@@ -294,7 +294,6 @@ PrimitiveInfo::PrimitiveInfo()
 {
 	// Private variables
 	primitive_ = NULL;
-	matrixTransformDefined_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -302,23 +301,10 @@ PrimitiveInfo::PrimitiveInfo()
 }
 
 // Set primitive info data
-void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords)
-{
-	primitive_ = prim;
-	localCoords_ = coords;
-	for (int n=0; n<4; ++n)
-	{
-		ambient_[n] = ambient[n];
-		diffuse_[n] = diffuse[n];
-	}
-}
-
-// Set primitive info data, including local rotation
 void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform)
 {
 	primitive_ = prim;
 	localTransform_ = transform;
-	matrixTransformDefined_ = TRUE;
 	for (int n=0; n<4; ++n)
 	{
 		ambient_[n] = ambient[n];
@@ -332,22 +318,10 @@ Primitive *PrimitiveInfo::primitive()
 	return primitive_;
 }
 
-// Return local coordinates of primitive
-Vec3<double> &PrimitiveInfo::localCoords()
-{
-	return localCoords_;
-}
-
 // Return local transformation of primitive
 GLMatrix &PrimitiveInfo::localTransform()
 {
 	return localTransform_;
-}
-
-// Return whether a local transformation is defined
-bool PrimitiveInfo::matrixTransformDefined()
-{
-	return matrixTransformDefined_;
 }
 
 // Return ambient colour pointer

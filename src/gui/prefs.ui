@@ -643,7 +643,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1096,74 +1096,9 @@
          </widget>
          <widget class="QWidget" name="QualitySubTab">
           <attribute name="title">
-           <string>Rendering / Quality</string>
+           <string>Rendering</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_20">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_18">
-             <item>
-              <widget class="QGroupBox" name="AliasingGroup">
-               <property name="title">
-                <string>Aliasing</string>
-               </property>
-               <property name="checkable">
-                <bool>false</bool>
-               </property>
-               <layout class="QHBoxLayout">
-                <property name="spacing">
-                 <number>4</number>
-                </property>
-                <property name="margin">
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QCheckBox" name="LineAliasingCheck">
-                  <property name="text">
-                   <string>Line</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="PolygonAliasingCheck">
-                  <property name="text">
-                   <string>Polygon</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QCheckBox" name="MultiSamplingCheck">
-                  <property name="text">
-                   <string>Multisampling</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="ObjectShininessGroup">
-               <property name="title">
-                <string>Shininess</string>
-               </property>
-               <layout class="QHBoxLayout" name="_17">
-                <property name="spacing">
-                 <number>4</number>
-                </property>
-                <property name="margin">
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QSpinBox" name="ShininessSpin">
-                  <property name="maximum">
-                   <number>127</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
+          <layout class="QVBoxLayout" name="verticalLayout_18">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_11">
              <item>
@@ -1302,6 +1237,446 @@
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
+             <item>
+              <widget class="QGroupBox" name="SpotlightGroup">
+               <property name="title">
+                <string>Spotlight</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_15">
+                <item>
+                 <layout class="QGridLayout" name="gridLayout_6">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>Ambient</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <layout class="QHBoxLayout" name="_8">
+                    <property name="spacing">
+                     <number>4</number>
+                    </property>
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="TColourFrame" name="SpotlightAmbientColourFrame">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>32</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="SpotlightAmbientColourButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>30</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>30</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="icons.qrc">
+                        <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
+                      </property>
+                      <property name="autoDefault">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_22">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>X</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="SpotlightPositionXSpin">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="decimals">
+                       <number>3</number>
+                      </property>
+                      <property name="minimum">
+                       <double>-10.000000000000000</double>
+                      </property>
+                      <property name="maximum">
+                       <double>10.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.200000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_11">
+                    <property name="text">
+                     <string>Diffuse</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <layout class="QHBoxLayout" name="_10">
+                    <property name="spacing">
+                     <number>4</number>
+                    </property>
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="TColourFrame" name="SpotlightDiffuseColourFrame">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>32</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="SpotlightDiffuseColourButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>30</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>30</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="icons.qrc">
+                        <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
+                      </property>
+                      <property name="autoDefault">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_21">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Y</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="SpotlightPositionYSpin">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="decimals">
+                       <number>3</number>
+                      </property>
+                      <property name="minimum">
+                       <double>-10.000000000000000</double>
+                      </property>
+                      <property name="maximum">
+                       <double>10.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.200000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Specular</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <layout class="QHBoxLayout" name="_12">
+                    <property name="spacing">
+                     <number>4</number>
+                    </property>
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="TColourFrame" name="SpotlightSpecularColourFrame">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>32</width>
+                        <height>0</height>
+                       </size>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <zorder>SpotlightSpecularColourButton</zorder>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="SpotlightSpecularColourButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>30</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>30</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string/>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="icons.qrc">
+                        <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
+                      </property>
+                      <property name="autoDefault">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="label_20">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Z</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="SpotlightPositionZSpin">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="decimals">
+                       <number>3</number>
+                      </property>
+                      <property name="minimum">
+                       <double>-10.000000000000000</double>
+                      </property>
+                      <property name="maximum">
+                       <double>10.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.200000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_16">
+               <item>
+                <widget class="QGroupBox" name="ObjectShininessGroup">
+                 <property name="title">
+                  <string>Shininess</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="_17">
+                  <property name="spacing">
+                   <number>4</number>
+                  </property>
+                  <property name="margin">
+                   <number>2</number>
+                  </property>
+                  <item>
+                   <widget class="QSpinBox" name="ShininessSpin">
+                    <property name="maximum">
+                     <number>127</number>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>202</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Quality</string>
+          </attribute>
+          <layout class="QVBoxLayout" name="verticalLayout_20">
+           <item>
+            <widget class="QGroupBox" name="AliasingGroup">
+             <property name="title">
+              <string>Aliasing</string>
+             </property>
+             <property name="checkable">
+              <bool>false</bool>
+             </property>
+             <layout class="QHBoxLayout" name="_5">
+              <property name="spacing">
+               <number>4</number>
+              </property>
+              <property name="margin">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QCheckBox" name="LineAliasingCheck">
+                <property name="text">
+                 <string>Line</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="PolygonAliasingCheck">
+                <property name="text">
+                 <string>Polygon</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="MultiSamplingCheck">
+                <property name="text">
+                 <string>Multisampling</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
            <item>
             <widget class="QGroupBox" name="PrimitivesGroup">
@@ -1477,428 +1852,119 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="SpotlightGroup">
+            <widget class="QGroupBox" name="TransparencyGroup">
              <property name="title">
-              <string>Spotlight</string>
+              <string>Transparency Correction</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
              </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-             <layout class="QVBoxLayout" name="_5">
-              <property name="spacing">
-               <number>4</number>
-              </property>
-              <property name="margin">
-               <number>2</number>
-              </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_14">
               <item>
-               <layout class="QHBoxLayout" name="_6">
-                <property name="spacing">
-                 <number>4</number>
-                </property>
-                <property name="margin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QGroupBox" name="AmbientLightGroup_2">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="title">
-                   <string>Ambient</string>
-                  </property>
-                  <layout class="QVBoxLayout" name="_7">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
-                   <property name="margin">
-                    <number>2</number>
-                   </property>
-                   <item>
-                    <layout class="QHBoxLayout" name="_8">
-                     <property name="spacing">
-                      <number>4</number>
-                     </property>
-                     <property name="margin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="TColourFrame" name="SpotlightAmbientColourFrame">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::StyledPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="SpotlightAmbientColourButton">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="icons.qrc">
-                         <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
-                       </property>
-                       <property name="autoDefault">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QGroupBox" name="DiffuseLightGroup_2">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="title">
-                   <string>Diffuse</string>
-                  </property>
-                  <layout class="QVBoxLayout" name="_9">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
-                   <property name="margin">
-                    <number>2</number>
-                   </property>
-                   <item>
-                    <layout class="QHBoxLayout" name="_10">
-                     <property name="spacing">
-                      <number>4</number>
-                     </property>
-                     <property name="margin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="TColourFrame" name="SpotlightDiffuseColourFrame">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::StyledPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="SpotlightDiffuseColourButton">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="icons.qrc">
-                         <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
-                       </property>
-                       <property name="autoDefault">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QGroupBox" name="SpecularLightGroup_2">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="title">
-                   <string>Specular</string>
-                  </property>
-                  <layout class="QVBoxLayout" name="_11">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
-                   <property name="margin">
-                    <number>2</number>
-                   </property>
-                   <item>
-                    <layout class="QHBoxLayout" name="_12">
-                     <property name="spacing">
-                      <number>4</number>
-                     </property>
-                     <property name="margin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="TColourFrame" name="SpotlightSpecularColourFrame">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="frameShape">
-                        <enum>QFrame::StyledPanel</enum>
-                       </property>
-                       <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="SpotlightSpecularColourButton">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize">
-                        <size>
-                         <width>30</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>30</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="icons.qrc">
-                         <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
-                       </property>
-                       <property name="autoDefault">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="LightPositionGroup">
+               <widget class="QLabel" name="label_86">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="title">
-                 <string>Position</string>
+                <property name="text">
+                 <string>NSlices</string>
                 </property>
-                <layout class="QHBoxLayout" name="_13">
-                 <property name="spacing">
-                  <number>4</number>
-                 </property>
-                 <property name="margin">
-                  <number>2</number>
-                 </property>
-                 <item>
-                  <layout class="QHBoxLayout" name="_14">
-                   <property name="spacing">
-                    <number>2</number>
-                   </property>
-                   <property name="margin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_22">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>X</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="SpotlightPositionXSpin">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="decimals">
-                      <number>3</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-10.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>10.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.200000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="_15">
-                   <property name="spacing">
-                    <number>2</number>
-                   </property>
-                   <property name="margin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_21">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Y</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="SpotlightPositionYSpin">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="decimals">
-                      <number>3</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-10.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>10.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.200000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="_16">
-                   <property name="spacing">
-                    <number>2</number>
-                   </property>
-                   <property name="margin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="label_20">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Z</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="SpotlightPositionZSpin">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="decimals">
-                      <number>3</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-10.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>10.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.200000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="TransparencyNBinsSpin">
+                <property name="toolTip">
+                 <string>Number of Z-bins in which to partition triangles</string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_84">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Start Z</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="TransparencyStartZSpin">
+                <property name="toolTip">
+                 <string>Z-distance from viewpoint at which transparent triangle sorting begins</string>
+                </property>
+                <property name="decimals">
+                 <number>1</number>
+                </property>
+                <property name="minimum">
+                 <double>1.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>100.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_85">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Width</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="TransparencyBinWidthSpin">
+                <property name="toolTip">
+                 <string>Width of single Z-bin</string>
+                </property>
+                <property name="decimals">
+                 <number>1</number>
+                </property>
+                <property name="minimum">
+                 <double>1.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>100.000000000000000</double>
+                </property>
                </widget>
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>241</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -1910,7 +1976,7 @@
            <item>
             <widget class="QGroupBox" name="ObjectsGroup">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -2630,7 +2696,7 @@
        <item>
         <widget class="QGroupBox" name="PointsGropu">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -3243,38 +3309,6 @@
     <hint type="destinationlabel">
      <x>142</x>
      <y>428</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>PrimitiveQualitySpin</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>PrimitiveQualitySlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>284</x>
-     <y>303</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>188</x>
-     <y>306</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>PrimitiveQualitySlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>PrimitiveQualitySpin</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>141</x>
-     <y>308</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>292</x>
-     <y>308</y>
     </hint>
    </hints>
   </connection>

@@ -224,65 +224,18 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v, Mat4<double> &v
 // Object Rendering
 */
 
-// Render primitive at requested local position in specified colour, returning projected position
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &pos, bool transformInGL)
-{
-// 	double alphadelta = 1.0-diffuse[3];
-	// Filter type determines what to do here...
-// 	if ((type_ == NoFilter) || ((type_ == TransparencyFilter) && (alphadelta < 0.001)))
-// 	{
-// 		// Pass through direct to GL
-// 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
-// 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
-// 		if (transformInGL)
-// 		{
-// 			glTranslated(pos.x, pos.y, pos.z);
-// 			pg.sendToGL(lod);
-// 			glTranslated(-pos.x, -pos.y, -pos.z);
-// 		}
-// 		else pg.sendToGL(lod);
-	if (diffuse[3] > 0.99f)
-	{
-		// Add primitive info to local buffer (it will be rendered later)
-		PrimitiveInfo *pi = solidPrimitives_.add();
-		pi->set(&pg.primitive(lod), ambient, diffuse, pos);
-	}
-	else
-	{
-		// Add primitive info to local buffer (it will be rendered later)
-		PrimitiveInfo *pi = transparentPrimitives_.add();
-		pi->set(&pg.primitive(lod), ambient, diffuse, pos);
-	}
-}
-
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
 void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform, bool transformInGL)
 {
-// 	double alphadelta = 1.0-diffuse[3];
-// 	// Filter type determines what to do here...
-// 	if ((type_ == NoFilter) || ((type_ == TransparencyFilter) && (alphadelta < 0.001)))
-// 	{
-// 		// Pass through direct to GL
-// 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
-// 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
-// 		if (transformInGL)
-// 		{
-// 			glPushMatrix();
-// 			glMultMatrixd(transform.matrix());
-// 			pg.sendToGL(lod);
-// 			glPopMatrix();
-// 		}
-// 		else pg.sendToGL(lod);
-// 	}
 	if (diffuse[3] > 0.99f)
 	{
-		// Add primitive info to local buffer (it will be rendered later)
+		// Add primitive info to solid objects list
 		PrimitiveInfo *pi = solidPrimitives_.add();
 		pi->set(&pg.primitive(lod), ambient, diffuse, transform);
 	}
 	else
 	{
-		// Add primitive info to local buffer (it will be rendered later
+		// Add primitive info to transparent objects list
 		PrimitiveInfo *pi = transparentPrimitives_.add();
 		pi->set(&pg.primitive(lod), ambient, diffuse, transform);
 	}
@@ -546,20 +499,10 @@ void RenderEngine::sortAndSendGL()
 	{
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
-		if (pi->matrixTransformDefined())
-		{
-			glPushMatrix();
-			glMultMatrixd(pi->localTransform().matrix());
-			pi->primitive()->sendToGL();
-			glPopMatrix();
-		}
-		else
-		{
-// 			pos = pi->localCoords();
-// 			glTranslated(pos.x, pos.y, pos.z);
-// 			pi->primitive()->sendToGL();
-// 			glTranslated(-pos.x, -pos.y, -pos.z);
-		}
+		glPushMatrix();
+		glMultMatrixd(pi->localTransform().matrix());
+		pi->primitive()->sendToGL();
+		glPopMatrix();
 	}
 	
 	// Transform and render each solid primitive in the list
@@ -575,20 +518,10 @@ void RenderEngine::sortAndSendGL()
 		
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
-		if (pi->matrixTransformDefined())
-		{
-			glPushMatrix();
-			glMultMatrixd(pi->localTransform().matrix());
-			pi->primitive()->sendToGL();
-			glPopMatrix();
-		}
-		else
-		{
-			pos = pi->localCoords();
-			glTranslated(pos.x, pos.y, pos.z);
-			pi->primitive()->sendToGL();
-			glTranslated(-pos.x, -pos.y, -pos.z);
-		}
+		glPushMatrix();
+		glMultMatrixd(pi->localTransform().matrix());
+		pi->primitive()->sendToGL();
+		glPopMatrix();
 	}
 	triangleChopper_.sendToGL();
 }

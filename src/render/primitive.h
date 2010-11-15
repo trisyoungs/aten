@@ -97,12 +97,8 @@ class PrimitiveInfo
 	private:
 	// Target primitive
 	Primitive *primitive_;
-	// Local coordinates of primitive
-	Vec3<double> localCoords_;
-	// Local transformation of primitive (if defined)
+	// Local transformation of primitive
 	GLMatrix localTransform_;
-	// Flag to specify whether vector or matrix transform of primitive has been defined
-	bool matrixTransformDefined_;
 	// Ambient colour
 	GLfloat ambient_[4];
 	// Diffuse colour
@@ -110,17 +106,11 @@ class PrimitiveInfo
 	
 	public:
 	// Set primitive info data
-	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords);
-	// Set primitive info data, including local rotation
 	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform);
 	// Return pointer to primitive
 	Primitive *primitive();
-	// Return local coordinates of primitive
-	Vec3<double> &localCoords();
 	// Return local transformation of primitive
 	GLMatrix &localTransform();
-	// Return whether a local transformation is defined
-	bool matrixTransformDefined();
 	// Return ambient colour pointer
 	GLfloat *ambient();
 	// Return diffuse colour pointer
