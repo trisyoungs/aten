@@ -674,7 +674,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 				}
 				if (p == destmodel->patterns())
 				{
-					s.sprintf(" %s", etatext.get());
+					s.strcatf(" %s", etatext.get());
 				}
 				s += '\n';
 				msg.print(s.get());
