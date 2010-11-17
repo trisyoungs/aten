@@ -51,7 +51,7 @@ void AtenSelectElement::finaliseUi()
 		elementButtons_[n]->setText(elements().symbol(n));
 		elementButtons_[n]->setMinimumSize(24,24);
 		elementButtons_[n]->setMaximumSize(24,24);
-		colour = elements().ambientColour(n);
+		colour = elements().colour(n);
 		elementButtons_[n]->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
 		QObject::connect(elementButtons_[n], SIGNAL(clicked(bool)), this, SLOT(ElementButton_clicked(bool)));
 	}
@@ -138,7 +138,7 @@ QPushButton *AtenSelectElement::addCommonButton(int el)
 	button->setText(elements().symbol(el));
 	button->setMinimumSize(24,24);
 	button->setMaximumSize(24,24);
-	double *colour = elements().ambientColour(el);
+	double *colour = elements().colour(el);
 	button->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
 	QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(CommonElementButton_clicked(bool)));
 	return button;

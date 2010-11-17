@@ -101,22 +101,18 @@ class PrimitiveInfo
 	Primitive *primitive_;
 	// Local transformation of primitive
 	GLMatrix localTransform_;
-	// Ambient colour
-	GLfloat ambient_[4];
-	// Diffuse colour
-	GLfloat diffuse_[4];
+	// Colour of primitive (if vertexData_ doesn't contain colour information)
+	GLfloat colour_[4];
 	
 	public:
 	// Set primitive info data
-	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform);
+	void set(Primitive *prim, GLfloat *colour, GLMatrix &transform);
 	// Return pointer to primitive
 	Primitive *primitive();
 	// Return local transformation of primitive
 	GLMatrix &localTransform();
-	// Return ambient colour pointer
-	GLfloat *ambient();
-	// Return diffuse colour pointer
-	GLfloat *diffuse();
+	// Return colour array
+	GLfloat *colour();
 };
 
 // Primitive Group

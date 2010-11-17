@@ -89,7 +89,7 @@ class RenderEngine
 	// Render primitive in specified colour and level of detail (coords used only if filtered)
 	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local, bool transformInGL = TRUE);
 	// Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform, bool transformInGL = TRUE);
+	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform, bool transformInGL = true);
 
 	public:
 	// Render specified model

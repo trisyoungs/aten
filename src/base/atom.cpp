@@ -696,7 +696,7 @@ void Atom::setColour(int n, double d)
 // Set custom colour from current atom element
 void Atom::setColourFromElement()
 {
-	for (int n=0; n<4; ++n) colour_[n] = elements().el[element_].ambientColour[n];
+	for (int n=0; n<4; ++n) colour_[n] = elements().el[element_].colour[n];
 }
 
 // Return custom colour

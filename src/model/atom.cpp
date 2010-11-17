@@ -417,7 +417,7 @@ void Model::atomResetColour(Atom *i)
 {
 	// Grab new colour...
 	double newcol[4];
-	for (int n=0; n<4; ++n) newcol[n] = elements().el[i->element()].ambientColour[n];
+	for (int n=0; n<4; ++n) newcol[n] = elements().el[i->element()].colour[n];
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
