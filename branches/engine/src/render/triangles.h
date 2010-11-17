@@ -55,7 +55,9 @@ class TriangleList
 	// Forget all stored triangles (but leave structures and lists intact
 	void forgetAll();
 	// Add triangle
-	void addTriangle(GLfloat *vertices, GLfloat *normals);
+	void addTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
+	// Add triangle with single colour per vertex
+	void addTriangleSingleColour(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
 	// Sent triangles to GL
 	void sendToGL();
 };

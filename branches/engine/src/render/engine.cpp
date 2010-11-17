@@ -471,7 +471,7 @@ void RenderEngine::renderModel(Model *source)
 					case (Atom::TubeStyle):
 					case (Atom::SphereStyle):
 					case (Atom::ScaledStyle):
-						bondtransform.applyTranslation(0.0, 0.0, halfr*2.0);
+						bondtransform.applyTranslation(0.0, 0.0, 1.0);
 						renderPrimitive(bond_[stylej], lod, ambientj, diffusej, bondtransform);
 						if (j->isSelected())
 						{
@@ -497,25 +497,32 @@ void RenderEngine::sortAndSendGL()
 	Vec3<double> pos;
 	for (PrimitiveInfo *pi = solidPrimitives_.first(); pi != NULL; pi = pi->next)
 	{
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
+		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
+		if (!pi->primitive()->colouredVertexData())
+		{
+			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
+			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
+		}
 		glPushMatrix();
 		glMultMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();
 		glPopMatrix();
 	}
 	
-	// Transform and render each solid primitive in the list
-	triangleChopper_.emptyTriangles();
-	for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next)
+	// Transform and render each transparent primitive in the list, unless transparencyCorrect_ is off.
+	if (prefs.transparencyCorrect())
 	{
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
-		triangleChopper_.storeTriangles(pi);
-		continue;
-		
-		
-		
+printf("TRIANGLE EMPTY\n");
+		triangleChopper_.emptyTriangles();
+printf("TRIANGLE STORE...\n");
+		for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next) triangleChopper_.storeTriangles(pi);
+printf("TRIANGLE RENDER\n");
+		triangleChopper_.sendToGL();
+printf("TRIANGLE DONE\n");
+
+	}
+	else for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next)
+	{
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
 		glPushMatrix();
@@ -523,5 +530,4 @@ void RenderEngine::sortAndSendGL()
 		pi->primitive()->sendToGL();
 		glPopMatrix();
 	}
-	triangleChopper_.sendToGL();
 }
