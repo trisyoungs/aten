@@ -225,26 +225,26 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v, Mat4<double> &v
 */
 
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform, bool transformInGL)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, GLMatrix &transform, bool transformInGL)
 {
-	if (diffuse[3] > 0.99f)
+	if (colour[3] > 0.99f)
 	{
 		// Add primitive info to solid objects list
 		PrimitiveInfo *pi = solidPrimitives_.add();
-		pi->set(&pg.primitive(lod), ambient, diffuse, transform);
+		pi->set(&pg.primitive(lod), colour, transform);
 	}
 	else
 	{
 		// Add primitive info to transparent objects list
 		PrimitiveInfo *pi = transparentPrimitives_.add();
-		pi->set(&pg.primitive(lod), ambient, diffuse, transform);
+		pi->set(&pg.primitive(lod), colour, transform);
 	}
 }
 
 // Render specified model
 void RenderEngine::renderModel(Model *source)
 {
-	GLfloat ambienti[4], diffusei[4], ambientj[4], diffusej[4], scaledradius;
+	GLfloat colouri[4], colourj[4], alphai, alphaj, scaledradius;
 	int lod, id_i;
 	double z, phi, halfr;
 	Atom *i, *j;
@@ -263,8 +263,8 @@ void RenderEngine::renderModel(Model *source)
 	transformbase = transformationMatrix_;
 
 	// Set polygon fill mode and specular reflection
-	prefs.copyColour(Prefs::SpecularColour, ambienti);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, ambienti);
+	prefs.copyColour(Prefs::SpecularColour, colouri);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colouri);
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
 
 	// Grab style values....
@@ -293,69 +293,62 @@ void RenderEngine::renderModel(Model *source)
 		// Move to local atom position
 		atomtransform = transformbase;
 		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
-// 		glTranslated(pos.x, pos.y, pos.z);
 
 		// Select colour
-		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, ambienti);
+		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colouri);
 		else switch (scheme)
 		{
 			case (Prefs::ElementScheme):
-				elements().copyAmbientColour(i->element(), ambienti);
+				elements().copyColour(i->element(), colouri);
 				break;
 			case (Prefs::ChargeScheme):
-				prefs.colourScale[0].colour(i->charge(), ambienti);
+				prefs.colourScale[0].colour(i->charge(), colouri);
 				break;
 			case (Prefs::VelocityScheme):
-				prefs.colourScale[1].colour(i->v().magnitude(), ambienti);
+				prefs.colourScale[1].colour(i->v().magnitude(), colouri);
 				break;
 			case (Prefs::ForceScheme):
-				prefs.colourScale[2].colour(i->f().magnitude(), ambienti);
+				prefs.colourScale[2].colour(i->f().magnitude(), colouri);
 				break;
 			case (Prefs::CustomScheme):
-				i->copyColour(ambienti);
+				i->copyColour(colouri);
 				break;
 			default:
 				break;
 		}
-		// Set diffuse colour as 0.75*ambient
-		diffusei[0] = ambienti[0] * 0.75f;
-		diffusei[1] = ambienti[1] * 0.75f;
-		diffusei[2] = ambienti[2] * 0.75f;
-		diffusei[3] = ambienti[3];
-
+		// Store copy of alpha value
+		alphai = colouri[3];
+		
 		// Get atom style
 		stylei = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
 		
 		switch (stylei)
 		{
 			case (Atom::StickStyle):
-				if (i->nBonds() == 0) renderPrimitive(atom_[stylei], lod, ambienti, diffusei, atomtransform, FALSE);
+				if (i->nBonds() == 0) renderPrimitive(atom_[stylei], lod, colouri, atomtransform, FALSE);
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
-				renderPrimitive(atom_[stylei], lod, ambienti, diffusei, atomtransform, FALSE);
+				renderPrimitive(atom_[stylei], lod, colouri, atomtransform, FALSE);
 				if (i->isSelected())
 				{
-					diffusei[3] = 0.5f;
-					renderPrimitive(selectedAtom_[stylei], lod, ambienti, diffusei, atomtransform, FALSE);
-					diffusei[3] = ambienti[3];
+					colouri[3] = 0.5f;
+					renderPrimitive(selectedAtom_[stylei], lod, colouri, atomtransform, FALSE);
+					colouri[3] = alphai;
 				}
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(scaledAtom_[i->element()], lod, ambienti, diffusei, atomtransform, FALSE);
+				renderPrimitive(scaledAtom_[i->element()], lod, colouri, atomtransform, FALSE);
 				if (i->isSelected())
 				{
-					diffusei[3] = 0.5f;
-					renderPrimitive(selectedScaledAtom_[i->element()], lod, ambienti, diffusei, atomtransform, FALSE);
-					diffusei[3] = ambienti[3];
+					colouri[3] = 0.5f;
+					renderPrimitive(selectedScaledAtom_[i->element()], lod, colouri, atomtransform, FALSE);
+					colouri[3] = alphai;;
 				}
 				break;
 		}
 
 		// LABELS ETC SHOULD BE DONE HERE....
-
-		// Move back to 'zero' position
-// 		glTranslated(-pos.x, -pos.y, -pos.z);
 
 		// Bonds
 		// Translate local matrix to atom centre
@@ -369,23 +362,23 @@ void RenderEngine::renderModel(Model *source)
 			v = j->r() - i->r();
 
 			// Grab colour of second atom
-			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, ambientj);
+			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colourj);
 			else switch (scheme)
 			{
 				case (Prefs::ElementScheme):
-					elements().copyAmbientColour(j->element(), ambientj);
+					elements().copyColour(j->element(), colourj);
 					break;
 				case (Prefs::ChargeScheme):
-					prefs.colourScale[0].colour(j->charge(), ambientj);
+					prefs.colourScale[0].colour(j->charge(), colourj);
 					break;
 				case (Prefs::VelocityScheme):
-					prefs.colourScale[1].colour(j->v().magnitude(), ambientj);
+					prefs.colourScale[1].colour(j->v().magnitude(), colourj);
 					break;
 				case (Prefs::ForceScheme):
-					prefs.colourScale[2].colour(j->f().magnitude(), ambientj);
+					prefs.colourScale[2].colour(j->f().magnitude(), colourj);
 					break;
 				case (Prefs::CustomScheme):
-					j->copyColour(ambientj);
+					j->copyColour(colourj);
 					break;
 				default:
 					break;
@@ -393,30 +386,27 @@ void RenderEngine::renderModel(Model *source)
 			// Get atom style
 			stylej = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
 
-			// Set diffuse colour as 0.75*ambient
-			diffusej[0] = ambientj[0] * 0.75f;
-			diffusej[1] = ambientj[1] * 0.75f;
-			diffusej[2] = ambientj[2] * 0.75f;
-			diffusej[3] = ambientj[3];
+			// Store copy of alpha value
+			alphaj = colourj[3];
 
 			// Don't bother calculating transformation if both atom styles are Stick
 			if ((stylei == Atom::StickStyle) && (stylej == Atom::StickStyle))
 			{
+			        glMultMatrixd(atomtransform.matrix());
 				glNormal3d(0.0,0.0,1.0);
 				glLineWidth( i->isSelected() ? 3.0 : 1.0 );
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambienti);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffusei);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colouri);
 				glBegin(GL_LINES);
-				glVertex3d(pos.x, pos.y, pos.z);
-				glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
+				glVertex3d(0.0, 0.0, 0.0);
+				glVertex3d(0.5*v.x, 0.5*v.y, 0.5*v.z);
 				glEnd();
 				glLineWidth( j->isSelected() ? 3.0 : 1.0 );
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambientj);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffusej);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colourj);
 				glBegin(GL_LINES);
-				glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
-				glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
+				glVertex3d(0.5*v.x, 0.5*v.y, 0.5*v.z);
+				glVertex3d(v.x, v.y, v.z);
 				glEnd();
+				glLoadIdentity();
 			}
 			else
 			{
@@ -429,7 +419,6 @@ void RenderEngine::renderModel(Model *source)
 				phi = DEGRAD * acos(v.z/halfr);
 	
 				// Special case where the bond is exactly in the XY plane.
-// 				transform1 = transformbase;
 				bondtransform = atomtransform;
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) bondtransform.applyRotationX(phi);
 				else bondtransform.applyRotationAxis(-v.y, v.x, 0.0, phi, TRUE);
@@ -450,12 +439,12 @@ void RenderEngine::renderModel(Model *source)
 					case (Atom::TubeStyle):
 					case (Atom::SphereStyle):
 					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[stylei], lod, ambienti, diffusei, bondtransform);
+						renderPrimitive(bond_[stylei], lod, colouri, bondtransform);
 						if (i->isSelected())
 						{
-							diffusei[3] = 0.5f;
-							renderPrimitive(selectedBond_[stylei], lod, ambienti, diffusei, bondtransform);
-							diffusei[3] = ambienti[3];
+							colouri[3] = 0.5f;
+							renderPrimitive(selectedBond_[stylei], lod, colouri, bondtransform);
+							colouri[3] = alphai;
 						}
 						break;
 				}
@@ -472,12 +461,12 @@ void RenderEngine::renderModel(Model *source)
 					case (Atom::SphereStyle):
 					case (Atom::ScaledStyle):
 						bondtransform.applyTranslation(0.0, 0.0, 1.0);
-						renderPrimitive(bond_[stylej], lod, ambientj, diffusej, bondtransform);
+						renderPrimitive(bond_[stylej], lod, colourj, bondtransform);
 						if (j->isSelected())
 						{
-							diffusej[3] = 0.5f;
-							renderPrimitive(selectedBond_[stylej], lod, ambientj, diffusej, bondtransform);
-							diffusej[3] = ambientj[3];
+							colourj[3] = 0.5f;
+							renderPrimitive(selectedBond_[stylej], lod, colourj, bondtransform);
+							colourj[3] = alphaj;
 						}
 						break;
 				}
@@ -500,8 +489,7 @@ void RenderEngine::sortAndSendGL()
 		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
 		if (!pi->primitive()->colouredVertexData())
 		{
-			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
-			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
+			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, pi->colour());
 		}
 		glPushMatrix();
 		glMultMatrixd(pi->localTransform().matrix());
@@ -512,19 +500,13 @@ void RenderEngine::sortAndSendGL()
 	// Transform and render each transparent primitive in the list, unless transparencyCorrect_ is off.
 	if (prefs.transparencyCorrect())
 	{
-printf("TRIANGLE EMPTY\n");
 		triangleChopper_.emptyTriangles();
-printf("TRIANGLE STORE...\n");
 		for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next) triangleChopper_.storeTriangles(pi);
-printf("TRIANGLE RENDER\n");
 		triangleChopper_.sendToGL();
-printf("TRIANGLE DONE\n");
-
 	}
 	else for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next)
 	{
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, pi->colour());
 		glPushMatrix();
 		glMultMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();

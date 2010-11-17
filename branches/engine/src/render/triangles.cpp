@@ -172,8 +172,7 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 	}
 	else
 	{
-		colourptr = pinfo->diffuse();
-	printf("Colour of TPrimitive = %f %f %f %f\n", colourptr[0], colourptr[1],colourptr[2], colourptr[3]); 
+		colourptr = pinfo->colour();
 		for (int n=0; n<pinfo->primitive()->nDefinedTypes(); ++n)
 		{
 			// Transform triangle centroid into world coordinates to decide bin

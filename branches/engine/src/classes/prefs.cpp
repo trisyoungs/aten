@@ -371,17 +371,10 @@ bool Prefs::save(const char *filename)
 		for (n=0; n<elements().nElements(); ++n)
 		{
 			// Ambient Colour
-			for (i = 0; i<4; ++i) if (elements().defaultEl[n].ambientColour[i] != elements().el[n].ambientColour[i]) break;
+			for (i = 0; i<4; ++i) if (elements().defaultEl[n].colour[i] != elements().el[n].colour[i]) break;
 			if (i != 4)
 			{
-				line.sprintf("aten.elements[%s].ambient = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].ambientColour[0], elements().el[n].ambientColour[1], elements().el[n].ambientColour[2], elements().el[n].ambientColour[3]);
-				prefsfile.writeLine(line);
-			}
-			// Diffuse Colour
-			for (i = 0; i<4; ++i) if (elements().defaultEl[n].diffuseColour[i] != elements().el[n].diffuseColour[i]) break;
-			if (i != 4)
-			{
-				line.sprintf("aten.elements[%s].diffuse = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].diffuseColour[0], elements().el[n].diffuseColour[1], elements().el[n].diffuseColour[2], elements().el[n].diffuseColour[3]);
+				line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].colour[0], elements().el[n].colour[1], elements().el[n].colour[2], elements().el[n].colour[3]);
 				prefsfile.writeLine(line);
 			}
 			// Atomic radius

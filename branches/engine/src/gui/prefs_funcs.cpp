@@ -228,18 +228,17 @@ void AtenPrefs::on_ElementList_currentRowChanged(int row)
 	ui.ElementNameLabel->setText(elements().name(row));
 	ui.ElementSymbolLabel->setText(elements().symbol(row));
 	ui.ElementMassLabel->setText(ftoa(elements().atomicMass(row)));
-	ui.ElementAmbientColourFrame->setColour(elements().ambientColour(row));
-	ui.ElementDiffuseColourFrame->setColour(elements().diffuseColour(row));
+	ui.ElementColourFrame->setColour(elements().colour(row));
 	ui.ElementRadiusSpin->setValue(elements().atomicRadius(row));
 }
 
-void AtenPrefs::on_ElementAmbientColourButton_clicked(bool checked)
+void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 {
 	// Get current row
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
 	// Get element's current ambient colour and convert into a QColor
-	double *col = elements().ambientColour(el);
+	double *col = elements().colour(el);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -247,31 +246,9 @@ void AtenPrefs::on_ElementAmbientColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	elements().setAmbientColour(el, newcol.redF(), newcol.greenF(), newcol.blueF());
-	ui.ElementAmbientColourFrame->setColour(newcol);
-	ui.ElementAmbientColourFrame->update();
-	// Re-set atom colours in model(s)
-	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
-}
-
-void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
-{
-	// Get current row
-	int el = ui.ElementList->currentRow();
-	if (el == -1) return;
-	// Get element's current diffuse colour and convert into a QColor
-	double *col = elements().diffuseColour(el);
-	QColor oldcol, newcol;
-	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-	// Request a colour dialog
-	bool ok = FALSE;
-	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
-	if (!ok) return;
-	// Store new colour
-	elements().setDiffuseColour(el, newcol.redF(), newcol.greenF(), newcol.blueF());
-	ui.ElementDiffuseColourFrame->setColour(newcol);
-	ui.ElementDiffuseColourFrame->update();
+	elements().setColour(el, newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.ElementColourFrame->setColour(newcol);
+	ui.ElementColourFrame->update();
 	// Re-set atom colours in model(s)
 	aten.currentModel()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();

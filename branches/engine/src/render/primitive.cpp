@@ -264,16 +264,12 @@ void Primitive::createCross(double width, int naxes)
 	{
 		for (j=0; j<3; ++j)
 		{
-			vert[count] = (i == j ? width : 0.0);
-			norm[count++] = (j == 0 ? 1.0 : 0.0);
+			vert[j] = (i == j ? width : 0.0);
+			norm[j] = (j == 0 ? 1.0 : 0.0);
 		}
-		defineVertex(vert[0], vert[1], vert[3], norm[0], norm[1], norm[2]);
-// 		for (j=0; j<3; ++j)
-// 		{
-// 			vert[count] = (i == j ? -width : 0.0);
-// 			norm[count++] = (j == 0 ? 1.0 : 0.0);
-// 		}
-// 		defineVertex(vert[0], vert[1], vert[3], norm[0], norm[1], norm[2]);   NOT REALLY BROKEN, BUT REMOVE ANYWAY
+		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2]);
+		vert[i] = -vert[i];
+		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2]);
 	}
 }
 
@@ -320,10 +316,11 @@ void Primitive::sendToGL()
 	// Does the vertex data contain colour-per-vertex information?
 	if (colouredVertexData_)
 	{
-		printf("lkjlkj\n");
 		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		glEnable(GL_COLOR_MATERIAL);
 		glInterleavedArrays(GL_C4F_N3F_V3F, 0, vertexData_);
 		glDrawArrays(type_, 0, nDefinedVertices_);
+		glDisable(GL_COLOR_MATERIAL);
 	}
 	else
 	{
@@ -348,15 +345,11 @@ PrimitiveInfo::PrimitiveInfo()
 }
 
 // Set primitive info data
-void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform)
+void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, GLMatrix& transform)
 {
 	primitive_ = prim;
 	localTransform_ = transform;
-	for (int n=0; n<4; ++n)
-	{
-		ambient_[n] = ambient[n];
-		diffuse_[n] = diffuse[n];
-	}
+	for (int n=0; n<4; ++n) colour_[n] = colour[n];
 }
 
 // Return pointer to primitive
@@ -371,16 +364,10 @@ GLMatrix &PrimitiveInfo::localTransform()
 	return localTransform_;
 }
 
-// Return ambient colour pointer
-GLfloat *PrimitiveInfo::ambient()
+// Return colour array
+GLfloat *PrimitiveInfo::colour()
 {
-	return ambient_;
-}
-
-// Return diffuse colour pointer
-GLfloat *PrimitiveInfo::diffuse()
-{
-	return diffuse_;
+	return colour_;
 }
 
 /*
