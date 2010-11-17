@@ -244,33 +244,44 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour,
 // Render specified model
 void RenderEngine::renderModel(Model *source)
 {
-	GLfloat colouri[4], colourj[4], alphai, alphaj, scaledradius;
+	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
 	int lod, id_i;
-	double z, phi, halfr;
+	double selscale, z, phi, halfr, radius_i, radius_j, dvisible, rij;
 	Atom *i, *j;
 	Vec3<double> pos, v;
 	Vec4<double> transformZ;
-	GLMatrix transformbase, atomtransform, bondtransform;
+	GLMatrix transformbase, atomtransform, bondtransform, A, B;
 	Refitem<Bond,int> *ri;
+	Atom::DrawStyle style_i, style_j, globalstyle;
+	Prefs::ColouringScheme scheme;
 
 	// Clear filtered primitives list
 	solidPrimitives_.clear();
 	transparentPrimitives_.clear();
 
-	// Set transformation matrix
+	// Set initial transformation matrix, including any translation occurring from cell...
 	setTransformationMatrix(source->viewMatrix());
 	transformZ = transformationMatrix_.z();
 	transformbase = transformationMatrix_;
+	transformbase.applyTranslation(-source->cell()->centre());
 
 	// Set polygon fill mode and specular reflection
-	prefs.copyColour(Prefs::SpecularColour, colouri);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colouri);
+	prefs.copyColour(Prefs::SpecularColour, colour_i);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour_i);
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
 
-	// Grab style values....
-	Prefs::ColouringScheme scheme = prefs.colourScheme();
-	Atom::DrawStyle stylei, stylej, globalstyle = prefs.renderStyle();
-	scaledradius = prefs.atomStyleRadius(Atom::ScaledStyle);
+	// Grab global style values
+	scheme = prefs.colourScheme();
+	globalstyle = prefs.renderStyle();
+	selscale = prefs.selectionScale();
+
+	// Render cell
+	if (source->cell()->type() != Cell::NoCell)
+	{
+		A = transformbase * source->cell()->axes();
+		glMultMatrixd(A.matrix());
+		glLoadIdentity();
+	}
 
 	// Atoms and Bonds // OPTIMIZE - use atom array instead
 	for (i = source->atoms(); i != NULL; i = i->next)
@@ -295,55 +306,55 @@ void RenderEngine::renderModel(Model *source)
 		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
 
 		// Select colour
-		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colouri);
+		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_i);
 		else switch (scheme)
 		{
 			case (Prefs::ElementScheme):
-				elements().copyColour(i->element(), colouri);
+				elements().copyColour(i->element(), colour_i);
 				break;
 			case (Prefs::ChargeScheme):
-				prefs.colourScale[0].colour(i->charge(), colouri);
+				prefs.colourScale[0].colour(i->charge(), colour_i);
 				break;
 			case (Prefs::VelocityScheme):
-				prefs.colourScale[1].colour(i->v().magnitude(), colouri);
+				prefs.colourScale[1].colour(i->v().magnitude(), colour_i);
 				break;
 			case (Prefs::ForceScheme):
-				prefs.colourScale[2].colour(i->f().magnitude(), colouri);
+				prefs.colourScale[2].colour(i->f().magnitude(), colour_i);
 				break;
 			case (Prefs::CustomScheme):
-				i->copyColour(colouri);
+				i->copyColour(colour_i);
 				break;
 			default:
 				break;
 		}
 		// Store copy of alpha value
-		alphai = colouri[3];
+		alpha_i = colour_i[3];
 		
 		// Get atom style
-		stylei = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
+		style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
 		
-		switch (stylei)
+		switch (style_i)
 		{
 			case (Atom::StickStyle):
-				if (i->nBonds() == 0) renderPrimitive(atom_[stylei], lod, colouri, atomtransform, FALSE);
+				if (i->nBonds() == 0) renderPrimitive(atom_[style_i], lod, colour_i, atomtransform, FALSE);
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
-				renderPrimitive(atom_[stylei], lod, colouri, atomtransform, FALSE);
+				renderPrimitive(atom_[style_i], lod, colour_i, atomtransform, FALSE);
 				if (i->isSelected())
 				{
-					colouri[3] = 0.5f;
-					renderPrimitive(selectedAtom_[stylei], lod, colouri, atomtransform, FALSE);
-					colouri[3] = alphai;
+					colour_i[3] = 0.5f;
+					renderPrimitive(selectedAtom_[style_i], lod, colour_i, atomtransform, FALSE);
+					colour_i[3] = alpha_i;
 				}
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(scaledAtom_[i->element()], lod, colouri, atomtransform, FALSE);
+				renderPrimitive(scaledAtom_[i->element()], lod, colour_i, atomtransform, FALSE);
 				if (i->isSelected())
 				{
-					colouri[3] = 0.5f;
-					renderPrimitive(selectedScaledAtom_[i->element()], lod, colouri, atomtransform, FALSE);
-					colouri[3] = alphai;;
+					colour_i[3] = 0.5f;
+					renderPrimitive(selectedScaledAtom_[i->element()], lod, colour_i, atomtransform, FALSE);
+					colour_i[3] = alpha_i;
 				}
 				break;
 		}
@@ -351,57 +362,64 @@ void RenderEngine::renderModel(Model *source)
 		// LABELS ETC SHOULD BE DONE HERE....
 
 		// Bonds
-		// Translate local matrix to atom centre
+		// Set initial transformation matrix to centre on atom i
 		bondtransform = atomtransform;
-// 		.createTranslation(pos.x, pos.y, pos.z);
+		// Grab some useful values from atom i
 		id_i = i->id();
+		radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
+
 		for (ri = i->bonds(); ri != NULL; ri = ri->next)
 		{
 			j = ri->item->partner(i);
 			if (j->id() > id_i) continue;
-			v = j->r() - i->r();
 
 			// Grab colour of second atom
-			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colourj);
+			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_j);
 			else switch (scheme)
 			{
 				case (Prefs::ElementScheme):
-					elements().copyColour(j->element(), colourj);
+					elements().copyColour(j->element(), colour_j);
 					break;
 				case (Prefs::ChargeScheme):
-					prefs.colourScale[0].colour(j->charge(), colourj);
+					prefs.colourScale[0].colour(j->charge(), colour_j);
 					break;
 				case (Prefs::VelocityScheme):
-					prefs.colourScale[1].colour(j->v().magnitude(), colourj);
+					prefs.colourScale[1].colour(j->v().magnitude(), colour_j);
 					break;
 				case (Prefs::ForceScheme):
-					prefs.colourScale[2].colour(j->f().magnitude(), colourj);
+					prefs.colourScale[2].colour(j->f().magnitude(), colour_j);
 					break;
 				case (Prefs::CustomScheme):
-					j->copyColour(colourj);
+					j->copyColour(colour_j);
 					break;
 				default:
 					break;
 			}
-			// Get atom style
-			stylej = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
+
+			// Get atom style and radius
+			style_j = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
+			radius_j = (style_j == Atom::TubeStyle ? 0.0 : prefs.screenRadius(j)*0.85);
 
 			// Store copy of alpha value
-			alphaj = colourj[3];
+			alpha_j = colour_j[3];
+
+			// Calculate vector i->j
+			v = source->cell()->mimd(j, i);
+			rij = v.magnitude();
 
 			// Don't bother calculating transformation if both atom styles are Stick
-			if ((stylei == Atom::StickStyle) && (stylej == Atom::StickStyle))
+			if ((style_i == Atom::StickStyle) && (style_j == Atom::StickStyle))
 			{
 			        glMultMatrixd(atomtransform.matrix());
 				glNormal3d(0.0,0.0,1.0);
 				glLineWidth( i->isSelected() ? 3.0 : 1.0 );
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colouri);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour_i);
 				glBegin(GL_LINES);
 				glVertex3d(0.0, 0.0, 0.0);
 				glVertex3d(0.5*v.x, 0.5*v.y, 0.5*v.z);
 				glEnd();
 				glLineWidth( j->isSelected() ? 3.0 : 1.0 );
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colourj);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour_j);
 				glBegin(GL_LINES);
 				glVertex3d(0.5*v.x, 0.5*v.y, 0.5*v.z);
 				glVertex3d(v.x, v.y, v.z);
@@ -410,63 +428,92 @@ void RenderEngine::renderModel(Model *source)
 			}
 			else
 			{
-				// OPTIMISE - Shift position so as not to draw 'inside' spherical atoms
-				// Scale to half-bond length
-				v *= 0.5;
-				halfr = v.magnitude();
+				// If bond is not visible, don't bother drawing it...
+				dvisible = 0.5 * (rij - 0.85*(radius_i + radius_j));
+				if (dvisible < 0.0) continue;
+
 				// Calculate angle out of XZ plane
 				// OPTIMISE - Precalculate acos()
-				phi = DEGRAD * acos(v.z/halfr);
+				phi = DEGRAD * acos(v.z/rij);
 	
 				// Special case where the bond is exactly in the XY plane.
 				bondtransform = atomtransform;
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) bondtransform.applyRotationX(phi);
 				else bondtransform.applyRotationAxis(-v.y, v.x, 0.0, phi, TRUE);
-	
-				// Scale to half length of bond
-				bondtransform.applyScalingZ(halfr);
-	
-				// Draw bond halves
-				switch (stylei)
+
+				// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
+				bondtransform.applyTranslation(0.0, 0.0, 0.85*radius_i);
+				bondtransform.applyScalingZ(dvisible);
+
+				// Draw first bond half
+				switch (style_i)
 				{
 					case (Atom::StickStyle):
 						glLineWidth( i->isSelected() ? 4.0 : 2.0 );
 						glBegin(GL_LINES);
 						glVertex3d(pos.x, pos.y, pos.z);
-						glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
+						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
 						glEnd();
 						break;
 					case (Atom::TubeStyle):
-					case (Atom::SphereStyle):
-					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[stylei], lod, colouri, bondtransform);
+						renderPrimitive(bond_[style_i], lod, colour_i, bondtransform);
 						if (i->isSelected())
 						{
-							colouri[3] = 0.5f;
-							renderPrimitive(selectedBond_[stylei], lod, colouri, bondtransform);
-							colouri[3] = alphai;
+							colour_i[3] = 0.5f;
+							renderPrimitive(selectedBond_[style_i], lod, colour_i, bondtransform);
+							colour_i[3] = alpha_i;
 						}
+						// Move to centre of visible bond, ready for next bond half
+						bondtransform.applyTranslation(0.0, 0.0, 1.0);
+						break;
+					case (Atom::SphereStyle):
+					case (Atom::ScaledStyle):
+						renderPrimitive(bond_[style_i], lod, colour_i, bondtransform);
+						if (i->isSelected())
+						{
+							// Move to bond centre and apply 'reverse' Z-scaling
+							bondtransform.applyTranslation(0.0, 0.0, 1.0);
+							z = -(1.0 - (dvisible - 0.85*(radius_i*selscale-radius_i))/dvisible);
+							bondtransform.applyScalingZ(z);
+							colour_i[3] = 0.5f;
+							renderPrimitive(selectedBond_[style_i], lod, colour_i, bondtransform);
+							colour_i[3] = alpha_i;
+							// Reverse scaling back to 'dvisible'
+							bondtransform.applyScalingZ(1.0/z);
+						}
+						else bondtransform.applyTranslation(0.0, 0.0, 1.0);
 						break;
 				}
-				switch (stylej)
+
+				// Draw second bond half
+				switch (style_j)
 				{
 					case (Atom::StickStyle):
 						glLineWidth( j->isSelected() ? 3.0 : 1.0 );
 						glBegin(GL_LINES);
+						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
 						glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
-						glVertex3d(pos.x+2*v.x, pos.y+2*v.y, pos.z+2*v.z);
 						glEnd();
 						break;
 					case (Atom::TubeStyle):
+						renderPrimitive(bond_[style_i], lod, colour_i, bondtransform);
+						if (i->isSelected())
+						{
+							colour_j[3] = 0.5f;
+							renderPrimitive(selectedBond_[style_j], lod, colour_j, bondtransform);
+							colour_j[3] = alpha_j;
+						}
+						break;
 					case (Atom::SphereStyle):
 					case (Atom::ScaledStyle):
-						bondtransform.applyTranslation(0.0, 0.0, 1.0);
-						renderPrimitive(bond_[stylej], lod, colourj, bondtransform);
+						renderPrimitive(bond_[style_j], lod, colour_j, bondtransform);
 						if (j->isSelected())
 						{
-							colourj[3] = 0.5f;
-							renderPrimitive(selectedBond_[stylej], lod, colourj, bondtransform);
-							colourj[3] = alphaj;
+							colour_j[3] = 0.5f;
+							z = 1.0 - (dvisible - 0.85*(radius_j*selscale-radius_j))/dvisible;
+							bondtransform.applyScalingZ(z);
+							renderPrimitive(selectedBond_[style_j], lod, colour_j, bondtransform);
+							colour_j[3] = alpha_j;
 						}
 						break;
 				}
