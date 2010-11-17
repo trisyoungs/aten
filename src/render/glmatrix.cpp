@@ -52,6 +52,33 @@ GLMatrix GLMatrix::operator*(const GLMatrix &B) const
 	return AB;
 }
 
+// Matrix multiply (operator *) (return new matrix)
+GLMatrix GLMatrix::operator*(const Mat4<double> &B) const
+{
+	// [ row(A|this).column(B) ]
+	GLMatrix AB;
+	AB.matrix_[0] = matrix_[0]*B.rows[0].x + matrix_[4]*B.rows[1].x + matrix_[8]*B.rows[2].x + matrix_[12]*B.rows[3].x;
+	AB.matrix_[1] = matrix_[1]*B.rows[0].x + matrix_[5]*B.rows[1].x + matrix_[9]*B.rows[2].x + matrix_[13]*B.rows[3].x;
+	AB.matrix_[2] = matrix_[2]*B.rows[0].x + matrix_[6]*B.rows[1].x + matrix_[10]*B.rows[2].x + matrix_[14]*B.rows[3].x;
+	AB.matrix_[3] = matrix_[3]*B.rows[0].x + matrix_[7]*B.rows[1].x + matrix_[11]*B.rows[2].x + matrix_[15]*B.rows[3].x;
+
+	AB.matrix_[4] = matrix_[0]*B.rows[0].y + matrix_[4]*B.rows[1].y + matrix_[8]*B.rows[2].y + matrix_[12]*B.rows[3].y;
+	AB.matrix_[5] = matrix_[1]*B.rows[0].y + matrix_[5]*B.rows[1].y + matrix_[9]*B.rows[2].y + matrix_[13]*B.rows[3].y;
+	AB.matrix_[6] = matrix_[2]*B.rows[0].y + matrix_[6]*B.rows[1].y + matrix_[10]*B.rows[2].y + matrix_[14]*B.rows[3].y;
+	AB.matrix_[7] = matrix_[3]*B.rows[0].y + matrix_[7]*B.rows[1].y + matrix_[11]*B.rows[2].y + matrix_[15]*B.rows[3].y;
+
+	AB.matrix_[8] = matrix_[0]*B.rows[0].z + matrix_[4]*B.rows[1].z + matrix_[8]*B.rows[2].z + matrix_[12]*B.rows[3].z;
+	AB.matrix_[9] = matrix_[1]*B.rows[0].z + matrix_[5]*B.rows[1].z + matrix_[9]*B.rows[2].z + matrix_[13]*B.rows[3].z;
+	AB.matrix_[10] = matrix_[2]*B.rows[0].z + matrix_[6]*B.rows[1].z + matrix_[10]*B.rows[2].z + matrix_[14]*B.rows[3].z;
+	AB.matrix_[11] = matrix_[3]*B.rows[0].z + matrix_[7]*B.rows[1].z + matrix_[11]*B.rows[2].z + matrix_[15]*B.rows[3].z;
+
+	AB.matrix_[12] = matrix_[0]*B.rows[0].w + matrix_[4]*B.rows[1].w + matrix_[8]*B.rows[2].w + matrix_[12]*B.rows[3].w;
+	AB.matrix_[13] = matrix_[1]*B.rows[0].w + matrix_[5]*B.rows[1].w + matrix_[9]*B.rows[2].w + matrix_[13]*B.rows[3].w;
+	AB.matrix_[14] = matrix_[2]*B.rows[0].w + matrix_[6]*B.rows[1].w + matrix_[10]*B.rows[2].w + matrix_[14]*B.rows[3].w;
+	AB.matrix_[15] = matrix_[3]*B.rows[0].w + matrix_[7]*B.rows[1].w + matrix_[11]*B.rows[2].w + matrix_[15]*B.rows[3].w;
+	return AB;
+}
+
 // Matrix multiply (operator *=)
 GLMatrix &GLMatrix::operator*=(const GLMatrix &B)
 {
@@ -374,7 +401,14 @@ void GLMatrix::applyTranslation(double dx, double dy, double dz)
 	matrix_[12] += matrix_[0]*dx + matrix_[4]*dy + matrix_[8]*dz;
 	matrix_[13] += matrix_[1]*dx + matrix_[5]*dy + matrix_[9]*dz;
 	matrix_[14] += matrix_[2]*dx + matrix_[6]*dy + matrix_[10]*dz;
-// 	matrix_[15] += matrix_[3]*dx + matrix_[7]*dy + matrix_[11]*dz;
+}
+
+// Apply a translation to the matrix (as glTranslated would to)
+void GLMatrix::applyTranslation(Vec3<double> vec)
+{
+	matrix_[12] += matrix_[0]*vec.x + matrix_[4]*vec.y + matrix_[8]*vec.z;
+	matrix_[13] += matrix_[1]*vec.x + matrix_[5]*vec.y + matrix_[9]*vec.z;
+	matrix_[14] += matrix_[2]*vec.x + matrix_[6]*vec.y + matrix_[10]*vec.z;
 }
 
 // Add a translation to the matrix

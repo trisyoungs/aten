@@ -43,7 +43,8 @@ class GLMatrix
 	*/
 	public:
 	GLMatrix operator*(const GLMatrix &B) const;
-	GLMatrix& operator*=(const GLMatrix &B);
+	GLMatrix operator*(const Mat4<double> &B) const;
+	GLMatrix &operator*=(const GLMatrix &B);
 	void operator=(const Mat4<double> &B);
 
 	/*
@@ -70,6 +71,8 @@ class GLMatrix
 	void createTranslation(double dx, double dy, double dz);
 	// Apply a translation to the matrix (as glTranslated would to)
 	void applyTranslation(double dx, double dy, double dz);
+	// Apply a translation to the matrix (as glTranslated would to)
+	void applyTranslation(Vec3<double> vec);
 	// Add a translation to the matrix
 	void translate(double dx, double dy, double dz);
 	// Apply a general scaling to the matrix (as glScaled would to)
