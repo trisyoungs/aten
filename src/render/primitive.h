@@ -35,10 +35,10 @@ class Primitive
 	~Primitive();
 
 	private:
-	// Primitive's vertex and scaled vertex array
-	GLfloat *vertices_;
-	// Primitive's normal array
-	GLfloat *normals_;
+	// Primitive's vertex data array (containing normal and possibly colour data)
+	GLfloat *vertexData_;
+	// Whether vertexData_ array also contains colour information
+	bool colouredVertexData_;
 	// Centroid array
 	GLfloat *centroids_;
 	// Maximum number of vertices in primitive (i.e. array size)
@@ -59,10 +59,12 @@ class Primitive
 	void clear();
 	// Forget all data, leaving arrays intact
 	void forgetAll();
-	// Create empty data arrays, setting type specified
-	void createEmpty(GLenum type, int ntype);
+	// Create empty data arrays
+	void createEmpty(GLenum type, int ntype, bool colours);
 	// Define next vertex and normal
-	void addVertexAndNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
+	// Define next vertex, normal, and colour
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
 	// Create vertices of sphere with specified radius and quality
 	void createSphere(double radius, int nstacks, int nslices);
 	// Create vertices of cylinder along z with specified radius, length, and quality
@@ -70,9 +72,9 @@ class Primitive
 	// Create vertices of cross with specified width
 	void createCross(double width, int naxes);
 	// Return vertex array
-	GLfloat *vertices();
-	// Return normal array
-	GLfloat *normals();
+	GLfloat *vertexData();
+	// Return whether vertex data contains colour information
+	bool colouredVertexData();
 	// Return centroids array
 	GLfloat *centroids();
 	// Return number of vertices defined
