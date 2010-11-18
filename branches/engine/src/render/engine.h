@@ -54,12 +54,13 @@ class RenderEngine
 	PrimitiveGroup bond_[Atom::nDrawStyles];
 	// Selected bond styles
 	PrimitiveGroup selectedBond_[Atom::nDrawStyles];
-	// Unit cubes
-	Primitive wireCube_;
+	// Unit cube
 	PrimitiveGroup cubes_;
 	// Cones of length 1.0 and base radius 0.2
 	PrimitiveGroup cones_;
-	
+	// One-off objects
+	Primitive wireCube_, cellAxes_;
+
 	public:
 	// (Re)Generate primitive vertex arrays
 	void createPrimitives();

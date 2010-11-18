@@ -101,8 +101,9 @@ void RenderEngine::createPrimitives()
 		// Cones
 		cones_.primitive(lod).createCylinder(0.2,0.0,1.0,nstacks,nslices);
 	}
-	// Cubes
+	// One-off objects
 	wireCube_.createWireCube(1.0);
+	cellAxes_.createCellAxes();
 	msg.exit("RenderEngine::createPrimitives");
 }
 
@@ -269,9 +270,9 @@ void RenderEngine::renderModel(Model *source)
 
 	// Set initial transformation matrix, including any translation occurring from cell...
 	setTransformationMatrix(source->viewMatrix());
+	transformbase.applyTranslation(-source->cell()->centre());
 	transformZ = transformationMatrix_.z();
 	transformbase = transformationMatrix_;
-	transformbase.applyTranslation(-source->cell()->centre());
 
 	// Set polygon fill mode and specular reflection
 	prefs.copyColour(Prefs::SpecularColour, colour_i);
