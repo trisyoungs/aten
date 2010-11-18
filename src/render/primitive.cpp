@@ -60,24 +60,58 @@ void Primitive::forgetAll()
 	nDefinedVertices_ = 0;
 }
 
-// Create empty data arrays, setting type specified
-void Primitive::createEmpty(GLenum type, int ntype, bool colours)
+/*
+// Vertex Generation
+*/
+
+// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
+void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double length, double startradius, double endradius, int nstacks, int nslices)
 {
-	// Clear old data, if any
-	clear();
-	type_ = type;
-	colouredVertexData_ = colours;
-	nType_ = ntype;
-	if (type_ == GL_LINES) verticesPerType_ = 2;
-	else verticesPerType_ = 3;
-	maxVertices_ = nType_*verticesPerType_;
-	nDefinedVertices_ = 0;
-	nDefinedTypes_ = 0;
-	if (colouredVertexData_) vertexData_ = new GLfloat[maxVertices_*10];
-	else vertexData_ = new GLfloat[maxVertices_*6];
-	centroids_ = new GLfloat[nType_*3];
-	for (int n=0; n<nType_*3; ++n) centroids_[n] = 0.0f;
+	int i, j, count;
+	Vec3<GLfloat> vec, u, v, vert[4];
+
+	double d, dtheta = TWOPI / nslices, dradius = (startradius-endradius)/nstacks;
+	deltarj = rj / nstacks;
+
+	// Calculate orthogonal vectors
+	vec.set(vx,vy,vz);
+	u = vec.orthogonal();
+	u.normalise();
+	v = vec * u;
+	v.normalise();
+
+	for (n=0; n<nstacks; ++n)
+	{
+//                 if (segmented && (n+1)%2) continue;
+		for (m=0; m<=nslices; ++m)
+		{
+			d = m * dtheta;
+			// glBegin(GL_QUAD_STRIP);
+			normal = u*cos(d) + v*sin(d);
+			glNormal3d(normal.x, normal.y, normal.z);
+			coord = normal*(startradius-n*dradius) + deltarj*n;
+			glVertex3d(coord.x, coord.y, coord.z);
+			coord = normal*(startradius-(n+1)*dradius) + deltarj*(n+1);
+			glVertex3d(coord.x, coord.y, coord.z);
+
+
+		}
+	}
 }
+
+
+// 			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+// 			defineVertex(x0 * zr0, y0 * zr0, z0, x0 * zr0, y0 * zr0, 0.0);
+// 			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
+// 			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
+// 
+// 			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+// 			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
+// 			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
+// 			defineVertex(x1 * zr1, y1 * zr1, z1, x1 * zr1, y1 * zr1, 0.0);
+// 		}
+// 	}
+// }
 
 // Define next vertex and normal
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
@@ -156,6 +190,29 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 		}
 		++nDefinedTypes_;
 	}
+}
+
+/*
+// Primitive Generation
+*/
+
+// Create empty data arrays, setting type specified
+void Primitive::createEmpty(GLenum type, int ntype, bool colours)
+{
+	// Clear old data, if any
+	clear();
+	type_ = type;
+	colouredVertexData_ = colours;
+	nType_ = ntype;
+	if (type_ == GL_LINES) verticesPerType_ = 2;
+	else verticesPerType_ = 3;
+	maxVertices_ = nType_*verticesPerType_;
+	nDefinedVertices_ = 0;
+	nDefinedTypes_ = 0;
+	if (colouredVertexData_) vertexData_ = new GLfloat[maxVertices_*10];
+	else vertexData_ = new GLfloat[maxVertices_*6];
+	centroids_ = new GLfloat[nType_*3];
+	for (int n=0; n<nType_*3; ++n) centroids_[n] = 0.0f;
 }
 
 // Create vertices of sphere with specified radius and quality
@@ -344,6 +401,14 @@ void Primitive::createCube(double size, int nsubs)
 		}
 	}
 	
+}
+
+// Create cell axes
+void Primitive::createCellAxes()
+{
+	// Clear existing data first (if it exists)
+	createEmpty(GL_TRIANGLES, nsubs*nsubs*2*6, FALSE);
+
 }
 
 // Return vertex array

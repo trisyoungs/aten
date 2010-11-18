@@ -53,7 +53,24 @@ class Primitive
 	int verticesPerType_;
 	// Number of defined primitive types
 	int nDefinedTypes_;
-	
+
+	/*
+	// Vertex Generation
+	*/
+	private:
+	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
+	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double length, double startradius, double endradius, int nstacks, int nslices);
+
+	public:
+	// Define next vertex and normal
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
+	// Define next vertex, normal, and colour
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
+
+
+	/*
+	// Primitive Generation
+	*/
 	public:
 	// Clear existing data (including deleting arrays)
 	void clear();
@@ -61,10 +78,6 @@ class Primitive
 	void forgetAll();
 	// Create empty data arrays
 	void createEmpty(GLenum type, int ntype, bool colours);
-	// Define next vertex and normal
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
-	// Define next vertex, normal, and colour
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
 	// Create vertices of sphere with specified radius and quality
 	void createSphere(double radius, int nstacks, int nslices);
 	// Create vertices of cylinder along z with specified radius, length, and quality
@@ -75,6 +88,8 @@ class Primitive
 	void createWireCube(double size);
 	// Create solid cube of specified size, centred at zero, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
 	void createCube(double size, int nsubs);
+	// Create cell axes
+	void createCellAxes();
 	// Return vertex array
 	GLfloat *vertexData();
 	// Return whether vertex data contains colour information

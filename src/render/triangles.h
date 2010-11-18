@@ -73,7 +73,7 @@ class TriangleChopper
 	private:
 	// Starting z-depth of chopper
 	double startZ_;
-	// Ending z-depth of chopper, beyond which range triangles will not be DRAWN / SORTED ???
+	// Ending z-depth of chopper, beyond which range triangles will be added to single slice
 	double endZ_;
 	// Slice width
 	double sliceWidth_;
