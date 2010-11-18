@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>AtenCustomDialog</class>
  <widget class="QDialog" name="AtenCustomDialog">
@@ -8,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>220</width>
-    <height>60</height>
+    <width>179</width>
+    <height>69</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,15 +24,15 @@
    <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
-    <number>2</number>
-   </property>
    <item>
-    <layout class="QGridLayout" name="MainLayout">
-     <property name="margin">
-      <number>2</number>
+    <widget class="QFrame" name="MainFrame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
-    </layout>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
