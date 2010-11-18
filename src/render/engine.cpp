@@ -51,7 +51,7 @@ RenderEngine::~RenderEngine()
 void RenderEngine::createPrimitives()
 {
 	msg.enter("RenderEngine::createPrimitives");
-	double radius;
+	double radius, lodratio;
 	int n, lod, nstacks, nslices, quality = prefs.primitiveQuality();
 	// Clear old primitive groups
 	for (n=0; n<Atom::nDrawStyles; ++n)
@@ -69,10 +69,12 @@ void RenderEngine::createPrimitives()
 	// Loop over levels of detail
 	for (lod=0; lod < prefs.levelsOfDetail(); ++lod)
 	{
+		// Calculate general level-of-detail ratio, which ranges from 1 (at lod=0) to 0 (at lod=nlevels)
+		lodratio = 1.0 - (double (lod+1)/prefs.levelsOfDetail());
 		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
 		atom_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
-		nstacks = max(3,(int) (quality*(1.0-lod*0.2)*0.75));
-		nslices = max(3,(int) (quality*(1.0-lod*0.2)*1.5));
+		nstacks = max(3,(int) (quality*lodratio*0.75));
+		nslices = max(3,(int) (quality*lodratio*1.5));
 		atom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle), nstacks, nslices);
 		atom_[Atom::SphereStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::SphereStyle), nstacks, nslices);
 		selectedAtom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), nstacks, nslices);
@@ -86,15 +88,21 @@ void RenderEngine::createPrimitives()
 			selectedScaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
 		}
 		// Bond Styles (all)
-		nstacks = max(1,(int) (quality*(1.0-lod*0.2)*0.25));
-		nslices = max(3,(int) (quality*(1.0-lod*0.2)));
+		nstacks = max(1,(int) (quality*lodratio*0.25));
+		nslices = max(3,(int) (quality*lodratio));
 		bond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle), prefs.bondStyleRadius(Atom::TubeStyle), 1.0, nstacks, nslices);
 		bond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle), prefs.bondStyleRadius(Atom::SphereStyle), 1.0, nstacks, nslices);
 		bond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle), prefs.bondStyleRadius(Atom::ScaledStyle), 1.0, nstacks, nslices);
 		selectedBond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
 		selectedBond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
 		selectedBond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
+		// Cubes
+		cubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)) );
+		// Cones
+		cones_.primitive(lod).createCylinder(0.2,0.0,1.0,nstacks,nslices);
 	}
+	// Cubes
+	wireCube_.createWireCube(1.0);
 	msg.exit("RenderEngine::createPrimitives");
 }
 
@@ -275,11 +283,18 @@ void RenderEngine::renderModel(Model *source)
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
 
-	// Render cell
+	// Render cell and cell axes
 	if (source->cell()->type() != Cell::NoCell)
 	{
-		A = transformbase * source->cell()->axes();
+		A = transformationMatrix_ * source->cell()->axes();
 		glMultMatrixd(A.matrix());
+// 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		wireCube_.sendToGL();
+		cubes_.primitive(0).sendToGL();
+		glTranslated(-0.5, -0.5, -0.5);
+		v = source->cell()->lengths();
+		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
+		cones_.primitive(0).sendToGL();
 		glLoadIdentity();
 	}
 

@@ -104,6 +104,10 @@ class AtenPrefs : public QDialog
 	void on_LevelOfDetailNLevelsSpin_valueChanged(int value);
 	void on_LevelOfDetailStartZSpin_valueChanged(double value);
 	void on_LevelOfDetailWidthSpin_valueChanged(double value);
+	void on_TransparencyGroup_clicked(bool checked);
+	void on_TransparencyNSlicesSpin_valueChanged(int value);
+	void on_TransparencyStartZSpin_valueChanged(double value);
+	void on_TransparencyBinWidthSpin_valueChanged(double value);
 	void on_PrimitiveQualitySpin_valueChanged(int value);
 	void on_FarClipSpin_valueChanged(double value);
 	void on_FarDepthSpin_valueChanged(int value);

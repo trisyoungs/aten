@@ -55,7 +55,7 @@ class Primitive
 	int nDefinedTypes_;
 	
 	public:
-	// Clear existing data
+	// Clear existing data (including deleting arrays)
 	void clear();
 	// Forget all data, leaving arrays intact
 	void forgetAll();
@@ -71,6 +71,10 @@ class Primitive
 	void createCylinder(double startradius, double endradius, double length, int nstacks, int nslices);
 	// Create vertices of cross with specified width
 	void createCross(double width, int naxes);
+	// Create wireframe cube centred at zero
+	void createWireCube(double size);
+	// Create solid cube of specified size, centred at zero, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
+	void createCube(double size, int nsubs);
 	// Return vertex array
 	GLfloat *vertexData();
 	// Return whether vertex data contains colour information
