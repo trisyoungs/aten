@@ -61,6 +61,8 @@ class AtenCustomDialog : public QDialog
 	private:
 	// Whether the window is currently refreshing its controls
 	bool refreshing_;
+	// Main Grid layout
+	QGridLayout *mainLayout_;
 	// Parent tree target
 	Tree *parentTree_;
 	// Create simple label

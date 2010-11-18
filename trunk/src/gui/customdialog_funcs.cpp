@@ -31,6 +31,8 @@ AtenCustomDialog::AtenCustomDialog(QWidget *parent) : QDialog(parent)
 {
 	refreshing_ = FALSE;
 	ui.setupUi(this);
+	// Add grid layout to MainFrame
+	mainLayout_ = new QGridLayout(ui.MainFrame);
 	parentTree_ = NULL;
 }
 
@@ -472,7 +474,7 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 	layouts.clear();
 	tabwidgets.clear();
 
-	mainlayout = layouts.add("_MAIN_", ui.MainLayout);
+	mainlayout = layouts.add("_MAIN_", mainLayout_);
 
 	// Create widgets
 	for (ri = t->widgets(); ri != NULL; ri = ri->next)
