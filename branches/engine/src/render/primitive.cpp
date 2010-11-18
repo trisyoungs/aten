@@ -220,11 +220,11 @@ void Primitive::createCylinder(double startradius, double endradius, double leng
 	{
 		stack0 = PI * (-0.5 + (double) i / nstacks);
 		z0  = i*deltaz;
-		zr0 = startradius - i*deltar;
+		zr0 = startradius + i*deltar;
 
 		stack1 = PI * (-0.5 + (double) (i+1) / nstacks);
 		z1 = (i+1)*deltaz;
-		zr1 = startradius - (i+1)*deltar;;
+		zr1 = startradius + (i+1)*deltar;
 
 		for (j = 0; j < nslices; j++)
 		{
@@ -271,6 +271,79 @@ void Primitive::createCross(double width, int naxes)
 		vert[i] = -vert[i];
 		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2]);
 	}
+}
+
+// Create wireframe cube centred at zero
+void Primitive::createWireCube(double size)
+{
+	// Clear existing data first (if it exists)
+	createEmpty(GL_LINES, 12, FALSE);
+	size = 0.5*size;
+	int i, j;
+	GLfloat r[3], v[3];
+	// Set initial corner
+	r[0] = -size;
+	r[1] = -size;
+	r[2] = -size;
+	for (i=0; i<4; ++i)
+	{
+		// Swap signs to generate new corner if necessary
+		if (i>0)
+		{
+			r[1] = -r[1];
+			if (i == 2) r[2] = -r[2];
+			else r[0] = -r[0];
+		}
+		// Generate lines
+		for (j=0; j<3; ++j)
+		{
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			defineVertex(j == 0 ? -r[0] : r[0], j == 1 ? -r[1] : r[1], j == 2 ? -r[2] : r[2], 1.0, 0.0, 0.0);	
+		}
+	}
+}
+
+// Create solid cube of specified size, centred at zero, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
+void Primitive::createCube(double size, int nsubs)
+{
+	// Clear existing data first (if it exists)
+	createEmpty(GL_TRIANGLES, nsubs*nsubs*2*6, FALSE);
+	
+	// Create each face individually
+	GLfloat origin, delta = (GLfloat) size/nsubs, veca[3], vecb[3], vertex[3];
+	int i, j, plane;
+	// Set general origin coordinate
+	origin = -0.5*size;
+	// Loop over planes
+	for (plane=0; plane<3; ++plane)
+	{
+		// Define deltas for this plane
+		for (j=0; j<3; ++j)
+		{
+			veca[j] = 0.0;
+			vecb[j] = 0.0;
+		}
+		veca[(plane+1)%3] = delta;
+		vecb[(plane+2)%3] = delta;
+		// Loop over subdivisions in plane
+		for (i=0; i<nsubs; ++i)
+		{
+			for (j=0; j<nsubs; ++j)
+			{
+				vertex[0] = origin + i*veca[0] + j*vecb[0];
+				vertex[1] = origin + i*veca[1] + j*vecb[1];
+				vertex[2] = origin + i*veca[2] + j*vecb[2];
+				// Define trangle vertices
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+			}
+		}
+	}
+	
 }
 
 // Return vertex array

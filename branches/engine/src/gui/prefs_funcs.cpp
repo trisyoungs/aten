@@ -102,6 +102,10 @@ void AtenPrefs::setControls()
 	ui.LevelOfDetailNLevelsSpin->setValue(prefs.levelsOfDetail());
 	ui.LevelOfDetailStartZSpin->setValue(prefs.levelOfDetailStartZ());
 	ui.LevelOfDetailWidthSpin->setValue(prefs.levelOfDetailWidth());
+	ui.TransparencyGroup->setChecked(prefs.transparencyCorrect());
+	ui.TransparencyNSlicesSpin->setValue(prefs.transparencyNBins());
+	ui.TransparencyStartZSpin->setValue(prefs.transparencyBinStartZ());
+	ui.TransparencyBinWidthSpin->setValue(prefs.transparencyBinWidth());
 	ui.LineAliasingCheck->setChecked(prefs.lineAliasing());
 	ui.PolygonAliasingCheck->setChecked(prefs.polygonAliasing());
 	ui.MultiSamplingCheck->setChecked(prefs.multiSampling());
@@ -360,6 +364,30 @@ void AtenPrefs::on_LevelOfDetailStartZSpin_valueChanged(double value)
 void AtenPrefs::on_LevelOfDetailWidthSpin_valueChanged(double value)
 {
 	prefs.setLevelOfDetailWidth(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_TransparencyGroup_clicked(bool checked)
+{
+	prefs.setTransparencyCorrect(checked);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_TransparencyNSlicesSpin_valueChanged(int value)
+{
+	prefs.setTransparencyNBins(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_TransparencyStartZSpin_valueChanged(double value)
+{
+	prefs.setTransparencyBinStartZ(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_TransparencyBinWidthSpin_valueChanged(double value)
+{
+	prefs.setTransparencyBinWidth(value);
 	updateAfterViewPrefs();
 }
 

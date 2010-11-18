@@ -40,7 +40,7 @@ Triangles::Triangles()
 // Constructor
 TriangleList::TriangleList()
 {
-	currentTriangles_ = triangles_.add();
+	currentTriangles_ = NULL;
 }
 
 // Forget all stored triangles (but leave structures and lists intact
@@ -56,7 +56,8 @@ void TriangleList::forgetAll()
 void TriangleList::addTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour)
 {
 	// Check current list for space
-	if (currentTriangles_->full()) currentTriangles_ = triangles_.add();
+	if (currentTriangles_ == NULL) currentTriangles_ = triangles_.add();
+	else if (currentTriangles_->full()) currentTriangles_ = triangles_.add();
 	// Add triangle to list
 	currentTriangles_->defineVertex(vertices[0], vertices[1], vertices[2], normals[0], normals[1], normals[2], colour[0], colour[1], colour[2], colour[3], FALSE);
 	currentTriangles_->defineVertex(vertices[3], vertices[4], vertices[5], normals[3], normals[4], normals[5], colour[4], colour[5], colour[6], colour[7], FALSE);
@@ -67,7 +68,8 @@ void TriangleList::addTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *col
 void TriangleList::addTriangleSingleColour(GLfloat *vertices, GLfloat *normals, GLfloat *colour)
 {
 	// Check current list for space
-	if (currentTriangles_->full()) currentTriangles_ = triangles_.add();
+	if (currentTriangles_ == NULL) currentTriangles_ = triangles_.add();
+	else if (currentTriangles_->full()) currentTriangles_ = triangles_.add();
 	// Add triangle to list
 	currentTriangles_->defineVertex(vertices[0], vertices[1], vertices[2], normals[0], normals[1], normals[2], colour[0], colour[1], colour[2], colour[3], FALSE);
 	currentTriangles_->defineVertex(vertices[3], vertices[4], vertices[5], normals[3], normals[4], normals[5], colour[0], colour[1], colour[2], colour[3], FALSE);
@@ -143,7 +145,7 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 		{
 			// Transform triangle centroid into world coordinates to decide bin
 			pinfo->localTransform().multiply(&centroids[n*3], newr);
-			bin = int((-newr[2]-startZ_)/sliceWidth_);
+			bin = max(0,int((-newr[2]-startZ_)/sliceWidth_));
 			if (bin >= nSlices_) bin = nSlices_-1;
 			// Vertex data contains packed: colour[voff], normal[voff+4], vertex[voff+7]
 			// Vertex 1
@@ -177,7 +179,7 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 		{
 			// Transform triangle centroid into world coordinates to decide bin
 			pinfo->localTransform().multiply(&centroids[n*3], newr);
-			bin = int((-newr[2]-startZ_)/sliceWidth_);
+			bin = max(0,int((-newr[2]-startZ_)/sliceWidth_));
 			if (bin >= nSlices_) bin = nSlices_-1;
 			// Vertex data contains packed: normal[voff], vertex[voff+3]
 			// Vertex 1
