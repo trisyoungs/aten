@@ -41,7 +41,7 @@ bool Command::function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (al == Atom::nLabelTypes) return FALSE;
 	if (c->hasArg(1))
 	{
-		Atom *i = obj.rs->atom(c->argi(1));
+		Atom *i = obj.rs->atom(c->argi(1)-1);
 		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Label atom");
 		obj.rs->addLabel(i, al);
@@ -65,7 +65,7 @@ bool Command::function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (al == Atom::nLabelTypes) return FALSE;
 	if (c->hasArg(1))
 	{
-		Atom *i = obj.rs->atom(c->argi(1));
+		Atom *i = obj.rs->atom(c->argi(1)-1);
 		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Remove label from atom");
 		obj.rs->removeLabel(i, al);
@@ -87,7 +87,7 @@ bool Command::function_RemoveLabels(CommandNode *c, Bundle &obj, ReturnValue &rv
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))
 	{
-		Atom *i = obj.rs->atom(c->argi(0));
+		Atom *i = obj.rs->atom(c->argi(0)-1);
 		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Remove all labels from atom");
 		obj.rs->clearLabels(i);

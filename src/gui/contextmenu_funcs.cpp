@@ -84,7 +84,7 @@ void GuiQt::callContextMenu(Atom *undermouse, int x, int y)
 void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
 	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
-	else CommandNode::run(Command::AtomStyle, "ci", Atom::drawStyle(ds), target->id());
+	else CommandNode::run(Command::AtomStyle, "ci", Atom::drawStyle(ds), target->id()+1);
 	target = NULL;
 }
 
@@ -116,7 +116,7 @@ void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
 	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
-	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id());
+	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id()+1);
 	target = NULL;
 	gui.update(FALSE,FALSE,FALSE);
 }
@@ -126,7 +126,7 @@ void AtenForm::removeAtomLabels(bool all)
 {
 	if (all) CommandNode::run(Command::ClearLabels, "");
 	else if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
-	else CommandNode::run(Command::RemoveLabels, "i", target->id());
+	else CommandNode::run(Command::RemoveLabels, "i", target->id()+1);
 	target = NULL;
 	gui.update(FALSE,FALSE,FALSE);
 }
@@ -200,8 +200,8 @@ void AtenForm::setAtomHidden(bool hidden)
 	}
 	else
 	{
-		if (hidden) CommandNode::run(Command::Hide, "i", target->id());
-		else CommandNode::run(Command::Show, "i", target->id());
+		if (hidden) CommandNode::run(Command::Hide, "i", target->id()+1);
+		else CommandNode::run(Command::Show, "i", target->id()+1);
 	}
 	gui.update(TRUE, FALSE, FALSE);
 }
@@ -219,14 +219,14 @@ void AtenForm::on_actionAtomProbe_triggered(bool checked)
 void AtenForm::on_actionAtomFixPosition_triggered(bool checked)
 {
 	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::Fix, "");
-	else CommandNode::run(Command::Fix, "i", target->id());
+	else CommandNode::run(Command::Fix, "i", target->id()+1);
 	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionAtomFreePosition_triggered(bool checked)
 {
 	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::Free, "");
-	else CommandNode::run(Command::Free, "i", target->id());
+	else CommandNode::run(Command::Free, "i", target->id()+1);
 	gui.update(FALSE,FALSE,FALSE);
 }
 
@@ -291,3 +291,4 @@ void AtenForm::createGlyph()
 	}
 	gui.update(FALSE,FALSE,FALSE,TRUE);
 }
+
