@@ -108,8 +108,14 @@ blockment:
 /* Filter Definitions */
 
 optlist:
-	NEWTOKEN savetokenname '=' constant		{ if (!cmdparser.setFilterOption(&tokenName, $4)) YYABORT; }
-	| optlist ',' NEWTOKEN savetokenname '=' constant { if (!cmdparser.setFilterOption(&tokenName, $6)) YYABORT; }
+	NEWTOKEN savetokenname '=' constant		{
+		if (!cmdparser.setFilterOption(&tokenName, $4)) YYABORT;
+		msg.print(Messenger::Parse,"PARSER : optlist : filter option '%s'\n", tokenName.get());
+		}
+	| optlist ',' NEWTOKEN savetokenname '=' constant {
+		if (!cmdparser.setFilterOption(&tokenName, $6)) YYABORT;
+		msg.print(Messenger::Parse,"PARSER : optlist : filter option '%s'\n", tokenName.get());
+		}
 	;
 
 filter:
