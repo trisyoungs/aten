@@ -113,18 +113,25 @@ void TCanvas::paintGL()
 
 		if (source != NULL)
 		{
-			// Render model
-			canvas_->renderModel(source);
-	
 			// Initialise QPainter
 			QPainter painter(this);
+			
+			// Draw on text objects (with QPainter)
+			font.setPointSize(prefs.labelSize());
+			painter.setFont(font);
+			painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
+			painter.setRenderHint(QPainter::Antialiasing);
+			// 			canvas_->renderText(painter);
+			
+			// Render model
+			canvas_->renderModel(source);
 	
 			// Draw on text objects (with QPainter)
 			font.setPointSize(prefs.labelSize());
 			painter.setFont(font);
 			painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
 			painter.setRenderHint(QPainter::Antialiasing);
-// 			canvas_->renderText(painter);	TEXT IS BROKEN
+// 			canvas_->renderText(painter);
 		}
 	}
 	else printf("NO CANVAS SET PAINT\n");

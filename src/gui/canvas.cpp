@@ -49,8 +49,6 @@ Canvas::Canvas()
 	atomClicked_ = NULL;
 	activeMode_ = UserAction::NoAction;
 	selectedMode_ = UserAction::SelectAction;
-// 	temporaryGlobList_[0] = 0;
-// 	globList_[0] = 0;
 	contextWidget_ = NULL;
 	pickEnabled_ = FALSE;
 	for (int i=0; i<3; i++)
@@ -65,6 +63,7 @@ Canvas::Canvas()
 	nAtomsToPick_ = -1;
 	currentDrawDepth_ = 0.0;
 	editable_ = TRUE;
+	engine_.setParent(this);
 }
 
 // Set the internal name of the canvas
@@ -278,7 +277,7 @@ void Canvas::renderModel(Model *source)
 }
 
 // Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-Vec3<double> &Canvas::modelToWorld(Vec3<double> &pos, Mat4<double> &viewMatrix, Vec4<double> *screenr, double screenradius)
+Vec3<double> &Canvas::modelToWorld(Vec3<double> pos, Mat4< double >& viewMatrix, Vec4< double >* screenr, double screenradius)
 {
 	return engine_.modelToWorld(pos, viewMatrix, screenr, screenradius);
 }
