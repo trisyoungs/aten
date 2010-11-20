@@ -79,6 +79,16 @@ GLMatrix GLMatrix::operator*(const Mat4<double> &B) const
 	return AB;
 }
 
+Vec4<double> GLMatrix::operator*(const Vec4<double> &v) const
+{
+	Vec4<double> result;
+	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8] + v.w*matrix_[12];
+	result.y = v.x*matrix_[1] + v.y*matrix_[5] + v.z*matrix_[9] + v.w*matrix_[13];
+	result.z = v.x*matrix_[2] + v.y*matrix_[6] + v.z*matrix_[10] + v.w*matrix_[14];
+	result.w = v.x*matrix_[3] + v.y*matrix_[7] + v.z*matrix_[11] + v.w*matrix_[15];
+	return result;
+}
+
 // Matrix multiply (operator *=)
 GLMatrix &GLMatrix::operator*=(const GLMatrix &B)
 {
@@ -125,6 +135,11 @@ void GLMatrix::operator=(const Mat4<double> &B)
 	matrix_[13] = B.rows[1].w;
 	matrix_[14] = B.rows[2].w;
 	matrix_[15] = B.rows[3].w;
+}
+
+GLfloat GLMatrix::operator[](int index)
+{
+	return matrix_[index];
 }
 
 /*

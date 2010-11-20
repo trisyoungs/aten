@@ -24,47 +24,224 @@
 
 #include <QtOpenGL/QGLWidget>
 #include <QtCore/QObject>
+#include "base/log.h"
+#include "classes/prefs.h"
+#include "gui/useractions.h"
+#include "render/engine.h"
 
 // Forward Declarations
-class Canvas;
 class Model;
 
+// Base rendering widget
 class TCanvas : public QGLWidget
 {
 	Q_OBJECT
 
 	public:
+	// Constructor
 	TCanvas(QGLContext *context, QWidget *parent);
+	// Keyboard Key Codes (internal to Aten)
+	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
 
+	/*
+	// Character / Setup
+	*/
 	private:
-	// Canvas object used by the widget
-	Canvas *canvas_;
+	// Width, height, and aspect ratio of the canvas
+	GLsizei contextWidth_, contextHeight_;
+	// Flag to indicate whether we may draw to the canvas
+	bool valid_;
+	
+	public:
+	// Return the current height of the drawing area
+	GLsizei contextHeight() const;
+	// Return the current width of the drawing area
+	GLsizei contextWidth() const;
+	// Return if the canvas is valid
+	bool isValid() const;
+	// Probe widget/context/format features
+	void probeFeatures();
+	
+	
+	/*
+	// Render Target
+	*/
+	private:
+	// Actual model being rendered by the canvas
+	Model *displayModel_;
+	// ID of last trajectory frame displayed (if any)
+	int displayFrameId_;
 	// Flag whether to use Aten's current model as rendering source (the default)
 	bool useCurrentModel_;
 	// Model to render if we are not using the current model in Aten
 	Model *renderSource_;
+	// Point at which the stored atom display list was valid (sum of Change::StructureLog and Change::CoordinateLog points)
+	Log renderPoint_;
 
 	public:
-	// Set the widgetcanvas for the display
-	void setCanvas(Canvas *wc);
-	// Set the rendering source to the supplied model (cancels useCurrentModel_ if it is enabled)
+	// Return the current display model
+	Model *displayModel() const;
+	// Set the rendering source to the supplied model (reverts to useCurrentModel_ if a NULL pointer is supplied)
 	void setRenderSource(Model *source);
-	// Probe widget/context/format features
-	void probeFeatures();
-
-	public slots:
-	void keyPressEvent(QKeyEvent*);
-	void keyReleaseEvent(QKeyEvent*);
-
+	
+	
+	/*
+	// Rendering Functions
+	*/
+	private:
+	// Flag indicating if we are currently drawing to this canvas
+	bool drawing_;
+	// Flag to prevent rendering (used to restrict unnecessary renders before canvas is even visible)
+	bool noDraw_;
+	// Flag used by some sub-rendering processes (e.g. surfaces) in order to decide which display list to use
+	bool renderOffScreen_;
+	// Rendering engine
+	RenderEngine engine_;
+	
 	protected:
+	// Initialise context widget (when created by Qt)
 	void initializeGL();
+	// General repaint callback
 	void paintGL();
+	// Resize function
 	void resizeGL(int, int);
+		
+	private:
+	// Begin construct for any OpenGL commands
+	bool beginGl();
+	// Finish OpenGL commands
+	void endGl();
+	// Check for GL error
+	void checkGlError();
+	
+	public:
+	// Enable rendering
+	void enableDrawing();
+	// Disable rendering
+	void disableDrawing();
+	// Set whether offscreen rendering is being performed
+	void setOffScreenRendering(bool b);
+	// Return whether offscreen rendering is being performed
+	bool offScreenRendering() const;
+	// Reinitialise GL (because of change in setup, lighting etc.)
+	void reinitialiseGL();
+	// Reset the projection matrix based on the current canvas geometry
+	void doProjection(int newwidth = -1, int newheight = -1);
+	// Update Canvas
+	void postRedisplay();
+	// Update view matrix stored in RenderEngine
+	void updateTransformation(Mat4<double> &mat, Vec3<double> cellcentre);
+	// Render a scene based on the specified model
+	void renderModel(Model *m);
+	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
+	Vec3<double> &modelToWorld(Vec3<double> pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
+	// Project the specified world coordinates into 2D screen coords
+	Vec4<double> &worldToScreen(const Vec3<double> &vec);
+	
+	
+	/*
+	// Atom Selection
+	*/
+	private:
+	// Number of atoms to pick in PickAtomsAction
+	int nAtomsToPick_;
+	// User action before picking mode was entered
+	QAction *actionBeforePick_;
+	// List of picked atoms
+	Reflist<Atom,int> pickedAtoms_;
+	// Pointer to callback function when PickAtomsAction exits
+	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
+	// Atom that was clicked at the start of a mouse press event
+	Atom *atomClicked_;
+	// Whether we are selecting atoms and placing them in the subsel list	
+	bool pickEnabled_;
+	// Reflist of selected atoms and their positions so manipulations may be un-done
+	Reflist< Atom,Vec3<double> > oldPositions_;
+		
+	public:
+	// Returns the clicked atom within a mouse click event
+	Atom *atomClicked();
+	// Clears the subsel of atoms
+	void clearPicked();
+	// Manually enter picking mode to select N atoms
+	void beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*));
+	// End manual picking
+	void endManualPick(bool resetaction);
+	
+	
+	/*
+	// Mouse Input
+	*/
+	private:
+	// Button flags (uses enum 'MouseButton')
+	bool mouseButton_[Prefs::nMouseButtons];
+	// Canvas coordinates of mouse down / mouse up events
+	Vec3<double> rMouseUp_, rMouseDown_;
+	// Canvas coordinates of mouse cursor
+	Vec3<double> rMouseLast_;
+	
+	protected:
+	// Qt Virtual (mouse press event)
 	void mousePressEvent(QMouseEvent*);
+	// Qt Virtual (mouse release event)
 	void mouseReleaseEvent(QMouseEvent*);
+	// Qt Virtual (mouse move event)
 	void mouseMoveEvent(QMouseEvent*);
-	void focusOutEvent(QFocusEvent *event);
+	// Qt Virtual (mouse wheel event)
 	void wheelEvent(QWheelEvent*);
+	
+	/*
+	// Key Input
+	*/
+	private:
+	// Key flags (set by Gui::informMouseDown and used by TCanvas::beginMode)
+	bool keyModifier_[Prefs::nModifierKeys];
+	
+	public slots:
+	// Qt Slot (key press event)
+	void keyPressEvent(QKeyEvent*);
+	// Qt Slot (key release event)
+	void keyReleaseEvent(QKeyEvent*);
+	
+	/*
+	// User Actions
+	*/
+	private:
+	// Active interaction mode of the main canvas
+	UserAction::Action activeMode_;
+	// Selected interaction mode (from GUI)
+	UserAction::Action selectedMode_;
+	// Whether the mouse has moved between begin_mode() and end_mode() calls
+	bool hasMoved_;
+	// Current drawing depth for certain tools
+	double currentDrawDepth_;
+	// Whether to accept editing actions (i.e. anything other than view manipulation)
+	bool editable_;
+
+	private:
+	// Begin an action on the model (called from MouseButtondown)
+	void beginMode(Prefs::MouseButton);
+	// End an action on the model (called from MouseButtonup)
+	void endMode(Prefs::MouseButton);
+	
+	public:
+	// Set the active mode to the current user mode
+	void useSelectedMode();
+	// Sets the currently selected interact mode
+	void setSelectedMode(UserAction::Action ua);
+	// Return the currently selected mode
+	UserAction::Action selectedMode() const;
+	// Set whether to accept editing actions (i.e. anything other than view manipulation)
+	void setEditable(bool b);
+	// Return whether to accept editing actions (i.e. anything other than view manipulation)
+	bool editable();
+	
+	
+	/*
+	// Other Qt Virtuals
+	*/
+	protected:
+	void focusOutEvent(QFocusEvent *event);
 	void timerEvent(QTimerEvent*);
 };
 

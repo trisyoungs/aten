@@ -1,6 +1,6 @@
 /*
-	*** GUI input routines
-	*** src/gui/input.cpp
+	*** Qt canvas input functions
+	*** src/gui/tcanvas_input.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -20,23 +20,105 @@
 */
 
 #include "main/aten.h"
-#include "gui/gui.h"
-#include "gui/mainwindow.h"
 #include "gui/tcanvas.uih"
 #include "gui/fragment.h"
+#include "gui/mainwindow.h"
+#include "gui/gui.h"
 #include "model/model.h"
+#include "model/fragment.h"
 
-// Inform mouse down
-void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y, bool shiftkey, bool ctrlkey, bool altkey)
+/*
+// Atom Selection
+*/
+
+// Returns the atom currently under the mouse
+Atom *TCanvas::atomClicked()
 {
-	// Store mouse position and key modifier status
-	rMouseDown_.set(x,y,0.0);
-	rMouseUp_.set(x,y,0.0);
-	keyModifier_[Prefs::ShiftKey] = shiftkey;
-	keyModifier_[Prefs::CtrlKey] = ctrlkey;
-	keyModifier_[Prefs::AltKey] = altkey;
+	return atomClicked_;
+}
+
+// Clears the list of picked atoms
+void TCanvas::clearPicked()
+{
+	pickedAtoms_.clear();
+}
+
+// Enter picking mode
+void TCanvas::beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*))
+{
+	msg.enter("TCanvas::beginManualPick");
+	// End old mode
+	endManualPick(FALSE);
+	// Store the current usermode, unless it is already PickAtomsAction
+	if (selectedMode_ != UserAction::ManualPickAction) actionBeforePick_ = gui.mainWindow->uaGroup->checkedAction();
+	setSelectedMode(UserAction::ManualPickAction);
+	gui.mainWindow->dummyToolButton->activate(QAction::Trigger);
+	pickAtomsCallback_ = callback;
+	nAtomsToPick_ = natoms;
+	msg.exit("TCanvas::beginManualPick");
+}
+
+// End manual picking
+void TCanvas::endManualPick(bool resetaction)
+{
+	msg.enter("TCanvas::endManualPick");
+	// If a previous callback was defined then call it before we move on
+	if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
+	pickAtomsCallback_ = NULL;
+	if (resetaction)
+	{
+		if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->activate(QAction::Trigger);
+		else actionBeforePick_->activate(QAction::Trigger);
+	}
+	pickedAtoms_.clear();
+	nAtomsToPick_ = -1;
+	postRedisplay();
+	msg.exit("TCanvas::endManualPick");
+}
+
+/*
+// Mouse Input
+*/
+
+// Qt Signal (mouse press event)
+void TCanvas::mousePressEvent(QMouseEvent *event)
+{
+	// Handle button presses (button down) from the mouse
+	msg.enter("TCanvas::mousePressEvent");
+	Prefs::MouseButton button;
+	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
+	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
+	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
+	else
+	{
+		msg.exit("TCanvas::mousePressEvent");
+		return;
+	}
+	
+	// Store event information
+	rMouseDown_.set(event->x(), event->y(), 0.0);
+	rMouseUp_.set(event->x(), event->y(), 0.0);
+	Qt::KeyboardModifiers km = event->modifiers();
+	keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
+	keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
+	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
+	
+	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
+	if ((button == Prefs::RightButton) && editable_)
+	{
+		Atom *tempi = displayModel_->atomOnScreen(event->x(), event->y());
+		if (tempi != NULL)
+		{
+			gui.callContextMenu(tempi, event->globalX(), event->globalY());
+			postRedisplay();
+			msg.exit("TCanvas::mousePressEvent");
+			return;
+		}
+	}
+
 	// Determine if there is an atom under the mouse
-	atomClicked_ = displayModel_->atomOnScreen(x,y);
+	atomClicked_ = displayModel_->atomOnScreen(event->x(), event->y());   // BROKEN Query - can this func be moved?
+	
 	// Perform atom picking before entering mode (if required)
 	if (pickEnabled_ && (atomClicked_ != NULL))
 	{
@@ -48,186 +130,304 @@ void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y, bool
 		}
 		else msg.print(Messenger::Verbose,"Atom %i is already in canvas subselection.\n",atomClicked_);
 	}
+	
 	// Activate mode...
 	beginMode(button);
+	msg.exit("TCanvas::mousePressEvent");
 }
 
-// Inform mouse up
-void Canvas::informMouseUp(Prefs::MouseButton button, double x, double y)
+// Qt Signal (mouse release event)
+void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 {
-	// Only finalise the mode if the button is the same as the one that caused the mousedown event.
+	// Handle button releases (button up) from the mouse
+	msg.enter("TCanvas::mouseReleaseEvent");
+	Prefs::MouseButton button;
+	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
+	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
+	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
+	else
+	{
+		msg.exit("TCanvas::mouseReleaseEvent");
+		return;
+	}
+	
+	// Only finalise the mode if the button is the same as the one that caused the mousepress event.
 	if (mouseButton_[button])
 	{
-		rMouseUp_.set(x,y,0.0);
+		rMouseUp_.set(event->x(), event->y(), 0.0);
 		// Deactivate mode...
 		endMode(button);
 	}
 	atomClicked_ = NULL;
+	
+	msg.exit("TCanvas::mouseReleaseEvent");
 }
 
-// Inform mouse move
-void Canvas::informMouseMove(double x, double y)
+// Qt Signal (mouse move event)
+void TCanvas::mouseMoveEvent(QMouseEvent *event)
 {
+	static Vec3<double> delta;
 	// Perform action associated with mode (if any)
-	if ((activeMode_ != UserAction::NoAction) || (selectedMode_ == UserAction::DrawFragmentAction)) modeMotion(x,y);
-	rMouseLast_.set(x,y,0.0);
-}
-
-// Inform mouse wheel scroll
-void Canvas::informScroll(bool dir)
-{
-	modeScroll(dir);
-}
-
-// Inform key down
-void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool altkey)
-{
-	// Check datamodel...
-	if (displayModel_ == NULL) return;
-	bool refresh = FALSE;
-	// Set keystates
-	keyModifier_[Prefs::ShiftKey] = shiftkey;
-	keyModifier_[Prefs::CtrlKey] = ctrlkey;
-	keyModifier_[Prefs::AltKey] = altkey;
-
-	// Set some useful flags...
-	bool manipulate = FALSE;
-	for (int n=0; n<3; n++)
+	if ((activeMode_ != UserAction::NoAction) || (selectedMode_ == UserAction::DrawFragmentAction))
 	{
-		if (keyModifier_[n])
+		if (displayModel_ == NULL)
 		{
-			switch (prefs.keyAction(Prefs::ModifierKey(n)))
-			{
-				case (Prefs::ManipulateKeyAction):
-					manipulate = TRUE;
-					break;
-				default:
-					break;
-			}
+			printf("Pointless TCanvas::modeMotion - datamodel == NULL.\n");
+			msg.exit("TCanvas::modeMotion");
+			return;
 		}
+		
+		// Calculate new delta.
+		delta.set(event->x(), event->y(),0.0);
+		delta = delta - rMouseLast_;
+		// Use activeMode_ to determine what needs to be performed
+		switch (activeMode_)
+		{
+			case (UserAction::NoAction):
+				break;
+			case (UserAction::RotateXYAction):
+				displayModel_->rotateView(delta.x/2.0,delta.y/2.0);
+				break;
+			case (UserAction::RotateZAction):
+				displayModel_->zRotateView(delta.x/2.0);
+				break;
+			case (UserAction::TranslateAction):
+				delta.y = -delta.y;
+				displayModel_->adjustCamera(delta/15.0,0.0);
+				break;
+			case (UserAction::ZoomAction):
+				displayModel_->adjustZoom(delta.y < 0.0);
+				break;
+			case (UserAction::DrawFragmentAction):
+				if (gui.fragmentWindow->currentFragment() != NULL)
+				{
+					if (atomClicked_ == NULL) gui.fragmentWindow->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
+					else gui.fragmentWindow->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
+				}
+				break;
+			case (UserAction::TransformRotateXYAction):
+				displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
+				displayModel_->updateMeasurements();
+				hasMoved_ = TRUE;
+				break;
+			case (UserAction::TransformRotateZAction):
+				displayModel_->rotateSelectionZaxis(delta.x/2.0);
+				displayModel_->updateMeasurements();
+				hasMoved_ = TRUE;
+				break;
+			case (UserAction::TransformTranslateAction):
+				delta.y = -delta.y;
+				delta /= displayModel_->translateScale() * 2.0;
+				displayModel_->translateSelectionWorld(delta);
+				displayModel_->updateMeasurements();
+				hasMoved_ = TRUE;
+				break;
+			default:
+				break;
+		}
+		postRedisplay();
 	}
+	rMouseLast_.set(event->x(), event->y(), 0.0);
+	setFocus();
+// 	gui.updateStatusBar();   // BROKEN TGAY   Why?
+}
 
-	switch (key)
+// Qt Signal (mouse wheel event)
+void TCanvas::wheelEvent(QWheelEvent *event)
+{
+	msg.enter("TCanvas::modeScroll");
+	if (displayModel_ == NULL)
 	{
-		case (Canvas::LeftKey):
-// 			if (keyModifier_[Prefs::CtrlKey])
-// 			{
-// 				displayModel_->prepareTransform();
-// 				displayModel_->beginUndoState("Rotate selection about world Y axis");
-// 				displayModel_->rotateSelectionWorld(2.0,0.0);
-// 				displayModel_->endUndoState();
-// 				displayModel_->updateMeasurements();
-// 				displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
-// 				gui.update(TRUE,FALSE,FALSE);
-// 			}
-// 			else
-			displayModel_->rotateView( shiftkey ? -1.0 : -10.0, 0.0);
-			refresh = TRUE;
-			break;
-		case (Canvas::RightKey):
-			displayModel_->rotateView( shiftkey ? 1.0 : 10.0, 0.0);
-			refresh = TRUE;
-			break;
-		case (Canvas::UpKey):
-			displayModel_->rotateView(0.0, shiftkey ? -1.0 : -10.0);
-			refresh = TRUE;
-			break;
-		case (Canvas::DownKey):
-			displayModel_->rotateView(0.0, shiftkey ? 1.0 : 10.0);
-			refresh = TRUE;
-			break;
-		case (Canvas::EscapeKey):
-			gui.mainWindow->cancelCurrentMode();
-			refresh = TRUE;
-			break;
-		default:
-			break;
+		msg.exit("TCanvas::modeScroll");
+		return;
 	}
 	
-	// Mode-specific
-	switch (selectedMode_)
+	// Do the requested wheel action as defined in the control panel
+	bool scrollup = event->delta() > 0;
+	switch (prefs.mouseAction(Prefs::WheelButton))
 	{
-		case (UserAction::DrawFragmentAction):
-			// Cycle link atom....
-			if (keyModifier_[Prefs::AltKey])
-			{
-				Fragment *frag = gui.fragmentWindow->currentFragment();
-				if (frag == NULL) break;
-				frag->cycleLinkAtom();
-				refresh = TRUE;
-			}
-			// Refresh if Shift status has changed
-			if (keyModifier_[Prefs::ShiftKey]) refresh = TRUE;
-			if (keyModifier_[Prefs::CtrlKey])
-			{
-				refresh = TRUE;
-				gui.fragmentWindow->increaseBondId();
-			}
+		case (Prefs::NoAction):
+			break;
+		case (Prefs::InteractAction):
+			// Only act if the editable_ flag is set
+			if (!editable_) break;
+			useSelectedMode();
+			break;
+		case (Prefs::RotateAction):
+			scrollup ? displayModel_->rotateView(1.0,0.0) : displayModel_->rotateView(-1.0,0.0);
+			break;
+		case (Prefs::TranslateAction):
+			// Only act if the editable_ flag is set
+			if (!editable_) break;
+			break;
+		case (Prefs::ZoomAction):
+			displayModel_->adjustZoom(scrollup);
 			break;
 		default:
 			break;
 	}
-	// Update display if necessary
-	if (refresh) postRedisplay();
-}
-
-// Inform key up
-void Canvas::informKeyUp(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool altkey)
-{
-	// Set keystates
-	bool oldshift = keyModifier_[Prefs::ShiftKey];
-	//bool oldctrl = keyModifier_[Prefs::CtrlKey];
-	//bool oldalt = keyModifier_[Prefs::AltKey];
-	keyModifier_[Prefs::ShiftKey] = shiftkey;
-	keyModifier_[Prefs::CtrlKey] = ctrlkey;
-	keyModifier_[Prefs::AltKey] = altkey;
-
-	// Set some useful flags...
-	bool manipulate = FALSE;
-	for (int n=0; n<3; n++)
-	{
-		if (keyModifier_[n])
-		{
-			switch (prefs.keyAction(Prefs::ModifierKey(n)))
-			{
-				case (Prefs::ManipulateKeyAction):
-					manipulate = TRUE;
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
-	// Mode-specific
-	switch (selectedMode_)
-	{
-		case (UserAction::DrawFragmentAction):
-			// Refresh if Shift status has changed
-			if (keyModifier_[Prefs::ShiftKey] != oldshift) gui.mainView.postRedisplay();
-			break;
-		default:
-			break;
-	}
-}
-
-// Return modifier status
-bool Canvas::modifierOn(Prefs::ModifierKey mk) const
-{
-	return keyModifier_[mk];
+	postRedisplay();
+	msg.exit("TCanvas::modeScroll");
 }
 
 /*
-// Canvas Modes
+// Key Input
+*/
+
+// Qt Slot (key press event)
+void TCanvas::keyPressEvent(QKeyEvent *event)
+{
+	TCanvas::KeyCode kc = gui.convertToKeyCode(event->key());
+	Qt::KeyboardModifiers km = event->modifiers();
+	if (kc != TCanvas::OtherKey)
+	{
+		// Check datamodel...
+		if (displayModel_ == NULL) return;
+		bool refresh = FALSE;
+		Qt::KeyboardModifiers km = event->modifiers();
+		keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
+		keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
+		keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
+		
+		// Set some useful flags...
+		bool manipulate = FALSE;
+		for (int n=0; n<3; n++)
+		{
+			if (keyModifier_[n])
+			{
+				switch (prefs.keyAction(Prefs::ModifierKey(n)))
+				{
+					case (Prefs::ManipulateKeyAction):
+						manipulate = TRUE;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		
+		switch (kc)
+		{
+			case (TCanvas::LeftKey):
+				// 			if (keyModifier_[Prefs::CtrlKey])
+				// 			{
+					// 				displayModel_->prepareTransform();
+					// 				displayModel_->beginUndoState("Rotate selection about world Y axis");
+					// 				displayModel_->rotateSelectionWorld(2.0,0.0);
+					// 				displayModel_->endUndoState();
+					// 				displayModel_->updateMeasurements();
+					// 				displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
+					// 				gui.update(TRUE,FALSE,FALSE);
+					// 			}
+					// 			else
+					displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
+					refresh = TRUE;
+					break;
+			case (TCanvas::RightKey):
+				displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0, 0.0);
+				refresh = TRUE;
+				break;
+			case (TCanvas::UpKey):
+				displayModel_->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0);
+				refresh = TRUE;
+				break;
+			case (TCanvas::DownKey):
+				displayModel_->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0);
+				refresh = TRUE;
+				break;
+			case (TCanvas::EscapeKey):
+				gui.mainWindow->cancelCurrentMode();
+				refresh = TRUE;
+				break;
+			default:
+				break;
+		}
+		
+		// Mode-specific
+		switch (selectedMode_)
+		{
+			case (UserAction::DrawFragmentAction):
+				// Cycle link atom....
+				if (keyModifier_[Prefs::AltKey])
+				{
+					Fragment *frag = gui.fragmentWindow->currentFragment();
+					if (frag == NULL) break;
+					frag->cycleLinkAtom();
+					refresh = TRUE;
+				}
+				// Refresh if Shift status has changed
+				if (keyModifier_[Prefs::ShiftKey]) refresh = TRUE;
+				if (keyModifier_[Prefs::CtrlKey])
+				{
+					refresh = TRUE;
+					gui.fragmentWindow->increaseBondId();
+				}
+				break;
+			default:
+				break;
+		}
+		// Update display if necessary
+		if (refresh) postRedisplay();
+	}
+	else event->ignore();
+}
+
+// Qt Slot (key release event)
+void TCanvas::keyReleaseEvent(QKeyEvent *event)
+{
+	TCanvas::KeyCode kc = gui.convertToKeyCode(event->key());
+	Qt::KeyboardModifiers km = event->modifiers();
+	if (kc != TCanvas::OtherKey)
+	{
+		// Set keystates
+		bool oldshift = keyModifier_[Prefs::ShiftKey];
+		//bool oldctrl = keyModifier_[Prefs::CtrlKey];
+		//bool oldalt = keyModifier_[Prefs::AltKey];
+		keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
+		keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
+		keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
+		
+		// Set some useful flags...
+		bool manipulate = FALSE;
+		for (int n=0; n<3; n++)
+		{
+			if (keyModifier_[n])
+			{
+				switch (prefs.keyAction(Prefs::ModifierKey(n)))
+				{
+					case (Prefs::ManipulateKeyAction):
+						manipulate = TRUE;
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		
+		// Mode-specific
+		switch (selectedMode_)
+		{
+			case (UserAction::DrawFragmentAction):
+				// Refresh if Shift status has changed
+				if (keyModifier_[Prefs::ShiftKey] != oldshift) postRedisplay();
+				break;
+			default:
+				break;
+		}
+	}
+	else event->ignore();
+}
+
+/*
+// User Actions
 */
 
 // Set selected mode
-void Canvas::setSelectedMode(UserAction::Action ua)
+void TCanvas::setSelectedMode(UserAction::Action ua)
 {
-	msg.enter("Canvas::setSelectedMode");
+	msg.enter("TCanvas::setSelectedMode");
 	if (displayModel_ == NULL)
 	{
-		printf("Pointless Canvas::setSelectedMode - datamodel == NULL.\n");
 		msg.exit("Canvas::setSelectedMode");
 		return;
 	}
@@ -256,17 +456,41 @@ void Canvas::setSelectedMode(UserAction::Action ua)
 	// Finally, set the mode and refresh
 	selectedMode_ = ua;
 	// Change mouse cursor depending on mode
-	if (selectedMode_ == UserAction::SelectAction) gui.mainWidget->setCursor(Qt::ArrowCursor);
-	else gui.mainWidget->setCursor(Qt::CrossCursor);
-	gui.mainView.postRedisplay();
+	if (selectedMode_ == UserAction::SelectAction) setCursor(Qt::ArrowCursor);
+	else setCursor(Qt::CrossCursor);
+	postRedisplay();
 	gui.updateStatusBar();
-	msg.exit("Canvas::setSelectedMode");
+	msg.exit("TCanvas::setSelectedMode");
+}
+
+// Set the active mode to the current user mode
+void TCanvas::useSelectedMode()
+{
+	activeMode_ = selectedMode_;
+}
+
+// Return the currently selected mode
+UserAction::Action TCanvas::selectedMode() const
+{
+	return selectedMode_;
+}
+
+// Set whether to accept editing actions (i.e. anything other than view manipulation)
+void TCanvas::setEditable(bool b)
+{
+	editable_ = b;
+}
+
+// Return whether to accept editing actions (i.e. anything other than view manipulation)
+bool TCanvas::editable()
+{
+	return editable_;
 }
 
 // Begin Mode
-void Canvas::beginMode(Prefs::MouseButton button)
+void TCanvas::beginMode(Prefs::MouseButton button)
 {
-	msg.enter("widgetCanvas::beginMode");
+	msg.enter("TCanvas::beginMode");
 	static bool manipulate, zrotate;
 	static int n;
 	static Atom *i;
@@ -276,8 +500,8 @@ void Canvas::beginMode(Prefs::MouseButton button)
 	// Set mouse flag and get state of modifier keys
 	if (displayModel_ == NULL)
 	{
-		printf("Pointless Canvas::beginMode - datamodel == NULL.\n");
-		msg.exit("Canvas::beginMode");
+		printf("Pointless TCanvas::beginMode - datamodel == NULL.\n");
+		msg.exit("TCanvas::beginMode");
 		return;
 	}
 	// Note the mouse button pressed
@@ -324,116 +548,53 @@ void Canvas::beginMode(Prefs::MouseButton button)
 							currentDrawDepth_ = prefs.drawDepth();
 							i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							displayModel_->endUndoState();
-// 							displayModel_->projectAtom(i);  TGAY
+							// 							displayModel_->projectAtom(i);  TGAY
 							atomClicked_ = i;
 						}
-						else currentDrawDepth_ = gui.mainView.modelToWorld(atomClicked_->r() - displayModel_->cell()->centre(), displayModel_->viewMatrix()).z;
+						else currentDrawDepth_ = modelToWorld(atomClicked_->r()).z;
 						break;
 					default:
 						break;
 				}
 				break;
-			case (Prefs::RotateAction):
-				// Check for multiple key modifiers first.
-				if (manipulate && zrotate && editable_) activeMode_ = UserAction::TransformRotateZAction;
-				else if (manipulate && editable_) activeMode_ = UserAction::TransformRotateXYAction;
-				else if (zrotate) activeMode_ = UserAction::RotateZAction;
-				else activeMode_ = UserAction::RotateXYAction;
-				break;
-			case (Prefs::ZoomAction):
-				activeMode_ = UserAction::ZoomAction;
-				break;
-			case (Prefs::TranslateAction):
-				if (manipulate && editable_) activeMode_ = UserAction::TransformTranslateAction;
-				else activeMode_ = UserAction::TranslateAction;
-				break;
-			default:
-				break;
+					case (Prefs::RotateAction):
+						// Check for multiple key modifiers first.
+						if (manipulate && zrotate && editable_) activeMode_ = UserAction::TransformRotateZAction;
+						else if (manipulate && editable_) activeMode_ = UserAction::TransformRotateXYAction;
+						else if (zrotate) activeMode_ = UserAction::RotateZAction;
+						else activeMode_ = UserAction::RotateXYAction;
+						break;
+					case (Prefs::ZoomAction):
+						activeMode_ = UserAction::ZoomAction;
+						break;
+					case (Prefs::TranslateAction):
+						if (manipulate && editable_) activeMode_ = UserAction::TransformTranslateAction;
+						else activeMode_ = UserAction::TranslateAction;
+						break;
+					default:
+						break;
 		}
 		// If we're manipulating, prepare the transform
 		if (manipulate)
 		{
 			/* We don't begin an undostate here - this will be done in endMode().
-			   Instead, store pointers to all selected atoms in a Reflist, along
-			   with their current positions.
+			Instead, store pointers to all selected atoms in a Reflist, along
+			with their current positions.
 			*/
 			oldPositions_.clear();
 			for (Refitem<Atom,int> *ri = displayModel_->selection(); ri != NULL; ri = ri->next) oldPositions_.add(ri->item, ri->item->r());
 			displayModel_->prepareTransform();
 		}
 	}
-	gui.mainView.postRedisplay();
-	msg.exit("Canvas::beginMode");
-}
-
-void Canvas::modeMotion(double x, double y)
-{
-	// Actively update variables when moving the mouse (possibly while performing a given action)
-	msg.enter("Canvas::modeMotion");
-	static Vec3<double> delta;
-	if (displayModel_ == NULL)
-	{
-		printf("Pointless Canvas::modeMotion - datamodel == NULL.\n");
-		msg.exit("Canvas::modeMotion");
-		return;
-	}
-	// Calculate new delta.
-	delta.set(x,y,0.0);
-	delta = delta - rMouseLast_;
-	// Use activeMode_ to determine what needs to be performed
-	switch (activeMode_)
-	{
-		case (UserAction::NoAction):
-			break;
-		case (UserAction::RotateXYAction):
-			displayModel_->rotateView(delta.x/2.0,delta.y/2.0);
-			break;
-		case (UserAction::RotateZAction):
-			displayModel_->zRotateView(delta.x/2.0);
-			break;
-		case (UserAction::TranslateAction):
-			delta.y = -delta.y;
-			displayModel_->adjustCamera(delta/15.0,0.0);
-			break;
-		case (UserAction::ZoomAction):
-			displayModel_->adjustZoom(delta.y < 0.0);
-			break;
-		case (UserAction::DrawFragmentAction):
-			if (gui.fragmentWindow->currentFragment() != NULL)
-			{
-				if (atomClicked_ == NULL) gui.fragmentWindow->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
-				else gui.fragmentWindow->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
-			}
-			break;
-		case (UserAction::TransformRotateXYAction):
-			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
-			displayModel_->updateMeasurements();
-			hasMoved_ = TRUE;
-			break;
-		case (UserAction::TransformRotateZAction):
-			displayModel_->rotateSelectionZaxis(delta.x/2.0);
-			displayModel_->updateMeasurements();
-			hasMoved_ = TRUE;
-			break;
-		case (UserAction::TransformTranslateAction):
-			delta.y = -delta.y;
-			delta /= displayModel_->translateScale() * 2.0;
-			displayModel_->translateSelectionWorld(delta);
-			displayModel_->updateMeasurements();
-			hasMoved_ = TRUE;
-			break;
-		default:
-			break;
-	}
 	postRedisplay();
-	msg.exit("Canvas::modeMotion");
+	msg.exit("TCanvas::beginMode");
 }
 
 // End Mode
-void Canvas::endMode(Prefs::MouseButton button)
+void TCanvas::endMode(Prefs::MouseButton button)
 {
 	// Finalize the current action on the model
-	msg.enter("Canvas::endMode");
+	msg.enter("TCanvas::endMode");
 	double area, radius;
 	Vec4<double> screenr;
 	Atom *atoms[4], *i;
@@ -442,8 +603,8 @@ void Canvas::endMode(Prefs::MouseButton button)
 	Fragment *frag;
 	if (displayModel_ == NULL)
 	{
-		printf("Pointless Canvas::endMode - datamodel == NULL.\n");
-		msg.exit("Canvas::endMode");
+		printf("Pointless TCanvas::endMode - datamodel == NULL.\n");
+		msg.exit("TCanvas::endMode");
 		return;
 	}
 	// Store modifier states for convenience
@@ -461,7 +622,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 		// No action
 		case (UserAction::NoAction):
 			break;
-		// Plain atom / box select
+			// Plain atom / box select
 		case (UserAction::SelectAction):
 			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
 			displayModel_->beginUndoState("Change Selection");
@@ -478,7 +639,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,FALSE);
 			break;
-		// Now do the rest
+			// Now do the rest
 		case (UserAction::SelectMoleculeAction):
 			displayModel_->beginUndoState("Select Molecule");
 			if (!modded) displayModel_->selectNone();
@@ -499,14 +660,14 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (atomClicked_ != NULL)
 			{
 				radius = (rMouseDown_-rMouseUp_).magnitude();
-				gui.mainView.modelToWorld(atomClicked_->r() - displayModel_->cell()->centre(), displayModel_->viewMatrix(), &screenr, prefs.screenRadius(atomClicked_));
+				modelToWorld(atomClicked_->r(), &screenr, prefs.screenRadius(atomClicked_));
 				radius /= screenr.w * prefs.screenRadius(atomClicked_);
 				displayModel_->selectRadial(atomClicked_,radius);
 			}
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,FALSE);
 			break;
-		// Measurements
+			// Measurements
 		case (UserAction::MeasureDistanceAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 2) break;
@@ -537,7 +698,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
 			break;
-		// Draw single atom
+			// Draw single atom
 		case (UserAction::DrawAtomAction):
 			// Make sure we don't draw on top of an existing atom
 			if (atomClicked_ == NULL)
@@ -546,11 +707,11 @@ void Canvas::endMode(Prefs::MouseButton button)
 				currentDrawDepth_ = prefs.drawDepth();
 				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				displayModel_->endUndoState();
-// 				displayModel_->projectAtom(i); TGAY
+				// 				displayModel_->projectAtom(i); TGAY
 			}
 			gui.update(TRUE,FALSE,TRUE);
 			break;
-		// Draw chains of atoms
+			// Draw chains of atoms
 		case (UserAction::DrawChainAction):
 			// If there is no atom under the mouse we draw one
 			i = displayModel_->atomOnScreen(rMouseUp_.x,rMouseUp_.y);
@@ -560,7 +721,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
 				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
-// 				displayModel_->projectAtom(i);  TGAY
+				// 				displayModel_->projectAtom(i);  TGAY
 			}
 			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
 			if (atomClicked_ != i)
@@ -578,7 +739,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);
 			break;
-		// Draw framents
+			// Draw framents
 		case (UserAction::DrawFragmentAction):
 			frag = gui.fragmentWindow->currentFragment();
 			if (frag == NULL) break;
@@ -630,7 +791,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (UserAction::DrawProbeAction):
 			if (atomClicked_ != NULL) atomClicked_->print();
 			break;
-		// Bonding
+			// Bonding
 		case (UserAction::DrawBondSingleAction):
 		case (UserAction::DrawBondDoubleAction):
 		case (UserAction::DrawBondTripleAction):
@@ -653,7 +814,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
 			break;
-		// Delete bond
+			// Delete bond
 		case (UserAction::DrawDeleteBondAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 2) break;
@@ -667,7 +828,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
 			break;
-		// Misc
+			// Misc
 		case (UserAction::DrawAddHydrogenAction):
 			if (atomClicked_ != NULL)
 			{
@@ -677,7 +838,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				gui.update(TRUE,FALSE,TRUE);
 			}
 			break;
-		// Model transformations
+			// Model transformations
 		case (UserAction::TransformRotateXYAction):
 		case (UserAction::TransformRotateZAction):
 		case (UserAction::TransformTranslateAction):
@@ -686,13 +847,13 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
 			gui.update(TRUE,FALSE,FALSE);
 			break;
-		// View changes (no action)
+			// View changes (no action)
 		case (UserAction::RotateXYAction):
 		case (UserAction::RotateZAction):
 		case (UserAction::TranslateAction):
 		case (UserAction::ZoomAction):
 			break;
-		// Manual picking mode (for toolwindow axis definitions etc.)
+			// Manual picking mode (for toolwindow axis definitions etc.)
 		case (UserAction::ManualPickAction):
 			// Have we picked the right number of atoms?
 			if (pickedAtoms_.nItems() != nAtomsToPick_) break;
@@ -704,41 +865,4 @@ void Canvas::endMode(Prefs::MouseButton button)
 			break;
 	}
 	msg.exit("UserAction::endMode");
-}
-
-void Canvas::modeScroll(bool scrollup)
-{
-	// Handle mouse-wheel scroll events.
-	// Do the requested wheel action as defined in the control panel
-	msg.enter("Canvas::modeScroll");
-	if (displayModel_ == NULL)
-	{
-		printf("Pointless Canvas::modeScroll - datamodel == NULL.\n");
-		msg.exit("Canvas::modeScroll");
-		return;
-	}
-	switch (prefs.mouseAction(Prefs::WheelButton))
-	{
-		case (Prefs::NoAction):
-			break;
-		case (Prefs::InteractAction):
-			// Only act if the editable_ flag is set
-			if (!editable_) break;
-			useSelectedMode();
-			break;
-		case (Prefs::RotateAction):
-			scrollup ? displayModel_->rotateView(1.0,0.0) : displayModel_->rotateView(-1.0,0.0);
-			break;
-		case (Prefs::TranslateAction):
-			// Only act if the editable_ flag is set
-			if (!editable_) break;
-			break;
-		case (Prefs::ZoomAction):
-			displayModel_->adjustZoom(scrollup);
-			break;
-		default:
-			break;
-	}
-	postRedisplay();
-	msg.exit("Canvas::modeScroll");
 }

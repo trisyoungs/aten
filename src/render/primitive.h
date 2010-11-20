@@ -57,11 +57,9 @@ class Primitive
 	/*
 	// Vertex Generation
 	*/
-	private:
+	public:
 	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
 	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices);
-
-	public:
 	// Define next vertex and normal
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
 	// Define next vertex, normal, and colour

@@ -880,7 +880,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	if (result)
 	{
 		if (aten.current.rs != NULL) aten.current.rs->changeLog.add(Log::Visual);
-		gui.mainView.postRedisplay();
+		gui.mainWidget->postRedisplay();
 	}
 	msg.exit("PreferencesVariable::setAccessor");
 	return result;

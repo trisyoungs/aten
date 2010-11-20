@@ -130,7 +130,7 @@ void AtenGrids::loadGrid()
 		}
 	}
 	gui.gridsWindow->refresh();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 	msg.exit("AtenGrids::loadGrid");
 }
 
@@ -165,7 +165,7 @@ void AtenGrids::on_actionGridCut_triggered(bool checked)
 	aten.copyGrid(g);
 	m->removeGrid(g);
 	refresh();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_actionGridDelete_triggered(bool checked)
@@ -179,7 +179,7 @@ void AtenGrids::on_actionGridDelete_triggered(bool checked)
 	refresh();
 	if (row == m->nGrids()) row --;
 	if (m->nGrids() != 0) ui.GridList->setCurrentRow(row);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_actionGridPaste_triggered(bool checked)
@@ -194,7 +194,7 @@ void AtenGrids::on_actionGridPaste_triggered(bool checked)
 	Grid *newgrid = m->addGrid();
 	*newgrid = *g;
 	refresh();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridOriginXSpin_valueChanged(double d)
@@ -357,7 +357,7 @@ void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
 	Grid *g = m->grid(row);
 	ui.GridSecondaryColourButton->setEnabled(g->useSecondary());
 	g->setUseColourScale(FALSE);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
@@ -372,7 +372,7 @@ void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setUseColourScale(TRUE);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 // Item in grid list has changed?
@@ -384,7 +384,7 @@ void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
 	Grid *g = (Grid*) titem->data.asPointer(VTypes::GridData);
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::gridOriginChanged(int component, double value)
@@ -399,7 +399,7 @@ void AtenGrids::gridOriginChanged(int component, double value)
 	o = g->origin();
 	o.set(component, value);
 	g->setOrigin(o);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::gridAxisChanged(int r, int component, double value)
@@ -414,7 +414,7 @@ void AtenGrids::gridAxisChanged(int r, int component, double value)
 	axes = g->axes();
 	axes.rows[r].set(component, value);
 	g->setAxes(axes);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridList_currentRowChanged(int row)
@@ -434,7 +434,7 @@ void AtenGrids::on_GridLowerCutoffSpin_editingFinished()
 	Grid *g = m->grid(row);
 	g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
 	refreshGridInfo();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridUpperCutoffSpin_editingFinished()
@@ -447,7 +447,7 @@ void AtenGrids::on_GridUpperCutoffSpin_editingFinished()
 	Grid *g = m->grid(row);
 	g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
 	refreshGridInfo();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridLowerCutoff2Spin_editingFinished()
@@ -460,7 +460,7 @@ void AtenGrids::on_GridLowerCutoff2Spin_editingFinished()
 	Grid *g = m->grid(row);
 	g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
 	refreshGridInfo();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridUpperCutoff2Spin_editingFinished()
@@ -473,7 +473,7 @@ void AtenGrids::on_GridUpperCutoff2Spin_editingFinished()
 	Grid *g = m->grid(row);
 	g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
 	refreshGridInfo();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
@@ -485,7 +485,7 @@ void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setStyle(Grid::SurfaceStyle (index));
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
@@ -508,7 +508,7 @@ void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
 	g->setPrimaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.GridPrimaryColourFrame->setColour(newcol);
 	ui.GridPrimaryColourFrame->update();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridSecondaryColourButton_clicked(bool checked)
@@ -531,7 +531,7 @@ void AtenGrids::on_GridSecondaryColourButton_clicked(bool checked)
 	g->setSecondaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.GridSecondaryColourFrame->setColour(newcol);
 	ui.GridSecondaryColourFrame->update();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
@@ -547,7 +547,7 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 	scalename += prefs.colourScale[g->colourScale()].name();
 	scalename += ")";
 	ui.GridColourscaleName->setText(scalename);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGrids::on_GridSecondaryCutoffCheck_clicked(bool checked)
@@ -561,7 +561,7 @@ void AtenGrids::on_GridSecondaryCutoffCheck_clicked(bool checked)
 	g->setUseSecondary(checked);
 	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
 	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 /*

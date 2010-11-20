@@ -118,7 +118,7 @@ void AtenVibrations::on_VibrationsList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	refreshDisplacements();
-	if (ui.ShowVectorsCheck->isChecked()) gui.mainView.postRedisplay();
+	if (ui.ShowVectorsCheck->isChecked()) gui.mainWidget->postRedisplay();
 	// If currently playing a trajectory, regenerate it
 	if (ui.PlayPauseVibration->isChecked())
 	{
@@ -134,12 +134,12 @@ void AtenVibrations::on_VibrationsList_currentRowChanged(int row)
 
 void AtenVibrations::on_ShowVectorsCheck_clicked(bool checked)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenVibrations::on_VectorScaleSpin_valueChanged(double value)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
@@ -151,7 +151,7 @@ void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 		Model *m = aten.currentModelOrFrame();
 		m->generateVibration(ui.VibrationsList->currentRow());
 		m->setRenderFromVibration(TRUE);
-		gui.mainView.setEditable(FALSE);
+		gui.mainWidget->setEditable(FALSE);
 		resetTimer(ui.DelaySpin->value());
 	}
 	else
@@ -161,8 +161,8 @@ void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 		vibrationTimerId_ = -1;
 		Model *m = aten.currentModelOrFrame();
 		m->setRenderFromVibration(FALSE);
-		gui.mainView.postRedisplay();
-		gui.mainView.setEditable(TRUE);
+		gui.mainWidget->postRedisplay();
+		gui.mainWidget->setEditable(TRUE);
 	}
 }
 
@@ -201,7 +201,7 @@ void AtenVibrations::timerEvent(QTimerEvent*)
 		DONTDRAW = TRUE;
 		Model *m = aten.currentModelOrFrame();
 		m->vibrationNextFrame();
-		gui.mainView.postRedisplay();
+		gui.mainWidget->postRedisplay();
 		DONTDRAW = FALSE;
 	}
 }

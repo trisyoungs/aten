@@ -23,7 +23,8 @@
 #include "base/messenger.h"
 #include "classes/prefs.h"
 #include "model/model.h"
-#include "gui/canvas.h"
+#include "classes/forcefieldatom.h"
+#include "gui/tcanvas.uih"
 #include <math.h>
 
 // Constructor
@@ -52,20 +53,29 @@ RenderEngine::~RenderEngine()
 void RenderEngine::createPrimitives()
 {
 	msg.enter("RenderEngine::createPrimitives");
-	double radius, lodratio;
-	int n, lod, nstacks, nslices, quality = prefs.primitiveQuality();
+	double radius, lodratio, aradius[Atom::nDrawStyles], bradius[Atom::nDrawStyles], selscale;
+	int n, m, lod, nstacks, nslices, quality = prefs.primitiveQuality();
 	// Clear old primitive groups
 	for (n=0; n<Atom::nDrawStyles; ++n)
 	{
 		atom_[n].clear();
 		selectedAtom_[n].clear();	
-		bond_[n].clear();
-		selectedBond_[n].clear();
-		for (int m=0; m<elements().nElements(); ++m)
+		for (m=0; m<Bond::nBondTypes; ++m)
 		{
-			scaledAtom_[m].clear();
-			selectedScaledAtom_[m].clear();
+			bond_[n][m].clear();
+			selectedBond_[n][m].clear();
 		}
+	}
+	for (n=0; n<elements().nElements(); ++n)
+	{
+		scaledAtom_[n].clear();
+		selectedScaledAtom_[n].clear();
+	}
+	// To clean up following code, grab radii here
+	for (n=0; n<Atom::nDrawStyles; ++n)
+	{
+		aradius[n] = prefs.atomStyleRadius( (Atom::DrawStyle) n);
+		bradius[n] = prefs.bondStyleRadius( (Atom::DrawStyle) n);
 	}
 	// Loop over levels of detail
 	for (lod=0; lod < prefs.levelsOfDetail(); ++lod)
@@ -76,27 +86,31 @@ void RenderEngine::createPrimitives()
 		atom_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
 		nstacks = max(3,(int) (quality*lodratio*0.75));
 		nslices = max(3,(int) (quality*lodratio*1.5));
-		atom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle), nstacks, nslices);
-		atom_[Atom::SphereStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::SphereStyle), nstacks, nslices);
-		selectedAtom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), nstacks, nslices);
-		selectedAtom_[Atom::SphereStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), nstacks, nslices);
+		atom_[Atom::TubeStyle].primitive(lod).createSphere(aradius[Atom::TubeStyle], nstacks, nslices);
+		atom_[Atom::SphereStyle].primitive(lod).createSphere(aradius[Atom::SphereStyle], nstacks, nslices);
+		selectedAtom_[Atom::TubeStyle].primitive(lod).createSphere(aradius[Atom::TubeStyle]*selscale, nstacks, nslices);
+		selectedAtom_[Atom::SphereStyle].primitive(lod).createSphere(aradius[Atom::SphereStyle]*selscale, nstacks, nslices);
 		// Atom Styles (Atom::ScaledStyle)
 		for (n = 0; n<elements().nElements(); ++n)
 		{
-			radius = prefs.atomStyleRadius(Atom::ScaledStyle) * elements().el[n].atomicRadius;
+			radius = aradius[Atom::ScaledStyle] * elements().el[n].atomicRadius;
 			scaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
-			radius *= prefs.selectionScale();
-			selectedScaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
+			selectedScaledAtom_[n].primitive(lod).createSphere(radius*selscale, nstacks, nslices);
 		}
-		// Bond Styles (all)
+		// Bond Styles
 		nstacks = max(1,(int) (quality*lodratio*0.25));
 		nslices = max(3,(int) (quality*lodratio));
-		bond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle), prefs.bondStyleRadius(Atom::TubeStyle), nstacks, nslices);
-		bond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle), prefs.bondStyleRadius(Atom::SphereStyle), nstacks, nslices);
-		bond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle), prefs.bondStyleRadius(Atom::ScaledStyle), nstacks, nslices);
-		selectedBond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), nstacks, nslices);
-		selectedBond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), nstacks, nslices);
-		selectedBond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), nstacks, nslices);
+		// All styles - Single Bond
+		bond_[Atom::TubeStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
+		bond_[Atom::SphereStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
+		bond_[Atom::ScaledStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::ScaledStyle], bradius[Atom::ScaledStyle], nstacks, nslices);
+		selectedBond_[Atom::TubeStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::TubeStyle]*selscale, bradius[Atom::TubeStyle]*selscale, nstacks, nslices);
+		selectedBond_[Atom::SphereStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
+		selectedBond_[Atom::ScaledStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
+		// All styles - Double Bond
+// 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).createEmpty(GL_TRIANGLES, 2*nstacks*nslices*2, FALSE);
+// 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(-aradius[Atom::TubeStyle]*0.25,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
+// 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(aradius[Atom::TubeStyle]*0.25,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);		
 		// Cubes
 		cubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)) );
 		// Cones
@@ -139,37 +153,19 @@ void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h)
 		glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
 	GLdouble pmat[16];
-	glGetDoublev(GL_PROJECTION_MATRIX,pmat);
-	projectionMatrix_.setFromColumnMajor(pmat);
-}
-
-// Set current transformation matrix
-void RenderEngine::setTransformationMatrix(Mat4<double> &mat)
-{
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	transformationMatrix_ = mat;
-// 	double m[16];
-// 	transformationMatrix_.copyColumnMajor(m);
-// 	glMultMatrixd(m);
+	glGetDoublev(GL_PROJECTION_MATRIX, projectionMatrix_.matrix());
 }
 
 // Project given model coordinates into world coordinates (and screen coordinates if requested)
-Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Mat4<double> &viewMatrix, Vec4<double> *screenr, double screenradius)
+Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, double screenradius)
 {
 	msg.enter("RenderEngine::modelToWorld");
 	static Vec3<double> worldr;
 	Vec4<double> pos, temp, tempscreen;
-// 	if (!gui.mainView.isValid())
-// 	{
-// 		msg.exit("RenderEngine::modelToWorld");
-// 		result.zero();
-// 		return result;
-// 	}
 	// Projection formula is : worldr = P x M x modelr
 	pos.set(modelr, 1.0);
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	temp = viewMatrix * pos;
+	temp = transformationMatrix_ * pos;
 	worldr.set(temp.x, temp.y, temp.z);
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	if (screenr != NULL)
@@ -194,22 +190,16 @@ Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Mat4<double> &vie
 }
 
 // Project the specified world coordinates into 2D screen coords
-Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v, Mat4<double> &viewMatrix)
+Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v)
 {
 	// The returned vec4's 'w' component is the unit 'radius' at that point.
 	msg.enter("RenderEngine::worldToScreen");
 	static Vec4<double> modelr, screenr, worldr, result;
 	static double x1,x2,radius;
-	screenr.zero();
-// 	if (!gui.mainView.isValid() )
-// 	{
-// 		msg.exit("RenderEngine::worldToScreen");
-// 		return screenr;
-// 	}
 	// Projection formula is : worldr = P x M x modelr
 	// Get the 3D coordinates of the atom - Multiply by modelview matrix 'view'
 	modelr.set(v.x, v.y, v.z, 1.0);
-	worldr = viewMatrix * modelr;
+	worldr = transformationMatrix_ * modelr;
 	//viewMatrix_.print();
 	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
 	screenr = projectionMatrix_ * worldr;
@@ -249,18 +239,103 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour,
 	}
 }
 
+// Set OpenGL options ready for drawing
+void RenderEngine::initialiseGL()
+{
+	msg.enter("RenderEngine::initialiseGL");
+	// Clear colour
+	GLfloat col[4];
+	prefs.copyColour(Prefs::BackgroundColour, col);
+	glClearColor(col[0],col[1],col[2],col[3]);
+	//glClearDepth(1.0);
+	// Perspective hint
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
+	// Enable depth buffer
+	glEnable(GL_DEPTH_TEST);
+	// Smooth shading
+	glShadeModel(GL_SMOOTH);
+	// Auto-calculate surface normals
+	glEnable(GL_NORMALIZE);
+	// Set alpha-blending function
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
+	// Set up the light model
+	glEnable(GL_LIGHTING);
+	prefs.copySpotlightColour(Prefs::AmbientComponent, col);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, col);
+	prefs.copySpotlightColour(Prefs::DiffuseComponent, col);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, col);
+	prefs.copySpotlightColour(Prefs::SpecularComponent, col);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, col);
+	prefs.copySpotlightPosition(col);
+	glLightfv(GL_LIGHT0, GL_POSITION, col);
+	prefs.spotlightActive() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
+	// Set specular reflection colour
+	prefs.copyColour(Prefs::SpecularColour, col);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, col);
+	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
+	glDisable(GL_BLEND);
+	glDisable(GL_LINE_SMOOTH);
+	glDisable(GL_POLYGON_SMOOTH);
+	glDisable(GL_MULTISAMPLE);
+	// Configure antialiasing
+	if (prefs.multiSampling()) glEnable(GL_MULTISAMPLE);
+	if (prefs.lineAliasing())
+	{
+		glEnable(GL_BLEND);
+		glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+		glEnable(GL_LINE_SMOOTH);
+	}
+	if (prefs.polygonAliasing())
+	{
+		glEnable(GL_BLEND);
+		glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
+		glEnable(GL_POLYGON_SMOOTH);
+	}
+	// Configure fog effects
+	if (prefs.depthCue())
+	{
+		glFogi(GL_FOG_MODE, GL_LINEAR);
+		prefs.copyColour(Prefs::BackgroundColour, col);
+		glFogfv(GL_FOG_COLOR, col);
+		glFogf(GL_FOG_DENSITY, 0.35f);
+		glHint(GL_FOG_HINT, GL_NICEST);
+		glFogi(GL_FOG_START, prefs.depthNear());
+		glFogi(GL_FOG_END, prefs.depthFar());
+		glEnable(GL_FOG);
+	}
+	else glDisable(GL_FOG);
+	// Configure face culling
+	glCullFace(GL_BACK);
+	prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+	// Test
+	glDisable(GL_DITHER);
+	glDisable(GL_LOGIC_OP);
+	msg.exit("RenderEngine::initialiseGL");
+}
+
+// Update transformation matrix
+void RenderEngine::setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre)
+{
+	transformationMatrix_ = mat;
+	transformationMatrix_.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
+}
+
 // Render specified model
-void RenderEngine::renderModel(Model *source, TCanvas *canvas)
+void RenderEngine::renderModel(Model *source, TCanvas *canvas, QPainter &painter)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
-	int lod, id_i;
+	int lod, id_i, labels;
+	Dnchar text;
 	double selscale, z, phi, halfr, radius_i, radius_j, dvisible, rij;
 	Atom *i, *j;
-	Vec3<double> pos, v, cellcentre;
-	Vec4<double> transformZ;
-	GLMatrix transformbase, atomtransform, bondtransform, A, B;
+	Vec3<double> pos, v, ijk;
+	Vec4<double> transformZ, screenr;
+	GLMatrix atomtransform, bondtransform, A, B;
 	Refitem<Bond,int> *ri;
+	ForcefieldAtom *ffa;
 	Atom::DrawStyle style_i, style_j, globalstyle;
+	Bond::BondType bt;
 	Prefs::ColouringScheme scheme;
 
 	// Clear filtered primitives list
@@ -268,26 +343,27 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 	transparentPrimitives_.clear();
 
 	// Set initial transformation matrix, including any translation occurring from cell...
-	setTransformationMatrix(source->viewMatrix());
-	transformZ = transformationMatrix_.z();
-	transformbase = transformationMatrix_;
-	cellcentre = source->cell()->centre();
-	transformbase.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
+	setTransformationMatrix(source->viewMatrix(), source->cell()->centre());
+	transformZ.set(transformationMatrix_[2], transformationMatrix_[6], transformationMatrix_[10], transformationMatrix_[14]);
 	
-	// Set polygon fill mode and specular reflection
-	prefs.copyColour(Prefs::SpecularColour, colour_i);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour_i);
-	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-
 	// Grab global style values
 	scheme = prefs.colourScheme();
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
 
+	// Set target matrix mode and reset it, and set colour mod
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	
 	// Render cell and cell axes
 	if (source->cell()->type() != Cell::NoCell)
 	{
-		A = transformationMatrix_ * source->cell()->axes();
+		// Setup pen colour
+		prefs.copyColour(Prefs::ForegroundColour, colour_i);
+		glColor4fv(colour_i);
+		A = source->viewMatrix() * source->cell()->axes();
 		glMultMatrixd(A.matrix());
 		wireCube_.sendToGL();
 		glTranslated(-0.5, -0.5, -0.5);
@@ -307,16 +383,16 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 		pos = i->r();
 		// Calculate projected Z distance from viewer
 		// If z is less than 0, don't even bother continuing since its behind the viewer
-		z = -(pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w)+cellcentre.z;
+		z = -(pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w);
 		if (z < 0) continue;
 
 		// Determine level of detail to use for primitives
 		if (z < prefs.levelOfDetailStartZ()) lod = 0;
-		else lod = int(z / prefs.levelOfDetailWidth());
-// 		printf("lod = %i, clipnear = %f, pos.z = %f\n", lod, prefs.clipNear(), z);
+		else lod = int((z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth());
+// 		printf("lod = %i, projected z = %f, nlevels = %i\n", lod, z, prefs.levelsOfDetail());
 
 		// Move to local atom position
-		atomtransform = transformbase;
+		atomtransform = transformationMatrix_;
 		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
 
 		// Select colour
@@ -373,15 +449,6 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				break;
 		}
 
-		// LABELS ETC SHOULD BE DONE HERE....
-		if ((!prefs.useNiceText()) && (canvas != NULL)) canvas->renderText(50,50, "Hello");
-		else
-		{
-// 			if (to->rightAlign) painter.drawText(0, to->y, to->x, to->y, Qt::AlignRight, to->text.get(), NULL);
-// 			else painter.drawText(to->x, to->y, to->text.get());
-		}
-		
-
 		// Bonds
 		// Set initial transformation matrix to centre on atom i
 		bondtransform = atomtransform;
@@ -420,6 +487,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 			// Get atom style and radius
 			style_j = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
 			radius_j = (style_j == Atom::TubeStyle ? 0.0 : prefs.screenRadius(j)*0.85);
+			bt = ri->item->type();
 
 			// Store copy of alpha value
 			alpha_j = colour_j[3];
@@ -434,13 +502,13 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 			        glMultMatrixd(atomtransform.matrix());
 				glNormal3d(0.0,0.0,1.0);
 				glLineWidth( i->isSelected() ? 3.0 : 1.0 );
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour_i);
+				glColor4fv(colour_i);
 				glBegin(GL_LINES);
 				glVertex3d(0.0, 0.0, 0.0);
 				glVertex3d(0.5*v.x, 0.5*v.y, 0.5*v.z);
 				glEnd();
 				glLineWidth( j->isSelected() ? 3.0 : 1.0 );
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour_j);
+				glColor4fv(colour_j);
 				glBegin(GL_LINES);
 				glVertex3d(0.5*v.x, 0.5*v.y, 0.5*v.z);
 				glVertex3d(v.x, v.y, v.z);
@@ -466,6 +534,14 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				bondtransform.applyTranslation(0.0, 0.0, 0.85*radius_i);
 				bondtransform.applyScalingZ(dvisible);
 
+				// Determine bond plane rotation if a multiple bond
+				if (ri->item->type() > Bond::Single)
+				{
+					if (i > j) ijk = i->findBondPlane(j,ri->item,v);
+					else ijk = j->findBondPlane(i,ri->item,v);
+					// Now what?
+				}
+				
 				// Draw first bond half
 				switch (style_i)
 				{
@@ -477,11 +553,11 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 						glEnd();
 						break;
 					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_i], lod, colour_i, bondtransform);
+						renderPrimitive(bond_[style_i][bt], lod, colour_i, bondtransform);
 						if (i->isSelected())
 						{
 							colour_i[3] = 0.5f;
-							renderPrimitive(selectedBond_[style_i], lod, colour_i, bondtransform);
+							renderPrimitive(selectedBond_[style_i][bt], lod, colour_i, bondtransform);
 							colour_i[3] = alpha_i;
 						}
 						// Move to centre of visible bond, ready for next bond half
@@ -489,7 +565,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 						break;
 					case (Atom::SphereStyle):
 					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[style_i], lod, colour_i, bondtransform);
+						renderPrimitive(bond_[style_i][bt], lod, colour_i, bondtransform);
 						if (i->isSelected())
 						{
 							// Move to bond centre and apply 'reverse' Z-scaling
@@ -497,7 +573,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 							z = -(1.0 - (dvisible - 0.85*(radius_i*selscale-radius_i))/dvisible);
 							bondtransform.applyScalingZ(z);
 							colour_i[3] = 0.5f;
-							renderPrimitive(selectedBond_[style_i], lod, colour_i, bondtransform);
+							renderPrimitive(selectedBond_[style_i][bt], lod, colour_i, bondtransform);
 							colour_i[3] = alpha_i;
 							// Reverse scaling back to 'dvisible'
 							bondtransform.applyScalingZ(1.0/z);
@@ -517,23 +593,23 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 						glEnd();
 						break;
 					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_i], lod, colour_j, bondtransform);
+						renderPrimitive(bond_[style_i][bt], lod, colour_j, bondtransform);
 						if (i->isSelected())
 						{
 							colour_j[3] = 0.5f;
-							renderPrimitive(selectedBond_[style_j], lod, colour_j, bondtransform);
+							renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, bondtransform);
 							colour_j[3] = alpha_j;
 						}
 						break;
 					case (Atom::SphereStyle):
 					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[style_j], lod, colour_j, bondtransform);
+						renderPrimitive(bond_[style_j][bt], lod, colour_j, bondtransform);
 						if (j->isSelected())
 						{
 							colour_j[3] = 0.5f;
 							z = 1.0 - (dvisible - 0.85*(radius_j*selscale-radius_j))/dvisible;
 							bondtransform.applyScalingZ(z);
-							renderPrimitive(selectedBond_[style_j], lod, colour_j, bondtransform);
+							renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, bondtransform);
 							colour_j[3] = alpha_j;
 						}
 						break;
@@ -555,10 +631,7 @@ void RenderEngine::sortAndSendGL()
 	for (PrimitiveInfo *pi = solidPrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
-		if (!pi->primitive()->colouredVertexData())
-		{
-			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, pi->colour());
-		}
+		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
 		glPushMatrix();
 		glMultMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();

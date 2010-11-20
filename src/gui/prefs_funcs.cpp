@@ -205,7 +205,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 	elements().restoreData();
 
 	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 	reject();
 }
 
@@ -255,7 +255,7 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	ui.ElementColourFrame->update();
 	// Re-set atom colours in model(s)
 	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
@@ -266,7 +266,7 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 	elements().setAtomicRadius(el, value);
 	// Re-draw models
 	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 /*
@@ -276,9 +276,9 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 void AtenPrefs::updateAfterViewPrefs()
 {
 	if (refreshing_) return;
-	gui.mainView.initGl();
+	gui.mainWidget->reinitialiseGL();
 	aten.currentModel()->renderSourceModel()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 /*
@@ -436,15 +436,15 @@ void AtenPrefs::on_MultiSamplingCheck_stateChanged(int state)
 void AtenPrefs::on_SpotlightGroup_clicked(bool checked)
 {
 	prefs.setSpotlightActive(checked);
-	gui.mainView.initGl();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->reinitialiseGL();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::spotlightPosChanged(int i, double value)
 {
 	prefs.setSpotlightPosition(i, (GLfloat) value);
-	gui.mainView.initGl();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->reinitialiseGL();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::on_SpotlightPositionXSpin_valueChanged(double value)
@@ -481,8 +481,8 @@ void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 	colframe->setColour(newcol);
 	colframe->update();
 	// Update display
-	gui.mainView.initGl();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->reinitialiseGL();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::on_SpotlightAmbientColourButton_clicked(bool checked)
@@ -504,7 +504,7 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 {
 	prefs.setShininess(value);
 	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::on_DefaultStyleCombo_currentIndexChanged(int index)
@@ -523,7 +523,7 @@ void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state, bool onscreen)
 		aten.currentModel()->changeLog.add(Log::Visual);
 	}
 	else prefs.setVisibleOffScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::on_AtomsVisibleCheck_stateChanged(int state)
@@ -682,7 +682,7 @@ void AtenPrefs::on_StandardColoursTable_cellDoubleClicked(int row, int column)
 	ui.StandardColoursTable->item(row, 1)->setBackgroundColor(newcol);
 	aten.currentModel()->changeLog.add(Log::Visual);
 	// Update display
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::updateScalePointsList()
@@ -746,7 +746,7 @@ void AtenPrefs::on_PointValueSpin_valueChanged(double d)
 	ui.ScalePointsTable->item(id, 0)->setText(ftoa(d));
 	// Update display
 	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::on_PointColourButton_clicked(bool checked)
@@ -772,7 +772,7 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	ui.ScalePointsTable->item(id, 1)->setBackgroundColor(newcol);
 	// Update display
 	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::on_AddPointButton_clicked(bool checked)
@@ -805,7 +805,7 @@ void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem *item)
 	if (row == -1) return;
 	// Look at checked state
 	prefs.colourScale[row].setVisible( (item->checkState() == Qt::Checked ? TRUE : FALSE) );
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem *item)
@@ -818,7 +818,7 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem *item)
 	if (ok && !text.isEmpty())
 	{
 		prefs.colourScale[row].setName( qPrintable(text) );
-		gui.mainView.postRedisplay();
+		gui.mainWidget->postRedisplay();
 	}
 }
 

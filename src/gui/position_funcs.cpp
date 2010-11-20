@@ -182,7 +182,7 @@ void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 void AtenPosition::on_DefineVectorButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&shiftPickAxisButton_callback);
+	gui.mainWidget->beginManualPick(2,&shiftPickAxisButton_callback);
 }
 
 void AtenPosition::on_NormaliseVectorButton_clicked(bool on)

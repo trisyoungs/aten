@@ -161,10 +161,7 @@ void GuiQt::initialise(int &argc, char **argv)
 	mainWidget->probeFeatures();
 	mainWidget->setGeometry(0,0,800,600);
 	mainWidget->setCursor(Qt::ArrowCursor);
-	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
-	mainView.setWidget(mainWidget);
-	mainWidget->setCanvas(&mainView);
-	mainView.enableDrawing();
+	mainWidget->enableDrawing();
 }
 
 // Initialise and create GUI
@@ -254,7 +251,7 @@ void GuiQt::run()
 	selectElementDialog->finaliseUi();
 
 	// Temporarily disable drawing on the main canvas again
-	gui.mainView.disableDrawing();
+	gui.mainWidget->disableDrawing();
 
 	// Set controls in the windows
 	mainWindow->setControls();
@@ -280,7 +277,7 @@ void GuiQt::run()
 	mainWindow->update();
 	commandWindow->refreshScripts();
 
-	gui.mainView.enableDrawing();
+	gui.mainWidget->enableDrawing();
 
 	// Add loaded models to tabbar (and reset the view while we're here)
 	// Must remember the current model, since adding the tabs will change it (in the currentChanged callback)
@@ -296,7 +293,7 @@ void GuiQt::run()
 	}
 	mainWindow->ui.ModelTabs->setCurrentIndex(currenttab);
 
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 
 	// Display message box warning if there was a filter load error
 	if (aten.nFiltersFailed() == -1)
@@ -371,7 +368,7 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 	// Update geometry page
 	geometryWindow->refresh();
 	// Request redraw of the main canvas
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 // Update statusbar
@@ -382,9 +379,9 @@ void GuiQt::updateStatusBar(bool clear)
 	// Initialise string if NoAction
 	if (lastAction == UserAction::NoAction) text.clear();
 	// If current action is not the same as the last action, recreate string
-	if (lastAction != mainView.selectedMode())
+	if (lastAction != mainWidget->selectedMode())
 	{
-		lastAction = mainView.selectedMode();
+		lastAction = mainWidget->selectedMode();
 		text.clear();
 		text.strcat("<b>");
 		text.strcat(UserActions[lastAction].name);
@@ -426,34 +423,34 @@ void GuiQt::addModel(Model *m)
 }
 
 // Convert Qt keysym to key_code
-Canvas::KeyCode GuiQt::convertToKeyCode(int sym)
+TCanvas::KeyCode GuiQt::convertToKeyCode(int sym)
 {
-	Canvas::KeyCode result = Canvas::OtherKey;
+	TCanvas::KeyCode result = TCanvas::OtherKey;
 	switch (sym)
 	{
 		case (Qt::Key_Left):
-			result = Canvas::LeftKey;
+			result = TCanvas::LeftKey;
 			break;
 		case (Qt::Key_Right):
-			result = Canvas::RightKey;
+			result = TCanvas::RightKey;
 			break;
 		case (Qt::Key_Up):
-			result = Canvas::UpKey;
+			result = TCanvas::UpKey;
 			break;
 		case (Qt::Key_Down):
-			result = Canvas::DownKey;
+			result = TCanvas::DownKey;
 			break;
 		case (Qt::Key_Shift):
-			result = Canvas::LeftShiftKey;
+			result = TCanvas::LeftShiftKey;
 			break;
 		case (Qt::Key_Control):
-			result = Canvas::LeftControlKey;
+			result = TCanvas::LeftControlKey;
 			break;
 		case (Qt::Key_Alt):
-			result = Canvas::LeftAltKey;
+			result = TCanvas::LeftAltKey;
 			break;
 		case (Qt::Key_Escape):
-			result = Canvas::EscapeKey;
+			result = TCanvas::EscapeKey;
 			break;
 	}
 	return result;
@@ -540,8 +537,8 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	int oldlabelsize = prefs.labelSize();
 	int newlabelsize = int (oldlabelsize*( (1.0*height / mainWidget->height()) ));
 	prefs.setLabelSize(newlabelsize);
-	mainView.postRedisplay();
-	mainView.setOffScreenRendering(TRUE);
+	mainWidget->postRedisplay();
+	mainWidget->setOffScreenRendering(TRUE);
 
 	// Flag any surfaces to be rerendered for use in this context
 	aten.current.rs->rerenderGrids();
@@ -553,14 +550,14 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 		pixmap = QPixmap::fromImage(image);
 	}
 
-	mainView.setOffScreenRendering(FALSE);
+	mainWidget->setOffScreenRendering(FALSE);
 	prefs.setScreenObjects(screenbits);
 
 	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
 	aten.current.rs->rerenderGrids();
 
 	// Reconfigure canvas to widget size (necessary if image size was changed)
-	mainView.configure(mainWidget->width(), mainWidget->height());
+// 	mainWidget->configure(mainWidget->width(), mainWidget->height());   BROKEN?
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);
@@ -751,7 +748,7 @@ void GuiQt::stopTrajectoryPlayback()
 	mainWidget->killTimer(trajectoryTimerId_);
 	mainWindow->ui.actionTrajectoryPlayPause->setChecked(FALSE);
 	trajectoryPlaying_ = FALSE;
-	gui.mainView.setEditable(TRUE);
+	gui.mainWidget->setEditable(TRUE);
 	mainWindow->updateTrajectoryControls();
 	update();
 }

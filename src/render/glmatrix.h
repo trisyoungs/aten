@@ -44,8 +44,10 @@ class GLMatrix
 	public:
 	GLMatrix operator*(const GLMatrix &B) const;
 	GLMatrix operator*(const Mat4<double> &B) const;
+	Vec4<double> operator*(const Vec4<double> &v) const;
 	GLMatrix &operator*=(const GLMatrix &B);
 	void operator=(const Mat4<double> &B);
+	GLfloat operator[](int);
 
 	/*
 	// Methods

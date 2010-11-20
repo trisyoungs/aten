@@ -38,7 +38,6 @@ set(qtproject_SRCS
   grids_funcs.cpp
   gui.cpp
   customdialog_funcs.cpp
-  input.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainwindow_funcs.cpp
@@ -60,6 +59,7 @@ set(qtproject_SRCS
   styleactions.cpp
   systemactions.cpp
   tcanvas_funcs.cpp
+  tcanvas_input.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
   tlistwidgetitem_funcs.cpp

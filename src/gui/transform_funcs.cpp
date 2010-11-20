@@ -97,7 +97,7 @@ void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
 void AtenTransform::on_RotatePickAxisButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&rotatePickAxisButton_callback);
+	gui.mainWidget->beginManualPick(2,&rotatePickAxisButton_callback);
 }
 
 void AtenTransform::rotateSelection(double direction)
@@ -177,19 +177,19 @@ void transformDefineCButton_callback(Reflist<Atom,int> *picked)
 void AtenTransform::on_TransformDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&transformDefineAButton_callback);
+	gui.mainWidget->beginManualPick(2,&transformDefineAButton_callback);
 }
 
 void AtenTransform::on_TransformDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&transformDefineBButton_callback);
+	gui.mainWidget->beginManualPick(2,&transformDefineBButton_callback);
 }
 
 void AtenTransform::on_TransformDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&transformDefineCButton_callback);
+	gui.mainWidget->beginManualPick(2,&transformDefineCButton_callback);
 }
 
 void AtenTransform::on_TransformNormaliseAButton_clicked(bool on)
@@ -344,7 +344,7 @@ void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
 
 	aten.currentModelOrFrame()->updateMeasurements();
 	gui.update(TRUE,FALSE,FALSE);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void convertDefineSourceAButton_callback(Reflist<Atom,int> *picked)
@@ -389,19 +389,19 @@ void convertDefineSourceCButton_callback(Reflist<Atom,int> *picked)
 void AtenTransform::on_ConvertSourceDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertDefineSourceAButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertDefineSourceAButton_callback);
 }
 
 void AtenTransform::on_ConvertSourceDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertDefineSourceBButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertDefineSourceBButton_callback);
 }
 
 void AtenTransform::on_ConvertSourceDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertDefineSourceCButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertDefineSourceCButton_callback);
 }
 
 void AtenTransform::on_ConvertSourceNormaliseAButton_clicked(bool on)
@@ -576,19 +576,19 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 void AtenTransform::on_ConvertTargetDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertTargetDefineAButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertTargetDefineAButton_callback);
 }
 
 void AtenTransform::on_ConvertTargetDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertTargetDefineBButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertTargetDefineBButton_callback);
 }
 
 void AtenTransform::on_ConvertTargetDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertTargetDefineCButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertTargetDefineCButton_callback);
 }
 
 void AtenTransform::on_ConvertTargetNormaliseAButton_clicked(bool on)

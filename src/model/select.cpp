@@ -241,11 +241,11 @@ Atom *Model::atomOnScreen(double x1, double y1)
 	Vec3<double> wr;
 	Vec4<double> sr;
 	double closestz = 10000.0, dist, nclip = prefs.clipNear();
-	y1 = gui.mainView.height() - y1;
+	y1 = gui.mainWidget->contextHeight() - y1;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		wr = -gui.mainView.modelToWorld(i->r() - cell_.centre(), viewMatrix(), &sr, prefs.screenRadius(i));
+		wr = -gui.mainWidget->modelToWorld(i->r(), &sr, prefs.screenRadius(i));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
@@ -271,8 +271,8 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	double t;
 	Atom *i;
 	Vec4<double> sr;
-	y1 = gui.mainView.height() - y1;
-	y2 = gui.mainView.height() - y2;
+	y1 = gui.mainWidget->contextHeight() - y1;
+	y2 = gui.mainWidget->contextHeight() - y2;
 	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
 	if (x1 > x2)
 	{
@@ -289,7 +289,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		gui.mainView.modelToWorld(i->r() - cell_.centre(), viewMatrix(), &sr);
+		gui.mainWidget->modelToWorld(i->r(), &sr);
 		if ((sr.x >= x1) && (sr.x <= x2) && (sr.y >= y1) && (sr.y <= y2)) (deselect ? deselectAtom(i) : selectAtom(i));
 	}
 	msg.exit("Model::selectBox");
