@@ -55,7 +55,7 @@ void Model::prepareTransform()
 	translateScale_ = 0.0;
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
-		transformCOG += gui.mainView.modelToWorld(ri->item->r() - cell_.centre(), viewMatrix(), &screenr, 1.0);
+		transformCOG += gui.mainWidget->modelToWorld(ri->item->r(), &screenr, 1.0);
 		translateScale_ += screenr.w;
 	}
 	transformCOG /= selection_.nItems();
@@ -113,7 +113,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		// Rotate this atom's position about the geometric centre of all selected atoms.
-		newr = (rotmat * (gui.mainView.modelToWorld(ri->item->r() - cell_.centre(), viewMatrix()) - transformCOG)) + transformCOG;
+		newr = (rotmat * (gui.mainWidget->modelToWorld(ri->item->r()) - transformCOG)) + transformCOG;
 		newr *= viewMatrixInverse_;
 		ri->item->r() = newr + cell_.centre();
 	}
@@ -200,8 +200,8 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	// Grab unit cell origin
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
-		newr = gui.mainView.modelToWorld(ri->item->r() - cell_.centre(), viewMatrix()) + v;
-		newr = (viewMatrixInverse_ * newr) + cell_.centre();
+		newr = gui.mainWidget->modelToWorld(ri->item->r()) + v;
+		newr = (viewMatrixInverse_ * newr) + cell_.centre();	// BROKEN?
 		positionAtom(ri->item, newr);
 	}
 

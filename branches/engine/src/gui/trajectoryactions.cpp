@@ -75,13 +75,13 @@ void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 	{
 		gui.setTrajectoryTimerId(gui.mainWidget->startTimer(100));
 		gui.setTrajectoryPlaying(TRUE);
-		gui.mainView.setEditable(FALSE);
+		gui.mainWidget->setEditable(FALSE);
 	}
 	else
 	{
 		gui.mainWidget->killTimer(gui.trajectoryTimerId());
 		gui.setTrajectoryPlaying(FALSE);
-		gui.mainView.setEditable(TRUE);
+		gui.mainWidget->setEditable(TRUE);
 	}
 	updateTrajectoryControls();
 }
@@ -95,7 +95,7 @@ void AtenForm::trajectorySlider_sliderMoved(int i)
 	// Set corresponding value in Spin control
 	trajectorySpin_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::trajectorySpin_valueChanged(int i)
@@ -107,5 +107,5 @@ void AtenForm::trajectorySpin_valueChanged(int i)
 	// Set corresponding value in Spin control
 	trajectorySlider_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }

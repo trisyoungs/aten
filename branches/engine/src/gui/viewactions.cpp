@@ -31,36 +31,36 @@
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0,0.0);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0,0.0);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionViewReset_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->resetView();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
-	gui.mainView.doProjection();
+	gui.mainWidget->doProjection();
 	//aten.currentModelOrFrame()->resetView();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
-	gui.mainView.doProjection();
+	gui.mainWidget->doProjection();
 	//aten.currentModelOrFrame()->resetView();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionViewModel_triggered(bool checked)
@@ -87,14 +87,14 @@ void AtenForm::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified axis
 	aten.currentModelOrFrame()->viewAlong(x,y,z);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified cell axis
 	aten.currentModelOrFrame()->viewAlongCell(x,y,z);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionViewSetCartesianPosX_triggered(bool checked)
@@ -162,7 +162,7 @@ void AtenForm::on_actionSchemeElement_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
 	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionSchemeCharge_triggered(bool checked)
@@ -170,7 +170,7 @@ void AtenForm::on_actionSchemeCharge_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
 	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionSchemeForce_triggered(bool checked)
@@ -178,7 +178,7 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
 	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionSchemeVelocity_triggered(bool checked)
@@ -186,7 +186,7 @@ void AtenForm::on_actionSchemeVelocity_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::VelocityScheme);
 	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionSchemeCustom_triggered(bool checked)
@@ -194,5 +194,5 @@ void AtenForm::on_actionSchemeCustom_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::CustomScheme);
 	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }

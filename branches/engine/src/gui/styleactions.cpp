@@ -44,6 +44,6 @@ void AtenForm::on_StyleToolbar_actionTriggered(QAction *action)
 	m = aten.currentModelOrFrame();
 // 	m->projectAll();
 // 	m->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 

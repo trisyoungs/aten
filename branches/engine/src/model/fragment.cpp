@@ -90,7 +90,7 @@ bool Fragment::setMasterModel(Model *m)
 		int screenbits = prefs.screenObjects();
 		prefs.setScreenObjects(prefs.offScreenObjects());
 		gui.mainWidget->setRenderSource(masterModel_);
-		gui.mainView.setOffScreenRendering(TRUE);
+		gui.mainWidget->setOffScreenRendering(TRUE);
 	
 		if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget->renderPixmap(100, 100, FALSE);
 		else icon_ = QPixmap::fromImage(gui.mainWidget->grabFrameBuffer());
@@ -98,10 +98,10 @@ bool Fragment::setMasterModel(Model *m)
 		prefs.setScreenObjects(screenbits);
 	
 		// Reconfigure canvas to widget size (necessary if image size was changed)
-		gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
+		gui.mainWidget->doProjection();
 		gui.mainWidget->setRenderSource(NULL);
 	
-		gui.mainView.setOffScreenRendering(FALSE);
+		gui.mainWidget->setOffScreenRendering(FALSE);
 	}
 
 	// Final tweaks to fragment model - put link atom at 0,0,0

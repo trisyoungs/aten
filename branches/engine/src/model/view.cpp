@@ -189,7 +189,7 @@ void Model::adjustZoom(bool zoomin)
 	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz,0.0);
-	gui.mainView.doProjection();
+	gui.mainWidget->doProjection();
 	msg.exit("Model::adjustZoom");
 }
 
@@ -235,7 +235,7 @@ void Model::resetView()
 	resetCamera(newcam);
 	// Now, adjust camera matrix so that this atom is on-screen.
 	// Need to do a check for the viability of the canvas first...
-	if (gui.mainView.isValid() && (atoms_.nItems() != 0))
+	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
 	{
 		if (prefs.hasPerspective())
 		{
@@ -244,9 +244,9 @@ void Model::resetView()
 				// Project our local atom and grab the z screen coordinate
 				adjustCamera(0.0,0.0,-1.0,0.0);
 				calculateViewMatrix();
-// 				gui.mainView.projectAtom(&target, viewMatrix());   BROKEN
-// 				z = target.rWorld().z;
-			} while (gui.mainView.modelToWorld(target.r(), viewMatrix()).z > -5.0);
+				gui.mainWidget->updateTransformation(viewMatrix(), cell_.centre());
+				z = gui.mainWidget->modelToWorld(target.r()).z;
+			} while (z > -5.0);
 		}
 		else
 		{
@@ -255,10 +255,10 @@ void Model::resetView()
 				// Project our local atom and grab the z screen coordinate
 				adjustCamera(0.0,0.0,-1.0,0.0);
 				calculateViewMatrix();
-				gui.mainView.modelToWorld(target.r()-cell_.centre(), viewMatrix(), &screenr);
+				gui.mainWidget->modelToWorld(target.r(), &screenr);
 				done = TRUE;
-				if ((screenr.x < 0.0) || (screenr.x > gui.mainView.width())) done = FALSE;
-				if ((screenr.y < 0.0) || (screenr.y > gui.mainView.height())) done = FALSE;
+				if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
+				if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
 				if (screenr.z < 0.0) done = FALSE;
 			} while (!done);
 		}
@@ -397,7 +397,7 @@ double Model::drawPixelWidth(double drawdepth)
 {
 	// Get the Angstrom width of a single pixel at the current draw depth in the current view
 	static Vec3<double> r;
-	r = guideToModel(gui.mainView.width()/2+1, gui.mainView.height()/2, drawdepth) - guideToModel(gui.mainView.width()/2, gui.mainView.height()/2, drawdepth);
+	r = guideToModel(gui.mainWidget->width()/2+1, gui.mainWidget->height()/2, drawdepth) - guideToModel(gui.mainWidget->width()/2, gui.mainWidget->height()/2, drawdepth);
 	return r.magnitude();
 }
 
@@ -419,12 +419,12 @@ Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
 	rotmat.invert();
 	newpoint *= rotmat;
 	//printf("newpoint2 "); newpoint.print();
-	guidepoint = gui.mainView.worldToScreen(newpoint, viewMatrix());
+	guidepoint = gui.mainWidget->worldToScreen(newpoint);
 	//printf("guidepoint "); guidepoint.print();
 	radius = guidepoint.w;
 	// Now, calculate the position of the clicked point on the guide
-	newpoint.x = sx - (gui.mainView.width() / 2.0 );
-	newpoint.y = (gui.mainView.height() - sy) - (gui.mainView.height() / 2.0 );
+	newpoint.x = sx - (gui.mainWidget->width() / 2.0 );
+	newpoint.y = (gui.mainWidget->height() - sy) - (gui.mainWidget->height() / 2.0 );
 	newpoint /= radius;
 	newpoint.z = drawdepth + camera_.z;
 	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.

@@ -70,7 +70,7 @@ void AtenAtomlist::updateSelection()
 	//printf("Selection has been updated.\n");
 	TTreeWidgetItem *ti;
 	Atom *i;
-	gui.mainView.disableDrawing();
+	gui.mainWidget->disableDrawing();
 	Model *m = aten.currentModelOrFrame();
 	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
 	{
@@ -78,7 +78,7 @@ void AtenAtomlist::updateSelection()
 		i = (Atom*) ti->data.asPointer(VTypes::AtomData);
 		if (i != NULL) item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
-	gui.mainView.enableDrawing();
+	gui.mainWidget->enableDrawing();
 	gui.update(FALSE,FALSE,FALSE);
 }
 

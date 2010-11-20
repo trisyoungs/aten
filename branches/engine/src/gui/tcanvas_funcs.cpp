@@ -22,7 +22,7 @@
 #include "main/aten.h"
 #include "gui/tcanvas.uih"
 #include "gui/gui.h"
-#include "model/model.h"
+#include "classes/forcefieldatom.h"
 
 // Local variables
 bool DONTDRAW = FALSE;
@@ -30,33 +30,59 @@ bool DONTDRAW = FALSE;
 // Constructor
 TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, parent)
 {
-	// Private variables
-	canvas_ = NULL;
+	// Character / Setup
+	contextWidth_ = 0;
+	contextHeight_ = 0;
+	valid_ = FALSE;
+	// Render Target
+	displayModel_ = NULL;
+	displayFrameId_ = -1;
 	useCurrentModel_ = TRUE;
 	renderSource_ = NULL;
+	// Rendering
+	drawing_ = FALSE;
+	noDraw_ = TRUE;
+	renderOffScreen_ = FALSE;
+	// Atom Selection
+	atomClicked_ = NULL;
+	pickEnabled_ = FALSE;
+	actionBeforePick_ = NULL;
+	pickAtomsCallback_ = NULL;
+	nAtomsToPick_ = -1;
+	// Mouse Input
+	for (int i=0; i<3; i++) mouseButton_[i] = FALSE;
+	// Key Input
+	for (int i=0; i<3; i++) keyModifier_[i] = FALSE;
+	// User Actions
+	activeMode_ = UserAction::NoAction;
+	selectedMode_ = UserAction::SelectAction;
+	currentDrawDepth_ = 0.0;
+	editable_ = TRUE;
 
+	// Prevent QPainter from autofilling widget background
 	setAutoFillBackground(FALSE);
 }
 
-// Set the widgetcanvas for the display
-void TCanvas::setCanvas(Canvas *wc)
+/*
+// Character
+*/
+
+// Return the current height of the drawing area
+GLsizei TCanvas::contextHeight() const
 {
-	canvas_ = wc;
+	return contextHeight_;
 }
 
-// Set the rendering source to the supplied model (uses useCurrentModel_ ifa NULL pointer is supplied)
-void TCanvas::setRenderSource(Model *source)
+// Return the current width of the drawing area
+GLsizei TCanvas::contextWidth() const
 {
-	if (source == NULL)
-	{
-		useCurrentModel_ = TRUE;
-		renderSource_ = NULL ;
-	}
-	else
-	{
-		useCurrentModel_ = FALSE;
-		renderSource_ = source;
-	}
+	return contextWidth_;
+}
+
+// Return if the canvas is valid
+bool TCanvas::isValid() const
+{
+	return valid_;
 }
 
 // Probe features
@@ -78,173 +104,297 @@ void TCanvas::probeFeatures()
 	}
 }
 
-void TCanvas::initializeGL()
+/*
+// Render Target
+*/
+
+// Return the current display model
+Model *TCanvas::displayModel() const
 {
-	// Initialize GL
-	if (canvas_ != NULL)
-	{
-		canvas_->setValid(TRUE);
-		canvas_->initGl();
-	}
-	else printf("NO CANVAS SET IN TCANVAS::INITIALIZEGL!!!\n");
+	return displayModel_;
 }
 
-void TCanvas::paintGL()
+// Set the rendering source to the supplied model (reverts to useCurrentModel_ if a NULL pointer is supplied)
+void TCanvas::setRenderSource(Model *source)
 {
-	static QFont font;
-	if (canvas_ != NULL)
+	if (source == NULL)
 	{
-		// Note: An internet source suggests that the QPainter documentation is incomplete, and that
-		// all OpenGL calls should be made after the QPainter is constructed, and befor the QPainter
-		// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
-		// so here it is done in the 'wrong' order.
-
-		Model *source;
-		if (useCurrentModel_)
-		{
-			source = aten.currentModelOrFrame();
-			if (source != NULL) source = (source->renderFromVibration() ? source->vibrationCurrentFrame() : source->renderSourceModel());
-		}
-		else
-		{
-			source = renderSource_;
-			if (source != NULL) source = (source->renderFromVibration() ? source->vibrationCurrentFrame() : source->renderSourceModel());
-		}
-
-		if (source != NULL)
-		{
-			// Initialise QPainter
-			QPainter painter(this);
-			
-			// Draw on text objects (with QPainter)
-			font.setPointSize(prefs.labelSize());
-			painter.setFont(font);
-			painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
-			painter.setRenderHint(QPainter::Antialiasing);
-			// 			canvas_->renderText(painter);
-			
-			// Render model
-			canvas_->renderModel(source);
-	
-			// Draw on text objects (with QPainter)
-			font.setPointSize(prefs.labelSize());
-			painter.setFont(font);
-			painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
-			painter.setRenderHint(QPainter::Antialiasing);
-// 			canvas_->renderText(painter);
-		}
+		useCurrentModel_ = TRUE;
+		renderSource_ = NULL ;
 	}
-	else printf("NO CANVAS SET PAINT\n");
-}
-
-void TCanvas::resizeGL(int width, int height)
-{
-	if (canvas_ != NULL)
+	else
 	{
-		canvas_->configure(width, height);
-		if (canvas_->displayModel() != NULL) canvas_->displayModel()->changeLog.add(Log::Camera);
+		useCurrentModel_ = FALSE;
+		renderSource_ = source;
 	}
-	else printf("NO CANVAS SET RESIZE\n");
 }
 
 /*
-// Input
+// Rendering Functions
 */
 
-void TCanvas::keyPressEvent(QKeyEvent *event)
+// Initialise context widget (when created by Qt)
+void TCanvas::initializeGL()
 {
-	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
-	Qt::KeyboardModifiers km = event->modifiers();
-	if (kc != Canvas::OtherKey) gui.mainView.informKeyDown(kc, km&Qt::ShiftModifier, km&Qt::ControlModifier, km&Qt::AltModifier);
-	else event->ignore();
+	// Initialize GL
+	msg.enter("TCanvas::initializeGL");
+	valid_ = TRUE;
+	engine_.createPrimitives();
+	msg.exit("TCanvas::initializeGL");
 }
 
-void TCanvas::keyReleaseEvent(QKeyEvent *event)
+// General repaint callback
+void TCanvas::paintGL()
 {
-	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
-	Qt::KeyboardModifiers km = event->modifiers();
-	if (kc != Canvas::OtherKey) gui.mainView.informKeyUp(kc, km&Qt::ShiftModifier, km&Qt::ControlModifier, km&Qt::AltModifier);
-	else event->ignore();
-}
-
-void TCanvas::mousePressEvent(QMouseEvent *event)
-{
-	// Handle button presses (button down) from the mouse
-	msg.enter("TCanvas::mousePressEvent");
-	Prefs::MouseButton button;
-	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
-	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
-	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
-	else
+	static QFont font;
+	static Model *lastDisplayed_ = NULL;
+	Vec4<double> screenr;
+	static Dnchar text;
+	int labels;
+	ForcefieldAtom *ffa;
+	
+	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
+	// all OpenGL calls should be made after the QPainter is constructed, and befor the QPainter
+	// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
+	// so here it is done in the 'wrong' order.
+	
+	if (useCurrentModel_) displayModel_ = aten.currentModelOrFrame();
+	else displayModel_ = renderSource_;
+	
+	if (displayModel_ != NULL)
 	{
-		msg.exit("TCanvas::mousePressEvent");
-		return;
-	}
-	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
-	if ((button == Prefs::RightButton) && gui.mainView.editable())
-	{
-		Atom *tempi = gui.mainView.displayModel()->atomOnScreen(event->x(), event->y());
-		if (tempi != NULL)
+		// Vibration frame?
+		if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
+		else displayModel_ = displayModel_->renderSourceModel();
+		
+		// Initialise QPainter
+		QPainter painter(this);
+		
+		// Render model
+		msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
+		
+		// If the canvas is stil restricted, don't draw anything
+		if (noDraw_)
 		{
-			gui.callContextMenu(tempi, event->globalX(), event->globalY());
-			gui.mainView.postRedisplay();
-			msg.exit("TCanvas::mousePressEvent");
+			msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
 			return;
 		}
-	}
-	// If the left mouse button is double-clicked over an atom, show the atomlist window
-	if ((button == Prefs::LeftButton) && (event->type() == QEvent::MouseButtonDblClick))
-	{
-		Atom *tempi = canvas_->atomClicked();
-		if (tempi != NULL)
+		checkGlError();
+		
+		// Begin the GL commands
+		if (!beginGl())
 		{
-			printf("gui::dblclick show atom list not done.\n");
-			//gui.atomwin_list_refresh();
-			msg.exit("TCanvas::mousePressEvent");
+			msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
 			return;
 		}
+		checkGlError();
+		
+		// Check the supplied model against the previous one rendered to see if we must outdate the display list
+		if ((lastDisplayed_ != displayModel_) || (displayModel_ == NULL)) renderPoint_.reset();
+		msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", displayModel_, renderPoint_.log(Log::Total));
+		
+		// If this is a trajectory frame, check its ID against the last one rendered
+		if (displayModel_->parent() != NULL)
+		{
+			if (displayModel_->parent()->trajectoryFrameIndex() != displayFrameId_) renderPoint_.reset();
+			displayFrameId_ = displayModel_->parent()->trajectoryFrameIndex();
+			msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
+		}
+		
+		// Prep for drawing
+		msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
+		engine_.initialiseGL();
+		checkGlError();
+		
+		// Clear colour and depth buffers
+		checkGlError();
+		msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		// Render model
+		engine_.renderModel(displayModel_, this, painter);
+		
+		// Render atom labels (with QPainter)
+		font.setPointSize(prefs.labelSize());
+		painter.setFont(font);
+		painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
+		painter.setRenderHint(QPainter::Antialiasing);
+		Atom **atoms = displayModel_->atomArray();
+		for (int i=0; i<displayModel_->nAtoms(); ++i)
+		{
+			labels = atoms[i]->labels();
+			if (labels == 0) continue;
+			ffa = atoms[i]->type();
+			
+			// Blank label string
+			text.clear();
+			// Now add on all parts of the label that are required
+			if (labels&(1 << Atom::IdLabel)) text.strcatf("%i ", atoms[i]->id()+1);
+			if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", elements().symbol(atoms[i]));
+			if (labels&(1 << Atom::TypeLabel))
+			{
+				if (ffa == NULL) text.strcat("[None] ");
+				else text.strcatf("[%i %s] ", ffa->typeId(), ffa->name());
+			}
+			if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
+			if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", atoms[i]->charge());
+			
+			// Project atom and render text
+			modelToWorld(atoms[i]->r(), &screenr);
+			if (prefs.useNiceText()) painter.drawText(screenr.x, contextHeight_-screenr.y, text.get());
+			else renderText(screenr.x, contextHeight_-screenr.y, text.get());
+		}
+		
+		//glFlush();
+		endGl();
+		checkGlError();
+		
+		msg.print(Messenger::GL, " --> RENDERING END\n");
+		lastDisplayed_ = displayModel_;
 	}
-	// Store the state of the modifier keys here
-	Qt::KeyboardModifiers km = event->modifiers();
-	// Inform the main canvas that a button action has occurred
-	gui.mainView.informMouseDown(button, event->x(), event->y(), km&Qt::ShiftModifier, km&Qt::ControlModifier, km&Qt::AltModifier);
-	msg.exit("TCanvas::mousePressEvent");
-}
-
-void TCanvas::mouseReleaseEvent(QMouseEvent *event)
-{
-	// Handle button releases (button up) from the mouse
-	msg.enter("TCanvas::mouseReleaseEvent");
-	Prefs::MouseButton button;
-	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
-	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
-	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
-		msg.exit("TCanvas::mouseReleaseEvent");
-		return;
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		printf("TCanvas has no model to render.\n");
 	}
-	// Finalize the requested action
-	gui.mainView.informMouseUp(button, event->x(), event->y());
-	msg.exit("TCanvas::mouseReleaseEvent");
 }
 
-void TCanvas::mouseMoveEvent(QMouseEvent *event)
+// Resize function
+void TCanvas::resizeGL(int newwidth, int newheight)
 {
-	// Mouse motion handler.
-	// Tell the main canvas that the mouse has moved
-	gui.mainView.informMouseMove(event->x(),event->y());
-	setFocus();
-	gui.updateStatusBar();
+	// Store the new width and height of the widget and re-do projection
+	contextWidth_ = (GLsizei) newwidth;
+	contextHeight_ = (GLsizei) newheight;
+	doProjection(contextWidth_, contextHeight_);
+	// Flag that render source needs to be reprojected
+	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
+	if (prefs.manualSwapBuffers()) swapBuffers();
+	// 	if (canvas_->displayModel() != NULL) canvas_->displayModel()->changeLog.add(Log::Camera);  //BROKEN?
 }
 
-void TCanvas::wheelEvent(QWheelEvent *event)
+// Begin GL
+bool TCanvas::beginGl()
 {
-	// Handle mouse-wheel scroll events.
-	if (event->delta() > 0) gui.mainView.informScroll(TRUE);
-	else gui.mainView.informScroll(FALSE);
+	if (!valid_) return FALSE;
+	drawing_ = TRUE;
+	return TRUE;
 }
 
+// Finalize GL commands
+void TCanvas::endGl()
+{
+	drawing_ = FALSE;
+}
+
+void TCanvas::checkGlError()
+{
+	// Do GL error check
+	if (msg.isOutputActive(Messenger::GL))
+	{
+		GLenum glerr = GL_NO_ERROR;
+		do
+		{
+			switch (glGetError())
+			{
+				case (GL_INVALID_ENUM): msg.print(Messenger::GL, "GLenum argument out of range\n"); break;
+				case (GL_INVALID_VALUE): msg.print(Messenger::GL, "Numeric argument out of range\n"); break;
+				case (GL_INVALID_OPERATION): msg.print(Messenger::GL, "Operation illegal in current state\n"); break;
+				case (GL_STACK_OVERFLOW): msg.print(Messenger::GL, "Command would cause a stack overflow\n"); break;
+				case (GL_STACK_UNDERFLOW): msg.print(Messenger::GL, "Command would cause a stack underflow\n"); break;
+				case (GL_OUT_OF_MEMORY): msg.print(Messenger::GL, "Not enough memory left to execute command\n"); break;
+				case (GL_NO_ERROR): msg.print(Messenger::GL, "No GL error\n"); break;
+				default:
+					msg.print(Messenger::GL, "Unknown GL error?\n");
+					break;
+			}
+		} while (glerr != GL_NO_ERROR);
+	}
+}
+
+// Enable drawing
+void TCanvas::enableDrawing()
+{
+	noDraw_ = FALSE;
+}
+
+// Disable drawing
+void TCanvas::disableDrawing()
+{
+	noDraw_ = TRUE;
+}
+
+// Set whether offscreen rendering is being performed
+void TCanvas::setOffScreenRendering(bool b)
+{
+	renderOffScreen_ = b;
+}
+
+// Return whether offscreen rendering is being performed
+bool TCanvas::offScreenRendering() const
+{
+	return renderOffScreen_;
+}
+
+// Refresh widget
+void TCanvas::postRedisplay()
+{
+	if (!valid_) return;
+	updateGL();
+	if (prefs.manualSwapBuffers()) swapBuffers();
+}
+
+// Update view matrix stored in RenderEngine
+void TCanvas::updateTransformation(Mat4<double> &mat, Vec3<double> cellcentre)
+{
+	engine_.setTransformationMatrix(mat, cellcentre);
+}
+
+// Reinitialise GL (because of change in setup, lighting etc.)
+void TCanvas::reinitialiseGL()
+{
+	engine_.initialiseGL();
+}
+
+// Calculate Projection
+void TCanvas::doProjection(int newwidth, int newheight)
+{
+	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
+	if (!valid_) return;
+	msg.enter("Canvas::doProjection");
+	// Check source
+	if (beginGl())
+	{
+		// Set the viewport size to the whole area and grab the matrix
+		contextWidth_ = (newwidth == -1 ? width() : newwidth);
+		contextHeight_ = (newheight == -1 ? height() : newheight);
+		engine_.setupView(0, 0, contextWidth_, contextHeight_);
+		// Rotation globe projection matrix (square)
+		/*		glLoadIdentity();
+		glFrustum(-1.0, 1.0, -1.0, 1.0, 0.0, 10.0);
+		glGetDoublev(GL_PROJECTION_MATRIX,pmat);
+		GlobePMAT.setFromColumnMajor(pmat);*/    // TGAY  BROKEN
+		glMatrixMode(GL_MODELVIEW);
+		endGl();
+	}
+	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
+	msg.exit("Canvas::doProjection");
+}
+
+// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
+Vec3<double> &TCanvas::modelToWorld(Vec3<double> pos, Vec4< double >* screenr, double screenradius)
+{
+	return engine_.modelToWorld(pos, screenr, screenradius);
+}
+
+// Project the specified world coordinates into 2D screen coords
+Vec4<double> &TCanvas::worldToScreen(const Vec3<double> &v)
+{
+	return engine_.worldToScreen(v);
+}
+
+/*
+// Other Qt Virtuals
+*/
 void TCanvas::focusOutEvent(QFocusEvent *event)
 {
 	gui.updateStatusBar(TRUE);
@@ -265,3 +415,9 @@ void TCanvas::timerEvent(QTimerEvent *event)
 		DONTDRAW = FALSE;
 	}
 }
+
+
+
+
+
+

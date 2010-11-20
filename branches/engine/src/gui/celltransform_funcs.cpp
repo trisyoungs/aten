@@ -162,26 +162,26 @@ void AtenCellTransform::on_MillerSelectButton_clicked(bool checked)
 
 void AtenCellTransform::on_MillerHSpin_valueChanged(int value)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenCellTransform::on_MillerKSpin_valueChanged(int value)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenCellTransform::on_MillerLSpin_valueChanged(int value)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenCellTransform::on_MillerInRadio_clicked(bool checked)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenCellTransform::on_MillerOutRadio_clicked(bool checked)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 

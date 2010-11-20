@@ -27,6 +27,7 @@
 #include "render/primitive.h"
 #include "templates/vector3.h"
 #include "base/atom.h"
+#include "base/bond.h"
 #include <GL/gl.h>
 
 // Forward declarations
@@ -53,9 +54,9 @@ class RenderEngine
 	// Selected atom styles
 	PrimitiveGroup selectedAtom_[Atom::nDrawStyles], *selectedScaledAtom_;
 	// Bond styles
-	PrimitiveGroup bond_[Atom::nDrawStyles];
+	PrimitiveGroup bond_[Atom::nDrawStyles][Bond::nBondTypes];
 	// Selected bond styles
-	PrimitiveGroup selectedBond_[Atom::nDrawStyles];
+	PrimitiveGroup selectedBond_[Atom::nDrawStyles][Bond::nBondTypes];
 	// Unit cube
 	PrimitiveGroup cubes_;
 	// Cones of length 1.0 and base radius 0.2
@@ -73,21 +74,19 @@ class RenderEngine
 	*/
 	private:
 	// View matrix
-	Mat4<double> transformationMatrix_;
+	GLMatrix transformationMatrix_;
 	// Projection matrix
-	Mat4<double> projectionMatrix_;
+	GLMatrix projectionMatrix_;
 	// Viewport matrix for canvas
 	GLint viewportMatrix_[4];
 
 	public:
 	// Set-up viewport and projection matrices
 	void setupView(GLint x, GLint y, GLint w, GLint h);
-	// Set current transformation matrix
-	void setTransformationMatrix(Mat4<double> &mat);
 	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-	Vec3<double> &modelToWorld(Vec3<double> &pos, Mat4<double> &viewMatrix, Vec4<double> *screenr = NULL, double screenradius = 0.0);
+	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
 	// Project the specified world coordinates into 2D screen coords
-	Vec4<double> &worldToScreen(const Vec3<double>&, Mat4<double> &viewMatrix);
+	Vec4<double> &worldToScreen(const Vec3<double> &vec);
 
 
 	/*
@@ -100,8 +99,12 @@ class RenderEngine
 	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform, bool transformInGL = true);
 
 	public:
-	// Render specified model (destination TCanvas object passed also)
-	void renderModel(Model *source, TCanvas *canvas);
+	// Initialise GL
+	void initialiseGL();
+	// Update transformation matrix
+	void setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre);
+	// Render specified model (destination TCanvas and QPainter objects passed also)
+	void renderModel(Model *source, TCanvas *canvas, QPainter &painter);
 
 
 	/*

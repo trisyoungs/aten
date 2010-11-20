@@ -262,7 +262,7 @@ void AtenGlyphs::on_GlyphDeleteSelectedButton_clicked(bool checked)
 	refresh();
 	// Reselect item now at the previous selection position
 	ui.GlyphList->setCurrentRow(row < ui.GlyphList->count() ? row : ui.GlyphList->count()-1);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphSelectAllButton_clicked(bool checked)
@@ -285,7 +285,7 @@ void AtenGlyphs::on_GlyphHideAllButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphHideNoneButton_clicked(bool checked)
@@ -316,7 +316,7 @@ void AtenGlyphs::on_GlyphTypeCombo_currentIndexChanged(int row)
 		item->setText(s);
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphLineEdit_returnPressed()
@@ -331,7 +331,7 @@ void AtenGlyphs::on_GlyphLineEdit_returnPressed()
 		g->setText(qPrintable(ui.GlyphLineEdit->text()));
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphVisibleCheck_clicked(bool checked)
@@ -346,7 +346,7 @@ void AtenGlyphs::on_GlyphVisibleCheck_clicked(bool checked)
 		g->setVisible(checked);
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_Data1AtomIdSpin_valueChanged(int i)
@@ -534,7 +534,7 @@ void AtenGlyphs::dataAtomIdChanged(int id, int value)
 		else g->data(id)->setAtom( g->parent()->atom(value) );
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::dataValueChanged(int id, int component, double value)
@@ -550,7 +550,7 @@ void AtenGlyphs::dataValueChanged(int id, int component, double value)
 		else g->data(id)->setVector(component, value);
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::dataValueChanged(int id, double x, double y, double z)
@@ -566,7 +566,7 @@ void AtenGlyphs::dataValueChanged(int id, double x, double y, double z)
 		else g->data(id)->setVector(x, y, z);
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::dataColourChanged(int id)
@@ -592,5 +592,5 @@ void AtenGlyphs::dataColourChanged(int id)
 		else gl->data(id)->setColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }

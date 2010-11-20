@@ -271,40 +271,7 @@ void Primitive::createCylinder(double startradius, double endradius, int nstacks
 	createEmpty(GL_TRIANGLES, nstacks*nslices*2, FALSE);
 
 	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.0, 1.0, startradius, endradius, nstacks, nslices);
-// 	count = 0;
-// 	deltaz = length / nstacks;
-// 	deltar = (endradius-startradius) / nstacks;
-// 	for (i = 0; i < nstacks; i++)
-// 	{
-// 		stack0 = PI * (-0.5 + (double) i / nstacks);
-// 		z0  = i*deltaz;
-// 		zr0 = startradius + i*deltar;
-// 
-// 		stack1 = PI * (-0.5 + (double) (i+1) / nstacks);
-// 		z1 = (i+1)*deltaz;
-// 		zr1 = startradius + (i+1)*deltar;
-// 
-// 		for (j = 0; j < nslices; j++)
-// 		{
-// 			slice0 = 2 * PI * (double) j / nslices;
-// 			x0 = cos(slice0);
-// 			y0 = sin(slice0);
-// 
-// 			slice1 = 2 * PI * (double) (j+1) / nslices;
-// 			x1 = cos(slice1);
-// 			y1 = sin(slice1);
-// 
-// 			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-// 			defineVertex(x0 * zr0, y0 * zr0, z0, x0 * zr0, y0 * zr0, 0.0);
-// 			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
-// 			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
-// 
-// 			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-// 			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
-// 			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
-// 			defineVertex(x1 * zr1, y1 * zr1, z1, x1 * zr1, y1 * zr1, 0.0);
-// 		}
-// 	}
+
 	msg.exit("Primitive::createCylinder");
 }
 
@@ -479,11 +446,8 @@ void Primitive::sendToGL()
 	// Does the vertex data contain colour-per-vertex information?
 	if (colouredVertexData_)
 	{
-		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-		glEnable(GL_COLOR_MATERIAL);
 		glInterleavedArrays(GL_C4F_N3F_V3F, 0, vertexData_);
 		glDrawArrays(type_, 0, nDefinedVertices_);
-		glDisable(GL_COLOR_MATERIAL);
 	}
 	else
 	{
