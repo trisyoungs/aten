@@ -23,6 +23,7 @@
 #include "base/messenger.h"
 #include "classes/prefs.h"
 #include "model/model.h"
+#include "gui/canvas.h"
 #include <math.h>
 
 // Constructor
@@ -31,7 +32,7 @@ RenderEngine::RenderEngine()
 	// Primitives
 	scaledAtom_ = new PrimitiveGroup[elements().nElements()];
 	selectedScaledAtom_ = new PrimitiveGroup[elements().nElements()];
-
+	
 	createPrimitives();
 	triangleChopper_.initialise(0.0, 20.0, 0.1);
 }
@@ -90,16 +91,16 @@ void RenderEngine::createPrimitives()
 		// Bond Styles (all)
 		nstacks = max(1,(int) (quality*lodratio*0.25));
 		nslices = max(3,(int) (quality*lodratio));
-		bond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle), prefs.bondStyleRadius(Atom::TubeStyle), 1.0, nstacks, nslices);
-		bond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle), prefs.bondStyleRadius(Atom::SphereStyle), 1.0, nstacks, nslices);
-		bond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle), prefs.bondStyleRadius(Atom::ScaledStyle), 1.0, nstacks, nslices);
-		selectedBond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
-		selectedBond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
-		selectedBond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
+		bond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle), prefs.bondStyleRadius(Atom::TubeStyle), nstacks, nslices);
+		bond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle), prefs.bondStyleRadius(Atom::SphereStyle), nstacks, nslices);
+		bond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle), prefs.bondStyleRadius(Atom::ScaledStyle), nstacks, nslices);
+		selectedBond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), nstacks, nslices);
+		selectedBond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), nstacks, nslices);
+		selectedBond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), nstacks, nslices);
 		// Cubes
 		cubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)) );
 		// Cones
-		cones_.primitive(lod).createCylinder(0.2,0.0,1.0,nstacks,nslices);
+		cones_.primitive(lod).createCylinder(0.2,0.0,nstacks,nslices);
 	}
 	// One-off objects
 	wireCube_.createWireCube(1.0);
@@ -167,8 +168,6 @@ Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Mat4<double> &vie
 // 	}
 	// Projection formula is : worldr = P x M x modelr
 	pos.set(modelr, 1.0);
-	// We also need to subtract the cell centre coordinate
-// 	pos -= cell_.centre();	BROKEN
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
 	temp = viewMatrix * pos;
 	worldr.set(temp.x, temp.y, temp.z);
@@ -251,13 +250,13 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour,
 }
 
 // Render specified model
-void RenderEngine::renderModel(Model *source)
+void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
 	int lod, id_i;
 	double selscale, z, phi, halfr, radius_i, radius_j, dvisible, rij;
 	Atom *i, *j;
-	Vec3<double> pos, v;
+	Vec3<double> pos, v, cellcentre;
 	Vec4<double> transformZ;
 	GLMatrix transformbase, atomtransform, bondtransform, A, B;
 	Refitem<Bond,int> *ri;
@@ -270,10 +269,11 @@ void RenderEngine::renderModel(Model *source)
 
 	// Set initial transformation matrix, including any translation occurring from cell...
 	setTransformationMatrix(source->viewMatrix());
-	transformbase.applyTranslation(-source->cell()->centre());
 	transformZ = transformationMatrix_.z();
 	transformbase = transformationMatrix_;
-
+	cellcentre = source->cell()->centre();
+	transformbase.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
+	
 	// Set polygon fill mode and specular reflection
 	prefs.copyColour(Prefs::SpecularColour, colour_i);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour_i);
@@ -289,9 +289,7 @@ void RenderEngine::renderModel(Model *source)
 	{
 		A = transformationMatrix_ * source->cell()->axes();
 		glMultMatrixd(A.matrix());
-// 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		wireCube_.sendToGL();
-		cubes_.primitive(0).sendToGL();
 		glTranslated(-0.5, -0.5, -0.5);
 		v = source->cell()->lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
@@ -309,7 +307,7 @@ void RenderEngine::renderModel(Model *source)
 		pos = i->r();
 		// Calculate projected Z distance from viewer
 		// If z is less than 0, don't even bother continuing since its behind the viewer
-		z = -(pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w);
+		z = -(pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w)+cellcentre.z;
 		if (z < 0) continue;
 
 		// Determine level of detail to use for primitives
@@ -376,6 +374,13 @@ void RenderEngine::renderModel(Model *source)
 		}
 
 		// LABELS ETC SHOULD BE DONE HERE....
+		if ((!prefs.useNiceText()) && (canvas != NULL)) canvas->renderText(50,50, "Hello");
+		else
+		{
+// 			if (to->rightAlign) painter.drawText(0, to->y, to->x, to->y, Qt::AlignRight, to->text.get(), NULL);
+// 			else painter.drawText(to->x, to->y, to->text.get());
+		}
+		
 
 		// Bonds
 		// Set initial transformation matrix to centre on atom i
@@ -512,7 +517,7 @@ void RenderEngine::renderModel(Model *source)
 						glEnd();
 						break;
 					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_i], lod, colour_i, bondtransform);
+						renderPrimitive(bond_[style_i], lod, colour_j, bondtransform);
 						if (i->isSelected())
 						{
 							colour_j[3] = 0.5f;

@@ -327,7 +327,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 // 							displayModel_->projectAtom(i);  TGAY
 							atomClicked_ = i;
 						}
-						else currentDrawDepth_ = gui.mainView.modelToWorld(atomClicked_->r(), displayModel_->viewMatrix()).z;
+						else currentDrawDepth_ = gui.mainView.modelToWorld(atomClicked_->r() - displayModel_->cell()->centre(), displayModel_->viewMatrix()).z;
 						break;
 					default:
 						break;
@@ -499,7 +499,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (atomClicked_ != NULL)
 			{
 				radius = (rMouseDown_-rMouseUp_).magnitude();
-				gui.mainView.modelToWorld(atomClicked_->r(), displayModel_->viewMatrix(), &screenr, prefs.screenRadius(atomClicked_));
+				gui.mainView.modelToWorld(atomClicked_->r() - displayModel_->cell()->centre(), displayModel_->viewMatrix(), &screenr, prefs.screenRadius(atomClicked_));
 				radius /= screenr.w * prefs.screenRadius(atomClicked_);
 				displayModel_->selectRadial(atomClicked_,radius);
 			}

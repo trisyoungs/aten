@@ -244,7 +244,7 @@ void Model::resetView()
 				// Project our local atom and grab the z screen coordinate
 				adjustCamera(0.0,0.0,-1.0,0.0);
 				calculateViewMatrix();
-// 				gui.mainView.projectAtom(&target, viewMatrix());
+// 				gui.mainView.projectAtom(&target, viewMatrix());   BROKEN
 // 				z = target.rWorld().z;
 			} while (gui.mainView.modelToWorld(target.r(), viewMatrix()).z > -5.0);
 		}
@@ -255,7 +255,7 @@ void Model::resetView()
 				// Project our local atom and grab the z screen coordinate
 				adjustCamera(0.0,0.0,-1.0,0.0);
 				calculateViewMatrix();
-				gui.mainView.modelToWorld(target.r(), viewMatrix(), &screenr);
+				gui.mainView.modelToWorld(target.r()-cell_.centre(), viewMatrix(), &screenr);
 				done = TRUE;
 				if ((screenr.x < 0.0) || (screenr.x > gui.mainView.width())) done = FALSE;
 				if ((screenr.y < 0.0) || (screenr.y > gui.mainView.height())) done = FALSE;
@@ -287,7 +287,7 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 		camrot = cameraRotation_;
 		camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
 		// Account for the orientation of the current camera up vector.
-	// 	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
+	// 	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;   BROKEN?
 	// 	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
 		// Generate quaternion
 		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle);

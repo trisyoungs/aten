@@ -64,54 +64,54 @@ void Primitive::forgetAll()
 // Vertex Generation
 */
 
-// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
-void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double length, double startradius, double endradius, int nstacks, int nslices)
+// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
+void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices)
 {
-	int i, j, count;
-	Vec3<GLfloat> vec, u, v, vert[4];
-
-	double d, dtheta = TWOPI / nslices, dradius = (startradius-endradius)/nstacks;
+	int n, m, count;
+	Vec3<GLfloat> u, v, vert[4], normal[2], deltarj, rj;
+	double d, dtheta, dradius;
+	
+	// Setup some variables
+	rj.set(vx,vy,vz);
+	dtheta = TWOPI / nslices;
+	dradius = (startradius-endradius)/nstacks;
 	deltarj = rj / nstacks;
 
 	// Calculate orthogonal vectors
-	vec.set(vx,vy,vz);
-	u = vec.orthogonal();
+	u = rj.orthogonal();
 	u.normalise();
-	v = vec * u;
+	v = rj * u;
 	v.normalise();
 
+	// TODO Normal calculation for cones will be incorrect
+	
 	for (n=0; n<nstacks; ++n)
 	{
 //                 if (segmented && (n+1)%2) continue;
-		for (m=0; m<=nslices; ++m)
+		for (m=0; m<nslices; ++m)
 		{
 			d = m * dtheta;
-			// glBegin(GL_QUAD_STRIP);
-			normal = u*cos(d) + v*sin(d);
-			glNormal3d(normal.x, normal.y, normal.z);
-			coord = normal*(startradius-n*dradius) + deltarj*n;
-			glVertex3d(coord.x, coord.y, coord.z);
-			coord = normal*(startradius-(n+1)*dradius) + deltarj*(n+1);
-			glVertex3d(coord.x, coord.y, coord.z);
-
+			normal[0] = u*cos(d) + v*sin(d);
+			vert[0] = normal[0]*(startradius-n*dradius) + deltarj*n;
+			vert[1] = normal[0]*(startradius-(n+1)*dradius) + deltarj*(n+1);
+			d = (m+1) * dtheta;
+			normal[1] = u*cos(d) + v*sin(d);
+			vert[2] = normal[1]*(startradius-n*dradius) + deltarj*n;
+			vert[3] = normal[1]*(startradius-(n+1)*dradius) + deltarj*(n+1);
+			
+			// Triangle 1
+			defineVertex(vert[0].x, vert[0].y, vert[0].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+ 
+			// Triangle 2
+			defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+			defineVertex(vert[3].x, vert[3].y, vert[3].z, normal[1].x, normal[1].y, normal[1].z);
 
 		}
 	}
 }
-
-
-// 			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-// 			defineVertex(x0 * zr0, y0 * zr0, z0, x0 * zr0, y0 * zr0, 0.0);
-// 			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
-// 			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
-// 
-// 			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-// 			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
-// 			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
-// 			defineVertex(x1 * zr1, y1 * zr1, z1, x1 * zr1, y1 * zr1, 0.0);
-// 		}
-// 	}
-// }
 
 // Define next vertex and normal
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
@@ -261,7 +261,7 @@ void Primitive::createSphere(double radius, int nstacks, int nslices)
 }
 
 // Create vertices of cylinder with specified radii, length, and quality
-void Primitive::createCylinder(double startradius, double endradius, double length, int nstacks, int nslices)
+void Primitive::createCylinder(double startradius, double endradius, int nstacks, int nslices)
 {
 	msg.enter("Primitive::createCylinder");
 	int i, j, count;
@@ -270,40 +270,41 @@ void Primitive::createCylinder(double startradius, double endradius, double leng
 	// Clear existing data first (if it exists)
 	createEmpty(GL_TRIANGLES, nstacks*nslices*2, FALSE);
 
-	count = 0;
-	deltaz = length / nstacks;
-	deltar = (endradius-startradius) / nstacks;
-	for (i = 0; i < nstacks; i++)
-	{
-		stack0 = PI * (-0.5 + (double) i / nstacks);
-		z0  = i*deltaz;
-		zr0 = startradius + i*deltar;
-
-		stack1 = PI * (-0.5 + (double) (i+1) / nstacks);
-		z1 = (i+1)*deltaz;
-		zr1 = startradius + (i+1)*deltar;
-
-		for (j = 0; j < nslices; j++)
-		{
-			slice0 = 2 * PI * (double) j / nslices;
-			x0 = cos(slice0);
-			y0 = sin(slice0);
-
-			slice1 = 2 * PI * (double) (j+1) / nslices;
-			x1 = cos(slice1);
-			y1 = sin(slice1);
-
-			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			defineVertex(x0 * zr0, y0 * zr0, z0, x0 * zr0, y0 * zr0, 0.0);
-			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
-			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
-
-			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
-			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
-			defineVertex(x1 * zr1, y1 * zr1, z1, x1 * zr1, y1 * zr1, 0.0);
-		}
-	}
+	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.0, 1.0, startradius, endradius, nstacks, nslices);
+// 	count = 0;
+// 	deltaz = length / nstacks;
+// 	deltar = (endradius-startradius) / nstacks;
+// 	for (i = 0; i < nstacks; i++)
+// 	{
+// 		stack0 = PI * (-0.5 + (double) i / nstacks);
+// 		z0  = i*deltaz;
+// 		zr0 = startradius + i*deltar;
+// 
+// 		stack1 = PI * (-0.5 + (double) (i+1) / nstacks);
+// 		z1 = (i+1)*deltaz;
+// 		zr1 = startradius + (i+1)*deltar;
+// 
+// 		for (j = 0; j < nslices; j++)
+// 		{
+// 			slice0 = 2 * PI * (double) j / nslices;
+// 			x0 = cos(slice0);
+// 			y0 = sin(slice0);
+// 
+// 			slice1 = 2 * PI * (double) (j+1) / nslices;
+// 			x1 = cos(slice1);
+// 			y1 = sin(slice1);
+// 
+// 			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+// 			defineVertex(x0 * zr0, y0 * zr0, z0, x0 * zr0, y0 * zr0, 0.0);
+// 			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
+// 			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
+// 
+// 			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+// 			defineVertex(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
+// 			defineVertex(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
+// 			defineVertex(x1 * zr1, y1 * zr1, z1, x1 * zr1, y1 * zr1, 0.0);
+// 		}
+// 	}
 	msg.exit("Primitive::createCylinder");
 }
 
@@ -390,7 +391,16 @@ void Primitive::createCube(double size, int nsubs)
 				vertex[0] = origin + i*veca[0] + j*vecb[0];
 				vertex[1] = origin + i*veca[1] + j*vecb[1];
 				vertex[2] = origin + i*veca[2] + j*vecb[2];
-				// Define trangle vertices
+				// Define trangle vertices for 'lower' plane
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+
+				// Define trangle vertices for 'upper' plane
+				vertex[plane] += size;
 				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
 				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2);
 				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
@@ -406,9 +416,24 @@ void Primitive::createCube(double size, int nsubs)
 // Create cell axes
 void Primitive::createCellAxes()
 {
-	// Clear existing data first (if it exists)
-	createEmpty(GL_TRIANGLES, nsubs*nsubs*2*6, FALSE);
+	int nstacks = max(3,(int) (prefs.primitiveQuality()*0.75));
+	int nslices = max(3,(int) (prefs.primitiveQuality()*1.5));
 
+	// Clear existing data first (if it exists) - need enough space for 6 cylinders
+	createEmpty(GL_TRIANGLES, 6*nstacks*nslices*2, FALSE);
+	
+	// X axis
+	plotCylinder(0.0, 0.0, 0.0, 0.65, 0.0, 0.0, 0.2, 0.2, nstacks, nslices);
+	plotCylinder(0.65, 0.0, 0.0, 0.35, 0.0, 0.0, 0.3, 0.0, nstacks, nslices);
+
+	// Y axis
+	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.65, 0.0, 0.2, 0.2, nstacks, nslices);
+	plotCylinder(0.0, 0.65, 0.0, 0.0, 0.35, 0.0, 0.3, 0.0, nstacks, nslices);
+	
+	// Z axis
+	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.0, 0.65, 0.2, 0.2, nstacks, nslices);
+	plotCylinder(0.0, 0.0, 65.0, 0.0, 0.0, 0.35, 0.3, 0.0, nstacks, nslices);
+	
 }
 
 // Return vertex array

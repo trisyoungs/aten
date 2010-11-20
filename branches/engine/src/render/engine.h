@@ -31,6 +31,7 @@
 
 // Forward declarations
 class Model;
+class TCanvas;
 
 // Render Engine
 class RenderEngine
@@ -42,6 +43,7 @@ class RenderEngine
 	// Filter type (if any)
 	enum FilterType { NoFilter, TransparencyFilter, CompleteFilter, nFilterTypes };
 
+	
 	/*
 	// Primitives
 	*/
@@ -98,8 +100,8 @@ class RenderEngine
 	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform, bool transformInGL = true);
 
 	public:
-	// Render specified model
-	void renderModel(Model *source);
+	// Render specified model (destination TCanvas object passed also)
+	void renderModel(Model *source, TCanvas *canvas);
 
 
 	/*

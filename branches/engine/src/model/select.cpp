@@ -245,7 +245,7 @@ Atom *Model::atomOnScreen(double x1, double y1)
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		wr = -gui.mainView.modelToWorld(i->r(), viewMatrix(), &sr, prefs.screenRadius(i));
+		wr = -gui.mainView.modelToWorld(i->r() - cell_.centre(), viewMatrix(), &sr, prefs.screenRadius(i));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
@@ -289,7 +289,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		gui.mainView.modelToWorld(i->r(), viewMatrix(), &sr);
+		gui.mainView.modelToWorld(i->r() - cell_.centre(), viewMatrix(), &sr);
 		if ((sr.x >= x1) && (sr.x <= x2) && (sr.y >= y1) && (sr.y <= y2)) (deselect ? deselectAtom(i) : selectAtom(i));
 	}
 	msg.exit("Model::selectBox");

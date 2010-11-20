@@ -59,7 +59,7 @@ class Primitive
 	*/
 	private:
 	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
-	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double length, double startradius, double endradius, int nstacks, int nslices);
+	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices);
 
 	public:
 	// Define next vertex and normal
@@ -81,7 +81,7 @@ class Primitive
 	// Create vertices of sphere with specified radius and quality
 	void createSphere(double radius, int nstacks, int nslices);
 	// Create vertices of cylinder along z with specified radius, length, and quality
-	void createCylinder(double startradius, double endradius, double length, int nstacks, int nslices);
+	void createCylinder(double startradius, double endradius, int nstacks, int nslices);
 	// Create vertices of cross with specified width
 	void createCross(double width, int naxes);
 	// Create wireframe cube centred at zero

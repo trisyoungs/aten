@@ -205,9 +205,9 @@ Prefs::Prefs()
 	depthNear_ = 1;
 	depthFar_ = 200;
 	primitiveQuality_ = 10;
-	levelsOfDetail_ = 3;
+	levelsOfDetail_ = 5;
 	levelOfDetailWidth_ = 10;
-	levelOfDetailStartZ_ = 10.0;
+	levelOfDetailStartZ_ = 25.0;
 	transparencyCorrect_ = TRUE;
 	transparencyNBins_ = 20;
 	transparencyBinStartZ_ = 0.0;
