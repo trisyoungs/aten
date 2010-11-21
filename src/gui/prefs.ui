@@ -3223,12 +3223,44 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>423</x>
-     <y>507</y>
+     <x>389</x>
+     <y>627</y>
     </hint>
     <hint type="destinationlabel">
      <x>142</x>
      <y>428</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PrimitiveQualitySpin</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>PrimitiveQualitySlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>334</x>
+     <y>167</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>209</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PrimitiveQualitySlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>PrimitiveQualitySpin</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>148</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>336</x>
+     <y>160</y>
     </hint>
    </hints>
   </connection>

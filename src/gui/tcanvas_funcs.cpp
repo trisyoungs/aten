@@ -356,6 +356,7 @@ void TCanvas::updateTransformation(Mat4<double> &mat, Vec3<double> cellcentre)
 void TCanvas::reinitialiseGL()
 {
 	engine_.initialiseGL();
+	engine_.createPrimitives();
 }
 
 // Calculate Projection

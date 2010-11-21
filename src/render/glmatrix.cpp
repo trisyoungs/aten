@@ -79,6 +79,16 @@ GLMatrix GLMatrix::operator*(const Mat4<double> &B) const
 	return AB;
 }
 
+
+Vec3<double> GLMatrix::operator*(const Vec3<double> &v) const
+{
+	Vec3<double> result;
+	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8] + matrix_[12];
+	result.y = v.x*matrix_[1] + v.y*matrix_[5] + v.z*matrix_[9] + matrix_[13];
+	result.z = v.x*matrix_[2] + v.y*matrix_[6] + v.z*matrix_[10] + matrix_[14];
+	return result;
+}
+
 Vec4<double> GLMatrix::operator*(const Vec4<double> &v) const
 {
 	Vec4<double> result;
@@ -472,10 +482,11 @@ void GLMatrix::applyScalingZ(double scale)
 // Print matrix
 void GLMatrix::print() const
 {
-	printf("GLMat_X %8.4f %8.4f %8.4f %8.4f\n",matrix_[0], matrix_[4], matrix_[8], matrix_[12]);
-	printf("GlMat_Y %8.4f %8.4f %8.4f %8.4f\n",matrix_[1], matrix_[5], matrix_[9], matrix_[13]);
-	printf("GLMat_Z %8.4f %8.4f %8.4f %8.4f\n",matrix_[2], matrix_[6], matrix_[10], matrix_[14]);
-	printf("GLMat_W %8.4f %8.4f %8.4f %8.4f\n",matrix_[3], matrix_[7], matrix_[11], matrix_[15]);
+	printf("GLMat      X        Y         Z    Translate\n");
+	printf("        %8.4f %8.4f %8.4f %8.4f\n",matrix_[0], matrix_[4], matrix_[8], matrix_[12]);
+	printf("        %8.4f %8.4f %8.4f %8.4f\n",matrix_[1], matrix_[5], matrix_[9], matrix_[13]);
+	printf("        %8.4f %8.4f %8.4f %8.4f\n",matrix_[2], matrix_[6], matrix_[10], matrix_[14]);
+	printf("Scale   %8.4f %8.4f %8.4f %8.4f\n",matrix_[3], matrix_[7], matrix_[11], matrix_[15]);
 }
 
 // Return matrix array
@@ -490,4 +501,14 @@ void GLMatrix::multiply(GLfloat *r, GLfloat *transformed)
 	transformed[0] = r[0]*matrix_[0] + r[1]*matrix_[4] + r[2]*matrix_[8] + matrix_[12];
 	transformed[1] = r[0]*matrix_[1] + r[1]*matrix_[5] + r[2]*matrix_[9] + matrix_[13];
 	transformed[2] = r[0]*matrix_[2] + r[1]*matrix_[6] + r[2]*matrix_[10] + matrix_[14];
+}
+
+// Apply rotational part of matrix to supplied vector
+Vec3<double> GLMatrix::rotateVector(Vec3<double> &v)
+{
+	Vec3<double> result;
+	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8];
+	result.y = v.x*matrix_[1] + v.y*matrix_[5] + v.z*matrix_[9];
+	result.z = v.x*matrix_[2] + v.y*matrix_[6] + v.z*matrix_[10];
+	return result;
 }
