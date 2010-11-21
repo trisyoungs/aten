@@ -103,8 +103,8 @@ class RenderEngine
 	void initialiseGL();
 	// Update transformation matrix
 	void setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre);
-	// Render specified model (destination TCanvas and QPainter objects passed also)
-	void renderModel(Model* source);
+	// Render 3D elements with OpenGL
+	void render3D(Model* source);
 
 
 	/*

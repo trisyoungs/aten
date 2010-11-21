@@ -270,6 +270,24 @@ void TCanvas::wheelEvent(QWheelEvent *event)
 	msg.exit("TCanvas::modeScroll");
 }
 
+// Return mouse coordinates at last mousedown event
+Vec3<double> TCanvas::rMouseDown()
+{
+	return rMouseDown_;
+}
+
+// Return mouse coordinates at last mouseup event
+Vec3<double> TCanvas::rMouseUp()
+{
+	return rMouseUp_;
+}
+
+// Return mouse coordinates at last mousemove event
+Vec3<double> TCanvas::rMouseLast()
+{
+	return rMouseLast_;
+}
+
 /*
 // Key Input
 */

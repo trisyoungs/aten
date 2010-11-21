@@ -60,6 +60,7 @@ set(qtproject_SRCS
   systemactions.cpp
   tcanvas_funcs.cpp
   tcanvas_input.cpp
+  tcanvas_render.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
   tlistwidgetitem_funcs.cpp

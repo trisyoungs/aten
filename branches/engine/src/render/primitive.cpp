@@ -397,16 +397,16 @@ void Primitive::createCellAxes()
 	createEmpty(GL_TRIANGLES, 6*nstacks*nslices*2, FALSE);
 	
 	// X axis
-	plotCylinder(0.0, 0.0, 0.0, 0.65, 0.0, 0.0, 0.2, 0.2, nstacks, nslices);
-	plotCylinder(0.65, 0.0, 0.0, 0.35, 0.0, 0.0, 0.3, 0.0, nstacks, nslices);
+	plotCylinder(0.0, 0.0, 0.0, 0.65, 0.0, 0.0, 0.1, 0.1, nstacks, nslices);
+	plotCylinder(0.65, 0.0, 0.0, 0.35, 0.0, 0.0, 0.2, 0.0, nstacks, nslices);
 
 	// Y axis
-	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.65, 0.0, 0.2, 0.2, nstacks, nslices);
-	plotCylinder(0.0, 0.65, 0.0, 0.0, 0.35, 0.0, 0.3, 0.0, nstacks, nslices);
+	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.65, 0.0, 0.1, 0.1, nstacks, nslices);
+	plotCylinder(0.0, 0.65, 0.0, 0.0, 0.35, 0.0, 0.2, 0.0, nstacks, nslices);
 	
 	// Z axis
-	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.0, 0.65, 0.2, 0.2, nstacks, nslices);
-	plotCylinder(0.0, 0.0, 65.0, 0.0, 0.0, 0.35, 0.3, 0.0, nstacks, nslices);
+	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.0, 0.65, 0.1, 0.1, nstacks, nslices);
+	plotCylinder(0.0, 0.0, 0.65, 0.0, 0.0, 0.35, 0.2, 0.0, nstacks, nslices);
 	
 }
 

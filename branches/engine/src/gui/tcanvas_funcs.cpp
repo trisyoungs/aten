@@ -22,7 +22,6 @@
 #include "main/aten.h"
 #include "gui/tcanvas.uih"
 #include "gui/gui.h"
-#include "classes/forcefieldatom.h"
 
 // Local variables
 bool DONTDRAW = FALSE;
@@ -146,12 +145,7 @@ void TCanvas::initializeGL()
 // General repaint callback
 void TCanvas::paintGL()
 {
-	static QFont font;
 	static Model *lastDisplayed_ = NULL;
-	Vec4<double> screenr;
-	static Dnchar text;
-	int labels;
-	ForcefieldAtom *ffa;
 	
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
 	// all OpenGL calls should be made after the QPainter is constructed, and befor the QPainter
@@ -198,58 +192,19 @@ void TCanvas::paintGL()
 			msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 		}
 		
-		// Prep for drawing
+		// Render 3D elements (with OpenGL)
 		msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
 		engine_.initialiseGL();
 		checkGlError();
-		
-		// Clear colour and depth buffers
-		checkGlError();
 		msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		// Render model
-		engine_.renderModel(displayModel_);
-		
+		engine_.render3D(displayModel_);
 		//glFlush();
-		glLoadIdentity();
 		endGl();
 		checkGlError();
-		
-		// Render atom labels (with QPainter)
-		// Initialise QPainter
-		QPainter painter(this);
-		font.setPointSize(prefs.labelSize());
-		painter.setFont(font);
-		painter.setBrush( QBrush(QColor(0,0,0,255), Qt::SolidPattern) );
-		painter.setRenderHint(QPainter::Antialiasing);
-		Atom **atoms = displayModel_->atomArray();
-		for (int i=0; i<displayModel_->nAtoms(); ++i)
-		{
-			labels = atoms[i]->labels();
-			if (labels == 0) continue;
-			ffa = atoms[i]->type();
-			
-			// Blank label string
-			text.clear();
-			// Now add on all parts of the label that are required
-			if (labels&(1 << Atom::IdLabel)) text.strcatf("%i ", atoms[i]->id()+1);
-			if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", elements().symbol(atoms[i]));
-			if (labels&(1 << Atom::TypeLabel))
-			{
-				if (ffa == NULL) text.strcat("[None] ");
-				else text.strcatf("[%i %s] ", ffa->typeId(), ffa->name());
-			}
-			if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
-			if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", atoms[i]->charge());
-			
-			// Project atom and render text
-			modelToWorld(atoms[i]->r(), &screenr);
-			if (prefs.useNiceText()) painter.drawText(screenr.x, contextHeight_-screenr.y, text.get());
-			else renderText(screenr.x, contextHeight_-screenr.y, text.get());
-		}
-		painter.endNativePainting();
-	
+
+		// Render 2D elements (with QPainter)
+		render2D();
 		
 		msg.print(Messenger::GL, " --> RENDERING END\n");
 		lastDisplayed_ = displayModel_;
@@ -369,15 +324,15 @@ void TCanvas::doProjection(int newwidth, int newheight)
 	if (beginGl())
 	{
 		// Set the viewport size to the whole area and grab the matrix
-		contextWidth_ = (newwidth == -1 ? width() : newwidth);
-		contextHeight_ = (newheight == -1 ? height() : newheight);
+		contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
+		contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
 		engine_.setupView(0, 0, contextWidth_, contextHeight_);
 		// Rotation globe projection matrix (square)
 		/*		glLoadIdentity();
 		glFrustum(-1.0, 1.0, -1.0, 1.0, 0.0, 10.0);
 		glGetDoublev(GL_PROJECTION_MATRIX,pmat);
 		GlobePMAT.setFromColumnMajor(pmat);*/    // TGAY  BROKEN
-		glMatrixMode(GL_MODELVIEW);
+// 		glMatrixMode(GL_MODELVIEW);
 		endGl();
 	}
 	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
@@ -419,9 +374,3 @@ void TCanvas::timerEvent(QTimerEvent *event)
 		DONTDRAW = FALSE;
 	}
 }
-
-
-
-
-
-
