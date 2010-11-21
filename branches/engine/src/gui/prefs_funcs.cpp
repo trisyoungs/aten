@@ -343,6 +343,12 @@ void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
 // View Page - Rendering / Quality Tab
 */
 
+void AtenPrefs::on_PrimitiveQualitySlider_valueChanged(int value)
+{
+	prefs.setPrimitiveQuality(value);
+	updateAfterViewPrefs();
+}
+
 void AtenPrefs::on_PrimitiveQualitySpin_valueChanged(int value)
 {
 	prefs.setPrimitiveQuality(value);

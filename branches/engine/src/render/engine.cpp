@@ -109,9 +109,25 @@ void RenderEngine::createPrimitives()
 		selectedBond_[Atom::SphereStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
 		selectedBond_[Atom::ScaledStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
 		// All styles - Double Bond
-// 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).createEmpty(GL_TRIANGLES, 2*nstacks*nslices*2, FALSE);
-// 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(-aradius[Atom::TubeStyle]*0.25,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
-// 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(aradius[Atom::TubeStyle]*0.25,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);		
+		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).createEmpty(GL_TRIANGLES, 2*nstacks*nslices*2, FALSE);
+		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
+		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
+		bond_[Atom::SphereStyle][Bond::Double].primitive(lod).createEmpty(GL_TRIANGLES, 2*nstacks*nslices*2, FALSE);
+		bond_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
+		bond_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
+		bond_[Atom::ScaledStyle][Bond::Double].primitive(lod).createEmpty(GL_TRIANGLES, 2*nstacks*nslices*2, FALSE);
+		bond_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
+		bond_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
+		// All styles - Triple Bond
+		bond_[Atom::TubeStyle][Bond::Triple].primitive(lod).createEmpty(GL_TRIANGLES, 3*nstacks*nslices*2, FALSE);
+		bond_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.25,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
+		bond_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.25,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
+		bond_[Atom::SphereStyle][Bond::Triple].primitive(lod).createEmpty(GL_TRIANGLES, 3*nstacks*nslices*2, FALSE);
+		bond_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
+		bond_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
+		bond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).createEmpty(GL_TRIANGLES, 3*nstacks*nslices*2, FALSE);
+		bond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
+		bond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
 		// Cubes
 		cubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)) );
 		// Cones
@@ -327,7 +343,7 @@ void RenderEngine::renderModel(Model *source)
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
 	int lod, id_i;
 	Dnchar text;
-	double selscale, z, phi, radius_i, radius_j, dvisible, rij;
+	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp;
 	Atom *i, *j;
 	Vec3<double> pos, v, ijk;
 	Vec4<double> transformZ, screenr;
@@ -538,7 +554,18 @@ void RenderEngine::renderModel(Model *source)
 				{
 					if (i > j) ijk = i->findBondPlane(j,ri->item,v);
 					else ijk = j->findBondPlane(i,ri->item,v);
-					// Now what?
+					// Calculate projected bond plane vector
+					ijk = bondtransform.rotateVector(ijk);
+// 					printf("Transformed bond-plane vector is :"); ijk.print();
+// 					bondtransform.print();
+// 					printf("DP = %f,  acos = %f\n", ijk.dp(Vec3<double>(bondtransform[0],bondtransform[1],bondtransform[2])), DEGRAD*acos(ijk.dp(Vec3<double>(bondtransform[0],bondtransform[1],bondtransform[2]))));
+					// Rotate into bond plane if necessary
+					dp = ijk.x*bondtransform[0] + ijk.y*bondtransform[1] + ijk.z*bondtransform[2];
+					phi = 180.0 - DEGRAD*acos(dp);
+					if (phi > 0.01)
+					{
+						bondtransform.applyRotationAxis(0.0,0.0,1.0,phi-180.0,FALSE);  // BROKEN
+					}
 				}
 				
 				// Draw first bond half

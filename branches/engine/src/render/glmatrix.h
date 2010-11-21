@@ -44,6 +44,7 @@ class GLMatrix
 	public:
 	GLMatrix operator*(const GLMatrix &B) const;
 	GLMatrix operator*(const Mat4<double> &B) const;
+	Vec3<double> operator*(const Vec3<double> &v) const;
 	Vec4<double> operator*(const Vec4<double> &v) const;
 	GLMatrix &operator*=(const GLMatrix &B);
 	void operator=(const Mat4<double> &B);
@@ -93,6 +94,8 @@ class GLMatrix
 	GLdouble *matrix();
 	// Multiply against coordinates provided
 	void multiply(GLfloat *r, GLfloat *transformed);
+	// Apply rotational part of matrix to supplied vector
+	Vec3<double> rotateVector(Vec3<double> &v);
 };
 
 #endif
