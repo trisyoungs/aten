@@ -29,7 +29,7 @@ MAINWINDOW_FUNCS = contextmenu_funcs.cpp ffeditor_funcs.cpp gui.cpp layoutlist.c
 MAINWINDOW_ACTIONS = bondactions.cpp drawactions.cpp editactions.cpp fileactions.cpp forcefieldactions.cpp measureactions.cpp modelactions.cpp mouseactions.cpp selectactions.cpp styleactions.cpp systemactions.cpp trajectoryactions.cpp viewactions.cpp
 
 WIDGET_UI = ttabbar.uih tcolourframe.uih ttreewidget.uih tcanvas.uih tprompt.uih tradiogroup.uih
-WIDGET_FUNCS = tcanvas_funcs.cpp tcanvas_input.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprompt_funcs.cpp
+WIDGET_FUNCS = tcanvas_funcs.cpp tcanvas_input.cpp tcanvas_render.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprompt_funcs.cpp
 
 CANVAS_FUNCS = useractions.cpp
 

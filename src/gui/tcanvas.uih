@@ -105,7 +105,7 @@ class TCanvas : public QGLWidget
 	void paintGL();
 	// Resize function
 	void resizeGL(int, int);
-		
+
 	private:
 	// Begin construct for any OpenGL commands
 	bool beginGl();
@@ -113,6 +113,8 @@ class TCanvas : public QGLWidget
 	void endGl();
 	// Check for GL error
 	void checkGlError();
+	// Draw 2D objects with QPainter
+	void render2D();
 	
 	public:
 	// Enable rendering
@@ -189,6 +191,15 @@ class TCanvas : public QGLWidget
 	void mouseMoveEvent(QMouseEvent*);
 	// Qt Virtual (mouse wheel event)
 	void wheelEvent(QWheelEvent*);
+
+	public:
+	// Return mouse coordinates at last mousedown event
+	Vec3<double> rMouseDown();
+	// Return mouse coordinates at last mouseup event
+	Vec3<double> rMouseUp();
+	// Return mouse coordinates at last mousemove event
+	Vec3<double> rMouseLast();
+
 	
 	/*
 	// Key Input

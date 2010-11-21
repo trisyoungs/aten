@@ -1,6 +1,6 @@
 noinst_LIBRARIES = librender.a
 
-librender_a_SOURCES = engine.cpp glmatrix.cpp primitive.cpp scene.cpp triangles.cpp
+librender_a_SOURCES = engine.cpp engine_render.cpp glmatrix.cpp primitive.cpp scene.cpp triangles.cpp
 
 noinst_HEADERS = engine.h glmatrix.h primitive.h triangles.h
 

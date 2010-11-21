@@ -5,6 +5,7 @@ triangles.h
 atoms.cpp 
 colourscale.cpp
 engine.cpp
+engine_render.cpp
 extra.cpp 
 glmatrix.cpp
 render.cpp 
