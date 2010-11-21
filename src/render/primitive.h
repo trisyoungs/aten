@@ -39,6 +39,8 @@ class Primitive
 	GLfloat *vertexData_;
 	// Whether vertexData_ array also contains colour information
 	bool colouredVertexData_;
+	// Number of data items (GLfloats) required to specify one vertex
+	int dataPerVertex_;
 	// Centroid array
 	GLfloat *centroids_;
 	// Maximum number of vertices in primitive (i.e. array size)

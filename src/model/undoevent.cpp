@@ -327,7 +327,7 @@ GlyphEvent::~GlyphEvent()
 }
 
 // Set change 
-void GlyphEvent::set(bool creation, Glyph *g)
+void GlyphEvent::set(bool creation, Glyph *g) //TODO
 {
 	msg.enter("GlyphEvent::set");
 	direction_ = (creation ? UndoEvent::Undo : UndoEvent::Redo);

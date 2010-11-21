@@ -780,7 +780,7 @@ void Pattern::updateScaleMatrices()
 		j = pb->atomId(3);
 		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
 		{
-			printf("Internal Error : One or both atom IDs associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			printf("Internal Error : One or both atom IDs (%i, %i) associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
 			continue;
 		}
 		vdwScaleMatrix_[i][j] = pb->data()->vdwScale();
@@ -796,7 +796,7 @@ void Pattern::updateScaleMatrices()
 		j = pb->atomId(2);
 		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
 		{
-			printf("Internal Error : One or both atom IDs associated to angle patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			printf("Internal Error : One or both atom IDs (%i, %i) associated to angle patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
 			continue;
 		}
 		vdwScaleMatrix_[i][j] = 0.0;
@@ -810,7 +810,7 @@ void Pattern::updateScaleMatrices()
 		j = pb->atomId(1);
 		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
 		{
-			printf("Internal Error : One or both atom IDs associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			printf("Internal Error : One or both atom IDs (%i, %i) associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
 			continue;
 		}
 		vdwScaleMatrix_[i][j] = 0.0;

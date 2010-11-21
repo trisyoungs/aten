@@ -31,6 +31,7 @@ Primitive::Primitive()
 {
 	vertexData_ = NULL;
 	colouredVertexData_ = FALSE;
+	dataPerVertex_ = 6;
 	centroids_ = NULL;
 	maxVertices_ = 0;
 	nDefinedVertices_ = 0;
@@ -67,7 +68,7 @@ void Primitive::forgetAll()
 // Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
 void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices)
 {
-	int n, m, count;
+	int n, m;
 	Vec3<GLfloat> u, v, vert[4], normal[2], deltarj, rj;
 	double d, dtheta, dradius;
 	
@@ -100,14 +101,14 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 			vert[3] = normal[1]*(startradius-(n+1)*dradius) + deltarj*(n+1);
 			
 			// Triangle 1
-			defineVertex(vert[0].x, vert[0].y, vert[0].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+			defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
  
 			// Triangle 2
-			defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-			defineVertex(vert[3].x, vert[3].y, vert[3].z, normal[1].x, normal[1].y, normal[1].z);
+			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+			defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
 
 		}
 	}
@@ -116,9 +117,13 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 // Define next vertex and normal
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
 {
-	if (colouredVertexData_) printf("Internal Error: No colour specified in vertex creation, but the primitive requires one.\n");
 	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for primitive reached.\n");
-	int index = nDefinedVertices_*6;
+	int index = nDefinedVertices_*dataPerVertex_;
+	if (colouredVertexData_)
+	{
+		printf("Internal Error: No colour specified in vertex creation, but the primitive requires one.\n");
+		index += 4;
+	}
 	// Store normal
 	vertexData_[index++] = nx;
 	vertexData_[index++] = ny;
@@ -153,14 +158,17 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 // Define next vertex and normal
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid)
 {
-	if (!colouredVertexData_) printf("Internal Error: Colour specified in vertex creation, but it is not required for primitive.\n");
 	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for primitive reached.\n");
-	int index = nDefinedVertices_*10;
+	int index = nDefinedVertices_*dataPerVertex_;
 	// Store colour
-	vertexData_[index++] = r;
-	vertexData_[index++] = g;
-	vertexData_[index++] = b;
-	vertexData_[index++] = a;
+	if (!colouredVertexData_) printf("Internal Error: Colour specified in vertex creation, but it is not required for primitive.\n");
+	else
+	{
+		vertexData_[index++] = r;
+		vertexData_[index++] = g;
+		vertexData_[index++] = b;
+		vertexData_[index++] = a;
+	}
 	// Store normal
 	vertexData_[index++] = nx;
 	vertexData_[index++] = ny;
@@ -203,14 +211,15 @@ void Primitive::createEmpty(GLenum type, int ntype, bool colours)
 	clear();
 	type_ = type;
 	colouredVertexData_ = colours;
+	dataPerVertex_ = (colouredVertexData_ ? 10 : 6);
 	nType_ = ntype;
 	if (type_ == GL_LINES) verticesPerType_ = 2;
 	else verticesPerType_ = 3;
 	maxVertices_ = nType_*verticesPerType_;
 	nDefinedVertices_ = 0;
 	nDefinedTypes_ = 0;
-	if (colouredVertexData_) vertexData_ = new GLfloat[maxVertices_*10];
-	else vertexData_ = new GLfloat[maxVertices_*6];
+	if (colouredVertexData_) vertexData_ = new GLfloat[maxVertices_*dataPerVertex_];
+	else vertexData_ = new GLfloat[maxVertices_*dataPerVertex_];
 	centroids_ = new GLfloat[nType_*3];
 	for (int n=0; n<nType_*3; ++n) centroids_[n] = 0.0f;
 }
@@ -264,8 +273,6 @@ void Primitive::createSphere(double radius, int nstacks, int nslices)
 void Primitive::createCylinder(double startradius, double endradius, int nstacks, int nslices)
 {
 	msg.enter("Primitive::createCylinder");
-	int i, j, count;
-	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1, deltaz, deltar;
 
 	// Clear existing data first (if it exists)
 	createEmpty(GL_TRIANGLES, nstacks*nslices*2, FALSE);
@@ -305,7 +312,7 @@ void Primitive::createWireCube(double size)
 	createEmpty(GL_LINES, 12, FALSE);
 	size = 0.5*size;
 	int i, j;
-	GLfloat r[3], v[3];
+	GLfloat r[3];
 	// Set initial corner
 	r[0] = -size;
 	r[1] = -size;
