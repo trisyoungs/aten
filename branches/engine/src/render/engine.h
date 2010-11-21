@@ -94,9 +94,9 @@ class RenderEngine
 	*/
 	private:
 	// Render primitive in specified colour and level of detail (coords used only if filtered)
-	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local, bool transformInGL = TRUE);
+	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local);
 	// Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform, bool transformInGL = true);
+	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform);
 
 	public:
 	// Initialise GL
@@ -104,7 +104,7 @@ class RenderEngine
 	// Update transformation matrix
 	void setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre);
 	// Render specified model (destination TCanvas and QPainter objects passed also)
-	void renderModel(Model *source, TCanvas *canvas, QPainter &painter);
+	void renderModel(Model* source);
 
 
 	/*

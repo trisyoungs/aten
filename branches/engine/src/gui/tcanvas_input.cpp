@@ -705,9 +705,8 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			{
 				displayModel_->beginUndoState("Draw Atom");
 				currentDrawDepth_ = prefs.drawDepth();
-				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+				displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				displayModel_->endUndoState();
-				// 				displayModel_->projectAtom(i); TGAY
 			}
 			gui.update(TRUE,FALSE,TRUE);
 			break;
@@ -721,7 +720,6 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
 				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
-				// 				displayModel_->projectAtom(i);  TGAY
 			}
 			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
 			if (atomClicked_ != i)

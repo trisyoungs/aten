@@ -474,7 +474,7 @@ template <class T> void Mat3<T>::rotateZ(double angle)
 template <class T> void Mat3<T>::rotate(double x, double y, double z, double angle)
 {
 	Mat3<T> rotmat;
-	rotmat.createRotationAxis(x, y, x, angle);
+	rotmat.createRotationAxis(x, y, z, angle);
 	*this *= rotmat;
 }
 

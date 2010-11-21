@@ -325,9 +325,9 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 // Parse CLI options, after filters / prefs have been loaded
 int Aten::parseCli(int argc, char *argv[])
 {
-	int argn, opt, ntried = 0, n, el, linelen;
+	int argn, opt, ntried = 0, n, el;
 	bool isShort, hasArg;
-	char *line, s[4096];
+	char *line;
 	Dnchar arg, argtext, varname, varvalue, prompt;
 	Forcefield *ff;
 	LineParser parser;

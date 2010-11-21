@@ -77,6 +77,7 @@ void RenderEngine::createPrimitives()
 		aradius[n] = prefs.atomStyleRadius( (Atom::DrawStyle) n);
 		bradius[n] = prefs.bondStyleRadius( (Atom::DrawStyle) n);
 	}
+	selscale = prefs.selectionScale();
 	// Loop over levels of detail
 	for (lod=0; lod < prefs.levelsOfDetail(); ++lod)
 	{
@@ -152,7 +153,6 @@ void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h)
 		bottom = -top;
 		glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
-	GLdouble pmat[16];
 	glGetDoublev(GL_PROJECTION_MATRIX, projectionMatrix_.matrix());
 }
 
@@ -223,7 +223,7 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v)
 */
 
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, GLMatrix &transform, bool transformInGL)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, GLMatrix &transform)
 {
 	if (colour[3] > 0.99f)
 	{
@@ -322,18 +322,17 @@ void RenderEngine::setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellc
 }
 
 // Render specified model
-void RenderEngine::renderModel(Model *source, TCanvas *canvas, QPainter &painter)
+void RenderEngine::renderModel(Model *source)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
-	int lod, id_i, labels;
+	int lod, id_i;
 	Dnchar text;
-	double selscale, z, phi, halfr, radius_i, radius_j, dvisible, rij;
+	double selscale, z, phi, radius_i, radius_j, dvisible, rij;
 	Atom *i, *j;
 	Vec3<double> pos, v, ijk;
 	Vec4<double> transformZ, screenr;
-	GLMatrix atomtransform, bondtransform, A, B;
+	GLMatrix atomtransform, bondtransform, A;
 	Refitem<Bond,int> *ri;
-	ForcefieldAtom *ffa;
 	Atom::DrawStyle style_i, style_j, globalstyle;
 	Bond::BondType bt;
 	Prefs::ColouringScheme scheme;
@@ -426,24 +425,24 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas, QPainter &painter
 		switch (style_i)
 		{
 			case (Atom::StickStyle):
-				if (i->nBonds() == 0) renderPrimitive(atom_[style_i], lod, colour_i, atomtransform, FALSE);
+				if (i->nBonds() == 0) renderPrimitive(atom_[style_i], lod, colour_i, atomtransform);
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
-				renderPrimitive(atom_[style_i], lod, colour_i, atomtransform, FALSE);
+				renderPrimitive(atom_[style_i], lod, colour_i, atomtransform);
 				if (i->isSelected())
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(selectedAtom_[style_i], lod, colour_i, atomtransform, FALSE);
+					renderPrimitive(selectedAtom_[style_i], lod, colour_i, atomtransform);
 					colour_i[3] = alpha_i;
 				}
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(scaledAtom_[i->element()], lod, colour_i, atomtransform, FALSE);
+				renderPrimitive(scaledAtom_[i->element()], lod, colour_i, atomtransform);
 				if (i->isSelected())
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(selectedScaledAtom_[i->element()], lod, colour_i, atomtransform, FALSE);
+					renderPrimitive(selectedScaledAtom_[i->element()], lod, colour_i, atomtransform);
 					colour_i[3] = alpha_i;
 				}
 				break;
@@ -621,6 +620,10 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas, QPainter &painter
 
 	// All objects have now been filtered...
 	sortAndSendGL();
+	
+// 	glDisable(GL_COLOR_MATERIAL);
+	prefs.copyColour(Prefs::ForegroundColour, colour_i);
+	glColor4fv(colour_i);
 }
 
 // Sort and render filtered polygons by depth
@@ -632,10 +635,9 @@ void RenderEngine::sortAndSendGL()
 	{
 		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
 		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
-		glPushMatrix();
+		glLoadIdentity();
 		glMultMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();
-		glPopMatrix();
 	}
 	
 	// Transform and render each transparent primitive in the list, unless transparencyCorrect_ is off.
@@ -643,14 +645,16 @@ void RenderEngine::sortAndSendGL()
 	{
 		triangleChopper_.emptyTriangles();
 		for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next) triangleChopper_.storeTriangles(pi);
+		glLoadIdentity();
+		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 		triangleChopper_.sendToGL();
+		glPopClientAttrib();
 	}
 	else for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next)
 	{
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, pi->colour());
-		glPushMatrix();
+		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
+		glLoadIdentity();
 		glMultMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();
-		glPopMatrix();
 	}
 }

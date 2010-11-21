@@ -30,7 +30,7 @@ Triangles::Triangles()
 {
 	prev = NULL;
 	next = NULL;
-	createEmpty(GL_TRIANGLES, TRIANGLECHUNKSIZE*3, TRUE);
+	createEmpty(GL_TRIANGLES, TRIANGLECHUNKSIZE, TRUE);
 };
 
 /*
@@ -150,19 +150,19 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 			// Vertex data contains packed: colour[voff], normal[voff+4], vertex[voff+7]
 			// Vertex 1
 			for (m=0; m<4; ++m) colour[m] = vertexData[voff++];
-			for (m=0; m<3; ++m) norm[m] = vertexData[voff++] + vertexData[voff-4];
+			for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
 			pinfo->localTransform().multiply(&vertexData[voff], newr);
 			pinfo->localTransform().multiply(norm, newn);
 			voff += 3;
 			// Vertex 2
 			for (m=4; m<8; ++m) colour[m] = vertexData[voff++];
-			for (m=0; m<3; ++m) norm[m] = vertexData[voff++] + vertexData[voff-4];
+			for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
 			pinfo->localTransform().multiply(&vertexData[voff], &newr[3]);
 			pinfo->localTransform().multiply(norm, &newn[3]);
 			voff += 3;
 			// Vertex 3
 			for (m=8; m<12; ++m) colour[m] = vertexData[voff++];
-			for (m=0; m<3; ++m) norm[m] = vertexData[voff++] + vertexData[voff-4];
+			for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
 			pinfo->localTransform().multiply(&vertexData[voff], &newr[6]);
 			pinfo->localTransform().multiply(norm, &newn[6]);
 			voff += 3;
@@ -183,17 +183,17 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 			if (bin >= nSlices_) bin = nSlices_-1;
 			// Vertex data contains packed: normal[voff], vertex[voff+3]
 			// Vertex 1
-			for (m=0; m<3; ++m) norm[m] = vertexData[voff+3] + vertexData[voff++];
+			for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
 			pinfo->localTransform().multiply(&vertexData[voff], newr);
 			pinfo->localTransform().multiply(norm, newn);
 			voff += 3;
 			// Vertex 2
-			for (m=0; m<3; ++m) norm[m] = vertexData[voff+3] + vertexData[voff++];
+			for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
 			pinfo->localTransform().multiply(&vertexData[voff], &newr[3]);
 			pinfo->localTransform().multiply(norm, &newn[3]);
 			voff += 3;
 			// Vertex 3
-			for (m=0; m<3; ++m) norm[m] = vertexData[voff+3] + vertexData[voff++];
+			for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
 			pinfo->localTransform().multiply(&vertexData[voff], &newr[6]);
 			pinfo->localTransform().multiply(norm, &newn[6]);
 			voff += 3;

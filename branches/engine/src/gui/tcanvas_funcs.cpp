@@ -167,9 +167,6 @@ void TCanvas::paintGL()
 		if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
 		else displayModel_ = displayModel_->renderSourceModel();
 		
-		// Initialise QPainter
-		QPainter painter(this);
-		
 		// Render model
 		msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
 		
@@ -212,12 +209,19 @@ void TCanvas::paintGL()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		// Render model
-		engine_.renderModel(displayModel_, this, painter);
+		engine_.renderModel(displayModel_);
+		
+		//glFlush();
+		glLoadIdentity();
+		endGl();
+		checkGlError();
 		
 		// Render atom labels (with QPainter)
+		// Initialise QPainter
+		QPainter painter(this);
 		font.setPointSize(prefs.labelSize());
 		painter.setFont(font);
-		painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
+		painter.setBrush( QBrush(QColor(0,0,0,255), Qt::SolidPattern) );
 		painter.setRenderHint(QPainter::Antialiasing);
 		Atom **atoms = displayModel_->atomArray();
 		for (int i=0; i<displayModel_->nAtoms(); ++i)
@@ -244,10 +248,8 @@ void TCanvas::paintGL()
 			if (prefs.useNiceText()) painter.drawText(screenr.x, contextHeight_-screenr.y, text.get());
 			else renderText(screenr.x, contextHeight_-screenr.y, text.get());
 		}
-		
-		//glFlush();
-		endGl();
-		checkGlError();
+		painter.endNativePainting();
+	
 		
 		msg.print(Messenger::GL, " --> RENDERING END\n");
 		lastDisplayed_ = displayModel_;
@@ -257,6 +259,7 @@ void TCanvas::paintGL()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		printf("TCanvas has no model to render.\n");
 	}
+	if (prefs.manualSwapBuffers()) swapBuffers();
 }
 
 // Resize function

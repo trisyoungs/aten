@@ -253,6 +253,8 @@ bool Grid::initialise(GridType gt, Vec3<int> npoints)
 		case (Grid::FreeXYZData):
 			msg.print("Initialised grid structure for free 3D XYZ data.\n");
 			break;
+		default:
+			break;
 	}
 	log_ ++;
 	msg.exit("Grid::initialise");

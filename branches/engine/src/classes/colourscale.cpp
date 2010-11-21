@@ -199,7 +199,7 @@ void ColourScale::colour(double v, GLfloat *target)
 // Adjust range of scale to encompass point supplied
 void ColourScale::adjustRange(double value)
 {
-
+	// TODO
 }
 
 // Return number of points in colourscale

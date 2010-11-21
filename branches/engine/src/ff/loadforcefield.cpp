@@ -431,7 +431,7 @@ bool Forcefield::readGenerator(const char *vars)
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) break;
 		// Search for this ffatom ID and retrieve it
-		ForcefieldAtom *ffa = findType(ffparser.argi(0));
+		ffa = findType(ffparser.argi(0));
 		if (ffa == NULL)
 		{
 			msg.print("Error: forcefield type ID '%i' has not been specified, so can't add generator data to it.\n", ffparser.argi(0));

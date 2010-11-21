@@ -1371,7 +1371,7 @@ bool Prefs::augmentAfterRebond() const
 // Set whether to augment when rebonding
 void Prefs::setAugmentAfterRebond(bool b)
 {
-	augmentAfterRebond_ = TRUE;
+	augmentAfterRebond_ = b;
 }
 
 // Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
