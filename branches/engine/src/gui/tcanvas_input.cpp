@@ -505,6 +505,12 @@ UserAction::Action TCanvas::activeMode() const
 	return activeMode_;
 }
 
+// Current drawing depth for certain tools
+double TCanvas::currentDrawDepth()
+{
+	return currentDrawDepth_;
+}
+
 // Set whether to accept editing actions (i.e. anything other than view manipulation)
 void TCanvas::setEditable(bool b)
 {

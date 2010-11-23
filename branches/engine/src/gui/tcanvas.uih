@@ -245,6 +245,8 @@ class TCanvas : public QGLWidget
 	UserAction::Action selectedMode() const;
 	// Return the currently active mode
 	UserAction::Action activeMode() const;
+	// Current drawing depth for certain tools
+	double currentDrawDepth();
 	// Set whether to accept editing actions (i.e. anything other than view manipulation)
 	void setEditable(bool b);
 	// Return whether to accept editing actions (i.e. anything other than view manipulation)
