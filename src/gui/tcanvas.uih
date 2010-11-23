@@ -169,7 +169,8 @@ class TCanvas : public QGLWidget
 	void beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*));
 	// End manual picking
 	void endManualPick(bool resetaction);
-	
+	// Return start of picked atom list
+	Refitem<Atom,int> *pickedAtoms();
 	
 	/*
 	// Mouse Input
@@ -242,6 +243,8 @@ class TCanvas : public QGLWidget
 	void setSelectedMode(UserAction::Action ua);
 	// Return the currently selected mode
 	UserAction::Action selectedMode() const;
+	// Return the currently active mode
+	UserAction::Action activeMode() const;
 	// Set whether to accept editing actions (i.e. anything other than view manipulation)
 	void setEditable(bool b);
 	// Return whether to accept editing actions (i.e. anything other than view manipulation)
