@@ -76,6 +76,12 @@ void TCanvas::endManualPick(bool resetaction)
 	msg.exit("TCanvas::endManualPick");
 }
 
+// Return start of picked atom list
+Refitem<Atom,int> *TCanvas::pickedAtoms()
+{
+	return pickedAtoms_.first();
+}
+
 /*
 // Mouse Input
 */
@@ -491,6 +497,12 @@ void TCanvas::useSelectedMode()
 UserAction::Action TCanvas::selectedMode() const
 {
 	return selectedMode_;
+}
+
+// Return the currently active mode
+UserAction::Action TCanvas::activeMode() const
+{
+	return activeMode_;
 }
 
 // Set whether to accept editing actions (i.e. anything other than view manipulation)

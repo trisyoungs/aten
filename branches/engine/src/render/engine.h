@@ -93,10 +93,8 @@ class RenderEngine
 	// Rendering Functions
 	*/
 	private:
-	// Render primitive in specified colour and level of detail (coords used only if filtered)
-	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local);
-	// Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform);
+	// Render primitive in specified colour and level of detail
+	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform, GLenum fillMode = GL_FILL);
 
 	public:
 	// Initialise GL
@@ -104,7 +102,7 @@ class RenderEngine
 	// Update transformation matrix
 	void setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre);
 	// Render 3D elements with OpenGL
-	void render3D(Model* source);
+	void render3D(Model* source, TCanvas *canvas);
 
 
 	/*

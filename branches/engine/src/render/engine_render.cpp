@@ -23,6 +23,7 @@
 #include "classes/prefs.h"
 #include "model/model.h"
 #include "model/fragment.h"
+#include "gui/tcanvas.uih"
 #include <math.h>
 
 // Set OpenGL options ready for drawing
@@ -101,7 +102,7 @@ void RenderEngine::initialiseGL()
 }
 
 // Render 3D
-void RenderEngine::render3D(Model *source)
+void RenderEngine::render3D(Model *source, TCanvas *canvas)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
 	int lod, id_i;
@@ -148,6 +149,7 @@ void RenderEngine::render3D(Model *source)
 		glTranslated(-0.5, -0.5, -0.5);
 		v = source->cell()->lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
+		glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
 		cellAxes_.sendToGL();
 		glLoadIdentity();
 	}
@@ -384,7 +386,7 @@ void RenderEngine::render3D(Model *source)
 						break;
 					case (Atom::TubeStyle):
 						renderPrimitive(bond_[style_i][bt], lod, colour_j, bondtransform);
-						if (i->isSelected())
+						if (j->isSelected())
 						{
 							colour_j[3] = 0.5f;
 							renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, bondtransform);
@@ -410,34 +412,124 @@ void RenderEngine::render3D(Model *source)
 	}
 
 	// Draw on the selection highlights (for atoms in canvas.subsel)
-// 	glSubsel3d();  BROKEN
+	for (Refitem<Atom,int> *ri = canvas->pickedAtoms(); ri != NULL; ri = ri->next)
+	{
+		i = ri->item;
+		// Move to local atom position
+		atomtransform = transformationMatrix_;
+		atomtransform.applyTranslation(i->r());
+		// Draw a wireframe sphere at the atoms position
+		style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
+		switch (style_i)
+		{
+			case (Atom::StickStyle):
+			case (Atom::TubeStyle):
+				renderPrimitive(atom_[Atom::TubeStyle], lod, colour_i, atomtransform, GL_LINES);
+				break;
+			case (Atom::SphereStyle):
+				renderPrimitive(atom_[Atom::SphereStyle], lod, colour_i, atomtransform, GL_LINES);
+				break;
+			case (Atom::ScaledStyle):
+				renderPrimitive(scaledAtom_[i->element()], lod, colour_i, atomtransform, GL_LINES);
+				break;
+		}
+	}
+
 
 	// Active user actions
-	switch (gui.mainWidget()->activeMode())
+	i = canvas->atomClicked();
+	switch (canvas->activeMode())
 	{
 		// Draw on bond and new atom for chain drawing (if mode is active)
 		case (Canvas::DrawChainAction):
-			if (atomClicked_ == NULL) break;
-			r = atomClicked_->r();
+			if (i == NULL) break;
+			pos = i->r();
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
-			i = displayModel_->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
-			if (i == NULL) mouse = displayModel_->guideToModel(rMouseLast_, currentDrawDepth_);
+			i = displayModel_->atomOnScreen(canvas->rMouseLast().x, canvas->rMouseLast().y);
+			style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
+			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
+			radius_j = prefs.bondStyleRadius(prefs.renderStyle());
+			if (i == NULL) mouse = displayModel_->guideToModel(canvas->rMouseLast()., canvas->currentDrawDepth());
 			else mouse = i->r();
-			textpos = mouse;
-			mouse -= r;
-			glPushMatrix();
-				glTranslated(r.x,r.y,r.z);
-				// Determine how we'll draw the new bond / atom
-				if (prefs.renderStyle() == Atom::StickStyle)
-				{
+			v = mouse - pos;
+			rij = v.magnitude();
+			
+			// Determine how we'll draw the new bond / atom
+			if (prefs.renderStyle() == Atom::StickStyle)
+			{
 				// Simple - draw line from atomClicked_ to mouse position
+				glLoadIdentity();
+				glMultMatrixd(transformationMatrix_.matrix();
 				glBegin(GL_LINES);
-					glVertex3d(0.0,0.0,0.0);
-					glVertex3d(mouse.x,mouse.y,mouse.z);
+				glVertex3d(pos.x, pos.y, pos.z);
+				glVertex3d(mouse.x+pos.x,mouse.y+pos.y,mouse.z+pos.z);
 				glEnd();
-				}
-				else
+			}
+			else
+			{
+				// Draw new bond and atom
+				bondtransform = transformationMatrix_;
+				bondtransform.applyTranslation(i->r());
+				
+				// If bond is not visible, don't bother drawing it...
+				dvisible = 0.5 * (rij - 0.85*(radius_i + radius_j));
+				if (dvisible < 0.0) continue;
+				
+				// Calculate angle out of XZ plane
+				// OPTIMISE - Precalculate acos()
+				phi = DEGRAD * acos(v.z/rij);
+				
+				// Special case where the bond is exactly in the XY plane.
+				bondtransform = atomtransform;
+				if ((fabs(phi) < 0.01) || (phi > 179.99)) bondtransform.applyRotationX(phi);
+				else bondtransform.applyRotationAxis(-v.y, v.x, 0.0, phi, TRUE);
+				
+				// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
+				bondtransform.applyTranslation(0.0, 0.0, 0.85*radius_i);
+				bondtransform.applyScalingZ(dvisible);
+				// Draw first bond half
+				switch (style_i)
 				{
+					case (Atom::StickStyle):
+						glLineWidth( i->isSelected() ? 4.0 : 2.0 );
+						glBegin(GL_LINES);
+						glVertex3d(pos.x, pos.y, pos.z);
+						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
+						glEnd();
+						break;
+					case (Atom::TubeStyle):
+						renderPrimitive(bond_[style_i][bt], lod, colour_i, bondtransform);
+						bondtransform.applyTranslation(0.0, 0.0, 1.0);
+						break;
+					case (Atom::SphereStyle):
+					case (Atom::ScaledStyle):
+						renderPrimitive(bond_[style_i][bt], lod, colour_i, bondtransform);
+						bondtransform.applyTranslation(0.0, 0.0, 1.0);
+						break;
+				}
+				
+				// Draw second bond half
+				switch (prefs.renderStyle())
+				{
+					case (Atom::StickStyle):
+						glLineWidth( j->isSelected() ? 3.0 : 1.0 );
+						glBegin(GL_LINES);
+						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
+						glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
+						glEnd();
+						break;
+					case (Atom::TubeStyle):
+						renderPrimitive(bond_[style_i][bt], lod, colour_j, bondtransform);
+						break;
+					case (Atom::SphereStyle):
+					case (Atom::ScaledStyle):
+						renderPrimitive(bond_[style_j][bt], lod, colour_j, bondtransform);
+						break;
+				}
+						
+						
+						
+						
 				radius = prefs.bondStyleRadius(prefs.renderStyle());
 				glCylinder(mouse, mouse.magnitude(), radius, radius, FALSE, FALSE);
 				glTranslated(mouse.x, mouse.y, mouse.z);
@@ -455,8 +547,7 @@ void RenderEngine::render3D(Model *source)
 					default:
 						break;
 				}
-				}
-			glPopMatrix();
+			}
 			// Draw text showing distance
 			s.sprintf(" l = %f A",mouse.magnitude());
 			glText(textpos,s);

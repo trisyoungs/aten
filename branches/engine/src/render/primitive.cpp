@@ -479,7 +479,7 @@ PrimitiveInfo::PrimitiveInfo()
 }
 
 // Set primitive info data
-void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, GLMatrix& transform)
+void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, GLMatrix& transform, GLenum fillMode)
 {
 	primitive_ = prim;
 	localTransform_ = transform;
@@ -502,6 +502,12 @@ GLMatrix &PrimitiveInfo::localTransform()
 GLfloat *PrimitiveInfo::colour()
 {
 	return colour_;
+}
+
+// Return polygon fill mode
+GLenum PrimitiveInfo::fillMode()
+{
+	return fillMode_;
 }
 
 /*

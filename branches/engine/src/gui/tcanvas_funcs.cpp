@@ -198,7 +198,7 @@ void TCanvas::paintGL()
 		checkGlError();
 		msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		engine_.render3D(displayModel_);
+		engine_.render3D(displayModel_, this);
 		//glFlush();
 		endGl();
 		checkGlError();

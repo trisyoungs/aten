@@ -239,13 +239,13 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v)
 */
 
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, GLMatrix &transform)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, GLMatrix &transform, GLenum fillMode)
 {
-	if (colour[3] > 0.99f)
+	if ((colour[3] > 0.99f) || (fillMode != GL_FILL))
 	{
 		// Add primitive info to solid objects list
 		PrimitiveInfo *pi = solidPrimitives_.add();
-		pi->set(&pg.primitive(lod), colour, transform);
+		pi->set(&pg.primitive(lod), colour, transform, fillMode);
 	}
 	else
 	{
@@ -271,6 +271,7 @@ void RenderEngine::sortAndSendGL()
 	{
 		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
 		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
+		glPolygonMode(GL_FRONT_AND_BACK, pi->fillMode());
 		glLoadIdentity();
 		glMultMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();
@@ -283,6 +284,7 @@ void RenderEngine::sortAndSendGL()
 		for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next) triangleChopper_.storeTriangles(pi);
 		glLoadIdentity();
 		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		triangleChopper_.sendToGL();
 		glPopClientAttrib();
 	}

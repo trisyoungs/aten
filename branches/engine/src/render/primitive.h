@@ -122,16 +122,20 @@ class PrimitiveInfo
 	GLMatrix localTransform_;
 	// Colour of primitive (if vertexData_ doesn't contain colour information)
 	GLfloat colour_[4];
+	// Whether to draw the primitive as filled or wireframe polygons
+	GLenum fillMode_;
 	
 	public:
 	// Set primitive info data
-	void set(Primitive *prim, GLfloat *colour, GLMatrix &transform);
+	void set(Primitive *prim, GLfloat *colour, GLMatrix &transform, GLenum fillMode = GL_FILL);
 	// Return pointer to primitive
 	Primitive *primitive();
 	// Return local transformation of primitive
 	GLMatrix &localTransform();
 	// Return colour array
 	GLfloat *colour();
+	// Return polygon fill mode
+	GLenum fillMode();
 };
 
 // Primitive Group
