@@ -441,46 +441,44 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	switch (canvas->activeMode())
 	{
 		// Draw on bond and new atom for chain drawing (if mode is active)
-		case (Canvas::DrawChainAction):
+		case (UserAction::DrawChainAction):
 			if (i == NULL) break;
 			pos = i->r();
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
-			i = displayModel_->atomOnScreen(canvas->rMouseLast().x, canvas->rMouseLast().y);
+			i = source->atomOnScreen(canvas->rMouseLast().x, canvas->rMouseLast().y);
 			style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
+			style_j = (globalstyle == Atom::IndividualStyle ? Atom::StickStyle : globalstyle);
 			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
 			radius_j = prefs.bondStyleRadius(prefs.renderStyle());
-			if (i == NULL) mouse = displayModel_->guideToModel(canvas->rMouseLast()., canvas->currentDrawDepth());
-			else mouse = i->r();
-			v = mouse - pos;
+			if (i == NULL) v = source->guideToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, canvas->currentDrawDepth());
+			else v = i->r();
+			v -= pos;
 			rij = v.magnitude();
-			
 			// Determine how we'll draw the new bond / atom
 			if (prefs.renderStyle() == Atom::StickStyle)
 			{
 				// Simple - draw line from atomClicked_ to mouse position
 				glLoadIdentity();
-				glMultMatrixd(transformationMatrix_.matrix();
+				glMultMatrixd(transformationMatrix_.matrix());
 				glBegin(GL_LINES);
 				glVertex3d(pos.x, pos.y, pos.z);
-				glVertex3d(mouse.x+pos.x,mouse.y+pos.y,mouse.z+pos.z);
+				glVertex3d(v.x+pos.x,v.y+pos.y,v.z+pos.z);
 				glEnd();
 			}
 			else
 			{
 				// Draw new bond and atom
 				bondtransform = transformationMatrix_;
-				bondtransform.applyTranslation(i->r());
-				
+				bondtransform.applyTranslation(pos);
+		
 				// If bond is not visible, don't bother drawing it...
 				dvisible = 0.5 * (rij - 0.85*(radius_i + radius_j));
-				if (dvisible < 0.0) continue;
-				
+				if (dvisible < 0.0) break;
 				// Calculate angle out of XZ plane
 				// OPTIMISE - Precalculate acos()
 				phi = DEGRAD * acos(v.z/rij);
-				
+			
 				// Special case where the bond is exactly in the XY plane.
-				bondtransform = atomtransform;
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) bondtransform.applyRotationX(phi);
 				else bondtransform.applyRotationAxis(-v.y, v.x, 0.0, phi, TRUE);
 				
@@ -491,7 +489,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 				switch (style_i)
 				{
 					case (Atom::StickStyle):
-						glLineWidth( i->isSelected() ? 4.0 : 2.0 );
+						glLineWidth(2.0);
 						glBegin(GL_LINES);
 						glVertex3d(pos.x, pos.y, pos.z);
 						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
@@ -512,7 +510,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 				switch (prefs.renderStyle())
 				{
 					case (Atom::StickStyle):
-						glLineWidth( j->isSelected() ? 3.0 : 1.0 );
+						glLineWidth(2.0);
 						glBegin(GL_LINES);
 						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
 						glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
@@ -526,33 +524,12 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 						renderPrimitive(bond_[style_j][bt], lod, colour_j, bondtransform);
 						break;
 				}
-						
-						
-						
-						
-				radius = prefs.bondStyleRadius(prefs.renderStyle());
-				glCylinder(mouse, mouse.magnitude(), radius, radius, FALSE, FALSE);
-				glTranslated(mouse.x, mouse.y, mouse.z);
-				switch (prefs.renderStyle())
-				{
-					case (Atom::TubeStyle):
-						glCallList(glob(WireTubeAtomGlob));
-						break;
-					case (Atom::SphereStyle):
-						glCallList(glob(WireSphereAtomGlob));
-						break;
-					case (Atom::ScaledStyle):
-						glCallList(glob(WireSphereAtomGlob));
-						break;
-					default:
-						break;
-				}
 			}
 			// Draw text showing distance
-			s.sprintf(" l = %f A",mouse.magnitude());
-			glText(textpos,s);
+// 			s.sprintf(" l = %f A",v.magnitude());
+// 			glText(textpos,s);
 			break;
-
+	}
 
 	// All objects have now been filtered...
 	sortAndSendGL();
