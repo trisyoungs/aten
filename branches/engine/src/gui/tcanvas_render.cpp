@@ -21,7 +21,6 @@
 
 #include "gui/tcanvas.uih"
 #include "model/model.h"
-#include "classes/forcefieldatom.h"
 #include "base/sysfunc.h"
 
 // Draw 2D objects with QPainted
@@ -48,34 +47,10 @@ void TCanvas::render2D()
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 
-	// Atom labels
+	// Text Primitives
 	painter.setBrush(solidbrush);
 	painter.setPen(solidpen);
-	Atom **atoms = displayModel_->atomArray();
-	for (i=0; i<displayModel_->nAtoms(); ++i)
-	{
-		labels = atoms[i]->labels();
-		if (labels == 0) continue;
-		ffa = atoms[i]->type();
-		
-		// Blank label string
-		text.clear();
-		// Now add on all parts of the label that are required
-		if (labels&(1 << Atom::IdLabel)) text.strcatf("%i ", atoms[i]->id()+1);
-		if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", elements().symbol(atoms[i]));
-		if (labels&(1 << Atom::TypeLabel))
-		{
-			if (ffa == NULL) text.strcat("[None] ");
-			else text.strcatf("[%i %s] ", ffa->typeId(), ffa->name());
-		}
-		if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
-		if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", atoms[i]->charge());
-		
-		// Project atom and render text
-		modelToWorld(atoms[i]->r(), &screenr);
-		if (prefs.useNiceText()) painter.drawText(screenr.x, contextHeight_-screenr.y, text.get());
-		else renderText(screenr.x, contextHeight_-screenr.y, text.get());
-	}
+	engine_.renderText(painter, this);
 
 	// Active mode embellishments
 	painter.setPen(dashedpen);

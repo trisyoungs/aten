@@ -23,8 +23,16 @@
 #define ATEN_PRIMITIVE_H
 
 #include <GL/gl.h>
+#include <Qt/QtGui>
 #include "render/glmatrix.h"
+#include "templates/list.h"
 #include "templates/vector3.h"
+#include "base/dnchar.h"
+
+#define TEXTCHUNKSIZE 100
+
+// Forward Declarations
+class TCanvas;
 
 // Rendering Primitive
 class Primitive
@@ -142,7 +150,7 @@ class PrimitiveInfo
 class PrimitiveGroup
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	PrimitiveGroup();
 	~PrimitiveGroup();
 
@@ -159,6 +167,66 @@ class PrimitiveGroup
 	Primitive &primitive(int lod);
 	// Send to OpenGL (i.e. render) at specified level of detail
 	void sendToGL(int lod);
+};
+
+// Text Primitive
+class TextPrimitive
+{
+	public:
+	// Coordinates on screen
+	int x, y;
+	// Text to render
+	Dnchar text;
+	// Whether to right-align text
+	bool rightAlign;
+};
+
+// Text Primitive Chunk
+class TextPrimitiveChunk
+{
+	public:
+	// Constructor
+	TextPrimitiveChunk();
+	// List pointers
+	TextPrimitiveChunk *prev, *next;
+
+	private:
+	// Array of TextPrimitive
+	TextPrimitive textPrimitives_[TEXTCHUNKSIZE];
+	// Number of text primitives currently in the array
+	int nTextPrimitives_;
+
+	public:
+	// Forget all text primitives in list
+	void forgetAll();
+	// Return whether array is full
+	bool full();
+	// Add primitive to list
+	void add(int x, int y, const char *text, bool rightAlign = FALSE);
+	// Render all primitives in list
+	void renderAll(QPainter &painter, TCanvas *canvas);
+};
+
+// Text Primitive List
+class TextPrimitiveList
+{
+	public:
+	// Constructor
+	TextPrimitiveList();
+
+	private:
+	// List of text primitive chunks
+	List<TextPrimitiveChunk> textPrimitives_;
+	// Current TextPrimitiveChunk
+	TextPrimitiveChunk *currentChunk_;
+
+	public:
+	// Forget all text primitives, but keeping lists intact
+	void forgetAll();
+	// Add new primitive object
+	void add(int x, int y, const char *text, bool rightAlign = FALSE);
+	// Return top of primitives list
+	void renderAll(QPainter &painter, TCanvas *canvas);
 };
 
 #endif

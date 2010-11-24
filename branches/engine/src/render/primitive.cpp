@@ -23,6 +23,7 @@
 #include "base/messenger.h"
 #include "base/constants.h"
 #include "classes/prefs.h"
+#include "gui/tcanvas.uih"
 #include <stdio.h>
 #include <math.h>
 
@@ -472,6 +473,7 @@ PrimitiveInfo::PrimitiveInfo()
 {
 	// Private variables
 	primitive_ = NULL;
+	fillMode_ = GL_FILL;
 
 	// Public variables
 	prev = NULL;
@@ -483,6 +485,7 @@ void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, GLMatrix& transform, G
 {
 	primitive_ = prim;
 	localTransform_ = transform;
+	fillMode_ = fillMode;
 	for (int n=0; n<4; ++n) colour_[n] = colour[n];
 }
 
@@ -553,4 +556,93 @@ void PrimitiveGroup::sendToGL(int lod)
 	if (lod < 0) lod = 0;
 	else if (lod >= nPrimitives_) lod = nPrimitives_-1;
 	primitives_[lod].sendToGL();
+}
+
+
+/*
+// Text Primitive Chunk
+*/
+// Constructor
+TextPrimitiveChunk::TextPrimitiveChunk()
+{
+	// Public variables
+	prev = NULL;
+	next = NULL;
+
+	// Private variables
+	nTextPrimitives_ = 0;
+}
+
+// Forget all text primitives in list
+void TextPrimitiveChunk::forgetAll()
+{
+	nTextPrimitives_ = 0;
+}
+
+// Return whether array is full
+bool TextPrimitiveChunk::full()
+{
+	return (nTextPrimitives_ == TEXTCHUNKSIZE);
+}
+
+// Add primitive to list
+void TextPrimitiveChunk::add(int x, int y, const char *text, bool rightAlign)
+{
+	textPrimitives_[nTextPrimitives_].x = x;
+	textPrimitives_[nTextPrimitives_].y = y;
+	textPrimitives_[nTextPrimitives_].text = text;
+	textPrimitives_[nTextPrimitives_].rightAlign = rightAlign;
+	++nTextPrimitives_;
+}
+
+// Render all primitives in list
+void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
+{
+	// Grab contextHeight
+	int height = canvas->contextHeight();
+	if (prefs.useNiceText())
+	{
+		for (int n=0; n<nTextPrimitives_; ++n)
+		{
+                        if (textPrimitives_[n].rightAlign) painter.drawText(0, textPrimitives_[n].y, textPrimitives_[n].x, textPrimitives_[n].y, Qt::AlignRight, textPrimitives_[n].text.get(), NULL);
+			painter.drawText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text.get());
+		}
+	}
+	else
+	{
+		for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text.get());
+	}
+}
+
+/*
+// Text Primitive List
+*/
+
+// Constructor
+TextPrimitiveList::TextPrimitiveList()
+{
+	currentChunk_ = NULL;
+}
+
+// Forget all text primitives, but keeping lists intact
+void TextPrimitiveList::forgetAll()
+{
+	for (TextPrimitiveChunk *chunk = textPrimitives_.first(); chunk != NULL; chunk = chunk->next) chunk->forgetAll();
+	currentChunk_ = textPrimitives_.first();
+}
+
+// Set data from literal coordinates and text
+void TextPrimitiveList::add(int x, int y, const char *text, bool rightAlign)
+{
+	// If we are rendering with nice text (i.e. QPainter) store info for later
+	if (currentChunk_ == NULL) currentChunk_ = textPrimitives_.add();
+	else if (currentChunk_->full()) currentChunk_ = textPrimitives_.add();
+	// Add primitive and set data
+	currentChunk_->add(x, y, text, rightAlign);
+}
+
+// Render all primitives in list
+void TextPrimitiveList::renderAll(QPainter &painter, TCanvas *canvas)
+{
+	for (TextPrimitiveChunk *chunk = textPrimitives_.first(); chunk != NULL; chunk = chunk->next) chunk->renderAll(painter, canvas);
 }

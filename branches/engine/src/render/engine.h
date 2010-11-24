@@ -87,36 +87,38 @@ class RenderEngine
 	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
 	// Project the specified world coordinates into 2D screen coords
 	Vec4<double> &worldToScreen(const Vec3<double> &vec);
+	// Update transformation matrix
+	void setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre);
 
 
 	/*
-	// Rendering Functions
+	// Rendering Functions and Primitive Lists
 	*/
+	private:
+	// List of filtered solid primitives
+	List<PrimitiveInfo> solidPrimitives_;
+	// List of filtered primitives
+	List<PrimitiveInfo> transparentPrimitives_;
+	// Text primitives
+	TextPrimitiveList textPrimitives_;
+	// Triangle 'sorter'
+	TriangleChopper triangleChopper_;
+
 	private:
 	// Render primitive in specified colour and level of detail
 	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform, GLenum fillMode = GL_FILL);
+	// Add text primitive for rendering later
+	void renderTextPrimitive(int x, int y, const char *text, bool rightalign = FALSE);
+	// Add text primitive for rendering later (screen position calculated from 3D model coordinates)
+	void renderTextPrimitive(Vec3<double> vec, const char *text, bool rightalign = FALSE);
 
 	public:
 	// Initialise GL
 	void initialiseGL();
-	// Update transformation matrix
-	void setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre);
 	// Render 3D elements with OpenGL
 	void render3D(Model* source, TCanvas *canvas);
-
-
-	/*
-	// Filter Type and Filtered Polygon List
-	*/
-	private:
-	// List of filtered solid primitives	// OPTIMIZE - Don't use a list, use a chunked, extendible array
-	List<PrimitiveInfo> solidPrimitives_;
-	// List of filtered primitives
-	List<PrimitiveInfo> transparentPrimitives_;
-	// Triangle 'sorter'
-	TriangleChopper triangleChopper_;
-
-	public:
+	// Render text objects (with supplied QPainter)
+	void renderText(QPainter &painter, TCanvas *canvas);
 	// Set filter type
 	void setType(FilterType type);
 	// Return filter type
