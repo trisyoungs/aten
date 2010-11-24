@@ -124,7 +124,7 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 		# *** [ atoms ]
 		writeline("\n[ atoms ]");
 		writeline("; atomnr  type   resnr  residue");
-		for (n=1; n<=p.nmolatoms; ++n) writelinef(" %6i   %-6s  1     %s     %s    0   %f  %f\n", n, p.atoms[n].type.name, p.name, p.atoms[n].type.name, p.atoms[n].q, p.atoms[n].mass);
+		for (n=1; n<=p.nmolatoms; ++n) writelinef(" %6i   %-6s  1   %-6s   %-6s  0  %8.4f  %8.4f\n", n, p.atoms[n].type.name, p.name, p.atoms[n].type.name, p.atoms[n].q, p.atoms[n].mass);
 
 		nconstraints = 0;
 		nub = 0;

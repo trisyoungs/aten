@@ -1,22 +1,6 @@
-General To-Do list:
-	- Molecular dynamics
-	- Calculate average molecule geometry (analyse)
-	- Add CG (needs testing) / simplex / other minimisers
-	- EPS export
-
-Forcefield To-Do list:
-	- UFF - oxidation state, torsions
-	- GAFF
-	- Tripos 5.2
-	- OPLS (types)
-
-Filters To-Do list:
-	- EPSR Ato import / export?
-
-General Qt To-Do list:
-	- Forcefield edit window
-	- Better editability in the atomlist stack page
-
-Optimisation To-Do list:
-	- Hemispherical Ewald summmation
-	- For large systems (10000+ atoms) autocreate_patterns() is a bottleneck, as is model::copy(model*)
+New TODO:
+Transparency correction (separate branch)
+Grid colourisation is wrong (will probably be fixed in new rendering engine.
+Ellipsoid (CG particle example) display broken?
+Add ability for AKF file to save (links to) loaded grid data, along with colour and style info (needs new grid data accessors)
+Fix spacegroup usage - for example, when only symmetry operators (and no spacegroup) are defined in file, Mercury succeeds but Aten does not!
