@@ -234,6 +234,13 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v)
 	return result;
 }
 
+// Update transformation matrix
+void RenderEngine::setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre)
+{
+	transformationMatrix_ = mat;
+	transformationMatrix_.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
+}
+
 /*
 // Object Rendering
 */
@@ -255,11 +262,19 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour,
 	}
 }
 
-// Update transformation matrix
-void RenderEngine::setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre)
+// Add text primitive for rendering later
+void RenderEngine::renderTextPrimitive(int x, int y, const char *text, bool rightalign)
 {
-	transformationMatrix_ = mat;
-	transformationMatrix_.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
+	textPrimitives_.add(x, y, text, rightalign);
+}
+
+// Add text primitive for rendering later (screen position calculated from 3D model coordinates)
+void RenderEngine::renderTextPrimitive(Vec3<double> vec, const char *text, bool rightalign)
+{
+	// Project atom and render text
+	Vec4<double> screenr;			// OPTIMIZE - Hardcode 'modelToWorld' here
+	modelToWorld(vec, &screenr);
+	if (screenr.z > 1.0) textPrimitives_.add(screenr.x, screenr.y, text, rightalign);
 }
 
 // Sort and render filtered polygons by depth

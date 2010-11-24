@@ -21,6 +21,7 @@
 
 #include "render/engine.h"
 #include "classes/prefs.h"
+#include "classes/forcefieldatom.h"
 #include "model/model.h"
 #include "model/fragment.h"
 #include "gui/tcanvas.uih"
@@ -105,11 +106,11 @@ void RenderEngine::initialiseGL()
 void RenderEngine::render3D(Model *source, TCanvas *canvas)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
-	int lod, id_i;
+	int lod, id_i, labels;
 	Dnchar text;
-	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp;
-	Atom *i, *j;
-	Vec3<double> pos, v, ijk;
+	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp, t, gamma;
+	Atom *i, *j, **atoms;
+	Vec3<double> pos, v, ijk, r1, r2, r3, r4, rji, rjk;
 	Vec4<double> transformZ, screenr;
 	GLMatrix atomtransform, bondtransform, A;
 	Refitem<Bond,int> *ri;
@@ -117,6 +118,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	Bond::BondType bt;
 	Prefs::ColouringScheme scheme;
 	Fragment *frag;
+	ForcefieldAtom *ffa;
 
 	// Clear filtered primitives list
 	solidPrimitives_.clear();
@@ -228,6 +230,29 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 					colour_i[3] = alpha_i;
 				}
 				break;
+		}
+
+		// Labels
+		labels = i->labels();
+		if (labels != 0)
+		{
+			ffa = i->type();
+			
+			// Blank label string
+			text.clear();
+			// Now add on all parts of the label that are required
+			if (labels&(1 << Atom::IdLabel)) text.strcatf("%i ", i->id()+1);
+			if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", elements().symbol(i));
+			if (labels&(1 << Atom::TypeLabel))
+			{
+				if (ffa == NULL) text.strcat("[None] ");
+				else text.strcatf("[%i %s] ", ffa->typeId(), ffa->name());
+			}
+			if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
+			if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", i->charge());
+			
+			// Add text object
+			renderTextPrimitive(i->r(), text.get());
 		}
 
 		// Bonds
@@ -424,13 +449,13 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		{
 			case (Atom::StickStyle):
 			case (Atom::TubeStyle):
-				renderPrimitive(atom_[Atom::TubeStyle], lod, colour_i, atomtransform, GL_LINES);
+				renderPrimitive(selectedAtom_[Atom::TubeStyle], lod, colour_i, atomtransform, GL_LINE);
 				break;
 			case (Atom::SphereStyle):
-				renderPrimitive(atom_[Atom::SphereStyle], lod, colour_i, atomtransform, GL_LINES);
+				renderPrimitive(selectedAtom_[Atom::SphereStyle], lod, colour_i, atomtransform, GL_LINE);
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(scaledAtom_[i->element()], lod, colour_i, atomtransform, GL_LINES);
+				renderPrimitive(selectedScaledAtom_[i->element()], lod, colour_i, atomtransform, GL_LINE);
 				break;
 		}
 	}
@@ -531,6 +556,87 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			break;
 	}
 
+	// Measurements
+	// Apply standard transformation matrix to OpenGL so we may just use local atom positions for vertices
+	glLoadIdentity();
+	glMultMatrixd(transformationMatrix_.matrix());
+	for (Measurement *m = source->distanceMeasurements(); m != NULL; m = m->next)
+	{
+		atoms = m->atoms();
+		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+		if (atoms[0]->isHidden() || atoms[1]->isHidden()) continue;
+		r1 = atoms[0]->r();
+		r2 = atoms[1]->r();
+		glBegin(GL_LINES);
+		glVertex3d(r1.x, r1.y, r1.z);
+		glVertex3d(r2.x, r2.y, r2.z);
+		glEnd();
+		text.sprintf("%f %s", m->value(), prefs.distanceLabel());
+		renderTextPrimitive((r1+r2)*0.5, text.get());
+	}
+          // Angles
+	for (Measurement *m = source->angleMeasurements(); m != NULL; m = m->next)
+	{
+		atoms = m->atoms();
+		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+		if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden()) continue;
+		r1 = atoms[0]->r();
+		r2 = atoms[1]->r();
+		r3 = atoms[2]->r();
+		glBegin(GL_LINE_STRIP);
+		glVertex3d(r1.x, r1.y, r1.z);
+		glVertex3d(r2.x, r2.y, r2.z);
+		glVertex3d(r3.x, r3.y, r3.z);
+		glEnd();
+		// Curved angle marker
+		rji = (r1 - r2);
+		rjk = (r3 - r2);
+		rji.normalise();
+		rjk.normalise();
+		gamma = acos(rji.dp(rjk));
+		// Draw segments
+		t = 0.0;
+		glBegin(GL_LINES);
+		for (int n=0; n<11; n++)
+		{
+			pos = rji * (sin((1.0-t)*gamma) / sin(gamma)) + rjk * (sin(t*gamma) / sin(gamma));  // OPTIMIZE!
+			pos *= 0.2;
+			pos += r2;
+			glVertex3d(pos.x, pos.y, pos.z);
+			t += 0.1;
+		}
+		glEnd();
+		// Determine orientation of text
+		pos = (rji + rjk) * 0.2 + r2;
+		// OPTIMIZE - can we just multiply by transformationMatrix_ here? We don't care about the exact projection....
+		modelToWorld(r2, &screenr);
+		gamma = screenr.x;
+		modelToWorld(pos, &screenr);
+		text.sprintf("%f %s", m->value(), prefs.angleLabel());
+		renderTextPrimitive(pos, text.get(), gamma < screenr.x);
+	}
+	// Torsions
+	for (Measurement *m = source->torsionMeasurements(); m != NULL; m = m->next)
+	{
+		atoms = m->atoms();
+		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+		if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden() || atoms[3]->isHidden()) continue;
+		r1 = atoms[0]->r();
+		r2 = atoms[1]->r();
+		r3 = atoms[2]->r();
+		r4 = atoms[3]->r();
+		glBegin(GL_LINE_STRIP);
+		glVertex3d(r1.x, r1.y, r1.z);
+		glVertex3d(r2.x, r2.y, r2.z);
+		glVertex3d(r3.x, r3.y, r3.z);
+		glVertex3d(r4.x, r4.y, r4.z);
+		glEnd();
+		text.sprintf("%f %s", m->value(), prefs.angleLabel());
+		renderTextPrimitive((r2+r3)*0.5, text.get());
+	}
+
+
+
 	// All objects have now been filtered...
 	sortAndSendGL();
 	
@@ -539,3 +645,8 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glColor4fv(colour_i);
 }
 
+// Render text objects (with supplied QPainter)
+void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
+{
+	textPrimitives_.renderAll(painter, canvas);
+}
