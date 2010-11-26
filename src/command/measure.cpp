@@ -97,28 +97,27 @@ bool Command::function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_MeasureSelected(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->argi(0) == 2)
+	switch (c->argi(0))
 	{
-		obj.rs->beginUndoState("Measure distances in selection");
-		obj.rs->addMeasurementsInSelection(Measurement::Distance);
-		obj.rs->endUndoState();
-	}
-	if (c->argi(0) == 3)
-	{
-		obj.rs->beginUndoState("Measure angles in selection");
-		obj.rs->addMeasurementsInSelection(Measurement::Angle);
-		obj.rs->endUndoState();
-	}
-	if (c->argi(0) == 4)
-	{
-		obj.rs->beginUndoState("Measure torsions in selection");
-		obj.rs->addMeasurementsInSelection(Measurement::Torsion);
-		obj.rs->endUndoState();
-	}
-	else
-	{
-		msg.print("%i does not represent a geometry type (number of atoms involved).\n", c->argi(0));
-		return FALSE;
+		case (2):
+			obj.rs->beginUndoState("Measure distances in selection");
+			obj.rs->addMeasurementsInSelection(Measurement::Distance);
+			obj.rs->endUndoState();
+			break;
+		case (3):
+			obj.rs->beginUndoState("Measure angles in selection");
+			obj.rs->addMeasurementsInSelection(Measurement::Angle);
+			obj.rs->endUndoState();
+			break;
+		case (4):
+			obj.rs->beginUndoState("Measure torsions in selection");
+			obj.rs->addMeasurementsInSelection(Measurement::Torsion);
+			obj.rs->endUndoState();
+			break;
+		default:
+			msg.print("%i does not represent a geometry type (number of atoms involved).\n", c->argi(0));
+			return FALSE;
+			break;
 	}
 	return TRUE;
 }
