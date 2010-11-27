@@ -45,6 +45,9 @@ template <class T> class Mat4
 	//	{ y.x y.y y.z y.w }  rows[1]
 	//	{ z.x z.y z.z z.w }  rows[2]
 	//	{ w.x w.y w.z w.w }  rows[3]
+	private:
+	// Array for returning matrix as 4x4 matrix suitable for OpenGL
+	double matrix[16];
 	public:
 	// Vectors of matrix
 	Vec4<T> rows[4];
@@ -484,9 +487,26 @@ template <class T> void Mat4<T>::print() const
 // Return matrix suitable for use in OpenGL (stored in static local array...)
 template <class T> GLdouble *Mat4<T>::forGL()
 {
-	static GLdouble m[16];
-	copyColumnMajor(m);
-	return m;
+	matrix[0] = rows[0].x;
+	matrix[1] = rows[1].x;
+	matrix[2] = rows[2].x;
+	matrix[3] = rows[3].x;
+	
+	matrix[4] = rows[0].y;
+	matrix[5] = rows[1].y;
+	matrix[6] = rows[2].y;
+	matrix[7] = rows[3].y;
+	
+	matrix[8] = rows[0].z;
+	matrix[9] = rows[1].z;
+	matrix[10] = rows[2].z;
+	matrix[11] = rows[3].z;
+	
+	matrix[12] = rows[0].w;
+	matrix[13] = rows[1].w;
+	matrix[14] = rows[2].w;
+	matrix[15] = rows[3].w;
+	return matrix;
 }
 
 #endif

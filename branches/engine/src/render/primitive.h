@@ -68,12 +68,14 @@ class Primitive
 	// Vertex Generation
 	*/
 	public:
-	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
-	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices);
 	// Define next vertex and normal
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
 	// Define next vertex, normal, and colour
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
+	// Plot vertices of sphere with specified radius and quality
+	void plotSphere(double radius, int nstacks, int nslices);
+	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
+	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices);
 
 
 	/*
@@ -98,6 +100,8 @@ class Primitive
 	void createCube(double size, int nsubs);
 	// Create cell axes
 	void createCellAxes();
+	// Create rotation globe axes
+	void createRotationGlobeAxes(int nstacks, int nslices);
 	// Return vertex array
 	GLfloat *vertexData();
 	// Return whether vertex data contains colour information

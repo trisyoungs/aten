@@ -62,7 +62,7 @@ class RenderEngine
 	// Cones of length 1.0 and base radius 0.2
 	PrimitiveGroup cones_;
 	// One-off objects
-	Primitive wireCube_, cellAxes_;
+	Primitive wireCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
 
 	public:
 	// (Re)Generate primitive vertex arrays
@@ -74,9 +74,11 @@ class RenderEngine
 	*/
 	private:
 	// View matrix
-	GLMatrix transformationMatrix_;
-	// Projection matrix
-	GLMatrix projectionMatrix_;
+	GLMatrix modelTransformationMatrix_;
+	// Projection matrix for model
+	GLMatrix modelProjectionMatrix_;
+	// Projection matrix for model
+	GLMatrix globeProjectionMatrix_;
 	// Viewport matrix for canvas
 	GLint viewportMatrix_[4];
 

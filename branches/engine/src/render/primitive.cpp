@@ -66,55 +66,6 @@ void Primitive::forgetAll()
 // Vertex Generation
 */
 
-// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
-void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices)
-{
-	int n, m;
-	Vec3<GLfloat> u, v, vert[4], normal[2], deltarj, rj;
-	double d, dtheta, dradius;
-	
-	// Setup some variables
-	rj.set(vx,vy,vz);
-	dtheta = TWOPI / nslices;
-	dradius = (startradius-endradius)/nstacks;
-	deltarj = rj / nstacks;
-
-	// Calculate orthogonal vectors
-	u = rj.orthogonal();
-	u.normalise();
-	v = rj * u;
-	v.normalise();
-
-	// TODO Normal calculation for cones will be incorrect
-	
-	for (n=0; n<nstacks; ++n)
-	{
-//                 if (segmented && (n+1)%2) continue;
-		for (m=0; m<nslices; ++m)
-		{
-			d = m * dtheta;
-			normal[0] = u*cos(d) + v*sin(d);
-			vert[0] = normal[0]*(startradius-n*dradius) + deltarj*n;
-			vert[1] = normal[0]*(startradius-(n+1)*dradius) + deltarj*(n+1);
-			d = (m+1) * dtheta;
-			normal[1] = u*cos(d) + v*sin(d);
-			vert[2] = normal[1]*(startradius-n*dradius) + deltarj*n;
-			vert[3] = normal[1]*(startradius-(n+1)*dradius) + deltarj*(n+1);
-			
-			// Triangle 1
-			defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
- 
-			// Triangle 2
-			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-			defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
-
-		}
-	}
-}
-
 // Define next vertex and normal
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
 {
@@ -201,6 +152,97 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 	}
 }
 
+// Create vertices of sphere with specified radius and quality
+void Primitive::plotSphere(double radius, int nstacks, int nslices)
+{
+	msg.enter("Primitive::plotSphere");
+	int i, j, count;
+	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1;
+	
+	count = 0;
+	for (i = 0; i < nstacks; i++)
+	{
+		stack0 = PI * (-0.5 + (double) i / nstacks);
+		z0  = sin(stack0);
+		zr0 = cos(stack0);
+		
+		stack1 = PI * (-0.5 + (double) (i+1) / nstacks);
+		z1 = sin(stack1);
+		zr1 = cos(stack1);
+		
+		for (j = 0; j < nslices; j++)
+		{
+			slice0 = 2 * PI * (double) j / nslices;
+			x0 = cos(slice0);
+			y0 = sin(slice0);
+			
+			slice1 = 2 * PI * (double) (j+1) / nslices;
+			x1 = cos(slice1);
+			y1 = sin(slice1);
+			
+			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+			defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
+			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
+			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+			
+			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
+			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+			defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
+		}
+	}
+	msg.exit("Primitive::plotSphere");
+}
+
+// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
+void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices)
+{
+	int n, m;
+	Vec3<GLfloat> u, v, vert[4], normal[2], deltarj, rj;
+	double d, dtheta, dradius;
+	
+	// Setup some variables
+	rj.set(vx,vy,vz);
+	dtheta = TWOPI / nslices;
+	dradius = (startradius-endradius)/nstacks;
+	deltarj = rj / nstacks;
+
+	// Calculate orthogonal vectors
+	u = rj.orthogonal();
+	u.normalise();
+	v = rj * u;
+	v.normalise();
+
+	// TODO Normal calculation for cones will be incorrect
+	
+	for (n=0; n<nstacks; ++n)
+	{
+//                 if (segmented && (n+1)%2) continue;
+		for (m=0; m<nslices; ++m)
+		{
+			d = m * dtheta;
+			normal[0] = u*cos(d) + v*sin(d);
+			vert[0] = normal[0]*(startradius-n*dradius) + deltarj*n;
+			vert[1] = normal[0]*(startradius-(n+1)*dradius) + deltarj*(n+1);
+			d = (m+1) * dtheta;
+			normal[1] = u*cos(d) + v*sin(d);
+			vert[2] = normal[1]*(startradius-n*dradius) + deltarj*n;
+			vert[3] = normal[1]*(startradius-(n+1)*dradius) + deltarj*(n+1);
+			
+			// Triangle 1
+			defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+ 
+			// Triangle 2
+			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+			defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
+
+		}
+	}
+}
+
 /*
 // Primitive Generation
 */
@@ -229,44 +271,12 @@ void Primitive::createEmpty(GLenum type, int ntype, bool colours)
 void Primitive::createSphere(double radius, int nstacks, int nslices)
 {
 	msg.enter("Primitive::createSphere");
-	int i, j, count;
-	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1;
 
 	// Clear existing data first (if it exists)
 	createEmpty(GL_TRIANGLES, nstacks*nslices*2, FALSE);
 
-	count = 0;
-	for (i = 0; i < nstacks; i++)
-	{
-		stack0 = PI * (-0.5 + (double) i / nstacks);
-		z0  = sin(stack0);
-		zr0 = cos(stack0);
-
-		stack1 = PI * (-0.5 + (double) (i+1) / nstacks);
-		z1 = sin(stack1);
-		zr1 = cos(stack1);
-
-		for (j = 0; j < nslices; j++)
-		{
-			slice0 = 2 * PI * (double) j / nslices;
-			x0 = cos(slice0);
-			y0 = sin(slice0);
-
-			slice1 = 2 * PI * (double) (j+1) / nslices;
-			x1 = cos(slice1);
-			y1 = sin(slice1);
-
-			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
-			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
-
-			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
-			defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
-		}
-	}
+	plotSphere(radius, nstacks, nslices);
+	
 	msg.exit("Primitive::createSphere");
 }
 
@@ -409,6 +419,18 @@ void Primitive::createCellAxes()
 	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.0, 0.65, 0.1, 0.1, nstacks, nslices);
 	plotCylinder(0.0, 0.0, 0.65, 0.0, 0.0, 0.35, 0.2, 0.0, nstacks, nslices);
 	
+}
+
+// Create rotation globe axes
+void Primitive::createRotationGlobeAxes(int nstacks, int nslices)
+{
+	// Create space for one sphere and three cylinders
+	createEmpty(GL_TRIANGLES, 3*nstacks*nslices*2, FALSE);
+	
+	// Axis pointers
+	plotCylinder(0.7, 0.0, 0.0, 0.3, 0.0, 0.0, 0.2, 0.0, nstacks, nslices);
+	plotCylinder(0.0, 0.7, 0.0, 0.0, 0.3, 0.0, 0.2, 0.0, nstacks, nslices);
+	plotCylinder(0.0, 0.0, 0.7, 0.0, 0.0, 0.3, 0.2, 0.0, nstacks, nslices);
 }
 
 // Return vertex array
@@ -606,7 +628,7 @@ void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
 		for (int n=0; n<nTextPrimitives_; ++n)
 		{
                         if (textPrimitives_[n].rightAlign) painter.drawText(0, textPrimitives_[n].y, textPrimitives_[n].x, textPrimitives_[n].y, Qt::AlignRight, textPrimitives_[n].text, NULL);
-			painter.drawText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
+			else painter.drawText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
 		}
 	}
 	else
