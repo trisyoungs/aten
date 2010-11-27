@@ -24,10 +24,9 @@
 #include "base/sysfunc.h"
 
 // Draw 2D objects with QPainted
-void TCanvas::render2D()
+void TCanvas::render2D(QPainter &painter)
 {
 	// Variables
-	static QFont font;
 	static Dnchar text;
 	GLfloat colour[4];
 	Vec4<double> screenr;
@@ -40,12 +39,6 @@ void TCanvas::render2D()
 	QColor color( colour[0]*255, colour[1]*255, colour[2]*255, colour[3]*255);
 	QBrush solidbrush(color, Qt::SolidPattern), nobrush(color, Qt::NoBrush);
 	QPen solidpen(Qt::SolidLine), dashedpen(Qt::DashLine);
-
-	// Initialise QPainter
-	QPainter painter(this);
-	font.setPointSize(prefs.labelSize());
-	painter.setFont(font);
-	painter.setRenderHint(QPainter::Antialiasing);
 
 	// Text Primitives
 	painter.setBrush(solidbrush);
@@ -105,7 +98,5 @@ void TCanvas::render2D()
 		default:
 			break;
 	}
-
-	painter.end();
 }
 

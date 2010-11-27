@@ -176,7 +176,7 @@ class TextPrimitive
 	// Coordinates on screen
 	int x, y;
 	// Text to render
-	Dnchar text;
+	QString text;
 	// Whether to right-align text
 	bool rightAlign;
 };
@@ -202,7 +202,7 @@ class TextPrimitiveChunk
 	// Return whether array is full
 	bool full();
 	// Add primitive to list
-	void add(int x, int y, const char *text, bool rightAlign = FALSE);
+	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
 	// Render all primitives in list
 	void renderAll(QPainter &painter, TCanvas *canvas);
 };
@@ -224,7 +224,7 @@ class TextPrimitiveList
 	// Forget all text primitives, but keeping lists intact
 	void forgetAll();
 	// Add new primitive object
-	void add(int x, int y, const char *text, bool rightAlign = FALSE);
+	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
 	// Return top of primitives list
 	void renderAll(QPainter &painter, TCanvas *canvas);
 };

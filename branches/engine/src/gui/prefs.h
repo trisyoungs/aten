@@ -125,8 +125,6 @@ class AtenPrefs : public QDialog
 	void on_SpotlightPositionYSpin_valueChanged(double value);
 	void on_SpotlightPositionZSpin_valueChanged(double value);
 	void on_ShininessSpin_valueChanged(int value);
-	void on_AngleLabelEdit_textEdited(const QString &text);
-	void on_DistanceLabelEdit_textEdited(const QString &text);
 	// Scene Objects page
 	void on_AtomsVisibleCheck_stateChanged(int state);
 	void on_CellVisibleCheck_stateChanged(int state);

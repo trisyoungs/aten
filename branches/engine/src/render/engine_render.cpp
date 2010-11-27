@@ -25,6 +25,7 @@
 #include "model/model.h"
 #include "model/fragment.h"
 #include "gui/tcanvas.uih"
+#include "base/sysfunc.h"
 #include <math.h>
 
 // Set OpenGL options ready for drawing
@@ -120,9 +121,10 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	Fragment *frag;
 	ForcefieldAtom *ffa;
 
-	// Clear filtered primitives list
+	// Clear filtered primitives lists
 	solidPrimitives_.clear();
 	transparentPrimitives_.clear();
+	textPrimitives_.forgetAll();
 
 	// Set initial transformation matrix, including any translation occurring from cell...
 	setTransformationMatrix(source->viewMatrix(), source->cell()->centre());
@@ -571,8 +573,8 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		glVertex3d(r1.x, r1.y, r1.z);
 		glVertex3d(r2.x, r2.y, r2.z);
 		glEnd();
-		text.sprintf("%f %s", m->value(), prefs.distanceLabel());
-		renderTextPrimitive((r1+r2)*0.5, text.get());
+		text.sprintf("%f ", m->value());
+		renderTextPrimitive((r1+r2)*0.5, text.get(), 0x212b);
 	}
           // Angles
 	for (Measurement *m = source->angleMeasurements(); m != NULL; m = m->next)
@@ -612,8 +614,8 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		modelToWorld(r2, &screenr);
 		gamma = screenr.x;
 		modelToWorld(pos, &screenr);
-		text.sprintf("%f %s", m->value(), prefs.angleLabel());
-		renderTextPrimitive(pos, text.get(), gamma < screenr.x);
+// 		text.sprintf("%f %s", m->value(), FALSE, &degree);
+		renderTextPrimitive(pos, ftoa(m->value()), 0xE2, gamma < screenr.x);
 	}
 	// Torsions
 	for (Measurement *m = source->torsionMeasurements(); m != NULL; m = m->next)
@@ -631,11 +633,9 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		glVertex3d(r3.x, r3.y, r3.z);
 		glVertex3d(r4.x, r4.y, r4.z);
 		glEnd();
-		text.sprintf("%f %s", m->value(), prefs.angleLabel());
-		renderTextPrimitive((r2+r3)*0.5, text.get());
+// 		text.sprintf("%f ", m->value(), FALSE, &degree);
+		renderTextPrimitive((r2+r3)*0.5, ftoa(m->value()), 0xE2);
 	}
-
-
 
 	// All objects have now been filtered...
 	sortAndSendGL();
