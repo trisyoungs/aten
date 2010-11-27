@@ -108,9 +108,9 @@ class RenderEngine
 	// Render primitive in specified colour and level of detail
 	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform, GLenum fillMode = GL_FILL);
 	// Add text primitive for rendering later
-	void renderTextPrimitive(int x, int y, const char *text, bool rightalign = FALSE);
+	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Add text primitive for rendering later (screen position calculated from 3D model coordinates)
-	void renderTextPrimitive(Vec3<double> vec, const char *text, bool rightalign = FALSE);
+	void renderTextPrimitive(Vec3<double> vec, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 
 	public:
 	// Initialise GL

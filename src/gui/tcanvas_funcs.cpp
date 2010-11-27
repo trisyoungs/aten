@@ -145,6 +145,7 @@ void TCanvas::initializeGL()
 // General repaint callback
 void TCanvas::paintGL()
 {
+	static QFont font;
 	static Model *lastDisplayed_ = NULL;
 	
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
@@ -204,8 +205,14 @@ void TCanvas::paintGL()
 		checkGlError();
 
 		// Render 2D elements (with QPainter)
-		render2D();
-		
+		QPainter painter(this);
+		font.setPointSize(prefs.labelSize());
+		painter.setFont(font);
+		painter.setRenderHint(QPainter::Antialiasing);
+		engine_.renderText(painter, this);
+		render2D(painter);
+		painter.end();
+	
 		msg.print(Messenger::GL, " --> RENDERING END\n");
 		lastDisplayed_ = displayModel_;
 	}

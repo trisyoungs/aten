@@ -20,12 +20,6 @@
 						<entry>Array of element data (masses, symbols, names, etc.)</entry>
 					</row>
 					<row>
-						<entry>anglelabel</entry>
-						<entry>string</entry>
-						<entry>rw</entry>
-						<entry>The units label appended to angle measurements</entry>
-					</row>
-					<row>
 						<entry>atomdetail</entry>
 						<entry>int</entry>
 						<entry>rw</entry>
@@ -146,12 +140,6 @@
 						<entry>The near fog distance used when rendering (if depth cueing is enabled)</entry>
 					</row>
 					<row>
-						<entry>distancelabel</entry>
-						<entry>string</entry>
-						<entry>rw</entry>
-						<entry>The units label appended to distance measurements</entry>
-					</row>
-					<row>
 						<entry>eleccutoff</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
@@ -228,6 +216,24 @@
 						<entry>int</entry>
 						<entry>rw</entry>
 						<entry>Font pointsize for label text</entry>
+					</row>
+					<row>
+						<entry>levelofdetailstartz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z-depth (in Angstroms) at which level of detail algorithm begins</entry>
+					</row>
+					<row>
+						<entry>levelofdetailwidth</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z-width (in Angstroms) of each level of detail strip</entry>
+					</row>
+					<row>
+						<entry>levelsofdetail</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Number of levels of detail to employ</entry>
 					</row>
 					<row>
 						<entry>linealiasing</entry>

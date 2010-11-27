@@ -586,11 +586,12 @@ bool TextPrimitiveChunk::full()
 }
 
 // Add primitive to list
-void TextPrimitiveChunk::add(int x, int y, const char *text, bool rightAlign)
+void TextPrimitiveChunk::add(int x, int y, const char *text, QChar addChar, bool rightAlign)
 {
 	textPrimitives_[nTextPrimitives_].x = x;
 	textPrimitives_[nTextPrimitives_].y = y;
 	textPrimitives_[nTextPrimitives_].text = text;
+	if (addChar != 0) textPrimitives_[nTextPrimitives_].text += addChar;    // BROKEN???
 	textPrimitives_[nTextPrimitives_].rightAlign = rightAlign;
 	++nTextPrimitives_;
 }
@@ -604,13 +605,13 @@ void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
 	{
 		for (int n=0; n<nTextPrimitives_; ++n)
 		{
-                        if (textPrimitives_[n].rightAlign) painter.drawText(0, textPrimitives_[n].y, textPrimitives_[n].x, textPrimitives_[n].y, Qt::AlignRight, textPrimitives_[n].text.get(), NULL);
-			painter.drawText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text.get());
+                        if (textPrimitives_[n].rightAlign) painter.drawText(0, textPrimitives_[n].y, textPrimitives_[n].x, textPrimitives_[n].y, Qt::AlignRight, textPrimitives_[n].text, NULL);
+			painter.drawText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
 		}
 	}
 	else
 	{
-		for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text.get());
+		for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
 	}
 }
 
@@ -632,13 +633,13 @@ void TextPrimitiveList::forgetAll()
 }
 
 // Set data from literal coordinates and text
-void TextPrimitiveList::add(int x, int y, const char *text, bool rightAlign)
+void TextPrimitiveList::add(int x, int y, const char *text, QChar addChar, bool rightAlign)
 {
 	// If we are rendering with nice text (i.e. QPainter) store info for later
 	if (currentChunk_ == NULL) currentChunk_ = textPrimitives_.add();
 	else if (currentChunk_->full()) currentChunk_ = textPrimitives_.add();
 	// Add primitive and set data
-	currentChunk_->add(x, y, text, rightAlign);
+	currentChunk_->add(x, y, text, addChar, rightAlign);
 }
 
 // Render all primitives in list

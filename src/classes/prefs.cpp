@@ -320,8 +320,6 @@ Prefs::Prefs()
 
 	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
-	angleLabel_ = "Deg";
-	distanceLabel_ = "A";
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
@@ -1638,30 +1636,6 @@ void Prefs::setLabelSize(int size)
 int Prefs::labelSize() const
 {
 	return labelSize_;
-}
-
-// Set the postfix distance label
-void Prefs::setDistanceLabel(const char *s)
-{
-	distanceLabel_ = s;
-}
-
-// Return the postfix distance label
-const char *Prefs::distanceLabel() const
-{
-	return distanceLabel_.get();
-}
-
-// Set the postfix angle label
-void Prefs::setAngleLabel(const char *s)
-{
-	angleLabel_ = s;
-}
-
-// Return the postfix angle label
-const char *Prefs::angleLabel() const
-{
-	return angleLabel_.get();
 }
 
 // Set whether to use nice text rendering

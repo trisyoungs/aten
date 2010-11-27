@@ -74,10 +74,7 @@ void AtenPrefs::setControls()
 	ui.SphereBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::SphereStyle));
 	ui.ScaledBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::ScaledStyle));
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
-	ui.AngleLabelEdit->setText(prefs.angleLabel());
-	ui.DistanceLabelEdit->setText(prefs.distanceLabel());
 	ui.StandardColoursTable->setRowCount(Prefs::nPenColours);
-	ui.DefaultStyleCombo->setCurrentIndex(prefs.renderStyle());
 	QColor qcol;
 	for (int n = 0; n < Prefs::nPenColours; ++n)
 	{
@@ -610,16 +607,6 @@ void AtenPrefs::on_RegionsVisibleImageCheck_stateChanged(int state)
 void AtenPrefs::on_SurfacesVisibleImageCheck_stateChanged(int state)
 {
 	setVisibleObject(Prefs::ViewSurfaces, state, FALSE);
-}
-
-void AtenPrefs::on_AngleLabelEdit_textEdited(const QString &text)
-{
-	prefs.setAngleLabel( qPrintable(text) );
-}
-
-void AtenPrefs::on_DistanceLabelEdit_textEdited(const QString &text)
-{
-	prefs.setDistanceLabel( qPrintable(text) );
 }
 
 /*

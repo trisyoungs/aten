@@ -113,8 +113,8 @@ class TCanvas : public QGLWidget
 	void endGl();
 	// Check for GL error
 	void checkGlError();
-	// Draw 2D objects with QPainter
-	void render2D();
+	// Draw 2D objects with supplied QPainter
+	void render2D(QPainter &painter);
 	
 	public:
 	// Enable rendering

@@ -270,10 +270,6 @@ class Prefs
 	// Rendering - Options
 	*/
 	private:
-	// Postfix (units) label for distances
-	Dnchar distanceLabel_;
-	// Postfix (units) label for angles
-	Dnchar angleLabel_;
 	// Pointsize for labels
 	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
@@ -284,14 +280,6 @@ class Prefs
 	bool useFrameBuffer_;
 
 	public:
-	// Set the postfix distance label
-	void setDistanceLabel(const char *s);
-	// Return the postfix distance label
-	const char *distanceLabel() const;
-	// Set the postfix angle label
-	void setAngleLabel(const char *s);
-	// Return the postfix angle label
-	const char *angleLabel() const;
 	// Set the pointsize of labels in the model
 	void setLabelSize(int size);
 	// Return the current label pointsize
