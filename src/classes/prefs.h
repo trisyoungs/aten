@@ -270,6 +270,10 @@ class Prefs
 	// Rendering - Options
 	*/
 	private:
+        // C-style format for distance label values
+        Dnchar distanceLabelFormat_;
+        // C-style format for angle label values
+        Dnchar angleLabelFormat_;
 	// Pointsize for labels
 	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
@@ -280,6 +284,14 @@ class Prefs
 	bool useFrameBuffer_;
 
 	public:
+        // Set C-style format for distance label values
+        void setDistanceLabelFormat(const char *format);
+        // Return C-style format for distance label values
+        const char *distanceLabelFormat();
+        // Set C-style format for angle label values
+        void setAngleLabelFormat(const char *format);
+        // Return C-style format for angle label values
+        const char *angleLabelFormat();
 	// Set the pointsize of labels in the model
 	void setLabelSize(int size);
 	// Return the current label pointsize

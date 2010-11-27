@@ -320,6 +320,8 @@ Prefs::Prefs()
 
 	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
+	distanceLabelFormat_ = "%8.3f ";
+	angleLabelFormat_ = "%8.2f";
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
@@ -1625,6 +1627,30 @@ void Prefs::setMaxImproperDist(double r)
 /*
 // Rendering (and compatibility) Options
 */
+
+// Set C-style format for distance label values
+void Prefs::setDistanceLabelFormat(const char *format)
+{
+	distanceLabelFormat_ = format;
+}
+
+// Return C-style format for distance label values
+const char *Prefs::distanceLabelFormat()
+{
+	return distanceLabelFormat_.get();
+}
+
+// Set C-style format for angle label values
+void Prefs::setAngleLabelFormat(const char *format)
+{
+	angleLabelFormat_ = format;
+}
+
+// Return C-style format for angle label values
+const char *Prefs::angleLabelFormat()
+{
+	return angleLabelFormat_.get();
+}
 
 // Set the scale of labels in the model
 void Prefs::setLabelSize(int size)

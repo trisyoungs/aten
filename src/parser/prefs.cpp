@@ -50,6 +50,7 @@ PreferencesVariable::~PreferencesVariable()
 
 // Accessor data - name, type, arraysize, ro?
 Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
+	{ "anglelabelformat",		VTypes::StringData,	0, FALSE },
 	{ "atomstyleradius",		VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
 	{ "backcull",			VTypes::IntegerData,	0, FALSE },
 	{ "backgroundcolour",		VTypes::DoubleData,	4, FALSE },
@@ -68,6 +69,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "depthcue",			VTypes::IntegerData,	0, FALSE },
 	{ "depthfar",			VTypes::IntegerData,	0, FALSE },
 	{ "depthnear",			VTypes::IntegerData,	0, FALSE },
+	{ "distancelabelformat",	VTypes::StringData,	0, FALSE },
 	{ "eleccutoff",			VTypes::DoubleData,	0, FALSE },
 	{ "elecmethod",			VTypes::StringData,	0, FALSE },
 	{ "energyunit",			VTypes::StringData,	0, FALSE },
@@ -226,6 +228,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	}
 	if (result) switch (acc)
 	{
+		case (PreferencesVariable::AngleLabelFormat):
+			rv.set(prefs.angleLabelFormat());
+			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
 			else rv.setArray( VTypes::DoubleData, &ptr->atomStyleRadius_, Atom::nDrawStyles);
@@ -283,6 +288,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::DepthNear):
 			rv.set( (int) ptr->depthNear());
+			break;
+		case (PreferencesVariable::DistanceLabelFormat):
+			rv.set(prefs.distanceLabelFormat());
 			break;
 		case (PreferencesVariable::ElecCutoff):
 			rv.set( ptr->elecCutoff() );
@@ -552,6 +560,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	ElementMap::ZMapType zm;
 	if (result) switch (acc)
 	{
+		case (PreferencesVariable::AngleLabelFormat):
+			ptr->setAngleLabelFormat(newvalue.asString());
+			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
@@ -625,6 +636,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::DepthNear):
 			ptr->setDepthNear( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::DistanceLabelFormat):
+			ptr->setDistanceLabelFormat(newvalue.asString());
 			break;
 		case (PreferencesVariable::ElecCutoff):
 			ptr->setElecCutoff( newvalue.asDouble(result) );

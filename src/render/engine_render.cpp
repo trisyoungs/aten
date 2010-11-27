@@ -107,7 +107,7 @@ void RenderEngine::initialiseGL()
 void RenderEngine::render3D(Model *source, TCanvas *canvas)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
-	int lod, id_i, labels;
+	int lod, id_i, labels, n;
 	Dnchar text;
 	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp, t, gamma;
 	Atom *i, *j, **atoms;
@@ -128,25 +128,45 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 
 	// Set initial transformation matrix, including any translation occurring from cell...
 	setTransformationMatrix(source->viewMatrix(), source->cell()->centre());
-	transformZ.set(transformationMatrix_[2], transformationMatrix_[6], transformationMatrix_[10], transformationMatrix_[14]);
+	transformZ.set(modelTransformationMatrix_[2], modelTransformationMatrix_[6], modelTransformationMatrix_[10], modelTransformationMatrix_[14]);
 	
 	// Grab global style values
 	scheme = prefs.colourScheme();
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
 
-	// Set target matrix mode and reset it, and set colour mod
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	// Set target matrix mode and reset it, and set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
+	
+	// Render rotation globe in small viewport in lower right-hand corner
+	n = prefs.globeSize();
+	glViewport(canvas->contextWidth()-n,0,n,n);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMultMatrixd(globeProjectionMatrix_.matrix());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glMultMatrixd(source->rotationMatrix().forGL());
+	glColor4f(0.5f,0.5f,0.5f,1.0f);
+	rotationGlobe_.sendToGL();
+	glColor4f(0.3f,0.3f,0.3f,1.0f);
+	rotationGlobeAxes_.sendToGL();
+	
+	// Prepare for model rendering
+	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMultMatrixd(modelProjectionMatrix_.matrix());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	
 	// Render cell and cell axes
 	if (source->cell()->type() != Cell::NoCell)
 	{
 		// Setup pen colour
-		prefs.copyColour(Prefs::ForegroundColour, colour_i);
-		glColor4fv(colour_i);
+// 		prefs.copyColour(Prefs::ForegroundColour, colour_i);
+		glColor4f(0.5f,0.5f,0.5f,1.0f);
 		A = source->viewMatrix() * source->cell()->axes();
 		glMultMatrixd(A.matrix());
 		wireCube_.sendToGL();
@@ -177,7 +197,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 // 		printf("lod = %i, projected z = %f, nlevels = %i\n", lod, z, prefs.levelsOfDetail());
 
 		// Move to local atom position
-		atomtransform = transformationMatrix_;
+		atomtransform = modelTransformationMatrix_;
 		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
 
 		// Select colour
@@ -443,7 +463,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	{
 		i = ri->item;
 		// Move to local atom position
-		atomtransform = transformationMatrix_;
+		atomtransform = modelTransformationMatrix_;
 		atomtransform.applyTranslation(i->r());
 		// Draw a wireframe sphere at the atoms position
 		style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
@@ -486,7 +506,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			{
 				// Simple - draw line from atomClicked_ to mouse position
 				glLoadIdentity();
-				glMultMatrixd(transformationMatrix_.matrix());
+				glMultMatrixd(modelTransformationMatrix_.matrix());
 				glBegin(GL_LINES);
 				glVertex3d(pos.x, pos.y, pos.z);
 				glVertex3d(v.x+pos.x,v.y+pos.y,v.z+pos.z);
@@ -495,7 +515,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			else
 			{
 				// Draw new bond and atom
-				bondtransform = transformationMatrix_;
+				bondtransform = modelTransformationMatrix_;
 				bondtransform.applyTranslation(pos);
 		
 				// If bond is not visible, don't bother drawing it...
@@ -561,7 +581,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	// Measurements
 	// Apply standard transformation matrix to OpenGL so we may just use local atom positions for vertices
 	glLoadIdentity();
-	glMultMatrixd(transformationMatrix_.matrix());
+	glMultMatrixd(modelTransformationMatrix_.matrix());
 	for (Measurement *m = source->distanceMeasurements(); m != NULL; m = m->next)
 	{
 		atoms = m->atoms();
@@ -573,8 +593,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		glVertex3d(r1.x, r1.y, r1.z);
 		glVertex3d(r2.x, r2.y, r2.z);
 		glEnd();
-		text.sprintf("%f ", m->value());
-		renderTextPrimitive((r1+r2)*0.5, text.get(), 0x212b);
+		renderTextPrimitive((r1+r2)*0.5, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
 	}
           // Angles
 	for (Measurement *m = source->angleMeasurements(); m != NULL; m = m->next)
@@ -610,12 +629,11 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		glEnd();
 		// Determine orientation of text
 		pos = (rji + rjk) * 0.2 + r2;
-		// OPTIMIZE - can we just multiply by transformationMatrix_ here? We don't care about the exact projection....
+		// OPTIMIZE - can we just multiply by modelTransformationMatrix_ here? We don't care about the exact projection....
 		modelToWorld(r2, &screenr);
 		gamma = screenr.x;
 		modelToWorld(pos, &screenr);
-// 		text.sprintf("%f %s", m->value(), FALSE, &degree);
-		renderTextPrimitive(pos, ftoa(m->value()), 0xE2, gamma < screenr.x);
+		renderTextPrimitive(pos, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma < screenr.x);
 	}
 	// Torsions
 	for (Measurement *m = source->torsionMeasurements(); m != NULL; m = m->next)
@@ -633,8 +651,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		glVertex3d(r3.x, r3.y, r3.z);
 		glVertex3d(r4.x, r4.y, r4.z);
 		glEnd();
-// 		text.sprintf("%f ", m->value(), FALSE, &degree);
-		renderTextPrimitive((r2+r3)*0.5, ftoa(m->value()), 0xE2);
+		renderTextPrimitive((r2+r3)*0.5, ftoa(m->value(), prefs.angleLabelFormat()), 176);
 	}
 
 	// All objects have now been filtered...

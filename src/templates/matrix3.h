@@ -613,17 +613,17 @@ template <class T> Mat3<T> Mat3<T>::transpose() const
 template <class T> double *Mat3<T>::forGL()
 {
 	matrix[0] = rows[0].x;
-	matrix[1] = rows[0].y;
-	matrix[2] = rows[0].z;
+	matrix[1] = rows[1].x;
+	matrix[2] = rows[2].x;
 	matrix[3] = 0.0;
 
-	matrix[4] = rows[1].x;
+	matrix[4] = rows[0].y;
 	matrix[5] = rows[1].y;
-	matrix[6] = rows[1].z;
+	matrix[6] = rows[2].y;
 	matrix[7] = 0.0;
 
-	matrix[8] = rows[2].x;
-	matrix[9] = rows[2].y;
+	matrix[8] = rows[0].z;
+	matrix[9] = rows[1].z;
 	matrix[10] = rows[2].z;
 	matrix[11] = 0.0;
 

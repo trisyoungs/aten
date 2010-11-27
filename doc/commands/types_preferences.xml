@@ -14,10 +14,10 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>elements</entry>
-						<entry><link linkend="command.types.element">element</link></entry>
-						<entry>ro</entry>
-						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+						<entry>anglelabelformat</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The C-style format to use for the numerical value of angle labels</entry>
 					</row>
 					<row>
 						<entry>atomdetail</entry>
@@ -138,6 +138,12 @@
 						<entry>int</entry>
 						<entry>rw</entry>
 						<entry>The near fog distance used when rendering (if depth cueing is enabled)</entry>
+					</row>
+					<row>
+						<entry>distancelabelformat</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The C-style format to use for the numerical value of distance labels</entry>
 					</row>
 					<row>
 						<entry>eleccutoff</entry>

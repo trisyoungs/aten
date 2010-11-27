@@ -74,6 +74,9 @@ void AtenPrefs::setControls()
 	ui.SphereBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::SphereStyle));
 	ui.ScaledBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::ScaledStyle));
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
+	ui.AngleLabelFormatEdit->setText(prefs.angleLabelFormat());
+	ui.DistanceLabelFormatEdit->setText(prefs.distanceLabelFormat());
+	ui.LabelSizeSpin->setValue(prefs.labelSize());
 	ui.StandardColoursTable->setRowCount(Prefs::nPenColours);
 	QColor qcol;
 	for (int n = 0; n < Prefs::nPenColours; ++n)
@@ -336,6 +339,45 @@ void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
 	updateAfterViewPrefs();
 }
 
+void AtenPrefs::on_AngleLabelFormatEdit_textEdited(const QString &text)
+{
+	prefs.setAngleLabelFormat( qPrintable(text) );
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_DistanceLabelFormatEdit_textEdited(const QString &text)
+{
+	prefs.setDistanceLabelFormat( qPrintable(text) );
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_LabelSizeSpin_valueChanged(int value)
+{
+	prefs.setLabelSize(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_StandardColoursTable_cellDoubleClicked(int row, int column)
+{
+	// Get clicked item in table
+	if (column != 1) return;
+	if (row == -1) return;
+	Prefs::PenColour pencol = (Prefs::PenColour) row;
+	double *col = prefs.colour(pencol);
+	QColor oldcol, newcol;
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+	// Request a colour dialog
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
+	// Store new colour
+	prefs.setColour(pencol, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	ui.StandardColoursTable->item(row, 1)->setBackgroundColor(newcol);
+	aten.currentModel()->changeLog.add(Log::Visual);
+	// Update display
+	gui.mainWidget->postRedisplay();
+}
+
 /*
 // View Page - Rendering / Quality Tab
 */
@@ -510,10 +552,6 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenPrefs::on_DefaultStyleCombo_currentIndexChanged(int index)
-{
-}
-
 /*
 // View Page - Scene Objects tab
 */
@@ -656,27 +694,6 @@ void AtenPrefs::on_ZoomThrottleSpin_valueChanged(double value)
 /*
 // Colours Page
 */
-
-void AtenPrefs::on_StandardColoursTable_cellDoubleClicked(int row, int column)
-{
-	// Get clicked item in table
-	if (column != 1) return;
-	if (row == -1) return;
-	Prefs::PenColour pencol = (Prefs::PenColour) row;
-	double *col = prefs.colour(pencol);
-	QColor oldcol, newcol;
-	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-	// Request a colour dialog
-	bool ok = FALSE;
-	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
-	if (!ok) return;
-	// Store new colour
-	prefs.setColour(pencol, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.StandardColoursTable->item(row, 1)->setBackgroundColor(newcol);
-	aten.currentModel()->changeLog.add(Log::Visual);
-	// Update display
-	gui.mainWidget->postRedisplay();
-}
 
 void AtenPrefs::updateScalePointsList()
 {

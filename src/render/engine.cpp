@@ -136,6 +136,8 @@ void RenderEngine::createPrimitives()
 	// One-off objects
 	wireCube_.createWireCube(1.0);
 	cellAxes_.createCellAxes();
+	rotationGlobe_.createSphere(0.75,8,10);
+	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
 	msg.exit("RenderEngine::createPrimitives");
 }
 
@@ -152,8 +154,14 @@ void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h)
 	viewportMatrix_[2] = w;
 	viewportMatrix_[3] = h;
 	glViewport( x, y, w, h );
-	// Create projection matrix
 	glMatrixMode(GL_PROJECTION);
+	
+	// Create projection matrix for rotation globe
+	glLoadIdentity();
+	glFrustum(1.0, -1.0, 1.0, -1.0, 0.0, 10.0);
+	glGetDoublev(GL_PROJECTION_MATRIX, globeProjectionMatrix_.matrix());
+	
+	// Create projection matrix for model
 	glLoadIdentity();
 	GLdouble top, bottom, aspect = (GLdouble) w / (GLdouble) h;
 	if (prefs.hasPerspective())
@@ -169,7 +177,8 @@ void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h)
 		bottom = -top;
 		glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
-	glGetDoublev(GL_PROJECTION_MATRIX, projectionMatrix_.matrix());
+	glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
+	glMatrixMode(GL_MODELVIEW);
 }
 
 // Project given model coordinates into world coordinates (and screen coordinates if requested)
@@ -181,12 +190,12 @@ Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Vec4<double> *scr
 	// Projection formula is : worldr = P x M x modelr
 	pos.set(modelr, 1.0);
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	temp = transformationMatrix_ * pos;
+	temp = modelTransformationMatrix_ * pos;
 	worldr.set(temp.x, temp.y, temp.z);
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	if (screenr != NULL)
 	{
-		*screenr = projectionMatrix_ * temp;
+		*screenr = modelProjectionMatrix_ * temp;
 		screenr->x /= screenr->w;
 		screenr->y /= screenr->w;
 		screenr->x = viewportMatrix_[0] + viewportMatrix_[2]*(screenr->x+1)*0.5;
@@ -196,7 +205,7 @@ Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Vec4<double> *scr
 		if (screenradius > 0.0)
 		{
 			temp.x += screenradius;
-			tempscreen = projectionMatrix_ * temp;
+			tempscreen = modelProjectionMatrix_ * temp;
 			tempscreen.x /= tempscreen.w;
 			screenr->w = fabs( (viewportMatrix_[0] + viewportMatrix_[2]*(tempscreen.x+1)*0.5) - screenr->x);
 		}
@@ -215,16 +224,16 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v)
 	// Projection formula is : worldr = P x M x modelr
 	// Get the 3D coordinates of the atom - Multiply by modelview matrix 'view'
 	modelr.set(v.x, v.y, v.z, 1.0);
-	worldr = transformationMatrix_ * modelr;
+	worldr = modelTransformationMatrix_ * modelr;
 	//viewMatrix_.print();
 	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
-	screenr = projectionMatrix_ * worldr;
+	screenr = modelProjectionMatrix_ * worldr;
 	screenr.x /= screenr.w;
 	screenr.y /= screenr.w;
 	result = screenr;
 	x1 = viewportMatrix_[0] + viewportMatrix_[2]*(screenr.x+1)/2.0;
 	worldr.x += 1.0;
-	screenr = projectionMatrix_ * worldr;
+	screenr = modelProjectionMatrix_ * worldr;
 	screenr.x /= screenr.w;
 	x2 = viewportMatrix_[0] + viewportMatrix_[2]*(screenr.x+1)/2.0;
 	radius = fabs(x2 - x1);
@@ -237,8 +246,8 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v)
 // Update transformation matrix
 void RenderEngine::setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre)
 {
-	transformationMatrix_ = mat;
-	transformationMatrix_.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
+	modelTransformationMatrix_ = mat;
+	modelTransformationMatrix_.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
 }
 
 /*
@@ -265,7 +274,7 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour,
 // Add text primitive for rendering later
 void RenderEngine::renderTextPrimitive(int x, int y, const char *text, QChar addChar, bool rightalign)
 {
-	textPrimitives_.add(x, y, text, rightalign);
+	textPrimitives_.add(x, y, text, addChar, rightalign);
 }
 
 // Add text primitive for rendering later (screen position calculated from 3D model coordinates)
@@ -274,8 +283,7 @@ void RenderEngine::renderTextPrimitive(Vec3<double> vec, const char *text, QChar
 	// Project atom and render text
 	Vec4<double> screenr;			// OPTIMIZE - Hardcode 'modelToWorld' here
 	Vec3<double> r = modelToWorld(vec, &screenr);
-// 	r.print();
-	if (r.z < -1.0) textPrimitives_.add(screenr.x, screenr.y, text, rightalign);
+	if (r.z < -1.0) textPrimitives_.add(screenr.x, screenr.y, text, addChar, rightalign);
 }
 
 // Sort and render filtered polygons by depth

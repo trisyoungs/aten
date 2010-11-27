@@ -99,7 +99,9 @@ class AtenPrefs : public QDialog
 	void on_ScaledBondRadiusSpin_valueChanged(double value);
 	void on_SelectionScaleSpin_valueChanged(double value);
 	void on_StandardColoursTable_cellDoubleClicked(int row, int column);
-	void on_DefaultStyleCombo_currentIndexChanged(int index);
+	void on_AngleLabelFormatEdit_textEdited(const QString &text);
+	void on_DistanceLabelFormatEdit_textEdited(const QString &text);
+	void on_LabelSizeSpin_valueChanged(int value);
 	// Rendering / Quality page
 	void on_LevelOfDetailNLevelsSpin_valueChanged(int value);
 	void on_LevelOfDetailStartZSpin_valueChanged(double value);

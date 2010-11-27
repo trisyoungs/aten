@@ -334,12 +334,6 @@ void TCanvas::doProjection(int newwidth, int newheight)
 		contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
 		contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
 		engine_.setupView(0, 0, contextWidth_, contextHeight_);
-		// Rotation globe projection matrix (square)
-		/*		glLoadIdentity();
-		glFrustum(-1.0, 1.0, -1.0, 1.0, 0.0, 10.0);
-		glGetDoublev(GL_PROJECTION_MATRIX,pmat);
-		GlobePMAT.setFromColumnMajor(pmat);*/    // TGAY  BROKEN
-// 		glMatrixMode(GL_MODELVIEW);
 		endGl();
 	}
 	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
