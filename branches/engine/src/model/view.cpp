@@ -59,70 +59,129 @@ bool Model::renderFromVibration()
 	return renderFromVibration_;
 }
 
-// Set the current rotation matrix
-void Model::setRotationMatrix(Mat4<double> &rmat)
+// Set the current modelview matrix
+void Model::setModelViewMatrix(Mat4<double> &rmat)
 {
-	if (parent_ == NULL) rotationMatrix_ = rmat;
-	else parent_->setRotationMatrix(rmat);
-	// Recalculate view matrix
-	calculateViewMatrix();
+	if (parent_ == NULL) modelViewMatrix_ = rmat;
+	else parent_->setModelViewMatrix(rmat);
 	// Log camera change
 	changeLog.add(Log::Camera);
 }
 
-// Return the current rotation matrix
-Mat4<double> Model::rotationMatrix() const
+// Return the current modelview matrix
+Mat4<double> &Model::modelViewMatrix()
 {
-	return (parent_ == NULL ? rotationMatrix_ : parent_->rotationMatrix());
-}
-
-// Return the GL-compatible array from the ModelMAT structure
-void Model::copyRotationMatrix(double *m)
-{
-	// If a trajectory frame, return the parent's matrix
-	if (parent_ == NULL) rotationMatrix_.copyColumnMajor(m);
-	else parent_->copyRotationMatrix(m);
-}
-
-// Return the current camera matrix
-Mat4<double> Model::cameraMatrix() const
-{
-	return (parent_ == NULL ? cameraMatrix_ : parent_->cameraMatrix());
-}
-
-// Return the GL-compatible array from the ModelMAT structure
-void Model::copyCameraMatrix(double *m)
-{
-	// If a trajectory frame, return the parent's matrix
-	if (parent_ == NULL) cameraMatrix_.copyColumnMajor(m);
-	else parent_->copyCameraMatrix(m);
-}
-
-// Set the camera z-rotation
-void Model::setCameraRotation(double r)
-{
-	cameraRotation_ = r;
-	calculateViewMatrix();
-	// Log camera change
-	changeLog.add(Log::Camera);
-}
-
-// Return the current camera z-rotation
-double Model::cameraRotation() const
-{
-	return (parent_ == NULL ? cameraRotation_ : parent_->cameraRotation());
+	return (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
 }
 
 // Spin the model about the z axis
 void Model::zRotateView(double angle)
 {
-	adjustCamera(0.0, 0.0, 0.0, angle / DEGRAD);
+// 	adjustCamera(0.0, 0.0, 0.0);   BROKEN
 }
 
-// Adjust the position of the camera
-void Model::adjustCamera(const Vec3<double> &v, double r)
+// Adjust Camera
+void Model::adjustCamera(double dx, double dy, double dz)
 {
-	adjustCamera(v.x,v.y,v.z,r);
+	// Adjust the models camera variables
+	msg.enter("Model::adjustCamera");
+	if (parent_ == NULL)
+	{
+		modelViewMatrix_.rows[3].add(dx, -dy, dz, 0.0);
+		// Never let camera z go below -1.0...
+		if (modelViewMatrix_.rows[3].z > -1.0) modelViewMatrix_.rows[3].z = -1.0;
+	}
+	else parent_->adjustCamera(dx, dy, dz);
+	// Log camera change
+	changeLog.add(Log::Camera);
+	msg.exit("Model::adjustCamera");
+}
+
+// Adjust camera zoom
+void Model::adjustZoom(bool zoomin)
+{
+	msg.enter("Model::adjustZoom");
+	double dz = (parent_ == NULL ? -modelViewMatrix_.rows[3].z : -parent_->modelViewMatrix().rows[3].z);
+	dz *= prefs.zoomThrottle();
+	if (zoomin) dz = -dz;
+	adjustCamera(0.0,0.0,dz);
+	gui.mainWidget->doProjection();
+	msg.exit("Model::adjustZoom");
+}
+
+// Reset View
+void Model::resetView()
+{
+	// Reset the modelview matrix and the camera
+	msg.enter("Model::resetView");
+	Vec4<double> screenr;
+	Atom *i, target;
+	bool done = FALSE;
+	double z, largest = 0.0;
+	parent_ == NULL ? modelViewMatrix_.setIdentity() : parent_->modelViewMatrix().setIdentity();
+	// Fit model to screen
+	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
+	for (i = atoms_.first(); i != NULL; i = i->next)
+	{
+		z = i->r().absMax();
+		if (z > largest) largest = z;
+	}
+	target.r() = cell_.centre();
+	target.r().add(0.0,0.0,cell_.lengths().z+largest);
+	modelViewMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
+	// Now, adjust camera matrix so that this atom is on-screen.
+	// Need to do a check for the viability of the canvas first...
+	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
+	{
+		if (prefs.hasPerspective())
+		{
+			do
+			{
+				// Project our local atom and grab the z screen coordinate
+				modelViewMatrix_.rows[3].z -= 1.0;
+				gui.mainWidget->updateTransformation(modelViewMatrix(), cell_.centre());
+				z = gui.mainWidget->modelToWorld(target.r()).z;
+			} while (z > -5.0);
+		}
+		else
+		{
+			do
+			{
+				// Project our local atom and grab the z screen coordinate
+				modelViewMatrix_.rows[3].z -= 1.0;
+				gui.mainWidget->modelToWorld(target.r(), &screenr);
+				done = TRUE;
+				if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
+				if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
+				if (screenr.z < 0.0) done = FALSE;
+			} while (!done);
+		}
+	}
+	else modelViewMatrix_.rows[3].set(0.0, 0.0, -10.0, 1.0);
+	// Log camera change
+	changeLog.add(Log::Camera);
+	msg.exit("Model::resetView");
+}
+
+// Rotate free
+void Model::axisRotateView(Vec3<double> vec, double angle)
+{
+	// Rotate the whole system by the amounts specified.
+	msg.enter("Model::axisRotateView");
+	static double theta, camrot;
+	static Mat4<double> newrotmat, oldrotmat;
+	if (parent_ == NULL)
+	{
+		// Generate quaternion
+		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle);
+		oldrotmat = modelViewMatrix_;
+		// Now, multiply our matrices together...
+		modelViewMatrix_ = newrotmat * oldrotmat;
+	}
+	else parent_->axisRotateView(vec, angle);
+	// Log camera change
+	changeLog.add(Log::Camera);
+	msg.exit("Model::axisRotateView");
 }
 
 // Set exact rotation of model (angles passed in degrees)
@@ -140,167 +199,15 @@ void Model::setRotation(double rotx, double roty)
 		cosy = cos(roty);
 		sinx = sin(rotx);
 		siny = sin(roty);
-		rotationMatrix_.rows[0].set(cosy,0.0,siny,0.0);
-		rotationMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-		rotationMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
-		rotationMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
+		modelViewMatrix_.rows[0].set(cosy,0.0,siny,0.0);
+		modelViewMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
+		modelViewMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
+		modelViewMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
 	}
 	else parent_->setRotation(rotx, roty);
-	// Recalculate view matrix
-	calculateViewMatrix();
 	// Log camera change
 	changeLog.add(Log::Camera);
 	msg.exit("Model::setRotation");
-}
-
-// Adjust Camera
-void Model::adjustCamera(double dx, double dy, double dz, double angle)
-{
-	// Adjust the models camera variables
-	msg.enter("Model::adjustCamera");
-	double sincam, coscam;
-	if (parent_ == NULL)
-	{
-		camera_.add(dx, -dy, dz);
-		// Never let camera z go below -1.0...
-		if (camera_.z > -1.0) camera_.z = -1.0;
-		cameraRotation_ = cameraRotation_ + angle;
-		if (cameraRotation_ > 2.0*PI) cameraRotation_ -= 2.0*PI;
-		coscam = cos(cameraRotation_);
-		sincam = sin(cameraRotation_);
-		// Now create the new matrix
-		cameraMatrix_.rows[0].set(coscam,-sincam,0.0,camera_.x*coscam-camera_.y*sincam);
-		cameraMatrix_.rows[1].set(sincam,coscam,0.0,camera_.x*sincam-camera_.y*coscam);
-		cameraMatrix_.rows[2].set(0.0,0.0,1.0,camera_.z);
-		cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
-	}
-	else parent_->adjustCamera(dx, dy, dz, angle);
-	calculateViewMatrix();
-	// Log camera change
-	changeLog.add(Log::Camera);
-	msg.exit("Model::adjustCamera");
-}
-
-// Adjust camera zoom
-void Model::adjustZoom(bool zoomin)
-{
-	msg.enter("Model::adjustZoom");
-	double dz = (parent_ == NULL ? -camera_.z : -parent_->camera().z);
-	dz *= prefs.zoomThrottle();
-	if (zoomin) dz = -dz;
-	adjustCamera(0.0,0.0,dz,0.0);
-	gui.mainWidget->doProjection();
-	msg.exit("Model::adjustZoom");
-}
-
-// Reset Camera
-void Model::resetCamera(const Vec3<double> &newr)
-{
-	// Adjust the models camera variables
-	msg.enter("Model::resetCamera");
-	// Reset current camera position
-	camera_.zero();
-	cameraRotation_ = 0.0;
-	// Set specified position
-	adjustCamera(newr.x, -newr.y, newr.z, 0.0);
-	// Recalculate viewing matrix
-	calculateViewMatrix();
-	// Log camera change
-	changeLog.add(Log::Camera);
-	msg.exit("Model::resetCamera");
-}
-
-// Reset View
-void Model::resetView()
-{
-	// Reset the modelview matrix and the camera
-	msg.enter("Model::resetView");
-	Vec3<double> newcam;
-	Vec4<double> screenr;
-	Atom *i, target;
-	bool done = FALSE;
-	double z, largest = 0.0;
-	Mat4<double> dummy;
-	parent_ == NULL ? rotationMatrix_.setIdentity() : parent_->setRotationMatrix( dummy );
-	// Fit model to screen
-	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
-	for (i = atoms_.first(); i != NULL; i = i->next)
-	{
-		z = i->r().absMax();
-		if (z > largest) largest = z;
-	}
-	target.r() = cell_.centre();
-	target.r().add(0.0,0.0,cell_.lengths().z+largest);
-	newcam.set(0.0,0.0,0.0);
-	resetCamera(newcam);
-	// Now, adjust camera matrix so that this atom is on-screen.
-	// Need to do a check for the viability of the canvas first...
-	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
-	{
-		if (prefs.hasPerspective())
-		{
-			do
-			{
-				// Project our local atom and grab the z screen coordinate
-				adjustCamera(0.0,0.0,-1.0,0.0);
-				calculateViewMatrix();
-				gui.mainWidget->updateTransformation(viewMatrix(), cell_.centre());
-				z = gui.mainWidget->modelToWorld(target.r()).z;
-			} while (z > -5.0);
-		}
-		else
-		{
-			do
-			{
-				// Project our local atom and grab the z screen coordinate
-				adjustCamera(0.0,0.0,-1.0,0.0);
-				calculateViewMatrix();
-				gui.mainWidget->modelToWorld(target.r(), &screenr);
-				done = TRUE;
-				if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
-				if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
-				if (screenr.z < 0.0) done = FALSE;
-			} while (!done);
-		}
-	}
-	else
-	{
-		newcam.set(0.0,0.0,-10.0);
-		resetCamera(newcam);
-	}
-	// Recalculate viewing matrix
-	calculateViewMatrix();
-	// Log camera change
-	changeLog.add(Log::Camera);
-	msg.exit("Model::resetView");
-}
-
-// Rotate free
-void Model::axisRotateView(Vec3<double> vec, double angle)
-{
-	// Rotate the whole system by the amounts specified.
-	msg.enter("Model::axisRotateView");
-	static double theta, camrot;
-	static Mat4<double> newrotmat, oldrotmat;
-	if (parent_ == NULL)
-	{
-		camrot = cameraRotation_;
-		camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
-		// Account for the orientation of the current camera up vector.
-	// 	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;   BROKEN?
-	// 	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
-		// Generate quaternion
-		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle);
-		oldrotmat = rotationMatrix_;
-		// Now, multiply our matrices together...
-		rotationMatrix_ = newrotmat * oldrotmat;
-	}
-	else parent_->axisRotateView(vec, angle);
-	// Recalculate view matrix
-	calculateViewMatrix();
-	// Log camera change
-	changeLog.add(Log::Camera);
-	msg.exit("Model::axisRotateView");
 }
 
 // Rotate free
@@ -308,57 +215,45 @@ void Model::rotateView(double dx, double dy)
 {
 	// Rotate the whole system by the amounts specified.
 	msg.enter("Model::rotateView");
-	static double rotx, roty, theta, sinx, cosx, siny, cosy, camrot;
+	double rotx, roty, sinx, cosx, siny, cosy;
 	static Mat4<double> newrotmat, oldrotmat;
 	if (parent_ == NULL)
 	{
-		camrot = cameraRotation_;
-		camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
-		// Account for the orientation of the current camera up vector.
-		rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
-		roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
+		rotx = -dy / 50.0;
+		roty = -dx / 50.0;
 		// Calculate cos/sin terms for needless speedup!
 		cosx = cos(rotx);
 		cosy = cos(roty);
 		sinx = sin(rotx);
 		siny = sin(roty);
-		newrotmat.rows[0].set(cosy,0.0,siny,0.0);
-		newrotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-		newrotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
-		newrotmat.rows[3].set(0.0,0.0,0.0,1.0);
-		oldrotmat = rotationMatrix_;
-		// Now, multiply our matrices together...
-		rotationMatrix_ = newrotmat * oldrotmat;
+
+		// Construct muptiplier matrix - will contain old translation / scaling values
+		newrotmat.rows[0].set(cosy,0.0,siny,modelViewMatrix_.rows[0].w);
+		newrotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,modelViewMatrix_.rows[1].w);
+		newrotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy,modelViewMatrix_.rows[2].w);
+		newrotmat.rows[3] = modelViewMatrix_.rows[3];
+
+		// Reset translation and scaling on original matrix, and multiply
+		modelViewMatrix_.rows[0].w = 0.0;
+		modelViewMatrix_.rows[1].w = 0.0;
+		modelViewMatrix_.rows[2].w = 0.0;
+		modelViewMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
+		modelViewMatrix_ *= newrotmat;
 	}
 	else parent_->rotateView(dx, dy);
-	// Recalculate view matrix
-	calculateViewMatrix();
 	// Log camera change
 	changeLog.add(Log::Camera);
 	msg.exit("Model::rotateView");
 }
 
-// Calculate View Matrix
-void Model::calculateViewMatrix()
+// Calculate and return inverse of current view matrix
+Mat4<double> &Model::modelViewMatrixInverse()
 {
-	// Calculate full viewing matrix
-	if (parent_ == NULL) viewMatrix_ = cameraMatrix_ * rotationMatrix_;
-	else viewMatrix_ = parent_->cameraMatrix() * parent_->rotationMatrix();
+	// Grab current modelview matrix
+	modelViewMatrixInverse_ = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
 	// Calculate inverse
-	viewMatrixInverse_ = viewMatrix_;
-	viewMatrixInverse_.invert();
-}
-
-// Return current view matrix
-Mat4<double> &Model::viewMatrix()
-{
-	return (parent_ == NULL ? viewMatrix_ : parent_->viewMatrix());
-}
-
-// Return the camera position vector
-Vec3<double> Model::camera() const
-{
-	return (parent_ == NULL ? camera_ : parent_->camera());
+	modelViewMatrixInverse_.invert();
+	return modelViewMatrixInverse_;
 }
 
 // Set view to be along the specified cartesian axis
@@ -410,25 +305,25 @@ Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
 	static Vec3<double> newpoint;
 	static Mat4<double> rotmat;
 	double radius;
-	drawdepth = -camera_.z + drawdepth;
+	drawdepth = -modelViewMatrix_.rows[3].z + drawdepth;
 //      printf("DEPTH = %f, cameraZ= %f\n",drawdepth, camera_.z);
 	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
-	newpoint.set(camera_.x, camera_.y, drawdepth);
+	newpoint.set(modelViewMatrix_.rows[3].x, modelViewMatrix_.rows[3].y, drawdepth);
 	//printf("newpoint1 "); newpoint.print();
-	rotmat = rotationMatrix_;
+	rotmat = modelViewMatrix_;
 	rotmat.invert();
 	newpoint *= rotmat;
 	//printf("newpoint2 "); newpoint.print();
-	guidepoint = gui.mainWidget->worldToScreen(newpoint);
+	gui.mainWidget->modelToWorld(newpoint, &guidepoint);
 	//printf("guidepoint "); guidepoint.print();
 	radius = guidepoint.w;
 	// Now, calculate the position of the clicked point on the guide
 	newpoint.x = sx - (gui.mainWidget->width() / 2.0 );
 	newpoint.y = (gui.mainWidget->height() - sy) - (gui.mainWidget->height() / 2.0 );
 	newpoint /= radius;
-	newpoint.z = drawdepth + camera_.z;
+	newpoint.z = drawdepth + modelViewMatrix_.rows[3].z;
 	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
-	newpoint *= viewMatrixInverse_;
+	newpoint *= modelViewMatrixInverse();
 	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
 	newpoint += cell_.centre();
 //      newpoint.print();

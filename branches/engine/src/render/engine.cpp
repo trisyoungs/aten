@@ -214,35 +214,6 @@ Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Vec4<double> *scr
 	return worldr;
 }
 
-// Project the specified world coordinates into 2D screen coords
-Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v)
-{
-	// The returned vec4's 'w' component is the unit 'radius' at that point.
-	msg.enter("RenderEngine::worldToScreen");
-	static Vec4<double> modelr, screenr, worldr, result;
-	static double x1,x2,radius;
-	// Projection formula is : worldr = P x M x modelr
-	// Get the 3D coordinates of the atom - Multiply by modelview matrix 'view'
-	modelr.set(v.x, v.y, v.z, 1.0);
-	worldr = modelTransformationMatrix_ * modelr;
-	//viewMatrix_.print();
-	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
-	screenr = modelProjectionMatrix_ * worldr;
-	screenr.x /= screenr.w;
-	screenr.y /= screenr.w;
-	result = screenr;
-	x1 = viewportMatrix_[0] + viewportMatrix_[2]*(screenr.x+1)/2.0;
-	worldr.x += 1.0;
-	screenr = modelProjectionMatrix_ * worldr;
-	screenr.x /= screenr.w;
-	x2 = viewportMatrix_[0] + viewportMatrix_[2]*(screenr.x+1)/2.0;
-	radius = fabs(x2 - x1);
-	// Store info and return
-	result.w = radius;
-	msg.exit("RenderEngine::worldToScreen");
-	return result;
-}
-
 // Update transformation matrix
 void RenderEngine::setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre)
 {

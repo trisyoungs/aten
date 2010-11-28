@@ -23,7 +23,7 @@
 #define ATEN_GENERATOR_H
 
 #include "base/dnchar.h"
-#include "templates/vector3.h"
+#include "base/matrix.h"
 #include "templates/list.h"
 
 // Symmetry generator
@@ -42,7 +42,7 @@ class Generator
 	// Generator text (if any)
 	Dnchar name_;
 	// Generator matrix
-	Mat4<double> matrix_;
+	Matrix matrix_;
 	// Set partial element of matrix
 	bool setMatrixPart(int row, const char *s);
 
@@ -56,7 +56,7 @@ class Generator
 	// Return text 'name' of generator
 	const char *name() const;
 	// Return operator matrix of generator
-	Mat4<double> &matrix();
+	 Matrix &matrix();
 };
 
 #endif

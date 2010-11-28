@@ -60,8 +60,10 @@ void Model::prepareTransform()
 	}
 	transformCOG /= selection_.nItems();
 	translateScale_ /= selection_.nItems();
-// 	Vec4<double> pvec = gui.mainView.worldToScreen(transformCOG, viewMatrix_);
-// 	translateScale_ = pvec.w;
+	printf("SELCOG = "); transformCOG.print();
+	Vec4<double> pvec;
+	gui.mainWidget->modelToWorld(transformCOG, &pvec);
+	translateScale_ = pvec.w;
 	msg.exit("Model::prepareTransform");
 }
 
@@ -99,23 +101,33 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	msg.enter("Model::rotateSelectionWorld");
 	static double rotx, roty, cosx, cosy, sinx, siny;
 	static Vec3<double> newr;
-	static Mat4<double> rotmat;
+	static Mat4<double> rotmat, inverse;
 	rotx = dy / 20.0;
 	roty = dx / 20.0;
-	cosx = cos(rotx);
-	cosy = cos(roty);
-	sinx = sin(rotx);
-	siny = sin(roty);
-	rotmat.set(0,cosy,0.0,siny,0.0);
-	rotmat.set(1,-sinx*-siny,cosx,-sinx*cosy,0.0);
-	rotmat.set(2,cosx*-siny,sinx,cosx*cosy,0.0);
-	rotmat.set(3,0.0,0.0,0.0,1.0);
+// 	cosx = cos(rotx);
+// 	cosy = cos(roty);
+// 	sinx = sin(rotx);
+// 	siny = sin(roty);
+// 	rotmat.set(0,cosy,0.0,siny,0.0);
+// 	rotmat.set(1,-sinx*-siny,cosx,-sinx*cosy,0.0);
+// 	rotmat.set(2,cosx*-siny,sinx,cosx*cosy,0.0);
+// 	rotmat.set(3,0.0,0.0,0.0,1.0);
+	rotmat.createRotationXY(rotx, roty);
+	inverse = modelViewMatrixInverse();
+	inverse.print();
+// 	inverse.rows[3].set(0.0, 0.0, 0.0, 1.0);
+
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (gui.mainWidget->modelToWorld(ri->item->r()) - transformCOG)) + transformCOG;
-		newr *= viewMatrixInverse_;
-		ri->item->r() = newr + cell_.centre();
+		printf("New world cooords of atom %i are ", ri->item->id()); newr.print();
+		ri->item->r().x = newr.x*inverse.rows[0].x + newr.y*inverse.rows[1].x + newr.z*inverse.rows[2].x + inverse.rows[3].x;
+		ri->item->r().y = newr.x*inverse.rows[0].y + newr.y*inverse.rows[1].y + newr.z*inverse.rows[2].y + inverse.rows[3].y;
+		ri->item->r().z = newr.x*inverse.rows[0].z + newr.y*inverse.rows[1].z + newr.z*inverse.rows[2].z + inverse.rows[3].z;
+// 		newr *= inverse;
+		printf("New model cooords of atom %i are ", ri->item->id()); ri->item->r().print();
+// 		ri->item->r() = newr + cell_.centre();		// BROKEN? Necessary?
 	}
 
 	// Update model measurements
@@ -193,15 +205,16 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 {
 	// Translate the selected atoms in the local XY plane
 	msg.enter("Model::translateSelectionWorld");
-	static Vec3<double> newr;
+	Vec3<double> newr;
+	Mat4<double> inverse;
 	// No need to account for orientation / rotation of view, since we do the transformation in world coordinates.
 	// So, take the local coordinates of each selected atom and add our position delta to it.
 	// We then unproject this new local coordinate to get the new model (world) coordinate.
-	// Grab unit cell origin
+	inverse = modelViewMatrixInverse();
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		newr = gui.mainWidget->modelToWorld(ri->item->r()) + v;
-		newr = (viewMatrixInverse_ * newr) + cell_.centre();	// BROKEN?
+		newr = (inverse * newr) + cell_.centre();	// BROKEN?
 		positionAtom(ri->item, newr);
 	}
 

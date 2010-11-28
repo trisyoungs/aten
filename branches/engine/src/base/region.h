@@ -61,9 +61,9 @@ class ComponentRegion
 	// Whether the region should be rotated
 	bool rotateRegion_;
 	// Rotation matrix for region (f the region is to be rotated)
-	Mat3<double> rotationMatrix_;
+	Matrix rotationMatrix_;
 	// Inverse rotation matrix for region (f the region is to be rotated)
-	Mat3<double> inverseRotationMatrix_;
+	Matrix inverseRotationMatrix_;
 	// Length of cylindrical ComponentRegion
 	double length_;
 	// Whether to allow overlap with other ComponentRegions, or to avoid them

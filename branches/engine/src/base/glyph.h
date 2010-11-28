@@ -31,6 +31,7 @@
 // Forward declarations
 class Model;
 class Atom;
+class GLMatrix;
 
 // Glyph data
 class GlyphData
@@ -116,7 +117,7 @@ class Glyph
 	// Vector data for Glyph
 	List<GlyphData> data_;
 	// Rotation matrix for the glyph (NULL if not rotated)
-	Mat3<double> *rotation_;
+	GLMatrix *rotation_;
 
 	public:
 	// Returns the number of data set for the Glyph
@@ -135,10 +136,8 @@ class Glyph
 	void setColour(double r, double g, double b, double a = 1.0f);
 	// Return whether glyph has been rotated (whether a rotation matrix exists)
 	bool rotated() const;
-	// Return rotation matrix suitable for GL
-	double *rotationForGL();
 	// Return rotation matrix
-	Mat3<double> *rotation();
+	GLMatrix *matrix();
 	// Set element of rotation matrix
 	void setRotationElement(int el, double d);
 	// Get element of rotation matrix

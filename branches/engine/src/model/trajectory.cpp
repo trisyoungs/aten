@@ -258,8 +258,6 @@ void Model::seekFirstTrajectoryFrame()
 	}
 	else seekTrajectoryFrame(0);
 	changeLog.add(Log::Visual);
-	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
-	trajectoryCurrentFrame_->calculateViewMatrix();
 	msg.exit("Model::seekFirstTrajectoryFrame");
 }
 
@@ -289,8 +287,6 @@ void Model::seekNextTrajectoryFrame()
 	else seekTrajectoryFrame(trajectoryFrameIndex_+1);
 	changeLog.add(Log::Visual);
 	//printf("Frame = %p, parent = %p (model = %p)\n",trajectoryCurrentFrame_,trajectoryCurrentFrame_->trajectoryParent_,this);
-	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
-	trajectoryCurrentFrame_->calculateViewMatrix();
 	msg.exit("Model::seekNextTrajectoryFrame");
 }
 
@@ -319,8 +315,6 @@ void Model::seekPreviousTrajectoryFrame()
 	}
 	else seekTrajectoryFrame(trajectoryFrameIndex_-1);
 	changeLog.add(Log::Visual);
-	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
-	trajectoryCurrentFrame_->calculateViewMatrix();
 	msg.exit("Model::seekPreviousTrajectoryFrame");
 }
 
@@ -349,8 +343,6 @@ void Model::seekLastTrajectoryFrame()
 	}
 	else seekTrajectoryFrame(nTrajectoryFrames()-1);
 	changeLog.add(Log::Visual);
-	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
-	trajectoryCurrentFrame_->calculateViewMatrix();
 	msg.exit("Model::seekLastTrajectoryFrame");
 }
 
@@ -430,8 +422,6 @@ void Model::seekTrajectoryFrame(int frameno)
 	}
 	trajectoryFrameIndex_ = frameno;
 	changeLog.add(Log::Visual);
-	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
-	trajectoryCurrentFrame_->calculateViewMatrix();
 	msg.print("Seek to frame %i\n", trajectoryFrameIndex_+1);
 	msg.exit("Model::seekTrajectoryFrame");
 }

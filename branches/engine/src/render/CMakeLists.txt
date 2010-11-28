@@ -1,13 +1,11 @@
 add_library(render
 engine.h
-glmatrix.h
 triangles.h
 atoms.cpp 
 colourscale.cpp
 engine.cpp
 engine_render.cpp
 extra.cpp 
-glmatrix.cpp
 render.cpp 
 surface.cpp
 triangles.cpp

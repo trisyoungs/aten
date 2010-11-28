@@ -127,7 +127,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	textPrimitives_.forgetAll();
 
 	// Set initial transformation matrix, including any translation occurring from cell...
-	setTransformationMatrix(source->viewMatrix(), source->cell()->centre());
+	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
 	transformZ.set(modelTransformationMatrix_[2], modelTransformationMatrix_[6], modelTransformationMatrix_[10], modelTransformationMatrix_[14]);
 	
 	// Grab global style values
@@ -147,8 +147,10 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glMultMatrixd(globeProjectionMatrix_.matrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glMultMatrixd(source->rotationMatrix().forGL());
-	glColor4f(0.5f,0.5f,0.5f,1.0f);
+	A = modelTransformationMatrix_;
+	A.removeTranslationAndScaling();
+	glMultMatrixd(A.matrix());
+	glColor4f(0.9f,0.9f,0.9f,1.0f);
 	rotationGlobe_.sendToGL();
 	glColor4f(0.3f,0.3f,0.3f,1.0f);
 	rotationGlobeAxes_.sendToGL();
@@ -167,7 +169,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		// Setup pen colour
 // 		prefs.copyColour(Prefs::ForegroundColour, colour_i);
 		glColor4f(0.5f,0.5f,0.5f,1.0f);
-		A = source->viewMatrix() * source->cell()->axes();
+		A = source->modelViewMatrix() * source->cell()->axes();
 		glMultMatrixd(A.matrix());
 		wireCube_.sendToGL();
 		glTranslated(-0.5, -0.5, -0.5);

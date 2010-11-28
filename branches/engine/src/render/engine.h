@@ -87,8 +87,6 @@ class RenderEngine
 	void setupView(GLint x, GLint y, GLint w, GLint h);
 	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
 	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
-	// Project the specified world coordinates into 2D screen coords
-	Vec4<double> &worldToScreen(const Vec3<double> &vec);
 	// Update transformation matrix
 	void setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre);
 

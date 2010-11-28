@@ -1,6 +1,6 @@
 /*
-	*** Specialized OpenGL 4x4 Matrix class
-	*** src/render/glmatrix.cpp
+	*** Column-Major (OpenGL-friendly) 4x4 Matrix class
+	*** src/base/matrix.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "render/glmatrix.h"
+#include "base/matrix.h"
 
 /*
 // Operators
 */
 
 // Matrix multiply (operator *) (return new matrix)
-GLMatrix GLMatrix::operator*(const GLMatrix &B) const
+Matrix Matrix::operator*(const Matrix &B) const
 {
 	// [ row(A|this).column(B) ]
-	GLMatrix AB;
+	Matrix AB;
 	AB.matrix_[0] = matrix_[0]*B.matrix_[0] + matrix_[4]*B.matrix_[1] + matrix_[8]*B.matrix_[2] + matrix_[12]*B.matrix_[3];
 	AB.matrix_[1] = matrix_[1]*B.matrix_[0] + matrix_[5]*B.matrix_[1] + matrix_[9]*B.matrix_[2] + matrix_[13]*B.matrix_[3];
 	AB.matrix_[2] = matrix_[2]*B.matrix_[0] + matrix_[6]*B.matrix_[1] + matrix_[10]*B.matrix_[2] + matrix_[14]*B.matrix_[3];
@@ -52,35 +52,7 @@ GLMatrix GLMatrix::operator*(const GLMatrix &B) const
 	return AB;
 }
 
-// Matrix multiply (operator *) (return new matrix)
-GLMatrix GLMatrix::operator*(const Mat4<double> &B) const
-{
-	// [ row(A|this).column(B) ]
-	GLMatrix AB;
-	AB.matrix_[0] = matrix_[0]*B.rows[0].x + matrix_[4]*B.rows[1].x + matrix_[8]*B.rows[2].x + matrix_[12]*B.rows[3].x;
-	AB.matrix_[1] = matrix_[1]*B.rows[0].x + matrix_[5]*B.rows[1].x + matrix_[9]*B.rows[2].x + matrix_[13]*B.rows[3].x;
-	AB.matrix_[2] = matrix_[2]*B.rows[0].x + matrix_[6]*B.rows[1].x + matrix_[10]*B.rows[2].x + matrix_[14]*B.rows[3].x;
-	AB.matrix_[3] = matrix_[3]*B.rows[0].x + matrix_[7]*B.rows[1].x + matrix_[11]*B.rows[2].x + matrix_[15]*B.rows[3].x;
-
-	AB.matrix_[4] = matrix_[0]*B.rows[0].y + matrix_[4]*B.rows[1].y + matrix_[8]*B.rows[2].y + matrix_[12]*B.rows[3].y;
-	AB.matrix_[5] = matrix_[1]*B.rows[0].y + matrix_[5]*B.rows[1].y + matrix_[9]*B.rows[2].y + matrix_[13]*B.rows[3].y;
-	AB.matrix_[6] = matrix_[2]*B.rows[0].y + matrix_[6]*B.rows[1].y + matrix_[10]*B.rows[2].y + matrix_[14]*B.rows[3].y;
-	AB.matrix_[7] = matrix_[3]*B.rows[0].y + matrix_[7]*B.rows[1].y + matrix_[11]*B.rows[2].y + matrix_[15]*B.rows[3].y;
-
-	AB.matrix_[8] = matrix_[0]*B.rows[0].z + matrix_[4]*B.rows[1].z + matrix_[8]*B.rows[2].z + matrix_[12]*B.rows[3].z;
-	AB.matrix_[9] = matrix_[1]*B.rows[0].z + matrix_[5]*B.rows[1].z + matrix_[9]*B.rows[2].z + matrix_[13]*B.rows[3].z;
-	AB.matrix_[10] = matrix_[2]*B.rows[0].z + matrix_[6]*B.rows[1].z + matrix_[10]*B.rows[2].z + matrix_[14]*B.rows[3].z;
-	AB.matrix_[11] = matrix_[3]*B.rows[0].z + matrix_[7]*B.rows[1].z + matrix_[11]*B.rows[2].z + matrix_[15]*B.rows[3].z;
-
-	AB.matrix_[12] = matrix_[0]*B.rows[0].w + matrix_[4]*B.rows[1].w + matrix_[8]*B.rows[2].w + matrix_[12]*B.rows[3].w;
-	AB.matrix_[13] = matrix_[1]*B.rows[0].w + matrix_[5]*B.rows[1].w + matrix_[9]*B.rows[2].w + matrix_[13]*B.rows[3].w;
-	AB.matrix_[14] = matrix_[2]*B.rows[0].w + matrix_[6]*B.rows[1].w + matrix_[10]*B.rows[2].w + matrix_[14]*B.rows[3].w;
-	AB.matrix_[15] = matrix_[3]*B.rows[0].w + matrix_[7]*B.rows[1].w + matrix_[11]*B.rows[2].w + matrix_[15]*B.rows[3].w;
-	return AB;
-}
-
-
-Vec3<double> GLMatrix::operator*(const Vec3<double> &v) const
+Vec3<double> Matrix::operator*(const Vec3<double> &v) const
 {
 	Vec3<double> result;
 	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8] + matrix_[12];
@@ -89,7 +61,7 @@ Vec3<double> GLMatrix::operator*(const Vec3<double> &v) const
 	return result;
 }
 
-Vec4<double> GLMatrix::operator*(const Vec4<double> &v) const
+Vec4<double> Matrix::operator*(const Vec4<double> &v) const
 {
 	Vec4<double> result;
 	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8] + v.w*matrix_[12];
@@ -100,10 +72,10 @@ Vec4<double> GLMatrix::operator*(const Vec4<double> &v) const
 }
 
 // Matrix multiply (operator *=)
-GLMatrix &GLMatrix::operator*=(const GLMatrix &B)
+Matrix &Matrix::operator*=(const Matrix &B)
 {
 	// [ row(A|this).column(B) ]
-	GLMatrix AB;
+	Matrix AB;
 	AB.matrix_[0] = matrix_[0]*B.matrix_[0] + matrix_[4]*B.matrix_[1] + matrix_[8]*B.matrix_[2] + matrix_[12]*B.matrix_[3];
 	AB.matrix_[1] = matrix_[1]*B.matrix_[0] + matrix_[5]*B.matrix_[1] + matrix_[9]*B.matrix_[2] + matrix_[13]*B.matrix_[3];
 	AB.matrix_[2] = matrix_[2]*B.matrix_[0] + matrix_[6]*B.matrix_[1] + matrix_[10]*B.matrix_[2] + matrix_[14]*B.matrix_[3];
@@ -127,37 +99,17 @@ GLMatrix &GLMatrix::operator*=(const GLMatrix &B)
 	return *this;
 }
 
-void GLMatrix::operator=(const Mat4<double> &B)
-{
-	matrix_[0] = B.rows[0].x;
-	matrix_[1] = B.rows[1].x;
-	matrix_[2] = B.rows[2].x;
-	matrix_[3] = B.rows[3].x;
-	matrix_[4] = B.rows[0].y;
-	matrix_[5] = B.rows[1].y;
-	matrix_[6] = B.rows[2].y;
-	matrix_[7] = B.rows[3].y;
-	matrix_[8] = B.rows[0].z;
-	matrix_[9] = B.rows[1].z;
-	matrix_[10] = B.rows[2].z;
-	matrix_[11] = B.rows[3].z;
-	matrix_[12] = B.rows[0].w;
-	matrix_[13] = B.rows[1].w;
-	matrix_[14] = B.rows[2].w;
-	matrix_[15] = B.rows[3].w;
-}
-
-GLfloat GLMatrix::operator[](int index)
+Matrix &Matrix::operator[](int index)
 {
 	return matrix_[index];
 }
 
 /*
-// Methods
+// Basic Set/Get
 */
 
 // Reset to the identity matrix
-void GLMatrix::setIdentity()
+void Matrix::setIdentity()
 {
 	matrix_[0] = 1.0;
 	matrix_[1] = 0.0;
@@ -177,8 +129,18 @@ void GLMatrix::setIdentity()
 	matrix_[15] = 1.0;
 }
 
+// Print matrix
+void Matrix::print() const
+{
+	printf("GLMat      X        Y         Z    Translate\n");
+	printf("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[0], matrix_[4], matrix_[8], matrix_[12]);
+	printf("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[1], matrix_[5], matrix_[9], matrix_[13]);
+	printf("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[2], matrix_[6], matrix_[10], matrix_[14]);
+	printf("Scale   %8.4f %8.4f %8.4f %8.4f\n", matrix_[3], matrix_[7], matrix_[11], matrix_[15]);
+}
+
 // Set zero matrix
-void GLMatrix::zero()
+void Matrix::zero()
 {
 	matrix_[0] = 0.0;
 	matrix_[1] = 0.0;
@@ -198,8 +160,115 @@ void GLMatrix::zero()
 	matrix_[15] = 0.0;
 }
 
+
+// Return matrix array
+double *Matrix::matrix()
+{
+	return matrix_;
+}
+
+// Return transpose of current matrix
+Matrix &Matrix::transpose()
+{
+	static Matrix A;
+	A.matrix_[0] = matrix_[0];
+	A.matrix_[1] = matrix_[4];
+	A.matrix_[2] = matrix_[8];
+	A.matrix_[3] = matrix_[12];
+	A.matrix_[4] = matrix_[1];
+	A.matrix_[5] = matrix_[5];
+	A.matrix_[6] = matrix_[9];
+	A.matrix_[7] = matrix_[13];
+	A.matrix_[8] = matrix_[2];
+	A.matrix_[9] = matrix_[6];
+	A.matrix_[10] = matrix_[10];
+	A.matrix_[11] = matrix_[14];
+	A.matrix_[12] = matrix_[3];
+	A.matrix_[13] = matrix_[7];
+	A.matrix_[14] = matrix_[11];
+	A.matrix_[15] = matrix_[15];
+	return A;
+}
+
+// Calculate determinant
+double Matrix::determinant()
+{
+
+	double a = matrix_[0] * (matrix_[5]*(matrix_[10]*matrix_[15]-matrix_[11]*matrix_[14]) - matrix_[9]*(matrix_[6]*matrix_[15]-matrix_[7]*matrix_[14]) + matrix_[13]*(matrix_[6]*matrix_[11]-matrix_[7]*matrix_[10]) );
+	double b = matrix_[4] * (matrix_[1]*(matrix_[10]*matrix_[15]-matrix_[11]*matrix_[14]) - matrix_[9]*(matrix_[2]*matrix_[15]-matrix_[3]*matrix_[14]) + matrix_[13]*(matrix_[2]*matrix_[11]-matrix_[3]*matrix_[10]) );
+	double c = matrix_[8] * (matrix_[1]*(matrix_[6]*matrix_[15]-matrix_[7]*matrix_[14]) - matrix_[5]*(matrix_[2]*matrix_[15]-matrix_[3]*matrix_[14]) + matrix_[13]*(matrix_[2]*matrix_[7]-matrix_[3]*matrix_[6]) );
+	double d = matrix_[12] * (matrix_[1]*(matrix_[6]*matrix_[11]-matrix_[7]*matrix_[10]) - matrix_[5]*(matrix_[2]*matrix_[11]-matrix_[3]*matrix_[10]) + matrix_[9]*(matrix_[2]*matrix_[7]-matrix_[3]*matrix_[6]) );
+	return (a-b+c-d);
+}
+
+/*
+// Column Operations
+*/
+
+// Copy column contents to supplied Vec3
+Vec4<double> Matrix::columnAsVec3(int col)
+{
+	Vec3<double> vec(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2]);
+	return vec;
+}
+
+// Copy column contents to supplied Vec4
+Vec4<double> Matrix::columnAsVec4(int col)
+{
+	Vec4<double> vec(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2], matrix_[col*4+3]);
+	return vec;
+}
+
+// Set specified column from supplied values
+void Matrix::setColumn(int col, double x, double y, double z, double w)
+{
+	matrix_[col*4] = x;
+	matrix_[col*4+1] = y;
+	matrix_[col*4+2] = z;
+	matrix_[col*4+3] = w;
+}
+
+// Set specified column from supplied Vec3
+void Matrix::setColumn(int col, Vec3<double> &vec, double w)
+{
+	matrix_[col*4] = vec.x;
+	matrix_[col*4+1] = vec.y;
+	matrix_[col*4+2] = vec.z;
+	matrix_[col*4+3] = w;
+}
+
+// Set specified column from supplied Vec4
+void Matrix::setColumn(int col, Vec4<double> &vec)
+{
+	matrix_[col*4] = vec.x;
+	matrix_[col*4+1] = vec.y;
+	matrix_[col*4+2] = vec.z;
+	matrix_[col*4+3] = vec.w;
+}
+
+// Calculate column magnitude
+double Matrix::columnMagnitude(int column)
+{
+	double mag = 0.0;
+	for (int n=column*4; n<column*4+4; ++n) mag += matrix_[n];
+	return mag;
+}
+
+// Multiply column by single value
+void Matrix::multiplyColumn(int col, double d)
+{
+	matrix_[col*4] *= d;
+	matrix_[col*4+1] *= d;
+	matrix_[col*4+2] *= d;
+	matrix_[col*4+3] *= d;
+}
+
+/*
+// Rotations
+*/
+
 // Create rotation matrix about X
-void GLMatrix::createRotationX(double angle)
+void Matrix::createRotationX(double angle)
 {
 	double cosx, sinx, theta = angle/DEGRAD;
 	cosx = cos(theta);
@@ -223,7 +292,7 @@ void GLMatrix::createRotationX(double angle)
 }
 
 // Create XY rotation matrix
-void GLMatrix::createRotationXY(double anglex, double angley)
+void Matrix::createRotationXY(double anglex, double angley)
 {
 	double cosx, sinx, cosy, siny, thetax = anglex/DEGRAD, thetay = angley/DEGRAD;
 	cosx = cos(thetax);
@@ -249,7 +318,7 @@ void GLMatrix::createRotationXY(double anglex, double angley)
 }
 
 // Create rotation matrix about Y
-void GLMatrix::createRotationY(double angle)
+void Matrix::createRotationY(double angle)
 {
 	double cosx, sinx, theta = angle/DEGRAD;
 	cosx = cos(theta);
@@ -273,7 +342,7 @@ void GLMatrix::createRotationY(double angle)
 }
 
 // Create rotation matrix about Z
-void GLMatrix::createRotationZ(double angle)
+void Matrix::createRotationZ(double angle)
 {
 	double cosx, sinx, theta = angle/DEGRAD;
 	cosx = cos(theta);
@@ -297,7 +366,7 @@ void GLMatrix::createRotationZ(double angle)
 }
 
 // Create axis rotation quaternion
-void GLMatrix::createRotationAxis(double ax, double ay, double az, double angle, bool normalise)
+void Matrix::createRotationAxis(double ax, double ay, double az, double angle, bool normalise)
 {
 	double cosx, sinx, theta = angle/DEGRAD;
 	if (normalise)
@@ -328,7 +397,7 @@ void GLMatrix::createRotationAxis(double ax, double ay, double az, double angle,
 }
 
 // Apply rotation about X axis
-void GLMatrix::applyRotationX(double angle)
+void Matrix::applyRotationX(double angle)
 {
 	double cosx, sinx, theta = angle/DEGRAD, temp[4];
 	cosx = cos(theta);
@@ -352,7 +421,7 @@ void GLMatrix::applyRotationX(double angle)
 }
 
 // Apply axis rotation quaternion
-void GLMatrix::applyRotationAxis(double ax, double ay, double az, double angle, bool normalise)
+void Matrix::applyRotationAxis(double ax, double ay, double az, double angle, bool normalise)
 {
 	double cosx, sinx, theta = angle/DEGRAD, temp[8], multipliers[16];
 	if (normalise)
@@ -399,8 +468,12 @@ void GLMatrix::applyRotationAxis(double ax, double ay, double az, double angle, 
 	matrix_[7] = temp[7];
 }
 
+/*
+// Translations
+*/
+
 // Apply a translation to the matrix (as glTranslated would do)
-void GLMatrix::createTranslation(double dx, double dy, double dz)
+void Matrix::createTranslation(double dx, double dy, double dz)
 {
 	matrix_[0] = 1.0;
 	matrix_[1] = 0.0;
@@ -421,7 +494,7 @@ void GLMatrix::createTranslation(double dx, double dy, double dz)
 }
 
 // Apply a translation to the matrix (as glTranslated would do)
-void GLMatrix::applyTranslation(double dx, double dy, double dz)
+void Matrix::applyTranslation(double dx, double dy, double dz)
 {
 	matrix_[12] += matrix_[0]*dx + matrix_[4]*dy + matrix_[8]*dz;
 	matrix_[13] += matrix_[1]*dx + matrix_[5]*dy + matrix_[9]*dz;
@@ -429,7 +502,7 @@ void GLMatrix::applyTranslation(double dx, double dy, double dz)
 }
 
 // Apply a translation to the matrix (as glTranslated would to)
-void GLMatrix::applyTranslation(Vec3<double> vec)
+void Matrix::applyTranslation(Vec3<double> vec)
 {
 	matrix_[12] += matrix_[0]*vec.x + matrix_[4]*vec.y + matrix_[8]*vec.z;
 	matrix_[13] += matrix_[1]*vec.x + matrix_[5]*vec.y + matrix_[9]*vec.z;
@@ -437,15 +510,19 @@ void GLMatrix::applyTranslation(Vec3<double> vec)
 }
 
 // Add a translation to the matrix
-void GLMatrix::translate(double dx, double dy, double dz)
+void Matrix::translate(double dx, double dy, double dz)
 {
 	matrix_[12] += dx;
 	matrix_[13] += dy;
 	matrix_[14] += dz;
 }
 
+/*
+// Scaling
+*/
+
 // Apply a general scaling to the matrix (as glScaled would do)
-void GLMatrix::applyScaling(double scalex, double scaley, double scalez)
+void Matrix::applyScaling(double scalex, double scaley, double scalez)
 {
 	applyScalingX(scalex);
 	applyScalingY(scaley);
@@ -453,7 +530,7 @@ void GLMatrix::applyScaling(double scalex, double scaley, double scalez)
 }
 
 // Apply a x scaling to the matrix
-void GLMatrix::applyScalingX(double scale)
+void Matrix::applyScalingX(double scale)
 {
 	matrix_[0] *= scale;
 	matrix_[1] *= scale;
@@ -462,7 +539,7 @@ void GLMatrix::applyScalingX(double scale)
 }
 
 // Apply a y scaling to the matrix
-void GLMatrix::applyScalingY(double scale)
+void Matrix::applyScalingY(double scale)
 {
 	matrix_[4] *= scale;
 	matrix_[5] *= scale;
@@ -471,7 +548,7 @@ void GLMatrix::applyScalingY(double scale)
 }
 
 // Apply a z scaling to the matrix
-void GLMatrix::applyScalingZ(double scale)
+void Matrix::applyScalingZ(double scale)
 {
 	matrix_[8] *= scale;
 	matrix_[9] *= scale;
@@ -479,24 +556,12 @@ void GLMatrix::applyScalingZ(double scale)
 	matrix_[11] *= scale;
 }
 
-// Print matrix
-void GLMatrix::print() const
-{
-	printf("GLMat      X        Y         Z    Translate\n");
-	printf("        %8.4f %8.4f %8.4f %8.4f\n",matrix_[0], matrix_[4], matrix_[8], matrix_[12]);
-	printf("        %8.4f %8.4f %8.4f %8.4f\n",matrix_[1], matrix_[5], matrix_[9], matrix_[13]);
-	printf("        %8.4f %8.4f %8.4f %8.4f\n",matrix_[2], matrix_[6], matrix_[10], matrix_[14]);
-	printf("Scale   %8.4f %8.4f %8.4f %8.4f\n",matrix_[3], matrix_[7], matrix_[11], matrix_[15]);
-}
-
-// Return matrix array
-GLdouble *GLMatrix::matrix()
-{
-	return matrix_;
-}
+/*
+// Misc
+*/
 
 // Multiply against coordinates provided
-void GLMatrix::multiply(GLfloat *r, GLfloat *transformed)
+void Matrix::multiply(GLfloat *r, GLfloat *transformed)
 {
 	transformed[0] = r[0]*matrix_[0] + r[1]*matrix_[4] + r[2]*matrix_[8] + matrix_[12];
 	transformed[1] = r[0]*matrix_[1] + r[1]*matrix_[5] + r[2]*matrix_[9] + matrix_[13];
@@ -504,11 +569,23 @@ void GLMatrix::multiply(GLfloat *r, GLfloat *transformed)
 }
 
 // Apply rotational part of matrix to supplied vector
-Vec3<double> GLMatrix::rotateVector(Vec3<double> &v)
+Vec3<double> Matrix::rotateVector(Vec3<double> &v)
 {
 	Vec3<double> result;
 	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8];
 	result.y = v.x*matrix_[1] + v.y*matrix_[5] + v.z*matrix_[9];
 	result.z = v.x*matrix_[2] + v.y*matrix_[6] + v.z*matrix_[10];
 	return result;
+}
+
+// Remove translation and scaling parts, leaving rotation only
+void Matrix::removeTranslationAndScaling()
+{
+	matrix_[3] = 0.0;
+	matrix_[7] = 0.0;
+	matrix_[11] = 0.0;
+	matrix_[15] = 1.0;
+	matrix_[12] = 0.0;
+	matrix_[13] = 0.0;
+	matrix_[14] = 0.0;
 }

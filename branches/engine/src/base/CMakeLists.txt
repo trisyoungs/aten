@@ -14,6 +14,7 @@ glyph.cpp
 kvmap.cpp
 lineparser.cpp
 log.cpp
+matrix.cpp
 measurement.cpp
 messenger.cpp
 pattern.cpp
@@ -35,6 +36,7 @@ glyph.h
 kvmap.h
 lineparser.h
 log.h
+matrix.h
 measurement.h
 messenger.h
 pattern.h

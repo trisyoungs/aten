@@ -23,6 +23,7 @@
 #include "base/sysfunc.h"
 #include "classes/prefs.h"
 #include "model/model.h"
+#include "render/glmatrix.h"
 
 // Glyph styles
 const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "cube", "ellipsoid", "ellipsoidxyz", "line", "quad", "svector", "sphere", "tetrahedron", "text", "text3d", "triangle", "vector" };
@@ -193,19 +194,8 @@ bool Glyph::rotated() const
 	return (rotation_ != NULL);
 }
 
-// Return rotation matrix suitable for GL
-double *Glyph::rotationForGL()
-{
-	if (rotation_ == NULL)
-	{
-		printf("Internal Error - Glyph has no rotation matrix to return for GL.\n");
-		return NULL;
-	}
-	else return rotation_->forGL();
-}
-
 // Return rotation matrix
-Mat3<double> *Glyph::rotation()
+GLMatrix *Glyph::matrix()
 {
 	return rotation_;
 }
@@ -213,15 +203,15 @@ Mat3<double> *Glyph::rotation()
 // Set element of rotation matrix
 void Glyph::setRotationElement(int el, double d)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->set(el,d);
+	if (rotation_ == NULL) rotation_ = new GLMatrix;
+	rotation_->matrix()[el] = d;
 }
 
 // Get element of rotation matrix
 double Glyph::getRotationElement(int el)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	return rotation_->element(el);
+	if (rotation_ == NULL) rotation_ = new GLMatrix;
+	return rotation_->matrix()[el];
 }
 
 // Reset (delete) current rotation matrix
@@ -234,29 +224,29 @@ void Glyph::resetRotation()
 // Rotate about X axis
 void Glyph::rotateX(double angle)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->rotateX(angle);
+	if (rotation_ == NULL) rotation_ = new GLMatrix;
+	rotation_->applyRotationAxis(1.0,0.0,0.0,angle,FALSE);
 }
 
 // Rotate about Y axis
 void Glyph::rotateY(double angle)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->rotateY(angle);
+	if (rotation_ == NULL) rotation_ = new GLMatrix;
+	rotation_->applyRotationAxis(0.0,1.0,0.0,angle,FALSE);
 }
 
 // Rotate about Z axis
 void Glyph::rotateZ(double angle)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->rotateZ(angle);
+	if (rotation_ == NULL) rotation_ = new GLMatrix;
+	rotation_->applyRotationAxis(0.0,0.0,1.0,angle,FALSE);
 }
 
 // Rotate about arbitrary axis
 void Glyph::rotate(double x, double y, double z, double angle)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->rotate(x, y, z, angle);
+	if (rotation_ == NULL) rotation_ = new GLMatrix;
+	rotation_->applyRotationAxis(x, y, z, angle, TRUE);
 }
 
 /*

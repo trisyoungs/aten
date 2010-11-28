@@ -857,12 +857,6 @@ void Grid::setAxes(const Mat3<double> m)
 	log_++;
 }
 
-// Get cell axes in suitable GL format
-double *Grid::axesForGl()
-{
-	return cell_.axesForGL();
-}
-
 // Update minimum / maximum based on supplied value
 void Grid::setLimits(double d)
 {
