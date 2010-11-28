@@ -52,8 +52,7 @@ Cell::Cell()
 	// Private variables
 	type_ = Cell::NoCell;
 	axes_.zero();
-	transpose_.zero();
-	itranspose_.zero();
+	inverse_.zero();
 	reciprocal_.zero();
 	lengths_.zero();
 	angles_.zero();
@@ -70,9 +69,8 @@ void Cell::operator=(Cell &source)
 {
 	type_ = source.type_;
 	axes_ = source.axes_;
-	transpose_ = source.transpose_;
 	reciprocal_ = source.reciprocal_;
-	itranspose_ = source.itranspose_;
+	inverse_ = source.inverse_;
 	centre_ = source.centre_;
 	lengths_ = source.lengths_;
 	angles_ = source.angles_;
@@ -207,12 +205,6 @@ Cell::CellType Cell::type() const
 	return type_;
 }
 
-// Return the cell vector matrix
-Matrix Cell::transpose() const
-{
-	return transpose_;
-}
-
 // Return the transpose of the cell vector matrix (giving individual axis vectors in rows[])
 Matrix Cell::axes() const
 {
@@ -223,6 +215,12 @@ Matrix Cell::axes() const
 Matrix Cell::reciprocal() const
 {
 	return reciprocal_;
+}
+
+// Return inverse of axes matrix
+Matrix Cell::inverse() const
+{
+	return inverse_;
 }
 
 // Return the axis lengths of the cell
@@ -241,12 +239,6 @@ Vec3<double> Cell::angles() const
 Vec3<double> Cell::centre() const
 {
 	return centre_;
-}
-
-// Return a inverse transpose matrix of cell axes
-Matrix Cell::inverseTranspose() const
-{
-	return itranspose_;
 }
 
 // Return the volume of the cell
@@ -307,8 +299,6 @@ Generator *Cell::generators()
 // Update dependent quantities
 void Cell::update()
 {
-	// Calculate transpose of axes
-	transpose_ = axes_.transpose();
 	// Determine type of cell
 	determineType();
 	// Calculate the cell volume
@@ -386,13 +376,13 @@ void Cell::calculateMatrix()
 	// It's x-component is equal to cos(beta) since {1,0,0}{x,y,z} = {1}{x} = cos(beta)
 	axes_.setColumn(2,cos(angles_.y/DEGRAD),0.0,0.0,0.0);
 	// The y-component can be determined by completing the dot product between the B and C vectors
-	axes_[9] = ( cos(angles_.x/DEGRAD) - axes_.rows[1].x*axes_.rows[2].x ) / axes_.rows[1].y;
+	axes_[9] = ( cos(angles_.x/DEGRAD) - axes_[4]*axes_[8] ) / axes_[5];
 	// The z-component is simply the remainder of the unit vector...
-	axes_[10] = sqrt(1.0 - axes_.rows[2].x*axes_.rows[2].x - axes_.rows[2].y*axes_.rows[2].y);
+	axes_[10] = sqrt(1.0 - axes_[8]*axes_[8] - axes_[9]*axes_[9]);
 	// Lastly, adjust these unit vectors to give the proper cell lengths
-	axes_.multiplyColumn(0,lengths_.x);
-	axes_.multiplyColumn(1,lengths_.y);
-	axes_.multiplyColumn(2,lengths_.z);
+	axes_.columnMultiply(0,lengths_.x);
+	axes_.columnMultiply(1,lengths_.y);
+	axes_.columnMultiply(2,lengths_.z);
 	msg.exit("Cell::calculateMatrix");
 }
 
@@ -408,21 +398,21 @@ void Cell::calculateReciprocal()
 			break;
 		case (Cell::CubicCell):
 		case (Cell::OrthorhombicCell):
-			reciprocal_.rows[0].set(1.0 / axes_.rows[0].x, 0.0, 0.0);
-			reciprocal_.rows[1].set(0.0, 1.0 / axes_.rows[1].y, 0.0);
-			reciprocal_.rows[2].set(0.0, 0.0, 1.0 / axes_.rows[2].z);
-			reciprocalVolume_ = 1.0 / (axes_.rows[0].x * axes_.rows[1].y * axes_.rows[2].z);
+			reciprocal_.setColumn(0,1.0 / axes_[0], 0.0, 0.0, 0.0);
+			reciprocal_.setColumn(1,0.0, 1.0 / axes_[5], 0.0, 0.0);
+			reciprocal_.setColumn(2,0.0, 0.0, 1.0 / axes_[10], 0.0);
+			reciprocalVolume_ = 1.0 / (axes_[0] * axes_[5] * axes_[10]);
 			break;
 		case (Cell::ParallelepipedCell):
 			// Reciprocal cell vectors are perpendicular to normal cell axes_t.
 			// Calculate from cross products of normal cell vectors
-			reciprocal_.rows[0] = axes_.rows[1] * axes_.rows[2];
-			reciprocal_.rows[1] = axes_.rows[0] * axes_.rows[2];
-			reciprocal_.rows[2] = axes_.rows[0] * axes_.rows[1];
-			reciprocalVolume_ = fabs( axes_.rows[0].x*reciprocal_.rows[0].x + axes_.rows[1].y*reciprocal_.rows[1].y + axes_.rows[2].z*reciprocal_.rows[2].z);
-			reciprocal_.rows[0] = reciprocal_.rows[0] / reciprocalVolume_;
-			reciprocal_.rows[1] = reciprocal_.rows[1] / reciprocalVolume_;
-			reciprocal_.rows[2] = reciprocal_.rows[2] / reciprocalVolume_;
+			reciprocal_.setColumn(0, axes_.columnAsVec3(1) * axes_.columnAsVec3(2), 0.0);
+			reciprocal_.setColumn(1, axes_.columnAsVec3(0) * axes_.columnAsVec3(2), 0.0);
+			reciprocal_.setColumn(2, axes_.columnAsVec3(0) * axes_.columnAsVec3(1), 0.0);
+			reciprocalVolume_ = fabs( axes_[0]*reciprocal_[0] + axes_[5]*reciprocal_[5] + axes_[10]*reciprocal_[10]);
+			reciprocal_.columnMultiply(0, 1.0 / reciprocalVolume_);
+			reciprocal_.columnMultiply(1, 1.0 / reciprocalVolume_);
+			reciprocal_.columnMultiply(2, 1.0 / reciprocalVolume_);;
 			reciprocalVolume_ = 1.0 / reciprocalVolume_;
 			break;
 		default:
@@ -435,21 +425,17 @@ void Cell::calculateReciprocal()
 void Cell::calculateCentre()
 {
 	msg.enter("Cell::calculateCentre");
-	if (type_ != Cell::NoCell)
-	{
-		centre_.set(0.5,0.5,0.5);
-		centre_ *= transpose_;
-	}
+	if (type_ != Cell::NoCell) centre_ = axes_.transform(0.5,0.5,0.5);
 	else centre_.set(0.0,0.0,0.0);
 	msg.exit("Cell::calculateCentre");
 }
 
-// Calculate inverse transpose matrix
+// Calculate inverse matrix
 void Cell::calculateInverse()
 {
 	msg.enter("Cell::calculateInverse");
-	itranspose_ = transpose_;
-	itranspose_.invert();
+	inverse_ = axes_;
+	inverse_.invert();
 	msg.exit("Cell::calculateInverse");
 }
 
@@ -499,9 +485,7 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 			break;
 		// Parallelepiped 
 		default:
-			R .set(r1.x,r1.y,r1.z);
-			R -= r2;
-			R *= itranspose_;
+			R = inverse_.transform(r1-r2);
 			// TODO Test speed of 'int' version
 			if (R.x < -0.5) R.x += 1.0;
 			if (R.y < -0.5) R.y += 1.0;
@@ -512,8 +496,7 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 			// R.x -= int(R.x);
 			// R.y -= int(R.y);
 			// R.z -= int(R.z);
-			R *= transpose_;
-			R += r2;
+			R = inverse_.transform(R) + r2;
 	}
 	return R;
 }
@@ -582,9 +565,8 @@ void Cell::fold(Vec3<double> &r, Atom *i, Model *parent) const
 			break;
 		// Parallelepiped
 		default:
-			newr = r;
 			// Convert these coordinates into fractional cell coordinates...
-			newr *= itranspose_;
+			newr = inverse_.transform(r);
 			if (newr.x < 0.0) newr.x -= int(newr.x-1.0);
 			else if (newr.x > 1.0) newr.x -= int(newr.x);
 			if (newr.y < 0.0) newr.y -= int(newr.y-1.0);
@@ -598,7 +580,7 @@ void Cell::fold(Vec3<double> &r, Atom *i, Model *parent) const
 // 			if (newr.z < 0.0) newr.z += 1.0;
 // 			else if (newr.z >= 1.0) newr.z -= 1.0;
 			// Convert back into world coordinates
-			newr *= transpose_;
+			newr = axes_.transform(newr);
 			// Use model functions to store new position if we were given one
 			if (parent != NULL) parent->positionAtom(i, newr);
 			else r = newr;
@@ -691,14 +673,14 @@ double Cell::torsion(Atom *i, Atom *j, Atom *k, Atom *l) const
 Vec3<double> Cell::realToFrac(const Vec3<double> &v) const
 {
 	// Convert the real coordinates supplied into fractional cell coordinates
-	return (v * itranspose_);
+	return inverse_.transform(v);
 }
 
 // Return the real coordinates of the specified fractional cell coordinate
 Vec3<double> Cell::fracToReal(const Vec3<double> &v) const
 {
 	// Convert the fractional cell coordinates supplied into real cell coordinates
-	return (transpose_ * v);
+	return axes_.transform(v);
 }
 
 /*
@@ -708,20 +690,14 @@ Vec3<double> Cell::fracToReal(const Vec3<double> &v) const
 // Generate a random position inside the unit cell
 Vec3<double> Cell::randomPos() const
 {
-	// Multiply some random fractional cell coordinates by the unit cell axes
-	static Vec3<double> result;
-	result.x = csRandom();
-	result.y = csRandom();
-	result.z = csRandom();
-	result *= transpose_;
-	return result;
+	return axes_.transform(csRandom(), csRandom(), csRandom());
 }
 
 // Print
-void Cell::print() const
+void Cell::print()
 {
 	msg.print("\t        x        y        z          l\n");
-	msg.print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]\n", axes_.rows[0].x, axes_.rows[0].y, axes_.rows[0].z, lengths_.x, angles_.x);
-	msg.print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]\n", axes_.rows[1].x, axes_.rows[1].y, axes_.rows[1].z, lengths_.y, angles_.y);
-	msg.print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]\n", axes_.rows[2].x, axes_.rows[2].y, axes_.rows[2].z, lengths_.z, angles_.z);
+	msg.print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]\n", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
+	msg.print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]\n", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
+	msg.print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]\n", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
 }

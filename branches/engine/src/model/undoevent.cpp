@@ -224,7 +224,7 @@ CellEvent::~CellEvent()
 }
 
 // Set change 
-void CellEvent::set(Mat3<double> oldaxes, Mat3<double> newaxes, bool ohs, bool nhs)
+void CellEvent::set(Matrix oldaxes, Matrix newaxes, bool ohs, bool nhs)
 {
 	msg.enter("CellEvent::set");
 	oldAxes_ = oldaxes;

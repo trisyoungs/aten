@@ -80,7 +80,7 @@ void Site::setCentre(Vec3<double> v)
 }
 
 // Set axes of site
-void Site::setAxes(Mat3<double> m)
+void Site::setAxes(Matrix axes)
 {
-	axes_ = m;
+	axes_ = axes;
 }

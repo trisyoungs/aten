@@ -172,7 +172,7 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 	msg.enter("Pattern::ewaldReciprocalEnergy");
 	static int kx, ky, kz, i, n, kmax, finalatom;
 	static Vec3<double> kvec, cross_ab, cross_bc, cross_ca, perpl;
-	static Mat3<double> rcell;
+	Matrix rcell;
 	static double cutoffsq, magsq, exp1, alphasq, xycos, xysin, xyzcos, xyzsin, rvolume;
 	static double factor, alpha, energy_inter;
 	double *sumcos, *sumsin;
@@ -191,9 +191,9 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 
 	// Cutoff is the shortest component of kVec * perpendicular reciprocal cell lengths
 	rcell = fourier.cell->reciprocal().transpose();
-	cross_ab = rcell.rows[0] * rcell.rows[1];
-	cross_bc = rcell.rows[1] * rcell.rows[2];
-	cross_ca = rcell.rows[2] * rcell.rows[0];
+	cross_ab = rcell.columnAsVec3(0) * rcell.columnAsVec3(1);
+	cross_bc = rcell.columnAsVec3(1) * rcell.columnAsVec3(2);
+	cross_ca = rcell.columnAsVec3(2) * rcell.columnAsVec3(0);
 	perpl.set(rvolume / cross_ab.magnitude(), rvolume / cross_bc.magnitude(), rvolume / cross_ca.magnitude());
 	perpl.x *= fourier.kVec.x;
 	perpl.y *= fourier.kVec.y;

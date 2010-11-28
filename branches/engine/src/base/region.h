@@ -22,6 +22,7 @@
 #ifndef ATEN_REGION_H
 #define ATEN_REGION_H
 
+#include "base/matrix.h"
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 

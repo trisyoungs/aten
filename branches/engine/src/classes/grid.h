@@ -156,9 +156,9 @@ class Grid
 	// Set spacing for an orthorhombic Grid
 	void setAxes(const Vec3<double> lengths);
 	// Set spacing for a parallelepiped Grid
-	void setAxes(const Mat3<double> axes);
+	void setAxes(const Matrix axes);
 	// Return the Grid axes
-	Mat3<double> axes() const;
+	Matrix axes() const;
 	// Return lengths of cell axes
 	Vec3<double> lengths() const;
 	// Set data origin

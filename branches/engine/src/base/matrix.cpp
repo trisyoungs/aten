@@ -21,6 +21,12 @@
 
 #include "base/matrix.h"
 
+// Constructor
+Matrix::Matrix()
+{
+	setIdentity();
+}
+
 /*
 // Operators
 */
@@ -50,6 +56,20 @@ Matrix Matrix::operator*(const Matrix &B) const
 	AB.matrix_[14] = matrix_[2]*B.matrix_[12] + matrix_[6]*B.matrix_[13] + matrix_[10]*B.matrix_[14] + matrix_[14]*B.matrix_[15];
 	AB.matrix_[15] = matrix_[3]*B.matrix_[12] + matrix_[7]*B.matrix_[13] + matrix_[11]*B.matrix_[14] + matrix_[15]*B.matrix_[15];
 	return AB;
+}
+
+Matrix Matrix::operator+(const Matrix &B) const
+{
+	Matrix A;
+	for (int n=0; n<16; ++n) A[n] = matrix_[n] + B.matrix_[n];
+	return A;
+}
+
+Matrix Matrix::operator-(const Matrix &B) const
+{
+	Matrix A;
+	for (int n=0; n<16; ++n) A[n] = matrix_[n] - B.matrix_[n];
+	return A;
 }
 
 Vec3<double> Matrix::operator*(const Vec3<double> &v) const
@@ -99,7 +119,7 @@ Matrix &Matrix::operator*=(const Matrix &B)
 	return *this;
 }
 
-Matrix &Matrix::operator[](int index)
+double &Matrix::operator[](int index)
 {
 	return matrix_[index];
 }
@@ -201,12 +221,102 @@ double Matrix::determinant()
 	return (a-b+c-d);
 }
 
+// Invert matrix
+void Matrix::invert()
+{
+	msg.enter("Matrix::invert");
+	// Gauss-Jordan Inversion
+	// Invert the supplied matrix using Gauss-Jordan elimination
+	int pivotrows[4], pivotcols[4], pivotrow = 0, pivotcol = 0;
+	bool pivoted[4];
+	int row, col, n, m;
+	double large, element;
+	for (n=0; n<4; ++n)
+	{
+		pivotrows[n] = 0;
+		pivotcols[n] = 0;
+		pivoted[n] = FALSE;
+	}
+	// Loop over columns to be reduced
+	for (n=0; n<4; ++n)
+	{
+		// Locate suitable pivot element - find largest value in the matrix A
+		large = 0.0;
+		for (row=0; row<4; ++row)
+		{
+			// Only search this row if it has not previously contained a pivot element
+			if (pivoted[row]) continue;
+			for (col=0; col<4; ++col)
+			{
+				// Similarly, only look at the column element if the column hasn't been pivoted yet.
+				if (pivoted[col]) continue;
+				// Check the size of the element...
+				element = fabs(matrix_[col*4+row]);
+				if (element > large)
+				{
+					large = element;
+					pivotrow = row;
+					pivotcol = col;
+				}
+			}
+		}
+		
+		// Mark the pivot row/column as changed
+		pivoted[pivotcol] = TRUE;
+		pivotrows[n] = pivotrow;
+		pivotcols[n] = pivotcol;
+		
+		// Exchange rows to put pivot element on the diagonal
+		if (pivotrow != pivotcol)
+		{
+			for (m=0; m<4; m++)
+			{
+	// 			element = rows[pivotrow].get(m);
+	// 			rows[pivotrow].set(m, rows[pivotcol].get(m));
+	// 			rows[pivotcol].set(m, element);
+				element = matrix_[m*4+pivotrow];
+				matrix_[m*4+pivotrow] = matrix_[m*4+pivotcol];
+				matrix_[m*4+pivotcol] = element;
+			}
+		}
+		
+		// Now ready to divide through row elements.
+		element = 1.0 / matrix_[pivotcol*4+pivotcol];
+		matrix_[pivotcol*4+pivotcol] = 1.0;
+		for (n=0; n<4; ++n) matrix_[n*4+pivotcol] *= element;
+		
+		// Divide through other rows by the relevant multiple of the pivot row
+		for (row=0; row<4; ++row)
+		{
+			if (row == pivotcol) continue;
+			element = matrix_[pivotcol*4+row];
+			matrix_[pivotcol*4+row] = 0.0;
+			for (m=0; m<4; ++m) matrix_[m*4+row] = matrix_[m*4+row] - matrix_[m*4+pivotcol] * element;
+	// 			rows[row].set(m, rows[row].get(m) - rows[pivotcol].get(m) * element);
+		}
+	}
+	// Rearrange columns to undo row exchanges performed earlier
+	for (n=3; n>=0; --n)
+	{
+		if (pivotrows[n] != pivotcols[n]) for (m=0; m<4; m++)
+		{
+			element = matrix_[pivotrows[n]*4+m];
+			matrix_[pivotrows[n]*4+m] = matrix_[pivotcols[n]+m];
+			matrix_[pivotcols[n]+m] = element;
+// 			element = rows[m].get(pivotrows[n]);
+// 			rows[m].set(pivotrows[n], rows[m].get(pivotcols[n]));
+// 			rows[m].set(pivotcols[n], element);
+		}
+	}
+	msg.exit("Matrix::invert");
+}
+
 /*
 // Column Operations
 */
 
 // Copy column contents to supplied Vec3
-Vec4<double> Matrix::columnAsVec3(int col)
+Vec3<double> Matrix::columnAsVec3(int col)
 {
 	Vec3<double> vec(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2]);
 	return vec;
@@ -229,7 +339,7 @@ void Matrix::setColumn(int col, double x, double y, double z, double w)
 }
 
 // Set specified column from supplied Vec3
-void Matrix::setColumn(int col, Vec3<double> &vec, double w)
+void Matrix::setColumn(int col, Vec3<double> vec, double w)
 {
 	matrix_[col*4] = vec.x;
 	matrix_[col*4+1] = vec.y;
@@ -238,12 +348,39 @@ void Matrix::setColumn(int col, Vec3<double> &vec, double w)
 }
 
 // Set specified column from supplied Vec4
-void Matrix::setColumn(int col, Vec4<double> &vec)
+void Matrix::setColumn(int col, Vec4<double> vec)
 {
 	matrix_[col*4] = vec.x;
 	matrix_[col*4+1] = vec.y;
 	matrix_[col*4+2] = vec.z;
 	matrix_[col*4+3] = vec.w;
+}
+
+// Adjust specified column from supplied values
+void Matrix::adjustColumn(int col, double x, double y, double z, double w)
+{
+	matrix_[col*4] += x;
+	matrix_[col*4+1] += y;
+	matrix_[col*4+2] += z;
+	matrix_[col*4+3] += w;
+}
+
+// Adjust specified column from supplied Vec3
+void Matrix::adjustColumn(int col, Vec3<double> vec, double w)
+{
+	matrix_[col*4] += vec.x;
+	matrix_[col*4+1] += vec.y;
+	matrix_[col*4+2] += vec.z;
+	matrix_[col*4+3] += w;
+}
+
+// Adjust specified column from supplied Vec4
+void Matrix::adjustColumn(int col, Vec4<double> vec)
+{
+	matrix_[col*4] += vec.x;
+	matrix_[col*4+1] += vec.y;
+	matrix_[col*4+2] += vec.z;
+	matrix_[col*4+3] += vec.w;
 }
 
 // Calculate column magnitude
@@ -255,12 +392,30 @@ double Matrix::columnMagnitude(int column)
 }
 
 // Multiply column by single value
-void Matrix::multiplyColumn(int col, double d)
+void Matrix::columnMultiply(int col, double d)
 {
 	matrix_[col*4] *= d;
 	matrix_[col*4+1] *= d;
 	matrix_[col*4+2] *= d;
 	matrix_[col*4+3] *= d;
+}
+
+// Multiply first three columns by values insupplied vector
+void Matrix::columnMultiply(Vec3<double> vec)
+{
+	columnMultiply(0, vec.x);
+	columnMultiply(1, vec.y);
+	columnMultiply(2, vec.z);
+}
+
+// Normalise specified column to 1
+void Matrix::columnNormalise(int col)
+{
+	double mag = 1.0/sqrt(matrix_[col*4]*matrix_[col*4] + matrix_[col*4+1]*matrix_[col*4+1] + matrix_[col*4+2]*matrix_[col*4+2] + matrix_[col*4+3]*matrix_[col*4+3]);
+	matrix_[col*4] *= mag;
+	matrix_[col*4+1] *= mag;
+	matrix_[col*4+2] *= mag;
+	matrix_[col*4+3] *= mag;
 }
 
 /*
@@ -560,8 +715,39 @@ void Matrix::applyScalingZ(double scale)
 // Misc
 */
 
+// Transform coordinates supplied and return as Vec3<double>
+Vec3<double> Matrix::transform(double x, double y, double z) const
+{
+	Vec3<double> result;
+	result.x = x*matrix_[0] + y*matrix_[4] + z*matrix_[8] + matrix_[12];
+	result.y = x*matrix_[1] + y*matrix_[5] + z*matrix_[9] + matrix_[13];
+	result.z = x*matrix_[2] + y*matrix_[6] + z*matrix_[10] + matrix_[14];
+	return result;
+}
+
+// Transform coordinates supplied and return as Vec3<double>
+Vec4<double> Matrix::transform(double x, double y, double z, double w) const
+{
+	Vec4<double> result;
+	result.x = x*matrix_[0] + y*matrix_[4] + z*matrix_[8] + w*matrix_[12];
+	result.y = x*matrix_[1] + y*matrix_[5] + z*matrix_[9] + w*matrix_[13];
+	result.z = x*matrix_[2] + y*matrix_[6] + z*matrix_[10] + w*matrix_[14];
+	result.w = x*matrix_[3] + y*matrix_[7] + z*matrix_[11] + w*matrix_[15];
+	return result;
+}
+
+// Transform coordinates supplied and return as Vec3<double>
+Vec3<double> Matrix::transform(Vec3<double> vec) const
+{
+	Vec3<double> result;
+	result.x = vec.x*matrix_[0] + vec.y*matrix_[4] + vec.z*matrix_[8] + matrix_[12];
+	result.y = vec.x*matrix_[1] + vec.y*matrix_[5] + vec.z*matrix_[9] + matrix_[13];
+	result.z = vec.x*matrix_[2] + vec.y*matrix_[6] + vec.z*matrix_[10] + matrix_[14];
+	return result;
+}
+
 // Multiply against coordinates provided
-void Matrix::multiply(GLfloat *r, GLfloat *transformed)
+void Matrix::multiply(GLfloat *r, GLfloat *transformed) const
 {
 	transformed[0] = r[0]*matrix_[0] + r[1]*matrix_[4] + r[2]*matrix_[8] + matrix_[12];
 	transformed[1] = r[0]*matrix_[1] + r[1]*matrix_[5] + r[2]*matrix_[9] + matrix_[13];
@@ -569,7 +755,7 @@ void Matrix::multiply(GLfloat *r, GLfloat *transformed)
 }
 
 // Apply rotational part of matrix to supplied vector
-Vec3<double> Matrix::rotateVector(Vec3<double> &v)
+Vec3<double> Matrix::rotateVector(Vec3<double> &v) const
 {
 	Vec3<double> result;
 	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8];
@@ -589,3 +775,4 @@ void Matrix::removeTranslationAndScaling()
 	matrix_[13] = 0.0;
 	matrix_[14] = 0.0;
 }
+

@@ -132,7 +132,7 @@ class TCanvas : public QGLWidget
 	// Update Canvas
 	void postRedisplay();
 	// Update view matrix stored in RenderEngine
-	void updateTransformation(Mat4<double> &mat, Vec3<double> cellcentre);
+	void updateTransformation(Matrix &mat, Vec3<double> cellcentre);
 	// Render a scene based on the specified model
 	void renderModel(Model *m);
 	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)

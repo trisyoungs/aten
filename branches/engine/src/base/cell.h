@@ -57,12 +57,10 @@ class Cell
 	CellType type_;
 	// Vectors of the principal cell axes (rows[0] = A, rows[1] = B, rows[2] = C)
 	Matrix axes_;
-	// Transpose of the principal cell axes (rows[0] = A.x,B.x,C.z)
-	Matrix transpose_;
 	// Reciprocal vectors of the principal cell axes
 	Matrix reciprocal_;
 	// Inverse of axes transpose
-	Matrix itranspose_;
+	Matrix inverse_;
 	// Coordinates at centre of cell
 	Vec3<double> centre_;
 	// Principal axis lengths
@@ -81,7 +79,7 @@ class Cell
 	// Return parent model
 	Model *parent();
 	// Print cell data
-	void print() const;
+	void print();
 	// Generate random position inside cell
 	Vec3<double> randomPos() const;
 	// Remove the cell definition (i.e. set 'type' to CT_NONE)
@@ -100,20 +98,18 @@ class Cell
 	void setParameter(Cell::CellParameter cp, double value, bool adjust = FALSE);
 	// Return the type of cell
 	CellType type() const;
-	// Return the transpose of the cell vector matrix
-	Matrix transpose() const;
-	// Return the cell vector matrix (individual axis vectors in rows[])
+	// Return the cell vector matrix
 	Matrix axes() const;
-	// Return a matrix of the reciprocal cell vectors
+	// Return reciprocal cell matrix
 	Matrix reciprocal() const;
+	// Return inverse matrix of cell axes
+	Matrix inverse() const;
 	// Return the axis lengths of the cell
 	Vec3<double> lengths() const;
 	// Return the angles the cell
 	Vec3<double> angles() const;
 	// Return the centre the cell
 	Vec3<double> centre() const;
-	// Return a inverse transpose matrix of cell axes
-	Matrix inverseTranspose() const;
 	// Return the inverse of the cell vectors as a column-major matrix in a 1D array
 	void inverseTransposeColumn(double *m);
 	// Return the volume of the cell

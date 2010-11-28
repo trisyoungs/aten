@@ -41,7 +41,7 @@ Model::Model()
 
 	// Camera / View / render
 	modelViewMatrix_.setIdentity();
-	modelViewMatrix_.rows[3].set(0.0, 0.0, -10.0, 1.0);
+	modelViewMatrix_[14] = -10.0;
 	renderSource_ = Model::ModelSource;
 	renderFromVibration_ = FALSE;
 

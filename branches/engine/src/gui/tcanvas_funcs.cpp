@@ -309,7 +309,7 @@ void TCanvas::postRedisplay()
 }
 
 // Update view matrix stored in RenderEngine
-void TCanvas::updateTransformation(Mat4<double> &mat, Vec3<double> cellcentre)
+void TCanvas::updateTransformation(Matrix& mat, Vec3< double > cellcentre)
 {
 	engine_.setTransformationMatrix(mat, cellcentre);
 }
