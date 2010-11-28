@@ -40,9 +40,8 @@ Model::Model()
 // 	type_ = Model::ParentModel;
 
 	// Camera / View / render
-	camera_.set(0.0,0.0,-10.0);
-	cameraMatrix_.rows[2].set(0.0,0.0,1.0,-10.0);
-	cameraRotation_ = 0.0;
+	modelViewMatrix_.setIdentity();
+	modelViewMatrix_.rows[3].set(0.0, 0.0, -10.0, 1.0);
 	renderSource_ = Model::ModelSource;
 	renderFromVibration_ = FALSE;
 

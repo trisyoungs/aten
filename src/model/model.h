@@ -241,7 +241,7 @@ class Model
 	// Set cell (vectors)
 	void setCell(Vec3<double> lengths, Vec3<double> angles);
 	// Set cell (axes)
-	void setCell(Mat3<double> axes);
+	void setCell(Matrix axes);
 	// Set cell (parameter)
 	void setCell(Cell::CellParameter cp, double value);
 	// Set cell (other Cell pointer)
@@ -418,57 +418,38 @@ class Model
 	// View
 	*/
 	private:
-	// Camera rotation
-	double cameraRotation_;
-	// Camera, model, and view (cam*rot*cell) matrices associated with the model
-	Mat4<double> cameraMatrix_, rotationMatrix_, viewMatrix_;
+	// Modelview matrix for this model's current view
+	Matrix modelViewMatrix_;
 	// Inverse of the view matrix
-	Mat4<double> viewMatrixInverse_;
-	// Camera position
-	Vec3<double> camera_;
+	Matrix modelViewMatrixInverse_;
+
+	private:
+	// Calculate and return inverse of current view matrix
+	Matrix &modelViewMatrixInverse();
 
 	public:
-	// Called when, e.g. the camera position or view rotation has changed
-	void calculateViewMatrix();
 	// Return current view matrix
-	Mat4<double> &viewMatrix();
-	// Set the current rotation matrix
-	void setRotationMatrix(Mat4<double> &rmat);
-	// Return the current rotation matrix
-	Mat4<double> rotationMatrix() const;
-	// Return the GL-compatible array from the ModelMAT structure
-	void copyRotationMatrix(double *m);
-	// Return the current camera matrix
-	Mat4<double> cameraMatrix() const;
-	// Return the GL-compatible array from the ModelMAT structure
-	void copyCameraMatrix(double *m);
-	// Set the camera z-rotation
-	void setCameraRotation(double r);
-	// Return the current camera z-rotation
-	double cameraRotation() const;
-	// Set model rotation to exact values
-	void setRotation(double rotx, double roty);
+	Matrix &modelViewMatrix();
+	// Set the current modelview matrix
+	void setModelViewMatrix(Matrix &mvmat);
 	// Set view to be along the specified cartesian axis
 	void viewAlong(double x, double y, double z);
 	// Set view to be along the specified cell axis
 	void viewAlongCell(double x, double y, double z);
 	// Rotate view about arbitrary axis
 	void axisRotateView(Vec3<double> axis, double angle);
+	// Set exact rotation of model (angles passed in degrees)
+	void setRotation(double rotx, double roty);
 	// Rotate view about the x and y axes
 	void rotateView(double xang, double yang);
 	// Spin view about the z axis
 	void zRotateView(double angle);
 	// Adjust the position of the camera
-	void adjustCamera(double, double, double, double);
-	void adjustCamera(const Vec3<double> &v, double r);
+	void adjustCamera(double dx, double dy, double dz);
 	// Adjusts the camera zoom
 	void adjustZoom(bool zoomin);
-	// (Re)set the camera position and matrix
-	void resetCamera(const Vec3<double>&);
 	// Reset modelview matrix and camera position
 	void resetView();
-	// Return the camera position vector
-	Vec3<double> camera() const;
 	// Calculate and return drawing pixel width
 	double drawPixelWidth(double drawdepth);
 
@@ -678,7 +659,7 @@ class Model
 	// Iteratively add hydrogens to the specified atom in the desired general geometry
 	void addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry);
 	// Pen orientation matrix
-	Mat3<double> penOrientation_;
+	Matrix penOrientation_;
 	// Pen position
 	Vec3<double> penPosition_;
 
@@ -686,7 +667,7 @@ class Model
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogenSatisfy(Atom *target = NULL);
 	// Return the pen orientation matrix
-	Mat3<double> penOrientation() const;
+	Matrix penOrientation() const;
 	// Rotate the pen orientation matrix about the specified axis
 	void rotatePenAxis(int axis, double degrees);
 	// Reset the pen axis system
@@ -750,7 +731,7 @@ class Model
 	// Mirror selection about specified axis
 	void mirrorSelectionLocal(int axis, bool markonly = FALSE);
 	// Matrix transform current selection
-	void matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix, bool markonly = FALSE);
+	void matrixTransformSelection(Vec3<double> origin, Matrix transform, bool markonly = FALSE);
 
 
 	/*
@@ -936,7 +917,7 @@ class Model
 	// Calculate site centre from config and molecule ID supplied
 	Vec3<double> siteCentre(Site *s, int molid);
 	// Calculate local coordinate system for site / molecule ID supplied
-	Mat3<double> siteAxes(Site *s, int molid);
+	Matrix siteAxes(Site *s, int molid);
 
 
 	/*

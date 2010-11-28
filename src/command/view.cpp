@@ -41,10 +41,8 @@ bool Command::function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Mat4<double> rmat = obj.rs->rotationMatrix();
-	Vec3<double> camr = obj.rs->camera();
-	double camrot = obj.rs->cameraRotation();
-	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot * DEGRAD);
+	Mat4<double> rmat = obj.rs->modelViewMatrix();
+	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, rmat.rows[3].x, rmat.rows[3].y, rmat.rows[3].z);
 	rv.reset();
 	return TRUE;
 }
@@ -92,18 +90,18 @@ bool Command::function_SetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Mat4<double> rmat;
-	Vec3<double> camr;
+// 	Vec3<double> camr;
 	// Get camera position
-	camr = c->arg3d(9);
-	obj.rs->resetCamera(camr);
+// 	camr = c->arg3d(9);
+// 	obj.rs->resetCamera(camr);   TGAY
 	// Get rotation matrix
 	rmat.rows[0].set(c->arg3d(0),0.0);
 	rmat.rows[1].set(c->arg3d(3),0.0);
 	rmat.rows[2].set(c->arg3d(6),0.0);
-	rmat.rows[3].set(0.0,0.0,0.0,1.0);
-	obj.rs->setRotationMatrix(rmat);
+	rmat.rows[3].set(c->arg3d(9),1.0);
+	obj.rs->setModelViewMatrix(rmat);
 	// Get camera z-rotation (if present)
-	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) / DEGRAD : 0.0);
+// 	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) / DEGRAD : 0.0);  TGAY
 	rv.reset();
 	return TRUE;
 }
@@ -137,7 +135,7 @@ bool Command::function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_TranslateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->adjustCamera(c->arg3d(0),0.0);
+	obj.rs->adjustCamera(c->argd(0), c->argd(1), c->argd(2));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -169,7 +167,7 @@ bool Command::function_ViewAlongCell(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->adjustCamera(0.0,0.0,c->argd(0),0.0);
+	obj.rs->adjustCamera(0.0,0.0,c->argd(0));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;

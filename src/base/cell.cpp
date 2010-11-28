@@ -119,7 +119,7 @@ void Cell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles)
 }
 
 // Set (by matrix)
-void Cell::set(const Mat3<double> &newaxes)
+void Cell::set(const Matrix &newaxes)
 {
 	msg.enter("Cell::set[matrix]");
 	// Store the supplied matrix
@@ -192,7 +192,8 @@ void Cell::setParameter(Cell::CellParameter cp, double value, bool adjust)
 		default:
 			// Adjust current matrix, then recalculate vectors
 			int i = cp - Cell::CellAX;
-			adjust ? axes_.add(i/3, i%3, value) : axes_.set(i/3, i%3, value);
+			if (adjust) axes_[i] += value;
+			else axes_[i] = value;
 			calculateVectors();
 			break;
 	}
@@ -207,25 +208,19 @@ Cell::CellType Cell::type() const
 }
 
 // Return the cell vector matrix
-Mat3<double> Cell::transpose() const
+Matrix Cell::transpose() const
 {
 	return transpose_;
 }
 
 // Return the transpose of the cell vector matrix (giving individual axis vectors in rows[])
-Mat3<double> Cell::axes() const
+Matrix Cell::axes() const
 {
 	return axes_;
 }
 
-// Return the cell vector matrix as a 4x4 matrix
-double *Cell::axesForGL()
-{
-	return axes_.forGL();
-}
-
 // Return a matrix of the reciprocal cell vectors
-Mat3<double> Cell::reciprocal() const
+Matrix Cell::reciprocal() const
 {
 	return reciprocal_;
 }
@@ -248,28 +243,10 @@ Vec3<double> Cell::centre() const
 	return centre_;
 }
 
-// Return the cell vectors as a column-major matrix in a 1D array
-void Cell::transposeColumn(double* m)
-{
-	transpose_.copyColumnMajor(m);
-}
-
-// Return the reciprocal vectors as a column-major matrix in a 1D array
-void Cell::reciprocalColumn(double* m)
-{
-	reciprocal_.copyColumnMajor(m);
-}
-
 // Return a inverse transpose matrix of cell axes
-Mat3<double> Cell::inverseTranspose() const
+Matrix Cell::inverseTranspose() const
 {
 	return itranspose_;
-}
-
-// Return the inverse of the cell vectors as a column-major matrix in a 1D array
-void Cell::inverseTransposeColumn(double *m)
-{
-	itranspose_.copyColumnMajor(m);
 }
 
 // Return the volume of the cell
@@ -361,9 +338,12 @@ void Cell::determineType()
 		if (count == 2) type_ = Cell::CubicCell;
 		else type_ = Cell::OrthorhombicCell;
 		// While we're here, symmetrise the matrix for cubic and orthorhombic cells
-		axes_.rows[0].y = axes_.rows[0].z = 0.0;
-		axes_.rows[1].x = axes_.rows[1].z = 0.0;
-		axes_.rows[2].x = axes_.rows[2].y = 0.0;
+		axes_[1] = 0.0;
+		axes_[2] = 0.0;
+		axes_[4] = 0.0;
+		axes_[6] = 0.0;
+		axes_[8] = 0.0;
+		axes_[9] = 0.0;
 	}
 	else type_ = Cell::ParallelepipedCell;
 	msg.exit("Cell::determineType");
@@ -374,14 +354,14 @@ void Cell::calculateVectors()
 {
 	msg.enter("Cell::calculateVectors");
 	// Calculate cell lengths
-	lengths_.x = axes_.rows[0].magnitude();
-	lengths_.y = axes_.rows[1].magnitude();
-	lengths_.z = axes_.rows[2].magnitude();
+	lengths_.x = axes_.columnMagnitude(0);
+	lengths_.y = axes_.columnMagnitude(1);
+	lengths_.z = axes_.columnMagnitude(2);
 	// Calculate cell angles
 	Vec3<double> vecx,vecy,vecz;
-	vecx = axes_.rows[0];
-	vecy = axes_.rows[1];
-	vecz = axes_.rows[2];
+	vecx = axes_.columnAsVec3(0);
+	vecy = axes_.columnAsVec3(1);
+	vecz = axes_.columnAsVec3(2);
 	vecx.normalise();
 	vecy.normalise();
 	vecz.normalise();
@@ -398,21 +378,21 @@ void Cell::calculateMatrix()
 	msg.enter("Cell::calculateMatrix");
 	double temp;
 	// Work in unit vectors. Assume that A lays along x-axis
-	axes_.set(0,1.0,0.0,0.0);
+	axes_.setColumn(0,1.0,0.0,0.0,0.0);
 	// Assume that B lays in the xy plane. Since A={1,0,0}, cos(gamma) equals 'x' of the B vector.
 	temp = cos(angles_.z/DEGRAD);
-	axes_.set(1,temp,sqrt(1.0 - temp*temp),0.0);
+	axes_.setColumn(1,temp,sqrt(1.0 - temp*temp),0.0,0.0);
 	// The C vector can now be determined in parts.
 	// It's x-component is equal to cos(beta) since {1,0,0}{x,y,z} = {1}{x} = cos(beta)
-	axes_.set(2,cos(angles_.y/DEGRAD),0.0,0.0);
+	axes_.setColumn(2,cos(angles_.y/DEGRAD),0.0,0.0,0.0);
 	// The y-component can be determined by completing the dot product between the B and C vectors
-	axes_.rows[2].y = ( cos(angles_.x/DEGRAD) - axes_.rows[1].x*axes_.rows[2].x ) / axes_.rows[1].y;
+	axes_[9] = ( cos(angles_.x/DEGRAD) - axes_.rows[1].x*axes_.rows[2].x ) / axes_.rows[1].y;
 	// The z-component is simply the remainder of the unit vector...
-	axes_.rows[2].z = sqrt(1.0 - axes_.rows[2].x*axes_.rows[2].x - axes_.rows[2].y*axes_.rows[2].y);
+	axes_[10] = sqrt(1.0 - axes_.rows[2].x*axes_.rows[2].x - axes_.rows[2].y*axes_.rows[2].y);
 	// Lastly, adjust these unit vectors to give the proper cell lengths
-	axes_.rows[0] *= lengths_.x;
-	axes_.rows[1] *= lengths_.y;
-	axes_.rows[2] *= lengths_.z;
+	axes_.multiplyColumn(0,lengths_.x);
+	axes_.multiplyColumn(1,lengths_.y);
+	axes_.multiplyColumn(2,lengths_.z);
 	msg.exit("Cell::calculateMatrix");
 }
 

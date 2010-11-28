@@ -199,7 +199,7 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 				break;
 			case (UserAction::TranslateAction):
 				delta.y = -delta.y;
-				displayModel_->adjustCamera(delta/15.0,0.0);
+				displayModel_->adjustCamera(delta.x/15.0, delta.y/15.0, 0.0);
 				break;
 			case (UserAction::ZoomAction):
 				displayModel_->adjustZoom(delta.y < 0.0);

@@ -346,12 +346,6 @@ Vec3<double> &TCanvas::modelToWorld(Vec3<double> pos, Vec4< double >* screenr, d
 	return engine_.modelToWorld(pos, screenr, screenradius);
 }
 
-// Project the specified world coordinates into 2D screen coords
-Vec4<double> &TCanvas::worldToScreen(const Vec3<double> &v)
-{
-	return engine_.worldToScreen(v);
-}
-
 /*
 // Other Qt Virtuals
 */

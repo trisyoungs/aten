@@ -127,7 +127,6 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.m->bohrToAngstrom();
 	obj.m->renumberAtoms();
-	obj.m->calculateViewMatrix();
 	obj.m->resetView();
 	obj.m->calculateMass();
 	obj.m->selectNone();

@@ -35,7 +35,6 @@ void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 	if (checked) aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	else aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
-	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
 	gui.update(TRUE, TRUE, FALSE, TRUE, TRUE);
 }

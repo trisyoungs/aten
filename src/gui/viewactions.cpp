@@ -30,13 +30,13 @@
 
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0,0.0);
+	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0);
 	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0,0.0);
+	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
 	gui.mainWidget->postRedisplay();
 }
 
@@ -68,7 +68,6 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 	// Switch render focus from the model's trajectory to the model.
 	aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
-	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
 	gui.update();
 }
@@ -78,7 +77,6 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 	// Switch render focus from the model to the trajectory.
 	aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	Model *m = aten.currentModelOrFrame();
-	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
 	gui.update();
 }

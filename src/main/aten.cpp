@@ -161,7 +161,6 @@ void Aten::setCurrentModel(Model *m)
 	current.p = m->patterns();
 	current.g = m->grids();
 	current.i = NULL;
-	current.m->renderSourceModel()->calculateViewMatrix();
 	// Set the title of the main window to reflect the version
 	Dnchar title;
 	title.sprintf("Aten (%s) - %s [%s]", ATENVERSION, current.m->name(), current.m->filename());

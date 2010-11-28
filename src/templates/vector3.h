@@ -25,8 +25,6 @@
 // Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
 #define NOMINMAX
 
-#include "templates/matrix3.h"
-#include "templates/matrix4.h"
 #include "base/messenger.h"
 #include "base/constants.h"
 #include "base/mathfunc.h"
@@ -89,9 +87,6 @@ template <class T> class Vec3
 	Vec3<T> operator*(T) const;
 	void operator*=(T);
 	Vec3<T> operator*(const Vec3<T>&) const;
-	Vec3<T> operator*(const Mat3<T>&) const;
-	void operator*=(const Mat3<T>&);
-	void operator*=(const Mat4<T> &A);
 	// Element access operator
 	T operator[](int index);
 
@@ -371,36 +366,6 @@ template <class T> Vec3<T> Vec3<T>::operator*(const Vec3<T> &v) const
 	return result;
 }
 
-// Operator *= (mat3)
-template <class T> void Vec3<T>::operator*=(const Mat3<T> &A)
-{
-	Vec3<T> result;
-	result.x = x*A.rows[0].x + y*A.rows[0].y + z*A.rows[0].z;
-	result.y = x*A.rows[1].x + y*A.rows[1].y + z*A.rows[1].z;
-	result.z = x*A.rows[2].x + y*A.rows[2].y + z*A.rows[2].z;
-	*this = result; 
-}
-
-// Operator *= (mat4)
-template <class T> void Vec3<T>::operator*=(const Mat4<T> &A)
-{
-	Vec3<T> result;
-	result.x = x*A.rows[0].x + y*A.rows[0].y + z*A.rows[0].z + A.rows[0].w;
-	result.y = x*A.rows[1].x + y*A.rows[1].y + z*A.rows[1].z + A.rows[1].w;
-	result.z = x*A.rows[2].x + y*A.rows[2].y + z*A.rows[2].z + A.rows[2].w;
-	*this = result;
-}
-
-// Operator * (mat3)
-template <class T> Vec3<T> Vec3<T>::operator*(const Mat3<T> &A) const
-{
-	Vec3<T> result;
-	result.x = x*A.rows[0].x + y*A.rows[0].y + z*A.rows[0].z;
-	result.y = x*A.rows[1].x + y*A.rows[1].y + z*A.rows[1].z;
-	result.z = x*A.rows[2].x + y*A.rows[2].y + z*A.rows[2].z;
-	return result;
-}
-
 // Element access operator
 template <class T> T Vec3<T>::operator[](int index)
 {
@@ -583,7 +548,6 @@ template <class T> void Vec3<T>::randomUnit()
 template <class T> void Vec3<T>::rotate(double angx, double angy)
 {
 	static double rotx, roty, thetax, thetay, sinx, cosx, siny, cosy, camrot;
-	static Mat3<double> rotmat;
 	// Calculate cos/sin terms
 	thetax = angx / DEGRAD;
 	thetay = angy / DEGRAD;
@@ -591,10 +555,11 @@ template <class T> void Vec3<T>::rotate(double angx, double angy)
 	cosy = cos(thetay);
 	sinx = sin(thetax);
 	siny = sin(thetay);
-	rotmat.rows[0].set(cosy,0.0,siny);
-	rotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy);
-	rotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy);
-	*this *= rotmat;
+// 	rotmat.rows[0].set(cosy,0.0,siny);
+// 	rotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy);
+// 	rotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy);
+	// BROKEN TGAY Hardcode in rotation here
+// 	*this *= rotmat;
 }
 
 // Convert to cartesian

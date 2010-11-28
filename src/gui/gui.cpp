@@ -288,8 +288,6 @@ void GuiQt::run()
 		tabid = mainWindow->addModelTab(m);
 		if (m == currentm) currenttab = tabid;
 		if (!prefs.keepView()) m->resetView();
-		m->calculateViewMatrix();
-		//m->projectAll();
 	}
 	mainWindow->ui.ModelTabs->setCurrentIndex(currenttab);
 
