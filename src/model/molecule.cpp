@@ -72,20 +72,21 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 	// Rotate the coordinates of the atoms in pattern p, molecule mol, about their centre of geometry.
 	// rotx and roty are the rotations about the x and y axes respectively, in degrees
 	msg.enter("Model::rotateMolecule");
-	static double cosx, cosy, sinx, siny;
-	static Mat3<double> rotmat;
+// 	static double cosx, cosy, sinx, siny;
+	static Matrix rotmat;
 	static Vec3<double> delta, newpos, cog;
 	static int pnatoms, offset, n;
 	Atom **modelatoms = atomArray();
 	rotx /= DEGRAD;
 	roty /= DEGRAD;
-	cosx = cos(rotx);
-	cosy = cos(roty);
-	sinx = sin(rotx);
-	siny = sin(roty);
-	rotmat.set(0,cosy,0.0,siny);
-	rotmat.set(1,(-sinx)*(-siny),cosx,(-sinx)*cosy);
-	rotmat.set(2,cosx*(-siny),sinx,cosx*cosy);
+	rotmat.createRotationXY(rotx,roty);
+// 	cosx = cos(rotx);			// BROKEN?
+// 	cosy = cos(roty);
+// 	sinx = sin(rotx);
+// 	siny = sin(roty);
+// 	rotmat.setColumn(0,cosy,0.0,siny);
+// 	rotmat.setColumn(1,(-sinx)*(-siny),cosx,(-sinx)*cosy);
+// 	rotmat.setColumn(2,cosx*(-siny),sinx,cosx*cosy);
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
 	// Calculate COG before we start

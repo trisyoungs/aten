@@ -101,7 +101,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	msg.enter("Model::rotateSelectionWorld");
 	static double rotx, roty, cosx, cosy, sinx, siny;
 	static Vec3<double> newr;
-	static Mat4<double> rotmat, inverse;
+	Matrix rotmat, inverse;
 	rotx = dy / 20.0;
 	roty = dx / 20.0;
 // 	cosx = cos(rotx);
@@ -122,10 +122,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (gui.mainWidget->modelToWorld(ri->item->r()) - transformCOG)) + transformCOG;
 		printf("New world cooords of atom %i are ", ri->item->id()); newr.print();
-		ri->item->r().x = newr.x*inverse.rows[0].x + newr.y*inverse.rows[1].x + newr.z*inverse.rows[2].x + inverse.rows[3].x;
-		ri->item->r().y = newr.x*inverse.rows[0].y + newr.y*inverse.rows[1].y + newr.z*inverse.rows[2].y + inverse.rows[3].y;
-		ri->item->r().z = newr.x*inverse.rows[0].z + newr.y*inverse.rows[1].z + newr.z*inverse.rows[2].z + inverse.rows[3].z;
-// 		newr *= inverse;
+		newr = inverse.transform(newr);
 		printf("New model cooords of atom %i are ", ri->item->id()); ri->item->r().print();
 // 		ri->item->r() = newr + cell_.centre();		// BROKEN? Necessary?
 	}
@@ -142,7 +139,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, double angle, bool markonly)
 {
 	msg.enter("Model::rotateSelectionVector");
-	static Mat3<double> r, u, ut, gr, Igr;
+	Matrix r, u, ut, gr, Igr;
 	Vec3<double> tempv;
 	if (selection(markonly) == NULL)
 	{
@@ -153,10 +150,13 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	
 	// Generate target coordinate system, with X equal to rotation axis
 	vector.normalise();
-	u.rows[0] = vector;
-	u.rows[1] = vector.orthogonal();
-	u.rows[2] = vector * u.rows[1];
-	u.rows[2].normalise();
+	
+	
+	u.setColumn(0, vector, 0.0);
+	u.setColumn(1, vector.orthogonal(), 0.0);
+	u.setColumn(2, vector * u.columnAsVec3(1), 0.0);
+	u.columnNormalise(2);
+
 	ut = u.transpose();
 
 	// Create rotation matrix
@@ -170,8 +170,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	// Loop over selected atoms
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
-		tempv = gr * ri->item->r();
-		tempv += Igr * origin;
+		tempv = gr * ri->item->r() + Igr * origin;
 		positionAtom(ri->item, tempv);
 		//i->r() = tempv;
 	}
@@ -206,7 +205,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	// Translate the selected atoms in the local XY plane
 	msg.enter("Model::translateSelectionWorld");
 	Vec3<double> newr;
-	Mat4<double> inverse;
+	Matrix inverse;
 	// No need to account for orientation / rotation of view, since we do the transformation in world coordinates.
 	// So, take the local coordinates of each selected atom and add our position delta to it.
 	// We then unproject this new local coordinate to get the new model (world) coordinate.
@@ -214,7 +213,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		newr = gui.mainWidget->modelToWorld(ri->item->r()) + v;
-		newr = (inverse * newr) + cell_.centre();	// BROKEN?
+		newr = inverse * newr + cell_.centre();	// BROKEN?
 		positionAtom(ri->item, newr);
 	}
 
@@ -284,14 +283,13 @@ void Model::centre(double newx, double newy, double newz, bool lockx, bool locky
 }
 
 // Matrix transform current selection
-void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix, bool markedonly)
+void Model::matrixTransformSelection(Vec3<double> origin, Matrix matrix, bool markedonly)
 {
 	msg.enter("Model::matrixTransformSelection");
 	Vec3<double> newr;
 	for (Refitem<Atom,int> *ri = selection(markedonly); ri != NULL; ri = ri->next)
 	{
-		newr = ri->item->r() - origin;
-		newr *= matrix;
+		newr = matrix * (ri->item->r() - origin);
 		positionAtom(ri->item, newr + origin);
 	}
 

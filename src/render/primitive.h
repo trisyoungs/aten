@@ -24,9 +24,9 @@
 
 #include <GL/gl.h>
 #include <Qt/QtGui>
-#include "render/glmatrix.h"
 #include "templates/list.h"
 #include "templates/vector3.h"
+#include "base/matrix.h"
 #include "base/dnchar.h"
 
 #define TEXTCHUNKSIZE 100
@@ -131,7 +131,7 @@ class PrimitiveInfo
 	// Target primitive
 	Primitive *primitive_;
 	// Local transformation of primitive
-	GLMatrix localTransform_;
+	Matrix localTransform_;
 	// Colour of primitive (if vertexData_ doesn't contain colour information)
 	GLfloat colour_[4];
 	// Whether to draw the primitive as filled or wireframe polygons
@@ -139,11 +139,11 @@ class PrimitiveInfo
 	
 	public:
 	// Set primitive info data
-	void set(Primitive *prim, GLfloat *colour, GLMatrix &transform, GLenum fillMode = GL_FILL);
+	void set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL);
 	// Return pointer to primitive
 	Primitive *primitive();
 	// Return local transformation of primitive
-	GLMatrix &localTransform();
+	Matrix &localTransform();
 	// Return colour array
 	GLfloat *colour();
 	// Return polygon fill mode

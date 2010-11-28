@@ -34,6 +34,10 @@ using namespace std;
 // Column-major 4x4 matrix
 class Matrix
 {
+	public:
+	// Constructor
+	Matrix();
+	
 	private:
 	// Matrix
 	double matrix_[16];
@@ -44,6 +48,8 @@ class Matrix
 	*/
 	public:
 	Matrix operator*(const Matrix &B) const;
+	Matrix operator+(const Matrix &B) const;
+	Matrix operator-(const Matrix &B) const;
 	Vec3<double> operator*(const Vec3<double> &v) const;
 	Vec4<double> operator*(const Vec4<double> &v) const;
 	Matrix &operator*=(const Matrix &B);
@@ -66,6 +72,8 @@ class Matrix
 	Matrix &transpose();
 	// Calculate determinant
 	double determinant();
+	// Invert matrix
+	void invert();
 
 
 	/*
@@ -79,14 +87,24 @@ class Matrix
 	// Set specified column from supplied values
 	void setColumn(int col, double x, double y, double z, double w);
 	// Set specified column from supplied Vec3
-	void setColumn(int col, Vec3<double> &vec, double w);
+	void setColumn(int col, Vec3<double> vec, double w);
 	// Set specified column from supplied Vec4
-	void setColumn(int col, Vec4<double> &vec);
+	void setColumn(int col, Vec4<double> vec);
+	// Adjust specified column from supplied values
+	void adjustColumn(int col, double x, double y, double z, double w);
+	// Adjust specified column from supplied Vec3
+	void adjustColumn(int col, Vec3<double> vec, double w);
+	// Adjust specified column from supplied Vec4
+	void adjustColumn(int col, Vec4<double> vec);
 	// Calculate column magnitude
 	double columnMagnitude(int column);
-	// Multiply column by single value
-	void multiplyColumn(int col, double d);
-
+	// Multiply single column by single value
+	void columnMultiply(int col, double d);
+	// Multiply first three columns by values insupplied vector
+	void columnMultiply(Vec3<double> vec);
+	// Normalise specified column to 1
+	void columnNormalise(int column);
+	
 
 	/*
 	// Rotations
@@ -140,10 +158,16 @@ class Matrix
 	// Misc
 	*/
 	public:
+	// Transform coordinates supplied and return as Vec3<double>
+	Vec3<double> transform(double x, double y, double z) const;
+	// Transform coordinates supplied and return as Vec3<double>
+	Vec4<double> transform(double x, double y, double z, double w) const;
+	// Transform coordinates supplied and return as Vec3<double>
+	Vec3<double> transform(Vec3<double> vec) const;
 	// Apply rotational part of matrix to supplied vector
-	Vec3<double> rotateVector(Vec3<double> &v);
+	Vec3<double> rotateVector(Vec3<double> &v) const;
 	// Multiply against coordinates provided (in GLfloats)
-	void multiply(GLfloat *r, GLfloat *transformed);
+	void multiply(GLfloat *r, GLfloat *transformed) const;
 	// Remove translation and scaling parts, leaving rotation only
 	void removeTranslationAndScaling();
 };

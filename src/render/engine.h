@@ -22,12 +22,12 @@
 #ifndef ATEN_RENDERENGINE_H
 #define ATEN_RENDERENGINE_H
 
-#include "render/glmatrix.h"
 #include "render/triangles.h"
 #include "render/primitive.h"
 #include "templates/vector3.h"
 #include "base/atom.h"
 #include "base/bond.h"
+#include "base/matrix.h"
 #include <GL/gl.h>
 
 // Forward declarations
@@ -74,11 +74,11 @@ class RenderEngine
 	*/
 	private:
 	// View matrix
-	GLMatrix modelTransformationMatrix_;
+	Matrix modelTransformationMatrix_;
 	// Projection matrix for model
-	GLMatrix modelProjectionMatrix_;
+	Matrix modelProjectionMatrix_;
 	// Projection matrix for model
-	GLMatrix globeProjectionMatrix_;
+	Matrix globeProjectionMatrix_;
 	// Viewport matrix for canvas
 	GLint viewportMatrix_[4];
 
@@ -88,7 +88,7 @@ class RenderEngine
 	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
 	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
 	// Update transformation matrix
-	void setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre);
+	void setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre);
 
 
 	/*
@@ -106,7 +106,7 @@ class RenderEngine
 
 	private:
 	// Render primitive in specified colour and level of detail
-	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, GLMatrix& transform, GLenum fillMode = GL_FILL);
+	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL);
 	// Add text primitive for rendering later
 	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Add text primitive for rendering later (screen position calculated from 3D model coordinates)

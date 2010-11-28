@@ -22,6 +22,7 @@
 #ifndef ATEN_SITE_H
 #define ATEN_SITE_H
 
+#include "base/matrix.h"
 #include "templates/vector3.h"
 #include "templates/list.h"
 #include "base/dnchar.h"
@@ -88,11 +89,11 @@ class Site
 	*/
 	private:
 	// Matrix defining local coordinate system
-	Mat3<double> axes_;
+	Matrix axes_;
 
 	public:
 	// Set axes
-	void setAxes(Mat3<double>);
+	void setAxes(Matrix axes);
 	// List of atoms whose average defines the x axis (from site centre)
 	List< ListItem<int> > xAxisAtoms;
 	// List of atoms whose average defines the y axis (from site centre)

@@ -204,28 +204,27 @@ bool ComponentRegion::coordsInRegion(const Vec3<double> &v, Cell *cell) const
 		return FALSE;
 	}
 	static Vec3<double> tempv, realgeometry;
-	static Mat3<double> rot;
 	bool result = TRUE;
 	// Get position of point relative to centre of region
 	tempv = v - (centreFrac_ ? cell->fracToReal(centre_) : centre_);
 	switch (shape_)
 	{
 		case (ComponentRegion::CuboidRegion):
-			if (rotateRegion_) tempv *= inverseRotationMatrix_;
+			if (rotateRegion_) tempv = inverseRotationMatrix_.transform(tempv);
 			realgeometry = (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
 			if (fabs(tempv.x) > 0.5*realgeometry.x) result = FALSE;
 			else if (fabs(tempv.y) > 0.5*realgeometry.y) result = FALSE;
 			else if (fabs(tempv.z) > 0.5*realgeometry.z) result = FALSE;
 			break;
 		case (ComponentRegion::SpheroidRegion):
-			if (rotateRegion_) tempv *= inverseRotationMatrix_;
+			if (rotateRegion_) tempv = inverseRotationMatrix_.transform(tempv);
 			// Scale test point by spheroid size
 			tempv /= (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
 			if (tempv.magnitude() > 1.0) result = FALSE;
 			break;
 		case (ComponentRegion::CylinderRegion):
 			// We rotate into the frame of the cylinder, so we can do line distance along 0,0,1
-			if (rotateRegion_) tempv *= inverseRotationMatrix_;
+			if (rotateRegion_) tempv = inverseRotationMatrix_.transform(tempv);
 			realgeometry = (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
 			// 'Normalise' coordinate w.r.t. cylinder X/Y radii
 			tempv.x = tempv.x / realgeometry.x;
@@ -260,17 +259,14 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 		switch (shape_)
 		{
 			case (ComponentRegion::WholeCell):
-				v.x = csRandom();
-				v.y = csRandom();
-				v.z = csRandom();
-				v *= cell->transpose();
+				v = cell->randomPos();
 				break;
 			case (ComponentRegion::CuboidRegion):
 				v = geometryFrac_ ? cell->fracToReal(geometry_) : geometry_;
 				v.x *= csRandom() - 0.5;
 				v.y *= csRandom() - 0.5;
 				v.z *= csRandom() - 0.5;
-				if (rotateRegion_) v *= rotationMatrix_;
+				if (rotateRegion_) v = rotationMatrix_.transform(v);
 				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
 			case (ComponentRegion::SpheroidRegion):
@@ -282,7 +278,7 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 					v.z = csRandom() * 2.0 - 1.0;
 				} while ( (v.x*v.x + v.y*v.y + v.z*v.z) > 1.0);
 				v.multiply(geometry);
-				if (rotateRegion_) v *= rotationMatrix_;
+				if (rotateRegion_) v = rotationMatrix_.transform(v);
 				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
 			case (ComponentRegion::CylinderRegion):
@@ -294,7 +290,7 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				} while ( (v.x*v.x + v.y*v.y) > 1.0);
 				v.z = (csRandom()-0.5);
 				v.multiply(geometry);
-				if (rotateRegion_) v *= rotationMatrix_;
+				if (rotateRegion_) v = rotationMatrix_.transform(v);
 				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
 			default:

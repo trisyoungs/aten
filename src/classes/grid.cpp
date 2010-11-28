@@ -272,7 +272,7 @@ Grid::GridType Grid::type() const
 */
 
 // Return the Grid axes
-Mat3<double> Grid::axes() const
+Matrix Grid::axes() const
 {
 	return cell_.axes();
 }
@@ -342,8 +342,7 @@ void Grid::calculateBounds()
 			upperRightCorner_.zero();
 			for (int n=0; n<8; ++n)
 			{
-				v.set( n&1, n&2, n&4 );
-				v *= cell_.axes();
+				v = cell_.axes().transform(n&1, n&2, n&4);
 				for (int m=0; m<3; ++m)
 				{
 					if (v.get(m) < lowerLeftCorner_.get(m)) lowerLeftCorner_.set(m,v.get(m));
@@ -851,9 +850,9 @@ void Grid::setAxes(const Vec3<double> v)
 }
 
 // Set spacing for a parallelepiped grid
-void Grid::setAxes(const Mat3<double> m)
+void Grid::setAxes(const Matrix axes)
 {
-	cell_.set(m);
+	cell_.set(axes);
 	log_++;
 }
 
