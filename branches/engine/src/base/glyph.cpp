@@ -261,10 +261,10 @@ GlyphData::GlyphData()
 	atomData_ = GlyphData::PositionData;
 	atomSetLast_ = FALSE;
 	set_ = FALSE;
-	colour_[0] = prefs.colour(Prefs::GlyphColour)[0];
-	colour_[1] = prefs.colour(Prefs::GlyphColour)[1];
-	colour_[2] = prefs.colour(Prefs::GlyphColour)[2];
-	colour_[3] = prefs.colour(Prefs::GlyphColour)[3];
+	colour_[0] = prefs.colour(Prefs::GlyphDefaultColour)[0];
+	colour_[1] = prefs.colour(Prefs::GlyphDefaultColour)[1];
+	colour_[2] = prefs.colour(Prefs::GlyphDefaultColour)[2];
+	colour_[3] = prefs.colour(Prefs::GlyphDefaultColour)[3];
 
 	// Public variables
 	prev = NULL;

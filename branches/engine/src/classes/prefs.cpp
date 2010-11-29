@@ -97,21 +97,21 @@ const char *Prefs::keyAction(Prefs::KeyAction i)
 }
 
 // Colours
-const char *PenColourKeywords[Prefs::nPenColours] = { "bg", "fixedatom", "fg", "glyph", "specular" };
-const char *PenColourNames[Prefs::nPenColours] = { "Background", "Fixed Atom", "Foreground", "Glyph Default", "Specular" };
-Prefs::PenColour Prefs::penColour(const char *s, bool reporterror)
+const char *ObjectColourKeywords[Prefs::nObjectColours] = { "bg", "fixedatom", "globeaxes", "globe", "glyph", "specular", "text", "unitcellaxes", "unitcell" };
+const char *ObjectColourNames[Prefs::nObjectColours] = { "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Specular", "Text", "Unit Cell Axes", "Unit Cell" };
+Prefs::ObjectColour Prefs::objectColour(const char *s, bool reporterror)
 {
-	Prefs::PenColour pc = (Prefs::PenColour) enumSearch("colour", Prefs::nPenColours, PenColourKeywords, s);
-	if ((pc == Prefs::nPenColours) && reporterror) enumPrintValid(Prefs::nPenColours,PenColourKeywords);
+	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
+	if ((pc == Prefs::nObjectColours) && reporterror) enumPrintValid(Prefs::nObjectColours,ObjectColourKeywords);
 	return pc;
 }
-const char *Prefs::penColour(Prefs::PenColour i)
+const char *Prefs::objectColour(Prefs::ObjectColour i)
 {
-	return PenColourKeywords[i];
+	return ObjectColourKeywords[i];
 }
-const char *Prefs::penColourName(Prefs::PenColour i)
+const char *Prefs::objectColourName(Prefs::ObjectColour i)
 {
-	return PenColourNames[i];
+	return ObjectColourNames[i];
 }
 
 // Density calculation units
@@ -240,11 +240,15 @@ Prefs::Prefs()
 	zoomThrottle_ = 0.15;
 
 	// Colours
-	setColour(Prefs::SpecularColour, 0.9f, 0.9f, 0.9f, 1.0f);
-	setColour(Prefs::ForegroundColour, 0.0f, 0.0f, 0.0f, 1.0f);
-	setColour(Prefs::BackgroundColour, 1.0f, 1.0f, 1.0f, 1.0f);
-	setColour(Prefs::GlyphColour, 0.0f, 0.0f, 1.0f, 0.7f);
-	setColour(Prefs::FixedAtomColour, 0.0f, 0.0f, 0.0f, 1.0f);
+	setColour(Prefs::BackgroundColour, 1.0, 1.0, 1.0, 1.0);
+	setColour(Prefs::FixedAtomColour, 0.0, 0.0, 0.0, 1.0);
+	setColour(Prefs::GlyphDefaultColour, 0.0, 0.0, 1.0, 0.7);
+	setColour(Prefs::GlobeColour, 0.9, 0.9, 0.9, 1.0);
+	setColour(Prefs::GlobeAxesColour, 0.5, 0.5, 0.5, 1.0);
+	setColour(Prefs::SpecularColour, 0.9, 0.9, 0.9, 1.0);
+	setColour(Prefs::TextColour, 0.0, 0.0, 0.0, 1.0);
+	setColour(Prefs::UnitCellColour, 0.0, 0.0, 0.0, 1.0);
+	setColour(Prefs::UnitCellAxesColour, 0.8, 0.8, 0.8, 1.0);
 
 	// Colour scales
 	colourScale[0].setName("Charge");
@@ -894,13 +898,13 @@ GLint Prefs::shininess() const
 */
 
 // Return the specified colour
-double *Prefs::colour(PenColour c)
+double *Prefs::colour(ObjectColour c)
 {
 	return colours_[c];
 }
 
 // Copy the specified colour
-void Prefs::copyColour(PenColour c, GLfloat *target) const
+void Prefs::copyColour(ObjectColour c, GLfloat *target) const
 {
 	target[0] = (GLfloat) colours_[c][0];
 	target[1] = (GLfloat) colours_[c][1];
@@ -909,7 +913,7 @@ void Prefs::copyColour(PenColour c, GLfloat *target) const
 }
 
 // Set the specified colour
-void Prefs::setColour(PenColour c, double r, double g, double b, double a)
+void Prefs::setColour(ObjectColour c, double r, double g, double b, double a)
 {
 	colours_[c][0] = r;
 	colours_[c][1] = g;
@@ -918,7 +922,7 @@ void Prefs::setColour(PenColour c, double r, double g, double b, double a)
 }
 
 // Set the supplied element of the specified colour
-void Prefs::setColour(PenColour c, int i, double value)
+void Prefs::setColour(ObjectColour c, int i, double value)
 {
 	if ((i < 0) || (i > 3)) printf("Colour element index out of range (%i)\n", i);
 	else colours_[c][i] = value;

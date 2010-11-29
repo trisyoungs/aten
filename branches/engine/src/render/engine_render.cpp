@@ -150,10 +150,17 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	A = modelTransformationMatrix_;
 	A.removeTranslationAndScaling();
 	glMultMatrixd(A.matrix());
-	glColor4f(0.9f,0.9f,0.9f,1.0f);
-	rotationGlobe_.sendToGL();
-	glColor4f(0.3f,0.3f,0.3f,1.0f);
-	rotationGlobeAxes_.sendToGL();
+	prefs.copyColour(Prefs::GlobeColour, colour_i);
+	glColor4fv(colour_i);
+// 	rotationGlobe_.sendToGL();
+	prefs.copyColour(Prefs::GlobeAxesColour, colour_i);
+	glColor4fv(colour_i);
+// 	rotationGlobeAxes_.sendToGL();
+	glBegin(GL_LINE_LOOP);
+	glVertex3d(0.0,0.0,0.0);
+	glVertex3d(1.0,0.0,0.0);
+	glVertex3d(1.0,0.1,0.0);
+	glEnd();
 	
 	// Prepare for model rendering
 	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
@@ -166,16 +173,16 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	// Render cell and cell axes
 	if (source->cell()->type() != Cell::NoCell)
 	{
-		// Setup pen colour
-// 		prefs.copyColour(Prefs::ForegroundColour, colour_i);
-		glColor4f(0.5f,0.5f,0.5f,1.0f);
+		prefs.copyColour(Prefs::UnitCellColour, colour_i);
+		glColor4fv(colour_i);
 		A = source->modelViewMatrix() * source->cell()->axes();
 		glMultMatrixd(A.matrix());
 		wireCube_.sendToGL();
 		glTranslated(-0.5, -0.5, -0.5);
 		v = source->cell()->lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
-		glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
+		prefs.copyColour(Prefs::UnitCellAxesColour, colour_i);
+		glColor4fv(colour_i);
 		cellAxes_.sendToGL();
 		glLoadIdentity();
 	}
@@ -658,10 +665,6 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 
 	// All objects have now been filtered...
 	sortAndSendGL();
-	
-// 	glDisable(GL_COLOR_MATERIAL);
-	prefs.copyColour(Prefs::ForegroundColour, colour_i);
-	glColor4fv(colour_i);
 }
 
 // Render text objects (with supplied QPainter)
