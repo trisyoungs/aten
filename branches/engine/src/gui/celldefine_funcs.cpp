@@ -55,16 +55,16 @@ void AtenCellDefine::refreshMatrix()
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
 	Cell *cell = m->cell();
-	Mat3<double> matrix = cell->axes();
+	Matrix matrix = cell->axes();
 	ui.CellMatrixXXSpin->setValue(matrix[0]);
 	ui.CellMatrixXYSpin->setValue(matrix[1]);
 	ui.CellMatrixXZSpin->setValue(matrix[2]);
-	ui.CellMatrixYXSpin->setValue(matrix[3]);
-	ui.CellMatrixYYSpin->setValue(matrix[4]);
-	ui.CellMatrixYZSpin->setValue(matrix[5]);
-	ui.CellMatrixZXSpin->setValue(matrix[6]);
-	ui.CellMatrixZYSpin->setValue(matrix[7]);
-	ui.CellMatrixZZSpin->setValue(matrix[8]);
+	ui.CellMatrixYXSpin->setValue(matrix[4]);
+	ui.CellMatrixYYSpin->setValue(matrix[5]);
+	ui.CellMatrixYZSpin->setValue(matrix[6]);
+	ui.CellMatrixZXSpin->setValue(matrix[8]);
+	ui.CellMatrixZYSpin->setValue(matrix[9]);
+	ui.CellMatrixZZSpin->setValue(matrix[10]);
 }
 
 void AtenCellDefine::refreshABC()

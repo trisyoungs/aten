@@ -237,7 +237,7 @@ void Model::rotateView(double dx, double dy)
 
 		// Reset translation and scaling on original matrix, and multiply
 		modelViewMatrix_.removeTranslationAndScaling();
-		modelViewMatrix_ *= newrotmat;
+		modelViewMatrix_ = newrotmat * modelViewMatrix_;
 	}
 	else parent_->rotateView(dx, dy);
 	// Log camera change

@@ -43,7 +43,7 @@ class AtenGrids : public QDialog
 	private:
 	void refreshGridInfo();
 	void gridOriginChanged(int component, double value);
-	void gridAxisChanged(int row, int component, double value);
+	void gridAxisChanged(int axis, int component, double value);
 	private slots:
 	// Menu
 	void on_actionGridLoad_triggered(bool checked);

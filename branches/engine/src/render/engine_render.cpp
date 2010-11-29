@@ -113,7 +113,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	Atom *i, *j, **atoms;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4, rji, rjk;
 	Vec4<double> transformZ, screenr;
-	GLMatrix atomtransform, bondtransform, A;
+	Matrix atomtransform, bondtransform, A;
 	Refitem<Bond,int> *ri;
 	Atom::DrawStyle style_i, style_j, globalstyle;
 	Bond::BondType bt;

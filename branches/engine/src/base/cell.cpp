@@ -165,10 +165,38 @@ void Cell::setAngle(int i, double d)
 // Set / adjust individual parameter
 void Cell::setParameter(Cell::CellParameter cp, double value, bool adjust)
 {
+	int i;
 	switch (cp)
 	{
 		case (Cell::nCellParameters):
 			printf("No cell parameter supplied to Cell::adjustParameter.\n");
+			break;	
+		// Cell axis A
+		case (Cell::CellAX):
+		case (Cell::CellAY):
+		case (Cell::CellAZ):
+			i = cp - Cell::CellAX;
+			if (adjust) axes_[i] += value;
+			else axes_[i] = value;
+			calculateVectors();
+			break;
+		// Cell axis B
+		case (Cell::CellBX):
+		case (Cell::CellBY):
+		case (Cell::CellBZ):
+			i = cp - Cell::CellBX;
+			if (adjust) axes_[4+i] += value;
+			else axes_[4+i] = value;
+			calculateVectors();
+			break;
+		// Cell axis C
+		case (Cell::CellCX):
+		case (Cell::CellCY):
+		case (Cell::CellCZ):
+			i = cp - Cell::CellCX;
+			if (adjust) axes_[8+i] += value;
+			else axes_[8+i] = value;
+			calculateVectors();
 			break;
 		// Cell lengths
 		case (Cell::CellA):
@@ -188,11 +216,6 @@ void Cell::setParameter(Cell::CellParameter cp, double value, bool adjust)
 			break;
 		// Cell matrix elements
 		default:
-			// Adjust current matrix, then recalculate vectors
-			int i = cp - Cell::CellAX;
-			if (adjust) axes_[i] += value;
-			else axes_[i] = value;
-			calculateVectors();
 			break;
 	}
 	// Update dependent quantities

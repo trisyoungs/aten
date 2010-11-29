@@ -214,7 +214,7 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 		kvec.y = ky * rcell.rows[1].y;
 		kvec.z = kz * rcell.rows[2].z;*/
 		kvec.set(kx,ky,kz);
-		kvec *= rcell * TWOPI;
+		kvec = (rcell * TWOPI)* kvec;
 		magsq = kvec.x*kvec.x + kvec.y*kvec.y + kvec.z*kvec.z;
 		//printf("Mag = %f, cutoff = %f\n",mag,cutoff);
 		if (magsq > cutoffsq) continue;
@@ -439,7 +439,7 @@ void Pattern::ewaldReciprocalForces(Model *srcmodel)
 	msg.enter("Pattern::ewaldReciprocalForces");
 	int kx, ky, kz, i, kmax;
 	Vec3<double> kvec, cross_ab, cross_bc, cross_ca, perpl;
-	Mat3<double> rcell;
+	Matrix rcell;
 	double cutoffsq, magsq, exp1, alphasq, factor, force, sumcos, sumsin, xycos, xysin, alpha, rvolume;
 	double *xyzcos, *xyzsin;
 
@@ -454,9 +454,9 @@ void Pattern::ewaldReciprocalForces(Model *srcmodel)
 
 	// Cutoff is the shortest component of kVec * perpendicular reciprocal cell lengths
 	rcell = fourier.cell->reciprocal().transpose();
-	cross_ab = rcell.rows[0] * rcell.rows[1];
-	cross_bc = rcell.rows[1] * rcell.rows[2];
-	cross_ca = rcell.rows[2] * rcell.rows[0];
+	cross_ab = rcell.columnAsVec3(0) * rcell.columnAsVec3(1);
+	cross_bc = rcell.columnAsVec3(1) * rcell.columnAsVec3(2);
+	cross_ca = rcell.columnAsVec3(2) * rcell.columnAsVec3(0);
 	perpl.set(rvolume / cross_ab.magnitude(), rvolume / cross_bc.magnitude(), rvolume / cross_ca.magnitude());
 	perpl.x *= fourier.kVec.x;
 	perpl.y *= fourier.kVec.y;
@@ -476,7 +476,7 @@ void Pattern::ewaldReciprocalForces(Model *srcmodel)
 		if ((kx == 0) && (ky == 0) && (kz == 0)) continue;
 		// Calculate magnitude of this vector
 		kvec.set(kx,ky,kz);
-		kvec *= rcell * TWOPI;
+		kvec = (rcell * TWOPI) * kvec;
 		magsq = kvec.x*kvec.x + kvec.y*kvec.y + kvec.z*kvec.z;
 		if (magsq > cutoffsq) continue;
 		sumcos = 0.0;

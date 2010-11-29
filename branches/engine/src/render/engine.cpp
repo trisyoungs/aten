@@ -215,7 +215,7 @@ Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Vec4<double> *scr
 }
 
 // Update transformation matrix
-void RenderEngine::setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellcentre)
+void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
 {
 	modelTransformationMatrix_ = mat;
 	modelTransformationMatrix_.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
@@ -226,7 +226,7 @@ void RenderEngine::setTransformationMatrix(Mat4<double> &mat, Vec3<double> cellc
 */
 
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, GLMatrix &transform, GLenum fillMode)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, Matrix &transform, GLenum fillMode)
 {
 	if ((colour[3] > 0.99f) || (fillMode != GL_FILL))
 	{

@@ -58,6 +58,13 @@ Matrix Matrix::operator*(const Matrix &B) const
 	return AB;
 }
 
+Matrix Matrix::operator*(const double a) const
+{
+	Matrix AB;
+	for (int n=0; n<16; ++n) AB.matrix_[n] = matrix_[n] * a;
+	return AB;
+}
+
 Matrix Matrix::operator+(const Matrix &B) const
 {
 	Matrix A;
@@ -251,7 +258,7 @@ void Matrix::invert()
 				// Similarly, only look at the column element if the column hasn't been pivoted yet.
 				if (pivoted[col]) continue;
 				// Check the size of the element...
-				element = fabs(matrix_[col*4+row]);
+				element = fabs(matrix_[row*4+col]);
 				if (element > large)
 				{
 					large = element;
@@ -269,43 +276,36 @@ void Matrix::invert()
 		// Exchange rows to put pivot element on the diagonal
 		if (pivotrow != pivotcol)
 		{
-			for (m=0; m<4; m++)
+			for (m=0; m<4; ++m)
 			{
-	// 			element = rows[pivotrow].get(m);
-	// 			rows[pivotrow].set(m, rows[pivotcol].get(m));
-	// 			rows[pivotcol].set(m, element);
-				element = matrix_[m*4+pivotrow];
-				matrix_[m*4+pivotrow] = matrix_[m*4+pivotcol];
-				matrix_[m*4+pivotcol] = element;
+				element = matrix_[pivotrow*4+m];
+				matrix_[pivotrow*4+m] = matrix_[pivotcol*4+m];
+				matrix_[pivotcol*4+m] = element;
 			}
 		}
 		
 		// Now ready to divide through row elements.
 		element = 1.0 / matrix_[pivotcol*4+pivotcol];
 		matrix_[pivotcol*4+pivotcol] = 1.0;
-		for (n=0; n<4; ++n) matrix_[n*4+pivotcol] *= element;
+		for (m=0; m<4; ++m) matrix_[pivotcol*4+m] *= element;
 		
 		// Divide through other rows by the relevant multiple of the pivot row
 		for (row=0; row<4; ++row)
 		{
 			if (row == pivotcol) continue;
-			element = matrix_[pivotcol*4+row];
-			matrix_[pivotcol*4+row] = 0.0;
-			for (m=0; m<4; ++m) matrix_[m*4+row] = matrix_[m*4+row] - matrix_[m*4+pivotcol] * element;
-	// 			rows[row].set(m, rows[row].get(m) - rows[pivotcol].get(m) * element);
+			element = matrix_[row*4 + pivotcol];
+			matrix_[row*4 + pivotcol] = 0.0;
+			for (m=0; m<4; ++m) matrix_[row*4+m] = matrix_[row*4+m] - matrix_[pivotcol*4+m] * element;
 		}
 	}
 	// Rearrange columns to undo row exchanges performed earlier
 	for (n=3; n>=0; --n)
 	{
-		if (pivotrows[n] != pivotcols[n]) for (m=0; m<4; m++)
+		if (pivotrows[n] != pivotcols[n]) for (m=0; m<4; ++m)
 		{
-			element = matrix_[pivotrows[n]*4+m];
-			matrix_[pivotrows[n]*4+m] = matrix_[pivotcols[n]+m];
-			matrix_[pivotcols[n]+m] = element;
-// 			element = rows[m].get(pivotrows[n]);
-// 			rows[m].set(pivotrows[n], rows[m].get(pivotcols[n]));
-// 			rows[m].set(pivotcols[n], element);
+			element = matrix_[m*4+pivotrows[n]];
+			matrix_[m*4+pivotrows[n]] = matrix_[m*4+pivotcols[n]];
+			matrix_[m*4+pivotcols[n]] = element;
 		}
 	}
 	msg.exit("Matrix::invert");
@@ -416,6 +416,35 @@ void Matrix::columnNormalise(int col)
 	matrix_[col*4+1] *= mag;
 	matrix_[col*4+2] *= mag;
 	matrix_[col*4+3] *= mag;
+}
+
+// Orthogonalise rotation matrix column w.r.t. one (or two) other columns)
+void Matrix::orthogonaliseColumn(int targetcol, int orthocol1, int orthocol2)
+{
+	// Grab target column
+	Vec3<double> v = columnAsVec3(targetcol);
+	// Orthogonalising w.r.t one or two other vectors?
+	if (orthocol2 == -1)
+	{
+		Vec3<double> source = columnAsVec3(orthocol1);
+		double sourcemag = source.magnitude();
+		double dpovermagsq = v.dp(source) / (sourcemag * sourcemag);
+		v.x -= dpovermagsq * source.x;
+		v.y -= dpovermagsq * source.y;
+		v.z -= dpovermagsq * source.z;
+	}
+	else
+	{
+		// This routine actually generates the orthogonal vector via the cross-product
+		// We also calculate the scalar resolute (dp) to ensure the new vector points in the same direction
+		Vec3<double> source1 = columnAsVec3(orthocol1), source2 = columnAsVec3(orthocol2);
+		Vec3<double> newvec = source1 * source2;
+		newvec.normalise();
+		double dp = newvec.dp(v);
+		if (dp < 0.0) newvec *= -1.0;
+		v = newvec;
+	}
+	setColumn(targetcol, v, matrix_[targetcol*4+3]);
 }
 
 /*
@@ -775,4 +804,3 @@ void Matrix::removeTranslationAndScaling()
 	matrix_[13] = 0.0;
 	matrix_[14] = 0.0;
 }
-

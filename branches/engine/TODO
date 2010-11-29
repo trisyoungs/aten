@@ -1,8 +1,14 @@
 Thigs to test in new version:
 
-1) Pen drawing (with benzene / helix scripts)
 2) Cell display / packing (vs Mercury)
 3) Disordered building (with points)
-4) Manipulation of atoms - transformation with RMB
 5) Viewing along (cell) axes
 6) Ewald energies / forces
+7) Torsion forces
+8) Matrix transformation operations on Model (specifically 'matrixtransform')
+
+Things to do in new version:
+
+1) Drawing of aromatic bonds
+2) Rotation of multiple bonds into bond plane
+3) Scaling of RMB transformation is wrong (too slow)

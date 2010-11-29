@@ -318,16 +318,16 @@ void AtenGrids::refreshGridInfo()
 	ui.GridOriginXSpin->setValue(origin.x);
 	ui.GridOriginYSpin->setValue(origin.y);
 	ui.GridOriginZSpin->setValue(origin.z);
-	Mat3<double> axes = g->axes();
-	ui.GridAxesAXSpin->setValue(axes.rows[0].x);
-	ui.GridAxesAYSpin->setValue(axes.rows[0].y);
-	ui.GridAxesAZSpin->setValue(axes.rows[0].z);
-	ui.GridAxesBXSpin->setValue(axes.rows[1].x);
-	ui.GridAxesBYSpin->setValue(axes.rows[1].y);
-	ui.GridAxesBZSpin->setValue(axes.rows[1].z);
-	ui.GridAxesCXSpin->setValue(axes.rows[2].x);
-	ui.GridAxesCYSpin->setValue(axes.rows[2].y);
-	ui.GridAxesCZSpin->setValue(axes.rows[2].z);
+	Matrix axes = g->axes();
+	ui.GridAxesAXSpin->setValue(axes[0]);
+	ui.GridAxesAYSpin->setValue(axes[1]);
+	ui.GridAxesAZSpin->setValue(axes[2]);
+	ui.GridAxesBXSpin->setValue(axes[4]);
+	ui.GridAxesBYSpin->setValue(axes[5]);
+	ui.GridAxesBZSpin->setValue(axes[6]);
+	ui.GridAxesCXSpin->setValue(axes[8]);
+	ui.GridAxesCYSpin->setValue(axes[9]);
+	ui.GridAxesCZSpin->setValue(axes[10]);
 	// Set surface style data
 	ui.GridStyleCombo->setCurrentIndex(g->style());
 	ui.GridPrimaryColourFrame->setColour(g->primaryColour());
@@ -402,7 +402,7 @@ void AtenGrids::gridOriginChanged(int component, double value)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::gridAxisChanged(int r, int component, double value)
+void AtenGrids::gridAxisChanged(int axis, int component, double value)
 {
 	// Get the current row selected in the grid list
 	int row = ui.GridList->currentRow();
@@ -410,9 +410,9 @@ void AtenGrids::gridAxisChanged(int r, int component, double value)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	// Get and re-set axes
-	static Mat3<double> axes;
+	Matrix axes;
 	axes = g->axes();
-	axes.rows[r].set(component, value);
+	axes[axis*4+component] = value;
 	g->setAxes(axes);
 	gui.mainWidget->postRedisplay();
 }

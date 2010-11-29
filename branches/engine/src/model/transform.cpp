@@ -60,7 +60,6 @@ void Model::prepareTransform()
 	}
 	transformCOG /= selection_.nItems();
 	translateScale_ /= selection_.nItems();
-	printf("SELCOG = "); transformCOG.print();
 	Vec4<double> pvec;
 	gui.mainWidget->modelToWorld(transformCOG, &pvec);
 	translateScale_ = pvec.w;
@@ -99,32 +98,20 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	// We then apply this to the stored *world* coordinates of
 	// the selected atoms, which we then unproject to get the new model coordinates.
 	msg.enter("Model::rotateSelectionWorld");
-	static double rotx, roty, cosx, cosy, sinx, siny;
-	static Vec3<double> newr;
+	double rotx, roty;
+	Vec3<double> newr;
 	Matrix rotmat, inverse;
 	rotx = dy / 20.0;
 	roty = dx / 20.0;
-// 	cosx = cos(rotx);
-// 	cosy = cos(roty);
-// 	sinx = sin(rotx);
-// 	siny = sin(roty);
-// 	rotmat.set(0,cosy,0.0,siny,0.0);
-// 	rotmat.set(1,-sinx*-siny,cosx,-sinx*cosy,0.0);
-// 	rotmat.set(2,cosx*-siny,sinx,cosx*cosy,0.0);
-// 	rotmat.set(3,0.0,0.0,0.0,1.0);
 	rotmat.createRotationXY(rotx, roty);
 	inverse = modelViewMatrixInverse();
-	inverse.print();
-// 	inverse.rows[3].set(0.0, 0.0, 0.0, 1.0);
 
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (gui.mainWidget->modelToWorld(ri->item->r()) - transformCOG)) + transformCOG;
-		printf("New world cooords of atom %i are ", ri->item->id()); newr.print();
 		newr = inverse.transform(newr);
-		printf("New model cooords of atom %i are ", ri->item->id()); ri->item->r().print();
-// 		ri->item->r() = newr + cell_.centre();		// BROKEN? Necessary?
+		ri->item->r() = newr + cell_.centre();
 	}
 
 	// Update model measurements
