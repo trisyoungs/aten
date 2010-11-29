@@ -24,7 +24,6 @@
 
 #include "gui/ui_celltransform.h"
 #include "templates/vector3.h"
-#include "templates/matrix3.h"
 
 // Cell transform window
 class AtenCellTransform : public QDialog

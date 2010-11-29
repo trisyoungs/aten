@@ -141,14 +141,14 @@ int cp(int n)
 }
 
 // Construct 'cross-product' vector of the supplied vector using cyclic permutations
-Mat3<double> make_cp_mat(Vec3<double> *v)
+Matrix make_cp_mat(Vec3<double> &v)
 {
-	Mat3<double> result;
+	Matrix result;
 	Vec3<double> temp;
-	for (int n=0; n<3; n++)
+	for (int n=0; n<3; ++n)
 	{
-		temp = unit_vector(cp(n+1)) * v->get(cp(n+2)) - unit_vector(cp(n+2)) * v->get(cp(n+1));
-		result.set(n,temp.x,temp.y,temp.z);
+		temp = unit_vector(cp(n+1)) * v.get(cp(n+2)) - unit_vector(cp(n+2)) * v.get(cp(n+1));
+		result.setColumn(n,temp.x,temp.y,temp.z,0.0);
 	}
 	return result;
 }
@@ -160,7 +160,7 @@ void Pattern::torsionForces(Model *srcmodel)
 	msg.enter("Pattern::torsionForces");
 	int i,j,k,l,aoff,m1;
 	static Vec3<double> rij, rkj, rlk, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
-	static Mat3<double> dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
+	Matrix dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
 	static double phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
 	static Vec3<double> fi, fj, fk, fl;
 	ForcefieldBound *ffb;
@@ -222,12 +222,12 @@ void Pattern::torsionForces(Model *srcmodel)
 
 					  = (0,rij[z],-rij[y])
 			*/
-			dxpj_dij = make_cp_mat(&rkj);
+			dxpj_dij = make_cp_mat(rkj);
 			temp = -rij;
-			dxpj_dkj = make_cp_mat(&temp);
+			dxpj_dkj = make_cp_mat(temp);
 			temp = -rlk;
-			dxpk_dkj = make_cp_mat(&temp);
-			dxpk_dlk = make_cp_mat(&rkj);
+			dxpk_dkj = make_cp_mat(temp);
+			dxpk_dlk = make_cp_mat(rkj);
 			// Construct derivatives of cos(phi) w.r.t. perpendicular axes
 			dcos_dxpj = (xpk - xpj * dp) / mag_xpj;
 			dcos_dxpk = (xpj - xpk * dp) / mag_xpk;
@@ -290,21 +290,21 @@ void Pattern::torsionForces(Model *srcmodel)
 			}
 // 			printf("i-j-k-l %i-%i-%i-%i %f %f %f\n",i,j,k,l, phi, dphi_dcosphi, du_dphi);
 			// Calculate forces
-			fi.x = -du_dphi * dcos_dxpj.dp(dxpj_dij.rows[0]);
-			fi.y = -du_dphi * dcos_dxpj.dp(dxpj_dij.rows[1]);
-			fi.z = -du_dphi * dcos_dxpj.dp(dxpj_dij.rows[2]);
+			fi.x = -du_dphi * dcos_dxpj.dp(dxpj_dij.columnAsVec3(0));
+			fi.y = -du_dphi * dcos_dxpj.dp(dxpj_dij.columnAsVec3(1));
+			fi.z = -du_dphi * dcos_dxpj.dp(dxpj_dij.columnAsVec3(2));
 
-			fj.x = -du_dphi * ( dcos_dxpj.dp( -dxpj_dij.rows[0] - dxpj_dkj.rows[0] ) - dcos_dxpk.dp(dxpk_dkj.rows[0]) );
-			fj.y = -du_dphi * ( dcos_dxpj.dp( -dxpj_dij.rows[1] - dxpj_dkj.rows[1] ) - dcos_dxpk.dp(dxpk_dkj.rows[1]) );
-			fj.z = -du_dphi * ( dcos_dxpj.dp( -dxpj_dij.rows[2] - dxpj_dkj.rows[2] ) - dcos_dxpk.dp(dxpk_dkj.rows[2]) );
+			fj.x = -du_dphi * ( dcos_dxpj.dp( -dxpj_dij.columnAsVec3(0) - dxpj_dkj.columnAsVec3(0) ) - dcos_dxpk.dp(dxpk_dkj.columnAsVec3(0)) );
+			fj.y = -du_dphi * ( dcos_dxpj.dp( -dxpj_dij.columnAsVec3(1) - dxpj_dkj.columnAsVec3(1) ) - dcos_dxpk.dp(dxpk_dkj.columnAsVec3(1)) );
+			fj.z = -du_dphi * ( dcos_dxpj.dp( -dxpj_dij.columnAsVec3(2) - dxpj_dkj.columnAsVec3(2) ) - dcos_dxpk.dp(dxpk_dkj.columnAsVec3(2)) );
 
-			fk.x = -du_dphi * ( dcos_dxpk.dp( dxpk_dkj.rows[0] - dxpk_dlk.rows[0] ) + dcos_dxpj.dp(dxpj_dkj.rows[0]) );
-			fk.y = -du_dphi * ( dcos_dxpk.dp( dxpk_dkj.rows[1] - dxpk_dlk.rows[1] ) + dcos_dxpj.dp(dxpj_dkj.rows[1]) );
-			fk.z = -du_dphi * ( dcos_dxpk.dp( dxpk_dkj.rows[2] - dxpk_dlk.rows[2] ) + dcos_dxpj.dp(dxpj_dkj.rows[2]) );
+			fk.x = -du_dphi * ( dcos_dxpk.dp( dxpk_dkj.columnAsVec3(0) - dxpk_dlk.columnAsVec3(0) ) + dcos_dxpj.dp(dxpj_dkj.columnAsVec3(0)) );
+			fk.y = -du_dphi * ( dcos_dxpk.dp( dxpk_dkj.columnAsVec3(1) - dxpk_dlk.columnAsVec3(1) ) + dcos_dxpj.dp(dxpj_dkj.columnAsVec3(1)) );
+			fk.z = -du_dphi * ( dcos_dxpk.dp( dxpk_dkj.columnAsVec3(2) - dxpk_dlk.columnAsVec3(2) ) + dcos_dxpj.dp(dxpj_dkj.columnAsVec3(2)) );
 
-			fl.x = -du_dphi * dcos_dxpk.dp(dxpk_dlk.rows[0]);
-			fl.y = -du_dphi * dcos_dxpk.dp(dxpk_dlk.rows[1]);
-			fl.z = -du_dphi * dcos_dxpk.dp(dxpk_dlk.rows[2]);
+			fl.x = -du_dphi * dcos_dxpk.dp(dxpk_dlk.columnAsVec3(0));
+			fl.y = -du_dphi * dcos_dxpk.dp(dxpk_dlk.columnAsVec3(1));
+			fl.z = -du_dphi * dcos_dxpk.dp(dxpk_dlk.columnAsVec3(2));
 
 			modelatoms[i]->f() -= fi;
 			modelatoms[j]->f() -= fj;

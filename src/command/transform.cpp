@@ -131,7 +131,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
-	Mat3<double> source, target;
+	Matrix source, target;
 	Vec3<double> o, v;
 	bool sourcenoz = FALSE, targetnoz = FALSE;
 	int n;
@@ -153,7 +153,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 					if ((i == NULL) || (j == NULL)) return FALSE;
 					v = obj.rs->cell()->mimd(j,i);
 					v.normalise();
-					source.set(n, v);
+					source.setColumn(n, v, 0.0);
 				}
 				// Target matrix
 				if ((n == 2) && (c->argi(n*2+6) == 0) && (c->argi(n*2+7) == 0)) targetnoz = TRUE;
@@ -164,20 +164,20 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 					if ((i == NULL) || (j == NULL)) return FALSE;
 					v = obj.rs->cell()->mimd(j,i);
 					v.normalise();
-					target.set(n, v);
+					target.setColumn(n, v, 0.0);
 				}
 				// Adjust Y and Z axes
 				if (n == 1)
 				{
-					source.y().orthogonalise(source.x());
-					target.y().orthogonalise(target.x());
+					source.orthogonaliseColumn(1, 0);
+					target.orthogonaliseColumn(1, 0);
 				}
 				else if (n == 2)
 				{
-					if (sourcenoz) source.z() = source.x() * source.y();
-					else source.z().orthogonalise(source.x(), source.y());
-					if (targetnoz) target.z() = target.x() * target.y();
-					else target.z().orthogonalise(target.x(), target.y());
+					if (sourcenoz) v = source.columnAsVec3(0) * source.columnAsVec3(1);
+					else source.orthogonaliseColumn(2, 0, 1);
+					if (targetnoz) v = target.columnAsVec3(0) * target.columnAsVec3(1);
+					else target.orthogonaliseColumn(2, 0, 1);
 				}
 			}
 			// Get origin if provided
@@ -185,8 +185,8 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 			break;
 		case (18):
 		case (21):
-			for (n=0; n<9; n++) source.set(n, c->argd(n));
-			for (n=9; n<18; n++) target.set(n, c->argd(n));
+			for (n=0; n<9; n++) source[(n/3)*4 + n%3] = c->argd(n);
+			for (n=9; n<18; n++) target[((n-9)/3)*4 + n%3] = c->argd(n);
 			// Get origin if provided
 			if (c->nArgs() == 21) o.set(c->argd(12), c->argd(13), c->argd(14));
 			break;
@@ -203,7 +203,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 	}
 	// Generate necessary rotation matrix
 	target = target.transpose();
-	Mat3<double> rotmat = target * source;
+	Matrix rotmat = target * source;
 	// Perform transformation
 	obj.rs->beginUndoState("Transform %i atom(s)", obj.rs->nSelected());
 	obj.rs->matrixTransformSelection(o, rotmat);
@@ -217,7 +217,7 @@ bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue 
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
-	Mat3<double> mat;
+	Matrix mat;
 	Vec3<double> o;
 	int n;
 	switch (c->nArgs())
@@ -225,7 +225,7 @@ bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue 
 		// Six atom ids defining matrix axes (and optional origin)
 		case (9):
 		case (12):
-			for (n=0; n<9; n++) mat.set(n, c->argd(n));
+			for (n=0; n<9; n++) mat[(n/3)*4+n%3] = c->argd(n);
 			// Get origin if provided
 			if (c->nArgs() == 12) o.set(c->argd(9), c->argd(10), c->argd(11));
 			break;
@@ -257,7 +257,7 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
-	Mat3<double> source, target;
+	Matrix source, target;
 	Vec3<double> o, v;
 	bool sourcenoz = FALSE;
 	int n;
@@ -281,15 +281,15 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if ((i == NULL) || (j == NULL)) return FALSE;
 		v = obj.rs->cell()->mimd(j,i);
 		v.normalise();
-		source.set(n/2, v);
+		source.setColumn(n/2, v, 0.0);
 	}
 	// Orthogonalise matrix
-	source.y().orthogonalise(source.x());
-	if (sourcenoz) source.z() = source.x() * source.y();
-	else source.z().orthogonalise(source.x(), source.y());
+	source.orthogonaliseColumn(1, 0);
+	if (sourcenoz) source.setColumn(2, source.columnAsVec3(0) * source.columnAsVec3(1), 0.0);
+	else source.orthogonaliseColumn(2, 0, 1);
 
 	// Determine target matrix
-	for (n=0; n<9; ++n) target.set(0, c->argd(n+6));
+	for (n=0; n<9; ++n) target[(n/3)*4+n%3] = c->argd(n+6);
 
 	// Get origin if provided
 	if (c->nArgs() == 18) o.set(c->argd(15), c->argd(16), c->argd(17));
@@ -303,7 +303,7 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	// Generate necessary rotation matrix
 	target = target.transpose();
-	Mat3<double> rotmat = target * source;
+	Matrix rotmat = target * source;
 	// Perform transformation
 	obj.rs->beginUndoState("Reorient %i atom(s)", obj.rs->nSelected());
 	obj.rs->matrixTransformSelection(o, rotmat);

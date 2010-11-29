@@ -92,7 +92,7 @@ void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
 	// (Re-)Calculate the range of reciprocal space vectors of the coordinates in the supplied config.
 	msg.enter("FourierData:::calculate");
 	Vec3<double> pos;
-	Mat3<double> fouriermat;
+	Matrix fouriermat;
 	int firstsin, n, k, sinpos, i;
 	if (srcmodel->nAtoms() != nAtoms)
 	{
@@ -115,9 +115,9 @@ void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
 		rCos[0][i].y = 1.0; rSin[kMax][i].y = 0.0;
 		rCos[0][i].z = 1.0; rSin[kMax][i].z = 0.0;
 		// Calculate first vector in the positive k-direction
-		pos.x = fouriermat.rows[0].dp(modelatoms[i]->r());
-		pos.y = fouriermat.rows[1].dp(modelatoms[i]->r());
-		pos.z = fouriermat.rows[2].dp(modelatoms[i]->r());
+		pos.x = fouriermat.columnAsVec3(0).dp(modelatoms[i]->r());
+		pos.y = fouriermat.columnAsVec3(1).dp(modelatoms[i]->r());
+		pos.z = fouriermat.columnAsVec3(2).dp(modelatoms[i]->r());
 		rCos[1][i].x = cos(pos.x);
 		rCos[1][i].y = cos(pos.y);
 		rCos[1][i].z = cos(pos.z);

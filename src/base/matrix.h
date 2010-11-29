@@ -48,6 +48,7 @@ class Matrix
 	*/
 	public:
 	Matrix operator*(const Matrix &B) const;
+	Matrix operator*(const double a) const;
 	Matrix operator+(const Matrix &B) const;
 	Matrix operator-(const Matrix &B) const;
 	Vec3<double> operator*(const Vec3<double> &v) const;
@@ -104,7 +105,8 @@ class Matrix
 	void columnMultiply(Vec3<double> vec);
 	// Normalise specified column to 1
 	void columnNormalise(int column);
-	
+	// Orthogonalise rotation matrix column w.r.t. one (or two) other columns)
+	void orthogonaliseColumn(int targetcol, int orthcol1, int orthocol2 = -1);
 
 	/*
 	// Rotations

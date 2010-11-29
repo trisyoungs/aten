@@ -196,7 +196,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (CellVariable::CX):
 		case (CellVariable::CY):
 		case (CellVariable::CZ):
-			rv.set(ptr->axes().element(acc - CellVariable::AX));
+			rv.set(ptr->axes()[((arrayIndex-1)/3)*4+(arrayIndex-1)%3]);
 			break;
 		case (CellVariable::Centre):
 			rv.set(ptr->centre());
@@ -215,7 +215,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 				msg.print("Array index [%i] is out of range for 'matrix' member.\n", arrayIndex);
 				result = FALSE;
 			}
-			else rv.set(ptr->axes().element(arrayIndex-1));
+			else rv.set(ptr->axes()[((arrayIndex-1)/3)*4+(arrayIndex-1)%3]);
 			break;
 		case (CellVariable::SpacegroupId):
 			rv.set(ptr->spacegroupId());

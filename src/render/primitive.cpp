@@ -503,7 +503,7 @@ PrimitiveInfo::PrimitiveInfo()
 }
 
 // Set primitive info data
-void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, GLMatrix& transform, GLenum fillMode)
+void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, Matrix& transform, GLenum fillMode)
 {
 	primitive_ = prim;
 	localTransform_ = transform;
@@ -518,7 +518,7 @@ Primitive *PrimitiveInfo::primitive()
 }
 
 // Return local transformation of primitive
-GLMatrix &PrimitiveInfo::localTransform()
+Matrix &PrimitiveInfo::localTransform()
 {
 	return localTransform_;
 }

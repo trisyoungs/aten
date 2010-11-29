@@ -198,7 +198,6 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 				displayModel_->zRotateView(delta.x/2.0);
 				break;
 			case (UserAction::TranslateAction):
-				delta.y = -delta.y;
 				displayModel_->adjustCamera(delta.x/15.0, delta.y/15.0, 0.0);
 				break;
 			case (UserAction::ZoomAction):
