@@ -613,7 +613,7 @@ void TextPrimitiveChunk::add(int x, int y, const char *text, QChar addChar, bool
 	textPrimitives_[nTextPrimitives_].x = x;
 	textPrimitives_[nTextPrimitives_].y = y;
 	textPrimitives_[nTextPrimitives_].text = text;
-	if (addChar != 0) textPrimitives_[nTextPrimitives_].text += addChar;    // BROKEN???
+	if (addChar != 0) textPrimitives_[nTextPrimitives_].text += addChar;
 	textPrimitives_[nTextPrimitives_].rightAlign = rightAlign;
 	++nTextPrimitives_;
 }
@@ -622,13 +622,14 @@ void TextPrimitiveChunk::add(int x, int y, const char *text, QChar addChar, bool
 void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
 {
 	// Grab contextHeight
+	QRect rect;
 	int height = canvas->contextHeight();
 	if (prefs.useNiceText())
 	{
 		for (int n=0; n<nTextPrimitives_; ++n)
 		{
-                        if (textPrimitives_[n].rightAlign) painter.drawText(0, textPrimitives_[n].y, textPrimitives_[n].x, textPrimitives_[n].y, Qt::AlignRight, textPrimitives_[n].text, NULL);
-			else painter.drawText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
+			rect = painter.boundingRect(textPrimitives_[n].x, height-textPrimitives_[n].y, 1, -1, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
+			painter.drawText(rect, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
 		}
 	}
 	else

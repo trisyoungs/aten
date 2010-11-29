@@ -149,18 +149,16 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glLoadIdentity();
 	A = modelTransformationMatrix_;
 	A.removeTranslationAndScaling();
+	A[14] = -1.2;
 	glMultMatrixd(A.matrix());
 	prefs.copyColour(Prefs::GlobeColour, colour_i);
 	glColor4fv(colour_i);
-// 	rotationGlobe_.sendToGL();
+// 	printf("GlobeCOlour = %f %f %f %f\n", colour_i[0],colour_i[1],colour_i[2],colour_i[3]);
+	rotationGlobe_.sendToGL();
 	prefs.copyColour(Prefs::GlobeAxesColour, colour_i);
 	glColor4fv(colour_i);
-// 	rotationGlobeAxes_.sendToGL();
-	glBegin(GL_LINE_LOOP);
-	glVertex3d(0.0,0.0,0.0);
-	glVertex3d(1.0,0.0,0.0);
-	glVertex3d(1.0,0.1,0.0);
-	glEnd();
+// 	printf("GlobeAxesCOlour = %f %f %f %f\n", colour_i[0],colour_i[1],colour_i[2],colour_i[3]);
+	rotationGlobeAxes_.sendToGL();
 	
 	// Prepare for model rendering
 	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
@@ -169,7 +167,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glMultMatrixd(modelProjectionMatrix_.matrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
 	// Render cell and cell axes
 	if (source->cell()->type() != Cell::NoCell)
 	{
@@ -195,6 +193,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 
 		// Grab atom coordinate - we'll need it a lot
 		pos = i->r();
+
 		// Calculate projected Z distance from viewer
 		// If z is less than 0, don't even bother continuing since its behind the viewer
 		z = -(pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w);
@@ -637,7 +636,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		}
 		glEnd();
 		// Determine orientation of text
-		pos = (rji + rjk) * 0.2 + r2;
+		pos = (rji + rjk) * 0.1 + r2;
 		// OPTIMIZE - can we just multiply by modelTransformationMatrix_ here? We don't care about the exact projection....
 		modelToWorld(r2, &screenr);
 		gamma = screenr.x;
