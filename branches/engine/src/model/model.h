@@ -443,7 +443,7 @@ class Model
 	// Rotate view about the x and y axes
 	void rotateView(double xang, double yang);
 	// Spin view about the z axis
-	void zRotateView(double angle);
+	void zRotateView(double dz);
 	// Adjust the position of the camera
 	void adjustCamera(double dx, double dy, double dz);
 	// Adjusts the camera zoom

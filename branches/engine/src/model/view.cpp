@@ -75,9 +75,24 @@ Matrix &Model::modelViewMatrix()
 }
 
 // Spin the model about the z axis
-void Model::zRotateView(double angle)
+void Model::zRotateView(double dz)
 {
-// 	adjustCamera(0.0, 0.0, 0.0);   BROKEN
+	// Rotate the whole system by the amounts specified.
+	msg.enter("Model::zRotateView");
+	Matrix newrotmat, oldrotmat;
+	if (parent_ == NULL)
+	{
+		newrotmat.createRotationZ(dz);
+		newrotmat.copyTranslationAndScaling(modelViewMatrix_);
+
+		// Reset translation and scaling on original matrix, and multiply
+		modelViewMatrix_.removeTranslationAndScaling();
+		modelViewMatrix_ = newrotmat * modelViewMatrix_;
+	}
+	else parent_->zRotateView(dz);
+	// Log camera change
+	changeLog.add(Log::Camera);
+	msg.exit("Model::zRotateView");
 }
 
 // Adjust Camera
@@ -188,23 +203,14 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 // Set exact rotation of model (angles passed in degrees)
 void Model::setRotation(double rotx, double roty)
 {
-	// Rotate the whole system by the amounts specified.
 	msg.enter("Model::setRotation");
-	double sinx, cosx, siny, cosy;
-	// Calculate cos/sin terms for needless speedup!
+	Matrix temp;
 	if (parent_ == NULL)
 	{
-		rotx /= DEGRAD;
-		roty /= DEGRAD;
-		modelViewMatrix_.createRotationXY(rotx, roty);   // TGAY Is this ok?
-/*		cosx = cos(rotx);
-		cosy = cos(roty);
-		sinx = sin(rotx);
-		siny = sin(roty);
-		modelViewMatrix_.rows[0].set(cosy,0.0,siny,0.0);
-		modelViewMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-		modelViewMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
-		modelViewMatrix_.rows[3].set(0.0,0.0,0.0,1.0);*/
+		// Store old translation and scaling values
+		temp.copyTranslationAndScaling(modelViewMatrix_);
+		modelViewMatrix_.createRotationXY(rotx, roty);   // TGAY Is this ok?  BROKEN?
+		modelViewMatrix_.copyTranslationAndScaling(temp);
 	}
 	else parent_->setRotation(rotx, roty);
 	// Log camera change
@@ -217,23 +223,15 @@ void Model::rotateView(double dx, double dy)
 {
 	// Rotate the whole system by the amounts specified.
 	msg.enter("Model::rotateView");
-	double rotx, roty, sinx, cosx, siny, cosy;
+	double rotx, roty;
 	Matrix newrotmat, oldrotmat;
 	if (parent_ == NULL)
 	{
-		rotx = -dy / 50.0;
-		roty = -dx / 50.0;
-		// Calculate cos/sin terms for needless speedup!
-		cosx = cos(rotx);
-		cosy = cos(roty);
-		sinx = sin(rotx);
-		siny = sin(roty);
-
-		// Construct muptiplier matrix - will contain old translation / scaling values
-		newrotmat.setColumn(0,cosy,0.0,siny,modelViewMatrix_[3]);
-		newrotmat.setColumn(1,(-sinx)*(-siny),cosx,(-sinx)*cosy,modelViewMatrix_[7]);
-		newrotmat.setColumn(2,cosx*(-siny),sinx,cosx*cosy,modelViewMatrix_[11]);
-		newrotmat.setColumn(3, modelViewMatrix_.columnAsVec4(3));
+		// Create rotation matrix
+		rotx = dy;
+		roty = dx;
+		newrotmat.createRotationXY(rotx, roty);
+		newrotmat.copyTranslationAndScaling(modelViewMatrix_);
 
 		// Reset translation and scaling on original matrix, and multiply
 		modelViewMatrix_.removeTranslationAndScaling();

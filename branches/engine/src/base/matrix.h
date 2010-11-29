@@ -172,6 +172,8 @@ class Matrix
 	void multiply(GLfloat *r, GLfloat *transformed) const;
 	// Remove translation and scaling parts, leaving rotation only
 	void removeTranslationAndScaling();
+	// Copy translation and scaling parts from specified matrix
+	void copyTranslationAndScaling(Matrix &source);
 };
 
 #endif

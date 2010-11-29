@@ -60,9 +60,6 @@ void Model::prepareTransform()
 	}
 	transformCOG /= selection_.nItems();
 	translateScale_ /= selection_.nItems();
-	Vec4<double> pvec;
-	gui.mainWidget->modelToWorld(transformCOG, &pvec);
-	translateScale_ = pvec.w;
 	msg.exit("Model::prepareTransform");
 }
 
@@ -101,8 +98,8 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	double rotx, roty;
 	Vec3<double> newr;
 	Matrix rotmat, inverse;
-	rotx = dy / 20.0;
-	roty = dx / 20.0;
+	rotx = dy;
+	roty = dx;
 	rotmat.createRotationXY(rotx, roty);
 	inverse = modelViewMatrixInverse();
 

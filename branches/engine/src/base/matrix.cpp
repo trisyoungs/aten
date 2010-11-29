@@ -804,3 +804,15 @@ void Matrix::removeTranslationAndScaling()
 	matrix_[13] = 0.0;
 	matrix_[14] = 0.0;
 }
+
+// Copy translation and scaling parts from specified matrix
+void Matrix::copyTranslationAndScaling(Matrix &source)
+{
+	matrix_[3] = source.matrix_[3];
+	matrix_[7] = source.matrix_[7];
+	matrix_[11] = source.matrix_[11];
+	matrix_[15] = source.matrix_[15];
+	matrix_[12] = source.matrix_[12];
+	matrix_[13] = source.matrix_[13];
+	matrix_[14] = source.matrix_[14];
+}

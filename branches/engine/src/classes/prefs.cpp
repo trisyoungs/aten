@@ -324,8 +324,8 @@ Prefs::Prefs()
 
 	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
-	distanceLabelFormat_ = "%8.3f ";
-	angleLabelFormat_ = "%8.2f";
+	distanceLabelFormat_ = "%0.3f ";
+	angleLabelFormat_ = "%0.2f";
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;

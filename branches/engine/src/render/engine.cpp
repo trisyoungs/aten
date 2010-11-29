@@ -136,7 +136,7 @@ void RenderEngine::createPrimitives()
 	// One-off objects
 	wireCube_.createWireCube(1.0);
 	cellAxes_.createCellAxes();
-	rotationGlobe_.createSphere(0.75,8,10);
+	rotationGlobe_.createSphere(0.75,10,13);
 	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
 	msg.exit("RenderEngine::createPrimitives");
 }
@@ -158,7 +158,7 @@ void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h)
 	
 	// Create projection matrix for rotation globe
 	glLoadIdentity();
-	glFrustum(1.0, -1.0, 1.0, -1.0, 0.0, 10.0);
+	glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
 	glGetDoublev(GL_PROJECTION_MATRIX, globeProjectionMatrix_.matrix());
 	
 	// Create projection matrix for model
