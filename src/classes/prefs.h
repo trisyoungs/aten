@@ -55,11 +55,11 @@ class Prefs
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
 	static KeyAction keyAction(const char *name, bool reporterror = 0);
 	static const char *keyAction(KeyAction);
-	// Standard 'Pen' Colours
-	enum PenColour { BackgroundColour, FixedAtomColour, ForegroundColour, GlyphColour, SpecularColour, nPenColours };
-	static const char *penColour(PenColour);
-	static const char *penColourName(PenColour);
-	static PenColour penColour(const char *name, bool reporterror = 0);
+	// Property/Object Colours
+	enum ObjectColour { BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, nObjectColours };
+	static const char *objectColour(ObjectColour);
+	static const char *objectColourName(ObjectColour);
+	static ObjectColour objectColour(const char *name, bool reporterror = 0);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, Kelvin, ElectronVolts, Hartree, nEnergyUnits };
 	static const char *energyUnit(EnergyUnit);
@@ -379,17 +379,17 @@ class Prefs
 	*/
 	private:
 	// RGB colour values
-	double colours_[Prefs::nPenColours][4];
+	double colours_[Prefs::nObjectColours][4];
 
 	public:
 	// Set the specified colour to the integer RGBA values supplied
-	void setColour(PenColour c, double r, double g, double b, double a);
+	void setColour(ObjectColour c, double r, double g, double b, double a);
 	// Set the supplied element of the specified colour
-	void setColour(PenColour c, int i, double value);
+	void setColour(ObjectColour c, int i, double value);
 	// Copy the specified colour
-	void copyColour(PenColour c, GLfloat *col) const;
+	void copyColour(ObjectColour c, GLfloat *col) const;
 	// Return a pointer to the specified colour
-	double *colour(PenColour c);
+	double *colour(ObjectColour c);
 	// User-definable colour scales
 	ColourScale colourScale[10];
 

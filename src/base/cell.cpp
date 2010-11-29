@@ -120,8 +120,9 @@ void Cell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles)
 void Cell::set(const Matrix &newaxes)
 {
 	msg.enter("Cell::set[matrix]");
-	// Store the supplied matrix
+	// Store the supplied matrix, making sure that column 4 is correct
 	axes_ = newaxes;
+	axes_.setColumn(3, 0.0, 0.0, 0.0, 1.0);
 	// Calculate new vectors
 	calculateVectors();
 	// Update dependent quantities
@@ -170,32 +171,20 @@ void Cell::setParameter(Cell::CellParameter cp, double value, bool adjust)
 	{
 		case (Cell::nCellParameters):
 			printf("No cell parameter supplied to Cell::adjustParameter.\n");
-			break;	
-		// Cell axis A
+			break;
+		// Cell matrix elements
 		case (Cell::CellAX):
 		case (Cell::CellAY):
 		case (Cell::CellAZ):
-			i = cp - Cell::CellAX;
-			if (adjust) axes_[i] += value;
-			else axes_[i] = value;
-			calculateVectors();
-			break;
-		// Cell axis B
 		case (Cell::CellBX):
 		case (Cell::CellBY):
-		case (Cell::CellBZ):
-			i = cp - Cell::CellBX;
-			if (adjust) axes_[4+i] += value;
-			else axes_[4+i] = value;
-			calculateVectors();
-			break;
-		// Cell axis C
+		case (Cell::CellBZ):			
 		case (Cell::CellCX):
 		case (Cell::CellCY):
 		case (Cell::CellCZ):
-			i = cp - Cell::CellCX;
-			if (adjust) axes_[8+i] += value;
-			else axes_[8+i] = value;
+			i = cp - Cell::CellAX;
+			if (adjust) axes_[(i/3)*4+i%3] += value;
+			else axes_[(i/3)*4+i%3] = value;
 			calculateVectors();
 			break;
 		// Cell lengths
@@ -406,6 +395,7 @@ void Cell::calculateMatrix()
 	axes_.columnMultiply(0,lengths_.x);
 	axes_.columnMultiply(1,lengths_.y);
 	axes_.columnMultiply(2,lengths_.z);
+	axes_.setColumn(3, 0.0, 0.0, 0.0, 1.0);
 	msg.exit("Cell::calculateMatrix");
 }
 

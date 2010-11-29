@@ -77,17 +77,17 @@ void AtenPrefs::setControls()
 	ui.AngleLabelFormatEdit->setText(prefs.angleLabelFormat());
 	ui.DistanceLabelFormatEdit->setText(prefs.distanceLabelFormat());
 	ui.LabelSizeSpin->setValue(prefs.labelSize());
-	ui.StandardColoursTable->setRowCount(Prefs::nPenColours);
+	ui.ColoursTable->setRowCount(Prefs::nObjectColours);
 	QColor qcol;
-	for (int n = 0; n < Prefs::nPenColours; ++n)
+	for (int n = 0; n < Prefs::nObjectColours; ++n)
 	{
-		QTableWidgetItem *item = new QTableWidgetItem(Prefs::penColourName( (Prefs::PenColour) n ));
-		ui.StandardColoursTable->setItem(n, 0, item);
+		QTableWidgetItem *item = new QTableWidgetItem(Prefs::objectColourName( (Prefs::ObjectColour) n ));
+		ui.ColoursTable->setItem(n, 0, item);
 		item = new QTableWidgetItem();
-		double *colour = prefs.colour( (Prefs::PenColour) n );
+		double *colour = prefs.colour( (Prefs::ObjectColour) n );
 		qcol.setRgbF( colour[0], colour[1], colour[2], colour[3] );
 		item->setBackgroundColor(qcol);
-		ui.StandardColoursTable->setItem(n, 1, item);
+		ui.ColoursTable->setItem(n, 1, item);
 	}
 	// View Page - Rendering / Quality tab
 	ui.SpotlightAmbientColourFrame->setColour(prefs.spotlightColour(Prefs::AmbientComponent));
@@ -357,12 +357,12 @@ void AtenPrefs::on_LabelSizeSpin_valueChanged(int value)
 	updateAfterViewPrefs();
 }
 
-void AtenPrefs::on_StandardColoursTable_cellDoubleClicked(int row, int column)
+void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 {
 	// Get clicked item in table
 	if (column != 1) return;
 	if (row == -1) return;
-	Prefs::PenColour pencol = (Prefs::PenColour) row;
+	Prefs::ObjectColour pencol = (Prefs::ObjectColour) row;
 	double *col = prefs.colour(pencol);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
@@ -372,7 +372,7 @@ void AtenPrefs::on_StandardColoursTable_cellDoubleClicked(int row, int column)
 	if (!ok) return;
 	// Store new colour
 	prefs.setColour(pencol, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.StandardColoursTable->item(row, 1)->setBackgroundColor(newcol);
+	ui.ColoursTable->item(row, 1)->setBackgroundColor(newcol);
 	aten.currentModel()->changeLog.add(Log::Visual);
 	// Update display
 	gui.mainWidget->postRedisplay();

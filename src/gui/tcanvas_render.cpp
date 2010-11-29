@@ -28,25 +28,28 @@ void TCanvas::render2D(QPainter &painter)
 {
 	// Variables
 	static Dnchar text;
+	QColor color;
+	QBrush solidbrush(Qt::SolidPattern), nobrush(Qt::NoBrush);
 	GLfloat colour[4];
 	Vec4<double> screenr;
 	int i, labels, skip, n;
 	ForcefieldAtom *ffa;
 	double dx, halfw;
 
-	// Setup brush and pen colour
-	prefs.copyColour(Prefs::ForegroundColour, colour);
-	QColor color( colour[0]*255, colour[1]*255, colour[2]*255, colour[3]*255);
-	QBrush solidbrush(color, Qt::SolidPattern), nobrush(color, Qt::NoBrush);
-	QPen solidpen(Qt::SolidLine), dashedpen(Qt::DashLine);
-
 	// Text Primitives
+	prefs.copyColour(Prefs::TextColour, colour);
+	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
+	solidbrush.setColor(color);
 	painter.setBrush(solidbrush);
-	painter.setPen(solidpen);
+	painter.setPen(Qt::SolidLine);
+	painter.setPen(color);
 	engine_.renderText(painter, this);
 
 	// Active mode embellishments
-	painter.setPen(dashedpen);
+	prefs.copyColour(Prefs::BackgroundColour, colour);
+	color.setRgbF(1.0-colour[0], 1.0-colour[1], 1.0-colour[2], 1.0);
+	painter.setPen(color);
+	painter.setPen(Qt::DashLine);
 	painter.setBrush(nobrush);
 	switch (activeMode_)
 	{
@@ -61,7 +64,6 @@ void TCanvas::render2D(QPainter &painter)
 	}
 
 	// Passive mode embellishments
-	painter.setPen(solidpen);
 	switch (selectedMode_)
 	{
 		// Draw on distance ruler for drawing modes

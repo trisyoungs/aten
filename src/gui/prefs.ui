@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>396</width>
-    <height>613</height>
+    <height>626</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -925,7 +925,7 @@
               </sizepolicy>
              </property>
              <property name="title">
-              <string>Standard Colours</string>
+              <string>Property/Object Colours</string>
              </property>
              <layout class="QHBoxLayout" name="_2">
               <property name="spacing">
@@ -935,9 +935,9 @@
                <number>2</number>
               </property>
               <item>
-               <widget class="QTableWidget" name="StandardColoursTable">
+               <widget class="QTableWidget" name="ColoursTable">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -962,7 +962,7 @@
                 </property>
                 <column>
                  <property name="text">
-                  <string>Property</string>
+                  <string>Property/Object</string>
                  </property>
                 </column>
                 <column>

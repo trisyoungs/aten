@@ -78,7 +78,8 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "ewaldkmax",			VTypes::IntegerData,	3, FALSE },
 	{ "ewaldprecision",		VTypes::DoubleData,	0, FALSE },
 	{ "forcerhombohedral",		VTypes::IntegerData,	0, FALSE },
-	{ "foregroundcolour",		VTypes::DoubleData,	4, FALSE },
+	{ "globeaxescolour",		VTypes::DoubleData,	4, FALSE },
+	{ "globecolour",		VTypes::DoubleData,	4, FALSE },
 	{ "globesize",			VTypes::IntegerData,	0, FALSE },
 	{ "glyphcolour",		VTypes::DoubleData,	4, FALSE },
 	{ "hdistance",			VTypes::DoubleData,	0, FALSE },
@@ -118,15 +119,18 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "useframebuffer",		VTypes::IntegerData,	0, FALSE },
 	{ "usenicetext",		VTypes::IntegerData,	0, FALSE },
 	{ "tempdir",			VTypes::StringData,	0, FALSE },
+	{ "textcolour",			VTypes::DoubleData,	4, FALSE },
 	{ "transparencybinwidth",	VTypes::DoubleData,	0, FALSE },
 	{ "transparencycorrect",	VTypes::IntegerData,	0, FALSE },
 	{ "transparencynbins",		VTypes::IntegerData,	0, FALSE },
 	{ "transparencystartz",		VTypes::DoubleData,	0, FALSE },
-	{ "vdwcutoff",		VTypes::DoubleData,	0, FALSE },
-	{ "vdwscale",		VTypes::DoubleData,	0, FALSE },
-	{ "warn1056",		VTypes::IntegerData,	0, FALSE },
-	{ "zmap",		VTypes::StringData,	0, FALSE },
-	{ "zoomthrottle",	VTypes::DoubleData,	0, FALSE }
+	{ "unltcellaxescolour",		VTypes::DoubleData,	4, FALSE },
+	{ "unitcellcolour",		VTypes::DoubleData,	4, FALSE },
+	{ "vdwcutoff",			VTypes::DoubleData,	0, FALSE },
+	{ "vdwscale",			VTypes::DoubleData,	0, FALSE },
+	{ "warn1056",			VTypes::IntegerData,	0, FALSE },
+	{ "zmap",			VTypes::StringData,	0, FALSE },
+	{ "zoomthrottle",		VTypes::DoubleData,	0, FALSE }
 };
 
 // Function data
@@ -317,16 +321,20 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
 			break;
-		case (PreferencesVariable::ForegroundColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::ForegroundColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::ForegroundColour), 4);
+		case (PreferencesVariable::GlobeAxesColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlobeAxesColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlobeAxesColour), 4);
+			break;
+		case (PreferencesVariable::GlobeColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlobeColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlobeColour), 4);
 			break;
 		case (PreferencesVariable::GlobeSize):
 			rv.set(ptr->globeSize() );
 			break;
-		case (PreferencesVariable::GlyphColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlyphColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlyphColour), 4);
+		case (PreferencesVariable::GlyphDefaultColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlyphDefaultColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlyphDefaultColour), 4);
 			break;
 		case (PreferencesVariable::HDistance):
 			rv.set( ptr->hydrogenDistance() );
@@ -440,6 +448,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::TempDir):
 			rv.set( ptr->tempDir() );
 			break;
+		case (PreferencesVariable::TextColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::TextColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::TextColour), 4);
+			break;
 		case (PreferencesVariable::TransparencyBinWidth):
 			rv.set( ptr->transparencyBinWidth() );
 			break;
@@ -451,6 +463,14 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::TransparencyBinStartZ):
 			rv.set( ptr->transparencyBinStartZ() );
+			break;
+		case (PreferencesVariable::UnitCellAxesColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellAxesColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::UnitCellAxesColour), 4);
+			break;
+		case (PreferencesVariable::UnitCellColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::UnitCellColour), 4);
 			break;
 		case (PreferencesVariable::UseFrameBuffer):
 			rv.set( ptr->useFrameBuffer() );
@@ -670,18 +690,23 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newvalue.asBool() );
 			break;
-		case (PreferencesVariable::ForegroundColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::ForegroundColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(result));
+		case (PreferencesVariable::GlobeAxesColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeAxesColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::GlobeColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::GlobeSize):
 			ptr->setGlobeSize( newvalue.asInteger(result) );
 			break;
-		case (PreferencesVariable::GlyphColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(result));
+		case (PreferencesVariable::GlyphDefaultColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphDefaultColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::HDistance):
 			ptr->setHydrogenDistance( newvalue.asDouble(result) );
@@ -834,6 +859,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::TempDir):
 			ptr->setTempDir( newvalue.asString(result) );
 			break;
+		case (PreferencesVariable::TextColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::TextColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(result));
+			break;
 		case (PreferencesVariable::TransparencyBinWidth):
 			ptr->setTransparencyBinWidth( newvalue.asDouble() );
 			break;
@@ -845,6 +875,16 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::TransparencyBinStartZ):
 			ptr->setTransparencyBinStartZ( newvalue.asDouble() );
+			break;
+		case (PreferencesVariable::UnitCellAxesColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellAxesColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::UnitCellColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::UseFrameBuffer):
 			ptr->setUseFrameBuffer( newvalue.asBool() );
