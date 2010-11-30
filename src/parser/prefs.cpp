@@ -83,6 +83,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "globesize",			VTypes::IntegerData,	0, FALSE },
 	{ "glyphcolour",		VTypes::DoubleData,	4, FALSE },
 	{ "hdistance",			VTypes::DoubleData,	0, FALSE },
+	{ "imagequality",		VTypes::IntegerData,	0, FALSE },
 	{ "keyaction",			VTypes::StringData,	Prefs::nModifierKeys, FALSE },
 	{ "labelsize",			VTypes::IntegerData,	0, FALSE },
 	{ "levelofdetailstartz",	VTypes::DoubleData,	0, FALSE },
@@ -107,6 +108,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "renderstyle",		VTypes::StringData,	0, FALSE },
 	{ "replicatefold",		VTypes::IntegerData,	0, FALSE },
 	{ "replicatetrim",		VTypes::IntegerData,	0, FALSE },
+	{ "reusequality",		VTypes::IntegerData,	0, FALSE },
 	{ "screenobjects",		VTypes::IntegerData,	0, FALSE },
 	{ "selectionscale",		VTypes::DoubleData,	0, FALSE },
 	{ "shininess",			VTypes::IntegerData,	0, FALSE },
@@ -120,10 +122,10 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "usenicetext",		VTypes::IntegerData,	0, FALSE },
 	{ "tempdir",			VTypes::StringData,	0, FALSE },
 	{ "textcolour",			VTypes::DoubleData,	4, FALSE },
+	{ "transparencybinstartz",	VTypes::DoubleData,	0, FALSE },
 	{ "transparencybinwidth",	VTypes::DoubleData,	0, FALSE },
 	{ "transparencycorrect",	VTypes::IntegerData,	0, FALSE },
 	{ "transparencynbins",		VTypes::IntegerData,	0, FALSE },
-	{ "transparencystartz",		VTypes::DoubleData,	0, FALSE },
 	{ "unltcellaxescolour",		VTypes::DoubleData,	4, FALSE },
 	{ "unitcellcolour",		VTypes::DoubleData,	4, FALSE },
 	{ "vdwcutoff",			VTypes::DoubleData,	0, FALSE },
@@ -339,6 +341,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::HDistance):
 			rv.set( ptr->hydrogenDistance() );
 			break;
+		case (PreferencesVariable::ImageQuality):
+			rv.set( (int) ptr->imagePrimitiveQuality() );
+			break;
 		case (PreferencesVariable::KeyAction):
 			if (hasArrayIndex) rv.set(Prefs::keyAction( ptr->keyAction((Prefs::ModifierKey) (arrayIndex-1))) );
 			else rv.setArray( VTypes::StringData, &ptr->keyActionTexts_, Prefs::nModifierKeys);
@@ -413,6 +418,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::ReplicateTrim):
 			rv.set( ptr->replicateTrim() );
 			break;
+		case (PreferencesVariable::ReuseQuality):
+			rv.set( ptr->reusePrimitiveQuality() );
+			break;
 		case (PreferencesVariable::ScreenObjects):
 			rv.set( ptr->screenObjects() );
 			break;
@@ -452,6 +460,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::TextColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::TextColour), 4);
 			break;
+		case (PreferencesVariable::TransparencyBinStartZ):
+			rv.set( ptr->transparencyBinStartZ() );
+			break;
 		case (PreferencesVariable::TransparencyBinWidth):
 			rv.set( ptr->transparencyBinWidth() );
 			break;
@@ -460,9 +471,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::TransparencyNBins):
 			rv.set( ptr->transparencyNBins() );
-			break;
-		case (PreferencesVariable::TransparencyBinStartZ):
-			rv.set( ptr->transparencyBinStartZ() );
 			break;
 		case (PreferencesVariable::UnitCellAxesColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellAxesColour)[arrayIndex-1] );
@@ -711,6 +719,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::HDistance):
 			ptr->setHydrogenDistance( newvalue.asDouble(result) );
 			break;
+		case (PreferencesVariable::ImageQuality):
+			ptr->setImagePrimitiveQuality( newvalue.asInteger(result) );
+			break;
 		case (PreferencesVariable::KeyAction):
 			if (newvalue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nModifierKeys; ++n)
 			{
@@ -819,6 +830,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::ReplicateTrim):
 			ptr->setReplicateTrim( newvalue.asBool() );
 			break;
+		case (PreferencesVariable::ReuseQuality):
+			ptr->setReusePrimitiveQuality( newvalue.asBool() );
+			break;
 		case (PreferencesVariable::ScreenObjects):
 			ptr->setScreenObjects( newvalue.asInteger(result) );
 			break;
@@ -864,6 +878,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			else if (hasArrayIndex) ptr->setColour(Prefs::TextColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(result));
 			break;
+		case (PreferencesVariable::TransparencyBinStartZ):
+			ptr->setTransparencyBinStartZ( newvalue.asDouble() );
+			break;
 		case (PreferencesVariable::TransparencyBinWidth):
 			ptr->setTransparencyBinWidth( newvalue.asDouble() );
 			break;
@@ -872,9 +889,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::TransparencyNBins):
 			ptr->setTransparencyNBins( newvalue.asInteger() );
-			break;
-		case (PreferencesVariable::TransparencyBinStartZ):
-			ptr->setTransparencyBinStartZ( newvalue.asDouble() );
 			break;
 		case (PreferencesVariable::UnitCellAxesColour):
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(n, result));

@@ -121,7 +121,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	Fragment *frag;
 	ForcefieldAtom *ffa;
 
-	// Clear filtered primitives lists
+	// Clear filtered primitive lists
 	solidPrimitives_.clear();
 	transparentPrimitives_.clear();
 	textPrimitives_.forgetAll();
@@ -140,24 +140,27 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glEnable(GL_COLOR_MATERIAL);
 	
 	// Render rotation globe in small viewport in lower right-hand corner
-	n = prefs.globeSize();
-	glViewport(canvas->contextWidth()-n,0,n,n);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMultMatrixd(globeProjectionMatrix_.matrix());
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	A = modelTransformationMatrix_;
-	A.removeTranslationAndScaling();
-	A[14] = -1.2;
-	glMultMatrixd(A.matrix());
-	prefs.copyColour(Prefs::GlobeColour, colour_i);
-	glColor4fv(colour_i);
-	rotationGlobe_.sendToGL();
-	prefs.copyColour(Prefs::GlobeAxesColour, colour_i);
-	glColor4fv(colour_i);
-	rotationGlobeAxes_.sendToGL();
-	
+	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe))
+	{
+		n = prefs.globeSize();
+		glViewport(canvas->contextWidth()-n,0,n,n);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glMultMatrixd(globeProjectionMatrix_.matrix());
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		A = modelTransformationMatrix_;
+		A.removeTranslationAndScaling();
+		A[14] = -1.2;
+		glMultMatrixd(A.matrix());
+		prefs.copyColour(Prefs::GlobeColour, colour_i);
+		glColor4fv(colour_i);
+		rotationGlobe_.sendToGL();
+		prefs.copyColour(Prefs::GlobeAxesColour, colour_i);
+		glColor4fv(colour_i);
+		rotationGlobeAxes_.sendToGL();
+	}
+
 	// Prepare for model rendering
 	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
 	glMatrixMode(GL_PROJECTION);
@@ -173,18 +176,18 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		glColor4fv(colour_i);
 		A = source->modelViewMatrix() * source->cell()->axes();
 		glMultMatrixd(A.matrix());
-		wireCube_.sendToGL();
+		if (prefs.isVisibleOnScreen(Prefs::ViewCell)) wireCube_.sendToGL();
 		glTranslated(-0.5, -0.5, -0.5);
 		v = source->cell()->lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
 		prefs.copyColour(Prefs::UnitCellAxesColour, colour_i);
 		glColor4fv(colour_i);
-		cellAxes_.sendToGL();
+		if (prefs.isVisibleOnScreen(Prefs::ViewCellAxes)) cellAxes_.sendToGL();
 		glLoadIdentity();
 	}
 
 	// Atoms and Bonds // OPTIMIZE - use atom array instead
-	for (i = source->atoms(); i != NULL; i = i->next)
+	if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) for (i = source->atoms(); i != NULL; i = i->next)
 	{
 		// Skip hidden atoms
 		if (i->isHidden()) continue;
@@ -262,7 +265,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 
 		// Labels
 		labels = i->labels();
-		if (labels != 0)
+		if ((labels != 0) && (prefs.isVisibleOnScreen(Prefs::ViewLabels)))
 		{
 			ffa = i->type();
 			
@@ -586,79 +589,85 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 
 	// Measurements
 	// Apply standard transformation matrix to OpenGL so we may just use local atom positions for vertices
-	glLoadIdentity();
-	glMultMatrixd(modelTransformationMatrix_.matrix());
-	for (Measurement *m = source->distanceMeasurements(); m != NULL; m = m->next)
+	if (prefs.isVisibleOnScreen(Prefs::ViewMeasurements))
 	{
-		atoms = m->atoms();
-		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
-		if (atoms[0]->isHidden() || atoms[1]->isHidden()) continue;
-		r1 = atoms[0]->r();
-		r2 = atoms[1]->r();
-		glBegin(GL_LINES);
-		glVertex3d(r1.x, r1.y, r1.z);
-		glVertex3d(r2.x, r2.y, r2.z);
-		glEnd();
-		renderTextPrimitive((r1+r2)*0.5, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
-	}
-          // Angles
-	for (Measurement *m = source->angleMeasurements(); m != NULL; m = m->next)
-	{
-		atoms = m->atoms();
-		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
-		if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden()) continue;
-		r1 = atoms[0]->r();
-		r2 = atoms[1]->r();
-		r3 = atoms[2]->r();
-		glBegin(GL_LINE_STRIP);
-		glVertex3d(r1.x, r1.y, r1.z);
-		glVertex3d(r2.x, r2.y, r2.z);
-		glVertex3d(r3.x, r3.y, r3.z);
-		glEnd();
-		// Curved angle marker
-		rji = (r1 - r2);
-		rjk = (r3 - r2);
-		rji.normalise();
-		rjk.normalise();
-		gamma = acos(rji.dp(rjk));
-		// Draw segments
-		t = 0.0;
-		glBegin(GL_LINES);
-		for (int n=0; n<11; n++)
+		glLoadIdentity();
+		glMultMatrixd(modelTransformationMatrix_.matrix());
+		// Distances
+		for (Measurement *m = source->distanceMeasurements(); m != NULL; m = m->next)
 		{
-			pos = rji * (sin((1.0-t)*gamma) / sin(gamma)) + rjk * (sin(t*gamma) / sin(gamma));  // OPTIMIZE!
-			pos *= 0.2;
-			pos += r2;
-			glVertex3d(pos.x, pos.y, pos.z);
-			t += 0.1;
+			atoms = m->atoms();
+			// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+			if (atoms[0]->isHidden() || atoms[1]->isHidden()) continue;
+			r1 = atoms[0]->r();
+			r2 = atoms[1]->r();
+			glBegin(GL_LINES);
+			glVertex3d(r1.x, r1.y, r1.z);
+			glVertex3d(r2.x, r2.y, r2.z);
+			glEnd();
+			renderTextPrimitive((r1+r2)*0.5, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
 		}
-		glEnd();
-		// Determine orientation of text
-		pos = (rji + rjk) * 0.1 + r2;
-		// OPTIMIZE - can we just multiply by modelTransformationMatrix_ here? We don't care about the exact projection....
-		modelToWorld(r2, &screenr);
-		gamma = screenr.x;
-		modelToWorld(pos, &screenr);
-		renderTextPrimitive(pos, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma < screenr.x);
+		// Angles
+		for (Measurement *m = source->angleMeasurements(); m != NULL; m = m->next)
+		{
+			atoms = m->atoms();
+			// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+			if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden()) continue;
+			r1 = atoms[0]->r();
+			r2 = atoms[1]->r();
+			r3 = atoms[2]->r();
+			glBegin(GL_LINE_STRIP);
+			glVertex3d(r1.x, r1.y, r1.z);
+			glVertex3d(r2.x, r2.y, r2.z);
+			glVertex3d(r3.x, r3.y, r3.z);
+			glEnd();
+			// Curved angle marker
+			rji = (r1 - r2);
+			rjk = (r3 - r2);
+			rji.normalise();
+			rjk.normalise();
+			gamma = acos(rji.dp(rjk));
+			// Draw segments
+			t = 0.0;
+			glBegin(GL_LINES);
+			for (int n=0; n<11; n++)
+			{
+				pos = rji * (sin((1.0-t)*gamma) / sin(gamma)) + rjk * (sin(t*gamma) / sin(gamma));  // OPTIMIZE!
+				pos *= 0.2;
+				pos += r2;
+				glVertex3d(pos.x, pos.y, pos.z);
+				t += 0.1;
+			}
+			glEnd();
+			// Determine orientation of text
+			pos = (rji + rjk) * 0.1 + r2;
+			// OPTIMIZE - can we just multiply by modelTransformationMatrix_ here? We don't care about the exact projection....
+			modelToWorld(r2, &screenr);
+			gamma = screenr.x;
+			modelToWorld(pos, &screenr);
+			renderTextPrimitive(pos, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma < screenr.x);
+		}
+		// Torsions
+		for (Measurement *m = source->torsionMeasurements(); m != NULL; m = m->next)
+		{
+			atoms = m->atoms();
+			// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+			if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden() || atoms[3]->isHidden()) continue;
+			r1 = atoms[0]->r();
+			r2 = atoms[1]->r();
+			r3 = atoms[2]->r();
+			r4 = atoms[3]->r();
+			glBegin(GL_LINE_STRIP);
+			glVertex3d(r1.x, r1.y, r1.z);
+			glVertex3d(r2.x, r2.y, r2.z);
+			glVertex3d(r3.x, r3.y, r3.z);
+			glVertex3d(r4.x, r4.y, r4.z);
+			glEnd();
+			renderTextPrimitive((r2+r3)*0.5, ftoa(m->value(), prefs.angleLabelFormat()), 176);
+		}
 	}
-	// Torsions
-	for (Measurement *m = source->torsionMeasurements(); m != NULL; m = m->next)
-	{
-		atoms = m->atoms();
-		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
-		if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden() || atoms[3]->isHidden()) continue;
-		r1 = atoms[0]->r();
-		r2 = atoms[1]->r();
-		r3 = atoms[2]->r();
-		r4 = atoms[3]->r();
-		glBegin(GL_LINE_STRIP);
-		glVertex3d(r1.x, r1.y, r1.z);
-		glVertex3d(r2.x, r2.y, r2.z);
-		glVertex3d(r3.x, r3.y, r3.z);
-		glVertex3d(r4.x, r4.y, r4.z);
-		glEnd();
-		renderTextPrimitive((r2+r3)*0.5, ftoa(m->value(), prefs.angleLabelFormat()), 176);
-	}
+
+	// Surfaces
 
 	// All objects have now been filtered...
 	sortAndSendGL();

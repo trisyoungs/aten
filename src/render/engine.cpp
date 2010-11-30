@@ -33,8 +33,8 @@ RenderEngine::RenderEngine()
 	// Primitives
 	scaledAtom_ = new PrimitiveGroup[elements().nElements()];
 	selectedScaledAtom_ = new PrimitiveGroup[elements().nElements()];
-	
-	createPrimitives();
+	primitiveQuality_ = -1;
+
 	triangleChopper_.initialise(0.0, 20.0, 0.1);
 }
 
@@ -50,11 +50,19 @@ RenderEngine::~RenderEngine()
 */
 
 // (Re)Generate primitives
-void RenderEngine::createPrimitives()
+void RenderEngine::createPrimitives(int quality)
 {
 	msg.enter("RenderEngine::createPrimitives");
 	double radius, lodratio, aradius[Atom::nDrawStyles], bradius[Atom::nDrawStyles], selscale;
-	int n, m, lod, nstacks, nslices, quality = prefs.primitiveQuality();
+	int n, m, lod, nstacks, nslices;
+	printf("createprimitives quality = %i\n", quality);
+	if (primitiveQuality_ == quality)
+	{
+		msg.exit("RenderEngine::createPrimitives");
+		return;
+	}
+printf("regnerating\n");
+	primitiveQuality_ = quality;
 	// Clear old primitive groups
 	for (n=0; n<Atom::nDrawStyles; ++n)
 	{
@@ -173,7 +181,7 @@ void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h, double orthozoo
 	}
 	else
 	{
-		top = tan(prefs.perspectiveFov() / DEGRAD) * 1.0; // TGAY (displayModel_ == NULL ? 1.0 : displayModel_->camera().z);
+		top = tan(prefs.perspectiveFov() / DEGRAD) * orthozoom;
 		bottom = -top;
 		glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}

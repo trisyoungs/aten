@@ -99,6 +99,8 @@ void AtenPrefs::setControls()
 	ui.SpotlightPositionZSpin->setValue(pos[2]);
 	ui.ShininessSpin->setValue(prefs.shininess());
 	ui.PrimitiveQualitySpin->setValue(prefs.primitiveQuality());
+	ui.ImagePrimitiveQualitySpin->setValue(prefs.imagePrimitiveQuality());
+	ui.ImagePrimitivesGroup->setChecked(prefs.reusePrimitiveQuality());
 	ui.LevelOfDetailNLevelsSpin->setValue(prefs.levelsOfDetail());
 	ui.LevelOfDetailStartZSpin->setValue(prefs.levelOfDetailStartZ());
 	ui.LevelOfDetailWidthSpin->setValue(prefs.levelOfDetailWidth());
@@ -392,6 +394,21 @@ void AtenPrefs::on_PrimitiveQualitySpin_valueChanged(int value)
 {
 	prefs.setPrimitiveQuality(value);
 	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_ImagePrimitivesGroup_clicked(bool checked)
+{
+	prefs.setReusePrimitiveQuality(!checked);
+}
+
+void AtenPrefs::on_ImagePrimitiveQualitySlider_valueChanged(int value)
+{
+	prefs.setImagePrimitiveQuality(value);
+}
+
+void AtenPrefs::on_ImagePrimitiveQualitySpin_valueChanged(int value)
+{
+	prefs.setImagePrimitiveQuality(value);
 }
 
 void AtenPrefs::on_LevelOfDetailNLevelsSpin_valueChanged(int value)
