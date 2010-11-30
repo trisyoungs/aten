@@ -55,13 +55,11 @@ void RenderEngine::createPrimitives(int quality)
 	msg.enter("RenderEngine::createPrimitives");
 	double radius, lodratio, aradius[Atom::nDrawStyles], bradius[Atom::nDrawStyles], selscale;
 	int n, m, lod, nstacks, nslices;
-	printf("createprimitives quality = %i\n", quality);
 	if (primitiveQuality_ == quality)
 	{
 		msg.exit("RenderEngine::createPrimitives");
 		return;
 	}
-printf("regnerating\n");
 	primitiveQuality_ = quality;
 	// Clear old primitive groups
 	for (n=0; n<Atom::nDrawStyles; ++n)
