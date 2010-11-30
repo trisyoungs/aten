@@ -49,6 +49,8 @@ class RenderEngine
 	// Primitives
 	*/
 	private:
+	// Quality setting that primitives were last generated at
+	int primitiveQuality_;
 	// Atom styles
 	PrimitiveGroup atom_[Atom::nDrawStyles], *scaledAtom_;
 	// Selected atom styles
@@ -65,8 +67,8 @@ class RenderEngine
 	Primitive wireCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
 
 	public:
-	// (Re)Generate primitive vertex arrays
-	void createPrimitives();
+	// (Re)Generate primitive vertex arrays with specified quality
+	void createPrimitives(int quality);
 
 
 	/*

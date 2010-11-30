@@ -205,6 +205,8 @@ Prefs::Prefs()
 	depthNear_ = 1;
 	depthFar_ = 200;
 	primitiveQuality_ = 10;
+	imagePrimitiveQuality_ = 50;
+	reusePrimitiveQuality_ = FALSE;
 	levelsOfDetail_ = 5;
 	levelOfDetailWidth_ = 10;
 	levelOfDetailStartZ_ = 25.0;
@@ -527,6 +529,30 @@ void Prefs::setPrimitiveQuality(int n)
 int Prefs::primitiveQuality() const
 {
 	return primitiveQuality_;
+}
+
+// Set whether to use separate primitive quality for saved images
+void Prefs::setReusePrimitiveQuality(bool b)
+{
+	reusePrimitiveQuality_ = b;
+}
+
+// Whether to use separate primitive quality for saved images
+bool Prefs::reusePrimitiveQuality() const
+{
+	return reusePrimitiveQuality_;
+}
+
+// Sets the saved image primitive quality
+void Prefs::setImagePrimitiveQuality(int n)
+{
+	imagePrimitiveQuality_ = n;
+}
+
+// Return the current save image primitive quality
+int Prefs::imagePrimitiveQuality() const
+{
+	return imagePrimitiveQuality_;
 }
 
 // Set number of levels of detail for rendering primitives

@@ -535,8 +535,9 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	int oldlabelsize = prefs.labelSize();
 	int newlabelsize = int (oldlabelsize*( (1.0*height / mainWidget->height()) ));
 	prefs.setLabelSize(newlabelsize);
-	mainWidget->postRedisplay();
+
 	mainWidget->setOffScreenRendering(TRUE);
+	mainWidget->postRedisplay();
 
 	// Flag any surfaces to be rerendered for use in this context
 	aten.current.rs->rerenderGrids();
@@ -553,9 +554,6 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 
 	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
 	aten.current.rs->rerenderGrids();
-
-	// Reconfigure canvas to widget size (necessary if image size was changed)
-// 	mainWidget->configure(mainWidget->width(), mainWidget->height());   BROKEN?
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);

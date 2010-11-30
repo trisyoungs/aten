@@ -20,12 +20,6 @@
 						<entry>The C-style format to use for the numerical value of angle labels</entry>
 					</row>
 					<row>
-						<entry>atomdetail</entry>
-						<entry>int</entry>
-						<entry>rw</entry>
-						<entry>Quadric detail of atoms. Higher values give rounder atoms but make rendering slower</entry>
-					</row>
-					<row>
 						<entry>atomstyleradius</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
@@ -42,12 +36,6 @@
 						<entry>double[4]</entry>
 						<entry>rw</entry>
 						<entry>Background colour of the main canvas on which models are drawn</entry>
-					</row>
-					<row>
-						<entry>bonddetail</entry>
-						<entry>int</entry>
-						<entry>rw</entry>
-						<entry>Quadric detail of bonds. Higher values give rounder bonds but make rendering slower</entry>
 					</row>
 					<row>
 						<entry>bondstyleradius</entry>
@@ -194,10 +182,22 @@
 						<entry>For spacegroups that are detected to have a hexagonal basis, force packing to use generators in a rhombohedral basis</entry>
 					</row>
 					<row>
-						<entry>foregroundcolour</entry>
+						<entry>textcolour</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
-						<entry>Forground pen colour of the main canvas on which models are drawn, affecting colour of text labels, rotation globe, unit cell etc.</entry>
+						<entry>Colour of rendered text</entry>
+					</row>
+					<row>
+						<entry>globeaxescolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of axis pointers on the rotation globe</entry>
+					</row>
+					<row>
+						<entry>globecolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of the actual rotation globe</entry>
 					</row>
 					<row>
 						<entry>globesize</entry>
@@ -206,10 +206,22 @@
 						<entry>Size, in pixels, of the rotation globe in the lower-right-hand corner of the screen</entry>
 					</row>
 					<row>
+						<entry>glyphcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Default colour of all created glyphs</entry>
+					</row>
+					<row>
 						<entry>hdistance</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
 						<entry>Default H-X bond distance to use when adding hydrogen atoms</entry>
+					</row>
+					<row>
+						<entry>imagequality</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The general rendering quality (i.e. number of triangles used to generate primitive objects) of the images, used if 'reusequality' is set to FALSE (otherwise the current 'quality' value is used).</entry>
 					</row>
 					<row>
 						<entry>keyaction</entry>
@@ -278,6 +290,12 @@
 						<entry>Update frequency for the current model in various methods</entry>
 					</row>
 					<row>
+						<entry>mopacexe</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Location of MOPAC executable (including full path)</entry>
+					</row>
+					<row>
 						<entry>mouseaction</entry>
 						<entry>string[4]</entry>
 						<entry>rw</entry>
@@ -326,6 +344,12 @@
 						<entry>The current model drawing style</entry>
 					</row>
 					<row>
+						<entry>quality</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The general rendering quality (i.e. number of triangles used to generate primitive objects) of the main view. Higher values give rounder atoms but make rendering slower. See also the 'imagequality' setting.</entry>
+					</row>
+					<row>
 						<entry>replicatefold</entry>
 						<entry>int</entry>
 						<entry>rw</entry>
@@ -336,6 +360,12 @@
 						<entry>int</entry>
 						<entry>rw</entry>
 						<entry>Whether to trim atoms after cell replicate</entry>
+					</row>
+					<row>
+						<entry>reusequality</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag specifying whether to use the current rendering 'quality' value when saving images (FALSE) or the 'imagequality' value (TRUE).</entry>
 					</row>
 					<row>
 						<entry>screenobjects</entry>
@@ -390,6 +420,48 @@
 						<entry>double[4]</entry>
 						<entry>rw</entry>
 						<entry>The specular colour component of the spotlight</entry>
+					</row>
+					<row>
+						<entry>tempdir</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Temporary (working) directory for some operations (e.g. execution of MOPAC jobs)</entry>
+					</row>
+					<row>
+						<entry>transparencybinwidth</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z-width of individual transparency bins</entry>
+					</row>
+					<row>
+						<entry>transparencycorrect</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether sort of transparent triangles is enabled. When enabled, any object which is to be drawn in a transparent colour is split into its component triangles and sorted over several bins (representing slices in the z direction). Rendering is a little slower with this option enabled, but corrects most transparency artefacts with sensible bin values.</entry>
+					</row>
+					<row>
+						<entry>transparencynbins</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The number of bins to use for sorting transparent triangles</entry>
+					</row>
+					<row>
+						<entry>transparencybinstartz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The z-depth at which binned transparency sorting begins. Before this value, all triangles are grouped (and rendered) together without sorting</entry>
+					</row>
+					<row>
+						<entry>unitcellaxescolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of unit cell axis pointers</entry>
+					</row>
+					<row>
+						<entry>unitcellcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of unit cell</entry>
 					</row>
 					<row>
 						<entry>useframebuffer</entry>

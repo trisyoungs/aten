@@ -12,6 +12,4 @@ Things to do (fix) in new version:
 1) Drawing of aromatic bonds
 2) Rotation of multiple bonds into bond plane
 5) Jump before first rotation of model (lastmouse not set properly?)
-6) Orthographic view completely broken.
 7) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
-8) Prefs option to render quality for saved bitmaps, automatically applied at save time (need to store quality of last generated primitives in Engine).

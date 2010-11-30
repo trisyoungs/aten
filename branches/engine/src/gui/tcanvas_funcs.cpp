@@ -138,7 +138,9 @@ void TCanvas::initializeGL()
 	// Initialize GL
 	msg.enter("TCanvas::initializeGL");
 	valid_ = TRUE;
-	engine_.createPrimitives();
+	// Image quality to use depends on current drawing target...
+	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality());
+	else engine_.createPrimitives(prefs.primitiveQuality());
 	msg.exit("TCanvas::initializeGL");
 }
 
@@ -318,7 +320,9 @@ void TCanvas::updateTransformation(Matrix& mat, Vec3< double > cellcentre)
 void TCanvas::reinitialiseGL()
 {
 	engine_.initialiseGL();
-	engine_.createPrimitives();
+	// Image quality to use depends on current drawing target...
+	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality());
+	else engine_.createPrimitives(prefs.primitiveQuality());
 }
 
 // Calculate Projection
@@ -341,7 +345,6 @@ void TCanvas::doProjection(int newwidth, int newheight)
 		else
 		{
 			// Vibration frame?
-			printf("Model = %p\n", source);
 			if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
 			else source = source->renderSourceModel();
 			engine_.setupView(0, 0, contextWidth_, contextHeight_, source->modelViewMatrix()[14] );

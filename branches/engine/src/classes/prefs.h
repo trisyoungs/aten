@@ -110,6 +110,10 @@ class Prefs
 	Atom::DrawStyle renderStyle_;
 	// General quality of primitives
 	int primitiveQuality_;
+	// Whether to use separate primitive quality for saved images
+	bool reusePrimitiveQuality_;
+	// General quality of primitives on saved images
+	int imagePrimitiveQuality_;
 	// Number of levels of detail for rendering primitives
 	int levelsOfDetail_;
 	// Level of detail start z-distance
@@ -164,6 +168,14 @@ class Prefs
 	void setPrimitiveQuality(int n);
 	// Return the current primitive quality
 	int primitiveQuality() const;
+	// Set whether to use separate primitive quality for saved images
+	void setReusePrimitiveQuality(bool b);
+	// Whether to use separate primitive quality for saved images
+	bool reusePrimitiveQuality() const;
+	// Sets the saved image primitive quality
+	void setImagePrimitiveQuality(int n);
+	// Return the current save image primitive quality
+	int imagePrimitiveQuality() const;
 	// Set number of levels of detail for rendering primitives
 	void setLevelsOfDetail(int n);
 	// Return number of levels of detail for rendering primitives
