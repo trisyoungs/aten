@@ -26,7 +26,8 @@
 #include "base/dnchar.h"
 #include "base/cell.h"
 #include "base/constants.h"
-#include <QtOpenGL/QtOpenGL>
+#include "render/primitive.h"
+#include <GL/gl.h>
 
 // GridPoint class
 class GridPoint
@@ -74,7 +75,7 @@ class Grid
 	static GridType gridType(const char *s, bool reporterror);
 	static const char *gridType(Grid::GridType gt);
 	// Surface rendering styles
-	enum SurfaceStyle { GridSurface, PointSurface, TriangleSurface, SolidSurface, nSurfaceStyles };
+	enum SurfaceStyle { PointSurface, TriangleSurface, SolidSurface, nSurfaceStyles };
 	static SurfaceStyle surfaceStyle(const char *s);
 	// Assignment operator
 	void operator=(Grid &source);
@@ -240,8 +241,8 @@ class Grid
 	private:
 	// Log for changes to Grid, display style etc.
 	int log_;
-	// GL display lists of rendered surface on screen and in temporary offscreen context
-	GLuint displayList_, offScreenDisplayList_;
+	// Primitive containing surface triangles
+	Primitive primitive_;
 	// Log point corresponding to the last render
 	int renderPoint_;
 	// Whether the surface is currently visible
@@ -260,8 +261,8 @@ class Grid
 	public:
 	// Increase the internal log
 	void logChange();
-	// Return the surface display list
-	GLuint displayList(bool offscreenlist = FALSE);
+	// Return the grid's primitive object
+	Primitive &primitive();
 	// Return whether re-rendering is necessary
 	bool shouldRerender() const;
 	// Update the log point of the surface
