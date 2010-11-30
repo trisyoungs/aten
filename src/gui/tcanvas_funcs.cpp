@@ -234,7 +234,7 @@ void TCanvas::resizeGL(int newwidth, int newheight)
 	// Flag that render source needs to be reprojected
 	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
 	if (prefs.manualSwapBuffers()) swapBuffers();
-	// 	if (canvas_->displayModel() != NULL) canvas_->displayModel()->changeLog.add(Log::Camera);  //BROKEN?
+	// 	if (canvas_->displayModel() != NULL) canvas_->displayModel()->changeLog.add(Log::Camera);  //BROKEN? Necessary?
 }
 
 // Begin GL
@@ -333,7 +333,19 @@ void TCanvas::doProjection(int newwidth, int newheight)
 		// Set the viewport size to the whole area and grab the matrix
 		contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
 		contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
-		engine_.setupView(0, 0, contextWidth_, contextHeight_);
+		// Need to get view z-depth (zoom) from current model
+		Model *source;
+		if (useCurrentModel_) source = aten.currentModelOrFrame();
+		else source = renderSource_;
+		if (source == NULL) engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);
+		else
+		{
+			// Vibration frame?
+			printf("Model = %p\n", source);
+			if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
+			else source = source->renderSourceModel();
+			engine_.setupView(0, 0, contextWidth_, contextHeight_, source->modelViewMatrix()[14] );
+		}
 		endGl();
 	}
 	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");

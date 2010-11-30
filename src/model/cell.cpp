@@ -539,7 +539,7 @@ void Model::rotateCell(int axis, double angle)
 	else if (axis == 2) rotmat.createRotationZ(angle);
 	// Create new cell axes
 	Matrix axes = cell_.axes();
-// 	axes *= rotmat;				// BROKEN
+// 	axes *= rotmat;				// TGAY  TODO
 // // 	cell_.set(axes);
 // 	Vec3<double> lengths, angles;
 // 	lengths = cell_.lengths();
