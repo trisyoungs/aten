@@ -146,7 +146,7 @@ void RenderEngine::createPrimitives()
 */
 
 // Set-up viewport and projection matrices
-void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h)
+void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h, double orthozoom)
 {
 	// Setup and store viewport matrix
 	viewportMatrix_[0] = x;
@@ -261,7 +261,6 @@ void RenderEngine::renderTextPrimitive(Vec3<double> vec, const char *text, QChar
 void RenderEngine::sortAndSendGL()
 {
 	// Transform and render each solid primitive in the list
-	Vec3<double> pos;
 	for (PrimitiveInfo *pi = solidPrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object

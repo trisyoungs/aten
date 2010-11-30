@@ -181,36 +181,9 @@ void Model::rotatePenAxis(int axis, double degrees)
 	q.set(v.x * sin(theta/2.0), v.y*sin(theta/2.0), v.z*sin(theta/2.0), cos(theta/2.0));
 	q.normalise();
 	// Create rotation matrix from quaternion
-	rotmat.setColumn(0, 1.0 - 2.0*q.y*q.y - 2.0*q.z*q.z, 2.0*q.x*q.y + 2.0*q.w*q.z, 2.0*q.x*q.z - 2.0*q.w*q.y, 0.0);  // BROKEN?
+	rotmat.setColumn(0, 1.0 - 2.0*q.y*q.y - 2.0*q.z*q.z, 2.0*q.x*q.y + 2.0*q.w*q.z, 2.0*q.x*q.z - 2.0*q.w*q.y, 0.0);
 	rotmat.setColumn(1, 2.0*q.x*q.y - 2.0*q.w*q.z, 1.0 - 2.0*q.x*q.x - 2.0*q.z*q.z, 2.0*q.y*q.z + 2.0*q.w*q.x, 0.0);
 	rotmat.setColumn(2, 2.0*q.x*q.z + 2.0*q.w*q.y, 2.0*q.y*q.z - 2.0*q.w*q.x, 1.0 - 2.0*q.x*q.x - 2.0*q.y*q.y, 0.0);
-/*	c = cos(theta);
-	s = sin(theta);
-	t = 1.0 - c;
-	rotmat.set(0, t*v.x*v.x + c, t*v.x*v.y + s*v.z, t*v.x*v.z - s*v.y);
-	rotmat.set(1, t*v.x*v.y - s*v.z, t*v.y*v.y + c, t*v.y*v.z + s*v.x);
-	rotmat.set(2, t*v.x*v.z + s*v.y, t*v.y*v.z - s*v.x, t*v.z*v.z + c);*/
-// 	switch (axis)
-// 	{
-// 		case (0):
-// 			rotmat.set(0,1.0,0.0,0.0);
-// 			rotmat.set(1,0.0,cos(theta),sin(theta));
-// 			rotmat.set(2,0.0,-sin(theta),cos(theta));
-// 			break;
-// 		case (1):
-// 			rotmat.set(0,cos(theta),0.0,-sin(theta));
-// 			rotmat.set(1,0.0,1.0,0.0);
-// 			rotmat.set(2,sin(theta),0.0,cos(theta));
-// 			break;
-// 		case (2):
-// 			rotmat.set(0,cos(theta),sin(theta),0.0);
-// 			rotmat.set(1,-sin(theta),cos(theta),0.0);
-// 			rotmat.set(2,0.0,0.0,1.0);
-// 			break;
-// 		default:
-// 			msg.print("%i is not a valid axis for Model::rotatePenAxis\n", axis);
-// 			break;
-// 	}
 	penOrientation_ *= rotmat;
 }
 

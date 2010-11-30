@@ -153,11 +153,9 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glMultMatrixd(A.matrix());
 	prefs.copyColour(Prefs::GlobeColour, colour_i);
 	glColor4fv(colour_i);
-// 	printf("GlobeCOlour = %f %f %f %f\n", colour_i[0],colour_i[1],colour_i[2],colour_i[3]);
 	rotationGlobe_.sendToGL();
 	prefs.copyColour(Prefs::GlobeAxesColour, colour_i);
 	glColor4fv(colour_i);
-// 	printf("GlobeAxesCOlour = %f %f %f %f\n", colour_i[0],colour_i[1],colour_i[2],colour_i[3]);
 	rotationGlobeAxes_.sendToGL();
 	
 	// Prepare for model rendering

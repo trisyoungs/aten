@@ -509,7 +509,7 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 			// R.x -= int(R.x);
 			// R.y -= int(R.y);
 			// R.z -= int(R.z);
-			R = inverse_.transform(R) + r2;
+			R = axes_.transform(R) + r2;
 	}
 	return R;
 }
