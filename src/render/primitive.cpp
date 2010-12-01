@@ -27,51 +27,54 @@
 #include <stdio.h>
 #include <math.h>
 
-// Constructor
-Primitive::Primitive()
-{
-	vertexData_ = NULL;
-	colouredVertexData_ = FALSE;
-	dataPerVertex_ = 6;
-	centroids_ = NULL;
-	maxVertices_ = 0;
-	nDefinedVertices_ = 0;
-	type_ = GL_TRIANGLES;
-	verticesPerType_ = 3;
-	nDefinedTypes_ = 0;
-}
-
-// Destructor
-Primitive::~Primitive()
-{
-	clear();
-}
-
-// Clear existing data
-void Primitive::clear()
-{
-	if (vertexData_ != NULL) delete[] vertexData_;
-	vertexData_ = NULL;
-	if (centroids_ != NULL) delete[] centroids_;
-	centroids_ = NULL;
-}
-
-// Forget all data, leaving arrays intact
-void Primitive::forgetAll()
-{
-	nDefinedVertices_ = 0;
-}
-
 /*
-// Vertex Generation
+// Vertex Chunk
 */
 
-// Define next vertex and normal
-void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
+// Constructor / Destructor
+VertexChunk::VertexChunk()
 {
-	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for primitive reached.\n");
+	// Public variables
+	next = NULL;
+	prev = NULL;
+	
+	// Private variables
+	vertexData_ = NULL;
+	centroids_ = NULL;
+	verticesPerType_ = 0;
+	dataPerVertex_ = 0;
+	nDefinedVertices_ = 0;
+	maxVertices_ = -1;
+	nDefinedTypes_ = 0;
+	type_ = GL_TRIANGLES;
+}
+
+VertexChunk::~VertexChunk()
+{
+	if (vertexData_ != NULL) delete[] vertexData_;
+	if (centroids_ != NULL) delete[] centroids_;
+}
+
+// Initialise structure
+void VertexChunk::initialise(GLenum type, bool colourData)
+{
+	type_ = type;
+	dataPerVertex_ = (colourData ? 10 : 6);
+	verticesPerType_ = (type_ == GL_TRIANGLES ? 3 : 2);
+	maxVertices_ = VERTEXCHUNKSIZE*verticesPerType_;
+	nDefinedVertices_ = 0;
+	nDefinedTypes_ = 0;
+	vertexData_ = new GLfloat[maxVertices_*dataPerVertex_];
+	centroids_ = new GLfloat[VERTEXCHUNKSIZE*3];
+	for (int n=0; n<VERTEXCHUNKSIZE*3; ++n) centroids_[n] = 0.0f;
+}
+
+// Define next vertex and normal
+void VertexChunk::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
+{
+	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for VertexChunk reached.\n");
 	int index = nDefinedVertices_*dataPerVertex_;
-	if (colouredVertexData_)
+	if (dataPerVertex_ == 10)
 	{
 		printf("Internal Error: No colour specified in vertex creation, but the primitive requires one.\n");
 		index += 4;
@@ -108,12 +111,12 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 }
 
 // Define next vertex and normal
-void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid)
+void VertexChunk::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid)
 {
-	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for primitive reached.\n");
+	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for VertexChunk reached.\n");
 	int index = nDefinedVertices_*dataPerVertex_;
 	// Store colour
-	if (!colouredVertexData_) printf("Internal Error: Colour specified in vertex creation, but it is not required for primitive.\n");
+	if (dataPerVertex_ != 10) printf("Internal Error: Colour specified in vertex creation, but it is not required for primitive.\n");
 	else
 	{
 		vertexData_[index++] = r;
@@ -150,6 +153,124 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 		}
 		++nDefinedTypes_;
 	}
+}
+
+// Return whether current array is full
+bool VertexChunk::full()
+{
+	return (nDefinedVertices_ == maxVertices_);
+}
+
+// Forget all vertex data currently stored in array (but retain array)
+void VertexChunk::forgetAll()
+{
+	nDefinedTypes_ = 0;
+	nDefinedVertices_ = 0;
+}
+
+// Return number of defined primitive (GL) types
+int VertexChunk::nDefinedTypes()
+{
+	return nDefinedTypes_;
+}
+
+// Return vertex array
+GLfloat *VertexChunk::vertexData()
+{
+	return vertexData_;
+}
+
+// Return centroid array
+GLfloat *VertexChunk::centroids()
+{
+	return centroids_;
+}
+
+// Send to OpenGL (i.e. render)
+void VertexChunk::sendToGL()
+{
+	if (nDefinedVertices_ == 0) return;
+	// Does the vertex data contain colour-per-vertex information?
+	glInterleavedArrays(dataPerVertex_ == 10 ? GL_C4F_N3F_V3F : GL_N3F_V3F, 0, vertexData_);
+	glDrawArrays(type_, 0, nDefinedVertices_);
+}
+
+/*
+// Primitive
+*/
+
+// Constructor
+Primitive::Primitive()
+{
+	currentVertexChunk_ = NULL;
+	colouredVertexData_ = FALSE;
+	type_ = GL_TRIANGLES;
+	prev = NULL;
+	next = NULL;
+}
+
+// Destructor
+Primitive::~Primitive()
+{
+	clear();
+}
+
+// Clear existing data
+void Primitive::clear()
+{
+	vertexChunks_.clear();
+	currentVertexChunk_ = NULL;
+}
+
+// Forget all data, leaving arrays intact
+void Primitive::forgetAll()
+{
+	for (VertexChunk *v = vertexChunks_.first(); v != NULL; v = v->next) v->forgetAll();
+	currentVertexChunk_ = vertexChunks_.first();
+}
+
+/*
+// Vertex Generation
+*/
+
+// Define next vertex and normal
+void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
+{
+	if ((currentVertexChunk_ == NULL) || (currentVertexChunk_->full()))
+	{
+		currentVertexChunk_ = vertexChunks_.add();
+		currentVertexChunk_->initialise(type_, colouredVertexData_);
+	}
+	currentVertexChunk_->defineVertex(x,y,z,nx,ny,nz,calcCentroid);
+}
+
+// Define next vertex and normal
+void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid)
+{
+	if ((currentVertexChunk_ == NULL) || (currentVertexChunk_->full()))
+	{
+		currentVertexChunk_ = vertexChunks_.add();
+		currentVertexChunk_->initialise(type_, colouredVertexData_);
+	}
+	currentVertexChunk_->defineVertex(x,y,z,nx,ny,nz,r,g,b,a,calcCentroid);
+}
+
+// Define triangle
+void Primitive::defineTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour)
+{
+	// Add vertices to list
+	defineVertex(vertices[0], vertices[1], vertices[2], normals[0], normals[1], normals[2], colour[0], colour[1], colour[2], colour[3], FALSE);
+	defineVertex(vertices[3], vertices[4], vertices[5], normals[3], normals[4], normals[5], colour[4], colour[5], colour[6], colour[7], FALSE);
+	defineVertex(vertices[6], vertices[7], vertices[8], normals[6], normals[7], normals[8], colour[8], colour[9], colour[10], colour[11], FALSE);
+}
+
+// Define triangle with same-coloured vertices
+void Primitive::defineTriangleSingleColour(GLfloat *vertices, GLfloat *normals, GLfloat *colour)
+{
+	// Add vertices to list
+	defineVertex(vertices[0], vertices[1], vertices[2], normals[0], normals[1], normals[2], colour[0], colour[1], colour[2], colour[3], FALSE);
+	defineVertex(vertices[3], vertices[4], vertices[5], normals[3], normals[4], normals[5], colour[0], colour[1], colour[2], colour[3], FALSE);
+	defineVertex(vertices[6], vertices[7], vertices[8], normals[6], normals[7], normals[8], colour[0], colour[1], colour[2], colour[3], FALSE);
 }
 
 // Create vertices of sphere with specified radius and quality
@@ -247,52 +368,6 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 // Primitive Generation
 */
 
-// Create empty data arrays, setting type specified
-void Primitive::createEmpty(GLenum type, int ntype, bool colours)
-{
-	// Clear old data, if any
-	clear();
-	type_ = type;
-	colouredVertexData_ = colours;
-	dataPerVertex_ = (colouredVertexData_ ? 10 : 6);
-	nType_ = ntype;
-	if (type_ == GL_LINES) verticesPerType_ = 2;
-	else verticesPerType_ = 3;
-	maxVertices_ = nType_*verticesPerType_;
-	nDefinedVertices_ = 0;
-	nDefinedTypes_ = 0;
-	if (colouredVertexData_) vertexData_ = new GLfloat[maxVertices_*dataPerVertex_];
-	else vertexData_ = new GLfloat[maxVertices_*dataPerVertex_];
-	centroids_ = new GLfloat[nType_*3];
-	for (int n=0; n<nType_*3; ++n) centroids_[n] = 0.0f;
-}
-
-// Create vertices of sphere with specified radius and quality
-void Primitive::createSphere(double radius, int nstacks, int nslices)
-{
-	msg.enter("Primitive::createSphere");
-
-	// Clear existing data first (if it exists)
-	createEmpty(GL_TRIANGLES, nstacks*nslices*2, FALSE);
-
-	plotSphere(radius, nstacks, nslices);
-	
-	msg.exit("Primitive::createSphere");
-}
-
-// Create vertices of cylinder with specified radii, length, and quality
-void Primitive::createCylinder(double startradius, double endradius, int nstacks, int nslices)
-{
-	msg.enter("Primitive::createCylinder");
-
-	// Clear existing data first (if it exists)
-	createEmpty(GL_TRIANGLES, nstacks*nslices*2, FALSE);
-
-	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.0, 1.0, startradius, endradius, nstacks, nslices);
-
-	msg.exit("Primitive::createCylinder");
-}
-
 // Create vertices of cross with specified width
 void Primitive::createCross(double width, int naxes)
 {
@@ -300,7 +375,9 @@ void Primitive::createCross(double width, int naxes)
 	GLfloat vert[3], norm[3];
 
 	// Clear existing data first (if it exists)
-	createEmpty(GL_LINES, limit, FALSE);
+	type_ = GL_LINES;
+	forgetAll();
+	
 
 	count = 0;
 	for (i=0; i<limit; ++i)
@@ -320,7 +397,9 @@ void Primitive::createCross(double width, int naxes)
 void Primitive::createWireCube(double size)
 {
 	// Clear existing data first (if it exists)
-	createEmpty(GL_LINES, 12, FALSE);
+	type_ = GL_LINES;
+	forgetAll();
+	
 	size = 0.5*size;
 	int i, j;
 	GLfloat r[3];
@@ -350,7 +429,7 @@ void Primitive::createWireCube(double size)
 void Primitive::createCube(double size, int nsubs)
 {
 	// Clear existing data first (if it exists)
-	createEmpty(GL_TRIANGLES, nsubs*nsubs*2*6, FALSE);
+	forgetAll();
 	
 	// Create each face individually
 	GLfloat origin, delta = (GLfloat) size/nsubs, veca[3], vecb[3], vertex[3];
@@ -405,7 +484,7 @@ void Primitive::createCellAxes()
 	int nslices = max(3,(int) (prefs.primitiveQuality()*1.5));
 
 	// Clear existing data first (if it exists) - need enough space for 6 cylinders
-	createEmpty(GL_TRIANGLES, 6*nstacks*nslices*2, FALSE);
+	forgetAll();
 	
 	// X axis
 	plotCylinder(0.0, 0.0, 0.0, 0.65, 0.0, 0.0, 0.1, 0.1, nstacks, nslices);
@@ -425,7 +504,7 @@ void Primitive::createCellAxes()
 void Primitive::createRotationGlobeAxes(int nstacks, int nslices)
 {
 	// Create space for one sphere and three cylinders
-	createEmpty(GL_TRIANGLES, 3*nstacks*nslices*2, FALSE);
+	forgetAll();
 	
 	// Axis pointers
 	plotCylinder(0.7, 0.0, 0.0, 0.3, 0.0, 0.0, 0.2, 0.0, nstacks, nslices);
@@ -433,10 +512,10 @@ void Primitive::createRotationGlobeAxes(int nstacks, int nslices)
 	plotCylinder(0.0, 0.0, 0.7, 0.0, 0.0, 0.3, 0.2, 0.0, nstacks, nslices);
 }
 
-// Return vertex array
-GLfloat *Primitive::vertexData()
+// Return first chunk vertex array
+VertexChunk *Primitive::vertexChunks()
 {
-	return vertexData_;
+	return vertexChunks_.first();;
 }
 
 // Return whether vertex data contains colour information
@@ -445,45 +524,10 @@ bool Primitive::colouredVertexData()
 	return colouredVertexData_;
 }
 
-// Return centroids array
-GLfloat *Primitive::centroids()
-{
-	return centroids_;
-}
-
-// Return number of vertices defined
-int Primitive::nDefinedVertices()
-{
-	return nDefinedVertices_;
-}
-
-// Return number of primitive types defined
-int Primitive::nDefinedTypes()
-{
-	return nDefinedTypes_;
-}
-
-// Return whether all arrays are full
-bool Primitive::full()
-{
-	return (nDefinedVertices_ == maxVertices_);
-}
-
 // Send to OpenGL (i.e. render)
 void Primitive::sendToGL()
 {
-	if (nDefinedVertices_ == 0) return;
-	// Does the vertex data contain colour-per-vertex information?
-	if (colouredVertexData_)
-	{
-		glInterleavedArrays(GL_C4F_N3F_V3F, 0, vertexData_);
-		glDrawArrays(type_, 0, nDefinedVertices_);
-	}
-	else
-	{
-		glInterleavedArrays(GL_N3F_V3F, 0, vertexData_);
-		glDrawArrays(type_, 0, nDefinedVertices_);
-	}
+	for (VertexChunk *chunk = vertexChunks_.first(); chunk != NULL; chunk = chunk->next) chunk->sendToGL();
 }
 
 /*
@@ -578,95 +622,4 @@ void PrimitiveGroup::sendToGL(int lod)
 	if (lod < 0) lod = 0;
 	else if (lod >= nPrimitives_) lod = nPrimitives_-1;
 	primitives_[lod].sendToGL();
-}
-
-
-/*
-// Text Primitive Chunk
-*/
-// Constructor
-TextPrimitiveChunk::TextPrimitiveChunk()
-{
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
-	// Private variables
-	nTextPrimitives_ = 0;
-}
-
-// Forget all text primitives in list
-void TextPrimitiveChunk::forgetAll()
-{
-	nTextPrimitives_ = 0;
-}
-
-// Return whether array is full
-bool TextPrimitiveChunk::full()
-{
-	return (nTextPrimitives_ == TEXTCHUNKSIZE);
-}
-
-// Add primitive to list
-void TextPrimitiveChunk::add(int x, int y, const char *text, QChar addChar, bool rightAlign)
-{
-	textPrimitives_[nTextPrimitives_].x = x;
-	textPrimitives_[nTextPrimitives_].y = y;
-	textPrimitives_[nTextPrimitives_].text = text;
-	if (addChar != 0) textPrimitives_[nTextPrimitives_].text += addChar;
-	textPrimitives_[nTextPrimitives_].rightAlign = rightAlign;
-	++nTextPrimitives_;
-}
-
-// Render all primitives in list
-void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
-{
-	// Grab contextHeight
-	QRect rect;
-	int height = canvas->contextHeight();
-	if (prefs.useNiceText())
-	{
-		for (int n=0; n<nTextPrimitives_; ++n)
-		{
-			rect = painter.boundingRect(textPrimitives_[n].x, height-textPrimitives_[n].y, 1, -1, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
-			painter.drawText(rect, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
-		}
-	}
-	else
-	{
-		for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
-	}
-}
-
-/*
-// Text Primitive List
-*/
-
-// Constructor
-TextPrimitiveList::TextPrimitiveList()
-{
-	currentChunk_ = NULL;
-}
-
-// Forget all text primitives, but keeping lists intact
-void TextPrimitiveList::forgetAll()
-{
-	for (TextPrimitiveChunk *chunk = textPrimitives_.first(); chunk != NULL; chunk = chunk->next) chunk->forgetAll();
-	currentChunk_ = textPrimitives_.first();
-}
-
-// Set data from literal coordinates and text
-void TextPrimitiveList::add(int x, int y, const char *text, QChar addChar, bool rightAlign)
-{
-	// If we are rendering with nice text (i.e. QPainter) store info for later
-	if (currentChunk_ == NULL) currentChunk_ = textPrimitives_.add();
-	else if (currentChunk_->full()) currentChunk_ = textPrimitives_.add();
-	// Add primitive and set data
-	currentChunk_->add(x, y, text, addChar, rightAlign);
-}
-
-// Render all primitives in list
-void TextPrimitiveList::renderAll(QPainter &painter, TCanvas *canvas)
-{
-	for (TextPrimitiveChunk *chunk = textPrimitives_.first(); chunk != NULL; chunk = chunk->next) chunk->renderAll(painter, canvas);
 }

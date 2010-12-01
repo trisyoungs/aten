@@ -24,6 +24,7 @@
 
 #include "render/triangles.h"
 #include "render/primitive.h"
+#include "render/textprimitive.h"
 #include "templates/vector3.h"
 #include "base/atom.h"
 #include "base/bond.h"
@@ -65,6 +66,8 @@ class RenderEngine
 	PrimitiveGroup cones_;
 	// One-off objects
 	Primitive wireCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
+	// List of surface primitives (generated from model's surface data)
+	List<Primitive> gridPrimitives_;
 
 	public:
 	// (Re)Generate primitive vertex arrays with specified quality

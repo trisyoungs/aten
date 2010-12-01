@@ -25,14 +25,61 @@
 #include <GL/gl.h>
 #include <Qt/QtGui>
 #include "templates/list.h"
-#include "templates/vector3.h"
 #include "base/matrix.h"
-#include "base/dnchar.h"
 
-#define TEXTCHUNKSIZE 100
+#define VERTEXCHUNKSIZE 100
 
 // Forward Declarations
 class TCanvas;
+
+// Chunk of triangles
+class VertexChunk
+{
+	public:
+	// Constructor / Destructor
+	VertexChunk();
+	~VertexChunk();
+	// List pointers
+	VertexChunk *prev, *next;
+	
+	private:
+	// Vertex data array (containing normal and possibly colour data)
+	GLfloat *vertexData_;
+	// Centroid array
+	GLfloat *centroids_;
+	// Number of data points per vertex (NR=6, CNR=10)
+	int dataPerVertex_;
+	// Number of defined vertices in current chunk
+	int nDefinedVertices_;
+	// NUmber of primitive types (nDefinedVertices/verticesPerType) currently defined
+	int nDefinedTypes_;
+	// Maximum number of allowable vertices
+	int maxVertices_;
+	// Primitive type (GL)
+	GLenum type_;
+	// Number of vertices per primitive type
+	int verticesPerType_;
+	
+	public:
+	// Initialise structure
+	void initialise(GLenum type, bool colourData);
+	// Forget all vertex data currently stored in array (but retain array)
+	void forgetAll();
+	// Define next vertex and normal
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
+	// Define next vertex, normal, and colour
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
+	// Return whether current array is full
+	bool full();
+	// Return number of defined primitive (GL) types
+	int nDefinedTypes();
+	// Return vertex array
+	GLfloat *vertexData();
+	// Return centroid array
+	GLfloat *centroids();
+	// Send to OpenGL (i.e. render)
+	void sendToGL();
+};
 
 // Rendering Primitive
 class Primitive
@@ -41,29 +88,24 @@ class Primitive
 	// Constructor / Destructor
 	Primitive();
 	~Primitive();
+	// List pointer
+	Primitive *prev, *next;
 
 	private:
-	// Primitive's vertex data array (containing normal and possibly colour data)
-	GLfloat *vertexData_;
+	// List of vertices in primitive
+	List<VertexChunk> vertexChunks_;
+	// Current vertex chunk
+	VertexChunk *currentVertexChunk_;
 	// Whether vertexData_ array also contains colour information
 	bool colouredVertexData_;
-	// Number of data items (GLfloats) required to specify one vertex
-	int dataPerVertex_;
-	// Centroid array
-	GLfloat *centroids_;
-	// Maximum number of vertices in primitive (i.e. array size)
-	int maxVertices_;
-	// Number of defined vertices (and normals) so far (when using createEmpty())
-	int nDefinedVertices_;
 	// GL object drawing method
 	GLenum type_;
-	// Number of primitive types stored
-	int nType_;
-	// Number of vertices per primitive type
-	int verticesPerType_;
-	// Number of defined primitive types
-	int nDefinedTypes_;
 
+	public:
+	// Flag that primitive should contain colour data information for each vertex
+	void setColourData();
+	
+	
 	/*
 	// Vertex Generation
 	*/
@@ -72,6 +114,10 @@ class Primitive
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
 	// Define next vertex, normal, and colour
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
+	// Define triangle fromn supplied array data, unique colour per vertex
+	void defineTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
+	// Define triangle with single colour per vertex
+	void defineTriangleSingleColour(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
 	// Plot vertices of sphere with specified radius and quality
 	void plotSphere(double radius, int nstacks, int nslices);
 	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
@@ -86,12 +132,6 @@ class Primitive
 	void clear();
 	// Forget all data, leaving arrays intact
 	void forgetAll();
-	// Create empty data arrays
-	void createEmpty(GLenum type, int ntype, bool colours);
-	// Create vertices of sphere with specified radius and quality
-	void createSphere(double radius, int nstacks, int nslices);
-	// Create vertices of cylinder along z with specified radius, length, and quality
-	void createCylinder(double startradius, double endradius, int nstacks, int nslices);
 	// Create vertices of cross with specified width
 	void createCross(double width, int naxes);
 	// Create wireframe cube centred at zero
@@ -103,17 +143,13 @@ class Primitive
 	// Create rotation globe axes
 	void createRotationGlobeAxes(int nstacks, int nslices);
 	// Return vertex array
-	GLfloat *vertexData();
+	VertexChunk *vertexChunks();
 	// Return whether vertex data contains colour information
 	bool colouredVertexData();
-	// Return centroids array
-	GLfloat *centroids();
-	// Return number of vertices defined
-	int nDefinedVertices();
+	// Return total number of vertices defined
+	int nTotalVertices();
 	// Return number of primitive types defined
 	int nDefinedTypes();
-	// Return whether all arrays are full
-	bool full();
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
 };
@@ -171,66 +207,6 @@ class PrimitiveGroup
 	Primitive &primitive(int lod);
 	// Send to OpenGL (i.e. render) at specified level of detail
 	void sendToGL(int lod);
-};
-
-// Text Primitive
-class TextPrimitive
-{
-	public:
-	// Coordinates on screen
-	int x, y;
-	// Text to render
-	QString text;
-	// Whether to right-align text
-	bool rightAlign;
-};
-
-// Text Primitive Chunk
-class TextPrimitiveChunk
-{
-	public:
-	// Constructor
-	TextPrimitiveChunk();
-	// List pointers
-	TextPrimitiveChunk *prev, *next;
-
-	private:
-	// Array of TextPrimitive
-	TextPrimitive textPrimitives_[TEXTCHUNKSIZE];
-	// Number of text primitives currently in the array
-	int nTextPrimitives_;
-
-	public:
-	// Forget all text primitives in list
-	void forgetAll();
-	// Return whether array is full
-	bool full();
-	// Add primitive to list
-	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
-	// Render all primitives in list
-	void renderAll(QPainter &painter, TCanvas *canvas);
-};
-
-// Text Primitive List
-class TextPrimitiveList
-{
-	public:
-	// Constructor
-	TextPrimitiveList();
-
-	private:
-	// List of text primitive chunks
-	List<TextPrimitiveChunk> textPrimitives_;
-	// Current TextPrimitiveChunk
-	TextPrimitiveChunk *currentChunk_;
-
-	public:
-	// Forget all text primitives, but keeping lists intact
-	void forgetAll();
-	// Add new primitive object
-	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
-	// Return top of primitives list
-	void renderAll(QPainter &painter, TCanvas *canvas);
 };
 
 #endif

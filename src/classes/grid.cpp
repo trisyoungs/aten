@@ -970,12 +970,6 @@ void Grid::bohrToAngstrom()
 	origin_ *= ANGBOHR;
 }
 
-// Return displaylist (create first if necessary)
-Primitive &Grid::primitive()
-{
-	return primitive_;
-}
-
 // Set whether to use both signs of a symmetric isovalue distribution
 void Grid::setUseSecondary(bool b)
 {
