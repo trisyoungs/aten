@@ -27,7 +27,7 @@
 #include "templates/list.h"
 #include "base/matrix.h"
 
-#define VERTEXCHUNKSIZE 100
+#define VERTEXCHUNKSIZE 102
 
 // Forward Declarations
 class TCanvas;

@@ -65,6 +65,7 @@ void TriangleChopper::initialise(double startz, double endz, double slicewidth)
 	nSlices_ = (endZ_ - startZ_) / sliceWidth_ + 1;
 	if (nSlices_ < 0) printf("Internal Error: Number of calculated slices in chopper is negative.\n");
 	triangleLists_ = new Primitive[nSlices_];
+	for (int n=0; n<nSlices_; ++n) triangleLists_[n].setColourData();
 	msg.print(Messenger::Verbose, "Created %i bins for transparency correction.\n", nSlices_);
 }
 
