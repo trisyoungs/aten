@@ -31,6 +31,7 @@
 
 // Forward Declarations
 class TCanvas;
+class Grid;
 
 // Chunk of triangles
 class VertexChunk
@@ -91,6 +92,10 @@ class Primitive
 	// List pointer
 	Primitive *prev, *next;
 
+
+	/*
+	// Data
+	*/
 	private:
 	// List of vertices in primitive
 	List<VertexChunk> vertexChunks_;
@@ -102,8 +107,18 @@ class Primitive
 	GLenum type_;
 
 	public:
+	// Clear existing data (including deleting arrays)
+	void clear();
+	// Forget all data, leaving arrays intact
+	void forgetAll();
+	// Return vertex array
+	VertexChunk *vertexChunks();
 	// Flag that primitive should contain colour data information for each vertex
 	void setColourData();
+	// Return whether vertex data contains colour information
+	bool colouredVertexData();
+	// Send to OpenGL (i.e. render)
+	void sendToGL();
 	
 	
 	/*
@@ -128,10 +143,6 @@ class Primitive
 	// Primitive Generation
 	*/
 	public:
-	// Clear existing data (including deleting arrays)
-	void clear();
-	// Forget all data, leaving arrays intact
-	void forgetAll();
 	// Create vertices of cross with specified width
 	void createCross(double width, int naxes);
 	// Create wireframe cube centred at zero
@@ -142,16 +153,10 @@ class Primitive
 	void createCellAxes();
 	// Create rotation globe axes
 	void createRotationGlobeAxes(int nstacks, int nslices);
-	// Return vertex array
-	VertexChunk *vertexChunks();
-	// Return whether vertex data contains colour information
-	bool colouredVertexData();
-	// Return total number of vertices defined
-	int nTotalVertices();
-	// Return number of primitive types defined
-	int nDefinedTypes();
-	// Send to OpenGL (i.e. render)
-	void sendToGL();
+	// Create 2D (heightmap-style) surface
+	void createSurface2D(Grid *g);
+	// Create 3D isosurface using Marching Cubes algorithm
+	void createSurfaceMarchingCubes(Grid *g);
 };
 
 // Primitive Info
@@ -207,6 +212,32 @@ class PrimitiveGroup
 	Primitive &primitive(int lod);
 	// Send to OpenGL (i.e. render) at specified level of detail
 	void sendToGL(int lod);
+};
+
+// Grid Primitive
+class GridPrimitive
+{
+	public:
+	// Constructor
+	GridPrimitive();
+	// List pointers
+	GridPrimitive *prev, *next;
+
+	private:
+	// Primitive containing generated surface
+	Primitive primitive_;
+	// Grid from which primitive was created
+	Grid *source_;
+	// Renderpoint at which grid was created
+	int renderPoint_;
+
+	public:
+	// Return primitive
+	Primitive &primitive();
+	// Return source grid pointer
+	Grid *source();
+	// Generate (or update) from supplied grid pointer
+	void createSurface(Grid *g);
 };
 
 #endif

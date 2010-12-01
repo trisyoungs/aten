@@ -2,13 +2,12 @@ add_library(render
 engine.h
 textprimitive.h
 triangles.h
-atoms.cpp 
-colourscale.cpp
 engine.cpp
 engine_render.cpp
-extra.cpp 
+primitive.cpp
+primitive_surface.cpp
+primitive_vertex.cpp
 render.cpp 
-surface.cpp
 textprimitive.cpp
 triangles.cpp
 )

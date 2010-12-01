@@ -22,6 +22,7 @@
 #include "render/engine.h"
 #include "classes/prefs.h"
 #include "classes/forcefieldatom.h"
+#include "classes/grid.h"
 #include "model/model.h"
 #include "model/fragment.h"
 #include "gui/tcanvas.uih"
@@ -668,6 +669,65 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	}
 
 	// Surfaces
+	// Cycle over grids stored in current model
+	for (Grid *g = source->grids(); g != NULL; g = g->next)
+	{
+		// Check visibility
+		if (!g->isVisible()) continue;
+
+		// Does a GridPrimitive already exist?
+		GridPrimitive *gp = findGridPrimitive(g);
+
+		// If the GridPrimitive exists and is 'in date', no need to regenerate it...
+		if ((gp == NULL) || g->shouldRerender())
+		{
+			// Generate new GridPrimitive if required
+			if (gp == NULL) gp = gridPrimitives_.add();
+
+			if (g->type() == Grid::RegularXYZData) cubeIt(g, g->style());
+			else if (g->type() == Grid::FreeXYZData)
+			{
+				// Construct the Delaunay triangulization of the surface
+				DelaunaySurface D(g);
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			
+				// Render triangles
+				Vec3<double> v1, v2, v3;
+				for (DelaunayTriangle *dt = D.triangles(); dt != NULL; dt = dt->next)
+				{
+					v1 = dt->vertex(0)->r();
+					v2 = dt->vertex(1)->r();
+					v3 = dt->vertex(2)->r();
+					glBegin(GL_TRIANGLES);
+					glVertex3d( v1.x, v1.y, v1.z);
+					glVertex3d( v2.x, v2.y, v2.z);
+					glVertex3d( v3.x, v3.y, v3.z);
+					glEnd();
+				}
+				for (DelaunayTetrahedron *tet = D.tetrahedra(); tet != NULL; tet = tet->next)
+				{
+					v1 = tet->circumCentre();
+					glPushMatrix();
+						glTranslated(v1.x, v1.y, v1.z);
+						glScaled(tet->radius(), tet->radius(), tet->radius());
+						glCallList(glob(WireUnitAtomGlob));
+					glPopMatrix();
+				}
+
+			}
+			else squareIt(g, g->style());
+			g->updateRenderPoint();
+		}
+
+		// Grid primitive now exists (or has been updated) so render it
+
+
+
+
+
+
+	}
+
 
 	// All objects have now been filtered...
 	sortAndSendGL();
