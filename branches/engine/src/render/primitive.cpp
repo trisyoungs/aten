@@ -215,6 +215,12 @@ Primitive::~Primitive()
 	clear();
 }
 
+// Flag that primitive should contain colour data information for each vertex
+void Primitive::setColourData()
+{
+	colouredVertexData_ = TRUE;
+}
+
 // Clear existing data
 void Primitive::clear()
 {
