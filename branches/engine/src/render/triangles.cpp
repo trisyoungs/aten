@@ -22,67 +22,6 @@
 #include "render/triangles.h"
 
 /*
-// Triangles
-*/
-
-// Constructor
-Triangles::Triangles()
-{
-	prev = NULL;
-	next = NULL;
-	createEmpty(GL_TRIANGLES, TRIANGLECHUNKSIZE, TRUE);
-};
-
-/*
-// Triangle List
-*/
-
-// Constructor
-TriangleList::TriangleList()
-{
-	currentTriangles_ = NULL;
-}
-
-// Forget all stored triangles (but leave structures and lists intact
-void TriangleList::forgetAll()
-{
-	// Set current list pointer to first in list
-	currentTriangles_ = triangles_.first();
-	// Set number of triangles in each list to zero
-	for (Triangles *t = triangles_.first(); t != NULL; t = t->next) t->forgetAll();
-}
-
-// Add triangle
-void TriangleList::addTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour)
-{
-	// Check current list for space
-	if (currentTriangles_ == NULL) currentTriangles_ = triangles_.add();
-	else if (currentTriangles_->full()) currentTriangles_ = triangles_.add();
-	// Add triangle to list
-	currentTriangles_->defineVertex(vertices[0], vertices[1], vertices[2], normals[0], normals[1], normals[2], colour[0], colour[1], colour[2], colour[3], FALSE);
-	currentTriangles_->defineVertex(vertices[3], vertices[4], vertices[5], normals[3], normals[4], normals[5], colour[4], colour[5], colour[6], colour[7], FALSE);
-	currentTriangles_->defineVertex(vertices[6], vertices[7], vertices[8], normals[6], normals[7], normals[8], colour[8], colour[9], colour[10], colour[11], FALSE);
-}
-
-// Add triangle with same-coloured vertices
-void TriangleList::addTriangleSingleColour(GLfloat *vertices, GLfloat *normals, GLfloat *colour)
-{
-	// Check current list for space
-	if (currentTriangles_ == NULL) currentTriangles_ = triangles_.add();
-	else if (currentTriangles_->full()) currentTriangles_ = triangles_.add();
-	// Add triangle to list
-	currentTriangles_->defineVertex(vertices[0], vertices[1], vertices[2], normals[0], normals[1], normals[2], colour[0], colour[1], colour[2], colour[3], FALSE);
-	currentTriangles_->defineVertex(vertices[3], vertices[4], vertices[5], normals[3], normals[4], normals[5], colour[0], colour[1], colour[2], colour[3], FALSE);
-	currentTriangles_->defineVertex(vertices[6], vertices[7], vertices[8], normals[6], normals[7], normals[8], colour[0], colour[1], colour[2], colour[3], FALSE);
-}
-
-// Sent triangles to GL
-void TriangleList::sendToGL()
-{
-	for (Triangles *t = triangles_.first(); t != NULL; t = t->next) t->sendToGL();
-}
-
-/*
 // Triangle Chopper
 */
 
@@ -125,15 +64,16 @@ void TriangleChopper::initialise(double startz, double endz, double slicewidth)
 	sliceWidth_ = slicewidth;
 	nSlices_ = (endZ_ - startZ_) / sliceWidth_ + 1;
 	if (nSlices_ < 0) printf("Internal Error: Number of calculated slices in chopper is negative.\n");
-	triangleLists_ = new TriangleList[nSlices_];
+	triangleLists_ = new Primitive[nSlices_];
 	msg.print(Messenger::Verbose, "Created %i bins for transparency correction.\n", nSlices_);
 }
 
 // Store primitive's triangles
 void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 {
-	GLfloat *vertexData = pinfo->primitive()->vertexData();
-	GLfloat *centroids = pinfo->primitive()->centroids();
+	GLfloat *vertexData, *centroids;
+	VertexChunk *chunk;
+	Matrix &transform = pinfo->localTransform();
 	GLfloat newr[9], newn[9], norm[3], colour[12], *colourptr;
 	// OPTIMISE - Do something better with norm[]
 	int voff = 0, bin, m;
@@ -141,66 +81,76 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 	// For speed, different loops depending on type of vertexData...
 	if (pinfo->primitive()->colouredVertexData())
 	{
-		for (int n=0; n<pinfo->primitive()->nDefinedTypes(); ++n)
+		for (chunk = pinfo->primitive()->vertexChunks(); chunk != NULL; chunk = chunk->next)
 		{
-			// Transform triangle centroid into world coordinates to decide bin
-			pinfo->localTransform().multiply(&centroids[n*3], newr);
-			bin = max(0,int((-newr[2]-startZ_)/sliceWidth_));
-			if (bin >= nSlices_) bin = nSlices_-1;
-			// Vertex data contains packed: colour[voff], normal[voff+4], vertex[voff+7]
-			// Vertex 1
-			for (m=0; m<4; ++m) colour[m] = vertexData[voff++];
-			for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
-			pinfo->localTransform().multiply(&vertexData[voff], newr);
-			pinfo->localTransform().multiply(norm, newn);
-			voff += 3;
-			// Vertex 2
-			for (m=4; m<8; ++m) colour[m] = vertexData[voff++];
-			for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
-			pinfo->localTransform().multiply(&vertexData[voff], &newr[3]);
-			pinfo->localTransform().multiply(norm, &newn[3]);
-			voff += 3;
-			// Vertex 3
-			for (m=8; m<12; ++m) colour[m] = vertexData[voff++];
-			for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
-			pinfo->localTransform().multiply(&vertexData[voff], &newr[6]);
-			pinfo->localTransform().multiply(norm, &newn[6]);
-			voff += 3;
-			// Subtract transformed position from normal to get new normal
-			for (m=0; m<9; ++m) newn[m] -= newr[m];
-			// Finally, add triangle
-			triangleLists_[bin].addTriangle(newr, newn, colour);
+			vertexData = chunk->vertexData();
+			centroids = chunk->centroids();
+			for (int n=0; n<chunk->nDefinedTypes(); ++n)
+			{
+				// Transform triangle centroid into world coordinates to decide bin
+				transform.multiply(&centroids[n*3], newr);
+				bin = max(0,int((-newr[2]-startZ_)/sliceWidth_));
+				if (bin >= nSlices_) bin = nSlices_-1;
+				// Vertex data contains packed: colour[voff], normal[voff+4], vertex[voff+7]
+				// Vertex 1
+				for (m=0; m<4; ++m) colour[m] = vertexData[voff++];
+				for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
+				transform.multiply(&vertexData[voff], newr);
+				transform.multiply(norm, newn);
+				voff += 3;
+				// Vertex 2
+				for (m=4; m<8; ++m) colour[m] = vertexData[voff++];
+				for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
+				transform.multiply(&vertexData[voff], &newr[3]);
+				transform.multiply(norm, &newn[3]);
+				voff += 3;
+				// Vertex 3
+				for (m=8; m<12; ++m) colour[m] = vertexData[voff++];
+				for (m=0; m<3; ++m) { norm[m] = vertexData[voff] + vertexData[voff+3]; ++voff; }
+				transform.multiply(&vertexData[voff], &newr[6]);
+				transform.multiply(norm, &newn[6]);
+				voff += 3;
+				// Subtract transformed position from normal to get new normal
+				for (m=0; m<9; ++m) newn[m] -= newr[m];
+				// Finally, add triangle
+				triangleLists_[bin].defineTriangle(newr, newn, colour);
+			}
 		}
 	}
 	else
 	{
 		colourptr = pinfo->colour();
-		for (int n=0; n<pinfo->primitive()->nDefinedTypes(); ++n)
+		for (chunk = pinfo->primitive()->vertexChunks(); chunk != NULL; chunk = chunk->next)
 		{
-			// Transform triangle centroid into world coordinates to decide bin
-			pinfo->localTransform().multiply(&centroids[n*3], newr);
-			bin = max(0,int((-newr[2]-startZ_)/sliceWidth_));
-			if (bin >= nSlices_) bin = nSlices_-1;
-			// Vertex data contains packed: normal[voff], vertex[voff+3]
-			// Vertex 1
-			for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
-			pinfo->localTransform().multiply(&vertexData[voff], newr);
-			pinfo->localTransform().multiply(norm, newn);
-			voff += 3;
-			// Vertex 2
-			for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
-			pinfo->localTransform().multiply(&vertexData[voff], &newr[3]);
-			pinfo->localTransform().multiply(norm, &newn[3]);
-			voff += 3;
-			// Vertex 3
-			for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
-			pinfo->localTransform().multiply(&vertexData[voff], &newr[6]);
-			pinfo->localTransform().multiply(norm, &newn[6]);
-			voff += 3;
-			// Subtract transformed position from normal to get new normal
-			for (m=0; m<9; ++m) newn[m] -= newr[m];
-			// Finally, add triangle
-			triangleLists_[bin].addTriangleSingleColour(newr, newn, colourptr);
+			vertexData = chunk->vertexData();
+			centroids = chunk->centroids();
+			for (int n=0; n<chunk->nDefinedTypes(); ++n)
+			{
+				// Transform triangle centroid into world coordinates to decide bin
+				transform.multiply(&centroids[n*3], newr);
+				bin = max(0,int((-newr[2]-startZ_)/sliceWidth_));
+				if (bin >= nSlices_) bin = nSlices_-1;
+				// Vertex data contains packed: normal[voff], vertex[voff+3]
+				// Vertex 1
+				for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
+				transform.multiply(&vertexData[voff], newr);
+				transform.multiply(norm, newn);
+				voff += 3;
+				// Vertex 2
+				for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
+				transform.multiply(&vertexData[voff], &newr[3]);
+				transform.multiply(norm, &newn[3]);
+				voff += 3;
+				// Vertex 3
+				for (m=0; m<3; ++m) { norm[m] = vertexData[voff+3] + vertexData[voff]; ++voff; }
+				transform.multiply(&vertexData[voff], &newr[6]);
+				transform.multiply(norm, &newn[6]);
+				voff += 3;
+				// Subtract transformed position from normal to get new normal
+				for (m=0; m<9; ++m) newn[m] -= newr[m];
+				// Finally, add triangle
+				triangleLists_[bin].defineTriangleSingleColour(newr, newn, colourptr);
+			}
 		}
 	}
 }

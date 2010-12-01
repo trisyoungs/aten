@@ -26,7 +26,6 @@
 #include "base/dnchar.h"
 #include "base/cell.h"
 #include "base/constants.h"
-#include "render/primitive.h"
 #include <GL/gl.h>
 
 // GridPoint class
@@ -242,8 +241,6 @@ class Grid
 	// Log for changes to Grid, display style etc.
 	int log_;
 	// Primitive containing surface triangles
-	Primitive primitive_;
-	// Log point corresponding to the last render
 	int renderPoint_;
 	// Whether the surface is currently visible
 	bool visible_;
@@ -261,8 +258,6 @@ class Grid
 	public:
 	// Increase the internal log
 	void logChange();
-	// Return the grid's primitive object
-	Primitive &primitive();
 	// Return whether re-rendering is necessary
 	bool shouldRerender() const;
 	// Update the log point of the surface

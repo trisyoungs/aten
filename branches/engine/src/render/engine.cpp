@@ -93,56 +93,50 @@ void RenderEngine::createPrimitives(int quality)
 		atom_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
 		nstacks = max(3,(int) (quality*lodratio*0.75));
 		nslices = max(3,(int) (quality*lodratio*1.5));
-		atom_[Atom::TubeStyle].primitive(lod).createSphere(aradius[Atom::TubeStyle], nstacks, nslices);
-		atom_[Atom::SphereStyle].primitive(lod).createSphere(aradius[Atom::SphereStyle], nstacks, nslices);
-		selectedAtom_[Atom::TubeStyle].primitive(lod).createSphere(aradius[Atom::TubeStyle]*selscale, nstacks, nslices);
-		selectedAtom_[Atom::SphereStyle].primitive(lod).createSphere(aradius[Atom::SphereStyle]*selscale, nstacks, nslices);
+		atom_[Atom::TubeStyle].primitive(lod).plotSphere(aradius[Atom::TubeStyle], nstacks, nslices);
+		atom_[Atom::SphereStyle].primitive(lod).plotSphere(aradius[Atom::SphereStyle], nstacks, nslices);
+		selectedAtom_[Atom::TubeStyle].primitive(lod).plotSphere(aradius[Atom::TubeStyle]*selscale, nstacks, nslices);
+		selectedAtom_[Atom::SphereStyle].primitive(lod).plotSphere(aradius[Atom::SphereStyle]*selscale, nstacks, nslices);
 		// Atom Styles (Atom::ScaledStyle)
 		for (n = 0; n<elements().nElements(); ++n)
 		{
 			radius = aradius[Atom::ScaledStyle] * elements().el[n].atomicRadius;
-			scaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
-			selectedScaledAtom_[n].primitive(lod).createSphere(radius*selscale, nstacks, nslices);
+			scaledAtom_[n].primitive(lod).plotSphere(radius, nstacks, nslices);
+			selectedScaledAtom_[n].primitive(lod).plotSphere(radius*selscale, nstacks, nslices);
 		}
 		// Bond Styles
 		nstacks = max(1,(int) (quality*lodratio*0.25));
 		nslices = max(3,(int) (quality*lodratio));
 		// All styles - Single Bond
-		bond_[Atom::TubeStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
-		bond_[Atom::SphereStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
-		bond_[Atom::ScaledStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::ScaledStyle], bradius[Atom::ScaledStyle], nstacks, nslices);
-		selectedBond_[Atom::TubeStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::TubeStyle]*selscale, bradius[Atom::TubeStyle]*selscale, nstacks, nslices);
-		selectedBond_[Atom::SphereStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
-		selectedBond_[Atom::ScaledStyle][Bond::Single].primitive(lod).createCylinder(bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
+		bond_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
+		bond_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
+		bond_[Atom::ScaledStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle], bradius[Atom::ScaledStyle], nstacks, nslices);
+		selectedBond_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle]*selscale, bradius[Atom::TubeStyle]*selscale, nstacks, nslices);
+		selectedBond_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
+		selectedBond_[Atom::ScaledStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
 		// All styles - Double Bond
-		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).createEmpty(GL_TRIANGLES, 2*nstacks*nslices*2, FALSE);
 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
-		bond_[Atom::SphereStyle][Bond::Double].primitive(lod).createEmpty(GL_TRIANGLES, 2*nstacks*nslices*2, FALSE);
 		bond_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
 		bond_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
-		bond_[Atom::ScaledStyle][Bond::Double].primitive(lod).createEmpty(GL_TRIANGLES, 2*nstacks*nslices*2, FALSE);
 		bond_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
 		bond_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
 		// All styles - Triple Bond
-		bond_[Atom::TubeStyle][Bond::Triple].primitive(lod).createEmpty(GL_TRIANGLES, 3*nstacks*nslices*2, FALSE);
 		bond_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.25,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
 		bond_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.25,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
-		bond_[Atom::SphereStyle][Bond::Triple].primitive(lod).createEmpty(GL_TRIANGLES, 3*nstacks*nslices*2, FALSE);
 		bond_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
 		bond_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
-		bond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).createEmpty(GL_TRIANGLES, 3*nstacks*nslices*2, FALSE);
 		bond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
 		bond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
 		// Cubes
 		cubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)) );
 		// Cones
-		cones_.primitive(lod).createCylinder(0.2,0.0,nstacks,nslices);
+		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,0.2,0.0,nstacks,nslices);
 	}
 	// One-off objects
 	wireCube_.createWireCube(1.0);
 	cellAxes_.createCellAxes();
-	rotationGlobe_.createSphere(0.75,10,13);
+	rotationGlobe_.plotSphere(0.75,10,13);
 	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
 	msg.exit("RenderEngine::createPrimitives");
 }

@@ -1,5 +1,6 @@
 add_library(render
 engine.h
+textprimitive.h
 triangles.h
 atoms.cpp 
 colourscale.cpp
@@ -8,6 +9,7 @@ engine_render.cpp
 extra.cpp 
 render.cpp 
 surface.cpp
+textprimitive.cpp
 triangles.cpp
 )
 

@@ -22,45 +22,7 @@
 #ifndef ATEN_TRIANGLES_H
 #define ATEN_TRIANGLES_H
 
-#include <GL/gl.h>
 #include "render/primitive.h"
-#include "templates/list.h"
-
-#define TRIANGLECHUNKSIZE 1000
-
-// Triangles
-class Triangles : public Primitive
-{
-	public:
-	// Constructor
-	Triangles();
-	// List pointers
-	Triangles *prev, *next;
-};
-
-// Triangle List
-class TriangleList
-{
-	public:
-	// Constructor
-	TriangleList();
-
-	private:
-	// List of triangle chunks
-	List<Triangles> triangles_;
-	// Internal pointer to current Triangles structure
-	Triangles *currentTriangles_;
-
-	public:
-	// Forget all stored triangles (but leave structures and lists intact
-	void forgetAll();
-	// Add triangle
-	void addTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
-	// Add triangle with single colour per vertex
-	void addTriangleSingleColour(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
-	// Sent triangles to GL
-	void sendToGL();
-};
 
 // Triangle Chopper
 class TriangleChopper
@@ -80,7 +42,7 @@ class TriangleChopper
 	// Number of slices
 	int nSlices_;
 	// Triangle Lists
-	TriangleList *triangleLists_;
+	Primitive *triangleLists_;
 	// Clear all existing trianglelists
 	void clear();
 	
