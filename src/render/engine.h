@@ -66,8 +66,6 @@ class RenderEngine
 	PrimitiveGroup cones_;
 	// One-off objects
 	Primitive wireCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
-	// List of surface primitives (generated from model's surface data)
-	List<Primitive> gridPrimitives_;
 
 	public:
 	// (Re)Generate primitive vertex arrays with specified quality
@@ -108,6 +106,8 @@ class RenderEngine
 	TextPrimitiveList textPrimitives_;
 	// Triangle 'sorter'
 	TriangleChopper triangleChopper_;
+	// Grid primitives (for all models)
+	List<GridPrimitive> gridPrimitives_;
 
 	private:
 	// Render primitive in specified colour and level of detail
@@ -116,6 +116,11 @@ class RenderEngine
 	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Add text primitive for rendering later (screen position calculated from 3D model coordinates)
 	void renderTextPrimitive(Vec3<double> vec, const char *text, QChar addChar = 0, bool rightalign = FALSE);
+	// Search for primitive associated to specified Grid pointer
+	GridPrimitive *findGridPrimitive(Grid *g);
+	// Remove grid primitive from list (if it exists)
+	void removeGridPrimitive(Grid *g);
+	
 
 	public:
 	// Initialise GL

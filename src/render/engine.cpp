@@ -257,6 +257,22 @@ void RenderEngine::renderTextPrimitive(Vec3<double> vec, const char *text, QChar
 	if (r.z < -1.0) textPrimitives_.add(screenr.x, screenr.y, text, addChar, rightalign);
 }
 
+// Search for primitive associated to specified Grid pointer
+GridPrimitive *RenderEngine::findGridPrimitive(Grid *g)
+{
+	GridPrimitive *gp = NULL;
+	for (gp = gridPrimitives_.first(); gp != NULL; gp = gp->next) if (gp->source() == g) break;
+	return gp;
+}
+
+// Remove grid primitive from list (if it exists)
+void RenderEngine::removeGridPrimitive(Grid *g)
+{
+	GridPrimitive *gp = NULL;
+	for (gp = gridPrimitives_.first(); gp != NULL; gp = gp->next) if (gp->source() == g) break;
+	if (gp != NULL) gridPrimitives_.remove(gp);
+}
+
 // Sort and render filtered polygons by depth
 void RenderEngine::sortAndSendGL()
 {
