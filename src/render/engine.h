@@ -68,6 +68,8 @@ class RenderEngine
 	public:
 	// (Re)Generate primitive vertex arrays with specified quality
 	void createPrimitives(int quality);
+	// (Re)initialise transparency filter
+	void initialiseTransparency();
 
 
 	/*

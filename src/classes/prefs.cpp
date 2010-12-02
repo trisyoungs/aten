@@ -211,7 +211,7 @@ Prefs::Prefs()
 	levelOfDetailWidth_ = 10;
 	levelOfDetailStartZ_ = 25.0;
 	transparencyCorrect_ = TRUE;
-	transparencyNBins_ = 20;
+	transparencyNBins_ = 50;
 	transparencyBinStartZ_ = 0.0;
 	transparencyBinWidth_ = 1.0;
 

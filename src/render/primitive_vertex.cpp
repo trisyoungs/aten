@@ -20,12 +20,6 @@
 */
 
 #include "render/primitive.h"
-// #include "base/messenger.h"
-// #include "base/constants.h"
-// #include "classes/prefs.h"
-// #include "gui/tcanvas.uih"
-// #include <stdio.h>
-// #include <math.h>
 
 // Define next vertex and normal
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)

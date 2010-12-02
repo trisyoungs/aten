@@ -108,6 +108,7 @@ void RenderEngine::initialiseGL()
 void RenderEngine::render3D(Model *source, TCanvas *canvas)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
+	GLenum style;
 	int lod, id_i, labels, n;
 	Dnchar text;
 	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp, t, gamma;
@@ -699,23 +700,24 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		A = modelTransformationMatrix_;
 		A.applyTranslation(g->origin());
 		A.multiplyRotation(g->axes());
-		if (g->style() == Grid::TriangleSurface)
+		if (g->style() == Grid::TriangleSurface) style = GL_LINE;
+		else if (g->style() == Grid::SolidSurface) style = GL_FILL;
+		else style = GL_POINTS;
+		if (g->useColourScale()) renderPrimitive(&gp->primaryPrimitive(), gp->primaryIsTransparent(), NULL, A, style);
+		else
 		{
-			renderPrimitive(&gp->primaryPrimitive(), gp->primaryIsTransparent(), A, GL_LINE);
-			if (g->useSecondary()) renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), A, GL_LINE);
+			g->copyPrimaryColour(colour_i);
+			renderPrimitive(&gp->primaryPrimitive(), gp->primaryIsTransparent(), colour_i, A, style);
 		}
-		else if (g->style() == Grid::SolidSurface)
+		if (g->useSecondary())
 		{
-			chunk, chunk->nDefinedTypes());
-			if (g->useColourScale()) renderPrimitive(&gp->primaryPrimitive(), gp->primaryIsTransparent(), A, GL_FILL);
-			else renderPrimitive(&gp->primaryPrimitive(), g->primaryColour(), A, GL_FILL);
-			if (g->useSecondary())
+			if (g->useColourScale()) renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), NULL, A, style);
+			else
 			{
-				if (g->useColourScale()) renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), A, GL_FILL);
-				else renderPrimitive(&gp->secondaryPrimitive(), g->secondaryColour(), A, GL_FILL);
+				g->copySecondaryColour(colour_i);
+				renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), colour_i, A, style);
 			}
 		}
-		// 		else if (g->surfaceStyle() == Grid::PointSurface) &gp->primitive(), NULL);
 	}
 
 	// All objects have now been filtered...

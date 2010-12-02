@@ -125,8 +125,10 @@ class TCanvas : public QGLWidget
 	void setOffScreenRendering(bool b);
 	// Return whether offscreen rendering is being performed
 	bool offScreenRendering() const;
-	// Reinitialise GL (because of change in setup, lighting etc.)
-	void reinitialiseGL();
+	// Reinitialise primitives
+	void reinitialisePrimitives();
+	// Reinitialise transparency correction
+	void reinitialiseTransparency();
 	// Reset the projection matrix based on the current canvas geometry
 	void doProjection(int newwidth = -1, int newheight = -1);
 	// Update Canvas

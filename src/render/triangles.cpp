@@ -29,7 +29,6 @@
 TriangleChopper::TriangleChopper()
 {
 	startZ_ = 0.0;
-	endZ_ = 0.0;
 	sliceWidth_ = 0.0;
 	nSlices_ = 0;
 	triangleLists_ = NULL;
@@ -55,14 +54,13 @@ void TriangleChopper::emptyTriangles()
 }
 
 // Initialise structure
-void TriangleChopper::initialise(double startz, double endz, double slicewidth)
+void TriangleChopper::initialise(double startz, int nbins, double slicewidth)
 {
 	clear();
 	// Store new range values and reallocate array
 	startZ_ = startz;
-	endZ_ = endz;
 	sliceWidth_ = slicewidth;
-	nSlices_ = (endZ_ - startZ_) / sliceWidth_ + 1;
+	nSlices_ = nbins;
 	if (nSlices_ < 0) printf("Internal Error: Number of calculated slices in chopper is negative.\n");
 	triangleLists_ = new Primitive[nSlices_];
 	for (int n=0; n<nSlices_; ++n) triangleLists_[n].setColourData(TRUE);
