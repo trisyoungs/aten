@@ -2,6 +2,7 @@
 # Created:	 25/05/2010
 # Last modified: 12/11/2010
 # ChangeLog:
+#	02/12/2010: Topology file output now uses FFatom mass when writing [atoms] section
 #	12/11/2010: Tweaked gro file output.
 #	18/10/2010: Addition of new topology file export filter
 
@@ -124,7 +125,7 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 		# *** [ atoms ]
 		writeline("\n[ atoms ]");
 		writeline("; atomnr  type   resnr  residue");
-		for (n=1; n<=p.nmolatoms; ++n) writelinef(" %6i   %-6s  1   %-6s   %-6s  0  %8.4f  %8.4f\n", n, p.atoms[n].type.name, p.name, p.atoms[n].type.name, p.atoms[n].q, p.atoms[n].mass);
+		for (n=1; n<=p.nmolatoms; ++n) writelinef(" %6i   %-6s  1   %-6s   %-6s  0  %8.4f  %8.4f\n", n, p.atoms[n].type.name, p.name, p.atoms[n].type.name, p.atoms[n].q, p.atoms[n].type.mass);
 
 		nconstraints = 0;
 		nub = 0;

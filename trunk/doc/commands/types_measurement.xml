@@ -44,6 +44,12 @@
 						<entry>Fourth atom involved in the measurement (if any)</entry>
 					</row>
 					<row>
+						<entry>literal</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>The literal value (e.g. distance, angle, or torsion angle) of the measurement using atom coordinates as-is without applying minimum image criteria in periodic systems</entry>
+					</row>
+					<row>
 						<entry>value</entry>
 						<entry>double</entry>
 						<entry>ro</entry>

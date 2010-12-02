@@ -636,26 +636,26 @@ void Cell::fold(Atom *i, Model *parent) const
 // Geometry Calculation
 */
 
-double Cell::distance(const Vec3<double> &r1, const Vec3<double> &r2) const
+double Cell::distance(const Vec3<double> &r1, const Vec3<double> &r2, bool useMim) const
 {
 	// Calculate the distance between atoms i and j
 	static Vec3<double> mimi;
-	mimi = mimd(r1,r2);
+	mimi = (useMim ? mimd(r1,r2) : r1-r2);
 	return mimi.magnitude();
 }
 
-double Cell::distance(Atom *i, Atom *j) const
+double Cell::distance(Atom *i, Atom *j, bool useMim) const
 {
-	return distance(i->r(),j->r());
+	return distance(i->r(),j->r(),useMim);
 }
 
-double Cell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<double> &r3) const
+double Cell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<double> &r3, bool useMim) const
 {
 	// Calculate the angle formed between atoms i, j, and k
 	static Vec3<double> vecij, veckj;
 	static double dp, a;
-	vecij = mimd(r1,r2);
-	veckj = mimd(r3,r2);
+	vecij = (useMim ? mimd(r1,r2) : r1-r2);
+	veckj = (useMim ? mimd(r3,r2) : r3-r2);
 	// Normalise vectors and calculate dot product and angle.
 	vecij.normalise();
 	veckj.normalise();
@@ -664,24 +664,24 @@ double Cell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<do
 	return a * DEGRAD;
 }
 
-double Cell::angle(Atom *i, Atom *j, Atom *k) const
+double Cell::angle(Atom *i, Atom *j, Atom *k, bool useMim) const
 {
-	return angle(i->r(),j->r(),k->r());
+	return angle(i->r(),j->r(),k->r(), useMim);
 }
 
-double Cell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<double> &k, const Vec3<double> &l) const
+double Cell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<double> &k, const Vec3<double> &l, bool useMim) const
 {
 	// Calculate the torsion angle formed between the atoms i, j, k, and l.
 	static Vec3<double> vecji, veckl, vecjk, veckj, mim_k, xpj, xpk;
 	static double dp, angle;
 	// Vector j->i (minimum image of i w.r.t. j)
-	vecji = mimd(i,j);
+	vecji = (useMim ? mimd(i,j) : i-j);
 	// Vectors j->k and k->j (minimum image of k w.r.t. j)
-	mim_k = mim(k,j);
+	mim_k = (useMim ? mim(k,j) : k);
 	vecjk = mim_k - j;
 	veckj = -vecjk;
 	// Vector k->l (minimum image of l w.r.t. k (in turn w.r.t. j))
-	veckl = mimd(mim_k,l);
+	veckl = (useMim ? mimd(mim_k,l) : mim_k-l);
 	// Calculate cross products
 	xpj = vecjk * vecji;
 	xpj.normalise();
@@ -698,9 +698,9 @@ double Cell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<do
 	return angle * DEGRAD;
 }
 
-double Cell::torsion(Atom *i, Atom *j, Atom *k, Atom *l) const
+double Cell::torsion(Atom *i, Atom *j, Atom *k, Atom *l, bool useMim) const
 {
-	return torsion(i->r(),j->r(),k->r(),l->r());
+	return torsion(i->r(),j->r(),k->r(),l->r(), useMim);
 }
 
 /*

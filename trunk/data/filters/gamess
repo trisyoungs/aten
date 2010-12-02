@@ -2,6 +2,7 @@
 # Created:	 14/04/2009
 # Last modified: 29/10/2010
 # ChangeLog:
+#	02/10/2010 - Logfile import filter now names models after filenames.
 #	29/10/2010 - Major update to log file filter - ability to read in basis set, MOs, and vibrations added
 #	14/09/2010 - Tweaks to options output in GUI filter. Standard DFTTYPs added.
 #	25/08/2010 - Added GUI options to output filter
@@ -23,7 +24,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 	double vib_freq[5], vib_dx[5], vib_dy[5], vib_dz[5], vib_rmass[5], vib_ir[5];
 
 	# Create a new model, and store its pointer for use later
-	model m = newmodel("GAMESS-US Output");
+	model m = newmodel(filterfilename());
 
 	# Find initial coordinates (in Bohr)
 	if (find("ATOM      ATOMIC                      COORDINATES (BOHR)"))

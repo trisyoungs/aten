@@ -38,7 +38,8 @@ Measurement::Measurement()
 	type_ = Measurement::None;
 	for (int n=0; n<4; n++) atoms_[n] = NULL;
 	value_ = 0.0;
-
+	literalValue_ = 0.0;
+	
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -56,10 +57,16 @@ Measurement::MeasurementType Measurement::type() const
 	return type_;
 }
 
-// Return value of the Measurement
+// Return MIM'd value of the Measurement
 double Measurement::value() const
 {
 	return value_;
+}
+
+// Return literal value of the Measurement
+double Measurement::literalValue() const
+{
+	return literalValue_;
 }
 
 // Set atom
@@ -95,12 +102,15 @@ void Measurement::calculate(Cell *cell)
 	switch (type_)
 	{
 		case (Measurement::Distance):
+			literalValue_ = cell->distance(atoms_[0],atoms_[1],FALSE);
 			value_ = cell->distance(atoms_[0],atoms_[1]);
 			break;
 		case (Measurement::Angle):
+			literalValue_ = cell->angle(atoms_[0],atoms_[1],atoms_[2],FALSE);
 			value_ = cell->angle(atoms_[0],atoms_[1],atoms_[2]);
 			break;
 		case (Measurement::Torsion):
+			literalValue_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3],FALSE);
 			value_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3]);
 			break;
 		default:
@@ -115,13 +125,16 @@ void Measurement::print() const
 	switch (type_)
 	{
 		case (Measurement::Distance):
-			msg.print("Distance (%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
+			if (fabs(value_-literalValue_) < 0.0001) msg.print("Distance (%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
+			else msg.print("Distance (%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_, literalValue_);
 			break;
 		case (Measurement::Angle):
-			msg.print("Angle (%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
+			if (fabs(value_-literalValue_) < 0.0001) msg.print("Angle (%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
+			else msg.print("Angle (%i-%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_, literalValue_);
 			break;
 		case (Measurement::Torsion):
-			msg.print("Torsion (%i-%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
+			if (fabs(value_-literalValue_) < 0.0001) msg.print("Torsion (%i-%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
+			else msg.print("Torsion (%i-%i-%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_, literalValue_);
 			break;
 		default:
 			printf("Measurement::print <<<< Unrecognised geometry type >>>>\n");

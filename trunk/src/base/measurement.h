@@ -46,8 +46,10 @@ class Measurement
 	MeasurementType type_;
 	// Atoms involved Measurement
 	Atom* atoms_[4];
-	// Value of Measurement
+	// Minimum image value of measurement
 	double value_;
+	// Literal (coordinate) value of Measurement
+	double literalValue_;
 
 	public:
 	// Set type of Measurement
@@ -56,8 +58,10 @@ class Measurement
 	MeasurementType type() const;
 	// Calculate Measurement value
 	void calculate(Cell *cell);
-	// Return value of the Measurement
+	// Return proper, MIM'd value of the Measurement
 	double value() const;
+	// Return literal coordinate value of the Measurement
+	double literalValue() const;
 	// Set atom
 	void setAtom(int n, Atom *i);
 	// Return whether the specified atom is used in this measurement

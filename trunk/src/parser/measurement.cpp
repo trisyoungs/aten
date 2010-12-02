@@ -55,6 +55,7 @@ Accessor MeasurementVariable::accessorData[MeasurementVariable::nAccessors] = {
 	{ "j",		VTypes::AtomData,		0, TRUE },
 	{ "k",		VTypes::AtomData,		0, TRUE },
 	{ "l",		VTypes::AtomData,		0, TRUE },
+	{ "literal",	VTypes::DoubleData,		0, TRUE },
 	{ "value",	VTypes::DoubleData,		0, TRUE }
 };
 
@@ -176,6 +177,9 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (MeasurementVariable::L):
 			rv.set(VTypes::AtomData, ptr->atom(3));
+			break;
+		case (MeasurementVariable::Literal):
+			rv.set(ptr->literalValue());
 			break;
 		case (MeasurementVariable::Value):
 			rv.set(ptr->value());
