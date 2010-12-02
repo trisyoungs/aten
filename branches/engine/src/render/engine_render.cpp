@@ -674,60 +674,49 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	{
 		// Check visibility
 		if (!g->isVisible()) continue;
-
 		// Does a GridPrimitive already exist?
 		GridPrimitive *gp = findGridPrimitive(g);
-
 		// If the GridPrimitive exists and is 'in date', no need to regenerate it...
 		if ((gp == NULL) || g->shouldRerender())
 		{
 			// Generate new GridPrimitive if required
-			if (gp == NULL) gp = gridPrimitives_.add();
-
-			if (g->type() == Grid::RegularXYZData) cubeIt(g, g->style());
+			if (gp == NULL)
+			{
+				gp = gridPrimitives_.add();
+				gp->setSource(g);
+			}
+			if (g->type() == Grid::RegularXYZData) gp->createSurfaceMarchingCubes();
 			else if (g->type() == Grid::FreeXYZData)
 			{
 				// Construct the Delaunay triangulization of the surface
-				DelaunaySurface D(g);
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			
-				// Render triangles
-				Vec3<double> v1, v2, v3;
-				for (DelaunayTriangle *dt = D.triangles(); dt != NULL; dt = dt->next)
-				{
-					v1 = dt->vertex(0)->r();
-					v2 = dt->vertex(1)->r();
-					v3 = dt->vertex(2)->r();
-					glBegin(GL_TRIANGLES);
-					glVertex3d( v1.x, v1.y, v1.z);
-					glVertex3d( v2.x, v2.y, v2.z);
-					glVertex3d( v3.x, v3.y, v3.z);
-					glEnd();
-				}
-				for (DelaunayTetrahedron *tet = D.tetrahedra(); tet != NULL; tet = tet->next)
-				{
-					v1 = tet->circumCentre();
-					glPushMatrix();
-						glTranslated(v1.x, v1.y, v1.z);
-						glScaled(tet->radius(), tet->radius(), tet->radius());
-						glCallList(glob(WireUnitAtomGlob));
-					glPopMatrix();
-				}
-
+// 				DelaunaySurface D(g);
 			}
-			else squareIt(g, g->style());
+			else gp->createSurface2D();
 			g->updateRenderPoint();
 		}
 
-		// Grid primitive now exists (or has been updated) so render it
-
-
-
-
-
-
+		// Grid primitive now exists (or has been updated) so create transformation and render it
+		A = modelTransformationMatrix_;
+		A.applyTranslation(g->origin());
+		A.multiplyRotation(g->axes());
+		if (g->style() == Grid::TriangleSurface)
+		{
+			renderPrimitive(&gp->primaryPrimitive(), gp->primaryIsTransparent(), A, GL_LINE);
+			if (g->useSecondary()) renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), A, GL_LINE);
+		}
+		else if (g->style() == Grid::SolidSurface)
+		{
+			chunk, chunk->nDefinedTypes());
+			if (g->useColourScale()) renderPrimitive(&gp->primaryPrimitive(), gp->primaryIsTransparent(), A, GL_FILL);
+			else renderPrimitive(&gp->primaryPrimitive(), g->primaryColour(), A, GL_FILL);
+			if (g->useSecondary())
+			{
+				if (g->useColourScale()) renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), A, GL_FILL);
+				else renderPrimitive(&gp->secondaryPrimitive(), g->secondaryColour(), A, GL_FILL);
+			}
+		}
+		// 		else if (g->surfaceStyle() == Grid::PointSurface) &gp->primitive(), NULL);
 	}
-
 
 	// All objects have now been filtered...
 	sortAndSendGL();

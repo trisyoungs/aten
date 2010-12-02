@@ -65,7 +65,7 @@ void TriangleChopper::initialise(double startz, double endz, double slicewidth)
 	nSlices_ = (endZ_ - startZ_) / sliceWidth_ + 1;
 	if (nSlices_ < 0) printf("Internal Error: Number of calculated slices in chopper is negative.\n");
 	triangleLists_ = new Primitive[nSlices_];
-	for (int n=0; n<nSlices_; ++n) triangleLists_[n].setColourData();
+	for (int n=0; n<nSlices_; ++n) triangleLists_[n].setColourData(TRUE);
 	msg.print(Messenger::Verbose, "Created %i bins for transparency correction.\n", nSlices_);
 }
 
@@ -77,7 +77,7 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 	Matrix &transform = pinfo->localTransform();
 	GLfloat newr[9], newn[9], norm[3], colour[12], *colourptr;
 	// OPTIMISE - Do something better with norm[]
-	int voff = 0, bin, m;
+	int voff, bin, m;
 
 	// For speed, different loops depending on type of vertexData...
 	if (pinfo->primitive()->colouredVertexData())
@@ -86,6 +86,7 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 		{
 			vertexData = chunk->vertexData();
 			centroids = chunk->centroids();
+			voff = 0;
 			for (int n=0; n<chunk->nDefinedTypes(); ++n)
 			{
 				// Transform triangle centroid into world coordinates to decide bin
@@ -125,6 +126,7 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 		{
 			vertexData = chunk->vertexData();
 			centroids = chunk->centroids();
+			voff = 0;
 			for (int n=0; n<chunk->nDefinedTypes(); ++n)
 			{
 				// Transform triangle centroid into world coordinates to decide bin

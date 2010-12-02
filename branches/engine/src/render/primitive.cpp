@@ -73,7 +73,7 @@ void VertexChunk::initialise(GLenum type, bool colourData)
 void VertexChunk::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
 {
 	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for VertexChunk reached.\n");
-	int index = nDefinedVertices_*dataPerVertex_;
+	int index = nDefinedVertices_*dataPerVertex_, coff;
 	if (dataPerVertex_ == 10)
 	{
 		printf("Internal Error: No colour specified in vertex creation, but the primitive requires one.\n");
@@ -90,9 +90,10 @@ void VertexChunk::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfl
 	// Accumulate centroid
 	if (calcCentroid)
 	{
-		centroids_[nDefinedTypes_*3] += x;
-		centroids_[nDefinedTypes_*3+1] += y;
-		centroids_[nDefinedTypes_*3+2] += z;
+		coff = nDefinedTypes_*3;
+		centroids_[coff] += x;
+		centroids_[coff+1] += y;
+		centroids_[coff+2] += z;
 	}
 	// Increase vertex counter
 	++nDefinedVertices_;
@@ -102,9 +103,9 @@ void VertexChunk::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfl
 		// Finalise centroid 
 		if (calcCentroid)
 		{
-			centroids_[nDefinedTypes_*3] /= verticesPerType_;
-			centroids_[nDefinedTypes_*3+1] /= verticesPerType_;
-			centroids_[nDefinedTypes_*3+2] /= verticesPerType_;
+			centroids_[coff] /= verticesPerType_;
+			centroids_[coff+1] /= verticesPerType_;
+			centroids_[coff+2] /= verticesPerType_;
 		}
 		++nDefinedTypes_;
 	}
@@ -166,6 +167,7 @@ void VertexChunk::forgetAll()
 {
 	nDefinedTypes_ = 0;
 	nDefinedVertices_ = 0;
+	for (int n=0; n<VERTEXCHUNKSIZE*3; ++n) centroids_[n] = 0.0f;
 }
 
 // Return number of defined primitive (GL) types
@@ -216,9 +218,9 @@ Primitive::~Primitive()
 }
 
 // Flag that primitive should contain colour data information for each vertex
-void Primitive::setColourData()
+void Primitive::setColourData(bool b)
 {
-	colouredVertexData_ = TRUE;
+	colouredVertexData_ = b;
 }
 
 // Clear existing data
@@ -411,6 +413,10 @@ PrimitiveInfo::PrimitiveInfo()
 	// Private variables
 	primitive_ = NULL;
 	fillMode_ = GL_FILL;
+	colour_[0] = 0.0;
+	colour_[1] = 0.0;
+	colour_[2] = 0.0;
+	colour_[3] = 1.0;
 
 	// Public variables
 	prev = NULL;
@@ -423,7 +429,7 @@ void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, Matrix& transform, GLe
 	primitive_ = prim;
 	localTransform_ = transform;
 	fillMode_ = fillMode;
-	for (int n=0; n<4; ++n) colour_[n] = colour[n];
+	if (colour != NULL) for (int n=0; n<4; ++n) colour_[n] = colour[n];
 }
 
 // Return pointer to primitive
@@ -508,13 +514,26 @@ GridPrimitive::GridPrimitive()
 
 	// Private variables
 	source_ = NULL;
-	renderPoint_ = -1;
+	primaryIsTransparent_ = FALSE;
+	secondaryIsTransparent_ = FALSE;
 }
 
-// Return primitive
-Primitive &GridPrimitive::primitive()
+// Return primary primitive
+Primitive &GridPrimitive::primaryPrimitive()
 {
-	return primitive_;
+	return primaryPrimitive_;
+}
+
+// Return secondary primitive
+Primitive &GridPrimitive::secondaryPrimitive()
+{
+	return secondaryPrimitive_;
+}
+
+// Set source grid pointer
+void GridPrimitive::setSource(Grid *g)
+{
+	source_ = g;
 }
 
 // Return source grid pointer
@@ -523,7 +542,14 @@ Grid *GridPrimitive::source()
 	return source_;
 }
 
-// Generate (or update) from supplied grid pointer
-void GridPrimitive::createSurface(Grid *g)
+// Return whether primary primitive contains any transparent triangles (and must be rendered through the chopper)
+bool GridPrimitive::primaryIsTransparent()
 {
+	return primaryIsTransparent_;
+}
+
+// Return whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
+bool GridPrimitive::secondaryIsTransparent()
+{
+	return secondaryIsTransparent_;
 }

@@ -170,6 +170,8 @@ class Matrix
 	Vec3<double> rotateVector(Vec3<double> &v) const;
 	// Multiply against coordinates provided (in GLfloats)
 	void multiply(GLfloat *r, GLfloat *transformed) const;
+	// Multiply against other matrix, but only rotational part, keeping translation/scaling intact
+	void multiplyRotation(Matrix B);
 	// Remove translation and scaling parts, leaving rotation only
 	void removeTranslationAndScaling();
 	// Copy translation and scaling parts from specified matrix

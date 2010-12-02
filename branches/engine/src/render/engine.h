@@ -42,8 +42,6 @@ class RenderEngine
 	// Constructor / Destructor
 	RenderEngine();
 	~RenderEngine();
-	// Filter type (if any)
-	enum FilterType { NoFilter, TransparencyFilter, CompleteFilter, nFilterTypes };
 
 	
 	/*
@@ -110,8 +108,10 @@ class RenderEngine
 	List<GridPrimitive> gridPrimitives_;
 
 	private:
-	// Render primitive in specified colour and level of detail
+	// Render primitive from primitive group in specified colour and level of detail
 	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL);
+	// Render primitive in specified colour
+	void renderPrimitive(Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL);
 	// Add text primitive for rendering later
 	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Add text primitive for rendering later (screen position calculated from 3D model coordinates)
@@ -129,10 +129,6 @@ class RenderEngine
 	void render3D(Model* source, TCanvas *canvas);
 	// Render text objects (with supplied QPainter)
 	void renderText(QPainter &painter, TCanvas *canvas);
-	// Set filter type
-	void setType(FilterType type);
-	// Return filter type
-	FilterType type();
 	// Sort and render filtered polygons by depth
 	void sortAndSendGL();
 };

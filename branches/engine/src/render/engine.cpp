@@ -242,6 +242,23 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour,
 	}
 }
 
+// Render primitive in specified colour
+void RenderEngine::renderPrimitive(Primitive* primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode)
+{
+	if ((!isTransparent) || (fillMode != GL_FILL) || ((colour != NULL) && (colour[3] > 0.99f))
+	{
+		// Add primitive info to solid objects list
+		PrimitiveInfo *pi = solidPrimitives_.add();
+		pi->set(primitive, colour, transform, fillMode);
+	}
+	else
+	{
+		// Add primitive info to transparent objects list
+		PrimitiveInfo *pi = transparentPrimitives_.add();
+		pi->set(primitive, colour, transform);
+	}
+}
+
 // Add text primitive for rendering later
 void RenderEngine::renderTextPrimitive(int x, int y, const char *text, QChar addChar, bool rightalign)
 {
@@ -261,7 +278,7 @@ void RenderEngine::renderTextPrimitive(Vec3<double> vec, const char *text, QChar
 GridPrimitive *RenderEngine::findGridPrimitive(Grid *g)
 {
 	GridPrimitive *gp = NULL;
-	for (gp = gridPrimitives_.first(); gp != NULL; gp = gp->next) if (gp->source() == g) break;
+	for (gp = gridPrimitives_.first(); gp != NULL; gp = (GridPrimitive*) gp->next) if (gp->source() == g) break;
 	return gp;
 }
 
@@ -269,7 +286,7 @@ GridPrimitive *RenderEngine::findGridPrimitive(Grid *g)
 void RenderEngine::removeGridPrimitive(Grid *g)
 {
 	GridPrimitive *gp = NULL;
-	for (gp = gridPrimitives_.first(); gp != NULL; gp = gp->next) if (gp->source() == g) break;
+	for (gp = gridPrimitives_.first(); gp != NULL; gp = (GridPrimitive*) gp->next) if (gp->source() == g) break;
 	if (gp != NULL) gridPrimitives_.remove(gp);
 }
 
