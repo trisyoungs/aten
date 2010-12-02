@@ -35,7 +35,7 @@ RenderEngine::RenderEngine()
 	selectedScaledAtom_ = new PrimitiveGroup[elements().nElements()];
 	primitiveQuality_ = -1;
 
-	triangleChopper_.initialise(0.0, 20.0, 0.1);
+	initialiseTransparency();
 }
 
 // Destructor
@@ -139,6 +139,12 @@ void RenderEngine::createPrimitives(int quality)
 	rotationGlobe_.plotSphere(0.75,10,13);
 	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
 	msg.exit("RenderEngine::createPrimitives");
+}
+
+// (Re)initialise transparency filter
+void RenderEngine::initialiseTransparency()
+{
+	triangleChopper_.initialise(prefs.transparencyBinStartZ(), prefs.transparencyNBins(), prefs.transparencyBinWidth());
 }
 
 /*
@@ -245,7 +251,7 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour,
 // Render primitive in specified colour
 void RenderEngine::renderPrimitive(Primitive* primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode)
 {
-	if ((!isTransparent) || (fillMode != GL_FILL) || ((colour != NULL) && (colour[3] > 0.99f))
+	if ((!isTransparent) || (fillMode != GL_FILL) || ((colour != NULL) && (colour[3] > 0.99f)))
 	{
 		// Add primitive info to solid objects list
 		PrimitiveInfo *pi = solidPrimitives_.add();

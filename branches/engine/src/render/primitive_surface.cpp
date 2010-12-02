@@ -484,13 +484,13 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						glNormal3d(normal.x, normal.y, normal.z);
 						if (cscale != -1)
 						{
-							prefs.colourScale[cscale].colour((a+b)/2.0, col1);
-							secondaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, col1[0], col1[1], col1[2], col1[3], TRUE);
+							prefs.colourScale[cscale].colour((a+b)/2.0, col2);
+							secondaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, col2[0], col2[1], col2[2], col2[3], TRUE);
 						}
-						else primaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, TRUE);
+						else secondaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, TRUE);
 						
 						// Store minimal alpha value in order to determine transparency
-						if (col1[3] < minalpha2) minalpha2 = col1[3];	
+						if (col2[3] < minalpha2) minalpha2 = col2[3];
 // 						glVertex3d(r.x, r.y, r.z);
 					}
 				}

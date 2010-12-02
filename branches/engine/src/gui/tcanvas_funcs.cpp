@@ -316,13 +316,18 @@ void TCanvas::updateTransformation(Matrix& mat, Vec3< double > cellcentre)
 	engine_.setTransformationMatrix(mat, cellcentre);
 }
 
-// Reinitialise GL (because of change in setup, lighting etc.)
-void TCanvas::reinitialiseGL()
+// Reinitialise primitives
+void TCanvas::reinitialisePrimitives()
 {
-	engine_.initialiseGL();
 	// Image quality to use depends on current drawing target...
 	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality());
 	else engine_.createPrimitives(prefs.primitiveQuality());
+}
+
+// Reinitialise transparency correction
+void TCanvas::reinitialiseTransparency()
+{
+	engine_.initialiseTransparency();
 }
 
 // Calculate Projection

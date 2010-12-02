@@ -35,12 +35,10 @@ class TriangleChopper
 	private:
 	// Starting z-depth of chopper
 	double startZ_;
-	// Ending z-depth of chopper, beyond which range triangles will be added to single slice
-	double endZ_;
-	// Slice width
-	double sliceWidth_;
 	// Number of slices
 	int nSlices_;
+	// Slice width
+	double sliceWidth_;
 	// Triangle Lists
 	Primitive *triangleLists_;
 	// Clear all existing trianglelists
@@ -48,7 +46,7 @@ class TriangleChopper
 	
 	public:
 	// Initialise structure
-	void initialise(double startz, double endz, double slicewidth);
+	void initialise(double startz, int nbins, double slicewidth);
 	// Empty all stored triangles, but retain storage
 	void emptyTriangles();
 	// Store primitive's triangles
