@@ -783,6 +783,33 @@ void Matrix::multiply(GLfloat *r, GLfloat *transformed) const
 	transformed[2] = r[0]*matrix_[2] + r[1]*matrix_[6] + r[2]*matrix_[10] + matrix_[14];
 }
 
+// Multiply against other matrix, but only rotational part, keeping translation/scaling intact
+void Matrix::multiplyRotation(Matrix B)
+{
+	Matrix AB;
+	AB.matrix_[0] = matrix_[0]*B.matrix_[0] + matrix_[4]*B.matrix_[1] + matrix_[8]*B.matrix_[2];
+	AB.matrix_[1] = matrix_[1]*B.matrix_[0] + matrix_[5]*B.matrix_[1] + matrix_[9]*B.matrix_[2];
+	AB.matrix_[2] = matrix_[2]*B.matrix_[0] + matrix_[6]*B.matrix_[1] + matrix_[10]*B.matrix_[2];
+	
+	AB.matrix_[4] = matrix_[0]*B.matrix_[4] + matrix_[4]*B.matrix_[5] + matrix_[8]*B.matrix_[6];
+	AB.matrix_[5] = matrix_[1]*B.matrix_[4] + matrix_[5]*B.matrix_[5] + matrix_[9]*B.matrix_[6];
+	AB.matrix_[6] = matrix_[2]*B.matrix_[4] + matrix_[6]*B.matrix_[5] + matrix_[10]*B.matrix_[6];
+	
+	AB.matrix_[8] = matrix_[0]*B.matrix_[8] + matrix_[4]*B.matrix_[9] + matrix_[8]*B.matrix_[10];
+	AB.matrix_[9] = matrix_[1]*B.matrix_[8] + matrix_[5]*B.matrix_[9] + matrix_[9]*B.matrix_[10];
+	AB.matrix_[10] = matrix_[2]*B.matrix_[8] + matrix_[6]*B.matrix_[9] + matrix_[10]*B.matrix_[10];
+	
+	matrix_[0] = AB.matrix_[0];
+	matrix_[1] = AB.matrix_[1];
+	matrix_[2] = AB.matrix_[2];
+	matrix_[4] = AB.matrix_[4];
+	matrix_[5] = AB.matrix_[5];
+	matrix_[6] = AB.matrix_[6];
+	matrix_[8] = AB.matrix_[8];
+	matrix_[9] = AB.matrix_[9];
+	matrix_[10] = AB.matrix_[10];
+}
+
 // Apply rotational part of matrix to supplied vector
 Vec3<double> Matrix::rotateVector(Vec3<double> &v) const
 {

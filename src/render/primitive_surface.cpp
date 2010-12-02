@@ -321,53 +321,48 @@ int facetriples[256][15] = {
 };
 
 // Render volumetric isosurface with Marching Cubes
-void Primitive::createSurfaceMarchingCubes(Grid *g)
+void GridPrimitive::createSurfaceMarchingCubes()
 {
 	int i, j, k, n, cubetype, *faces, cscale;
-	Vec3<double> r, normal, gradient[8];
-	Vec3<int> npoints = g->nPoints();
+	Vec3<GLfloat> normal, gradient[8];
+	Vec3<double> r;
+	Vec3<int> npoints = source_->nPoints();
+	GLfloat col1[4], col2[4], minalpha1, minalpha2;
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
 	// Grab the data pointer, surface cutoff, and primitive reference
-	data = g->data3d();
-	bool secondary = g->useSecondary();
-	cscale = g->useColourScale() ? g->colourScale() : -1;
-	// Clear primitive data
-	clear();
+	data = source_->data3d();
+	bool secondary = source_->useSecondary();
+	cscale = source_->useColourScale() ? source_->colourScale() : -1;
+
 	mult = 1.0;
 	// Get distances between grid points
-	r = g->lengths();
+	r = source_->lengths();
 	twodx = r.x / npoints.x * 2.0;
 	twody = r.y / npoints.y * 2.0;
 	twodz = r.z / npoints.z * 2.0;
-	glEnable(GL_BLEND);
 
-	// Set glBegin based on the surface style
-	switch (ss)
+	// Grab colours (if not using a colourscale) and determine colour mode to use
+	if (cscale == -1)
 	{
-		case (Grid::PointSurface):
-			glBegin(GL_POINTS);
-			break;
-		case (Grid::TriangleSurface):
-			glPolygonMode(GL_FRONT, GL_LINE);
-			glBegin(GL_TRIANGLES);
-			break;
-		case (Grid::SolidSurface):
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glBegin(GL_TRIANGLES);
-			break;
-		default:
-			break;
+		source_->copyPrimaryColour(col1);
+		source_->copySecondaryColour(col2);
+		primaryPrimitive_.setColourData(FALSE);
+		secondaryPrimitive_.setColourData(FALSE);
+		minalpha1 = col1[3];
+		minalpha2 = col2[3];
+	}
+	else
+	{
+		primaryPrimitive_.setColourData(TRUE);
+		secondaryPrimitive_.setColourData(TRUE);
+		minalpha1 = 1.0f;
+		minalpha2 = 1.0f;
 	}
 
-	// Set colour / transparency for surface
-	GLfloat col1[4], col2[4];
-	prefs.copyColour(Prefs::SpecularColour, col1);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, col1);
-	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-	g->copyPrimaryColour(col1);
-	g->copySecondaryColour(col2);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, col1);
-
+	// Clear primitive data
+	primaryPrimitive_.clear();
+	secondaryPrimitive_.clear();
+	
 	// Generate isosurface
 	for (i=1; i<npoints.x-2; i++)
 	{
@@ -413,14 +408,14 @@ void Primitive::createSurfaceMarchingCubes(Grid *g)
 				gradient[7].z = (data[i][j+1][k+2] - vertex[3]) / twodz;
 				// Determine cube type (primary cutoff)
 				cubetype = 0;
-				if (g->withinPrimaryCutoff(vertex[0])) cubetype += 1;
-				if (g->withinPrimaryCutoff(vertex[1])) cubetype += 2;
-				if (g->withinPrimaryCutoff(vertex[2])) cubetype += 4;
-				if (g->withinPrimaryCutoff(vertex[3])) cubetype += 8;
-				if (g->withinPrimaryCutoff(vertex[4])) cubetype += 16;
-				if (g->withinPrimaryCutoff(vertex[5])) cubetype += 32;
-				if (g->withinPrimaryCutoff(vertex[6])) cubetype += 64;
-				if (g->withinPrimaryCutoff(vertex[7])) cubetype += 128;
+				if (source_->withinPrimaryCutoff(vertex[0])) cubetype += 1;
+				if (source_->withinPrimaryCutoff(vertex[1])) cubetype += 2;
+				if (source_->withinPrimaryCutoff(vertex[2])) cubetype += 4;
+				if (source_->withinPrimaryCutoff(vertex[3])) cubetype += 8;
+				if (source_->withinPrimaryCutoff(vertex[4])) cubetype += 16;
+				if (source_->withinPrimaryCutoff(vertex[5])) cubetype += 32;
+				if (source_->withinPrimaryCutoff(vertex[6])) cubetype += 64;
+				if (source_->withinPrimaryCutoff(vertex[7])) cubetype += 128;
 				if (cubetype != 0)
 				{
 					// Get edges from list and draw triangles or points
@@ -446,28 +441,29 @@ void Primitive::createSurfaceMarchingCubes(Grid *g)
 						if (cscale != -1)
 						{
 							prefs.colourScale[cscale].colour((a+b)/2.0, col1);
-							glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, col1);
+							primaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, col1[0], col1[1], col1[2], col1[3], TRUE);
 						}
-	
-						glVertex3d(r.x, r.y, r.z);
+						else primaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, TRUE);
+						// Store minimal alpha value in order to determine transparency
+						if (col1[3] < minalpha1) minalpha1 = col1[3];
+// 						glVertex3d(r.x, r.y, r.z);
 					}
 				}
 				if (!secondary) continue;
 				// Determine cube type (secondary cutoff)
 				cubetype = 0;
-				if (g->withinSecondaryCutoff(vertex[0])) cubetype += 1;
-				if (g->withinSecondaryCutoff(vertex[1])) cubetype += 2;
-				if (g->withinSecondaryCutoff(vertex[2])) cubetype += 4;
-				if (g->withinSecondaryCutoff(vertex[3])) cubetype += 8;
-				if (g->withinSecondaryCutoff(vertex[4])) cubetype += 16;
-				if (g->withinSecondaryCutoff(vertex[5])) cubetype += 32;
-				if (g->withinSecondaryCutoff(vertex[6])) cubetype += 64;
-				if (g->withinSecondaryCutoff(vertex[7])) cubetype += 128;
+				if (source_->withinSecondaryCutoff(vertex[0])) cubetype += 1;
+				if (source_->withinSecondaryCutoff(vertex[1])) cubetype += 2;
+				if (source_->withinSecondaryCutoff(vertex[2])) cubetype += 4;
+				if (source_->withinSecondaryCutoff(vertex[3])) cubetype += 8;
+				if (source_->withinSecondaryCutoff(vertex[4])) cubetype += 16;
+				if (source_->withinSecondaryCutoff(vertex[5])) cubetype += 32;
+				if (source_->withinSecondaryCutoff(vertex[6])) cubetype += 64;
+				if (source_->withinSecondaryCutoff(vertex[7])) cubetype += 128;
 				if (cubetype != 0)
 				{
 					// Get edges from list and draw triangles or points
 					faces = facetriples[cubetype];
-					glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, col2);
 					for (n = 0; n<15; n++)
 					{
 						if (faces[n] == -1) break;
@@ -489,59 +485,44 @@ void Primitive::createSurfaceMarchingCubes(Grid *g)
 						if (cscale != -1)
 						{
 							prefs.colourScale[cscale].colour((a+b)/2.0, col1);
-							glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, col1);
+							secondaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, col1[0], col1[1], col1[2], col1[3], TRUE);
 						}
-	
-						glVertex3d(r.x, r.y, r.z);
+						else primaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, TRUE);
+						
+						// Store minimal alpha value in order to determine transparency
+						if (col1[3] < minalpha2) minalpha2 = col1[3];	
+// 						glVertex3d(r.x, r.y, r.z);
 					}
-					// Return to primary colour
-					glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, col1);
 				}
 			}
 		}
-	  }
-	glEnd();
+	}
+
+	// Set transparency flags
+	primaryIsTransparent_ = (minalpha1 <= 0.99f);
+	secondaryIsTransparent_ = (minalpha2 <= 0.99f);	
 }
 
-// Render normal surface 
-void squareIt(Grid *g, Grid::SurfaceStyle ss)
+// Render normal '2D' surface 
+void GridPrimitive::createSurface2D()
 {
 	int i, j;
 	Vec3<double> r, gradientx, gradienty, normal;
 	int cscale;
-	Vec3<int> npoints = g->nPoints();
+	Vec3<int> npoints = source_->nPoints();
 	GLfloat colour[4], poscol[4];
 	double **data;
-	bool usez = g->useDataForZ();
+	bool usez = source_->useDataForZ();
 	// Grab the data pointer and surface cutoff
-	data = g->data2d();
-	// Set glBegin based on the surface style
-	switch (ss)
-	{
-		case (Grid::PointSurface):
-			glBegin(GL_POINTS);
-			break;
-		case (Grid::TriangleSurface):
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glBegin(GL_QUADS);
-			break;
-		case (Grid::SolidSurface):
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glBegin(GL_QUADS);
-			break;
-		default:
-			break;
-	}
+	data = source_->data2d();
+
 	// Set colour / transparency for surface
 	prefs.copyColour(Prefs::SpecularColour, colour);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour);
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-	cscale = g->useColourScale() ? g->colourScale() : -1;
-	if (cscale == -1)
-	{
-		g->copyPrimaryColour(poscol);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, poscol);
-	}
+	cscale = source_->useColourScale() ? source_->colourScale() : -1;
+	if (cscale == -1) source_->copyPrimaryColour(poscol);
+
 	// Render surface
 	for (i = 1; i<npoints.x-2; i++)
 	{
@@ -610,11 +591,11 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 // 	// Draw surface - push current GL matrix
 // 	glPushMatrix();
 // 		// Centre on cell origin (lower left-hand corner)
-// 		origin = g->origin();
+// 		origin = source_->origin();
 // 		glTranslated(origin.x, origin.y, origin.z);
 // 		// Apply matrix transform to get proper grid axes / shear
 // 		glMatrixMode(GL_MODELVIEW);
-// 		glMultMatrixd( g->axesForGl() );
+// 		glMultMatrixd( source_->axesForGl() );
 // 		// Call the display list
 // 		glCallList(list);
 // 	glPopMatrix();

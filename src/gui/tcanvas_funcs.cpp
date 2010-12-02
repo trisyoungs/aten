@@ -221,7 +221,7 @@ void TCanvas::paintGL()
 	else
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		printf("TCanvas has no model to render.\n");
+// 		printf("TCanvas has no model to render.\n");
 	}
 	if (prefs.manualSwapBuffers()) swapBuffers();
 }

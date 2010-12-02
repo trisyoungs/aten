@@ -113,8 +113,8 @@ class Primitive
 	void forgetAll();
 	// Return vertex array
 	VertexChunk *vertexChunks();
-	// Flag that primitive should contain colour data information for each vertex
-	void setColourData();
+	// Flag whether primitive should contain colour data information for each vertex
+	void setColourData(bool b);
 	// Return whether vertex data contains colour information
 	bool colouredVertexData();
 	// Send to OpenGL (i.e. render)
@@ -153,10 +153,6 @@ class Primitive
 	void createCellAxes();
 	// Create rotation globe axes
 	void createRotationGlobeAxes(int nstacks, int nslices);
-	// Create 2D (heightmap-style) surface
-	void createSurface2D(Grid *g);
-	// Create 3D isosurface using Marching Cubes algorithm
-	void createSurfaceMarchingCubes(Grid *g);
 };
 
 // Primitive Info
@@ -224,20 +220,34 @@ class GridPrimitive
 	GridPrimitive *prev, *next;
 
 	private:
-	// Primitive containing generated surface
-	Primitive primitive_;
+	// Primitive containing generated porimary surface
+	Primitive primaryPrimitive_;
+	// Primitive containing generated secondary surface
+	Primitive secondaryPrimitive_;
 	// Grid from which primitive was created
 	Grid *source_;
-	// Renderpoint at which grid was created
-	int renderPoint_;
-
+	// Whether primary primitive contains any transparent triangles (and must be rendered through the chopper)
+	bool primaryIsTransparent_;
+	// Whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
+	bool secondaryIsTransparent_;
+	
 	public:
-	// Return primitive
-	Primitive &primitive();
+	// Return primary primitive
+	Primitive &primaryPrimitive();
+	// Return secondary primitive
+	Primitive &secondaryPrimitive();
+	// Set source grid pointer
+	void setSource(Grid *g);
 	// Return source grid pointer
 	Grid *source();
-	// Generate (or update) from supplied grid pointer
-	void createSurface(Grid *g);
+	// Return whether primary primitive contains any transparent triangles (and must be rendered through the chopper)
+	bool primaryIsTransparent();
+	// Return whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
+	bool secondaryIsTransparent();
+	// Create 2D (heightmap-style) surface
+	void createSurface2D();
+	// Create 3D isosurface using Marching Cubes algorithm
+	void createSurfaceMarchingCubes();
 };
 
 #endif
