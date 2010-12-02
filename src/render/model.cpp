@@ -132,7 +132,8 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 		  glVertex3d(ri.x, ri.y, ri.z);
 		  glVertex3d(rj.x, rj.y, rj.z);
 		glEnd();
-		text.sprintf("%f %s", m->value(), prefs.distanceLabel());
+		if (fabs(m->value()-m->literalValue()) < 0.0001) text.sprintf("%f %s", m->value(), prefs.distanceLabel());
+		else text.sprintf("%f %s (lit = %f %s)", m->value(), prefs.distanceLabel(), m->literalValue(), prefs.distanceLabel());
 		// Add text object to list
 		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)
@@ -178,7 +179,8 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 		pos1 = sourceModel->modelToScreen(labpos);
 		pos2 = sourceModel->modelToScreen(rj);
 		rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
-		text.sprintf("%f %s", m->value(), prefs.angleLabel());
+		if (fabs(m->value()-m->literalValue()) < 0.0001) text.sprintf("%f %s", m->value(), prefs.angleLabel());
+		else text.sprintf("%f %s (lit = %f %s)", m->value(), prefs.angleLabel(), m->literalValue(), prefs.angleLabel());
 		// Add text object to list
 		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)
@@ -204,7 +206,8 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 		  glVertex3d(rl.x, rl.y, rl.z);
 		glEnd();
 		labpos = (rj + rk) * 0.5;
-		text.sprintf("%f Deg", m->value());
+		if (fabs(m->value()-m->literalValue()) < 0.0001) text.sprintf("%f %s", m->value(), prefs.angleLabel());
+		else text.sprintf("%f %s (lit = %f %s)", m->value(), prefs.angleLabel(), m->literalValue(), prefs.angleLabel());
 		// Add text object to list
 		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)

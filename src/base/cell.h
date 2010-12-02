@@ -205,12 +205,12 @@ class Cell
 	// Geometry calculation
 	*/
 	public:
-	double distance(const Vec3<double>&, const Vec3<double>&) const;
-	double distance(Atom*, Atom*) const;
-	double angle(const Vec3<double>&, const Vec3<double>&, const Vec3<double>&) const;
-	double angle(Atom*, Atom*, Atom*) const;
-	double torsion(const Vec3<double>&, const Vec3<double>&, const Vec3<double>&, const Vec3<double>&) const;
-	double torsion(Atom*, Atom*, Atom*, Atom*) const;
+	double distance(const Vec3<double> &ri, const Vec3<double> &rj, bool useMim = TRUE) const;
+	double distance(Atom *i, Atom *j, bool useMim = TRUE) const;
+	double angle(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, bool useMim = TRUE) const;
+	double angle(Atom *i, Atom *j, Atom *k, bool useMim = TRUE) const;
+	double torsion(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, const Vec3<double> &rl, bool useMim = TRUE) const;
+	double torsion(Atom *i, Atom *j, Atom *k, Atom *l, bool useMim = TRUE) const;
 };
 
 #endif
