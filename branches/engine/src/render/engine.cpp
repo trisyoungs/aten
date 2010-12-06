@@ -220,6 +220,23 @@ Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Vec4<double> *scr
 	return worldr;
 }
 
+// Convert screen coordinates into modelspace coordinates
+Vec3<double> &RenderEngine::screenToModel(double x, double y, double z)
+{
+	Vec3<double> screenr, modelr;
+	// Unproject screen coordinates
+	screenr.x = (x - viewportMatrix_[0]) / viewportMatrix_[2] * 2.0;
+	screenr.y = (y - viewportMatrix_[1]) / viewportMatrix_[3] * 2.0;
+	screenr.z = z;
+	Matrix mat = modelProjectionMatrix_;
+	mat.invert();
+	screenr = mat * screenr;
+	mat = modelTransformationMatrix_;
+	mat.invert();
+	modelr = mat * screenr;
+	return modelr;
+}
+
 // Update transformation matrix
 void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
 {

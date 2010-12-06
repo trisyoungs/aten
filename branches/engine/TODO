@@ -9,9 +9,10 @@ Thigs to test in new version:
 
 Things to do (fix) in new version:
 
-1) Drawing of aromatic bonds
+1) Rendering of aromatic bonds
 2) Rotation of multiple bonds into bond plane
 5) Jump before first rotation of model (lastmouse not set properly?)
 7) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
 a) Glyphs (render in immediate mode?)
 b) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
+c) Drawing atoms - coordinates are projected wrongly

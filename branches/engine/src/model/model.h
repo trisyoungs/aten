@@ -830,8 +830,6 @@ class Model
 	// Coordinate Transformations
 	*/
 	public:
-	// Convert screen coordinates into modelspace coordinates
-	Vec3<double> guideToModel(double x, double y, double drawdepth);
 	// Convert from Bohr to Angstrom
 	void bohrToAngstrom();
 	// Convert from Angstrom to Bohr
