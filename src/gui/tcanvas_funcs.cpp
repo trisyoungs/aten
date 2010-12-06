@@ -366,6 +366,12 @@ Vec3<double> &TCanvas::modelToWorld(Vec3<double> pos, Vec4< double >* screenr, d
 	return engine_.modelToWorld(pos, screenr, screenradius);
 }
 
+// Convert screen coordinates into modelspace coordinates
+Vec3<double> &TCanvas::screenToModel(double x, double y, double z)
+{
+	return engine_.screenToModel(x, y, z);
+}
+
 /*
 // Other Qt Virtuals
 */

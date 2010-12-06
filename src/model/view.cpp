@@ -20,6 +20,7 @@
 */
 
 #include "model/model.h"
+#include "gui/tcanvas.uih"
 #include "gui/gui.h"
 
 // Set rendering source
@@ -289,41 +290,39 @@ double Model::drawPixelWidth(double drawdepth)
 {
 	// Get the Angstrom width of a single pixel at the current draw depth in the current view
 	static Vec3<double> r;
-	r = guideToModel(gui.mainWidget->width()/2+1, gui.mainWidget->height()/2, drawdepth) - guideToModel(gui.mainWidget->width()/2, gui.mainWidget->height()/2, drawdepth);
+// 	r = guideToModel(gui.mainWidget->width()/2+1, gui.mainWidget->height()/2, drawdepth) - guideToModel(gui.mainWidget->width()/2, gui.mainWidget->height()/2, drawdepth);
+	r = gui.mainWidget->screenToModel(gui.mainWidget->width()/2+1, gui.mainWidget->height()/2, drawdepth) - gui.mainWidget->screenToModel(gui.mainWidget->width()/2, gui.mainWidget->height()/2, drawdepth);
 	return r.magnitude();
 }
 
-// Convert screen coordinates into modelspace coordinates
-Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
-{
-	// Convert the screen coordinates passed to a position on the drawing guide, and then into model coordinates
-	msg.enter("Model::guideToModel");
-	Vec4<double> guidepoint;
-	Vec3<double> newpoint;
-	Matrix rotmat;
-	double radius;
-	drawdepth = -modelViewMatrix_[14] + drawdepth;
-//      printf("DEPTH = %f, cameraZ= %f\n",drawdepth, camera_.z);
-	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
-	newpoint.set(modelViewMatrix_[12], modelViewMatrix_[13], drawdepth);
-	//printf("newpoint1 "); newpoint.print();
-	rotmat = modelViewMatrix_;
-	rotmat.invert();
-	newpoint = rotmat.transform(newpoint);
-	//printf("newpoint2 "); newpoint.print();
-	gui.mainWidget->modelToWorld(newpoint, &guidepoint);
-	//printf("guidepoint "); guidepoint.print();
-	radius = guidepoint.w;
-	// Now, calculate the position of the clicked point on the guide
-	newpoint.x = sx - (gui.mainWidget->width() / 2.0 );
-	newpoint.y = (gui.mainWidget->height() - sy) - (gui.mainWidget->height() / 2.0 );
-	newpoint /= radius;
-	newpoint.z = drawdepth + modelViewMatrix_[14];
-	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
-	newpoint = modelViewMatrixInverse().transform(newpoint);
-	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
-	newpoint += cell_.centre();	// BROKEN Do we need to do this?
+// // Convert screen coordinates into modelspace coordinates
+// Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
+// {
+// 	// Convert the screen coordinates passed to a position on the drawing guide, and then into model coordinates
+// 	msg.enter("Model::guideToModel");
+// 	Vec4<double> guidepoint;
+// 	Vec3<double> newpoint;
+// 	Matrix rotmat = modelViewMatrixInverse();
+// 	double radius;
+// 	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
+// // 	newpoint.set(modelViewMatrix_[12], modelViewMatrix_[13], -modelViewMatrix_[14] + drawdepth);
+// 	newpoint.set(0.0, 0.0, -modelViewMatrix_[14] + drawdepth);
+// 	printf("newpoint1 "); newpoint.print();
+// 	newpoint = modelViewMatrix_.rotateVector(newpoint);
+// 	printf("newpoint2 "); newpoint.print();
+// 	gui.mainWidget->modelToWorld(newpoint, &guidepoint, 1.0);
+// 	printf("guidepoint "); guidepoint.print();
+// 	radius = guidepoint.w;
+// 	// Now, calculate the position of the clicked point on the guide
+// 	newpoint.x = sx - (gui.mainWidget->contextWidth() / 2.0 );
+// 	newpoint.y = (gui.mainWidget->contextHeight() - sy) - (gui.mainWidget->contextHeight() / 2.0 );
+// 	newpoint /= radius;
+// 	newpoint.z = drawdepth; // modelViewMatrix_[14];
+// 	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
+// 	newpoint = modelViewMatrixInverse().transform(newpoint);
+// 	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
+// 	newpoint += cell_.centre();	// BROKEN Do we need to do this?
 //      newpoint.print();
-	msg.exit("Model::guideToModel");
-	return newpoint;
-}
+// 	msg.exit("Model::guideToModel");
+// 	return newpoint;
+// }

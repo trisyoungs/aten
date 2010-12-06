@@ -581,7 +581,7 @@ void TCanvas::beginMode(Prefs::MouseButton button)
 						{
 							displayModel_->beginUndoState("Draw Chain");
 							currentDrawDepth_ = prefs.drawDepth();
-							i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+							i = displayModel_->addAtom(aten.sketchElement(), screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							displayModel_->endUndoState();
 							// 							displayModel_->projectAtom(i);  TGAY
 							atomClicked_ = i;
@@ -740,7 +740,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			{
 				displayModel_->beginUndoState("Draw Atom");
 				currentDrawDepth_ = prefs.drawDepth();
-				displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+				displayModel_->addAtom(aten.sketchElement(), screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				displayModel_->endUndoState();
 			}
 			gui.update(TRUE,FALSE,TRUE);
@@ -754,7 +754,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
-				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
+				i = displayModel_->addAtom(aten.sketchElement(), screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
 			}
 			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
 			if (atomClicked_ != i)
@@ -785,7 +785,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
 				displayModel_->beginUndoState("Draw Fragment");
-				frag->pasteOrientedModel(displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), displayModel_);
+				frag->pasteOrientedModel(screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), displayModel_);
 			}
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);

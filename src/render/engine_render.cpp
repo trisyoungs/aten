@@ -508,7 +508,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			style_j = (globalstyle == Atom::IndividualStyle ? Atom::StickStyle : globalstyle);
 			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
 			radius_j = prefs.bondStyleRadius(prefs.renderStyle());
-			if (i == NULL) v = source->guideToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, canvas->currentDrawDepth());
+			if (i == NULL) v = screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, canvas->currentDrawDepth());
 			else v = i->r();
 			v -= pos;
 			rij = v.magnitude();
