@@ -221,19 +221,47 @@ Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Vec4<double> *scr
 }
 
 // Convert screen coordinates into modelspace coordinates
-Vec3<double> &RenderEngine::screenToModel(double x, double y, double z)
+Vec3<double> &RenderEngine::screenToModel(int x, int y, double z)
 {
-	Vec3<double> screenr, modelr;
-	// Unproject screen coordinates
-	screenr.x = (x - viewportMatrix_[0]) / viewportMatrix_[2] * 2.0;
-	screenr.y = (y - viewportMatrix_[1]) / viewportMatrix_[3] * 2.0;
-	screenr.z = z;
-	Matrix mat = modelProjectionMatrix_;
-	mat.invert();
-	screenr = mat * screenr;
-	mat = modelTransformationMatrix_;
-	mat.invert();
-	modelr = mat * screenr;
+	msg.enter("RenderEngine::screenToModel");
+	static Vec3<double> modelr;
+	Vec4<double> temp, worldr;
+	int newx, newy;
+	double dx, dy;
+	
+	// Grab transformation matrix and invert
+	Matrix itransform = modelTransformationMatrix_;
+	itransform.invert();
+	
+	// Mirror y-coordinate
+	y = viewportMatrix_[3] - y;
+
+	// Project points at guide z-position and two other points along literal x and y to get scaling factors for screen coordinates
+	worldr.set(0.0,0.0,z, 1.0);
+	temp = modelProjectionMatrix_ * worldr;
+	newx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5;
+	newy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5;
+		
+	for (int n=0; n<10; ++n)
+	{
+		// Determine new (better) coordinate from a yardstick centred at current world coordinates
+		temp = modelProjectionMatrix_ * Vec4<double>(worldr.x+1.0, worldr.y+1.0, worldr.z, worldr.w);
+		dx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5 - newx;
+		dy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5 - newy;
+
+		worldr.add((x-newx)/dx, (y-newy)/dy, 0.0, 0.0);
+// 		printf ("N=%i", n); worldr.print();
+		temp = modelProjectionMatrix_ * worldr;
+		newx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5;
+		newy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5;
+// 		printf("NEW dx = %f, dy = %f, wantedxy = %f, %f\n", newx, newy, x, y);
+		if ((x == newx) && (y == newy)) break;
+	}
+	
+	// Finally, invert to model coordinates
+	modelr = itransform * Vec3<double>(worldr.x, worldr.y, worldr.z);
+	
+	msg.exit("RenderEngine::screenToModel");
 	return modelr;
 }
 

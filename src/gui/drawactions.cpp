@@ -53,7 +53,7 @@ void AtenForm::on_actionTransmuteAtom_triggered(bool on)
 
 void AtenForm::on_actionTransmuteSelection_triggered(bool on)
 {
-	CommandNode::run(Command::Transmute, "i", aten.sketchElement());
+	CommandNode::run(Command::Transmute, "i", gui.mainWidget->sketchElement());
 	gui.update();
 }
 
@@ -79,22 +79,22 @@ void AtenForm::on_actionDeleteBond_triggered(bool on)
 
 void AtenForm::on_actionElementH_triggered(bool on)
 {
-	if (on) aten.setSketchElement(1);
+	if (on) gui.mainWidget->setSketchElement(1);
 }
 
 void AtenForm::on_actionElementC_triggered(bool on)
 {
-	if (on) aten.setSketchElement(6);
+	if (on) gui.mainWidget->setSketchElement(6);
 }
 
 void AtenForm::on_actionElementN_triggered(bool on)
 {
-	if (on) aten.setSketchElement(7);
+	if (on) gui.mainWidget->setSketchElement(7);
 }
 
 void AtenForm::on_actionElementCustom_triggered(bool on)
 {
-	if (on) aten.setSketchElement(customElement_);
+	if (on) gui.mainWidget->setSketchElement(customElement_);
 }
 
 void AtenForm::on_actionSelectCustomElement_triggered(bool on)
@@ -108,7 +108,7 @@ void AtenForm::on_actionSelectCustomElement_triggered(bool on)
 		customElement_ = newel;
 		// Activate custom element button
 		ui.actionElementCustom->setChecked(TRUE);
-		aten.setSketchElement(customElement_);
+		gui.mainWidget->setSketchElement(customElement_);
 	}
 }
 

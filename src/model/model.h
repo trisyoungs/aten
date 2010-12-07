@@ -450,8 +450,6 @@ class Model
 	void adjustZoom(bool zoomin);
 	// Reset modelview matrix and camera position
 	void resetView();
-	// Calculate and return drawing pixel width
-	double drawPixelWidth(double drawdepth);
 
 
 	/*

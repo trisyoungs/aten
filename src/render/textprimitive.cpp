@@ -20,12 +20,7 @@
 */
 
 #include "render/textprimitive.h"
-//#include "base/messenger.h"
-//#include "base/constants.h"
-//#include "classes/prefs.h"
 #include "gui/tcanvas.uih"
-//#include <stdio.h>
-//#include <math.h>
 
 /*
 // Text Primitive Chunk
@@ -78,10 +73,7 @@ void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
 			painter.drawText(rect, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
 		}
 	}
-	else
-	{
-		for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
-	}
+	else for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
 }
 
 /*

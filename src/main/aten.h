@@ -282,16 +282,10 @@ class Aten
 	// Program Control / Settings (not Prefs)
 	*/
 	private:
-	// Selected drawing element
-	short int sketchElement_;
 	// Whether type export conversion is enabled
 	bool typeExportMapping_;
 
 	public:
-	// Set current drawing element
-	void setSketchElement(short int el);
-	// Return current drawing element
-	short int sketchElement() const;
 	// Element map name conversions to apply on load
 	List< NameMap<int> > typeImportMap;
 	// Type map name conversions to apply on save

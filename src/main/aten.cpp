@@ -48,7 +48,6 @@ Aten::Aten()
 	programMode_ = Aten::GuiMode;
 
 	// Program control / settings (not prefs)
-	sketchElement_ = 6;
 	typeExportMapping_ = FALSE;
 
 	// Misc 
@@ -107,18 +106,6 @@ Aten::ProgramMode Aten::programMode() const
 /*
 // Program Control / Settings (not prefs)
 */
-
-// Set current drawing element
-void Aten::setSketchElement(short int el)
-{
-	sketchElement_ = el;
-}
-
-// Return current drawing element
-short int Aten::sketchElement() const
-{
-	return sketchElement_;
-}
 
 // Set whether type export conversion is enabled
 void Aten::setTypeExportMapping(bool b)

@@ -15,4 +15,3 @@ Things to do (fix) in new version:
 7) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
 a) Glyphs (render in immediate mode?)
 b) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
-c) Drawing atoms - coordinates are projected wrongly

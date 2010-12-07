@@ -113,7 +113,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	Dnchar text;
 	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp, t, gamma;
 	Atom *i, *j, **atoms;
-	Vec3<double> pos, v, ijk, r1, r2, r3, r4, rji, rjk;
+	Vec3<double> pos, v, ijk, r1, r2, r3, r4, rji, rjk, rmouse;
 	Vec4<double> transformZ, screenr;
 	Matrix atomtransform, bondtransform, A;
 	Refitem<Bond,int> *ri;
@@ -502,16 +502,50 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		case (UserAction::DrawChainAction):
 			if (i == NULL) break;
 			pos = i->r();
-			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
-			i = source->atomOnScreen(canvas->rMouseLast().x, canvas->rMouseLast().y);
+			rmouse = canvas->rMouseLast();
 			style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
-			style_j = (globalstyle == Atom::IndividualStyle ? Atom::StickStyle : globalstyle);
 			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
-			radius_j = prefs.bondStyleRadius(prefs.renderStyle());
-			if (i == NULL) v = screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, canvas->currentDrawDepth());
-			else v = i->r();
+			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
+			j = source->atomOnScreen(rmouse.x, rmouse.y);
+			if (j == NULL)
+			{
+				v = screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
+				style_j = (globalstyle == Atom::IndividualStyle ? Atom::StickStyle : globalstyle);
+				radius_j = prefs.bondStyleRadius(prefs.renderStyle());
+			}
+			else
+			{
+				v = j->r();
+				style_j = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
+				radius_j = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(j)*0.85);
+			}
 			v -= pos;
 			rij = v.magnitude();
+			
+			// Select colour
+			if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_i);
+			else switch (scheme)
+			{
+				case (Prefs::ElementScheme):
+					elements().copyColour(i->element(), colour_i);
+					break;
+				case (Prefs::ChargeScheme):
+					prefs.colourScale[0].colour(i->charge(), colour_i);
+					break;
+				case (Prefs::VelocityScheme):
+					prefs.colourScale[1].colour(i->v().magnitude(), colour_i);
+					break;
+				case (Prefs::ForceScheme):
+					prefs.colourScale[2].colour(i->f().magnitude(), colour_i);
+					break;
+				case (Prefs::CustomScheme):
+					i->copyColour(colour_i);
+					break;
+				default:
+					break;
+			}
+			elements().copyColour(canvas->sketchElement(), colour_j);
+			
 			// Determine how we'll draw the new bond / atom
 			if (prefs.renderStyle() == Atom::StickStyle)
 			{
@@ -554,18 +588,18 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 						glEnd();
 						break;
 					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_i][bt], lod, colour_i, bondtransform);
+						renderPrimitive(bond_[style_i][Bond::Single], lod, colour_i, bondtransform, GL_LINE);
 						bondtransform.applyTranslation(0.0, 0.0, 1.0);
 						break;
 					case (Atom::SphereStyle):
 					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[style_i][bt], lod, colour_i, bondtransform);
+						renderPrimitive(bond_[style_i][Bond::Single], lod, colour_i, bondtransform, GL_LINE);
 						bondtransform.applyTranslation(0.0, 0.0, 1.0);
 						break;
 				}
 				
 				// Draw second bond half
-				switch (prefs.renderStyle())
+				switch (style_j)
 				{
 					case (Atom::StickStyle):
 						glLineWidth(2.0);
@@ -575,17 +609,17 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 						glEnd();
 						break;
 					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_i][bt], lod, colour_j, bondtransform);
+						renderPrimitive(bond_[style_j][Bond::Single], lod, colour_j, bondtransform, GL_LINE);
 						break;
 					case (Atom::SphereStyle):
 					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[style_j][bt], lod, colour_j, bondtransform);
+						renderPrimitive(bond_[style_j][Bond::Single], lod, colour_j, bondtransform, GL_LINE);
 						break;
 				}
 			}
 			// Draw text showing distance
-// 			s.sprintf(" l = %f A",v.magnitude());
-// 			glText(textpos,s);
+			text.sprintf("r = %f ", v.magnitude());
+			renderTextPrimitive(rmouse.x, canvas->contextHeight()-rmouse.y, text.get(), 0x212b);
 			break;
 	}
 

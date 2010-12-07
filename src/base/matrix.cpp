@@ -820,6 +820,16 @@ Vec3<double> Matrix::rotateVector(Vec3<double> &v) const
 	return result;
 }
 
+// Apply rotational part of matrix to supplied vector coordinates
+Vec3<double> Matrix::rotateVector(double x, double y, double z) const
+{
+	Vec3<double> result;
+	result.x = x*matrix_[0] + y*matrix_[4] + z*matrix_[8];
+	result.y = x*matrix_[1] + y*matrix_[5] + z*matrix_[9];
+	result.z = x*matrix_[2] + y*matrix_[6] + z*matrix_[10];
+	return result;
+}
+
 // Remove translation and scaling parts, leaving rotation only
 void Matrix::removeTranslationAndScaling()
 {
