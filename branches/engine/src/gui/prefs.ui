@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PrefsDialog</class>
  <widget class="QDialog" name="PrefsDialog">
@@ -1842,6 +1843,12 @@
                 <property name="minimum">
                  <number>1</number>
                 </property>
+                <property name="maximum">
+                 <number>2000</number>
+                </property>
+                <property name="singleStep">
+                 <number>10</number>
+                </property>
                </widget>
               </item>
               <item>
@@ -1869,7 +1876,7 @@
                  <number>1</number>
                 </property>
                 <property name="minimum">
-                 <double>1.000000000000000</double>
+                 <double>0.000000000000000</double>
                 </property>
                 <property name="maximum">
                  <double>100.000000000000000</double>
@@ -1898,13 +1905,16 @@
                  <string>Width of single Z-bin</string>
                 </property>
                 <property name="decimals">
-                 <number>1</number>
+                 <number>2</number>
                 </property>
                 <property name="minimum">
-                 <double>1.000000000000000</double>
+                 <double>0.010000000000000</double>
                 </property>
                 <property name="maximum">
-                 <double>100.000000000000000</double>
+                 <double>5.000000000000000</double>
+                </property>
+                <property name="singleStep">
+                 <double>0.100000000000000</double>
                 </property>
                </widget>
               </item>

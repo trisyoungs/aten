@@ -553,6 +553,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	}
 
 	mainWidget->setOffScreenRendering(FALSE);
+	if (!prefs.reusePrimitiveQuality()) mainWidget->reinitialisePrimitives();
 	prefs.setScreenObjects(screenbits);
 
 	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext

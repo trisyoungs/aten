@@ -211,10 +211,9 @@ Prefs::Prefs()
 	levelOfDetailWidth_ = 10;
 	levelOfDetailStartZ_ = 25.0;
 	transparencyCorrect_ = TRUE;
-	transparencyNBins_ = 50;
+	transparencyNBins_ = 1000;
 	transparencyBinStartZ_ = 0.0;
-	transparencyBinWidth_ = 1.0;
-
+	transparencyBinWidth_ = 0.2;
 	// Screen Objects
 	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
 	offScreenObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;

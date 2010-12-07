@@ -100,7 +100,7 @@ void AtenPrefs::setControls()
 	ui.ShininessSpin->setValue(prefs.shininess());
 	ui.PrimitiveQualitySpin->setValue(prefs.primitiveQuality());
 	ui.ImagePrimitiveQualitySpin->setValue(prefs.imagePrimitiveQuality());
-	ui.ImagePrimitivesGroup->setChecked(prefs.reusePrimitiveQuality());
+	ui.ImagePrimitivesGroup->setChecked(!prefs.reusePrimitiveQuality());
 	ui.LevelOfDetailNLevelsSpin->setValue(prefs.levelsOfDetail());
 	ui.LevelOfDetailStartZSpin->setValue(prefs.levelOfDetailStartZ());
 	ui.LevelOfDetailWidthSpin->setValue(prefs.levelOfDetailWidth());
