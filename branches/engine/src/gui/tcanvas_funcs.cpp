@@ -55,7 +55,8 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	// User Actions
 	activeMode_ = UserAction::NoAction;
 	selectedMode_ = UserAction::SelectAction;
-	currentDrawDepth_ = 0.0;
+	currentDrawDepth_ = -5.0;
+	sketchElement_ = 6;
 	editable_ = TRUE;
 
 	// Prevent QPainter from autofilling widget background

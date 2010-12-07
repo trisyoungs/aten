@@ -91,7 +91,7 @@ class RenderEngine
 	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
 	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
 	// Convert screen coordinates into modelspace coordinates
-	Vec3<double> &screenToModel(double x, double y, double z);
+	Vec3<double> &screenToModel(int x, int y, double z);
 	// Update transformation matrix
 	void setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre);
 

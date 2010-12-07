@@ -166,8 +166,10 @@ class Matrix
 	Vec4<double> transform(double x, double y, double z, double w) const;
 	// Transform coordinates supplied and return as Vec3<double>
 	Vec3<double> transform(Vec3<double> vec) const;
-	// Apply rotational part of matrix to supplied vector
+	// Apply rotational part of matrix to supplied Vec3
 	Vec3<double> rotateVector(Vec3<double> &v) const;
+	// Apply rotational part of matrix to supplied vector coordinates
+	Vec3<double> rotateVector(double x, double y, double z) const;
 	// Multiply against coordinates provided (in GLfloats)
 	void multiply(GLfloat *r, GLfloat *transformed) const;
 	// Multiply against other matrix, but only rotational part, keeping translation/scaling intact

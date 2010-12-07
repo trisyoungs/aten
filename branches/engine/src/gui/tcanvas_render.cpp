@@ -32,6 +32,7 @@ void TCanvas::render2D(QPainter &painter)
 	QBrush solidbrush(Qt::SolidPattern), nobrush(Qt::NoBrush);
 	GLfloat colour[4];
 	Vec4<double> screenr;
+	Vec3<double> r;
 	int i, labels, skip, n;
 	ForcefieldAtom *ffa;
 	double dx, halfw;
@@ -69,8 +70,11 @@ void TCanvas::render2D(QPainter &painter)
 		// Draw on distance ruler for drawing modes
 		case (UserAction::DrawAtomAction):
 		case (UserAction::DrawChainAction):
-			// Get angstrom length
-			dx = 1.0 / displayModel_->drawPixelWidth(currentDrawDepth_);	// BROKEN in periodic systems
+			// Get pixel 'length' in Angstrom terms at current draw depth
+			r = screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
+			r -= screenToModel(contextWidth_/2, contextHeight_/2, currentDrawDepth_);
+			dx = 10.0 / r.magnitude();
+			
 			halfw = contextWidth_ / 2.0;
 			i = int( halfw / dx);
 			skip = 1;

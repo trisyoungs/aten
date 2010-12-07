@@ -141,6 +141,9 @@ bool GuiQt::exists()
 void GuiQt::initialise(int &argc, char **argv)
 {
 	// Create the QApplication
+	#if QT_VERSION >= 0x040600
+	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL);
+	#endif
 	app = new QApplication(argc, argv);
 
 	// Initialise application name, organisation and author

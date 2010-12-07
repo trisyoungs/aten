@@ -19,7 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "main/aten.h"
 #include "gui/tcanvas.uih"
 #include "gui/fragment.h"
 #include "gui/mainwindow.h"
@@ -234,7 +233,6 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 	}
 	rMouseLast_.set(event->x(), event->y(), 0.0);
 	setFocus();
-// 	gui.updateStatusBar();   // BROKEN TGAY   Why?
 }
 
 // Qt Signal (mouse wheel event)
@@ -504,6 +502,18 @@ UserAction::Action TCanvas::activeMode() const
 	return activeMode_;
 }
 
+// Set current drawing element
+void TCanvas::setSketchElement(short int el)
+{
+	sketchElement_ = el;
+}
+
+// Return current drawing element
+short int TCanvas::sketchElement() const
+{
+	return sketchElement_;
+}
+
 // Current drawing depth for certain tools
 double TCanvas::currentDrawDepth()
 {
@@ -581,7 +591,7 @@ void TCanvas::beginMode(Prefs::MouseButton button)
 						{
 							displayModel_->beginUndoState("Draw Chain");
 							currentDrawDepth_ = prefs.drawDepth();
-							i = displayModel_->addAtom(aten.sketchElement(), screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+							i = displayModel_->addAtom(sketchElement_, screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							displayModel_->endUndoState();
 							// 							displayModel_->projectAtom(i);  TGAY
 							atomClicked_ = i;
@@ -740,7 +750,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			{
 				displayModel_->beginUndoState("Draw Atom");
 				currentDrawDepth_ = prefs.drawDepth();
-				displayModel_->addAtom(aten.sketchElement(), screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+				displayModel_->addAtom(sketchElement_, screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				displayModel_->endUndoState();
 			}
 			gui.update(TRUE,FALSE,TRUE);
@@ -754,7 +764,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
-				i = displayModel_->addAtom(aten.sketchElement(), screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
+				i = displayModel_->addAtom(sketchElement_, screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
 			}
 			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
 			if (atomClicked_ != i)
@@ -797,9 +807,9 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (shifted)
 			{
 				int element = atomClicked_->element();
-				for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next) if (i->element() == element) displayModel_->transmuteAtom(i, aten.sketchElement());
+				for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next) if (i->element() == element) displayModel_->transmuteAtom(i,sketchElement_);
 			}
-			else displayModel_->transmuteAtom(atomClicked_, aten.sketchElement());
+			else displayModel_->transmuteAtom(atomClicked_, sketchElement_);
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);
 			break;
