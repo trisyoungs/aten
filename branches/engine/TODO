@@ -1,7 +1,6 @@
 Thigs to test in new version:
 
 2) Cell packing (vs Mercury)
-3) Disordered building (with points)
 5) Viewing along (cell) axes
 6) Ewald energies / forces
 7) Torsion forces
@@ -16,3 +15,4 @@ Things to do (fix) in new version:
 a) Glyphs, including render test akf (inc. lots more stuff besides)
 b) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
 c) Spacegroup Pnmmm
+e) Tabulated trigonometric functions (in mathfunc.h)

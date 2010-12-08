@@ -185,13 +185,16 @@ void TCanvas::paintGL()
 		checkGlError();
 		
 		// Check the supplied model against the previous one rendered to see if we must outdate the display list
-		if ((lastDisplayed_ != displayModel_) || (displayModel_ == NULL)) renderPoint_.reset();
-		msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", displayModel_, renderPoint_.log(Log::Total));
+		if (lastDisplayed_ != displayModel_)
+		{
+			// Clear the picked atoms list
+			pickedAtoms_.clear();
+		}
+		msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", displayModel_, displayModel_->changeLog.log(Log::Total));
 		
 		// If this is a trajectory frame, check its ID against the last one rendered
 		if (displayModel_->parent() != NULL)
 		{
-			if (displayModel_->parent()->trajectoryFrameIndex() != displayFrameId_) renderPoint_.reset();
 			displayFrameId_ = displayModel_->parent()->trajectoryFrameIndex();
 			msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 		}
