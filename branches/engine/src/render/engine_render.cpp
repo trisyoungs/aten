@@ -109,13 +109,13 @@ void RenderEngine::initialiseGL()
 // Render 3D
 void RenderEngine::render3D(Model *source, TCanvas *canvas)
 {
-	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j;
+	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j, colour_k[4], colour_l[4];
 	GLenum style;
 	int lod, id_i, labels, n;
 	Dnchar text;
 	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp, t, gamma, factor;
 	Atom *i, *j, **atoms;
-	Vec3<double> pos, v, ijk, r1, r2, r3, r4, rji, rjk, rmouse;
+	Vec3<double> pos, v, ijk, r1, r2, r3, r4, rji, rjk, rmouse, centroid;
 	Vec4<double> transformZ, screenr;
 	Matrix atomtransform, bondtransform, A;
 	Refitem<Bond,int> *ri;
@@ -244,7 +244,11 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		switch (style_i)
 		{
 			case (Atom::StickStyle):
-				if (i->nBonds() == 0) renderPrimitive(atom_[style_i], lod, colour_i, atomtransform);
+				if (i->nBonds() == 0)
+				{
+					glLineWidth( i->isSelected() ? 3.0 : 1.0 );
+					renderPrimitive(atom_[style_i], lod, colour_i, atomtransform);
+				}
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
@@ -678,6 +682,58 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		}
 	}
 
+	// Glyphs
+	for (Glyph *g = source->glyphs(); g != NULL; g = g->next)
+	{
+		// Check if glyph is visible
+		if (!g->isVisible()) continue;
+		
+		// Determine level of detail for glyph
+		r1 = g->data(0)->vector();
+		// If z is less than 0, don't even bother continuing since its behind the viewer
+		z = -(r1.x*transformZ.x + r1.y*transformZ.y + r1.z*transformZ.z + transformZ.w);
+		if (z < 0) continue;
+		if (z < prefs.levelOfDetailStartZ()) lod = 0;
+		else lod = int((z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth());
+		
+		switch (g->type())
+		{
+// 			// Arrow - tail = data[0], head = data[1]
+// 			case (Glyph::ArrowGlyph):
+// 				r2 = g->data(1)->vector();
+// 				g->data(0)->copyColour(colour_i);
+// 				glLineWidth(g->lineWidth());
+// 				glColor4fv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour_i);
+// 				if (g->rotated())
+// 				{
+// 					centroid = (r1 + r2) * 0.5;
+// 					r1 -= centroid;
+// 					r2 -= centroid;
+// 					glPushMatrix();
+// 					glTranslated(centroid.x, centroid.y, centroid.z);
+// 					glPushMatrix();
+// 					glMultMatrixd(g->rotationForGL());
+// 					glArrow(vec[0], g->data(1)->vector() - vec[0] );
+// 					glPopMatrix();
+// 					glPopMatrix();
+// 				}
+// 				else glArrow(vec[0], g->data(1)->vector() - vec[0] );
+// 				break;
+			// Sphere or Cube - centre = data[0], scale = data[1]
+			case (Glyph::SphereGlyph):
+			case (Glyph::CubeGlyph):
+				r2 = g->data(1)->vector();
+				g->data(0)->copyColour(colour_i);
+				A = modelTransformationMatrix_;
+				A.applyTranslation(r1.x, r1.y, r1.z);
+				if (g->rotated()) A *= (*g->matrix());
+				A.applyScaling(r2.x, r2.y, r2.z);
+				if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				else renderPrimitive(cubes_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				break;
+		}
+	}
+	
 	// All primitive objects have now been filtered, so sort and send to GL
 	sortAndSendGL();
 

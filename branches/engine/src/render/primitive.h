@@ -173,10 +173,12 @@ class PrimitiveInfo
 	GLfloat colour_[4];
 	// Whether to draw the primitive as filled or wireframe polygons
 	GLenum fillMode_;
+	// GL object line width (if type_ == GL_LINE or chunk primitive type == GL_LINES)
+	GLfloat lineWidth_;
 	
 	public:
 	// Set primitive info data
-	void set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL);
+	void set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
 	// Return pointer to primitive
 	Primitive *primitive();
 	// Return local transformation of primitive
@@ -185,6 +187,8 @@ class PrimitiveInfo
 	GLfloat *colour();
 	// Return polygon fill mode
 	GLenum fillMode();
+	// Return line width
+	GLfloat lineWidth();
 };
 
 // Primitive Group

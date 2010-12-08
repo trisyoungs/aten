@@ -77,6 +77,14 @@ void RenderEngine::createPrimitives(int quality)
 		scaledAtom_[n].clear();
 		selectedScaledAtom_[n].clear();
 	}
+	spheres_.clear();
+	cubes_.clear();
+	cones_.clear();
+	wireCube_.clear();
+	cellAxes_.clear();
+	rotationGlobe_.clear();
+	rotationGlobeAxes_.clear();
+	
 	// To clean up following code, grab radii here
 	for (n=0; n<Atom::nDrawStyles; ++n)
 	{
@@ -89,14 +97,16 @@ void RenderEngine::createPrimitives(int quality)
 	{
 		// Calculate general level-of-detail ratio, which ranges from 1 (at lod=0) to 0 (at lod=nlevels)
 		lodratio = 1.0 - (double (lod+1)/prefs.levelsOfDetail());
-		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
-		atom_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
 		nstacks = max(3,(int) (quality*lodratio*0.75));
 		nslices = max(3,(int) (quality*lodratio*1.5));
+		
+		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
+		atom_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
 		atom_[Atom::TubeStyle].primitive(lod).plotSphere(aradius[Atom::TubeStyle], nstacks, nslices);
 		atom_[Atom::SphereStyle].primitive(lod).plotSphere(aradius[Atom::SphereStyle], nstacks, nslices);
 		selectedAtom_[Atom::TubeStyle].primitive(lod).plotSphere(aradius[Atom::TubeStyle]*selscale, nstacks, nslices);
 		selectedAtom_[Atom::SphereStyle].primitive(lod).plotSphere(aradius[Atom::SphereStyle]*selscale, nstacks, nslices);
+		
 		// Atom Styles (Atom::ScaledStyle)
 		for (n = 0; n<elements().nElements(); ++n)
 		{
@@ -104,9 +114,11 @@ void RenderEngine::createPrimitives(int quality)
 			scaledAtom_[n].primitive(lod).plotSphere(radius, nstacks, nslices);
 			selectedScaledAtom_[n].primitive(lod).plotSphere(radius*selscale, nstacks, nslices);
 		}
+		
 		// Bond Styles
 		nstacks = max(1,(int) (quality*lodratio*0.25));
 		nslices = max(3,(int) (quality*lodratio));
+		
 		// All styles - Single Bond
 		bond_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
 		bond_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
@@ -114,6 +126,7 @@ void RenderEngine::createPrimitives(int quality)
 		selectedBond_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle]*selscale, bradius[Atom::TubeStyle]*selscale, nstacks, nslices);
 		selectedBond_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
 		selectedBond_[Atom::ScaledStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
+		
 		// All styles - Double Bond
 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
@@ -127,6 +140,7 @@ void RenderEngine::createPrimitives(int quality)
 		selectedBond_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5*selscale, bradius[Atom::SphereStyle]*0.5*selscale, nstacks, nslices);
 		selectedBond_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5*selscale, bradius[Atom::ScaledStyle]*0.5*selscale, nstacks, nslices);
 		selectedBond_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5*selscale, bradius[Atom::ScaledStyle]*0.5*selscale, nstacks, nslices);
+		
 		// All styles - Triple Bond
 		bond_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.33, bradius[Atom::TubeStyle]*0.33, nstacks, nslices);
 		bond_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.33, bradius[Atom::TubeStyle]*0.33, nstacks, nslices);
@@ -146,9 +160,12 @@ void RenderEngine::createPrimitives(int quality)
 		selectedBond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33*selscale, bradius[Atom::ScaledStyle]*0.33*selscale, nstacks, nslices);
 		selectedBond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33*selscale, bradius[Atom::ScaledStyle]*0.33*selscale, nstacks, nslices);
 		selectedBond_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33*selscale, bradius[Atom::ScaledStyle]*0.33*selscale, nstacks, nslices);
-		// Cubes
+		
+		// Other primitives
+		nstacks = max(3,(int) (quality*lodratio*0.75));
+		nslices = max(3,(int) (quality*lodratio*1.5));
+		spheres_.primitive(lod).plotSphere(1.0, nstacks, nslices);
 		cubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)) );
-		// Cones
 		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,0.2,0.0,nstacks,nslices);
 	}
 	// One-off objects
@@ -295,13 +312,13 @@ void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
 */
 
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, Matrix &transform, GLenum fillMode)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
 {
 	if ((colour[3] > 0.99f) || (fillMode != GL_FILL))
 	{
 		// Add primitive info to solid objects list
 		PrimitiveInfo *pi = solidPrimitives_.add();
-		pi->set(&pg.primitive(lod), colour, transform, fillMode);
+		pi->set(&pg.primitive(lod), colour, transform, fillMode, lineWidth);
 	}
 	else
 	{
@@ -312,13 +329,13 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour,
 }
 
 // Render primitive in specified colour
-void RenderEngine::renderPrimitive(Primitive* primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode)
+void RenderEngine::renderPrimitive(Primitive* primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
 {
 	if ((!isTransparent) || (fillMode != GL_FILL) || ((colour != NULL) && (colour[3] > 0.99f)))
 	{
 		// Add primitive info to solid objects list
 		PrimitiveInfo *pi = solidPrimitives_.add();
-		pi->set(primitive, colour, transform, fillMode);
+		pi->set(primitive, colour, transform, fillMode, lineWidth);
 	}
 	else
 	{
@@ -368,6 +385,7 @@ void RenderEngine::sortAndSendGL()
 		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
 		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
 		glPolygonMode(GL_FRONT_AND_BACK, pi->fillMode());
+		if (pi->fillMode() == GL_LINE) glLineWidth(pi->lineWidth());
 		glLoadIdentity();
 		glMultMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();

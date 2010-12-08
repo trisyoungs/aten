@@ -58,10 +58,8 @@ class RenderEngine
 	PrimitiveGroup bond_[Atom::nDrawStyles][Bond::nBondTypes];
 	// Selected bond styles
 	PrimitiveGroup selectedBond_[Atom::nDrawStyles][Bond::nBondTypes];
-	// Unit cube
-	PrimitiveGroup cubes_;
-	// Cones of length 1.0 and base radius 0.2
-	PrimitiveGroup cones_;
+	// Primitive objects
+	PrimitiveGroup cubes_, spheres_, cones_;
 	// One-off objects
 	Primitive wireCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
 
@@ -113,9 +111,9 @@ class RenderEngine
 
 	private:
 	// Render primitive from primitive group in specified colour and level of detail
-	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL);
+	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Render primitive in specified colour
-	void renderPrimitive(Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL);
+	void renderPrimitive(Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Add text primitive for rendering later
 	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Add text primitive for rendering later (screen position calculated from 3D model coordinates)
