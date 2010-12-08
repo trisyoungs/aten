@@ -16,3 +16,9 @@ a) Glyphs, including render test akf (inc. lots more stuff besides)
 b) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
 c) Spacegroup Pnmmm
 e) Tabulated trigonometric functions (in mathfunc.h)
+f) Proper positioning of bond halves
+g) Selection of multiple bonds
+
+General TODO:
+
+1) Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click
