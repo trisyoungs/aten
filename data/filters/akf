@@ -18,6 +18,8 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 
 	newmodel(filterfilename());
 
+	addreadoption("skipblanks");
+
 	# Read line
 	while (!eof())
 	{
@@ -51,7 +53,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			# First 'n' lines are the 'n' data points for the glyph
 			for (int n=1; n<=ndata; ++n)
 			{
-				readline(l,i,atomdata,v.x,v.y,v.z,g.data[1].colour[1],g.data[l].colour[2],g.data[l].colour[3],g.data[l].colour[4]);
+				readline(l,i,atomdata,v.x,v.y,v.z,g.data[l].colour[1],g.data[l].colour[2],g.data[l].colour[3],g.data[l].colour[4]);
 				if (i < 0) g.data[l].vector = v;
 				else g.data[l].atom = aten.model.atoms[i];
 				g.data[l].atomdata = atomdata;
@@ -63,6 +65,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 				if (keywd == "rotation") readvarf(line,"%f %f %f %f %f %f %f %f %f", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
 				else if (keywd == "invisible") g.visible = FALSE;
 				else if (keywd == "text") readvar(line,g.text);
+				else if (keywd == "wireframe") g.solid = FALSE;
 			}
 		}
 		else if (keywd == "geometry")
@@ -128,6 +131,7 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 		if (g.rotated) writelinef("  rotation  %f %f %f %f %f %f %f %f %f\n", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
 		if (!g.visible) writelinef("  invisible\n");
 		if (g.text != "") writelinef("  text  '%s'\n", g.text);
+		if (!g.solid) writelinef("  wireframe\n");
 		writelinef("endglyph\n");
 	}
 }

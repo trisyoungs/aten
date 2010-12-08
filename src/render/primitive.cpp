@@ -413,6 +413,7 @@ PrimitiveInfo::PrimitiveInfo()
 	// Private variables
 	primitive_ = NULL;
 	fillMode_ = GL_FILL;
+	lineWidth_ = 1.0f;
 	colour_[0] = 0.0;
 	colour_[1] = 0.0;
 	colour_[2] = 0.0;
@@ -424,11 +425,12 @@ PrimitiveInfo::PrimitiveInfo()
 }
 
 // Set primitive info data
-void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, Matrix& transform, GLenum fillMode)
+void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
 {
 	primitive_ = prim;
 	localTransform_ = transform;
 	fillMode_ = fillMode;
+	lineWidth_ = lineWidth;
 	if (colour != NULL) for (int n=0; n<4; ++n) colour_[n] = colour[n];
 }
 
@@ -454,6 +456,12 @@ GLfloat *PrimitiveInfo::colour()
 GLenum PrimitiveInfo::fillMode()
 {
 	return fillMode_;
+}
+
+// Return line width
+GLfloat PrimitiveInfo::lineWidth()
+{
+	return lineWidth_;
 }
 
 /*
