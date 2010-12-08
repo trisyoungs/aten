@@ -76,8 +76,6 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 	static Vec3<double> delta, newpos, cog;
 	static int pnatoms, offset, n;
 	Atom **modelatoms = atomArray();
-	rotx /= DEGRAD;
-	roty /= DEGRAD;
 	rotmat.createRotationXY(rotx,roty);
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;

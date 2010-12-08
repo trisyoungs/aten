@@ -75,8 +75,6 @@ class TCanvas : public QGLWidget
 	bool useCurrentModel_;
 	// Model to render if we are not using the current model in Aten
 	Model *renderSource_;
-	// Point at which the stored atom display list was valid (sum of Change::StructureLog and Change::CoordinateLog points)
-	Log renderPoint_;
 
 	public:
 	// Return the current display model
