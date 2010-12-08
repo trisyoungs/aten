@@ -50,6 +50,8 @@ void RenderEngine::initialiseGL()
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 	// Set up the light model
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	glEnable(GL_LIGHTING);
 	prefs.copySpotlightColour(Prefs::AmbientComponent, col);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, col);
