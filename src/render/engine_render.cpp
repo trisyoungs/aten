@@ -106,73 +106,173 @@ void RenderEngine::initialiseGL()
 	msg.exit("RenderEngine::initialiseGL");
 }
 
-// Render 3D
-void RenderEngine::render3D(Model *source, TCanvas *canvas)
+// Render bond
+void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b)
+{
+	double dvisible, factor, rij, phi, dp;
+	Vec3<double> ijk;
+	GLfloat alpha_i, alpha_j;
+	
+	// Store copies of alpha values
+	alpha_i = colour_i[3];
+	alpha_j = colour_j[3];
+	
+	rij = vij.magnitude();
+	
+	// Don't bother calculating transformation if both atom styles are Stick
+	if ((style_i == Atom::StickStyle) && (style_j == Atom::StickStyle))
+	{
+		glNormal3d(0.0,0.0,1.0);
+		glLineWidth( i->isSelected() ? 3.0 : 1.0 );
+		glColor4fv(colour_i);
+		glBegin(GL_LINES);
+		glVertex3d(0.0, 0.0, 0.0);
+		glVertex3d(0.5*vij.x, 0.5*vij.y, 0.5*vij.z);
+		glEnd();
+		glLineWidth( j->isSelected() ? 3.0 : 1.0 );
+		glColor4fv(colour_j);
+		glBegin(GL_LINES);
+		glVertex3d(0.5*vij.x, 0.5*vij.y, 0.5*vij.z);
+		glVertex3d(vij.x, vij.y, vij.z);
+		glEnd();
+	}
+	else
+	{
+		// If bond is not visible, don't bother drawing it...
+		dvisible = 0.5 * (rij - 0.85*(radius_i + radius_j));
+		if (dvisible < 0.0) return;
+		factor = (selscale*radius_i - 0.85*radius_i) / dvisible;
+		
+		// Calculate angle out of XZ plane
+		// OPTIMISE - Precalculate acos()
+		phi = DEGRAD * acos(vij.z/rij);
+		
+		// Special case where the bond is exactly in the XY plane.
+		if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
+		else A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
+		
+		// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
+		A.applyTranslation(0.0, 0.0, 0.85*radius_i);
+		A.applyScalingZ(dvisible);
+		
+		// Determine bond plane rotation if a multiple bond
+		if ((bt > Bond::Single) && (b != NULL))
+		{
+			if (i > j) ijk = i->findBondPlane(j,b,vij);
+			else ijk = j->findBondPlane(i,b,vij);
+			// Calculate projected bond plane vector
+			ijk = A.rotateVector(ijk);
+			// 					printf("Transformed bond-plane vector is :"); ijk.print();
+			// 					A.print();
+			// 					printf("DP = %f,  acos = %f\n", ijk.dp(Vec3<double>(A[0],A[1],A[2])), DEGRAD*acos(ijk.dp(Vec3<double>(A[0],A[1],A[2]))));
+			// Rotate into bond plane if necessary
+			dp = ijk.x*A[0] + ijk.y*A[1] + ijk.z*A[2];
+			phi = 180.0 - DEGRAD*acos(dp);
+			if (phi > 0.01)
+			{
+				A.applyRotationAxis(0.0,0.0,1.0,phi-180.0,FALSE);  // BROKEN
+			}
+		}
+		
+		// Draw first bond half
+		switch (style_i)
+		{
+			case (Atom::StickStyle):
+				glLineWidth( i->isSelected() ? 4.0 : 2.0 );
+				glBegin(GL_LINES);
+				glVertex3d(0.0, 0.0, 0.0);
+				glVertex3d(0.5*vij.x, 0.5*vij.y, 0.5*vij.z);
+				glEnd();
+				break;
+			case (Atom::TubeStyle):
+				renderPrimitive(bond_[style_i][bt], lod, colour_i, A);
+				if (i->isSelected())
+				{
+					colour_i[3] = 0.5f;
+					renderPrimitive(selectedBond_[style_i][bt], lod, colour_i, A);
+					colour_i[3] = alpha_i;
+				}
+				// Move to centre of visible bond, ready for next bond half
+				A.applyTranslation(0.0, 0.0, 1.0);
+				break;
+			case (Atom::SphereStyle):
+			case (Atom::ScaledStyle):
+				renderPrimitive(bond_[style_i][bt], lod, colour_i, A);
+				if (i->isSelected())
+				{
+					// Move to bond centre and apply 'reverse' Z-scaling
+					A.applyTranslation(0.0, 0.0, factor);
+					A.applyScalingZ(1.0-factor);
+					colour_i[3] = 0.5f;
+					renderPrimitive(selectedBond_[style_i][bt], lod, colour_i, A);
+					colour_i[3] = alpha_i;
+					// Move to centrepoint and reverse scaling back to 'dvisible'
+					A.applyTranslation(0.0, 0.0, 1.0);	// OPTIMIZE - Separate funcs for X, Y, or Z translation
+					A.applyScalingZ(1.0/(1.0-factor));
+				}
+				else A.applyTranslation(0.0, 0.0, 1.0);
+				break;
+		}
+		
+		// Draw second bond half
+		switch (style_j)
+		{
+			case (Atom::StickStyle):
+				glLineWidth( j->isSelected() ? 3.0 : 1.0 );
+				glBegin(GL_LINES);
+				glVertex3d(0.5*vij.x, 0.5*vij.y, 0.5*vij.z);
+				glVertex3d(vij.x, vij.y, vij.z);
+				glEnd();
+				break;
+			case (Atom::TubeStyle):
+				renderPrimitive(bond_[style_i][bt], lod, colour_j, A);
+				if (j->isSelected())
+				{
+					colour_j[3] = 0.5f;
+					renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, A);
+					colour_j[3] = alpha_j;
+				}
+				break;
+			case (Atom::SphereStyle):
+			case (Atom::ScaledStyle):
+				renderPrimitive(bond_[style_j][bt], lod, colour_j, A);
+				if (j->isSelected())
+				{
+					colour_j[3] = 0.5f;
+					A.applyScalingZ(1.0-factor);
+					renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, A);
+					colour_j[3] = alpha_j;
+				}
+				break;
+		}
+	}
+}
+
+// Render basic model information (atoms, bonds, labels, and glyphs)
+void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j, colour_k[4], colour_l[4];
 	GLenum style;
 	int lod, id_i, labels, n;
 	Dnchar text;
-	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp, t, gamma, factor;
+	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp, factor;
 	Atom *i, *j, **atoms;
-	Vec3<double> pos, v, ijk, r1, r2, r3, r4, rji, rjk, rmouse, centroid;
+	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> transformZ, screenr;
-	Matrix atomtransform, bondtransform, A;
+	Matrix atomtransform, A;
 	Refitem<Bond,int> *ri;
 	Atom::DrawStyle style_i, style_j, globalstyle;
-	Bond::BondType bt;
 	Prefs::ColouringScheme scheme;
-	Fragment *frag;
 	ForcefieldAtom *ffa;
-
-	// Clear filtered primitive lists
-	solidPrimitives_.clear();
-	transparentPrimitives_.clear();
-	textPrimitives_.forgetAll();
-
-	// Set initial transformation matrix, including any translation occurring from cell...
-	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
-	transformZ.set(modelTransformationMatrix_[2], modelTransformationMatrix_[6], modelTransformationMatrix_[10], modelTransformationMatrix_[14]);
 	
 	// Grab global style values
 	scheme = prefs.colourScheme();
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
-
-	// Set target matrix mode and reset it, and set colour mode
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
 	
-	// Render rotation globe in small viewport in lower right-hand corner
-	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe))
-	{
-		n = prefs.globeSize();
-		glViewport(canvas->contextWidth()-n,0,n,n);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glMultMatrixd(globeProjectionMatrix_.matrix());
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		A = modelTransformationMatrix_;
-		A.removeTranslationAndScaling();
-		A[14] = -1.2;
-		glMultMatrixd(A.matrix());
-		prefs.copyColour(Prefs::GlobeColour, colour_i);
-		glColor4fv(colour_i);
-		rotationGlobe_.sendToGL();
-		prefs.copyColour(Prefs::GlobeAxesColour, colour_i);
-		glColor4fv(colour_i);
-		rotationGlobeAxes_.sendToGL();
-	}
-
-	// Prepare for model rendering
-	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMultMatrixd(modelProjectionMatrix_.matrix());
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
+	// Gram z-transform vector
+	transformZ.set(modelTransformationMatrix_[2], modelTransformationMatrix_[6], modelTransformationMatrix_[10], modelTransformationMatrix_[14]);
+	
 	// Render cell and cell axes
 	if (source->cell()->type() != Cell::NoCell)
 	{
@@ -187,32 +287,36 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		prefs.copyColour(Prefs::UnitCellAxesColour, colour_i);
 		glColor4fv(colour_i);
 		if (prefs.isVisibleOnScreen(Prefs::ViewCellAxes)) cellAxes_.sendToGL();
-		glLoadIdentity();
 	}
 
+	// We will apply the basic transformation matrix to OpenGL here, so we can draw simple line primitives using just model coordinates
+	// Consequencly, glMultMatrixd() and glLoadIdentity(), as well as all other OpenGL matrix manipulators, should not be used past this point!
+	glLoadIdentity();
+	glMultMatrixd(modelTransformationMatrix_.matrix());
+	
 	// Atoms and Bonds // OPTIMIZE - use atom array instead
 	if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) for (i = source->atoms(); i != NULL; i = i->next)
 	{
 		// Skip hidden atoms
 		if (i->isHidden()) continue;
-
+		
 		// Grab atom coordinate - we'll need it a lot
 		pos = i->r();
-
+		
 		// Calculate projected Z distance from viewer
 		// If z is less than 0, don't even bother continuing since its behind the viewer
 		z = -(pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w);
 		if (z < 0) continue;
-
+		
 		// Determine level of detail to use for primitives
 		if (z < prefs.levelOfDetailStartZ()) lod = 0;
 		else lod = int((z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth());
-// 		printf("lod = %i, projected z = %f, nlevels = %i\n", lod, z, prefs.levelsOfDetail());
-
+		// 		printf("lod = %i, projected z = %f, nlevels = %i\n", lod, z, prefs.levelsOfDetail());
+		
 		// Move to local atom position
 		atomtransform = modelTransformationMatrix_;
 		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
-
+		
 		// Select colour
 		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_i);
 		else switch (scheme)
@@ -270,7 +374,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 				}
 				break;
 		}
-
+		
 		// Labels
 		labels = i->labels();
 		if ((labels != 0) && (prefs.isVisibleOnScreen(Prefs::ViewLabels)))
@@ -293,344 +397,53 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			// Add text object
 			renderTextPrimitive(i->r(), text.get());
 		}
-
+		
 		// Bonds
-		// Set initial transformation matrix to centre on atom i
-		bondtransform = atomtransform;
 		// Grab some useful values from atom i
 		id_i = i->id();
 		radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
-
+		
 		for (ri = i->bonds(); ri != NULL; ri = ri->next)
 		{
 			j = ri->item->partner(i);
 			if (j->id() > id_i) continue;
-
+			
 			// Grab colour of second atom
 			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_j);
 			else switch (scheme)
 			{
-				case (Prefs::ElementScheme):
-					elements().copyColour(j->element(), colour_j);
-					break;
-				case (Prefs::ChargeScheme):
-					prefs.colourScale[0].colour(j->charge(), colour_j);
-					break;
-				case (Prefs::VelocityScheme):
-					prefs.colourScale[1].colour(j->v().magnitude(), colour_j);
-					break;
-				case (Prefs::ForceScheme):
-					prefs.colourScale[2].colour(j->f().magnitude(), colour_j);
-					break;
-				case (Prefs::CustomScheme):
-					j->copyColour(colour_j);
-					break;
-				default:
-					break;
+			case (Prefs::ElementScheme):
+				elements().copyColour(j->element(), colour_j);
+				break;
+			case (Prefs::ChargeScheme):
+				prefs.colourScale[0].colour(j->charge(), colour_j);
+				break;
+			case (Prefs::VelocityScheme):
+				prefs.colourScale[1].colour(j->v().magnitude(), colour_j);
+				break;
+			case (Prefs::ForceScheme):
+				prefs.colourScale[2].colour(j->f().magnitude(), colour_j);
+				break;
+			case (Prefs::CustomScheme):
+				j->copyColour(colour_j);
+				break;
+			default:
+				break;
 			}
-
+			
 			// Get atom style and radius
 			style_j = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
 			radius_j = (style_j == Atom::TubeStyle ? 0.0 : prefs.screenRadius(j)*0.85);
-			bt = ri->item->type();
-
-			// Store copy of alpha value
-			alpha_j = colour_j[3];
-
+			
 			// Calculate vector i->j
 			v = source->cell()->mimd(j, i);
-			rij = v.magnitude();
-
-			// Don't bother calculating transformation if both atom styles are Stick
-			if ((style_i == Atom::StickStyle) && (style_j == Atom::StickStyle))
-			{
-			        glMultMatrixd(atomtransform.matrix());
-				glNormal3d(0.0,0.0,1.0);
-				glLineWidth( i->isSelected() ? 3.0 : 1.0 );
-				glColor4fv(colour_i);
-				glBegin(GL_LINES);
-				glVertex3d(0.0, 0.0, 0.0);
-				glVertex3d(0.5*v.x, 0.5*v.y, 0.5*v.z);
-				glEnd();
-				glLineWidth( j->isSelected() ? 3.0 : 1.0 );
-				glColor4fv(colour_j);
-				glBegin(GL_LINES);
-				glVertex3d(0.5*v.x, 0.5*v.y, 0.5*v.z);
-				glVertex3d(v.x, v.y, v.z);
-				glEnd();
-				glLoadIdentity();
-			}
-			else
-			{
-				// If bond is not visible, don't bother drawing it...
-				dvisible = 0.5 * (rij - 0.85*(radius_i + radius_j));
-				if (dvisible < 0.0) continue;
-				factor = (selscale*radius_i - 0.85*radius_i) / dvisible;
-
-				// Calculate angle out of XZ plane
-				// OPTIMISE - Precalculate acos()
-				phi = DEGRAD * acos(v.z/rij);
-	
-				// Special case where the bond is exactly in the XY plane.
-				bondtransform = atomtransform;
-				if ((fabs(phi) < 0.01) || (phi > 179.99)) bondtransform.applyRotationX(phi);
-				else bondtransform.applyRotationAxis(-v.y, v.x, 0.0, phi, TRUE);
-
-				// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
-				bondtransform.applyTranslation(0.0, 0.0, 0.85*radius_i);
-				bondtransform.applyScalingZ(dvisible);
-
-				// Determine bond plane rotation if a multiple bond
-				if (ri->item->type() > Bond::Single)
-				{
-					if (i > j) ijk = i->findBondPlane(j,ri->item,v);
-					else ijk = j->findBondPlane(i,ri->item,v);
-					// Calculate projected bond plane vector
-					ijk = bondtransform.rotateVector(ijk);
-// 					printf("Transformed bond-plane vector is :"); ijk.print();
-// 					bondtransform.print();
-// 					printf("DP = %f,  acos = %f\n", ijk.dp(Vec3<double>(bondtransform[0],bondtransform[1],bondtransform[2])), DEGRAD*acos(ijk.dp(Vec3<double>(bondtransform[0],bondtransform[1],bondtransform[2]))));
-					// Rotate into bond plane if necessary
-					dp = ijk.x*bondtransform[0] + ijk.y*bondtransform[1] + ijk.z*bondtransform[2];
-					phi = 180.0 - DEGRAD*acos(dp);
-					if (phi > 0.01)
-					{
-						bondtransform.applyRotationAxis(0.0,0.0,1.0,phi-180.0,FALSE);  // BROKEN
-					}
-				}
-				
-				// Draw first bond half
-				switch (style_i)
-				{
-					case (Atom::StickStyle):
-						glLineWidth( i->isSelected() ? 4.0 : 2.0 );
-						glBegin(GL_LINES);
-						glVertex3d(pos.x, pos.y, pos.z);
-						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
-						glEnd();
-						break;
-					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_i][bt], lod, colour_i, bondtransform);
-						if (i->isSelected())
-						{
-							colour_i[3] = 0.5f;
-							renderPrimitive(selectedBond_[style_i][bt], lod, colour_i, bondtransform);
-							colour_i[3] = alpha_i;
-						}
-						// Move to centre of visible bond, ready for next bond half
-						bondtransform.applyTranslation(0.0, 0.0, 1.0);
-						break;
-					case (Atom::SphereStyle):
-					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[style_i][bt], lod, colour_i, bondtransform);
-						if (i->isSelected())
-						{
-							// Move to bond centre and apply 'reverse' Z-scaling
-							bondtransform.applyTranslation(0.0, 0.0, factor);
-// 							z = -(1.0 - (dvisible - 0.85*(radius_i*selscale-radius_i))/dvisible);
-							bondtransform.applyScalingZ(1.0-factor);
-							colour_i[3] = 0.5f;
-							renderPrimitive(selectedBond_[style_i][bt], lod, colour_i, bondtransform);
-							colour_i[3] = alpha_i;
-							// Move to centrepoint and reverse scaling back to 'dvisible'
-							bondtransform.applyTranslation(0.0, 0.0, 1.0);	// OPTIMIZE - Separate funcs for X, Y, or Z translation
-							bondtransform.applyScalingZ(1.0/(1.0-factor));
-						}
-						else bondtransform.applyTranslation(0.0, 0.0, 1.0);
-						break;
-				}
-
-				// Draw second bond half
-				switch (style_j)
-				{
-					case (Atom::StickStyle):
-						glLineWidth( j->isSelected() ? 3.0 : 1.0 );
-						glBegin(GL_LINES);
-						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
-						glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
-						glEnd();
-						break;
-					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_i][bt], lod, colour_j, bondtransform);
-						if (j->isSelected())
-						{
-							colour_j[3] = 0.5f;
-							renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, bondtransform);
-							colour_j[3] = alpha_j;
-						}
-						break;
-					case (Atom::SphereStyle):
-					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[style_j][bt], lod, colour_j, bondtransform);
-						if (j->isSelected())
-						{
-							colour_j[3] = 0.5f;
-// 							z = 1.0 - (dvisible - 0.85*(radius_j*selscale-radius_j))/dvisible;
-							bondtransform.applyScalingZ(1.0-factor);
-							renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, bondtransform);
-							colour_j[3] = alpha_j;
-						}
-						break;
-				}
-			}
-		}
-
-	}
-
-	// Draw on the selection highlights (for atoms in canvas.subsel)
-	for (Refitem<Atom,int> *ri = canvas->pickedAtoms(); ri != NULL; ri = ri->next)
-	{
-		i = ri->item;
-		// Move to local atom position
-		atomtransform = modelTransformationMatrix_;
-		atomtransform.applyTranslation(i->r());
-		// Draw a wireframe sphere at the atoms position
-		style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
-		switch (style_i)
-		{
-			case (Atom::StickStyle):
-			case (Atom::TubeStyle):
-				renderPrimitive(selectedAtom_[Atom::TubeStyle], lod, colour_i, atomtransform, GL_LINE);
-				break;
-			case (Atom::SphereStyle):
-				renderPrimitive(selectedAtom_[Atom::SphereStyle], lod, colour_i, atomtransform, GL_LINE);
-				break;
-			case (Atom::ScaledStyle):
-				renderPrimitive(selectedScaledAtom_[i->element()], lod, colour_i, atomtransform, GL_LINE);
-				break;
-		}
-	}
-
-
-	// Active user actions
-	i = canvas->atomClicked();
-	switch (canvas->activeMode())
-	{
-		// Draw on bond and new atom for chain drawing (if mode is active)
-		case (UserAction::DrawChainAction):
-			if (i == NULL) break;
-			pos = i->r();
-			rmouse = canvas->rMouseLast();
-			style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
-			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
-			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
-			j = source->atomOnScreen(rmouse.x, rmouse.y);
-			if (j == NULL)
-			{
-				v = screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
-				style_j = (globalstyle == Atom::IndividualStyle ? Atom::StickStyle : globalstyle);
-				radius_j = prefs.bondStyleRadius(prefs.renderStyle());
-			}
-			else
-			{
-				v = j->r();
-				style_j = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
-				radius_j = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(j)*0.85);
-			}
-			v -= pos;
-			rij = v.magnitude();
 			
-			// Select colour
-			if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_i);
-			else switch (scheme)
-			{
-				case (Prefs::ElementScheme):
-					elements().copyColour(i->element(), colour_i);
-					break;
-				case (Prefs::ChargeScheme):
-					prefs.colourScale[0].colour(i->charge(), colour_i);
-					break;
-				case (Prefs::VelocityScheme):
-					prefs.colourScale[1].colour(i->v().magnitude(), colour_i);
-					break;
-				case (Prefs::ForceScheme):
-					prefs.colourScale[2].colour(i->f().magnitude(), colour_i);
-					break;
-				case (Prefs::CustomScheme):
-					i->copyColour(colour_i);
-					break;
-				default:
-					break;
-			}
-			elements().copyColour(canvas->sketchElement(), colour_j);
-			
-			// Determine how we'll draw the new bond / atom
-			if (prefs.renderStyle() == Atom::StickStyle)
-			{
-				// Simple - draw line from atomClicked_ to mouse position
-				glLoadIdentity();
-				glMultMatrixd(modelTransformationMatrix_.matrix());
-				glBegin(GL_LINES);
-				glVertex3d(pos.x, pos.y, pos.z);
-				glVertex3d(v.x+pos.x,v.y+pos.y,v.z+pos.z);
-				glEnd();
-			}
-			else
-			{
-				// Draw new bond and atom
-				bondtransform = modelTransformationMatrix_;
-				bondtransform.applyTranslation(pos);
+			// Render bond
+			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, ri->item->type(), lod, selscale);
+		}
 		
-				// If bond is not visible, don't bother drawing it...
-				dvisible = 0.5 * (rij - 0.85*(radius_i + radius_j));
-				if (dvisible < 0.0) break;
-				// Calculate angle out of XZ plane
-				// OPTIMISE - Precalculate acos()
-				phi = DEGRAD * acos(v.z/rij);
-			
-				// Special case where the bond is exactly in the XY plane.
-				if ((fabs(phi) < 0.01) || (phi > 179.99)) bondtransform.applyRotationX(phi);
-				else bondtransform.applyRotationAxis(-v.y, v.x, 0.0, phi, TRUE);
-				
-				// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
-				bondtransform.applyTranslation(0.0, 0.0, 0.85*radius_i);
-				bondtransform.applyScalingZ(dvisible);
-				// Draw first bond half
-				switch (style_i)
-				{
-					case (Atom::StickStyle):
-						glLineWidth(2.0);
-						glBegin(GL_LINES);
-						glVertex3d(pos.x, pos.y, pos.z);
-						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
-						glEnd();
-						break;
-					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_i][Bond::Single], lod, colour_i, bondtransform, GL_LINE);
-						bondtransform.applyTranslation(0.0, 0.0, 1.0);
-						break;
-					case (Atom::SphereStyle):
-					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[style_i][Bond::Single], lod, colour_i, bondtransform, GL_LINE);
-						bondtransform.applyTranslation(0.0, 0.0, 1.0);
-						break;
-				}
-				
-				// Draw second bond half
-				switch (style_j)
-				{
-					case (Atom::StickStyle):
-						glLineWidth(2.0);
-						glBegin(GL_LINES);
-						glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
-						glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
-						glEnd();
-						break;
-					case (Atom::TubeStyle):
-						renderPrimitive(bond_[style_j][Bond::Single], lod, colour_j, bondtransform, GL_LINE);
-						break;
-					case (Atom::SphereStyle):
-					case (Atom::ScaledStyle):
-						renderPrimitive(bond_[style_j][Bond::Single], lod, colour_j, bondtransform, GL_LINE);
-						break;
-				}
-			}
-			// Draw text showing distance
-			text.sprintf("r = %f ", v.magnitude());
-			renderTextPrimitive(rmouse.x, canvas->contextHeight()-rmouse.y, text.get(), 0x212b);
-			break;
 	}
-
+	
 	// Surfaces
 	// Cycle over grids stored in current model
 	for (Grid *g = source->grids(); g != NULL; g = g->next)
@@ -652,12 +465,12 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			else if (g->type() == Grid::FreeXYZData)
 			{
 				// Construct the Delaunay triangulization of the surface
-// 				DelaunaySurface D(g);
+				// 				DelaunaySurface D(g);
 			}
 			else gp->createSurface2D();
 			g->updateRenderPoint();
 		}
-
+		
 		// Grid primitive now exists (or has been updated) so create transformation and render it
 		A = modelTransformationMatrix_;
 		A.applyTranslation(g->origin());
@@ -681,7 +494,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			}
 		}
 	}
-
+	
 	// Glyphs
 	for (Glyph *g = source->glyphs(); g != NULL; g = g->next)
 	{
@@ -698,28 +511,28 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		
 		switch (g->type())
 		{
-// 			// Arrow - tail = data[0], head = data[1]
-// 			case (Glyph::ArrowGlyph):
-// 				r2 = g->data(1)->vector();
-// 				g->data(0)->copyColour(colour_i);
-// 				glLineWidth(g->lineWidth());
-// 				glColor4fv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour_i);
-// 				if (g->rotated())
-// 				{
-// 					centroid = (r1 + r2) * 0.5;
-// 					r1 -= centroid;
-// 					r2 -= centroid;
-// 					glPushMatrix();
-// 					glTranslated(centroid.x, centroid.y, centroid.z);
-// 					glPushMatrix();
-// 					glMultMatrixd(g->rotationForGL());
-// 					glArrow(vec[0], g->data(1)->vector() - vec[0] );
-// 					glPopMatrix();
-// 					glPopMatrix();
-// 				}
-// 				else glArrow(vec[0], g->data(1)->vector() - vec[0] );
-// 				break;
-			// Sphere or Cube - centre = data[0], scale = data[1]
+			// 			// Arrow - tail = data[0], head = data[1]
+			// 			case (Glyph::ArrowGlyph):
+			// 				r2 = g->data(1)->vector();
+			// 				g->data(0)->copyColour(colour_i);
+			// 				glLineWidth(g->lineWidth());
+			// 				glColor4fv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour_i);
+			// 				if (g->rotated())
+			// 				{
+				// 					centroid = (r1 + r2) * 0.5;
+				// 					r1 -= centroid;
+				// 					r2 -= centroid;
+				// 					glPushMatrix();
+				// 					glTranslated(centroid.x, centroid.y, centroid.z);
+				// 					glPushMatrix();
+				// 					glMultMatrixd(g->rotationForGL());
+				// 					glArrow(vec[0], g->data(1)->vector() - vec[0] );
+				// 					glPopMatrix();
+				// 					glPopMatrix();
+				// 				}
+				// 				else glArrow(vec[0], g->data(1)->vector() - vec[0] );
+				// 				break;
+				// Sphere or Cube - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):
 			case (Glyph::CubeGlyph):
 				r2 = g->data(1)->vector();
@@ -733,16 +546,25 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 				break;
 		}
 	}
-	
-	// All primitive objects have now been filtered, so sort and send to GL
-	sortAndSendGL();
+}
 
+// Render additional model information (measurements etc.)
+void RenderEngine::renderModelOverlays(Model *source, TCanvas *canvas)
+{
+	Vec3<double> r1, r2, r3, r4, pos, rji, rjk;
+	Vec4<double> screenr;
+	Matrix A;
+	double gamma, t;
+	Atom **atoms;
+
+	// Clear depth buffer to force lines on top of existing primitives,
+	glDisable(GL_DEPTH_TEST);
+	
 	// Measurements
 	// Apply standard transformation matrix to OpenGL so we may just use local atom positions for vertices
 	if (prefs.isVisibleOnScreen(Prefs::ViewMeasurements))
 	{
-		// Clear depth buffer to force lines on top of existing primitives, and load model transformation matrix
-		glDisable(GL_DEPTH_TEST);
+		// Load model transformation matrix
 		glLoadIdentity();
 		glMultMatrixd(modelTransformationMatrix_.matrix());
 		
@@ -820,14 +642,168 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			glEnd();
 			renderTextPrimitive((r2+r3)*0.5, ftoa(m->value(), prefs.angleLabelFormat()), 176);
 		}
-		
-		// Re-enable depth buffer
-		glEnable(GL_DEPTH_TEST);
 	}
+	
+	// Re-enable depth buffer
+	glEnable(GL_DEPTH_TEST);
 }
 
 // Render text objects (with supplied QPainter)
 void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 {
 	textPrimitives_.renderAll(painter, canvas);
+}
+
+// Render 3D
+void RenderEngine::render3D(Model *source, TCanvas *canvas)
+{
+	Matrix A;
+	Atom *i, *j, tempj;
+	GLfloat colour[4], colour_j[4];
+	Atom::DrawStyle style_i, style_j;
+	Vec3<double> pos, rmouse, v;
+	double radius_i, radius_j;
+	Dnchar text;
+	
+	// Clear filtered primitive lists
+	solidPrimitives_.clear();
+	transparentPrimitives_.clear();
+	textPrimitives_.forgetAll();
+	
+	// Set initial transformation matrix, including any translation occurring from cell...
+	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
+	
+	// Set target matrix mode and reset it, and set colour mode
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	
+	// Render rotation globe in small viewport in lower right-hand corner
+	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe))
+	{
+		int n = prefs.globeSize();
+		glViewport(canvas->contextWidth()-n,0,n,n);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glMultMatrixd(globeProjectionMatrix_.matrix());
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		A = modelTransformationMatrix_;
+		A.removeTranslationAndScaling();
+		A[14] = -1.2;
+		glMultMatrixd(A.matrix());
+		prefs.copyColour(Prefs::GlobeColour, colour);
+		glColor4fv(colour);
+		rotationGlobe_.sendToGL();
+		prefs.copyColour(Prefs::GlobeAxesColour, colour);
+		glColor4fv(colour);
+		rotationGlobeAxes_.sendToGL();
+	}
+	
+	// Prepare for model rendering
+	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMultMatrixd(modelProjectionMatrix_.matrix());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	// Draw main model
+	renderModel(source, canvas);
+	
+	// Draw on the selection highlights (for atoms in canvas.subsel)
+	for (Refitem<Atom,int> *ri = canvas->pickedAtoms(); ri != NULL; ri = ri->next)
+	{
+		i = ri->item;
+		// Move to local atom position
+		A = modelTransformationMatrix_;
+		A.applyTranslation(i->r());
+		prefs.copyColour(Prefs::TextColour, colour);
+		// Draw a wireframe sphere at the atoms position
+		style_i = (prefs.renderStyle() == Atom::IndividualStyle ? i->style() : prefs.renderStyle());
+		switch (style_i)
+		{
+			case (Atom::StickStyle):
+			case (Atom::TubeStyle):
+				renderPrimitive(selectedAtom_[Atom::TubeStyle], 0, colour, A, GL_LINE);
+				break;
+			case (Atom::SphereStyle):
+				renderPrimitive(selectedAtom_[Atom::SphereStyle], 0, colour, A, GL_LINE);
+				break;
+			case (Atom::ScaledStyle):
+				renderPrimitive(selectedScaledAtom_[i->element()], 0, colour, A, GL_LINE);
+				break;
+		}
+	}
+	
+	
+	// Active user actions
+	i = canvas->atomClicked();
+	switch (canvas->activeMode())
+	{
+		// Draw on bond and new atom for chain drawing (if mode is active)
+		case (UserAction::DrawChainAction):
+			if (i == NULL) break;
+			pos = i->r();
+			rmouse = canvas->rMouseLast();
+			style_i = (prefs.renderStyle() == Atom::IndividualStyle ? i->style() : prefs.renderStyle());
+			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
+			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
+			j = source->atomOnScreen(rmouse.x, rmouse.y);
+			if (j == NULL)
+			{
+				j = &tempj;
+				v = screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
+				style_j = (prefs.renderStyle() == Atom::IndividualStyle ? Atom::StickStyle : prefs.renderStyle());
+				radius_j = prefs.bondStyleRadius(prefs.renderStyle());
+			}
+			else
+			{
+				v = j->r();
+				style_j = (prefs.renderStyle() == Atom::IndividualStyle ? j->style() : prefs.renderStyle());
+				radius_j = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(j)*0.85);
+			}
+			v -= pos;
+			
+			// Select colour
+			if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour);
+			else switch (prefs.colourScheme())
+			{
+				case (Prefs::ElementScheme):
+					elements().copyColour(i->element(), colour);
+					break;
+				case (Prefs::ChargeScheme):
+					prefs.colourScale[0].colour(i->charge(), colour);
+					break;
+				case (Prefs::VelocityScheme):
+					prefs.colourScale[1].colour(i->v().magnitude(), colour);
+					break;
+				case (Prefs::ForceScheme):
+					prefs.colourScale[2].colour(i->f().magnitude(), colour);
+					break;
+				case (Prefs::CustomScheme):
+					i->copyColour(colour);
+					break;
+				default:
+					break;
+			}
+			elements().copyColour(canvas->sketchElement(), colour_j);
+			
+			// Construct transformation matrix to centre on original (first) atom
+			A = modelTransformationMatrix_;
+			A.applyTranslation(pos);
+			
+			// Render new (temporary) bond
+			renderBond(A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, Bond::Single, 0, prefs.selectionScale());
+			
+			// Draw text showing distance
+			text.sprintf("r = %f ", v.magnitude());
+			renderTextPrimitive(rmouse.x, canvas->contextHeight()-rmouse.y, text.get(), 0x212b);
+			break;
+	}
+	
+	// All 3D primitive objects have now been filtered, so sort and send to GL
+	sortAndSendGL();
+	
+	// Render overlays
+	renderModelOverlays(source, canvas);
 }

@@ -126,7 +126,7 @@ endglyph
 atom 1 H 12 5 0 0.0 tube 
 atom 2 H 10 7 0 0.0 tube
 atom 3 H 8 5 0 0.0 tube
-atom 4 H 10 -3 0 0.0 tube
+atom 4 H 10 3 0 0.0 tube
 atom 5 H 10 5 2 0.0 tube
 atom 6 H 10 5 -2 0.0 tube
 glyph cube 2

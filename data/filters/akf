@@ -2,6 +2,7 @@
 # Created:	 14/05/2009
 # Last modified: 02/09/2010
 # ChangeLog:
+#	09/12/2010: Added 'wireframe' glyph property and more associated verbosity. Fixed some minor bugs.
 # 	02/09/2010: Added read/write of atom style / custom colour information
 # 	27/06/2010: Added glyph support
 # 	09/04/2010: Added 'title' keyword
@@ -66,6 +67,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 				else if (keywd == "invisible") g.visible = FALSE;
 				else if (keywd == "text") readvar(line,g.text);
 				else if (keywd == "wireframe") g.solid = FALSE;
+				else if (keywd != "endglyph") printf("Unrecognised glyph property '%s'\n", keywd);
 			}
 		}
 		else if (keywd == "geometry")
