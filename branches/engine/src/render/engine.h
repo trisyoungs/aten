@@ -108,6 +108,8 @@ class RenderEngine
 	TriangleChopper triangleChopper_;
 	// Grid primitives (for all models)
 	List<GridPrimitive> gridPrimitives_;
+	// Glyph triangle primitives
+	Primitive solidTriangles_, transparentTriangles_, wireTriangles_;
 
 	private:
 	// Render primitive from primitive group in specified colour and level of detail

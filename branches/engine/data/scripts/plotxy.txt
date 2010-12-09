@@ -1,0 +1,52 @@
+# Simple plot example, rendering a function over a regular 2D grid using triangle glyphs
+
+double deltax = PI/10.0, deltay = PI/10.0;
+int nx = 20, ny = 20, ix, iy;
+
+double x, y, fxy, slice1[2*ny+1], slice2[2*ny+1];
+
+model m = newmodel("Function Plot");
+glyph g;
+
+# Double loop begins
+for (ix = 0; ix <= 2*nx; ++ix)
+{
+	x = (ix-nx) * deltax;
+
+	# Calculate slice of values at fixed x
+	for (iy = 0; iy <= 2*ny; ++iy)
+	{
+		y = (iy-ny) * deltay;
+
+		# ***
+		# Function to plot goes in here!
+		# ***
+		#fxy = 100*sin(x)*sin(y);
+		#fxy = cos(abs(x)+abs(y))*(abs(x)+abs(y));
+		fxy = sin(10*(x^2+y^2));
+		# ***
+
+		slice2[iy+1] = fxy;
+	}
+
+	# Generate glyphs (only if not first iteration of ix)
+	if (ix > 0)
+	{
+
+		for (iy = 1; iy <=2*ny; ++iy)
+		{
+			y = (iy-ny) * deltay;
+			g = m.newglyph("triangle");
+			g.data[1].vector = { x-deltax, y-deltay, slice1[iy] };
+			g.data[2].vector = { x-deltax, y, slice1[iy+1] };
+			g.data[3].vector = { x, y-deltay, slice2[iy] };
+			g = m.newglyph("triangle");
+			g.data[1].vector = { x, y-deltay, slice2[iy] };
+			g.data[2].vector = { x-deltax, y, slice1[iy+1] };
+			g.data[3].vector = { x, y, slice2[iy+1] };
+		}
+	}
+
+	# Copy slice2[] values into slice1[] for next pass
+	for (iy = 0; iy <=2*ny; ++iy) slice1[iy+1] = slice2[iy+1];
+}

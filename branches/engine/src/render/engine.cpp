@@ -34,7 +34,9 @@ RenderEngine::RenderEngine()
 	scaledAtom_ = new PrimitiveGroup[elements().nElements()];
 	selectedScaledAtom_ = new PrimitiveGroup[elements().nElements()];
 	primitiveQuality_ = -1;
-
+	solidTriangles_.setColourData(TRUE);
+	transparentTriangles_.setColourData(TRUE);
+	wireTriangles_.setColourData(TRUE);
 	initialiseTransparency();
 }
 

@@ -38,6 +38,12 @@
 						<entry>Rotation matrix for the glyph</entry>
 					</row>
 					<row>
+						<entry>selected</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the glyph is currently selected</entry>
+					</row>
+					<row>
 						<entry>solid</entry>
 						<entry>int</entry>
 						<entry>rw</entry>

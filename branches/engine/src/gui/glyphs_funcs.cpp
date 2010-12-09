@@ -93,7 +93,6 @@ void AtenGlyphs::finaliseUi()
 	dataValueWidget[1] = ui.Data2ValueGroup;
 	dataValueWidget[2] = ui.Data3ValueGroup;
 	dataValueWidget[3] = ui.Data4ValueGroup;
-
 }
 
 // Show window
@@ -151,6 +150,8 @@ void AtenGlyphs::updateData(Glyph *g)
 	if (g == NULL) return;
 	// Set data in widgets
 	ui.GlyphTypeCombo->setCurrentIndex(g->type());
+	ui.GlyphLineEdit->setText(g->text());
+	ui.GlyphVisibleCheck->setChecked(g->isVisible());
 	// Set individual data groups
 	for (int n=0; n<g->nData(); ++n)
 	{
@@ -168,7 +169,6 @@ void AtenGlyphs::updateData(Glyph *g)
 		}
 		dataColourFrame[n]->setColour(gd->colour());
 		dataColourFrame[n]->update();
-		ui.GlyphLineEdit->setText(g->text());
 	}
 }
 
@@ -216,6 +216,12 @@ void AtenGlyphs::on_GlyphList_currentRowChanged(int row)
 	updateData(g);
 	updateControls(g);
 	refreshing_ = FALSE;
+	for (int i = 0; i<ui.GlyphList->count(); ++i)
+	{
+		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g->setSelected(ui.GlyphList->item(i)->isSelected());
+	}
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphList_itemSelectionChanged()
@@ -228,22 +234,32 @@ void AtenGlyphs::on_GlyphList_itemSelectionChanged()
 		updateControls(NULL);
 		refreshing_ = FALSE;
 	}
+	Glyph *g;
+	for (int i = 0; i<ui.GlyphList->count(); ++i)
+	{
+		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g->setSelected(ui.GlyphList->item(i)->isSelected());
+	}
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphAddButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
+	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setSelected(FALSE);
 	Glyph *g = m->addGlyph(Glyph::ArrowGlyph);
 	addItemToList(g);
 	// Deselect any previously-selected items - easiest way is to temporarily change selection mode
 	ui.GlyphList->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui.GlyphList->setCurrentRow(ui.GlyphList->count()-1);
 	ui.GlyphList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	g->setSelected(TRUE);
 	refreshing_ = TRUE;
 	updateData(g);
 	updateControls(g);
 	refreshing_ = FALSE;
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphDeleteSelectedButton_clicked(bool checked)
@@ -267,18 +283,41 @@ void AtenGlyphs::on_GlyphDeleteSelectedButton_clicked(bool checked)
 
 void AtenGlyphs::on_GlyphSelectAllButton_clicked(bool checked)
 {
-	for (int i = 0; i<ui.GlyphList->count(); ++i) ui.GlyphList->item(i)->setSelected(TRUE);
+	Model *m = aten.currentModelOrFrame();
+	Glyph *g;
+	for (int i = 0; i<ui.GlyphList->count(); ++i)
+	{
+		ui.GlyphList->item(i)->setSelected(TRUE);
+		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g->setSelected(TRUE);
+	}
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphSelectNoneButton_clicked(bool checked)
 {
+	Model *m = aten.currentModelOrFrame();
+	Glyph *g = m->glyphs();
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	for (int i = items.size()-1; i>=0; --i) items.at(i)->setSelected(FALSE);
+	for (int i = items.size()-1; i>=0; --i)
+	{
+		items.at(i)->setSelected(FALSE);
+		g->setSelected(TRUE);
+		g = g->next;
+	}
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphInvertSelectionButton_clicked(bool checked)
 {
-	for (int i = 0; i<ui.GlyphList->count(); ++i) ui.GlyphList->item(i)->setSelected( ui.GlyphList->item(i)->isSelected() ? FALSE : TRUE );
+	Glyph *g;
+	for (int i = 0; i<ui.GlyphList->count(); ++i)
+	{
+		ui.GlyphList->item(i)->setSelected( ui.GlyphList->item(i)->isSelected() ? FALSE : TRUE );
+		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g->setSelected( ui.GlyphList->item(i)->isSelected());
+	}
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphHideAllButton_clicked(bool checked)
@@ -290,10 +329,20 @@ void AtenGlyphs::on_GlyphHideAllButton_clicked(bool checked)
 
 void AtenGlyphs::on_GlyphHideNoneButton_clicked(bool checked)
 {
+	Model *m = aten.currentModelOrFrame();
+	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(TRUE);
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphHideSelectedButton_clicked(bool checked)
 {
+	Glyph *g;
+	for (int i = 0; i<ui.GlyphList->count(); ++i)
+	{
+		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g->setVisible(FALSE);
+	}
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphTypeCombo_currentIndexChanged(int row)
