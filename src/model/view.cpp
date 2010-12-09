@@ -134,7 +134,8 @@ void Model::resetView()
 	Atom *i, target;
 	bool done = FALSE;
 	double z, largest = 0.0;
-	parent_ == NULL ? modelViewMatrix_.setIdentity() : parent_->modelViewMatrix().setIdentity();
+	Matrix &mview = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix_);
+	mview.setIdentity();
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (i = atoms_.first(); i != NULL; i = i->next)
@@ -144,7 +145,7 @@ void Model::resetView()
 	}
 	target.r() = cell_.centre();
 	target.r().add(0.0,0.0,cell_.lengths().z+largest);
-	modelViewMatrix_.setColumn(3,0.0,0.0,0.0,1.0);
+	mview.setColumn(3,0.0,0.0,0.0,1.0);
 	// Now, adjust camera matrix so that this atom is on-screen.
 	// Need to do a check for the viability of the canvas first...
 	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
@@ -154,9 +155,9 @@ void Model::resetView()
 			do
 			{
 				// Adjust z-translation by 1 Angstrom
-				modelViewMatrix_[14] -= 1.0;
+				mview[14] -= 1.0;
 				// Project our local atom and grab the z screen coordinate
-				gui.mainWidget->updateTransformation(modelViewMatrix(), cell_.centre());
+				gui.mainWidget->updateTransformation(mview, cell_.centre());
 				z = gui.mainWidget->modelToWorld(target.r()).z;
 			} while (z > -5.0);
 		}
@@ -174,7 +175,7 @@ void Model::resetView()
 			} while (!done);
 		}
 	}
-	else modelViewMatrix_.setColumn(3, 0.0, 0.0, -10.0, 1.0);
+	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
 	// Log camera change
 	changeLog.add(Log::Camera);
 	msg.exit("Model::resetView");
