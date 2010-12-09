@@ -69,6 +69,7 @@ Glyph::GlyphOption Glyph::glyphOption(const char *s, bool reporterror)
 Glyph::Glyph()
 {
 	// Private variables
+	selected_ = FALSE;
 	visible_ = TRUE;
 	solid_ = TRUE;
 	lineWidth_ = 1.0f;
@@ -149,6 +150,18 @@ const char *Glyph::text() const
 void Glyph::setColour(double r, double g, double b, double a)
 {
 	for (GlyphData *gd = data_.first(); gd != NULL; gd = gd->next) gd->setColour(r, g, b, a);
+}
+
+// Set whether the Glyph is selected
+void Glyph::setSelected(bool isselected)
+{
+	selected_ = isselected;
+}
+
+// Return whether the Glyph is selected
+bool Glyph::isSelected() const
+{
+	return selected_;
 }
 
 // Set whether the Glyph is visible

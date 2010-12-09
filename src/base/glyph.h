@@ -160,6 +160,8 @@ class Glyph
 	// Style
 	*/
 	private:
+	// Whether glyph is selected
+	bool selected_;
 	// Whether glyph is visible
 	bool visible_;
 	// Whether Glyph should be drawn with filled polygons (where possible)
@@ -168,6 +170,10 @@ class Glyph
 	GLfloat lineWidth_;
 
 	public:
+	// Set whether the Glyph is selected
+	void setSelected(bool isselected);
+	// Return whether the Glyph is selected
+	bool isSelected() const;
 	// Set whether the Glyph is visible
 	void setVisible(bool isvisible);
 	// Return whether the Glyph is visible

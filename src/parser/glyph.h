@@ -41,7 +41,7 @@ class GlyphVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Data, NData, Rotated, Rotation, Solid, Text, Type, Visible, nAccessors };
+        enum Accessors { Data, NData, Rotated, Rotation, Selected, Solid, Text, Type, Visible, nAccessors };
 	// Function list
 	enum Functions { Recolour, ResetRotation, Rotate, RotateX, RotateY, RotateZ, nFunctions };
 	// Search variable access list for provided accessor

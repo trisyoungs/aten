@@ -55,7 +55,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			for (int n=1; n<=ndata; ++n)
 			{
 				readline(l,i,atomdata,v.x,v.y,v.z,g.data[l].colour[1],g.data[l].colour[2],g.data[l].colour[3],g.data[l].colour[4]);
-				if (i < 0) g.data[l].vector = v;
+				if (i <= 0) g.data[l].vector = v;
 				else g.data[l].atom = aten.model.atoms[i];
 				g.data[l].atomdata = atomdata;
 			}
@@ -65,7 +65,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 				readlinef("%s%r",keywd,line);
 				if (keywd == "rotation") readvarf(line,"%f %f %f %f %f %f %f %f %f", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
 				else if (keywd == "invisible") g.visible = FALSE;
-				else if (keywd == "text") readvar(line,g.text);
+				else if (keywd == "text") g.text = line;
 				else if (keywd == "wireframe") g.solid = FALSE;
 				else if (keywd != "endglyph") printf("Unrecognised glyph property '%s'\n", keywd);
 			}

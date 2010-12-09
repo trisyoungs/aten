@@ -251,12 +251,12 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 // Render basic model information (atoms, bonds, labels, and glyphs)
 void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 {
-	GLfloat colour_i[4], colour_j[4], alpha_i, alpha_j, colour_k[4], colour_l[4];
+	GLfloat colour_i[4], colour_j[4], alpha_i, colour_k[4], colour_l[4], textcolour[4];
 	GLenum style;
-	int lod, id_i, labels, n;
+	int lod, id_i, labels;
 	Dnchar text;
-	double selscale, z, phi, radius_i, radius_j, dvisible, rij, dp, factor;
-	Atom *i, *j, **atoms;
+	double selscale, z, radius_i, radius_j;
+	Atom *i, *j;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> transformZ, screenr;
 	Matrix atomtransform, A;
@@ -265,10 +265,11 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 	Prefs::ColouringScheme scheme;
 	ForcefieldAtom *ffa;
 	
-	// Grab global style values
+	// Grab global style values and text colour
 	scheme = prefs.colourScheme();
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
+	prefs.copyColour(Prefs::TextColour, textcolour);
 	
 	// Gram z-transform vector
 	transformZ.set(modelTransformationMatrix_[2], modelTransformationMatrix_[6], modelTransformationMatrix_[10], modelTransformationMatrix_[14]);
@@ -348,11 +349,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 		switch (style_i)
 		{
 			case (Atom::StickStyle):
-				if (i->nBonds() == 0)
-				{
-					glLineWidth( i->isSelected() ? 3.0 : 1.0 );
-					renderPrimitive(atom_[style_i], lod, colour_i, atomtransform);
-				}
+				if (i->nBonds() == 0) renderPrimitive(atom_[style_i], lod, colour_i, atomtransform, GL_LINE, i->isSelected() ? 3.0 : 1.0);
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
@@ -412,23 +409,23 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_j);
 			else switch (scheme)
 			{
-			case (Prefs::ElementScheme):
-				elements().copyColour(j->element(), colour_j);
-				break;
-			case (Prefs::ChargeScheme):
-				prefs.colourScale[0].colour(j->charge(), colour_j);
-				break;
-			case (Prefs::VelocityScheme):
-				prefs.colourScale[1].colour(j->v().magnitude(), colour_j);
-				break;
-			case (Prefs::ForceScheme):
-				prefs.colourScale[2].colour(j->f().magnitude(), colour_j);
-				break;
-			case (Prefs::CustomScheme):
-				j->copyColour(colour_j);
-				break;
-			default:
-				break;
+				case (Prefs::ElementScheme):
+					elements().copyColour(j->element(), colour_j);
+					break;
+				case (Prefs::ChargeScheme):
+					prefs.colourScale[0].colour(j->charge(), colour_j);
+					break;
+				case (Prefs::VelocityScheme):
+					prefs.colourScale[1].colour(j->v().magnitude(), colour_j);
+					break;
+				case (Prefs::ForceScheme):
+					prefs.colourScale[2].colour(j->f().magnitude(), colour_j);
+					break;
+				case (Prefs::CustomScheme):
+					j->copyColour(colour_j);
+					break;
+				default:
+					break;
 			}
 			
 			// Get atom style and radius
@@ -541,8 +538,59 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				A.applyTranslation(r1.x, r1.y, r1.z);
 				if (g->rotated()) A *= (*g->matrix());
 				A.applyScaling(r2.x, r2.y, r2.z);
-				if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
-				else renderPrimitive(cubes_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				if (g->isSolid())
+				{
+					if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, colour_i, A, GL_FILL);
+					else renderPrimitive(cubes_, lod, colour_i, A, GL_FILL);
+					if (g->isSelected())
+					{
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, 3.0);
+						else renderPrimitive(cubes_, lod, textcolour, A, GL_LINE, 3.0);
+					}
+				}
+				else
+				{
+					if (g->isSelected())
+					{
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, g->lineWidth()+2);
+						else renderPrimitive(cubes_, lod, textcolour, A, GL_LINE, g->lineWidth()+2);
+					}
+					else
+					{
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, colour_i, A, GL_LINE, g->lineWidth());
+						else renderPrimitive(cubes_, lod, colour_i, A, GL_LINE, g->lineWidth());
+					}
+				}
+				break;
+			// Triangle - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
+			case (Glyph::TriangleGlyph):
+				r2 = g->data(1)->vector();
+				r3 = g->data(2)->vector();
+				g->data(0)->copyColour(colour_i);
+				g->data(1)->copyColour(colour_j);
+				g->data(2)->copyColour(colour_k);
+				if (g->isSolid())
+				{
+					if ((colour_i[3] < 0.99f) || (colour_j[3] < 0.99f) || (colour_k[3] < 0.99f))
+					transparentTriangles_.defineVertex(r1.x, r1.y, r1.z, XXX);
+// 				glLineWidth(g->lineWidth());
+				
+				glBegin(GL_TRIANGLES);
+				glColor4fv(colour_i);
+				glVertex3d(r1.x, r1.y, r1.z);
+				glColor4fv(colour_j);
+				glVertex3d(r2.x, r2.y, r2.z);
+				glColor4fv(colour_k);
+				glVertex3d(r3.x, r3.y, r3.z);
+				glEnd();
+				break;
+			// Text in 2D coordinates - left-hand origin = data[0]
+			case (Glyph::TextGlyph):
+				renderTextPrimitive(r1.x, canvas->contextHeight()-r1.y, g->text());
+				break;
+				// Text in 3D coordinates - left-hand origin = data[0]
+			case (Glyph::Text3DGlyph):
+				renderTextPrimitive(r1, g->text());
 				break;
 		}
 	}
@@ -644,6 +692,8 @@ void RenderEngine::renderModelOverlays(Model *source, TCanvas *canvas)
 		}
 	}
 	
+	// If glyphs window is visible, highlight selected glyph(s)
+	
 	// Re-enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 }
@@ -669,6 +719,8 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	solidPrimitives_.clear();
 	transparentPrimitives_.clear();
 	textPrimitives_.forgetAll();
+	solidTriangles_.forgetAll();
+	transparentTriangles_.forgetAll();
 	
 	// Set initial transformation matrix, including any translation occurring from cell...
 	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
@@ -801,7 +853,10 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			break;
 	}
 	
-	// All 3D primitive objects have now been filtered, so sort and send to GL
+	// All 3D primitive objects have now been filtered, so add triangles, then sort and send to GL
+	renderPrimitive(&solidTriangles_, FALSE, NULL, modelTransformationMatrix_);
+	renderPrimitive(&wireTriangles_, FALSE, NULL, modelTransformationMatrix_, GL_LINE);
+	renderPrimitive(&transparentTriangles_, TRUE, NULL, modelTransformationMatrix_);
 	sortAndSendGL();
 	
 	// Render overlays
