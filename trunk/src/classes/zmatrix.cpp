@@ -320,7 +320,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	{
 		v = new DoubleVariable(parent_->distance(zel->atom(0), zel->atom(1)), FALSE);
 		distances_.take(v);
-		name.sprintf("d%i",itoa(distances_.nVariables()));
+		name.sprintf("d%i",distances_.nVariables());
 		v->setName(name.get());
 		zel->setDistanceVariable(v);
 	}
@@ -328,7 +328,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	{
 		v = new DoubleVariable(parent_->angle(zel->atom(0), zel->atom(1), zel->atom(2)), FALSE);
 		angles_.take(v);
-		name.sprintf("a%i",itoa(angles_.nVariables()));
+		name.sprintf("a%i",angles_.nVariables());
 		v->setName(name.get());
 		zel->setAngleVariable(v);
 	}
@@ -336,7 +336,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	{
 		v = new DoubleVariable(parent_->torsion(zel->atom(0), zel->atom(1), zel->atom(2), zel->atom(3)), FALSE);
 		torsions_.take(v);
-		name.sprintf("t%i",itoa(torsions_.nVariables()));
+		name.sprintf("t%i",torsions_.nVariables());
 		v->setName(name.get());
 		zel->setTorsionVariable(v);
 	}
@@ -558,4 +558,60 @@ void ZMatrix::setVariable(Variable *v, double value)
 	v->set( newvalue );
 	parent_->recalculateFromZMatrix();
 	msg.exit("ZMatrix::setVariable");
+}
+
+// Print zmatrix
+void ZMatrix::print()
+{
+	Dnchar s;
+	for (ZMatrixElement *zel = elements_.first(); zel != NULL; zel = zel->next)
+	{
+		// First atom (the creation target)
+		Atom *i = zel->atom(0);
+// 		item = new QTableWidgetItem(elements().symbol(i));
+		s.sprintf("%i   ", i->element());
+		// Second atom (distance specifier)
+		i = zel->atom(1);
+		if (i != NULL)
+		{
+			s.strcatf("%i  %s  ", i->id()+1, zel->distanceVariable()->name());
+
+			// Third atom (angle specii->id()+1fier)
+			i = zel->atom(2);
+			if (i != NULL)
+			{
+				s.strcatf("%i  %s  ", i->id()+1, zel->angleVariable()->name());
+				
+				// Fourth atom (torsion specifier)
+				i = zel->atom(3);
+				if (i != NULL)
+				{
+					s.strcatf("%i  %s  ", i->id()+1, zel->torsionVariable()->name());
+				}
+			}
+		}
+		printf("%s\n", s.get());
+	}
+
+	// Variable list
+	ReturnValue rv;
+	Variable *var;
+	for (TreeNode *v = distances_.variables(); v != NULL; v = v->next)
+	{
+		var = (Variable*) v;
+		var->execute(rv);
+		printf("  %s   %f\n", var->name(), rv.asDouble());
+	}
+	for (TreeNode *v = angles_.variables(); v != NULL; v = v->next)
+	{
+		var = (Variable*) v;
+		var->execute(rv);
+		printf("  %s   %f\n", var->name(), rv.asDouble());
+	}
+	for (TreeNode *v = torsions_.variables(); v != NULL; v = v->next)
+	{
+		var = (Variable*) v;
+		var->execute(rv);
+		printf("  %s   %f\n", var->name(), rv.asDouble());
+	}
 }
