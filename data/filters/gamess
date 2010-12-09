@@ -2,6 +2,7 @@
 # Created:	 14/04/2009
 # Last modified: 29/10/2010
 # ChangeLog:
+#	09/12/2010 - Updated reading of vibration data from logfile to cope with presence of symmetry line
 #	02/10/2010 - Logfile import filter now names models after filenames.
 #	29/10/2010 - Major update to log file filter - ability to read in basis set, MOs, and vibrations added
 #	14/09/2010 - Tweaks to options output in GUI filter. Standard DFTTYPs added.
@@ -19,7 +20,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 	basisprimitive prim;
 	eigenvector orbs[5];
 	vibration vibs[5];
-	string line,e,name,discard,orb_symm[5],type, vib_imag[5];
+	string line,e,name,discard,orb_symm[5],type, vib_imag[5], vib_symm[5];
 	double rx,ry,rz, exponent,coeff,orb_nrg[5], orb_coeff[5];
 	double vib_freq[5], vib_dx[5], vib_dy[5], vib_dz[5], vib_rmass[5], vib_ir[5];
 
@@ -182,6 +183,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 		# Vibration information is provided 5 vibrations per line, in the format:
 		#                       1          2          3          4            5
 		#    FREQUENCY:      39.84 I     19.94       19.03       15.12       11.87
+		#     SYMMETRY:         A          A           A           A           A       (optional)
 		# REDUCED MASS:      2.15985     3.96061     4.04986     3.97821     5.98898
 		# IR INTENSITY:      0.00121     0.00399     0.00426     0.00020     0.00070
 		#  <blank line>
@@ -200,7 +202,13 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 			}
 			# Read in frequencies and imaginary flags
 			readlinef("%* %f%2s%f%2s%f%2s%f%2s%f%2s", vib_freq[1], vib_imag[1], vib_freq[2], vib_imag[2], vib_freq[3], vib_imag[3], vib_freq[4], vib_imag[4], vib_freq[5], vib_imag[5]);
-			readline(discard, vib_rmass[1], vib_rmass[2], vib_rmass[3], vib_rmass[4], vib_rmass[5]);
+			readlinef("%18s %r", discard, line);
+			if (stripchars(discard," ") == "REDUCEDMASS:") readvar(line, vib_rmass[1], vib_rmass[2], vib_rmass[3], vib_rmass[4], vib_rmass[5]);
+			else
+			{
+				readvar(line, vib_symm[1], vib_symm[2], vib_symm[3], vib_symm[4], vib_symm[5]);
+				readline(discard, vib_rmass[1], vib_rmass[2], vib_rmass[3], vib_rmass[4], vib_rmass[5]);
+			}
 			readline(discard, vib_ir[1], vib_ir[2], vib_ir[3], vib_ir[4], vib_ir[5]);
 			# Create vibrations
 			for (l=1; l<6; ++l)
@@ -230,6 +238,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 			# Skip over Sayvetz information
 			skipline(11);
 		}
+		printf("Read in data for %i vibrations.\n", m.nvibrations());
 	}
 
 	finalisemodel();

@@ -432,6 +432,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
  		case (ModelVariable::NUnknown):
 			rv.set(ptr->nUnknownAtoms());
 			break;
+ 		case (ModelVariable::NVibrations):
+			rv.set(ptr->nVibrations());
+			break;
 		case (ModelVariable::Patterns):
 			if (!hasArrayIndex) rv.set(VTypes::PatternData, ptr->patterns());
 			else if (arrayIndex > ptr->nPatterns())
