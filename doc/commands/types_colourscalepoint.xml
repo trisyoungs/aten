@@ -1,0 +1,26 @@
+	<section id="command.types.colourscalepoint"><title>ColourScalePoint Type</title>
+		
+		<indexterm zone="command.types.bond"><primary>types</primary><secondary>colourscalepoint</secondary></indexterm>
+	
+		<table frame='all' pgwide='1' tocentry='1'><title>ColourScalePoint Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>colour</entry>
+						<entry>double[4]</entry>
+						<entry>r2</entry>
+						<entry>Colour associated to the point</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

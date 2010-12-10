@@ -26,6 +26,8 @@
 #include "parser/basisshell.h"
 #include "parser/bond.h"
 #include "parser/cell.h"
+#include "parser/colourscale.h"
+#include "parser/colourscalepoint.h"
 #include "parser/eigenvector.h"
 #include "parser/element.h"
 #include "parser/energystore.h"
@@ -150,6 +152,14 @@ bool StepNode::execute(ReturnValue &rv)
 		case (VTypes::CellData):
 			if (functionAccessor_) result = CellVariable::performFunction(accessor_, rv, this);
 			else result = CellVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::ColourScaleData):
+			if (functionAccessor_) result = ColourScaleVariable::performFunction(accessor_, rv, this);
+			else result = ColourScaleVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::ColourScalePointData):
+			if (functionAccessor_) result = ColourScalePointVariable::performFunction(accessor_, rv, this);
+			else result = ColourScalePointVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::EigenvectorData):
 			if (functionAccessor_) result = EigenvectorVariable::performFunction(accessor_, rv, this);
@@ -381,6 +391,12 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::CellData):
 			result = CellVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::ColourScaleData):
+			result = ColourScaleVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::ColourScalePointData):
+			result = ColourScalePointVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::EigenvectorData):
 			result = EigenvectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -488,6 +504,12 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::CellData):
 			result = CellVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::ColourScaleData):
+			result = ColourScaleVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::ColourScalePointData):
+			result = ColourScalePointVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::EigenvectorData):
 			result = EigenvectorVariable::accessorSearch(s, arrayindex, arglist);

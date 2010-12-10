@@ -74,8 +74,6 @@ class ColourScale
 	List<ColourScalePoint> points_;
 	// List of colour deltas between points in the colourscale
 	List<ColourScaleDelta> deltas_;
-	// Calculate colour deltas for current list of points
-	void calculateDeltas();
 
 	public:
 	// Return number of points in colourscale
@@ -90,10 +88,12 @@ class ColourScale
 	ColourScaleDelta *firstDelta();
 	// Clear all points in colourscale
 	void clear();
+	// Calculate colour deltas for current list of points
+	void calculateDeltas();
 	// Add new point to colourscale
-	void addPoint(int position, double value, double r, double g, double b, double a = 1.0f);
+	ColourScalePoint *addPoint(int position, double value, double r, double g, double b, double a = 1.0f);
 	// Add new point to end of colourscale
-	void addPointAtEnd(double value, double r, double g, double b, double a = 1.0f);
+	ColourScalePoint *addPointAtEnd(double value, double r, double g, double b, double a = 1.0f);
 	// Set colour and value data for point
 	void setPoint(int position, double value, double r, double g, double b, double a = 1.0f, bool setval = TRUE, bool setcol = TRUE);
 	// Set only value for point

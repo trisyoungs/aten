@@ -285,6 +285,7 @@ void AtenGlyphs::on_GlyphSelectAllButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	Glyph *g;
+// 	printf("In GlyphSelectAll...\n");
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		ui.GlyphList->item(i)->setSelected(TRUE);
