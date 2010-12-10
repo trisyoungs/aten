@@ -120,6 +120,33 @@ void ReturnValue::operator=(const ReturnValue &source)
 	}
 }
 
+// Operator =(double)
+void ReturnValue::operator=(double d)
+{
+	clearArrayData();
+	type_ = VTypes::DoubleData;
+	arraySize_ = -1;
+	valueD_ = d;
+}
+
+// Operator =(int)
+void ReturnValue::operator=(int i)
+{
+	clearArrayData();
+	type_ = VTypes::IntegerData;
+	arraySize_ = -1;
+	valueI_ = i;
+}
+
+// Operator =
+void ReturnValue::operator=(const char *s)
+{
+	clearArrayData();
+	type_ = VTypes::StringData;
+	arraySize_ = -1;
+	valueS_ = s;
+}
+
 // Clear any current array data
 void ReturnValue::clearArrayData()
 {
