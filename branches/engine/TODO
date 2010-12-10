@@ -19,10 +19,12 @@ e) Tabulated trigonometric functions (in mathfunc.h)
 f) Proper positioning of bond halves w.r.t. outer edge of atom
 h) Labels should have their position adjusted based on their point size
 
+XXX Colourscale point setting through variable. Glyphs funcs 'Select All' hangs.
+
 General TODO:
 
 1) Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click
 2) Script to add H-bonds to pair of selected atoms
 3) Script to perform conformational searching on molecule
 4) Better control over MOPAC output (filter options)
-
+5) Loading scripts should not cause duplicate scripts to be remembered (Qt contains an isSameFile function or something similar).

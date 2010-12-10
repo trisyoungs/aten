@@ -264,6 +264,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 	Atom::DrawStyle style_i, style_j, globalstyle;
 	Prefs::ColouringScheme scheme;
 	ForcefieldAtom *ffa;
+	RenderEngine::TriangleStyle ts;
 	
 	// Grab global style values and text colour
 	scheme = prefs.colourScheme();
@@ -569,20 +570,18 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				g->data(0)->copyColour(colour_i);
 				g->data(1)->copyColour(colour_j);
 				g->data(2)->copyColour(colour_k);
+				// Work out normal
+				r4 = (r2 - r1) * (r3 - r1);
+				r4.normalise();
 				if (g->isSolid())
 				{
-					if ((colour_i[3] < 0.99f) || (colour_j[3] < 0.99f) || (colour_k[3] < 0.99f))
-					transparentTriangles_.defineVertex(r1.x, r1.y, r1.z, XXX);
-// 				glLineWidth(g->lineWidth());
-				
-				glBegin(GL_TRIANGLES);
-				glColor4fv(colour_i);
-				glVertex3d(r1.x, r1.y, r1.z);
-				glColor4fv(colour_j);
-				glVertex3d(r2.x, r2.y, r2.z);
-				glColor4fv(colour_k);
-				glVertex3d(r3.x, r3.y, r3.z);
-				glEnd();
+					if ((colour_i[3] < 0.99f) || (colour_j[3] < 0.99f) || (colour_k[3] < 0.99f)) ts = RenderEngine::TransparentTriangle;
+					else ts = RenderEngine::SolidTriangle;
+				}
+				else ts = RenderEngine::WireTriangle;
+				glyphTriangles_[ts].defineVertex(r1.x, r1.y, r1.z, r4.x, r4.y, r4.z, colour_i);
+				glyphTriangles_[ts].defineVertex(r2.x, r2.y, r2.z, r4.x, r4.y, r4.z, colour_j);
+				glyphTriangles_[ts].defineVertex(r3.x, r3.y, r3.z, r4.x, r4.y, r4.z, colour_k);
 				break;
 			// Text in 2D coordinates - left-hand origin = data[0]
 			case (Glyph::TextGlyph):
@@ -719,8 +718,9 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	solidPrimitives_.clear();
 	transparentPrimitives_.clear();
 	textPrimitives_.forgetAll();
-	solidTriangles_.forgetAll();
-	transparentTriangles_.forgetAll();
+	glyphTriangles_[RenderEngine::SolidTriangle].forgetAll();
+	glyphTriangles_[RenderEngine::TransparentTriangle].forgetAll();
+	glyphTriangles_[RenderEngine::WireTriangle].forgetAll();
 	
 	// Set initial transformation matrix, including any translation occurring from cell...
 	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
@@ -854,9 +854,9 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	}
 	
 	// All 3D primitive objects have now been filtered, so add triangles, then sort and send to GL
-	renderPrimitive(&solidTriangles_, FALSE, NULL, modelTransformationMatrix_);
-	renderPrimitive(&wireTriangles_, FALSE, NULL, modelTransformationMatrix_, GL_LINE);
-	renderPrimitive(&transparentTriangles_, TRUE, NULL, modelTransformationMatrix_);
+	renderPrimitive(&glyphTriangles_[RenderEngine::SolidTriangle], FALSE, NULL, modelTransformationMatrix_);
+	renderPrimitive(&glyphTriangles_[RenderEngine::WireTriangle], FALSE, NULL, modelTransformationMatrix_, GL_LINE);
+	renderPrimitive(&glyphTriangles_[RenderEngine::TransparentTriangle], TRUE, NULL, modelTransformationMatrix_);
 	sortAndSendGL();
 	
 	// Render overlays

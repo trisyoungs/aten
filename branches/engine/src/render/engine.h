@@ -42,6 +42,8 @@ class RenderEngine
 	// Constructor / Destructor
 	RenderEngine();
 	~RenderEngine();
+	// Style enum for ease of coding
+	enum TriangleStyle { SolidTriangle, TransparentTriangle, WireTriangle, nTriangleStyles };
 
 	
 	/*
@@ -109,7 +111,7 @@ class RenderEngine
 	// Grid primitives (for all models)
 	List<GridPrimitive> gridPrimitives_;
 	// Glyph triangle primitives
-	Primitive solidTriangles_, transparentTriangles_, wireTriangles_;
+	Primitive glyphTriangles_[RenderEngine::nTriangleStyles];
 
 	private:
 	// Render primitive from primitive group in specified colour and level of detail

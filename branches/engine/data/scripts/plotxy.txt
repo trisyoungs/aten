@@ -1,12 +1,17 @@
 # Simple plot example, rendering a function over a regular 2D grid using triangle glyphs
 
-double deltax = PI/10.0, deltay = PI/10.0;
+double deltax = PI/5.0, deltay = PI/5.0;
 int nx = 20, ny = 20, ix, iy;
 
 double x, y, fxy, slice1[2*ny+1], slice2[2*ny+1];
 
+aten.prefs.glyphcolour = { 0, 0, 1, 0.5 };
 model m = newmodel("Function Plot");
 glyph g;
+
+# Set up a colourscale to colour the plot nicely
+aten.prefs.colourscale[8].clear();
+aten.prefs.colourscale[8].addpoint();
 
 # Double loop begins
 for (ix = 0; ix <= 2*nx; ++ix)
@@ -23,7 +28,7 @@ for (ix = 0; ix <= 2*nx; ++ix)
 		# ***
 		#fxy = 100*sin(x)*sin(y);
 		#fxy = cos(abs(x)+abs(y))*(abs(x)+abs(y));
-		fxy = sin(10*(x^2+y^2));
+		fxy = sin(10.0*(x^2+y^2));
 		# ***
 
 		slice2[iy+1] = fxy;

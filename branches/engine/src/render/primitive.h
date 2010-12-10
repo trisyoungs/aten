@@ -61,6 +61,10 @@ class VertexChunk
 	// Number of vertices per primitive type
 	int verticesPerType_;
 	
+	private:
+	// Update (and finalise) centroid for current primitive type
+	void updateCentroid(GLfloat x, GLfloat y, GLfloat z, bool finalise);
+	
 	public:
 	// Initialise structure
 	void initialise(GLenum type, bool colourData);
@@ -68,8 +72,10 @@ class VertexChunk
 	void forgetAll();
 	// Define next vertex and normal
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
+	// Define next vertex, normal, and colour (as array)
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid = TRUE);
 	// Define next vertex, normal, and colour
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid = TRUE);
 	// Return whether current array is full
 	bool full();
 	// Return number of defined primitive (GL) types
@@ -127,8 +133,10 @@ class Primitive
 	public:
 	// Define next vertex and normal
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
+	// Define next vertex, normal, and colour (as array)
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid = TRUE);
 	// Define next vertex, normal, and colour
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid = TRUE);
 	// Define triangle fromn supplied array data, unique colour per vertex
 	void defineTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
 	// Define triangle with single colour per vertex
