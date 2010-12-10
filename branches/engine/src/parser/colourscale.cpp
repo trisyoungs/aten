@@ -56,8 +56,8 @@ Accessor ColourScaleVariable::accessorData[ColourScaleVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ColourScaleVariable::functionData[ColourScaleVariable::nFunctions] = {
-	{ "addpoint",	VTypes::ColourScalePointData,	"",	"" },
-	{ "clear",	VTypes::NoData,			"",	"" },
+	{ "addpoint",	VTypes::ColourScalePointData,	"NNNNn",	"double value, doublr r, double g, double b, double a = 1.0" },
+	{ "clear",	VTypes::NoData,			"",		"" },
 	{ "colour",	VTypes::NoData,			"N^N^N^N^n",	"double value, double *r, double *g, double *b, double *a = NULL" }
 };
 
@@ -270,6 +270,13 @@ bool ColourScaleVariable::performFunction(int i, ReturnValue &rv, TreeNode *node
 	GLfloat colour[4];
 	if (result) switch (i)
 	{
+		case (ColourScaleVariable::AddPoint):
+			rv.set(VTypes::ColourScalePointData, ptr->addPointAtEnd(node->argd(0), node->argd(1), node->argd(2), node->argd(3), node->hasArg(4) ? node->argd(4) : 1.0f));
+			break;
+		case (ColourScaleVariable::Clear):
+			ptr->clear();
+			rv.reset();
+			break;
 		case (ColourScaleVariable::Colour):
 			ptr->colour(node->argd(0), colour);
 			for (int n = 1; n < node->nArgs(); ++n)

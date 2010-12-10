@@ -274,6 +274,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::ClipNear):
 			rv.set(ptr->clipNear());
 			break;
+		case (PreferencesVariable::ColourScales):
+			rv.set(VTypes::ColourScaleData, &ptr->colourScale[arrayIndex-1]);
+			break;
 		case (PreferencesVariable::ColourScheme):
 			rv.set(Prefs::colouringScheme(ptr->colourScheme()));
 			break;

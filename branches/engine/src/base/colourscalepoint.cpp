@@ -28,10 +28,23 @@ ColourScalePoint::ColourScalePoint()
 	// Private variables
 	value_ = 0.0;
 	setColour(1.0, 1.0, 1.0, 1.0);
+	parent_ = NULL;
 
 	// Public variables
 	prev = NULL;
 	next = NULL;
+}
+
+// Set parent colourscale
+void ColourScalePoint::setParent(ColourScale *cscale)
+{
+	parent_ = cscale;
+}
+
+// Return parent colourscale
+ColourScale *ColourScalePoint::parent()
+{
+	return parent_;
 }
 
 // Return value of scale point

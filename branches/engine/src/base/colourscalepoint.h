@@ -29,6 +29,7 @@
 
 // Forward declarations
 class Grid;
+class ColourScale;
 class ColourScaleDelta;
 
 // Colour scale point
@@ -43,12 +44,18 @@ class ColourScalePoint
 	friend class ColourScaleDelta;
 
 	private:
+	// Parent colourscale
+	ColourScale *parent_;
 	// Value at which this point occurs
 	double value_;
 	// Colour of this point
 	double colour_[4];
 
 	public:
+	// Set parent colourscale
+	void setParent(ColourScale *cscale);
+	// Return parent colourscale
+	ColourScale *parent();
 	// Set value for scalepoint
 	void setValue(double d);
 	// Return value for scalepoint

@@ -86,6 +86,12 @@
 						<entry>The near clipping distance used when rendering</entry>
 					</row>
 					<row>
+						<entry>colourscales</entry>
+						<entry><link linkend="command.types.colourscale">colourscale[10]</link></entry>
+						<entry>ro</entry>
+						<entry>List of colourscales</entry>
+					</row>
+					<row>
 						<entry>colourscheme</entry>
 						<entry>string</entry>
 						<entry>rw</entry>
