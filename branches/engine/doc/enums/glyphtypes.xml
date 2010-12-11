@@ -33,7 +33,7 @@
 				</row>
 				<row>
 					<entry>quad</entry>
-					<entry>Standard four-vertex quad</entry>
+					<entry>A quad (made up of two triangles)</entry>
 				</row>
 				<row>
 					<entry>sphere</entry>
@@ -58,6 +58,10 @@
 				<row>
 					<entry>triangle</entry>
 					<entry>Regular triangle</entry>
+				</row>
+				<row>
+					<entry>tubearrow</entry>
+					<entry>A fully 3D arrow</entry>
 				</row>
 				<row>
 					<entry>vector</entry>

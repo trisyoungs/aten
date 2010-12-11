@@ -255,7 +255,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 	GLenum style;
 	int lod, id_i, labels;
 	Dnchar text;
-	double selscale, z, radius_i, radius_j;
+	double selscale, z, radius_i, radius_j, rij, phi;
 	Atom *i, *j;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> transformZ, screenr;
@@ -509,28 +509,44 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 		
 		switch (g->type())
 		{
-			// 			// Arrow - tail = data[0], head = data[1]
-			// 			case (Glyph::ArrowGlyph):
-			// 				r2 = g->data(1)->vector();
-			// 				g->data(0)->copyColour(colour_i);
-			// 				glLineWidth(g->lineWidth());
-			// 				glColor4fv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour_i);
-			// 				if (g->rotated())
-			// 				{
-				// 					centroid = (r1 + r2) * 0.5;
-				// 					r1 -= centroid;
-				// 					r2 -= centroid;
-				// 					glPushMatrix();
-				// 					glTranslated(centroid.x, centroid.y, centroid.z);
-				// 					glPushMatrix();
-				// 					glMultMatrixd(g->rotationForGL());
-				// 					glArrow(vec[0], g->data(1)->vector() - vec[0] );
-				// 					glPopMatrix();
-				// 					glPopMatrix();
-				// 				}
-				// 				else glArrow(vec[0], g->data(1)->vector() - vec[0] );
-				// 				break;
-				// Sphere or Cube - centre = data[0], scale = data[1]
+			// Arrow - tail = data[0], head = data[1]
+			case (Glyph::ArrowGlyph):
+				r2 = g->data(1)->vector();
+				g->data(0)->copyColour(colour_i);
+				glLineWidth(g->lineWidth());
+				glColor4fv(colour_i);
+				// Draw simple line from tail to head points
+				glBegin(GL_LINES);
+				glVertex3d(r1.x, r1.y, r1.z);
+				glVertex3d(r2.x, r2.y, r2.z);
+				glEnd();
+				// Draw cylinder arrowhead in wireframe
+				A = modelTransformationMatrix_;
+				A.applyTranslation(r1);
+				r3 = r2-r1;
+				rij = r3.magnitude();
+				phi = DEGRAD * acos(r3.z/rij);
+				// Special case where the bond is exactly in the XY plane.
+				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
+				else A.applyRotationAxis(-r3.y, r3.x, 0.0, phi, TRUE);
+				// Move to endpoint
+				A.applyTranslation(0.0,0.0,rij*0.9);
+				A.applyScaling(0.2,0.2,rij*0.1);
+				renderPrimitive(cones_, lod, colour_i, A, GL_LINE);
+				break;
+			// Line - start = data[0], end = data[1]
+			case (Glyph::LineGlyph):
+				r2 = g->data(1)->vector();
+				g->data(0)->copyColour(colour_i);
+				glLineWidth(g->lineWidth());
+				glColor4fv(colour_i);
+				// Draw simple line from tail to head points
+				glBegin(GL_LINES);
+				glVertex3d(r1.x, r1.y, r1.z);
+				glVertex3d(r2.x, r2.y, r2.z);
+				glEnd();
+				break;
+			// Sphere or Cube - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):
 			case (Glyph::CubeGlyph):
 				r2 = g->data(1)->vector();
@@ -582,14 +598,66 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				glyphTriangles_[ts].defineVertex(r1.x, r1.y, r1.z, r4.x, r4.y, r4.z, colour_i);
 				glyphTriangles_[ts].defineVertex(r2.x, r2.y, r2.z, r4.x, r4.y, r4.z, colour_j);
 				glyphTriangles_[ts].defineVertex(r3.x, r3.y, r3.z, r4.x, r4.y, r4.z, colour_k);
+				if (g->isSelected())
+				{
+					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r1.x, r1.y, r1.z, r4.x, r4.y, r4.z, textcolour);
+					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r2.x, r2.y, r2.z, r4.x, r4.y, r4.z, textcolour);
+					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r3.x, r3.y, r3.z, r4.x, r4.y, r4.z, textcolour);
+				}
 				break;
 			// Text in 2D coordinates - left-hand origin = data[0]
 			case (Glyph::TextGlyph):
 				renderTextPrimitive(r1.x, canvas->contextHeight()-r1.y, g->text());
 				break;
-				// Text in 3D coordinates - left-hand origin = data[0]
+			// Text in 3D coordinates - left-hand origin = data[0]
 			case (Glyph::Text3DGlyph):
 				renderTextPrimitive(r1, g->text());
+				break;
+			// Tube arrow - tail = data[0], head = data[1]
+			case (Glyph::TubeArrowGlyph):
+				r2 = g->data(1)->vector();
+				g->data(0)->copyColour(colour_i);
+				// Draw cylinder body and arrowhead
+				A = modelTransformationMatrix_;
+				A.applyTranslation(r1);
+				r3 = r2-r1;
+				rij = r3.magnitude();
+				phi = DEGRAD * acos(r3.z/rij);
+				// Special case where the bond is exactly in the XY plane.
+				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
+				else A.applyRotationAxis(-r3.y, r3.x, 0.0, phi, TRUE);
+				// Draw cylinder
+				A.applyScaling(0.1,0.1,rij*0.9);
+				renderPrimitive(cylinders_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				// Move to endpoint
+				A.applyTranslation(0.0,0.0,1.0);
+				A.applyScaling(2.0,2.0,0.1/0.9);	// BROKEN Not sure this is right!
+				renderPrimitive(cones_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				break;
+			// Vector - tail = data[0], head = data[1]
+			case (Glyph::VectorGlyph):
+				r2 = g->data(1)->vector() - r1;
+				r1 -= r2*0.5;
+				g->data(0)->copyColour(colour_i);
+				glLineWidth(g->lineWidth());
+				glColor4fv(colour_i);
+				// Draw simple line from tail to head points
+				glBegin(GL_LINES);
+				glVertex3d(r1.x, r1.y, r1.z);
+				glVertex3d(r2.x, r2.y, r2.z);
+				glEnd();
+				// Draw cylinder arrowhead in wireframe
+				A = modelTransformationMatrix_;
+				A.applyTranslation(r1);
+				rij = r2.magnitude();
+				phi = DEGRAD * acos(r2.z/rij);
+				// Special case where the bond is exactly in the XY plane.
+				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
+				else A.applyRotationAxis(-r2.y, r2.x, 0.0, phi, TRUE);
+				// Move to endpoint
+				A.applyTranslation(0.0,0.0,rij*0.9);
+				A.applyScalingZ(rij*0.1);
+				renderPrimitive(cones_, lod, colour_i, A, GL_LINE);
 				break;
 		}
 	}

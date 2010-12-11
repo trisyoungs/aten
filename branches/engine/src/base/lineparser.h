@@ -65,8 +65,6 @@ class LineParser
 	std::fstream *file_;
 	// Whether the file is for reading or writing
 	bool readOnly_;
-	// Option bitmask (set by get*() calls)
-	int optionMask_;
 
 	public:
 	// Reset data
@@ -110,31 +108,29 @@ class LineParser
 	*/
 	private:
 	// Gets all delimited args from internal line
-	void getAllArgsDelim();
+	void getAllArgsDelim(int optionMask);
 
 	public:
 	// Gets next delimited arg from internal line
-	bool getNextArg(Dnchar *destarg, int flags = LineParser::Defaults);
+	bool getNextArg(int optionMask, Dnchar *destarg);
 	// Gets next n chars from internal line
-	bool getNextN(int length, Dnchar *destarg = NULL);
+	bool getNextN(int optionMask, int length, Dnchar *destarg = NULL);
 	// Read line from file and do delimited parse
-	int getArgsDelim(int flags = LineParser::Defaults);
+	int getArgsDelim(int optionMask);
 	// Get rest of line starting at next delimited part
-	bool getRestDelim(Dnchar *destarg = NULL);
+	bool getRestDelim(int optionMask, Dnchar *destarg = NULL);
 	// Set line and parse using delimiters
-	void getArgsDelim(const char *string, int flags = LineParser::Defaults);
+	void getArgsDelim(int optionMask, const char *s);
 	// Get next delimited chunk from file (not line)
-	bool getCharsDelim(Dnchar *destarg = NULL);
+	bool getCharsDelim(int optionMask, Dnchar *destarg = NULL);
 	// Get next delimited chunk from string, removing grabbed part
-	bool getCharsDelim(Dnchar *source, Dnchar *destarg);
+	bool getCharsDelim(int optionMask, Dnchar *source, Dnchar *destarg);
 	// Read next line from internal source file, setting as parsing source
-	int readLine(bool closeoneof = TRUE);
-	// Read next line from source file, skipping blank lines and removing comments
-	int getLine();
+	int readNextLine(int optionMask);
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
 	// Get next delimited argument from internal line
-	bool getArgDelim(Dnchar *destarg, int flags);
+	bool getArgDelim(int optionMask, Dnchar *destarg);
 	// Return a number of characters from the input stream
 	const char *getChars(int nchars, bool skipeol = TRUE);
 	// Skip a number of characters from the input stream

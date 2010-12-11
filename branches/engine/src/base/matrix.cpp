@@ -713,6 +713,13 @@ void Matrix::applyScaling(double scalex, double scaley, double scalez)
 	applyScalingZ(scalez);
 }
 
+// Apply an xy-scaling to the matrix
+void Matrix::applyScalingXY(double scalex, double scaley)
+{
+	applyScalingX(scalex);
+	applyScalingY(scaley);
+}
+
 // Apply a x scaling to the matrix
 void Matrix::applyScalingX(double scale)
 {

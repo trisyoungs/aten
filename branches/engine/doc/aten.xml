@@ -102,6 +102,7 @@
 	<!ENTITY commandview SYSTEM "commands/view.xml">
 	<!-- Topics of Interest -->
 	<!ENTITY topicscolourscales SYSTEM "topics/colourscales.xml">
+	<!ENTITY topicsglyphs SYSTEM "topics/colourglyphs.xml">
 	<!ENTITY topicspatterns SYSTEM "topics/patterns.xml">
 	<!-- Forcefields -->
 	<!ENTITY fffiles SYSTEM "ff/files.xml">
@@ -337,6 +338,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 	<!-- Topics of Interest -->
 	<chapter id="topics"><title>Topics of Interest</title>
 		&topicscolourscales;
+		&topicsglyphs;
 		&topicspatterns;
 	</chapter>
 

@@ -321,7 +321,7 @@ bool Forcefield::readData(const char *vars)
 	// First, parse list of data items to get name
 	NameMapList<VTypes::DataType> items(VTypes::nDataTypes);
 	LineParser parser;
-	parser.getArgsDelim(vars);
+	parser.getArgsDelim(LineParser::SkipBlanks, vars);
 	int n;
 	for (n=0; n<parser.nArgs(); n += 2)
 	{
@@ -405,7 +405,7 @@ bool Forcefield::readGenerator(const char *vars)
 	// First, parse list of data items to get names and types of variables
 	NameMapList<VTypes::DataType> items(VTypes::nDataTypes);
 	LineParser parser;
-	parser.getArgsDelim(vars);
+	parser.getArgsDelim(LineParser::SkipBlanks, vars);
 	for (n=0; n<parser.nArgs(); n += 2)
 	{
 		// Determine data type

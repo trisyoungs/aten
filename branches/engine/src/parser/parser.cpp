@@ -94,7 +94,7 @@ char CommandParser::getChar()
 		switch (source_)
 		{
 			case (CommandParser::FileSource):
-				if (parser_.getLine() != 0) return 0;
+				if (parser_.readNextLine(LineParser::SkipBlanks) != 0) return 0;
 				stringSource_ = parser_.line();
 				stringLength_ = stringSource_.length();
 				stringPos_ = 0;

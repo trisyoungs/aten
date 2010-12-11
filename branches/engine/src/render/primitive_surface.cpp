@@ -328,7 +328,7 @@ void GridPrimitive::createSurfaceMarchingCubes()
 	Vec3<double> r;
 	Vec3<int> npoints = source_->nPoints();
 	GLfloat col1[4], col2[4], minalpha1, minalpha2;
-	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
+	double ***data, **xdata, *ydata, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
 	// Grab the data pointer, surface cutoff, and primitive reference
 	data = source_->data3d();
 	bool secondary = source_->useSecondary();
@@ -426,7 +426,7 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						// Get edge vectors, interpolate, and set tri-points
 						a = vertex[edgevertices[faces[n]][0]];
 						b = vertex[edgevertices[faces[n]][1]];
-						ipol = ((mult*cutoff) - a) / (b-a);
+						ipol = ((mult*source_->lowerPrimaryCutoff()) - a) / (b-a);
 						if (ipol> 1.0) ipol = 1.0;
 						if (ipol < 0.0) ipol = 0.0;
 						v1 = vertexpos[edgevertices[faces[n]][0]];
@@ -470,7 +470,7 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						// Get edge vectors, interpolate, and set tri-points
 						a = vertex[edgevertices[faces[n]][0]];
 						b = vertex[edgevertices[faces[n]][1]];
-						ipol = ((mult*cutoff) - a) / (b-a);
+						ipol = ((mult*source_->lowerSecondaryCutoff()) - a) / (b-a);
 						if (ipol> 1.0) ipol = 1.0;
 						if (ipol < 0.0) ipol = 0.0;
 						v1 = vertexpos[edgevertices[faces[n]][0]];
