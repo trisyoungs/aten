@@ -108,12 +108,13 @@ class Format
 	// Return whether the format was created successfully
 	bool isValid();
 
+	
 	/*
 	// Read/Write
 	*/
 	private:
 	// Use specified parser to perform formatted read
-	int executeRead(LineParser *parser, int flags);
+	int executeRead(LineParser *parser, int optionMask);
 
 	public:
 	// Return last written string
@@ -121,9 +122,9 @@ class Format
 	// Write format to internal string
 	bool writeToString();
 	// Read line and parse according to format
-	int read(const char *line, int flags);
+	int read(const char *line, int optionMask);
 	// Read line from file and parse according to format
-	int read(LineParser *parser, int flags);
+	int read(LineParser *parser, int optionMask);
 };
 
 #endif

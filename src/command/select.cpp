@@ -64,7 +64,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 	{
 		// Use a parser to split up the line, in case there are multiple selections separated by commas
 		LineParser parser;
-		parser.getArgsDelim(value.asString());
+		parser.getArgsDelim(LineParser::Defaults, value.asString());
 		for (int arg=0; arg<parser.nArgs(); ++arg)
 		{
 			// If arg contains a '-', select by range
@@ -183,7 +183,7 @@ bool Command::function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValu
 		return FALSE;
 	}
 	LineParser parser;
-	parser.getArgsDelim(format->string());
+	parser.getArgsDelim(LineParser::Defaults, format->string());
 	for (int i=0; i<parser.nArgs(); i++)
 	{
 		StringVariable stringvar(parser.argc(i));
@@ -295,7 +295,7 @@ bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue 
 		return FALSE;
 	}
 	LineParser parser;
-	parser.getArgsDelim(format->string());
+	parser.getArgsDelim(LineParser::Defaults, format->string());
 	for (int i=0; i<parser.nArgs(); i++)
 	{
 		StringVariable stringvar(parser.argc(i));

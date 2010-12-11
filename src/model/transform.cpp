@@ -170,16 +170,24 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 // Rotation of selection about screen Z-axis
 void Model::rotateSelectionZaxis(double dz)
 {
-	// Rotate about the perceived z-axis by changing the up vector of the camera.
 	msg.enter("Model::rotateSelectionZaxis");
-	//GLdouble newx, newy;   TODO
-	//dx = (dx / DEGRAD ) * 2.0f;
-	//aten.activemodel->adjust_camera(0.0,0.0,0.0,dx);
-	//aten.activemodel->mmatTransform_all();
-
+	Vec3<double> newr;
+	Matrix rotmat, inverse;
+	rotmat.createRotationZ(dz);
+	inverse = modelViewMatrixInverse();
+	
+	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
+	{
+		// Rotate this atom's position about the geometric centre of all selected atoms.
+		newr = (rotmat * (gui.mainWidget->modelToWorld(ri->item->r()) - transformCOG)) + transformCOG;
+		newr = inverse.transform(newr);
+		ri->item->r() = newr + cell_.centre();
+	}
+	
 	// Update model measurements
 	updateMeasurements();
-
+	
+	changeLog.add(Log::Visual);
 	msg.exit("Model::rotateSelectionZaxis");
 }
 
@@ -190,8 +198,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	msg.enter("Model::translateSelectionWorld");
 	Vec3<double> newr;
 	Matrix inverse;
-	// No need to account for orientation / rotation of view, since we do the transformation in world coordinates.
-	// So, take the local coordinates of each selected atom and add our position delta to it.
+	// Take the local coordinates of each selected atom and add our position delta to it.
 	// We then unproject this new local coordinate to get the new model (world) coordinate.
 	inverse = modelViewMatrixInverse();
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)

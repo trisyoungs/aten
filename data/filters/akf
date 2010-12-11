@@ -2,6 +2,7 @@
 # Created:	 14/05/2009
 # Last modified: 02/09/2010
 # ChangeLog:
+#	11/12/2010: Tweaked glyph data-reading loop
 #	09/12/2010: Added 'wireframe' glyph property and more associated verbosity. Fixed some minor bugs.
 # 	02/09/2010: Added read/write of atom style / custom colour information
 # 	27/06/2010: Added glyph support
@@ -60,7 +61,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 				g.data[l].atomdata = atomdata;
 			}
 			# Additional data now...
-			while (keywd != "endglyph")
+			do
 			{
 				readlinef("%s%r",keywd,line);
 				if (keywd == "rotation") readvarf(line,"%f %f %f %f %f %f %f %f %f", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
@@ -68,7 +69,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 				else if (keywd == "text") g.text = line;
 				else if (keywd == "wireframe") g.solid = FALSE;
 				else if (keywd != "endglyph") printf("Unrecognised glyph property '%s'\n", keywd);
-			}
+			} while (keywd != "endglyph");
 		}
 		else if (keywd == "geometry")
 		{

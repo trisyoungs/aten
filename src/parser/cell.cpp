@@ -196,7 +196,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (CellVariable::CX):
 		case (CellVariable::CY):
 		case (CellVariable::CZ):
-			rv.set(ptr->axes()[((arrayIndex-1)/3)*4+(arrayIndex-1)%3]);
+			rv.set(ptr->axes()[((acc - CellVariable::AX)/3)*4+(acc - CellVariable::AX)%3]);
 			break;
 		case (CellVariable::Centre):
 			rv.set(ptr->centre());

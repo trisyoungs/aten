@@ -81,6 +81,7 @@ void RenderEngine::createPrimitives(int quality)
 	}
 	spheres_.clear();
 	cubes_.clear();
+	cylinders_.clear();
 	cones_.clear();
 	wireCube_.clear();
 	cellAxes_.clear();
@@ -166,9 +167,10 @@ void RenderEngine::createPrimitives(int quality)
 		// Other primitives
 		nstacks = max(3,(int) (quality*lodratio*0.75));
 		nslices = max(3,(int) (quality*lodratio*1.5));
-		spheres_.primitive(lod).plotSphere(1.0, nstacks, nslices);
 		cubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)) );
-		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,0.2,0.0,nstacks,nslices);
+		spheres_.primitive(lod).plotSphere(1.0, nstacks, nslices);
+		cylinders_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,1.0,nstacks, nslices);
+		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,0.0,nstacks,nslices);
 	}
 	// One-off objects
 	wireCube_.createWireCube(1.0);

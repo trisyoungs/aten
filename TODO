@@ -18,8 +18,8 @@ c) Spacegroup Pnmmm
 e) Tabulated trigonometric functions (in mathfunc.h)
 f) Proper positioning of bond halves w.r.t. outer edge of atom
 h) Labels should have their position adjusted based on their point size
-
-XXX Colourscale point setting through variable. Glyphs funcs 'Select All' hangs.
+i) Stick rendering of bonds is broken - all appear at zero.
+j) Vibrational animation arrows (and transparent original model?)
 
 General TODO:
 
@@ -28,3 +28,8 @@ General TODO:
 3) Script to perform conformational searching on molecule
 4) Better control over MOPAC output (filter options)
 5) Loading scripts should not cause duplicate scripts to be remembered (Qt contains an isSameFile function or something similar).
+
+Doc TODO:
+
+1) Topic: Colourscales
+2) Topic: Glyphs

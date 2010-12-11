@@ -41,7 +41,6 @@ LineParser::LineParser()
 	lineLength_ = 0;
 	readOnly_ = FALSE;
 	linePos_ = 0;
-	optionMask_ = LineParser::Defaults;
 	lastLineNo_ = 0;
 	file_ = NULL;
 }
@@ -69,7 +68,6 @@ void LineParser::reset()
 	lastLineNo_ = 0;
 	file_ = NULL;
 	readOnly_ = FALSE;
-	optionMask_ = LineParser::Defaults;
 }
 
 /*
@@ -235,55 +233,37 @@ bool LineParser::eofOrBlank() const
 */
 
 // Read single line from internal file source
-int LineParser::readLine(bool closeoneof)
+int LineParser::readNextLine(int optionMask)
 {
-	msg.enter("LineParser::readLine");
+	msg.enter("LineParser::readNextLine");
 	// Returns : 0=ok, 1=error, -1=eof
 	if (file_ == NULL)
 	{
 		printf("Attempted to readLine from a NULL file in LineParser.\n");
+		msg.exit("LineParser::readNextLine");
 		return 1;
 	}
-	file_->getline(line_, MAXLINELENGTH-1);
-	msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 	if (file_->eof())
 	{
-// 		if (closeoneof) closeFile();
 		msg.exit("LineParser::readLine");
 		return -1;
 	}
-	if (file_->fail())
-	{
-// 		if (closeoneof) closeFile();
-		msg.exit("LineParser::readLine");
-		return 1;
-	}
-	lineLength_ = strlen(line_);
-	linePos_ = 0;
-	lastLineNo_ ++;
-	//printf("Line = [%s], length = %i\n",line_,lineLength_);
-	msg.exit("LineParser::readLine");
-	return 0;
-}
-
-// Read single line from internal file, ignoring comments and skipping blank lines
-int LineParser::getLine()
-{
-	msg.enter("LineParser::getLine");
-	// Returns : 0=ok, 1=error, -1=eof
-	int result;
+	// Loop until we get 'suitable' line from file
+	int nchars, nspaces, result = 0;
+	char *c, quotchar;
 	bool escaped = FALSE;
 	do
 	{
-		result = readLine();
-		if (result != 0)
+		file_->getline(line_, MAXLINELENGTH-1);
+		msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
+		if (file_->fail())
 		{
-			msg.exit("LineParser::getLine");
-			return result;
+			msg.exit("LineParser::readLine");
+			return 1;
 		}
-		// Search for '#' or '//' in the file to remove comments
-		char *c, quotchar = '\0';
-		for (c = line_; *c != '\0'; c++)
+		// Read a line from the file, so process it to remove comments
+		quotchar = '\0';
+		for (c = line_; *c != '\0'; ++c)
 		{
 			// Remember current quoting info...
 			if (*c == '"')
@@ -313,22 +293,32 @@ int LineParser::getLine()
 			}
 			escaped = *c == '\\';
 		}
-		// Now, see if our line contains only blanks
-		int nchars = 0, nspaces = 0;
-		for (c = line_; *c != '\0'; c++)
+		// If we are skipping blank lines, check for a blank line here
+		if (optionMask&LineParser::SkipBlanks) 
 		{
-			nchars++;
-			if (isspace(*c)) nspaces++;
+			// Now, see if our line contains only blanks
+			nchars = 0;
+			nspaces = 0;
+			for (c = line_; *c != '\0'; c++)
+			{
+				nchars++;
+				if (isspace(*c)) nspaces++;
+			}
+			if (nchars == nspaces) result = -1;
+			else result = 0;
 		}
-		if (nchars == nspaces) result = -1;
-	}
-	while (result != 0);
-	//printf("Line = [%s], length = %i\n",line_,lineLength_);
-	msg.exit("LineParser::getLine");
-	return 0;
+		else result = 0;
+		lineLength_ = strlen(line_);
+		linePos_ = 0;
+		lastLineNo_ ++;
+	} while (result != 0);
+// 	printf("Line = [%s], length = %i\n",line_,lineLength_);
+	msg.exit("LineParser::readNextLine");
+	return result;
 }
 
-bool LineParser::getNextArg(Dnchar *destarg, int flags)
+// Gets next delimited arg from internal line
+bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
 	msg.enter("LineParser::getNextArg");
@@ -339,9 +329,14 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 	done = FALSE;
 	hadquotes = FALSE;
 	quotechar = '\0';
-	endOfLine_ = FALSE;
+	endOfLine_ = FALSE;		// WHY HERE? BROKEN
 	arglen = 0;
-	optionMask_ = flags;
+	if (endOfLine_)
+	{
+		destarg->clear();
+		printf("Lineparser is at enf of line - returning...\n");
+		return TRUE;
+	}
 	while (linePos_ < lineLength_)
 	{
 		c = line_[linePos_];
@@ -369,7 +364,7 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
-				if (!(optionMask_&LineParser::UseQuotes)) break;
+				if (!(optionMask&LineParser::UseQuotes)) break;
 				if (quotechar == '\0') quotechar = c;
 				else if (quotechar == c)
 				{
@@ -386,7 +381,7 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 			// Curly brackets - treat in the same way as quotes
 			case ('{'):
 			case ('}'):
-				if (!(optionMask_&LineParser::UseBraces))
+				if (!(optionMask&LineParser::UseBraces))
 				{
 					// Just add as normal character
 					tempArg_[arglen] = c;
@@ -413,7 +408,7 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 			// Parentheses
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask_&LineParser::StripBrackets) break;
+				if (optionMask&LineParser::StripBrackets) break;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -421,6 +416,7 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 			case ('#'):	// "#" Rest/all of line is a comment
 				endOfLine_ = TRUE;
 				done = TRUE;
+				printf("Found a hash...\n");
 				break;
 			// Normal character
 			default: 
@@ -443,7 +439,7 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 }
 
 // Rip next n characters
-bool LineParser::getNextN(int length, Dnchar *destarg)
+bool LineParser::getNextN(int optionMask, int length, Dnchar* destarg)
 {
 	// Put the next 'length' characters from line_ into temparg (and put into supplied arg if supplied)
 	// A negative length may be supplied, which we interpret as 'strip trailing spaces'
@@ -468,7 +464,7 @@ bool LineParser::getNextN(int length, Dnchar *destarg)
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask_&LineParser::StripBrackets) break;
+				if (optionMask&LineParser::StripBrackets) break;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -490,7 +486,7 @@ bool LineParser::getNextN(int length, Dnchar *destarg)
 }
 
 // Get all arguments (delimited) from LineParser::line_
-void LineParser::getAllArgsDelim()
+void LineParser::getAllArgsDelim(int optionMask)
 {
 	// Parse the string in 'line_' into arguments in 'args'
 	msg.enter("LineParser::getAllArgsDelim");
@@ -501,8 +497,8 @@ void LineParser::getAllArgsDelim()
 	{
 		// Create new, empty dnchar
 		arg = new Dnchar;
-		// We must pass on the current optionMask_, else it will be reset by the default value in getNextArg()
-		if (getNextArg(arg, optionMask_))
+		// We must pass on the current optionMask, else it will be reset by the default value in getNextArg()
+		if (getNextArg(optionMask, arg))
 		{
 			msg.print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]\n", arguments_.nItems(), arg->get());
 			// Add this char to the list
@@ -518,7 +514,7 @@ void LineParser::getAllArgsDelim()
 */
 
 // Parse delimited (from file)
-int LineParser::getArgsDelim(int flags)
+int LineParser::getArgsDelim(int optionMask)
 {
 	// Standard file parse routine.
 	// Splits the line from the file into delimited arguments via the 'parseline' function
@@ -528,11 +524,10 @@ int LineParser::getArgsDelim(int flags)
 	// Lines beginning with '#' are ignored as comments
 	// Blank lines are skipped if blankskip == TRUE.
 	// Returns : 0=ok, 1=error, -1=eof
-	optionMask_ = flags;
 	do
 	{
 		// Read line from file and parse it
-		result = readLine();
+		result = readNextLine(optionMask);
 		if (result != 0)
 		{
 			msg.exit("LineParser::getArgsDelim[ifstream]");
@@ -541,15 +536,15 @@ int LineParser::getArgsDelim(int flags)
 		// Assume that we will finish after parsing the line we just read in
 		done = TRUE;
 		// To check for blank lines, do the parsing and then check nargs()
-		getAllArgsDelim();
-		if ((optionMask_&LineParser::SkipBlanks) && (nArgs() == 0)) done = FALSE;
+		getAllArgsDelim(optionMask);
+		if ((optionMask&LineParser::SkipBlanks) && (nArgs() == 0)) done = FALSE;
 	} while (!done);
 	msg.exit("LineParser::getArgsDelim[ifstream]");
 	return 0;
 }
 
 // Get rest of current line starting at next delimited part
-bool LineParser::getRestDelim(Dnchar *destarg)
+bool LineParser::getRestDelim(int optionMask, Dnchar* destarg)
 {
 	// Put the next 'length' characters from line_ into temparg (and put into supplied arg if supplied)
 	msg.enter("LineParser::getRestDelim");
@@ -590,28 +585,26 @@ bool LineParser::getRestDelim(Dnchar *destarg)
 }
 
 // Get next argument (delimited) from file stream
-bool LineParser::getArgDelim(Dnchar *destarg, int flags)
+bool LineParser::getArgDelim(int optionMask, Dnchar* destarg)
 {
 	msg.enter("LineParser::getArgDelim");
-	optionMask_ = flags;
-	bool result = getNextArg(destarg);
+	bool result = getNextArg(optionMask, destarg);
 	msg.print(Messenger::Parse,"getArgDelim = %s [%s]\n", result ? "TRUE" : "FALSE", destarg->get());
 	msg.exit("LineParser::getArgDelim");
 	return result;
 }
 
 // Parse all arguments (delimited) from string
-void LineParser::getArgsDelim(const char *s, int options)
+void LineParser::getArgsDelim(int optionMask, const char* s)
 {
 	strcpy(line_,s);
 	lineLength_ = strlen(line_);
 	linePos_ = 0;
-	optionMask_ = options;
-	getAllArgsDelim();
+	getAllArgsDelim(optionMask);
 }
 
 // Get next delimited chunk from file (not line)
-bool LineParser::getCharsDelim(Dnchar *destarg)
+bool LineParser::getCharsDelim(int optionMask, Dnchar *destarg)
 {
 	int length = 0;
 	bool result = TRUE;
@@ -638,10 +631,10 @@ bool LineParser::getCharsDelim(Dnchar *destarg)
 }
 
 // Get next delimited chunk from string, removing grabbed part
-bool LineParser::getCharsDelim(Dnchar *source, Dnchar *destarg)
+bool LineParser::getCharsDelim(int optionMask, Dnchar *source, Dnchar *destarg)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
-	msg.enter("LineParser::getCharsDelim(Dnchar,Dnchar)");
+	msg.enter("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
 	int arglen, pos = 0, length = source->length();
 	bool done, hadquotes, failed;
 	char c, quotechar;
@@ -676,7 +669,7 @@ bool LineParser::getCharsDelim(Dnchar *source, Dnchar *destarg)
 			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
-				if (!(optionMask_&LineParser::UseQuotes)) break;
+				if (!(optionMask&LineParser::UseQuotes)) break;
 				if (quotechar == '\0') quotechar = c;
 				else if (quotechar == c)
 				{
@@ -693,7 +686,7 @@ bool LineParser::getCharsDelim(Dnchar *source, Dnchar *destarg)
 			// Curly brackets - treat in the same way as quotes
 			case ('{'):
 			case ('}'):
-				if (!(optionMask_&LineParser::UseBraces))
+				if (!(optionMask&LineParser::UseBraces))
 				{
 					// Just add as normal character
 					tempArg_[arglen] = c;
@@ -720,7 +713,7 @@ bool LineParser::getCharsDelim(Dnchar *source, Dnchar *destarg)
 			// Parentheses
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask_&LineParser::StripBrackets) break;
+				if (optionMask&LineParser::StripBrackets) break;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -745,7 +738,7 @@ bool LineParser::getCharsDelim(Dnchar *source, Dnchar *destarg)
 	if (destarg != NULL) *destarg = tempArg_;
 	// Trim characters from source string
 	source->eraseStart(pos);
-	msg.exit("LineParser::getCharsDelim(Dnchar,Dnchar)");
+	msg.exit("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
 	if (failed) return FALSE;
 	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
 }
@@ -912,7 +905,7 @@ int LineParser::skipLines(int nlines)
 	int result;
 	for (int n=0; n<nlines; n++)
 	{
-		result = readLine();
+		result = readNextLine(LineParser::Defaults);
 		if (result != 0)
 		{
 			msg.exit("LineParser::skipLines");

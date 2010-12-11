@@ -61,7 +61,7 @@ class RenderEngine
 	// Selected bond styles
 	PrimitiveGroup selectedBond_[Atom::nDrawStyles][Bond::nBondTypes];
 	// Primitive objects
-	PrimitiveGroup cubes_, spheres_, cones_;
+	PrimitiveGroup cubes_, spheres_, cylinders_, cones_;
 	// One-off objects
 	Primitive wireCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
 

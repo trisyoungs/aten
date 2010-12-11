@@ -148,6 +148,8 @@ class Matrix
 	public:
 	// Apply a general scaling to the matrix (as glScaled would to)
 	void applyScaling(double scalex, double scaley, double scalez);
+	// Apply an xy-scaling to the matrix
+	void applyScalingXY(double scalex, double scaley);
 	// Apply an x-scaling to the matrix
 	void applyScalingX(double scale);
 	// Apply a y-scaling to the matrix

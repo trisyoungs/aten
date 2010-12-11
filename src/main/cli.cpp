@@ -475,7 +475,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set export type remappings
 				case (Cli::ExportMapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(argtext.get());
+					parser.getArgsDelim(LineParser::Defaults, argtext.get());
 					if (strchr(parser.argc(n),'=') == NULL)
 					{
 						printf("Mangled exportmap value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
@@ -564,7 +564,7 @@ int Aten::parseCli(int argc, char *argv[])
 					if (!parser.openFile(argtext.get())) return -1;
 					while (!parser.eofOrBlank())
 					{
-						parser.getLine();
+						parser.readNextLine(LineParser::Defaults);
 						ntried ++;
 						if (modelfilter != NULL) f = modelfilter;
 						else f = aten.probeFile(parser.line(), FilterData::ModelImport);
@@ -575,7 +575,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set type mappings
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(argtext.get());
+					parser.getArgsDelim(LineParser::Defaults, argtext.get());
 					for (n=0; n<parser.nArgs(); n++)
 					{
 						if (strchr(parser.argc(n),'=') == NULL)

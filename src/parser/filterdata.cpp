@@ -211,12 +211,12 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 	{
 		case (FilterData::ExactOption):
 			if (!value->execute(rv)) printf("Error retrieving 'exact' filter option value.\n");
-			parser.getArgsDelim(rv.asString());
+			parser.getArgsDelim(LineParser::Defaults, rv.asString());
 			for (n = 0; n < parser.nArgs(); ++n) exactNames_.add()->set(parser.argc(n));
 			break;
 		case (FilterData::ExtensionOption):
 			if (!value->execute(rv)) printf("Error retrieving 'extension' filter option value.\n");
-			parser.getArgsDelim(rv.asString());
+			parser.getArgsDelim(LineParser::Defaults, rv.asString());
 			for (n = 0; n < parser.nArgs(); ++n) extensions_.add()->set(parser.argc(n));
 			break;
 		case (FilterData::GlobOption):

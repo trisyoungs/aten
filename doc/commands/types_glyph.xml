@@ -35,7 +35,7 @@
 						<entry>rotation</entry>
 						<entry>double[9]</entry>
 						<entry>rw</entry>
-						<entry>Rotation matrix for the glyph</entry>
+						<entry>Rotation matrix for the glyph. Note that not all glyphs can be rotated (see the topic on <link linkend="topics.glyphs">Glyphs</link> for more information.</entry>
 					</row>
 					<row>
 						<entry>selected</entry>

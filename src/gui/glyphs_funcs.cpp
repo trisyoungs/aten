@@ -117,6 +117,7 @@ void AtenGlyphs::addItemToList(Glyph *g)
 	TListWidgetItem *item = new TListWidgetItem(ui.GlyphList);
 	item->setText(s);
 	item->data.set(VTypes::GlyphData, g);
+	if (g->isSelected()) item->setSelected(TRUE);
 }
 
 // Update glyph list
@@ -211,6 +212,7 @@ void AtenGlyphs::updateControls(Glyph *g)
 
 void AtenGlyphs::on_GlyphList_currentRowChanged(int row)
 {
+	if (refreshing_) return;
 	Glyph *g = (row == -1 ? NULL : aten.currentModelOrFrame()->glyph(row));
 	refreshing_ = TRUE;
 	updateData(g);
@@ -227,6 +229,7 @@ void AtenGlyphs::on_GlyphList_currentRowChanged(int row)
 void AtenGlyphs::on_GlyphList_itemSelectionChanged()
 {
 	// Extra check to deactivate controls when no glyph in the list is selected
+	if (refreshing_) return;
 	if (ui.GlyphList->currentRow() == -1)
 	{
 		refreshing_ = TRUE;
@@ -285,13 +288,14 @@ void AtenGlyphs::on_GlyphSelectAllButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	Glyph *g;
-// 	printf("In GlyphSelectAll...\n");
+	refreshing_ = TRUE;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		ui.GlyphList->item(i)->setSelected(TRUE);
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
 		g->setSelected(TRUE);
 	}
+	refreshing_ = FALSE;
 	gui.mainWidget->postRedisplay();
 }
 
@@ -299,25 +303,29 @@ void AtenGlyphs::on_GlyphSelectNoneButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	Glyph *g = m->glyphs();
+	refreshing_ = TRUE;
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
 	for (int i = items.size()-1; i>=0; --i)
 	{
 		items.at(i)->setSelected(FALSE);
-		g->setSelected(TRUE);
+		g->setSelected(FALSE);
 		g = g->next;
 	}
+	refreshing_ = FALSE;
 	gui.mainWidget->postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphInvertSelectionButton_clicked(bool checked)
 {
 	Glyph *g;
+	refreshing_ = TRUE;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		ui.GlyphList->item(i)->setSelected( ui.GlyphList->item(i)->isSelected() ? FALSE : TRUE );
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
 		g->setSelected( ui.GlyphList->item(i)->isSelected());
 	}
+	refreshing_ = FALSE;
 	gui.mainWidget->postRedisplay();
 }
 

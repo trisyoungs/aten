@@ -113,13 +113,13 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 					combo->setEnabled(TRUE);
 					break;
 				case (StateChange::ItemsAction):
-					lp.getArgsDelim(sc->changeData(), LineParser::UseQuotes);
+					lp.getArgsDelim(LineParser::UseQuotes, sc->changeData());
 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
 					combo->setCurrentIndex(0);
 					break;
 				case (StateChange::OriginalItemsAction):
 					if (!node->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
-					lp.getArgsDelim(data.get(), LineParser::UseQuotes);
+					lp.getArgsDelim(LineParser::UseQuotes, data.get());
 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
 					combo->setCurrentIndex(0);
 					break;
@@ -353,7 +353,7 @@ TRadioGroup *AtenCustomDialog::createRadioGroup(WidgetNode *gfo)
 	Dnchar data;
 	if (!gfo->data("items", data)) printf("Critical: No items list found when constructing TRadioGroup.\n");
 	LineParser lp;
-	lp.getArgsDelim(data.get(), LineParser::UseQuotes);
+	lp.getArgsDelim(LineParser::UseQuotes, data.get());
 	for (int n=0; n<lp.nArgs(); ++n) radio->addItem(lp.argc(n));
 	// Optional : default index (+1)
 	if (!gfo->data("default", data)) printf("Warning: Default value for TRadioGroup not set.\n");
@@ -372,7 +372,7 @@ QComboBox *AtenCustomDialog::createComboBox(WidgetNode *gfo)
 	Dnchar data;
 	if (!gfo->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
 	LineParser lp;
-	lp.getArgsDelim(data.get(), LineParser::UseQuotes);
+	lp.getArgsDelim(LineParser::UseQuotes, data.get());
 	for (int n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
 	// Optional : default index (+1)
 	if (!gfo->data("default", data)) printf("Warning: Default value for QComboBox not set.\n");
