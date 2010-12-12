@@ -492,12 +492,8 @@ int Format::read(LineParser *parser, int optionMask)
 		return 1;
 	}
 	// Get next line from file and parse line
-	int result;
-	do
-	{
-		result = parser->readNextLine(optionMask);
-		if (result == 0) result = executeRead(parser, optionMask);
-	} while (result == 0);
+	int result = parser->readNextLine(optionMask);
+	if (result == 0) result = executeRead(parser, optionMask);
 	msg.exit("Format::read[file]");
 	return result;
 }
