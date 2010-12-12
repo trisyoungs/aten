@@ -135,7 +135,6 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	// Generate target coordinate system, with X equal to rotation axis
 	vector.normalise();
 	
-	
 	u.setColumn(0, vector, 0.0);
 	u.setColumn(1, vector.orthogonal(), 0.0);
 	u.setColumn(2, vector * u.columnAsVec3(1), 0.0);

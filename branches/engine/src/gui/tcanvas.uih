@@ -210,6 +210,10 @@ class TCanvas : public QGLWidget
 	// Key flags (set by Gui::informMouseDown and used by TCanvas::beginMode)
 	bool keyModifier_[Prefs::nModifierKeys];
 	
+	public:
+	// Return state of specified keymodifier
+	bool keyModifier(Prefs::ModifierKey mk);
+
 	public slots:
 	// Qt Slot (key press event)
 	void keyPressEvent(QKeyEvent*);

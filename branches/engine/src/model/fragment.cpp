@@ -230,6 +230,7 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 		anchoredModel_.rotateSelectionWorld(dx,dy);
 		anchoredModel_.selectNone();
 	}
+
 	msg.exit("Fragment::rotateAnchoredModel");
 }
 

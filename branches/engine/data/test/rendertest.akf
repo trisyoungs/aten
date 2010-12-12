@@ -1,7 +1,7 @@
 title "Render Test"
 
 glyph text3d 1
-1 0 0 -12 8 0
+1 0 0 -12 3 0
 text "Spheres"
 endglyph
 # Two sphere glyphs bounded by atoms
@@ -83,7 +83,7 @@ wireframe
 endglyph
 
 glyph text3d 1
-1 0 0 -12 3 0
+1 0 0 -12 8 0
 text "Cubes"
 endglyph
 
@@ -167,7 +167,7 @@ endglyph
 
 glyph text3d 1
 1 0 0 -12 -2 0
-text "Triangles"
+text "Triangles and Quads"
 endglyph
 
 # Triangle glyphs attached to atoms
@@ -198,42 +198,46 @@ endglyph
 atom 70 H  3 -3 0 0.0 tube 
 atom 71 H  3 -7 0 0.0 tube
 atom 72 H  7 -7 0 0.0 tube
-glyph triangle 3
+atom 73 H  7 -3 0 0.0 tube
+glyph quad 4
 1 70 1 0 0 0 1 1 0 0.0
 2 71 1 0 0 0 0 0 0 1.0
 3 72 1 0 0 0 0 0 0 1.0
+4 73 1 0 0 0 0 0 0 1.0
 endglyph
-atom 73 H  8 -3 0 0.0 tube 
-atom 74 H  8 -7 0 0.0 tube
-atom 75 H  12 -7 0 0.0 tube
-glyph triangle 3
-1 73 1 0 0 0 1 1 0 0.0
-2 74 1 0 0 0 0 0 0 1.0
-3 75 1 0 0 0 0 0 0 1.0
+atom 74 H  8 -3 0 0.0 tube 
+atom 75 H  8 -7 0 0.0 tube
+atom 76 H  12 -7 0 0.0 tube
+atom 77 H  12 -3 0 0.0 tube
+glyph quad 4
+1 74 1 0 0 0 1 1 0 0.0
+2 75 1 0 0 0 0 0 0 1.0
+3 76 1 0 0 0 0 0 0 1.0
+4 77 1 0 0 0 0 0 0 1.0
 endglyph
 
 glyph text3d 1
 1 0 0 -12 13 0
-text "XXX, XXX, Arrow, XXX, XXX"
+text "TubeArrow, Vector, Arrow, XXX, XXX"
 endglyph
 
 # Tubearrow glyph attached to atoms
-atom 76 H -12 10 0 0.0 tube 
-atom 77 H -8 12 0 0.0 tube
+atom 78 H -12 10 0 0.0 tube
+atom 79 H -8 12 0 0.0 tube
 glyph tubearrow 2
-1 76 1 0 0 0 0 0 0 1.0
-2 77 1 0 0 0
+1 78 1 0 0 0 0.5 0.8 0.5 1.0
+2 79 1 0 0 0
 endglyph
 # Vector glyph attached to atom
-atom 78 H -5 11 0 0.0 tube 
-glyph arrow 2
-1 78 1 0 0 0 0 0 0 1.0
+atom 80 H -5 11 0 0.0 tube
+glyph vector 2
+1 80 1 0 0 0 0 0 0 1.0
 2 0 0 0.7 0.7 0.0
 endglyph
 # Arrow glyph attached to atoms
-atom 79 H -2 10 0 0.0 tube 
-atom 80 H  2 12 0 0.0 tube
+atom 81 H -2 10 0 0.0 tube
+atom 82 H  2 12 0 0.0 tube
 glyph arrow 2
-1 79 1 0 0 0 0 0 0 1.0
-2 80 1 0 0 0
+1 81 1 0 0 0 0 0 0 1.0
+2 82 1 0 0 0
 endglyph

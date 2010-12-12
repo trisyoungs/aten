@@ -83,7 +83,7 @@
 				<row>
 					<entry>text</entry>
 					<entry>No</entry>
-					<entry>Upper-left corner of text</entry>
+					<entry>Mid-left anchorpoint of text</entry>
 					<entry></entry>
 					<entry></entry>
 					<entry></entry>
@@ -91,7 +91,7 @@
 				<row>
 					<entry>text3d</entry>
 					<entry>No</entry>
-					<entry>Upper-left corner of text</entry>
+					<entry>Mid-left anchorpoint of text</entry>
 					<entry></entry>
 					<entry></entry>
 					<entry></entry>

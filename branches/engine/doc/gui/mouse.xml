@@ -46,7 +46,7 @@ e mouse wheel zooms in and out. Note that right-clicking on an atom brings up th
 					<entry>Click-hold-drag to inclusively select all atoms within rectangular region</entry>
 				</row>
 				<row>
-					<entry morerows='2'>Right</entry>
+					<entry morerows='4'>Right</entry>
 					<entry morerows='1'>None</entry>
 					<entry>Click-hold-drag to rotate camera around model</entry>
 				</row>
@@ -54,8 +54,16 @@ e mouse wheel zooms in and out. Note that right-clicking on an atom brings up th
 					<entry>Click on atom to show context menu</entry>
 				</row>
 				<row>
+					<entry>Shift</entry>
+					<entry>Click-hold-drag to rotate view around z-axis (perpendicular to plane of screen)</entry>
+				</row>
+				<row>
 					<entry>Ctrl</entry>
 					<entry>Click-hold-drag to rotate selection in local (model) space</entry>
+				</row>
+				<row>
+					<entry>Ctrl+Shift</entry>
+					<entry>Click-hold-drag to rotate selection around z-axis in local (model) space</entry>
 				</row>
 				<row>
 					<entry morerows='1'>Middle</entry>
