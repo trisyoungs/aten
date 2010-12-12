@@ -155,6 +155,8 @@ class Primitive
 	void createCross(double width, int naxes);
 	// Create wireframe cube centred at zero
 	void createWireCube(double size);
+	// Create wireframe, crossed, cube centred at zero
+	void createCrossedCube(double size);
 	// Create solid cube of specified size, centred at zero, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
 	void createCube(double size, int nsubs);
 	// Create cell axes

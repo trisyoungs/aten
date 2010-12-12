@@ -11,15 +11,11 @@ Things to do (fix) in new version:
 1) Rendering of aromatic bonds
 2) Rotation of multiple bonds into bond plane
 5) Jump before first rotation of model (lastmouse not set properly?)
-7) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
-a) Glyphs, including render test akf (inc. lots more stuff besides)
-b) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
+a) Ellipsoid glyphs - inc. testing of CG particle script
 c) Spacegroup Pnmmm
-e) Tabulated trigonometric functions (in mathfunc.h)
 f) Proper positioning of bond halves w.r.t. outer edge of atom
-h) Labels should have their position adjusted based on their point size
-i) Stick rendering of bonds is broken - all appear at zero.
 j) Vibrational animation arrows (and transparent original model?)
+k) Fragment builder molecules are not reoriented properly along existing bonds
 
 General TODO:
 
@@ -28,6 +24,9 @@ General TODO:
 3) Script to perform conformational searching on molecule
 4) Better control over MOPAC output (filter options)
 5) Loading scripts should not cause duplicate scripts to be remembered (Qt contains an isSameFile function or something similar).
+6) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
+7) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
+8) Tabulated trigonometric functions (in mathfunc.h) for rendering optimisation
 
 Doc TODO:
 

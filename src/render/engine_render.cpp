@@ -25,7 +25,9 @@
 #include "classes/grid.h"
 #include "model/model.h"
 #include "model/fragment.h"
+#include "gui/gui.h"
 #include "gui/tcanvas.uih"
+#include "gui/fragment.h"
 #include "base/sysfunc.h"
 #include <math.h>
 
@@ -110,7 +112,7 @@ void RenderEngine::initialiseGL()
 void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b)
 {
 	double dvisible, factor, rij, phi, dp;
-	Vec3<double> ijk;
+	Vec3<double> ijk, ri, rj;
 	GLfloat alpha_i, alpha_j;
 	
 	// Store copies of alpha values
@@ -122,18 +124,21 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	// Don't bother calculating transformation if both atom styles are Stick
 	if ((style_i == Atom::StickStyle) && (style_j == Atom::StickStyle))
 	{
+		ri = i->r();
+		rj = j->r();
 		glNormal3d(0.0,0.0,1.0);
 		glLineWidth( i->isSelected() ? 3.0 : 1.0 );
 		glColor4fv(colour_i);
 		glBegin(GL_LINES);
-		glVertex3d(0.0, 0.0, 0.0);
-		glVertex3d(0.5*vij.x, 0.5*vij.y, 0.5*vij.z);
+		glVertex3d(ri.x, ri.y, ri.z);
+		ri += vij*0.5;
+		glVertex3d(ri.x, ri.y, ri.z);
 		glEnd();
 		glLineWidth( j->isSelected() ? 3.0 : 1.0 );
 		glColor4fv(colour_j);
 		glBegin(GL_LINES);
-		glVertex3d(0.5*vij.x, 0.5*vij.y, 0.5*vij.z);
-		glVertex3d(vij.x, vij.y, vij.z);
+		glVertex3d(ri.x, ri.y, ri.z);
+		glVertex3d(rj.x, rj.y, rj.z);
 		glEnd();
 	}
 	else
@@ -249,7 +254,7 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 }
 
 // Render basic model information (atoms, bonds, labels, and glyphs)
-void RenderEngine::renderModel(Model *source, TCanvas *canvas)
+void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *canvas)
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, colour_k[4], colour_l[4], textcolour[4];
 	GLenum style;
@@ -273,7 +278,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 	prefs.copyColour(Prefs::TextColour, textcolour);
 	
 	// Gram z-transform vector
-	transformZ.set(modelTransformationMatrix_[2], modelTransformationMatrix_[6], modelTransformationMatrix_[10], modelTransformationMatrix_[14]);
+	transformZ.set(baseTransform[2], baseTransform[6], baseTransform[10], baseTransform[14]);
 	
 	// Render cell and cell axes
 	if (source->cell()->type() != Cell::NoCell)
@@ -292,9 +297,9 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 	}
 
 	// We will apply the basic transformation matrix to OpenGL here, so we can draw simple line primitives using just model coordinates
-	// Consequencly, glMultMatrixd() and glLoadIdentity(), as well as all other OpenGL matrix manipulators, should not be used past this point!
+	// Consequently, glMultMatrixd() and glLoadIdentity(), as well as all other OpenGL matrix manipulators, should not be used past this point!
 	glLoadIdentity();
-	glMultMatrixd(modelTransformationMatrix_.matrix());
+	glMultMatrixd(baseTransform.matrix());
 	
 	// Atoms and Bonds // OPTIMIZE - use atom array instead
 	if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) for (i = source->atoms(); i != NULL; i = i->next)
@@ -316,7 +321,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 		// 		printf("lod = %i, projected z = %f, nlevels = %i\n", lod, z, prefs.levelsOfDetail());
 		
 		// Move to local atom position
-		atomtransform = modelTransformationMatrix_;
+		atomtransform = baseTransform;
 		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
 		
 		// Select colour
@@ -470,7 +475,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 		}
 		
 		// Grid primitive now exists (or has been updated) so create transformation and render it
-		A = modelTransformationMatrix_;
+		A = baseTransform;
 		A.applyTranslation(g->origin());
 		A.multiplyRotation(g->axes());
 		if (g->style() == Grid::TriangleSurface) style = GL_LINE;
@@ -521,7 +526,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				glVertex3d(r2.x, r2.y, r2.z);
 				glEnd();
 				// Draw cylinder arrowhead in wireframe
-				A = modelTransformationMatrix_;
+				A = baseTransform;
 				A.applyTranslation(r1);
 				r3 = r2-r1;
 				rij = r3.magnitude();
@@ -551,7 +556,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 			case (Glyph::CubeGlyph):
 				r2 = g->data(1)->vector();
 				g->data(0)->copyColour(colour_i);
-				A = modelTransformationMatrix_;
+				A = baseTransform;
 				A.applyTranslation(r1.x, r1.y, r1.z);
 				if (g->rotated()) A *= (*g->matrix());
 				A.applyScaling(r2.x, r2.y, r2.z);
@@ -579,8 +584,9 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 					}
 				}
 				break;
-			// Triangle - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
+			// Triangle/Quad - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
 			case (Glyph::TriangleGlyph):
+			case (Glyph::QuadGlyph):
 				r2 = g->data(1)->vector();
 				r3 = g->data(2)->vector();
 				g->data(0)->copyColour(colour_i);
@@ -604,6 +610,29 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r2.x, r2.y, r2.z, r4.x, r4.y, r4.z, textcolour);
 					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r3.x, r3.y, r3.z, r4.x, r4.y, r4.z, textcolour);
 				}
+				if (g->type() == Glyph::QuadGlyph)
+				{
+					r4 = g->data(3)->vector();
+					g->data(3)->copyColour(colour_l);
+					// Work out normal
+					r2 = -(r1 - r3) * (r4 - r3);
+					r2.normalise();
+					if (g->isSolid())
+					{
+						if ((colour_i[3] < 0.99f) || (colour_k[3] < 0.99f) || (colour_l[3] < 0.99f)) ts = RenderEngine::TransparentTriangle;
+						else ts = RenderEngine::SolidTriangle;
+					}
+					else ts = RenderEngine::WireTriangle;
+					glyphTriangles_[ts].defineVertex(r1.x, r1.y, r1.z, r2.x, r2.y, r2.z, colour_i);
+					glyphTriangles_[ts].defineVertex(r3.x, r3.y, r3.z, r2.x, r2.y, r2.z, colour_k);
+					glyphTriangles_[ts].defineVertex(r4.x, r4.y, r4.z, r2.x, r2.y, r2.z, colour_l);
+					if (g->isSelected())
+					{
+						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r1.x, r1.y, r1.z, r2.x, r2.y, r2.z, textcolour);
+						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r3.x, r3.y, r3.z, r2.x, r2.y, r2.z, textcolour);
+						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r4.x, r4.y, r4.z, r2.x, r2.y, r2.z, textcolour);
+					}
+				}
 				break;
 			// Text in 2D coordinates - left-hand origin = data[0]
 			case (Glyph::TextGlyph):
@@ -618,7 +647,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				r2 = g->data(1)->vector();
 				g->data(0)->copyColour(colour_i);
 				// Draw cylinder body and arrowhead
-				A = modelTransformationMatrix_;
+				A = baseTransform;
 				A.applyTranslation(r1);
 				r3 = r2-r1;
 				rij = r3.magnitude();
@@ -636,7 +665,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				break;
 			// Vector - tail = data[0], head = data[1]
 			case (Glyph::VectorGlyph):
-				r2 = g->data(1)->vector() - r1;
+				r2 = g->data(1)->vector();
 				r1 -= r2*0.5;
 				g->data(0)->copyColour(colour_i);
 				glLineWidth(g->lineWidth());
@@ -644,10 +673,10 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				// Draw simple line from tail to head points
 				glBegin(GL_LINES);
 				glVertex3d(r1.x, r1.y, r1.z);
-				glVertex3d(r2.x, r2.y, r2.z);
+				glVertex3d(r1.x+r2.x, r1.y+r2.y, r1.z+r2.z);
 				glEnd();
 				// Draw cylinder arrowhead in wireframe
-				A = modelTransformationMatrix_;
+				A = baseTransform;
 				A.applyTranslation(r1);
 				rij = r2.magnitude();
 				phi = DEGRAD * acos(r2.z/rij);
@@ -656,7 +685,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 				else A.applyRotationAxis(-r2.y, r2.x, 0.0, phi, TRUE);
 				// Move to endpoint
 				A.applyTranslation(0.0,0.0,rij*0.9);
-				A.applyScalingZ(rij*0.1);
+				A.applyScaling(0.2, 0.2, rij*0.1);
 				renderPrimitive(cones_, lod, colour_i, A, GL_LINE);
 				break;
 		}
@@ -664,7 +693,7 @@ void RenderEngine::renderModel(Model *source, TCanvas *canvas)
 }
 
 // Render additional model information (measurements etc.)
-void RenderEngine::renderModelOverlays(Model *source, TCanvas *canvas)
+void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCanvas *canvas)
 {
 	Vec3<double> r1, r2, r3, r4, pos, rji, rjk;
 	Vec4<double> screenr;
@@ -681,7 +710,7 @@ void RenderEngine::renderModelOverlays(Model *source, TCanvas *canvas)
 	{
 		// Load model transformation matrix
 		glLoadIdentity();
-		glMultMatrixd(modelTransformationMatrix_.matrix());
+		glMultMatrixd(baseTransform.matrix());
 		
 		// Distances
 		for (Measurement *m = source->distanceMeasurements(); m != NULL; m = m->next)
@@ -728,15 +757,16 @@ void RenderEngine::renderModelOverlays(Model *source, TCanvas *canvas)
 				pos += r2;
 				glVertex3d(pos.x, pos.y, pos.z);
 				t += 0.1;
+				// Store text position
+				if (n == 5) r4 = pos;
 			}
 			glEnd();
-			// Determine orientation of text
-			pos = (rji + rjk) * 0.1 + r2;
+			// Determine left or right-alignment of text
 			// OPTIMIZE - can we just multiply by modelTransformationMatrix_ here? We don't care about the exact projection....
 			modelToWorld(r2, &screenr);
 			gamma = screenr.x;
-			modelToWorld(pos, &screenr);
-			renderTextPrimitive(pos, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma < screenr.x);
+			modelToWorld(r4, &screenr);
+			renderTextPrimitive(r4, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma > screenr.x);
 		}
 		
 		// Torsions
@@ -781,6 +811,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	Vec3<double> pos, rmouse, v;
 	double radius_i, radius_j;
 	Dnchar text;
+	Fragment *frag;
 	
 	// Clear filtered primitive lists
 	solidPrimitives_.clear();
@@ -828,7 +859,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glLoadIdentity();
 	
 	// Draw main model
-	renderModel(source, canvas);
+	renderModel(source, modelTransformationMatrix_, canvas);
 	
 	// Draw on the selection highlights (for atoms in canvas.subsel)
 	for (Refitem<Atom,int> *ri = canvas->pickedAtoms(); ri != NULL; ri = ri->next)
@@ -921,6 +952,45 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 			break;
 	}
 	
+	// Selected user mode actions
+	i = canvas->atomClicked();
+	switch (canvas->selectedMode())
+	{
+		// Draw on fragment (as long as mode is selected)
+		case (UserAction::DrawFragmentAction):
+			if (gui.fragmentWindow->currentFragment() == NULL) break;
+			frag = gui.fragmentWindow->currentFragment();
+			j = source->atomOnScreen(canvas->rMouseLast().x, canvas->rMouseLast().y);
+			if ((i != NULL) || (j != NULL))
+			{
+				// Atom is now fragment anchor point - make sure we select a non-null atom i or j
+				if (i != NULL) j = i;
+				pos = j->r();
+				Model *m = frag->anchoredModel(j, canvas->keyModifier(Prefs::ShiftKey), gui.fragmentWindow->bondId());
+
+				A = modelTransformationMatrix_;
+				A.applyTranslation(pos);	
+				// Did we find a valid anchor point?
+				if (m != NULL) renderModel(m, A, canvas);
+				else
+				{
+					prefs.copyColour(Prefs::TextColour, colour);
+					renderPrimitive(&crossedCube_, FALSE, colour, A, GL_LINE, 2.0);
+				}
+			}
+			else
+			{
+				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
+				// Get drawing point origin, translate to it, and render the stored model
+				if (canvas->activeMode() == UserAction::DrawFragmentAction) pos = screenToModel(canvas->rMouseDown().x, canvas->rMouseDown().y, prefs.drawDepth());
+				else pos = screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());
+				A = modelTransformationMatrix_;
+				A.applyTranslation(pos);
+				renderModel(frag->orientedModel(), A, canvas);
+			}
+			break;
+	}
+
 	// All 3D primitive objects have now been filtered, so add triangles, then sort and send to GL
 	renderPrimitive(&glyphTriangles_[RenderEngine::SolidTriangle], FALSE, NULL, modelTransformationMatrix_);
 	renderPrimitive(&glyphTriangles_[RenderEngine::WireTriangle], FALSE, NULL, modelTransformationMatrix_, GL_LINE);
@@ -928,5 +998,5 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	sortAndSendGL();
 	
 	// Render overlays
-	renderModelOverlays(source, canvas);
+	renderModelOverlays(source, modelTransformationMatrix_, canvas);
 }

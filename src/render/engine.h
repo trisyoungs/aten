@@ -63,7 +63,7 @@ class RenderEngine
 	// Primitive objects
 	PrimitiveGroup cubes_, spheres_, cylinders_, cones_;
 	// One-off objects
-	Primitive wireCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
+	Primitive wireCube_, crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
 
 	public:
 	// (Re)Generate primitive vertex arrays with specified quality
@@ -129,9 +129,9 @@ class RenderEngine
 	// Render bond
 	void renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b = NULL);
 	// Render basic model information (atoms, bonds, labels, and glyphs)
-	void renderModel(Model *source, TCanvas *canvas);
+	void renderModel(Model *source, Matrix baseTransform, TCanvas *canvas);
 	// Render additional model information (measurements etc.) which need to appear on top of everything else
-	void renderModelOverlays(Model *source, TCanvas *canvas);
+	void renderModelOverlays(Model *source, Matrix baseTransform, TCanvas *canvas);
 	
 
 	public:

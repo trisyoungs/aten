@@ -84,6 +84,7 @@ void RenderEngine::createPrimitives(int quality)
 	cylinders_.clear();
 	cones_.clear();
 	wireCube_.clear();
+	crossedCube_.clear();
 	cellAxes_.clear();
 	rotationGlobe_.clear();
 	rotationGlobeAxes_.clear();
@@ -172,8 +173,10 @@ void RenderEngine::createPrimitives(int quality)
 		cylinders_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,1.0,nstacks, nslices);
 		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,0.0,nstacks,nslices);
 	}
+
 	// One-off objects
 	wireCube_.createWireCube(1.0);
+	crossedCube_.createCrossedCube(1.0);
 	cellAxes_.createCellAxes();
 	rotationGlobe_.plotSphere(0.75,10,13);
 	rotationGlobeAxes_.createRotationGlobeAxes(8,10);

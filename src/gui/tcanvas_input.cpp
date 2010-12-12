@@ -295,6 +295,12 @@ Vec3<double> TCanvas::rMouseLast()
 // Key Input
 */
 
+// Return state of specified keymodifier
+bool TCanvas::keyModifier(Prefs::ModifierKey mk)
+{
+	return keyModifier_[mk];
+}
+
 // Qt Slot (key press event)
 void TCanvas::keyPressEvent(QKeyEvent *event)
 {

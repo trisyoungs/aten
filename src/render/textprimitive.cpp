@@ -65,15 +65,16 @@ void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
 	// Grab contextHeight
 	QRect rect;
 	int height = canvas->contextHeight();
+	int pointsize = prefs.labelSize();
 	if (prefs.useNiceText())
 	{
 		for (int n=0; n<nTextPrimitives_; ++n)
 		{
-			rect = painter.boundingRect(textPrimitives_[n].x, height-textPrimitives_[n].y, 1, -1, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
+			rect = painter.boundingRect(textPrimitives_[n].x, height-textPrimitives_[n].y-pointsize, 1, -1, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
 			painter.drawText(rect, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
 		}
 	}
-	else for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y, textPrimitives_[n].text);
+	else for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y-pointsize, textPrimitives_[n].text);
 }
 
 /*
