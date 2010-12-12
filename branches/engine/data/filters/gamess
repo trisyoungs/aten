@@ -29,10 +29,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 	if (find("ATOM      ATOMIC                      COORDINATES (BOHR)"))
 	{
 		skipline();
-		while (readline(e,discard,rx,ry,rz) != 0)
-		{
-			newatom(e,rx,ry,rz);
-		}
+		while (readline(e,discard,rx,ry,rz) != 0) newatom(e,rx,ry,rz);
 		bohr(aten.model);
 		rebond();
 	}

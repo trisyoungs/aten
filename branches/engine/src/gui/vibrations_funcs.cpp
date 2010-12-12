@@ -144,6 +144,7 @@ void AtenVibrations::on_VectorScaleSpin_valueChanged(double value)
 
 void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 {
+	printf("Hjhdskfjshdjfh\n");
 	if (checked)
 	{
 		vibrationPlaying_ = TRUE;
@@ -209,6 +210,6 @@ void AtenVibrations::timerEvent(QTimerEvent*)
 void AtenVibrations::dialogFinished(int result)
 {
 	// Stop animation if it is playing
-	ui.PlayPauseVibration->setChecked(FALSE);
+	if (ui.PlayPauseVibration->isChecked()) ui.PlayPauseVibration->click();
 	gui.mainWindow->ui.actionVibrationsWindow->setChecked(FALSE);
 }

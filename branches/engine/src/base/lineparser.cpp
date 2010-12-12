@@ -294,7 +294,7 @@ int LineParser::readNextLine(int optionMask)
 			escaped = *c == '\\';
 		}
 		// If we are skipping blank lines, check for a blank line here
-		if (optionMask&LineParser::SkipBlanks) 
+		if (optionMask&LineParser::SkipBlanks)
 		{
 			// Now, see if our line contains only blanks
 			nchars = 0;
@@ -312,7 +312,7 @@ int LineParser::readNextLine(int optionMask)
 		linePos_ = 0;
 		lastLineNo_ ++;
 	} while (result != 0);
-// 	printf("Line = [%s], length = %i\n",line_,lineLength_);
+// 	printf("LineParser Returned line = [%s], length = %i\n",line_,lineLength_);
 	msg.exit("LineParser::readNextLine");
 	return result;
 }

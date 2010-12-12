@@ -320,21 +320,24 @@ void Primitive::createCrossedCube(double size)
 	// Create wire cube to start with
 	createWireCube(size);
 	// Add crosses to faces
-	int i, j;
+	int i, j, sign;
 	GLfloat r[3];
 	for (i=0; i<3; ++i)
 	{
-		// Determine single coordinate on positive face
-		for (j = 0; j<3; ++j) r[j] = (j == i ? 0.55*size : 0.4*size);
-		defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
-		r[(i+1)%3] = -r[(i+1)%3];
-		r[(i+2)%3] = -r[(i+2)%3];
-		defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
-		r[(i+1)%3] = -r[(i+1)%3];
-		defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
-		r[(i+1)%3] = -r[(i+1)%3];
-		r[(i+2)%3] = -r[(i+2)%3];
-		defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+		for (sign = 1; sign > -2; sign -=2)
+		{
+			// Determine single coordinate on positive face from which to determine all others
+			for (j = 0; j<3; ++j) r[j] = (j == i ? 0.55*size*sign : 0.4*size);
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			r[(i+1)%3] = -r[(i+1)%3];
+			r[(i+2)%3] = -r[(i+2)%3];
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			r[(i+1)%3] = -r[(i+1)%3];
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			r[(i+1)%3] = -r[(i+1)%3];
+			r[(i+2)%3] = -r[(i+2)%3];
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+		}
 	}
 }
 
