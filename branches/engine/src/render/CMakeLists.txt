@@ -3,7 +3,9 @@ engine.h
 textprimitive.h
 triangles.h
 engine.cpp
-engine_render.cpp
+engine_model.cpp
+engine_useractions.cpp
+engine_windows.cpp
 primitive.cpp
 primitive_surface.cpp
 primitive_vertex.cpp

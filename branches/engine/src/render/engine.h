@@ -114,6 +114,8 @@ class RenderEngine
 	Primitive glyphTriangles_[RenderEngine::nTriangleStyles];
 
 	private:
+	// Return level of detail for supplied coordinate
+	int levelOfDetail(Vec3<double> &r);
 	// Render primitive from primitive group in specified colour and level of detail
 	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Render primitive in specified colour
@@ -126,23 +128,26 @@ class RenderEngine
 	GridPrimitive *findGridPrimitive(Grid *g);
 	// Remove grid primitive from list (if it exists)
 	void removeGridPrimitive(Grid *g);
+	// Sort and render filtered polygons by depth
+	void sortAndSendGL();
 	// Render bond
 	void renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b = NULL);
 	// Render basic model information (atoms, bonds, labels, and glyphs)
 	void renderModel(Model *source, Matrix baseTransform, TCanvas *canvas);
 	// Render additional model information (measurements etc.) which need to appear on top of everything else
 	void renderModelOverlays(Model *source, Matrix baseTransform, TCanvas *canvas);
-	
+	// Render addition elements related to selected/active UserActions
+	void renderUserActions(Model *source, Matrix baseTransform, TCanvas *canvas);
+	// Render addition elements related to visible windows
+	void renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas);
 
 	public:
 	// Initialise GL
 	void initialiseGL();
-	// Render 3D elements with OpenGL
-	void render3D(Model* source, TCanvas *canvas);
 	// Render text objects (with supplied QPainter)
 	void renderText(QPainter &painter, TCanvas *canvas);
-	// Sort and render filtered polygons by depth
-	void sortAndSendGL();
+	// Render 3D elements with OpenGL
+	void render3D(Model* source, TCanvas *canvas);
 };
 
 #endif
