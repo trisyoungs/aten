@@ -20,17 +20,9 @@
 */
 
 #include "render/engine.h"
-// #include "classes/prefs.h"
-// #include "classes/forcefieldatom.h"
-// #include "classes/grid.h"
 #include "model/model.h"
-// #include "model/fragment.h"
 #include "gui/gui.h"
 #include "gui/vibrations.h"
-// #include "gui/tcanvas.uih"
-// #include "gui/fragment.h"
-// #include "base/sysfunc.h"
-// #include <math.h>
 
 // Render addition elements related to visible windows
 void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas)
@@ -39,7 +31,7 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 	GLfloat colour[4];
 	Matrix A;
 	int lod;
-	double z, rij, phi;
+	double rij, phi;
 
 	// Vibrations Window - Draw vibration arrows
 	if ((gui.vibrationsWindow->isVisible()) && (gui.vibrationsWindow->ui.ShowVectorsCheck->isChecked()))
@@ -59,9 +51,13 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 				Vec3<double> *disp = vib->displacements();
 				// Cycle over model atoms and draw associated displacement vectors
 				int count = 0;
-				for (Atom *i = m->atoms(); i != NULL; i = i->next)
+				for (Atom *i = source->atoms(); i != NULL; i = i->next)
 				{
+					// Grab atom position and calculated level of detail
 					r1 = i->r();
+					lod = levelOfDetail(r1, canvas);
+					if (lod == -1) continue;
+					
 					r2 = disp[count]*scale;
 					// Create basic transformation matrix
 					A = baseTransform;
@@ -80,13 +76,13 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 						glEnd();
 						// Move to endpoint
 						A.applyTranslation(0.0,0.0,rij*0.9);
-						A.applyScaling(0.2,0.2,rij*0.1);
+						A.applyScaling(rij*0.02,rij*0.02,rij*0.1);
 						renderPrimitive(cones_, lod, colour, A, GL_LINE);
 					}
 					else
 					{
 						// Draw cylinder
-						A.applyScaling(0.1,0.1,rij*0.9);
+						A.applyScaling(rij*0.05,rij*0.05,rij*0.9);
 						renderPrimitive(cylinders_, lod, colour, A, GL_FILL);
 						// Move to endpoint
 						A.applyTranslation(0.0,0.0,1.0);

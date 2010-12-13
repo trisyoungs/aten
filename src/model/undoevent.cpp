@@ -327,10 +327,17 @@ GlyphEvent::~GlyphEvent()
 }
 
 // Set change 
-void GlyphEvent::set(bool creation, Glyph *g) //TODO
+void GlyphEvent::set(bool creation, Glyph *g)	// TODO Need a separate event for changes to glyph data - keep all changes in one event somehow?
 {
 	msg.enter("GlyphEvent::set");
 	direction_ = (creation ? UndoEvent::Undo : UndoEvent::Redo);
+	// Copy Glyph data
+	if (g != NULL)
+	{
+		glyphData_ = *g;
+		for (int i=0; i<glyphData_.nGlyphData(g->type()); ++i) atomIDs_[i] = (glyphData_.data(i)->atom() == NULL ? -1 : glyphData_.data(i)->atom()->id());
+	}
+	else printf("Null pointer passed to GlyphEvent::set()!\n");
 	msg.exit("GlyphEvent::set");
 }
 

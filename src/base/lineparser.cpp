@@ -256,12 +256,8 @@ int LineParser::readNextLine(int optionMask)
 	{
 		file_->getline(line_, MAXLINELENGTH-1);
 		msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
-		if (file_->fail())
-		{
-			msg.exit("LineParser::readLine");
-			return 1;
-		}
-		// Read a line from the file, so process it to remove comments
+
+		// Process line to remove comments
 		quotchar = '\0';
 		for (c = line_; *c != '\0'; ++c)
 		{
@@ -293,6 +289,7 @@ int LineParser::readNextLine(int optionMask)
 			}
 			escaped = *c == '\\';
 		}
+		
 		// If we are skipping blank lines, check for a blank line here
 		if (optionMask&LineParser::SkipBlanks)
 		{
@@ -308,6 +305,21 @@ int LineParser::readNextLine(int optionMask)
 			else result = 0;
 		}
 		else result = 0;
+		
+		// If result is 0, everything went okay, but if not we got a blank line. EOF or failed perhaps?
+		if (result == -1)
+		{
+			if (file_->eof())
+			{
+				msg.exit("LineParser::readLine");
+				return -1;
+			}
+			if (file_->fail())
+			{
+				msg.exit("LineParser::readLine");
+				return 1;
+			}
+		}
 		lineLength_ = strlen(line_);
 		linePos_ = 0;
 		lastLineNo_ ++;
@@ -516,13 +528,9 @@ void LineParser::getAllArgsDelim(int optionMask)
 // Parse delimited (from file)
 int LineParser::getArgsDelim(int optionMask)
 {
-	// Standard file parse routine.
-	// Splits the line from the file into delimited arguments via the 'parseline' function
 	msg.enter("LineParser::getArgsDelim[ifstream]");
 	bool done = FALSE;
 	int result;
-	// Lines beginning with '#' are ignored as comments
-	// Blank lines are skipped if blankskip == TRUE.
 	// Returns : 0=ok, 1=error, -1=eof
 	do
 	{
@@ -530,6 +538,7 @@ int LineParser::getArgsDelim(int optionMask)
 		result = readNextLine(optionMask);
 		if (result != 0)
 		{
+			printf("result == %i\n", result);
 			msg.exit("LineParser::getArgsDelim[ifstream]");
 			return result;
 		}
@@ -543,10 +552,9 @@ int LineParser::getArgsDelim(int optionMask)
 	return 0;
 }
 
-// Get rest of current line starting at next delimited part
+// Get rest of current line starting at next delimited part (and put into supplied arg if supplied)
 bool LineParser::getRestDelim(int optionMask, Dnchar* destarg)
 {
-	// Put the next 'length' characters from line_ into temparg (and put into supplied arg if supplied)
 	msg.enter("LineParser::getRestDelim");
 	int arglen = 0, n, length;
 	char c;

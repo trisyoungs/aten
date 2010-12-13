@@ -40,14 +40,13 @@ class GlyphData
 	GlyphData();
 	// List pointers
 	GlyphData *prev, *next;
-
 	// Atom data pointer type
 	enum GlyphDataType { PositionData, ForceData, VelocityData };
 
 	private:
 	// Position or direction vector
 	Vec3<double> vector_;
-	// Integer atom in the parent model from which to get r, f, or v
+	// Atom in the parent model from which to get r, f, or v
 	Atom *atom_;
 	// Type of vector data to take from atom (if defined)
 	GlyphDataType atomData_;
@@ -95,6 +94,8 @@ class Glyph
 	Glyph();
 	// List pointers
 	Glyph *prev, *next;
+	// Operator =
+	void operator=(Glyph &source);
 	// Glyph style
 	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, TubeArrowGlyph, VectorGlyph, nGlyphTypes };
 	static const char *glyphType(GlyphType gt);

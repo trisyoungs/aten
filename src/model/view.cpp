@@ -186,7 +186,6 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 {
 	// Rotate the whole system by the amounts specified.
 	msg.enter("Model::axisRotateView");
-	static double theta, camrot;
 	Matrix newrotmat, oldrotmat;
 	if (parent_ == NULL)
 	{

@@ -51,7 +51,7 @@
 #include <string.h>
 
 // Constructors
-StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly, int arraysize) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype), arraySize_(arraysize)
+StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly, int arraysize) : previousType_(prevtype), accessor_(id), arrayIndex_(arrayindex), arraySize_(arraysize)
 {
 	// Private variables
 	readOnly_ = readonly;
@@ -60,7 +60,7 @@ StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTyp
 	functionAccessor_ = FALSE;
 // 	printf("Return type of StepNode is %s\n", VTypes::dataType(returnType_));
 }
-StepNode::StepNode(int id, VTypes::DataType prevtype, VTypes::DataType rtntype) : accessor_(id), previousType_(prevtype)
+StepNode::StepNode(int id, VTypes::DataType prevtype, VTypes::DataType rtntype) : previousType_(prevtype), accessor_(id)
 {
 	// Private variables
 	arraySize_ = 0;
@@ -272,6 +272,15 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::BondData):
 			printf("%s", BondVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::CellData):
+			printf("%s", CellVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::ColourScaleData):
+			printf("%s", ColourScaleVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::ColourScalePointData):
+			printf("%s", ColourScalePointVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::EigenvectorData):
 			printf("%s", EigenvectorVariable::accessorData[accessor_].name);

@@ -21,6 +21,8 @@
 
 #include "base/glyph.h"
 #include "model/model.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
 
 // Create new glyph in this model
 Glyph *Model::addGlyph(Glyph::GlyphType gt)
@@ -30,6 +32,13 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 	Glyph *newglyph = glyphs_.add();
 	newglyph->setParent(this);
 	newglyph->setType(gt);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+// 		GlyphEvent *newchange = new GlyphEvent;	// TODO
+// 		newchange->set(TRUE, newglyph);
+// 		recordingState_->addEvent(newchange);
+	}
 	return newglyph;
 }
 
