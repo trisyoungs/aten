@@ -320,15 +320,16 @@ void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
 */
 
 // Return level of detail for supplied coordinate (return -1 for 'behind viewer')
-int RenderEngine::levelOfDetail(Vec3<double> &r)
+int RenderEngine::levelOfDetail(Vec3<double> &r, TCanvas *canvas)
 {
-		// If z is less than 0, don't even bother continuing since its behind the viewer
-		double z = -(r.x*modelTransformationMatrix_[2] + r.y*modelTransformationMatrix_[6] + r.z*modelTransformationMatrix_[10] + modelTransformationMatrix_[14]);
-		if (z < 0) return -1;
-		
-		// Determine level of detail to use for primitives
-		if (z < prefs.levelOfDetailStartZ()) return 0;
-		else return int((z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth());
+	// If z is less than 0, don't even bother continuing since its behind the viewer
+	double z = -(r.x*modelTransformationMatrix_[2] + r.y*modelTransformationMatrix_[6] + r.z*modelTransformationMatrix_[10] + modelTransformationMatrix_[14]);
+	if (z < 0) return -1;
+	// If we are rendering to an offscreen bitmap, don't bother with levelofdetal calculation (always return best quality)
+	if (canvas->offScreenRendering()) return 0;
+	// Determine level of detail to use for primitives
+	if (z < prefs.levelOfDetailStartZ()) return 0;
+	else return int((z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth());
 
 }
 

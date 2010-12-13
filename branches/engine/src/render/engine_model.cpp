@@ -183,7 +183,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	Atom *i, *j;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
-	Matrix atomtransform, A;
+	Matrix atomtransform, A, B;
 	Refitem<Bond,int> *ri;
 	Atom::DrawStyle style_i, style_j, globalstyle;
 	Prefs::ColouringScheme scheme;
@@ -227,7 +227,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		pos = i->r();
 		
 		// Calculate projected Z distance from viewer
-		lod = levelOfDetail(pos);
+		lod = levelOfDetail(pos, canvas);
 		if (lod == -1) continue;
 		
 		// Move to local atom position
@@ -416,7 +416,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		
 		// Determine level of detail for glyph
 		r1 = g->data(0)->vector();
-		lod = levelOfDetail(r1);
+		lod = levelOfDetail(r1, canvas);
 		if (lod == -1) continue;
 		
 		switch (g->type())
@@ -473,8 +473,8 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 					else renderPrimitive(cubes_, lod, colour_i, A, GL_FILL);
 					if (g->isSelected())
 					{
-						if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, 3.0);
-						else renderPrimitive(cubes_, lod, textcolour, A, GL_LINE, 3.0);
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, 2.0);
+						else renderPrimitive(cubes_, lod, textcolour, A, GL_LINE, 2.0);
 					}
 				}
 				else
@@ -539,6 +539,36 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r3.x, r3.y, r3.z, r2.x, r2.y, r2.z, textcolour);
 						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r4.x, r4.y, r4.z, r2.x, r2.y, r2.z, textcolour);
 					}
+				}
+				break;
+			// Ellipsoid - centre = data[0], edge vector = data[1], face vector = data[2]
+			// EllipsoidXYZ - centre = data[0], X = data[1], Y = data[2], Z= data[3]
+			case (Glyph::EllipsoidGlyph):
+			case (Glyph::EllipsoidXYZGlyph):
+				g->data(0)->copyColour(colour_i);
+				A = baseTransform;
+				A.applyTranslation(r1.x, r1.y, r1.z);
+				r2 = g->data(1)->vector() - r1;
+				r3 = g->data(2)->vector() - r1;
+				if (g->type() == Glyph::EllipsoidXYZGlyph) r4 = g->data(3)->vector() - r1;
+				else
+				{
+					r4 = r2 * r3;
+					r4.normalise();
+				}
+				B.setColumn(0, r2, 0.0);
+				B.setColumn(1, r3, 0.0);
+				B.setColumn(2, r4, 0.0);
+				A.multiplyRotation(B);
+				if (g->isSolid())
+				{
+					renderPrimitive(spheres_, lod, colour_i, A, GL_FILL);
+					if (g->isSelected()) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, 2.0);
+				}
+				else
+				{
+					if (g->isSelected()) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, g->lineWidth()+2);
+					else renderPrimitive(spheres_, lod, colour_i, A, GL_LINE, g->lineWidth());
 				}
 				break;
 			// Text in 2D coordinates - left-hand origin = data[0]

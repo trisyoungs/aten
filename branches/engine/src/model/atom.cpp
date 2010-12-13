@@ -181,6 +181,13 @@ void Model::deleteAtom(Atom *xatom, bool noupdate)
 			unbondAtoms(xatom,j,b);
 			bref = xatom->bonds();
 		}
+		// For all glyphs involving this atom, set the current coordinates
+		int i;
+		for (Glyph *g = glyphs_.first(); g != NULL; g = g->next)
+		{
+			for (i=0; i<Glyph::nGlyphData(g->type()); ++i) if (g->data(i)->atom() == xatom) g->data(i)->setVector(xatom->r());
+		}
+		
 		// Finally, delete the atom
 		removeAtom(xatom, noupdate);
 	}

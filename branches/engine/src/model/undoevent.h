@@ -228,6 +228,7 @@ class GlyphEvent : public UndoEvent
 	private:
 	// Change data
 	Glyph glyphData_;
+	int atomIDs_[4];
 
 	public:
 	// Set change data

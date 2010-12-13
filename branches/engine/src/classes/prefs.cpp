@@ -207,8 +207,8 @@ Prefs::Prefs()
 	primitiveQuality_ = 10;
 	imagePrimitiveQuality_ = 50;
 	reusePrimitiveQuality_ = FALSE;
-	levelsOfDetail_ = 5;
-	levelOfDetailWidth_ = 10;
+	levelsOfDetail_ = 8;
+	levelOfDetailWidth_ = 25.0;
 	levelOfDetailStartZ_ = 25.0;
 	transparencyCorrect_ = TRUE;
 	transparencyNBins_ = 1000;

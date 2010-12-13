@@ -11,10 +11,8 @@ Things to do (fix) in new version:
 1) Rendering of aromatic bonds
 2) Rotation of multiple bonds into bond plane
 5) Jump before first rotation of model (lastmouse not set properly?)
-a) Ellipsoid glyphs - inc. testing of CG particle script
-c) Spacegroup Pnmmm
+a) Testing of CG particle script
 f) Proper positioning of bond halves w.r.t. outer edge of atom
-j) Vibrational animation arrows (and transparent original model?)
 k) Fragment builder molecules are not reoriented properly along existing bonds
 
 General TODO:
@@ -27,6 +25,8 @@ General TODO:
 6) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
 7) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
 8) Tabulated trigonometric functions (in mathfunc.h) for rendering optimisation
+9) Glyph Undo/Redo
+a) Spacegroup Pnmmm
 
 Doc TODO:
 

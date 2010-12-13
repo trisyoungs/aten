@@ -115,7 +115,7 @@ class RenderEngine
 
 	private:
 	// Return level of detail for supplied coordinate
-	int levelOfDetail(Vec3<double> &r);
+	int levelOfDetail(Vec3<double> &r, TCanvas *canvas);
 	// Render primitive from primitive group in specified colour and level of detail
 	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Render primitive in specified colour
