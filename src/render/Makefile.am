@@ -1,6 +1,6 @@
 noinst_LIBRARIES = librender.a
 
-librender_a_SOURCES = engine.cpp engine_render.cpp primitive.cpp primitive_surface.cpp primitive_vertex.cpp textprimitive.cpp triangles.cpp
+librender_a_SOURCES = engine.cpp engine_model.cpp engine_useractions.cpp engine_windows.cpp primitive.cpp primitive_surface.cpp primitive_vertex.cpp textprimitive.cpp triangles.cpp
 
 noinst_HEADERS = engine.h primitive.h textprimitive.h triangles.h
 

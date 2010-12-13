@@ -97,8 +97,8 @@ const char *Prefs::keyAction(Prefs::KeyAction i)
 }
 
 // Colours
-const char *ObjectColourKeywords[Prefs::nObjectColours] = { "bg", "fixedatom", "globeaxes", "globe", "glyph", "specular", "text", "unitcellaxes", "unitcell" };
-const char *ObjectColourNames[Prefs::nObjectColours] = { "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Specular", "Text", "Unit Cell Axes", "Unit Cell" };
+const char *ObjectColourKeywords[Prefs::nObjectColours] = { "bg", "fixedatom", "globeaxes", "globe", "glyph", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow" };
+const char *ObjectColourNames[Prefs::nObjectColours] = { "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow" };
 Prefs::ObjectColour Prefs::objectColour(const char *s, bool reporterror)
 {
 	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
@@ -250,6 +250,7 @@ Prefs::Prefs()
 	setColour(Prefs::TextColour, 0.0, 0.0, 0.0, 1.0);
 	setColour(Prefs::UnitCellColour, 0.0, 0.0, 0.0, 1.0);
 	setColour(Prefs::UnitCellAxesColour, 0.8, 0.8, 0.8, 1.0);
+	setColour(Prefs::VibrationArrowColour, 0.8, 0.4, 0.4, 1.0);
 
 	// Colour scales
 	colourScale[0].setName("Charge");

@@ -144,7 +144,6 @@ void AtenVibrations::on_VectorScaleSpin_valueChanged(double value)
 
 void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 {
-	printf("Hjhdskfjshdjfh\n");
 	if (checked)
 	{
 		vibrationPlaying_ = TRUE;

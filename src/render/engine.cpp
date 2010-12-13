@@ -24,6 +24,7 @@
 #include "classes/prefs.h"
 #include "model/model.h"
 #include "classes/forcefieldatom.h"
+#include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include <math.h>
 
@@ -318,6 +319,19 @@ void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
 // Object Rendering
 */
 
+// Return level of detail for supplied coordinate (return -1 for 'behind viewer')
+int RenderEngine::levelOfDetail(Vec3<double> &r)
+{
+		// If z is less than 0, don't even bother continuing since its behind the viewer
+		double z = -(r.x*modelTransformationMatrix_[2] + r.y*modelTransformationMatrix_[6] + r.z*modelTransformationMatrix_[10] + modelTransformationMatrix_[14]);
+		if (z < 0) return -1;
+		
+		// Determine level of detail to use for primitives
+		if (z < prefs.levelOfDetailStartZ()) return 0;
+		else return int((z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth());
+
+}
+
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
 void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
 {
@@ -416,4 +430,158 @@ void RenderEngine::sortAndSendGL()
 		glMultMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();
 	}
+}
+
+// Set OpenGL options ready for drawing
+void RenderEngine::initialiseGL()
+{
+	msg.enter("RenderEngine::initialiseGL");
+	// Clear colour
+	GLfloat col[4];
+	prefs.copyColour(Prefs::BackgroundColour, col);
+	glClearColor(col[0],col[1],col[2],col[3]);
+	//glClearDepth(1.0);
+	// Perspective hint
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
+	// Enable depth buffer
+	glEnable(GL_DEPTH_TEST);
+	// Smooth shading
+	glShadeModel(GL_SMOOTH);
+	// Auto-calculate surface normals
+	glEnable(GL_NORMALIZE);
+	// Set alpha-blending function
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
+	// Set up the light model
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glEnable(GL_LIGHTING);
+	prefs.copySpotlightColour(Prefs::AmbientComponent, col);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, col);
+	prefs.copySpotlightColour(Prefs::DiffuseComponent, col);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, col);
+	prefs.copySpotlightColour(Prefs::SpecularComponent, col);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, col);
+	prefs.copySpotlightPosition(col);
+	glLightfv(GL_LIGHT0, GL_POSITION, col);
+	prefs.spotlightActive() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
+	// Set specular reflection colour
+	prefs.copyColour(Prefs::SpecularColour, col);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, col);
+	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
+	glDisable(GL_BLEND);
+	glDisable(GL_LINE_SMOOTH);
+	glDisable(GL_POLYGON_SMOOTH);
+	glDisable(GL_MULTISAMPLE);
+	// Configure antialiasing
+	if (prefs.multiSampling()) glEnable(GL_MULTISAMPLE);
+	if (prefs.lineAliasing())
+	{
+		glEnable(GL_BLEND);
+		glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+		glEnable(GL_LINE_SMOOTH);
+	}
+	if (prefs.polygonAliasing())
+	{
+		glEnable(GL_BLEND);
+		glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
+		glEnable(GL_POLYGON_SMOOTH);
+	}
+	// Configure fog effects
+	if (prefs.depthCue())
+	{
+		glFogi(GL_FOG_MODE, GL_LINEAR);
+		prefs.copyColour(Prefs::BackgroundColour, col);
+		glFogfv(GL_FOG_COLOR, col);
+		glFogf(GL_FOG_DENSITY, 0.35f);
+		glHint(GL_FOG_HINT, GL_NICEST);
+		glFogi(GL_FOG_START, prefs.depthNear());
+		glFogi(GL_FOG_END, prefs.depthFar());
+		glEnable(GL_FOG);
+	}
+	else glDisable(GL_FOG);
+	// Configure face culling
+	glCullFace(GL_BACK);
+	prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+	// Test
+	glDisable(GL_DITHER);
+	glDisable(GL_LOGIC_OP);
+	msg.exit("RenderEngine::initialiseGL");
+}
+
+// Render text objects (with supplied QPainter)
+void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
+{
+	textPrimitives_.renderAll(painter, canvas);
+}
+
+// Render 3D
+void RenderEngine::render3D(Model *source, TCanvas *canvas)
+{
+	GLfloat colour[4];
+
+	// Clear filtered primitive lists
+	solidPrimitives_.clear();
+	transparentPrimitives_.clear();
+	textPrimitives_.forgetAll();
+	glyphTriangles_[RenderEngine::SolidTriangle].forgetAll();
+	glyphTriangles_[RenderEngine::TransparentTriangle].forgetAll();
+	glyphTriangles_[RenderEngine::WireTriangle].forgetAll();
+	
+	// Set initial transformation matrix, including any translation occurring from cell...
+	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
+	
+	// Set target matrix mode and reset it, and set colour mode
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	
+	// Render rotation globe in small viewport in lower right-hand corner
+	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe))
+	{
+		int n = prefs.globeSize();
+		glViewport(canvas->contextWidth()-n,0,n,n);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glMultMatrixd(globeProjectionMatrix_.matrix());
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		Matrix A = modelTransformationMatrix_;
+		A.removeTranslationAndScaling();
+		A[14] = -1.2;
+		glMultMatrixd(A.matrix());
+		prefs.copyColour(Prefs::GlobeColour, colour);
+		glColor4fv(colour);
+		rotationGlobe_.sendToGL();
+		prefs.copyColour(Prefs::GlobeAxesColour, colour);
+		glColor4fv(colour);
+		rotationGlobeAxes_.sendToGL();
+	}
+	
+	// Prepare for model rendering
+	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMultMatrixd(modelProjectionMatrix_.matrix());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	// Draw main model
+	renderModel(source, modelTransformationMatrix_, canvas);
+	
+	if (gui.exists())
+	{
+		// Render embellshments for current UserAction
+		renderUserActions(source, modelTransformationMatrix_, canvas);	
+		// Render extras arising from open tool windows
+		renderWindowExtras(source, modelTransformationMatrix_, canvas);
+	}
+
+	// All 3D primitive objects have now been filtered, so add triangles, then sort and send to GL
+	renderPrimitive(&glyphTriangles_[RenderEngine::SolidTriangle], FALSE, NULL, modelTransformationMatrix_);
+	renderPrimitive(&glyphTriangles_[RenderEngine::WireTriangle], FALSE, NULL, modelTransformationMatrix_, GL_LINE);
+	renderPrimitive(&glyphTriangles_[RenderEngine::TransparentTriangle], TRUE, NULL, modelTransformationMatrix_);
+	sortAndSendGL();
+	
+	// Render overlays
+	renderModelOverlays(source, modelTransformationMatrix_, canvas);
 }

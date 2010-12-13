@@ -131,6 +131,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "unitcellcolour",		VTypes::DoubleData,		4, FALSE },
 	{ "vdwcutoff",			VTypes::DoubleData,		0, FALSE },
 	{ "vdwscale",			VTypes::DoubleData,		0, FALSE },
+	{ "vibrationarrowcolour",	VTypes::DoubleData,		4, FALSE },
 	{ "warn1056",			VTypes::IntegerData,		0, FALSE },
 	{ "zmap",			VTypes::StringData,		0, FALSE },
 	{ "zoomthrottle",		VTypes::DoubleData,		0, FALSE }
@@ -495,6 +496,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::VdwScale):
 			rv.set( ptr->vdwScale() );
+			break;
+		case (PreferencesVariable::VibrationArrowColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::VibrationArrowColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::VibrationArrowColour), 4);
 			break;
 		case (PreferencesVariable::Warn1056):
 			rv.set( ptr->warning1056() );
@@ -915,6 +920,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::VdwScale):
 			ptr->setVdwScale( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::VibrationArrowColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::VibrationArrowColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::Warn1056):
 			ptr->setWarning1056( newvalue.asBool() );
