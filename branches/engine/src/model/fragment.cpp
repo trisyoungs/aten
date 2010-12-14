@@ -104,14 +104,15 @@ bool Fragment::setMasterModel(Model *m)
 		gui.mainWidget->setOffScreenRendering(FALSE);
 	}
 
-	// Final tweaks to fragment model - put link atom at 0,0,0
-	masterModel_->selectAll();
-	masterModel_->translateSelectionLocal(-masterLinkAtom_->r());
-	masterModel_->selectNone();
+	// Final tweaks to master model - put link atom at 0,0,0
+	masterModel_->markAll();
+	masterModel_->translateSelectionLocal(-masterLinkAtom_->r(), TRUE);
 
-	// Copy master model to orientedModel_ and anchoredModel_
+	// Copy master model to orientedModel_ and anchoredModel_ and mark all atoms ready for operations
 	orientedModel_.copy(masterModel_);
+	orientedModel_.markAll();
 	anchoredModel_.copy(masterModel_);
+	anchoredModel_.markAll();
 
 	// Reset rendering style
 	prefs.setRenderStyle(ds);
@@ -145,17 +146,11 @@ void Fragment::cycleLinkAtom()
 	if (masterLinkAtom_ == NULL) masterLinkAtom_ = masterModel_->atoms();
 	setLinkPartner();
 	// Re-translate masterModel_, orientedModel_, and anchoredModel_ so new link atom is at the origin
-	masterModel_->selectAll();
-	masterModel_->translateSelectionLocal(-masterLinkAtom_->r());
-	masterModel_->selectNone();
+	masterModel_->translateSelectionLocal(-masterLinkAtom_->r(), TRUE);
 	Atom *i = anchoredModel_.atom(masterLinkAtom_->id());
-	anchoredModel_.selectAll();
-	anchoredModel_.translateSelectionLocal(-i->r());
-	anchoredModel_.selectNone();
+	anchoredModel_.translateSelectionLocal(-i->r(), TRUE);
 	i = orientedModel_.atom(masterLinkAtom_->id());
-	orientedModel_.selectAll();
-	orientedModel_.translateSelectionLocal(-i->r());
-	orientedModel_.selectNone();
+	orientedModel_.translateSelectionLocal(-i->r(), TRUE);
 }
 
 // Reset oriented model
@@ -164,17 +159,16 @@ void Fragment::resetOrientedModel()
 	// Copy masterModel_ over to orientedModel_
 	orientedModel_.copy(masterModel_);
 	Atom *i = orientedModel_.atom(masterLinkAtom_->id());
-	orientedModel_.selectAll();
-	orientedModel_.translateSelectionLocal(-i->r());
-	orientedModel_.selectNone();
+	orientedModel_.markAll();
+	orientedModel_.translateSelectionLocal(-i->r(), TRUE);
 }
 
 // Rotate oriented model according to screen delta
 void Fragment::rotateOrientedModel(double dx, double dy)
 {
-	orientedModel_.selectAll();
-	orientedModel_.rotateSelectionWorld(dx,dy);
-	orientedModel_.selectNone();
+	Matrix rotmat;
+	rotmat.createRotationXY(dy,dx);
+	for (Refitem<Atom,int> *ri = orientedModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
 }
 
 // Return oriented model pointer
@@ -188,22 +182,21 @@ void Fragment::pasteOrientedModel(Vec3<double> origin, Model *target)
 {
 	msg.enter("Fragment::pasteOrientedModel");
 
-	// Select all atoms and translate model to correct origin
+	// Translate model to correct origin
+	orientedModel_.translateSelectionLocal(origin, TRUE);
+
+	// Select all atoms except any anchor atoms
 	orientedModel_.selectAll();
-	orientedModel_.translateSelectionLocal(origin);
-
-	// Deselect any anchor atoms
 	orientedModel_.deselectElement(0);
-
+	orientedModel_.selectNone();
+	
 	// Paste to the target model, bonding the anchor and linkPartners if a bond was there before
 	Clipboard clip;
 	clip.copySelection(&orientedModel_);
 	clip.pasteToModel(target, FALSE);
 
 	// Translate orientedModel_ back to its previous position
-	orientedModel_.selectAll();
-	orientedModel_.translateSelectionLocal(-origin);
-	orientedModel_.selectNone();
+	orientedModel_.translateSelectionLocal(-origin, TRUE);
 
 	msg.exit("Fragment::pasteOrientedModel");
 }
@@ -220,15 +213,13 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
 		Vec3<double> ref = anchoredModel_.cell()->mimd(linkPartner, linkAtom);
 		ref.normalise();
-		anchoredModel_.selectAll();
-		anchoredModel_.rotateSelectionVector(Vec3<double>(), ref, -dy);
-		anchoredModel_.selectNone();
+		anchoredModel_.rotateSelectionVector(Vec3<double>(), ref, -dy, TRUE);
 	}
 	else
 	{
-		anchoredModel_.selectAll();
-		anchoredModel_.rotateSelectionWorld(dx,dy);
-		anchoredModel_.selectNone();
+		Matrix rotmat;
+		rotmat.createRotationXY(dy,dx);
+		for (Refitem<Atom,int> *ri = orientedModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
 	}
 
 	msg.exit("Fragment::rotateAnchoredModel");
@@ -260,24 +251,33 @@ Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond
 	}
 
 	// Calculate reference vector in fragment, if a linkPartner is specified
-	Vec3<double> ref;
+	Vec3<double> ref(1.0,0.0,0.0);
 	if (masterLinkPartner_ != NULL)
 	{
 		Atom *linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
 		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
+		linkAtom->r().print();
+		linkPartner->r().print();
 		ref = anchoredModel_.cell()->mimd(linkPartner, linkAtom);
 		ref.normalise();
 	}
 	else ref.zero();
 
 	// Calculate cross product to get rotation axis, and dot product to get rotation angle
+	// Check for ref and orientation being 'exactly' opposite facing
 	Vec3<double> xp = ref * orientation;
-	double angle = acos(ref.dp(orientation)) * DEGRAD;
+	if (xp.magnitude() < 0.1) xp = orientation.orthogonal();
+	xp.normalise();
+	double dp = ref.dp(orientation);
+	if (dp > 1.0) dp = 1.0;
+	else if (dp < -1.0) dp = -1.0;
+	double angle = acos(dp) * DEGRAD;
 
 	// Copy original model and reorient
-	anchoredModel_.selectAll();
-	if (xp.magnitude() > 0.001) anchoredModel_.rotateSelectionVector(Vec3<double>(), xp, -angle);
-	anchoredModel_.selectNone();
+	anchoredModel_.markAll();
+	Matrix A;
+	A.createRotationAxis(xp.x, xp.y, xp.z, -angle, TRUE);
+	for (Refitem<Atom,int> *ri = anchoredModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = A * ri->item->r();
 
 	msg.exit("Fragment::anchoredModel");
 	return &anchoredModel_;	
@@ -331,9 +331,8 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replaceb
 	// Since we've physically altered anchoredModel_, re-copy it
 	anchoredModel_.copy(masterModel_);
 	linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
-	anchoredModel_.selectAll();
-	anchoredModel_.translateSelectionLocal(-linkAtom->r());
-	anchoredModel_.selectNone();
+	anchoredModel_.markAll();
+	anchoredModel_.translateSelectionLocal(-linkAtom->r(), TRUE);
 
 	msg.exit("Fragment::pasteAnchoredModel");
 }

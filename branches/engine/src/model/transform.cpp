@@ -123,7 +123,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, double angle, bool markonly)
 {
 	msg.enter("Model::rotateSelectionVector");
-	Matrix r, u, ut, gr, Igr;
+	Matrix A;
 	Vec3<double> tempv;
 	if (selection(markonly) == NULL)
 	{
@@ -132,30 +132,14 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 		return;
 	}
 	
-	// Generate target coordinate system, with X equal to rotation axis
-	vector.normalise();
-	
-	u.setColumn(0, vector, 0.0);
-	u.setColumn(1, vector.orthogonal(), 0.0);
-	u.setColumn(2, vector * u.columnAsVec3(1), 0.0);
-	u.columnNormalise(2);
-
-	ut = u.transpose();
-
 	// Create rotation matrix
-	r.createRotationX(angle);
-
-	// Create grand rotation matrix
-	gr = ut * r * u;
-	Igr.setIdentity();
-	Igr = Igr - gr;
+	A.createRotationAxis(vector.x, vector.y, vector.z, angle, TRUE);
 
 	// Loop over selected atoms
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
-		tempv = gr * ri->item->r() + Igr * origin;
-		positionAtom(ri->item, tempv);
-		//i->r() = tempv;
+		tempv = A * (ri->item->r() - origin);
+		positionAtom(ri->item, tempv+origin);
 	}
 
 	// Update model measurements
