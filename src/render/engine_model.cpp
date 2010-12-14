@@ -634,12 +634,17 @@ void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCan
 {
 	Vec3<double> r1, r2, r3, r4, pos, rji, rjk;
 	Vec4<double> screenr;
+	GLfloat colour[4];
 	Matrix A;
 	double gamma, t;
 	Atom **atoms;
 
 	// Clear depth buffer to force lines on top of existing primitives,
 	glDisable(GL_DEPTH_TEST);
+	
+	// Set colour
+	prefs.copyColour(Prefs::TextColour, colour);
+	glColor4fv(colour);
 	
 	// Measurements
 	// Apply standard transformation matrix to OpenGL so we may just use local atom positions for vertices

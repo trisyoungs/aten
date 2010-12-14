@@ -13,7 +13,6 @@ Things to do (fix) in new version:
 5) Jump before first rotation of model (lastmouse not set properly?)
 a) Testing of CG particle script
 f) Proper positioning of bond halves w.r.t. outer edge of atom
-k) Fragment builder molecules are not reoriented properly along existing bonds
 
 General TODO:
 
