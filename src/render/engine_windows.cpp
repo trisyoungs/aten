@@ -22,16 +22,18 @@
 #include "render/engine.h"
 #include "model/model.h"
 #include "gui/gui.h"
+#include "gui/celltransform.h"
 #include "gui/vibrations.h"
 
 // Render addition elements related to visible windows
 void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas)
 {
-	Vec3<double> r1, r2;
+	Vec3<double> r1, r2, r3;
+	Vec3<int> ineg, ipos;
 	GLfloat colour[4];
 	Matrix A;
-	int lod;
-	double rij, phi;
+	int lod, i, j, k;
+	double rij, phi, x, y, z;
 
 	// Vibrations Window - Draw vibration arrows
 	if ((gui.vibrationsWindow->isVisible()) && (gui.vibrationsWindow->ui.ShowVectorsCheck->isChecked()))
@@ -96,4 +98,45 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 		}
 	}
 
+	// Cell Transform Window
+	if (gui.cellTransformWindow->isVisible())
+	{
+		switch (gui.cellTransformWindow->ui.CellTransformTabs->currentIndex())
+		{
+			// Replicate tab - draw on end results of replication
+			case (0):
+				r1.x = gui.cellTransformWindow->ui.CellReplicateNegXSpin->value();
+				r1.y = gui.cellTransformWindow->ui.CellReplicateNegYSpin->value();
+				r1.z = gui.cellTransformWindow->ui.CellReplicateNegZSpin->value();
+				r2.x = gui.cellTransformWindow->ui.CellReplicatePosXSpin->value();
+				r2.y = gui.cellTransformWindow->ui.CellReplicatePosYSpin->value();
+				r2.z = gui.cellTransformWindow->ui.CellReplicatePosZSpin->value();
+				r1.print();
+				r2.print();
+				ineg.set(ceil(r1.x), ceil(r1.y), ceil(r1.z));
+				ipos.set(floor(r2.x), floor(r2.y), floor(r2.z));
+				ineg.print();
+				ipos.print();
+				prefs.copyColour(Prefs::UnitCellColour, colour);
+				glColor4fv(colour);
+				A = source->modelViewMatrix() * source->cell()->axes();
+				glPushMatrix();
+				glMultMatrixd(A.matrix());
+				for (i = ineg.x; i<=ipos.x; ++i)
+				{
+					for (j = ineg.y; j<=ipos.y; ++j)
+					{
+						for (k = ineg.z; k<=ipos.z; ++k)
+						{
+							glTranslated(i*1.0, j*1.0, k*1.0);
+							wireCube_.sendToGL();
+							printf("Replica %i %i %i\n", i, j, k);
+						}
+					}
+				}
+				
+
+				glPopMatrix();
+		}
+	}
 }
