@@ -276,3 +276,9 @@ glyph ellipsoid 3
 2 90 1 0 0 0
 3 91 1 0 0 0
 endglyph
+
+glyph text3d 1
+1 0 0 -12 -7 0
+text "Multiple Bonds"
+endglyph
+

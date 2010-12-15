@@ -95,6 +95,36 @@ void AtenCellTransform::on_CellReplicateTrimCheck_clicked(bool checked)
 	prefs.setReplicateTrim(checked);
 }
 
+void AtenCellTransform::on_CellReplicateNegXSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicateNegYSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicateNegZSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicatePosXSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicatePosYSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicatePosZSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
 /*
 // Scale Functions
 */
