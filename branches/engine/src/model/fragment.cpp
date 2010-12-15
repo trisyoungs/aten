@@ -84,9 +84,11 @@ bool Fragment::setMasterModel(Model *m)
 	masterModel_->centre(0.0,0.0,0.0,FALSE,FALSE,FALSE);
 	masterModel_->selectNone();
 
-	// Generate pixmap for fragment
+	// Generate pixmap for fragment, keeping current primitive quality
 	if (prefs.generateFragmentIcons())
 	{
+		bool reusePrims = prefs.reusePrimitiveQuality();
+		prefs.setReusePrimitiveQuality(TRUE);
 		int screenbits = prefs.screenObjects();
 		prefs.setScreenObjects(prefs.offScreenObjects());
 		gui.mainWidget->setRenderSource(masterModel_);
@@ -102,6 +104,7 @@ bool Fragment::setMasterModel(Model *m)
 		gui.mainWidget->setRenderSource(NULL);
 	
 		gui.mainWidget->setOffScreenRendering(FALSE);
+		prefs.setReusePrimitiveQuality(reusePrims);
 	}
 
 	// Final tweaks to master model - put link atom at 0,0,0
@@ -256,8 +259,6 @@ Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond
 	{
 		Atom *linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
 		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
-		linkAtom->r().print();
-		linkPartner->r().print();
 		ref = anchoredModel_.cell()->mimd(linkPartner, linkAtom);
 		ref.normalise();
 	}

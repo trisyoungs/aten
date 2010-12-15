@@ -4,7 +4,7 @@ Thigs to test in new version:
 5) Viewing along (cell) axes
 6) Ewald energies / forces
 7) Torsion forces
-8) Matrix transformation operations on Model (specifically 'matrixtransform')
+8) MatrixTransform of model
 
 Things to do (fix) in new version:
 
@@ -13,8 +13,6 @@ Things to do (fix) in new version:
 3) Jump before first rotation of model (lastmouse not set properly?)
 4) Testing of CG particle script
 5) Proper positioning of bond halves w.r.t. outer edge of atom
-6) Image primitive quality appears to remain after creating fragment from selection in the GUI?
-7) Double-press of ALT required to cycle over fragment attachment points? Or just that view isn't updated?
 
 General TODO:
 
@@ -29,6 +27,8 @@ General TODO:
 9) Glyph Undo/Redo
 a) Spacegroup Pnmmm
 b) Allow (somehow) rotation of fragments without drawing them *or* rotating main view
+c) Replacing existing bond in fragment builder causes wrong atoms to be deleted
+d) Double-press of ALT required to cycle over fragment attachment points? Or just that view isn't updated?
 
 Filter TODO:
 1) ECP type is not written in GAMESS-US export filter

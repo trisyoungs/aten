@@ -28,12 +28,12 @@
 // Render addition elements related to visible windows
 void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas)
 {
-	Vec3<double> r1, r2, r3;
+	Vec3<double> r1, r2, translate, scale;
 	Vec3<int> ineg, ipos;
 	GLfloat colour[4];
 	Matrix A;
 	int lod, i, j, k;
-	double rij, phi, x, y, z;
+	double rij, phi;
 
 	// Vibrations Window - Draw vibration arrows
 	if ((gui.vibrationsWindow->isVisible()) && (gui.vibrationsWindow->ui.ShowVectorsCheck->isChecked()))
@@ -111,31 +111,47 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 				r2.x = gui.cellTransformWindow->ui.CellReplicatePosXSpin->value();
 				r2.y = gui.cellTransformWindow->ui.CellReplicatePosYSpin->value();
 				r2.z = gui.cellTransformWindow->ui.CellReplicatePosZSpin->value();
-				r1.print();
-				r2.print();
 				ineg.set(ceil(r1.x), ceil(r1.y), ceil(r1.z));
 				ipos.set(floor(r2.x), floor(r2.y), floor(r2.z));
-				ineg.print();
-				ipos.print();
 				prefs.copyColour(Prefs::UnitCellColour, colour);
 				glColor4fv(colour);
-				A = source->modelViewMatrix() * source->cell()->axes();
 				glPushMatrix();
-				glMultMatrixd(A.matrix());
-				for (i = ineg.x; i<=ipos.x; ++i)
+				glMultMatrixd(source->cell()->axes().matrix());
+				glTranslated(0.5, 0.5, 0.5);
+				glEnable(GL_LINE_STIPPLE);
+				glLineStipple(1,0x5555);
+				for (i = ineg.x-1; i<=ipos.x; ++i)
 				{
-					for (j = ineg.y; j<=ipos.y; ++j)
+					// Construct translation vector (partial part)
+					if (i == ineg.x-1) { scale.x = ineg.x-r1.x; translate.x = ineg.x - 0.5*scale.x - 0.5; }
+					else if (i == ipos.x) { scale.x = r2.x-ipos.x; translate.x = ipos.x-1 + 0.5*scale.x + 0.5; }
+					else { scale.x = 1.0; translate.x = i*1.0; }
+					for (j = ineg.y-1; j<=ipos.y; ++j)
 					{
-						for (k = ineg.z; k<=ipos.z; ++k)
+						// Construct translation vector (partial part)
+						if (j == ineg.y-1) { scale.y = ineg.y-r1.y; translate.y = ineg.y - 0.5*scale.y - 0.5; }
+						else if (j == ipos.y) { scale.y = r2.y-ipos.y; translate.y = ipos.y-1 + 0.5*scale.y + 0.5; }
+						else { scale.y = 1.0; translate.y = j*1.0; }
+						
+						for (k = ineg.z-1; k<=ipos.z; ++k)
 						{
-							glTranslated(i*1.0, j*1.0, k*1.0);
+							// Construct translation vector (partial part)
+							if (k == ineg.z-1) { scale.z = ineg.z-r1.z; translate.z = ineg.z - 0.5*scale.z - 0.5; }
+							else if (k == ipos.z) { scale.z = r2.z-ipos.z; translate.z = ipos.z-1 + 0.5*scale.z + 0.5; }
+							else { scale.z = 1.0; translate.z = k*1.0; }
+							
+							// Check scaling factors
+							if ((scale.x < 0.001) || (scale.y < 0.001) || (scale.z < 0.001)) continue;
+							
+							glPushMatrix();
+							glTranslated(translate.x, translate.y, translate.z);
+							glScaled(scale.x, scale.y, scale.z);
 							wireCube_.sendToGL();
-							printf("Replica %i %i %i\n", i, j, k);
+							glPopMatrix();
 						}
 					}
 				}
-				
-
+				glDisable(GL_LINE_STIPPLE);
 				glPopMatrix();
 		}
 	}
