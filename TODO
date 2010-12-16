@@ -11,7 +11,6 @@ Things to do (fix) in new version:
 1) Rendering of aromatic bonds / rings (esp. fused rings)
 2) Rotation of multiple bonds into bond plane
 3) Jump before first rotation of model (lastmouse not set properly?)
-4) Testing of CG particle script
 5) Proper positioning of bond halves w.r.t. outer edge of atom
 
 General TODO:

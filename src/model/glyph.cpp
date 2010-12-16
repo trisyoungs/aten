@@ -187,11 +187,11 @@ void Model::addEllipsoidGlyphs()
 	msg.enter("Model::addEllipsoidGlyphs");
 	// From the current selection of atoms, add polyhedra to/around them.
 	Reflist<Atom,int> atoms;
-	Vec3<double> centroid, v, extents, tempv;
-	Matrix axes;
-	double mag, best = 0.0, ang, tolerance = 0.3, angletol = PI/4.0, minz, maxz;
-	Refitem<Atom,int> *ri;
-	Atom *i;
+	Vec3<double> centroid, v, u, vecx, vecy, vecz;
+	double mag, best, r, phi;
+	Refitem<Atom,int> *ri, *rj;
+	Atom *i, *j, *k, *l;
+	Matrix A;
 	Reflist<Atom, Vec3<double> > xaxisatoms;
 	Refitem<Atom, Vec3<double> > *rid;
 	Glyph *g;
@@ -201,173 +201,108 @@ void Model::addEllipsoidGlyphs()
 		i = selection_.first()->item;
 		atoms.clear();
 		fragmentFromSelection(i, atoms);
-		// Check that we have enough atoms
-		if (atoms.nItems() < 3) continue;
-		// Get centre of current selection
-		centroid.zero();
-		for (ri = atoms.first(); ri != NULL; ri = ri->next) centroid += cell_.mim(ri->item, atoms.first()->item);
-		centroid /= atoms.nItems();
-
-		/*
-		// 1) Determine the X-axis (choose this to be defined from the (set of) atom(s) farthest from the centroid)
-		// From the centroid, measure the distance of each atom. If it is less than a tolerance amount of the current
-		// maximum, ignore it. If it is within this tolerance, add it to the list of defining atoms (after considering
-		// the angle it makes with the current x-axis point). If it is greater than tolerance of the current maximum, 
-		// clear the list and start again with this atom.
-		*/
-		xaxisatoms.clear();
-		extents.x = 0.0;
-		for (ri = atoms.first(); ri != NULL; ri = ri->next)
+		
+		// If only one atom selected, draw small sphere
+		if (atoms.nItems() == 1)
 		{
-			v = cell_.mimd(ri->item->r(), centroid);
-			mag = v.magnitude();
-			//printf("Atom ID %i is %f from centroid (current max = %f)\n", ri->item->id(), mag, extents.x);
-			if (mag < (extents.x - tolerance)) continue;
-			if (fabs(extents.x - mag) < tolerance)
-			{
-				// This atom is at a distance close to the current maximal point, so check the angle it makes with the current axis
-				ang = cell_.angle(ri->item->r(), centroid, centroid + axes.columnAsVec3(0)) / DEGRAD;
-				if (ang < angletol)
-				{
-					// Reconstruct xaxis and add to list of atoms
-					axes.setColumn(0, v, 0.0);
-					for (rid = xaxisatoms.first(); rid != NULL; rid = rid->next) axes.adjustColumn(0, rid->data, 0.0);
-					axes.columnMultiply(0, 1.0 / (xaxisatoms.nItems() + 1));
-					xaxisatoms.add(i, v);
-					//printf("There are now %i atoms defining the x-axis, which is ", xaxisatoms.nItems());
-					//axes.x().print();
-				}
-			}
-			else
-			{
-				// This atom is further than the tolerance away from the current maximum, so clear list and start again
-				xaxisatoms.clear();
-				xaxisatoms.add(ri->item, v);
-				axes.setColumn(0, v, 0.0);
-				extents.x = mag;
-			}
+			// Create glyph
+			v = atoms.first()->item->r();
+			g = addGlyph(Glyph::EllipsoidXYZGlyph);
+			g->data(0)->setVector(v);
+			g->data(1)->setVector(Vec3<double>(v.x+0.1,v.y,v.z));
+			g->data(2)->setVector(Vec3<double>(v.x,v.y+0.1,v.z));
+			g->data(3)->setVector(Vec3<double>(v.x,v.y,v.z+0.1));
+			msg.exit("Model::addEllipsoidGlyphs");
+			return;
 		}
-// 		g = addGlyph(Glyph::ArrowGlyph);
-// 		g->data(0)->setVector(centroid);
-// 		g->data(1)->setVector(centroid+axes.x());
-		axes.columnNormalise(0);
-
-		/*
-		// 2) Determine Y-axis.
-		// Take the atom that makes the angle closest to 90deg with the x-axis, weighted by its distance
-		*/
-		// Now find the atom in the selection that makes the angle closest to 90deg with xi-centroid and is furthest away
-		best = TWOPI;
-		for (ri = atoms.first(); ri != NULL; ri = ri->next)
-		{
-			v = cell_.mimd(centroid, ri->item->r());
-			mag = v.magnitude();
-			//angle = fabs(cell_.angle(xi->r(), centroid, ri->item->r()));
-			ang = cell_.angle(axes.columnAsVec3(0) + centroid, centroid, ri->item->r()) / DEGRAD;
-			if (ang < HALFPI) ang = HALFPI + (HALFPI - ang);
-			// Magnitudinalise (!) w.r.t. distance as well.
-			ang /= mag;
-			//printf("Anglemag for atom %i is %f\n", ri->item->id(), angle);
-			if (ang < best)
-			{
-				tempv = v;
-				best = ang;
-				extents.y = mag;
-			}
-		}
-		// Must orthogonalise y-axis w.r.t. x
-		tempv.orthogonalise(axes.columnAsVec3(0));
-		axes.setColumn(1,tempv, 0.0);
-// 		g = addGlyph(Glyph::ArrowGlyph);
-// 		g->data(0)->setVector(centroid);
-// 		g->data(1)->setVector(centroid+axes.y());
-		axes.columnNormalise(1);
-
-		/*
-		// 3) Construct Z-axis from X and Y, and determine extent
-		*/
-		axes.setColumn(2, axes.columnAsVec3(0) * axes.columnAsVec3(1), 0.0);
-		minz = 1000.0;
-		maxz = -1000.0;
-		for (ri = atoms.first(); ri != NULL; ri = ri->next)
-		{
-			v = axes * (ri->item->r() - centroid);
-			if (v.z < minz) minz = v.z;
-			else if (v.z > maxz) maxz = v.z;
-		}
-		if (fabs(minz) > maxz) maxz = fabs(minz);
-		extents.z = maxz;
-		if (extents.z < 0.5) extents.z = 0.5;
-		axes.columnMultiply(extents);
-		g = addGlyph(Glyph::EllipsoidXYZGlyph);
-		g->data(0)->setVector(centroid);
-		g->data(1)->setVector(axes.columnAsVec3(0));
-		g->data(2)->setVector(axes.columnAsVec3(1));
-		g->data(3)->setVector(axes.columnAsVec3(2));
-
-/*
-		for (ri = atoms.first(); ri != NULL; ri = ri->next)
+		
+		// Find most distant two points - this will be the x-axis of the ellipsoid
+		best = 0.0;
+		i = NULL;
+		j = NULL;
+		for (ri = atoms.first(); ri->next != NULL; ri = ri->next)
 		{
 			for (rj = ri->next; rj != NULL; rj = rj->next)
 			{
-				v = ri->item->r() - rj->item->r();
-				mag = v.magnitude();
+				mag = cell_.distance(ri->item, rj->item);
 				if (mag > best)
 				{
 					best = mag;
-					xi = ri->item;
-					xj = rj->item;
-					axes.x() = v * 0.5;
-					centroid = axes.x() + xj->r();
-					extents.x = axes.x().magAndNormalise();
+					i = ri->item;
+					j = rj->item;
 				}
 			}
 		}
-		//printf("Atom ids %i and %i determine X and centroid\n", xi->id(), xj->id());
-
-		// Now find the atom in the selection that makes the angle closest to 90deg with xi-centroid and is furthest away
-		best = TWOPI;
+// 		printf("Atom pointers are %p and %p\n", i, j);
+// 		printf("Distance is greatest (%f) between atoms %i and %i\n", best, i->id(), j->id());
+		centroid = i->r() + cell_.mimd(j,i) * 0.5;
+// 		centroid.print();
+		mag = best * 0.5;
+		vecx = i->r() - centroid;
+// 		vecx.print();
+		
+		// Determine Y-vector from atom with greatest distance (on unit sphere) from centroid
+		k = NULL;
+		best = 0.0;
 		for (ri = atoms.first(); ri != NULL; ri = ri->next)
 		{
-			if ((ri->item == xi) || (ri->item == xj)) continue;
-			mag = cell_.distance(centroid, ri->item->r());
-			//angle = fabs(cell_.angle(xi->r(), centroid, ri->item->r()));
-			angle = cell_.angle(xi->r(), centroid, ri->item->r());
-			if (angle < HALFPI) angle = HALFPI + (HALFPI - angle);
-			// Magnitudinalise (!) w.r.t. distance as well.
-			angle /= mag;
-			//printf("Anglemag for atom %i is %f\n", ri->item->id(), angle);
-			if (angle < best)
+			if ((ri->item == i) || (ri->item == j)) continue;
+			v = ri->item->r();
+			// Determine angle with current x-axis and 2D polar r-coordinate (squared)
+			phi = cell_.angle(i->r(), centroid, v) / DEGRAD;
+			v -= centroid;
+			r = (cos(phi)*mag)*(cos(phi)*mag) + (sin(phi)*v.magnitude())*(sin(phi)*v.magnitude());
+			if (r > best)
 			{
-				yi = ri->item;
-				best = angle;
-				extents.y = mag;
+				k = ri->item;
+				vecy = v;
+				vecy.orthogonalise(vecx);
+				vecy.normalise();
+				vecy *= v.magnitude();
+				best = r;
 			}
 		}
-		//printf("Best Y atom is id %i, forming anglemag of %f Deg\n", yi->id(), cell_.angle(xi->r(), centroid, yi->r()));
-		// Orthogonalise Y axis w.r.t. X axis, and create z-axis
-		axes.y() = cell_.mimd(yi->r(), centroid);
-		axes.y().orthogonalise(axes.x());
-		axes.y().normalise();
-		axes.z() = axes.x() * axes.y();
-		// With the three axes so obtained, determine the extent of the ellipsoid in the Z direction
-		minz = 1000.0;
-		maxz = -1000.0;
+		// If no Y-pointer found, set to orthogonal and 10% of X magnitude
+		if (k == NULL) vecy = vecx.orthogonal() * vecx.magnitude()*0.1;
+// 		printf("Atom Y pointer is %p\n", k);
+// 		vecy.print();
+		
+		// Determine z-vector from atom with greatest angle out of xy plane
+		vecz = vecx*vecy;
+		vecz.normalise();
+		l = NULL;
+		best = 0.0;
+		A.setColumn(0, vecx, 0.0);
+		A.setColumn(1, vecy, 0.0);
+		A.setColumn(2, vecz, 0.0);
+		A.invert();
 		for (ri = atoms.first(); ri != NULL; ri = ri->next)
 		{
-			v = (ri->item->r() - centroid) * axes;
-			if (v.z < minz) minz = v.z;
-			else if (v.z > maxz) maxz = v.z;
+			if ((ri->item == i) || (ri->item == j) || (ri->item == k)) continue;
+			v = ri->item->r() - centroid;
+			phi = acos(v.dp(vecz)) * DEGRAD;
+			if (fabs(phi-90) < 1.0) continue;
+			// Calculate unit coordinate
+			u = A * v;
+			mag = u.magnitude();
+			if (mag > best)
+			{
+				best = mag;
+				l = ri->item;
+			}
 		}
-		if (fabs(minz) > maxz) maxz = fabs(minz);
-		extents.z = maxz;
-		if (extents.z < 0.5) extents.z = 0.5;
-		axes.rowMultiply(extents);
+// 		printf("Atom Z pointer is %p\n", l);
+		// If 'l' pointer is NULL (no suitable atom found) make z-axis magnitude 10% of x-axis 
+		if (l == 0) vecz *= vecx.magnitude()*0.1;
+
+		// Create glyph
 		g = addGlyph(Glyph::EllipsoidXYZGlyph);
 		g->data(0)->setVector(centroid);
-		g->data(1)->setVector(axes.x());
-		g->data(2)->setVector(axes.y());
-		g->data(3)->setVector(axes.z());*/
+		g->data(1)->setVector(vecx+centroid);
+		g->data(2)->setVector(vecy+centroid);
+		g->data(3)->setVector(vecz+centroid);
 	}
+	
 	msg.exit("Model::addEllipsoidGlyphs");
+	return;
 }
