@@ -421,6 +421,8 @@ class Pattern
 	public:
 	// Returns a pointer to the ring list structure
 	List<Ring>* ringList();
+	// Return number of rings in current pattern
+	int nRings();
 	// Returns the first ring in the ring list
 	Ring *rings();
 	// Reset the atom environment flags

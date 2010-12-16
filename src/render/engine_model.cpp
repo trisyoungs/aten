@@ -24,6 +24,7 @@
 #include "classes/forcefieldatom.h"
 #include "classes/grid.h"
 #include "model/model.h"
+#include "base/pattern.h"
 #include "gui/tcanvas.uih"
 #include "base/sysfunc.h"
 
@@ -177,10 +178,10 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 {
 	GLfloat colour_i[4], colour_j[4], alpha_i, colour_k[4], colour_l[4], textcolour[4];
 	GLenum style;
-	int lod, id_i, labels;
+	int lod, id_i, labels, m, n;
 	Dnchar text;
 	double selscale, z, radius_i, radius_j, rij, phi;
-	Atom *i, *j;
+	Atom *i, *j, **atoms;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
 	Matrix atomtransform, A, B;
@@ -218,8 +219,13 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	glMultMatrixd(baseTransform.matrix());
 	
 	// Atoms and Bonds // OPTIMIZE - use atom array instead
-	if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) for (i = source->atoms(); i != NULL; i = i->next)
+	atoms = source->atomArray();
+	if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) for (n = 0; n<source->nAtoms(); ++n)
 	{
+		// Get atom pointer
+		i = atoms[n];
+		printf ("DRAW %p %p\n", atoms, atoms[n]);
+		
 		// Skip hidden atoms
 		if (i->isHidden()) continue;
 		
@@ -355,6 +361,45 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, ri->item->type(), lod, selscale);
 		}
 		
+	}
+	
+	// Aromatic rings (needs valid pattern description)
+	printf("Patterns valid? %i\n", source->arePatternsValid());
+	if (prefs.isVisibleOnScreen(Prefs::ViewAtoms) && source->arePatternsValid())
+	{
+		atoms = source->atomArray();
+		printf("Adding aromatic rings.\n");
+		for (Pattern *p = source->patterns(); p != NULL; p = p->next)
+		{
+			printf("There are %i rings in the current pattern\n", p->nRings());
+			// Continue if no rings present in pattern
+			if (p->rings() == NULL) continue;
+			// Cycle over rings
+			for (Ring *r = p->rings(); r != NULL; r = r->next)
+			{
+				if (r->type() != Ring::AromaticRing) continue;
+				
+				// Loop over pattern molecules
+				id_i = p->startAtom();
+				for (m=0; m<p->nMolecules(); ++m)
+				{
+					printf("lkjdlkjkl %i %i\n", id_i, m);
+					// Determine ring centroid
+					printf ("%p %p\n", atoms, atoms[id_i]);
+					i = atoms[n];
+					r1 = i->r();
+					pos = r1;
+					for (n=1; n<=p->nAtoms(); ++n) pos += source->cell()->mim(atoms[id_i+n]->r(), r1);
+					pos /= p->nAtoms();
+					atomtransform = baseTransform;
+					atomtransform.applyTranslation(pos.x, pos.y, pos.z);
+					renderPrimitive(spheres_, lod, colour_i, atomtransform, GL_LINE, 1.0);
+					pos.print();
+					
+					id_i += p->nAtoms();
+				}
+			}
+		}
 	}
 	
 	// Surfaces

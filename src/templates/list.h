@@ -322,7 +322,7 @@ template <class T> void List<T>::fillArray(int n, T **data)
 		++count;
 		if (count == n) break;
 		i = i->next;
-		if (i == NULL) printf("list::fill_array <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
+		if (i == NULL) printf("List::fillArray <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
 	}
 }
 
@@ -382,7 +382,11 @@ template <class T> T **List<T>::array()
 	items_ = new T*[nItems_];
 	// Fill in pointers
 	int count = 0;
-	for (T *i = listHead_; i != NULL; i = i->next) items_[count++] = i;
+	for (T *i = listHead_; i != NULL; i = i->next)
+	{
+		items_[count++] = i;
+		printf("Item %i in static items list is %p\n", count-1, i);
+	}
 	regenerate_ = 0;
 	return items_;
 }

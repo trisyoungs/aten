@@ -144,8 +144,6 @@ bool Model::typeAll()
 		msg.exit("Model::typeAll");
 		return FALSE;
 	}
-	// Describe the atoms / rings in the patterns
-	describeAtoms();
 	if (forcefield_ == NULL) msg.print("Typing all patterns in model '%s' (no forcefield associated -- using default)...\n", name_.get());
 	else msg.print("Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
 	// Assign forcefield types to atoms
