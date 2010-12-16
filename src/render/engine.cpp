@@ -34,6 +34,7 @@ RenderEngine::RenderEngine()
 	// Primitives
 	scaledAtom_ = new PrimitiveGroup[elements().nElements()];
 	selectedScaledAtom_ = new PrimitiveGroup[elements().nElements()];
+	scaledAtomAdjustment_ = new double[elements().nElements()];
 	primitiveQuality_ = -1;
 	glyphTriangles_[RenderEngine::SolidTriangle].setColourData(TRUE);
 	glyphTriangles_[RenderEngine::TransparentTriangle].setColourData(TRUE);
@@ -46,6 +47,7 @@ RenderEngine::~RenderEngine()
 {
 	delete[] scaledAtom_;
 	delete[] selectedScaledAtom_;
+	delete[] scaledAtomAdjustment_;
 }
 
 /*

@@ -180,7 +180,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	GLenum style;
 	int lod, id_i, labels, m, n;
 	Dnchar text;
-	double selscale, z, radius_i, radius_j, rij, phi;
+	double selscale, z, radius_i, radius_j, rij, phi, mag, best;
 	Atom *i, *j, **atoms;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
@@ -383,18 +383,49 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				id_i = p->startAtom();
 				for (m=0; m<p->nMolecules(); ++m)
 				{
-					printf("lkjdlkjkl %i %i\n", id_i, m);
 					// Determine ring centroid
-					printf ("%p %p\n", atoms, atoms[id_i]);
-					i = atoms[n];
+					i = atoms[id_i];
 					r1 = i->r();
 					pos = r1;
-					for (n=1; n<=p->nAtoms(); ++n) pos += source->cell()->mim(atoms[id_i+n]->r(), r1);
+					for (n=1; n<p->nAtoms(); ++n)
+					{
+						j = atoms[id_i+n];
+						pos += source->cell()->mim(j->r(), r1);
+					}
 					pos /= p->nAtoms();
+					// Determine average vector magnitude of ring atoms and y-axis vector (closest 90deg vector)
+					mag = 0.0;
+					r1 -= pos;
+					best = PI/2.0;
+					r3.zero();
+					for (n=0; n<p->nAtoms(); ++n)
+					{
+						i = atoms[id_i+n];
+						r2 = source->cell()->mimd(i->r(), pos);
+						r2 -= pos;
+						mag += r2.magnitude();
+						phi = PI/2.0 - acos(r1.dp(r2));
+						if (phi < best)
+						{
+							r3 = r2;
+							best = phi;
+						}
+					}
+					// Finalise values and create z-vector from cross product
+					r3.orthogonalise(r1);
+					r4 = r2*r3;
+					r4.normalise();
+					mag /= p->nAtoms();
+					// Construct transformation matrix
 					atomtransform = baseTransform;
 					atomtransform.applyTranslation(pos.x, pos.y, pos.z);
+					A.setColumn(0, r2, 0.0);
+					A.setColumn(1, r3, 0.0);
+					A.setColumn(2, r4, 0.0);
+					atomtransform *= A;
 					renderPrimitive(spheres_, lod, colour_i, atomtransform, GL_LINE, 1.0);
 					pos.print();
+					// 
 					
 					id_i += p->nAtoms();
 				}

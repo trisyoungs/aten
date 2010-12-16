@@ -54,6 +54,8 @@ class RenderEngine
 	int primitiveQuality_;
 	// Atom styles
 	PrimitiveGroup atom_[Atom::nDrawStyles], *scaledAtom_;
+	// Atom bond adjustment distances
+	double atomAdjustment_[Atom::nDrawStyles], *scaledAtomAdjustment_;
 	// Selected atom styles
 	PrimitiveGroup selectedAtom_[Atom::nDrawStyles], *selectedScaledAtom_;
 	// Bond styles
