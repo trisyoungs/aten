@@ -338,6 +338,8 @@ bool Model::autocreatePatterns(bool acceptDefault)
 		p = addPattern(nmols, patclip.nAtoms(), emp.get());
 	}
 
+	// Describe the atoms / rings in the patterns
+	describeAtoms();
 	// Deselect all atoms (unless the default pattern was forced)
 // 	selectNone(TRUE);
 

@@ -577,6 +577,12 @@ List<Ring>* Pattern::ringList()
 	return &rings_;
 }
 
+// Return number of rings in current pattern
+int Pattern::nRings()
+{
+	return rings_.nItems();
+}
+
 // Returns the first ring in the ring list
 Ring *Pattern::rings()
 {
