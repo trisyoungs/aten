@@ -382,11 +382,7 @@ template <class T> T **List<T>::array()
 	items_ = new T*[nItems_];
 	// Fill in pointers
 	int count = 0;
-	for (T *i = listHead_; i != NULL; i = i->next)
-	{
-		items_[count++] = i;
-		printf("Item %i in static items list is %p\n", count-1, i);
-	}
+	for (T *i = listHead_; i != NULL; i = i->next) items_[count++] = i;
 	regenerate_ = 0;
 	return items_;
 }

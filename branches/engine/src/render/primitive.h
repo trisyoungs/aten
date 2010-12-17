@@ -145,6 +145,8 @@ class Primitive
 	void plotSphere(double radius, int nstacks, int nslices);
 	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
 	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices);
+	// Plot tube ring of specified radius and tube width
+	void plotRing(double radius, double width, int nstacks, int nslices, bool segmented = FALSE);
 
 
 	/*

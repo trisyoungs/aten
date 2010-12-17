@@ -397,33 +397,33 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 					mag = 0.0;
 					r1 -= pos;
 					best = PI/2.0;
-					r3.zero();
+					r2.zero();
 					for (n=0; n<p->nAtoms(); ++n)
 					{
 						i = atoms[id_i+n];
-						r2 = source->cell()->mimd(i->r(), pos);
-						r2 -= pos;
-						mag += r2.magnitude();
-						phi = PI/2.0 - acos(r1.dp(r2));
+						v = source->cell()->mimd(i->r(), pos);
+						mag += v.magnitude();
+						phi = PI/2.0 - acos(r1.dp(v));
 						if (phi < best)
 						{
-							r3 = r2;
+							r2 = v;
 							best = phi;
 						}
 					}
 					// Finalise values and create z-vector from cross product
-					r3.orthogonalise(r1);
-					r4 = r2*r3;
-					r4.normalise();
+					r2.orthogonalise(r1);
+					r3 = r1*r2;
+					r3.normalise();
 					mag /= p->nAtoms();
 					// Construct transformation matrix
 					atomtransform = baseTransform;
 					atomtransform.applyTranslation(pos.x, pos.y, pos.z);
-					A.setColumn(0, r2, 0.0);
-					A.setColumn(1, r3, 0.0);
-					A.setColumn(2, r4, 0.0);
-					atomtransform *= A;
-					renderPrimitive(spheres_, lod, colour_i, atomtransform, GL_LINE, 1.0);
+					A.setColumn(0, r1, 0.0);
+					A.setColumn(1, r2, 0.0);
+					A.setColumn(2, r3, 0.0);
+					A.print();
+// 					atomtransform *= A;
+					renderPrimitive(rings_, lod, colour_i, atomtransform, GL_LINE);
 					pos.print();
 					// 
 					
