@@ -224,7 +224,6 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	{
 		// Get atom pointer
 		i = atoms[n];
-		printf ("DRAW %p %p\n", atoms, atoms[n]);
 		
 		// Skip hidden atoms
 		if (i->isHidden()) continue;
@@ -320,7 +319,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		// Bonds
 		// Grab some useful values from atom i
 		id_i = i->id();
-		radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
+		radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.styleRadius(i)*0.85);
 		
 		for (ri = i->bonds(); ri != NULL; ri = ri->next)
 		{
@@ -352,7 +351,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			
 			// Get atom style and radius
 			style_j = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
-			radius_j = (style_j == Atom::TubeStyle ? 0.0 : prefs.screenRadius(j)*0.85);
+			radius_j = (style_j == Atom::TubeStyle ? 0.0 : prefs.styleRadius(j)*0.85);
 			
 			// Calculate vector i->j
 			v = source->cell()->mimd(j, i);
@@ -364,16 +363,19 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	}
 	
 	// Aromatic rings (needs valid pattern description)
-	printf("Patterns valid? %i\n", source->arePatternsValid());
 	if (prefs.isVisibleOnScreen(Prefs::ViewAtoms) && source->arePatternsValid())
 	{
+		colour_i[0] = 0.0;
+		colour_i[1] = 0.0;
+		colour_i[2] = 0.0;
+		colour_i[3] = 1.0;
+
 		atoms = source->atomArray();
-		printf("Adding aromatic rings.\n");
 		for (Pattern *p = source->patterns(); p != NULL; p = p->next)
 		{
-			printf("There are %i rings in the current pattern\n", p->nRings());
 			// Continue if no rings present in pattern
 			if (p->rings() == NULL) continue;
+
 			// Cycle over rings
 			for (Ring *r = p->rings(); r != NULL; r = r->next)
 			{
@@ -393,40 +395,48 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 						pos += source->cell()->mim(j->r(), r1);
 					}
 					pos /= p->nAtoms();
+
 					// Determine average vector magnitude of ring atoms and y-axis vector (closest 90deg vector)
 					mag = 0.0;
 					r1 -= pos;
+					r1.normalise();
 					best = PI/2.0;
 					r2.zero();
+					radius_i = 0.0;
 					for (n=0; n<p->nAtoms(); ++n)
 					{
+						// Grab atom pointer and get minimum image vector with centroid 'v'
 						i = atoms[id_i+n];
+						if (prefs.styleRadius(i) > radius_i) radius_i = prefs.styleRadius(i);
 						v = source->cell()->mimd(i->r(), pos);
+						// Accumulate magnitude
 						mag += v.magnitude();
-						phi = PI/2.0 - acos(r1.dp(v));
+						v.normalise();
+						phi = fabs(PI/2.0 - acos(r1.dp(v)));
 						if (phi < best)
 						{
 							r2 = v;
 							best = phi;
 						}
 					}
+
 					// Finalise values and create z-vector from cross product
 					r2.orthogonalise(r1);
+					r2.normalise();
 					r3 = r1*r2;
-					r3.normalise();
 					mag /= p->nAtoms();
+					mag -= radius_i*0.9;
+					mag *= 0.5;
 					// Construct transformation matrix
 					atomtransform = baseTransform;
 					atomtransform.applyTranslation(pos.x, pos.y, pos.z);
-					A.setColumn(0, r1, 0.0);
-					A.setColumn(1, r2, 0.0);
-					A.setColumn(2, r3, 0.0);
-					A.print();
-// 					atomtransform *= A;
-					renderPrimitive(rings_, lod, colour_i, atomtransform, GL_LINE);
-					pos.print();
-					// 
-					
+					A.setColumn(0, r1*mag, 0.0);
+					A.setColumn(1, r2*mag, 0.0);
+					A.setColumn(2, r3*mag, 0.0);
+					atomtransform *= A;
+					if (prefs.renderDashedAromatics()) renderPrimitive(segmentedRings_, lod, colour_i, atomtransform);
+					else renderPrimitive(rings_, lod, colour_i, atomtransform);
+
 					id_i += p->nAtoms();
 				}
 			}

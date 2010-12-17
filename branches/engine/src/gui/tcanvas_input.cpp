@@ -711,8 +711,8 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (atomClicked_ != NULL)
 			{
 				radius = (rMouseDown_-rMouseUp_).magnitude();
-				modelToWorld(atomClicked_->r(), &screenr, prefs.screenRadius(atomClicked_));
-				radius /= screenr.w * prefs.screenRadius(atomClicked_);
+				modelToWorld(atomClicked_->r(), &screenr, prefs.styleRadius(atomClicked_));
+				radius /= screenr.w * prefs.styleRadius(atomClicked_);
 				displayModel_->selectRadial(atomClicked_,radius);
 			}
 			displayModel_->endUndoState();

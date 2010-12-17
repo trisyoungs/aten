@@ -74,7 +74,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			pos = i->r();
 			rmouse = canvas->rMouseLast();
 			style_i = (prefs.renderStyle() == Atom::IndividualStyle ? i->style() : prefs.renderStyle());
-			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(i)*0.85);
+			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.styleRadius(i)*0.85);
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
 			j = source->atomOnScreen(rmouse.x, rmouse.y);
 			if (j == NULL)
@@ -88,7 +88,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			{
 				v = j->r();
 				style_j = (prefs.renderStyle() == Atom::IndividualStyle ? j->style() : prefs.renderStyle());
-				radius_j = (style_i == Atom::TubeStyle ? 0.0 : prefs.screenRadius(j)*0.85);
+				radius_j = (style_i == Atom::TubeStyle ? 0.0 : prefs.styleRadius(j)*0.85);
 			}
 			v -= pos;
 			

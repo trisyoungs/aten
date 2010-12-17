@@ -110,6 +110,12 @@
 						<entry>Comma-separated list of common elements that appear in the Select Element dialog</entry>
 					</row>
 					<row>
+						<entry>dashedaromatics</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to render solid or dashed rings for aromatics</entry>
+					</row>
+					<row>
 						<entry>densityunit</entry>
 						<entry>string</entry>
 						<entry>rw</entry>
