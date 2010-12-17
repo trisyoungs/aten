@@ -77,6 +77,7 @@ void AtenPrefs::setControls()
 	ui.AngleLabelFormatEdit->setText(prefs.angleLabelFormat());
 	ui.DistanceLabelFormatEdit->setText(prefs.distanceLabelFormat());
 	ui.LabelSizeSpin->setValue(prefs.labelSize());
+	ui.RenderDashedAromaticsCheck->setChecked(prefs.renderDashedAromatics());
 	ui.ColoursTable->setRowCount(Prefs::nObjectColours);
 	QColor qcol;
 	for (int n = 0; n < Prefs::nObjectColours; ++n)
@@ -355,6 +356,12 @@ void AtenPrefs::on_DistanceLabelFormatEdit_textEdited(const QString &text)
 void AtenPrefs::on_LabelSizeSpin_valueChanged(int value)
 {
 	prefs.setLabelSize(value);
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenPrefs::on_RenderDashedAromaticsCheck_clicked(bool checked)
+{
+	prefs.setRenderDashedAromatics(checked);
 	gui.mainWidget->postRedisplay();
 }
 

@@ -164,79 +164,59 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 }
 
 // Plot tube ring of specified radius and tube width
-void Primitive::plotRing(double radius, double width, int nstacks, int nslices, bool segmented)
+void Primitive::plotRing(double radius, double width, int nstacks, int nslices, int nsegments, bool segmented)
 {
-	int n, m;
-	Vec3<GLfloat> x1, x2, y1, y2, vert[4], normal[2], tempv, r1, r2;
-	double d1, d2, dtheta, dphi, cosphi1, sinphi1, cosphi2, sinphi2;
-	
+	int n, m, o;
+	Vec3<GLfloat> x1, x2, y(0.0,0.0,1.0), normal[4], vert[4], r1, r2;
+	double d1, d2, dtheta, dphi, dpsi, cosphi1, sinphi1, cosphi2, sinphi2;
+
 	// Setup some variables
 	dphi = TWOPI / nstacks;
+	dpsi = dphi / nsegments;
 	dtheta = TWOPI / nslices;
 	
-	for (n=0; n<2; ++n)
+	for (n=0; n<nstacks; ++n)
 	{
 		// Calculate position around circle and orthogonal vectors (for cylinder plotting)
-		//                 if (segmented && (n+1)%2) continue;
-		cosphi1 = cos(n*dphi);
-		sinphi1 = sin(n*dphi);
-		cosphi2 = cos((n+1)*dphi);
-		sinphi2 = sin((n+1)*dphi);
-		r1.set(cosphi1*radius, sinphi1*radius, 0.0);
-		r2.set(cosphi2*radius, sinphi2*radius, 0.0);
-		x1.set(cosphi1, sinphi1, 0.0);
-		x2.set(cosphi2, sinphi2, 0.0);
-		y1.set(0.0,0.0,1.0);
-		y2.set(0.0,0.0,1.0);
-// // 		u1 = r1.orthogonal();
-// // 		u2 = r2.orthogonal();
-// // 		u1.normalise();
-// // 		u2.normalise();
-// // 		v1 = u1 * r1;
-// // 		v2 = u2 * r2;
-// // 		v1.normalise();
-// // 		v2.normalise();
-// 		u1.set(sinphi1, cosphi1, 0.0);
-// 		u2.set(sinphi2, cosphi2, 0.0);
-// 		v1 = u1*r1;
-// 		v2= u2*r2;
-// 		v1.normalise();
-// 		v2.normalise();
-// // 		v1.set(cosphi1, 0.0, sinphi1);
-// // 		v2.set(cosphi2, 0.0, sinphi2);
-		
-		for (m=0; m<nslices; ++m)
+		if (segmented && (n+1)%2) continue;
+
+		for (o=0; o<nsegments; ++o)
 		{
-			d1 = m * dtheta;
-			d2 = (m+1) * dtheta;
+			cosphi1 = cos(n*dphi+o*dpsi);
+			sinphi1 = sin(n*dphi+o*dpsi);
+			cosphi2 = cos(n*dphi+(o+1)*dpsi);
+			sinphi2 = sin(n*dphi+(o+1)*dpsi);
+			r1.set(cosphi1*radius, sinphi1*radius, 0.0);
+			r2.set(cosphi2*radius, sinphi2*radius, 0.0);
+			x1.set(cosphi1, sinphi1, 0.0);
+			x2.set(cosphi2, sinphi2, 0.0);
 			
-			// Plot along specified direction, and then map vertices from straight cylinder onto circle in XY plane
-			normal[0] = x1*cos(d1) + y1*sin(d1);
-			normal[1] = x2*cos(d2) + y2*sin(d2);
-			
-			tempv = normal[0]*width + r1;
-// 			vert[0].set(cosphi1*tempv.x+sinphi1*tempv.y, cosphi1*tempv.y+sinphi1*tempv.x, tempv.z);
-			vert[0] = tempv;
-			tempv = normal[0]*width + r2;
-// 			vert[1].set(cosphi2*tempv.x+sinphi2*tempv.y, cosphi2*tempv.y+sinphi2*tempv.x, tempv.z);
-			vert[1] = tempv;
-			
-			tempv = normal[1]*width + r1;
-// 			vert[2].set(cosphi1*tempv.x+sinphi1*tempv.y, cosphi1*tempv.y+sinphi1*tempv.x, tempv.z);
-			vert[2] = tempv;
-			tempv = normal[1]*width + r2;
-// 			vert[3].set(cosphi2*tempv.x+sinphi2*tempv.y, cosphi2*tempv.y+sinphi2*tempv.x, tempv.z);
-			vert[3] = tempv;
-			
-			// Triangle 1
-			defineVertex(vert[0].x, vert[0].y, vert[0].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-			
-			// Triangle 2
-// 			defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-// 			defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-// 			defineVertex(vert[3].x, vert[3].y, vert[3].z, normal[1].x, normal[1].y, normal[1].z);
+			for (m=0; m<nslices; ++m)
+			{
+				// Plot along specified direction, and then map vertices from straight cylinder onto circle in XY plane
+				d1 = m * dtheta;
+				d2 = d1 + dtheta;
+	
+				normal[0] = x1*cos(d1) + y*sin(d1);
+				normal[1] = x1*cos(d2) + y*sin(d2);
+				normal[2] = x2*cos(d1) + y*sin(d1);
+				normal[3] = x2*cos(d2) + y*sin(d2);
+	
+				vert[0] = normal[0]*width + r1;
+				vert[1] = normal[1]*width + r1;
+				vert[2] = normal[2]*width + r2;
+				vert[3] = normal[3]*width + r2;
+	
+				// Triangle 1
+				defineVertex(vert[0].x, vert[0].y, vert[0].z, normal[0].x, normal[0].y, normal[0].z);
+				defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[1].x, normal[1].y, normal[1].z);
+				defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[2].x, normal[2].y, normal[2].z);
+				
+				// Triangle 2
+				defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[1].x, normal[1].y, normal[1].z);
+				defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[2].x, normal[2].y, normal[2].z);
+				defineVertex(vert[3].x, vert[3].y, vert[3].z, normal[3].x, normal[3].y, normal[3].z);
+			}
 		}
 	}
 }

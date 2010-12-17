@@ -640,8 +640,8 @@ void Prefs::setTransparencyBinWidth(double width)
 }
 
 
-// Return screen radius of specified atom
-double Prefs::screenRadius(Atom *i) const
+// Return styled radius of specified atom
+double Prefs::styleRadius(Atom *i) const
 {
 	Atom::DrawStyle dstyle;
 	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;
@@ -1722,6 +1722,18 @@ bool Prefs::useFrameBuffer() const
 void Prefs::setUseFrameBuffer(bool on)
 {
 	useFrameBuffer_ = on;
+}
+
+// Return whether to use solid or dashed circles for aromatic ring rendering
+bool Prefs::renderDashedAromatics()
+{
+	return renderDashedAromatics_;
+}
+
+// Set  whether to use solid or dashed circles for aromatic ring rendering
+void Prefs::setRenderDashedAromatics(bool b)
+{
+	renderDashedAromatics_ = b;
 }
 
 // Return whether manual buffer swapping is enabled

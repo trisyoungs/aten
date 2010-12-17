@@ -128,13 +128,19 @@ void RenderEngine::createPrimitives(int quality)
 		nstacks = max(1,(int) (quality*lodratio*0.25));
 		nslices = max(3,(int) (quality*lodratio));
 		
-		// All styles - Single Bond
+		// All styles - Single and Aromatic Bonds
 		bond_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
 		bond_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
 		bond_[Atom::ScaledStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle], bradius[Atom::ScaledStyle], nstacks, nslices);
 		selectedBond_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle]*selscale, bradius[Atom::TubeStyle]*selscale, nstacks, nslices);
 		selectedBond_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
 		selectedBond_[Atom::ScaledStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
+		bond_[Atom::TubeStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
+		bond_[Atom::SphereStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
+		bond_[Atom::ScaledStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle], bradius[Atom::ScaledStyle], nstacks, nslices);
+		selectedBond_[Atom::TubeStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle]*selscale, bradius[Atom::TubeStyle]*selscale, nstacks, nslices);
+		selectedBond_[Atom::SphereStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
+		selectedBond_[Atom::ScaledStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
 		
 		// All styles - Double Bond
 		bond_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
@@ -177,8 +183,8 @@ void RenderEngine::createPrimitives(int quality)
 		spheres_.primitive(lod).plotSphere(1.0, nstacks, nslices);
 		cylinders_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,1.0,nstacks, nslices);
 		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,0.0,nstacks,nslices);
-		rings_.primitive(lod).plotRing(1.0, 0.1, 18, nslices);
-		segmentedRings_.primitive(lod).plotRing(1.0, 0.1, 18, nslices);
+		rings_.primitive(lod).plotRing(1.0, 0.1, 10, nslices, 5);
+		segmentedRings_.primitive(lod).plotRing(1.0, 0.1, 20, nslices, 5, TRUE);
 	}
 
 	// One-off objects
@@ -573,6 +579,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glLoadIdentity();
 	
 	// Draw main model
+	glPointSize(3.0);  // TEMPORARY  TGAY
 	renderModel(source, modelTransformationMatrix_, canvas);
 	
 	if (gui.exists())

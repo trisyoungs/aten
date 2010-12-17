@@ -66,6 +66,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "colourscheme",		VTypes::StringData,		0, FALSE },
 	{ "combinationrule",		VTypes::StringData,		Combine::nCombinationRules, FALSE },
 	{ "commonelements",		VTypes::StringData,		0, FALSE },
+	{ "dashedaromatics",		VTypes::IntegerData,		0, FALSE },
 	{ "densityunit",		VTypes::StringData,		0, FALSE },
 	{ "depthcue",			VTypes::IntegerData,		0, FALSE },
 	{ "depthfar",			VTypes::IntegerData,		0, FALSE },
@@ -287,6 +288,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::CommonElements):
 			rv.set(ptr->commonElements());
+			break;
+		case (PreferencesVariable::DashedAromatics):
+			rv.set(ptr->renderDashedAromatics());
 			break;
 		case (PreferencesVariable::DensityUnit):
 			rv.set(Prefs::densityUnit(ptr->densityUnit()));
@@ -659,6 +663,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::CommonElements):
 			ptr->setCommonElements( newvalue.asString(result) );
+			break;
+		case (PreferencesVariable::DashedAromatics):
+			ptr->setRenderDashedAromatics(newvalue.asBool());
 			break;
 		case (PreferencesVariable::DensityUnit):
 			du = Prefs::densityUnit( newvalue.asString(result), TRUE );

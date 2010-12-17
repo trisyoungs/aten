@@ -245,7 +245,7 @@ Atom *Model::atomOnScreen(double x1, double y1)
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		wr = -gui.mainWidget->modelToWorld(i->r(), &sr, prefs.screenRadius(i));
+		wr = -gui.mainWidget->modelToWorld(i->r(), &sr, prefs.styleRadius(i));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));

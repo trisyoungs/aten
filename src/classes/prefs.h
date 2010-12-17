@@ -146,8 +146,8 @@ class Prefs
 	int offScreenObjects() const;
 	// Set imageobjects bitvector
 	void setOffScreenObjects(int i);
-	// Return the radius of an atom calculated from the element and draw style
-	double screenRadius(Atom*) const;
+	// Return the styled radius of an atom calculated from the element and draw style
+	double styleRadius(Atom*) const;
 	// Set the drawing style of models
 	void setRenderStyle(Atom::DrawStyle ds);
 	// Return the current drawing style of models
@@ -294,6 +294,8 @@ class Prefs
 	bool manualSwapBuffers_;
 	// Flag to use framebuffer for image saving rather than the renderPixmap() method
 	bool useFrameBuffer_;
+	// Whether to use solid or dashed circles for aromatic ring rendering
+	bool renderDashedAromatics_;
 
 	public:
         // Set C-style format for distance label values
@@ -320,7 +322,10 @@ class Prefs
 	void setUseFrameBuffer(bool on);
 	// Return whether to use framebuffer for image saving
 	bool useFrameBuffer() const;
-
+	// Return whether to use solid or dashed circles for aromatic ring rendering
+	bool renderDashedAromatics();
+	// Set  whether to use solid or dashed circles for aromatic ring rendering
+	void setRenderDashedAromatics(bool b);
 
 	/*
 	// GL Options

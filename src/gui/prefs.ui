@@ -978,6 +978,25 @@
              </layout>
             </widget>
            </item>
+           <item>
+            <widget class="QGroupBox" name="MiscStyleOptions">
+             <property name="title">
+              <string>Miscellaneous</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QCheckBox" name="RenderDashedAromaticsCheck">
+                <property name="text">
+                 <string>Render dashed aromatic rings</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="QualitySubTab">

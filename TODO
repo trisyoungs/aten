@@ -5,13 +5,13 @@ Thigs to test in new version:
 6) Ewald energies / forces
 7) Torsion forces
 8) MatrixTransform of model
+9) Rendering of aromatic rings in more complex systems (e.g. buckytube?, cgparticle example?)
 
 Things to do (fix) in new version:
 
-1) Rendering of aromatic bonds / rings (esp. fused rings)
-2) Rotation of multiple bonds into bond plane
-3) Jump before first rotation of model (lastmouse not set properly?)
-5) Proper positioning of bond halves w.r.t. outer edge of atom
+1) Rotation of multiple bonds into bond plane
+2) Jump before first rotation of model (lastmouse not set properly?)
+3) Proper positioning of bond halves w.r.t. outer edge of atom (READY!)
 
 General TODO:
 
