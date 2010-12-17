@@ -82,6 +82,8 @@ void RenderEngine::createPrimitives(int quality)
 		scaledAtom_[n].clear();
 		selectedScaledAtom_[n].clear();
 	}
+	rings_.clear();
+	segmentedRings_.clear();
 	spheres_.clear();
 	cubes_.clear();
 	cylinders_.clear();
@@ -175,6 +177,8 @@ void RenderEngine::createPrimitives(int quality)
 		spheres_.primitive(lod).plotSphere(1.0, nstacks, nslices);
 		cylinders_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,1.0,nstacks, nslices);
 		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,0.0,nstacks,nslices);
+		rings_.primitive(lod).plotRing(1.0, 0.1, 18, nslices);
+		segmentedRings_.primitive(lod).plotRing(1.0, 0.1, 18, nslices);
 	}
 
 	// One-off objects
