@@ -147,6 +147,8 @@ class Primitive
 	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices);
 	// Plot tube ring of specified radius and tube width
 	void plotRing(double radius, double width, int nstacks, int nslices, int nsegments, bool segmented = FALSE);
+	// Plot circle of specified radius
+	void plotCircle(double radius, int nstacks, int nsegments, bool segmented = FALSE);
 
 
 	/*

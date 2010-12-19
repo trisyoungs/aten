@@ -137,7 +137,6 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 	
 	for (n=0; n<nstacks; ++n)
 	{
-//                 if (segmented && (n+1)%2) continue;
 		for (m=0; m<nslices; ++m)
 		{
 			d = m * dtheta;
@@ -221,3 +220,35 @@ void Primitive::plotRing(double radius, double width, int nstacks, int nslices, 
 	}
 }
 
+// Plot circle of specified radius
+void Primitive::plotCircle(double radius, int nstacks, int nsegments, bool segmented)
+{
+	int n, o;
+	Vec3<GLfloat> r1, r2;
+	double d1, d2, dphi, dpsi, cosphi1, sinphi1, cosphi2, sinphi2;
+
+	type_ = GL_LINES;
+
+	// Setup some variables
+	dphi = TWOPI / nstacks;
+	dpsi = dphi / nsegments;
+	
+	for (n=0; n<nstacks; ++n)
+	{
+		// Calculate position around circle
+		if (segmented && (n+1)%2) continue;
+
+		for (o=0; o<nsegments; ++o)
+		{
+			cosphi1 = cos(n*dphi+o*dpsi);
+			sinphi1 = sin(n*dphi+o*dpsi);
+			cosphi2 = cos(n*dphi+(o+1)*dpsi);
+			sinphi2 = sin(n*dphi+(o+1)*dpsi);
+			r1.set(cosphi1*radius, sinphi1*radius, 0.0);
+			r2.set(cosphi2*radius, sinphi2*radius, 0.0);
+	
+			defineVertex(r1.x, r1.y, r1.z, 0.0, 0.0, 1.0);
+			defineVertex(r2.x, r2.y, r2.z, 0.0, 0.0, 1.0);
+		}
+	}
+}

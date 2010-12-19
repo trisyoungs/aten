@@ -52,13 +52,13 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 		{
 			case (Atom::StickStyle):
 			case (Atom::TubeStyle):
-				renderPrimitive(selectedAtom_[Atom::TubeStyle], 0, colour, A, GL_LINE);
+				renderPrimitive(selectedAtoms_[Atom::TubeStyle], 0, colour, A, GL_LINE);
 				break;
 			case (Atom::SphereStyle):
-				renderPrimitive(selectedAtom_[Atom::SphereStyle], 0, colour, A, GL_LINE);
+				renderPrimitive(selectedAtoms_[Atom::SphereStyle], 0, colour, A, GL_LINE);
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(selectedScaledAtom_[i->element()], 0, colour, A, GL_LINE);
+				renderPrimitive(selectedScaledAtoms_[i->element()], 0, colour, A, GL_LINE);
 				break;
 		}
 	}
@@ -74,7 +74,10 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			pos = i->r();
 			rmouse = canvas->rMouseLast();
 			style_i = (prefs.renderStyle() == Atom::IndividualStyle ? i->style() : prefs.renderStyle());
-			radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.styleRadius(i)*0.85);
+			if (style_i == Atom::TubeStyle) radius_i = 0.0;
+			else if (style_i == Atom::ScaledStyle) radius_i = prefs.styleRadius(i) - scaledAtomAdjustments_[i->element()];
+			else radius_i = prefs.styleRadius(i) - sphereAtomAdjustment_;
+
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
 			j = source->atomOnScreen(rmouse.x, rmouse.y);
 			if (j == NULL)
@@ -82,14 +85,16 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 				j = &tempj;
 				v = screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
 				style_j = (prefs.renderStyle() == Atom::IndividualStyle ? Atom::StickStyle : prefs.renderStyle());
-				radius_j = prefs.bondStyleRadius(prefs.renderStyle());
+				j->setStyle(style_j);
 			}
 			else
 			{
 				v = j->r();
 				style_j = (prefs.renderStyle() == Atom::IndividualStyle ? j->style() : prefs.renderStyle());
-				radius_j = (style_i == Atom::TubeStyle ? 0.0 : prefs.styleRadius(j)*0.85);
 			}
+			if (style_j == Atom::TubeStyle) radius_j = 0.0;
+			else if (style_j == Atom::ScaledStyle) radius_j = prefs.styleRadius(j) - scaledAtomAdjustments_[canvas->sketchElement()];
+			else radius_j = prefs.styleRadius(j) - sphereAtomAdjustment_;
 			v -= pos;
 			
 			// Select colour

@@ -13,7 +13,7 @@
 	Aten is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+	GNU General Public License for more detailAs.
 
 	You should have received a copy of the GNU General Public License
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
@@ -691,6 +691,30 @@ void Matrix::applyTranslation(Vec3<double> vec)
 	matrix_[12] += matrix_[0]*vec.x + matrix_[4]*vec.y + matrix_[8]*vec.z;
 	matrix_[13] += matrix_[1]*vec.x + matrix_[5]*vec.y + matrix_[9]*vec.z;
 	matrix_[14] += matrix_[2]*vec.x + matrix_[6]*vec.y + matrix_[10]*vec.z;
+}
+
+// Apply an X-translation to the matrix (as glTranslated would do)
+void Matrix::applyTranslationX(double dx)
+{
+	matrix_[12] += matrix_[0]*dx;
+	matrix_[13] += matrix_[1]*dx;
+	matrix_[14] += matrix_[2]*dx;
+}
+
+// Apply an Y-translation to the matrix (as glTranslated would do)
+void Matrix::applyTranslationY(double dy)
+{
+	matrix_[12] += matrix_[4]*dy;
+	matrix_[13] += matrix_[5]*dy;
+	matrix_[14] += matrix_[6]*dy;
+}
+
+// Apply an Z-translation to the matrix (as glTranslated would do)
+void Matrix::applyTranslationZ(double dz)
+{
+	matrix_[12] += matrix_[8]*dz;
+	matrix_[13] += matrix_[9]*dz;
+	matrix_[14] += matrix_[10]*dz;
 }
 
 // Add a translation to the matrix

@@ -74,7 +74,6 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 	VertexChunk *chunk;
 	Matrix &transform = pinfo->localTransform();
 	GLfloat newr[9], newn[9], norm[3], colour[12], *colourptr;
-	// OPTIMISE - Do something better with norm[]
 	int voff, bin, m;
 
 	// For speed, different loops depending on type of vertexData...

@@ -241,6 +241,7 @@ Prefs::Prefs()
 	zoomThrottle_ = 0.15;
 
 	// Colours
+	setColour(Prefs::AromaticRingColour, 0.4, 0.4, 0.7, 1.0);
 	setColour(Prefs::BackgroundColour, 1.0, 1.0, 1.0, 1.0);
 	setColour(Prefs::FixedAtomColour, 0.0, 0.0, 0.0, 1.0);
 	setColour(Prefs::GlyphDefaultColour, 0.0, 0.0, 1.0, 0.7);

@@ -20,6 +20,12 @@
 						<entry>The C-style format to use for the numerical value of angle labels</entry>
 					</row>
 					<row>
+						<entry>aromaticringcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of aromatic ring circles</entry>
+					</row>
+					<row>
 						<entry>atomstyleradius</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
