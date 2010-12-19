@@ -56,7 +56,7 @@ class Prefs
 	static KeyAction keyAction(const char *name, bool reporterror = 0);
 	static const char *keyAction(KeyAction);
 	// Property/Object Colours
-	enum ObjectColour { BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, nObjectColours };
+	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, nObjectColours };
 	static const char *objectColour(ObjectColour);
 	static const char *objectColourName(ObjectColour);
 	static ObjectColour objectColour(const char *name, bool reporterror = 0);

@@ -53,17 +53,17 @@ class RenderEngine
 	// Quality setting that primitives were last generated at
 	int primitiveQuality_;
 	// Atom styles
-	PrimitiveGroup atom_[Atom::nDrawStyles], *scaledAtom_;
+	PrimitiveGroup atoms_[Atom::nDrawStyles], *scaledAtoms_;
 	// Atom bond adjustment distances
-	double atomAdjustment_[Atom::nDrawStyles], *scaledAtomAdjustment_;
+	double sphereAtomAdjustment_, *scaledAtomAdjustments_;
 	// Selected atom styles
-	PrimitiveGroup selectedAtom_[Atom::nDrawStyles], *selectedScaledAtom_;
+	PrimitiveGroup selectedAtoms_[Atom::nDrawStyles], *selectedScaledAtoms_;
 	// Bond styles
-	PrimitiveGroup bond_[Atom::nDrawStyles][Bond::nBondTypes];
+	PrimitiveGroup bonds_[Atom::nDrawStyles][Bond::nBondTypes];
 	// Selected bond styles
-	PrimitiveGroup selectedBond_[Atom::nDrawStyles][Bond::nBondTypes];
+	PrimitiveGroup selectedBonds_[Atom::nDrawStyles][Bond::nBondTypes];
 	// Rings
-	PrimitiveGroup rings_, segmentedRings_;
+	PrimitiveGroup lineRings_, segmentedLineRings_, tubeRings_, segmentedTubeRings_;
 	// Primitive objects
 	PrimitiveGroup cubes_, spheres_, cylinders_, cones_;
 	// One-off objects
@@ -74,6 +74,8 @@ class RenderEngine
 	void createPrimitives(int quality);
 	// (Re)initialise transparency filter
 	void initialiseTransparency();
+	// Calculate atom/bond adjustments
+	void calculateAdjustments();
 
 
 	/*

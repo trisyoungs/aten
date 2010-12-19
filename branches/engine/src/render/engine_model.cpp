@@ -31,10 +31,10 @@
 // Render bond
 void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b)
 {
-	double dvisible, factor, rij, phi, dp;
+	double dvisible, selvisible, factor, rij, phi, dp;
 	Vec3<double> ijk, ri, rj;
 	GLfloat alpha_i, alpha_j;
-	
+
 	// Store copies of alpha values
 	alpha_i = colour_i[3];
 	alpha_j = colour_j[3];
@@ -64,9 +64,9 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	else
 	{
 		// If bond is not visible, don't bother drawing it...
-		dvisible = 0.5 * (rij - 0.85*(radius_i + radius_j));
+		dvisible = 0.5 * (rij - radius_i - radius_j);
 		if (dvisible < 0.0) return;
-		factor = (selscale*radius_i - 0.85*radius_i) / dvisible;
+		selvisible = 0.5 * (rij - selscale*radius_i - selscale*radius_j);
 		
 		// Calculate angle out of XZ plane
 		// OPTIMISE - Precalculate acos()
@@ -77,7 +77,7 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 		else A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
 		
 		// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
-		A.applyTranslation(0.0, 0.0, 0.85*radius_i);
+		A.applyTranslationZ(radius_i);
 		A.applyScalingZ(dvisible);
 		
 		// Determine bond plane rotation if a multiple bond
@@ -86,13 +86,14 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			if (i > j) ijk = i->findBondPlane(j,b,vij);
 			else ijk = j->findBondPlane(i,b,vij);
 			// Calculate projected bond plane vector
-			ijk = A.rotateVector(ijk);
+// 			ijk = A * ijk - i->r();
 			// 					printf("Transformed bond-plane vector is :"); ijk.print();
 			// 					A.print();
 			// 					printf("DP = %f,  acos = %f\n", ijk.dp(Vec3<double>(A[0],A[1],A[2])), DEGRAD*acos(ijk.dp(Vec3<double>(A[0],A[1],A[2]))));
 			// Rotate into bond plane if necessary
 			dp = ijk.x*A[0] + ijk.y*A[1] + ijk.z*A[2];
 			phi = 180.0 - DEGRAD*acos(dp);
+	printf("DP = %f, phi = %f\n", dp, phi);
 			if (phi > 0.01)
 			{
 				A.applyRotationAxis(0.0,0.0,1.0,phi-180.0,FALSE);  // BROKEN
@@ -110,32 +111,32 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 				glEnd();
 				break;
 			case (Atom::TubeStyle):
-				renderPrimitive(bond_[style_i][bt], lod, colour_i, A);
-				if (i->isSelected())
+				renderPrimitive(bonds_[style_i][bt], lod, colour_i, A);
+				if (i->isSelected() && (selvisible > 0.0))
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(selectedBond_[style_i][bt], lod, colour_i, A);
+					renderPrimitive(selectedBonds_[style_i][bt], lod, colour_i, A);
 					colour_i[3] = alpha_i;
 				}
 				// Move to centre of visible bond, ready for next bond half
-				A.applyTranslation(0.0, 0.0, 1.0);
+				A.applyTranslationZ(1.0);
 				break;
 			case (Atom::SphereStyle):
 			case (Atom::ScaledStyle):
-				renderPrimitive(bond_[style_i][bt], lod, colour_i, A);
-				if (i->isSelected())
+				renderPrimitive(bonds_[style_i][bt], lod, colour_i, A);
+				if (i->isSelected() && (selvisible > 0.0))
 				{
-					// Move to bond centre and apply 'reverse' Z-scaling
-					A.applyTranslation(0.0, 0.0, factor);
-					A.applyScalingZ(1.0-factor);
+					// Move to edge of selected atom and apply selection bond scaling
+					A.applyTranslationZ((selscale*radius_i-radius_i) / dvisible);
+					A.applyScalingZ(selvisible/dvisible);
 					colour_i[3] = 0.5f;
-					renderPrimitive(selectedBond_[style_i][bt], lod, colour_i, A);
+					renderPrimitive(selectedBonds_[style_i][bt], lod, colour_i, A);
 					colour_i[3] = alpha_i;
 					// Move to centrepoint and reverse scaling back to 'dvisible'
-					A.applyTranslation(0.0, 0.0, 1.0);	// OPTIMIZE - Separate funcs for X, Y, or Z translation
-					A.applyScalingZ(1.0/(1.0-factor));
+					A.applyTranslationZ(1.0);
+					A.applyScalingZ(dvisible/selvisible);
 				}
-				else A.applyTranslation(0.0, 0.0, 1.0);
+				else A.applyTranslationZ(1.0);
 				break;
 		}
 		
@@ -150,22 +151,22 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 				glEnd();
 				break;
 			case (Atom::TubeStyle):
-				renderPrimitive(bond_[style_i][bt], lod, colour_j, A);
+				renderPrimitive(bonds_[style_i][bt], lod, colour_j, A);
 				if (j->isSelected())
 				{
 					colour_j[3] = 0.5f;
-					renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, A);
+					renderPrimitive(selectedBonds_[style_j][bt], lod, colour_j, A);
 					colour_j[3] = alpha_j;
 				}
 				break;
 			case (Atom::SphereStyle):
 			case (Atom::ScaledStyle):
-				renderPrimitive(bond_[style_j][bt], lod, colour_j, A);
-				if (j->isSelected())
+				renderPrimitive(bonds_[style_j][bt], lod, colour_j, A);
+				if (j->isSelected() && (selvisible > 0.0))
 				{
+					A.applyScalingZ(selvisible / dvisible);
 					colour_j[3] = 0.5f;
-					A.applyScalingZ(1.0-factor);
-					renderPrimitive(selectedBond_[style_j][bt], lod, colour_j, A);
+					renderPrimitive(selectedBonds_[style_j][bt], lod, colour_j, A);
 					colour_j[3] = alpha_j;
 				}
 				break;
@@ -270,24 +271,24 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		switch (style_i)
 		{
 			case (Atom::StickStyle):
-				if (i->nBonds() == 0) renderPrimitive(atom_[style_i], lod, colour_i, atomtransform, GL_LINE, i->isSelected() ? 3.0 : 1.0);
+				if (i->nBonds() == 0) renderPrimitive(atoms_[style_i], lod, colour_i, atomtransform, GL_LINE, i->isSelected() ? 3.0 : 1.0);
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
-				renderPrimitive(atom_[style_i], lod, colour_i, atomtransform);
+				renderPrimitive(atoms_[style_i], lod, colour_i, atomtransform);
 				if (i->isSelected())
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(selectedAtom_[style_i], lod, colour_i, atomtransform);
+					renderPrimitive(selectedAtoms_[style_i], lod, colour_i, atomtransform);
 					colour_i[3] = alpha_i;
 				}
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(scaledAtom_[i->element()], lod, colour_i, atomtransform);
+				renderPrimitive(scaledAtoms_[i->element()], lod, colour_i, atomtransform);
 				if (i->isSelected())
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(selectedScaledAtom_[i->element()], lod, colour_i, atomtransform);
+					renderPrimitive(selectedScaledAtoms_[i->element()], lod, colour_i, atomtransform);
 					colour_i[3] = alpha_i;
 				}
 				break;
@@ -319,7 +320,9 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		// Bonds
 		// Grab some useful values from atom i
 		id_i = i->id();
-		radius_i = (style_i == Atom::TubeStyle ? 0.0 : prefs.styleRadius(i)*0.85);
+		if (style_i == Atom::TubeStyle) radius_i = 0.0;
+		else if (style_i == Atom::ScaledStyle) radius_i = prefs.styleRadius(i) - scaledAtomAdjustments_[i->element()];
+		else radius_i = prefs.styleRadius(i) - sphereAtomAdjustment_;
 		
 		for (ri = i->bonds(); ri != NULL; ri = ri->next)
 		{
@@ -351,13 +354,15 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			
 			// Get atom style and radius
 			style_j = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
-			radius_j = (style_j == Atom::TubeStyle ? 0.0 : prefs.styleRadius(j)*0.85);
+			if (style_j == Atom::TubeStyle) radius_j = 0.0;
+			else if (style_j == Atom::ScaledStyle) radius_j = prefs.styleRadius(j) - scaledAtomAdjustments_[j->element()];
+			else radius_j = prefs.styleRadius(j) - sphereAtomAdjustment_;
 			
 			// Calculate vector i->j
 			v = source->cell()->mimd(j, i);
 			
 			// Render bond
-			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, ri->item->type(), lod, selscale);
+			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, ri->item->type(), lod, selscale, ri->item);
 		}
 		
 	}
@@ -365,10 +370,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	// Aromatic rings (needs valid pattern description)
 	if (prefs.isVisibleOnScreen(Prefs::ViewAtoms) && source->arePatternsValid())
 	{
-		colour_i[0] = 0.0;
-		colour_i[1] = 0.0;
-		colour_i[2] = 0.0;
-		colour_i[3] = 1.0;
+		prefs.copyColour(Prefs::AromaticRingColour, colour_i);
 
 		atoms = source->atomArray();
 		for (Pattern *p = source->patterns(); p != NULL; p = p->next)
@@ -395,6 +397,8 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 						pos += source->cell()->mim(j->r(), r1);
 					}
 					pos /= p->nAtoms();
+					lod = levelOfDetail(pos, canvas);
+					if (lod == -1) continue;
 
 					// Determine average vector magnitude of ring atoms and y-axis vector (closest 90deg vector)
 					mag = 0.0;
@@ -434,8 +438,10 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 					A.setColumn(1, r2*mag, 0.0);
 					A.setColumn(2, r3*mag, 0.0);
 					atomtransform *= A;
-					if (prefs.renderDashedAromatics()) renderPrimitive(segmentedRings_, lod, colour_i, atomtransform);
-					else renderPrimitive(rings_, lod, colour_i, atomtransform);
+					// Render ring
+// 					if (
+					if (prefs.renderDashedAromatics()) renderPrimitive(segmentedTubeRings_, lod, colour_i, atomtransform);
+					else renderPrimitive(tubeRings_, lod, colour_i, atomtransform);
 
 					id_i += p->nAtoms();
 				}
@@ -528,7 +534,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
 				else A.applyRotationAxis(-r3.y, r3.x, 0.0, phi, TRUE);
 				// Move to endpoint
-				A.applyTranslation(0.0,0.0,rij*0.9);
+				A.applyTranslationZ(rij*0.9);
 				A.applyScaling(0.2,0.2,rij*0.1);
 				renderPrimitive(cones_, lod, colour_i, A, GL_LINE);
 				break;
@@ -682,7 +688,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				A.applyScaling(0.1,0.1,rij*0.9);
 				renderPrimitive(cylinders_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
-				A.applyTranslation(0.0,0.0,1.0);
+				A.applyTranslationZ(1.0);
 				A.applyScaling(2.0,2.0,0.1/0.9);
 				renderPrimitive(cones_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
 				break;
@@ -707,7 +713,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
 				else A.applyRotationAxis(-r2.y, r2.x, 0.0, phi, TRUE);
 				// Move to endpoint
-				A.applyTranslation(0.0,0.0,rij*0.9);
+				A.applyTranslationZ(rij*0.9);
 				A.applyScaling(0.2, 0.2, rij*0.1);
 				renderPrimitive(cones_, lod, colour_i, A, GL_LINE);
 				break;

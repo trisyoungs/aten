@@ -51,6 +51,7 @@ PreferencesVariable::~PreferencesVariable()
 // Accessor data - name, type, arraysize, ro?
 Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "anglelabelformat",		VTypes::StringData,		0, FALSE },
+	{ "aromaticringcolour",		VTypes::DoubleData,		4, FALSE },
 	{ "atomstyleradius",		VTypes::DoubleData,		Atom::nDrawStyles, FALSE },
 	{ "backcull",			VTypes::IntegerData,		0, FALSE },
 	{ "backgroundcolour",		VTypes::DoubleData,		4, FALSE },
@@ -239,6 +240,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	{
 		case (PreferencesVariable::AngleLabelFormat):
 			rv.set(prefs.angleLabelFormat());
+			break;
+		case (PreferencesVariable::AromaticRingColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::AromaticRingColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::AromaticRingColour), 4);
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
@@ -603,6 +608,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	{
 		case (PreferencesVariable::AngleLabelFormat):
 			ptr->setAngleLabelFormat(newvalue.asString());
+			break;
+		case (PreferencesVariable::AromaticRingColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::AromaticRingColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
