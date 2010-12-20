@@ -195,6 +195,7 @@ SET(CPACK_PACKAGE_VERSION_PATCH ${VERSION_PATCH})
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Aten${VERSION_MAJOR}.${VERSION_MINOR}")
 IF(WIN32)
   SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Aten-${VERSION_MAJOR}.${VERSION_MINOR}")
+  SET(CPACK_GENERATOR "NSIS;ZIP")
   # There is a bug in NSI that does not handle full unix paths properly. Make
   # sure there is at least one set of four (4) backlasshes.
   set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\aten.ico")
