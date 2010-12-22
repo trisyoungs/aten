@@ -336,20 +336,20 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 		switch (kc)
 		{
 			case (TCanvas::LeftKey):
-				// 			if (keyModifier_[Prefs::CtrlKey])
-				// 			{
-					// 				displayModel_->prepareTransform();
-					// 				displayModel_->beginUndoState("Rotate selection about world Y axis");
-					// 				displayModel_->rotateSelectionWorld(2.0,0.0);
-					// 				displayModel_->endUndoState();
-					// 				displayModel_->updateMeasurements();
-					// 				displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
-					// 				gui.update(TRUE,FALSE,FALSE);
-					// 			}
-					// 			else
-					displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
-					refresh = TRUE;
-					break;
+				if (keyModifier_[Prefs::CtrlKey])
+				{
+					printf("Why doesn't this ever get printed?\n");
+					displayModel_->prepareTransform();
+					displayModel_->beginUndoState("Rotate selection about world Y axis");
+					displayModel_->rotateSelectionWorld(2.0,0.0);
+					displayModel_->endUndoState();
+					displayModel_->updateMeasurements();
+					displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
+					gui.update(TRUE,FALSE,FALSE);
+				}
+				else displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
+				refresh = TRUE;
+				break;
 			case (TCanvas::RightKey):
 				displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0, 0.0);
 				refresh = TRUE;

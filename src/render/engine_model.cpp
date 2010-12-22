@@ -31,8 +31,8 @@
 // Render bond
 void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b)
 {
-	double dvisible, selvisible, factor, rij, phi, dp;
-	Vec3<double> ijk, ri, rj;
+	double dvisible, selvisible, factor, rij, phi, dp, dp2;
+	Vec3<double> ijk, ri, rj, Ax, xp;
 	GLfloat alpha_i, alpha_j;
 
 	// Store copies of alpha values
@@ -67,38 +67,59 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 		dvisible = 0.5 * (rij - radius_i - radius_j);
 		if (dvisible < 0.0) return;
 		selvisible = 0.5 * (rij - selscale*radius_i - selscale*radius_j);
-		
+
 		// Calculate angle out of XZ plane
 		// OPTIMISE - Precalculate acos()
 		phi = DEGRAD * acos(vij.z/rij);
-		
-		// Special case where the bond is exactly in the XY plane.
-		if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
-		else A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
-		
+
+		// Determine bond plane rotation if a multiple bond
+		if (((bt == Bond::Double) || (bt == Bond::Triple)) && (b != NULL))
+		{
+			// Determine bond plane and transform into world coordinates with *unmodified* Matrix
+			if (i > j) ijk = i->findBondPlane(j,b,vij);
+			else ijk = j->findBondPlane(i,b,vij);
+			ijk = A.rotateVector(ijk);
+// 			printf("\n\nWorld-rotated bond-plane vector (X) = "); ijk.print();
+
+			// Apply local bond rotation to move z-axis along bond vector
+			// Special case where the bond is exactly in the XY plane.
+			if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
+			else A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
+
+			Ax.set(A[0], A[1], A[2]);
+			Ax.normalise();
+// 			printf("World X-axis = "); Ax.print();
+
+			// Calculate dot product between bond plane vector and x-axis of bond-rotated matrix
+			dp = ijk.x*A[0] + ijk.y*A[1] + ijk.z*A[2];
+			if (dp < -1) dp = -1.0;
+			else if (dp > 1) dp = 1.0;
+			phi = DEGRAD*acos(dp);
+// 			printf("DP between X and viewX = %f (phi = %f)\n", dp, phi);
+			if (phi > 0.01)
+			{
+// 				printf("Current Matrix = \n"); A.print();
+				A.applyRotationAxis(0.0, 0.0, 1.0, -phi, FALSE);
+// 				printf("Adjusted Matrix = \n"); A.print();
+
+// 				Ax.set(A[0], A[1], A[2]);
+// 				printf("Adjusted world X-axis = "); Ax.print();
+				dp = ijk.x*A[0] + ijk.y*A[1] + ijk.z*A[2];
+				if (dp < -1) dp = -1.0;
+				else if (dp > 1) dp = 1.0;
+				phi = DEGRAD*acos(dp);
+// 				printf("New DP = %f, phi = %f\n", dp, phi);
+			}
+		}
+		else
+		{
+			// Special case where the bond is exactly in the XY plane.
+			if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
+			else A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
+		}
 		// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
 		A.applyTranslationZ(radius_i);
 		A.applyScalingZ(dvisible);
-		
-		// Determine bond plane rotation if a multiple bond
-		if ((bt > Bond::Single) && (b != NULL))
-		{
-			if (i > j) ijk = i->findBondPlane(j,b,vij);
-			else ijk = j->findBondPlane(i,b,vij);
-			// Calculate projected bond plane vector
-// 			ijk = A * ijk - i->r();
-			// 					printf("Transformed bond-plane vector is :"); ijk.print();
-			// 					A.print();
-			// 					printf("DP = %f,  acos = %f\n", ijk.dp(Vec3<double>(A[0],A[1],A[2])), DEGRAD*acos(ijk.dp(Vec3<double>(A[0],A[1],A[2]))));
-			// Rotate into bond plane if necessary
-			dp = ijk.x*A[0] + ijk.y*A[1] + ijk.z*A[2];
-			phi = 180.0 - DEGRAD*acos(dp);
-	printf("DP = %f, phi = %f\n", dp, phi);
-			if (phi > 0.01)
-			{
-				A.applyRotationAxis(0.0,0.0,1.0,phi-180.0,FALSE);  // BROKEN
-			}
-		}
 		
 		// Draw first bond half
 		switch (style_i)
@@ -186,7 +207,8 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
 	Matrix atomtransform, A, B;
-	Refitem<Bond,int> *ri;
+	Refitem<Bond,int> *rb;
+	Refitem<Atom,int> *ra;
 	Atom::DrawStyle style_i, style_j, globalstyle;
 	Prefs::ColouringScheme scheme;
 	ForcefieldAtom *ffa;
@@ -324,9 +346,9 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		else if (style_i == Atom::ScaledStyle) radius_i = prefs.styleRadius(i) - scaledAtomAdjustments_[i->element()];
 		else radius_i = prefs.styleRadius(i) - sphereAtomAdjustment_;
 		
-		for (ri = i->bonds(); ri != NULL; ri = ri->next)
+		for (rb = i->bonds(); rb != NULL; rb = rb->next)
 		{
-			j = ri->item->partner(i);
+			j = rb->item->partner(i);
 			if (j->id() > id_i) continue;
 			
 			// Grab colour of second atom
@@ -362,7 +384,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			v = source->cell()->mimd(j, i);
 			
 			// Render bond
-			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, ri->item->type(), lod, selscale, ri->item);
+			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), lod, selscale, rb->item);
 		}
 		
 	}
@@ -384,19 +406,20 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				if (r->type() != Ring::AromaticRing) continue;
 				
 				// Loop over pattern molecules
-				id_i = p->startAtom();
+				id_i = 0;
 				for (m=0; m<p->nMolecules(); ++m)
 				{
 					// Determine ring centroid
-					i = atoms[id_i];
+					ra = r->atoms();
+					i = atoms[id_i+ra->item->id()];
 					r1 = i->r();
 					pos = r1;
-					for (n=1; n<p->nAtoms(); ++n)
+					for (ra = ra->next; ra != NULL; ra = ra->next)
 					{
-						j = atoms[id_i+n];
+						j = atoms[id_i+ra->item->id()];
 						pos += source->cell()->mim(j->r(), r1);
 					}
-					pos /= p->nAtoms();
+					pos /= r->nAtoms();
 					lod = levelOfDetail(pos, canvas);
 					if (lod == -1) continue;
 
@@ -407,10 +430,11 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 					best = PI/2.0;
 					r2.zero();
 					radius_i = 0.0;
-					for (n=0; n<p->nAtoms(); ++n)
+					
+					for (ra = r->atoms(); ra != NULL; ra = ra->next)
 					{
 						// Grab atom pointer and get minimum image vector with centroid 'v'
-						i = atoms[id_i+n];
+						i = atoms[id_i+ra->item->id()];
 						if (prefs.styleRadius(i) > radius_i) radius_i = prefs.styleRadius(i);
 						v = source->cell()->mimd(i->r(), pos);
 						// Accumulate magnitude
@@ -428,18 +452,19 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 					r2.orthogonalise(r1);
 					r2.normalise();
 					r3 = r1*r2;
-					mag /= p->nAtoms();
+					mag /= r->nAtoms();
 					mag -= radius_i*0.9;
-					mag *= 0.5;
+					mag *= 0.75;
 					// Construct transformation matrix
 					atomtransform = baseTransform;
 					atomtransform.applyTranslation(pos.x, pos.y, pos.z);
 					A.setColumn(0, r1*mag, 0.0);
 					A.setColumn(1, r2*mag, 0.0);
 					A.setColumn(2, r3*mag, 0.0);
+					A.setColumn(3, 0.0, 0.0, 0.0, 1.0);
 					atomtransform *= A;
+
 					// Render ring
-// 					if (
 					if (prefs.renderDashedAromatics()) renderPrimitive(segmentedTubeRings_, lod, colour_i, atomtransform);
 					else renderPrimitive(tubeRings_, lod, colour_i, atomtransform);
 
