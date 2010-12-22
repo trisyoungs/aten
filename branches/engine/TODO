@@ -1,17 +1,15 @@
 Thigs to test in new version:
 
-2) Cell packing (vs Mercury)
-5) Viewing along (cell) axes
-6) Ewald energies / forces
-7) Torsion forces
-8) MatrixTransform of model
-9) Rendering of aromatic rings in more complex systems (e.g. buckytube?, cgparticle example?)
+1) Cell packing (vs Mercury)
+2) Viewing along (cell) axes
+3) Ewald energies / forces
+4) Torsion forces
+5) MatrixTransform of model
 
 Things to do (fix) in new version:
 
 1) Rotation of multiple bonds into bond plane
 2) Jump before first rotation of model (lastmouse not set properly?)
-3) Proper positioning of bond halves w.r.t. outer edge of atom (READY!)
 
 General TODO:
 
@@ -28,6 +26,7 @@ a) Spacegroup Pnmmm
 b) Allow (somehow) rotation of fragments without drawing them *or* rotating main view
 c) Replacing existing bond in fragment builder causes wrong atoms to be deleted
 d) Double-press of ALT required to cycle over fragment attachment points? Or just that view isn't updated?
+e) Undo/Redo of cell addition not working properly?
 
 Filter TODO:
 1) ECP type is not written in GAMESS-US export filter
