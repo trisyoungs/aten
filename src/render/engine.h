@@ -71,7 +71,7 @@ class RenderEngine
 
 	public:
 	// (Re)Generate primitive vertex arrays with specified quality
-	void createPrimitives(int quality);
+	void createPrimitives(int quality, bool force = FALSE);
 	// (Re)initialise transparency filter
 	void initialiseTransparency();
 	// Calculate atom/bond adjustments

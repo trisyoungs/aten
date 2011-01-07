@@ -321,11 +321,11 @@ void TCanvas::updateTransformation(Matrix& mat, Vec3< double > cellcentre)
 }
 
 // Reinitialise primitives
-void TCanvas::reinitialisePrimitives()
+void TCanvas::reinitialisePrimitives(bool force)
 {
 	// Image quality to use depends on current drawing target...
-	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality());
-	else engine_.createPrimitives(prefs.primitiveQuality());
+	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality(), force);
+	else engine_.createPrimitives(prefs.primitiveQuality(), force);
 }
 
 // Reinitialise transparency correction

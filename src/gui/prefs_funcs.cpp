@@ -276,10 +276,10 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 // View Page
 */
 
-void AtenPrefs::updateAfterViewPrefs()
+void AtenPrefs::updateAfterViewPrefs(bool force)
 {
 	if (refreshing_) return;
-	gui.mainWidget->reinitialisePrimitives();
+	gui.mainWidget->reinitialisePrimitives(force);
 	gui.mainWidget->postRedisplay();
 }
 
@@ -292,7 +292,7 @@ void AtenPrefs::setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom)
 	if (refreshing_) return;
 	if (foratom) prefs.setAtomStyleRadius(ds, value);
 	else prefs.setBondStyleRadius(ds, value);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(TRUE);
 }
 
 void AtenPrefs::on_StickRadiusSpin_valueChanged(double value)
@@ -338,7 +338,7 @@ void AtenPrefs::on_ScaledBondRadiusSpin_valueChanged(double value)
 void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
 {
 	prefs.setSelectionScale(value);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(TRUE);
 }
 
 void AtenPrefs::on_AngleLabelFormatEdit_textEdited(const QString &text)
@@ -393,13 +393,13 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 void AtenPrefs::on_PrimitiveQualitySlider_valueChanged(int value)
 {
 	prefs.setPrimitiveQuality(value);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(TRUE);
 }
 
 void AtenPrefs::on_PrimitiveQualitySpin_valueChanged(int value)
 {
 	prefs.setPrimitiveQuality(value);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(TRUE);
 }
 
 void AtenPrefs::on_ImagePrimitivesGroup_clicked(bool checked)
@@ -420,19 +420,19 @@ void AtenPrefs::on_ImagePrimitiveQualitySpin_valueChanged(int value)
 void AtenPrefs::on_LevelOfDetailNLevelsSpin_valueChanged(int value)
 {
 	prefs.setLevelsOfDetail(value);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(TRUE);
 }
 
 void AtenPrefs::on_LevelOfDetailStartZSpin_valueChanged(double value)
 {
 	prefs.setLevelOfDetailStartZ(value);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(TRUE);
 }
 
 void AtenPrefs::on_LevelOfDetailWidthSpin_valueChanged(double value)
 {
 	prefs.setLevelOfDetailWidth(value);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(TRUE);
 }
 
 void AtenPrefs::on_TransparencyGroup_clicked(bool checked)
@@ -486,13 +486,13 @@ void AtenPrefs::on_NearClipSpin_valueChanged(double value)
 void AtenPrefs::on_NearDepthSpin_valueChanged(int value)
 {
 	prefs.setDepthNear(value);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(FALSE);
 }
 
 void AtenPrefs::on_LineAliasingCheck_stateChanged(int state)
 {
 	prefs.setLineAliasing(state == Qt::Checked);
-	updateAfterViewPrefs();
+	updateAfterViewPrefs(FALSE);
 }
 
 void AtenPrefs::on_PolygonAliasingCheck_stateChanged(int state)

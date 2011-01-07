@@ -82,7 +82,7 @@ class AtenPrefs : public QDialog
 	// View Page
 	*/
 	private:
-	void updateAfterViewPrefs();
+	void updateAfterViewPrefs(bool force);
 	void setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom);
 	void setVisibleObject(Prefs::ViewObject vo, int state, bool onscreen);
 	void spotlightPosChanged(int i, double value);
