@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 	Dnchar filename;
 	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
 	if (!prefs.load(filename)) return -1;
-
+	
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
 	if (aten.parseCli(argc,argv) == -1) return -1;
 
