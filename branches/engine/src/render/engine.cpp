@@ -56,12 +56,12 @@ RenderEngine::~RenderEngine()
 */
 
 // (Re)Generate primitives
-void RenderEngine::createPrimitives(int quality)
+void RenderEngine::createPrimitives(int quality, bool force)
 {
 	msg.enter("RenderEngine::createPrimitives");
 	double radius, lodratio, aradius[Atom::nDrawStyles], bradius[Atom::nDrawStyles], selscale;
 	int n, m, lod, nstacks, nslices;
-	if (primitiveQuality_ == quality)
+	if ((!force) && (primitiveQuality_ == quality))
 	{
 		msg.exit("RenderEngine::createPrimitives");
 		return;
@@ -199,6 +199,8 @@ void RenderEngine::createPrimitives(int quality)
 	cellAxes_.createCellAxes();
 	rotationGlobe_.plotSphere(0.75,10,13);
 	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
+	// Recalculate adjustments for bond positioning
+	calculateAdjustments();
 	msg.exit("RenderEngine::createPrimitives");
 }
 
