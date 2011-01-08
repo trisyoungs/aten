@@ -323,7 +323,7 @@ void Format::addGreedyDelimitedChunk(TreeNode *arg, VTypes::DataType retrievetyp
 */
 
 // Use specified parser to perform formatted read
-int Format::executeRead(LineParser *parser, int flags)
+int Format::executeRead(LineParser *parser, int optionMask)
 {
 	msg.enter("Format::executeRead");
 	int nparsed = 0, length;
@@ -338,23 +338,23 @@ int Format::executeRead(LineParser *parser, int flags)
 			case (FormatChunk::PlainTextChunk):
 				// Skip as many characters as there are in the string
 				length = chunk->textLength();
-				parser->getNextN(length, &bit);
+				parser->getNextN(optionMask, length, &bit);
 				break;
 			case (FormatChunk::DelimitedChunk):
 				// Get next delimited argument from LineParser
-				parser->getNextArg(&bit, flags);
+				parser->getNextArg(optionMask, &bit);
 				if (!bit.isEmpty()) nparsed ++;
 				break;
 			case (FormatChunk::GreedyDelimitedChunk):
 				// Get rest of line, starting from next delimited argument
-				parser->getRestDelim(&bit);
+				parser->getRestDelim(optionMask, &bit);
 				if (!bit.isEmpty()) nparsed ++;
 				break;
 			case (FormatChunk::FormattedChunk):
 				// Get argument from LineParser
 				length = chunk->formatLength();
-				if (length != 0) parser->getNextN(length, &bit);
-				else parser->getNextArg(&bit, flags);
+				if (length != 0) parser->getNextN(optionMask, length, &bit);
+				else parser->getNextArg(optionMask, &bit);
 				if (!bit.isEmpty()) nparsed ++;
 				break;
 			default:
@@ -470,18 +470,18 @@ bool Format::writeToString()
 }
 
 // Parse supplied line according to format
-int Format::read(const char *line, int flags)
+int Format::read(const char *line, int optionMask)
 {
 	msg.enter("Format::read[string]");
 	static LineParser parser;
 	parser.setLine(line);
-	int result = executeRead(&parser, flags);
+	int result = executeRead(&parser, optionMask);
 	msg.exit("Format::read[string]");
 	return result;
 }
 
 // Read line from file and parse according to format
-int Format::read(LineParser *parser, int flags)
+int Format::read(LineParser *parser, int optionMask)
 {
 	msg.enter("Format::read[file]");
 	// Read a new line using the supplied parser
@@ -492,13 +492,8 @@ int Format::read(LineParser *parser, int flags)
 		return 1;
 	}
 	// Get next line from file and parse line
-	int result;
-	do
-	{
-		result = parser->readLine();
-		if (result == 0) result = executeRead(parser, flags);
-		if ((result == 0) && !(flags&LineParser::SkipBlanks)) break;
-	} while (result == 0);
+	int result = parser->readNextLine(optionMask);
+	if (result == 0) result = executeRead(parser, optionMask);
 	msg.exit("Format::read[file]");
 	return result;
 }

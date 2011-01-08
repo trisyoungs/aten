@@ -39,7 +39,7 @@ Cell *Model::cell()
 void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 {
 	msg.enter("Model::setCell[vectors]");
-	Mat3<double> oldmatrix = cell_.axes();
+	Matrix oldaxes = cell_.axes();
 	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(lengths, angles);
@@ -48,7 +48,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldmatrix, cell_.axes(), oldhs, TRUE);
+		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Visual);
@@ -56,10 +56,10 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 }
 
 // Set cell (axes)
-void Model::setCell(Mat3<double> axes)
+void Model::setCell(Matrix axes)
 {
 	msg.enter("Model::setCell[axes]");
-	Mat3<double> oldmatrix = cell_.axes();
+	Matrix oldaxes = cell_.axes();
 	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(axes);
@@ -68,7 +68,7 @@ void Model::setCell(Mat3<double> axes)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldmatrix, cell_.axes(), oldhs, TRUE);
+		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Visual);
@@ -79,7 +79,7 @@ void Model::setCell(Mat3<double> axes)
 void Model::setCell(Cell::CellParameter cp, double value)
 {
 	msg.enter("Model::setCell[parameter]");
-	Mat3<double> oldmatrix = cell_.axes();
+	Matrix oldaxes = cell_.axes();
 	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new parameter value
 	cell_.setParameter(cp, value);
@@ -88,7 +88,7 @@ void Model::setCell(Cell::CellParameter cp, double value)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldmatrix, cell_.axes(), oldhs, TRUE);
+		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Visual);
@@ -101,7 +101,7 @@ void Model::setCell(Cell *newcell)
 	if (newcell == NULL) printf("Warning: NULL Cell pointer passed to Model::setCell().\n");
 	else
 	{
-		Mat3<double> oldmatrix = cell_.axes();
+		Matrix oldaxes = cell_.axes();
 		bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 		cell_ = *newcell;
 		calculateDensity();
@@ -109,7 +109,7 @@ void Model::setCell(Cell *newcell)
 		if (recordingState_ != NULL)
 		{
 			CellEvent *newchange = new CellEvent;
-			newchange->set(oldmatrix, cell_.axes(), oldhs, TRUE);
+			newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 			recordingState_->addEvent(newchange);
 		}
 	}
@@ -256,7 +256,7 @@ void Model::pack(Generator *gen)
 		// Get the position of the newly-pasted atom
 		newr = cell_.realToFrac(i->r());
 		// Apply the rotation and translation
-		newr *= gen->matrix();
+		newr = gen->matrix().transform(newr);
 // 		newr +=  cell_.transpose() * gen->translation;
 		i->r() = cell_.fracToReal(newr);
 		cell_.fold(i, this);
@@ -330,7 +330,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	msg.enter("Model::scaleCell");
 	Vec3<double> oldcog, newcog, newpos;
 	Cell newcell;
-	Mat3<double> newaxes;
+	Matrix newaxes;
 	double olde = 0.0, newe;
 	bool success;
 	int n,m;
@@ -356,7 +356,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 
 	// Copy original cell axes, expand and save for later
 	newaxes = cell_.axes();
-	newaxes.rowMultiply(scale);
+	newaxes.columnMultiply(scale);
 	newcell.set(newaxes);
 	// We need a working configuration (for COG calculations)
 	foldAllAtoms();
@@ -419,7 +419,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	int count;
 	bool stop;
 	Vec3<double> tvec;
-	Mat3<double> newaxes, oldaxes;
+	Matrix newaxes, oldaxes;
 	Clipboard originalClip, clip;
 
 	// If this isn't a periodic model, exit
@@ -443,7 +443,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 
 	// Set new unit cell dimensions
 	tvec.set(pos.x-neg.x, pos.y-neg.y, pos.z-neg.z);
-	newaxes.rowMultiply(tvec);
+	newaxes.columnMultiply(tvec);
 	setCell(newaxes);
 
 	// Paste in whole copies of the original cell - don't worry about fractional cells yet
@@ -466,9 +466,9 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 			for (kk = ineg.z; kk <= ipos.z; kk++)
 			{
 				// Set base translation vector for this replication
-				tvec = oldaxes.rows[0] * ii;
-				tvec += oldaxes.rows[1] * jj;
-				tvec += oldaxes.rows[2] * kk;
+				tvec = oldaxes.columnAsVec3(0) * ii;
+				tvec += oldaxes.columnAsVec3(1) * jj;
+				tvec += oldaxes.columnAsVec3(2) * kk;
 				//tvec.print();
 				clip.pasteToModel(this,tvec);
 				msg.print(Messenger::Verbose,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
@@ -482,9 +482,9 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 
 	// Select all atoms and shift if negative replication values were provided
 	selectAll();
-	tvec = oldaxes.rows[0] * -neg.x;
-	tvec += oldaxes.rows[1] * -neg.y;
-	tvec += oldaxes.rows[2] * -neg.z;
+	tvec = oldaxes.columnAsVec3(0) * -neg.x;
+	tvec += oldaxes.columnAsVec3(1) * -neg.y;
+	tvec += oldaxes.columnAsVec3(2) * -neg.z;
 	translateSelectionLocal(tvec);
 	selectNone();
 
@@ -494,7 +494,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		bool delatom;
 		Atom *i, *j;
 		Vec3<double> fracr;
-		Mat3<double> cellinverse = cell_.inverseTranspose();
+		Matrix cellinverse = cell_.inverse();
 	
 		aten.initialiseProgress("Trimming excess atoms...", atoms_.nItems());
 		i = atoms_.first();
@@ -503,7 +503,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		{
 			delatom = FALSE;
 			// Convert coordinates to fractional coords and test them
-			fracr = cellinverse * i->r();
+			fracr = cellinverse.transform(i->r());
 			if ((fracr.x < -0.001) || (fracr.x >= 1.001)) delatom = TRUE;
 			else if ((fracr.y < -0.001) || (fracr.y >= 1.001)) delatom = TRUE;
 			else if ((fracr.z < -0.001) || (fracr.z >= 1.001)) delatom = TRUE;
@@ -533,31 +533,32 @@ void Model::rotateCell(int axis, double angle)
 		msg.exit("Model::rotateCell");
 		return;
 	}
-	Mat3<double> rotmat;
+	Matrix rotmat;
 	if (axis == 0) rotmat.createRotationX(angle);
 	else if (axis == 1) rotmat.createRotationY(angle);
 	else if (axis == 2) rotmat.createRotationZ(angle);
 	// Create new cell axes
-	Mat3<double> axes = cell_.axes();
-	axes *= rotmat;
-// 	cell_.set(axes);
-	Vec3<double> lengths, angles;
-	lengths = cell_.lengths();
-	angles = cell_.angles();
-	double temp;
-	temp = lengths.z;
-	lengths.z = lengths.y;
-	lengths.y = temp;
-	temp = angles.z;
-	angles.z = angles.y;
-	angles.y = temp;
-	cell_.set(lengths, angles);
+	Matrix axes = cell_.axes();
+// 	axes *= rotmat;				// TODO
+// // 	cell_.set(axes);
+// 	Vec3<double> lengths, angles;
+// 	lengths = cell_.lengths();
+// 	angles = cell_.angles();
+// 	double temp;
+// 	temp = lengths.z;
+// 	lengths.z = lengths.y;
+// 	lengths.y = temp;
+// 	temp = angles.z;
+// 	angles.z = angles.y;
+// 	angles.y = temp;
+// 	cell_.set(lengths, angles);
 	// Ensure that our new axes point along positive directions
 	
 	// Transform atoms
 	markAll();
 	Vec3<double> origin;
 	matrixTransformSelection(origin,rotmat,TRUE);
+	
 	msg.exit("Model::rotateCell");
 }
 

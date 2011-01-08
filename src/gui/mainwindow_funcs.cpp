@@ -412,7 +412,7 @@ void AtenForm::loadRecent()
 		ReturnValue rv;
 		filter->executeRead(filename.get(), rv);
 		aten.currentModel()->changeLog.add(Log::Visual);
-		gui.mainView.postRedisplay();
+		gui.mainWidget->postRedisplay();
 	}
 	else
 	{

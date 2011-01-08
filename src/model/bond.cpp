@@ -466,7 +466,7 @@ void Model::patternCalculateBonding(bool augment)
 		}
 	}
 	// Augment?
-	if (prefs.augmentAfterRebond()) augmentBonding();
+	if (prefs.augmentAfterRebond() || augment) augmentBonding();
 	msg.print(" Done.\n");
 	msg.exit("Model::patternCalculateBonding");
 }

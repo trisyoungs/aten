@@ -322,7 +322,7 @@ template <class T> void List<T>::fillArray(int n, T **data)
 		++count;
 		if (count == n) break;
 		i = i->next;
-		if (i == NULL) printf("list::fill_array <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
+		if (i == NULL) printf("List::fillArray <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
 	}
 }
 

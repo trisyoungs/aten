@@ -35,7 +35,6 @@ void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 	if (checked) aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	else aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
-	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
 	gui.update(TRUE, TRUE, FALSE, TRUE, TRUE);
 }
@@ -75,13 +74,13 @@ void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 	{
 		gui.setTrajectoryTimerId(gui.mainWidget->startTimer(100));
 		gui.setTrajectoryPlaying(TRUE);
-		gui.mainView.setEditable(FALSE);
+		gui.mainWidget->setEditable(FALSE);
 	}
 	else
 	{
 		gui.mainWidget->killTimer(gui.trajectoryTimerId());
 		gui.setTrajectoryPlaying(FALSE);
-		gui.mainView.setEditable(TRUE);
+		gui.mainWidget->setEditable(TRUE);
 	}
 	updateTrajectoryControls();
 }
@@ -95,7 +94,7 @@ void AtenForm::trajectorySlider_sliderMoved(int i)
 	// Set corresponding value in Spin control
 	trajectorySpin_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::trajectorySpin_valueChanged(int i)
@@ -107,5 +106,5 @@ void AtenForm::trajectorySpin_valueChanged(int i)
 	// Set corresponding value in Spin control
 	trajectorySlider_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }

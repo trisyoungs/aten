@@ -252,15 +252,15 @@ bool DelaunayTetrahedron::containsPoint(Vec3<double> r)
 {
 	Vec3<double> delta = r - circumCentre_;
 	return (delta.magnitude() <= radius_);
-	Mat4<double> reference, m;
+	Matrix reference, m;
 	int n;
 	bool result = TRUE;
-	for (n=0; n<4; ++n) reference.set(n,vertex(n)->r(),1.0);
+	for (n=0; n<4; ++n) reference.setColumn(n,vertex(n)->r(),1.0);	// BROKEN Should the fourth element 'w' be 1.0?
 	double det, refdet = reference.determinant();
 	for (n=0; n<4; ++n)
 	{
 		m = reference;
-		m.set(n,r,1.0);
+		m.setColumn(n,r,1.0);	// Here also
 		det = m.determinant();
 		if ((det < 0) != (refdet < 0))
 		{

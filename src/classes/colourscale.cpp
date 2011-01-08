@@ -82,21 +82,18 @@ void ColourScale::calculateDeltas()
 }
 
 // Add point to scale
-void ColourScale::addPoint(int position, double value, double r, double g, double b, double a)
+ColourScalePoint *ColourScale::addPoint(int position, double value, double r, double g, double b, double a)
 {
 	msg.enter("ColourScale::addPoint");
 	// Check position supplied - if it is 0 add point at start. If npoints then add at end.
-	if ((position < 0) || (position > points_.nItems()))
-	{
-		msg.print( "Position at which to add scale point (%i) is invalid - nItems = %i.\n", position, points_.nItems());
-		msg.exit("ColourScale::addPoint");
-		return;
-	}
+	if (position < 0) position = 0;
+	else if (position > points_.nItems()) position = points_.nItems();
 	ColourScalePoint *csp;
 	if (position == 0) csp = points_.insert(NULL);
 	else if (position == points_.nItems()) csp = points_.add();
 	else csp = points_.insert( points_[position-1] );
 	// Now, set data in new point
+	csp->setParent(this);
 	csp->setColour(r, g, b, a);
 	csp->setValue(value);
 	// Recalculate colour deltas
@@ -104,12 +101,13 @@ void ColourScale::addPoint(int position, double value, double r, double g, doubl
 	// Refresh linked objects
 	refreshObjects();
 	msg.exit("ColourScale::addPoint");
+	return csp;
 }
 
 // Add new point to end of colourscale
-void ColourScale::addPointAtEnd(double value, double r, double g, double b, double a)
+ColourScalePoint *ColourScale::addPointAtEnd(double value, double r, double g, double b, double a)
 {
-	addPoint(points_.nItems(), value, r, g, b, a);
+	return addPoint(points_.nItems(), value, r, g, b, a);
 }
 
 // Set colour and value data for point
@@ -199,7 +197,7 @@ void ColourScale::colour(double v, GLfloat *target)
 // Adjust range of scale to encompass point supplied
 void ColourScale::adjustRange(double value)
 {
-
+	// TODO
 }
 
 // Return number of points in colourscale

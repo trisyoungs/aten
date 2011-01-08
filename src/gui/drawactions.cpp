@@ -28,73 +28,73 @@
 
 void AtenForm::on_actionDrawAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawAtomAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawAtomAction);
 }
 
 void AtenForm::on_actionDrawChain_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawChainAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawChainAction);
 }
 
 void AtenForm::on_actionDrawFragment_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawFragmentAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawFragmentAction);
 }
 
 void AtenForm::on_actionDeleteAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawDeleteAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawDeleteAction);
 }
 
 void AtenForm::on_actionTransmuteAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawTransmuteAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawTransmuteAction);
 }
 
 void AtenForm::on_actionTransmuteSelection_triggered(bool on)
 {
-	CommandNode::run(Command::Transmute, "i", aten.sketchElement());
+	CommandNode::run(Command::Transmute, "i", gui.mainWidget->sketchElement());
 	gui.update();
 }
 
 void AtenForm::on_actionBondSingle_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondSingleAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawBondSingleAction);
 }
 
 void AtenForm::on_actionBondDouble_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondDoubleAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawBondDoubleAction);
 }
 
 void AtenForm::on_actionBondTriple_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondTripleAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawBondTripleAction);
 }
 
 void AtenForm::on_actionDeleteBond_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawDeleteBondAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawDeleteBondAction);
 }
 
 void AtenForm::on_actionElementH_triggered(bool on)
 {
-	if (on) aten.setSketchElement(1);
+	if (on) gui.mainWidget->setSketchElement(1);
 }
 
 void AtenForm::on_actionElementC_triggered(bool on)
 {
-	if (on) aten.setSketchElement(6);
+	if (on) gui.mainWidget->setSketchElement(6);
 }
 
 void AtenForm::on_actionElementN_triggered(bool on)
 {
-	if (on) aten.setSketchElement(7);
+	if (on) gui.mainWidget->setSketchElement(7);
 }
 
 void AtenForm::on_actionElementCustom_triggered(bool on)
 {
-	if (on) aten.setSketchElement(customElement_);
+	if (on) gui.mainWidget->setSketchElement(customElement_);
 }
 
 void AtenForm::on_actionSelectCustomElement_triggered(bool on)
@@ -108,18 +108,18 @@ void AtenForm::on_actionSelectCustomElement_triggered(bool on)
 		customElement_ = newel;
 		// Activate custom element button
 		ui.actionElementCustom->setChecked(TRUE);
-		aten.setSketchElement(customElement_);
+		gui.mainWidget->setSketchElement(customElement_);
 	}
 }
 
 void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawAddHydrogenAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawAddHydrogenAction);
 }
 
 //void AtenForm::on_actionProbeAtom_triggered(bool on)
 //{
-//	if (on) gui.mainView.setSelectedMode(Canvas::DrawProbeAction);
+//	if (on) gui.mainWidget->setSelectedMode(UserAction::DrawProbeAction);
 //}
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)

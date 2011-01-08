@@ -23,7 +23,7 @@
 #define ATEN_MAINWINDOW_H
 
 #include "base/dnchar.h"
-#include "render/canvas.h"
+#include "base/atom.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "templates/reflist.h"

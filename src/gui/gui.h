@@ -22,8 +22,7 @@
 #ifndef ATEN_GUIQT_H
 #define ATEN_GUIQT_H
 
-#include "gui/gui.h"
-#include "render/canvas.h"
+#include "gui/tcanvas.uih"
 
 // Forward declarations
 class AtenForm;
@@ -111,7 +110,7 @@ class GuiQt
 	// Add model (adds new model to list)
 	void addModel(Model*);
 	// Convert Qt key code value to internal key
-	Canvas::KeyCode convertToKeyCode(int);
+	TCanvas::KeyCode convertToKeyCode(int);
 	// Initialise GUI file filters array
 	void initFilters();
 	// Add a message to the main window's message output box
@@ -204,8 +203,6 @@ class GuiQt
 	public:
 	// Main view Widget
 	TCanvas *mainWidget;
-	// Main view canvas
-	Canvas mainView;
 	// Update context menu
 	void updateContextMenu();
 	// Call the atompopup menu

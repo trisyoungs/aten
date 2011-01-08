@@ -28,16 +28,16 @@
 
 void AtenForm::on_actionSelectAtoms_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::SelectAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectAction);
 }
 
 void AtenForm::on_actionSelectMolecules_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::SelectMoleculeAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectMoleculeAction);
 }
 
 void AtenForm::on_actionSelectElement_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::SelectElementAction);
+	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectElementAction);
 }
 

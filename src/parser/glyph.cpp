@@ -56,6 +56,7 @@ Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
 	{ "ndata",	VTypes::IntegerData,	0, TRUE },
 	{ "rotated",	VTypes::IntegerData,	0, FALSE },
 	{ "rotation",	VTypes::DoubleData,	9, FALSE },
+	{ "selected",	VTypes::IntegerData,	0, FALSE },
 	{ "solid",	VTypes::IntegerData,	0, FALSE },
 	{ "text",	VTypes::StringData,	0, FALSE },
 	{ "type",	VTypes::StringData,	0, FALSE },
@@ -182,7 +183,10 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				msg.print("Array index [%i] is out of range for 'rotation' member.\n", arrayIndex);
 				result = FALSE;
 			}
-			else rv.set(ptr->getRotationElement(arrayIndex-1));
+			else rv.set(ptr->getRotationElement(((arrayIndex-1)/3)*4 + (arrayIndex-1)%3));
+			break;
+		case (GlyphVariable::Selected):
+			rv.set( ptr->isSelected() );
 			break;
 		case (GlyphVariable::Solid):
 			rv.set( ptr->isSolid() );
@@ -278,7 +282,10 @@ bool GlyphVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 			if (newvalue.asInteger() == 0) ptr->resetRotation();
 			break;
 		case (GlyphVariable::Rotation):
-			ptr->setRotationElement( arrayIndex-1, newvalue.asDouble());
+			ptr->setRotationElement( ((arrayIndex-1)/3)*4 + (arrayIndex-1)%3, newvalue.asDouble());
+			break;
+		case (GlyphVariable::Selected):
+			ptr->setSelected(newvalue.asBool());
 			break;
 		case (GlyphVariable::Solid):
 			ptr->setSolid(newvalue.asBool());

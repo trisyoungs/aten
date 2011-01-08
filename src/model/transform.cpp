@@ -22,6 +22,7 @@
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
+#include "gui/gui.h"
 
 // Variables
 Vec3<double> transformCOG;
@@ -48,12 +49,17 @@ void Model::prepareTransform()
 		return;
 	}
 	// Reference point for mim will be the updating cog
+	// At the same time, calculate a unit radius for the centre of geometry
+	Vec4<double> screenr;
 	transformCOG.zero();
-	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) transformCOG += ri->item->rWorld();
+	translateScale_ = 0.0;
+	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
+	{
+		transformCOG += gui.mainWidget->modelToWorld(ri->item->r(), &screenr, 1.0);
+		translateScale_ += screenr.w;
+	}
 	transformCOG /= selection_.nItems();
-	// Calculate a unit radius for the centre of geometry
-	Vec4<double> pvec = worldToScreen(transformCOG);
-	translateScale_ = pvec.w;
+	translateScale_ /= selection_.nItems();
 	msg.exit("Model::prepareTransform");
 }
 
@@ -78,7 +84,6 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const cha
 		}
 	}
 	changeLog.add(Log::Coordinates);
-	projectAll();
 	endUndoState();
 }
 
@@ -90,24 +95,19 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	// We then apply this to the stored *world* coordinates of
 	// the selected atoms, which we then unproject to get the new model coordinates.
 	msg.enter("Model::rotateSelectionWorld");
-	static double rotx, roty, cosx, cosy, sinx, siny;
-	static Vec3<double> newr;
-	static Mat4<double> rotmat;
-	rotx = dy / 20.0;
-	roty = dx / 20.0;
-	cosx = cos(rotx);
-	cosy = cos(roty);
-	sinx = sin(rotx);
-	siny = sin(roty);
-	rotmat.set(0,cosy,0.0,siny,0.0);
-	rotmat.set(1,-sinx*-siny,cosx,-sinx*cosy,0.0);
-	rotmat.set(2,cosx*-siny,sinx,cosx*cosy,0.0);
-	rotmat.set(3,0.0,0.0,0.0,1.0);
+	double rotx, roty;
+	Vec3<double> newr;
+	Matrix rotmat, inverse;
+	rotx = dy;
+	roty = dx;
+	rotmat.createRotationXY(rotx, roty);
+	inverse = modelViewMatrixInverse();
+
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		// Rotate this atom's position about the geometric centre of all selected atoms.
-		newr = (rotmat * (ri->item->rWorld() - transformCOG)) + transformCOG;
-		newr *= viewMatrixInverse_;
+		newr = (rotmat * (gui.mainWidget->modelToWorld(ri->item->r()) - transformCOG)) + transformCOG;
+		newr = inverse.transform(newr);
 		ri->item->r() = newr + cell_.centre();
 	}
 
@@ -115,7 +115,6 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::rotateSelectionWorld");
 }
@@ -124,7 +123,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, double angle, bool markonly)
 {
 	msg.enter("Model::rotateSelectionVector");
-	static Mat3<double> r, u, ut, gr, Igr;
+	Matrix A;
 	Vec3<double> tempv;
 	if (selection(markonly) == NULL)
 	{
@@ -133,36 +132,20 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 		return;
 	}
 	
-	// Generate target coordinate system, with X equal to rotation axis
-	vector.normalise();
-	u.rows[0] = vector;
-	u.rows[1] = vector.orthogonal();
-	u.rows[2] = vector * u.rows[1];
-	u.rows[2].normalise();
-	ut = u.transpose();
-
 	// Create rotation matrix
-	r.createRotationX(angle);
-
-	// Create grand rotation matrix
-	gr = ut * r * u;
-	Igr.setIdentity();
-	Igr = Igr - gr;
+	A.createRotationAxis(vector.x, vector.y, vector.z, angle, TRUE);
 
 	// Loop over selected atoms
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
-		tempv = gr * ri->item->r();
-		tempv += Igr * origin;
-		positionAtom(ri->item, tempv);
-		//i->r() = tempv;
+		tempv = A * (ri->item->r() - origin);
+		positionAtom(ri->item, tempv+origin);
 	}
 
 	// Update model measurements
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::rotateSelectionVector");
 }
@@ -170,16 +153,24 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 // Rotation of selection about screen Z-axis
 void Model::rotateSelectionZaxis(double dz)
 {
-	// Rotate about the perceived z-axis by changing the up vector of the camera.
 	msg.enter("Model::rotateSelectionZaxis");
-	//GLdouble newx, newy;   TODO
-	//dx = (dx / DEGRAD ) * 2.0f;
-	//aten.activemodel->adjust_camera(0.0,0.0,0.0,dx);
-	//aten.activemodel->mmatTransform_all();
-
+	Vec3<double> newr;
+	Matrix rotmat, inverse;
+	rotmat.createRotationZ(dz);
+	inverse = modelViewMatrixInverse();
+	
+	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
+	{
+		// Rotate this atom's position about the geometric centre of all selected atoms.
+		newr = (rotmat * (gui.mainWidget->modelToWorld(ri->item->r()) - transformCOG)) + transformCOG;
+		newr = inverse.transform(newr);
+		ri->item->r() = newr + cell_.centre();
+	}
+	
 	// Update model measurements
 	updateMeasurements();
-
+	
+	changeLog.add(Log::Visual);
 	msg.exit("Model::rotateSelectionZaxis");
 }
 
@@ -188,16 +179,15 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 {
 	// Translate the selected atoms in the local XY plane
 	msg.enter("Model::translateSelectionWorld");
-	static Vec3<double> newr;
-	// No need to account for orientation / rotation of view, since we do the transformation in world coordinates.
-	// So, take the local coordinates of each selected atom and add our position delta to it.
+	Vec3<double> newr;
+	Matrix inverse;
+	// Take the local coordinates of each selected atom and add our position delta to it.
 	// We then unproject this new local coordinate to get the new model (world) coordinate.
-	// Grab unit cell origin
+	inverse = modelViewMatrixInverse();
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
-		newr = ri->item->rWorld() + v;
-		//newr += v;
-		newr = (viewMatrixInverse_ * newr) + cell_.centre();
+		newr = gui.mainWidget->modelToWorld(ri->item->r()) + v;
+		newr = inverse * newr + cell_.centre();
 		positionAtom(ri->item, newr);
 	}
 
@@ -205,7 +195,6 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 	msg.exit("Model::translateSelectionWorld");
 }
 
@@ -220,7 +209,6 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec, bool markonly)
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::translateSelectionLocal");
 }
@@ -245,7 +233,6 @@ void Model::mirrorSelectionLocal(int axis, bool markonly)
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::mirrorSelectionLocal");
 }
@@ -270,14 +257,13 @@ void Model::centre(double newx, double newy, double newz, bool lockx, bool locky
 }
 
 // Matrix transform current selection
-void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix, bool markedonly)
+void Model::matrixTransformSelection(Vec3<double> origin, Matrix matrix, bool markedonly)
 {
 	msg.enter("Model::matrixTransformSelection");
 	Vec3<double> newr;
 	for (Refitem<Atom,int> *ri = selection(markedonly); ri != NULL; ri = ri->next)
 	{
-		newr = ri->item->r() - origin;
-		newr *= matrix;
+		newr = matrix * (ri->item->r() - origin);
 		positionAtom(ri->item, newr + origin);
 	}
 
@@ -285,7 +271,6 @@ void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix, b
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::matrixTransformSelection");
 }

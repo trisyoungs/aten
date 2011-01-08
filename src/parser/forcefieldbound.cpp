@@ -201,6 +201,8 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 				case (ForcefieldBound::ImproperInteraction):
 					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionForm()].parameterKeywords[arrayIndex-1]);
 					break;
+				default:
+					break;
 			}
 			break;
 		case (ForcefieldBoundVariable::DataName):
@@ -222,6 +224,8 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 				case (ForcefieldBound::TorsionInteraction):
 				case (ForcefieldBound::ImproperInteraction):
 					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionForm()].parameters[arrayIndex-1]);
+					break;
+				default:
 					break;
 			}
 			break;

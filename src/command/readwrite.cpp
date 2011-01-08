@@ -32,7 +32,7 @@ bool Command::function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Get parse option from variable
 	LineParser::ParseOption po = LineParser::parseOption(c->argc(0));
 	if (po != LineParser::nParseOptions) c->parent()->addReadOption(po);
-	return TRUE;
+	return (po != LineParser::nParseOptions);
 }
 
 // Check for end of file (or nothing remaining but whitespace)
@@ -76,7 +76,7 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	do
 	{
 		// Get line from file
-		int result = c->parent()->parser()->readLine(FALSE);
+		int result = c->parent()->parser()->readNextLine(LineParser::Defaults);
 		if (result != 0) break;
 		// Check for string
 		if (strstr(c->parent()->parser()->line(), c->argc(0)) != '\0')
@@ -106,7 +106,7 @@ bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("No valid filesource available for the 'getline' command.\n");
 		return FALSE;
 	}
-	int result = c->parent()->parser()->readLine();
+	int result = c->parent()->parser()->readNextLine(LineParser::Defaults);
 	ReturnValue val;
 	if (result == 0) val.set(c->parent()->parser()->line());
 	else val.set("");
@@ -125,7 +125,7 @@ bool Command::function_NextArg(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	Dnchar arg;
-	rv.set( c->parent()->parser()->getCharsDelim(&arg) );
+	rv.set( c->parent()->parser()->getCharsDelim(LineParser::Defaults, &arg) );
 	ReturnValue argrv;
 	argrv.set(arg.get());
 	c->setArg(0, argrv);
@@ -137,7 +137,7 @@ bool Command::function_NextVariableArg(CommandNode *c, Bundle &obj, ReturnValue 
 {
 	Dnchar source = c->argc(0);
 	Dnchar arg;
-	rv.set( c->parent()->parser()->getCharsDelim(&source, &arg) );
+	rv.set( c->parent()->parser()->getCharsDelim(LineParser::Defaults, &source, &arg) );
 	ReturnValue argrv;
 	argrv.set(arg.get());
 	c->setArg(1, argrv);
@@ -337,7 +337,7 @@ bool Command::function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	Dnchar arg;
-	rv.set( c->parent()->parser()->getArgDelim(&arg, c->parent()->readOptions()));
+	rv.set( c->parent()->parser()->getArgDelim(c->parent()->readOptions(), &arg));
 	ReturnValue argrv;
 	argrv.set(arg.get());
 	c->setArg(0, argrv);
@@ -376,7 +376,7 @@ bool Command::function_RemoveReadOption(CommandNode *c, Bundle &obj, ReturnValue
 	// Get parse option from variable
 	LineParser::ParseOption po = LineParser::parseOption(c->argc(0));
 	if (po != LineParser::nParseOptions) c->parent()->removeReadOption(po);
-	return TRUE;
+	return (po != LineParser::nParseOptions);
 }
 
 // Go to start of current file

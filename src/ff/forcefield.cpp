@@ -792,7 +792,7 @@ void Forcefield::convertParameters()
 			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::VdwFunctions[ffa->vdwForm()].isEnergyParameter[n]) ffa->setParameter(n,prefs.convertEnergy(ffa->parameter(n), energyUnit_));
 		}
 		// Only convert those parameters which are contained in the energyData_ list
-		for (Dnchar *param = energyData_.first(); param != NULL; param = param->next)
+		for (param = energyData_.first(); param != NULL; param = param->next)
 		{
 			v = ffa->data(param->get());
 			if (v == NULL) continue;

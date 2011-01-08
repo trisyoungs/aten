@@ -1,0 +1,128 @@
+<section id="topics.glyphs"><title>Glyphs</title>
+	<indexterm zone="colourscales"><primary>glyphs</primary></indexterm>
+
+	<para>A 'glyph' in Aten is any of a series of primitives (or shapes, or objects) that can be rendered in addition to the components that make up a standard model (i.e. atoms, bonds, and unit cell). These can be used to illustrate points of interest in a system, illustrate some vector quantity, or draw whole new objects from scratch. Glyphs can be drawn at fixed positions within a model, or can have their vertices linked to existing atoms, enabling them to be moved in conjunction with the model's atoms. Some glyphs can also be rotated about their current position.</para>
+
+	<para>A glyph requires from one to four vertices to be set, depending on the type. A different colour may be assigned to each vertex enabling, for example, each corner of a triangle to possess a different colour. The available glyph types and the roles of the four possible coordinates are:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Glyph type data</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Glyph</entry>
+					<entry>Rotatable?</entry>
+					<entry>r1</entry>
+					<entry>r2</entry>
+					<entry>r3</entry>
+					<entry>r4</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>arrow</entry>
+					<entry>No</entry>
+					<entry>Tail coords</entry>
+					<entry>Head coords</entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>cube</entry>
+					<entry>Yes</entry>
+					<entry>Centroid</entry>
+					<entry>XYZ scaling factors</entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>ellipsoid</entry>
+				</row>
+				<row>
+					<entry>ellipsoidxyz</entry>
+				</row>
+				<row>
+					<entry>line</entry>
+					<entry>No</entry>
+					<entry>Start coords</entry>
+					<entry>End coords</entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>quad</entry>
+					<entry>No</entry>
+					<entry>Vertex 1</entry>
+					<entry>Vertex 2</entry>
+					<entry>Vertex 3</entry>
+					<entry>Vertex 4</entry>
+				</row>
+				<row>
+					<entry>sphere</entry>
+					<entry>Yes</entry>
+					<entry>Centroid</entry>
+					<entry>XYZ scaling factors</entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>svector</entry>
+					<entry>No</entry>
+					<entry></entry>
+					<entry></entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>tetrahedron</entry>
+					<entry>Yes</entry>
+					<entry>Vertex 1</entry>
+					<entry>Vertex 2</entry>
+					<entry>Vertex 3</entry>
+					<entry>Vertex 4</entry>
+				</row>
+				<row>
+					<entry>text</entry>
+					<entry>No</entry>
+					<entry>Mid-left anchorpoint of text</entry>
+					<entry></entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>text3d</entry>
+					<entry>No</entry>
+					<entry>Mid-left anchorpoint of text</entry>
+					<entry></entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>triangle</entry>
+					<entry>No</entry>
+					<entry>Vertex 1</entry>
+					<entry>Vertex 2</entry>
+					<entry>Vertex 3</entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>tubearrow</entry>
+					<entry>No</entry>
+					<entry>Tail coords</entry>
+					<entry>Head coords</entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>vector</entry>
+					<entry>No</entry>
+					<entry>Centroid</entry>
+					<entry>Pointing vector</entry>
+					<entry></entry>
+					<entry></entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+</section>
+</section>

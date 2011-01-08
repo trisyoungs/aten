@@ -21,13 +21,14 @@
 
 #include "base/glyph.h"
 #include "base/sysfunc.h"
+#include "base/matrix.h"
 #include "classes/prefs.h"
 #include "model/model.h"
 
 // Glyph styles
-const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "cube", "ellipsoid", "ellipsoidxyz", "line", "quad", "svector", "sphere", "tetrahedron", "text", "text3d", "triangle", "vector" };
-const char *GlyphTypeNames[Glyph::nGlyphTypes] = { "Arrow", "Cube", "Ellipsoid", "EllipsoidXYZ", "Line", "Quad", "SenseVector", "Sphere", "Tetrahedron", "Text", "Text3D", "Triangle", "Vector" };
-int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 4, 2, 4, 3, 2, 4, 1, 1, 3, 2 };
+const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "cube", "ellipsoid", "ellipsoidxyz", "line", "quad", "svector", "sphere", "tetrahedron", "text", "text3d", "triangle", "tubearrow", "vector" };
+const char *GlyphTypeNames[Glyph::nGlyphTypes] = { "Arrow", "Cube", "Ellipsoid", "EllipsoidXYZ", "Line", "Quad", "SenseVector", "Sphere", "Tetrahedron", "Text", "Text3D", "Triangle", "tubearrow", "Vector" };
+int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 4, 2, 4, 3, 2, 4, 1, 1, 3, 2, 2 };
 const char *Glyph::glyphType(Glyph::GlyphType gt)
 {
 	return GlyphTypeKeywords[gt];
@@ -61,6 +62,134 @@ Glyph::GlyphOption Glyph::glyphOption(const char *s, bool reporterror)
 }
 
 /*
+ * // GlyphData
+ */
+
+// Constructor
+GlyphData::GlyphData()
+{
+	// Private variables
+	atom_ = NULL;
+	atomData_ = GlyphData::PositionData;
+	atomSetLast_ = FALSE;
+	set_ = FALSE;
+	colour_[0] = prefs.colour(Prefs::GlyphDefaultColour)[0];
+	colour_[1] = prefs.colour(Prefs::GlyphDefaultColour)[1];
+	colour_[2] = prefs.colour(Prefs::GlyphDefaultColour)[2];
+	colour_[3] = prefs.colour(Prefs::GlyphDefaultColour)[3];
+	
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+// Set vector data
+void GlyphData::setVector(double x, double y, double z)
+{
+	vector_.set(x,y,z);
+	set_ = TRUE;
+	atomSetLast_ = FALSE;
+}
+
+// Set vector data
+void GlyphData::setVector(Vec3<double> vec)
+{
+	setVector(vec.x, vec.y, vec.z);
+}
+
+// Set component of vector data
+void GlyphData::setVector(int i, double d)
+{
+	vector_.set(i, d);
+	set_ = TRUE;
+	atomSetLast_ = FALSE;
+}
+
+// Set atom data
+void GlyphData::setAtom(Atom *atom)
+{
+	atom_ = atom;
+	set_ = TRUE;
+	if (atom_ == NULL)
+	{
+		msg.print("Info - NULL atom pointer stored in glyph data, so vector data will be used instead.\n");
+		atomSetLast_ = FALSE;
+	}
+	else atomSetLast_ = TRUE;
+}
+
+// Set atom data type for datapoint
+void GlyphData::setAtomData(GlyphData::GlyphDataType av)
+{
+	atomData_ = av;
+}
+
+// Set atom pointer and datatype for datapoint
+void GlyphData::setAtom(Atom *atom, GlyphData::GlyphDataType av)
+{
+	setAtom(atom);
+	setAtomData(av);
+}
+
+// Return the atom pointer
+Atom *GlyphData::atom()
+{
+	return atom_;
+}
+
+// Return whether the atom was set last
+bool GlyphData::atomSetLast() const
+{
+	return atomSetLast_;
+}
+
+// Return the data type 
+GlyphData::GlyphDataType GlyphData::atomData() const
+{
+	return atomData_;
+}
+
+// Return the position
+Vec3<double> GlyphData::vector() const
+{
+	if (!atomSetLast_) return vector_;
+	else if (atom_ != NULL) return atom_->r();
+	msg.print("Warning - Atom pointer is defined NULL *and* glyph data has not been set to use vector data ({0,0,0} returned)...\n");
+	return Vec3<double>();
+}
+
+// Set colour
+void GlyphData::setColour(double r, double g, double b, double a)
+{
+	colour_[0] = r;
+	colour_[1] = g;
+	colour_[2] = b;
+	colour_[3] = a;
+}
+
+// Set n'th component of colour
+void GlyphData::setColour(int n, double d)
+{
+	if ((n < 0) || (n > 4)) msg.print( "Tried to set component %i for colour in glyphdata which is out of range.\n", n+1);
+	else colour_[n] = d;
+}
+
+// Return colour
+double *GlyphData::colour()
+{
+	return colour_;
+}
+
+// Return i'th colour for glyph
+void GlyphData::copyColour(GLfloat *col) const
+{
+	col[0] = (GLfloat) colour_[0];
+	col[1] = (GLfloat) colour_[1];
+	col[2] = (GLfloat) colour_[2];
+	col[3] = (GLfloat) colour_[3];
+}
+
+/*
 // Glyph
 */
 
@@ -68,6 +197,7 @@ Glyph::GlyphOption Glyph::glyphOption(const char *s, bool reporterror)
 Glyph::Glyph()
 {
 	// Private variables
+	selected_ = FALSE;
 	visible_ = TRUE;
 	solid_ = TRUE;
 	lineWidth_ = 1.0f;
@@ -77,6 +207,29 @@ Glyph::Glyph()
 	prev = NULL;
 	next = NULL;
 }
+
+// Assignment operator
+void Glyph::operator=(Glyph &source)
+{
+	// Simple data first
+	type_ = source.type_;
+	selected_ = source.selected_;
+	visible_ = source.visible_;
+	solid_ = source.solid_;
+	lineWidth_ = source.lineWidth_;
+	// Rotation matrix (if it exists)
+	if (rotation_ != NULL) delete rotation_;
+	if (source.rotation_ == NULL) rotation_ = NULL;
+	else
+	{
+		rotation_ = new Matrix();
+		*rotation_ = *source.rotation_;
+	}
+	// Glyph data
+	data_.clear();
+	data_.createEmpty( Glyph::nGlyphData(type_) );
+	for (int n=0; n<Glyph::nGlyphData(type_); ++n) *data_[n] =  *(source.data_[n]);
+}	
 
 // Returns the number of data set for the Glyph
 int Glyph::nData() const
@@ -150,6 +303,18 @@ void Glyph::setColour(double r, double g, double b, double a)
 	for (GlyphData *gd = data_.first(); gd != NULL; gd = gd->next) gd->setColour(r, g, b, a);
 }
 
+// Set whether the Glyph is selected
+void Glyph::setSelected(bool isselected)
+{
+	selected_ = isselected;
+}
+
+// Return whether the Glyph is selected
+bool Glyph::isSelected() const
+{
+	return selected_;
+}
+
 // Set whether the Glyph is visible
 void Glyph::setVisible(bool isvisible)
 {
@@ -193,19 +358,8 @@ bool Glyph::rotated() const
 	return (rotation_ != NULL);
 }
 
-// Return rotation matrix suitable for GL
-double *Glyph::rotationForGL()
-{
-	if (rotation_ == NULL)
-	{
-		printf("Internal Error - Glyph has no rotation matrix to return for GL.\n");
-		return NULL;
-	}
-	else return rotation_->forGL();
-}
-
 // Return rotation matrix
-Mat3<double> *Glyph::rotation()
+Matrix *Glyph::matrix()
 {
 	return rotation_;
 }
@@ -213,15 +367,15 @@ Mat3<double> *Glyph::rotation()
 // Set element of rotation matrix
 void Glyph::setRotationElement(int el, double d)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->set(el,d);
+	if (rotation_ == NULL) rotation_ = new Matrix;
+	rotation_->matrix()[el] = d;
 }
 
 // Get element of rotation matrix
 double Glyph::getRotationElement(int el)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	return rotation_->element(el);
+	if (rotation_ == NULL) rotation_ = new Matrix;
+	return rotation_->matrix()[el];
 }
 
 // Reset (delete) current rotation matrix
@@ -234,155 +388,27 @@ void Glyph::resetRotation()
 // Rotate about X axis
 void Glyph::rotateX(double angle)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->rotateX(angle);
+	if (rotation_ == NULL) rotation_ = new Matrix;
+	rotation_->applyRotationAxis(1.0,0.0,0.0,angle,FALSE);
 }
 
 // Rotate about Y axis
 void Glyph::rotateY(double angle)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->rotateY(angle);
+	if (rotation_ == NULL) rotation_ = new Matrix;
+	rotation_->applyRotationAxis(0.0,1.0,0.0,angle,FALSE);
 }
 
 // Rotate about Z axis
 void Glyph::rotateZ(double angle)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->rotateZ(angle);
+	if (rotation_ == NULL) rotation_ = new Matrix;
+	rotation_->applyRotationAxis(0.0,0.0,1.0,angle,FALSE);
 }
 
 // Rotate about arbitrary axis
 void Glyph::rotate(double x, double y, double z, double angle)
 {
-	if (rotation_ == NULL) rotation_ = new Mat3<double>;
-	rotation_->rotate(x, y, z, angle);
-}
-
-/*
-// GlyphData
-*/
-
-// Constructor
-GlyphData::GlyphData()
-{
-	// Private variables
-	atom_ = NULL;
-	atomData_ = GlyphData::PositionData;
-	atomSetLast_ = FALSE;
-	set_ = FALSE;
-	colour_[0] = prefs.colour(Prefs::GlyphColour)[0];
-	colour_[1] = prefs.colour(Prefs::GlyphColour)[1];
-	colour_[2] = prefs.colour(Prefs::GlyphColour)[2];
-	colour_[3] = prefs.colour(Prefs::GlyphColour)[3];
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
-}
-
-// Set vector data
-void GlyphData::setVector(double x, double y, double z)
-{
-	vector_.set(x,y,z);
-	set_ = TRUE;
-	atomSetLast_ = FALSE;
-}
-
-// Set vector data
-void GlyphData::setVector(Vec3<double> vec)
-{
-	setVector(vec.x, vec.y, vec.z);
-}
-
-// Set component of vector data
-void GlyphData::setVector(int i, double d)
-{
-	vector_.set(i, d);
-	set_ = TRUE;
-	atomSetLast_ = FALSE;
-}
-
-// Set atom data
-void GlyphData::setAtom(Atom *atom)
-{
-	atom_ = atom;
-	set_ = TRUE;
-	if (atom_ == NULL)
-	{
-		msg.print("Info - NULL atom pointer stored in glyph data, so vector data will be used instead.\n");
-		atomSetLast_ = FALSE;
-	}
-	else atomSetLast_ = TRUE;
-}
-
-// Set atom data type for datapoint
-void GlyphData::setAtomData(GlyphData::GlyphDataType av)
-{
-	atomData_ = av;
-}
-
-	// Set atom pointer and datatype for datapoint
-void GlyphData::setAtom(Atom *atom, GlyphData::GlyphDataType av)
-{
-	setAtom(atom);
-	setAtomData(av);
-}
-
-// Return the atom pointer
-Atom *GlyphData::atom()
-{
-	return atom_;
-}
-
-// Return whether the atom was set last
-bool GlyphData::atomSetLast() const
-{
-	return atomSetLast_;
-}
-
-// Return the data type 
-GlyphData::GlyphDataType GlyphData::atomData() const
-{
-	return atomData_;
-}
-
-// Return the position
-Vec3<double> GlyphData::vector() const
-{
-	if (!atomSetLast_) return vector_;
-	else if (atom_ != NULL) return atom_->r();
-	msg.print("Warning - Atom pointer is defined NULL *and* glyph data has not been set to use vector data ({0,0,0} returned)...\n");
-	return Vec3<double>();
-}
-
-// Set colour
-void GlyphData::setColour(double r, double g, double b, double a)
-{
-	colour_[0] = r;
-	colour_[1] = g;
-	colour_[2] = b;
-	colour_[3] = a;
-}
-
-// Set n'th component of colour
-void GlyphData::setColour(int n, double d)
-{
-	if ((n < 0) || (n > 4)) msg.print( "Tried to set component %i for colour in glyphdata which is out of range.\n", n+1);
-	else colour_[n] = d;
-}
-
-// Return colour
-double *GlyphData::colour()
-{
-	return colour_;
-}
-
-// Return i'th colour for glyph
-void GlyphData::copyColour(GLfloat *col) const
-{
-	 col[0] = (GLfloat) colour_[0];
-	 col[1] = (GLfloat) colour_[1];
-	 col[2] = (GLfloat) colour_[2];
-	 col[3] = (GLfloat) colour_[3];
+	if (rotation_ == NULL) rotation_ = new Matrix;
+	rotation_->applyRotationAxis(x, y, z, angle, TRUE);
 }

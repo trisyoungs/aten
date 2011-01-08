@@ -95,6 +95,36 @@ void AtenCellTransform::on_CellReplicateTrimCheck_clicked(bool checked)
 	prefs.setReplicateTrim(checked);
 }
 
+void AtenCellTransform::on_CellReplicateNegXSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicateNegYSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicateNegZSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicatePosXSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicatePosYSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenCellTransform::on_CellReplicatePosZSpin_valueChanged(double d)
+{
+	gui.mainWidget->postRedisplay();
+}
+
 /*
 // Scale Functions
 */
@@ -113,10 +143,10 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 void AtenCellTransform::on_CellRotateXClockwise_clicked(bool checked)
 {
 	// Construct rotation matrix
-	Mat3<double> mat;
-	mat.set(0,1.0,0.0,0.0);
-	mat.set(1,1.0,cos(HALFPI),sin(HALFPI));
-	mat.set(2,1.0,0.0,0.0);
+	Matrix mat;
+// 	mat.set(0,1.0,0.0,0.0);
+// 	mat.set(1,1.0,cos(HALFPI),sin(HALFPI));
+// 	mat.set(2,1.0,0.0,0.0);     TODO
 }
 
 void AtenCellTransform::on_CellRotateXAnticlockwise_clicked(bool checked)
@@ -162,26 +192,26 @@ void AtenCellTransform::on_MillerSelectButton_clicked(bool checked)
 
 void AtenCellTransform::on_MillerHSpin_valueChanged(int value)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenCellTransform::on_MillerKSpin_valueChanged(int value)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenCellTransform::on_MillerLSpin_valueChanged(int value)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenCellTransform::on_MillerInRadio_clicked(bool checked)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenCellTransform::on_MillerOutRadio_clicked(bool checked)
 {
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 

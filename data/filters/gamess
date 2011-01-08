@@ -2,15 +2,80 @@
 # Created:	 14/04/2009
 # Last modified: 29/10/2010
 # ChangeLog:
+#	15/12/2010 - Added basic trajectory reader
 #	09/12/2010 - Updated reading of vibration data from logfile to cope with presence of symmetry line
-#	02/10/2010 - Logfile import filter now names models after filenames.
 #	29/10/2010 - Major update to log file filter - ability to read in basis set, MOs, and vibrations added
+#	02/10/2010 - Logfile import filter now names models after filenames.
 #	14/09/2010 - Tweaks to options output in GUI filter. Standard DFTTYPs added.
 #	25/08/2010 - Added GUI options to output filter
 #	12/05/2010 - Changed id of log file filter to 11 (was 10, which conflicted with MDL Molfile in 'mol')
 #	13/10/2009 - Last frame and parent frame from logfile are now deselected.
 # Notes:
 #	Output model filter sets symmetry to C1, regardless of the actual symmetry.
+
+filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", extension="trj", glob="*.trj", zmap="name", search="GAMESS VERSION", id=11)
+{
+        int readheader()
+        {
+                return TRUE;
+        }
+
+        int readframe()
+        {
+		int n, natm, nfrag, nqmmm;
+		string discard, symbol;
+		double ano, x, y, z;
+		model m = aten.frame;
+
+		if (find("===== MD DATA PACKET ====="))
+		{
+			# Read in number of atoms
+			readline(discard, natm, discard, nfrag, discard, nqmmm);
+			skipline(3);
+			# Read QM atom data (if present)
+			if (natm > 0)
+			{
+				skipline();
+				for (n=0; n<natm; ++n)
+				{
+					readline(symbol,ano,x,y,z);
+					newatom(symbol,x,y,z);
+				}
+			}
+			# Read fragment data (if present)
+			if (nfrag > 0)
+			{
+				error("Not implemented yet.");
+				skipline();
+				for (n=0; n<nfrag; ++n)
+				{
+				}
+			}
+			# Read QMMM data (if present)
+			if (nqmmm > 0)
+			{
+				error("Not implemented yet.");
+				skipline();
+				for (n=0; n<nfrag; ++n)
+				{
+				}
+			}
+			# Read in velocities for atoms
+			if (find("TVELQM(1)"))
+			{
+				for (n=1; n<=natm; ++n)
+				{
+					readline(x, y, z);
+					m.atoms[n].v = { x, y, z};
+				}
+			}
+			rebond();
+			finalisemodel();
+		}
+		else return FALSE;
+		return TRUE;
+	}
+}
 
 filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", extension="log", glob="*.log", zmap="name", search="GAMESS VERSION", id=11)
 {
@@ -31,10 +96,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 	if (find("ATOM      ATOMIC                      COORDINATES (BOHR)"))
 	{
 		skipline();
-		while (readline(e,discard,rx,ry,rz) != 0)
-		{
-			newatom(e,rx,ry,rz);
-		}
+		while (readline(e,discard,rx,ry,rz) != 0) newatom(e,rx,ry,rz);
 		bohr(aten.model);
 		rebond();
 	}

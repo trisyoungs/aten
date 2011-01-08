@@ -69,10 +69,10 @@ bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Mat3<double> mat;
-	mat.rows[0] = c->arg3d(0);
-	mat.rows[1] = c->arg3d(3);
-	mat.rows[2] = c->arg3d(6);
+	Matrix mat;
+	mat.setColumn(0, c->arg3d(0), 0.0);
+	mat.setColumn(1, c->arg3d(3), 0.0);
+	mat.setColumn(2, c->arg3d(6), 0.0);
 	obj.rs->beginUndoState("Set cell");
 	obj.rs->setCell(mat);
 	obj.rs->endUndoState();

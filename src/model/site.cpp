@@ -78,13 +78,13 @@ Vec3<double> Model::siteCentre(Site *s, int mol)
 }
 
 // Calculate site local axis system
-Mat3<double> Model::siteAxes(Site *s, int mol)
+Matrix Model::siteAxes(Site *s, int mol)
 {
 	msg.enter("Model::calculateAxes");
 	int offset;
 	Atom **modelatoms = atomArray();
 	static Vec3<double> mim, v1, v2, centre;
-	Mat3<double> axes;
+	Matrix axes;
 	ListItem<int> *li;
 	Pattern *sitep = s->pattern();
 	offset = sitep->startAtom();
@@ -115,9 +115,9 @@ Mat3<double> Model::siteAxes(Site *s, int mol)
 	v2.orthogonalise(v1);
 	v1.normalise();
 	v2.normalise();
-	axes.set(0,v1);
-	axes.set(1,v2);
-	axes.set(2,v1 * v2);
+	axes.setColumn(0,v1,0.0);
+	axes.setColumn(1,v2,0.0);
+	axes.setColumn(2,v1 * v2,0.0);
 	//axes.print();
 	s->setAxes(axes);
 	msg.enter("Model::calculateAxes");

@@ -21,6 +21,7 @@ setnmols(200);
 # Create fluorobenzene model
 newmodel("fluorobenzene");
 paste();
+selectnone();
 select(H);
 transmute(F);
 setnmols(200);

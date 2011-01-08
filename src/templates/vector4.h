@@ -34,7 +34,7 @@ template <class T> class Vec4
 {
 	public:
 	// Constructor
-	Vec4<T>();
+	Vec4<T>(T xx = 0, T yy = 0, T zz = 0, T ww = 0);
 	// Components of vector
 	T x,y,z,w;
 
@@ -86,9 +86,12 @@ template <class T> class Vec4
 };
 
 // Constructur
-template <class T> Vec4<T>::Vec4()
+template <class T> Vec4<T>::Vec4(T xx, T yy, T zz, T ww)
 {
-	zero();
+	x = xx;
+	y = yy;
+	z = zz;
+	w = ww;
 }
 
 // Zero

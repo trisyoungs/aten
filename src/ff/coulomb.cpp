@@ -303,7 +303,7 @@ void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 	msg.enter("Pattern::coulombInterPatternForces");
 	int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	Vec3<double> mim_i, f_i, tempf;
-	double rij, energy_inter, energy, cutoff, factor;
+	double rij, energy_inter, cutoff, factor;
 	PatternAtom *pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom **modelatoms = srcmodel->atomArray();

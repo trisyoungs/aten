@@ -68,7 +68,6 @@ void Model::hydrogenSatisfy(Atom *target)
 			else addHydrogens(i,numh,Atom::LinearHydrogen);
 		}
 	}
-	projectAll();
 	msg.exit("Model::hydrogenSatisfy");
 }
 
@@ -161,13 +160,12 @@ void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 		// Now add the atom at the position specified in newhpos.
 		newh = addAtom(1, newhpos + target->r());
 		bondAtoms(newh,target,Bond::Single);
-		projectAtom(newh);
 	}
 	msg.exit("Model::addHydrogens");
 }
 
 // Return the pen orientation matrix
-Mat3<double> Model::penOrientation() const
+Matrix Model::penOrientation() const
 {
 	return penOrientation_;
 }
@@ -175,44 +173,17 @@ Mat3<double> Model::penOrientation() const
 // Rotate the pen orientation matrix about the specified axis
 void Model::rotatePenAxis(int axis, double degrees)
 {
-	Mat3<double> rotmat;
+	Matrix rotmat;
 	double theta = degrees / DEGRAD;
-	Vec3<double> v = penOrientation_.rows[axis];
+	Vec3<double> v = penOrientation_.columnAsVec3(axis);
 	// Define quaternion components
 	Vec4<double> q;
 	q.set(v.x * sin(theta/2.0), v.y*sin(theta/2.0), v.z*sin(theta/2.0), cos(theta/2.0));
 	q.normalise();
 	// Create rotation matrix from quaternion
-	rotmat.set(0, 1.0 - 2.0*q.y*q.y - 2.0*q.z*q.z, 2.0*q.x*q.y + 2.0*q.w*q.z, 2.0*q.x*q.z - 2.0*q.w*q.y);
-	rotmat.set(1, 2.0*q.x*q.y - 2.0*q.w*q.z, 1.0 - 2.0*q.x*q.x - 2.0*q.z*q.z, 2.0*q.y*q.z + 2.0*q.w*q.x);
-	rotmat.set(2, 2.0*q.x*q.z + 2.0*q.w*q.y, 2.0*q.y*q.z - 2.0*q.w*q.x, 1.0 - 2.0*q.x*q.x - 2.0*q.y*q.y);
-/*	c = cos(theta);
-	s = sin(theta);
-	t = 1.0 - c;
-	rotmat.set(0, t*v.x*v.x + c, t*v.x*v.y + s*v.z, t*v.x*v.z - s*v.y);
-	rotmat.set(1, t*v.x*v.y - s*v.z, t*v.y*v.y + c, t*v.y*v.z + s*v.x);
-	rotmat.set(2, t*v.x*v.z + s*v.y, t*v.y*v.z - s*v.x, t*v.z*v.z + c);*/
-// 	switch (axis)
-// 	{
-// 		case (0):
-// 			rotmat.set(0,1.0,0.0,0.0);
-// 			rotmat.set(1,0.0,cos(theta),sin(theta));
-// 			rotmat.set(2,0.0,-sin(theta),cos(theta));
-// 			break;
-// 		case (1):
-// 			rotmat.set(0,cos(theta),0.0,-sin(theta));
-// 			rotmat.set(1,0.0,1.0,0.0);
-// 			rotmat.set(2,sin(theta),0.0,cos(theta));
-// 			break;
-// 		case (2):
-// 			rotmat.set(0,cos(theta),sin(theta),0.0);
-// 			rotmat.set(1,-sin(theta),cos(theta),0.0);
-// 			rotmat.set(2,0.0,0.0,1.0);
-// 			break;
-// 		default:
-// 			msg.print("%i is not a valid axis for Model::rotatePenAxis\n", axis);
-// 			break;
-// 	}
+	rotmat.setColumn(0, 1.0 - 2.0*q.y*q.y - 2.0*q.z*q.z, 2.0*q.x*q.y + 2.0*q.w*q.z, 2.0*q.x*q.z - 2.0*q.w*q.y, 0.0);
+	rotmat.setColumn(1, 2.0*q.x*q.y - 2.0*q.w*q.z, 1.0 - 2.0*q.x*q.x - 2.0*q.z*q.z, 2.0*q.y*q.z + 2.0*q.w*q.x, 0.0);
+	rotmat.setColumn(2, 2.0*q.x*q.z + 2.0*q.w*q.y, 2.0*q.y*q.z - 2.0*q.w*q.x, 1.0 - 2.0*q.x*q.x - 2.0*q.y*q.y, 0.0);
 	penOrientation_ *= rotmat;
 }
 
@@ -253,17 +224,19 @@ void Model::setAtomicDistance(Atom *i, Atom *j, double newdistance)
 // Set angle between atoms, moving atom k
 void Model::setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle)
 {
-	static Mat3<double> r, u, ut, gr, Igr;
+	Matrix r, u, ut, gr, Igr;
 	double ang = angle(k,j,i);
 
 	// Get cross product of bond vectors to define rotation axis
 	Vec3<double> v = cell_.mimd(j,k) * cell_.mimd(j,i);
 	v.normalise();
 	double delta = newangle - ang;
-	u.rows[0] = v;
-	u.rows[1] = v.orthogonal();
-	u.rows[2] = v * u.rows[1];
-	u.rows[2].normalise();
+	
+	u.setColumn(0, v, 0.0);
+	u.setColumn(1, v.orthogonal(), 0.0);
+	u.setColumn(2, v * u.columnAsVec3(1), 0.0);
+	u.columnNormalise(2);
+	
 	ut = u.transpose();
 
 	// Create rotation matrix
@@ -274,24 +247,25 @@ void Model::setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle)
 	Igr.setIdentity();
 	Igr = Igr - gr;
 
-	Vec3<double> tempv = gr * k->r();
-	tempv += Igr * j->r();
+	Vec3<double> tempv = gr.transform(k->r()) + Igr.transform(j->r());
 	positionAtom(k, tempv);
 }
 
 // Set torsion between atoms, moving atom l
 void Model::setAtomicTorsion(Atom *i, Atom *j, Atom *k, Atom *l, double newtorsion)
 {
-	static Mat3<double> r, u, ut, gr, Igr;
+	Matrix r, u, ut, gr, Igr;
 	double ang = torsion(l,k,j,i);
 	// Rotation vector will be vector j->k
 	Vec3<double> v = cell_.mimd(j,k);
 	v.normalise();
 	double delta = newtorsion - ang;
-	u.rows[0] = v;
-	u.rows[1] = v.orthogonal();
-	u.rows[2] = v * u.rows[1];
-	u.rows[2].normalise();
+	
+	u.setColumn(0, v, 0.0);
+	u.setColumn(1, v.orthogonal(), 0.0);
+	u.setColumn(2, v * u.columnAsVec3(1), 0.0);
+	u.columnNormalise(2);
+	
 	ut = u.transpose();
 
 	// Create rotation matrix
@@ -302,7 +276,6 @@ void Model::setAtomicTorsion(Atom *i, Atom *j, Atom *k, Atom *l, double newtorsi
 	Igr.setIdentity();
 	Igr = Igr - gr;
 
-	Vec3<double> tempv = gr * l->r();
-	tempv += Igr * k->r();
+	Vec3<double> tempv = gr.transform(l->r()) + Igr.transform(k->r());
 	positionAtom(l, tempv);
 }
