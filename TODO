@@ -1,10 +1,7 @@
 Thigs to test in new version:
 
 1) Cell packing (vs Mercury)
-2) Viewing along (cell) axes
-3) Ewald energies / forces
-4) Torsion forces
-5) MatrixTransform of model
+2) MatrixTransform of model
 
 Things to do (fix) in new version:
 
@@ -16,21 +13,22 @@ General TODO:
 1) Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click
 2) Script to add H-bonds to pair of selected atoms
 3) Script to perform conformational searching on molecule
-4) Better control over MOPAC output (filter options)
-5) Loading scripts should not cause duplicate scripts to be remembered (Qt contains an isSameFile function or something similar).
-6) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
-7) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
-8) Tabulated trigonometric functions (in mathfunc.h) for rendering optimisation
-9) Glyph Undo/Redo
-a) Spacegroup Pnmmm
-b) Allow (somehow) rotation of fragments without drawing them *or* rotating main view
-c) Replacing existing bond in fragment builder causes wrong atoms to be deleted
-d) Double-press of ALT required to cycle over fragment attachment points? Or just that view isn't updated?
-e) Undo/Redo of cell addition not working properly?
+4) Loading scripts should not cause duplicate scripts to be remembered (Qt contains an isSameFile function or something similar).
+5) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
+6) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
+7) Tabulated trigonometric functions (in mathfunc.h) for rendering optimisation
+8) Glyph Undo/Redo
+9) Spacegroup Pnmmm
+a) Allow (somehow) rotation of fragments without drawing them *or* rotating main view
+b) Replacing existing bond in fragment builder causes wrong atoms to be deleted
+c) Double-press of ALT required to cycle over fragment attachment points? Or just that view isn't updated?
+d) Undo/Redo of cell addition not working properly?
+e) Build Window tool to transmute current atom selection
 
 Filter TODO:
 1) ECP type is not written in GAMESS-US export filter
 2) Add more options to GAMESS-US inp filter, inc. specification of how to write elements (full name / symbol), MD options etc.
+3) Better control over MOPAC output (filter options)
 
 Doc TODO:
 

@@ -190,7 +190,7 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 	factor = rvolume * TWOPI * prefs.elecConvert();
 
 	// Cutoff is the shortest component of kVec * perpendicular reciprocal cell lengths
-	rcell = fourier.cell->reciprocal().transpose();
+	rcell = fourier.cell->reciprocal();
 	cross_ab = rcell.columnAsVec3(0) * rcell.columnAsVec3(1);
 	cross_bc = rcell.columnAsVec3(1) * rcell.columnAsVec3(2);
 	cross_ca = rcell.columnAsVec3(2) * rcell.columnAsVec3(0);
@@ -374,7 +374,7 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 {
 	// Calculate the real-space Ewald forces from interactions between different molecules
-	// of this pnode and the one supplied. 
+	// of this pattern and the one supplied. 
 	msg.enter("Pattern::ewaldRealInterPatternForces");
 	int i, j, aoff1, aoff2, m1, m2, start, finish, atomi, atomj;
 	Vec3<double> mim_i, f_i, tempf;
@@ -453,7 +453,7 @@ void Pattern::ewaldReciprocalForces(Model *srcmodel)
 	factor = 2.0 * rvolume * TWOPI * prefs.elecConvert();
 
 	// Cutoff is the shortest component of kVec * perpendicular reciprocal cell lengths
-	rcell = fourier.cell->reciprocal().transpose();
+	rcell = fourier.cell->reciprocal();
 	cross_ab = rcell.columnAsVec3(0) * rcell.columnAsVec3(1);
 	cross_bc = rcell.columnAsVec3(1) * rcell.columnAsVec3(2);
 	cross_ca = rcell.columnAsVec3(2) * rcell.columnAsVec3(0);
@@ -467,7 +467,6 @@ void Pattern::ewaldReciprocalForces(Model *srcmodel)
 	alphasq = alpha * alpha;
 	kmax = fourier.kMax;
 	//printf("Cutoffsq = %f  (%f)\n",cutoffsq,sqrt(cutoffsq));
-
 
 	for (kx=-fourier.kVec.x; kx<=fourier.kVec.x; kx++)
 	for (ky=-fourier.kVec.y; ky<=fourier.kVec.y; ky++)
@@ -540,7 +539,6 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 					if (rij > cutoff) continue;
 					// Calculate force to subtract
 					alpharij = alpha * rij;
-					//factor = erf(alpharij) - 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
 					factor = cserf(alpharij) - 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
 					qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
 					factor = factor * qqrij3 * prefs.elecConvert();
