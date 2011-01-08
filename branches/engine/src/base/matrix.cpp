@@ -387,8 +387,8 @@ void Matrix::adjustColumn(int col, Vec4<double> vec)
 double Matrix::columnMagnitude(int column)
 {
 	double mag = 0.0;
-	for (int n=column*4; n<column*4+4; ++n) mag += matrix_[n];
-	return mag;
+	for (int n=column*4; n<column*4+4; ++n) mag += (matrix_[n] * matrix_[n]);
+	return sqrt(mag);
 }
 
 // Multiply column by single value

@@ -210,7 +210,7 @@ void Model::setRotation(double rotx, double roty)
 	{
 		// Store old translation and scaling values
 		temp.copyTranslationAndScaling(modelViewMatrix_);
-		modelViewMatrix_.createRotationXY(rotx, roty);   // TGAY Is this ok?  BROKEN?
+		modelViewMatrix_.createRotationXY(rotx, roty);
 		modelViewMatrix_.copyTranslationAndScaling(temp);
 	}
 	else parent_->setRotation(rotx, roty);

@@ -599,7 +599,6 @@ void TCanvas::beginMode(Prefs::MouseButton button)
 							currentDrawDepth_ = prefs.drawDepth();
 							i = displayModel_->addAtom(sketchElement_, screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							displayModel_->endUndoState();
-							// 							displayModel_->projectAtom(i);  TGAY
 							atomClicked_ = i;
 						}
 						else currentDrawDepth_ = modelToWorld(atomClicked_->r()).z;
