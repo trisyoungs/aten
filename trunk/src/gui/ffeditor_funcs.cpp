@@ -393,7 +393,6 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 	Dnchar text;
 	ForcefieldAtom *old;
 	int n, returnvalue;
-	QComboBox *combo;
 	switch (column)
 	{
 		// Forcefield TypeId
@@ -424,7 +423,7 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 			break;
 		// Character element
 		case (TypeColumn::NETAString):
-			// 			ffa->setName(qPrintable(w->text()));
+			// 			ffa->setName(qPrintable(w->text()));   //TODO
 			break;
 		// Character element
 		case (TypeColumn::Description):
@@ -489,8 +488,7 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 	ForcefieldAtom *ffa = targetForcefield_->type(row);
 	// Set new data based on the column edited
 	Dnchar text;
-	ForcefieldAtom *old;
-	int n, returnvalue;
+	int n;
 	QComboBox *combo;
 	switch (column)
 	{

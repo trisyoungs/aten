@@ -1,0 +1,61 @@
+	<section id="command.types.colourscale"><title>ColourScale Type</title>
+		
+		<indexterm zone="command.types.colourscale"><primary>types</primary><secondary>colourscale</secondary></indexterm>
+	
+		<table frame='all' pgwide='1' tocentry='1'><title>ColourScale Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>npoints</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of points contained in the colourscale</entry>
+					</row>
+					<row>
+						<entry>points</entry>
+						<entry><link linkend="command.types.colourscalepoint">[]</link></entry>
+						<entry>ro</entry>
+						<entry>Array of points in the colourscale</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<table frame='all' pgwide='1' tocentry='1'><title>ColourScale Type Functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>addpoint ( double value, double r, double g, double b, double a = 1.0)</entry>
+						<entry><link linkend="command.types.colourscalepoint">colourscalepoint</link></entry>
+						<entry>Add a new point to the colourscale at point 'value' and colour components specified</entry>
+					</row>
+					<row>
+						<entry>clear ()</entry>
+						<entry>void</entry>
+						<entry>Clear all points contained in the colourscale</entry>
+					</row>
+					<row>
+						<entry>colour ( double value, double &amp;r, double &amp;g, double &amp;b, double &amp;a = 1.0)</entry>
+						<entry>void</entry>
+						<entry>Set the components of the colour at the 'value' in the colourscale in the variables provided</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+	</section>

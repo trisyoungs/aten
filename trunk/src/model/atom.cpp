@@ -181,6 +181,13 @@ void Model::deleteAtom(Atom *xatom, bool noupdate)
 			unbondAtoms(xatom,j,b);
 			bref = xatom->bonds();
 		}
+		// For all glyphs involving this atom, set the current coordinates
+		int i;
+		for (Glyph *g = glyphs_.first(); g != NULL; g = g->next)
+		{
+			for (i=0; i<Glyph::nGlyphData(g->type()); ++i) if (g->data(i)->atom() == xatom) g->data(i)->setVector(xatom->r());
+		}
+		
 		// Finally, delete the atom
 		removeAtom(xatom, noupdate);
 	}
@@ -416,7 +423,7 @@ void Model::atomResetColour(Atom *i)
 {
 	// Grab new colour...
 	double newcol[4];
-	for (int n=0; n<4; ++n) newcol[n] = elements().el[i->element()].ambientColour[n];
+	for (int n=0; n<4; ++n) newcol[n] = elements().el[i->element()].colour[n];
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{

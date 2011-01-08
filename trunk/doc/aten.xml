@@ -48,6 +48,8 @@
 	<!ENTITY typesbond SYSTEM "commands/types_bond.xml">
 	<!ENTITY typesbound SYSTEM "commands/types_bound.xml">
 	<!ENTITY typescell SYSTEM "commands/types_cell.xml">
+	<!ENTITY typescolourscale SYSTEM "commands/types_colourscale.xml">
+	<!ENTITY typescolourscalepoint SYSTEM "commands/types_colourscalepoint.xml">
 	<!ENTITY typeseigenvector SYSTEM "commands/types_eigenvector.xml">
 	<!ENTITY typeselement SYSTEM "commands/types_element.xml">
 	<!ENTITY typesenergystore SYSTEM "commands/types_energystore.xml">
@@ -100,6 +102,7 @@
 	<!ENTITY commandview SYSTEM "commands/view.xml">
 	<!-- Topics of Interest -->
 	<!ENTITY topicscolourscales SYSTEM "topics/colourscales.xml">
+	<!ENTITY topicsglyphs SYSTEM "topics/colourglyphs.xml">
 	<!ENTITY topicspatterns SYSTEM "topics/patterns.xml">
 	<!-- Forcefields -->
 	<!ENTITY fffiles SYSTEM "ff/files.xml">
@@ -275,6 +278,8 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 			&typesbond;
 			&typesbound;
 			&typescell;
+			&typescolourscale;
+			&typescolourscalepoint;
 			&typeseigenvector;
 			&typeselement;
 			&typesenergystore;
@@ -333,6 +338,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 	<!-- Topics of Interest -->
 	<chapter id="topics"><title>Topics of Interest</title>
 		&topicscolourscales;
+		&topicsglyphs;
 		&topicspatterns;
 	</chapter>
 

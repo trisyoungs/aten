@@ -90,7 +90,6 @@ void AtomEvent::undo(Model *m)
 		msg.print(Messenger::Verbose,"Replaying atom creation - atom id = %i\n", id);
 		if (id == 0) i = m->addCopy(NULL, &atomData_);
 		else i = m->addCopy(modelatoms[id-1], &atomData_);
-		m->projectAtom(i);
 	}
 }
 
@@ -225,7 +224,7 @@ CellEvent::~CellEvent()
 }
 
 // Set change 
-void CellEvent::set(Mat3<double> oldaxes, Mat3<double> newaxes, bool ohs, bool nhs)
+void CellEvent::set(Matrix oldaxes, Matrix newaxes, bool ohs, bool nhs)
 {
 	msg.enter("CellEvent::set");
 	oldAxes_ = oldaxes;
@@ -328,10 +327,17 @@ GlyphEvent::~GlyphEvent()
 }
 
 // Set change 
-void GlyphEvent::set(bool creation, Glyph *g)
+void GlyphEvent::set(bool creation, Glyph *g)	// TODO Need a separate event for changes to glyph data - keep all changes in one event somehow?
 {
 	msg.enter("GlyphEvent::set");
 	direction_ = (creation ? UndoEvent::Undo : UndoEvent::Redo);
+	// Copy Glyph data
+	if (g != NULL)
+	{
+		glyphData_ = *g;
+		for (int i=0; i<glyphData_.nGlyphData(g->type()); ++i) atomIDs_[i] = (glyphData_.data(i)->atom() == NULL ? -1 : glyphData_.data(i)->atom()->id());
+	}
+	else printf("Null pointer passed to GlyphEvent::set()!\n");
 	msg.exit("GlyphEvent::set");
 }
 

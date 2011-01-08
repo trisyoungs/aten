@@ -37,7 +37,6 @@ void Aten::exportModels()
 {
 	msg.enter("Aten::exportModels");
 	Dnchar filename;
-	int n;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		aten.setCurrentModel(m);

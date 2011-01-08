@@ -62,8 +62,7 @@ class AtenPrefs : public QDialog
 	*/
 	private slots:
 	void on_ElementList_currentRowChanged(int row);
-	void on_ElementAmbientColourButton_clicked(bool checked);
-	void on_ElementDiffuseColourButton_clicked(bool checked);
+	void on_ElementColourButton_clicked(bool checked);
 	void on_ElementRadiusSpin_valueChanged(double value);
 
 	/*
@@ -83,13 +82,13 @@ class AtenPrefs : public QDialog
 	// View Page
 	*/
 	private:
-	void updateAfterViewPrefs();
+	void updateAfterViewPrefs(bool force);
 	void setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom);
 	void setVisibleObject(Prefs::ViewObject vo, int state, bool onscreen);
 	void spotlightPosChanged(int i, double value);
 	void spotlightColourChanged(Prefs::ColourComponent);
 	private slots:
-	// Radii
+	// Style page
 	void on_StickRadiusSpin_valueChanged(double value);
 	void on_TubeRadiusSpin_valueChanged(double value);
 	void on_SphereRadiusSpin_valueChanged(double value);
@@ -99,7 +98,31 @@ class AtenPrefs : public QDialog
 	void on_SphereBondRadiusSpin_valueChanged(double value);
 	void on_ScaledBondRadiusSpin_valueChanged(double value);
 	void on_SelectionScaleSpin_valueChanged(double value);
-	// Lighting
+	void on_ColoursTable_cellDoubleClicked(int row, int column);
+	void on_AngleLabelFormatEdit_textEdited(const QString &text);
+	void on_DistanceLabelFormatEdit_textEdited(const QString &text);
+	void on_LabelSizeSpin_valueChanged(int value);
+	void on_RenderDashedAromaticsCheck_clicked(bool checked);
+	// Rendering / Quality page
+	void on_LevelOfDetailNLevelsSpin_valueChanged(int value);
+	void on_LevelOfDetailStartZSpin_valueChanged(double value);
+	void on_LevelOfDetailWidthSpin_valueChanged(double value);
+	void on_TransparencyGroup_clicked(bool checked);
+	void on_TransparencyNSlicesSpin_valueChanged(int value);
+	void on_TransparencyStartZSpin_valueChanged(double value);
+	void on_TransparencyBinWidthSpin_valueChanged(double value);
+	void on_PrimitiveQualitySpin_valueChanged(int value);
+	void on_PrimitiveQualitySlider_valueChanged(int value);
+	void on_ImagePrimitivesGroup_clicked(bool checked);
+	void on_ImagePrimitiveQualitySpin_valueChanged(int value);
+	void on_ImagePrimitiveQualitySlider_valueChanged(int value);
+	void on_FarClipSpin_valueChanged(double value);
+	void on_FarDepthSpin_valueChanged(int value);
+	void on_NearClipSpin_valueChanged(double value);
+	void on_NearDepthSpin_valueChanged(int value);
+	void on_LineAliasingCheck_stateChanged(int state);
+	void on_PolygonAliasingCheck_stateChanged(int state);
+	void on_MultiSamplingCheck_stateChanged(int state);
 	void on_SpotlightGroup_clicked(bool checked);
 	void on_SpotlightAmbientColourButton_clicked(bool checked);
 	void on_SpotlightDiffuseColourButton_clicked(bool checked);
@@ -108,7 +131,7 @@ class AtenPrefs : public QDialog
 	void on_SpotlightPositionYSpin_valueChanged(double value);
 	void on_SpotlightPositionZSpin_valueChanged(double value);
 	void on_ShininessSpin_valueChanged(int value);
-	// Scene
+	// Scene Objects page
 	void on_AtomsVisibleCheck_stateChanged(int state);
 	void on_CellVisibleCheck_stateChanged(int state);
 	void on_AxesVisibleCheck_stateChanged(int state);
@@ -125,35 +148,21 @@ class AtenPrefs : public QDialog
 	void on_MeasurementsVisibleImageCheck_stateChanged(int state);
 	void on_SurfacesVisibleImageCheck_stateChanged(int state);
 	void on_RegionsVisibleImageCheck_stateChanged(int state);
-	void on_AngleLabelEdit_textEdited(const QString &text);
-	void on_DistanceLabelEdit_textEdited(const QString &text);
-	// GL
-	void on_AtomQualitySpin_valueChanged(int value);
-	void on_BondQualitySpin_valueChanged(int value);
-	void on_FarClipSpin_valueChanged(double value);
-	void on_FarDepthSpin_valueChanged(int value);
-	void on_NearClipSpin_valueChanged(double value);
-	void on_NearDepthSpin_valueChanged(int value);
-	void on_LineAliasingCheck_stateChanged(int state);
-	void on_PolygonAliasingCheck_stateChanged(int state);
-	void on_MultiSamplingCheck_stateChanged(int state);
 
 	/*
-	// Colours page
+	// Colourscales page
 	*/
 	private:
 	void updateScalePointsList();
 	private slots:
-	void on_StandardColoursTable_currentCellChanged(int row, int col, int prevrow, int prevcol);
-	void on_StandardColoursButton_clicked(bool checked);
 	void on_ScaleList_currentRowChanged(int id);
 	void on_ScalePointsTable_currentCellChanged(int row, int col, int prevrow, int prevcol);
-	void on_ScaleNameEdit_returnPressed();
 	void on_PointValueSpin_valueChanged(double d);
 	void on_PointColourButton_clicked(bool checked);
 	void on_AddPointButton_clicked(bool checked);
 	void on_RemovePointButton_clicked(bool checked);
 	void on_ScaleList_itemClicked(QListWidgetItem *item);
+	void on_ScaleList_itemDoubleClicked(QListWidgetItem *item);
 
 	/*
 	// Energy / FF Page

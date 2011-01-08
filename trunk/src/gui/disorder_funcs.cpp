@@ -199,7 +199,7 @@ void AtenDisorder::setComponentCentre()
 	Model *m = componentList[comp]->item;
 	ComponentRegion *r = m->region();
 	ui.CentreFracCheck->isChecked() ? r->setCentreFrac(v) : r->setCentre(v);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenDisorder::setComponentGeometry()
@@ -213,7 +213,7 @@ void AtenDisorder::setComponentGeometry()
 	Model *m = componentList[comp]->item;
 	ComponentRegion *r = m->region();
 	ui.GeometryFracCheck->isChecked() ? r->setGeometryFrac(v) : r->setGeometry(v);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenDisorder::setComponentRotation()
@@ -227,7 +227,7 @@ void AtenDisorder::setComponentRotation()
 	ComponentRegion *r = m->region();
 	r->setRotateRegion(ui.RotationCheck->isChecked());
 	r->setRotations(v);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenDisorder::on_ComponentTable_itemClicked(QTableWidgetItem *item)
@@ -268,13 +268,13 @@ void AtenDisorder::on_ComponentRegionCombo_currentIndexChanged(int index)
 	ComponentRegion *r = m->region();
 // 	printf("Setting model %s region to be %i\n",m->name(), index);
 	r->setShape( (ComponentRegion::RegionShape) index);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenDisorder::on_ShowRegionsCheck_clicked(bool checked)
 {
 	prefs.setVisibleOnScreen(Prefs::ViewRegions, checked);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenDisorder::on_DisorderStartButton_clicked(bool checked)

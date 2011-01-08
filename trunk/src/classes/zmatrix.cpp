@@ -350,7 +350,7 @@ void ZMatrix::createAlongBonds(Atom *target, Reflist<Atom,int> &atomlist)
 	msg.enter("ZMatrix::createAlongBonds");
 	// Add the current atom to the list and create an element for it
 	atomlist.addStart(target);
-	ZMatrixElement *zel = addElement(atomlist);
+	addElement(atomlist);
 	// Mark this atom so it won't be added again
 	parent_->selectAtom(target, TRUE);
 	// Cycle over bonds, progressing along each connected atom
@@ -414,7 +414,7 @@ void ZMatrix::create(Model *source, bool usebonds)
 	}
 	// Create the elements
 	origin_ = parent_->atoms()->r();
-	if (TRUE)
+	if (usebonds)
 	{
 		// Step through atoms in order, creating elements as we go using bonds wherever possible
 		// We always maintain a list of the previous four atoms, just in case there are not enough bound connections to use

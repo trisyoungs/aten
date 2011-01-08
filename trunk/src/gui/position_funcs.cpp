@@ -153,7 +153,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 			msg.print("No unit cell defined for model.\n");
 			return;
 		}
-		tvec = aten.currentModelOrFrame()->cell()->axes().getRow(axis);
+		tvec = aten.currentModelOrFrame()->cell()->axes().columnAsVec3(axis);
 		tvec *= double(dir) * step;
 		m->beginUndoState("Translate Cell (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionLocal(tvec);
@@ -182,7 +182,7 @@ void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 void AtenPosition::on_DefineVectorButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&shiftPickAxisButton_callback);
+	gui.mainWidget->beginManualPick(2,&shiftPickAxisButton_callback);
 }
 
 void AtenPosition::on_NormaliseVectorButton_clicked(bool on)

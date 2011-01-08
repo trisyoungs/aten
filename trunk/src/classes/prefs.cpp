@@ -97,21 +97,21 @@ const char *Prefs::keyAction(Prefs::KeyAction i)
 }
 
 // Colours
-const char *PenColourKeywords[Prefs::nPenColours] = { "bg", "fixedatom", "fg", "glyph", "specular" };
-const char *PenColourNames[Prefs::nPenColours] = { "Background", "Fixed Atom", "Foreground", "Glyph Default", "Specular" };
-Prefs::PenColour Prefs::penColour(const char *s, bool reporterror)
+const char *ObjectColourKeywords[Prefs::nObjectColours] = { "bg", "fixedatom", "globeaxes", "globe", "glyph", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow" };
+const char *ObjectColourNames[Prefs::nObjectColours] = { "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow" };
+Prefs::ObjectColour Prefs::objectColour(const char *s, bool reporterror)
 {
-	Prefs::PenColour pc = (Prefs::PenColour) enumSearch("colour", Prefs::nPenColours, PenColourKeywords, s);
-	if ((pc == Prefs::nPenColours) && reporterror) enumPrintValid(Prefs::nPenColours,PenColourKeywords);
+	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
+	if ((pc == Prefs::nObjectColours) && reporterror) enumPrintValid(Prefs::nObjectColours,ObjectColourKeywords);
 	return pc;
 }
-const char *Prefs::penColour(Prefs::PenColour i)
+const char *Prefs::objectColour(Prefs::ObjectColour i)
 {
-	return PenColourKeywords[i];
+	return ObjectColourKeywords[i];
 }
-const char *Prefs::penColourName(Prefs::PenColour i)
+const char *Prefs::objectColourName(Prefs::ObjectColour i)
 {
-	return PenColourNames[i];
+	return ObjectColourNames[i];
 }
 
 // Density calculation units
@@ -161,6 +161,7 @@ const char *GG_strings[Prefs::nGuideGeometries] = { "Square", "Hexagonal" };
 Prefs::Prefs()
 {
 	// Rendering - Style
+	renderStyle_ = Atom::StickStyle;
 	colourScheme_ = Prefs::ElementScheme;
 	atomStyleRadius_[Atom::StickStyle] = 0.1;      // Only used as a selection radius
 	atomStyleRadius_[Atom::TubeStyle] = 0.15;
@@ -171,11 +172,11 @@ Prefs::Prefs()
 	bondStyleRadius_[Atom::SphereStyle] = 0.15;
 	bondStyleRadius_[Atom::ScaledStyle] = 0.15;
 	selectionScale_ = 1.5;
-	globeSize_ = 75;
-	atomDetail_ = 10;
-	bondDetail_ = 6;
 	perspective_ = TRUE;
 	perspectiveFov_ = 20.0;
+
+	// Rendering / Quality Options
+	globeSize_ = 75;
 	spotlightActive_ = TRUE;
 	spotlightColour_[Prefs::AmbientComponent][0] = 0.0;
 	spotlightColour_[Prefs::AmbientComponent][1] = 0.0;
@@ -193,8 +194,6 @@ Prefs::Prefs()
 	spotlightPosition_[1] = 1.0;
 	spotlightPosition_[2] = 1.0;
 	spotlightPosition_[3] = 0.0;
-
-	// GL Options
 	depthCue_ = FALSE;
 	lineAliasing_ = TRUE;
 	polygonAliasing_ = FALSE;
@@ -205,11 +204,19 @@ Prefs::Prefs()
 	clipFar_ = 2000.0;
 	depthNear_ = 1;
 	depthFar_ = 200;
-
-	// Rendering - Objects
+	primitiveQuality_ = 10;
+	imagePrimitiveQuality_ = 50;
+	reusePrimitiveQuality_ = FALSE;
+	levelsOfDetail_ = 8;
+	levelOfDetailWidth_ = 25.0;
+	levelOfDetailStartZ_ = 25.0;
+	transparencyCorrect_ = TRUE;
+	transparencyNBins_ = 1000;
+	transparencyBinStartZ_ = 0.0;
+	transparencyBinWidth_ = 0.2;
+	// Screen Objects
 	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
 	offScreenObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
-	renderStyle_ = Atom::StickStyle;
 
 	// Build
 	showGuide_ = FALSE;
@@ -234,11 +241,17 @@ Prefs::Prefs()
 	zoomThrottle_ = 0.15;
 
 	// Colours
-	setColour(Prefs::SpecularColour, 0.9f, 0.9f, 0.9f, 1.0f);
-	setColour(Prefs::ForegroundColour, 0.0f, 0.0f, 0.0f, 1.0f);
-	setColour(Prefs::BackgroundColour, 1.0f, 1.0f, 1.0f, 1.0f);
-	setColour(Prefs::GlyphColour, 0.0f, 0.0f, 1.0f, 0.7f);
-	setColour(Prefs::FixedAtomColour, 0.0f, 0.0f, 0.0f, 1.0f);
+	setColour(Prefs::AromaticRingColour, 0.4, 0.4, 0.7, 1.0);
+	setColour(Prefs::BackgroundColour, 1.0, 1.0, 1.0, 1.0);
+	setColour(Prefs::FixedAtomColour, 0.0, 0.0, 0.0, 1.0);
+	setColour(Prefs::GlyphDefaultColour, 0.0, 0.0, 1.0, 0.7);
+	setColour(Prefs::GlobeColour, 0.9, 0.9, 0.9, 1.0);
+	setColour(Prefs::GlobeAxesColour, 0.5, 0.5, 0.5, 1.0);
+	setColour(Prefs::SpecularColour, 0.9, 0.9, 0.9, 1.0);
+	setColour(Prefs::TextColour, 0.0, 0.0, 0.0, 1.0);
+	setColour(Prefs::UnitCellColour, 0.0, 0.0, 0.0, 1.0);
+	setColour(Prefs::UnitCellAxesColour, 0.8, 0.8, 0.8, 1.0);
+	setColour(Prefs::VibrationArrowColour, 0.8, 0.4, 0.4, 1.0);
 
 	// Colour scales
 	colourScale[0].setName("Charge");
@@ -315,8 +328,8 @@ Prefs::Prefs()
 
 	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
-	angleLabel_ = "Deg";
-	distanceLabel_ = "A";
+	distanceLabelFormat_ = "%0.3f ";
+	angleLabelFormat_ = "%0.2f";
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
@@ -366,17 +379,10 @@ bool Prefs::save(const char *filename)
 		for (n=0; n<elements().nElements(); ++n)
 		{
 			// Ambient Colour
-			for (i = 0; i<4; ++i) if (elements().defaultEl[n].ambientColour[i] != elements().el[n].ambientColour[i]) break;
+			for (i = 0; i<4; ++i) if (elements().defaultEl[n].colour[i] != elements().el[n].colour[i]) break;
 			if (i != 4)
 			{
-				line.sprintf("aten.elements[%s].ambient = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].ambientColour[0], elements().el[n].ambientColour[1], elements().el[n].ambientColour[2], elements().el[n].ambientColour[3]);
-				prefsfile.writeLine(line);
-			}
-			// Diffuse Colour
-			for (i = 0; i<4; ++i) if (elements().defaultEl[n].diffuseColour[i] != elements().el[n].diffuseColour[i]) break;
-			if (i != 4)
-			{
-				line.sprintf("aten.elements[%s].diffuse = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].diffuseColour[0], elements().el[n].diffuseColour[1], elements().el[n].diffuseColour[2], elements().el[n].diffuseColour[3]);
+				line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].colour[0], elements().el[n].colour[1], elements().el[n].colour[2], elements().el[n].colour[3]);
 				prefsfile.writeLine(line);
 			}
 			// Atomic radius
@@ -515,9 +521,130 @@ int Prefs::repeatCellsNeg(int i) const
 	return repeatCellsNeg_.get(i);
 }
 
-double Prefs::screenRadius(Atom *i) const
+// Set the general primitive detail
+void Prefs::setPrimitiveQuality(int n)
 {
-	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on its drawing style
+	primitiveQuality_ = n;
+}
+
+// Return the general primitive detail
+int Prefs::primitiveQuality() const
+{
+	return primitiveQuality_;
+}
+
+// Set whether to use separate primitive quality for saved images
+void Prefs::setReusePrimitiveQuality(bool b)
+{
+	reusePrimitiveQuality_ = b;
+}
+
+// Whether to use separate primitive quality for saved images
+bool Prefs::reusePrimitiveQuality() const
+{
+	return reusePrimitiveQuality_;
+}
+
+// Sets the saved image primitive quality
+void Prefs::setImagePrimitiveQuality(int n)
+{
+	imagePrimitiveQuality_ = n;
+}
+
+// Return the current save image primitive quality
+int Prefs::imagePrimitiveQuality() const
+{
+	return imagePrimitiveQuality_;
+}
+
+// Set number of levels of detail for rendering primitives
+void Prefs::setLevelsOfDetail(int n)
+{
+	levelsOfDetail_ = n;
+}
+
+// Return number of levels of detail for rendering primitives
+int Prefs::levelsOfDetail()
+{
+	return levelsOfDetail_;
+}
+
+// Set level of detail starting z
+void Prefs::setLevelOfDetailStartZ(double z)
+{
+	levelOfDetailStartZ_ = z;
+}
+
+// Return level of detail slice 'width'
+double Prefs::levelOfDetailStartZ()
+{
+	return levelOfDetailStartZ_;
+}
+
+// Set level of detail slice 'width'
+void Prefs::setLevelOfDetailWidth(double width)
+{
+	levelOfDetailWidth_ = width;
+}
+
+// Return level of detail slice 'width'
+double Prefs::levelOfDetailWidth()
+{
+	return levelOfDetailWidth_;
+}
+
+// Return whether transparency correction is enabled
+bool Prefs::transparencyCorrect()
+{
+	return transparencyCorrect_;
+}
+
+// Return whether transparency correction is enabled
+void Prefs::setTransparencyCorrect(bool b)
+{
+	transparencyCorrect_ = b;
+}
+
+// Return number of bins to use in transparency sorting
+int Prefs::transparencyNBins()
+{
+	return transparencyNBins_;
+}
+
+// Set number of bins to use in transparency sorting
+void Prefs::setTransparencyNBins(int nbins)
+{
+	transparencyNBins_ = nbins;
+}
+
+// Return starting Z-depth of transparency bins
+double Prefs::transparencyBinStartZ()
+{
+	return transparencyBinStartZ_;
+}
+
+// Set starting Z-depth of transparency bins
+void Prefs::setTransparencyBinStartZ(double startz)
+{
+	transparencyBinStartZ_ = startz;
+}
+
+// Return width of individual transparency Z-bin
+double Prefs::transparencyBinWidth()
+{
+	return transparencyBinWidth_;
+}
+
+// Set width of individual transparency Z-bin
+void Prefs::setTransparencyBinWidth(double width)
+{
+	transparencyBinWidth_ = width;
+}
+
+
+// Return styled radius of specified atom
+double Prefs::styleRadius(Atom *i) const
+{
 	Atom::DrawStyle dstyle;
 	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;
 	return (dstyle == Atom::ScaledStyle) ? (elements().atomicRadius(i) * atomStyleRadius_[Atom::ScaledStyle]) : atomStyleRadius_[dstyle];
@@ -549,30 +676,6 @@ void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 GLdouble Prefs::bondStyleRadius(Atom::DrawStyle ds) const
 {
 	return bondStyleRadius_[ds];
-}
-
-// Sets the detail for atom quadrics
-void Prefs::setAtomDetail(int n)
-{
-	atomDetail_ = n;
-}
-
-// Return the current detail of atom quadrics
-GLint Prefs::atomDetail() const
-{
-	return atomDetail_;
-}
-
-// Sets the detail for bond quadrics
-void Prefs::setBondDetail(int n)
-{
-	bondDetail_ = n;
-}
-
-// Return the current detail of bond quadrics
-GLint Prefs::bondDetail() const
-{
-	return bondDetail_;
 }
 
 // Sets the scale of selected atoms
@@ -823,13 +926,13 @@ GLint Prefs::shininess() const
 */
 
 // Return the specified colour
-double *Prefs::colour(PenColour c)
+double *Prefs::colour(ObjectColour c)
 {
 	return colours_[c];
 }
 
 // Copy the specified colour
-void Prefs::copyColour(PenColour c, GLfloat *target) const
+void Prefs::copyColour(ObjectColour c, GLfloat *target) const
 {
 	target[0] = (GLfloat) colours_[c][0];
 	target[1] = (GLfloat) colours_[c][1];
@@ -838,7 +941,7 @@ void Prefs::copyColour(PenColour c, GLfloat *target) const
 }
 
 // Set the specified colour
-void Prefs::setColour(PenColour c, double r, double g, double b, double a)
+void Prefs::setColour(ObjectColour c, double r, double g, double b, double a)
 {
 	colours_[c][0] = r;
 	colours_[c][1] = g;
@@ -847,7 +950,7 @@ void Prefs::setColour(PenColour c, double r, double g, double b, double a)
 }
 
 // Set the supplied element of the specified colour
-void Prefs::setColour(PenColour c, int i, double value)
+void Prefs::setColour(ObjectColour c, int i, double value)
 {
 	if ((i < 0) || (i > 3)) printf("Colour element index out of range (%i)\n", i);
 	else colours_[c][i] = value;
@@ -1314,7 +1417,7 @@ bool Prefs::augmentAfterRebond() const
 // Set whether to augment when rebonding
 void Prefs::setAugmentAfterRebond(bool b)
 {
-	augmentAfterRebond_ = TRUE;
+	augmentAfterRebond_ = b;
 }
 
 // Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
@@ -1571,6 +1674,30 @@ void Prefs::setMaxImproperDist(double r)
 // Rendering (and compatibility) Options
 */
 
+// Set C-style format for distance label values
+void Prefs::setDistanceLabelFormat(const char *format)
+{
+	distanceLabelFormat_ = format;
+}
+
+// Return C-style format for distance label values
+const char *Prefs::distanceLabelFormat()
+{
+	return distanceLabelFormat_.get();
+}
+
+// Set C-style format for angle label values
+void Prefs::setAngleLabelFormat(const char *format)
+{
+	angleLabelFormat_ = format;
+}
+
+// Return C-style format for angle label values
+const char *Prefs::angleLabelFormat()
+{
+	return angleLabelFormat_.get();
+}
+
 // Set the scale of labels in the model
 void Prefs::setLabelSize(int size)
 {
@@ -1581,30 +1708,6 @@ void Prefs::setLabelSize(int size)
 int Prefs::labelSize() const
 {
 	return labelSize_;
-}
-
-// Set the postfix distance label
-void Prefs::setDistanceLabel(const char *s)
-{
-	distanceLabel_ = s;
-}
-
-// Return the postfix distance label
-const char *Prefs::distanceLabel() const
-{
-	return distanceLabel_.get();
-}
-
-// Set the postfix angle label
-void Prefs::setAngleLabel(const char *s)
-{
-	angleLabel_ = s;
-}
-
-// Return the postfix angle label
-const char *Prefs::angleLabel() const
-{
-	return angleLabel_.get();
 }
 
 // Set whether to use nice text rendering
@@ -1635,6 +1738,18 @@ bool Prefs::useFrameBuffer() const
 void Prefs::setUseFrameBuffer(bool on)
 {
 	useFrameBuffer_ = on;
+}
+
+// Return whether to use solid or dashed circles for aromatic ring rendering
+bool Prefs::renderDashedAromatics()
+{
+	return renderDashedAromatics_;
+}
+
+// Set  whether to use solid or dashed circles for aromatic ring rendering
+void Prefs::setRenderDashedAromatics(bool b)
+{
+	renderDashedAromatics_ = b;
 }
 
 // Return whether manual buffer swapping is enabled

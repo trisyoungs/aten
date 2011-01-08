@@ -254,9 +254,9 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	Dnchar geometry, message;
 	int width, height;
 	bool ok;
-	geometry.sprintf("%ix%i\n", (int) gui.mainView.width(), (int) gui.mainView.height());
+	geometry.sprintf("%ix%i\n", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
 	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry.get(), &ok);
-	if (ok && !text.isEmpty())
+	if (ok && (!text.isEmpty()))
 	{
 		geometry = qPrintable(text);
 		width = atoi(beforeChar(geometry,'x'));
@@ -341,7 +341,7 @@ void AtenForm::on_actionFileOpenExpression_triggered(bool checked)
 		}
 	}
 	gui.gridsWindow->refresh();
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 // Save expression

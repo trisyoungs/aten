@@ -24,7 +24,6 @@
 
 #include "gui/ui_celltransform.h"
 #include "templates/vector3.h"
-#include "templates/matrix3.h"
 
 // Cell transform window
 class AtenCellTransform : public QDialog
@@ -44,6 +43,12 @@ class AtenCellTransform : public QDialog
 	void on_CellReplicateButton_clicked(bool checked);
 	void on_CellReplicateFoldCheck_clicked(bool checked);
 	void on_CellReplicateTrimCheck_clicked(bool checked);
+	void on_CellReplicateNegXSpin_valueChanged(double d);
+	void on_CellReplicateNegYSpin_valueChanged(double d);
+	void on_CellReplicateNegZSpin_valueChanged(double d);
+	void on_CellReplicatePosXSpin_valueChanged(double d);
+	void on_CellReplicatePosYSpin_valueChanged(double d);
+	void on_CellReplicatePosZSpin_valueChanged(double d);
 	// Scale
 	void on_CellScaleButton_clicked(bool checked);
 	// Rotate

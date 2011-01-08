@@ -233,12 +233,6 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 					//msg.exit("Model::createExpression");
 					//return FALSE;
 				}
-				else if (cell_.type() != Cell::CubicCell)
-				{
-					msg.print("!!! Ewald sum only implemented for cubic cells.\n");
-					//msg.exit("Model::createExpression");
-					//return FALSE;
-				}
 				break;
 		}
 	}

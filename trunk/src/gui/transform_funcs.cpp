@@ -97,7 +97,7 @@ void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
 void AtenTransform::on_RotatePickAxisButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&rotatePickAxisButton_callback);
+	gui.mainWidget->beginManualPick(2,&rotatePickAxisButton_callback);
 }
 
 void AtenTransform::rotateSelection(double direction)
@@ -122,10 +122,10 @@ void AtenTransform::rotateSelection(double direction)
 void AtenTransform::on_TransformApplyButton_clicked(bool on)
 {
 	// Put values into our matrix...
-	Mat3<double> mat;
-	mat.set(0, ui.TransformMatrixAXSpin->value(), ui.TransformMatrixAYSpin->value(), ui.TransformMatrixAZSpin->value());
-	mat.set(1, ui.TransformMatrixBXSpin->value(), ui.TransformMatrixBYSpin->value(), ui.TransformMatrixBZSpin->value());
-	mat.set(2, ui.TransformMatrixCXSpin->value(), ui.TransformMatrixCYSpin->value(), ui.TransformMatrixCZSpin->value());
+	Matrix mat;
+	mat.setColumn(0, ui.TransformMatrixAXSpin->value(), ui.TransformMatrixAYSpin->value(), ui.TransformMatrixAZSpin->value(), 0.0);
+	mat.setColumn(1, ui.TransformMatrixBXSpin->value(), ui.TransformMatrixBYSpin->value(), ui.TransformMatrixBZSpin->value(), 0.0);
+	mat.setColumn(2, ui.TransformMatrixCXSpin->value(), ui.TransformMatrixCYSpin->value(), ui.TransformMatrixCZSpin->value(), 0.0);
 	// ...and grab coordinate origin
 	Vec3<double> v;
 	v.set(ui.TransformOriginXSpin->value(), ui.TransformOriginYSpin->value(), ui.TransformOriginZSpin->value());
@@ -177,19 +177,19 @@ void transformDefineCButton_callback(Reflist<Atom,int> *picked)
 void AtenTransform::on_TransformDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&transformDefineAButton_callback);
+	gui.mainWidget->beginManualPick(2,&transformDefineAButton_callback);
 }
 
 void AtenTransform::on_TransformDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&transformDefineBButton_callback);
+	gui.mainWidget->beginManualPick(2,&transformDefineBButton_callback);
 }
 
 void AtenTransform::on_TransformDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&transformDefineCButton_callback);
+	gui.mainWidget->beginManualPick(2,&transformDefineCButton_callback);
 }
 
 void AtenTransform::on_TransformNormaliseAButton_clicked(bool on)
@@ -329,22 +329,22 @@ void AtenTransform::on_TransformDefineOriginButton_clicked(bool on)
 void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
 {
 	// Put values into our matrices...
-	Mat3<double> source, target, rotmat;
-	source.set(0, ui.ConvertSourceMatrixAXSpin->value(), ui.ConvertSourceMatrixAYSpin->value(), ui.ConvertSourceMatrixAZSpin->value());
-	source.set(1, ui.ConvertSourceMatrixBXSpin->value(), ui.ConvertSourceMatrixBYSpin->value(), ui.ConvertSourceMatrixBZSpin->value());
-	source.set(2, ui.ConvertSourceMatrixCXSpin->value(), ui.ConvertSourceMatrixCYSpin->value(), ui.ConvertSourceMatrixCZSpin->value());
-	target.set(0, ui.ConvertTargetMatrixAXSpin->value(), ui.ConvertTargetMatrixAYSpin->value(), ui.ConvertTargetMatrixAZSpin->value());
-	target.set(1, ui.ConvertTargetMatrixBXSpin->value(), ui.ConvertTargetMatrixBYSpin->value(), ui.ConvertTargetMatrixBZSpin->value());
-	target.set(2, ui.ConvertTargetMatrixCXSpin->value(), ui.ConvertTargetMatrixCYSpin->value(), ui.ConvertTargetMatrixCZSpin->value());
+	Matrix source, target, rotmat;
+	source.setColumn(0, ui.ConvertSourceMatrixAXSpin->value(), ui.ConvertSourceMatrixAYSpin->value(), ui.ConvertSourceMatrixAZSpin->value(), 0.0);
+	source.setColumn(1, ui.ConvertSourceMatrixBXSpin->value(), ui.ConvertSourceMatrixBYSpin->value(), ui.ConvertSourceMatrixBZSpin->value(), 0.0);
+	source.setColumn(2, ui.ConvertSourceMatrixCXSpin->value(), ui.ConvertSourceMatrixCYSpin->value(), ui.ConvertSourceMatrixCZSpin->value(), 0.0);
+	target.setColumn(0, ui.ConvertTargetMatrixAXSpin->value(), ui.ConvertTargetMatrixAYSpin->value(), ui.ConvertTargetMatrixAZSpin->value(), 0.0);
+	target.setColumn(1, ui.ConvertTargetMatrixBXSpin->value(), ui.ConvertTargetMatrixBYSpin->value(), ui.ConvertTargetMatrixBZSpin->value(), 0.0);
+	target.setColumn(2, ui.ConvertTargetMatrixCXSpin->value(), ui.ConvertTargetMatrixCYSpin->value(), ui.ConvertTargetMatrixCZSpin->value(), 0.0);
 	// ...and grab coordinate origin
 	Vec3<double> v;
 	v.set(ui.ConvertOriginXSpin->value(), ui.ConvertOriginYSpin->value(), ui.ConvertOriginZSpin->value());
 
-	CommandNode::run(Command::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[3], source[4], source[5], source[6], source[7], source[8], target[0], target[1], target[2], target[3], target[4], target[5], target[6], target[7], target[8], v.x, v.y, v.z);
+	CommandNode::run(Command::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[4], source[5], source[6], source[8], source[9], source[10], target[0], target[1], target[2], target[4], target[5], target[6], target[8], target[9], target[10], v.x, v.y, v.z);
 
 	aten.currentModelOrFrame()->updateMeasurements();
 	gui.update(TRUE,FALSE,FALSE);
-	gui.mainView.postRedisplay();
+	gui.mainWidget->postRedisplay();
 }
 
 void convertDefineSourceAButton_callback(Reflist<Atom,int> *picked)
@@ -389,19 +389,19 @@ void convertDefineSourceCButton_callback(Reflist<Atom,int> *picked)
 void AtenTransform::on_ConvertSourceDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertDefineSourceAButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertDefineSourceAButton_callback);
 }
 
 void AtenTransform::on_ConvertSourceDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertDefineSourceBButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertDefineSourceBButton_callback);
 }
 
 void AtenTransform::on_ConvertSourceDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertDefineSourceCButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertDefineSourceCButton_callback);
 }
 
 void AtenTransform::on_ConvertSourceNormaliseAButton_clicked(bool on)
@@ -576,19 +576,19 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 void AtenTransform::on_ConvertTargetDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertTargetDefineAButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertTargetDefineAButton_callback);
 }
 
 void AtenTransform::on_ConvertTargetDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertTargetDefineBButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertTargetDefineBButton_callback);
 }
 
 void AtenTransform::on_ConvertTargetDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&convertTargetDefineCButton_callback);
+	gui.mainWidget->beginManualPick(2,&convertTargetDefineCButton_callback);
 }
 
 void AtenTransform::on_ConvertTargetNormaliseAButton_clicked(bool on)

@@ -123,10 +123,10 @@ bool Command::function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	Mat3<double> mat;
-	mat.set(0, c->arg3d(0));
-	mat.set(1, c->arg3d(3));
-	mat.set(2, c->arg3d(6));
+	Matrix mat;
+	mat.setColumn(0, c->arg3d(0), 0.0);
+	mat.setColumn(1, c->arg3d(3), 0.0);
+	mat.setColumn(2, c->arg3d(6), 0.0);
 	obj.g->setAxes(mat);
 	rv.reset();
 	return TRUE;

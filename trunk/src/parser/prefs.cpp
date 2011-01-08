@@ -50,77 +50,93 @@ PreferencesVariable::~PreferencesVariable()
 
 // Accessor data - name, type, arraysize, ro?
 Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
-	{ "anglelabel",		VTypes::StringData,	0, FALSE },
-	{ "atomdetail"	,	VTypes::DoubleData,	0, FALSE },
-	{ "atomstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
-	{ "backcull",		VTypes::IntegerData,	0, FALSE },
-	{ "backgroundcolour",	VTypes::DoubleData,	4, FALSE },
-	{ "bonddetail"	,	VTypes::DoubleData,	0, FALSE },
-	{ "bondstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
-	{ "bondtolerance",	VTypes::DoubleData,	0, FALSE },
-	{ "cachelimit",		VTypes::IntegerData,	0, FALSE },
-	{ "calculateelec",	VTypes::IntegerData,	0, FALSE },
-	{ "calculateintra",	VTypes::IntegerData,	0, FALSE },
-	{ "calculatevdw",	VTypes::IntegerData,	0, FALSE },
-	{ "clipfar",		VTypes::DoubleData,	0, FALSE },
-	{ "clipnear",		VTypes::DoubleData,	0, FALSE },
-	{ "colourscheme",	VTypes::StringData,	0, FALSE },
-	{ "combinationrule",	VTypes::StringData,	Combine::nCombinationRules, FALSE },
-	{ "commonelements",	VTypes::StringData,	0, FALSE },
-	{ "densityunit",	VTypes::StringData,	0, FALSE },
-	{ "depthcue",		VTypes::IntegerData,	0, FALSE },
-	{ "depthfar",		VTypes::IntegerData,	0, FALSE },
-	{ "depthnear",		VTypes::IntegerData,	0, FALSE },
-	{ "distancelabel",	VTypes::StringData,	0, FALSE },
-	{ "eleccutoff",		VTypes::DoubleData,	0, FALSE },
-	{ "elecmethod",		VTypes::StringData,	0, FALSE },
-	{ "energyunit",		VTypes::StringData,	0, FALSE },
-	{ "energyupdate",	VTypes::IntegerData,	0, FALSE },
-	{ "ewaldalpha",		VTypes::DoubleData,	0, FALSE },
-	{ "ewaldkmax",		VTypes::IntegerData,	3, FALSE },
-	{ "ewaldprecision",	VTypes::DoubleData,	0, FALSE },
-	{ "forcerhombohedral",	VTypes::IntegerData,	0, FALSE },
-	{ "foregroundcolour",	VTypes::DoubleData,	4, FALSE },
-	{ "globesize",		VTypes::IntegerData,	0, FALSE },
-	{ "glyphcolour",	VTypes::DoubleData,	4, FALSE },
-	{ "hdistance",		VTypes::DoubleData,	0, FALSE },
-	{ "keyaction",		VTypes::StringData,	Prefs::nModifierKeys, FALSE },
-	{ "labelsize",		VTypes::IntegerData,	0, FALSE },
-	{ "linealiasing",	VTypes::IntegerData,	0, FALSE },
-	{ "manualswapbuffers",	VTypes::IntegerData,	0, FALSE },
-	{ "maxcuboids",		VTypes::IntegerData,	0, FALSE },
-	{ "maxrings",		VTypes::IntegerData,	0, FALSE },
-	{ "maxringsize",	VTypes::IntegerData,	0, FALSE },
-	{ "maxundo",		VTypes::IntegerData,	0, FALSE },
-	{ "modelupdate",	VTypes::IntegerData,	0, FALSE },
-	{ "mopacexe",		VTypes::StringData,	0, FALSE },
-	{ "mouseaction",	VTypes::StringData,	Prefs::nMouseButtons, FALSE },
-	{ "multisampling",	VTypes::IntegerData,	0, FALSE },
-	{ "noqtsettings",	VTypes::IntegerData,	0, FALSE },
-	{ "offscreenobjects",	VTypes::IntegerData,	0, FALSE },
-	{ "perspective"	,	VTypes::IntegerData,	0, FALSE },
-	{ "perspectivefov",	VTypes::DoubleData,	0, FALSE },
-	{ "polygonaliasing",	VTypes::IntegerData,	0, FALSE },
-	{ "renderstyle",	VTypes::StringData,	0, FALSE },
-	{ "replicatefold",	VTypes::IntegerData,	0, FALSE },
-	{ "replicatetrim",	VTypes::IntegerData,	0, FALSE },
-	{ "screenobjects",	VTypes::IntegerData,	0, FALSE },
-	{ "selectionscale",	VTypes::DoubleData,	0, FALSE },
-	{ "shininess",		VTypes::IntegerData,	0, FALSE },
-	{ "specularcolour",	VTypes::DoubleData,	4, FALSE },
-	{ "spotlight",		VTypes::IntegerData,	0, FALSE },
-	{ "spotlightambient",	VTypes::DoubleData,	4, FALSE },
-	{ "spotlightdiffuse",	VTypes::DoubleData,	4, FALSE },
-	{ "spotlightposition",	VTypes::DoubleData,	4, FALSE },
-	{ "spotlightspecular",	VTypes::DoubleData,	4, FALSE },
-	{ "tempdir",		VTypes::StringData,	0, FALSE },
-	{ "useframebuffer",	VTypes::IntegerData,	0, FALSE },
-	{ "usenicetext",	VTypes::IntegerData,	0, FALSE },
-	{ "vdwcutoff",		VTypes::DoubleData,	0, FALSE },
-	{ "vdwscale",		VTypes::DoubleData,	0, FALSE },
-	{ "warn1056",		VTypes::IntegerData,	0, FALSE },
-	{ "zmap",		VTypes::StringData,	0, FALSE },
-	{ "zoomthrottle",	VTypes::DoubleData,	0, FALSE }
+	{ "anglelabelformat",		VTypes::StringData,		0, FALSE },
+	{ "aromaticringcolour",		VTypes::DoubleData,		4, FALSE },
+	{ "atomstyleradius",		VTypes::DoubleData,		Atom::nDrawStyles, FALSE },
+	{ "backcull",			VTypes::IntegerData,		0, FALSE },
+	{ "backgroundcolour",		VTypes::DoubleData,		4, FALSE },
+	{ "bondstyleradius",		VTypes::DoubleData,		Atom::nDrawStyles, FALSE },
+	{ "bondtolerance",		VTypes::DoubleData,		0, FALSE },
+	{ "cachelimit",			VTypes::IntegerData,		0, FALSE },
+	{ "calculateelec",		VTypes::IntegerData,		0, FALSE },
+	{ "calculateintra",		VTypes::IntegerData,		0, FALSE },
+	{ "calculatevdw",		VTypes::IntegerData,		0, FALSE },
+	{ "clipfar",			VTypes::DoubleData,		0, FALSE },
+	{ "clipnear",			VTypes::DoubleData,		0, FALSE },
+	{ "colourscales",		VTypes::ColourScaleData,	10, TRUE },
+	{ "colourscheme",		VTypes::StringData,		0, FALSE },
+	{ "combinationrule",		VTypes::StringData,		Combine::nCombinationRules, FALSE },
+	{ "commonelements",		VTypes::StringData,		0, FALSE },
+	{ "dashedaromatics",		VTypes::IntegerData,		0, FALSE },
+	{ "densityunit",		VTypes::StringData,		0, FALSE },
+	{ "depthcue",			VTypes::IntegerData,		0, FALSE },
+	{ "depthfar",			VTypes::IntegerData,		0, FALSE },
+	{ "depthnear",			VTypes::IntegerData,		0, FALSE },
+	{ "distancelabelformat",	VTypes::StringData,		0, FALSE },
+	{ "eleccutoff",			VTypes::DoubleData,		0, FALSE },
+	{ "elecmethod",			VTypes::StringData,		0, FALSE },
+	{ "energyunit",			VTypes::StringData,		0, FALSE },
+	{ "energyupdate",		VTypes::IntegerData,		0, FALSE },
+	{ "ewaldalpha",			VTypes::DoubleData,		0, FALSE },
+	{ "ewaldkmax",			VTypes::IntegerData,		3, FALSE },
+	{ "ewaldprecision",		VTypes::DoubleData,		0, FALSE },
+	{ "forcerhombohedral",		VTypes::IntegerData,		0, FALSE },
+	{ "globeaxescolour",		VTypes::DoubleData,		4, FALSE },
+	{ "globecolour",		VTypes::DoubleData,		4, FALSE },
+	{ "globesize",			VTypes::IntegerData,		0, FALSE },
+	{ "glyphcolour",		VTypes::DoubleData,		4, FALSE },
+	{ "hdistance",			VTypes::DoubleData,		0, FALSE },
+	{ "imagequality",		VTypes::IntegerData	,	0, FALSE },
+	{ "keyaction",			VTypes::StringData,		Prefs::nModifierKeys, FALSE },
+	{ "labelsize",			VTypes::IntegerData,		0, FALSE },
+	{ "levelofdetailstartz",	VTypes::DoubleData,		0, FALSE },
+	{ "levelofdetailwidth",		VTypes::DoubleData,		0, FALSE },
+	{ "levelsofdetail",		VTypes::IntegerData,		0, FALSE },
+	{ "linealiasing",		VTypes::IntegerData,		0, FALSE },
+	{ "manualswapbuffers",		VTypes::IntegerData,		0, FALSE },
+	{ "maxcuboids",			VTypes::IntegerData,		0, FALSE },
+	{ "maxrings",			VTypes::IntegerData,		0, FALSE },
+	{ "maxringsize",		VTypes::IntegerData,		0, FALSE },
+	{ "maxundo",			VTypes::IntegerData,		0, FALSE },
+	{ "modelupdate",		VTypes::IntegerData,		0, FALSE },
+	{ "mopacexe",			VTypes::StringData,		0, FALSE },
+	{ "mouseaction",		VTypes::StringData,		Prefs::nMouseButtons, FALSE },
+	{ "multisampling",		VTypes::IntegerData,		0, FALSE },
+	{ "noqtsettings",		VTypes::IntegerData,		0, FALSE },
+	{ "offscreenobjects",		VTypes::IntegerData,		0, FALSE },
+	{ "perspective"	,		VTypes::IntegerData,		0, FALSE },
+	{ "perspectivefov",		VTypes::DoubleData,		0, FALSE },
+	{ "polygonaliasing",		VTypes::IntegerData,		0, FALSE },
+	{ "quality"	,		VTypes::IntegerData,		0, FALSE },
+	{ "renderstyle",		VTypes::StringData,		0, FALSE },
+	{ "replicatefold",		VTypes::IntegerData,		0, FALSE },
+	{ "replicatetrim",		VTypes::IntegerData,		0, FALSE },
+	{ "reusequality",		VTypes::IntegerData,		0, FALSE },
+	{ "screenobjects",		VTypes::IntegerData,		0, FALSE },
+	{ "selectionscale",		VTypes::DoubleData,		0, FALSE },
+	{ "shininess",			VTypes::IntegerData,		0, FALSE },
+	{ "specularcolour",		VTypes::DoubleData,		4, FALSE },
+	{ "spotlight",			VTypes::IntegerData,		0, FALSE },
+	{ "spotlightambient",		VTypes::DoubleData,		4, FALSE },
+	{ "spotlightdiffuse",		VTypes::DoubleData,		4, FALSE },
+	{ "spotlightposition",		VTypes::DoubleData,		4, FALSE },
+	{ "spotlightspecular",		VTypes::DoubleData,		4, FALSE },
+	{ "tempdir",			VTypes::StringData,		0, FALSE },
+	{ "textcolour",			VTypes::DoubleData,		4, FALSE },
+	{ "transparencybinstartz",	VTypes::DoubleData,		0, FALSE },
+	{ "transparencybinwidth",	VTypes::DoubleData,		0, FALSE },
+	{ "transparencycorrect",	VTypes::IntegerData,		0, FALSE },
+	{ "transparencynbins",		VTypes::IntegerData,		0, FALSE },
+	{ "unitcellaxescolour",		VTypes::DoubleData,		4, FALSE },
+	{ "unitcellcolour",		VTypes::DoubleData,		4, FALSE },
+	{ "useframebuffer",		VTypes::IntegerData,		0, FALSE },
+	{ "usenicetext",		VTypes::IntegerData,		0, FALSE },
+	{ "vdwcutoff",			VTypes::DoubleData,		0, FALSE },
+	{ "vdwscale",			VTypes::DoubleData,		0, FALSE },
+	{ "vibrationarrowcolour",	VTypes::DoubleData,		4, FALSE },
+	{ "warn1056",			VTypes::IntegerData,		0, FALSE },
+	{ "zmap",			VTypes::StringData,		0, FALSE },
+	{ "zoomthrottle",		VTypes::DoubleData,		0, FALSE }
 };
 
 // Function data
@@ -222,11 +238,12 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	}
 	if (result) switch (acc)
 	{
-		case (PreferencesVariable::AngleLabel):
-			rv.set( ptr->angleLabel() );
+		case (PreferencesVariable::AngleLabelFormat):
+			rv.set(prefs.angleLabelFormat());
 			break;
-		case (PreferencesVariable::AtomDetail):
-			rv.set( (int) ptr->atomDetail() );
+		case (PreferencesVariable::AromaticRingColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::AromaticRingColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::AromaticRingColour), 4);
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
@@ -238,9 +255,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::BackgroundColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::BackgroundColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::BackgroundColour), 4);
-			break;
-		case (PreferencesVariable::BondDetail):
-			rv.set( (int) ptr->bondDetail() );
 			break;
 		case (PreferencesVariable::BondStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
@@ -267,6 +281,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::ClipNear):
 			rv.set(ptr->clipNear());
 			break;
+		case (PreferencesVariable::ColourScales):
+			rv.set(VTypes::ColourScaleData, &ptr->colourScale[arrayIndex-1]);
+			break;
 		case (PreferencesVariable::ColourScheme):
 			rv.set(Prefs::colouringScheme(ptr->colourScheme()));
 			break;
@@ -276,6 +293,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::CommonElements):
 			rv.set(ptr->commonElements());
+			break;
+		case (PreferencesVariable::DashedAromatics):
+			rv.set(ptr->renderDashedAromatics());
 			break;
 		case (PreferencesVariable::DensityUnit):
 			rv.set(Prefs::densityUnit(ptr->densityUnit()));
@@ -289,8 +309,8 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::DepthNear):
 			rv.set( (int) ptr->depthNear());
 			break;
-		case (PreferencesVariable::DistanceLabel):
-			rv.set( ptr->distanceLabel() );
+		case (PreferencesVariable::DistanceLabelFormat):
+			rv.set(prefs.distanceLabelFormat());
 			break;
 		case (PreferencesVariable::ElecCutoff):
 			rv.set( ptr->elecCutoff() );
@@ -317,19 +337,26 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
 			break;
-		case (PreferencesVariable::ForegroundColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::ForegroundColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::ForegroundColour), 4);
+		case (PreferencesVariable::GlobeAxesColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlobeAxesColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlobeAxesColour), 4);
+			break;
+		case (PreferencesVariable::GlobeColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlobeColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlobeColour), 4);
 			break;
 		case (PreferencesVariable::GlobeSize):
 			rv.set(ptr->globeSize() );
 			break;
-		case (PreferencesVariable::GlyphColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlyphColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlyphColour), 4);
+		case (PreferencesVariable::GlyphDefaultColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlyphDefaultColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlyphDefaultColour), 4);
 			break;
 		case (PreferencesVariable::HDistance):
 			rv.set( ptr->hydrogenDistance() );
+			break;
+		case (PreferencesVariable::ImageQuality):
+			rv.set( (int) ptr->imagePrimitiveQuality() );
 			break;
 		case (PreferencesVariable::KeyAction):
 			if (hasArrayIndex) rv.set(Prefs::keyAction( ptr->keyAction((Prefs::ModifierKey) (arrayIndex-1))) );
@@ -337,6 +364,15 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::LabelSize):
 			rv.set( ptr->labelSize() );
+			break;
+		case (PreferencesVariable::LevelOfDetailStartZ):
+			rv.set( ptr->levelOfDetailStartZ() );
+			break;
+		case (PreferencesVariable::LevelOfDetailWidth):
+			rv.set( ptr->levelOfDetailWidth() );
+			break;
+		case (PreferencesVariable::LevelsOfDetail):
+			rv.set( ptr->levelsOfDetail() );
 			break;
 		case (PreferencesVariable::LineAliasing):
 			rv.set( ptr->lineAliasing() );
@@ -384,6 +420,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::PolygonAliasing):
 			rv.set( ptr->polygonAliasing() );
 			break;
+		case (PreferencesVariable::Quality):
+			rv.set( (int) ptr->primitiveQuality() );
+			break;
 		case (PreferencesVariable::RenderStyle):
 			rv.set( Atom::drawStyle(ptr->renderStyle()) );
 			break;
@@ -392,6 +431,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::ReplicateTrim):
 			rv.set( ptr->replicateTrim() );
+			break;
+		case (PreferencesVariable::ReuseQuality):
+			rv.set( ptr->reusePrimitiveQuality() );
 			break;
 		case (PreferencesVariable::ScreenObjects):
 			rv.set( ptr->screenObjects() );
@@ -428,6 +470,30 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::TempDir):
 			rv.set( ptr->tempDir() );
 			break;
+		case (PreferencesVariable::TextColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::TextColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::TextColour), 4);
+			break;
+		case (PreferencesVariable::TransparencyBinStartZ):
+			rv.set( ptr->transparencyBinStartZ() );
+			break;
+		case (PreferencesVariable::TransparencyBinWidth):
+			rv.set( ptr->transparencyBinWidth() );
+			break;
+		case (PreferencesVariable::TransparencyCorrect):
+			rv.set( ptr->transparencyCorrect() );
+			break;
+		case (PreferencesVariable::TransparencyNBins):
+			rv.set( ptr->transparencyNBins() );
+			break;
+		case (PreferencesVariable::UnitCellAxesColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellAxesColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::UnitCellAxesColour), 4);
+			break;
+		case (PreferencesVariable::UnitCellColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::UnitCellColour), 4);
+			break;
 		case (PreferencesVariable::UseFrameBuffer):
 			rv.set( ptr->useFrameBuffer() );
 			break;
@@ -439,6 +505,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::VdwScale):
 			rv.set( ptr->vdwScale() );
+			break;
+		case (PreferencesVariable::VibrationArrowColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::VibrationArrowColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::VibrationArrowColour), 4);
 			break;
 		case (PreferencesVariable::Warn1056):
 			rv.set( ptr->warning1056() );
@@ -530,24 +600,25 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	Prefs::DensityUnit du;
 	Prefs::EnergyUnit eu;
 	Electrostatics::ElecMethod em;
-//	Prefs::ModifierKey mk;
 	Prefs::KeyAction ka;
-//	Prefs::MouseButton mb;
 	Prefs::MouseAction ma;
 	Atom::DrawStyle ds;
 	ElementMap::ZMapType zm;
 	if (result) switch (acc)
 	{
-		case (PreferencesVariable::AngleLabel):
-			ptr->setAngleLabel( newvalue.asString(result) );
+		case (PreferencesVariable::AngleLabelFormat):
+			ptr->setAngleLabelFormat(newvalue.asString());
 			break;
-		case (PreferencesVariable::AtomDetail):
-			ptr->setAtomDetail( newvalue.asInteger(result) );
+		case (PreferencesVariable::AromaticRingColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::AromaticRingColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
 			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
+			gui.mainWidget->reinitialisePrimitives(TRUE);
 			break;
 		case (PreferencesVariable::BackCull):
 			ptr->setBackfaceCulling(newvalue.asBool());
@@ -557,13 +628,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			else if (hasArrayIndex) ptr->setColour(Prefs::BackgroundColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(result));
 			break;
-		case (PreferencesVariable::BondDetail):
-			ptr->setBondDetail( newvalue.asInteger(result) );
-			break;
 		case (PreferencesVariable::BondStyleRadius):
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setBondStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
 			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
+			gui.mainWidget->reinitialisePrimitives(TRUE);
 			break;
 		case (PreferencesVariable::BondTolerance):
 			ptr->setBondTolerance( newvalue.asDouble(result) );
@@ -607,6 +676,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::CommonElements):
 			ptr->setCommonElements( newvalue.asString(result) );
 			break;
+		case (PreferencesVariable::DashedAromatics):
+			ptr->setRenderDashedAromatics(newvalue.asBool());
+			break;
 		case (PreferencesVariable::DensityUnit):
 			du = Prefs::densityUnit( newvalue.asString(result), TRUE );
 			if (du != Prefs::nDensityUnits) ptr->setDensityUnit(du);
@@ -621,8 +693,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::DepthNear):
 			ptr->setDepthNear( newvalue.asInteger(result) );
 			break;
-		case (PreferencesVariable::DistanceLabel):
-			ptr->setDistanceLabel( newvalue.asString(result) );
+		case (PreferencesVariable::DistanceLabelFormat):
+			ptr->setDistanceLabelFormat(newvalue.asString());
 			break;
 		case (PreferencesVariable::ElecCutoff):
 			ptr->setElecCutoff( newvalue.asDouble(result) );
@@ -654,21 +726,29 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newvalue.asBool() );
 			break;
-		case (PreferencesVariable::ForegroundColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::ForegroundColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(result));
+		case (PreferencesVariable::GlobeAxesColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeAxesColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::GlobeColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::GlobeSize):
 			ptr->setGlobeSize( newvalue.asInteger(result) );
 			break;
-		case (PreferencesVariable::GlyphColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(result));
+		case (PreferencesVariable::GlyphDefaultColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphDefaultColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::HDistance):
 			ptr->setHydrogenDistance( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::ImageQuality):
+			ptr->setImagePrimitiveQuality( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::KeyAction):
 			if (newvalue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nModifierKeys; ++n)
@@ -692,6 +772,16 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::LabelSize):
 			ptr->setLabelSize( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::LevelOfDetailStartZ):
+			ptr->setLevelOfDetailStartZ( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::LevelOfDetailWidth):
+			ptr->setLevelOfDetailWidth( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::LevelsOfDetail):
+			ptr->setLevelsOfDetail( newvalue.asInteger(result) );
+			gui.mainWidget->reinitialisePrimitives(TRUE);
 			break;
 		case (PreferencesVariable::LineAliasing):
 			ptr->setLineAliasing( newvalue.asBool() );
@@ -755,6 +845,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::PolygonAliasing):
 			ptr->setPolygonAliasing( newvalue.asBool() );
 			break;
+		case (PreferencesVariable::Quality):
+			ptr->setPrimitiveQuality( newvalue.asInteger(result) );
+			break;
 		case (PreferencesVariable::RenderStyle):
 			ds = Atom::drawStyle( newvalue.asString(result), TRUE );
 			if ((ds != Atom::nDrawStyles) && result) ptr->setRenderStyle(ds);
@@ -766,11 +859,15 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::ReplicateTrim):
 			ptr->setReplicateTrim( newvalue.asBool() );
 			break;
+		case (PreferencesVariable::ReuseQuality):
+			ptr->setReusePrimitiveQuality( newvalue.asBool() );
+			break;
 		case (PreferencesVariable::ScreenObjects):
 			ptr->setScreenObjects( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::SelectionScale):
 			ptr->setSelectionScale( newvalue.asDouble(result) );
+			gui.mainWidget->reinitialisePrimitives(TRUE);
 			break;
 		case (PreferencesVariable::Shininess):
 			ptr->setShininess( newvalue.asInteger(result) );
@@ -806,6 +903,33 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::TempDir):
 			ptr->setTempDir( newvalue.asString(result) );
 			break;
+		case (PreferencesVariable::TextColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::TextColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::TransparencyBinStartZ):
+			ptr->setTransparencyBinStartZ( newvalue.asDouble() );
+			break;
+		case (PreferencesVariable::TransparencyBinWidth):
+			ptr->setTransparencyBinWidth( newvalue.asDouble() );
+			break;
+		case (PreferencesVariable::TransparencyCorrect):
+			ptr->setTransparencyCorrect( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::TransparencyNBins):
+			ptr->setTransparencyNBins( newvalue.asInteger() );
+			break;
+		case (PreferencesVariable::UnitCellAxesColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellAxesColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::UnitCellColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(result));
+			break;
 		case (PreferencesVariable::UseFrameBuffer):
 			ptr->setUseFrameBuffer( newvalue.asBool() );
 			break;
@@ -817,6 +941,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::VdwScale):
 			ptr->setVdwScale( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::VibrationArrowColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::VibrationArrowColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::Warn1056):
 			ptr->setWarning1056( newvalue.asBool() );
@@ -838,7 +967,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	if (result)
 	{
 		if (aten.current.rs != NULL) aten.current.rs->changeLog.add(Log::Visual);
-		gui.mainView.postRedisplay();
+		gui.mainWidget->postRedisplay();
 	}
 	msg.exit("PreferencesVariable::setAccessor");
 	return result;

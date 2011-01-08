@@ -11,8 +11,8 @@ ${CMAKE_BINARY_DIR}
 )
 
 set(qtproject_SRCS
-  actiontext.h
-  actiontext.cpp
+  useractions.h
+  useractions.cpp
   gui.h 
   ttreewidgetitem.h
   ttablewidgetitem.h
@@ -38,7 +38,6 @@ set(qtproject_SRCS
   grids_funcs.cpp
   gui.cpp
   customdialog_funcs.cpp
-  input.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainwindow_funcs.cpp
@@ -60,6 +59,8 @@ set(qtproject_SRCS
   styleactions.cpp
   systemactions.cpp
   tcanvas_funcs.cpp
+  tcanvas_input.cpp
+  tcanvas_render.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
   tlistwidgetitem_funcs.cpp

@@ -27,6 +27,8 @@
 #include "parser/bond.h"
 #include "parser/cell.h"
 #include "parser/character.h"
+#include "parser/colourscale.h"
+#include "parser/colourscalepoint.h"
 #include "parser/double.h"
 #include "parser/eigenvector.h"
 #include "parser/element.h"
@@ -107,6 +109,12 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 			break;
 		case (VTypes::CellData):
 			v = (Variable*) new CellVariable(NULL, FALSE);
+			break;
+		case (VTypes::ColourScaleData):
+			v = (Variable*) new ColourScaleVariable(NULL, FALSE);
+			break;
+		case (VTypes::ColourScalePointData):
+			v = (Variable*) new ColourScalePointVariable(NULL, FALSE);
 			break;
 		case (VTypes::EigenvectorData):
 			v = (Variable*) new EigenvectorVariable(NULL, FALSE);
@@ -192,6 +200,12 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::CellData):
 			var = new CellArrayVariable(sizeexpr);
+			break;
+		case (VTypes::ColourScaleData):
+			var = new ColourScaleArrayVariable(sizeexpr);
+			break;
+		case (VTypes::ColourScalePointData):
+			var = new ColourScalePointArrayVariable(sizeexpr);
 			break;
 		case (VTypes::EigenvectorData):
 			var = new EigenvectorArrayVariable(sizeexpr);

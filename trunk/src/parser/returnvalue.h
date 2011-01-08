@@ -40,6 +40,9 @@ class ReturnValue
 	ReturnValue(VTypes::DataType type, void *ptr);
 	// Operator=
 	void operator=(const ReturnValue &rv);
+	void operator=(double d);
+	void operator=(int i);
+	void operator=(const char *s);
 
 
 	/*

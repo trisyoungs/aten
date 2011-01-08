@@ -22,6 +22,7 @@
 #ifndef ATEN_UNDOEVENT_H
 #define ATEN_UNDOEVENT_H
 
+#include "base/matrix.h"
 #include "base/dnchar.h"
 #include "base/atom.h"
 #include "base/bond.h"
@@ -139,12 +140,12 @@ class CellEvent : public UndoEvent
 	
 	private:
 	// Change data
-	Mat3<double> oldAxes_, newAxes_;
+	Matrix oldAxes_, newAxes_;
 	bool oldHasCell_, newHasCell_;
 
 	public:
 	// Set change data
-	void set(Mat3<double> oldaxes, Mat3<double> newaxes, bool ohs, bool nhs);
+	void set(Matrix oldaxes, Matrix newaxes, bool ohs, bool nhs);
 	// Undo stored change
 	void undo(Model *m);
 	// Print change information
@@ -227,6 +228,7 @@ class GlyphEvent : public UndoEvent
 	private:
 	// Change data
 	Glyph glyphData_;
+	int atomIDs_[4];
 
 	public:
 	// Set change data

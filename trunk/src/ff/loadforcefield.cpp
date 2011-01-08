@@ -321,7 +321,7 @@ bool Forcefield::readData(const char *vars)
 	// First, parse list of data items to get name
 	NameMapList<VTypes::DataType> items(VTypes::nDataTypes);
 	LineParser parser;
-	parser.getArgsDelim(vars);
+	parser.getArgsDelim(LineParser::SkipBlanks, vars);
 	int n;
 	for (n=0; n<parser.nArgs(); n += 2)
 	{
@@ -405,7 +405,7 @@ bool Forcefield::readGenerator(const char *vars)
 	// First, parse list of data items to get names and types of variables
 	NameMapList<VTypes::DataType> items(VTypes::nDataTypes);
 	LineParser parser;
-	parser.getArgsDelim(vars);
+	parser.getArgsDelim(LineParser::SkipBlanks, vars);
 	for (n=0; n<parser.nArgs(); n += 2)
 	{
 		// Determine data type
@@ -431,7 +431,7 @@ bool Forcefield::readGenerator(const char *vars)
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) break;
 		// Search for this ffatom ID and retrieve it
-		ForcefieldAtom *ffa = findType(ffparser.argi(0));
+		ffa = findType(ffparser.argi(0));
 		if (ffa == NULL)
 		{
 			msg.print("Error: forcefield type ID '%i' has not been specified, so can't add generator data to it.\n", ffparser.argi(0));

@@ -69,6 +69,7 @@ Vec3<double> Atom::twoBondVector(Bond *b1, Bond *b2, double angle)
 }
 
 // Return suitable vector based on three supplied bonds
+// TGAY What were parameters 'angle' and 'expgeom' for?
 Vec3<double> Atom::threeBondVector(Bond *b1, Bond *b2, Bond *b3, double angle, Atom::AtomGeometry expgeom)
 {
 	// Work out the three angles between the bonds

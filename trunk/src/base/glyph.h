@@ -25,12 +25,12 @@
 #include "base/dnchar.h"
 #include "templates/list.h"
 #include "templates/vector3.h"
-#include "templates/vector4.h"
 #include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
 class Model;
 class Atom;
+class Matrix;
 
 // Glyph data
 class GlyphData
@@ -40,14 +40,13 @@ class GlyphData
 	GlyphData();
 	// List pointers
 	GlyphData *prev, *next;
-
 	// Atom data pointer type
 	enum GlyphDataType { PositionData, ForceData, VelocityData };
 
 	private:
 	// Position or direction vector
 	Vec3<double> vector_;
-	// Integer atom in the parent model from which to get r, f, or v
+	// Atom in the parent model from which to get r, f, or v
 	Atom *atom_;
 	// Type of vector data to take from atom (if defined)
 	GlyphDataType atomData_;
@@ -95,8 +94,10 @@ class Glyph
 	Glyph();
 	// List pointers
 	Glyph *prev, *next;
+	// Operator =
+	void operator=(Glyph &source);
 	// Glyph style
-	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, VectorGlyph, nGlyphTypes };
+	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, TubeArrowGlyph, VectorGlyph, nGlyphTypes };
 	static const char *glyphType(GlyphType gt);
 	static const char *glyphTypeName(GlyphType gt);
 	static GlyphType glyphType(const char *name, bool reporterror = 0);
@@ -116,7 +117,7 @@ class Glyph
 	// Vector data for Glyph
 	List<GlyphData> data_;
 	// Rotation matrix for the glyph (NULL if not rotated)
-	Mat3<double> *rotation_;
+	Matrix *rotation_;
 
 	public:
 	// Returns the number of data set for the Glyph
@@ -135,10 +136,8 @@ class Glyph
 	void setColour(double r, double g, double b, double a = 1.0f);
 	// Return whether glyph has been rotated (whether a rotation matrix exists)
 	bool rotated() const;
-	// Return rotation matrix suitable for GL
-	double *rotationForGL();
 	// Return rotation matrix
-	Mat3<double> *rotation();
+	Matrix *matrix();
 	// Set element of rotation matrix
 	void setRotationElement(int el, double d);
 	// Get element of rotation matrix
@@ -162,6 +161,8 @@ class Glyph
 	// Style
 	*/
 	private:
+	// Whether glyph is selected
+	bool selected_;
 	// Whether glyph is visible
 	bool visible_;
 	// Whether Glyph should be drawn with filled polygons (where possible)
@@ -170,6 +171,10 @@ class Glyph
 	GLfloat lineWidth_;
 
 	public:
+	// Set whether the Glyph is selected
+	void setSelected(bool isselected);
+	// Return whether the Glyph is selected
+	bool isSelected() const;
 	// Set whether the Glyph is visible
 	void setVisible(bool isvisible);
 	// Return whether the Glyph is visible

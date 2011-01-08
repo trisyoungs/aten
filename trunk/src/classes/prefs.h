@@ -55,11 +55,11 @@ class Prefs
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
 	static KeyAction keyAction(const char *name, bool reporterror = 0);
 	static const char *keyAction(KeyAction);
-	// Standard 'Pen' Colours
-	enum PenColour { BackgroundColour, FixedAtomColour, ForegroundColour, GlyphColour, SpecularColour, nPenColours };
-	static const char *penColour(PenColour);
-	static const char *penColourName(PenColour);
-	static PenColour penColour(const char *name, bool reporterror = 0);
+	// Property/Object Colours
+	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, nObjectColours };
+	static const char *objectColour(ObjectColour);
+	static const char *objectColourName(ObjectColour);
+	static ObjectColour objectColour(const char *name, bool reporterror = 0);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, Kelvin, ElectronVolts, Hartree, nEnergyUnits };
 	static const char *energyUnit(EnergyUnit);
@@ -108,6 +108,26 @@ class Prefs
 	int globeSize_;
 	// Rendering style of models
 	Atom::DrawStyle renderStyle_;
+	// General quality of primitives
+	int primitiveQuality_;
+	// Whether to use separate primitive quality for saved images
+	bool reusePrimitiveQuality_;
+	// General quality of primitives on saved images
+	int imagePrimitiveQuality_;
+	// Number of levels of detail for rendering primitives
+	int levelsOfDetail_;
+	// Level of detail start z-distance
+	double levelOfDetailStartZ_;
+	// Level of detail slice 'width'
+	double levelOfDetailWidth_;
+	// Whether transparency correction is enabled
+	bool transparencyCorrect_;
+	// Number of bins to use in transparency sorting
+	int transparencyNBins_;
+	// Starting Z-depth of transparency bins
+	double transparencyBinStartZ_;
+	// Width of individual transparency Z-bin
+	double transparencyBinWidth_;
 
 	public:
 	// Set the visibility of an object on-screen
@@ -126,8 +146,8 @@ class Prefs
 	int offScreenObjects() const;
 	// Set imageobjects bitvector
 	void setOffScreenObjects(int i);
-	// Return the radius of an atom calculated from the element and draw style
-	double screenRadius(Atom*) const;
+	// Return the styled radius of an atom calculated from the element and draw style
+	double styleRadius(Atom*) const;
 	// Set the drawing style of models
 	void setRenderStyle(Atom::DrawStyle ds);
 	// Return the current drawing style of models
@@ -144,6 +164,46 @@ class Prefs
 	void setRepeatCellsNeg(int i, int r);
 	// Get negative repeat cell value
 	int repeatCellsNeg(int i) const;
+	// Sets the general primitive quality
+	void setPrimitiveQuality(int n);
+	// Return the current primitive quality
+	int primitiveQuality() const;
+	// Set whether to use separate primitive quality for saved images
+	void setReusePrimitiveQuality(bool b);
+	// Whether to use separate primitive quality for saved images
+	bool reusePrimitiveQuality() const;
+	// Sets the saved image primitive quality
+	void setImagePrimitiveQuality(int n);
+	// Return the current save image primitive quality
+	int imagePrimitiveQuality() const;
+	// Set number of levels of detail for rendering primitives
+	void setLevelsOfDetail(int n);
+	// Return number of levels of detail for rendering primitives
+	int levelsOfDetail();
+	// Set level of detail starting z-distance
+	void setLevelOfDetailStartZ(double z);
+	// Return level of detail starting z-distance
+	double levelOfDetailStartZ();
+	// Set level of detail slice 'width'
+	void setLevelOfDetailWidth(double width);
+	// Return level of detail slice 'width'
+	double levelOfDetailWidth();
+	// Return whether transparency correction is enabled
+	bool transparencyCorrect();
+	// Return whether transparency correction is enabled
+	void setTransparencyCorrect(bool b);
+	// Return number of bins to use in transparency sorting
+	int transparencyNBins();
+	// Set number of bins to use in transparency sorting
+	void setTransparencyNBins(int nbins);
+	// Return starting Z-depth of transparency bins
+	double transparencyBinStartZ();
+	// Set starting Z-depth of transparency bins
+	void setTransparencyBinStartZ(double startz);
+	// Return width of individual transparency Z-bin
+	double transparencyBinWidth();
+	// Set width of individual transparency Z-bin
+	void setTransparencyBinWidth(double width);
 
 
 	/*
@@ -158,10 +218,6 @@ class Prefs
 	GLdouble bondStyleRadius_[Atom::nDrawStyles];
 	// Size scaling for atom selection transparency
 	GLdouble selectionScale_;
-	// Detail of atom quadric (slices/stacks)
-	GLint atomDetail_;
-	// Detail of bond quadric (slices/stacks)
-	GLint bondDetail_;
 	// Whether to use a perspective (TRUE) or orthographic (FALSE) projection
 	bool perspective_;
 	// Viewing angle for perspective projection
@@ -182,14 +238,6 @@ class Prefs
 	void setBondStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the bond radius used in Scaled and Sphere styles
 	GLdouble bondStyleRadius(Atom::DrawStyle ds) const;
-	// Sets the detail for atom quadrics
-	void setAtomDetail(int n);
-	// Return the current detail of atom quadrics
-	GLint atomDetail() const;
-	// Sets the detail for bond quadrics
-	void setBondDetail(int n);
-	// Return the current detail of bond quadrics
-	GLint bondDetail() const;
 	// Sets the scale of selected atoms
 	void setSelectionScale(double f);
 	// Return the scale of selected atoms
@@ -234,10 +282,10 @@ class Prefs
 	// Rendering - Options
 	*/
 	private:
-	// Postfix (units) label for distances
-	Dnchar distanceLabel_;
-	// Postfix (units) label for angles
-	Dnchar angleLabel_;
+        // C-style format for distance label values
+        Dnchar distanceLabelFormat_;
+        // C-style format for angle label values
+        Dnchar angleLabelFormat_;
 	// Pointsize for labels
 	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
@@ -246,16 +294,18 @@ class Prefs
 	bool manualSwapBuffers_;
 	// Flag to use framebuffer for image saving rather than the renderPixmap() method
 	bool useFrameBuffer_;
+	// Whether to use solid or dashed circles for aromatic ring rendering
+	bool renderDashedAromatics_;
 
 	public:
-	// Set the postfix distance label
-	void setDistanceLabel(const char *s);
-	// Return the postfix distance label
-	const char *distanceLabel() const;
-	// Set the postfix angle label
-	void setAngleLabel(const char *s);
-	// Return the postfix angle label
-	const char *angleLabel() const;
+        // Set C-style format for distance label values
+        void setDistanceLabelFormat(const char *format);
+        // Return C-style format for distance label values
+        const char *distanceLabelFormat();
+        // Set C-style format for angle label values
+        void setAngleLabelFormat(const char *format);
+        // Return C-style format for angle label values
+        const char *angleLabelFormat();
 	// Set the pointsize of labels in the model
 	void setLabelSize(int size);
 	// Return the current label pointsize
@@ -272,7 +322,10 @@ class Prefs
 	void setUseFrameBuffer(bool on);
 	// Return whether to use framebuffer for image saving
 	bool useFrameBuffer() const;
-
+	// Return whether to use solid or dashed circles for aromatic ring rendering
+	bool renderDashedAromatics();
+	// Set  whether to use solid or dashed circles for aromatic ring rendering
+	void setRenderDashedAromatics(bool b);
 
 	/*
 	// GL Options
@@ -343,17 +396,17 @@ class Prefs
 	*/
 	private:
 	// RGB colour values
-	double colours_[Prefs::nPenColours][4];
+	double colours_[Prefs::nObjectColours][4];
 
 	public:
 	// Set the specified colour to the integer RGBA values supplied
-	void setColour(PenColour c, double r, double g, double b, double a);
+	void setColour(ObjectColour c, double r, double g, double b, double a);
 	// Set the supplied element of the specified colour
-	void setColour(PenColour c, int i, double value);
+	void setColour(ObjectColour c, int i, double value);
 	// Copy the specified colour
-	void copyColour(PenColour c, GLfloat *col) const;
+	void copyColour(ObjectColour c, GLfloat *col) const;
 	// Return a pointer to the specified colour
-	double *colour(PenColour c);
+	double *colour(ObjectColour c);
 	// User-definable colour scales
 	ColourScale colourScale[10];
 

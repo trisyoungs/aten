@@ -115,7 +115,7 @@ void Pdens::accumulate(Model *sourcemodel)
 	int m1, m2;
 	static Vec3<double> centre1, centre2, mimd;
 	static Vec3<int> gridPoint;
-	static Mat3<double> axes;
+	Matrix axes;
 	Cell *cell = sourcemodel->cell();
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
@@ -127,10 +127,8 @@ void Pdens::accumulate(Model *sourcemodel)
 		for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 		{
 			centre2 = sourcemodel->siteCentre(sites_[1],m2);
-			// Calculate minimum image vector...
-			mimd = cell->mimd(centre2,centre1);
-			// ...translate into local coordinate system...
-			mimd *= axes;
+			// Calculate minimum image vector and translate into local coordinate system...
+			mimd = axes.transform(cell->mimd(centre2,centre1));
 			// ...and work out the gridpoint (convert to 0..totalSteps_ from -nsteps..0..+nsteps)
 			gridPoint.x = int(mimd.x / stepSize_);
 			gridPoint.y = int(mimd.y / stepSize_);

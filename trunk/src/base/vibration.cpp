@@ -26,7 +26,7 @@
 Vibration::Vibration(Model *parent)
 {
 	// Private variables
-	parent_ = NULL;
+	parent_ = parent;
 	frequency_ = 0.0;
 	nDisplacements_ = 0;
 	displacements_ = NULL;

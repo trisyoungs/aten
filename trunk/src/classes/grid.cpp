@@ -118,8 +118,6 @@ Grid::Grid()
 	log_ = -1;
 	boundsLog_ = -1;
 	style_ = Grid::SolidSurface;
-	displayList_ = 0;
-	offScreenDisplayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = TRUE;
 	primaryColour_[0] = 0.0;
@@ -168,7 +166,6 @@ void Grid::operator=(Grid &source)
 	upperSecondaryCutoff_ = source.upperSecondaryCutoff_;
 	log_ = 0;
 	style_ = source.style_;
-	displayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = source.visible_;
 	totalPositiveSum_ = source.totalPositiveSum_;
@@ -253,6 +250,8 @@ bool Grid::initialise(GridType gt, Vec3<int> npoints)
 		case (Grid::FreeXYZData):
 			msg.print("Initialised grid structure for free 3D XYZ data.\n");
 			break;
+		default:
+			break;
 	}
 	log_ ++;
 	msg.exit("Grid::initialise");
@@ -270,7 +269,7 @@ Grid::GridType Grid::type() const
 */
 
 // Return the Grid axes
-Mat3<double> Grid::axes() const
+Matrix Grid::axes() const
 {
 	return cell_.axes();
 }
@@ -340,8 +339,7 @@ void Grid::calculateBounds()
 			upperRightCorner_.zero();
 			for (int n=0; n<8; ++n)
 			{
-				v.set( n&1, n&2, n&4 );
-				v *= cell_.axes();
+				v = cell_.axes().transform(n&1, n&2, n&4);
 				for (int m=0; m<3; ++m)
 				{
 					if (v.get(m) < lowerLeftCorner_.get(m)) lowerLeftCorner_.set(m,v.get(m));
@@ -849,16 +847,10 @@ void Grid::setAxes(const Vec3<double> v)
 }
 
 // Set spacing for a parallelepiped grid
-void Grid::setAxes(const Mat3<double> m)
+void Grid::setAxes(const Matrix axes)
 {
-	cell_.set(m);
+	cell_.set(axes);
 	log_++;
-}
-
-// Get cell axes in suitable GL format
-double *Grid::axesForGl()
-{
-	return cell_.axesForGL();
 }
 
 // Update minimum / maximum based on supplied value
@@ -976,24 +968,6 @@ void Grid::bohrToAngstrom()
 	lengths *= ANGBOHR;
 	cell_.set(lengths, angles);
 	origin_ *= ANGBOHR;
-}
-
-// Return displaylist (create first if necessary)
-GLuint Grid::displayList(bool offscreenlist)
-{
-	// If an offscreen list is requested, we shouldn't have to (and its probably dangerous to try) and delete any previous off-screen list
-	// since it will have been destroyed along with the off-screen temporary context.
-	if (offscreenlist)
-	{
-		offScreenDisplayList_ = glGenLists(1);
-		return offScreenDisplayList_;
-	}
-	else if (displayList_ == 0)
-	{
-		displayList_ = glGenLists(1);
-		if (displayList_ == 0) printf("Critical - couldn't generate display list for grid data.\n");
-	}
-	return displayList_;
 }
 
 // Set whether to use both signs of a symmetric isovalue distribution

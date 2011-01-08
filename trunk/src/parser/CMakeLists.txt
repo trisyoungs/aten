@@ -7,6 +7,8 @@ basisshell.h
 bond.h
 cell.h
 character.h
+colourscale.h
+colourscalepoint.h
 commandnode.h
 double.h
 eigenvector.h
@@ -54,6 +56,8 @@ basisshell.cpp
 bond.cpp
 cell.cpp
 character.cpp
+colourscale.cpp
+colourscalepoint.cpp
 commandnode.cpp
 double.cpp
 eigenvector.cpp

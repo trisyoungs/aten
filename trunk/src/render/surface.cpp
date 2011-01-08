@@ -315,58 +315,20 @@ int facetriples[256][15] = {
 	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 };
 
-// Render grid points (no surface)
-void renderSurfaceGrid(Grid *g)
-{
-	int i, j, k;
-	Vec3<int> npoints = g->nPoints();
-	double ***data3d, **data2d, **xdata, *ydata, cutoff;
-	// Grab the data pointers and cutoff
-	data3d = g->data3d();
-	data2d = g->data2d();
-	glBegin(GL_POINTS);
-	  if (g->type() == Grid::RegularXYZData)
-	  {
-		for (i=0; i<npoints.x; i++)
-		{
-			xdata = data3d[i];
-			for (j=0; j<npoints.y; j++)
-			{
-				ydata = xdata[j];
-				for (k=0; k<npoints.z; k++)
-				{
-					if (!g->withinPrimaryCutoff(ydata[k])) continue;
-					glVertex3i(i, j, k);
-				}
-			}
-		}
-	  }
-	  else
-	  {
-		for (i=0; i<npoints.x; i++)
-		{
-			ydata = data2d[i];
-			for (j=0; j<npoints.y; j++)
-			{
-				if (!g->withinPrimaryCutoff(ydata[j])) continue;
-				glVertex3i(i, j, 0);
-			}
-		}
-	  }
-	glEnd();
-}
-
 // Render volumetric isosurface with Marching Cubes
 void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 {
 	int i, j, k, n, cubetype, *faces, cscale;
 	Vec3<double> r, normal, gradient[8];
 	Vec3<int> npoints = g->nPoints();
+	DynamicPrimitive &primitive;
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
-	// Grab the data pointer and surface cutoff
+	// Grab the data pointer, surface cutoff, and primitive reference
 	data = g->data3d();
 	bool secondary = g->useSecondary();
 	cscale = g->useColourScale() ? g->colourScale() : -1;
+	primitive = g->primitive();
+	primitive.clear();
 	mult = 1.0;
 	// Get distances between grid points
 	r = g->lengths();

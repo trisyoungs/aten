@@ -52,7 +52,7 @@ const char *CartesianFunctionNames[BasisShell::nBasisShellTypes][11] = {
 const char *BasisShell::cartesianFunction(BasisShellType bft, int index)
 {
 	// Check limits of index
-	if ((index < 0) || (index >= NumberCartesianFunctions[bft])) printf("Cartesian function ID %i is out of range for an '%s' shell.\n", BasisShellTypeKeywords[bft], index);
+	if ((index < 0) || (index >= NumberCartesianFunctions[bft])) printf("Cartesian function ID %i is out of range for an '%s' shell.\n", index , BasisShellTypeKeywords[bft]);
 	else return CartesianFunctionNames[bft][index];
 	return "NONAME";
 }
@@ -74,7 +74,7 @@ const char *SphericalFunctionNames[BasisShell::nBasisShellTypes][11] = {
 const char *BasisShell::sphericalFunction(BasisShellType bft, int index)
 {
 	// Check limits of index
-	if ((index < 0) || (index >= NumberSphericalFunctions[bft])) printf("Spherical function ID %i is out of range for an '%s' shell.\n", BasisShellTypeKeywords[bft], index);
+	if ((index < 0) || (index >= NumberSphericalFunctions[bft])) printf("Spherical function ID %i is out of range for an '%s' shell.\n", index, BasisShellTypeKeywords[bft]);
 	else return SphericalFunctionNames[bft][index];
 	return "NONAME";
 }

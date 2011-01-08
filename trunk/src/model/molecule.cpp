@@ -72,26 +72,18 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 	// Rotate the coordinates of the atoms in pattern p, molecule mol, about their centre of geometry.
 	// rotx and roty are the rotations about the x and y axes respectively, in degrees
 	msg.enter("Model::rotateMolecule");
-	static double cosx, cosy, sinx, siny;
-	static Mat3<double> rotmat;
+	static Matrix rotmat;
 	static Vec3<double> delta, newpos, cog;
 	static int pnatoms, offset, n;
 	Atom **modelatoms = atomArray();
-	rotx /= DEGRAD;
-	roty /= DEGRAD;
-	cosx = cos(rotx);
-	cosy = cos(roty);
-	sinx = sin(rotx);
-	siny = sin(roty);
-	rotmat.set(0,cosy,0.0,siny);
-	rotmat.set(1,(-sinx)*(-siny),cosx,(-sinx)*cosy);
-	rotmat.set(2,cosx*(-siny),sinx,cosx*cosy);
+	rotmat.createRotationXY(rotx,roty);
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
 	// Calculate COG before we start
 	cog = p->calculateCog(mol,this);
 	//printf("rotateMolecule : Moving %i atoms starting at %i (%i atoms currently in config)\n",pnatoms,offset,natoms);
 	if (offset < atoms_.nItems())
+	{
 		for (n=offset; n<offset+pnatoms; n++)
 		{
 			// Get local coordinates of atom, i.e. subtract centre of geometry
@@ -102,6 +94,7 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 			// Store the new position
 			modelatoms[n]->r() = newpos;
 		}
+	}
 	else printf("Model::rotateMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
 	msg.exit("Model::rotateMolecule");
 }

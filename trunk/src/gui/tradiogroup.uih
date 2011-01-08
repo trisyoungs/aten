@@ -60,7 +60,7 @@ class TRadioGroup : public QGroupBox
 		{
 			QRadioButton *radio;
 			LineParser lp;
-			lp.getArgsDelim(items, LineParser::UseQuotes);
+			lp.getArgsDelim(LineParser::UseQuotes, items);
 			for (int n=0; n<lp.nArgs(); ++n)
 			{
  				radio = new QRadioButton(lp.argc(n));

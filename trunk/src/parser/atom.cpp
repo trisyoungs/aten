@@ -206,7 +206,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (AtomVariable::FracX):
 		case (AtomVariable::FracY):
 		case (AtomVariable::FracZ):
-			rv.set((ptr->r() * ptr->parent()->cell()->inverseTranspose()).get(acc - AtomVariable::FracX));
+			rv.set((ptr->parent()->cell()->inverse() * ptr->r()).get(acc - AtomVariable::FracX));
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
@@ -373,7 +373,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		case (AtomVariable::FracX):
 		case (AtomVariable::FracY):
 		case (AtomVariable::FracZ):
-			v = ptr->parent()->cell()->inverseTranspose() * ptr->r();
+			v = ptr->parent()->cell()->inverse() * ptr->r();
 			v.set(acc - AtomVariable::FracX, newvalue.asDouble());
 			v = ptr->parent()->cell()->fracToReal(v);
 			ptr->parent()->beginUndoState("Position atom (fractional coordinates)");

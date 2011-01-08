@@ -1,14 +1,17 @@
 add_library(render
-canvas.h
-atoms.cpp 
-canvas.cpp
-colourscale.cpp
-extra.cpp 
-glyph.cpp 
-model.cpp 
-objects.cpp 
+engine.h
+textprimitive.h
+triangles.h
+engine.cpp
+engine_model.cpp
+engine_useractions.cpp
+engine_windows.cpp
+primitive.cpp
+primitive_surface.cpp
+primitive_vertex.cpp
 render.cpp 
-surface.cpp
+textprimitive.cpp
+triangles.cpp
 )
 
 include_directories(
