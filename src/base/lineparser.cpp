@@ -123,7 +123,7 @@ bool LineParser::openFile(const char *filename, bool outputstream)
 	if (!file_->is_open())
 	{
 		closeFile();
-		msg.print("Failed to open file '%s' for %s.\n", filename, outputstream ? "writing" : "reading");
+		msg.print("Error: Failed to open file '%s' for %s.\n", filename, outputstream ? "writing" : "reading");
 		msg.exit("LineParser::openFile");
 		return FALSE;
 	}

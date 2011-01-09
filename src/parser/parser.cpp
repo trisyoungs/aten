@@ -260,7 +260,6 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename, bool dontp
 	parser_.openFile(filename);
 	if (!parser_.isFileGood())
 	{
-		msg.print("Error: File '%s' could not be opened.\n", filename);
 		msg.exit("CommandParser::generateFromFile");
 		return FALSE;
 	}
