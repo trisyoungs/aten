@@ -30,7 +30,9 @@
 void AtenForm::loadSettings()
 {
 	QString key;
+	QFileInfo fi1, fi2;
 	Dnchar filename;
+	Forest *f, *loadedf;
 	int n;
 	// Recent file entries
 	for (n=0; n<MAXRECENTFILES; n++)
@@ -61,14 +63,30 @@ void AtenForm::loadSettings()
 		key += itoa(n);
 		if (settings_.contains(key))
 		{
-			Forest *f = aten.addScript();
 			filename = qPrintable(settings_.value(key).toString());
-			if (f->generateFromFile(filename.get(), filename.get())) msg.print("Successfully loaded script file '%s'.\n", filename.get());
+			// Has this script already been loaded?
+			// Use a couple of QFileInfo's to find out...
+			fi1.setFile(filename.get());
+			for (loadedf = aten.scripts(); loadedf != NULL; loadedf = loadedf->next)
+			{
+				fi2.setFile(loadedf->filename());
+				if (fi1.canonicalFilePath() == fi2.canonicalFilePath()) break;
+			}
+			if (loadedf != NULL)
+			{
+				printf("Script '%s' appears to have been loaded already. Will not load it a second time, and removed duplicate entry from settings.\n", filename.get());
+				settings_.remove(key);
+			}
 			else
 			{
-				aten.removeScript(f);
-				msg.print("Failed to load script file '%s'.\n", filename.get());
-				settings_.remove(key);
+				f = aten.addScript();
+				if (f->generateFromFile(filename.get(), filename.get())) msg.print("Successfully loaded script file '%s'.\n", filename.get());
+				else
+				{
+					aten.removeScript(f);
+					msg.print("Failed to load script file '%s'.\n", filename.get());
+					settings_.remove(key);
+				}
 			}
 		}
 		++n;

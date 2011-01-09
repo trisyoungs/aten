@@ -83,6 +83,15 @@
 						<entry></entry>
 					</row>
 					<row>
+						<entry>Mopac Archive File </entry>
+						<entry>*.arc</entry>
+						<entry>arc</entry>
+						<entry>16</entry>
+						<entry>yes</entry>
+						<entry>no</entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry>Mopac Control File </entry>
 						<entry>*.mop</entry>
 						<entry>mop</entry>

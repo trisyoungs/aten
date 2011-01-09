@@ -246,48 +246,48 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 
 	// Next arguments are specific to the control type
 	bool result = FALSE;
-	arg = arg->nextArgument;
+	if (arg != NULL) arg = arg->nextArgument;
 	switch (controlType_)
 	{
 		// Check Box - option("Title", "check", int state)
 		case (WidgetNode::CheckControl):
 			if (!setData("state", arg, "Warning: No initial state supplied for 'check' GUI filter option - 'off' assumed.\n", TRUE, "0")) break;
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// RadioGroup Box - option("Title", "radiogroup", "<csv itemlist>", int default=1)
 		case (WidgetNode::RadioGroupControl):
 			if (!setData("items", arg, "Error: No items list supplied for 'radiogroup' GUI filter option.\n", TRUE, "")) break;
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			setData("default", arg, "No default value supplied for 'radiogroup' GUI filter option - '1' assumed.\n", TRUE, "1");
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// Combo Box - option("Title", "combo", "<csv itemlist>", int default=1)
 		case (WidgetNode::IntegerComboControl):
 		case (WidgetNode::ComboControl):
 			if (!setData("items", arg, "Error: No items list supplied for 'combo' GUI filter option.\n", TRUE, "")) break;
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			setData("default", arg, "No default value supplied for 'combo' GUI filter option - '1' assumed.\n", TRUE, "1");
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// Double Spin Edit - option("Title", "spin", double min, double max, double start, double step)
 		case (WidgetNode::DoubleSpinControl):
 			if (!setData("min", arg, "Error: No minimum value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("max", arg, "Error: No maximum value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("start", arg, "Error: No starting value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("step", arg, "Error: No step value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// Spin Edit - option("Title", "edit", string text = "")
 		case (WidgetNode::EditControl):
 			setData("text", arg, "No default string supplied for 'edit' GUI filter option - empty string assumed.\n", TRUE, "");
-			arg = arg->nextArgument;
+			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// Integer Spin Edit - option("Title", "spin", int min, int max, int start, int step)
@@ -310,6 +310,7 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			printf("Internal Error: Setting arguments for control type '%s' has not been implemented.\n", WidgetNode::guiControl(controlType_));
 			break;
 	}
+
 	// Any remaining arguments are options of the format opt=arg
 	for (arg = arg; arg != NULL; arg = arg->nextArgument) setOption(arg);
 	msg.exit("WidgetNode::addJoinedArguments");
@@ -336,7 +337,7 @@ bool WidgetNode::setData(const char *name, TreeNode *arg, const char *errormsg, 
 	{
 		msg.print(errormsg);
 		// No argument here - was it a critical value?
-		if (critical )return FALSE;
+		if (critical) return FALSE;
 		// Not critical, so set default
 		data_.add(name, def);
 		return TRUE;
