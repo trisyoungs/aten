@@ -13,16 +13,14 @@ General TODO:
 1) Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click
 2) Script to add H-bonds to pair of selected atoms
 3) Script to perform conformational searching on molecule
-4) Switch (checkbox) to prevent folding of atoms when rotating / translating with mouse (in Build window?)
-5) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
-6) Tabulated trigonometric functions (in mathfunc.h) for rendering optimisation
-7) Glyph Undo/Redo
-8) Spacegroup Pnmmm
-9) Allow (somehow) rotation of fragments without drawing them *or* rotating main view
-a) Replacing existing bond in fragment builder causes wrong atoms to be deleted
-b) Double-press of ALT required to cycle over fragment attachment points? Or just that view isn't updated?
-c) Undo/Redo of cell addition not working properly?
-d) Build Window tool to transmute current atom selection
+4) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
+5) Tabulated trigonometric functions (in mathfunc.h) for rendering optimisation
+6) Glyph Undo/Redo
+7) Spacegroup Pnmmm
+8) Allow (somehow) rotation of fragments without drawing them *or* rotating main view
+9) Replacing existing bond in fragment builder causes wrong atoms to be deleted
+a) Double-press of ALT required to cycle over fragment attachment points? Or just that view isn't updated?
+b) Undo/Redo of cell addition not working properly?
 
 Filter TODO:
 1) ECP type is not written in GAMESS-US export filter

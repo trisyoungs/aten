@@ -64,11 +64,11 @@ void Model::prepareTransform()
 }
 
 // Finalize Model Manipulation
-void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const char *statetitle)
+void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const char *statetitle, bool nofold)
 {
 	// Called after mouse-up.
 	// Atom positions may have moved outside the boundaries of the box, so need to re-fold.
-	foldAllAtoms();
+	if (!nofold) foldAllAtoms();
 	beginUndoState(statetitle);
 	// Go through list of atoms in 'originalr', work out delta, and store
 	if (recordingState_ != NULL)

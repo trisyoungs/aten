@@ -21,6 +21,7 @@
 
 #include "gui/tcanvas.uih"
 #include "gui/fragment.h"
+#include "gui/build.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "model/model.h"
@@ -318,6 +319,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 		
 		// Set some useful flags...
 		bool manipulate = FALSE;
+		bool nofold = gui.buildWindow->ui.PreventFoldCheck->isChecked();
 		for (int n=0; n<3; n++)
 		{
 			if (keyModifier_[n])
@@ -344,7 +346,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 					displayModel_->rotateSelectionWorld(2.0,0.0);
 					displayModel_->endUndoState();
 					displayModel_->updateMeasurements();
-					displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
+					displayModel_->finalizeTransform(oldPositions_, "Transform Selection", nofold);
 					gui.update(TRUE,FALSE,FALSE);
 				}
 				else displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
@@ -661,6 +663,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 	bool shifted = keyModifier_[Prefs::ShiftKey];
 	bool ctrled = keyModifier_[Prefs::CtrlKey];
 	bool modded = (shifted || ctrled);
+	bool nofold = gui.buildWindow->ui.PreventFoldCheck->isChecked();
 	// Reset mouse button flag
 	mouseButton_[button] = FALSE;
 	// Copy the current mode and reset it so we redraw properly
@@ -672,7 +675,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		// No action
 		case (UserAction::NoAction):
 			break;
-			// Plain atom / box select
+		// Plain atom / box select
 		case (UserAction::SelectAction):
 			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
 			displayModel_->beginUndoState("Change Selection");
@@ -689,7 +692,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,FALSE);
 			break;
-			// Now do the rest
+		// Other selection operations
 		case (UserAction::SelectMoleculeAction):
 			displayModel_->beginUndoState("Select Molecule");
 			if (!modded) displayModel_->selectNone();
@@ -717,7 +720,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,FALSE);
 			break;
-			// Measurements
+		// Measurements
 		case (UserAction::MeasureDistanceAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 2) break;
@@ -748,7 +751,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
 			break;
-			// Draw single atom
+		// Draw single atom
 		case (UserAction::DrawAtomAction):
 			// Make sure we don't draw on top of an existing atom
 			if (atomClicked_ == NULL)
@@ -760,7 +763,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			}
 			gui.update(TRUE,FALSE,TRUE);
 			break;
-			// Draw chains of atoms
+		// Draw chains of atoms
 		case (UserAction::DrawChainAction):
 			// If there is no atom under the mouse we draw one
 			i = displayModel_->atomOnScreen(rMouseUp_.x,rMouseUp_.y);
@@ -787,7 +790,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);
 			break;
-			// Draw framents
+		// Draw fragments
 		case (UserAction::DrawFragmentAction):
 			frag = gui.fragmentWindow->currentFragment();
 			if (frag == NULL) break;
@@ -839,7 +842,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		case (UserAction::DrawProbeAction):
 			if (atomClicked_ != NULL) atomClicked_->print();
 			break;
-			// Bonding
+		// Bonding
 		case (UserAction::DrawBondSingleAction):
 		case (UserAction::DrawBondDoubleAction):
 		case (UserAction::DrawBondTripleAction):
@@ -862,7 +865,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
 			break;
-			// Delete bond
+		// Delete bond
 		case (UserAction::DrawDeleteBondAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 2) break;
@@ -876,7 +879,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
 			break;
-			// Misc
+		// Misc
 		case (UserAction::DrawAddHydrogenAction):
 			if (atomClicked_ != NULL)
 			{
@@ -886,22 +889,22 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				gui.update(TRUE,FALSE,TRUE);
 			}
 			break;
-			// Model transformations
+		// Model transformations
 		case (UserAction::TransformRotateXYAction):
 		case (UserAction::TransformRotateZAction):
 		case (UserAction::TransformTranslateAction):
 			// Clear list of oldPositions_ if nothing was moved
 			if (!hasMoved_) oldPositions_.clear();
-			displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
+			displayModel_->finalizeTransform(oldPositions_, "Transform Selection", nofold);
 			gui.update(TRUE,FALSE,FALSE);
 			break;
-			// View changes (no action)
+		// View changes (no action)
 		case (UserAction::RotateXYAction):
 		case (UserAction::RotateZAction):
 		case (UserAction::TranslateAction):
 		case (UserAction::ZoomAction):
 			break;
-			// Manual picking mode (for toolwindow axis definitions etc.)
+		// Manual picking mode (for toolwindow axis definitions etc.)
 		case (UserAction::ManualPickAction):
 			// Have we picked the right number of atoms?
 			if (pickedAtoms_.nItems() != nAtomsToPick_) break;
