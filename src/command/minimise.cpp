@@ -44,7 +44,7 @@ bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	cg.minimise(obj.rs, econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)");
+	obj.rs->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", TRUE);
 	rv.reset();
 	return TRUE;
 }
@@ -76,7 +76,7 @@ bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	mc.minimise(obj.rs, econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Monte Carlo)");
+	obj.rs->finalizeTransform(oldpos, "Minimise (Monte Carlo)", TRUE);
 	rv.reset();
 	return TRUE;
 }
@@ -178,7 +178,7 @@ bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	sd.minimise(obj.rs, econverge, fconverge, c->hasArg(1) ? c->argb(1) : FALSE);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Steepest Descent)");
+	obj.rs->finalizeTransform(oldpos, "Minimise (Steepest Descent)", TRUE);
 	rv.reset();
 	return TRUE;
 }
