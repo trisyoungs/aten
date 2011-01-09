@@ -263,9 +263,9 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				break;
 			case (ComponentRegion::CuboidRegion):
 				v = geometryFrac_ ? cell->fracToReal(geometry_) : geometry_;
-				v.x *= csRandom() - 0.5;
-				v.y *= csRandom() - 0.5;
-				v.z *= csRandom() - 0.5;
+				v.x *= AtenMath::random() - 0.5;
+				v.y *= AtenMath::random() - 0.5;
+				v.z *= AtenMath::random() - 0.5;
 				if (rotateRegion_) v = rotationMatrix_.transform(v);
 				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
@@ -273,9 +273,9 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				geometry = (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
 				do
 				{
-					v.x = csRandom() * 2.0 - 1.0;
-					v.y = csRandom() * 2.0 - 1.0;
-					v.z = csRandom() * 2.0 - 1.0;
+					v.x = AtenMath::random() * 2.0 - 1.0;
+					v.y = AtenMath::random() * 2.0 - 1.0;
+					v.z = AtenMath::random() * 2.0 - 1.0;
 				} while ( (v.x*v.x + v.y*v.y + v.z*v.z) > 1.0);
 				v.multiply(geometry);
 				if (rotateRegion_) v = rotationMatrix_.transform(v);
@@ -285,10 +285,10 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				geometry = (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
 				do
 				{
-					v.x = csRandom() * 2.0 - 1.0;
-					v.y = csRandom() * 2.0 - 1.0;
+					v.x = AtenMath::random() * 2.0 - 1.0;
+					v.y = AtenMath::random() * 2.0 - 1.0;
 				} while ( (v.x*v.x + v.y*v.y) > 1.0);
-				v.z = (csRandom()-0.5);
+				v.z = (AtenMath::random()-0.5);
 				v.multiply(geometry);
 				if (rotateRegion_) v = rotationMatrix_.transform(v);
 				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;

@@ -23,6 +23,7 @@
 #include "main/version.h"
 #include "gui/gui.h"
 #include "base/messenger.h"
+#include "base/mathfunc.h"
 #include <time.h>
 #include <ctime>
 #include <iostream>

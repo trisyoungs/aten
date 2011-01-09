@@ -242,10 +242,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				// Select random pattern and molecule
 				do
 				{
-					npats != 1 ? randpat = csRandomi(npats) : randpat = 0;
+					npats != 1 ? randpat = AtenMath::randomi(npats) : randpat = 0;
 					p = srcmodel->pattern(randpat);
 				} while ((p->nMolecules() == 0) && (!p->areAtomsFixed()));
-				mol = csRandomi(p->nMolecules());
+				mol = AtenMath::randomi(p->nMolecules());
 	
 				// Copy the coordinates of the current molecule
 				if (p->nMolecules() != 0) bakmodel.copyAtomData(srcmodel, Atom::PositionData, p->offset(mol),p->nAtoms());
@@ -262,15 +262,15 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 					case (MonteCarlo::Translate):
 						// Create a random translation vector
 						v.randomUnit();
-						v *= maxStep_[MonteCarlo::Translate]*csRandom();
+						v *= maxStep_[MonteCarlo::Translate]*AtenMath::random();
 						// Translate the coordinates of the molecule in cfg
 						srcmodel->translateMolecule(p,mol,v);
 						break;
 					// Rotate molecule about COG
 					case (MonteCarlo::Rotate):
 						// To do the random rotation, do two separate random rotations about the x and y axes.
-						phi = csRandom() * maxStep_[MonteCarlo::Rotate];
-						theta = csRandom() * maxStep_[MonteCarlo::Rotate];
+						phi = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
+						theta = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
 						srcmodel->rotateMolecule(p,mol,phi,theta);
 						break;
 					// Other moves....
@@ -285,7 +285,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				deltaElecEnergy = srcmodel->energy.electrostatic() - referenceElecEnergy;
 
 				// Do we accept the move?
-				if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( csRandom() < exp(-beta*deltaMoleculeEnergy) ))
+				if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( AtenMath::random() < exp(-beta*deltaMoleculeEnergy) ))
 				{
 					// Update energy and move counters
 					//ecurrent = enew;
@@ -558,8 +558,8 @@ bool MonteCarlo::disorder(Model *destmodel)
 							// Only rotate the new molecule if the component allows it
 							if (c->isMoveAllowed(MonteCarlo::Rotate))
 							{
-								phi = csRandom() * 360.0;
-								theta = csRandom() * 360.0;
+								phi = AtenMath::random() * 360.0;
+								theta = AtenMath::random() * 360.0;
 								destmodel->rotateMolecule(p,mol,phi,theta);
 							}
 							referenceMoleculeEnergy = 0.0;
@@ -570,14 +570,14 @@ bool MonteCarlo::disorder(Model *destmodel)
 						case (MonteCarlo::Translate):
 							if (patternNMols == 0) continue;
 							// Select random molecule, store, and move
-							mol = csRandomi(patternNMols-1);
+							mol = AtenMath::randomi(patternNMols-1);
 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
 							referenceVdwEnergy = destmodel->energy.vdw();
 							referenceElecEnergy = destmodel->energy.electrostatic();
 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 							// Create a random translation vector
 							v.randomUnit();
-							v *= maxStep_[MonteCarlo::Translate]*csRandom();
+							v *= maxStep_[MonteCarlo::Translate]*AtenMath::random();
 							// Translate the coordinates of the molecule in cfg
 							destmodel->translateMolecule(p,mol,v);
 							// Check new COG is inside region
@@ -588,14 +588,14 @@ bool MonteCarlo::disorder(Model *destmodel)
 						case (MonteCarlo::Rotate):
 							if (patternNMols == 0) continue;
 							// Select random molecule, store, and rotate
-							mol = csRandomi(patternNMols-1);
+							mol = AtenMath::randomi(patternNMols-1);
 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
 							referenceVdwEnergy = destmodel->energy.vdw();
 							referenceElecEnergy = destmodel->energy.electrostatic();
 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 							// Do two separate random rotations about the x and y axes.
-							phi = csRandom() * maxStep_[MonteCarlo::Rotate];
-							theta = csRandom() * maxStep_[MonteCarlo::Rotate];
+							phi = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
+							theta = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
 							destmodel->rotateMolecule(p,mol,phi,theta);
 							break;
 						// Other moves....
@@ -615,7 +615,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
 					deltaElecEnergy = destmodel->energy.electrostatic() - referenceElecEnergy;
 					msg.print(Messenger::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
-					if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( csRandom() < exp(-beta*deltaMoleculeEnergy) ))
+					if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( AtenMath::random() < exp(-beta*deltaMoleculeEnergy) ))
 					{
 						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
 						// Fold the molecule's atoms and recalculate its centre of geometry 
