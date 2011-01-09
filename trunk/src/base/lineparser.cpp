@@ -538,7 +538,6 @@ int LineParser::getArgsDelim(int optionMask)
 		result = readNextLine(optionMask);
 		if (result != 0)
 		{
-			printf("result == %i\n", result);
 			msg.exit("LineParser::getArgsDelim[ifstream]");
 			return result;
 		}
