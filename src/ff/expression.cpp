@@ -36,7 +36,8 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 	msg.enter("Pattern::createExpression");
 	Atom *i;
 	Refitem<Bond,int> *bref;
-	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0, nUreyBradleys = 0, nDummy;
+	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0, nUreyBradleys = 0;
+	int nDummyBonds = 0, nDummyAngles = 0, nDummyTorsions = 0;
 	Atom *ai, *aj, *ak, *al;
 	ForcefieldBound *ffb;
 	PatternAtom *ipa[4];
@@ -140,7 +141,6 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 		// Also, create the lists of bound atoms here for use by the angle and torsion functions.
 		// Again, only add bonds involving atoms in the first molecule of the pattern.
 		ai = firstAtom_;
-		nDummy = 0;
 		for (ii=0; ii<nAtoms_; ii++)
 		{
 			// Go through the list of bonds to this atom
@@ -171,7 +171,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 						else if (addDummyTerms_ || allowDummy)
 						{
 							ffb = createDummyBond(ti,tj);
-							++nDummy;
+							++nDummyBonds;
 						}
 					}
 					addBondData(ffb, ii, jj);
@@ -194,22 +194,75 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 			}
 			ai = ai->next;
 		}
-		if (bonds_.nItems() != nBonds)
+		
+		// Construct the torsion list.
+		// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
+		// Loop over the bonds in the molecule as the basis, then we can never count the same torsion twice.
+		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 		{
-			msg.print("...INTERNAL ERROR: expected %i bonds, found %i\n", nBonds, bonds_.nItems());
-			incomplete_ = TRUE;
+			jj = pb->atomId(0);
+			kk = pb->atomId(1);
+			// Loop over list of atoms bound to jj
+			for (ii=0; ii<bonding[jj].nItems(); ii++)
+			{
+				// Skip atom kk
+				if (bonding[jj][ii]->value() == kk) continue;
+				// Loop over list of atoms bound to kk
+				for (ll=0; ll<bonding[kk].nItems(); ll++)
+				{
+					// Skip atom jj
+					if (bonding[kk][ll]->value() == jj) continue;
+					
+					ai = atoms_[bonding[jj][ii]->value()]->atom();
+					aj = atoms_[jj]->atom();
+					ak = atoms_[kk]->atom();
+					al = atoms_[bonding[kk][ll]->value()]->atom();
+					
+					// Check for ii == ll (caused by three-membered rings)
+					if (ai->id() == al->id())
+					{
+						msg.print("... Excluded torsion %i-%i-%i-%i because terminal atoms are the same (three-membered ring?) - expected nTorsions reduced from %i to %i...\n", ai->id()+1, aj->id()+1, ak->id()+1, al->id()+1, nTorsions, nTorsions-1);
+						nTorsions --;
+						continue;
+					}
+					
+					ti = ai->type();
+					tj = aj->type();
+					tk = ak->type();
+					tl = al->type();
+					
+					// Search for the torsion data. If its a rule-based FF and we don't find any matching data,
+					// generate it. If its a normal forcefield, flag the incomplete marker.
+					ffb = ff->findTorsion(ti,tj,tk,tl);
+					// If we didn't find a match in the forcefield, attempt generation and dummy term addition
+					if (ffb == NULL)
+					{
+						if (ff->torsionGenerator() != NULL) ffb = ff->generateTorsion(ai,aj,ak,al);
+						else if (addDummyTerms_ || allowDummy)
+						{
+							ffb = createDummyTorsion(ti,tj,tk,tl);
+							++nDummyTorsions;
+						}
+					}
+					addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
+					// Check ffb and raise warning if NULL
+					if (ffb == NULL)
+					{
+						msg.print("!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
+						incomplete_ = TRUE;
+						itorsions ++;
+					}
+					else
+					{
+						msg.print(Messenger::Verbose,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+					}
+				}
+			}
 		}
-		else if (bonds_.nItems() == 0) msg.print("... No bonds in model.\n");
-		else if (ibonds == 0)
-		{
-			if (nDummy == 0) msg.print("... Found parameters for %i bonds.\n", bonds_.nItems());
-			else msg.print("... Found parameters for %i bonds (%i dummy terms).\n", bonds_.nItems(), nDummy);
-		}
-		else msg.print("... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
+		
 		// Construct the angle list.
 		// Use the list of bound atoms in the bonding[][] array generated above
 		// Loop over central atoms 'jj'
-		nDummy = 0;
 		for (jj=0; jj<nAtoms_; jj++)
 		{
 			for (ii=0; ii<bonding[jj].nItems(); ii++)
@@ -232,7 +285,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 						else if (addDummyTerms_ || allowDummy)
 						{
 							ffb = createDummyAngle(ti,tj,tk);
-							++nDummy;
+							++nDummyAngles;
 						}
 					}
 					addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
@@ -258,100 +311,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 				}
 			}
 		}
-		if (angles_.nItems() != nAngles)
-		{
-			msg.print("...INTERNAL ERROR: expected %i angles, found %i\n", nAngles, angles_.nItems());
-			incomplete_ = TRUE;
-		}
-		else if (angles_.nItems() == 0) msg.print("... No angles in model.\n");
-		else if (iangles == 0)
-		{
-			if (nUreyBradleys == 0)
-			{
-				if (nDummy == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
-				else msg.print("... Found parameters for %i angles (%i dummy terms).\n", bonds_.nItems(), nDummy);
-			}
-			else if (nDummy == 0) msg.print("... Found parameters for %i angles with %i corresponding Urey-Bradley definitions.\n", nUreyBradleys);
-			else msg.print("... Found parameters for %i angles (%i dummy terms) with %i corresponding Urey-Bradley definitions.\n", nDummy, nUreyBradleys);
-		}
-		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
-		// Construct the torsion list.
-		// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
-		// Loop over the bonds in the molecule as the basis, then we can never count the same torsion twice.
-		nDummy = 0;
-		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
-		{
-			jj = pb->atomId(0);
-			kk = pb->atomId(1);
-			// Loop over list of atoms bound to jj
-			for (ii=0; ii<bonding[jj].nItems(); ii++)
-			{
-				// Skip atom kk
-				if (bonding[jj][ii]->value() == kk) continue;
-				// Loop over list of atoms bound to kk
-				for (ll=0; ll<bonding[kk].nItems(); ll++)
-				{
-					// Skip atom jj
-					if (bonding[kk][ll]->value() == jj) continue;
-	
-					ai = atoms_[bonding[jj][ii]->value()]->atom();
-					aj = atoms_[jj]->atom();
-					ak = atoms_[kk]->atom();
-					al = atoms_[bonding[kk][ll]->value()]->atom();
 
-					// Check for ii == ll (caused by three-membered rings)
-					if (ai->id() == al->id())
-					{
-						msg.print("... Excluded torsion %i-%i-%i-%i because terminal atoms are the same (three-membered ring?) - expected nTorsions reduced from %i to %i...\n", ai->id()+1, aj->id()+1, ak->id()+1, al->id()+1, nTorsions, nTorsions-1);
-						nTorsions --;
-						continue;
-					}
-
-					ti = ai->type();
-					tj = aj->type();
-					tk = ak->type();
-					tl = al->type();
-	
-					// Search for the torsion data. If its a rule-based FF and we don't find any matching data,
-					// generate it. If its a normal forcefield, flag the incomplete marker.
-					ffb = ff->findTorsion(ti,tj,tk,tl);
-					// If we didn't find a match in the forcefield, attempt generation and dummy term addition
-					if (ffb == NULL)
-					{
-						if (ff->torsionGenerator() != NULL) ffb = ff->generateTorsion(ai,aj,ak,al);
-						else if (addDummyTerms_ || allowDummy)
-						{
-							ffb = createDummyTorsion(ti,tj,tk,tl);
-							++nDummy;
-						}
-					}
-					addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
-					// Check ffb and raise warning if NULL
-					if (ffb == NULL)
-					{
-						msg.print("!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
-						incomplete_ = TRUE;
-						itorsions ++;
-					}
-					else
-					{
-						msg.print(Messenger::Verbose,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
-					}
-				}
-			}
-		}
-		if (torsions_.nItems() != nTorsions)
-		{
-			msg.print("...INTERNAL ERROR: expected %i torsions, found %i\n", nTorsions, torsions_.nItems());
-			incomplete_ = TRUE;
-		}
-		else if (torsions_.nItems() == 0) msg.print("... No torsions in model.\n");
-		else if (itorsions == 0)
-		{
-			if (nDummy == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
-			else msg.print("... Found parameters for %i torsions (%i dummy terms).\n", torsions_.nItems(), nDummy);
-		}
-		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
 		// Construct improper torsions list
 		// Cycle over impropers defined in forcefield and see if the pattern contains those atoms within a certain distance
 		nImpropers = 0;
@@ -392,6 +352,61 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 			msg.print(Messenger::Verbose,"Improper %s-%s-%s-%s data : %f %f %f %f\n", ipa[0]->atom()->type()->equivalent(), ipa[1]->atom()->type()->equivalent(), ipa[2]->atom()->type()->equivalent(), ipa[3]->atom()->type()->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 
 		}
+		
+		// Print out information (in more logical order)
+		// Bonds
+		if ((bonds_.nItems()-nUreyBradleys) != nBonds)
+		{
+			msg.print("...INTERNAL ERROR: expected %i bonds, found %i\n", nBonds, bonds_.nItems());
+			incomplete_ = TRUE;
+		}
+		else if (bonds_.nItems() == 0) msg.print("... No bonds in model.\n");
+		else if (ibonds == 0)
+		{
+			if (nDummyBonds == 0)
+			{
+				if (nUreyBradleys != 0) msg.print("... Found parameters for %i bonds and %i Urey-Bradley terms.\n", bonds_.nItems()-nUreyBradleys, nUreyBradleys);
+				else msg.print("... Found parameters for %i bonds.\n", bonds_.nItems());
+			}
+			else
+			{
+				if (nUreyBradleys != 0) msg.print("... Found parameters for %i bonds (%i dummy terms) and %i Urey-Bradley terms.\n", bonds_.nItems(), nDummyBonds, nUreyBradleys);
+				else msg.print("... Found parameters for %i bonds (%i dummy terms).\n", bonds_.nItems(), nDummyBonds);
+			}
+		}
+		else msg.print("... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
+		// Angles
+		if (angles_.nItems() != nAngles)
+		{
+			msg.print("...INTERNAL ERROR: expected %i angles, found %i\n", nAngles, angles_.nItems());
+			incomplete_ = TRUE;
+		}
+		else if (angles_.nItems() == 0) msg.print("... No angles in model.\n");
+		else if (iangles == 0)
+		{
+			if (nUreyBradleys == 0)
+			{
+				if (nDummyAngles == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
+				else msg.print("... Found parameters for %i angles (%i dummy terms).\n", bonds_.nItems(), nDummyAngles);
+			}
+			else if (nDummyAngles == 0) msg.print("... Found parameters for %i angles, %i with corresponding Urey-Bradley definitions.\n", angles_.nItems(), nUreyBradleys);
+			else msg.print("... Found parameters for %i angles (%i dummy terms), %i with corresponding Urey-Bradley definitions.\n", angles_.nItems(), nDummyAngles, nUreyBradleys);
+		}
+		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
+		// Torsions
+		if (torsions_.nItems() != nTorsions)
+		{
+			msg.print("...INTERNAL ERROR: expected %i torsions, found %i\n", nTorsions, torsions_.nItems());
+			incomplete_ = TRUE;
+		}
+		else if (torsions_.nItems() == 0) msg.print("... No torsions in model.\n");
+		else if (itorsions == 0)
+		{
+			if (nDummyTorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
+			else msg.print("... Found parameters for %i torsions (%i dummy terms).\n", torsions_.nItems(), nDummyTorsions);
+		}
+		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
+		// Impropers
 		if (nImpropers > 0) msg.print("... Found parameters for %i impropers.\n", nImpropers);
 	}
 	delete[] bonding;
