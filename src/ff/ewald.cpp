@@ -88,7 +88,7 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, 
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) * cserfc(alpha*rij) / rij;
+					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) * AtenMath::erfc(alpha*rij) / rij;
 					con == 0 ? energy_inter += energy : energy_intra += (con == 3 ? energy * elecScaleMatrix_[i][j] : energy);
 				}
 			}
@@ -146,7 +146,7 @@ void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Ener
 					atomj = j + aoff2;
 					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = mim_i.magnitude();
-					if (rij < cutoff) energy  += (modelatoms[atomj]->charge() * cserfc(alpha*rij) / rij);
+					if (rij < cutoff) energy  += (modelatoms[atomj]->charge() * AtenMath::erfc(alpha*rij) / rij);
 				}
 				energy *= modelatoms[atomi]->charge();
 				energy_inter += energy;
@@ -306,7 +306,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, EnergyStore *estore, int molec
 					qprod *= (1.0 - elecScaleMatrix_[i][j]);
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
-					molcorrect += qprod *( cserf(alpha*rij)/rij );
+					molcorrect += qprod *( AtenMath::erf(alpha*rij)/rij );
 				}
 			}
 		aoff += nAtoms_;
@@ -353,7 +353,7 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					alpharij = alpha * rij;
-					factor = cserfc(alpharij) + 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
+					factor = AtenMath::erfc(alpharij) + 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
 					qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
 					factor = factor * qqrij3 * prefs.elecConvert();
 					if (con == 3) factor *= elecScaleMatrix_[i][j];
@@ -406,7 +406,7 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 					if (rij < cutoff)
 					{
 						alpharij = alpha * rij;
-						factor = cserfc(alpharij) + 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
+						factor = AtenMath::erfc(alpharij) + 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
 						qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
 						factor = factor * qqrij3 * prefs.elecConvert();
 						// Sum forces
@@ -539,7 +539,7 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 					if (rij > cutoff) continue;
 					// Calculate force to subtract
 					alpharij = alpha * rij;
-					factor = cserf(alpharij) - 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
+					factor = AtenMath::erf(alpharij) - 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
 					qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
 					factor = factor * qqrij3 * prefs.elecConvert();
 					factor *= (1.0 - elecScaleMatrix_[i][j]);

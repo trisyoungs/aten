@@ -19,16 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/mathfunc.h"
+#include "base/constants.h"
 #include <cstdlib>
 #include <math.h>
 
 // Error Function
-double cserfc(double x)
+double AtenMath::erfc(double x)
 {
 	// Approximation to the complementary error function.
 	// Ref: Abramowitz and Stegun, Handbook of Mathematical Functions,
 	//	National Bureau of Standards, Formula 7.1.26
-	const double a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+	static double a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
 	double t, tp, result;
 	t = 1.0 / ( 1.0 + p * x );
 	tp = t * ( a1 + t * ( a2 + t * ( a3 + t * ( a4 + t * a5 ) ) ) );
@@ -37,13 +39,13 @@ double cserfc(double x)
 }
 
 // Complementary error function
-double cserf(double x)
+double AtenMath::erf(double x)
 {
-	return (1.0 - cserfc(x));
+	return (1.0 - erfc(x));
 }
 
 // Random Number Generator (0 - 1)
-double csRandom()
+double AtenMath::random()
 {
 	// Simple random number generator from C++ stdlib.
 	// Returns numbers from 0.0 to 1.0, exclusive of 1.0.
@@ -52,14 +54,14 @@ double csRandom()
 }
 
 // Random number generator (0 - range-1)
-int csRandomi(int range)
+int AtenMath::randomi(int range)
 {
 	// Returns a random number from 0->(range-1) inclusive.
-	return int(range * csRandom());
+	return int(range * random());
 }
 
 // Integer power function
-int power(int i, int p)
+int AtenMath::power(int i, int p)
 {
 	static int result, n;
 	result = i;
@@ -67,4 +69,3 @@ int power(int i, int p)
 	else for (n=1; n<p; n++) result *= i;
 	return result;
 }
-

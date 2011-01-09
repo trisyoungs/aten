@@ -19,13 +19,25 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Error functions
-double cserfc(double);
-double cserf(double);
+#ifndef ATEN_MATHFUNC_H
+#define ATEN_MATHFUNC_H
 
-// Misc
-double csRandom();
-int csRandomi(int);
+// Mathematical functions
+class AtenMath
+{
+	// Error functions
+	public:
+	static double erfc(double);
+	static double erf(double);
 
-// Integer power function
-int power(int i, int p);
+	// Random number generation
+	public:
+	static double random();
+	static int randomi(int);
+
+	// Integer power function
+	public:
+	static int power(int i, int p);
+};
+
+#endif

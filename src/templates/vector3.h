@@ -538,9 +538,9 @@ template <class T> void Vec3<T>::print() const
 template <class T> void Vec3<T>::randomUnit()
 {
 	// Generates a random unit vector
-	x = csRandom()-0.5;
-	y = csRandom()-0.5;
-	z = csRandom()-0.5;
+	x = AtenMath::random()-0.5;
+	y = AtenMath::random()-0.5;
+	z = AtenMath::random()-0.5;
 	normalise();
 }
 

@@ -22,6 +22,7 @@
 #include "base/cell.h"
 #include "base/atom.h"
 #include "model/model.h"
+#include "base/mathfunc.h"
 #include "base/sysfunc.h"
 #include "base/spacegroup.h"
 using namespace std;
@@ -703,7 +704,7 @@ Vec3<double> Cell::fracToReal(const Vec3<double> &v) const
 // Generate a random position inside the unit cell
 Vec3<double> Cell::randomPos() const
 {
-	return axes_.transform(csRandom(), csRandom(), csRandom());
+	return axes_.transform(AtenMath::random(), AtenMath::random(), AtenMath::random());
 }
 
 // Print
