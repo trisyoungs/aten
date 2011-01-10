@@ -33,8 +33,7 @@ void TCanvas::render2D(QPainter &painter)
 	GLfloat colour[4];
 	Vec4<double> screenr;
 	Vec3<double> r;
-	int i, labels, skip, n;
-	ForcefieldAtom *ffa;
+	int i, skip, n;
 	double dx, halfw;
 
 	// Text Primitives

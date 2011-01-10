@@ -200,7 +200,11 @@ void AtenCustomDialog::checkBoxWidget_clicked(bool checked)
 		return;
 	}
 	// Check all states defined in the widgetnode
-	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (checked == (int)sc->stateValueAsInteger()) performStateChange(sc);
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
+	{
+		if (checked && ((int)sc->stateValueAsInteger() > 0)) performStateChange(sc);
+		else if ((!checked) && ((int)sc->stateValueAsInteger() < 1)) performStateChange(sc);
+	}
 	refreshing_ = FALSE;
 }
 

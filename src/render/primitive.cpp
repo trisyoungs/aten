@@ -406,16 +406,16 @@ void Primitive::createCellAxes()
 	forgetAll();
 	
 	// X axis
-	plotCylinder(0.0, 0.0, 0.0, 0.65, 0.0, 0.0, 0.1, 0.1, nstacks, nslices);
-	plotCylinder(0.65, 0.0, 0.0, 0.35, 0.0, 0.0, 0.2, 0.0, nstacks, nslices);
+	plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nstacks, nslices);
+	plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nstacks, nslices);
 
 	// Y axis
-	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.65, 0.0, 0.1, 0.1, nstacks, nslices);
-	plotCylinder(0.0, 0.65, 0.0, 0.0, 0.35, 0.0, 0.2, 0.0, nstacks, nslices);
+	plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.1f, 0.1f, nstacks, nslices);
+	plotCylinder(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, 0.0f, nstacks, nslices);
 	
 	// Z axis
-	plotCylinder(0.0, 0.0, 0.0, 0.0, 0.0, 0.65, 0.1, 0.1, nstacks, nslices);
-	plotCylinder(0.0, 0.0, 0.65, 0.0, 0.0, 0.35, 0.2, 0.0, nstacks, nslices);
+	plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.1f, 0.1f, nstacks, nslices);
+	plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nstacks, nslices);
 	
 }
 
@@ -426,9 +426,9 @@ void Primitive::createRotationGlobeAxes(int nstacks, int nslices)
 	forgetAll();
 	
 	// Axis pointers
-	plotCylinder(0.7, 0.0, 0.0, 0.3, 0.0, 0.0, 0.2, 0.0, nstacks, nslices);
-	plotCylinder(0.0, 0.7, 0.0, 0.0, 0.3, 0.0, 0.2, 0.0, nstacks, nslices);
-	plotCylinder(0.0, 0.0, 0.7, 0.0, 0.0, 0.3, 0.2, 0.0, nstacks, nslices);
+	plotCylinder(0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 0.2f, 0.0f, nstacks, nslices);
+	plotCylinder(0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.2f, 0.0f, nstacks, nslices);
+	plotCylinder(0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.2f, 0.0f, nstacks, nslices);
 }
 
 // Return first chunk vertex array

@@ -34,6 +34,11 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(SRCS src/)
 #ADD_DEFINITIONS(-DQT_SHARED)
 
+# Add global NOMINMAX define for Windows systems
+if(WIN32)
+  ADD_DEFINITIONS("-DNOMINMAX")
+endif(WIN32)
+
 # tell cmake to process CMakeLists.txt in that subdirectory
 add_subdirectory(${SRCS})
 
@@ -194,7 +199,6 @@ SET(CPACK_PACKAGE_VERSION_MINOR ${VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${VERSION_PATCH})
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Aten${VERSION_MAJOR}.${VERSION_MINOR}")
 IF(WIN32)
-  ADD_DEFINITION("-DNOMINMAX")
   SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Aten-${VERSION_MAJOR}.${VERSION_MINOR}")
   SET(CPACK_GENERATOR "NSIS;ZIP")
   # There is a bug in NSI that does not handle full unix paths properly. Make
