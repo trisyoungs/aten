@@ -22,7 +22,7 @@
 #ifndef ATEN_TEXTPRIMITIVE_H
 #define ATEN_TEXTPRIMITIVE_H
 
-#include <Qt/QtGui>
+#include <QtGui/QtGui>
 #include "templates/list.h"
 
 #define TEXTCHUNKSIZE 100
