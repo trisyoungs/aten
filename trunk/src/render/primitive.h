@@ -22,7 +22,6 @@
 #ifndef ATEN_PRIMITIVE_H
 #define ATEN_PRIMITIVE_H
 
-#include <GL/gl.h>
 #include <Qt/QtGui>
 #include "templates/list.h"
 #include "base/matrix.h"

@@ -19,9 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Prevent Windows caveat
-#define NOMINMAX
-
 #include "base/elements.h"
 #include "classes/forcefieldatom.h"
 #include "classes/neta_parser.h"

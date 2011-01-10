@@ -22,9 +22,6 @@
 #ifndef ATEN_VECTOR3_H
 #define ATEN_VECTOR3_H
 
-// Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
-#define NOMINMAX
-
 #include "base/messenger.h"
 #include "base/constants.h"
 #include "base/mathfunc.h"

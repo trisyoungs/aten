@@ -22,14 +22,13 @@
 #ifndef ATEN_MATRIX_H
 #define ATEN_MATRIX_H
 
-// Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
-#define NOMINMAX
-
 #include <stdio.h>
 #include "templates/vector3.h"
 #include "templates/vector4.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <GL/gl.h>
-using namespace std;
 
 // Column-major 4x4 matrix
 class Matrix

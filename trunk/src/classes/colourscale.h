@@ -22,9 +22,6 @@
 #ifndef ATEN_COLOURSCALE_H
 #define ATEN_COLOURSCALE_H
 
-// Fix Windows.h
-#define NOMINMAX
-
 #include <QtOpenGL/QtOpenGL>
 #include "templates/list.h"
 #include "templates/reflist.h"

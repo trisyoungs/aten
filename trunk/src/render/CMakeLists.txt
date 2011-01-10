@@ -1,5 +1,6 @@
 add_library(render
 engine.h
+primitive.h
 textprimitive.h
 triangles.h
 engine.cpp
