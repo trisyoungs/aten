@@ -225,7 +225,7 @@ void Primitive::plotCircle(double radius, int nstacks, int nsegments, bool segme
 {
 	int n, o;
 	Vec3<GLfloat> r1, r2;
-	double d1, d2, dphi, dpsi, cosphi1, sinphi1, cosphi2, sinphi2;
+	double dphi, dpsi, cosphi1, sinphi1, cosphi2, sinphi2;
 
 	type_ = GL_LINES;
 

@@ -27,6 +27,9 @@
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include <math.h>
+#ifdef _WIN32
+#include "glext.h"
+#endif
 
 // Constructor
 RenderEngine::RenderEngine()

@@ -22,7 +22,7 @@
 #ifndef ATEN_PRIMITIVE_H
 #define ATEN_PRIMITIVE_H
 
-#include <Qt/QtGui>
+#include <QtGui/QtGui>
 #include "templates/list.h"
 #include "base/matrix.h"
 
