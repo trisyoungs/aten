@@ -26,7 +26,6 @@
 #include "base/dnchar.h"
 #include "base/cell.h"
 #include "base/constants.h"
-#include <GL/gl.h>
 
 // GridPoint class
 class GridPoint

@@ -29,7 +29,6 @@
 #include "base/atom.h"
 #include "base/bond.h"
 #include "base/matrix.h"
-#include <GL/gl.h>
 
 // Forward declarations
 class Model;

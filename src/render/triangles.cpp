@@ -20,6 +20,7 @@
 */
 
 #include "render/triangles.h"
+using namespace std;
 
 /*
 // Triangle Chopper

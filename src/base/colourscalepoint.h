@@ -22,9 +22,6 @@
 #ifndef ATEN_COLOURSCALEPOINT_H
 #define ATEN_COLOURSCALEPOINT_H
 
-// Fix Windows.h
-#define NOMINMAX
-
 #include <QtOpenGL/QtOpenGL>
 
 // Forward declarations

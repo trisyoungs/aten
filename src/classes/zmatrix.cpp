@@ -19,9 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// 'Prevent Windows collapsing in on itself' caveat
-#define NOMINMAX
-
 #include "classes/zmatrix.h"
 #include "parser/double.h"
 #include "model/model.h"

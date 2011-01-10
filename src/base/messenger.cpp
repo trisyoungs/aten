@@ -22,7 +22,6 @@
 #include "gui/gui.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
-#include "base/mathfunc.h"
 #include "base/constants.h"
 #include <stdarg.h>
 #include <stdio.h>

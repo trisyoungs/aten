@@ -19,9 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Prevent Windows macro idiocy
-#define NOMINMAX
-
 #include "base/elements.h"
 #include "main/aten.h"
 #include "model/model.h"

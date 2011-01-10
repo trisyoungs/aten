@@ -19,9 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Fix Windows.h
-#define NOMINMAX
-
 #include <string.h>
 #include "base/sysfunc.h"
 #include "base/elements.h"
