@@ -9,7 +9,6 @@ engine_windows.cpp
 primitive.cpp
 primitive_surface.cpp
 primitive_vertex.cpp
-render.cpp 
 textprimitive.cpp
 triangles.cpp
 )
