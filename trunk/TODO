@@ -2,6 +2,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Multiple stick bonds currrently missing</para>
+		</listitem>
+		<listitem>
 			<para>Rotation of multiple bonds into bond plane not working correctly</para>
 		</listitem>
 		<listitem>

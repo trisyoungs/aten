@@ -140,6 +140,8 @@ class Primitive
 	void defineTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
 	// Define triangle with single colour per vertex
 	void defineTriangleSingleColour(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
+	// Plot simple line between specified coordinates
+	void plotLine(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2);
 	// Plot vertices of sphere with specified radius and quality
 	void plotSphere(double radius, int nstacks, int nslices);
 	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
