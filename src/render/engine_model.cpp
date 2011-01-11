@@ -126,28 +126,6 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 		switch (style_i)
 		{
 			case (Atom::StickStyle):
-				renderPrimitive(bonds_[style_i][bt], lod, colour_i, A);
-				if (i->isSelected() && (selvisible > 0.0))
-				{
-					colour_i[3] = 0.5f;
-					renderPrimitive(selectedBonds_[style_i][bt], lod, colour_i, A);
-					colour_i[3] = alpha_i;
-				}
-				// Move to centre of visible bond, ready for next bond half
-				A.applyTranslationZ(1.0);
-				break;
-// 				ri = i->r();
-// 				rj = ri + vij*0.5;
-// 				glLineWidth( i->isSelected() ? 3.0 : 1.0 );
-// 				glColor4fv(colour_i);
-// 				glDisable(GL_LIGHTING);
-// 				glBegin(GL_LINES);
-// 				glVertex3d(ri.x, ri.y, ri.z);
-// 				glVertex3d(rj.x, rj.y, rj.z);
-// 				glEnd();
-// 				glEnable(GL_LIGHTING);
-// 				A.applyTranslationZ(1.0);
-// 				break;
 			case (Atom::TubeStyle):
 				renderPrimitive(bonds_[style_i][bt], lod, colour_i, A);
 				if (i->isSelected() && (selvisible > 0.0))
@@ -182,19 +160,6 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 		switch (style_j)
 		{
 			case (Atom::StickStyle):
-				rj = j->r();
-				ri = rj - vij*0.5;
-				glNormal3d(0.0,0.0,1.0);
-				glColor4fv(colour_j);
-				glLineWidth( j->isSelected() ? 3.0 : 1.0 );
-				glColor4fv(colour_j);
-				glDisable(GL_LIGHTING);
-				glBegin(GL_LINES);
-				glVertex3d(ri.x, ri.y, ri.z);
-				glVertex3d(rj.x, rj.y, rj.z);
-				glEnd();
-				glEnable(GL_LIGHTING);
-				break;
 			case (Atom::TubeStyle):
 				renderPrimitive(bonds_[style_i][bt], lod, colour_j, A);
 				if (j->isSelected())
