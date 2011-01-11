@@ -1,32 +1,78 @@
-Thigs to test in new version:
+<sect5><title>Known Bugs</title>
 
-1) Cell packing (vs Mercury)
-2) MatrixTransform of model
+	<orderedlist>
+		<listitem>
+			<para>Rotation of multiple bonds into bond plane not working correctly</para>
+		</listitem>
+		<listitem>
+			<para>Undo/redo of cell creation/removal not working properly?</para>
+		</listitem>
+		<listitem>
+			<para>Reading spacegroup info and packing from certain cifs with Pnmmm symmetry is incorrect (c.f. Mercury)</para>
+		</listitem>
+		<listitem>
+			<para>In fragment builder, fragment is not updated properly after Alt</para>
+		</listitem>
+		<listitem>
+			<para>Replacing existing bond in fragment builder occasionally causes wrong atoms to be deleted</para>
+		</listitem>
+	</orderedlist>
 
-Things to do (fix) in new version:
+</sect5>
 
-1) Rotation of multiple bonds into bond plane
-2) Jump before first rotation of model (lastmouse not set properly?)
+<sect5><title>General TODO</title>
 
-General TODO:
+	<orderedlist>
+		<listitem>
+			<para>Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click)</para>
+		</listitem>
+		<listitem>
+			<para>Script to add glyphs to represent H-bonds between pair of selected atoms</para>
+		</listitem>
+		<listitem>
+			<para>More stuff on Grids window - e.g. number of points, grid extent, volume etc.</para>
+		</listitem>
+		<listitem>
+			<para>Update script to perform conformational searching on molecule (add GUI options)</para>
+		</listitem>
+		<listitem>
+			<para>Glyph Undo/Redo</para>
+		</listitem>
+		<listitem>
+			<para>Allow (somehow) rotation of fragments without drawing them *or* rotating main view</para>
+		</listitem>
+		<listitem>
+			<para>Test matrix-transform of models</para>
+		</listitem>
+	</orderedlist>
 
-1) Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click
-2) Script to add H-bonds to pair of selected atoms
-3) Update script to perform conformational searching on molecule (add GUI options)
-4) More stuff on Grids window - e.g. number of points, grid extent, volume etc.
-5) Glyph Undo/Redo
-6) Spacegroup Pnmmm 'issues'
-7) Allow (somehow) rotation of fragments without drawing them *or* rotating main view
-8) Replacing existing bond in fragment builder causes wrong atoms to be deleted
-9) Double-press of ALT required to cycle over fragment attachment points? Or just that view isn't updated?
-a) Undo/Redo of cell addition not working properly?
+</sect5>
 
-Filter TODO:
-1) ECP type is not written in GAMESS-US export filter
-2) Add more options to GAMESS-US inp filter, inc. specification of how to write elements (full name / symbol), MD options etc.
-3) Storage of grid data in AKF format.
+<sect5><title>Filter TODO</title>
 
-Doc TODO:
+	<orderedlist>
+		<listitem>
+			<para>ECP type is not written in GAMESS-US export filter</para>
+		</listitem>
+		<listitem>
+			<para>Add more options to GAMESS-US inp filter, inc. specification of how to write elements (full name / symbol), MD options etc.</para>
+		</listitem>
+		<listitem>
+			<para>Storage of grid data in AKF format</para>
+		</listitem>
+	</orderedlist>
 
-1) Topic: Colourscales
-2) Topic: Glyphs
+</sect5>
+
+<sect5><title>Doc TODO</title>
+
+	<orderedlist>
+		<listitem>
+			<para>Topic: Colourscales</para>
+		</listitem>
+		<listitem>
+			<para>Topic: Glyphs</para>
+		</listitem>
+	</orderedlist>
+
+</sect5>

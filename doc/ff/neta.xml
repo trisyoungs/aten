@@ -80,7 +80,7 @@
 		</table>
 	</section>
 
-	<section id="ff.neta.ref.doublebondto"><title>-X (double bond to X)</title>
+	<section id="ff.neta.ref.doublebondto"><title>=X (double bond to X)</title>
 		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>double bond to</tertiary></indexterm>
 			
 		<para>Specifies that a double bond to 'X' must exist. Equivalent to writing '~X(bond=double)'. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. If used inside the bracketed part of a <link linkend="ff.neta.ref.ring">ring</link> description this only indicates that the atom/type should be present within the cycle - the connection to the target atom is unimportant. If used in a <link linkend="ff.neta.ref.chain">chain</link> keyword the connection type is honoured.</para>

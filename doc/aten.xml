@@ -102,7 +102,7 @@
 	<!ENTITY commandview SYSTEM "commands/view.xml">
 	<!-- Topics of Interest -->
 	<!ENTITY topicscolourscales SYSTEM "topics/colourscales.xml">
-	<!ENTITY topicsglyphs SYSTEM "topics/colourglyphs.xml">
+	<!ENTITY topicsglyphs SYSTEM "topics/glyphs.xml">
 	<!ENTITY topicspatterns SYSTEM "topics/patterns.xml">
 	<!-- Forcefields -->
 	<!ENTITY fffiles SYSTEM "ff/files.xml">
@@ -141,7 +141,8 @@
 	<!ENTITY regionshapes SYSTEM "enums/regionshapes.xml">
 	<!ENTITY viewobjects SYSTEM "enums/viewobjects.xml">
 	<!ENTITY zmaptypes SYSTEM "enums/zmaptypes.xml">
-	<!-- Changelogs -->
+	<!-- Changelogs / TODO -->
+	<!ENTITY todolist SYSTEM "../TODO">
 	<!ENTITY changelog11 SYSTEM "changelogs/changelog1.1.xml">
 	<!ENTITY changelog12 SYSTEM "changelogs/changelog1.2.xml">
 	<!ENTITY changelog13 SYSTEM "changelogs/changelog1.3.xml">
@@ -394,6 +395,11 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 		&regionshapes;
 		&viewobjects;
 		&zmaptypes;
+	</chapter>
+
+	<!-- TODO -->
+	<chapter id="todo"><title>TODO</title>
+		&todolist;
 	</chapter>
 
 	<!-- Changelogs -->
