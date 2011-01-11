@@ -72,6 +72,14 @@ void Primitive::defineTriangleSingleColour(GLfloat *vertices, GLfloat *normals, 
 	defineVertex(vertices[6], vertices[7], vertices[8], normals[6], normals[7], normals[8], colour[0], colour[1], colour[2], colour[3], FALSE);
 }
 
+// Plot simple line between specified coordinates
+void Primitive::plotLine(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
+{
+	type_ = GL_LINES;
+	defineVertex(x1,y1,z1,0.0f,0.0f,1.0f,FALSE);
+	defineVertex(x2,y2,z2,0.0f,0.0f,1.0f,FALSE);
+}
+
 // Create vertices of sphere with specified radius and quality
 void Primitive::plotSphere(double radius, int nstacks, int nslices)
 {

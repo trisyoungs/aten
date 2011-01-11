@@ -131,11 +131,20 @@ void RenderEngine::createPrimitives(int quality, bool force)
 			selectedScaledAtoms_[n].primitive(lod).plotSphere(radius*selscale, nstacks, nslices);
 		}
 		
-		// Bond Styles
+		// Bond primitive accuracy
 		nstacks = max(1,(int) (quality*lodratio*0.25));
 		nslices = max(3,(int) (quality*lodratio));
 		
-		// All styles - Single and Aromatic Bonds
+		// All Stick styles, all bond types
+		bonds_[Atom::StickStyle][Bond::Single].primitive(lod).plotLine(0,0,0,0,0,1);
+		bonds_[Atom::StickStyle][Bond::Aromatic].primitive(lod).plotLine(0,0,0,0,0,1);
+		bonds_[Atom::StickStyle][Bond::Double].primitive(lod).plotLine(-bradius[Atom::StickStyle]*0.5,0,0,-bradius[Atom::StickStyle]*0.5,0,1);
+		bonds_[Atom::StickStyle][Bond::Double].primitive(lod).plotLine(bradius[Atom::StickStyle]*0.5,0,0,bradius[Atom::StickStyle]*0.5,0,1);
+		bonds_[Atom::StickStyle][Bond::Triple].primitive(lod).plotLine(0,0,0,0,0,1);
+		bonds_[Atom::StickStyle][Bond::Triple].primitive(lod).plotLine(-bradius[Atom::StickStyle]*0.66,0,0,-bradius[Atom::StickStyle]*0.66,0,1);
+		bonds_[Atom::StickStyle][Bond::Triple].primitive(lod).plotLine(bradius[Atom::StickStyle]*0.66,0,0,bradius[Atom::StickStyle]*0.66,0,1);
+		
+		// All sphere styles - Single and Aromatic Bonds
 		bonds_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
 		bonds_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
 		bonds_[Atom::ScaledStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle], bradius[Atom::ScaledStyle], nstacks, nslices);
