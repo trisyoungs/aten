@@ -144,7 +144,7 @@
      <x>0</x>
      <y>0</y>
      <width>1031</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu">
@@ -2343,6 +2343,9 @@
   <action name="actionMolecularDynamicsWindow">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
