@@ -53,8 +53,8 @@ sed -i -n "
 $ {
 	g
 	s/\n\t*<\/pre/<\/pre/g
-	s/\([a-z0-9\.]*\)\.html/\/docs\/Examples\/\1.xhtml/g
-	s/img src=\"images/img src=\"\/docs\/$TARGETDIR\/images/g
+	s/\([a-z0-9\.]*\)\.html/\/doc\/Examples\/\1.xhtml/g
+	s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g
 	p
 }" *.html
 for a in *html
@@ -87,8 +87,8 @@ sed -i -n "
 \$ {
 	g
 	s/\n\t*<\/pre/<\/pre/g
-	s/\([a-z\.]*\)\.html/\/docs\/$TARGETDIR\/\1.xhtml/g
-	s/img src=\"images/img src=\"\/docs\/$TARGETDIR\/images/g
+	s/\([a-z\.]*\)\.html/\/doc\/$TARGETDIR\/\1.xhtml/g
+	s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g
 	p
 }" *html
 for a in *html
@@ -105,7 +105,7 @@ CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl |
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc aten.xsl aten-versioned.xml > manual.html
 # Rewrite image links
-sed -e "s/img src=\"images/img src=\"\/docs\/$TARGETDIR\/images/g" manual.html > manual.xhtml
+sed -e "s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g" manual.html > manual.xhtml
 
 echo "#"
 echo "# Generating Single Page FAQ"
