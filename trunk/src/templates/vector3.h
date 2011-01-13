@@ -92,6 +92,8 @@ template <class T> class Vec3
 	// Methods
 	*/
 	public:
+	// Return vector of absolute elements
+	Vec3<T> abs() const;
 	// Returns the largest absolute value of the vector
 	T absMax() const;
 	// Returns the index of the maximum absolute-valued element in the vector
@@ -376,6 +378,12 @@ template <class T> T Vec3<T>::operator[](int index)
 /*
 // Methods
 */
+
+// Return vector of absolute elements
+template <class T> Vec3<T> Vec3<T>::abs() const
+{
+	return Vec3<T>(fabs(x), fabs(y), fabs(z));
+}
 
 // Largest absolute value
 template <class T> T Vec3<T>::absMax() const

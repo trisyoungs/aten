@@ -2,7 +2,10 @@
 
 	<orderedlist>
 		<listitem>
-			<para>Multiple stick bonds currrently missing</para>
+			<para>Resetting orthographic view is broken</para>
+		</listitem>
+		<listitem>
+			<para>Aromatic stick bonds missing</para>
 		</listitem>
 		<listitem>
 			<para>Rotation of multiple bonds into bond plane not working correctly</para>
