@@ -280,11 +280,13 @@ void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h, double orthozoo
 	}
 	else
 	{
+			printf("Orthozoom = %f\n", orthozoom);
 		top = tan(prefs.perspectiveFov() / DEGRAD) * orthozoom;
 		bottom = -top;
 		glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
 	glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
+	modelProjectionMatrix_.print();
 	glMatrixMode(GL_MODELVIEW);
 }
 

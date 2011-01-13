@@ -130,50 +130,44 @@ void Model::resetView()
 {
 	// Reset the modelview matrix and the camera
 	msg.enter("Model::resetView");
+	Vec3<double> extremes, rabs, target;
 	Vec4<double> screenr;
-	Atom *i, target;
 	bool done = FALSE;
-	double z, largest = 0.0;
+	double largest = 0.0;
 	Matrix &mview = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix_);
 	mview.setIdentity();
+	mview.setColumn(3,0.0,0.0,0.0,1.0);
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
-	for (i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		z = i->r().absMax();
-		if (z > largest) largest = z;
+		rabs = i->r().abs();
+		if (rabs.x > extremes.x) extremes.x = rabs.x;
+		if (rabs.y > extremes.y) extremes.y = rabs.y;
+		if (i->r().z > extremes.z) extremes.z = rabs.z;
 	}
-	target.r() = cell_.centre();
-	target.r().add(0.0,0.0,cell_.lengths().z+largest);
-	mview.setColumn(3,0.0,0.0,0.0,1.0);
+	target = (cell_.lengths() * 0.5) + extremes;
+	printf("TARGET R = "); target.print();
+// 	target.r().add(0.0,0.0,cell_.lengths().z+largest);
 	// Now, adjust camera matrix so that this atom is on-screen.
 	// Need to do a check for the viability of the canvas first...
 	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
 	{
-		if (prefs.hasPerspective())
+		// TODO Resetting orthographic view is broken, since modelProjectionMatrix_ (in engine_) is not updated
+		// after changing zoom factor (relevant call to glOrtho)
+		do
 		{
-			do
-			{
-				// Adjust z-translation by 1 Angstrom
-				mview[14] -= 1.0;
-				// Project our local atom and grab the z screen coordinate
-				gui.mainWidget->updateTransformation(mview, cell_.centre());
-				z = gui.mainWidget->modelToWorld(target.r()).z;
-			} while (z > -5.0);
-		}
-		else
-		{
-			do
-			{
-				// Project our local atom and grab the z screen coordinate
-				modelViewMatrix_[14] -= 1.0;
-				gui.mainWidget->modelToWorld(target.r(), &screenr);
-				done = TRUE;
-				if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
-				if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
-				if (screenr.z < 0.0) done = FALSE;
-			} while (!done);
-		}
+			// Adjust z-translation by 1 Angstrom
+			mview[14] -= 1.0;
+			// Project our local atom and grab the z screen coordinate
+			gui.mainWidget->updateTransformation(mview, cell_.centre());
+			gui.mainWidget->modelToWorld(target, &screenr);
+			done = TRUE;
+			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
+			if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
+			if (screenr.z < 0.0) done = FALSE;
+			printf("Screen coords = "); screenr.print();
+		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
 	// Log camera change
