@@ -47,6 +47,9 @@
 		<listitem>
 			<para>Test matrix-transform of models</para>
 		</listitem>
+		<listitem>
+			<para>Add on glyph selection methods (a la box select with the mouse)</para>
+		</listitem>
 	</orderedlist>
 
 </sect5>
