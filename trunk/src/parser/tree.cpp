@@ -87,13 +87,13 @@ Tree::~Tree()
 }
 
 // Set parent
-void Tree::setParent(Forest *f)
+void Tree::setParent(Program *prog)
 {
-	parent_ = f;
+	parent_ = prog;
 }
 
 // Return parent
-Forest *Tree::parent() const
+Program *Tree::parent() const
 {
 	return parent_;
 }

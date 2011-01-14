@@ -1,5 +1,5 @@
 /*
-	*** Forest
+	*** Program
 	*** src/parser/forest.cpp
 	Copyright T. Youngs 2007-2010
 
@@ -31,10 +31,10 @@
 #include "main/aten.h"
 
 // Constructors
-Forest::Forest()
+Program::Program()
 {
 	// Private variables
-	name_ = "NewForest";
+	name_ = "NewProgram";
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = FALSE;
 
@@ -44,111 +44,125 @@ Forest::Forest()
 }
 
 // Destructor
-Forest::~Forest()
+Program::~Program()
 {
 }
 
 // Clear forest
-void Forest::clear()
+void Program::clear()
 {
 	functions_.clear();
-	trees_.clear();
+	filters_.clear();
 }
 
 // Set name of forest
-void Forest::setName(const char *s)
+void Program::setName(const char *s)
 {
 	name_ = s;
 }
 
 // Return name of forest
-const char *Forest::name()
+const char *Program::name()
 {
 	return name_.get();
 }
 
 // Return filename of source file
-const char *Forest::filename()
+const char *Program::filename()
 {
 	return filename_.get();
 }
 
 // Finalise forest
-void Forest::finalise()
+void Program::finalise()
 {
-	msg.enter("Forest::finalise");
-	// Cycle over generated trees...
-	for (Tree *t = trees_.first(); t != NULL; t = t->next)
+	msg.enter("Program::finalise");
+	// Create GUI controls for main program
+	if (mainProgram_.widgets() != NULL)
+	{
+		if (!mainProgram_.isFilter()) mainProgram_.createCustomDialog(name_.get());
+		else
+		{
+			Dnchar title;
+			if (mainProgram_.filter.isExportFilter()) title.sprintf("Export Options (%s)", mainProgram_.name());
+			else title.sprintf("Import Options (%s)", mainProgram_.name());
+			mainProgram_.createCustomDialog(title.get());
+		}
+		// Grab default values
+		mainProgram_.executeCustomDialog(TRUE);
+	}
+	// Cycle over generated filters
+	for (Tree *filter = filters_.first(); filter != NULL; filter = filter->next)
 	{
 		// Register file filters with the master
-		if (t->isFilter())
+		if (filter->isFilter())
 		{
-			aten.registerFilter(t, t->filter.type());
+			aten.registerFilter(filter, filter->filter.type());
 			// For trajectory import filters, we expect to find the two functions readheader and readframe, both returning integers
-			if (t->filter.type() == FilterData::TrajectoryImport)
+			if (filter->filter.type() == FilterData::TrajectoryImport)
 			{
 				// Search for 'int readheader()' function
-				Tree *func = t->findLocalFunction("readheader");
+				Tree *func = filter->findLocalFunction("readheader");
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readheader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), t->filter.name());
+					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readheader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
 				}
-				else msg.print("Warning: 'readheader' function has not been defined in the importtrajectory filter '%s'.\n", t->filter.name());
-				t->filter.setTrajectoryHeaderFunction(func);
+				else msg.print("Warning: 'readheader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				filter->filter.setTrajectoryHeaderFunction(func);
 
 				// Search for 'int readframe()' function
-				func = t->findLocalFunction("readframe");
+				func = filter->findLocalFunction("readframe");
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readframe' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), t->filter.name());
+					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readframe' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
 				}
-				else msg.print("Warning: 'readframe' function has not been defined in the importtrajectory filter '%s'.\n", t->filter.name());
-				t->filter.setTrajectoryFrameFunction(func);
+				else msg.print("Warning: 'readframe' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				filter->filter.setTrajectoryFrameFunction(func);
 			}
 		}
 		// Generate widgets (if Tree has any)
-		if (t->widgets() != NULL)
+		if (filter->widgets() != NULL)
 		{
-			if (!t->isFilter()) t->createCustomDialog(name_.get());
+			if (!filter->isFilter()) filter->createCustomDialog(name_.get());
 			else
 			{
 				Dnchar title;
-				if (t->filter.isExportFilter()) title.sprintf("Export Options (%s)", t->name());
-				else title.sprintf("Import Options (%s)", t->name());
-				t->createCustomDialog(title.get());
+				if (filter->filter.isExportFilter()) title.sprintf("Export Options (%s)", filter->name());
+				else title.sprintf("Import Options (%s)", filter->name());
+				filter->createCustomDialog(title.get());
 			}
 			// Grab default values
-			t->executeCustomDialog(TRUE);
+			filter->executeCustomDialog(TRUE);
 		}
 	}
-	msg.exit("Forest::finalise");
+	msg.exit("Program::finalise");
 }
 
-// Return number of trees in forest
-int Forest::nTrees()
+// Return main program
+Tree *Program::mainProgram()
 {
-	return trees_.nItems();
+	return &mainProgram_;
 }
 
-// Return first tree of forest
-Tree *Forest::trees()
-{
-	return trees_.first();
-}
+// Return first filter of forest
+//Tree *Program::filters()
+//{
+//	return filters_.first();
+//}   TGAY
 
-// Create a new tree
-Tree *Forest::addTree(Tree::TreeType type)
+// Create a new filter
+Tree *Program::addFilter()
 {
-	Tree *tree = trees_.add();
-	tree->setType(type);
+	Tree *tree = filters_.add();
 	tree->setParent(this);
+	tree->setType(Tree::FilterTree);
 	return tree;
 }
 
-// Add a Forest-global function
-Tree *Forest::addGlobalFunction(const char *name)
+// Add a Program-global function
+Tree *Program::addGlobalFunction(const char *name)
 {
 	Tree *tree = functions_.add();
 	tree->setName(name);
@@ -158,7 +172,7 @@ Tree *Forest::addGlobalFunction(const char *name)
 }
 
 // Search for existing global function
-Tree *Forest::findGlobalFunction(const char *name)
+Tree *Program::findGlobalFunction(const char *name)
 {
 	Tree *result;
 	for (result = functions_.first(); result != NULL; result = result->next) if (strcmp(result->name(),name) == 0) break;
@@ -166,15 +180,15 @@ Tree *Forest::findGlobalFunction(const char *name)
 }
 
 // Execute specified global function
-bool Forest::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist ...)
+bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist ...)
 {
-	msg.enter("Forest::executeGlobalFunction");
+	msg.enter("Program::executeGlobalFunction");
 	// First, locate funciton with the name supplied
 	Tree *func = findGlobalFunction(funcname);
 	if (func == NULL)
 	{
 		printf("Error: No global function named '%s' exists in '%s'.\n", funcname, name_.get());
-		msg.exit("Forest::executeGlobalFunction");
+		msg.exit("Program::executeGlobalFunction");
 		return FALSE;
 	}
 
@@ -207,7 +221,7 @@ bool Forest::executeGlobalFunction(const char *funcname, ReturnValue &rv, const 
 				var = new ForcefieldBoundVariable(va_arg(vars, ForcefieldBound*));
 				break;
 			default:
-				printf("Invalid argument specifier '%c' in Forest::executeGlobalFunctin.\n", *c);
+				printf("Invalid argument specifier '%c' in Program::executeGlobalFunctin.\n", *c);
 				var = NULL;
 				break;
 		}
@@ -218,40 +232,40 @@ bool Forest::executeGlobalFunction(const char *funcname, ReturnValue &rv, const 
 	// Now, pass all the info on to the static 'run' command in UserCommandNode
 	bool success = UserCommandNode::run(func,rv,args.first());
 
-	msg.exit("Forest::executeGlobalFunction");
+	msg.exit("Program::executeGlobalFunction");
 	return success;
 }
 
 // Generate forest from string 
-bool Forest::generateFromString(const char *s, const char *name, bool dontpushtree)
+bool Program::generateFromString(const char *s, const char *name, bool dontpushtree)
 {
-	msg.enter("Forest::generateFromString");
+	msg.enter("Program::generateFromString");
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromString(this, s, initialPushTree_);
 	finalise();
-	msg.exit("Forest::generateFromString");
+	msg.exit("Program::generateFromString");
 	return result;
 }
 
 // Generate forest from string list
-bool Forest::generateFromStringList(Dnchar *stringListHead, const char *name, bool dontpushtree)
+bool Program::generateFromStringList(Dnchar *stringListHead, const char *name, bool dontpushtree)
 {
-	msg.enter("Forest::generateFromStringList");
+	msg.enter("Program::generateFromStringList");
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromStringList(this, stringListHead, initialPushTree_);
 	finalise();
-	msg.exit("Forest::generateFromStringList");
+	msg.exit("Program::generateFromStringList");
 	return result;
 }
 
 // Generate forest from input file
-bool Forest::generateFromFile(const char *filename, const char *name, bool dontpushtree, bool isFilterFile)
+bool Program::generateFromFile(const char *filename, const char *name, bool dontpushtree, bool isFilterFile)
 {
-	msg.enter("Forest::generateFromFile");
+	msg.enter("Program::generateFromFile");
 	filename_ = filename;
 	if (name != NULL) name_ = name;
 	else name_ = filename;
@@ -260,72 +274,60 @@ bool Forest::generateFromFile(const char *filename, const char *name, bool dontp
 	bool result = cmdparser.generateFromFile(this, filename, initialPushTree_);
 // 	print();
 	finalise();
-	msg.exit("Forest::generateFromFile");
+	msg.exit("Program::generateFromFile");
 	return result;
 }
 
 // Reload forest (provided it was from a file...)
-bool Forest::reload()
+bool Program::reload()
 {
-	msg.enter("Forest::reload");
+	msg.enter("Program::reload");
 	if (filename_.isEmpty())
 	{
 		msg.print("No filename present in '%s' - can't reload commands.\n", name_.get());
-		msg.exit("Forest::reload");
+		msg.exit("Program::reload");
 		return FALSE;
 	}
 	// Clear old data...
 	clear();
 	bool result = cmdparser.generateFromFile(this, filename_, initialPushTree_);
 	finalise();
-	msg.exit("Forest::reload");
+	msg.exit("Program::reload");
 	return result;
 }
 
 // Delete specified tree
-void Forest::deleteTree(Tree *t)
+void Program::deleteTree(Tree *t)
 {
 	if (t == NULL) return;
 	// Search for the specified tree...
-	if (trees_.contains(t)) trees_.remove(t);
+	if (filters_.contains(t)) filters_.remove(t);
 	else if (functions_.contains(t)) functions_.remove(t);
 	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
 }
 
-// Return whether the Forest is being generated from a filterfile
-bool Forest::isFromFilterFile()
+// Return whether the Program is being generated from a filterfile
+bool Program::isFromFilterFile()
 {
 	return fromFilterFile_;
 }
 
 // Execute all trees in forest
-bool Forest::executeAll(ReturnValue &rv)
+bool Program::execute(ReturnValue &rv)
 {
-	msg.enter("Forest::executeAll");
-	int count = 0;
-	bool result = TRUE;
-	for (Tree *t = trees_.first(); t != NULL; t = t->next)
-	{
-		count ++;
-		if (t->isFilter()) msg.print(Messenger::Parse, "Skipping tree %i of %i since it's a filter....\n", count, trees_.nItems());
-		else
-		{
-			msg.print(Messenger::Parse, "Executing tree %i of %i in set '%s')....\n", count, trees_.nItems(), name_.get());
-			result = t->execute(rv);
-			if (!result) break;
-		}
-	}
-	msg.exit("Forest::executeAll");
+	msg.enter("Program::execute");
+	bool result = mainProgram_.execute(rv);
+	msg.exit("Program::execute");
 	return result;
 }
 
 // Print forest information
-void Forest::print()
+void Program::print()
 {
-	printf("Forest '%s':\nContains:  %i trees and %i functions.\n", name_.get(), trees_.nItems(), functions_.nItems());
-	if (trees_.nItems() > 0) printf("  Trees:\n");
-	for (int n=0; n<trees_.nItems(); ++n) printf("     %-3i  %s\n", n+1, trees_[n]->name());
-	if (trees_.nItems() > 0) printf("  Functions:\n");
+	printf("Program '%s':\nContains: %i filters and %i functions.\n", name_.get(), filters_.nItems(), functions_.nItems());
+	if (filters_.nItems() > 0) printf("  Trees:\n");
+	for (int n=0; n<filters_.nItems(); ++n) printf("     %-3i  %s\n", n+1, filters_[n]->name());
+	if (functions_.nItems() > 0) printf("  Functions:\n");
 	for (int n=0; n<functions_.nItems(); ++n) printf("     %-3i  %s\n", n+1, functions_[n]->name());
 }
 

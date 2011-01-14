@@ -41,9 +41,9 @@ int CommandParser_lex()
 // Parser lexer, called by yylex()
 int CommandParser::lex()
 {
-	if (forest_ == NULL)
+	if (program_ == NULL)
 	{
-		printf("Lexer called when no target Forest set.\n");
+		printf("Lexer called when no target Program set.\n");
 		return 0;
 	}
 
@@ -322,7 +322,7 @@ int CommandParser::lex()
 			}
 
 			// Is it a user-defined function keyword in the global (Forest-wide) scope?
-			func = forest_->findGlobalFunction(token);
+			func = program_->findGlobalFunction(token);
 			if (func != NULL)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);

@@ -44,7 +44,7 @@ class Combine
 	// Execute combination rule with parameters specified
 	static double combine(CombinationRule cr, double a, double b);
 	// Static function trees for combination rule equations
-	static Forest combinationRules_;
+	static Program combinationRules_;
 };
 
 // Function Definition

@@ -71,12 +71,12 @@ QStringList AtenCommand::commandList()
 
 void AtenCommand::on_CommandPrompt_returnPressed()
 {
-	Forest tempScript;
+	Program tempScript;
 	// Grab the current text of the line edit (and clear it at the same time)
 	if (tempScript.generateFromString(ui.CommandPrompt->getText()))
 	{
 		ReturnValue result;
-		tempScript.executeAll(result);
+		tempScript.execute(result);
 	}
 	// Force update of the GUI?
 	if (ui.PromptForceUpdateCheck->isChecked()) gui.update();
@@ -89,9 +89,9 @@ void AtenCommand::on_CommandPrompt_returnPressed()
 void AtenCommand::refreshScripts()
 {
 	ui.ScriptsList->clear();
-	for (Forest *script = aten.scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
+	for (Program *script = aten.scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
 	// Also clear and refresh scripts menu
-	for (Refitem<QAction, Forest*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
+	for (Refitem<QAction, Program*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
 	{
 		gui.mainWindow->ui.ScriptsMenu->removeAction(sa->item);
 		// Free Reflist QActions
@@ -99,15 +99,15 @@ void AtenCommand::refreshScripts()
 	}
 	// Clear Reflist and repopulate, along with Scripts menu actions
 	scriptActions_.clear();
-	for (Forest *f = aten.scripts(); f != NULL; f = f->next)
+	for (Program *prog = aten.scripts(); prog != NULL; prog = prog->next)
 	{
 		// Create new QAction and add to Reflist
 		QAction *qa = new QAction(this);
 		// Set action data
 		qa->setVisible(TRUE);
-		qa->setText(f->name());
+		qa->setText(prog->name());
 		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
-		scriptActions_.add(qa, f);
+		scriptActions_.add(qa, prog);
 		gui.mainWindow->ui.ScriptsMenu->addAction(qa);
 	}
 }
@@ -122,7 +122,7 @@ void AtenCommand::on_OpenScriptButton_clicked(bool v)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Create script and model variables within it
-		Forest *ca = aten.addScript();
+		Program *ca = aten.addScript();
 		if (ca->generateFromFile(qPrintable(filename)))
 		{
 			msg.print("Script file '%s' loaded succesfully.\n", qPrintable(filename));
@@ -139,7 +139,7 @@ void AtenCommand::on_OpenScriptButton_clicked(bool v)
 void AtenCommand::on_ReloadAllButton_clicked(bool checked)
 {
 	// Cycle over scripts, clearing and reloading
-	Forest *script = aten.scripts(), *xscript;
+	Program *script = aten.scripts(), *xscript;
 	while (script != NULL)
 	{
 		// Check that the file still exists
@@ -199,13 +199,13 @@ void AtenCommand::on_RunSelectedButton_clicked(bool checked)
 {
 	int row = ui.ScriptsList->currentRow();
 	if (row == -1) return;
-	Forest *script = aten.script(row);
+	Program *script = aten.script(row);
 	if (script != NULL)
 	{
 		// Execute the script
-		msg.print("Executing script '%s':\n",script->name());
+		msg.print("Executing script '%s':\n", script->name());
 		ReturnValue result;
-		script->executeAll(result);
+		script->execute(result);
 	}
 	gui.update();
 }
@@ -220,14 +220,14 @@ void AtenCommand::runScript()
 		return;
 	}
 	// Find the relevant Script entry...
-	Refitem<QAction, Forest*> *ri = scriptActions_.contains(action);
+	Refitem<QAction, Program*> *ri = scriptActions_.contains(action);
 	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in Reflist.\n");
 	else
 	{
 		// Execute the script
-		msg.print("Executing script '%s':\n",ri->data->name());
+		msg.print("Executing script '%s':\n", ri->data->name());
 		ReturnValue result;
-		ri->data->executeAll(result);
+		ri->data->execute(result);
 	}
 	gui.update();
 }

@@ -29,7 +29,7 @@
 #include <fstream>
 
 // Forward declarations
-class Forest;
+class Program;
 class TreeNode;
 
 // Parser
@@ -44,7 +44,7 @@ class CommandParser : public Tree
 	// Source of parser input
 	enum ParserSource { StringSource, StringListSource, FileSource, nParserSources };
 	// Friend declarations
-	friend class Forest;
+	friend class Program;
 
 
 	/*
@@ -91,8 +91,8 @@ class CommandParser : public Tree
 	// Tree Data
 	*/
 	private:
-	// Current forest target
-	Forest *forest_;
+	// Current program target
+	Program *program_;
 	// Current tree (target of node creation)
 	Tree *tree_;
 	// Stack of created trees
@@ -100,15 +100,15 @@ class CommandParser : public Tree
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
 	// Populate target forest from specified character string
-	bool generateFromString(Forest *f, const char *s, bool dontpushtree = FALSE);
+	bool generateFromString(Program *prog, const char *s, bool dontpushtree = FALSE);
 	// Populate target forest from specified string list
-	bool generateFromStringList(Forest *f, Dnchar *stringListHead, bool dontpushtree = FALSE);
+	bool generateFromStringList(Program *prog, Dnchar *stringListHead, bool dontpushtree = FALSE);
 	// Populate target forest from specified file(name)
-	bool generateFromFile(Forest *f, const char *filename, bool dontpushtree = FALSE);
+	bool generateFromFile(Program *prog, const char *filename, bool dontpushtree = FALSE);
 
 	public:
-	// Push tree
-	void pushTree(bool filter = FALSE);
+	// Push filter
+	void pushFilter();
 	// Push function
 	void pushFunction(const char *name, VTypes::DataType returntype);
 	// Pop tree (or function) from stack

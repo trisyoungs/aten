@@ -742,13 +742,13 @@ FragmentGroup *Aten::fragmentGroups()
 */
 
 // Add script to list
-Forest *Aten::addScript()
+Program *Aten::addScript()
 {
 	return scripts_.add();
 }
 
 // Remove specified script
-void Aten::removeScript(Forest *script)
+void Aten::removeScript(Program *script)
 {
 	scripts_.remove(script);
 }
@@ -760,13 +760,13 @@ int Aten::nScripts()
 }
 
 // Return first script in list
-Forest *Aten::scripts()
+Program *Aten::scripts()
 {
 	return scripts_.first();
 }
 
 // Return n'th script in list
-Forest *Aten::script(int n)
+Program *Aten::script(int n)
 {
 	if ((n < 0) || (n >= scripts_.nItems())) msg.print("Script %i is out of range.\n", n);
 	else return scripts_[n];

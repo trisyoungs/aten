@@ -40,7 +40,7 @@ class TreeNode;
 class ScopeNode;
 class VariableNode;
 class StepNode;
-class Forest;
+class Program;
 class AtenCustomDialog;
 
 // Tree
@@ -60,29 +60,29 @@ class Tree
 	/*
 	// Tree Character
 	*/
-	private :
-	// Forest parent
-	Forest *parent_;
+	private:
+	// Program parent
+	Program *parent_;
 	// Tree name (if any)
 	Dnchar name_;
-	// Return type (used if defined as a function)
-	VTypes::DataType returnType_;
 	// Type of tree
 	Tree::TreeType type_;
+	// Return type (used if defined as a function)
+	VTypes::DataType returnType_;
 
 	public:
 	// Set parent
-	void setParent(Forest *f);
+	void setParent(Program *prog);
 	// Return parent
-	Forest *parent() const;
-	// Set type
-	void setType(Tree::TreeType type);
-	// Return type
-	Tree::TreeType type() const;
+	Program *parent() const;
 	// Set name of tree
 	void setName(const char *s);
 	// Return name of tree
 	const char *name() const;
+	// Set type
+	void setType(Tree::TreeType type);
+	// Return type
+	Tree::TreeType type() const; 
 	// Set return type of tree
 	void setReturnType(VTypes::DataType dt);
 	// Return return-type of tree

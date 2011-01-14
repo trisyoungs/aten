@@ -123,7 +123,7 @@ filter:
 	;
 
 pushfilter:
-	/* empty */					{ cmdparser.pushTree(TRUE); }
+	/* empty */					{ cmdparser.pushFilter(); }
 	;
 
 /* Single Statement / Flow Control */
