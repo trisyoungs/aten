@@ -98,13 +98,13 @@ void Aten::openFilters()
 bool Aten::openFilter(const char *filename)
 {
 	msg.enter("Aten::openFilter");
-	// Construct Forest...
-	Forest *f = filterForests_.add();
+	// Construct filter Program...
+	Program *f = filterPrograms_.add();
 	if (!f->generateFromFile(filename, filename, TRUE, TRUE))
 	{
 		msg.print("Failed to load filters from '%s'...\n", filename);
 		failedFilters_.add()->set( filename );
-		filterForests_.remove(f);
+		filterPrograms_.remove(f);
 		msg.exit("Aten::openFilter");
 		return FALSE;
 	}
@@ -132,7 +132,7 @@ int Aten::reloadFilters()
 	filters_[FilterData::ExpressionExport].clear();
 	filters_[FilterData::GridImport].clear();
 	filters_[FilterData::GridExport].clear();
-	filterForests_.clear();
+	filterPrograms_.clear();
 	nFiltersFailed_ = 0;
 	failedFilters_.clear();
 
@@ -183,8 +183,8 @@ int Aten::parseFilterDir(const char *path)
 	QStringList filterlist = filterdir.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 	for (i=0; i<filterlist.size(); i++)
 	{
-		// Construct Forest...
-		Forest *f = filterForests_.add();
+		// Construct filter Program...
+		Program *f = filterPrograms_.add();
 		QString filename(path);
 		filename += "/";
 		filename += filterlist.at(i);
@@ -193,7 +193,7 @@ int Aten::parseFilterDir(const char *path)
 			msg.print("Failed to load filters from '%s'...\n", qPrintable(filterlist.at(i)));
 			failedFilters_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );
 			nfailed ++;
-			filterForests_.remove(f);
+			filterPrograms_.remove(f);
 		}
 		else
 		{

@@ -50,7 +50,7 @@ void CommandParser::reset()
 	stringLength_ = 0;
 	lineNumber_ = 0;
 	expectPathStep_ = FALSE;
-	forest_ = NULL;
+	program_ = NULL;
 	tree_ = NULL;
 	parser_.reset();
 	stack_.clear();
@@ -181,27 +181,32 @@ bool CommandParser::generate()
 	if (result != 0)
 	{
 		printErrorInfo();
-		forest_->clear();
+		program_->clear();
 	}
-	forest_ = NULL;
+	program_ = NULL;
 	msg.exit("CommandParser::generate");
 	return (result != 0 ? FALSE : TRUE);
 }
 
 // Fill target forest from specified character string
-bool CommandParser::generateFromString(Forest *f, const char *s, bool dontpushtree)
+bool CommandParser::generateFromString(Program *prog, const char *s, bool dontpushtree)
 {
 	msg.enter("CommandParser::generateFromString");
 	// Clear any data in the existing forest
-	if (f == NULL)
+	if (prog == NULL)
 	{
 		printf("Internal Error: No Forest passed to CommandParser::generateFromString.\n");
 		msg.exit("CommandParser::generateFromString");
 		return FALSE;
 	}
-	forest_ = f;
-	forest_->clear();
-	if (!dontpushtree) pushTree();
+	program_ = prog;
+	program_->clear();
+	if (!dontpushtree)
+	{
+		tree_ = program_->mainProgram();
+		stack_.add(tree_, FALSE);
+		msg.print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+	}
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
@@ -215,24 +220,28 @@ bool CommandParser::generateFromString(Forest *f, const char *s, bool dontpushtr
 }
 
 // Populate target forest from specified string list
-bool CommandParser::generateFromStringList(Forest *f, Dnchar *stringListHead, bool dontpushtree)
+bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead, bool dontpushtree)
 {
 	msg.enter("CommandParser::generateFromStringList");
 	// Clear any data in the existing forest
-	if (f == NULL)
+	if (prog == NULL)
 	{
 		printf("Internal Error: No Forest passed to CommandParser::generateFromStringList.\n");
 		msg.exit("CommandParser::generateFromStringList");
 		return FALSE;
 	}
-	forest_ = f;
-	forest_->clear();
-	if (!dontpushtree) pushTree();
+	program_ = prog;
+	program_->clear();
+	if (!dontpushtree)
+	{
+		tree_ = program_->mainProgram();
+		stack_.add(tree_, FALSE);
+		msg.print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+	}
 	// Store the source string
 	stringListSource_ = stringListHead;
 	stringPos_ = 0;
 	stringLength_ = 0;
-// 	stringListSource_->print();
 	msg.print(Messenger::Parse, "Parser source is now string list.\n");
 	source_ = CommandParser::StringListSource;
 	bool result = generate();
@@ -243,19 +252,24 @@ bool CommandParser::generateFromStringList(Forest *f, Dnchar *stringListHead, bo
 }
 
 // Fill target forest from specified character string
-bool CommandParser::generateFromFile(Forest *f, const char *filename, bool dontpushtree)
+bool CommandParser::generateFromFile(Program *prog, const char *filename, bool dontpushtree)
 {
 	msg.enter("CommandParser::generateFromFile");
 	// Clear any data in the existing forest
-	if (f == NULL)
+	if (prog == NULL)
 	{
 		printf("Internal Error: No Forest passed to CommandParser::generateFromFile.\n");
 		msg.exit("CommandParser::generateFromFile");
 		return FALSE;
 	}
-	forest_ = f;
-	forest_->clear();
-	if (!dontpushtree) pushTree();
+	program_ = prog;
+	program_->clear();
+	if (!dontpushtree)
+	{
+		tree_ = program_->mainProgram();
+		stack_.add(tree_, FALSE);
+		msg.print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+	}
 	// Open the file
 	parser_.openFile(filename);
 	if (!parser_.isFileGood())
@@ -284,8 +298,8 @@ bool CommandParser::generateSingleTree(Tree *t, const char *name, const char *co
 		return FALSE;
 	}
 	// Set the forest target to be our own local, static Forest
-	static Forest localForest;
-	forest_ = &localForest;
+	static Program localProgram;
+	program_ = &localProgram;
 	tree_ = t;
 	// 'Push' tree onto the stack
 	stack_.add(tree_, FALSE);
@@ -303,20 +317,20 @@ bool CommandParser::generateSingleTree(Tree *t, const char *name, const char *co
 	return result;
 }
 
-// Push tree
-void CommandParser::pushTree(bool isfilter)
+// Push filter
+void CommandParser::pushFilter()
 {
-	tree_ = forest_->addTree(isfilter ? Tree::FilterTree : Tree::CommandTree);
-	stack_.add(tree_, isfilter);
-	msg.print(Messenger::Parse, "New tree stacked - %p\n", tree_);
+	tree_ = program_->addFilter();
+	stack_.add(tree_, TRUE);
+	msg.print(Messenger::Parse, "New filter stacked - %p\n", tree_);
 }
 
 // Push function (into topmost tree)
 void CommandParser::pushFunction(const char *name, VTypes::DataType returntype)
 {
-	// If there is no current tree target then we add a Forest-global function...
+	// If there is no current tree target then we add a global function...
 	if (tree_ != NULL) msg.print(Messenger::Parse, "Pushing function onto tree %p (%s)\n", tree_, tree_->name());
-	if (tree_ == NULL) tree_ = forest_->addGlobalFunction(name);
+	if (tree_ == NULL) tree_ = program_->addGlobalFunction(name);
 	else tree_ = tree_->addLocalFunction(name);
 	tree_->setReturnType(returntype);
 	stack_.add(tree_, FALSE);
@@ -346,6 +360,6 @@ void CommandParser::popTree()
 void CommandParser::deleteCurrentTree()
 {
 	// Delete the current tree from its parent forest
-	forest_->deleteTree(tree_);
+	program_->deleteTree(tree_);
 	popTree();
 }

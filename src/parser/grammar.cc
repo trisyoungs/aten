@@ -1983,7 +1983,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 126 "grammar.yy"
-    { cmdparser.pushTree(TRUE); }
+    { cmdparser.pushFilter(); }
     break;
 
   case 22:

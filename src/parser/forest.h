@@ -1,6 +1,6 @@
 /*
-	*** Forest
-	*** src/parser/forest.h
+	*** Program
+	*** src/parser/program.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -25,15 +25,15 @@
 #include "base/dnchar.h"
 #include "parser/tree.h"
 
-// Forest
-class Forest
+// Program
+class Program
 {
 	public:
 	// Constructors / Destructor
-	Forest();
-	~Forest();
+	Program();
+	~Program();
 	// List pointers
-	Forest *prev, *next;
+	Program *prev, *next;
 
 
 	/*
@@ -44,41 +44,41 @@ class Forest
 	Dnchar name_;
 	// Original source filename, if any
 	Dnchar filename_;
-	// User-defined global functions (but local to this forest)
+	// Main program
+	Tree mainProgram_;
+	// User-defined global functions (but local to this program)
 	List<Tree> functions_;
-	// List of trees belonging to this forest
-	List<Tree> trees_;
-	// Whether this forest is being generated from a filter file...
+	// List of filters belonging to this program
+	List<Tree> filters_;
+	// Whether this program is being populated from a filter file...
 	bool fromFilterFile_;
 	// Whether or not a tree was pushed initially
 	bool initialPushTree_;
 
 	public:
-	// Clear contents of forest
+	// Clear contents of program
 	void clear();
-	// Set name of forest
+	// Set name of program
 	void setName(const char *s);
-	// Return name of forest
+	// Return name of program
 	const char *name();
 	// Return associated filename (if any)
 	const char *filename();
-	// Generate forest from string 
+	// Generate program from string 
 	bool generateFromString(const char *s, const char *name = NULL, bool dontpushtree = FALSE);
-	// Generate forest from string list
+	// Generate program from string list
 	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL, bool dontpushtree = FALSE);
-	// Generate forest from input file
+	// Generate program from input file
 	bool generateFromFile(const char *filename, const char *name = NULL, bool dontpushtree = FALSE, bool isFilterFile = FALSE);
-	// Reload forest (provided it was from a file...)
+	// Reload program (provided it was from a file...)
 	bool reload();
-	// Finalise forest
+	// Finalise program
 	void finalise();
-	// Return number of trees in forest
-	int nTrees();
-	// Return first tree of forest
-	Tree *trees();
-	// Add a new, generic (filter, script or command) tree
-	Tree *addTree(Tree::TreeType type);
-	// Add a new Forest-global function tree
+	// Return main program
+	Tree *mainProgram();
+	// Add a filter tree
+	Tree *addFilter();
+	// Add a new Program-global function tree
 	Tree *addGlobalFunction(const char *name);
 	// Search for existing global function
 	Tree *findGlobalFunction(const char *s);
@@ -86,11 +86,11 @@ class Forest
 	bool executeGlobalFunction(const char *name, ReturnValue &rv, const char *arglist ...);
 	// Delete specified tree
 	void deleteTree(Tree *t);
-	// Return whether the Forest is being generated from a filterfile
+	// Return whether the Program is being generated from a filterfile
 	bool isFromFilterFile();
-	// Execute all trees in forest
-	bool executeAll(ReturnValue &rv);
-	// Print forest information
+	// Execute main program
+	bool execute(ReturnValue &rv);
+	// Print program information
 	void print();
 };
 

@@ -66,7 +66,7 @@ void Aten::exportModels()
 */
 
 // Add set of batch commands
-Forest *Aten::addBatchCommand()
+Program  *Aten::addBatchCommand()
 {
 	return batchCommands_.add();
 }
@@ -77,12 +77,12 @@ void Aten::processModels()
 	ReturnValue rv;
 	for (Model *m = models_.first(); m != NULL; m = m->next)
 	{
-		for (Forest *f = batchCommands_.first(); f != NULL; f = f->next)
+		for (Program *cmd = batchCommands_.first(); cmd != NULL; cmd = cmd->next)
 		{
 			// Set the current model
 			aten.setCurrentModel(m);
 			// Run the command list
-			if (!f->executeAll(rv)) return;
+			if (!cmd->execute(rv)) return;
 		}
 	}
 }

@@ -70,7 +70,6 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 		selvisible = 0.5 * (rij - selscale*radius_i - selscale*radius_j);
 
 		// Calculate angle out of XZ plane
-		// OPTIMISE - Precalculate acos()
 		phi = DEGRAD * acos(vij.z/rij);
 
 		// Determine bond plane rotation if a multiple bond

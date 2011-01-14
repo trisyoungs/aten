@@ -337,10 +337,10 @@ int Aten::parseCli(int argc, char *argv[])
 	ElementMap::ZMapType zm;
 	NameMap<int> *nmi;
 	Model *m;
-	Forest *script, tempforest;
+	Program *script, tempforest;
 	ReturnValue rv;
 	Tree *f, *modelfilter = NULL;
-	Forest interactiveScript;
+	Program interactiveScript;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
 	while (argn < (argc-1))
@@ -457,7 +457,7 @@ int Aten::parseCli(int argc, char *argv[])
 						tempforest.clear();
 						if (tempforest.generateFromString(argtext.get(), "CLI command"))
 						{
-							if (!tempforest.executeAll(rv)) return -1;
+							if (!tempforest.execute(rv)) return -1;
 						}
 						else return -1;
 					}
@@ -547,7 +547,7 @@ int Aten::parseCli(int argc, char *argv[])
 						// Get string from user
 						line = readline(prompt);
 						interactiveScript.clear();
-						if (interactiveScript.generateFromString(line)) interactiveScript.executeAll(rv);
+						if (interactiveScript.generateFromString(line)) interactiveScript.execute(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
 						delete line;
@@ -646,7 +646,7 @@ int Aten::parseCli(int argc, char *argv[])
 					if (script->generateFromFile(argtext.get(), "CliScript"))
 					{
 						aten.setProgramMode(Aten::CommandMode);
-						if (!script->executeAll(rv)) aten.setProgramMode(Aten::NoMode);
+						if (!script->execute(rv)) aten.setProgramMode(Aten::NoMode);
 						// Need to check program mode after each script since it can be changed
 						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);
 					}
@@ -716,7 +716,7 @@ int Aten::parseCli(int argc, char *argv[])
 				tempforest.clear();
 				if (tempforest.generateFromString(buf, "CLI command (cin)"))
 				{
-					if (!tempforest.executeAll(rv)) return -1;
+					if (!tempforest.execute(rv)) return -1;
 				}
 				else return -1;
 			}

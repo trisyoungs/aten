@@ -220,7 +220,7 @@ class Forcefield
 	// List of data values that have units of energy (and thus should be converted)
 	List<Dnchar> energyData_;
 	// Container for generator functions defined in this forcefield
-	Forest generatorFunctions_;
+	Program generatorFunctions_;
 	// Pointer to vdw generation function (if one is defined)
 	Tree *vdwGenerator_;
 	// Pointer to bond generation function (if one is defined)

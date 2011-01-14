@@ -118,8 +118,8 @@ class Aten
 	int parseFilterDir(const char *path);
 	// Set export partners for import filters
 	void partnerFilters();
-	// List of Filter Forests
-	List<Forest> filterForests_;
+	// List of Filter programs
+	List<Program> filterPrograms_;
 	// Reflists of file filters of different types
 	Reflist<Tree,int> filters_[FilterData::nFilterTypes];
 
@@ -263,19 +263,19 @@ class Aten
 	*/
 	private:
 	// List of loaded scripts
-	List<Forest> scripts_;
+	List<Program> scripts_;
 
 	public:
 	// Add script to list
-	Forest *addScript();
+	Program *addScript();
 	// Remove specified script
-	void removeScript(Forest *script);
+	void removeScript(Program *script);
 	// Return number of loaded scripts
 	int nScripts();
 	// Return first script in list
-	Forest *scripts();
+	Program *scripts();
 	// Return n'th script in list
-	Forest *script(int n);
+	Program *script(int n);
 
 
 	/*
@@ -337,7 +337,7 @@ class Aten
 	// Model format in which to export models
 	Tree *exportFilter_;
 	// Cached commands to use in batch processing mode
-	List<Forest> batchCommands_;
+	List<Program> batchCommands_;
 
 	public:
 	// Set format to use in export
@@ -345,7 +345,7 @@ class Aten
 	// Export all currently loaded models in the referenced format
 	void exportModels();
 	// Add set of batch commands
-	Forest *addBatchCommand();
+	Program *addBatchCommand();
 	// Run all stored commands on all loaded models
 	void processModels();
 	// Save all models under their original names
@@ -359,7 +359,7 @@ class Aten
 	// Command Definitions
 	Command commands;
 	// Preferences file commands
-	Forest prefsCommands;
+	Program prefsCommands;
 
 	/*
 	// Fragment Library

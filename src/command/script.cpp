@@ -30,7 +30,7 @@ bool Command::function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (aten.nScripts() == 0) msg.print("No scripts loaded.\n");
 	else msg.print("Currently loaded scripts:\n");
-	for (Forest *f = aten.scripts(); f != NULL; f = f->next) msg.print("  %s (%s)\n", f->filename(), f->name());
+	for (Program *prog = aten.scripts(); prog != NULL; prog = prog->next) msg.print("  %s (%s)\n", prog->filename(), prog->name());
 	rv.reset();
 	return TRUE;
 }
@@ -38,14 +38,14 @@ bool Command::function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Load script from disk
 bool Command::function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Forest *f = aten.addScript();
-	if (!f->generateFromFile(c->argc(0), "ScriptFile"))
+	Program *prog = aten.addScript();
+	if (!prog->generateFromFile(c->argc(0), "ScriptFile"))
 	{
-		aten.removeScript(f);
+		aten.removeScript(prog);
 		return FALSE;
 	}
-	if (c->hasArg(1)) f->setName(c->argc(1));
-	else f->setName(c->argc(0));
+	if (c->hasArg(1)) prog->setName(c->argc(1));
+	else prog->setName(c->argc(0));
 	rv.reset();
 	// Update GUI
 	if (gui.exists()) gui.commandWindow->refreshScripts();
@@ -56,13 +56,13 @@ bool Command::function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RunScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Find the script...
-	Forest *f;
-	for (f = aten.scripts(); f != NULL; f = f->next) if (strcmp(c->argc(0), f->name()) == 0) break;
-	if (f != NULL)
+	Program *prog;
+	for (prog = aten.scripts(); prog != NULL; prog = prog->next) if (strcmp(c->argc(0), prog->name()) == 0) break;
+	if (prog != NULL)
 	{
 		msg.print("Executing script '%s':\n",c->argc(0));
 		ReturnValue result;
-		f->executeAll(result);
+		prog->execute(result);
 	}
 	else msg.print("Couldn't find script '%s'.\n",c->argc(0));
 	rv.reset();

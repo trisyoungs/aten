@@ -29,7 +29,7 @@ TreeNode *CommandParser::createPath(TreeNode *var)
 	msg.enter("CommandParser::createPath");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (createPath).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (createPath).\n");
 		else printf("Internal Error: No current Tree target for Parser (createPath).\n");
 		msg.exit("CommandParser::createPath");
 		return FALSE;
@@ -45,7 +45,7 @@ bool CommandParser::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arg
 	msg.enter("CommandParser::expandPath");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (expandPath).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (expandPath).\n");
 		else printf("Internal Error: No current Tree target for Parser (expandPath).\n");
 		msg.exit("CommandParser::createPath");	
 		return FALSE;
@@ -61,7 +61,7 @@ TreeNode *CommandParser::finalisePath()
 	msg.enter("CommandParser::finalisePath");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (finalisePath).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (finalisePath).\n");
 		else printf("Internal Error: No current Tree target for Parser (finalisePath).\n");
 		msg.exit("CommandParser::finalisePath");	
 		return FALSE;
@@ -77,7 +77,7 @@ bool CommandParser::addStatement(TreeNode *leaf)
 	msg.enter("CommandParser::addStatement");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addStatement).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addStatement).\n");
 		else printf("Internal Error: No current Tree target for Parser (addStatement).\n");
 		msg.exit("CommandParser::addStatement");	
 		return FALSE;
@@ -93,7 +93,7 @@ TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, Tre
 	msg.enter("CommandParser::addOperator");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addOperator).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addOperator).\n");
 		else printf("Internal Error: No current Tree target for Parser (addOperator).\n");
 		msg.exit("CommandParser::addOperator");	
 		return NULL;
@@ -109,7 +109,7 @@ TreeNode *CommandParser::addFunction(Command::Function func, TreeNode *a1, TreeN
 	msg.enter("CommandParser::addFunction");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addFunction).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addFunction).\n");
 		else printf("Internal Error: No current Tree target for Parser (addFunction).\n");
 		msg.exit("CommandParser::addFunction");
 		return NULL;
@@ -125,7 +125,7 @@ TreeNode *CommandParser::addFunctionWithArglist(Command::Function func, TreeNode
 	msg.enter("CommandParser::addFunctionWithArglist");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addFunctionWithArglist).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addFunctionWithArglist).\n");
 		else printf("Internal Error: No current Tree target for Parser (addFunctionWithArglist).\n");
 		msg.exit("CommandParser::addFunctionWithArglist");	
 		return NULL;
@@ -141,7 +141,7 @@ TreeNode *CommandParser::addUserFunction(Tree *func, TreeNode *arglist)
 	msg.enter("CommandParser::addUserFunction");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addUserFunction).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addUserFunction).\n");
 		else printf("Internal Error: No current Tree target for Parser (addUserFunction).\n");
 		msg.exit("CommandParser::addUserFunction");
 		return NULL;
@@ -157,7 +157,7 @@ TreeNode *CommandParser::addDeclarations(TreeNode *declist)
 	msg.enter("CommandParser::addDeclarations");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addDeclarations).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addDeclarations).\n");
 		else printf("Internal Error: No current Tree target for Parser (addDeclarations).\n");
 		msg.exit("CommandParser::addDeclarations");	
 		return NULL;
@@ -173,7 +173,7 @@ TreeNode *CommandParser::joinCommands(TreeNode *node1, TreeNode *node2)
 	msg.enter("CommandParser::joinCommands");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (joinCommands).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (joinCommands).\n");
 		else printf("Internal Error: No current Tree target for Parser (joinCommands).\n");
 		msg.exit("CommandParser::joinCommands");	
 		return FALSE;
@@ -189,7 +189,7 @@ TreeNode *CommandParser::pushScope(Command::Function func)
 	msg.enter("CommandParser::pushScope");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (pushScope).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (pushScope).\n");
 		else printf("Internal Error: No current Tree target for Parser (pushScope).\n");
 		msg.exit("CommandParser::pushScope");	
 		return FALSE;
@@ -205,7 +205,7 @@ bool CommandParser::popScope()
 	msg.enter("CommandParser::popScope");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (popScope).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (popScope).\n");
 		else printf("Internal Error: No current Tree target for Parser (popScope).\n");
 		msg.exit("CommandParser::popScope");	
 		return FALSE;
@@ -221,7 +221,7 @@ TreeNode *CommandParser::addConstant(VTypes::DataType type, Dnchar *token)
 	msg.enter("CommandParser::addConstant");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant).\n");
 		else printf("Internal Error: No current Tree target for Parser (addConstant).\n");
 		msg.exit("CommandParser::addConstant");	
 		return FALSE;
@@ -237,7 +237,7 @@ TreeNode *CommandParser::addConstant(int i)
 	msg.enter("CommandParser::addConstant(int)");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(int)).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(int)).\n");
 		else printf("Internal Error: No current Tree target for Parser (addConstant(int)).\n");
 		msg.exit("CommandParser::addConstant(int)");	
 		return FALSE;
@@ -253,7 +253,7 @@ TreeNode *CommandParser::addConstant(double d)
 	msg.enter("CommandParser::addConstant(double)");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(double)).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(double)).\n");
 		else printf("Internal Error: No current Tree target for Parser (addConstant(double)).\n");
 		msg.exit("CommandParser::addConstant(double)");	
 		return FALSE;
@@ -269,7 +269,7 @@ TreeNode *CommandParser::addConstant(const char *s)
 	msg.enter("CommandParser::addConstant(const char)");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(const char)).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(const char)).\n");
 		else printf("Internal Error: No current Tree target for Parser (addConstant(const char)).\n");
 		msg.exit("CommandParser::addConstant(const char)");	
 		return FALSE;
@@ -285,7 +285,7 @@ TreeNode *CommandParser::addElementConstant(int el)
 	msg.enter("CommandParser::addElementConstant");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addElementConstant).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addElementConstant).\n");
 		else printf("Internal Error: No current Tree target for Parser (addElementConstant).\n");
 		msg.exit("CommandParser::addElementConstant");	
 		return FALSE;
@@ -301,7 +301,7 @@ TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNo
 	msg.enter("CommandParser::addVariable");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addVariable).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addVariable).\n");
 		else printf("Internal Error: No current Tree target for Parser (addVariable).\n");
 		msg.exit("CommandParser::addVariable");	
 		return FALSE;
@@ -317,7 +317,7 @@ TreeNode *CommandParser::addVariableAsArgument(VTypes::DataType type, Dnchar *na
 	msg.enter("CommandParser::addVariableAsArgument");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addVariableAsArgument).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addVariableAsArgument).\n");
 		else printf("Internal Error: No current Tree target for Parser (addVariableAsArgument).\n");
 		msg.exit("CommandParser::addVariableAsArgument");	
 		return FALSE;
@@ -334,7 +334,7 @@ TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, T
 	msg.enter("CommandParser::addArrayVariable");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addArrayVariable).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addArrayVariable).\n");
 		else printf("Internal Error: No current Tree target for Parser (addArrayVariable).\n");
 		msg.exit("CommandParser::addArrayVariable");	
 		return FALSE;
@@ -350,7 +350,7 @@ TreeNode *CommandParser::addArrayConstant(TreeNode *values)
 	msg.enter("CommandParser::addArrayConstant");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addArrayConstant).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addArrayConstant).\n");
 		else printf("Internal Error: No current Tree target for Parser (addArrayConstant).\n");
 		msg.exit("CommandParser::addArrayConstant");	
 		return FALSE;
@@ -366,7 +366,7 @@ TreeNode *CommandParser::wrapVariable(Variable *var, TreeNode *arrayindex)
 	msg.enter("CommandParser::wrapVariable");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (wrapVariable).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (wrapVariable).\n");
 		else printf("Internal Error: No current Tree target for Parser (wrapVariable).\n");
 		msg.exit("CommandParser::wrapVariable");	
 		return FALSE;
@@ -382,7 +382,7 @@ bool CommandParser::setFilterOption(Dnchar *name, TreeNode *value)
 	msg.enter("CommandParser::setFilterOption");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (setFilterOption).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (setFilterOption).\n");
 		else printf("Internal Error: No current Tree target for Parser (setFilterOption).\n");
 		msg.exit("CommandParser::setFilterOption");	
 		return FALSE;
@@ -398,7 +398,7 @@ TreeNode *CommandParser::addWidget(TreeNode *arglist)
 	msg.enter("CommandParser::addWidget");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addWidget).\n");
+		if (program_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addWidget).\n");
 		else printf("Internal Error: No current Tree target for Parser (addWidget).\n");
 		msg.exit("CommandParser::addWidget");	
 		return NULL;

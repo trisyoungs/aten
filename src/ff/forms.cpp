@@ -26,7 +26,7 @@
 #include "base/messenger.h"
 
 // Static Singleton
-Forest Combine::combinationRules_;
+Program Combine::combinationRules_;
 
 // Combination rules
 const char *CombinationRuleKeywords[Combine::nCombinationRules] = { "arithmetic", "geometric", "custom1", "custom2", "custom3" };
