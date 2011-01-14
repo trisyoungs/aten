@@ -176,6 +176,34 @@ bool Command::function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Delete forcefield
+bool Command::function_DeleteFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Forcefield *ff = NULL;
+	rv.reset();
+	if (c->hasArg(0))
+	{
+		switch (c->argType(0))
+		{
+			case (VTypes::IntegerData):
+				ff = aten.forcefield(c->argi(0)-1);
+				break;
+			case (VTypes::StringData):
+				ff = aten.findForcefield(c->argc(0));
+				break;
+			case (VTypes::ForcefieldData):
+				ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
+				break;
+			default:
+				msg.print("Can't convert a variable of type '%s' into a Forcefield.\n", VTypes::dataType(c->argType(0)));
+				break;
+		}
+		if (ff == NULL)	return FALSE;
+		aten.removeForcefield(ff);
+	}
+	return TRUE;
+}
+
 // Set energetic parameters to convert in generator data
 bool Command::function_EnergyConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

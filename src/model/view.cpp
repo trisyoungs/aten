@@ -133,7 +133,7 @@ void Model::resetView()
 	Vec3<double> extremes, rabs, target;
 	Vec4<double> screenr;
 	bool done = FALSE;
-	double largest = 0.0;
+	double rad;
 	Matrix &mview = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix_);
 	mview.setIdentity();
 	mview.setColumn(3,0.0,0.0,0.0,1.0);
@@ -141,14 +141,14 @@ void Model::resetView()
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
+		rad = prefs.styleRadius(i);
 		rabs = i->r().abs();
-		if (rabs.x > extremes.x) extremes.x = rabs.x;
-		if (rabs.y > extremes.y) extremes.y = rabs.y;
+		if (rabs.x > extremes.x) extremes.x = rabs.x + rad;
+		if (rabs.y > extremes.y) extremes.y = rabs.y + rad;
 		if (i->r().z > extremes.z) extremes.z = rabs.z;
 	}
 	target = (cell_.lengths() * 0.5) + extremes;
-	printf("TARGET R = "); target.print();
-// 	target.r().add(0.0,0.0,cell_.lengths().z+largest);
+
 	// Now, adjust camera matrix so that this atom is on-screen.
 	// Need to do a check for the viability of the canvas first...
 	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
@@ -160,13 +160,13 @@ void Model::resetView()
 			// Adjust z-translation by 1 Angstrom
 			mview[14] -= 1.0;
 			// Project our local atom and grab the z screen coordinate
+			if (!prefs.hasPerspective()) gui.mainWidget->doProjection();
 			gui.mainWidget->updateTransformation(mview, cell_.centre());
 			gui.mainWidget->modelToWorld(target, &screenr);
 			done = TRUE;
 			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
 			if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
 			if (screenr.z < 0.0) done = FALSE;
-			printf("Screen coords = "); screenr.print();
 		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);

@@ -622,7 +622,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 		for (int n=0; n<startAtom_; n++) i = i->next;
 		firstAtom_ = i;
 	}
-	msg.print("New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_, nMolecules_, nAtoms_, totalAtoms_, name_.get());
+	msg.print("New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_+1, nMolecules_, nAtoms_, totalAtoms_, name_.get());
 	msg.exit("Pattern::initialise");
 }
 

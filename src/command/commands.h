@@ -274,6 +274,7 @@ class Command
 		CreateExpression,
 		CurrentFF,
 		DefaultFF,
+		DeleteFF,
 		EnergyConvert,
 		Equivalent,
 		ExportMap,
@@ -748,6 +749,7 @@ class Command
 	static bool function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CurrentFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DeleteFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_EnergyConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);

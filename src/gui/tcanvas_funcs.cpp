@@ -365,7 +365,7 @@ void TCanvas::doProjection(int newwidth, int newheight)
 }
 
 // Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-Vec3<double> &TCanvas::modelToWorld(Vec3<double> pos, Vec4< double >* screenr, double screenradius)
+Vec3<double> &TCanvas::modelToWorld(Vec3<double> pos, Vec4<double> *screenr, double screenradius)
 {
 	return engine_.modelToWorld(pos, screenr, screenradius);
 }
