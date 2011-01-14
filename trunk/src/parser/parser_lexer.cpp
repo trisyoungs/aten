@@ -24,7 +24,7 @@
 #include "parser/parser.h"
 #include "parser/grammar.h"
 #include "parser/tree.h"
-#include "parser/forest.h"
+#include "parser/program.h"
 #include "command/commands.h"
 #include "base/sysfunc.h"
 

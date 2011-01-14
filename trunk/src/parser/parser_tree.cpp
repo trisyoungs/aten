@@ -21,7 +21,7 @@
 
 #include "parser/parser.h"
 #include "command/commands.h"
-#include "parser/forest.h"
+#include "parser/program.h"
 
 // Create a new path on the stack with the specified base 'variable'
 TreeNode *CommandParser::createPath(TreeNode *var)
