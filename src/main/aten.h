@@ -29,7 +29,7 @@
 #include "templates/reflist.h"
 #include "templates/namemap.h"
 #include "command/commands.h"
-#include "parser/forest.h"
+#include "parser/program.h"
 #include "parser/tree.h"
 #include "parser/variablelist.h"
 

@@ -23,7 +23,7 @@
 #define ATEN_FORMS_H
 
 #include "base/constants.h"
-#include "parser/forest.h"
+#include "parser/program.h"
 
 // Combination Rule Data
 class Combine

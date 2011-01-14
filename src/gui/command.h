@@ -24,7 +24,7 @@
 
 #include "gui/ui_command.h"
 #include "templates/reflist.h"
-#include "parser/forest.h"
+#include "parser/program.h"
 
 // Script/command window
 class AtenCommand : public QDialog

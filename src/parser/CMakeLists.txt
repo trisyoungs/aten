@@ -18,7 +18,6 @@ filterdata.h
 forcefieldatom.h
 forcefieldbound.h
 forcefield.h
-forest.h
 format.h
 grammar.h
 glyph.h
@@ -31,6 +30,7 @@ parser.h
 pattern.h
 patternbound.h
 prefs.h
+program.h
 pvariable.h
 region.h
 returnvalue.h
@@ -67,7 +67,6 @@ filterdata.cpp
 forcefieldatom.cpp
 forcefieldbound.cpp
 forcefield.cpp
-forest.cpp
 format.cpp
 glyph.cpp
 glyphdata.cpp
@@ -82,6 +81,7 @@ parser_tree.cpp
 pattern.cpp
 patternbound.cpp
 prefs.cpp
+program.cpp
 pvariable.cpp
 region.cpp
 returnvalue.cpp

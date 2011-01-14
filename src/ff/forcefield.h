@@ -27,7 +27,7 @@
 #include "classes/prefs.h"
 #include "classes/neta.h"
 #include "ff/forms.h"
-#include "parser/forest.h"
+#include "parser/program.h"
 
 // Forward declarations
 class Atom;

@@ -20,7 +20,7 @@
 */
 
 #include "parser/parser.h"
-#include "parser/forest.h"
+#include "parser/program.h"
 #include "parser/usercommandnode.h"
 #include "parser/integer.h"
 #include "parser/double.h"
@@ -37,7 +37,8 @@ Program::Program()
 	name_ = "NewProgram";
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = FALSE;
-
+	mainProgram_.setParent(this);
+	
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -145,12 +146,6 @@ Tree *Program::mainProgram()
 {
 	return &mainProgram_;
 }
-
-// Return first filter of forest
-//Tree *Program::filters()
-//{
-//	return filters_.first();
-//}   TGAY
 
 // Create a new filter
 Tree *Program::addFilter()

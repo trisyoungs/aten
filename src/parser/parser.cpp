@@ -20,7 +20,7 @@
 */
 
 #include "parser/parser.h"
-#include "parser/forest.h"
+#include "parser/program.h"
 
 // External Declarations
 CommandParser cmdparser;
