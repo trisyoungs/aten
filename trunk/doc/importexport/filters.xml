@@ -502,6 +502,11 @@ string runtype = option(&quot;"Run Type"&quot;, &quot;"combo"&quot;, &quot;check
 						<entry>All controls take up a single column by default. The 'span' property can be set to override this. For example, adding 'span=5' to the list of arguments will force the control to span five columns instead of one. The associated label will still use only one column, unless this is overridden by the 'labelspan' property.</entry>
 					</row>
 					<row>
+						<entry>state</entry>
+						<entry>value@name?action</entry>
+						<entry>Some control over the states / content of other controls is possible using the 'state' command. The 'value' part indicates when the change detailed in 'action' is performed on the control 'name'. Since a direct equality comparison between the current value of the control and the state-change 'value' is made, only integer and string values make sense here. The control 'name' is the target control for the specified 'action', where 'action' is one of 'checked', 'disable', 'enable', 'items', or 'originalitems'. For those actions that take a property value (e.g. 'checked') the format of the line is then 'value@name?action=property'.</entry>
+					</row>
+					<row>
 						<entry>tab</entry>
 						<entry>page@name</entry>
 						<entry>Similar to the 'group' command, this adds the widget to an existing page in an existing tab widget, or creates one or both and adds it there. For example, to add a control to a page named "Extra" in a tab widget called "My Tabs", you can specify 'tab=Extra@My Tabs' as an argument.</entry>

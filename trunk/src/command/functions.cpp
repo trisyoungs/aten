@@ -234,6 +234,7 @@ void Command::initPointers()
 	pointers_[CreateExpression] = &Command::function_CreateExpression;
 	pointers_[CurrentFF] = &Command::function_CurrentFF;
 	pointers_[DefaultFF] = &Command::function_DefaultFF;
+	pointers_[DeleteFF] = &Command::function_DeleteFF;
 	pointers_[EnergyConvert] = &Command::function_EnergyConvert;
 	pointers_[Equivalent] = &Command::function_Equivalent;
 	pointers_[ExportMap] = &Command::function_ExportMap;
