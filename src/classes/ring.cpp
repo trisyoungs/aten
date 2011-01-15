@@ -226,9 +226,10 @@ void Ring::detectType()
 		if ((lasttype == Bond::Single) && (thistype != Bond::Double)) alternating = FALSE;
 		else if ((lasttype == Bond::Double) && (thistype != Bond::Single)) alternating = FALSE;
 	}
+
 	// Set type
 	if (nsingle == bonds_.nItems()) type_ = Ring::AliphaticRing;
-	if (naromatic == bonds_.nItems()) type_ = Ring::AromaticRing;
+	else if (naromatic == bonds_.nItems()) type_ = Ring::AromaticRing;
 	else if ((bonds_.nItems()%2) == 0)
 	{
 		// For rings with an even number of atoms, the bonds *must* alternate in type
@@ -265,7 +266,6 @@ void Ring::detectType()
 			}
 			else failed = TRUE;
 			if (failed) break;
-
 		}
 		if (failed) type_ = Ring::NonAromaticRing;
 		else
@@ -281,7 +281,7 @@ void Ring::detectType()
 		for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next) ra->item->setEnvironment(Atom::AromaticEnvironment);
 		for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) 
 		{
-			parent_->parent()->changeBond(rb->item, Bond::Aromatic);
+			if (rb->data != Bond::Aromatic) parent_->parent()->changeBond(rb->item, Bond::Aromatic);
 			rb->data = Bond::Aromatic;
 		}
 	}

@@ -132,8 +132,6 @@ template <class T> class Vec3
 	void print() const;
 	// Generate random unit vector
 	void randomUnit();
-	// Rotate contained point by the amounts specified
-	void rotate(double angx, double angy);
 	// Convert spherical who,phi,theta coordinates into cartesian x,y,z
 	void toCartesian();
 	// Convert cartesian x,y,z coordinates into spherical (rho,phi/zenith,theta/azimuthal)
@@ -547,24 +545,6 @@ template <class T> void Vec3<T>::randomUnit()
 	y = AtenMath::random()-0.5;
 	z = AtenMath::random()-0.5;
 	normalise();
-}
-
-// Rotate contained point by the amounts specified
-template <class T> void Vec3<T>::rotate(double angx, double angy)
-{
-	static double rotx, roty, thetax, thetay, sinx, cosx, siny, cosy, camrot;
-	// Calculate cos/sin terms
-	thetax = angx / DEGRAD;
-	thetay = angy / DEGRAD;
-	cosx = cos(thetax);
-	cosy = cos(thetay);
-	sinx = sin(thetax);
-	siny = sin(thetay);
-// 	rotmat.rows[0].set(cosy,0.0,siny);
-// 	rotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy);
-// 	rotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy);
-	// BROKEN TGAY Hardcode in rotation here
-// 	*this *= rotmat;
 }
 
 // Convert to cartesian

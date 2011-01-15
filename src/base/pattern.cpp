@@ -1525,10 +1525,10 @@ void Pattern::assignEnvironments()
 					nother ++;
 					break;
 			}
-			if (nother == 0) i->setEnvironment(Atom::PureEnvironment);
-			else if (nsingle == 0) i->setEnvironment(Atom::UnboundEnvironment);
-			else i->setEnvironment(Atom::NonPureEnvironment);
 		}
+		if (i->nBonds() == 0) i->setEnvironment(Atom::UnboundEnvironment);
+		else if (nother == 0) i->setEnvironment(Atom::PureEnvironment);
+		else i->setEnvironment(Atom::NonPureEnvironment);
 		i = i->next;
 	}
 	msg.exit("Pattern::assignEnvironments");
