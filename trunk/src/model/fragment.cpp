@@ -191,7 +191,6 @@ void Fragment::pasteOrientedModel(Vec3<double> origin, Model *target)
 	// Select all atoms except any anchor atoms
 	orientedModel_.selectAll();
 	orientedModel_.deselectElement(0);
-	orientedModel_.selectNone();
 	
 	// Paste to the target model, bonding the anchor and linkPartners if a bond was there before
 	Clipboard clip;
@@ -200,7 +199,8 @@ void Fragment::pasteOrientedModel(Vec3<double> origin, Model *target)
 
 	// Translate orientedModel_ back to its previous position
 	orientedModel_.translateSelectionLocal(-origin, TRUE);
-
+	orientedModel_.selectNone();
+	
 	msg.exit("Fragment::pasteOrientedModel");
 }
 
@@ -289,6 +289,7 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replaceb
 {
 	msg.enter("Fragment::pasteAnchoredModel");
 
+	printf("kjlkjkj\n");
 	// Set up anchored model in correct geometry - have we a valid attachment point?
 	if (!anchoredModel(anchorpoint, replace, replacebond))
 	{
