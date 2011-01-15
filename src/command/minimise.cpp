@@ -121,7 +121,8 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	msg.print(Messenger::Verbose, "Command to run will be '%s'\n", mopaccmd.get());
 	// Create copy of current model so as not to disturb filename/filter values
 	Model tempmodel;
-	tempmodel.copy(aten.currentModel());
+	//printf("Target for minimisation = %p\n", obj.rs);
+	tempmodel.copy(aten.currentModelOrFrame());
 	tempmodel.setFilter(mopacexport);
 	tempmodel.setFilename(mopacinput);
 	// Save the input file... construct temporary bundle object containing our model pointer
@@ -156,6 +157,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	tempmodel.copy(m);
 	aten.setUseWorkingList(FALSE);
 	// Start a new undostate in the original model
+	//printf("Target for new coords = %p\n", obj.rs);
 	obj.rs->beginUndoState("MOPAC geometry optimisation");
 	Atom *i, *j = obj.rs->atoms();
 	for (i = tempmodel.atoms(); i != NULL; i = i->next)
@@ -164,6 +166,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		j = j->next;
 	}
 	obj.rs->endUndoState();
+	
 	return TRUE;
 }
 

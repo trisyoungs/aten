@@ -5,9 +5,6 @@
 			<para>Rotation of multiple bonds into bond plane not working correctly</para>
 		</listitem>
 		<listitem>
-			<para>Undo/redo of cell creation/removal not working properly?</para>
-		</listitem>
-		<listitem>
 			<para>Reading spacegroup info and packing from certain cifs with Pnmmm symmetry is incorrect (c.f. Mercury)</para>
 		</listitem>
 		<listitem>
