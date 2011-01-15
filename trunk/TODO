@@ -2,9 +2,6 @@
 
 	<orderedlist>
 		<listitem>
-			<para>Aromatic stick bonds missing</para>
-		</listitem>
-		<listitem>
 			<para>Rotation of multiple bonds into bond plane not working correctly</para>
 		</listitem>
 		<listitem>

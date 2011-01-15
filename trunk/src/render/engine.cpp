@@ -435,7 +435,7 @@ void RenderEngine::renderTextPrimitive(int x, int y, const char *text, QChar add
 void RenderEngine::renderTextPrimitive(Vec3<double> vec, const char *text, QChar addChar, bool rightalign)
 {
 	// Project atom and render text
-	Vec4<double> screenr;			// OPTIMIZE - Hardcode 'modelToWorld' here
+	static Vec4<double> screenr;
 	Vec3<double> r = modelToWorld(vec, &screenr);
 	if (r.z < -1.0) textPrimitives_.add(screenr.x, screenr.y, text, addChar, rightalign);
 }
@@ -465,10 +465,18 @@ void RenderEngine::sortAndSendGL()
 		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
 		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
 		glPolygonMode(GL_FRONT_AND_BACK, pi->fillMode());
-		if (pi->fillMode() == GL_LINE) glLineWidth(pi->lineWidth());
-		glLoadIdentity();
-		glMultMatrixd(pi->localTransform().matrix());
+		if (pi->fillMode() == GL_LINE)
+		{
+			glLineWidth(pi->lineWidth());
+			glDisable(GL_LIGHTING);
+		}
+		glLoadMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();
+		if (pi->fillMode() == GL_LINE)
+		{
+			glLineWidth(1.0);
+			glEnable(GL_LIGHTING);
+		}
 	}
 	
 	// Transform and render each transparent primitive in the list, unless transparencyCorrect_ is off.
@@ -485,8 +493,7 @@ void RenderEngine::sortAndSendGL()
 	else for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
-		glLoadIdentity();
-		glMultMatrixd(pi->localTransform().matrix());
+		glLoadMatrixd(pi->localTransform().matrix());
 		pi->primitive()->sendToGL();
 	}
 }
