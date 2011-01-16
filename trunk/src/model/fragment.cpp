@@ -289,7 +289,6 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replaceb
 {
 	msg.enter("Fragment::pasteAnchoredModel");
 
-	printf("kjlkjkj\n");
 	// Set up anchored model in correct geometry - have we a valid attachment point?
 	if (!anchoredModel(anchorpoint, replace, replacebond))
 	{
@@ -315,7 +314,7 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replaceb
 	anchoredModel_.translateSelectionLocal(anchorpoint->r());
 
 	// If we are to replace a hydrogen in the target model, delete it first
-	if (replacebond && (anchorpoint->nBonds() != 0))
+	if (replace && (anchorpoint->nBonds() != 0))
 	{
 		// For safety, clamp range of replaced atom id (shouldn't be necessary)
 		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;

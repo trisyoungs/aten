@@ -49,6 +49,11 @@ void AtenMinimiser::showWindow()
 void AtenMinimiser::on_MinimiserMethodCombo_currentIndexChanged(int index)
 {
 	ui.MethodOptionsStack->setCurrentIndex(index);
+	// Show/hide other controlsi?
+	bool enabled = (index != AtenMinimiser::MopacMethod);
+	ui.ConvergenceGroup->setEnabled(enabled);
+	ui.MinimiseCyclesSpin->setEnabled(enabled);
+	ui.MethodOptionsStack->setEnabled(enabled);
 }
 
 void AtenMinimiser::on_MinimiseButton_clicked(bool checked)

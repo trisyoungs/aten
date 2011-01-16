@@ -10,9 +10,6 @@
 		<listitem>
 			<para>In fragment builder, fragment is not updated properly after Alt</para>
 		</listitem>
-		<listitem>
-			<para>Replacing existing bond in fragment builder occasionally causes wrong atoms to be deleted</para>
-		</listitem>
 	</orderedlist>
 
 </sect5>
