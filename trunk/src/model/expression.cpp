@@ -170,7 +170,6 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 		done = FALSE;
 		while (!done)
 		{
-			printf("Hello.\n");
 			p->deleteExpression();
 			if (!p->createExpression(vdwOnly, allowDummy))
 			{
