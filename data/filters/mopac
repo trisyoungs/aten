@@ -67,7 +67,7 @@ filter(type="exportmodel", name="Mopac Control File", nickname="mopac", extensio
 	model m = aten.frame;
 	
 	# Widgets
-	string jobtype = option("JobType", "combo", "1SCF (Single SCF),EF (Optimisation),BFGS (Optimisation),FORCE (Vibrations),FORCETS (Vibrations)", 1, "group=Method");
+	string jobtype = option("JobType", "combo", "'1SCF (Single SCF)','EF (Optimisation)','BFGS (Optimisation)','FORCE (Vibrations)','FORCETS (Vibrations)'", 3, "group=Method");
 	string hamil = option("Hamiltonian", "combo", "AM1,MNDO,MNDOD,PM3,PM6,PM6-DH2,RM1", 5, "group=Method");
 	string scftyp = option("SCF Type", "combo", "RHF,UHF", 1, "group=Method");
 	string state = option("State", "combo", "SINGLET,EXCITED,DOUBLET,TRIPLET,QUARTET,QUINTET,SEXTET,SEPTET,OCTET,NONET", 1, "group=Method");
