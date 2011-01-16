@@ -88,8 +88,8 @@ class Program
 	void deleteTree(Tree *t);
 	// Return whether the Program is being generated from a filterfile
 	bool isFromFilterFile();
-	// Execute main program
-	bool execute(ReturnValue &rv);
+	// Execute main program, including GUI options if specified
+	bool execute(ReturnValue &rv, bool runOptions = FALSE);
 	// Print program information
 	void print();
 };

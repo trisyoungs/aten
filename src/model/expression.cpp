@@ -151,6 +151,7 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
 	uniqueForcefieldTypes_.clear();
+	allForcefieldTypes_.clear();
 	expressionVdwOnly_ = vdwOnly;
 	expressionPoint_ = -1;
 	if (expressionVdwOnly_) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
@@ -169,6 +170,7 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 		done = FALSE;
 		while (!done)
 		{
+			printf("Hello.\n");
 			p->deleteExpression();
 			if (!p->createExpression(vdwOnly, allowDummy))
 			{

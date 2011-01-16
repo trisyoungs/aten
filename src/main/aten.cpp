@@ -285,7 +285,7 @@ void Aten::removeModel(Model *xmodel)
 	Model *m;
 	// Unset the datamodel for the canvas
 	// Delete the current model, but don't allow there to be zero models...
-	// (if possible, set the active row to the next model, otherwise  the previous)
+	// (if possible, set the active row to the next model, otherwise the previous)
 	if (models_.nItems() == 1) m = aten.addModel();
 	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
 	setCurrentModel(m);
@@ -410,19 +410,34 @@ void Aten::dereferenceForcefield(Forcefield *xff)
 		{
 			m->removeTyping();
 			m->setForcefield(NULL);
+			m->invalidateExpression();
 		}
-		for (Pattern *p = m->patterns(); p != NULL; p = p->next)
+		if (m->patterns() != NULL)
 		{
-			if (p->forcefield() == xff)
+			for (Pattern *p = m->patterns(); p != NULL; p = p->next)
 			{
-				Atom *i = p->firstAtom();
-				for (int n=0; n<p->totalAtoms(); n++)
+				if (p->forcefield() == xff)
 				{
-					i->setType(NULL);
-					i = i->next;
+					Atom *i = p->firstAtom();
+					for (int n=0; n<p->totalAtoms(); n++)
+					{
+						i->setType(NULL);
+						i = i->next;
+					}
+					p->setForcefield(NULL);
+					m->invalidateExpression();
 				}
-				p->setForcefield(NULL);
 			}
+		}
+		else
+		{
+			int count = 0;
+			for (Atom *i = m->atoms(); i != NULL; i = i->next) if (xff->containsType(i->type()))
+			{
+				++count;
+				i->setType(NULL);
+			}
+			if (count != 0) m->invalidateExpression();
 		}
 	}
 	msg.exit("Aten::dereferenceForcefield");
