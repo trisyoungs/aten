@@ -101,6 +101,8 @@ class Forcefield
 	ForcefieldAtom *findByTypeId(int id, ForcefieldAtom *excluding = NULL);
 	// Find type define
 	Neta *typeDefine(const char *name);
+	// Returns whether the specified forcefield type is contained in this forcefield
+	bool containsType(ForcefieldAtom *type);
 
 
 	/*

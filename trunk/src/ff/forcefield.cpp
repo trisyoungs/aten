@@ -178,6 +178,12 @@ Neta *Forcefield::typeDefine(const char *name)
 	return node;
 }
 
+// Returns whether the specified forcefield type is contained in this forcefield
+bool Forcefield::containsType(ForcefieldAtom *type)
+{
+	return types_.contains(type);
+}
+
 /*
 // Bonding Interactions
 */

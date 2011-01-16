@@ -68,7 +68,7 @@ class AtenCommand : public QDialog
 	void on_ScriptsList_currentRowChanged(int row);
 	void runScript();
 	public:
-	void refreshScripts();
+	void refreshScripts(bool refreshactions = TRUE, bool refreshlist = TRUE);
 
 	/*
 	// Command Index Page

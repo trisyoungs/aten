@@ -86,29 +86,36 @@ void AtenCommand::on_CommandPrompt_returnPressed()
 // Scripts Tab
 */
 
-void AtenCommand::refreshScripts()
+void AtenCommand::refreshScripts(bool refreshactions, bool refreshlist)
 {
-	ui.ScriptsList->clear();
-	for (Program *script = aten.scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
-	// Also clear and refresh scripts menu
-	for (Refitem<QAction, Program*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
+	// Refresh list
+	if (refreshlist)
 	{
-		gui.mainWindow->ui.ScriptsMenu->removeAction(sa->item);
-		// Free Reflist QActions
-		delete sa->item;
+		ui.ScriptsList->clear();
+		for (Program *script = aten.scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
 	}
-	// Clear Reflist and repopulate, along with Scripts menu actions
-	scriptActions_.clear();
-	for (Program *prog = aten.scripts(); prog != NULL; prog = prog->next)
+	// Refresh scripts menu
+	if (refreshactions)
 	{
-		// Create new QAction and add to Reflist
-		QAction *qa = new QAction(this);
-		// Set action data
-		qa->setVisible(TRUE);
-		qa->setText(prog->name());
-		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
-		scriptActions_.add(qa, prog);
-		gui.mainWindow->ui.ScriptsMenu->addAction(qa);
+		for (Refitem<QAction, Program*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
+		{
+			gui.mainWindow->ui.ScriptsMenu->removeAction(sa->item);
+			// Free Reflist QActions
+			delete sa->item;
+		}
+		// Clear Reflist and repopulate, along with Scripts menu actions
+		scriptActions_.clear();
+		for (Program *prog = aten.scripts(); prog != NULL; prog = prog->next)
+		{
+			// Create new QAction and add to Reflist
+			QAction *qa = new QAction(this);
+			// Set action data
+			qa->setVisible(TRUE);
+			qa->setText(prog->name());
+			QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
+			scriptActions_.add(qa, prog);
+			gui.mainWindow->ui.ScriptsMenu->addAction(qa);
+		}
 	}
 }
 
@@ -127,6 +134,7 @@ void AtenCommand::on_OpenScriptButton_clicked(bool v)
 		{
 			msg.print("Script file '%s' loaded succesfully.\n", qPrintable(filename));
 			ui.ScriptsList->addItem(ca->filename());
+			refreshScripts(TRUE,FALSE);
 		}
 		else
 		{
@@ -205,7 +213,7 @@ void AtenCommand::on_RunSelectedButton_clicked(bool checked)
 		// Execute the script
 		msg.print("Executing script '%s':\n", script->name());
 		ReturnValue result;
-		script->execute(result);
+		script->execute(result, TRUE);
 	}
 	gui.update();
 }
@@ -227,7 +235,7 @@ void AtenCommand::runScript()
 		// Execute the script
 		msg.print("Executing script '%s':\n", ri->data->name());
 		ReturnValue result;
-		ri->data->execute(result);
+		ri->data->execute(result, TRUE);
 	}
 	gui.update();
 }

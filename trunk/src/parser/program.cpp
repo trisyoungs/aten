@@ -308,10 +308,12 @@ bool Program::isFromFilterFile()
 }
 
 // Execute all trees in forest
-bool Program::execute(ReturnValue &rv)
+bool Program::execute(ReturnValue &rv, bool runOptions)
 {
 	msg.enter("Program::execute");
-	bool result = mainProgram_.execute(rv);
+	bool result;
+	if (runOptions) result = mainProgram_.executeCustomDialog();
+	if (result) result = mainProgram_.execute(rv);
 	msg.exit("Program::execute");
 	return result;
 }
