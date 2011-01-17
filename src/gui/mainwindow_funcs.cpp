@@ -443,7 +443,7 @@ void AtenForm::addRecent(const char *filename)
 		for (n=MAXRECENTFILES-2; n>=0; n--)
 		{
 			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
-			temp.sprintf("&%i %s", n, removePath(qPrintable(actionRecentFile[n]->data().toString())));
+			temp.sprintf("&%i %s", n+1, removePath(qPrintable(actionRecentFile[n]->data().toString())));
 			actionRecentFile[n+1]->setText(temp.get());
 			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
 		}

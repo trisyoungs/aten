@@ -546,7 +546,7 @@ int Aten::parseCli(int argc, char *argv[])
 					{
 						// Get string from user
 						line = readline(prompt);
-						interactiveScript.clear();
+						interactiveScript.mainProgram()->reset();
 						if (interactiveScript.generateFromString(line)) interactiveScript.execute(rv);
 						// Add the command to the history and delete it 
 						add_history(line);

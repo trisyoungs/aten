@@ -428,7 +428,6 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 			case ('#'):	// "#" Rest/all of line is a comment
 				endOfLine_ = TRUE;
 				done = TRUE;
-				printf("Found a hash...\n");
 				break;
 			// Normal character
 			default: 

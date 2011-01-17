@@ -83,6 +83,27 @@ void AtenCommand::on_CommandPrompt_returnPressed()
 }
 
 /*
+// Interactive Tab
+*/
+
+void AtenCommand::on_InteractivePrompt_returnPressed()
+{
+	// Grab the current text of the line edit (and clear it at the same time)
+	interactiveProgram_.mainProgram()->reset();
+	if (interactiveProgram_.generateFromString(ui.InteractivePrompt->getText()))
+	{
+		ReturnValue result;
+		interactiveProgram_.execute(result);
+	}
+	// Force update of the GUI?
+	if (ui.InteractiveForceUpdateCheck->isChecked()) gui.update();
+}
+
+void AtenCommand::on_RemoveSelectedVariables_clicked(bool checked)
+{
+}
+
+/*
 // Scripts Tab
 */
 

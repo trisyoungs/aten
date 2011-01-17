@@ -25,8 +25,30 @@
 #include <fstream>
 #include <iostream>
 #include <string.h>
+#include <QFileInfo>
 
 using namespace std;
+
+// Return full, absolute path of file
+const char *filePath(const char *s)
+{
+	QFileInfo info(s);
+	return qPrintable(info.absoluteFilePath());
+}
+
+// Return full, absolute filename
+const char *absoluteFilePath(const char *s)
+{
+	QFileInfo info(s);
+	return qPrintable(info.absoluteFilePath());
+}
+
+// Remove path in front of filename
+const char *removePath(const char *s)
+{
+	QFileInfo info(s);
+	return qPrintable(info.fileName());
+}
 
 // Convert string to uppercase
 const char *upperCase(const char *s)
@@ -158,14 +180,6 @@ const char *ftoa(double f,const char *fmt)
 	static Dnchar result;
 	result.sprintf(fmt,f);
 	return result;
-}
-
-// Remove path in front of filename
-const char *removePath(const char *s)
-{
-	const char *lastslash = strrchr(s,'/');
-	lastslash == 0 ? lastslash = s : lastslash ++;
-	return lastslash;
 }
 
 // Strip trailing whitespace from string
