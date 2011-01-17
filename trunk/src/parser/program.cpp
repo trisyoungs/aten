@@ -29,6 +29,7 @@
 #include "parser/forcefieldbound.h"
 #include "parser/atom.h"
 #include "main/aten.h"
+#include "base/sysfunc.h"
 
 // Constructors
 Program::Program()
@@ -261,7 +262,7 @@ bool Program::generateFromStringList(Dnchar *stringListHead, const char *name, b
 bool Program::generateFromFile(const char *filename, const char *name, bool dontpushtree, bool isFilterFile)
 {
 	msg.enter("Program::generateFromFile");
-	filename_ = filename;
+	filename_ = absoluteFilePath(filename);
 	if (name != NULL) name_ = name;
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;

@@ -2,13 +2,7 @@
 
 	<orderedlist>
 		<listitem>
-			<para>Rotation of multiple bonds into bond plane not working correctly</para>
-		</listitem>
-		<listitem>
 			<para>Reading spacegroup info and packing from certain cifs with Pnmmm symmetry is incorrect (c.f. Mercury)</para>
-		</listitem>
-		<listitem>
-			<para>In fragment builder, fragment is not updated properly after Alt</para>
 		</listitem>
 	</orderedlist>
 

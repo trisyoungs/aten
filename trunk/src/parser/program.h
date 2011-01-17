@@ -50,13 +50,13 @@ class Program
 	List<Tree> functions_;
 	// List of filters belonging to this program
 	List<Tree> filters_;
-	// Whether this program is being populated from a filter file...
+	// Whether this program is being populated from a filter file
 	bool fromFilterFile_;
 	// Whether or not a tree was pushed initially
 	bool initialPushTree_;
 
 	public:
-	// Clear contents of program
+	// Clear contents of program, including filters and functions
 	void clear();
 	// Set name of program
 	void setName(const char *s);

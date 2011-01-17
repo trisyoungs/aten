@@ -54,6 +54,23 @@ class AtenCommand : public QDialog
 	// Return list of commands stored in command tab
 	QStringList commandList();
 
+	
+	/*
+	// Interactive Page
+	*/
+	private:
+	Program interactiveProgram_;
+	
+	private slots:
+	void on_InteractivePrompt_returnPressed();
+	void on_RemoveSelectedVariables_clicked(bool checked);
+		
+	public:
+	// Set list of commands in command tab
+	void setInteractiveList(QStringList cmds);
+	// Return list of commands stored in command tab
+	QStringList interactiveList();
+	
 
 	/*
 	// Scripts Page

@@ -134,6 +134,23 @@ VTypes::DataType Tree::returnType() const
 	return returnType_;
 }
 
+// Reset Tree, ready for new statement(s) to be added
+void Tree::reset()
+{
+	msg.enter("Tree::reset");
+	// Remove all nodes and statements except the first (which was the original root ScopeNode)
+	TreeNode *rootnode = nodes_.first();
+	nodes_.disown(rootnode);
+	nodes_.clear();
+	scopeStack_.clear();
+	statements_.clear();
+	// Re-own the root node
+	nodes_.own(rootnode);
+	scopeStack_.add( (ScopeNode*) rootnode);
+	statements_.add(rootnode);
+	msg.exit("Tree::reset");
+}
+
 // Return whether this tree is a filter
 bool Tree::isFilter() const
 {

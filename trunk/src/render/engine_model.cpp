@@ -31,68 +31,50 @@
 // Render bond
 void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b)
 {
-	double dvisible, selvisible, factor, rij, phi, dp, dp2;
-	Vec3<double> ijk, ri, rj, Ax, xp;
+	double dvisible, selvisible, factor, rij, phi;
+	Vec3<double> ri, rj, localx, localy, localz;
 	GLfloat alpha_i, alpha_j;
 
 	// Store copies of alpha values
 	alpha_i = colour_i[3];
 	alpha_j = colour_j[3];
 	
-	rij = vij.magnitude();
+	localz = vij;
+	rij = localz.magAndNormalise();
 	
 	// If bond is not visible, don't bother drawing it...
 	dvisible = 0.5 * (rij - radius_i - radius_j);
 	if (dvisible < 0.0) return;
 	selvisible = 0.5 * (rij - selscale*radius_i - selscale*radius_j);
 
-	// Calculate angle out of XZ plane
-	phi = DEGRAD * acos(vij.z/rij);
-
 	// Determine bond plane rotation if a multiple bond
 	if (((bt == Bond::Double) || (bt == Bond::Triple)) && (b != NULL))
 	{
-		// Determine bond plane and transform into world coordinates with *unmodified* Matrix
-		if (i > j) ijk = i->findBondPlane(j,b,vij);
-		else ijk = j->findBondPlane(i,b,vij);
-		ijk = A.rotateVector(ijk);
-// 			printf("\n\nWorld-rotated bond-plane vector (X) = "); ijk.print();
-
-		// Apply local bond rotation to move z-axis along bond vector
-		// Special case where the bond is exactly in the XY plane.
-		if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
-		else A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
-
-		Ax.set(A[0], A[1], A[2]);
-		Ax.normalise();
-// 			printf("World X-axis = "); Ax.print();
-
-		// Calculate dot product between bond plane vector and x-axis of bond-rotated matrix
-		dp = ijk.x*A[0] + ijk.y*A[1] + ijk.z*A[2];
-		if (dp < -1) dp = -1.0;
-		else if (dp > 1) dp = 1.0;
-		phi = DEGRAD*acos(dp);
-// 			printf("DP between X and viewX = %f (phi = %f)\n", dp, phi);
-		if (phi > 0.01)
-		{
-// 			printf("Current Matrix = \n"); A.print();
-			A.applyRotationAxis(0.0, 0.0, 1.0, -phi, FALSE);
-// 			printf("Adjusted Matrix = \n"); A.print();
-
-// 			Ax.set(A[0], A[1], A[2]);
-// 			printf("Adjusted world X-axis = "); Ax.print();
-			dp = ijk.x*A[0] + ijk.y*A[1] + ijk.z*A[2];
-			if (dp < -1) dp = -1.0;
-			else if (dp > 1) dp = 1.0;
-			phi = DEGRAD*acos(dp);
-// 			printf("New DP = %f, phi = %f\n", dp, phi);
-		}
+		// Desired z-axis is already known ( = vijn)
+		// X axis is bond plane vector
+		// Y axis is xp of the two
+		localx = i->findBondPlane(j,b,localz);
+		localx = A.rotateVector(localx);
+		localz = A.rotateVector(localz);
+		localy = localx * localz;
+		A[0] = localx.x;
+		A[1] = localx.y;
+		A[2] = localx.z;
+		A[4] = localy.x;
+		A[5] = localy.y;
+		A[6] = localy.z;
+		A[8] = localz.x;
+		A[9] = localz.y;
+		A[10] = localz.z;
 	}
 	else
 	{
-		// Special case where the bond is exactly in the XY plane.
-		if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
-		else A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
+		// Calculate dot product with vector {0,0,1}
+		phi = DEGRAD * acos(localz.z);
+		
+		// Special case where the bond is exactly along Z already
+		if (phi > 179.99) A.applyRotationX(phi);
+		else if (phi >= 0.01) A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
 	}
 	// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
 	A.applyTranslationZ(radius_i);
