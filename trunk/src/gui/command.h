@@ -60,10 +60,11 @@ class AtenCommand : public QDialog
 	*/
 	private:
 	Program interactiveProgram_;
+	// Update variable list
+	void updateVariableList();
 	
 	private slots:
 	void on_InteractivePrompt_returnPressed();
-	void on_RemoveSelectedVariables_clicked(bool checked);
 		
 	public:
 	// Set list of commands in command tab
@@ -78,12 +79,14 @@ class AtenCommand : public QDialog
 	private:
 	// List of scripts and their associated Menu item actions
 	Reflist<QAction, Program*> scriptActions_;
+	
 	private slots:
 	void on_ReloadAllButton_clicked(bool checked);
 	void on_RunSelectedButton_clicked(bool checked);
 	void on_OpenScriptButton_clicked(bool checked);
 	void on_ScriptsList_currentRowChanged(int row);
 	void runScript();
+	
 	public:
 	void refreshScripts(bool refreshactions = TRUE, bool refreshlist = TRUE);
 
@@ -92,6 +95,7 @@ class AtenCommand : public QDialog
 	*/
 	private:
 	void repopulateCommandList(const char *search);
+	
 	private slots:
 	void on_ClearSearchButton_clicked(bool checked);
 	void on_CommandSearchEdit_textChanged(QString test);

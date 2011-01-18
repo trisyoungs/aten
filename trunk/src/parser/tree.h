@@ -127,7 +127,9 @@ class Tree
 	int nArgs() const;
 	// Return first argument defined (for function)
 	TreeNode *args() const;
-
+	// Return first in stack of scopenodes
+	Refitem<ScopeNode,int> *scopeNodes();
+	
 
 	/*
 	// Statement / Command Addition
