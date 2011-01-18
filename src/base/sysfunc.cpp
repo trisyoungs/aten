@@ -25,7 +25,7 @@
 #include <fstream>
 #include <iostream>
 #include <string.h>
-#include <QFileInfo>
+#include <QtCore/QFileInfo>
 
 using namespace std;
 
