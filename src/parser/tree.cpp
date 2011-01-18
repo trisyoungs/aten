@@ -924,6 +924,13 @@ TreeNode *Tree::args() const
 	return arguments_.first();
 }
 
+// Return first in stack of scopenodes
+Refitem<ScopeNode,int> *Tree::scopeNodes()
+{
+	return scopeStack_.first();
+}
+
+
 /*
 // Local Functions
 */

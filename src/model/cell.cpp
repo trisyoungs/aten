@@ -121,11 +121,10 @@ void Model::removeCell()
 {
 	msg.enter("Model::removeCell");
 	changeLog.add(Log::Visual);
-// 	changeLog.add(Log::Structure);
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(cell_.axes(), cell_.axes(), cell_.type() == Cell::NoCell, FALSE);
+		newchange->set(cell_.axes(), cell_.axes(), cell_.type() != Cell::NoCell, FALSE);
 		recordingState_->addEvent(newchange);
 	}
 	cell_.reset();

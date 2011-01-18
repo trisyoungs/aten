@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/command.h"
+#include "parser/scopenode.h"
 #include "base/sysfunc.h"
 
 // Constructor
@@ -86,6 +87,45 @@ void AtenCommand::on_CommandPrompt_returnPressed()
 // Interactive Tab
 */
 
+// Update variable list
+void AtenCommand::updateVariableList()
+{
+	// Count number of variables
+	int count = 0;
+	for (Refitem<ScopeNode,int> *sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next) count += sn->item->variables.nVariables();
+	// Reset table
+	ui.VariableTable->clear();
+	ui.VariableTable->setRowCount(count);
+	ui.VariableTable->setColumnCount(3);
+	ui.VariableTable->setHorizontalHeaderLabels(QStringList() << "Variable" << "Type" << "Value");
+	QTableWidgetItem *item;
+	Variable *var;
+	TreeNode *node;
+	ReturnValue rv;
+	Dnchar s;
+	for (Refitem<ScopeNode,int> *sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next)
+	{
+		count = 0;
+		for (node = sn->item->variables.variables(); node != NULL; node = node->next)
+		{
+			var = (Variable*) node;
+			item = new QTableWidgetItem(var->name());
+			ui.VariableTable->setItem(count, 0, item);
+			item = new QTableWidgetItem(VTypes::dataType(var->returnType()));
+			ui.VariableTable->setItem(count, 1, item);
+			var->execute(rv);
+			if (rv.type() < VTypes::AtenData) item = new QTableWidgetItem(rv.asString());
+			else
+			{
+				s.sprintf("%p", rv.asPointer(rv.type()));
+				item = new QTableWidgetItem(s.get());
+			}
+			ui.VariableTable->setItem(count, 2, item);
+			++count;
+		}
+	}
+}
+
 void AtenCommand::on_InteractivePrompt_returnPressed()
 {
 	// Grab the current text of the line edit (and clear it at the same time)
@@ -94,13 +134,10 @@ void AtenCommand::on_InteractivePrompt_returnPressed()
 	{
 		ReturnValue result;
 		interactiveProgram_.execute(result);
+		updateVariableList();
 	}
 	// Force update of the GUI?
 	if (ui.InteractiveForceUpdateCheck->isChecked()) gui.update();
-}
-
-void AtenCommand::on_RemoveSelectedVariables_clicked(bool checked)
-{
 }
 
 /*
