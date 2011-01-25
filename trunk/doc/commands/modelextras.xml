@@ -1,6 +1,6 @@
-<section id="command.groups.mo"><title>Molecular Orbital Commands</title>
+<section id="command.groups.modelextras"><title>Model Extras Commands</title>
 	
-	<para>Store and manipulate molecular orbital data.</para>
+	<para>Store and manipulate molecular orbital data, vibrations, and z-matrix elements.</para>
 	
 	<section id="command.ref.newbasisshell"><title>newbasisshell</title>
 		<indexterm><primary>commands</primary><secondary>newbasisshell</secondary></indexterm>
@@ -41,6 +41,34 @@ eigenvector = neweigenvector(180);
 		</synopsis>
 		<para>creates a new eigenvector which will contain 180 coefficients.</para>
 	
+	</section>
+	
+	<section id="command.ref.newvibration"><title>newvibration</title>
+		<indexterm><primary>commands</primary><secondary>newvibration</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>vibration <function>newvibration</function></funcdef>
+				<paramdef>string <parameter>name</parameter> = (auto)</paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Adds a new, empty vibration definition to the current model.</para>
+		
+	</section>
+
+	<section id="command.ref.printzmatrix"><title>printzmatrix</title>
+		<indexterm><primary>commands</primary><secondary>printzmatrix</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printzmatrix</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints a Z-matrix for the current model to the console, creating one first if necessary.</para>
+		
 	</section>
 	
 </section>

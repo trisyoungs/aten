@@ -1005,6 +1005,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "newvibration",	"c",		VTypes::VibrationData,
 		"string name =  null",
 		"Create a new vibration in the current model" },
+	{ "printzmatrix",	"",		VTypes::NoData,
+		"",
+		"Print the zmatrix for the current model, creating first if necessary" },
 
 	// Pattern commands
 	{ "clearpatterns",	"",		VTypes::NoData,

@@ -388,6 +388,7 @@ void Command::initPointers()
 	pointers_[NewBasisShell] = &Command::function_NewBasisShell;
 	pointers_[NewEigenvector] = &Command::function_NewEigenvector;
 	pointers_[NewVibration] = &Command::function_NewVibration;
+	pointers_[PrintZMatrix] = &Command::function_PrintZMatrix;
 
 	// Pattern Commands
 	pointers_[ClearPatterns] = &Command::function_ClearPatterns;
