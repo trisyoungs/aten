@@ -39,10 +39,11 @@ class StateChange
 	// List pointers
 	StateChange *prev, *next;
 	// State change actions
-	enum StateAction { CheckedAction, DisableAction, EnableAction, ItemsAction, OriginalItemsAction, nStateActions };
+	enum StateAction { CheckedAction, DisableAction, EnableAction, ItemsAction, OriginalItemsAction, SwitchStackAcion, nStateActions };
 	static StateAction stateAction(const char *s, bool reporterror = FALSE);
 	static const char *stateAction(StateAction sa);
 
+	
 	/*
 	// State change data
 	*/
@@ -53,10 +54,14 @@ class StateChange
 	Dnchar targetWidget_;
 	// Action to perform on target widget
 	KVData<StateAction,Dnchar> changeData_;
+	// Whether or not the state change value is linked to current control state
+	bool dynamicValue_;
 	
 	public:
 	// Set control value for which state change applies
 	void setStateValue(const char *value);
+	// Set control value for which state change applies
+	void setStateValue(int i);
 	// Return control value for which state change applies
 	const char *stateValue() const;
 	// Return control value for which state change applies as an integer
@@ -79,6 +84,10 @@ class StateChange
 	double changeDataAsDouble() const;
 	// Return action data as bool
 	bool changeDataAsBool() const;
+	// Return whether or not the state change value is linked to current control state
+	bool dynamicValue();
+	// Set whether or not the state change value is linked to current control state
+	void setDynamicValue(bool b);
 };
 
 // User-defined GUI filter option
@@ -89,7 +98,7 @@ class WidgetNode : public TreeNode
 	WidgetNode();
 	~WidgetNode();
 	// User-defined GUI option types
-	enum GuiControl { CheckControl, ComboControl, DoubleSpinControl, EditControl, IntegerComboControl, IntegerSpinControl, LabelControl, RadioGroupControl, nGuiControls };
+	enum GuiControl { CheckControl, ComboControl, DoubleSpinControl, EditControl, IntegerComboControl, IntegerSpinControl, LabelControl, RadioButtonControl, RadioGroupControl, StackControl, nGuiControls };
 	static GuiControl guiControl(const char *s, bool reporterror = FALSE);
 	static const char *guiControl(GuiControl got);
 	// Options for Qt layout

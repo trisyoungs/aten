@@ -50,11 +50,17 @@ bool Command::function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv
 	return TRUE;
 }
 
-// Break out of current for loop
+// Break out of current 'for' loop or 'switch' structure
 bool Command::function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	c->parent()->setAcceptedFail(Command::Break);
 	return FALSE;
+}
+
+// Case statement within 'switch' structure
+bool Command::function_Case(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	return TRUE;
 }
 
 // Continue for loop at next iteration
@@ -62,6 +68,12 @@ bool Command::function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	c->parent()->setAcceptedFail(Command::Continue);
 	return FALSE;
+}
+
+// Default case statement within 'switch' structure
+bool Command::function_Default(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	return TRUE;
 }
 
 // Do-While loop
@@ -182,6 +194,12 @@ bool Command::function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	c->parent()->setAcceptedFail(Command::Return);
 	if (c->hasArg(0)) c->arg(0, rv);
 	return FALSE;
+}
+
+// Switch statement
+bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	return TRUE;
 }
 
 // While loop

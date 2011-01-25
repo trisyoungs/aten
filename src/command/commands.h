@@ -251,12 +251,15 @@ class Command
 	
 		// Flow control
 		Break,
+		Case,
 		Continue,
+		Default,
 		DoWhile,
 		For,
 		ForIn,
 		If,
 		Return,
+		Switch,
 		While,
 	
 		// Force Commands
@@ -729,12 +732,15 @@ class Command
 	static bool function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Flow control
 	static bool function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Case(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Default(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_For(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ForIn(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_If(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_While(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Force Commands
 	static bool function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv);

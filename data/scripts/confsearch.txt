@@ -1,8 +1,10 @@
 # Conformer searching!
 
 int i, j, k, l, n, nconformers;
-int nsteps = option("NSteps","intspin",2,100,3,1);
-int excludeh = TRUE;
+int nsteps = option("Steps per Torsion","intspin",2,100,3,1);
+int excludeh = option("Exclude X-X-X-H", "checkbox", 1);
+int excludering = option("Exclude Rings", "checkbox", 1);
+int minimise = option("Minimisation", "intcombo", "None,'Steepest Descent','Conjugate Gradient',MOPAC", 1)
 double oldtors, delta = 360.0 / nsteps;
 
 model conf, m = aten.frame;
@@ -68,15 +70,23 @@ for (int t = 1; t<=nconformers; ++t)
 	for (n=1; n<ntorsions; ++n)
 	{
 		if (counters[n] != nsteps) break;
+
 		# Reset counter and rotate next torsion
 		counters[n] = 0;
 		i = torsions[n+1].targetatom.id;
 		j = torsions[n+1].distanceatom.id;
 		k = torsions[n+1].angleatom.id;
 		l = torsions[n+1].torsionatom.id;
+
 		# Get current torsion value
 		oldtors = torsion(i,j,k,l);
 		settorsion(i,j,k,l,oldtors+delta);
+
+		# Minimise?
+		if (minimise == 2) sdminimise();
+		else if (minimise == 3) cgminimise();
+		else if (minimise == 4) mopacminimise();
+
 		++counters[n+1];
 	}
 

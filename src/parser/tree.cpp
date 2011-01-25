@@ -677,38 +677,6 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 	return var;
 }
 
-// Add variable as function argument to topmost scope
-TreeNode *Tree::addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
-{
-	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
-	if (type_ != Tree::FunctionTree)
-	{
-		printf("Internal Error: Target tree is not a function.\n");
-		return NULL;
-	}
-	// Get topmost scopenode
-// 	printf("nscope = %i, %p  %p\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
-	Refitem<ScopeNode,int> *ri = scopeStack_.last();
-	if (ri == NULL)
-	{
-		printf("Internal Error: No current scope in which to define variable '%s'.\n", name->get());
-		return NULL;
-	}
-	// Create the supplied variable in the list of the topmost scope
-	Variable *var = ri->item->variables.create(type, name->get(), initialValue);
-	if (!var)
-	{
-// 		printf("Failed to create variable '%s' in local scope.\n", name->get());
-		return NULL;
-	}
-	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %p\n", name->get(), ri->item);
-	// Wrap the variable and add it to the arguments_ list
-	VariableNode *vnode = new VariableNode(var);
-	arguments_.own(vnode);
-	vnode->setParent(this);
-	return vnode;
-}
-
 // Add array variable to topmost ScopeNode using the most recently declared type
 TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
 {
@@ -930,10 +898,17 @@ Refitem<ScopeNode,int> *Tree::scopeNodes()
 	return scopeStack_.first();
 }
 
-
 /*
 // Local Functions
 */
+
+// Search for existing local function
+Tree *Tree::findLocalFunction(const char *funcname) const
+{
+	Tree *result;
+	for (result = functions_.first(); result != NULL; result = result ->next) if (strcmp(result->name(),funcname) == 0) break;
+	return result;
+}
 
 // Add new local function
 Tree *Tree::addLocalFunction(const char *funcname)
@@ -945,12 +920,29 @@ Tree *Tree::addLocalFunction(const char *funcname)
 	return result;
 }
 
-// Search for existing local function
-Tree *Tree::findLocalFunction(const char *funcname) const
+// Add arguments to local function (topmost in stack)
+bool Tree::addLocalFunctionArguments(TreeNode *arglist)
 {
-	Tree *result;
-	for (result = functions_.first(); result != NULL; result = result ->next) if (strcmp(result->name(),funcname) == 0) break;
-	return result;
+	if (type_ != Tree::FunctionTree)
+	{
+		printf("Internal Error: Target tree is not a function.\n");
+		return NULL;
+	}
+	TreeNode *first, *node, *oldnode;
+	VariableNode *vnode;
+	// Rewind to head of arguments list
+	for (first = arglist; first != NULL; first = first->prevArgument) if (first->prevArgument == NULL) break;
+	// Wrap the argument variables supplied, checking for duplicates
+	for (node = first; node != NULL; node = node->nextArgument)
+	{
+		// Search existing arguments - TGAY necessary, or is this handled by grammar?
+// 		for (oldnode = arguments_.first(); oldnode != NULL; 
+		Variable *var = (Variable*) node;
+		vnode = new VariableNode(var);
+		arguments_.own(vnode);
+		vnode->setParent(this);
+	}
+	return TRUE;
 }
 
 /*

@@ -429,6 +429,13 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 	writeline("close");
 }
 
+# Function definitions
+int elementbymass(double mass, double masstol)
+{
+	for (int n=1; 1<=aten.nelements; ++n) if (abs(mass-aten.elements[n].mass) < masstol) return n;
+	return 0;
+}
+
 filter(type="importexpression",name="DL_POLY Forcefield Specification", extension="FIELD", glob="*FIELD",exact="FIELD",nickname="dlpoly")
 {
 	# Variable declaration
@@ -444,13 +451,6 @@ filter(type="importexpression",name="DL_POLY Forcefield Specification", extensio
 	double masstol = 0.1; #option();
 	double qtol = 0.1; #option();
 	int reducetypes = TRUE; #option();
-
-	# Function definitions
-	int elementbymass(double mass, double masstol)
-	{
-		for (int n=1; 1<=aten.nelements; ++n) if (abs(mass-aten.elements[n].mass) < masstol) return n;
-		return 0;
-	}
 
 	# First line is header information - use as FF name
 	getline(s);

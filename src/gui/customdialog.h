@@ -33,6 +33,8 @@ class QSpinEdit;
 class QDoubleSpinEdit;
 class QLineEdit;
 class QCheckBox;
+class QRadioButton;
+class QStackWidget;
 class TRadioGroup;
 class WidgetNode;
 class StateChange;
@@ -54,6 +56,7 @@ class AtenCustomDialog : public QDialog
 	void doubleSpinWidget_valueChanged(double d);
 	void integerSpinWidget_valueChanged(int i);
 	void radioGroupWidget_currentIndexChanged(int id);
+	void radioButtonWidget_clicked(bool checked);
 
 	/*
 	// Data
@@ -71,6 +74,8 @@ class AtenCustomDialog : public QDialog
 	QGridLayout *createGridLayout(QWidget *parent);
 	// Create check box from data in specified WidgetNode
 	QCheckBox *createCheckBox(WidgetNode *gfo);
+	// Create radio button from data in specified WidgetNode
+	QRadioButton *createRadioButton(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups);
 	// Create radiogroup from data in specified WidgetNode
 	TRadioGroup *createRadioGroup(WidgetNode *gfo);
 	// Create combo box from data in specified GuiFilterOption
@@ -81,7 +86,9 @@ class AtenCustomDialog : public QDialog
 	QLineEdit *createLineEdit(WidgetNode *gfo);
 	// Create spin edit from data in specified GuiFilterOption
 	QSpinBox *createSpinBox(WidgetNode *gfo);
-
+	// Create stack widget from data in specified GuiFilterOption
+	QStackedWidget *createStackedWidget(WidgetNode* gfo, LayoutList& layoutList);
+	
 	public:
 	// Construct filter option widgets
 	bool createWidgets(const char *title, Tree *t);

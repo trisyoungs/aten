@@ -2,6 +2,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Severe memory leak related to atom selection transparency</para>
+		</listitem>
+		<listitem>
 			<para>Reading spacegroup info and packing from certain cifs with Pnmmm symmetry is incorrect (c.f. Mercury)</para>
 		</listitem>
 	</orderedlist>
@@ -11,6 +14,9 @@
 <sect5><title>General TODO</title>
 
 	<orderedlist>
+		<listitem>
+			<para>Add 'switch/case' constructs to parser grammar?</para>
+		</listitem>
 		<listitem>
 			<para>Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click)</para>
 		</listitem>
@@ -46,7 +52,7 @@
 			<para>ECP type is not written in GAMESS-US export filter</para>
 		</listitem>
 		<listitem>
-			<para>Add more options to GAMESS-US inp filter, inc. specification of how to write elements (full name / symbol), MD options etc.</para>
+			<para>Add more options to GAMESS-US inp filter, inc. specification of how to write elements (full name / symbol), MD options etc., and optional output of Z-matrix over cartesians</para>
 		</listitem>
 		<listitem>
 			<para>Storage of grid data in AKF format</para>

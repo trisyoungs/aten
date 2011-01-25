@@ -50,7 +50,7 @@ class Tree
 	// Constructor / Destructor
 	Tree();
 	Tree(const char *name, const char *commands);
-	virtual ~Tree();
+	~Tree();
 	// List pointers
 	Tree *prev, *next;
 	// Tree Types
@@ -118,11 +118,11 @@ class Tree
 	
 	public:
 	// Create a new path on the stack with the specified base 'variable'
-	virtual TreeNode *createPath(TreeNode *var);
+	TreeNode *createPath(TreeNode *var);
 	// Expand topmost path
-	virtual bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL, TreeNode *arglist = NULL);
+	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL, TreeNode *arglist = NULL);
 	// Finalise and remove the topmost path on the stack
-	virtual TreeNode *finalisePath();
+	TreeNode *finalisePath();
 	// Return number of arguments defined (for function)
 	int nArgs() const;
 	// Return first argument defined (for function)
@@ -136,25 +136,25 @@ class Tree
 	*/
 	public:
 	// Add a node representing a whole statement to the execution list
-	virtual bool addStatement(TreeNode *leaf);
+	bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
-	virtual TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
+	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Associate a command-based leaf node to the Tree
-	virtual TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
+	TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
-	virtual TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
+	TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
 	// Associate a user-defined command-based leaf node to the Tree
-	virtual TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
+	TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
 	// Add a declaration list
-	virtual TreeNode *addDeclarations(TreeNode *declist);
+	TreeNode *addDeclarations(TreeNode *declist);
 	// Join two nodes together
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Join two commands together
-	virtual TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
+	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
-	virtual TreeNode *pushScope(Command::Function func = Command::NoFunction);
+	TreeNode *pushScope(Command::Function func = Command::NoFunction);
 	// Pop the topmost scope node
-	virtual bool popScope();
+	bool popScope();
 	// Print statement info
 	void print();
 
@@ -164,27 +164,25 @@ class Tree
 	*/
 	public:
 	// Add constant value to tompost scope
-	virtual TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
+	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
 	// Add integer constant
-	virtual TreeNode *addConstant(int i);
+	TreeNode *addConstant(int i);
 	// Add double constant
-	virtual TreeNode *addConstant(double d);
+	TreeNode *addConstant(double d);
 	// Add string constant
-	virtual TreeNode *addConstant(const char *s);
+	TreeNode *addConstant(const char *s);
 	// Add Element constant
-	virtual TreeNode *addElementConstant(int el);
+	TreeNode *addElementConstant(int el);
 	// Add variable to topmost ScopeNode
-	virtual TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
-	// Add variable (as a function argument) to topmost ScopeNode
-	virtual TreeNode *addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode
-	virtual TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
+	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add array 'constant'
-	virtual TreeNode *addArrayConstant(TreeNode *values);
+	TreeNode *addArrayConstant(TreeNode *values);
 	// Search for variable in current scope
 	Variable *findVariableInScope(const char *name, int &scopelevel);
 	// Wrap named variable (and array index)
-	virtual TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
+	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 
 
 	/*
@@ -199,6 +197,8 @@ class Tree
 	Tree *findLocalFunction(const char *name) const;
 	// Add new local function
 	Tree *addLocalFunction(const char *name);
+	// Add list of variable arguments to topmost function
+	bool addLocalFunctionArguments(TreeNode* arglist);
 
 
 	/*
@@ -222,7 +222,7 @@ class Tree
 
 	public:
 	// Add new (GUI-based) filter option linked to a variable
-	virtual TreeNode *addWidget(TreeNode *arglist);
+	TreeNode *addWidget(TreeNode *arglist);
 	// Return first item in list of filter options
 	Refitem<WidgetNode,int> *widgets();
 	// Locate named widget
