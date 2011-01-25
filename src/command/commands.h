@@ -428,6 +428,7 @@ class Command
 		NewBasisShell,
 		NewEigenvector,
 		NewVibration,
+		PrintZMatrix,
 	
 		// Pattern Commands
 		ClearPatterns,
@@ -881,7 +882,6 @@ class Command
 	static bool function_LogInfo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -889,9 +889,11 @@ class Command
 	static bool function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	// MO Definition Commands
+	// Model Extra Commands
 	static bool function_NewBasisShell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewEigenvector(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintZMatrix(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Pattern Commands
 	static bool function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);

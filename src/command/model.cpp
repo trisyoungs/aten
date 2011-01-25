@@ -290,17 +290,6 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Create new vibration in current model
-bool Command::function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vibration *v = obj.rs->renderSourceModel()->addVibration();
-	if (c->hasArg(0)) v->setName(c->argc(0));
-	msg.print(Messenger::Verbose, "Added vibration to model '%s'\n", obj.rs->name());
-	rv.set(VTypes::VibrationData, v);
-	return TRUE;
-}
-
 // Skip to next loaded model ('nextmodel')
 bool Command::function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
