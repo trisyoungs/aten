@@ -60,6 +60,7 @@ bool Command::function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Case statement within 'switch' structure
 bool Command::function_Case(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
+	if (!c->arg(0, rv)) return FALSE;
 	return TRUE;
 }
 
@@ -199,6 +200,66 @@ bool Command::function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Switch statement
 bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
+	printf("Here in the switch.....\n");
+	ReturnValue switchval, caseval;
+	if (!c->arg(0, switchval)) return FALSE;
+	printf("Switch value is %s\n", switchval.info());
+	int index = 1;
+	CommandNode *node;
+	bool result, execute = FALSE;
+	Command::Function af;
+	while (c->hasArg(index))
+	{
+		// Do nothing if its not a CommandNode (but it always should be...)
+		if (c->argNode(index)->nodeType() == TreeNode::CmdNode)
+		{
+			node = (CommandNode*) c->argNode(index);
+			// Are we executing or checking case values?
+			if (execute)
+			{
+				if ((node->function() != Command::Case) && (node->function() != Command::Default))
+				{
+					result = c->arg(index, rv);
+					if (!result)
+					{
+						// Did we break out?
+						af = c->parent()->acceptedFail();
+						if (af == Command::Break)
+						{
+// 							printf("Broken.\n");
+							c->parent()->setAcceptedFail(Command::NoFunction);
+							return TRUE;
+						}
+						else return FALSE;
+					}
+				}
+			}
+			else
+			{
+				// Is this a 'case' or a 'default' node
+				if (node->function() == Command::Default)
+				{
+					++index;
+					if (c->hasArg(index))
+					{
+						if (!c->arg(index, rv)) return FALSE;
+						break;
+					}
+				}
+				else if ((node->function() == Command::Case) && (!execute))
+				{
+					if (!c->arg(index, caseval)) return FALSE;
+// 					printf("Index %i is a case node whose value is %s..\n", index, caseval.info());
+					// Do comparison...
+					if (switchval.type() == VTypes::IntegerData) result = (switchval.asInteger() == caseval.asInteger());
+					else result = (strcmp(switchval.asString(), caseval.asString()) == 0);
+					// Flag to enter into execution state if values matched
+					if (result) execute = TRUE;
+				}
+			}
+		}
+		++index;
+	}
 	return TRUE;
 }
 

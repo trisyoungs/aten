@@ -35,6 +35,7 @@ Command commands;
 	R	Real		DoubleData
 	C	Character	StringData
 	S	Any Simple	IntegerData, DoubleData, StringData
+	T	Exact Simple	IntegerData, StringData
 	U	Vector		VectorData
 	B	Boolean		Any
 	E	Element		StringData,IntegerData,DoubleData,AtomData
@@ -55,7 +56,7 @@ Command commands;
 	/	<type Or>	Specifies an argument may be one of two types
 	2-9	<NRepeat>	Next argument should occur N times
 	
-	Current Usage List: ABCEFGIMNOPRSUVXZ*^[]|&/23456789
+	Current Usage List: ABCEFGIMNOPRSTUVXZ*^[]|&/23456789
 */
 
 // Command action
@@ -526,7 +527,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "break",		"",		VTypes::NoData,
 		"",
 		"Exit from the current for loop or switch statement" },
-	{ "_case",		"",		VTypes::NoData,
+	{ "_case",		"T",		VTypes::NoData,
 		"",
 		"" },
 	{ "continue",		"",		VTypes::NoData,
@@ -550,7 +551,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "return",		"z",		VTypes::NoData,
 		"value = 0",
 		"Terminate execution of the current program/filter/function, optionally returning the value provided" },
-	{ "_switch",		"I",		VTypes::NoData,
+	{ "_switch",		"T",		VTypes::NoData,
 		"int value",
 		"Begins a switch/case statement on the specified value" },
 	{ "while",		"_",		VTypes::NoData,

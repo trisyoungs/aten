@@ -537,9 +537,17 @@ flowstatement:
 		cmdparser.popScope();
 		}
 	| ATEN_FOR pushscope '(' VTYPE savetype variablename ATEN_IN expression ')' { 
-		if (declaredType <= VTypes::VectorData) { msg.print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
+		if (declaredType <= VTypes::VectorData)
+		{
+			msg.print("Error: For/In loop variable must be of pointer type.\n");
+			YYABORT;
+		}
 		tempNode = cmdparser.addVariable(declaredType, &tokenName);
-		if (declaredType != $8->returnType()) { msg.print("Error: For/In loop variable is not being assigned the correct type.\n"); YYABORT; }
+		if (declaredType != $8->returnType())
+		{
+			msg.print("Error: For/In loop variable is not being assigned the correct type.\n");
+			YYABORT;
+		}
 		} blockment {
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::ForIn,tempNode,$8,$11));
 		cmdparser.popScope();
@@ -552,18 +560,21 @@ flowstatement:
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6));
 		cmdparser.popScope();
 		}
+	| ATEN_SWITCH '(' expression ')' '{' caselist '}'	{
+		$$ = cmdparser.addFunction(Command::Switch, $3);
+		$$->addJoinedArguments($6);
+		}
 	;
 
-/* Switch Statement Case Label*/
+/* Switch Statement Case/Default Label */
 caselabel:
-	ATEN_CASE '(' INTCONST ')' ':'			{
+	ATEN_CASE '(' expression ')' ':'			{
 		$$ = cmdparser.addFunction(Command::Case, $3);
+		if ($$ == NULL) { msg.print("Error: Invalid case expression.\n"); YYABORT; }
 		}
-	| ATEN_CASE '(' CHARCONST ')' ':'		{
-		$$ = cmdparser.addFunction(Command::Case, $3);
-		}
-	| ATEN_DEFAULT ':'				{
+	| ATEN_DEFAULT ':'					{
 		$$ = cmdparser.addFunction(Command::Default);
+		if ($$ == NULL) { msg.print("Error: Invalid default case expression.\n"); YYABORT; }
 		}
 	;
 
@@ -576,7 +587,7 @@ caselist:
 		$$ = Tree::joinArguments($2,$1);
 		}
 	| caselist caselabel				{
-		$$ = TREE::joinArguments($2,$1);
+		$$ = Tree::joinArguments($2,$1);
 		}
 	;
 
