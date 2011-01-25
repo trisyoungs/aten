@@ -383,6 +383,15 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 					result = FALSE;
 				}
 				break;
+			// Exact Simple		(IntegerData, StringData)
+			case ('T'):
+				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::StringData))
+				{
+					if (altargs != NULL) { reset = TRUE; continue; }
+					msg.print("Argument %i to function '%s' must be a number or a string.\n", count+1, funcname);
+					result = FALSE;
+				}
+				break;
 			// Boolean		(Any Except NoData)
 			case ('B'):
 				if (rtype == VTypes::NoData)
@@ -473,6 +482,30 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 					result = FALSE;
 				}
 				break;
+			// Any
+			case ('Z'):
+				break;
+			// Modifiers
+			case ('*'):
+			case ('^'):
+			case ('['):
+			case (']'):
+			case ('|'):
+			case ('&'):
+			case ('/'):
+			case ('2'):
+			case ('3'):
+			case ('4'):
+			case ('5'):
+			case ('6'):
+			case ('7'):
+			case ('8'):
+			case ('9'):
+				break;
+			// Default (error)
+			default:
+				printf("Unrecognised argument specifier '%c'.\n", upc);
+				return FALSE;
 		}
 		// Was this argument requested to be a modifiable variable value?
 		if (requirevar && argNode(count)->readOnly())
