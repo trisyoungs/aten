@@ -52,6 +52,7 @@ void CommandParser::reset()
 	expectPathStep_ = FALSE;
 	program_ = NULL;
 	tree_ = NULL;
+	failed_ = FALSE;
 	parser_.reset();
 	stack_.clear();
 }
@@ -183,6 +184,7 @@ bool CommandParser::generate()
 		printErrorInfo();
 		program_->clear();
 	}
+	if (failed_) result = -1;
 	program_ = NULL;
 	msg.exit("CommandParser::generate");
 	return (result != 0 ? FALSE : TRUE);
@@ -317,6 +319,19 @@ bool CommandParser::generateSingleTree(Tree *t, const char *name, const char *co
 	return result;
 }
 
+// Return current tree target, raising warning and setting fail flag if no tree is defined...
+Tree *CommandParser::tree()
+{
+	static Tree dummyTree;
+	if (tree_ == NULL)
+	{
+		failed_ = TRUE;
+		msg.print("Internal Error: Parser tried to do something to a non-existent tree.\n");
+		return &dummyTree;
+	}
+	else return tree_;
+}
+
 // Push filter
 void CommandParser::pushFilter()
 {
@@ -326,7 +341,7 @@ void CommandParser::pushFilter()
 }
 
 // Push function (into topmost tree)
-void CommandParser::pushFunction(const char *name, VTypes::DataType returntype)
+Tree* CommandParser::pushFunction(const char* name, VTypes::DataType returntype)
 {
 	// If there is no current tree target then we add a global function...
 	if (tree_ != NULL) msg.print(Messenger::Parse, "Pushing function onto tree %p (%s)\n", tree_, tree_->name());
@@ -335,6 +350,7 @@ void CommandParser::pushFunction(const char *name, VTypes::DataType returntype)
 	tree_->setReturnType(returntype);
 	stack_.add(tree_, FALSE);
 	msg.print(Messenger::Parse, "New function stacked (return type is %s) - %p\n", VTypes::dataType(tree_->returnType()), tree_);
+	return tree_;
 }
 
 // Pop tree
@@ -362,4 +378,144 @@ void CommandParser::deleteCurrentTree()
 	// Delete the current tree from its parent forest
 	program_->deleteTree(tree_);
 	popTree();
+}
+
+/*
+// Pass-Throughs to Tree Functions
+*/
+
+// Add integer constant
+TreeNode *CommandParser::addConstant(int i)
+{
+	return tree()->addConstant(i);
+}
+
+// Add double constant
+TreeNode *CommandParser::addConstant(double d)
+{
+	return tree()->addConstant(d);
+}
+
+// Add string constant
+TreeNode *CommandParser::addConstant(const char *s)
+{
+	return tree()->addConstant(s);
+}
+
+// Add Element constant
+TreeNode *CommandParser::addElementConstant(int el)
+{
+	return tree()->addElementConstant(el);
+}
+
+// Create a new path on the stack with the specified base 'variable'
+TreeNode *CommandParser::createPath(TreeNode *var)
+{
+	return tree()->createPath(var);
+}
+
+// Expand topmost path
+bool CommandParser::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
+{
+	return tree()->expandPath(name, arrayindex, arglist);
+}
+
+// Finalise and remove the topmost path on the stack
+TreeNode *CommandParser::finalisePath()
+{
+	return tree()->finalisePath();
+}
+
+// Join two commands together
+TreeNode *CommandParser::joinCommands(TreeNode *node1, TreeNode *node2)
+{
+	return tree()->joinCommands(node1, node2);
+}
+
+// Add on a new scope to the stack
+TreeNode *CommandParser::pushScope(Command::Function func)
+{
+	return tree()->pushScope(func);
+}
+
+// Pop the topmost scope node
+bool CommandParser::popScope()
+{
+	return tree()->popScope();
+}
+
+// Add a node representing a whole statement to the execution list
+bool CommandParser::addStatement(TreeNode *leaf)
+{
+	return tree()->addStatement(leaf);
+}
+
+// Add an operator to the Tree
+TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2)
+{
+	return tree()->addOperator(func, arg1, arg2);
+}
+
+// Associate a command-based leaf node to the Tree
+TreeNode *CommandParser::addFunctionWithArglist(Command::Function func, TreeNode *arglist)
+{
+	return tree()->addFunctionWithArglist(func, arglist);
+}
+
+// Add a function node to the list (overloaded to accept simple arguments instead of a list)
+TreeNode *CommandParser::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
+{
+	return tree()->addFunction(func, a1, a2, a3, a4);
+}
+
+// Associate a user-defined command-based leaf node to the Tree
+TreeNode *CommandParser::addUserFunction(Tree *func, TreeNode *arglist)
+{
+	return tree()->addUserFunction(func, arglist);
+}
+
+// Add a declaration list
+TreeNode *CommandParser::addDeclarations(TreeNode *declist)
+{
+	return tree()->addDeclarations(declist);
+}
+
+// Wrap named variable (and array index)
+TreeNode *CommandParser::wrapVariable(Variable *var, TreeNode *arrayindex)
+{
+	return tree()->wrapVariable(var, arrayindex);
+}
+
+// Add variable to topmost ScopeNode
+TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+{
+	return tree()->addVariable(type, name, initialValue);
+}
+
+// Add array variable to topmost ScopeNode
+TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
+{
+	return tree()->addArrayVariable(type, name, sizeexpr, initialvalue);
+}
+
+// Add array 'constant'
+TreeNode *CommandParser::addArrayConstant(TreeNode *values)
+{
+	return tree()->addArrayConstant(values);
+}
+
+// Add new (GUI-based) filter option linked to a variable
+TreeNode *CommandParser::addWidget(TreeNode *arglist)
+{
+	return tree()->addWidget(arglist);
+}
+
+/*
+// Filters / GUI
+*/
+
+// Set filter option
+bool CommandParser::setFilterOption(Dnchar *name, TreeNode *value)
+{
+	return tree()->filter.setOption(name, value);	
 }

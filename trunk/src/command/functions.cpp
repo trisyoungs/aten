@@ -211,12 +211,15 @@ void Command::initPointers()
 	// Flow control
 	pointers_[If] = &function_If;
 	pointers_[Break] = &Command::function_Break;
+	pointers_[Case] = &Command::function_Case;
 	pointers_[Continue] = &Command::function_Continue;
+	pointers_[Default] = &Command::function_Default;
 	pointers_[DoWhile] = &Command::function_DoWhile;
 	pointers_[For] = &Command::function_For;
 	pointers_[ForIn] = &Command::function_ForIn;
 	pointers_[If] = &Command::function_If;
 	pointers_[Return] = &Command::function_Return;
+	pointers_[Switch] = &Command::function_Switch;
 	pointers_[While] = &Command::function_While;
 
 	// Force Commands

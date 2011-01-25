@@ -387,16 +387,15 @@ const char *Dnchar::upper() const
 // Find character
 int Dnchar::find(char search) const
 {
-	int result = 0;
+	int count = 0;
 	char *c;
 	for (c = data_; *c != '\0'; c++)
 	{
-	//printf("Dnchar %c %c\n",*c,search);
-		if (*c == search) break;
-		result ++;
+// 	printf("Dnchar %c %c\n",*c,search);
+		if (*c == search) return count;
+		++count;
 	}
-	if (result >= endPosition_) result = -1;
-	return result;
+	return -1;
 }
 
 // Reverse find character

@@ -26,7 +26,7 @@
 #include "base/sysfunc.h"
 
 // GUI Control Typesname
-const char *GuiControlKeywords[WidgetNode::nGuiControls] = { "check", "combo", "doublespin", "edit", "intcombo", "intspin", "label", "radiogroup" };
+const char *GuiControlKeywords[WidgetNode::nGuiControls] = { "check", "combo", "doublespin", "edit", "intcombo", "intspin", "label", "radiobutton", "radiogroup", "stack" };
 const char *WidgetNode::guiControl(WidgetNode::GuiControl gct)
 {
 	return GuiControlKeywords[gct];
@@ -52,8 +52,7 @@ WidgetNode::GuiQtOption WidgetNode::guiQtOption(const char *s, bool reporterror)
 }
 
 // State change actions
-enum StateAction { DisableAction, EnableAction, ItemsAction, nStateActions };
-const char *StateActionKeywords[StateChange::nStateActions] = { "checked", "disable", "enable", "items", "originalitems" };
+const char *StateActionKeywords[StateChange::nStateActions] = { "checked", "disable", "enable", "items", "originalitems", "switchstack" };
 StateChange::StateAction StateChange::stateAction(const char *s, bool reporterror)
 {
         StateChange::StateAction sa = (StateChange::StateAction) enumSearch("state action", StateChange::nStateActions, StateActionKeywords, s);
@@ -72,6 +71,9 @@ const char *StateChange::stateAction(StateChange::StateAction sa)
 // Constructor
 StateChange::StateChange()
 {
+	// Private variables
+	dynamicValue_ = TRUE;
+	
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -82,6 +84,12 @@ StateChange::StateChange()
 void StateChange::setStateValue(const char *value)
 {
 	stateValue_ = value;
+}
+
+// Set control value for which state change applies
+void StateChange::setStateValue(int i)
+{
+	stateValue_ = itoa(i);
 }
 
 // Return control value for which state change applies
@@ -149,6 +157,18 @@ double StateChange::changeDataAsDouble() const
 bool StateChange::changeDataAsBool() const
 {
 	return changeData_.value().asBool();
+}
+
+// Return whether or not the state change value is linked to current control state
+bool StateChange::dynamicValue()
+{
+	return dynamicValue_;
+}
+
+// Set whether or not the state change value is linked to current control state
+void StateChange::setDynamicValue(bool b)
+{
+	dynamicValue_ = b;
 }
 
 /*
@@ -234,12 +254,14 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			returnType_ = VTypes::DoubleData;
 			break;
 		case (WidgetNode::CheckControl):
+		case (WidgetNode::RadioButtonControl):
 		case (WidgetNode::RadioGroupControl):
 		case (WidgetNode::IntegerSpinControl):
 		case (WidgetNode::IntegerComboControl):
 			returnType_ = VTypes::IntegerData;
 			break;
 		case (WidgetNode::LabelControl):
+		case (WidgetNode::StackControl):
 			returnType_ = VTypes::NoData;
 			break;
 	}
@@ -251,7 +273,15 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 	{
 		// Check Box - option("Title", "check", int state)
 		case (WidgetNode::CheckControl):
-			if (!setData("state", arg, "Warning: No initial state supplied for 'check' GUI filter option - 'off' assumed.\n", TRUE, "0")) break;
+			if (!setData("state", arg, "Error: No initial state supplied for 'check' GUI filter option - 'off' assumed.\n", TRUE, "0")) break;
+			if (arg != NULL) arg = arg->nextArgument;
+			result = TRUE;
+			break;
+		// Check Box - option("Title", "check", "buttongroup", int state)
+		case (WidgetNode::RadioButtonControl):
+			if (!setData("buttongroup", arg, "Error: No button group supplied for 'radiocheck' control.\n", TRUE, "")) break;
+			if (arg != NULL) arg = arg->nextArgument;
+			if (!setData("state", arg, "Error: No initial state supplied for 'radiocheck' GUI filter option.\n", TRUE, "0")) break;
 			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
@@ -300,6 +330,14 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			arg = arg->nextArgument;
 			if (!setData("step", arg, "Error: No step value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
+			result = TRUE;
+			break;
+		// Stack - number of pages, initial page number
+		case (WidgetNode::StackControl):
+			setData("pages", arg, "Error: Number of pages not supplied for stack.\n", TRUE, "");
+			if (arg != NULL) arg = arg->nextArgument;
+			setData("index", arg, "Error: Initial page index not supplied for stack.\n", TRUE, "");
+			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// Label - no data
@@ -368,8 +406,17 @@ void WidgetNode::setOption(TreeNode *arg)
 	StateChange *state;
 	StateChange::StateAction sa;
 	arg->execute(rv);
-	Dnchar keywd = beforeChar(rv.asString(), '='), otherdata;
-	Dnchar argdata = afterChar(rv.asString(), '=');
+	Dnchar keywd, argdata, otherdata;
+	// Keyword is part of string before first '@' before first '=' (if both/either exists)
+	keywd = beforeChar(rv.asString(), '@');
+	if (keywd.find('=') != -1)
+	{
+		otherdata = keywd;
+		argdata = afterChar(rv.asString(), '=');
+		keywd = beforeChar(otherdata, '=');
+		otherdata = "";
+	}
+	else argdata = afterChar(rv.asString(), '@');
 	// Determine option enum
 	WidgetNode::GuiQtOption gqo = WidgetNode::guiQtOption(keywd.get(), TRUE);
 	if (gqo == WidgetNode::nGuiQtOptions) return;
@@ -403,11 +450,16 @@ void WidgetNode::setOption(TreeNode *arg)
 			break;
 		case (WidgetNode::StateOption):
 			state = stateChanges_.add();
-			// Split argument again: part before '@' is the state value
-			keywd = beforeChar(argdata.get(), '@');
-			state->setStateValue(keywd.get());
+			// Split argument again: part before '@' is the state value (if any)
+			if (argdata.find('@') != -1)
+			{
+				keywd = beforeChar(argdata.get(), '@');
+				state->setStateValue(keywd.get());
+				state->setDynamicValue(FALSE);
+				otherdata = afterChar(argdata.get(), '@');
+			}
+			else otherdata = argdata;
 			// ...after '@' and before '?' is the target control...
-			otherdata = afterChar(argdata.get(), '@');
 			keywd = beforeChar(otherdata.get(), '?');
 			state->setTargetWidget(keywd.get());
 			// ...and after '?' is the state change definition

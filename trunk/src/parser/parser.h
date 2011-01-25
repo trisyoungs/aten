@@ -33,7 +33,7 @@ class Program;
 class TreeNode;
 
 // Parser
-class CommandParser : public Tree
+class CommandParser
 {
 	public:
 	// Constructor / Destructor
@@ -85,7 +85,10 @@ class CommandParser : public Tree
 	void print();
 	// Print error information and location
 	void printErrorInfo();
-
+	// Flag that the next token to expect is a path step
+	bool setExpectPathStep(bool b);
+	// Whether to treat the next alphanumeric token as a path step variable
+	bool expectPathStep();
 
 	/*
 	// Tree Data
@@ -97,6 +100,8 @@ class CommandParser : public Tree
 	Tree *tree_;
 	// Stack of created trees
 	Reflist<Tree,bool> stack_;
+	// Flag to indicate failure in tree generation (set by tree() function)
+	bool failed_;
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
 	// Populate target forest from specified character string
@@ -107,10 +112,12 @@ class CommandParser : public Tree
 	bool generateFromFile(Program *prog, const char *filename, bool dontpushtree = FALSE);
 
 	public:
+	// Return current tree target, raising warning and setting fail flag if no tree is defined...
+	Tree *tree();
 	// Push filter
 	void pushFilter();
 	// Push function
-	void pushFunction(const char *name, VTypes::DataType returntype);
+	Tree *pushFunction(const char *name, VTypes::DataType returntype);
 	// Pop tree (or function) from stack
 	void popTree();
 	// Discard current tree and its contents
@@ -120,25 +127,29 @@ class CommandParser : public Tree
 
 
 	/*
-	// Path Generation
+	// Pass-Throughs to Tree Functions
 	*/
 	public:	
-	// Flag that the next token to expect is a path step
-	bool setExpectPathStep(bool b);
-	// Whether to treat the next alphanumeric token as a path step variable
-	bool expectPathStep();
+	// Add integer constant
+	TreeNode *addConstant(int i);
+	// Add double constant
+	TreeNode *addConstant(double d);
+	// Add string constant
+	TreeNode *addConstant(const char *s);
+	// Add Element constant
+	TreeNode *addElementConstant(int el);
 	// Create a new path on the stack with the specified base 'variable'
 	TreeNode *createPath(TreeNode *var);
 	// Expand topmost path
 	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL, TreeNode *arglist = NULL);
 	// Finalise and remove the topmost path on the stack
 	TreeNode *finalisePath();
-
-
-	/*
-	// Tree Interface
-	*/
-	public:
+	// Join two commands together
+	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
+	// Add on a new scope to the stack
+	TreeNode *pushScope(Command::Function func = Command::NoFunction);
+	// Pop the topmost scope node
+	bool popScope();
 	// Add a node representing a whole statement to the execution list
 	bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
@@ -151,47 +162,24 @@ class CommandParser : public Tree
 	TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
 	// Add a declaration list
 	TreeNode *addDeclarations(TreeNode *declist);
-	// Join two commands together
-	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
-	// Add on a new scope to the stack
-	TreeNode *pushScope(Command::Function func = Command::NoFunction);
-	// Pop the topmost scope node
-	bool popScope();
-
-
-	/*
-	// Variables / Constants
-	*/
-	public:
-	// Add constant value to tompost scope
-	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
-	// Add integer constant
-	TreeNode *addConstant(int i);
-	// Add double constant
-	TreeNode *addConstant(double d);
-	// Add string constant
-	TreeNode *addConstant(const char *s);
-	// Add Element constant
-	TreeNode *addElementConstant(int el);
-	// Add variable to topmost ScopeNode
-	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
-	// Add variable (as a function argument) to topmost ScopeNode
-	TreeNode *addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
-	// Add array variable to topmost ScopeNode
-	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
-	// Add array constant
-	TreeNode *addArrayConstant(TreeNode *values);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
-
+	// Add variable to topmost ScopeNode
+	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	// Add array variable to topmost ScopeNode
+	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
+	// Add array 'constant'
+	TreeNode *addArrayConstant(TreeNode *values);
+	// Add new (GUI-based) filter option linked to a variable
+	TreeNode *addWidget(TreeNode *arglist);
+	
+	
 	/*
 	// Filters / GUI
 	*/
 	public:
 	// Set filter option
 	bool setFilterOption(Dnchar *name, TreeNode *value);
-	// Add new (GUI-based) widget linked to a variable
-	TreeNode *addWidget(TreeNode *arglist);
 };
 
 // External declaration

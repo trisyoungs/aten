@@ -52,6 +52,7 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 	QDoubleSpinBox *doublespin;
 	QCheckBox *check;
 	QLineEdit *line;
+	QStackedWidget *stack;
 	TRadioGroup *radio;
 	Dnchar data;
 	LineParser lp;
@@ -177,6 +178,26 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 		// Label
 		case (WidgetNode::LabelControl):
 			break;
+		// Stack control
+		case (WidgetNode::StackControl):
+			stack = (QStackedWidget*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::DisableAction):
+					stack->setEnabled(FALSE);
+					break;
+				case (StateChange::EnableAction):
+					stack->setEnabled(TRUE);
+					break;
+				case (StateChange::SwitchStackAcion):
+					// Get new index
+					n = sc->stateValueAsInteger() - 1;
+					stack->setCurrentIndex(n);
+					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
+			break;
 	}
 }
 
@@ -202,7 +223,12 @@ void AtenCustomDialog::checkBoxWidget_clicked(bool checked)
 	// Check all states defined in the widgetnode
 	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
 	{
-		if (checked && ((int)sc->stateValueAsInteger() > 0)) performStateChange(sc);
+		if (sc->dynamicValue())
+		{
+			sc->setStateValue(checked);
+			performStateChange(sc);
+		}
+		else if (checked && ((int)sc->stateValueAsInteger() > 0)) performStateChange(sc);
 		else if ((!checked) && ((int)sc->stateValueAsInteger() < 1)) performStateChange(sc);
 	}
 	refreshing_ = FALSE;
@@ -230,8 +256,13 @@ void AtenCustomDialog::comboWidget_currentIndexChanged(int row)
 	// Check all states defined in the widgetnode
 	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
 	{
-		// Compare by integer value or string depending on control type
-		if (node->controlType() == WidgetNode::IntegerComboControl)
+		// If StateChange has a dynamic value, set it now, otherwise compare by integer value or string depending on control type
+		if (sc->dynamicValue())
+		{
+			sc->setStateValue(row+1);
+			performStateChange(sc);
+		}
+		else if (node->controlType() == WidgetNode::IntegerComboControl)
 		{
 			if ((row+1) == sc->stateValueAsInteger()) performStateChange(sc);
 		}
@@ -263,7 +294,15 @@ void AtenCustomDialog::doubleSpinWidget_valueChanged(double d)
 		return;
 	}
 	// Check all states defined in the widgetnode
-	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (d == sc->stateValueAsDouble()) performStateChange(sc);
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
+	{
+		if (sc->dynamicValue())
+		{
+			sc->setStateValue(d);
+			performStateChange(sc);
+		}
+		else if (d == sc->stateValueAsDouble()) performStateChange(sc);
+	}
 	refreshing_ = FALSE;
 }
 
@@ -287,7 +326,15 @@ void AtenCustomDialog::integerSpinWidget_valueChanged(int i)
 		return;
 	}
 	// Check all states defined in the widgetnode
-	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (i == sc->stateValueAsInteger()) performStateChange(sc);
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
+	{
+		if (sc->dynamicValue())
+		{
+			sc->setStateValue(i);
+			performStateChange(sc);
+		}
+		else if (i == sc->stateValueAsInteger()) performStateChange(sc);
+	}
 	refreshing_ = FALSE;
 }
 
@@ -311,7 +358,15 @@ void AtenCustomDialog::radioGroupWidget_currentIndexChanged(int index)
 		return;
 	}
 	// Check all states defined in the widgetnode
-	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (index == sc->stateValueAsInteger()) performStateChange(sc);
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
+	{
+		if (sc->dynamicValue())
+		{
+			sc->setStateValue(index+1);
+			performStateChange(sc);
+		}
+		else if (index == sc->stateValueAsInteger()) performStateChange(sc);
+	}
 	refreshing_ = FALSE;
 }
 
@@ -347,6 +402,30 @@ QCheckBox *AtenCustomDialog::createCheckBox(WidgetNode *gfo)
 	check->setChecked(data.asInteger());
 	msg.exit("AtenCustomDialog::createCheckBox");
 	return check;
+}
+
+// Create radio button from data in specified WidgetNode
+QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups)
+{
+	msg.enter("AtenCustomDialog::createRadioButton");
+	QRadioButton *radio = new QRadioButton(gfo->name());
+	Dnchar data;
+	// Critical : parent buttongroup
+	if (!gfo->data("buttongroup", data)) printf("Critical: No parent buttongroup found when constructing QRadioButton.\n");
+	// Search to see if specific key is in the table
+	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups.search(data);
+	if (bg == NULL)
+	{
+		QButtonGroup *butgroup = new QButtonGroup();
+		butgroup->addButton(radio);
+		buttonGroups.add(data, butgroup);
+	}
+	else bg->value()->addButton(radio);
+	// Critical : state
+	if (!gfo->data("state", data)) printf("Critical: No state found when constructing QRadioButton.\n");
+	radio->setChecked(data.asInteger());
+	msg.exit("AtenCustomDialog::createRadioButton");
+	return radio;
 }
 
 // Create radiogroup from data in specified GuiFilterOption
@@ -445,6 +524,31 @@ QSpinBox *AtenCustomDialog::createSpinBox(WidgetNode *gfo)
 	return spin;
 }
 
+// Create line edit from data in specified GuiFilterOption
+QStackedWidget *AtenCustomDialog::createStackedWidget(WidgetNode* gfo, LayoutList& layoutList)
+{
+	msg.enter("AtenCustomDialog::createStackedWidget");
+	QStackedWidget *stack = new QStackedWidget();
+	// Critical : pages
+	Dnchar data, name;
+	if (!gfo->data("pages", data)) printf("Critical: Number of pages not found whild constructing QStackWidget.\n");
+	else for (int n=0; n<data.asInteger(); ++n)
+	{
+		name.sprintf("%s_%i", gfo->name(), n+1);
+		LayoutData *ld = layoutList.find(name);
+		if (ld != NULL) printf("Critical: A stack named '%s' already exists...\n", gfo->name());
+		else
+		{
+			// Add a new page to the current QStackedWidget, along with an empty widget and a layout
+			QWidget *widget = new QWidget();
+			stack->addWidget(widget);
+			ld = layoutList.add(name, createGridLayout(widget));
+		}
+	}
+	msg.exit("AtenCustomDialog::createStackedWidget");
+	return stack;
+}
+
 // Construct filter option widgets for specified tree
 bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 {
@@ -457,6 +561,8 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 	int span, labelspan, alignment;
 	bool newline;
 	LayoutList layouts;
+	KVTable<Dnchar,QButtonGroup*> buttonGroups, *bg;
+	KVTable<Dnchar,QStackWidget*> stackWidgets;
 	Reflist<QTabWidget,Dnchar> tabwidgets;
 	Refitem<QTabWidget,Dnchar> *tabref;
 	Dnchar name;
@@ -547,6 +653,12 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 				currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
+			// RadioButton - data: buttongroup, state)
+			case (WidgetNode::RadioButtonControl):
+				widget = createRadioButton(gfo, buttonGroups);
+				currentlayout->addWidget(widget, span, newline);
+				gfo->setWidget(widget);
+				break;
 			// Checkgroup - data:  items, default
 			case (WidgetNode::RadioGroupControl):
 // 				widget = createLabel(gfo->name(), alignment);
@@ -586,6 +698,12 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 				currentlayout->addWidget(widget, labelspan, newline);
 				widget = createSpinBox(gfo);
 				currentlayout->addWidget(widget, span, FALSE);
+				gfo->setWidget(widget);
+				break;
+			// Stack - data: npages, index
+			case (WidgetNode::StackControl):
+				widget = createStackedWidget(gfo, layouts);
+				currentlayout->addWidget(widget, labelspan, newline);
 				gfo->setWidget(widget);
 				break;
 			// Label

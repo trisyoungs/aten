@@ -43,39 +43,42 @@
      ELEMENTCONST = 259,
      DOUBLECONST = 260,
      NEWTOKEN = 261,
-     NEWFUNCTOKEN = 262,
-     CHARCONST = 263,
-     STEPTOKEN = 264,
-     VAR = 265,
-     LOCALVAR = 266,
-     FUNCCALL = 267,
-     USERFUNCCALL = 268,
-     VTYPE = 269,
-     ATEN_DO = 270,
-     WHILE = 271,
-     FOR = 272,
-     ATEN_IF = 273,
-     ATEN_IN = 274,
-     ATEN_RETURN = 275,
-     FILTERBLOCK = 276,
-     HELP = 277,
-     ATEN_VOID = 278,
-     DUMMY = 279,
-     OPTION = 280,
-     ELSE = 281,
-     OR = 282,
-     AND = 283,
-     DEQ = 284,
-     TEQ = 285,
-     MEQ = 286,
-     PEQ = 287,
-     NEQ = 288,
-     EQ = 289,
-     LEQ = 290,
-     GEQ = 291,
-     UMINUS = 292,
-     MINUSMINUS = 293,
-     PLUSPLUS = 294
+     CHARCONST = 262,
+     STEPTOKEN = 263,
+     VAR = 264,
+     LOCALVAR = 265,
+     FUNCCALL = 266,
+     USERFUNCCALL = 267,
+     VTYPE = 268,
+     ATEN_DO = 269,
+     ATEN_WHILE = 270,
+     ATEN_FOR = 271,
+     ATEN_SWITCH = 272,
+     ATEN_CASE = 273,
+     ATEN_DEFAULT = 274,
+     ATEN_IF = 275,
+     ATEN_IN = 276,
+     ATEN_RETURN = 277,
+     FILTERBLOCK = 278,
+     HELP = 279,
+     ATEN_VOID = 280,
+     ATEN_CONTINUE = 281,
+     ATEN_BREAK = 282,
+     OPTION = 283,
+     ATEN_ELSE = 284,
+     OR = 285,
+     AND = 286,
+     DEQ = 287,
+     TEQ = 288,
+     MEQ = 289,
+     PEQ = 290,
+     NEQ = 291,
+     EQ = 292,
+     LEQ = 293,
+     GEQ = 294,
+     UMINUS = 295,
+     MINUSMINUS = 296,
+     PLUSPLUS = 297
    };
 #endif
 /* Tokens.  */
@@ -83,39 +86,42 @@
 #define ELEMENTCONST 259
 #define DOUBLECONST 260
 #define NEWTOKEN 261
-#define NEWFUNCTOKEN 262
-#define CHARCONST 263
-#define STEPTOKEN 264
-#define VAR 265
-#define LOCALVAR 266
-#define FUNCCALL 267
-#define USERFUNCCALL 268
-#define VTYPE 269
-#define ATEN_DO 270
-#define WHILE 271
-#define FOR 272
-#define ATEN_IF 273
-#define ATEN_IN 274
-#define ATEN_RETURN 275
-#define FILTERBLOCK 276
-#define HELP 277
-#define ATEN_VOID 278
-#define DUMMY 279
-#define OPTION 280
-#define ELSE 281
-#define OR 282
-#define AND 283
-#define DEQ 284
-#define TEQ 285
-#define MEQ 286
-#define PEQ 287
-#define NEQ 288
-#define EQ 289
-#define LEQ 290
-#define GEQ 291
-#define UMINUS 292
-#define MINUSMINUS 293
-#define PLUSPLUS 294
+#define CHARCONST 262
+#define STEPTOKEN 263
+#define VAR 264
+#define LOCALVAR 265
+#define FUNCCALL 266
+#define USERFUNCCALL 267
+#define VTYPE 268
+#define ATEN_DO 269
+#define ATEN_WHILE 270
+#define ATEN_FOR 271
+#define ATEN_SWITCH 272
+#define ATEN_CASE 273
+#define ATEN_DEFAULT 274
+#define ATEN_IF 275
+#define ATEN_IN 276
+#define ATEN_RETURN 277
+#define FILTERBLOCK 278
+#define HELP 279
+#define ATEN_VOID 280
+#define ATEN_CONTINUE 281
+#define ATEN_BREAK 282
+#define OPTION 283
+#define ATEN_ELSE 284
+#define OR 285
+#define AND 286
+#define DEQ 287
+#define TEQ 288
+#define MEQ 289
+#define PEQ 290
+#define NEQ 291
+#define EQ 292
+#define LEQ 293
+#define GEQ 294
+#define UMINUS 295
+#define MINUSMINUS 296
+#define PLUSPLUS 297
 
 
 
@@ -131,7 +137,7 @@ typedef union YYSTYPE
 	Dnchar *name;			/* character pointer for names */
 	TreeNode *node;			/* node pointer */
 	Variable *variable;		/* variable pointer */
-	Tree *functree;			/* user-defined function (tree) pointer */
+	Tree *tree;			/* function (tree) pointer */
 	VTypes::DataType vtype;		/* variable type for next declarations */
 	int intconst;			/* integer constant value */
 	double doubleconst;		/* double constant value */
@@ -139,7 +145,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 143 "grammar.h"
+#line 149 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

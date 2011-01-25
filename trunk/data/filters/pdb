@@ -60,7 +60,7 @@ filter(type="exportmodel",name="Protein Databank PDB gromacs compatible", extens
 	int k,j,l,n;
 
 	#should make sure there is at least one pattern here
-	if (p = m.patterns)
+	if (m.patterns)
 	{
 	printf("a pattern exists\n");
 	}

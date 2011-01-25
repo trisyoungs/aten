@@ -77,7 +77,6 @@ measurement.cpp
 model.cpp
 parser.cpp
 parser_lexer.cpp
-parser_tree.cpp
 pattern.cpp
 patternbound.cpp
 prefs.cpp

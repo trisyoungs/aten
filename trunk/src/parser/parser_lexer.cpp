@@ -253,10 +253,15 @@ int CommandParser::lex()
 			// Is this a recognised high-level keyword?
 			n = 0;
 			if (token == "if") n = ATEN_IF;
-			else if (token == "else") n = ELSE;
-			else if (token == "for") n = FOR;
+			else if (token == "else") n = ATEN_ELSE;
+			else if (token == "for") n = ATEN_FOR;
 			else if (token == "do") n = ATEN_DO;
-			else if (token == "while") n = WHILE;
+			else if (token == "continue") n = ATEN_CONTINUE;
+			else if (token == "break") n = ATEN_BREAK;
+			else if (token == "while") n = ATEN_WHILE;
+			else if (token == "switch") n = ATEN_SWITCH;
+			else if (token == "case") n = ATEN_CASE;
+			else if (token == "default") n = ATEN_DEFAULT;
 			else if (token == "return") n = ATEN_RETURN;
 			else if (token == "void") n = ATEN_VOID;
 			else if (token == "help") n = HELP;
@@ -316,7 +321,7 @@ int CommandParser::lex()
 				if (func != NULL)
 				{
 					msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
-					CommandParser_lval.functree = func;
+					CommandParser_lval.tree = func;
 					return USERFUNCCALL;
 				}
 			}
@@ -326,7 +331,7 @@ int CommandParser::lex()
 			if (func != NULL)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);
-				CommandParser_lval.functree = func;
+				CommandParser_lval.tree = func;
 				return USERFUNCCALL;
 			}
 		}
@@ -342,20 +347,21 @@ int CommandParser::lex()
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
-		if (peekChar() == '(')
-		{
-			msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWFUNC)\n", tree_);
-			name = token;
-			CommandParser_lval.name = &name;
-			return NEWFUNCTOKEN;
-		}
-		else
-		{
+// 		printf("PEEKCHAR = %c\n", peekChar());   TGAY
+// 		if (peekChar() == '(')
+// 		{
+// 			msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWFUNC)\n", tree_);
+// 			name = token;
+// 			CommandParser_lval.name = &name;
+// 			return NEWFUNCTOKEN;
+// 		}
+// 		else
+// 		{
 			msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
 			name = token;
 			CommandParser_lval.name = &name;
 			return NEWTOKEN;
-		}
+// 		}
 	}
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */

@@ -65,13 +65,22 @@
 						<entry></entry>
 					</row>
 					<row>
-						<entry>GAMESS-US Input</entry>
+						<entry>GAMESS-US Input File</entry>
 						<entry>*.inp</entry>
 						<entry>gamusinp</entry>
 						<entry>5</entry>
 						<entry>yes</entry>
 						<entry>yes</entry>
 						<entry>Cartesian coordinates only.</entry>
+					</row>
+					<row>
+						<entry>Gaussian Input File</entry>
+						<entry>*.gjf</entry>
+						<entry>gjf</entry>
+						<entry>17</entry>
+						<entry>no</entry>
+						<entry>no</entry>
+						<entry></entry>
 					</row>
 					<row>
 						<entry>Gromacs Configuration</entry>
