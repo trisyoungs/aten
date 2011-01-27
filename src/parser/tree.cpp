@@ -1023,6 +1023,14 @@ WidgetNode *Tree::findWidget(QWidget *widget)
 	return NULL;
 }
 
+// Locate widget with specified object pointer
+WidgetNode *Tree::findWidgetObject(QObject *obj)
+{	
+	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next) if (ri->item->object() == obj) return ri->item;
+	printf("Internal Error: Couldn't find widget %p in tree '%s'.\n", obj, name_.get());
+	return NULL;
+}
+
 // Retrieve current value of named widget as a double
 double Tree::widgetValued(const char *name)
 {

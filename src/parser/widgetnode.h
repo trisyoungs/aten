@@ -98,7 +98,7 @@ class WidgetNode : public TreeNode
 	WidgetNode();
 	~WidgetNode();
 	// User-defined GUI option types
-	enum GuiControl { CheckControl, ComboControl, DoubleSpinControl, EditControl, IntegerComboControl, IntegerSpinControl, LabelControl, RadioButtonControl, RadioGroupControl, StackControl, nGuiControls };
+	enum GuiControl { CheckControl, ComboControl, DoubleSpinControl, EditControl, IntegerComboControl, IntegerSpinControl, LabelControl, RadioButtonControl, RadioGroupControl, StackControl, StringRadioGroupControl, nGuiControls };
 	static GuiControl guiControl(const char *s, bool reporterror = FALSE);
 	static const char *guiControl(GuiControl got);
 	// Options for Qt layout
@@ -146,6 +146,8 @@ class WidgetNode : public TreeNode
 	private:
 	// Pointer to associated QWidget
 	QWidget *widget_;
+	// Pointer to associated QObject (if not QWidget)
+	QObject *object_;
 	// Type of widget parent (if any)
 	GuiWidgetParent widgetParentType_;
 	// Name of parent in which the control exists
@@ -186,7 +188,10 @@ class WidgetNode : public TreeNode
 	QWidget *widget();
 	// Return whether widget is enabled
 	bool widgetEnabled();
-
+	// Set object pointer
+	void setObject(QObject *obj);
+	// Return object pointer
+	QObject *object();
 
 	/*
 	// Inherited Virtuals

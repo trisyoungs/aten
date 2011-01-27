@@ -560,21 +560,31 @@ flowstatement:
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6));
 		cmdparser.popScope();
 		}
-	| ATEN_SWITCH '(' expression ')' '{' caselist '}'	{
+	| ATEN_SWITCH '(' expression ')' 		{
+		if (($3->returnType() != VTypes::IntegerData) && ($3->returnType() != VTypes::StringData))
+		{
+			msg.print("Error: Switch value must be of integer or string type.\n");
+			YYABORT;
+		}
+		} '{' caselist '}' {
 		$$ = cmdparser.addFunction(Command::Switch, $3);
-		$$->addJoinedArguments($6);
+		$$->addJoinedArguments($7);
 		}
 	;
 
 /* Switch Statement Case/Default Label */
 caselabel:
-	ATEN_CASE '(' expression ')' ':'			{
+	ATEN_CASE '(' expression ')' ':'		{
+		if (($3->returnType() != VTypes::IntegerData) && ($3->returnType() != VTypes::StringData))
+		{
+			msg.print("Error: Case value must be of integer or string type.\n");
+			YYABORT;
+		}
 		$$ = cmdparser.addFunction(Command::Case, $3);
 		if ($$ == NULL) { msg.print("Error: Invalid case expression.\n"); YYABORT; }
 		}
-	| ATEN_DEFAULT ':'					{
+	| ATEN_DEFAULT ':'				{
 		$$ = cmdparser.addFunction(Command::Default);
-		if ($$ == NULL) { msg.print("Error: Invalid default case expression.\n"); YYABORT; }
 		}
 	;
 

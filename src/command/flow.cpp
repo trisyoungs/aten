@@ -200,10 +200,8 @@ bool Command::function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Switch statement
 bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	printf("Here in the switch.....\n");
 	ReturnValue switchval, caseval;
 	if (!c->arg(0, switchval)) return FALSE;
-	printf("Switch value is %s\n", switchval.info());
 	int index = 1;
 	CommandNode *node;
 	bool result, execute = FALSE;
@@ -251,7 +249,7 @@ bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
 					if (!c->arg(index, caseval)) return FALSE;
 // 					printf("Index %i is a case node whose value is %s..\n", index, caseval.info());
 					// Do comparison...
-					if (switchval.type() == VTypes::IntegerData) result = (switchval.asInteger() == caseval.asInteger());
+					if ((switchval.type() == VTypes::IntegerData) && (caseval.type() == VTypes::IntegerData)) result = (switchval.asInteger() == caseval.asInteger());
 					else result = (strcmp(switchval.asString(), caseval.asString()) == 0);
 					// Flag to enter into execution state if values matched
 					if (result) execute = TRUE;

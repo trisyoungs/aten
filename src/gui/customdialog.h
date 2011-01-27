@@ -35,7 +35,7 @@ class QLineEdit;
 class QCheckBox;
 class QRadioButton;
 class QStackWidget;
-class TRadioGroup;
+class QButtonGroup;
 class WidgetNode;
 class StateChange;
 
@@ -77,7 +77,7 @@ class AtenCustomDialog : public QDialog
 	// Create radio button from data in specified WidgetNode
 	QRadioButton *createRadioButton(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups);
 	// Create radiogroup from data in specified WidgetNode
-	TRadioGroup *createRadioGroup(WidgetNode *gfo);
+	QButtonGroup *createRadioGroup(WidgetNode *gfo);
 	// Create combo box from data in specified GuiFilterOption
 	QComboBox *createComboBox(WidgetNode *gfo);
 	// Create double spin edit from data in specified GuiFilterOption
