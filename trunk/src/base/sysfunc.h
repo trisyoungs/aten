@@ -28,7 +28,6 @@ const char *ftoa(double);
 const char *ftoa(double, const char*);
 
 // String functions
-const char *filePath(const char*);
 const char *absoluteFilePath(const char*);
 const char *removePath(const char*);
 const char *upperCase(const char*);
