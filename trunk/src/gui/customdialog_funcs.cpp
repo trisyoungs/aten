@@ -22,7 +22,6 @@
 #include "gui/customdialog.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
-#include "gui/tradiogroup.uih"
 #include "main/aten.h"
 #include "base/sysfunc.h"
 
@@ -53,7 +52,7 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 	QCheckBox *check;
 	QLineEdit *line;
 	QStackedWidget *stack;
-	TRadioGroup *radio;
+	QButtonGroup *radio;
 	Dnchar data;
 	LineParser lp;
 	int n;
@@ -79,26 +78,9 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 			break;
 		// RadioGroup
 		case (WidgetNode::RadioGroupControl):
-			radio = (TRadioGroup*) node->widget();
+			radio = (QButtonGroup*) node->widget();
 			switch (sc->changeAction())
 			{
-				case (StateChange::DisableAction):
-					radio->setEnabled(FALSE);
-					break;
-				case (StateChange::EnableAction):
-					radio->setEnabled(TRUE);
-					break;
-// 				case (StateChange::ItemsAction):
-// 					lp.getArgsDelim(sc->changeData(), LineParser::UseQuotes);
-// 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
-// 					combo->setCurrentIndex(0);
-// 					break;
-// 				case (StateChange::OriginalItemsAction):
-// 					if (!node->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
-// 					lp.getArgsDelim(data.get(), LineParser::UseQuotes);
-// 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
-// 					combo->setCurrentIndex(0);
-// 					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
 			}
@@ -344,14 +326,14 @@ void AtenCustomDialog::radioGroupWidget_currentIndexChanged(int index)
 	if (!isVisible()) return;
 	// Cast sender into checkbox
 	refreshing_ = TRUE;
-	TRadioGroup *radio = (TRadioGroup*) sender();
+	QButtonGroup *radio = (QButtonGroup*) sender();
 	if (!radio)
 	{
-		printf("AtenCustomDialog::radioGroupWidget_currentIndexChanged - Sender could not be cast to a TRadioGroup.\n");
+		printf("AtenCustomDialog::radioGroupWidget_currentIndexChanged - Sender could not be cast to a QButtonGroup.\n");
 		return;
 	}
 	// Search for widget definition in original tree...
-	WidgetNode *node = parentTree_->findWidget(radio);
+	WidgetNode *node = parentTree_->findWidgetObject(radio);
 	if (node == NULL)
 	{
 		printf("AtenCustomDialog::radioGroupWidget_currentIndexChanged - couldn't find associated WidgetNode.\n");
@@ -429,20 +411,11 @@ QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo, KVTable<Dncha
 }
 
 // Create radiogroup from data in specified GuiFilterOption
-TRadioGroup *AtenCustomDialog::createRadioGroup(WidgetNode *gfo)
+QButtonGroup *AtenCustomDialog::createRadioGroup(WidgetNode *gfo)
 {
 	msg.enter("AtenCustomDialog::createRadioGroup");
-	TRadioGroup *radio = new TRadioGroup(this);
+	QButtonGroup *radio = new QButtonGroup(this);
 	QObject::connect(radio, SIGNAL(currentIndexChanged(int)), this, SLOT(radioGroupWidget_currentIndexChanged(int)));
-	// Critical : items list
-	Dnchar data;
-	if (!gfo->data("items", data)) printf("Critical: No items list found when constructing TRadioGroup.\n");
-	LineParser lp;
-	lp.getArgsDelim(LineParser::UseQuotes, data.get());
-	for (int n=0; n<lp.nArgs(); ++n) radio->addItem(lp.argc(n));
-	// Optional : default index (+1)
-	if (!gfo->data("default", data)) printf("Warning: Default value for TRadioGroup not set.\n");
-	radio->setCurrentIndex(data.asInteger()-1);
 	msg.exit("AtenCustomDialog::createRadioGroup");
 	return radio;
 }
@@ -545,6 +518,10 @@ QStackedWidget *AtenCustomDialog::createStackedWidget(WidgetNode* gfo, LayoutLis
 			ld = layoutList.add(name, createGridLayout(widget));
 		}
 	}
+	// Critical : currentindex
+	if (!gfo->data("index", data)) printf("Critical: Initial page index not found whild constructing QStackWidget.\n");
+	else stack->setCurrentIndex(data.asInteger()-1);
+	
 	msg.exit("AtenCustomDialog::createStackedWidget");
 	return stack;
 }
@@ -568,6 +545,7 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 	Dnchar name;
 	LayoutData *mainlayout, *currentlayout;
 	QWidget *widget;
+	QObject *object;
 
 	// Set title of window and store target tree
 	setWindowTitle(title);
@@ -659,13 +637,11 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 				currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
-			// Checkgroup - data:  items, default
+			// RadioGroup
 			case (WidgetNode::RadioGroupControl):
-// 				widget = createLabel(gfo->name(), alignment);
-// 				currentlayout->addWidget(widget, labelspan, newline);
-				widget = createRadioGroup(gfo);
-				currentlayout->addWidget(widget, span, newline);
-				gfo->setWidget(widget);
+			case (WidgetNode::StringRadioGroupControl):
+				object = createRadioGroup(gfo);
+				gfo->setObject(object);
 				break;
 			// Combo Box - data:  items, default
 			case (WidgetNode::IntegerComboControl):
@@ -703,7 +679,7 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 			// Stack - data: npages, index
 			case (WidgetNode::StackControl):
 				widget = createStackedWidget(gfo, layouts);
-				currentlayout->addWidget(widget, labelspan, newline);
+				currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
 			// Label
@@ -727,6 +703,7 @@ void AtenCustomDialog::storeValues()
 	msg.enter("AtenCustomDialog::storeValues");
 	WidgetNode *gfo;
 	ReturnValue rv;
+	QAbstractButton *button;
 	for (Refitem<WidgetNode,int> *ri = parentTree_->widgets(); ri != NULL; ri = ri->next)
 	{
 		gfo = ri->item;
@@ -737,7 +714,13 @@ void AtenCustomDialog::storeValues()
 				rv.set( ((QCheckBox*) (gfo->widget()))->isChecked());
 				break;
 			case (WidgetNode::RadioGroupControl):
-				rv.set( ((TRadioGroup*) (gfo->widget()))->currentIndex()+1);
+				rv.set( ((QButtonGroup*) (gfo->object()))->checkedId()+1);
+// 				printf("Radiogroupcontrol id = %i\n", rv.asInteger());
+				break;
+			case (WidgetNode::StringRadioGroupControl):
+				button = ((QButtonGroup*) (gfo->object()))->checkedButton();
+				rv.set( button == 0 ? "" : qPrintable(button->text()) );
+// 				printf("Radiogroupcontrol string = %s\n", rv.asString());
 				break;
 			case (WidgetNode::IntegerComboControl):
 				rv.set( ((QComboBox*) (gfo->widget()))->currentIndex()+1);

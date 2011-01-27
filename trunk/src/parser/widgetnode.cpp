@@ -26,7 +26,7 @@
 #include "base/sysfunc.h"
 
 // GUI Control Typesname
-const char *GuiControlKeywords[WidgetNode::nGuiControls] = { "check", "combo", "doublespin", "edit", "intcombo", "intspin", "label", "radiobutton", "radiogroup", "stack" };
+const char *GuiControlKeywords[WidgetNode::nGuiControls] = { "check", "combo", "doublespin", "edit", "intcombo", "intspin", "label", "radio", "radiogroup", "stack", "stringradiogroup" };
 const char *WidgetNode::guiControl(WidgetNode::GuiControl gct)
 {
 	return GuiControlKeywords[gct];
@@ -186,6 +186,7 @@ WidgetNode::WidgetNode()
 	controlType_ = WidgetNode::nGuiControls;
 	returnType_ = VTypes::NoData;
 	widget_ = NULL;
+	object_ = NULL;
 	widgetParentType_ = WidgetNode::NoParent;
 	widgetParentSpan_ = 2;
 	widgetSpan_ = 1;
@@ -248,6 +249,7 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 	{
 		case (WidgetNode::EditControl):
 		case (WidgetNode::ComboControl):
+		case (WidgetNode::StringRadioGroupControl):
 			returnType_ = VTypes::StringData;
 			break;
 		case (WidgetNode::DoubleSpinControl):
@@ -285,12 +287,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
-		// RadioGroup Box - option("Title", "radiogroup", "<csv itemlist>", int default=1)
+		// RadioGroup 'containers'
 		case (WidgetNode::RadioGroupControl):
-			if (!setData("items", arg, "Error: No items list supplied for 'radiogroup' GUI filter option.\n", TRUE, "")) break;
-			if (arg != NULL) arg = arg->nextArgument;
-			setData("default", arg, "No default value supplied for 'radiogroup' GUI filter option - '1' assumed.\n", TRUE, "1");
-			if (arg != NULL) arg = arg->nextArgument;
+		case (WidgetNode::StringRadioGroupControl):
 			result = TRUE;
 			break;
 		// Combo Box - option("Title", "combo", "<csv itemlist>", int default=1)
@@ -539,6 +538,18 @@ QWidget *WidgetNode::widget()
 bool WidgetNode::widgetEnabled()
 {
 	return widgetEnabled_;
+}
+
+// Set object pointer
+void WidgetNode::setObject(QObject *obj)
+{
+	object_ = obj;
+}
+
+// Return object pointer
+QObject *WidgetNode::object()
+{
+	return object_;
 }
 
 /*

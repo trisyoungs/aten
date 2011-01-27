@@ -227,8 +227,10 @@ class Tree
 	Refitem<WidgetNode,int> *widgets();
 	// Locate named widget
 	WidgetNode *findWidget(const char *name);
-	// Locate widget with specified pointer
+	// Locate widget with specified widget pointer
 	WidgetNode *findWidget(QWidget *widget);
+	// Locate widget with specified object pointer
+	WidgetNode *findWidgetObject(QObject *obj);
 	// Create custom dialog from defined widgets (if there are any)
 	void createCustomDialog(const char *title = NULL);
 	// Return custom dialog (if any)
