@@ -72,7 +72,7 @@ void AtenLoadModel::on_BrowseButton_clicked(bool checked)
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
 	selectedFilename_ = qPrintable(QFileDialog::getOpenFileName(this, "Select Model File", currentDirectory_.path(), gui.mainWindow->loadModelFilters, &selFilter));
-	currentDirectory_ = filePath(selectedFilename_);
+	currentDirectory_ = absoluteFilePath(selectedFilename_);
 	ui.FilenameEdit->setText(selectedFilename_.get());
 }
 

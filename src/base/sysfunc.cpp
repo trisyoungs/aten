@@ -29,25 +29,22 @@
 
 using namespace std;
 
-// Return full, absolute path of file
-const char *filePath(const char *s)
-{
-	QFileInfo info(s);
-	return qPrintable(info.absoluteFilePath());
-}
-
-// Return full, absolute filename
+// Return full, absolute filename including path
 const char *absoluteFilePath(const char *s)
 {
 	QFileInfo info(s);
-	return qPrintable(info.absoluteFilePath());
+	static Dnchar result;
+	result = qPrintable(info.absoluteFilePath());
+	return result.get();
 }
 
 // Remove path in front of filename
 const char *removePath(const char *s)
 {
 	QFileInfo info(s);
-	return qPrintable(info.fileName());
+	static Dnchar result;
+	result = qPrintable(info.fileName());
+	return result.get();
 }
 
 // Convert string to uppercase

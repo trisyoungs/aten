@@ -268,7 +268,6 @@ bool Program::generateFromFile(const char *filename, const char *name, bool dont
 	fromFilterFile_ = isFilterFile;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromFile(this, filename, initialPushTree_);
-// 	print();
 	finalise();
 	msg.exit("Program::generateFromFile");
 	return result;
