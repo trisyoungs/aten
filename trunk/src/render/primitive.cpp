@@ -233,6 +233,7 @@ Primitive::Primitive()
 // Destructor
 Primitive::~Primitive()
 {
+	printf("Dlkjlkfdskl\n");
 	clear();
 }
 
