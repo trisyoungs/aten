@@ -24,10 +24,19 @@
 // Define next vertex and normal
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
 {
-	if ((currentVertexChunk_ == NULL) || (currentVertexChunk_->full()))
+	if (currentVertexChunk_ == NULL)
 	{
 		currentVertexChunk_ = vertexChunks_.add();
 		currentVertexChunk_->initialise(type_, colouredVertexData_);
+	}
+	else if (currentVertexChunk_->full())
+	{
+		if (currentVertexChunk_->next == NULL)
+		{
+			currentVertexChunk_ = vertexChunks_.add();
+			currentVertexChunk_->initialise(type_, colouredVertexData_);
+		}
+		else currentVertexChunk_ = currentVertexChunk_->next;
 	}
 	currentVertexChunk_->defineVertex(x,y,z,nx,ny,nz,calcCentroid);
 }
@@ -35,10 +44,19 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 // Define next vertex and normal with colour (as array)
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid)
 {
-	if ((currentVertexChunk_ == NULL) || (currentVertexChunk_->full()))
+	if (currentVertexChunk_ == NULL)
 	{
 		currentVertexChunk_ = vertexChunks_.add();
 		currentVertexChunk_->initialise(type_, colouredVertexData_);
+	}
+	else if (currentVertexChunk_->full())
+	{
+		if (currentVertexChunk_->next == NULL)
+		{
+			currentVertexChunk_ = vertexChunks_.add();
+			currentVertexChunk_->initialise(type_, colouredVertexData_);
+		}
+		else currentVertexChunk_ = currentVertexChunk_->next;
 	}
 	currentVertexChunk_->defineVertex(x,y,z,nx,ny,nz,colour,calcCentroid);
 }
@@ -46,10 +64,19 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 // Define next vertex and normal with colour
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid)
 {
-	if ((currentVertexChunk_ == NULL) || (currentVertexChunk_->full()))
+	if (currentVertexChunk_ == NULL)
 	{
 		currentVertexChunk_ = vertexChunks_.add();
 		currentVertexChunk_->initialise(type_, colouredVertexData_);
+	}
+	else if (currentVertexChunk_->full())
+	{
+		if (currentVertexChunk_->next == NULL)
+		{
+			currentVertexChunk_ = vertexChunks_.add();
+			currentVertexChunk_->initialise(type_, colouredVertexData_);
+		}
+		else currentVertexChunk_ = currentVertexChunk_->next;
 	}
 	currentVertexChunk_->defineVertex(x,y,z,nx,ny,nz,r,g,b,a,calcCentroid);
 }

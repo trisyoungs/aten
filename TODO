@@ -2,7 +2,7 @@
 
 	<orderedlist>
 		<listitem>
-			<para>Severe memory leak related to atom selection transparency</para>
+			<para>Rebonding model also folds atoms, making --nobond irrelevant</para>
 		</listitem>
 		<listitem>
 			<para>Reading spacegroup info and packing from certain cifs with Pnmmm symmetry is incorrect (c.f. Mercury)</para>
