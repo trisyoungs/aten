@@ -321,7 +321,7 @@ void AtenCustomDialog::integerSpinWidget_valueChanged(int i)
 }
 
 // Generic function for radio group spin activation
-void AtenCustomDialog::radioGroupWidget_currentIndexChanged(int index)
+void AtenCustomDialog::buttonGroupWidget_currentIndexChanged(int index)
 {
 	if (!isVisible()) return;
 	// Cast sender into checkbox
@@ -348,6 +348,39 @@ void AtenCustomDialog::radioGroupWidget_currentIndexChanged(int index)
 			performStateChange(sc);
 		}
 		else if (index == sc->stateValueAsInteger()) performStateChange(sc);
+	}
+	refreshing_ = FALSE;
+}
+
+// Generic function for radio button activation
+void AtenCustomDialog::radioButtonWidget_clicked(bool checked)
+{
+	if (!isVisible()) return;
+	// Cast sender into radiobutton
+	refreshing_ = TRUE;
+	QRadioButton *check = (QRadioButton*) sender();
+	if (!check)
+	{
+		printf("AtenCustomDialog::radioButtonWidget_clicked - Sender could not be cast to a QRadioButton.\n");
+		return;
+	}
+	// Search for widget definition in original tree...
+	WidgetNode *node = parentTree_->findWidget(check);
+	if (node == NULL)
+	{
+		printf("AtenCustomDialog::radioButtonWidget_clicked - couldn't find associated WidgetNode.\n");
+		return;
+	}
+	// Check all states defined in the widgetnode
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
+	{
+		if (sc->dynamicValue())
+		{
+			sc->setStateValue(checked);
+			performStateChange(sc);
+		}
+		else if (checked && ((int)sc->stateValueAsInteger() > 0)) performStateChange(sc);
+		else if ((!checked) && ((int)sc->stateValueAsInteger() < 1)) performStateChange(sc);
 	}
 	refreshing_ = FALSE;
 }

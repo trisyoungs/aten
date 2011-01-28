@@ -55,7 +55,7 @@ class AtenCustomDialog : public QDialog
 	void comboWidget_currentIndexChanged(int row);
 	void doubleSpinWidget_valueChanged(double d);
 	void integerSpinWidget_valueChanged(int i);
-	void radioGroupWidget_currentIndexChanged(int id);
+	void buttonGroupWidget_currentIndexChanged(int id);
 	void radioButtonWidget_clicked(bool checked);
 
 	/*
