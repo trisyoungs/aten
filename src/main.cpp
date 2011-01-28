@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "main/version.h"
 #include "gui/gui.h"
+#include "gui/mainwindow.h"
 #include "base/messenger.h"
 #include "base/mathfunc.h"
 #include <time.h>
@@ -99,6 +100,9 @@ int main(int argc, char *argv[])
 		default:
 			break;
 	}
+
+	// Delete the main TCanvas
+	delete gui.mainWindow;
 
 	// Delete the main QApplication
 	delete gui.app;
