@@ -55,7 +55,7 @@ class AtenCustomDialog : public QDialog
 	void comboWidget_currentIndexChanged(int row);
 	void doubleSpinWidget_valueChanged(double d);
 	void integerSpinWidget_valueChanged(int i);
-	void buttonGroupWidget_currentIndexChanged(int id);
+	void buttonGroupWidget_buttonClicked(int id);
 	void radioButtonWidget_clicked(bool checked);
 
 	/*
@@ -77,7 +77,7 @@ class AtenCustomDialog : public QDialog
 	// Create radio button from data in specified WidgetNode
 	QRadioButton *createRadioButton(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups);
 	// Create radiogroup from data in specified WidgetNode
-	QButtonGroup *createRadioGroup(WidgetNode *gfo);
+	QButtonGroup *createRadioGroup(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups);
 	// Create combo box from data in specified GuiFilterOption
 	QComboBox *createComboBox(WidgetNode *gfo);
 	// Create double spin edit from data in specified GuiFilterOption

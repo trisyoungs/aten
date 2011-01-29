@@ -54,6 +54,7 @@ Accessor ZMatrixElementVariable::accessorData[ZMatrixElementVariable::nAccessors
 	{ "angle",		VTypes::DoubleData,	0, FALSE },
 	{ "angleatom",		VTypes::AtomData,	0, TRUE },
 	{ "anglename",		VTypes::StringData,	0, FALSE },
+	{ "atom",		VTypes::AtomData,	4, TRUE },
 	{ "distance",		VTypes::DoubleData,	0, FALSE },
 	{ "distanceatom",	VTypes::AtomData,	0, TRUE },
 	{ "distancename",	VTypes::StringData,	0, FALSE },
@@ -173,6 +174,9 @@ bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			break;
 		case (ZMatrixElementVariable::AngleName):
 			rv.set( ptr->angleName() );
+			break;
+		case (ZMatrixElementVariable::AtomData):
+			rv.set(VTypes::AtomData, ptr->atom(arrayIndex-1));
 			break;
 		case (ZMatrixElementVariable::Distance):
 			rv.set( ptr->distance() );

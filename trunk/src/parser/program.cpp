@@ -131,8 +131,8 @@ void Program::finalise()
 			else
 			{
 				Dnchar title;
-				if (filter->filter.isExportFilter()) title.sprintf("Export Options (%s)", filter->name());
-				else title.sprintf("Import Options (%s)", filter->name());
+				if (filter->filter.isExportFilter()) title.sprintf("Export Options (%s)", filter->filter.name());
+				else title.sprintf("Import Options (%s)", filter->filter.name());
 				filter->createCustomDialog(title.get());
 			}
 			// Grab default values

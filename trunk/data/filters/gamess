@@ -2,6 +2,7 @@
 # Created:	 14/04/2009
 # Last modified: 29/10/2010
 # ChangeLog:
+#	28/02/2011 - Updated trajectory reader to handle IRC trajectory data
 #	15/12/2010 - Added basic trajectory reader
 #	09/12/2010 - Updated reading of vibration data from logfile to cope with presence of symmetry line
 #	29/10/2010 - Major update to log file filter - ability to read in basis set, MOs, and vibrations added
@@ -22,16 +23,32 @@ filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", 
 
         int readframe()
         {
-		int n, natm, nfrag, nqmmm;
-		string discard, symbol;
+		int n, natm, nfrag, nqmmm, packettype, skip = 0;
+		string discard, symbol, line;
 		double ano, x, y, z;
 		model m = aten.frame;
 
-		if (find("===== MD DATA PACKET ====="))
+		# MD data packets have three skippable lines at the start
+		# IRC data packets have 
+		if (find("DATA PACKET",line))
+		{
+			# Found a data packet - determine which type it is...
+			if (contains(line, "===== MD")) { packettype = 1; skip = 3; }
+			else if (contains(line, "===== IRC")) { packettype = 2; skip = 1; }
+			else
+			{
+				printf("Unrecognised DATA PACKET type encountered in trj file.\n");
+				return FALSE;
+			}
+		}
+		else packettype = 0;
+
+		# Did we find some data?
+		if (packettype != 0)
 		{
 			# Read in number of atoms
 			readline(discard, natm, discard, nfrag, discard, nqmmm);
-			skipline(3);
+			skipline(skip);
 			# Read QM atom data (if present)
 			if (natm > 0)
 			{
@@ -45,7 +62,7 @@ filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", 
 			# Read fragment data (if present)
 			if (nfrag > 0)
 			{
-				error("Not implemented yet.");
+				error("Reading of fragment data from trajectory not implemented yet.");
 				skipline();
 				for (n=0; n<nfrag; ++n)
 				{
@@ -54,20 +71,29 @@ filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", 
 			# Read QMMM data (if present)
 			if (nqmmm > 0)
 			{
-				error("Not implemented yet.");
+				error("Reading of QMMM data form trajectory not implemented yet.");
 				skipline();
-				for (n=0; n<nfrag; ++n)
+				for (n=0; n<nqmmm; ++n)
 				{
 				}
 			}
-			# Read in velocities for atoms
-			if (find("TVELQM(1)"))
+			# Specific reads for DATA PACKET types
+			if (packettype == 1)
 			{
-				for (n=1; n<=natm; ++n)
+				# Read in velocities for atoms
+				if (find("TVELQM(1)"))
 				{
-					readline(x, y, z);
-					m.atoms[n].v = { x, y, z};
+					for (n=1; n<=natm; ++n)
+					{
+						readline(x, y, z);
+						m.atoms[n].v = { x, y, z};
+					}
 				}
+			}
+			else if (packettype == 2)
+			{
+				# Discard mass-weighted gradient
+				skipline(natm+1);
 			}
 			rebond();
 			finalisemodel();

@@ -412,13 +412,21 @@ declaration:
 
 /* User-Defined Function Declaration */
 functiondeclaration:
-	ATEN_VOID cleartype NEWTOKEN pushfunc '(' ')' block	{
+	ATEN_VOID cleartype NEWTOKEN pushfunc '(' ')' block {
 		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined subroutine (VOID return value, no arguments)\n");
 		if (!cmdparser.addStatement($7)) YYABORT;
 		cmdparser.popTree();
 		declaredType = VTypes::NoData;
 		}
-	| VTYPE savetype NEWTOKEN pushfunc '(' ')' block	{
+	| ATEN_VOID cleartype NEWTOKEN pushfunc '(' typedvariablelist ')' {
+		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined subroutine (VOID return value, arguments)\n");
+		if (!$4->addLocalFunctionArguments($6)) YYABORT;
+		} block {
+		if (!cmdparser.addStatement($9)) YYABORT;
+		cmdparser.popTree();
+		declaredType = VTypes::NoData;
+		}
+	| VTYPE savetype NEWTOKEN pushfunc '(' ')' block {
 		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, no arguments)\n", VTypes::dataType($4->returnType()));
 		if (!cmdparser.addStatement($7)) YYABORT;
 		cmdparser.popTree();
