@@ -281,9 +281,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			break;
 		// Check Box - option("Title", "check", "buttongroup", int state)
 		case (WidgetNode::RadioButtonControl):
-			if (!setData("buttongroup", arg, "Error: No button group supplied for 'radiocheck' control.\n", TRUE, "")) break;
+			if (!setData("buttongroup", arg, "Error: No button group supplied for 'radiobutton' control.\n", TRUE, "")) break;
 			if (arg != NULL) arg = arg->nextArgument;
-			if (!setData("state", arg, "Error: No initial state supplied for 'radiocheck' GUI filter option.\n", TRUE, "0")) break;
+			if (!setData("state", arg, "Error: No initial state supplied for 'radiobutton' GUI filter option.\n", TRUE, "0")) break;
 			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;

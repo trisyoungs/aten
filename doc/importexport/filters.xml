@@ -396,7 +396,6 @@ string runtype = option(&quot;"Run Type"&quot;, &quot;"combo"&quot;, &quot;check
 						<row>
 							<entry morerows='1'>combo</entry>
 							<entry>string items = "<emphasis>item1,item2,...</emphasis>"</entry>
-
 							<entry morerows='1'>A combobox is a drop-down list of predefined items. The text of the selected item is returned.</entry>
 						</row>
 						<row><entry>int default = 1-<emphasis>nitems</emphasis></entry></row>
@@ -433,10 +432,20 @@ string runtype = option(&quot;"Run Type"&quot;, &quot;"combo"&quot;, &quot;check
 							<entry>A simple text label, with no associated value.</entry>
 						</row>
 						<row>
-							<entry morerows='1'>radiogroup</entry>
-							<entry>string items = "<emphasis>item1,item2,...</emphasis>"</entry>
-
-							<entry morerows='1'>A radio group is a collection of radio buttons, of which only one can be selected at any one time. The index of the selected item is returned.</entry>
+							<entry morerows='1'>radio</entry>
+							<entry>string group</entry>
+							<entry morerows='1'>A radio control is part of a set of checkable items, of which only one can be selected at any one point. The parent group does not need to be created beforehand - if the named group does not currently exist, it will be created. Note that the group widget itself is not visible, and so many contain any number of radio buttons spread over many tabs and pages.</entry>
+						</row>
+						<row><entry>int checked</entry></row>
+						<row>
+							<entry>radiogroup</entry>
+							<entry>None.</entry>
+							<entry>A radio group is a collection of radio buttons, of which only one can be selected at any one time. A radiogroup only provides the means to collect a set of radio buttons together, and it not itself visible. The index of the selected item is returned.</entry>
+						</row>
+						<row>
+							<entry>stringradiogroup</entry>
+							<entry>None.</entry>
+							<entry>Same as 'radiogroup', except that the text label of the selected item is returned.</entry>
 						</row>
 					</tbody>
 				</tgroup>

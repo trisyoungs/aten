@@ -8,12 +8,26 @@
 #	TODO - DFT Functionals cannot be selected yet.
 #	TODO - Optional saving of z-matrix instead of cartesians
 
+# ZMatrix Subroutine
+void writezmatrix(model m)
+{
+	zmatrix zmat = m.zmatrix;
+	# ZMatrix connectivities
+	for (ZMatrixElement zel = zmat.elements; zel; ++zel)
+	{
+		if (zel.torsionatom) writelinef("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", zel.atom[1].symbol, zel.atom[2].id, zel.distancename, zel.atom[3].id, zel.anglename, zel.atom[4].id, zel.torsionname);
+		else if (zel.angleatom) writelinef("%-4s %-4i %-6s %-4i %-6s\n", zel.atom[1].symbol, zel.atom[2].id, zel.distancename, zel.atom[3].id, zel.anglename);
+		else if (zel.distanceatom) writelinef("%-4s %-4i %-6s\n", zel.atom[1].symbol, zel.atom[2].id, zel.distancename);
+		else writelinef("%-4s\n", zel.atom[1].symbol);
+	}
+	# ZMatrix variables
+	for (int n=1; n<=zmat.ndistances; ++n) writelinef("%-6s  %f\n", zmat.distancenames[n], zmat.distances[n]);
+	for (int n=1; n<=zmat.nangles; ++n) writelinef("%-6s  %f\n", zmat.anglenames[n], zmat.angles[n]);
+	for (int n=1; n<=zmat.ntorsions; ++n) writelinef("%-6s  %f\n", zmat.torsionnames[n], zmat.torsions[n]);
+}
+
 filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension="gjf", glob="*.gjf", id=17)
 {
-	#
-	# GUI Control Definitions
-	#
-
 	# Job type
 	string runtyp = option("Run Type", "combo", "SP,Opt,Freq,IRC,IRCMax,Scan,Polar,ADMP,BOMD,Force,Stable,Volume", 2, "tab=Job Control@Job Specification", "state@runstack?switchstack");
 	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "tab=Job Control@Job Specification");
@@ -119,6 +133,11 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 	# -- CBSB7
 	option("Elements: H-Kr", "label", "group=basisstack_22", "labelspan=2");
 	string basis_cbsb7_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_22", "newline");
+
+	# Coordinates
+	int coordtype = option("coordgroup", "radiogroup");
+	option("Cartesian", "radio", "coordgroup", 1, "tab=Coordinates@Job Specification");
+	option("ZMatrix", "radio", "coordgroup", 0, "tab=Coordinates@Job Specification");
 			
 	#
 	# Write Link0 Section
@@ -198,6 +217,7 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 	writelinef("%i %i\n", charge, mult);
 
 	# Atom coordinates (or z-matrix)
-	for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-5s  %12.6f %12.6f %12.6f\n", i.symbol,i.rx,i.ry,i.rz);
+	if (coordtype == 1) for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-5s  %12.6f %12.6f %12.6f\n", i.symbol,i.rx,i.ry,i.rz);
+	else writezmatrix(aten.frame);
 }
 

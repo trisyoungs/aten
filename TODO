@@ -15,9 +15,6 @@
 
 	<orderedlist>
 		<listitem>
-			<para>Add 'switch/case' constructs to parser grammar?</para>
-		</listitem>
-		<listitem>
 			<para>Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click)</para>
 		</listitem>
 		<listitem>

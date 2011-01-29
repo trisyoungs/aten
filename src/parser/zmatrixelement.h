@@ -41,7 +41,7 @@ class ZMatrixElementVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Angle, AngleAtom, AngleName, Distance, DistanceAtom, DistanceName, NegateAngle, NegateDistance, NegateTorsion, TargetAtom, Torsion, TorsionAtom, TorsionName, nAccessors };
+        enum Accessors { Angle, AngleAtom, AngleName, AtomData, Distance, DistanceAtom, DistanceName, NegateAngle, NegateDistance, NegateTorsion, TargetAtom, Torsion, TorsionAtom, TorsionName, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
