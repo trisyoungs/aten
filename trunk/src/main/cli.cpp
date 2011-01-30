@@ -132,6 +132,9 @@ Cli cliSwitches[] = {
 	{ Cli::NoFragmentIconsSwitch,	'\0',"nofragmenticons",	0,
 		"",
 		"Prevent generation of fragment icons" },
+	{ Cli::NoIncludesSwitch,	'\0',"noincludes",	0,
+		"",
+		"Prevent loading of includes on startup" },
 	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
 		"",
 		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
@@ -300,6 +303,10 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (Cli::NoFragmentIconsSwitch):
 					prefs.setGenerateFragmentIcons(FALSE);
 					break;
+				// Restrict include loading on startup
+				case (Cli::NoIncludesSwitch):
+					prefs.setLoadIncludes(FALSE);
+					break;
 				// Display help
 				case (Cli::HelpSwitch):
 					printUsage();
@@ -420,6 +427,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::NoFiltersSwitch):
 				case (Cli::NoFragmentsSwitch):
 				case (Cli::NoFragmentIconsSwitch):
+				case (Cli::NoIncludesSwitch):
 				case (Cli::QuietSwitch):
 				case (Cli::VerboseSwitch):
 				case (Cli::VersionSwitch):

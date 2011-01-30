@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "main/aten.h"
 #include "base/dnchar.h"
 #include "parser/variable.h"
 #include "parser/parser.h"
@@ -326,8 +327,9 @@ int CommandParser::lex()
 				}
 			}
 
-			// Is it a user-defined function keyword in the global (Forest-wide) scope?
+			// Is it a user-defined function keyword in the global (Forest-wide) scope, or Aten's global scope?
 			func = program_->findGlobalFunction(token);
+			if (func == NULL) func = aten.findIncludeFunction(token);
 			if (func != NULL)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);
@@ -346,22 +348,11 @@ int CommandParser::lex()
 			return STEPTOKEN;
 		}
 
-		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
-// 		printf("PEEKCHAR = %c\n", peekChar());   TGAY
-// 		if (peekChar() == '(')
-// 		{
-// 			msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWFUNC)\n", tree_);
-// 			name = token;
-// 			CommandParser_lval.name = &name;
-// 			return NEWFUNCTOKEN;
-// 		}
-// 		else
-// 		{
-			msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
-			name = token;
-			CommandParser_lval.name = &name;
-			return NEWTOKEN;
-// 		}
+		// If we get to here then we have found an unrecognised alphanumeric token
+		msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
+		name = token;
+		CommandParser_lval.name = &name;
+		return NEWTOKEN;
 	}
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */

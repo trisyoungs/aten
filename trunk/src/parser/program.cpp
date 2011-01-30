@@ -175,6 +175,12 @@ Tree *Program::findGlobalFunction(const char *name)
 	return result;
 }
 
+// Return first defined global function...
+Tree *Program::globalFunctions()
+{
+	return functions_.first();
+}
+
 // Execute specified global function
 bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist ...)
 {
@@ -311,7 +317,7 @@ bool Program::isFromFilterFile()
 bool Program::execute(ReturnValue &rv, bool runOptions)
 {
 	msg.enter("Program::execute");
-	bool result;
+	bool result = TRUE;
 	if (runOptions) result = mainProgram_.executeCustomDialog();
 	if (result) result = mainProgram_.execute(rv);
 	msg.exit("Program::execute");

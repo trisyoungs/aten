@@ -4,6 +4,7 @@ cli.h
 version.h 
 aten.cpp
 aten_filters.cpp
+aten_includes.cpp
 cli.cpp 
 modes.cpp
 probe.cpp
