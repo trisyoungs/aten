@@ -600,6 +600,8 @@ class Prefs
 	bool warning1056_;
 	// Whether to load filters on startup
 	bool loadFilters_;
+	// Whether to load includes on startup
+	bool loadIncludes_;
 	// Whether to load fragments on startup
 	bool loadFragments_;
 	// Whether to generate icons for loaded fragments
@@ -670,7 +672,11 @@ class Prefs
 	bool loadFilters() const;
 	// Set whether to load filters on startup
 	void setLoadFilters(bool b);
-	// Whether to load filters on startup
+	// Whether to load includes on startup
+	bool loadIncludes() const;
+	// Set whether to load includes on startup
+	void setLoadIncludes(bool b);
+	// Whether to load fragments on startup
 	bool loadFragments() const;
 	// Set whether to load fragments on startup
 	void setLoadFragments(bool b);

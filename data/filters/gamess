@@ -1,8 +1,9 @@
-# GAMESS-US Output Filter, and Cartesian Input Model Filters (I/O) (for v1.2+)
+# GAMESS-US Input / Outputi, Logfile and Trajectory Filters (for v1.2+)
 # Created:	 14/04/2009
-# Last modified: 29/10/2010
+# Last modified: 29/01/2011
 # ChangeLog:
-#	28/02/2011 - Updated trajectory reader to handle IRC trajectory data
+#	29/01/2011 - Added COORD option to specify CART or ZMT
+#	28/01/2011 - Updated trajectory reader to handle IRC trajectory data
 #	15/12/2010 - Added basic trajectory reader
 #	09/12/2010 - Updated reading of vibration data from logfile to cope with presence of symmetry line
 #	29/10/2010 - Major update to log file filter - ability to read in basis set, MOs, and vibrations added
@@ -387,6 +388,8 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	string relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
 	string exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
 	string pp = option("Pseudo", "combo", "NONE,READ,SBKJC,HW,MCP", 1, "group=Job Control ($CONTRL)");
+	string coord = option("Coord Type", "combo", "CART,ZMT", 1, "group=Job Control ($CONTRL)", "newline");
+	int cart_symbols = option("Use Symbols", "check", 1, "group=Job Control ($CONTRL)");
 
 	# Basis set specification ($BASIS)
 	string basis_gbasis = option("Basis", "combo", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, "group=Basis Set ($BASIS)", "newline");
@@ -404,6 +407,13 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");
 	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
 	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 20, 5, "tab=$STATPT@opts");
+
+	# Intrinsic reaction coordinate run ($IRC), place in 'opts' tabs
+	string irc_forwrd = option("Forward", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
+	string irc_saddle = option("Saddle", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
+	double irc_stride = option("Stride", "doublespin", 0.001, 1.0, 0.3, 0.05, "tab=$IRC@opts");
+	int irc_npoint = option("NPoint", "intspin", 1, 1000, 1, 5, "tab=$IRC@opts");
+	string irc_pace = option("Pace", "combo", "GS2,LINEAR,QUAD,AMPC4,RK4", 1, "tab=$IRC@opts", "newline");
 
 	# Electron density calculation ($ELDENS), placed in 'opts' tabs
 	int eldens_ieden = option("Calculate", "check", 0, "tab=$ELDENS@opts", "newline");
@@ -439,16 +449,30 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	#
 	# Write Data
 	#
-
-	# Write $CONTRL, $SYSTEM and $BASIS groups
+	string line;
+	# Write $CONTRL line(s)
 	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=CART ICHARG=%i MULT=%i $END\n", scftyp, runtyp, charge, mult);
-	writelinef(" $CONTRL DFTTYP=%s TDDFT=%s MPLEVL=%s CITYP=%s CCTYP=%s $END\n", beforestr(dfttyp," ",TRUE), tddft, mplevl, cityp, cctyp);
-	writelinef(" $BASIS GBASIS=%s NGAUSS=%i NDFUNC=%i NPFUNC=%i $END\n", basis_gbasis, basis_ngauss, basis_ndfunc, basis_npfunc);
-	writelinef(" $BASIS NFFUNC=%i DIFFSP=%s DIFFS=%s $END\n", basis_nffunc, basis_diffsp, basis_diffs);
+	line = "";
+	if (dfttyp != "NONE") line += " DFTTYP=" + beforestr(dfttyp," ",TRUE);
+	if (tddft != "NONE") line += " TDDFT=" + tddft;
+	if (mplevl != "0") line += " MPLEVL=" + mplevl;
+	if (cityp != "NONE") line += " CITYP=" + cityp;
+	if (cctyp != "NONE") line += " CCTYP=" + cctyp;
+	if (pp != "NONE") line += " ECPTYP=" + pp;
+	if (line != "") writelinef(" $CONTRL%s $END\n", line);
+
+	# Write $BASIS line(s)
+	line = " GBASIS=" + basis_gbasis;
+	if ((basis_gbasis == "STO") || (basis_gbasis == "N21") || (basis_gbasis == "N31") || (basis_gbasis == "N311"))
+	{
+		writelinef(" $BASIS GBASIS=%s NGAUSS=%i NDFUNC=%i NPFUNC=%i $END\n", basis_gbasis, basis_ngauss, basis_ndfunc, basis_npfunc);
+		writelinef(" $BASIS NFFUNC=%i DIFFSP=%s DIFFS=%s $END\n", basis_nffunc, basis_diffsp, basis_diffs);
+	}
+	else writelinef(" $BASIS GBASIS=%s $END\n", basis_gbasis);
+
+	# Write additional groups, depending on job type
 	if ((runtyp == "OPTIMIZE") || (runtyp == "SADPOINT")) writelinef(" $STATPT METHOD=%s NSTEP=%i OPTTOL=%f $END\n", statpt_method, statpt_nstep, statpt_opttol);
-	writeline(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
-	writeline(" $GUESS GUESS=HUCKEL $END");
-	writeline(" $SCF DIRSCF=.TRUE. $END");
+	else if (runtyp == "IRC") writelinef(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
 
 	# Write $ELDENS if required
 	if (eldens_ieden == 1) writelinef(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", eldens_morb, eldens_where, eldens_output);
@@ -466,10 +490,20 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 		if (grid_modgrd == 1) writelinef(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END\n", grid_zvecx, grid_zvecy, grid_zvecz);
 	}
 
+	# Write $SYSTEM, $GUESS, and $SCF groups
+	writeline(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
+	writeline(" $GUESS GUESS=HUCKEL $END");
+	writeline(" $SCF DIRSCF=.TRUE. $END");
+
 	# Now for the DATA section
 	writeline(" $DATA");
 	writeline(aten.frame.name);
 	writeline("C1");
-	for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
+	if (coord == "CART")
+	{
+		if (cart_symbols) for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.symbol,i.z*1.0,i.rx,i.ry,i.rz);
+		else for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
+	}
+	else writezmatrix(aten.frame);
 	writeline(" $END");
 }

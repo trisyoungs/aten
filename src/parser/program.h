@@ -82,6 +82,8 @@ class Program
 	Tree *addGlobalFunction(const char *name);
 	// Search for existing global function
 	Tree *findGlobalFunction(const char *s);
+	// Return first defined global function
+	Tree *globalFunctions();
 	// Execute specified global function
 	bool executeGlobalFunction(const char *name, ReturnValue &rv, const char *arglist ...);
 	// Delete specified tree

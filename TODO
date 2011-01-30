@@ -46,10 +46,7 @@
 
 	<orderedlist>
 		<listitem>
-			<para>ECP type is not written in GAMESS-US export filter</para>
-		</listitem>
-		<listitem>
-			<para>Add more options to GAMESS-US inp filter, inc. specification of how to write elements (full name / symbol), MD options etc., and optional output of Z-matrix over cartesians</para>
+			<para>Add more options to GAMESS-US inp filter: MD options</para>
 		</listitem>
 		<listitem>
 			<para>Storage of grid data in AKF format</para>

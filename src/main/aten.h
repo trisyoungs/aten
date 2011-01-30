@@ -23,14 +23,11 @@
 #define ATEN_ATEN_H
 
 #include "base/bundle.h"
+#include "base/dnchar.h"
 #include "base/kvmap.h"
 #include "model/fragment.h"
 #include "templates/list.h"
-#include "templates/reflist.h"
-#include "templates/namemap.h"
-#include "command/commands.h"
 #include "parser/program.h"
-#include "parser/tree.h"
 #include "parser/variablelist.h"
 
 // Forward Declarations
@@ -153,7 +150,33 @@ class Aten
 	// Print list of valid filter nicknames
 	void printValidNicknames(FilterData::FilterType ft);
 
+	
+	/*
+	// Global Functions
+	*/
+	private:
+	// Program containing all globally-defined include functions
+	Program includeFunctions_;
+	// How many include files had errors on startup
+	int nIncludesFailed_;
+	// Filenames (including paths) of includes that failed to load
+	List<Dnchar> failedIncludes_;
+	// Parse directory index and load includes
+	int parseIncludeDir(const char *path);
+	
+	public:
+	// Load global include functions
+	void openIncludes();
+	// Load include from specified filename
+	bool openInclude(const char *filename);
+	// Whether includes loaded succesfully on startup
+	int nIncludesFailed() const;
+	// Return first item in failed includes list
+	Dnchar *failedIncludes() const;
+	// Find global include function by name
+	Tree *findIncludeFunction(const char *name);
 
+	
 	/*
 	// Forcefields
 	*/

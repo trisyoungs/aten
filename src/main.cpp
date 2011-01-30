@@ -58,13 +58,16 @@ int main(int argc, char *argv[])
 	// Reconstruct combination rule functions
 	Combine::regenerateEquations();
 
+	// Read in includes (if unsuccessful, a messagebox will be raised in the GUI)
+	if (prefs.loadIncludes()) aten.openIncludes();
+
 	// Read in file filters (if unsuccessful, a messagebox will be raised in the GUI)
 	// This will also set dataDir_ to a valid value (provided one could be found in a default search location)
 	if (prefs.loadFilters()) aten.openFilters();
-
+	
 	// Load in fragments
 	if (prefs.loadFragments()) aten.openFragments();
-
+	
 	// Load in user preferences
 	Dnchar filename;
 	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);

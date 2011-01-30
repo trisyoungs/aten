@@ -278,6 +278,7 @@ Prefs::Prefs()
 	forceRhombohedral_ = FALSE;
 	augmentAfterRebond_ = TRUE;
 	warning1056_ = TRUE;
+	loadIncludes_ = TRUE;
 	loadFragments_ = TRUE;
 	generateFragmentIcons_ = TRUE;
 	loadFilters_ = TRUE;
@@ -1454,6 +1455,18 @@ bool Prefs::loadFilters() const
 void Prefs::setLoadFilters(bool b)
 {
 	loadFilters_ = b;
+}
+
+// Whether to load includes on startup
+bool Prefs::loadIncludes() const
+{
+	return loadIncludes_;
+}
+
+// Set whether to load includes on startup
+void Prefs::setLoadIncludes(bool b)
+{
+	loadIncludes_ = b;
 }
 
 // Whether to load fragments on startup
