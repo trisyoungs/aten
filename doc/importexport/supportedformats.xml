@@ -71,7 +71,7 @@
 						<entry>5</entry>
 						<entry>yes</entry>
 						<entry>yes</entry>
-						<entry>Cartesian coordinates only.</entry>
+						<entry>Cartesian coordinates and Z-Matrices</entry>
 					</row>
 					<row>
 						<entry>Gaussian Input File</entry>
@@ -80,7 +80,7 @@
 						<entry>17</entry>
 						<entry>no</entry>
 						<entry>no</entry>
-						<entry></entry>
+						<entry>Cartesian coordinates and Z-Matrices</entry>
 					</row>
 					<row>
 						<entry>Gromacs Configuration</entry>
@@ -197,6 +197,12 @@
 						<entry>*HISu | *HISf | HISTORY</entry>
 						<entry>dlpoly</entry>
 						<entry></entry>
+					</row>
+					<row>
+						<entry>GAMESS-US Trj File</entry>
+						<entry>*.trj</entry>
+						<entry>trj</entry>
+						<entry>QM atoms in MD and IRC runs</entry>
 					</row>
 					<row>
 						<entry>PDB Trajectory (Multiple PDB file)</entry>
