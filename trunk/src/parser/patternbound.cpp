@@ -45,7 +45,7 @@ PatternBoundVariable::~PatternBoundVariable()
 
 // Accessor data
 Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = {
-	{ "data", 	VTypes::DoubleData,		MAXFFBOUNDTYPES, TRUE },
+	{ "data", 	VTypes::DoubleData,		MAXFFPARAMDATA, TRUE },
 	{ "escale", 	VTypes::DoubleData,		0, TRUE },
 	{ "form", 	VTypes::StringData,		0, TRUE },
 	{ "id", 	VTypes::IntegerData,		MAXFFBOUNDTYPES, TRUE },

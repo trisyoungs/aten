@@ -100,7 +100,7 @@ types
 65	s4	S	"nbonds=3"				"S with three connected atoms " # 2.900
 66	s6	S	"nbonds=4			"	"S with four connected atoms " # 2.900
 67	sh	S	"nbonds=2,-H"				"Sp3 S connected with hydrogen " # 2.900
-68	ss	S	"nbonds=2,-[S,O]"			"Sp3 S in thio-ester and thio-ether" # 2.900
+68	ss	S	"nbonds=2,-C,-C"			"Sp3 S in thio-ester and thio-ether" # 2.900
 69	sx	S	"=Any,-Any(=Any)"			"Special s4 in conjugated systems" # 2.900
 70	sy	S	"=Any(n=2),-Any(=Any)"			"Special s6 in conjugated systems" # 2.900
 end

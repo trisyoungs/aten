@@ -463,7 +463,7 @@ int torsiongenerator(ffbound newterm, atom i, atom j, atom k, atom l)
 		# Case e) j and k are both sp2 centres
 		# Force constant is adjusted based on current bond order
 		forcek = 5.0 * sqrt(fj.datad("U")*fk.datad("U")) * (1.0 + 4.18*ln( j.findbond(k).order() ));
-		printf("sp2-sp2  Vi=%f Vj=%f lnbond=%f\n", fj.datad("U"),fk.datad("U"),ln( j.findbond(k).order() ));
+		#printf("sp2-sp2  Vi=%f Vj=%f lnbond=%f\n", fj.datad("U"),fk.datad("U"),ln( j.findbond(k).order() ));
 		n = 2.0;
 		s = -cos(n*180.0);
 	}
