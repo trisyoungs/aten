@@ -314,6 +314,12 @@
 						<entry>Current actions of the Left, Middle, Right, and Wheel mouse buttons</entry>
 					</row>
 					<row>
+						<entry>mousemovefilter</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Sets the degree to which mouse move events are filtered, with 1 being no filtering. Use this to reduce update lag on sluggish systems.</entry>
+					</row>
+					<row>
 						<entry>multisampling</entry>
 						<entry>int</entry>
 						<entry>rw</entry>

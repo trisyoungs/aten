@@ -334,6 +334,7 @@ Prefs::Prefs()
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
+	mouseMoveFilter_ = 2;
 	useFrameBuffer_ = FALSE;
 	maxUndoLevels_ = -1;
 	loadQtSettings_ = TRUE;
@@ -1763,6 +1764,18 @@ bool Prefs::renderDashedAromatics()
 void Prefs::setRenderDashedAromatics(bool b)
 {
 	renderDashedAromatics_ = b;
+}
+
+// Return mouse move event filter ratio
+int Prefs::mouseMoveFilter()
+{
+	return mouseMoveFilter_;
+}
+
+// Set mouse move event filter ratio
+void Prefs::setMouseMoveFilter(int i)
+{
+	mouseMoveFilter_ = i;
 }
 
 // Return whether manual buffer swapping is enabled

@@ -296,6 +296,8 @@ class Prefs
 	bool useFrameBuffer_;
 	// Whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics_;
+	// Mouse move event filter ratio
+	int mouseMoveFilter_;
 
 	public:
         // Set C-style format for distance label values
@@ -326,6 +328,10 @@ class Prefs
 	bool renderDashedAromatics();
 	// Set  whether to use solid or dashed circles for aromatic ring rendering
 	void setRenderDashedAromatics(bool b);
+	// Return mouse move event filter ratio
+	int mouseMoveFilter();
+	// Set mouse move event filter ratio
+	void setMouseMoveFilter(int i);
 
 	/*
 	// GL Options

@@ -42,6 +42,7 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
 	renderOffScreen_ = FALSE;
+	mouseMoveCounter_ = 0;
 	// Atom Selection
 	atomClicked_ = NULL;
 	pickEnabled_ = FALSE;
@@ -150,6 +151,9 @@ void TCanvas::paintGL()
 {
 	static QFont font;
 	static Model *lastDisplayed_ = NULL;
+
+	// Do nothing if the canvas is not valid, or we are still drawing from last time.
+	if ((!valid_) || drawing_) return;
 	
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
 	// all OpenGL calls should be made after the QPainter is constructed, and befor the QPainter
@@ -168,7 +172,7 @@ void TCanvas::paintGL()
 		// Render model
 		msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
 		
-		// If the canvas is stil restricted, don't draw anything
+		// If the canvas is still restricted, don't draw anything
 		if (noDraw_)
 		{
 			msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
@@ -309,7 +313,7 @@ bool TCanvas::offScreenRendering() const
 // Refresh widget
 void TCanvas::postRedisplay()
 {
-	if (!valid_) return;
+	if ((!valid_) || drawing_) return;
 	updateGL();
 	if (prefs.manualSwapBuffers()) swapBuffers();
 }

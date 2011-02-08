@@ -101,6 +101,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "modelupdate",		VTypes::IntegerData,		0, FALSE },
 	{ "mopacexe",			VTypes::StringData,		0, FALSE },
 	{ "mouseaction",		VTypes::StringData,		Prefs::nMouseButtons, FALSE },
+	{ "mousemovefilter",		VTypes::IntegerData,		0, FALSE },
 	{ "multisampling",		VTypes::IntegerData,		0, FALSE },
 	{ "noqtsettings",		VTypes::IntegerData,		0, FALSE },
 	{ "offscreenobjects",		VTypes::IntegerData,		0, FALSE },
@@ -401,6 +402,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::MouseAction):
 			if (hasArrayIndex) rv.set(Prefs::mouseAction( ptr->mouseAction((Prefs::MouseButton) (arrayIndex-1))) );
 			else rv.setArray( VTypes::StringData, &ptr->mouseActionTexts_, Prefs::nMouseButtons);
+			break;
+		case (PreferencesVariable::MouseMoveFilter):
+			rv.set( ptr->mouseMoveFilter() );
 			break;
 		case (PreferencesVariable::MultiSampling):
 			rv.set( ptr->multiSampling() );
@@ -826,6 +830,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 				if ((ma != Prefs::nMouseActions) && result) for (n=0; n<Prefs::nMouseActions; ++n) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
 				else { result = FALSE; break; }
 			}
+			break;
+		case (PreferencesVariable::MouseMoveFilter):
+			// Don't allow values below 1
+			if (newvalue.asInteger() > 0) ptr->setMouseMoveFilter( newvalue.asInteger() );
+			else msg.print("Values below 1 are not permitted for 'mousemovefilter' member.\n");
 			break;
 		case (PreferencesVariable::MultiSampling):
 			ptr->setMultiSampling( newvalue.asBool() );
