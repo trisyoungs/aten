@@ -93,8 +93,8 @@ class TCanvas : public QGLWidget
 	bool noDraw_;
 	// Flag used by some sub-rendering processes (e.g. surfaces) in order to decide which display list to use
 	bool renderOffScreen_;
-	// Counter for mouse move events
-	int mouseMoveCounter_;
+	// Timer for mouse move events
+	QTime mouseMoveCounter_;
 	// Rendering engine
 	RenderEngine engine_;
 	

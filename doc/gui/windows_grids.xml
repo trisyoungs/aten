@@ -28,7 +28,7 @@
 	<section><title>Colouring</title>
 		<para>In the simplest case the points, triangles, or polygons that make up the rendered grid data are drawn in a single colour. This colour is determined by the upper of the two colour selections. If the data is symmetric (see above) and is composed of 'positive' and 'negative' parts, then the uppermost colour selection is applied to the positive part, and the lower colour selection is applied to the negative part. In addition, the transparency of the rendered data (if drawn in the Solid style) is determined by the Alpha value (0.0 being fully transparent, and 1.0 being fully opaque).</para>
 
-		<para>Should a more useful colouring scheme be desired than the grid may be rendered using a <link linkend="colourscales">colour scale</link>, in which case the isovalue (if volumetric) or height (if a 2D grid) determines the colour of the data point. To do so, enable the checkbox next to the CScale widget, and select the ID of the colour scale to use (from the ten definable in the program).</para>
+		<para>Should a more useful colouring scheme be desired than the grid may be rendered using a <link linkend="topics.colourscales">colour scale</link>, in which case the isovalue (if volumetric) or height (if a 2D grid) determines the colour of the data point. To do so, enable the checkbox next to the CScale widget, and select the ID of the colour scale to use (from the ten definable in the program).</para>
 	</section>
 
 </section>

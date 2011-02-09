@@ -334,7 +334,7 @@ Prefs::Prefs()
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
-	mouseMoveFilter_ = 2;
+	mouseMoveFilter_ = 10;
 	useFrameBuffer_ = FALSE;
 	maxUndoLevels_ = -1;
 	loadQtSettings_ = TRUE;

@@ -77,6 +77,7 @@ class AtenPrefs : public QDialog
 	void on_CtrlButtonCombo_currentIndexChanged(int ka);
 	void on_AltButtonCombo_currentIndexChanged(int ka);
 	void on_ZoomThrottleSpin_valueChanged(double value);
+	void on_MouseMoveFilterSpin_valueChanged(int value);
 
 	/*
 	// View Page

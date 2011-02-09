@@ -173,11 +173,7 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 void TCanvas::mouseMoveEvent(QMouseEvent *event)
 {
 	static Vec3<double> delta;
-
-	// Filter mouse move events to prevent lag on some systems
-	if (++mouseMoveCounter_ < prefs.mouseMoveFilter()) return;
-	mouseMoveCounter_ = 0;
-
+	
 	// Perform action associated with mode (if any)
 	if ((activeMode_ != UserAction::NoAction) || (selectedMode_ == UserAction::DrawFragmentAction))
 	{
@@ -235,7 +231,13 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 			default:
 				break;
 		}
-		postRedisplay();
+		
+		// Update display (only if mouse move filtering permits)
+		if (mouseMoveCounter_.elapsed() > prefs.mouseMoveFilter())
+		{
+			mouseMoveCounter_.start();
+			postRedisplay();
+		}
 	}
 	rMouseLast_.set(event->x(), event->y(), 0.0);
 	setFocus();
