@@ -175,7 +175,7 @@ gridcoloursecondary(0.9, 0.9, 0.9);
 				<paramdef>int <parameter>id</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Set the <link linkend="colourscales">colourscale</link> to use for the current grid to the colourscale ID specified, which should be in the range 1-10. If '0' is given as the argument, the internal colour of the grid data is used. Linking a <link linkend="colourscales">colourscale</link> to a grid will result in the minimum and maximum ranges of the grid being recalculated to ensure all points in the grid are covered by the scale, whose range is adjusted if necessary.</para>
+		<para>Set the <link linkend="topics.colourscales">colourscale</link> to use for the current grid to the colourscale ID specified, which should be in the range 1-10. If '0' is given as the argument, the internal colour of the grid data is used. Linking a <link linkend="topics.colourscales">colourscale</link> to a grid will result in the minimum and maximum ranges of the grid being recalculated to ensure all points in the grid are covered by the scale, whose range is adjusted if necessary.</para>
 		
 		<para>For example:</para>
 		<synopsis>

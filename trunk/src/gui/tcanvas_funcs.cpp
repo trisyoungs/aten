@@ -42,7 +42,7 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
 	renderOffScreen_ = FALSE;
-	mouseMoveCounter_ = 0;
+	mouseMoveCounter_.start();
 	// Atom Selection
 	atomClicked_ = NULL;
 	pickEnabled_ = FALSE;

@@ -1,5 +1,5 @@
 <section id="topics.glyphs"><title>Glyphs</title>
-	<indexterm zone="colourscales"><primary>glyphs</primary></indexterm>
+	<indexterm zone="topics.glyphs"><primary>glyphs</primary></indexterm>
 
 	<para>A 'glyph' in Aten is any of a series of primitives (or shapes, or objects) that can be rendered in addition to the components that make up a standard model (i.e. atoms, bonds, and unit cell). These can be used to illustrate points of interest in a system, illustrate some vector quantity, or draw whole new objects from scratch. Glyphs can be drawn at fixed positions within a model, or can have their vertices linked to existing atoms, enabling them to be moved in conjunction with the model's atoms. Some glyphs can also be rotated about their current position.</para>
 

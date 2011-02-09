@@ -143,6 +143,7 @@ void AtenPrefs::setControls()
 	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::CtrlKey));
 	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::AltKey));
 	ui.ZoomThrottleSpin->setValue(prefs.zoomThrottle());
+	ui.MouseMoveFilterSpin->setValue(prefs.mouseMoveFilter());
 
 	// Set controls in Program page
 	ui.CommonElementsEdit->setText(prefs.commonElements());
@@ -715,6 +716,11 @@ void AtenPrefs::on_AltButtonCombo_currentIndexChanged(int ka)
 void AtenPrefs::on_ZoomThrottleSpin_valueChanged(double value)
 {
 	prefs.setZoomThrottle(value);
+}
+
+void AtenPrefs::on_MouseMoveFilterSpin_valueChanged(int value)
+{
+	prefs.setMouseMoveFilter(value);
 }
 
 /*
