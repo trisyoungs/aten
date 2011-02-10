@@ -43,6 +43,9 @@ class AtenSelect : public QDialog
 	void on_SelectionInvertButton_clicked(bool on);
 	void on_SelectButton_clicked(bool on);
 	void on_DeselectButton_clicked(bool on);
+	void on_TypeSelectElementButton_clicked(bool on);
+	void on_SelectTypeButton_clicked(bool on);
+	void on_DeselectTypeButton_clicked(bool on);
 	void dialogFinished(int result);
 
 	/*
