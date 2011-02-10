@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/select.h"
+#include "gui/selectelement.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
@@ -78,6 +79,37 @@ void AtenSelect::on_DeselectButton_clicked(bool on)
 {
 	CommandNode::run(Command::DeSelect, "c", qPrintable(ui.SelectionCombo->currentText()));
 	gui.update(TRUE,FALSE,FALSE);
+}
+
+void AtenSelect::on_TypeSelectElementButton_clicked(bool on)
+{
+	// Call the select element dialog...
+	int newel = gui.selectElementDialog->selectElement();
+	if (newel != -1) ui.TypeElementEdit->setText( elements().symbol(newel) );
+}
+
+void AtenSelect::on_SelectTypeButton_clicked(bool on)
+{
+	// Make sure we have a valid element
+	int el = elements().find(qPrintable(ui.TypeElementEdit->text()));
+	if (el == 0) msg.print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
+	else
+	{
+		CommandNode::run(Command::SelectType, "ic", el, qPrintable(ui.TypeNetaCombo->currentText()));
+		gui.update(TRUE,FALSE,FALSE);
+	}
+}
+
+void AtenSelect::on_DeselectTypeButton_clicked(bool on)
+{
+	// Make sure we have a valid element
+	int el = elements().find(qPrintable(ui.TypeElementEdit->text()));
+	if (el == 0) msg.print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
+	else
+	{
+		CommandNode::run(Command::DeSelectType, "ic", el, qPrintable(ui.TypeNetaCombo->currentText()));
+		gui.update(TRUE,FALSE,FALSE);
+	}
 }
 
 void AtenSelect::refresh()

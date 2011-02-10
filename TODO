@@ -7,6 +7,9 @@
 		<listitem>
 			<para>Reading spacegroup info and packing from certain cifs with Pnmmm symmetry is incorrect (c.f. Mercury)</para>
 		</listitem>
+		<listitem>
+			<para>Atom list update is super-slow when changing selection in big systems</para>
+		</listitem>
 	</orderedlist>
 
 </sect5>
@@ -58,6 +61,9 @@
 <sect5><title>Doc TODO</title>
 
 	<orderedlist>
+		<listitem>
+			<para>New image and description for Select window</para>
+		</listitem>
 		<listitem>
 			<para>Topic: Colourscales</para>
 		</listitem>
