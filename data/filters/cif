@@ -1,7 +1,8 @@
 # Crystallographic Information File (cif) (for v1.2+)
 # Created:	 10/04/2009
-# Last modified: 28/05/2009
+# Last modified: 10/02/2011
 # ChangeLog:
+#	10/02/2011 - Added basic support for data contained in mmCIFs.
 #	28/05/2009 - Near total rewrite.
 #	21/05/2009 - Major fixes - data in loops was not read correctly.
 
@@ -13,7 +14,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 
 	# Variables
 	string discard,data1,data2,data3,keywd,line,char,looptype,args[50],keywdstripped;
-	int n,arg,cellspec,id_r[3],id_e,id_gen,nread,inloop,nloopdata;
+	int n,arg,cellspec,id_r[3],id_e,id_gen,nread,inloop,nloopdata,fractional = TRUE;
 	double length[3],cellangle[3];
 
 	# Recognise quoting
@@ -34,7 +35,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 		if (keywd == "") continue;
 		readvarf(keywd, "%1s", char);
 
-		if (keywd == "_chemical_name_common") { setname(data1); inloop = 0; continue; }
+		if ((keywd == "_chemical_name_common") || (keywd == "_chem_comp.name")) { setname(data1); inloop = 0; continue; }
 		else if (keywd == "_cell_length_a") { length[1] = atof(data1); cellspec++; inloop = 0; continue; }
 		else if (keywd == "_cell_length_b") { length[2] = atof(data1); cellspec++; inloop = 0; continue; }
 		else if (keywd == "_cell_length_c") { length[3] = atof(data1); cellspec++; inloop = 0; continue; }
@@ -45,7 +46,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 		else if (keywd == "_symmetry_space_group_name_H-M") { spacegroup(data1); inloop = 0; continue; }
 		# Loops
 		else if (keywd == "loop_") { inloop = 1; nloopdata = 0; looptype = "none"; continue; }
-		# Enf of loop data items (is first char is a '_')
+		# End of loop data items (if first char is a '_')
 		else if (inloop > 0)
 		{
 			if ((char == "_") && (inloop == 2)) inloop = 0;
@@ -55,7 +56,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 		# Loop handling
 		if (inloop == 1)		# Loop data specification
 		{
-			keywdstripped = replacechars(keywd,"_"," ");
+			keywdstripped = replacechars(keywd,"_."," ");
 			readvar(keywdstripped, data1, data2, data3);
 			if ((data1 == "atom") && (data2 == "site"))
 			{
@@ -91,6 +92,18 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 				nloopdata++;
 				if (keywd == "_space_group_symop_operation_xyz") id_gen = nloopdata;
 			}
+			else if ((data1 == "chem") && (data2 == "comp") && (data3 == "atom"))
+			{
+				# PDB-style atom section (as found in mmCIFs)
+				if (data3 == "aniso") continue;
+				looptype = "atom";
+				fractional = FALSE;
+				nloopdata++;
+				if (keywd == "_chem_comp_atom.type_symbol") id_e = nloopdata;
+				else if (keywd == "_chem_comp_atom.model_Cartn_x") id_r[1] = nloopdata;
+				else if (keywd == "_chem_comp_atom.model_Cartn_y") id_r[2] = nloopdata;
+				else if (keywd == "_chem_comp_atom.model_Cartn_z") id_r[3] = nloopdata;
+			}
 		}
 		else if (inloop == 2)		# Loop data items
 		{
@@ -115,14 +128,14 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 	if (cellspec == 6)
 	{
 		cell(length[1],length[2],length[3],cellangle[1],cellangle[2],cellangle[3]);
-		fractoreal();
+		if (fractional) fractoreal();
 		# Pack according to spacegroup
 		pack();
 	}
 	else
 	{
 		printf("Warning: Full cell specification was not found in file.\n");
-		printf("Warning: Atom coordinates are still fractional.\n");
+		if (fractional) printf("Warning: Atom coordinates are still fractional.\n");
 	}
 
 	rebond();
