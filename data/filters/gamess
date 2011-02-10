@@ -426,6 +426,10 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	string elpot_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, "tab=$ELPOT@opts");
 	string elpot_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH,NONE", 3, "tab=$ELPOT@opts");
 
+	# Point selection ($PDC), placed in 'opts' tabs
+	string pdc_ptsel = option("PTSEL", "combo", "GEODESIC,CONNOLLY,CHELPG", 1, "tab=$PDC@opts");
+	string pdc_constr = option("CONSTR", "combo", "NONE,CHARGE,DIPOLE,QUPOLE", 2, "tab=$PDC@opts");
+
 	# Grid specification ($GRID), placed in 'opts' tabs
 	int grid_modgrd = option("3D Grid", "check", 0, "tab=$GRID@opts", "newline");
 	double grid_size = option("Grid Increment", "doublespin", 0.00001, 2.0, 0.25, 0.1, "tab=$GRID@opts");
@@ -478,7 +482,11 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	if (eldens_ieden == 1) writelinef(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", eldens_morb, eldens_where, eldens_output);
 
 	# Write $ELPOT if required
-	if (elpot_iepot == 1) writelinef(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END\n", elpot_where, elpot_output);
+	if (elpot_iepot == 1)
+	{
+		writelinef(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END\n", elpot_where, elpot_output);
+		if (elpot_where == "PDC") writelinef(" $PDC PTSEL=%s CONSTR=%s $END\n", pdc_ptsel, pdc_constr);
+	}
 
 	# Write $GRID if required
 	if ((eldens_where == "GRID") || (elpot_where == "GRID"))
