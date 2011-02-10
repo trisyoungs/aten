@@ -179,7 +179,9 @@ void AtenForm::on_actionAtomColourSet_triggered(bool checked)
 {
 	QColor oldcol, newcol;
 	// Get colour of clicked atom and convert into a QColor
-	oldcol.setRgbF( target->colour()[0], target->colour()[1], target->colour()[2], target->colour()[3] );
+	if (target != NULL) oldcol.setRgbF( target->colour()[0], target->colour()[1], target->colour()[2], target->colour()[3] );
+	else oldcol.setRgbF(1.0, 1.0, 1.0, 1.0);
+		
 	// Request a colour dialog
 	bool ok = FALSE;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
