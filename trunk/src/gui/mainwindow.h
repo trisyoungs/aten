@@ -24,6 +24,7 @@
 
 #include "base/dnchar.h"
 #include "base/atom.h"
+#include "classes/prefs.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "templates/reflist.h"
@@ -182,6 +183,8 @@ class AtenForm : public QMainWindow
 	*/
 	private slots:
 	void on_StyleToolbar_actionTriggered(QAction *action);
+	public:
+	void setActiveStyleAction(Atom::DrawStyle ds);
 
 	/*
 	// Edit Actions
@@ -302,6 +305,7 @@ class AtenForm : public QMainWindow
 	public:
 	void setCartesianView(double x, double y, double z);
 	void setCellView(double x, double y, double z);
+	void setActiveSchemeAction(Prefs::ColouringScheme cs);
 	private slots:
 	void on_actionViewReset_triggered(bool checked);
 	void on_actionViewZoomIn_triggered(bool checked);

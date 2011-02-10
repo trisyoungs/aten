@@ -32,7 +32,7 @@
 Prefs prefs;
 
 // Colour Schemes
-const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity" };
+const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity", "Custom" };
 Prefs::ColouringScheme Prefs::colouringScheme(const char *s, bool reporterror)
 {
 	Prefs::ColouringScheme cs = (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);

@@ -109,8 +109,6 @@ class GuiQt
 	public:
 	// Add model (adds new model to list)
 	void addModel(Model*);
-	// Convert Qt key code value to internal key
-	TCanvas::KeyCode convertToKeyCode(int);
 	// Initialise GUI file filters array
 	void initFilters();
 	// Add a message to the main window's message output box

@@ -40,10 +40,16 @@ void AtenForm::on_StyleToolbar_actionTriggered(QAction *action)
 	else if (action == ui.actionStyleScaled) ds = Atom::ScaledStyle;
 	else if (action == ui.actionStyleIndividual) ds = Atom::IndividualStyle;
 	prefs.setRenderStyle(ds);
-	// Inform the displayed model
-	m = aten.currentModelOrFrame();
-// 	m->projectAll();
-// 	m->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
+void AtenForm::setActiveStyleAction(Atom::DrawStyle ds)
+{
+	if (ds == Atom::StickStyle) ui.actionStyleStick->setChecked(TRUE);
+	else if (ds == Atom::TubeStyle) ui.actionStyleTube->setChecked(TRUE);
+	else if (ds == Atom::SphereStyle) ui.actionStyleSphere->setChecked(TRUE);
+	else if (ds == Atom::ScaledStyle) ui.actionStyleScaled->setChecked(TRUE);
+	else if (ds == Atom::IndividualStyle) ui.actionStyleIndividual->setChecked(TRUE);
+	prefs.setRenderStyle(ds);
+	gui.mainWidget->postRedisplay();
+}
