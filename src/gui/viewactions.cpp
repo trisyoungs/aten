@@ -194,3 +194,15 @@ void AtenForm::on_actionSchemeCustom_triggered(bool checked)
 	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
+
+void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
+{
+	if (cs == Prefs::ChargeScheme) ui.actionSchemeCharge->setChecked(TRUE);
+	else if (cs == Prefs::ElementScheme) ui.actionSchemeElement->setChecked(TRUE);
+	else if (cs == Prefs::ForceScheme) ui.actionSchemeForce->setChecked(TRUE);
+	else if (cs == Prefs::VelocityScheme) ui.actionSchemeVelocity->setChecked(TRUE);
+	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
+	prefs.setColourScheme(cs);
+	gui.mainWidget->postRedisplay();
+}

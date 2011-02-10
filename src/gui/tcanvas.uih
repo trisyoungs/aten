@@ -40,9 +40,7 @@ class TCanvas : public QGLWidget
 	public:
 	// Constructor
 	TCanvas(QGLContext *context, QWidget *parent);
-	// Keyboard Key Codes (internal to Aten)
-	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
-
+	
 	/*
 	// Character / Setup
 	*/

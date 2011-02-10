@@ -423,40 +423,6 @@ void GuiQt::addModel(Model *m)
 	gui.update(TRUE,TRUE,TRUE);
 }
 
-// Convert Qt keysym to key_code
-TCanvas::KeyCode GuiQt::convertToKeyCode(int sym)
-{
-	TCanvas::KeyCode result = TCanvas::OtherKey;
-	switch (sym)
-	{
-		case (Qt::Key_Left):
-			result = TCanvas::LeftKey;
-			break;
-		case (Qt::Key_Right):
-			result = TCanvas::RightKey;
-			break;
-		case (Qt::Key_Up):
-			result = TCanvas::UpKey;
-			break;
-		case (Qt::Key_Down):
-			result = TCanvas::DownKey;
-			break;
-		case (Qt::Key_Shift):
-			result = TCanvas::LeftShiftKey;
-			break;
-		case (Qt::Key_Control):
-			result = TCanvas::LeftControlKey;
-			break;
-		case (Qt::Key_Alt):
-			result = TCanvas::LeftAltKey;
-			break;
-		case (Qt::Key_Escape):
-			result = TCanvas::EscapeKey;
-			break;
-	}
-	return result;
-}
-
 void GuiQt::printMessage(const char *s)
 {
 	static char str[8096];

@@ -312,146 +312,159 @@ bool TCanvas::keyModifier(Prefs::ModifierKey mk)
 // Qt Slot (key press event)
 void TCanvas::keyPressEvent(QKeyEvent *event)
 {
-	TCanvas::KeyCode kc = gui.convertToKeyCode(event->key());
+	// Check datamodel...
+	if (displayModel_ == NULL) return;
+	bool refresh = FALSE, ignore = TRUE;
 	Qt::KeyboardModifiers km = event->modifiers();
-	if (kc != TCanvas::OtherKey)
+	keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
+	keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
+	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
+	
+	// Set some useful flags...
+	bool manipulate = FALSE;
+	bool nofold = gui.buildWindow->ui.PreventFoldCheck->isChecked();
+	for (int n=0; n<3; n++)
 	{
-		// Check datamodel...
-		if (displayModel_ == NULL) return;
-		bool refresh = FALSE;
-		Qt::KeyboardModifiers km = event->modifiers();
-		keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
-		keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
-		keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
-		
-		// Set some useful flags...
-		bool manipulate = FALSE;
-		bool nofold = gui.buildWindow->ui.PreventFoldCheck->isChecked();
-		for (int n=0; n<3; n++)
+		if (keyModifier_[n])
 		{
-			if (keyModifier_[n])
+			switch (prefs.keyAction(Prefs::ModifierKey(n)))
 			{
-				switch (prefs.keyAction(Prefs::ModifierKey(n)))
-				{
-					case (Prefs::ManipulateKeyAction):
-						manipulate = TRUE;
-						break;
-					default:
-						break;
-				}
+				case (Prefs::ManipulateKeyAction):
+					manipulate = TRUE;
+					break;
+				default:
+					break;
 			}
 		}
-		
-		switch (kc)
-		{
-			case (TCanvas::LeftKey):
-				if (keyModifier_[Prefs::CtrlKey])
-				{
-					printf("Why doesn't this ever get printed?\n");
-					displayModel_->prepareTransform();
-					displayModel_->beginUndoState("Rotate selection about world Y axis");
-					displayModel_->rotateSelectionWorld(2.0,0.0);
-					displayModel_->endUndoState();
-					displayModel_->updateMeasurements();
-					displayModel_->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-					gui.update(TRUE,FALSE,FALSE);
-				}
-				else displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
-				refresh = TRUE;
-				break;
-			case (TCanvas::RightKey):
-				displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0, 0.0);
-				refresh = TRUE;
-				break;
-			case (TCanvas::UpKey):
-				displayModel_->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0);
-				refresh = TRUE;
-				break;
-			case (TCanvas::DownKey):
-				displayModel_->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0);
-				refresh = TRUE;
-				break;
-			case (TCanvas::EscapeKey):
-				gui.mainWindow->cancelCurrentMode();
-				refresh = TRUE;
-				break;
-			default:
-				break;
-		}
-		
-		// Mode-specific
-		switch (selectedMode_)
-		{
-			case (UserAction::DrawFragmentAction):
-				// Cycle link atom....
-				if (keyModifier_[Prefs::AltKey])
-				{
-					Fragment *frag = gui.fragmentWindow->currentFragment();
-					if (frag == NULL) break;
-					frag->cycleLinkAtom();
-					refresh = TRUE;
-				}
-				// Refresh if Shift status has changed
-				if (keyModifier_[Prefs::ShiftKey]) refresh = TRUE;
-				if (keyModifier_[Prefs::CtrlKey])
-				{
-					refresh = TRUE;
-					gui.fragmentWindow->increaseBondId();
-				}
-				break;
-			default:
-				break;
-		}
-		// Update display if necessary
-		if (refresh) postRedisplay();
 	}
-	else event->ignore();
+	
+	int n;
+	
+	switch (event->key())
+	{
+		case (Qt::Key_Left):
+			if (keyModifier_[Prefs::CtrlKey])
+			{
+				printf("Why doesn't this ever get printed?\n");
+				displayModel_->prepareTransform();
+				displayModel_->beginUndoState("Rotate selection about world Y axis");
+				displayModel_->rotateSelectionWorld(2.0,0.0);
+				displayModel_->endUndoState();
+				displayModel_->updateMeasurements();
+				displayModel_->finalizeTransform(oldPositions_, "Transform Selection", nofold);
+				gui.update(TRUE,FALSE,FALSE);
+			}
+			else displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
+			refresh = TRUE;
+			ignore = FALSE;
+			break;
+		case (Qt::Key_Right):
+			displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0, 0.0);
+			refresh = TRUE;
+			ignore = FALSE;
+			break;
+		case (Qt::Key_Up):
+			displayModel_->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0);
+			refresh = TRUE;
+			ignore = FALSE;
+			break;
+		case (Qt::Key_Down):
+			displayModel_->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0);
+			refresh = TRUE;
+			ignore = FALSE;
+			break;
+		case (Qt::Key_Escape):
+			gui.mainWindow->cancelCurrentMode();
+			refresh = TRUE;
+			ignore = FALSE;
+			break;
+		// Cycle render styles
+		case (Qt::Key_F8):
+			n = prefs.renderStyle() + 1;
+			if (n == Atom::nDrawStyles) n = 0;
+			gui.mainWindow->setActiveStyleAction( (Atom::DrawStyle) n);
+			ignore = FALSE;
+			break;
+		// Cycle colouring styles
+		case (Qt::Key_F9):
+			n = prefs.colourScheme() + 1;
+			if (n == Prefs::nColouringSchemes) n = 0;
+			gui.mainWindow->setActiveSchemeAction( (Prefs::ColouringScheme) n);
+			ignore = FALSE;
+			break;
+		default:
+			break;
+	}
+	
+	// Mode-specific
+	switch (selectedMode_)
+	{
+		case (UserAction::DrawFragmentAction):
+			// Cycle link atom....
+			if (keyModifier_[Prefs::AltKey])
+			{
+				Fragment *frag = gui.fragmentWindow->currentFragment();
+				if (frag == NULL) break;
+				frag->cycleLinkAtom();
+				refresh = TRUE;
+			}
+			// Refresh if Shift status has changed
+			if (keyModifier_[Prefs::ShiftKey]) refresh = TRUE;
+			if (keyModifier_[Prefs::CtrlKey])
+			{
+				refresh = TRUE;
+				gui.fragmentWindow->increaseBondId();
+			}
+			break;
+		default:
+			break;
+	}
+	// Update display if necessary
+	if (refresh) postRedisplay();
+	if (ignore) event->ignore();
 }
 
 // Qt Slot (key release event)
 void TCanvas::keyReleaseEvent(QKeyEvent *event)
 {
-	TCanvas::KeyCode kc = gui.convertToKeyCode(event->key());
+	// Set keystates
+	bool oldshift = keyModifier_[Prefs::ShiftKey];
+	bool oldctrl = keyModifier_[Prefs::CtrlKey];
+	bool oldalt = keyModifier_[Prefs::AltKey];
 	Qt::KeyboardModifiers km = event->modifiers();
-	if (kc != TCanvas::OtherKey)
+	keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
+	keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
+	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
+	
+	// Set some useful flags...
+	bool manipulate = FALSE;
+	for (int n=0; n<3; n++)
 	{
-		// Set keystates
-		bool oldshift = keyModifier_[Prefs::ShiftKey];
-		//bool oldctrl = keyModifier_[Prefs::CtrlKey];
-		//bool oldalt = keyModifier_[Prefs::AltKey];
-		keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
-		keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
-		keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
-		
-		// Set some useful flags...
-		bool manipulate = FALSE;
-		for (int n=0; n<3; n++)
+		if (keyModifier_[n])
 		{
-			if (keyModifier_[n])
+			switch (prefs.keyAction(Prefs::ModifierKey(n)))
 			{
-				switch (prefs.keyAction(Prefs::ModifierKey(n)))
-				{
-					case (Prefs::ManipulateKeyAction):
-						manipulate = TRUE;
-						break;
-					default:
-						break;
-				}
+				case (Prefs::ManipulateKeyAction):
+					manipulate = TRUE;
+					break;
+				default:
+					break;
 			}
 		}
-		
-		// Mode-specific
-		switch (selectedMode_)
-		{
-			case (UserAction::DrawFragmentAction):
-				// Refresh if Shift status has changed
-				if (keyModifier_[Prefs::ShiftKey] != oldshift) postRedisplay();
-				break;
-			default:
-				break;
-		}
 	}
-	else event->ignore();
+	
+	// Mode-specific
+	switch (selectedMode_)
+	{
+		case (UserAction::DrawFragmentAction):
+			// Refresh if Shift status has changed
+			if (keyModifier_[Prefs::ShiftKey] != oldshift) postRedisplay();
+			break;
+		default:
+			break;
+	}
+
+	event->ignore();
 }
 
 /*

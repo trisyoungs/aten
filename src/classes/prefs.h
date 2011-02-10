@@ -44,7 +44,7 @@ class Prefs
 	static MouseButton mouseButton(const char *name, bool reporterror = 0);
 	static const char *mouseButton(MouseButton);
 	// Mouse Actions
-	enum MouseAction { NoAction, RotateAction, TranslateAction, InteractAction, ZoomAction, ZrotateAction, nMouseActions };
+	enum MouseAction { NoAction, RotateAction, TranslateAction, InteractAction, ZoomAction, ZRotateAction, nMouseActions };
 	static MouseAction mouseAction(const char *name, bool reporterror = 0);
 	static const char *mouseAction(MouseAction);
 	// Modifier keys
