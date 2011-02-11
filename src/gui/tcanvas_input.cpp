@@ -91,7 +91,12 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 {
 	// Handle button presses (button down) from the mouse
 	msg.enter("TCanvas::mousePressEvent");
-	Prefs::MouseButton button;
+	static Prefs::MouseButton button = Prefs::nMouseButtons;
+
+	// End old mode if one is active (i.e. prevent mode overlap on different mouse buttons)
+	if (activeMode_ != UserAction::NoAction) endMode(button);
+	
+	// Which mouse button was pressed?
 	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
 	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
 	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
@@ -123,7 +128,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	}
 
 	// Determine if there is an atom under the mouse
-	atomClicked_ = displayModel_->atomOnScreen(event->x(), event->y());   // BROKEN Query - can this func be moved?
+	atomClicked_ = displayModel_->atomOnScreen(event->x(), event->y());
 	
 	// Perform atom picking before entering mode (if required)
 	if (pickEnabled_ && (atomClicked_ != NULL))
