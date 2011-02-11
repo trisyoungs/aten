@@ -219,12 +219,25 @@ bool LineParser::eofOrBlank() const
 	if (file_->eof()) return TRUE;
 	// Otherwise, store the current file position and search for a non-whitespace character (or end of file)
 	streampos pos = file_->tellg();
-	// Attempt to read a character.
-	// Since 'skipws' is on by default, if we find one without setting eofbit, then we are *NOT* at the end of the file
+	
+	// Skip through whitespace, searching for 'hard' character
 	char c;
-	*file_ >> c;
-	bool result = file_->eof();
+	bool result = TRUE;
+	do
+	{
+		file_->get(c);
+		if (file_->eof()) break;
+		// If a whitespace character then skip it....
+		if ((c == ' ') || (c == '\r') || ( c == '\n') || (c == '\t') || (c == '\0'))
+		{
+			if (file_->eof()) break;
+			else continue;
+		}
+		result = FALSE;
+		break;
+	} while (1);
 	file_->seekg(pos);
+	
 	return result;
 }
 
@@ -250,11 +263,23 @@ int LineParser::readNextLine(int optionMask)
 	}
 	// Loop until we get 'suitable' line from file
 	int nchars, nspaces, result = 0;
-	char *c, quotchar;
+	char *c, quotchar, chr;
 	bool escaped = FALSE;
 	do
 	{
-		file_->getline(line_, MAXLINELENGTH-1);
+		char chr;
+		lineLength_ = 0;
+		while(file_->get(chr).good())
+		{
+			if (chr == '\r')
+			{
+				if (file_->peek() == '\n') file_->ignore();
+				break;
+			}
+			else if (chr == '\n') break;
+			line_[lineLength_++] = chr;
+		}
+		line_[lineLength_] = '\0';
 		msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 
 		// Process line to remove comments
