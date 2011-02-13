@@ -108,6 +108,100 @@ void AtenGrids::refresh()
 	msg.exit("AtenGrids::refresh");
 }
 
+Grid *AtenGrids::getCurrentGrid()
+{
+	Model *m = aten.currentModelOrFrame();
+	if (m == NULL)
+	{
+		printf("Internal Error: No current model in Grids window.\n");
+		return NULL;
+	}
+	int row = ui.GridList->currentRow();
+	if (row == -1) return NULL;
+	else return m->grid(row);
+}
+
+void AtenGrids::refreshGridInfo()
+{
+	msg.enter("AtenGrids::refreshGridInfo");
+	// Get the current row selected in the grid list
+	Grid *g;
+	Model *m = aten.currentModelOrFrame();
+	int row = ui.GridList->currentRow();
+	if (row == -1)
+	{
+		msg.exit("AtenGrids::refreshGridInfo");
+		return;
+	}
+	else g = m->grid(row);
+	refreshing_ = TRUE;
+	// Set minimum, maximum, and cutoff, and stepsizes for spins
+	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
+	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
+	ui.GridNPointsLabel->setText(itoa(g->nPoints().x*g->nPoints().y*g->nPoints().z));
+	ui.GridLowerCutoffSpin->setMinimum(g->minimum());
+	ui.GridLowerCutoffSpin->setMaximum(g->maximum());
+	ui.GridLowerCutoffSpin->setValue(g->lowerPrimaryCutoff());
+	ui.GridLowerCutoffSpin->setSingleStep(g->maximum() / 100.0);
+	ui.GridUpperCutoffSpin->setMinimum(g->minimum());
+	ui.GridUpperCutoffSpin->setMaximum(g->maximum());
+	ui.GridUpperCutoffSpin->setValue(g->upperPrimaryCutoff());
+	ui.GridUpperCutoffSpin->setSingleStep(g->maximum() / 100.0);
+	ui.GridLowerCutoff2Spin->setMinimum(g->minimum());
+	ui.GridLowerCutoff2Spin->setMaximum(g->maximum());
+	ui.GridLowerCutoff2Spin->setValue(g->lowerSecondaryCutoff());
+	ui.GridLowerCutoff2Spin->setSingleStep(g->maximum() / 100.0);
+	ui.GridUpperCutoff2Spin->setMinimum(g->minimum());
+	ui.GridUpperCutoff2Spin->setMaximum(g->maximum());
+	ui.GridUpperCutoff2Spin->setValue(g->upperSecondaryCutoff());
+	ui.GridUpperCutoff2Spin->setSingleStep(g->maximum() / 100.0);
+	ui.GridSecondaryCutoffCheck->setChecked( g->useSecondary() );
+	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
+	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
+	// Set sum data labels
+	ui.GridTotalPositiveSumLabel->setText(ftoa(g->totalPositiveSum()));
+	ui.GridTotalNegativeSumLabel->setText(ftoa(g->totalNegativeSum()));
+	double total = g->totalPositiveSum() + fabs(g->totalNegativeSum());
+	ui.GridTotalAbsoluteLabel->setText(ftoa(total));
+	ui.GridPrimaryPercentLabel->setText(ftoa(100.0*g->partialPrimarySum()/total));
+	ui.GridSecondaryPercentLabel->setText(ftoa(100.0*g->partialSecondarySum()/total));
+	// Set origin and axes
+	Vec3<double> origin = g->origin();
+	ui.GridOriginXSpin->setValue(origin.x);
+	ui.GridOriginYSpin->setValue(origin.y);
+	ui.GridOriginZSpin->setValue(origin.z);
+	Matrix axes = g->axes();
+	ui.GridAxesAXSpin->setValue(axes[0]);
+	ui.GridAxesAYSpin->setValue(axes[1]);
+	ui.GridAxesAZSpin->setValue(axes[2]);
+	ui.GridAxesBXSpin->setValue(axes[4]);
+	ui.GridAxesBYSpin->setValue(axes[5]);
+	ui.GridAxesBZSpin->setValue(axes[6]);
+	ui.GridAxesCXSpin->setValue(axes[8]);
+	ui.GridAxesCYSpin->setValue(axes[9]);
+	ui.GridAxesCZSpin->setValue(axes[10]);
+	// Set surface style data
+	ui.GridStyleCombo->setCurrentIndex(g->style());
+	ui.GridOutlineVolumeCheck->setChecked(g->outlineVolume());
+	ui.GridPeriodicCheck->setChecked(g->periodic());
+	ui.GridPrimaryColourFrame->setColour(g->primaryColour());
+	ui.GridPrimaryColourFrame->update();
+	ui.GridSecondaryColourFrame->setColour(g->secondaryColour());
+	ui.GridSecondaryColourFrame->update();
+	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
+	QString scalename = "(";
+	scalename += prefs.colourScale[g->colourScale()].name();
+	scalename += ")";
+	ui.GridColourscaleName->setText(scalename);
+	g->useColourScale() ? ui.GridUseColourScaleRadio->setChecked(TRUE) : ui.GridUseInternalColoursRadio->setChecked(TRUE);
+	// Shift data
+	ui.GridShiftXSpin->setValue(g->shift().x);
+	ui.GridShiftYSpin->setValue(g->shift().y);
+	ui.GridShiftZSpin->setValue(g->shift().z);
+	refreshing_ = FALSE;
+	msg.exit("AtenGrids::refreshGridInfo");
+}
+
 // Load grid (public function)
 void AtenGrids::loadGrid()
 {
@@ -134,6 +228,10 @@ void AtenGrids::loadGrid()
 	msg.exit("AtenGrids::loadGrid");
 }
 
+/*
+// Menu
+*/
+
 void AtenGrids::on_actionGridLoad_triggered(bool checked)
 {
 	loadGrid();
@@ -141,27 +239,24 @@ void AtenGrids::on_actionGridLoad_triggered(bool checked)
 
 void AtenGrids::on_actionGridCopy_triggered(bool checked)
 {
-	int row = ui.GridList->currentRow();
-	if (row == -1)
+	Grid *g = getCurrentGrid();
+	if (g == NULL)
 	{
 		msg.print("No grid selected to copy.\n");
 		return;
 	}
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
 	aten.copyGrid(g);
 }
 
 void AtenGrids::on_actionGridCut_triggered(bool checked)
 {
-	int row = ui.GridList->currentRow();
-	if (row == -1)
+	Grid *g = getCurrentGrid();
+	if (g == NULL)
 	{
 		msg.print("No grid selected to cut.\n");
 		return;
 	}
 	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
 	aten.copyGrid(g);
 	m->removeGrid(g);
 	refresh();
@@ -196,6 +291,10 @@ void AtenGrids::on_actionGridPaste_triggered(bool checked)
 	refresh();
 	gui.mainWidget->postRedisplay();
 }
+
+/*
+// Origin / Axes
+*/
 
 void AtenGrids::on_GridOriginXSpin_valueChanged(double d)
 {
@@ -269,92 +368,16 @@ void AtenGrids::on_GridAxesCZSpin_valueChanged(double d)
 	gridAxisChanged(2,2, d);
 }
 
-void AtenGrids::refreshGridInfo()
-{
-	msg.enter("AtenGrids::refreshGridInfo");
-	// Get the current row selected in the grid list
-	Grid *g;
-	Model *m = aten.currentModelOrFrame();
-	int row = ui.GridList->currentRow();
-	if (row == -1)
-	{
-		msg.exit("AtenGrids::refreshGridInfo");
-		return;
-	}
-	else g = m->grid(row);
-	refreshing_ = TRUE;
-	// Set minimum, maximum, and cutoff, and stepsizes for spins
-	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
-	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
-	ui.GridNPointsLabel->setText(itoa(g->nPoints().x*g->nPoints().y*g->nPoints().z));
-	ui.GridLowerCutoffSpin->setMinimum(g->minimum());
-	ui.GridLowerCutoffSpin->setMaximum(g->maximum());
-	ui.GridLowerCutoffSpin->setValue(g->lowerPrimaryCutoff());
-	ui.GridLowerCutoffSpin->setSingleStep(g->maximum() / 100.0);
-	ui.GridUpperCutoffSpin->setMinimum(g->minimum());
-	ui.GridUpperCutoffSpin->setMaximum(g->maximum());
-	ui.GridUpperCutoffSpin->setValue(g->upperPrimaryCutoff());
-	ui.GridUpperCutoffSpin->setSingleStep(g->maximum() / 100.0);
-	ui.GridLowerCutoff2Spin->setMinimum(g->minimum());
-	ui.GridLowerCutoff2Spin->setMaximum(g->maximum());
-	ui.GridLowerCutoff2Spin->setValue(g->lowerSecondaryCutoff());
-	ui.GridLowerCutoff2Spin->setSingleStep(g->maximum() / 100.0);
-	ui.GridUpperCutoff2Spin->setMinimum(g->minimum());
-	ui.GridUpperCutoff2Spin->setMaximum(g->maximum());
-	ui.GridUpperCutoff2Spin->setValue(g->upperSecondaryCutoff());
-	ui.GridUpperCutoff2Spin->setSingleStep(g->maximum() / 100.0);
-	ui.GridSecondaryCutoffCheck->setChecked( g->useSecondary() );
-	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
-	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
-	// Set sum data labels
-	ui.GridTotalPositiveSumLabel->setText(ftoa(g->totalPositiveSum()));
-	ui.GridTotalNegativeSumLabel->setText(ftoa(g->totalNegativeSum()));
-	double total = g->totalPositiveSum() + fabs(g->totalNegativeSum());
-	ui.GridTotalAbsoluteLabel->setText(ftoa(total));
-	ui.GridPrimaryPercentLabel->setText(ftoa(100.0*g->partialPrimarySum()/total));
-	ui.GridSecondaryPercentLabel->setText(ftoa(100.0*g->partialSecondarySum()/total));
-	// Set origin and axes
-	Vec3<double> origin = g->origin();
-	ui.GridOriginXSpin->setValue(origin.x);
-	ui.GridOriginYSpin->setValue(origin.y);
-	ui.GridOriginZSpin->setValue(origin.z);
-	Matrix axes = g->axes();
-	ui.GridAxesAXSpin->setValue(axes[0]);
-	ui.GridAxesAYSpin->setValue(axes[1]);
-	ui.GridAxesAZSpin->setValue(axes[2]);
-	ui.GridAxesBXSpin->setValue(axes[4]);
-	ui.GridAxesBYSpin->setValue(axes[5]);
-	ui.GridAxesBZSpin->setValue(axes[6]);
-	ui.GridAxesCXSpin->setValue(axes[8]);
-	ui.GridAxesCYSpin->setValue(axes[9]);
-	ui.GridAxesCZSpin->setValue(axes[10]);
-	// Set surface style data
-	ui.GridStyleCombo->setCurrentIndex(g->style());
-	ui.GridPrimaryColourFrame->setColour(g->primaryColour());
-	ui.GridPrimaryColourFrame->update();
-	ui.GridSecondaryColourFrame->setColour(g->secondaryColour());
-	ui.GridSecondaryColourFrame->update();
-	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
-	QString scalename = "(";
-	scalename += prefs.colourScale[g->colourScale()].name();
-	scalename += ")";
-	ui.GridColourscaleName->setText(scalename);
-	g->useColourScale() ? ui.GridUseColourScaleRadio->setChecked(TRUE) : ui.GridUseInternalColoursRadio->setChecked(TRUE);
-	refreshing_ = FALSE;
-	msg.exit("AtenGrids::refreshGridInfo");
-}
-
 void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
 {
 	ui.GridSecondaryColourButton->setEnabled(TRUE);
 	ui.GridPrimaryColourButton->setEnabled(TRUE);
 	ui.GridColourscaleSpin->setEnabled(FALSE);
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	ui.GridSecondaryColourButton->setEnabled(g->useSecondary());
 	g->setUseColourScale(FALSE);
 	gui.mainWidget->postRedisplay();
@@ -366,11 +389,10 @@ void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
 	ui.GridPrimaryColourButton->setEnabled(FALSE);
 	ui.GridColourscaleSpin->setEnabled(TRUE);
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	g->setUseColourScale(TRUE);
 	gui.mainWidget->postRedisplay();
 }
@@ -389,11 +411,9 @@ void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
 
 void AtenGrids::gridOriginChanged(int component, double value)
 {
-	// Get the current row selected in the grid list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	// Get and re-set origin
 	static Vec3<double> o;
 	o = g->origin();
@@ -404,11 +424,9 @@ void AtenGrids::gridOriginChanged(int component, double value)
 
 void AtenGrids::gridAxisChanged(int axis, int component, double value)
 {
-	// Get the current row selected in the grid list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	// Get and re-set axes
 	Matrix axes;
 	axes = g->axes();
@@ -427,11 +445,9 @@ void AtenGrids::on_GridList_currentRowChanged(int row)
 void AtenGrids::on_GridLowerCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
 	refreshGridInfo();
 	gui.mainWidget->postRedisplay();
@@ -440,11 +456,9 @@ void AtenGrids::on_GridLowerCutoffSpin_editingFinished()
 void AtenGrids::on_GridUpperCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
 	refreshGridInfo();
 	gui.mainWidget->postRedisplay();
@@ -453,11 +467,9 @@ void AtenGrids::on_GridUpperCutoffSpin_editingFinished()
 void AtenGrids::on_GridLowerCutoff2Spin_editingFinished()
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
 	refreshGridInfo();
 	gui.mainWidget->postRedisplay();
@@ -466,11 +478,9 @@ void AtenGrids::on_GridLowerCutoff2Spin_editingFinished()
 void AtenGrids::on_GridUpperCutoff2Spin_editingFinished()
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
 	refreshGridInfo();
 	gui.mainWidget->postRedisplay();
@@ -479,16 +489,14 @@ void AtenGrids::on_GridUpperCutoff2Spin_editingFinished()
 void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	g->setStyle(Grid::SurfaceStyle (index));
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
+void AtenGrids::on_GridOutlineVolumeCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current surface in list
@@ -496,6 +504,26 @@ void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
 	if (row == -1) return;
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
+	g->setOutlineVolume(checked);
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenGrids::on_GridPeriodicCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
+	g->setPeriodic(checked);
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
+{
+	if (refreshing_) return;
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	// Get current surface colour and convert into a QColor
 	double *col = g->primaryColour();
 	QColor oldcol, newcol;
@@ -514,11 +542,9 @@ void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
 void AtenGrids::on_GridSecondaryColourButton_clicked(bool checked)
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	// Get current surface colour and convert into a QColor
 	double *col = g->secondaryColour();
 	QColor oldcol, newcol;
@@ -537,11 +563,9 @@ void AtenGrids::on_GridSecondaryColourButton_clicked(bool checked)
 void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	g->setColourScale(n-1);
 	QString scalename = "(";
 	scalename += prefs.colourScale[g->colourScale()].name();
@@ -553,15 +577,100 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 void AtenGrids::on_GridSecondaryCutoffCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
 	g->setUseSecondary(checked);
 	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
 	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
 	gui.mainWidget->postRedisplay();
+}
+
+
+/*
+// Shift Page
+*/
+
+void AtenGrids::gridShiftChanged()
+{
+	if (refreshing_) return;
+	// Get current grid and set data
+	Grid *g = getCurrentGrid();
+	if (g == NULL) return;
+	// Grab old shift values
+	Vec3<int> oldshift = g->shift();
+	g->setShift(ui.GridShiftXSpin->value(), ui.GridShiftYSpin->value(), ui.GridShiftZSpin->value());
+	if (ui.ShiftAtomNoneRadio->isChecked() == FALSE)
+	{
+		Model *m = aten.currentModelOrFrame();
+		// Determine shift amount...
+		Vec3<int> delta = g->shift() - oldshift;
+		Vec3<double> vec;
+		vec += g->axes().columnAsVec3(0) * delta.x;
+		vec += g->axes().columnAsVec3(1) * delta.y;
+		vec += g->axes().columnAsVec3(2) * delta.z;
+		// Move atoms....
+		m->beginUndoState("Shift atoms with grid");
+		if (ui.ShiftAtomAllRadio->isChecked())
+		{
+			m->markAll();
+			m->translateSelectionLocal(vec, TRUE);
+		}
+		else m->translateSelectionLocal(vec, FALSE);
+		m->endUndoState();
+	}
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenGrids::on_ShiftGridPosXButton_clicked(bool checked)
+{
+	ui.GridShiftXSpin->stepUp();
+	gridShiftChanged();
+}
+
+void AtenGrids::on_ShiftGridPosYButton_clicked(bool checked)
+{
+	ui.GridShiftYSpin->stepUp();
+	gridShiftChanged();
+}
+
+void AtenGrids::on_ShiftGridPosZButton_clicked(bool checked)
+{
+	ui.GridShiftZSpin->stepUp();
+	gridShiftChanged();
+}
+
+void AtenGrids::on_ShiftGridNegXButton_clicked(bool checked)
+{
+	ui.GridShiftXSpin->stepDown();
+	gridShiftChanged();
+}
+
+void AtenGrids::on_ShiftGridNegYButton_clicked(bool checked)
+{
+	ui.GridShiftYSpin->stepDown();
+	gridShiftChanged();
+}
+
+void AtenGrids::on_ShiftGridNegZButton_clicked(bool checked)
+{
+	ui.GridShiftZSpin->stepDown();
+	gridShiftChanged();
+}
+
+void AtenGrids::on_GridShiftXSpin_valueChanged(int i)
+{
+	gridShiftChanged();
+}
+
+void AtenGrids::on_GridShiftYSpin_valueChanged(int i)
+{
+	gridShiftChanged();
+}
+
+void AtenGrids::on_GridShiftZSpin_valueChanged(int i)
+{
+	gridShiftChanged();
 }
 
 /*

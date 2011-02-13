@@ -52,22 +52,29 @@ GridVariable::~GridVariable()
 
 // Accessor data
 Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
-	{ "axes",		VTypes::CellData,	0, TRUE },
-	{ "cutoff",		VTypes::DoubleData,	0, FALSE },
-	{ "cutoffsec",		VTypes::DoubleData,	0, FALSE },
-	{ "name",		VTypes::StringData,	0, FALSE },
-	{ "nx",			VTypes::IntegerData,	0, TRUE },
-	{ "ny",			VTypes::IntegerData,	0, TRUE },
-	{ "nz",			VTypes::IntegerData,	0, TRUE },
-	{ "origin", 		VTypes::VectorData,	0, FALSE },
-	{ "uppercutoff",	VTypes::DoubleData,	0, FALSE },
-	{ "uppercutoffsec",	VTypes::DoubleData,	0, FALSE },
-	{ "visible",		VTypes::IntegerData,	0, FALSE }
+	{ "axes",			VTypes::CellData,	0, TRUE },
+	{ "colour",			VTypes::DoubleData,	4, FALSE },
+	{ "cutoff",			VTypes::DoubleData,	0, FALSE },
+	{ "name",			VTypes::StringData,	0, FALSE },
+	{ "nx",				VTypes::IntegerData,	0, TRUE },
+	{ "ny",				VTypes::IntegerData,	0, TRUE },
+	{ "nz",				VTypes::IntegerData,	0, TRUE },
+	{ "origin", 			VTypes::VectorData,	0, FALSE },
+	{ "outlinevolume",		VTypes::IntegerData,	0, FALSE },
+	{ "periodic",			VTypes::IntegerData,	0, FALSE },
+	{ "secondarycolour",		VTypes::DoubleData,	4, FALSE },
+	{ "secondarycutoff",		VTypes::DoubleData,	0, FALSE },
+	{ "secondaryuppercutoff",	VTypes::DoubleData,	0, FALSE },
+	{ "shiftx",			VTypes::IntegerData,	0, FALSE },
+	{ "shifty",			VTypes::IntegerData,	0, FALSE },
+	{ "shiftz",			VTypes::IntegerData,	0, FALSE },
+	{ "uppercutoff",		VTypes::DoubleData,	0, FALSE },
+	{ "visible",			VTypes::IntegerData,	0, FALSE }
 };
 
 // Function data
 FunctionAccessor GridVariable::functionData[GridVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "data",	VTypes::DoubleData,	"IIi",	"int i, int j, int k = -1" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -167,11 +174,12 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (GridVariable::Axes):
 			rv.set(VTypes::CellData, ptr->cell());
 			break;
+		case (GridVariable::Colour):
+			if (hasArrayIndex) rv.set( ptr->primaryColour()[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->primaryColour(), 4);
+			break;
 		case (GridVariable::Cutoff):
 			rv.set(ptr->lowerPrimaryCutoff());
-			break;
-		case (GridVariable::CutoffSecondary):
-			rv.set(ptr->lowerSecondaryCutoff());
 			break;
 		case (GridVariable::Name):
 			rv.set(ptr->name());
@@ -184,11 +192,33 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (GridVariable::Origin):
 			rv.set(ptr->origin());
 			break;
+		case (GridVariable::OutlineVolume):
+			rv.set(ptr->outlineVolume());
+			break;
+		case (GridVariable::Periodic):
+			rv.set(ptr->periodic());
+			break;
+		case (GridVariable::SecondaryColour):
+			if (hasArrayIndex) rv.set( ptr->secondaryColour()[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->secondaryColour(), 4);
+			break;
+		case (GridVariable::SecondaryCutoff):
+			rv.set(ptr->lowerSecondaryCutoff());
+			break;
+		case (GridVariable::SecondaryUpperCutoff):
+			rv.set(ptr->upperSecondaryCutoff());
+			break;
+		case (GridVariable::ShiftX):
+			rv.set(ptr->shift().x);
+			break;
+		case (GridVariable::ShiftY):
+			rv.set(ptr->shift().y);
+			break;
+		case (GridVariable::ShiftZ):
+			rv.set(ptr->shift().z);
+			break;
 		case (GridVariable::UpperCutoff):
 			rv.set(ptr->upperPrimaryCutoff());
-			break;
-		case (GridVariable::UpperCutoffSecondary):
-			rv.set(ptr->upperSecondaryCutoff());
 			break;
 		case (GridVariable::Visible):
 			rv.set(ptr->isVisible());
@@ -264,6 +294,7 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	Grid *ptr= (Grid*) sourcerv.asPointer(VTypes::GridData, result);
+	int n;
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
@@ -271,11 +302,13 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	if (result) switch (acc)
 	{
+		case (GridVariable::Colour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->primaryColour()[n] = newvalue.asDouble(n, result);
+			else if (hasArrayIndex) ptr->primaryColour()[arrayIndex-1] = newvalue.asDouble(result);
+			else for (n=0; n<4; ++n) ptr->primaryColour()[n] = newvalue.asDouble(result);
+			break;
 		case (GridVariable::Cutoff):
 			ptr->setLowerPrimaryCutoff( newvalue.asDouble() );
-			break;
-		case (GridVariable::CutoffSecondary):
-			ptr->setLowerSecondaryCutoff( newvalue.asDouble() );
 			break;
 		case (GridVariable::Name):
 			ptr->setName( newvalue.asString() );
@@ -283,11 +316,34 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		case (GridVariable::Origin):
 			ptr->setOrigin( newvalue.asVector() );
 			break;
+		case (GridVariable::OutlineVolume):
+			ptr->setOutlineVolume( newvalue.asInteger() );
+			break;
+		case (GridVariable::Periodic):
+			ptr->setPeriodic( newvalue.asInteger() );
+			break;
+		case (GridVariable::SecondaryColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->secondaryColour()[n] = newvalue.asDouble(n, result);
+			else if (hasArrayIndex) ptr->secondaryColour()[arrayIndex-1] = newvalue.asDouble(result);
+			else for (n=0; n<4; ++n) ptr->secondaryColour()[n] = newvalue.asDouble(result);
+			break;
+		case (GridVariable::SecondaryCutoff):
+			ptr->setLowerSecondaryCutoff( newvalue.asDouble() );
+			break;
+		case (GridVariable::SecondaryUpperCutoff):
+			ptr->setUpperSecondaryCutoff( newvalue.asDouble() );
+			break;
+		case (GridVariable::ShiftX):
+			ptr->setShift(0, newvalue.asInteger());
+			break;
+		case (GridVariable::ShiftY):
+			ptr->setShift(1, newvalue.asInteger());
+			break;
+		case (GridVariable::ShiftZ):
+			ptr->setShift(2, newvalue.asInteger());
+			break;
 		case (GridVariable::UpperCutoff):
 			ptr->setUpperPrimaryCutoff( newvalue.asDouble() );
-			break;
-		case (GridVariable::UpperCutoffSecondary):
-			ptr->setUpperSecondaryCutoff( newvalue.asDouble() );
 			break;
 		case (GridVariable::Visible):
 			ptr->setVisible( newvalue.asBool() );
@@ -314,9 +370,63 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Grid *ptr= (Grid*) rv.asPointer(VTypes::GridData, result);
+	Grid *ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
+	int nx, ny, nz;
 	if (result) switch (i)
 	{
+		case (GridVariable::Data):
+			// Check type of grid data stored...
+			switch (ptr->type())
+			{
+				case (Grid::RegularXYData):
+					if (node->nArgs() == 3) msg.print("Warning: Third dimension given to 'data' function will be ignored...\n");
+					nx = node->argi(0) - 1;
+					ny = node->argi(1) - 1;
+					if ((nx < 0) || (nx >= ptr->nPoints().x))
+					{
+						msg.print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nPoints().x);
+						result = FALSE;
+					}
+					else if ((ny < 0) || (ny >= ptr->nPoints().y))
+					{
+						msg.print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nPoints().y);
+						result = FALSE;
+					}
+					else rv.set( ptr->data2d()[nx][ny] );
+					break;
+				case (Grid::RegularXYZData):
+					if (node->nArgs() != 3)
+					{
+						msg.print("Error: Third dimension for 3D grid not provided in 'data' function.\n");
+						result = FALSE;
+						break;
+					}
+					nx = node->argi(0) - 1;
+					ny = node->argi(1) - 1;
+					nz = node->argi(2) - 1;
+					if ((nx < 0) || (nx >= ptr->nPoints().x))
+					{
+						msg.print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nPoints().x);
+						result = FALSE;
+					}
+					else if ((ny < 0) || (ny >= ptr->nPoints().y))
+					{
+						msg.print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nPoints().y);
+						result = FALSE;
+					}
+					else if ((nz < 0) || (nz >= ptr->nPoints().z))
+					{
+						msg.print("Error: Z value for grid (%i) is out of range (nz = %i)\n", nz+1, ptr->nPoints().z);
+						result = FALSE;
+					}
+					else rv.set( ptr->data3d()[nx][ny][nz] );
+					break;
+				case (Grid::FreeXYZData):
+					msg.print("Free (irregular) grid data cannot be accessed with the 'data' function.\n");
+					result = FALSE;
+					break;
+			}
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in GridVariable.\n", functionData[i].name);
 			result = FALSE;

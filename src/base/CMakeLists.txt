@@ -21,6 +21,7 @@ pattern.cpp
 region.cpp
 sysfunc.cpp
 vibration.cpp
+wrapint.cpp
 atomaddress.h
 atom.h
 bond.h
@@ -43,6 +44,7 @@ pattern.h
 region.h
 sysfunc.h
 vibration.h
+wrapint.h
 )
 
 add_library(math

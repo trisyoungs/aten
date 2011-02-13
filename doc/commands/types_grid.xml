@@ -20,16 +20,16 @@
 						<entry>Axes system for the grid, stored in a unit cell structure</entry>
 					</row>
 					<row>
+						<entry>colour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The primary colour of the grid data</entry>
+					</row>
+					<row>
 						<entry>cutoff</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
 						<entry>The lower primary cutoff value</entry>
-					</row>
-					<row>
-						<entry>cutoffsec</entry>
-						<entry>double</entry>
-						<entry>rw</entry>
-						<entry>The lower secondary cutoff value</entry>
 					</row>
 					<row>
 						<entry>name</entry>
@@ -62,16 +62,58 @@
 						<entry>Coordinates of the origin (lower left-hand corner) of the grid data</entry>
 					</row>
 					<row>
+						<entry>outlinevolume</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag specifying whether a bounding volume cuboid should be drawn for the grid</entry>
+					</row>
+					<row>
+						<entry>periodic</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag specifying whether the grid is periodic (e.g. at the edges data from opposite side should be used to form grid)</entry>
+					</row>
+					<row>
+						<entry>secondarycolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The secondary colour of the grid data</entry>
+					</row>
+					<row>
+						<entry>secondarycutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The lower secondary cutoff value</entry>
+					</row>
+					<row>
+						<entry>secondaryuppercutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The upper secondary cutoff value</entry>
+					</row>
+					<row>
+						<entry>shiftx</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Shift value (in points) for the grid along its x-axis</entry>
+					</row>
+					<row>
+						<entry>shifty</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Shift value (in points) for the grid along its y-axis</entry>
+					</row>
+					<row>
+						<entry>shiftz</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Shift value (in points) for the grid along its z-axis</entry>
+					</row>
+					<row>
 						<entry>uppercutoff</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
 						<entry>The upper primary cutoff value</entry>
-					</row>
-					<row>
-						<entry>uppercutoffsec</entry>
-						<entry>double</entry>
-						<entry>rw</entry>
-						<entry>The upper secondary cutoff value</entry>
 					</row>
 					<row>
 						<entry>visible</entry>

@@ -64,7 +64,7 @@ class RenderEngine
 	// Rings
 	PrimitiveGroup lineRings_, segmentedLineRings_, tubeRings_, segmentedTubeRings_;
 	// Primitive objects
-	PrimitiveGroup cubes_, spheres_, cylinders_, cones_;
+	PrimitiveGroup cubes_, originCubes_, spheres_, cylinders_, cones_;
 	// One-off objects
 	Primitive wireCube_, crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
 

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PositionDialog</class>
  <widget class="QDialog" name="PositionDialog">
@@ -689,7 +690,7 @@
              </property>
              <property name="icon">
               <iconset resource="icons.qrc">
-               <normaloff>:/arrows/icons/arrow_in.svg</normaloff>:/arrows/icons/arrow_in.svg</iconset>
+               <normaloff>:/arrows/icons/arrow_out.svg</normaloff>:/arrows/icons/arrow_out.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -724,7 +725,7 @@
              </property>
              <property name="icon">
               <iconset resource="icons.qrc">
-               <normaloff>:/arrows/icons/arrow_out.svg</normaloff>:/arrows/icons/arrow_out.svg</iconset>
+               <normaloff>:/arrows/icons/arrow_in.svg</normaloff>:/arrows/icons/arrow_in.svg</iconset>
              </property>
              <property name="iconSize">
               <size>

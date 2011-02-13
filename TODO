@@ -2,6 +2,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Warnings on startup: "Could not add child element to parent element..", related to SVGs.</para>
+		</listitem>
+		<listitem>
 			<para>Rebonding model also folds atoms, making --nobond irrelevant</para>
 		</listitem>
 		<listitem>
@@ -18,13 +21,13 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Add 'Rebond in Patterns' toolbar button</para>
+		</listitem>
+		<listitem>
 			<para>Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click)</para>
 		</listitem>
 		<listitem>
 			<para>Script to add glyphs to represent H-bonds between pair of selected atoms</para>
-		</listitem>
-		<listitem>
-			<para>More stuff on Grids window - e.g. number of points, grid extent, volume etc.</para>
 		</listitem>
 		<listitem>
 			<para>Update script to perform conformational searching on molecule (add GUI options)</para>
@@ -49,6 +52,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Add options to FIELD import filter, allowing application of pattern to model.</para>
+		</listitem>
+		<listitem>
 			<para>Add more options to GAMESS-US inp filter: MD options</para>
 		</listitem>
 		<listitem>
@@ -63,6 +69,9 @@
 	<orderedlist>
 		<listitem>
 			<para>List of keyboard shortcuts</para>
+		</listitem>
+		<listitem>
+			<para>Update images for Grids window</para>
 		</listitem>
 		<listitem>
 			<para>New image and description for Select window</para>

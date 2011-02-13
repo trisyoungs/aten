@@ -116,6 +116,12 @@
 						<entry>List of glyphs owned by the model</entry>
 					</row>
 					<row>
+						<entry>grids</entry>
+						<entry><link linkend="command.types.grid">grid</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of grids owned by the model</entry>
+					</row>
+					<row>
 						<entry>id</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
@@ -204,6 +210,12 @@
 						<entry>int</entry>
 						<entry>ro</entry>
 						<entry>Number of glyphs owned by the model</entry>
+					</row>
+					<row>
+						<entry>ngrids</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of grids owned by the model</entry>
 					</row>
 					<row>
 						<entry>npatterns</entry>

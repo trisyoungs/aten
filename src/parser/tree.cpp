@@ -850,7 +850,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
 	if (ri->item != ri->data)
 	{
 		StepNode *laststep = (StepNode*) ri->data;
-		if ((laststep->arraySize() != 0) && (laststep->arrayIndex() == NULL))
+		if ((laststep->arraySize() > 0) && (laststep->arrayIndex() == NULL))
 		{
 			msg.print("Previous step in path requires an array index to be specified.\n");
 			msg.exit("Tree::expandPath");

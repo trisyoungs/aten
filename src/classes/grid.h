@@ -232,7 +232,8 @@ class Grid
 	void setNextData(double d);
 	// Add free data point
 	void addFreePoint(double x, double y, double z, double value);
-	
+
+
 	/*
 	// Visuals
 	*/
@@ -253,7 +254,13 @@ class Grid
 	bool useColourScale_;
 	// Whether to draw complementary surface with second set of cutoffs
 	bool useSecondary_;
-
+	// Whether the grid data is periodic
+	bool periodic_;
+	// Whether to show outline of grid volume
+	bool outlineVolume_;
+	// Offset (shift) when drawing grid volume
+	Vec3<int> shift_;
+	
 	public:
 	// Increase the internal log
 	void logChange();
@@ -303,6 +310,21 @@ class Grid
 	void setUseSecondary(bool b);
 	// Returns whether to render additional data using secondary cutoff
 	bool useSecondary() const;
+	// Set whether the grid data is periodic
+	void setPeriodic(bool b);
+	// Return whether the grid data is periodic
+	bool periodic() const;
+	// Set whether to outline grid volume
+	void setOutlineVolume(bool b);
+	// Return whether to outline grid volume
+	bool outlineVolume() const;
+	// Set shift amounts for grid
+	void setShift(int i, int j, int k);
+	// Set single shift amount
+	void setShift(int id, int i);
+	// Return shift amount
+	Vec3<int> shift();
+
 
 	/*
 	// Transformations
