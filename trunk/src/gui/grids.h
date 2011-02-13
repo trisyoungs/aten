@@ -26,6 +26,7 @@
 
 // Forward Declarations
 class QMenuBar;
+class Grid;
 
 // Grids window
 class AtenGrids : public QDialog
@@ -41,9 +42,11 @@ class AtenGrids : public QDialog
 	void refresh();
 	void loadGrid();
 	private:
+	Grid *getCurrentGrid();
 	void refreshGridInfo();
 	void gridOriginChanged(int component, double value);
 	void gridAxisChanged(int axis, int component, double value);
+	void gridShiftChanged();
 	private slots:
 	// Menu
 	void on_actionGridLoad_triggered(bool checked);
@@ -75,11 +78,23 @@ class AtenGrids : public QDialog
 	void on_GridAxesCZSpin_valueChanged(double d);
 	// Style Page
 	void on_GridStyleCombo_currentIndexChanged(int index);
+	void on_GridPeriodicCheck_clicked(bool checked);
+	void on_GridOutlineVolumeCheck_clicked(bool checked);
 	void on_GridPrimaryColourButton_clicked(bool checked);
 	void on_GridSecondaryColourButton_clicked(bool checked);
 	void on_GridColourscaleSpin_valueChanged(int n);
 	void on_GridUseInternalColoursRadio_clicked(bool checked);
-	void on_GridUseColourScaleRadio_clicked(bool checked);	
+	void on_GridUseColourScaleRadio_clicked(bool checked);
+	// Shift Page
+	void on_ShiftGridPosXButton_clicked(bool checked);
+	void on_ShiftGridPosYButton_clicked(bool checked);
+	void on_ShiftGridPosZButton_clicked(bool checked);
+	void on_ShiftGridNegXButton_clicked(bool checked);
+	void on_ShiftGridNegYButton_clicked(bool checked);
+	void on_ShiftGridNegZButton_clicked(bool checked);
+	void on_GridShiftXSpin_valueChanged(int i);
+	void on_GridShiftYSpin_valueChanged(int i);
+	void on_GridShiftZSpin_valueChanged(int i);
 	// Orbital Page
 	void on_ViewBasisButton_clicked(bool checked);
 	void on_ViewEigenvectorButton_clicked(bool checked);

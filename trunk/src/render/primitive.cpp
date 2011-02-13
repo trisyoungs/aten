@@ -345,16 +345,15 @@ void Primitive::createCrossedCube(double size)
 }
 
 // Create solid cube of specified size, centred at zero, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
-void Primitive::createCube(double size, int nsubs)
+void Primitive::createCube(double size, int nsubs, double ox, double oy, double oz)
 {
 	// Clear existing data first (if it exists)
 	forgetAll();
 	
 	// Create each face individually
-	GLfloat origin, delta = (GLfloat) size/nsubs, veca[3], vecb[3], vertex[3];
+	GLfloat delta = (GLfloat) size/nsubs, veca[3], vecb[3], vertex[3];
 	int i, j, plane;
 	// Set general origin coordinate
-	origin = -0.5*size;
 	// Loop over planes
 	for (plane=0; plane<3; ++plane)
 	{
@@ -371,9 +370,9 @@ void Primitive::createCube(double size, int nsubs)
 		{
 			for (j=0; j<nsubs; ++j)
 			{
-				vertex[0] = origin + i*veca[0] + j*vecb[0];
-				vertex[1] = origin + i*veca[1] + j*vecb[1];
-				vertex[2] = origin + i*veca[2] + j*vecb[2];
+				vertex[0] = ox + i*veca[0] + j*vecb[0];
+				vertex[1] = oy + i*veca[1] + j*vecb[1];
+				vertex[2] = oz + i*veca[2] + j*vecb[2];
 				// Define trangle vertices for 'lower' plane
 				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
 				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2);

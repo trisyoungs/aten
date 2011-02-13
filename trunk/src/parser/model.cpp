@@ -69,6 +69,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "frame",		VTypes::ModelData,		0, TRUE },
 	{ "frames",		VTypes::ModelData,		-1, TRUE },
 	{ "glyphs",		VTypes::GlyphData,		-1, TRUE },
+	{ "grids",		VTypes::GridData,		-1, TRUE },
 	{ "id",			VTypes::IntegerData,		0, TRUE },
 	{ "mass",		VTypes::DoubleData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
@@ -85,6 +86,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nfftypes",		VTypes::IntegerData,		0, TRUE },
 	{ "nframes",		VTypes::IntegerData,		0, TRUE },
 	{ "nglyphs",		VTypes::IntegerData,		0, TRUE },
+	{ "ngrids",		VTypes::IntegerData,		0, TRUE },
 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
 	{ "nrequested",		VTypes::IntegerData,		0, FALSE },
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
@@ -369,6 +371,19 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else rv.set(VTypes::GlyphData, ptr->glyph(arrayIndex-1));
 			break;
+		case (ModelVariable::Grids):
+			if (!hasArrayIndex)
+			{
+				if (ptr->grids() != NULL) rv.set(VTypes::GridData, ptr->grids());
+				else rv.set(VTypes::GridData, NULL);
+			}
+			else if (arrayIndex > ptr->nGrids())
+			{
+				msg.print("Grid array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::GridData, ptr->glyph(arrayIndex-1));
+			break;
 		case (ModelVariable::Id):
 			rv.set(aten.modelIndex(ptr)+1);
 			break;
@@ -417,6 +432,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::NGlyphs):
 			rv.set(ptr->nGlyphs());
 			break;
+		case (ModelVariable::NGrids):
+			rv.set(ptr->nGrids());
+			break;
 		case (ModelVariable::NPatterns):
 			rv.set(ptr->nPatterns());
 			break;
@@ -426,13 +444,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::NSelected):
 			rv.set(ptr->nSelected());
 			break;
- 		case (ModelVariable::NTorsions):
+		case (ModelVariable::NTorsions):
 			rv.set(ptr->nTorsionMeasurements());
 			break;
- 		case (ModelVariable::NUnknown):
+		case (ModelVariable::NUnknown):
 			rv.set(ptr->nUnknownAtoms());
 			break;
- 		case (ModelVariable::NVibrations):
+		case (ModelVariable::NVibrations):
 			rv.set(ptr->nVibrations());
 			break;
 		case (ModelVariable::Patterns):

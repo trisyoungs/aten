@@ -21,13 +21,9 @@
 
 #include "render/primitive.h"
 #include "classes/grid.h"
-// #include "base/messenger.h"
-// #include "base/constants.h"
 #include "classes/prefs.h"
 #include "classes/grid.h"
-// #include "gui/tcanvas.uih"
-// #include <stdio.h>
-// #include <math.h>
+#include "base/wrapint.h"
 
 /*
 	Marching Cube vertex and [edge] numbering
@@ -323,15 +319,16 @@ int facetriples[256][15] = {
 // Render volumetric isosurface with Marching Cubes
 void GridPrimitive::createSurfaceMarchingCubes()
 {
-	int i, j, k, n, cubetype, *faces, cscale;
+	int ii, jj, kk, n, cubetype, *faces, cscale;
 	Vec3<GLfloat> normal, gradient[8];
 	Vec3<double> r;
-	Vec3<int> npoints = source_->nPoints();
+	Vec3<int> npoints = source_->nPoints(), shift = source_->shift();
+	WrapInt i, j, k;
 	GLfloat col1[4], col2[4], minalpha1, minalpha2;
-	double ***data, **xdata, *ydata, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
+	double ***data, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
 	// Grab the data pointer, surface cutoff, and primitive reference
 	data = source_->data3d();
-	bool secondary = source_->useSecondary();
+	bool secondary = source_->useSecondary(), periodic = source_->periodic();
 	cscale = source_->useColourScale() ? source_->colourScale() : -1;
 
 	mult = 1.0;
@@ -363,15 +360,25 @@ void GridPrimitive::createSurfaceMarchingCubes()
 	primaryPrimitive_.clear();
 	secondaryPrimitive_.clear();
 	
+	// Loops here will go over 0 to npoints-1, but actual array indices will be based on this plus shift amounts, folded into limits
+	// Set up the wrapped integers for this purpose
+	i.setLimits(0, npoints.x-1);
+	j.setLimits(0, npoints.y-1);
+	k.setLimits(0, npoints.z-1);
+	
 	// Generate isosurface
-	for (i=1; i<npoints.x-2; i++)
+	for (ii=0; ii<npoints.x; ++ii)
 	{
-		xdata = data[i];
-		for (j=1; j<npoints.y-2; j++)
+		if (!periodic && ((ii < 2) || (ii > (npoints.x-3)))) continue;
+		i = ii-shift.x;
+		for (jj=0; jj<npoints.y; ++jj)
 		{
-			ydata = xdata[j];
-			for (k=1; k<npoints.z-2; k++)
+			if (!periodic && ((jj < 2) || (jj > (npoints.y-3)))) continue;
+			j = jj-shift.y;
+			for (kk=0; kk<npoints.z; ++kk)
 			{
+				if (!periodic && ((kk < 2) || (kk > (npoints.z-3)))) continue;
+				k = kk-shift.z;
 				// Grab values that form vertices of cube.
 				vertex[0] = data[i][j][k];
 				vertex[1] = data[i+1][j][k];
@@ -435,7 +442,7 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						r *= ipol;
 						normal = (gradient[edgevertices[faces[n]][0]] + (gradient[edgevertices[faces[n]][1]] - gradient[edgevertices[faces[n]][0]]) * ipol) * -mult;
 						normal.normalise();
-						r.add(i+v1[0], j+v1[1], k+v1[2]);
+						r.add(ii+v1[0], jj+v1[1], kk+v1[2]);
 						// Set triangle coordinates and add cube position
 						glNormal3d(normal.x, normal.y, normal.z);
 						if (cscale != -1)
@@ -446,7 +453,6 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						else primaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, TRUE);
 						// Store minimal alpha value in order to determine transparency
 						if (col1[3] < minalpha1) minalpha1 = col1[3];
-// 						glVertex3d(r.x, r.y, r.z);
 					}
 				}
 				if (!secondary) continue;
@@ -479,7 +485,7 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						r *= ipol;
 						normal = (gradient[edgevertices[faces[n]][0]] + (gradient[edgevertices[faces[n]][1]] - gradient[edgevertices[faces[n]][0]]) * ipol) * -mult;
 						normal.normalise();
-						r.add(i+v1[0], j+v1[1], k+v1[2]);
+						r.add(ii+v1[0], jj+v1[1], kk+v1[2]);
 						// Set triangle coordinates and add cube position
 						glNormal3d(normal.x, normal.y, normal.z);
 						if (cscale != -1)
@@ -579,26 +585,3 @@ void GridPrimitive::createSurface2D()
 	}
 	glEnd();
 }
-
-// // Create surface from gridded data
-// void Primitive::createSurface(Grid *g)
-// {
-// 	msg.enter("Primitive::createSurface");
-// 	static Vec3<double> origin;
-// 	static Mat4<double> mat;
-// 
-// 
-// 	// Draw surface - push current GL matrix
-// 	glPushMatrix();
-// 		// Centre on cell origin (lower left-hand corner)
-// 		origin = source_->origin();
-// 		glTranslated(origin.x, origin.y, origin.z);
-// 		// Apply matrix transform to get proper grid axes / shear
-// 		glMatrixMode(GL_MODELVIEW);
-// 		glMultMatrixd( source_->axesForGl() );
-// 		// Call the display list
-// 		glCallList(list);
-// 	glPopMatrix();
-// 	prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
-// 	msg.exit("Primitive::createSurface");
-// }

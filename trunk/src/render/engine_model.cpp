@@ -436,7 +436,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		}
 	}
 	
-	// Surfaces
+	// Grid Data
 	// Cycle over grids stored in current model
 	for (Grid *g = source->grids(); g != NULL; g = g->next)
 	{
@@ -484,6 +484,14 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				g->copySecondaryColour(colour_i);
 				renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), colour_i, A, style);
 			}
+		}
+		// Render volume outline
+		if (g->outlineVolume())
+		{
+			A.columnMultiply(0, g->nPoints().x);
+			A.columnMultiply(1, g->nPoints().y);
+			A.columnMultiply(2, g->nPoints().z);
+			renderPrimitive(originCubes_, 1, textcolour, A, GL_LINE, 1.0);
 		}
 	}
 	

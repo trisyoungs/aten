@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Wrapped Integer Class
+	*** src/base/wrapint.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,12 +19,49 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#ifndef ATEN_WRAPINT_H
+#define ATEN_WRAPINT_H
 
-#define ATENVERSION "1.6"
-#define ATENREVISION "1474"
-#define ATENDATE "Sun 13 Feb - 21:00"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+// Warpped Integer Variable
+class WrapInt
+{
+	public:
+	// Constructor / Destructor
+	WrapInt();
+
+	/*
+	// Data
+	*/
+	private:
+	// Minimum integer value
+	int minimum_;
+	// Maximum integer value
+	int maximum_;
+	// Integer range
+	int range_;
+	// Value
+	int value_;
+
+	public:
+	// Set limits
+	void setLimits(int minvalue, int maxvalue);
+	// Return value
+	int value();
+
+
+	/*
+	// Operators
+	*/
+	public:
+	// Assignment
+	void operator=(int i);
+	// Binary addition
+	int operator+(int i);
+	// Binary subtraction
+	int operator-(int i);
+	// Conversion (int)
+	operator int();
+};
 
 #endif
+
