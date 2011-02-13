@@ -1,7 +1,7 @@
 /*
 	*** NETA Description Parser
 	*** src/classes/neta_parser.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
