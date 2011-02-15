@@ -315,7 +315,7 @@ void TCanvas::postRedisplay()
 {
 	if ((!valid_) || drawing_) return;
 	updateGL();
-	if (prefs.manualSwapBuffers()) swapBuffers();
+// 	if (prefs.manualSwapBuffers()) swapBuffers();
 }
 
 // Update view matrix stored in RenderEngine
