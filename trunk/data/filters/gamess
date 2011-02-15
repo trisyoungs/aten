@@ -108,6 +108,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 {
 	# Variable declaration
 	int result,nstructures,natoms,n,l,lastshell,shell,count,orb_no[5];
+	atom i;
 	basisshell bas;
 	basisprimitive prim;
 	eigenvector orbs[5];
@@ -328,6 +329,22 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 			skipline(11);
 		}
 		printf("Read in data for %i vibrations.\n", m.nvibrations());
+	}
+
+	# Atomic Charges
+	rewind();
+	if (find("ELECTROSTATIC POTENTIAL"))
+	{
+		# Skip to last section
+		do { }
+		while (find("ELECTROSTATIC POTENTIAL"));
+		# Now search for "NET CHARGES"
+		if (find("NET CHARGES"))
+		{
+			skipline(3);
+			for (i = m.atoms; i; ++i) readline(discard, i.q);
+			printf("Found and read in ESP charges.\n");
+		}
 	}
 
 	finalisemodel();

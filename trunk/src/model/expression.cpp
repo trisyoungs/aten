@@ -185,13 +185,14 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 				else
 				{
 					// What to do?
-					static Tree dialog("Expression For Pattern XXX", "option('One or more terms are missing from the pattern expression.', 'label', 'left'); option('Would you like to:', 'label', 'newline', 'left'); option('choice', 'radiogroup', '\"Cancel expression generation\",\"Add in dummy terms (type=ignore,params=0.0)\"', '1', 'newline');");
+					static Tree dialog("Expression For Pattern XXX", "option('One or more terms are missing from the pattern expression.', 'label', 'left'); option('choices', 'radiogroup'); option('Would you like to:', 'label', 'newline', 'left'); option('Cancel expression generation', 'radio', 'choices', 1, 'newline'); option('Add in dummy terms (type=ignore,params=0.0)', 'radio', 'choices', 0, 'newline');");
 					// Rename and run the custom dialog
 					Dnchar title;
 					title.sprintf("Expression for Pattern '%s'", p->name());
 					if (dialog.executeCustomDialog(FALSE, title.get()))
 					{
-						int choice = dialog.widgetValuei("choice");
+						int choice = dialog.widgetValuei("choices");
+						printf("CHOICE = %i\n", choice);
 						if (choice == 1)
 						{
 							msg.exit("Model::createExpression");

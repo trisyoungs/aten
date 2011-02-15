@@ -434,7 +434,6 @@ QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo, KVTable<Dncha
 		QButtonGroup *butgroup = new QButtonGroup();
 		butgroup->addButton(radio, butgroup->buttons().count());
 		buttonGroups.add(data, butgroup);
-		
 	}
 	else bg->value()->addButton(radio, bg->value()->buttons().count());
 	// Critical : state
