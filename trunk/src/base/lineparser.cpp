@@ -119,7 +119,8 @@ bool LineParser::openFile(const char *filename, bool outputstream)
 		file_ = NULL;
 	}
 	// Open new file
-	file_ = new fstream(filename, outputstream ? ios::out : ios::in);
+	if (outputstream) file_ = new fstream(filename, ios::out);
+	else file_ = new fstream(filename, ios::in | ios::binary);
 	if (!file_->is_open())
 	{
 		closeFile();
