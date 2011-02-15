@@ -25,7 +25,6 @@
 <section id="faq"><title>Frequently Asked Questions</title>
 	
 	<qandaset>
-	
 		
 		<qandaentry>
 			<question>
@@ -61,6 +60,15 @@
 			</question>
 			<answer>
 				<para>This is, sadly, a fairly common issue, and the exact cause(s) is (are) not known for sure. Certainly on some Linux machines the presence of an ATI graphics card seems to be related. Using the 'radeon' or 'fglrx' drivers supplied with the OS rather than the proprietary 'ati' driver sometimes helps. On any platform, forcing the main view widget to manually refresh itself also often helps, particularly on the Mac. To do this, type in 'aten.prefs.manualswapbuffers = TRUE;' in the command toolbar (or supply it with the '-c' switch on the command line). If this remedies the problem, add the line to your preferences file.</para>
+			</answer>
+		</qandaentry>
+
+		<qandaentry>
+			<question>
+				<para>Rotating a model, or even the empty main view, seems to have a huge lag, with rotation happening even after I've stopped moving the mouse. What's going on? </para>
+			</question>
+			<answer>
+				<para>Recent versions of Qt / Linux seem to display this problem. Certainly it has been observed on OpenSuSE 11.3 with libqt4-4.6.3-2.1.1. The problem is that, normally, Aten attempts to redraw the screen after each mouseMove event sent by Qt, but on these particular systems it appears as if many more mouseEvents are generated (or stored) than normal. To remedy the problem, you can set the option 'aten.prefs.mousemovefilter' to tell Aten to leave at least a certain number of milliseconds between redraws of the screen. A number of around 75 is about right, but you should experiment and see what works best for you.</para>
 			</answer>
 		</qandaentry>
 		
