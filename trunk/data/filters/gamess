@@ -386,7 +386,7 @@ filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	finalisemodel();
 }
 
-filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
+filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
 {
 	#
 	# GUI Control Definitions
@@ -424,6 +424,13 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");
 	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
 	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 20, 5, "tab=$STATPT@opts");
+	int statpt_ifolow = option("IFOLOW", "intspin", 1, 100000, 1, 1, "tab=$STATPT@opts", "newline");
+	string statpt_stpt = option("STPT", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
+	double statpt_ststep = option("STSTEP", "doublespin", 0.0, 1.0, 0.01, 0.005, "tab=$STATPT@opts");
+	string statpt_ifreez = option("IFREEZ", "edit", "", "tab=$STATPT@opts", "newline", "span=5");
+	string statpt_hess = option("HESS", "combo", "GUESS,READ,RDAB,RDALL,CALC", 1, "tab=$STATPT@opts", "newline");
+	int statpt_ihrep = option("IHREP", "intspin", 0, 1000, 0, 1, "tab=$STATPT@opts");
+	string statpt_hssend = option("HSSEND", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
 
 	# Intrinsic reaction coordinate run ($IRC), place in 'opts' tabs
 	string irc_forwrd = option("Forward", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
@@ -483,7 +490,6 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	if (line != "") writelinef(" $CONTRL%s $END\n", line);
 
 	# Write $BASIS line(s)
-	line = " GBASIS=" + basis_gbasis;
 	if ((basis_gbasis == "STO") || (basis_gbasis == "N21") || (basis_gbasis == "N31") || (basis_gbasis == "N311"))
 	{
 		writelinef(" $BASIS GBASIS=%s NGAUSS=%i NDFUNC=%i NPFUNC=%i $END\n", basis_gbasis, basis_ngauss, basis_ndfunc, basis_npfunc);
@@ -492,8 +498,16 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	else writelinef(" $BASIS GBASIS=%s $END\n", basis_gbasis);
 
 	# Write additional groups, depending on job type
-	if ((runtyp == "OPTIMIZE") || (runtyp == "SADPOINT")) writelinef(" $STATPT METHOD=%s NSTEP=%i OPTTOL=%f $END\n", statpt_method, statpt_nstep, statpt_opttol);
-	else if (runtyp == "IRC") writelinef(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
+	if ((runtyp == "OPTIMIZE") || (runtyp == "SADPOINT"))
+	{
+		writevarf(line, " $STATPT METHOD=%s NSTEP=%i OPTTOL=%f HESS=%s", statpt_method, statpt_nstep, statpt_opttol, statpt_hess);
+		if (statpt_ihrep != 0) line += " IHREP=" + itoa(statpt_ihrep);
+		if (statpt_hssend == ".TRUE.") line += " HSSEND=.TRUE.";
+		writelinef("%s $END\n", line);
+		if (runtyp == "SADPOINT") writelinef(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", statpt_ifolow, statpt_stpt, statpt_ststep);
+		if (statpt_ifreez != "") writelinef(" $STATPT IFREEZ=%s $END\n", statpt_ifreez);
+	}
+	else if (runtyp == "IRC") writelinef(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
 
 	# Write $ELDENS if required
 	if (eldens_ieden == 1) writelinef(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", eldens_morb, eldens_where, eldens_output);
