@@ -391,6 +391,7 @@ QLabel *AtenCustomDialog::createLabel(const char *text, int alignment)
 	msg.enter("AtenCustomDialog::createLabel");
 	QLabel *label = new QLabel(text);
 	label->setAlignment(((Qt::Alignment) alignment)|Qt::AlignVCenter);
+	label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	msg.exit("AtenCustomDialog::createLabel");
 	return label;
 }
@@ -476,6 +477,7 @@ QComboBox *AtenCustomDialog::createComboBox(WidgetNode *gfo)
 	// Optional : default index (+1)
 	if (!gfo->data("default", data)) printf("Warning: Default value for QComboBox not set.\n");
 	combo->setCurrentIndex(data.asInteger()-1);
+	combo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	msg.exit("AtenCustomDialog::createComboBox");
 	return combo;
 }
@@ -499,6 +501,7 @@ QDoubleSpinBox *AtenCustomDialog::createDoubleSpinBox(WidgetNode *gfo)
 	if (!gfo->data("step", data)) printf("Critical: No step value found when constructing QDoubleSpinBox.\n");
 	double step = data.asDouble();
 	spin->setSingleStep(step);
+	spin->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	msg.exit("AtenCustomDialog::createDoubleSpinBox");
 	return spin;
 }
@@ -512,6 +515,7 @@ QLineEdit *AtenCustomDialog::createLineEdit(WidgetNode *gfo)
 	Dnchar data;
 	if (!gfo->data("text", data)) printf("Critical: No text found when constructing QLineEdit.\n");
 	lineedit->setText(data.get());
+	lineedit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	msg.exit("AtenCustomDialog::createLineEdit");
 	return lineedit;
 }
@@ -534,6 +538,7 @@ QSpinBox *AtenCustomDialog::createSpinBox(WidgetNode *gfo)
 	if (!gfo->data("step", data)) printf("Critical: No step value found when constructing QSpinBox.\n");
 	int step = data.asInteger();
 	spin->setSingleStep(step);
+	spin->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	msg.exit("AtenCustomDialog::createSpinBox");
 	return spin;
 }
