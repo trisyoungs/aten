@@ -430,6 +430,7 @@ bool MonteCarlo::disorder(Model *destmodel)
         }
 
 	// Create master expression for the new (filled) model
+	destmodel->describeAtoms();
 	if (!destmodel->createExpression(TRUE))
 	{
 		msg.print("Couldn't create master expression for destination model.\n");
