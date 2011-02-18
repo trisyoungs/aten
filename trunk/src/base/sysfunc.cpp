@@ -124,6 +124,62 @@ const char *afterStr(const char *s, const char *search)
 	return c;
 }
 
+// Remove comments from line
+void removeComments(char *s)
+{
+	char *c, quotechar = '\0';
+	bool escaped = FALSE;
+	for (c = s; *c != '\0'; ++c)
+	{
+		// Remember current quoting info...
+		if (*c == '"')
+		{
+			if (quotechar == '\0') quotechar = '"';
+			    else if (quotechar == '"') quotechar = '\0';
+		}
+		if (*c == '\'')
+		{
+			if (quotechar == '\0') quotechar = '\'';
+			    else if (quotechar == '\'') quotechar = '\0';
+		}
+		if ((*c == '#') && (!escaped) && (quotechar == '\0'))
+		{
+			*c = '\0';
+		break;
+		}
+		else if ((*c == '/') && (!escaped) && (quotechar == '\0'))
+		{
+			char *c2 = c;
+			c2++;
+			if (*c2 == '/')
+			{
+				*c = '\0';
+				break;
+			}
+		}
+		escaped = *c == '\\';
+	}
+}
+
+// Return whether string consists of empty whitespace characters only
+bool isEmpty(char *s)
+{
+	for (char *c = s; *c != '\0'; ++c)
+	{
+		switch (*c)
+		{
+			case (' '):
+			case ('\t'):
+			case ('\n'):
+			case ('\r'):
+				continue;
+			default:
+				return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 // Search enum list for text
 int enumSearch(const char *name, int maxn, const char **itemlist, const char *query, bool reporterror)
 {

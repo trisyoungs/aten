@@ -264,8 +264,6 @@ int LineParser::readNextLine(int optionMask)
 	}
 	// Loop until we get 'suitable' line from file
 	int nchars, nspaces, result = 0;
-	char *c, quotchar, chr;
-	bool escaped = FALSE;
 	do
 	{
 		char chr;
@@ -283,38 +281,8 @@ int LineParser::readNextLine(int optionMask)
 		line_[lineLength_] = '\0';
 		msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 
-		// Process line to remove comments
-		quotchar = '\0';
-		for (c = line_; *c != '\0'; ++c)
-		{
-			// Remember current quoting info...
-			if (*c == '"')
-			{
-				if (quotchar == '\0') quotchar = '"';
-				else if (quotchar == '"') quotchar = '\0';
-			}
-			if (*c == '\'')
-			{
-				if (quotchar == '\0') quotchar = '\'';
-				else if (quotchar == '\'') quotchar = '\0';
-			}
-			if ((*c == '#') && (!escaped) && (quotchar == '\0'))
-			{
-				*c = '\0';
-				break;
-			}
-			else if ((*c == '/') && (!escaped) && (quotchar == '\0'))
-			{
-				char *c2 = c;
-				c2++;
-				if (*c2 == '/')
-				{
-					*c = '\0';
-					break;
-				}
-			}
-			escaped = *c == '\\';
-		}
+		// Remove comments from line
+		removeComments(line_);
 		
 		// If we are skipping blank lines, check for a blank line here
 		if (optionMask&LineParser::SkipBlanks)
@@ -322,7 +290,7 @@ int LineParser::readNextLine(int optionMask)
 			// Now, see if our line contains only blanks
 			nchars = 0;
 			nspaces = 0;
-			for (c = line_; *c != '\0'; c++)
+			for (char *c = line_; *c != '\0'; c++)
 			{
 				nchars++;
 				if (isspace(*c)) nspaces++;

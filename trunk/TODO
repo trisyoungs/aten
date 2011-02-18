@@ -2,6 +2,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Reading of unformatted files (i.e. DL_POLY HISu) broken?</para>
+		</listitem>
+		<listitem>
 			<para>Warnings on startup: "Could not add child element to parent element..", related to SVGs.</para>
 		</listitem>
 		<listitem>

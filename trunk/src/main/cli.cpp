@@ -701,36 +701,39 @@ int Aten::parseCli(int argc, char *argv[])
 			else return -1;
 		}
 	}
+
 	// Anything redirected to stdin?
 	if ((!cin.eof()) && cin.good())
 	{
-		// Grab all content from cin to a temporary string....
-		cin.seekg(0,ios::end);
-		int buflen = cin.tellg();
-		if (buflen > 0)
+		// Grab all lines from cin to a temporary stringlist....
+		List<Dnchar> commands;
+		char line[8096];
+		while (cin.good())
 		{
-			cin.seekg(0, ios::beg);
-			char *buf = new char[buflen+1];
-			// read data as a block:
-			cin.read(buf,buflen);
-			buf[buflen] = '\0';
-			if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
+			cin.getline(line, 8095);
+			// Remove any commented part of line
+			removeComments(line);
+			if (isEmpty(line)) continue;
+			Dnchar *s = commands.add();
+			s->set(line);
+		}
+		// Create and execute commands
+		if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
+		{
+			script = aten.addBatchCommand();
+			if (!script->generateFromStringList(commands.first(), "batchcommand")) return -1;
+		}
+		else
+		{
+			tempforest.clear();
+			if (tempforest.generateFromStringList(commands.first(), "CLI command (cin)"))
 			{
-				script = aten.addBatchCommand();
-				if (!script->generateFromString(buf, "batchcommand")) return -1;
+				if (!tempforest.execute(rv)) return -1;
 			}
-			else
-			{
-				tempforest.clear();
-				if (tempforest.generateFromString(buf, "CLI command (cin)"))
-				{
-					if (!tempforest.execute(rv)) return -1;
-				}
-				else return -1;
-			}
-			delete[] buf;
+			else return -1;
 		}
 	}
+
 	return aten.nModels();
 }
 
