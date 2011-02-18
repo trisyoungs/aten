@@ -447,10 +447,10 @@ filter(type="importexpression",name="DL_POLY Forcefield Specification", extensio
 	string discard, s, keyword, form, name, names[100];
 
 	# Filter options
-	int assumeua = FALSE; #option();
-	double masstol = 0.1; #option();
-	double qtol = 0.1; #option();
-	int reducetypes = TRUE; #option();
+	int assumeua = option("Assume United Atom", "check", 0, "disabled", "group=Options");
+	int reducetypes = option("Reduce Types", "check", 1, "group=Options");
+	double masstol = option("Mass", "doublespin", 0.0, 1.0, 0.01, 0.01, "group=Tolerances for Real Values");
+	double qtol = option("Charge", "doublespin", 0.0, 1.0, 0.01, 0.01, "group=Tolerances for Real Values");
 
 	# First line is header information - use as FF name
 	getline(s);

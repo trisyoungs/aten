@@ -41,6 +41,8 @@ const char *stripTrailing(const char*);
 const char *replaceChars(const char *s, const char *charstoreplace, char r);
 const char *stripChars(const char *s, const char *charstostrip);
 int countChars(const char *string, const char *searchchars, int offset = 0);
+void removeComments(char *s);
+bool isEmpty(char *s);
 
 // Enum search and print
 int enumSearch(const char *name, int nitems, const char **list, const char *query, bool reporterror = 1);
