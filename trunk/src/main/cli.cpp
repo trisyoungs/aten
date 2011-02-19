@@ -144,6 +144,9 @@ Cli cliSwitches[] = {
 	{ Cli::PackSwitch,		'\0',"pack",		0,
 		"",
 		"Force generation of symmetry-equivalent atoms from spacegroup information" },
+	{ Cli::PipeSwitch,		'p',"pipe",		0,
+		"",
+		"Read and execute commands from piped input" },
 	{ Cli::QuietSwitch,		'q',"quiet",		0,
 		"",
 		"Run silently, reporting only errors that stop the program" },
@@ -648,6 +651,10 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::PackSwitch):
 					prefs.setPackOnLoad(Prefs::SwitchOn);
 					break;
+				// Read and execute commads from pipe
+				case (Cli::PipeSwitch):
+					prefs.setReadPipe(TRUE);
+					break;
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = aten.addScript();
@@ -702,13 +709,23 @@ int Aten::parseCli(int argc, char *argv[])
 		}
 	}
 
-	// Anything redirected to stdin?
-	if ((!cin.eof()) && cin.good())
+	// Anything redirected to stdin (or forcibly piped)?
+	bool readcin = FALSE;
+	if (prefs.readPipe()) readcin = TRUE;
+	else
+	{
+		cin.seekg(0, ios::end);
+		streampos endpos = cin.tellg();
+		if (endpos != -1) readcin = TRUE;
+		cin.seekg(0, ios::beg);
+		
+	}
+	if (readcin)
 	{
 		// Grab all lines from cin to a temporary stringlist....
 		List<Dnchar> commands;
 		char line[8096];
-		while (cin.good())
+		while (cin.good() && (!cin.eof()))
 		{
 			cin.getline(line, 8095);
 			// Remove any commented part of line

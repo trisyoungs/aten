@@ -326,6 +326,11 @@ bob@pc:~> aten --map 'CX=C,N_=P'
 						--nofragmenticons</term>
 					<listitem><para>Prevent generation of fragment icons, used in the <link linkend="gui.toolwindows.fragment">Fragment Library Window</link>.</para></listitem>
 				</varlistentry>
+				<varlistentry id="cli.switches.noincludes">
+					<term><indexterm><primary>command line switches</primary><secondary>--noincludes</secondary></indexterm>
+						--noincludes</term>
+					<listitem><para>Prevent loading of global includes on startup.</para></listitem>
+				</varlistentry>
 				<varlistentry id="cli.switches.nopack">
 					<term><indexterm><primary>command line switches</primary><secondary>--nopack</secondary></indexterm>
 						--nopack</term>
@@ -345,8 +350,13 @@ bob@pc:~> aten --map 'CX=C,N_=P'
 			<variablelist>
 				<varlistentry id="cli.switches.pack">
 					<term><indexterm><primary>command line switches</primary><secondary>--pack</secondary></indexterm>
-					</term>
+					--pack</term>
 					<listitem><para>Force generation of symmetry-equivalent atoms from spacegroup information in loaded models, even if the command <link linkend="command.ref.pack">pack</link> was not used in the corresponding filter.</para></listitem>
+				</varlistentry>
+				<varlistentry id="cli.switches.pipe">
+					<term><indexterm><primary>command line switches</primary><secondary>-p, --pipe</secondary></indexterm>
+					--pipe</term>
+					<listitem><para>Read and execute commands from piped input on startup.</para></listitem>
 				</varlistentry>
 			</variablelist>
 			
