@@ -282,7 +282,8 @@ Prefs::Prefs()
 	loadFragments_ = TRUE;
 	generateFragmentIcons_ = TRUE;
 	loadFilters_ = TRUE;
-
+	readPipe_ = FALSE;
+	
 	// File
 	bondOnLoad_ = Prefs::SwitchAsFilter;
 	foldOnLoad_ = Prefs::SwitchAsFilter;
@@ -1492,6 +1493,18 @@ bool Prefs::generateFragmentIcons() const
 void Prefs::setGenerateFragmentIcons(bool b)
 {
 	generateFragmentIcons_ = b;
+}
+
+// Whether to read and execute commands from piped input on startup
+bool Prefs::readPipe() const
+{
+	return readPipe_;
+}
+
+// Set whether to read and execute commands from piped input on startup
+void Prefs::setReadPipe(bool b)
+{
+	readPipe_ = b;
 }
 
 /*

@@ -333,6 +333,7 @@ class Prefs
 	// Set mouse move event filter ratio
 	void setMouseMoveFilter(int i);
 
+	
 	/*
 	// GL Options
 	*/
@@ -612,7 +613,9 @@ class Prefs
 	bool loadFragments_;
 	// Whether to generate icons for loaded fragments
 	bool generateFragmentIcons_;
-
+	// Whether to read and execute commands from piped input on startup
+	bool readPipe_;
+	
 	public:
 	// Set the model update frequency
 	void setModelUpdate(int n);
@@ -690,7 +693,12 @@ class Prefs
 	bool generateFragmentIcons() const;
 	// Set whether to generate icons for loaded fragments
 	void setGenerateFragmentIcons(bool b);
-
+	// Whether to read and execute commands from piped input on startup
+	bool readPipe() const;
+	// Set whether to read and execute commands from piped input on startup
+	void setReadPipe(bool b);
+	
+	
 
 	/*
 	// Units and Conversion
