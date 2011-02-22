@@ -20,15 +20,8 @@
 */
 
 #include "parser/returnvalue.h"
-#include "base/messenger.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
-#include "model/model.h"
-#include "ff/forcefield.h"
-#include "classes/grid.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
-#include "base/pattern.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -39,14 +32,11 @@ ReturnValue::ReturnValue()
 	type_ = VTypes::NoData;
 	valueI_ = 0;
 	valueD_ = 0.0;
-	valueP_ = NULL;
-	valueRefitem_ = NULL;
 	arraySize_ = -1;
 	arrayI_ = NULL;
 	arrayD_ = NULL;
 	arrayS_ = NULL;
 	arrayV_ = NULL;
-	arrayP_ = NULL;
 }
 ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), arraySize_(-1), valueI_(i)
 {
@@ -54,13 +44,7 @@ ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), arraySize_(-1), va
 ReturnValue::ReturnValue(double d) : type_(VTypes::DoubleData), arraySize_(-1), valueD_(d)
 {
 }
-ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), arraySize_(-1), valueS_(s)
-{
-}
 ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), arraySize_(-1), valueV_(v)
-{
-}
-ReturnValue::ReturnValue(VTypes::DataType dt, void *ptr) : type_(dt), arraySize_(-1), valueP_(ptr)
 {
 }
 
@@ -92,14 +76,6 @@ void ReturnValue::operator=(const ReturnValue &source)
 				for (int i=0; i<arraySize_; ++i) arrayD_[i] = source.arrayD_[i];
 			}
 			break;
-		case (VTypes::StringData):
-			if (arraySize_ == -1) valueS_ = source.valueS_;
-			else
-			{
-				arrayS_ = new Dnchar[arraySize_];
-				for (int i=0; i<arraySize_; ++i) arrayS_[i] = source.arrayS_[i];
-			}
-			break;
 		case (VTypes::VectorData):
 			if (arraySize_ == -1) valueV_ = source.valueV_;
 			else
@@ -109,13 +85,6 @@ void ReturnValue::operator=(const ReturnValue &source)
 			}
 			break;
 		default:
-			if (arraySize_ == -1) valueP_ = source.valueP_;
-			else
-			{
-				valueP_ = NULL;
-				arrayP_ = new void*[arraySize_];
-				for (int i=0; i<arraySize_; ++i) arrayP_[i] = source.arrayP_[i];
-			}
 			break;
 	}
 }
@@ -126,9 +95,7 @@ void ReturnValue::clearArrayData()
 	if (arraySize_ == -1) return;
 	if (type_ == VTypes::IntegerData) { delete[] arrayI_; arrayI_ = NULL; }
 	else if (type_ == VTypes::DoubleData) { delete[] arrayD_; arrayD_ = NULL; }
-	else if (type_ == VTypes::StringData) { delete[] arrayS_; arrayS_ = NULL; }
 	else if (type_ == VTypes::VectorData) { delete[] arrayV_; arrayV_ = NULL; }
-	else { if (arrayP_ != NULL) delete[] arrayP_; arrayP_ = NULL; }
 	arraySize_ = -1;
 }
 
@@ -162,17 +129,11 @@ const char *ReturnValue::info()
 			if (arraySize_ == -1) result.sprintf("%f (%s)", valueD_, VTypes::dataType(type_));
 			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
-		case (VTypes::StringData):
-			if (arraySize_ == -1) result.sprintf("'%s' (%s)", valueS_.get(), VTypes::dataType(type_));
-			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
-			break;
 		case (VTypes::VectorData):
 			if (arraySize_ == -1) result.sprintf("{%f,%f,%f} (%s)", valueV_.x, valueV_.y, valueV_.z, VTypes::dataType(type_));
 			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		default:
-			if (arraySize_ == -1) result.sprintf("%p (%s)", valueP_, VTypes::dataType(type_));
-			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 	}
 	return result;
@@ -195,7 +156,6 @@ void ReturnValue::set(int i)
 	type_ = VTypes::IntegerData;
 	valueI_ = i;
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
 }
 
 // Set from double value
@@ -205,17 +165,6 @@ void ReturnValue::set(double d)
 	type_ = VTypes::DoubleData;
 	valueD_ = d;
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
-}
-
-// Set from character value
-void ReturnValue::set(const char *s)
-{
-	clearArrayData();
-	type_ = VTypes::StringData;
-	valueS_ = s;
-	arraySize_ = -1;
-	valueRefitem_ = NULL;
 }
 
 // Set from vector value
@@ -225,7 +174,6 @@ void ReturnValue::set(Vec3<double> v)
 	type_ = VTypes::VectorData;
 	valueV_ = v;
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
 }
 
 // Set from individual vector data
@@ -235,7 +183,6 @@ void ReturnValue::set(double x, double y, double z)
 	type_ = VTypes::VectorData;
 	valueV_.set(x,y,z);
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
 }
 
 // Set from single vector data
@@ -245,17 +192,6 @@ void ReturnValue::set(int id, double xyz)
 	type_ = VTypes::VectorData;
 	valueV_.set(id, xyz);
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
-}
-
-// Set from pointer value
-void ReturnValue::set(VTypes::DataType ptrtype, void *ptr, void *refitem)
-{
-	clearArrayData();
-	type_ = ptrtype;
-	valueP_ = ptr;
-	valueRefitem_ = refitem;
-	arraySize_ = -1;
 }
 
 // Set from standard array
@@ -264,7 +200,6 @@ void ReturnValue::setArray(VTypes::DataType type, void *array, int arraysize)
 	clearArrayData();
 	type_ = type;
 	arraySize_ = arraysize;
-	valueRefitem_ = NULL;
 	int i;
 	if (type_ == VTypes::IntegerData)
 	{
@@ -278,24 +213,11 @@ void ReturnValue::setArray(VTypes::DataType type, void *array, int arraysize)
 		double *source = (double*) array;
 		for (i = 0; i < arraySize_; ++i) arrayD_[i] = source[i];
 	}
-	else if (type_ == VTypes::StringData)
-	{
-		arrayS_ = new Dnchar[arraySize_];
-		Dnchar *source = (Dnchar*) array;
-		for (i = 0; i < arraySize_; ++i) arrayS_[i] = source[i];
-	}
 	else if (type_ == VTypes::VectorData)
 	{
 		arrayV_ = new Vec3<double>[arraySize_];
 		Vec3<double> *source = (Vec3<double>*) array;
 		for (i = 0; i < arraySize_; ++i) arrayV_[i] = source[i];
-	}
-	else
-	{
-		// Pointer-type arrays are a little different
-		arrayP_ = new void*[arraySize_];
-		void **source = (void**) array;
-		for (i = 0; i < arraySize_; ++i) arrayP_[i] = source[i];
 	}
 }
 
@@ -305,7 +227,6 @@ void ReturnValue::setArray(Vec3<int> vec)
 	clearArrayData();
 	type_ = VTypes::IntegerData;
 	arraySize_ = 3;
-	valueRefitem_ = NULL;
 	arrayI_ = new int[arraySize_];
 	for (int i = 0; i < 3; ++i) arrayI_[i] = vec.get(i);
 }
@@ -338,13 +259,6 @@ void ReturnValue::setElement(int id, Vec3<double> v)
 	else printf("Error: Tried to set a vector array element when none existed/wrong type.\n");
 }
 
-// Set array element from pointer value
-void ReturnValue::setElement(int id, VTypes::DataType type, void *ptr)
-{
-	if ((type_ == type) && (id >= 0) && (id < arraySize_)) arrayP_[id] = ptr;
-	else printf("Error: Tried to set a pointer array element when none existed/wrong type.\n");
-}
-
 /*
 // Get (with type checking)
 */
@@ -353,7 +267,7 @@ void ReturnValue::setElement(int id, VTypes::DataType type, void *ptr)
 int ReturnValue::asInteger(bool &success)
 {
 	success = TRUE;
-	if (arraySize_ != -1) msg.print("Cannot return a whole array as a single integer.\n");
+	if (arraySize_ != -1) printf("Cannot return a whole array as a single integer.\n");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
@@ -367,12 +281,6 @@ int ReturnValue::asInteger(bool &success)
 		case (VTypes::DoubleData):
 			return (int)valueD_;
 			break;
-		case (VTypes::StringData):
-			return valueS_.asInteger();
-			break;
-		case (VTypes::ElementData):
-			return (valueP_ == NULL ? 0 : ((Element*) valueP_)->z);
-			break;
 		default:
 			printf("ReturnValue::asInteger() doesn't recognise this type (%s).\n", VTypes::dataType(type_));
 			break;
@@ -385,7 +293,7 @@ int ReturnValue::asInteger(bool &success)
 double ReturnValue::asDouble(bool &success)
 {
 	success = TRUE;
-	if (arraySize_ != -1) msg.print("Cannot return a whole array as a single double.\n");
+	if (arraySize_ != -1) printf("Cannot return a whole array as a single double.\n");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
@@ -398,9 +306,6 @@ double ReturnValue::asDouble(bool &success)
 			break;
 		case (VTypes::DoubleData):
 			return valueD_;
-			break;
-		case (VTypes::StringData):
-			return valueS_.asDouble();
 			break;
 		default:
 			printf("ReturnValue::asDouble() doesn't recognise this type (%s).\n", VTypes::dataType(type_));
@@ -418,7 +323,7 @@ const char *ReturnValue::asString(bool &success)
 	if (arraySize_ != -1)
 	{
 		// Use valueS_ to store the result....
-// 		msg.print("Cannot return a whole array as a single string.\n");
+// 		printf("Cannot return a whole array as a single string.\n");
 // 		valueS_.createEmpty(1024);
 		valueS_.clear();
 		valueS_.strcat("{ ");
@@ -437,11 +342,6 @@ const char *ReturnValue::asString(bool &success)
 					break;
 				case (VTypes::DoubleData):
 					valueS_.strcat(ftoa(arrayD_[i]));
-					break;
-				case (VTypes::StringData):
-					valueS_ += '"';
-					valueS_.strcat(arrayS_[i].get());
-					valueS_ += '"';
 					break;
 				default:
 					break;
@@ -463,17 +363,12 @@ const char *ReturnValue::asString(bool &success)
 		case (VTypes::DoubleData):
 			return ftoa(valueD_);
 			break;
-		case (VTypes::StringData):
-			return valueS_.get();
-			break;
 		case (VTypes::VectorData):
 			converted.sprintf("{%f,%f,%f}", valueV_.x, valueV_.y, valueV_.z);
 			tempString_ = converted;
 			return tempString_;
 			break;
 		default:
-			// All pointer types
-			msg.print("Cannot return a pointer as a string.\n");
 			break;
 	}
 	success = FALSE;
@@ -487,19 +382,19 @@ Vec3<double> ReturnValue::asVector(bool &success)
 	switch (type_)
 	{
 		case (VTypes::NoData):
-			printf("Internal error: No data in ReturnValue to return as a character!\n");
+			printf("Internal error: No data in ReturnValue to return as a vector!\n");
 			success = FALSE;
 			return Vec3<double>();
 			break;
 		case (VTypes::IntegerData):
 			if (arraySize_ == -1) return Vec3<double>(valueI_, valueI_, valueI_);
 			else if (arraySize_ == 3) return Vec3<double>( arrayI_[0], arrayI_[1], arrayI_[2] );
-			else msg.print("Cannot return a whole array as a single vector.\n");
+			else printf("Cannot return a whole array as a single vector.\n");
 			break;
 		case (VTypes::DoubleData):
 			if (arraySize_ == -1) return Vec3<double>(valueD_, valueD_, valueD_);
 			else if (arraySize_ == 3) return Vec3<double>( arrayD_[0], arrayD_[1], arrayD_[2] );
-			else msg.print("Cannot return a whole array as a single vector.\n");
+			else printf("Cannot return a whole array as a single vector.\n");
 			break;
 		case (VTypes::VectorData):
 			return valueV_;
@@ -515,7 +410,7 @@ Vec3<double> ReturnValue::asVector(bool &success)
 void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 {
 	success = TRUE;
-	if (arraySize_ != -1) msg.print("Cannot return a whole array as a single pointer.\n");
+	if (arraySize_ != -1) printf("Cannot return a whole array as a single pointer.\n");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
@@ -529,37 +424,29 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 		case (VTypes::VectorData):
 			if (arraySize_ == -1)
 			{
-				msg.print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				printf("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 				success = FALSE;
 				return NULL;
 			}
 			else if (ptrtype != type_)
 			{
-				msg.print("Error: An array pointer of type '%s' cannot be cast into an array pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				printf("Error: An array pointer of type '%s' cannot be cast into an array pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 				success = FALSE;
 				return NULL;
 			}
-			else return valueP_;
 			break;
 		default:
 			// Check that internal pointer type matches requested pointer type
 			if (ptrtype != type_)
 			{
-				msg.print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				printf("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 				success = FALSE;
 				return NULL;
 			}
-			else return valueP_;
 			break;
 	}
 	success = FALSE;
 	return NULL;
-}
-
-// Return pointer refitem data
-void *ReturnValue::refPointer()
-{
-	return valueRefitem_;
 }
 
 // Return integer element value
@@ -588,9 +475,6 @@ int ReturnValue::asInteger(int index, bool &success)
 			break;
 		case (VTypes::DoubleData):
 			return (int) arrayD_[index];
-			break;
-		case (VTypes::StringData):
-			return atoi( arrayS_[index].get() );
 			break;
 		default:
 			printf("ReturnValue::asInteger(id) doesn't recognise this type (%s).\n", VTypes::dataType(type_));
@@ -626,9 +510,6 @@ double ReturnValue::asDouble(int index, bool &success)
 			break;
 		case (VTypes::DoubleData):
 			return arrayD_[index];
-			break;
-		case (VTypes::StringData):
-			return atof( arrayS_[index].get() );
 			break;
 		default:
 			printf("ReturnValue::asDouble(id) doesn't recognise this type (%s).\n", VTypes::dataType(type_));
@@ -666,17 +547,10 @@ const char *ReturnValue::asString(int index, bool &success)
 		case (VTypes::DoubleData):
 			return ftoa( arrayD_[index] );
 			break;
-		case (VTypes::StringData):
-			return arrayS_[index].get();
-			break;
 		case (VTypes::VectorData):
 			printf("Cannot convert return value of type 'vector' into a string.\n");
 			break;
 		default:
-			// All pointer types
-			converted.sprintf("%p", valueP_);
-			tempString_ = converted;
-			return tempString_;
 			break;
 	}
 	success = FALSE;
@@ -747,21 +621,12 @@ void *ReturnValue::asPointer(int index, VTypes::DataType ptrtype, bool &success)
 			break;
 		case (VTypes::IntegerData):
 		case (VTypes::DoubleData):
-		case (VTypes::StringData):
 		case (VTypes::VectorData):
-			msg.print("Error: An array element of type '%s' cannot be cast into an array element of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+			printf("Error: An array element of type '%s' cannot be cast into an array element of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 			success = FALSE;
 			return NULL;
 			break;
 		default:
-			// Check that internal pointer type matches requested pointer type
-			if (ptrtype != type_)
-			{
-				msg.print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
-				success = FALSE;
-				return NULL;
-			}
-			else return arrayP_[index];
 			break;
 	}
 	success = FALSE;
@@ -828,16 +693,11 @@ bool ReturnValue::asBool()
 		case (VTypes::DoubleData):
 			return (valueD_ > 0.0);
 			break;
-		case (VTypes::StringData):
-			return valueS_.asBool();
-			break;
 		case (VTypes::VectorData):
-			msg.print("Can't convert an object of type 'vector' into a bool.\n");
+			printf("Can't convert an object of type 'vector' into a bool.\n");
 			return FALSE;
 			break;
 		default:
-			// All pointer types here...
-			return (valueP_ != NULL);
 			break;
 	}
 	return FALSE;
@@ -856,11 +716,7 @@ bool ReturnValue::increase()
 	switch (type_)
 	{
 		case (VTypes::NoData):
-		case (VTypes::StringData):
 		case (VTypes::VectorData):
-		case (VTypes::AtenData):
-		case (VTypes::CellData):
-		case (VTypes::ElementData):
 			result = FALSE;
 			break;
 		case (VTypes::IntegerData):
@@ -868,126 +724,6 @@ bool ReturnValue::increase()
 			break;
 		case (VTypes::DoubleData):
 			++valueD_;
-			break;
-		case (VTypes::AtomData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Atom,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Atom,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Atom*) valueP_)->next;
-			break;
-		case (VTypes::BondData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Bond,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Bond,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Bond*) valueP_)->next;
-			break;
-		case (VTypes::ForcefieldData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Forcefield,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Forcefield,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Forcefield*) valueP_)->next;
-			break;
-		case (VTypes::ForcefieldAtomData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((ForcefieldAtom*) valueP_)->next;
-			break;
-		case (VTypes::ForcefieldBoundData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((ForcefieldBound*) valueP_)->next;
-			break;
-		case (VTypes::GlyphData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Glyph,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Glyph,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Glyph*) valueP_)->next;
-			break;
-		case (VTypes::GridData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Grid,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Grid,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Grid*) valueP_)->next;
-			break;
-		case (VTypes::MeasurementData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Measurement,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Measurement,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Measurement*) valueP_)->next;
-			break;
-		case (VTypes::ModelData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Model,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Model,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Model*) valueP_)->next;
-			break;
-		case (VTypes::PatternData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Pattern,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Pattern,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Pattern*) valueP_)->next;
-			break;
-		case (VTypes::PatternBoundData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<PatternBound,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<PatternBound,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((PatternBound*) valueP_)->next;
-			break;
-		case (VTypes::ZMatrixElementData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((ZMatrixElement*) valueP_)->next;
 			break;
 		default:
 			printf("Internal Error: No 'increase' has been defined for %s.\n", VTypes::aDataType(type_));
@@ -1004,11 +740,7 @@ bool ReturnValue::decrease()
 	switch (type_)
 	{
 		case (VTypes::NoData):
-		case (VTypes::StringData):
 		case (VTypes::VectorData):
-		case (VTypes::AtenData):
-		case (VTypes::CellData):
-		case (VTypes::ElementData):
 			result = FALSE;
 			break;
 		case (VTypes::IntegerData):
@@ -1016,126 +748,6 @@ bool ReturnValue::decrease()
 			break;
 		case (VTypes::DoubleData):
 			--valueD_;
-			break;
-		case (VTypes::AtomData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Atom,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Atom,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Atom*) valueP_)->prev;
-			break;
-		case (VTypes::BondData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Bond,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Bond,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Bond*) valueP_)->prev;
-			break;
-		case (VTypes::ForcefieldData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Forcefield,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Forcefield,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Forcefield*) valueP_)->prev;
-			break;
-		case (VTypes::ForcefieldAtomData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((ForcefieldAtom*) valueP_)->prev;
-			break;
-		case (VTypes::ForcefieldBoundData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((ForcefieldBound*) valueP_)->prev;
-			break;
-		case (VTypes::GridData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Grid,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Grid,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Grid*) valueP_)->prev;
-			break;
-		case (VTypes::GlyphData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Glyph,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Glyph,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Glyph*) valueP_)->prev;
-			break;
-		case (VTypes::MeasurementData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Measurement,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Measurement,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Measurement*) valueP_)->prev;
-			break;
-		case (VTypes::ModelData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Model,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Model,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Model*) valueP_)->prev;
-			break;
-		case (VTypes::PatternData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<Pattern,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Pattern,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((Pattern*) valueP_)->prev;
-			break;
-		case (VTypes::PatternBoundData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<PatternBound,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<PatternBound,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((PatternBound*) valueP_)->prev;
-			break;
-		case (VTypes::ZMatrixElementData):
-			if (valueP_ == NULL) result = FALSE;
-			else if (valueRefitem_ != NULL)
-			{
-				valueRefitem_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->item;
-			}
-			else valueP_ = ((ZMatrixElement*) valueP_)->prev;
 			break;
 		default:
 			printf("Internal Error: No 'decrease' has been defined for %s.\n", VTypes::aDataType(type_));

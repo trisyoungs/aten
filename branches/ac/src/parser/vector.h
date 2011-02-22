@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VECTORVARIABLE_H
-#define ATEN_VECTORVARIABLE_H
+#ifndef ATENCALC_VECTORVARIABLE_H
+#define ATENCALC_VECTORVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"

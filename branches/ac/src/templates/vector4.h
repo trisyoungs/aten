@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VECTOR4_H
-#define ATEN_VECTOR4_H
+#ifndef ATENCALC_VECTOR4_H
+#define ATENCALC_VECTOR4_H
 
 // Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
 #define NOMINMAX

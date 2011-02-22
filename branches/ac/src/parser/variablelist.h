@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VARIABLELIST_H
-#define ATEN_VARIABLELIST_H
+#ifndef ATENCALC_VARIABLELIST_H
+#define ATENCALC_VARIABLELIST_H
 
 #include "parser/variable.h"
 #include "base/constants.h"

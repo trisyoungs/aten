@@ -19,15 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CLI_H
-#define ATEN_CLI_H
+#ifndef ATENCALC_CLI_H
+#define ATENCALC_CLI_H
 
 // Command option data
 class Cli
 {
 	public:
 	// Command line switches
-	enum CliSwitch { AtenDataSwitch, BatchSwitch, BohrSwitch, BondSwitch, CacheSwitch, CentreSwitch, CommandSwitch, DebugSwitch, DoubleSwitch, ExportSwitch, ExportMapSwitch, FilterSwitch, ForcefieldSwitch, FoldSwitch, FormatSwitch, GridSwitch, HelpSwitch, IntSwitch, InteractiveSwitch, KeepNamesSwitch, KeepViewSwitch, LoadFromListSwitch, MapSwitch, NewModelSwitch, NoBondSwitch, NoCentreSwitch, NoFoldSwitch, NoFragmentsSwitch, NoFragmentIconsSwitch, NoPackSwitch, NoQtSettingsSwitch, PackSwitch, QuietSwitch, ScriptSwitch, StringSwitch, TrajectorySwitch, UndoLevelSwitch, VerboseSwitch, VersionSwitch, ZmapSwitch, nSwitchItems };
+	enum CliSwitch { DummySwitch, HelpSwitch, nSwitchItems };
 
 	/*
 	// Description of command line option
@@ -50,10 +50,12 @@ class Cli
 	// Member functions
 	*/
 	public:
+	// Parse CLI options, after filters / prefs have been loaded
+	static int parse(int argc, char *argv[]);
 	// Search for short option
-	static Cli::CliSwitch cliSwitch(char c);
+	static CliSwitch cliSwitch(char c);
 	// Search for long option
-	static Cli::CliSwitch cliSwitch(const char *s);
+	static CliSwitch cliSwitch(const char *s);
 };
 
 #endif

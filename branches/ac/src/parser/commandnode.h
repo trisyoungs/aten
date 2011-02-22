@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_COMMANDNODE_H
-#define ATEN_COMMANDNODE_H
+#ifndef ATENCALC_COMMANDNODE_H
+#define ATENCALC_COMMANDNODE_H
 
 #include "templates/reflist.h"
 #include "templates/list.h"
@@ -28,7 +28,6 @@
 #include "command/commands.h"
 #include "parser/treenode.h"
 #include "parser/returnvalue.h"
-#include "parser/format.h"
 
 // Forward Declarations
 class Tree;
@@ -39,7 +38,6 @@ class CommandNode : public TreeNode
 	public:
 	// Constructors / Destructor
 	CommandNode(Command::Function func = Command::NoFunction);
-	CommandNode(TreeNode *source);
 	~CommandNode();
 
 	/*
@@ -48,18 +46,10 @@ class CommandNode : public TreeNode
 	protected:
 	// Command that this node performs
 	Command::Function function_;
-	// Associated format node (if any)
-	Format *format_;
 	
 	public:
-	// Prepare the stored command function, initialising any data and running any commands
-	bool prepFunction();
 	// Get command function
 	Command::Function function();
-	// Create format node (if necessary) from supplied argument id
-	Format *createFormat(int fmtargid, int firstargid);
-	// Create a 'delimited' writeable format (if necessary) from supplied argument id
-	Format *createFormat(const char *delimiter);
 	// Execute command
 	bool execute(ReturnValue &rv);
 	// Print node contents
@@ -68,8 +58,6 @@ class CommandNode : public TreeNode
 	bool set(ReturnValue &rv);
 	// Initialise node
 	bool initialise();
-	// Create, run, and free a single command with simple arguments
-	static bool run(Command::Function func, const char *arglist, ...);
 };
 
 #endif

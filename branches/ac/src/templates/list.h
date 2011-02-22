@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_LIST_H
-#define ATEN_LIST_H
+#ifndef ATENCALC_LIST_H
+#define ATENCALC_LIST_H
 
 #include <stdlib.h>
 #include <stdio.h>

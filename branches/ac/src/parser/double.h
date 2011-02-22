@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_DOUBLEVARIABLE_H
-#define ATEN_DOUBLEVARIABLE_H
+#ifndef ATENCALC_DOUBLEVARIABLE_H
+#define ATENCALC_DOUBLEVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"

@@ -27,13 +27,13 @@
 #include <string.h>
 
 // Dummy Node
-bool Command::function_NoFunction(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_NoFunction(CommandNode *c, ReturnValue &rv)
 {
 	return TRUE;
 }
 
 // Joiner
-bool Command::function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Joiner(CommandNode *c, ReturnValue &rv)
 {
 	// Execute both commands
 	bool result = TRUE;
@@ -43,7 +43,7 @@ bool Command::function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Declarations
-bool Command::function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Declarations(CommandNode *c, ReturnValue &rv)
 {
 	// Reset each variable argument
 	for (int n=0; n<c->nArgs(); ++n) if (!c->argNode(n)->initialise()) return FALSE;
@@ -51,21 +51,21 @@ bool Command::function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Break out of current for loop
-bool Command::function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Break(CommandNode *c, ReturnValue &rv)
 {
 	c->parent()->setAcceptedFail(Command::Break);
 	return FALSE;
 }
 
 // Continue for loop at next iteration
-bool Command::function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Continue(CommandNode *c, ReturnValue &rv)
 {
 	c->parent()->setAcceptedFail(Command::Continue);
 	return FALSE;
 }
 
 // Do-While loop
-bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_DoWhile(CommandNode *c, ReturnValue &rv)
 {
 	// Argument 0 - Blockment
 	// Argument 1 - Test condition
@@ -95,7 +95,7 @@ bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // For loop
-bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_For(CommandNode *c, ReturnValue &rv)
 {
 	// Argument 0 - Initial value expression
 	// Argument 1 - Loop condition
@@ -132,7 +132,7 @@ bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // If test
-bool Command::function_If(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_If(CommandNode *c, ReturnValue &rv)
 {
 	ReturnValue ifval;
 	if (!c->arg(0, ifval)) return FALSE;
@@ -142,7 +142,7 @@ bool Command::function_If(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Return from function/filter/program
-bool Command::function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Return(CommandNode *c, ReturnValue &rv)
 {
 	c->parent()->setAcceptedFail(Command::Return);
 	if (c->hasArg(0)) c->arg(0, rv);
@@ -150,7 +150,7 @@ bool Command::function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // While loop
-bool Command::function_While(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_While(CommandNode *c, ReturnValue &rv)
 {
 	// Argument 0 - Test condition
 	// Argument 1 - Blockment

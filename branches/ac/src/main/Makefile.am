@@ -1,7 +1,7 @@
-noinst_LIBRARIES = libaten.a
+noinst_LIBRARIES = libcli.a
 
-libaten_a_SOURCES = aten.cpp aten_filters.cpp cli.cpp modes.cpp probe.cpp
+libcli_a_SOURCES = cli.cpp 
 
-noinst_HEADERS = aten.h cli.h version.h
+noinst_HEADERS = cli.h
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ 

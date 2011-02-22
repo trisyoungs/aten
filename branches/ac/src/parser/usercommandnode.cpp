@@ -40,8 +40,6 @@ UserCommandNode::~UserCommandNode()
 // Check validity of supplied arguments
 bool UserCommandNode::checkArguments()
 {
-	msg.enter("UserCommandNode::checkArguments");
-	msg.print(Messenger::Parse, "Checking the %i argument(s) given to user function '%s'...\n", args_.nItems(), function_->name());
 	bool required;
 	int count = 0;
 	Variable *v;
@@ -52,8 +50,7 @@ bool UserCommandNode::checkArguments()
 		required = v->initialValue() == NULL;
 		if (required && (args_.nItems() <= count))
 		{
-			msg.print("Error: Argument %i to user function '%s' is required.\n", count+1, function_->name());
-			msg.exit("UserCommandNode::checkArguments");
+			printf("Error: Argument %i to user function '%s' is required.\n", count+1, function_->name());
 			return FALSE;
 		}
 		else if ((!required) && ((args_.nItems() <= count))) break;
@@ -68,8 +65,7 @@ bool UserCommandNode::checkArguments()
 			}
 			else
 			{
-				msg.print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
-				msg.exit("UserCommandNode::checkArguments");
+				printf("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
 				return FALSE;
 			}
 		}
@@ -80,19 +76,16 @@ bool UserCommandNode::checkArguments()
 		}
 		else
 		{
-			msg.print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
-			msg.exit("UserCommandNode::checkArguments");
+			printf("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
 			return FALSE;
 		}
 	}
 	// Extra arguments provided?
 	if (args_.nItems() > count)
 	{
-		msg.print("Error: %i extra arguments given to user function '%s'.\n", args_.nItems()-count, function_->name());
-		msg.exit("UserCommandNode::checkArguments");
+		printf("Error: %i extra arguments given to user function '%s'.\n", args_.nItems()-count, function_->name());
 		return FALSE;
 	}
-	msg.exit("UserCommandNode::checkArguments");
 	return TRUE;
 }
 
@@ -120,11 +113,8 @@ bool UserCommandNode::execute(ReturnValue &rv)
 			else if (!v->initialise()) return FALSE;
 		}
 	}
-	// We must pass the current input 'state' of this node's parent tree - give it the LineParser pointer...
-	LineParser *parser = parent_->parser();
 	bool result;
-	result = parser == NULL ? function_->execute(rv) : function_->execute(parser, rv);
-	return result;
+	return function_->execute(rv);
 }
 
 // Print node contents
@@ -160,7 +150,6 @@ bool UserCommandNode::initialise()
 // Create, run, and free a single command with simple argument list
 bool UserCommandNode::run(Tree *func, ReturnValue &rv, const char *arglist ...)
 {
-	msg.enter("UserCommandNode::run");
 	// Local tree to contain usercommandnode and its arguments
 	Tree tree;
 
@@ -183,10 +172,6 @@ bool UserCommandNode::run(Tree *func, ReturnValue &rv, const char *arglist ...)
 			case ('d'):
 				var = tree.addConstant(va_arg(vars, double));
 				break;
-			case ('c'):
-			case ('s'):
-				var = tree.addConstant(va_arg(vars, const char *));
-				break;
 			default:
 				printf("Invalid argument specifier '%c' in UserCommandNode::run.\n", *c);
 				var = NULL;
@@ -197,14 +182,12 @@ bool UserCommandNode::run(Tree *func, ReturnValue &rv, const char *arglist ...)
 	va_end(vars);
 	// Now, run the command...
 	bool result = node.execute(rv);
-	msg.exit("UserCommandNode::run");
 	return result;
 }
 
 // Create, run, and free a single command with simple argument list
 bool UserCommandNode::run(Tree *func, ReturnValue &rv, TreeNode *arglisthead)
 {
-	msg.enter("UserCommandNode::run(arglist)");
 	// Local tree to contain usercommandnode and its arguments
 	Tree tree;
 
@@ -217,6 +200,5 @@ bool UserCommandNode::run(Tree *func, ReturnValue &rv, TreeNode *arglisthead)
 
 	// Now, run the command...
 	bool result = node.execute(rv);
-	msg.exit("UserCommandNode::run(arglist)");
 	return result;
 }

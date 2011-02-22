@@ -19,15 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VECTOR3_H
-#define ATEN_VECTOR3_H
+#ifndef ATENCALC_VECTOR3_H
+#define ATENCALC_VECTOR3_H
 
 // Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
 #define NOMINMAX
 
 #include "templates/matrix3.h"
 #include "templates/matrix4.h"
-#include "base/messenger.h"
 #include "base/constants.h"
 #include "base/mathfunc.h"
 #include <stdio.h>

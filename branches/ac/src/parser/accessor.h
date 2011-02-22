@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ACCESSOR_H
-#define ATEN_ACCESSOR_H
+#ifndef ATENCALC_ACCESSOR_H
+#define ATENCALC_ACCESSOR_H
 
 #include "parser/vtypes.h"
 

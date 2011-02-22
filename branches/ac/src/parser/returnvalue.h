@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_RETURNVALUE_H
-#define ATEN_RETURNVALUE_H
+#ifndef ATENCALC_RETURNVALUE_H
+#define ATENCALC_RETURNVALUE_H
 
 #include "parser/returnvalue.h"
 #include "parser/vtypes.h"
@@ -35,9 +35,7 @@ class ReturnValue
 	ReturnValue();
 	ReturnValue(int i);
 	ReturnValue(double d);
-	ReturnValue(const char *s);
 	ReturnValue(Vec3<double> v);
-	ReturnValue(VTypes::DataType type, void *ptr);
 	// Operator=
 	void operator=(const ReturnValue &rv);
 
@@ -57,13 +55,11 @@ class ReturnValue
 	double valueD_;
 	Dnchar valueS_;
 	Vec3<double> valueV_;
-	void *valueP_, *valueRefitem_;
 	// Array members for returns
 	int *arrayI_;
 	double *arrayD_;
 	Dnchar *arrayS_;
 	Vec3<double> *arrayV_;
-	void **arrayP_;
 	// Clear any current array data
 	void clearArrayData();
 
@@ -86,16 +82,12 @@ class ReturnValue
 	void set(int i);
 	// Set from real value
 	void set(double d);
-	// Set from character value
-	void set(const char *s);
 	// Set from vector value
 	void set(Vec3<double> v);
 	// Set from individual vector data
 	void set(double x, double y, double z);
 	// Set from single vector data
 	void set(int id, double xyz);
-	// Set from pointer value
-	void set(VTypes::DataType type, void *ptr, void *refitem = NULL);
 	// Set from standard array
 	void setArray(VTypes::DataType type, void *source, int arraysize);
 	// Set from Vec3<int>
@@ -108,8 +100,6 @@ class ReturnValue
 	void setElement(int id, const char *s);
 	// Set array element from vector value
 	void setElement(int id, Vec3<double> v);
-	// Set array element from pointer value
-	void setElement(int id, VTypes::DataType type, void *ptr);
 
 
 	/*
@@ -126,8 +116,8 @@ class ReturnValue
 	Vec3<double> asVector(bool &success);
 	// Return pointer data
 	void *asPointer(VTypes::DataType type, bool &success);
-	// Return pointer refitem data
-	void *refPointer();
+	// Return pointer data
+	Vec3<double> asPointer(bool &success);
 	// Return integer element value
 	int asInteger(int index, bool &success);
 	// Return real element value

@@ -79,8 +79,6 @@ const char *VariableNode::name()
 // Finalise path, setting return value and readOnly property from last step node
 void VariableNode::finalisePath()
 {
-	msg.enter("VariableNode::finalisePath");
-	msg.print(Messenger::Parse, "There are %i steps in the pathnode...\n", args_.nItems());
 	// Return type of last argument is return type of PathNode
 	if (args_.last() == NULL) returnType_ = VTypes::NoData;
 	else
@@ -90,8 +88,6 @@ void VariableNode::finalisePath()
 		readOnly_ = step->readOnly();
 		returnsArray_ = ((step->arraySize() > 0) && (step->arrayIndex() == NULL));
 	}
-	msg.print(Messenger::Parse, "Return type of VariableNode path is '%s'. Path contents are %s.\n", VTypes::dataType(returnType_), readOnly_ ? "read-only" : "read-write");
-	msg.exit("VariableNode::finalisePath");
 }
 
 /*
@@ -101,11 +97,9 @@ void VariableNode::finalisePath()
 // Execute command
 bool VariableNode::execute(ReturnValue &rv)
 {
-	msg.enter("VariableNode::execute");
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be executed.\n");
-		msg.exit("VariableNode::execute");
 		return FALSE;
 	}
 	// Call the local variable's execute() function to get the base value
@@ -130,7 +124,6 @@ bool VariableNode::execute(ReturnValue &rv)
 // 		rv.info();
 	}
 	else printf("Variable retrieval failed.\n");
-	msg.exit("VariableNode::execute");
 	return result;
 }
 
@@ -168,11 +161,9 @@ void VariableNode::nodePrint(int offset, const char *prefix)
 // Set from returnvalue node
 bool VariableNode::set(ReturnValue &setrv)
 {
-	msg.enter("VariableNode::set");
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be set.\n");
-		msg.exit("VariableNode::set");
 		return FALSE;
 	}
 	bool result = TRUE;
@@ -263,7 +254,6 @@ bool VariableNode::set(ReturnValue &setrv)
 		else result = FALSE;
 	}
 	if (!result) printf("Variable set failed.\n");
-	msg.exit("VariableNode::set");
 	return result;
 }
 

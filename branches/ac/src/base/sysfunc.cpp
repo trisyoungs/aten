@@ -21,7 +21,6 @@
 
 #include "base/constants.h"
 #include "base/dnchar.h"
-#include "base/messenger.h"
 #include <fstream>
 #include <iostream>
 #include <string.h>
@@ -127,13 +126,13 @@ int enumSearch(const char *name, int maxn, const char **itemlist, const char *qu
 // Print valid enum values
 void enumPrintValid(int nitems, const char **list)
 {
-	msg.print("Valid values are:\n    ");
+	printf("Valid values are:\n    ");
 	for (int i=0; i < nitems; i++)
 	{
 		if ((strcmp(list[i],"_NULL_") == 0) || (list[i][0] == '_')) continue;
-		msg.print("%s ", lowerCase(list[i]));
+		printf("%s ", lowerCase(list[i]));
 	}
-	msg.print("\n");
+	printf("\n");
 }
 
 // Convert the number 'n' to a string representation.
