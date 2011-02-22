@@ -19,14 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MATRIX3_H
-#define ATEN_MATRIX3_H
+#ifndef ATENCALC_MATRIX3_H
+#define ATENCALC_MATRIX3_H
 
 // Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
 #define NOMINMAX
 
 #include "templates/vector3.h"
-#include "base/messenger.h"
 #include "base/constants.h"
 #include <algorithm>
 #include <math.h>
@@ -492,7 +491,6 @@ template <class T> double Mat3<T>::determinant()
 // Calculate matrix inverse
 template <class T> void Mat3<T>::invert()
 {
-	msg.enter("Mat3<T>::invert");
 	// Gauss-Jordan Inversion
 	// Invert the supplied matrix using Gauss-Jordan elimination
 	int pivotrows[3], pivotcols[3], pivotrow = 0, pivotcol = 0;
@@ -563,7 +561,6 @@ template <class T> void Mat3<T>::invert()
 				rows[m].set(pivotrows[n], rows[m].get(pivotcols[n]));
 				rows[m].set(pivotcols[n], element);
 			}
-	msg.exit("Mat3<T>::invert");
 }
 
 // Print

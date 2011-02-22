@@ -25,42 +25,42 @@
 #include <math.h>
 
 // Return absolute of argument
-bool Command::function_Abs(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Abs(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( fabs(c->argd(0)) );
 	return TRUE;
 }
 
 // Return invserse cosine of argument
-bool Command::function_ACos(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_ACos(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( acos(c->argd(0)) * DEGRAD );
 	return TRUE;
 }
 
 // Return invserse sine of argument
-bool Command::function_ASin(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_ASin(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( asin(c->argd(0)) * DEGRAD );
 	return TRUE;
 }
 
 // Return invserse tangent of argument
-bool Command::function_ATan(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_ATan(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( atan(c->argd(0)) * DEGRAD );
 	return TRUE;
 }
 
 // Return cosine of argument (supplied in degrees)
-bool Command::function_Cos(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Cos(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( cos(c->argd(0) / DEGRAD) );
 	return TRUE;
 }
 
 // Calculate vector dot product
-bool Command::function_DotProduct(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_DotProduct(CommandNode *c, ReturnValue &rv)
 {
 	Vec3<double> v = c->argv(0);
 	rv.set(v.dp(c->argv(1)));
@@ -68,35 +68,35 @@ bool Command::function_DotProduct(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Return exponential of of argument
-bool Command::function_Exp(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Exp(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( exp(c->argd(0)) );
 	return TRUE;
 }
 
 // Return natural logarithm of argument
-bool Command::function_Ln(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Ln(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( log(c->argd(0)) );
 	return TRUE;
 }
 
 // Return base-10 logarithm of argument
-bool Command::function_Log(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Log(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( log10(c->argd(0)) );
 	return TRUE;
 }
 
 // Round real value to nearest integer
-bool Command::function_Nint(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Nint(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( floor(c->argd(0) + 0.5) );
 	return TRUE;
 }
 
 // Normalise vector, returning magnitude
-bool Command::function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Normalise(CommandNode *c, ReturnValue &rv)
 {
 	Vec3<double> v = c->argv(0);
 	double mag = v.magAndNormalise();
@@ -107,7 +107,7 @@ bool Command::function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Return sine of argument (supplied in degrees)
-bool Command::function_Sin(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Sin(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( sin(c->argd(0) / DEGRAD) );
 	return TRUE;
@@ -115,14 +115,14 @@ bool Command::function_Sin(CommandNode *c, Bundle &obj, ReturnValue &rv)
 
 
 // Return square root of argument
-bool Command::function_Sqrt(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Sqrt(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( sqrt(c->argd(0)) );
 	return TRUE;
 }
 
 // Return tangent of argument (supplied in degrees)
-bool Command::function_Tan(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Tan(CommandNode *c, ReturnValue &rv)
 {
 	rv.set( tan(c->argd(0) / DEGRAD) );
 	return TRUE;

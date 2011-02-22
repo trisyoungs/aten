@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VARIABLENODE_H
-#define ATEN_VARIABLENODE_H
+#ifndef ATENCALC_VARIABLENODE_H
+#define ATENCALC_VARIABLENODE_H
 
 #include "parser/treenode.h"
 

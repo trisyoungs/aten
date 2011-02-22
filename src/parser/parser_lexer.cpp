@@ -24,7 +24,6 @@
 #include "parser/parser.h"
 #include "parser/grammar.h"
 #include "parser/tree.h"
-#include "parser/forest.h"
 #include "command/commands.h"
 #include "base/sysfunc.h"
 
@@ -41,12 +40,6 @@ int CommandParser_lex()
 // Parser lexer, called by yylex()
 int CommandParser::lex()
 {
-	if (forest_ == NULL)
-	{
-		printf("Lexer called when no target Forest set.\n");
-		return 0;
-	}
-
 	int n;
 	bool done, integer, hasexp;
 	static Dnchar token, name;
@@ -64,10 +57,10 @@ int CommandParser::lex()
 	/*
 	// A '.' followed by a character indicates a variable path - generate a step
 	*/
-	msg.print(Messenger::Parse, "LEXER (%p): begins at [%c], peek = [%c]\n", tree_, c, peekChar());
+// 	printf("LEXER (%p): begins at [%c], peek = [%c]\n", tree_, c, peekChar());
 	if ((c == '.') && isalpha(peekChar()))
 	{
-		msg.print(Messenger::Parse, "LEXER (%p): found a '.' before an alpha character - expecting a path step next...\n",tree_);
+// 		printf("LEXER (%p): found a '.' before an alpha character - expecting a path step next...\n",tree_);
 		expectPathStep_ = TRUE;
 		return '.';
 	}
@@ -95,7 +88,7 @@ int CommandParser::lex()
 				// Check for previous exponential in number
 				if (hasexp)
 				{
-					msg.print("Error: Number has two exponentiations (e/E).\n");
+					printf("Error: Number has two exponentiations (e/E).\n");
 					return 0;
 				}
 				token += 'E';
@@ -129,8 +122,8 @@ int CommandParser::lex()
 			integer = FALSE;
 			CommandParser_lval.doubleconst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
 		}
-		if (integer) msg.print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]\n", tree_, token.get(), CommandParser_lval.intconst);
-		else msg.print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]\n", tree_, token.get(), CommandParser_lval.doubleconst);
+// 		if (integer) printf("LEXER (%p): found an integer constant [%s] [%i]\n", tree_, token.get(), CommandParser_lval.intconst);
+// 		else printf("LEXER (%p): found a floating-point constant [%s] [%e]\n", tree_, token.get(), CommandParser_lval.doubleconst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 
@@ -139,41 +132,8 @@ int CommandParser::lex()
 	*/
 	if ((c == '"') || ( c == '\''))
 	{
-		quotechar = c;
-		// Just read everything until we find a matching quote
-		done = FALSE;
-		do
-		{
-			c = getChar();
-			// Check for escaped characters....
-			if (c == '\\')
-			{
-				// Look at next character and either add it as-is, or convert it to its proper control code
-				char c2 = getChar();
-				switch (c2)
-				{
-					case ('n'):
-						token += '\n'; break;
-					case ('t'):
-						token += '\t'; break;
-					case ('r'):
-						token += '\r'; break;
-					default:
-						token += c2; break;
-				}
-			}
-			else if (c == quotechar) done = TRUE;
-			else if (c == '\0')
-			{
-				msg.print("Runaway character constant in input.\n");
-				return 0;
-			}
-			else token += c;
-		} while (!done);
-		msg.print(Messenger::Parse, "LEXER (%p): found a literal string [%s]...\n",tree_,token.get());
-		name = token;
-		CommandParser_lval.name = &name;
-		return CHARCONST;
+		printf("Illegal character (quote) found in input.\n");
+		return 0;
 	}
 
 	/*
@@ -188,7 +148,7 @@ int CommandParser::lex()
 		}
 		while (isalnum(c) || (c == '_'));
 		unGetChar();
-		msg.print(Messenger::Parse, "LEXER (%p): found an alpha token [%s]...\n", tree_, token.get());
+// 		printf("LEXER (%p): found an alpha token [%s]...\n", tree_, token.get());
 		// Skip over keyword detection if we are expecting a path step
 		if (!expectPathStep_)
 		{
@@ -196,7 +156,7 @@ int CommandParser::lex()
 			VTypes::DataType dt = VTypes::dataType(token);
 			if (dt != VTypes::nDataTypes)
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ...which is a variable type name (->VTYPE)\n",tree_);
+// 				printf("LEXER (%p): ...which is a variable type name (->VTYPE)\n",tree_);
 				CommandParser_lval.vtype = dt;
 				return VTYPE;
 			}
@@ -229,21 +189,6 @@ int CommandParser::lex()
 				return DOUBLECONST;
 			}
 
-			// OPTION keywords
-			if (strcmp(token,"option") == 0)
-			{
-				return OPTION;
-			}
-
-			// Element symbol?
-			for (n=0; n<elements().nElements(); ++n) if (strcmp(token,elements().symbol(n)) == 0) break;
-			if (n < elements().nElements())
-			{
-				CommandParser_lval.intconst = n;
-				msg.print(Messenger::Parse, "LEXER (%p): ...which is a an element symbol (%i)\n",tree_,n);
-				return ELEMENTCONST;
-			}
-
 			// Is this a recognised high-level keyword?
 			n = 0;
 			if (token == "if") n = IF;
@@ -252,19 +197,10 @@ int CommandParser::lex()
 			else if (token == "do") n = DO;
 			else if (token == "while") n = WHILE;
 			else if (token == "return") n = RETURN;
-			else if (token == "void") n = DIOV;
-			else if (token == "help") n = HELP;
 			if (n != 0)
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);
+// 				printf("LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);
 				return n;
-			}
-
-			// Is this the start of a filter or a function?
-			if (token == "filter")
-			{
-				msg.print(Messenger::Parse, "LEXER (%p): ...which marks the start of a filter (->FILTERBLOCK)\n",tree_);
-				return FILTERBLOCK;
 			}
 
 			// Is it an existing variable in scope?
@@ -277,13 +213,13 @@ int CommandParser::lex()
 				{
 					if (scopelevel == 0)
 					{
-						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing local variable (->LOCALVAR)\n", tree_);
+// 						printf("LEXER (%p): ...which is an existing local variable (->LOCALVAR)\n", tree_);
 						CommandParser_lval.variable = v;
 						return LOCALVAR;
 					}
 					else
 					{
-						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable (->VAR)\n", tree_);
+// 						printf("LEXER (%p): ...which is an existing variable (->VAR)\n", tree_);
 						CommandParser_lval.variable = v;
 						return VAR;
 					}
@@ -294,7 +230,7 @@ int CommandParser::lex()
 			for (n=0; n<Command::nCommands; n++) if (strcmp(token,Command::data[n].keyword) == 0) break;
 			if (n != Command::nCommands)
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ... which is a function (->FUNCCALL).\n", tree_);
+// 				printf("LEXER (%p): ... which is a function (->FUNCCALL).\n", tree_);
 				CommandParser_lval.functionId = n;
 				// Quick check - if we are declaring variables then we must raise an error
 				functionStart_ = tokenStart_;
@@ -308,19 +244,10 @@ int CommandParser::lex()
 				func = tree_->findLocalFunction(token);
 				if (func != NULL)
 				{
-					msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
+// 					printf("LEXER (%p): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
 					CommandParser_lval.functree = func;
 					return USERFUNCCALL;
 				}
-			}
-
-			// Is it a user-defined function keyword in the global (Forest-wide) scope?
-			func = forest_->findGlobalFunction(token);
-			if (func != NULL)
-			{
-				msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);
-				CommandParser_lval.functree = func;
-				return USERFUNCCALL;
 			}
 
 		}
@@ -329,14 +256,14 @@ int CommandParser::lex()
 		if (expectPathStep_)
 		{
 			expectPathStep_ = FALSE;
-			msg.print(Messenger::Parse, "LEXER (%p): ...which we assume is a path step (->STEPTOKEN)\n", tree_);
+// 			printf("LEXER (%p): ...which we assume is a path step (->STEPTOKEN)\n", tree_);
 			name = token;
 			CommandParser_lval.name = &name;
 			return STEPTOKEN;
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
-		msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
+// 		printf("LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
 		name = token;
 		CommandParser_lval.name = &name;
 		return NEWTOKEN;
@@ -346,7 +273,7 @@ int CommandParser::lex()
 	// Return immediately in the case of brackets, comma, and semicolon
 	if ((c == '(') || (c == ')') || (c == ';') || (c == ',') || (c == '{') || (c == '}') || (c == '[') || (c == ']') || (c == '%'))
 	{
-		msg.print(Messenger::Parse, "LEXER (%p): found symbol [%c]\n",tree_,c);
+// 		printf("LEXER (%p): found symbol [%c]\n",tree_,c);
 		return c;
 	}
 	token += c;
@@ -360,17 +287,17 @@ int CommandParser::lex()
 	{
 		c = getChar();
 		token += c;
-		msg.print(Messenger::Parse, "LEXER (%p): found symbol [%s]\n",tree_,token.get());
+// 		printf("LEXER (%p): found symbol [%s]\n",tree_,token.get());
 		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token.get());
 		if (st != nSymbolTokens) return SymbolTokenValues[st];
-		else msg.print("Error: Unrecognised symbol found in input (%s).\n", token.get());
+		printf("Error: Unrecognised symbol found in input (%s).\n", token.get());
  	}
 	else
 	{
 		// Make sure that this is a known symbol
 		if ((c == '$') || (c == '%') || (c == '&') || (c == '@') || (c == '?') || (c == ':'))
 		{
-			msg.print("Error: Unrecognised symbol found in input (%c).\n", c);
+			printf("Error: Unrecognised symbol found in input (%c).\n", c);
 		}
 		else return c;
 	}

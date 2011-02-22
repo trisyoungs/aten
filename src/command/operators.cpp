@@ -28,7 +28,7 @@
 Dnchar s;
 
 // Add two quantities together
-bool Command::function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorAdd(CommandNode *c, ReturnValue &rv)
 {
 	ReturnValue lhs, rhs;
 	bool b = TRUE;
@@ -42,7 +42,6 @@ bool Command::function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) + rhs.asDouble(i,b)); rv = lhs; break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) { s = lhs.asString(i,b); s.strcat(rhs.asString(i,b)); lhs.setElement(i,s); } rv = lhs; break;
 		case (VTypes::IntAInt):
 		case (VTypes::IntADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) + rhs.asInteger(b)); rv = lhs; break;
 		case (VTypes::DblAInt):
@@ -66,15 +65,14 @@ bool Command::function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		case (VTypes::VecIntA):
 		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v + lhs.asVector()); } break;
-		case (VTypes::StrStr): s = lhs.asString(b); s.strcat(rhs.asString(b)); rv.set(s); break;
 		default:
-			msg.print("The operator '+' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '+' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
 
 // Logical AND check on two operators
-bool Command::function_OperatorAnd(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorAnd(CommandNode *c, ReturnValue &rv)
 {
 	ReturnValue v1, v2;
 	if (!c->arg(0,v1)) return FALSE;
@@ -84,7 +82,7 @@ bool Command::function_OperatorAnd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Assignment
-bool Command::function_OperatorAssignment(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorAssignment(CommandNode *c, ReturnValue &rv)
 {
 	// Grab the second argument result and assign it to the first
 	if (!c->arg(1, rv)) return FALSE;
@@ -93,43 +91,43 @@ bool Command::function_OperatorAssignment(CommandNode *c, Bundle &obj, ReturnVal
 }
 
 // Assignment Divide
-bool Command::function_OperatorAssignmentDivide(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorAssignmentDivide(CommandNode *c, ReturnValue &rv)
 {
-	if (!function_OperatorDivide(c,obj,rv)) return FALSE;
+	if (!function_OperatorDivide(c,rv)) return FALSE;
 	// Now, set the first argument to our return value
 	if (!c->setArg(0, rv)) return FALSE;
 	return TRUE;
 }
 
 // Assignment Multiply
-bool Command::function_OperatorAssignmentMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorAssignmentMultiply(CommandNode *c, ReturnValue &rv)
 {
-	if (!function_OperatorMultiply(c,obj,rv)) return FALSE;
+	if (!function_OperatorMultiply(c,rv)) return FALSE;
 	// Now, set the first argument to our return value
 	if (!c->setArg(0, rv)) return FALSE;
 	return TRUE;
 }
 
 // Assignment Plus
-bool Command::function_OperatorAssignmentPlus(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorAssignmentPlus(CommandNode *c, ReturnValue &rv)
 {
-	if (!function_OperatorAdd(c,obj,rv)) return FALSE;
+	if (!function_OperatorAdd(c,rv)) return FALSE;
 	// Now, set the first argument to our return value
 	if (!c->setArg(0, rv)) return FALSE;
 	return TRUE;
 }
 
 // Assignment Subtract
-bool Command::function_OperatorAssignmentSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorAssignmentSubtract(CommandNode *c, ReturnValue &rv)
 {
-	if (!function_OperatorSubtract(c,obj,rv)) return FALSE;
+	if (!function_OperatorSubtract(c,rv)) return FALSE;
 	// Now, set the first argument to our return value
 	if (!c->setArg(0, rv)) return FALSE;
 	return TRUE;
 }
 
 // Divide one quantity by another
-bool Command::function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorDivide(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -162,13 +160,13 @@ bool Command::function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &
 		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v / lhs.asVector()); } break;
 		default:
-			msg.print("The operator '/' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '/' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
 
 // Equal To
-bool Command::function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorEqualTo(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -184,25 +182,19 @@ bool Command::function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue 
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) != rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) != 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) != rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) != rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) != ((long int) rhs.asPointer(rhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) != rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) != 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) != rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) != ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			msg.print("The operator '==' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '==' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
 }
 
 // Greater Than
-bool Command::function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorGreaterThan(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -218,25 +210,19 @@ bool Command::function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnVa
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) <= rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) <= 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) <= rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) <= rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) <= ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) <= rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) <= 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) <= rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) <= ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			msg.print("The operator '>' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '>' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
 }
 
 // Greater Than Equal To
-bool Command::function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorGreaterThanEqualTo(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -252,25 +238,19 @@ bool Command::function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, R
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) < rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) < 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) < rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) < rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) < ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) < rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) < 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) < rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) < ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			msg.print("The operator '>=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '>=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
 }
 
 // Less Than
-bool Command::function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorLessThan(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -286,25 +266,19 @@ bool Command::function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) >= rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) >= 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) >= rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) >= rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) >= ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) >= rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) >= 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) >= rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) >= ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			msg.print("The operator '<' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '<' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
 }
 
 // Less Than Equal To
-bool Command::function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorLessThanEqualTo(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -320,25 +294,19 @@ bool Command::function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, Retu
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) > rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) > 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) > rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) > rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) > ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) > rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) > 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) > rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) > ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			msg.print("The operator '<=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '<=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
 }
 
 // Integer remainder of A/B
-bool Command::function_OperatorModulus(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorModulus(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -351,13 +319,13 @@ bool Command::function_OperatorModulus(CommandNode *c, Bundle &obj, ReturnValue 
 	{
 		case (VTypes::IntInt): rv.set(lhs.asInteger(b) % rhs.asInteger(b)); break;
 		default:
-			msg.print("The operator '/' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '/' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
 
 // Multiply one quantity by another
-bool Command::function_OperatorMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorMultiply(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -396,13 +364,13 @@ bool Command::function_OperatorMultiply(CommandNode *c, Bundle &obj, ReturnValue
 		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v * lhs.asVector()); } break;
 		default:
-			msg.print("The operator '*' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '*' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
 
 // Negate value
-bool Command::function_OperatorNegate(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorNegate(CommandNode *c, ReturnValue &rv)
 {
 	if (!c->arg(0, rv)) return FALSE;
 	int i;
@@ -428,14 +396,14 @@ bool Command::function_OperatorNegate(CommandNode *c, Bundle &obj, ReturnValue &
 			rv.set(-rv.asVector());
 			break;
 		default:
-			msg.print("Can't negate %s.\n", VTypes::aDataType(c->argType(0)));
+			printf("Can't negate %s.\n", VTypes::aDataType(c->argType(0)));
 			return FALSE;
 	}
 	return TRUE;
 }
 
 // Not (Reverse Logic)
-bool Command::function_OperatorNot(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorNot(CommandNode *c, ReturnValue &rv)
 {
 	// Grab argument and 'negate' it
 	ReturnValue v1;
@@ -445,7 +413,7 @@ bool Command::function_OperatorNot(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Not Equal To
-bool Command::function_OperatorNotEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorNotEqualTo(CommandNode *c, ReturnValue &rv)
 {
 	ReturnValue lhs, rhs;
 	bool b = TRUE;
@@ -460,25 +428,19 @@ bool Command::function_OperatorNotEqualTo(CommandNode *c, Bundle &obj, ReturnVal
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) == rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) == 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) == rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) == rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) == ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) == rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) == 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) == rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) == ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			msg.print("The operator '!=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '!=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
 }
 
 // Logical OR check on two operators
-bool Command::function_OperatorOr(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorOr(CommandNode *c, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue v1, v2;
@@ -489,7 +451,7 @@ bool Command::function_OperatorOr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Postfix Decrease
-bool Command::function_OperatorPostfixDecrease(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorPostfixDecrease(CommandNode *c, ReturnValue &rv)
 {
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
@@ -500,7 +462,7 @@ bool Command::function_OperatorPostfixDecrease(CommandNode *c, Bundle &obj, Retu
 }
 
 // Postfix Increase
-bool Command::function_OperatorPostfixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorPostfixIncrease(CommandNode *c, ReturnValue &rv)
 {
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
@@ -511,7 +473,7 @@ bool Command::function_OperatorPostfixIncrease(CommandNode *c, Bundle &obj, Retu
 }
 
 // Prefix Decrease
-bool Command::function_OperatorPrefixDecrease(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorPrefixDecrease(CommandNode *c, ReturnValue &rv)
 {
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
@@ -520,7 +482,7 @@ bool Command::function_OperatorPrefixDecrease(CommandNode *c, Bundle &obj, Retur
 }
 
 // Prefix Increase
-bool Command::function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorPrefixIncrease(CommandNode *c, ReturnValue &rv)
 {
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
@@ -529,7 +491,7 @@ bool Command::function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, Retur
 }
 
 // Raise one quantity to the power of another
-bool Command::function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorPower(CommandNode *c, ReturnValue &rv)
 {
 	ReturnValue lhs, rhs;
 	bool b = TRUE;
@@ -544,13 +506,13 @@ bool Command::function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &r
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): rv.set(pow(lhs.asDouble(b),rhs.asDouble(b))); break;
 		default:
-			msg.print("The operator '^' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '^' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
 
 // Subtract one quantity from another
-bool Command::function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_OperatorSubtract(CommandNode *c, ReturnValue &rv)
 {
 {
 	// Grab both argument (return) values and send them to be operated on
@@ -590,7 +552,7 @@ bool Command::function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue
 		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v - lhs.asVector()); } break;
 		default:
-			msg.print("The operator '-' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			printf("The operator '-' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }

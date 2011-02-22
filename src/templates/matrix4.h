@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MATRIX4_H
-#define ATEN_MATRIX4_H
+#ifndef ATENCALC_MATRIX4_H
+#define ATENCALC_MATRIX4_H
 
 // Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
 #define NOMINMAX
@@ -396,7 +396,6 @@ template <class T> double Mat4<T>::determinant() const
 // Calculate matrix inverse
 template <class T> void Mat4<T>::invert()
 {
-	msg.enter("Mat4<T>::invert");
 	// Gauss-Jordan Inversion
 	// Invert the supplied matrix using Gauss-Jordan elimination
 	int pivotrows[4], pivotcols[4], pivotrow = 0, pivotcol = 0;
@@ -467,7 +466,6 @@ template <class T> void Mat4<T>::invert()
 				rows[m].set(pivotrows[n], rows[m].get(pivotcols[n]));
 				rows[m].set(pivotcols[n], element);
 			}
-	msg.exit("Mat4<T>::invert");
 }
 
 template <class T> void Mat4<T>::print() const

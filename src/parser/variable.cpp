@@ -69,7 +69,7 @@ bool Variable::initialise()
 			if (set(rv)) return TRUE;
 			else
 			{
-				msg.print("Error: Failed to initialise variable '%s'.\n", name_.get());
+				printf("Error: Failed to initialise variable '%s'.\n", name_.get());
 				return FALSE;
 			}
 		}
@@ -91,15 +91,15 @@ bool Variable::setInitialValue(TreeNode *node)
 		case (VTypes::DoubleData):
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData))
 			{
-				msg.print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+				printf("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
 				return FALSE;
 			}
-			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) msg.print("Warning: Initial value for integer variable '%s' is a double and will lose precision.\n", name_.get());
+			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) printf("Warning: Initial value for integer variable '%s' is a double and will lose precision.\n", name_.get());
 			break;
 		case (VTypes::VectorData):
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData) && (dt != returnType_))
 			{
-				msg.print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+				printf("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
 				return FALSE;
 			}
 			break;
@@ -107,7 +107,7 @@ bool Variable::setInitialValue(TreeNode *node)
 		default:
 			if (returnType_ == dt) break;
 			if ((dt == VTypes::IntegerData) && (returnType_ > VTypes::VectorData)) break;
-			msg.print("Error: Initial value for variable '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+			printf("Error: Initial value for variable '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
 			return FALSE;
 			break;
 	}
@@ -124,7 +124,7 @@ TreeNode *Variable::initialValue() const
 bool Variable::executeAsArray(ReturnValue &rv, int arrayindex)
 {
 	// Secondary array 'retrieval' executor
-	msg.print("Error: Variable '%s' is not an array.\n", name_.get());
+	printf("Error: Variable '%s' is not an array.\n", name_.get());
 	return FALSE;
 }
 
@@ -132,7 +132,7 @@ bool Variable::executeAsArray(ReturnValue &rv, int arrayindex)
 bool Variable::setAsArray(ReturnValue &rv, int arrayindex)
 {
 	// Secondary array 'set' executor
-	msg.print("Error: Variable '%s' is not an array.\n", name_.get());
+	printf("Error: Variable '%s' is not an array.\n", name_.get());
 	return FALSE;
 }
 

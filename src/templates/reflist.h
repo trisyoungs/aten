@@ -19,10 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_REFLIST_H
-#define ATEN_REFLIST_H
+#ifndef ATENCALC_REFLIST_H
+#define ATENCALC_REFLIST_H
 
-#include "base/messenger.h"
 #include <stddef.h>
 #include <stdio.h>
 

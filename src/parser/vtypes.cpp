@@ -22,15 +22,14 @@
 #include "parser/vtypes.h"
 #include "base/constants.h"
 #include "base/sysfunc.h"
-#include "base/messenger.h"
 #include <string.h>
 #include <stdio.h>
 
 // Variable Types
-const char *DataTypeNames[VTypes::nDataTypes] = { "no data", "int", "double", "string", "vector", "aten&", "atom&", "basisprimitive&", "basisshell&", "bond&", "unitcell&", "eigenvector&", "element&", "energystore&", "forcefield&", "ffatom&", "ffbound&", "glyph&", "glyphdata&", "grid&", "measurement&", "model&", "pattern&", "bound&", "prefs&", "region&", "site&", "vibration&", "zmatrix&", "zmatrixelement&" };
-const char *DataTypePhrases[VTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "aten&", "an atom&", "a basisprimitive&", "a basisshell&", "a bond&", "a unitcell&", "an eigenvector&", "an element&", "an energystore&", "a forcefield&", "a ffatom&", "a ffbound&", "a glyph&", "a glyphdata&", "a grid&", "a measurement&", "a model&", "a pattern&", "a bound&", "some prefs&", "a region", "a site", "a vibration&", "a zmatrix", "a zmatrix element" };
-const char *DataTypeArrayPhrases[VTypes::nDataTypes] = { "no data", "an integer array", "a double array", "a string array", "a vector array", "an aten& array", "an atom& array", "a basisprimitive& array", "a basisshell& array", "a bond& array", "a unitcell& array", "an eigenvector& array", "an element& array", "an energystore& array", "a forcefield& array", "a ffatom& array", "a ffbound& array", "a glyph& array", "a glyphdata& array", "a grid& array", "a measurement& array", "a model& array", "a pattern& array", "a bound& array", "a prefs& array", "a region& array", "a site& array", "a vibration& array", "a zmatrix& array", "a zmatrixelement& array" };
-const char *DataTypeKeywords[VTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector", "_ATEN", "atom", "basisprimitive", "basisshell", "bond", "unitcell", "eigenvector", "element", "energystore", "forcefield", "ffatom", "ffbound", "glyph", "_GLYPHDATA", "grid", "measurement", "model", "pattern", "bound", "_PREFS", "region", "site", "vibration", "zmatrix", "zmatrixelement" };
+const char *DataTypeNames[VTypes::nDataTypes] = { "no data", "int", "double", "__STRING", "vector" };
+const char *DataTypePhrases[VTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector" };
+const char *DataTypeArrayPhrases[VTypes::nDataTypes] = { "no data", "an integer array", "a double array", "a string array", "a vector array" };
+const char *DataTypeKeywords[VTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector" };
 VTypes::DataType VTypes::dataType(const char *s, bool reporterror)
 {
 	VTypes::DataType dt = (VTypes::DataType) enumSearch("", VTypes::nDataTypes, DataTypeKeywords, s);
@@ -74,25 +73,25 @@ int VTypes::dataPair(DataType type1, int arraysize1, DataType type2, int arraysi
 {
 	if ((type1 == VTypes::NoData) || (type2 == VTypes::NoData))
 	{
-		msg.print("One or both arguments have no data type.\n");
+		printf("One or both arguments have no data type.\n");
 		return UntypedData;
 	}
 	if ((arraysize1 > 0) && (arraysize2 > 0) && (arraysize1 != arraysize2))
 	{
-		msg.print("Array sizes do not conform.\n");
+		printf("Array sizes do not conform.\n");
 		return ArrayMisMatch;
 	}
-	int bit1 = (1 << (type1 < AtenData ? type1-1 : AtenData-1)) << (arraysize1 != -1 ? AtenData : 0);
-	int bit2 = (1 << (type2 < AtenData ? type2-1 : AtenData-1)) << (arraysize2 != -1 ? AtenData : 0);
-	return (bit1 + (bit2 << (AtenData*2)));
+	int bit1 = (1 << (type1-1)) << (arraysize1 != -1 ? nDataTypes : 0);
+	int bit2 = (1 << (type2-1)) << (arraysize2 != -1 ? nDataTypes : 0);
+	return (bit1 + (bit2 << (nDataTypes*2)));
 }
 
 int VTypes::dataSinglet(DataType type1, int arraysize1)
 {
 	if (type1 == VTypes::NoData)
 	{
-		msg.print("Argument has no data type.\n");
+		printf("Argument has no data type.\n");
 		return UntypedData;
 	}
-	return ((1 << (type1 < AtenData ? type1-1 : AtenData-1)) << (arraysize1 != -1 ? AtenData : 0));
+	return (1 << (type1-1)) << (arraysize1 != -1 ? nDataTypes : 0);
 }

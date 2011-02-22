@@ -20,8 +20,6 @@
 */
 
 #include "parser/scopenode.h"
-#include "main/aten.h"
-#include "model/model.h"
 #include <string.h>
 
 // Constructor
@@ -36,20 +34,11 @@ ScopeNode::~ScopeNode()
 {
 }
 
-// Add global variables to list
-void ScopeNode::createGlobalVariables()
-{
-	// Add the global Aten variable
-	variables.create(VTypes::AtenData, "aten");
-}
-
 // Execute command
 bool ScopeNode::execute(ReturnValue &rv)
 {
-	// Make sure the current rendersource is up-to-date
-	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSourceModel());
 	// Execute the command
-	return aten.commands.call(function_, this, rv);
+	return commands.call(function_, this, rv);
 }
 
 // Set from returnvalue node

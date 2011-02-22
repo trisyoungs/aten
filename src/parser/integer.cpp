@@ -49,7 +49,7 @@ bool IntegerVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer) cannot be assigned to.\n");
+		printf("A constant value (in this case an integer) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success;
@@ -116,7 +116,7 @@ bool IntegerArrayVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an int array) cannot be assigned to.\n");
+		printf("A constant value (in this case an int array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (integerArrayData_ == NULL)
@@ -135,12 +135,12 @@ bool IntegerArrayVariable::set(ReturnValue &rv)
 			integerArrayData_[1] = v.y;
 			integerArrayData_[2] = v.z;
 		}
-		else msg.print("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
+		else printf("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
 	}
 	else if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asDouble(success);
 	else
 	{
-		if (rv.arraySize() != arraySize_) msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+		if (rv.arraySize() != arraySize_) printf("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
 		else for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asInteger(i, success);
 	}
 	return success;
@@ -151,7 +151,7 @@ bool IntegerArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array?) cannot be assigned to.\n");
+		printf("A constant value (in this case an integer array?) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (integerArrayData_ == NULL)
@@ -162,7 +162,7 @@ bool IntegerArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 	// Check index
 	if ((arrayindex < 0) || (arrayindex >= arraySize_))
 	{
-		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		printf("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
@@ -219,7 +219,7 @@ bool IntegerArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 	// Check bounds
 	if ((arrayindex < 0) || (arrayindex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		printf("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
 	rv.set( integerArrayData_[arrayindex] );
@@ -253,7 +253,7 @@ bool IntegerArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for int array '%s'.\n", name_.get());
+		printf("Failed to find size for int array '%s'.\n", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different

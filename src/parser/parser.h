@@ -19,10 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_COMMANDPARSER_H
-#define ATEN_COMMANDPARSER_H
+#ifndef ATENCALC_COMMANDPARSER_H
+#define ATENCALC_COMMANDPARSER_H
 
-#include "base/lineparser.h"
 #include "parser/tree.h"
 #include "templates/reflist.h"
 #include "base/dnchar.h"
@@ -41,10 +40,6 @@ class CommandParser : public Tree
 	~CommandParser();
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
 	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, PlusPlusSymbol, MinusMinusSymbol, AndSymbol, OrSymbol, nSymbolTokens };
-	// Source of parser input
-	enum ParserSource { StringSource, StringListSource, FileSource, nParserSources };
-	// Friend declarations
-	friend class Forest;
 
 
 	/*
@@ -53,16 +48,10 @@ class CommandParser : public Tree
 	private:
 	// Character string source
 	Dnchar stringSource_;
-	// Character string list source
-	Dnchar *stringListSource_;
 	// Integer position in stringSource, total length of string, and starting position of current token/function
 	int stringPos_, stringLength_, tokenStart_, functionStart_;
-	// Line parser
-	LineParser parser_;
 	// Line number in source file that we've just read
 	int lineNumber_;
-	// Current input type to parser
-	ParserSource source_;
 	// Whether the next token to expect is a path step
 	bool expectPathStep_;
 
@@ -71,8 +60,6 @@ class CommandParser : public Tree
 	void reset();
 	// Parser lexer, called by yylex()
 	int lex();
-	// Return current input source
-	ParserSource source();
 	// Get next character from current input stream
 	char getChar();
 	// Peek next character from current input stream
@@ -91,32 +78,18 @@ class CommandParser : public Tree
 	// Tree Data
 	*/
 	private:
-	// Current forest target
-	Forest *forest_;
 	// Current tree (target of node creation)
 	Tree *tree_;
 	// Stack of created trees
 	Reflist<Tree,bool> stack_;
-	// Perform tree generation (base function, called by generateFrom*)
-	bool generate();
-	// Populate target forest from specified character string
-	bool generateFromString(Forest *f, const char *s, bool dontpushtree = FALSE);
-	// Populate target forest from specified string list
-	bool generateFromStringList(Forest *f, Dnchar *stringListHead, bool dontpushtree = FALSE);
-	// Populate target forest from specified file(name)
-	bool generateFromFile(Forest *f, const char *filename, bool dontpushtree = FALSE);
 
 	public:
-	// Push tree
-	void pushTree(bool filter = FALSE);
 	// Push function
 	void pushFunction(const char *name, VTypes::DataType returntype);
 	// Pop tree (or function) from stack
 	void popTree();
-	// Discard current tree and its contents
-	void deleteCurrentTree();
 	// Populate supplied tree with commands
-	bool generateSingleTree(Tree *t, const char *name, const char *commands);
+	bool generate(Tree *t, const char *commands);
 
 
 	/*
@@ -169,10 +142,6 @@ class CommandParser : public Tree
 	TreeNode *addConstant(int i);
 	// Add double constant
 	TreeNode *addConstant(double d);
-	// Add string constant
-	TreeNode *addConstant(const char *s);
-	// Add Element constant
-	TreeNode *addElementConstant(int el);
 	// Add variable to topmost ScopeNode
 	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add variable (as a function argument) to topmost ScopeNode
@@ -183,15 +152,6 @@ class CommandParser : public Tree
 	TreeNode *addArrayConstant(TreeNode *values);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
-
-	/*
-	// Filters / GUI
-	*/
-	public:
-	// Set filter option
-	bool setFilterOption(Dnchar *name, TreeNode *value);
-	// Add new (GUI-based) widget linked to a variable
-	TreeNode *addWidget(TreeNode *arglist);
 };
 
 // External declaration

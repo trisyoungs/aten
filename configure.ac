@@ -15,7 +15,6 @@ AC_CANONICAL_TARGET
 MAC_LIBS=""
 if test "$target_vendor" = "apple"; then
   AC_DEFINE([IS_MAC], [], [Whether operating system is an Apple])
-  MAC_LIBS="-framework OpenGL"
 fi
 AC_SUBST(MAC_LIBS)
 
@@ -31,23 +30,6 @@ AC_PROG_YACC
 #
 # Additional Configuration Options
 #
-
-# QT Tools
-QTMOC="moc"
-QTRCC="rcc"
-QTUIC="uic"
-AC_ARG_WITH([qtmoc],[AC_HELP_STRING([--with-qtmoc=<executable>],
-    [Specify Qt4 Meta-Object Compiler tool (moc) [default="moc"]])], ,
-    [with_qtmoc="moc"])
-AC_ARG_WITH([qtuic],[AC_HELP_STRING([--with-qtuic=<executable>],
-    [Specify Qt4 User Interface Compiler tool (uic) [default="uic"]])], ,
-    [with_qtuic="uic"])
-AC_ARG_WITH([qtrcc],[AC_HELP_STRING([--with-qtrcc=<executable],
-    [Specify Qt4 Resource Compiler tool (rcc) [default="rcc"]])], ,
-    [with_qtrcc="rcc"])
-QTMOC="$with_qtmoc"
-QTRCC="$with_qtrcc"
-QTUIC="$with_qtuic"
 
 # Readline include dir
 RLINCDIR=""
@@ -78,11 +60,6 @@ if test "$with_install_dir" != "/usr/local"; then
 fi
 
 
-# QT-FRAMEWORK  (Mac only)
-AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
-    [Determines which installation of Qt4 to use on OS X (should not be set for Linux)[default=<none>]])], ,
-    [with_qt=])
-
 # Pre-initialise pkg-config  (unless using Qt framework on the Mac)
 if test "$with_qt" != "framework"; then
   PKG_PROG_PKG_CONFIG
@@ -92,34 +69,7 @@ fi
 # Check for other dependencies
 AC_CHECK_HEADER([$RLINCDIR/readline.h],,[AC_MSG_ERROR([Cannot find headers for readline.])])
 
-# Set up compilation for Qt GUI
-if test "$with_qt" = "framework"; then
-  QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore"
-  QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
-fi
-if test "$with_qt" = "fink"; then
-  QTGUI_LIBS="-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL"
-  QTGUI_CFLAGS="-I/sw/lib/qt4-x11/include -I/usr/X11R6/include"
-  QTOPENGL_CFLAGS="-I/sw/lib/qt4-x11/include"
-  QTOPENGL_LIBS="-I/sw/lib/qt4-x11/lib"
-  PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
-  PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
-fi
-if test "x$with_qt" = "x"; then
-  PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
-  PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
-fi
-GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses"
-GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
-
-
 VERSION=ATEN_VERSION
-# Perform Makefile substitutions
-AC_SUBST(GUI_LDLIBS)
-AC_SUBST(GUI_CFLAGS)
-AC_SUBST(QTMOC)
-AC_SUBST(QTUIC)
-AC_SUBST(QTRCC)
 AC_SUBST(BUILDDIR)
 AC_SUBST(INSTALLDIR)
 AC_SUBST(VERSION)
@@ -142,14 +92,8 @@ AC_CHECK_FUNCS([floor pow select sqrt strchr strrchr strstr])
 AC_OUTPUT(Makefile
 src/Makefile
 src/base/Makefile
-src/classes/Makefile
 src/command/Makefile
-src/ff/Makefile
-src/gui/Makefile
 src/main/Makefile
-src/methods/Makefile
 src/parser/Makefile
-src/model/Makefile
-src/render/Makefile
 src/templates/Makefile
 )

@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_SCOPENODE_H
-#define ATEN_SCOPENODE_H
+#ifndef ATENCALC_SCOPENODE_H
+#define ATENCALC_SCOPENODE_H
 
 #include "parser/commandnode.h"
 #include "parser/variablelist.h"
@@ -39,8 +39,6 @@ class ScopeNode : public CommandNode
 	public:
 	// List of variables (and constants) owned by this scope
 	VariableList variables;
-	// Add global variables to list
-	void createGlobalVariables();
 
 	/*
 	// Set / Get / Execute

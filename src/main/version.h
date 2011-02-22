@@ -1,5 +1,5 @@
 /*
-	*** Aten version information
+	*** AtenCalc version information
 	*** src/main/version.h
 	Copyright T. Youngs 2007-2010
 
@@ -19,12 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#ifndef ATENCALC_VERSION_H
+#define ATENCALC_VERSION_H
 
-#define ATENVERSION "1.6"
-#define ATENREVISION "1323"
-#define ATENDATE "Tue 19 Oct - 21:35"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#define ATENCALCVERSION "1.6"
+#define ATENCALCREVISION "1323"
+#define ATENCALCDATE "Tue 19 Oct - 21:35"
+#define ATENCALCURL "http://aten.googlecode.com/svn/branches/ac"
 
 #endif

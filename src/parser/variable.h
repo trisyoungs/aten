@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VARIABLE_H
-#define ATEN_VARIABLE_H
+#ifndef ATENCALC_VARIABLE_H
+#define ATENCALC_VARIABLE_H
 
 #include "parser/treenode.h"
 #include "base/dnchar.h"

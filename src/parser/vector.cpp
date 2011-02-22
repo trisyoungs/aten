@@ -63,7 +63,7 @@ bool VectorVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector) cannot be assigned to.\n");
+		printf("A constant value (in this case a vector) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success = FALSE;
@@ -76,7 +76,7 @@ bool VectorVariable::set(ReturnValue &rv)
 	}
 	else
 	{
-		msg.print("Error: Array assigned to vector variable must contain three elements.\n");
+		printf("Error: Array assigned to vector variable must contain three elements.\n");
 		success = FALSE;
 	}
 	return success;
@@ -153,7 +153,6 @@ StepNode *VectorVariable::findAccessor(const char *s, TreeNode *arrayindex, Tree
 // Private static function to search accessors
 StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	msg.enter("VectorVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
@@ -163,15 +162,12 @@ StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
 		if (i == nFunctions)
 		{
-			msg.print("Error: Type 'vector' has no member or function named '%s'.\n", s);
-			msg.exit("VectorVariable::accessorSearch");
+			printf("Error: Type 'vector' has no member or function named '%s'.\n", s);
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'vector' function '%s'.\n", s);
-			msg.exit("VectorVariable::accessorSearch");
+			printf("Error: Array index given to 'vector' function '%s'.\n", s);
 			return NULL;
 		}
 		// Add and check supplied arguments...
@@ -179,43 +175,38 @@ StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'vector' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			printf("Error: Syntax for 'vector' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			printf("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		else result = new StepNode(i, VTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("VectorVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
 bool VectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("VectorVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vector type.\n", i);
-		msg.exit("VectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if (hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("VectorVariable::retrieveAccessor");
+		printf("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -240,19 +231,16 @@ bool VectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 			result = FALSE;
 			break;
 	}
-	msg.exit("VectorVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
 bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("VectorVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vector type.\n", i);
-		msg.exit("VectorVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -264,12 +252,12 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				printf("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newvalue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				printf("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -277,7 +265,7 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		{
 			if (newvalue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				printf("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -289,21 +277,17 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				printf("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				printf("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
-	if (!result)
-	{
-		msg.exit("VectorVariable::setAccessor");
-		return FALSE;
-	}
+	if (!result) return FALSE;
 	// Get current data from ReturnValue
 	Vec3<double> v = sourcerv.asVector(result);
 	if (result) switch (acc)
@@ -323,19 +307,16 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 			result = FALSE;
 			break;
 	}
-	msg.exit("VectorVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
 bool VectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 {
-	msg.enter("VectorVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Vector type.\n", i);
-		msg.exit("VectorVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -348,7 +329,6 @@ bool VectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("VectorVariable::performFunction");
 	return result;
 }
 
@@ -382,7 +362,7 @@ bool VectorArrayVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector array) cannot be assigned to.\n");
+		printf("A constant value (in this case a vector array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (vectorArrayData_ == NULL)
@@ -400,7 +380,7 @@ bool VectorArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector array?) cannot be assigned to.\n");
+		printf("A constant value (in this case a vector array?) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (vectorArrayData_ == NULL)
@@ -411,7 +391,7 @@ bool VectorArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 	// Check index
 	if ((arrayindex < 0) || (arrayindex >= arraySize_))
 	{
-		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		printf("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
@@ -434,7 +414,7 @@ void VectorArrayVariable::reset()
 // Return value of node
 bool VectorArrayVariable::execute(ReturnValue &rv)
 {
-	msg.print("A whole vector array ('%s') cannot be passed as a value.\n", name_.get());
+	printf("A whole vector array ('%s') cannot be passed as a value.\n", name_.get());
 	return FALSE;
 }
 
@@ -444,7 +424,7 @@ bool VectorArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 	// Check bounds
 	if ((arrayindex < 0) || (arrayindex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		printf("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
 	rv.set( vectorArrayData_[arrayindex] );
@@ -472,7 +452,7 @@ bool VectorArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for vector array '%s'.\n", name_.get());
+		printf("Failed to find size for vector array '%s'.\n", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different

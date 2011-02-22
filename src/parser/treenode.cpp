@@ -24,8 +24,6 @@
 #include "parser/variablenode.h"
 #include "base/sysfunc.h"
 #include "templates/reflist.h"
-#include "main/aten.h"
-#include "base/atom.h"
 #include <stdarg.h>
 
 // Constructors
@@ -145,7 +143,7 @@ bool TreeNode::setArg(int i, ReturnValue &rv)
 	if (args_[i]->item->readOnly())
 	{
 		args_[i]->item->nodePrint(0);
-		msg.print("Argument %i is read-only and can't be set.\n", i);
+		//printf("Argument %i is read-only and can't be set.\n", i);
 		return FALSE;
 	}
 	return args_[i]->item->set(rv);
@@ -184,7 +182,7 @@ void TreeNode::addArguments(int nargs, ...)
 	// Add arguments in the order they were provided
 	for (int n=0; n<nargs; n++) addArgument(va_arg(vars, TreeNode*));
 	va_end(vars);
-	msg.print(Messenger::Parse,"Node %p now has %i arguments.\n", this, args_.nItems());
+	//msg.print(Messenger::Parse,"Node %p now has %i arguments.\n", this, args_.nItems());
 }
 
 // Add multiple arguments to node
@@ -196,10 +194,10 @@ void TreeNode::addArgument(TreeNode *arg)
 // Check validity of supplied arguments
 bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 {
-	msg.enter("TreeNode::checkArguments");
-	msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), funcname);
+	//msg.enter("TreeNode::checkArguments");
+	//msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), funcname);
 	const char *c = NULL, *altargs = arglist;
-	msg.print(Messenger::Parse, "...argument list is [%s]\n", altargs);
+// 	msg.print(Messenger::Parse, "...argument list is [%s]\n", altargs);
 	char upc;
 	int count = 0, ngroup = -1, repeat = 0;
 	bool optional = FALSE, requirevar = FALSE, result, cluster = FALSE, array = FALSE, reset = TRUE;
@@ -207,7 +205,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 	// If the argument list begins with '_', arguments will have already been checked and added elsewhere...
 	if (*altargs == '_')
 	{
-		msg.exit("TreeNode::checkArguments");
+// 		msg.exit("TreeNode::checkArguments");
 		return TRUE;
 	}
 	// Search for an alternative set of arguments
@@ -236,7 +234,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 					reset = TRUE;
 					continue;
 				}
-				msg.exit("TreeNode::checkArguments");
+// 				msg.exit("TreeNode::checkArguments");
 				return TRUE;
 			}
 		// Retain previous information if this is a repeat, but make it an optional argument
@@ -282,7 +280,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 					reset = TRUE;
 					continue;
 				}
-				msg.exit("TreeNode::checkArguments");
+// 				msg.exit("TreeNode::checkArguments");
 				return TRUE;
 			}
 			// Convert character to upper case if necessary
@@ -298,7 +296,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 			}
 		}
 		if (*c == '\0') break;
-		msg.print(Messenger::Parse,"...next/current argument token is '%c', opt=%s, reqvar=%s, repeat=%i, ngroup=%i\n", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", repeat, ngroup);
+// 		msg.print(Messenger::Parse,"...next/current argument token is '%c', opt=%s, reqvar=%s, repeat=%i, ngroup=%i\n", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", repeat, ngroup);
 		// If we have gone over the number of arguments provided, is this an optional argument?
 		if (count >= args_.nItems())
 		{
@@ -306,21 +304,21 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 			{
 				// If an alternative argument list is present, check this before we fail...
 				if (altargs != NULL) { reset = TRUE; continue; }
-				msg.print("Error: The function '%s' requires argument %i.\n", funcname, count+1);
-// 				msg.print("       Command syntax is '%s(%s)'.\n", funcname, Command::data[function_].argText);
-				msg.exit("TreeNode::checkArguments");
+				printf("Error: The function '%s' requires argument %i.\n", funcname, count+1);
+// 				printf("       Command syntax is '%s(%s)'.\n", funcname, Command::data[function_].argText);
+// 				msg.exit("TreeNode::checkArguments");
 				return FALSE;
 			}
 			else if (cluster && (ngroup != 0))
 			{
-				msg.print("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, funcname);
-// 				msg.print("       Command syntax is '%s(%s)'.\n", funcname, arglist);
-				msg.exit("TreeNode::checkArguments");
+				printf("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, funcname);
+// 				printf("       Command syntax is '%s(%s)'.\n", funcname, arglist);
+// 				msg.exit("TreeNode::checkArguments");
 				return FALSE;
 			}
 			else
 			{
-				msg.exit("TreeNode::checkArguments");
+// 				msg.exit("TreeNode::checkArguments");
 				return TRUE;
 			}
 		}
@@ -334,7 +332,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a number.\n", count+1, funcname);
+					printf("Argument %i to function '%s' must be a number.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -343,7 +341,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if (rtype != VTypes::IntegerData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int.\n", count+1, funcname);
+					printf("Argument %i to function '%s' must be an int.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -352,25 +350,16 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if (rtype != VTypes::DoubleData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a double.\n", count+1, funcname);
+					printf("Argument %i to function '%s' must be a double.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
-			// Character		(StringData)
-			case ('C'):
-				if (rtype != VTypes::StringData)
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a character string.\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;	
 			// Vector		(VectorData)
 			case ('U'):
 				if (rtype != VTypes::VectorData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a vector.\n", count+1, funcname);
+					printf("Argument %i to function '%s' must be a vector.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;	
@@ -379,7 +368,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a number or a string.\n", count+1, funcname);
+					printf("Argument %i to function '%s' must be a number or a string.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -388,79 +377,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if (rtype == VTypes::NoData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must return something!\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;
-			// Element		(StringData, DoubleData, IntegerData, AtomData, ElementData)
-			case ('E'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData) && (rtype != VTypes::ElementData))
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int, double, string or an atom&.\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;
-			// Atom/Id		(IntegerData, AtomData)
-			case ('A'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData))
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int or an atom&.\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;
-			// Model/ID/Name	(ModelData, StringData, IntegerData)
-			case ('M'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ModelData) && (rtype != VTypes::StringData))
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int, a model& or a string.\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;
-			// Forcefield/ID/Name	(ForcefieldData, StringData, IntegerData)
-			case ('F'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ForcefieldData) && (rtype != VTypes::StringData))
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int, a forcefield& or a string.\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;
-			// Pattern/ID/Name	(PatternData, StringData, IntegerData)
-			case ('P'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::PatternData) && (rtype != VTypes::StringData))
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int, a pattern& or a string.\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;
-			// Grid/ID/Name	(GridData, StringData, IntegerData)
-			case ('G'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::GridData) ) //&& (rtype != VTypes::StringData))
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int or a grid&.\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;
-			// FFAtom (ForcefieldAtomData)
-			case ('O'):
-				if (rtype != VTypes::ForcefieldAtomData)
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an ffatom&.\n", count+1, funcname);
-					result = FALSE;
-				}
-				break;
-			// Pointer		(Any pointer (void*) object)
-			case ('X'):
-				if (rtype < VTypes::AtomData)
-				{
-					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a reference of some kind.\n", count+1, funcname);
+					printf("Argument %i to function '%s' must return something!\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -469,7 +386,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a variable of some kind.\n", count+1, funcname);
+					printf("Argument %i to function '%s' must be a variable of some kind.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -477,7 +394,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 		// Was this argument requested to be a modifiable variable value?
 		if (requirevar && argNode(count)->readOnly())
 		{
-			msg.print("Argument %i to function '%s' must be a variable and not a constant.\n", count+1, funcname);
+			printf("Argument %i to function '%s' must be a variable and not a constant.\n", count+1, funcname);
 			result = FALSE;
 		}
 		// Was this argument requested to be an array (*not* an array element)?
@@ -485,18 +402,18 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 		{
 			if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
 			{
-				msg.print("Argument %i to function '%s' must be an array.\n", count+1, funcname);
+				printf("Argument %i to function '%s' must be an array.\n", count+1, funcname);
 				result = FALSE;
 			}
 			Variable *v = ((VariableNode*) argNode(count))->variable();
 			if (v->nodeType() != TreeNode::ArrayVarNode)
 			{
-				msg.print("Argument %i to function '%s' must be an array.\n", count+1, funcname);
+				printf("Argument %i to function '%s' must be an array.\n", count+1, funcname);
 				result = FALSE;
 			}
 			else if (((VariableNode*) argNode(count))->arrayIndex() != NULL)
 			{
-				msg.print("Argument %i to function '%s' must be an array and not an array element.\n", count+1, funcname);
+				printf("Argument %i to function '%s' must be an array and not an array element.\n", count+1, funcname);
 				result = FALSE;
 			}
 		}
@@ -510,11 +427,11 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 	// End of the argument specification - do we still have arguments left over in the command?
 	if (result && (args_.nItems() > count))
 	{
-		msg.print("Error: %i extra arguments given to function '%s'.\n", args_.nItems()-count, funcname);
-		msg.exit("TreeNode::checkArguments");
+		printf("Error: %i extra arguments given to function '%s'.\n", args_.nItems()-count, funcname);
+// 		msg.exit("TreeNode::checkArguments");
 		return FALSE;
 	}
-	msg.exit("TreeNode::checkArguments");
+// 	msg.exit("TreeNode::checkArguments");
 	return result;
 }
 
@@ -540,9 +457,9 @@ bool TreeNode::argb(int i)
 	static ReturnValue rv;
 	bool success;
 	bool result;
-	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) printf("Couldn't retrieve argument %i.\n", i+1);
 	result = (rv.asInteger(success) > 0);
-	if (!success) msg.print("Couldn't cast argument %i into an integer.\n", i+1);
+	if (!success) printf("Couldn't cast argument %i into an integer.\n", i+1);
 	return result;
 }
 
@@ -557,54 +474,9 @@ int TreeNode::argi(int i)
 	static ReturnValue rv;
 	bool success;
 	int result = 0;
-	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) printf("Couldn't retrieve argument %i.\n", i+1);
 	result = rv.asInteger(success);
-	if (!success) msg.print("Couldn't cast argument %i into an integer.\n", i+1);
-	return result;
-}
-
-// Return (execute) argument specified as an atomic number
-short int TreeNode::argz(int i)
-{
-	if ((i < 0) || (i >= args_.nItems()))
-	{
-		printf("TreeNode::argz : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
-	}
-	static ReturnValue rv;
-	NameMap<int> *nm;
-	Atom *atm;
-	short int result = 0;
-	Element *elem;
-	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
-	switch (rv.type())
-	{
-		case (VTypes::IntegerData):
-			result = rv.asInteger();
-			break;
-		case (VTypes::DoubleData):
-			result = (short int) floor(rv.asDouble() + 0.15);
-			break;
-		case (VTypes::StringData):
-			// Attempt conversion of the string first from the users type list
-			for (nm = aten.typeImportMap.first(); nm != NULL; nm = nm->next)
-				if (strcmp(nm->name(),rv.asString()) == 0) break;
-			if (nm == NULL) result = elements().find(rv.asString());
-			else result = nm->data();
-			break;
-		case (VTypes::AtomData):
-			atm = (Atom*) rv.asPointer(VTypes::AtomData);
-			result = atm == NULL ? 0 : atm->element();
-			break;
-		case (VTypes::ElementData):
-			// Check pointer data first....
-			elem = (Element*) rv.asPointer(VTypes::ElementData);
-			result = elem == 0 ? 0 : elem->z;
-			break;
-		default:
-			msg.print("Couldn't cast argument %i (%s) into an atomic number.\n", i+1, VTypes::aDataType(rv.type()));
-			break;
-	}
+	if (!success) printf("Couldn't cast argument %i into an integer.\n", i+1);
 	return result;
 }
 
@@ -619,16 +491,10 @@ double TreeNode::argd(int i)
 	static ReturnValue rv;
 	bool success;
 	double result = 0.0;
-	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) printf("Couldn't retrieve argument %i.\n", i+1);
 	result = rv.asDouble(success);
-	if (!success) msg.print("Couldn't cast argument %i into a real.\n", i+1);
+	if (!success) printf("Couldn't cast argument %i into a real.\n", i+1);
 	return result;
-}
-
-// Return (execute) argument specified as a GLFloat
-GLfloat TreeNode::argGLf(int i)
-{
-	return (GLfloat) argd(i);
 }
 
 // Return (execute) argument specified as a character
@@ -642,9 +508,9 @@ const char *TreeNode::argc(int i)
 	static ReturnValue rv[MAXNODEARGS];
 	bool success;
 	const char *result = NULL;
-	if (!args_[i]->item->execute(rv[i])) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv[i])) printf("Couldn't retrieve argument %i.\n", i+1);
 	result = rv[i].asString(success);
-	if (!success) msg.print("Couldn't cast argument %i into a character.\n", i+1);
+	if (!success) printf("Couldn't cast argument %i into a character.\n", i+1);
 	return result;
 }
 
@@ -658,7 +524,7 @@ Vec3<double> TreeNode::argv(int i)
 	}
 	static ReturnValue rv;
 	bool success;
-	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) printf("Couldn't retrieve argument %i.\n", i+1);
 	return rv.asVector(success);
 }
 
@@ -673,9 +539,9 @@ void *TreeNode::argp(int i, VTypes::DataType type)
 	static ReturnValue rv;
 	bool success;
 	void *result = NULL;
-	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) printf("Couldn't retrieve argument %i.\n", i+1);
 	result = rv.asPointer(type, success);
-	if (!success) msg.print("Couldn't cast argument %i into a pointer of type '%s'.\n", i+1, VTypes::dataType(type));
+	if (!success) printf("Couldn't cast argument %i into a pointer of type '%s'.\n", i+1, VTypes::dataType(type));
 	return result;
 }
 
@@ -702,19 +568,6 @@ Vec3<int> TreeNode::arg3i(int i)
 	}
 	Vec3<int> result;
 	result.set(argi(i), argi(i+1), argi(i+2));
-	return result;
-}
-
-// Return (execute) argument triplet specified
-Vec3<GLfloat> TreeNode::arg3GLf(int i)
-{
-	if ((i < 0) || (i > (args_.nItems()-3)))
-	{
-		printf("TreeNode::arg3GLf : Argument index %i is out of range for a triplet (node = %p).\n", i, this);
-		return FALSE;
-	}
-	Vec3<GLfloat> result;
-	result.set(argGLf(i), argGLf(i+1), argGLf(i+2));
 	return result;
 }
 

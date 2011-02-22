@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TREENODE_H
-#define ATEN_TREENODE_H
+#ifndef ATENCALC_TREENODE_H
+#define ATENCALC_TREENODE_H
 
 #include "parser/returnvalue.h"
 #include "templates/reflist.h"
@@ -96,12 +96,8 @@ class TreeNode
 	bool argb(int i);
 	// Return (execute) argument specified as an integer
 	int argi(int i);
-	// Return (execute) argument specified as an atomic number
-	short int argz(int i);
 	// Return (execute) argument specified as a double
 	double argd(int i);
-	// Return (execute) argument specified as a GLFloat
-	GLfloat argGLf(int i);
 	// Return (execute) argument specified as a character
 	const char *argc(int i);
 	// Return (execute) argument specified as a vector
@@ -112,8 +108,6 @@ class TreeNode
 	Vec3<double> arg3d(int i);
 	// Return (execute) triplet of 'int' arguments, starting from argument specified
 	Vec3<int> arg3i(int i);
-	// Return (execute) triplet of 'GLfloat' arguments, starting from argument specified
-	Vec3<GLfloat> arg3GLf(int i);
 	// Return the TreeNode corresponding to the argument, rather than executing it
 	TreeNode *argNode(int i);
 	// Set argument specified from ReturnValue

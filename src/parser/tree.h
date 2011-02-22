@@ -19,29 +19,22 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TREE_H
-#define ATEN_TREE_H
+#ifndef ATENCALC_TREE_H
+#define ATENCALC_TREE_H
 
 #include <iostream>
-#include "parser/filterdata.h"
-#include "parser/widgetnode.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
 #include "command/commands.h"
-#include "templates/namemap.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
 #include "base/dnchar.h"
-#include "base/elements.h"
-#include "base/lineparser.h"
 
 // Forward declarations
 class TreeNode;
 class ScopeNode;
 class VariableNode;
 class StepNode;
-class Forest;
-class AtenCustomDialog;
 
 // Tree
 class Tree
@@ -53,32 +46,18 @@ class Tree
 	virtual ~Tree();
 	// List pointers
 	Tree *prev, *next;
-	// Tree Types
-	enum TreeType { UnknownTree, CommandTree, FilterTree, FunctionTree, nTreeTypes };
 
 
 	/*
 	// Tree Character
 	*/
-	private :
-	// Forest parent
-	Forest *parent_;
-	// Tree name (if any)
+	private:
+	// Tree name (or function name if is a function)
 	Dnchar name_;
 	// Return type (used if defined as a function)
 	VTypes::DataType returnType_;
-	// Type of tree
-	Tree::TreeType type_;
-
+	
 	public:
-	// Set parent
-	void setParent(Forest *f);
-	// Return parent
-	Forest *parent() const;
-	// Set type
-	void setType(Tree::TreeType type);
-	// Return type
-	Tree::TreeType type() const;
 	// Set name of tree
 	void setName(const char *s);
 	// Return name of tree
@@ -165,10 +144,6 @@ class Tree
 	virtual TreeNode *addConstant(int i);
 	// Add double constant
 	virtual TreeNode *addConstant(double d);
-	// Add string constant
-	virtual TreeNode *addConstant(const char *s);
-	// Add Element constant
-	virtual TreeNode *addElementConstant(int el);
 	// Add variable to topmost ScopeNode
 	virtual TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add variable (as a function argument) to topmost ScopeNode
@@ -198,89 +173,19 @@ class Tree
 
 
 	/*
-	// Filter Properties
-	*/
-	public:
-	// Filter data
-	FilterData filter;
-	// Return whether this tree is a filter
-	bool isFilter() const;
-
-
-	/*
-	// Custom Dialog Widgets
-	*/
-	private:
-	// List of user-defined widgets for custom dialog / filter options
-	Reflist<WidgetNode,int> widgets_;
-	// Custom dialog containing ready-created set of controls
-	AtenCustomDialog *customDialog_;
-
-	public:
-	// Add new (GUI-based) filter option linked to a variable
-	virtual TreeNode *addWidget(TreeNode *arglist);
-	// Return first item in list of filter options
-	Refitem<WidgetNode,int> *widgets();
-	// Locate named widget
-	WidgetNode *findWidget(const char *name);
-	// Locate widget with specified pointer
-	WidgetNode *findWidget(QWidget *widget);
-	// Create custom dialog from defined widgets (if there are any)
-	void createCustomDialog(const char *title = NULL);
-	// Return custom dialog (if any)
-	AtenCustomDialog *customDialog();
-	// Execute defined custom dialog (if one exists, just return TRUE if not)
-	bool executeCustomDialog(bool getvaluesonly = FALSE, const char *newtitle = NULL);
-	// Retrieve current value of named widget as a double
-	double widgetValued(const char *name);
-	// Retrieve current value of named widget as an integer
-	int widgetValuei(const char *name);
-	// Retrieve current value of named widget as a string
-	const char *widgetValuec(const char *name);
-	// Retrieve current value of named widget triplet as a vector
-	Vec3<double> widgetValue3d(const char *name1, const char *name2, const char *name3);
-
-
-	/*
 	// Execution
 	*/
 	private:
-	// Read options for parser
-	int readOptions_;
-	// Current input stream target, in the form of a LineParser
-	LineParser *parser_;
 	// Flag to indicate that recent failure of this token is known and we should continue
 	Command::Function acceptedFail_;
 
 	public:
-	// Add read option
-	void addReadOption(LineParser::ParseOption po);
-	// Remove read option
-	void removeReadOption(LineParser::ParseOption po);
-	// Return read options
-	int readOptions() const;
-	// Return the current LineParser pointer
-	LineParser *parser();
-	// Return whether the LineParser is ready for file reading
-	bool isFileGoodForReading() const;
-	// Return whether the LineParser is ready for file writing
-	bool isFileGoodForWriting() const;
 	// Set function for accepted fail
 	void setAcceptedFail(Command::Function func);
 	// Return function for accepted fail
 	Command::Function acceptedFail() const;
 	// Execute
 	bool execute(ReturnValue &rv);
-	// Execute, using specified parser as input/output source
-	bool execute(LineParser *parser, ReturnValue &rv);
-	// Execute, opening specified file as input source
-	bool executeRead(const char *filename, ReturnValue &rv);
-	// Execute, with specified filename as data target
-	bool executeWrite(const char *filename, ReturnValue &rv);
-	// Execute, opening specified file as input source (no return value)
-	bool executeRead(const char *filename);
-	// Execute, with specified filename as data target (no return value)
-	bool executeWrite(const char *filename);
 };
 
 #endif

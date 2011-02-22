@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_USERCOMMANDNODE_H
-#define ATEN_USERCOMMANDNODE_H
+#ifndef ATENCALC_USERCOMMANDNODE_H
+#define ATENCALC_USERCOMMANDNODE_H
 
 #include "templates/reflist.h"
 #include "templates/list.h"
@@ -28,7 +28,6 @@
 #include "command/commands.h"
 #include "parser/treenode.h"
 #include "parser/returnvalue.h"
-#include "parser/format.h"
 
 // Forward Declarations
 class Tree;

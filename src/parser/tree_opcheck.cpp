@@ -24,12 +24,12 @@
 // Check unary operator type compatibility
 VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, bool array, bool &returnsarray)
 {
-	msg.enter("Tree::checkUnaryOperatorTypes");
+// 	msg.enter("Tree::checkUnaryOperatorTypes");
 	int id = VTypes::dataSinglet(type, array ? 1 : -1);
 	// Check for no data type
 	if (id == VTypes::UntypedData)
 	{
-		msg.exit("Tree::checkUnaryOperatorTypes");
+// 		msg.exit("Tree::checkUnaryOperatorTypes");
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
@@ -47,18 +47,6 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 				case (VTypes::Dbl):
 				case (VTypes::Vec):
 					result = type;
-					break;
-				case (VTypes::Ptr):
-					// Only some pointer types are supported....
-					switch (type)
-					{
-						case (VTypes::AtenData):
-						case (VTypes::CellData):
-							break;
-						default:
-							result = type;
-							break;
-					}
 					break;
 			}
 			break;
@@ -86,20 +74,20 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 			break;
 	}
 	// Print error message if necessary
-	if (result == VTypes::NoData) msg.print("Error: Unary operator %s cannot act on %s.\n", Command::data[func].keyword, VTypes::aDataType(type));
-	msg.exit("Tree::checkUnaryOperatorTypes");
+	if (result == VTypes::NoData) printf("Error: Unary operator %s cannot act on %s.\n", Command::data[func].keyword, VTypes::aDataType(type));
+// 	msg.exit("Tree::checkUnaryOperatorTypes");
 	return result;
 }
 
 // Check binary operator type compatibility
 VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray)
 {
-	msg.enter("Tree::checkBinaryOperatorTypes");
+// 	msg.enter("Tree::checkBinaryOperatorTypes");
 	int id = VTypes::dataPair(type1, array1 ? 1 : -1, type2, array2 ? 1 : -1);
 	// Check for no data type
 	if (id == VTypes::UntypedData)
 	{
-		msg.exit("Tree::checkBinaryOperatorTypes");
+// 		msg.exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
@@ -302,7 +290,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 			break;
 	}
 	// Print error message
-	if (result == VTypes::NoData) msg.print("Error: Operator %s cannot act between types %s and %s.\n", Command::data[func].keyword, VTypes::dataType(type1), VTypes::dataType(type2));
-	msg.exit("Tree::checkBinaryOperatorTypes");
+	if (result == VTypes::NoData) printf("Error: Operator %s cannot act between types %s and %s.\n", Command::data[func].keyword, VTypes::dataType(type1), VTypes::dataType(type2));
+// 	msg.exit("Tree::checkBinaryOperatorTypes");
 	return result;
 }
