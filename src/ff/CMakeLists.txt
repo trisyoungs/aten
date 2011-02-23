@@ -12,6 +12,7 @@ forcefield.cpp
 forms.cpp
 loadforcefield.cpp
 rules.cpp 
+saveforcefield.cpp
 torsion.cpp 
 vdw.cpp
 )

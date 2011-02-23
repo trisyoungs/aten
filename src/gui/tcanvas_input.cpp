@@ -822,7 +822,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (atomClicked_ != NULL)
 			{
 				displayModel_->beginUndoState("Draw Attached Fragment");
-				frag->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], gui.fragmentWindow->bondId(), displayModel_);
+				frag->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], gui.fragmentWindow->bondId(), displayModel_, gui.fragmentWindow->ui.AdjustBondLengthCheck->isChecked());
 			}
 			else
 			{

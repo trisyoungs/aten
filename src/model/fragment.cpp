@@ -285,7 +285,7 @@ Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond
 }
 
 // Paste anchored model to target model
-void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replacebond, Model *target)
+void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replacebond, Model *target, bool adjustbond)
 {
 	msg.enter("Fragment::pasteAnchoredModel");
 
@@ -326,9 +326,17 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replaceb
 	// Paste to the target model, bonding the anchor and linkPartners if a bond was there before
 	Clipboard clip;
 	clip.copyAll(&anchoredModel_);
+	// Translate to adjust bond length if requested
+	if (adjustbond)
+	{
+		Vec3<double> delta = linkPartner->r() - anchorpoint->r();
+		double original = delta.magAndNormalise();
+		delta *= (elements().atomicRadius(linkPartner) + elements().atomicRadius(anchorpoint)) - original;
+		clip.translate(delta);
+	}
 	clip.pasteToModel(target, FALSE);
 	if (bt != Bond::nBondTypes) target->bondAtoms(anchorpoint->id(), target->nAtoms() - anchoredModel_.nAtoms() + linkPartner->id(), bt);
-
+	
 	// Since we've physically altered anchoredModel_, re-copy it
 	anchoredModel_.copy(masterModel_);
 	linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
