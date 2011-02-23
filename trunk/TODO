@@ -2,6 +2,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>When in script/filter, encountering a NULL reference and using it really should result in an error</para>
+		</listitem>
+		<listitem>
 			<para>Reading of unformatted files (i.e. DL_POLY HISu) broken?</para>
 		</listitem>
 		<listitem>
@@ -23,6 +26,9 @@
 <sect5><title>General TODO</title>
 
 	<orderedlist>
+		<listitem>
+			<para>Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?</para>
+		</listitem>
 		<listitem>
 			<para>Add 'Rebond in Patterns' toolbar button</para>
 		</listitem>

@@ -335,12 +335,12 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 	done = FALSE;
 	hadquotes = FALSE;
 	quotechar = '\0';
-	endOfLine_ = FALSE;		// WHY HERE? BROKEN
+	endOfLine_ = FALSE;
 	arglen = 0;
 	if (endOfLine_)
 	{
 		destarg->clear();
-		printf("Lineparser is at enf of line - returning...\n");
+		printf("Lineparser is at end of line - returning...\n");
 		return TRUE;
 	}
 	while (linePos_ < lineLength_)
