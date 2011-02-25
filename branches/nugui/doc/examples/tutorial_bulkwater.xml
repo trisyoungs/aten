@@ -1,0 +1,159 @@
+<section id="tutorials.bulkwater"><title>Bulk Water</title>
+	<indexterm><primary>building</primary></indexterm>
+	<indexterm><primary>salt</primary></indexterm>
+	<indexterm><primary>liquids</primary></indexterm>	
+	<indexterm><primary>disordered systems</primary></indexterm>
+	
+	<para>Bulk systems are the staple diet of the molecular dynamicist, particularly systems that are isotropic. This example illustrates how to generate a simple bulk configuration of liquid water.</para>
+	
+	<sect5><title>1. Make a Water Molecule</title>
+	<para>We need a water molecule. We <emphasis>could</emphasis> load one in, but its marginally more interesting to build one from scratch. So, we'll place an oxygen atom down somewhere and automatically add hydrogens to it.</para>
+
+	<table frame='all' pgwide='1' tocentry='0'>
+		<tgroup cols='2' align='left' colsep='0' rowsep='0'>
+			<tbody>
+				<row>
+					<entry><emphasis>File Toolbar</emphasis></entry>
+					<entry>On the File toolbar click <inlinegraphic fileref="images/file_new.png"/> to create a new, empty model</entry>
+				</row>
+				<row>
+					<entry><emphasis>Build Toolbar</emphasis></entry>
+					<entry>On the Build toolbar change the active element to oxygen by clicking the <inlinegraphic fileref="images/build_element.png"/> button and selecing it in the periodic table.</entry>
+				</row>
+				<row>
+					<entry><emphasis>Draw Toolbar</emphasis></entry>
+					<entry>Select the draw single atoms tool <inlinegraphic fileref="images/draw_atom.png"/> and click once somewhere in the empty model to draw an oxygen atom</entry>
+				</row>
+				<row>
+					<entry><emphasis>Build Toolbar</emphasis></entry>
+					<entry>Add hydrogens to the oxygen atom by clicking on add hydrogens <inlinegraphic fileref="images/build_addh.png"/></entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<figure><title>Single water molecule</title>
+		<graphic fileref="images/tutorial_bulkwater1.png" align="center"/>
+	</figure>
+	
+</sect5>
+
+<sect5><title>2. Create a New Model with an Empty Cell</title>
+	
+	<para>The Disordered Builder adds molecules into a single target model, which must have a unit cell definition. This means we predetermine the size and shape of the cell before the Disorded Builder begins -- for this example a simple cubic cell will suffice. How big a system you want (and how long you're prepared to wait for it) will determine the size of the cell. For example, a side length <emphasis>l</emphasis> of 10 &#197; will hold 33 water molecules (at a density of 1 g / cm3), while a side length <emphasis>l</emphasis> of 20 &#197; holds around 300. The choice of either of these, or something entirely different (even non-cubic) is yours.</para>
+
+	<table frame='all' pgwide='1' tocentry='0'>
+		<tgroup cols='2' align='left' colsep='0' rowsep='0'>
+			<tbody>
+				<row>
+					<entry><emphasis>File Toolbar</emphasis></entry>
+					<entry>On the File toolbar click <inlinegraphic fileref="images/file_new.png"/> to create a new, empty model</entry>
+				</row>
+				<row>
+					<entry><inlinegraphic fileref="image/stack_celledit.png"/></entry>
+					<entry>Open the Cell Edit window</entry>
+				</row>
+				<row>
+					<entry></entry>
+					<entry>Make sure the 'Has Cell?' checkbox is checked, and set the cell up to be the size and shape that you want it</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<figure><title>Empty unit cell</title>
+		<graphic fileref="images/tutorial_bulkwater2.png" align="center"/>
+	</figure>
+
+</sect5>
+
+<sect5><title>3. Load a Suitable Forcefield</title>
+
+	<para>Now, water isn't the most complicated of molecules so many of the supplied forcefields will do. We must load one in so that Aten can generate an energy expression for the water and target models.</para>
+
+	<table frame='all' pgwide='1' tocentry='0'>
+		<tgroup cols='2' align='left' colsep='0' rowsep='0'>
+			<tbody>
+				<row>
+					<entry><inlinegraphic fileref="image/stack_ff.png"/></entry>
+					<entry>Open the Forcefields window</entry>
+				</row>
+				<row>
+					<entry></entry>
+					<entry>Open any one of 'oplsaa.ff', 'spc.ff', 'spce.ff', 'uff.ff' - all these forcefields contain the terms for liquid water</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+
+</sect5>
+
+<sect5><title>4. Build the Disordered System</title>
+	
+	<para>All loaded models that are non-periodic are listed in the Disordered Builder window, since they are all viable candidates for inclusion into new models. Since the only non-periodic model currently loaded is the water model we created earlier, this is the only one in the list.</para>
+	
+	<para>Each model listed has a number ('0' by default) and two checkboxes associated with it. The number represents the requested number of copies to insert into the target model, while the checkboxes allow rotation and translation Monte Carlo moves to be restricted for specific models (also restricting the reorientation of inserted copies). The size of cell you created will determine the number that you type in here - alternatively you could just put in a huge number and see how many will fit.</para>
+	
+	<para>Note that the number(s) you request here may not be the final molecule populations that you end up with, as a result of the Monte Carlo insertion method. The requested numbers represent the maximum number of copies of a given model that may be inserted into the model. The nature of the beast means that, should you choose exactly the number that corresponds to the experimental density for a given cell volume, you'll most likely find that you don't get the number you wanted. Two options are available: either you can increase the size of the cell and then reduce the volume afterwards somehow, or you can play with the van der Waals scaling factor option (which decreases the effective radii of atoms allowing more to fit into the same volume). The latter method is probably preferable, but some extra minimisation of the final system might be required.</para>
+	
+	<table frame='all' pgwide='1' tocentry='0'>
+		<tgroup cols='2' align='left' colsep='0' rowsep='0'>
+			<tbody>
+				<row>
+					<entry><inlinegraphic fileref="images/stack_disorder.png"/></entry>
+					<entry>Open the Disordered Builder window</entry>
+				</row>
+				<row>
+					<entry></entry>
+					<entry>Change the number of water molecules to add to a sensible number (dependent on the size of the cell - a water molecule's volume is around 30 cubic Angstroms at room temperature)</entry>
+				</row>
+				<row>
+					<entry></entry>
+					<entry>Once the number of water molecules has been changed, press 'Build' to add in water molecules to the empty cell</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<figure><title>Bulk water system</title>
+		<graphic fileref="images/tutorial_bulkwater3.png" align="center"/>
+	</figure>
+
+</sect5>
+
+<sect5><title>5. Further Actions</title>
+	
+	<para>You could energy minimise the model a little with one of the minimisers. Add a few more waters by running the Disordered Builder again on the same cell. Save the coordinates and a forcefield specification of the system from the File menu? Your choice.</para>
+	
+</sect5>
+
+<sect5><title>Script</title>
+
+	<para>This script uses a larger cubic box to hold more waters, and also minimises the system a little before saving out coordinates and a forcefield expression for DL_POLY.</para>
+	
+	<programlisting>
+newmodel("water");
+newatom(O);
+addhydrogen();
+nmols(267);
+
+loadff("spce.ff");
+
+newmodel("box");
+cell(20,20,20,90,90,90);
+
+disorder(20);
+
+mcminimise(20);
+
+sdminimise(20);
+
+saveexpression("dlpoly", "water.FIELD");
+savemodel("dlpoly", "water.CONFIG");
+
+quit();
+	</programlisting>
+
+</sect5>
+
+</section>

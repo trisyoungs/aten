@@ -1,0 +1,284 @@
+title "Render Test"
+
+glyph text3d 1
+1 0 0 -12 3 0
+text "Spheres"
+endglyph
+# Two sphere glyphs bounded by atoms
+atom 1 H 2 0 0 0.0 tube 
+atom 2 H 0 2 0 0.0 tube
+atom 3 H -2 0 0 0.0 tube
+atom 4 H 0 -2 0 0.0 tube
+atom 5 H 0 0 2 0.0 tube
+atom 6 H 0 0 -2 0.0 tube
+glyph sphere 2
+1 0 0 0.0 0.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 2.0 2.0 2.0
+endglyph
+
+# Another two sphere glyphs bounded by atoms
+atom 7 H 7 0 0 0.0 tube 
+atom 8 H 5 2 0 0.0 tube
+atom 9 H 3 0 0 0.0 tube
+atom 10 H 5 -2 0 0.0 tube
+atom 11 H 5 0 2 0.0 tube
+atom 12 H 5 0 -2 0.0 tube
+glyph sphere 2
+1 0 0 5.0 0.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 1.5 1.5 1.5
+endglyph
+glyph sphere 2
+1 0 0 5.0 0.0 0.0 0.0 0.0 1.0 0.5
+2 0 0 2.0 2.0 2.0
+endglyph
+
+# Another two sphere glyphs bounded by atoms
+atom 13 H -3 0 0 0.0 tube 
+atom 14 H -5 2 0 0.0 tube
+atom 15 H -7 0 0 0.0 tube
+atom 16 H -5 -2 0 0.0 tube
+atom 17 H -5 0 2 0.0 tube
+atom 18 H -5 0 -2 0.0 tube
+glyph sphere 2
+1 0 0 -5.0 0.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 1.5 1.5 1.5
+endglyph
+glyph sphere 2
+1 0 0 -5.0 0.0 0.0 0.0 0.0 1.0 0.5
+2 0 0 2.0 2.0 2.0
+endglyph
+
+# Another two sphere glyphs bounded by atoms
+atom 19 H 12 0 0 0.0 tube 
+atom 20 H 10 2 0 0.0 tube
+atom 21 H 8 0 0 0.0 tube
+atom 22 H 10 -2 0 0.0 tube
+atom 23 H 10 0 2 0.0 tube
+atom 24 H 10 0 -2 0.0 tube
+glyph sphere 2
+1 0 0 10.0 0.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 1.0 1.0 1.0
+endglyph
+glyph sphere 2
+1 0 0 10.0 0.0 0.0 0.0 1.0 1.0 1.0
+2 0 0 2.0 2.0 2.0
+wireframe
+endglyph
+
+# Another two sphere glyphs bounded by atoms
+atom 25 H -8 0 0 0.0 tube 
+atom 26 H -10 2 0 0.0 tube
+atom 27 H -12 0 0 0.0 tube
+atom 28 H -10 -2 0 0.0 tube
+atom 29 H -10 0 2 0.0 tube
+atom 30 H -10 0 -2 0.0 tube
+glyph sphere 2
+1 0 0 -10.0 0.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 1.0 1.0 1.0
+endglyph
+glyph sphere 2
+1 0 0 -10.0 0.0 0.0 0.0 1.0 1.0 1.0 
+2 0 0 2.0 2.0 2.0
+wireframe
+endglyph
+
+glyph text3d 1
+1 0 0 -12 8 0
+text "Cubes"
+endglyph
+
+# Two cube glyphs bounded by atoms
+atom 31 H 2 5 0 0.0 tube 
+atom 32 H 0 7 0 0.0 tube
+atom 33 H -2 5 0 0.0 tube
+atom 34 H 0 3 0 0.0 tube
+atom 35 H 0 5 2 0.0 tube
+atom 36 H 0 5 -2 0.0 tube
+glyph cube 2
+1 0 0 0.0 5.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 4.0 4.0 4.0
+endglyph
+
+# Another two cube glyphs bounded by atoms
+atom 37 H 7 5 0 0.0 tube 
+atom 38 H 5 7 0 0.0 tube
+atom 39 H 3 5 0 0.0 tube
+atom 40 H 5 3 0 0.0 tube
+atom 41 H 5 5 2 0.0 tube
+atom 42 H 5 5 -2 0.0 tube
+glyph cube 2
+1 0 0 5.0 5.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 3.0 3.0 3.0
+endglyph
+glyph cube 2
+1 0 0 5.0 5.0 0.0 0.0 1.0 0.0 0.5
+2 0 0 4.0 4.0 4.0
+endglyph
+
+# Another two cube glyphs bounded by atoms
+atom 43 H -3 5 0 0.0 tube 
+atom 44 H -5 7 0 0.0 tube
+atom 45 H -7 5 0 0.0 tube
+atom 46 H -5 3 0 0.0 tube
+atom 47 H -5 5 2 0.0 tube
+atom 48 H -5 5 -2 0.0 tube
+glyph cube 2
+1 0 0 -5.0 5.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 3.0 3.0 3.0
+endglyph
+glyph cube 2
+1 0 0 -5.0 5.0 0.0 0.0 1.0 0.0 0.5
+2 0 0 4.0 4.0 4.0
+endglyph
+
+# Another two cube glyphs bounded by atoms
+atom 49 H 12 5 0 0.0 tube 
+atom 50 H 10 7 0 0.0 tube
+atom 51 H 8 5 0 0.0 tube
+atom 52 H 10 3 0 0.0 tube
+atom 53 H 10 5 2 0.0 tube
+atom 54 H 10 5 -2 0.0 tube
+glyph cube 2
+1 0 0 10.0 5.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 2.0 2.0 2.0
+endglyph
+glyph cube 2
+1 0 0 10.0 5.0 0.0 1.0 1.0 0.0 1.0
+2 0 0 4.0 4.0 4.0
+wireframe
+endglyph
+
+# Another two cube glyphs bounded by atoms
+atom 55 H -8 5 0 0.0 tube 
+atom 56 H -10 7 0 0.0 tube
+atom 57 H -12 5 0 0.0 tube
+atom 58 H -10 3 0 0.0 tube
+atom 59 H -10 5 2 0.0 tube
+atom 60 H -10 5 -2 0.0 tube
+glyph cube 2
+1 0 0 -10.0 5.0 0.0 1.0 1.0 1.0 1.0
+2 0 0 2.0 2.0 2.0
+endglyph
+glyph cube 2
+1 0 0 -10.0 5.0 0.0 1.0 1.0 0.0 1.0 
+2 0 0 4.0 4.0 4.0
+wireframe
+endglyph
+
+glyph text3d 1
+1 0 0 -12 -2 0
+text "Triangles and Quads"
+endglyph
+
+# Triangle glyphs attached to atoms
+atom 61 H -12 -3 0 0.0 tube 
+atom 62 H -12 -7 0 0.0 tube
+atom 63 H  -8 -7 0 0.0 tube
+glyph triangle 3
+1 61 1 0 0 0 1 0 0 1
+2 62 1 0 0 0 0 1 0 1
+3 63 1 0 0 0 0 0 1 1
+endglyph
+atom 64 H -7 -3 0 0.0 tube 
+atom 65 H -3 -3 0 0.0 tube
+atom 66 H -3 -7 0 0.0 tube
+glyph triangle 3
+1 64 1 0 0 0 1 0 0 1
+2 65 1 0 0 0 1 0 0 1
+3 66 1 0 0 0 1 1 1 0.2
+endglyph
+atom 67 H -2 -3 0 0.0 tube 
+atom 68 H -2 -7 0 0.0 tube
+atom 69 H  2 -7 0 0.0 tube
+glyph triangle 3
+1 67 1 0 0 0 0 1 0 1
+2 68 1 0 0 0 0 1 0 0.2
+3 69 1 0 0 0 1 1 1 0.2
+endglyph
+atom 70 H  3 -3 0 0.0 tube 
+atom 71 H  3 -7 0 0.0 tube
+atom 72 H  7 -7 0 0.0 tube
+atom 73 H  7 -3 0 0.0 tube
+glyph quad 4
+1 70 1 0 0 0 1 1 0 0.0
+2 71 1 0 0 0 0 0 0 1.0
+3 72 1 0 0 0 0 0 0 1.0
+4 73 1 0 0 0 0 0 0 1.0
+endglyph
+atom 74 H  8 -3 0 0.0 tube 
+atom 75 H  8 -7 0 0.0 tube
+atom 76 H  12 -7 0 0.0 tube
+atom 77 H  12 -3 0 0.0 tube
+glyph quad 4
+1 74 1 0 0 0 1 1 0 0.0
+2 75 1 0 0 0 0 0 0 1.0
+3 76 1 0 0 0 0 0 0 1.0
+4 77 1 0 0 0 0 0 0 1.0
+endglyph
+
+glyph text3d 1
+1 0 0 -12 13 0
+text "TubeArrow, Vector, Arrow, XXX, XXX"
+endglyph
+
+# Tubearrow glyph attached to atoms
+atom 78 H -12 10 0 0.0 tube
+atom 79 H -8 12 0 0.0 tube
+glyph tubearrow 2
+1 78 1 0 0 0 0.5 0.8 0.5 1.0
+2 79 1 0 0 0
+endglyph
+# Vector glyph attached to atom
+atom 80 H -5 11 0 0.0 tube
+glyph vector 2
+1 80 1 0 0 0 0 0 0 1.0
+2 0 0 0.7 0.7 0.0
+endglyph
+# Arrow glyph attached to atoms
+atom 81 H -2 10 0 0.0 tube
+atom 82 H  2 12 0 0.0 tube
+glyph arrow 2
+1 81 1 0 0 0 0 0 0 1.0
+2 82 1 0 0 0
+endglyph
+
+glyph text3d 1
+1 0 0 -12 -7 0
+text "Ellipsoids"
+endglyph
+
+# Ellipsoid centred at atom and using two others for orientation
+atom 83 H -10 -10 0 0.0 tube 
+atom 84 H -12 -12 0 0.0 tube
+atom 85 H  -9 -11 0 0.0 tube
+glyph ellipsoid 3
+1 83 1 0 0 0 0 0 1 1.0
+2 84 1 0 0 0
+3 85 1 0 0 0
+endglyph
+
+# Ellipsoid centred at atom and using two others for orientation, overlapping with next
+atom 86 H  0 -10 0 0.0 tube 
+atom 87 H  3 -11 -2 0.0 tube
+atom 88 H  -2 -12 0 0.0 tube
+glyph ellipsoid 3
+1 86 1 0 0 0 0.2 1 0.1 0.8
+2 87 1 0 0 0
+3 88 1 0 0 0
+endglyph
+
+# Ellipsoid centred at atom and using two others for orientation
+atom 89 H  0 -10 0 0.0 tube 
+atom 90 H -2 -12 0 0.0 tube
+atom 91 H  1 -11 0 0.0 tube
+glyph ellipsoid 3
+1 89 1 0 0 0 1 0 0 1.0
+2 90 1 0 0 0
+3 91 1 0 0 0
+endglyph
+
+glyph text3d 1
+1 0 0 -12 -7 0
+text "Multiple Bonds"
+endglyph
+

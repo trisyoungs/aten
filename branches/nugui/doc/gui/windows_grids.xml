@@ -1,0 +1,59 @@
+<section id="gui.toolwindows.grids"><title>Grids Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>grids</tertiary></indexterm>
+	
+	<para>
+		<inlinegraphic fileref="images/stack_surfaces.png"/>Grids Window
+	</para>
+	
+	<para>The Grids Tool Window provides management for grid data sets owned by the different models. All grid data sets held by the current model are displayed here, and. The appearance of individual grids may be changed, and axes / cutoffs changed. Grid data can also be cut, copied, and pasted to different models.</para>
+
+	<section><title>General Grid Management</title>
+		<para>Each grid in the left-hand list has associated with it a checkbox that determines whether or not it is currently visible. Below the list the minimum and maximum data values contained within the grid, and the current cutoff (i.e. the value that the isosurface is drawn at) to use when rendering the data. The File and Edit menus allow to load new grids into the current model, and to cut, paste, and delete grids between models.</para>
+	</section>
+	
+	<section><title>Data / Cutoff</title>
+		<figure><title>Grids Window - Data / Cutoff Page</title>
+			<graphic fileref="images/window_grids_data.png" align="center"/>
+		</figure>
+
+		<para>Various data on the current grid is displayed here, including the minimum and maximum values present in the data, the number of points, and the total (unnormalised) sum of data values encompassed by the current isosurface.</para>
+		<para>For grids in which the data is 'symmetric' about a cutoff of zero (as is the case for orbital data, for example) a secondary surface can be enabled with the 'Secondary' checkbox. This second isosurface is controlled by the second lower/upper cutoff values. Note that the secondary isosurface can be drawn for any data set - it can be used, for example, to draw a second surface at a different cutoff to the primary cutoff, for example.</para>
+	</section>
+
+	<section><title>Origin / Axes</title>
+		<figure><title>Grids Window - Origin / Axes Page</title>
+			<graphic fileref="images/window_grids_origin.png" align="center"/>
+		</figure>
+
+		<para>The associated origin and axes to the currently selected grid can be modified here. In this way grid data may be arbitrarily flipped, stretched, and sheared, and its position in the local space of the model changed. All changes made are reflected immediately in the main view.</para>
+	</section>
+	
+	<section><title>Style</title>
+		<figure><title>Grids Window - Style Page</title>
+			<graphic fileref="images/window_grids_style.png" align="center"/>
+		</figure>
+
+		<para>The general appearance of the selected grid can be modified in the Style page, with the main rendering style set with the combo box (see <link linkend="enums.gridstyles">grid styles</link> for a list of possible styles). Optionally, the bounding cuboid of the grid data may be highlighted ('Outline Volume' checkbox). The 'Periodic' checkbox influences the way 3D surfaces are drawn close to the boundaries of the grid. If unchecked, a 'gap' will appear near to the edges of the grid volume since there is inufficient data with which to generate gradient information. If checked, data points on the opposite site of the grid will be used in this region (useful, for instance, in the case of orbital information calculated from 3D periodic QM codes).</para>
+
+		<para>In the simplest case the points, triangles, or polygons that make up the rendered grid data are drawn in a single colour. This colour is determined by the upper of the two colour selections. If the data is symmetric (see above) and is composed of 'positive' and 'negative' parts, then the uppermost colour selection is applied to the positive part, and the lower colour selection is applied to the negative part. In addition, the transparency of the rendered data (if drawn in the Solid style) is determined by the Alpha value (0 being fully transparent, and 255 being fully opaque).</para>
+
+		<para>Should a more useful colouring scheme be desired than the grid may be rendered using a <link linkend="topics.colourscales">colour scale</link>, in which case the isovalue (if volumetric) or height (if a 2D grid) determines the colour of the data point. To do so, enable the checkbox next to the CScale widget, and select the ID of the colour scale to use (from the ten definable in the program).</para>
+	</section>
+
+	<section><title>Shift</title>
+		<figure><title>Grids Window - Shift Page</title>
+			<graphic fileref="images/window_grids_shift.png" align="center"/>
+		</figure>
+
+		<para>The Shift page can be used to 'translate' the grid data points along each axis of the data set allowing, for instance, isosurface features of interest in a periodic grid to be displayed in a more central position. Note that no modification of the actual grid data is performed - the effect is entirely visual. The 'Atom Shift' group allows translation of selected/all atoms in the parent model to be moved at the same time, so as to correlate them with the new positions of the grid data.</para>
+	</section>
+
+	<section><title>Orbitals</title>
+		<figure><title>Grids Window - Orbitals Page</title>
+			<graphic fileref="images/window_grids_orbitals.png" align="center"/>
+		</figure>
+
+		<para>Not implemented yet.</para>
+	</section>
+
+</section>

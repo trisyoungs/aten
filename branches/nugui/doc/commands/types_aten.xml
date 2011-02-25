@@ -1,0 +1,88 @@
+	<section id="command.types.aten"><title>Aten Type</title>
+		
+		<indexterm zone="command.types.aten"><primary>types</primary><secondary>aten</secondary></indexterm>
+	
+		<para>The 'master' class type, 'aten', is there to provide access to various other structures such as the list of loaded models, preferences, element data etc. It is available at all times from any command, script, or filter, and is always called 'aten'.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Aten Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>frame</entry>
+						<entry><link linkend="command.types.model">model</link></entry>
+						<entry>ro</entry>
+						<entry>The current model being 'displayed' and the focus of editing, i.e. the current trajectory frame or, if no trajectory is associated to the current model then the current selected model is returned</entry>
+					</row>
+					<row>
+						<entry>model</entry>
+						<entry><link linkend="command.types.model">model</link></entry>
+						<entry>ro</entry>
+						<entry>The current model selected (this is the parent model of a trajectory if a frame is currently being displayed)</entry>
+					</row>
+					<row>
+						<entry>models</entry>
+						<entry><link linkend="command.types.model">model</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of all loaded models currently available</entry>
+					</row>
+					<row>
+						<entry>nelements</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of chemical elements defined in the 'elements' array</entry>
+					</row>
+					<row>
+						<entry>nmodels</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of models (parent models, i.e. not including trajectory frames) currently loaded</entry>
+					</row>
+					<row>
+						<entry>prefs</entry>
+						<entry><link linkend="command.types.preferences">prefs</link></entry>
+						<entry>ro</entry>
+						<entry>Program preferences</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<table frame='all' pgwide='1' tocentry='1'><title>Bond Type Functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>convertenergy ( double value, string <emphasis>oldunits</emphasis> )</entry>
+						<entry>double</entry>
+						<entry>Convert the supplied energy value from <emphasis>oldunits</emphasis> to the current, internal unit of energy in use by Aten. See also <link linkend="enums.energyunits">Energy Units</link> and the relevant <link linkend="command.types.preferences">prefs</link> accessor.</entry>
+					</row>
+					<row>
+						<entry>findelement ( string <emphasis>name</emphasis> )</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>Convert the string specified into an element, according to the current <link linkend="enums.zmaptypes">zmapping type</link>.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+	</section>

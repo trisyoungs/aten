@@ -1,0 +1,44 @@
+	<section id="command.types.glyphdata"><title>GlyphData Type</title>
+		
+		<indexterm zone="command.types.glyphdata"><primary>types</primary><secondary>glyphdata</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>GlyphData Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>atom</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>rw</entry>
+						<entry>Atom (if any) from which positional data is retrieved</entry>
+					</row>
+					<row>
+						<entry>atomdata</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Type of data to retrieve from specified atom (if any) - 0 = position, 1 = force, 2 = velocity</entry>
+					</row>
+					<row>
+						<entry>colour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>RGBA colour of the vertex</entry>
+					</row>
+					<row>
+						<entry>vector</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Vertex coordinates</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

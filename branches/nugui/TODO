@@ -1,0 +1,93 @@
+<sect5><title>Known Bugs</title>
+
+	<orderedlist>
+		<listitem>
+			<para>When in script/filter, encountering a NULL reference and using it really should result in an error</para>
+		</listitem>
+		<listitem>
+			<para>Reading of unformatted files (i.e. DL_POLY HISu) broken?</para>
+		</listitem>
+		<listitem>
+			<para>Warnings on startup: "Could not add child element to parent element..", related to SVGs.</para>
+		</listitem>
+		<listitem>
+			<para>Rebonding model also folds atoms, making --nobond irrelevant</para>
+		</listitem>
+		<listitem>
+			<para>Reading spacegroup info and packing from certain cifs with Pnmmm symmetry is incorrect (c.f. Mercury)</para>
+		</listitem>
+		<listitem>
+			<para>Atom list update is super-slow when changing selection in big systems</para>
+		</listitem>
+	</orderedlist>
+
+</sect5>
+
+<sect5><title>General TODO</title>
+
+	<orderedlist>
+		<listitem>
+			<para>Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?</para>
+		</listitem>
+		<listitem>
+			<para>Add 'Rebond in Patterns' toolbar button</para>
+		</listitem>
+		<listitem>
+			<para>Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click)</para>
+		</listitem>
+		<listitem>
+			<para>Script to add glyphs to represent H-bonds between pair of selected atoms</para>
+		</listitem>
+		<listitem>
+			<para>Update script to perform conformational searching on molecule (add GUI options)</para>
+		</listitem>
+		<listitem>
+			<para>Glyph Undo/Redo</para>
+		</listitem>
+		<listitem>
+			<para>Allow (somehow) rotation of fragments without drawing them *or* rotating main view</para>
+		</listitem>
+		<listitem>
+			<para>Test matrix-transform of models</para>
+		</listitem>
+		<listitem>
+			<para>Add on glyph selection methods (a la box select with the mouse)</para>
+		</listitem>
+	</orderedlist>
+
+</sect5>
+
+<sect5><title>Filter TODO</title>
+
+	<orderedlist>
+		<listitem>
+			<para>Add options to FIELD import filter, allowing application of pattern to model.</para>
+		</listitem>
+		<listitem>
+			<para>Add more options to GAMESS-US inp filter: MD options</para>
+		</listitem>
+		<listitem>
+			<para>Storage of grid data in AKF format</para>
+		</listitem>
+	</orderedlist>
+
+</sect5>
+
+<sect5><title>Doc TODO</title>
+
+	<orderedlist>
+		<listitem>
+			<para>List of keyboard shortcuts</para>
+		</listitem>
+		<listitem>
+			<para>New description for Select window</para>
+		</listitem>
+		<listitem>
+			<para>Topic: Colourscales</para>
+		</listitem>
+		<listitem>
+			<para>Topic: Glyphs</para>
+		</listitem>
+	</orderedlist>
+
+</sect5>

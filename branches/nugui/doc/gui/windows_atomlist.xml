@@ -1,0 +1,25 @@
+<section id="gui.toolwindows.atomlist"><title>Atom List Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>atom list</tertiary></indexterm>
+
+	<para>
+		<inlinegraphic fileref="images/stack_atomlist.png"/>Atom List Window
+	</para>
+	
+	<figure><title>Atom List Window</title>
+		<graphic fileref="images/window_atomlist.png" align="center"/>
+	</figure>
+
+	<section><title>General Format</title>
+		<para>The atom list shows, unsurprisingly, a list of all atoms in the model, displaying elements, charges, and positions. If <link linkend="topics.patterns">patterns</link> have been defined for the model, the atoms in the list will be grouped according to their encompassing pattern, otherwise they are listed in one continuous run by ascending ID.</para>
+		
+	</section>
+	
+	<section><title>Atom Selection</title>
+		<para>The selection of items in the atom list mirrors the selection in the current model - (de)selecting atoms in one will also (de)select them in the other. If patterns are defined, (de)selecting the pattern name in the list (de)selects all atoms making up the pattern.</para>
+	</section>
+	
+	<section><title>Changing the Order of Atoms</title>
+		<para>The four buttons at the foot of the atom list allow the current selection of atoms to be moved up and down the list, useful for reordering atoms into a specific sequence. Selected atoms can be shifted up/down the list one place at a time, or all moved to the top or bottom of the list at once. In the latter case the order of the original selection is preserved.</para>
+	</section>
+	
+</section>

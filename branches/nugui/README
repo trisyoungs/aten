@@ -1,0 +1,51 @@
+                                *** Introduction ***
+
+Aten is a code to do 'stuff' with coordinates / starting configurations for
+computational chemistry and physics codes. It was written primarily as a 
+means for brushing up on C++ and OpenGL but has ballooned into something 
+that I find useful most days at work as a researcher.
+
+Aten is not guaranteed to work, and is not a full-time project (paid work always
+gets preference!). However fixes and code extensions will be made where possible, and 
+contributions (especially forcefields and filters) are welcome.
+
+Find a bug? Report it.
+
+Suggestions / comments? Send them on, but be original (writing "Your code sucks."
+is fair enough, but be brave and give a little detail).
+
+Want to add something in? Great! E-mail me about it. This software is provided
+under the GPL, so you can take / change / redistribute at will, but it would be
+nice to be putting everything into the same pot.
+
+
+                                *** Installation ***
+
+Full instructions can be found in the manual. Briefly:
+
+1) Run './autogen.sh' (if you got Aten via svn)
+
+2) Run './configure' without options use standard locations and build in the Qt GUI.
+	Use --prefix to specify the install location
+	Use --with-gui to specify a different gui (currently 'qt', 'gtk', or 'none')
+	Use --with-qt=framework to use native Qt installation from TrollTech on Macs,
+		otherwise use --with-qt=fink to use the Fink-installed version. Leave
+		blank to take your chances!
+  **or, if you use CMake**
+  Run 'cmake .'
+
+3) Run 'make'.
+
+4) Run 'make install' as root or, if you wish, put the code where you want it.
+	Note for custom installs: the contents of the 'data' directory must be
+	in a location accessible to all users.
+
+5) Set the environment variable ATENDATA to point to the installed data files.
+	For my default configuration (SuSE Linux 10.2) it's /usr/local/share/aten.
+	For example, using 'bash': export ATENDATA='/usr/local/share/aten'.
+	It's a good idea to put this in your .login, .bashrc, or whatever is relevant.
+
+
+Tris Youngs
+tris@projectaten.net
+March 2008

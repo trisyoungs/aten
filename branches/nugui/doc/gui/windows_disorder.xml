@@ -1,0 +1,20 @@
+<section id="gui.toolwindows.disorder"><title>Disordered Builder Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>disorder</tertiary></indexterm>
+	
+	<para>
+		<inlinegraphic fileref="images/stack_disorder.png"/>Disordered Builder Window
+	</para>
+	
+	<figure><title>Disordered Builder Window</title>
+		<graphic fileref="images/window_disorder.png" align="center"/>
+	</figure>
+
+	<para>The Disordered builder page allows the creation of randomly-oriented collections of molecules in periodic cells (e.g. gases, liquids, mixtures etc.) from individual molecule components. The list at the top of the panel gives all the currently-loaded molecules that are suitable for use as components – the main criterion is that they do not themselves possess a unit cell. Next to the name of each model in the list is a number, which specifies the number of molecules that you want to be inserted into the target model, and two checkboxes that allow certain Monte Carlo move types to be prevented for individual molecules. The first checkbox, if unticked, prevents rotations (both on insertion and in standard Monte Carlo moves) of the model, while the second checkbox, if unticked, will prevent the standard Monte Carlo translation move from being used with this model. If the number is set to zero (the default for all components) then no insertions of that model will be attempted.</para>
+
+	<para>The disordered builder needs a model with a cell already defined to insert into, and should be selected as the current model in the main view. The Build button will only be available if the current model is periodic. Note that the current model does not have to be empty to begin with, but if it is not, a forcefield must be assigned (or must be available) that describes completely the existing contents.</para>
+
+	<para>By default, all components are randomly distributed over the entire space of the model cell, but can be restricted to specific regions of the cell if required. For the model currently selected in the list of components, the Region panel may be used to define an area of the unit cell in which to restrict insertions of the model. If regions are defined for one or more models, these will displayed in the current model's cell.</para>
+
+	<para>The number of cycles determined the number of times to perform a round of Monte Carlo moves (see XXX), while the VDW Scale sets a temporary scaling factor to use in the energy calculation.</para>
+
+</section>

@@ -1,0 +1,52 @@
+<section id="enums.zmaptypes"><title>ZMapping Types</title>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Map type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>alpha</entry>
+					<entry>Convert based on the alpha part of the name only. Leading or trailing numbers and symbols are discarded. The alpha part is assumed to be an element symbol</entry>
+				</row>
+				<row>
+					<entry>auto</entry>
+					<entry>Attempts several of the other conversions of increasing complexity until a match is found</entry>
+				</row>
+				<row>
+					<entry>ff</entry>
+					<entry>Search through the names of atomtypes in currently-loaded forcefields, assigning elements based on matches found</entry>
+				</row>
+				<row>
+					<entry>firstalpha</entry>
+					<entry>Convert based on the first alpha part of the name only (i.e. until a non-alpha character is found). The alpha part is assumed to be an element symbol</entry>
+				</row>
+				<row>
+					<entry>name</entry>
+					<entry>The name is assumed to be an actual element name, and is converted to the relevant element number</entry>
+				</row>
+				<row>
+					<entry>numeric</entry>
+					<entry>Use the numeric part of the name as the element number</entry>
+				</row>
+				<row>
+					<entry>singlealpha</entry>
+					<entry>Convert based on the first alphabetic character encountered - useful only when single-character element symbols are likely to be found (e.g. for pure organic CHON systems)</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="cli.switches.z">ZMapping CLI switch</link> to see how to set the zmapping style from the command line</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>

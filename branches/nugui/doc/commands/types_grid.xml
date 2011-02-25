@@ -1,0 +1,128 @@
+	<section id="command.types.grid"><title>Grid Type</title>
+		
+		<indexterm zone="command.types.grid"><primary>types</primary><secondary>grid</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Grid Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>axes</entry>
+						<entry><link linkend="command.types.cell">cell</link></entry>
+						<entry>ro</entry>
+						<entry>Axes system for the grid, stored in a unit cell structure</entry>
+					</row>
+					<row>
+						<entry>colour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The primary colour of the grid data</entry>
+					</row>
+					<row>
+						<entry>cutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The lower primary cutoff value</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Name associated to the grid data</entry>
+					</row>
+					<row>
+						<entry>nx</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Size of grid data in the x-dimension</entry>
+					</row>
+					<row>
+						<entry>ny</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Size of grid data in the y-dimension</entry>
+					</row>
+					<row>
+						<entry>nz</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Size of grid data in the z-dimension</entry>
+					</row>
+					<row>
+						<entry>origin</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Coordinates of the origin (lower left-hand corner) of the grid data</entry>
+					</row>
+					<row>
+						<entry>outlinevolume</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag specifying whether a bounding volume cuboid should be drawn for the grid</entry>
+					</row>
+					<row>
+						<entry>periodic</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag specifying whether the grid is periodic (e.g. at the edges data from opposite side should be used to form grid)</entry>
+					</row>
+					<row>
+						<entry>secondarycolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The secondary colour of the grid data</entry>
+					</row>
+					<row>
+						<entry>secondarycutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The lower secondary cutoff value</entry>
+					</row>
+					<row>
+						<entry>secondaryuppercutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The upper secondary cutoff value</entry>
+					</row>
+					<row>
+						<entry>shiftx</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Shift value (in points) for the grid along its x-axis</entry>
+					</row>
+					<row>
+						<entry>shifty</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Shift value (in points) for the grid along its y-axis</entry>
+					</row>
+					<row>
+						<entry>shiftz</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Shift value (in points) for the grid along its z-axis</entry>
+					</row>
+					<row>
+						<entry>uppercutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The upper primary cutoff value</entry>
+					</row>
+					<row>
+						<entry>visible</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag specifying whether the grid is visible (i.e. should be drawn in the model)</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

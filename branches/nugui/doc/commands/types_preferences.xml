@@ -1,0 +1,537 @@
+	<section id="command.types.preferences"><title>Prefs Type</title>
+		
+		<indexterm zone="command.types.preferences"><primary>types</primary><secondary>prefs</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Prefs Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>anglelabelformat</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The C-style format to use for the numerical value of angle labels</entry>
+					</row>
+					<row>
+						<entry>aromaticringcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of aromatic ring circles</entry>
+					</row>
+					<row>
+						<entry>atomstyleradius</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The atom radii used for selection and rendering in the four <link linkend="enums.drawstyles">Drawing Styles</link></entry>
+					</row>
+					<row>
+						<entry>backcull</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether culling of backward-facing polygons should be performed</entry>
+					</row>
+					<row>
+						<entry>backgroundcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Background colour of the main canvas on which models are drawn</entry>
+					</row>
+					<row>
+						<entry>bondstyleradius</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The bond radii used for selection and rendering in the four <link linkend="enums.drawstyles">Drawing Styles</link></entry>
+					</row>
+					<row>
+						<entry>bondtolerance</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Tolerance used in automatic calculation of bonds between atoms</entry>
+					</row>
+					<row>
+						<entry>cachelimit</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The trajectory cache size (in kilobytes) - trajectory files calculated to have more than this amount of data will not be cached in memory</entry>
+					</row>
+					<row>
+						<entry>calculateelec</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Controls whether electrostatic contributions to the energy/forces are calculated</entry>
+					</row>
+					<row>
+						<entry>calculateintra</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Controls whether intramolecular contributions to the energy/forces are calculated</entry>
+					</row>
+					<row>
+						<entry>calculatevdw</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Controls whether short-range Vdw contributions to the energy/forces are calculated</entry>
+					</row>
+					<row>
+						<entry>clipfar</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The far clipping distance used when rendering</entry>
+					</row>
+					<row>
+						<entry>clipnear</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The near clipping distance used when rendering</entry>
+					</row>
+					<row>
+						<entry>colourscales</entry>
+						<entry><link linkend="command.types.colourscale">colourscale[10]</link></entry>
+						<entry>ro</entry>
+						<entry>List of colourscales</entry>
+					</row>
+					<row>
+						<entry>colourscheme</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The current <link linkend="enums.colourschemes">Colour Scheme</link> used to colour atoms and bonds</entry>
+					</row>
+					<row>
+						<entry>combinationrule</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Lennard-Jones parameter combination rule equations. See <link linkend="enums.combinationrules">Combination Rules</link> for a list of rules.</entry>
+					</row>
+					<row>
+						<entry>commonelements</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Comma-separated list of common elements that appear in the Select Element dialog</entry>
+					</row>
+					<row>
+						<entry>dashedaromatics</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to render solid or dashed rings for aromatics</entry>
+					</row>
+					<row>
+						<entry>densityunit</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The unit of density to used when displaying cell densities</entry>
+					</row>
+					<row>
+						<entry>depthcue</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Enables/disables depth cueing</entry>
+					</row>
+					<row>
+						<entry>depthfar</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The far fog distance used when rendering (if depth cueing is enabled)</entry>
+					</row>
+					<row>
+						<entry>depthnear</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The near fog distance used when rendering (if depth cueing is enabled)</entry>
+					</row>
+					<row>
+						<entry>distancelabelformat</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The C-style format to use for the numerical value of distance labels</entry>
+					</row>
+					<row>
+						<entry>eleccutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The electrostatic cutoff distance</entry>
+					</row>
+					<row>
+						<entry>elecmethod</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The method of electrostatic energy/force calculation</entry>
+					</row>
+					<row>
+						<entry>energyunit</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Set the unit of energy to use</entry>
+					</row>
+					<row>
+						<entry>energyupdate</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Update frequency for the energy in various methods</entry>
+					</row>
+					<row>
+						<entry>ewaldalpha</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Convergence parameter in Ewald sum</entry>
+					</row>
+					<row>
+						<entry>ewaldkmax</entry>
+						<entry>int[3]</entry>
+						<entry>rw</entry>
+						<entry>Vector of Ewald reciprocal space vector limits (kmax)</entry>
+					</row>
+					<row>
+						<entry>ewaldprecision</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Precision parameter to use when generating parameters in EwaldAuto</entry>
+					</row>
+					<row>
+						<entry>forcerhombohedral</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>For spacegroups that are detected to have a hexagonal basis, force packing to use generators in a rhombohedral basis</entry>
+					</row>
+					<row>
+						<entry>globeaxescolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of axis pointers on the rotation globe</entry>
+					</row>
+					<row>
+						<entry>globecolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of the actual rotation globe</entry>
+					</row>
+					<row>
+						<entry>globesize</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Size, in pixels, of the rotation globe in the lower-right-hand corner of the screen</entry>
+					</row>
+					<row>
+						<entry>glyphcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Default colour of all created glyphs</entry>
+					</row>
+					<row>
+						<entry>hdistance</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Default H-X bond distance to use when adding hydrogen atoms</entry>
+					</row>
+					<row>
+						<entry>imagequality</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The general rendering quality (i.e. number of triangles used to generate primitive objects) of the images, used if 'reusequality' is set to FALSE (otherwise the current 'quality' value is used).</entry>
+					</row>
+					<row>
+						<entry>keyaction</entry>
+						<entry>string[3]</entry>
+						<entry>rw</entry>
+						<entry>Current actions of the modifier keys Shift, Ctrl, and Alt</entry>
+					</row>
+					<row>
+						<entry>labelsize</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Font pointsize for label text</entry>
+					</row>
+					<row>
+						<entry>levelofdetailstartz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z-depth (in Angstroms) at which level of detail algorithm begins</entry>
+					</row>
+					<row>
+						<entry>levelofdetailwidth</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z-width (in Angstroms) of each level of detail strip</entry>
+					</row>
+					<row>
+						<entry>levelsofdetail</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Number of levels of detail to employ</entry>
+					</row>
+					<row>
+						<entry>linealiasing</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Enables/disables line aliasing</entry>
+					</row>
+					<row>
+						<entry>manualswapbuffers</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag whether manual swapping of GL buffers is enabled</entry>
+					</row>
+					<row>
+						<entry>maxrings</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Maximum allowable number of rings to detect within any single pattern</entry>
+					</row>
+					<row>
+						<entry>maxringsize</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Maximum size of ring to detect when atom typing</entry>
+					</row>
+					<row>
+						<entry>maxundo</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Maximum number of undo levels remembered for each model (-1 = unlimited)</entry>
+					</row>
+					<row>
+						<entry>modelupdate</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Update frequency for the current model in various methods</entry>
+					</row>
+					<row>
+						<entry>mopacexe</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Location of MOPAC executable (including full path)</entry>
+					</row>
+					<row>
+						<entry>mouseaction</entry>
+						<entry>string[4]</entry>
+						<entry>rw</entry>
+						<entry>Current actions of the Left, Middle, Right, and Wheel mouse buttons</entry>
+					</row>
+					<row>
+						<entry>mousemovefilter</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Sets the degree to which mouse move events are filtered, with 1 being no filtering. Use this to reduce update lag on sluggish systems.</entry>
+					</row>
+					<row>
+						<entry>multisampling</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Enables/disables multisampling (hardware aliasing)</entry>
+					</row>
+					<row>
+						<entry>noqtsettings</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag controlling whether OS-stored Qt settings are loaded on startup</entry>
+					</row>
+					<row>
+						<entry>offscreenobjects</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Bitarray of <link linkend="enums.viewobjects">View Objects</link> drawn when rendering scenes to image files</entry>
+					</row>
+					<row>
+						<entry>perspective</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether perspective view is enabled</entry>
+					</row>
+					<row>
+						<entry>perspectivefov</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Field of vision angle to use for perspective rendering</entry>
+					</row>
+					<row>
+						<entry>polygonaliasing</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Enables/disables polygon aliasing</entry>
+					</row>
+					<row>
+						<entry>renderstyle</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The current model drawing style</entry>
+					</row>
+					<row>
+						<entry>quality</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The general rendering quality (i.e. number of triangles used to generate primitive objects) of the main view. Higher values give rounder atoms but make rendering slower. See also the 'imagequality' setting.</entry>
+					</row>
+					<row>
+						<entry>replicatefold</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to fold atoms before cell replicate</entry>
+					</row>
+					<row>
+						<entry>replicatetrim</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to trim atoms after cell replicate</entry>
+					</row>
+					<row>
+						<entry>reusequality</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag specifying whether to use the current rendering 'quality' value when saving images (FALSE) or the 'imagequality' value (TRUE).</entry>
+					</row>
+					<row>
+						<entry>screenobjects</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Bitarray of <link linkend="enums.viewobjects">View objects</link> drawn when rendering to screen</entry>
+					</row>
+					<row>
+						<entry>selectionscale</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Multiple of the standard atom radius to use for transparent selection spheres</entry>
+					</row>
+					<row>
+						<entry>shininess</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The shininess of atoms (value must be between 0 and 127 inclusive)</entry>
+					</row>
+					<row>
+						<entry>specularcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of all specular reflections</entry>
+					</row>
+					<row>
+						<entry>spotlight</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the spotlight is on or off</entry>
+					</row>
+					<row>
+						<entry>spotlightambient</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The ambient colour component of the spotlight</entry>
+					</row>
+					<row>
+						<entry>spotlightdiffuse</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The diffuse colour component of the spotlight</entry>
+					</row>
+					<row>
+						<entry>spotlightposition</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Spotlight coordinates (in &#8491;)</entry>
+					</row>
+					<row>
+						<entry>spotlightspecular</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The specular colour component of the spotlight</entry>
+					</row>
+					<row>
+						<entry>tempdir</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Temporary (working) directory for some operations (e.g. execution of MOPAC jobs)</entry>
+					</row>
+					<row>
+						<entry>textcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of rendered text</entry>
+					</row>
+					<row>
+						<entry>transparencybinwidth</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z-width of individual transparency bins</entry>
+					</row>
+					<row>
+						<entry>transparencycorrect</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether sort of transparent triangles is enabled. When enabled, any object which is to be drawn in a transparent colour is split into its component triangles and sorted over several bins (representing slices in the z direction). Rendering is a little slower with this option enabled, but corrects most transparency artefacts with sensible bin values.</entry>
+					</row>
+					<row>
+						<entry>transparencynbins</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The number of bins to use for sorting transparent triangles</entry>
+					</row>
+					<row>
+						<entry>transparencybinstartz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The z-depth at which binned transparency sorting begins. Before this value, all triangles are grouped (and rendered) together without sorting</entry>
+					</row>
+					<row>
+						<entry>unitcellaxescolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of unit cell axis pointers</entry>
+					</row>
+					<row>
+						<entry>unitcellcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of unit cell</entry>
+					</row>
+					<row>
+						<entry>useframebuffer</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to use the grabFrameBuffer() method of the main widget instead of the normal renderPixmap() method when saving bitmap images. If saving an image results in a completely black or corrupt bitmap, try setting this to TRUE.</entry>
+					</row>
+					<row>
+						<entry>usenicetext</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether QPainter (on/1/TRUE) or QGlWidget (off/0/FALSE) is used to render label text</entry>
+					</row>
+					<row>
+						<entry>vdwcut</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The VDW cutoff distance</entry>
+					</row>
+					<row>
+						<entry>vdwscale</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Scaling factor to use for short-range radii in energy/force calculation</entry>
+					</row>
+					<row>
+						<entry>vibrationcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of vibration vector arrows</entry>
+					</row>
+					<row>
+						<entry>warn1056</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Many changes to the typing language syntax were introduced in revision 1056, and a warning message was implemented.  This can be turned off by setting this variable to FALSE</entry>
+					</row>
+					<row>
+						<entry>zoomthrottle</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Zooming 'throttle' value used to calm down or increase the distance jumped when zooming with the mouse</entry>
+					</row>
+
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>

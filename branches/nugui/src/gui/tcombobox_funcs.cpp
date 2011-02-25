@@ -1,0 +1,55 @@
+/*
+	*** Qt TComboBox functions
+	*** src/gui/tcombobox_funcs.cpp
+	Copyright T. Youngs 2007-2011
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "gui/tcombobox.h"
+
+// Constructor
+TComboBox::TComboBox(QWidget *parent) : QComboBox(parent)
+{
+	// Private variables
+	pointer_ = NULL;
+	integer_ = 0;
+}
+
+// Set the data pointer in the widget
+void TComboBox::setPointer(void *source)
+{
+	pointer_ = source;
+}
+
+// Return the pointer in the widget
+void *TComboBox::pointer()
+{
+	return pointer_;
+}
+
+// Set the data integer in the widget
+void TComboBox::setInteger(int i)
+{
+	integer_ = i;
+}
+
+// Return the integer in the widget
+int TComboBox::integer()
+{
+	return integer_;
+}
+

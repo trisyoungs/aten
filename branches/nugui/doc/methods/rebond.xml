@@ -1,0 +1,19 @@
+<section id="methods.rebond"><title>Rebond</title>
+	<indexterm zone="methods.rebond"><primary>methods</primary><secondary>rebond</secondary></indexterm>
+
+	<para>The most common means of determining connectivity between a collection of atoms is based on simple check of the actual distance between two atoms and the sum of their assigned radii:</para>
+
+{img align=&quot;center&quot; src=show_image.php?id=116}
+
+	<para>The two ''sigma''s represent the radii of atoms ''i'' and ''j'' which have coordinates ''xi'', ''yi'', ''zi'' and ''xj'', ''yj'', ''zj''. The parameter ''alpha'' is an adjustable tolerance value to enable fine-tuning, and using Aten's set of built-in radii[[1] usually lays between 1.0 and 2.0. For molecules or periodic systems of modest size the method can be used as is, but for large systems of many atoms the use of a double loop over atoms results in a very slow algorithm.</para>
+
+	<para>Aten overcomes this slowdown for larger systems by partitioning the system up into a series of overlapping ''cuboids''. For a system of N particles in a periodic box (or an isolated system with an orthorhombic pseudo-box determined by the extreme positions of atoms), the volume is partitioned into a number of subvolumes of some minimum size in each direction. The minimum size of any one of the subvolume's dimensions is chosen relative to the maximum bond length possible given the largest elemental radius and the current bond tolerance ''alpha''. A single loop over atoms is then performed to associate them to these subvolumes. Each atom belongs to at least one cuboid, determined by its absolute position in the system, and commonly belongs to one other cuboid, determined by adding half of the cuboids dimensions on to the atoms position. While a little counterintuitive, potentially adding atoms to a neighbouring cuboid along this diagonal vector allows the final calculation of distances between pairs of atoms to consider only eight 'neighbouring' (more correctly 'overlapping') subvolumes rather than the 26 needed if each atom belongs exclusively to only one cuboid. For atoms that exist in subvolumes along the edges of the whole volume, these are also added to the subvolume(s) on the opposite side(s) to account for minimum image effects in periodic systems.</para>
+
+	<para>Once the effort has been made to assign atoms to cuboids, the final loops to calculate distances runs over a much reduced subset of atom pairs owing to the partitioning. A loop over cuboids is performed, first considering all atom pairs within the same cuboid, and then extending this to consider distances between a particular atom of this central cuboid and its eight 'overlapping' neighbours.</para>
+
+	<para>There is some redundancy of atom pairs since the same pair may be considered twice when taking into account the overlapping cuboids. However, in the interests of facile book-keeping this is not checked for explicitly during the running of the algorithm.</para>
+
+	<para>[1] &quot;Covalent radii revisited&quot;, B. Cordero, V. Gómez, A. E. Platero-Prats, M. Revés, J. Echeverría, E. Cremades, F. Barragán and S. Alvarez, Dalton Trans., (2008) (DOI: i<ulink url="http://dx.doi.org/10.1039/b801115j">http://dx.doi.org/10.1039/b801115j</ulink>)</para>
+
+</section>
+

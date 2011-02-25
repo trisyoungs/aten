@@ -1,0 +1,170 @@
+	<section id="command.types.cell"><title>Cell Type</title>
+		
+		<indexterm zone="command.types.cell"><primary>types</primary><secondary>cell</secondary></indexterm>
+	
+		<table frame='all' pgwide='1' tocentry='1'><title>Cell Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>a</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Length of the cell vector A</entry>
+					</row>
+					<row>
+						<entry>alpha</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Angle alpha of the cell</entry>
+					</row>
+					<row>
+						<entry>ax</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>X component of the cell vector A</entry>
+					</row>
+					<row>
+						<entry>ay</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Y component of the cell vector A</entry>
+					</row>
+					<row>
+						<entry>az</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z component of the cell vector A</entry>
+					</row>
+					<row>
+						<entry>b</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Length of the cell vector B</entry>
+					</row>
+					<row>
+						<entry>beta</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Angle beta of the cell</entry>
+					</row>
+					<row>
+						<entry>bx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>X component of the cell vector B</entry>
+					</row>
+					<row>
+						<entry>by</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Y component of the cell vector B</entry>
+					</row>
+					<row>
+						<entry>bz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z component of the cell vector B</entry>
+					</row>
+					<row>
+						<entry>c</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Length of the cell vector C</entry>
+					</row>
+					<row>
+						<entry>centre</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Coordinates of cell centroid</entry>
+					</row>
+					<row>
+						<entry>centrex</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>X component of the cell centroid</entry>
+					</row>
+					<row>
+						<entry>centrey</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Y component of the cell centroid</entry>
+					</row>
+					<row>
+						<entry>centrez</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z component of the cell centroid</entry>
+					</row>
+					<row>
+						<entry>cx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>X component of the cell vector C</entry>
+					</row>
+					<row>
+						<entry>cy</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Y component of the cell vector C</entry>
+					</row>
+					<row>
+						<entry>cz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Z component of the cell vector C</entry>
+					</row>
+					<row>
+						<entry>density</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Density of the cell</entry>
+					</row>
+					<row>
+						<entry>gamma</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Angle gamma of the cell</entry>
+					</row>
+					<row>
+						<entry>matrix</entry>
+						<entry>double[9]</entry>
+						<entry>rw</entry>
+						<entry>Cell axis matrix</entry>
+					</row>
+					<row>
+						<entry>sgid</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Spacegroup ID assigned to the cell</entry>
+					</row>
+					<row>
+						<entry>sgname</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Name of the currently assigned spacegroup</entry>
+					</row>
+					<row>
+						<entry>type</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Type (shape) of current cell</entry>
+					</row>
+					<row>
+						<entry>volume</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Current cell volume, in cubic Angstroms</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>
