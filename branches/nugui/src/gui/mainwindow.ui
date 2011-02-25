@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
@@ -39,104 +40,41 @@
    <enum>Qt::ToolButtonIconOnly</enum>
   </property>
   <property name="dockNestingEnabled">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="MainWindowLayout">
-   <layout class="QHBoxLayout">
-    <property name="spacing">
-     <number>4</number>
+   <widget class="QFrame" name="ViewFrame">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>110</y>
+      <width>231</width>
+      <height>311</height>
+     </rect>
     </property>
-    <property name="margin">
-     <number>2</number>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
     </property>
-    <item>
-     <layout class="QVBoxLayout">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="margin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="TTabBar" name="ModelTabs" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>255</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSplitter" name="MainSplitter">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <widget class="QFrame" name="ViewFrame">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="TextDisplay">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-           <horstretch>255</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>64</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>256</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Courier 10 Pitch</family>
-          </font>
-         </property>
-         <property name="mouseTracking">
-          <bool>true</bool>
-         </property>
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="contextMenuPolicy">
-          <enum>Qt::DefaultContextMenu</enum>
-         </property>
-         <property name="acceptDrops">
-          <bool>false</bool>
-         </property>
-         <property name="horizontalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOff</enum>
-         </property>
-         <property name="undoRedoEnabled">
-          <bool>false</bool>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-         <property name="acceptRichText">
-          <bool>false</bool>
-         </property>
-         <property name="textInteractionFlags">
-          <set>Qt::TextBrowserInteraction</set>
-         </property>
-        </widget>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="TTabBar" name="ModelTabs" native="true">
+    <property name="geometry">
+     <rect>
+      <x>3</x>
+      <y>3</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+      <horstretch>255</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="MainWindowMenuBar">
    <property name="geometry">
@@ -648,48 +586,6 @@
    <addaction name="actionMinimise"/>
    <addaction name="actionCalculateEnergy"/>
    <addaction name="actionCalculateForces"/>
-  </widget>
-  <widget class="QToolBar" name="WindowToolbar">
-   <property name="windowTitle">
-    <string>Tool WIndows</string>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>24</width>
-     <height>24</height>
-    </size>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>RightToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionAtomlistWindow"/>
-   <addaction name="actionZMatrixEditorWindow"/>
-   <addaction name="actionGridsWindow"/>
-   <addaction name="actionFragmentWindow"/>
-   <addaction name="actionGlyphsWindow"/>
-   <addaction name="separator"/>
-   <addaction name="actionBuildWindow"/>
-   <addaction name="actionTransformWindow"/>
-   <addaction name="actionPositionWindow"/>
-   <addaction name="actionGeometryWindow"/>
-   <addaction name="actionSelectWindow"/>
-   <addaction name="separator"/>
-   <addaction name="actionCellDefineWindow"/>
-   <addaction name="actionCellTransformWindow"/>
-   <addaction name="actionDisorderWindow"/>
-   <addaction name="separator"/>
-   <addaction name="actionMinimiserWindow"/>
-   <addaction name="actionForcefieldsWindow"/>
-   <addaction name="actionMolecularDynamicsWindow"/>
-   <addaction name="actionVibrationsWindow"/>
-   <addaction name="separator"/>
-   <addaction name="actionCommandWindow"/>
   </widget>
   <action name="actionFileOpen">
    <property name="icon">

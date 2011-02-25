@@ -21,7 +21,7 @@ set(qtproject_SRCS
   atomlist_funcs.cpp
   bondactions.cpp
   build_funcs.cpp
-  celldefine_funcs.cpp
+  celldefinition_funcs.cpp
   celltransform_funcs.cpp
   contextmenu_funcs.cpp
   command_funcs.cpp
@@ -64,6 +64,7 @@ set(qtproject_SRCS
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
   tlistwidgetitem_funcs.cpp
+  toolbox_funcs.cpp
   trajectoryactions.cpp
   transform_funcs.cpp
   tprompt_funcs.cpp
@@ -80,7 +81,7 @@ SET(pro_MOC_HDRS
   about.h
   atomlist.h
   build.h
-  celldefine.h
+  celldefinition.h
   celltransform.h
   command.h
   disorder.h
@@ -103,6 +104,7 @@ SET(pro_MOC_HDRS
   selectfilter.h
   selectpattern.h
   selectvariable.h
+  toolbox.h
   transform.h
   vibrations.h
   viewbasis.h
@@ -112,7 +114,6 @@ SET(pro_MOC_HDRS
   tcolourframe.uih
   tprompt.uih
   tradiogroup.uih
-  ttabbar.uih
   ttreewidget.uih
 )
 QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)
@@ -121,9 +122,10 @@ SET(pro_UIS
   about.ui
   atomlist.ui
   build.ui
-  celldefine.ui
+  celldefinition.ui
   celltransform.ui
   command.ui
+  customdialog.ui
   disorder.ui
   ffeditor.ui
   forcefields.ui
@@ -131,7 +133,6 @@ SET(pro_UIS
   geometry.ui
   glyphs.ui
   grids.ui
-  customdialog.ui
   loadmodel.ui
   mainwindow.ui
   md.ui
@@ -143,6 +144,7 @@ SET(pro_UIS
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
+  toolbox.ui
   transform.ui
   vibrations.ui
   viewbasis.ui
