@@ -1,0 +1,47 @@
+<section id="ff.rules"><title>Rule-Based Forcefields</title>
+	<indexterm zone="ff.rules"><primary>forcefields</primary><secondary>rule-based</secondary></indexterm>
+	
+	<para>Forcefields exist where individual intramolecular parameter definitions (i.e. those provided by the <link linkend="ff.ref.bonds">bond</link>, <link linkend="ff.ref.angles">angle</link>, and <link linkend="ff.ref.torsions">torsion</link> blocks) are not necessary. Instead, such parameters are constructed as and when necessary using a set of parameters that depend only on the atomtypes involved. These forcefields are so-called 'rule-based', and are often able to describe enormously varied systems from a small set of defining parameters.</para>
+	
+	<para>Rule-based forcefields are defined in exactly the same way as normal forcefields, save for the lack of blocks that define intramolecular terms. Instead, the per-atomtype parameters must be provided instead, and for all atomtypes defined in the <link linkend="ff.ref.types">types</link> section. This "generator" data is then used by the equations defined within the code to construct the necessary intramolecular terms when required. One or more <link linkend="ff.ref.data">data</link> blocks should be used to define this data for each atomtype.</para>
+	
+	<section id="ff.rules.functions"><title>Functions</title>
+		<indexterm zone="ff.rules.functions"><primary>forcefields</primary><secondary>rule-based</secondary><tertiary>functions</tertiary></indexterm>
+		
+		<para>In a rule-based forcefield all the useful function declarations which calculate the correct parameters (usually from values supplied in a <link linkend="ff.ref.data">data</link> block) must be made within a single <link linkend="ff.ref.function">function</link> block in the forcefield file. The recognised function names and their arguments are as follows:</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>Allowable FF Rule Functions</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function Declaration</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>int vdwgenerator(ffatom data)</entry>
+						<entry>Called whenever descriptive VDW data is missing from an atom type (which is passed into the function and should have the correct data placed in it)</entry>
+					</row>
+					<row>
+						<entry>int bondgenerator(ffbound newdata, atom i, atom j)</entry>
+						<entry>Called whenever function data for an unrecognised bond (between the atom types currently assigned to atoms 'i' and 'j') is needed. Generated parameters should be store in the passed 'newdata' structure</entry>
+					</row>
+					<row>
+						<entry>int anglegenerator(ffbound newdata, atom i, atom j, atom k)</entry>
+						<entry>Called whenever function data for an unrecognised angle (between the atom types currently assigned to atoms 'i', 'j', and 'k') is needed. Generated parameters should be store in the passed 'newdata' structure</entry>
+					</row>
+					<row>
+						<entry>int torsiongenerator(ffbound newdata, atom i, atom j, atom k, atom l)</entry>
+						<entry>Called whenever function data for an unrecognised torsion (between the atom types currently assigned to atoms 'i', 'j', 'k', and 'l') is needed. Generated parameters should be store in the passed 'newdata' structure</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<para>When calling the functions, Aten provides the necessary structure in which the generated parameters should be store. In the case of the Vdw-generating function, the actual atomtype structure which is missing the data is passed (see the <link linkend="command.types.ffatom">ffatom</link> variable type). In the case of intramolecular interactions, Aten creates and passes a new, empty <link linkend="command.types.ffbound">ffbound</link> container in which the functional form of the interaction and the relevant data values should be set. A number of <link linkend="command.types.ffatom">ffatom</link> references are also provided, corresponding to the atom types involved in the bound interaction, and from which the necessary data values may be retrieved using the relevant 'data' accessors. For bound interactions it is not necessary to set the equivalent names of the involved atom types since this is done automatically.</para>
+		
+	</section>
+	
+</section>

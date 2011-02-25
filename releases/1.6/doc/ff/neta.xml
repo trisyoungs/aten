@@ -1,0 +1,500 @@
+<section id="ff.neta.ref"><title>NETA Reference</title>
+	<indexterm zone="ff.neta.ref"><primary>NETA</primary></indexterm>
+	<indexterm zone="ff.neta.ref"><primary>typing</primary><secondary>NETA</secondary></indexterm>
+	
+	<para>This section lists all the available commands that may make up a type description. Many keywords only make sense within the bracketed parts of keywords that expand the depth of the description. For instance, it is meaningless to specify the connection type with the 'bond' keyword in the root of a typing command since no connections are relevant at this point.</para>
+
+	<section id="ff.neta.ref.anybondto"><title>~X (any bond to X)</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>any bond to</tertiary></indexterm>
+			
+		<para>Specifies that a connection to 'X' must exist, but makes no demand of the type (bond order) of the connection. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. Specifying an 'unknown' connection with ~X is often useful in, for example, aromatic rings or conjugated systems where the connection might be either a double or single bond.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword '~X' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>~C</entry>
+						<entry>Any bond to a carbon atom</entry>
+					</row>
+					<row>
+						<entry>~&amp;101</entry>
+						<entry>Any bond to an atom which matches type ID 101 (see <link linkend="ff.typing.reusing">reusing rypes</link>)</entry>
+					</row>
+					<row>
+						<entry>~[N,S,P]</entry>
+						<entry>Any connection to either nitrogen, sulfur, or phosphorous</entry>
+					</row>
+					<row>
+						<entry>!=O</entry>
+						<entry>Explicitly states that there should not be a double bond to an oxygen atom</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+	
+	<section id="ff.neta.ref.singlebondto"><title>-X (single bond to X)</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>single bond to</tertiary></indexterm>
+		
+		<para>Specifies that a single bond to 'X' must exist. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. If used inside the bracketed part of a <link linkend="ff.neta.ref.ring">ring</link> description this only indicates that the atom/type should be present within the cycle - the connection to the target atom is unimportant. If used in a <link linkend="ff.neta.ref.chain">chain</link> keyword the connection type is honoured.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword '-X' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>-H</entry>
+						<entry>A single bond to a hydrogen atom</entry>
+					</row>
+					<row>
+						<entry>-&amp;120</entry>
+						<entry>A single bond to an atom which matches type ID 120 (see <link linkend="ff.typing.reusing">reusing types</link>)</entry>
+					</row>
+					<row>
+						<entry>-[C,N]</entry>
+						<entry>A single bond to either a carbon or a nitrogen</entry>
+					</row>
+					<row>
+						<entry>-[F,Cl,Br,I,At]</entry>
+						<entry>A single bond to any halogen atom</entry>
+					</row>
+					<row>
+						<entry>-[&amp;10,&amp;11,&amp;18,-Kr]</entry>
+						<entry>A single bond to an atom with type ID 10, 11, or 18, or a krypton atom</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.doublebondto"><title>=X (double bond to X)</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>double bond to</tertiary></indexterm>
+			
+		<para>Specifies that a double bond to 'X' must exist. Equivalent to writing '~X(bond=double)'. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. If used inside the bracketed part of a <link linkend="ff.neta.ref.ring">ring</link> description this only indicates that the atom/type should be present within the cycle - the connection to the target atom is unimportant. If used in a <link linkend="ff.neta.ref.chain">chain</link> keyword the connection type is honoured.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword '=X' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>=O</entry>
+						<entry>A double bond to an oxygen atom</entry>
+					</row>
+					<row>
+						<entry>=&amp;4</entry>
+						<entry>A double bond to an atom which matches type ID 4 (see <link linkend="ff.typing.reusing">reusing types</link>)</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.bond"><title>bond</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>bond</tertiary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<synopsis>
+bond=<emphasis>type</emphasis>
+		</synopsis>
+		
+		<para>Defines the specific <emphasis>type</emphasis> of the connection (see <link linkend="enums.bondtypes">Bond Types</link>) required for a bound atom. The keyword should be used inside bracketed parts of bound atom descriptions. It is important to note that the 'bond' keyword should only be used in conjunction with the '~X' (any bond to) specifier, since the specific connection demanded by the '-X' and '=X' specifiers will override any 'bond' declarations.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'bond' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>~O(bond=double)</entry>
+						<entry>A double bond to an oxygen atom (equivalent to '=O')</entry>
+					</row>
+					<row>
+						<entry>~&amp;55(bond=triple)</entry>
+						<entry>A triple bond to an atom which matches type ID 55 (see <link linkend="ff.typing.reusing">reusing types</link>)</entry>
+					</row>
+					<row>
+						<entry>~C(bond=single)</entry>
+						<entry>A single bond to a carbon atom (a very explicit way of writing simply '-C')</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.chain"><title>chain</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>chain</tertiary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<synopsis>
+chain( <emphasis>neta</emphasis> )
+		</synopsis>
+		
+		<para>The 'chain' command provides an easy was of specifying a linear sequence of atoms from the current atom forward. Within the bracketed part, a sequence of connections are listed in the order in which they are to appear. Atoms in the chain are specified in the same way as other connections (e.g. '-C(nbonds=2)') but should <emphasis>not</emphasis> be separated by commas. The repeat keyword <link linkend="ff.neta.ref.n">n</link> may also be specified at some point in the bracketed part to define that more than one of the defined chains is required. Note that, if all atoms specif ied for the chain are matched, but the actual chain in the model is longer, a positive match will be returned. Thus, it is usually a good idea to define the last atom in the chain more explicitly to prevent false matches.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'chain' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>chain(-C-C-C-C)</entry>
+						<entry>Specifies a (minimum) four-carbon chain of any degree of saturation</entry>
+					</row>
+					<row>
+						<entry>chain(-C(nh=2)-C(nh=2)-C(nh=2)-C(nh=3))</entry>
+						<entry>Explicity specifies a butyl chain</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.n"><title>n</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>n</tertiary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<synopsis>
+n=<emphasis>nrepeat</emphasis>
+		</synopsis>
+		
+		<para>The 'n' keyword, when placed in the bracketed parts of bound atom, ring, and chain descriptions requires that they are matched a number of times rather than just once.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'n' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>-C(n=4,-H(n=3))</entry>
+						<entry>Describes the central carbon in neopentane (2,2-dimethylpropane) which is bound to four methyl groups</entry>
+					</row>
+					<row>
+						<entry>ring(size=4,n=3)</entry>
+						<entry>Specifies that the target atom should be present in three unique four-membered rings</entry>
+					</row>
+					<row>
+						<entry>chain(-C-C-C~N(bond=triple),n=4)</entry>
+						<entry>Requests that the atom has four cyanoethyl groups hanging off it</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.nbonds"><title>nbonds</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>nbonds</tertiary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<synopsis>
+nbonds=<emphasis>n</emphasis>
+		</synopsis>
+		
+		<para>Specifies the exact number of connections that an atom must possess.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'nbonds' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>nbonds=2</entry>
+						<entry>Demand that the atom has exactly two connections</entry>
+					</row>
+					<row>
+						<entry>~N(nbonds=1)</entry>
+						<entry>Describes a nitrogen with only one bond, perhaps an sp1 nitrogen with a triple bond</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.nh"><title>nh</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>nh</tertiary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<synopsis>
+nh=<emphasis>m</emphasis>
+		</synopsis>
+		
+		<para>The 'nh' keyword is shorthand for explicitly specifying the number of attached hydrogens to the target atom or a bound atom. It is equivalent to '-H(n=<emphasis>m</emphasis>)'.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'nh' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>-C(nh=2)</entry>
+						<entry>Atom is bound to a methylene carbon with exactly two hydrogens on it</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.aromatic"><title>aromatic</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>aromatic</tertiary></indexterm>
+		
+		<para>Indicates either that an atom must be present in an aromatic environment (e.g. in an aromatic ring), or that a ring should itself be aromatic.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'aromatic' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>~N(aromatic)</entry>
+						<entry>Specifies a nitrogen connected by any bond which is present in an aromatic environment</entry>
+					</row>
+					<row>
+						<entry>-C(ring(aromatic))</entry>
+						<entry>Single bond to a carbon atom which is in an aromatic ring</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.noring"><title>noring</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>noring</tertiary></indexterm>
+		
+		<para>Indicates that the atom must not be present in any rings.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'noring' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>-O(noring)</entry>
+						<entry>Single bond to an oxygen which is not present in a ring</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.planar"><title>planar</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>planar</tertiary></indexterm>
+		
+		<para>Specifies that the atom target should be planar, which is to say no bond from the atom may be more than 15&deg; out of the plane formed by the first two bonds to the atom)</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'planar' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>-C(planar)</entry>
+						<entry>Single bond to a carbon atom which is roughly planar</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+	
+	<section id="ff.neta.ref.ring"><title>ring</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>ring</tertiary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<synopsis>
+ring ( <emphasis>neta</emphasis> )
+		</synopsis>
+		
+		<para>Denotes that the target atom (if specified in the root of the description) or a bound atom (if used inside the associated bracketed part) should be present in a ring structure of some kind. The 'ring' keyword alone simply demands that the atom is present inside a ring of some size, but may take an optional bracketed part describing more fully the number of atoms in the ring, and the individual nature of each of these atoms. Within the bracketed part, bound atoms may be specified as usual in the contained <emphasis>neta</emphasis>, but the connection type is irrelevant as it is only the presence of those particular atoms within the ring that is considered important.</para>
+		
+		<para>Bound atom descriptions given inside the bracketed part should again be listed in order of decreasing complexity. Multiple rings may be specified with separate 'ring' keywords, allowing the location of fused ring atoms.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'ring' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>ring(size=6,~C(n=6),aromatic)</entry>
+						<entry>Benzene-style carbon</entry>
+					</row>
+					<row>
+						<entry>-C(ring(size=6,-C(n=6,nh=2)))</entry>
+						<entry>Carbon atom in cyclohexane</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.size"><title>size</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>size</tertiary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<synopsis>
+size=<emphasis>n</emphasis>
+		</synopsis>
+		
+		<para>Only relevant in the bracketed part of a <link linkend="ff.neta.ref.ring">ring</link> keyword, requests the exact number of atoms (<emphasis>n</emphasis>) comprising the cycle. Note that this may be used independently of the implicit size suggested by the number of atom descriptions supplied, or in conjunction with a partial list of atoms.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'size' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>ring(size=7)</entry>
+						<entry>Specifies a 7-membered ring</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+	<section id="ff.neta.ref.geometries"><title>Geometries</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>geometries</tertiary></indexterm>
+		
+		<para>These keywords requests that the target atom (if specified in the root of the type description) or a bound atom (if used inside the associated bracketed part) should possess a certain physical geometry in terms of its connections. The number of bonds to the target atom and the angles between them are used to determine the geometry.</para>
+		
+		<para>Note that, for some geometry types, there are several ways for the atom to have this geometry. Also note that, since the geometry is determined by consideration of ideal angles within some tolerance, an atom may not possess no detectable geometry.</para>
+		
+		<para>Valid geometry keywords and the criteria that are used to identify them are as follows:</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='1'><title>NETA geometry keywords</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Bonds Required</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>unbound</entry>
+						<entry>0</entry>
+						<entry>An unbound atom. Only makes sense when used in the root of a type description.</entry>
+					</row>
+					<row>
+						<entry>onebond</entry>
+						<entry>1</entry>
+						<entry>The atom has one bond.</entry>
+					</row>
+					<row>
+						<entry>linear</entry>
+						<entry>2</entry>
+						<entry>Two bonds to the atom, making an angle &gt; 170&deg;.</entry>
+					</row>
+					<row>
+						<entry>tshape</entry>
+						<entry>3</entry>
+						<entry>Three bonds to the atom, with two bonds making an angle &gt; 170&deg;.</entry>
+					</row>
+					<row>
+						<entry>trigonal</entry>
+						<entry>3</entry>
+						<entry>Trigonal planar arrangement of three bonds, with the largest of the three angles between 115 and 125&deg;.</entry>
+					</row>
+					<row>
+						<entry>tetrahedral</entry>
+						<entry>2</entry>
+						<entry>Two bonds to the atom, making an angle between 100 and 115&deg;.</entry>
+					</row>
+					<row>
+						<entry>tetrahedral</entry>
+						<entry>3</entry>
+						<entry>Three bonds to the atom, with the largest of the angles between 100 and 115&deg;.</entry>
+					</row>
+					<row>
+						<entry>tetrahedral</entry>
+						<entry>4</entry>
+						<entry>Four bonds to the atom, with the average of the angles laying between 100 and 115&deg;.</entry>
+					</row>
+					<row>
+						<entry>sqplanar</entry>
+						<entry>4</entry>
+						<entry>Four bonds to the atom, with the average of the angles laying between 115 and 125&deg;.</entry>
+					</row>
+					<row>
+						<entry>tbp</entry>
+						<entry>5</entry>
+						<entry>Five bonds to the atom are assumed to be trigonal bipyramidal geometry.</entry>
+					</row>
+					<row>
+						<entry>octahedral</entry>
+						<entry>6</entry>
+						<entry>Six bonds to the atom are assumed to be octahedral geometry.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+
+</section>

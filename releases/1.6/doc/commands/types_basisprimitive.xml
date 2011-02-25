@@ -1,0 +1,52 @@
+	<section id="command.types.basisprimitive"><title>BasisPrimitive Type</title>
+		
+		<indexterm zone="command.types.basisprimitive"><primary>types</primary><secondary>basisprimitive</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>BasisPrimitive Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>exponent</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Exponent of the basis primitive</entry>
+					</row>
+					<row>
+						<entry>coefficients</entry>
+						<entry>double[]</entry>
+						<entry>rw</entry>
+						<entry>Coefficients of the basis primitive</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+		<table frame='all' pgwide='1' tocentry='1'><title>BasisPrimitive Type Functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>addcoefficient ( double coeff )</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>Add a new coefficient to the basis primitive</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>
+

@@ -1,0 +1,113 @@
+	<section id="command.types.glyph"><title>Glyph</title>
+		
+		<indexterm zone="command.types.glyph"><primary>types</primary><secondary>glyph</secondary></indexterm>
+	
+		<table frame='all' pgwide='1' tocentry='1'><title>Glyph Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>data</entry>
+						<entry><link linkend="command.types.glyphdata">glyphdata</link></entry>
+						<entry>ro</entry>
+						<entry>Individual data for each vertex of the glyph</entry>
+					</row>
+					<row>
+						<entry>ndata</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>How many data points (vertices) are associated with this glyph's type</entry>
+					</row>
+					<row>
+						<entry>rotated</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag to indicate whether the glyph's rotation matrix has been modified (i.e. the glyph has been rotated). Setting this to '0' resets (and removes) any current rotation matrix (same as calling member function 'resetrotation').</entry>
+					</row>
+					<row>
+						<entry>rotation</entry>
+						<entry>double[9]</entry>
+						<entry>rw</entry>
+						<entry>Rotation matrix for the glyph. Note that not all glyphs can be rotated (see the topic on <link linkend="topics.glyphs">Glyphs</link> for more information.</entry>
+					</row>
+					<row>
+						<entry>selected</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the glyph is currently selected</entry>
+					</row>
+					<row>
+						<entry>solid</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Specifies whether the glyph is drawn as a filled (solid) shape or in wireframe</entry>
+					</row>
+					<row>
+						<entry>text</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Text data associated to the glyph. Not all glyphs use text</entry>
+					</row>
+					<row>
+						<entry>type</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Style of the glyph - see <link linkend="enums.glyphtypes">Glyph Types</link> for a list</entry>
+					</row>
+					<row>
+						<entry>visible</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag indicating whether the glyph is currently visible</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+		<table frame='all' pgwide='1' tocentry='1'><title>Glyph Type Functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>recolour ( double <emphasis>r</emphasis>, double <emphasis>g</emphasis>, double <emphasis>b</emphasis>, double <emphasis>a</emphasis> = 1.0 )</entry>
+						<entry>void</entry>
+						<entry>Recolour all data vertices of the glyph to the specified RGB(a) value</entry>
+					</row>
+					<row>
+						<entry>resetrotation ()</entry>
+						<entry>void</entry>
+						<entry>Reset any rotation applied to the glyph</entry>
+					</row>
+					<row>
+						<entry>rotatex ( double <emphasis>angle</emphasis> )</entry>
+						<entry>void</entry>
+						<entry>Rotates the glyph by <emphasis>angle</emphasis> degrees about its x axis</entry>
+					</row>
+					<row>
+						<entry>rotatey ( double <emphasis>angle</emphasis> )</entry>
+						<entry>void</entry>
+						<entry>Rotates the glyph by <emphasis>angle</emphasis> degrees about its y axis</entry>
+					</row>
+					<row>
+						<entry>rotatey ( double <emphasis>angle</emphasis> )</entry>
+						<entry>void</entry>
+						<entry>Rotates the glyph by <emphasis>angle</emphasis> degrees about its z axis</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

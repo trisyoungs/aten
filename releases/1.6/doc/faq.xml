@@ -1,0 +1,166 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+	"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"
+	[
+	<!ENTITY % MATHML.prefixed "INCLUDE">
+	<!ENTITY % MATHML.prefix "mml">
+	<!ENTITY % equation.content "(alt?, (graphic+|mediaobject+|mml:math))">
+	<!ENTITY % inlineequation.content "(alt?, (inlinegraphic+|inlinemediaobject+|mml:math))">
+	<!ENTITY % mathml PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">
+	%mathml;
+	<!ENTITY example001 SYSTEM "examples/example001.xml">
+	<!ENTITY example002 SYSTEM "examples/example002.xml">
+	<!ENTITY example003 SYSTEM "examples/example003.xml">
+]>
+
+<book>
+	<bookinfo>
+	<title>Aten vATENVERSION (rATENREVISION)</title>
+	<subtitle>Frequently Asked Questions</subtitle>
+	<author>
+		<firstname>Tristan</firstname>
+		<surname>Youngs</surname>
+	</author>
+	</bookinfo>
+	
+<section id="faq"><title>Frequently Asked Questions</title>
+	
+	<qandaset>
+		
+		<qandaentry>
+			<question>
+				<para>Do I need to reference Aten in my work? Is there even a publication to reference?</para>
+			</question>
+			<answer>
+				<para>I don't demand that you reference Aten, but if you wish to then I won't stop you! The full reference is:</para>
+				<para>&quot;Aten - An application for the creation, editing, and visualization of coordinates for glasses, liquids, crystals, and molecules&quot;, T. G. A. Youngs, J. Comp. Chem., <emphasis>31</emphasis>, 639-648, (2009).</para>
+			</answer>
+		</qandaentry>
+		
+		<qandaentry>
+			<question>
+				<para>Are packages available for my Linux distribution?</para>
+			</question>
+			<answer>
+				<para>Many common Linux flavours are catered for over at the SuSE Build Service. Try there.</para>
+			</answer>
+		</qandaentry>
+		
+		<qandaentry>
+			<question>
+				<para>I saved an image from the GUI and it was completely black / corrupt. Why?</para>
+			</question>
+			<answer>
+				<para>A common issue with (integrated) Intel graphics chips, but may affect others. There are some issues with the Qt code used to grab the current view as an image, but an alternative method is available and works. Try the prefs option 'aten.prefs.useframebuffer = TRUE;' to use the alternative method. If this remedies the problem, add the line to your preferences file. One caveat - although this appears to fix problems when saving images from the GUI, it does not (apparently) solve the problem when saving the image from the command line.</para>
+			</answer>
+		</qandaentry>
+		
+		<qandaentry>
+			<question>
+				<para>Why is Aten's main view corrupt/black on my Mac/Windows/Linux machine?</para>
+			</question>
+			<answer>
+				<para>This is, sadly, a fairly common issue, and the exact cause(s) is (are) not known for sure. Certainly on some Linux machines the presence of an ATI graphics card seems to be related. Using the 'radeon' or 'fglrx' drivers supplied with the OS rather than the proprietary 'ati' driver sometimes helps. On any platform, forcing the main view widget to manually refresh itself also often helps, particularly on the Mac. To do this, type in 'aten.prefs.manualswapbuffers = TRUE;' in the command toolbar (or supply it with the '-c' switch on the command line). If this remedies the problem, add the line to your preferences file.</para>
+			</answer>
+		</qandaentry>
+
+		<qandaentry>
+			<question>
+				<para>Rotating a model, or even the empty main view, seems to have a huge lag, with rotation happening even after I've stopped moving the mouse. What's going on? </para>
+			</question>
+			<answer>
+				<para>Recent versions of Qt / Linux seem to display this problem. Certainly it has been observed on OpenSuSE 11.3 with libqt4-4.6.3-2.1.1. The problem is that, normally, Aten attempts to redraw the screen after each mouseMove event sent by Qt, but on these particular systems it appears as if many more mouseEvents are generated (or stored) than normal. To remedy the problem, you can set the option 'aten.prefs.mousemovefilter' to tell Aten to leave at least a certain number of milliseconds between redraws of the screen. A number of around 75 is about right, but you should experiment and see what works best for you.</para>
+			</answer>
+		</qandaentry>
+		
+		<qandaentry>
+			<question>
+				<para>./autogen.sh: line 35: libtoolize: command not found</para>
+			</question>
+			<answer>
+				<para>You need to install the 'libtool' package - it should be on the original CD of your linux distro or on one of the billions of repository mirrors around the world.</para>
+			</answer>
+		</qandaentry>
+		
+		<qandaentry>
+			<question>
+				<para>Error: 'uic: File generated with too recent version of Qt Designer (4.0 vs. 3.x.x)'</para>
+			</question>
+			<answer>
+				<para>This error can occur when both the Qt3 and Qt4 development packages are installed The $PATH is sometimes set so that the Qt3 binaries are found first, so the Meta-object compiler from Qt3 is called, and then the generated source includes the Qt4 headers. Running 'which moc' will tell you which binary is being used - you can then run this binary with the -v option to check the version. If its version 3.x.x then you will need to reconfigure the build.</para>
+				<para>Each of the three Qt4 utilities needed to compile Aten - moc, rcc, and uic - can be specified explicitly with three configure options:</para>
+					
+					{CODE()}bob@pc:~&gt; ./configure --with-qtmoc=&lt;executable&gt; --with-qtuic=&lt;executable&gt; --with-qtrcc=&lt;executable&gt;{CODE}
+					
+				<para>For older versions of Aten (pre v1.5 r1164), only a single configure option is available:</para>
+
+					{CODE()}bob@pc:~&gt; ./configure --with-qtdir=&lt;path&gt; {CODE}
+
+				<para>...where &lt;path&gt; is the location of the Qt4 binaries (moc, uic, and rcc). Typically, the Qt3 binaries are located in /usr/lib/qt3/bin while the Qt4 binaries are in /usr/bin, but this may not be the case on your particular system.</para>
+			</answer>
+		</qandaentry>
+		
+		<qandaentry>
+			<question>
+				<para>Error: 'This file was generated using the moc from 3.X.X. It cannot be used with the include files from this version...'</para>
+			</question>
+			<answer>
+				<para>See previous Error.</para>
+			</answer>
+		</qandaentry>
+		
+		
+		<qandaentry>
+			<question>
+				<para>Error: Can't find 'libtoolize'</para>
+			</question>
+			<answer>
+				<para>It is possible that ./autogen.sh will complain that it can't find 'libtoolize'. How to fix it?</para>
+			</answer>
+		</qandaentry>
+		
+		
+		<qandaentry>
+			<question>
+				<para>Error: Possibly undefined macro: AC_DEFINE</para>
+			</question>
+			<answer>
+				<para>When running ./autogen.sh, autoconf sometimes fails with 'configure.ac:16: error: possibly undefined macro: AC DEFINE'.
+					This is related to the version of pkg-config you have installed (e.g. version 0.15.1 gives this error, but version 0.21 does not) with Fink / MacPorts. Upgrade to the latest version. Incidentally, the line-number reported (16) is not the actual location of the error - autoconf reports this wrongly (the actual error occurs later on with the `PKG CHECK MODULES(GTK28, ..., [AC DEFINE...' command).</para>
+			</answer>
+		</qandaentry>
+		
+		
+		<qandaentry>
+			<question>
+				<para>Warning: Underquoted definition of PKG_CHECK_MODULES</para>
+			</question>
+			<answer>
+				<para>Running ./autogen.sh, aclocal complains '/sw/share/aclocal/pkg.m4:5: warning: underquoted definition of PKG_CHECK_MODULES'
+					If pkgconfig is not installed this is likely to give rise to the said spurious error. Install pkgconfig from Fink / MacPorts to proceed.</para>
+			</answer>
+		</qandaentry>
+		
+		
+		<qandaentry>
+			<question>
+				<para>autogen.sh appears successful, but aclocal complains about 'underquoted definition of AM PATH...'</para>
+			</question>
+			<answer>
+				<para>These warnings should not have affected the generation of a working ./configure script. So you may as well move on to the next step.</para>
+			</answer>
+		</qandaentry>
+		
+		<qandaentry>
+			<question>
+				<para>Undefined reference to ___stdoutp expected to be defined in /usr/lib/libSystem.B.dylib</para>
+			</question>
+			<answer>
+				<para>Chances are you have an 'old' operating system - Panther (10.3.9) is confirmed to show this error. Since the Universal Mac binaries are built on a machine with Leopard (10.5) this error can only be avoided by upgrading your operating system or compiling Aten by hand.</para>
+			</answer>
+		</qandaentry>
+	
+	</qandaset>
+
+</section>
+
+</book>

@@ -1,0 +1,24 @@
+<section id="gui.toolwindows.ff"><title>Forcefield Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>forcefield</tertiary></indexterm>
+	
+	<para>
+		<inlinegraphic fileref="images/stack_ff.png"/>Forcefield Window
+	</para>
+	
+	<figure><title>Forcefield Window</title>
+		<graphic fileref="images/window_ff.png" align="center"/>
+	</figure>
+
+	<para><link linkend="ff">Forcefield files</link> are managed through the Forcefield window. A list of currently-loaded forcefields is shown at the top, the default forcefield (if any) is indicated with a tick, and is used whenever a forcefield is required by a process but none has been linked to the target model. The forcefield selected in the list is the current forcefield, and the one used by all other actions on the page. Forcefields are loaded, unloaded, and edited with the buttons immediately underneath the list.</para>
+
+	<section><title>Assigning Forcefields to Models</title>
+		<para>The Associate panel links the selected forcefield to one or more models and their patterns; the 'Model' button links the current forcefield to the current model, while the 'All' button links the current forcefield to all loaded model. The 'Pattern' button brings up a dialog listing the patterns of the current model, from which one is selected to link the forcefield to. A forcefield associated to an individual pattern will be used in preference to the forcefield associated with its parent model.</para>
+	</section>
+
+	<section><title>Assigning Atom Types</title>
+		<para>Automatic Typing takes the current model and either assigns or removes forcefield types from the model's (or pattern's) associated forcefield(s). Forcefield types for all atoms are determined unless they have been assigned a specific type manually.</para>
+
+		<para>Manual assignment of forcefield types can be performed in the Manual Typing panel. The list gives all atom types in the current forcefield that are relevant to the element entered just above the list. One can be selected from the list and be manually assigned (forced) onto the current atom selection with the Set button. Such assignments will not be overwritten by subsequent automatic typings. Manual typings can be removed with the Delete button, and the currently selected atomtype can be tested for suitability on the current selection of atoms with the Test button.</para>
+	</section>
+	
+</section>
