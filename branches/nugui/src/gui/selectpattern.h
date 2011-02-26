@@ -1,7 +1,7 @@
 /*
-	*** Qt select pattern dialog declaration
+	*** Select Pattern Dialog
 	*** src/gui/selectpattern.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 

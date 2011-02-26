@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Geometry Window
+	*** Geometry Dock Widget
 	*** src/gui/geometry.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GEOMETRYWINDOW_H
-#define ATEN_GEOMETRYWINDOW_H
+#ifndef ATEN_GEOMETRYWIDGET_H
+#define ATEN_GEOMETRYWIDGET_H
 
 #include "gui/ui_geometry.h"
 
 // Geometry window
-class AtenGeometry : public QDialog
+class GeometryWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -34,10 +34,9 @@ class AtenGeometry : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
 	private slots:
-	void dialogFinished(int result);
 	void on_SetNewDistanceButton_clicked(bool checked);
 	void on_NudgeDistancePlusButton_clicked(bool checked);
 	void on_NudgeDistanceMinusButton_clicked(bool checked);
@@ -58,11 +57,11 @@ class AtenGeometry : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenGeometry(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	GeometryWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Destructor
-	~AtenGeometry();
+	~GeometryWidget();
 	// Main form declaration
-	Ui::GeometryDialog ui;
+	Ui::GeometryWidget ui;
 	// Finalise widgets (things that couldn't be done in Qt Designer)
 	void finaliseUi();
 	// Set controls to reflect program variables

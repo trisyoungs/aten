@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Grids Window
+	*** Grids Dock Widget
 	*** src/gui/grids.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GRIDSWINDOW_H
-#define ATEN_GRIDSWINDOW_H
+#ifndef ATEN_GRIDSWIDGET_H
+#define ATEN_GRIDSWIDGET_H
 
 #include "gui/ui_grids.h"
 
@@ -29,7 +29,7 @@ class QMenuBar;
 class Grid;
 
 // Grids window
-class AtenGrids : public QDialog
+class GridsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -38,7 +38,7 @@ class AtenGrids : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
 	void loadGrid();
 	private:
@@ -104,8 +104,6 @@ class AtenGrids : public QDialog
 	void on_OrbitalOriginZSpin_valueChanged(double d);
 	void on_OrbitalSpacingSpin_valueChanged(double d);
 	void on_OrbitalPointsSpin_valueChanged(int i);
-	// Dialog
-	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -121,10 +119,10 @@ class AtenGrids : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenGrids(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenGrids();
+	GridsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~GridsWidget();
 	// Main form declaration
-	Ui::GridsDialog ui;
+	Ui::GridsWidget ui;
 };
 
 #endif

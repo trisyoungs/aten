@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1031</width>
-    <height>814</height>
+    <width>463</width>
+    <height>477</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -43,46 +43,26 @@
    <bool>true</bool>
   </property>
   <widget class="QWidget" name="MainWindowLayout">
-   <widget class="QFrame" name="ViewFrame">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>110</y>
-      <width>231</width>
-      <height>311</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-   </widget>
-   <widget class="TTabBar" name="ModelTabs" native="true">
-    <property name="geometry">
-     <rect>
-      <x>3</x>
-      <y>3</y>
-      <width>16</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-      <horstretch>255</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QFrame" name="ViewFrame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="MainWindowMenuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1031</width>
-     <height>19</height>
+     <width>463</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu">
@@ -1854,129 +1834,6 @@
     <string>Show / hide forcefields window</string>
    </property>
   </action>
-  <action name="actionAtomlistWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_atomlist.svg</normaloff>:/stackicons/icons/stack_atomlist.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Atomlist</string>
-   </property>
-   <property name="iconText">
-    <string>Atomlist</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide atomlist window</string>
-   </property>
-  </action>
-  <action name="actionCellDefineWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Cell Define</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide cell definition window</string>
-   </property>
-  </action>
-  <action name="actionCellTransformWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_celledit.svg</normaloff>:/stackicons/icons/stack_celledit.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Cell Transform</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide cell transform window</string>
-   </property>
-  </action>
-  <action name="actionBuildWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_build.svg</normaloff>:/stackicons/icons/stack_build.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Build</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide builder window</string>
-   </property>
-  </action>
-  <action name="actionGridsWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_surfaces.svg</normaloff>:/stackicons/icons/stack_surfaces.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Grids</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide grids window</string>
-   </property>
-  </action>
-  <action name="actionTransformWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_transform.svg</normaloff>:/stackicons/icons/stack_transform.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Transform</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide atom transform window</string>
-   </property>
-  </action>
-  <action name="actionPositionWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_position.svg</normaloff>:/stackicons/icons/stack_position.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Position</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide atom position window</string>
-   </property>
-  </action>
-  <action name="actionMinimiserWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_minimiser.svg</normaloff>:/stackicons/icons/stack_minimiser.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Minimiser</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide minimiser window</string>
-   </property>
-  </action>
   <action name="actionDisorderWindow">
    <property name="checkable">
     <bool>true</bool>
@@ -2136,18 +1993,6 @@
     <string>Save To File</string>
    </property>
   </action>
-  <action name="actionCommandWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_command.svg</normaloff>:/stackicons/icons/stack_command.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Command/Scripts Window</string>
-   </property>
-  </action>
   <action name="actionSetBondLength">
    <property name="text">
     <string>Set Bond Length</string>
@@ -2161,21 +2006,6 @@
   <action name="actionSetTorsionAngle">
    <property name="text">
     <string>Set Torsion Angle</string>
-   </property>
-  </action>
-  <action name="actionGeometryWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_geometry.svg</normaloff>:/stackicons/icons/stack_geometry.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Geometry</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide the atom geometry window</string>
    </property>
   </action>
   <action name="actionCentreAtOrigin">
@@ -2201,57 +2031,9 @@
     <string>Draw using fragments from the fragment library</string>
    </property>
   </action>
-  <action name="actionFragmentWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_fragment.svg</normaloff>:/stackicons/icons/stack_fragment.svg</iconset>
-   </property>
-   <property name="text">
-    <string>FragmentWindow</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide the Fragment Library</string>
-   </property>
-  </action>
-  <action name="actionGlyphsWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_glyphs.svg</normaloff>:/stackicons/icons/stack_glyphs.svg</iconset>
-   </property>
-   <property name="text">
-    <string>GlyphsWindow</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide the glyphs window</string>
-   </property>
-  </action>
   <action name="actionCreateGlyph">
    <property name="text">
     <string>Create Glyph</string>
-   </property>
-  </action>
-  <action name="actionMolecularDynamicsWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_md.svg</normaloff>:/stackicons/icons/stack_md.svg</iconset>
-   </property>
-   <property name="text">
-    <string>MolecularDynamics</string>
-   </property>
-   <property name="toolTip">
-    <string>Show the Molecular Dynamics window</string>
    </property>
   </action>
   <action name="actionZMatrixEditorWindow">
@@ -2316,21 +2098,6 @@
     <string>&amp;Select...</string>
    </property>
   </action>
-  <action name="actionSelectWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_select.svg</normaloff>:/stackicons/icons/stack_select.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Atom Selection</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide atom selection window</string>
-   </property>
-  </action>
   <action name="actionModelCreateExpression">
    <property name="text">
     <string>Create Expression</string>
@@ -2339,21 +2106,6 @@
   <action name="actionCreateFragment">
    <property name="text">
     <string>Create Fragment</string>
-   </property>
-  </action>
-  <action name="actionVibrationsWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_vibrations.svg</normaloff>:/stackicons/icons/stack_vibrations.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Build</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide vibrations window</string>
    </property>
   </action>
   <action name="actionAtomColourReset">
@@ -2373,13 +2125,6 @@
   </action>
  </widget>
  <layoutdefault spacing="0" margin="0"/>
- <customwidgets>
-  <customwidget>
-   <class>TTabBar</class>
-   <extends>QWidget</extends>
-   <header>gui/ttabbar.uih</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="icons.qrc"/>
  </resources>

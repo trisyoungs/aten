@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Minimiser Window
+	*** Minimiser Dock Window
 	*** src/gui/minimiser.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MINIMISERWINDOW_H
-#define ATEN_MINIMISERWINDOW_H
+#ifndef ATEN_MINIMISERWIDGET_H
+#define ATEN_MINIMISERWIDGET_H
 
 #include "gui/ui_minimiser.h"
 
 // Minimiser window
-class AtenMinimiser : public QDialog
+class MinimiserWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -36,11 +36,10 @@ class AtenMinimiser : public QDialog
 	public:
 	// Minimisation algorithms
 	enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, MopacMethod, nMinimiserMethods };
-	void showWindow();
+	void showWidget();
 	private slots:
 	void on_MinimiserMethodCombo_currentIndexChanged(int index);
 	void on_MinimiseButton_clicked(bool checked);
-	void dialogFinished(int result);
 	public:
 	void doMinimisation();
 
@@ -54,10 +53,10 @@ class AtenMinimiser : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenMinimiser(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenMinimiser();
+	MinimiserWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~MinimiserWidget();
 	// Main form declaration
-	Ui::MinimiserDialog ui;
+	Ui::MinimiserWidget ui;
 };
 
 #endif

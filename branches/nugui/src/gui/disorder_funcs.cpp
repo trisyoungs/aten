@@ -45,7 +45,6 @@ AtenDisorder::~AtenDisorder()
 // Show window
 void AtenDisorder::showWindow()
 {
-	//if (shouldRefresh_) refresh();
 	show();
 }
 

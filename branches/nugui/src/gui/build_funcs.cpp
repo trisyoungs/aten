@@ -1,5 +1,5 @@
 /*
-	*** Qt build window functions
+	*** Build Dock Widget
 	*** src/gui/build_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -27,24 +27,23 @@
 #include "parser/commandnode.h"
 
 // Constructor
-AtenBuild::AtenBuild(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 }
 
 // Destructor
-AtenBuild::~AtenBuild()
+BuildWidget::~BuildWidget()
 {
 }
 
 // Show window
-void AtenBuild::showWindow()
+void BuildWidget::showWidget()
 {
-	//if (shouldRefresh_) refresh();
 	show();
 }
 
-void AtenBuild::on_AddAtomButton_clicked(bool on)
+void BuildWidget::on_AddAtomButton_clicked(bool on)
 {
 	if (ui.AddAtomFractionalCheck->isChecked())
 	{
@@ -57,7 +56,3 @@ void AtenBuild::on_AddAtomButton_clicked(bool on)
 	gui.update();
 }
 
-void AtenBuild::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionBuildWindow->setChecked(FALSE);
-}

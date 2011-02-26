@@ -1,6 +1,6 @@
 /*
-	*** Build Dock Widget
-	*** src/gui/build.h
+	*** Model List Dock Widget
+	*** src/gui/modellist.h
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -19,24 +19,27 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_BUILDWIDGET_H
-#define ATEN_BUILDWIDGET_H
+#ifndef ATEN_MODELLISTWIDGET_H
+#define ATEN_MODELLISTWIDGET_H
 
-#include "gui/ui_build.h"
+#include "gui/ui_modellist.h"
 
-// Build (draw) window
-class BuildWidget : public QDockWidget
+// Model List dock widget
+class ModelListWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Atom data columns
+	enum DataColumns { IdData=1, ElementData, RxData, RyData, RzData };
 
 	/*
 	// Window Functions
 	*/
 	public:
 	void showWidget();
-	private slots:
-	void on_AddAtomButton_clicked(bool on);
+	void refresh();
 
 	/*
 	// Local variables
@@ -48,10 +51,10 @@ class BuildWidget : public QDockWidget
 	*/
 	public:
 	// Constructor / Destructor
-	BuildWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~BuildWidget();
+	ModelListWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~ModelListWidget();
 	// Main form declaration
-	Ui::BuildWidget ui;
+	Ui::ModelListWidget ui;
 };
 
 #endif

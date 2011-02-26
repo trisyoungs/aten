@@ -34,6 +34,7 @@ void AtenForm::loadSettings()
 	Dnchar filename;
 	Program *prog, *loadedscript;
 	int n;
+	
 	// Recent file entries
 	for (n=0; n<MAXRECENTFILES; n++)
 	{
@@ -44,6 +45,7 @@ void AtenForm::loadSettings()
 	}
 	// Toolbar visibility / position
 	if (prefs.loadQtSettings() && settings_.contains("MainWinPositions")) gui.mainWindow->restoreState( settings_.value("MainWinPositions").toByteArray());
+	
 	// Command toolbar history
 	QStringList history;
 	n = 0;
@@ -54,7 +56,8 @@ void AtenForm::loadSettings()
 		if (settings_.contains(key)) history << settings_.value(key).toString();
 		++n;
 	} while (settings_.contains(key));
-	gui.commandWindow->setCommandList(history);
+	gui.commandWidget->setCommandList(history);
+	
 	// Scripts
 	n = 0;
 	do
@@ -98,6 +101,7 @@ void AtenForm::saveSettings()
 {
 	QString key;
 	int n;
+	
 	// Save the recent file entries
 	for (n=0; n<MAXRECENTFILES; n++)
 	{
@@ -107,16 +111,18 @@ void AtenForm::saveSettings()
 		if (actionRecentFile[n]->isVisible()) settings_.setValue(key,actionRecentFile[n]->data().toString());
 		else settings_.remove(key);
 	}
+	
 	// Toolbar visibility / position
 	settings_.setValue("MainWinPositions", gui.mainWindow->saveState() );
 	// Command toolbar history
-	QStringList history = gui.commandWindow->commandList();
+	QStringList history = gui.commandWidget->commandList();
 	for (n=0; n < history.count(); ++n)
 	{
 		key = "CommandHistory";
 		key += itoa(n);
 		settings_.setValue(key, history[n]);
 	}
+	
 	// Scripts
 	n = 0;
 	for (Program *prog = aten.scripts(); prog != NULL; prog = prog->next)
@@ -126,6 +132,7 @@ void AtenForm::saveSettings()
 		settings_.setValue(key, prog->filename());
 		++n;
 	}
+	
 	// Synchronise (i.e. save) changes to settings
 	settings_.sync();
 }

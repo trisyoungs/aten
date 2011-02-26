@@ -36,8 +36,8 @@
 #include "gui/disorder.h"
 #include "gui/atomlist.h"
 #include "gui/forcefields.h"
-#include "gui/fragment.h"
-#include "gui/celldefine.h"
+#include "gui/fragments.h"
+#include "gui/celldefinition.h"
 #include "gui/celltransform.h"
 #include "gui/command.h"
 #include "gui/build.h"
@@ -45,6 +45,8 @@
 #include "gui/glyphs.h"
 #include "gui/md.h"
 #include "gui/minimiser.h"
+#include "gui/modellist.h"
+#include "gui/toolbox.h"
 #include "gui/transform.h"
 #include "gui/select.h"
 #include "gui/position.h"
@@ -103,23 +105,25 @@ GuiQt::GuiQt()
 	viewBasisDialog = NULL;
 	viewEigenvectorDialog = NULL;
 	aboutDialog = NULL;
-	atomlistWindow = NULL;
-	buildWindow = NULL;
-	cellDefineWindow = NULL;
-	cellTransformWindow = NULL;
-	commandWindow = NULL;
 	disorderWindow = NULL;
 	forcefieldsWindow = NULL;
-	fragmentWindow = NULL;
-	geometryWindow = NULL;
-	glyphsWindow = NULL;
-	gridsWindow = NULL;
-	mdWindow = NULL;
-	minimiserWindow = NULL;
-	positionWindow = NULL;
-	transformWindow = NULL;
-	vibrationsWindow = NULL;
 	zmatrixWindow = NULL;
+	
+	atomListWidget = NULL;
+	buildWidget = NULL;
+	cellDefinitionWidget = NULL;
+	cellTransformWidget = NULL;
+	commandWidget = NULL;
+	fragmentsWidget = NULL;
+	geometryWidget = NULL;
+	glyphsWidget = NULL;
+	gridsWidget = NULL;
+	mdWidget = NULL;
+	minimiserWidget = NULL;
+	positionWidget = NULL;
+	toolBoxWidget = NULL;
+	transformWidget = NULL;
+	vibrationsWidget = NULL;
 }
 
 // Destructor
@@ -193,45 +197,39 @@ void GuiQt::run()
 	aboutDialog = new AtenAbout(mainWindow);
 	viewBasisDialog = new AtenViewBasis(mainWindow);
 	viewEigenvectorDialog = new AtenViewEigenvector(mainWindow);
-	// ...tool windows
-	atomlistWindow = new AtenAtomlist(mainWindow, Qt::Window|Qt::Tool);
-	buildWindow = new AtenBuild(mainWindow, Qt::Window|Qt::Tool);
-	cellDefineWindow = new AtenCellDefine(mainWindow, Qt::Window|Qt::Tool);
-	cellTransformWindow = new AtenCellTransform(mainWindow, Qt::Window|Qt::Tool);
-	commandWindow = new AtenCommand(mainWindow, Qt::Window|Qt::Tool);
 	disorderWindow = new AtenDisorder(mainWindow, Qt::Window|Qt::Tool);
 	forcefieldsWindow = new AtenForcefields(mainWindow, Qt::Window|Qt::Tool);
-	fragmentWindow = new AtenFragment(mainWindow, Qt::Window|Qt::Tool);
-	geometryWindow = new AtenGeometry(mainWindow, Qt::Window|Qt::Tool);
-	glyphsWindow = new AtenGlyphs(mainWindow, Qt::Window|Qt::Tool);
-	gridsWindow = new AtenGrids(mainWindow, Qt::Window|Qt::Tool);
-	mdWindow = new AtenMD(mainWindow, Qt::Window|Qt::Tool);
-	minimiserWindow = new AtenMinimiser(mainWindow, Qt::Window|Qt::Tool);
-	positionWindow = new AtenPosition(mainWindow, Qt::Window|Qt::Tool);
-	selectWindow = new AtenSelect(mainWindow, Qt::Window|Qt::Tool);
-	transformWindow = new AtenTransform(mainWindow, Qt::Window|Qt::Tool);
-	vibrationsWindow = new AtenVibrations(mainWindow, Qt::Window|Qt::Tool);
-	zmatrixWindow = new AtenZMatrix(mainWindow);	// Modal dialog
+	zmatrixWindow = new AtenZMatrix(mainWindow);
+	
+	// ...dock widgets
+	atomListWidget = new AtomListWidget(mainWindow, Qt::Tool);
+	buildWidget = new BuildWidget(mainWindow, Qt::Tool);
+	cellDefinitionWidget = new CellDefinitionWidget(mainWindow, Qt::Tool);
+	cellTransformWidget = new CellTransformWidget(mainWindow, Qt::Tool);
+	commandWidget = new CommandWidget(mainWindow, Qt::Tool);
+	fragmentsWidget = new FragmentsWidget(mainWindow, Qt::Tool);
+	geometryWidget = new GeometryWidget(mainWindow, Qt::Tool);
+	glyphsWidget = new GlyphsWidget(mainWindow, Qt::Tool);
+	gridsWidget = new GridsWidget(mainWindow, Qt::Tool);
+	mdWidget = new MDWidget(mainWindow, Qt::Tool);
+	minimiserWidget = new MinimiserWidget(mainWindow, Qt::Tool);
+	modelListWidget = new ModelListWidget(mainWindow, Qt::Tool);
+	positionWidget = new PositionWidget(mainWindow, Qt::Tool);
+	selectWidget = new SelectWidget(mainWindow, Qt::Tool);
+	toolBoxWidget = new ToolBoxWidget(mainWindow, Qt::Tool);
+	transformWidget = new TransformWidget(mainWindow, Qt::Tool);
+	vibrationsWidget = new VibrationsWidget(mainWindow, Qt::Tool);
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << minimiserWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
+	toolBoxWidget->show();
 
 	// Connect Finished signal of tool windows to finished slots in structure
-	QObject::connect(atomlistWindow, SIGNAL(finished(int)), atomlistWindow, SLOT(dialogFinished(int)));
-	QObject::connect(buildWindow, SIGNAL(finished(int)), buildWindow, SLOT(dialogFinished(int)));
-	QObject::connect(cellDefineWindow, SIGNAL(finished(int)), cellDefineWindow, SLOT(dialogFinished(int)));
-	QObject::connect(cellTransformWindow, SIGNAL(finished(int)), cellTransformWindow, SLOT(dialogFinished(int)));
-	QObject::connect(commandWindow, SIGNAL(finished(int)), commandWindow, SLOT(dialogFinished(int)));
-	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));
-	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));
-	QObject::connect(fragmentWindow, SIGNAL(finished(int)), fragmentWindow, SLOT(dialogFinished(int)));
-	QObject::connect(geometryWindow, SIGNAL(finished(int)), geometryWindow, SLOT(dialogFinished(int)));
-	QObject::connect(glyphsWindow, SIGNAL(finished(int)), glyphsWindow, SLOT(dialogFinished(int)));
-	QObject::connect(gridsWindow, SIGNAL(finished(int)), gridsWindow, SLOT(dialogFinished(int)));
-	QObject::connect(mdWindow, SIGNAL(finished(int)), mdWindow, SLOT(dialogFinished(int)));
-	QObject::connect(minimiserWindow, SIGNAL(finished(int)), minimiserWindow, SLOT(dialogFinished(int)));
-	QObject::connect(positionWindow, SIGNAL(finished(int)), positionWindow, SLOT(dialogFinished(int)));
-	QObject::connect(selectWindow, SIGNAL(finished(int)), selectWindow, SLOT(dialogFinished(int)));
-	QObject::connect(transformWindow, SIGNAL(finished(int)), transformWindow, SLOT(dialogFinished(int)));
-	QObject::connect(vibrationsWindow, SIGNAL(finished(int)), vibrationsWindow, SLOT(dialogFinished(int)));
-	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));
+	foreach( QObject *obj, dockWidgets_) QObject::connect(obj, SIGNAL(visibilityChanged(bool)), toolBoxWidget, SLOT(dockWindowVisibilityChanged(bool)));
+	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));	// TGAY
+	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));// TGAY
+	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY
+
+	// Create list of toolbars
+	toolBars_ << mainWindow->ui.BondToolbar << mainWindow->ui.StyleToolbar << mainWindow->ui.DrawToolbar << mainWindow->ui.EditToolbar << mainWindow->ui.FileToolbar << mainWindow->ui.ForcefieldsToolbar << mainWindow->ui.MeasureToolbar << mainWindow->ui.MouseToolbar << mainWindow->ui.SelectToolbar << mainWindow->ui.TrajectoryToolbar;
 
 	// Set the modality of some dialogs
 	prefsDialog->setModal(TRUE);
@@ -244,7 +242,7 @@ void GuiQt::run()
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
-	glyphsWindow->finaliseUi();
+	glyphsWidget->finaliseUi();
 	prefsDialog->finaliseUi();
 	forcefieldEditorDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
@@ -264,36 +262,29 @@ void GuiQt::run()
 	selectFilterDialog->setControls();
 	selectPatternDialog->setControls();
 	selectVariableDialog->setControls();
-	fragmentWindow->refresh();
+	fragmentsWidget->refresh();
+	commandWidget->refresh();
 
-	// Show the widgets in the GUI and flag it as existing
+	// Set central widget of main window, show the main window, and flag it as existing
+	mainWindow->setCentralWidget(mainWindow->ui.ViewFrame);
 	mainWindow->show();
 	doesExist_ = TRUE;
 
 	// Refresh the necessary windows
-	gridsWindow->refresh();
+	gridsWidget->refresh();
 	forcefieldsWindow->refresh();
 	disorderWindow->refresh();
-	mdWindow->refresh();
-	cellDefineWindow->refresh();
-	cellTransformWindow->refresh();
+	mdWidget->refresh();
+	cellDefinitionWidget->refresh();
+	cellTransformWidget->refresh();
 	mainWindow->update();
-	commandWindow->refreshScripts();
+	commandWidget->refreshScripts();
+	modelListWidget->refresh();
+
+	// Reset view of all loaded models
+	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
 
 	gui.mainWidget->enableDrawing();
-
-	// Add loaded models to tabbar (and reset the view while we're here)
-	// Must remember the current model, since adding the tabs will change it (in the currentChanged callback)
-	Model *currentm = aten.currentModel();
-	int tabid, currenttab = 0;
-	for (Model *m = aten.models(); m != NULL; m = m->next)
-	{
-		tabid = mainWindow->addModelTab(m);
-		if (m == currentm) currenttab = tabid;
-		if (!prefs.keepView()) m->resetView();
-	}
-	mainWindow->ui.ModelTabs->setCurrentIndex(currenttab);
-
 	gui.mainWidget->postRedisplay();
 
 	// Display message box warning if there was a filter load error
@@ -346,20 +337,20 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 	// Refresh aspects of main window
 	mainWindow->update();
 	// Update contents of the atom list
-	if (updateAtoms) atomlistWindow->refresh();
+	if (updateAtoms) atomListWidget->refresh();
 	// Update contents of the glyph list
-	if (updateGlyphs) glyphsWindow->refresh();
+	if (updateGlyphs) glyphsWidget->refresh();
 	// Update contents of the grid window
-	if (updateGrids) gridsWindow->refresh();
+	if (updateGrids) gridsWidget->refresh();
 	// Update selection window
-	selectWindow->refresh();
+	selectWidget->refresh();
 	// Update vibrations window
-	vibrationsWindow->refresh();
+	vibrationsWidget->refresh();
 	// Update the contents of the cell page
 	if (updateCell)
 	{
-		cellDefineWindow->refresh();
-		cellTransformWindow->refresh();
+		cellDefinitionWidget->refresh();
+		cellTransformWidget->refresh();
 		disorderWindow->refresh();
 	}
 	// Update forcefields in the forcefield window
@@ -367,7 +358,7 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 	// Update context menu items
 	updateContextMenu();
 	// Update geometry page
-	geometryWindow->refresh();
+	geometryWidget->refresh();
 	// Request redraw of the main canvas
 	gui.mainWidget->postRedisplay();
 }
@@ -414,14 +405,14 @@ void GuiQt::updateStatusBar(bool clear)
 // Methods
 */
 
-// Add model to GUI list, in this case a tab in the ModelTabs widget
-void GuiQt::addModel(Model *m)
-{
-	if (!doesExist_) return;
-	mainWindow->addModelTab(m);
-	m->resetView();
-	gui.update(TRUE,TRUE,TRUE);
-}
+// // Add model to GUI list, in this case a tab in the ModelTabs widget
+// void GuiQt::addModel(Model *m)
+// {
+// 	if (!doesExist_) return;
+// 	mainWindow->addModelTab(m);
+// 	m->resetView();		TGAY
+// 	gui.update(TRUE,TRUE,TRUE);
+// }
 
 void GuiQt::printMessage(const char *s)
 {
@@ -431,17 +422,17 @@ void GuiQt::printMessage(const char *s)
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
-	mainWindow->ui.TextDisplay->append(str);
-	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
+// 	mainWindow->ui.TextDisplay->append(str);			// tgay
+// 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
 }
 
-// Remove model from list
-void GuiQt::removeModel(int id)
-{
-	if (!doesExist_) return;
-	mainWindow->ui.ModelTabs->removeTab(id);
-	gui.update();
-}
+// // Remove model from list
+// void GuiQt::removeModel(int id)
+// {
+// 	if (!doesExist_) return;
+// 	mainWindow->ui.ModelTabs->removeTab(id);			TGAY
+// 	gui.update();
+// }
 
 bool GuiQt::saveBeforeClose()
 {
@@ -538,30 +529,15 @@ void GuiQt::setWindowsEnabled(bool b)
 {
 	// Disable some key widgets on the main form
 	mainWindow->ui.ViewFrame->setEnabled(b);
-	atomlistWindow->setEnabled(b);
-	buildWindow->setEnabled(b);
-	cellDefineWindow->setEnabled(b);
-	cellTransformWindow->setEnabled(b);
-	commandWindow->setEnabled(b);
 	disorderWindow->setEnabled(b);
 	forcefieldsWindow->setEnabled(b);
-	geometryWindow->setEnabled(b);
-	glyphsWindow->setEnabled(b);
-	gridsWindow->setEnabled(b);
-	minimiserWindow->setEnabled(b);
-	positionWindow->setEnabled(b);
-	transformWindow->setEnabled(b);
-	vibrationsWindow->setEnabled(b);
-	mainWindow->ui.BondToolbar->setEnabled(b);
-	mainWindow->ui.DrawToolbar->setEnabled(b);
-	mainWindow->ui.EditToolbar->setEnabled(b);
-	mainWindow->ui.FileToolbar->setEnabled(b);
-	mainWindow->ui.ForcefieldsToolbar->setEnabled(b);
-	mainWindow->ui.MeasureToolbar->setEnabled(b);
-	mainWindow->ui.MouseToolbar->setEnabled(b);
-	mainWindow->ui.SelectToolbar->setEnabled(b);
-	mainWindow->ui.TrajectoryToolbar->setEnabled(b);
-	mainWindow->ui.WindowToolbar->setEnabled(b);
+
+	// ...and all the dock widgets...
+	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", b);
+
+	// ...and all the toolbars.
+	foreach( QObject *obj, toolBars_) obj->setProperty( "enabled", b);
+	
 	mainWindow->setWidgetsEnabled(b);
 	app->processEvents();
 }

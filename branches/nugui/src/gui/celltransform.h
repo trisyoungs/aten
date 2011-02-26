@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: CellTransform Window
+	*** Cell Transform Dock Widget
 	*** src/gui/celltransform.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,14 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CELLTRANSFORMWINDOW_H
-#define ATEN_CELLTRANSFORMWINDOW_H
+#ifndef ATEN_CELLTRANSFORMWIDGET_H
+#define ATEN_CELLTRANSFORMWIDGET_H
 
 #include "gui/ui_celltransform.h"
 #include "templates/vector3.h"
 
 // Cell transform window
-class AtenCellTransform : public QDialog
+class CellTransformWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -35,10 +35,9 @@ class AtenCellTransform : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
 	private slots:
-	void dialogFinished(int result);
 	// Replicate
 	void on_CellReplicateButton_clicked(bool checked);
 	void on_CellReplicateFoldCheck_clicked(bool checked);
@@ -80,10 +79,10 @@ class AtenCellTransform : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenCellTransform(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenCellTransform();
+	CellTransformWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~CellTransformWidget();
 	// Main form declaration
-	Ui::CellTransformDialog ui;
+	Ui::CellTransformWidget ui;
 };
 
 #endif

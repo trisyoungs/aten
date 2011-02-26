@@ -141,8 +141,6 @@ void AtenForm::update()
 		ui.TrajectoryToolbar->setVisible(TRUE);
 		// Menu controls (and toolbar)
 		updateTrajectoryControls();
-		// Update current tab text
-		updateModelTabName(-1, m);
 	}
 	else
 	{
@@ -204,17 +202,6 @@ void AtenForm::update()
 	ui.actionEditDelete->setEnabled( m->nSelected() != 0 );
 	// Update main window title
 	updateWindowTitle();
-}
-
-// Rename specified (or current if -1) tab
-void AtenForm::updateModelTabName(int tabid, Model *m)
-{
-	if (tabid < 0) tabid = ui.ModelTabs->currentIndex();
-	Dnchar title;
-	if (m->nTrajectoryFrames() == 0) title.sprintf("%s", m->name());
-	else if (m->renderSourceModel() == m) title.sprintf("%s (Parent of %i frames)", m->name(), m->nTrajectoryFrames());
-	else title.sprintf("%s (Frame %i of %i)", m->name(), m->trajectoryFrameIndex()+1, m->nTrajectoryFrames());
-	ui.ModelTabs->setTabText(tabid, title.get());
 }
 
 // Update trajectory controls
@@ -293,66 +280,10 @@ void AtenForm::updateWindowTitle()
 	setWindowTitle(title.get());
 }
 
-// Add model tab
-int AtenForm::addModelTab(Model *m)
-{
-	if (!gui.exists()) return -1;
-	// Create new tab in ModelTabs QTabBar
-	int tabid = ui.ModelTabs->addTab("Unnamed");
-	ui.ModelTabs->setCurrentIndex(tabid);
-	updateModelTabName(tabid, m);
-	return tabid;
-}
-
 // Cancel any current mode and return to select
 void AtenForm::cancelCurrentMode()
 {
 	ui.actionSelectAtoms->trigger();
-}
-
-/*
-// Model Navigation / Management
-*/
-
-void AtenForm::on_ModelTabs_currentChanged(int n)
-{
-	msg.enter("AtenForm::on_ModelTabs_currentChanged");
-	// Different model tab has been selected, so set aten.currentmodel to reflect it.
-	aten.setCurrentModel(aten.model(n));
-	gui.update(TRUE,TRUE,TRUE);
-	msg.exit("AtenForm::on_ModelTabs_currentChanged");
-}
-
-void AtenForm::on_ModelTabs_doubleClicked(int tabid)
-{
-	msg.enter("AtenForm::on_ModelTabs_doubleClicked");
-	// Different model tab has been selected, so set aten.currentmodel to reflect it.
-	Model *m = aten.model(tabid);
-	if (m == NULL) return;
-	bool ok;
-	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
-	if (ok && !text.isEmpty())
-	{
-		CommandNode::run(Command::SetName, "c", qPrintable(text));
-		updateModelTabName(tabid, m);
-		updateWindowTitle();
-		gui.disorderWindow->refresh();
-	}
-	msg.exit("AtenForm::on_ModelTabs_doubleClicked");
-}
-
-void AtenForm::refreshModelTabs()
-{
-	msg.enter("AtenForm::refreshModelTabs");
-	// Set names on tabs
-	int tabid = 0;
-	for (Model *m = aten.models(); m != NULL; m = m->next)
-	{
-		updateModelTabName(tabid, m);
-		tabid ++;
-	}
-	gui.disorderWindow->refresh();
-	msg.exit("AtenForm::refreshModelTabs");
 }
 
 // Cancel progress indicator

@@ -34,7 +34,7 @@ bool updating_ = FALSE;
 void AtenForm::on_actionMinimise_triggered(bool on)
 {
 	// Activate the slot for the 'Minimise' button on the minimiser window
-	gui.minimiserWindow->doMinimisation();
+	gui.minimiserWidget->doMinimisation();
 }
 
 void AtenForm::on_actionCalculateEnergy_triggered(bool on)

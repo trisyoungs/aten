@@ -1,7 +1,7 @@
 /*
-	*** Qt main window
+	*** Main Window
 	*** src/gui/mainwindow.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -52,6 +52,7 @@ class AtenForm : public QMainWindow
 	// All Qt declarations must include this macro
 	Q_OBJECT
 
+
 	/*
 	// Window Functions
 	*/
@@ -70,22 +71,17 @@ class AtenForm : public QMainWindow
 	protected:
 	void closeEvent(QCloseEvent *event);
 
+
 	/*
 	// Refresh Functions
 	*/
 	private:
-	// Rename specified (or current if -1) tab
-	void updateModelTabName(int tabid, Model *m);
 	// Refresh window title
 	void updateWindowTitle();
-	// Refresh names in ModelTabs
-	void refreshModelTabs();
 
 	public:
 	// Refresh main window to reflect model change
 	void update();
-	// Add model tab
-	int addModelTab(Model *m);
 	// Update trajectory control widgets
 	void updateTrajectoryControls();
 	// Update trajectory toolbar controls
@@ -94,14 +90,6 @@ class AtenForm : public QMainWindow
 	void setTrajectoryToolbarActive(bool active);
 	// Cancel any current mode and return to select
 	void cancelCurrentMode();
-
-
-	/*
-	// Model Management
-	*/
-	private slots:
-	void on_ModelTabs_currentChanged(int value);
-	void on_ModelTabs_doubleClicked(int tabid);
 
 
 	/*
@@ -140,6 +128,7 @@ class AtenForm : public QMainWindow
 	void on_actionCentreAtOrigin_triggered(bool checked);
 	void createGlyph();
 
+
 	/*
 	// Bonding Actions
 	*/
@@ -152,6 +141,7 @@ class AtenForm : public QMainWindow
 	void on_actionClearBondingSelection_triggered(bool checked);
 	void on_actionAugmentBonding_triggered(bool checked);
 	void bondTolerance_valueChanged(double d);
+
 
 	/*
 	// Draw Actions
@@ -178,6 +168,7 @@ class AtenForm : public QMainWindow
 	void on_actionAddHydrogen_triggered(bool checked);
 	void on_actionAddHydrogenAtom_triggered(bool checked);
 
+
 	/*
 	// Draw style Actions
 	*/
@@ -185,6 +176,7 @@ class AtenForm : public QMainWindow
 	void on_StyleToolbar_actionTriggered(QAction *action);
 	public:
 	void setActiveStyleAction(Atom::DrawStyle ds);
+
 
 	/*
 	// Edit Actions
@@ -201,6 +193,7 @@ class AtenForm : public QMainWindow
 	void on_actionEditSelectNone_triggered(bool checked);
 	void on_actionEditSelectExpand_triggered(bool checked);
 	void on_actionEditInvert_triggered(bool checked);
+
 
 	/*
 	// File Actions
@@ -223,6 +216,7 @@ class AtenForm : public QMainWindow
 	void on_actionFileOpenExpression_triggered(bool checked);
 	void on_actionFileSaveExpression_triggered(bool checked);
 
+
 	/*
 	// Forcefield Actions
 	*/
@@ -236,6 +230,7 @@ class AtenForm : public QMainWindow
 	public:
 	void refreshForcefieldCombo();
 
+
 	/*
 	// Measure Actions
 	*/
@@ -248,6 +243,7 @@ class AtenForm : public QMainWindow
 	void on_actionMeasureAngleSelection_triggered(bool checked);
 	void on_actionMeasureTorsionSelection_triggered(bool checked);
 	void on_actionMeasureList_triggered(bool checked);
+
 
 	/*
 	// Model Menu
@@ -266,6 +262,7 @@ class AtenForm : public QMainWindow
 	void on_actionModelPrevious_triggered(bool checked);
 	void on_actionModelShowAll_triggered(bool checked);
 
+
 	/*
 	// Mouse Actions
 	*/
@@ -274,6 +271,7 @@ class AtenForm : public QMainWindow
 	void on_actionMouseRotate_triggered(bool checked);
 	void on_actionMouseTranslate_triggered(bool checked);
 
+
 	/*
 	// Selection actions
 	*/
@@ -281,6 +279,7 @@ class AtenForm : public QMainWindow
 	void on_actionSelectAtoms_triggered(bool checked);
 	void on_actionSelectMolecules_triggered(bool checked);
 	void on_actionSelectElement_triggered(bool checked);
+
 
 	/*
 	// Trajectory Actions
@@ -298,6 +297,7 @@ class AtenForm : public QMainWindow
 	void on_actionTrajectoryPlayPause_triggered(bool checked);
 	void trajectorySlider_sliderMoved(int i);
 	void trajectorySpin_valueChanged(int i);
+
 
 	/*
 	// View Actions
@@ -332,28 +332,6 @@ class AtenForm : public QMainWindow
 	void on_actionSchemeVelocity_triggered(bool checked);
 	void on_actionSchemeCustom_triggered(bool checked);
 
-	/*
-	// Window Show / Hide Actions
-	*/
-	private slots:
-	void on_actionAtomlistWindow_triggered(bool checked);
-	void on_actionBuildWindow_triggered(bool checked);
-	void on_actionCellDefineWindow_triggered(bool checked);
-	void on_actionCellTransformWindow_triggered(bool checked);
-	void on_actionCommandWindow_triggered(bool checked);
-	void on_actionDisorderWindow_triggered(bool checked);
-	void on_actionForcefieldsWindow_triggered(bool checked);
-	void on_actionFragmentWindow_triggered(bool checked);
-	void on_actionGeometryWindow_triggered(bool checked);
-	void on_actionGlyphsWindow_triggered(bool checked);
-	void on_actionGridsWindow_triggered(bool checked);
-	void on_actionMinimiserWindow_triggered(bool checked);
- 	void on_actionMolecularDynamicsWindow_triggered(bool checked);
-	void on_actionPositionWindow_triggered(bool checked);
-	void on_actionSelectWindow_triggered(bool checked);
-	void on_actionTransformWindow_triggered(bool checked);
-	void on_actionVibrationsWindow_triggered(bool checked);
- 	void on_actionZMatrixEditorWindow_triggered(bool checked);
 
 	/*
 	// System Functions
@@ -362,12 +340,14 @@ class AtenForm : public QMainWindow
 	void on_actionPreferences_triggered(bool checked);
 	void on_actionReloadFilters_triggered(bool checked);
 
+
 	/*
 	// Help Functions
 	*/
 	private slots:
 	void on_actionAboutAten_triggered(bool checked);
 	void on_actionAboutQt_triggered(bool checked);
+
 
 	/*
 	// Local Routines

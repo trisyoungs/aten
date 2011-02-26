@@ -20,7 +20,7 @@
 */
 
 #include "gui/tcanvas.uih"
-#include "gui/fragment.h"
+#include "gui/fragments.h"
 #include "gui/build.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
@@ -210,10 +210,10 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 				displayModel_->adjustZoom(delta.y < 0.0);
 				break;
 			case (UserAction::DrawFragmentAction):
-				if (gui.fragmentWindow->currentFragment() != NULL)
+				if (gui.fragmentsWidget->currentFragment() != NULL)
 				{
-					if (atomClicked_ == NULL) gui.fragmentWindow->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
-					else gui.fragmentWindow->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
+					if (atomClicked_ == NULL) gui.fragmentsWidget->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
+					else gui.fragmentsWidget->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
 				}
 				break;
 			case (UserAction::TransformRotateXYAction):
@@ -327,7 +327,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 	
 	// Set some useful flags...
 	bool manipulate = FALSE;
-	bool nofold = gui.buildWindow->ui.PreventFoldCheck->isChecked();
+	bool nofold = gui.buildWidget->ui.PreventFoldCheck->isChecked();
 	for (int n=0; n<3; n++)
 	{
 		if (keyModifier_[n])
@@ -408,7 +408,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 			// Cycle link atom....
 			if (keyModifier_[Prefs::AltKey])
 			{
-				Fragment *frag = gui.fragmentWindow->currentFragment();
+				Fragment *frag = gui.fragmentsWidget->currentFragment();
 				if (frag == NULL) break;
 				frag->cycleLinkAtom();
 				refresh = TRUE;
@@ -418,7 +418,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 			if (keyModifier_[Prefs::CtrlKey])
 			{
 				refresh = TRUE;
-				gui.fragmentWindow->increaseBondId();
+				gui.fragmentsWidget->increaseBondId();
 			}
 			break;
 		default:
@@ -688,7 +688,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 	bool shifted = keyModifier_[Prefs::ShiftKey];
 	bool ctrled = keyModifier_[Prefs::CtrlKey];
 	bool modded = (shifted || ctrled);
-	bool nofold = gui.buildWindow->ui.PreventFoldCheck->isChecked();
+	bool nofold = gui.buildWidget->ui.PreventFoldCheck->isChecked();
 	// Reset mouse button flag
 	mouseButton_[button] = FALSE;
 	// Copy the current mode and reset it so we redraw properly
@@ -817,12 +817,12 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			break;
 		// Draw fragments
 		case (UserAction::DrawFragmentAction):
-			frag = gui.fragmentWindow->currentFragment();
+			frag = gui.fragmentsWidget->currentFragment();
 			if (frag == NULL) break;
 			if (atomClicked_ != NULL)
 			{
 				displayModel_->beginUndoState("Draw Attached Fragment");
-				frag->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], gui.fragmentWindow->bondId(), displayModel_, gui.fragmentWindow->ui.AdjustBondLengthCheck->isChecked());
+				frag->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], gui.fragmentsWidget->bondId(), displayModel_, gui.fragmentsWidget->ui.AdjustBondLengthCheck->isChecked());
 			}
 			else
 			{

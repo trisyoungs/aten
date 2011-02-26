@@ -1,5 +1,5 @@
 /*
-	*** Qt select window functions
+	*** Select Dock Widget
 	*** src/gui/select_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -28,67 +28,67 @@
 #include "parser/commandnode.h"
 
 // Constructor
-AtenSelect::AtenSelect(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+SelectWidget::SelectWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 }
 
 // Destructor
-AtenSelect::~AtenSelect()
+SelectWidget::~SelectWidget()
 {
 }
 
 // Show window
-void AtenSelect::showWindow()
+void SelectWidget::showWidget()
 {
 	show();
 	refresh();
 }
 
-void AtenSelect::on_SelectAllButton_clicked(bool on)
+void SelectWidget::on_SelectAllButton_clicked(bool on)
 {
 	CommandNode::run(Command::SelectAll, "");
 	gui.update(TRUE,FALSE,FALSE);
 }
 
-void AtenSelect::on_SelectNoneButton_clicked(bool on)
+void SelectWidget::on_SelectNoneButton_clicked(bool on)
 {
 	CommandNode::run(Command::SelectNone, "");
 	gui.update(TRUE,FALSE,FALSE);
 }
 
-void AtenSelect::on_SelectionExpandButton_clicked(bool on)
+void SelectWidget::on_SelectionExpandButton_clicked(bool on)
 {
 	CommandNode::run(Command::Expand, "");
 	gui.update(TRUE,FALSE,FALSE);
 }
 
-void AtenSelect::on_SelectionInvertButton_clicked(bool on)
+void SelectWidget::on_SelectionInvertButton_clicked(bool on)
 {
 	CommandNode::run(Command::Invert, "");
 	gui.update(TRUE,FALSE,FALSE);
 }
 
-void AtenSelect::on_SelectButton_clicked(bool on)
+void SelectWidget::on_SelectButton_clicked(bool on)
 {
 	CommandNode::run(Command::Select, "c", qPrintable(ui.SelectionCombo->currentText()));
 	gui.update(TRUE,FALSE,FALSE);
 }
 
-void AtenSelect::on_DeselectButton_clicked(bool on)
+void SelectWidget::on_DeselectButton_clicked(bool on)
 {
 	CommandNode::run(Command::DeSelect, "c", qPrintable(ui.SelectionCombo->currentText()));
 	gui.update(TRUE,FALSE,FALSE);
 }
 
-void AtenSelect::on_TypeSelectElementButton_clicked(bool on)
+void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
 {
 	// Call the select element dialog...
 	int newel = gui.selectElementDialog->selectElement();
 	if (newel != -1) ui.TypeElementEdit->setText( elements().symbol(newel) );
 }
 
-void AtenSelect::on_SelectTypeButton_clicked(bool on)
+void SelectWidget::on_SelectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
 	int el = elements().find(qPrintable(ui.TypeElementEdit->text()));
@@ -100,7 +100,7 @@ void AtenSelect::on_SelectTypeButton_clicked(bool on)
 	}
 }
 
-void AtenSelect::on_DeselectTypeButton_clicked(bool on)
+void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
 	int el = elements().find(qPrintable(ui.TypeElementEdit->text()));
@@ -112,10 +112,10 @@ void AtenSelect::on_DeselectTypeButton_clicked(bool on)
 	}
 }
 
-void AtenSelect::refresh()
+void SelectWidget::refresh()
 {
 	// If the select window is not visible, don't do anything
-	if (!gui.selectWindow->isVisible()) return;
+	if (!gui.selectWidget->isVisible()) return;
 
 	Model *m = aten.currentModelOrFrame();
 
@@ -127,9 +127,4 @@ void AtenSelect::refresh()
 	// Second label contains empirical formula of selection
 	m->selectionEmpirical(text, FALSE, TRUE);
 	ui.SelectionLabel2->setText(text.get());
-}
-
-void AtenSelect::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionSelectWindow->setChecked(FALSE);
 }

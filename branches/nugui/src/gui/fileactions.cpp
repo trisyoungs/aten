@@ -52,7 +52,6 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 		{
 			filter->executeRead(gui.loadModelDialog->selectedFilename());
 			addRecent(gui.loadModelDialog->selectedFilename());
-			refreshModelTabs();
 			aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 			gui.update();
 		}
@@ -340,7 +339,6 @@ void AtenForm::on_actionFileOpenExpression_triggered(bool checked)
 			if (filter != NULL) filter->executeRead(qPrintable(filename));
 		}
 	}
-	gui.gridsWindow->refresh();
 	gui.mainWidget->postRedisplay();
 }
 
@@ -409,7 +407,7 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {
 	// Call routine in grids window...
-	gui.gridsWindow->loadGrid();
+	gui.gridsWidget->loadGrid();
 }
 
 // Open forcefield file

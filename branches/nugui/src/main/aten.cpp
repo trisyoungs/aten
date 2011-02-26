@@ -26,6 +26,7 @@
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
 #include "gui/grids.h"
+#include "gui/modellist.h"
 #include "model/model.h"
 #include "model/clipboard.h"
 #include "ff/forcefield.h"
@@ -154,7 +155,7 @@ void Aten::setCurrentModel(Model *m)
 	if (gui.exists())
 	{
 		gui.mainWindow->setWindowTitle(title.get());
-		gui.gridsWindow->refresh();
+		gui.gridsWidget->refresh();
 	}
 	msg.exit("Aten::setCurrentModel");
 }
@@ -249,9 +250,9 @@ Model *Aten::addModel()
 			newname.sprintf("Unnamed%03i", ++modelId_);
 			m->setName(newname);
 			m->changeLog.reset();
-			gui.addModel(m);
-			gui.disorderWindow->refresh();
 			setCurrentModel(m);
+			gui.modelListWidget->refresh();
+			gui.disorderWindow->refresh();
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();
@@ -283,16 +284,14 @@ void Aten::removeModel(Model *xmodel)
 	// Remove this model from the model_list in the main window
 	msg.enter("Aten::removeModel");
 	Model *m;
-	// Unset the datamodel for the canvas
 	// Delete the current model, but don't allow there to be zero models...
-	// (if possible, set the active row to the next model, otherwise the previous)
 	if (models_.nItems() == 1) m = aten.addModel();
 	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
 	setCurrentModel(m);
 	// Delete the old model (GUI first, then master)
 	int id = models_.indexOf(xmodel);
 	models_.remove(xmodel);
-	gui.removeModel(id);
+	gui.modelListWidget->refresh();
 	gui.disorderWindow->refresh();
 	msg.exit("Aten::removeModel");
 }

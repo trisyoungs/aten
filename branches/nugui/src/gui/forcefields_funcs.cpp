@@ -73,8 +73,8 @@ AtenForcefields::~AtenForcefields()
 // Show window
 void AtenForcefields::showWindow()
 {
-	if (shouldRefresh_) refresh();
 	show();
+	if (shouldRefresh_) refresh();
 }
 
 // Update the list of loaded forcefields

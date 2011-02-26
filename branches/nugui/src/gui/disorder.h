@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Disorder Window
+	*** Disorder Window
 	*** src/gui/disorder.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 

@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Transform Window
+	*** Transform Dock Widget
 	*** src/gui/transform.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TRANSFORMWINDOW_H
-#define ATEN_TRANSFORMWINDOW_H
+#ifndef ATEN_TRANSFORMWIDGET_H
+#define ATEN_TRANSFORMWIDGET_H
 
 #include "gui/ui_transform.h"
 
 // Atom transform window
-class AtenTransform : public QDialog
+class TransformWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -34,7 +34,7 @@ class AtenTransform : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	private:
 	void rotateSelection(double direction);
 	private slots:
@@ -88,8 +88,6 @@ class AtenTransform : public QDialog
 	void on_ConvertTargetGenerateBButton_clicked(bool on);
 	void on_ConvertTargetGenerateCButton_clicked(bool on);
 
-	void dialogFinished(int result);
-
 	/*
 	// Local variables
 	*/
@@ -100,10 +98,10 @@ class AtenTransform : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenTransform(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenTransform();
+	TransformWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~TransformWidget();
 	// Main form declaration
-	Ui::TransformDialog ui;
+	Ui::TransformWidget ui;
 };
 
 #endif

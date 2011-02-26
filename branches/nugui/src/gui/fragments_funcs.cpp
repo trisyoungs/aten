@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: Fragment library window functions
+	*** Fragment Library Dock Widget
 	*** src/gui/fragment_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -22,7 +22,7 @@
 #include "base/sysfunc.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
-#include "gui/fragment.h"
+#include "gui/fragments.h"
 #include "gui/ttreewidgetitem.h"
 #include "gui/ttablewidgetitem.h"
 #include "gui/tcanvas.uih"
@@ -31,7 +31,7 @@
 #include "main/aten.h"
 
 // Constructor
-AtenFragment::AtenFragment(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+FragmentsWidget::FragmentsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 	ui.FragmentTable->setVisible(FALSE);
@@ -42,37 +42,37 @@ AtenFragment::AtenFragment(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 }
 
 // Destructor
-AtenFragment::~AtenFragment()
+FragmentsWidget::~FragmentsWidget()
 {
 }
 
-void AtenFragment::showWindow()
+void FragmentsWidget::showWidget()
 {
 	show();
 }
 
 // Increment bond id value
-void AtenFragment::increaseBondId()
+void FragmentsWidget::increaseBondId()
 {
 	bondId_++;
 }
 
 // Return bondId (as reference so it can be reset by associated Fragment routines)
-int &AtenFragment::bondId()
+int &FragmentsWidget::bondId()
 {
 	return bondId_;
 }
 
 // Return current drawing fragment
-Fragment *AtenFragment::currentFragment()
+Fragment *FragmentsWidget::currentFragment()
 {
 	return currentFragment_;
 }
 
 // Refresh the atom list
-void AtenFragment::refresh()
+void FragmentsWidget::refresh()
 {
-	msg.enter("AtenFragment::refresh");
+	msg.enter("FragmentsWidget::refresh");
 
 	TTreeWidgetItem *item, *group;
 	TTableWidgetItem *tabitem;
@@ -145,15 +145,10 @@ void AtenFragment::refresh()
 	// Resize columns and rows
 	for (int n=0; n<3; n++) ui.FragmentTree->resizeColumnToContents(n);
 	ui.FragmentTable->resizeRowsToContents();
-	msg.exit("AtenFragment::refresh");
+	msg.exit("FragmentsWidget::refresh");
 }
 
-void AtenFragment::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionFragmentWindow->setChecked(FALSE);
-}
-
-void AtenFragment::on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void FragmentsWidget::on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
 	if (current == NULL) currentFragment_ = NULL;
 	else
@@ -170,12 +165,12 @@ void AtenFragment::on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, 
 	}
 }
 
-void AtenFragment::on_FragmentTree_doubleClicked(const QModelIndex &index)
+void FragmentsWidget::on_FragmentTree_doubleClicked(const QModelIndex &index)
 {
 	gui.mainWindow->ui.actionDrawFragment->trigger();
 }
 
-void AtenFragment::on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
+void FragmentsWidget::on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
 {
 	if (current == NULL) currentFragment_ = NULL;
 	else
@@ -192,26 +187,26 @@ void AtenFragment::on_FragmentTable_currentItemChanged(QTableWidgetItem *current
 	}
 }
 
-void AtenFragment::on_FragmentTable_doubleClicked(const QModelIndex &index)
+void FragmentsWidget::on_FragmentTable_doubleClicked(const QModelIndex &index)
 {
 	gui.mainWindow->ui.actionDrawFragment->trigger();
 }
 
 
-void AtenFragment::on_FragmentFilterEdit_textChanged(const QString &text)
+void FragmentsWidget::on_FragmentFilterEdit_textChanged(const QString &text)
 {
 	filterText_ = lowerCase(qPrintable(text));
 	refresh();
 }
 
-void AtenFragment::on_FragmentShowAllButton_clicked(bool checked)
+void FragmentsWidget::on_FragmentShowAllButton_clicked(bool checked)
 {
 	ui.FragmentFilterEdit->setText("");
 	filterText_.clear();
 	refresh();
 }
 
-void AtenFragment::on_ViewAsListCheck_clicked(bool checked)
+void FragmentsWidget::on_ViewAsListCheck_clicked(bool checked)
 {
 	if (checked)
 	{
@@ -225,7 +220,7 @@ void AtenFragment::on_ViewAsListCheck_clicked(bool checked)
 	}
 }
 
-void AtenFragment::on_ViewAsGridCheck_clicked(bool checked)
+void FragmentsWidget::on_ViewAsGridCheck_clicked(bool checked)
 {
 	if (checked)
 	{

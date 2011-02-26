@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ToolboxWidget</class>
- <widget class="QDockWidget" name="ToolboxWidget">
+ <class>ToolBoxWidget</class>
+ <widget class="QDockWidget" name="ToolBoxWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>207</width>
-    <height>314</height>
+    <width>206</width>
+    <height>318</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="features">
+   <set>QDockWidget::AllDockWidgetFeatures</set>
   </property>
   <property name="allowedAreas">
    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
@@ -66,35 +78,6 @@
         <property name="icon">
          <iconset resource="icons.qrc">
           <normaloff>:/stackicons/icons/stack_surfaces.svg</normaloff>:/stackicons/icons/stack_surfaces.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QToolButton" name="ZMatrixButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Z-Matrix</string>
-        </property>
-        <property name="icon">
-         <iconset resource="icons.qrc">
-          <normaloff>:/stackicons/icons/stack_zmatrix.svg</normaloff>:/stackicons/icons/stack_zmatrix.svg</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -176,7 +159,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QToolButton" name="FragmentButton">
+       <widget class="QToolButton" name="FragmentsButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -205,7 +188,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QToolButton" name="AtomTransformButton">
+       <widget class="QToolButton" name="TransformButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -234,7 +217,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QToolButton" name="AtomPositionButton">
+       <widget class="QToolButton" name="PositionButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -386,7 +369,7 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="QToolButton" name="ForcefieldButton">
+       <widget class="QToolButton" name="MinimiserButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -394,7 +377,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Forcefields</string>
+         <string>Minimiser</string>
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">
@@ -415,7 +398,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QToolButton" name="DisorderedButton">
+       <widget class="QToolButton" name="MDButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -423,7 +406,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Disorder</string>
+         <string>MD</string>
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">
@@ -502,6 +485,19 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>

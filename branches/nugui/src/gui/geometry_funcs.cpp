@@ -1,5 +1,5 @@
 /*
-	*** Qt geometry dialog functions
+	*** Geometry Dock Widget
 	*** src/gui/geometry_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -27,23 +27,23 @@
 #include "parser/commandnode.h"
 
 // Constructor
-AtenGeometry::AtenGeometry(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+GeometryWidget::GeometryWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 }
 
 // Destructor
-AtenGeometry::~AtenGeometry()
+GeometryWidget::~GeometryWidget()
 {
 }
 
-void AtenGeometry::showWindow()
+void GeometryWidget::showWidget()
 {
 	refresh();
 	show();
 }
 
-void AtenGeometry::refresh()
+void GeometryWidget::refresh()
 {
 	// Check current atom selection
 	ui.DistanceTab->setEnabled(FALSE);
@@ -87,16 +87,11 @@ void AtenGeometry::refresh()
 	}
 }
 
-void AtenGeometry::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionGeometryWindow->setChecked(FALSE);
-}
-
 /*
 // Bond Length Tab
 */
 
-void AtenGeometry::on_SetNewDistanceButton_clicked(bool checked)
+void GeometryWidget::on_SetNewDistanceButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 2)
@@ -112,7 +107,7 @@ void AtenGeometry::on_SetNewDistanceButton_clicked(bool checked)
 	gui.update(TRUE, FALSE, FALSE);
 }
 
-void AtenGeometry::on_NudgeDistancePlusButton_clicked(bool checked)
+void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 2)
@@ -129,7 +124,7 @@ void AtenGeometry::on_NudgeDistancePlusButton_clicked(bool checked)
 	gui.update(TRUE, FALSE, FALSE);
 }
 
-void AtenGeometry::on_NudgeDistanceMinusButton_clicked(bool checked)
+void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 2)
@@ -150,7 +145,7 @@ void AtenGeometry::on_NudgeDistanceMinusButton_clicked(bool checked)
 // Bond Angle Tab
 */
 
-void AtenGeometry::on_SetNewAngleButton_clicked(bool checked)
+void GeometryWidget::on_SetNewAngleButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 3)
@@ -167,7 +162,7 @@ void AtenGeometry::on_SetNewAngleButton_clicked(bool checked)
 	gui.update(TRUE, FALSE, FALSE);
 }
 
-void AtenGeometry::on_NudgeAnglePlusButton_clicked(bool checked)
+void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 3)
@@ -185,7 +180,7 @@ void AtenGeometry::on_NudgeAnglePlusButton_clicked(bool checked)
 	gui.update(TRUE, FALSE, FALSE);
 }
 
-void AtenGeometry::on_NudgeAngleMinusButton_clicked(bool checked)
+void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 3)
@@ -207,7 +202,7 @@ void AtenGeometry::on_NudgeAngleMinusButton_clicked(bool checked)
 // Angle Torsion Tab
 */
 
-void AtenGeometry::on_SetNewTorsionButton_clicked(bool checked)
+void GeometryWidget::on_SetNewTorsionButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 4)
@@ -225,7 +220,7 @@ void AtenGeometry::on_SetNewTorsionButton_clicked(bool checked)
 	gui.update(TRUE, FALSE, FALSE);
 }
 
-void AtenGeometry::on_NudgeTorsionPlusButton_clicked(bool checked)
+void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 4)
@@ -244,7 +239,7 @@ void AtenGeometry::on_NudgeTorsionPlusButton_clicked(bool checked)
 	gui.update(TRUE, FALSE, FALSE);
 }
 
-void AtenGeometry::on_NudgeTorsionMinusButton_clicked(bool checked)
+void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel()->renderSourceModel();
 	if (m->nSelected() != 4)

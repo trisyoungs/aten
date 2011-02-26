@@ -28,7 +28,7 @@
 #include "base/sysfunc.h"
 
 // Constructor
-AtenVibrations::AtenVibrations(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+VibrationsWidget::VibrationsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	// Private variables
 	refreshing_ = FALSE;
@@ -41,25 +41,25 @@ AtenVibrations::AtenVibrations(QWidget *parent, Qt::WindowFlags flags) : QDialog
 }
 
 // Destructor
-AtenVibrations::~AtenVibrations()
+VibrationsWidget::~VibrationsWidget()
 {
 }
 
 // Show window
-void AtenVibrations::showWindow()
+void VibrationsWidget::showWidget()
 {
 	show();
 	if (shouldRefresh_) refresh();
 }
 
 // Refresh window contents
-void AtenVibrations::refresh()
+void VibrationsWidget::refresh()
 {
-	msg.enter("AtenVibrations::refresh");
-	if (!gui.vibrationsWindow->isVisible())
+	msg.enter("VibrationsWidget::refresh");
+	if (!gui.vibrationsWidget->isVisible())
 	{
 		shouldRefresh_ = TRUE;
-		msg.exit("AtenVibrations::refresh");
+		msg.exit("VibrationsWidget::refresh");
 		return;
 	}
 	refreshing_ = TRUE;
@@ -76,11 +76,11 @@ void AtenVibrations::refresh()
 	ui.VibrationsList->setCurrentRow(0);
 	refreshing_ = FALSE;
 	refreshDisplacements();
-	msg.exit("AtenVibrations::refresh");
+	msg.exit("VibrationsWidget::refresh");
 }
 
 // Refresh displacement data
-void AtenVibrations::refreshDisplacements()
+void VibrationsWidget::refreshDisplacements()
 {
 	if (refreshing_) return;
 	ui.DisplacementsTable->clear();
@@ -114,7 +114,7 @@ void AtenVibrations::refreshDisplacements()
 	for (n=0; n<4; ++n) ui.DisplacementsTable->resizeColumnToContents(n);
 }
 
-void AtenVibrations::on_VibrationsList_currentRowChanged(int row)
+void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	refreshDisplacements();
@@ -132,17 +132,17 @@ void AtenVibrations::on_VibrationsList_currentRowChanged(int row)
 	}
 }
 
-void AtenVibrations::on_ShowVectorsCheck_clicked(bool checked)
+void VibrationsWidget::on_ShowVectorsCheck_clicked(bool checked)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenVibrations::on_VectorScaleSpin_valueChanged(double value)
+void VibrationsWidget::on_VectorScaleSpin_valueChanged(double value)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
+void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 {
 	if (checked)
 	{
@@ -166,36 +166,36 @@ void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 	}
 }
 
-void AtenVibrations::on_DelaySlider_valueChanged(int value)
+void VibrationsWidget::on_DelaySlider_valueChanged(int value)
 {
 	if (vibrationTimerId_ == -1) return;
 	resetTimer(value);
 }
 
-void AtenVibrations::on_DelaySpin_valueChanged(int value)
+void VibrationsWidget::on_DelaySpin_valueChanged(int value)
 {
 	if (vibrationTimerId_ == -1) return;
 	resetTimer(value);
 }
 
 // Stop current timer (if any)
-void AtenVibrations::stopTimer()
+void VibrationsWidget::stopTimer()
 {
 	if (vibrationTimerId_ != -1) this->killTimer(vibrationTimerId_);
 	vibrationTimerId_ = -1;
 }
 
 // (Re)start timer event with specified delay
-void AtenVibrations::resetTimer(int delay)
+void VibrationsWidget::resetTimer(int delay)
 {
 	// If a timer currently exists, kill it first
 	stopTimer();
 	vibrationTimerId_ = this->startTimer(delay);
 }
 
-void AtenVibrations::timerEvent(QTimerEvent*)
+void VibrationsWidget::timerEvent(QTimerEvent*)
 {
-	if (DONTDRAW) msg.print(Messenger::Verbose, "AtenVibrations - Still drawing previous frame...\n");
+	if (DONTDRAW) msg.print(Messenger::Verbose, "VibrationsWidget - Still drawing previous frame...\n");
 	else
 	{
 		DONTDRAW = TRUE;
@@ -204,11 +204,4 @@ void AtenVibrations::timerEvent(QTimerEvent*)
 		gui.mainWidget->postRedisplay();
 		DONTDRAW = FALSE;
 	}
-}
-
-void AtenVibrations::dialogFinished(int result)
-{
-	// Stop animation if it is playing
-	if (ui.PlayPauseVibration->isChecked()) ui.PlayPauseVibration->click();
-	gui.mainWindow->ui.actionVibrationsWindow->setChecked(FALSE);
 }

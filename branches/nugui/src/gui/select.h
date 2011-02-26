@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Select Window
+	*** Select Dock Widget
 	*** src/gui/select.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_SELECTWINDOW_H
-#define ATEN_SELECTWINDOW_H
+#ifndef ATEN_SELECTWIDGET_H
+#define ATEN_SELECTWIDGET_H
 
 #include "gui/ui_select.h"
 
 // Selection window
-class AtenSelect : public QDialog
+class SelectWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -35,7 +35,7 @@ class AtenSelect : public QDialog
 	*/
 	public:
 	void refresh();
-	void showWindow();
+	void showWidget();
 	private slots:
 	void on_SelectAllButton_clicked(bool on);
 	void on_SelectNoneButton_clicked(bool on);
@@ -46,7 +46,6 @@ class AtenSelect : public QDialog
 	void on_TypeSelectElementButton_clicked(bool on);
 	void on_SelectTypeButton_clicked(bool on);
 	void on_DeselectTypeButton_clicked(bool on);
-	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -58,10 +57,10 @@ class AtenSelect : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenSelect(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenSelect();
+	SelectWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~SelectWidget();
 	// Main form declaration
-	Ui::SelectDialog ui;
+	Ui::SelectWidget ui;
 };
 
 #endif

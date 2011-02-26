@@ -1,6 +1,6 @@
 /*
-	*** Qt GUI: Cell Definition Window
-	*** src/gui/celldefine_funcs.cpp
+	*** Cell Definition Dock Widget
+	*** src/gui/celldefinition_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -23,14 +23,14 @@
 #include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
-#include "gui/celldefine.h"
+#include "gui/celldefinition.h"
 #include "gui/celltransform.h"
 #include "gui/disorder.h"
 #include "base/spacegroup.h"
 #include "parser/commandnode.h"
 
 // Constructor
-AtenCellDefine::AtenCellDefine(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+CellDefinitionWidget::CellDefinitionWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 
@@ -39,18 +39,18 @@ AtenCellDefine::AtenCellDefine(QWidget *parent, Qt::WindowFlags flags) : QDialog
 }
 
 // Destructor
-AtenCellDefine::~AtenCellDefine()
+CellDefinitionWidget::~CellDefinitionWidget()
 {
 }
 
 // Show window
-void AtenCellDefine::showWindow()
+void CellDefinitionWidget::showWidget()
 {
-	//if (shouldRefresh_) refresh();
 	show();
+	refresh();
 }
 
-void AtenCellDefine::refreshMatrix()
+void CellDefinitionWidget::refreshMatrix()
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
@@ -67,7 +67,7 @@ void AtenCellDefine::refreshMatrix()
 	ui.CellMatrixZZSpin->setValue(matrix[10]);
 }
 
-void AtenCellDefine::refreshABC()
+void CellDefinitionWidget::refreshABC()
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
@@ -83,7 +83,7 @@ void AtenCellDefine::refreshABC()
 	ui.CellAngleCSpin->setValue(angles.z);
 }
 
-void AtenCellDefine::refresh()
+void CellDefinitionWidget::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model *m = aten.currentModelOrFrame();
@@ -120,7 +120,7 @@ void AtenCellDefine::refresh()
 }
 
 
-void AtenCellDefine::on_DefineFromABCButton_clicked(bool checked)
+void CellDefinitionWidget::on_DefineFromABCButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 	CommandNode::run(Command::Cell, "dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
@@ -131,7 +131,7 @@ void AtenCellDefine::on_DefineFromABCButton_clicked(bool checked)
 	gui.update(FALSE,TRUE,FALSE);
 }
 
-void AtenCellDefine::cellChanged(int index, double newvalue)
+void CellDefinitionWidget::cellChanged(int index, double newvalue)
 {
 	if (refreshing_) return;
 	Model *m = aten.currentModelOrFrame();
@@ -148,7 +148,7 @@ void AtenCellDefine::cellChanged(int index, double newvalue)
 // Cell Definition
 */
 
-void AtenCellDefine::on_CellMatrixXXSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixXXSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -156,7 +156,7 @@ void AtenCellDefine::on_CellMatrixXXSpin_editingFinished()
 	cellChanged(0,spin->value());
 }
 
-void AtenCellDefine::on_CellMatrixXYSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixXYSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -164,7 +164,7 @@ void AtenCellDefine::on_CellMatrixXYSpin_editingFinished()
 	cellChanged(1,spin->value());
 }
 
-void AtenCellDefine::on_CellMatrixXZSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixXZSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -172,7 +172,7 @@ void AtenCellDefine::on_CellMatrixXZSpin_editingFinished()
 	cellChanged(2,spin->value());
 }
 
-void AtenCellDefine::on_CellMatrixYXSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixYXSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -180,7 +180,7 @@ void AtenCellDefine::on_CellMatrixYXSpin_editingFinished()
 	cellChanged(3,spin->value());
 }
 
-void AtenCellDefine::on_CellMatrixYYSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixYYSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -188,7 +188,7 @@ void AtenCellDefine::on_CellMatrixYYSpin_editingFinished()
 	cellChanged(4,spin->value());
 }
 
-void AtenCellDefine::on_CellMatrixYZSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixYZSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -196,7 +196,7 @@ void AtenCellDefine::on_CellMatrixYZSpin_editingFinished()
 	cellChanged(5,spin->value());
 }
 
-void AtenCellDefine::on_CellMatrixZXSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixZXSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -204,7 +204,7 @@ void AtenCellDefine::on_CellMatrixZXSpin_editingFinished()
 	cellChanged(6,spin->value());
 }
 
-void AtenCellDefine::on_CellMatrixZYSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixZYSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -212,7 +212,7 @@ void AtenCellDefine::on_CellMatrixZYSpin_editingFinished()
 	cellChanged(7,spin->value());
 }
 
-void AtenCellDefine::on_CellMatrixZZSpin_editingFinished()
+void CellDefinitionWidget::on_CellMatrixZZSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
@@ -220,12 +220,12 @@ void AtenCellDefine::on_CellMatrixZZSpin_editingFinished()
 	cellChanged(8,spin->value());
 }
 
-void AtenCellDefine::on_CellSpacegroupEdit_returnPressed()
+void CellDefinitionWidget::on_CellSpacegroupEdit_returnPressed()
 {
 	on_CellSpacegroupSetButton_clicked(FALSE);
 }
 
-void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
+void CellDefinitionWidget::on_CellDefinitionGroup_clicked(bool checked)
 {
 	// If the group is checked we store the current spin values in the current model.
 	if (checked)
@@ -239,7 +239,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
-	gui.cellTransformWindow->refresh();
+	gui.cellTransformWidget->refresh();
 	gui.disorderWindow->refresh();
 	gui.update(FALSE,FALSE,FALSE);
 }
@@ -248,7 +248,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 // Spacegroup Functions
 */
 
-void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
+void CellDefinitionWidget::on_CellSpacegroupSetButton_clicked(bool checked)
 {
 	// Grab the current text of the line edit and determine spacegroup
 	CommandNode::run(Command::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));
@@ -260,20 +260,15 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	ui.SpacegroupLabel->setText(label.get());
 }
 
-void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
+void CellDefinitionWidget::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Spacegroup, "i", 0);
 	// Set spacegroup label
 	ui.SpacegroupLabel->setText("None (0)");
 }
 
-void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
+void CellDefinitionWidget::on_CellSpacegroupPackButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Pack, "");
 	gui.update();
-}
-
-void AtenCellDefine::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionCellDefineWindow->setChecked(FALSE);
 }

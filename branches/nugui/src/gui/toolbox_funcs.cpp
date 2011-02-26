@@ -1,5 +1,5 @@
 /*
-	*** Toolbox Dock Widget Functions
+	*** ToolBox Dock Widget Functions
 	*** src/gui/toolbox_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -19,153 +19,132 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "main/aten.h"
 #include "gui/gui.h"
-#include "gui/mainwindow.h"
-#include "gui/disorder.h"
-#include "gui/geometry.h"
-#include "gui/grids.h"
-#include "gui/glyphs.h"
+#include "gui/atomlist.h"
 #include "gui/build.h"
 #include "gui/celltransform.h"
-#include "gui/celldefine.h"
+#include "gui/celldefinition.h"
 #include "gui/command.h"
-#include "gui/transform.h"
+#include "gui/fragments.h"
+#include "gui/geometry.h"
+#include "gui/glyphs.h"
+#include "gui/grids.h"
 #include "gui/position.h"
-#include "gui/atomlist.h"
 #include "gui/select.h"
-#include "gui/forcefields.h"
-#include "gui/fragment.h"
+#include "gui/toolbox.h"
+#include "gui/transform.h"
 #include "gui/md.h"
 #include "gui/minimiser.h"
 #include "gui/vibrations.h"
-#include "gui/zmatrix.h"
 
-void AtenForm::on_AtomlistWidget_triggered(bool checked)
+// Constructor
+ToolBoxWidget::ToolBoxWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
-	if (checked)
+	ui.setupUi(this);
+}
+
+// Destructor
+ToolBoxWidget::~ToolBoxWidget()
+{
+}
+
+void ToolBoxWidget::on_AtomListButton_clicked(bool checked)
+{
+	if (checked) gui.atomListWidget->showWidget();
+	else gui.atomListWidget->hide();
+}
+
+void ToolBoxWidget::on_BuildButton_clicked(bool checked)
+{
+	if (checked) gui.buildWidget->showWidget();
+	else gui.buildWidget->hide();
+}
+
+void ToolBoxWidget::on_CellDefinitionButton_clicked(bool checked)
+{
+	if (checked) gui.cellDefinitionWidget->showWidget();
+	else gui.cellDefinitionWidget->hide();
+}
+
+void ToolBoxWidget::on_CellTransformButton_clicked(bool checked)
+{
+	if (checked) gui.cellTransformWidget->showWidget();
+	else gui.cellTransformWidget->hide();
+}
+
+void ToolBoxWidget::on_CommandButton_clicked(bool checked)
+{
+	if (checked) gui.commandWidget->showWidget();
+	else gui.commandWidget->hide();
+}
+
+void ToolBoxWidget::on_FragmentsButton_clicked(bool checked)
+{
+	if (checked) gui.fragmentsWidget->showWidget();
+	else gui.fragmentsWidget->hide();
+}
+
+void ToolBoxWidget::on_GeometryButton_clicked(bool checked)
+{
+	if (checked) gui.geometryWidget->showWidget();
+	else gui.geometryWidget->hide();
+}
+
+void ToolBoxWidget::on_GridsButton_clicked(bool checked)
+{
+	if (checked) gui.gridsWidget->showWidget();
+	else gui.gridsWidget->hide();
+}
+
+void ToolBoxWidget::on_GlyphsButton_clicked(bool checked)
+{
+	if (checked) gui.glyphsWidget->showWidget();
+	else gui.glyphsWidget->hide();
+}
+
+void ToolBoxWidget::on_MDButton_clicked(bool checked)
+{
+	if (checked) gui.mdWidget->showWidget();
+	else gui.mdWidget->hide();
+}
+
+void ToolBoxWidget::on_MinimiserButton_clicked(bool checked)
+{
+	if (checked) gui.minimiserWidget->showWidget();
+	else gui.minimiserWidget->hide();
+}
+
+void ToolBoxWidget::on_PositionButton_clicked(bool checked)
+{
+	if (checked) gui.positionWidget->showWidget();
+	else gui.positionWidget->hide();
+}
+
+void ToolBoxWidget::on_SelectButton_clicked(bool checked)
+{
+	if (checked) gui.selectWidget->showWidget();
+	else gui.selectWidget->hide();
+}
+
+void ToolBoxWidget::on_TransformButton_clicked(bool checked)
+{
+	if (checked) gui.transformWidget->showWidget();
+	else gui.transformWidget->hide();
+}
+
+void ToolBoxWidget::on_VibrationsButton_clicked(bool checked)
+{
+	if (checked) gui.vibrationsWidget->showWidget();
+	else gui.vibrationsWidget->hide();
+}
+
+void ToolBoxWidget::dockWindowVisibilityChanged(bool visibility)
+{
+	// Cast sender
+	QDockWidget *w = qobject_cast<QDockWidget*> (sender());
+	if (w == gui.vibrationsWidget)
 	{
-		gui.atomlistWindow->showWindow();
-		gui.atomlistWindow->refresh();
+		// Stop animation if it is playing
+		if (gui.vibrationsWidget->ui.PlayPauseVibration->isChecked()) gui.vibrationsWidget->ui.PlayPauseVibration->click();
 	}
-	else gui.atomlistWindow->hide();
 }
-
-void AtenForm::on_BuildWidget_triggered(bool checked)
-{
-	if (checked) gui.buildWindow->showWindow();
-	else gui.buildWindow->hide();
-}
-
-void AtenForm::on_TransformWidget_triggered(bool checked)
-{
-	if (checked) gui.transformWindow->showWindow();
-	else gui.transformWindow->hide();
-}
-
-void AtenForm::on_SelectWidget_triggered(bool checked)
-{
-	if (checked) gui.selectWindow->showWindow();
-	else gui.selectWindow->hide();
-}
-
-void AtenForm::on_PositionWidget_triggered(bool checked)
-{
-	if (checked) gui.positionWindow->showWindow();
-	else gui.positionWindow->hide();
-}
-
-void AtenForm::on_CellDefineWidget_triggered(bool checked)
-{
-	if (checked)
-	{
-		gui.cellDefineWindow->showWindow();
-		gui.cellDefineWindow->refresh();
-	}
-	else gui.cellDefineWindow->hide();
-}
-
-void AtenForm::on_CellTransformWidget_triggered(bool checked)
-{
-	if (checked)
-	{
-		gui.cellTransformWindow->showWindow();
-		gui.cellTransformWindow->refresh();
-	}
-	else gui.cellTransformWindow->hide();
-}
-
-void AtenForm::on_CommandWidget_triggered(bool checked)
-{
-	if (checked)
-	{
-		gui.commandWindow->showWindow();
-		gui.commandWindow->refresh();
-	}
-	else gui.commandWindow->hide();
-}
-
-void AtenForm::on_MinimiserWidget_triggered(bool checked)
-{
-	if (checked) gui.minimiserWindow->showWindow();
-	else gui.minimiserWindow->hide();
-}
-
-void AtenForm::on_DisorderWidget_triggered(bool checked)
-{
-	if (checked) gui.disorderWindow->showWindow();
-	else gui.disorderWindow->hide();
-}
-
-void AtenForm::on_ForcefieldsWidget_triggered(bool checked)
-{
-	if (checked)
-	{
-		gui.forcefieldsWindow->showWindow();
-		gui.forcefieldsWindow->refresh();
-	}
-	else gui.forcefieldsWindow->hide();
-}
-
-void AtenForm::on_FragmentWidget_triggered(bool checked)
-{
-	if (checked) gui.fragmentWindow->showWindow();
-	else gui.fragmentWindow->hide();
-}
-
-void AtenForm::on_GeometryWidget_triggered(bool checked)
-{
-	if (checked) gui.geometryWindow->showWindow();
-	else gui.geometryWindow->hide();
-}
-
-void AtenForm::on_GridsWidget_triggered(bool checked)
-{
-	if (checked) gui.gridsWindow->showWindow();
-	else gui.gridsWindow->hide();
-}
-
-void AtenForm::on_GlyphsWidget_triggered(bool checked)
-{
-	if (checked) gui.glyphsWindow->showWindow();
-	else gui.glyphsWindow->hide();
-}
-
-void AtenForm::on_MolecularDynamicsWidget_triggered(bool checked)
-{
-	if (checked) gui.mdWindow->showWindow();
-	else gui.mdWindow->hide();
-}
-
-void AtenForm::on_VibrationsWidget_triggered(bool checked)
-{
-	if (checked) gui.vibrationsWindow->showWindow();
-	else gui.vibrationsWindow->hide();
-}
-
-void AtenForm::on_ZMatrixWidget_triggered(bool checked)
-{
-	if (checked) gui.zmatrixWindow->showWindow();
-	else gui.zmatrixWindow->hide();
-}
-

@@ -1,7 +1,7 @@
 /*
-	*** Qt user interface
+	*** Main User Interface
 	*** src/gui/gui.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -24,42 +24,50 @@
 
 #include "gui/tcanvas.uih"
 
-// Forward declarations
+// Forward Declarations 1 - Main Form and Windows
 class AtenForm;
 class AtenAbout;
 class AtenPrefs;
 class AtenForcefieldEditor;
+class QApplication;
+class QProgressDialog;
+
+// Forward Declarations 2 - Dialogs
 class AtenLoadModel;
 class AtenSelectFilter;
 class AtenSelectPattern;
 class AtenSelectElement;
 class AtenSelectVariable;
-class AtenAtomlist;
-class AtenBuild;
-class AtenCellDefine;
-class AtenCellTransform;
-class AtenCommand;
 class AtenDisorder;
 class AtenForcefields;
-class AtenFragment;
-class AtenGeometry;
-class AtenGlyphs;
-class AtenGrids;
-class AtenMD;
-class AtenMinimiser;
-class AtenPosition;
-class AtenSelect;
-class AtenTransform;
-class AtenVibrations;
 class AtenViewBasis;
 class AtenViewEigenvector;
 class AtenZMatrix;
+
+// Forward Declarations 3 - Dock Widgets
+class AtomListWidget;
+class BuildWidget;
+class CellDefinitionWidget;
+class CellTransformWidget;
+class CommandWidget;
+class FragmentsWidget;
+class GeometryWidget;
+class GlyphsWidget;
+class GridsWidget;
+class MDWidget;
+class MinimiserWidget;
+class ModelListWidget;
+class PositionWidget;
+class SelectWidget;
+class ToolBoxWidget;
+class TransformWidget;
+class VibrationsWidget;
+
+// Forward Declarations 4 - Other Classes
 class Atom;
 class Model;
 class Forcefield;
 class Grid;
-class QApplication;
-class QProgressDialog;
 
 // QT4 GUI
 class GuiQt
@@ -107,14 +115,10 @@ class GuiQt
 	// Methods
 	*/
 	public:
-	// Add model (adds new model to list)
-	void addModel(Model*);
 	// Initialise GUI file filters array
 	void initFilters();
 	// Add a message to the main window's message output box
 	void printMessage(const char*);
-	// Remove model from list
-	void removeModel(int id);
 	// Save before close
 	bool saveBeforeClose();
 	// Save image of current view
@@ -126,48 +130,66 @@ class GuiQt
 	/*
 	// Windows / Subwindows
 	*/
+	private:
+	// List of toolbars
+	QList<QObject*> toolBars_;
+	
 	public:
 	// Main application structure
 	QApplication *app;
 	// Main Window
 	AtenForm *mainWindow;
-	// Atom list subwindow
-	AtenAtomlist *atomlistWindow;
-	// Build subwindow
-	AtenBuild *buildWindow;
-	// Cell definition subwindow
-	AtenCellDefine *cellDefineWindow;
-	// Cell transform subwindow
-	AtenCellTransform *cellTransformWindow;
-	// Command subwindow
-	AtenCommand *commandWindow;
+	// Forcefields dock widget
+	AtenForcefields *forcefieldsWindow;
 	// Disordered builder window
 	AtenDisorder *disorderWindow;
-	// Forcefields window
-	AtenForcefields *forcefieldsWindow;
-	// Fragment Library window
-	AtenFragment *fragmentWindow;
-	// Geometry window
-	AtenGeometry *geometryWindow;
-	// Glyphs window
-	AtenGlyphs *glyphsWindow;
-	// Grids window
-	AtenGrids *gridsWindow;
-	// MD window
-	AtenMD *mdWindow;
-	// Minimiser window
-	AtenMinimiser *minimiserWindow;
-	// Atom positioning window
-	AtenPosition *positionWindow;
-	// Atom selection window
-	AtenSelect *selectWindow;
-	// Atom transformation window
-	AtenTransform *transformWindow;
-	// Vibrations window
-	AtenVibrations *vibrationsWindow;
 	// Zmatrix window
 	AtenZMatrix *zmatrixWindow;
 
+	
+	/*
+	// Dock Widgets
+	*/
+	private:
+	// List of dock widgets
+	QList<QObject*> dockWidgets_;
+	
+	public:
+	// Atom list dock widget
+	AtomListWidget *atomListWidget;
+	// Build dock widget
+	BuildWidget *buildWidget;
+	// Cell definition dock widget
+	CellDefinitionWidget *cellDefinitionWidget;
+	// Cell transform dock widget
+	CellTransformWidget *cellTransformWidget;
+	// Command dock widget
+	CommandWidget *commandWidget;
+	// Fragment Library dock widget
+	FragmentsWidget *fragmentsWidget;
+	// Geometry dock widget
+	GeometryWidget *geometryWidget;
+	// Glyphs dock widget
+	GlyphsWidget *glyphsWidget;
+	// Grids dock widget
+	GridsWidget *gridsWidget;
+	// MD dock widget
+	MDWidget *mdWidget;
+	// Minimiser dock widget
+	MinimiserWidget *minimiserWidget;
+	// Model List dock widget
+	ModelListWidget *modelListWidget;
+	// Atom positioning dock widget
+	PositionWidget *positionWidget;
+	// Atom selection dock widget
+	SelectWidget *selectWidget;
+	// Toolbox dock widget
+	ToolBoxWidget *toolBoxWidget;
+	// Atom transformation dock widget
+	TransformWidget *transformWidget;
+	// Vibrations dock widget
+	VibrationsWidget *vibrationsWidget;
+	
 
 	/*
 	// Dialogs

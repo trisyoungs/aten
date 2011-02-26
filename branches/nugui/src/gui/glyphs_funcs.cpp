@@ -1,6 +1,6 @@
 /*
-	*** Qt atomlist functions interface
-	*** src/gui/atomlist_funcs.cpp
+	*** Glyphs Dock Widget
+	*** src/gui/glyphs_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -28,7 +28,7 @@
 #include "base/sysfunc.h"
 
 // Constructor
-AtenGlyphs::AtenGlyphs(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+GlyphsWidget::GlyphsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 
@@ -37,12 +37,12 @@ AtenGlyphs::AtenGlyphs(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,
 }
 
 // Destructor
-AtenGlyphs::~AtenGlyphs()
+GlyphsWidget::~GlyphsWidget()
 {
 }
 
 // Finalise widgets (things that we couldn't do in Qt Designer)
-void AtenGlyphs::finaliseUi()
+void GlyphsWidget::finaliseUi()
 {
 	// Set allowable glyph types in combo box
 	refreshing_ = TRUE;
@@ -96,19 +96,14 @@ void AtenGlyphs::finaliseUi()
 }
 
 // Show window
-void AtenGlyphs::showWindow()
+void GlyphsWidget::showWidget()
 {
 	show();
 	if (shouldRefresh_) refresh();
 }
 
-void AtenGlyphs::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionGlyphsWindow->setChecked(FALSE);
-}
-
 // Add item to list
-void AtenGlyphs::addItemToList(Glyph *g)
+void GlyphsWidget::addItemToList(Glyph *g)
 {
 	QString s;
 	s = itoa(ui.GlyphList->count()+1);
@@ -121,10 +116,10 @@ void AtenGlyphs::addItemToList(Glyph *g)
 }
 
 // Update glyph list
-void AtenGlyphs::refresh()
+void GlyphsWidget::refresh()
 {
 	// If the page isn't visible, don't do anything
-	if (!gui.glyphsWindow->isVisible())
+	if (!gui.glyphsWidget>isVisible())
 	{
 		shouldRefresh_ = TRUE;
 		return;
@@ -146,7 +141,7 @@ void AtenGlyphs::refresh()
 }
 
 // Update current glyph data
-void AtenGlyphs::updateData(Glyph *g)
+void GlyphsWidget::updateData(Glyph *g)
 {
 	if (g == NULL) return;
 	// Set data in widgets
@@ -174,7 +169,7 @@ void AtenGlyphs::updateData(Glyph *g)
 }
 
 // Update controls (i.e. enable/disable widgets in data groups)
-void AtenGlyphs::updateControls(Glyph *g)
+void GlyphsWidget::updateControls(Glyph *g)
 {
 	if (g == NULL)
 	{
@@ -210,7 +205,7 @@ void AtenGlyphs::updateControls(Glyph *g)
 	}
 }
 
-void AtenGlyphs::on_GlyphList_currentRowChanged(int row)
+void GlyphsWidget::on_GlyphList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	Glyph *g = (row == -1 ? NULL : aten.currentModelOrFrame()->glyph(row));
@@ -226,7 +221,7 @@ void AtenGlyphs::on_GlyphList_currentRowChanged(int row)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphList_itemSelectionChanged()
+void GlyphsWidget::on_GlyphList_itemSelectionChanged()
 {
 	// Extra check to deactivate controls when no glyph in the list is selected
 	if (refreshing_) return;
@@ -246,7 +241,7 @@ void AtenGlyphs::on_GlyphList_itemSelectionChanged()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphAddButton_clicked(bool checked)
+void GlyphsWidget::on_GlyphAddButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
@@ -265,7 +260,7 @@ void AtenGlyphs::on_GlyphAddButton_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphDeleteSelectedButton_clicked(bool checked)
+void GlyphsWidget::on_GlyphDeleteSelectedButton_clicked(bool checked)
 {
 	// Loop over list of selected items and set new colour
 	int row = ui.GlyphList->currentRow();
@@ -284,7 +279,7 @@ void AtenGlyphs::on_GlyphDeleteSelectedButton_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphSelectAllButton_clicked(bool checked)
+void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	Glyph *g;
@@ -299,7 +294,7 @@ void AtenGlyphs::on_GlyphSelectAllButton_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphSelectNoneButton_clicked(bool checked)
+void GlyphsWidget::on_GlyphSelectNoneButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	Glyph *g = m->glyphs();
@@ -315,7 +310,7 @@ void AtenGlyphs::on_GlyphSelectNoneButton_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphInvertSelectionButton_clicked(bool checked)
+void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 {
 	Glyph *g;
 	refreshing_ = TRUE;
@@ -329,21 +324,21 @@ void AtenGlyphs::on_GlyphInvertSelectionButton_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphHideAllButton_clicked(bool checked)
+void GlyphsWidget::on_GlyphHideAllButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphHideNoneButton_clicked(bool checked)
+void GlyphsWidget::on_GlyphHideNoneButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(TRUE);
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphHideSelectedButton_clicked(bool checked)
+void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
 {
 	Glyph *g;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
@@ -354,7 +349,7 @@ void AtenGlyphs::on_GlyphHideSelectedButton_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphTypeCombo_currentIndexChanged(int row)
+void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
 {
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
@@ -377,7 +372,7 @@ void AtenGlyphs::on_GlyphTypeCombo_currentIndexChanged(int row)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphLineEdit_returnPressed()
+void GlyphsWidget::on_GlyphLineEdit_returnPressed()
 {
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
@@ -392,7 +387,7 @@ void AtenGlyphs::on_GlyphLineEdit_returnPressed()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_GlyphVisibleCheck_clicked(bool checked)
+void GlyphsWidget::on_GlyphVisibleCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
@@ -407,27 +402,27 @@ void AtenGlyphs::on_GlyphVisibleCheck_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::on_Data1AtomIdSpin_valueChanged(int i)
+void GlyphsWidget::on_Data1AtomIdSpin_valueChanged(int i)
 {
 	dataAtomIdChanged(0, i-1);
 }
 
-void AtenGlyphs::on_Data2AtomIdSpin_valueChanged(int i)
+void GlyphsWidget::on_Data2AtomIdSpin_valueChanged(int i)
 {
 	dataAtomIdChanged(1, i-1);
 }
 
-void AtenGlyphs::on_Data3AtomIdSpin_valueChanged(int i)
+void GlyphsWidget::on_Data3AtomIdSpin_valueChanged(int i)
 {
 	dataAtomIdChanged(2, i-1);
 }
 
-void AtenGlyphs::on_Data4AtomIdSpin_valueChanged(int i)
+void GlyphsWidget::on_Data4AtomIdSpin_valueChanged(int i)
 {
 	dataAtomIdChanged(3, i-1);
 }
 
-void AtenGlyphs::on_Data1AtomRadio_clicked(bool checked)
+void GlyphsWidget::on_Data1AtomRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
 	dataAtomWidget[0]->setEnabled(TRUE);
@@ -436,7 +431,7 @@ void AtenGlyphs::on_Data1AtomRadio_clicked(bool checked)
 	dataAtomIdChanged(0, dataAtomIdSpin[0]->value()-1);
 }
 
-void AtenGlyphs::on_Data2AtomRadio_clicked(bool checked)
+void GlyphsWidget::on_Data2AtomRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
 	dataAtomWidget[1]->setEnabled(TRUE);
@@ -445,7 +440,7 @@ void AtenGlyphs::on_Data2AtomRadio_clicked(bool checked)
 	dataAtomIdChanged(1, dataAtomIdSpin[1]->value()-1);
 }
 
-void AtenGlyphs::on_Data3AtomRadio_clicked(bool checked)
+void GlyphsWidget::on_Data3AtomRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
 	dataAtomWidget[2]->setEnabled(TRUE);
@@ -454,7 +449,7 @@ void AtenGlyphs::on_Data3AtomRadio_clicked(bool checked)
 	dataAtomIdChanged(2, dataAtomIdSpin[2]->value()-1);
 }
 
-void AtenGlyphs::on_Data4AtomRadio_clicked(bool checked)
+void GlyphsWidget::on_Data4AtomRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
 	dataAtomWidget[3]->setEnabled(TRUE);
@@ -463,7 +458,7 @@ void AtenGlyphs::on_Data4AtomRadio_clicked(bool checked)
 	dataAtomIdChanged(3, dataAtomIdSpin[3]->value()-1);
 }
 
-void AtenGlyphs::on_Data1ValueRadio_clicked(bool checked)
+void GlyphsWidget::on_Data1ValueRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
 	dataAtomWidget[0]->setEnabled(FALSE);
@@ -472,7 +467,7 @@ void AtenGlyphs::on_Data1ValueRadio_clicked(bool checked)
 	dataValueChanged(0, dataValueXSpin[0]->value(), dataValueYSpin[0]->value(), dataValueZSpin[0]->value());
 }
 
-void AtenGlyphs::on_Data2ValueRadio_clicked(bool checked)
+void GlyphsWidget::on_Data2ValueRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
 	dataAtomWidget[1]->setEnabled(FALSE);
@@ -481,7 +476,7 @@ void AtenGlyphs::on_Data2ValueRadio_clicked(bool checked)
 	dataValueChanged(1, dataValueXSpin[1]->value(), dataValueYSpin[1]->value(), dataValueZSpin[1]->value());
 }
 
-void AtenGlyphs::on_Data3ValueRadio_clicked(bool checked)
+void GlyphsWidget::on_Data3ValueRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
 	dataAtomWidget[2]->setEnabled(FALSE);
@@ -490,7 +485,7 @@ void AtenGlyphs::on_Data3ValueRadio_clicked(bool checked)
 	dataValueChanged(2, dataValueXSpin[2]->value(), dataValueYSpin[2]->value(), dataValueZSpin[2]->value());
 }
 
-void AtenGlyphs::on_Data4ValueRadio_clicked(bool checked)
+void GlyphsWidget::on_Data4ValueRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
 	dataAtomWidget[3]->setEnabled(FALSE);
@@ -499,87 +494,87 @@ void AtenGlyphs::on_Data4ValueRadio_clicked(bool checked)
 	dataValueChanged(3, dataValueXSpin[3]->value(), dataValueYSpin[3]->value(), dataValueZSpin[3]->value());
 }
 
-void AtenGlyphs::on_Data1ValueXSpin_valueChanged(double d)
+void GlyphsWidget::on_Data1ValueXSpin_valueChanged(double d)
 {
 	dataValueChanged(0, 0, d);
 }
 
-void AtenGlyphs::on_Data2ValueXSpin_valueChanged(double d)
+void GlyphsWidget::on_Data2ValueXSpin_valueChanged(double d)
 {
 	dataValueChanged(1, 0, d);
 }
 
-void AtenGlyphs::on_Data3ValueXSpin_valueChanged(double d)
+void GlyphsWidget::on_Data3ValueXSpin_valueChanged(double d)
 {
 	dataValueChanged(2, 0, d);
 }
 
-void AtenGlyphs::on_Data4ValueXSpin_valueChanged(double d)
+void GlyphsWidget::on_Data4ValueXSpin_valueChanged(double d)
 {
 	dataValueChanged(3, 0, d);
 }
 
-void AtenGlyphs::on_Data1ValueYSpin_valueChanged(double d)
+void GlyphsWidget::on_Data1ValueYSpin_valueChanged(double d)
 {
 	dataValueChanged(0, 1, d);
 }
 
-void AtenGlyphs::on_Data2ValueYSpin_valueChanged(double d)
+void GlyphsWidget::on_Data2ValueYSpin_valueChanged(double d)
 {
 	dataValueChanged(1, 1, d);
 }
 
-void AtenGlyphs::on_Data3ValueYSpin_valueChanged(double d)
+void GlyphsWidget::on_Data3ValueYSpin_valueChanged(double d)
 {
 	dataValueChanged(2, 1, d);
 }
 
-void AtenGlyphs::on_Data4ValueYSpin_valueChanged(double d)
+void GlyphsWidget::on_Data4ValueYSpin_valueChanged(double d)
 {
 	dataValueChanged(3, 1, d);
 }
 
-void AtenGlyphs::on_Data1ValueZSpin_valueChanged(double d)
+void GlyphsWidget::on_Data1ValueZSpin_valueChanged(double d)
 {
 	dataValueChanged(0, 2, d);
 }
 
-void AtenGlyphs::on_Data2ValueZSpin_valueChanged(double d)
+void GlyphsWidget::on_Data2ValueZSpin_valueChanged(double d)
 {
 	dataValueChanged(1, 2, d);
 }
 
-void AtenGlyphs::on_Data3ValueZSpin_valueChanged(double d)
+void GlyphsWidget::on_Data3ValueZSpin_valueChanged(double d)
 {
 	dataValueChanged(2, 2, d);
 }
 
-void AtenGlyphs::on_Data4ValueZSpin_valueChanged(double d)
+void GlyphsWidget::on_Data4ValueZSpin_valueChanged(double d)
 {
 	dataValueChanged(3, 2, d);
 }
 
-void AtenGlyphs::on_Data1ColourButton_clicked(bool checked)
+void GlyphsWidget::on_Data1ColourButton_clicked(bool checked)
 {
 	dataColourChanged(0);
 }
 
-void AtenGlyphs::on_Data2ColourButton_clicked(bool checked)
+void GlyphsWidget::on_Data2ColourButton_clicked(bool checked)
 {
 	dataColourChanged(1);
 }
 
-void AtenGlyphs::on_Data3ColourButton_clicked(bool checked)
+void GlyphsWidget::on_Data3ColourButton_clicked(bool checked)
 {
 	dataColourChanged(2);
 }
 
-void AtenGlyphs::on_Data4ColourButton_clicked(bool checked)
+void GlyphsWidget::on_Data4ColourButton_clicked(bool checked)
 {
 	dataColourChanged(3);
 }
 
-void AtenGlyphs::dataAtomIdChanged(int id, int value)
+void GlyphsWidget::dataAtomIdChanged(int id, int value)
 {
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
@@ -595,7 +590,7 @@ void AtenGlyphs::dataAtomIdChanged(int id, int value)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::dataValueChanged(int id, int component, double value)
+void GlyphsWidget::dataValueChanged(int id, int component, double value)
 {
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
@@ -611,7 +606,7 @@ void AtenGlyphs::dataValueChanged(int id, int component, double value)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::dataValueChanged(int id, double x, double y, double z)
+void GlyphsWidget::dataValueChanged(int id, double x, double y, double z)
 {
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
@@ -627,7 +622,7 @@ void AtenGlyphs::dataValueChanged(int id, double x, double y, double z)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGlyphs::dataColourChanged(int id)
+void GlyphsWidget::dataColourChanged(int id)
 {
 	if (refreshing_) return;
 	// Get current colour from frame and convert into a QColor

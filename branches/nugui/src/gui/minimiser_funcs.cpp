@@ -1,5 +1,5 @@
 /*
-	*** Qt minimiser functions interface
+	*** Minimiser Dock Widget
 	*** src/gui/minimise_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -30,39 +30,38 @@
 #include "parser/commandnode.h"
 
 // Constructor
-AtenMinimiser::AtenMinimiser(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+MinimiserWidget::MinimiserWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 }
 
 // Destructor
-AtenMinimiser::~AtenMinimiser()
+MinimiserWidget::~MinimiserWidget()
 {
 }
 
-void AtenMinimiser::showWindow()
+void MinimiserWidget::showWidget()
 {
-	//if (shouldRefresh_) refresh();
 	show();
 }
 
-void AtenMinimiser::on_MinimiserMethodCombo_currentIndexChanged(int index)
+void MinimiserWidget::on_MinimiserMethodCombo_currentIndexChanged(int index)
 {
 	ui.MethodOptionsStack->setCurrentIndex(index);
 	// Show/hide other controlsi?
-	bool enabled = (index != AtenMinimiser::MopacMethod);
+	bool enabled = (index != MinimiserWidget::MopacMethod);
 	ui.ConvergenceGroup->setEnabled(enabled);
 	ui.MinimiseCyclesSpin->setEnabled(enabled);
 	ui.MethodOptionsStack->setEnabled(enabled);
 }
 
-void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
+void MinimiserWidget::on_MinimiseButton_clicked(bool checked)
 {
 	doMinimisation();
 	gui.update();
 }
 
-void AtenMinimiser::doMinimisation()
+void MinimiserWidget::doMinimisation()
 {
 	// Set convergence criteria and get maxcycles data
 	CommandNode::run(Command::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
@@ -95,9 +94,4 @@ void AtenMinimiser::doMinimisation()
 	}
 	// Update the view
 	gui.update(FALSE,FALSE,FALSE);
-}
-
-void AtenMinimiser::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionMinimiserWindow->setChecked(FALSE);
 }

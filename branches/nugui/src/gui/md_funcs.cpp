@@ -1,5 +1,5 @@
 /*
-	*** Qt MD dialog functions
+	*** MD Dock Widget
 	*** src/gui/md_funcs.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -26,7 +26,7 @@
 #include "gui/md.h"
 
 // Constructor
-AtenMD::AtenMD(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+MDWidget::MDWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 
@@ -37,17 +37,17 @@ AtenMD::AtenMD(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 }
 
 // Destructor
-AtenMD::~AtenMD()
+MDWidget::~MDWidget()
 {
 }
 
-void AtenMD::showWindow()
+void MDWidget::showWidget()
 {
-	refresh();
 	show();
+	refresh();
 }
 
-void AtenMD::refresh()
+void MDWidget::refresh()
 {
 	// Set controls to reflect values in singleton MDEngine
 	refreshing_ = TRUE;
@@ -63,37 +63,37 @@ void AtenMD::refresh()
 // Control Page
 */
 
-void AtenMD::on_TemperatureSpin_valueChanged(double value)
+void MDWidget::on_TemperatureSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 	md.setTemperature(value);
 }
 
-void AtenMD::on_PressureSpin_valueChanged(double value)
+void MDWidget::on_PressureSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 	md.setPressure(value);
 }
 
-void AtenMD::on_NStepsSpin_valueChanged(int value)
+void MDWidget::on_NStepsSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 	md.setNSteps(value);
 }
 
-void AtenMD::on_TimeStepMantissaSpin_valueChanged(double value)
+void MDWidget::on_TimeStepMantissaSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 	md.timeStep().setMantissa(value);
 }
 
-void AtenMD::on_TimeStepExponentSpin_valueChanged(int value)
+void MDWidget::on_TimeStepExponentSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 	md.timeStep().setExponent(value);
 }
 
-void AtenMD::on_RunMDButton_clicked(bool checked)
+void MDWidget::on_RunMDButton_clicked(bool checked)
 {
 	md.run();
 }
@@ -105,9 +105,3 @@ void AtenMD::on_RunMDButton_clicked(bool checked)
 /*
 // Extra Page
 */
-
-void AtenMD::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionMolecularDynamicsWindow->setChecked(FALSE);
-}
-

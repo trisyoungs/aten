@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: CellDefine Window
-	*** src/gui/celldefine.h
-	Copyright T. Youngs 2007-2010
+	*** Cell Definition Dock Widget
+	*** src/gui/celldefinition.h
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CELLDEFINEWINDOW_H
-#define ATEN_CELLDEFINEWINDOW_H
+#ifndef ATEN_CELLDEFINITIONWIDGET_H
+#define ATEN_CELLDEFINITIONWIDGET_H
 
-#include "gui/ui_celldefine.h"
+#include "gui/ui_celldefinition.h"
 
-// Cell definition window
-class AtenCellDefine : public QDialog
+// Cell definition dock widget
+class CellDefinitionWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -37,7 +37,7 @@ class AtenCellDefine : public QDialog
 	void refreshMatrix();
 	void refreshABC();
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
 	void cellChanged(int index, double newvalue);
 	private slots:
@@ -56,7 +56,6 @@ class AtenCellDefine : public QDialog
 	void on_CellSpacegroupEdit_returnPressed();
 	void on_CellSpacegroupRemoveButton_clicked(bool checked);
 	void on_CellSpacegroupPackButton_clicked(bool checked);
-	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -70,10 +69,10 @@ class AtenCellDefine : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenCellDefine(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenCellDefine();
+	CellDefinitionWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~CellDefinitionWidget();
 	// Main form declaration
-	Ui::CellDefineDialog ui;
+	Ui::CellDefinitionWidget ui;
 };
 
 #endif

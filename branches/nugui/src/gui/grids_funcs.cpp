@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: Grids functions
+	*** Grids Dock Widget
 	*** src/gui/grids_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -31,7 +31,7 @@
 #include "base/sysfunc.h"
 
 // Constructor
-AtenGrids::AtenGrids(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+GridsWidget::GridsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 
@@ -54,20 +54,19 @@ AtenGrids::AtenGrids(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,fl
 }
 
 // Destructor
-AtenGrids::~AtenGrids()
+GridsWidget::~GridsWidget()
 {
 }
 
-void AtenGrids::showWindow()
+void GridsWidget::showWidget()
 {
-	//if (shouldRefresh_) refresh();
 	show();
 }
 
 // Refresh widget
-void AtenGrids::refresh()
+void GridsWidget::refresh()
 {
-	msg.enter("AtenGrids::refresh");
+	msg.enter("GridsWidget::refresh");
 	// Clear and refresh the grids list
 	refreshing_ = TRUE;
 	ui.GridList->clear();
@@ -105,10 +104,10 @@ void AtenGrids::refresh()
 	ui.OrbitalTable->resizeColumnToContents(1);
 	ui.OrbitalTable->resizeColumnToContents(2);
 	refreshing_ = FALSE;
-	msg.exit("AtenGrids::refresh");
+	msg.exit("GridsWidget::refresh");
 }
 
-Grid *AtenGrids::getCurrentGrid()
+Grid *GridsWidget::getCurrentGrid()
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL)
@@ -121,16 +120,16 @@ Grid *AtenGrids::getCurrentGrid()
 	else return m->grid(row);
 }
 
-void AtenGrids::refreshGridInfo()
+void GridsWidget::refreshGridInfo()
 {
-	msg.enter("AtenGrids::refreshGridInfo");
+	msg.enter("GridsWidget::refreshGridInfo");
 	// Get the current row selected in the grid list
 	Grid *g;
 	Model *m = aten.currentModelOrFrame();
 	int row = ui.GridList->currentRow();
 	if (row == -1)
 	{
-		msg.exit("AtenGrids::refreshGridInfo");
+		msg.exit("GridsWidget::refreshGridInfo");
 		return;
 	}
 	else g = m->grid(row);
@@ -199,13 +198,13 @@ void AtenGrids::refreshGridInfo()
 	ui.GridShiftYSpin->setValue(g->shift().y);
 	ui.GridShiftZSpin->setValue(g->shift().z);
 	refreshing_ = FALSE;
-	msg.exit("AtenGrids::refreshGridInfo");
+	msg.exit("GridsWidget::refreshGridInfo");
 }
 
 // Load grid (public function)
-void AtenGrids::loadGrid()
+void GridsWidget::loadGrid()
 {
-	msg.enter("AtenGrids::loadGrid");
+	msg.enter("GridsWidget::loadGrid");
 	Tree *filter;
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
@@ -223,21 +222,21 @@ void AtenGrids::loadGrid()
 			if (filter != NULL) filter->executeRead(qPrintable(filename));
 		}
 	}
-	gui.gridsWindow->refresh();
+	refresh();
 	gui.mainWidget->postRedisplay();
-	msg.exit("AtenGrids::loadGrid");
+	msg.exit("GridsWidget::loadGrid");
 }
 
 /*
 // Menu
 */
 
-void AtenGrids::on_actionGridLoad_triggered(bool checked)
+void GridsWidget::on_actionGridLoad_triggered(bool checked)
 {
 	loadGrid();
 }
 
-void AtenGrids::on_actionGridCopy_triggered(bool checked)
+void GridsWidget::on_actionGridCopy_triggered(bool checked)
 {
 	Grid *g = getCurrentGrid();
 	if (g == NULL)
@@ -248,7 +247,7 @@ void AtenGrids::on_actionGridCopy_triggered(bool checked)
 	aten.copyGrid(g);
 }
 
-void AtenGrids::on_actionGridCut_triggered(bool checked)
+void GridsWidget::on_actionGridCut_triggered(bool checked)
 {
 	Grid *g = getCurrentGrid();
 	if (g == NULL)
@@ -263,7 +262,7 @@ void AtenGrids::on_actionGridCut_triggered(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_actionGridDelete_triggered(bool checked)
+void GridsWidget::on_actionGridDelete_triggered(bool checked)
 {
 	// Get the current row selected in the grid list
 	int row = ui.GridList->currentRow();
@@ -277,7 +276,7 @@ void AtenGrids::on_actionGridDelete_triggered(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_actionGridPaste_triggered(bool checked)
+void GridsWidget::on_actionGridPaste_triggered(bool checked)
 {
 	Grid *g = aten.gridClipboard();
 	if (g == NULL)
@@ -296,79 +295,79 @@ void AtenGrids::on_actionGridPaste_triggered(bool checked)
 // Origin / Axes
 */
 
-void AtenGrids::on_GridOriginXSpin_valueChanged(double d)
+void GridsWidget::on_GridOriginXSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridOriginChanged(0, d);
 }
 
-void AtenGrids::on_GridOriginYSpin_valueChanged(double d)
+void GridsWidget::on_GridOriginYSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridOriginChanged(1, d);
 }
 
-void AtenGrids::on_GridOriginZSpin_valueChanged(double d)
+void GridsWidget::on_GridOriginZSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridOriginChanged(2, d);
 }
 
-void AtenGrids::on_GridAxesAXSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesAXSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(0,0, d);
 }
 
-void AtenGrids::on_GridAxesAYSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesAYSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(0,1, d);
 }
 
-void AtenGrids::on_GridAxesAZSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesAZSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(0,2, d);
 }
 
-void AtenGrids::on_GridAxesBXSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesBXSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(1,0, d);
 }
 
-void AtenGrids::on_GridAxesBYSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesBYSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(1,1, d);
 }
 
-void AtenGrids::on_GridAxesBZSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesBZSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(1,2, d);
 }
 
-void AtenGrids::on_GridAxesCXSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesCXSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(2,0, d);
 }
 
-void AtenGrids::on_GridAxesCYSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesCYSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(2,1, d);
 }
 
-void AtenGrids::on_GridAxesCZSpin_valueChanged(double d)
+void GridsWidget::on_GridAxesCZSpin_valueChanged(double d)
 {
 	if (refreshing_) return;
 	gridAxisChanged(2,2, d);
 }
 
-void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
+void GridsWidget::on_GridUseInternalColoursRadio_clicked(bool checked)
 {
 	ui.GridSecondaryColourButton->setEnabled(TRUE);
 	ui.GridPrimaryColourButton->setEnabled(TRUE);
@@ -383,7 +382,7 @@ void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
+void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
 {
 	ui.GridSecondaryColourButton->setEnabled(FALSE);
 	ui.GridPrimaryColourButton->setEnabled(FALSE);
@@ -398,7 +397,7 @@ void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
 }
 
 // Item in grid list has changed?
-void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
+void GridsWidget::on_GridList_itemClicked(QListWidgetItem *item)
 {
 	// Cast item to our own TListWidgetItem
 	TListWidgetItem *titem = (TListWidgetItem*) item;
@@ -409,7 +408,7 @@ void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::gridOriginChanged(int component, double value)
+void GridsWidget::gridOriginChanged(int component, double value)
 {
 	// Get current grid and set data
 	Grid *g = getCurrentGrid();
@@ -422,7 +421,7 @@ void AtenGrids::gridOriginChanged(int component, double value)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::gridAxisChanged(int axis, int component, double value)
+void GridsWidget::gridAxisChanged(int axis, int component, double value)
 {
 	// Get current grid and set data
 	Grid *g = getCurrentGrid();
@@ -435,14 +434,14 @@ void AtenGrids::gridAxisChanged(int axis, int component, double value)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridList_currentRowChanged(int row)
+void GridsWidget::on_GridList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	// New item selected, so update the data shown in the page
 	if (row != -1) refreshGridInfo();
 }
 
-void AtenGrids::on_GridLowerCutoffSpin_editingFinished()
+void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -453,7 +452,7 @@ void AtenGrids::on_GridLowerCutoffSpin_editingFinished()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridUpperCutoffSpin_editingFinished()
+void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -464,7 +463,7 @@ void AtenGrids::on_GridUpperCutoffSpin_editingFinished()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridLowerCutoff2Spin_editingFinished()
+void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -475,7 +474,7 @@ void AtenGrids::on_GridLowerCutoff2Spin_editingFinished()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridUpperCutoff2Spin_editingFinished()
+void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -486,7 +485,7 @@ void AtenGrids::on_GridUpperCutoff2Spin_editingFinished()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
+void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -496,7 +495,7 @@ void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridOutlineVolumeCheck_clicked(bool checked)
+void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current surface in list
@@ -508,7 +507,7 @@ void AtenGrids::on_GridOutlineVolumeCheck_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridPeriodicCheck_clicked(bool checked)
+void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -518,7 +517,7 @@ void AtenGrids::on_GridPeriodicCheck_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
+void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -539,7 +538,7 @@ void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridSecondaryColourButton_clicked(bool checked)
+void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -560,7 +559,7 @@ void AtenGrids::on_GridSecondaryColourButton_clicked(bool checked)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
+void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -574,7 +573,7 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_GridSecondaryCutoffCheck_clicked(bool checked)
+void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -591,7 +590,7 @@ void AtenGrids::on_GridSecondaryCutoffCheck_clicked(bool checked)
 // Shift Page
 */
 
-void AtenGrids::gridShiftChanged()
+void GridsWidget::gridShiftChanged()
 {
 	if (refreshing_) return;
 	// Get current grid and set data
@@ -622,53 +621,53 @@ void AtenGrids::gridShiftChanged()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenGrids::on_ShiftGridPosXButton_clicked(bool checked)
+void GridsWidget::on_ShiftGridPosXButton_clicked(bool checked)
 {
 	ui.GridShiftXSpin->stepUp();
 	gridShiftChanged();
 }
 
-void AtenGrids::on_ShiftGridPosYButton_clicked(bool checked)
+void GridsWidget::on_ShiftGridPosYButton_clicked(bool checked)
 {
 	ui.GridShiftYSpin->stepUp();
 	gridShiftChanged();
 }
 
-void AtenGrids::on_ShiftGridPosZButton_clicked(bool checked)
+void GridsWidget::on_ShiftGridPosZButton_clicked(bool checked)
 {
 	ui.GridShiftZSpin->stepUp();
 	gridShiftChanged();
 }
 
-void AtenGrids::on_ShiftGridNegXButton_clicked(bool checked)
+void GridsWidget::on_ShiftGridNegXButton_clicked(bool checked)
 {
 	ui.GridShiftXSpin->stepDown();
 	gridShiftChanged();
 }
 
-void AtenGrids::on_ShiftGridNegYButton_clicked(bool checked)
+void GridsWidget::on_ShiftGridNegYButton_clicked(bool checked)
 {
 	ui.GridShiftYSpin->stepDown();
 	gridShiftChanged();
 }
 
-void AtenGrids::on_ShiftGridNegZButton_clicked(bool checked)
+void GridsWidget::on_ShiftGridNegZButton_clicked(bool checked)
 {
 	ui.GridShiftZSpin->stepDown();
 	gridShiftChanged();
 }
 
-void AtenGrids::on_GridShiftXSpin_valueChanged(int i)
+void GridsWidget::on_GridShiftXSpin_valueChanged(int i)
 {
 	gridShiftChanged();
 }
 
-void AtenGrids::on_GridShiftYSpin_valueChanged(int i)
+void GridsWidget::on_GridShiftYSpin_valueChanged(int i)
 {
 	gridShiftChanged();
 }
 
-void AtenGrids::on_GridShiftZSpin_valueChanged(int i)
+void GridsWidget::on_GridShiftZSpin_valueChanged(int i)
 {
 	gridShiftChanged();
 }
@@ -677,12 +676,12 @@ void AtenGrids::on_GridShiftZSpin_valueChanged(int i)
 // Orbital Page
 */
 
-void AtenGrids::on_ViewBasisButton_clicked(bool checked)
+void GridsWidget::on_ViewBasisButton_clicked(bool checked)
 {
 	gui.viewBasisDialog->showWindow( aten.currentModelOrFrame() );
 }
 
-void AtenGrids::on_ViewEigenvectorButton_clicked(bool checked)
+void GridsWidget::on_ViewEigenvectorButton_clicked(bool checked)
 {
 	int row = ui.OrbitalTable->currentRow();
 	if (row == -1) 
@@ -693,7 +692,7 @@ void AtenGrids::on_ViewEigenvectorButton_clicked(bool checked)
 	gui.viewEigenvectorDialog->showWindow( aten.currentModelOrFrame(), row);
 }
 
-void AtenGrids::on_OrbitalCalculateButton_clicked(bool checked)
+void GridsWidget::on_OrbitalCalculateButton_clicked(bool checked)
 {
 	int row = ui.OrbitalTable->currentRow();
 	if (row == -1)
@@ -730,27 +729,22 @@ void AtenGrids::on_OrbitalCalculateButton_clicked(bool checked)
 	}
 }
 
-void AtenGrids::on_OrbitalOriginXSpin_valueChanged(double d)
+void GridsWidget::on_OrbitalOriginXSpin_valueChanged(double d)
 {
 }
 
-void AtenGrids::on_OrbitalOriginYSpin_valueChanged(double d)
+void GridsWidget::on_OrbitalOriginYSpin_valueChanged(double d)
 {
 }
 
-void AtenGrids::on_OrbitalOriginZSpin_valueChanged(double d)
+void GridsWidget::on_OrbitalOriginZSpin_valueChanged(double d)
 {
 }
 
-void AtenGrids::on_OrbitalSpacingSpin_valueChanged(double d)
+void GridsWidget::on_OrbitalSpacingSpin_valueChanged(double d)
 {
 }
 
-void AtenGrids::on_OrbitalPointsSpin_valueChanged(int i)
+void GridsWidget::on_OrbitalPointsSpin_valueChanged(int i)
 {
-}
-
-void AtenGrids::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionGridsWindow->setChecked(FALSE);
 }

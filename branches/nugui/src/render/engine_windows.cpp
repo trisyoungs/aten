@@ -36,9 +36,9 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 	double rij, phi;
 
 	// Vibrations Window - Draw vibration arrows
-	if ((gui.vibrationsWindow->isVisible()) && (gui.vibrationsWindow->ui.ShowVectorsCheck->isChecked()))
+	if ((gui.vibrationsWidget->isVisible()) && (gui.vibrationsWidget->ui.ShowVectorsCheck->isChecked()))
 	{
-		int row = gui.vibrationsWindow->ui.VibrationsList->currentRow();
+		int row = gui.vibrationsWidget->ui.VibrationsList->currentRow();
 		if (row != -1)
 		{
 			prefs.copyColour(Prefs::VibrationArrowColour, colour);
@@ -47,7 +47,7 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 			// Grab displacements array
 			Vibration *vib = m->vibration(row);
 			// Get vector scale factor
-			double scale = gui.vibrationsWindow->ui.VectorScaleSpin->value();
+			double scale = gui.vibrationsWidget->ui.VectorScaleSpin->value();
 			if (vib != NULL)
 			{
 				Vec3<double> *disp = vib->displacements();
@@ -99,18 +99,18 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 	}
 
 	// Cell Transform Window
-	if (gui.cellTransformWindow->isVisible())
+	if (gui.cellTransformWidget->isVisible())
 	{
-		switch (gui.cellTransformWindow->ui.CellTransformTabs->currentIndex())
+		switch (gui.cellTransformWidget->ui.CellTransformTabs->currentIndex())
 		{
 			// Replicate tab - draw on end results of replication
 			case (0):
-				r1.x = gui.cellTransformWindow->ui.CellReplicateNegXSpin->value();
-				r1.y = gui.cellTransformWindow->ui.CellReplicateNegYSpin->value();
-				r1.z = gui.cellTransformWindow->ui.CellReplicateNegZSpin->value();
-				r2.x = gui.cellTransformWindow->ui.CellReplicatePosXSpin->value();
-				r2.y = gui.cellTransformWindow->ui.CellReplicatePosYSpin->value();
-				r2.z = gui.cellTransformWindow->ui.CellReplicatePosZSpin->value();
+				r1.x = gui.cellTransformWidget->ui.CellReplicateNegXSpin->value();
+				r1.y = gui.cellTransformWidget->ui.CellReplicateNegYSpin->value();
+				r1.z = gui.cellTransformWidget->ui.CellReplicateNegZSpin->value();
+				r2.x = gui.cellTransformWidget->ui.CellReplicatePosXSpin->value();
+				r2.y = gui.cellTransformWidget->ui.CellReplicatePosYSpin->value();
+				r2.z = gui.cellTransformWidget->ui.CellReplicatePosZSpin->value();
 				ineg.set(ceil(r1.x), ceil(r1.y), ceil(r1.z));
 				ipos.set(floor(r2.x), floor(r2.y), floor(r2.z));
 				prefs.copyColour(Prefs::UnitCellColour, colour);

@@ -46,6 +46,7 @@ set(qtproject_SRCS
   measureactions.cpp
   minimiser_funcs.cpp
   modelactions.cpp
+  modellist_funcs.cpp
   mouseactions.cpp
   position_funcs.cpp
   prefs_funcs.cpp
@@ -97,6 +98,7 @@ SET(pro_MOC_HDRS
   mainwindow.h
   md.h
   minimiser.h
+  modellist.h
   position.h
   prefs.h
   select.h
@@ -137,6 +139,7 @@ SET(pro_UIS
   mainwindow.ui
   md.ui
   minimiser.ui
+  modellist.ui
   position.ui
   prefs.ui
   select.ui

@@ -316,7 +316,7 @@ void AtenForm::createDialogFilters()
 		loadGridFilters += ";;";
 		loadGridFilters += ri->item->filter.description();
 	}
-	gui.gridsWindow->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
+	gui.gridsWidget->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
 
 	// Create open script dialog
 	loadScriptFilters.clear();
@@ -364,8 +364,7 @@ void AtenForm::setControls()
 	}
 	// Set controls on Bond toolbar 
 	bondToleranceSpin_->setValue(prefs.bondTolerance());
-	// Set the initial configuration of the splitter
-	ui.MainSplitter->setSizes( QList<int>() << 500 << 64 );
+
 	msg.exit("AtenForm::setControls");
 }
 

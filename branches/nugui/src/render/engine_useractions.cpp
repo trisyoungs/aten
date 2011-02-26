@@ -24,7 +24,7 @@
 #include "model/fragment.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
-#include "gui/fragment.h"
+#include "gui/fragments.h"
 
 // Render addition elements related to selected/active UserActions
 void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanvas *canvas)
@@ -140,15 +140,15 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 	{
 		// Draw on fragment (as long as mode is selected)
 		case (UserAction::DrawFragmentAction):
-			if (gui.fragmentWindow->currentFragment() == NULL) break;
-			frag = gui.fragmentWindow->currentFragment();
+			if (gui.fragmentsWidget->currentFragment() == NULL) break;
+			frag = gui.fragmentsWidget->currentFragment();
 			j = source->atomOnScreen(canvas->rMouseLast().x, canvas->rMouseLast().y);
 			if ((i != NULL) || (j != NULL))
 			{
 				// Atom is now fragment anchor point - make sure we select a non-null atom i or j
 				if (i != NULL) j = i;
 				pos = j->r();
-				Model *m = frag->anchoredModel(j, canvas->keyModifier(Prefs::ShiftKey), gui.fragmentWindow->bondId());
+				Model *m = frag->anchoredModel(j, canvas->keyModifier(Prefs::ShiftKey), gui.fragmentsWidget->bondId());
 
 				A = modelTransformationMatrix_;
 				A.applyTranslation(pos);	

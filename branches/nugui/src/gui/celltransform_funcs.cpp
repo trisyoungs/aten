@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: Cell Transform Window
+	*** Cell Transform Dock Widget
 	*** src/gui/celltransform_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -27,7 +27,7 @@
 #include "parser/commandnode.h"
 
 // Constructor
-AtenCellTransform::AtenCellTransform(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+CellTransformWidget::CellTransformWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 
@@ -36,19 +36,18 @@ AtenCellTransform::AtenCellTransform(QWidget *parent, Qt::WindowFlags flags) : Q
 }
 
 // Destructor
-AtenCellTransform::~AtenCellTransform()
+CellTransformWidget::~CellTransformWidget()
 {
 }
 
 // Show window
-void AtenCellTransform::showWindow()
+void CellTransformWidget::showWidget()
 {
-	//if (shouldRefresh_) refresh();
 	show();
 }
 
 // Refresh window
-void AtenCellTransform::refresh()
+void CellTransformWidget::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model *m = aten.currentModelOrFrame();
@@ -79,48 +78,48 @@ void AtenCellTransform::refresh()
 // Replicate Functions
 */
 
-void AtenCellTransform::on_CellReplicateButton_clicked(bool checked)
+void CellTransformWidget::on_CellReplicateButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Replicate, "dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
 	gui.update();
 }
 
-void AtenCellTransform::on_CellReplicateFoldCheck_clicked(bool checked)
+void CellTransformWidget::on_CellReplicateFoldCheck_clicked(bool checked)
 {
 	prefs.setReplicateFold(checked);
 }
 
-void AtenCellTransform::on_CellReplicateTrimCheck_clicked(bool checked)
+void CellTransformWidget::on_CellReplicateTrimCheck_clicked(bool checked)
 {
 	prefs.setReplicateTrim(checked);
 }
 
-void AtenCellTransform::on_CellReplicateNegXSpin_valueChanged(double d)
+void CellTransformWidget::on_CellReplicateNegXSpin_valueChanged(double d)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_CellReplicateNegYSpin_valueChanged(double d)
+void CellTransformWidget::on_CellReplicateNegYSpin_valueChanged(double d)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_CellReplicateNegZSpin_valueChanged(double d)
+void CellTransformWidget::on_CellReplicateNegZSpin_valueChanged(double d)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_CellReplicatePosXSpin_valueChanged(double d)
+void CellTransformWidget::on_CellReplicatePosXSpin_valueChanged(double d)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_CellReplicatePosYSpin_valueChanged(double d)
+void CellTransformWidget::on_CellReplicatePosYSpin_valueChanged(double d)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_CellReplicatePosZSpin_valueChanged(double d)
+void CellTransformWidget::on_CellReplicatePosZSpin_valueChanged(double d)
 {
 	gui.mainWidget->postRedisplay();
 }
@@ -129,7 +128,7 @@ void AtenCellTransform::on_CellReplicatePosZSpin_valueChanged(double d)
 // Scale Functions
 */
 
-void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
+void CellTransformWidget::on_CellScaleButton_clicked(bool checked)
 {
 	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::ScaleMolecules, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
 	else CommandNode::run(Command::Scale, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
@@ -140,7 +139,7 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 // Rotate Functions
 */
 
-void AtenCellTransform::on_CellRotateXClockwise_clicked(bool checked)
+void CellTransformWidget::on_CellRotateXClockwise_clicked(bool checked)
 {
 	// Construct rotation matrix
 	Matrix mat;
@@ -149,69 +148,63 @@ void AtenCellTransform::on_CellRotateXClockwise_clicked(bool checked)
 // 	mat.set(2,1.0,0.0,0.0);     TODO
 }
 
-void AtenCellTransform::on_CellRotateXAnticlockwise_clicked(bool checked)
+void CellTransformWidget::on_CellRotateXAnticlockwise_clicked(bool checked)
 {
 }
 
-void AtenCellTransform::on_CellRotateYClockwise_clicked(bool checked)
+void CellTransformWidget::on_CellRotateYClockwise_clicked(bool checked)
 {
 }
 
-void AtenCellTransform::on_CellRotateYAnticlockwise_clicked(bool checked)
+void CellTransformWidget::on_CellRotateYAnticlockwise_clicked(bool checked)
 {
 }
 
-void AtenCellTransform::on_CellRotateZClockwise_clicked(bool checked)
+void CellTransformWidget::on_CellRotateZClockwise_clicked(bool checked)
 {
 }
 
-void AtenCellTransform::on_CellRotateZAnticlockwise_clicked(bool checked)
+void CellTransformWidget::on_CellRotateZAnticlockwise_clicked(bool checked)
 {
-}
-
-void AtenCellTransform::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionCellTransformWindow->setChecked(FALSE);
 }
 
 /*
 // Miller Cut Functions
 */
 
-void AtenCellTransform::on_MillerCutButton_clicked(bool checked)
+void CellTransformWidget::on_MillerCutButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
 	gui.update(FALSE,TRUE,FALSE);
 }
 
-void AtenCellTransform::on_MillerSelectButton_clicked(bool checked)
+void CellTransformWidget::on_MillerSelectButton_clicked(bool checked)
 {
 	CommandNode::run(Command::SelectMiller, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
 	gui.update(FALSE,TRUE,FALSE);
 }
 
-void AtenCellTransform::on_MillerHSpin_valueChanged(int value)
+void CellTransformWidget::on_MillerHSpin_valueChanged(int value)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_MillerKSpin_valueChanged(int value)
+void CellTransformWidget::on_MillerKSpin_valueChanged(int value)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_MillerLSpin_valueChanged(int value)
+void CellTransformWidget::on_MillerLSpin_valueChanged(int value)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_MillerInRadio_clicked(bool checked)
+void CellTransformWidget::on_MillerInRadio_clicked(bool checked)
 {
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenCellTransform::on_MillerOutRadio_clicked(bool checked)
+void CellTransformWidget::on_MillerOutRadio_clicked(bool checked)
 {
 	gui.mainWidget->postRedisplay();
 }
-

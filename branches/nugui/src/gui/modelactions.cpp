@@ -80,22 +80,12 @@ void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
 
 void AtenForm::on_actionModelNext_triggered(bool checked)
 {
-	// Get current ID of modeltabs, increase it, and check we're still within range
-	int newid = ui.ModelTabs->currentIndex();
-	newid ++;
-	if (newid > (aten.nModels() - 1)) newid = 0;
-	// Activate new model tab
-	ui.ModelTabs->setCurrentIndex(newid);
+	// TGAY
 }
 
 void AtenForm::on_actionModelPrevious_triggered(bool checked)
 {
-	// Get current ID of modeltabs, decrease it, and check we're still within range
-	int newid = ui.ModelTabs->currentIndex();
-	newid --;
-	if (newid < 0) newid = aten.nModels() - 1;
-	// Activate new model tab
-	ui.ModelTabs->setCurrentIndex(newid);
+	// TGAY
 }
 
 void AtenForm::on_actionModelShowAll_triggered(bool checked)
@@ -112,7 +102,6 @@ void AtenForm::on_actionModelRename_triggered(bool checked)
 	if (ok && !text.isEmpty())
 	{
 		CommandNode::run(Command::SetName, "c", qPrintable(text));
-		refreshModelTabs();
 		updateWindowTitle();
 	}
 }

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,9 +15,8 @@
    height="100"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.48.1 r9760"
    sodipodi:docname="arrow_right.svg"
-   sodipodi:docbase="/home/tris/src/aten/src/gui-qt/icons"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <metadata
      id="metadata2566">
@@ -42,11 +42,13 @@
      pagecolor="#ffffff"
      id="base"
      inkscape:zoom="1.7288761"
-     inkscape:cx="51.515554"
+     inkscape:cx="-17.8937"
      inkscape:cy="-12.504976"
      inkscape:window-x="55"
      inkscape:window-y="29"
-     inkscape:current-layer="svg2" />
+     inkscape:current-layer="svg2"
+     showgrid="false"
+     inkscape:window-maximized="0" />
   <defs
      id="defs4">
     <linearGradient
@@ -96,22 +98,25 @@
        r="42.138133" />
   </defs>
   <path
-     style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 37.807233,45.292025 L 35.264652,26.863531 L 84.946788,53.63827 L 35.264652,80.412999 L 37.807233,62.518665 C 35.844859,62.518665 11.100511,62.324305 9.1890752,62.518665 L 9.1890752,45.292025 L 37.807233,45.292025 z "
+     style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none"
+     d="m 40.361352,45.167918 -3.122,-22.628092 61.004004,32.87633 -61.004004,32.876317 3.122,-21.972204 c -2.409572,0 -32.792812,-0.238652 -35.1398374,0 l 0,-21.152351 35.1398374,0 z"
      id="path4225"
-     sodipodi:nodetypes="cccccccc" />
+     sodipodi:nodetypes="cccccccc"
+     inkscape:connector-curvature="0" />
   <g
      id="g4217"
-     transform="matrix(-1.0586039,0,0,1.0586039,95.881176,-3.5065399)">
+     transform="matrix(-1.299845,0,0,1.299845,111.66954,-14.751161)">
     <path
        sodipodi:nodetypes="cccccccc"
        id="path3242"
-       d="M 56.191798,40.582064 L 58.593618,23.173764 L 11.661868,48.466259 L 58.593618,73.75875 L 56.191798,56.85504 C 58.045528,56.85504 81.420038,56.67144 83.225658,56.85504 L 83.225658,40.582064 L 56.191798,40.582064 z "
-       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:5.63700008;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       d="m 56.191798,40.582064 2.40182,-17.4083 -46.93175,25.292495 46.93175,25.292491 -2.40182,-16.90371 c 1.85373,0 25.22824,-0.1836 27.03386,0 l 0,-16.272976 -27.03386,0 z"
+       style="fill:none;stroke:#000000;stroke-width:5.63700008;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       inkscape:connector-curvature="0" />
     <path
        sodipodi:nodetypes="cccccccc"
        id="path3176"
-       d="M 56.191794,40.582064 L 58.593619,23.173764 L 11.661867,48.466259 L 58.593619,73.75875 L 56.191794,56.85504 C 58.045532,56.85504 81.420037,56.67144 83.225659,56.85504 L 83.225659,40.582064 L 56.191794,40.582064 z "
-       style="fill:url(#radialGradient4237);fill-opacity:1;fill-rule:evenodd;stroke:url(#radialGradient4239);stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1" />
+       d="M 56.191794,40.582064 58.593619,23.173764 11.661867,48.466259 58.593619,73.75875 56.191794,56.85504 c 1.853738,0 25.228243,-0.1836 27.033865,0 l 0,-16.272976 -27.033865,0 z"
+       style="fill:url(#radialGradient4237);fill-opacity:1;fill-rule:evenodd;stroke:url(#radialGradient4239);stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
