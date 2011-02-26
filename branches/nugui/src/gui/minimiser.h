@@ -77,6 +77,11 @@ class MinimiserWidget : public QDockWidget
 	bool refreshing_;
 	// Element selected in Type filter
 	int typelistElement_;
+
+	public:
+	// File dialogs for forcefields
+	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
+	
 	
 	/*
 	// Dialog

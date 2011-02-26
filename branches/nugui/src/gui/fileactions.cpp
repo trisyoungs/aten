@@ -25,7 +25,7 @@
 #include "gui/loadmodel.h"
 #include "gui/selectfilter.h"
 #include "gui/customdialog.h"
-#include "gui/forcefields.h"
+#include "gui/minimiser.h"
 #include "gui/grids.h"
 #include "gui/tcanvas.uih"
 #include "model/model.h"
@@ -414,7 +414,7 @@ void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
 {
 	// Call routine in forcefields window...
-	gui.forcefieldsWindow->loadForcefield();
+	gui.minimiserWidget->loadForcefield();
 }
 
 // Quit program

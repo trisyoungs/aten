@@ -23,6 +23,12 @@
 #include "methods/mc.h"
 #include "methods/sd.h"
 #include "methods/cg.h"
+#include "ff/forcefield.h"
+#include "base/pattern.h"
+#include "base/sysfunc.h"
+#include "classes/forcefieldatom.h"
+#include "gui/ffeditor.h"
+#include "gui/selectpattern.h"
 #include "gui/mainwindow.h"
 #include "gui/toolbox.h"
 #include "gui/gui.h"
@@ -34,7 +40,32 @@
 MinimiserWidget::MinimiserWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
+
+	// Private variables
+	typelistElement_ = -1;
 	refreshing_ = FALSE;
+	
+	// Create open forcefield dialog
+	QStringList filters;
+	openForcefieldDialog = new QFileDialog(this);
+	openForcefieldDialog->setFileMode(QFileDialog::ExistingFile);
+	openForcefieldDialog->setDirectory(aten.dataDir());
+	openForcefieldDialog->setWindowTitle("Open Forcefield");
+	filters.clear();
+	filters << "All files (*)";
+	filters << "Forcefield Files (*.ff)";
+	openForcefieldDialog->setFilters(filters);
+	
+	// Create save forcefield dialog
+	saveForcefieldDialog = new QFileDialog(this);
+	saveForcefieldDialog->setWindowTitle("Save Forcefield");
+	saveForcefieldDialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveForcefieldDialog->setDirectory(aten.workDir());
+	saveForcefieldDialog->setFileMode(QFileDialog::AnyFile);
+	filters.clear();
+	filters << "All files (*)";
+	filters << "Forcefield Files (*.ff)";
+	saveForcefieldDialog->setFilters(filters);
 }
 
 // Destructor
@@ -79,7 +110,6 @@ void MinimiserWidget::refresh()
 	// Is a valid current forcefield selected?
 	if (aten.currentForcefield() == NULL)
 	{
-		ui.ForcefieldList->setCurrentRow(0);
 		ui.RemoveForcefieldButton->setEnabled(FALSE);
 		ui.EditForcefieldButton->setEnabled(FALSE);
 		ui.AssociateGroup->setEnabled(FALSE);
@@ -88,7 +118,6 @@ void MinimiserWidget::refresh()
 	}
 	else
 	{
-		ui.ForcefieldList->setCurrentRow(aten.currentForcefieldId());
 		ui.RemoveForcefieldButton->setEnabled(TRUE);
 		ui.EditForcefieldButton->setEnabled(TRUE);
 		ui.AssociateGroup->setEnabled(TRUE);
@@ -148,7 +177,7 @@ void MinimiserWidget::on_ForcefieldCombo_currentIndexChanged(int index)
 {
 	if (refreshing_) return;
 	// Set the new default forcefield in the master and refresh the forcefields page
-	Forcefield *ff = (i == 0 ? NULL : aten.forcefield(i-1));
+	Forcefield *ff = (index == 0 ? NULL : aten.forcefield(index-1));
 	aten.setDefaultForcefield(ff);
 	refreshTypes();
 }
@@ -211,12 +240,10 @@ void MinimiserWidget::on_UntypeModelButton_clicked(bool checked)
 
 void MinimiserWidget::on_MinimiserMethodCombo_currentIndexChanged(int index)
 {
-	ui.MethodOptionsStack->setCurrentIndex(index);
 	// Show/hide other controlsi?
 	bool enabled = (index != MinimiserWidget::MopacMethod);
 	ui.ConvergenceGroup->setEnabled(enabled);
 	ui.MinimiseCyclesSpin->setEnabled(enabled);
-	ui.MethodOptionsStack->setEnabled(enabled);
 }
 
 void MinimiserWidget::on_CurrentEnergyButton_clicked(bool checked)
@@ -252,15 +279,15 @@ void MinimiserWidget::doMinimisation()
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (SimpleSteepestMethod):
-			CommandNode::run(Command::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
 			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 1);
 			break;
 		case (SteepestMethod):
-			CommandNode::run(Command::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
 			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 0);
 			break;
 		case (ConjugateMethod):
-			CommandNode::run(Command::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
 			CommandNode::run(Command::CGMinimise, "i", maxcycles);
 			break;
 		case (MonteCarloMethod):

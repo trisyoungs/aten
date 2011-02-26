@@ -35,7 +35,6 @@
 #include "gui/grids.h"
 #include "gui/disorder.h"
 #include "gui/atomlist.h"
-#include "gui/forcefields.h"
 #include "gui/fragments.h"
 #include "gui/celldefinition.h"
 #include "gui/celltransform.h"
@@ -106,7 +105,6 @@ GuiQt::GuiQt()
 	viewEigenvectorDialog = NULL;
 	aboutDialog = NULL;
 	disorderWindow = NULL;
-	forcefieldsWindow = NULL;
 	zmatrixWindow = NULL;
 	
 	atomListWidget = NULL;
@@ -228,7 +226,6 @@ void GuiQt::run()
 		QObject::connect(obj, SIGNAL(topLevelChanged(bool)), toolBoxWidget, SLOT(dockWidgetTopLevelChanged(bool)));
 	}
 	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));	// TGAY
-	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));// TGAY
 	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY
 
 	// Create list of toolbars
@@ -275,7 +272,7 @@ void GuiQt::run()
 
 	// Refresh the necessary windows
 	gridsWidget->refresh();
-	forcefieldsWindow->refresh();
+	minimiserWidget->refresh();
 	disorderWindow->refresh();
 	mdWidget->refresh();
 	cellDefinitionWidget->refresh();
@@ -356,8 +353,8 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 		cellTransformWidget->refresh();
 		disorderWindow->refresh();
 	}
-	// Update forcefields in the forcefield window
-	if (updateForcefield) forcefieldsWindow->refresh();
+	// Update forcefields in the forcefield widget
+	if (updateForcefield) minimiserWidget->refresh();
 	// Update context menu items
 	updateContextMenu();
 	// Update geometry page
@@ -533,7 +530,6 @@ void GuiQt::setWindowsEnabled(bool b)
 	// Disable some key widgets on the main form
 	mainWindow->ui.ViewFrame->setEnabled(b);
 	disorderWindow->setEnabled(b);
-	forcefieldsWindow->setEnabled(b);
 
 	// ...and all the dock widgets...
 	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", b);
