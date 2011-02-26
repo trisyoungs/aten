@@ -46,6 +46,8 @@ class GeometryWidget : public QDockWidget
 	void on_SetNewTorsionButton_clicked(bool checked);
 	void on_NudgeTorsionPlusButton_clicked(bool checked);
 	void on_NudgeTorsionMinusButton_clicked(bool checked);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Public Functions

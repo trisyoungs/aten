@@ -104,6 +104,8 @@ class GridsWidget : public QDockWidget
 	void on_OrbitalOriginZSpin_valueChanged(double d);
 	void on_OrbitalSpacingSpin_valueChanged(double d);
 	void on_OrbitalPointsSpin_valueChanged(int i);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables

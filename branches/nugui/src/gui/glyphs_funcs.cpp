@@ -22,6 +22,7 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/glyphs.h"
+#include "gui/toolbox.h"
 #include "gui/tlistwidgetitem.h"
 #include "model/model.h"
 #include "main/aten.h"
@@ -646,4 +647,11 @@ void GlyphsWidget::dataColourChanged(int id)
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
 	gui.mainWidget->postRedisplay();
+}
+
+void GlyphsWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.GlyphsButton->setChecked(FALSE);
+	event->accept();
 }

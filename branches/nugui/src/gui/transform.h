@@ -43,7 +43,7 @@ class TransformWidget : public QDockWidget
 	void on_RotateDefineAxisButton_clicked(bool on);
 	void on_RotateClockwiseButton_clicked(bool on);
 	void on_RotateAnticlockwiseButton_clicked(bool on);
-
+	// Matrix Transform
 	void on_TransformDefineAButton_clicked(bool on);
 	void on_TransformDefineBButton_clicked(bool on);
 	void on_TransformDefineCButton_clicked(bool on);
@@ -59,7 +59,7 @@ class TransformWidget : public QDockWidget
 	void on_TransformApplyButton_clicked(bool on);
 	void on_TransformOriginCellCentreButton_clicked(bool on);
 	void on_TransformDefineOriginButton_clicked(bool on);
-
+	// Matrix Convert
 	void on_ConvertRotateIntoButton_clicked(bool on);
 	void on_ConvertSourceDefineAButton_clicked(bool on);
 	void on_ConvertSourceDefineBButton_clicked(bool on);
@@ -87,6 +87,8 @@ class TransformWidget : public QDockWidget
 	void on_ConvertTargetGenerateAButton_clicked(bool on);
 	void on_ConvertTargetGenerateBButton_clicked(bool on);
 	void on_ConvertTargetGenerateCButton_clicked(bool on);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables

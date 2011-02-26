@@ -40,6 +40,8 @@ class ModelListWidget : public QDockWidget
 	public:
 	void showWidget();
 	void refresh();
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables

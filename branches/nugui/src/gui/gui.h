@@ -39,7 +39,6 @@ class AtenSelectPattern;
 class AtenSelectElement;
 class AtenSelectVariable;
 class AtenDisorder;
-class AtenForcefields;
 class AtenViewBasis;
 class AtenViewEigenvector;
 class AtenZMatrix;
@@ -139,8 +138,6 @@ class GuiQt
 	QApplication *app;
 	// Main Window
 	AtenForm *mainWindow;
-	// Forcefields dock widget
-	AtenForcefields *forcefieldsWindow;
 	// Disordered builder window
 	AtenDisorder *disorderWindow;
 	// Zmatrix window

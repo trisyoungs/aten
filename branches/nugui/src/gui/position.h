@@ -65,6 +65,8 @@ class PositionWidget : public QDockWidget
 	void on_RepositionSelectionButton_clicked(bool on);
 	void on_DefineRepositionReferenceButton_clicked(bool on);
 	void on_DefineRepositionTargetButton_clicked(bool on);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables

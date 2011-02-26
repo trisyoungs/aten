@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/geometry.h"
+#include "gui/toolbox.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
@@ -256,4 +257,11 @@ void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 	double value = m->torsion(i,j,k,l) - ui.NudgeTorsionSpin->value();
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
 	gui.update(TRUE, FALSE, FALSE);
+}
+
+void GeometryWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.GeometryButton->setChecked(FALSE);
+	event->accept();
 }

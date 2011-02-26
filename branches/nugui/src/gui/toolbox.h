@@ -48,7 +48,8 @@ class ToolBoxWidget : public QDockWidget
 	void on_SelectButton_clicked(bool checked);
 	void on_TransformButton_clicked(bool checked);
 	void on_VibrationsButton_clicked(bool checked);
-	void dockWindowVisibilityChanged(bool visibility);
+	void dockWidgetVisibilityChanged(bool visibility);
+	void dockWidgetTopLevelChanged(bool topLevel);
 	
 	/*
 	// Dialog

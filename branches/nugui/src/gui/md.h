@@ -49,6 +49,8 @@ class MDWidget : public QDockWidget
 	void on_TimeStepMantissaSpin_valueChanged(double value);
 	void on_TimeStepExponentSpin_valueChanged(int value);
 	void on_RunMDButton_clicked(bool checked);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Widgets

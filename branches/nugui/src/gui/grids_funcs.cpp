@@ -24,6 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
 #include "gui/gui.h"
+#include "gui/toolbox.h"
 #include "gui/viewbasis.h"
 #include "gui/vieweigenvector.h"
 #include "gui/tlistwidgetitem.h"
@@ -747,4 +748,11 @@ void GridsWidget::on_OrbitalSpacingSpin_valueChanged(double d)
 
 void GridsWidget::on_OrbitalPointsSpin_valueChanged(int i)
 {
+}
+
+void GridsWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.GridsButton->setChecked(FALSE);
+	event->accept();
 }

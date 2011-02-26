@@ -94,6 +94,8 @@ class GlyphsWidget : public QDockWidget
 	void dataValueChanged(int id, int component, double value);
 	void dataValueChanged(int id, double x, double y, double z);
 	void dataColourChanged(int id);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables and functions

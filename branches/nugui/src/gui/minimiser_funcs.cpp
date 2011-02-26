@@ -24,6 +24,7 @@
 #include "methods/sd.h"
 #include "methods/cg.h"
 #include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "gui/minimiser.h"
 #include "model/model.h"
@@ -33,6 +34,7 @@
 MinimiserWidget::MinimiserWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
+	refreshing_ = FALSE;
 }
 
 // Destructor
@@ -43,7 +45,169 @@ MinimiserWidget::~MinimiserWidget()
 void MinimiserWidget::showWidget()
 {
 	show();
+	refresh();
 }
+
+void MinimiserWidget::refresh()
+{
+	// If the window is not visible, don't do anything
+	if (!gui.minimiserWidget->isVisible())
+	{
+		msg.exit("MinimiserWidget::refresh");
+		return;
+	}
+	
+	// Update list of forcefields in the combo box
+	refreshing_ = TRUE;
+	QStringList slist;
+	int def = -1, n = 0;
+	slist << "<No Forcefield>";
+	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
+	{
+		n++;
+		if (ff == aten.defaultForcefield()) def = n;
+		slist << ff->name();
+	}
+	ui.ForcefieldsCombo->clear();
+	ui.ForcefieldsCombo->addItems(slist);
+	ui.ForcefieldsCombo->setEnabled( n == 0 ? FALSE : TRUE );
+	
+	// Select whichever forcefield is marked as the default
+	if (def != -1) ui.ForcefieldsCombo->setCurrentIndex(def);
+	else ui.ForcefieldsCombo->setCurrentIndex(0);
+	
+	// Is a valid current forcefield selected?
+	if (aten.currentForcefield() == NULL)
+	{
+		ui.ForcefieldList->setCurrentRow(0);
+		ui.RemoveForcefieldButton->setEnabled(FALSE);
+		ui.EditForcefieldButton->setEnabled(FALSE);
+		ui.AssociateGroup->setEnabled(FALSE);
+		ui.AutomaticTypingGroup->setEnabled(FALSE);
+		ui.ManualTypingGroup->setEnabled(FALSE);
+	}
+	else
+	{
+		ui.ForcefieldList->setCurrentRow(aten.currentForcefieldId());
+		ui.RemoveForcefieldButton->setEnabled(TRUE);
+		ui.EditForcefieldButton->setEnabled(TRUE);
+		ui.AssociateGroup->setEnabled(TRUE);
+		ui.AutomaticTypingGroup->setEnabled(TRUE);
+		ui.ManualTypingGroup->setEnabled(TRUE);
+		refreshTypes();
+	}
+	refreshing_ = FALSE;
+	msg.exit("MinimiserWidget::refresh");
+}
+
+// Update list of forcefield types in typelist
+void MinimiserWidget::refreshTypes()
+{
+	ui.FFTypeTable->clear();
+	QTableWidgetItem *item;
+	int count = 0;
+	Forcefield *ff = aten.currentForcefield();
+	if (ff == NULL) return;
+	// Reset header labels
+	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
+	for (ForcefieldAtom *ffa = ff->types(); ffa != NULL; ffa = ffa->next)
+	{
+		if (ffa->neta()->characterElement() != typelistElement_) continue;
+		ui.FFTypeTable->setRowCount(count+1);
+		item = new QTableWidgetItem(itoa(ffa->typeId()));
+		ui.FFTypeTable->setItem(count, 0, item);
+		item = new QTableWidgetItem(ffa->name());
+		ui.FFTypeTable->setItem(count, 1, item);
+		item = new QTableWidgetItem(ffa->description());
+		ui.FFTypeTable->setItem(count, 2, item);
+		count ++;
+	}
+	// Resize the columns
+	ui.FFTypeTable->resizeColumnToContents(0);
+	ui.FFTypeTable->resizeColumnToContents(1);
+	ui.FFTypeTable->resizeColumnToContents(2);
+}
+
+// Load forcefield (public function)
+void MinimiserWidget::loadForcefield()
+{
+	static QDir currentDirectory_(aten.dataDir());
+	QString filename = QFileDialog::getOpenFileName(this, "Select Forcefield", currentDirectory_.path());
+	if (!filename.isEmpty())
+	{
+		aten.loadForcefield(qPrintable(filename));
+		refresh();
+	}
+}
+
+/*
+// Forcefields Tab
+*/
+
+void MinimiserWidget::on_ForcefieldCombo_currentIndexChanged(int index)
+{
+	if (refreshing_) return;
+	// Set the new default forcefield in the master and refresh the forcefields page
+	Forcefield *ff = (i == 0 ? NULL : aten.forcefield(i-1));
+	aten.setDefaultForcefield(ff);
+	refreshTypes();
+}
+
+// Load forcefield 
+void MinimiserWidget::on_LoadForcefieldButton_clicked(bool checked)
+{
+	loadForcefield();
+}
+
+// Remove selected forcefield in list
+void MinimiserWidget::on_RemoveForcefieldButton_clicked(bool checked)
+{
+	aten.removeForcefield(aten.currentForcefield());
+	refresh();
+}
+
+// Call forcefield editor
+void MinimiserWidget::on_EditForcefieldButton_clicked(bool checked)
+{
+	gui.forcefieldEditorDialog->populate(aten.currentForcefield());
+	gui.forcefieldEditorDialog->show();
+}
+
+// Assign current forcefield to model
+void MinimiserWidget::on_AssignFFToCurrentButton_clicked(bool checked)
+{
+	aten.currentModel()->setForcefield(aten.currentForcefield());
+}
+
+// Assign current forcefield to all models
+void MinimiserWidget::on_AssignFFToAllButton_clicked(bool checked)
+{
+	for (Model *m = aten.models(); m != NULL; m = m->next) m->setForcefield(aten.currentForcefield());
+}
+
+// Assign current forcefield to pattern
+void MinimiserWidget::on_AssignFFToPatternButton_clicked(bool checked)
+{
+	Pattern *p = gui.selectPatternDialog->selectPattern(aten.currentModel());
+	if (p != NULL) p->setForcefield(aten.currentForcefield());
+}
+
+// Perform automatic atom typing
+void MinimiserWidget::on_TypeModelButton_clicked(bool checked)
+{
+	if (aten.currentModel()->typeAll()) gui.update();
+}
+
+// Remove typing from model
+void MinimiserWidget::on_UntypeModelButton_clicked(bool checked)
+{
+	aten.currentModel()->removeTyping();
+	gui.update();
+}
+
+/*
+// Energy Tab
+*/
 
 void MinimiserWidget::on_MinimiserMethodCombo_currentIndexChanged(int index)
 {
@@ -53,6 +217,22 @@ void MinimiserWidget::on_MinimiserMethodCombo_currentIndexChanged(int index)
 	ui.ConvergenceGroup->setEnabled(enabled);
 	ui.MinimiseCyclesSpin->setEnabled(enabled);
 	ui.MethodOptionsStack->setEnabled(enabled);
+}
+
+void MinimiserWidget::on_CurrentEnergyButton_clicked(bool checked)
+{
+	bool result;
+	if (aten.current.rs == aten.current.m) result = CommandNode::run(Command::ModelEnergy, "");
+	else result = CommandNode::run(Command::FrameEnergy, "");
+	// Print energy
+	if (result) aten.currentModel()->renderSourceModel()->energy.print();
+}
+
+void MinimiserWidget::on_CurrentForcesButton_clicked(bool checked)
+{
+	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelForces, "");
+	else CommandNode::run(Command::FrameForces, "");
+	gui.update(FALSE,FALSE,FALSE,FALSE,FALSE);
 }
 
 void MinimiserWidget::on_MinimiseButton_clicked(bool checked)
@@ -94,4 +274,96 @@ void MinimiserWidget::doMinimisation()
 	}
 	// Update the view
 	gui.update(FALSE,FALSE,FALSE);
+}
+
+/*
+// Manual Typing Tab
+*/
+
+// Set the selected atoms to have the specified forcefield type
+void MinimiserWidget::on_ManualTypeSetButton_clicked(bool checked)
+{
+	// Check selected forcefield against that assigned to the model
+	Model *m = aten.currentModel();
+	Forcefield *ff = aten.currentForcefield();
+	if ((m == NULL) || (ff == NULL)) return;
+	if (m->forcefield() != ff)
+	{
+		msg.print("The type you are trying to assign is in a different forcefield to that assigned to the model.\n");
+		return;
+	}
+	// Get the selected row in the FFTypeList
+	int row = ui.FFTypeTable->currentRow();
+	if (row == -1) return;
+	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
+	ForcefieldAtom *ffa = ff->findType(atoi(qPrintable(item->text())));
+	if (ffa != NULL)
+	{
+		m->selectionSetType(ffa, TRUE);
+		msg.print("Manually set types of %i atoms.\n", aten.currentModel()->nSelected());
+	}
+	gui.update();
+}
+
+// Clear type definitions from the selected atoms
+void MinimiserWidget::on_ManualTypeClearButton_clicked(bool checked)
+{
+	aten.currentModel()->selectionSetType(NULL, FALSE);
+	msg.print("Cleared types of %i atoms.\n", aten.currentModel()->nSelected());
+	gui.update();
+}
+
+// Test selected atom type on current atom selection
+void MinimiserWidget::on_ManualTypeTestButton_clicked(bool checked)
+{
+	Forcefield *ff = aten.currentForcefield();
+	int row = ui.FFTypeTable->currentRow();
+	if (row == -1) return;
+	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
+	ForcefieldAtom *ffa = ff->findType(atoi(qPrintable(item->text())));
+	if (ffa != NULL)
+	{
+		Model *m = aten.currentModel();
+		Neta *at = ffa->neta();
+		if (m->autocreatePatterns())
+		{
+			msg.print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->name(), ffa->typeId(), ff->name());
+			// Prepare for typing
+			m->describeAtoms();
+			int matchscore;
+			for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next)
+			{
+				// Get the pattern in which the atom exists
+				Pattern *p = m->pattern(ri->item);
+				if (ri->item->element() == at->characterElement())
+				{
+					matchscore = at->matchAtom(ri->item, p->ringList(), m);
+					msg.print("Atom %i (%s) matched type with score %i.\n", ri->item->id()+1, elements().symbol(ri->item), matchscore);
+				}
+				else msg.print("Atom %i (%s) is the wrong element for this type.\n", ri->item->id()+1, elements().symbol(ri->item));
+			}
+		}
+	}
+}
+
+// Change target element in type list
+void MinimiserWidget::on_ManualTypeEdit_returnPressed()
+{
+	// Get the contents of the line edit and check that it is an element symbol
+	int el = elements().find(qPrintable(ui.ManualTypeEdit->text()));
+	if (el == -1)
+	{
+		msg.print("Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));
+		ui.ManualTypeEdit->setText("H");
+		typelistElement_ = 1;
+	}
+	else typelistElement_ = el;
+	refreshTypes();
+}
+
+void MinimiserWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.MinimiserButton->setChecked(FALSE);
+	event->accept();
 }

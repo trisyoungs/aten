@@ -198,7 +198,6 @@ void GuiQt::run()
 	viewBasisDialog = new AtenViewBasis(mainWindow);
 	viewEigenvectorDialog = new AtenViewEigenvector(mainWindow);
 	disorderWindow = new AtenDisorder(mainWindow, Qt::Window|Qt::Tool);
-	forcefieldsWindow = new AtenForcefields(mainWindow, Qt::Window|Qt::Tool);
 	zmatrixWindow = new AtenZMatrix(mainWindow);
 	
 	// ...dock widgets
@@ -223,13 +222,17 @@ void GuiQt::run()
 	toolBoxWidget->show();
 
 	// Connect Finished signal of tool windows to finished slots in structure
-	foreach( QObject *obj, dockWidgets_) QObject::connect(obj, SIGNAL(visibilityChanged(bool)), toolBoxWidget, SLOT(dockWindowVisibilityChanged(bool)));
+	foreach( QObject *obj, dockWidgets_)
+	{
+		QObject::connect(obj, SIGNAL(visibilityChanged(bool)), toolBoxWidget, SLOT(dockWidgetVisibilityChanged(bool)));
+		QObject::connect(obj, SIGNAL(topLevelChanged(bool)), toolBoxWidget, SLOT(dockWidgetTopLevelChanged(bool)));
+	}
 	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));	// TGAY
 	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));// TGAY
 	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY
 
 	// Create list of toolbars
-	toolBars_ << mainWindow->ui.BondToolbar << mainWindow->ui.StyleToolbar << mainWindow->ui.DrawToolbar << mainWindow->ui.EditToolbar << mainWindow->ui.FileToolbar << mainWindow->ui.ForcefieldsToolbar << mainWindow->ui.MeasureToolbar << mainWindow->ui.MouseToolbar << mainWindow->ui.SelectToolbar << mainWindow->ui.TrajectoryToolbar;
+	toolBars_ << mainWindow->ui.BondToolbar << mainWindow->ui.StyleToolbar << mainWindow->ui.DrawToolbar << mainWindow->ui.EditToolbar << mainWindow->ui.FileToolbar << mainWindow->ui.MeasureToolbar << mainWindow->ui.MouseToolbar << mainWindow->ui.SelectToolbar << mainWindow->ui.TrajectoryToolbar;
 
 	// Set the modality of some dialogs
 	prefsDialog->setModal(TRUE);

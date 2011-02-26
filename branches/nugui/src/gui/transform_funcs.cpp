@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/transform.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
@@ -698,4 +699,11 @@ void TransformWidget::on_ConvertTargetGenerateCButton_clicked(bool on)
 	gui.transformWidget->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
 	gui.transformWidget->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
 	gui.transformWidget->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
+}
+
+void TransformWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.TransformButton->setChecked(FALSE);
+	event->accept();
 }

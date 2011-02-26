@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/select.h"
+#include "gui/toolbox.h"
 #include "gui/selectelement.h"
 #include "gui/gui.h"
 #include "model/model.h"
@@ -127,4 +128,11 @@ void SelectWidget::refresh()
 	// Second label contains empirical formula of selection
 	m->selectionEmpirical(text, FALSE, TRUE);
 	ui.SelectionLabel2->setText(text.get());
+}
+
+void SelectWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.SelectButton->setChecked(FALSE);
+	event->accept();
 }

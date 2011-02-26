@@ -74,16 +74,8 @@ void AtenForm::finaliseUi()
 
 	// Hide some toolbars initially
 	ui.BondToolbar->setVisible(FALSE);
-	//ui.DrawToolbar->setVisible(FALSE);
-	ui.ForcefieldsToolbar->setVisible(FALSE);
 	ui.MeasureToolbar->setVisible(FALSE);
 	ui.TrajectoryToolbar->setVisible(FALSE);
-
-	// Add combobox to ForcefieldsToolbar
-	forcefieldCombo_ = new QComboBox(ui.ForcefieldsToolbar);
-	ui.ForcefieldsToolbar->addWidget(forcefieldCombo_);
-	ui.ForcefieldsToolbar->setMinimumSize(128,16);
-	QObject::connect(forcefieldCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(forcefieldCombo_currentIndexChanged(int)));
 
 	// Add extra widgets to trajectory toolbar
 	trajectorySlider_ = new QSlider(Qt::Horizontal, ui.TrajectoryToolbar);

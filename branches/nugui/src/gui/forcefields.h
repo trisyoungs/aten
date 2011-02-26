@@ -19,13 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FORCEFIELDSWINDOW_H
-#define ATEN_FORCEFIELDSWINDOW_H
+#ifndef ATEN_OLDFORCEFIELDSWINDOW_H
+#define ATEN_OLDFORCEFIELDSWINDOW_H
 
 #include "gui/ui_forcefields.h"
 
-// Forward Declarations
-class QFileDialog;
+
 class TListWidgetItem;
 
 // Forcefields window
@@ -38,49 +37,23 @@ class AtenForcefields : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
 	void refresh();
-	void refreshTypes();
-	void loadForcefield();
-	private slots:
-	void on_TypeModelButton_clicked(bool checked);
-	void on_UntypeModelButton_clicked(bool checked);
-	void on_ManualTypeSetButton_clicked(bool checked);
-	void on_ManualTypeClearButton_clicked(bool checked);
-	void on_ManualTypeTestButton_clicked(bool checked);
-	void on_ManualTypeEdit_returnPressed();
-	void on_LoadForcefieldButton_clicked(bool checked);
-	void on_RemoveForcefieldButton_clicked(bool checked);
-	void on_EditForcefieldButton_clicked(bool checked);
-	void on_AssignFFToCurrentButton_clicked(bool checked);
-	void on_AssignFFToAllButton_clicked(bool checked);
-	void on_AssignFFToPatternButton_clicked(bool clicked);
-	void on_ForcefieldList_currentRowChanged(int row);
-	void on_ForcefieldList_itemClicked(QListWidgetItem *item);
-	void dialogFinished(int result);
-
+	
 	/*
 	// Local variables
 	*/
 	private:
-	// Element selected in Type filter
-	int typelistElement_;
 	// Whether window contents should be refreshed when shown
-	bool shouldRefresh_;
+// 	bool shouldRefresh_;
 	// Current checked item (default forcefield) if any
-	TListWidgetItem *checkedItem_;
+// 	TListWidgetItem *checkedItem_;
 
 	/*
 	// Dialog
 	*/
 	public:
-	// Constructor / Destructor
-	AtenForcefields(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenForcefields();
-	// Main form declaration
-	Ui::ForcefieldsDialog ui;
 	// File dialogs for forcefields
-	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
+// 	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
 };
 
 #endif

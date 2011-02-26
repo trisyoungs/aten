@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "gui/command.h"
 #include "parser/scopenode.h"
 #include "base/sysfunc.h"
@@ -331,4 +332,11 @@ void CommandWidget::on_CommandList_currentTextChanged(const QString &text)
 	Dnchar cmdtext;
  	cmdtext.sprintf("<b>%s(%s)</b><br/>%s", commands.data[cf].keyword, commands.data[cf].hasArguments() ? commands.data[cf].argText : "", commands.data[cf].syntax);
 	ui.CommandEdit->insertHtml(cmdtext.get());
+}
+
+void CommandWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.CommandButton->setChecked(FALSE);
+	event->accept();
 }

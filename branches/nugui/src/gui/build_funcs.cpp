@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/build.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
@@ -56,3 +57,9 @@ void BuildWidget::on_AddAtomButton_clicked(bool on)
 	gui.update();
 }
 
+void BuildWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.BuildButton->setChecked(FALSE);
+	event->accept();
+}

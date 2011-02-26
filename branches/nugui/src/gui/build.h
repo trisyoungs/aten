@@ -37,6 +37,8 @@ class BuildWidget : public QDockWidget
 	void showWidget();
 	private slots:
 	void on_AddAtomButton_clicked(bool on);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables

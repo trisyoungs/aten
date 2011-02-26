@@ -138,13 +138,24 @@ void ToolBoxWidget::on_VibrationsButton_clicked(bool checked)
 	else gui.vibrationsWidget->hide();
 }
 
-void ToolBoxWidget::dockWindowVisibilityChanged(bool visibility)
+void ToolBoxWidget::dockWidgetVisibilityChanged(bool visibility)
 {
 	// Cast sender
 	QDockWidget *w = qobject_cast<QDockWidget*> (sender());
+	if (w == NULL) return;
 	if (w == gui.vibrationsWidget)
 	{
 		// Stop animation if it is playing
 		if (gui.vibrationsWidget->ui.PlayPauseVibration->isChecked()) gui.vibrationsWidget->ui.PlayPauseVibration->click();
 	}
+}
+
+void ToolBoxWidget::dockWidgetTopLevelChanged(bool topLevel)
+{
+	if (!topLevel) return;
+	// Cast sender
+	QDockWidget *w = qobject_cast<QDockWidget*> (sender());
+	if (w == NULL) return;
+	// Resize widget to the general width and a tiny height (so its natural minimum height is used)
+	w->resize(270,10);
 }

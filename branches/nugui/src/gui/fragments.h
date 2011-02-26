@@ -51,6 +51,8 @@ class FragmentsWidget : public QDockWidget
 	void on_FragmentShowAllButton_clicked(bool checked);
 	void on_ViewAsListCheck_clicked(bool checked);
 	void on_ViewAsGridCheck_clicked(bool checked);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables

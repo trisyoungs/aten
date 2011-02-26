@@ -21,6 +21,7 @@
 
 #include "gui/gui.h"
 #include "gui/modellist.h"
+#include "gui/toolbox.h"
 #include "model/model.h"
 
 // Constructor
@@ -54,5 +55,15 @@ void ModelListWidget::refresh()
 		msg.exit("ModelListWidget::refresh");
 		return;
 	}
+	// Clear the current list
+// 	ui.ModelList->clear();
+	
 	msg.exit("ModelListWidget::refresh");
+}
+
+void ModelListWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.ModelListButton->setChecked(FALSE);
+	event->accept();
 }

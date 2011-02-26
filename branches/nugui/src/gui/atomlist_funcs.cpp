@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/atomlist.h"
+#include "gui/toolbox.h"
 #include "model/model.h"
 #include "main/aten.h"
 #include "parser/commandnode.h"
@@ -351,4 +352,11 @@ void AtomListWidget::treeMouseMoveEvent(QMouseEvent *event)
 		lastHovered_ = twi;
 		gui.update(FALSE, FALSE, FALSE);
 	}
+}
+
+void AtomListWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(FALSE);
+	event->accept();
 }

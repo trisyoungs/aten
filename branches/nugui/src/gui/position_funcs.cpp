@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/position.h"
 #include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
@@ -288,4 +289,11 @@ void PositionWidget::on_DefineRepositionTargetButton_clicked(bool on)
 	ui.RepositionTargetXSpin->setValue(centre.x);
 	ui.RepositionTargetYSpin->setValue(centre.y);
 	ui.RepositionTargetZSpin->setValue(centre.z);
+}
+
+void PositionWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.PositionButton->setChecked(FALSE);
+	event->accept();
 }

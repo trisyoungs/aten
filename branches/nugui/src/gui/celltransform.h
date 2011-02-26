@@ -65,7 +65,8 @@ class CellTransformWidget : public QDockWidget
 	void on_MillerLSpin_valueChanged(int value);
 	void on_MillerInRadio_clicked(bool checked);
 	void on_MillerOutRadio_clicked(bool checked);
-
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables

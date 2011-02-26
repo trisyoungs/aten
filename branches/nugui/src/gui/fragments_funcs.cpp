@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
+#include "gui/toolbox.h"
 #include "gui/ttreewidgetitem.h"
 #include "gui/ttablewidgetitem.h"
 #include "gui/tcanvas.uih"
@@ -232,4 +233,11 @@ void FragmentsWidget::on_ViewAsGridCheck_clicked(bool checked)
 		ui.FragmentTree->setVisible(TRUE);
 		ui.FragmentTable->setVisible(FALSE);
 	}
+}
+
+void FragmentsWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.FragmentsButton->setChecked(FALSE);
+	event->accept();
 }

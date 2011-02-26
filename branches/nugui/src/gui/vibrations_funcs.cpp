@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/vibrations.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
@@ -204,4 +205,11 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 		gui.mainWidget->postRedisplay();
 		DONTDRAW = FALSE;
 	}
+}
+
+void VibrationsWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.VibrationsButton->setChecked(FALSE);
+	event->accept();
 }

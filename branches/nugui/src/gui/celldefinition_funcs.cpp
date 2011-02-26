@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "gui/celldefinition.h"
 #include "gui/celltransform.h"
@@ -271,4 +272,11 @@ void CellDefinitionWidget::on_CellSpacegroupPackButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Pack, "");
 	gui.update();
+}
+
+void CellDefinitionWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.CellDefinitionButton->setChecked(FALSE);
+	event->accept();
 }

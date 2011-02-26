@@ -218,20 +218,6 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Forcefield Actions
-	*/
-	private:
-	QComboBox *forcefieldCombo_;
-	private slots:
-	void on_actionMinimise_triggered(bool checked);
-	void on_actionCalculateEnergy_triggered(bool checked);
-	void on_actionCalculateForces_triggered(bool checked);
-	void forcefieldCombo_currentIndexChanged(int i);
-	public:
-	void refreshForcefieldCombo();
-
-
-	/*
 	// Measure Actions
 	*/
 	private slots:

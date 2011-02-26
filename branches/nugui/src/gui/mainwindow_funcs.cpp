@@ -45,7 +45,6 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 	// Private variables
 	saveModelFilter = NULL;
 	customElement_ = 8;
-	forcefieldCombo_ = NULL;
 	trajectoryToolbarRefreshing_ = FALSE;
 
 	// Public variables
@@ -403,7 +402,6 @@ void AtenForm::updateUndoRedo()
 void AtenForm::setWidgetsEnabled(bool b)
 {
 	// Must manually enable all widgets added to toolbars by hand. Bug in Qt?
-	forcefieldCombo_->setEnabled(b);
 	trajectorySlider_->setEnabled(b);
 	trajectorySpin_->setEnabled(b);
 	bondToleranceSpin_->setEnabled(b);

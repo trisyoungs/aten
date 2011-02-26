@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "methods/md.h"
 #include "gui/gui.h"
+#include "gui/toolbox.h"
 #include "gui/mainwindow.h"
 #include "gui/md.h"
 
@@ -105,3 +106,10 @@ void MDWidget::on_RunMDButton_clicked(bool checked)
 /*
 // Extra Page
 */
+
+void MDWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.MDButton->setChecked(FALSE);
+	event->accept();
+}

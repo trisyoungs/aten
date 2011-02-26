@@ -56,6 +56,8 @@ class CellDefinitionWidget : public QDockWidget
 	void on_CellSpacegroupEdit_returnPressed();
 	void on_CellSpacegroupRemoveButton_clicked(bool checked);
 	void on_CellSpacegroupPackButton_clicked(bool checked);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables

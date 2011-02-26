@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
 #include "parser/commandnode.h"
@@ -207,4 +208,11 @@ void CellTransformWidget::on_MillerInRadio_clicked(bool checked)
 void CellTransformWidget::on_MillerOutRadio_clicked(bool checked)
 {
 	gui.mainWidget->postRedisplay();
+}
+
+void CellTransformWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.CellTransformButton->setChecked(FALSE);
+	event->accept();
 }
