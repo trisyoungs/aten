@@ -44,7 +44,6 @@ set(qtproject_SRCS
   mainwindow_init.cpp
   md_funcs.cpp
   measureactions.cpp
-  minimiser_funcs.cpp
   modelactions.cpp
   modellist_funcs.cpp
   mouseactions.cpp
@@ -97,7 +96,6 @@ SET(pro_MOC_HDRS
   loadmodel.h
   mainwindow.h
   md.h
-  minimiser.h
   modellist.h
   position.h
   prefs.h
@@ -138,7 +136,6 @@ SET(pro_UIS
   loadmodel.ui
   mainwindow.ui
   md.ui
-  minimiser.ui
   modellist.ui
   position.ui
   prefs.ui
