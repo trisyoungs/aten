@@ -129,10 +129,7 @@ class GuiQt
 	/*
 	// Windows / Subwindows
 	*/
-	private:
-	// List of toolbars
-	QList<QObject*> toolBars_;
-	
+
 	public:
 	// Main application structure
 	QApplication *app;

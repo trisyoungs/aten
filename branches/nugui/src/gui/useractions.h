@@ -28,7 +28,7 @@ class UserAction
 	public:
 
 	// Actions
-	enum Action { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction, nUserActions };
+	enum Action { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, PickPositionVectorAction, PickTransformRotateAxisAction, PickTransformDefineAAction, PickTransformDefineBAction, PickTransformDefineCAction, PickConvertDefineSourceAAction, PickConvertDefineSourceBAction, PickConvertDefineSourceCAction, PickConvertDefineTargetAAction, PickConvertDefineTargetBAction, PickConvertDefineTargetCAction, nUserActions };
 
 	// Action texts
 	const char *name;

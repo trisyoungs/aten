@@ -386,6 +386,12 @@
                 <iconset resource="icons.qrc">
                  <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
                </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="autoExclusive">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
@@ -695,6 +701,9 @@
                <property name="checkable">
                 <bool>true</bool>
                </property>
+               <property name="autoExclusive">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
              <item>
@@ -957,6 +966,9 @@
                 </size>
                </property>
                <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="autoExclusive">
                 <bool>true</bool>
                </property>
               </widget>
@@ -1233,6 +1245,9 @@
                 </size>
                </property>
                <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="autoExclusive">
                 <bool>true</bool>
                </property>
               </widget>
@@ -1750,6 +1765,9 @@
                 <property name="checkable">
                  <bool>true</bool>
                 </property>
+                <property name="autoExclusive">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
               <item>
@@ -1988,6 +2006,9 @@
                  </size>
                 </property>
                 <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="autoExclusive">
                  <bool>true</bool>
                 </property>
                </widget>
@@ -2242,6 +2263,9 @@
                 <property name="checkable">
                  <bool>true</bool>
                 </property>
+                <property name="autoExclusive">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
               <item>
@@ -2476,6 +2500,9 @@
                 <property name="checkable">
                  <bool>true</bool>
                 </property>
+                <property name="autoExclusive">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
               <item>
@@ -2701,6 +2728,9 @@
                  </size>
                 </property>
                 <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="autoExclusive">
                  <bool>true</bool>
                 </property>
                </widget>
@@ -2940,6 +2970,9 @@
                  </size>
                 </property>
                 <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="autoExclusive">
                  <bool>true</bool>
                 </property>
                </widget>

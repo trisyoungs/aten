@@ -36,7 +36,25 @@ class BuildWidget : public QDockWidget
 	public:
 	void showWidget();
 	private slots:
-	void on_AddAtomButton_clicked(bool on);
+	// Edit Tab - Draw
+	void on_ElementHButton_clicked(bool checked);
+	void on_ElementCButton_clicked(bool checked);
+	void on_ElementNButton_clicked(bool checked);
+	void on_ElementOButton_clicked(bool checked);
+	void on_ElementCustomButton_clicked(bool checked);
+	void on_ElementPickButton_clicked(bool checked);
+	void on_DrawAddHModelButton_clicked(bool checked);
+	void on_DrawTransmuteSelectionButton_clicked(bool checked);
+	// Edit Tab - Bond
+	void on_DrawRebondButton_clicked(bool checked);
+	void on_DrawClearBondingButton_clicked(bool checked);
+	void on_DrawAugmentButton_clicked(bool checked);
+	void on_DrawRebondSelectionButton_clicked(bool checked);
+	void on_DrawClearSelectionButton_clicked(bool checked);
+	// Tools Tab - Add Atom
+	void on_AddAtomButton_clicked(bool checked);
+	// Options Tab
+	void on_PreventFoldCheck_clicked(bool checked);
 	protected:
 	void closeEvent(QCloseEvent *event);
 
@@ -44,6 +62,8 @@ class BuildWidget : public QDockWidget
 	// Local variables
 	*/
 	private:
+	// Current custom element
+	int customElement_;
 
 	/*
 	// Dialog

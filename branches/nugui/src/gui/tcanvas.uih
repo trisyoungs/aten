@@ -139,40 +139,8 @@ class TCanvas : public QGLWidget
 	Vec3<double> &modelToWorld(Vec3<double> pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
 	// Convert screen coordinates into modelspace coordinates
 	Vec3<double> &screenToModel(double x, double y, double z);
-	
-	
-	/*
-	// Atom Selection
-	*/
-	private:
-	// Number of atoms to pick in PickAtomsAction
-	int nAtomsToPick_;
-	// User action before picking mode was entered
-	QAction *actionBeforePick_;
-	// List of picked atoms
-	Reflist<Atom,int> pickedAtoms_;
-	// Pointer to callback function when PickAtomsAction exits
-	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
-	// Atom that was clicked at the start of a mouse press event
-	Atom *atomClicked_;
-	// Whether we are selecting atoms and placing them in the subsel list	
-	bool pickEnabled_;
-	// Reflist of selected atoms and their positions so manipulations may be un-done
-	Reflist< Atom,Vec3<double> > oldPositions_;
-		
-	public:
-	// Returns the clicked atom within a mouse click event
-	Atom *atomClicked();
-	// Clears the subsel of atoms
-	void clearPicked();
-	// Manually enter picking mode to select N atoms
-	void beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*));
-	// End manual picking
-	void endManualPick(bool resetaction);
-	// Return start of picked atom list
-	Refitem<Atom,int> *pickedAtoms();
-	
-	
+
+
 	/*
 	// Mouse Input
 	*/
@@ -237,6 +205,20 @@ class TCanvas : public QGLWidget
 	short int sketchElement_;
 	// Whether to accept editing actions (i.e. anything other than view manipulation)
 	bool editable_;
+	// Number of atoms to pick in PickAtomsAction
+	int nAtomsToPick_;
+	// User action before picking mode was entered
+	UserAction::Action actionBeforePick_;
+	// List of picked atoms
+	Reflist<Atom,int> pickedAtoms_;
+	// Pointer to callback function when PickAtomsAction exits
+	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
+	// Atom that was clicked at the start of a mouse press event
+	Atom *atomClicked_;
+	// Whether we are selecting atoms and placing them in the subsel list	
+	bool pickEnabled_;
+	// Reflist of selected atoms and their positions so manipulations may be un-done
+	Reflist< Atom,Vec3<double> > oldPositions_;
 
 	private:
 	// Begin an action on the model (called from MouseButtondown)
@@ -248,7 +230,7 @@ class TCanvas : public QGLWidget
 	// Set the active mode to the current user mode
 	void useSelectedMode();
 	// Sets the currently selected interact mode
-	void setSelectedMode(UserAction::Action ua);
+	void setSelectedMode(UserAction::Action ua, int atomsToPick = -1, void (*callback)(Reflist<Atom,int>*) = NULL);
 	// Return the currently selected mode
 	UserAction::Action selectedMode() const;
 	// Return the currently active mode
@@ -263,6 +245,14 @@ class TCanvas : public QGLWidget
 	void setEditable(bool b);
 	// Return whether to accept editing actions (i.e. anything other than view manipulation)
 	bool editable();
+	// Returns the clicked atom within a mouse click event
+	Atom *atomClicked();
+	// Clears the subsel of atoms
+	void clearPicked();
+	// End manual picking
+	void endddManualPick(bool resetaction);
+	// Return start of picked atom list
+	Refitem<Atom,int> *pickedAtoms();
 	
 	
 	/*

@@ -27,6 +27,7 @@
 #include "classes/prefs.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
+#include "gui/useractions.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
 
@@ -91,112 +92,9 @@ class AtenForm : public QMainWindow
 	// Cancel any current mode and return to select
 	void cancelCurrentMode();
 
-
+	
 	/*
-	// Atom Selection / Context Menu Actions
-	*/
-	public:
-	void activateGlyphActions(int n);
-	private:
-	void setAtomStyle(Atom::DrawStyle ds);
-	void setAtomLabel(Atom::AtomLabel al);
-	void removeAtomLabels(bool all);
-	void setAtomHidden(bool hidden);
-	QAction *createGlyphActions[Glyph::nGlyphTypes];
-	private slots:
-	void on_actionAtomStyleStick_triggered(bool checked);
-	void on_actionAtomStyleTube_triggered(bool checked);
-	void on_actionAtomStyleSphere_triggered(bool checked);
-	void on_actionAtomStyleScaled_triggered(bool checked);
-	void on_actionAtomLabelID_triggered(bool checked);
-	void on_actionAtomLabelCharge_triggered(bool checked);
-	void on_actionAtomLabelFFType_triggered(bool checked);
-	void on_actionAtomLabelElement_triggered(bool checked);
-	void on_actionAtomLabelFFEquiv_triggered(bool checked);
-	void on_actionAtomLabelClear_triggered(bool checked);
-	void on_actionAtomLabelClearAll_triggered(bool checked);
-	void on_actionAtomColourReset_triggered(bool checked);
-	void on_actionAtomColourSet_triggered(bool checked);
-	void on_actionAtomHide_triggered(bool checked);
-	void on_actionAtomProbe_triggered(bool checked);
-	void on_actionAtomFixPosition_triggered(bool checked);
-	void on_actionAtomFreePosition_triggered(bool checked);
-	void on_actionSetBondLength_triggered(bool checked);
-	void on_actionSetBondAngle_triggered(bool checked);
-	void on_actionSetTorsionAngle_triggered(bool checked);
-	void on_actionCreateFragment_triggered(bool checked);
-	void on_actionCentreAtOrigin_triggered(bool checked);
-	void createGlyph();
-
-
-	/*
-	// Bonding Actions
-	*/
-	private:
-	QDoubleSpinBox *bondToleranceSpin_;
-	private slots:
-	void on_actionCalculateBonding_triggered(bool checked);
-	void on_actionClearBonding_triggered(bool checked);
-	void on_actionCalculateBondingSelection_triggered(bool checked);
-	void on_actionClearBondingSelection_triggered(bool checked);
-	void on_actionAugmentBonding_triggered(bool checked);
-	void bondTolerance_valueChanged(double d);
-
-
-	/*
-	// Draw Actions
-	*/
-	private:
-	// Current custom element
-	int customElement_;
-	private slots:
-	void on_actionDrawAtom_triggered(bool checked);
-	void on_actionDrawChain_triggered(bool checked);
-	void on_actionDrawFragment_triggered(bool checked);
-	void on_actionDeleteAtom_triggered(bool checked);
-	void on_actionTransmuteAtom_triggered(bool checked);
-	void on_actionTransmuteSelection_triggered(bool checked);
-	void on_actionBondSingle_triggered(bool checked);
-	void on_actionBondDouble_triggered(bool checked);
-	void on_actionBondTriple_triggered(bool checked);
-	void on_actionDeleteBond_triggered(bool checked);
-	void on_actionElementH_triggered(bool checked);
-	void on_actionElementC_triggered(bool checked);
-	void on_actionElementN_triggered(bool checked);
-	void on_actionElementCustom_triggered(bool checked);
-	void on_actionSelectCustomElement_triggered(bool checked);
-	void on_actionAddHydrogen_triggered(bool checked);
-	void on_actionAddHydrogenAtom_triggered(bool checked);
-
-
-	/*
-	// Draw style Actions
-	*/
-	private slots:
-	void on_StyleToolbar_actionTriggered(QAction *action);
-	public:
-	void setActiveStyleAction(Atom::DrawStyle ds);
-
-
-	/*
-	// Edit Actions
-	*/
-	private slots:
-	void on_actionEditUndo_triggered(bool checked);
-	void on_actionEditRedo_triggered(bool checked);
-	void on_actionEditCut_triggered(bool checked);
-	void on_actionEditCopy_triggered(bool checked);
-	void on_actionEditPaste_triggered(bool checked);
-	void on_actionEditPasteTranslated_triggered(bool checked);
-	void on_actionEditDelete_triggered(bool checked);
-	void on_actionEditSelectAll_triggered(bool checked);
-	void on_actionEditSelectNone_triggered(bool checked);
-	void on_actionEditSelectExpand_triggered(bool checked);
-	void on_actionEditInvert_triggered(bool checked);
-
-
-	/*
-	// File Actions
+	// File Menu / Actions
 	*/
 	public:
 	bool runSaveModelDialog();
@@ -216,77 +114,26 @@ class AtenForm : public QMainWindow
 	void on_actionFileOpenExpression_triggered(bool checked);
 	void on_actionFileSaveExpression_triggered(bool checked);
 
-
+	
 	/*
-	// Measure Actions
+	// Edit Menu / Actions
 	*/
 	private slots:
-	void on_actionMeasureDistance_triggered(bool checked);
-	void on_actionMeasureAngle_triggered(bool checked);
-	void on_actionMeasureTorsion_triggered(bool checked);
-	void on_actionMeasureClearAll_triggered(bool checked);
-	void on_actionMeasureDistanceSelection_triggered(bool checked);
-	void on_actionMeasureAngleSelection_triggered(bool checked);
-	void on_actionMeasureTorsionSelection_triggered(bool checked);
-	void on_actionMeasureList_triggered(bool checked);
+	void on_actionEditUndo_triggered(bool checked);
+	void on_actionEditRedo_triggered(bool checked);
+	void on_actionEditCut_triggered(bool checked);
+	void on_actionEditCopy_triggered(bool checked);
+	void on_actionEditPaste_triggered(bool checked);
+	void on_actionEditPasteTranslated_triggered(bool checked);
+	void on_actionEditDelete_triggered(bool checked);
+	void on_actionSelectionAll_triggered(bool checked);
+	void on_actionSelectionNone_triggered(bool checked);
+	void on_actionSelectionExpand_triggered(bool checked);
+	void on_actionSelectionInvert_triggered(bool checked);
 
 
 	/*
-	// Model Menu
-	*/
-	private slots:
-	void on_actionModelRename_triggered(bool checked);
-	void on_actionModelCreatePatterns_triggered(bool checked);
-	void on_actionModelRemovePatterns_triggered(bool checked);
-	void on_actionModelListPatterns_triggered(bool checked);
-	void on_actionModelFFType_triggered(bool checked);
-	void on_actionModelFFUntype_triggered(bool checked);
-	void on_actionModelCreateExpression_triggered(bool checked);
-	void on_actionModelFoldAtoms_triggered(bool checked);
-	void on_actionModelFoldMolecules_triggered(bool checked);
-	void on_actionModelNext_triggered(bool checked);
-	void on_actionModelPrevious_triggered(bool checked);
-	void on_actionModelShowAll_triggered(bool checked);
-
-
-	/*
-	// Mouse Actions
-	*/
-	private slots:
-	void on_actionMouseInteract_triggered(bool checked);
-	void on_actionMouseRotate_triggered(bool checked);
-	void on_actionMouseTranslate_triggered(bool checked);
-
-
-	/*
-	// Selection actions
-	*/
-	private slots:
-	void on_actionSelectAtoms_triggered(bool checked);
-	void on_actionSelectMolecules_triggered(bool checked);
-	void on_actionSelectElement_triggered(bool checked);
-
-
-	/*
-	// Trajectory Actions
-	*/
-	private:
-	QSlider *trajectorySlider_;
-	QSpinBox *trajectorySpin_;
-	bool trajectoryToolbarRefreshing_;
-	private slots:
-	void on_actionTrajectoryViewTrajectory_triggered(bool checked);
-	void on_actionTrajectoryNextFrame_triggered(bool checked);
-	void on_actionTrajectoryPreviousFrame_triggered(bool checked);
-	void on_actionTrajectoryFirstFrame_triggered(bool checked);
-	void on_actionTrajectoryLastFrame_triggered(bool checked);
-	void on_actionTrajectoryPlayPause_triggered(bool checked);
-	void trajectorySlider_sliderMoved(int i);
-	void trajectorySpin_valueChanged(int i);
-
-
-	/*
-	// View Actions
+	// View Menu / Actions
 	*/
 	public:
 	void setCartesianView(double x, double y, double z);
@@ -320,7 +167,68 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// System Functions
+	// Selection Menu / Actions (doubles as Atom Context Menu)
+	*/
+	public:
+	void activateGlyphActions(int n);
+	private:
+	void setAtomStyle(Atom::DrawStyle ds);
+	void setAtomLabel(Atom::AtomLabel al);
+	void removeAtomLabels(bool all);
+	void setAtomHidden(bool hidden);
+	QAction *createGlyphActions[Glyph::nGlyphTypes];
+	void createGlyph();
+	private slots:
+	void on_actionAtomStyleStick_triggered(bool checked);
+	void on_actionAtomStyleTube_triggered(bool checked);
+	void on_actionAtomStyleSphere_triggered(bool checked);
+	void on_actionAtomStyleScaled_triggered(bool checked);
+	void on_actionAtomLabelID_triggered(bool checked);
+	void on_actionAtomLabelCharge_triggered(bool checked);
+	void on_actionAtomLabelFFType_triggered(bool checked);
+	void on_actionAtomLabelElement_triggered(bool checked);
+	void on_actionAtomLabelFFEquiv_triggered(bool checked);
+	void on_actionAtomLabelClear_triggered(bool checked);
+	void on_actionAtomLabelClearAll_triggered(bool checked);
+	void on_actionAtomColourReset_triggered(bool checked);
+	void on_actionAtomColourSet_triggered(bool checked);
+	void on_actionAtomHide_triggered(bool checked);
+	void on_actionAtomProbe_triggered(bool checked);
+	void on_actionAtomFixPosition_triggered(bool checked);
+	void on_actionAtomFreePosition_triggered(bool checked);
+	void on_actionSetBondLength_triggered(bool checked);
+	void on_actionSetBondAngle_triggered(bool checked);
+	void on_actionSetTorsionAngle_triggered(bool checked);
+	void on_actionCreateFragment_triggered(bool checked);
+	void on_actionCentreAtOrigin_triggered(bool checked);
+
+
+	/*
+	// Model Menu
+	*/
+	private slots:
+	void on_actionModelRename_triggered(bool checked);
+	void on_actionModelFoldAtoms_triggered(bool checked);
+	void on_actionModelFoldMolecules_triggered(bool checked);
+	void on_actionModelNext_triggered(bool checked);
+	void on_actionModelPrevious_triggered(bool checked);
+	void on_actionModelShowAll_triggered(bool checked);
+
+
+	/*
+	// Expression Menu
+	*/
+	private slots:
+	void on_actionModelCreatePatterns_triggered(bool checked);
+	void on_actionModelRemovePatterns_triggered(bool checked);
+	void on_actionModelListPatterns_triggered(bool checked);
+	void on_actionModelFFType_triggered(bool checked);
+	void on_actionModelFFUntype_triggered(bool checked);
+	void on_actionModelCreateExpression_triggered(bool checked);
+
+
+	/*
+	// Settings Menu / Actions
 	*/
 	private slots:
 	void on_actionPreferences_triggered(bool checked);
@@ -328,11 +236,79 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Help Functions
+	// Help Menu / Actions
 	*/
 	private slots:
 	void on_actionAboutAten_triggered(bool checked);
 	void on_actionAboutQt_triggered(bool checked);
+
+	
+	/*
+	// Main Toolbar (other actions not already account for by menus)
+	*/
+	private slots:
+	void on_actionStyleStick_triggered(bool checked);
+	void on_actionStyleTube_triggered(bool checked);
+	void on_actionStyleSphere_triggered(bool checked);
+	void on_actionStyleScaled_triggered(bool checked);
+	void on_actionStyleIndividual_triggered(bool checked);
+	void on_actionSelectAtoms_triggered(bool checked);
+	void on_actionSelectMolecules_triggered(bool checked);
+	void on_actionSelectElement_triggered(bool checked);
+	public:
+	void setActiveStyleAction(Atom::DrawStyle ds);
+
+
+
+	// XXXXXXXXXXXXX
+	// XXXXXXXXXXXXX  All the following must be moved!
+	// XXXXXXXXXXXXX
+
+	/*
+	// Measure Actions   TGAY
+	*/
+	private slots:
+	void on_actionMeasureDistance_triggered(bool checked);
+	void on_actionMeasureAngle_triggered(bool checked);
+	void on_actionMeasureTorsion_triggered(bool checked);
+	void on_actionMeasureClearAll_triggered(bool checked);
+	void on_actionMeasureDistanceSelection_triggered(bool checked);
+	void on_actionMeasureAngleSelection_triggered(bool checked);
+	void on_actionMeasureTorsionSelection_triggered(bool checked);
+	void on_actionMeasureList_triggered(bool checked);
+
+
+
+	/*
+	// Mouse Actions
+	*/
+	private slots:
+	void on_actionMouseInteract_triggered(bool checked);
+	void on_actionMouseRotate_triggered(bool checked);
+	void on_actionMouseTranslate_triggered(bool checked);
+
+
+
+
+
+	/*
+	// Trajectory Actions
+	*/
+	private:
+	QSlider *trajectorySlider_;
+	QSpinBox *trajectorySpin_;
+	bool trajectoryToolbarRefreshing_;
+	private slots:
+	void on_actionTrajectoryViewTrajectory_triggered(bool checked);
+	void on_actionTrajectoryNextFrame_triggered(bool checked);
+	void on_actionTrajectoryPreviousFrame_triggered(bool checked);
+	void on_actionTrajectoryFirstFrame_triggered(bool checked);
+	void on_actionTrajectoryLastFrame_triggered(bool checked);
+	void on_actionTrajectoryPlayPause_triggered(bool checked);
+	void trajectorySlider_sliderMoved(int i);
+	void trajectorySpin_valueChanged(int i);
+
+
 
 
 	/*
@@ -353,10 +329,20 @@ class AtenForm : public QMainWindow
 	// Local Widgets
 	*/
 	private:
-	// List of manually-created QActionWidgets
+	// List of manually-created QActionGroups
 	Reflist<QActionGroup,int> actionGroups_;
+	// User-Action button group
+	QButtonGroup uaButtons_;
+	
+	private slots:
+	// Change current user action
+	void uaButtonClicked(int id);
 
 	public:
+	// Set action/button to reflect supplied user action
+	void setUserAction(UserAction::Action ua);
+
+	// TGAY Can any of this be made private?
 	// Text labels for model information and UI messages in status bar
 	QLabel *infoLabel1, *infoLabel2, *messageLabel;
 	// Statusbar progress indicator widgets
@@ -370,10 +356,7 @@ class AtenForm : public QMainWindow
 	Tree *saveModelFilter;
 	// Filename set from save model dialog
 	Dnchar saveModelFilename;
-	// Group for actions that determine the current user action
-	QActionGroup *uaGroup;
-	// Dummy toolbutton for inclusion in action group
-	QAction *dummyToolButton;
+
 
 	/*
 	// Settings

@@ -46,7 +46,7 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	// Atom Selection
 	atomClicked_ = NULL;
 	pickEnabled_ = FALSE;
-	actionBeforePick_ = NULL;
+	actionBeforePick_ = UserAction::NoAction;
 	pickAtomsCallback_ = NULL;
 	nAtomsToPick_ = -1;
 	// Mouse Input

@@ -28,61 +28,6 @@
 #include "model/fragment.h"
 
 /*
-// Atom Selection
-*/
-
-// Returns the atom currently under the mouse
-Atom *TCanvas::atomClicked()
-{
-	return atomClicked_;
-}
-
-// Clears the list of picked atoms
-void TCanvas::clearPicked()
-{
-	pickedAtoms_.clear();
-}
-
-// Enter picking mode
-void TCanvas::beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*))
-{
-	msg.enter("TCanvas::beginManualPick");
-	// End old mode
-	endManualPick(FALSE);
-	// Store the current usermode, unless it is already PickAtomsAction
-	if (selectedMode_ != UserAction::ManualPickAction) actionBeforePick_ = gui.mainWindow->uaGroup->checkedAction();
-	setSelectedMode(UserAction::ManualPickAction);
-	gui.mainWindow->dummyToolButton->activate(QAction::Trigger);
-	pickAtomsCallback_ = callback;
-	nAtomsToPick_ = natoms;
-	msg.exit("TCanvas::beginManualPick");
-}
-
-// End manual picking
-void TCanvas::endManualPick(bool resetaction)
-{
-	msg.enter("TCanvas::endManualPick");
-	// If a previous callback was defined then call it before we move on
-	if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
-	pickAtomsCallback_ = NULL;
-	if (resetaction)
-	{
-		if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->activate(QAction::Trigger);
-		else actionBeforePick_->activate(QAction::Trigger);
-	}
-	pickedAtoms_.clear();
-	nAtomsToPick_ = -1;
-	postRedisplay();
-	msg.exit("TCanvas::endManualPick");
-}
-
-// Return start of picked atom list
-Refitem<Atom,int> *TCanvas::pickedAtoms()
-{
-	return pickedAtoms_.first();
-}
-
-/*
 // Mouse Input
 */
 
@@ -477,7 +422,7 @@ void TCanvas::keyReleaseEvent(QKeyEvent *event)
 */
 
 // Set selected mode
-void TCanvas::setSelectedMode(UserAction::Action ua)
+void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*callback)(Reflist<Atom,int>*))
 {
 	msg.enter("TCanvas::setSelectedMode");
 	if (displayModel_ == NULL)
@@ -485,14 +430,32 @@ void TCanvas::setSelectedMode(UserAction::Action ua)
 		msg.exit("Canvas::setSelectedMode");
 		return;
 	}
-	// If previous action was UserAction::ManualPickAction then finalise it first
-	if (selectedMode_ == UserAction::ManualPickAction) endManualPick(FALSE);
+	
+	// If previous action was a Pick action then finalise it first
+	if (selectedMode_ >= UserAction::PickPositionVectorAction) endManualPick(FALSE);
+	
+	// Store picking information in case that's what we're about to do
+	actionBeforePick_ = selectedMode_;
+	pickAtomsCallback_ = callback;
+	nAtomsToPick_ = natoms;
+
 	// Clear any old selection (from e.g. bonding, measurements....)
 	clearPicked();
+	
 	// Prepare canvas for the selected action
 	switch (ua)
 	{
-		case (UserAction::ManualPickAction):
+		case (UserAction::PickPositionVectorAction):
+		case (UserAction::PickTransformRotateAxisAction):
+		case (UserAction::PickTransformDefineAAction):
+		case (UserAction::PickTransformDefineBAction):
+		case (UserAction::PickTransformDefineCAction):
+		case (UserAction::PickConvertDefineSourceAAction):
+		case (UserAction::PickConvertDefineSourceBAction):
+		case (UserAction::PickConvertDefineSourceCAction):
+		case (UserAction::PickConvertDefineTargetAAction):
+		case (UserAction::PickConvertDefineTargetBAction):
+		case (UserAction::PickConvertDefineTargetCAction):
 		case (UserAction::MeasureDistanceAction):
 		case (UserAction::MeasureAngleAction):
 		case (UserAction::MeasureTorsionAction):
@@ -929,8 +892,19 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		case (UserAction::TranslateAction):
 		case (UserAction::ZoomAction):
 			break;
-		// Manual picking mode (for toolwindow axis definitions etc.)
+		// Manual picking modes (for toolwindow axis definitions etc.)
 		case (UserAction::ManualPickAction):
+		case (UserAction::PickPositionVectorAction):
+		case (UserAction::PickTransformRotateAxisAction):
+		case (UserAction::PickTransformDefineAAction):
+		case (UserAction::PickTransformDefineBAction):
+		case (UserAction::PickTransformDefineCAction):
+		case (UserAction::PickConvertDefineSourceAAction):
+		case (UserAction::PickConvertDefineSourceBAction):
+		case (UserAction::PickConvertDefineSourceCAction):
+		case (UserAction::PickConvertDefineTargetAAction):
+		case (UserAction::PickConvertDefineTargetBAction):
+		case (UserAction::PickConvertDefineTargetCAction):
 			// Have we picked the right number of atoms?
 			if (pickedAtoms_.nItems() != nAtomsToPick_) break;
 			// Call callback and re-set used mode (if callback was defined)
@@ -941,4 +915,40 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			break;
 	}
 	msg.exit("UserAction::endMode");
+}
+
+// Returns the atom currently under the mouse
+Atom *TCanvas::atomClicked()
+{
+	return atomClicked_;
+}
+
+// Clears the list of picked atoms
+void TCanvas::clearPicked()
+{
+	pickedAtoms_.clear();
+}
+
+// End manual picking
+void TCanvas::endddManualPick(bool resetaction)
+{
+	msg.enter("TCanvas::endManualPick");
+	// If a previous callback was defined then call it before we move on
+	if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
+	pickAtomsCallback_ = NULL;
+	if (resetaction)
+	{
+		if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->activate(QAction::Trigger);
+		else actionBeforePick_->activate(QAction::Trigger);
+	}
+	pickedAtoms_.clear();
+	nAtomsToPick_ = -1;
+	postRedisplay();
+	msg.exit("TCanvas::endManualPick");
+}
+
+// Return start of picked atom list
+Refitem<Atom,int> *TCanvas::pickedAtoms()
+{
+	return pickedAtoms_.first();
 }

@@ -153,7 +153,7 @@ void GuiQt::initialise(int &argc, char **argv)
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");
 	QCoreApplication::setApplicationName("Aten");
 
-	// Create GUI window here (used to be done in Gui Qt::run(), but this would cause GLX crashes under some circumstances, apparently as a result of the lack of ownership of the TCanvas)
+	// Create GUI window here (used to be done in GuiQt::run(), but this would cause GLX crashes under some circumstances, apparently as a result of the lack of ownership of the TCanvas)
 	mainWindow = new AtenForm;
 
 	// Create the main QGLWidget
@@ -227,9 +227,6 @@ void GuiQt::run()
 	}
 	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));	// TGAY
 	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY
-
-	// Create list of toolbars
-	toolBars_ << mainWindow->ui.BondToolbar << mainWindow->ui.StyleToolbar << mainWindow->ui.DrawToolbar << mainWindow->ui.EditToolbar << mainWindow->ui.FileToolbar << mainWindow->ui.MeasureToolbar << mainWindow->ui.MouseToolbar << mainWindow->ui.SelectToolbar << mainWindow->ui.TrajectoryToolbar;
 
 	// Set the modality of some dialogs
 	prefsDialog->setModal(TRUE);
@@ -422,7 +419,7 @@ void GuiQt::printMessage(const char *s)
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
-// 	mainWindow->ui.TextDisplay->append(str);			// tgay
+// 	mainWindow->ui.TextDisplay->append(str);			// TGAY
 // 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
 }
 
@@ -534,8 +531,8 @@ void GuiQt::setWindowsEnabled(bool b)
 	// ...and all the dock widgets...
 	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", b);
 
-	// ...and all the toolbars.
-	foreach( QObject *obj, toolBars_) obj->setProperty( "enabled", b);
+	// ...and the main toolbar
+	mainWindow->ui.MainToolbar->setEnabled(b);
 	
 	mainWindow->setWidgetsEnabled(b);
 	app->processEvents();

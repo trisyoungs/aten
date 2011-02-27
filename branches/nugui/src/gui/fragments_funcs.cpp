@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
+#include "gui/build.h"
 #include "gui/toolbox.h"
 #include "gui/ttreewidgetitem.h"
 #include "gui/ttablewidgetitem.h"
@@ -168,7 +169,7 @@ void FragmentsWidget::on_FragmentTree_currentItemChanged(QTreeWidgetItem *curren
 
 void FragmentsWidget::on_FragmentTree_doubleClicked(const QModelIndex &index)
 {
-	gui.mainWindow->ui.actionDrawFragment->trigger();
+	gui.buildWidget->ui.DrawFragmentButton->click();
 }
 
 void FragmentsWidget::on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
@@ -190,7 +191,7 @@ void FragmentsWidget::on_FragmentTable_currentItemChanged(QTableWidgetItem *curr
 
 void FragmentsWidget::on_FragmentTable_doubleClicked(const QModelIndex &index)
 {
-	gui.mainWindow->ui.actionDrawFragment->trigger();
+	gui.buildWidget->ui.DrawFragmentButton->click();
 }
 
 

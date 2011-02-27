@@ -23,6 +23,7 @@
 #include "main/version.h"
 #include "parser/tree.h"
 #include "gui/mainwindow.h"
+#include "gui/build.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include "gui/grids.h"
@@ -73,7 +74,6 @@ void AtenForm::finaliseUi()
 	group->addAction(ui.actionMouseTranslate);
 
 	// Hide some toolbars initially
-	ui.BondToolbar->setVisible(FALSE);
 	ui.MeasureToolbar->setVisible(FALSE);
 	ui.TrajectoryToolbar->setVisible(FALSE);
 
@@ -128,39 +128,45 @@ void AtenForm::finaliseUi()
 			break;
 	}
 
-	// Add bond tolerance spinbox to Bond Toolbar
-	bondToleranceSpin_ = new QDoubleSpinBox(ui.BondToolbar);
-	bondToleranceSpin_->setRange(0.0, 100.0);
-	bondToleranceSpin_->setSingleStep(0.01);
-	ui.BondToolbar->addWidget(bondToleranceSpin_);
-	QObject::connect(bondToleranceSpin_, SIGNAL(valueChanged(double)), this, SLOT(bondTolerance_valueChanged(double)));
-
-	// Create master group for toolbar buttons that change user action modes
-	uaGroup = new QActionGroup(this);
+	// Create master group for buttons that change user action modes
+	// -- From Build Dock Widget
+	uaButtons_.addButton(gui.buildWidget->ui.DrawAtomButton, UserAction::DrawAtomAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawChainButton, UserAction::DrawChainAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawFragmentButton, UserAction::DrawFragmentAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawTransmuteButton, UserAction::DrawTransmuteAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawAddHButton, UserAction::DrawAddHydrogenAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawSingleBondButton, UserAction::DrawBondSingleAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawDoubleBondButton, UserAction::DrawBondDoubleAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawTripleBondButton, UserAction::DrawBondTripleAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawDeleteBondButton, UserAction::DrawDeleteBondAction);
 	// Select Toolbar
-	uaGroup->addAction(ui.actionSelectAtoms);
-	uaGroup->addAction(ui.actionSelectMolecules);
-	uaGroup->addAction(ui.actionSelectElement);
+// 	uaGroup->addAction(ui.actionSelectAtoms);
+// 	uaGroup->addAction(ui.actionSelectMolecules);
+// 	uaGroup->addAction(ui.actionSelectElement);
 	// Draw Toolbar
-	uaGroup->addAction(ui.actionDrawAtom);
-	uaGroup->addAction(ui.actionDrawChain);
-	uaGroup->addAction(ui.actionDrawFragment);
-	uaGroup->addAction(ui.actionDeleteAtom);
-	uaGroup->addAction(ui.actionTransmuteAtom);
-	uaGroup->addAction(ui.actionBondSingle);
-	uaGroup->addAction(ui.actionBondDouble);
-	uaGroup->addAction(ui.actionBondTriple);
-	uaGroup->addAction(ui.actionDeleteBond);
-	uaGroup->addAction(ui.actionAddHydrogenAtom);
-	uaGroup->addAction(ui.actionAtomProbe);
-	// Measure Toolbar
-	uaGroup->addAction(ui.actionMeasureDistance);
-	uaGroup->addAction(ui.actionMeasureAngle);
-	uaGroup->addAction(ui.actionMeasureTorsion);
-	// Invisible tool button for PickAtomsAction
-	dummyToolButton = new QAction(this);
-	dummyToolButton->setCheckable(TRUE);
-	uaGroup->addAction(dummyToolButton);
+// 	uaGroup->addAction(ui.actionDrawAtom);
+// 	uaGroup->addAction(ui.actionDrawChain);
+// 	uaGroup->addAction(ui.actionDrawFragment);
+// 	uaGroup->addAction(ui.actionDeleteAtom);
+// 	uaGroup->addAction(ui.actionTransmuteAtom);
+// 	uaGroup->addAction(ui.actionBondSingle);
+// 	uaGroup->addAction(ui.actionBondDouble);
+// 	uaGroup->addAction(ui.actionBondTriple);
+// 	uaGroup->addAction(ui.actionDeleteBond);
+// 	uaGroup->addAction(ui.actionAddHydrogenAtom);
+// 	uaGroup->addAction(ui.actionAtomProbe);
+// 	// Measure Toolbar
+// 	uaGroup->addAction(ui.actionMeasureDistance);
+// 	uaGroup->addAction(ui.actionMeasureAngle);
+// 	uaGroup->addAction(ui.actionMeasureTorsion);
+	
+	// Connect buttonPressed signal of button group to our handler
+	QObject::connect(&uaButtons_, SIGNAL(buttonPressed(int id)), this, SLOT(uaButtonClicked(int id)));
+	
+// 	// Invisible tool button for PickAtomsAction
+// 	dummyToolButton = new QAction(this);
+// 	dummyToolButton->setCheckable(TRUE);
+// 	uaGroup->addAction(dummyToolButton);
 
 	// Create a subgroup for the element select buttons
 	QActionGroup *elementGroup = new QActionGroup(this);

@@ -44,6 +44,79 @@ void BuildWidget::showWidget()
 	show();
 }
 
+/*
+// Edit Tab - Draw
+*/
+void BuildWidget::on_ElementHButton_clicked(bool checked)
+{
+}
+
+void BuildWidget::on_ElementCButton_clicked(bool checked)
+{
+}
+
+void BuildWidget::on_ElementNButton_clicked(bool checked)
+{
+}
+
+void BuildWidget::on_ElementOButton_clicked(bool checked)
+{
+}
+
+void BuildWidget::on_ElementCustomButton_clicked(bool checked)
+{
+}
+
+void BuildWidget::on_ElementPickButton_clicked(bool checked)
+{
+}
+
+void BuildWidget::on_DrawAddHModelButton_clicked(bool checked)
+{
+}
+
+void BuildWidget::on_DrawTransmuteSelectionButton_clicked(bool checked)
+{
+}
+
+/*
+// Edit Tab - Bond
+*/
+
+void BuildWidget::on_DrawRebondButton_clicked(bool checked)
+{
+	CommandNode::run(Command::ReBond, "");
+	gui.update(FALSE,FALSE,FALSE);
+}
+
+void BuildWidget::on_DrawClearBondingButton_clicked(bool checked)
+{
+	CommandNode::run(Command::ClearBonds, "");
+	gui.update(FALSE,FALSE,FALSE);
+}
+
+void BuildWidget::on_DrawAugmentButton_clicked(bool checked)
+{
+	CommandNode::run(Command::Augment, "");
+	gui.update(FALSE,FALSE,FALSE);
+}
+
+void BuildWidget::on_DrawRebondSelectionButton_clicked(bool checked)
+{
+	CommandNode::run(Command::ReBondSelection, "");
+	gui.update(FALSE,FALSE,FALSE);
+}
+
+void BuildWidget::on_DrawClearSelectionButton_clicked(bool checked)
+{
+	CommandNode::run(Command::ClearSelectedBonds, "");
+	gui.update(FALSE,FALSE,FALSE);
+}
+
+/*
+// Tools Tab - Add Atom
+*/
+
 void BuildWidget::on_AddAtomButton_clicked(bool on)
 {
 	if (ui.AddAtomFractionalCheck->isChecked())
