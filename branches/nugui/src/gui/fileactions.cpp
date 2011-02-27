@@ -143,7 +143,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 			msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
 		}
 		else msg.print("Failed to save model '%s'.\n", m->name());
-		gui.update(FALSE,FALSE,FALSE);
+		gui.update();
 	}
 }
 
@@ -189,7 +189,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 		t->executeWrite(filename.get());
 		m->changeLog.updateSavePoint();
 	}	
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 // Modify export options for current model's associated filter

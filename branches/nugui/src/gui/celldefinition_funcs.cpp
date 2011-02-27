@@ -129,7 +129,7 @@ void CellDefinitionWidget::on_DefineFromABCButton_clicked(bool checked)
 	Dnchar label;
 	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
 	ui.CellVolumeLabel->setText(label.get());
-	gui.update(FALSE,TRUE,FALSE);
+	gui.update(GuiQt::CellTarget);
 }
 
 void CellDefinitionWidget::cellChanged(int index, double newvalue)
@@ -142,7 +142,7 @@ void CellDefinitionWidget::cellChanged(int index, double newvalue)
 	Dnchar label;
 	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
 	ui.CellVolumeLabel->setText(label.get());
-	gui.update(FALSE,TRUE,FALSE);
+	gui.update(GuiQt::CellTarget);
 }
 
 /*
@@ -242,7 +242,7 @@ void CellDefinitionWidget::on_CellDefinitionGroup_clicked(bool checked)
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
 	gui.cellTransformWidget->refresh();
 	gui.disorderWindow->refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 /*

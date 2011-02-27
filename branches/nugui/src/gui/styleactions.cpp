@@ -28,18 +28,33 @@
 // Draw style Actions
 */
 
-void AtenForm::on_StyleToolbar_actionTriggered(QAction *action)
+void AtenForm::on_actionStyleStick_triggered(bool checked)
 {
-	// If the source action is not checked, ignore the signal
-	if (!action->isChecked()) return;
-	Model *m;
-	Atom::DrawStyle ds = Atom::StickStyle;
-	if (action == ui.actionStyleStick) ds = Atom::StickStyle;
-	else if (action == ui.actionStyleTube) ds = Atom::TubeStyle;
-	else if (action == ui.actionStyleSphere) ds = Atom::SphereStyle;
-	else if (action == ui.actionStyleScaled) ds = Atom::ScaledStyle;
-	else if (action == ui.actionStyleIndividual) ds = Atom::IndividualStyle;
-	prefs.setRenderStyle(ds);
+	prefs.setRenderStyle(Atom::StickStyle);
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenForm::on_actionStyleTube_triggered(bool checked)
+{
+	prefs.setRenderStyle(Atom::TubeStyle);
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenForm::on_actionStyleSphere_triggered(bool checked)
+{
+	prefs.setRenderStyle(Atom::SphereStyle);
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenForm::on_actionStyleScaled_triggered(bool checked)
+{
+	prefs.setRenderStyle(Atom::ScaledStyle);
+	gui.mainWidget->postRedisplay();
+}
+
+void AtenForm::on_actionStyleIndividual_triggered(bool checked)
+{
+	prefs.setRenderStyle(Atom::IndividualStyle);
 	gui.mainWidget->postRedisplay();
 }
 

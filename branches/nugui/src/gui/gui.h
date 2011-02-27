@@ -81,13 +81,16 @@ class GuiQt
 	static BitmapFormat bitmapFormatFromFilter(const char *s);
 	static const char *bitmapFormatFilter(BitmapFormat bf);
 	static const char *bitmapFormatExtension(BitmapFormat bf);
+	// Update Targets
+	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, AllTarget = 31 };
+
 
 	/*
 	// Refresh Functions
 	*/
 	public:
 	// Refreshes all widgets to do with the model
-	void update(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE, bool updateGlyphs = TRUE, bool updateGrids = TRUE);
+	void update(int targets = 0);
 	// Update statusbar
 	void updateStatusBar(bool clear = FALSE);
 
@@ -96,8 +99,6 @@ class GuiQt
 	// General Functions
 	*/
 	private:
-	// Is a GUI available?
-	bool isAvailable_;
 	// Does the GUI exist (has it been created)
 	bool doesExist_;
 

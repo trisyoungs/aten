@@ -48,6 +48,13 @@ void AtenForm::finaliseUi()
 		ui.RecentMenu->addAction(actionRecentFile[n]);
 	}
 
+	// Populate QActionGroup for main toolbar selection actions
+	uaSelectActions_ = new QActionGroup(this);
+	uaSelectActions_->addAction(ui.actionSelectAtoms);
+	uaSelectActions_->addAction(ui.actionSelectMolecules);
+	uaSelectActions_->addAction(ui.actionSelectElement);
+	uaSelectActions_->addAction(ui.actionNoAction);
+	
 	// Create QActionGroup for draw styles
 	QActionGroup *group = new QActionGroup(this);
 	actionGroups_.add(group);
@@ -129,6 +136,9 @@ void AtenForm::finaliseUi()
 	}
 
 	// Create master group for buttons that change user action modes
+	uaDummyButton_ = new QToolButton(this);
+	uaDummyButton_->setCheckable(TRUE);
+	uaButtons_.addButton(uaDummyButton_);
 	// -- From Build Dock Widget
 	uaButtons_.addButton(gui.buildWidget->ui.DrawAtomButton, UserAction::DrawAtomAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawChainButton, UserAction::DrawChainAction);
@@ -162,18 +172,8 @@ void AtenForm::finaliseUi()
 	
 	// Connect buttonPressed signal of button group to our handler
 	QObject::connect(&uaButtons_, SIGNAL(buttonPressed(int id)), this, SLOT(uaButtonClicked(int id)));
-	
-// 	// Invisible tool button for PickAtomsAction
-// 	dummyToolButton = new QAction(this);
-// 	dummyToolButton->setCheckable(TRUE);
-// 	uaGroup->addAction(dummyToolButton);
 
-	// Create a subgroup for the element select buttons
-	QActionGroup *elementGroup = new QActionGroup(this);
-	elementGroup->addAction(ui.actionElementH);
-	elementGroup->addAction(ui.actionElementC);
-	elementGroup->addAction(ui.actionElementN);
-	elementGroup->addAction(ui.actionElementCustom);
+
 
 	/*
 	// Statusbar
@@ -327,41 +327,15 @@ void AtenForm::createDialogFilters()
 void AtenForm::setControls()
 {
 	msg.enter("AtenForm::setControls");
+	
 	// Set correct Atom::DrawStyle on toolbar
-	switch (prefs.renderStyle())
-	{
-		case (Atom::StickStyle):
-			ui.actionStyleStick->setChecked(TRUE);
-			break;
-		case (Atom::TubeStyle):
-			ui.actionStyleTube->setChecked(TRUE);
-			break;
-		case (Atom::SphereStyle):
-			ui.actionStyleSphere->setChecked(TRUE);
-			break;
-		case (Atom::ScaledStyle):
-			ui.actionStyleScaled->setChecked(TRUE);
-			break;
-		case (Atom::IndividualStyle):
-			ui.actionStyleIndividual->setChecked(TRUE);
-			break;
-		default:
-			break;
-	}
-	// Set some menu items
+	setActiveStyleAction(prefs.renderStyle());
+
+	// Set view perspective/orthographic
 	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
+
 	// Set correct colour scheme menuitem
-	switch (prefs.colourScheme())
-	{
-		case (Prefs::ElementScheme): ui.actionSchemeElement->setChecked(TRUE); break;
-		case (Prefs::ChargeScheme): ui.actionSchemeCharge->setChecked(TRUE); break;
-		case (Prefs::ForceScheme): ui.actionSchemeForce->setChecked(TRUE); break;
-		//case (Prefs::VelocityScheme): ui.actionSchemeVelocity->setChecked(TRUE); break;
-		default:
-			break;
-	}
-	// Set controls on Bond toolbar 
-	bondToleranceSpin_->setValue(prefs.bondTolerance());
+	setActiveSchemeAction(prefs.colourScheme());
 
 	msg.exit("AtenForm::setControls");
 }

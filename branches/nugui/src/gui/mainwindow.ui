@@ -1623,6 +1623,11 @@
     <string>Open Expression</string>
    </property>
   </action>
+  <action name="actionNoAction">
+   <property name="text">
+    <string>Null</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="0" margin="0"/>
  <resources>

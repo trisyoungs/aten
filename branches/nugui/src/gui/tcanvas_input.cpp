@@ -302,7 +302,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 				displayModel_->endUndoState();
 				displayModel_->updateMeasurements();
 				displayModel_->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-				gui.update(TRUE,FALSE,FALSE);
+				gui.update();
 			}
 			else displayModel_->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
 			refresh = TRUE;
@@ -432,12 +432,24 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	}
 	
 	// If previous action was a Pick action then finalise it first
-	if (selectedMode_ >= UserAction::PickPositionVectorAction) endManualPick(FALSE);
+	if (selectedMode_ >= UserAction::PickPositionVectorAction)
+	{
+		// If a previous callback was defined then call it before we move on
+		if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
+		pickAtomsCallback_ = NULL;
+		/*if (resetaction)
+		{
+			if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->activate(QAction::Trigger);
+			else actionBeforePick_->activate(QAction::Trigger);
+		}*/
+		pickedAtoms_.clear();
+		nAtomsToPick_ = -1;
+	}
 	
 	// Store picking information in case that's what we're about to do
 	actionBeforePick_ = selectedMode_;
 	pickAtomsCallback_ = callback;
-	nAtomsToPick_ = natoms;
+	nAtomsToPick_ = atomsToPick;
 
 	// Clear any old selection (from e.g. bonding, measurements....)
 	clearPicked();
@@ -678,7 +690,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				else displayModel_->selectAtom(atomClicked_);
 			}
 			displayModel_->endUndoState();
-			gui.update(TRUE,FALSE,FALSE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		// Other selection operations
 		case (UserAction::SelectMoleculeAction):
@@ -686,14 +698,14 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (!modded) displayModel_->selectNone();
 			if (atomClicked_ != NULL)	displayModel_->selectTree(atomClicked_, FALSE, ctrled);
 			displayModel_->endUndoState();
-			gui.update(TRUE,FALSE,FALSE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		case (UserAction::SelectElementAction):
 			displayModel_->beginUndoState("Select Element");
 			if (!modded) displayModel_->selectNone();
 			if (atomClicked_ != NULL) displayModel_->selectElement(atomClicked_, FALSE, ctrled);
 			displayModel_->endUndoState();
-			gui.update(TRUE,FALSE,FALSE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		case (UserAction::SelectRadialAction):
 			displayModel_->beginUndoState("Select Radial");
@@ -706,7 +718,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				displayModel_->selectRadial(atomClicked_,radius);
 			}
 			displayModel_->endUndoState();
-			gui.update(TRUE,FALSE,FALSE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		// Measurements
 		case (UserAction::MeasureDistanceAction):
@@ -717,7 +729,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			displayModel_->addDistanceMeasurement(atoms[0],atoms[1]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
-			gui.update(FALSE,FALSE,FALSE);
+			gui.update();
 			break;
 		case (UserAction::MeasureAngleAction):
 			// Must be two atoms in subselection to continue
@@ -727,7 +739,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			displayModel_->addAngleMeasurement(atoms[0],atoms[1],atoms[2]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
-			gui.update(FALSE,FALSE,FALSE);
+			gui.update();
 			break;
 		case (UserAction::MeasureTorsionAction):
 			// Must be two atoms in subselection to continue
@@ -737,7 +749,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			displayModel_->addTorsionMeasurement(atoms[0],atoms[1],atoms[2],atoms[3]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
-			gui.update(FALSE,FALSE,FALSE);
+			gui.update();
 			break;
 		// Draw single atom
 		case (UserAction::DrawAtomAction):
@@ -749,7 +761,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				displayModel_->addAtom(sketchElement_, screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				displayModel_->endUndoState();
 			}
-			gui.update(TRUE,FALSE,TRUE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		// Draw chains of atoms
 		case (UserAction::DrawChainAction):
@@ -776,7 +788,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				displayModel_->bondAtoms(i,atomClicked_,bt);
 			}
 			displayModel_->endUndoState();
-			gui.update(TRUE,FALSE,TRUE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		// Draw fragments
 		case (UserAction::DrawFragmentAction):
@@ -794,7 +806,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				frag->pasteOrientedModel(screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), displayModel_);
 			}
 			displayModel_->endUndoState();
-			gui.update(TRUE,FALSE,TRUE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		case (UserAction::DrawTransmuteAction):
 			if (atomClicked_ == NULL) break;
@@ -807,7 +819,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			}
 			else displayModel_->transmuteAtom(atomClicked_, sketchElement_);
 			displayModel_->endUndoState();
-			gui.update(TRUE,FALSE,TRUE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		case (UserAction::DrawDeleteAction):
 			if (shifted)
@@ -825,7 +837,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				displayModel_->deleteAtom(atomClicked_);
 				displayModel_->endUndoState();
 			}
-			gui.update(TRUE,FALSE,TRUE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		case (UserAction::DrawProbeAction):
 			if (atomClicked_ != NULL) atomClicked_->print();
@@ -851,7 +863,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				displayModel_->endUndoState();
 			}
 			pickedAtoms_.clear();
-			gui.update(FALSE,FALSE,FALSE);
+			gui.update();
 			break;
 		// Delete bond
 		case (UserAction::DrawDeleteBondAction):
@@ -865,7 +877,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				displayModel_->endUndoState();
 			}
 			pickedAtoms_.clear();
-			gui.update(FALSE,FALSE,FALSE);
+			gui.update();
 			break;
 		// Misc
 		case (UserAction::DrawAddHydrogenAction):
@@ -874,7 +886,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				displayModel_->beginUndoState("Add Hydrogen to Atom");
 				displayModel_->hydrogenSatisfy(atomClicked_);
 				displayModel_->endUndoState();
-				gui.update(TRUE,FALSE,TRUE);
+				gui.update(GuiQt::AtomsTarget);
 			}
 			break;
 		// Model transformations
@@ -884,7 +896,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			// Clear list of oldPositions_ if nothing was moved
 			if (!hasMoved_) oldPositions_.clear();
 			displayModel_->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-			gui.update(TRUE,FALSE,FALSE);
+			gui.update(GuiQt::AtomsTarget);
 			break;
 		// View changes (no action)
 		case (UserAction::RotateXYAction):
@@ -893,7 +905,6 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		case (UserAction::ZoomAction):
 			break;
 		// Manual picking modes (for toolwindow axis definitions etc.)
-		case (UserAction::ManualPickAction):
 		case (UserAction::PickPositionVectorAction):
 		case (UserAction::PickTransformRotateAxisAction):
 		case (UserAction::PickTransformDefineAAction):
@@ -907,8 +918,12 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		case (UserAction::PickConvertDefineTargetCAction):
 			// Have we picked the right number of atoms?
 			if (pickedAtoms_.nItems() != nAtomsToPick_) break;
-			// Call callback and re-set used mode (if callback was defined)
-			endManualPick(TRUE);
+			// If a previous callback was defined then call it before we move on
+			if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
+			pickAtomsCallback_ = NULL;
+			gui.mainWindow->setActiveUserAction(actionBeforePick_);
+			pickedAtoms_.clear();
+			nAtomsToPick_ = -1;
 			break;
 		default:
 			printf("No endMode handler defined for UserAction %i.\n", endingMode);
@@ -927,24 +942,6 @@ Atom *TCanvas::atomClicked()
 void TCanvas::clearPicked()
 {
 	pickedAtoms_.clear();
-}
-
-// End manual picking
-void TCanvas::endddManualPick(bool resetaction)
-{
-	msg.enter("TCanvas::endManualPick");
-	// If a previous callback was defined then call it before we move on
-	if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
-	pickAtomsCallback_ = NULL;
-	if (resetaction)
-	{
-		if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->activate(QAction::Trigger);
-		else actionBeforePick_->activate(QAction::Trigger);
-	}
-	pickedAtoms_.clear();
-	nAtomsToPick_ = -1;
-	postRedisplay();
-	msg.exit("TCanvas::endManualPick");
 }
 
 // Return start of picked atom list

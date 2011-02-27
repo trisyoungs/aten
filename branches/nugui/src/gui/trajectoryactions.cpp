@@ -36,35 +36,35 @@ void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 	else aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
 	m->changeLog.add(Log::Camera);
-	gui.update(TRUE, TRUE, FALSE, TRUE, TRUE);
+	gui.update(GuiQt::AllTarget);
 }
 
 void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekNextTrajectoryFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.update(TRUE,TRUE,FALSE);
+	gui.update(GuiQt::AllTarget);
 }
 
 void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekPreviousTrajectoryFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.update(TRUE,TRUE,FALSE);
+	gui.update(GuiQt::AllTarget);
 }
 
 void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstTrajectoryFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.update(TRUE,TRUE,FALSE);
+	gui.update(GuiQt::AllTarget);
 }
 
 void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekLastTrajectoryFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.update(TRUE,TRUE,FALSE);
+	gui.update(GuiQt::AllTarget);
 }
 
 void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)

@@ -30,7 +30,17 @@
 // Constructor
 BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
+	// Set up interface
 	ui.setupUi(this);
+	// Create a subgroup for the element select buttons
+	QButtonGroup *elementGroup = new QButtonGroup(this);
+	elementGroup->addButton(ui.ElementHButton);
+	elementGroup->addButton(ui.ElementCButton);
+	elementGroup->addButton(ui.ElementNButton);
+	elementGroup->addButton(ui.ElementCustomButton);
+	
+	// Private variables
+	customElement_ = 9;
 }
 
 // Destructor
@@ -49,34 +59,54 @@ void BuildWidget::showWidget()
 */
 void BuildWidget::on_ElementHButton_clicked(bool checked)
 {
+	if (checked) gui.mainWidget->setSketchElement(1);
 }
 
 void BuildWidget::on_ElementCButton_clicked(bool checked)
 {
+	if (checked) gui.mainWidget->setSketchElement(6);
 }
 
 void BuildWidget::on_ElementNButton_clicked(bool checked)
 {
+	if (checked) gui.mainWidget->setSketchElement(7);
 }
 
 void BuildWidget::on_ElementOButton_clicked(bool checked)
 {
+	if (checked) gui.mainWidget->setSketchElement(8);
 }
 
 void BuildWidget::on_ElementCustomButton_clicked(bool checked)
 {
+	if (checked) gui.mainWidget->setSketchElement(customElement_);
 }
 
 void BuildWidget::on_ElementPickButton_clicked(bool checked)
 {
+	// Call the select element dialog...
+	int newel = gui.selectElementDialog->selectElement();
+	if (newel != -1)
+	{
+		// Set text of custom element button
+		ui.ElementCustomButton->setText( elements().symbol(newel) );
+		customElement_ = newel;
+		// Activate custom element button
+		ui.ElementCustomButton->setChecked(TRUE);
+		gui.mainWidget->setSketchElement(customElement_);
+	}
 }
 
 void BuildWidget::on_DrawAddHModelButton_clicked(bool checked)
 {
+	CommandNode::run(Command::AddHydrogen, "");
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void BuildWidget::on_DrawTransmuteSelectionButton_clicked(bool checked)
 {
+	CommandNode::run(Command::Transmute, "i", gui.mainWidget->sketchElement());
+	gui.update(GuiQt::AtomsTarget);
 }
 
 /*
@@ -86,31 +116,31 @@ void BuildWidget::on_DrawTransmuteSelectionButton_clicked(bool checked)
 void BuildWidget::on_DrawRebondButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ReBond, "");
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 void BuildWidget::on_DrawClearBondingButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ClearBonds, "");
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 void BuildWidget::on_DrawAugmentButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Augment, "");
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 void BuildWidget::on_DrawRebondSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ReBondSelection, "");
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 void BuildWidget::on_DrawClearSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ClearSelectedBonds, "");
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 /*

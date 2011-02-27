@@ -80,7 +80,7 @@ void AtomListWidget::updateSelection()
 		if (i != NULL) item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
 	gui.mainWidget->enableDrawing();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 // Set column data for specified item
@@ -231,7 +231,7 @@ void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 	CommandNode::run(Command::ShiftUp, "i", 1);
 	refresh();
 	pokeScrollBar();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
@@ -240,21 +240,21 @@ void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 	CommandNode::run(Command::ShiftDown, "i", 1);
 	refresh();
 	pokeScrollBar();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MoveToStart, "");
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MoveToEnd, "");
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 void AtomListWidget::peekScrollBar()
@@ -337,7 +337,7 @@ void AtomListWidget::treeMouseReleaseEvent(QMouseEvent *event)
 // 	printf("Mouse release event.\n");
 	lastHovered_ = NULL;
 	listLastModel_->endUndoState();
-	gui.update(FALSE, FALSE, FALSE);
+	gui.update();
 }
 
 void AtomListWidget::treeMouseMoveEvent(QMouseEvent *event)
@@ -350,7 +350,7 @@ void AtomListWidget::treeMouseMoveEvent(QMouseEvent *event)
 	{
 		toggleItem(twi);
 		lastHovered_ = twi;
-		gui.update(FALSE, FALSE, FALSE);
+		gui.update();
 	}
 }
 

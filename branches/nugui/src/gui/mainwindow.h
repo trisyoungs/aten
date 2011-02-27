@@ -331,6 +331,10 @@ class AtenForm : public QMainWindow
 	private:
 	// List of manually-created QActionGroups
 	Reflist<QActionGroup,int> actionGroups_;
+	// Action group for main toolbar select actions
+	QActionGroup *uaSelectActions_;
+	// Dummy button for user-action group
+	QToolButton *uaDummyButton_;
 	// User-Action button group
 	QButtonGroup uaButtons_;
 	
@@ -340,7 +344,7 @@ class AtenForm : public QMainWindow
 
 	public:
 	// Set action/button to reflect supplied user action
-	void setUserAction(UserAction::Action ua);
+	void setActiveUserAction(UserAction::Action ua);
 
 	// TGAY Can any of this be made private?
 	// Text labels for model information and UI messages in status bar

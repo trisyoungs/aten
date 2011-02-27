@@ -328,34 +328,37 @@ void GuiQt::run()
 */
 
 // Update GUI after model change (or different model selected) (accessible wrapper to call AtenForm's function)
-void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, bool updateGlyphs, bool updateGrids)
+void GuiQt::update(int targets)
 {
 	if (!doesExist_) return;
+
 	// Refresh aspects of main window
 	mainWindow->update();
-	// Update contents of the atom list
-	if (updateAtoms) atomListWidget->refresh();
-	// Update contents of the glyph list
-	if (updateGlyphs) glyphsWidget->refresh();
-	// Update contents of the grid window
-	if (updateGrids) gridsWidget->refresh();
-	// Update selection window
+	updateContextMenu();
+	geometryWidget->refresh();
 	selectWidget->refresh();
-	// Update vibrations window
 	vibrationsWidget->refresh();
+	
+	// Update contents of the atom list
+	if (targets&GuiQt::AtomsTarget) atomListWidget->refresh();
+
+	// Update contents of the glyph list
+	if (targets&GuiQt::GlyphsTarget) glyphsWidget->refresh();
+
+	// Update contents of the grid window
+	if (targets&GuiQt::GridsTarget) gridsWidget->refresh();
+
 	// Update the contents of the cell page
-	if (updateCell)
+	if (targets&GuiQt::CellTarget)
 	{
 		cellDefinitionWidget->refresh();
 		cellTransformWidget->refresh();
 		disorderWindow->refresh();
 	}
+
 	// Update forcefields in the forcefield widget
-	if (updateForcefield) forcefieldsWidget->refresh();
-	// Update context menu items
-	updateContextMenu();
-	// Update geometry page
-	geometryWidget->refresh();
+	if (targets&GuiQt::ForcefieldsTarget) forcefieldsWidget->refresh();
+
 	// Request redraw of the main canvas
 	gui.mainWidget->postRedisplay();
 }

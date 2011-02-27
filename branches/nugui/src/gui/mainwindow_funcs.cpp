@@ -44,7 +44,6 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
 	// Private variables
 	saveModelFilter = NULL;
-	customElement_ = 8;
 	trajectoryToolbarRefreshing_ = FALSE;
 
 	// Public variables
@@ -56,8 +55,6 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 	progressEta = NULL;
 	progressButton = NULL;
 	progressIndicator = NULL;
-	uaGroup = NULL;
-	dummyToolButton = NULL;
 
 	ui.setupUi(this);
 }
@@ -403,7 +400,6 @@ void AtenForm::setWidgetsEnabled(bool b)
 	// Must manually enable all widgets added to toolbars by hand. Bug in Qt?
 	trajectorySlider_->setEnabled(b);
 	trajectorySpin_->setEnabled(b);
-	bondToleranceSpin_->setEnabled(b);
 }
 
 void AtenForm::on_actionAboutAten_triggered(bool checked)
@@ -414,4 +410,42 @@ void AtenForm::on_actionAboutAten_triggered(bool checked)
 void AtenForm::on_actionAboutQt_triggered(bool checked)
 {
 	QMessageBox::aboutQt(this, "About Qt");
+}
+
+// Change current user action
+void AtenForm::uaButtonClicked(int id)
+{
+	QAbstractButton *button;
+	// Check button correspondiong to supplied index
+	button = uaButtons_.button(id);
+	if (button == NULL) printf("Internal Error: AtenForm::uaButtonClicked - No button associated to id %i\n", id);
+	else if (button->isChecked()) gui.mainWidget->setSelectedMode((UserAction::Action) id);
+}
+
+// Set action/button to reflect supplied user action
+void AtenForm::setActiveUserAction(UserAction::Action ua)
+{
+	// Set (check) relevant action or button based on supplied UserAction
+	QAbstractButton *button;
+	switch (ua)
+	{
+		// No active mode
+		case (UserAction::NoAction):
+			uaDummyButton_->setChecked(TRUE);
+			ui.actionNoAction->setChecked(TRUE);
+			break;
+		// Three select QActions on main ToolBar
+		case (UserAction::SelectAction):
+		case (UserAction::SelectMoleculeAction):
+		case (UserAction::SelectElementAction):
+			uaDummyButton_->setChecked(TRUE);
+			break;
+		// All other actions are related to buttons elsewhere in the GUI
+		default:
+			ui.actionNoAction->setChecked(TRUE);
+			button = uaButtons_.button(ua);
+			if (button == NULL) printf("No button associated to user action %i.\n");
+			else button->setChecked(TRUE);
+			break;
+	}
 }
