@@ -105,7 +105,8 @@ CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl |
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc aten.xsl aten-versioned.xml > manual.html
 # Rewrite image links
-sed -e "s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g" manual.html > manual.xhtml
+sed -e "s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g" manual.html > temp.xhtml
+grep -v "xml version=\"1.0\"" temp.xhtml > manual.xhtml
 
 echo "#"
 echo "# Generating Single Page FAQ"
