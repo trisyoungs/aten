@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>220</height>
+    <height>226</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>220</height>
+    <height>226</height>
    </size>
   </property>
   <property name="floating">
@@ -4626,7 +4626,7 @@
        </widget>
       </item>
       <item row="7" column="1">
-       <widget class="QToolButton" name="MinimiserButton">
+       <widget class="QToolButton" name="ForcefieldsButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -5049,7 +5049,7 @@
          </palette>
         </property>
         <property name="text">
-         <string>Minimiser</string>
+         <string>FF/Energy</string>
         </property>
         <property name="icon">
          <iconset resource="icons.qrc">

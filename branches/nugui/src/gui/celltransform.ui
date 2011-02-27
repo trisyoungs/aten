@@ -20,6 +20,12 @@
    <iconset resource="icons.qrc">
     <normaloff>:/stackicons/icons/stack_celledit.svg</normaloff>:/stackicons/icons/stack_celledit.svg</iconset>
   </property>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+  </property>
   <property name="windowTitle">
    <string>Cell Transform</string>
   </property>

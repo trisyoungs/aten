@@ -43,7 +43,7 @@
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
 #include "gui/md.h"
-#include "gui/minimiser.h"
+#include "gui/forcefields.h"
 #include "gui/modellist.h"
 #include "gui/toolbox.h"
 #include "gui/transform.h"
@@ -112,12 +112,12 @@ GuiQt::GuiQt()
 	cellDefinitionWidget = NULL;
 	cellTransformWidget = NULL;
 	commandWidget = NULL;
+	forcefieldsWidget = NULL;
 	fragmentsWidget = NULL;
 	geometryWidget = NULL;
 	glyphsWidget = NULL;
 	gridsWidget = NULL;
 	mdWidget = NULL;
-	minimiserWidget = NULL;
 	positionWidget = NULL;
 	toolBoxWidget = NULL;
 	transformWidget = NULL;
@@ -204,21 +204,21 @@ void GuiQt::run()
 	cellDefinitionWidget = new CellDefinitionWidget(mainWindow, Qt::Tool);
 	cellTransformWidget = new CellTransformWidget(mainWindow, Qt::Tool);
 	commandWidget = new CommandWidget(mainWindow, Qt::Tool);
+	forcefieldsWidget = new ForcefieldsWidget(mainWindow, Qt::Tool);
 	fragmentsWidget = new FragmentsWidget(mainWindow, Qt::Tool);
 	geometryWidget = new GeometryWidget(mainWindow, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(mainWindow, Qt::Tool);
 	gridsWidget = new GridsWidget(mainWindow, Qt::Tool);
 	mdWidget = new MDWidget(mainWindow, Qt::Tool);
-	minimiserWidget = new MinimiserWidget(mainWindow, Qt::Tool);
 	modelListWidget = new ModelListWidget(mainWindow, Qt::Tool);
 	positionWidget = new PositionWidget(mainWindow, Qt::Tool);
 	selectWidget = new SelectWidget(mainWindow, Qt::Tool);
 	toolBoxWidget = new ToolBoxWidget(mainWindow, Qt::Tool);
 	transformWidget = new TransformWidget(mainWindow, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(mainWindow, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << minimiserWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << forcefieldsWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
 	toolBoxWidget->show();
-
+	
 	// Connect Finished signal of tool windows to finished slots in structure
 	foreach( QObject *obj, dockWidgets_)
 	{
@@ -272,7 +272,7 @@ void GuiQt::run()
 
 	// Refresh the necessary windows
 	gridsWidget->refresh();
-	minimiserWidget->refresh();
+	forcefieldsWidget->refresh();
 	disorderWindow->refresh();
 	mdWidget->refresh();
 	cellDefinitionWidget->refresh();
@@ -354,7 +354,7 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 		disorderWindow->refresh();
 	}
 	// Update forcefields in the forcefield widget
-	if (updateForcefield) minimiserWidget->refresh();
+	if (updateForcefield) forcefieldsWidget->refresh();
 	// Update context menu items
 	updateContextMenu();
 	// Update geometry page

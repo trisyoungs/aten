@@ -16,9 +16,11 @@
     <height>217</height>
    </size>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/stackicons/icons/stack_atomlist.svg</normaloff>:/stackicons/icons/stack_atomlist.svg</iconset>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
   </property>
   <property name="windowTitle">
    <string>Atom List</string>

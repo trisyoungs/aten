@@ -38,12 +38,12 @@ class ToolBoxWidget : public QDockWidget
 	void on_CellDefinitionButton_clicked(bool checked);
 	void on_CellTransformButton_clicked(bool checked);
 	void on_CommandButton_clicked(bool checked);
+	void on_ForcefieldsButton_clicked(bool checked);
 	void on_FragmentsButton_clicked(bool checked);
 	void on_GeometryButton_clicked(bool checked);
 	void on_GlyphsButton_clicked(bool checked);
 	void on_GridsButton_clicked(bool checked);
-	void on_MinimiserButton_clicked(bool checked);
- 	void on_MDButton_clicked(bool checked);
+	void on_MDButton_clicked(bool checked);
 	void on_PositionButton_clicked(bool checked);
 	void on_SelectButton_clicked(bool checked);
 	void on_TransformButton_clicked(bool checked);

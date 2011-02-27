@@ -99,7 +99,6 @@ void AtenForm::closeEvent(QCloseEvent *event)
 // 		delete gui.glyphsWindow;
 // 		delete gui.gridsWindow;
 // 		delete gui.mdWindow;
-// 		delete gui.minimiserWindow;
 // 		delete gui.positionWindow;
 // 		delete gui.selectWindow;
 // 		delete gui.transformWindow;

@@ -10,9 +10,21 @@
     <height>259</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>270</width>
+    <height>259</height>
+   </size>
+  </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
     <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+  </property>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
   </property>
   <property name="windowTitle">
    <string>Cell Definition</string>
@@ -48,7 +60,7 @@
             <enum>QTabWidget::North</enum>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="CellMatrixTab">
             <attribute name="title">
@@ -394,7 +406,7 @@
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>16</width>
+                       <width>1</width>
                        <height>20</height>
                       </size>
                      </property>
@@ -426,7 +438,7 @@
                    <item>
                     <widget class="QDoubleSpinBox" name="CellLengthASpin">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -471,7 +483,7 @@
                    <item>
                     <widget class="QDoubleSpinBox" name="CellLengthBSpin">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -516,7 +528,7 @@
                    <item>
                     <widget class="QDoubleSpinBox" name="CellLengthCSpin">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -617,7 +629,7 @@
                    <item>
                     <widget class="QDoubleSpinBox" name="CellAngleASpin">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -665,7 +677,7 @@
                    <item>
                     <widget class="QDoubleSpinBox" name="CellAngleBSpin">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
@@ -713,7 +725,7 @@
                    <item>
                     <widget class="QDoubleSpinBox" name="CellAngleCSpin">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>

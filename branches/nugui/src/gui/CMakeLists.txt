@@ -30,7 +30,6 @@ set(qtproject_SRCS
   editactions.cpp
   ffeditor_funcs.cpp
   fileactions.cpp
-  forcefieldactions.cpp
   forcefields_funcs.cpp
   fragments_funcs.cpp
   geometry_funcs.cpp

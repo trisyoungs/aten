@@ -25,6 +25,7 @@
 #include "gui/celltransform.h"
 #include "gui/celldefinition.h"
 #include "gui/command.h"
+#include "gui/forcefields.h"
 #include "gui/fragments.h"
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
@@ -34,7 +35,6 @@
 #include "gui/toolbox.h"
 #include "gui/transform.h"
 #include "gui/md.h"
-#include "gui/minimiser.h"
 #include "gui/vibrations.h"
 
 // Constructor
@@ -78,6 +78,12 @@ void ToolBoxWidget::on_CommandButton_clicked(bool checked)
 	else gui.commandWidget->hide();
 }
 
+void ToolBoxWidget::on_ForcefieldsButton_clicked(bool checked)
+{
+	if (checked) gui.forcefieldsWidget->showWidget();
+	else gui.forcefieldsWidget->hide();
+}
+
 void ToolBoxWidget::on_FragmentsButton_clicked(bool checked)
 {
 	if (checked) gui.fragmentsWidget->showWidget();
@@ -106,12 +112,6 @@ void ToolBoxWidget::on_MDButton_clicked(bool checked)
 {
 	if (checked) gui.mdWidget->showWidget();
 	else gui.mdWidget->hide();
-}
-
-void ToolBoxWidget::on_MinimiserButton_clicked(bool checked)
-{
-	if (checked) gui.minimiserWidget->showWidget();
-	else gui.minimiserWidget->hide();
 }
 
 void ToolBoxWidget::on_PositionButton_clicked(bool checked)

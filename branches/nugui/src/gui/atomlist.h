@@ -92,8 +92,6 @@ class AtomListWidget : public QDockWidget
 	~AtomListWidget();
 	// Main form declaration
 	Ui::AtomListWidget ui;
-	// Friends
-	friend class AtomlistRefreshThread;
 };
 
 #endif

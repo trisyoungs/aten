@@ -49,12 +49,12 @@ class BuildWidget;
 class CellDefinitionWidget;
 class CellTransformWidget;
 class CommandWidget;
+class ForcefieldsWidget;
 class FragmentsWidget;
 class GeometryWidget;
 class GlyphsWidget;
 class GridsWidget;
 class MDWidget;
-class MinimiserWidget;
 class ModelListWidget;
 class PositionWidget;
 class SelectWidget;
@@ -162,6 +162,8 @@ class GuiQt
 	CellTransformWidget *cellTransformWidget;
 	// Command dock widget
 	CommandWidget *commandWidget;
+	// Forcefields dock widget
+	ForcefieldsWidget *forcefieldsWidget;
 	// Fragment Library dock widget
 	FragmentsWidget *fragmentsWidget;
 	// Geometry dock widget
@@ -172,8 +174,6 @@ class GuiQt
 	GridsWidget *gridsWidget;
 	// MD dock widget
 	MDWidget *mdWidget;
-	// Minimiser dock widget
-	MinimiserWidget *minimiserWidget;
 	// Model List dock widget
 	ModelListWidget *modelListWidget;
 	// Atom positioning dock widget

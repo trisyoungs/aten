@@ -1,6 +1,6 @@
 /*
-	*** Minimiser Dock Window
-	*** src/gui/minimiser.h
+	*** Forcefields Dock Window
+	*** src/gui/forcefields.h
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -22,13 +22,13 @@
 #ifndef ATEN_FORCEFIELDSWIDGET_H
 #define ATEN_FORCEFIELDSWIDGET_H
 
-#include "gui/ui_minimiser.h"
+#include "gui/ui_forcefields.h"
 
 // Forward Declarations
 class QFileDialog;
 
 // Minimiser window
-class MinimiserWidget : public QDockWidget
+class ForcefieldsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -88,10 +88,10 @@ class MinimiserWidget : public QDockWidget
 	*/
 	public:
 	// Constructor / Destructor
-	MinimiserWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~MinimiserWidget();
+	ForcefieldsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~ForcefieldsWidget();
 	// Main form declaration
-	Ui::MinimiserWidget ui;
+	Ui::ForcefieldsWidget ui;
 };
 
 #endif
