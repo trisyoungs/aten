@@ -116,6 +116,7 @@ GuiQt::GuiQt()
 	geometryWidget = NULL;
 	glyphsWidget = NULL;
 	gridsWidget = NULL;
+	modelListWidget = NULL;
 	mdWidget = NULL;
 	positionWidget = NULL;
 	toolBoxWidget = NULL;

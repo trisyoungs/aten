@@ -30,11 +30,12 @@
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
 #include "gui/grids.h"
+#include "gui/md.h"
+#include "gui/modellist.h"
 #include "gui/position.h"
 #include "gui/select.h"
 #include "gui/toolbox.h"
 #include "gui/transform.h"
-#include "gui/md.h"
 #include "gui/vibrations.h"
 
 // Constructor
@@ -106,6 +107,12 @@ void ToolBoxWidget::on_GlyphsButton_clicked(bool checked)
 {
 	if (checked) gui.glyphsWidget->showWidget();
 	else gui.glyphsWidget->hide();
+}
+
+void ToolBoxWidget::on_ModelListButton_clicked(bool checked)
+{
+	if (checked) gui.modelListWidget->showWidget();
+	else gui.modelListWidget->hide();
 }
 
 void ToolBoxWidget::on_MDButton_clicked(bool checked)
