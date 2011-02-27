@@ -19,14 +19,12 @@ set(qtproject_SRCS
   tlistwidgetitem.h 
   about_funcs.cpp
   atomlist_funcs.cpp
-  bondactions.cpp
   build_funcs.cpp
   celldefinition_funcs.cpp
   celltransform_funcs.cpp
   contextmenu_funcs.cpp
   command_funcs.cpp
   disorder_funcs.cpp
-  drawactions.cpp
   editactions.cpp
   ffeditor_funcs.cpp
   fileactions.cpp
@@ -42,7 +40,6 @@ set(qtproject_SRCS
   mainwindow_funcs.cpp
   mainwindow_init.cpp
   md_funcs.cpp
-  measureactions.cpp
   modelactions.cpp
   modellist_funcs.cpp
   mouseactions.cpp

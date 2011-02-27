@@ -1,5 +1,5 @@
 /*
-	*** Qt file actions
+	*** File Actions
 	*** src/gui/fileactions.cpp
 	Copyright T. Youngs 2007-2011
 

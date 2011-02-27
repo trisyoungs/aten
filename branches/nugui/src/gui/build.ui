@@ -904,7 +904,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="ElemenetPickButton">
+              <widget class="QPushButton" name="ElementPickButton">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>

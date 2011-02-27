@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -13,9 +14,8 @@
    height="100"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.48.1 r9760"
    version="1.0"
-   sodipodi:docbase="/home/tris/src/aten/src/gui-qt/icons"
    sodipodi:docname="traj_next.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
@@ -34,16 +34,7 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3216"
-       id="linearGradient3443"
-       gradientUnits="userSpaceOnUse"
-       x1="19.101948"
-       y1="65.918365"
-       x2="54.39883"
-       y2="65.918365" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3216"
-       id="linearGradient2172"
+       id="linearGradient4944"
        gradientUnits="userSpaceOnUse"
        x1="19.101948"
        y1="65.918365"
@@ -60,9 +51,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="6.7458388"
-     inkscape:cx="53.661123"
-     inkscape:cy="40.245021"
+     inkscape:zoom="3.3729194"
+     inkscape:cx="19.113348"
+     inkscape:cy="55.027057"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="100px"
@@ -70,7 +61,9 @@
      inkscape:window-width="1024"
      inkscape:window-height="714"
      inkscape:window-x="20"
-     inkscape:window-y="121" />
+     inkscape:window-y="121"
+     showgrid="false"
+     inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -86,9 +79,18 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path3246"
+       id="use2479"
+       transform="translate(-33.791265,0.39064996)"
+       width="100"
+       height="100"
+       style="fill:#000000;fill-opacity:1" />
     <path
        sodipodi:type="star"
-       style="fill:#e5e7e4;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.917;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.63393869;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
        id="path3246"
        sodipodi:sides="3"
        sodipodi:cx="31.020409"
@@ -100,11 +102,11 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="M 19.560448,46.069131 L 53.940331,65.918366 L 19.560448,85.7676 L 19.560448,46.069131 z "
-       transform="matrix(1.3517309,0,0,1.3517309,9.117001,-19.119853)" />
+       d="M 19.560448,46.069131 53.940331,65.918366 19.560448,85.7676 z"
+       transform="matrix(1.7810846,0,0,1.7810846,-0.85775512,-63.791968)" />
     <path
        sodipodi:type="star"
-       style="fill:url(#linearGradient2172);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.917;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.63393869;stroke-opacity:1"
+       style="fill:url(#linearGradient4944);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.917;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:2.63393869"
        id="path3234"
        sodipodi:sides="3"
        sodipodi:cx="31.020409"
@@ -116,22 +118,14 @@
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="M 19.560448,46.069131 L 53.940331,65.918366 L 19.560448,85.7676 L 19.560448,46.069131 z "
-       transform="matrix(1.3517309,0,0,1.3517309,23.547741,-39.106443)" />
-    <use
-       x="0"
-       y="0"
-       xlink:href="#path3246"
-       id="use2479"
-       transform="translate(-25.645439,0.2964791)"
-       width="100"
-       height="100" />
+       d="M 19.560448,46.069131 53.940331,65.918366 19.560448,85.7676 z"
+       transform="matrix(1.7810846,0,0,1.7810846,2.9212888,-70.594426)" />
     <use
        x="0"
        y="0"
        xlink:href="#path3234"
        id="use2475"
-       transform="translate(-25.793679,0)"
+       transform="translate(-33.986591,4.4468841e-8)"
        width="100"
        height="100" />
   </g>

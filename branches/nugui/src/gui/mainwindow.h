@@ -177,7 +177,6 @@ class AtenForm : public QMainWindow
 	void removeAtomLabels(bool all);
 	void setAtomHidden(bool hidden);
 	QAction *createGlyphActions[Glyph::nGlyphTypes];
-	void createGlyph();
 	private slots:
 	void on_actionAtomStyleStick_triggered(bool checked);
 	void on_actionAtomStyleTube_triggered(bool checked);
@@ -201,6 +200,7 @@ class AtenForm : public QMainWindow
 	void on_actionSetTorsionAngle_triggered(bool checked);
 	void on_actionCreateFragment_triggered(bool checked);
 	void on_actionCentreAtOrigin_triggered(bool checked);
+	void createGlyph();
 
 
 	/*
@@ -213,6 +213,8 @@ class AtenForm : public QMainWindow
 	void on_actionModelNext_triggered(bool checked);
 	void on_actionModelPrevious_triggered(bool checked);
 	void on_actionModelShowAll_triggered(bool checked);
+	void on_actionListMeasurements_triggered(bool checked);
+	void on_actionSaveMeasurements_triggered(bool checked);
 
 
 	/*
@@ -233,6 +235,7 @@ class AtenForm : public QMainWindow
 	private slots:
 	void on_actionPreferences_triggered(bool checked);
 	void on_actionReloadFilters_triggered(bool checked);
+	void on_actionShowToolBox_triggered(bool checked);
 
 
 	/*
@@ -264,18 +267,7 @@ class AtenForm : public QMainWindow
 	// XXXXXXXXXXXXX  All the following must be moved!
 	// XXXXXXXXXXXXX
 
-	/*
-	// Measure Actions   TGAY
-	*/
-	private slots:
-	void on_actionMeasureDistance_triggered(bool checked);
-	void on_actionMeasureAngle_triggered(bool checked);
-	void on_actionMeasureTorsion_triggered(bool checked);
-	void on_actionMeasureClearAll_triggered(bool checked);
-	void on_actionMeasureDistanceSelection_triggered(bool checked);
-	void on_actionMeasureAngleSelection_triggered(bool checked);
-	void on_actionMeasureTorsionSelection_triggered(bool checked);
-	void on_actionMeasureList_triggered(bool checked);
+
 
 
 

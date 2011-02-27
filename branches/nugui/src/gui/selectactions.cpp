@@ -1,5 +1,5 @@
 /*
-	*** Qt Select Actions
+	*** Select Actions
 	*** src/gui/selectactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -22,20 +22,19 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 
-/*
-// Select Toolbar
-*/
-
+// Enter basic atom selection mode
 void AtenForm::on_actionSelectAtoms_triggered(bool on)
 {
 	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectAction);
 }
 
+// Enter molecule selection mode
 void AtenForm::on_actionSelectMolecules_triggered(bool on)
 {
 	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectMoleculeAction);
 }
 
+// Enter element selection mode
 void AtenForm::on_actionSelectElement_triggered(bool on)
 {
 	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectElementAction);

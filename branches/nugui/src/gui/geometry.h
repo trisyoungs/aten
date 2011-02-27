@@ -37,12 +37,20 @@ class GeometryWidget : public QDockWidget
 	void showWidget();
 	void refresh();
 	private slots:
+	// Measure Tab
+	void on_MeasureDistanceSelectionButton_clicked(bool checked);
+	void on_MeasureAngleSelectionButton_clicked(bool checked);
+	void on_MeasureTorsionSelectionButton_clicked(bool checked);
+	void on_MeasureClearAllButton_clicked(bool checked);
+	// Distance Tab
 	void on_SetNewDistanceButton_clicked(bool checked);
 	void on_NudgeDistancePlusButton_clicked(bool checked);
 	void on_NudgeDistanceMinusButton_clicked(bool checked);
+	// Angle Tab
 	void on_SetNewAngleButton_clicked(bool checked);
 	void on_NudgeAnglePlusButton_clicked(bool checked);
 	void on_NudgeAngleMinusButton_clicked(bool checked);
+	// Torsion Tab
 	void on_SetNewTorsionButton_clicked(bool checked);
 	void on_NudgeTorsionPlusButton_clicked(bool checked);
 	void on_NudgeTorsionMinusButton_clicked(bool checked);

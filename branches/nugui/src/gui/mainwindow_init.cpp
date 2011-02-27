@@ -24,6 +24,7 @@
 #include "parser/tree.h"
 #include "gui/mainwindow.h"
 #include "gui/build.h"
+#include "gui/geometry.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include "gui/grids.h"
@@ -81,8 +82,7 @@ void AtenForm::finaliseUi()
 	group->addAction(ui.actionMouseTranslate);
 
 	// Hide some toolbars initially
-	ui.MeasureToolbar->setVisible(FALSE);
-	ui.TrajectoryToolbar->setVisible(FALSE);
+	ui.TrajectoryToolbar->setVisible(FALSE);    // TGAY
 
 	// Add extra widgets to trajectory toolbar
 	trajectorySlider_ = new QSlider(Qt::Horizontal, ui.TrajectoryToolbar);
@@ -138,42 +138,26 @@ void AtenForm::finaliseUi()
 	// Create master group for buttons that change user action modes
 	uaDummyButton_ = new QToolButton(this);
 	uaDummyButton_->setCheckable(TRUE);
+	uaDummyButton_->setVisible(FALSE);
 	uaButtons_.addButton(uaDummyButton_);
 	// -- From Build Dock Widget
 	uaButtons_.addButton(gui.buildWidget->ui.DrawAtomButton, UserAction::DrawAtomAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawChainButton, UserAction::DrawChainAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawFragmentButton, UserAction::DrawFragmentAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawDeleteAtomButton, UserAction::DrawDeleteAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawTransmuteButton, UserAction::DrawTransmuteAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawAddHButton, UserAction::DrawAddHydrogenAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawSingleBondButton, UserAction::DrawBondSingleAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawDoubleBondButton, UserAction::DrawBondDoubleAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawTripleBondButton, UserAction::DrawBondTripleAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawDeleteBondButton, UserAction::DrawDeleteBondAction);
-	// Select Toolbar
-// 	uaGroup->addAction(ui.actionSelectAtoms);
-// 	uaGroup->addAction(ui.actionSelectMolecules);
-// 	uaGroup->addAction(ui.actionSelectElement);
-	// Draw Toolbar
-// 	uaGroup->addAction(ui.actionDrawAtom);
-// 	uaGroup->addAction(ui.actionDrawChain);
-// 	uaGroup->addAction(ui.actionDrawFragment);
-// 	uaGroup->addAction(ui.actionDeleteAtom);
-// 	uaGroup->addAction(ui.actionTransmuteAtom);
-// 	uaGroup->addAction(ui.actionBondSingle);
-// 	uaGroup->addAction(ui.actionBondDouble);
-// 	uaGroup->addAction(ui.actionBondTriple);
-// 	uaGroup->addAction(ui.actionDeleteBond);
-// 	uaGroup->addAction(ui.actionAddHydrogenAtom);
-// 	uaGroup->addAction(ui.actionAtomProbe);
-// 	// Measure Toolbar
-// 	uaGroup->addAction(ui.actionMeasureDistance);
-// 	uaGroup->addAction(ui.actionMeasureAngle);
-// 	uaGroup->addAction(ui.actionMeasureTorsion);
+	// -- From Geometry Dock Widget
+	uaButtons_.addButton(gui.geometryWidget->ui.MeasureDistanceButton, UserAction::MeasureDistanceAction);
+	uaButtons_.addButton(gui.geometryWidget->ui.MeasureAngleButton, UserAction::MeasureAngleAction);
+	uaButtons_.addButton(gui.geometryWidget->ui.MeasureTorsionButton, UserAction::MeasureTorsionAction);
 	
 	// Connect buttonPressed signal of button group to our handler
-	QObject::connect(&uaButtons_, SIGNAL(buttonPressed(int id)), this, SLOT(uaButtonClicked(int id)));
-
-
+	QObject::connect(&uaButtons_, SIGNAL(buttonClicked(int)), this, SLOT(uaButtonClicked(int)));
 
 	/*
 	// Statusbar

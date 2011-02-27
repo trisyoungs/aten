@@ -49,7 +49,7 @@ void AtenZMatrix::showWindow()
 
 void AtenZMatrix::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionZMatrixEditorWindow->setChecked(FALSE);
+// 	gui.mainWindow->ui.actionZMatrixEditorWindow->setChecked(FALSE);   TGAY
 }
 
 // Refresh the zmatrix
@@ -257,7 +257,7 @@ void AtenZMatrix::on_ShiftUpButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::ShiftUp, "i", 1);
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
@@ -268,7 +268,7 @@ void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::ShiftDown, "i", 1);
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
@@ -279,7 +279,7 @@ void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::MoveToStart, "");
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
@@ -290,5 +290,5 @@ void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::MoveToEnd, "");
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }

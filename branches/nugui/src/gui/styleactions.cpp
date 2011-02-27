@@ -1,5 +1,5 @@
 /*
-	*** Qt draw style action functions
+	*** Style Actions
 	*** src/gui/styleactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -24,40 +24,42 @@
 #include "gui/gui.h"
 #include "model/model.h"
 
-/*
-// Draw style Actions
-*/
-
+// Set current rendering style to stick
 void AtenForm::on_actionStyleStick_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::StickStyle);
 	gui.mainWidget->postRedisplay();
 }
 
+// Set current rendering style to tube
 void AtenForm::on_actionStyleTube_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::TubeStyle);
 	gui.mainWidget->postRedisplay();
 }
 
+// Set current rendering style to sphere
 void AtenForm::on_actionStyleSphere_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::SphereStyle);
 	gui.mainWidget->postRedisplay();
 }
 
+// Set current rendering style to scaled
 void AtenForm::on_actionStyleScaled_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::ScaledStyle);
 	gui.mainWidget->postRedisplay();
 }
 
+// Set current rendering style to individual
 void AtenForm::on_actionStyleIndividual_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::IndividualStyle);
 	gui.mainWidget->postRedisplay();
 }
 
+// Set corresponding action to supplied Atom::DrawStyle
 void AtenForm::setActiveStyleAction(Atom::DrawStyle ds)
 {
 	if (ds == Atom::StickStyle) ui.actionStyleStick->setChecked(TRUE);

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,9 +15,8 @@
    height="100"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.48.1 r9760"
    sodipodi:docname="select_all.svg"
-   sodipodi:docbase="/home/tris/src/aten/src/gui-qt/icons"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <metadata
      id="metadata2566">
@@ -42,11 +42,13 @@
      pagecolor="#ffffff"
      id="base"
      inkscape:zoom="2.505"
-     inkscape:cx="-7.9096221"
+     inkscape:cx="3.4596624"
      inkscape:cy="75.371744"
      inkscape:window-x="5"
      inkscape:window-y="29"
-     inkscape:current-layer="svg2" />
+     inkscape:current-layer="svg2"
+     showgrid="false"
+     inkscape:window-maximized="0" />
   <defs
      id="defs4">
     <radialGradient
@@ -98,7 +100,7 @@
      transform="matrix(1.5215343,0,0,1.5215343,-12.933513,-10.008492)">
     <path
        d="M 35.79613,34.309543 C 31.514364,38.592808 24.570847,38.593416 20.288332,34.3109 C 16.005816,30.028385 16.006424,23.084868 20.28969,18.803102 C 24.571455,14.519836 31.514972,14.519228 35.797488,18.801744 C 40.080003,23.08426 40.079395,30.027777 35.79613,34.309543 L 35.79613,34.309543 z "
-       style="opacity:1;fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="opacity:1;fill:#c5c1c2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="path3390" />
     <g
        transform="matrix(0.688562,0,0,0.688562,-8.9406523,-2.1904593)"
@@ -134,17 +136,10 @@
      width="100"
      height="100" />
   <rect
-     style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#282828;stroke-width:3.20253754;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6.40507497, 3.20253749;stroke-dashoffset:0;stroke-opacity:1"
-     id="rect4726"
-     width="93.276093"
-     height="93.536499"
-     x="4.9849653"
-     y="5.0202103" />
-  <rect
-     style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.20915413;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6.41830834, 3.20915417;stroke-dashoffset:0;stroke-opacity:1"
+     style="fill:none;stroke:#000000;stroke-width:3.28844762;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:6.57689519, 3.2884476;stroke-dashoffset:0"
      id="rect4688"
-     width="93.46907"
-     height="93.729485"
-     x="1.8452083"
-     y="1.8143114" />
+     width="95.778549"
+     height="96.045403"
+     x="1.884855"
+     y="1.8539581" />
 </svg>

@@ -432,16 +432,11 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	}
 	
 	// If previous action was a Pick action then finalise it first
-	if (selectedMode_ >= UserAction::PickPositionVectorAction)
+	if (selectedMode_ >= UserAction::PickPositionVectorShiftAction)
 	{
 		// If a previous callback was defined then call it before we move on
 		if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
 		pickAtomsCallback_ = NULL;
-		/*if (resetaction)
-		{
-			if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->activate(QAction::Trigger);
-			else actionBeforePick_->activate(QAction::Trigger);
-		}*/
 		pickedAtoms_.clear();
 		nAtomsToPick_ = -1;
 	}
@@ -457,7 +452,7 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	// Prepare canvas for the selected action
 	switch (ua)
 	{
-		case (UserAction::PickPositionVectorAction):
+		case (UserAction::PickPositionVectorShiftAction):
 		case (UserAction::PickTransformRotateAxisAction):
 		case (UserAction::PickTransformDefineAAction):
 		case (UserAction::PickTransformDefineBAction):
@@ -904,8 +899,8 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		case (UserAction::TranslateAction):
 		case (UserAction::ZoomAction):
 			break;
-		// Manual picking modes (for toolwindow axis definitions etc.)
-		case (UserAction::PickPositionVectorAction):
+		// Manual picking modes (for axis definitions etc.)
+		case (UserAction::PickPositionVectorShiftAction):
 		case (UserAction::PickTransformRotateAxisAction):
 		case (UserAction::PickTransformDefineAAction):
 		case (UserAction::PickTransformDefineBAction):

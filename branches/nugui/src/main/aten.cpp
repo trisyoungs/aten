@@ -149,14 +149,11 @@ void Aten::setCurrentModel(Model *m)
 	current.p = m->patterns();
 	current.g = m->grids();
 	current.i = NULL;
-	// Set the title of the main window to reflect the version
-	Dnchar title;
-	title.sprintf("Aten (%s) - %s [%s]", ATENVERSION, current.m->name(), current.m->filename());
-	if (gui.exists())
-	{
-		gui.mainWindow->setWindowTitle(title.get());
-		gui.gridsWidget->refresh();
-	}
+	
+	// Update GUI
+	gui.modelListWidget->refresh();
+	gui.update(GuiQt::AllTarget);
+
 	msg.exit("Aten::setCurrentModel");
 }
 
@@ -292,7 +289,7 @@ void Aten::removeModel(Model *xmodel)
 	int id = models_.indexOf(xmodel);
 	models_.remove(xmodel);
 	gui.modelListWidget->refresh();
-	gui.disorderWindow->refresh();
+	gui.update(GuiQt::AllTarget);
 	msg.exit("Aten::removeModel");
 }
 

@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: Qt Settings
+	*** Qt Settings Load/Save
 	*** src/gui/settings.cpp
 	Copyright T. Youngs 2007-2011
 

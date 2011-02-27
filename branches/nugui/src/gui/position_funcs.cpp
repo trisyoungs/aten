@@ -66,7 +66,7 @@ void PositionWidget::on_FlipZButton_clicked(bool checked)
 void PositionWidget::flipSelection(int axis)
 {
 	CommandNode::run(Command::Mirror, "i", axis);
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 /*
@@ -87,7 +87,7 @@ void PositionWidget::on_CentreSelectionButton_clicked(bool checked)
 	Vec3<double> centre(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	Vec3<int> lock(ui.CentreLockXCheck->isChecked(), ui.CentreLockYCheck->isChecked(), ui.CentreLockZCheck->isChecked());
 	CommandNode::run(Command::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 /*
@@ -160,7 +160,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 	}
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 /*
@@ -182,7 +182,7 @@ void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 void PositionWidget::on_DefineVectorButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&shiftPickAxisButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickPositionVectorShiftAction,2,&shiftPickAxisButton_callback);
 }
 
 void PositionWidget::on_NormaliseVectorButton_clicked(bool on)
@@ -237,7 +237,7 @@ void PositionWidget::on_VectorShiftPositiveButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void PositionWidget::on_VectorShiftNegativeButton_clicked(bool checked)
@@ -252,7 +252,7 @@ void PositionWidget::on_VectorShiftNegativeButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 /*
@@ -270,7 +270,7 @@ void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void PositionWidget::on_DefineRepositionReferenceButton_clicked(bool on)

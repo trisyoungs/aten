@@ -97,7 +97,7 @@ void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_RotatePickAxisButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&rotatePickAxisButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickTransformRotateAxisAction,2,&rotatePickAxisButton_callback);
 }
 
 void TransformWidget::rotateSelection(double direction)
@@ -112,7 +112,7 @@ void TransformWidget::rotateSelection(double direction)
 	CommandNode::run(Command::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
 	Model *m = aten.currentModelOrFrame();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 /*
@@ -132,7 +132,7 @@ void TransformWidget::on_TransformApplyButton_clicked(bool on)
 	CommandNode::run(Command::MatrixTransform, "dddddddddddd", mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], v.x, v.y, v.z);
 
 	aten.currentModelOrFrame()->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void transformDefineAButton_callback(Reflist<Atom,int> *picked)
@@ -177,19 +177,19 @@ void transformDefineCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_TransformDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&transformDefineAButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineAAction,2,&transformDefineAButton_callback);
 }
 
 void TransformWidget::on_TransformDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&transformDefineBButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineBAction,2,&transformDefineBButton_callback);
 }
 
 void TransformWidget::on_TransformDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&transformDefineCButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineCAction,2,&transformDefineCButton_callback);
 }
 
 void TransformWidget::on_TransformNormaliseAButton_clicked(bool on)
@@ -343,8 +343,7 @@ void TransformWidget::on_ConvertRotateIntoButton_clicked(bool on)
 	CommandNode::run(Command::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[4], source[5], source[6], source[8], source[9], source[10], target[0], target[1], target[2], target[4], target[5], target[6], target[8], target[9], target[10], v.x, v.y, v.z);
 
 	aten.currentModelOrFrame()->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
-	gui.mainWidget->postRedisplay();
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void convertDefineSourceAButton_callback(Reflist<Atom,int> *picked)
@@ -389,19 +388,19 @@ void convertDefineSourceCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_ConvertSourceDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertDefineSourceAButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceAAction,2,&convertDefineSourceAButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertDefineSourceBButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceBAction,2,&convertDefineSourceBButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertDefineSourceCButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceCAction,2,&convertDefineSourceCButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool on)
@@ -576,19 +575,19 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_ConvertTargetDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertTargetDefineAButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetAAction,2,&convertTargetDefineAButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertTargetDefineBButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetBAction,2,&convertTargetDefineBButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertTargetDefineCButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetCAction,2,&convertTargetDefineCButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool on)

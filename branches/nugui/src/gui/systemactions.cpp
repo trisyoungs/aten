@@ -1,5 +1,5 @@
 /*
-	*** Qt system actions
+	*** System Actions
 	*** src/gui/systemactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -24,13 +24,16 @@
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
+#include "gui/toolbox.h"
 
+// Show preferences window
 void AtenForm::on_actionPreferences_triggered(bool checked)
 {
 	gui.prefsDialog->setControls();
 	gui.prefsDialog->exec();
 }
 
+// Reload all filters
 void AtenForm::on_actionReloadFilters_triggered(bool checked)
 {
 	if (aten.reloadFilters() > 0)
@@ -39,4 +42,12 @@ void AtenForm::on_actionReloadFilters_triggered(bool checked)
 	}
 	createDialogFilters();
 	gui.loadModelDialog->setControls();
+}
+
+// Show main ToolBox
+void AtenForm::on_actionShowToolBox_triggered(bool checked)
+{
+	gui.toolBoxWidget->setVisible(TRUE);
+	gui.toolBoxWidget->setFloating(TRUE);
+// 	gui.toolBoxWidget->
 }

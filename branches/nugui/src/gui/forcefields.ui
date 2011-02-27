@@ -41,7 +41,7 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QComboBox" name="ForcefieldsCombo"/>
+         <widget class="QComboBox" name="ForcefieldCombo"/>
         </item>
         <item>
          <layout class="QHBoxLayout" name="_2">
@@ -282,7 +282,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="CalculateEnergyButton">
+           <widget class="QPushButton" name="CurrentEnergyButton">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -305,7 +305,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="CalculateForcesButton">
+           <widget class="QPushButton" name="CurrentForcesButton">
             <property name="minimumSize">
              <size>
               <width>0</width>

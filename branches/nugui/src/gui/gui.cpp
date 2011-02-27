@@ -88,7 +88,6 @@ const char *GuiQt::bitmapFormatExtension(GuiQt::BitmapFormat bf)
 GuiQt::GuiQt()
 {
 	doesExist_ = FALSE;
-	isAvailable_ = FALSE;
 	trajectoryPlaying_ = FALSE;
 	trajectoryTimerId_ = -1;
 	app = NULL;

@@ -1,6 +1,6 @@
 /*
-	*** Qt trajectory actions
-	*** src/gui/action_funcs.cpp
+	*** Trajectory Actions
+	*** src/gui/trajectoryactions.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -25,13 +25,9 @@
 #include "gui/tcanvas.uih"
 #include "model/model.h"
 
-/*
-// Trajectory Actions
-*/
-
+// Switch render focus from the model to the trajectory (or vice versa)
 void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 {
-	// Switch render focus from the model to the trajectory (or vice versa)
 	if (checked) aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	else aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
@@ -39,6 +35,7 @@ void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 	gui.update(GuiQt::AllTarget);
 }
 
+// Skip to next frame in trajectory
 void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekNextTrajectoryFrame();
@@ -46,6 +43,7 @@ void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
 	gui.update(GuiQt::AllTarget);
 }
 
+// Skip to previous frame in trajectory
 void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekPreviousTrajectoryFrame();
@@ -53,6 +51,7 @@ void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
 	gui.update(GuiQt::AllTarget);
 }
 
+// Skip to first frame in trajectory
 void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstTrajectoryFrame();
@@ -60,6 +59,7 @@ void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 	gui.update(GuiQt::AllTarget);
 }
 
+// Skip to last frame in trajectory
 void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekLastTrajectoryFrame();
@@ -67,6 +67,7 @@ void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 	gui.update(GuiQt::AllTarget);
 }
 
+// Play/pause trajectory playback
 void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 {
 	// If button is depressed, begin playback
@@ -85,6 +86,7 @@ void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 	updateTrajectoryControls();
 }
 
+// Frame position slider adjusted
 void AtenForm::trajectorySlider_sliderMoved(int i)
 {
 	if (trajectoryToolbarRefreshing_) return;
@@ -97,6 +99,7 @@ void AtenForm::trajectorySlider_sliderMoved(int i)
 	gui.mainWidget->postRedisplay();
 }
 
+// Frame spinbox value adjusted
 void AtenForm::trajectorySpin_valueChanged(int i)
 {
 	if (trajectoryToolbarRefreshing_) return;
@@ -108,3 +111,4 @@ void AtenForm::trajectorySpin_valueChanged(int i)
 	trajectoryToolbarRefreshing_ = FALSE;
 	gui.mainWidget->postRedisplay();
 }
+

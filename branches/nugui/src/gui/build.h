@@ -54,7 +54,6 @@ class BuildWidget : public QDockWidget
 	// Tools Tab - Add Atom
 	void on_AddAtomButton_clicked(bool checked);
 	// Options Tab
-	void on_PreventFoldCheck_clicked(bool checked);
 	protected:
 	void closeEvent(QCloseEvent *event);
 

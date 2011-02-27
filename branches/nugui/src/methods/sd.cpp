@@ -137,7 +137,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update(FALSE, FALSE, FALSE, FALSE);
+		if (prefs.shouldUpdateModel(cycle+1)) gui.update();
 
 		if (lineDone || converged) break;
 	}
@@ -152,6 +152,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 // 	srcmodel->calculateForces(srcmodel);
 	srcmodel->updateMeasurements();
 	srcmodel->changeLog.add(Log::Coordinates);
+	
 	msg.exit("MethodSd::minimise");
 }
 

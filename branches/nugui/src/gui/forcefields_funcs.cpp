@@ -99,13 +99,13 @@ void ForcefieldsWidget::refresh()
 		if (ff == aten.defaultForcefield()) def = n;
 		slist << ff->name();
 	}
-	ui.ForcefieldsCombo->clear();
-	ui.ForcefieldsCombo->addItems(slist);
-	ui.ForcefieldsCombo->setEnabled( n == 0 ? FALSE : TRUE );
+	ui.ForcefieldCombo->clear();
+	ui.ForcefieldCombo->addItems(slist);
+	ui.ForcefieldCombo->setEnabled( n == 0 ? FALSE : TRUE );
 	
 	// Select whichever forcefield is marked as the default
-	if (def != -1) ui.ForcefieldsCombo->setCurrentIndex(def);
-	else ui.ForcefieldsCombo->setCurrentIndex(0);
+	if (def != -1) ui.ForcefieldCombo->setCurrentIndex(def);
+	else ui.ForcefieldCombo->setCurrentIndex(0);
 	
 	// Is a valid current forcefield selected?
 	if (aten.currentForcefield() == NULL)
@@ -259,13 +259,11 @@ void ForcefieldsWidget::on_CurrentForcesButton_clicked(bool checked)
 {
 	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelForces, "");
 	else CommandNode::run(Command::FrameForces, "");
-	gui.update(FALSE,FALSE,FALSE,FALSE,FALSE);
 }
 
 void ForcefieldsWidget::on_MinimiseButton_clicked(bool checked)
 {
 	doMinimisation();
-	gui.update();
 }
 
 void ForcefieldsWidget::doMinimisation()
@@ -300,7 +298,7 @@ void ForcefieldsWidget::doMinimisation()
 			break;
 	}
 	// Update the view
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 /*

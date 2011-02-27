@@ -100,9 +100,7 @@ bool Command::function_DeleteModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 
 	if (m != NULL) 
 	{
-		// If the selected model 
 		aten.removeModel(m);
-		gui.update(FALSE, FALSE, FALSE);
 		return TRUE;
 	}
 	else
@@ -179,7 +177,6 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(m);
 		m->setRenderSource(Model::ModelSource);
-		gui.update(FALSE, FALSE, FALSE);
 		obj.p = NULL;
 		obj.i = m->atoms();
 		return TRUE;

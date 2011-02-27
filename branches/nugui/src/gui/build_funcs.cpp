@@ -23,6 +23,7 @@
 #include "gui/mainwindow.h"
 #include "gui/build.h"
 #include "gui/toolbox.h"
+#include "gui/selectelement.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"

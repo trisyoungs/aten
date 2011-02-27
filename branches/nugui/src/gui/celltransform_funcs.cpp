@@ -133,7 +133,7 @@ void CellTransformWidget::on_CellScaleButton_clicked(bool checked)
 {
 	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::ScaleMolecules, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
 	else CommandNode::run(Command::Scale, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
-	gui.update(FALSE,TRUE,FALSE);
+	gui.update(GuiQt::AtomsTarget+GuiQt::CellTarget);
 }
 
 /*
@@ -176,13 +176,13 @@ void CellTransformWidget::on_CellRotateZAnticlockwise_clicked(bool checked)
 void CellTransformWidget::on_MillerCutButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
-	gui.update(FALSE,TRUE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void CellTransformWidget::on_MillerSelectButton_clicked(bool checked)
 {
 	CommandNode::run(Command::SelectMiller, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
-	gui.update(FALSE,TRUE,FALSE);
+	gui.update(GuiQt::AtomsTarget);
 }
 
 void CellTransformWidget::on_MillerHSpin_valueChanged(int value)

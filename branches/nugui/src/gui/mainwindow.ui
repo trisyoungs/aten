@@ -44,6 +44,9 @@
   </property>
   <widget class="QWidget" name="MainWindowLayout">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QFrame" name="ViewFrame">
       <property name="frameShape">
@@ -72,6 +75,7 @@
     <addaction name="actionPreferences"/>
     <addaction name="separator"/>
     <addaction name="actionReloadFilters"/>
+    <addaction name="actionShowToolBox"/>
    </widget>
    <widget class="QMenu" name="FileMenu">
     <property name="title">
@@ -182,26 +186,18 @@
     <property name="title">
      <string>&amp;Model</string>
     </property>
-    <widget class="QMenu" name="menuMeasurements">
-     <property name="title">
-      <string>Measurements</string>
-     </property>
-     <addaction name="actionMeasureClearAll"/>
-     <addaction name="actionMeasureList"/>
-     <addaction name="actionMeasureSaveToFile"/>
-    </widget>
     <addaction name="actionModelRename"/>
     <addaction name="separator"/>
-    <addaction name="menuMeasurements"/>
+    <addaction name="actionListMeasurements"/>
+    <addaction name="actionSaveMeasurements"/>
     <addaction name="separator"/>
     <addaction name="actionModelFoldAtoms"/>
     <addaction name="actionModelFoldMolecules"/>
     <addaction name="separator"/>
-    <addaction name="actionModelNext"/>
-    <addaction name="actionModelPrevious"/>
-    <addaction name="separator"/>
     <addaction name="actionModelShowAll"/>
     <addaction name="separator"/>
+    <addaction name="actionModelNext"/>
+    <addaction name="actionModelPrevious"/>
    </widget>
    <widget class="QMenu" name="AtomContextMenu">
     <property name="title">
@@ -301,7 +297,7 @@
     <string>File / Model</string>
    </property>
    <property name="movable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -314,6 +310,9 @@
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonIconOnly</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -359,8 +358,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>24</width>
-     <height>24</height>
+     <width>20</width>
+     <height>20</height>
     </size>
    </property>
    <attribute name="toolBarArea">
@@ -385,31 +384,8 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>24</width>
-     <height>24</height>
-    </size>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>true</bool>
-   </attribute>
-   <addaction name="actionMouseInteract"/>
-   <addaction name="actionMouseRotate"/>
-   <addaction name="actionMouseTranslate"/>
-  </widget>
-  <widget class="QToolBar" name="MeasureToolbar">
-   <property name="windowTitle">
-    <string>Measure</string>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>24</width>
-     <height>24</height>
+     <width>20</width>
+     <height>20</height>
     </size>
    </property>
    <attribute name="toolBarArea">
@@ -418,14 +394,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionMeasureDistance"/>
-   <addaction name="actionMeasureAngle"/>
-   <addaction name="actionMeasureTorsion"/>
-   <addaction name="separator"/>
-   <addaction name="actionMeasureDistanceSelection"/>
-   <addaction name="actionMeasureAngleSelection"/>
-   <addaction name="actionMeasureTorsionSelection"/>
-   <addaction name="actionMeasureClearAll"/>
+   <addaction name="actionMouseInteract"/>
+   <addaction name="actionMouseRotate"/>
+   <addaction name="actionMouseTranslate"/>
   </widget>
   <action name="actionFileOpen">
    <property name="icon">
@@ -785,42 +756,6 @@
    </property>
    <property name="toolTip">
     <string>Expand current selection by one step along bonds</string>
-   </property>
-  </action>
-  <action name="actionMeasureDistance">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/geometry/icons/measure_distance.svg</normaloff>:/geometry/icons/measure_distance.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Measure Distance</string>
-   </property>
-  </action>
-  <action name="actionMeasureAngle">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/geometry/icons/measure_angle.svg</normaloff>:/geometry/icons/measure_angle.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Measure Angle</string>
-   </property>
-  </action>
-  <action name="actionMeasureTorsion">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Measure Torsion</string>
    </property>
   </action>
   <action name="actionViewReset">
@@ -1378,51 +1313,6 @@
     <string>Probe individual atoms</string>
    </property>
   </action>
-  <action name="actionMeasureDistanceSelection">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/geometry/icons/measure_distancesel.svg</normaloff>:/geometry/icons/measure_distancesel.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Measure Distances in Selection</string>
-   </property>
-   <property name="toolTip">
-    <string>Measure all bond distances in selection</string>
-   </property>
-  </action>
-  <action name="actionMeasureAngleSelection">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/geometry/icons/measure_anglesel.svg</normaloff>:/geometry/icons/measure_anglesel.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Measure Angles in Selection</string>
-   </property>
-   <property name="toolTip">
-    <string>Measure all bond angles in selection</string>
-   </property>
-  </action>
-  <action name="actionMeasureTorsionSelection">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/geometry/icons/measure_torsionsel.svg</normaloff>:/geometry/icons/measure_torsionsel.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Measure Torsions in Selection</string>
-   </property>
-   <property name="toolTip">
-    <string>Measure all torsion angles in selection</string>
-   </property>
-  </action>
-  <action name="actionMeasureClearAll">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Clear</string>
-   </property>
-  </action>
   <action name="actionLoadForcefield">
    <property name="icon">
     <iconset resource="icons.qrc">
@@ -1441,21 +1331,6 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actionDisorderWindow">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_disorder.svg</normaloff>:/stackicons/icons/stack_disorder.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Disorder</string>
-   </property>
-   <property name="toolTip">
-    <string>Show / hide disordered builder window</string>
-   </property>
-  </action>
   <action name="actionAboutQt">
    <property name="text">
     <string>About Qt</string>
@@ -1471,13 +1346,13 @@
     <string>Reload Filters</string>
    </property>
   </action>
-  <action name="actionMeasureList">
+  <action name="actionListMeasurements">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/geometry/icons/measure_list.svg</normaloff>:/geometry/icons/measure_list.svg</iconset>
    </property>
    <property name="text">
-    <string>List</string>
+    <string>List Measurements</string>
    </property>
    <property name="iconText">
     <string>List Measurements</string>
@@ -1526,13 +1401,13 @@
     <string>Free Position</string>
    </property>
   </action>
-  <action name="actionMeasureSaveToFile">
+  <action name="actionSaveMeasurements">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
    </property>
    <property name="text">
-    <string>Save To File</string>
+    <string>Save Measurements</string>
    </property>
   </action>
   <action name="actionSetBondLength">
@@ -1626,6 +1501,26 @@
   <action name="actionNoAction">
    <property name="text">
     <string>Null</string>
+   </property>
+  </action>
+  <action name="actionShowToolBox">
+   <property name="text">
+    <string>Show ToolBox</string>
+   </property>
+  </action>
+  <action name="actionDisorderWindow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/stackicons/icons/stack_disorder.svg</normaloff>:/stackicons/icons/stack_disorder.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Disorder</string>
+   </property>
+   <property name="toolTip">
+    <string>Show / hide disordered builder window</string>
    </property>
   </action>
  </widget>

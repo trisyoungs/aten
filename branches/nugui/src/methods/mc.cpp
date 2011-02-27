@@ -316,7 +316,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			//msg.print("\n");
 		}
 		
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update(FALSE, FALSE, FALSE, FALSE);
+		if (prefs.shouldUpdateModel(cycle+1)) gui.update();
 		
 		elast = ecurrent;
 

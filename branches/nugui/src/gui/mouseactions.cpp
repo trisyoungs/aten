@@ -1,5 +1,5 @@
 /*
-	*** Qt Mouse Actions
+	*** Mouse Actions
 	*** src/gui/mouseactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -22,10 +22,6 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "classes/prefs.h"
-
-/*
-// Mouse Toolbar
-*/
 
 void AtenForm::on_actionMouseInteract_triggered(bool checked)
 {

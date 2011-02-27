@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: Editing actions
+	*** Edit Actions
 	*** src/gui/editactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -83,6 +83,10 @@ void AtenForm::on_actionEditDelete_triggered(bool checked)
 	CommandNode::run(Command::Delete, "");
 	gui.update(GuiQt::AtomsTarget);
 }
+
+/*
+// Selection
+*/
 
 void AtenForm::on_actionSelectionAll_triggered(bool checked)
 {
