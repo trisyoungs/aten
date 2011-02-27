@@ -508,8 +508,6 @@
 		<listitem>
 			<para>Fixed - Drawing of oriented (not anchored) fragments was broken.</para>
 		</listitem>
-		<listitem>
-			<para>
 	</itemizedlist>
 
 	<para><emphasis>Revision 1446</emphasis></para>
@@ -527,7 +525,7 @@
 			<para>Fixed - Display of multiple bonds in global stick style not working.</para>
 		</listitem>
 		<listitem>
-			<para>Removed unused Vec3<T>::rotate() method.</para>
+			<para>Removed unused Vec3&lt;T&gt;::rotate() method.</para>
 		</listitem>
 	</itemizedlist>
 
@@ -576,7 +574,7 @@
 	<para><emphasis>Revision 1442</emphasis></para>
 	<itemizedlist mark='opencircle'>
 		<listitem>
-			<para>Added Vec3<T>::abs() method to return absolute vector of elements.</para>
+			<para>Added Vec3&lt;T&gt;::abs() method to return absolute vector of elements.</para>
 		</listitem>
 		<listitem>
 			<para>Fixed - Hang on startup caused by Model::resetView when using an orthographic projection.</para>
@@ -861,7 +859,8 @@
 			<para>Changed Prefs::updateEnergy*() routines to return FALSE on first step.</para>
 		</listitem>
 		<listitem>
-			<para>Corrected output of CG minimiser which was printing RMS force instead of total energy on Init step,
+			<para>Corrected output of CG minimiser which was printing RMS force instead of total energy on Init step.</para>
+		</listitem>
 	</itemizedlist>
 
 	<para><emphasis>Revision 1347</emphasis></para>
@@ -982,7 +981,7 @@
 			<para>Added in ability to utilise defined ImportExpression filters from the GUI.</para>
 		</listitem>
 		<listitem>
-			<para>Fixed - Improper return value in Maat3<T>::element() function.</para>
+			<para>Fixed - Improper return value in Maat3&lt;T&gt;::element() function.</para>
 		</listitem>
 	</itemizedlist>
 
@@ -1337,11 +1336,6 @@
 			<para>Reinstated Scripts menu, linked to contents of Command/Script window (partial).</para>
 		</listitem>
 	</itemizedlist>
-
-	<para><emphasis>Revision 1309</emphasis></para>
-	<itemizedlist mark='opencircle'>
-		<listitem>
-			<para>	</itemizedlist>
 
 	<para><emphasis>Revision 1308</emphasis></para>
 	<itemizedlist mark='opencircle'>
@@ -2122,11 +2116,6 @@
 		</listitem>
 	</itemizedlist>
 
-	<para><emphasis>Revision 1248</emphasis></para>
-	<itemizedlist mark='opencircle'>
-		<listitem>
-			<para>	</itemizedlist>
-
 	<para><emphasis>Revision 1247</emphasis></para>
 	<itemizedlist mark='opencircle'>
 		<listitem>
@@ -2714,8 +2703,6 @@
 		<listitem>
 			<para>Fixed - CLI options '--nofragments' and '--nofragmenticons' had no effect.</para>
 		</listitem>
-		<listitem>
-			<para>
 	</itemizedlist>
 
 	<para><emphasis>Revision 1200</emphasis></para>
@@ -2734,7 +2721,7 @@
 			<para>Removed debug output from cif filter.</para>
 		</listitem>
 		<listitem>
-			<para>Fixed - Hideous bug in Mat4<T> *= T which was using an out-of-bounds array index.</para>
+			<para>Fixed - Hideous bug in Mat4&lt;T&gt; *= T which was using an out-of-bounds array index.</para>
 		</listitem>
 		<listitem>
 			<para>Fixed - Free rotation of selection about its centre of geometry was broken when the view was rotated.</para>
