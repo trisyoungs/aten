@@ -148,6 +148,7 @@
 	<!ENTITY changelog13 SYSTEM "changelogs/changelog1.3.xml">
 	<!ENTITY changelog14 SYSTEM "changelogs/changelog1.4.xml">
 	<!ENTITY changelog15 SYSTEM "changelogs/changelog1.5.xml">
+	<!ENTITY changelog16 SYSTEM "changelogs/changelog1.6.xml">
 ]>
 
 <book>
@@ -409,6 +410,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 		&changelog13;
 		&changelog14;
 		&changelog15;
+		&changelog16;
 	</chapter>
 
 	<!-- Index -->
