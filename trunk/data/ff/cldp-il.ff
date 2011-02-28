@@ -68,9 +68,9 @@ types
 163	OBT	O	"nbonds=1,=&162"				
 164	NBT	N	"nbonds=2,-S,-S"
 # Dicyanamide
-170	N3	N	"nbonds=2,-C(n=2,-N(bond=triple))"
-171	CZA	C	"nbonds=2,-N(-C(-N(bond=triple))),-N(nbonds=1,bond=triple)"
-172	NZA	N	"nbonds=1,-C(bond=triple,-N(-C(-N(bond=triple))))"
+170	N3	N	"nbonds=2,~C(n=2)"
+171	CZA	C	"nbonds=2,~&170,~N(nbonds=1)"
+172	NZA	N	"~&171"
 #
 # Extra params (CYANOPYRIDINIUM / MethylNapthalene)
 #
