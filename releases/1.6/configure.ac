@@ -36,7 +36,7 @@ AC_PROG_YACC
 QTMOC="moc"
 QTRCC="rcc"
 QTUIC="uic"
-QTVERSION=""
+QTVERSION="1"
 AC_ARG_WITH([qtmoc],[AC_HELP_STRING([--with-qtmoc=<executable>],
     [Specify Qt4 Meta-Object Compiler tool (moc) [default="moc"]])], ,
     [with_qtmoc="moc"])
@@ -47,8 +47,8 @@ AC_ARG_WITH([qtrcc],[AC_HELP_STRING([--with-qtrcc=<executable],
     [Specify Qt4 Resource Compiler tool (rcc) [default="rcc"]])], ,
     [with_qtrcc="rcc"])
 AC_ARG_WITH([qtversion],[AC_HELP_STRING([--with-qtversion=<version>],
-    [Specify version of Qt4 to account for [default=""]])], ,
-    [with_qtversion=""])
+    [Specify version of Qt4 to account for [default="1"]])], ,
+    [with_qtversion="1"])
 QTMOC="$with_qtmoc"
 QTRCC="$with_qtrcc"
 QTUIC="$with_qtuic"
@@ -115,9 +115,7 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
 GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses"
-GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
-if test "x$with_qtversion" != "x"; then
-  GUI_CFLAGS="$GUI_CFLAGS -DATENQTVERSION=$QTVERSION"
+GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR -DATENQTVERSION=$QTVERSION"
 fi
 
 
