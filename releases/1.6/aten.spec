@@ -41,12 +41,15 @@ BuildRequires: libqt4 libqt4-devel Mesa-devel readline-devel
 %endif
 
 # For SLES-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
-%if 0%{?sles_version}
+%if 0%{?sles_version} == 11
 BuildRequires: Mesa-devel libqt4 libqt4-devel readline-devel
+%endif
+%if 0%{?sles_version} == 10
+BuildRequires: Mesa-devel libqt4-devel readline-devel qt4
 %endif
 
 # For RedHat-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
-%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
+%if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
 BuildRequires: Mesa-devel qt4 qt4-devel readline-devel
 %endif
 
@@ -71,6 +74,11 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr 
 %endif
 
+%if 0%{?sles_version}
+./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr 
+%endif
+
+
 %if 0%{?mandriva_version}
     %ifarch x86_64
         ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic
@@ -79,10 +87,12 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
     %endif
 %endif
 
-%if 0%{?fedora_version}
+%if 0%{?fedora}
     %ifarch x86_64
+        export LDFLAGS="-lGL"
         ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=moc-qt4 --with-qtrcc=rcc --with-qtuic=uic-qt4
     %else
+        export LDFLAGS="-lGL"
         ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=moc-qt4 --with-qtrcc=rcc --with-qtuic=uic-qt4
     %endif
 %endif
