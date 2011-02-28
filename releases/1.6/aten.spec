@@ -89,17 +89,17 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 
 %if 0%{?rhel_version}
     %ifarch x86_64
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic --with-qtversion=42
     %else
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic --with-qtversion=42
     %endif
 %endif
 
 %if 0%{?centos_version}
     %ifarch x86_64
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic --with-qtversion=42
     %else
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic --with-qtversion=42
     %endif
 %endif
 
