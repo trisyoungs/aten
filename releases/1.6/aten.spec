@@ -35,8 +35,14 @@ AutoReq: yes
 # Basic package dependencies are listed here. For RedHat-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
 BuildRequires: gcc-c++
 
+# For OpenSUSE distros
 %if 0%{?suse_version}
 BuildRequires: libqt4 libqt4-devel Mesa-devel readline-devel
+%endif
+
+# For SLES-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
+%if 0%{?sles_version}
+BuildRequires: Mesa-devel qt4 qt4-devel readline-devel
 %endif
 
 # For RedHat-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel

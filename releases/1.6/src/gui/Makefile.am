@@ -4,6 +4,7 @@ SUFFIXES: .ui .uih .qrc
 
 .ui.o:
 	$(QTUIC) -o ui_$*.h $<
+	cat ui_$*.h
 	$(QTMOC) -o moc_$*.cpp $(top_srcdir)/src/gui/$*.h
 	$(CXX) -I$(top_srcdir)/src -I$(top_srcdir)/src/gui/ -I../ $(CXXFLAGS) $(QTGUI_CFLAGS) -c -o $@ moc_$*.cpp
 	rm moc_$*.cpp
