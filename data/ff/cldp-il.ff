@@ -70,7 +70,7 @@ types
 # Dicyanamide
 170	N3	N	"nbonds=2,~C(n=2)"
 171	CZA	C	"nbonds=2,~&170,~N(nbonds=1)"
-172	NZA	N	"~&171"
+172	NZA	N	"~&171,nbonds=1"
 #
 # Extra params (CYANOPYRIDINIUM / MethylNapthalene)
 #
