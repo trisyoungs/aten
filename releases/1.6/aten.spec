@@ -42,7 +42,7 @@ BuildRequires: libqt4 libqt4-devel Mesa-devel readline-devel
 
 # For SLES-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
 %if 0%{?sles_version}
-BuildRequires: Mesa-devel qt4 qt4-devel readline-devel
+BuildRequires: Mesa-devel libqt4 libqt4-devel readline-devel
 %endif
 
 # For RedHat-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
@@ -89,17 +89,17 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 
 %if 0%{?rhel_version}
     %ifarch x86_64
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic --with-qtversion=42
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic --with-oldqt
     %else
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic --with-qtversion=42
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic --with-oldqt
     %endif
 %endif
 
 %if 0%{?centos_version}
     %ifarch x86_64
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic --with-qtversion=42
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic --with-oldqt
     %else
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic --with-qtversion=42
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic --with-oldqt
     %endif
 %endif
 
