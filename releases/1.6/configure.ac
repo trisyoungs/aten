@@ -36,6 +36,7 @@ AC_PROG_YACC
 QTMOC="moc"
 QTRCC="rcc"
 QTUIC="uic"
+QTVERSION=""
 AC_ARG_WITH([qtmoc],[AC_HELP_STRING([--with-qtmoc=<executable>],
     [Specify Qt4 Meta-Object Compiler tool (moc) [default="moc"]])], ,
     [with_qtmoc="moc"])
@@ -45,9 +46,13 @@ AC_ARG_WITH([qtuic],[AC_HELP_STRING([--with-qtuic=<executable>],
 AC_ARG_WITH([qtrcc],[AC_HELP_STRING([--with-qtrcc=<executable],
     [Specify Qt4 Resource Compiler tool (rcc) [default="rcc"]])], ,
     [with_qtrcc="rcc"])
+AC_ARG_WITH([qtversion],[AC_HELP_STRING([--with-qtversion=<version>],
+    [Specify version of Qt4 to account for [default=""]])], ,
+    [with_qtversion=""])
 QTMOC="$with_qtmoc"
 QTRCC="$with_qtrcc"
 QTUIC="$with_qtuic"
+QTVERSION="$with_qtversion"
 
 # Readline include dir
 RLINCDIR=""
@@ -111,6 +116,9 @@ if test "x$with_qt" = "x"; then
 fi
 GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses"
 GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
+if test "x$with_qtversion" != "x"; then
+  GUI_CFLAGS="$GUI_CFLAGS -DATENQTVERSION=$QTVERSION"
+fi
 
 
 VERSION=ATEN_VERSION
