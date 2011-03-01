@@ -111,8 +111,8 @@ class TCanvas : public QGLWidget
 	void endGl();
 	// Check for GL error
 	void checkGlError();
-	// Render 3D objects for specified model over rectangular region supplied
-	void render3D(Model *source, int x, int y, int width, int height);
+	// Render 3D objects for current displayModel_
+	void render3D();
 	// Draw 2D objects with supplied QPainter
 	void render2D(QPainter &painter);
 	
@@ -137,10 +137,6 @@ class TCanvas : public QGLWidget
 	void updateTransformation(Matrix &mat, Vec3<double> cellcentre);
 	// Render a scene based on the specified model
 	void renderModel(Model *m);
-	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-	Vec3<double> &modelToWorld(Vec3<double> pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
-	// Convert screen coordinates into modelspace coordinates
-	Vec3<double> &screenToModel(double x, double y, double z);
 
 
 	/*

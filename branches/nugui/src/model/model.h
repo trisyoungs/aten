@@ -436,6 +436,10 @@ class Model
 	Matrix modelViewMatrixInverse_;
 	// Viewport matrix for model
 	GLint viewportMatrix_[4];
+	// Projection matrix for model
+	Matrix modelProjectionMatrix_;
+	// Projection matrix for globe
+	Matrix globeProjectionMatrix_;
 
 	private:
 	// Calculate and return inverse of current view matrix
@@ -446,6 +450,10 @@ class Model
 	Matrix &modelViewMatrix();
 	// Set the current modelview matrix
 	void setModelViewMatrix(Matrix &mvmat);
+	// Return current projection matrix
+	Matrix &modelProjectionMatrix();
+	// Return current globe projection matrix
+	Matrix &globeProjectionMatrix();
 	// Set view to be along the specified cartesian axis
 	void viewAlong(double x, double y, double z);
 	// Set view to be along the specified cell axis
@@ -464,6 +472,12 @@ class Model
 	void adjustZoom(bool zoomin);
 	// Reset modelview matrix and camera position
 	void resetView();
+	// Set-up viewport and projection matrices
+	void setupView(GLint x, GLint y, GLint w, GLint h);
+	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
+	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
+	// Convert screen coordinates into modelspace coordinates
+	Vec3<double> &screenToModel(int x, int y, double z);
 
 
 	/*

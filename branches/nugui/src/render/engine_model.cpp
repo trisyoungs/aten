@@ -290,7 +290,8 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", i->charge());
 			
 			// Add text object
-			renderTextPrimitive(i->r(), text.get());
+			r2 = source->modelToWorld(i->r(), &screenr);
+			if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, text.get());
 		}
 		
 		// Bonds
@@ -664,7 +665,8 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				break;
 			// Text in 3D coordinates - left-hand origin = data[0]
 			case (Glyph::Text3DGlyph):
-				renderTextPrimitive(r1, g->text());
+				r2 = source->modelToWorld(r1, &screenr);
+				if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, g->text());
 				break;
 			// Tube arrow - tail = data[0], head = data[1]
 			case (Glyph::TubeArrowGlyph):
@@ -753,7 +755,9 @@ void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCan
 			glVertex3d(r1.x, r1.y, r1.z);
 			glVertex3d(r2.x, r2.y, r2.z);
 			glEnd();
-			renderTextPrimitive((r1+r2)*0.5, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
+			r4 = (r1+r2)*0.5;
+			r3 = source->modelToWorld(r4, &screenr);
+			if (r3.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
 		}
 		
 		// Angles
@@ -791,10 +795,10 @@ void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCan
 			}
 			glEnd();
 			// Determine left or right-alignment of text
-			modelToWorld(r2, &screenr);
+			source->modelToWorld(r2, &screenr);
 			gamma = screenr.x;
-			modelToWorld(r4, &screenr);
-			renderTextPrimitive(r4, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma > screenr.x);
+			r3 = source->modelToWorld(r4, &screenr);
+			if (r3.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma > screenr.x);
 		}
 		
 		// Torsions
@@ -813,7 +817,9 @@ void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCan
 			glVertex3d(r3.x, r3.y, r3.z);
 			glVertex3d(r4.x, r4.y, r4.z);
 			glEnd();
-			renderTextPrimitive((r2+r3)*0.5, ftoa(m->value(), prefs.angleLabelFormat()), 176);
+			r1 = (r2+r3)*0.5;
+			r4 = source->modelToWorld(r1, &screenr);
+			if (r4.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176);
 		}
 	}
 	

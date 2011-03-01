@@ -75,6 +75,18 @@ Matrix &Model::modelViewMatrix()
 	return (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
 }
 
+// Return current projection matrix
+Matrix &Model::modelProjectionMatrix()
+{
+	return (parent_ == NULL ? modelProjectionMatrix_ : parent_->modelProjectionMatrix());
+}
+
+// Return current globe projection matrix
+Matrix &Model::globeProjectionMatrix()
+{
+	return (parent_ == NULL ? globeProjectionMatrix_ : parent_->globeProjectionMatrix());
+}
+
 // Spin the model about the z axis
 void Model::zRotateView(double dz)
 {
@@ -161,9 +173,12 @@ void Model::resetView()
 			mview[14] -= 1.0;
 			// Project our local atom and grab the z screen coordinate
 			if (!prefs.hasPerspective()) gui.mainWidget->doProjection();
-			gui.mainWidget->updateTransformation(mview, cell_.centre());
-			gui.mainWidget->modelToWorld(target, &screenr);
+// 			setupView(0, 0, contextWidth_, contextHeight_);
+// 			gui.mainWidget->updateTransformation(mview, cell_.centre());
+			modelToWorld(target, &screenr);
+			XXX There's a problem here - has a minus sign been accidentally removed with all the projection routine changes?
 			done = TRUE;
+			screenr.print();
 			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
 			if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
 			if (screenr.z < 0.0) done = FALSE;
@@ -277,4 +292,119 @@ void Model::viewAlongCell(double x, double y, double z)
 	// Log camera change
 	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlongCell");
+}
+
+
+// Set-up viewport and projection matrices
+void Model::setupView(GLint x, GLint y, GLint w, GLint h)
+{
+	// Setup and store viewport matrix
+	viewportMatrix_[0] = x;
+	viewportMatrix_[1] = y;
+	viewportMatrix_[2] = w;
+	viewportMatrix_[3] = h;
+	glViewport( x, y, w, h );
+	glMatrixMode(GL_PROJECTION);
+	
+	// Create projection matrix for rotation globe
+	glLoadIdentity();
+	glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
+	glGetDoublev(GL_PROJECTION_MATRIX, globeProjectionMatrix_.matrix());
+	
+	// Create projection matrix for model
+	glLoadIdentity();
+	GLdouble top, bottom, aspect = (GLdouble) w / (GLdouble) h;
+	if (prefs.hasPerspective())
+	{
+		// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
+		bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
+		top = -bottom;
+		glFrustum(aspect*top, aspect*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
+	}
+	else
+	{
+		top = tan(prefs.perspectiveFov() / DEGRAD) * modelViewMatrix_[14];
+		bottom = -top;
+		glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
+	}
+	glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
+	glMatrixMode(GL_MODELVIEW);
+}
+
+// Project given model coordinates into world coordinates (and screen coordinates if requested)
+Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, double screenradius)
+{
+	msg.enter("Model::modelToWorld");
+	static Vec3<double> worldr;
+	Vec4<double> pos, temp, tempscreen;
+	// Projection formula is : worldr = P x M x modelr
+	pos.set(modelr, 1.0);
+	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
+	temp = modelViewMatrix_ * pos;
+	worldr.set(temp.x, temp.y, temp.z);
+	// Calculate 2D screen coordinates - Multiply world coordinates by P
+	if (screenr != NULL)
+	{
+		*screenr = modelProjectionMatrix_ * temp;
+		screenr->x /= screenr->w;
+		screenr->y /= screenr->w;
+		screenr->x = viewportMatrix_[0] + viewportMatrix_[2]*(screenr->x+1)*0.5;
+		screenr->y = viewportMatrix_[1] + viewportMatrix_[3]*(screenr->y+1)*0.5;
+		screenr->z = screenr->z / screenr->w;
+		// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
+		if (screenradius > 0.0)
+		{
+			temp.x += screenradius;
+			tempscreen = modelProjectionMatrix_ * temp;
+			tempscreen.x /= tempscreen.w;
+			screenr->w = fabs( (viewportMatrix_[0] + viewportMatrix_[2]*(tempscreen.x+1)*0.5) - screenr->x);
+		}
+	}
+	msg.exit("Model::modelToWorld");
+	return worldr;
+}
+
+// Convert screen coordinates into modelspace coordinates
+Vec3<double> &Model::screenToModel(int x, int y, double z)
+{
+	msg.enter("Model::screenToModel");
+	static Vec3<double> modelr;
+	Vec4<double> temp, worldr;
+	int newx, newy;
+	double dx, dy;
+	
+	// Grab transformation matrix and invert   TGAY No longer necessary since we already have it in the Model
+// 	Matrix itransform = modelTransformationMatrix_;
+// 	itransform.invert();
+	
+	// Mirror y-coordinate
+	y = viewportMatrix_[3] - y;
+
+	// Project points at guide z-position and two other points along literal x and y to get scaling factors for screen coordinates
+	worldr.set(0.0,0.0,z, 1.0);
+	temp = modelProjectionMatrix_ * worldr;
+	newx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5;
+	newy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5;
+		
+	for (int n=0; n<10; ++n)
+	{
+		// Determine new (better) coordinate from a yardstick centred at current world coordinates
+		temp = modelProjectionMatrix_ * Vec4<double>(worldr.x+1.0, worldr.y+1.0, worldr.z, worldr.w);
+		dx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5 - newx;
+		dy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5 - newy;
+
+		worldr.add((x-newx)/dx, (y-newy)/dy, 0.0, 0.0);
+// 		printf ("N=%i", n); worldr.print();
+		temp = modelProjectionMatrix_ * worldr;
+		newx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5;
+		newy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5;
+// 		printf("NEW dx = %f, dy = %f, wantedxy = %f, %f\n", newx, newy, x, y);
+		if ((x == newx) && (y == newy)) break;
+	}
+	
+	// Finally, invert to model coordinates
+	modelr = modelViewMatrixInverse_ * Vec3<double>(worldr.x, worldr.y, worldr.z);
+	
+	msg.exit("Model::screenToModel");
+	return modelr;
 }

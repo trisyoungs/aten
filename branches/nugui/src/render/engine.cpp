@@ -254,120 +254,6 @@ void RenderEngine::calculateAdjustments()
 // View Control
 */
 
-// Set-up viewport and projection matrices
-void RenderEngine::setupView(GLint x, GLint y, GLint w, GLint h, double orthozoom)
-{
-	// Setup and store viewport matrix
-	viewportMatrix_[0] = x;
-	viewportMatrix_[1] = y;
-	viewportMatrix_[2] = w;
-	viewportMatrix_[3] = h;
-	glViewport( x, y, w, h );
-	glMatrixMode(GL_PROJECTION);
-	
-	// Create projection matrix for rotation globe
-	glLoadIdentity();
-	glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
-	glGetDoublev(GL_PROJECTION_MATRIX, globeProjectionMatrix_.matrix());
-	
-	// Create projection matrix for model
-	glLoadIdentity();
-	GLdouble top, bottom, aspect = (GLdouble) w / (GLdouble) h;
-	if (prefs.hasPerspective())
-	{
-		// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
-		bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
-		top = -bottom;
-		glFrustum(aspect*top, aspect*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
-	}
-	else
-	{
-		top = tan(prefs.perspectiveFov() / DEGRAD) * orthozoom;
-		bottom = -top;
-		glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
-	}
-	glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
-	glMatrixMode(GL_MODELVIEW);
-}
-
-// Project given model coordinates into world coordinates (and screen coordinates if requested)
-Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, double screenradius)
-{
-	msg.enter("RenderEngine::modelToWorld");
-	static Vec3<double> worldr;
-	Vec4<double> pos, temp, tempscreen;
-	// Projection formula is : worldr = P x M x modelr
-	pos.set(modelr, 1.0);
-	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	temp = modelTransformationMatrix_ * pos;
-	worldr.set(temp.x, temp.y, temp.z);
-	// Calculate 2D screen coordinates - Multiply world coordinates by P
-	if (screenr != NULL)
-	{
-		*screenr = modelProjectionMatrix_ * temp;
-		screenr->x /= screenr->w;
-		screenr->y /= screenr->w;
-		screenr->x = viewportMatrix_[0] + viewportMatrix_[2]*(screenr->x+1)*0.5;
-		screenr->y = viewportMatrix_[1] + viewportMatrix_[3]*(screenr->y+1)*0.5;
-		screenr->z = screenr->z / screenr->w;
-		// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
-		if (screenradius > 0.0)
-		{
-			temp.x += screenradius;
-			tempscreen = modelProjectionMatrix_ * temp;
-			tempscreen.x /= tempscreen.w;
-			screenr->w = fabs( (viewportMatrix_[0] + viewportMatrix_[2]*(tempscreen.x+1)*0.5) - screenr->x);
-		}
-	}
-	msg.exit("RenderEngine::modelToWorld");
-	return worldr;
-}
-
-// Convert screen coordinates into modelspace coordinates
-Vec3<double> &RenderEngine::screenToModel(int x, int y, double z)
-{
-	msg.enter("RenderEngine::screenToModel");
-	static Vec3<double> modelr;
-	Vec4<double> temp, worldr;
-	int newx, newy;
-	double dx, dy;
-	
-	// Grab transformation matrix and invert
-	Matrix itransform = modelTransformationMatrix_;
-	itransform.invert();
-	
-	// Mirror y-coordinate
-	y = viewportMatrix_[3] - y;
-
-	// Project points at guide z-position and two other points along literal x and y to get scaling factors for screen coordinates
-	worldr.set(0.0,0.0,z, 1.0);
-	temp = modelProjectionMatrix_ * worldr;
-	newx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5;
-	newy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5;
-		
-	for (int n=0; n<10; ++n)
-	{
-		// Determine new (better) coordinate from a yardstick centred at current world coordinates
-		temp = modelProjectionMatrix_ * Vec4<double>(worldr.x+1.0, worldr.y+1.0, worldr.z, worldr.w);
-		dx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5 - newx;
-		dy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5 - newy;
-
-		worldr.add((x-newx)/dx, (y-newy)/dy, 0.0, 0.0);
-// 		printf ("N=%i", n); worldr.print();
-		temp = modelProjectionMatrix_ * worldr;
-		newx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5;
-		newy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5;
-// 		printf("NEW dx = %f, dy = %f, wantedxy = %f, %f\n", newx, newy, x, y);
-		if ((x == newx) && (y == newy)) break;
-	}
-	
-	// Finally, invert to model coordinates
-	modelr = itransform * Vec3<double>(worldr.x, worldr.y, worldr.z);
-	
-	msg.exit("RenderEngine::screenToModel");
-	return modelr;
-}
-
 // Update transformation matrix
 void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
 {
@@ -431,15 +317,6 @@ void RenderEngine::renderPrimitive(Primitive* primitive, bool isTransparent, GLf
 void RenderEngine::renderTextPrimitive(int x, int y, const char *text, QChar addChar, bool rightalign)
 {
 	textPrimitives_.add(x, y, text, addChar, rightalign);
-}
-
-// Add text primitive for rendering later (screen position calculated from 3D model coordinates)
-void RenderEngine::renderTextPrimitive(Vec3<double> vec, const char *text, QChar addChar, bool rightalign)
-{
-	// Project atom and render text
-	static Vec4<double> screenr;
-	Vec3<double> r = modelToWorld(vec, &screenr);
-	if (r.z < -1.0) textPrimitives_.add(screenr.x, screenr.y, text, addChar, rightalign);
 }
 
 // Search for primitive associated to specified Grid pointer
@@ -610,7 +487,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 		glViewport(canvas->contextWidth()-n,0,n,n);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glMultMatrixd(globeProjectionMatrix_.matrix());
+		glMultMatrixd(source->globeProjectionMatrix().matrix());
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		Matrix A = modelTransformationMatrix_;
@@ -629,7 +506,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glMultMatrixd(modelProjectionMatrix_.matrix());
+	glMultMatrixd(source->modelProjectionMatrix().matrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	

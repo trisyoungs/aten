@@ -594,11 +594,11 @@ void TCanvas::beginMode(Prefs::MouseButton button)
 						{
 							displayModel_->beginUndoState("Draw Chain");
 							currentDrawDepth_ = prefs.drawDepth();
-							i = displayModel_->addAtom(sketchElement_, screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+							i = displayModel_->addAtom(sketchElement_, displayModel_->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							displayModel_->endUndoState();
 							atomClicked_ = i;
 						}
-						else currentDrawDepth_ = modelToWorld(atomClicked_->r()).z;
+						else currentDrawDepth_ = displayModel_->modelToWorld(atomClicked_->r()).z;
 						break;
 					default:
 						break;
@@ -708,7 +708,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (atomClicked_ != NULL)
 			{
 				radius = (rMouseDown_-rMouseUp_).magnitude();
-				modelToWorld(atomClicked_->r(), &screenr, prefs.styleRadius(atomClicked_));
+				displayModel_->modelToWorld(atomClicked_->r(), &screenr, prefs.styleRadius(atomClicked_));
 				radius /= screenr.w * prefs.styleRadius(atomClicked_);
 				displayModel_->selectRadial(atomClicked_,radius);
 			}
@@ -753,7 +753,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			{
 				displayModel_->beginUndoState("Draw Atom");
 				currentDrawDepth_ = prefs.drawDepth();
-				displayModel_->addAtom(sketchElement_, screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+				displayModel_->addAtom(sketchElement_, displayModel_->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				displayModel_->endUndoState();
 			}
 			gui.update(GuiQt::AtomsTarget);
@@ -767,7 +767,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
-				i = displayModel_->addAtom(sketchElement_, screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
+				i = displayModel_->addAtom(sketchElement_, displayModel_->screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
 			}
 			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
 			if (atomClicked_ != i)
@@ -798,7 +798,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
 				displayModel_->beginUndoState("Draw Fragment");
-				frag->pasteOrientedModel(screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), displayModel_);
+				frag->pasteOrientedModel(displayModel_->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), displayModel_);
 			}
 			displayModel_->endUndoState();
 			gui.update(GuiQt::AtomsTarget);

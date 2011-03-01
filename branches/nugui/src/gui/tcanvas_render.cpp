@@ -70,8 +70,8 @@ void TCanvas::render2D(QPainter &painter)
 		case (UserAction::DrawAtomAction):
 		case (UserAction::DrawChainAction):
 			// Get pixel 'length' in Angstrom terms at current draw depth
-			r = screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
-			r -= screenToModel(contextWidth_/2, contextHeight_/2, currentDrawDepth_);
+			r = displayModel_->screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
+			r -= displayModel_->screenToModel(contextWidth_/2, contextHeight_/2, currentDrawDepth_);
 			dx = 10.0 / r.magnitude();
 			
 			halfw = contextWidth_ / 2.0;

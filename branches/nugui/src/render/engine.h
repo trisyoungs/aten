@@ -76,25 +76,15 @@ class RenderEngine
 	// Calculate atom/bond adjustments
 	void calculateAdjustments();
 
-
+	
 	/*
 	// View Control
 	*/
 	private:
-	// View matrix
+	// Local copy of model view matrix
 	Matrix modelTransformationMatrix_;
-	// Projection matrix for model
-	Matrix modelProjectionMatrix_;
-	// Projection matrix for model
-	Matrix globeProjectionMatrix_;
-
+	
 	public:
-	// Set-up viewport and projection matrices
-	void setupView(GLint x, GLint y, GLint w, GLint h, double orthozoom);
-	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
-	// Convert screen coordinates into modelspace coordinates
-	Vec3<double> &screenToModel(int x, int y, double z);
 	// Update transformation matrix
 	void setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre);
 
@@ -125,8 +115,6 @@ class RenderEngine
 	void renderPrimitive(Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Add text primitive for rendering later
 	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
-	// Add text primitive for rendering later (screen position calculated from 3D model coordinates)
-	void renderTextPrimitive(Vec3<double> vec, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Search for primitive associated to specified Grid pointer
 	GridPrimitive *findGridPrimitive(Grid *g);
 	// Remove grid primitive from list (if it exists)

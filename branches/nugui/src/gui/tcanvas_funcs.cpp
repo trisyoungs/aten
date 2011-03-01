@@ -149,8 +149,7 @@ void TCanvas::initializeGL()
 // General repaint callback
 void TCanvas::paintGL()
 {
-	static QFont font;
-	static Model *lastDisplayed_ = NULL;
+
 
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
 	if ((!valid_) || drawing_) return;
@@ -160,101 +159,96 @@ void TCanvas::paintGL()
 	// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
 	// so here it is done in the 'wrong' order.
 	
+	printf("There are %i visible models\n", aten.nVisibleModels());
+
 			// Need to get view z-depth (zoom) from current model
-		Model *source;
-		if (useCurrentModel_) source = aten.currentModelOrFrame();
-		else source = renderSource_;
-		if (source == NULL) engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);
-		else
-		{
-			// Vibration frame?
-			if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
-			else source = source->renderSourceModel();
-			engine_.setupView(0, 0, contextWidth_, contextHeight_, source->modelViewMatrix()[14] );
-		}
-	
+
+	// TEST - Render single model as usual
 	
 	if (useCurrentModel_) displayModel_ = aten.currentModelOrFrame();
 	else displayModel_ = renderSource_;
-	
-	printf("There are %i visible models\n", aten.nVisibleModels());
-	
-	
-	// Render 3D objects for specified model over rectangular region supplied
-void TCanvas::render3D(Model *source, int x, int y, int width, int height)
-{
+			
 	// First, setup view for specified pixel range
-	
-	
-	if (displayModel_ != NULL)
+	if (displayModel_ != NULL)  /* engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);*/
 	{
+		displayModel_->setupView(0, 0, contextWidth_, contextHeight_);
 		// Vibration frame?
 		if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
 		else displayModel_ = displayModel_->renderSourceModel();
-		
-		// Render model
-		msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
-		
-		// If the canvas is still restricted, don't draw anything
-		if (noDraw_)
-		{
-			msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
-			return;
-		}
-		checkGlError();
-		
-		// Begin the GL commands
-		if (!beginGl())
-		{
-			msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
-			return;
-		}
-		checkGlError();
-		
-		// Check the supplied model against the previous one rendered to see if we must outdate the display list
-		if (lastDisplayed_ != displayModel_)
-		{
-			// Clear the picked atoms list
-			pickedAtoms_.clear();
-		}
-		msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", displayModel_, displayModel_->changeLog.log(Log::Total));
-		
-		// If this is a trajectory frame, check its ID against the last one rendered
-		if (displayModel_->parent() != NULL)
-		{
-			displayFrameId_ = displayModel_->parent()->trajectoryFrameIndex();
-			msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
-		}
-		
-		// Render 3D elements (with OpenGL)
-		msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
-		engine_.initialiseGL();
-		checkGlError();
-		msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		engine_.render3D(displayModel_, this);
-		//glFlush();
-		endGl();
-		checkGlError();
-
-		// Render 2D elements (with QPainter)
-		QPainter painter(this);
-		font.setPointSize(prefs.labelSize());
-		painter.setFont(font);
-		painter.setRenderHint(QPainter::Antialiasing);
-		engine_.renderText(painter, this);
-		render2D(painter);
-		painter.end();
-	
-		msg.print(Messenger::GL, " --> RENDERING END\n");
-		lastDisplayed_ = displayModel_;
+		render3D();
 	}
-	else
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-// 		printf("TCanvas has no model to render.\n");
-	}
+		
+	// Finally, swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();
+}
+
+// Render 3D objects for current displayModel_
+void TCanvas::render3D()
+{	
+	static QFont font;
+	
+	// Valid pointer set?
+	if (displayModel_ == NULL) return;
+
+	// Vibration frame?
+	if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
+	else displayModel_ = displayModel_->renderSourceModel();
+	
+	// Render model
+	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
+	
+	// If the canvas is still restricted, don't draw anything
+	if (noDraw_)
+	{
+		msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
+		return;
+	}
+	checkGlError();
+	
+	// Begin the GL commands
+	if (!beginGl())
+	{
+		msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
+		return;
+	}
+	checkGlError();
+	
+	// Check the supplied model against the previous one rendered to see if we must outdate the display list
+// 	if (lastDisplayed_ != displayModel_)
+// 	{
+// 		// Clear the picked atoms list
+// 		pickedAtoms_.clear();
+// 	}
+	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", displayModel_, displayModel_->changeLog.log(Log::Total));
+	
+	// If this is a trajectory frame, check its ID against the last one rendered
+	if (displayModel_->parent() != NULL)
+	{
+		displayFrameId_ = displayModel_->parent()->trajectoryFrameIndex();
+		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
+	}
+	
+	// Render 3D elements (with OpenGL)
+	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
+	engine_.initialiseGL();
+	checkGlError();
+	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	engine_.render3D(displayModel_, this);
+	//glFlush();
+	endGl();
+	checkGlError();
+
+	// Render 2D elements (with QPainter)
+	QPainter painter(this);
+	font.setPointSize(prefs.labelSize());
+	painter.setFont(font);
+	painter.setRenderHint(QPainter::Antialiasing);
+	engine_.renderText(painter, this);
+	render2D(painter);
+	painter.end();
+
+	msg.print(Messenger::GL, " --> RENDERING END\n");
 }
 
 // Resize function
@@ -377,7 +371,7 @@ void TCanvas::doProjection(int newwidth, int newheight)
 // 		Model *source;
 // 		if (useCurrentModel_) source = aten.currentModelOrFrame();
 // 		else source = renderSource_;
-// 		if (source == NULL) engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);
+// 		if (source != NULL) source->setupView(0, 0, contextWidth_, contextHeight_);
 // 		else
 // 		{
 // 			// Vibration frame?
@@ -389,18 +383,6 @@ void TCanvas::doProjection(int newwidth, int newheight)
 	}
 	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
 	msg.exit("Canvas::doProjection");
-}
-
-// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-Vec3<double> &TCanvas::modelToWorld(Vec3<double> pos, Vec4<double> *screenr, double screenradius)
-{
-	return engine_.modelToWorld(pos, screenr, screenradius);
-}
-
-// Convert screen coordinates into modelspace coordinates
-Vec3<double> &TCanvas::screenToModel(double x, double y, double z)
-{
-	return engine_.screenToModel(x, y, z);
 }
 
 /*

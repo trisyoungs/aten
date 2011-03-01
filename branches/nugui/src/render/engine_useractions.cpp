@@ -83,7 +83,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			if (j == NULL)
 			{
 				j = &tempj;
-				v = screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
+				v = source->screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
 				style_j = (prefs.renderStyle() == Atom::IndividualStyle ? Atom::StickStyle : prefs.renderStyle());
 				j->setStyle(style_j);
 			}
@@ -164,8 +164,8 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
 				// Get drawing point origin, translate to it, and render the stored model
-				if (canvas->activeMode() == UserAction::DrawFragmentAction) pos = screenToModel(canvas->rMouseDown().x, canvas->rMouseDown().y, prefs.drawDepth());
-				else pos = screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());
+				if (canvas->activeMode() == UserAction::DrawFragmentAction) pos = source->screenToModel(canvas->rMouseDown().x, canvas->rMouseDown().y, prefs.drawDepth());
+				else pos = source->screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());
 				A = modelTransformationMatrix_;
 				A.applyTranslation(pos);
 				renderModel(frag->orientedModel(), A, canvas);
