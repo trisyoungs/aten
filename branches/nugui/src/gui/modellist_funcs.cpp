@@ -30,9 +30,9 @@ ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 {
 	ui.setupUi(this);
 	
-	QObject::connect(ui.ModelList, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(listMousePressEvent(QMouseEvent*)));
-	QObject::connect(ui.ModelList, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(listMouseReleaseEvent(QMouseEvent*)));
-	QObject::connect(ui.ModelList, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(listMouseMoveEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelList, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelList, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelList, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
 }
 
 // Destructor
@@ -40,6 +40,7 @@ ModelListWidget::~ModelListWidget()
 {
 }
 
+// Show the widget, refreshing at the same time
 void ModelListWidget::showWidget()
 {
 	show();
@@ -57,23 +58,24 @@ void ModelListWidget::refresh()
 		return;
 	}
 	// Clear the current list
-	ui.ModelList->clear();
+	ui.ModelTree->clear();
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
+		ui.ModelTree->addItem(m->name());
 	}
 	msg.exit("ModelListWidget::refresh");
 }
 
 // Return item under mouse (if any)
-TListWidgetItem *ModelListWidget::itemUnderMouse(const QPoint &pos)
+TTreeWidgetItem *ModelListWidget::itemUnderMouse(const QPoint &pos)
 {
-	QListWidgetItem *qwi = ui.ModelList->itemAt(pos);
+	QListWidgetItem *qwi = ui.ModelTree->itemAt(pos);
 	if (qwi == NULL) return NULL;
-	else return (TListWidgetItem*) qwi;
+	else return (TTreeWidgetItem*) qwi;
 }
 
 // Toggle the selection state in the model
-void ModelListWidget::toggleItem(TListWidgetItem *twi)
+void ModelListWidget::toggleItem(TTreeWidgetItem *twi)
 {
 	// Check for no item or header item
 	if (twi == NULL) return;
@@ -85,7 +87,7 @@ void ModelListWidget::toggleItem(TListWidgetItem *twi)
 }
 
 // Select tree widget item *and* model atom, provided the tree widget item is not selected already
-void ModelListWidget::selectItem(TListWidgetItem *twi)
+void ModelListWidget::selectItem(TTreeWidgetItem *twi)
 {
 	if (twi == NULL) return;
 	if (twi->isSelected()) return;
@@ -96,7 +98,7 @@ void ModelListWidget::selectItem(TListWidgetItem *twi)
 }
 
 // Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
-void ModelListWidget::deselectItem(TListWidgetItem *twi)
+void ModelListWidget::deselectItem(TTreeWidgetItem *twi)
 {
 	if (twi == NULL) return;
 	if (!twi->isSelected()) return;
@@ -106,6 +108,11 @@ void ModelListWidget::deselectItem(TListWidgetItem *twi)
 	aten.setModelVisible(m,FALSE);
 }
 
+void ModelListWidget::updateSelection()
+{
+}
+
+// Mouse pressed on ModelList
 void ModelListWidget::listMousePressEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
@@ -131,6 +138,7 @@ void ModelListWidget::listMousePressEvent(QMouseEvent *event)
 	lastHovered_ = lastClicked_;
 }
 
+// Mouse releaseed on ModelList
 void ModelListWidget::listMouseReleaseEvent(QMouseEvent *event)
 {
 	// 	printf("Mouse release event.\n");
@@ -138,11 +146,12 @@ void ModelListWidget::listMouseReleaseEvent(QMouseEvent *event)
 	gui.update();
 }
 
+// Mouse moved over ModelList
 void ModelListWidget::listMouseMoveEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
 	// 	printf("Mouse move event.\n");
-	TListWidgetItem *twi = itemUnderMouse(event->pos());
+	TTreeWidgetItem *twi = itemUnderMouse(event->pos());
 	// If the current hovered item is the same as the last one, ignore it
 	if (twi != lastHovered_)
 	{
@@ -152,6 +161,7 @@ void ModelListWidget::listMouseMoveEvent(QMouseEvent *event)
 	}
 }
 
+// Window closed
 void ModelListWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now

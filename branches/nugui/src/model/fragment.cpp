@@ -94,8 +94,8 @@ bool Fragment::setMasterModel(Model *m)
 		gui.mainWidget->setRenderSource(masterModel_);
 		gui.mainWidget->setOffScreenRendering(TRUE);
 	
-		if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget->renderPixmap(100, 100, FALSE);
-		else icon_ = QPixmap::fromImage(gui.mainWidget->grabFrameBuffer());
+		if (prefs.useFrameBuffer() == FALSE) masterModel_->icon() = gui.mainWidget->renderPixmap(100, 100, FALSE);
+		else masterModel_->icon() = QPixmap::fromImage(gui.mainWidget->grabFrameBuffer());
 	
 		prefs.setScreenObjects(screenbits);
 	
@@ -130,16 +130,10 @@ Model *Fragment::masterModel()
 	return masterModel_;
 }
 
-// Set icon (from pixmap)
-void Fragment::setIcon(QPixmap &pixmap)
-{
-	icon_ = pixmap;
-}
-
-// Return pixmap
+// Return pixmap (from masterModel_)
 QIcon &Fragment::icon()
 {
-	return icon_;
+	return masterModel_->icon();
 }
 
 // Cycle link atom

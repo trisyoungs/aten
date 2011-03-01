@@ -147,7 +147,7 @@ class GuiQt
 	*/
 	private:
 	// List of dock widgets
-	QList<QObject*> dockWidgets_;
+	QList<QDockWidget*> dockWidgets_;
 	
 	public:
 	// Atom list dock widget

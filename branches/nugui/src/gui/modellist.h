@@ -38,15 +38,15 @@ class ModelListWidget : public QDockWidget
 	void showWidget();
 	void refresh();
 	private:
-	TListWidgetItem *itemUnderMouse(const QPoint &pos);
-	void toggleItem(TListWidgetItem *twi);
-	void selectItem(TListWidgetItem *twi);
-	void deselectItem(TListWidgetItem *twi);
+	TTreeWidgetItem *itemUnderMouse(const QPoint &pos);
+	void toggleItem(TTreeWidgetItem *twi);
+	void selectItem(TTreeWidgetItem *twi);
+	void deselectItem(TTreeWidgetItem *twi);
 	private slots:
 	void updateSelection();
-	void listMousePressEvent(QMouseEvent *event);
-	void listMouseReleaseEvent(QMouseEvent *event);
-	void listMouseMoveEvent(QMouseEvent *event);
+	void treeMousePressEvent(QMouseEvent *event);
+	void treeMouseReleaseEvent(QMouseEvent *event);
+	void treeMouseMoveEvent(QMouseEvent *event);
 	
 	protected:
 	void closeEvent(QCloseEvent *event);
@@ -55,8 +55,10 @@ class ModelListWidget : public QDockWidget
 	// Local variables
 	*/
 	private:
-	// Last clicked and 'moved over' TListWidgetItem in the ModelList
-	TListWidgetItem *lastClicked_, *lastHovered_;
+	// Whether the widget is currently refreshing
+	bool refreshing_;
+	// Last clicked and 'moved over' TTreeWidgetItem in the ModelList
+	TTreeWidgetItem *lastClicked_, *lastHovered_;
 	
 	/*
 	// Dialog

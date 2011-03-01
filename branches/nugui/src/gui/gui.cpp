@@ -216,14 +216,16 @@ void GuiQt::run()
 	toolBoxWidget = new ToolBoxWidget(mainWindow, Qt::Tool);
 	transformWidget = new TransformWidget(mainWindow, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(mainWindow, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << forcefieldsWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << forcefieldsWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
 	toolBoxWidget->show();
 	
 	// Connect Finished signal of tool windows to finished slots in structure
-	foreach( QObject *obj, dockWidgets_)
+	foreach( QDockWidget *obj, dockWidgets_)
 	{
 		QObject::connect(obj, SIGNAL(visibilityChanged(bool)), toolBoxWidget, SLOT(dockWidgetVisibilityChanged(bool)));
 		QObject::connect(obj, SIGNAL(topLevelChanged(bool)), toolBoxWidget, SLOT(dockWidgetTopLevelChanged(bool)));
+		// Add every dock widget to a dock area (annoying to have to do it, but prevents 'stuck' dock widgets on some versions)
+		mainWindow->addDockWidget(Qt::RightDockWidgetArea, obj);
 	}
 	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));	// TGAY
 	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY

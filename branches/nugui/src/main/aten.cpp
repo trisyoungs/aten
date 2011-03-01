@@ -151,8 +151,11 @@ void Aten::setCurrentModel(Model *m)
 	current.i = NULL;
 	
 	// Update GUI
-	gui.modelListWidget->refresh();
-	gui.update(GuiQt::AllTarget);
+	if (gui.exists())
+	{
+		gui.modelListWidget->refresh();
+		gui.update(GuiQt::AllTarget);
+	}
 
 	msg.exit("Aten::setCurrentModel");
 }
@@ -248,8 +251,6 @@ Model *Aten::addModel()
 			m->setName(newname);
 			m->changeLog.reset();
 			setCurrentModel(m);
-			gui.modelListWidget->refresh();
-			gui.disorderWindow->refresh();
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();

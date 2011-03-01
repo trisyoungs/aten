@@ -83,6 +83,8 @@ class Model
 	Model *parent_;
 	// Type of model
 	ModelType type_;
+	// QIcon containing miniature picture of model
+	QIcon icon_;
 	// Whether model is visible
 	bool visible_;
 
@@ -119,6 +121,8 @@ class Model
 	void setType(Model::ModelType mt);
 	// Return model type
 	Model::ModelType type();
+	// Return icon
+	QIcon &icon();
 	// Set whether model is visible
 	void setVisible(bool b);
 	// Return whether model is visible
