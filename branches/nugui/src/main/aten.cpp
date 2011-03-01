@@ -304,6 +304,31 @@ Model *Aten::findModel(const char *s) const
 	return result ;
 }
 
+// Set visible flag for specified model
+void Aten::setModelVisible(Model *m, bool visible)
+{
+	// Check model pointer
+	if (m == NULL) return;
+	m->setVisible(visible);
+	// Search list for specified model
+	Refitem<Model,int> *ri = visibleModels_.contains(m);
+	if ((ri == NULL) && visible) visibleModels_.add(m);
+	else if ((ri != NULL) && (!visible)) visibleModels_.remove(m);
+	gui.update();
+}
+
+// Return number of visible models
+int Aten::nVisibleModels()
+{
+	return visibleModels_.nItems();
+}
+
+// Return reflist of visible models
+Refitem<Model,int> *Aten::visibleModels()
+{
+	return visibleModels_.first();
+}
+
 /*
 // Forcefield Management routines
 */

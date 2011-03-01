@@ -163,6 +163,8 @@ void TCanvas::paintGL()
 	if (useCurrentModel_) displayModel_ = aten.currentModelOrFrame();
 	else displayModel_ = renderSource_;
 	
+	printf("There are %n visible models\n", aten.nVisibleModels());
+	
 	if (displayModel_ != NULL)
 	{
 		// Vibration frame?

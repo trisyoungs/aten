@@ -23,6 +23,7 @@
 #define ATEN_MODELLISTWIDGET_H
 
 #include "gui/ui_modellist.h"
+#include "gui/tlistwidgetitem.h"
 
 // Model List dock widget
 class ModelListWidget : public QDockWidget
@@ -30,16 +31,23 @@ class ModelListWidget : public QDockWidget
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
-	public:
-	// Atom data columns
-	enum DataColumns { IdData=1, ElementData, RxData, RyData, RzData };
-
 	/*
 	// Window Functions
 	*/
 	public:
 	void showWidget();
 	void refresh();
+	private:
+	TListWidgetItem *itemUnderMouse(const QPoint &pos);
+	void toggleItem(TListWidgetItem *twi);
+	void selectItem(TListWidgetItem *twi);
+	void deselectItem(TListWidgetItem *twi);
+	private slots:
+	void updateSelection();
+	void listMousePressEvent(QMouseEvent *event);
+	void listMouseReleaseEvent(QMouseEvent *event);
+	void listMouseMoveEvent(QMouseEvent *event);
+	
 	protected:
 	void closeEvent(QCloseEvent *event);
 
@@ -47,7 +55,9 @@ class ModelListWidget : public QDockWidget
 	// Local variables
 	*/
 	private:
-
+	// Last clicked and 'moved over' TListWidgetItem in the ModelList
+	TListWidgetItem *lastClicked_, *lastHovered_;
+	
 	/*
 	// Dialog
 	*/

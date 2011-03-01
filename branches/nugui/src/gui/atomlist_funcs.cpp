@@ -44,7 +44,6 @@ AtomListWidget::AtomListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	listSelectionPoint_ = -1;
 	listLastModel_ = NULL;
 	shouldRefresh_ = FALSE;
-	listPosition_ = -1;
 	lastClicked_ = NULL;
 	lastHovered_ = NULL;
 	viewingByAtom_ = TRUE;

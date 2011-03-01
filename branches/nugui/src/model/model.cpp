@@ -37,7 +37,8 @@ Model::Model()
 {
 	// Private variables
 	parent_ = NULL;
-// 	type_ = Model::ParentModel;
+// 	type_ = Model::ParentModel
+	visible_ = FALSE;
 
 	// Camera / View / render
 	modelViewMatrix_.setIdentity();
@@ -206,6 +207,18 @@ void Model::setType(Model::ModelType mt)
 Model::ModelType Model::type()
 {
 	return type_;
+}
+
+// Set whether model is visible
+void Model::setVisible(bool b)
+{
+	visible_ = b;
+}
+
+// Return whether model is visible
+bool Model::isVisible()
+{
+	return visible_;
 }
 
 /*

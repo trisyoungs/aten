@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/modellist.h"
 #include "gui/toolbox.h"
@@ -29,9 +30,9 @@ ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 {
 	ui.setupUi(this);
 	
-	//QObject::connect(ui.AtomTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
-	//QObject::connect(ui.AtomTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
-	//QObject::connect(ui.AtomTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelList, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(listMousePressEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelList, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(listMouseReleaseEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelList, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(listMouseMoveEvent(QMouseEvent*)));
 }
 
 // Destructor
@@ -56,9 +57,99 @@ void ModelListWidget::refresh()
 		return;
 	}
 	// Clear the current list
-// 	ui.ModelList->clear();
-	
+	ui.ModelList->clear();
+	for (Model *m = aten.models(); m != NULL; m = m->next)
+	{
+	}
 	msg.exit("ModelListWidget::refresh");
+}
+
+// Return item under mouse (if any)
+TListWidgetItem *ModelListWidget::itemUnderMouse(const QPoint &pos)
+{
+	QListWidgetItem *qwi = ui.ModelList->itemAt(pos);
+	if (qwi == NULL) return NULL;
+	else return (TListWidgetItem*) qwi;
+}
+
+// Toggle the selection state in the model
+void ModelListWidget::toggleItem(TListWidgetItem *twi)
+{
+	// Check for no item or header item
+	if (twi == NULL) return;
+	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
+	if (m == NULL) return;
+	bool state = twi->isSelected();
+	twi->setSelected(!state);
+	aten.setModelVisible(m,!state);
+}
+
+// Select tree widget item *and* model atom, provided the tree widget item is not selected already
+void ModelListWidget::selectItem(TListWidgetItem *twi)
+{
+	if (twi == NULL) return;
+	if (twi->isSelected()) return;
+	twi->setSelected(TRUE);
+	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
+	if (m == NULL) return;
+	aten.setModelVisible(m,TRUE);
+}
+
+// Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
+void ModelListWidget::deselectItem(TListWidgetItem *twi)
+{
+	if (twi == NULL) return;
+	if (!twi->isSelected()) return;
+	twi->setSelected(FALSE);
+	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
+	if (m == NULL) return;
+	aten.setModelVisible(m,FALSE);
+}
+
+void ModelListWidget::listMousePressEvent(QMouseEvent *event)
+{
+	if (!(event->buttons()&Qt::LeftButton)) return;
+	lastClicked_ = itemUnderMouse(event->pos());
+	// Check for header items to we can (un)collapse them or select all atoms within them
+	if (lastClicked_ != NULL)
+	{
+		// If the clicked item contains a pattern pointer, its a collapsible list item root node
+		if (lastClicked_->data.type() == VTypes::ModelData) toggleItem(lastClicked_);
+/*		else if (lastClicked_->data.type() == VTypes::PatternData)
+		{
+			// If the x-coordinate is less than 15, change the collapsed state of the item
+			if (event->x() < 15) lastClicked_->setExpanded(!lastClicked_->isExpanded());
+			else
+			{
+				if (event->modifiers()&Qt::ShiftModifier) for (int n=0; n < lastClicked_->childCount(); n++) deselectItem((TTreeWidgetItem*) lastClicked_->child(n));
+				else if (event->modifiers()&Qt::ControlModifier) for (int n=0; n < lastClicked_->childCount(); n++) toggleItem((TTreeWidgetItem*) lastClicked_->child(n));
+				else for (int n=0; n < lastClicked_->childCount(); n++) selectItem((TTreeWidgetItem*) lastClicked_->child(n));
+			}
+		}
+		else printf("Internal Error: Atomlist item contains an unrecognised pointer type.\n");*/
+	}
+	lastHovered_ = lastClicked_;
+}
+
+void ModelListWidget::listMouseReleaseEvent(QMouseEvent *event)
+{
+	// 	printf("Mouse release event.\n");
+	lastHovered_ = NULL;
+	gui.update();
+}
+
+void ModelListWidget::listMouseMoveEvent(QMouseEvent *event)
+{
+	if (!(event->buttons()&Qt::LeftButton)) return;
+	// 	printf("Mouse move event.\n");
+	TListWidgetItem *twi = itemUnderMouse(event->pos());
+	// If the current hovered item is the same as the last one, ignore it
+	if (twi != lastHovered_)
+	{
+		toggleItem(twi);
+		lastHovered_ = twi;
+		gui.update();
+	}
 }
 
 void ModelListWidget::closeEvent(QCloseEvent *event)
@@ -67,3 +158,4 @@ void ModelListWidget::closeEvent(QCloseEvent *event)
 	gui.toolBoxWidget->ui.ModelListButton->setChecked(FALSE);
 	event->accept();
 }
+

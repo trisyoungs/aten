@@ -1,5 +1,5 @@
 /*
-	*** Model definition
+	*** Main Model Class
 	*** src/model/model.h
 	Copyright T. Youngs 2007-2011
 
@@ -83,6 +83,8 @@ class Model
 	Model *parent_;
 	// Type of model
 	ModelType type_;
+	// Whether model is visible
+	bool visible_;
 
 	public:
 	// Sets the filename of the model
@@ -117,6 +119,10 @@ class Model
 	void setType(Model::ModelType mt);
 	// Return model type
 	Model::ModelType type();
+	// Set whether model is visible
+	void setVisible(bool b);
+	// Return whether model is visible
+	bool isVisible();
 
 
 	/*

@@ -71,7 +71,9 @@ class Aten
 	List<Model> workingModels_;
 	// Current target list for new generation of models
 	Aten::TargetModelList targetModelList_;
-
+	// Reflist of visible models
+	Reflist<Model,int> visibleModels_;
+	
 	public:
 	// Set usage of working model list
 	void setUseWorkingList(bool b);
@@ -101,6 +103,12 @@ class Aten
 	void removeModel(Model*);
 	// Find model by name
 	Model *findModel(const char *name) const;
+	// Set visible flag for specified model
+	void setModelVisible(Model *m, bool visible);
+	// Return number of visible models
+	int nVisibleModels();
+	// Return reflist of visible models
+	Refitem<Model, int> *visibleModels();
 
 
 	/*

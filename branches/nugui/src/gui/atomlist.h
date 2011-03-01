@@ -78,8 +78,6 @@ class AtomListWidget : public QDockWidget
 	Model *listLastModel_;
 	// Whether the widget should refresh when it is next shown
 	bool shouldRefresh_;
-	// Position of list slider
-	int listPosition_;
 	// Last clicked and 'moved over' TTreeWidgetItem in the AtomList
 	TTreeWidgetItem *lastClicked_, *lastHovered_;
 
