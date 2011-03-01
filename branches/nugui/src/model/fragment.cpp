@@ -84,28 +84,8 @@ bool Fragment::setMasterModel(Model *m)
 	masterModel_->centre(0.0,0.0,0.0,FALSE,FALSE,FALSE);
 	masterModel_->selectNone();
 
-	// Generate pixmap for fragment, keeping current primitive quality
-	if (prefs.generateFragmentIcons())
-	{
-		bool reusePrims = prefs.reusePrimitiveQuality();
-		prefs.setReusePrimitiveQuality(TRUE);
-		int screenbits = prefs.screenObjects();
-		prefs.setScreenObjects(prefs.offScreenObjects());
-		gui.mainWidget->setRenderSource(masterModel_);
-		gui.mainWidget->setOffScreenRendering(TRUE);
-	
-		if (prefs.useFrameBuffer() == FALSE) masterModel_->icon() = gui.mainWidget->renderPixmap(100, 100, FALSE);
-		else masterModel_->icon() = QPixmap::fromImage(gui.mainWidget->grabFrameBuffer());
-	
-		prefs.setScreenObjects(screenbits);
-	
-		// Reconfigure canvas to widget size (necessary if image size was changed)
-		gui.mainWidget->doProjection();
-		gui.mainWidget->setRenderSource(NULL);
-	
-		gui.mainWidget->setOffScreenRendering(FALSE);
-		prefs.setReusePrimitiveQuality(reusePrims);
-	}
+	// Generate icon for fragment
+	if (prefs.generateFragmentIcons()) masterModel_->regenerateIcon();
 
 	// Final tweaks to master model - put link atom at 0,0,0
 	masterModel_->markAll();

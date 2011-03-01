@@ -23,7 +23,7 @@
 #define ATEN_MODELLISTWIDGET_H
 
 #include "gui/ui_modellist.h"
-#include "gui/tlistwidgetitem.h"
+#include "gui/ttreewidgetitem.h"
 
 // Model List dock widget
 class ModelListWidget : public QDockWidget

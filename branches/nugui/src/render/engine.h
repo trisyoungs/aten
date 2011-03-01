@@ -87,8 +87,6 @@ class RenderEngine
 	Matrix modelProjectionMatrix_;
 	// Projection matrix for model
 	Matrix globeProjectionMatrix_;
-	// Viewport matrix for canvas
-	GLint viewportMatrix_[4];
 
 	public:
 	// Set-up viewport and projection matrices

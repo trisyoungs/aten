@@ -30,9 +30,9 @@ ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 {
 	ui.setupUi(this);
 	
-	QObject::connect(ui.ModelList, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
-	QObject::connect(ui.ModelList, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
-	QObject::connect(ui.ModelList, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
 }
 
 // Destructor
@@ -59,19 +59,30 @@ void ModelListWidget::refresh()
 	}
 	// Clear the current list
 	ui.ModelTree->clear();
+	ui.ModelTree->setColumnCount(2);
+	TTreeWidgetItem *item;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		ui.ModelTree->addItem(m->name());
+		// Filter?
+// 		if (!filterText_.isEmpty() && (strstr(lowerCase(f->masterModel()->name()), filterText_.get()) == 0)) continue;
+		item = new TTreeWidgetItem(ui.ModelTree);
+		item->data.set(VTypes::ModelData, m);
+		item->setIcon(0,m->icon());
+		item->setText(1,m->name());
+		item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
+		if (m->isVisible()) item->setSelected(TRUE);
 	}
+	ui.ModelTree->resizeColumnToContents(0);
+	ui.ModelTree->resizeColumnToContents(1);
 	msg.exit("ModelListWidget::refresh");
 }
 
 // Return item under mouse (if any)
 TTreeWidgetItem *ModelListWidget::itemUnderMouse(const QPoint &pos)
 {
-	QListWidgetItem *qwi = ui.ModelTree->itemAt(pos);
-	if (qwi == NULL) return NULL;
-	else return (TTreeWidgetItem*) qwi;
+	QTreeWidgetItem *twi = ui.ModelTree->itemAt(pos);
+	if (twi == NULL) return NULL;
+	else return (TTreeWidgetItem*) twi;
 }
 
 // Toggle the selection state in the model
@@ -113,7 +124,7 @@ void ModelListWidget::updateSelection()
 }
 
 // Mouse pressed on ModelList
-void ModelListWidget::listMousePressEvent(QMouseEvent *event)
+void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
 	lastClicked_ = itemUnderMouse(event->pos());
@@ -139,7 +150,7 @@ void ModelListWidget::listMousePressEvent(QMouseEvent *event)
 }
 
 // Mouse releaseed on ModelList
-void ModelListWidget::listMouseReleaseEvent(QMouseEvent *event)
+void ModelListWidget::treeMouseReleaseEvent(QMouseEvent *event)
 {
 	// 	printf("Mouse release event.\n");
 	lastHovered_ = NULL;
@@ -147,7 +158,7 @@ void ModelListWidget::listMouseReleaseEvent(QMouseEvent *event)
 }
 
 // Mouse moved over ModelList
-void ModelListWidget::listMouseMoveEvent(QMouseEvent *event)
+void ModelListWidget::treeMouseMoveEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
 	// 	printf("Mouse move event.\n");

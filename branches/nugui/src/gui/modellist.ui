@@ -28,9 +28,18 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QTreeWidget" name="ModelTree">
+     <widget class="TTreeWidget" name="ModelTree">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
       <property name="selectionMode">
        <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>75</width>
+        <height>75</height>
+       </size>
       </property>
       <attribute name="headerVisible">
        <bool>false</bool>
@@ -45,6 +54,13 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>gui/ttreewidget.uih</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

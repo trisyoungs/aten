@@ -121,6 +121,8 @@ class Model
 	void setType(Model::ModelType mt);
 	// Return model type
 	Model::ModelType type();
+	// Regenerate icon
+	void regenerateIcon();
 	// Return icon
 	QIcon &icon();
 	// Set whether model is visible
@@ -432,6 +434,8 @@ class Model
 	Matrix modelViewMatrix_;
 	// Inverse of the view matrix
 	Matrix modelViewMatrixInverse_;
+	// Viewport matrix for model
+	GLint viewportMatrix_[4];
 
 	private:
 	// Calculate and return inverse of current view matrix

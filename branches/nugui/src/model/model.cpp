@@ -31,6 +31,7 @@
 #include "classes/forcefieldatom.h"
 #include "base/elements.h"
 #include "base/pattern.h"
+#include "gui/gui.h"
 
 // Constructors
 Model::Model()
@@ -207,6 +208,36 @@ void Model::setType(Model::ModelType mt)
 Model::ModelType Model::type()
 {
 	return type_;
+}
+
+// Regenerate icon
+void Model::regenerateIcon()
+{
+	// Generate pixmap for fragment, keeping current primitive quality
+	bool reusePrims = prefs.reusePrimitiveQuality();
+	prefs.setReusePrimitiveQuality(TRUE);
+	int screenbits = prefs.screenObjects();
+	prefs.setScreenObjects(prefs.offScreenObjects());
+	gui.mainWidget->setRenderSource(this);
+	gui.mainWidget->setOffScreenRendering(TRUE);
+
+	if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget->renderPixmap(100, 100, FALSE);
+	else icon_ = QPixmap::fromImage(gui.mainWidget->grabFrameBuffer());
+
+	prefs.setScreenObjects(screenbits);
+
+	// Reconfigure canvas to widget size (necessary if image size was changed)
+	gui.mainWidget->doProjection();
+	gui.mainWidget->setRenderSource(NULL);
+
+	gui.mainWidget->setOffScreenRendering(FALSE);
+	prefs.setReusePrimitiveQuality(reusePrims);
+}
+
+// Return icon
+QIcon &Model::icon()
+{
+	return icon_;
 }
 
 // Set whether model is visible

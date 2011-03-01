@@ -156,14 +156,35 @@ void TCanvas::paintGL()
 	if ((!valid_) || drawing_) return;
 	
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
-	// all OpenGL calls should be made after the QPainter is constructed, and befor the QPainter
+	// all OpenGL calls should be made after the QPainter is constructed, and before the QPainter
 	// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
 	// so here it is done in the 'wrong' order.
+	
+			// Need to get view z-depth (zoom) from current model
+		Model *source;
+		if (useCurrentModel_) source = aten.currentModelOrFrame();
+		else source = renderSource_;
+		if (source == NULL) engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);
+		else
+		{
+			// Vibration frame?
+			if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
+			else source = source->renderSourceModel();
+			engine_.setupView(0, 0, contextWidth_, contextHeight_, source->modelViewMatrix()[14] );
+		}
+	
 	
 	if (useCurrentModel_) displayModel_ = aten.currentModelOrFrame();
 	else displayModel_ = renderSource_;
 	
-	//printf("There are %n visible models\n", aten.nVisibleModels());
+	printf("There are %i visible models\n", aten.nVisibleModels());
+	
+	
+	// Render 3D objects for specified model over rectangular region supplied
+void TCanvas::render3D(Model *source, int x, int y, int width, int height)
+{
+	// First, setup view for specified pixel range
+	
 	
 	if (displayModel_ != NULL)
 	{
@@ -246,7 +267,6 @@ void TCanvas::resizeGL(int newwidth, int newheight)
 	// Flag that render source needs to be reprojected
 	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
 	if (prefs.manualSwapBuffers()) swapBuffers();
-	// 	if (canvas_->displayModel() != NULL) canvas_->displayModel()->changeLog.add(Log::Camera);  //BROKEN? Necessary?
 }
 
 // Begin GL
@@ -349,21 +369,22 @@ void TCanvas::doProjection(int newwidth, int newheight)
 	// Check source
 	if (beginGl())
 	{
+		printf("Doing projection\n");
 		// Set the viewport size to the whole area and grab the matrix
 		contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
 		contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
-		// Need to get view z-depth (zoom) from current model
-		Model *source;
-		if (useCurrentModel_) source = aten.currentModelOrFrame();
-		else source = renderSource_;
-		if (source == NULL) engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);
-		else
-		{
-			// Vibration frame?
-			if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
-			else source = source->renderSourceModel();
-			engine_.setupView(0, 0, contextWidth_, contextHeight_, source->modelViewMatrix()[14] );
-		}
+// 		// Need to get view z-depth (zoom) from current model
+// 		Model *source;
+// 		if (useCurrentModel_) source = aten.currentModelOrFrame();
+// 		else source = renderSource_;
+// 		if (source == NULL) engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);
+// 		else
+// 		{
+// 			// Vibration frame?
+// 			if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
+// 			else source = source->renderSourceModel();
+// 			engine_.setupView(0, 0, contextWidth_, contextHeight_, source->modelViewMatrix()[14] );
+// 		}
 		endGl();
 	}
 	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");

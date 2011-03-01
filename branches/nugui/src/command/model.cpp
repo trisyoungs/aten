@@ -128,6 +128,7 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	obj.m->resetView();
 	obj.m->calculateMass();
 	obj.m->selectNone();
+	obj.m->regenerateIcon();
 	// Print out some useful info on the model that we've just read in
 	msg.print(Messenger::Verbose, "Model  : %s\n",obj.m->name());
 	msg.print(Messenger::Verbose, "Atoms  : %i\n",obj.m->nAtoms());
