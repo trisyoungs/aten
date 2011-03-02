@@ -7,16 +7,11 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.0"
    width="100"
    height="100"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.48.1 r9760"
-   sodipodi:docname="stack_ff.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   id="svg2">
   <metadata
      id="metadata2566">
     <rdf:RDF>
@@ -28,57 +23,35 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="714"
-     inkscape:window-width="1024"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="1.225"
-     inkscape:cx="35.001466"
-     inkscape:cy="52.740815"
-     inkscape:window-x="125"
-     inkscape:window-y="101"
-     inkscape:current-layer="svg2"
-     showgrid="false"
-     inkscape:window-maximized="0" />
   <defs
      id="defs4" />
   <g
-     id="g2239"
      transform="matrix(1.8139565,0,0,1.8139565,-36.752469,-30.034814)"
+     id="g2239"
      style="fill:#e7e7e3;fill-opacity:1;stroke:none">
     <path
-       sodipodi:nodetypes="cccccccc"
-       id="path2241"
        d="m 31.383599,31.686262 23.004884,0.0523 -11.850004,37.59211 m -17.8474,-42.590905 13.922395,43.959079 5.593384,0 13.897967,-43.959079 -33.413746,0"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#e7e7e3;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       id="path2241"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#e7e7e3;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans" />
     <path
-       id="path2243"
        d="m 73.089192,32.937402 -1.230816,0 -0.279731,1.426628 c -0.36365,1.790275 -0.587435,1.98609 -2.321767,1.98609 l -6.265974,0 c 1.930144,-2.01406 2.573528,-2.601501 4.363803,-4.000153 2.545549,-1.958114 3.636506,-2.937175 4.279884,-3.776368 0.895139,-1.230817 1.342709,-2.489609 1.342709,-3.832315 0,-3.160957 -2.657447,-5.454754 -6.293947,-5.454754 -3.552578,0 -6.293947,2.293797 -6.293947,5.258942 0,1.762303 0.895142,2.965149 2.237847,2.965149 1.035005,0 1.734333,-0.699328 1.734333,-1.706359 0,-0.699328 -0.391624,-1.342709 -1.007032,-1.594467 -1.035002,-0.447569 -1.090951,-0.475542 -1.090951,-0.839193 0,-0.419596 0.279734,-1.062977 0.671355,-1.53852 0.699327,-0.839193 1.8742,-1.342709 3.188933,-1.342709 2.293794,0 3.692449,1.426631 3.692449,3.776369 0,2.070006 -0.979059,3.944209 -3.300826,6.405839 l -1.650413,1.734332 -2.181901,2.34974 c -1.007029,1.174871 -1.510548,1.818255 -2.741364,3.440691 l 0,0.783247 12.615867,0 0.531489,-6.042189"
-       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;fill:#e7e7e3;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       id="path2243"
+       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;fill:#e7e7e3;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans" />
   </g>
   <g
-     id="g2235"
-     transform="matrix(1.8139565,0,0,1.8139565,-40.616689,-33.194743)">
+     transform="matrix(1.8139565,0,0,1.8139565,-40.616689,-33.194743)"
+     id="g2235">
     <path
-       sodipodi:nodetypes="cccccccc"
-       id="text2221"
        d="m 31.383599,31.686262 23.004884,0.0523 -11.850004,37.59211 m -17.8474,-42.590905 13.922395,43.959079 5.593384,0 13.897967,-43.959079 -33.413746,0"
-       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       id="text2221"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans" />
     <path
-       id="text2230"
        d="m 73.089192,32.937402 -1.230816,0 -0.279731,1.426628 c -0.36365,1.790275 -0.587435,1.98609 -2.321767,1.98609 l -6.265974,0 c 1.930144,-2.01406 2.573528,-2.601501 4.363803,-4.000153 2.545549,-1.958114 3.636506,-2.937175 4.279884,-3.776368 0.895139,-1.230817 1.342709,-2.489609 1.342709,-3.832315 0,-3.160957 -2.657447,-5.454754 -6.293947,-5.454754 -3.552578,0 -6.293947,2.293797 -6.293947,5.258942 0,1.762303 0.895142,2.965149 2.237847,2.965149 1.035005,0 1.734333,-0.699328 1.734333,-1.706359 0,-0.699328 -0.391624,-1.342709 -1.007032,-1.594467 -1.035002,-0.447569 -1.090951,-0.475542 -1.090951,-0.839193 0,-0.419596 0.279734,-1.062977 0.671355,-1.53852 0.699327,-0.839193 1.8742,-1.342709 3.188933,-1.342709 2.293794,0 3.692449,1.426631 3.692449,3.776369 0,2.070006 -0.979059,3.944209 -3.300826,6.405839 l -1.650413,1.734332 -2.181901,2.34974 c -1.007029,1.174871 -1.510548,1.818255 -2.741364,3.440691 l 0,0.783247 12.615867,0 0.531489,-6.042189"
-       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       id="text2230"
+       style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans" />
   </g>
 </svg>

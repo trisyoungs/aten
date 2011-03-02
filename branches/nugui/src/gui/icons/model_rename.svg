@@ -7,119 +7,13 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
    width="100"
    height="100"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.48.1 r9760"
-   version="1.0"
-   sodipodi:docname="model_rename.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   id="svg2">
   <defs
-     id="defs4">
-    <linearGradient
-       id="linearGradient4454">
-      <stop
-         style="stop-color:#e8ede5;stop-opacity:1;"
-         offset="0"
-         id="stop4456" />
-      <stop
-         style="stop-color:#f2f8ff;stop-opacity:1;"
-         offset="1"
-         id="stop4458" />
-    </linearGradient>
-    <linearGradient
-       id="linearGradient3186">
-      <stop
-         style="stop-color:#aaaaaa;stop-opacity:1;"
-         offset="0"
-         id="stop3188" />
-      <stop
-         style="stop-color:#fffffd;stop-opacity:0.50196081;"
-         offset="1"
-         id="stop3190" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3186"
-       id="linearGradient3400"
-       gradientUnits="userSpaceOnUse"
-       x1="18.799059"
-       y1="7.9464054"
-       x2="78.915184"
-       y2="89.205368" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3186"
-       id="linearGradient3402"
-       gradientUnits="userSpaceOnUse"
-       x1="18.799059"
-       y1="7.9464054"
-       x2="78.915184"
-       y2="89.205368" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3186"
-       id="linearGradient3404"
-       gradientUnits="userSpaceOnUse"
-       x1="18.799059"
-       y1="7.9464054"
-       x2="78.915184"
-       y2="89.205368" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4454"
-       id="linearGradient4460"
-       x1="94.145199"
-       y1="69.53889"
-       x2="154.36486"
-       y2="69.53889"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4454"
-       id="linearGradient3341"
-       gradientUnits="userSpaceOnUse"
-       x1="94.145199"
-       y1="69.53889"
-       x2="154.36486"
-       y2="69.53889" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4454"
-       id="linearGradient3343"
-       gradientUnits="userSpaceOnUse"
-       x1="94.145199"
-       y1="69.53889"
-       x2="154.36486"
-       y2="69.53889" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     gridtolerance="10000"
-     guidetolerance="10"
-     objecttolerance="10"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="2.5929548"
-     inkscape:cx="-14.81128"
-     inkscape:cy="15.845125"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     width="100px"
-     height="100px"
-     inkscape:window-width="1024"
-     inkscape:window-height="734"
-     inkscape:window-x="0"
-     inkscape:window-y="6"
-     showgrid="false"
-     inkscape:window-maximized="0" />
+     id="defs4" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -132,52 +26,48 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <g
-       id="g6075"
-       transform="matrix(1.2895968,0,0,1.2895968,-95.609713,-109.87269)">
+       transform="matrix(1.2895968,0,0,1.2895968,-95.609713,-109.87269)"
+       id="g6075">
       <text
-         id="text5098"
-         y="136.49742"
          x="76.112076"
-         style="font-size:36.84945679px;fill:#a6a6a3;fill-opacity:1;stroke:none;font-family:B"
-         xml:space="preserve"><tspan
-           y="136.49742"
+         y="136.49742"
+         id="text5098"
+         xml:space="preserve"
+         style="font-size:36.84945679px;fill:#a6a6a3;fill-opacity:1;stroke:none;font-family:B"><tspan
            x="76.112076"
-           id="tspan5100"
-           sodipodi:role="line">abc</tspan></text>
+           y="136.49742"
+           id="tspan5100">abc</tspan></text>
       <path
-         id="path5102"
          d="m 140.78302,111.12724 c 0,34.34394 0,34.34394 0,34.34394 l 9.74374,0 -19.12661,0"
-         style="fill:none;stroke:#a9aca5;stroke-width:2.00800991;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         id="path5102"
+         style="fill:none;stroke:#a9aca5;stroke-width:2.00800991;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none" />
       <path
-         id="path5104"
          d="m 140.78302,139.00861 c 0,-34.34394 0,-34.34394 0,-34.34394 l 9.74374,0 -19.12661,0"
-         style="fill:none;stroke:#a9aca5;stroke-width:2.00800991;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         id="path5104"
+         style="fill:none;stroke:#a9aca5;stroke-width:2.00800991;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none" />
     </g>
     <text
-       xml:space="preserve"
-       style="font-size:47.52094269px;fill:#000000;fill-opacity:1;stroke:none;font-family:B"
        x="-1.5209421"
        y="63.324932"
-       id="text2184"><tspan
-         sodipodi:role="line"
-         id="tspan2186"
+       id="text2184"
+       xml:space="preserve"
+       style="font-size:47.52094269px;fill:#000000;fill-opacity:1;stroke:none;font-family:B"><tspan
          x="-1.5209421"
-         y="63.324932">abc</tspan></text>
+         y="63.324932"
+         id="tspan2186">abc</tspan></text>
     <path
-       style="fill:none;stroke:#000000;stroke-width:2.58952332;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
        d="m 81.878495,30.607629 c 0,44.289834 0,44.289834 0,44.289834 l 12.565504,0 -24.66562,0"
+       inkscape:connector-curvature="0"
        id="path2177"
-       inkscape:connector-curvature="0" />
+       style="fill:none;stroke:#000000;stroke-width:2.58952332;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:2.58952332;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none"
        d="m 81.878497,66.563353 c 0,-44.289832 0,-44.289832 0,-44.289832 l 12.565498,0 -24.665612,0"
+       inkscape:connector-curvature="0"
        id="path2179"
-       inkscape:connector-curvature="0" />
+       style="fill:none;stroke:#000000;stroke-width:2.58952332;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none" />
   </g>
 </svg>

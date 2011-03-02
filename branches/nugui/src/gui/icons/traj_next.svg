@@ -8,62 +8,32 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
    width="100"
    height="100"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.48.1 r9760"
-   version="1.0"
-   sodipodi:docname="traj_next.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   id="svg2">
   <defs
      id="defs4">
     <linearGradient
        id="linearGradient3216">
       <stop
-         style="stop-color:#d6a2ff;stop-opacity:1;"
-         offset="0"
-         id="stop3218" />
+         id="stop3218"
+         style="stop-color:#d6a2ff;stop-opacity:1"
+         offset="0" />
       <stop
-         style="stop-color:#8e1dff;stop-opacity:1;"
-         offset="1"
-         id="stop3220" />
+         id="stop3220"
+         style="stop-color:#8e1dff;stop-opacity:1"
+         offset="1" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3216"
-       id="linearGradient4944"
-       gradientUnits="userSpaceOnUse"
        x1="19.101948"
        y1="65.918365"
        x2="54.39883"
-       y2="65.918365" />
+       y2="65.918365"
+       id="linearGradient4944"
+       xlink:href="#linearGradient3216"
+       gradientUnits="userSpaceOnUse" />
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     gridtolerance="10000"
-     guidetolerance="10"
-     objecttolerance="10"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="3.3729194"
-     inkscape:cx="19.113348"
-     inkscape:cy="55.027057"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     width="100px"
-     height="100px"
-     inkscape:window-width="1024"
-     inkscape:window-height="714"
-     inkscape:window-x="20"
-     inkscape:window-y="121"
-     showgrid="false"
-     inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -76,57 +46,33 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1">
     <use
+       transform="translate(-33.791265,0.39064996)"
+       id="use2479"
+       style="fill:#000000;fill-opacity:1"
        x="0"
        y="0"
-       xlink:href="#path3246"
-       id="use2479"
-       transform="translate(-33.791265,0.39064996)"
        width="100"
        height="100"
-       style="fill:#000000;fill-opacity:1" />
+       xlink:href="#path3246" />
     <path
-       sodipodi:type="star"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+       d="M 19.560448,46.069131 53.940331,65.918366 19.560448,85.7676 z"
+       transform="matrix(1.7810846,0,0,1.7810846,-0.85775512,-63.791968)"
        id="path3246"
-       sodipodi:sides="3"
-       sodipodi:cx="31.020409"
-       sodipodi:cy="65.918365"
-       sodipodi:r1="22.919922"
-       sodipodi:r2="11.459961"
-       sodipodi:arg1="-2.0943951"
-       sodipodi:arg2="-1.0471976"
-       inkscape:flatsided="true"
-       inkscape:rounded="0"
-       inkscape:randomized="0"
-       d="M 19.560448,46.069131 53.940331,65.918366 19.560448,85.7676 z"
-       transform="matrix(1.7810846,0,0,1.7810846,-0.85775512,-63.791968)" />
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none" />
     <path
-       sodipodi:type="star"
-       style="fill:url(#linearGradient4944);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.917;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:2.63393869"
-       id="path3234"
-       sodipodi:sides="3"
-       sodipodi:cx="31.020409"
-       sodipodi:cy="65.918365"
-       sodipodi:r1="22.919922"
-       sodipodi:r2="11.459961"
-       sodipodi:arg1="-2.0943951"
-       sodipodi:arg2="-1.0471976"
-       inkscape:flatsided="true"
-       inkscape:rounded="0"
-       inkscape:randomized="0"
        d="M 19.560448,46.069131 53.940331,65.918366 19.560448,85.7676 z"
-       transform="matrix(1.7810846,0,0,1.7810846,2.9212888,-70.594426)" />
+       transform="matrix(1.7810846,0,0,1.7810846,2.9212888,-70.594426)"
+       id="path3234"
+       style="fill:url(#linearGradient4944);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.917;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:2.63393869" />
     <use
+       transform="translate(-33.986591,4.4468841e-8)"
+       id="use2475"
        x="0"
        y="0"
-       xlink:href="#path3234"
-       id="use2475"
-       transform="translate(-33.986591,4.4468841e-8)"
        width="100"
-       height="100" />
+       height="100"
+       xlink:href="#path3234" />
   </g>
 </svg>

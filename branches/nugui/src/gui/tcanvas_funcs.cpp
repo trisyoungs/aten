@@ -149,8 +149,10 @@ void TCanvas::initializeGL()
 // General repaint callback
 void TCanvas::paintGL()
 {
-
-
+	static QFont font;
+	Refitem<Model,int> *first, localri;
+	int px, py, nperrow=2, nrows, col, row, nmodels;
+	
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
 	if ((!valid_) || drawing_) return;
 	
@@ -159,24 +161,82 @@ void TCanvas::paintGL()
 	// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
 	// so here it is done in the 'wrong' order.
 	
-	printf("There are %i visible models\n", aten.nVisibleModels());
-
-			// Need to get view z-depth (zoom) from current model
-
-	// TEST - Render single model as usual
-	
-	if (useCurrentModel_) displayModel_ = aten.currentModelOrFrame();
-	else displayModel_ = renderSource_;
-			
-	// First, setup view for specified pixel range
-	if (displayModel_ != NULL)  /* engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);*/
+	// Set the first item to consider - if we are rendering from a specifid model (useCurrentModel_ == FALSE) use the local listitem
+	if (useCurrentModel_)
 	{
-		displayModel_->setupView(0, 0, contextWidth_, contextHeight_);
+		nmodels = aten.nVisibleModels();
+		if (nmodels == 0)
+		{
+			localri.item = aten.currentModelOrFrame();
+			nmodels = 1;
+			first = &localri;
+		}
+		else first = aten.visibleModels();
+	}
+	else
+	{
+		// Quick check for NULL pointer
+		if (renderSource_ == NULL) return;
+		localri.item = renderSource_;
+		first = &localri;
+		nmodels = 1;
+	}
+	if (first == NULL) return;
+	
+	// Begin the GL commands
+	if (!beginGl())
+	{
+		msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
+		return;
+	}
+	
+	// Clear view
+	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
+	glViewport(0,0,contextWidth_,contextHeight_);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	// Set up some useful values
+	nrows = nmodels/nperrow + (nmodels%nperrow == 0 ? 0 : 1);
+	py = contextHeight_ / nrows;
+	px = (nmodels == 1 ? contextWidth_ : contextWidth_ / nperrow);
+// 	printf("NVisible Models=%i, nperrow=%i, size=%ix%i, context=%ix%i\n", nmodels,nperrow, px,py,contextWidth_,contextHeight_);
+	
+	// Loop over model refitems in list (or single refitem)
+	col = 0;
+	row = 0;
+	for (Refitem<Model,int> *ri = first; ri != NULL; ri = ri->next)
+	{
+		// Grab model pointer
+		displayModel_ = ri->item;
+		if (displayModel_ == NULL) continue;
+		
+		// Determine desired pixel range and set up view(port)
+		checkGlError();
+		displayModel_->setupView(col*px, row*py, px, py);
 		// Vibration frame?
 		if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
 		else displayModel_ = displayModel_->renderSourceModel();
 		render3D();
+		
+		// Increase counters
+		++col;
+		if (col%nperrow == 0)
+		{
+			col = 0;
+			++row;
+		}
 	}
+	endGl();
+	
+	// Render 2D elements (with QPainter)
+	/// TGAY THis won't work properly, since only text elements from the last model will be rendered
+	QPainter painter(this);
+	font.setPointSize(prefs.labelSize());
+	painter.setFont(font);
+	painter.setRenderHint(QPainter::Antialiasing);
+	engine_.renderText(painter, this);
+	render2D(painter);
+	painter.end();
 		
 	// Finally, swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();
@@ -185,8 +245,6 @@ void TCanvas::paintGL()
 // Render 3D objects for current displayModel_
 void TCanvas::render3D()
 {	
-	static QFont font;
-	
 	// Valid pointer set?
 	if (displayModel_ == NULL) return;
 
@@ -204,15 +262,7 @@ void TCanvas::render3D()
 		return;
 	}
 	checkGlError();
-	
-	// Begin the GL commands
-	if (!beginGl())
-	{
-		msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
-		return;
-	}
-	checkGlError();
-	
+
 	// Check the supplied model against the previous one rendered to see if we must outdate the display list
 // 	if (lastDisplayed_ != displayModel_)
 // 	{
@@ -232,21 +282,9 @@ void TCanvas::render3D()
 	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
 	engine_.initialiseGL();
 	checkGlError();
-	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	engine_.render3D(displayModel_, this);
 	//glFlush();
-	endGl();
 	checkGlError();
-
-	// Render 2D elements (with QPainter)
-	QPainter painter(this);
-	font.setPointSize(prefs.labelSize());
-	painter.setFont(font);
-	painter.setRenderHint(QPainter::Antialiasing);
-	engine_.renderText(painter, this);
-	render2D(painter);
-	painter.end();
 
 	msg.print(Messenger::GL, " --> RENDERING END\n");
 }
@@ -360,28 +398,11 @@ void TCanvas::doProjection(int newwidth, int newheight)
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
 	if (!valid_) return;
 	msg.enter("Canvas::doProjection");
-	// Check source
-	if (beginGl())
-	{
-		printf("Doing projection\n");
-		// Set the viewport size to the whole area and grab the matrix
-		contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
-		contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
-// 		// Need to get view z-depth (zoom) from current model
-// 		Model *source;
-// 		if (useCurrentModel_) source = aten.currentModelOrFrame();
-// 		else source = renderSource_;
-// 		if (source != NULL) source->setupView(0, 0, contextWidth_, contextHeight_);
-// 		else
-// 		{
-// 			// Vibration frame?
-// 			if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
-// 			else source = source->renderSourceModel();
-// 			engine_.setupView(0, 0, contextWidth_, contextHeight_, source->modelViewMatrix()[14] );
-// 		}
-		endGl();
-	}
-	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
+
+	// Only need to store values here, since projection is setup on-the-fly
+	contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
+	contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
+
 	msg.exit("Canvas::doProjection");
 }
 

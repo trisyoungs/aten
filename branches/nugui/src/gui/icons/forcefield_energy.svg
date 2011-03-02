@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.0"
    width="100"
    height="100"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.45.1"
-   sodipodi:docname="forcefield_energy.svg"
-   sodipodi:docbase="/home/tris/src/aten/src/gui/icons"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   id="svg2">
   <metadata
      id="metadata2566">
     <rdf:RDF>
@@ -28,71 +23,29 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="734"
-     inkscape:window-width="1024"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="0.88565124"
-     inkscape:cx="-247.81527"
-     inkscape:cy="-149.42728"
-     inkscape:window-x="0"
-     inkscape:window-y="6"
-     inkscape:current-layer="svg2" />
   <defs
      id="defs4">
-    <marker
-       inkscape:stockid="Arrow1Lend"
-       orient="auto"
-       refY="0.0"
-       refX="0.0"
-       id="Arrow1Lend"
-       style="overflow:visible;">
-      <path
-         id="path3173"
-         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
-         transform="scale(0.8) rotate(180) translate(12.5,0)" />
-    </marker>
-    <linearGradient
-       id="linearGradient3150">
-      <stop
-         style="stop-color:#ffffff;stop-opacity:1;"
-         offset="0"
-         id="stop3152" />
-      <stop
-         style="stop-color:#ffffff;stop-opacity:0;"
-         offset="1"
-         id="stop3154" />
-    </linearGradient>
     <filter
-       inkscape:collect="always"
-       x="-0.188479"
-       width="1.376958"
+       x="-0.18847901"
        y="-0.17812899"
+       width="1.376958"
        height="1.356258"
+       color-interpolation-filters="sRGB"
        id="filter4471">
       <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="0.61632632"
-         id="feGaussianBlur4473" />
+         id="feGaussianBlur4473"
+         stdDeviation="0.61632632" />
     </filter>
   </defs>
   <path
+     d="m 25.95075,27.16475 -0.084,0.348 0.72,0.048 c 0.276,0.024 0.36,0.168 0.264,0.576 l -1.44,6.336 c -0.096,0.408 -0.204,0.552 -0.492,0.576 l -0.672,0.072 -0.072,0.348 6.264,0 0.612,-2.112 -0.36,0 c -0.611999,1.475999 -1.152001,1.692 -2.628,1.692 -0.587999,0 -1.188,-0.036 -1.344,-0.156 -0.18,-0.144 -0.192,-0.324001 -0.06,-0.888 l 0.612,-2.628 1.572,0 c 1.055999,0 1.092,0.252001 1.044,1.032 l 0.36,0 0.552,-2.508 -0.36,0 c -0.312,0.827999 -0.444001,1.02 -1.5,1.02 l -1.572,0 0.684,-2.988 c 0.06,-0.288 0.132,-0.348 0.336,-0.348 l 1.452,0 c 1.511998,0 1.476,0.504001 1.368,1.584 l 0.36,0 0.456,-2.004 -6.072,0"
+     inkscape:connector-curvature="0"
      transform="matrix(6.4405034,0,0,6.4405034,-135.3337,-157.01622)"
-     style=""
-     d="M 25.95075,27.16475 L 25.86675,27.51275 L 26.58675,27.56075 C 26.86275,27.58475 26.94675,27.72875 26.85075,28.13675 L 25.41075,34.47275 C 25.31475,34.88075 25.20675,35.02475 24.91875,35.04875 L 24.24675,35.12075 L 24.17475,35.46875 L 30.43875,35.46875 L 31.05075,33.35675 L 30.69075,33.35675 C 30.078751,34.832749 29.538749,35.04875 28.06275,35.04875 C 27.474751,35.04875 26.87475,35.01275 26.71875,34.89275 C 26.53875,34.74875 26.52675,34.568749 26.65875,34.00475 L 27.27075,31.37675 L 28.84275,31.37675 C 29.898749,31.37675 29.93475,31.628751 29.88675,32.40875 L 30.24675,32.40875 L 30.79875,29.90075 L 30.43875,29.90075 C 30.12675,30.728749 29.994749,30.92075 28.93875,30.92075 L 27.36675,30.92075 L 28.05075,27.93275 C 28.11075,27.64475 28.18275,27.58475 28.38675,27.58475 L 29.83875,27.58475 C 31.350748,27.58475 31.31475,28.088751 31.20675,29.16875 L 31.56675,29.16875 L 32.02275,27.16475 L 25.95075,27.16475"
      id="flowRoot3405" />
   <path
+     d="m 25.95075,27.16475 -0.084,0.348 0.72,0.048 c 0.276,0.024 0.36,0.168 0.264,0.576 l -1.44,6.336 c -0.096,0.408 -0.204,0.552 -0.492,0.576 l -0.672,0.072 -0.072,0.348 6.264,0 0.612,-2.112 -0.36,0 c -0.611999,1.475999 -1.152001,1.692 -2.628,1.692 -0.587999,0 -1.188,-0.036 -1.344,-0.156 -0.18,-0.144 -0.192,-0.324001 -0.06,-0.888 l 0.612,-2.628 1.572,0 c 1.055999,0 1.092,0.252001 1.044,1.032 l 0.36,0 0.552,-2.508 -0.36,0 c -0.312,0.827999 -0.444001,1.02 -1.5,1.02 l -1.572,0 0.684,-2.988 c 0.06,-0.288 0.132,-0.348 0.336,-0.348 l 1.452,0 c 1.511998,0 1.476,0.504001 1.368,1.584 l 0.36,0 0.456,-2.004 -6.072,0"
+     inkscape:connector-curvature="0"
      transform="matrix(6.4405034,0,0,6.4405034,-127.82941,-147.21856)"
-     style="filter:url(#filter4471);fill:#000000;fill-opacity:0.73033708"
-     d="M 25.95075,27.16475 L 25.86675,27.51275 L 26.58675,27.56075 C 26.86275,27.58475 26.94675,27.72875 26.85075,28.13675 L 25.41075,34.47275 C 25.31475,34.88075 25.20675,35.02475 24.91875,35.04875 L 24.24675,35.12075 L 24.17475,35.46875 L 30.43875,35.46875 L 31.05075,33.35675 L 30.69075,33.35675 C 30.078751,34.832749 29.538749,35.04875 28.06275,35.04875 C 27.474751,35.04875 26.87475,35.01275 26.71875,34.89275 C 26.53875,34.74875 26.52675,34.568749 26.65875,34.00475 L 27.27075,31.37675 L 28.84275,31.37675 C 29.898749,31.37675 29.93475,31.628751 29.88675,32.40875 L 30.24675,32.40875 L 30.79875,29.90075 L 30.43875,29.90075 C 30.12675,30.728749 29.994749,30.92075 28.93875,30.92075 L 27.36675,30.92075 L 28.05075,27.93275 C 28.11075,27.64475 28.18275,27.58475 28.38675,27.58475 L 29.83875,27.58475 C 31.350748,27.58475 31.31475,28.088751 31.20675,29.16875 L 31.56675,29.16875 L 32.02275,27.16475 L 25.95075,27.16475"
-     id="flowRoot3417" />
+     id="flowRoot3417"
+     style="fill:#000000;fill-opacity:0.73033711;filter:url(#filter4471)" />
 </svg>

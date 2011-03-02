@@ -450,6 +450,8 @@ class Model
 	Matrix &modelViewMatrix();
 	// Set the current modelview matrix
 	void setModelViewMatrix(Matrix &mvmat);
+	// Return the viewportMatrix
+	GLint *viewportMatrix();
 	// Return current projection matrix
 	Matrix &modelProjectionMatrix();
 	// Return current globe projection matrix
@@ -713,7 +715,7 @@ class Model
 
 
 	/*
-	// Geometry (using staticatoms[])
+	// Geometry
 	*/
 	public:
 	// Calculate distance

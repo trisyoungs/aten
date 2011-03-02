@@ -75,6 +75,12 @@ Matrix &Model::modelViewMatrix()
 	return (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
 }
 
+// Return the viewportMatrix
+GLint *Model::viewportMatrix()
+{
+	return (parent_ == NULL ? viewportMatrix_ : parent_->viewportMatrix());
+}
+
 // Return current projection matrix
 Matrix &Model::modelProjectionMatrix()
 {
@@ -172,13 +178,11 @@ void Model::resetView()
 			// Adjust z-translation by 1 Angstrom
 			mview[14] -= 1.0;
 			// Project our local atom and grab the z screen coordinate
-			if (!prefs.hasPerspective()) gui.mainWidget->doProjection();
-// 			setupView(0, 0, contextWidth_, contextHeight_);
+			if (!prefs.hasPerspective()) gui.mainWidget->doProjection();// TGAY Necessary?
+			setupView(0, 0, gui.mainWidget->contextWidth(), gui.mainWidget->contextHeight());
 // 			gui.mainWidget->updateTransformation(mview, cell_.centre());
 			modelToWorld(target, &screenr);
-			XXX There's a problem here - has a minus sign been accidentally removed with all the projection routine changes?
 			done = TRUE;
-			screenr.print();
 			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
 			if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
 			if (screenr.z < 0.0) done = FALSE;
@@ -340,7 +344,7 @@ Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, d
 	// Projection formula is : worldr = P x M x modelr
 	pos.set(modelr, 1.0);
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	temp = modelViewMatrix_ * pos;
+	temp = modelViewMatrix() * pos;
 	worldr.set(temp.x, temp.y, temp.z);
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	if (screenr != NULL)
@@ -378,32 +382,32 @@ Vec3<double> &Model::screenToModel(int x, int y, double z)
 // 	itransform.invert();
 	
 	// Mirror y-coordinate
-	y = viewportMatrix_[3] - y;
+	y = viewportMatrix()[3] - y;
 
 	// Project points at guide z-position and two other points along literal x and y to get scaling factors for screen coordinates
 	worldr.set(0.0,0.0,z, 1.0);
-	temp = modelProjectionMatrix_ * worldr;
-	newx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5;
-	newy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5;
+	temp = modelProjectionMatrix() * worldr;
+	newx = viewportMatrix()[0] + viewportMatrix()[2]*(temp.x / temp.w + 1.0)*0.5;
+	newy = viewportMatrix()[1] + viewportMatrix()[3]*(temp.y / temp.w + 1.0)*0.5;
 		
 	for (int n=0; n<10; ++n)
 	{
 		// Determine new (better) coordinate from a yardstick centred at current world coordinates
-		temp = modelProjectionMatrix_ * Vec4<double>(worldr.x+1.0, worldr.y+1.0, worldr.z, worldr.w);
-		dx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5 - newx;
-		dy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5 - newy;
+		temp = modelProjectionMatrix() * Vec4<double>(worldr.x+1.0, worldr.y+1.0, worldr.z, worldr.w);
+		dx = viewportMatrix()[0] + viewportMatrix()[2]*(temp.x / temp.w + 1.0)*0.5 - newx;
+		dy = viewportMatrix()[1] + viewportMatrix()[3]*(temp.y / temp.w + 1.0)*0.5 - newy;
 
 		worldr.add((x-newx)/dx, (y-newy)/dy, 0.0, 0.0);
 // 		printf ("N=%i", n); worldr.print();
-		temp = modelProjectionMatrix_ * worldr;
-		newx = viewportMatrix_[0] + viewportMatrix_[2]*(temp.x / temp.w + 1.0)*0.5;
-		newy = viewportMatrix_[1] + viewportMatrix_[3]*(temp.y / temp.w + 1.0)*0.5;
+		temp = modelProjectionMatrix() * worldr;
+		newx = viewportMatrix()[0] + viewportMatrix()[2]*(temp.x / temp.w + 1.0)*0.5;
+		newy = viewportMatrix()[1] + viewportMatrix()[3]*(temp.y / temp.w + 1.0)*0.5;
 // 		printf("NEW dx = %f, dy = %f, wantedxy = %f, %f\n", newx, newy, x, y);
 		if ((x == newx) && (y == newy)) break;
 	}
 	
 	// Finally, invert to model coordinates
-	modelr = modelViewMatrixInverse_ * Vec3<double>(worldr.x, worldr.y, worldr.z);
+	modelr = modelViewMatrixInverse() * Vec3<double>(worldr.x, worldr.y, worldr.z);
 	
 	msg.exit("Model::screenToModel");
 	return modelr;

@@ -503,7 +503,8 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	}
 	
 	// Prepare for model rendering
-	glViewport(0, 0, canvas->contextWidth(), canvas->contextHeight());
+	GLint *vp = source->viewportMatrix();
+	glViewport(vp[0], vp[1], vp[2], vp[3]);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glMultMatrixd(source->modelProjectionMatrix().matrix());

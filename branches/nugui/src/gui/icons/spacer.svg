@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.0"
    width="40"
    height="100"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="spacer.svg"
-   sodipodi:docbase="/home/tris/src/aten/src/gui-qt/icons"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   id="svg2">
   <metadata
      id="metadata2566">
     <rdf:RDF>
@@ -28,42 +22,23 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="780"
-     inkscape:window-width="1024"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="1.5315846"
-     inkscape:cx="114.08878"
-     inkscape:cy="49.789216"
-     inkscape:window-x="20"
-     inkscape:window-y="59"
-     inkscape:current-layer="svg2"
-     showgrid="false" />
   <defs
      id="defs4" />
   <g
-     id="g3666"
-     transform="translate(-27.829803,-0.5999038)">
+     transform="translate(-27.829803,-0.5999038)"
+     id="g3666">
     <rect
-       y="5.8166394"
-       x="47.829803"
-       height="89.566528"
        width="6.4635639"
+       height="89.566528"
+       x="47.829803"
+       y="5.8166394"
        id="rect2383"
        style="fill:#ebebeb;fill-opacity:1" />
     <rect
-       y="5.8166399"
-       x="41.366238"
-       height="89.566528"
        width="6.4635639"
+       height="89.566528"
+       x="41.366238"
+       y="5.8166399"
        id="rect3664"
        style="fill:#909090;fill-opacity:1" />
   </g>
