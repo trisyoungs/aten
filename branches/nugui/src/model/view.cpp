@@ -377,9 +377,10 @@ Vec3<double> &Model::screenToModel(int x, int y, double z)
 	int newx, newy;
 	double dx, dy;
 	
-	// Grab transformation matrix and invert   TGAY No longer necessary since we already have it in the Model
-// 	Matrix itransform = modelTransformationMatrix_;
-// 	itransform.invert();
+	// Grab transformation matrix, apply cell centre correction, and invert
+	Matrix itransform = modelViewMatrix_;
+	itransform.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
+	itransform.invert();
 	
 	// Mirror y-coordinate
 	y = viewportMatrix()[3] - y;

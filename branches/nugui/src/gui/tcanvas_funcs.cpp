@@ -150,6 +150,10 @@ void TCanvas::initializeGL()
 void TCanvas::paintGL()
 {
 	static QFont font;
+	static QBrush solidbrush(Qt::NoBrush);
+	QPen pen;
+	QColor color;
+	QRect currentBox;
 	Refitem<Model,int> *first, localri;
 	int px, py, nperrow=2, nrows, col, row, nmodels;
 	
@@ -161,13 +165,13 @@ void TCanvas::paintGL()
 	// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
 	// so here it is done in the 'wrong' order.
 	
-	// Set the first item to consider - if we are rendering from a specifid model (useCurrentModel_ == FALSE) use the local listitem
+	// Set the first item to consider - if we are rendering from a specific model (useCurrentModel_ == FALSE) use the local listitem
 	if (useCurrentModel_)
 	{
 		nmodels = aten.nVisibleModels();
 		if (nmodels == 0)
 		{
-			localri.item = aten.currentModelOrFrame();
+			localri.item = aten.currentModel();
 			nmodels = 1;
 			first = &localri;
 		}
@@ -209,6 +213,12 @@ void TCanvas::paintGL()
 		// Grab model pointer
 		displayModel_ = ri->item;
 		if (displayModel_ == NULL) continue;
+
+		// Store coordinates for box if this is the current model
+		if ((displayModel_ == aten.currentModel()) && useCurrentModel_) currentBox.setRect(col*px, row*py, px, py);
+
+		// Grab secondary pointer (e.g. trajectory frame) if necessary
+		if (useCurrentModel_) displayModel_ = displayModel_->renderSourceModel();
 		
 		// Determine desired pixel range and set up view(port)
 		checkGlError();
@@ -217,7 +227,7 @@ void TCanvas::paintGL()
 		if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
 		else displayModel_ = displayModel_->renderSourceModel();
 		render3D();
-		
+
 		// Increase counters
 		++col;
 		if (col%nperrow == 0)
@@ -229,13 +239,23 @@ void TCanvas::paintGL()
 	endGl();
 	
 	// Render 2D elements (with QPainter)
-	/// TGAY THis won't work properly, since only text elements from the last model will be rendered
+	/// TGAY This won't work properly, since only text elements from the last model will be rendered
 	QPainter painter(this);
 	font.setPointSize(prefs.labelSize());
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 	engine_.renderText(painter, this);
 	render2D(painter);
+	// Draw box around current model
+// 	prefs.copyColour(Prefs::TextColour, colour);
+// 	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
+	color.setRgbF(0.0,0.0,0.0,1.0);
+	pen.setColor(color);
+	pen.setWidth(2);
+	painter.setBrush(solidbrush);
+	painter.setPen(Qt::SolidLine);
+	painter.setPen(pen);
+	painter.drawRect(currentBox);
 	painter.end();
 		
 	// Finally, swap buffers if necessary
@@ -369,7 +389,6 @@ void TCanvas::postRedisplay()
 {
 	if ((!valid_) || drawing_) return;
 	updateGL();
-// 	if (prefs.manualSwapBuffers()) swapBuffers();
 }
 
 // Update view matrix stored in RenderEngine

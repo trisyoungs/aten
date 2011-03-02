@@ -119,6 +119,17 @@ void ModelListWidget::deselectItem(TTreeWidgetItem *twi)
 	aten.setModelVisible(m,FALSE);
 }
 
+// Deselect all items in list
+void ModelListWidget::deselectAll()
+{
+	TTreeWidgetItem *twi;
+	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
+	{
+		twi = (TTreeWidgetItem*) item;
+		deselectItem(twi);
+	};
+}
+
 void ModelListWidget::updateSelection()
 {
 }
@@ -127,24 +138,23 @@ void ModelListWidget::updateSelection()
 void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
+	
+	// Was an item clicked?
 	lastClicked_ = itemUnderMouse(event->pos());
-	// Check for header items to we can (un)collapse them or select all atoms within them
 	if (lastClicked_ != NULL)
 	{
-		// If the clicked item contains a pattern pointer, its a collapsible list item root node
-		if (lastClicked_->data.type() == VTypes::ModelData) toggleItem(lastClicked_);
-/*		else if (lastClicked_->data.type() == VTypes::PatternData)
+		// Clear all old selected items, unless Ctrl was pressed at the same time
+		if (TRUE) deselectAll();	// TGAY Ctrl!
+
+		// If no item is selected (visible) then set this one to be the current model
+		if (lastClicked_->data.type() == VTypes::ModelData)
 		{
-			// If the x-coordinate is less than 15, change the collapsed state of the item
-			if (event->x() < 15) lastClicked_->setExpanded(!lastClicked_->isExpanded());
-			else
-			{
-				if (event->modifiers()&Qt::ShiftModifier) for (int n=0; n < lastClicked_->childCount(); n++) deselectItem((TTreeWidgetItem*) lastClicked_->child(n));
-				else if (event->modifiers()&Qt::ControlModifier) for (int n=0; n < lastClicked_->childCount(); n++) toggleItem((TTreeWidgetItem*) lastClicked_->child(n));
-				else for (int n=0; n < lastClicked_->childCount(); n++) selectItem((TTreeWidgetItem*) lastClicked_->child(n));
-			}
+			// Toggle the selection status of the item
+			toggleItem(lastClicked_);
+			Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
+			if (m == NULL) return;
+			aten.setCurrentModel(m);
 		}
-		else printf("Internal Error: Atomlist item contains an unrecognised pointer type.\n");*/
 	}
 	lastHovered_ = lastClicked_;
 }
