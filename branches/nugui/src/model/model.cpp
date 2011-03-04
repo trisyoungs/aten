@@ -38,7 +38,6 @@ Model::Model()
 {
 	// Private variables
 	parent_ = NULL;
-// 	type_ = Model::ParentModel
 	visible_ = FALSE;
 
 	// Camera / View / render

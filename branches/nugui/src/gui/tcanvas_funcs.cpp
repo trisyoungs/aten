@@ -156,7 +156,8 @@ void TCanvas::paintGL()
 	QRect currentBox;
 	Refitem<Model,int> *first, localri;
 	int px, py, nperrow=2, nrows, col, row, nmodels;
-	
+	Model *m;
+
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
 	if ((!valid_) || drawing_) return;
 	
@@ -176,6 +177,8 @@ void TCanvas::paintGL()
 			first = &localri;
 		}
 		else first = aten.visibleModels();
+		displayModel_ = aten.currentModelOrFrame();
+		if (displayModel_ != NULL) displayModel_ = displayModel_->renderSourceModel();
 	}
 	else
 	{
@@ -184,6 +187,7 @@ void TCanvas::paintGL()
 		localri.item = renderSource_;
 		first = &localri;
 		nmodels = 1;
+		displayModel_ = renderSource_;
 	}
 	if (first == NULL) return;
 	
@@ -203,7 +207,6 @@ void TCanvas::paintGL()
 	nrows = nmodels/nperrow + (nmodels%nperrow == 0 ? 0 : 1);
 	py = contextHeight_ / nrows;
 	px = (nmodels == 1 ? contextWidth_ : contextWidth_ / nperrow);
-// 	printf("NVisible Models=%i, nperrow=%i, size=%ix%i, context=%ix%i\n", nmodels,nperrow, px,py,contextWidth_,contextHeight_);
 	
 	// Loop over model refitems in list (or single refitem)
 	col = 0;
@@ -211,22 +214,22 @@ void TCanvas::paintGL()
 	for (Refitem<Model,int> *ri = first; ri != NULL; ri = ri->next)
 	{
 		// Grab model pointer
-		displayModel_ = ri->item;
-		if (displayModel_ == NULL) continue;
+		m = ri->item;
+		if (m == NULL) continue;
 
 		// Store coordinates for box if this is the current model
-		if ((displayModel_ == aten.currentModel()) && useCurrentModel_) currentBox.setRect(col*px, row*py, px, py);
+		if ((m == aten.currentModel()) && useCurrentModel_) currentBox.setRect(col*px, row*py, px, py);
 
 		// Grab secondary pointer (e.g. trajectory frame) if necessary
-		if (useCurrentModel_) displayModel_ = displayModel_->renderSourceModel();
+		if (useCurrentModel_) m = m->renderSourceModel();
 		
 		// Determine desired pixel range and set up view(port)
 		checkGlError();
-		displayModel_->setupView(col*px, row*py, px, py);
+		m->setupView(col*px, row*py, px, py);
 		// Vibration frame?
-		if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
-		else displayModel_ = displayModel_->renderSourceModel();
-		render3D();
+		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
+		else m = m->renderSourceModel();
+		render3D(m);
 
 		// Increase counters
 		++col;
@@ -245,7 +248,7 @@ void TCanvas::paintGL()
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 	engine_.renderText(painter, this);
-	render2D(painter);
+	render2D(painter, displayModel_);
 	// Draw box around current model
 // 	prefs.copyColour(Prefs::TextColour, colour);
 // 	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
@@ -263,14 +266,14 @@ void TCanvas::paintGL()
 }
 
 // Render 3D objects for current displayModel_
-void TCanvas::render3D()
+void TCanvas::render3D(Model *source)
 {	
 	// Valid pointer set?
-	if (displayModel_ == NULL) return;
+	if (source == NULL) return;
 
 	// Vibration frame?
-	if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
-	else displayModel_ = displayModel_->renderSourceModel();
+	if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
+	else source = source->renderSourceModel();
 	
 	// Render model
 	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
@@ -284,17 +287,17 @@ void TCanvas::render3D()
 	checkGlError();
 
 	// Check the supplied model against the previous one rendered to see if we must outdate the display list
-// 	if (lastDisplayed_ != displayModel_)
+	// 	if (lastDisplayed_ != source)
 // 	{
 // 		// Clear the picked atoms list
 // 		pickedAtoms_.clear();
 // 	}
-	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", displayModel_, displayModel_->changeLog.log(Log::Total));
+	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
 	
 	// If this is a trajectory frame, check its ID against the last one rendered
-	if (displayModel_->parent() != NULL)
+	if (source->parent() != NULL)
 	{
-		displayFrameId_ = displayModel_->parent()->trajectoryFrameIndex();
+		displayFrameId_ = source->parent()->trajectoryFrameIndex();
 		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 	}
 	
@@ -302,7 +305,7 @@ void TCanvas::render3D()
 	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
 	engine_.initialiseGL();
 	checkGlError();
-	engine_.render3D(displayModel_, this);
+	engine_.render3D(source, this);
 	//glFlush();
 	checkGlError();
 
@@ -316,8 +319,7 @@ void TCanvas::resizeGL(int newwidth, int newheight)
 	contextWidth_ = (GLsizei) newwidth;
 	contextHeight_ = (GLsizei) newheight;
 	doProjection(contextWidth_, contextHeight_);
-	// Flag that render source needs to be reprojected
-	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
+	// TGAY
 	if (prefs.manualSwapBuffers()) swapBuffers();
 }
 
