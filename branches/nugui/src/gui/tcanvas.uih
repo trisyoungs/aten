@@ -65,8 +65,6 @@ class TCanvas : public QGLWidget
 	// Render Target
 	*/
 	private:
-	// Actual model being rendered by the canvas
-	Model *displayModel_;
 	// ID of last trajectory frame displayed (if any)
 	int displayFrameId_;
 	// Flag whether to use Aten's current model as rendering source (the default)

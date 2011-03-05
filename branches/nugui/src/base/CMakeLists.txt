@@ -3,7 +3,6 @@ atomaddress.cpp
 atom.cpp
 atom_geometry.cpp
 bond.cpp
-bundle.cpp
 cell.cpp
 colourscalepoint.cpp
 dnchar.cpp
@@ -25,7 +24,6 @@ wrapint.cpp
 atomaddress.h
 atom.h
 bond.h
-bundle.h
 cell.h
 colourscalepoint.h
 constants.h

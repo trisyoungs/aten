@@ -249,7 +249,7 @@ void ForcefieldsWidget::on_MinimiserMethodCombo_currentIndexChanged(int index)
 void ForcefieldsWidget::on_CurrentEnergyButton_clicked(bool checked)
 {
 	bool result;
-	if (aten.current.rs == aten.current.m) result = CommandNode::run(Command::ModelEnergy, "");
+	if (aten.current.rs() == aten.current.m) result = CommandNode::run(Command::ModelEnergy, "");
 	else result = CommandNode::run(Command::FrameEnergy, "");
 	// Print energy
 	if (result) aten.currentModel()->renderSourceModel()->energy.print();
@@ -257,7 +257,7 @@ void ForcefieldsWidget::on_CurrentEnergyButton_clicked(bool checked)
 
 void ForcefieldsWidget::on_CurrentForcesButton_clicked(bool checked)
 {
-	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelForces, "");
+	if (aten.current.rs() == aten.current.m) CommandNode::run(Command::ModelForces, "");
 	else CommandNode::run(Command::FrameForces, "");
 }
 

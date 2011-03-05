@@ -31,7 +31,7 @@
 bool Command::function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->axisRotateView(c->arg3d(0), c->argd(3));
+	obj.rs()->axisRotateView(c->arg3d(0), c->argd(3));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -41,7 +41,7 @@ bool Command::function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Matrix rmat = obj.rs->modelViewMatrix();
+	Matrix rmat = obj.rs()->modelViewMatrix();
 	msg.print( "View [R c] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat[0], rmat[1], rmat[2], rmat[4], rmat[5], rmat[6], rmat[8], rmat[9], rmat[10], rmat[12], rmat[13], rmat[14]);
 	rv.reset();
 	return TRUE;
@@ -69,7 +69,7 @@ bool Command::function_Perspective(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Reset view
 bool Command::function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	obj.rs->resetView();
+	obj.rs()->resetView();
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -79,7 +79,7 @@ bool Command::function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->rotateView(c->argd(1), c->argd(0));
+	obj.rs()->rotateView(c->argd(1), c->argd(0));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -95,7 +95,7 @@ bool Command::function_SetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rmat.setColumn(1,c->arg3d(3),0.0);
 	rmat.setColumn(2,c->arg3d(6),0.0);
 	rmat.setColumn(3,c->arg3d(9),1.0);
-	obj.rs->setModelViewMatrix(rmat);
+	obj.rs()->setModelViewMatrix(rmat);
 	rv.reset();
 	return TRUE;
 }
@@ -114,7 +114,7 @@ bool Command::function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int nrenders = (c->hasArg(0) ? c->argi(0) : 100);
 	for (int n=0; n < nrenders; n ++)
 	{
-		obj.rs->rotateView(5.0,0.0);
+		obj.rs()->rotateView(5.0,0.0);
 		gui.mainWidget->postRedisplay();
 	}
 	clock_t tfinish = clock();
@@ -129,7 +129,7 @@ bool Command::function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_TranslateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->adjustCamera(c->argd(0), c->argd(1), c->argd(2));
+	obj.rs()->adjustCamera(c->argd(0), c->argd(1), c->argd(2));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -140,7 +140,7 @@ bool Command::function_ViewAlong(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Set model rotation matrix to be along the specified axis
-	obj.rs->viewAlong(c->argd(0), c->argd(1), c->argd(2));
+	obj.rs()->viewAlong(c->argd(0), c->argd(1), c->argd(2));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -151,7 +151,7 @@ bool Command::function_ViewAlongCell(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Set model rotation matrix to be along the specified axis
-	obj.rs->viewAlongCell(c->argd(0), c->argd(1), c->argd(2));
+	obj.rs()->viewAlongCell(c->argd(0), c->argd(1), c->argd(2));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -161,7 +161,7 @@ bool Command::function_ViewAlongCell(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->adjustCamera(0.0,0.0,c->argd(0));
+	obj.rs()->adjustCamera(0.0,0.0,c->argd(0));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -171,7 +171,7 @@ bool Command::function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ZRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->zRotateView(-c->argd(0));
+	obj.rs()->zRotateView(-c->argd(0));
 	gui.mainWidget->postRedisplay();
 	rv.reset();
 	return TRUE;

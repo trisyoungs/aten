@@ -22,7 +22,7 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
-#include "base/bundle.h"
+#include "model/bundle.h"
 #include "parser/tree.h"
 
 // Static singleton

@@ -74,7 +74,7 @@ bool Command::function_GlyphAtomF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(1))
 	{
 		if (c->argType(1) == VTypes::AtomData) target = (Atom*) c->argp(1, VTypes::AtomData);
-		else target = obj.rs->atom(c->argi(1) - 1);
+		else target = obj.rs()->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
 	obj.gl->data(d)->setAtom(target, GlyphData::ForceData);
@@ -99,7 +99,7 @@ bool Command::function_GlyphAtomR(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(1))
 	{
 		if (c->argType(1) == VTypes::AtomData) target = (Atom*) c->argp(1, VTypes::AtomData);
-		else target = obj.rs->atom(c->argi(1) - 1);
+		else target = obj.rs()->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
 	obj.gl->data(d)->setAtom(target, GlyphData::PositionData);
@@ -124,7 +124,7 @@ bool Command::function_GlyphAtomV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(1))
 	{
 		if (c->argType(1) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(1, VTypes::AtomData), GlyphData::VelocityData);
-		else target = obj.rs->atom(c->argi(1) - 1);
+		else target = obj.rs()->atom(c->argi(1) - 1);
 	}
 	obj.gl->data(d)->setAtom(target, GlyphData::VelocityData); 
 	if (target == NULL) msg.print("Warning - NULL atom stored in glyph data %i.\n",d);
@@ -142,7 +142,7 @@ bool Command::function_GlyphAtomsF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (c->hasArg(d))
 		{
 			if (c->argType(d) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(d, VTypes::AtomData), GlyphData::ForceData);
-			else obj.gl->data(d)->setAtom(obj.rs->atom(c->argi(d)-1), GlyphData::ForceData); 
+			else obj.gl->data(d)->setAtom(obj.rs()->atom(c->argi(d)-1), GlyphData::ForceData); 
 		}
 		else break;
 	}
@@ -160,7 +160,7 @@ bool Command::function_GlyphAtomsR(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (c->hasArg(d))
 		{
 			if (c->argType(d) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(d, VTypes::AtomData), GlyphData::PositionData);
-			else obj.gl->data(d)->setAtom(obj.rs->atom(c->argi(d)-1), GlyphData::PositionData); 
+			else obj.gl->data(d)->setAtom(obj.rs()->atom(c->argi(d)-1), GlyphData::PositionData); 
 		}
 		else break;
 	}
@@ -178,7 +178,7 @@ bool Command::function_GlyphAtomsV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (c->hasArg(d))
 		{
 			if (c->argType(d) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(d, VTypes::AtomData), GlyphData::VelocityData);
-			else obj.gl->data(d)->setAtom(obj.rs->atom(c->argi(d)-1), GlyphData::VelocityData); 
+			else obj.gl->data(d)->setAtom(obj.rs()->atom(c->argi(d)-1), GlyphData::VelocityData); 
 		}
 		else break;
 	}
@@ -257,7 +257,7 @@ bool Command::function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("Unrecognised glyph style '%s'.\n", c->argc(0));
 		return FALSE;
 	}
-	obj.gl = obj.rs->addGlyph(gt);
+	obj.gl = obj.rs()->addGlyph(gt);
 	rv.set(VTypes::GlyphData, obj.gl);
 	// Set default text for text glyphs
 	if ((gt == Glyph::TextGlyph) || (gt == Glyph::Text3DGlyph)) obj.gl->setText("NewGlyph");

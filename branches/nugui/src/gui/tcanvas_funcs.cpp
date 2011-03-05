@@ -34,7 +34,6 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	contextHeight_ = 0;
 	valid_ = FALSE;
 	// Render Target
-	displayModel_ = NULL;
 	displayFrameId_ = -1;
 	useCurrentModel_ = TRUE;
 	renderSource_ = NULL;
@@ -112,7 +111,9 @@ void TCanvas::probeFeatures()
 // Return the current display model
 Model *TCanvas::displayModel() const
 {
-	return displayModel_;
+	Model *source = (useCurrentModel_ ? aten.currentModelOrFrame() : renderSource_);
+	if (source != NULL) source = (source->renderFromVibration() ? source->vibrationCurrentFrame() : source);
+	return source;
 }
 
 // Set the rendering source to the supplied model (reverts to useCurrentModel_ if a NULL pointer is supplied)
@@ -177,8 +178,6 @@ void TCanvas::paintGL()
 			first = &localri;
 		}
 		else first = aten.visibleModels();
-		displayModel_ = aten.currentModelOrFrame();
-		if (displayModel_ != NULL) displayModel_ = displayModel_->renderSourceModel();
 	}
 	else
 	{
@@ -187,7 +186,6 @@ void TCanvas::paintGL()
 		localri.item = renderSource_;
 		first = &localri;
 		nmodels = 1;
-		displayModel_ = renderSource_;
 	}
 	if (first == NULL) return;
 	
@@ -248,7 +246,7 @@ void TCanvas::paintGL()
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 	engine_.renderText(painter, this);
-	render2D(painter, displayModel_);
+// 	render2D(painter, displayModel_);   TGAY
 	// Draw box around current model
 // 	prefs.copyColour(Prefs::TextColour, colour);
 // 	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);

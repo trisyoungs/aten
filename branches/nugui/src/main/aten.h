@@ -22,9 +22,9 @@
 #ifndef ATEN_ATEN_H
 #define ATEN_ATEN_H
 
-#include "base/bundle.h"
 #include "base/dnchar.h"
 #include "base/kvmap.h"
+#include "model/bundle.h"
 #include "model/fragment.h"
 #include "templates/list.h"
 #include "parser/program.h"

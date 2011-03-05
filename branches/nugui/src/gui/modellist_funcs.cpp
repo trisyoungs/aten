@@ -70,7 +70,7 @@ void ModelListWidget::refresh()
 		item->setIcon(0,m->icon());
 		item->setText(1,m->name());
 		item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
-		if (m->isVisible()) item->setSelected(TRUE);
+		if (m->isVisible() || (m == aten.currentModel())) item->setSelected(TRUE);
 	}
 	ui.ModelTree->resizeColumnToContents(0);
 	ui.ModelTree->resizeColumnToContents(1);
@@ -92,42 +92,90 @@ void ModelListWidget::toggleItem(TTreeWidgetItem *twi)
 	if (twi == NULL) return;
 	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
 	if (m == NULL) return;
-	bool state = twi->isSelected();
-	twi->setSelected(!state);
-	aten.setModelVisible(m,!state);
+	bool selected = twi->isSelected();
+	
+	// Here we must consider the rules of Aten - that a model must *always* be current.
+	// So, if this toggle would result in there being no visible models, ignore the request.
+	// Similarly, if this item *can* legitimately be deselected, we must select another current model.
+	
+	// So, check for a single selected model for which toggling would be invalid
+	if (selected && (aten.nVisibleModels() == 1)) return;
+
+	// Now, if the item is *not* selected we can safely select it and make it current
+	if (!selected)
+	{
+		printf("Model [%s] is not currently selected...\n", m->name());
+		twi->setSelected(TRUE);
+		aten.setModelVisible(m,TRUE);
+		aten.setCurrentModel(m);
+	}
+	else
+	{
+		printf("Model [%s] is currently selected...\n", m->name());
+		// We are deselecting, so need to check if its currently the active model
+		twi->setSelected(FALSE);
+		aten.setModelVisible(m,FALSE);
+		if (m == aten.currentModel())
+		{
+			printf(".....model [%s] is the current model...\n", m->name());
+
+			// Grab the last visible model added to the list
+			Refitem<Model,int> *ri;
+			m = NULL;
+			for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item != aten.currentModel()) m = ri->item;
+			if (ri == NULL) printf("Internal Error: Couldn't reassign active model in ModelListWidget::treeMouseMoveEvent.\n");
+			else aten.setCurrentModel(m);
+			printf("......model [%s] is now the current model...\n", m->name());
+
+		}
+	}
 }
 
-// Select tree widget item *and* model atom, provided the tree widget item is not selected already
-void ModelListWidget::selectItem(TTreeWidgetItem *twi)
-{
-	if (twi == NULL) return;
-	if (twi->isSelected()) return;
-	twi->setSelected(TRUE);
-	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
-	if (m == NULL) return;
-	aten.setModelVisible(m,TRUE);
-}
+// // Select tree widget item *and* model atom, provided the tree widget item is not selected already
+// void ModelListWidget::selectItem(TTreeWidgetItem *twi)
+// {
+// 	if (twi == NULL) return;
+// 	if (twi->isSelected()) return;
+// 	twi->setSelected(TRUE);
+// 	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
+// 	if (m == NULL) return;
+// 	aten.setModelVisible(m,TRUE);
+// }
+// 
+// // Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
+// void ModelListWidget::deselectItem(TTreeWidgetItem *twi)
+// {
+// 	if (twi == NULL) return;
+// 	if (!twi->isSelected()) return;
+// 	twi->setSelected(FALSE);
+// 	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
+// 	if (m == NULL) return;
+// 	aten.setModelVisible(m,FALSE);
+// }
 
-// Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
-void ModelListWidget::deselectItem(TTreeWidgetItem *twi)
+// Deselect all items in list (except the supplied item)
+void ModelListWidget::deselectAll(TTreeWidgetItem *except)
 {
-	if (twi == NULL) return;
-	if (!twi->isSelected()) return;
-	twi->setSelected(FALSE);
-	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
-	if (m == NULL) return;
-	aten.setModelVisible(m,FALSE);
-}
-
-// Deselect all items in list
-void ModelListWidget::deselectAll()
-{
+	// Check supplied except item
+	if (except == NULL)
+	{
+		printf("Internal Error: Can't deselect every item in the ModelList (NULL except pointer provided).\n");
+		return;
+	}
+	
+	// Clear selected items
 	TTreeWidgetItem *twi;
+	Model *m;
 	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
 	{
 		twi = (TTreeWidgetItem*) item;
-		deselectItem(twi);
-	};
+		m = (Model*) twi->data.asPointer(VTypes::ModelData);
+		aten.setModelVisible(m, FALSE);
+		twi->setSelected(FALSE);
+	}
+	
+	// Make sure the excepted item is selected
+	toggleItem(except);
 }
 
 void ModelListWidget::updateSelection()
@@ -144,17 +192,8 @@ void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 	if (lastClicked_ != NULL)
 	{
 		// Clear all old selected items, unless Ctrl was pressed at the same time
-		if (TRUE) deselectAll();	// TGAY Ctrl!
-
-		// If no item is selected (visible) then set this one to be the current model
-		if (lastClicked_->data.type() == VTypes::ModelData)
-		{
-			// Toggle the selection status of the item
-			toggleItem(lastClicked_);
-			Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
-			if (m == NULL) return;
-			aten.setCurrentModel(m);
-		}
+		if (TRUE) deselectAll(lastClicked_);	// TGAY Ctrl!
+		else toggleItem(lastClicked_);
 	}
 	lastHovered_ = lastClicked_;
 }

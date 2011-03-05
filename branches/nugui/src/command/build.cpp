@@ -35,25 +35,25 @@ bool Command::function_AddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Optional argument specifies an atom, either by id or pointer
 	if (c->hasArg(0))
 	{
-		obj.rs->beginUndoState("Add Hydrogens to Atom");
+		obj.rs()->beginUndoState("Add Hydrogens to Atom");
 		Atom *i;
 		static ReturnValue v1;
 		if (!c->arg(0, v1)) return FALSE;
-		if (v1.type() == VTypes::IntegerData) i = obj.rs->atom(v1.asInteger()-1);
+		if (v1.type() == VTypes::IntegerData) i = obj.rs()->atom(v1.asInteger()-1);
 		else if (v1.type() == VTypes::AtomData) i = (Atom*) v1.asPointer(VTypes::AtomData);
 		else
 		{
 			msg.print("Optional argument to 'addhydrogen' must be a variable of Integer or Atom type.\n");
 			return FALSE;
 		}
-		obj.rs->hydrogenSatisfy(i);
+		obj.rs()->hydrogenSatisfy(i);
 	}
 	else
 	{
-		obj.rs->beginUndoState("Add Hydrogens to Model");
-		obj.rs->hydrogenSatisfy();
+		obj.rs()->beginUndoState("Add Hydrogens to Model");
+		obj.rs()->hydrogenSatisfy();
 	}
-	obj.rs->endUndoState();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -109,14 +109,14 @@ bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
-	obj.rs->beginUndoState("Draw Chain");
+	obj.rs()->beginUndoState("Draw Chain");
 	Atom *i;
 	ReturnValue v1;
 	short int el = c->argz(0);
 	if (c->hasArg(3))
 	{
 		Vec3<double> pos = c->arg3d(1);
-		i = obj.rs->addAtom(el, pos);
+		i = obj.rs()->addAtom(el, pos);
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -127,12 +127,12 @@ bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				else bt = Bond::bondType(v1.asDouble());
 			}
 			else bt = Bond::Single;
-			obj.rs->bondAtoms(obj.i, i, bt);
+			obj.rs()->bondAtoms(obj.i, i, bt);
 		}
 	}
 	else
 	{
-		i = obj.rs->addAtomAtPen(el);
+		i = obj.rs()->addAtomAtPen(el);
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -143,10 +143,10 @@ bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				else bt = Bond::bondType(v1.asInteger());
 			}
 			else bt = Bond::Single;
-			obj.rs->bondAtoms(obj.i, i, bt);
+			obj.rs()->bondAtoms(obj.i, i, bt);
 		}
 	}
-	obj.rs->endUndoState();
+	obj.rs()->endUndoState();
 	aten.current.i = i;
 	rv.set(VTypes::AtomData, i);
 	return TRUE;
@@ -167,20 +167,20 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	short int el = c->argz(0);
-	obj.rs->beginUndoState("Draw Atom");
+	obj.rs()->beginUndoState("Draw Atom");
 	// Get and check requested ID
 	int id = c->argi(1);
-	if ((id < 1) && (id > (obj.rs->nAtoms()+1)))
+	if ((id < 1) && (id > (obj.rs()->nAtoms()+1)))
 	{
-		msg.print("Requested ID for new atom (%i) is out of range (target model has %i atoms).\n", id, obj.rs->nAtoms());
+		msg.print("Requested ID for new atom (%i) is out of range (target model has %i atoms).\n", id, obj.rs()->nAtoms());
 		return FALSE;
 	}
-	if (c->hasArg(4)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), id-1);
-	else aten.current.i = obj.rs->addAtomAtPen(el, id-1);
+	if (c->hasArg(4)) aten.current.i = obj.rs()->addAtom(el, c->arg3d(1), id-1);
+	else aten.current.i = obj.rs()->addAtomAtPen(el, id-1);
 	// Add the name to the model's namesForcefield, if requested and it exists
 	if (prefs.keepNames())
 	{
-		ForcefieldAtom *ffa = obj.rs->addAtomName(el, c->argc(0));
+		ForcefieldAtom *ffa = obj.rs()->addAtomName(el, c->argc(0));
 		aten.current.i->setType(ffa);
 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
 	}
@@ -195,7 +195,7 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		aten.current.i->setType(ffa);
 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
 	}
-	obj.rs->endUndoState();
+	obj.rs()->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
@@ -203,7 +203,7 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Set pen coordinates ('locate <dx dy dz>')
 bool Command::function_Locate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	obj.rs->setPenPosition(c->arg3d(0));
+	obj.rs()->setPenPosition(c->arg3d(0));
 	rv.reset();
 	return TRUE;
 }
@@ -211,7 +211,7 @@ bool Command::function_Locate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Move pen along pen axes ('move <dx dy dz>')
 bool Command::function_Move(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	obj.rs->movePenPosition(c->arg3d(0));
+	obj.rs()->movePenPosition(c->arg3d(0));
 	rv.reset();
 	return TRUE;
 }
@@ -220,9 +220,9 @@ bool Command::function_Move(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_MoveToEnd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Move selection to end");
-	obj.rs->moveSelectionToEnd();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Move selection to end");
+	obj.rs()->moveSelectionToEnd();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -231,9 +231,9 @@ bool Command::function_MoveToEnd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_MoveToStart(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Move selection to start");
-	obj.rs->moveSelectionToStart();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Move selection to start");
+	obj.rs()->moveSelectionToStart();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -244,15 +244,15 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	short int el = c->argz(0);
-	obj.rs->beginUndoState("Draw Atom");
-	if (c->hasArg(9)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), c->arg3d(4), c->arg3d(7));
-	else if (c->hasArg(6)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), c->arg3d(4));
-	else if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
-	else aten.current.i = obj.rs->addAtomAtPen(el);
+	obj.rs()->beginUndoState("Draw Atom");
+	if (c->hasArg(9)) aten.current.i = obj.rs()->addAtom(el, c->arg3d(1), c->arg3d(4), c->arg3d(7));
+	else if (c->hasArg(6)) aten.current.i = obj.rs()->addAtom(el, c->arg3d(1), c->arg3d(4));
+	else if (c->hasArg(3)) aten.current.i = obj.rs()->addAtom(el, c->arg3d(1));
+	else aten.current.i = obj.rs()->addAtomAtPen(el);
 	// Add the name to the model's namesForcefield, if requested and it exists
  	if (prefs.keepNames())
  	{
-		ForcefieldAtom *ffa = obj.rs->addAtomName(el, c->argc(0));
+		ForcefieldAtom *ffa = obj.rs()->addAtomName(el, c->argc(0));
  		aten.current.i->setType(ffa);
  		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
  	}
@@ -267,7 +267,7 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		aten.current.i->setType(ffa);
 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
 	}
-	obj.rs->endUndoState();
+	obj.rs()->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
@@ -285,16 +285,16 @@ bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	else if (r.y > 1.0) r.y -= 1.0;
 	if (r.z < 0.0) r.z += 1.0;
 	else if (r.z > 1.0) r.z -= 1.0;	
-	if (obj.rs->cell()->type() == Cell::NoCell) msg.print("Warning: No unit cell present - atom added with supplied coordinates.\n");
-	else r = obj.rs->cell()->fracToReal(r);
-	obj.rs->beginUndoState("Draw atom (fractional)");
-	if (c->hasArg(9)) aten.current.i = obj.rs->addAtom(el, r, c->arg3d(4), c->arg3d(7));
-	else if (c->hasArg(6)) aten.current.i = obj.rs->addAtom(el, r, c->arg3d(4));
-	else aten.current.i = obj.rs->addAtom(el, r);
+	if (obj.rs()->cell()->type() == Cell::NoCell) msg.print("Warning: No unit cell present - atom added with supplied coordinates.\n");
+	else r = obj.rs()->cell()->fracToReal(r);
+	obj.rs()->beginUndoState("Draw atom (fractional)");
+	if (c->hasArg(9)) aten.current.i = obj.rs()->addAtom(el, r, c->arg3d(4), c->arg3d(7));
+	else if (c->hasArg(6)) aten.current.i = obj.rs()->addAtom(el, r, c->arg3d(4));
+	else aten.current.i = obj.rs()->addAtom(el, r);
 	// Add the name to the model's namesForcefield, if requested and it exists
  	if (prefs.keepNames())
  	{
-		ForcefieldAtom *ffa = obj.rs->addAtomName(el, c->argc(0));
+		ForcefieldAtom *ffa = obj.rs()->addAtomName(el, c->argc(0));
  		aten.current.i->setType(ffa);
  		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
  	}
@@ -309,7 +309,7 @@ bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		aten.current.i->setType(ffa);
 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
 	}
-	obj.rs->endUndoState();
+	obj.rs()->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
@@ -318,9 +318,9 @@ bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReOrder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Reorder selected atoms");
-	obj.rs->reorderSelectedAtoms();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Reorder selected atoms");
+	obj.rs()->reorderSelectedAtoms();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -329,7 +329,7 @@ bool Command::function_ReOrder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ResetPen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->resetPenOrientation();
+	obj.rs()->resetPenOrientation();
 	rv.reset();
 	return TRUE;
 }
@@ -338,7 +338,7 @@ bool Command::function_ResetPen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RotX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->rotatePenAxis(0, c->argd(0));
+	obj.rs()->rotatePenAxis(0, c->argd(0));
 	rv.reset();
 	return TRUE;
 }
@@ -347,7 +347,7 @@ bool Command::function_RotX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RotY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->rotatePenAxis(1, c->argd(0));
+	obj.rs()->rotatePenAxis(1, c->argd(0));
 	rv.reset();
 	return TRUE;
 }
@@ -356,7 +356,7 @@ bool Command::function_RotY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RotZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->rotatePenAxis(2, c->argd(0));
+	obj.rs()->rotatePenAxis(2, c->argd(0));
 	rv.reset();
 	return TRUE;
 }
@@ -365,9 +365,9 @@ bool Command::function_RotZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SelectionAddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Add Hydrogens to selection");
-	for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) obj.rs->hydrogenSatisfy(ri->item);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Add Hydrogens to selection");
+	for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.rs()->hydrogenSatisfy(ri->item);
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -376,9 +376,9 @@ bool Command::function_SelectionAddHydrogen(CommandNode *c, Bundle &obj, ReturnV
 bool Command::function_ShiftDown(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Shift selection down");
-	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionDown();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Shift selection down");
+	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs()->shiftSelectionDown();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -387,9 +387,9 @@ bool Command::function_ShiftDown(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ShiftUp(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Shift selection up");
-	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionUp();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Shift selection up");
+	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs()->shiftSelectionUp();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -399,9 +399,9 @@ bool Command::function_Transmute(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	short int el = c->argz(0);
-	obj.rs->beginUndoState("Transmute selection");
-	for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) obj.rs->transmuteAtom(ri->item,el);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Transmute selection");
+	for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.rs()->transmuteAtom(ri->item,el);
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }

@@ -28,7 +28,7 @@ bool Command::function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->createExpression()) return FALSE;
-	bool success = obj.m->calculateForces(obj.rs);
+	bool success = obj.m->calculateForces(obj.rs());
 	rv.reset();
 	return success;
 }

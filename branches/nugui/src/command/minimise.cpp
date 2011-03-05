@@ -41,10 +41,10 @@ bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	cg.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	cg.minimise(obj.rs, econverge, fconverge);
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	cg.minimise(obj.rs(), econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", TRUE);
 	rv.reset();
 	return TRUE;
 }
@@ -73,10 +73,10 @@ bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	mc.minimise(obj.rs, econverge, fconverge);
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	mc.minimise(obj.rs(), econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Monte Carlo)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Monte Carlo)", TRUE);
 	rv.reset();
 	return TRUE;
 }
@@ -158,14 +158,14 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	aten.setUseWorkingList(FALSE);
 	// Start a new undostate in the original model
 	//printf("Target for new coords = %p\n", obj.rs);
-	obj.rs->beginUndoState("MOPAC geometry optimisation");
-	Atom *i, *j = obj.rs->atoms();
+	obj.rs()->beginUndoState("MOPAC geometry optimisation");
+	Atom *i, *j = obj.rs()->atoms();
 	for (i = tempmodel.atoms(); i != NULL; i = i->next)
 	{
-		obj.rs->positionAtom(j, i->r());
+		obj.rs()->positionAtom(j, i->r());
 		j = j->next;
 	}
-	obj.rs->endUndoState();
+	obj.rs()->endUndoState();
 	
 	return TRUE;
 }
@@ -178,10 +178,10 @@ bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	sd.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	sd.minimise(obj.rs, econverge, fconverge, c->hasArg(1) ? c->argb(1) : FALSE);
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	sd.minimise(obj.rs(), econverge, fconverge, c->hasArg(1) ? c->argb(1) : FALSE);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Steepest Descent)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Steepest Descent)", TRUE);
 	rv.reset();
 	return TRUE;
 }

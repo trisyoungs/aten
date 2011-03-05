@@ -502,7 +502,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	mainWidget->postRedisplay();
 
 	// Flag any surfaces to be rerendered for use in this context
-	aten.current.rs->rerenderGrids();
+	aten.current.rs()->rerenderGrids();
 
 	if (prefs.useFrameBuffer() == FALSE) pixmap = mainWidget->renderPixmap(width, height, FALSE);
 	else
@@ -516,7 +516,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	prefs.setScreenObjects(screenbits);
 
 	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
-	aten.current.rs->rerenderGrids();
+	aten.current.rs()->rerenderGrids();
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);

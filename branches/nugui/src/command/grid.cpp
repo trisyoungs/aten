@@ -63,7 +63,7 @@ bool Command::function_CurrentGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	switch (c->argType(0))
 	{
 		case (VTypes::IntegerData):
-			g = obj.rs->grid(c->argi(0)-1);
+			g = obj.rs()->grid(c->argi(0)-1);
 			break;
 		case (VTypes::GridData):
 			g = (Grid*) c->argp(0, VTypes::GridData);
@@ -95,7 +95,7 @@ bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	switch (c->argType(0))
 	{
 		case (VTypes::IntegerData):
-			g = obj.rs->grid(c->argi(0)-1);
+			g = obj.rs()->grid(c->argi(0)-1);
 			break;
 		case (VTypes::GridData):
 			g = (Grid*) c->argp(0, VTypes::GridData);

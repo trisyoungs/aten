@@ -975,7 +975,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	// Update model and main view
 	if (result)
 	{
-		if (aten.current.rs != NULL) aten.current.rs->changeLog.add(Log::Visual);
+		if (aten.current.rs() != NULL) aten.current.rs()->changeLog.add(Log::Visual);
 		gui.mainWidget->postRedisplay();
 	}
 	msg.exit("PreferencesVariable::setAccessor");

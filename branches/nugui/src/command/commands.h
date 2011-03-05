@@ -22,7 +22,7 @@
 #ifndef ATEN_COMMANDS_H
 #define ATEN_COMMANDS_H
 
-#include "base/bundle.h"
+#include "model/bundle.h"
 #include "parser/returnvalue.h"
 
 // Forward declarations

@@ -144,7 +144,6 @@ void Aten::setCurrentModel(Model *m)
 	}
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
-	current.rs = (current.m == NULL ? NULL : current.m->renderSourceModel());
 	// Set other Bundle objects based on model
 	current.p = m->patterns();
 	current.g = m->grids();
