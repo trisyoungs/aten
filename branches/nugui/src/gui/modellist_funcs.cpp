@@ -29,7 +29,7 @@
 ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
-	
+	refreshing_ = FALSE;
 	QObject::connect(ui.ModelTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
 	QObject::connect(ui.ModelTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
 	QObject::connect(ui.ModelTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
@@ -51,12 +51,16 @@ void ModelListWidget::showWidget()
 void ModelListWidget::refresh()
 {
 	msg.enter("ModelListWidget::refresh");
+	printf("Refreshing..\n");
 	// If the model list is not visible, don't do anything
-	if (!gui.modelListWidget->isVisible())
+	if (refreshing_ || (!gui.modelListWidget->isVisible()))
 	{
 		msg.exit("ModelListWidget::refresh");
 		return;
 	}
+	
+	refreshing_ = TRUE;
+	
 	// Clear the current list
 	ui.ModelTree->clear();
 	ui.ModelTree->setColumnCount(2);
@@ -74,6 +78,9 @@ void ModelListWidget::refresh()
 	}
 	ui.ModelTree->resizeColumnToContents(0);
 	ui.ModelTree->resizeColumnToContents(1);
+	
+	refreshing_ = FALSE;
+	
 	msg.exit("ModelListWidget::refresh");
 }
 
@@ -92,11 +99,14 @@ void ModelListWidget::toggleItem(TTreeWidgetItem *twi)
 	if (twi == NULL) return;
 	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
 	if (m == NULL) return;
-	bool selected = twi->isSelected();
+
+	refreshing_ = TRUE;
 	
 	// Here we must consider the rules of Aten - that a model must *always* be current.
 	// So, if this toggle would result in there being no visible models, ignore the request.
 	// Similarly, if this item *can* legitimately be deselected, we must select another current model.
+
+	bool selected = twi->isSelected();
 	
 	// So, check for a single selected model for which toggling would be invalid
 	if (selected && (aten.nVisibleModels() == 1)) return;
@@ -118,7 +128,6 @@ void ModelListWidget::toggleItem(TTreeWidgetItem *twi)
 		if (m == aten.currentModel())
 		{
 			printf(".....model [%s] is the current model...\n", m->name());
-
 			// Grab the last visible model added to the list
 			Refitem<Model,int> *ri;
 			m = NULL;
@@ -126,40 +135,20 @@ void ModelListWidget::toggleItem(TTreeWidgetItem *twi)
 			if (ri == NULL) printf("Internal Error: Couldn't reassign active model in ModelListWidget::treeMouseMoveEvent.\n");
 			else aten.setCurrentModel(m);
 			printf("......model [%s] is now the current model...\n", m->name());
-
 		}
 	}
+	refreshing_ = FALSE;
 }
 
-// // Select tree widget item *and* model atom, provided the tree widget item is not selected already
-// void ModelListWidget::selectItem(TTreeWidgetItem *twi)
-// {
-// 	if (twi == NULL) return;
-// 	if (twi->isSelected()) return;
-// 	twi->setSelected(TRUE);
-// 	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
-// 	if (m == NULL) return;
-// 	aten.setModelVisible(m,TRUE);
-// }
-// 
-// // Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
-// void ModelListWidget::deselectItem(TTreeWidgetItem *twi)
-// {
-// 	if (twi == NULL) return;
-// 	if (!twi->isSelected()) return;
-// 	twi->setSelected(FALSE);
-// 	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
-// 	if (m == NULL) return;
-// 	aten.setModelVisible(m,FALSE);
-// }
-
 // Deselect all items in list (except the supplied item)
-void ModelListWidget::deselectAll(TTreeWidgetItem *except)
+void ModelListWidget::deselectAll(TTreeWidgetItem *selectitem)
 {
+	refreshing_ = TRUE;
+	
 	// Check supplied except item
-	if (except == NULL)
+	if (selectitem == NULL)
 	{
-		printf("Internal Error: Can't deselect every item in the ModelList (NULL except pointer provided).\n");
+		printf("Internal Error: Can't deselect every item in the ModelList (NULL 'selectitem' except pointer provided).\n");
 		return;
 	}
 	
@@ -175,7 +164,9 @@ void ModelListWidget::deselectAll(TTreeWidgetItem *except)
 	}
 	
 	// Make sure the excepted item is selected
-	toggleItem(except);
+	toggleItem(selectitem);
+	
+	refreshing_ = FALSE;
 }
 
 void ModelListWidget::updateSelection()
@@ -186,14 +177,14 @@ void ModelListWidget::updateSelection()
 void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
-	
+
 	// Was an item clicked?
 	lastClicked_ = itemUnderMouse(event->pos());
 	if (lastClicked_ != NULL)
 	{
 		// Clear all old selected items, unless Ctrl was pressed at the same time
-		if (TRUE) deselectAll(lastClicked_);	// TGAY Ctrl!
-		else toggleItem(lastClicked_);
+		deselectAll(lastClicked_);
+// 		toggleItem(lastClicked_);
 	}
 	lastHovered_ = lastClicked_;
 }
@@ -203,7 +194,7 @@ void ModelListWidget::treeMouseReleaseEvent(QMouseEvent *event)
 {
 	// 	printf("Mouse release event.\n");
 	lastHovered_ = NULL;
-	gui.update();
+// 	gui.update(GUI);
 }
 
 // Mouse moved over ModelList
@@ -217,7 +208,7 @@ void ModelListWidget::treeMouseMoveEvent(QMouseEvent *event)
 	{
 		toggleItem(twi);
 		lastHovered_ = twi;
-		gui.update();
+// 		gui.update();
 	}
 }
 
@@ -228,4 +219,3 @@ void ModelListWidget::closeEvent(QCloseEvent *event)
 	gui.toolBoxWidget->ui.ModelListButton->setChecked(FALSE);
 	event->accept();
 }
-

@@ -47,15 +47,6 @@
   </metadata>
   <g
      id="layer1">
-    <use
-       transform="translate(33.6907,0.38948883)"
-       id="use2479"
-       style="fill:#000000;fill-opacity:1"
-       x="0"
-       y="0"
-       width="100"
-       height="100"
-       xlink:href="#path3246" />
     <path
        d="M 19.560448,46.069131 53.940331,65.918366 19.560448,85.7676 z"
        transform="matrix(-1.775784,0,0,1.775784,100.7064,-63.648061)"
@@ -66,6 +57,15 @@
        transform="matrix(-1.775784,0,0,1.775784,96.938602,-70.040788)"
        id="path3234"
        style="fill:url(#linearGradient3896);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.917;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:2.63393869" />
+    <use
+       transform="translate(33.6907,0.38948883)"
+       id="use2479"
+       style="fill:#000000;fill-opacity:1"
+       x="0"
+       y="0"
+       width="100"
+       height="100"
+       xlink:href="#path3246" />
     <use
        transform="translate(33.885444,1.7410306e-7)"
        id="use2475"

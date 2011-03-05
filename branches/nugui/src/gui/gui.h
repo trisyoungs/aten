@@ -82,7 +82,7 @@ class GuiQt
 	static const char *bitmapFormatFilter(BitmapFormat bf);
 	static const char *bitmapFormatExtension(BitmapFormat bf);
 	// Update Targets
-	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, AllTarget = 31 };
+	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, ModelsTarget = 32, AllTarget = 63 };
 
 
 	/*
@@ -130,7 +130,6 @@ class GuiQt
 	/*
 	// Windows / Subwindows
 	*/
-
 	public:
 	// Main application structure
 	QApplication *app;

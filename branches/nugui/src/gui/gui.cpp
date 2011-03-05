@@ -337,6 +337,7 @@ void GuiQt::update(int targets)
 	// Refresh aspects of main window
 	mainWindow->update();
 	updateContextMenu();
+	if (targets&GuiQt::ModelsTarget) modelListWidget->refresh();
 	geometryWidget->refresh();
 	selectWidget->refresh();
 	vibrationsWidget->refresh();

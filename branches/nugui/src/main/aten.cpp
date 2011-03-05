@@ -150,11 +150,7 @@ void Aten::setCurrentModel(Model *m)
 	current.i = NULL;
 	
 	// Update GUI
-	if (gui.exists())
-	{
-		gui.modelListWidget->refresh();
-		gui.update(GuiQt::AllTarget);
-	}
+	gui.update(GuiQt::AllTarget);
 
 	msg.exit("Aten::setCurrentModel");
 }
