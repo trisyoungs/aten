@@ -1,5 +1,5 @@
 /*
-	*** Qt vibration window functions
+	*** Vibrations Dock Widget
 	*** src/gui/vibrations_funcs.cpp
 	Copyright T. Youngs 2007-2011
 

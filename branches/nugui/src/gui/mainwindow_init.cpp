@@ -26,6 +26,7 @@
 #include "gui/build.h"
 #include "gui/geometry.h"
 #include "gui/gui.h"
+#include "gui/toolbox.h"
 #include "gui/tcanvas.uih"
 #include "gui/grids.h"
 

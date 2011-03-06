@@ -49,6 +49,27 @@ ToolBoxWidget::~ToolBoxWidget()
 {
 }
 
+// Update all buttons in the toolbox
+void ToolBoxWidget::updateButtons()
+{
+	ui.AtomListButton->setChecked(gui.atomListWidget->isVisible());
+	ui.BuildButton->setChecked(gui.buildWidget->isVisible());
+	ui.CellDefinitionButton->setChecked(gui.cellDefinitionWidget->isVisible());
+	ui.CellTransformButton->setChecked(gui.cellTransformWidget->isVisible());
+	ui.CommandButton->setChecked(gui.commandWidget->isVisible());
+	ui.ForcefieldsButton->setChecked(gui.forcefieldsWidget->isVisible());
+	ui.FragmentsButton->setChecked(gui.fragmentsWidget->isVisible());
+	ui.GeometryButton->setChecked(gui.geometryWidget->isVisible());
+	ui.GridsButton->setChecked(gui.gridsWidget->isVisible());
+	ui.GlyphsButton->setChecked(gui.glyphsWidget->isVisible());
+	ui.ModelListButton->setChecked(gui.modelListWidget->isVisible());
+	ui.MDButton->setChecked(gui.mdWidget->isVisible());
+	ui.PositionButton->setChecked(gui.positionWidget->isVisible());
+	ui.SelectButton->setChecked(gui.selectWidget->isVisible());
+	ui.TransformButton->setChecked(gui.transformWidget->isVisible());
+	ui.VibrationsButton->setChecked(gui.vibrationsWidget->isVisible());
+}
+	
 void ToolBoxWidget::on_AtomListButton_clicked(bool checked)
 {
 	if (checked) gui.atomListWidget->showWidget();

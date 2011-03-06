@@ -148,10 +148,6 @@ void Aten::setCurrentModel(Model *m)
 	current.p = m->patterns();
 	current.g = m->grids();
 	current.i = NULL;
-	
-	// Update GUI
-	gui.update(GuiQt::AllTarget);
-
 	msg.exit("Aten::setCurrentModel");
 }
 
@@ -284,8 +280,6 @@ void Aten::removeModel(Model *xmodel)
 	// Delete the old model (GUI first, then master)
 	int id = models_.indexOf(xmodel);
 	models_.remove(xmodel);
-	gui.modelListWidget->refresh();
-	gui.update(GuiQt::AllTarget);
 	msg.exit("Aten::removeModel");
 }
 

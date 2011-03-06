@@ -310,6 +310,8 @@ void AtenForm::loadRecent()
 		{
 			msg.print(Messenger::Verbose,"Matched filename to loaded model.\n");
 			aten.setCurrentModel(m);
+			// Update GUI
+			gui.update(GuiQt::AllTarget);
 			return;
 		}
 	}

@@ -72,6 +72,8 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 		{
 			aten.setCurrentModel(m);
 			msg.print("Current model is now '%s'.\n", aten.current.m->name());
+			// Update GUI
+			gui.update(GuiQt::AllTarget);
 		}
 	}
 	else msg.print("Current model is '%s'.\n", aten.current.m->name());
@@ -101,6 +103,8 @@ bool Command::function_DeleteModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (m != NULL) 
 	{
 		aten.removeModel(m);
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 		return TRUE;
 	}
 	else
@@ -152,8 +156,8 @@ bool Command::function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
-		obj.p = NULL;
-		obj.i = m->atoms();
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	else return FALSE;
 	return TRUE;
@@ -178,8 +182,8 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(m);
 		m->setRenderSource(Model::ModelSource);
-		obj.p = NULL;
-		obj.i = m->atoms();
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 		return TRUE;
 	}
 	else
@@ -206,8 +210,8 @@ bool Command::function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
-		obj.p = NULL;
-		obj.i = m->atoms();
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	else return FALSE;
 	return TRUE;
@@ -285,6 +289,8 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(VTypes::ModelData, obj.m);
+	// Update GUI
+	gui.update(GuiQt::AllTarget);
 	return TRUE;
 }
 
@@ -297,6 +303,8 @@ bool Command::function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	rv.set(VTypes::ModelData, obj.m);
 	return TRUE;
@@ -314,6 +322,8 @@ bool Command::function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	obj.m->setRenderSource(Model::ModelSource);
 	aten.setCurrentModel(obj.m);
+	// Update GUI
+	gui.update(GuiQt::AllTarget);
 	return TRUE;
 }
 
@@ -326,6 +336,8 @@ bool Command::function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	rv.set(VTypes::ModelData, obj.m);
 	return TRUE;

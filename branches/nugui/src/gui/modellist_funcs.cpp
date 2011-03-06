@@ -114,30 +114,26 @@ void ModelListWidget::toggleItem(TTreeWidgetItem *twi)
 	// Now, if the item is *not* selected we can safely select it and make it current
 	if (!selected)
 	{
-		printf("Model [%s] is not currently selected...\n", m->name());
 		twi->setSelected(TRUE);
 		aten.setModelVisible(m,TRUE);
-		aten.setCurrentModel(m);
 	}
 	else
 	{
-		printf("Model [%s] is currently selected...\n", m->name());
 		// We are deselecting, so need to check if its currently the active model
 		twi->setSelected(FALSE);
 		aten.setModelVisible(m,FALSE);
 		if (m == aten.currentModel())
 		{
-			printf(".....model [%s] is the current model...\n", m->name());
 			// Grab the last visible model added to the list
 			Refitem<Model,int> *ri;
 			m = NULL;
 			for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item != aten.currentModel()) m = ri->item;
 			if (ri == NULL) printf("Internal Error: Couldn't reassign active model in ModelListWidget::treeMouseMoveEvent.\n");
 			else aten.setCurrentModel(m);
-			printf("......model [%s] is now the current model...\n", m->name());
 		}
 	}
 	refreshing_ = FALSE;
+	gui.mainWidget->postRedisplay();
 }
 
 // Deselect all items in list (except the supplied item)
@@ -184,7 +180,9 @@ void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 	{
 		// Clear all old selected items, unless Ctrl was pressed at the same time
 		deselectAll(lastClicked_);
-// 		toggleItem(lastClicked_);
+		Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
+		aten.setCurrentModel(m);
+		gui.update(GuiQt::AllTarget - GuiQt::ModelsTarget);
 	}
 	lastHovered_ = lastClicked_;
 }
@@ -192,23 +190,20 @@ void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 // Mouse releaseed on ModelList
 void ModelListWidget::treeMouseReleaseEvent(QMouseEvent *event)
 {
-	// 	printf("Mouse release event.\n");
 	lastHovered_ = NULL;
-// 	gui.update(GUI);
+	gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget);
 }
 
 // Mouse moved over ModelList
 void ModelListWidget::treeMouseMoveEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
-	// 	printf("Mouse move event.\n");
 	TTreeWidgetItem *twi = itemUnderMouse(event->pos());
 	// If the current hovered item is the same as the last one, ignore it
 	if (twi != lastHovered_)
 	{
 		toggleItem(twi);
 		lastHovered_ = twi;
-// 		gui.update();
 	}
 }
 

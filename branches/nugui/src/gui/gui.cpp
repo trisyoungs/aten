@@ -279,6 +279,7 @@ void GuiQt::run()
 	mainWindow->update();
 	commandWidget->refreshScripts();
 	modelListWidget->refresh();
+	toolBoxWidget->updateButtons();
 
 	// Reset view of all loaded models
 	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
@@ -408,15 +409,7 @@ void GuiQt::updateStatusBar(bool clear)
 // Methods
 */
 
-// // Add model to GUI list, in this case a tab in the ModelTabs widget
-// void GuiQt::addModel(Model *m)
-// {
-// 	if (!doesExist_) return;
-// 	mainWindow->addModelTab(m);
-// 	m->resetView();		TGAY
-// 	gui.update(TRUE,TRUE,TRUE);
-// }
-
+// Print message
 void GuiQt::printMessage(const char *s)
 {
 	static char str[8096];
@@ -429,17 +422,9 @@ void GuiQt::printMessage(const char *s)
 // 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
 }
 
-// // Remove model from list
-// void GuiQt::removeModel(int id)
-// {
-// 	if (!doesExist_) return;
-// 	mainWindow->ui.ModelTabs->removeTab(id);			TGAY
-// 	gui.update();
-// }
-
+// Check the status of all models, asking to save before close if necessary
 bool GuiQt::saveBeforeClose()
 {
-	// Check the status of all models, asking to save before close if necessary
 	Dnchar text;
 	int returnvalue;
 	ReturnValue rv;

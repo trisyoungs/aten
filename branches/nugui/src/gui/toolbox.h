@@ -32,6 +32,8 @@ class ToolBoxWidget : public QDockWidget
 	/*
 	// Window Functions
 	*/
+	public:
+	void updateButtons();
 	private slots:
 	void on_AtomListButton_clicked(bool checked);
 	void on_BuildButton_clicked(bool checked);

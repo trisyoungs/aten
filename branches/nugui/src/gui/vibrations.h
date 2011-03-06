@@ -36,6 +36,7 @@ class VibrationsWidget : public QDockWidget
 	public:
 	void showWidget();
 	void refresh();
+	void updateInToolBox();
 	private slots:
 	void on_VibrationsList_currentRowChanged(int row);
 	void on_PlayPauseVibration_clicked(bool checked);

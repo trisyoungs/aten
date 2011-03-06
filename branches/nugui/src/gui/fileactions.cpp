@@ -37,6 +37,8 @@ void AtenForm::on_actionFileNew_triggered(bool checked)
 {
 	Model *m = aten.addModel();
 	m->enableUndoRedo();
+	// Update GUI
+	gui.update(GuiQt::AllTarget);
 }
 
 // Open existing file
@@ -217,6 +219,8 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 			// Discard changes
 			case (QMessageBox::Discard):
 				aten.removeModel(m);
+				// Update GUI
+				gui.update(GuiQt::AllTarget);
 				break;
 			// Cancel quit and return to app
 			case (QMessageBox::Cancel):
@@ -240,6 +244,8 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 				}
 				else return;
 				aten.removeModel(m);
+				// Update GUI
+				gui.update(GuiQt::AllTarget);
 				break;
 		}
 	}
