@@ -135,6 +135,10 @@ class RenderEngine
 	public:
 	// Initialise GL
 	void initialiseGL();
+	// Clear all triangle primitive lists
+	void clearTriangleLists();
+	// Clear all text primitive lists
+	void clearTextLists();
 	// Render text objects (with supplied QPainter)
 	void renderText(QPainter &painter, TCanvas *canvas);
 	// Render 3D elements with OpenGL

@@ -51,7 +51,6 @@ void ModelListWidget::showWidget()
 void ModelListWidget::refresh()
 {
 	msg.enter("ModelListWidget::refresh");
-	printf("Refreshing..\n");
 	// If the model list is not visible, don't do anything
 	if (refreshing_ || (!gui.modelListWidget->isVisible()))
 	{

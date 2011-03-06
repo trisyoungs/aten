@@ -214,7 +214,6 @@ class AtenForm : public QMainWindow
 	void on_actionModelPrevious_triggered(bool checked);
 	void on_actionModelShowAll_triggered(bool checked);
 	void on_actionListMeasurements_triggered(bool checked);
-	void on_actionSaveMeasurements_triggered(bool checked);
 
 
 	/*

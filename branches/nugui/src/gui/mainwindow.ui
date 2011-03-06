@@ -189,7 +189,6 @@
     <addaction name="actionModelRename"/>
     <addaction name="separator"/>
     <addaction name="actionListMeasurements"/>
-    <addaction name="actionSaveMeasurements"/>
     <addaction name="separator"/>
     <addaction name="actionModelFoldAtoms"/>
     <addaction name="actionModelFoldMolecules"/>
@@ -1399,15 +1398,6 @@
   <action name="actionAtomFreePosition">
    <property name="text">
     <string>Free Position</string>
-   </property>
-  </action>
-  <action name="actionSaveMeasurements">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Save Measurements</string>
    </property>
   </action>
   <action name="actionSetBondLength">

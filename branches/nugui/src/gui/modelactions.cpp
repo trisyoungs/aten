@@ -84,13 +84,49 @@ void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
 // Move to next model in list
 void AtenForm::on_actionModelNext_triggered(bool checked)
 {
-	// TGAY
+	// If multiple models are visible, step along to next visible model. Otherwise, just next in list
+	if (aten.nVisibleModels() > 1)
+	{
+		// Find current model in visible models list...
+		Refitem<Model,int> *ri;
+		for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten.currentModel()) break;
+		if (ri == NULL)
+		{
+			printf("Internal Error : Failed to find current model in visible models list.\n");
+			return;
+		}
+		aten.setCurrentModel(ri->next == NULL ? aten.visibleModels()->item : ri->next->item);
+	}
+	else
+	{
+		Model *m = aten.currentModel();
+		aten.setCurrentModel(m->next == NULL ? aten.models() : m->next);
+	}
+	gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget);
 }
 
 // Move to previous model in list
 void AtenForm::on_actionModelPrevious_triggered(bool checked)
 {
-	// TGAY
+	// If multiple models are visible, step back to previous visible model. Otherwise, just previous in list
+	if (aten.nVisibleModels() > 1)
+	{
+		// Find current model in visible models list...
+		Refitem<Model,int> *ri;
+		for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten.currentModel()) break;
+		if (ri == NULL)
+		{
+			printf("Internal Error : Failed to find current model in visible models list.\n");
+			return;
+		}
+		aten.setCurrentModel(ri->prev == NULL ? aten.visibleModels()->item : ri->prev->item);
+	}
+	else
+	{
+		Model *m = aten.currentModel();
+		aten.setCurrentModel(m->prev == NULL ? aten.models() : m->prev);
+	}
+	gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget);
 }
 
 // Show all atoms in current model
@@ -117,10 +153,4 @@ void AtenForm::on_actionModelRename_triggered(bool checked)
 void AtenForm::on_actionListMeasurements_triggered(bool on)
 {
 	aten.currentModelOrFrame()->listMeasurements();
-}
-
-// Save all measurements in model
-void AtenForm::on_actionSaveMeasurements_triggered(bool on)
-{
-	// TGAY
 }

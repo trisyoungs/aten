@@ -77,6 +77,8 @@ class TCanvas : public QGLWidget
 	Model *displayModel() const;
 	// Set the rendering source to the supplied model (reverts to useCurrentModel_ if a NULL pointer is supplied)
 	void setRenderSource(Model *source);
+	// Determine target model based on clicked position on TCanvas
+	Model *modelAt(int x, int y);
 	
 	
 	/*

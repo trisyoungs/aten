@@ -282,10 +282,10 @@ class Prefs
 	// Rendering - Options
 	*/
 	private:
-        // C-style format for distance label values
-        Dnchar distanceLabelFormat_;
-        // C-style format for angle label values
-        Dnchar angleLabelFormat_;
+	// C-style format for distance label values
+	Dnchar distanceLabelFormat_;
+	// C-style format for angle label values
+	Dnchar angleLabelFormat_;
 	// Pointsize for labels
 	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
@@ -296,18 +296,20 @@ class Prefs
 	bool useFrameBuffer_;
 	// Whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics_;
-	// Mouse move event filter ratio
+	// Mouse move event filter rate
 	int mouseMoveFilter_;
+	// Number of models per row when viewing multiple models
+	int nModelsPerRow_;
 
 	public:
-        // Set C-style format for distance label values
-        void setDistanceLabelFormat(const char *format);
-        // Return C-style format for distance label values
-        const char *distanceLabelFormat();
-        // Set C-style format for angle label values
-        void setAngleLabelFormat(const char *format);
-        // Return C-style format for angle label values
-        const char *angleLabelFormat();
+	// Set C-style format for distance label values
+	void setDistanceLabelFormat(const char *format);
+	// Return C-style format for distance label values
+	const char *distanceLabelFormat();
+	// Set C-style format for angle label values
+	void setAngleLabelFormat(const char *format);
+	// Return C-style format for angle label values
+	const char *angleLabelFormat();
 	// Set the pointsize of labels in the model
 	void setLabelSize(int size);
 	// Return the current label pointsize
@@ -332,8 +334,12 @@ class Prefs
 	int mouseMoveFilter();
 	// Set mouse move event filter ratio
 	void setMouseMoveFilter(int i);
+	// Return number of models per row when viewing multiple models
+	int nModelsPerRow();
+	// Set number of models per row when viewing multiple models
+	void setNModelsPerRow(int n);
 
-	
+
 	/*
 	// GL Options
 	*/

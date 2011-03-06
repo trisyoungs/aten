@@ -114,7 +114,13 @@ class GuiQt
 	/*
 	// Methods
 	*/
+	private:
+	// Message buffer
+	List<Dnchar> messageBuffer_;
+
 	public:
+	//.Return message buffer list
+	Dnchar *messageBuffer();
 	// Initialise GUI file filters array
 	void initFilters();
 	// Add a message to the main window's message output box

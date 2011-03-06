@@ -83,7 +83,7 @@ void AtenForm::finaliseUi()
 	group->addAction(ui.actionMouseTranslate);
 
 	// Hide some toolbars initially
-	ui.TrajectoryToolbar->setVisible(FALSE);    // TGAY
+	ui.TrajectoryToolbar->setVisible(FALSE);
 
 	// Add extra widgets to trajectory toolbar
 	trajectorySlider_ = new QSlider(Qt::Horizontal, ui.TrajectoryToolbar);

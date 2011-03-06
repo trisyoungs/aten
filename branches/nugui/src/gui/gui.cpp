@@ -409,6 +409,12 @@ void GuiQt::updateStatusBar(bool clear)
 // Methods
 */
 
+//.Return message buffer list
+Dnchar *GuiQt::messageBuffer()
+{
+	return messageBuffer_.first();
+}
+
 // Print message
 void GuiQt::printMessage(const char *s)
 {
@@ -418,6 +424,9 @@ void GuiQt::printMessage(const char *s)
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
+	Dnchar *msg = messageBuffer_.add();
+	msg->set(str);
+	
 // 	mainWindow->ui.TextDisplay->append(str);			// TGAY
 // 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
 }

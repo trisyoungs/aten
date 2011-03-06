@@ -26,6 +26,7 @@
 #include "gui/gui.h"
 #include "model/model.h"
 #include "model/fragment.h"
+#include "main/aten.h"
 
 /*
 // Mouse Input
@@ -58,6 +59,10 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
 	keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
 	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
+
+	// Determine whether we need to change Aten's currentmodel based on click position on the canvas
+	Model *m = modelAt(rMouseDown_.x, rMouseDown_.y);
+	if (m != aten.currentModel()) aten.setCurrentModel(m);
 	
 	// Get current active model
 	Model *source = displayModel();

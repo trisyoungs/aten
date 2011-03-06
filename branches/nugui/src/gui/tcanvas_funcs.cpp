@@ -131,6 +131,26 @@ void TCanvas::setRenderSource(Model *source)
 	}
 }
 
+// Determine target model based on clicked position on TCanvas
+Model *TCanvas::modelAt(int x, int y)
+{
+	int nrows, py, px, id;
+	
+	// Is only one model displayed?
+	if (aten.nVisibleModels() <= 1) return aten.currentModel();
+
+	// Determine whether we need to change Aten's currentmodel based on click position on the canvas
+	nrows = aten.nVisibleModels()/prefs.nModelsPerRow() + (aten.nVisibleModels()%prefs.nModelsPerRow() == 0 ? 0 : 1);
+	py = contextHeight_ / nrows;
+	px = (aten.nVisibleModels() == 1 ? contextWidth_ : contextWidth_ / prefs.nModelsPerRow());
+
+	// Work out model index...
+	id = (y/py)*prefs.nModelsPerRow() + x/px;
+
+	// In the case of clicking in a blank part of the canvas with no model (i.e. bottom-right corner) return a safe model pointer
+	return (id >= aten.nVisibleModels() ? aten.currentModel() : aten.visibleModel(id));
+}
+
 /*
 // Rendering Functions
 */
@@ -144,6 +164,7 @@ void TCanvas::initializeGL()
 	// Image quality to use depends on current drawing target...
 	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality());
 	else engine_.createPrimitives(prefs.primitiveQuality());
+	engine_.initialiseGL();
 	msg.exit("TCanvas::initializeGL");
 }
 
@@ -160,7 +181,7 @@ void TCanvas::paintGL()
 	Model *m;
 
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
-	if ((!valid_) || drawing_) return;
+	if ((!valid_) || drawing_ || (aten.currentModel() == NULL)) return;
 	
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
 	// all OpenGL calls should be made after the QPainter is constructed, and before the QPainter
@@ -206,6 +227,9 @@ void TCanvas::paintGL()
 	py = contextHeight_ / nrows;
 	px = (nmodels == 1 ? contextWidth_ : contextWidth_ / nperrow);
 	
+	// Clear text lists in renderengine before we start the model loop
+	engine_.clearTextLists();
+
 	// Loop over model refitems in list (or single refitem)
 	col = 0;
 	row = 0;
@@ -223,10 +247,14 @@ void TCanvas::paintGL()
 		
 		// Determine desired pixel range and set up view(port)
 		checkGlError();
-		m->setupView(col*px, row*py, px, py);
+		m->setupView(col*px, contextHeight_-(row+1)*py, px, py);
+		
 		// Vibration frame?
 		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
 		else m = m->renderSourceModel();
+		
+		// Clear triangle lists and render the 3D parts of the model
+		engine_.clearTriangleLists();
 		render3D(m);
 
 		// Increase counters
@@ -239,17 +267,23 @@ void TCanvas::paintGL()
 	}
 	endGl();
 	
-	// Render 2D elements (with QPainter)
-	/// TGAY This won't work properly, since only text elements from the last model will be rendered
+	// Render text elements for all models (with QPainter)
+	// TGAY This won't work properly, since only text elements from the last model will be rendered
 	QPainter painter(this);
 	font.setPointSize(prefs.labelSize());
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 	engine_.renderText(painter, this);
-// 	render2D(painter, displayModel_);   TGAY
+	
+	// Render 2D mode embellishments for current model (with QPainter)
+	m = useCurrentModel_ ? aten.currentModel() : renderSource_;
+	if (m != NULL)
+	{
+		m = m->renderFromVibration() ? m->vibrationCurrentFrame() : m->renderSourceModel();
+		render2D(painter, m);
+	}
+
 	// Draw box around current model
-// 	prefs.copyColour(Prefs::TextColour, colour);
-// 	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
 	color.setRgbF(0.0,0.0,0.0,1.0);
 	pen.setColor(color);
 	pen.setWidth(2);
@@ -257,8 +291,18 @@ void TCanvas::paintGL()
 	painter.setPen(Qt::SolidLine);
 	painter.setPen(pen);
 	painter.drawRect(currentBox);
+	
+	// TEST Render random texts
+	color.setRgbF(0.0,0.0,0.0,0.1);
+	pen.setColor(color);
+	int pos = 13;
+	for (Dnchar *txt = gui.messageBuffer(); txt != NULL; txt = txt->next)
+	{
+		painter.drawText(2, pos, txt->get());
+		pos += 12;
+	}
 	painter.end();
-		
+	
 	// Finally, swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();
 }
@@ -269,10 +313,6 @@ void TCanvas::render3D(Model *source)
 	// Valid pointer set?
 	if (source == NULL) return;
 
-	// Vibration frame?
-	if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
-	else source = source->renderSourceModel();
-	
 	// Render model
 	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
 	
@@ -301,7 +341,6 @@ void TCanvas::render3D(Model *source)
 	
 	// Render 3D elements (with OpenGL)
 	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
-	engine_.initialiseGL();
 	checkGlError();
 	engine_.render3D(source, this);
 	//glFlush();
@@ -317,7 +356,6 @@ void TCanvas::resizeGL(int newwidth, int newheight)
 	contextWidth_ = (GLsizei) newwidth;
 	contextHeight_ = (GLsizei) newheight;
 	doProjection(contextWidth_, contextHeight_);
-	// TGAY
 	if (prefs.manualSwapBuffers()) swapBuffers();
 }
 

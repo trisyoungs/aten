@@ -2,6 +2,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Add filter type to export generic 'data', e.g. measurements list</para>
+		</listitem>
+		<listitem>
 			<para>When in script/filter, encountering a NULL reference and using it really should result in an error</para>
 		</listitem>
 		<listitem>

@@ -281,6 +281,10 @@ Prefs::Prefs()
 	loadIncludes_ = TRUE;
 	loadFragments_ = TRUE;
 	generateFragmentIcons_ = TRUE;
+	commonElements_ = "H,C,N,O,Cl";
+	maxUndoLevels_ = -1;
+	loadQtSettings_ = TRUE;
+	maxImproperDist_ = 5.0;
 	loadFilters_ = TRUE;
 	readPipe_ = FALSE;
 	
@@ -333,13 +337,11 @@ Prefs::Prefs()
 	distanceLabelFormat_ = "%0.3f ";
 	angleLabelFormat_ = "%0.2f";
 	labelSize_ = 10;
-	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
 	mouseMoveFilter_ = 10;
 	useFrameBuffer_ = FALSE;
-	maxUndoLevels_ = -1;
-	loadQtSettings_ = TRUE;
-	maxImproperDist_ = 5.0;
+	renderDashedAromatics_ = TRUE;
+	nModelsPerRow_ = 2;
 
 	// External programs
 #ifdef _WIN32
@@ -1330,7 +1332,6 @@ bool Prefs::shouldUpdateModel(int n)
 	else return (n%modelUpdate_ == 0 ? TRUE : FALSE);
 }
 
-
 // Set the energy update frequency
 void Prefs::setEnergyUpdate(int n)
 {
@@ -1507,6 +1508,54 @@ void Prefs::setReadPipe(bool b)
 	readPipe_ = b;
 }
 
+// Set list of common elements in SelectElement dialog
+void Prefs::setCommonElements(const char *s)
+{
+	commonElements_ = s;
+}
+
+// Return list of common elements to use in SelectElement dialog
+const char *Prefs::commonElements() const
+{
+	return commonElements_.get();
+}
+
+// Set the maximum number of undo levels allowed
+void Prefs::setMaxUndoLevels(int n)
+{
+	maxUndoLevels_ = n;
+}
+
+// Return the maximum number of undo levels allowed
+int Prefs::maxUndoLevels() const
+{
+	return maxUndoLevels_;
+}
+
+// Return whether to load Qt window/toolbar settings on startup
+bool Prefs::loadQtSettings()
+{
+	return loadQtSettings_;
+}
+
+// Whether to load Qt window/toolbar settings on startup
+void Prefs::setLoadQtSettings(bool b)
+{
+	loadQtSettings_ = b;
+}
+
+// Return maximum distance allowed between consecutive improper torsion atoms
+double Prefs::maxImproperDist() const
+{
+	return maxImproperDist_;
+}
+
+// Set maximum distance allowed between consecutive improper torsion atoms
+void Prefs::setMaxImproperDist(double r)
+{
+	maxImproperDist_ = r;
+}
+
 /*
 // Expression (general parameters)
 */
@@ -1658,46 +1707,6 @@ const char *Prefs::combinationRule(Combine::CombinationRule cr) const
 }
 
 /*
-// General prefs
-*/
-
-// Set the maximum number of undo levels allowed
-void Prefs::setMaxUndoLevels(int n)
-{
-	maxUndoLevels_ = n;
-}
-
-// Return the maximum number of undo levels allowed
-int Prefs::maxUndoLevels() const
-{
-	return maxUndoLevels_;
-}
-
-// Return whether to load Qt window/toolbar settings on startup
-bool Prefs::loadQtSettings()
-{
-	return loadQtSettings_;
-}
-
-// Whether to load Qt window/toolbar settings on startup
-void Prefs::setLoadQtSettings(bool b)
-{
-	loadQtSettings_ = b;
-}
-
-// Return maximum distance allowed between consecutive improper torsion atoms
-double Prefs::maxImproperDist() const
-{
-	return maxImproperDist_;
-}
-
-// Set maximum distance allowed between consecutive improper torsion atoms
-void Prefs::setMaxImproperDist(double r)
-{
-	maxImproperDist_ = r;
-}
-
-/*
 // Rendering (and compatibility) Options
 */
 
@@ -1756,6 +1765,12 @@ void Prefs::setManualSwapBuffers(bool on)
 }
 
 // Return whether manual buffer swapping is enabled
+bool Prefs::manualSwapBuffers() const
+{
+	return manualSwapBuffers_;
+}
+
+// Return whether manual buffer swapping is enabled
 bool Prefs::useFrameBuffer() const
 {
 	return useFrameBuffer_;
@@ -1779,7 +1794,7 @@ void Prefs::setRenderDashedAromatics(bool b)
 	renderDashedAromatics_ = b;
 }
 
-// Return mouse move event filter ratio
+// Return mouse move event filter rate
 int Prefs::mouseMoveFilter()
 {
 	return mouseMoveFilter_;
@@ -1791,22 +1806,16 @@ void Prefs::setMouseMoveFilter(int i)
 	mouseMoveFilter_ = i;
 }
 
-// Return whether manual buffer swapping is enabled
-bool Prefs::manualSwapBuffers() const
+// Return number of models per row when viewing multiple models
+int Prefs::nModelsPerRow()
 {
-	return manualSwapBuffers_;
+	return nModelsPerRow_;
 }
 
-// Set list of common elements in SelectElement dialog
-void Prefs::setCommonElements(const char *s)
+// Set number of models per row when viewing multiple models
+void Prefs::setNModelsPerRow(int n)
 {
-	commonElements_ = s;
-}
-
-// Return list of common elements to use in SelectElement dialog
-const char *Prefs::commonElements() const
-{
-	return commonElements_.get();
+	nModelsPerRow_ = n;
 }
 
 /*

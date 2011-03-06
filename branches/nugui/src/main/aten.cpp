@@ -319,6 +319,17 @@ Refitem<Model,int> *Aten::visibleModels()
 	return visibleModels_.first();
 }
 
+// Return n'th visible model
+Model *Aten::visibleModel(int id)
+{
+	if ((id < 0) || (id >= visibleModels_.nItems()))
+	{
+		printf("Index %i is out of range for visible model list.\n", id);
+		return NULL;
+	}
+	return visibleModels_[id]->item;
+}
+
 /*
 // Forcefield Management routines
 */

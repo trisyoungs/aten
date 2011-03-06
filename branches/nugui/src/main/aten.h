@@ -109,6 +109,8 @@ class Aten
 	int nVisibleModels();
 	// Return reflist of visible models
 	Refitem<Model, int> *visibleModels();
+	// Return n'th visible model
+	Model *visibleModel(int id);
 
 
 	/*

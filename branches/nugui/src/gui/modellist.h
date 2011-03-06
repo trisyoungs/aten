@@ -40,8 +40,6 @@ class ModelListWidget : public QDockWidget
 	private:
 	TTreeWidgetItem *itemUnderMouse(const QPoint &pos);
 	void toggleItem(TTreeWidgetItem *twi);
-// 	void selectItem(TTreeWidgetItem *twi);
-// 	void deselectItem(TTreeWidgetItem *twi);
 	void deselectAll(TTreeWidgetItem* selectitem);
 	private slots:
 	void updateSelection();

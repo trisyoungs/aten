@@ -22,10 +22,11 @@
 #include "render/engine.h"
 #include "base/messenger.h"
 #include "classes/prefs.h"
-#include "model/model.h"
 #include "classes/forcefieldatom.h"
+#include "model/model.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
+#include "main/aten.h"
 #include <math.h>
 #ifdef _WIN32
 #include "glext.h"
@@ -454,6 +455,22 @@ void RenderEngine::initialiseGL()
 	msg.exit("RenderEngine::initialiseGL");
 }
 
+// Clear all triangle primitive lists
+void RenderEngine::clearTriangleLists()
+{
+	solidPrimitives_.clear();
+	transparentPrimitives_.clear();
+	glyphTriangles_[RenderEngine::SolidTriangle].forgetAll();
+	glyphTriangles_[RenderEngine::TransparentTriangle].forgetAll();
+	glyphTriangles_[RenderEngine::WireTriangle].forgetAll();
+}
+
+// Clear all text primitive lists
+void RenderEngine::clearTextLists()
+{
+	textPrimitives_.forgetAll();
+}
+
 // Render text objects (with supplied QPainter)
 void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 {
@@ -465,26 +482,22 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 {
 	GLfloat colour[4];
 
-	// Clear filtered primitive lists
-	solidPrimitives_.clear();
-	transparentPrimitives_.clear();
-	textPrimitives_.forgetAll();
-	glyphTriangles_[RenderEngine::SolidTriangle].forgetAll();
-	glyphTriangles_[RenderEngine::TransparentTriangle].forgetAll();
-	glyphTriangles_[RenderEngine::WireTriangle].forgetAll();
-	
 	// Set initial transformation matrix, including any translation occurring from cell...
 	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
 	
 	// Set target matrix mode and reset it, and set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	
+
+	// Grab model-specific viewport
+	GLint *vp = source->viewportMatrix();
+
 	// Render rotation globe in small viewport in lower right-hand corner
 	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe))
 	{
 		int n = prefs.globeSize();
-		glViewport(canvas->contextWidth()-n,0,n,n);
+		if (aten.nVisibleModels() > 2) n /= 2;
+		glViewport(vp[0]+vp[2]-n,vp[1],n,n);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glMultMatrixd(source->globeProjectionMatrix().matrix());
@@ -503,7 +516,6 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	}
 	
 	// Prepare for model rendering
-	GLint *vp = source->viewportMatrix();
 	glViewport(vp[0], vp[1], vp[2], vp[3]);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
