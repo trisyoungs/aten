@@ -32,23 +32,24 @@
 #include "gui/about.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
-#include "gui/grids.h"
 #include "gui/disorder.h"
 #include "gui/atomlist.h"
-#include "gui/fragments.h"
+#include "gui/build.h"
 #include "gui/celldefinition.h"
 #include "gui/celltransform.h"
 #include "gui/command.h"
-#include "gui/build.h"
+#include "gui/forcefields.h"
+#include "gui/fragments.h"
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
+#include "gui/grids.h"
 #include "gui/md.h"
-#include "gui/forcefields.h"
+#include "gui/messages.h"
 #include "gui/modellist.h"
+#include "gui/position.h"
+#include "gui/select.h"
 #include "gui/toolbox.h"
 #include "gui/transform.h"
-#include "gui/select.h"
-#include "gui/position.h"
 #include "gui/vibrations.h"
 #include "gui/viewbasis.h"
 #include "gui/vieweigenvector.h"
@@ -210,13 +211,14 @@ void GuiQt::run()
 	glyphsWidget = new GlyphsWidget(mainWindow, Qt::Tool);
 	gridsWidget = new GridsWidget(mainWindow, Qt::Tool);
 	mdWidget = new MDWidget(mainWindow, Qt::Tool);
+	messagesWidget = new MessagesWidget(mainWindow, Qt::Tool);
 	modelListWidget = new ModelListWidget(mainWindow, Qt::Tool);
 	positionWidget = new PositionWidget(mainWindow, Qt::Tool);
 	selectWidget = new SelectWidget(mainWindow, Qt::Tool);
 	toolBoxWidget = new ToolBoxWidget(mainWindow, Qt::Tool);
 	transformWidget = new TransformWidget(mainWindow, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(mainWindow, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << forcefieldsWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << forcefieldsWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
 	toolBoxWidget->show();
 	
 	// Connect Finished signal of tool windows to finished slots in structure
@@ -403,7 +405,6 @@ void GuiQt::updateStatusBar(bool clear)
 	if (clear) mainWindow->messageLabel->setText("");
 	else mainWindow->messageLabel->setText(text.get());
 }
-
 
 /*
 // Methods

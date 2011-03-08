@@ -55,6 +55,7 @@ class GeometryWidget;
 class GlyphsWidget;
 class GridsWidget;
 class MDWidget;
+class MessagesWidget;
 class ModelListWidget;
 class PositionWidget;
 class SelectWidget;
@@ -177,6 +178,8 @@ class GuiQt
 	GridsWidget *gridsWidget;
 	// MD dock widget
 	MDWidget *mdWidget;
+	// Messages dock widget
+	MessagesWidget *messagesWidget;
 	// Model List dock widget
 	ModelListWidget *modelListWidget;
 	// Atom positioning dock widget

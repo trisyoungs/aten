@@ -40,6 +40,7 @@ set(qtproject_SRCS
   mainwindow_funcs.cpp
   mainwindow_init.cpp
   md_funcs.cpp
+  messages_funcs.cpp
   modelactions.cpp
   modellist_funcs.cpp
   mouseactions.cpp
@@ -92,6 +93,7 @@ SET(pro_MOC_HDRS
   loadmodel.h
   mainwindow.h
   md.h
+  messages.h
   modellist.h
   position.h
   prefs.h
@@ -132,6 +134,7 @@ SET(pro_UIS
   loadmodel.ui
   mainwindow.ui
   md.ui
+  messages.ui
   modellist.ui
   position.ui
   prefs.ui

@@ -292,17 +292,6 @@ void TCanvas::paintGL()
 	painter.setPen(pen);
 	painter.drawRect(currentBox);
 	
-	// TEST Render random texts
-	color.setRgbF(0.0,0.0,0.0,0.1);
-	pen.setColor(color);
-	int pos = 13;
-	for (Dnchar *txt = gui.messageBuffer(); txt != NULL; txt = txt->next)
-	{
-		painter.drawText(2, pos, txt->get());
-		pos += 12;
-	}
-	painter.end();
-	
 	// Finally, swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();
 }

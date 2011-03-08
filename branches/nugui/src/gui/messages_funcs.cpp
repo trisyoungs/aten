@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Messages Dock Widget
+	*** src/gui/messages_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -19,12 +19,35 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "gui/gui.h"
+#include "gui/messages.h"
+#include "gui/toolbox.h"
 
-#define ATENVERSION "1.7"
-#define ATENREVISION "1540"
-#define ATENDATE "Tue 08 Mar - 23:30"
-#define ATENURL "http://aten.googlecode.com/svn/branches/nugui"
+// Constructor
+MessagesWidget::MessagesWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+{
+	ui.setupUi(this);
+}
 
-#endif
+// Destructor
+MessagesWidget::~MessagesWidget()
+{
+}
+
+void MessagesWidget::showWidget()
+{
+	show();
+	refresh();
+}
+
+void MessagesWidget::refresh()
+{
+	if (!this->isVisible()) return;
+}
+
+void MessagesWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.CommandButton->setChecked(FALSE);
+	event->accept();
+}

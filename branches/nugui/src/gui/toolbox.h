@@ -47,6 +47,7 @@ class ToolBoxWidget : public QDockWidget
 	void on_GridsButton_clicked(bool checked);
 	void on_ModelListButton_clicked(bool checked);
 	void on_MDButton_clicked(bool checked);
+	void on_MessagesButton_clicked(bool checked);
 	void on_PositionButton_clicked(bool checked);
 	void on_SelectButton_clicked(bool checked);
 	void on_TransformButton_clicked(bool checked);

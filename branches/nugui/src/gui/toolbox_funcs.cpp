@@ -31,6 +31,7 @@
 #include "gui/glyphs.h"
 #include "gui/grids.h"
 #include "gui/md.h"
+#include "gui/messages.h"
 #include "gui/modellist.h"
 #include "gui/position.h"
 #include "gui/select.h"
@@ -64,6 +65,7 @@ void ToolBoxWidget::updateButtons()
 	ui.GlyphsButton->setChecked(gui.glyphsWidget->isVisible());
 	ui.ModelListButton->setChecked(gui.modelListWidget->isVisible());
 	ui.MDButton->setChecked(gui.mdWidget->isVisible());
+	ui.MessagesButton->setChecked(gui.mdWidget->isVisible());
 	ui.PositionButton->setChecked(gui.positionWidget->isVisible());
 	ui.SelectButton->setChecked(gui.selectWidget->isVisible());
 	ui.TransformButton->setChecked(gui.transformWidget->isVisible());
@@ -140,6 +142,12 @@ void ToolBoxWidget::on_MDButton_clicked(bool checked)
 {
 	if (checked) gui.mdWidget->showWidget();
 	else gui.mdWidget->hide();
+}
+
+void ToolBoxWidget::on_MessagesButton_clicked(bool checked)
+{
+	if (checked) gui.messagesWidget->showWidget();
+	else gui.messagesWidget->hide();
 }
 
 void ToolBoxWidget::on_PositionButton_clicked(bool checked)
