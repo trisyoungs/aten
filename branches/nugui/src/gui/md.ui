@@ -6,15 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>273</width>
-    <height>208</height>
+    <width>298</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>273</width>
-    <height>208</height>
+    <width>298</width>
+    <height>237</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
   <property name="floating">
    <bool>true</bool>
@@ -28,7 +33,7 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <property name="spacing">
-     <number>-1</number>
+     <number>6</number>
     </property>
     <property name="margin">
      <number>0</number>

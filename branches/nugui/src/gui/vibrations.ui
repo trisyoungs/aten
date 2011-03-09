@@ -13,8 +13,13 @@
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>230</height>
+    <height>251</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
   <property name="floating">
    <bool>true</bool>
@@ -140,6 +145,12 @@
            <property name="icon">
             <iconset resource="icons.qrc">
              <normaloff>:/playback/icons/traj_playpause.svg</normaloff>:/playback/icons/traj_playpause.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
            <property name="checkable">
             <bool>true</bool>

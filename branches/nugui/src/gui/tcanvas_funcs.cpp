@@ -268,7 +268,6 @@ void TCanvas::paintGL()
 	endGl();
 	
 	// Render text elements for all models (with QPainter)
-	// TGAY This won't work properly, since only text elements from the last model will be rendered
 	QPainter painter(this);
 	font.setPointSize(prefs.labelSize());
 	painter.setFont(font);
@@ -291,6 +290,7 @@ void TCanvas::paintGL()
 	painter.setPen(Qt::SolidLine);
 	painter.setPen(pen);
 	painter.drawRect(currentBox);
+	painter.end();
 	
 	// Finally, swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();

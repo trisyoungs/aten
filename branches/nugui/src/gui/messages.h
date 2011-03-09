@@ -24,7 +24,7 @@
 
 #include "gui/ui_messages.h"
 
-// Script/command window
+// Messages window
 class MessagesWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
@@ -38,7 +38,8 @@ class MessagesWidget : public QDockWidget
 	void refresh();
 	protected:
 	void closeEvent(QCloseEvent *event);
-	void on_MessagesBrowser_anchorClicked(QUrl &link);
+	private slots:
+	void on_MessagesBrowser_anchorClicked(const QUrl &link);
 	
 	/*
 	// Widgets

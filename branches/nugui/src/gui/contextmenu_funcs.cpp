@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/geometry.h"
+#include "gui/toolbox.h"
 #include "gui/fragments.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
@@ -234,19 +235,16 @@ void AtenForm::on_actionAtomFreePosition_triggered(bool checked)
 
 void AtenForm::on_actionSetBondLength_triggered(bool checked)
 {
-// 	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);   TGAY necessary?
 	gui.geometryWidget->showWidget();
 }
 
 void AtenForm::on_actionSetBondAngle_triggered(bool checked)
 {
-// 	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
 	gui.geometryWidget->showWidget();
 }
 
 void AtenForm::on_actionSetTorsionAngle_triggered(bool checked)
 {
-// 	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
 	gui.geometryWidget->showWidget();
 }
 

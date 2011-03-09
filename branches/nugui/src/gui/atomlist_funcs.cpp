@@ -62,6 +62,8 @@ void AtomListWidget::showWidget()
 {
 	show();
 	if (shouldRefresh_) refresh();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 // Update slection states of TTreeWidgetItems from selection in model

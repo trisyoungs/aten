@@ -64,6 +64,8 @@ class Messenger
 	public:
 	// Print normal message
 	void print(const char* ...) const;
+	// Print rich message (for GUI, plain for console) including html formatting
+	void richPrint(const char* ...) const;
 	// Print message in specific output level
 	void print(Messenger::OutputType, const char* ...) const;
 	// Entrances / exits to / from subroutines

@@ -266,8 +266,7 @@ void GuiQt::run()
 	fragmentsWidget->refresh();
 	commandWidget->refresh();
 
-	// Set central widget of main window, show the main window, and flag it as existing
-	mainWindow->setCentralWidget(mainWindow->ui.ViewFrame);
+	// Show the main window, and flag it as existing
 	mainWindow->show();
 	doesExist_ = TRUE;
 
@@ -314,9 +313,9 @@ void GuiQt::run()
 	}
 
 	// Add GNU GPL message to statusbox
-	msg.print("Aten version %s (%s@%s) built on %s, Copyright (C) 2007-2011  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
-	msg.print("Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
-	msg.print("Aten comes with ABSOLUTELY NO WARRANTY.\n");
+	msg.print("<b>Aten</b> version %s (%s@%s) built on %s, Copyright (C) 2007-2011  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
+	msg.print("<b>Aten</b> uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
+	msg.print("<b>Aten</b> comes with ABSOLUTELY NO WARRANTY.\n");
 	msg.print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
 	msg.print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
@@ -425,9 +424,7 @@ void GuiQt::printMessage(const char *s)
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
-	Dnchar *msg = messageBuffer_.add();
-	msg->set(str);
-	
+	messagesWidget->ui.MessagesBrowser->append(str);
 // 	mainWindow->ui.TextDisplay->append(str);			// TGAY
 // 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
 }

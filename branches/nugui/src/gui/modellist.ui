@@ -10,6 +10,11 @@
     <height>303</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
   <property name="floating">
    <bool>true</bool>
   </property>
@@ -43,6 +48,9 @@
         <width>75</width>
         <height>75</height>
        </size>
+      </property>
+      <property name="indentation">
+       <number>5</number>
       </property>
       <attribute name="headerVisible">
        <bool>false</bool>

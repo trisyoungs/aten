@@ -171,16 +171,12 @@ void Model::resetView()
 	// Need to do a check for the viability of the canvas first...
 	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
 	{
-		// TODO Resetting orthographic view is broken, since modelProjectionMatrix_ (in engine_) is not updated
-		// after changing zoom factor (relevant call to glOrtho)
 		do
 		{
 			// Adjust z-translation by 1 Angstrom
 			mview[14] -= 1.0;
 			// Project our local atom and grab the z screen coordinate
-			if (!prefs.hasPerspective()) gui.mainWidget->doProjection();// TGAY Necessary?
 			setupView(0, 0, gui.mainWidget->contextWidth(), gui.mainWidget->contextHeight());
-// 			gui.mainWidget->updateTransformation(mview, cell_.centre());
 			modelToWorld(target, &screenr);
 			done = TRUE;
 			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
@@ -340,28 +336,31 @@ Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, d
 {
 	msg.enter("Model::modelToWorld");
 	static Vec3<double> worldr;
+	static Matrix vmat;
 	Vec4<double> pos, temp, tempscreen;
 	// Projection formula is : worldr = P x M x modelr
 	pos.set(modelr, 1.0);
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
+	vmat = modelViewMatrix();
+	vmat.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
 	temp = modelViewMatrix() * pos;
 	worldr.set(temp.x, temp.y, temp.z);
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	if (screenr != NULL)
 	{
-		*screenr = modelProjectionMatrix_ * temp;
+		*screenr = modelProjectionMatrix() * temp;
 		screenr->x /= screenr->w;
 		screenr->y /= screenr->w;
-		screenr->x = viewportMatrix_[0] + viewportMatrix_[2]*(screenr->x+1)*0.5;
-		screenr->y = viewportMatrix_[1] + viewportMatrix_[3]*(screenr->y+1)*0.5;
+		screenr->x = viewportMatrix()[0] + viewportMatrix()[2]*(screenr->x+1)*0.5;
+		screenr->y = viewportMatrix()[1] + viewportMatrix()[3]*(screenr->y+1)*0.5;
 		screenr->z = screenr->z / screenr->w;
 		// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
 		if (screenradius > 0.0)
 		{
 			temp.x += screenradius;
-			tempscreen = modelProjectionMatrix_ * temp;
+			tempscreen = modelProjectionMatrix() * temp;
 			tempscreen.x /= tempscreen.w;
-			screenr->w = fabs( (viewportMatrix_[0] + viewportMatrix_[2]*(tempscreen.x+1)*0.5) - screenr->x);
+			screenr->w = fabs( (viewportMatrix()[0] + viewportMatrix()[2]*(tempscreen.x+1)*0.5) - screenr->x);
 		}
 	}
 	msg.exit("Model::modelToWorld");

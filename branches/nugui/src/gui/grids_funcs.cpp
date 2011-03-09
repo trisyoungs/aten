@@ -62,6 +62,8 @@ GridsWidget::~GridsWidget()
 void GridsWidget::showWidget()
 {
 	show();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 // Refresh widget

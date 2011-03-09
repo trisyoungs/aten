@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>275</width>
-    <height>368</height>
+    <height>369</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>275</width>
-    <height>368</height>
+    <height>369</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -21,6 +21,11 @@
     <width>275</width>
     <height>524287</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
@@ -68,7 +73,7 @@
            <item>
             <layout class="QGridLayout" name="gridLayout">
              <property name="horizontalSpacing">
-              <number>-1</number>
+              <number>6</number>
              </property>
              <item row="0" column="0">
               <widget class="QPushButton" name="DrawAtomButton">

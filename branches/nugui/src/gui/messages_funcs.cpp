@@ -38,6 +38,8 @@ void MessagesWidget::showWidget()
 {
 	show();
 	refresh();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 void MessagesWidget::refresh()
@@ -45,9 +47,15 @@ void MessagesWidget::refresh()
 	if (!this->isVisible()) return;
 }
 
+// A link in the text browser has been clicked 
+void MessagesWidget::on_MessagesBrowser_anchorClicked(const QUrl &link)
+{
+	printf("A link was clicked = [%s]\n", qPrintable(link.toString()));
+}
+	
 void MessagesWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.CommandButton->setChecked(FALSE);
+	gui.toolBoxWidget->ui.MessagesButton->setChecked(FALSE);
 	event->accept();
 }

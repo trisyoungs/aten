@@ -23,8 +23,8 @@
 #define ATEN_VERSION_H
 
 #define ATENVERSION "1.7"
-#define ATENREVISION "1540"
-#define ATENDATE "Tue 08 Mar - 23:30"
+#define ATENREVISION "1541"
+#define ATENDATE "Wed 09 Mar - 17:44"
 #define ATENURL "http://aten.googlecode.com/svn/branches/nugui"
 
 #endif

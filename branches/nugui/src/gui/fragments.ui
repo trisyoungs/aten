@@ -13,8 +13,13 @@
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>244</height>
+    <height>263</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
   <property name="floating">
    <bool>true</bool>

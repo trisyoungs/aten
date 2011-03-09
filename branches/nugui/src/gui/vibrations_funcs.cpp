@@ -51,6 +51,8 @@ void VibrationsWidget::showWidget()
 {
 	show();
 	if (shouldRefresh_) refresh();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 // Refresh window contents

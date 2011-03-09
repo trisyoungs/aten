@@ -7,14 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>272</width>
-    <height>397</height>
+    <height>414</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>397</height>
+    <height>414</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
   <property name="floating">
    <bool>true</bool>

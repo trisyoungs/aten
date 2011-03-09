@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -41,19 +37,8 @@
        id="linearGradient4424"
        xlink:href="#linearGradient3216"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.57576155,0,0,1.0721693,-81.678343,-5.3806552)" />
+       gradientTransform="matrix(0.5757615,0,0,1.0721693,-81.678343,-5.3806552)" />
   </defs>
-  <metadata
-     id="metadata7">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
   <g
      id="layer1">
     <rect
@@ -65,7 +50,7 @@
        id="rect3599"
        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none" />
     <use
-       transform="translate(19.769203,-0.18650082)"
+       transform="translate(19.769203,-0.1865008)"
        id="use2483"
        style="fill:#000000;fill-opacity:1"
        x="0"
@@ -74,7 +59,7 @@
        height="100"
        xlink:href="#rect3599" />
     <path
-       d="M 19.560448,46.069131 53.940331,65.918366 19.560448,85.7676 z"
+       d="M 19.560448,46.069131 L 53.940331,65.918366 L 19.560448,85.7676 L 19.560448,46.069131 z"
        transform="matrix(1.7469666,0,0,1.7469666,-30.4975,-63.180951)"
        id="path3597"
        style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none" />
@@ -85,9 +70,9 @@
        y="15.191905"
        transform="scale(-1,1)"
        id="rect3343"
-       style="fill:url(#linearGradient4424);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.55087078;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:2.63393869" />
+       style="fill:url(#linearGradient4424);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.55087078;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.63393869;stroke-opacity:1" />
     <use
-       transform="translate(19.955704,-0.18650282)"
+       transform="translate(19.955704,-0.1865028)"
        id="use2481"
        x="0"
        y="0"
@@ -95,9 +80,9 @@
        height="100"
        xlink:href="#rect3343" />
     <path
-       d="M 19.560448,46.069131 53.940331,65.918366 19.560448,85.7676 z"
+       d="M 19.560448,46.069131 L 53.940331,65.918366 L 19.560448,85.7676 L 19.560448,46.069131 z"
        transform="matrix(1.7469666,0,0,1.7469666,-33.122628,-66.33243)"
        id="path3224"
-       style="fill:url(#linearGradient3609);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.917;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:2.63393869" />
+       style="fill:url(#linearGradient3609);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.917;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.63393869;stroke-opacity:1" />
   </g>
 </svg>

@@ -42,6 +42,8 @@ void GeometryWidget::showWidget()
 {
 	refresh();
 	show();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 void GeometryWidget::refresh()

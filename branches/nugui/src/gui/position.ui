@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>271</height>
+    <height>284</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>271</height>
+    <height>284</height>
    </size>
   </property>
   <property name="floating">
@@ -193,13 +193,13 @@
                <property name="minimumSize">
                 <size>
                  <width>32</width>
-                 <height>22</height>
+                 <height>25</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>300</width>
-                 <height>22</height>
+                 <height>25</height>
                 </size>
                </property>
                <property name="toolTip">
@@ -636,8 +636,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="autoDefault">
@@ -671,8 +671,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="autoDefault">
@@ -706,8 +706,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="autoDefault">
@@ -741,8 +741,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="autoDefault">
@@ -776,8 +776,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="autoDefault">
@@ -811,8 +811,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>16</width>
+                <height>16</height>
                </size>
               </property>
               <property name="autoDefault">
@@ -1021,13 +1021,13 @@
                  <property name="minimumSize">
                   <size>
                    <width>32</width>
-                   <height>22</height>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
                    <width>400</width>
-                   <height>22</height>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="toolTip">
@@ -1059,13 +1059,13 @@
                  <property name="minimumSize">
                   <size>
                    <width>60</width>
-                   <height>22</height>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
                    <width>400</width>
-                   <height>22</height>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="toolTip">
@@ -1214,8 +1214,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>24</width>
-              <height>24</height>
+              <width>16</width>
+              <height>16</height>
              </size>
             </property>
             <property name="autoDefault">
@@ -1255,8 +1255,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>24</width>
-              <height>24</height>
+              <width>16</width>
+              <height>16</height>
              </size>
             </property>
             <property name="autoDefault">
@@ -1424,13 +1424,13 @@
                  <property name="minimumSize">
                   <size>
                    <width>32</width>
-                   <height>22</height>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
                    <width>88888</width>
-                   <height>22</height>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="sizeIncrement">
@@ -1592,13 +1592,13 @@
                  <property name="minimumSize">
                   <size>
                    <width>32</width>
-                   <height>22</height>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
                    <width>9999</width>
-                   <height>22</height>
+                   <height>25</height>
                   </size>
                  </property>
                  <property name="sizeIncrement">

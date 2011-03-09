@@ -46,6 +46,8 @@ void MDWidget::showWidget()
 {
 	show();
 	refresh();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 void MDWidget::refresh()

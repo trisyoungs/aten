@@ -53,6 +53,8 @@ BuildWidget::~BuildWidget()
 void BuildWidget::showWidget()
 {
 	show();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 /*
