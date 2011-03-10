@@ -90,7 +90,7 @@ bool Command::function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.rs()->foldAllAtoms();
 		obj.rs()->endUndoState();
 	}
-	else if (prefs.foldOnLoad() != Prefs::SwitchOff) obj.rs()->foldAllAtoms();
+	else if (prefs.foldOnLoad() != Choice::No) obj.rs()->foldAllAtoms();
 	rv.reset();
 	return TRUE;
 }
@@ -150,7 +150,7 @@ bool Command::function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.rs()->pack();
 		obj.rs()->endUndoState();
 	}
-	else if (prefs.packOnLoad() != Prefs::SwitchOff) obj.rs()->pack();
+	else if (prefs.packOnLoad() != Choice::No) obj.rs()->pack();
 	rv.reset();
 	return TRUE;
 }

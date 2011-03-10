@@ -36,10 +36,26 @@ AtenLoadModel::AtenLoadModel(QWidget *parent) : QDialog(parent)
 void AtenLoadModel::setControls()
 {
 	refreshing_ = TRUE;
-	ui.RebondCombo->setCurrentIndex( prefs.bondOnLoad() );
-	ui.CentreCombo->setCurrentIndex( prefs.centreOnLoad() );
-	ui.FoldCombo->setCurrentIndex( prefs.foldOnLoad() );
-	ui.PackCombo->setCurrentIndex( prefs.packOnLoad() );
+	if (prefs.bondOnLoad() == Choice::Default) ui.RebondCombo->setCurrentIndex(0);
+	else if (prefs.bondOnLoad() == Choice::No) ui.RebondCombo->setCurrentIndex(1);
+	else ui.RebondCombo->setCurrentIndex(2);
+
+	if (prefs.centreOnLoad() == Choice::Default) ui.CentreCombo->setCurrentIndex(0);
+	else if (prefs.centreOnLoad() == Choice::No) ui.CentreCombo->setCurrentIndex(1);
+	else ui.CentreCombo->setCurrentIndex(2);
+	
+	if (prefs.foldOnLoad() == Choice::Default) ui.FoldCombo->setCurrentIndex(0);
+	else if (prefs.foldOnLoad() == Choice::No) ui.FoldCombo->setCurrentIndex(1);
+	else ui.FoldCombo->setCurrentIndex(2);
+
+	if (prefs.packOnLoad() == Choice::Default) ui.PackCombo->setCurrentIndex(0);
+	else if (prefs.packOnLoad() == Choice::No) ui.PackCombo->setCurrentIndex(1);
+	else ui.PackCombo->setCurrentIndex(2);
+
+	if (prefs.bondOnLoad() == Choice::Default) ui.RebondCombo->setCurrentIndex(0);
+	else if (prefs.bondOnLoad() == Choice::No) ui.RebondCombo->setCurrentIndex(1);
+	else ui.RebondCombo->setCurrentIndex(2);
+
 	ui.ZMappingCombo->setCurrentIndex( prefs.zMapType() );
 	ui.FormatCombo->clear();
 	ui.FormatCombo->addItem("<Auto Detect>");
@@ -94,25 +110,33 @@ const char *AtenLoadModel::selectedFilename()
 void AtenLoadModel::on_RebondCombo_activated(int index)
 {
 	if (refreshing_) return;
-	prefs.setBondOnLoad( (Prefs::FilterSwitch) index );
+	if (index == 0) prefs.setBondOnLoad(Choice::Default);
+	else if (index == 1) prefs.setBondOnLoad(Choice::No);
+	else if (index == 2) prefs.setBondOnLoad(Choice::Yes);
 }
 
 void AtenLoadModel::on_FoldCombo_activated(int index)
 {
 	if (refreshing_) return;
-	prefs.setFoldOnLoad( (Prefs::FilterSwitch) index );
+	if (index == 0) prefs.setFoldOnLoad(Choice::Default);
+	else if (index == 1) prefs.setFoldOnLoad(Choice::No);
+	else if (index == 2) prefs.setFoldOnLoad(Choice::Yes);
 }
 
 void AtenLoadModel::on_PackCombo_activated(int index)
 {
 	if (refreshing_) return;
-	prefs.setPackOnLoad( (Prefs::FilterSwitch) index );
+	if (index == 0) prefs.setPackOnLoad(Choice::Default);
+	else if (index == 1) prefs.setPackOnLoad(Choice::No);
+	else if (index == 2) prefs.setPackOnLoad(Choice::Yes);
 }
 
 void AtenLoadModel::on_CentreCombo_activated(int index)
 {
 	if (refreshing_) return;
-	prefs.setCentreOnLoad( (Prefs::FilterSwitch) index );
+	if (index == 0) prefs.setCentreOnLoad(Choice::Default);
+	else if (index == 1) prefs.setCentreOnLoad(Choice::No);
+	else if (index == 2) prefs.setCentreOnLoad(Choice::Yes);
 }
 
 void AtenLoadModel::on_ZMappingCombo_activated(int index)

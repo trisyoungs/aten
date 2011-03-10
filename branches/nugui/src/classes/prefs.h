@@ -28,6 +28,7 @@
 #include "base/elements.h"
 #include "classes/colourscale.h"
 #include "base/dnchar.h"
+#include "base/choice.h"
 
 // Forward declarations
 class Cell;
@@ -76,8 +77,6 @@ class Prefs
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, CustomScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char *name, bool reporterror = 0);
 	static const char *colouringScheme(ColouringScheme cs);
-	// Filter override switches
-	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };
 	// Drawing guide geometry
 	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
 	// Spotlight Components
@@ -429,13 +428,13 @@ class Prefs
 	*/
 	private:
 	// Recalculate bonding when model has loaded
-	FilterSwitch bondOnLoad_;
+	Choice bondOnLoad_;
 	// Centre non-periodic models on load
-	FilterSwitch centreOnLoad_;
+	Choice centreOnLoad_;
 	// Fold atomic positions after model load
-	FilterSwitch foldOnLoad_;
+	Choice foldOnLoad_;
 	// Whether to apply symmetry operators to get crystal packing on load
-	FilterSwitch packOnLoad_;
+	Choice packOnLoad_;
 	// Whether to load in all coordinate sets from a file
 	bool loadAllCoords_;
 	// Convert coordinates from Bohr to Angstrom on load
@@ -455,21 +454,21 @@ class Prefs
 
 	public:
 	// Sets whether to calculate bonding on model load
-	void setBondOnLoad(FilterSwitch s);
+	void setBondOnLoad(Choice s);
 	// Whether bonding should be recalculated on model load
-	FilterSwitch bondOnLoad() const;
+	Choice bondOnLoad() const;
 	// Sets whether to centre molecule on load
-	void setCentreOnLoad(FilterSwitch s);
+	void setCentreOnLoad(Choice s);
 	// Whether molecule should be centred on model load
-	FilterSwitch centreOnLoad() const;
+	Choice centreOnLoad() const;
 	// Sets whether to fold atomic positions after model load
-	void setFoldOnLoad(FilterSwitch s);
+	void setFoldOnLoad(Choice s);
 	// Whether atoms should be folded after model load
-	FilterSwitch foldOnLoad() const;
+	Choice foldOnLoad() const;
 	// Sets whether to apply symmetry operators (pack) on load
-	void setPackOnLoad(FilterSwitch s);
+	void setPackOnLoad(Choice s);
 	// Whether atoms should be packed (with symmetry operations) after model load
-	FilterSwitch packOnLoad() const;
+	Choice packOnLoad() const;
 	// Set the cache limit (in kb) for trajectory files
 	void setCacheLimit(int i);
 	// Return the cache limit for trajectory files

@@ -207,7 +207,7 @@ void ForcefieldsWidget::on_EditForcefieldButton_clicked(bool checked)
 // Assign current forcefield to model
 void ForcefieldsWidget::on_AssignFFToCurrentButton_clicked(bool checked)
 {
-	aten.currentModel()->setForcefield(aten.currentForcefield());
+	aten.currentModelOrFrame()->setForcefield(aten.currentForcefield());
 }
 
 // Assign current forcefield to all models
@@ -219,23 +219,28 @@ void ForcefieldsWidget::on_AssignFFToAllButton_clicked(bool checked)
 // Assign current forcefield to pattern
 void ForcefieldsWidget::on_AssignFFToPatternButton_clicked(bool checked)
 {
-	Pattern *p = gui.selectPatternDialog->selectPattern(aten.currentModel());
+	Pattern *p = gui.selectPatternDialog->selectPattern(aten.currentModelOrFrame());
 	if (p != NULL) p->setForcefield(aten.currentForcefield());
 }
 
 // Perform automatic atom typing
 void ForcefieldsWidget::on_TypeModelButton_clicked(bool checked)
 {
-	if (aten.currentModel()->typeAll()) gui.update();
+	if (aten.currentModelOrFrame()->typeAll()) gui.update();
 }
 
 // Remove typing from model
 void ForcefieldsWidget::on_UntypeModelButton_clicked(bool checked)
 {
-	aten.currentModel()->removeTyping();
+	aten.currentModelOrFrame()->removeTyping();
 	gui.update();
 }
 
+void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
+{
+	aten.currentModelOrFrame()->createExpression(Choice::Default, Choice::Default, ui.AssignFFChargesCheck->isChecked());
+}
+	
 /*
 // Energy Tab
 */

@@ -88,7 +88,7 @@ bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.rs()->centre(centre, lock.x, lock.y, lock.z);
 		obj.rs()->endUndoState();
 	}
-	else if (prefs.centreOnLoad() != Prefs::SwitchOff) obj.rs()->centre(c->arg3d(0));
+	else if (prefs.centreOnLoad() != Choice::No) obj.rs()->centre(c->arg3d(0));
 	rv.reset();
 	return TRUE;
 }

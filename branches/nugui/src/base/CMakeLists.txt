@@ -4,6 +4,7 @@ atom.cpp
 atom_geometry.cpp
 bond.cpp
 cell.cpp
+choice.cpp
 colourscalepoint.cpp
 dnchar.cpp
 doubleexp.cpp
@@ -25,6 +26,7 @@ atomaddress.h
 atom.h
 bond.h
 cell.h
+choice.h
 colourscalepoint.h
 constants.h
 dnchar.h

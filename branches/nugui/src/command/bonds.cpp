@@ -138,7 +138,7 @@ bool Command::function_ReBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.rs()->calculateBonding( c->hasArg(0) ? c->argb(0) : prefs.augmentAfterRebond() );
 		obj.rs()->endUndoState();
 	}
-	else if (prefs.bondOnLoad() != Prefs::SwitchOff)
+	else if (prefs.bondOnLoad() != Choice::No)
 	{
 		obj.rs()->clearBonding();
 		obj.rs()->calculateBonding( c->hasArg(0) ? c->argb(0) : prefs.augmentAfterRebond() );

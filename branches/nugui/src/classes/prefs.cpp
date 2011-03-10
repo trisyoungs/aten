@@ -289,10 +289,10 @@ Prefs::Prefs()
 	readPipe_ = FALSE;
 	
 	// File
-	bondOnLoad_ = Prefs::SwitchAsFilter;
-	foldOnLoad_ = Prefs::SwitchAsFilter;
-	centreOnLoad_ = Prefs::SwitchAsFilter;
-	packOnLoad_ = Prefs::SwitchAsFilter;
+	bondOnLoad_ = Choice::Default;
+	foldOnLoad_ = Choice::Default;
+	centreOnLoad_ = Choice::Default;
+	packOnLoad_ = Choice::Default;
 	cacheLimit_ = 1024;
 	zMapType_ = ElementMap::AutoZMap;
 	fixedZMapType_ = FALSE;
@@ -1102,49 +1102,49 @@ double Prefs::zoomThrottle() const
 */
 
 // Sets whether to calculate bonding on model load
-void Prefs::setBondOnLoad(FilterSwitch s)
+void Prefs::setBondOnLoad(Choice s)
 {
 	bondOnLoad_ = s;
 }
 
 // Whether bonding should be recalculated on model load
-Prefs::FilterSwitch Prefs::bondOnLoad() const
+Choice Prefs::bondOnLoad() const
 {
 	return bondOnLoad_;
 }
 
 // Sets whether to centre molecule on load
-void Prefs::setCentreOnLoad(Prefs::FilterSwitch s)
+void Prefs::setCentreOnLoad(Choice s)
 {
 	centreOnLoad_ = s;
 }
 
 // Whether molecule should be centred on model load
-Prefs::FilterSwitch Prefs::centreOnLoad() const
+Choice Prefs::centreOnLoad() const
 {
 	return centreOnLoad_;
 }
 
 // Sets whether to fold atomic positions after model load
-void Prefs::setFoldOnLoad(Prefs::FilterSwitch s)
+void Prefs::setFoldOnLoad(Choice s)
 {
 	foldOnLoad_ = s;
 }
 
 // Whether atoms should be folded after model load
-Prefs::FilterSwitch Prefs::foldOnLoad() const
+Choice Prefs::foldOnLoad() const
 {
 	return foldOnLoad_;
 }
 
 // Sets whether to apply symmetry operators (pack) on load
-void Prefs::setPackOnLoad(Prefs::FilterSwitch s)
+void Prefs::setPackOnLoad(Choice s)
 {
 	packOnLoad_ = s;
 }
 
 // Whether atoms should be packed (with symmetry operations) after model load
-Prefs::FilterSwitch Prefs::packOnLoad() const
+Choice Prefs::packOnLoad() const
 {
 	return packOnLoad_;
 }

@@ -32,6 +32,7 @@
 #include "base/atom.h"
 #include "base/lineparser.h"
 #include "base/eigenvector.h"
+#include "base/choice.h"
 #include "classes/basisshell.h"
 #define SGCOREDEF__
 #include "base/sginfo.h"
@@ -583,7 +584,7 @@ class Model
 	// Return the unique type specified
 	Refitem<ForcefieldAtom,int> *uniqueForcefieldType(int i);
 	// Create total energy function shell for the model
-	bool createExpression(bool vdwOnly = FALSE, bool allowDummy = FALSE);
+	bool createExpression(Choice vdwOnly = Choice::Default, Choice allowDummy = Choice::Default, Choice assignCharges = Choice::Default);
 	// Return whether the expression is valid
 	bool isExpressionValid() const;
 	// Clear the current expression

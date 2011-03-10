@@ -54,6 +54,7 @@ class ForcefieldsWidget : public QDockWidget
 	void on_AssignFFToCurrentButton_clicked(bool checked);
 	void on_AssignFFToAllButton_clicked(bool checked);
 	void on_AssignFFToPatternButton_clicked(bool clicked);
+	void on_CreateExpressionButton_clicked(bool clicked);
 	// Energy Tab
 	void on_MinimiserMethodCombo_currentIndexChanged(int index);
 	void on_CurrentEnergyButton_clicked(bool checked);
