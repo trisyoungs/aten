@@ -31,17 +31,7 @@ AtenPrefs::AtenPrefs(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 	refreshing_ = FALSE;
-}
 
-// Destructor
-AtenPrefs::~AtenPrefs()
-{
-}
-
-// Finalise GUI
-void AtenPrefs::finaliseUi()
-{
-	msg.enter("AtenPrefs::finaliseUi");
 	int i;
 	// Add elements to element list and select first item
 	QListWidgetItem *item;
@@ -51,7 +41,6 @@ void AtenPrefs::finaliseUi()
 		item->setText(elements().name(i));
 	}
 	ui.ElementList->setCurrentRow(0);
-	msg.exit("AtenPrefs::finaliseUi");
 }
 
 // Set controls

@@ -70,7 +70,6 @@ class BuildWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	BuildWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~BuildWidget();
 	// Main form declaration
 	Ui::BuildWidget ui;
 };

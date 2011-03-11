@@ -1,489 +1,557 @@
-<ui version="4.0" >
- <class>DisorderDialog</class>
- <widget class="QDialog" name="DisorderDialog" >
-  <property name="geometry" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DisorderWidget</class>
+ <widget class="QDockWidget" name="DisorderWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
-    <height>255</height>
+    <width>270</width>
+    <height>366</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>Disordered Builder</string>
+  <property name="minimumSize">
+   <size>
+    <width>270</width>
+    <height>347</height>
+   </size>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="icons.qrc" >
-    <normaloff>:/stackicons/icons/stack_disorder.svg</normaloff>:/stackicons/icons/stack_disorder.svg</iconset>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="spacing" >
-    <number>4</number>
-   </property>
-   <property name="margin" >
-    <number>2</number>
-   </property>
-   <item>
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QTableWidget" name="ComponentTable" >
-       <property name="editTriggers" >
-        <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+  </property>
+  <property name="windowTitle">
+   <string>Disorder</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="margin">
+     <number>2</number>
+    </property>
+    <item>
+     <widget class="QTableWidget" name="ComponentTable">
+      <property name="editTriggers">
+       <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <column>
+       <property name="text">
+        <string>nMols</string>
        </property>
-       <property name="selectionMode" >
-        <enum>QAbstractItemView::SingleSelection</enum>
+      </column>
+      <column>
+       <property name="text">
+        <string>R</string>
        </property>
-       <property name="selectionBehavior" >
-        <enum>QAbstractItemView::SelectRows</enum>
+      </column>
+      <column>
+       <property name="text">
+        <string>T</string>
        </property>
-       <column>
-        <property name="text" >
-         <string>nMols</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>R</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>T</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Model</string>
-        </property>
-       </column>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="ComponentRegionGroup" >
-       <property name="title" >
-        <string>Region</string>
+      </column>
+      <column>
+       <property name="text">
+        <string>Model</string>
        </property>
-       <layout class="QVBoxLayout" >
-        <property name="spacing" >
-         <number>4</number>
-        </property>
-        <property name="margin" >
-         <number>2</number>
-        </property>
-        <item>
-         <widget class="QComboBox" name="ComponentRegionCombo" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+      </column>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="ComponentRegionGroup">
+      <property name="title">
+       <string>Region</string>
+      </property>
+      <layout class="QVBoxLayout">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="margin">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QComboBox" name="ComponentRegionCombo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="currentIndex">
+          <number>3</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>Cell</string>
           </property>
-          <property name="currentIndex" >
-           <number>3</number>
+         </item>
+         <item>
+          <property name="text">
+           <string>Cuboid</string>
           </property>
-          <item>
-           <property name="text" >
-            <string>Cell</string>
+         </item>
+         <item>
+          <property name="text">
+           <string>Spheroid</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Cylinder</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="_2">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="CentreYSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Cuboid</string>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
            </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Spheroid</string>
+           <property name="decimals">
+            <number>5</number>
            </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>Cylinder</string>
+           <property name="minimum">
+            <double>-1000.000000000000000</double>
            </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" >
-          <property name="margin" >
-           <number>0</number>
-          </property>
-          <property name="spacing" >
-           <number>2</number>
-          </property>
-          <item row="2" column="1" >
-           <widget class="QDoubleSpinBox" name="CentreYSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="minimum" >
-             <double>-1000.000000000000000</double>
-            </property>
-            <property name="maximum" >
-             <double>1000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1" >
-           <widget class="QCheckBox" name="CentreFracCheck" >
-            <property name="text" >
-             <string>Frac</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" >
-           <widget class="QDoubleSpinBox" name="CentreXSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="minimum" >
-             <double>-1000.000000000000000</double>
-            </property>
-            <property name="maximum" >
-             <double>1000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_24" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Y</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" >
-           <widget class="QDoubleSpinBox" name="CentreZSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="minimum" >
-             <double>-1000.000000000000000</double>
-            </property>
-            <property name="maximum" >
-             <double>1000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2" >
-           <widget class="QDoubleSpinBox" name="GeometryXSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="maximum" >
-             <double>2000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2" >
-           <widget class="QDoubleSpinBox" name="GeometryZSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="maximum" >
-             <double>2000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" >
-           <widget class="QLabel" name="label344_2" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Geometry</string>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="2" >
-           <widget class="QCheckBox" name="GeometryFracCheck" >
-            <property name="text" >
-             <string>Frac</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" >
-           <widget class="QLabel" name="label344" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Centre</string>
-            </property>
-            <property name="alignment" >
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2" >
-           <widget class="QDoubleSpinBox" name="GeometryYSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="maximum" >
-             <double>2000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="label_23" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>X</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="label_25" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Z</string>
-            </property>
-            <property name="scaledContents" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3" >
-           <widget class="QDoubleSpinBox" name="RotationXSpin" >
-            <property name="decimals" >
-             <number>4</number>
-            </property>
-            <property name="minimum" >
-             <double>-180.000000000000000</double>
-            </property>
-            <property name="maximum" >
-             <double>180.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3" >
-           <widget class="QDoubleSpinBox" name="RotationYSpin" >
-            <property name="decimals" >
-             <number>4</number>
-            </property>
-            <property name="minimum" >
-             <double>-180.000000000000000</double>
-            </property>
-            <property name="maximum" >
-             <double>180.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3" >
-           <widget class="QCheckBox" name="RotationCheck" >
-            <property name="text" >
-             <string>Rotation</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="AllowOverlapCheck" >
-          <property name="text" >
-           <string>Allow Overlap</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0" >
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="DisorderStartButton" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font" >
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text" >
-        <string>Build</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_27" >
-       <property name="text" >
-        <string>Cycles</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="DisorderCyclesSpin" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximum" >
-        <number>10000</number>
-       </property>
-       <property name="value" >
-        <number>100</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_30" >
-       <property name="text" >
-        <string>VDW Scale</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="VDWScaleSpin" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals" >
-        <number>5</number>
-       </property>
-       <property name="maximum" >
-        <double>100.000000000000000</double>
-       </property>
-       <property name="singleStep" >
-        <double>0.010000000000000</double>
-       </property>
-       <property name="value" >
-        <double>1.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="ShowRegionsCheck" >
-       <property name="text" >
-        <string>Show Regions</string>
-       </property>
-       <property name="checked" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-  </layout>
+           <property name="maximum">
+            <double>1000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QCheckBox" name="CentreFracCheck">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Frac</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="CentreXSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>-1000.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_24">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Y</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QDoubleSpinBox" name="CentreZSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="minimum">
+            <double>-1000.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QDoubleSpinBox" name="GeometryXSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="maximum">
+            <double>2000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QDoubleSpinBox" name="GeometryZSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="maximum">
+            <double>2000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label344_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Geometry</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QCheckBox" name="GeometryFracCheck">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Frac</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label344">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Centre</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QDoubleSpinBox" name="GeometryYSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="maximum">
+            <double>2000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_23">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>X</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_25">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Z</string>
+           </property>
+           <property name="scaledContents">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QDoubleSpinBox" name="RotationXSpin">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>4</number>
+           </property>
+           <property name="minimum">
+            <double>-180.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>180.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QDoubleSpinBox" name="RotationYSpin">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="decimals">
+            <number>4</number>
+           </property>
+           <property name="minimum">
+            <double>-180.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>180.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QCheckBox" name="RotationCheck">
+           <property name="text">
+            <string>Rotation</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="3">
+          <widget class="QCheckBox" name="AllowOverlapCheck">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="text">
+            <string>Overlap?</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="_3">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_27">
+        <property name="text">
+         <string>Cycles</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="DisorderCyclesSpin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+        <property name="value">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_30">
+        <property name="text">
+         <string>VDW Scale</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="VDWScaleSpin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="decimals">
+         <number>5</number>
+        </property>
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+        <property name="value">
+         <double>1.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="ShowRegionsCheck">
+      <property name="text">
+       <string>Show Regions</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="DisorderStartButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Build</string>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
  </widget>
- <tabstops>
-  <tabstop>ComponentTable</tabstop>
-  <tabstop>ComponentRegionCombo</tabstop>
-  <tabstop>CentreXSpin</tabstop>
-  <tabstop>CentreYSpin</tabstop>
-  <tabstop>CentreZSpin</tabstop>
-  <tabstop>GeometryXSpin</tabstop>
-  <tabstop>GeometryYSpin</tabstop>
-  <tabstop>GeometryZSpin</tabstop>
-  <tabstop>CentreFracCheck</tabstop>
-  <tabstop>GeometryFracCheck</tabstop>
-  <tabstop>ShowRegionsCheck</tabstop>
-  <tabstop>DisorderStartButton</tabstop>
-  <tabstop>DisorderCyclesSpin</tabstop>
-  <tabstop>VDWScaleSpin</tabstop>
- </tabstops>
- <resources>
-  <include location="icons.qrc" />
- </resources>
+ <resources/>
  <connections/>
 </ui>

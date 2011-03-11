@@ -81,7 +81,6 @@ class CellTransformWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	CellTransformWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~CellTransformWidget();
 	// Main form declaration
 	Ui::CellTransformWidget ui;
 };

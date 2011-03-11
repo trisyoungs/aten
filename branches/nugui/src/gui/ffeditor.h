@@ -124,10 +124,6 @@ class AtenForcefieldEditor : public QDialog
 	AtenForcefieldEditor(QWidget *parent = 0);
 	// Main form declaration
 	Ui::FFEditorDialog ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

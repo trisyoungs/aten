@@ -33,11 +33,6 @@ GeometryWidget::GeometryWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	ui.setupUi(this);
 }
 
-// Destructor
-GeometryWidget::~GeometryWidget()
-{
-}
-
 void GeometryWidget::showWidget()
 {
 	refresh();

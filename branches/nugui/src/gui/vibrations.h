@@ -77,7 +77,6 @@ class VibrationsWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	VibrationsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~VibrationsWidget();
 	// Main form declaration
 	Ui::VibrationsWidget ui;
 };

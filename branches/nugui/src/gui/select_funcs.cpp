@@ -34,11 +34,6 @@ SelectWidget::SelectWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget
 	ui.setupUi(this);
 }
 
-// Destructor
-SelectWidget::~SelectWidget()
-{
-}
-
 // Show window
 void SelectWidget::showWidget()
 {

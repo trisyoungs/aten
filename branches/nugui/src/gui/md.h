@@ -58,12 +58,8 @@ class MDWidget : public QDockWidget
 	public:
 	// Constructor
 	MDWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Destructor
-	~MDWidget();
 	// Main form declaration
 	Ui::MDWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
 };
 
 #endif

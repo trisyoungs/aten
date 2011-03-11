@@ -261,17 +261,8 @@ class AtenForm : public QMainWindow
 	void setActiveStyleAction(Atom::DrawStyle ds);
 
 
-
-	// XXXXXXXXXXXXX
-	// XXXXXXXXXXXXX  All the following must be moved!
-	// XXXXXXXXXXXXX
-
-
-
-
-
 	/*
-	// Mouse Actions
+	// Mouse Toolbar Actions
 	*/
 	private slots:
 	void on_actionMouseInteract_triggered(bool checked);
@@ -279,11 +270,8 @@ class AtenForm : public QMainWindow
 	void on_actionMouseTranslate_triggered(bool checked);
 
 
-
-
-
 	/*
-	// Trajectory Actions
+	// Trajectory Toolbar Actions
 	*/
 	private:
 	QSlider *trajectorySlider_;
@@ -300,24 +288,8 @@ class AtenForm : public QMainWindow
 	void trajectorySpin_valueChanged(int i);
 
 
-
-
 	/*
-	// Local Routines
-	*/
-	private slots:
-	// Cancel progress dialog
-	void progressCancel();
-
-	public:
-	// Update undo/redo labels
-	void updateUndoRedo();
-	// Enable/disable manually-created widgets
-	void setWidgetsEnabled(bool b);
-
-
-	/*
-	// Local Widgets
+	// Local Widgets and Routines
 	*/
 	private:
 	// List of manually-created QActionGroups
@@ -328,23 +300,31 @@ class AtenForm : public QMainWindow
 	QToolButton *uaDummyButton_;
 	// User-Action button group
 	QButtonGroup uaButtons_;
-	
+	// Text labels for model information and UI messages in status bar
+	QLabel *infoLabel1_, *infoLabel2_, *messageLabel_;
+	// Statusbar progress indicator widgets
+	QProgressBar *progressBar_;
+	QLabel *progressTitle_, *progressEta_;
+	QPushButton *progressButton_;
+	QFrame *progressIndicator_;
+
 	private slots:
 	// Change current user action
 	void uaButtonClicked(int id);
+	// Cancel progress dialog
+	void progressCancel();
 
 	public:
+	// Update undo/redo labels
+	void updateUndoRedo();
+	// Enable/disable manually-created widgets
+	void setWidgetsEnabled(bool b);
 	// Set action/button to reflect supplied user action
 	void setActiveUserAction(UserAction::Action ua);
-
-	// TGAY Can any of this be made private?
-	// Text labels for model information and UI messages in status bar
-	QLabel *infoLabel1, *infoLabel2, *messageLabel;
-	// Statusbar progress indicator widgets
-	QProgressBar *progressBar;
-	QLabel *progressTitle, *progressEta;
-	QPushButton *progressButton;
-	QFrame *progressIndicator;
+	// Set message label text
+	void setMessageLabel(const char *s);
+	// Setup or update progress indicator
+	void updateProgressIndicator(bool visible, int maximum = -1, int value = -1, const char *title = NULL, const char *eta = NULL);
 	// String lists to hold file dialog filter definitions
 	QString loadModelFilters, saveModelFilters, loadTrajectoryFilters, saveTrajectoryFilters, loadExpressionFilters, saveExpressionFilters, saveBitmapFilters, saveVectorFilters, loadScriptFilters, loadGridFilters, saveGridFilters;
 	// Filter set from save model dialog

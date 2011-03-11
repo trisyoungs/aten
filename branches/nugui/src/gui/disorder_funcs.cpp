@@ -24,12 +24,13 @@
 #include "gui/disorder.h"
 #include "gui/gui.h"
 #include "gui/ttablewidgetitem.h"
+#include "gui/toolbox.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
 #include "parser/commandnode.h"
 
 // Constructor
-AtenDisorder::AtenDisorder(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+DisorderWidget::DisorderWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 
@@ -37,82 +38,26 @@ AtenDisorder::AtenDisorder(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 	refreshing_ = FALSE;
 }
 
-// Destructor
-AtenDisorder::~AtenDisorder()
+// Show widget
+void DisorderWidget::showWidget()
 {
-}
-
-// Show window
-void AtenDisorder::showWindow()
-{
+	refresh();
 	show();
 }
 
-void AtenDisorder::on_CentreXSpin_valueChanged(double d)
+// Refresh widget
+void DisorderWidget::refresh()
 {
-	setComponentCentre();
-}
+	msg.enter("DisorderWidget::refresh");
+	// If the window is not visible, don't do anything
+	if (!gui.disorderWidget->isVisible())
+	{
+		msg.exit("DisorderWidget::refresh");
+		return;
+	}
 
-void AtenDisorder::on_CentreYSpin_valueChanged(double d)
-{
-	setComponentCentre();
-}
-
-void AtenDisorder::on_CentreZSpin_valueChanged(double d)
-{
-	setComponentCentre();
-}
-
-void AtenDisorder::on_CentreFracCheck_clicked(bool checked)
-{
-	setComponentCentre();
-}
-
-void AtenDisorder::on_GeometryXSpin_valueChanged(double d)
-{
-	setComponentGeometry();
-}
-
-void AtenDisorder::on_GeometryYSpin_valueChanged(double d)
-{
-	setComponentGeometry();
-}
-
-void AtenDisorder::on_GeometryZSpin_valueChanged(double d)
-{
-	setComponentGeometry();
-}
-
-void AtenDisorder::on_GeometryFracCheck_clicked(bool checked)
-{
-	setComponentGeometry();
-}
-
-void AtenDisorder::on_RotationXSpin_valueChanged(double d)
-{
-	setComponentRotation();
-}
-
-void AtenDisorder::on_RotationYSpin_valueChanged(double d)
-{
-	setComponentRotation();
-}
-
-void AtenDisorder::on_RotationCheck_clicked(bool checked)
-{
-	setComponentRotation();
-}
-
-void AtenDisorder::on_AllowOverlapCheck_clicked(bool checked)
-{
-	
-}
-
-void AtenDisorder::refresh()
-{
-	if (!gui.exists()) return;
 	if (aten.currentModelOrFrame() == NULL) return;
-	msg.enter("AtenDisorder::refresh");
+
 	refreshing_ = TRUE;
 	// (De)sensitize controls
 	ui.DisorderStartButton->setDisabled(aten.currentModelOrFrame()->cell()->type() == Cell::NoCell);
@@ -157,10 +102,10 @@ void AtenDisorder::refresh()
 	ui.ComponentTable->setCurrentItem(firstitem);
 	refreshing_ = FALSE;
 	if (count > 0) refreshComponentData(0);
-	msg.exit("AtenDisorder::refresh");
+	msg.exit("DisorderWidget::refresh");
 }
 
-void AtenDisorder::refreshComponentData(int comp)
+void DisorderWidget::refreshComponentData(int comp)
 {
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
@@ -187,7 +132,7 @@ void AtenDisorder::refreshComponentData(int comp)
 	refreshing_ = FALSE;
 }
 
-void AtenDisorder::setComponentCentre()
+void DisorderWidget::setComponentCentre()
 {
 	if (refreshing_) return;
 	Vec3<double> v;
@@ -201,7 +146,7 @@ void AtenDisorder::setComponentCentre()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenDisorder::setComponentGeometry()
+void DisorderWidget::setComponentGeometry()
 {
 	if (refreshing_) return;
 	Vec3<double> v;
@@ -215,7 +160,7 @@ void AtenDisorder::setComponentGeometry()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenDisorder::setComponentRotation()
+void DisorderWidget::setComponentRotation()
 {
 	if (refreshing_) return;
 	Vec3<double> v(ui.RotationXSpin->value(), ui.RotationYSpin->value(), 0.0);
@@ -229,12 +174,72 @@ void AtenDisorder::setComponentRotation()
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenDisorder::on_ComponentTable_itemClicked(QTableWidgetItem *item)
+void DisorderWidget::on_CentreXSpin_valueChanged(double d)
+{
+	setComponentCentre();
+}
+
+void DisorderWidget::on_CentreYSpin_valueChanged(double d)
+{
+	setComponentCentre();
+}
+
+void DisorderWidget::on_CentreZSpin_valueChanged(double d)
+{
+	setComponentCentre();
+}
+
+void DisorderWidget::on_CentreFracCheck_clicked(bool checked)
+{
+	setComponentCentre();
+}
+
+void DisorderWidget::on_GeometryXSpin_valueChanged(double d)
+{
+	setComponentGeometry();
+}
+
+void DisorderWidget::on_GeometryYSpin_valueChanged(double d)
+{
+	setComponentGeometry();
+}
+
+void DisorderWidget::on_GeometryZSpin_valueChanged(double d)
+{
+	setComponentGeometry();
+}
+
+void DisorderWidget::on_GeometryFracCheck_clicked(bool checked)
+{
+	setComponentGeometry();
+}
+
+void DisorderWidget::on_RotationXSpin_valueChanged(double d)
+{
+	setComponentRotation();
+}
+
+void DisorderWidget::on_RotationYSpin_valueChanged(double d)
+{
+	setComponentRotation();
+}
+
+void DisorderWidget::on_RotationCheck_clicked(bool checked)
+{
+	setComponentRotation();
+}
+
+void DisorderWidget::on_AllowOverlapCheck_clicked(bool checked)
+{
+	
+}
+
+void DisorderWidget::on_ComponentTable_itemClicked(QTableWidgetItem *item)
 {
 	refreshComponentData(item->row());
 }
 
-void AtenDisorder::on_ComponentTable_itemChanged(QTableWidgetItem *item)
+void DisorderWidget::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 {
 	if (!gui.exists() || refreshing_) return;
 	int column = ui.ComponentTable->column(item);
@@ -258,7 +263,7 @@ void AtenDisorder::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 	}
 }
 
-void AtenDisorder::on_ComponentRegionCombo_currentIndexChanged(int index)
+void DisorderWidget::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
 	if (refreshing_) return;
 	int comp = ui.ComponentTable->currentRow();
@@ -270,23 +275,26 @@ void AtenDisorder::on_ComponentRegionCombo_currentIndexChanged(int index)
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenDisorder::on_ShowRegionsCheck_clicked(bool checked)
+void DisorderWidget::on_ShowRegionsCheck_clicked(bool checked)
 {
 	prefs.setVisibleOnScreen(Prefs::ViewRegions, checked);
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenDisorder::on_DisorderStartButton_clicked(bool checked)
+void DisorderWidget::on_DisorderStartButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Disorder, "i", ui.DisorderCyclesSpin->value());
 }
 
-void AtenDisorder::on_VDWScaleSpin_valueChanged(double d)
+void DisorderWidget::on_VDWScaleSpin_valueChanged(double d)
 {
 	CommandNode::run(Command::VdwScale, "d", d);
 }
 
-void AtenDisorder::dialogFinished(int result)
+void DisorderWidget::closeEvent(QCloseEvent *event)
 {
-	gui.mainWindow->ui.actionDisorderWindow->setChecked(FALSE);
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.DisorderButton->setChecked(FALSE);
+	event->accept();
 }
+

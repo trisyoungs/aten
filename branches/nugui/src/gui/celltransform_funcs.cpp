@@ -36,11 +36,6 @@ CellTransformWidget::CellTransformWidget(QWidget *parent, Qt::WindowFlags flags)
 	refreshing_ = FALSE;
 }
 
-// Destructor
-CellTransformWidget::~CellTransformWidget()
-{
-}
-
 // Show window
 void CellTransformWidget::showWidget()
 {

@@ -65,7 +65,6 @@ class ModelListWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	ModelListWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~ModelListWidget();
 	// Main form declaration
 	Ui::ModelListWidget ui;
 };

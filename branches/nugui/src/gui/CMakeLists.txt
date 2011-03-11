@@ -64,6 +64,7 @@ set(qtproject_SRCS
   toolbox_funcs.cpp
   trajectoryactions.cpp
   transform_funcs.cpp
+  tprocess_funcs.cpp
   tprompt_funcs.cpp
   ttablewidgetitem_funcs.cpp
   ttreewidgetitem_funcs.cpp
@@ -110,6 +111,7 @@ SET(pro_MOC_HDRS
   zmatrix.h
   tcanvas.uih
   tcolourframe.uih
+  tprocess.uih
   tprompt.uih
   tradiogroup.uih
   ttreewidget.uih

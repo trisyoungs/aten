@@ -932,11 +932,9 @@ bool Tree::addLocalFunctionArguments(TreeNode *arglist)
 	VariableNode *vnode;
 	// Rewind to head of arguments list
 	for (first = arglist; first != NULL; first = first->prevArgument) if (first->prevArgument == NULL) break;
-	// Wrap the argument variables supplied, checking for duplicates
+	// Wrap the argument variables supplied
 	for (node = first; node != NULL; node = node->nextArgument)
 	{
-		// Search existing arguments - TGAY necessary, or is this handled by grammar?
-// 		for (oldnode = arguments_.first(); oldnode != NULL; 
 		Variable *var = (Variable*) node;
 		vnode = new VariableNode(var);
 		arguments_.own(vnode);

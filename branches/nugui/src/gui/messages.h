@@ -47,12 +47,8 @@ class MessagesWidget : public QDockWidget
 	public:
 	// Constructor
 	MessagesWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Destructor
-	~MessagesWidget();
 	// Main form declaration
 	Ui::MessagesWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
 	// Set controls to reflect program variables
 	void setControls();
 };

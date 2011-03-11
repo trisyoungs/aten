@@ -122,7 +122,6 @@ class GridsWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	GridsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~GridsWidget();
 	// Main form declaration
 	Ui::GridsWidget ui;
 };

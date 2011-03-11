@@ -58,7 +58,6 @@ class AtenViewBasis : public QDialog
 	public:
 	// Constructor / Destructor
 	AtenViewBasis(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenViewBasis();
 	// Main form declaration
 	Ui::ViewBasisDialog ui;
 };

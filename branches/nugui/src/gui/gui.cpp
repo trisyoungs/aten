@@ -104,7 +104,6 @@ GuiQt::GuiQt()
 	viewBasisDialog = NULL;
 	viewEigenvectorDialog = NULL;
 	aboutDialog = NULL;
-	disorderWindow = NULL;
 	zmatrixWindow = NULL;
 	
 	atomListWidget = NULL;
@@ -112,22 +111,19 @@ GuiQt::GuiQt()
 	cellDefinitionWidget = NULL;
 	cellTransformWidget = NULL;
 	commandWidget = NULL;
+	disorderWidget = NULL;
 	forcefieldsWidget = NULL;
 	fragmentsWidget = NULL;
 	geometryWidget = NULL;
 	glyphsWidget = NULL;
 	gridsWidget = NULL;
-	modelListWidget = NULL;
 	mdWidget = NULL;
+	messagesWidget = NULL;
+	modelListWidget = NULL;
 	positionWidget = NULL;
 	toolBoxWidget = NULL;
 	transformWidget = NULL;
 	vibrationsWidget = NULL;
-}
-
-// Destructor
-GuiQt::~GuiQt()
-{
 }
 
 /*
@@ -196,7 +192,6 @@ void GuiQt::run()
 	aboutDialog = new AtenAbout(mainWindow);
 	viewBasisDialog = new AtenViewBasis(mainWindow);
 	viewEigenvectorDialog = new AtenViewEigenvector(mainWindow);
-	disorderWindow = new AtenDisorder(mainWindow, Qt::Window|Qt::Tool);
 	zmatrixWindow = new AtenZMatrix(mainWindow);
 	
 	// ...dock widgets
@@ -205,6 +200,7 @@ void GuiQt::run()
 	cellDefinitionWidget = new CellDefinitionWidget(mainWindow, Qt::Tool);
 	cellTransformWidget = new CellTransformWidget(mainWindow, Qt::Tool);
 	commandWidget = new CommandWidget(mainWindow, Qt::Tool);
+	disorderWidget = new DisorderWidget(mainWindow, Qt::Tool);
 	forcefieldsWidget = new ForcefieldsWidget(mainWindow, Qt::Tool);
 	fragmentsWidget = new FragmentsWidget(mainWindow, Qt::Tool);
 	geometryWidget = new GeometryWidget(mainWindow, Qt::Tool);
@@ -218,7 +214,7 @@ void GuiQt::run()
 	toolBoxWidget = new ToolBoxWidget(mainWindow, Qt::Tool);
 	transformWidget = new TransformWidget(mainWindow, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(mainWindow, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << forcefieldsWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << disorderWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
 	toolBoxWidget->show();
 	
 	// Connect Finished signal of tool windows to finished slots in structure
@@ -229,7 +225,6 @@ void GuiQt::run()
 		// Add every dock widget to a dock area (annoying to have to do it, but prevents 'stuck' dock widgets on some versions)
 		mainWindow->addDockWidget(Qt::RightDockWidgetArea, obj);
 	}
-	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));	// TGAY
 	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY
 
 	// Set the modality of some dialogs
@@ -243,14 +238,7 @@ void GuiQt::run()
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
-	glyphsWidget->finaliseUi();
-	prefsDialog->finaliseUi();
-	forcefieldEditorDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
-	selectFilterDialog->finaliseUi();
-	selectPatternDialog->finaliseUi();
-	selectVariableDialog->finaliseUi();
-	selectElementDialog->finaliseUi();
 
 	// Temporarily disable drawing on the main canvas again
 	gui.mainWidget->disableDrawing();
@@ -258,11 +246,7 @@ void GuiQt::run()
 	// Set controls in the windows
 	mainWindow->setControls();
 	prefsDialog->setControls();
-	forcefieldEditorDialog->setControls();
 	loadModelDialog->setControls();
-	selectFilterDialog->setControls();
-	selectPatternDialog->setControls();
-	selectVariableDialog->setControls();
 	fragmentsWidget->refresh();
 	commandWidget->refresh();
 
@@ -273,7 +257,7 @@ void GuiQt::run()
 	// Refresh the necessary windows
 	gridsWidget->refresh();
 	forcefieldsWidget->refresh();
-	disorderWindow->refresh();
+	disorderWidget->refresh();
 	mdWidget->refresh();
 	cellDefinitionWidget->refresh();
 	cellTransformWidget->refresh();
@@ -358,7 +342,7 @@ void GuiQt::update(int targets)
 	{
 		cellDefinitionWidget->refresh();
 		cellTransformWidget->refresh();
-		disorderWindow->refresh();
+		disorderWidget->refresh();
 	}
 
 	// Update forcefields in the forcefield widget
@@ -366,6 +350,18 @@ void GuiQt::update(int targets)
 
 	// Request redraw of the main canvas
 	gui.mainWidget->postRedisplay();
+}
+
+// Return the PID of Aten
+int GuiQt::pid()
+{
+	return (app == NULL ? 0 : app->applicationPid());
+}
+
+// Process application messages
+void GuiQt::processMessages()
+{
+	if (app != NULL) app->processEvents();
 }
 
 // Update statusbar
@@ -401,19 +397,13 @@ void GuiQt::updateStatusBar(bool clear)
 		}
 	}
 	// Set text in statusbar widget
-	if (clear) mainWindow->messageLabel->setText("");
-	else mainWindow->messageLabel->setText(text.get());
+	if (clear) mainWindow->setMessageLabel("");
+	else mainWindow->setMessageLabel(text);
 }
 
 /*
 // Methods
 */
-
-//.Return message buffer list
-Dnchar *GuiQt::messageBuffer()
-{
-	return messageBuffer_.first();
-}
 
 // Print message
 void GuiQt::printMessage(const char *s)
@@ -425,8 +415,7 @@ void GuiQt::printMessage(const char *s)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
 	messagesWidget->ui.MessagesBrowser->append(str);
-// 	mainWindow->ui.TextDisplay->append(str);			// TGAY
-// 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
+// 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());  TGAY
 }
 
 // Check the status of all models, asking to save before close if necessary
@@ -522,9 +511,8 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 // Enable / disable GUI (except progress bar group)
 void GuiQt::setWindowsEnabled(bool b)
 {
-	// Disable some key widgets on the main form
+	// Disable/enable some key widgets on the main form
 	mainWindow->ui.ViewFrame->setEnabled(b);
-	disorderWindow->setEnabled(b);
 
 	// ...and all the dock widgets...
 	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", b);
@@ -566,13 +554,7 @@ void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
 		printf("Progress [-]                              (  0%%)");
 		fflush(stdout);
 	}
-	else
-	{
-		mainWindow->progressBar->setMaximum(stepstodo);
-		mainWindow->progressBar->setValue(0);
-		mainWindow->progressTitle->setText(jobtitle);
-		mainWindow->progressEta->setText("");
-	}
+	else mainWindow->updateProgressIndicator(TRUE, stepstodo, 0, jobtitle, "");
 }
 
 // Terminate the progress dialog
@@ -587,7 +569,7 @@ void GuiQt::progressTerminate()
 	else
 	{
 		// Hide the progress bar and re-enable widgets
-		mainWindow->progressIndicator->setVisible(FALSE);
+		mainWindow->updateProgressIndicator(FALSE);
 		setWindowsEnabled(TRUE);
 		app->processEvents();
 	}
@@ -640,12 +622,11 @@ bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
 	else if (time_.elapsed() >= 500)
 	{
 		setWindowsEnabled(FALSE);
-		mainWindow->progressIndicator->setVisible(TRUE);
-		mainWindow->progressBar->setValue(progressCurrentStep_);
 		etatext.sprintf("ETA %02i:%02i:%02i", remtime.hour(), remtime.minute(), remtime.second());
-		mainWindow->progressEta->setText(etatext.get());
+		mainWindow->updateProgressIndicator(TRUE, -1, progressCurrentStep_, NULL, etatext);
 		app->processEvents();
 	}
+	app->processEvents();
 	// Check to see if the abort button was pressed
 	return (!progressCanceled_);
 }

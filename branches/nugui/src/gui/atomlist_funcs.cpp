@@ -53,11 +53,6 @@ AtomListWidget::AtomListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	QObject::connect(ui.AtomTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
 }
 
-// Destructor
-AtomListWidget::~AtomListWidget()
-{
-}
-
 void AtomListWidget::showWidget()
 {
 	show();

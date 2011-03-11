@@ -25,6 +25,7 @@
 #include "gui/celltransform.h"
 #include "gui/celldefinition.h"
 #include "gui/command.h"
+#include "gui/disorder.h"
 #include "gui/forcefields.h"
 #include "gui/fragments.h"
 #include "gui/geometry.h"
@@ -38,16 +39,12 @@
 #include "gui/toolbox.h"
 #include "gui/transform.h"
 #include "gui/vibrations.h"
+#include "gui/zmatrix.h"
 
 // Constructor
 ToolBoxWidget::ToolBoxWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
-}
-
-// Destructor
-ToolBoxWidget::~ToolBoxWidget()
-{
 }
 
 // Update all buttons in the toolbox
@@ -100,6 +97,12 @@ void ToolBoxWidget::on_CommandButton_clicked(bool checked)
 {
 	if (checked) gui.commandWidget->showWidget();
 	else gui.commandWidget->hide();
+}
+
+void ToolBoxWidget::on_DisorderButton_clicked(bool checked)
+{
+	if (checked) gui.disorderWidget->showWidget();
+	else gui.disorderWidget->hide();
 }
 
 void ToolBoxWidget::on_ForcefieldsButton_clicked(bool checked)
@@ -172,6 +175,12 @@ void ToolBoxWidget::on_VibrationsButton_clicked(bool checked)
 {
 	if (checked) gui.vibrationsWidget->showWidget();
 	else gui.vibrationsWidget->hide();
+}
+
+void ToolBoxWidget::on_ZMatrixButton_clicked(bool checked)
+{
+	if (checked) gui.zmatrixWindow->show();
+	else gui.zmatrixWindow->hide();
 }
 
 void ToolBoxWidget::dockWidgetVisibilityChanged(bool visibility)

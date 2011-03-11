@@ -29,11 +29,6 @@ MessagesWidget::MessagesWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	ui.setupUi(this);
 }
 
-// Destructor
-MessagesWidget::~MessagesWidget()
-{
-}
-
 void MessagesWidget::showWidget()
 {
 	show();

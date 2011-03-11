@@ -72,7 +72,6 @@ class CellDefinitionWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	CellDefinitionWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~CellDefinitionWidget();
 	// Main form declaration
 	Ui::CellDefinitionWidget ui;
 };

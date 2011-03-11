@@ -68,14 +68,8 @@ class GeometryWidget : public QDockWidget
 	public:
 	// Constructor
 	GeometryWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Destructor
-	~GeometryWidget();
 	// Main form declaration
 	Ui::GeometryWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

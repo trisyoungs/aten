@@ -34,11 +34,6 @@ PositionWidget::PositionWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	ui.setupUi(this);
 }
 
-// Destructor
-PositionWidget::~PositionWidget()
-{
-}
-
 void PositionWidget::showWidget()
 {
 	show();

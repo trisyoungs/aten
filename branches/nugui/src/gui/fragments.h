@@ -80,7 +80,6 @@ class FragmentsWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	FragmentsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~FragmentsWidget();
 	// Main form declaration
 	Ui::FragmentsWidget ui;
 };

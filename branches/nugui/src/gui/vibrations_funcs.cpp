@@ -41,11 +41,6 @@ VibrationsWidget::VibrationsWidget(QWidget *parent, Qt::WindowFlags flags) : QDo
 	ui.setupUi(this);
 }
 
-// Destructor
-VibrationsWidget::~VibrationsWidget()
-{
-}
-
 // Show window
 void VibrationsWidget::showWidget()
 {

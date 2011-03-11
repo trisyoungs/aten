@@ -44,11 +44,6 @@ BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 	customElement_ = 9;
 }
 
-// Destructor
-BuildWidget::~BuildWidget()
-{
-}
-
 // Show window
 void BuildWidget::showWidget()
 {

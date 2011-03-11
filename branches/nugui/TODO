@@ -2,6 +2,34 @@
 
 	<orderedlist>
 		<listitem>
+			<para>GUI not updated on change in model list?</para>
+		</listitem>
+		<listitem>
+			<para>Options for visibility of current model box on image output</para>
+		</listitem>
+		<listitem>
+			<para>Ability to close models (or all other models) by right-click context menu on model list</para>
+		</listitem>
+		<listitem>
+			<para>DL_POLY config import/export filter - options to shift by half-cell on read/write</para>
+		</listitem>
+		<listitem>
+			<para>Save forcefield!</para>
+		</listitem>
+		<listitem>
+			<para>Save trajectory as movie - external program...  "mencoder mf://*.png -demuxer lavf -lavfdopts format=png -ovc copy -v -o cattest_1.avi" </para>
+		</listitem>
+		<listitem>
+			<para>Editing info for multiple grids at once.</para>
+		</listitem>
+
+	</orderedlist>
+</sect5>
+
+<sect5><title>Known Bugs</title>
+
+	<orderedlist>
+		<listitem>
 			<para>Add filter type to export generic 'data', e.g. measurements list</para>
 		</listitem>
 		<listitem>

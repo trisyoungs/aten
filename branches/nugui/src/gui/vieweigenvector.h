@@ -51,7 +51,6 @@ class AtenViewEigenvector : public QDialog
 	public:
 	// Constructor / Destructor
 	AtenViewEigenvector(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenViewEigenvector();
 	// Main form declaration
 	Ui::ViewEigenvectorDialog ui;
 };

@@ -35,11 +35,6 @@ ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 	QObject::connect(ui.ModelTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
 }
 
-// Destructor
-ModelListWidget::~ModelListWidget()
-{
-}
-
 // Show the widget, refreshing at the same time
 void ModelListWidget::showWidget()
 {

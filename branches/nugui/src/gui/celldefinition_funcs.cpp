@@ -39,11 +39,6 @@ CellDefinitionWidget::CellDefinitionWidget(QWidget *parent, Qt::WindowFlags flag
 	refreshing_ = FALSE;
 }
 
-// Destructor
-CellDefinitionWidget::~CellDefinitionWidget()
-{
-}
-
 // Show window
 void CellDefinitionWidget::showWidget()
 {
@@ -243,7 +238,7 @@ void CellDefinitionWidget::on_CellDefinitionGroup_clicked(bool checked)
 	}
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
 	gui.cellTransformWidget->refresh();
-	gui.disorderWindow->refresh();
+	gui.disorderWidget->refresh();
 	gui.update();
 }
 

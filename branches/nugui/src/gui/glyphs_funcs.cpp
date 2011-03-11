@@ -33,18 +33,6 @@ GlyphsWidget::GlyphsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget
 {
 	ui.setupUi(this);
 
-	// Private variables
-	refreshing_ = FALSE;
-}
-
-// Destructor
-GlyphsWidget::~GlyphsWidget()
-{
-}
-
-// Finalise widgets (things that we couldn't do in Qt Designer)
-void GlyphsWidget::finaliseUi()
-{
 	// Set allowable glyph types in combo box
 	refreshing_ = TRUE;
 	for (int n=0; n<Glyph::nGlyphTypes; ++n) ui.GlyphTypeCombo->addItem( Glyph::glyphTypeName( (Glyph::GlyphType) n) );

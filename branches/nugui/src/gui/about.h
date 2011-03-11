@@ -49,7 +49,6 @@ class AtenAbout : public QDialog
 	public:
 	// Constructor / Destructor
 	AtenAbout(QWidget *parent = 0);
-	~AtenAbout();
 	// Main form declaration
 	Ui::AboutDialog ui;
 };

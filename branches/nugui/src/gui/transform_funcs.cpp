@@ -33,11 +33,6 @@ TransformWidget::TransformWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 	ui.setupUi(this);
 }
 
-// Destructor
-TransformWidget::~TransformWidget()
-{
-}
-
 void TransformWidget::showWidget()
 {
 	show();

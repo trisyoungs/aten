@@ -37,11 +37,6 @@ AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
 	ui.UrlLabel->setText(ATENURL);
 }
 
-// Destructor
-AtenAbout::~AtenAbout()
-{
-}
-
 void AtenAbout::on_AboutCloseButton_clicked(bool checked)
 {
 	hide();

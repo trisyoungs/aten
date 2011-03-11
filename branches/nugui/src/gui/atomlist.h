@@ -87,7 +87,6 @@ class AtomListWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	AtomListWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtomListWidget();
 	// Main form declaration
 	Ui::AtomListWidget ui;
 };

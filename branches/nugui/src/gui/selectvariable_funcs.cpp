@@ -34,16 +34,6 @@ AtenSelectVariable::AtenSelectVariable(QWidget *parent) : QDialog(parent)
 	ui.setupUi(this);
 }
 
-// Set controls
-void AtenSelectVariable::setControls()
-{
-}
-
-// Finalise GUI
-void AtenSelectVariable::finaliseUi()
-{
-}
-
 // Get variable of given type, based on Table row number
 Variable *AtenSelectVariable::getVariable(int row)
 {

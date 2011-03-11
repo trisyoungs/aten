@@ -35,11 +35,6 @@ CommandWidget::CommandWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidg
 	refreshScripts();
 }
 
-// Destructor
-CommandWidget::~CommandWidget()
-{
-}
-
 void CommandWidget::showWidget()
 {
 	show();

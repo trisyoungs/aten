@@ -38,7 +38,6 @@ class AtenSelectFilter;
 class AtenSelectPattern;
 class AtenSelectElement;
 class AtenSelectVariable;
-class AtenDisorder;
 class AtenViewBasis;
 class AtenViewEigenvector;
 class AtenZMatrix;
@@ -49,6 +48,7 @@ class BuildWidget;
 class CellDefinitionWidget;
 class CellTransformWidget;
 class CommandWidget;
+class DisorderWidget;
 class ForcefieldsWidget;
 class FragmentsWidget;
 class GeometryWidget;
@@ -73,9 +73,8 @@ class Grid;
 class GuiQt
 {
 	public:
-	// Constructor / Destructor
+	// Constructor
 	GuiQt();
-	~GuiQt();
 	// Bitmap Formats
 	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
 	static BitmapFormat bitmapFormat(const char *name, bool reporterror = 0);
@@ -110,18 +109,16 @@ class GuiQt
 	void initialise(int &argc, char **argv);
 	// Create the GUI and hand over control to Qt
 	void run();
+	// Return the PID of Aten
+	int pid();
+	// Process application messages
+	void processMessages();
 
 
 	/*
 	// Methods
 	*/
-	private:
-	// Message buffer
-	List<Dnchar> messageBuffer_;
-
 	public:
-	//.Return message buffer list
-	Dnchar *messageBuffer();
 	// Initialise GUI file filters array
 	void initFilters();
 	// Add a message to the main window's message output box
@@ -142,8 +139,6 @@ class GuiQt
 	QApplication *app;
 	// Main Window
 	AtenForm *mainWindow;
-	// Disordered builder window
-	AtenDisorder *disorderWindow;
 	// Zmatrix window
 	AtenZMatrix *zmatrixWindow;
 
@@ -166,6 +161,8 @@ class GuiQt
 	CellTransformWidget *cellTransformWidget;
 	// Command dock widget
 	CommandWidget *commandWidget;
+	// Disorder dock widget
+	DisorderWidget *disorderWidget;
 	// Forcefields dock widget
 	ForcefieldsWidget *forcefieldsWidget;
 	// Fragment Library dock widget

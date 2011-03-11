@@ -79,7 +79,6 @@ class PositionWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	PositionWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~PositionWidget();
 	// Main form declaration
 	Ui::PositionWidget ui;
 };

@@ -68,11 +68,6 @@ ForcefieldsWidget::ForcefieldsWidget(QWidget *parent, Qt::WindowFlags flags) : Q
 	saveForcefieldDialog->setFilters(filters);
 }
 
-// Destructor
-ForcefieldsWidget::~ForcefieldsWidget()
-{
-}
-
 void ForcefieldsWidget::showWidget()
 {
 	show();
@@ -83,6 +78,7 @@ void ForcefieldsWidget::showWidget()
 
 void ForcefieldsWidget::refresh()
 {
+	msg.enter("ForcefieldsWidget::refresh");
 	// If the window is not visible, don't do anything
 	if (!gui.forcefieldsWidget->isVisible())
 	{

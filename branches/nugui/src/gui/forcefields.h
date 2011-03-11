@@ -90,7 +90,6 @@ class ForcefieldsWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	ForcefieldsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~ForcefieldsWidget();
 	// Main form declaration
 	Ui::ForcefieldsWidget ui;
 };

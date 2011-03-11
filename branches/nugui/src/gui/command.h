@@ -89,6 +89,7 @@ class CommandWidget : public QDockWidget
 	public:
 	void refreshScripts(bool refreshactions = TRUE, bool refreshlist = TRUE);
 
+	
 	/*
 	// Command Index Page
 	*/
@@ -107,14 +108,10 @@ class CommandWidget : public QDockWidget
 	public:
 	// Constructor
 	CommandWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Destructor
-	~CommandWidget();
 	// Main form declaration
 	Ui::CommandWidget ui;
 	// Finalise widgets (things that couldn't be done in Qt Designer)
 	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

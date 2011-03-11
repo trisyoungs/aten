@@ -76,10 +76,6 @@ class AtenSelectFilter : public QDialog
 	AtenSelectFilter(QWidget *parent = 0);
 	// Main form declaration
 	Ui::SelectFilterDialog ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

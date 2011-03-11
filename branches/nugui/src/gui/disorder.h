@@ -29,7 +29,7 @@
 class Model;
 
 // Disordered builder window
-class AtenDisorder : public QDialog
+class DisorderWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -38,7 +38,7 @@ class AtenDisorder : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
 	private:
 	void refreshComponentData(int row);
@@ -64,7 +64,8 @@ class AtenDisorder : public QDialog
 	void on_RotationYSpin_valueChanged(double d);
 	void on_RotationCheck_clicked(bool checked);
 	void on_AllowOverlapCheck_clicked(bool checked);
-	void dialogFinished(int result);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables
@@ -77,11 +78,10 @@ class AtenDisorder : public QDialog
 	// Dialog
 	*/
 	public:
-	// Constructor / Destructor
-	AtenDisorder(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenDisorder();
+	// Constructor
+	DisorderWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::DisorderDialog ui;
+	Ui::DisorderWidget ui;
 };
 
 #endif

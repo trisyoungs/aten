@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/selectvariable.h"
 #include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include "parser/commandnode.h"
@@ -36,20 +37,10 @@ AtenZMatrix::AtenZMatrix(QWidget *parent, Qt::WindowFlags flags) : QDialog(paren
 	ui.setupUi(this);
 }
 
-// Destructor
-AtenZMatrix::~AtenZMatrix()
-{
-}
-
 void AtenZMatrix::showWindow()
 {
 	refresh();
 	show();
-}
-
-void AtenZMatrix::dialogFinished(int result)
-{
-// 	gui.mainWindow->ui.actionZMatrixEditorWindow->setChecked(FALSE);   TGAY
 }
 
 // Refresh the zmatrix
@@ -291,4 +282,10 @@ void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
 	CommandNode::run(Command::MoveToEnd, "");
 	refresh();
 	gui.update(GuiQt::AtomsTarget);
+}
+
+void AtenZMatrix::dialogFinished(int result)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.ZMatrixButton->setChecked(FALSE);
 }

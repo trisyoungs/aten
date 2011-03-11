@@ -47,14 +47,14 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 	trajectoryToolbarRefreshing_ = FALSE;
 
 	// Public variables
-	infoLabel1 = NULL;
-	infoLabel2 = NULL;
-	messageLabel = NULL;
-	progressBar = NULL;
-	progressTitle = NULL;
-	progressEta = NULL;
-	progressButton = NULL;
-	progressIndicator = NULL;
+	infoLabel1_ = NULL;
+	infoLabel2_ = NULL;
+	messageLabel_ = NULL;
+	progressBar_ = NULL;
+	progressTitle_ = NULL;
+	progressEta_ = NULL;
+	progressButton_ = NULL;
+	progressIndicator_ = NULL;
 
 	ui.setupUi(this);
 }
@@ -63,16 +63,14 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 AtenForm::~AtenForm()
 {
 	// No need (i.e. do not) delete: dummyToolButton.
-	if (infoLabel1 != NULL) delete infoLabel1;
-	if (infoLabel2 != NULL) delete infoLabel2;
-	if (messageLabel != NULL) delete messageLabel;
-	if (progressBar != NULL) delete progressBar;
-	if (progressTitle != NULL) delete progressTitle;
-	if (progressEta != NULL) delete progressEta;
-	if (progressButton != NULL) delete progressButton;
-	if (progressIndicator != NULL) delete progressIndicator;
-// 	if (uaGroup != NULL) delete uaGroup;
-// 	for (Refitem<QActionGroup,int> *ri = actionGroups_.first(); ri != NULL; ri = ri->next) delete ri->item;
+	if (infoLabel1_ != NULL) delete infoLabel1_;
+	if (infoLabel2_ != NULL) delete infoLabel2_;
+	if (messageLabel_ != NULL) delete messageLabel_;
+	if (progressBar_ != NULL) delete progressBar_;
+	if (progressTitle_ != NULL) delete progressTitle_;
+	if (progressEta_ != NULL) delete progressEta_;
+	if (progressButton_ != NULL) delete progressButton_;
+	if (progressIndicator_ != NULL) delete progressIndicator_;
 }
 
 // Catch window close event
@@ -161,7 +159,7 @@ void AtenForm::update()
 	}
 	s += ftoa(m->mass());
 	s += " g mol<sup>-1</sup> ";
-	infoLabel1->setText(s);
+	infoLabel1_->setText(s);
 	// Second label - cell information
 	Cell::CellType ct = m->cell()->type();
 	if (ct != Cell::NoCell)
@@ -182,7 +180,7 @@ void AtenForm::update()
 		}
 	}
 	else s = "Non-periodic";
-	infoLabel2->setText(s);
+	infoLabel2_->setText(s);
 	// Update save button status
 	ui.actionFileSave->setEnabled( m->changeLog.isModified() );
 	// Enable the Atom menu if one or more atoms are selected
@@ -366,6 +364,16 @@ void AtenForm::addRecent(const char *filename)
 	actionRecentFile[last]->setVisible(TRUE);
 }
 
+void AtenForm::on_actionAboutAten_triggered(bool checked)
+{
+	gui.aboutDialog->showWindow();
+}
+
+void AtenForm::on_actionAboutQt_triggered(bool checked)
+{
+	QMessageBox::aboutQt(this, "About Qt");
+}
+
 // Update undo/redo actions in Edit menu
 void AtenForm::updateUndoRedo()
 {
@@ -404,16 +412,6 @@ void AtenForm::setWidgetsEnabled(bool b)
 	trajectorySpin_->setEnabled(b);
 }
 
-void AtenForm::on_actionAboutAten_triggered(bool checked)
-{
-	gui.aboutDialog->showWindow();
-}
-
-void AtenForm::on_actionAboutQt_triggered(bool checked)
-{
-	QMessageBox::aboutQt(this, "About Qt");
-}
-
 // Change current user action
 void AtenForm::uaButtonClicked(int id)
 {
@@ -450,4 +448,20 @@ void AtenForm::setActiveUserAction(UserAction::Action ua)
 			else button->setChecked(TRUE);
 			break;
 	}
+}
+
+// Set message label text
+void AtenForm::setMessageLabel(const char *s)
+{
+	messageLabel_->setText(s);
+}
+
+// Setup or update progress indicator
+void AtenForm::updateProgressIndicator(bool visible, int maximum, int value, const char *title, const char *eta)
+{
+	if (maximum != -1) progressBar_->setMaximum(maximum);
+	if (value != -1) progressBar_->setValue(value);
+	if (title != NULL) progressTitle_->setText(title);
+	if (eta != NULL) progressEta_->setText(eta);
+	progressIndicator_->setVisible(visible);
 }

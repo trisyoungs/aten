@@ -68,7 +68,6 @@ class AtenZMatrix : public QDialog
 	public:
 	// Constructor / Destructor
 	AtenZMatrix(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenZMatrix();
 	// Main form declaration
 	Ui::ZMatrixDialog ui;
 };

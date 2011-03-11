@@ -37,11 +37,6 @@ MDWidget::MDWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,
 	// Public variables
 }
 
-// Destructor
-MDWidget::~MDWidget()
-{
-}
-
 void MDWidget::showWidget()
 {
 	show();

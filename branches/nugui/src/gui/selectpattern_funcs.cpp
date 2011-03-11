@@ -34,16 +34,6 @@ AtenSelectPattern::AtenSelectPattern(QWidget *parent) : QDialog(parent)
 	selectedPattern_ = NULL;
 }
 
-// Set controls
-void AtenSelectPattern::setControls()
-{
-}
-
-// Finalise GUI
-void AtenSelectPattern::finaliseUi()
-{
-}
-
 void AtenSelectPattern::on_PatternTable_doubleClicked(const QModelIndex &index)
 {
 	int row = index.row();

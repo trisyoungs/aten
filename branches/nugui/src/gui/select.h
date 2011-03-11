@@ -60,7 +60,6 @@ class SelectWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	SelectWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~SelectWidget();
 	// Main form declaration
 	Ui::SelectWidget ui;
 };

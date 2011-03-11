@@ -54,11 +54,6 @@ GridsWidget::GridsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 	ui.menuFrame->setLayout(layout);
 }
 
-// Destructor
-GridsWidget::~GridsWidget()
-{
-}
-
 void GridsWidget::showWidget()
 {
 	show();

@@ -38,8 +38,6 @@ class GlyphsWidget : public QDockWidget
 	// Window Functions
 	*/
 	public:
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
 	// Show the widget
 	void showWidget();
 	// Update widget
@@ -124,7 +122,6 @@ class GlyphsWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	GlyphsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~GlyphsWidget();
 	// Main form declaration
 	Ui::GlyphsWidget ui;
 };

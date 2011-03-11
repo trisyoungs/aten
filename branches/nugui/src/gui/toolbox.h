@@ -40,6 +40,7 @@ class ToolBoxWidget : public QDockWidget
 	void on_CellDefinitionButton_clicked(bool checked);
 	void on_CellTransformButton_clicked(bool checked);
 	void on_CommandButton_clicked(bool checked);
+	void on_DisorderButton_clicked(bool checked);
 	void on_ForcefieldsButton_clicked(bool checked);
 	void on_FragmentsButton_clicked(bool checked);
 	void on_GeometryButton_clicked(bool checked);
@@ -52,6 +53,7 @@ class ToolBoxWidget : public QDockWidget
 	void on_SelectButton_clicked(bool checked);
 	void on_TransformButton_clicked(bool checked);
 	void on_VibrationsButton_clicked(bool checked);
+	void on_ZMatrixButton_clicked(bool checked);
 	void dockWidgetVisibilityChanged(bool visibility);
 	void dockWidgetTopLevelChanged(bool topLevel);
 	
@@ -61,7 +63,6 @@ class ToolBoxWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	ToolBoxWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~ToolBoxWidget();
 	// Main form declaration
 	Ui::ToolBoxWidget ui;
 };

@@ -210,12 +210,8 @@ class AtenPrefs : public QDialog
 	public:
 	// Constructor
 	AtenPrefs(QWidget *parent = 0);
-	// Destructor
-	~AtenPrefs();
 	// Main form declaration
 	Ui::PrefsDialog ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
 	// Set controls to reflect program variables
 	void setControls();
 };

@@ -101,7 +101,6 @@ class TransformWidget : public QDockWidget
 	public:
 	// Constructor / Destructor
 	TransformWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~TransformWidget();
 	// Main form declaration
 	Ui::TransformWidget ui;
 };

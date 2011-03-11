@@ -43,11 +43,6 @@ FragmentsWidget::FragmentsWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 	bondId_ = 0;
 }
 
-// Destructor
-FragmentsWidget::~FragmentsWidget()
-{
-}
-
 void FragmentsWidget::showWidget()
 {
 	show();

@@ -34,16 +34,6 @@ AtenSelectFilter::AtenSelectFilter(QWidget *parent) : QDialog(parent)
 	appendExtension_ = TRUE;
 }
 
-// Set controls
-void AtenSelectFilter::setControls()
-{
-}
-
-// Finalise GUI
-void AtenSelectFilter::finaliseUi()
-{
-}
-
 // Select item in list and finish dialog
 void AtenSelectFilter::on_FilterTable_doubleClicked(const QModelIndex &index)
 {

@@ -74,10 +74,6 @@ class AtenSelectVariable : public QDialog
 	AtenSelectVariable(QWidget *parent = 0);
 	// Main form declaration
 	Ui::SelectVariableDialog ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

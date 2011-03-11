@@ -29,6 +29,8 @@
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "parser/filterdata.h"
+#include "gui/gui.h"
+#include "gui/tprocess.uih"
 
 // Local variables
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
@@ -86,13 +88,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
-	// Check that we can run system commands
-	int cmdresult = system(NULL);
-	if (cmdresult == 0)
-	{
-		msg.print("Error: Unable to run system commands.\n");
-		return FALSE;
-	}
+
 	// Grab pointers to MOPAC import and export filters
 	Tree *mopacexport = aten.findFilter(FilterData::ModelExport, "mopac");
 	if (mopacexport == NULL)
@@ -113,39 +109,61 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		return FALSE;
 	}
 	// Grab/create various filenames and paths
-	static int runid = 1;
-	Dnchar mopacinput, mopacoutput, mopaccmd;
-	mopacinput.sprintf("%s%caten-mopac%05i.mop", prefs.tempDir(), PATHSEP, runid);
-	mopacoutput.sprintf("%s%caten-mopac%05i.arc", prefs.tempDir(), PATHSEP, runid);
-	mopaccmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacinput.get());
-	msg.print(Messenger::Verbose, "Command to run will be '%s'\n", mopaccmd.get());
+	TProcess mopacProcess;
+	Dnchar mopacInput, mopacArc, mopacCmd, mopacOut;
+	int runid;
+	// Determine unique filename
+	do
+	{
+		runid = AtenMath::randomi(123456789);
+		mopacInput.sprintf("%s%caten-%i-mopac%i.mop", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+	} while (fileExists(mopacInput));
+	mopacArc.sprintf("%s%caten-%i-mopac%i.arc", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+	mopacOut.sprintf("%s%caten-%i-mopac%i.out", prefs.tempDir(), '/', gui.pid(), runid);
+	mopacCmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacInput.get());
+	msg.print("Command to run will be '%s'\n", mopacCmd.get());
+	
 	// Create copy of current model so as not to disturb filename/filter values
 	Model tempmodel;
 	//printf("Target for minimisation = %p\n", obj.rs);
 	tempmodel.copy(aten.currentModelOrFrame());
 	tempmodel.setFilter(mopacexport);
-	tempmodel.setFilename(mopacinput);
+	tempmodel.setFilename(mopacInput);
+	
 	// Save the input file... construct temporary bundle object containing our model pointer
 	bool result = TRUE;
 	Bundle bundle(&tempmodel);
 	ReturnValue temprv;
-	result = CommandNode::run(Command::SaveModel, bundle, "cc", "mopac", mopacinput.get());
+	result = CommandNode::run(Command::SaveModel, bundle, "cc", "mopac", mopacInput.get());
+	
 	// Ready to run command....
-	cmdresult = system(mopaccmd.get());
-	if (cmdresult != 0)
+	if (!mopacProcess.execute(mopacCmd, mopacOut))
 	{
 		msg.print("Error: Failed to run MOPAC. Is it installed correctly?\n");
 		return FALSE;
 	}
-	// Check for existence of output file....
-	if (!fileExists(mopacoutput))
+
+	// Follow output here...
+	while (!mopacProcess.finished())
 	{
-		msg.print("Error: Can't locate MOPAC output '%s'.\n", mopacoutput.get());
+		// Is output file already present?
+		while (mopacProcess.outputAvailable())
+		{
+			mopacProcess.printLineToMessages();
+		}
+
+		gui.processMessages();
+	};
+	
+	// Check for existence of output file....
+	if (!fileExists(mopacArc))
+	{
+		msg.print("Error: Can't locate MOPAC output '%s'.\n", mopacArc.get());
 		return FALSE;
 	}
 	// Time to load in the results
 	aten.setUseWorkingList(TRUE);
-	result = CommandNode::run(Command::LoadModel, "c", mopacoutput.get());
+	result = CommandNode::run(Command::LoadModel, "c", mopacArc.get());
 	// There should now be a model in the working model list (our results)
 	Model *m = aten.workingModels();
 	if (m == NULL)

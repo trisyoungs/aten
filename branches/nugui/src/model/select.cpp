@@ -271,7 +271,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	double t;
 	Atom *i;
 	Vec4<double> sr;
-	y1 = gui.mainWidget->contextHeight() - y1;	// TGAY Needs correcting for new rendering?
+	y1 = gui.mainWidget->contextHeight() - y1;
 	y2 = gui.mainWidget->contextHeight() - y2;
 	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
 	if (x1 > x2)
