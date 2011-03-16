@@ -69,10 +69,6 @@ class Prefs
 	enum DensityUnit { GramsPerCm, AtomsPerAngstrom, nDensityUnits };
 	static const char *densityUnit(DensityUnit);
 	static DensityUnit densityUnit(const char *name, bool reporterror = 0);
-	// View Objects
-	enum ViewObject { ViewAtoms, ViewCell, ViewCellAxes, ViewCellRepeat, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
-	static ViewObject viewObject(const char *name, bool reporterror = 0);
-	static const char *viewObject(ViewObject);
 	// Atom colouring scheme
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, CustomScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char *name, bool reporterror = 0);
@@ -90,15 +86,19 @@ class Prefs
 	// Save preferences to file
 	bool save(const char *filename);
 	// Friend class
-	friend class PreferencesVariable;
+// 	friend class PreferencesVariable;
 
 
 	/*
 	// Rendering - View Objects
 	*/
 	private:
-	// List of visibilities of renderable objects on screen and off-screen (on image)
-	int screenObjects_, offScreenObjects_;
+	// Whether to frame current model in view
+	bool frameCurrentModel_;
+	// Whether to frame whole view
+	bool frameWholeView_;
+	// Rotation globe style
+	bool viewRotationGlobe_;
 	// Repeat units in positive xyz directions
 	Vec3<int> repeatCellsPos_;
 	// Repeat units in negative xyz directions
@@ -129,22 +129,18 @@ class Prefs
 	double transparencyBinWidth_;
 
 	public:
-	// Set the visibility of an object on-screen
-	void setVisibleOnScreen(ViewObject vo, bool b);
-	// Set the visibility of an object off-screen
-	void setVisibleOffScreen(ViewObject vo, bool b);
-	// Return whether the specified object is visible (i.e. should be rendered)
-	bool isVisibleOnScreen(ViewObject vo);
-	// Return whether the specified object is visible (i.e. should be rendered) offscreen
-	bool isVisibleOffScreen(ViewObject vo);
-	// Return screenobjects bitvector
-	int screenObjects() const;
-	// Set screenobjects bitvector
-	void setScreenObjects(int i);
-	// Return screenobjects bitvector
-	int offScreenObjects() const;
-	// Set imageobjects bitvector
-	void setOffScreenObjects(int i);
+	// Return whether to frame current model in view
+	bool frameCurrentModel();
+	// Set whether to frame current model in view
+	void setFrameCurrentModel(bool b);
+	// Return whether to frame whole view
+	bool frameWholeView();
+	// Set whether to frame whole view
+	void setFrameWholeView(bool b);
+	// Return whether to draw rotation globe
+	bool viewRotationGlobe();
+	// Set whether to draw rotation globe
+	void setViewRotationGlobe(bool b);
 	// Return the styled radius of an atom calculated from the element and draw style
 	double styleRadius(Atom*) const;
 	// Set the drawing style of models
@@ -233,10 +229,14 @@ class Prefs
 	void setAtomStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the specified atom radius
 	GLdouble atomStyleRadius(Atom::DrawStyle ds) const;
+	// Return atom radii array
+	GLdouble *atomStyleRadii();
 	// Sets the bond radius used in Scaled and Sphere styles
 	void setBondStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the bond radius used in Scaled and Sphere styles
 	GLdouble bondStyleRadius(Atom::DrawStyle ds) const;
+	// Return bond radii array
+	GLdouble *bondStyleRadii();
 	// Sets the scale of selected atoms
 	void setSelectionScale(double f);
 	// Return the scale of selected atoms
@@ -570,10 +570,14 @@ class Prefs
 	void setMouseAction(MouseButton mb, MouseAction ma);
 	// Return the action associated with the specified mouse button
 	MouseAction mouseAction(MouseButton mb) const;
+	// Return array of (derived) mouse action texts
+	Dnchar *mouseActionTexts();
 	// Sets the modifier key for the specified action
 	void setKeyAction(ModifierKey mk, KeyAction ka);
 	// Return the action associated with the specified keymod button
 	KeyAction keyAction(ModifierKey mk) const;
+	// Return array of (derived) key action texts
+	Dnchar *keyActionTexts();
 	// Sets the zoom throttle
 	void setZoomThrottle(double throtvalue);
 	// Returns the zoom throttle
@@ -822,6 +826,8 @@ class Prefs
 	void setCombinationRule(Combine::CombinationRule cr, const char *s);
 	// Return combination rule equation
 	const char *combinationRule(Combine::CombinationRule cr) const;
+	// Return array of combination rule equations
+	Dnchar *combinationRules();
 
 
 	/*
@@ -832,6 +838,8 @@ class Prefs
 	Dnchar tempDir_;
 	// Location of MOPAC executable
 	Dnchar mopacExe_;
+	// Video encoder command
+	Dnchar encoderCommand_;
 
 	public:
 	// Set temp directory
@@ -839,9 +847,13 @@ class Prefs
 	// Return the temp directory path
 	const char *tempDir() const;
 	// Location of MOPAC executable
-	void setMopacExe(const char *path);
+	void setMopacExe(const char *exe);
 	// Return the location of the MOPAC executable
 	const char *mopacExe() const;
+	// Video encoder command
+	void setEncoderCommand(const char *command);
+	// Return the video encoder command
+	const char *encoderCommand() const;
 };
 
 extern Prefs prefs;

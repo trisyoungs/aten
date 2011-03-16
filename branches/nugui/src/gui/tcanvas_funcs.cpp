@@ -289,7 +289,12 @@ void TCanvas::paintGL()
 	painter.setBrush(solidbrush);
 	painter.setPen(Qt::SolidLine);
 	painter.setPen(pen);
-	painter.drawRect(currentBox);
+	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
+	if (prefs.frameWholeView())
+	{
+		currentBox.setRect(0,0,contextWidth_,contextHeight_);
+		painter.drawRect(currentBox);
+	}
 	painter.end();
 	
 	// Finally, swap buffers if necessary

@@ -202,9 +202,74 @@ WidgetNode::~WidgetNode()
 }
 
 // Set return value
-void WidgetNode::setReturnValue(const ReturnValue &rv)
+void WidgetNode::setReturnValue(ReturnValue &rv)
 {
 	returnValue_ = rv;
+}
+
+// Set widget value from supplied ReturnValue
+void WidgetNode::setWidgetValue(ReturnValue &rv)
+{
+	QLineEdit *lineedit;
+	QCheckBox *checkbox;
+	QLabel *label;
+	QSpinBox *spinbox;
+	QDoubleSpinBox *dspinbox;
+	QComboBox *combo;
+	QRadioButton *radio;
+	switch (controlType_)
+	{
+		case (WidgetNode::EditControl):
+			lineedit = qobject_cast<QLineEdit*> (widget_);
+			if (lineedit) lineedit->setText(rv.asString());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of edit control.\n");
+			break;
+		case (WidgetNode::IntegerComboControl):
+		case (WidgetNode::ComboControl):
+			combo = qobject_cast<QComboBox*> (widget_);
+			if (combo)
+			{
+				// If an integer was supplied, just set the index. Otherwise, search for string
+				if (rv.type() == VTypes::IntegerData) combo->setCurrentIndex(rv.asInteger());
+				// else  TGAY
+			}
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of (int)combo control.\n");
+			break;
+		case (WidgetNode::StringRadioGroupControl):
+			break;
+		case (WidgetNode::DoubleSpinControl):
+			dspinbox = qobject_cast<QDoubleSpinBox*> (widget_);
+			if (dspinbox) dspinbox->setValue(rv.asDouble());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of doublespin control.\n");
+			break;
+		case (WidgetNode::CheckControl):
+			checkbox = qobject_cast<QCheckBox*> (widget_);
+			if (checkbox) checkbox->setChecked(rv.asBool());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set state of check control.\n");
+			break;
+		case (WidgetNode::RadioButtonControl):
+			radio = qobject_cast<QRadioButton*> (widget_);
+			if (radio) checkbox->setChecked(rv.asBool());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set state of radio control.\n");
+			break;
+		case (WidgetNode::RadioGroupControl):
+			printf("WidgetNode::setWidgetValue() - Couldn't set stack control.\n");
+			break;
+		case (WidgetNode::IntegerSpinControl):
+			spinbox = qobject_cast<QSpinBox*> (widget_);
+			if (spinbox) dspinbox->setValue(rv.asInteger());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of intspin control.\n");
+			break;
+		case (WidgetNode::LabelControl):
+			lineedit = qobject_cast<QLineEdit*> (widget_);
+			if (lineedit) lineedit->setText(rv.asString());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of edit control.\n");
+			break;
+		case (WidgetNode::StackControl):
+			printf("WidgetNode::setWidgetValue() - Couldn't set stack control.\n");
+			break;
+	}
+
 }
 
 // Set argument list from parser-joined treenodes

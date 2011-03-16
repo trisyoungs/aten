@@ -277,7 +277,6 @@ void DisorderWidget::on_ComponentRegionCombo_currentIndexChanged(int index)
 
 void DisorderWidget::on_ShowRegionsCheck_clicked(bool checked)
 {
-	prefs.setVisibleOnScreen(Prefs::ViewRegions, checked);
 	gui.mainWidget->postRedisplay();
 }
 

@@ -215,16 +215,18 @@ void Model::regenerateIcon()
 	// Generate pixmap for fragment, keeping current primitive quality
 	bool reusePrims = prefs.reusePrimitiveQuality();
 	prefs.setReusePrimitiveQuality(TRUE);
-	int screenbits = prefs.screenObjects();
-	prefs.setScreenObjects(prefs.offScreenObjects());
+	int framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
+	prefs.setFrameCurrentModel(FALSE);
+	prefs.setFrameWholeView(FALSE);
 	gui.mainWidget->setRenderSource(this);
 	gui.mainWidget->setOffScreenRendering(TRUE);
 
 	if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget->renderPixmap(100, 100, FALSE);
 	else icon_ = QPixmap::fromImage(gui.mainWidget->grabFrameBuffer());
 
-	prefs.setScreenObjects(screenbits);
-
+	prefs.setFrameCurrentModel(framemodel);
+	prefs.setFrameWholeView(frameview);
+	
 	// Reconfigure canvas to widget size (necessary if image size was changed)
 	gui.mainWidget->doProjection();
 	gui.mainWidget->setRenderSource(NULL);

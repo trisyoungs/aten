@@ -349,7 +349,7 @@ void GuiQt::update(int targets)
 	if (targets&GuiQt::ForcefieldsTarget) forcefieldsWidget->refresh();
 
 	// Request redraw of the main canvas
-	gui.mainWidget->postRedisplay();
+	if (targets&GuiQt::CanvasTarget) gui.mainWidget->postRedisplay();
 }
 
 // Return the PID of Aten
@@ -469,8 +469,6 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	}
 
 	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
-	int screenbits = prefs.screenObjects();
-	prefs.setScreenObjects(prefs.offScreenObjects());
 	QPixmap pixmap;
 	// Get current widget geometry if none was specified
 	if (width == 0) width = mainWidget->width();
@@ -495,7 +493,6 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 
 	mainWidget->setOffScreenRendering(FALSE);
 	if (!prefs.reusePrimitiveQuality()) mainWidget->reinitialisePrimitives();
-	prefs.setScreenObjects(screenbits);
 
 	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
 	aten.current.rs()->rerenderGrids();

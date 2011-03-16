@@ -126,8 +126,10 @@ class WidgetNode : public TreeNode
 	List<StateChange> stateChanges_;
 
 	public:
-	// Set return value
-	void setReturnValue(const ReturnValue &rv);
+	// Set return value accessed from value get calls
+	void setReturnValue(ReturnValue &rv);
+	// Set widget value from supplied ReturnValue
+	void setWidgetValue(ReturnValue &rv);
 	// Set argument list from parser-joined treenodes
 	bool addJoinedArguments(TreeNode *arglist);
 	// Return type of GUI control

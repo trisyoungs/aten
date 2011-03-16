@@ -1054,7 +1054,7 @@ const char *Tree::widgetValuec(const char *name)
 {
 	WidgetNode *node = findWidget(name);
 	if (node == NULL) return "NULL";
-	ReturnValue rv;
+	static ReturnValue rv;
 	node->execute(rv);
 	return rv.asString();
 }
@@ -1081,3 +1081,12 @@ Vec3<double> Tree::widgetValue3d(const char *name1, const char *name2, const cha
 	result.z = rv.asDouble();
 	return result;
 }
+
+// Set current value of named widget
+void Tree::setWidgetValue(const char *name, ReturnValue value)
+{
+	WidgetNode *node = findWidget(name);
+	if (node == NULL) return;
+	node->setWidgetValue(value);
+}
+

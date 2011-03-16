@@ -200,6 +200,18 @@
 						<entry>For spacegroups that are detected to have a hexagonal basis, force packing to use generators in a rhombohedral basis</entry>
 					</row>
 					<row>
+						<entry>framecurrentview</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to frame the current model with a box</entry>
+					</row>
+					<row>
+						<entry>framewholeview</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to frame the entire view with a box</entry>
+					</row>
+					<row>
 						<entry>globeaxescolour</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
@@ -332,12 +344,6 @@
 						<entry>Flag controlling whether OS-stored Qt settings are loaded on startup</entry>
 					</row>
 					<row>
-						<entry>offscreenobjects</entry>
-						<entry>int</entry>
-						<entry>rw</entry>
-						<entry>Bitarray of <link linkend="enums.viewobjects">View Objects</link> drawn when rendering scenes to image files</entry>
-					</row>
-					<row>
 						<entry>perspective</entry>
 						<entry>int</entry>
 						<entry>rw</entry>
@@ -384,12 +390,6 @@
 						<entry>int</entry>
 						<entry>rw</entry>
 						<entry>Flag specifying whether to use the current rendering 'quality' value when saving images (FALSE) or the 'imagequality' value (TRUE).</entry>
-					</row>
-					<row>
-						<entry>screenobjects</entry>
-						<entry>int</entry>
-						<entry>rw</entry>
-						<entry>Bitarray of <link linkend="enums.viewobjects">View objects</link> drawn when rendering to screen</entry>
 					</row>
 					<row>
 						<entry>selectionscale</entry>
@@ -516,6 +516,12 @@
 						<entry>double[4]</entry>
 						<entry>rw</entry>
 						<entry>Colour of vibration vector arrows</entry>
+					</row>
+					<row>
+						<entry>viewrotationglobe</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to draw a rotation globe in the lower right-hand corner for each model</entry>
 					</row>
 					<row>
 						<entry>warn1056</entry>

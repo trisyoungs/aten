@@ -245,6 +245,8 @@ class Tree
 	const char *widgetValuec(const char *name);
 	// Retrieve current value of named widget triplet as a vector
 	Vec3<double> widgetValue3d(const char *name1, const char *name2, const char *name3);
+	// Set current value of named widget
+	void setWidgetValue(const char *name, ReturnValue value);
 
 
 	/*

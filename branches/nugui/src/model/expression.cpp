@@ -201,7 +201,6 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 					if (dialog.executeCustomDialog(FALSE, title.get()))
 					{
 						int choice = dialog.widgetValuei("choices");
-						printf("CHOICE = %i\n", choice);
 						if (choice == 1)
 						{
 							msg.exit("Model::createExpression");

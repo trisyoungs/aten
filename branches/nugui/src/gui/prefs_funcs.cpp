@@ -105,23 +105,8 @@ void AtenPrefs::setControls()
 	ui.FarClipSpin->setValue(prefs.clipFar());
 	ui.NearDepthSpin->setValue(prefs.depthNear());
 	ui.FarDepthSpin->setValue(prefs.depthFar());
-	// View Page - Scene Objects tab
-	ui.GlobeVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewGlobe));
-	ui.CellVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewCell));
-	ui.AxesVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewCellAxes));
-	ui.AtomsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewAtoms));
-	ui.LabelsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewLabels));
-	ui.MeasurementsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewMeasurements));
-	ui.RegionsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewRegions));
-	ui.SurfacesVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewSurfaces));
-	ui.GlobeVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewGlobe));
-	ui.CellVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewCell));
-	ui.AxesVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewCellAxes));
-	ui.AtomsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewAtoms));
-	ui.LabelsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewLabels));
-	ui.MeasurementsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewMeasurements));
-	ui.RegionsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewRegions));
-	ui.SurfacesVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewSurfaces));
+	ui.FrameCurrentModelCheck->setChecked(prefs.frameCurrentModel());
+	ui.FrameWholeViewCheck->setChecked(prefs.frameWholeView());
 
 	// Set controls in interaction page
 	ui.LeftMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::LeftButton));
@@ -568,99 +553,16 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 	gui.mainWidget->postRedisplay();
 }
 
-/*
-// View Page - Scene Objects tab
-*/
-
-void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state, bool onscreen)
+void AtenPrefs::on_FrameCurrentModelCheck_clicked(bool checked)
 {
-	if (onscreen)
-	{
-		prefs.setVisibleOnScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
-		aten.currentModel()->changeLog.add(Log::Visual);
-	}
-	else prefs.setVisibleOffScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
+	prefs.setFrameCurrentModel(checked);
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenPrefs::on_AtomsVisibleCheck_stateChanged(int state)
+void AtenPrefs::on_FrameWholeViewCheck_clicked(bool checked)
 {
-	setVisibleObject(Prefs::ViewAtoms, state, TRUE);
-}
-
-void AtenPrefs::on_CellVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewCell, state, TRUE);
-}
-
-void AtenPrefs::on_AxesVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewCellAxes, state, TRUE);
-}
-
-void AtenPrefs::on_GlobeVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewGlobe, state, TRUE);
-}
-
-void AtenPrefs::on_LabelsVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewLabels, state, TRUE);
-}
-
-void AtenPrefs::on_MeasurementsVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewMeasurements, state, TRUE);
-}
-
-void AtenPrefs::on_RegionsVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewRegions, state, TRUE);
-}
-
-void AtenPrefs::on_SurfacesVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewSurfaces, state, TRUE);
-}
-
-void AtenPrefs::on_AtomsVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewAtoms, state, FALSE);
-}
-
-void AtenPrefs::on_CellVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewCell, state, FALSE);
-}
-
-void AtenPrefs::on_AxesVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewCellAxes, state, FALSE);
-}
-
-void AtenPrefs::on_GlobeVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewGlobe, state, FALSE);
-}
-
-void AtenPrefs::on_LabelsVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewLabels, state, FALSE);
-}
-
-void AtenPrefs::on_MeasurementsVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewMeasurements, state, FALSE);
-}
-
-void AtenPrefs::on_RegionsVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewRegions, state, FALSE);
-}
-
-void AtenPrefs::on_SurfacesVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewSurfaces, state, FALSE);
+	prefs.setFrameWholeView(checked);
+	gui.mainWidget->postRedisplay();
 }
 
 /*

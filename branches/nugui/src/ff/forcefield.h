@@ -99,6 +99,10 @@ class Forcefield
 	ForcefieldAtom *findType(const char *name);
 	// Returns the ForcefieldAtom with the typeId provided
 	ForcefieldAtom *findByTypeId(int id, ForcefieldAtom *excluding = NULL);
+	// Return number of type defines in forcefield
+	int nTypeDefines();
+	// Return type defines list
+	Neta *typeDefines();
 	// Find type define
 	Neta *typeDefine(const char *name);
 	// Returns whether the specified forcefield type is contained in this forcefield
@@ -303,6 +307,8 @@ class Forcefield
 	public:
 	// Load Forcefield from the filename supplied
 	bool load(const char*);
+	// Save forcefield to the filename supplied
+	bool save(const char *filename);
 
 
 	/*

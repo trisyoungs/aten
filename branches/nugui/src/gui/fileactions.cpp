@@ -256,24 +256,36 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Get geometry from user - initial setup is to use current canvas geometry
-	Dnchar geometry, message;
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
 	int width, height;
-	bool ok;
-	geometry.sprintf("%ix%i\n", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
-	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry.get(), &ok);
-	if (ok && (!text.isEmpty()))
+	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
+	bool currentframemodel, currentframeview;
+	
+	static Tree dialog("Save Image Options","option('Size', 'edit', '10x10'); option('choices', 'radiogroup'); option('No frames', 'radio', 'choices', 1, 'newline'); option('Frame current model', 'radio', 'choices', 0, 'newline'); option('Frame whole view', 'radio', 'choices', 0, 'newline'); option('Frame current model and whole view', 'radio', 'choices', 0, 'newline'); ");
+
+	// Poke values into dialog widgets and execute
+	dialog.setWidgetValue("Size", ReturnValue(geometry.get()));
+	dialog.setWidgetValue("choices", ReturnValue(framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) ));
+	if (!dialog.executeCustomDialog(FALSE)) return;
+
+	// 	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry.get(), &ok);
+
+	// Get values from dialog
+	geometry = dialog.widgetValuec("Size");
+	width = atoi(beforeChar(geometry,'x'));
+	height = atoi(afterChar(geometry,'x'));
+	if ((width < 1) || (height < 1))
 	{
-		geometry = qPrintable(text);
-		width = atoi(beforeChar(geometry,'x'));
-		height = atoi(afterChar(geometry,'x'));
-		if ((width < 1) || (height < 1))
-		{
-			message.sprintf("The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
-			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
-			return;
-		}
+		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
+		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
+		return;
 	}
-	else return;
+	int choice = dialog.widgetValuei("choices");
+	framemodel = choice%2 == 0;
+	frameview = choice > 2;
+	currentframemodel = prefs.frameCurrentModel();
+	currentframeview = prefs.frameWholeView();
+	
 	// Get filename from user
 	GuiQt::BitmapFormat bf;
 	static QString selectedFilter("Windows Bitmap (*.bmp)");
@@ -289,10 +301,17 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// If we didn't recognise the extension, complain and quit
 		if (bf == GuiQt::nBitmapFormats) 
 		{
-			message.sprintf("Bitmap format not recognised - '%s'.\n", ext.get());
+			Dnchar message(-1, "Bitmap format not recognised - '%s'.\n", ext.get());
 			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		}
-		else if (!gui.saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
+		else
+		{
+			prefs.setFrameCurrentModel(framemodel);
+			prefs.setFrameWholeView(frameview);
+			if (!gui.saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
+			prefs.setFrameCurrentModel(currentframemodel);
+			prefs.setFrameWholeView(currentframeview);
+		}
 	}
 }
 

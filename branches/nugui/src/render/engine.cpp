@@ -493,7 +493,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	GLint *vp = source->viewportMatrix();
 
 	// Render rotation globe in small viewport in lower right-hand corner
-	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe))
+	if (prefs.viewRotationGlobe())
 	{
 		int n = prefs.globeSize();
 		if (aten.nVisibleModels() > 2) n /= 2;

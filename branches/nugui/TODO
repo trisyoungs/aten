@@ -1,8 +1,11 @@
-<sect5><title>Known Bugs</title>
+<sect5><title>Current TODO</title>
 
 	<orderedlist>
 		<listitem>
-			<para>GUI not updated on change in model list?</para>
+			<para>Check possibility of doing torsion profile a la Padua - need access to or ready calculation of energy components.</para>
+		</listitem>
+		<listitem>
+			<para>Remove configure option --with-oldqt, and use QT_VERSION define instead.</para>
 		</listitem>
 		<listitem>
 			<para>Options for visibility of current model box on image output</para>

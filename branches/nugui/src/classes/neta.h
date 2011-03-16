@@ -114,6 +114,8 @@ class Neta
 	NetaRootNode *description();
 	// Print
 	void print() const;
+	// Print (append) NETA string to target Dnchar
+	void netaPrint(Dnchar &target) const;
 
 
 	/*

@@ -85,7 +85,6 @@ class AtenPrefs : public QDialog
 	private:
 	void updateAfterViewPrefs(bool force);
 	void setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom);
-	void setVisibleObject(Prefs::ViewObject vo, int state, bool onscreen);
 	void spotlightPosChanged(int i, double value);
 	void spotlightColourChanged(Prefs::ColourComponent);
 	private slots:
@@ -132,24 +131,9 @@ class AtenPrefs : public QDialog
 	void on_SpotlightPositionYSpin_valueChanged(double value);
 	void on_SpotlightPositionZSpin_valueChanged(double value);
 	void on_ShininessSpin_valueChanged(int value);
-	// Scene Objects page
-	void on_AtomsVisibleCheck_stateChanged(int state);
-	void on_CellVisibleCheck_stateChanged(int state);
-	void on_AxesVisibleCheck_stateChanged(int state);
-	void on_GlobeVisibleCheck_stateChanged(int state);
-	void on_LabelsVisibleCheck_stateChanged(int state);
-	void on_MeasurementsVisibleCheck_stateChanged(int state);
-	void on_SurfacesVisibleCheck_stateChanged(int state);
-	void on_RegionsVisibleCheck_stateChanged(int state);
-	void on_AtomsVisibleImageCheck_stateChanged(int state);
-	void on_CellVisibleImageCheck_stateChanged(int state);
-	void on_AxesVisibleImageCheck_stateChanged(int state);
-	void on_GlobeVisibleImageCheck_stateChanged(int state);
-	void on_LabelsVisibleImageCheck_stateChanged(int state);
-	void on_MeasurementsVisibleImageCheck_stateChanged(int state);
-	void on_SurfacesVisibleImageCheck_stateChanged(int state);
-	void on_RegionsVisibleImageCheck_stateChanged(int state);
-
+	void on_FrameCurrentModelCheck_clicked(bool checked);
+	void on_FrameWholeViewCheck_clicked(bool checked);
+	
 	/*
 	// Colourscales page
 	*/

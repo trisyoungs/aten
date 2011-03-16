@@ -10,78 +10,69 @@ types
 # Cations
 #
 # Dialkylimidazolium - JPCb 108, p2038 (2004)
-1	C1	C	"nbonds=4,-N(ring),-H,-H"			# First tetrahedral carbon in R group on ring nitrogen
-2	C2	C	"nbonds=4,-C(~[N,P]),-H(n=2),-C"		# Second carbon in R group (> ethyl)
-3	CE	C	"nbonds=4,-C(~[N,P]),-H(n=3)"			# Terminal carbon of ethyl R group
-4	CS	C	"nbonds=4,-C(n=2),-H(n=2)"			# General carbon in R group
-5	CT	C	"nbonds=4,~C(~C(-H(n=2)),~C),-H(n=3)"		# Terminal carbon in R group (> ethyl)
-6	CR	C	"nbonds=3,~N(n=2,~C(n=3)),ring(size=5)"		# Carbon adjacent to two nitrogens with alkyl groups
-7	CW	C	"nbonds=3,~N(~C,~C),~C,ring(size=5)"		# Carbon adjacent to nitrogen (with alkyl group) and carbon
-8	HA	H	"nbonds=1"					# ???
-9	HCR	H	"-C(~N(~C(n=3),n=2),ring(size=5))"		# H on carbon adjacent to two N
-10	HCW	H	"-C(~N(~C(n=3)),~C,ring(size=5))"		# H on carbon adjacent to N and C
-11	HC	H	"-C(-C,-H)"					# Hydrogen on other carbon in R group
-12	H1	H	"-C(-N(ring(size=5)),-H)"			# Hydrogen on first carbon in R group
-13	NA	N	"nbonds=3,ring(size=5,~N,~N,~C(n=3)),~C(n=3)"	# Nitrogen with alkyl group attached
+1	C1	C	"nbonds=4,-N(ring),-H,-H"			"First tetrahedral carbon in R group on ring nitrogen"
+2	C2	C	"nbonds=4,-C(~[N,P]),-H(n=2),-C"		"Second carbon in R group (> ethyl)"
+3	CE	C	"nbonds=4,-C(~[N,P]),-H(n=3)"			"Terminal carbon of ethyl R group"
+4	CS	C	"nbonds=4,-C(n=2),-H(n=2)"			"General carbon in R group"
+5	CT	C	"nbonds=4,~C(~C(-H(n=2)),~C),-H(n=3)"		"Terminal carbon in R group (> ethyl)"
+6	CR	C	"nbonds=3,~N(n=2,~C(n=3)),ring(size=5)"		"Carbon adjacent to two nitrogens with alkyl groups"
+7	CW	C	"nbonds=3,~N(~C,~C),~C,ring(size=5)"		"Carbon adjacent to nitrogen (with alkyl group) and carbon"
+8	HA	H	"nbonds=1"					"???"
+9	HCR	H	"-C(~N(~C(n=3),n=2),ring(size=5))"		"H on carbon adjacent to two N"
+10	HCW	H	"-C(~N(~C(n=3)),~C,ring(size=5))"		"H on carbon adjacent to N and C"
+11	HC	H	"-C(-C,-H)"					"Hydrogen on other carbon in R group"
+12	H1	H	"-C(-N(ring(size=5)),-H)"			"Hydrogen on first carbon in R group"
+13	NA	N	"nbonds=3,ring(size=5,~N,~N,~C(n=3)),~C(n=3)"	"Nitrogen with alkyl group attached"
 # Alkylimidazolium
-21	NAH	N	"nbonds=3,ring(size=5,~N,~C(n=3)),~C(n=2),-H"	# Nitrogen with hydrogen attached
-22	CRH	C	"nbonds=3,~N(~C,~C),~N(-H),ring(size=5)"	# Carbon adjacent to two nitrogens
-23	CWH	C	"nbonds=3,~N(~C,-H),~C,ring(size=5)"		# Carbon adjavent to N with H attached
-24	HNA	H	"-N(~C(n=2),ring(size=5))"			# Nitrogen with hydrogen attached
+21	NAH	N	"nbonds=3,ring(size=5,~N,~C(n=3)),~C(n=2),-H"	"Nitrogen with hydrogen attached"
+22	CRH	C	"nbonds=3,~N(~C,~C),~N(-H),ring(size=5)"	"Carbon adjacent to two nitrogens"
+23	CWH	C	"nbonds=3,~N(~C,-H),~C,ring(size=5)"		"Carbon adjavent to N with H attached"
+24	HNA	H	"-N(~C(n=2),ring(size=5))"			"Nitrogen with hydrogen attached"
 # Alkylpyridinium - Perkin 2, p2365 (1999)
-31	NAP	N	"nbonds=3,ring(size=6,-C(n=5))"			
-32	CA1	C	"nbonds=3,ring(size=6),~N,~C,-H"		# Carbon in ring, adjacent to ring nitrogen (ortho)
-33	CA2	C	"nbonds=3,ring(size=6),~C,-H,~C"		# Carbon in ring, adjacent to two carbons (meta)
-34	CA3	C	"nbonds=3,ring(size=6),~C(n=2,~C(~N))"		# Carbon in ring, adjacent to two carbons (para)
-35	HAP	H	"nbonds=1,~C(ring(size=6,-C(n=5),~N),~C)"	# Hydrogen on ring carbon
+31	NAP	N	"nbonds=3,ring(size=6,-C(n=5))"			"Nitrogen in alkylpyridinium"
+32	CA1	C	"nbonds=3,ring(size=6),~N,~C,-H"		"Carbon in ring, adjacent to ring nitrogen (ortho)"
+33	CA2	C	"nbonds=3,ring(size=6),~C,-H,~C"		"Carbon in ring, adjacent to two carbons (meta)"
+34	CA3	C	"nbonds=3,ring(size=6),~C(n=2,~C(~N))"		"Carbon in ring, adjacent to two carbons (para)"
+35	HAP	H	"nbonds=1,~C(ring(size=6,-C(n=5),~N),~C)"	"Hydrogen on ring carbon"
 # Ammonium (also pyrrolidinium) - OPLS-AA / JACS 121, p4827 (1999) / AMBER
 41	N3	N	""
 42	H	H	""
 # Phosphonium - OPLS-AA
-51	P3	P	"nbonds=4,-C(n=4)"				# Phosphorus with four alkyl groups
-52	C1P	C	"nbonds=4,-P(-C(n=3)),-H,-H,-C"			# First tetrahedral carbon in R group on phosphorus
+51	P3	P	"nbonds=4,-C(n=4)"				"Phosphorus with four alkyl groups"
+52	C1P	C	"nbonds=4,-P(-C(n=3)),-H,-H,-C"			"First tetrahedral carbon in R group on phosphorus"
 #
 # Anions
 #
 # Tetrafluoroborate
-100	B	B	"nbonds=4,-F(n=4)"				# Boron with four fluorines attached
-101	FB	F	"nbonds=1,-B(-F(n=4))"				# Fluorine attached to boron in BF4
+100	B	B	"nbonds=4,-F(n=4)"				"Boron with four fluorines attached"
+101	FB	F	"nbonds=1,-B(-F(n=4))"				"Fluorine attached to boron in BF4"
 # Hexafluorophosphate - Perkin 2, p2365 (1999)
-110	P	P	"nbonds=6,-F(n=6)"				# Phosphorus with six fluorines attahed
-111	F	F	"nbonds=1,-P(-F(n=6))"				# Fluorine attached to phosphorus in PF6
+110	P	P	"nbonds=6,-F(n=6)"				"Phosphorus with six fluorines attahed"
+111	F	F	"nbonds=1,-P(-F(n=6))"				"Fluorine attached to phosphorus in PF6"
 # Nitrate - JPCb 108, p2038 (2004)
-120	ON	O	"nbonds=1,-N(-O,-O)"				# Oxygen attached to N in NO3
-121	NN	N	"nbonds=3,-O(n=3)"				# Nitrogen with three oxygens attached
+120	ON	O	"nbonds=1,-N(-O,-O)"				"Oxygen attached to N in NO3"
+121	NN	N	"nbonds=3,-O(n=3)"				"Nitrogen with three oxygens attached"
 # Chloride - JPCb 108, p2038 (2004)
-130	Cl	Cl	"unbound"					# Chloride ion
+130	Cl	Cl	"unbound"					"Chloride ion"
 # Bromide
-140	Br	Br	"unbound"					# Bromide ion
+140	Br	Br	"unbound"					"Bromide ion"
 # Triflate
-150	CTF	C	"nbonds=4,-F(n=3),-S(nbonds=4,~O(n=3))"		# Fluoroalkane carbon attached to sulphate
-151	FTF	F	"-&150"
-152	STF	S	"-&150"
-153	OTF	O	"~&152"
+150	CTF	C	"nbonds=4,-F(n=3),-S(nbonds=4,~O(n=3))"		"Fluoroalkane carbon attached to sulphate"
+151	FTF	F	"-&150"						"Fluorine in triflate"
+152	STF	S	"-&150"						"Sulfur in triflate"
+153	OTF	O	"~&152"						"Oxygen in triflate"
 # Bistrifylamide
-160	CBT	C	"nbonds=4,-F,-F,-F,-S"				
-161	FBT	F	"nbonds=1,-C(-F,-F,-S)"				
-162	SBT	S	"nbonds=4,=O,=O,-N,-C(-F(n=3))"				
-163	OBT	O	"nbonds=1,=&162"				
-164	NBT	N	"nbonds=2,-S,-S"
+160	CBT	C	"nbonds=4,-F,-F,-F,-S"				"Carbon in bistrifylamide"
+161	FBT	F	"nbonds=1,-C(-F,-F,-S)"				"Fluorine in bistrifylamide"
+162	SBT	S	"nbonds=4,=O,=O,-N,-C(-F(n=3))"			"Sulfur in bistrifylamide"
+163	OBT	O	"nbonds=1,=&162"				"Oxygen in bistrifylamide"
+164	NBT	N	"nbonds=2,-S,-S"				"Nitrogen in bistrifylamide"
 # Dicyanamide
-170	N3	N	"nbonds=2,-C(n=2,-N(bond=triple))"
-171	CZA	C	"nbonds=2,-N(-C(-N(bond=triple))),-N(nbonds=1,bond=triple)"
-172	NZA	N	"nbonds=1,-C(bond=triple,-N(-C(-N(bond=triple))))"
-#
-# Extra params (CYANOPYRIDINIUM / MethylNapthalene)
-#
-900	Cxx	C	"nbonds=3,ring(size=6),-C,-C,-C"		# Carbon in ring with CN group attached
-901	CNx	C	"nbonds=2,-N(bond=triple),-C(ring(size=6))"	# Carbon of cyano group
-902	NCx	N	"nbonds=1,-C(bond=triple,-C(ring(size=6)))"	# Nitrogen of cyano group
-903	CWn	C	"nbonds=3,ring(size=6,-C(n=5))"			# Aromatic C in (methyl)napthalene
-904	CTn	C	"nbonds=4,-C(ring(size=6,-C(n=5)))"		# Aliphatic C in methylnapthalene
-905	HWn	H	"-C(ring(size=6,-C(n=5)))"			# Aromatic H in (methyl)napthalene
-906	HTn	H	"-C(nbonds=4,-C(ring(size=6,-C(n=5))))"		# Aliphatic H in methylnapthalene
+170	N3	N	"nbonds=2,-C(n=2,-N(bond=triple))"		"Central nitrogen in dicyanamide"
+171	CZA	C	"nbonds=2,-N(-C(-N(bond=triple))),-N(nbonds=1,bond=triple)"	"Carbon in dicyanamide"
+172	NZA	N	"nbonds=1,-C(bond=triple,-N(-C(-N(bond=triple))))"	"Nitrogen in cyano group of dicyanamide"
 end
+
 inter  ljgeom
 #FFID	Type	Charge	VDW1		VDW2	VDW3
 # Dialkylimidazolium
@@ -146,17 +137,8 @@ inter  ljgeom
 170	N3	-0.76	0.71128		3.25
 171	CZA	0.64	0.27614		3.30
 172	NZA	-0.76	0.71128		3.20
-#
-# Extra Params
-#
-900	Cxx	0.02    0.29288		3.55	# Unfinished
-901	CNx	0.00    0.29288		3.55	# Unfinished
-902	NCx	0.00    0.29288		3.55	# Unfinished
-903	CWn	0.0	0.29288		3.55
-904	CTn	0.0	0.29288		3.55
-905	HWn	0.0	0.12552		2.42
-906	HTn	0.0	0.12552		2.42
 end
+
 equivalents
 HA	HCW HCR HNA HAP
 HC	H1
@@ -166,27 +148,30 @@ CR	CRH
 CW	CWH
 NA	NAH NAP
 end
+
+bonds constraint
+HC	CT	2845	1.090
+CR	HA	2845	1.080
+CW	HA	2845	1.080
+NA	HA	3632	1.010
+CA	HA	3071	1.080
+H	N3	3632	1.010
+end
+
 bonds harmonic
 # Alkanes - OPLS-AA / JACS 118, p11225 (1996) / JPC 100, p18010 (1996)
-HC	CT	2845	1.090	#RES 2845.0
 CT	CT	2242	1.529
 # Dialkylimidazolium - JPCb 108, p2038 (2004)
-CR	HA	2845	1.080	#RES 2845.0
-CW	HA	2845	1.080	#RES 2845.0
 CR	NA	3992	1.315
 CW	NA	3574	1.378
 CW	CW	4352	1.341
 NA	CT	2820	1.466
-#alkylimidazolium - OPLS-AA
-NA	HA	3632	1.010	#RES 3632.0
 # Pyridinium - OPLS-AA / Theochem 424, p145 (1998)
-CA	HA	3071	1.080	#RES 3071.0
 CA	CA	3925	1.380
 CA	NA	4042	1.340
 NA	CT	2820	1.480
 # Ammonium (also pyrrolidinium) - OPLS-AA / JACS 121, p4827 (1999) / AMBER
 N3	CT	3071	1.471
-H	N3	3632	1.010	#RES 3632.0
 # Phosphonium - OPLS-AA
 P3	CT	3550	1.81
 # Tetrafluoroborate	
@@ -208,6 +193,7 @@ NBT	SBT	3137	1.570
 N3	CZA	4206	1.310
 CZA	NZA	7746	1.157
 end
+
 angles harmonic
 # Alkanes
 CT	CT	CT	488.3	112.7
@@ -314,10 +300,6 @@ CA	NA	CA	CA	0.0000	12.5520	0.0000	0.0000
 CT	NA	CA	CA	0.0000	12.5520	0.0000	0.0000
 HC	CT	NA	CA	0.0000	0.0000	0.0000	0.0000
 #CT	CT	NA	CA	0.0000	1.1120	0.0000	0.6900	# Cos4 term
-# Improper pyridinium ring
-#CA	CA	CA	HA	0.0000	9.2000	0.0000	0.0000
-#CA	CA	NA	HA	0.0000	9.2000	0.0000	0.0000
-#CA	CA	NA	CT	0.0000	8.3700	0.0000	0.0000
 # Ammonium (also pyrrolidinium)
 HC	CT	CT	N3	-4.2384	-2.9665	1.9790	0.0000
 CT	CT	CT	N3	10.0081	-2.8200	2.3012	0.0000
@@ -340,3 +322,11 @@ SBT	NBT	SBT	CBT	32.7730	-10.4200	-3.1950	0.0000
 # Dicyanamide
 NZA	CZA	N3	CZA	4.0800	0.0000	0.0000	0.0000
 end
+
+impropers cos3
+# Improper pyridinium ring
+CA	CA	CA	HA	0.0000	9.2000	0.0000	0.0000
+CA	CA	NA	HA	0.0000	9.2000	0.0000	0.0000
+CA	CA	NA	CT	0.0000	8.3700	0.0000	0.0000
+end
+

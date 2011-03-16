@@ -62,7 +62,11 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 
 	// Determine whether we need to change Aten's currentmodel based on click position on the canvas
 	Model *m = modelAt(rMouseDown_.x, rMouseDown_.y);
-	if (m != aten.currentModel()) aten.setCurrentModel(m);
+	if (m != aten.currentModel())
+	{
+		aten.setCurrentModel(m);
+		gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget-GuiQt::CanvasTarget);
+	}
 	
 	// Get current active model
 	Model *source = displayModel();

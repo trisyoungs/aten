@@ -139,7 +139,6 @@
 	<!ENTITY parseoptions SYSTEM "enums/parseoptions.xml">
 	<!ENTITY readsuccess SYSTEM "enums/readsuccess.xml">
 	<!ENTITY regionshapes SYSTEM "enums/regionshapes.xml">
-	<!ENTITY viewobjects SYSTEM "enums/viewobjects.xml">
 	<!ENTITY zmaptypes SYSTEM "enums/zmaptypes.xml">
 	<!-- Changelogs / TODO -->
 	<!ENTITY todolist SYSTEM "../TODO">
@@ -393,7 +392,6 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 		&parseoptions;
 		&readsuccess;
 		&regionshapes;
-		&viewobjects;
 		&zmaptypes;
 	</chapter>
 

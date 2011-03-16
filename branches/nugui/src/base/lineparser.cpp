@@ -25,6 +25,7 @@
 #include "base/constants.h"
 #include "base/messenger.h"
 #include <string.h>
+#include <stdarg.h>
 
 // Parse options
 const char *ParseOptionKeywords[LineParser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies" };
@@ -895,6 +896,29 @@ bool LineParser::writeLine(const char *s)
 	}
 	*file_ << s;
 	msg.exit("LineParser::writeLine");
+	return TRUE;
+}
+
+// Write formatter line to file
+bool LineParser::writeLineF(const char *fmt ...)
+{
+	msg.enter("LineParser::writeLine");
+	if (readOnly_)
+	{
+		msg.print("Unable to write formatted line - destination file was opened read-only!\n");
+		msg.exit("LineParser::writeLineF");
+		return FALSE;
+	}
+	
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into s[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	*file_ << s;
+	msg.exit("LineParser::writeLineF");
 	return TRUE;
 }
 

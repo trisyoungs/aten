@@ -141,19 +141,6 @@ Prefs::EnergyUnit Prefs::energyUnit(const char *s, bool reporterror)
 	return eu;
 }
 
-// View Objects
-const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions", "surfaces" };
-Prefs::ViewObject Prefs::viewObject(const char *s, bool reporterror)
-{
-	Prefs::ViewObject vo = (Prefs::ViewObject) enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s);
-	if ((vo == Prefs::nViewObjects) && reporterror) enumPrintValid(Prefs::nViewObjects,ViewObjectKeywords);
-	return vo;
-}
-const char *Prefs::viewObject(Prefs::ViewObject vo)
-{
-	return ViewObjectKeywords[vo];
-}
-
 // Guide Geometries
 const char *GG_strings[Prefs::nGuideGeometries] = { "Square", "Hexagonal" };
 
@@ -214,9 +201,7 @@ Prefs::Prefs()
 	transparencyNBins_ = 1000;
 	transparencyBinStartZ_ = 0.0;
 	transparencyBinWidth_ = 0.2;
-	// Screen Objects
-	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
-	offScreenObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
+	frameCurrentModel_ = TRUE;
 
 	// Build
 	showGuide_ = FALSE;
@@ -349,6 +334,7 @@ Prefs::Prefs()
 #else
 	tempDir_ = "/tmp";
 #endif
+	encoderCommand_ = "mencoder mf://FILES -ovc copy -v -o OUTPUT";
 }
 
 // Load user preferences file
@@ -425,57 +411,43 @@ bool Prefs::save(const char *filename)
 }
 
 /*
-// Rendering - View Objects
+// Rendering
 */
 
-// Set the visibility of an object on-screen
-void Prefs::setVisibleOnScreen(ViewObject vo, bool b)
+// Return whether to frame current model in view
+bool Prefs::frameCurrentModel()
 {
-	if (b && (!(screenObjects_&(1 << vo)))) screenObjects_ += (1 << vo);
-	else if ((!b) && (screenObjects_&(1 << vo))) screenObjects_ -= (1 << vo);
+	return frameCurrentModel_;
 }
 
-// Set the visibility of an object off-screen
-void Prefs::setVisibleOffScreen(ViewObject vo, bool b)
+// Set whether to frame current model in view
+void Prefs::setFrameCurrentModel(bool b)
 {
-	if (b && (!(offScreenObjects_&(1 << vo)))) offScreenObjects_ += (1 << vo);
-	else if ((!b) && (offScreenObjects_&(1 << vo))) offScreenObjects_ -= (1 << vo);
+	frameCurrentModel_ = b;
 }
 
-// Return whether the specified object is visible (i.e. should be rendered) on screen
-bool Prefs::isVisibleOnScreen(ViewObject vo)
+// Return whether to frame whole view
+bool Prefs::frameWholeView()
 {
-	return (screenObjects_&(1 << vo) ? TRUE : FALSE);
+	return frameWholeView_;
 }
 
-// Return whether the specified object is visible (i.e. should be rendered) offscreen on saved images
-bool Prefs::isVisibleOffScreen(ViewObject vo)
+// Set whether to frame whole view
+void Prefs::setFrameWholeView(bool b)
 {
-	return (offScreenObjects_&(1 << vo) ? TRUE : FALSE);
+	frameWholeView_ = b;
 }
 
-// Return screenobjects bitvector
-int Prefs::screenObjects() const
+// Return whether to draw rotation globe
+bool Prefs::viewRotationGlobe()
 {
-	return screenObjects_;
+	return viewRotationGlobe_;
 }
 
-// Set screenobjects bitvector
-void Prefs::setScreenObjects(int i)
+// Set whether to draw rotation globe
+void Prefs::setViewRotationGlobe(bool b)
 {
-	screenObjects_ = i;
-}
-
-// Return offscreenobjects bitvector
-int Prefs::offScreenObjects() const
-{
-	return offScreenObjects_;
-}
-
-// Set offscreenobjects bitvector
-void Prefs::setOffScreenObjects(int i)
-{
-	offScreenObjects_ = i;
+	viewRotationGlobe_ = b;
 }
 
 // Set the drawing style of models
@@ -671,6 +643,12 @@ GLdouble Prefs::atomStyleRadius(Atom::DrawStyle ds) const
 	return atomStyleRadius_[(int)ds];
 }
 
+// Return atom radii array
+GLdouble *Prefs::atomStyleRadii()
+{
+	return atomStyleRadius_;
+}
+
 // Sets the tube size in DS_TUBE
 void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 {
@@ -681,6 +659,12 @@ void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 GLdouble Prefs::bondStyleRadius(Atom::DrawStyle ds) const
 {
 	return bondStyleRadius_[ds];
+}
+
+// Return bond radii array
+GLdouble *Prefs::bondStyleRadii()
+{
+	return bondStyleRadius_;
 }
 
 // Sets the scale of selected atoms
@@ -1072,6 +1056,12 @@ Prefs::MouseAction Prefs::mouseAction(Prefs::MouseButton mb) const
 	return mouseAction_[mb];
 }
 
+// Return array of (derived) mouse action texts
+Dnchar *Prefs::mouseActionTexts()
+{
+	return mouseActionTexts_;
+}
+
 // Sets the modifier key for the specified action
 void Prefs::setKeyAction(Prefs::ModifierKey mk, Prefs::KeyAction ka)
 {
@@ -1083,6 +1073,12 @@ void Prefs::setKeyAction(Prefs::ModifierKey mk, Prefs::KeyAction ka)
 Prefs::KeyAction Prefs::keyAction(Prefs::ModifierKey mk) const
 {
 	return keyAction_[mk];
+}
+
+// Return array of (derived) key action texts
+Dnchar *Prefs::keyActionTexts()
+{
+	return keyActionTexts_;
 }
 
 // Sets the zoom throttle
@@ -1706,6 +1702,12 @@ const char *Prefs::combinationRule(Combine::CombinationRule cr) const
 	return combinationRules_[cr].get();
 }
 
+// Return array of combination rule equations
+Dnchar *Prefs::combinationRules()
+{
+	return combinationRules_;
+}
+
 /*
 // Rendering (and compatibility) Options
 */
@@ -1835,13 +1837,25 @@ const char *Prefs::tempDir() const
 }
 
 // Location of MOPAC executable
-void Prefs::setMopacExe(const char *path)
+void Prefs::setMopacExe(const char *exe)
 {
-	mopacExe_ = path;
+	mopacExe_ = exe;
 }
 
 // Return the location of the MOPAC executable
 const char *Prefs::mopacExe() const
 {
 	return mopacExe_.get();
+}
+
+// Encoder command
+void Prefs::setEncoderCommand(const char *command)
+{
+	encoderCommand_ = command;
+}
+
+// Return tencoder command
+const char *Prefs::encoderCommand() const
+{
+	return encoderCommand_.get();
 }
