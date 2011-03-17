@@ -1,7 +1,8 @@
 # DL_POLY Configuration Import / Export (for v1.2+)
 # Created:	 25/03/2009
-# Last modified: 16/09/2009
+# Last modified: 17/03/2011
 # ChangeLog:
+# 	17/03/2011 - Added custom dialog options to control level or written data and half-cell shift in CONFIG files.
 # 	16/09/2009 - Expression export filter now uses atom type names rathern than ffbound type names. FF term loop styles updated.
 #	11/06/2009 - Fixed counting and output of constraint terms in FIELD export. 'nvdw' section corrected to 'vdw'.
 

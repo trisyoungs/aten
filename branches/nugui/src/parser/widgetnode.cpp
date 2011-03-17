@@ -210,6 +210,7 @@ void WidgetNode::setReturnValue(ReturnValue &rv)
 // Set widget value from supplied ReturnValue
 void WidgetNode::setWidgetValue(ReturnValue &rv)
 {
+	msg.enter("WidgetNode::setWidgetValue");
 	QLineEdit *lineedit;
 	QCheckBox *checkbox;
 	QLabel *label;
@@ -217,6 +218,8 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 	QDoubleSpinBox *dspinbox;
 	QComboBox *combo;
 	QRadioButton *radio;
+	QButtonGroup *buttongroup;
+	QAbstractButton *button;
 	switch (controlType_)
 	{
 		case (WidgetNode::EditControl):
@@ -231,11 +234,16 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 			{
 				// If an integer was supplied, just set the index. Otherwise, search for string
 				if (rv.type() == VTypes::IntegerData) combo->setCurrentIndex(rv.asInteger());
-				// else  TGAY
+				else if (rv.type() == VTypes::StringData)
+				{
+					// Search for combo item corresponding to supplied text
+					int id = combo->findText(rv.asString());
+					if (id == -1) printf("WidgetNode::setWidgetValue() - Couldn't find text in (int)combo control.\n");
+					else combo->setCurrentIndex(id);
+				}
+				else printf("WidgetNode::setWidgetValue() - Couldn't set text of (int)combo control.\n");
 			}
 			else printf("WidgetNode::setWidgetValue() - Couldn't set text of (int)combo control.\n");
-			break;
-		case (WidgetNode::StringRadioGroupControl):
 			break;
 		case (WidgetNode::DoubleSpinControl):
 			dspinbox = qobject_cast<QDoubleSpinBox*> (widget_);
@@ -252,8 +260,21 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 			if (radio) checkbox->setChecked(rv.asBool());
 			else printf("WidgetNode::setWidgetValue() - Couldn't set state of radio control.\n");
 			break;
+		case (WidgetNode::StringRadioGroupControl):
 		case (WidgetNode::RadioGroupControl):
-			printf("WidgetNode::setWidgetValue() - Couldn't set stack control.\n");
+			buttongroup = qobject_cast<QButtonGroup*> (object_);
+			if (buttongroup)
+			{
+				if (rv.type() == VTypes::IntegerData)
+				{
+					// Search for button with supplied id
+					button = buttongroup->button(rv.asInteger());
+					if (button == NULL) printf("WidgetNode::setWidgetValue() - Couldn't find button %i in buttongroup.\n", rv.asInteger());
+					else button->setChecked(TRUE);
+				}
+				else printf("WidgetNode::setWidgetValue() - Can only set active buttongroup member from an integer id.\n");
+			}
+			else printf("WidgetNode::setWidgetValue() - Couldn't set radiogroup control.\n");
 			break;
 		case (WidgetNode::IntegerSpinControl):
 			spinbox = qobject_cast<QSpinBox*> (widget_);
@@ -269,7 +290,7 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 			printf("WidgetNode::setWidgetValue() - Couldn't set stack control.\n");
 			break;
 	}
-
+	msg.exit("WidgetNode::setWidgetValue");
 }
 
 // Set argument list from parser-joined treenodes

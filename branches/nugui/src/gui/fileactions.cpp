@@ -263,7 +263,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
 	bool currentframemodel, currentframeview;
 	
-	static Tree dialog("Save Image Options","option('Size', 'edit', '10x10'); option('choices', 'radiogroup'); option('No frames', 'radio', 'choices', 1, 'newline'); option('Frame current model', 'radio', 'choices', 0, 'newline'); option('Frame whole view', 'radio', 'choices', 0, 'newline'); option('Frame current model and whole view', 'radio', 'choices', 0, 'newline'); ");
+	static Tree dialog("Save Image Options","option('Size', 'edit', '10x10'); option('choices', 'radiogroup'); option('No frames', 'radio', 'choices', 1, 'newline', 'span=2'); option('Frame current model', 'radio', 'choices', 0, 'newline', 'span=2'); option('Frame whole view', 'radio', 'choices', 0, 'newline', 'span=2'); option('Frame current model and whole view', 'radio', 'choices', 0, 'newline', 'span=2'); ");
 
 	// Poke values into dialog widgets and execute
 	dialog.setWidgetValue("Size", ReturnValue(geometry.get()));

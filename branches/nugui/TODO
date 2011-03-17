@@ -2,10 +2,10 @@
 
 	<orderedlist>
 		<listitem>
-			<para>More verbosity for all commands</para>
+			<para>Make quiet mode still allow printing of user-based printf messages</para>
 		</listitem>
 		<listitem>
-			<para>Add pbc/mim accessor(s) to UnitCell.</para>
+			<para>More verbosity for all commands</para>
 		</listitem>
 		<listitem>
 			<para>Check possibility of doing torsion profile a la Padua - need access to or ready calculation of energy components.</para>
@@ -14,13 +14,7 @@
 			<para>Remove configure option --with-oldqt, and use QT_VERSION define instead.</para>
 		</listitem>
 		<listitem>
-			<para>Options for visibility of current model box on image output</para>
-		</listitem>
-		<listitem>
 			<para>Ability to close models (or all other models) by right-click context menu on model list</para>
-		</listitem>
-		<listitem>
-			<para>DL_POLY config import/export filter - options to shift by half-cell on read/write</para>
 		</listitem>
 		<listitem>
 			<para>Save forcefield!</para>

@@ -303,12 +303,11 @@ Prefs::Prefs()
 	electrostaticsMethod_ = Electrostatics::EwaldAuto;
 	calculateIntra_ = TRUE;
 	calculateVdw_ = TRUE;
-	calculateElec_ = FALSE;
 	ewaldKMax_.set(5,5,5);
 	ewaldAlpha_ = 0.5;
 	ewaldPrecision_.set(5.0, -6);
-	vdwCutoff_ = 10.0;
-	elecCutoff_ = 10.0;
+	vdwCutoff_ = 50.0;
+	elecCutoff_ = 50.0;
 	vdwScale_ = 1.0;
 	validEwaldAuto_ = FALSE;
 	combinationRules_[Combine::ArithmeticRule] = "c = (a+b)*0.5";
@@ -1590,18 +1589,6 @@ void Prefs::setCalculateVdw(bool b)
 bool Prefs::calculateVdw() const
 {
 	return calculateVdw_;
-}
-
-// Sets whether to calculate electrostatic interactions
-void Prefs::setCalculateElec(bool b)
-{
-	calculateElec_ = b;
-}
-
-// Return whether to calculate electrostatic interactions
-bool Prefs::calculateElec() const
-{
-	return calculateElec_;
 }
 
 // Sets the Ewald k-vector extents

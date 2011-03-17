@@ -136,7 +136,7 @@ bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				return TRUE;
 			}
 			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
-			else if (af != Command::NoFunction) return FALSE;
+			else return FALSE;
 		}
 		// Loop 'increment' statement
 		if (!c->arg(2, rv)) return FALSE;
@@ -170,7 +170,7 @@ bool Command::function_ForIn(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				return TRUE;
 			}
 			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
-			else if (af != Command::NoFunction) return FALSE;
+			else return FALSE;
 		}
 		// Skip to next linked item...
 		if (!varval.increase()) return FALSE;

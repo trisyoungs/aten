@@ -285,9 +285,19 @@
 						<entry>Hydrogen satisfy all atoms in the model. See the <link linkend="command.ref.addhydrogen">addhydrogen</link> command for more details.</entry>
 					</row>
 					<row>
+						<entry>angleenergy ( )</entry>
+						<entry>double</entry>
+						<entry>Calculates and returns the total angle energy for the current model.</entry>
+					</row>
+					<row>
 						<entry>augment ( )</entry>
 						<entry>--</entry>
 						<entry>Automatically detect and add multiple bonds in the system. See the <link linkend="command.ref.augment">augment</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>bondenergy ( )</entry>
+						<entry>double</entry>
+						<entry>Calculates and returns the total bond energy (including Urey-Bradley contributions) for the current model.</entry>
 					</row>
 					<row>
 						<entry>charge ( )</entry>
@@ -333,6 +343,16 @@
 						<entry>finalise ( )</entry>
 						<entry>--</entry>
 						<entry>Finalise the current model. See the <link linkend="command.ref.finalisemodel">finalisemodel</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>interenergy ( )</entry>
+						<entry>double</entry>
+						<entry>Calculates and returns the total intermolecular (i.e. combined van der Waals and electrostatic) energy for the current model.</entry>
+					</row>
+					<row>
+						<entry>intraenergy ( )</entry>
+						<entry>double</entry>
+						<entry>Calculates and returns the total intramolecular (i.e. combined bond, angle, and torsion) energy for the current model.</entry>
 					</row>
 					<row>
 						<entry>movetoend ( )</entry>
@@ -450,6 +470,16 @@
 						<entry>Unhides any hidden atoms in the model. See the <link linkend="command.ref.showall">showall</link> command for more details.</entry>
 					</row>
 					<row>
+						<entry>toangstroms ( )</entry>
+						<entry>--</entry>
+						<entry>Converts cell specification and atomic coordinates in the model from (assumed units of) Bohr into Angstroms. No changes to associated trajectory frames or grid data is made.</entry>
+					</row>
+					<row>
+						<entry>torsionenergy ( )</entry>
+						<entry>double</entry>
+						<entry>Calculates and returns the total torsion energy (including improper terms) for the current model.</entry>
+					</row>
+					<row>
 						<entry>transmute ( int|string <emphasis>el</emphasis> )</entry>
 						<entry>--</entry>
 						<entry>Transmute all selected atoms to the specified element. See the <link linkend="command.ref.transmute">transmute</link> command for more details.</entry>
@@ -457,7 +487,12 @@
 					<row>
 						<entry>undo ( )</entry>
 						<entry>--</entry>
-						<entry>Undo the last chanige made to the model. See the <link linkend="command.ref.undo">undo</link> command for more details.</entry>
+						<entry>Undo the last change made to the model. See the <link linkend="command.ref.undo">undo</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>vdwenergy ( )</entry>
+						<entry>double</entry>
+						<entry>Calculates and returns the total van der Waals energy for the current model.</entry>
 					</row>
 				</tbody>
 			</tgroup>

@@ -611,6 +611,20 @@ class Model
 	double totalEnergy(Model *config, bool &success);
 	// Calculate (and return) the total interaction energy of the specified pattern molecule with the remainder
 	double moleculeEnergy(Model *config, Pattern *molpattern, int molecule, bool &success);
+	// Calculate and return the total angle energy of the model
+	double angleEnergy(Model *config, bool &success);
+	// Calculate and return the total bond energy of the model
+	double bondEnergy(Model *config, bool &success);
+	// Calculate and return the total coulomb energy of the model
+	double coulombEnergy(Model *config, bool &success);
+	// Calculate and return the total intermolecular energy of the model
+	double intermolecularEnergy(Model *config, bool &success);
+	// Calculate and return the total intramolecular energy of the model
+	double intramolecularEnergy(Model *config, bool &success);
+	// Calculate and return the total torsion energy of the model
+	double torsionEnergy(Model *config, bool &success);
+	// Calculate and return the total van der Waals energy of the model
+	double vdwEnergy(Model *config, bool &success);
 	// Calculate forces in the specified model configuration
 	bool calculateForces(Model *config);
 	// Prints out atomic forces

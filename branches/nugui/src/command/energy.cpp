@@ -64,7 +64,6 @@ bool Command::function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &
 	}
 	// Set method
 	prefs.setElectrostaticsMethod(em);
-	prefs.setCalculateElec(em == Electrostatics::None ? FALSE : TRUE);
 	return TRUE;
 }
 

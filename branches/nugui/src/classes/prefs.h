@@ -786,10 +786,6 @@ class Prefs
 	void setCalculateVdw(bool b);
 	// Return whether to calculate VDW interactions
 	bool calculateVdw() const;
-	// Sets whether to calculate electrostatic interactions
-	void setCalculateElec(bool b);
-	// Return whether to calculate electrostatic interactions
-	bool calculateElec() const;
 	// Sets the Ewald k-vector extents
 	void setEwaldKMax(int element, int i);
 	void setEwaldKMax(int a, int b, int c);

@@ -58,7 +58,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "bondstyleradius",		VTypes::DoubleData,		Atom::nDrawStyles, FALSE },
 	{ "bondtolerance",		VTypes::DoubleData,		0, FALSE },
 	{ "cachelimit",			VTypes::IntegerData,		0, FALSE },
-	{ "calculateelec",		VTypes::IntegerData,		0, FALSE },
 	{ "calculateintra",		VTypes::IntegerData,		0, FALSE },
 	{ "calculatevdw",		VTypes::IntegerData,		0, FALSE },
 	{ "clipfar",			VTypes::DoubleData,		0, FALSE },
@@ -268,9 +267,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::CacheLimit):
 			rv.set(ptr->cacheLimit());
-			break;
-		case (PreferencesVariable::CalculateElec):
-			rv.set(ptr->calculateElec());
 			break;
 		case (PreferencesVariable::CalculateIntra):
 			rv.set(ptr->calculateIntra());
@@ -651,9 +647,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::CacheLimit):
 			ptr->setCacheLimit( newvalue.asInteger(result) );
-			break;
-		case (PreferencesVariable::CalculateElec):
-			ptr->setCalculateElec( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::CalculateIntra):
 			ptr->setCalculateIntra( newvalue.asBool() );

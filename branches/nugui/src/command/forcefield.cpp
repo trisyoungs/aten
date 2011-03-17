@@ -597,7 +597,7 @@ bool Command::function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	msg.print("Current Energy Setup:\n");
 	msg.print("Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
 	msg.print("       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
-	msg.print("      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
+	msg.print("      Electrostatics : %s\n", Electrostatics::elecMethod(prefs.electrostaticsMethod()));
 	msg.print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
 	rv.reset();
 	return TRUE;

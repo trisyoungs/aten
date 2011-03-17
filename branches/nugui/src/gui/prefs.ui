@@ -2758,10 +2758,27 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="CalculateElecCheck">
-              <property name="text">
-               <string>Electrostatics</string>
-              </property>
+             <widget class="QComboBox" name="ElectrostaticMethodCombo">
+              <item>
+               <property name="text">
+                <string>No Electrostatics</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Coulomb Sum</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Ewald Sum (Manual)</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Ewald Sum (Automatic)</string>
+               </property>
+              </item>
              </widget>
             </item>
            </layout>

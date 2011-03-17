@@ -157,7 +157,7 @@ class AtenPrefs : public QDialog
 	private slots:
 	void on_CalculateIntraCheck_stateChanged(int state);
 	void on_CalculateVdwCheck_stateChanged(int state);
-	void on_CalculateElecCheck_stateChanged(int state);
+	void on_ElectrostaticMethodCombo_currentIndexChanged(int index);
 	void on_VdwCutoffSpin_valueChanged(double d);
 	void on_ElecCutoffSpin_valueChanged(double d);
 	void on_EwaldPrecisionMantissaSpin_valueChanged(double d);

@@ -24,8 +24,26 @@
 #include "classes/prefs.h"
 #include "base/pattern.h"
 
-// Constructor
+// Constructors
 EnergyStore::EnergyStore()
+{
+	initialise();
+}
+EnergyStore::EnergyStore(int nPatterns)
+{
+	initialise();
+	resize(nPatterns);
+	clear();
+}
+
+// Destructor
+EnergyStore::~EnergyStore()
+{
+	deallocate();
+}
+
+// Initialise
+void EnergyStore::initialise()
 {
 	// Private variables
 	bond_ = NULL;
@@ -46,12 +64,6 @@ EnergyStore::EnergyStore()
 	resetTotals();
 	size_ = 0;
 	calculated_ = FALSE;
-}
-
-// Destructor
-EnergyStore::~EnergyStore()
-{
-	deallocate();
 }
 
 /*
@@ -138,13 +150,13 @@ void EnergyStore::clear()
 }
 
 // Resize
-void EnergyStore::resize(int newsize)
+void EnergyStore::resize(int npatterns)
 {
 	msg.enter("EnergyStore::resize");
 	// Delete old data first
 	deallocate();
 	// Now create new arrays...
-	size_ = newsize;
+	size_ = npatterns;
 	bond_ = new double[size_];
 	angle_ = new double[size_];
 	torsion_ = new double[size_];
@@ -222,64 +234,64 @@ void EnergyStore::totalise()
 }
 
 // Add
-void EnergyStore::add(EnergyType et, double energy, int id1, int id2)
+void EnergyStore::add(EnergyStore::EnergyType type, double value, int p1, int p2)
 {
 	msg.enter("EnergyStore::add");
-	if ((id1 >= size_) || (id2 >= size_))
+	if ((p1 >= size_) || (p2 >= size_))
 	{
-		printf("EnergyStore::add <<<< Array element out of range - %i %i - Ignored >>>>\n", id1, id2);
+		printf("EnergyStore::add <<<< Array element out of range - %i %i - Ignored >>>>\n", p1, p2);
 		msg.exit("EnergyStore::add");
 		return;
 	}
-	switch (et)
+	switch (type)
 	{
 		case (EnergyStore::BondEnergy):
-			bond_[id1] += energy;
+			bond_[p1] += value;
 			break;
 		case (EnergyStore::AngleEnergy):
-			angle_[id1] += energy;
+			angle_[p1] += value;
 			break;
 		case (EnergyStore::TorsionEnergy):
-			torsion_[id1] += energy;
+			torsion_[p1] += value;
 			break;
 		case (EnergyStore::UreyBradleyEnergy):
-			ureyBradley_[id1] += energy;
+			ureyBradley_[p1] += value;
 			break;
 		case (EnergyStore::VdwIntraEnergy):
-			vdwIntra_[id1] += energy;
+			vdwIntra_[p1] += value;
 			break;
 		case (EnergyStore::VdwInterEnergy):
-			vdwInter_[id1][id2] += energy;
+			vdwInter_[p1][p2] += value;
 			break;
 		case (EnergyStore::VdwTailEnergy):
-			vdwTail_ += energy;
+			vdwTail_ += value;
 			break;
 		case (EnergyStore::CoulombIntraEnergy):
-			coulombIntra_[id1] += energy;
+			coulombIntra_[p1] += value;
 			break;
 		case (EnergyStore::CoulombInterEnergy):
-			coulombInter_[id1][id2] += energy;
+			coulombInter_[p1][p2] += value;
 			break;
 		case (EnergyStore::EwaldRealIntraEnergy):
-			ewaldRealIntra_[id1] += energy;
+			ewaldRealIntra_[p1] += value;
 			break;
 		case (EnergyStore::EwaldRealInterEnergy):
-			ewaldRealInter_[id1][id2] += energy;
+			ewaldRealInter_[p1][p2] += value;
 			break;
 		case (EnergyStore::EwaldRecipIntraEnergy):
-			ewaldRecipIntra_[id1] += energy;
+			ewaldRecipIntra_[p1] += value;
 			break;
 		case (EnergyStore::EwaldRecipInterEnergy):
-			ewaldRecipInter_[id1][id2] += energy;
+			ewaldRecipInter_[p1][p2] += value;
 			break;
 		case (EnergyStore::EwaldSelfEnergy):
-			ewaldSelfCorrect_[id1] += energy;
+			ewaldSelfCorrect_[p1] += value;
 			break;
 		case (EnergyStore::EwaldMolecularEnergy):
-			ewaldMolCorrect_[id1] += energy;
+			ewaldMolCorrect_[p1] += value;
 			break;
 		default:
-			printf("Internal Error: Summation of energy type %i missed.\n", et);
+			printf("Internal Error: Summation of energy type %i missed.\n", type);
 			break;
 	}
 	msg.exit("EnergyStore::add");

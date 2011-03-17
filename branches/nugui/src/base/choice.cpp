@@ -44,6 +44,7 @@ Choice::Choice(bool b)
 // Resolve data to supplied value (if current choice_ == Default)
 void Choice::resolve(bool defaultvalue)
 {
+	if (choice_ == Choice::Default) choice_ = (defaultvalue ? Choice::Yes : Choice::No);
 }
 
 /*

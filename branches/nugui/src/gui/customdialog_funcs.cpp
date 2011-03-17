@@ -433,10 +433,10 @@ QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo, KVTable<Dncha
 	if (bg == NULL)
 	{
 		QButtonGroup *butgroup = new QButtonGroup();
-		butgroup->addButton(radio, butgroup->buttons().count());
+		butgroup->addButton(radio, 1);
 		buttonGroups.add(data, butgroup);
 	}
-	else bg->value()->addButton(radio, bg->value()->buttons().count());
+	else bg->value()->addButton(radio, bg->value()->buttons().count()+1);
 	// Critical : state
 	if (!gfo->data("state", data)) printf("Critical: No state found when constructing QRadioButton.\n");
 	radio->setChecked(data.asInteger());
@@ -449,17 +449,17 @@ QButtonGroup *AtenCustomDialog::createRadioGroup(WidgetNode *gfo, KVTable<Dnchar
 {
 	msg.enter("AtenCustomDialog::createRadioGroup");
 	// Search for existing button group
-	QButtonGroup *radio;
+	QButtonGroup *buttongroup;
 	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups.search(gfo->name());
 	if (bg == NULL)
 	{
-		radio = new QButtonGroup(this);
-		buttonGroups.add(gfo->name(), radio);
-		QObject::connect(radio, SIGNAL(buttonClicked(int)), this, SLOT(buttonGroupWidget_buttonClicked(int)));
+		buttongroup = new QButtonGroup(this);
+		buttonGroups.add(gfo->name(), buttongroup);
+		QObject::connect(buttongroup, SIGNAL(buttonClicked(int)), this, SLOT(buttonGroupWidget_buttonClicked(int)));
 	}
-	else radio = bg->value();
+	else buttongroup = bg->value();
 	msg.exit("AtenCustomDialog::createRadioGroup");
-	return radio;
+	return buttongroup;
 }
 
 // Create combo box from data in specified GuiFilterOption
@@ -761,7 +761,7 @@ void AtenCustomDialog::storeValues()
 				break;
 			case (WidgetNode::RadioGroupControl):
 				button = ((QButtonGroup*) (gfo->object()))->checkedButton();
-				rv.set( ((QButtonGroup*) (gfo->object()))->checkedId()+1);
+				rv.set( ((QButtonGroup*) (gfo->object()))->checkedId());
 				break;
 			case (WidgetNode::StringRadioGroupControl):
 				button = ((QButtonGroup*) (gfo->object()))->checkedButton();

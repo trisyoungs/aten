@@ -62,12 +62,6 @@
 						<entry>The trajectory cache size (in kilobytes) - trajectory files calculated to have more than this amount of data will not be cached in memory</entry>
 					</row>
 					<row>
-						<entry>calculateelec</entry>
-						<entry>int</entry>
-						<entry>rw</entry>
-						<entry>Controls whether electrostatic contributions to the energy/forces are calculated</entry>
-					</row>
-					<row>
 						<entry>calculateintra</entry>
 						<entry>int</entry>
 						<entry>rw</entry>
@@ -162,6 +156,12 @@
 						<entry>string</entry>
 						<entry>rw</entry>
 						<entry>The method of electrostatic energy/force calculation</entry>
+					</row>
+					<row>
+						<entry>encodercommand</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Encoder command including full path and options to use when generating movies. The text strings FILES and OUTPUT will be replaced with a wildcard filelist and the output movie filename respectively.</entry>
 					</row>
 					<row>
 						<entry>energyunit</entry>

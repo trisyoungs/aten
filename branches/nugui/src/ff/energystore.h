@@ -32,9 +32,13 @@ class EnergyStore
 	public:
 	// Constructor / Destructor
 	EnergyStore();
+	EnergyStore(int npatterns);
 	~EnergyStore();
 	// Energy Types
 	enum EnergyType { BondEnergy, AngleEnergy, TorsionEnergy, UreyBradleyEnergy, VdwIntraEnergy, VdwInterEnergy, VdwTailEnergy, CoulombIntraEnergy, CoulombInterEnergy, EwaldRealIntraEnergy, EwaldRealInterEnergy, EwaldRecipIntraEnergy, EwaldRecipInterEnergy, EwaldSelfEnergy, EwaldMolecularEnergy, nEnergyTypes };
+	private:
+	// Initialise pointer variables
+	void initialise();
 
 	/*
 	// Energy components
@@ -95,11 +99,11 @@ class EnergyStore
 	// Clear the energy store (reset to zero)
 	void clear();
 	// Resize the Energy
-	void resize(int);
+	void resize(int npatterns);
 	// Calculate the sub-total and total energies.
 	void totalise();
 	// Add to energy
-	void add(EnergyType, double, int, int=-1);
+	void add(EnergyType type, double value, int p1, int p2 = -1);
 	// Returns the total energy in the store
 	double total();
 	// Returns the total bond energy in the store

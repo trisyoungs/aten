@@ -145,7 +145,7 @@ void AtenPrefs::setControls()
 	// Set controls in Energy/FF page
 	ui.CalculateIntraCheck->setChecked(prefs.calculateIntra());
 	ui.CalculateVdwCheck->setChecked(prefs.calculateVdw());
-	ui.CalculateElecCheck->setChecked(prefs.calculateElec());
+	ui.ElectrostaticMethodCombo->setCurrentIndex(prefs.electrostaticsMethod());
 	ui.VdwCutoffSpin->setValue(prefs.vdwCutoff());
 	ui.ElecCutoffSpin->setValue(prefs.elecCutoff());
 	ui.EwaldPrecisionMantissaSpin->setValue(prefs.ewaldPrecision().mantissa());
@@ -166,6 +166,7 @@ void AtenPrefs::setControls()
 	// External Programs
 	ui.TemporaryDirEdit->setText(prefs.tempDir());
 	ui.MopacExecutableEdit->setText(prefs.mopacExe());
+	ui.EncoderCommandEdit->setText(prefs.encoderCommand());
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
@@ -856,9 +857,9 @@ void AtenPrefs::on_CalculateVdwCheck_stateChanged(int state)
 	prefs.setCalculateVdw(state);
 }
 
-void AtenPrefs::on_CalculateElecCheck_stateChanged(int state)
+void AtenPrefs::on_ElectrostaticMethodCombo_currentIndexChanged(int index)
 {
-	prefs.setCalculateElec(state);
+	prefs.setElectrostaticsMethod( (Electrostatics::ElecMethod) index);
 }
 
 void AtenPrefs::on_VdwCutoffSpin_valueChanged(double d)

@@ -342,7 +342,6 @@ void Model::printCoords() const
 // Bohr to Angstrom
 void Model::bohrToAngstrom()
 {
-	// Convert coordinates and cell from Bohr to Angstrom
 	msg.enter("Model::bohrToAngstrom");
 	// Coordinates
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;

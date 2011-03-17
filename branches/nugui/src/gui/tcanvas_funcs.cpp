@@ -61,7 +61,6 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 
 	// Prevent QPainter from autofilling widget background
 	setAutoFillBackground(FALSE);
-	setCursor(Qt::CrossCursor);
 }
 
 /*

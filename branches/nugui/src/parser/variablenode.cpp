@@ -129,7 +129,7 @@ bool VariableNode::execute(ReturnValue &rv)
 // 		printf("Final result of path walk / variable retrieval is:\n");
 // 		rv.info();
 	}
-	else printf("Variable retrieval failed.\n");
+	else msg.print(Messenger::Verbose, "Variable retrieval failed.\n");
 	msg.exit("VariableNode::execute");
 	return result;
 }

@@ -104,16 +104,21 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "addhydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::argText(Command::AddHydrogen) },
+	{ "angleenergy",	VTypes::DoubleData,	"",						"" },
 	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::argText(Command::Augment) },
+	{ "bondenergy",		VTypes::DoubleData,	"",						"" },
 	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::argText(Command::Charge) },
 	{ "clearbonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::argText(Command::ClearBonds) },
 	{ "clearcharges",	VTypes::NoData,		Command::arguments(Command::ClearCharges),	Command::argText(Command::ClearCharges) },
 	{ "clearselectedbonds",	VTypes::NoData,		Command::arguments(Command::ClearSelectedBonds),Command::argText(Command::ClearSelectedBonds) },
 	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::argText(Command::Copy) },
+	{ "coulombenergy",	VTypes::DoubleData,	"",						"" },
 	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::argText(Command::Cut) },
 	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::argText(Command::Delete) },
 	{ "expand",		VTypes::NoData,		Command::arguments(Command::Expand),		Command::argText(Command::Expand) },
 	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::argText(Command::Finalise) },
+	{ "interenergy",	VTypes::DoubleData,	"",						"" },
+	{ "intraenergy",	VTypes::DoubleData,	"",						"" },
 	{ "movetoend",		VTypes::NoData,		Command::arguments(Command::MoveToEnd),		Command::argText(Command::MoveToEnd) },
 	{ "movetostart",	VTypes::NoData,		Command::arguments(Command::MoveToStart),	Command::argText(Command::MoveToStart) },
 	{ "newatom",		VTypes::AtomData,	Command::arguments(Command::NewAtom),		Command::argText(Command::NewAtom) },
@@ -138,9 +143,11 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "shiftdown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::argText(Command::ShiftDown) },
 	{ "shiftup",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::argText(Command::ShiftUp) },
 	{ "showall",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::argText(Command::ShowAll) },
-	{ "toangstroms",	VTypes::NoData,		"",						"Convert cell and atom coordinates from Bohr to Angstroms" },
+	{ "toangstroms",	VTypes::NoData,		"",						"" },
+	{ "torsionenergy",	VTypes::DoubleData,	"",						"" },
 	{ "transmute",		VTypes::NoData,		Command::arguments(Command::Transmute),		Command::argText(Command::Transmute) },
-	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::argText(Command::Undo) }
+	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::argText(Command::Undo) },
+	{ "vdwenergy",		VTypes::DoubleData,	"",						"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -611,8 +618,14 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		case (ModelVariable::AddHydrogen):
 			result = aten.commands.call(Command::AddHydrogen, node, rv, bundle);
 			break;
+		case (ModelVariable::AngleEnergy):
+			rv.set( ptr->angleEnergy(ptr, result));
+			break;
  		case (ModelVariable::Augment):
 			result = aten.commands.call(Command::Augment, node, rv, bundle);
+			break;
+		case (ModelVariable::BondEnergy):
+			rv.set( ptr->bondEnergy(ptr, result));
 			break;
  		case (ModelVariable::Charge):
 			result = aten.commands.call(Command::Charge, node, rv, bundle);
@@ -629,6 +642,9 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::Copy):
 			result = aten.commands.call(Command::Copy, node, rv, bundle);
 			break;
+		case (ModelVariable::CoulombEnergy):
+			rv.set( ptr->coulombEnergy(ptr, result));
+			break;
  		case (ModelVariable::Cut):
 			result = aten.commands.call(Command::Cut, node, rv, bundle);
 			break;
@@ -640,6 +656,12 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			break;
  		case (ModelVariable::Finalise):
 			result = aten.commands.call(Command::Finalise, node, rv, bundle);
+			break;
+		case (ModelVariable::InterEnergy):
+			rv.set( ptr->intermolecularEnergy(ptr, result));
+			break;
+		case (ModelVariable::IntraEnergy):
+			rv.set( ptr->intramolecularEnergy(ptr, result));
 			break;
  		case (ModelVariable::MoveToEnd):
 			result = aten.commands.call(Command::MoveToEnd, node, rv, bundle);
@@ -716,11 +738,17 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::ToAngstroms):
 			ptr->bohrToAngstrom();
 			break;
+ 		case (ModelVariable::TorsionEnergy):
+			rv.set( ptr->torsionEnergy(ptr, result));
+			break;
  		case (ModelVariable::Transmute):
 			result = aten.commands.call(Command::Transmute, node, rv, bundle);
 			break;
  		case (ModelVariable::Undo):
 			result = aten.commands.call(Command::Undo, node, rv, bundle);
+			break;
+		case (ModelVariable::VdwEnergy):
+			rv.set( ptr->vdwEnergy(ptr, result));
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ModelVariable.\n", functionData[i].name);

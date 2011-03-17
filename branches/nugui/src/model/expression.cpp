@@ -226,26 +226,22 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	}
 	
 	// 3) Check the electrostatic setup for the model
-	if (prefs.calculateElec())
+	Electrostatics::ElecMethod emodel = prefs.electrostaticsMethod();
+	switch (emodel)
 	{
-		Electrostatics::ElecMethod emodel = prefs.electrostaticsMethod();
-		switch (emodel)
-		{
-			case (Electrostatics::None):
-				msg.print("Electrostatics are off.\n");
-				break;
-			case (Electrostatics::Coulomb):
-				if (cell_.type() != UnitCell::NoCell) msg.print("!!! Coulomb sum requested for periodic model.\n");
-				break;
-			default: // Ewald - issue warnings, but don't return FALSE
-				if (cell_.type() == UnitCell::NoCell)
-				{
-					msg.print("!!! Ewald sum cannot be used for a non-periodic model.\n");
-					//msg.exit("Model::createExpression");
-					//return FALSE;
-				}
-				break;
-		}
+		case (Electrostatics::None):
+			break;
+		case (Electrostatics::Coulomb):
+			if (cell_.type() != UnitCell::NoCell) msg.print("!!! Coulomb sum requested for periodic model.\n");
+			break;
+		default: // Ewald - issue warnings, but don't return FALSE
+			if (cell_.type() == UnitCell::NoCell)
+			{
+				msg.print("!!! Ewald sum cannot be used for a non-periodic model.\n");
+				//msg.exit("Model::createExpression");
+				//return FALSE;
+			}
+			break;
 	}
 	
 	// 4) Create master (Model) forcefield term lists
