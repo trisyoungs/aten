@@ -235,10 +235,10 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 				msg.print("Electrostatics are off.\n");
 				break;
 			case (Electrostatics::Coulomb):
-				if (cell_.type() != Cell::NoCell) msg.print("!!! Coulomb sum requested for periodic model.\n");
+				if (cell_.type() != UnitCell::NoCell) msg.print("!!! Coulomb sum requested for periodic model.\n");
 				break;
 			default: // Ewald - issue warnings, but don't return FALSE
-				if (cell_.type() == Cell::NoCell)
+				if (cell_.type() == UnitCell::NoCell)
 				{
 					msg.print("!!! Ewald sum cannot be used for a non-periodic model.\n");
 					//msg.exit("Model::createExpression");

@@ -569,7 +569,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Celldata):
-			ptr->setCell( ((Cell*) newvalue.asPointer(VTypes::CellData)) );
+			ptr->setCell( ((UnitCell*) newvalue.asPointer(VTypes::CellData)) );
 			break;
 		case (ModelVariable::FField):
 			ptr->setForcefield( (Forcefield*) newvalue.asPointer(VTypes::ForcefieldData) );

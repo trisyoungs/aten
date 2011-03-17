@@ -47,8 +47,8 @@ bool Command::function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
-	if (cp != Cell::nCellParameters) obj.rs()->cell()->setParameter(cp, c->argd(1), TRUE);
+	UnitCell::CellParameter cp = UnitCell::cellParameter(c->argc(0));
+	if (cp != UnitCell::nCellParameters) obj.rs()->cell()->setParameter(cp, c->argd(1), TRUE);
 	rv.reset();
 	return TRUE;
 }
@@ -57,7 +57,7 @@ bool Command::function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.rs()->cell()->type() == Cell::NoCell) obj.rs()->beginUndoState("Add Cell");
+	if (obj.rs()->cell()->type() == UnitCell::NoCell) obj.rs()->beginUndoState("Add Cell");
 	else obj.rs()->beginUndoState("Edit Cell");
 	obj.rs()->setCell(c->arg3d(0), c->arg3d(3));
 	obj.rs()->endUndoState();
@@ -159,8 +159,8 @@ bool Command::function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PrintCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	msg.print("Unit cell type for model '%s' is %s\n", obj.rs()->name(), Cell::cellType(obj.rs()->cell()->type()));
-	if (obj.rs()->cell()->type() != Cell::NoCell) obj.rs()->cell()->print();
+	msg.print("Unit cell type for model '%s' is %s\n", obj.rs()->name(), UnitCell::cellType(obj.rs()->cell()->type()));
+	if (obj.rs()->cell()->type() != UnitCell::NoCell) obj.rs()->cell()->print();
 	rv.reset();
 	return TRUE;
 }
@@ -239,8 +239,8 @@ bool Command::function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
-	if (cp != Cell::nCellParameters) obj.rs()->cell()->setParameter(cp, c->argd(1));
+	UnitCell::CellParameter cp = UnitCell::cellParameter(c->argc(0));
+	if (cp != UnitCell::nCellParameters) obj.rs()->cell()->setParameter(cp, c->argd(1));
 	rv.reset();
 	return TRUE;
 }

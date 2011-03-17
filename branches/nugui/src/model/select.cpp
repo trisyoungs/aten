@@ -591,7 +591,7 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
 {
 	msg.enter("Model::selectMiller");
-	if (cell_.type() == Cell::NoCell)
+	if (cell_.type() == UnitCell::NoCell)
 	{
 		msg.print("Can't use Miller planes on a non-periodic model.\n");
 		msg.exit("Model::selectMiller");

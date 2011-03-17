@@ -347,8 +347,8 @@ void Model::bohrToAngstrom()
 	// Coordinates
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
 	// Cell
-	Cell::CellType ct = cell_.type();
-	if (ct != Cell::NoCell)
+	UnitCell::CellType ct = cell_.type();
+	if (ct != UnitCell::NoCell)
 	{
 		Vec3<double> lengths = cell_.lengths();
 		lengths *= ANGBOHR;
@@ -381,7 +381,7 @@ void Model::print() const
 	msg.print("   Name : %s\n", name_.get());
 	msg.print("   File : %s\n", filename_.get());
 	msg.print("   Mass : %f\n", mass_);
-	if (cell_.type() != Cell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", Cell::cellType(cell_.type()), density_, Prefs::densityUnit(prefs.densityUnit()));
+	if (cell_.type() != UnitCell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", UnitCell::cellType(cell_.type()), density_, Prefs::densityUnit(prefs.densityUnit()));
 	msg.print("  Atoms : %i\n", atoms_.nItems());
 	msg.print(" Id     El   FFType    FFId           X             Y             Z              Q        S  \n");
 	// Print from pattern definition if possible, otherwise just use model atom list

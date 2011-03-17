@@ -240,7 +240,7 @@ class Model
 	*/
 	private:
 	// Cell definition (also contains reciprocal cell definition)
-	Cell cell_;
+	UnitCell cell_;
 	// Density of model (if periodic)
 	double density_;
 	// Calculate the density of the model
@@ -250,15 +250,15 @@ class Model
 
 	public:
 	// Return pointer to unit cell structure
-	Cell *cell();
+	UnitCell *cell();
 	// Set cell (vectors)
 	void setCell(Vec3<double> lengths, Vec3<double> angles);
 	// Set cell (axes)
 	void setCell(Matrix axes);
 	// Set cell (parameter)
-	void setCell(Cell::CellParameter cp, double value);
+	void setCell(UnitCell::CellParameter cp, double value);
 	// Set cell (other Cell pointer)
-	void setCell(Cell *newcell);
+	void setCell(UnitCell *newcell);
 	// Remove cell definition
 	void removeCell();
 	// Fold all atoms into the cell

@@ -32,7 +32,7 @@
 */
 
 // Constructor
-CellVariable::CellVariable(Cell *ptr, bool constant)
+CellVariable::CellVariable(UnitCell *ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::CellData;
@@ -169,7 +169,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Cell *ptr= (Cell*) rv.asPointer(VTypes::CellData, result);
+	UnitCell *ptr= (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
@@ -224,7 +224,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(ptr->spacegroup());
 			break;
 		case (CellVariable::Type):
-			rv.set(lowerCase(Cell::cellType(ptr->type())));
+			rv.set(lowerCase(UnitCell::cellType(ptr->type())));
 			break;
 		case (CellVariable::Volume):
 			rv.set(ptr->volume());
@@ -299,7 +299,7 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Cell *ptr = (Cell*) sourcerv.asPointer(VTypes::CellData, result);
+	UnitCell *ptr = (UnitCell*) sourcerv.asPointer(VTypes::CellData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
@@ -323,11 +323,11 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		case (CellVariable::CY):
 		case (CellVariable::CZ):
 			// Cast accessor into a CellParameter
-			ptr->parent()->setCell( (Cell::CellParameter) acc, newvalue.asDouble());
+			ptr->parent()->setCell( (UnitCell::CellParameter) acc, newvalue.asDouble());
 			break;
 		case (CellVariable::Matrix):
 			// Cast accessor into a CellParameter
-			ptr->parent()->setCell( (Cell::CellParameter) ((arrayIndex-1) + Cell::CellAX), newvalue.asDouble());
+			ptr->parent()->setCell( (UnitCell::CellParameter) ((arrayIndex-1) + UnitCell::CellAX), newvalue.asDouble());
 			break;
 		case (CellVariable::SpacegroupId):
 			ptr->parent()->setSpacegroup( newvalue.asString() );
@@ -354,7 +354,7 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Cell *ptr= (Cell*) rv.asPointer(VTypes::CellData, result);
+	UnitCell *ptr= (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if (result) switch (i)
 	{
 		default:

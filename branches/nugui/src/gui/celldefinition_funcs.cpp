@@ -52,7 +52,7 @@ void CellDefinitionWidget::refreshMatrix()
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
-	Cell *cell = m->cell();
+	UnitCell *cell = m->cell();
 	Matrix matrix = cell->axes();
 	ui.CellMatrixXXSpin->setValue(matrix[0]);
 	ui.CellMatrixXYSpin->setValue(matrix[1]);
@@ -69,7 +69,7 @@ void CellDefinitionWidget::refreshABC()
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
-	Cell *cell = m->cell();
+	UnitCell *cell = m->cell();
 	Vec3<double> lengths, angles;
 	lengths = cell->lengths();
 	angles = cell->angles();
@@ -86,15 +86,14 @@ void CellDefinitionWidget::refresh()
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
-	Cell *cell = m->cell();
-	Cell::CellType ct = cell->type();
-	Dnchar label;
-	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", cell->volume());
+	UnitCell *cell = m->cell();
+	UnitCell::CellType ct = cell->type();
+	Dnchar label(-1, " Volume : %10.3f &#8491;<sup>3</sup>", cell->volume());
 	ui.CellVolumeLabel->setText(label.get());
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
 	// Update the widgets on the page to reflect the current model's unit cell
-	if (ct == Cell::NoCell)
+	if (ct == UnitCell::NoCell)
 	{
 		// No cell, so disable group boxes and quit
 		ui.CellDefinitionGroup->setChecked(FALSE);

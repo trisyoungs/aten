@@ -159,7 +159,7 @@ void Matrix::setIdentity()
 // Print matrix
 void Matrix::print() const
 {
-	printf("GLMat      X        Y         Z    Translate\n");
+	printf("GLMat   [0123]    [4567]    [8901] Translate\n");
 	printf("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[0], matrix_[4], matrix_[8], matrix_[12]);
 	printf("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[1], matrix_[5], matrix_[9], matrix_[13]);
 	printf("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[2], matrix_[6], matrix_[10], matrix_[14]);

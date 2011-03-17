@@ -830,7 +830,7 @@ void Grid::clear()
 }
 
 // Return pointer to the underlying cell structure
-Cell *Grid::cell()
+UnitCell *Grid::cell()
 {
 	return &cell_;
 }

@@ -35,7 +35,7 @@ void Pattern::coulombIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, in
 	PatternAtom *pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 
@@ -106,7 +106,7 @@ void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, 
 	PatternAtom *pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 
 	// Outer loop over molecules in *this* pattern
@@ -231,7 +231,7 @@ void Pattern::coulombIntraPatternForces(Model *srcmodel)
 	PatternAtom *pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -307,7 +307,7 @@ void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 	PatternAtom *pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 
 	// Outer loop over molecules in *this* pattern

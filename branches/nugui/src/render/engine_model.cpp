@@ -175,7 +175,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	prefs.copyColour(Prefs::TextColour, textcolour);
 	
 	// Render cell and cell axes
-	if (source->cell()->type() != Cell::NoCell)
+	if (source->cell()->type() != UnitCell::NoCell)
 	{
 		prefs.copyColour(Prefs::UnitCellColour, colour_i);
 		glColor4fv(colour_i);

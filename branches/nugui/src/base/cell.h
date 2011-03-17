@@ -1,5 +1,5 @@
 /*
-	*** Periodic cell definition
+	*** Unit cell definition
 	*** src/base/cell.h
 	Copyright T. Youngs 2007-2011
 
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CELL_H
-#define ATEN_CELL_H
+#ifndef ATEN_UNITCELL_H
+#define ATEN_UNITCELL_H
 
 #include "base/generator.h"
 #include "base/dnchar.h"
@@ -32,11 +32,11 @@ class Atom;
 class Model;
 
 // Unit cell
-class Cell
+class UnitCell
 {
 	public:
 	// Constructor
-	Cell();
+	UnitCell();
 	// Cell types
 	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
 	static const char *cellType(CellType);
@@ -45,7 +45,7 @@ class Cell
 	enum CellParameter { CellA, CellB, CellC, CellAlpha, CellBeta, CellGamma, CellAX, CellAY, CellAZ, CellBX, CellBY, CellBZ, CellCX, CellCY, CellCZ, nCellParameters };
 	static CellParameter cellParameter(const char *);
 	// Assignment operator
-	void operator=(Cell &source);
+	void operator=(UnitCell &source);
 
 	/*
 	// Cell Definition
@@ -82,7 +82,7 @@ class Cell
 	void print();
 	// Generate random position inside cell
 	Vec3<double> randomPos() const;
-	// Remove the cell definition (i.e. set 'type' to CT_NONE)
+	// Remove the cell definition (i.e. set 'type' to NoCell)
 	void reset();
 	// Set lengths and angles and calculates matrix
 	void set(const Vec3<double> &lengths, const Vec3<double> &angles);
@@ -95,9 +95,9 @@ class Cell
 	// Set individual angle
 	void setAngle(int i, double d);
 	// Set / adjust individual parameter
-	void setParameter(Cell::CellParameter cp, double value, bool adjust = FALSE);
+	void setParameter(UnitCell::CellParameter cp, double value, bool adjust = FALSE);
 	// Return the type of cell
-	CellType type() const;
+	UnitCell::CellType type() const;
 	// Return the cell vector matrix
 	Matrix axes() const;
 	// Return reciprocal cell matrix

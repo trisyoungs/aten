@@ -31,7 +31,7 @@
 #include "base/choice.h"
 
 // Forward declarations
-class Cell;
+class UnitCell;
 
 // Prefs
 class Prefs
@@ -805,7 +805,7 @@ class Prefs
 	// Set the short-range and electrostatic cutoffs
 	void setCutoffs(double vcut, double ecut);
 	// Estimate Ewald sum parameters for the current unit cell
-	void estimateEwaldParameters(Cell*);
+	void estimateEwaldParameters(UnitCell *cell);
 	// Return the validity of automatic Ewald params (invalidated on cell change)
 	bool hasValidEwaldAuto() const;
 	// Flag the Ewald auto params as invalid

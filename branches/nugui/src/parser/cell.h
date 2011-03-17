@@ -26,14 +26,14 @@
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Cell;
+class UnitCell;
 
 // Cell Variable
 class CellVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	CellVariable(Cell *i = NULL, bool constant = FALSE);
+	CellVariable(UnitCell *i = NULL, bool constant = FALSE);
 	~CellVariable();
 
 	/*

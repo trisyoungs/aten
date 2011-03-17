@@ -60,7 +60,7 @@ void DisorderWidget::refresh()
 
 	refreshing_ = TRUE;
 	// (De)sensitize controls
-	ui.DisorderStartButton->setDisabled(aten.currentModelOrFrame()->cell()->type() == Cell::NoCell);
+	ui.DisorderStartButton->setDisabled(aten.currentModelOrFrame()->cell()->type() == UnitCell::NoCell);
 	// Update model (component) list
 	TTableWidgetItem *item, *firstitem = NULL;
 	//ui.ComponentTable->setCurrentRow(-1);
@@ -70,7 +70,7 @@ void DisorderWidget::refresh()
 	int count = 0;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		if (m->cell()->type() != Cell::NoCell) continue;
+		if (m->cell()->type() != UnitCell::NoCell) continue;
 		// Add model to reflist
 		componentList.add(m,0);
 		// Number requested

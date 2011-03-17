@@ -27,7 +27,7 @@
 #include "templates/reflist.h"
 
 // Forward Declarations
-class Cell;
+class UnitCell;
 class Component;
 class Model;
 
@@ -108,11 +108,11 @@ class ComponentRegion
 	// Returns whether to allow overlap over other ComponentRegions when inserting
 	bool allowOverlap() const;
 	// Determines whether the supplied coordinates are within the ComponentRegion defined
-	bool coordsInRegion(const Vec3<double> &point, Cell *cell) const;
+	bool coordsInRegion(const Vec3<double> &point, UnitCell *cell) const;
 	// Determines whether the supplied coordinates overlap any of the other ComponentRegions supplied
-	bool pointOverlaps(const Vec3<double> &point, Cell *cell, Reflist<Model,int> &components) const;
+	bool pointOverlaps(const Vec3<double> &point, UnitCell *cell, Reflist<Model,int> &components) const;
 	// Generate a random coordinate inside the ComponentRegion
-	Vec3<double> randomCoords(Cell *cell, Reflist<Model,int> &components) const;
+	Vec3<double> randomCoords(UnitCell *cell, Reflist<Model,int> &components) const;
 };
 
 #endif

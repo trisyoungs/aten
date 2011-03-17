@@ -161,10 +161,10 @@ void AtenForm::update()
 	s += " g mol<sup>-1</sup> ";
 	infoLabel1_->setText(s);
 	// Second label - cell information
-	Cell::CellType ct = m->cell()->type();
-	if (ct != Cell::NoCell)
+	UnitCell::CellType ct = m->cell()->type();
+	if (ct != UnitCell::NoCell)
 	{
-		s = Cell::cellType(ct);
+		s = UnitCell::cellType(ct);
 		s += ", ";
 		s += ftoa(m->density());
 		switch (prefs.densityUnit())

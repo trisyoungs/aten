@@ -30,7 +30,7 @@
 #include "classes/prefs.h"
 
 // Return pointer to unit cell structure
-Cell *Model::cell()
+UnitCell *Model::cell()
 {
 	return &cell_;
 }
@@ -40,7 +40,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 {
 	msg.enter("Model::setCell[vectors]");
 	Matrix oldaxes = cell_.axes();
-	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
+	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(lengths, angles);
 	calculateDensity();
@@ -60,7 +60,7 @@ void Model::setCell(Matrix axes)
 {
 	msg.enter("Model::setCell[axes]");
 	Matrix oldaxes = cell_.axes();
-	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
+	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(axes);
 	calculateDensity();
@@ -76,11 +76,11 @@ void Model::setCell(Matrix axes)
 }
 
 // Set cell (parameter)
-void Model::setCell(Cell::CellParameter cp, double value)
+void Model::setCell(UnitCell::CellParameter cp, double value)
 {
 	msg.enter("Model::setCell[parameter]");
 	Matrix oldaxes = cell_.axes();
-	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
+	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new parameter value
 	cell_.setParameter(cp, value);
 	calculateDensity();
@@ -96,13 +96,13 @@ void Model::setCell(Cell::CellParameter cp, double value)
 }
 
 // Set cell (other Cell pointer)
-void Model::setCell(Cell *newcell)
+void Model::setCell(UnitCell *newcell)
 {
-	if (newcell == NULL) printf("Warning: NULL Cell pointer passed to Model::setCell().\n");
+	if (newcell == NULL) printf("Warning: NULL UnitCell pointer passed to Model::setCell().\n");
 	else
 	{
 		Matrix oldaxes = cell_.axes();
-		bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
+		bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 		cell_ = *newcell;
 		calculateDensity();
 		// Add the change to the undo state (if there is one)
@@ -124,7 +124,7 @@ void Model::removeCell()
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(cell_.axes(), cell_.axes(), cell_.type() != Cell::NoCell, FALSE);
+		newchange->set(cell_.axes(), cell_.axes(), cell_.type() != UnitCell::NoCell, FALSE);
 		recordingState_->addEvent(newchange);
 	}
 	cell_.reset();
@@ -328,14 +328,14 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 {
 	msg.enter("Model::scaleCell");
 	Vec3<double> oldcog, newcog, newpos;
-	Cell newcell;
+	UnitCell newcell;
 	Matrix newaxes;
 	double olde = 0.0, newe;
 	bool success;
 	int n,m;
 	Atom *i;
 	// First, make sure we have a cell and a valid pattern (if using cog)
-	if (cell_.type() == Cell::NoCell)
+	if (cell_.type() == UnitCell::NoCell)
 	{
 		msg.print("No cell to scale.\n");
 		msg.exit("Model::scaleCell");
@@ -422,7 +422,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	Clipboard originalClip, clip;
 
 	// If this isn't a periodic model, exit
-	if (cell_.type() == Cell::NoCell)
+	if (cell_.type() == UnitCell::NoCell)
 	{
 		msg.print("No cell to replicate.\n");
 		msg.exit("Model::replicateCell");
@@ -526,7 +526,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 void Model::rotateCell(int axis, double angle)
 {
 	msg.enter("Model::rotateCell");
-	if (cell_.type() == Cell::NoCell)
+	if (cell_.type() == UnitCell::NoCell)
 	{
 		msg.print("This model has no cell, and so it can't be rotated.\n");
 		msg.exit("Model::rotateCell");
@@ -573,7 +573,7 @@ void Model::fracToReal()
 void Model::calculateDensity()
 {
 	msg.enter("Model::calculateDensity");
-	if (cell_.type() != Cell::NoCell)
+	if (cell_.type() != UnitCell::NoCell)
 	{
 		// Calculate density in the units specified by prefs.density_internal
 		switch (prefs.densityUnit())

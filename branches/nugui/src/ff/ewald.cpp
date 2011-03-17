@@ -32,7 +32,7 @@
 #include "model/model.h"
 
 // Estimate alpha and kmax parameters based on a given precision value
-void Prefs::estimateEwaldParameters(Cell *cell)
+void Prefs::estimateEwaldParameters(UnitCell *cell)
 {
 	msg.enter("Prefs::estimateEwaldParameterss");
 	if (prefs.hasValidEwaldAuto())
@@ -73,7 +73,7 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, 
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMolecules_ : molecule+1); m1++)
 	{
@@ -114,7 +114,7 @@ void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Ener
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 	aoff1 = startAtom_;
 	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -273,7 +273,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, EnergyStore *estore, int molec
 	alpha = prefs.ewaldAlpha();
 	static Vec3<double> mim_i;
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 
 	// TODO
 	if (molecule != -1) printf("Ewald energy correction is not yet complete for indvidual molecule|system calculations.\n");
@@ -332,7 +332,7 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
@@ -382,7 +382,7 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 
 	aoff1 = startAtom_;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -517,7 +517,7 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)

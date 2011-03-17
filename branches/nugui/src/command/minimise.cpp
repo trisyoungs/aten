@@ -115,7 +115,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Determine unique filename
 	do
 	{
-		runid = AtenMath::randomi(123456789);
+		runid = AtenMath::randomi(RAND_MAX);
 		mopacInput.sprintf("%s%caten-%i-mopac%i.mop", prefs.tempDir(), PATHSEP, gui.pid(), runid);
 	} while (fileExists(mopacInput));
 	mopacArc.sprintf("%s%caten-%i-mopac%i.arc", prefs.tempDir(), PATHSEP, gui.pid(), runid);
@@ -123,18 +123,26 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	mopacCmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacInput.get());
 	msg.print("Command to run will be '%s'\n", mopacCmd.get());
 	
-	// Create copy of current model so as not to disturb filename/filter values
-	Model tempmodel;
-	//printf("Target for minimisation = %p\n", obj.rs);
-	tempmodel.copy(aten.currentModelOrFrame());
-	tempmodel.setFilter(mopacexport);
-	tempmodel.setFilename(mopacInput);
-	
-	// Save the input file... construct temporary bundle object containing our model pointer
-	bool result = TRUE;
-	Bundle bundle(&tempmodel);
-	ReturnValue temprv;
-	result = CommandNode::run(Command::SaveModel, bundle, "cc", "mopac", mopacInput.get());
+	// Save input file
+	LineParser parser(mopacInput, TRUE);
+	int opt;
+	if (c->hasArg(0)) parser.writeLineF("ITER %s\n",c->argc(0));
+	else parser.writeLine("ITER BFGS PM6 RHF SINGLET\n");
+	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", mopacInput.get());
+	parser.writeLineF("Temporary MOPAC Job Output : %s\n", mopacArc.get());	
+	for (Atom *i = aten.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
+	{
+		opt = 1 - i->isPositionFixed();
+		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
+	}
+	if (aten.currentModelOrFrame()->cell()->type() != UnitCell::NoCell)
+	{
+		Matrix mat = aten.currentModelOrFrame()->cell()->axes();
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[0], mat[1], mat[2]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[4], mat[5], mat[6]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[8], mat[9], mat[10]);
+	}
+	parser.closeFile();
 	
 	// Ready to run command....
 	if (!mopacProcess.execute(mopacCmd, mopacOut))
@@ -163,7 +171,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	}
 	// Time to load in the results
 	aten.setUseWorkingList(TRUE);
-	result = CommandNode::run(Command::LoadModel, "c", mopacArc.get());
+	int result = CommandNode::run(Command::LoadModel, "c", mopacArc.get());
 	// There should now be a model in the working model list (our results)
 	Model *m = aten.workingModels();
 	if (m == NULL)
@@ -171,7 +179,8 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		msg.print("Error: No results model found.\n");
 		return FALSE;
 	}
-	// Copy the atoms back into our tempmodel
+	// Copy the atoms into a temporary model
+	Model tempmodel;
 	tempmodel.copy(m);
 	aten.setUseWorkingList(FALSE);
 	// Start a new undostate in the original model

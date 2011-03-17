@@ -50,14 +50,14 @@ void CellTransformWidget::refresh()
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model *m = aten.currentModelOrFrame();
 	if (m == NULL) return;
-	Cell::CellType ct = m->cell()->type();
+	UnitCell::CellType ct = m->cell()->type();
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
 	// Update checkboxes in replicate group
 	ui.CellReplicateFoldCheck->setChecked( prefs.replicateFold() );
 	ui.CellReplicateTrimCheck->setChecked( prefs.replicateTrim() );
 	// Update the widgets on the page to reflect the current model's unit cell
-	if (ct == Cell::NoCell)
+	if (ct == UnitCell::NoCell)
 	{
 		// No cell, so disable group boxes and quit
 		ui.CellTransformTabs->setEnabled(FALSE);

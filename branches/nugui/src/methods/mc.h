@@ -28,7 +28,6 @@
 
 // Forward declarations
 class Model;
-class Cell;
 class Pattern;
 
 // Monte Carlo
@@ -48,9 +47,9 @@ class MonteCarlo
 	MonteCarlo();
 	~MonteCarlo();
 	// Minimise the specified model
-	bool minimise(Model*, double, double);
+	bool minimise(Model *target, double, double);
 	// Run disordered builder
-	bool disorder(Model*);
+	bool disorder(Model *target);
 
 	/*
 	// Subroutines

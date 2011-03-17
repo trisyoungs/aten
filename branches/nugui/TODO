@@ -2,6 +2,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Add pbc/mim accessor(s) to UnitCell.</para>
+		</listitem>
+		<listitem>
 			<para>Check possibility of doing torsion profile a la Padua - need access to or ready calculation of energy components.</para>
 		</listitem>
 		<listitem>

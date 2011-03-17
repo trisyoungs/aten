@@ -969,7 +969,7 @@ Vec3<double> Pattern::calculateCog(int mol, Model *srcmodel)
 	if (srcmodel == NULL) srcmodel = parent_;
 	msg.print(Messenger::Verbose,"Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	cog.zero();
 	Atom **modelatoms = srcmodel->atomArray();
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
@@ -996,7 +996,7 @@ Vec3<double> Pattern::calculateCom(int mol, Model *srcmodel)
 	int offset = startAtom_ + mol*nAtoms_;
 	com.zero();
 	msg.print(Messenger::Verbose,"molecule_com : Offset = %i\n",offset);
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	Atom **modelatoms = srcmodel->atomArray();
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
 	{

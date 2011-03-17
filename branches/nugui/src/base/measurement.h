@@ -24,7 +24,7 @@
 
 // Forward Declarations
 class Atom;
-class Cell;
+class UnitCell;
 
 // Measurement
 class Measurement
@@ -57,7 +57,7 @@ class Measurement
 	// Return type of Measurement
 	MeasurementType type() const;
 	// Calculate Measurement value
-	void calculate(Cell *cell);
+	void calculate(UnitCell *cell);
 	// Return proper, MIM'd value of the Measurement
 	double value() const;
 	// Return literal coordinate value of the Measurement

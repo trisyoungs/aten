@@ -22,7 +22,6 @@
 #ifndef ATEN_MATRIX_H
 #define ATEN_MATRIX_H
 
-#include <stdio.h>
 #include "templates/vector3.h"
 #include "templates/vector4.h"
 #ifdef _WIN32

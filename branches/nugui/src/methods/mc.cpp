@@ -348,7 +348,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy = 0.0, referenceVdwEnergy = 0.0, referenceElecEnergy = 0.0;
 	double penalty;
 	bool done, endearly = FALSE, success;
-	Cell *cell;
+	UnitCell *cell;
 	Pattern *p;
 	ComponentRegion *r;
 	Vec3<double> v, cog;
@@ -358,7 +358,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	Dnchar etatext;
 
 	// Model must have a cell to continue
-	if (destmodel->cell()->type() == Cell::NoCell)
+	if (destmodel->cell()->type() == UnitCell::NoCell)
 	{
 		msg.print("Model must have a cell definition to be the target of a disordered build.\n");
 		msg.exit("MonteCarlo::disorder");
@@ -389,7 +389,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 		if (c->nRequested() <= 0) continue;
 		if (c == destmodel) continue;
 		// Warn if this model is periodic
-		if (c->cell()->type() != Cell::NoCell) msg.print("Warning: Component model '%s' is periodic but will still be added.\n", c->name());
+		if (c->cell()->type() != UnitCell::NoCell) msg.print("Warning: Component model '%s' is periodic but will still be added.\n", c->name());
 		// Add this model to the component reflist
 		components.add(c);
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.

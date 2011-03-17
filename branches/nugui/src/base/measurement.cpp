@@ -97,7 +97,7 @@ Atom **Measurement::atoms()
 }
 
 // Calculate
-void Measurement::calculate(Cell *cell)
+void Measurement::calculate(UnitCell *cell)
 {
 	switch (type_)
 	{

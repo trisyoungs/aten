@@ -134,10 +134,10 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	obj.m->selectNone();
 	obj.m->regenerateIcon();
 	// Print out some useful info on the model that we've just read in
-	msg.print(Messenger::Verbose, "Model  : %s\n",obj.m->name());
-	msg.print(Messenger::Verbose, "Atoms  : %i\n",obj.m->nAtoms());
-	msg.print(Messenger::Verbose, "Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
-	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
+	msg.print(Messenger::Verbose, "Model  : %s\n", obj.m->name());
+	msg.print(Messenger::Verbose, "Atoms  : %i\n", obj.m->nAtoms());
+	msg.print(Messenger::Verbose, "Cell   : %s\n", UnitCell::cellType(obj.m->cell()->type()));
+	if (obj.m->cell()->type() != UnitCell::NoCell) obj.m->cell()->print();
 	// If a trajectory exists for this model, by default we view from trajectory in the GUI
 	if (obj.m->nTrajectoryFrames() > 0) obj.m->setRenderSource(Model::TrajectorySource);
 	// Lastly, reset all the log points and start afresh

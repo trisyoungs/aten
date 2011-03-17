@@ -43,7 +43,7 @@ double Model::totalEnergy(Model *srcmodel, bool &success)
 	Pattern *p, *p2;
 	p = patterns_.first();
 	// Calculate VDW correction
-	if (prefs.calculateVdw() && (cell_.type() != Cell::NoCell))
+	if (prefs.calculateVdw() && (cell_.type() != UnitCell::NoCell))
 	{
 		if (!p->vdwCorrectEnergy(&cell_, &energy))
 		{

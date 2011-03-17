@@ -134,6 +134,8 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 	}
 	atomClicked_ = NULL;
 	
+	postRedisplay();
+	
 	msg.exit("TCanvas::mouseReleaseEvent");
 }
 
@@ -146,8 +148,8 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 	Model *source = displayModel();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::modeMotion - no source model.\n");
-		msg.exit("TCanvas::modeMotion");
+		printf("Pointless TCanvas::mouseMoveEvent - no source model.\n");
+		msg.exit("TCanvas::mouseMoveEvent");
 		return;
 	}
 	

@@ -145,7 +145,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 	else if (ui.TranslateCellFrameRadio->isChecked())
 	{
 		// Translate selection in the cell axes of the model
-		if (m->cell()->type() == Cell::NoCell)
+		if (m->cell()->type() == UnitCell::NoCell)
 		{
 			msg.print("No unit cell defined for model.\n");
 			return;

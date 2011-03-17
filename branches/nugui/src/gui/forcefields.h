@@ -38,12 +38,17 @@ class ForcefieldsWidget : public QDockWidget
 	*/
 	public:
 	// Minimisation algorithms
-	enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, MopacMethod, nMinimiserMethods };
+	enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, nMinimiserMethods };
 	void showWidget();
 	void refresh();
 	void refreshTypes();
 	void loadForcefield();
 	private slots:
+	// Energy Tab
+	void on_CurrentEnergyButton_clicked(bool checked);
+	void on_CurrentForcesButton_clicked(bool checked);
+	void on_ForcefieldMinimiseButton_clicked(bool checked);
+	void on_MopacMinimiseButton_clicked(bool checked);
 	// Forcefields Tab
 	void on_ForcefieldCombo_currentIndexChanged(int index);
 	void on_LoadForcefieldButton_clicked(bool checked);
@@ -55,18 +60,11 @@ class ForcefieldsWidget : public QDockWidget
 	void on_AssignFFToAllButton_clicked(bool checked);
 	void on_AssignFFToPatternButton_clicked(bool clicked);
 	void on_CreateExpressionButton_clicked(bool clicked);
-	// Energy Tab
-	void on_MinimiserMethodCombo_currentIndexChanged(int index);
-	void on_CurrentEnergyButton_clicked(bool checked);
-	void on_CurrentForcesButton_clicked(bool checked);
-	void on_MinimiseButton_clicked(bool checked);
 	// Manual Typing Tab
 	void on_ManualTypeSetButton_clicked(bool checked);
 	void on_ManualTypeClearButton_clicked(bool checked);
 	void on_ManualTypeTestButton_clicked(bool checked);
 	void on_ManualTypeEdit_returnPressed();
-	public:
-	void doMinimisation();
 	protected:
 	void closeEvent(QCloseEvent *event);
 

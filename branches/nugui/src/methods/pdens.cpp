@@ -116,7 +116,7 @@ void Pdens::accumulate(Model *sourcemodel)
 	static Vec3<double> centre1, centre2, mimd;
 	static Vec3<int> gridPoint;
 	Matrix axes;
-	Cell *cell = sourcemodel->cell();
+	UnitCell *cell = sourcemodel->cell();
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{

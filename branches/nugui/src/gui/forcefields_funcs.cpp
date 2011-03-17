@@ -168,6 +168,63 @@ void ForcefieldsWidget::loadForcefield()
 }
 
 /*
+// Energy Tab
+*/
+
+void ForcefieldsWidget::on_CurrentEnergyButton_clicked(bool checked)
+{
+	bool result;
+	if (aten.current.rs() == aten.current.m) result = CommandNode::run(Command::ModelEnergy, "");
+	else result = CommandNode::run(Command::FrameEnergy, "");
+	// Print energy
+	if (result) aten.currentModel()->renderSourceModel()->energy.print();
+}
+
+void ForcefieldsWidget::on_CurrentForcesButton_clicked(bool checked)
+{
+	if (aten.current.rs() == aten.current.m) CommandNode::run(Command::ModelForces, "");
+	else CommandNode::run(Command::FrameForces, "");
+}
+
+void ForcefieldsWidget::on_ForcefieldMinimiseButton_clicked(bool checked)
+{
+	// Set convergence criteria and get maxcycles data
+	CommandNode::run(Command::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
+	int maxcycles = ui.MinimiseCyclesSpin->value();
+	Dnchar options;
+	
+	// Perform the minimisation
+	switch (ui.MinimiserMethodCombo->currentIndex())
+	{
+		case (SimpleSteepestMethod):
+			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
+			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 1);
+			break;
+		case (SteepestMethod):
+			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
+			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 0);
+			break;
+		case (ConjugateMethod):
+			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
+			CommandNode::run(Command::CGMinimise, "i", maxcycles);
+			break;
+		case (MonteCarloMethod):
+			CommandNode::run(Command::MCMinimise, "i", maxcycles);
+			break;
+	}
+	// Update the view
+	gui.update(GuiQt::AtomsTarget+GuiQt::CanvasTarget);
+}
+
+void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
+{
+	// Construct command string from GUI widget options
+	Dnchar options(-1, "BFGS %s %s %s CHARGE=%i", qPrintable(ui.MopacHFCombo->currentText()), qPrintable(ui.MopacHamiltonianCombo->currentText()), 	qPrintable(ui.MopacSpinCombo->currentText()), ui.MopacChargeSpin->value());
+	CommandNode::run(Command::MopacMinimise, "c", options.get());
+	gui.update(GuiQt::AtomsTarget+GuiQt::CanvasTarget);
+}
+			
+/*
 // Forcefields Tab
 */
 
@@ -235,73 +292,6 @@ void ForcefieldsWidget::on_UntypeModelButton_clicked(bool checked)
 void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
 {
 	aten.currentModelOrFrame()->createExpression(Choice::Default, Choice::Default, ui.AssignFFChargesCheck->isChecked());
-}
-	
-/*
-// Energy Tab
-*/
-
-void ForcefieldsWidget::on_MinimiserMethodCombo_currentIndexChanged(int index)
-{
-	// Show/hide other controlsi?
-	bool enabled = (index != ForcefieldsWidget::MopacMethod);
-	ui.ConvergenceGroup->setEnabled(enabled);
-	ui.MinimiseCyclesSpin->setEnabled(enabled);
-}
-
-void ForcefieldsWidget::on_CurrentEnergyButton_clicked(bool checked)
-{
-	bool result;
-	if (aten.current.rs() == aten.current.m) result = CommandNode::run(Command::ModelEnergy, "");
-	else result = CommandNode::run(Command::FrameEnergy, "");
-	// Print energy
-	if (result) aten.currentModel()->renderSourceModel()->energy.print();
-}
-
-void ForcefieldsWidget::on_CurrentForcesButton_clicked(bool checked)
-{
-	if (aten.current.rs() == aten.current.m) CommandNode::run(Command::ModelForces, "");
-	else CommandNode::run(Command::FrameForces, "");
-}
-
-void ForcefieldsWidget::on_MinimiseButton_clicked(bool checked)
-{
-	doMinimisation();
-}
-
-void ForcefieldsWidget::doMinimisation()
-{
-	// Set convergence criteria and get maxcycles data
-	CommandNode::run(Command::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
-	int maxcycles = ui.MinimiseCyclesSpin->value();
-	Dnchar options;
-	
-	// Perform the minimisation
-	switch (ui.MinimiserMethodCombo->currentIndex())
-	{
-		case (SimpleSteepestMethod):
-			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
-			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 1);
-			break;
-		case (SteepestMethod):
-			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
-			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 0);
-			break;
-		case (ConjugateMethod):
-			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
-			CommandNode::run(Command::CGMinimise, "i", maxcycles);
-			break;
-		case (MonteCarloMethod):
-			CommandNode::run(Command::MCMinimise, "i", maxcycles);
-			break;
-		case (MopacMethod):
-			// Construct command string from GUI widget options
-			
-			CommandNode::run(Command::MopacMinimise, "c", options.get());
-			break;
-	}
-	// Update the view
-	gui.update(GuiQt::AtomsTarget);
 }
 
 /*
