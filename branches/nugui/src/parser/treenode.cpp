@@ -419,6 +419,15 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 					result = FALSE;
 				}
 				break;
+			// Atom			(AtomData)
+			case ('J'):
+				if (rtype != VTypes::AtomData)
+				{
+					if (altargs != NULL) { reset = TRUE; continue; }
+					msg.print("Argument %i to function '%s' must be an atom&.\n", count+1, funcname);
+					result = FALSE;
+				}
+				break;
 			// Model/ID/Name	(ModelData, StringData, IntegerData)
 			case ('M'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ModelData) && (rtype != VTypes::StringData))

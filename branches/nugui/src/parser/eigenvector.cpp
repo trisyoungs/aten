@@ -150,7 +150,7 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Eigenvector *ptr= (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
+	Eigenvector *ptr = (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EigenvectorData));
@@ -244,7 +244,7 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Eigenvector *ptr= (Eigenvector*) sourcerv.asPointer(VTypes::EigenvectorData, result);
+	Eigenvector *ptr = (Eigenvector*) sourcerv.asPointer(VTypes::EigenvectorData, result);
 	int n;
 	if (result && (ptr == NULL))
 	{
@@ -292,7 +292,7 @@ bool EigenvectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Eigenvector *ptr= (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
+	Eigenvector *ptr = (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
 	if (result) switch (i)
 	{
 		default:

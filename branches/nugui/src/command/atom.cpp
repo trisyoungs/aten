@@ -75,9 +75,19 @@ bool Command::function_CurrentAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs()->beginUndoState("Fix positions of %i atoms", obj.rs()->nSelected());
-	obj.rs()->selectionSetFixed(TRUE);
-	obj.rs()->endUndoState();
+	if (c->hasArg(0))
+	{
+		Atom *i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
+		obj.rs()->beginUndoState("Fix position of single atom");
+		obj.rs()->atomSetFixed(i, TRUE);
+		obj.rs()->endUndoState();
+	}
+	else
+	{
+		obj.rs()->beginUndoState("Fix positions of %i atoms", obj.rs()->nSelected());
+		obj.rs()->selectionSetFixed(TRUE);
+		obj.rs()->endUndoState();
+	}
 	rv.reset();
 	return TRUE;
 }
@@ -86,9 +96,19 @@ bool Command::function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs()->beginUndoState("Free positions of %i atoms", obj.rs()->nSelected());
-	obj.rs()->selectionSetFixed(FALSE);
-	obj.rs()->endUndoState();
+	if (c->hasArg(0))
+	{
+		Atom *i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
+		obj.rs()->beginUndoState("Free position of single atom");
+		obj.rs()->atomSetFixed(i, FALSE);
+		obj.rs()->endUndoState();
+	}
+	else
+	{
+		obj.rs()->beginUndoState("Free positions of %i atoms", obj.rs()->nSelected());
+		obj.rs()->selectionSetFixed(FALSE);
+		obj.rs()->endUndoState();
+	}
 	rv.reset();
 	return TRUE;
 }

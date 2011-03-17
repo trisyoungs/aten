@@ -46,37 +46,37 @@ void SelectWidget::showWidget()
 void SelectWidget::on_SelectAllButton_clicked(bool on)
 {
 	CommandNode::run(Command::SelectAll, "");
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void SelectWidget::on_SelectNoneButton_clicked(bool on)
 {
 	CommandNode::run(Command::SelectNone, "");
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void SelectWidget::on_SelectionExpandButton_clicked(bool on)
 {
 	CommandNode::run(Command::Expand, "");
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void SelectWidget::on_SelectionInvertButton_clicked(bool on)
 {
 	CommandNode::run(Command::Invert, "");
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void SelectWidget::on_SelectButton_clicked(bool on)
 {
 	CommandNode::run(Command::Select, "c", qPrintable(ui.SelectionCombo->currentText()));
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void SelectWidget::on_DeselectButton_clicked(bool on)
 {
 	CommandNode::run(Command::DeSelect, "c", qPrintable(ui.SelectionCombo->currentText()));
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
@@ -94,7 +94,7 @@ void SelectWidget::on_SelectTypeButton_clicked(bool on)
 	else
 	{
 		CommandNode::run(Command::SelectType, "ic", el, qPrintable(ui.TypeNetaCombo->currentText()));
-		gui.update(GuiQt::AtomsTarget);
+		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 	}
 }
 
@@ -106,7 +106,7 @@ void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 	else
 	{
 		CommandNode::run(Command::DeSelectType, "ic", el, qPrintable(ui.TypeNetaCombo->currentText()));
-		gui.update(GuiQt::AtomsTarget);
+		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 	}
 }
 

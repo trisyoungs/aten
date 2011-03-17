@@ -63,7 +63,7 @@ void PositionWidget::on_FlipZButton_clicked(bool checked)
 void PositionWidget::flipSelection(int axis)
 {
 	CommandNode::run(Command::Mirror, "i", axis);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
@@ -84,7 +84,7 @@ void PositionWidget::on_CentreSelectionButton_clicked(bool checked)
 	Vec3<double> centre(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	Vec3<int> lock(ui.CentreLockXCheck->isChecked(), ui.CentreLockYCheck->isChecked(), ui.CentreLockZCheck->isChecked());
 	CommandNode::run(Command::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
@@ -157,7 +157,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 	}
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
@@ -234,7 +234,7 @@ void PositionWidget::on_VectorShiftPositiveButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void PositionWidget::on_VectorShiftNegativeButton_clicked(bool checked)
@@ -249,7 +249,7 @@ void PositionWidget::on_VectorShiftNegativeButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
@@ -267,7 +267,7 @@ void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void PositionWidget::on_DefineRepositionReferenceButton_clicked(bool on)

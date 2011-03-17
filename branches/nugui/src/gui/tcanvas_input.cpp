@@ -134,8 +134,6 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 	}
 	atomClicked_ = NULL;
 	
-	postRedisplay();
-	
 	msg.exit("TCanvas::mouseReleaseEvent");
 }
 
@@ -336,7 +334,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 				source->endUndoState();
 				source->updateMeasurements();
 				source->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-				gui.update();
+				gui.update(GuiQt::CanvasTarget);
 			}
 			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
 			refresh = TRUE;
@@ -741,7 +739,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				else source->selectAtom(atomClicked_);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		// Other selection operations
 		case (UserAction::SelectMoleculeAction):
@@ -749,14 +747,14 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, FALSE, ctrled);
 			source->endUndoState();
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		case (UserAction::SelectElementAction):
 			source->beginUndoState("Select Element");
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL) source->selectElement(atomClicked_, FALSE, ctrled);
 			source->endUndoState();
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		case (UserAction::SelectRadialAction):
 			source->beginUndoState("Select Radial");
@@ -769,7 +767,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->selectRadial(atomClicked_,radius);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		// Measurements
 		case (UserAction::MeasureDistanceAction):
@@ -780,7 +778,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			source->addDistanceMeasurement(atoms[0],atoms[1]);
 			source->endUndoState();
 			pickedAtoms_.clear();
-			gui.update();
+			gui.update(GuiQt::CanvasTarget);
 			break;
 		case (UserAction::MeasureAngleAction):
 			// Must be two atoms in subselection to continue
@@ -790,7 +788,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			source->addAngleMeasurement(atoms[0],atoms[1],atoms[2]);
 			source->endUndoState();
 			pickedAtoms_.clear();
-			gui.update();
+			gui.update(GuiQt::CanvasTarget);
 			break;
 		case (UserAction::MeasureTorsionAction):
 			// Must be two atoms in subselection to continue
@@ -800,7 +798,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			source->addTorsionMeasurement(atoms[0],atoms[1],atoms[2],atoms[3]);
 			source->endUndoState();
 			pickedAtoms_.clear();
-			gui.update();
+			gui.update(GuiQt::CanvasTarget);
 			break;
 		// Draw single atom
 		case (UserAction::DrawAtomAction):
@@ -812,7 +810,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->addAtom(sketchElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				source->endUndoState();
 			}
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		// Draw chains of atoms
 		case (UserAction::DrawChainAction):
@@ -839,7 +837,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->bondAtoms(i,atomClicked_,bt);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		// Draw fragments
 		case (UserAction::DrawFragmentAction):
@@ -857,7 +855,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				frag->pasteOrientedModel(source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), source);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		case (UserAction::DrawTransmuteAction):
 			if (atomClicked_ == NULL) break;
@@ -870,7 +868,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			}
 			else source->transmuteAtom(atomClicked_, sketchElement_);
 			source->endUndoState();
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		case (UserAction::DrawDeleteAction):
 			if (shifted)
@@ -888,7 +886,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->deleteAtom(atomClicked_);
 				source->endUndoState();
 			}
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		case (UserAction::DrawProbeAction):
 			if (atomClicked_ != NULL) atomClicked_->print();
@@ -914,7 +912,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->endUndoState();
 			}
 			pickedAtoms_.clear();
-			gui.update();
+			gui.update(GuiQt::CanvasTarget);
 			break;
 		// Delete bond
 		case (UserAction::DrawDeleteBondAction):
@@ -928,7 +926,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->endUndoState();
 			}
 			pickedAtoms_.clear();
-			gui.update();
+			gui.update(GuiQt::CanvasTarget);
 			break;
 		// Misc
 		case (UserAction::DrawAddHydrogenAction):
@@ -937,7 +935,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->beginUndoState("Add Hydrogen to Atom");
 				source->hydrogenSatisfy(atomClicked_);
 				source->endUndoState();
-				gui.update(GuiQt::AtomsTarget);
+				gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			}
 			break;
 		// Model transformations
@@ -947,7 +945,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			// Clear list of oldPositions_ if nothing was moved
 			if (!hasMoved_) oldPositions_.clear();
 			source->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-			gui.update(GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			break;
 		// View changes (no action)
 		case (UserAction::RotateXYAction):

@@ -264,6 +264,7 @@ void GuiQt::run()
 	mainWindow->update();
 	commandWidget->refreshScripts();
 	modelListWidget->refresh();
+	atomListWidget->refresh();
 	toolBoxWidget->updateButtons();
 
 	// Reset view of all loaded models

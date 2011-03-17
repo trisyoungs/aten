@@ -154,7 +154,7 @@ bool RegionVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ComponentRegion *ptr= (ComponentRegion*) rv.asPointer(VTypes::RegionData, result);
+	ComponentRegion *ptr = (ComponentRegion*) rv.asPointer(VTypes::RegionData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::RegionData));
@@ -266,7 +266,7 @@ bool RegionVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	ComponentRegion *ptr= (ComponentRegion*) sourcerv.asPointer(VTypes::RegionData, result);
+	ComponentRegion *ptr = (ComponentRegion*) sourcerv.asPointer(VTypes::RegionData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::RegionData));
@@ -324,7 +324,7 @@ bool RegionVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ComponentRegion *ptr= (ComponentRegion*) rv.asPointer(VTypes::RegionData, result);
+	ComponentRegion *ptr = (ComponentRegion*) rv.asPointer(VTypes::RegionData, result);
 	if (result) switch (i)
 	{
 		default:

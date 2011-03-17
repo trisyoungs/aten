@@ -146,7 +146,7 @@ bool SiteVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Site *ptr= (Site*) rv.asPointer(VTypes::SiteData, result);
+	Site *ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
@@ -224,7 +224,7 @@ bool SiteVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Site *ptr= (Site*) sourcerv.asPointer(VTypes::SiteData, result);
+	Site *ptr = (Site*) sourcerv.asPointer(VTypes::SiteData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
@@ -254,7 +254,7 @@ bool SiteVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Site *ptr= (Site*) rv.asPointer(VTypes::SiteData, result);
+	Site *ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
 	if (result) switch (i)
 	{
 		default:

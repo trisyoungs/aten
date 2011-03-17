@@ -167,7 +167,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Pattern *ptr= (Pattern*) rv.asPointer(VTypes::PatternData, result);
+	Pattern *ptr = (Pattern*) rv.asPointer(VTypes::PatternData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternData));
@@ -390,7 +390,7 @@ bool PatternVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Pattern *ptr= (Pattern*) sourcerv.asPointer(VTypes::PatternData, result);
+	Pattern *ptr = (Pattern*) sourcerv.asPointer(VTypes::PatternData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternData));
@@ -430,7 +430,7 @@ bool PatternVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Pattern *ptr= (Pattern*) rv.asPointer(VTypes::PatternData, result);
+	Pattern *ptr = (Pattern*) rv.asPointer(VTypes::PatternData, result);
 	if (result) switch (i)
 	{
 		default:

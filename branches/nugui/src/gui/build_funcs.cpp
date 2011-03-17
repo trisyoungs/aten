@@ -98,13 +98,13 @@ void BuildWidget::on_ElementPickButton_clicked(bool checked)
 void BuildWidget::on_DrawAddHModelButton_clicked(bool checked)
 {
 	CommandNode::run(Command::AddHydrogen, "");
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void BuildWidget::on_DrawTransmuteSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Transmute, "i", gui.mainWidget->sketchElement());
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
@@ -114,31 +114,31 @@ void BuildWidget::on_DrawTransmuteSelectionButton_clicked(bool checked)
 void BuildWidget::on_DrawRebondButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ReBond, "");
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void BuildWidget::on_DrawClearBondingButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ClearBonds, "");
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void BuildWidget::on_DrawAugmentButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Augment, "");
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void BuildWidget::on_DrawRebondSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ReBondSelection, "");
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void BuildWidget::on_DrawClearSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ClearSelectedBonds, "");
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 /*
@@ -155,7 +155,7 @@ void BuildWidget::on_AddAtomButton_clicked(bool on)
 	{
 		CommandNode::run(Command::NewAtom, "iddd", gui.mainWidget->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void BuildWidget::closeEvent(QCloseEvent *event)

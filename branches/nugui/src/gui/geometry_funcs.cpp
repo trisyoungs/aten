@@ -96,28 +96,28 @@ void GeometryWidget::refresh()
 void GeometryWidget::on_MeasureDistanceSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MeasureSelected, "i", 2);
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 // Measure all bond angles in current selection
 void GeometryWidget::on_MeasureAngleSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MeasureSelected, "i", 3);
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 // Measure all bond torsions in current selection
 void GeometryWidget::on_MeasureTorsionSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MeasureSelected, "i", 4);
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 // Clear all selections from model
 void GeometryWidget::on_MeasureClearAllButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ClearMeasurements, "");
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 /*
@@ -137,7 +137,7 @@ void GeometryWidget::on_SetNewDistanceButton_clicked(bool checked)
 	i = ri->item;
 	j = ri->next->item;
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, ui.NewDistanceSpin->value());
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
@@ -154,7 +154,7 @@ void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
 	j = ri->next->item;
 	double value = m->distance(i,j) + ui.NudgeDistanceSpin->value();
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, value);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
@@ -171,7 +171,7 @@ void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 	j = ri->next->item;
 	double value = m->distance(i,j) - ui.NudgeDistanceSpin->value();
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, value);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
@@ -192,7 +192,7 @@ void GeometryWidget::on_SetNewAngleButton_clicked(bool checked)
 	j = ri->next->item;
 	k = ri->next->next->item;
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, ui.NewAngleSpin->value());
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
@@ -210,7 +210,7 @@ void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
 	k = ri->next->next->item;
 	double value = m->angle(i,j,k) + ui.NudgeAngleSpin->value();
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, value);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
@@ -228,7 +228,7 @@ void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 	k = ri->next->next->item;
 	double value = m->angle(i,j,k) - ui.NudgeAngleSpin->value();
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, value);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
@@ -250,7 +250,7 @@ void GeometryWidget::on_SetNewTorsionButton_clicked(bool checked)
 	k = ri->next->next->item;
 	l = ri->next->next->next->item;
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, ui.NewTorsionSpin->value());
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
@@ -269,7 +269,7 @@ void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
 	l = ri->next->next->next->item;
 	double value = m->torsion(i,j,k,l) + ui.NudgeTorsionSpin->value();
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
@@ -288,7 +288,7 @@ void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 	l = ri->next->next->next->item;
 	double value = m->torsion(i,j,k,l) - ui.NudgeTorsionSpin->value();
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void GeometryWidget::closeEvent(QCloseEvent *event)

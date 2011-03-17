@@ -68,7 +68,7 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 	aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
 	m->changeLog.add(Log::Camera);
-	gui.update();
+	gui.update(GuiQt::AllTarget);
 }
 
 // Switch render focus from the model to the model's trajectory
@@ -77,7 +77,7 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 	aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	Model *m = aten.currentModelOrFrame();
 	m->changeLog.add(Log::Camera);
-	gui.update();
+	gui.update(GuiQt::AllTarget);
 }
 
 // Set view along cartesian axis supplied

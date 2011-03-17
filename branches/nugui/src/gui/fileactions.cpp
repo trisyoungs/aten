@@ -52,10 +52,12 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 		if (filter == NULL) filter = aten.probeFile(gui.loadModelDialog->selectedFilename(), FilterData::ModelImport);
 		if (filter != NULL)
 		{
+			// Run any import options in the filter
+			if (!filter->executeCustomDialog()) return;
 			filter->executeRead(gui.loadModelDialog->selectedFilename());
 			addRecent(gui.loadModelDialog->selectedFilename());
 			aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-			gui.update();
+			gui.update(GuiQt::AllTarget);
 		}
 	}
 }
@@ -268,8 +270,6 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	dialog.setWidgetValue("choices", ReturnValue(framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) ));
 	if (!dialog.executeCustomDialog(FALSE)) return;
 
-	// 	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry.get(), &ok);
-
 	// Get values from dialog
 	geometry = dialog.widgetValuec("Size");
 	width = atoi(beforeChar(geometry,'x'));
@@ -340,7 +340,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 			updateTrajectoryControls();
 		}
 		else msg.print( "Couldn't determine trajectory file format.\n");
-		gui.update();
+		gui.update(GuiQt::AllTarget);
 	}
 }
 
@@ -357,10 +357,11 @@ void AtenForm::on_actionFileOpenExpression_triggered(bool checked)
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
 		filter = aten.findFilterByDescription(FilterData::ExpressionImport, qPrintable(selFilter));
-		if (filter != NULL) filter->executeRead(qPrintable(filename));
-		else
+		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::ExpressionImport);
+		if (filter != NULL)
 		{
-			filter = aten.probeFile(qPrintable(filename), FilterData::ExpressionImport);
+			// Run any import options in the filter
+			if (!filter->executeCustomDialog()) return;
 			if (filter != NULL) filter->executeRead(qPrintable(filename));
 		}
 	}
@@ -423,8 +424,13 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		}
 		Model *m = aten.currentModelOrFrame();
 		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
-		else if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
-		else msg.print("Failed to save expression for model '%s'.\n", m->name());
+		else
+		{
+			// Run any export options in the filter
+			if (!filter->executeCustomDialog()) return;
+			if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
+			else msg.print("Failed to save expression for model '%s'.\n", m->name());
+		}
 	}
 }
 

@@ -113,7 +113,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update();
+		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
 
 		// Store old forces and calculate new forces at the new line-minimised position
 		for (i=0; i<srcmodel->nAtoms()*3; i += 3)

@@ -61,6 +61,7 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 
 	// Prevent QPainter from autofilling widget background
 	setAutoFillBackground(FALSE);
+	setCursor(Qt::CrossCursor);
 }
 
 /*
@@ -476,7 +477,7 @@ void TCanvas::timerEvent(QTimerEvent *event)
 		Model *m = aten.currentModel();
 		m->seekNextTrajectoryFrame();
 		if (m->trajectoryFrameIndex() == m->nTrajectoryFrames()-1) gui.stopTrajectoryPlayback();
-		gui.update();
+		gui.update(GuiQt::CanvasTarget);
 		DONTDRAW = FALSE;
 	}
 }

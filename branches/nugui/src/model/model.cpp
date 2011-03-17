@@ -383,7 +383,7 @@ void Model::print() const
 	msg.print("   Mass : %f\n", mass_);
 	if (cell_.type() != UnitCell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", UnitCell::cellType(cell_.type()), density_, Prefs::densityUnit(prefs.densityUnit()));
 	msg.print("  Atoms : %i\n", atoms_.nItems());
-	msg.print(" Id     El   FFType    FFId           X             Y             Z              Q        S  \n");
+	msg.print(" Id     El   FFType    FFId         X             Y             Z              Q      Sel Fix\n");
 	// Print from pattern definition if possible, otherwise just use model atom list
 	Atom *i;
 	int n;

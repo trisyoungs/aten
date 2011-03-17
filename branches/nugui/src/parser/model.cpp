@@ -229,7 +229,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Model *ptr= (Model*) rv.asPointer(VTypes::ModelData, result);
+	Model *ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
@@ -560,7 +560,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Model *ptr= (Model*) sourcerv.asPointer(VTypes::ModelData, result);
+	Model *ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
@@ -602,7 +602,7 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Model *ptr= (Model*) rv.asPointer(VTypes::ModelData, result);
+	Model *ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
 	// Construct temporary bundle object containing our model pointer
 	Bundle bundle(ptr);
 // 	ReturnValue temprv;

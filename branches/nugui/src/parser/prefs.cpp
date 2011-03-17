@@ -601,7 +601,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Prefs *ptr= (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
+	Prefs *ptr = (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
@@ -1009,7 +1009,7 @@ bool PreferencesVariable::performFunction(int i, ReturnValue &rv, TreeNode *node
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Prefs *ptr= (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
+	Prefs *ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
 	if (result) switch (i)
 	{
 		default:

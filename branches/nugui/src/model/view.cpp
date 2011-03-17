@@ -343,7 +343,7 @@ Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, d
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
 	vmat = modelViewMatrix();
 	vmat.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
-	temp = modelViewMatrix() * pos;
+	temp = vmat * pos;
 	worldr.set(temp.x, temp.y, temp.z);
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	if (screenr != NULL)

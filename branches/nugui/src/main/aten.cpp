@@ -304,7 +304,7 @@ void Aten::setModelVisible(Model *m, bool visible)
 	Refitem<Model,int> *ri = visibleModels_.contains(m);
 	if ((ri == NULL) && visible) visibleModels_.add(m);
 	else if ((ri != NULL) && (!visible)) visibleModels_.remove(m);
-	gui.update();
+// 	gui.update(GuiQt::CanvasTarget);   TGAY
 }
 
 // Return number of visible models

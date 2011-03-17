@@ -213,11 +213,12 @@ void GridsWidget::loadGrid()
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
 		filter = aten.findFilterByDescription(FilterData::GridImport, qPrintable(selFilter));
-		if (filter != NULL) filter->executeRead(qPrintable(filename));
-		else
+		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::GridImport);
+		if (filter != NULL)
 		{
-			filter = aten.probeFile(qPrintable(filename), FilterData::GridImport);
-			if (filter != NULL) filter->executeRead(qPrintable(filename));
+			// Run any import options in the filter
+			if (!filter->executeCustomDialog()) return;
+			filter->executeRead(qPrintable(filename));
 		}
 	}
 	refresh();

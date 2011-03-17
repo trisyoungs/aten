@@ -279,14 +279,14 @@ void ForcefieldsWidget::on_AssignFFToPatternButton_clicked(bool checked)
 // Perform automatic atom typing
 void ForcefieldsWidget::on_TypeModelButton_clicked(bool checked)
 {
-	if (aten.currentModelOrFrame()->typeAll()) gui.update();
+	if (aten.currentModelOrFrame()->typeAll()) gui.update(GuiQt::CanvasTarget);
 }
 
 // Remove typing from model
 void ForcefieldsWidget::on_UntypeModelButton_clicked(bool checked)
 {
 	aten.currentModelOrFrame()->removeTyping();
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
@@ -320,7 +320,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 		m->selectionSetType(ffa, TRUE);
 		msg.print("Manually set types of %i atoms.\n", aten.currentModel()->nSelected());
 	}
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 // Clear type definitions from the selected atoms
@@ -328,7 +328,7 @@ void ForcefieldsWidget::on_ManualTypeClearButton_clicked(bool checked)
 {
 	aten.currentModel()->selectionSetType(NULL, FALSE);
 	msg.print("Cleared types of %i atoms.\n", aten.currentModel()->nSelected());
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 // Test selected atom type on current atom selection

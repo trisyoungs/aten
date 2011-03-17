@@ -155,7 +155,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	int n;
-	ForcefieldBound *ptr= (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
+	ForcefieldBound *ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
@@ -344,7 +344,7 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVa
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	ForcefieldBound *ptr= (ForcefieldBound*) sourcerv.asPointer(VTypes::ForcefieldBoundData, result);
+	ForcefieldBound *ptr = (ForcefieldBound*) sourcerv.asPointer(VTypes::ForcefieldBoundData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
@@ -404,7 +404,7 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ForcefieldBound *ptr= (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
+	ForcefieldBound *ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
 	int id;
 	if (result) switch (i)
 	{

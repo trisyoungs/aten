@@ -126,7 +126,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Save input file
 	LineParser parser(mopacInput, TRUE);
 	int opt;
-	if (c->hasArg(0)) parser.writeLineF("ITER %s\n",c->argc(0));
+	if (c->hasArg(0)) parser.writeLineF("ITER BFGS %s\n",c->argc(0));
 	else parser.writeLine("ITER BFGS PM6 RHF SINGLET\n");
 	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", mopacInput.get());
 	parser.writeLineF("Temporary MOPAC Job Output : %s\n", mopacArc.get());	

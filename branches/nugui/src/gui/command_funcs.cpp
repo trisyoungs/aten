@@ -74,7 +74,7 @@ void CommandWidget::on_CommandPrompt_returnPressed()
 		tempScript.execute(result);
 	}
 	// Force update of the GUI?
-	if (ui.PromptForceUpdateCheck->isChecked()) gui.update();
+	if (ui.PromptForceUpdateCheck->isChecked()) gui.update(GuiQt::CanvasTarget);
 }
 
 /*
@@ -131,7 +131,7 @@ void CommandWidget::on_InteractivePrompt_returnPressed()
 		updateVariableList();
 	}
 	// Force update of the GUI?
-	if (ui.InteractiveForceUpdateCheck->isChecked()) gui.update();
+	if (ui.InteractiveForceUpdateCheck->isChecked()) gui.update(GuiQt::CanvasTarget);
 }
 
 /*
@@ -267,7 +267,7 @@ void CommandWidget::on_RunSelectedButton_clicked(bool checked)
 		ReturnValue result;
 		script->execute(result, TRUE);
 	}
-	gui.update();
+	gui.update(GuiQt::AllTarget);
 }
 
 void CommandWidget::runScript()
@@ -289,7 +289,7 @@ void CommandWidget::runScript()
 		ReturnValue result;
 		ri->data->execute(result, TRUE);
 	}
-	gui.update();
+	gui.update(GuiQt::AllTarget);
 }
 
 /*

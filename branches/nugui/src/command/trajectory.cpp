@@ -32,7 +32,7 @@ bool Command::function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.m->addTrajectoryFrame();
 	obj.m->setRenderSource(Model::TrajectorySource);
 	if (c->hasArg(0)) obj.rs()->setName(c->argc(0));
-	gui.update(GuiQt::AtomsTarget+GuiQt::CellTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.set(VTypes::ModelData, obj.rs());
 	return TRUE;
 }
@@ -47,7 +47,7 @@ bool Command::function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue 
 		obj.m->setRenderSource(Model::ModelSource);
 	}
 	obj.m->clearTrajectory();
-	gui.update(GuiQt::AtomsTarget+GuiQt::CellTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
@@ -87,7 +87,7 @@ bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekFirstTrajectoryFrame();
-	gui.update(GuiQt::AtomsTarget+GuiQt::CellTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
@@ -102,7 +102,7 @@ bool Command::function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekLastTrajectoryFrame();
-	gui.update(GuiQt::AtomsTarget+GuiQt::CellTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
@@ -128,7 +128,7 @@ bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekNextTrajectoryFrame();
-	gui.update(GuiQt::AtomsTarget+GuiQt::CellTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
@@ -143,7 +143,7 @@ bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekPreviousTrajectoryFrame();
-	gui.update(GuiQt::AtomsTarget+GuiQt::CellTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
@@ -158,7 +158,7 @@ bool Command::function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekTrajectoryFrame(c->argi(0)-1);
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 	rv.reset();
 	return TRUE;
 }

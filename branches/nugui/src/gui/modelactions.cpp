@@ -29,56 +29,55 @@
 void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->autocreatePatterns();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // Remove patterns from model
 void AtenForm::on_actionModelRemovePatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->clearPatterns();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // List patterns in model
 void AtenForm::on_actionModelListPatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->printPatterns();
-	gui.update(GuiQt::AtomsTarget);
 }
 
 // Perform forcefield typing in model
 void AtenForm::on_actionModelFFType_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->typeAll();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // // Remove typing from model
 void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->removeTyping();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // Create energy expression for model
 void AtenForm::on_actionModelCreateExpression_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->createExpression();
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // Fold atoms in model
 void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
 {
 	CommandNode::run(Command::Fold, "");
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // Fold molecules in model
 void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
 {
 	CommandNode::run(Command::FoldMolecules, "");
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // Move to next model in list
@@ -102,7 +101,7 @@ void AtenForm::on_actionModelNext_triggered(bool checked)
 		Model *m = aten.currentModel();
 		aten.setCurrentModel(m->next == NULL ? aten.models() : m->next);
 	}
-	gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget-GuiQt::ModelsTarget);
 }
 
 // Move to previous model in list
@@ -126,14 +125,14 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 		Model *m = aten.currentModel();
 		aten.setCurrentModel(m->prev == NULL ? aten.models() : m->prev);
 	}
-	gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget-GuiQt::ModelsTarget);
 }
 
 // Show all atoms in current model
 void AtenForm::on_actionModelShowAll_triggered(bool checked)
 {
 	CommandNode::run(Command::ShowAll, "");
-	gui.update(GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // Rename model

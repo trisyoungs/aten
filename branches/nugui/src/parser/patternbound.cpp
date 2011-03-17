@@ -146,7 +146,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	PatternBound *ptr= (PatternBound*) rv.asPointer(VTypes::PatternBoundData, result);
+	PatternBound *ptr = (PatternBound*) rv.asPointer(VTypes::PatternBoundData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternBoundData));
@@ -308,7 +308,7 @@ bool PatternBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	PatternBound *ptr= (PatternBound*) sourcerv.asPointer(VTypes::PatternBoundData, result);
+	PatternBound *ptr = (PatternBound*) sourcerv.asPointer(VTypes::PatternBoundData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternBoundData));
@@ -339,7 +339,7 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *nod
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	PatternBound *ptr= (PatternBound*) rv.asPointer(VTypes::PatternBoundData, result);
+	PatternBound *ptr = (PatternBound*) rv.asPointer(VTypes::PatternBoundData, result);
 	int id;
 	if (result) switch (i)
 	{

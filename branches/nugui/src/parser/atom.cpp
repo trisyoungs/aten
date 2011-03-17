@@ -173,7 +173,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
+	Atom *ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
@@ -336,7 +336,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	int n;
 	Atom::DrawStyle ds;
 	Element *el;
-	Atom *ptr= (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
+	Atom *ptr = (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
@@ -455,7 +455,7 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
+	Atom *ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if (result) switch (i)
 	{
 		case (AtomVariable::FindBond):

@@ -2,6 +2,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>More verbosity for all commands</para>
+		</listitem>
+		<listitem>
 			<para>Add pbc/mim accessor(s) to UnitCell.</para>
 		</listitem>
 		<listitem>

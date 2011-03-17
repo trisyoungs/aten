@@ -30,33 +30,38 @@ Command commands;
 
 /* Argument Specification Tokens:
        Char	Meaning		Acceptable Types in VTypes
-	N	Number		IntegerData, DoubleData
-	I	Integer		IntegerData
-	R	Real		DoubleData
+	A	Atom/Id		IntegerData, AtomData
+	B	Boolean		Any
 	C	Character	StringData
+	D	<free>
+	E	Element		StringData,IntegerData,DoubleData,AtomData
+	F	Frcefld/ID/Name	ForcefieldData, IntegerData, StringData
+	G	Grid/ID		GridData, StringData, IntegerData
+	H	<free>
+	I	Integer		IntegerData
+	J	Atom		AtomData
+	K	<free>
+	L	<free>
+	M	Model/ID/Name	ModelData, StringData, IntegerData
+	N	Number		IntegerData, DoubleData
+	O	FFAtom		ForcefieldAtomData
+	P	Pattern/ID/Name	PatternData, StringData, IntegerData
+	Q	<free>
+	R	Real		DoubleData
 	S	Any Simple	IntegerData, DoubleData, StringData
 	T	Exact Simple	IntegerData, StringData
 	U	Vector		VectorData
-	B	Boolean		Any
-	E	Element		StringData,IntegerData,DoubleData,AtomData
-	A	Atom/Id		IntegerData, AtomData
-	M	Model/ID/Name	ModelData, StringData, IntegerData
-	F	Frcefld/ID/Name	ForcefieldData, IntegerData, StringData
-	P	Pattern/ID/Name	PatternData, StringData, IntegerData
-	O	FFAtom		ForcefieldAtomData
-	G	Grid/ID		GridData, StringData, IntegerData
-	X	Pointer		Any pointer object
 	V	Variable	Any simple variable (not path)
+	W	<free>
+	X	Pointer		Any pointer object
+	Y	<free>
 	Z	Any		Any
 	*	<Repeat>	Any number of the last type again
 	^	<Require Var>	Next token must be a modifiable variable and not a constant
 	[]	<Cluster>	Surrounds groups of optional arguments that must be specified together
 	|	<Or>		Separates alternative lists of arguments for the command
 	&	<Array>		Next token must be an array
-	/	<type Or>	Specifies an argument may be one of two types
 	2-9	<NRepeat>	Next argument should occur N times
-	
-	Current Usage List: ABCEFGIMNOPRSTUVXZ*^[]|&/23456789
 */
 
 // Command action

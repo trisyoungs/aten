@@ -316,7 +316,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			//msg.print("\n");
 		}
 		
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update();
+		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
 		
 		elast = ecurrent;
 
@@ -744,7 +744,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	//else printf("Expression is NOT valid.\n");
 	destmodel->changeLog.add(Log::Coordinates);
 	gui.disorderWidget->refresh();
-	gui.update();
+	gui.update(GuiQt::AllTarget);
 	msg.exit("MonteCarlo::insert");
 	return TRUE;
 }
