@@ -27,9 +27,6 @@
 			<para>Add filter type to export generic 'data', e.g. measurements list</para>
 		</listitem>
 		<listitem>
-			<para>Reading of unformatted files (i.e. DL_POLY HISu) broken?</para>
-		</listitem>
-		<listitem>
 			<para>Rebonding model also folds atoms, making --nobond irrelevant</para>
 		</listitem>
 		<listitem>

@@ -122,6 +122,7 @@ GuiQt::GuiQt()
 	modelListWidget = NULL;
 	positionWidget = NULL;
 	toolBoxWidget = NULL;
+	trajectoryWidget = NULL;
 	transformWidget = NULL;
 	vibrationsWidget = NULL;
 }
@@ -212,9 +213,10 @@ void GuiQt::run()
 	positionWidget = new PositionWidget(mainWindow, Qt::Tool);
 	selectWidget = new SelectWidget(mainWindow, Qt::Tool);
 	toolBoxWidget = new ToolBoxWidget(mainWindow, Qt::Tool);
+	trajectoryWidget = new TrajectoryWidget(mainWindow, Qt::Tool);
 	transformWidget = new TransformWidget(mainWindow, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(mainWindow, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << disorderWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << disorderWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << trajectoryWidget << transformWidget << vibrationsWidget;
 	toolBoxWidget->show();
 	
 	// Connect Finished signal of tool windows to finished slots in structure
@@ -271,7 +273,7 @@ void GuiQt::run()
 	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
 
 	gui.mainWidget->enableDrawing();
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 
 	// Display message box warning if there was a filter load error
 	if (aten.nFiltersFailed() == -1)

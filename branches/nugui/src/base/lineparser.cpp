@@ -260,7 +260,7 @@ int LineParser::readNextLine(int optionMask)
 	}
 	if (file_->eof())
 	{
-		msg.exit("LineParser::readLine");
+		msg.exit("LineParser::readNextLine");
 		return -1;
 	}
 	// Loop until we get 'suitable' line from file
@@ -278,6 +278,12 @@ int LineParser::readNextLine(int optionMask)
 			}
 			else if (chr == '\n') break;
 			line_[lineLength_++] = chr;
+			// Check here for overfilling the line_ buffer - perhaps it's a binary file?
+			if (lineLength_ == MAXLINELENGTH)
+			{
+				msg.exit("LineParser::readNextLine");
+				return -1;
+			}
 		}
 		line_[lineLength_] = '\0';
 		msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);

@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Trajectory Dock Widget Functions
+	*** src/gui/trajectory_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -19,12 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "gui/gui.h"
+#include "gui/trajectory.h"
 
-#define ATENVERSION "1.7"
-#define ATENREVISION "1552"
-#define ATENDATE "Fri 18 Mar - 18:47"
-#define ATENURL "http://aten.googlecode.com/svn/branches/nugui"
+// Constructor
+TrajectoryWidget::TrajectoryWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+{
+	ui.setupUi(this);
+}
 
-#endif

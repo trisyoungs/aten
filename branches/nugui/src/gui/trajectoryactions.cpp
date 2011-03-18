@@ -30,36 +30,35 @@ void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 {
 	if (checked) aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	else aten.currentModel()->setRenderSource(Model::ModelSource);
-	Model *m = aten.currentModelOrFrame();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Skip to next frame in trajectory
 void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekNextTrajectoryFrame();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Skip to previous frame in trajectory
 void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekPreviousTrajectoryFrame();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Skip to first frame in trajectory
 void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstTrajectoryFrame();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Skip to last frame in trajectory
 void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekLastTrajectoryFrame();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Play/pause trajectory playback

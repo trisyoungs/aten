@@ -65,6 +65,7 @@ void ToolBoxWidget::updateButtons()
 	ui.MessagesButton->setChecked(gui.mdWidget->isVisible());
 	ui.PositionButton->setChecked(gui.positionWidget->isVisible());
 	ui.SelectButton->setChecked(gui.selectWidget->isVisible());
+	ui.TrajectoryButton->setChecked(gui.trajectoryWidget->isVisible());
 	ui.TransformButton->setChecked(gui.transformWidget->isVisible());
 	ui.VibrationsButton->setChecked(gui.vibrationsWidget->isVisible());
 }
@@ -163,6 +164,12 @@ void ToolBoxWidget::on_SelectButton_clicked(bool checked)
 {
 	if (checked) gui.selectWidget->showWidget();
 	else gui.selectWidget->hide();
+}
+
+void ToolBoxWidget::on_TrajectoryButton_clicked(bool checked)
+{
+	if (checked) gui.trajectoryWidget->showWidget();
+	else gui.trajectoryWidget->hide();
 }
 
 void ToolBoxWidget::on_TransformButton_clicked(bool checked)

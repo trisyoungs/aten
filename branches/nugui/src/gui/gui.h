@@ -60,6 +60,7 @@ class ModelListWidget;
 class PositionWidget;
 class SelectWidget;
 class ToolBoxWidget;
+class TrajectoryWidget;
 class TransformWidget;
 class VibrationsWidget;
 
@@ -185,6 +186,8 @@ class GuiQt
 	SelectWidget *selectWidget;
 	// Toolbox dock widget
 	ToolBoxWidget *toolBoxWidget;
+	// Trajectory control dock widget
+	TrajectoryWidget *trajectoryWidget;
 	// Atom transformation dock widget
 	TransformWidget *transformWidget;
 	// Vibrations dock widget

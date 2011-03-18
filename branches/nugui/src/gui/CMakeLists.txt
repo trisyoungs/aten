@@ -63,6 +63,7 @@ set(qtproject_SRCS
   tlistwidgetitem_funcs.cpp
   toolbox_funcs.cpp
   trajectoryactions.cpp
+  trajectory_funcs.cpp
   transform_funcs.cpp
   tprocess_funcs.cpp
   tprompt_funcs.cpp
@@ -104,6 +105,7 @@ SET(pro_MOC_HDRS
   selectpattern.h
   selectvariable.h
   toolbox.h
+  trajectory.h
   transform.h
   vibrations.h
   viewbasis.h
@@ -146,6 +148,7 @@ SET(pro_UIS
   selectpattern.ui
   selectvariable.ui
   toolbox.ui
+  trajectory.ui
   transform.ui
   vibrations.ui
   viewbasis.ui
