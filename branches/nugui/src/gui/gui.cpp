@@ -480,10 +480,10 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	prefs.setLabelSize(newlabelsize);
 
 	mainWidget->setOffScreenRendering(TRUE);
-	mainWidget->postRedisplay();
+	mainWidget->postRedisplay(TRUE);
 
 	// Flag any surfaces to be rerendered for use in this context
-	aten.current.rs()->rerenderGrids();
+// 	aten.current.rs()->rerenderGrids();
 
 	if (prefs.useFrameBuffer() == FALSE) pixmap = mainWidget->renderPixmap(width, height, FALSE);
 	else

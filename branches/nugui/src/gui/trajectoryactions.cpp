@@ -31,7 +31,6 @@ void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 	if (checked) aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	else aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
-	m->changeLog.add(Log::Camera);
 	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
 }
 
@@ -39,7 +38,6 @@ void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekNextTrajectoryFrame();
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
 }
 
@@ -47,7 +45,6 @@ void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
 void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekPreviousTrajectoryFrame();
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
 }
 
@@ -55,7 +52,6 @@ void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
 void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstTrajectoryFrame();
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
 }
 
@@ -63,7 +59,6 @@ void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekLastTrajectoryFrame();
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget);
 }
 

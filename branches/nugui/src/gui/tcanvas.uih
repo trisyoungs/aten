@@ -105,6 +105,8 @@ class TCanvas : public QGLWidget
 	void resizeGL(int, int);
 
 	private:
+	// Flag specifying that stored model pixel data should not be used
+	bool noPixelData_;
 	// Begin construct for any OpenGL commands
 	bool beginGl();
 	// Finish OpenGL commands
@@ -132,7 +134,7 @@ class TCanvas : public QGLWidget
 	// Reset the projection matrix based on the current canvas geometry
 	void doProjection(int newwidth = -1, int newheight = -1);
 	// Update Canvas
-	void postRedisplay();
+	void postRedisplay(bool noImages = FALSE);
 	// Update view matrix stored in RenderEngine
 	void updateTransformation(Matrix &mat, Vec3<double> cellcentre);
 	// Render a scene based on the specified model

@@ -38,6 +38,7 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	useCurrentModel_ = TRUE;
 	renderSource_ = NULL;
 	// Rendering
+	noPixelData_ = FALSE;
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
 	renderOffScreen_ = FALSE;
@@ -244,18 +245,68 @@ void TCanvas::paintGL()
 
 		// Grab secondary pointer (e.g. trajectory frame) if necessary
 		if (useCurrentModel_) m = m->renderSourceModel();
+
+		// Vibration frame?
+		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
+		else m = m->renderSourceModel();
+
+		// If the stored model pixel data is not out of date, just render this instead
+		if ((!noPixelData_) && ri->item->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)))
+		{
+			// Setup flat projection for pixel rendering
+			glViewport(0,0,contextWidth_,contextHeight_);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho(0.0, (double)contextWidth_, 0.0, (double)contextHeight_, -1.0, 1.0);
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			glRasterPos2i(col*px, contextHeight_-(row+1)*py);
+			glDrawPixels(px, py, GL_RGBA, GL_UNSIGNED_BYTE, ri->item->pixelData());
+		}
+		else
+		{
+			// Determine desired pixel range and set up view(port)
+			checkGlError();
+			m->setupView(col*px, contextHeight_-(row+1)*py, px, py);
 		
-		// Determine desired pixel range and set up view(port)
-		checkGlError();
-		m->setupView(col*px, contextHeight_-(row+1)*py, px, py);
+			// Clear triangle lists and render the 3D parts of the model
+			engine_.clearTriangleLists();
+			render3D(m);
+		}
+
+		// Increase counters
+		++col;
+		if (col%nperrow == 0)
+		{
+			col = 0;
+			++row;
+		}
+	}
+	
+	// Store pixel data for models that need it
+	col = 0;
+	row = 0;
+	glReadBuffer(GL_BACK);
+	glViewport(0,0,contextWidth_,contextHeight_);
+	for (Refitem<Model,int> *ri = first; ri != NULL; ri = ri->next)
+	{
+		// Grab model pointer
+		m = ri->item;
+		if (m == NULL) continue;
+
+		// Grab secondary pointer (e.g. trajectory frame) if necessary
+		if (useCurrentModel_) m = m->renderSourceModel();
 		
 		// Vibration frame?
 		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
 		else m = m->renderSourceModel();
 		
-		// Clear triangle lists and render the 3D parts of the model
-		engine_.clearTriangleLists();
-		render3D(m);
+		// If the stored model pixel data is not out of date, just render this instead
+		if (noPixelData_ || (!ri->item->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total))))
+		{
+			ri->item->preparePixelData(px,py,m,m->changeLog.log(Log::Total));
+			glReadPixels(col*px, contextHeight_-(row+1)*py, px, py, GL_RGBA, GL_UNSIGNED_BYTE, ri->item->pixelData());
+		}
 
 		// Increase counters
 		++col;
@@ -281,7 +332,7 @@ void TCanvas::paintGL()
 		m = m->renderFromVibration() ? m->vibrationCurrentFrame() : m->renderSourceModel();
 		render2D(painter, m);
 	}
-
+	
 	// Draw box around current model
 	color.setRgbF(0.0,0.0,0.0,1.0);
 	pen.setColor(color);
@@ -417,9 +468,10 @@ bool TCanvas::offScreenRendering() const
 }
 
 // Refresh widget
-void TCanvas::postRedisplay()
+void TCanvas::postRedisplay(bool noImages)
 {
 	if ((!valid_) || drawing_) return;
+	noPixelData_ = noImages;
 	updateGL();
 }
 

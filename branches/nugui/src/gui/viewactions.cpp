@@ -50,16 +50,14 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
-	gui.mainWidget->doProjection();
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 }
 
 // Set orthographic view
 void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
-	gui.mainWidget->doProjection();
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 }
 
 // Switch render focus from the model's trajectory to the model.
@@ -67,7 +65,6 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 {
 	aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
-	m->changeLog.add(Log::Camera);
 	gui.update(GuiQt::AllTarget);
 }
 
@@ -76,7 +73,6 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 {
 	aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	Model *m = aten.currentModelOrFrame();
-	m->changeLog.add(Log::Camera);
 	gui.update(GuiQt::AllTarget);
 }
 
@@ -170,8 +166,7 @@ void AtenForm::on_actionSchemeCharge_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
-	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 }
 
 // Set current colouring scheme to force
@@ -179,8 +174,7 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
-	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 }
 
 // Set current colouring scheme to velocity
@@ -188,8 +182,7 @@ void AtenForm::on_actionSchemeVelocity_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::VelocityScheme);
-	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 }
 
 // Set current colouring scheme to custom
@@ -197,8 +190,7 @@ void AtenForm::on_actionSchemeCustom_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::CustomScheme);
-	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 }
 
 // Set scheme actions to reflect supplied Prefs::ColouringScheme
@@ -209,8 +201,6 @@ void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
 	else if (cs == Prefs::ForceScheme) ui.actionSchemeForce->setChecked(TRUE);
 	else if (cs == Prefs::VelocityScheme) ui.actionSchemeVelocity->setChecked(TRUE);
 	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
-	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	prefs.setColourScheme(cs);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 }
-

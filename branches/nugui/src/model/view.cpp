@@ -60,13 +60,47 @@ bool Model::renderFromVibration()
 	return renderFromVibration_;
 }
 
+// Return whether stored pixel data is valid
+bool Model::pixelDataIsValid(int currentwidth, int currentheight, Model *source, int logpoint)
+{
+	// First, check for presence of array data
+	if (pixelData_ == NULL) return FALSE;
+	// Second, check width and height
+	if ((currentwidth != pixelDataWidth_) || (currentheight != pixelDataHeight_)) return FALSE;
+	// Third, check model source
+	if (pixelDataSource_ != source) return FALSE;
+	// Lastly, check logpoint
+	return (pixelDataLogPoint_ == logpoint);
+}
+
+// Prepare pixel data buffer
+void Model::preparePixelData(int width, int height, Model *source, int logpoint)
+{
+	// Reallocate array if necessary
+	if ((width != pixelDataWidth_) || (height != pixelDataHeight_))
+	{
+		// Deallocate old array if necessary
+		if (pixelData_ != NULL) delete[] pixelData_;
+		pixelDataWidth_ = width;
+		pixelDataHeight_ = height;
+		pixelData_ = new GLubyte[4*pixelDataWidth_*pixelDataHeight_];
+	}
+	// Set new log point and source model
+	pixelDataSource_ = source;
+	pixelDataLogPoint_ = logpoint;
+}
+
+// Return pixel data buffer pointer
+GLubyte *Model::pixelData()
+{
+	return pixelData_;
+}
+
 // Set the current modelview matrix
 void Model::setModelViewMatrix(Matrix &rmat)
 {
 	if (parent_ == NULL) modelViewMatrix_ = rmat;
 	else parent_->setModelViewMatrix(rmat);
-	// Log camera change
-	changeLog.add(Log::Camera);
 }
 
 // Return the current modelview matrix
@@ -109,8 +143,6 @@ void Model::zRotateView(double dz)
 		modelViewMatrix_ = newrotmat * modelViewMatrix_;
 	}
 	else parent_->zRotateView(dz);
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::zRotateView");
 }
 
@@ -126,8 +158,6 @@ void Model::adjustCamera(double dx, double dy, double dz)
 		if (modelViewMatrix_[14] > -1.0) modelViewMatrix_[14] = -1.0;
 	}
 	else parent_->adjustCamera(dx, dy, dz);
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::adjustCamera");
 }
 
@@ -185,8 +215,6 @@ void Model::resetView()
 		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::resetView");
 }
 
@@ -205,8 +233,6 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 		modelViewMatrix_ = newrotmat * oldrotmat;
 	}
 	else parent_->axisRotateView(vec, angle);
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::axisRotateView");
 }
 
@@ -223,8 +249,6 @@ void Model::setRotation(double rotx, double roty)
 		modelViewMatrix_.copyTranslationAndScaling(temp);
 	}
 	else parent_->setRotation(rotx, roty);
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::setRotation");
 }
 
@@ -248,8 +272,7 @@ void Model::rotateView(double dx, double dy)
 		modelViewMatrix_ = newrotmat * modelViewMatrix_;
 	}
 	else parent_->rotateView(dx, dy);
-	// Log camera change
-	changeLog.add(Log::Camera);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::rotateView");
 }
 
@@ -273,8 +296,6 @@ void Model::viewAlong(double x, double y, double z)
 	v.toSpherical();
 	// setRotation() expects the degrees of rotation about the x and y axes respectively
 	setRotation(-v.y,fabs(v.z-180.0));
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlong");
 }
 
@@ -289,8 +310,6 @@ void Model::viewAlongCell(double x, double y, double z)
 	v.toSpherical();
 	// setRotation() expects the degrees of rotation about the x and y axes respectively
 	setRotation(-v.y,fabs(v.z-180.0));
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlongCell");
 }
 

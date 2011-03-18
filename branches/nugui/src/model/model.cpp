@@ -43,6 +43,10 @@ Model::Model()
 	// Camera / View / render
 	modelViewMatrix_.setIdentity();
 	modelViewMatrix_[14] = -10.0;
+	pixelData_ = NULL;
+	pixelDataLogPoint_ = -1;
+	pixelDataWidth_ = -1;
+	pixelDataHeight_ = -1;
 	renderSource_ = Model::ModelSource;
 	renderFromVibration_ = FALSE;
 
