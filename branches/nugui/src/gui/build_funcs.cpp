@@ -33,12 +33,29 @@ BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 {
 	// Set up interface
 	ui.setupUi(this);
+	
 	// Create a subgroup for the element select buttons
 	QButtonGroup *elementGroup = new QButtonGroup(this);
 	elementGroup->addButton(ui.ElementHButton);
 	elementGroup->addButton(ui.ElementCButton);
 	elementGroup->addButton(ui.ElementNButton);
 	elementGroup->addButton(ui.ElementCustomButton);
+	
+	// Create submenus for Rebond and Clear buttons
+	QMenu *menu;
+	QAction *action;
+	menu = new QMenu(this);
+	menu->setFont(this->font());
+	ui.DrawRebondButton->setMenu(menu);
+	action = menu->addAction("Selection");
+	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(rebondSelection(bool)));
+	action = menu->addAction("Patterns");
+	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(rebondPatterns(bool)));
+	menu = new QMenu(this);
+	menu->setFont(this->font());
+	ui.DrawClearBondingButton->setMenu(menu);
+	action = menu->addAction("Selection");
+	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(clearSelectionBonds(bool)));
 	
 	// Private variables
 	customElement_ = 9;
@@ -129,13 +146,19 @@ void BuildWidget::on_DrawAugmentButton_clicked(bool checked)
 	gui.update(GuiQt::CanvasTarget);
 }
 
-void BuildWidget::on_DrawRebondSelectionButton_clicked(bool checked)
+void BuildWidget::rebondSelection(bool checked)
 {
 	CommandNode::run(Command::ReBondSelection, "");
 	gui.update(GuiQt::CanvasTarget);
 }
 
-void BuildWidget::on_DrawClearSelectionButton_clicked(bool checked)
+void BuildWidget::rebondPatterns(bool checked)
+{
+	CommandNode::run(Command::ReBondPatterns, "");
+	gui.update(GuiQt::CanvasTarget);
+}
+
+void BuildWidget::clearSelectionBonds(bool checked)
 {
 	CommandNode::run(Command::ClearSelectedBonds, "");
 	gui.update(GuiQt::CanvasTarget);
@@ -162,5 +185,6 @@ void BuildWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.BuildButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainWidget->postRedisplay();
 	event->accept();
 }

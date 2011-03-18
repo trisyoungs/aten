@@ -335,6 +335,11 @@
 						<entry>Delete the current atom selection. See the <link linkend="command.ref.delete">delete</link> command for more details.</entry>
 					</row>
 					<row>
+						<entry>elecenergy ( )</entry>
+						<entry>double</entry>
+						<entry>Calculates and returns the total electrostatic energy for the current model, using the calculation method specified in the preferences.</entry>
+					</row>
+					<row>
 						<entry>expand ( )</entry>
 						<entry>--</entry>
 						<entry>Expand the current atom selection along bonds. See the <link linkend="command.ref.expand">expand</link> command for more details.</entry>

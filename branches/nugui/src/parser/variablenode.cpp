@@ -262,7 +262,7 @@ bool VariableNode::set(ReturnValue &setrv)
 		}
 		else result = FALSE;
 	}
-	if (!result) printf("Variable set failed.\n");
+	if (!result) msg.print(Messenger::Verbose, "Variable set failed.\n");
 	msg.exit("VariableNode::set");
 	return result;
 }

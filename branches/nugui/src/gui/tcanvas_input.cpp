@@ -134,6 +134,8 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 	}
 	atomClicked_ = NULL;
 	
+	postRedisplay(FALSE,TRUE);
+	
 	msg.exit("TCanvas::mouseReleaseEvent");
 }
 
@@ -206,7 +208,7 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 		if (mouseMoveCounter_.elapsed() > prefs.mouseMoveFilter())
 		{
 			mouseMoveCounter_.start();
-			postRedisplay();
+			postRedisplay(FALSE,TRUE);
 		}
 	}
 	rMouseLast_.set(event->x(), event->y(), 0.0);
@@ -653,22 +655,23 @@ void TCanvas::beginMode(Prefs::MouseButton button)
 						break;
 				}
 				break;
-					case (Prefs::RotateAction):
-						// Check for multiple key modifiers first.
-						if (manipulate && zrotate && editable_) activeMode_ = UserAction::TransformRotateZAction;
-						else if (manipulate && editable_) activeMode_ = UserAction::TransformRotateXYAction;
-						else if (zrotate) activeMode_ = UserAction::RotateZAction;
-						else activeMode_ = UserAction::RotateXYAction;
-						break;
-					case (Prefs::ZoomAction):
-						activeMode_ = UserAction::ZoomAction;
-						break;
-					case (Prefs::TranslateAction):
-						if (manipulate && editable_) activeMode_ = UserAction::TransformTranslateAction;
-						else activeMode_ = UserAction::TranslateAction;
-						break;
-					default:
-						break;
+			case (Prefs::RotateAction):
+				// Check for multiple key modifiers first.
+				if (manipulate && zrotate && editable_) activeMode_ = UserAction::TransformRotateZAction;
+				else if (manipulate && editable_) activeMode_ = UserAction::TransformRotateXYAction;
+				else if (zrotate) activeMode_ = UserAction::RotateZAction;
+				else activeMode_ = UserAction::RotateXYAction;
+				break;
+			case (Prefs::ZoomAction):
+				activeMode_ = UserAction::ZoomAction;
+				break;
+			case (Prefs::TranslateAction):
+				if (manipulate && editable_) activeMode_ = UserAction::TransformTranslateAction;
+				else activeMode_ = UserAction::TranslateAction;
+				break;
+				
+			default:
+				break;
 		}
 		// If we're manipulating, prepare the transform
 		if (manipulate)
@@ -895,7 +898,13 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		case (UserAction::DrawBondSingleAction):
 		case (UserAction::DrawBondDoubleAction):
 		case (UserAction::DrawBondTripleAction):
-			// Must be two atoms in subselection to continue
+			if (pickedAtoms_.nItems() == 0) break;
+			// Must be two atoms in subselection to continue, or we must be hovering over a different atom (which we'll add to the list)
+			if (pickedAtoms_.nItems() == 1)
+			{
+				i = source->atomOnScreen(rMouseUp_.x,rMouseUp_.y);
+				if (pickedAtoms_.last()->item != i) pickedAtoms_.add(i);
+			}
 			if (pickedAtoms_.nItems() != 2) break;
 			pickedAtoms_.fillArray(2,atoms);
 			b = atoms[0]->findBond(atoms[1]);

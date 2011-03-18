@@ -615,8 +615,8 @@ class Model
 	double angleEnergy(Model *config, bool &success);
 	// Calculate and return the total bond energy of the model
 	double bondEnergy(Model *config, bool &success);
-	// Calculate and return the total coulomb energy of the model
-	double coulombEnergy(Model *config, bool &success);
+	// Calculate and return the total electrostatic energy of the model
+	double electrostaticEnergy(Model *config, bool &success);
 	// Calculate and return the total intermolecular energy of the model
 	double intermolecularEnergy(Model *config, bool &success);
 	// Calculate and return the total intramolecular energy of the model

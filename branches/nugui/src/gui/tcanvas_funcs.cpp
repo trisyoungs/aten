@@ -179,6 +179,7 @@ void TCanvas::paintGL()
 	QRect currentBox;
 	Refitem<Model,int> *first, localri;
 	int px, py, nperrow = prefs.nModelsPerRow(), nrows, col, row, nmodels;
+	bool usepixels;
 	Model *m;
 
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
@@ -250,8 +251,13 @@ void TCanvas::paintGL()
 		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
 		else m = m->renderSourceModel();
 
-		// If the stored model pixel data is not out of date, just render this instead
-		if ((!noPixelData_) && ri->item->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)))
+		// If the stored model pixel data is out of date or rerendering has specifically been requested, redraw the model
+		usepixels = TRUE;
+		if (redrawActiveModel_ && (ri->item == aten.currentModel())) usepixels = FALSE;
+		else if (noPixelData_) usepixels = FALSE;
+		else if (!ri->item->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total))) usepixels = FALSE;
+		
+		if (usepixels)
 		{
 			// Setup flat projection for pixel rendering
 			glViewport(0,0,contextWidth_,contextHeight_);
@@ -282,7 +288,23 @@ void TCanvas::paintGL()
 			++row;
 		}
 	}
+	endGl();
 	
+	// Render text elements for all models (with QPainter)
+	QPainter painter(this);
+	font.setPointSize(prefs.labelSize());
+	painter.setFont(font);
+	painter.setRenderHint(QPainter::Antialiasing);
+	engine_.renderText(painter, this);
+	
+	// Render 2D mode embellishments for current model (with QPainter)
+	m = useCurrentModel_ ? aten.currentModel() : renderSource_;
+	if (m != NULL)
+	{
+		m = m->renderFromVibration() ? m->vibrationCurrentFrame() : m->renderSourceModel();
+		render2D(painter, m);
+	}
+
 	// Store pixel data for models that need it
 	col = 0;
 	row = 0;
@@ -316,23 +338,7 @@ void TCanvas::paintGL()
 			++row;
 		}
 	}
-	endGl();
-	
-	// Render text elements for all models (with QPainter)
-	QPainter painter(this);
-	font.setPointSize(prefs.labelSize());
-	painter.setFont(font);
-	painter.setRenderHint(QPainter::Antialiasing);
-	engine_.renderText(painter, this);
-	
-	// Render 2D mode embellishments for current model (with QPainter)
-	m = useCurrentModel_ ? aten.currentModel() : renderSource_;
-	if (m != NULL)
-	{
-		m = m->renderFromVibration() ? m->vibrationCurrentFrame() : m->renderSourceModel();
-		render2D(painter, m);
-	}
-	
+
 	// Draw box around current model
 	color.setRgbF(0.0,0.0,0.0,1.0);
 	pen.setColor(color);
@@ -468,10 +474,11 @@ bool TCanvas::offScreenRendering() const
 }
 
 // Refresh widget
-void TCanvas::postRedisplay(bool noImages)
+void TCanvas::postRedisplay(bool noImages, bool redrawActive)
 {
 	if ((!valid_) || drawing_) return;
 	noPixelData_ = noImages;
+	redrawActiveModel_ = redrawActive;
 	updateGL();
 }
 

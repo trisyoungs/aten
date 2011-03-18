@@ -250,7 +250,7 @@ double Model::bondEnergy(Model *config, bool &success)
 }
 
 // Calculate and return the total coulomb energy of the model
-double Model::coulombEnergy(Model *config, bool &success)
+double Model::electrostaticEnergy(Model *config, bool &success)
 {
 	msg.enter("Model::coulombEnergy");
 	// Check the expression validity
@@ -318,7 +318,7 @@ double Model::intermolecularEnergy(Model *config, bool &success)
 {
 	double interenergy = vdwEnergy(config, success);
 	if (!success) return 0.0;
-	interenergy += coulombEnergy(config, success);
+	interenergy += electrostaticEnergy(config, success);
 	if (!success) return 0.0;
 	return interenergy;
 }

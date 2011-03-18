@@ -49,8 +49,9 @@ class BuildWidget : public QDockWidget
 	void on_DrawRebondButton_clicked(bool checked);
 	void on_DrawClearBondingButton_clicked(bool checked);
 	void on_DrawAugmentButton_clicked(bool checked);
-	void on_DrawRebondSelectionButton_clicked(bool checked);
-	void on_DrawClearSelectionButton_clicked(bool checked);
+	void rebondSelection(bool checked);
+	void rebondPatterns(bool checked);
+	void clearSelectionBonds(bool checked);
 	// Tools Tab - Add Atom
 	void on_AddAtomButton_clicked(bool checked);
 	// Options Tab

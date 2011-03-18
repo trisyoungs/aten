@@ -430,7 +430,7 @@ Vec3<double> &Model::screenToModel(int x, int y, double z)
 	}
 	
 	// Finally, invert to model coordinates
-	modelr = modelViewMatrixInverse() * Vec3<double>(worldr.x, worldr.y, worldr.z);
+	modelr = itransform * Vec3<double>(worldr.x, worldr.y, worldr.z);
 	
 	msg.exit("Model::screenToModel");
 	return modelr;

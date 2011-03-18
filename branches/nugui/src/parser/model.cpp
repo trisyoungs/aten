@@ -112,9 +112,9 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "clearcharges",	VTypes::NoData,		Command::arguments(Command::ClearCharges),	Command::argText(Command::ClearCharges) },
 	{ "clearselectedbonds",	VTypes::NoData,		Command::arguments(Command::ClearSelectedBonds),Command::argText(Command::ClearSelectedBonds) },
 	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::argText(Command::Copy) },
-	{ "coulombenergy",	VTypes::DoubleData,	"",						"" },
 	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::argText(Command::Cut) },
 	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::argText(Command::Delete) },
+	{ "elecenergy",		VTypes::DoubleData,	"",						"" },
 	{ "expand",		VTypes::NoData,		Command::arguments(Command::Expand),		Command::argText(Command::Expand) },
 	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::argText(Command::Finalise) },
 	{ "interenergy",	VTypes::DoubleData,	"",						"" },
@@ -642,14 +642,14 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::Copy):
 			result = aten.commands.call(Command::Copy, node, rv, bundle);
 			break;
-		case (ModelVariable::CoulombEnergy):
-			rv.set( ptr->coulombEnergy(ptr, result));
-			break;
  		case (ModelVariable::Cut):
 			result = aten.commands.call(Command::Cut, node, rv, bundle);
 			break;
  		case (ModelVariable::Delete):
 			result = aten.commands.call(Command::Delete, node, rv, bundle);
+			break;
+		case (ModelVariable::ElectrostaticEnergy):
+			rv.set( ptr->electrostaticEnergy(ptr, result));
 			break;
  		case (ModelVariable::Expand):
 			result = aten.commands.call(Command::Expand, node, rv, bundle);

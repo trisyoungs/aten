@@ -383,5 +383,6 @@ void ForcefieldsWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.ForcefieldsButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainWidget->postRedisplay();
 	event->accept();
 }

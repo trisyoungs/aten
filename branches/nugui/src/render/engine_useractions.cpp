@@ -34,6 +34,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 	GLfloat colour[4], colour_j[4];
 	Atom::DrawStyle style_i, style_j;
 	Vec3<double> pos, rmouse, v;
+	Bond::BondType bt = Bond::Single;
 	double radius_i, radius_j;
 	Dnchar text;
 	Fragment *frag;
@@ -63,12 +64,16 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 		}
 	}
 
-	
 	// Active user actions
 	i = canvas->atomClicked();
 	switch (canvas->activeMode())
 	{
 		// Draw on bond and new atom for chain drawing (if mode is active)
+		case (UserAction::DrawBondSingleAction):
+		case (UserAction::DrawBondDoubleAction):
+		case (UserAction::DrawBondTripleAction):
+			if (i == NULL) i = (gui.mainWidget->pickedAtoms() != NULL ? gui.mainWidget->pickedAtoms()->item : NULL);
+			bt = (Bond::BondType) (1+canvas->activeMode()-UserAction::DrawBondSingleAction);
 		case (UserAction::DrawChainAction):
 			if (i == NULL) break;
 			pos = i->r();
@@ -126,7 +131,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			A.applyTranslation(pos);
 			
 			// Render new (temporary) bond
-			renderBond(A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, Bond::Single, 0, prefs.selectionScale());
+			renderBond(A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, bt, 0, prefs.selectionScale());
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
@@ -162,7 +167,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			}
 			else
 			{
-				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
+				// No atom under the mouse pointer, so draw on at the prefs drawing depth in its current orientation
 				// Get drawing point origin, translate to it, and render the stored model
 				if (canvas->activeMode() == UserAction::DrawFragmentAction) pos = source->screenToModel(canvas->rMouseDown().x, canvas->rMouseDown().y, prefs.drawDepth());
 				else pos = source->screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());

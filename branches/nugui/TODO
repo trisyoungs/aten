@@ -27,13 +27,7 @@
 			<para>Add filter type to export generic 'data', e.g. measurements list</para>
 		</listitem>
 		<listitem>
-			<para>When in script/filter, encountering a NULL reference and using it really should result in an error</para>
-		</listitem>
-		<listitem>
 			<para>Reading of unformatted files (i.e. DL_POLY HISu) broken?</para>
-		</listitem>
-		<listitem>
-			<para>Warnings on startup: "Could not add child element to parent element..", related to SVGs.</para>
 		</listitem>
 		<listitem>
 			<para>Rebonding model also folds atoms, making --nobond irrelevant</para>
@@ -53,12 +47,6 @@
 	<orderedlist>
 		<listitem>
 			<para>Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?</para>
-		</listitem>
-		<listitem>
-			<para>Add 'Rebond in Patterns' toolbar button</para>
-		</listitem>
-		<listitem>
-			<para>Make bond drawing same as chain drawing (i.e. can click-drag *or* click-move-click)</para>
 		</listitem>
 		<listitem>
 			<para>Script to add glyphs to represent H-bonds between pair of selected atoms</para>
