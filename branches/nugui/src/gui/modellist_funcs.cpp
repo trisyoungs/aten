@@ -33,6 +33,14 @@ ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 	QObject::connect(ui.ModelTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
 	QObject::connect(ui.ModelTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
 	QObject::connect(ui.ModelTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
+	
+	// Create context menu
+	QAction *action;
+	QMenu *menu = new QMenu(this);
+	action = menu->addAction("Close Selected");
+	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(closeSelectedModels(bool)));
+	action = menu->addAction("Close Others");
+	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(closeOtherModels(bool)));
 }
 
 // Show the widget, refreshing at the same time
@@ -201,6 +209,25 @@ void ModelListWidget::treeMouseMoveEvent(QMouseEvent *event)
 		toggleItem(twi);
 		lastHovered_ = twi;
 	}
+}
+
+void ModelListWidget::closeSelectedModels(bool checked)
+{
+	// Clear selected items
+	TTreeWidgetItem *twi;
+	Model *m;
+	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
+	{
+		twi = (TTreeWidgetItem*) item;
+		m = (Model*) twi->data.asPointer(VTypes::ModelData);
+		aten.setModelVisible(m, FALSE);
+		twi->setSelected(FALSE);
+	}
+
+}
+
+void ModelListWidget::closeOtherModels(bool checked)
+{
 }
 
 // Window closed

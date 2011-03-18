@@ -2,13 +2,7 @@
 
 	<orderedlist>
 		<listitem>
-			<para>Make quiet mode still allow printing of user-based printf messages</para>
-		</listitem>
-		<listitem>
 			<para>More verbosity for all commands</para>
-		</listitem>
-		<listitem>
-			<para>Check possibility of doing torsion profile a la Padua - need access to or ready calculation of energy components.</para>
 		</listitem>
 		<listitem>
 			<para>Remove configure option --with-oldqt, and use QT_VERSION define instead.</para>

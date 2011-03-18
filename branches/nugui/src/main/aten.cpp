@@ -283,6 +283,56 @@ void Aten::removeModel(Model *xmodel)
 	msg.exit("Aten::removeModel");
 }
 
+// Close specified model, saving first if requested
+bool Aten::closeModel(Model *m)
+{
+	// If the current model has been modified, ask for confirmation before we close it
+	Dnchar text;
+	Tree *filter;
+	if (m->changeLog.isModified())
+	{
+		// Create a modal message dialog
+		text.sprintf("Model '%s' has been modified.\n", m->name());
+		int returnvalue = QMessageBox::warning(gui.mainWindow, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+		switch (returnvalue)
+		{
+			// Discard changes
+			case (QMessageBox::Discard):
+				aten.removeModel(m);
+				// Update GUI
+				gui.update(GuiQt::AllTarget);
+				break;
+				// Cancel close
+			case (QMessageBox::Cancel):
+				return FALSE;
+				// Save model before quit
+			case (QMessageBox::Save):
+				// If model has a filter set, just save it
+				filter = m->filter();
+				if (filter != NULL) filter->executeWrite(m->filename());
+				else if (gui.mainWindow->runSaveModelDialog())
+				{
+					// Run options dialog
+					if (!gui.mainWindow->saveModelFilter->executeCustomDialog())
+					{
+						msg.print("Not saved.\n");
+						return FALSE;
+					}
+					m->setFilter(gui.mainWindow->saveModelFilter);
+					m->setFilename(gui.mainWindow->saveModelFilename.get());
+					gui.mainWindow->saveModelFilter->executeWrite(gui.mainWindow->saveModelFilename.get());
+				}
+				else return FALSE;
+				aten.removeModel(m);
+				// Update GUI
+				gui.update(GuiQt::AllTarget);
+				break;
+		}
+	}
+	else aten.removeModel(m);
+	return TRUE;
+}
+
 // Find model by name
 Model *Aten::findModel(const char *s) const
 {

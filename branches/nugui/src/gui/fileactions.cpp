@@ -207,51 +207,8 @@ void AtenForm::on_actionExportOptions_triggered(bool checked)
 // Close current model
 void AtenForm::on_actionFileClose_triggered(bool checked)
 {
-	// If the current model has been modified, ask for confirmation before we close it
-	Dnchar text;
-	Tree *filter;
 	Model *m = aten.currentModel();
-	if (m->changeLog.isModified())
-	{
-		// Create a model message dialog
-		text.sprintf("Model '%s' has been modified.\n", m->name());
-		int returnvalue = QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
-		switch (returnvalue)
-		{
-			// Discard changes
-			case (QMessageBox::Discard):
-				aten.removeModel(m);
-				// Update GUI
-				gui.update(GuiQt::AllTarget);
-				break;
-			// Cancel quit and return to app
-			case (QMessageBox::Cancel):
-				return;
-			// Save model before quit
-			case (QMessageBox::Save):
-				// If model has a filter set, just save it
-				filter = m->filter();
-				if (filter != NULL) filter->executeWrite(m->filename());
-				else if (runSaveModelDialog())
-				{
-					// Run options dialog
-					if (!saveModelFilter->executeCustomDialog())
-					{
-						msg.print("Not saved.\n");
-						return;
-					}
-					m->setFilter(saveModelFilter);
-					m->setFilename(saveModelFilename.get());
-					saveModelFilter->executeWrite(saveModelFilename.get());
-				}
-				else return;
-				aten.removeModel(m);
-				// Update GUI
-				gui.update(GuiQt::AllTarget);
-				break;
-		}
-	}
-	else aten.removeModel(m);
+	aten.closeModel(m);
 }
 
 // Save the current view as a bitmap image.

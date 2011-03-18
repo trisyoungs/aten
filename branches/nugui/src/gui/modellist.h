@@ -46,7 +46,9 @@ class ModelListWidget : public QDockWidget
 	void treeMousePressEvent(QMouseEvent *event);
 	void treeMouseReleaseEvent(QMouseEvent *event);
 	void treeMouseMoveEvent(QMouseEvent *event);
-	
+	void closeSelectedModels(bool checked);
+	void closeOtherModels(bool checked);
+
 	protected:
 	void closeEvent(QCloseEvent *event);
 

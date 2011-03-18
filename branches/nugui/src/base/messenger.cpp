@@ -130,8 +130,8 @@ void Messenger::richPrint(const char *fmt ...) const
 void Messenger::print(Messenger::OutputType ot, const char *fmt ...) const
 {
 	// Print to the text view in the main window if it has been initialised.
-	// If program is in quiet mode, don't print anything except Messenger::Error calls
-	if (quiet_ && (ot != Messenger::Error)) return;
+	// If program is in quiet mode, don't print anything except Messenger::Always calls
+	if (quiet_ && (ot != Messenger::Always)) return;
 	va_list arguments;
 	static char msgs[8096];
 	msgs[0] = '\0';
@@ -139,7 +139,7 @@ void Messenger::print(Messenger::OutputType ot, const char *fmt ...) const
 	va_start(arguments,fmt);
 	vsprintf(msgs,fmt,arguments);
 	// Print message to stdout, but only if specified output type is active
-	if (ot == Messenger::Error)
+	if (ot == Messenger::Always)
 	{
 		if (gui.exists()) gui.printMessage(msgs);
 		printf("%s",msgs);

@@ -100,7 +100,9 @@ class Aten
 	// Add a new model to the workspace
 	Model* addModel();
 	// Remove specified model from the list
-	void removeModel(Model*);
+	void removeModel(Model *m);
+	// Close specified model, saving first if requested
+	bool closeModel(Model *m);
 	// Find model by name
 	Model *findModel(const char *name) const;
 	// Set visible flag for specified model

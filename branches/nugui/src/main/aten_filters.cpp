@@ -64,14 +64,14 @@ void Aten::openFilters()
 
 	if (!found)
 	{
-		msg.print(Messenger::Error, "No filters found in any known default locations.\n");
-		msg.print(Messenger::Error, "Probable solutions:\n");
-		msg.print(Messenger::Error, "  1) Set the environment variable ATENDATA to point to the installed location of the filters\n");
-		msg.print(Messenger::Error, "         e.g. (in Linux) 'export ATENDATA=/usr/share/aten/'\n");
-		msg.print(Messenger::Error, "  2) Set the environment variable ATENDATA to point to the location of the 'data' directory in the source tree\n");
-		msg.print(Messenger::Error, "         e.g. (in Linux) 'export ATENDATA=/home/bob/src/aten-1.2/data)\n");
-		msg.print(Messenger::Error, "  3) Use the command-line switch --atendata <dir> to specify either of the above locations\n");
-		msg.print(Messenger::Error, "         e.g. (in Linux) 'aten --atendata /home/bob/src/aten-1.2/data\n");
+		msg.print(Messenger::Always, "No filters found in any known default locations.\n");
+		msg.print(Messenger::Always, "Probable solutions:\n");
+		msg.print(Messenger::Always, "  1) Set the environment variable ATENDATA to point to the installed location of the filters\n");
+		msg.print(Messenger::Always, "         e.g. (in Linux) 'export ATENDATA=/usr/share/aten/'\n");
+		msg.print(Messenger::Always, "  2) Set the environment variable ATENDATA to point to the location of the 'data' directory in the source tree\n");
+		msg.print(Messenger::Always, "         e.g. (in Linux) 'export ATENDATA=/home/bob/src/aten-1.2/data)\n");
+		msg.print(Messenger::Always, "  3) Use the command-line switch --atendata <dir> to specify either of the above locations\n");
+		msg.print(Messenger::Always, "         e.g. (in Linux) 'aten --atendata /home/bob/src/aten-1.2/data\n");
 		nFiltersFailed_ = -1;
 	}
 
