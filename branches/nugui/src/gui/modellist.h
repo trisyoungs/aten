@@ -42,12 +42,16 @@ class ModelListWidget : public QDockWidget
 	void toggleItem(TTreeWidgetItem *twi);
 	void deselectAll(TTreeWidgetItem* selectitem);
 	private slots:
-	void updateSelection();
+	void on_RefreshIconsButton_clicked(bool checked);
+	void on_ModelsPerRowSpin_valueChanged(int value);
 	void treeMousePressEvent(QMouseEvent *event);
 	void treeMouseReleaseEvent(QMouseEvent *event);
 	void treeMouseMoveEvent(QMouseEvent *event);
+	void treeMouseDoubleClickEvent(QMouseEvent *event);
+	void renameModel(bool checked);
 	void closeSelectedModels(bool checked);
-	void closeOtherModels(bool checked);
+	void closeUnselectedModels(bool checked);
+	void closeThisModel(bool checked);
 
 	protected:
 	void closeEvent(QCloseEvent *event);
@@ -56,6 +60,8 @@ class ModelListWidget : public QDockWidget
 	// Local variables
 	*/
 	private:
+	// Context Menu
+	QMenu *contextMenu_;
 	// Whether the widget is currently refreshing
 	bool refreshing_;
 	// Last clicked and 'moved over' TTreeWidgetItem in the ModelList

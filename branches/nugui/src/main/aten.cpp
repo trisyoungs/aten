@@ -277,9 +277,10 @@ void Aten::removeModel(Model *xmodel)
 	if (models_.nItems() == 1) m = aten.addModel();
 	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
 	setCurrentModel(m);
-	// Delete the old model (GUI first, then master)
+	// Delete the old model
 	int id = models_.indexOf(xmodel);
 	models_.remove(xmodel);
+	visibleModels_.remove(xmodel);
 	msg.exit("Aten::removeModel");
 }
 

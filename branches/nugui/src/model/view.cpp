@@ -158,6 +158,7 @@ void Model::adjustCamera(double dx, double dy, double dz)
 		if (modelViewMatrix_[14] > -1.0) modelViewMatrix_[14] = -1.0;
 	}
 	else parent_->adjustCamera(dx, dy, dz);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::adjustCamera");
 }
 
@@ -169,7 +170,7 @@ void Model::adjustZoom(bool zoomin)
 	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz);
-	gui.mainWidget->doProjection();
+	changeLog.add(Log::Visual);
 	msg.exit("Model::adjustZoom");
 }
 
@@ -215,6 +216,7 @@ void Model::resetView()
 		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::resetView");
 }
 
@@ -233,6 +235,7 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 		modelViewMatrix_ = newrotmat * oldrotmat;
 	}
 	else parent_->axisRotateView(vec, angle);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::axisRotateView");
 }
 
@@ -249,6 +252,7 @@ void Model::setRotation(double rotx, double roty)
 		modelViewMatrix_.copyTranslationAndScaling(temp);
 	}
 	else parent_->setRotation(rotx, roty);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::setRotation");
 }
 

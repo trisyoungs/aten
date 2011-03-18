@@ -23,7 +23,10 @@
 #include "gui/gui.h"
 #include "gui/modellist.h"
 #include "gui/toolbox.h"
+#include "gui/mainwindow.h"
 #include "model/model.h"
+#include "parser/commandnode.h"
+#include "base/sysfunc.h"
 
 // Constructor
 ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
@@ -33,14 +36,19 @@ ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 	QObject::connect(ui.ModelTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
 	QObject::connect(ui.ModelTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
 	QObject::connect(ui.ModelTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
+	QObject::connect(ui.ModelTree, SIGNAL(mouseDoubleClickEvent(QMouseEvent*)), this, SLOT(treeMouseDoubleClickEvent(QMouseEvent*)));
 	
 	// Create context menu
 	QAction *action;
-	QMenu *menu = new QMenu(this);
-	action = menu->addAction("Close Selected");
+	contextMenu_ = new QMenu(this);
+	action = contextMenu_->addAction("Rename");
+	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(renameModel(bool)));
+	action = contextMenu_->addAction("Close Selected");
 	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(closeSelectedModels(bool)));
-	action = menu->addAction("Close Others");
-	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(closeOtherModels(bool)));
+	action = contextMenu_->addAction("Close Unselected");
+	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(closeUnselectedModels(bool)));
+	action = contextMenu_->addAction("Close This");
+	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(closeThisModel(bool)));
 }
 
 // Show the widget, refreshing at the same time
@@ -65,6 +73,10 @@ void ModelListWidget::refresh()
 	
 	refreshing_ = TRUE;
 	
+	// Set number of visible models and model total
+	ui.ModelsPerRowSpin->setValue(prefs.nModelsPerRow());
+	ui.TotalLoadedModelsLabel->setText(itoa(aten.nModels()));
+
 	// Clear the current list
 	ui.ModelTree->clear();
 	ui.ModelTree->setColumnCount(2);
@@ -169,26 +181,44 @@ void ModelListWidget::deselectAll(TTreeWidgetItem *selectitem)
 	refreshing_ = FALSE;
 }
 
-void ModelListWidget::updateSelection()
+void ModelListWidget::on_RefreshIconsButton_clicked(bool checked)
 {
+	for (Model *m = aten.models(); m != NULL; m = m->next) m->regenerateIcon();
+	refresh();
+}
+
+void ModelListWidget::on_ModelsPerRowSpin_valueChanged(int value)
+{
+	prefs.setNModelsPerRow(value);
+	gui.mainWidget->postRedisplay();
 }
 
 // Mouse pressed on ModelList
 void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 {
-	if (!(event->buttons()&Qt::LeftButton)) return;
-
-	// Was an item clicked?
-	lastClicked_ = itemUnderMouse(event->pos());
-	if (lastClicked_ != NULL)
+	// Left Button is selection operator, right is context menu
+	if ((event->buttons()&Qt::LeftButton))
 	{
-		// Clear all old selected items, unless Ctrl was pressed at the same time
-		deselectAll(lastClicked_);
-		Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
-		aten.setCurrentModel(m);
-		gui.update(GuiQt::AllTarget - GuiQt::ModelsTarget);
+		// Was an item clicked?
+		lastClicked_ = itemUnderMouse(event->pos());
+		if (lastClicked_ != NULL)
+		{
+			// Clear all old selected items, unless Ctrl was pressed at the same time
+			deselectAll(lastClicked_);
+			Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
+			aten.setCurrentModel(m);
+			gui.update(GuiQt::AllTarget - GuiQt::ModelsTarget);
+		}
+		lastHovered_ = lastClicked_;
 	}
-	lastHovered_ = lastClicked_;
+	else if ((event->buttons()&Qt::RightButton))
+	{
+		// Is there an item under the mouse?
+		lastClicked_ = itemUnderMouse(event->pos());
+		if (lastClicked_ == NULL) return;
+		// Call context menu...
+		contextMenu_->exec(event->globalPos());
+	}
 }
 
 // Mouse releaseed on ModelList
@@ -211,23 +241,99 @@ void ModelListWidget::treeMouseMoveEvent(QMouseEvent *event)
 	}
 }
 
+// Mouse double-clicked over ModelList
+void ModelListWidget::treeMouseDoubleClickEvent(QMouseEvent *event)
+{
+	// Left Button double-click is rename function
+	if ((event->buttons()&Qt::LeftButton))
+	{
+		// Was an item clicked?
+		lastClicked_ = itemUnderMouse(event->pos());
+		if (lastClicked_ == NULL) return;
+			
+		Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
+		m = m->renderSourceModel();
+		bool ok;
+		QString text = QInputDialog::getText(this, tr("Rename Model/Frame: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
+		if (ok && !text.isEmpty())
+		{
+			// Create a temporary Bundle
+			Bundle bundle(m);
+			CommandNode::run(Command::SetName, "c", qPrintable(text));
+			gui.update(GuiQt::ModelsTarget);
+		}
+	}
+}
+
+void ModelListWidget::renameModel(bool checked)
+{
+	// Check clicked item...
+	if (lastClicked_ == NULL) return;
+		
+	Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
+	m = m->renderSourceModel();
+	bool ok;
+	QString text = QInputDialog::getText(this, tr("Rename Model/Frame: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
+	if (ok && !text.isEmpty())
+	{
+		// Create a temporary Bundle
+		Bundle bundle(m);
+		CommandNode::run(Command::SetName, "c", qPrintable(text));
+		gui.update(GuiQt::ModelsTarget);
+	}
+}
+
+// Close selected models in list
 void ModelListWidget::closeSelectedModels(bool checked)
 {
-	// Clear selected items
 	TTreeWidgetItem *twi;
 	Model *m;
 	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
 	{
 		twi = (TTreeWidgetItem*) item;
 		m = (Model*) twi->data.asPointer(VTypes::ModelData);
-		aten.setModelVisible(m, FALSE);
-		twi->setSelected(FALSE);
+		if (!aten.closeModel(m)) break;
 	}
-
+	// There are probably now no selected models, and potentially none left at all...
+	gui.update(GuiQt::AllTarget);
 }
 
-void ModelListWidget::closeOtherModels(bool checked)
+// Close unselected models in list
+void ModelListWidget::closeUnselectedModels(bool checked)
 {
+	// Close all models except the currently-selected ones
+	// Awkward - QTreeWidget does not return, apparently, even a list of all items...
+
+	// First, create a list of all loaded models...
+	Reflist<Model,int> xmodels;
+	Model *m;
+	TTreeWidgetItem *twi;
+	for (m = aten.models(); m != NULL; m = m->next) xmodels.add(m);
+	// ...then prune it with the current model selection from the treeview
+	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
+	{
+		twi = (TTreeWidgetItem*) item;
+		m = (Model*) twi->data.asPointer(VTypes::ModelData);
+		xmodels.remove(m);
+	}
+
+	// The xmodels list now contains all unselected models....
+	for (Refitem<Model,int> *ri = xmodels.first(); ri != NULL; ri = ri->next)
+	{
+		if (!aten.closeModel(ri->item)) break;
+	}
+	gui.update(GuiQt::AllTarget);
+}
+
+void ModelListWidget::closeThisModel(bool checked)
+{
+	// If there is no clicked item, ignore
+	if (lastClicked_ == NULL) return;
+	
+	// Close clicked model
+	Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
+	aten.closeModel(m);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Window closed

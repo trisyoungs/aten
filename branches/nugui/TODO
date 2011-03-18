@@ -8,9 +8,6 @@
 			<para>Remove configure option --with-oldqt, and use QT_VERSION define instead.</para>
 		</listitem>
 		<listitem>
-			<para>Ability to close models (or all other models) by right-click context menu on model list</para>
-		</listitem>
-		<listitem>
 			<para>Save forcefield!</para>
 		</listitem>
 		<listitem>

@@ -178,7 +178,7 @@ void TCanvas::paintGL()
 	QColor color;
 	QRect currentBox;
 	Refitem<Model,int> *first, localri;
-	int px, py, nperrow=2, nrows, col, row, nmodels;
+	int px, py, nperrow = prefs.nModelsPerRow(), nrows, col, row, nmodels;
 	Model *m;
 
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
@@ -500,18 +500,15 @@ void TCanvas::doProjection(int newwidth, int newheight)
 {
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
 	if (!valid_) return;
-	msg.enter("Canvas::doProjection");
-
 	// Only need to store values here, since projection is setup on-the-fly
 	contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
 	contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
-
-	msg.exit("Canvas::doProjection");
 }
 
 /*
 // Other Qt Virtuals
 */
+
 void TCanvas::focusOutEvent(QFocusEvent *event)
 {
 	gui.updateStatusBar(TRUE);
