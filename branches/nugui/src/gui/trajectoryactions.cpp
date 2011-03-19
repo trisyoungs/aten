@@ -22,87 +22,68 @@
 #include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/trajectory.h"
 #include "gui/tcanvas.uih"
 #include "model/model.h"
 
-// Switch render focus from the model to the trajectory (or vice versa)
-void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
+// Add trajectory to model
+void AtenForm::on_actionOpenTrajectory_triggered(bool checked)
 {
-	if (checked) aten.currentModel()->setRenderSource(Model::TrajectorySource);
-	else aten.currentModel()->setRenderSource(Model::ModelSource);
+	Tree *filter;
+	Model *m = aten.currentModel();
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), loadTrajectoryFilters, &selFilter);
+	if (!filename.isEmpty())
+	{
+		// Store path for next use
+		currentDirectory_.setPath(filename);
+		// Find the filter that was selected
+		filter = aten.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
+		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
+		if (filter != NULL)
+		{
+			m->initialiseTrajectory(qPrintable(filename), filter);
+			updateTrajectoryMenu();
+		}
+		else msg.print( "Couldn't determine trajectory file format.\n");
+		gui.update(GuiQt::AllTarget);
+	}
+}
+
+// Switch render focus from the model's trajectory to the model.
+void AtenForm::on_actionTrajectoryModel_triggered(bool checked)
+{
+	aten.currentModel()->setRenderSource(Model::ModelSource);
+	gui.trajectoryWidget->refresh();
 	gui.update(GuiQt::AllTarget);
 }
 
-// Skip to next frame in trajectory
-void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
+// Switch render focus from the model to the model's trajectory
+void AtenForm::on_actionTrajectoryFrames_triggered(bool checked)
 {
-	aten.currentModel()->seekNextTrajectoryFrame();
+	aten.currentModel()->setRenderSource(Model::TrajectorySource);
+	gui.trajectoryWidget->refresh();
 	gui.update(GuiQt::AllTarget);
 }
 
-// Skip to previous frame in trajectory
-void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
-{
-	aten.currentModel()->seekPreviousTrajectoryFrame();
-	gui.update(GuiQt::AllTarget);
-}
-
-// Skip to first frame in trajectory
 void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstTrajectoryFrame();
+	gui.trajectoryWidget->refresh();
 	gui.update(GuiQt::AllTarget);
 }
 
-// Skip to last frame in trajectory
 void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekLastTrajectoryFrame();
+	gui.trajectoryWidget->refresh();
 	gui.update(GuiQt::AllTarget);
 }
 
-// Play/pause trajectory playback
 void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 {
-	// If button is depressed, begin playback
-	if (checked)
-	{
-		gui.setTrajectoryTimerId(gui.mainWidget->startTimer(100));
-		gui.setTrajectoryPlaying(TRUE);
-		gui.mainWidget->setEditable(FALSE);
-	}
-	else
-	{
-		gui.mainWidget->killTimer(gui.trajectoryTimerId());
-		gui.setTrajectoryPlaying(FALSE);
-		gui.mainWidget->setEditable(TRUE);
-	}
-	updateTrajectoryControls();
+	gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->setChecked(checked);
+// 	gui.update(GuiQt::AllTarget);
 }
-
-// Frame position slider adjusted
-void AtenForm::trajectorySlider_sliderMoved(int i)
-{
-	if (trajectoryToolbarRefreshing_) return;
-	trajectoryToolbarRefreshing_ = TRUE;
-	// Slider range is from 1-NFrames, so pass (N-1) to the seekFrame function
-	aten.current.m->seekTrajectoryFrame(i-1);
-	// Set corresponding value in Spin control
-	trajectorySpin_->setValue(i);
-	trajectoryToolbarRefreshing_ = FALSE;
-	gui.mainWidget->postRedisplay();
-}
-
-// Frame spinbox value adjusted
-void AtenForm::trajectorySpin_valueChanged(int i)
-{
-	if (trajectoryToolbarRefreshing_) return;
-	trajectoryToolbarRefreshing_ = TRUE;
-	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
-	aten.current.m->seekTrajectoryFrame(i-1);
-	// Set corresponding value in Spin control
-	trajectorySlider_->setValue(i);
-	trajectoryToolbarRefreshing_ = FALSE;
-	gui.mainWidget->postRedisplay();
-}
-

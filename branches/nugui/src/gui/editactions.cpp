@@ -1,5 +1,5 @@
 /*
-	*** Edit Actions
+	*** Edit Menu Actions
 	*** src/gui/editactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -26,10 +26,6 @@
 #include "model/model.h"
 #include "model/clipboard.h"
 #include "parser/commandnode.h"
-
-/*
-// Editing Actions
-*/
 
 void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
@@ -83,10 +79,6 @@ void AtenForm::on_actionEditDelete_triggered(bool checked)
 	CommandNode::run(Command::Delete, "");
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
-
-/*
-// Selection
-*/
 
 void AtenForm::on_actionSelectionAll_triggered(bool checked)
 {

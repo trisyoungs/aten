@@ -106,23 +106,13 @@ void ForcefieldsWidget::refresh()
 	else ui.ForcefieldCombo->setCurrentIndex(0);
 	
 	// Is a valid current forcefield selected?
-	if (aten.currentForcefield() == NULL)
-	{
-		ui.RemoveForcefieldButton->setEnabled(FALSE);
-		ui.EditForcefieldButton->setEnabled(FALSE);
-		ui.AssociateGroup->setEnabled(FALSE);
-		ui.AutomaticTypingGroup->setEnabled(FALSE);
-		ui.ManualTypingGroup->setEnabled(FALSE);
-	}
-	else
-	{
-		ui.RemoveForcefieldButton->setEnabled(TRUE);
-		ui.EditForcefieldButton->setEnabled(TRUE);
-		ui.AssociateGroup->setEnabled(TRUE);
-		ui.AutomaticTypingGroup->setEnabled(TRUE);
-		ui.ManualTypingGroup->setEnabled(TRUE);
-		refreshTypes();
-	}
+	bool ffselected = (aten.currentForcefield() != NULL);
+	ui.CloseForcefieldButton->setEnabled(ffselected);
+	ui.EditForcefieldButton->setEnabled(ffselected);
+	ui.AssociateGroup->setEnabled(ffselected);
+	ui.AutomaticTypingGroup->setEnabled(ffselected);
+	ui.ManualTypingGroup->setEnabled(ffselected);
+	if (ffselected) refreshTypes();
 	refreshing_ = FALSE;
 	msg.exit("ForcefieldsWidget::refresh");
 }
@@ -165,6 +155,18 @@ void ForcefieldsWidget::loadForcefield()
 		aten.loadForcefield(qPrintable(filename));
 		refresh();
 	}
+}
+
+// Save forcefield (public function)
+void ForcefieldsWidget::saveForcefield()
+{
+// 	static QDir currentDirectory_(aten.dataDir());
+// 	QString filename = QFileDialog::getSFileName(this, "Select Forcefield", currentDirectory_.path());
+// 	if (!filename.isEmpty())
+// 	{
+// 		aten.loadForcefield(qPrintable(filename));
+// 		refresh();
+// 	}
 }
 
 /*
@@ -238,13 +240,19 @@ void ForcefieldsWidget::on_ForcefieldCombo_currentIndexChanged(int index)
 }
 
 // Load forcefield 
-void ForcefieldsWidget::on_LoadForcefieldButton_clicked(bool checked)
+void ForcefieldsWidget::on_OpenForcefieldButton_clicked(bool checked)
 {
 	loadForcefield();
 }
 
+// Save forcefield 
+void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
+{
+	saveForcefield();
+}
+
 // Remove selected forcefield in list
-void ForcefieldsWidget::on_RemoveForcefieldButton_clicked(bool checked)
+void ForcefieldsWidget::on_CloseForcefieldButton_clicked(bool checked)
 {
 	aten.removeForcefield(aten.currentForcefield());
 	refresh();

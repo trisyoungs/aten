@@ -24,6 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
+#include "gui/trajectory.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
 #include "gui/about.h"
@@ -44,7 +45,6 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
 	// Private variables
 	saveModelFilter = NULL;
-	trajectoryToolbarRefreshing_ = FALSE;
 
 	// Public variables
 	infoLabel1_ = NULL;
@@ -129,18 +129,10 @@ void AtenForm::update()
 			s += itoa(m->nTrajectoryFrames());
 			s += ") ";
 		}
-		// Make sure the trajectory toolbar is visible
-		ui.TrajectoryToolbar->setDisabled(FALSE);
-		ui.TrajectoryToolbar->setVisible(TRUE);
-		// Menu controls (and toolbar)
-		updateTrajectoryControls();
+		gui.trajectoryWidget->refresh();
 	}
-	else
-	{
-		// Make sure the trajectory toolbar is visible
-		ui.TrajectoryToolbar->setDisabled(TRUE);
-// 		ui.TrajectoryToolbar->setVisible(FALSE);
-	}
+	updateTrajectoryMenu();
+
 	m = m->renderSourceModel();
 	s += itoa(m->nAtoms());
 	s += " Atoms ";
@@ -197,70 +189,20 @@ void AtenForm::update()
 	updateWindowTitle();
 }
 
-// Update trajectory controls
-void AtenForm::updateTrajectoryControls()
+// Update trajectory menu
+void AtenForm::updateTrajectoryMenu()
 {
 	if (!gui.exists()) return;
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
-	if (m->nTrajectoryFrames() == 0) ui.TrajectoryToolbar->setDisabled(TRUE);
-	else
-	{
-		// If the trajectory is playing, desensitise all but the play/pause button
-		if (gui.isTrajectoryPlaying())
-		{
-			ui.actionTrajectoryViewTrajectory->setDisabled(TRUE);
-			ui.actionTrajectoryFirstFrame->setDisabled(TRUE);
-			ui.actionTrajectoryPreviousFrame->setDisabled(TRUE);
-			ui.actionTrajectoryNextFrame->setDisabled(TRUE);
-			ui.actionTrajectoryLastFrame->setDisabled(TRUE);
-			ui.actionTrajectoryPlayPause->setDisabled(FALSE);
-			setTrajectoryToolbarActive(FALSE);
-		}
-		else
-		{
-			ui.actionTrajectoryViewTrajectory->setDisabled(FALSE);
-			ui.actionTrajectoryFirstFrame->setDisabled(FALSE);
-			ui.actionTrajectoryPreviousFrame->setDisabled(FALSE);
-			ui.actionTrajectoryNextFrame->setDisabled(FALSE);
-			ui.actionTrajectoryLastFrame->setDisabled(FALSE);
-			ui.actionTrajectoryPlayPause->setDisabled(FALSE);
-			setTrajectoryToolbarActive(TRUE);
-		}
-		ui.actionViewTrajectory->setDisabled(FALSE);
-		// Select the correct view action
-		if (m->renderSource() == Model::ModelSource)
-		{
-			ui.actionViewModel->setChecked(TRUE);
-			ui.actionTrajectoryViewTrajectory->setChecked(FALSE);
-		}
-		else
-		{
-			ui.actionViewTrajectory->setChecked(TRUE);
-			ui.actionTrajectoryViewTrajectory->setChecked(TRUE);
-		}
-		// Set slider and spinbox
-		updateTrajectoryToolbar();
-	}
-}
-
-// Update trajectory toolbar controls
-void AtenForm::updateTrajectoryToolbar()
-{
-	trajectoryToolbarRefreshing_ = TRUE;
-	trajectorySlider_->setMinimum(1);
-	trajectorySlider_->setMaximum(aten.currentModel()->nTrajectoryFrames());
-	trajectorySlider_->setValue(aten.currentModel()->trajectoryFrameIndex()+1);
-	trajectorySpin_->setRange(1,aten.currentModel()->nTrajectoryFrames());
-	trajectorySpin_->setValue(aten.currentModel()->trajectoryFrameIndex()+1);
-	trajectoryToolbarRefreshing_ = FALSE;
-}
-
-// Set the active status of some controls on the trajectory toolbar
-void AtenForm::setTrajectoryToolbarActive(bool active)
-{
-	trajectorySlider_->setEnabled(active);
-	trajectorySpin_->setEnabled(active);
+	bool hastrj = (m->nTrajectoryFrames() != 0);
+	ui.actionTrajectoryFirstFrame->setEnabled(hastrj);
+	ui.actionTrajectoryLastFrame->setEnabled(hastrj);
+	ui.actionTrajectoryPlayPause->setEnabled(hastrj);
+	// Select the correct view action
+	if (m->renderSource() == Model::ModelSource)
+	ui.actionTrajectoryModel->setChecked(m->renderSource() == Model::ModelSource);
+	ui.actionTrajectoryFrames->setChecked(m->renderSource() != Model::ModelSource);
 }
 
 // Refresh window title
@@ -402,14 +344,6 @@ void AtenForm::updateUndoRedo()
 		ui.actionEditRedo->setText(text.get());
 		ui.actionEditRedo->setEnabled(TRUE);
 	}
-}
-
-// Enable/disable manually-created widgets
-void AtenForm::setWidgetsEnabled(bool b)
-{
-	// Must manually enable all widgets added to toolbars by hand. Bug in Qt?
-	trajectorySlider_->setEnabled(b);
-	trajectorySpin_->setEnabled(b);
 }
 
 // Change current user action

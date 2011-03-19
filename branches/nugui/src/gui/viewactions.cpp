@@ -60,22 +60,6 @@ void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 	gui.mainWidget->postRedisplay(TRUE);
 }
 
-// Switch render focus from the model's trajectory to the model.
-void AtenForm::on_actionViewModel_triggered(bool checked)
-{
-	aten.currentModel()->setRenderSource(Model::ModelSource);
-	Model *m = aten.currentModelOrFrame();
-	gui.update(GuiQt::AllTarget);
-}
-
-// Switch render focus from the model to the model's trajectory
-void AtenForm::on_actionViewTrajectory_triggered(bool checked)
-{
-	aten.currentModel()->setRenderSource(Model::TrajectorySource);
-	Model *m = aten.currentModelOrFrame();
-	gui.update(GuiQt::AllTarget);
-}
-
 // Set view along cartesian axis supplied
 void AtenForm::setCartesianView(double x, double y, double z)
 {

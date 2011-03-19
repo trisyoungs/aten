@@ -82,17 +82,6 @@ void AtenForm::finaliseUi()
 	group->addAction(ui.actionMouseRotate);
 	group->addAction(ui.actionMouseTranslate);
 
-	// Hide some toolbars initially
-	ui.TrajectoryToolbar->setVisible(FALSE);
-
-	// Add extra widgets to trajectory toolbar
-	trajectorySlider_ = new QSlider(Qt::Horizontal, ui.TrajectoryToolbar);
-	ui.TrajectoryToolbar->addWidget(trajectorySlider_);
-	QObject::connect(trajectorySlider_, SIGNAL(sliderMoved(int)), this, SLOT(trajectorySlider_sliderMoved(int)));
-	trajectorySpin_ = new QSpinBox(ui.TrajectoryToolbar);
-	ui.TrajectoryToolbar->addWidget(trajectorySpin_);
-	QObject::connect(trajectorySpin_, SIGNAL(valueChanged(int)), this, SLOT(trajectorySpin_valueChanged(int)));
-
 	// Create QActionGroup for perspective / orthographic views
 	group = new QActionGroup(this);
 	actionGroups_.add(group);
@@ -102,8 +91,8 @@ void AtenForm::finaliseUi()
 	// Create QActionGroup for model / trajectory render source
 	group = new QActionGroup(this);
 	actionGroups_.add(group);
-	group->addAction(ui.actionViewModel);
-	group->addAction(ui.actionViewTrajectory);
+	group->addAction(ui.actionTrajectoryModel);
+	group->addAction(ui.actionTrajectoryFrames);
 
 	// Add the previously-created QGLWidget to the main interface, and set up calls
 	QVBoxLayout *vbox = new QVBoxLayout();
@@ -254,7 +243,7 @@ void AtenForm::createDialogFilters()
 		loadTrajectoryFilters += ";;";
 		loadTrajectoryFilters += ri->item->filter.description();
 	}
-	ui.actionFileAddTrajectory->setEnabled(!loadTrajectoryFilters.isEmpty());
+	ui.actionOpenTrajectory->setEnabled(!loadTrajectoryFilters.isEmpty());
 
 	// Model Export
 	saveModelFilters.clear();

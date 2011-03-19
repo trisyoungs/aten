@@ -272,35 +272,6 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	}
 }
 
-// Add trajectory to model
-void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
-{
-	Tree *filter;
-	Model *m = aten.currentModel();
-	static QDir currentDirectory_(aten.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), loadTrajectoryFilters, &selFilter);
-	if (!filename.isEmpty())
-	{
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		// Find the filter that was selected
-		filter = aten.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
-		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
-		if (filter != NULL)
-		{
-			m->initialiseTrajectory(qPrintable(filename), filter);
-			// Ensure trajectory toolbar is visible and View->Trajectory is selected
-			ui.TrajectoryToolbar->setVisible(TRUE);
-			ui.actionViewTrajectory->setChecked(TRUE);
-			updateTrajectoryControls();
-		}
-		else msg.print( "Couldn't determine trajectory file format.\n");
-		gui.update(GuiQt::AllTarget);
-	}
-}
-
 // Open expression file
 void AtenForm::on_actionFileOpenExpression_triggered(bool checked)
 {
@@ -396,13 +367,6 @@ void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {
 	// Call routine in grids window...
 	gui.gridsWidget->loadGrid();
-}
-
-// Open forcefield file
-void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
-{
-	// Call routine in forcefields window...
-	gui.forcefieldsWidget->loadForcefield();
 }
 
 // Quit program

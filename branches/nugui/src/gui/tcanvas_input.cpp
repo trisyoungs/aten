@@ -1,5 +1,5 @@
 /*
-	*** Qt canvas input functions
+	*** TCanvas input functions
 	*** src/gui/tcanvas_input.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -524,13 +524,14 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 			pickEnabled_ = FALSE;
 			break;
 	}
+
 	// Finally, set the mode and refresh
 	selectedMode_ = ua;
 	// Change mouse cursor depending on mode
 	if (selectedMode_ == UserAction::SelectAction) setCursor(Qt::ArrowCursor);
 	else setCursor(Qt::CrossCursor);
-	postRedisplay();
-	gui.updateStatusBar();
+
+	gui.update(GuiQt::CanvasTarget+GuiQt::StatusBarTarget);
 	msg.exit("TCanvas::setSelectedMode");
 }
 
@@ -742,7 +743,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				else source->selectAtom(atomClicked_);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::GeometryTarget);
 			break;
 		// Other selection operations
 		case (UserAction::SelectMoleculeAction):
@@ -750,14 +751,14 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, FALSE, ctrled);
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::GeometryTarget);
 			break;
 		case (UserAction::SelectElementAction):
 			source->beginUndoState("Select Element");
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL) source->selectElement(atomClicked_, FALSE, ctrled);
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::GeometryTarget);
 			break;
 		case (UserAction::SelectRadialAction):
 			source->beginUndoState("Select Radial");
@@ -770,7 +771,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->selectRadial(atomClicked_,radius);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::GeometryTarget);
 			break;
 		// Measurements
 		case (UserAction::MeasureDistanceAction):

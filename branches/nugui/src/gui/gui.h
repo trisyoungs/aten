@@ -83,7 +83,7 @@ class GuiQt
 	static const char *bitmapFormatFilter(BitmapFormat bf);
 	static const char *bitmapFormatExtension(BitmapFormat bf);
 	// Update Targets
-	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, ModelsTarget = 32, CanvasTarget = 64, AllTarget = 127 };
+	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, ModelsTarget = 32, CanvasTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, AllTarget = 2047 };
 
 
 	/*
@@ -92,8 +92,6 @@ class GuiQt
 	public:
 	// Refreshes all widgets to do with the model
 	void update(int targets = 0);
-	// Update statusbar
-	void updateStatusBar(bool clear = FALSE);
 
 
 	/*
@@ -230,28 +228,6 @@ class GuiQt
 	void updateContextMenu();
 	// Call the atompopup menu
 	void callContextMenu(Atom*, int, int);
-
-
-	/*
-	// Trajectory State
-	*/
-	private:
-	// Whether the trajectory is currently playing
-	bool trajectoryPlaying_;
-	// ID of rtrajectory timer
-	int trajectoryTimerId_;
-
-	public:
-	// Return state of trajectory playback
-	bool isTrajectoryPlaying();
-	// Set state of trajectory playback
-	void setTrajectoryPlaying(bool b);
-	// Return trajectory timer id
-	int trajectoryTimerId();
-	// Set state of trajectory playback
-	void setTrajectoryTimerId(int i);
-	// Stop trajectory playback
-	void stopTrajectoryPlayback();
 
 
 	/*

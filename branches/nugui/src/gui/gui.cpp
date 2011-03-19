@@ -49,6 +49,7 @@
 #include "gui/position.h"
 #include "gui/select.h"
 #include "gui/toolbox.h"
+#include "gui/trajectory.h"
 #include "gui/transform.h"
 #include "gui/vibrations.h"
 #include "gui/viewbasis.h"
@@ -89,8 +90,6 @@ const char *GuiQt::bitmapFormatExtension(GuiQt::BitmapFormat bf)
 GuiQt::GuiQt()
 {
 	doesExist_ = FALSE;
-	trajectoryPlaying_ = FALSE;
-	trajectoryTimerId_ = -1;
 	app = NULL;
 	mainWindow = NULL;
 	mainWidget = NULL;
@@ -323,13 +322,14 @@ void GuiQt::update(int targets)
 {
 	if (!doesExist_) return;
 
-	// Refresh aspects of main window
+	// Refresh aspects of main window and dock widgets
 	mainWindow->update();
 	updateContextMenu();
+	
 	if (targets&GuiQt::ModelsTarget) modelListWidget->refresh();
-	geometryWidget->refresh();
-	selectWidget->refresh();
-	vibrationsWidget->refresh();
+	if (targets&GuiQt::GeometryTarget) geometryWidget->refresh();
+	if (targets&GuiQt::SelectTarget) selectWidget->refresh();
+	if (targets&GuiQt::VibrationsTarget) vibrationsWidget->refresh();
 	
 	// Update contents of the atom list
 	if (targets&GuiQt::AtomsTarget) atomListWidget->refresh();
@@ -351,6 +351,28 @@ void GuiQt::update(int targets)
 	// Update forcefields in the forcefield widget
 	if (targets&GuiQt::ForcefieldsTarget) forcefieldsWidget->refresh();
 
+	if (targets&GuiQt::StatusBarTarget)
+	{
+		static Dnchar text(512);
+		static UserAction::Action lastAction = UserAction::NoAction;
+		
+		// Initialise string if NoAction
+		if (lastAction == UserAction::NoAction) text.clear();
+		
+		// If current action is not the same as the last action, recreate string
+		if (lastAction != mainWidget->selectedMode())
+		{
+			lastAction = mainWidget->selectedMode();
+			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
+			if (UserActions[lastAction].shiftModified[0] != '\0') text.strcatf(", <b>+shift</b> %s", UserActions[lastAction].shiftModified);
+			if (UserActions[lastAction].ctrlModified[0] != '\0') text.strcatf(", <b>+ctrl</b> %s", UserActions[lastAction].ctrlModified);
+			if (UserActions[lastAction].altModified[0] != '\0') text.strcatf(", <b>+alt</b> %s", UserActions[lastAction].altModified);
+		}
+		// Set text in statusbar widget
+// 		if (clear) mainWindow->setMessageLabel("");  TGAY
+		mainWindow->setMessageLabel(text);
+	}
+	
 	// Request redraw of the main canvas
 	if (targets&GuiQt::CanvasTarget) gui.mainWidget->postRedisplay();
 }
@@ -365,43 +387,6 @@ int GuiQt::pid()
 void GuiQt::processMessages()
 {
 	if (app != NULL) app->processEvents();
-}
-
-// Update statusbar
-void GuiQt::updateStatusBar(bool clear)
-{
-	static Dnchar text(512);
-	static UserAction::Action lastAction = UserAction::NoAction;
-	// Initialise string if NoAction
-	if (lastAction == UserAction::NoAction) text.clear();
-	// If current action is not the same as the last action, recreate string
-	if (lastAction != mainWidget->selectedMode())
-	{
-		lastAction = mainWidget->selectedMode();
-		text.clear();
-		text.strcat("<b>");
-		text.strcat(UserActions[lastAction].name);
-		text.strcat(":</b> ");
-		text.strcat(UserActions[lastAction].unModified);
-		if (UserActions[lastAction].shiftModified[0] != '\0')
-		{
-			text.strcat(", <b>+shift</b> ");
-			text.strcat(UserActions[lastAction].shiftModified);
-		}
-		if (UserActions[lastAction].ctrlModified[0] != '\0')
-		{
-			text.strcat(", <b>+ctrl</b> ");
-			text.strcat(UserActions[lastAction].ctrlModified);
-		}
-		if (UserActions[lastAction].altModified[0] != '\0')
-		{
-			text.strcat(", <b>+alt</b> ");
-			text.strcat(UserActions[lastAction].altModified);
-		}
-	}
-	// Set text in statusbar widget
-	if (clear) mainWindow->setMessageLabel("");
-	else mainWindow->setMessageLabel(text);
 }
 
 /*
@@ -520,7 +505,6 @@ void GuiQt::setWindowsEnabled(bool b)
 	// ...and the main toolbar
 	mainWindow->ui.MainToolbar->setEnabled(b);
 	
-	mainWindow->setWidgetsEnabled(b);
 	app->processEvents();
 }
 
@@ -629,43 +613,4 @@ bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
 	app->processEvents();
 	// Check to see if the abort button was pressed
 	return (!progressCanceled_);
-}
-
-/*
-// Trajectory
-*/
-
-// Return state of trajectory playback
-bool GuiQt::isTrajectoryPlaying()
-{
-	return trajectoryPlaying_;
-}
-
-// Set state of trajectory playback
-void GuiQt::setTrajectoryPlaying(bool b)
-{
-	trajectoryPlaying_ = b;
-}
-
-// Return trajectory timer id
-int GuiQt::trajectoryTimerId()
-{
-	return trajectoryTimerId_;
-}
-
-// Set state of trajectory playback
-void GuiQt::setTrajectoryTimerId(int i)
-{
-	trajectoryTimerId_ = i;
-}
-
-// Stop trajectory playback
-void GuiQt::stopTrajectoryPlayback()
-{
-	mainWidget->killTimer(trajectoryTimerId_);
-	mainWindow->ui.actionTrajectoryPlayPause->setChecked(FALSE);
-	trajectoryPlaying_ = FALSE;
-	gui.mainWidget->setEditable(TRUE);
-	mainWindow->updateTrajectoryControls();
-	update();
 }

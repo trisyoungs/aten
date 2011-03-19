@@ -43,6 +43,7 @@ class ForcefieldsWidget : public QDockWidget
 	void refresh();
 	void refreshTypes();
 	void loadForcefield();
+	void saveForcefield();
 	private slots:
 	// Energy Tab
 	void on_CurrentEnergyButton_clicked(bool checked);
@@ -51,8 +52,9 @@ class ForcefieldsWidget : public QDockWidget
 	void on_MopacMinimiseButton_clicked(bool checked);
 	// Forcefields Tab
 	void on_ForcefieldCombo_currentIndexChanged(int index);
-	void on_LoadForcefieldButton_clicked(bool checked);
-	void on_RemoveForcefieldButton_clicked(bool checked);
+	void on_OpenForcefieldButton_clicked(bool checked);
+	void on_SaveForcefieldButton_clicked(bool checked);
+	void on_CloseForcefieldButton_clicked(bool checked);
 	void on_EditForcefieldButton_clicked(bool checked);
 	void on_TypeModelButton_clicked(bool checked);
 	void on_UntypeModelButton_clicked(bool checked);

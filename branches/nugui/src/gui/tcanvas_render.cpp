@@ -1,5 +1,5 @@
 /*
-	*** Qt canvas 2D render functions
+	*** TCanvas 2D Rendering Functions
 	*** src/gui/tcanvas_render.cpp
 	Copyright T. Youngs 2007-2011
 

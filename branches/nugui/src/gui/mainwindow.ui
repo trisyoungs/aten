@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>801</width>
-     <height>18</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu">
@@ -102,9 +102,6 @@
     <addaction name="actionExportOptions"/>
     <addaction name="actionFileSaveExpression"/>
     <addaction name="separator"/>
-    <addaction name="actionFileAddTrajectory"/>
-    <addaction name="separator"/>
-    <addaction name="actionFileOpenForcefield"/>
     <addaction name="actionFileOpenGrid"/>
     <addaction name="separator"/>
     <addaction name="actionFileSaveImage"/>
@@ -184,8 +181,6 @@
     <addaction name="StyleMenu"/>
     <addaction name="SchemeMenu"/>
     <addaction name="separator"/>
-    <addaction name="actionViewModel"/>
-    <addaction name="actionViewTrajectory"/>
    </widget>
    <widget class="QMenu" name="ModelMenu">
     <property name="title">
@@ -275,8 +270,10 @@
    </widget>
    <widget class="QMenu" name="ExpressionMenu">
     <property name="title">
-     <string>Expression</string>
+     <string>Forcefield</string>
     </property>
+    <addaction name="actionOpenForcefield"/>
+    <addaction name="separator"/>
     <addaction name="actionModelCreatePatterns"/>
     <addaction name="actionModelRemovePatterns"/>
     <addaction name="actionModelListPatterns"/>
@@ -285,11 +282,28 @@
     <addaction name="actionModelFFUntype"/>
     <addaction name="actionModelCreateExpression"/>
    </widget>
+   <widget class="QMenu" name="menuTrajectory">
+    <property name="title">
+     <string>Trajectory</string>
+    </property>
+    <addaction name="actionOpenTrajectory"/>
+    <addaction name="actionRemove"/>
+    <addaction name="separator"/>
+    <addaction name="actionTrajectoryModel"/>
+    <addaction name="actionTrajectoryFrames"/>
+    <addaction name="separator"/>
+    <addaction name="actionTrajectoryFirstFrame"/>
+    <addaction name="actionTrajectoryPlayPause"/>
+    <addaction name="actionTrajectoryLastFrame"/>
+    <addaction name="separator"/>
+    <addaction name="actionTrajectorySaveMovie"/>
+   </widget>
    <addaction name="FileMenu"/>
    <addaction name="EditMenu"/>
    <addaction name="ViewMenu"/>
    <addaction name="AtomContextMenu"/>
    <addaction name="ModelMenu"/>
+   <addaction name="menuTrajectory"/>
    <addaction name="ExpressionMenu"/>
    <addaction name="SettingsMenu"/>
    <addaction name="ScriptsMenu"/>
@@ -610,30 +624,6 @@
     <string>Ctrl+D</string>
    </property>
   </action>
-  <action name="actionTrajectoryNextFrame">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/playback/icons/traj_next.svg</normaloff>:/playback/icons/traj_next.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Next Frame</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+.</string>
-   </property>
-  </action>
-  <action name="actionTrajectoryPreviousFrame">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/playback/icons/traj_prev.svg</normaloff>:/playback/icons/traj_prev.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Previous Frame</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+,</string>
-   </property>
-  </action>
   <action name="actionTrajectoryPlayPause">
    <property name="checkable">
     <bool>true</bool>
@@ -942,7 +932,7 @@
     <string>FF Equivalent</string>
    </property>
   </action>
-  <action name="actionViewModel">
+  <action name="actionTrajectoryModel">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -950,10 +940,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Model</string>
+    <string>View Model</string>
    </property>
   </action>
-  <action name="actionViewTrajectory">
+  <action name="actionTrajectoryFrames">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -961,12 +951,19 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Trajectory</string>
+    <string>View Trajectory</string>
    </property>
   </action>
-  <action name="actionFileAddTrajectory">
+  <action name="actionOpenTrajectory">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+   </property>
    <property name="text">
-    <string>Add Trajectory</string>
+    <string>Open Trajectory</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Trajectory</string>
    </property>
   </action>
   <action name="actionFileQuit">
@@ -1062,11 +1059,6 @@
   <action name="actionMouseZRotate">
    <property name="text">
     <string>ZRotate</string>
-   </property>
-  </action>
-  <action name="actionFileOpenForcefield">
-   <property name="text">
-    <string>Open &amp;Forcefield</string>
    </property>
   </action>
   <action name="actionFileOpenGrid">
@@ -1252,6 +1244,10 @@
    </property>
   </action>
   <action name="actionFileSaveExpression">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
+   </property>
    <property name="text">
     <string>Save &amp;Expression</string>
    </property>
@@ -1285,13 +1281,13 @@
     <string>Probe individual atoms</string>
    </property>
   </action>
-  <action name="actionLoadForcefield">
+  <action name="actionOpenForcefield">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
    </property>
    <property name="text">
-    <string>Load</string>
+    <string>Open Forcefield</string>
    </property>
   </action>
   <action name="actionSaveForcefield">
@@ -1300,7 +1296,7 @@
      <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
    </property>
    <property name="text">
-    <string>Save</string>
+    <string>Save Forcefield</string>
    </property>
   </action>
   <action name="actionAboutQt">
@@ -1346,21 +1342,6 @@
   <action name="actionModelListPatterns">
    <property name="text">
     <string>List Patterns</string>
-   </property>
-  </action>
-  <action name="actionTrajectoryViewTrajectory">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/playback/icons/traj_view.svg</normaloff>:/playback/icons/traj_view.svg</iconset>
-   </property>
-   <property name="text">
-    <string>View Trajectory</string>
-   </property>
-   <property name="toolTip">
-    <string>Toggle between parent model and trajectory frames</string>
    </property>
   </action>
   <action name="actionAtomFixPosition">
@@ -1469,6 +1450,20 @@
   <action name="actionShowToolBox">
    <property name="text">
     <string>Show ToolBox</string>
+   </property>
+  </action>
+  <action name="actionRemove">
+   <property name="text">
+    <string>Remove</string>
+   </property>
+  </action>
+  <action name="actionTrajectorySaveMovie">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/file/icons/file_saveimage.svg</normaloff>:/file/icons/file_saveimage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Movie</string>
    </property>
   </action>
  </widget>

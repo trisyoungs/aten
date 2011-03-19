@@ -37,6 +37,7 @@
 #include "gui/position.h"
 #include "gui/select.h"
 #include "gui/toolbox.h"
+#include "gui/trajectory.h"
 #include "gui/transform.h"
 #include "gui/vibrations.h"
 #include "gui/zmatrix.h"

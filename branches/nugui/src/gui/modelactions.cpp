@@ -25,45 +25,17 @@
 #include "model/model.h"
 #include "parser/commandnode.h"
 
-// Create patterns for model
-void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
+// Rename model
+void AtenForm::on_actionModelRename_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->autocreatePatterns();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
-}
-
-// Remove patterns from model
-void AtenForm::on_actionModelRemovePatterns_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->clearPatterns();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
-}
-
-// List patterns in model
-void AtenForm::on_actionModelListPatterns_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->printPatterns();
-}
-
-// Perform forcefield typing in model
-void AtenForm::on_actionModelFFType_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->typeAll();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
-}
-
-// // Remove typing from model
-void AtenForm::on_actionModelFFUntype_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->removeTyping();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
-}
-
-// Create energy expression for model
-void AtenForm::on_actionModelCreateExpression_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->createExpression();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	Model *m = aten.currentModelOrFrame();
+	bool ok;
+	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
+	if (ok && !text.isEmpty())
+	{
+		CommandNode::run(Command::SetName, "c", qPrintable(text));
+		updateWindowTitle();
+	}
 }
 
 // Fold atoms in model
@@ -133,19 +105,6 @@ void AtenForm::on_actionModelShowAll_triggered(bool checked)
 {
 	CommandNode::run(Command::ShowAll, "");
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
-}
-
-// Rename model
-void AtenForm::on_actionModelRename_triggered(bool checked)
-{
-	Model *m = aten.currentModelOrFrame();
-	bool ok;
-	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
-	if (ok && !text.isEmpty())
-	{
-		CommandNode::run(Command::SetName, "c", qPrintable(text));
-		updateWindowTitle();
-	}
 }
 
 // List all measurements in model

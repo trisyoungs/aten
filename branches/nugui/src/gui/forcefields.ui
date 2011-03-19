@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>359</height>
+    <height>367</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>359</height>
+    <height>367</height>
    </size>
   </property>
   <property name="font">
@@ -701,7 +701,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="LoadForcefieldButton">
+           <widget class="QPushButton" name="OpenForcefieldButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -742,7 +742,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="RemoveForcefieldButton">
+           <widget class="QPushButton" name="CloseForcefieldButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>

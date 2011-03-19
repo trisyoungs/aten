@@ -1,6 +1,6 @@
 /*
-	*** Style Actions
-	*** src/gui/styleactions.cpp
+	*** ToolBar Actions
+	*** src/gui/toolbaractions.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -70,3 +70,22 @@ void AtenForm::setActiveStyleAction(Atom::DrawStyle ds)
 	prefs.setRenderStyle(ds);
 	gui.mainWidget->postRedisplay(TRUE);
 }
+
+// Enter basic atom selection mode
+void AtenForm::on_actionSelectAtoms_triggered(bool on)
+{
+	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectAction);
+}
+
+// Enter molecule selection mode
+void AtenForm::on_actionSelectMolecules_triggered(bool on)
+{
+	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectMoleculeAction);
+}
+
+// Enter element selection mode
+void AtenForm::on_actionSelectElement_triggered(bool on)
+{
+	if (on) gui.mainWidget->setSelectedMode(UserAction::SelectElementAction);
+}
+

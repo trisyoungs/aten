@@ -1,5 +1,5 @@
 /*
-	*** Qt canvas functions
+	*** TCanvas Functions
 	*** src/gui/tcanvas_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -518,21 +518,5 @@ void TCanvas::doProjection(int newwidth, int newheight)
 
 void TCanvas::focusOutEvent(QFocusEvent *event)
 {
-	gui.updateStatusBar(TRUE);
-}
-
-void TCanvas::timerEvent(QTimerEvent *event)
-{
-	// Move on to the next frame in the trajectory
-	// Check that we're not still drawing the last frame from the last timerEvent
-	if (DONTDRAW) printf("Still drawing previous frame.\n");
-	else
-	{
-		DONTDRAW = TRUE;
-		Model *m = aten.currentModel();
-		m->seekNextTrajectoryFrame();
-		if (m->trajectoryFrameIndex() == m->nTrajectoryFrames()-1) gui.stopTrajectoryPlayback();
-		gui.update(GuiQt::CanvasTarget);
-		DONTDRAW = FALSE;
-	}
+	gui.update(GuiQt::StatusBarTarget);
 }

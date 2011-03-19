@@ -33,8 +33,41 @@ class TrajectoryWidget : public QDockWidget
 	// Window Functions
 	*/
 	public:
+	void showWidget();
+	void refresh();
 	private slots:
+	void on_TrajectorySwitchButton_clicked(bool checked);
+	void on_TrajectoryFirstFrameButton_clicked(bool checked);
+	void on_TrajectoryPreviousFrameButton_clicked(bool checked);
+	void on_TrajectoryPlayPauseButton_clicked(bool checked);
+	void on_TrajectoryNextFrameButton_clicked(bool checked);
+	void on_TrajectoryLastFrameButton_clicked(bool checked);
+	void on_TrajectoryFrameSlider_valueChanged(int value);
+	void on_TrajectoryFrameSpin_valueChanged(int value);
+	void widgetLocationChanged(Qt::DockWidgetArea area); 
+	protected:
+	void closeEvent(QCloseEvent *event);
+	void timerEvent(QTimerEvent *event);
 	
+	
+	/*
+	// Local Variables / Functions
+	*/
+	private:
+	// Whether widget is currently refreshing
+	bool refreshing_;
+	// Whether the trajectory is currently playing
+	bool trajectoryPlaying_;
+	// ID of rtrajectory timer
+	int trajectoryTimerId_;
+	// Flag to prevent overdrawing
+	bool DONTDRAW;
+
+	public:
+	// Stop trajectory playback
+	void stopTrajectoryPlayback();
+
+
 	/*
 	// Dialog
 	*/

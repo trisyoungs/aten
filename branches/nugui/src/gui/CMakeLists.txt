@@ -28,6 +28,7 @@ set(qtproject_SRCS
   editactions.cpp
   ffeditor_funcs.cpp
   fileactions.cpp
+  forcefieldactions.cpp
   forcefields_funcs.cpp
   fragments_funcs.cpp
   geometry_funcs.cpp
@@ -47,13 +48,11 @@ set(qtproject_SRCS
   position_funcs.cpp
   prefs_funcs.cpp
   select_funcs.cpp
-  selectactions.cpp
   selectelement_funcs.cpp
   selectfilter_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
-  styleactions.cpp
   systemactions.cpp
   tcanvas_funcs.cpp
   tcanvas_input.cpp
@@ -61,6 +60,7 @@ set(qtproject_SRCS
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
   tlistwidgetitem_funcs.cpp
+  toolbaractions.cpp
   toolbox_funcs.cpp
   trajectoryactions.cpp
   trajectory_funcs.cpp

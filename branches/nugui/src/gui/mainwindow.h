@@ -34,10 +34,7 @@
 #define MAXRECENTFILES 10
 
 // Forward Declarations
-class QDoubleSpinBox;
 class QLabel;
-class QTimer;
-class QLineEdit;
 class QProgressBar;
 class QPushButton;
 class QFrame;
@@ -84,11 +81,7 @@ class AtenForm : public QMainWindow
 	// Refresh main window to reflect model change
 	void update();
 	// Update trajectory control widgets
-	void updateTrajectoryControls();
-	// Update trajectory toolbar controls
-	void updateTrajectoryToolbar();
-	// Set active status of some trajectory toolbar controls
-	void setTrajectoryToolbarActive(bool active);
+	void updateTrajectoryMenu();
 	// Cancel any current mode and return to select
 	void cancelCurrentMode();
 
@@ -101,18 +94,13 @@ class AtenForm : public QMainWindow
 	private slots:
 	void on_actionFileNew_triggered(bool checked);
 	void on_actionFileOpen_triggered(bool checked);
-	void on_actionFileAddTrajectory_triggered(bool checked);
 	void on_actionFileSave_triggered(bool checked);
 	void on_actionFileSaveAs_triggered(bool checked);
 	void on_actionExportOptions_triggered(bool checked);
 	void on_actionFileClose_triggered(bool checked);
 	void on_actionFileSaveImage_triggered(bool checked);
 	void on_actionFileQuit_triggered(bool checked);
-	void on_actionFileOpenForcefield_triggered(bool checked);
-	//void on_actionFileSaveForcefield_triggered(bool checked);
 	void on_actionFileOpenGrid_triggered(bool checked);
-	void on_actionFileOpenExpression_triggered(bool checked);
-	void on_actionFileSaveExpression_triggered(bool checked);
 
 	
 	/*
@@ -145,8 +133,6 @@ class AtenForm : public QMainWindow
 	void on_actionViewZoomOut_triggered(bool checked);
 	void on_actionViewPerspective_triggered(bool checked);
 	void on_actionViewOrthographic_triggered(bool checked);
-	void on_actionViewModel_triggered(bool checked);
-	void on_actionViewTrajectory_triggered(bool checked);
 	void on_actionViewSetCartesianPosX_triggered(bool checked);
 	void on_actionViewSetCartesianPosY_triggered(bool checked);
 	void on_actionViewSetCartesianPosZ_triggered(bool checked);
@@ -215,11 +201,26 @@ class AtenForm : public QMainWindow
 	void on_actionModelShowAll_triggered(bool checked);
 	void on_actionListMeasurements_triggered(bool checked);
 
+	
+	/*
+	// Trajectory Menu
+	*/
+	private slots:
+	void on_actionOpenTrajectory_triggered(bool checked);
+	void on_actionTrajectoryFirstFrame_triggered(bool checked);
+	void on_actionTrajectoryLastFrame_triggered(bool checked);
+	void on_actionTrajectoryPlayPause_triggered(bool checked);
+	void on_actionTrajectoryModel_triggered(bool checked);
+	void on_actionTrajectoryFrames_triggered(bool checked);
+
 
 	/*
 	// Expression Menu
 	*/
 	private slots:
+	void on_actionFileOpenForcefield_triggered(bool checked);
+	void on_actionFileOpenExpression_triggered(bool checked);
+	void on_actionFileSaveExpression_triggered(bool checked);
 	void on_actionModelCreatePatterns_triggered(bool checked);
 	void on_actionModelRemovePatterns_triggered(bool checked);
 	void on_actionModelListPatterns_triggered(bool checked);
@@ -271,24 +272,6 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Trajectory Toolbar Actions
-	*/
-	private:
-	QSlider *trajectorySlider_;
-	QSpinBox *trajectorySpin_;
-	bool trajectoryToolbarRefreshing_;
-	private slots:
-	void on_actionTrajectoryViewTrajectory_triggered(bool checked);
-	void on_actionTrajectoryNextFrame_triggered(bool checked);
-	void on_actionTrajectoryPreviousFrame_triggered(bool checked);
-	void on_actionTrajectoryFirstFrame_triggered(bool checked);
-	void on_actionTrajectoryLastFrame_triggered(bool checked);
-	void on_actionTrajectoryPlayPause_triggered(bool checked);
-	void trajectorySlider_sliderMoved(int i);
-	void trajectorySpin_valueChanged(int i);
-
-
-	/*
 	// Local Widgets and Routines
 	*/
 	private:
@@ -317,8 +300,6 @@ class AtenForm : public QMainWindow
 	public:
 	// Update undo/redo labels
 	void updateUndoRedo();
-	// Enable/disable manually-created widgets
-	void setWidgetsEnabled(bool b);
 	// Set action/button to reflect supplied user action
 	void setActiveUserAction(UserAction::Action ua);
 	// Set message label text
