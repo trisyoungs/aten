@@ -347,7 +347,7 @@ void Model::seekLastTrajectoryFrame()
 }
 
 // Seek to specified frame
-void Model::seekTrajectoryFrame(int frameno)
+void Model::seekTrajectoryFrame(int frameno, bool quiet)
 {
 	// Seek to the previous frame in the trajectory
 	msg.enter("Model::seekTrajectoryFrame");
@@ -422,6 +422,6 @@ void Model::seekTrajectoryFrame(int frameno)
 	}
 	trajectoryFrameIndex_ = frameno;
 	changeLog.add(Log::Visual);
-	msg.print("Seek to frame %i\n", trajectoryFrameIndex_+1);
+	if (!quiet) msg.print("Seek to frame %i\n", trajectoryFrameIndex_+1);
 	msg.exit("Model::seekTrajectoryFrame");
 }

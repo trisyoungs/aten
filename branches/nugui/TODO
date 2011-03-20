@@ -21,6 +21,12 @@
 
 	<orderedlist>
 		<listitem>
+		<para>Rotaiton globe has disappeared!</para>
+		</listitem>
+		<listitem>
+		<para>Bond drawing exacly in XY plane is sometimes incorrect? E.g. data/test/gold.xyz atoms 220 and 228</para>
+		</listitem>
+		<listitem>
 			<para>Add filter type to export generic 'data', e.g. measurements list</para>
 		</listitem>
 		<listitem>

@@ -84,7 +84,9 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	// Get arguments...
 	int width = c->hasArg(1) ? c->argi(1) : gui.mainWidget->width();
+	if (width == -1) width = gui.mainWidget->width();
 	int height = c->hasArg(2) ? c->argi(2) : gui.mainWidget->height();
+	if (height == -1) height = gui.mainWidget->height();
 	int quality = c->hasArg(3) ? c->argi(3) : -1;
 	int firstframe = c->hasArg(4) ? c->argi(4)-1 : 0;
 	int lastframe = c->hasArg(5) ? c->argi(5)-1 : obj.m->nTrajectoryFrames()-1;
@@ -118,7 +120,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	bool canceled = FALSE;
 	for (int n = firstframe; n <= lastframe; n += frameskip)
 	{
-		obj.m->seekTrajectoryFrame(n);
+		obj.m->seekTrajectoryFrame(n, TRUE);
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
 		gui.mainWidget->postRedisplay(TRUE);
 
@@ -167,7 +169,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		// Is output file already present?
 		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
 		gui.processMessages();
-	};
+	}
 	
 	return TRUE;
 }

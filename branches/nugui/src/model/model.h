@@ -844,7 +844,7 @@ class Model
 	// Seek to previous frame
 	void seekPreviousTrajectoryFrame();
 	// Seek to specified frame
-	void seekTrajectoryFrame(int frameno);
+	void seekTrajectoryFrame(int frameno, bool quiet = FALSE);
 
 
 	/*

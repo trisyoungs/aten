@@ -133,8 +133,6 @@ class TCanvas : public QGLWidget
 	void reinitialisePrimitives(bool force = FALSE);
 	// Reinitialise transparency correction
 	void reinitialiseTransparency();
-	// Reset the projection matrix based on the current canvas geometry
-	void doProjection(int newwidth = -1, int newheight = -1);
 	// Update Canvas
 	void postRedisplay(bool noImages = FALSE, bool redrawActive = FALSE);
 	// Update view matrix stored in RenderEngine

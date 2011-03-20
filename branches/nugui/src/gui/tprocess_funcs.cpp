@@ -90,9 +90,9 @@ bool TProcess::outputAvailable()
 	if (!outputFileSpecified_)
 	{
 		// Is some old output already available?
-		if (stdOutput_.data() != '\0') return TRUE;
+		if (!stdOutput_.isEmpty()) return TRUE;
 		stdOutput_ = readAllStandardOutput();
-		if (stdOutput_.data() != '\0') return TRUE;
+		if (!stdOutput_.isEmpty()) return TRUE;
 		return FALSE;
 	}
 	

@@ -406,8 +406,7 @@ void TCanvas::resizeGL(int newwidth, int newheight)
 	// Store the new width and height of the widget and re-do projection
 	contextWidth_ = (GLsizei) newwidth;
 	contextHeight_ = (GLsizei) newheight;
-	doProjection(contextWidth_, contextHeight_);
-	if (prefs.manualSwapBuffers()) swapBuffers();
+	noPixelData_ = TRUE;
 }
 
 // Begin GL
@@ -500,16 +499,6 @@ void TCanvas::reinitialisePrimitives(bool force)
 void TCanvas::reinitialiseTransparency()
 {
 	engine_.initialiseTransparency();
-}
-
-// Calculate Projection
-void TCanvas::doProjection(int newwidth, int newheight)
-{
-	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
-	if (!valid_) return;
-	// Only need to store values here, since projection is setup on-the-fly
-	contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
-	contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
 }
 
 /*
