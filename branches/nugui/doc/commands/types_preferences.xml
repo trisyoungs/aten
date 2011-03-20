@@ -158,10 +158,16 @@
 						<entry>The method of electrostatic energy/force calculation</entry>
 					</row>
 					<row>
-						<entry>encodercommand</entry>
+						<entry>encoderargs</entry>
 						<entry>string</entry>
 						<entry>rw</entry>
-						<entry>Encoder command including full path and options to use when generating movies. The text strings FILES and OUTPUT will be replaced with a wildcard filelist and the output movie filename respectively.</entry>
+						<entry>Arguments to pass to the movie encoder. It should include the text strings FILES and OUTPUT will be replaced with a wildcard filelist and the output movie filename respectively.</entry>
+					</row>
+					<row>
+						<entry>encoderexe</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Encoder executable, including full path if necessary.</entry>
 					</row>
 					<row>
 						<entry>energyunit</entry>

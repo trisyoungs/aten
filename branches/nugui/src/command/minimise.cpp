@@ -145,7 +145,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	parser.closeFile();
 	
 	// Ready to run command....
-	if (!mopacProcess.execute(mopacCmd, mopacOut))
+	if (!mopacProcess.execute(mopacCmd, NULL, mopacOut))
 	{
 		msg.print("Error: Failed to run MOPAC. Is it installed correctly?\n");
 		return FALSE;
@@ -155,11 +155,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	while (!mopacProcess.finished())
 	{
 		// Is output file already present?
-		while (mopacProcess.outputAvailable())
-		{
-			mopacProcess.printLineToMessages();
-		}
-
+		while (mopacProcess.outputAvailable()) mopacProcess.printLineToMessages();
 		gui.processMessages();
 	};
 	

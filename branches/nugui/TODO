@@ -11,9 +11,6 @@
 			<para>Save forcefield!</para>
 		</listitem>
 		<listitem>
-			<para>Save trajectory as movie - external program...  "mencoder mf://*.png -demuxer lavf -lavfdopts format=png -ovc copy -v -o cattest_1.avi" </para>
-		</listitem>
-		<listitem>
 			<para>Editing info for multiple grids at once.</para>
 		</listitem>
 

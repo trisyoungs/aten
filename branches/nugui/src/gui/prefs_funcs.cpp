@@ -166,7 +166,8 @@ void AtenPrefs::setControls()
 	// External Programs
 	ui.TemporaryDirEdit->setText(prefs.tempDir());
 	ui.MopacExecutableEdit->setText(prefs.mopacExe());
-	ui.EncoderCommandEdit->setText(prefs.encoderCommand());
+	ui.EncoderExecutableEdit->setText(prefs.encoderExe());
+	ui.EncoderArgumentsEdit->setText(prefs.encoderArguments());
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
@@ -958,7 +959,7 @@ void AtenPrefs::on_TemporaryDirEdit_textEdited(const QString &text)
 void AtenPrefs::on_MopacExecutableButton_clicked(bool checked)
 {
 	// Call a fileselector....
-	QString filename = QFileDialog::getOpenFileName(this, "Select MOPAC executable", prefs.mopacExe());
+	QString filename = QFileDialog::getOpenFileName(this, "Select MOPAC Executable", prefs.mopacExe());
 	if (!filename.isEmpty())
 	{
 		prefs.setMopacExe( qPrintable(filename) );
@@ -969,4 +970,25 @@ void AtenPrefs::on_MopacExecutableButton_clicked(bool checked)
 void AtenPrefs::on_MopacExecutableEdit_textEdited(const QString &text)
 {
 	prefs.setMopacExe( qPrintable(text) );
+}
+
+void AtenPrefs::on_EncoderExecutableButton_clicked(bool checked)
+{
+	// Call a fileselector....
+	QString filename = QFileDialog::getOpenFileName(this, "Select Video Encoder Executable", prefs.mopacExe());
+	if (!filename.isEmpty())
+	{
+		prefs.setEncoderExe( qPrintable(filename) );
+		ui.EncoderExecutableEdit->setText(filename);
+	}
+}
+
+void AtenPrefs::on_EncoderExecutableEdit_textEdited(const QString &text)
+{
+	prefs.setEncoderExe( qPrintable(text) );
+}
+
+void AtenPrefs::on_EncoderArgumentsEdit_textEdited(const QString &text)
+{
+	prefs.setEncoderArguments( qPrintable(text) );
 }

@@ -10,6 +10,7 @@
 	<!ENTITY example001 SYSTEM "examples/example001.xml">
 	<!ENTITY example002 SYSTEM "examples/example002.xml">
 	<!ENTITY example003 SYSTEM "examples/example003.xml">
+	<!ENTITY example004 SYSTEM "examples/example004.xml">
 	<!ENTITY tutorial001 SYSTEM "examples/tutorial_ice.xml">
 	<!ENTITY tutorial002 SYSTEM "examples/tutorial_alumina.xml">
 	<!ENTITY tutorial003 SYSTEM "examples/tutorial_saltwater.xml">
@@ -34,9 +35,10 @@
 		&example001;
 		&example002;
 		&example003;
+		&example004;
 	</chapter>
 	
-	<!-- TUTORIALAS -->
+	<!-- TUTORIALS -->
 	<chapter id="tutorials"><title>Tutorials</title>
 		<section><title>Overview</title>
 			<para>Some longer tutorials using the GUI are given here, and are intended to give overviews of key features and topics.</para>

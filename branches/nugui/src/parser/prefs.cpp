@@ -74,7 +74,8 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "distancelabelformat",	VTypes::StringData,		0, FALSE },
 	{ "eleccutoff",			VTypes::DoubleData,		0, FALSE },
 	{ "elecmethod",			VTypes::StringData,		0, FALSE },
-	{ "encodercommand",		VTypes::StringData,		0, FALSE },
+	{ "encoderargs",		VTypes::StringData,		0, FALSE },
+	{ "encoderexe",			VTypes::StringData,		0, FALSE },
 	{ "energyunit",			VTypes::StringData,		0, FALSE },
 	{ "energyupdate",		VTypes::IntegerData,		0, FALSE },
 	{ "ewaldalpha",			VTypes::DoubleData,		0, FALSE },
@@ -317,8 +318,11 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::ElecMethod):
 			rv.set(Electrostatics::elecMethod(ptr->electrostaticsMethod()));
 			break;
-		case (PreferencesVariable::EncoderCommand):
-			rv.set( ptr->encoderCommand() );
+		case (PreferencesVariable::EncoderArgs):
+			rv.set( ptr->encoderArguments() );
+			break;
+		case (PreferencesVariable::EncoderExe):
+			rv.set( ptr->encoderExe() );
 			break;
 		case (PreferencesVariable::EnergyUnit):
 			rv.set(Prefs::energyUnit(ptr->energyUnit()));
@@ -709,8 +713,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (em != Electrostatics::nElectrostatics) ptr->setElectrostaticsMethod(em);
 			else result = FALSE;
 			break;
-		case (PreferencesVariable::EncoderCommand):
-			ptr->setEncoderCommand( newvalue.asString(result) );
+		case (PreferencesVariable::EncoderArgs):
+			ptr->setEncoderArguments( newvalue.asString(result) );
+			break;
+		case (PreferencesVariable::EncoderExe):
+			ptr->setEncoderExe( newvalue.asString(result) );
 			break;
 		case (PreferencesVariable::EnergyUnit):
 			eu = Prefs::energyUnit( newvalue.asString(result), TRUE );

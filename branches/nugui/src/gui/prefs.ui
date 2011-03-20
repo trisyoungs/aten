@@ -3072,14 +3072,39 @@
          <item row="2" column="0">
           <widget class="QLabel" name="EncodeLabel">
            <property name="text">
-            <string>Encoder Command</string>
+            <string>Encoder Executable</string>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="EncoderCommandEdit">
+          <widget class="QLineEdit" name="EncoderExecutableEdit">
            <property name="toolTip">
             <string>Command to execute when encoding video files. The text FILES will be replaced by a suitable wildcard, and OUTPUT will be replaced by the output video filename.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="EncoderArgsLabel">
+           <property name="text">
+            <string>Encoder Arguments</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="EncoderArgumentsEdit">
+           <property name="toolTip">
+            <string>Command to execute when encoding video files. The text FILES will be replaced by a suitable wildcard, and OUTPUT will be replaced by the output video filename.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QToolButton" name="EncoderExecutableButton">
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
            </property>
           </widget>
          </item>

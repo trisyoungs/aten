@@ -311,6 +311,7 @@ void Command::initPointers()
 
 	// Image Commands
 	pointers_[SaveBitmap] = &Command::function_SaveBitmap;
+	pointers_[SaveMovie] = &Command::function_SaveMovie;
 	pointers_[SaveVector] = &Command::function_SaveVector;
 
 	// Labeling Commands

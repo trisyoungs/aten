@@ -85,8 +85,6 @@ class Prefs
 	bool load(const char *filename);
 	// Save preferences to file
 	bool save(const char *filename);
-	// Friend class
-// 	friend class PreferencesVariable;
 
 
 	/*
@@ -834,8 +832,10 @@ class Prefs
 	Dnchar tempDir_;
 	// Location of MOPAC executable
 	Dnchar mopacExe_;
-	// Video encoder command
-	Dnchar encoderCommand_;
+	// Video encoder executable
+	Dnchar encoderExe_;
+	// Video encoder arguments
+	Dnchar encoderArguments_;
 
 	public:
 	// Set temp directory
@@ -847,9 +847,13 @@ class Prefs
 	// Return the location of the MOPAC executable
 	const char *mopacExe() const;
 	// Video encoder command
-	void setEncoderCommand(const char *command);
+	void setEncoderExe(const char *exe);
 	// Return the video encoder command
-	const char *encoderCommand() const;
+	const char *encoderExe() const;
+	// Video encoder arguments
+	void setEncoderArguments(const char *arguments);
+	// Return the video encoder arguments
+	const char *encoderArguments() const;
 };
 
 extern Prefs prefs;

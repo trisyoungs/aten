@@ -24,7 +24,9 @@
 #include "gui/mainwindow.h"
 #include "gui/trajectory.h"
 #include "gui/tcanvas.uih"
+#include "gui/tprocess.uih"
 #include "model/model.h"
+#include "parser/commandnode.h"
 #include "base/sysfunc.h"
 
 // Add trajectory to model
@@ -100,7 +102,7 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
 	int width, height;
 	
-	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Skip', 'intspin', 0, 9999999, 0, 1, 'newline'); ");
+	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Interval', 'intspin', 1, 9999999, 0, 1, 'newline'); ");
 
 	Model *m = aten.currentModel();
 
@@ -123,91 +125,16 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	}
 	int firstframe = dialog.widgetValuei("First Frame") - 1;
 	int lastframe = dialog.widgetValuei("Last Frame") - 1;
-	int frameskip = dialog.widgetValuei("Frame Skip") + 1;
-
+	int frameskip = dialog.widgetValuei("Frame Interval");
+	
 	// Get movie filename
 	static QString selectedFilter("All Files (*.*)");
 	static QDir currentDirectory_(aten.workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Movie", currentDirectory_.path(), "All Files (*.*)", &selectedFilter);
 	if (filename.isEmpty()) return;
-	
 	// Store path for next use
 	currentDirectory_.setPath(filename);
-	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
-	prefs.setFrameCurrentModel(FALSE);
-	prefs.setFrameWholeView(FALSE);
-	m->setRenderSource(Model::TrajectorySource);
-	// Generate unique file basename
-	int runid;
-	Dnchar basename;
-	do
-	{
-		runid = AtenMath::randomi(RAND_MAX);
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, 0);
-	} while (fileExists(basename));
 	
-	// Save all frame images
-	QPixmap pixmap;
-	QImage image;
-	// Temporarily adjust label size...
-	int oldlabelsize = prefs.labelSize();
-	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainWidget->height()) ));
-	prefs.setLabelSize(newlabelsize);
-
-	gui.mainWidget->setOffScreenRendering(TRUE);
-	aten.initialiseProgress("Save movie frames", lastframe-firstframe);
-	bool canceled = FALSE;
-	for (int n = firstframe; n <= lastframe; n += frameskip)
-	{
-		m->seekTrajectoryFrame(n);
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
-		gui.mainWidget->postRedisplay(TRUE);
-
-		if (prefs.useFrameBuffer() == FALSE) pixmap = gui.mainWidget->renderPixmap(width, height, FALSE);
-		else
-		{
-			QImage image = gui.mainWidget->grabFrameBuffer();
-			pixmap = QPixmap::fromImage(image);
-		}
-		pixmap.save(basename.get(), "png", -1);
-		if (!aten.updateProgress(n))
-		{
-			canceled = TRUE;
-			msg.print("Canceled.\n");
-			break;
-		}
-	}
-	aten.cancelProgress();
-	prefs.setFrameCurrentModel(framemodel);
-	prefs.setFrameWholeView(frameview);
-	gui.mainWidget->setOffScreenRendering(FALSE);
-	if (!prefs.reusePrimitiveQuality()) gui.mainWidget->reinitialisePrimitives();
-
-	// Restore label size
-	prefs.setLabelSize(oldlabelsize);
-
-	if (canceled) return;
-	
-	// Now run external program to create movie
-	TProcess encoderProcess;
-	Dnchar encoderCmd(-1, "");
-	encodercmd.
-	msg.print("Command to run will be '%s'\n", encoderCmd.get());
-	if (!encoderProcess.execute(encoderCmd, XXX))
-	{
-		msg.print("Error: Failed to run encoder command.\n");
-		return;
-	}
-
-	// Follow output here...
-	while (!encoderProcess.finished())
-	{
-		// Is output file already present?
-		XXwhile (encoderProcess.outputAvailable())
-		{
-			mopacProcess.printLineToMessages();
-		}
-
-		gui.processMessages();
-	};
+	// Generate movie file...
+	CommandNode::run(Command::SaveMovie, "ciiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip);
 }

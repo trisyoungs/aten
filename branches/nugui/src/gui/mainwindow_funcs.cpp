@@ -200,6 +200,7 @@ void AtenForm::updateTrajectoryMenu()
 	ui.actionTrajectoryFirstFrame->setEnabled(hastrj);
 	ui.actionTrajectoryLastFrame->setEnabled(hastrj);
 	ui.actionTrajectoryPlayPause->setEnabled(hastrj);
+	ui.actionTrajectoryPlayPause->setChecked( gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
 	ui.actionTrajectoryFrames->setEnabled(hastrj);
 	ui.actionTrajectorySaveMovie->setEnabled(hastrj);
 	// Select the correct view action

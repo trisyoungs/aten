@@ -21,6 +21,7 @@
 
 #include "gui/tprocess.uih"
 #include "base/messenger.h"
+#include "base/dnchar.h"
 #include <stdio.h>
 
 // Constructor
@@ -37,7 +38,7 @@ void TProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 }
 
 // Execute specified command
-bool TProcess::execute(const char *command, const char *outputfile)
+bool TProcess::execute(const char *command, const char *args, const char *outputfile)
 {
 	// Check on state of any existing process
 	if (state() != QProcess::NotRunning)
@@ -60,7 +61,12 @@ bool TProcess::execute(const char *command, const char *outputfile)
 	}
 	
 	// Attempt to start process
-	start(command);
+	if (args == NULL) start(command);
+	else
+	{
+		Dnchar cmdplusargs(-1,"%s %s", command, args);
+		start(cmdplusargs.get());
+	}
 	if (!waitForStarted(1000))
 	{
 		printf("Error: Failed to run command '%s'\n", command);
@@ -80,7 +86,15 @@ bool TProcess::finished()
 bool TProcess::outputAvailable()
 {
 	// First check - was an outputfile specified on execute?
-	if (!outputFileSpecified_) return FALSE;
+	// If it wasn't, is there any stdoutput to read?
+	if (!outputFileSpecified_)
+	{
+		// Is some old output already available?
+		if (stdOutput_.data() != '\0') return TRUE;
+		stdOutput_ = readAllStandardOutput();
+		if (stdOutput_.data() != '\0') return TRUE;
+		return FALSE;
+	}
 	
 	// Second check - if output file doesn't exist, no output to be had
 	if (!outputFile_.exists()) return FALSE;
@@ -101,6 +115,15 @@ bool TProcess::outputAvailable()
 // Return next line from output file
 void TProcess::printLineToMessages()
 {
-	QString line = stream_.readLine() + "\n";
-	msg.print(qPrintable(line));
+	// Standard output takes priority over file...
+	if (stdOutput_.data() != '\0')
+	{
+		msg.print(stdOutput_.data());
+		stdOutput_.clear();
+	}
+	else
+	{
+		QString line = stream_.readLine() + "\n";
+		msg.print(qPrintable(line));
+	}
 }

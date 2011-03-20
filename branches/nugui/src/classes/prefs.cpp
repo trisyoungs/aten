@@ -333,7 +333,8 @@ Prefs::Prefs()
 #else
 	tempDir_ = "/tmp";
 #endif
-	encoderCommand_ = "mencoder mf://FILES -ovc copy -v -o OUTPUT";
+	encoderExe_ = "/usr/bin/mencoder";
+	encoderArguments_ = "mf://FILES -ovc copy -v -o OUTPUT";
 }
 
 // Load user preferences file
@@ -1836,13 +1837,25 @@ const char *Prefs::mopacExe() const
 }
 
 // Encoder command
-void Prefs::setEncoderCommand(const char *command)
+void Prefs::setEncoderExe(const char *exe)
 {
-	encoderCommand_ = command;
+	encoderExe_ = exe;
 }
 
-// Return tencoder command
-const char *Prefs::encoderCommand() const
+// Return encoder command
+const char *Prefs::encoderExe() const
 {
-	return encoderCommand_.get();
+	return encoderExe_.get();
+}
+
+// Encoder arguments
+void Prefs::setEncoderArguments(const char *arguments)
+{
+	encoderArguments_ = arguments;
+}
+
+// Return encoder arguments
+const char *Prefs::encoderArguments() const
+{
+	return encoderArguments_.get();
 }
