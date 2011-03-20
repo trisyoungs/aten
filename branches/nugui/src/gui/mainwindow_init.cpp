@@ -243,7 +243,7 @@ void AtenForm::createDialogFilters()
 		loadTrajectoryFilters += ";;";
 		loadTrajectoryFilters += ri->item->filter.description();
 	}
-	ui.actionOpenTrajectory->setEnabled(!loadTrajectoryFilters.isEmpty());
+	ui.actionTrajectoryOpen->setEnabled(!loadTrajectoryFilters.isEmpty());
 
 	// Model Export
 	saveModelFilters.clear();

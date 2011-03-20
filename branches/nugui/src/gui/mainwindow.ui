@@ -286,8 +286,8 @@
     <property name="title">
      <string>Trajectory</string>
     </property>
-    <addaction name="actionOpenTrajectory"/>
-    <addaction name="actionRemove"/>
+    <addaction name="actionTrajectoryOpen"/>
+    <addaction name="actionTrajectoryRemove"/>
     <addaction name="separator"/>
     <addaction name="actionTrajectoryModel"/>
     <addaction name="actionTrajectoryFrames"/>
@@ -954,7 +954,7 @@
     <string>View Trajectory</string>
    </property>
   </action>
-  <action name="actionOpenTrajectory">
+  <action name="actionTrajectoryOpen">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
@@ -1452,7 +1452,7 @@
     <string>Show ToolBox</string>
    </property>
   </action>
-  <action name="actionRemove">
+  <action name="actionTrajectoryRemove">
    <property name="text">
     <string>Remove</string>
    </property>

@@ -1090,3 +1090,17 @@ void Tree::setWidgetValue(const char *name, ReturnValue value)
 	node->setWidgetValue(value);
 }
 
+// Set property of named widget (via a state change)
+bool Tree::setWidgetProperty(const char *name, const char *property, ReturnValue value)
+{
+	// First, find named widget
+	WidgetNode *node = findWidget(name);
+	if (node == NULL) return FALSE;
+	// Next, find state change property
+	StateChange::StateAction action = StateChange::stateAction(property, TRUE);
+	if (action == StateChange::nStateActions) return FALSE;
+	StateChange sc;
+	sc.setTargetWidget(name);
+	sc.setChange(action, value.asString());
+	customDialog_->performStateChange(&sc);
+}

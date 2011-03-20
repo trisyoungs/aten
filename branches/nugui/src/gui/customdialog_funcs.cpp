@@ -52,7 +52,9 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 	QCheckBox *check;
 	QLineEdit *line;
 	QStackedWidget *stack;
-	QButtonGroup *radio;
+	QButtonGroup *buttongroup;
+	QAbstractButton *button;
+	QLabel *label;
 	Dnchar data;
 	LineParser lp;
 	int n;
@@ -78,9 +80,15 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 			break;
 		// RadioGroup
 		case (WidgetNode::RadioGroupControl):
-			radio = (QButtonGroup*) node->widget();
+			buttongroup = (QButtonGroup*) node->widget();
 			switch (sc->changeAction())
 			{
+				case (StateChange::ValueAction):
+					// Search for button with supplied id
+					button = buttongroup->button(sc->changeDataAsInteger());
+					if (button == NULL) printf("Warning - Couldn't find button %i in buttongroup.\n", sc->changeDataAsInteger());
+					else button->setChecked(TRUE);
+					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
 			}
@@ -108,6 +116,9 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
 					combo->setCurrentIndex(0);
 					break;
+				case (StateChange::ValueAction):
+					combo->setCurrentIndex(sc->changeDataAsInteger());
+					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
 			}
@@ -122,6 +133,18 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 					break;
 				case (StateChange::EnableAction):
 					doublespin->setEnabled(TRUE);
+					break;
+				case (StateChange::MinimumAction):
+					doublespin->setMinimum(sc->changeDataAsDouble());
+					break;
+				case (StateChange::MaximumAction):
+					doublespin->setMaximum(sc->changeDataAsDouble());
+					break;
+				case (StateChange::StepAction):
+					doublespin->setSingleStep(sc->changeDataAsDouble());
+					break;
+				case (StateChange::ValueAction):
+					doublespin->setValue(sc->changeDataAsDouble());
 					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
@@ -153,12 +176,33 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 				case (StateChange::EnableAction):
 					spin->setEnabled(TRUE);
 					break;
+				case (StateChange::MinimumAction):
+					spin->setMinimum(sc->changeDataAsInteger());
+					break;
+				case (StateChange::MaximumAction):
+					spin->setMaximum(sc->changeDataAsInteger());
+					break;
+				case (StateChange::StepAction):
+					spin->setSingleStep(sc->changeDataAsInteger());
+					break;
+				case (StateChange::ValueAction):
+					spin->setValue(sc->changeDataAsInteger());
+					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
 			}
 			break;
 		// Label
 		case (WidgetNode::LabelControl):
+			label = (QLabel*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::ValueAction):
+					label->setText(sc->changeData());
+					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
 			break;
 		// Stack control
 		case (WidgetNode::StackControl):

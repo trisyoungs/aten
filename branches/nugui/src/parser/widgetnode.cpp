@@ -52,7 +52,7 @@ WidgetNode::GuiQtOption WidgetNode::guiQtOption(const char *s, bool reporterror)
 }
 
 // State change actions
-const char *StateActionKeywords[StateChange::nStateActions] = { "checked", "disable", "enable", "items", "originalitems", "switchstack" };
+const char *StateActionKeywords[StateChange::nStateActions] = { "checked", "disable", "enable", "items", "maximum", "minimum", "originalitems", "step", "switchstack", "value" };
 StateChange::StateAction StateChange::stateAction(const char *s, bool reporterror)
 {
         StateChange::StateAction sa = (StateChange::StateAction) enumSearch("state action", StateChange::nStateActions, StateActionKeywords, s);

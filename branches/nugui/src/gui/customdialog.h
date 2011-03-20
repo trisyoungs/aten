@@ -48,8 +48,6 @@ class AtenCustomDialog : public QDialog
 	/*
 	// Generic Widget Functions
 	*/
-	private:
-	void performStateChange(StateChange *sc);
 	private slots:
 	void checkBoxWidget_clicked(bool checked);
 	void comboWidget_currentIndexChanged(int row);
@@ -57,6 +55,7 @@ class AtenCustomDialog : public QDialog
 	void integerSpinWidget_valueChanged(int i);
 	void buttonGroupWidget_buttonClicked(int id);
 	void radioButtonWidget_clicked(bool checked);
+
 
 	/*
 	// Data
@@ -92,10 +91,13 @@ class AtenCustomDialog : public QDialog
 	public:
 	// Construct filter option widgets
 	bool createWidgets(const char *title, Tree *t);
+	// Perform specified state change
+	void performStateChange(StateChange *sc);
 	// Store widget values back into the target variables
 	void storeValues();
 	// Show defined dialog, displaying options for the specified tree and setting variables within
 	bool showDialog();
+
 
 	/*
 	// Widgets

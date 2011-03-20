@@ -330,7 +330,8 @@ void GuiQt::update(int targets)
 	if (targets&GuiQt::GeometryTarget) geometryWidget->refresh();
 	if (targets&GuiQt::SelectTarget) selectWidget->refresh();
 	if (targets&GuiQt::VibrationsTarget) vibrationsWidget->refresh();
-	
+	if (targets&GuiQt::TrajectoryTarget) trajectoryWidget->refresh();
+
 	// Update contents of the atom list
 	if (targets&GuiQt::AtomsTarget) atomListWidget->refresh();
 
@@ -456,7 +457,6 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 		return FALSE;
 	}
 
-	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
 	QPixmap pixmap;
 	// Get current widget geometry if none was specified
 	if (width == 0) width = mainWidget->width();
@@ -483,7 +483,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	if (!prefs.reusePrimitiveQuality()) mainWidget->reinitialisePrimitives();
 
 	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
-	aten.current.rs()->rerenderGrids();
+// 	aten.current.rs()->rerenderGrids();
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);

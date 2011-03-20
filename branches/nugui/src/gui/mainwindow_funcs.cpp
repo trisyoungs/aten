@@ -196,13 +196,16 @@ void AtenForm::updateTrajectoryMenu()
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
 	bool hastrj = (m->nTrajectoryFrames() != 0);
+	ui.actionTrajectoryRemove->setEnabled(hastrj);
 	ui.actionTrajectoryFirstFrame->setEnabled(hastrj);
 	ui.actionTrajectoryLastFrame->setEnabled(hastrj);
 	ui.actionTrajectoryPlayPause->setEnabled(hastrj);
+	ui.actionTrajectoryFrames->setEnabled(hastrj);
+	ui.actionTrajectorySaveMovie->setEnabled(hastrj);
 	// Select the correct view action
 	if (m->renderSource() == Model::ModelSource)
 	ui.actionTrajectoryModel->setChecked(m->renderSource() == Model::ModelSource);
-	ui.actionTrajectoryFrames->setChecked(m->renderSource() != Model::ModelSource);
+	ui.actionTrajectoryFrames->setChecked(m->renderSource() == Model::TrajectorySource);
 }
 
 // Refresh window title

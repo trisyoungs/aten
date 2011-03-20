@@ -247,6 +247,8 @@ class Tree
 	Vec3<double> widgetValue3d(const char *name1, const char *name2, const char *name3);
 	// Set current value of named widget
 	void setWidgetValue(const char *name, ReturnValue value);
+	// Set property of named widget (via a state change)
+	bool setWidgetProperty(const char *name, const char *property, ReturnValue value);
 
 
 	/*

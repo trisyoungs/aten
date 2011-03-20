@@ -206,12 +206,14 @@ class AtenForm : public QMainWindow
 	// Trajectory Menu
 	*/
 	private slots:
-	void on_actionOpenTrajectory_triggered(bool checked);
+	void on_actionTrajectoryOpen_triggered(bool checked);
+	void on_actionTrajectoryRemove_triggered(bool checked);
 	void on_actionTrajectoryFirstFrame_triggered(bool checked);
 	void on_actionTrajectoryLastFrame_triggered(bool checked);
 	void on_actionTrajectoryPlayPause_triggered(bool checked);
 	void on_actionTrajectoryModel_triggered(bool checked);
 	void on_actionTrajectoryFrames_triggered(bool checked);
+	void on_actionTrajectorySaveMovie_triggered(bool checked);
 
 
 	/*

@@ -52,10 +52,16 @@ void TrajectoryWidget::refresh()
 	if (refreshing_) return;
 	refreshing_ = TRUE;
 	Model *m = aten.currentModel();
-	ui.TrajectoryFrameSlider->setRange(1, m->nTrajectoryFrames());
-	ui.TrajectoryFrameSlider->setValue(m->trajectoryFrameIndex()+1);
-	ui.TrajectoryFrameSpin->setRange(1, m->nTrajectoryFrames());
-	ui.TrajectoryFrameSpin->setValue(m->trajectoryFrameIndex()+1);
+	bool hastrj = m->nTrajectoryFrames() > 0;
+	ui.ControlsWidget->setEnabled(hastrj);
+	ui.FrameSelectWidget->setEnabled(hastrj);
+	if (hastrj)
+	{
+		ui.TrajectoryFrameSlider->setRange(1, m->nTrajectoryFrames());
+		ui.TrajectoryFrameSlider->setValue(m->trajectoryFrameIndex()+1);
+		ui.TrajectoryFrameSpin->setRange(1, m->nTrajectoryFrames());
+		ui.TrajectoryFrameSpin->setValue(m->trajectoryFrameIndex()+1);
+	}
 	refreshing_ = FALSE;
 }
 
@@ -160,8 +166,8 @@ void TrajectoryWidget::timerEvent(QTimerEvent *event)
 void TrajectoryWidget::widgetLocationChanged(Qt::DockWidgetArea area)
 {
 	// If in the top or bottom dock areas, set the layout to be horizontal, otherwise make it vertical
-	if (isFloating() || (area == Qt::LeftDockWidgetArea) || (area == Qt::RightDockWidgetArea)) ui.MainLayout->addWidget(ui.FrameSelectWidget, 0);
-	else ui.ButtonLayout->addWidget(ui.FrameSelectWidget, 10);
+	if (isFloating() || (area == Qt::LeftDockWidgetArea) || (area == Qt::RightDockWidgetArea)) ui.VerticalLayout->addWidget(ui.FrameSelectWidget, 0);
+	else ui.HorizontalLayout->addWidget(ui.FrameSelectWidget, 10);
 }
 
 // Window closed

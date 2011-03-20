@@ -39,7 +39,7 @@ class StateChange
 	// List pointers
 	StateChange *prev, *next;
 	// State change actions
-	enum StateAction { CheckedAction, DisableAction, EnableAction, ItemsAction, OriginalItemsAction, SwitchStackAcion, nStateActions };
+	enum StateAction { CheckedAction, DisableAction, EnableAction, ItemsAction, MaximumAction, MinimumAction, OriginalItemsAction, StepAction, SwitchStackAcion, ValueAction, nStateActions };
 	static StateAction stateAction(const char *s, bool reporterror = FALSE);
 	static const char *stateAction(StateAction sa);
 
