@@ -36,6 +36,9 @@ class GeometryWidget : public QDockWidget
 	public:
 	void showWidget();
 	void refresh();
+	private:
+	void updateTabs();
+	void updateLabels();
 	private slots:
 	// Measure Tab
 	void on_MeasureDistanceSelectionButton_clicked(bool checked);

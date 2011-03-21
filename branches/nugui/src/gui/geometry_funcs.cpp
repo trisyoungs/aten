@@ -41,12 +41,48 @@ void GeometryWidget::showWidget()
 	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
+// Update active tab and labels
 void GeometryWidget::refresh()
 {
+	updateTabs();
+	updateLabels();
+}
+
+// Update active tab control
+void GeometryWidget::updateTabs()
+{
 	// Check current atom selection
-	ui.DistanceTab->setEnabled(FALSE);
-	ui.AngleTab->setEnabled(FALSE);
-	ui.TorsionTab->setEnabled(FALSE);
+	Model *m = aten.currentModelOrFrame();
+	if (m->nSelected() < 2) return;
+	switch (m->nSelected())
+	{
+		case (2):
+			ui.DistanceTab->setEnabled(TRUE);
+			ui.AngleTab->setEnabled(FALSE);
+			ui.TorsionTab->setEnabled(FALSE);
+			ui.Tabs->setCurrentIndex(1);
+			break;
+		case (3):
+			ui.DistanceTab->setEnabled(FALSE);
+			ui.AngleTab->setEnabled(TRUE);
+			ui.TorsionTab->setEnabled(FALSE);
+			ui.Tabs->setCurrentIndex(2);
+			break;
+		case (4):
+			ui.DistanceTab->setEnabled(FALSE);
+			ui.AngleTab->setEnabled(FALSE);
+			ui.TorsionTab->setEnabled(TRUE);
+			ui.Tabs->setCurrentIndex(3);
+			break;
+		default:
+			ui.Tabs->setCurrentIndex(0);
+			break;
+	}
+}
+
+// Update value labels
+void GeometryWidget::updateLabels()
+{
 	Model *m = aten.currentModelOrFrame();
 	if (m->nSelected() < 2) return;
 	double value;
@@ -59,23 +95,17 @@ void GeometryWidget::refresh()
 	switch (m->nSelected())
 	{
 		case (2):
-			ui.DistanceTab->setEnabled(TRUE);
-			ui.Tabs->setCurrentIndex(1);
 			value = m->distance(i,j);
 			text.sprintf("%f (atoms %i-%i)", value, i->id()+1, j->id()+1);
 			ui.DistanceLabel->setText(text.get());
 			break;
 		case (3):
-			ui.AngleTab->setEnabled(TRUE);
-			ui.Tabs->setCurrentIndex(2);
 			k = ri->item;
 			value = m->angle(i,j,k);
 			text.sprintf("%f (atoms %i-%i-%i)", value, i->id()+1, j->id()+1, k->id()+1);
 			ui.AngleLabel->setText(text.get());
 			break;
 		case (4):
-			ui.TorsionTab->setEnabled(TRUE);
-			ui.Tabs->setCurrentIndex(3);
 			k = ri->item;
 			l = ri->next->item;
 			value = m->torsion(i,j,k,l);
@@ -83,7 +113,6 @@ void GeometryWidget::refresh()
 			ui.TorsionLabel->setText(text.get());
 			break;
 		default:
-			ui.Tabs->setCurrentIndex(0);
 			break;
 	}
 }
@@ -137,6 +166,7 @@ void GeometryWidget::on_SetNewDistanceButton_clicked(bool checked)
 	i = ri->item;
 	j = ri->next->item;
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, ui.NewDistanceSpin->value());
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -154,6 +184,7 @@ void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
 	j = ri->next->item;
 	double value = m->distance(i,j) + ui.NudgeDistanceSpin->value();
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, value);
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -171,6 +202,7 @@ void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 	j = ri->next->item;
 	double value = m->distance(i,j) - ui.NudgeDistanceSpin->value();
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, value);
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -192,6 +224,7 @@ void GeometryWidget::on_SetNewAngleButton_clicked(bool checked)
 	j = ri->next->item;
 	k = ri->next->next->item;
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, ui.NewAngleSpin->value());
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -210,6 +243,7 @@ void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
 	k = ri->next->next->item;
 	double value = m->angle(i,j,k) + ui.NudgeAngleSpin->value();
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, value);
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -228,6 +262,7 @@ void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 	k = ri->next->next->item;
 	double value = m->angle(i,j,k) - ui.NudgeAngleSpin->value();
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, value);
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -250,6 +285,7 @@ void GeometryWidget::on_SetNewTorsionButton_clicked(bool checked)
 	k = ri->next->next->item;
 	l = ri->next->next->next->item;
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, ui.NewTorsionSpin->value());
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -269,6 +305,7 @@ void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
 	l = ri->next->next->next->item;
 	double value = m->torsion(i,j,k,l) + ui.NudgeTorsionSpin->value();
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -288,6 +325,7 @@ void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 	l = ri->next->next->next->item;
 	double value = m->torsion(i,j,k,l) - ui.NudgeTorsionSpin->value();
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
+	updateLabels();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
