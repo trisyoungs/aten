@@ -23,8 +23,8 @@
 #define ATEN_TPROCESS_H
 
 #include <QtCore/QProcess>
-#include <QFile>
-#include <QTextStream>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 
 class TProcess : public QProcess
 {

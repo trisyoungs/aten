@@ -154,7 +154,8 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Grab encoder command and replace
 	basename.sprintf("%s%caten-movie-%i-%i-*.png", prefs.tempDir(), PATHSEP, gui.pid(), runid);
 	QString encoderArgs = prefs.encoderArguments(), temp;
-	temp = encoderArgs.replace("OUTPUT", c->argc(0));
+	Dnchar filename(-1, "\"%s\"", c->argc(0));
+	temp = encoderArgs.replace("OUTPUT", filename.get());
 	encoderArgs = temp.replace("FILES", basename.get());
 	printf("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
 	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))

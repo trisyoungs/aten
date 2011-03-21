@@ -126,8 +126,8 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Save input file
 	LineParser parser(mopacInput, TRUE);
 	int opt;
-	if (c->hasArg(0)) parser.writeLineF("ITER BFGS %s\n",c->argc(0));
-	else parser.writeLine("ITER BFGS PM6 RHF SINGLET\n");
+	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s\n",c->argc(0));
+	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
 	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", mopacInput.get());
 	parser.writeLineF("Temporary MOPAC Job Output : %s\n", mopacArc.get());	
 	for (Atom *i = aten.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
@@ -157,7 +157,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		// Is output file already present?
 		while (mopacProcess.outputAvailable()) mopacProcess.printLineToMessages();
 		gui.processMessages();
-	};
+	}
 	
 	// Check for existence of output file....
 	if (!fileExists(mopacArc))
