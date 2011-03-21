@@ -244,9 +244,6 @@ void TCanvas::paintGL()
 		// Store coordinates for box if this is the current model
 		if ((m == aten.currentModel()) && useCurrentModel_) currentBox.setRect(col*px, row*py, px, py);
 
-		// Grab secondary pointer (e.g. trajectory frame) if necessary
-		if (useCurrentModel_) m = m->renderSourceModel();
-
 		// Vibration frame?
 		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
 		else m = m->renderSourceModel();
@@ -255,7 +252,7 @@ void TCanvas::paintGL()
 		usepixels = TRUE;
 		if (redrawActiveModel_ && (ri->item == aten.currentModel())) usepixels = FALSE;
 		else if (noPixelData_) usepixels = FALSE;
-		else if (!ri->item->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total))) usepixels = FALSE;
+		else if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total))) usepixels = FALSE;
 		
 		if (usepixels)
 		{
@@ -267,7 +264,7 @@ void TCanvas::paintGL()
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 			glRasterPos2i(col*px, contextHeight_-(row+1)*py);
-			glDrawPixels(px, py, GL_RGBA, GL_UNSIGNED_BYTE, ri->item->pixelData());
+			glDrawPixels(px, py, GL_RGBA, GL_UNSIGNED_BYTE, m->pixelData());
 		}
 		else
 		{
@@ -316,18 +313,15 @@ void TCanvas::paintGL()
 		m = ri->item;
 		if (m == NULL) continue;
 
-		// Grab secondary pointer (e.g. trajectory frame) if necessary
-		if (useCurrentModel_) m = m->renderSourceModel();
-		
 		// Vibration frame?
 		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
 		else m = m->renderSourceModel();
 		
-		// If the stored model pixel data is not out of date, just render this instead
-		if (noPixelData_ || (!ri->item->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total))))
+		// If the stored model pixel data is out of date re-copy pixel data
+		if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)))
 		{
-			ri->item->preparePixelData(px,py,m,m->changeLog.log(Log::Total));
-			glReadPixels(col*px, contextHeight_-(row+1)*py, px, py, GL_RGBA, GL_UNSIGNED_BYTE, ri->item->pixelData());
+			m->preparePixelData(px,py,m,m->changeLog.log(Log::Total));
+			glReadPixels(col*px, contextHeight_-(row+1)*py, px, py, GL_RGBA, GL_UNSIGNED_BYTE, m->pixelData());
 		}
 
 		// Increase counters
@@ -406,7 +400,6 @@ void TCanvas::resizeGL(int newwidth, int newheight)
 	// Store the new width and height of the widget and re-do projection
 	contextWidth_ = (GLsizei) newwidth;
 	contextHeight_ = (GLsizei) newheight;
-	noPixelData_ = TRUE;
 }
 
 // Begin GL
@@ -464,6 +457,12 @@ void TCanvas::disableDrawing()
 void TCanvas::setOffScreenRendering(bool b)
 {
 	renderOffScreen_ = b;
+	// Make sure here that the current (correct) context width and height are stored
+	if (!b) 
+	{
+		contextWidth_ = (GLsizei) gui.mainWidget->width();
+		contextHeight_ = (GLsizei) gui.mainWidget->height();
+	}
 }
 
 // Return whether offscreen rendering is being performed

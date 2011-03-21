@@ -231,8 +231,6 @@ void Model::regenerateIcon()
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	
-	// Reconfigure canvas to widget size (necessary if image size was changed)
-// 	gui.mainWidget->doProjection  TGAY will this cause problems
 	gui.mainWidget->setRenderSource(NULL);
 
 	gui.mainWidget->setOffScreenRendering(FALSE);

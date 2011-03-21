@@ -65,37 +65,48 @@ bool Model::renderFromVibration()
 // Return whether stored pixel data is valid
 bool Model::pixelDataIsValid(int currentwidth, int currentheight, Model *source, int logpoint)
 {
-	// First, check for presence of array data
-	if (pixelData_ == NULL) return FALSE;
-	// Second, check width and height
-	if ((currentwidth != pixelDataWidth_) || (currentheight != pixelDataHeight_)) return FALSE;
-	// Third, check model source
-	if (pixelDataSource_ != source) return FALSE;
-	// Lastly, check logpoint
-	return (pixelDataLogPoint_ == logpoint);
+	if (parent_ != NULL) return parent_->pixelDataIsValid(currentwidth, currentheight, source, logpoint);
+	else
+	{
+// 		printf("Model [%s] : data = %p, wxh = %ix%i, new wxh = %ix%i, source = %p, newsource = %p, lp = %i, newlp = %i\n", name_.get(), pixelData_, pixelDataWidth_, pixelDataHeight_, currentwidth, currentheight, pixelDataSource_, source, pixelDataLogPoint_, logpoint);
+		// First, check for presence of array data
+		if (pixelData_ == NULL) return FALSE;
+		// Second, check width and height
+		if ((currentwidth != pixelDataWidth_) || (currentheight != pixelDataHeight_)) return FALSE;
+		// Third, check model source
+		if (pixelDataSource_ != source) return FALSE;
+		// Lastly, check logpoint
+		return (pixelDataLogPoint_ == logpoint);
+	}
 }
 
 // Prepare pixel data buffer
 void Model::preparePixelData(int width, int height, Model *source, int logpoint)
 {
-	// Reallocate array if necessary
-	if ((width != pixelDataWidth_) || (height != pixelDataHeight_))
+	// Forward to parent model if one is defined
+	if (parent_ != NULL) parent_->preparePixelData(width, height, source, logpoint);
+	else
 	{
-		// Deallocate old array if necessary
-		if (pixelData_ != NULL) delete[] pixelData_;
-		pixelDataWidth_ = width;
-		pixelDataHeight_ = height;
-		pixelData_ = new GLubyte[4*pixelDataWidth_*pixelDataHeight_];
+		// Reallocate array if necessary
+		if ((width != pixelDataWidth_) || (height != pixelDataHeight_))
+		{
+			// Deallocate old array if necessary
+			if (pixelData_ != NULL) delete[] pixelData_;
+			pixelDataWidth_ = width;
+			pixelDataHeight_ = height;
+			pixelData_ = new GLubyte[4*pixelDataWidth_*pixelDataHeight_];
+		}
+		// Set new log point and source model
+		pixelDataSource_ = source;
+		pixelDataLogPoint_ = logpoint;
 	}
-	// Set new log point and source model
-	pixelDataSource_ = source;
-	pixelDataLogPoint_ = logpoint;
 }
 
 // Return pixel data buffer pointer
 GLubyte *Model::pixelData()
 {
-	return pixelData_;
+	if (parent_ != NULL) return parent_->pixelData();
+	else return pixelData_;
 }
 
 // Set the current modelview matrix
@@ -323,37 +334,41 @@ void Model::viewAlongCell(double x, double y, double z)
 // Set-up viewport and projection matrices
 void Model::setupView(GLint x, GLint y, GLint w, GLint h)
 {
-	// Setup and store viewport matrix
-	viewportMatrix_[0] = x;
-	viewportMatrix_[1] = y;
-	viewportMatrix_[2] = w;
-	viewportMatrix_[3] = h;
-	glViewport( x, y, w, h );
-	glMatrixMode(GL_PROJECTION);
-	
-	// Create projection matrix for rotation globe
-	glLoadIdentity();
-	glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
-	glGetDoublev(GL_PROJECTION_MATRIX, globeProjectionMatrix_.matrix());
-	
-	// Create projection matrix for model
-	glLoadIdentity();
-	GLdouble top, bottom, aspect = (GLdouble) w / (GLdouble) h;
-	if (prefs.hasPerspective())
+	if (parent_ == NULL)
 	{
-		// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
-		bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
-		top = -bottom;
-		glFrustum(aspect*top, aspect*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
+		// Setup and store viewport matrix
+		viewportMatrix_[0] = x;
+		viewportMatrix_[1] = y;
+		viewportMatrix_[2] = w;
+		viewportMatrix_[3] = h;
+		glViewport( x, y, w, h );
+		glMatrixMode(GL_PROJECTION);
+		
+		// Create projection matrix for rotation globe
+		glLoadIdentity();
+		glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
+		glGetDoublev(GL_PROJECTION_MATRIX, globeProjectionMatrix_.matrix());
+		
+		// Create projection matrix for model
+		glLoadIdentity();
+		GLdouble top, bottom, aspect = (GLdouble) w / (GLdouble) h;
+		if (prefs.hasPerspective())
+		{
+			// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
+			bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
+			top = -bottom;
+			glFrustum(aspect*top, aspect*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
+		}
+		else
+		{
+			top = tan(prefs.perspectiveFov() / DEGRAD) * modelViewMatrix_[14];
+			bottom = -top;
+			glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
+		}
+		glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
+		glMatrixMode(GL_MODELVIEW);
 	}
-	else
-	{
-		top = tan(prefs.perspectiveFov() / DEGRAD) * modelViewMatrix_[14];
-		bottom = -top;
-		glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
-	}
-	glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
-	glMatrixMode(GL_MODELVIEW);
+	else parent_->setupView(x, y, w, h);
 }
 
 // Project given model coordinates into world coordinates (and screen coordinates if requested)
