@@ -82,6 +82,14 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("No trajectory associated to current model.\n");
 		return FALSE;
 	}
+	
+	// Check that defined encoder exe exists
+	if (!fileExists(prefs.encoderExe()))
+	{
+		msg.print("Error: Encoder excutable doesn't appear to exist ('%s').\n", prefs.encoderExe());
+		return FALSE;
+	}
+	
 	// Get arguments...
 	int width = c->hasArg(1) ? c->argi(1) : gui.mainWidget->width();
 	if (width == -1) width = gui.mainWidget->width();
@@ -91,6 +99,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int firstframe = c->hasArg(4) ? c->argi(4)-1 : 0;
 	int lastframe = c->hasArg(5) ? c->argi(5)-1 : obj.m->nTrajectoryFrames()-1;
 	int frameskip = c->hasArg(6) ? c->argi(6) : 1;
+	int fps = c->hasArg(7) ? c->argi(7) : 25;
 
 	// Set offscreen rendering and save some current view preferences
 	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
@@ -153,11 +162,12 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	TProcess encoderProcess;
 	// Grab encoder command and replace
 	basename.sprintf("%s%caten-movie-%i-%i-*.png", prefs.tempDir(), PATHSEP, gui.pid(), runid);
-	QString encoderArgs = prefs.encoderArguments(), temp;
+	QString encoderArgs = prefs.encoderArguments();
 	Dnchar filename(-1, "\"%s\"", c->argc(0));
-	temp = encoderArgs.replace("OUTPUT", filename.get());
-	encoderArgs = temp.replace("FILES", basename.get());
-	printf("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
+	encoderArgs.replace("OUTPUT", filename.get());
+	encoderArgs.replace("FILES", basename.get());
+	encoderArgs.replace("FPS", itoa(fps));
+	msg.print("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
 	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
 	{
 		msg.print("Error: Failed to run encoder command.\n");
@@ -171,6 +181,16 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
 		gui.processMessages();
 	}
+	
+	// Cleanup
+	aten.initialiseProgress("Cleaning up", lastframe-firstframe);
+	for (int n = firstframe; n <= lastframe; n += frameskip)
+	{
+		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
+		QFile::remove(basename.get());
+		aten.updateProgress(n);
+	}
+	aten.cancelProgress();
 	
 	return TRUE;
 }

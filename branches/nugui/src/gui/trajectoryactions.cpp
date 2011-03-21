@@ -102,7 +102,7 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
 	int width, height;
 	
-	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Interval', 'intspin', 1, 9999999, 0, 1, 'newline'); ");
+	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Interval', 'intspin', 1, 9999999, 0, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
 
 	Model *m = aten.currentModel();
 
@@ -126,6 +126,7 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	int firstframe = dialog.widgetValuei("First Frame") - 1;
 	int lastframe = dialog.widgetValuei("Last Frame") - 1;
 	int frameskip = dialog.widgetValuei("Frame Interval");
+	int fps = dialog.widgetValuei("Movie FPS");
 	
 	// Get movie filename
 	static QString selectedFilter("All Files (*.*)");
@@ -136,5 +137,5 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	currentDirectory_.setPath(filename);
 	
 	// Generate movie file...
-	CommandNode::run(Command::SaveMovie, "ciiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip);
+	CommandNode::run(Command::SaveMovie, "ciiiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip, fps);
 }

@@ -222,6 +222,7 @@ void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
 {
 	// Construct command string from GUI widget options
 	Dnchar options(-1, "BFGS %s %s %s CHARGE=%i", qPrintable(ui.MopacHFCombo->currentText()), qPrintable(ui.MopacHamiltonianCombo->currentText()), 	qPrintable(ui.MopacSpinCombo->currentText()), ui.MopacChargeSpin->value());
+	if (ui.MopacMozymeCheck->isChecked()) options.strcat(" MOZYME");
 	CommandNode::run(Command::MopacMinimise, "c", options.get());
 	gui.update(GuiQt::AtomsTarget+GuiQt::CanvasTarget);
 }

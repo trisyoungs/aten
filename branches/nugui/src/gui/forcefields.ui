@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
+    <width>280</width>
     <height>367</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>270</width>
+    <width>280</width>
     <height>367</height>
    </size>
   </property>
@@ -149,7 +149,7 @@
            <item>
             <widget class="QTabWidget" name="MinimiserTabs">
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="ForcefieldMinimiserTab">
               <attribute name="title">
@@ -446,7 +446,7 @@
                    </item>
                   </widget>
                  </item>
-                 <item row="1" column="1">
+                 <item row="1" column="1" colspan="2">
                   <widget class="QComboBox" name="MopacSpinCombo">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -501,7 +501,7 @@
                    </item>
                   </widget>
                  </item>
-                 <item row="2" column="1">
+                 <item row="2" column="1" colspan="2">
                   <widget class="QComboBox" name="MopacHamiltonianCombo">
                    <property name="currentIndex">
                     <number>4</number>
@@ -582,13 +582,20 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="1">
+                 <item row="3" column="1" colspan="2">
                   <widget class="QSpinBox" name="MopacChargeSpin">
                    <property name="minimum">
                     <number>-100</number>
                    </property>
                    <property name="maximum">
                     <number>100</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QCheckBox" name="MopacMozymeCheck">
+                   <property name="text">
+                    <string>MOZYME</string>
                    </property>
                   </widget>
                  </item>

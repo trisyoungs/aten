@@ -116,14 +116,14 @@ bool TProcess::outputAvailable()
 void TProcess::printLineToMessages()
 {
 	// Standard output takes priority over file...
-	if (stdOutput_.data() != '\0')
-	{
-		msg.print(stdOutput_.data());
-		stdOutput_.clear();
-	}
-	else
+	if (stdOutput_.isEmpty())
 	{
 		QString line = stream_.readLine() + "\n";
 		msg.print(qPrintable(line));
+	}
+	else
+	{
+		msg.print(stdOutput_.data());
+		stdOutput_.clear();
 	}
 }

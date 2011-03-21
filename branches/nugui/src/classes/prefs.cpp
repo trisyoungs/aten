@@ -334,7 +334,7 @@ Prefs::Prefs()
 	tempDir_ = "/tmp";
 #endif
 	encoderExe_ = "/usr/bin/mencoder";
-	encoderArguments_ = "mf://FILES -ovc copy -v -o OUTPUT";
+	encoderArguments_ = "mf://FILES -ovc x264 -fps FPS -v -o OUTPUT";
 }
 
 // Load user preferences file

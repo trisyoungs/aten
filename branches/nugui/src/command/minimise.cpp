@@ -116,10 +116,10 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	do
 	{
 		runid = AtenMath::randomi(RAND_MAX);
-		mopacInput.sprintf("%s%caten-%i-mopac%i.mop", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+		mopacInput.sprintf("%s%caten-mopac-%i-%i.mop", prefs.tempDir(), PATHSEP, gui.pid(), runid);
 	} while (fileExists(mopacInput));
-	mopacArc.sprintf("%s%caten-%i-mopac%i.arc", prefs.tempDir(), PATHSEP, gui.pid(), runid);
-	mopacOut.sprintf("%s%caten-%i-mopac%i.out", prefs.tempDir(), '/', gui.pid(), runid);
+	mopacArc.sprintf("%s%caten-mopac-%i-%i.arc", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+	mopacOut.sprintf("%s%caten-mopac-%i-%i.out", prefs.tempDir(), '/', gui.pid(), runid);
 	mopacCmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacInput.get());
 	msg.print("Command to run will be '%s'\n", mopacCmd.get());
 	
@@ -165,6 +165,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		msg.print("Error: Can't locate MOPAC output '%s'.\n", mopacArc.get());
 		return FALSE;
 	}
+
 	// Time to load in the results
 	aten.setUseWorkingList(TRUE);
 	int result = CommandNode::run(Command::LoadModel, "c", mopacArc.get());
@@ -175,6 +176,12 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		msg.print("Error: No results model found.\n");
 		return FALSE;
 	}
+
+	// Cleanup
+	QFile::remove(mopacArc.get());
+	QFile::remove(mopacOut.get());
+	QFile::remove(mopacInput.get());
+
 	// Copy the atoms into a temporary model
 	Model tempmodel;
 	tempmodel.copy(m);
