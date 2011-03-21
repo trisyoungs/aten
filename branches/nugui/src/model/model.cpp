@@ -305,24 +305,28 @@ void Model::clearLabels(Atom *i)
 void Model::clearAllLabels()
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) clearLabels(i);
+	changeLog.add(Log::Visual);
 }
 
 // Clear all labels in selection
 void Model::selectionClearLabels()
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) clearLabels(i);
+	changeLog.add(Log::Visual);
 }
 
 // Remove specific labels in selection
 void Model::selectionRemoveLabels(Atom::AtomLabel al)
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) removeLabel(i, al);
+	changeLog.add(Log::Visual);
 }
 
 // Add atom labels
 void Model::selectionAddLabels(Atom::AtomLabel al)
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addLabel(i, al);
+	changeLog.add(Log::Visual);
 }
 
 /*

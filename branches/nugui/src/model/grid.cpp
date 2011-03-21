@@ -43,17 +43,13 @@ Grid *Model::grid(int id)
 // Add new surface
 Grid *Model::addGrid()
 {
-	return grids_.add();
+	Grid *g = grids_.add();
+	g->setParent(this);
+	return g;
 }
 
 // Remove surface
 void Model::removeGrid(Grid *xgrid)
 {
 	grids_.remove(xgrid);
-}
-
-// Request rerendering of all grid data
-void Model::rerenderGrids()
-{
-	for (Grid *g = grids_.first(); g != NULL; g = g->next) g->requestRerender();
 }

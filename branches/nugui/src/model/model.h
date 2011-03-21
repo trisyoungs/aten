@@ -1111,8 +1111,6 @@ class Model
 	Grid *addGrid();
 	// Remove surface
 	void removeGrid(Grid *s);
-	// Request rerendering of all grid data
-	void rerenderGrids();
 
 
 	/*

@@ -46,6 +46,7 @@ bool Command::function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.rs()->beginUndoState("Label atom");
 		obj.rs()->addLabel(i, al);
 		obj.rs()->endUndoState();
+		obj.rs()->changeLog.add(Log::Visual);
 	}
 	else
 	{

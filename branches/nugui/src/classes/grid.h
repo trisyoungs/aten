@@ -83,6 +83,8 @@ class Grid
 	// Identity
 	*/
 	private:
+	// Parent model
+	Model *parent_;
 	// Name of the Grid data
 	Dnchar name_;
 	// Type of data contained in the class
@@ -97,6 +99,10 @@ class Grid
 	bool initialise(GridType type, Vec3<int> npoints);
 	// Return type of Grid data
 	GridType type() const;
+	// Return parent model
+	Model *parent();
+	// Set parent model
+	void setParent(Model *parent);
 
 
 	/*
@@ -268,8 +274,6 @@ class Grid
 	bool shouldRerender() const;
 	// Update the log point of the surface
 	void updateRenderPoint();
-	// Request rerendering of the surface (update log)
-	void requestRerender();
 	// Set whether the surface is visible
 	void setVisible(bool v);
 	// Return whether the surface is visible

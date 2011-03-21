@@ -63,7 +63,7 @@ void ToolBoxWidget::updateButtons()
 	ui.GlyphsButton->setChecked(gui.glyphsWidget->isVisible());
 	ui.ModelListButton->setChecked(gui.modelListWidget->isVisible());
 	ui.MDButton->setChecked(gui.mdWidget->isVisible());
-	ui.MessagesButton->setChecked(gui.mdWidget->isVisible());
+	ui.MessagesButton->setChecked(gui.messagesWidget->isVisible());
 	ui.PositionButton->setChecked(gui.positionWidget->isVisible());
 	ui.SelectButton->setChecked(gui.selectWidget->isVisible());
 	ui.TrajectoryButton->setChecked(gui.trajectoryWidget->isVisible());

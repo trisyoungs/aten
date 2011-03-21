@@ -65,6 +65,7 @@ void GridsWidget::showWidget()
 void GridsWidget::refresh()
 {
 	msg.enter("GridsWidget::refresh");
+
 	// Clear and refresh the grids list
 	refreshing_ = TRUE;
 	ui.GridList->clear();
@@ -80,6 +81,7 @@ void GridsWidget::refresh()
 	// Select the first item
 	if (m->nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
+
 	// Update orbital page
 	QTableWidgetItem *tabitem;
 	ui.OrbitalTable->clear();
