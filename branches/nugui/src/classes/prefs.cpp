@@ -164,6 +164,7 @@ Prefs::Prefs()
 
 	// Rendering / Quality Options
 	globeSize_ = 75;
+	viewRotationGlobe_ = TRUE;
 	spotlightActive_ = TRUE;
 	spotlightColour_[Prefs::AmbientComponent][0] = 0.0;
 	spotlightColour_[Prefs::AmbientComponent][1] = 0.0;

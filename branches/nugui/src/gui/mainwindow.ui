@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>801</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu">
@@ -93,14 +93,12 @@
     </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
-    <addaction name="actionFileOpenExpression"/>
     <addaction name="RecentMenu"/>
     <addaction name="separator"/>
     <addaction name="actionFileClose"/>
     <addaction name="actionFileSave"/>
     <addaction name="actionFileSaveAs"/>
     <addaction name="actionExportOptions"/>
-    <addaction name="actionFileSaveExpression"/>
     <addaction name="separator"/>
     <addaction name="actionFileOpenGrid"/>
     <addaction name="separator"/>
@@ -274,6 +272,9 @@
     </property>
     <addaction name="actionOpenForcefield"/>
     <addaction name="separator"/>
+    <addaction name="actionOpenExpression"/>
+    <addaction name="actionSaveExpression"/>
+    <addaction name="separator"/>
     <addaction name="actionModelCreatePatterns"/>
     <addaction name="actionModelRemovePatterns"/>
     <addaction name="actionModelListPatterns"/>
@@ -378,7 +379,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="actionMouseInteract"/>
    <addaction name="actionMouseRotate"/>
@@ -800,7 +801,7 @@
   </action>
   <action name="actionModelFFType">
    <property name="text">
-    <string>Perform Typing</string>
+    <string>Perform &amp;Typing</string>
    </property>
   </action>
   <action name="actionModelFFUntype">
@@ -1243,7 +1244,7 @@
     <string>Cell -Z</string>
    </property>
   </action>
-  <action name="actionFileSaveExpression">
+  <action name="actionSaveExpression">
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
@@ -1287,7 +1288,7 @@
      <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
    </property>
    <property name="text">
-    <string>Open Forcefield</string>
+    <string>&amp;Open Forcefield</string>
    </property>
   </action>
   <action name="actionSaveForcefield">
@@ -1331,7 +1332,7 @@
   </action>
   <action name="actionModelCreatePatterns">
    <property name="text">
-    <string>Create Patterns</string>
+    <string>Create &amp;Patterns</string>
    </property>
   </action>
   <action name="actionModelRemovePatterns">
@@ -1341,7 +1342,7 @@
   </action>
   <action name="actionModelListPatterns">
    <property name="text">
-    <string>List Patterns</string>
+    <string>&amp;List Patterns</string>
    </property>
   </action>
   <action name="actionAtomFixPosition">
@@ -1437,9 +1438,9 @@
     <string>Set...</string>
    </property>
   </action>
-  <action name="actionFileOpenExpression">
+  <action name="actionOpenExpression">
    <property name="text">
-    <string>Open Expression</string>
+    <string>Open E&amp;xpression</string>
    </property>
   </action>
   <action name="actionNoAction">

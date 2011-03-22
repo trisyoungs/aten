@@ -219,9 +219,11 @@ void Model::regenerateIcon()
 	// Generate pixmap for fragment, keeping current primitive quality
 	bool reusePrims = prefs.reusePrimitiveQuality();
 	prefs.setReusePrimitiveQuality(TRUE);
-	int framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
+	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
+	
 	prefs.setFrameCurrentModel(FALSE);
 	prefs.setFrameWholeView(FALSE);
+	prefs.setViewRotationGlobe(FALSE);
 	gui.mainWidget->setRenderSource(this);
 	gui.mainWidget->setOffScreenRendering(TRUE);
 
@@ -230,6 +232,7 @@ void Model::regenerateIcon()
 
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
+	prefs.setViewRotationGlobe(viewglobe);
 	
 	gui.mainWidget->setRenderSource(NULL);
 

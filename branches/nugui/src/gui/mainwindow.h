@@ -220,9 +220,9 @@ class AtenForm : public QMainWindow
 	// Expression Menu
 	*/
 	private slots:
-	void on_actionFileOpenForcefield_triggered(bool checked);
-	void on_actionFileOpenExpression_triggered(bool checked);
-	void on_actionFileSaveExpression_triggered(bool checked);
+	void on_actionOpenForcefield_triggered(bool checked);
+	void on_actionOpenExpression_triggered(bool checked);
+	void on_actionSaveExpression_triggered(bool checked);
 	void on_actionModelCreatePatterns_triggered(bool checked);
 	void on_actionModelRemovePatterns_triggered(bool checked);
 	void on_actionModelListPatterns_triggered(bool checked);

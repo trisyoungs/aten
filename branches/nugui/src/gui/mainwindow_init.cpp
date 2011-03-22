@@ -278,7 +278,7 @@ void AtenForm::createDialogFilters()
 		saveExpressionFilters += ri->item->filter.description();
 	}
 	// Check for empty filters list
-	ui.actionFileSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
+	ui.actionSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
 
 	// Grid import
 	loadGridFilters.clear();

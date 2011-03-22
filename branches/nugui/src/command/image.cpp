@@ -102,9 +102,10 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int fps = c->hasArg(7) ? c->argi(7) : 25;
 
 	// Set offscreen rendering and save some current view preferences
-	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
+	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
 	prefs.setFrameCurrentModel(FALSE);
 	prefs.setFrameWholeView(FALSE);
+	prefs.setViewRotationGlobe(FALSE);
 	obj.m->setRenderSource(Model::TrajectorySource);
 	
 	// Generate unique file basename
@@ -150,6 +151,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	aten.cancelProgress();
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
+	prefs.setViewRotationGlobe(viewglobe);
 	gui.mainWidget->setOffScreenRendering(FALSE);
 	if (!prefs.reusePrimitiveQuality()) gui.mainWidget->reinitialisePrimitives();
 
