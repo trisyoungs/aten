@@ -1,5 +1,5 @@
 /*
-	*** TProcess
+	*** TProcess Functions
 	*** src/gui/tprocess.cpp
 	Copyright T. Youngs 2007-2011
 

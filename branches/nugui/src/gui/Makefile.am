@@ -19,7 +19,7 @@ SUFFIXES: .ui .uih .qrc
 	rm $*.cpp
 
 clean:
-	rm -f *.o ui_* tprompt.cpp ttreewidget.cpp tcanvas.cpp tcolourframe.cpp tradiogroup.cpp tprocess.cpp
+	rm -f *.o ui_* tprompt.cpp ttreewidget.cpp tcanvas.cpp tcolourframe.cpp tradiogroup.cpp tprocess.cpp tmenubutton.cpp tcombobox.cpp
 
 SUBWINDOW_UI = about.ui atomlist.ui build.ui celldefinition.ui celltransform.ui command.ui customdialog.ui disorder.ui forcefields.ui fragments.ui geometry.ui glyphs.ui grids.ui md.ui messages.ui modellist.ui position.ui select.ui toolbox.ui trajectory.ui transform.ui vibrations.ui viewbasis.ui vieweigenvector.ui zmatrix.ui
 SUBWINDOW_FUNCS = about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefinition_funcs.cpp celltransform_funcs.cpp command_funcs.cpp customdialog_funcs.cpp disorder_funcs.cpp forcefields_funcs.cpp fragments_funcs.cpp geometry_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp md_funcs.cpp messages_funcs.cpp modellist_funcs.cpp position_funcs.cpp select_funcs.cpp toolbox_funcs.cpp trajectory_funcs.cpp transform_funcs.cpp vibrations_funcs.cpp viewbasis_funcs.cpp vieweigenvector_funcs.cpp zmatrix_funcs.cpp
@@ -28,8 +28,8 @@ MAINWINDOW_UI = icons.qrc ffeditor.ui loadmodel.ui prefs.ui selectelement.ui sel
 MAINWINDOW_FUNCS = contextmenu_funcs.cpp ffeditor_funcs.cpp gui.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_funcs.cpp mainwindow_init.cpp prefs_funcs.cpp select_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
 MAINWINDOW_ACTIONS = editactions.cpp fileactions.cpp forcefieldactions.cpp modelactions.cpp mouseactions.cpp systemactions.cpp toolbaractions.cpp trajectoryactions.cpp viewactions.cpp
 
-WIDGET_UI = tcolourframe.uih ttreewidget.uih tcanvas.uih tprocess.uih tprompt.uih tradiogroup.uih
-WIDGET_FUNCS = tcanvas_funcs.cpp tcanvas_input.cpp tcanvas_render.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
+WIDGET_UI = tcolourframe.uih ttreewidget.uih tcanvas.uih tmenubutton.uih tprocess.uih tprompt.uih tradiogroup.uih
+WIDGET_FUNCS = tcanvas_funcs.cpp tcanvas_input.cpp tcanvas_render.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
 
 CANVAS_FUNCS = useractions.cpp
 

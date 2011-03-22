@@ -279,7 +279,7 @@ Prefs::Prefs()
 	foldOnLoad_ = Choice::Default;
 	centreOnLoad_ = Choice::Default;
 	packOnLoad_ = Choice::Default;
-	cacheLimit_ = 1024;
+	cacheLimit_ = 512000;
 	zMapType_ = ElementMap::AutoZMap;
 	fixedZMapType_ = FALSE;
 	coordsInBohr_ = FALSE;

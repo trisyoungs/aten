@@ -14,6 +14,7 @@ set(qtproject_SRCS
   useractions.h
   useractions.cpp
   gui.h 
+  tcombobox.h
   ttreewidgetitem.h
   ttablewidgetitem.h
   tlistwidgetitem.h 
@@ -59,6 +60,7 @@ set(qtproject_SRCS
   tcanvas_render.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
+  tmenubutton_funcs.cpp
   tlistwidgetitem_funcs.cpp
   toolbaractions.cpp
   toolbox_funcs.cpp
@@ -113,6 +115,7 @@ SET(pro_MOC_HDRS
   zmatrix.h
   tcanvas.uih
   tcolourframe.uih
+  tmenubutton.uih
   tprocess.uih
   tprompt.uih
   tradiogroup.uih

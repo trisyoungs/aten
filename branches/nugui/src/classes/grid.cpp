@@ -580,7 +580,7 @@ void Grid::copySecondaryColour(GLfloat *col)
 // Log changes
 void Grid::logChange()
 {
-	logChange();
+	++log_;
 	if (parent_ != NULL) parent_->changeLog.add(Log::Visual);
 }
 

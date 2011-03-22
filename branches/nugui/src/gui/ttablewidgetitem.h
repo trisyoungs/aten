@@ -1,5 +1,5 @@
 /*
-	*** TTableWidgetItem Class
+	*** TTableWidgetItem - QTableWidgetItem with custom data structure
 	*** src/gui/ttablewidgetitem.h
 	Copyright T. Youngs 2007-2011
 

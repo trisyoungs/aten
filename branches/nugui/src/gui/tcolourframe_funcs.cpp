@@ -1,5 +1,5 @@
 /*
-	*** Qt ColourFrame functions
+	*** TColourFrame Functions
 	*** src/gui/tcolourframe_funcs.cpp
 	Copyright T. Youngs 2007-2011
 

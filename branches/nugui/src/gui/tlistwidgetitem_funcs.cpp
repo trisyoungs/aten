@@ -1,5 +1,5 @@
 /*
-	*** Qt TListWidgetItem functions
+	*** TListWidgetItem Functions
 	*** src/gui/tlistwidgetitem_funcs.cpp
 	Copyright T. Youngs 2007-2011
 

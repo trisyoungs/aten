@@ -41,21 +41,13 @@ BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 	elementGroup->addButton(ui.ElementNButton);
 	elementGroup->addButton(ui.ElementCustomButton);
 	
-	// Create submenus for Rebond and Clear buttons
-	QMenu *menu;
-	QAction *action;
-	menu = new QMenu(this);
-	menu->setFont(this->font());
-	ui.DrawRebondButton->setMenu(menu);
-	action = menu->addAction("Selection");
-	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(rebondSelection(bool)));
-	action = menu->addAction("Patterns");
-	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(rebondPatterns(bool)));
-	menu = new QMenu(this);
-	menu->setFont(this->font());
-	ui.DrawClearBondingButton->setMenu(menu);
-	action = menu->addAction("Selection");
-	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(clearSelectionBonds(bool)));
+	// Add items to submenus for Rebond and Clear buttons
+	ui.DrawRebondMenuButton->addMenuItem("Model (no augment)", BuildWidget::ModelNoAugmentItem);
+	ui.DrawRebondMenuButton->addMenuItem("Selection", BuildWidget::SelectionItem);
+	ui.DrawRebondMenuButton->addMenuItem("Selection (no augment)", BuildWidget::SelectionNoAugmentItem);
+	ui.DrawRebondMenuButton->addMenuItem("Within Patterns", BuildWidget::PatternsItem);
+	ui.DrawRebondMenuButton->addMenuItem("Within Patterns (no augment)", BuildWidget::PatternsNoAugmentItem);
+	ui.DrawClearBondingMenuButton->addMenuItem("Selection", 0);
 	
 	// Private variables
 	customElement_ = 9;
@@ -140,27 +132,46 @@ void BuildWidget::on_DrawClearBondingButton_clicked(bool checked)
 	gui.update(GuiQt::CanvasTarget);
 }
 
+void BuildWidget::on_DrawRebondMenuButton_menuItemClicked(int menuItemId)
+{
+	switch (menuItemId)
+	{
+		case (BuildWidget::ModelNoAugmentItem):
+			CommandNode::run(Command::ReBond, "i", 1);
+			break;
+		case (BuildWidget::SelectionItem):
+			CommandNode::run(Command::ReBondSelection, "");
+			break;
+		case (BuildWidget::SelectionNoAugmentItem):
+			CommandNode::run(Command::ReBondSelection, "i", 1);
+			break;
+		case (BuildWidget::PatternsItem):
+			CommandNode::run(Command::ReBondPatterns, "");
+			break;
+		case (BuildWidget::PatternsNoAugmentItem):
+			CommandNode::run(Command::ReBondPatterns, "i", 1);
+			break;
+		default:
+			printf("BuildWidget - Unhandled menu item from DrawRebondButton.\n");
+			break;
+	}
+	gui.update(GuiQt::CanvasTarget);
+}
+
+void BuildWidget::on_DrawClearBondingMenuButton_menuItemClicked(int menuItemId)
+{
+	// Only one action to consider,,.
+	if (menuItemId == 0)
+	{
+		CommandNode::run(Command::ClearSelectedBonds, "");
+		gui.update(GuiQt::CanvasTarget);
+	}
+	else printf("BuildWidget - Unhandled menu item from DrawRebondButton.\n");
+}
+
 void BuildWidget::on_DrawAugmentButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Augment, "");
-	gui.update(GuiQt::CanvasTarget);
-}
-
-void BuildWidget::rebondSelection(bool checked)
-{
-	CommandNode::run(Command::ReBondSelection, "");
-	gui.update(GuiQt::CanvasTarget);
-}
-
-void BuildWidget::rebondPatterns(bool checked)
-{
-	CommandNode::run(Command::ReBondPatterns, "");
-	gui.update(GuiQt::CanvasTarget);
-}
-
-void BuildWidget::clearSelectionBonds(bool checked)
-{
-	CommandNode::run(Command::ClearSelectedBonds, "");
 	gui.update(GuiQt::CanvasTarget);
 }
 

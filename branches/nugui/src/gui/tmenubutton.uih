@@ -1,6 +1,6 @@
 /*
-	*** TListWidgetItem - QListWidgetItem with custom data storage
-	*** src/gui/tlistwidgetitem.h
+	*** TMenuButton - QPushButton with custom handling of mousepress/release events
+	*** src/gui/tmenubutton.uih
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -19,24 +19,42 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TLISTWIDGETITEM_H
-#define ATEN_TLISTWIDGETITEM_H
+#ifndef ATEN_TMENUBUTTON_H
+#define ATEN_TMENUBUTTON_H
 
-#include <QtGui/QListWidgetItem>
+#include <QtGui/QPushButton>
+#include <QtGui/QMenu>
 #include "parser/returnvalue.h"
+#include "templates/reflist.h"
 
-class TListWidgetItem : public QListWidgetItem
+class TMenuButton : public QPushButton
 {
+	Q_OBJECT
+	
 	public:
 	// Constructor
-	TListWidgetItem(QListWidget *parent = 0);
+	TMenuButton(QWidget *parent = 0);
 
 	/*
-	// Associated Data
+	// Data
 	*/
+	private:
+	// Menu associated to list button
+	QMenu menu_;
+	// List of QActions in menu
+	Reflist<QAction, int> actions_;
+	
 	public:
-	// Associated data item
-	ReturnValue data;
+	// Add item to menu
+	bool addMenuItem(const char *text, int id);
+	
+	private slots:
+	void menuActionTriggered(bool checked);
+	void menuButtonPressed(bool checked);
+	
+	signals:
+	// Menu item has been clicked
+	void menuItemClicked(int menuItemId);
 };
 
 #endif

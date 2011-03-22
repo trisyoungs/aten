@@ -1,5 +1,5 @@
 /*
-	*** TTreeWidgetItem Class
+	*** TTreeWidgetItem - QTreeWidgetItem with custom data class
 	*** src/gui/ttreewidgetitem.h
 	Copyright T. Youngs 2007-2011
 

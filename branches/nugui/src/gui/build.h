@@ -30,6 +30,10 @@ class BuildWidget : public QDockWidget
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
+	public:
+	// Enum for extra bond calculation button menu items
+	enum RebondMenuItems { ModelNoAugmentItem, SelectionItem, SelectionNoAugmentItem, PatternsItem, PatternsNoAugmentItem };
+
 	/*
 	// Window Functions
 	*/
@@ -49,9 +53,8 @@ class BuildWidget : public QDockWidget
 	void on_DrawRebondButton_clicked(bool checked);
 	void on_DrawClearBondingButton_clicked(bool checked);
 	void on_DrawAugmentButton_clicked(bool checked);
-	void rebondSelection(bool checked);
-	void rebondPatterns(bool checked);
-	void clearSelectionBonds(bool checked);
+	void on_DrawRebondMenuButton_menuItemClicked(int menuItemId);
+	void on_DrawClearBondingMenuButton_menuItemClicked(int menuItemId);
 	// Tools Tab - Add Atom
 	void on_AddAtomButton_clicked(bool checked);
 	// Options Tab

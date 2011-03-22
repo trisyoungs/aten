@@ -1,5 +1,5 @@
 /*
-	*** Qt Custom Command Prompt functions
+	*** TPrompt Functions
 	*** src/gui/tprompt.cpp
 	Copyright T. Youngs 2007-2011
 
