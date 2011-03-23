@@ -26,6 +26,12 @@
 						<entry>Custom colour of the atom (used when the <link linkend="enums.colourschemes">colouring scheme</link> is set to 'custom')</entry>
 					</row>
 					<row>
+						<entry>data</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Temporary character data stored on the atom (for use in filters etc.)</entry>
+					</row>
+					<row>
 						<entry>element</entry>
 						<entry><link linkend="command.types.element">element</link></entry>
 						<entry>rw</entry>

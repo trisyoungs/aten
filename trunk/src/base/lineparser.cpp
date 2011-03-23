@@ -614,6 +614,8 @@ bool LineParser::getCharsDelim(int optionMask, Dnchar *destarg)
 		file_->get(c);
 		if ((c == '\n') || (c == '\t') || (c == '\r') || (c == ' '))
 		{
+			// Eat DOS-style line terminator
+			if ((c == '\r') && (file_->peek() == '\n')) file_->get(c);
 			if (length != 0) break;
 			else continue;
 		}
