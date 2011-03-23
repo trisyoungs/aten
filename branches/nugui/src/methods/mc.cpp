@@ -445,7 +445,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	{
 		// Set nmols, starti, endi, startatom and endatom in the pattern
 		msg.print("  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMolecules(),p->nAtoms(),
-			p->startAtom(),p->startAtom() + p->totalAtoms(),p->name());
+			p->startAtom()+1,p->startAtom() + p->totalAtoms(),p->name());
 	}
 
 	// Reset number of molecules in component patterns to zero (except those for the original patterns of the model)

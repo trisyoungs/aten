@@ -1443,6 +1443,9 @@
    </property>
   </action>
   <action name="actionNoAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Null</string>
    </property>

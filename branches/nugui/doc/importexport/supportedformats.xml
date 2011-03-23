@@ -56,6 +56,15 @@
 						<entry></entry>
 					</row>
 					<row>
+						<entry>EPSR ATO File</entry>
+						<entry>*.ato</entry>
+						<entry>ato</entry>
+						<entry>18</entry>
+						<entry>yes</entry>
+						<entry>yes</entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry>GAMESS-US Output (Log)</entry>
 						<entry>*.log</entry>
 						<entry>gamuslog</entry>

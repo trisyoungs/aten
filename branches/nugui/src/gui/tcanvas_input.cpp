@@ -527,6 +527,8 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 
 	// Finally, set the mode and refresh
 	selectedMode_ = ua;
+	gui.mainWindow->setActiveUserAction(ua);
+	
 	// Change mouse cursor depending on mode
 	if (selectedMode_ == UserAction::SelectAction) setCursor(Qt::ArrowCursor);
 	else setCursor(Qt::CrossCursor);

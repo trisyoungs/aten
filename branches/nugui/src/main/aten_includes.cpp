@@ -86,7 +86,7 @@ int Aten::parseIncludeDir(const char *path)
 	QDir includedir(path);
 	if (!includedir.exists())
 	{
-		msg.enter("Aten::parseIncludeDir");
+		msg.exit("Aten::parseIncludeDir");
 		return -1;
 	}
 	// Include the directory contents - show only files and exclude '.' and '..'

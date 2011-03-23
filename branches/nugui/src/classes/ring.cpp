@@ -281,8 +281,8 @@ void Ring::detectType()
 		for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next) ra->item->setEnvironment(Atom::AromaticEnvironment);
 		for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) 
 		{
-			if (rb->data != Bond::Aromatic) parent_->parent()->changeBond(rb->item, Bond::Aromatic);
-			rb->data = Bond::Aromatic;
+			if (rb->item->type() != Bond::Aromatic) parent_->parent()->changeBond(rb->item, Bond::Aromatic);
+// 			rb->data = Bond::Aromatic;
 		}
 	}
 	msg.exit("Ring::detectType");

@@ -52,6 +52,7 @@ AtomVariable::~AtomVariable()
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "bonds", 	VTypes::BondData,		-1, TRUE },
 	{ "colour",	VTypes::DoubleData,		4, FALSE },
+	{ "data",	VTypes::StringData,		0, FALSE },
 	{ "element",	VTypes::ElementData,		0, FALSE },
 	{ "f",		VTypes::VectorData,		0, FALSE },
 	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
@@ -193,6 +194,9 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (AtomVariable::Colour):
 			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(), 4);
+			break;
+		case (AtomVariable::Data):
+			rv.set(ptr->data());
 			break;
 		case (AtomVariable::ElementInfo):
 			rv.set(VTypes::ElementData, &elements().el[ptr->element()]);
@@ -349,6 +353,9 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
+			break;
+		case (AtomVariable::Data):
+			ptr->setData(newvalue.asString());
 			break;
 		case (AtomVariable::ElementInfo):
 			el = (Element*) newvalue.asPointer(VTypes::ElementData);

@@ -176,7 +176,7 @@ int Aten::parseFilterDir(const char *path)
 	QDir filterdir(path);
 	if (!filterdir.exists())
 	{
-		msg.enter("Aten::parseFilterDir");
+		msg.exit("Aten::parseFilterDir");
 		return -1;
 	}
 	// Filter the directory contents - show only files and exclude '.' and '..'

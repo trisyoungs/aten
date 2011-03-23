@@ -724,7 +724,7 @@ int Aten::parseCli(int argc, char *argv[])
 	{
 		cin.seekg(0, ios::end);
 		streampos endpos = cin.tellg();
-		if (endpos != streampos(-1)) readcin = TRUE;
+		if ((endpos != streampos(-1)) && (endpos != streampos(0))) readcin = TRUE;
 		cin.seekg(0, ios::beg);
 		
 	}
