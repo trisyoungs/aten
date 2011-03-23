@@ -204,9 +204,13 @@ void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 		if (lastClicked_ != NULL)
 		{
 			// Clear all old selected items, unless Ctrl was pressed at the same time
-			deselectAll(lastClicked_);
-			Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
-			aten.setCurrentModel(m);
+			if (event->modifiers()&Qt::ControlModifier) toggleItem(lastClicked_);
+			else 
+			{
+				deselectAll(lastClicked_);
+				Model *m = (Model*) lastClicked_->data.asPointer(VTypes::ModelData);
+				aten.setCurrentModel(m);
+			}
 			gui.update(GuiQt::AllTarget - GuiQt::ModelsTarget);
 		}
 		lastHovered_ = lastClicked_;

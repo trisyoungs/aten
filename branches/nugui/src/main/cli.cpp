@@ -282,7 +282,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			{
 				case (Cli::AtenDataSwitch):
 					aten.setDataDir(argtext.get());
-					printf("Will search for filters in '%s'.\n", argtext.get());
+					msg.print("Will search for filters in '%s'.\n", argtext.get());
 					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
@@ -321,7 +321,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
-					printf("Verbosity enabled.\n");
+					msg.print("Verbosity enabled.\n");
 					msg.addOutputType(Messenger::Verbose);
 					break;
 				// Print version and exit
@@ -364,7 +364,7 @@ int Aten::parseCli(int argc, char *argv[])
 			// Manually-exclude some specific (and extremely annoying) extraneous command line options
 			if (strncmp(argv[argn],"-psn",4) == 0)
 			{
-				printf("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
+				msg.print("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
 				continue;
 			}
 			// Is this a long or short option?
@@ -614,7 +614,11 @@ int Aten::parseCli(int argc, char *argv[])
 							return -1;
 						}
 						el = elements().findAlpha(afterChar(parser.argc(n), '='));
-						if (el == 0) printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+						if (el == 0)
+						{
+							printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+							return -1;
+						}
 						else
 						{
 							nmi = typeImportMap.add();
@@ -674,7 +678,11 @@ int Aten::parseCli(int argc, char *argv[])
 				// Associate trajectory with last loaded model
 				case (Cli::TrajectorySwitch):
 					// Check for a current model
-					if (current.m == NULL) printf("There is no current model to associate a trajectory to.\n");
+					if (current.m == NULL)
+					{
+						printf("There is no current model to associate a trajectory to.\n");
+						return -1;
+					}
 					else
 					{
 						Tree *f = probeFile(argtext.get(), FilterData::TrajectoryImport);
