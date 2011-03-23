@@ -24,6 +24,9 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)</para>
+		</listitem>
+		<listitem>
 			<para>Reading xyz trajectory from disk (i.e. not cached) appears to be broken, reading only some frames properly</para>
 		</listitem>
 		<listitem>

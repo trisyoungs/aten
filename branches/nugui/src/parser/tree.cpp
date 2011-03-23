@@ -809,7 +809,6 @@ TreeNode *Tree::createPath(TreeNode *node)
 	msg.enter("Tree::createPath");
 	VariableNode *vnode = (VariableNode*) node;
 	pathStack_.add(vnode, vnode);
-// 	nodes_.own(vnode);	// Should not be called, since the passed *node is already owned by the tree
 	msg.print(Messenger::Parse, "A new path has been started, beginning from variable '%s'.\n", vnode->name());
 	msg.exit("Tree::createPath");
 	return vnode;

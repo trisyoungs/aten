@@ -50,8 +50,6 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 	{ "angles", 	VTypes::PatternBoundData,	-1, TRUE },
 	{ "atoms", 	VTypes::AtomData,		-1, TRUE },
 	{ "bonds", 	VTypes::PatternBoundData,	-1, TRUE },
-	{ "cog", 	VTypes::VectorData,		-1, TRUE },
-	{ "com", 	VTypes::VectorData,		-1, TRUE },
 	{ "ffangles",	VTypes::ForcefieldBoundData,	0, TRUE },
 	{ "ffbonds",	VTypes::ForcefieldBoundData,	0, TRUE },
 	{ "fftorsions",	VTypes::ForcefieldBoundData,	0, TRUE },
@@ -78,7 +76,8 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor PatternVariable::functionData[PatternVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "cog", 	VTypes::VectorData,	"I",	"int id" },
+	{ "com", 	VTypes::VectorData,	"I",	"int id" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -201,12 +200,6 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
-			break;
-		case (PatternVariable::Cog):
-			rv.set(ptr->calculateCog(arrayIndex-1));
-			break;
-		case (PatternVariable::Com):
-			rv.set(ptr->calculateCom(arrayIndex-1));
 			break;
 		case (PatternVariable::FFAngles):
 			if (!hasArrayIndex)
@@ -431,8 +424,27 @@ bool PatternVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Pattern *ptr = (Pattern*) rv.asPointer(VTypes::PatternData, result);
+	int index;
 	if (result) switch (i)
 	{
+		case (PatternVariable::Cog):
+			index = node->argi(0);
+			if ((index < 1) || (index > ptr->nMolecules()))
+			{
+				msg.print("Molecule id %i is out of range for 'cog' function in pattern '%s'.\n", index, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(ptr->calculateCog(index-1));
+			break;
+		case (PatternVariable::Com):
+			index = node->argi(0);
+			if ((index < 1) || (index > ptr->nMolecules()))
+			{
+				msg.print("Molecule id %i is out of range for 'com' function in pattern '%s'.\n", index, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(ptr->calculateCom(index-1));
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in PatternVariable.\n", functionData[i].name);
 			result = FALSE;

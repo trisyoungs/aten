@@ -2,6 +2,7 @@
 # Created:	 23/03/2011
 # Last modified: 23/03/2011
 # ChangeLog:
+# 	23/03/2011 : Initial version.
 
 filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato", glob="*.ato", id=18)
 {
@@ -99,7 +100,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	pattern p;
 	int nmols, n, m, mol, nres, nresa, nrest;
 	vector com, r;
-	atom i;
+	atom i, j;
 	bound b;
 	bond bnd;
 
@@ -116,7 +117,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	int restorsions = option("Restrain Across Torsions", "check", 0, "newline", "group=Restraints");
 
 	// First, some checks. We need valid patterns and a cubic cell.
-	if (!createpatterns()) error("Error: Can't write ATO file without a valid pattern description.\n");
+	if (!createpatterns(FALSE)) error("Error: Can't write ATO file without a valid (full) pattern description.\n");
 	if (srcmodel.cell.type != "cubic") error("Error: System must have a cubic cell.\n");
 
 	// Line 1 : nmols, box dimension, temperature
@@ -137,14 +138,14 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		{
 			++mol;
 			// Write centre of mass
-			com = p.com(m);
-			writelinef(" %5i  %13.6e  %13.6e  %13.6e  %6.4f  %6.4f  %6.4f  %5i\n",p.natoms,com.x,com.y,com.z,0.0,0.0,0.0,mol);
+			com = p.com[m];
+			writelinef(" %5i  %13.6e  %13.6e  %13.6e  %6.4f  %6.4f  %6.4f  %5i\n",p.nmolatoms,com.x,com.y,com.z,0.0,0.0,0.0,mol);
 
 			// Write atom information
 			for (n=1; n<=p.natoms; ++n)
 			{
-				if (i.type == 0) writelinef(" %3s  %i", i.symbol, n);
-				else writelinef(" %3s  %i", i.type.name, n);
+				if (i.type == 0) writelinef(" %3s  %i\n", i.symbol, n);
+				else writelinef(" %3s  %i\n", i.type.name, n);
 
 				// Get mim vector to COM
 				r = srcmodel.cell.mimd(i.r, com);
@@ -155,22 +156,22 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 				nresa = 0;
 				nrest = 0;
 				if (resbonds) nres += i.nbonds;
-				if (resangles) { for (b in p.angles) if ((b.id[1] == n) || (b.id[3] == n)) ++nresa;
-				if (restorsions) { for (b in p.torsions) if ((b.id[1] == n) || (b.id[4] == n)) ++nrest;
+				if (resangles) for (b in p.angles) if ((b.id[1] == n) || (b.id[3] == n)) ++nresa;
+				if (restorsions) for (b in p.torsions) if ((b.id[1] == n) || (b.id[4] == n)) ++nrest;
 				nres += nresa + nrest;
 				writelinef(" %4i", nres);
-				if (resbonds) for (bnd in i.bonds) { j = bnd.partner(i); writelinef("%4i %9.3e ", j.id-p.firstatomid+1, distance(i,j); }
+				if (resbonds) for (bnd in i.bonds) { j = bnd.partner(i); writelinef("%4i %9.3e ", j.id-p.firstatomid+1, measure(i,j)); }
 				if (nresa > 0) for (b in p.angles)
 				{
 					// Search for angles in which this atom is involved
-					if (b.id[1] == n) writelinef("%4i %9.3e ", b.id[3], distance(i.id, i.id+(b.id[3]-b.id[1]));
-					else if (b.id[3] == n) writelinef("%4i %9.3e ", b.id[1], distance(i.id, i.id+(b.id[1]-b.id[3]));
+					if (b.id[1] == n) writelinef("%4i %9.3e ", b.id[3], measure(i.id, i.id+(b.id[3]-b.id[1])));
+					else if (b.id[3] == n) writelinef("%4i %9.3e ", b.id[1], measure(i.id, i.id+(b.id[1]-b.id[3])));
 				}
 				if (nrest > 0) for (b in p.torsions)
 				{
 					// Search for torsions in which this atom is involved
-					if (b.id[1] == n) writelinef("%4i %9.3e ", b.id[4], distance(i.id, i.id+(b.id[4]-b.id[1]));
-					else if (b.id[4] == n) writelinef("%4i %9.3e ", b.id[4], distance(i.id, i.id+(b.id[1]-b.id[4]));
+					if (b.id[1] == n) writelinef("%4i %9.3e ", b.id[4], measure(i.id, i.id+(b.id[4]-b.id[1])));
+					else if (b.id[4] == n) writelinef("%4i %9.3e ", b.id[1], measure(i.id, i.id+(b.id[1]-b.id[4])));
 				}
 				writelinef("\n");
 
@@ -178,151 +179,12 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			}
 		}
 	}
+
+	// Write the forcefield info
+	for (ffatom ffa in srcmodel.fftypes)
+	{
+		//sprintf(s," %3s %3s %1i\n",names[count-1].c_str(),elements.symbol(i),0);
+		//sprintf(s," %8.4f  %8.4f  %8.4f  %8.4f  %8.4f\n",xff->get_vdw_param(i,VF_LJ_EPS),xff->get_vdw_param(i,VF_LJ_SIGMA), elements.mass(i),0.0,0.0);
+	}
 }
 
-//	i = sourcemodel->get_atoms();
-//	pn = sourcemodel->get_patterns();
-//	while (pn != NULL)
-//	{
-//		mol = &pn->molecule;
-//		// Create list of headgroup rotations to write out
-//		msg(DM_NONE,"Creating headgroup rotations for pattern '%s'...\n",pn->get_name());
-//		nrot = mol->epsr_rotations.get_nitems();
-//		if (nrot == 0) hg = "0\n";
-//		else
-//		{
-//			hg = itoa(nrot);
-//			hg += "\n";
-//			for (ap = mol->epsr_rotations.get_first(); ap != NULL; ap = ap->next)
-//			{
-//				// Deselect all atoms in molecule, select the first atom of the rotation, then
-//				// perform treeselect on the second atom (first selected atom will act as a barrier)
-//				mol->deselect_all();
-//				mol->select_atom(ap->get_i());
-//				mol->tree_select(ap->get_j());
-//				mol->deselect_atom(ap->get_i());
-//				mol->deselect_atom(ap->get_j());
-//				// Selection now contains just the atoms that form the rotation list, so construct string
-//				hg += " ROT\n";
-//				sprintf(s,"%3i%3i\n ",ap->get_i()->get_id()+1,ap->get_j()->get_id()+1);
-//				hg += s;
-//				sprintf(s,"%-4i",mol->get_nselected());
-//				hg += s;
-//				for (j = mol->get_atoms(); j != NULL; j = j->next)
-//				{
-//					if (j->is_selected())
-//					{
-//						sprintf(s,"%-4i",j->get_id()+1);
-//						hg += s;
-//					}
-//					j = j->next;
-//				}
-//				hg += "\n";
-//				//printf("nselected = %i\n",mol->get_nselected());
-//			}
-//		}
-//		msg(DM_NONE,"Writing molecules...\n");
-//		xff = pn->get_ff();
-//		if (xff == NULL) xff = sourcemodel->get_forcefield();
-//		if (xff == NULL) printf("No forcefield associated to model - using element names instead of type names...\n");
-//		int pnatoms = pn->get_natoms();
-//		for (m1=0; m1<pn->get_nmols(); m1++)
-//		{
-//			com = pn->calculate_com(cfg,m1);
-//			sprintf(s," %5i  %13.6e  %13.6e  %13.6e  %6.4f  %6.4f  %6.4f\n",pnatoms,com.x,com.y,com.z,0.0,0.0,0.0);
-//			atofile << s;
-//			for (a1=0; a1<pnatoms; a1++)
-//			{
-//				if (xff != NULL) atofile << (i->get_fftype() <= 0 ? " NUL" : xff->get_name(i->get_fftype())) << "\n";
-//				else atofile << elements.name(i) << "\n";
-//				// Get atomic coordinates relative to COM.
-//				mim_i = sourcemodel->cell.mim(i,&com);
-//				mim_i -= com;
-//				sprintf(s," %13.6e  %13.6e  %13.6e \n",mim_i.x,mim_i.y,mim_i.z);
-//				atofile << s;
-//				// Write list of restraints.
-//				/* OLD VERSION - Just use mim distances between atoms.
-//				if (pnatoms > 1)
-//				{
-//					atofile << pnatoms;
-//					for (a2=0; a2<pnatoms; a2++)
-//					{
-//						if ((a2%5 == 0) && (a2 != 0)) atofile << "\n";
-//						mim_i = sourcemodel->cell.mimd(i,&cfg->r[count+a2]);
-//						rij = mim_i.magnitude();
-//						sprintf(s," %3i  %13.6e ",a2+1,rij);
-//						atofile << s;
-//					}
-//				}
-//				else atofile << " 0 ";
-//				*/
-//				// NEW VERSION - Use restraint list in pattern model
-//				nres = mol->get_nrestraints_by_id(a1);
-//				if (nres == 0) atofile << " 0 ";
-//				else
-//				{
-//					atofile << nres;
-//					ap = mol->epsr_restraints.get_first();
-//					count = 0;
-//					while (ap != NULL)
-//					{
-//						// Check if this restraint involves the current atom (a1)
-//						if ((a1 == ap->get_i()->get_id()) || (a1 == ap->get_j()->get_id()))
-//						{
-//							a1 == ap->get_i()->get_id() ? a2 = ap->get_j()->get_id() : a2 = ap->get_i()->get_id();
-//							sprintf(s," %3i  %13.6e ",a2+1,ap->get_data());
-//							atofile << s;
-//							count ++;
-//							if ((count%5 == 0) && (count != 0)) atofile << "\n";
-//						}
-//						ap = ap->next;
-//					}
-//				}
-//				atofile << "\n";
-//				i = i->next;
-//			}
-//			// Write out headgroup rotation data
-//			atofile << hg;
-//		}
-//		pn = pn->next;
-//	}
-//	// Write the forcefield info
-//	msg(DM_NONE,"Writing forcefield data...\n");
-//	count = 0;
-//	i = sourcemodel->get_atoms();
-//	pn = sourcemodel->get_patterns();
-//	while (pn != NULL)
-//	{
-//		xff = pn->get_ff();
-//		if (xff == NULL) xff = sourcemodel->get_forcefield();
-//		int pnatoms = pn->get_natoms();
-//		for (a1=0; a1<pnatoms; a1++)
-//		{
-//			printf("Atom %i\n",a1);
-//			// Check vector list 'names' to see if this ff type has been written out already
-//			done = FALSE;
-//			for (n=0; n<count; n++)
-//				if (names[n] == xff->get_name(i)) done = TRUE;
-//			if (!done)
-//			{
-//				count ++;
-//				names.resize(count,"");
-//				names[count-1] = xff->get_name(i);
-//				sprintf(s," %3s %3s %1i\n",names[count-1].c_str(),elements.symbol(i),0);
-//				atofile << s;
-//				sprintf(s," %8.4f  %8.4f  %8.4f  %8.4f  %8.4f\n",xff->get_vdw_param(i,VF_LJ_EPS),xff->get_vdw_param(i,VF_LJ_SIGMA),
-//					elements.mass(i),0.0,0.0);
-//				atofile << s;
-//			}
-//			i = i->next;
-//		}
-//		// Skip the rest of the molecule's atoms (neet to maintain correct i*)
-//		for (m1=1; m1<pn->get_nmols(); m1++)
-//			for (a1=0; a1<pnatoms; a1++)
-//				i = i->next;
-//		pn = pn->next;
-//	}
-//	dbg_end(DM_CALLS,"fileimp::write_epsrato");
-//	return TRUE;
-//}
-//

@@ -52,7 +52,7 @@ Command commands;
 	T	Exact Simple	IntegerData, StringData
 	U	Vector		VectorData
 	V	Variable	Any simple variable (not path)
-	W	<free>
+	W	Vector/Atom	VectorData or AtomData (using position vector)
 	X	Pointer		Any pointer object
 	Y	<free>
 	Z	Any		Any
@@ -1031,8 +1031,8 @@ CommandData Command::data[Command::nCommands] = {
 	{ "clearpatterns",	"",		VTypes::NoData,
 		"",
 		"Remove all pattern definitions from the current model" },
-	{ "createpatterns",	"",		VTypes::NoData,
-		"",
+	{ "createpatterns",	"b",		VTypes::IntegerData,
+		"bool acceptdefault = TRUE",
 		"Automatically determine pattern definitions for the current model" },
 	{ "currentpattern",	"p",		VTypes::PatternData,
 		"string|int|pattern p = null",

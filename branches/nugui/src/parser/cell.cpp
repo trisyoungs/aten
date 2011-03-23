@@ -80,9 +80,9 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
-	{ "mim",		VTypes::VectorData,	"JJ",	"atom i, atom j" },
-	{ "mimd",		VTypes::VectorData,	"JJ",	"atom i, atom j" },
-	{ "translateatom",	VTypes::VectorData,	"JNNN",	"atom i, double dx, double dy, double dz" }
+	{ "mim",		VTypes::VectorData,	"WW",		"atom i | vector u, atom j | vector v" },
+	{ "mimd",		VTypes::VectorData,	"WW",		"atom i | vector u, atom j | vector v" },
+	{ "translateatom",	VTypes::VectorData,	"JNNN",		"atom i, double dx, double dy, double dz" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -357,43 +357,63 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Atom *ii, *jj;
-	Vec3<double> v;
+	Vec3<double> v1, v2;
 	UnitCell *ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if (result) switch (i)
 	{
 		case (CellVariable::MinimumImage):
-			ii = (Atom*) node->argp(0, VTypes::AtomData);
-			if (ii == NULL)
+			if (node->argType(0) == VTypes::VectorData) v1 = node->argv(0);
+			else
 			{
-				msg.print("Error: Source atom given to cell 'mim' function is NULL.\n");
-				result = FALSE;
-				break;
+				ii = (Atom*) node->argp(0, VTypes::AtomData);
+				if (ii == NULL)
+				{
+					msg.print("Error: Source atom given to cell 'mim' function is NULL.\n");
+					result = FALSE;
+					break;
+				}
+				v1 = ii->r();
 			}
-			jj = (Atom*) node->argp(1, VTypes::AtomData);
-			if (jj == NULL)
+			if (node->argType(1) == VTypes::VectorData) v2 = node->argv(1);
+			else
 			{
-				msg.print("Error: Reference atom given to cell 'mim' function is NULL.\n");
-				result = FALSE;
-				break;
+				jj = (Atom*) node->argp(1, VTypes::AtomData);
+				if (jj == NULL)
+				{
+					msg.print("Error: Reference atom given to cell 'mim' function is NULL.\n");
+					result = FALSE;
+					break;
+				}
+				v2 = jj->r();
 			}
-			rv.set(ptr->mim(ii,jj));
+			rv.set(ptr->mim(v1,v2));
 			break;
 		case (CellVariable::MinimumImageDistance):
-			ii = (Atom*) node->argp(0, VTypes::AtomData);
-			if (ii == NULL)
+			if (node->argType(0) == VTypes::VectorData) v1 = node->argv(0);
+			else
 			{
-				msg.print("Error: Source atom given to cell 'mimd' function is NULL.\n");
-				result = FALSE;
-				break;
+				ii = (Atom*) node->argp(0, VTypes::AtomData);
+				if (ii == NULL)
+				{
+					msg.print("Error: Source atom given to cell 'mimd' function is NULL.\n");
+					result = FALSE;
+					break;
+				}
+				v1 = ii->r();
 			}
-			jj = (Atom*) node->argp(1, VTypes::AtomData);
-			if (jj == NULL)
+			if (node->argType(1) == VTypes::VectorData) v2 = node->argv(1);
+			else
 			{
-				msg.print("Error: Reference atom given to cell 'mimd' function is NULL.\n");
-				result = FALSE;
-				break;
+				jj = (Atom*) node->argp(1, VTypes::AtomData);
+				if (jj == NULL)
+				{
+					msg.print("Error: Reference atom given to cell 'mimd' function is NULL.\n");
+					result = FALSE;
+					break;
+				}
+				v2 = jj->r();
 			}
-			rv.set(ptr->mimd(ii,jj));
+			rv.set(ptr->mimd(v1,v2));
 			break;
 		case (CellVariable::TranslateAtom):
 			ii = (Atom*) node->argp(0, VTypes::AtomData);

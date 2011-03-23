@@ -995,7 +995,7 @@ Vec3<double> Pattern::calculateCom(int mol, Model *srcmodel)
 	static Vec3<double> mim_i;
 	int offset = startAtom_ + mol*nAtoms_;
 	com.zero();
-	msg.print(Messenger::Verbose,"molecule_com : Offset = %i\n",offset);
+	msg.print(Messenger::Verbose,"molecule_com : Offset = %i\n", offset);
 	UnitCell *cell = srcmodel->cell();
 	Atom **modelatoms = srcmodel->atomArray();
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
