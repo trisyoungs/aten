@@ -36,8 +36,9 @@ class ForcefieldAtom;
 class Atom
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	Atom();
+	~Atom();
 	// List pointers
 	Atom *prev, *next;
 	// Drawing style enum
@@ -238,6 +239,8 @@ class Atom
 	private:
 	// ID number of atom
 	int id_;
+	// Data attached to atom (if any)
+	char *data_;
 
 	public:
 	// Temporary integer variable
@@ -248,6 +251,10 @@ class Atom
 	void decreaseId();
 	// Return the id of the atom
 	int id() const;
+	// Return data set for atom
+	const char *data();
+	// Set data for atom
+	void setData(const char *s);
 
 
 	/*

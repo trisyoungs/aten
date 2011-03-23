@@ -89,6 +89,8 @@ Atom::Atom()
 	style_ = StickStyle;
 	labels_ = 0;
 	parent_ = NULL;
+	id_ = -1;
+	data_ = NULL;
 	// Set initial custom colour to be black (since we have no element yet)
 	colour_[0] = 0.0;
 	colour_[1] = 0.0;
@@ -99,6 +101,12 @@ Atom::Atom()
 	next = NULL;
 	prev = NULL;
 	tempi = 0;
+}
+
+// Destructor
+Atom::~Atom()
+{
+	if (data_ != NULL) delete[] data_;
 }
 
 // Set parent model
@@ -623,6 +631,24 @@ void Atom::decreaseId()
 int Atom::id() const
 {
 	return id_;
+}
+
+// Return data set for atom
+const char *Atom::data()
+{
+	return data_;
+}
+
+// Set data for atom
+void Atom::setData(const char *s)
+{
+	// Delete any old data and set new
+	if (data_ != NULL) delete[] data_;
+	data_ = NULL;
+	int len = strlen(s);
+	if (len == 0) return;
+	data_ = new char[len+1];
+	strcpy(data_, s);
 }
 
 /*
