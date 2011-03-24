@@ -13,6 +13,7 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	double boxsize, temp, eps, sigma, mass, q;
 	string atomname, elname,line;
 	vector com, r, phi;
+	ffatom ffa;
 
 	// File header:
 	// 1 : nmols, box length, temperature
@@ -85,10 +86,11 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		el = aten.findelement(elname);
 		if (el == 0) break;
 		printf("       : Mapping atom name %s to %s.\n", atomname, el.symbol);
-		for (i in aten.model.atoms) if (i.data == atomname) i.element = el;
-		ff.addtype(count, atomname, atomname, el, "", "");
+		ffa = ff.addtype(count, atomname, atomname, el, "", "");
+		for (i in aten.model.atoms) if (i.data == atomname) { i.element = el; i.type = ffa; }
 		ff.addinter("lj", count, q, eps, sigma);
 	} while (!done);
+	ff.finalise();
 
 	finalisemodel();
 }
@@ -98,7 +100,8 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	# Variable declaration
 	model srcmodel= aten.frame;
 	pattern p;
-	int nmols, n, m, mol, nres, nresa, nrest;
+	int nmols, n, m, mol, nresb, nresa, nrest, nrot, idj;
+	double rij;
 	vector com, r;
 	atom i, j;
 	bound b;
@@ -106,18 +109,23 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 
 	# Options
 	double temperature = option("Temperature", "doublespin", 0.0, 100000.0, 10.0, 300.0);
-	double epsr_tol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0, 0.0, "newline");
-	double epsr_itrans = option("Intramolecular Translations", "doublespin", 0.0, 1.0, 1.0, 0.0, "newline", "group=Step Sizes", "span=2");
+	double epsr_tol = option("Tolerance", "doublespin", 0.0, 1.0, 0.1, 0.0, "newline");
+	double epsr_itrans = option("Intramolecular Translations", "doublespin", 0.0, 100.0, 1.0, 1.5, "newline", "group=Step Sizes", "span=2");
 	double epsr_hrot = option("Headgroup Rotations", "doublespin", 0.0, 10.0, 0.1, 2.5, "newline", "group=Step Sizes", "span=2");
 	double epsr_mrot = option("Whole Molecule Rotations", "doublespin", 0.0, 10.0, 0.1, 1.0, "newline", "group=Step Sizes", "span=2");
 	double epsr_mtrans = option("Whole Molecule Translations", "doublespin", 0.0, 10.0, 0.01, 0.1, "newline", "group=Step Sizes", "span=2");
 	double epsr_vtemp = option("Vibrational Temperature", "doublespin", 0.0, 1500.0, 10.0, 65.0, "newline", "span=2");
-	int resbonds = option("Restrain Across Bonds", "check", 1, "newline", "group=Restraints");
-	int resangles = option("Restrain Across Angles", "check", 0, "newline", "group=Restraints");
-	int restorsions = option("Restrain Across Torsions", "check", 0, "newline", "group=Restraints");
+	int geomres = option("Restrain Based on Connectivity", "radio", "restypegroup", 1, "newline", "span=2", "group=Restraints");
+	int distres = option("Restrain Based on Distance", "radio", "restypegroup", 0, "span=2", "group=Restraints");
+	int geomresbonds = option("Across Bonds", "check", 1, "newline", "span=2", "group=Restraints");
+	double distresmax = option("Maximum Distance", "doublespin", 0.0, 10.0, 0.1, 2.4, "group=Restraints");
+	int geomresangles = option("Across Angles", "check", 0, "newline", "span=2", "group=Restraints");
+	int geomrestorsions = option("Across Torsions", "check", 0, "newline", "span=2", "group=Restraints");
+	double geomresmax = option("Maximum Distance", "doublespin", 0.0, 10.0, 0.1, 2.4, "newline", "group=Restraints");
 
 	// First, some checks. We need valid patterns and a cubic cell.
-	if (!createpatterns(FALSE)) error("Error: Can't write ATO file without a valid (full) pattern description.\n");
+	//if (!createpatterns(FALSE)) error("Error: Can't write ATO file without a valid (full) pattern description.\n");
+	if (!createexpression(FALSE,TRUE)) error("Error: Can't write ATO file without valid forcefield types assigned to all atoms.\n");
 	if (srcmodel.cell.type != "cubic") error("Error: System must have a cubic cell.\n");
 
 	// Line 1 : nmols, box dimension, temperature
@@ -138,44 +146,100 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		{
 			++mol;
 			// Write centre of mass
-			com = p.com[m];
+			com = p.com(m) - srcmodel.cell.a*0.5;
 			writelinef(" %5i  %13.6e  %13.6e  %13.6e  %6.4f  %6.4f  %6.4f  %5i\n",p.nmolatoms,com.x,com.y,com.z,0.0,0.0,0.0,mol);
 
 			// Write atom information
-			for (n=1; n<=p.natoms; ++n)
+			for (n=1; n<=p.nmolatoms; ++n)
 			{
-				if (i.type == 0) writelinef(" %3s  %i\n", i.symbol, n);
-				else writelinef(" %3s  %i\n", i.type.name, n);
+				if (i.type == 0) writelinef(" %3s  %5i\n", i.symbol, n);
+				else writelinef(" %3s  %5i\n", i.type.name, n);
 
 				// Get mim vector to COM
 				r = srcmodel.cell.mimd(i.r, com);
 				writelinef(" %12.5e %12.5e %12.5e\n", r.x, r.y, r.z);
 
 				// Restraint information
-				nres = 0;
-				nresa = 0;
-				nrest = 0;
-				if (resbonds) nres += i.nbonds;
-				if (resangles) for (b in p.angles) if ((b.id[1] == n) || (b.id[3] == n)) ++nresa;
-				if (restorsions) for (b in p.torsions) if ((b.id[1] == n) || (b.id[4] == n)) ++nrest;
-				nres += nresa + nrest;
-				writelinef(" %4i", nres);
-				if (resbonds) for (bnd in i.bonds) { j = bnd.partner(i); writelinef("%4i %9.3e ", j.id-p.firstatomid+1, measure(i,j)); }
-				if (nresa > 0) for (b in p.angles)
+				if (geomres)
 				{
-					// Search for angles in which this atom is involved
-					if (b.id[1] == n) writelinef("%4i %9.3e ", b.id[3], measure(i.id, i.id+(b.id[3]-b.id[1])));
-					else if (b.id[3] == n) writelinef("%4i %9.3e ", b.id[1], measure(i.id, i.id+(b.id[1]-b.id[3])));
+					nresb = 0;
+					nresa = 0;
+					nrest = 0;
+					if (geomresbonds) for (b in p.bonds) if (((b.id[1] == n) || (b.id[2] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[2]]) < geomresmax)) ++nresb;
+					if (geomresangles) for (b in p.angles) if (((b.id[1] == n) || (b.id[3] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[3]]) < geomresmax)) ++nresa;
+					if (geomrestorsions) for (b in p.torsions) if (((b.id[1] == n) || (b.id[4] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[4]]) < geomresmax)) ++nrest;
+					writelinef(" %4i", nresa+nresb+nrest);
+					if (nresb > 0) for (b in p.bonds)
+					{
+						// Search for bonds in which this atom is involved
+						if (b.id[1] == n) idj = b.id[2];
+						else if (b.id[2] == n) idj = b.id[1];
+						else continue;
+						rij = geometry(p.atoms[b.id[1]],p.atoms[b.id[2]]);
+						if (rij < geomresmax) writelinef("%4i %9.3e ", idj, rij);
+					}
+					if (nresa > 0) for (b in p.angles)
+					{
+						// Search for angles in which this atom is involved
+						if (b.id[1] == n) idj = b.id[3];
+						else if (b.id[3] == n) idj = b.id[1];
+						else continue;
+						rij = geometry(p.atoms[b.id[1]],p.atoms[b.id[3]]);
+						if (rij < geomresmax) writelinef("%4i %9.3e ", idj, rij);
+					}
+					if (nrest > 0) for (b in p.torsions)
+					{
+						// Search for torsions in which this atom is involved
+						if (b.id[1] == n) idj = b.id[4];
+						else if (b.id[4] == n) idj = b.id[1];
+						else continue;
+						rij = geometry(p.atoms[b.id[1]],p.atoms[b.id[4]]);
+						if (rij < geomresmax) writelinef("%4i %9.3e ", idj, rij);
+					}
+					writelinef("\n");
 				}
-				if (nrest > 0) for (b in p.torsions)
+				else
 				{
-					// Search for torsions in which this atom is involved
-					if (b.id[1] == n) writelinef("%4i %9.3e ", b.id[4], measure(i.id, i.id+(b.id[4]-b.id[1])));
-					else if (b.id[4] == n) writelinef("%4i %9.3e ", b.id[1], measure(i.id, i.id+(b.id[1]-b.id[4])));
+					nresb = 0;
+					for (idj = 1; idj<=p.nmolatoms; ++idj) if ((n != idj) && (geometry(p.atoms[n],p.atoms[idj]) < distresmax)) ++nresb;
+					writelinef(" %4i", nresb);
+					if (nresb > 0) for (idj = 1; idj<=p.nmolatoms; ++idj)
+					{
+						if (n == idj) continue;
+						rij = geometry(p.atoms[n],p.atoms[idj]);
+						if (rij < distresmax) writelinef("%4i %9.3e ", idj, rij);
+					}
+					writelinef("\n");
 				}
-				writelinef("\n");
 
 				++i;
+			}
+
+			// Write headgroup rotations
+			nrot = 0;
+			for (b in p.bonds)
+			{
+				if (p.atomsinring(b.id[1],b.id[2])) continue;
+				if (p.atoms[b.id[1]].nbonds == 1) continue;
+				if (p.atoms[b.id[2]].nbonds == 1) continue;
+				++nrot;
+			}
+			writelinef(" %5i\n", nrot);
+			if (nrot > 0)
+			{
+				for (b in p.bonds)
+				{
+					if (p.atomsinring(b.id[1],b.id[2])) continue;
+					if (p.atoms[b.id[1]].nbonds == 1) continue;
+					if (p.atoms[b.id[2]].nbonds == 1) continue;
+					bnd = p.atoms[b.id[1]].findbond(p.atoms[b.id[2]]);
+					writeline(" ROT");
+					writelinef("%5i%5i\n", b.id[1], b.id[2]);
+					srcmodel.selectnone();
+					srcmodel.selecttree(p.atoms[b.id[1]], bnd);
+					for (j in srcmodel.selection) writelinef(" %4i", j.id-p.firstatomid+1);
+					writelinef("\n");
+				}
 			}
 		}
 	}
@@ -183,8 +247,8 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	// Write the forcefield info
 	for (ffatom ffa in srcmodel.fftypes)
 	{
-		//sprintf(s," %3s %3s %1i\n",names[count-1].c_str(),elements.symbol(i),0);
-		//sprintf(s," %8.4f  %8.4f  %8.4f  %8.4f  %8.4f\n",xff->get_vdw_param(i,VF_LJ_EPS),xff->get_vdw_param(i,VF_LJ_SIGMA), elements.mass(i),0.0,0.0);
+		writelinef(" %3s     %3s    %1i\n", ffa.name, aten.elements[ffa.z].symbol, 0);
+		writelinef(" %8.4f  %8.4f  %8.4f  %8.4f  %8.4f\n", 
 	}
 }
 

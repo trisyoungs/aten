@@ -392,6 +392,15 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 					result = FALSE;
 				}
 				break;
+			// Bond		(BondData)
+			case ('H'):
+				if (rtype != VTypes::BondData)
+				{
+					if (altargs != NULL) { reset = TRUE; continue; }
+					msg.print("Argument %i to function '%s' must be a bond&.\n", count+1, funcname);
+					result = FALSE;
+				}
+				break;
 			// Integer		(IntegerData)
 			case ('I'):
 				if (rtype != VTypes::IntegerData)
@@ -510,7 +519,6 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 			case (']'):
 			case ('|'):
 			case ('&'):
-			case ('/'):
 			case ('2'):
 			case ('3'):
 			case ('4'):

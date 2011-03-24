@@ -425,6 +425,8 @@ class Pattern
 	int nRings();
 	// Returns the first ring in the ring list
 	Ring *rings();
+	// Returns whether atom id i is in a ring, or both atoms i and j are in the same ring
+	bool atomsInRing(int i, int j = -1);
 	// Reset the atom environment flags
 	void clearEnvironments();
 	// Set atom environments

@@ -12,6 +12,7 @@ void writezmatrix(model m)
 		else if (zel.distanceatom) writelinef("%-4s %-4i %-6s\n", zel.atom[1].symbol, zel.atom[2].id, zel.distancename);
 		else writelinef("%-4s\n", zel.atom[1].symbol);
 	}
+	writeline("");
 	# ZMatrix variables
 	for (int n=1; n<=zmat.ndistances; ++n) writelinef("%-6s  %f\n", zmat.distancenames[n], zmat.distances[n]);
 	for (int n=1; n<=zmat.nangles; ++n) writelinef("%-6s  %f\n", zmat.anglenames[n], zmat.angles[n]);

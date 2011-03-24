@@ -460,6 +460,21 @@ bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv
 	return TRUE;
 }
 
+// Select all atoms within a distance of target atom
+bool Command::function_SelectTree(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	if (i == NULL) return FALSE;
+	Bond *b = c->hasArg(1) ? (Bond*) c->argp(1, VTypes::BondData) : NULL;
+	int nselected = obj.rs()->nSelected();
+	obj.rs()->beginUndoState("Tree selection from atom %i", i->id()+1);
+	obj.rs()->selectTree(i, FALSE, FALSE, b);
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
+	return TRUE;
+}
+
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
 bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

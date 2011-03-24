@@ -67,17 +67,17 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addangle",		VTypes::NoData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
-	{ "addbond",		VTypes::NoData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
-	{ "addinter",		VTypes::NoData,	Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
-	{ "addtorsion",		VTypes::NoData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
-	{ "addtype",		VTypes::IntegerData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
-	{ "finalise",		VTypes::NoData, Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) },
-	{ "findangle",		VTypes::ForcefieldBoundData, "CCC",	"string typei, string typej, string typek" },
-	{ "findbond",		VTypes::ForcefieldBoundData, "CC",	"string typei, string typej" },
-	{ "findimproper",	VTypes::ForcefieldBoundData, "CCCC",	"string typei, string typej, string typek, string typel" },
-	{ "findtorsion",	VTypes::ForcefieldBoundData, "CCCC",	"string typei, string typej, string typek, string typel" },
-	{ "findureybradley",	VTypes::ForcefieldBoundData, "CCC",	"string typei, string typej, string typek" }
+	{ "addangle",		VTypes::NoData,			Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
+	{ "addbond",		VTypes::NoData,			Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
+	{ "addinter",		VTypes::NoData,			Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
+	{ "addtorsion",		VTypes::NoData,			Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
+	{ "addtype",		VTypes::ForcefieldAtomData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
+	{ "finalise",		VTypes::NoData, 		Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) },
+	{ "findangle",		VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" },
+	{ "findbond",		VTypes::ForcefieldBoundData, 	"CC",					"string typei, string typej" },
+	{ "findimproper",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
+	{ "findtorsion",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
+	{ "findureybradley",	VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" }
 };
 
 // Search variable access list for provided accessor (call private static function)

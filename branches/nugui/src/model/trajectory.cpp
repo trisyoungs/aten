@@ -419,9 +419,10 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 			}
 		}
 		trajectoryCurrentFrame_->changeLog.add(Log::Visual);
+		// Reset log flag for pixeldata so we redraw every frame change
+		pixelDataLogPoint_ = -1;
 	}
 	trajectoryFrameIndex_ = frameno;
-	changeLog.add(Log::Visual);
 	if (!quiet) msg.print("Seek to frame %i\n", trajectoryFrameIndex_+1);
 	msg.exit("Model::seekTrajectoryFrame");
 }

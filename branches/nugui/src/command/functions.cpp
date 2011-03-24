@@ -458,6 +458,7 @@ void Command::initPointers()
 	pointers_[SelectOutsideCell] = &Command::function_SelectOutsideCell;
 	pointers_[SelectPattern] = &Command::function_SelectPattern;
 	pointers_[SelectRadial] = &Command::function_SelectRadial;
+	pointers_[SelectTree] = &Command::function_SelectTree;
 	pointers_[SelectType] = &Command::function_SelectType;
 	
 	// Site Commands

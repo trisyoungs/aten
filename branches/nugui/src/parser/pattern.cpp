@@ -76,8 +76,9 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor PatternVariable::functionData[PatternVariable::nFunctions] = {
-	{ "cog", 	VTypes::VectorData,	"I",	"int id" },
-	{ "com", 	VTypes::VectorData,	"I",	"int id" }
+	{ "atomsinring",	VTypes::IntegerData,	"Ii",	"int i, int j = -1" },
+	{ "cog", 		VTypes::VectorData,	"I",	"int id" },
+	{ "com", 		VTypes::VectorData,	"I",	"int id" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -424,9 +425,24 @@ bool PatternVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Pattern *ptr = (Pattern*) rv.asPointer(VTypes::PatternData, result);
-	int index;
+	int index, id_i, id_j;
 	if (result) switch (i)
 	{
+		case (PatternVariable::AtomsInRing):
+			id_i = node->argi(0) - 1;
+			if ((id_i < 0) || (id_i >= ptr->nAtoms()))
+			{
+				msg.print("First atom id %i is out of range for 'atomsinring' function in pattern '%s'.\n", id_i, ptr->name());
+				result = FALSE;
+			}
+			id_j = node->hasArg(1) ? node->argi(1)-1 : -1;
+			if ((id_j != -1) && (id_j < 0) || (id_j >= ptr->nAtoms()))
+			{
+				msg.print("Second atom id %i is out of range for 'atomsinring' function in pattern '%s'.\n", id_j, ptr->name());
+				result = FALSE;
+			}
+			if (result) rv.set(ptr->atomsInRing(id_i, id_j));
+			break;
 		case (PatternVariable::Cog):
 			index = node->argi(0);
 			if ((index < 1) || (index > ptr->nMolecules()))

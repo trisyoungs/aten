@@ -14,12 +14,6 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>elements</entry>
-						<entry><link linkend="command.types.element">element</link></entry>
-						<entry>ro</entry>
-						<entry>Array of element data (masses, symbols, names, etc.)</entry>
-					</row>
-					<row>
 						<entry>angles</entry>
 						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
 						<entry>ro</entry>
@@ -458,6 +452,11 @@
 						<entry>selectnone ( )</entry>
 						<entry>--</entry>
 						<entry>Deselect all atoms in the model. See the <link linkend="command.ref.selectnone">selectnone</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>selecttree ( atom <emphasis>i<emphasis>, bond <emphasis>exclude</emphasis> = NULL )</entry>
+						<entry>int</entry>
+						<entry>Select all atoms from atom <emphasis>i</emphasis> reachable by following any number of chemical bonds. See the <link linkend="command.ref.selecttree">selectnone</link> command for more details.</entry>
 					</row>
 					<row>
 						<entry>shiftdown ( int <emphasis>n</emphasis> = 1 )</entry>

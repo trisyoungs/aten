@@ -33,11 +33,11 @@ Command commands;
 	A	Atom/Id		IntegerData, AtomData
 	B	Boolean		Any
 	C	Character	StringData
-	D	<free>
+	D	Double		DoubleData
 	E	Element		StringData,IntegerData,DoubleData,AtomData
 	F	Frcefld/ID/Name	ForcefieldData, IntegerData, StringData
 	G	Grid/ID		GridData, StringData, IntegerData
-	H	<free>
+	H	Bond		BondData
 	I	Integer		IntegerData
 	J	Atom		AtomData
 	K	<free>
@@ -593,7 +593,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "clearexpression",	"",		VTypes::NoData,
 		"",
 		"Clear the current model's expression" },
-	{ "createexpression",	"bbb",		VTypes::NoData,
+	{ "createexpression",	"bbb",		VTypes::IntegerData,
 		"bool nointra = FALSE, bool allowdummy = FALSE, bool assignCharges = TRUE",
 		"Create a forcefield expression for the current model" },
 	{ "currentff",		"f",		VTypes::ForcefieldData,
@@ -1204,6 +1204,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "selectradial",	"AN",		VTypes::IntegerData,
 		"atom|int target, double radius",
 		"Select all atoms less than some distance from a central atom" },
+	{ "selecttree",		"Ah",		VTypes::IntegerData,
+		"atom|int i, bond exclude = NULL",
+		"Select all atoms which are within a given distance of each other" },
 	{ "selecttype",		"EC",		VTypes::IntegerData,
 		"element el, string neta",
 		"Select all atoms that match the provided atomtype description (returning the number matched)" },

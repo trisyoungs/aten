@@ -183,13 +183,13 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (AtomVariable::Bonds):
-			if (!hasArrayIndex) rv.set( VTypes::BondData, ptr->bonds() == NULL ? NULL : ptr->bonds()->item );
+			if (!hasArrayIndex) rv.set( VTypes::BondData, ptr->bonds() == NULL ? NULL : ptr->bonds()->item, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
 				msg.print("Bond array index (%i) is out of bounds for atom '%i'\n", arrayIndex, ptr->id()+1);
 				result = FALSE;
 			}
-			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item);
+			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item, ptr->bond(arrayIndex-1));
 			break;
 		case (AtomVariable::Colour):
 			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );

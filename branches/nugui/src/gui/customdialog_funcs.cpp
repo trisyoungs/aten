@@ -828,6 +828,9 @@ void AtenCustomDialog::storeValues()
 			case (WidgetNode::IntegerSpinControl):
 				rv.set( ((QSpinBox*) (gfo->widget()))->value());
 				break;
+			case (WidgetNode::RadioButtonControl):
+				rv.set( ((QRadioButton*) (gfo->widget()))->isChecked());
+				break;
 			case (WidgetNode::LabelControl):
 				break;
 		}

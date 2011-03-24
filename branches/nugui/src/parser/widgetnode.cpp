@@ -393,9 +393,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("max", arg, "Error: No maximum value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
 			if (arg != NULL) arg = arg->nextArgument;
-			if (!setData("start", arg, "Error: No starting value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
-			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("step", arg, "Error: No step value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
+			if (arg != NULL) arg = arg->nextArgument;
+			if (!setData("start", arg, "Error: No starting value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
 			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
@@ -411,9 +411,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			arg = arg->nextArgument;
 			if (!setData("max", arg, "Error: No maximum value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
-			if (!setData("start", arg, "Error: No starting value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
-			arg = arg->nextArgument;
 			if (!setData("step", arg, "Error: No step value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
+			arg = arg->nextArgument;
+			if (!setData("start", arg, "Error: No starting value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
 			result = TRUE;
 			break;

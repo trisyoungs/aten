@@ -253,7 +253,7 @@ void TCanvas::paintGL()
 		if (redrawActiveModel_ && (ri->item == aten.currentModel())) usepixels = FALSE;
 		else if (noPixelData_) usepixels = FALSE;
 		else if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total))) usepixels = FALSE;
-		
+
 		if (usepixels)
 		{
 			// Setup flat projection for pixel rendering

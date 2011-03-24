@@ -14,12 +14,6 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>elements</entry>
-						<entry><link linkend="command.types.element">element</link></entry>
-						<entry>ro</entry>
-						<entry>Array of element data (masses, symbols, names, etc.)</entry>
-					</row>
-					<row>
 						<entry>angles</entry>
 						<entry><link linkend="command.types.bound">bound</link>[]</entry>
 						<entry>ro</entry>
@@ -36,18 +30,6 @@
 						<entry><link linkend="command.types.bound">bound</link>[]</entry>
 						<entry>ro</entry>
 						<entry>Array of bond interactions in one molecule of the pattern</entry>
-					</row>
-					<row>
-						<entry>cog</entry>
-						<entry><link linkend="command.types.vector">vector</link>[]</entry>
-						<entry>ro</entry>
-						<entry>Array of centres of mass of the molecules in the pattern</entry>
-					</row>
-					<row>
-						<entry>com</entry>
-						<entry><link linkend="command.types.vector">vector</link>[]</entry>
-						<entry>ro</entry>
-						<entry>Array of centres of geometry of the molecules in the pattern</entry>
 					</row>
 					<row>
 						<entry>ff</entry>
@@ -184,5 +166,34 @@
 				</tbody>
 			</tgroup>
 		</table>
-	
+
+		<table frame='all' pgwide='1' tocentry='1'><title>Pattern Type Functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>atomsinring ( int <emphasis>id_i</emphasis>, int <emphasis>id_j</emphasis> = -1 )</entry>
+						<entry>int</entry>
+						<entry>Return whether the supplied atom index (indices), given in local pattern atom numbering, is in a ring (the same ring)</entry>
+					</row>
+					<row>
+						<entry>cog ( int <emphasis>index</emphasis> )</entry>
+						<entry><link linkend="command.types.vector">vector</link>[]</entry>
+						<entry>Return calculated centre of geometry for the molecule index provided</entry>
+					</row>
+					<row>
+						<entry>com ( int <emphasis>index</emphasis> )</entry>
+						<entry><link linkend="command.types.vector">vector</link>[]</entry>
+						<entry>Return calculated centre of mass for the molecule index provided</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
 	</section>

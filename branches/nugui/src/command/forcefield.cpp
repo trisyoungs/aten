@@ -132,8 +132,8 @@ bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue
 	noIntra = c->hasArg(0) ? c->argb(0) : Choice::Default;
 	allowDummy = c->hasArg(1) ? c->argb(1) : Choice::Default;
 	assignCharges = c->hasArg(2) ? c->argb(2) : Choice::Default;
-	if (!obj.m->createExpression(noIntra, allowDummy, assignCharges)) return FALSE;
-	rv.reset();
+	bool result = obj.m->createExpression(noIntra, allowDummy, assignCharges);
+	rv.set(result);
 	return TRUE;
 }
 
