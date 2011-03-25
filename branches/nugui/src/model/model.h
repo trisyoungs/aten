@@ -1067,30 +1067,58 @@ class Model
 	// Component Definition (for disordered builder only)
 	*/
 	private:
-	// Definition of region the Component is restricted to
-	ComponentRegion region_;
+	// Flag indicating whether component is required in build
+	bool componentIsRequired_;
+	// Index of partition the model is restricted to
+	int componentPartition_;
 	// Pointer to the Components related pattern
 	Pattern *componentPattern_;
 	// Number of requested copies
-	int nRequested_;
+	int componentPopulation_;
+	// Flag stating whether population is not explicitly requested
+	bool componentIsBulk_;
+	// Requested density
+	double componentDensity_;
+	// Flag stating whether density is specified
+	bool componentHasFreeDensity_;
 	// Lists which MC move types are allowed for this Component
-	bool moveAllowed_[MonteCarlo::nMoveTypes];
+	bool componentMoveAllowed_[MonteCarlo::nMoveTypes];
+	// Molecular volume of the component (if available)
+	double componentVolume_;
 
 	public:
+	// Set whether component is required in build
+	void setComponentIsRequired(bool b);
+	// Return whether component is required in build
+	bool componentIsRequired();
+	// Set target component partition for model
+	void setComponentPartition(int id);
 	// Return region data for model
-	ComponentRegion *region();
+	int componentPartition();
 	// Set the Component's pattern
 	void setComponentPattern(Pattern *p);
 	// Return the Component's pattern
 	Pattern *componentPattern() const;
 	// Set the requested number of molecules
-	void setNRequested(int i);
+	void setComponentPopulation(int i);
 	// Return the requested number of molecules
-	int nRequested() const;
+	int componentPopulation() const;
+	// Set whether the component is a bulk component
+	void setComponentIsBulk(bool b);
+	// Return whether component is a bulk component
+	bool componentIsBulk();
+	// Set the requested density for the component
+	void setComponentDensity(double d);
+	// Return the requested density for the component
+	double componentDensity() const;
+	// Set whether the component has free density or not
+	void setComponentHasFreeDensity(bool b);
+	// Return whether component has free density
+	bool componentHasFreeDensity();
 	// Set a specific move type for the Component
-	void setMoveAllowed(MonteCarlo::MoveType m, bool b);
+	void setComponentMoveAllowed(MonteCarlo::MoveType m, bool b);
 	// Set whether the Component may be translated
-	bool isMoveAllowed(MonteCarlo::MoveType m) const;
+	bool componentMoveAllowed(MonteCarlo::MoveType m) const;
 
 
 	/*

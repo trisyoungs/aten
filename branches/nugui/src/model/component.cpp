@@ -21,45 +21,96 @@
 
 #include "model/model.h"
 
-// Return region data for model
-ComponentRegion *Model::region()
+// Set whether component is required in build
+void Model::setComponentIsRequired(bool b)
 {
-	return &region_;
+	componentIsRequired_ = b;
+}
+
+// Return whether component is required in build
+bool Model::componentIsRequired()
+{
+	return componentIsRequired_;
+}
+
+// Set target component partition for model
+void Model::setComponentPartition(int id)
+{
+}
+
+// Return region data for model
+int Model::componentPartition()
+{
 }
 
 // Set the Component's pattern
 void Model::setComponentPattern(Pattern *p)
 {
-        componentPattern_ = p;
+	componentPattern_ = p;
 }
 
 // Return the Component's pattern
 Pattern *Model::componentPattern() const
 {
-        return componentPattern_;
+	return componentPattern_;
 }
 
 // Set the requested number of molecules
-void Model::setNRequested(int i)
+void Model::setComponentPopulation(int i)
 {
-        nRequested_ = i;
+	componentPopulation_ = i;
 }
 
 // Return the requested number of molecules
-int Model::nRequested() const
+int Model::componentPopulation() const
 {
-        return nRequested_;
+	return componentPopulation_;
+}
+
+// Set whether the component is a bulk component
+void Model::setComponentIsBulk(bool b)
+{
+	componentIsBulk_ = b;
+}
+
+// Return whether component is a bulk component
+bool Model::componentIsBulk()
+{
+	return componentIsBulk_;
+}
+
+// Set the requested density for the component
+void Model::setComponentDensity(double d)
+{
+	componentDensity_ = d;
+}
+
+// Return the requested density for the component
+double Model::componentDensity() const
+{
+	return componentDensity_;
+}
+
+// Set whether the component has free density or not
+void Model::setComponentHasFreeDensity(bool b)
+{
+	componentHasFreeDensity_ = b;
+}
+
+// Return whether component has free density
+bool Model::componentHasFreeDensity()
+{
+	return componentHasFreeDensity_;
 }
 
 // Set a specific move type for the Component
-void Model::setMoveAllowed(MonteCarlo::MoveType m, bool b)
+void Model::setComponentMoveAllowed(MonteCarlo::MoveType m, bool b)
 {
-        moveAllowed_[m] = b;
+	componentMoveAllowed_[m] = b;
 }
 
 // Set whether the Component may be translated
-bool Model::isMoveAllowed(MonteCarlo::MoveType m) const
+bool Model::componentMoveAllowed(MonteCarlo::MoveType m) const
 {
-        return moveAllowed_[m];
+	return componentMoveAllowed_;
 }
-

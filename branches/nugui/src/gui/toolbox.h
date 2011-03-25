@@ -40,7 +40,7 @@ class ToolBoxWidget : public QDockWidget
 	void on_CellDefinitionButton_clicked(bool checked);
 	void on_CellTransformButton_clicked(bool checked);
 	void on_CommandButton_clicked(bool checked);
-	void on_DisorderButton_clicked(bool checked);
+	void on_DisorderWizardButton_clicked(bool checked);
 	void on_ForcefieldsButton_clicked(bool checked);
 	void on_FragmentsButton_clicked(bool checked);
 	void on_GeometryButton_clicked(bool checked);

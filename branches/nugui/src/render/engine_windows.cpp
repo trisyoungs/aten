@@ -23,7 +23,7 @@
 #include "model/model.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
-#include "gui/disorder.h"
+#include "gui/disorderwizard.h"
 #include "gui/vibrations.h"
 #include "main/aten.h"
 #include "base/region.h"

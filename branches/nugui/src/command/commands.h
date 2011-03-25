@@ -215,16 +215,6 @@ class Command
 		// Disordered build commands
 		Disorder,
 		ListComponents,
-		RegionCentre,
-		RegionCentreFrac,
-		RegionGeometry,
-		RegionGeometryFrac,
-		RegionOverlaps,
-		RegionRotation,
-		RegionShape,
-		SetNMols,
-		SetRegion,
-		SetRegionFrac,
 		VdwScale,
 	
 		// Edit commands

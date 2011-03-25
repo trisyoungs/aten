@@ -24,7 +24,6 @@
 #include "model/model.h"
 #include "model/clipboard.h"
 #include "gui/gui.h"
-#include "gui/disorder.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 
@@ -386,13 +385,13 @@ bool MonteCarlo::disorder(Model *destmodel)
 	for (c = aten.models(); c != NULL; c = c->next)
 	{
 		// Check that this model is a required component
-		if (c->nRequested() <= 0) continue;
+		if (c->componentPopulation() == -1) continue;
 		if (c == destmodel) continue;
 		// Warn if this model is periodic
 		if (c->cell()->type() != UnitCell::NoCell) msg.print("Warning: Component model '%s' is periodic but will still be added.\n", c->name());
 		// Add this model to the component reflist
 		components.add(c);
-		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
+		// Create expression
 		if (!c->createExpression(TRUE))
 		{
 			msg.print("Failed to create expression for component model '%s'.\n", c->name());
@@ -416,12 +415,12 @@ bool MonteCarlo::disorder(Model *destmodel)
 		c = ri->item;
 		// Copy the model and paste it 'nrequested' times into destmodel
 		clip.copyAll(c);
-		if (c->nRequested() > 0)
+		if (c->componentPopulation() > 0)
 		{
-			for (mol=0; mol<c->nRequested(); mol++) clip.pasteToModel(destmodel);
+			for (mol=0; mol<c->componentPopulation(); ++mol) clip.pasteToModel(destmodel);
 			// Create a new pattern node in the destination model to cover these molecules and set it as the component's pattern
-			p = destmodel->addPattern(c->nRequested(), c->nAtoms(), c->name());
-			p->setNExpectedMolecules(c->nRequested());
+			p = destmodel->addPattern(c->componentPopulation(), c->nAtoms(), c->name());
+			p->setNExpectedMolecules(c->componentPopulation());
 			c->setComponentPattern(p);
 			// Set the forcefield of the new pattern fo that of the source model
 			p->setForcefield(c->forcefield());
@@ -495,208 +494,208 @@ bool MonteCarlo::disorder(Model *destmodel)
 	prog = 0;
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
-		msg.print(Messenger::Verbose,"Begin cycle %i...\n",cycle);
-		done = TRUE;
-
-		// Loop over component models searching for ones that are to be added to the target model
-		for (ri = components.first(); ri != NULL; ri = ri->next)
-		{
-			// Get model pointer
-			c = ri->item;
-
-			prog ++;
-			if (!gui.progressUpdate(prog, &etatext)) endearly = TRUE;
-			if (endearly) break;
-
-			// Skip if nRequested == 0 (or c == destmodel to be sure)
-			if ((c->nRequested() == 0) || (c == destmodel)) continue;
-
-			// Get pointers to variables
-			p = c->componentPattern();
-			r = c->region();
-			msg.print(Messenger::Verbose,"Working on pattern '%s'\n",p->name());
-			// If the pattern is fixed, move on
-			if (p->isFixed())
-			{
-				prog += MonteCarlo::nMoveTypes;
-				msg.print(Messenger::Verbose,"Pattern '%s' is fixed.\n",p->name());
-				continue;
-			}
-			msg.print(Messenger::Verbose,"Pattern region is '%s'.\n", ComponentRegion::regionShape(r->shape()));
-
-			// Loop over MC moves in reverse order so we do creation / destruction first
-			for (move=MonteCarlo::Delete; move>-1; move--)
-			{
-				acceptanceRatio_[p->id()][move] = 0;
-				// If this move type isn't allowed then continue onto the next
-				if (!moveAllowed_[move]) continue;
-				if (!c->isMoveAllowed((MonteCarlo::MoveType) move)) continue;
-				for (n=0; n<nTrials_[move]; n++)
-				{
-					// Reset penalty value
-					penalty = 0.0;
-					// Grab number of molecules currently in this pattern
-					patternNMols = p->nMolecules();
-					// Perform the move
-					switch (move)
-					{
-						// New molecule
-						case (MonteCarlo::Insert):
-							// Check if we've already filled as many as requested
-							msg.print(Messenger::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
-							if (patternNMols == p->nExpectedMolecules()) continue;
-							// Paste a new molecule into the working configuration
-							msg.print(Messenger::Verbose,"insert : Pasting new molecule - component %s, mol %i\n",c->name(),patternNMols);
-							//clip.paste_to_model(destmodel,p,patternNMols);
-							// Increase nmols for pattern and natoms for config
-							mol = patternNMols;		// Points to new molecule, since m-1
-							p->setNMolecules(mol+1);
-							// Set the hidden flag on the new molecule to FALSE
-							destmodel->hideMolecule(p,mol,FALSE);
-							// Randomise position of new molecule
-							v = r->randomCoords(cell,components);
-							destmodel->positionMolecule(p,mol,v); 
-							// Only rotate the new molecule if the component allows it
-							if (c->isMoveAllowed(MonteCarlo::Rotate))
-							{
-								phi = AtenMath::random() * 360.0;
-								theta = AtenMath::random() * 360.0;
-								destmodel->rotateMolecule(p,mol,phi,theta);
-							}
-							referenceMoleculeEnergy = 0.0;
-							referenceVdwEnergy = 0.0;
-							referenceElecEnergy = 0.0;
-							break;
-						// Translate COG of molecule
-						case (MonteCarlo::Translate):
-							if (patternNMols == 0) continue;
-							// Select random molecule, store, and move
-							mol = AtenMath::randomi(patternNMols-1);
-							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
-							referenceVdwEnergy = destmodel->energy.vdw();
-							referenceElecEnergy = destmodel->energy.electrostatic();
-							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
-							// Create a random translation vector
-							v.randomUnit();
-							v *= maxStep_[MonteCarlo::Translate]*AtenMath::random();
-							// Translate the coordinates of the molecule in cfg
-							destmodel->translateMolecule(p,mol,v);
-							// Check new COG is inside region
-							cog = p->calculateCog(mol,destmodel);
-							if ((!r->coordsInRegion(cog,cell)) || r->pointOverlaps(cog,cell,components)) penalty += 1e6;
-							break;
-						// Rotate molecule about COG
-						case (MonteCarlo::Rotate):
-							if (patternNMols == 0) continue;
-							// Select random molecule, store, and rotate
-							mol = AtenMath::randomi(patternNMols-1);
-							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
-							referenceVdwEnergy = destmodel->energy.vdw();
-							referenceElecEnergy = destmodel->energy.electrostatic();
-							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
-							// Do two separate random rotations about the x and y axes.
-							phi = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
-							theta = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
-							destmodel->rotateMolecule(p,mol,phi,theta);
-							break;
-						// Other moves....
-					}
-
-					// Get the energy of this new configuration.
-					enew = destmodel->moleculeEnergy(destmodel, p, mol, success);
-					if (!success)
-					{
-						endearly = TRUE;
-						break;
-					}
-					// Add on any penalty value
-					enew += penalty;
-					// If the energy has gone up, undo the move.
-					deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
-					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
-					deltaElecEnergy = destmodel->energy.electrostatic() - referenceElecEnergy;
-					msg.print(Messenger::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
-					if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( AtenMath::random() < exp(-beta*deltaMoleculeEnergy) ))
-					{
-						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
-						// Fold the molecule's atoms and recalculate its centre of geometry 
-						//cfg->fold_molecule(p,mol);
-						//destmodel->set_Prefs::ColourScheme(NULL);
-						// Update energy and move counters
-						//ecurrent = enew;
-						//currentVdwEnergy = destmodel->energy.get_vdw();
-						//currentElecEnergy = destmodel->energy.get_elec();
-						ecurrent += deltaMoleculeEnergy;
-						currentVdwEnergy += deltaVdwEnergy;
-						currentElecEnergy += deltaElecEnergy;
-						acceptanceRatio_[p->id()][move] ++;
-					}
-					else
-					{
-						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
-						// Revert to the previous state.
-						switch (move)
-						{
-							case (MonteCarlo::Insert):
-								// Set the hidden flag on the new molecule to TRUE
-								destmodel->hideMolecule(p,mol,TRUE);
-								p->setNMolecules(mol);
-								break;
-							case (MonteCarlo::Delete):
-							default:
-								destmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
-								break;
-						}
-					}
-				}
-				// Get acceptance ratio percentages
-				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];
-				if (endearly) break;
-			}
-			// Check to see if this component has the required number of molecules
-			if (c->nRequested() != p->nMolecules()) done = FALSE;
-			if (endearly) break;
-		}
-		if (prefs.shouldUpdateEnergy(cycle+1))
-		{
-			// Print start of first line (current energy and difference)
-			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
-			for (p = destmodel->patterns(); p != NULL; p = p->next)
-			{
-				n = p->id();
-				if (p == destmodel->patterns())
-				{
-					s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
-				}
-				else s.sprintf("%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
-				for (m=0; m<MonteCarlo::nMoveTypes; m++)
-				{
-					s.strcatf(" %3i", int(acceptanceRatio_[n][m]*100.0));
-				}
-				if (p == destmodel->patterns())
-				{
-					s.strcatf(" %s", etatext.get());
-				}
-				s += '\n';
-				msg.print(s.get());
-			}
-		}
-		elast = ecurrent;
-		// Check for early termination
-		if (endearly)
-		{
-			msg.print("Stopped.\n");
-			break;
-		}
-		if (done)
-		{
-			msg.print("All component populations satisfied.\n");
-			break;
-		}
+// 		msg.print(Messenger::Verbose,"Begin cycle %i...\n",cycle);
+// 		done = TRUE;
+// 
+// 		// Loop over component models searching for ones that are to be added to the target model
+// 		for (ri = components.first(); ri != NULL; ri = ri->next)
+// 		{
+// 			// Get model pointer
+// 			c = ri->item;
+// 
+// 			prog ++;
+// 			if (!gui.progressUpdate(prog, &etatext)) endearly = TRUE;
+// 			if (endearly) break;
+// 
+// 			// Skip if nRequested == 0 (or c == destmodel to be sure)
+// 			if ((c->nRequested() == 0) || (c == destmodel)) continue;
+// 
+// 			// Get pointers to variables
+// 			p = c->componentPattern();
+// 			r = c->region();
+// 			msg.print(Messenger::Verbose,"Working on pattern '%s'\n",p->name());
+// 			// If the pattern is fixed, move on
+// 			if (p->isFixed())
+// 			{
+// 				prog += MonteCarlo::nMoveTypes;
+// 				msg.print(Messenger::Verbose,"Pattern '%s' is fixed.\n",p->name());
+// 				continue;
+// 			}
+// 			msg.print(Messenger::Verbose,"Pattern region is '%s'.\n", ComponentRegion::regionShape(r->shape()));
+// 
+// 			// Loop over MC moves in reverse order so we do creation / destruction first
+// 			for (move=MonteCarlo::Delete; move>-1; move--)
+// 			{
+// 				acceptanceRatio_[p->id()][move] = 0;
+// 				// If this move type isn't allowed then continue onto the next
+// 				if (!moveAllowed_[move]) continue;
+// 				if (!c->isMoveAllowed((MonteCarlo::MoveType) move)) continue;
+// 				for (n=0; n<nTrials_[move]; n++)
+// 				{
+// 					// Reset penalty value
+// 					penalty = 0.0;
+// 					// Grab number of molecules currently in this pattern
+// 					patternNMols = p->nMolecules();
+// 					// Perform the move
+// 					switch (move)
+// 					{
+// 						// New molecule
+// 						case (MonteCarlo::Insert):
+// 							// Check if we've already filled as many as requested
+// 							msg.print(Messenger::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
+// 							if (patternNMols == p->nExpectedMolecules()) continue;
+// 							// Paste a new molecule into the working configuration
+// 							msg.print(Messenger::Verbose,"insert : Pasting new molecule - component %s, mol %i\n",c->name(),patternNMols);
+// 							//clip.paste_to_model(destmodel,p,patternNMols);
+// 							// Increase nmols for pattern and natoms for config
+// 							mol = patternNMols;		// Points to new molecule, since m-1
+// 							p->setNMolecules(mol+1);
+// 							// Set the hidden flag on the new molecule to FALSE
+// 							destmodel->hideMolecule(p,mol,FALSE);
+// 							// Randomise position of new molecule
+// 							v = r->randomCoords(cell,components);
+// 							destmodel->positionMolecule(p,mol,v); 
+// 							// Only rotate the new molecule if the component allows it
+// 							if (c->isMoveAllowed(MonteCarlo::Rotate))
+// 							{
+// 								phi = AtenMath::random() * 360.0;
+// 								theta = AtenMath::random() * 360.0;
+// 								destmodel->rotateMolecule(p,mol,phi,theta);
+// 							}
+// 							referenceMoleculeEnergy = 0.0;
+// 							referenceVdwEnergy = 0.0;
+// 							referenceElecEnergy = 0.0;
+// 							break;
+// 						// Translate COG of molecule
+// 						case (MonteCarlo::Translate):
+// 							if (patternNMols == 0) continue;
+// 							// Select random molecule, store, and move
+// 							mol = AtenMath::randomi(patternNMols-1);
+// 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
+// 							referenceVdwEnergy = destmodel->energy.vdw();
+// 							referenceElecEnergy = destmodel->energy.electrostatic();
+// 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
+// 							// Create a random translation vector
+// 							v.randomUnit();
+// 							v *= maxStep_[MonteCarlo::Translate]*AtenMath::random();
+// 							// Translate the coordinates of the molecule in cfg
+// 							destmodel->translateMolecule(p,mol,v);
+// 							// Check new COG is inside region
+// 							cog = p->calculateCog(mol,destmodel);
+// 							if ((!r->coordsInRegion(cog,cell)) || r->pointOverlaps(cog,cell,components)) penalty += 1e6;
+// 							break;
+// 						// Rotate molecule about COG
+// 						case (MonteCarlo::Rotate):
+// 							if (patternNMols == 0) continue;
+// 							// Select random molecule, store, and rotate
+// 							mol = AtenMath::randomi(patternNMols-1);
+// 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
+// 							referenceVdwEnergy = destmodel->energy.vdw();
+// 							referenceElecEnergy = destmodel->energy.electrostatic();
+// 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
+// 							// Do two separate random rotations about the x and y axes.
+// 							phi = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
+// 							theta = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
+// 							destmodel->rotateMolecule(p,mol,phi,theta);
+// 							break;
+// 						// Other moves....
+// 					}
+// 
+// 					// Get the energy of this new configuration.
+// 					enew = destmodel->moleculeEnergy(destmodel, p, mol, success);
+// 					if (!success)
+// 					{
+// 						endearly = TRUE;
+// 						break;
+// 					}
+// 					// Add on any penalty value
+// 					enew += penalty;
+// 					// If the energy has gone up, undo the move.
+// 					deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
+// 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
+// 					deltaElecEnergy = destmodel->energy.electrostatic() - referenceElecEnergy;
+// 					msg.print(Messenger::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
+// 					if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( AtenMath::random() < exp(-beta*deltaMoleculeEnergy) ))
+// 					{
+// 						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
+// 						// Fold the molecule's atoms and recalculate its centre of geometry 
+// 						//cfg->fold_molecule(p,mol);
+// 						//destmodel->set_Prefs::ColourScheme(NULL);
+// 						// Update energy and move counters
+// 						//ecurrent = enew;
+// 						//currentVdwEnergy = destmodel->energy.get_vdw();
+// 						//currentElecEnergy = destmodel->energy.get_elec();
+// 						ecurrent += deltaMoleculeEnergy;
+// 						currentVdwEnergy += deltaVdwEnergy;
+// 						currentElecEnergy += deltaElecEnergy;
+// 						acceptanceRatio_[p->id()][move] ++;
+// 					}
+// 					else
+// 					{
+// 						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
+// 						// Revert to the previous state.
+// 						switch (move)
+// 						{
+// 							case (MonteCarlo::Insert):
+// 								// Set the hidden flag on the new molecule to TRUE
+// 								destmodel->hideMolecule(p,mol,TRUE);
+// 								p->setNMolecules(mol);
+// 								break;
+// 							case (MonteCarlo::Delete):
+// 							default:
+// 								destmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
+// 								break;
+// 						}
+// 					}
+// 				}
+// 				// Get acceptance ratio percentages
+// 				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];
+// 				if (endearly) break;
+// 			}
+// 			// Check to see if this component has the required number of molecules
+// 			if (c->nRequested() != p->nMolecules()) done = FALSE;
+// 			if (endearly) break;
+// 		}
+// 		if (prefs.shouldUpdateEnergy(cycle+1))
+// 		{
+// 			// Print start of first line (current energy and difference)
+// 			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
+// 			for (p = destmodel->patterns(); p != NULL; p = p->next)
+// 			{
+// 				n = p->id();
+// 				if (p == destmodel->patterns())
+// 				{
+// 					s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
+// 				}
+// 				else s.sprintf("%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
+// 				for (m=0; m<MonteCarlo::nMoveTypes; m++)
+// 				{
+// 					s.strcatf(" %3i", int(acceptanceRatio_[n][m]*100.0));
+// 				}
+// 				if (p == destmodel->patterns())
+// 				{
+// 					s.strcatf(" %s", etatext.get());
+// 				}
+// 				s += '\n';
+// 				msg.print(s.get());
+// 			}
+// 		}
+// 		elast = ecurrent;
+// 		// Check for early termination
+// 		if (endearly)
+// 		{
+// 			msg.print("Stopped.\n");
+// 			break;
+// 		}
+// 		if (done)
+// 		{
+// 			msg.print("All component populations satisfied.\n");
+// 			break;
+// 		}
 	}
-	gui.progressTerminate();
-	
-	// Print out final energy and data
+// 	gui.progressTerminate();
+// 	
+// 	// Print out final energy and data
 	enew = destmodel->totalEnergy(destmodel, success);
 	destmodel->energy.print();
 	// Print out pattern list info here
@@ -720,30 +719,29 @@ bool MonteCarlo::disorder(Model *destmodel)
 		}
 		else i = i->next;
 	}
-	// Remove number of molecules inserted from original number requested
-	for (ri = components.first(); ri != NULL; ri = ri->next)
-	{
-		if (c->nRequested() < 1) continue;
-		// Get model pointer
-		c = ri->item;
-		c->setNRequested( c->nRequested() - c->componentPattern()->nMolecules() );
-	}
-	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
-	for (p = destmodel->patterns(); p != NULL; p = p->next)
-	{
-		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
-		p->setStartAtom( p == destmodel->patterns() ? 0 : p->prev->startAtom() + p->prev->nMolecules()*p->prev->nAtoms() );
-		p->setEndAtom( p->startAtom() + p->nAtoms() - 1 );
-		//printf("PATTERN %p NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
-	}
-	destmodel->foldAllAtoms();
-	destmodel->calculateMass();
+// 	// Remove number of molecules inserted from original number requested
+// 	for (ri = components.first(); ri != NULL; ri = ri->next)
+// 	{
+// 		if (c->nRequested() < 1) continue;
+// 		// Get model pointer
+// 		c = ri->item;
+// 		c->setNRequested( c->nRequested() - c->componentPattern()->nMolecules() );
+// 	}
+// 	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
+// 	for (p = destmodel->patterns(); p != NULL; p = p->next)
+// 	{
+// 		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
+// 		p->setStartAtom( p == destmodel->patterns() ? 0 : p->prev->startAtom() + p->prev->nMolecules()*p->prev->nAtoms() );
+// 		p->setEndAtom( p->startAtom() + p->nAtoms() - 1 );
+// 		//printf("PATTERN %p NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
+// 	}
+// 	destmodel->foldAllAtoms();
+// 	destmodel->calculateMass();
 	//if (destmodel->arePatternsValid()) printf("Patterns are valid...\n");
 	//else printf("Patterns are NOT valid.\n");
 	//if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
 	//else printf("Expression is NOT valid.\n");
 	destmodel->changeLog.add(Log::Coordinates);
-	gui.disorderWidget->refresh();
 	gui.update(GuiQt::AllTarget);
 	msg.exit("MonteCarlo::insert");
 	return TRUE;

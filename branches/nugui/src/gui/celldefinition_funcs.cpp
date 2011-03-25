@@ -26,7 +26,6 @@
 #include "gui/gui.h"
 #include "gui/celldefinition.h"
 #include "gui/celltransform.h"
-#include "gui/disorder.h"
 #include "base/spacegroup.h"
 #include "parser/commandnode.h"
 
@@ -237,7 +236,6 @@ void CellDefinitionWidget::on_CellDefinitionGroup_clicked(bool checked)
 	}
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
 	gui.cellTransformWidget->refresh();
-	gui.disorderWidget->refresh();
 	gui.update(GuiQt::CanvasTarget);
 }
 

@@ -38,6 +38,36 @@
 						<entry>The model's unit cell</entry>
 					</row>
 					<row>
+						<entry>componentbulk</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the component is to be considered a bulk component</entry>
+					</row>
+					<row>
+						<entry>componentdensity</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Requested density of the model</entry>
+					</row>
+					<row>
+						<entry>componentfree</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the model or not has a specific density requested (FALSE)</entry>
+					</row>
+					<row>
+						<entry>componentpartition</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The integer index of the partition which this model will be added to in the disordered builder</entry>
+					</row>
+					<row>
+						<entry>componentpopulation</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The number of times this model will be added to the specified partition in the disordered builder</entry>
+					</row>
+					<row>
 						<entry>distances</entry>
 						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
 						<entry>ro</entry>

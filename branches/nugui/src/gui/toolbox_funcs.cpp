@@ -25,7 +25,7 @@
 #include "gui/celltransform.h"
 #include "gui/celldefinition.h"
 #include "gui/command.h"
-#include "gui/disorder.h"
+#include "gui/disorderwizard.h"
 #include "gui/forcefields.h"
 #include "gui/fragments.h"
 #include "gui/geometry.h"
@@ -101,10 +101,9 @@ void ToolBoxWidget::on_CommandButton_clicked(bool checked)
 	else gui.commandWidget->hide();
 }
 
-void ToolBoxWidget::on_DisorderButton_clicked(bool checked)
+void ToolBoxWidget::on_DisorderWizardButton_clicked(bool checked)
 {
-	if (checked) gui.disorderWidget->showWidget();
-	else gui.disorderWidget->hide();
+	int result = gui.disorderWizard->exec();
 }
 
 void ToolBoxWidget::on_ForcefieldsButton_clicked(bool checked)

@@ -85,15 +85,19 @@ Model::Model()
 	trajectoryPlaying_ = FALSE;
 	trajectoryCurrentFrame_ = NULL;
 
-	// Disordered builder
+	// Component
+	componentIsRequired_ = FALSE;
 	componentPattern_ = NULL;
-	nRequested_ = 0;
-	region_.setParent(this);
-	moveAllowed_[MonteCarlo::Insert] = TRUE;
-	moveAllowed_[MonteCarlo::Delete] = FALSE;
-	moveAllowed_[MonteCarlo::Translate] = TRUE;
-	moveAllowed_[MonteCarlo::Rotate] = TRUE;
-	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
+	componentPartition_ = 0;
+	componentPopulation_ = 1;
+	componentDensity_ = 1.0;
+	componentIsBulk_ = FALSE;
+	componentHasFreeDensity_ = FALSE;
+	componentMoveAllowed_[MonteCarlo::Insert] = TRUE;
+	componentMoveAllowed_[MonteCarlo::Delete] = FALSE;
+	componentMoveAllowed_[MonteCarlo::Translate] = TRUE;
+	componentMoveAllowed_[MonteCarlo::Rotate] = TRUE;
+	componentMoveAllowed_[MonteCarlo::ZMatrix] = FALSE;
 
 	// Misc Function Data
 	bondingCuboids_ = NULL;

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ToolBoxWidget</class>
  <widget class="QDockWidget" name="ToolBoxWidget">
@@ -5230,7 +5231,7 @@
        </widget>
       </item>
       <item row="7" column="0">
-       <widget class="QToolButton" name="DisorderButton">
+       <widget class="QToolButton" name="DisorderWizardButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -5672,7 +5673,7 @@
          </size>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="toolButtonStyle">
          <enum>Qt::ToolButtonTextBesideIcon</enum>

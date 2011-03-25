@@ -25,7 +25,7 @@ set(qtproject_SRCS
   celltransform_funcs.cpp
   contextmenu_funcs.cpp
   command_funcs.cpp
-  disorder_funcs.cpp
+  disorderwizard_funcs.cpp
   editactions.cpp
   ffeditor_funcs.cpp
   fileactions.cpp
@@ -85,7 +85,7 @@ SET(pro_MOC_HDRS
   celldefinition.h
   celltransform.h
   command.h
-  disorder.h
+  disorderwizard.h
   ffeditor.h
   forcefields.h
   fragments.h
@@ -131,7 +131,7 @@ SET(pro_UIS
   celltransform.ui
   command.ui
   customdialog.ui
-  disorder.ui
+  disorderwizard.ui
   ffeditor.ui
   forcefields.ui
   fragments.ui

@@ -32,7 +32,7 @@
 #include "gui/about.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
-#include "gui/disorder.h"
+#include "gui/disorderwizard.h"
 #include "gui/atomlist.h"
 #include "gui/build.h"
 #include "gui/celldefinition.h"
@@ -110,7 +110,7 @@ GuiQt::GuiQt()
 	cellDefinitionWidget = NULL;
 	cellTransformWidget = NULL;
 	commandWidget = NULL;
-	disorderWidget = NULL;
+	disorderWizard = NULL;
 	forcefieldsWidget = NULL;
 	fragmentsWidget = NULL;
 	geometryWidget = NULL;
@@ -200,7 +200,7 @@ void GuiQt::run()
 	cellDefinitionWidget = new CellDefinitionWidget(mainWindow, Qt::Tool);
 	cellTransformWidget = new CellTransformWidget(mainWindow, Qt::Tool);
 	commandWidget = new CommandWidget(mainWindow, Qt::Tool);
-	disorderWidget = new DisorderWidget(mainWindow, Qt::Tool);
+	disorderWizard = new DisorderWizard(mainWindow);
 	forcefieldsWidget = new ForcefieldsWidget(mainWindow, Qt::Tool);
 	fragmentsWidget = new FragmentsWidget(mainWindow, Qt::Tool);
 	geometryWidget = new GeometryWidget(mainWindow, Qt::Tool);
@@ -215,7 +215,7 @@ void GuiQt::run()
 	trajectoryWidget = new TrajectoryWidget(mainWindow, Qt::Tool);
 	transformWidget = new TransformWidget(mainWindow, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(mainWindow, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << disorderWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << trajectoryWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << trajectoryWidget << transformWidget << vibrationsWidget;
 	toolBoxWidget->show();
 	
 	// Connect Finished signal of tool windows to finished slots in structure
@@ -258,7 +258,6 @@ void GuiQt::run()
 	// Refresh the necessary windows
 	gridsWidget->refresh();
 	forcefieldsWidget->refresh();
-	disorderWidget->refresh();
 	mdWidget->refresh();
 	cellDefinitionWidget->refresh();
 	cellTransformWidget->refresh();
@@ -346,7 +345,6 @@ void GuiQt::update(int targets)
 	{
 		cellDefinitionWidget->refresh();
 		cellTransformWidget->refresh();
-		disorderWidget->refresh();
 	}
 
 	// Update forcefields in the forcefield widget

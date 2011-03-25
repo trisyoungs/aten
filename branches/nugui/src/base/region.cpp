@@ -184,11 +184,11 @@ bool ComponentRegion::pointOverlaps(const Vec3<double> &v, UnitCell *cell, Refli
 // 	printf("Number of components in list is %i\n",components.nItems());
 	for (ri = components.first(); ri != NULL; ri = ri->next)
 	{
-		r = ri->item->region();
-		if (r == this) continue;
-		if (r->coordsInRegion(v,cell)) result = TRUE;
-// 		printf("Overlap of region '%s' with region '%s' is %i.\n", regionShape(shape_), regionShape(r->shape()), r->coordsInRegion(v,cell));
-		if (result) break;
+// 		r = ri->item->region();
+// 		if (r == this) continue;
+// 		if (r->coordsInRegion(v,cell)) result = TRUE;
+// // 		printf("Overlap of region '%s' with region '%s' is %i.\n", regionShape(shape_), regionShape(r->shape()), r->coordsInRegion(v,cell));
+// 		if (result) break;
 	}
 	msg.exit("ComponentRegion::pointOverlaps");
 	return result;

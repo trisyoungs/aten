@@ -56,6 +56,11 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "atoms",		VTypes::AtomData,		-1, TRUE },
 	{ "bonds",		VTypes::BondData,		-1, TRUE },
 	{ "cell",		VTypes::CellData,		0, FALSE },
+	{ "componentbulk",	VTypes::IntegerData,		0, FALSE },
+	{ "componentdensity",	VTypes::DoubleData,		0, FALSE },
+	{ "componentfree",	VTypes::IntegerData,		0, FALSE },
+	{ "componentpopulation",VTypes::IntegerData,		0, FALSE },
+	{ "componentregion",	VTypes::IntegerData,		0, FALSE },
 	{ "distances",		VTypes::MeasurementData,	-1, TRUE },
 	{ "eigenvectors",	VTypes::EigenvectorData,	-1, TRUE },
 	{ "energy",		VTypes::EnergyStoreData,	0, TRUE },
@@ -88,13 +93,11 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nglyphs",		VTypes::IntegerData,		0, TRUE },
 	{ "ngrids",		VTypes::IntegerData,		0, TRUE },
 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
-	{ "nrequested",		VTypes::IntegerData,		0, FALSE },
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "nunknown",		VTypes::IntegerData,		0, TRUE },
 	{ "nvibrations",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
-	{ "region",		VTypes::RegionData,		0, TRUE },
 	{ "selection",		VTypes::AtomData,		-1, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
 	{ "vibrations",		VTypes::VibrationData,		0, TRUE },
@@ -277,6 +280,21 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::Celldata):
 			rv.set(VTypes::CellData, ptr->cell());
 			break;
+		case (ModelVariable::ComponentBulk):
+			rv.set(ptr->componentIsBulk());
+			break;
+		case (ModelVariable::ComponentDensity):
+			rv.set(ptr->componentDensity());
+			break;
+		case (ModelVariable::ComponentFree):
+			rv.set(ptr->componentHasFreeDensity());
+			break;
+		case (ModelVariable::ComponentPartition):
+			rv.set(ptr->componentPartition());
+			break;
+		case (ModelVariable::ComponentPopulation):
+			rv.set(ptr->componentPopulation());
+			break;
 		case (ModelVariable::Distances):
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->distanceMeasurements());
 			else if (arrayIndex > ptr->nDistanceMeasurements())
@@ -448,9 +466,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::NPatterns):
 			rv.set(ptr->nPatterns());
 			break;
-		case (ModelVariable::NRequested):
-			rv.set(ptr->nRequested());
-			break;
 		case (ModelVariable::NSelected):
 			rv.set(ptr->nSelected());
 			break;
@@ -471,9 +486,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
-			break;
-		case (ModelVariable::Region):
-			rv.set(VTypes::RegionData, ptr->region());
 			break;
 		case (ModelVariable::Selection):
 			if (!hasArrayIndex)
@@ -581,14 +593,26 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		case (ModelVariable::Celldata):
 			ptr->setCell( ((UnitCell*) newvalue.asPointer(VTypes::CellData)) );
 			break;
+		case (ModelVariable::ComponentBulk):
+			ptr->setComponentIsBulk( newvalue.asInteger() );
+			break;
+		case (ModelVariable::ComponentDensity):
+			ptr->setComponentDensity( newvalue.asDouble() );
+			break;
+		case (ModelVariable::ComponentFree):
+			ptr->setComponentHasFreeDensity( newvalue.asInteger() );
+			break;
+		case (ModelVariable::ComponentPartition):
+			ptr->setComponentPartition( newvalue.asInteger() );
+			break;
+		case (ModelVariable::ComponentPopulation):
+			ptr->setComponentPopulation( newvalue.asInteger() );
+			break;
 		case (ModelVariable::FField):
 			ptr->setForcefield( (Forcefield*) newvalue.asPointer(VTypes::ForcefieldData) );
 			break;
 		case (ModelVariable::Name):
 			ptr->setName(newvalue.asString());
-			break;
-		case (ModelVariable::NRequested):
-			ptr->setNRequested(newvalue.asInteger());
 			break;
 		default:
 			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

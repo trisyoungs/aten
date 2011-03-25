@@ -42,13 +42,13 @@ class AtenViewBasis;
 class AtenViewEigenvector;
 class AtenZMatrix;
 
-// Forward Declarations 3 - Dock Widgets
+// Forward Declarations 3 - Dock Widgets and Wizards
 class AtomListWidget;
 class BuildWidget;
 class CellDefinitionWidget;
 class CellTransformWidget;
 class CommandWidget;
-class DisorderWidget;
+class DisorderWizard;
 class ForcefieldsWidget;
 class FragmentsWidget;
 class GeometryWidget;
@@ -160,8 +160,8 @@ class GuiQt
 	CellTransformWidget *cellTransformWidget;
 	// Command dock widget
 	CommandWidget *commandWidget;
-	// Disorder dock widget
-	DisorderWidget *disorderWidget;
+	// Disorder wizard
+	DisorderWizard *disorderWizard;
 	// Forcefields dock widget
 	ForcefieldsWidget *forcefieldsWidget;
 	// Fragment Library dock widget

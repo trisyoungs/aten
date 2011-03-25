@@ -24,7 +24,6 @@
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include "gui/mainwindow.h"
-#include "gui/disorder.h"
 #include "gui/grids.h"
 #include "gui/modellist.h"
 #include "model/model.h"
