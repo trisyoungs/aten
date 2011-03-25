@@ -35,9 +35,16 @@ TMenuButton::TMenuButton(QWidget *parent) : QPushButton(parent)
 // Add item to menu
 bool TMenuButton::addMenuItem(const char *text, int id)
 {
+	// Search for existing item with same ID
+	if (actions_.containsData(id))
+	{
+		printf("TMenuButton::addMenuItem - id '%i' is already in use.\n", id);
+		return FALSE;
+	}
 	QAction *action = menu_.addAction(text);
 	actions_.add(action, id);
 	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(menuActionTriggered(bool)));
+	return TRUE;
 }
 
 void TMenuButton::menuActionTriggered(bool checked)

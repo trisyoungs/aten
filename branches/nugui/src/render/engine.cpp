@@ -478,7 +478,7 @@ void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 }
 
 // Render 3D
-void RenderEngine::render3D(Model *source, TCanvas *canvas)
+void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 {
 	GLfloat colour[4];
 
@@ -530,8 +530,8 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas)
 	{
 		// Render embellshments for current UserAction
 		renderUserActions(source, modelTransformationMatrix_, canvas);	
-		// Render extras arising from open tool windows
-		renderWindowExtras(source, modelTransformationMatrix_, canvas);
+		// Render extras arising from open tool windows (current model only)
+		if (currentModel) renderWindowExtras(source, modelTransformationMatrix_, canvas);
 	}
 
 	// All 3D primitive objects have now been filtered, so add triangles, then sort and send to GL

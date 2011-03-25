@@ -142,7 +142,7 @@ class RenderEngine
 	// Render text objects (with supplied QPainter)
 	void renderText(QPainter &painter, TCanvas *canvas);
 	// Render 3D elements with OpenGL
-	void render3D(Model* source, TCanvas *canvas);
+	void render3D(Model* source, TCanvas* canvas, bool currentModel);
 };
 
 #endif

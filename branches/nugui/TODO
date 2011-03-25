@@ -16,7 +16,12 @@
 		<listitem>
 			<para>Editing info for multiple grids at once.</para>
 		</listitem>
-
+		<listitem>
+			<para>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</para>
+		</listitem>
+		<listitem>
+			<para>Drag/drop disordered system creation via ModelList widget?</para>
+		</listitem>
 	</orderedlist>
 </sect5>
 

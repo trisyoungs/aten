@@ -20,7 +20,6 @@
 */
 
 #include "main/aten.h"
-#include "gui/mainwindow.h"
 #include "gui/transform.h"
 #include "gui/toolbox.h"
 #include "gui/gui.h"

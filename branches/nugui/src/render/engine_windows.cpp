@@ -23,7 +23,10 @@
 #include "model/model.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
+#include "gui/disorder.h"
 #include "gui/vibrations.h"
+#include "main/aten.h"
+#include "base/region.h"
 
 // Render addition elements related to visible windows
 void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas)
@@ -101,6 +104,9 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 	// Cell Transform Window
 	if (gui.cellTransformWidget->isVisible())
 	{
+		Vec3<int> hkl;
+		int n, i, j, anindex = -1, notanindex = -1, ncoords = 0;
+		Vec3<double> coords[4], origin;
 		switch (gui.cellTransformWidget->ui.CellTransformTabs->currentIndex())
 		{
 			// Replicate tab - draw on end results of replication
@@ -153,6 +159,70 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 				}
 				glDisable(GL_LINE_STIPPLE);
 				glPopMatrix();
+			// Miller Plane tab
+			case (3):
+				hkl.set(gui.cellTransformWidget->ui.MillerHSpin->value(), gui.cellTransformWidget->ui.MillerKSpin->value(), gui.cellTransformWidget->ui.MillerLSpin->value());
+				if ((hkl.x == 0) && (hkl.y == 0) && (hkl.z == 0)) return;
+				// Plane Eq : hx + ky + lz = 1    (h, k, and l are reciprocals)
+				for (n=0; n<3; ++n)
+				{
+					if (hkl[n] != 0)
+					{
+						coords[ncoords++].set(n, 1.0 / hkl[n]);
+						anindex = n;
+					}
+					else notanindex = n;
+				}
+				// Generate other coordinates if necessary
+				if (ncoords == 1)
+				{
+					// {100}
+					i = (anindex+1)%3;
+					j = (i+1)%3;
+					for (n=1; n<4; ++n) coords[n] = coords[0];
+					coords[1].set(i, 1.0);
+					coords[2].set(i, 1.0);
+					coords[2].set(j, 1.0);
+					coords[3].set(j, 1.0);
+					ncoords = 4;
+				}
+				else if (ncoords == 2)
+				{
+					// {110}
+					coords[2] = coords[1];
+					coords[2].set(notanindex, 1.0);
+					coords[3] = coords[0];
+					coords[3].set(notanindex, 1.0);
+					ncoords = 4;
+				}
+				glPushMatrix();
+				glMultMatrixd(source->cell()->axes().matrix());
+				if (ncoords == 3)
+				{
+					glBegin(GL_TRIANGLES);
+						glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+						glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+						glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+						glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
+						glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
+						glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
+					glEnd();
+				}
+				else
+				{
+					glBegin(GL_QUADS);
+						glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+						glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+						glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+						glVertex3d(coords[3].x, coords[3].y, coords[3].z);
+						glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
+						glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
+						glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
+						glVertex3d(1-coords[3].x, 1-coords[3].y, 1-coords[3].z);
+					glEnd();
+				}
+				break;
 		}
 	}
+
 }

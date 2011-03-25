@@ -179,7 +179,7 @@ void TCanvas::paintGL()
 	QRect currentBox;
 	Refitem<Model,int> *first, localri;
 	int px, py, nperrow = prefs.nModelsPerRow(), nrows, col, row, nmodels;
-	bool usepixels;
+	bool usepixels, modelIsCurrentModel;
 	Model *m;
 
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
@@ -242,7 +242,12 @@ void TCanvas::paintGL()
 		if (m == NULL) continue;
 
 		// Store coordinates for box if this is the current model
-		if ((m == aten.currentModel()) && useCurrentModel_) currentBox.setRect(col*px, row*py, px, py);
+		if ((m == aten.currentModel()) && useCurrentModel_)
+		{
+			modelIsCurrentModel = TRUE;
+			currentBox.setRect(col*px, row*py, px, py);
+		}
+		else modelIsCurrentModel = FALSE;
 
 		// Vibration frame?
 		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
@@ -274,7 +279,7 @@ void TCanvas::paintGL()
 		
 			// Clear triangle lists and render the 3D parts of the model
 			engine_.clearTriangleLists();
-			render3D(m);
+			render3D(m, modelIsCurrentModel);
 		}
 
 		// Increase counters
@@ -353,7 +358,7 @@ void TCanvas::paintGL()
 }
 
 // Render 3D objects for current displayModel_
-void TCanvas::render3D(Model *source)
+void TCanvas::render3D(Model *source, bool currentModel)
 {	
 	// Valid pointer set?
 	if (source == NULL) return;
@@ -387,7 +392,7 @@ void TCanvas::render3D(Model *source)
 	// Render 3D elements (with OpenGL)
 	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
 	checkGlError();
-	engine_.render3D(source, this);
+	engine_.render3D(source, this, currentModel);
 	//glFlush();
 	checkGlError();
 

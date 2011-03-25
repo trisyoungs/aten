@@ -21,7 +21,6 @@
 
 #include "main/aten.h"
 #include "gui/position.h"
-#include "gui/mainwindow.h"
 #include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "model/model.h"
