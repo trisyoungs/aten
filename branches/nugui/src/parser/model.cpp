@@ -114,6 +114,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::argText(Command::Copy) },
 	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::argText(Command::Cut) },
 	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::argText(Command::Delete) },
+	{ "deselect",		VTypes::NoData,		Command::arguments(Command::DeSelect),		Command::argText(Command::DeSelect) },
 	{ "elecenergy",		VTypes::DoubleData,	"",						"" },
 	{ "expand",		VTypes::NoData,		Command::arguments(Command::Expand),		Command::argText(Command::Expand) },
 	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::argText(Command::Finalise) },
@@ -137,6 +138,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "redo",		VTypes::NoData,		Command::arguments(Command::Redo),		Command::argText(Command::Redo) },
 	{ "reorder",		VTypes::NoData,		Command::arguments(Command::ReOrder),		Command::argText(Command::ReOrder) },
 	{ "savebitmap",		VTypes::NoData,		Command::arguments(Command::SaveBitmap),	Command::argText(Command::SaveBitmap) },
+	{ "select",		VTypes::NoData,		Command::arguments(Command::Select),		Command::argText(Command::Select) },
 	{ "selectall",		VTypes::NoData,		Command::arguments(Command::SelectAll),		Command::argText(Command::SelectAll) },
 	{ "selectionaddhydrogen",VTypes::NoData,	Command::arguments(Command::SelectionAddHydrogen),	Command::argText(Command::SelectionAddHydrogen) },
 	{ "selectnone",		VTypes::NoData,		Command::arguments(Command::SelectNone),	Command::argText(Command::SelectNone) },
@@ -649,6 +651,9 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::Delete):
 			result = aten.commands.call(Command::Delete, node, rv, bundle);
 			break;
+		case (ModelVariable::DeSelect):
+			result = aten.commands.call(Command::DeSelect, node, rv, bundle);
+			break;
 		case (ModelVariable::ElectrostaticEnergy):
 			rv.set( ptr->electrostaticEnergy(ptr, result));
 			break;
@@ -717,6 +722,9 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			break;
  		case (ModelVariable::SaveBitmap):
 			result = aten.commands.call(Command::SaveBitmap, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Select):
+			result = aten.commands.call(Command::Select, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectAll):
 			result = aten.commands.call(Command::SelectAll, node, rv, bundle);

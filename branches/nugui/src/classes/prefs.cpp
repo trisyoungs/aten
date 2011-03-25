@@ -257,7 +257,7 @@ Prefs::Prefs()
 	modelUpdate_ = 5;
 	energyUpdate_ = 5;
 	maxRingSize_ = 6;
-	maxRings_ = 20;
+	maxRings_ = 100;
 	maxCuboids_ = 100;
 	replicateFold_ = TRUE;
 	replicateTrim_ = TRUE;

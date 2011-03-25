@@ -165,13 +165,13 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	else msg.print("Creating expression for model %s...\n",name_.get());
 	
 	// 1) Assign forcefield types to all atoms
-// 	if (!typeAll())
-// 	{
-// 		msg.print("Couldn't type atoms.\n");
-// 		msg.exit("Model::createExpression");
-// 		return FALSE;
-// 	}
-// 	
+	if (!typeAll())
+	{
+		msg.print("Couldn't type atoms.\n");
+		msg.exit("Model::createExpression");
+		return FALSE;
+	}
+	
 	// 2) Remove old expression data and create new
 	bool done;
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)

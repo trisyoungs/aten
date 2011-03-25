@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>VibrationsWidget</class>
  <widget class="QDockWidget" name="VibrationsWidget">
@@ -31,8 +32,11 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <property name="spacing">
+     <number>4</number>
+    </property>
     <property name="margin">
-     <number>0</number>
+     <number>2</number>
     </property>
     <item>
      <widget class="QTabWidget" name="VibrationsTabWidget">
@@ -44,6 +48,12 @@
         <string>Frequencies</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <widget class="QListWidget" name="VibrationsList">
           <property name="sizePolicy">
@@ -70,6 +80,12 @@
         <string>Displacements</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <widget class="QTableWidget" name="DisplacementsTable">
           <property name="sizePolicy">
@@ -122,8 +138,20 @@
        <string>Control</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="margin">
+        <number>2</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="margin">
+          <number>2</number>
+         </property>
          <item>
           <widget class="QToolButton" name="PlayPauseVibration">
            <property name="minimumSize">
@@ -205,6 +233,12 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="margin">
+          <number>2</number>
+         </property>
          <item>
           <widget class="QCheckBox" name="ShowVectorsCheck">
            <property name="text">

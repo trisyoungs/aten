@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>CommandWidget</class>
  <widget class="QDockWidget" name="CommandWidget">
@@ -35,6 +36,9 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout_8">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <property name="margin">
      <number>0</number>
     </property>
@@ -48,10 +52,22 @@
         <string>Prompt</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="spacing">
+           <number>4</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="spacing">
+             <number>4</number>
+            </property>
             <item>
              <spacer>
               <property name="orientation">
@@ -92,6 +108,12 @@
         <string>Interactive</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <widget class="QGroupBox" name="VariablesGroup">
           <property name="sizePolicy">
@@ -105,7 +127,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <property name="spacing">
-            <number>2</number>
+            <number>4</number>
            </property>
            <property name="margin">
             <number>2</number>
@@ -136,15 +158,25 @@
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5"/>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <property name="spacing">
+              <number>4</number>
+             </property>
+            </layout>
            </item>
           </layout>
          </widget>
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="spacing">
+           <number>4</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <property name="spacing">
+             <number>4</number>
+            </property>
             <item>
              <spacer>
               <property name="orientation">
@@ -198,11 +230,20 @@
         <string>Scripts</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <widget class="QListWidget" name="ScriptsList"/>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="spacing">
+           <number>4</number>
+          </property>
           <item>
            <widget class="QToolButton" name="OpenScriptButton">
             <property name="sizePolicy">
@@ -274,10 +315,16 @@
         <string>Command Help</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="_2">
           <property name="spacing">
-           <number>6</number>
+           <number>4</number>
           </property>
           <property name="margin">
            <number>0</number>

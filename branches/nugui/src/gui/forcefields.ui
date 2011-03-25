@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ForcefieldsWidget</class>
  <widget class="QDockWidget" name="ForcefieldsWidget">
@@ -6,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>280</width>
-    <height>367</height>
+    <height>329</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -18,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>280</width>
-    <height>367</height>
+    <height>329</height>
    </size>
   </property>
   <property name="font">
@@ -37,6 +38,9 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <property name="margin">
      <number>0</number>
     </property>
@@ -56,8 +60,17 @@
         <string>Energy</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="spacing">
+           <number>4</number>
+          </property>
           <item>
            <widget class="QPushButton" name="CurrentEnergyButton">
             <property name="sizePolicy">
@@ -142,19 +155,28 @@
            <string>Minimiser</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="spacing">
+            <number>4</number>
+           </property>
            <property name="margin">
             <number>2</number>
            </property>
            <item>
             <widget class="QTabWidget" name="MinimiserTabs">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="ForcefieldMinimiserTab">
               <attribute name="title">
                <string>Forcefield</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_6">
+               <property name="spacing">
+                <number>4</number>
+               </property>
+               <property name="margin">
+                <number>2</number>
+               </property>
                <item>
                 <widget class="QComboBox" name="MinimiserMethodCombo">
                  <property name="sizePolicy">
@@ -197,8 +219,17 @@
                   <string>Convergence Criteria</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_9">
+                  <property name="spacing">
+                   <number>4</number>
+                  </property>
+                  <property name="margin">
+                   <number>2</number>
+                  </property>
                   <item>
                    <layout class="QGridLayout" name="gridLayout_3">
+                    <property name="spacing">
+                     <number>4</number>
+                    </property>
                     <item row="0" column="0">
                      <widget class="QLabel" name="label_9">
                       <property name="sizePolicy">
@@ -272,49 +303,39 @@
                       </property>
                      </widget>
                     </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="label_46">
+                      <property name="text">
+                       <string>Max Cycles</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QSpinBox" name="MinimiseCyclesSpin">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>10000</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>2</number>
+                      </property>
+                      <property name="value">
+                       <number>100</number>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </item>
                  </layout>
                 </widget>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="_8">
-                 <property name="spacing">
-                  <number>4</number>
-                 </property>
-                 <property name="margin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QLabel" name="label_46">
-                   <property name="text">
-                    <string>Max Cycles</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="MinimiseCyclesSpin">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <number>10000</number>
-                   </property>
-                   <property name="singleStep">
-                    <number>2</number>
-                   </property>
-                   <property name="value">
-                    <number>100</number>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </item>
                <item>
                 <spacer name="verticalSpacer_3">
@@ -407,8 +428,17 @@
                <string>MOPAC</string>
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_8">
+               <property name="spacing">
+                <number>4</number>
+               </property>
+               <property name="margin">
+                <number>2</number>
+               </property>
                <item>
                 <layout class="QGridLayout" name="gridLayout">
+                 <property name="spacing">
+                  <number>4</number>
+                 </property>
                  <item row="0" column="0">
                   <widget class="QLabel" name="MopacMethodLabel">
                    <property name="sizePolicy">
@@ -695,6 +725,12 @@
         <string>Forcefields</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <widget class="QComboBox" name="ForcefieldCombo"/>
         </item>
@@ -845,7 +881,7 @@
            <item>
             <layout class="QHBoxLayout" name="_4">
              <property name="spacing">
-              <number>6</number>
+              <number>4</number>
              </property>
              <property name="margin">
               <number>0</number>
@@ -933,7 +969,7 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <property name="spacing">
-            <number>2</number>
+            <number>4</number>
            </property>
            <property name="margin">
             <number>2</number>
@@ -984,6 +1020,12 @@
         <string>Manual Typing</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <widget class="QGroupBox" name="ManualTypingGroup">
           <property name="sizePolicy">
@@ -1008,7 +1050,7 @@
               <number>4</number>
              </property>
              <property name="margin">
-              <number>0</number>
+              <number>2</number>
              </property>
              <item>
               <widget class="QLabel" name="label_343">
@@ -1066,7 +1108,7 @@
               <number>4</number>
              </property>
              <property name="margin">
-              <number>0</number>
+              <number>2</number>
              </property>
              <item>
               <widget class="QPushButton" name="ManualTypeSetButton">

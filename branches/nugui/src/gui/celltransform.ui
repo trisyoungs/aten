@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>CellTransformWidget</class>
  <widget class="QDockWidget" name="CellTransformWidget">
@@ -6,13 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>220</height>
+    <height>223</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>220</height>
+    <height>223</height>
    </size>
   </property>
   <property name="windowIcon">
@@ -30,11 +37,20 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <property name="margin">
      <number>0</number>
     </property>
     <item>
      <widget class="QTabWidget" name="CellTransformTabs">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -55,7 +71,7 @@
            <number>4</number>
           </property>
           <property name="margin">
-           <number>0</number>
+           <number>2</number>
           </property>
           <item>
            <widget class="QDoubleSpinBox" name="CellReplicateNegXSpin">
@@ -119,7 +135,7 @@
            <number>4</number>
           </property>
           <property name="margin">
-           <number>0</number>
+           <number>2</number>
           </property>
           <item>
            <widget class="QDoubleSpinBox" name="CellReplicateNegYSpin">
@@ -183,7 +199,7 @@
            <number>4</number>
           </property>
           <property name="margin">
-           <number>0</number>
+           <number>2</number>
           </property>
           <item>
            <widget class="QDoubleSpinBox" name="CellReplicateNegZSpin">
@@ -280,10 +296,10 @@
         <item>
          <layout class="QHBoxLayout" name="_6">
           <property name="spacing">
-           <number>0</number>
+           <number>4</number>
           </property>
           <property name="margin">
-           <number>0</number>
+           <number>2</number>
           </property>
           <item>
            <spacer name="leftspacer">
@@ -370,7 +386,7 @@
            <number>0</number>
           </property>
           <property name="spacing">
-           <number>2</number>
+           <number>4</number>
           </property>
           <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="CellScaleZSpin">
@@ -482,7 +498,7 @@
         <item>
          <layout class="QVBoxLayout" name="_9">
           <property name="spacing">
-           <number>2</number>
+           <number>4</number>
           </property>
           <property name="margin">
            <number>0</number>
@@ -518,7 +534,7 @@
         <item>
          <layout class="QHBoxLayout" name="_10">
           <property name="spacing">
-           <number>6</number>
+           <number>4</number>
           </property>
           <property name="margin">
            <number>0</number>
@@ -932,7 +948,7 @@
               <number>0</number>
              </property>
              <property name="spacing">
-              <number>2</number>
+              <number>4</number>
              </property>
              <item row="0" column="1">
               <widget class="QSpinBox" name="MillerHSpin">
@@ -1073,7 +1089,7 @@
         <item>
          <layout class="QHBoxLayout" name="_17">
           <property name="spacing">
-           <number>6</number>
+           <number>4</number>
           </property>
           <property name="margin">
            <number>0</number>

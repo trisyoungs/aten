@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MDWidget</class>
  <widget class="QDockWidget" name="MDWidget">
@@ -5,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>298</width>
-    <height>237</height>
+    <width>270</width>
+    <height>199</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>298</width>
-    <height>237</height>
+    <width>270</width>
+    <height>199</height>
    </size>
   </property>
   <property name="font">
@@ -32,13 +33,19 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <property name="spacing">
-     <number>6</number>
+     <number>0</number>
     </property>
     <property name="margin">
      <number>0</number>
     </property>
     <item>
      <widget class="QTabWidget" name="MDTabs">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -47,8 +54,17 @@
         <string>Control</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
         <item>
          <layout class="QGridLayout" name="gridLayout">
+          <property name="spacing">
+           <number>4</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -162,6 +178,9 @@
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>4</number>
+          </property>
           <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
