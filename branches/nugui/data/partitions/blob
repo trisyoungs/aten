@@ -1,0 +1,44 @@
+# Example partition definition for Aten
+# Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 ub a cubuc cell.
+# Shearing / scaling of all coordinates is performed internally by Aten when necessary.
+
+#
+# Name / Description
+#
+// Two simple functions which return the name and description of the partitioning scheme
+string name() { return "Blob"; }
+string description() { return "Simple spherical region"; }
+
+# Every partition definition *must* contain a 'partition' function
+# When constructing the insertion grid, Aten will call this function to determine which points on the grid fall within which partitions.
+# Unit cell coordinates are always given. The function should return the integer ID number of the partition in which the point
+# falls, or zero to mean the point falls in no partition at all (i.e. it is elsewhere in the cell)
+int partition(double x, double y, double z)
+{
+	// Variables should be listed here using the 'options' keyword (so that they may be displayed in the GUI
+	option("Sphere ", "label");
+	double spherex = option("X", "doublespin", 0.0, 1.0, 0.1, 0.5);
+	double spherey = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5);
+	double spherez = option("Z", "doublespin", 0.0, 1.0, 0.1, 0.5);
+	double spherer = option("R", "doublespin", 0.001, 1.0, 0.1, 0.1, "newline");
+
+	// Check 1 - Is the point inside the defined sphere (region 1)
+	double rij = sqrt( (x-spherex)*(x-spherex) + (y-spherey)*(y-spherey) + (z-spherez)*(z-spherez));
+	if (rij <= spherer) return 1;
+
+	// Not inside any defined regions, so return '0' for 'inside rest of cell'
+	return 0;
+}
+
+string partitionname(int id)
+{
+	switch(id)
+	{
+		case (0):
+			return "Unit Cell";
+		case (1):
+			return "Sphere";
+		default:
+			return "UNKNOWN";
+	}
+}

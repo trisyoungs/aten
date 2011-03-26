@@ -164,6 +164,17 @@ void UnitCell::setAngle(int i, double d)
 	update();
 }
 
+// Set angles and calculates matrix
+void UnitCell::setAngles(const Vec3<double> &newangles)
+{
+	// Store new cell lengths
+	angles_ = newangles;
+	// Calculate new matrix
+	calculateMatrix();
+	// Update dependent quantities
+	update();
+}
+
 // Set / adjust individual parameter
 void UnitCell::setParameter(UnitCell::CellParameter cp, double value, bool adjust)
 {

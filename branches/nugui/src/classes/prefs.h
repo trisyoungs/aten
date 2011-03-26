@@ -616,6 +616,8 @@ class Prefs
 	bool loadFilters_;
 	// Whether to load includes on startup
 	bool loadIncludes_;
+	// Whether to load partitions on startup
+	bool loadPartitions_;
 	// Whether to load fragments on startup
 	bool loadFragments_;
 	// Whether to generate icons for loaded fragments
@@ -692,6 +694,10 @@ class Prefs
 	bool loadIncludes() const;
 	// Set whether to load includes on startup
 	void setLoadIncludes(bool b);
+	// Whether to load partitions on startup
+	bool loadPartitions() const;
+	// Set whether to load partitions on startup
+	void setLoadPartitions(bool b);
 	// Whether to load fragments on startup
 	bool loadFragments() const;
 	// Set whether to load fragments on startup

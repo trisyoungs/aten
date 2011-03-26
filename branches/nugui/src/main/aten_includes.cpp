@@ -61,7 +61,7 @@ void Aten::openIncludes()
 		break;
 	}
 
-	if (!found) msg.print("No Includes found in any known default locations.\n");
+	if (!found) msg.print("No includes found in any known default locations.\n");
 
 	// Try to load user includes - we don't mind if the directory doesn't exist...
 	path.sprintf("%s%c.aten%cincludess%c", homeDir_.get(), PATHSEP, PATHSEP, PATHSEP);
@@ -99,7 +99,7 @@ int Aten::parseIncludeDir(const char *path)
 		filename += includelist.at(i);
 		if (!includeFunctions_.generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(includelist.at(i)), TRUE, TRUE))
 		{
-			msg.print("Failed to load Includes from '%s'...\n", qPrintable(includelist.at(i)));
+			msg.print("Failed to load includes from '%s'...\n", qPrintable(includelist.at(i)));
 			failedIncludes_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );
 			nfailed ++;
 		}
@@ -123,7 +123,7 @@ bool Aten::openInclude(const char *filename)
 	// Construct includes Program...
 	if (!includeFunctions_.generateFromFile(filename, filename, TRUE, TRUE))
 	{
-		msg.print("Failed to load Includes from '%s'...\n", filename);
+		msg.print("Failed to load includes from '%s'...\n", filename);
 		failedIncludes_.add()->set( filename );
 		msg.exit("Aten::openInclude");
 		return FALSE;

@@ -103,7 +103,7 @@ void ToolBoxWidget::on_CommandButton_clicked(bool checked)
 
 void ToolBoxWidget::on_DisorderWizardButton_clicked(bool checked)
 {
-	int result = gui.disorderWizard->exec();
+	int result = gui.disorderWizard->run();
 }
 
 void ToolBoxWidget::on_ForcefieldsButton_clicked(bool checked)

@@ -182,7 +182,7 @@ Tree *Program::globalFunctions()
 }
 
 // Execute specified global function
-bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist ...)
+bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist, ...)
 {
 	msg.enter("Program::executeGlobalFunction");
 	// First, locate funciton with the name supplied
@@ -223,7 +223,7 @@ bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const
 				var = new ForcefieldBoundVariable(va_arg(vars, ForcefieldBound*));
 				break;
 			default:
-				printf("Invalid argument specifier '%c' in Program::executeGlobalFunctin.\n", *c);
+				printf("Invalid argument specifier '%c' in Program::executeGlobalFunction.\n", *c);
 				var = NULL;
 				break;
 		}

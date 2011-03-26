@@ -29,6 +29,7 @@
 #include "templates/list.h"
 #include "parser/program.h"
 #include "parser/variablelist.h"
+#include "methods/partition.h"
 
 // Forward Declarations
 class Model;
@@ -164,7 +165,7 @@ class Aten
 
 	
 	/*
-	// Global Functions
+	// Global Function Includes and Partitioning Schemes
 	*/
 	private:
 	// Program containing all globally-defined include functions
@@ -175,6 +176,14 @@ class Aten
 	List<Dnchar> failedIncludes_;
 	// Parse directory index and load includes
 	int parseIncludeDir(const char *path);
+	// Programs containing partitioning schemes
+	List<PartitioningScheme> partitioningSchemes_;
+	// How many partitioning files had errors on startup
+	int nPartitionsFailed_;
+	// Filenames (including paths) of partitions that failed to load
+	List<Dnchar> failedPartitions_;
+	// Parse directory index and load includes
+	int parsePartitionsDir(const char *path);
 	
 	public:
 	// Load global include functions
@@ -187,8 +196,20 @@ class Aten
 	Dnchar *failedIncludes() const;
 	// Find global include function by name
 	Tree *findIncludeFunction(const char *name);
+	// Load global partition functions
+	void openPartitions();
+	// Load partition from specified filename
+	bool openPartition(const char *filename);
+	// Whether partitions loaded succesfully on startup
+	int nPartitionsFailed() const;
+	// Return first item in failed partitions list
+	Dnchar *failedPartitions() const;
+	// Recalculate grids for all partitioning schemes
+	void recalculatePartitions() const;
+	// Return first partitioning scheme in the list
+	PartitioningScheme *partitioningSchemes();
 
-	
+
 	/*
 	// Forcefields
 	*/

@@ -37,6 +37,8 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	displayFrameId_ = -1;
 	useCurrentModel_ = TRUE;
 	renderSource_ = NULL;
+	redrawActiveModel_ = FALSE;
+	noPixelData_ = FALSE;
 	// Rendering
 	noPixelData_ = FALSE;
 	drawing_ = FALSE;

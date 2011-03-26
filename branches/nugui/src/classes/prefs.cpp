@@ -263,8 +263,9 @@ Prefs::Prefs()
 	replicateTrim_ = TRUE;
 	forceRhombohedral_ = FALSE;
 	augmentAfterRebond_ = TRUE;
-	warning1056_ = TRUE;
+	warning1056_ = FALSE;
 	loadIncludes_ = TRUE;
+	loadPartitions_ = TRUE;
 	loadFragments_ = TRUE;
 	generateFragmentIcons_ = TRUE;
 	commonElements_ = "H,C,N,O,Cl";
@@ -1467,6 +1468,18 @@ bool Prefs::loadIncludes() const
 void Prefs::setLoadIncludes(bool b)
 {
 	loadIncludes_ = b;
+}
+
+// Whether to load partitions on startup
+bool Prefs::loadPartitions() const
+{
+	return loadPartitions_;
+}
+
+// Set whether to load partitions on startup
+void Prefs::setLoadPartitions(bool b)
+{
+	loadPartitions_ = b;
 }
 
 // Whether to load fragments on startup

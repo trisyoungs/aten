@@ -6,6 +6,7 @@ linemin.h
 mc.h 
 md.h 
 geometry.h 
+partition.h
 pdens.h 
 rdf.h 
 sd.h
@@ -16,6 +17,7 @@ linemin.cpp
 mc.cpp 
 md.cpp 
 geometry.cpp 
+partition.cpp
 pdens.cpp 
 rdf.cpp 
 sd.cpp

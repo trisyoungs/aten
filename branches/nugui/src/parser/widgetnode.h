@@ -22,7 +22,7 @@
 #ifndef ATEN_WIDGETNODE_H
 #define ATEN_WIDGETNODE_H
 
-#include "parser/treenode.h"
+#include "parser/variable.h"
 #include "templates/list.h"
 #include "templates/kvtable.h"
 #include "base/dnchar.h"
@@ -91,7 +91,7 @@ class StateChange
 };
 
 // User-defined GUI filter option
-class WidgetNode : public TreeNode
+class WidgetNode : public Variable
 {
 	public:
 	// Constructor / destructor

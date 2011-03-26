@@ -26,7 +26,6 @@
 #include "gui/disorderwizard.h"
 #include "gui/vibrations.h"
 #include "main/aten.h"
-#include "base/region.h"
 
 // Render addition elements related to visible windows
 void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas)
@@ -225,4 +224,14 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 		}
 	}
 
+	// Disorder Wizard
+	if ((gui.disorderWizard->isVisible()) && (gui.disorderWizard->currentId() < 3))
+	{
+		// Get currently-selected partitioning scheme
+		PartitioningScheme *ps = gui.disorderWizard->partitioningScheme();
+		if (ps != NULL)
+		{
+			// Grab the grid structure from 
+		}
+	}
 }

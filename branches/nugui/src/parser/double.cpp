@@ -59,6 +59,18 @@ bool DoubleVariable::set(ReturnValue &rv)
 	return success;
 }
 
+// Set from double data
+bool DoubleVariable::setFromDouble(double d)
+{
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case a double) cannot be assigned to.\n");
+		return FALSE;
+	}
+	doubleData_ = d;
+	return TRUE;
+}
+
 // Reset variable
 void DoubleVariable::reset()
 {

@@ -42,7 +42,6 @@
 #include "parser/pattern.h"
 #include "parser/patternbound.h"
 #include "parser/prefs.h"
-#include "parser/region.h"
 #include "parser/site.h"
 #include "parser/vector.h"
 #include "parser/vibration.h"
@@ -217,10 +216,6 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = PreferencesVariable::performFunction(accessor_, rv, this);
 			else result = PreferencesVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (VTypes::RegionData):
-			if (functionAccessor_) result = RegionVariable::performFunction(accessor_, rv, this);
-			else result = RegionVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
-			break;
 		case (VTypes::SiteData):
 			if (functionAccessor_) result = SiteVariable::performFunction(accessor_, rv, this);
 			else result = SiteVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -323,9 +318,6 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::PreferencesData):
 			printf("%s", PreferencesVariable::accessorData[accessor_].name);
-			break;
-		case (VTypes::RegionData):
-			printf("%s", RegionVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::SiteData):
 			printf("%s", SiteVariable::accessorData[accessor_].name);
@@ -448,9 +440,6 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::PreferencesData):
 			result = PreferencesVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
-		case (VTypes::RegionData):
-			result = RegionVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
-			break;
 		case (VTypes::SiteData):
 			result = SiteVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -561,9 +550,6 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::PreferencesData):
 			result = PreferencesVariable::accessorSearch(s, arrayindex, arglist);
-			break;
-		case (VTypes::RegionData):
-			result = RegionVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::SiteData):
 			result = SiteVariable::accessorSearch(s, arrayindex, arglist);

@@ -23,7 +23,11 @@
 #define ATEN_DISORDERWIZARD_H
 
 #include "gui/ui_disorderwizard.h"
+#include "base/cell.h"
 #include "templates/reflist.h"
+
+// Forward Declarations
+class PartitioningScheme;
 
 // Disordered builder window
 class DisorderWizard : public QWizard
@@ -46,12 +50,16 @@ class DisorderWizard : public QWizard
 	void updateComponentData();
 	private slots:
 	void pageChanged(int id);
-	private slots:
+	void rejected();
+	void accepted();
 	// Step 1 / 5 - Select target model type
 	void on_TargetExistingRadio_clicked(bool checked);
 	void on_TargetNewRadio_clicked(bool checked);
 	void on_TargetGenerateRadio_clicked(bool checked);
 	// Step 2 / 5 - Select model or define unit cell
+	void on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void setCellAbsolute(double value);
+	void setCellRelative(double value);
 	// Step 3 / 5 - Select partitioning scheme for cell
 	void on_PartitionSchemeOptionsButton_clicked(bool checked);
 	// Step 4 / 5 - Select component models
@@ -64,13 +72,25 @@ class DisorderWizard : public QWizard
 	void on_ComponentAllowTranslationsCheck_clicked(bool checked);
 	void on_ComponentTargetPartitionCombo_currentIndexChanged(int index);
 	
+	
 	/*
 	// Local variables
 	*/
 	private:
 	// Target model type
 	DisorderWizard::TargetModelType targetType_;
-		
+	// Target model for existing model runs
+	Model *targetModel_;
+	// Target model for new model runs
+	Model *newModel_;
+	// Selected partitioning scheme
+	PartitioningScheme *partitioningScheme_;
+	
+	public:
+	// Return currently-selected partitioning scheme
+	PartitioningScheme *partitioningScheme();
+	
+
 	/*
 	// Dialog
 	*/

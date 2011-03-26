@@ -94,6 +94,8 @@ class UnitCell
 	void setLength(int i, double d);
 	// Set individual angle
 	void setAngle(int i, double d);
+	// Set all angles simultaneously
+	void setAngles(const Vec3<double> &angles);
 	// Set / adjust individual parameter
 	void setParameter(UnitCell::CellParameter cp, double value, bool adjust = FALSE);
 	// Return the type of cell

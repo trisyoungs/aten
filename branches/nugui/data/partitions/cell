@@ -1,0 +1,30 @@
+# Example partition definition for Aten
+# Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 ub a cubuc cell.
+# Shearing / scaling of all coordinates is performed internally by Aten when necessary.
+
+#
+# Name / Description
+#
+// Two simple functions which return the name and description of the partitioning scheme
+string name() { return "Cell"; }
+string description() { return "Whole cell"; }
+
+# Every partition definition *must* contain a 'partition' function
+# When constructing the insertion grid, Aten will call this function to determine which points on the grid fall within which partitions.
+# Unit cell coordinates are always given. The function should return the integer ID number of the partition in which the point
+# falls, or zero to mean the point falls in no partition at all (i.e. it is elsewhere in the cell)
+int partition(double x, double y, double z)
+{
+	return 0;
+}
+
+string partitionname(int id)
+{
+	switch(id)
+	{
+		case (0):
+			return "Unit Cell";
+		default:
+			return "UNKNOWN";
+	}
+}
