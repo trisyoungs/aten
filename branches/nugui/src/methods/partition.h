@@ -107,6 +107,10 @@ class PartitioningScheme
 	const char *name();
 	// Return description of partitioning scheme
 	const char *description();
+	// Return whether the partition function has any user-definable options
+	bool hasOptions();
+	// Execute dialog for user-definable options in partition function
+	bool runOptions();
 
 
 	/*
@@ -127,6 +131,8 @@ class PartitioningScheme
 	int nPartitions();
 	// Return list object containing partition information
 	List<PartitionData> &partitions();
+	// Return the grid structure
+	Grid &grid();
 	// Return icon containing illustrative partitions
 	QIcon &icon();
 };

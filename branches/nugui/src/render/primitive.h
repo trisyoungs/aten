@@ -234,7 +234,7 @@ class GridPrimitive
 {
 	public:
 	// Constructor
-	GridPrimitive();
+	GridPrimitive(Grid *source = NULL);
 	// List pointers
 	GridPrimitive *prev, *next;
 

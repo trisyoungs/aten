@@ -132,7 +132,7 @@ const char *Aten::typeExportConvert(const char *oldname) const
 */
 
 // Set the active model
-void Aten::setCurrentModel(Model *m)
+void Aten::setCurrentModel(Model *m, bool deselectOthers)
 {
 	msg.enter("Aten::setCurrentModel");
 	if (m == NULL)
@@ -147,6 +147,13 @@ void Aten::setCurrentModel(Model *m)
 	current.p = m->patterns();
 	current.g = m->grids();
 	current.i = NULL;
+	// Deselect all other models if specified
+	if (deselectOthers)
+	{
+		visibleModels_.clear();
+		// Add to visible list
+		visibleModels_.add(m);
+	}
 	msg.exit("Aten::setCurrentModel");
 }
 

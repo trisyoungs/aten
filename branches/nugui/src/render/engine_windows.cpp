@@ -225,13 +225,43 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 	}
 
 	// Disorder Wizard
-	if ((gui.disorderWizard->isVisible()) && (gui.disorderWizard->currentId() < 3))
+	static List<GridPrimitive> disorderGridPrimitives_;
+	disorderGridPrimitives_.clear();
+	if ((gui.disorderWizard->isVisible()) && (gui.disorderWizard->currentId() > 2))
 	{
 		// Get currently-selected partitioning scheme
 		PartitioningScheme *ps = gui.disorderWizard->partitioningScheme();
 		if (ps != NULL)
 		{
-			// Grab the grid structure from 
+			// Grab the grid structure and list of partitions from the scheme
+			List<PartitionData> &partitions = ps->partitions();
+			Grid &grid = ps->grid();
+
+			for (PartitionData *pd = partitions.first(); pd != NULL; pd = pd->next)
+			{
+				if (pd->id() == 0) continue;
+				
+				colour[0] = 0.0;	//TGAY
+				colour[1] = 0.0;
+				colour[2] = 0.0;
+				colour[3] = 1.0;
+				prefs.copyColour(Prefs::VibrationArrowColour, colour);
+				// Construct a surface for each partition in the model (except 0 == unit cell)
+				GridPrimitive *prim = disorderGridPrimitives_.add();
+				prim->setSource(&ps->grid());
+				
+				Matrix mat = gui.disorderWizard->cell()->axes();
+				Vec3<int> npoints = grid.nPoints();
+				mat.applyScaling(1.0/npoints.x, 1.0/npoints.y, 1.0/npoints.z);
+				mat.print();
+				grid.setAxes(mat);
+				grid.setLowerPrimaryCutoff(pd->id()-0.5);
+				grid.setUpperPrimaryCutoff(pd->id()+0.5);
+				prim->createSurfaceMarchingCubes();
+				A = baseTransform;
+				A.multiplyRotation(mat);
+				renderPrimitive(&prim->primaryPrimitive(), TRUE, colour, A, GL_FILL);
+			}
 		}
 	}
 }

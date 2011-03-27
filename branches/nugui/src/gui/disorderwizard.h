@@ -47,7 +47,9 @@ class DisorderWizard : public QWizard
 	public:
 	int run();
 	private:
-	void updateComponentData();
+	void setComponentData(Model *data);
+	void updateComponentControls();
+	void setPartitionData(QTreeWidgetItem *target, PartitioningScheme *data);
 	private slots:
 	void pageChanged(int id);
 	void rejected();
@@ -62,8 +64,10 @@ class DisorderWizard : public QWizard
 	void setCellRelative(double value);
 	// Step 3 / 5 - Select partitioning scheme for cell
 	void on_PartitionSchemeOptionsButton_clicked(bool checked);
+	void on_PartitionTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 	// Step 4 / 5 - Select component models
 	// Step 5 / 5 - Select component populations and partition assignments
+	void on_EditComponentsTablecurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 	void on_ComponentPopulationSpin_valueChanged(int value);
 	void on_ComponentBulkCheck_clicked(bool checked);
 	void on_ComponentDensitySpin_valueChanged(double value);
@@ -77,19 +81,29 @@ class DisorderWizard : public QWizard
 	// Local variables
 	*/
 	private:
+	// Whether the windos is currently refreshing controls
+	bool refreshing_;
 	// Target model type
 	DisorderWizard::TargetModelType targetType_;
 	// Target model for existing model runs
-	Model *targetModel_;
+	Model *existingModel_;
 	// Target model for new model runs
 	Model *newModel_;
 	// Selected partitioning scheme
 	PartitioningScheme *partitioningScheme_;
+	// Reflist of tree items and partitioning schemes
+	Reflist<QTreeWidgetItem, PartitioningScheme*> partitioningSchemeItems_;
+	// Current component (Model*) editing target
+	Model *componentTarget_;
+	// Reflist of tree items and selected model components
+	Reflist<QTreeWidgetItem, Model*> componentModelItems_;
 	
 	public:
 	// Return currently-selected partitioning scheme
 	PartitioningScheme *partitioningScheme();
-	
+	// Return relevant unit cell
+	UnitCell *cell();
+
 
 	/*
 	// Dialog

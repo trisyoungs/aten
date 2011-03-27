@@ -936,7 +936,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QTreeWidget" name="AllComponentsTree">
+     <widget class="QTreeWidget" name="ChooseComponentsTree">
       <property name="mouseTracking">
        <bool>true</bool>
       </property>
@@ -1001,7 +1001,7 @@
      <number>2</number>
     </property>
     <item>
-     <widget class="QTreeWidget" name="ComponentsTree_2">
+     <widget class="QTreeWidget" name="EditComponentsTree">
       <property name="mouseTracking">
        <bool>true</bool>
       </property>
@@ -1018,7 +1018,7 @@
        <bool>true</bool>
       </property>
       <property name="selectionMode">
-       <enum>QAbstractItemView::ExtendedSelection</enum>
+       <enum>QAbstractItemView::SingleSelection</enum>
       </property>
       <property name="iconSize">
        <size>

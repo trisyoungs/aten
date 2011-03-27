@@ -62,21 +62,55 @@ int DisorderWizard::run()
 	ui.TargetNewRadio->setChecked(nperiodic == 0);
 	ui.TargetExistingRadio->setChecked(nperiodic != 0);
 	targetType_ = nperiodic == 0 ? DisorderWizard::NewTarget : DisorderWizard::ExistingTarget;
-	targetModel_ = NULL;
+	existingModel_ = NULL;
 	newModel_ = NULL;
 	partitioningScheme_ = NULL;
+	componentTarget_ = NULL;
+	refreshing_ = FALSE;
 	return exec();
 }
 
 // Update component data shown for current component
-void DisorderWizard::updateComponentData()
+void DisorderWizard::setComponentData(Model *m)
 {
+	// Find the corresponding QTreeWidgetItem
+	Refitem<QTreeWidgetItem, Model*> *ri = componentModelItems_.containsData(m);
+	if (ri == NULL) return;
+	ri->item->setIcon(0, m->icon());
+	Dnchar text(-1,"%s\n", m->name());	//TGAY
+	ri->item->setText(1, text.get());
+	ri->item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
+}
+
+void DisorderWizard::updateComponentControls()
+{
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	refreshing_ = TRUE;
+	ui.ComponentBulkCheck->setChecked(componentTarget_->componentIsBulk());
+	ui.ComponentPopulationSpin->setValue(componentTarget_->componentPopulation());
+	ui.ComponentPopulationSpin->setDisabled(componentTarget_->componentIsBulk());
+	ui.ComponentFreeDensityCheck->setChecked(componentTarget_->componentHasFreeDensity());
+	ui.ComponentDensitySpin->setValue(componentTarget_->componentDensity());
+	ui.ComponentDensitySpin->setDisabled(componentTarget_->componentHasFreeDensity());
+	
+	refreshing_ = FALSE;
+}
+
+// Update data in specified TTreeWidgetItem (from supplied data)
+void DisorderWizard::setPartitionData(QTreeWidgetItem *target, PartitioningScheme *ps)
+{
+	target->setIcon(0,ps->icon());
+	Dnchar text(-1,"%s\n%s\nNumber of partitions = %i\n", ps->name(), ps->description(), ps->nPartitions());
+	target->setText(1,text.get());
+	target->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 }
 
 // Different page selected in the wizard...
 void DisorderWizard::pageChanged(int id)
 {
 	TTreeWidgetItem *item, *selectitem;
+	QTreeWidgetItem *qitem;
+	Model *m;
 	int count;
 	switch (id)
 	{
@@ -89,6 +123,7 @@ void DisorderWizard::pageChanged(int id)
 				gui.update(GuiQt::AllTarget);
 				newModel_ = NULL;
 			}
+			existingModel_ = NULL;
 			break;
 		// Step 2 / 5 - Select model or define unit cell
 		case (2):
@@ -96,6 +131,7 @@ void DisorderWizard::pageChanged(int id)
 			if (targetType_ != DisorderWizard::ExistingTarget)
 			{
 				newModel_ = aten.addModel();
+				aten.setCurrentModel(newModel_, TRUE);
 				gui.update(GuiQt::AllTarget);
 			}
 			
@@ -107,7 +143,8 @@ void DisorderWizard::pageChanged(int id)
 			{
 				ui.ExistingModelTree->clear();
 				ui.ExistingModelTree->setColumnCount(2);
-				for (Model *m = aten.models(); m != NULL; m = m->next)
+				selectitem = NULL;
+				for (m = aten.models(); m != NULL; m = m->next)
 				{
 					if (m->cell()->type() == UnitCell::NoCell) continue;
 					item = new TTreeWidgetItem(ui.ExistingModelTree);
@@ -115,7 +152,7 @@ void DisorderWizard::pageChanged(int id)
 					item->setIcon(0,m->icon());
 					item->setText(1,m->name());
 					item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
-					if (m == aten.models()) selectitem = item;
+					if (selectitem == NULL) selectitem = item;
 				}
 				ui.ExistingModelTree->resizeColumnToContents(0);
 				ui.ExistingModelTree->resizeColumnToContents(1);
@@ -126,28 +163,65 @@ void DisorderWizard::pageChanged(int id)
 		case (3):
 			ui.PartitionTree->clear();
 			ui.PartitionTree->setColumnCount(2);
-			count = 0;
+			partitioningSchemeItems_.clear();
+			selectitem = NULL;
 			for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
 			{
 				// Update grid and icon for PartitioningScheme
 				ps->updatePartitions(TRUE);
-				item = new TTreeWidgetItem(ui.PartitionTree);
-				item->data.set(VTypes::IntegerData, count);
-				item->setIcon(0,ps->icon());
-				Dnchar text(-1,"%s\n%s\nNumber of partitions = %i\n", ps->name(), ps->description(), ps->nPartitions());
-				item->setText(1,text.get());
-				item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
-				++count;
+				qitem = new QTreeWidgetItem(ui.PartitionTree);
+				partitioningSchemeItems_.add(qitem, ps);
+				setPartitionData(qitem,ps);
+				if (selectitem == NULL) selectitem = item;
 			}
 			ui.PartitionTree->resizeColumnToContents(0);
 			ui.PartitionTree->resizeColumnToContents(1);
-			ui.PartitionTree->setCurrentItem(0);
+			ui.PartitionTree->setCurrentItem(selectitem);
 			break;
 		// Step 4 / 5 - Select component models
 		case (4):
+			ui.ChooseComponentsTree->clear();
+			ui.ChooseComponentsTree->setColumnCount(2);
+			for (m = aten.models(); m != NULL; m = m->next)
+			{
+				if (m->cell()->type() != UnitCell::NoCell) continue;
+				item = new TTreeWidgetItem(ui.ChooseComponentsTree);
+				item->data.set(VTypes::ModelData, m);
+				item->setIcon(0,m->icon());
+				item->setText(1,m->name());
+				item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
+			}
+			ui.ChooseComponentsTree->resizeColumnToContents(0);
+			ui.ChooseComponentsTree->resizeColumnToContents(1);
 			break;
 		// Step 5 / 5 - Select component populations and partition assignments
 		case (5):
+			// Flag all components as not required except those selected in the ChooseComponentsTree
+			for (m = aten.models(); m != NULL; m = m->next) m->setComponentIsRequired(FALSE);
+			ui.EditComponentsTree->clear();
+			ui.EditComponentsTree->setColumnCount(2);
+			componentModelItems_.clear();
+			selectitem = NULL;
+			foreach (QTreeWidgetItem *qtwi, ui.ChooseComponentsTree->selectedItems())
+			{
+				TTreeWidgetItem *twi = (TTreeWidgetItem*) qtwi;
+				m = (Model*) twi->data.asPointer(VTypes::ModelData);
+				if (m == NULL)
+				{
+					printf("Error: Found a NULL model reference when populating EditComponentsTree.\n");
+					continue;
+				}
+				m->setComponentIsRequired(TRUE);
+				item = new TTreeWidgetItem(ui.EditComponentsTree);
+				item->data.set(VTypes::ModelData, m);
+				componentModelItems_.add(item, m);
+				setComponentData(m);
+				if (selectitem == NULL) selectitem = item;
+			}
+			ui.EditComponentsTree->resizeColumnToContents(0);
+			ui.EditComponentsTree->resizeColumnToContents(1);
+			ui.EditComponentsTree->setCurrentItem(selectitem);
+			updateComponentControls();
 			break;
 	}
 }
@@ -155,6 +229,14 @@ void DisorderWizard::pageChanged(int id)
 void DisorderWizard::rejected()
 {
 	printf("REJECTED\n");
+	// If a new model was created, remove it here
+	if (newModel_ != NULL)
+	{
+		aten.removeModel(newModel_);
+		newModel_ = NULL;
+	}
+	existingModel_ = NULL;
+	printf("CLEANUP DONE\n");
 }
 
 void DisorderWizard::accepted()
@@ -189,9 +271,10 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *cu
 {
 	if (current == NULL) return;
 	TTreeWidgetItem *twi = (TTreeWidgetItem*) current;
-	targetModel_ = (Model*) twi->data.asPointer(VTypes::ModelData);
-	if (targetModel_ == NULL) return;
-	aten.setCurrentModel(targetModel_);
+	existingModel_ = (Model*) twi->data.asPointer(VTypes::ModelData);
+	if (existingModel_ == NULL) return;
+	aten.setCurrentModel(existingModel_, TRUE);
+	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Visual);
 	gui.update(GuiQt::AllTarget);
 }
 
@@ -217,46 +300,96 @@ void DisorderWizard::setCellRelative(double value)
 		gui.update(GuiQt::CanvasTarget+GuiQt::CellTarget);
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
-
 }
 
 /*
 // Step 3 / 5 - Select partitioning scheme for cell
 */
 
+void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	if (current == NULL) return;
+	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.contains(current);
+	if (ri == NULL) return;
+	partitioningScheme_ = ri->data;
+	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Visual);
+	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Visual);
+	gui.update(GuiQt::CanvasTarget);
+	// Enable/disable options button based on presence of custom dialog widgets...
+	ui.PartitionSchemeOptionsButton->setEnabled(partitioningScheme_->hasOptions());
+}
+
 void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 {
+	// Run custom dialog for scheme
+	if (partitioningScheme_ == NULL) return;
+	partitioningScheme_->runOptions();
+	partitioningScheme_->updatePartitions(TRUE);
+	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.containsData(partitioningScheme_);
+	if (ri == NULL) return;
+	setPartitionData(ri->item, ri->data);
 }
 
 // Step 4 / 5 - Select component models
 
 // Step 5 / 5 - Select component populations and partition assignments
+
+void DisorderWizard::on_EditComponentsTablecurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	Refitem<QTreeWidgetItem, Model*> *ri = componentModelItems_.contains(current);
+	if (ri == NULL) return;
+	componentTarget_ = ri->data;
+	updateComponentControls();
+}
+
 void DisorderWizard::on_ComponentPopulationSpin_valueChanged(int value)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	componentTarget_->setComponentPopulation(value);
+	setComponentData(componentTarget_);
 }
 
 void DisorderWizard::on_ComponentBulkCheck_clicked(bool checked)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	componentTarget_->setComponentIsBulk(checked);
+	setComponentData(componentTarget_);
+	
 }
 
 void DisorderWizard::on_ComponentDensitySpin_valueChanged(double value)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	componentTarget_->setComponentDensity(value);
+	setComponentData(componentTarget_);
 }
 
 void DisorderWizard::on_ComponentFreeDensityCheck_clicked(bool checked)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	componentTarget_->setComponentHasFreeDensity(checked);
+	setComponentData(componentTarget_);
 }
 
 void DisorderWizard::on_ComponentAllowRotationsCheck_clicked(bool checked)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	componentTarget_->setComponentMoveAllowed(MonteCarlo::Rotation, checked);
+	setComponentData(componentTarget_);
 }
 
 void DisorderWizard::on_ComponentAllowTranslationsCheck_clicked(bool checked)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	componentTarget_->setComponentMoveAllowed(MonteCarlo::Translate, checked);
+	setComponentData(componentTarget_);
 }
 
 void DisorderWizard::on_ComponentTargetPartitionCombo_currentIndexChanged(int index)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	componentTarget_->setComponentPartition(index);
+	setComponentData(componentTarget_);
 }
 
 /*
@@ -267,4 +400,27 @@ void DisorderWizard::on_ComponentTargetPartitionCombo_currentIndexChanged(int in
 PartitioningScheme *DisorderWizard::partitioningScheme()
 {
 	return partitioningScheme_;
+}
+
+// Return relevant unit cell
+UnitCell *DisorderWizard::cell()
+{
+	if (targetType_ == DisorderWizard::ExistingTarget)
+	{
+		if (existingModel_ == NULL)
+		{
+			printf("Internal Error: DisorderWizard was asked for a cell when no existing model had been set.\n");
+			return NULL;
+		}
+		else return existingModel_->cell();
+	}
+	else
+	{
+		if (newModel_ == NULL)
+		{
+			printf("Internal Error: DisorderWizard was asked for a cell when no new model had been set.\n");
+			return NULL;
+		}
+		else return newModel_->cell();
+	}
 }

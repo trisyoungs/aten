@@ -81,7 +81,7 @@ class Aten
 	// Return list of working models
 	Model *workingModels() const;
 	// Sets the current active model for editing
-	void setCurrentModel(Model*);
+	void setCurrentModel(Model *m, bool deselectOthers = FALSE);
 	// Return current active model for editing
 	Model *currentModel() const;
 	// Return current active model for editing, accounting for trajectory frames
@@ -208,6 +208,8 @@ class Aten
 	void recalculatePartitions() const;
 	// Return first partitioning scheme in the list
 	PartitioningScheme *partitioningSchemes();
+	// Return nth partitioning scheme in the list
+	PartitioningScheme *partitioningSchemes(int index);
 
 
 	/*

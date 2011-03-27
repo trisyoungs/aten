@@ -156,3 +156,9 @@ PartitioningScheme *Aten::partitioningSchemes()
 {
 	return partitioningSchemes_.first();
 }
+
+// Return nth partitioning scheme in the list
+PartitioningScheme *Aten::partitioningSchemes(int index)
+{
+	return partitioningSchemes_[index];
+}

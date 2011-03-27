@@ -164,6 +164,20 @@ const char *PartitioningScheme::description()
 	return description_.get();
 }
 
+// Return whether the partition function has any user-definable options
+bool PartitioningScheme::hasOptions()
+{
+	if (partitionFunction_ == NULL) return FALSE;
+	return (partitionFunction_->widgets() ? TRUE : FALSE);
+}
+
+// Execute dialog for user-definable options in partition function
+bool PartitioningScheme::runOptions()
+{
+	if (partitionFunction_ == NULL) return FALSE;
+	return partitionFunction_->executeCustomDialog();
+}
+
 // Update partition information (after load or change in options)
 void PartitioningScheme::updatePartitions(bool generateIcon)
 {
@@ -187,50 +201,46 @@ void PartitioningScheme::updatePartitions(bool generateIcon)
 	UserCommandNode pf(partitionFunction_);
 	pf.setParent(&tree);
 	List<TreeNode> args;
-	TreeNode *xvar = new DoubleVariable(x, TRUE);
-	TreeNode *yvar = new DoubleVariable(y, TRUE);
-	TreeNode *zvar = new DoubleVariable(z, TRUE);
+	DoubleVariable *xvar = new DoubleVariable(x, FALSE);
+	DoubleVariable *yvar = new DoubleVariable(y, FALSE);
+	DoubleVariable *zvar = new DoubleVariable(z, FALSE);
 	args.own(xvar);
 	args.own(yvar);
 	args.own(zvar);
 	pf.addListArguments(args.first());
 
-
 	// Okay, do the calculation
 	x = 0.5*dx;
 	for (i=0; i<npoints.x; ++i)
 	{
+		xvar->setFromDouble(x);
 		y = 0.5*dy;
 		for (j=0; j<npoints.y; ++j)
 		{
+			yvar->setFromDouble(y);
 			z = 0.5*dz;
 			for (k=0; k<npoints.z; ++k)
 			{
+				zvar->setFromDouble(z);
 				// Get integer id of the partition at this location
 				success = pf.execute(rv);
-// 				success = UserCommandNode::run(partitionFunction_, rv, args.first());
-// 				success = schemeDefinition_.executeGlobalFunction("partition", rv, "ddd", x, y, z);
 				pid = rv.asInteger();
 				if (pid < 0)
 				{
 					pflags[abs(pid)] = 1;
 					pflags[0] = 1;
-					data[i][j][k] = abs(pid)+0.5;
+					data[i][j][k] = abs(pid);
 				}
 				else
 				{
 					pflags[pid] = 1;
-					data[i][j][k] = pid+0.5;
+					data[i][j][k] = pid;
 				}
-				
 				z += dz;
-// 				zvar->setFromDouble(z);
 			}
 			y += dy;
-// 			yvar->setFromDouble(y);
 		}
 		x += dx;
-// 		xvar->setFromDouble(x);
 	}
 	
 	// How many partitions did we discover?
@@ -240,6 +250,7 @@ void PartitioningScheme::updatePartitions(bool generateIcon)
 		if (pflags[n] == 0) continue;
 		PartitionData *pd = partitions_.add();
 		pd->setId(n);
+		printf("Found partition %i\n", n);
 	}
 	
 	msg.exit("PartitioningScheme::updatePartitions");
@@ -255,6 +266,12 @@ int PartitioningScheme::nPartitions()
 List<PartitionData> &PartitioningScheme::partitions()
 {
 	return partitions_;
+}
+
+// Return the grid structure
+Grid &PartitioningScheme::grid()
+{
+	return grid_;
 }
 
 // Return icon containing illustrative partitions
