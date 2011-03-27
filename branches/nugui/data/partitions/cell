@@ -2,9 +2,7 @@
 # Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 ub a cubuc cell.
 # Shearing / scaling of all coordinates is performed internally by Aten when necessary.
 
-#
 # Name / Description
-#
 // Two simple functions which return the name and description of the partitioning scheme
 string name() { return "Cell"; }
 string description() { return "Whole cell"; }
@@ -27,4 +25,9 @@ string partitionname(int id)
 		default:
 			return "UNKNOWN";
 	}
+}
+
+int maxpartitions()
+{
+	return 1;
 }

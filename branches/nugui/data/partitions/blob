@@ -2,9 +2,7 @@
 # Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 ub a cubuc cell.
 # Shearing / scaling of all coordinates is performed internally by Aten when necessary.
 
-#
 # Name / Description
-#
 // Two simple functions which return the name and description of the partitioning scheme
 string name() { return "Blob"; }
 string description() { return "Simple spherical region"; }
@@ -13,6 +11,7 @@ string description() { return "Simple spherical region"; }
 # When constructing the insertion grid, Aten will call this function to determine which points on the grid fall within which partitions.
 # Unit cell coordinates are always given. The function should return the integer ID number of the partition in which the point
 # falls, or zero to mean the point falls in no partition at all (i.e. it is elsewhere in the cell)
+# Partitions *must* be numbered consecutively from zero upwards.
 int partition(double x, double y, double z)
 {
 	// Variables should be listed here using the 'options' keyword (so that they may be displayed in the GUI
@@ -42,3 +41,9 @@ string partitionname(int id)
 			return "UNKNOWN";
 	}
 }
+
+int maxpartitions()
+{
+	return 2;
+}
+

@@ -27,19 +27,22 @@
 #include "render/primitive.h"
 #include "parser/program.h"
 
-#define CELLCHUNKSIZE 100
+#define CELLCHUNKSIZE 1000
 
 // Partition Cell Data
 class PartitionCellData
 {
+	public:
 	// Constructor
 	PartitionCellData();
-	
-	public:
 	// List pointers
 	PartitionCellData *next, *prev;
+
+	public:
 	// Data
 	int data[CELLCHUNKSIZE*3];
+	// Position of next data to be added
+	int dataPos;
 };
 
 // Partition Data
@@ -61,14 +64,32 @@ class PartitionData
 	int nCells_;
 	// List of basic coordinates of cells
 	List<PartitionCellData> cells_;
-	// Primitive containing parition data for rendering
-	GridPrimitive partitionPrimitive_;
-
+	// Pointer to current PartitionCellData
+	PartitionCellData *currentCellChunk_;
+	// Volume of partition
+	double volume_;
+	// Current reduced atomic mass present in partition
+	double reducedMass_;
+	
 	public:
 	// Set id of partition
 	void setId(int id);
 	// Return id of partition
 	int id();
+	// Clear cells list
+	void clear();
+	// Add cell to list
+	void addCell(int ix, int iy, int iz);
+	// Return random cell from list
+	int *randomCell();
+	// Calculate volume based on supplied volume element
+	void calculateVolume(double velement);
+	// Return volume of partition
+	double volume();
+	// Adjust partition reduced mass contents
+	void adjustReducedMass(Model *source, bool subtract = FALSE);
+	// Return current density of partition
+	double density();
 };
 
 // Partitioning Scheme for Disordered Builder
@@ -117,7 +138,7 @@ class PartitioningScheme
 	// Partition Data
 	*/
 	private:
-	// List of partitions (generated from last call to updatePartitions)
+	// List of all possible partitions in scheme
 	List<PartitionData> partitions_;
 	// Grid structure holding illustrative partition data
 	Grid grid_;
@@ -126,9 +147,11 @@ class PartitioningScheme
 	
 	public:
 	// Update partition information (after load or change in options)
-	void updatePartitions(bool generateIcon);
+	void updatePartitions(int nx, int ny, int nz, bool createGrid);
 	// Return number of partitions now recognised in grid
 	int nPartitions();
+	// Return partition in which simple (unit) coordinate falls
+	int partitionId(double x, double y, double z);
 	// Return list object containing partition information
 	List<PartitionData> &partitions();
 	// Return the grid structure

@@ -25,14 +25,21 @@
 #include "model/model.h"
 #include "methods/mc.h"
 
-// Performs MC insertion ('disorder <ncycles>')
+// Performs MC insertion ('disorder <scheme>')
 bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	// Find the specified scheme
+	PartitioningScheme *scheme;
+	for (scheme = aten.partitioningSchemes(); scheme != NULL; scheme = scheme->next) if (strcmp(c->argc(0), scheme->name()) == 0) break;
+	if (scheme == NULL) 
+	{
+		msg.print("Error: Can't find scheme '%s'.\n", c->argc(0));
+		return FALSE;
+	}
 	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
-	mc.setNCycles(c->argi(0));
 	rv.reset();
-	if (!mc.disorder(obj.m)) return FALSE;
+	if (!mc.disorder(obj.m, scheme)) return FALSE;
 	return TRUE;
 }
 

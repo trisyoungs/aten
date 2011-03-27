@@ -22,6 +22,8 @@
 #include "methods/partition.h"
 #include "parser/double.h"
 #include "parser/usercommandnode.h"
+#include "model/model.h"
+#include "base/mathfunc.h"
 
 /*
 // Partition Cell Data
@@ -32,6 +34,7 @@ PartitionCellData::PartitionCellData()
 {
 	next = NULL;
 	prev = NULL;
+	dataPos = 0;
 }
 
 /*
@@ -48,6 +51,7 @@ PartitionData::PartitionData()
 	// Private variables
 	id_ = -1;
 	nCells_ = 0;
+	currentCellChunk_ = NULL;
 }
 
 // Set id of partition
@@ -60,6 +64,61 @@ void PartitionData::setId(int id)
 int PartitionData::id()
 {
 	return id_;
+}
+
+// Clear cells list
+void PartitionData::clear()
+{
+	cells_.clear();
+	nCells_ = 0;
+	volume_ = 0.0;
+	reducedMass_ = 0.0;
+}
+
+// Add cell to list
+void PartitionData::addCell(int ix, int iy, int iz)
+{
+	if (currentCellChunk_ == NULL) currentCellChunk_ = cells_.add();
+	else if (currentCellChunk_->dataPos == CELLCHUNKSIZE*3) currentCellChunk_ = cells_.add();
+	currentCellChunk_->data[currentCellChunk_->dataPos] = ix;
+	currentCellChunk_->data[currentCellChunk_->dataPos+1] = iy;
+	currentCellChunk_->data[currentCellChunk_->dataPos+2] = iz;
+	currentCellChunk_->dataPos += 3;
+	++nCells_;
+}
+
+// Return random cell from list
+int *PartitionData::randomCell()
+{
+	// Generate random number between 0 and nCells_-1
+	int id = AtenMath::randomi(nCells_);
+	int listid = id/CELLCHUNKSIZE;
+	return &cells_[id/CELLCHUNKSIZE]->data[(id%CELLCHUNKSIZE)*3];
+}
+
+// Calculate volume based on supplied volume element
+void PartitionData::calculateVolume(double velement)
+{
+	volume_ = nCells_ * velement;
+}
+
+// Return volume of partition
+double PartitionData::volume()
+{
+	return volume_;
+}
+
+// Adjust partition density based on supplied model
+void PartitionData::adjustReducedMass(Model *source, bool subtract)
+{
+	if (subtract) reducedMass_ -= source->mass() / AVOGADRO;
+	else reducedMass_ += source->mass() / AVOGADRO;
+}
+
+// Return current density of partition
+double PartitionData::density()
+{
+	return reducedMass_ / (volume_ * 1.0E-24);
 }
 
 /*
@@ -148,6 +207,25 @@ bool PartitioningScheme::initialise()
 		return FALSE;
 	}
 
+	// Locate 'maxpartitions' function
+	func = schemeDefinition_.findGlobalFunction("maxpartitions");
+	if (func) msg.print(Messenger::Verbose, "  --> Found 'maxpartitions' function in partitioning scheme '%s'.\n", name_.get());
+	else
+	{
+		msg.print("Error: No 'maxpartitions' function defined in partitioning scheme '%s'\n", name_.get());
+		msg.exit("PartitioningScheme::initialise");
+		return FALSE;
+	}
+	bool success = func->execute(rv);
+	int maxparts = rv.asInteger();
+	if (maxparts < 1)
+	{
+		msg.print("Error: Invalid 'maxpartitions' (%i) returned by partitioning scheme '%s'\n", maxparts, name_.get());
+		msg.exit("PartitioningScheme::initialise");
+		return FALSE;
+	}
+	partitions_.clear();
+	
 	msg.exit("PartitioningScheme::initialise");
 	return TRUE;
 }
@@ -179,16 +257,21 @@ bool PartitioningScheme::runOptions()
 }
 
 // Update partition information (after load or change in options)
-void PartitioningScheme::updatePartitions(bool generateIcon)
+void PartitioningScheme::updatePartitions(int nx, int ny, int nz, bool createGrid)
 {
 	msg.enter("PartitioningScheme::updatePartitions");
 	
 	// Recalculate grid points (and icon if requested)
-	Vec3<int> npoints(50,50,50);
-	grid_.initialise(Grid::RegularXYZData, npoints);
-	double ***data = grid_.data3d();
-	int pflags[100];
-	for (int n=0; n<100; ++n) pflags[n] = 0;
+	Vec3<int> npoints(nx,ny,nz);
+	double ***data;
+	if (createGrid)
+	{
+		grid_.initialise(Grid::RegularXYZData, npoints);
+		data = grid_.data3d();
+	}
+	// Clear partition data
+	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next) pd->clear();
+
 	ReturnValue rv;
 	bool success;
 	int i, j, k, pid;
@@ -225,34 +308,16 @@ void PartitioningScheme::updatePartitions(bool generateIcon)
 				// Get integer id of the partition at this location
 				success = pf.execute(rv);
 				pid = rv.asInteger();
-				if (pid < 0)
-				{
-					pflags[abs(pid)] = 1;
-					pflags[0] = 1;
-					data[i][j][k] = abs(pid);
-				}
-				else
-				{
-					pflags[pid] = 1;
-					data[i][j][k] = pid;
-				}
+				
+				if (createGrid) data[i][j][k] = pid;
+				else partitions_[pid]->addCell(i,j,k);
 				z += dz;
 			}
 			y += dy;
 		}
 		x += dx;
 	}
-	
-	// How many partitions did we discover?
-	partitions_.clear();
-	for (int n=0; n<100; ++n)
-	{
-		if (pflags[n] == 0) continue;
-		PartitionData *pd = partitions_.add();
-		pd->setId(n);
-		printf("Found partition %i\n", n);
-	}
-	
+
 	msg.exit("PartitioningScheme::updatePartitions");
 }
 

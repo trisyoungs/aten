@@ -442,6 +442,14 @@ void Model::copy(Model *srcmodel)
 	for (Bond *b = srcmodel->bonds(); b != NULL; b = b->next) bondAtoms(b->atomI()->id(), b->atomJ()->id(), b->type());
 	// Copy unit cell
 	cell_ = srcmodel->cell_;
+	// Copy component information
+	componentDensity_ = srcmodel->componentDensity_;
+	componentHasFreeDensity_ = srcmodel->componentHasFreeDensity_;
+	componentPartition_ = srcmodel->componentPartition_;
+	componentPopulation_ = srcmodel->componentPopulation_;
+	componentIsBulk_ = srcmodel->componentIsBulk_;
+	componentIsRequired_ = srcmodel->componentIsRequired_;
+	for (int n = 0; n < MonteCarlo::nMoveTypes; ++n) componentMoveAllowed_[n] = srcmodel->componentMoveAllowed_[n];
 }
 
 // Copy atom data from specified model

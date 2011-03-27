@@ -430,8 +430,8 @@ CommandData Command::data[Command::nCommands] = {
 		"Set the value for an existing colourscale point" },
 
 	// Disordered Builder Commands
-	{ "disorder",		"N",		VTypes::NoData,
-		"int nsteps",
+	{ "disorder",		"C",		VTypes::IntegerData,
+		"string schemename",
 		"Run the disordered builder" },
 	{ "listcomponents",	"",		VTypes::NoData,
 		"",

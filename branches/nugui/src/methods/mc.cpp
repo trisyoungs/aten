@@ -333,416 +333,477 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	return TRUE;
 }
 
-// MC Insertion
-bool MonteCarlo::disorder(Model *destmodel)
+// Disorder Builder
+bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme)
 {
-	// Monte Carlo Insertion
 	msg.enter("MonteCarlo::disorder");
-	int n, m, cycle, move, mol, nOldAtoms, nOldPatterns;
-	int patternNMols, prog;
-	Dnchar s;
-	Refitem<Model,int> *ri;
-	Model *c;
-	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
-	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy = 0.0, referenceVdwEnergy = 0.0, referenceElecEnergy = 0.0;
-	double penalty;
-	bool done, endearly = FALSE, success;
-	UnitCell *cell;
-	Pattern *p;
-	ComponentRegion *r;
-	Vec3<double> v, cog;
-	Clipboard clip;
-	Reflist<Model,int> components;
-	double beta = 1.0 / (prefs.gasConstant() * temperature_);
-	Dnchar etatext;
+	Refitem<Model,PartitioningData*> *component;
+	PartitionData *pd;
+	Atom *i;
+	int n, id;
 
-	// Model must have a cell to continue
-	if (destmodel->cell()->type() == UnitCell::NoCell)
+	// Step 1 - Construct cell lists in scheme
+	if (scheme == NULL)
 	{
-		msg.print("Model must have a cell definition to be the target of a disordered build.\n");
+		msg.print("Error: NULL scheme pointer given to disorder builder.\n");
 		msg.exit("MonteCarlo::disorder");
 		return FALSE;
 	}
+	Vec3<int> npoints(100,100,100);
+	scheme->updatePartitions(npoints.x, npoints.y, npoints.z, FALSE);
 
-	/*
-	// Prepare the calculation
-	*/
-        // First, create expression for the current model and assign charges
-	msg.print("Creating expression for target model...\n");
-        if (!destmodel->createExpression(TRUE))
+	// Step 2 - Construct list of components with partition references, taking copies of all component models
+	Model *targetModel_ = destmodel;
+	List<Model> temporaryModels_;
+	Reflist<Model, PartitionData*> components_;
+	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		msg.exit("MonteCarlo::disorder");
-		return FALSE;
-	}
-	nOldPatterns = destmodel->nPatterns();
-	nOldAtoms = destmodel->nAtoms();
-	cell = destmodel->cell();
-	// Fix all patterns in the destmodel
-	destmodel->setPatternsFixed(destmodel->nPatterns());
-
-	// Before we add in the molecule copies, check that we can create expressions for each component (and build reflist)
-	msg.print("Checking component models...\n");
-	for (c = aten.models(); c != NULL; c = c->next)
-	{
-		// Check that this model is a required component
-		if (c->componentPopulation() == -1) continue;
-		if (c == destmodel) continue;
-		// Warn if this model is periodic
-		if (c->cell()->type() != UnitCell::NoCell) msg.print("Warning: Component model '%s' is periodic but will still be added.\n", c->name());
-		// Add this model to the component reflist
-		components.add(c);
-		// Create expression
-		if (!c->createExpression(TRUE))
+		if (!m->componentIsRequired()) continue;
+		Model *newmodel = temporaryModels_.add();
+		newmodel->copy(m);
+		// Check that we can get the requested partition
+		int id = newmodel->componentPartition();
+		if ((id < -1) || (id >= scheme->nPartitions()))
 		{
-			msg.print("Failed to create expression for component model '%s'.\n", c->name());
+			msg.print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.\n", m->name(), id, scheme->name());
 			msg.exit("MonteCarlo::disorder");
 			return FALSE;
 		}
+		components_.add(newmodel, scheme->partitions()[id]);
 	}
-
-	// Check that there were actually components specified
-	if (components.nItems() == 0)
+	if (components_.nItems() == 0)
 	{
-		msg.print("No components have been specified for insertion into the model.\n");
+		msg.print("Error: No component models selected for disorder builder.\n");
 		msg.exit("MonteCarlo::disorder");
 		return FALSE;
 	}
 
-	// Autocreate expressions for component models, paste copies in to the target model, and then add a corresponding pattern node.
-	msg.print("Preparing destination model...\n");
-	for (ri = components.first(); ri != NULL; ri = ri->next)
+	// Step 3 - Determine partition volumes and current partition densities (arising from existing model contents)
+	double volumeElement = targetModel_->cell()->volume() / (npoints.x*npoints.y*npoints.z);
+	for (pd = scheme->partitions(); pd != NULL; pd = pd->next) pd->calculateVolume(volumeElement);
+	// The target model may contain atoms already, so this must be subtracted from the relevant partitions
+	for (i = targetModel_->atoms(); i != NULL; i = i->next)
 	{
-		c = ri->item;
-		// Copy the model and paste it 'nrequested' times into destmodel
-		clip.copyAll(c);
-		if (c->componentPopulation() > 0)
-		{
-			for (mol=0; mol<c->componentPopulation(); ++mol) clip.pasteToModel(destmodel);
-			// Create a new pattern node in the destination model to cover these molecules and set it as the component's pattern
-			p = destmodel->addPattern(c->componentPopulation(), c->nAtoms(), c->name());
-			p->setNExpectedMolecules(c->componentPopulation());
-			c->setComponentPattern(p);
-			// Set the forcefield of the new pattern fo that of the source model
-			p->setForcefield(c->forcefield());
-		}
-		else c->setComponentPattern(NULL);
-        }
-
-	// Create master expression for the new (filled) model
-	destmodel->describeAtoms();
-	if (!destmodel->createExpression(TRUE))
-	{
-		msg.print("Couldn't create master expression for destination model.\n");
-		msg.exit("MonteCarlo::disorder");
-		return FALSE;
+		id = scheme->
 	}
-
-	// Set starting populations of patterns, add atom space to target model, and print out pattern list info.
-	msg.print("Pattern info for insertion to model '%s':\n", destmodel->name());
-	msg.print("  ID  nmols  atoms  starti  finali  name\n");
-	for (p = destmodel->patterns(); p != NULL; p = p->next)
+	
+	
+	for (component = components_.first(); component != NULL; component = component->next)
 	{
-		// Set nmols, starti, endi, startatom and endatom in the pattern
-		msg.print("  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMolecules(),p->nAtoms(),
-			p->startAtom()+1,p->startAtom() + p->totalAtoms(),p->name());
+// 		component->
 	}
+}
 
-	// Reset number of molecules in component patterns to zero (except those for the original patterns of the model)
-	for (p = destmodel->pattern(nOldPatterns); p != NULL; p = p->next) p->setNMolecules(0);
-
-	// Hide unused atoms to begin with
-	Atom **modelAtoms = destmodel->atomArray();
-	for (n = nOldAtoms; n < destmodel->nAtoms(); n++) modelAtoms[n]->setHidden(TRUE);
-
-	// Create a backup model
-	msg.print("Preparing workspace for maximum of %i atoms...\n", destmodel->nAtoms());
-	Model bakmodel;
-	bakmodel.copy(destmodel);
-
-	// Make sure intramolecular energy calculation is off (bound terms only)
-	bool intrastatus = prefs.calculateIntra();
-	prefs.setCalculateIntra(FALSE);
-
-	// Create array for move acceptance ratios
-	createRatioArray(destmodel->nPatterns());
-
-	// Set VDW scale ratio
-	prefs.setVdwScale(vdwScale_);
-
-	/*
-	// Calculation
-	*/
-	// Cycle through move types; try and perform nTrials_ for each; move on.
-	// For each attempt, select a random molecule in a random pattern
-	msg.print("Beginning Monte Carlo insertion...\n\n");
-	msg.print(" Step     Energy        Delta          VDW          Elec         Model        N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
-	// Calculate initial reference energies
-	ecurrent = destmodel->totalEnergy(destmodel, success);
-	if (!success)
-	{
-		msg.exit("MonteCarlo::disorder");
-		return FALSE;
-	}
-	currentVdwEnergy = destmodel->energy.vdw();
-	currentElecEnergy = destmodel->energy.electrostatic();
-
-	elast = ecurrent;
-	msg.print(" Init  %13.6e %13s %13.6e %13.6e \n", ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.electrostatic());
-
-	// Loop over MC cycles
-	gui.progressCreate("Building disordered system", nCycles_ * components.nItems());
-	prog = 0;
-	for (cycle=0; cycle<nCycles_; cycle++)
-	{
-// 		msg.print(Messenger::Verbose,"Begin cycle %i...\n",cycle);
-// 		done = TRUE;
+// // MC Insertion
+// bool MonteCarlo::disorder(Model *destmodel)
+// {
+// 	// Monte Carlo Insertion
+// 	msg.enter("MonteCarlo::disorder");
+// 	int n, m, cycle, move, mol, nOldAtoms, nOldPatterns;
+// 	int patternNMols, prog;
+// 	Dnchar s;
+// 	Refitem<Model,int> *ri;
+// 	Model *c;
+// 	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
+// 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy = 0.0, referenceVdwEnergy = 0.0, referenceElecEnergy = 0.0;
+// 	double penalty;
+// 	bool done, endearly = FALSE, success;
+// 	UnitCell *cell;
+// 	Pattern *p;
+// 	ComponentRegion *r;
+// 	Vec3<double> v, cog;
+// 	Clipboard clip;
+// 	Reflist<Model,int> components;
+// 	double beta = 1.0 / (prefs.gasConstant() * temperature_);
+// 	Dnchar etatext;
 // 
-// 		// Loop over component models searching for ones that are to be added to the target model
-// 		for (ri = components.first(); ri != NULL; ri = ri->next)
+// 	// Model must have a cell to continue
+// 	if (destmodel->cell()->type() == UnitCell::NoCell)
+// 	{
+// 		msg.print("Model must have a cell definition to be the target of a disordered build.\n");
+// 		msg.exit("MonteCarlo::disorder");
+// 		return FALSE;
+// 	}
+// 
+// 	/*
+// 	// Prepare the calculation
+// 	*/
+//         // First, create expression for the current model and assign charges
+// 	msg.print("Creating expression for target model...\n");
+//         if (!destmodel->createExpression(TRUE))
+// 	{
+// 		msg.exit("MonteCarlo::disorder");
+// 		return FALSE;
+// 	}
+// 	nOldPatterns = destmodel->nPatterns();
+// 	nOldAtoms = destmodel->nAtoms();
+// 	cell = destmodel->cell();
+// 	// Fix all patterns in the destmodel
+// 	destmodel->setPatternsFixed(destmodel->nPatterns());
+// 
+// 	// Before we add in the molecule copies, check that we can create expressions for each component (and build reflist)
+// 	msg.print("Checking component models...\n");
+// 	for (c = aten.models(); c != NULL; c = c->next)
+// 	{
+// 		// Check that this model is a required component
+// 		if (c->componentPopulation() == -1) continue;
+// 		if (c == destmodel) continue;
+// 		// Warn if this model is periodic
+// 		if (c->cell()->type() != UnitCell::NoCell) msg.print("Warning: Component model '%s' is periodic but will still be added.\n", c->name());
+// 		// Add this model to the component reflist
+// 		components.add(c);
+// 		// Create expression
+// 		if (!c->createExpression(TRUE))
 // 		{
-// 			// Get model pointer
-// 			c = ri->item;
-// 
-// 			prog ++;
-// 			if (!gui.progressUpdate(prog, &etatext)) endearly = TRUE;
-// 			if (endearly) break;
-// 
-// 			// Skip if nRequested == 0 (or c == destmodel to be sure)
-// 			if ((c->nRequested() == 0) || (c == destmodel)) continue;
-// 
-// 			// Get pointers to variables
-// 			p = c->componentPattern();
-// 			r = c->region();
-// 			msg.print(Messenger::Verbose,"Working on pattern '%s'\n",p->name());
-// 			// If the pattern is fixed, move on
-// 			if (p->isFixed())
-// 			{
-// 				prog += MonteCarlo::nMoveTypes;
-// 				msg.print(Messenger::Verbose,"Pattern '%s' is fixed.\n",p->name());
-// 				continue;
-// 			}
-// 			msg.print(Messenger::Verbose,"Pattern region is '%s'.\n", ComponentRegion::regionShape(r->shape()));
-// 
-// 			// Loop over MC moves in reverse order so we do creation / destruction first
-// 			for (move=MonteCarlo::Delete; move>-1; move--)
-// 			{
-// 				acceptanceRatio_[p->id()][move] = 0;
-// 				// If this move type isn't allowed then continue onto the next
-// 				if (!moveAllowed_[move]) continue;
-// 				if (!c->isMoveAllowed((MonteCarlo::MoveType) move)) continue;
-// 				for (n=0; n<nTrials_[move]; n++)
-// 				{
-// 					// Reset penalty value
-// 					penalty = 0.0;
-// 					// Grab number of molecules currently in this pattern
-// 					patternNMols = p->nMolecules();
-// 					// Perform the move
-// 					switch (move)
-// 					{
-// 						// New molecule
-// 						case (MonteCarlo::Insert):
-// 							// Check if we've already filled as many as requested
-// 							msg.print(Messenger::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
-// 							if (patternNMols == p->nExpectedMolecules()) continue;
-// 							// Paste a new molecule into the working configuration
-// 							msg.print(Messenger::Verbose,"insert : Pasting new molecule - component %s, mol %i\n",c->name(),patternNMols);
-// 							//clip.paste_to_model(destmodel,p,patternNMols);
-// 							// Increase nmols for pattern and natoms for config
-// 							mol = patternNMols;		// Points to new molecule, since m-1
-// 							p->setNMolecules(mol+1);
-// 							// Set the hidden flag on the new molecule to FALSE
-// 							destmodel->hideMolecule(p,mol,FALSE);
-// 							// Randomise position of new molecule
-// 							v = r->randomCoords(cell,components);
-// 							destmodel->positionMolecule(p,mol,v); 
-// 							// Only rotate the new molecule if the component allows it
-// 							if (c->isMoveAllowed(MonteCarlo::Rotate))
-// 							{
-// 								phi = AtenMath::random() * 360.0;
-// 								theta = AtenMath::random() * 360.0;
-// 								destmodel->rotateMolecule(p,mol,phi,theta);
-// 							}
-// 							referenceMoleculeEnergy = 0.0;
-// 							referenceVdwEnergy = 0.0;
-// 							referenceElecEnergy = 0.0;
-// 							break;
-// 						// Translate COG of molecule
-// 						case (MonteCarlo::Translate):
-// 							if (patternNMols == 0) continue;
-// 							// Select random molecule, store, and move
-// 							mol = AtenMath::randomi(patternNMols-1);
-// 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
-// 							referenceVdwEnergy = destmodel->energy.vdw();
-// 							referenceElecEnergy = destmodel->energy.electrostatic();
-// 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
-// 							// Create a random translation vector
-// 							v.randomUnit();
-// 							v *= maxStep_[MonteCarlo::Translate]*AtenMath::random();
-// 							// Translate the coordinates of the molecule in cfg
-// 							destmodel->translateMolecule(p,mol,v);
-// 							// Check new COG is inside region
-// 							cog = p->calculateCog(mol,destmodel);
-// 							if ((!r->coordsInRegion(cog,cell)) || r->pointOverlaps(cog,cell,components)) penalty += 1e6;
-// 							break;
-// 						// Rotate molecule about COG
-// 						case (MonteCarlo::Rotate):
-// 							if (patternNMols == 0) continue;
-// 							// Select random molecule, store, and rotate
-// 							mol = AtenMath::randomi(patternNMols-1);
-// 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
-// 							referenceVdwEnergy = destmodel->energy.vdw();
-// 							referenceElecEnergy = destmodel->energy.electrostatic();
-// 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
-// 							// Do two separate random rotations about the x and y axes.
-// 							phi = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
-// 							theta = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
-// 							destmodel->rotateMolecule(p,mol,phi,theta);
-// 							break;
-// 						// Other moves....
-// 					}
-// 
-// 					// Get the energy of this new configuration.
-// 					enew = destmodel->moleculeEnergy(destmodel, p, mol, success);
-// 					if (!success)
-// 					{
-// 						endearly = TRUE;
-// 						break;
-// 					}
-// 					// Add on any penalty value
-// 					enew += penalty;
-// 					// If the energy has gone up, undo the move.
-// 					deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
-// 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
-// 					deltaElecEnergy = destmodel->energy.electrostatic() - referenceElecEnergy;
-// 					msg.print(Messenger::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
-// 					if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( AtenMath::random() < exp(-beta*deltaMoleculeEnergy) ))
-// 					{
-// 						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
-// 						// Fold the molecule's atoms and recalculate its centre of geometry 
-// 						//cfg->fold_molecule(p,mol);
-// 						//destmodel->set_Prefs::ColourScheme(NULL);
-// 						// Update energy and move counters
-// 						//ecurrent = enew;
-// 						//currentVdwEnergy = destmodel->energy.get_vdw();
-// 						//currentElecEnergy = destmodel->energy.get_elec();
-// 						ecurrent += deltaMoleculeEnergy;
-// 						currentVdwEnergy += deltaVdwEnergy;
-// 						currentElecEnergy += deltaElecEnergy;
-// 						acceptanceRatio_[p->id()][move] ++;
-// 					}
-// 					else
-// 					{
-// 						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
-// 						// Revert to the previous state.
-// 						switch (move)
-// 						{
-// 							case (MonteCarlo::Insert):
-// 								// Set the hidden flag on the new molecule to TRUE
-// 								destmodel->hideMolecule(p,mol,TRUE);
-// 								p->setNMolecules(mol);
-// 								break;
-// 							case (MonteCarlo::Delete):
-// 							default:
-// 								destmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
-// 								break;
-// 						}
-// 					}
-// 				}
-// 				// Get acceptance ratio percentages
-// 				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];
-// 				if (endearly) break;
-// 			}
-// 			// Check to see if this component has the required number of molecules
-// 			if (c->nRequested() != p->nMolecules()) done = FALSE;
-// 			if (endearly) break;
+// 			msg.print("Failed to create expression for component model '%s'.\n", c->name());
+// 			msg.exit("MonteCarlo::disorder");
+// 			return FALSE;
 // 		}
-// 		if (prefs.shouldUpdateEnergy(cycle+1))
-// 		{
-// 			// Print start of first line (current energy and difference)
-// 			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
-// 			for (p = destmodel->patterns(); p != NULL; p = p->next)
-// 			{
-// 				n = p->id();
-// 				if (p == destmodel->patterns())
-// 				{
-// 					s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
-// 				}
-// 				else s.sprintf("%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
-// 				for (m=0; m<MonteCarlo::nMoveTypes; m++)
-// 				{
-// 					s.strcatf(" %3i", int(acceptanceRatio_[n][m]*100.0));
-// 				}
-// 				if (p == destmodel->patterns())
-// 				{
-// 					s.strcatf(" %s", etatext.get());
-// 				}
-// 				s += '\n';
-// 				msg.print(s.get());
-// 			}
-// 		}
-// 		elast = ecurrent;
-// 		// Check for early termination
-// 		if (endearly)
-// 		{
-// 			msg.print("Stopped.\n");
-// 			break;
-// 		}
-// 		if (done)
-// 		{
-// 			msg.print("All component populations satisfied.\n");
-// 			break;
-// 		}
-	}
-// 	gui.progressTerminate();
-// 	
-// 	// Print out final energy and data
-	enew = destmodel->totalEnergy(destmodel, success);
-	destmodel->energy.print();
-	// Print out pattern list info here
-	msg.print("Final populations for model '%s':\n",destmodel->name());
-	msg.print("  ID  name                 nmols \n");
-	for (p = destmodel->patterns(); p != NULL; p = p->next) msg.print("  %2i  %-20s  %6i\n", p->id()+1, p->name(), p->nMolecules());
-
-	// Reset VDW scale ratio and intramolecular status
-	prefs.setVdwScale(1.0);
-	prefs.setCalculateIntra(intrastatus);
-	// Remove all hidden atoms in the model (unused molecule space)
-	Atom *i, *j;
-	i = destmodel->atoms();
-	while (i != NULL)
-	{
-		if (i->isHidden())
-		{
-			j = i;
-			i = i->next;
-			destmodel->deleteAtom(j);
-		}
-		else i = i->next;
-	}
-// 	// Remove number of molecules inserted from original number requested
+// 	}
+// 
+// 	// Check that there were actually components specified
+// 	if (components.nItems() == 0)
+// 	{
+// 		msg.print("No components have been specified for insertion into the model.\n");
+// 		msg.exit("MonteCarlo::disorder");
+// 		return FALSE;
+// 	}
+// 
+// 	// Autocreate expressions for component models, paste copies in to the target model, and then add a corresponding pattern node.
+// 	msg.print("Preparing destination model...\n");
 // 	for (ri = components.first(); ri != NULL; ri = ri->next)
 // 	{
-// 		if (c->nRequested() < 1) continue;
-// 		// Get model pointer
 // 		c = ri->item;
-// 		c->setNRequested( c->nRequested() - c->componentPattern()->nMolecules() );
+// 		// Copy the model and paste it 'nrequested' times into destmodel
+// 		clip.copyAll(c);
+// 		if (c->componentPopulation() > 0)
+// 		{
+// 			for (mol=0; mol<c->componentPopulation(); ++mol) clip.pasteToModel(destmodel);
+// 			// Create a new pattern node in the destination model to cover these molecules and set it as the component's pattern
+// 			p = destmodel->addPattern(c->componentPopulation(), c->nAtoms(), c->name());
+// 			p->setNExpectedMolecules(c->componentPopulation());
+// 			c->setComponentPattern(p);
+// 			// Set the forcefield of the new pattern fo that of the source model
+// 			p->setForcefield(c->forcefield());
+// 		}
+// 		else c->setComponentPattern(NULL);
+//         }
+// 
+// 	// Create master expression for the new (filled) model
+// 	destmodel->describeAtoms();
+// 	if (!destmodel->createExpression(TRUE))
+// 	{
+// 		msg.print("Couldn't create master expression for destination model.\n");
+// 		msg.exit("MonteCarlo::disorder");
+// 		return FALSE;
 // 	}
-// 	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
+// 
+// 	// Set starting populations of patterns, add atom space to target model, and print out pattern list info.
+// 	msg.print("Pattern info for insertion to model '%s':\n", destmodel->name());
+// 	msg.print("  ID  nmols  atoms  starti  finali  name\n");
 // 	for (p = destmodel->patterns(); p != NULL; p = p->next)
 // 	{
-// 		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
-// 		p->setStartAtom( p == destmodel->patterns() ? 0 : p->prev->startAtom() + p->prev->nMolecules()*p->prev->nAtoms() );
-// 		p->setEndAtom( p->startAtom() + p->nAtoms() - 1 );
-// 		//printf("PATTERN %p NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
+// 		// Set nmols, starti, endi, startatom and endatom in the pattern
+// 		msg.print("  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMolecules(),p->nAtoms(),
+// 			p->startAtom()+1,p->startAtom() + p->totalAtoms(),p->name());
 // 	}
-// 	destmodel->foldAllAtoms();
-// 	destmodel->calculateMass();
-	//if (destmodel->arePatternsValid()) printf("Patterns are valid...\n");
-	//else printf("Patterns are NOT valid.\n");
-	//if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
-	//else printf("Expression is NOT valid.\n");
-	destmodel->changeLog.add(Log::Coordinates);
-	gui.update(GuiQt::AllTarget);
-	msg.exit("MonteCarlo::insert");
-	return TRUE;
-}
+// 
+// 	// Reset number of molecules in component patterns to zero (except those for the original patterns of the model)
+// 	for (p = destmodel->pattern(nOldPatterns); p != NULL; p = p->next) p->setNMolecules(0);
+// 
+// 	// Hide unused atoms to begin with
+// 	Atom **modelAtoms = destmodel->atomArray();
+// 	for (n = nOldAtoms; n < destmodel->nAtoms(); n++) modelAtoms[n]->setHidden(TRUE);
+// 
+// 	// Create a backup model
+// 	msg.print("Preparing workspace for maximum of %i atoms...\n", destmodel->nAtoms());
+// 	Model bakmodel;
+// 	bakmodel.copy(destmodel);
+// 
+// 	// Make sure intramolecular energy calculation is off (bound terms only)
+// 	bool intrastatus = prefs.calculateIntra();
+// 	prefs.setCalculateIntra(FALSE);
+// 
+// 	// Create array for move acceptance ratios
+// 	createRatioArray(destmodel->nPatterns());
+// 
+// 	// Set VDW scale ratio
+// 	prefs.setVdwScale(vdwScale_);
+// 
+// 	/*
+// 	// Calculation
+// 	*/
+// 	// Cycle through move types; try and perform nTrials_ for each; move on.
+// 	// For each attempt, select a random molecule in a random pattern
+// 	msg.print("Beginning Monte Carlo insertion...\n\n");
+// 	msg.print(" Step     Energy        Delta          VDW          Elec         Model        N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
+// 	// Calculate initial reference energies
+// 	ecurrent = destmodel->totalEnergy(destmodel, success);
+// 	if (!success)
+// 	{
+// 		msg.exit("MonteCarlo::disorder");
+// 		return FALSE;
+// 	}
+// 	currentVdwEnergy = destmodel->energy.vdw();
+// 	currentElecEnergy = destmodel->energy.electrostatic();
+// 
+// 	elast = ecurrent;
+// 	msg.print(" Init  %13.6e %13s %13.6e %13.6e \n", ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.electrostatic());
+// 
+// 	// Loop over MC cycles
+// 	gui.progressCreate("Building disordered system", nCycles_ * components.nItems());
+// 	prog = 0;
+// 	for (cycle=0; cycle<nCycles_; cycle++)
+// 	{
+// // 		msg.print(Messenger::Verbose,"Begin cycle %i...\n",cycle);
+// // 		done = TRUE;
+// // 
+// // 		// Loop over component models searching for ones that are to be added to the target model
+// // 		for (ri = components.first(); ri != NULL; ri = ri->next)
+// // 		{
+// // 			// Get model pointer
+// // 			c = ri->item;
+// // 
+// // 			prog ++;
+// // 			if (!gui.progressUpdate(prog, &etatext)) endearly = TRUE;
+// // 			if (endearly) break;
+// // 
+// // 			// Skip if nRequested == 0 (or c == destmodel to be sure)
+// // 			if ((c->nRequested() == 0) || (c == destmodel)) continue;
+// // 
+// // 			// Get pointers to variables
+// // 			p = c->componentPattern();
+// // 			r = c->region();
+// // 			msg.print(Messenger::Verbose,"Working on pattern '%s'\n",p->name());
+// // 			// If the pattern is fixed, move on
+// // 			if (p->isFixed())
+// // 			{
+// // 				prog += MonteCarlo::nMoveTypes;
+// // 				msg.print(Messenger::Verbose,"Pattern '%s' is fixed.\n",p->name());
+// // 				continue;
+// // 			}
+// // 			msg.print(Messenger::Verbose,"Pattern region is '%s'.\n", ComponentRegion::regionShape(r->shape()));
+// // 
+// // 			// Loop over MC moves in reverse order so we do creation / destruction first
+// // 			for (move=MonteCarlo::Delete; move>-1; move--)
+// // 			{
+// // 				acceptanceRatio_[p->id()][move] = 0;
+// // 				// If this move type isn't allowed then continue onto the next
+// // 				if (!moveAllowed_[move]) continue;
+// // 				if (!c->isMoveAllowed((MonteCarlo::MoveType) move)) continue;
+// // 				for (n=0; n<nTrials_[move]; n++)
+// // 				{
+// // 					// Reset penalty value
+// // 					penalty = 0.0;
+// // 					// Grab number of molecules currently in this pattern
+// // 					patternNMols = p->nMolecules();
+// // 					// Perform the move
+// // 					switch (move)
+// // 					{
+// // 						// New molecule
+// // 						case (MonteCarlo::Insert):
+// // 							// Check if we've already filled as many as requested
+// // 							msg.print(Messenger::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
+// // 							if (patternNMols == p->nExpectedMolecules()) continue;
+// // 							// Paste a new molecule into the working configuration
+// // 							msg.print(Messenger::Verbose,"insert : Pasting new molecule - component %s, mol %i\n",c->name(),patternNMols);
+// // 							//clip.paste_to_model(destmodel,p,patternNMols);
+// // 							// Increase nmols for pattern and natoms for config
+// // 							mol = patternNMols;		// Points to new molecule, since m-1
+// // 							p->setNMolecules(mol+1);
+// // 							// Set the hidden flag on the new molecule to FALSE
+// // 							destmodel->hideMolecule(p,mol,FALSE);
+// // 							// Randomise position of new molecule
+// // 							v = r->randomCoords(cell,components);
+// // 							destmodel->positionMolecule(p,mol,v); 
+// // 							// Only rotate the new molecule if the component allows it
+// // 							if (c->isMoveAllowed(MonteCarlo::Rotate))
+// // 							{
+// // 								phi = AtenMath::random() * 360.0;
+// // 								theta = AtenMath::random() * 360.0;
+// // 								destmodel->rotateMolecule(p,mol,phi,theta);
+// // 							}
+// // 							referenceMoleculeEnergy = 0.0;
+// // 							referenceVdwEnergy = 0.0;
+// // 							referenceElecEnergy = 0.0;
+// // 							break;
+// // 						// Translate COG of molecule
+// // 						case (MonteCarlo::Translate):
+// // 							if (patternNMols == 0) continue;
+// // 							// Select random molecule, store, and move
+// // 							mol = AtenMath::randomi(patternNMols-1);
+// // 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
+// // 							referenceVdwEnergy = destmodel->energy.vdw();
+// // 							referenceElecEnergy = destmodel->energy.electrostatic();
+// // 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
+// // 							// Create a random translation vector
+// // 							v.randomUnit();
+// // 							v *= maxStep_[MonteCarlo::Translate]*AtenMath::random();
+// // 							// Translate the coordinates of the molecule in cfg
+// // 							destmodel->translateMolecule(p,mol,v);
+// // 							// Check new COG is inside region
+// // 							cog = p->calculateCog(mol,destmodel);
+// // 							if ((!r->coordsInRegion(cog,cell)) || r->pointOverlaps(cog,cell,components)) penalty += 1e6;
+// // 							break;
+// // 						// Rotate molecule about COG
+// // 						case (MonteCarlo::Rotate):
+// // 							if (patternNMols == 0) continue;
+// // 							// Select random molecule, store, and rotate
+// // 							mol = AtenMath::randomi(patternNMols-1);
+// // 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
+// // 							referenceVdwEnergy = destmodel->energy.vdw();
+// // 							referenceElecEnergy = destmodel->energy.electrostatic();
+// // 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
+// // 							// Do two separate random rotations about the x and y axes.
+// // 							phi = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
+// // 							theta = AtenMath::random() * maxStep_[MonteCarlo::Rotate];
+// // 							destmodel->rotateMolecule(p,mol,phi,theta);
+// // 							break;
+// // 						// Other moves....
+// // 					}
+// // 
+// // 					// Get the energy of this new configuration.
+// // 					enew = destmodel->moleculeEnergy(destmodel, p, mol, success);
+// // 					if (!success)
+// // 					{
+// // 						endearly = TRUE;
+// // 						break;
+// // 					}
+// // 					// Add on any penalty value
+// // 					enew += penalty;
+// // 					// If the energy has gone up, undo the move.
+// // 					deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
+// // 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
+// // 					deltaElecEnergy = destmodel->energy.electrostatic() - referenceElecEnergy;
+// // 					msg.print(Messenger::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
+// // 					if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( AtenMath::random() < exp(-beta*deltaMoleculeEnergy) ))
+// // 					{
+// // 						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
+// // 						// Fold the molecule's atoms and recalculate its centre of geometry 
+// // 						//cfg->fold_molecule(p,mol);
+// // 						//destmodel->set_Prefs::ColourScheme(NULL);
+// // 						// Update energy and move counters
+// // 						//ecurrent = enew;
+// // 						//currentVdwEnergy = destmodel->energy.get_vdw();
+// // 						//currentElecEnergy = destmodel->energy.get_elec();
+// // 						ecurrent += deltaMoleculeEnergy;
+// // 						currentVdwEnergy += deltaVdwEnergy;
+// // 						currentElecEnergy += deltaElecEnergy;
+// // 						acceptanceRatio_[p->id()][move] ++;
+// // 					}
+// // 					else
+// // 					{
+// // 						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
+// // 						// Revert to the previous state.
+// // 						switch (move)
+// // 						{
+// // 							case (MonteCarlo::Insert):
+// // 								// Set the hidden flag on the new molecule to TRUE
+// // 								destmodel->hideMolecule(p,mol,TRUE);
+// // 								p->setNMolecules(mol);
+// // 								break;
+// // 							case (MonteCarlo::Delete):
+// // 							default:
+// // 								destmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
+// // 								break;
+// // 						}
+// // 					}
+// // 				}
+// // 				// Get acceptance ratio percentages
+// // 				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];
+// // 				if (endearly) break;
+// // 			}
+// // 			// Check to see if this component has the required number of molecules
+// // 			if (c->nRequested() != p->nMolecules()) done = FALSE;
+// // 			if (endearly) break;
+// // 		}
+// // 		if (prefs.shouldUpdateEnergy(cycle+1))
+// // 		{
+// // 			// Print start of first line (current energy and difference)
+// // 			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
+// // 			for (p = destmodel->patterns(); p != NULL; p = p->next)
+// // 			{
+// // 				n = p->id();
+// // 				if (p == destmodel->patterns())
+// // 				{
+// // 					s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
+// // 				}
+// // 				else s.sprintf("%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
+// // 				for (m=0; m<MonteCarlo::nMoveTypes; m++)
+// // 				{
+// // 					s.strcatf(" %3i", int(acceptanceRatio_[n][m]*100.0));
+// // 				}
+// // 				if (p == destmodel->patterns())
+// // 				{
+// // 					s.strcatf(" %s", etatext.get());
+// // 				}
+// // 				s += '\n';
+// // 				msg.print(s.get());
+// // 			}
+// // 		}
+// // 		elast = ecurrent;
+// // 		// Check for early termination
+// // 		if (endearly)
+// // 		{
+// // 			msg.print("Stopped.\n");
+// // 			break;
+// // 		}
+// // 		if (done)
+// // 		{
+// // 			msg.print("All component populations satisfied.\n");
+// // 			break;
+// // 		}
+// 	}
+// // 	gui.progressTerminate();
+// // 	
+// // 	// Print out final energy and data
+// 	enew = destmodel->totalEnergy(destmodel, success);
+// 	destmodel->energy.print();
+// 	// Print out pattern list info here
+// 	msg.print("Final populations for model '%s':\n",destmodel->name());
+// 	msg.print("  ID  name                 nmols \n");
+// 	for (p = destmodel->patterns(); p != NULL; p = p->next) msg.print("  %2i  %-20s  %6i\n", p->id()+1, p->name(), p->nMolecules());
+// 
+// 	// Reset VDW scale ratio and intramolecular status
+// 	prefs.setVdwScale(1.0);
+// 	prefs.setCalculateIntra(intrastatus);
+// 	// Remove all hidden atoms in the model (unused molecule space)
+// 	Atom *i, *j;
+// 	i = destmodel->atoms();
+// 	while (i != NULL)
+// 	{
+// 		if (i->isHidden())
+// 		{
+// 			j = i;
+// 			i = i->next;
+// 			destmodel->deleteAtom(j);
+// 		}
+// 		else i = i->next;
+// 	}
+// // 	// Remove number of molecules inserted from original number requested
+// // 	for (ri = components.first(); ri != NULL; ri = ri->next)
+// // 	{
+// // 		if (c->nRequested() < 1) continue;
+// // 		// Get model pointer
+// // 		c = ri->item;
+// // 		c->setNRequested( c->nRequested() - c->componentPattern()->nMolecules() );
+// // 	}
+// // 	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
+// // 	for (p = destmodel->patterns(); p != NULL; p = p->next)
+// // 	{
+// // 		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
+// // 		p->setStartAtom( p == destmodel->patterns() ? 0 : p->prev->startAtom() + p->prev->nMolecules()*p->prev->nAtoms() );
+// // 		p->setEndAtom( p->startAtom() + p->nAtoms() - 1 );
+// // 		//printf("PATTERN %p NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
+// // 	}
+// // 	destmodel->foldAllAtoms();
+// // 	destmodel->calculateMass();
+// 	//if (destmodel->arePatternsValid()) printf("Patterns are valid...\n");
+// 	//else printf("Patterns are NOT valid.\n");
+// 	//if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
+// 	//else printf("Expression is NOT valid.\n");
+// 	destmodel->changeLog.add(Log::Coordinates);
+// 	gui.update(GuiQt::AllTarget);
+// 	msg.exit("MonteCarlo::insert");
+// 	return TRUE;
+// }

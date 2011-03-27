@@ -28,6 +28,7 @@
 // Forward declarations
 class Model;
 class Pattern;
+class PartitioningScheme;
 
 // Monte Carlo
 class MonteCarlo
@@ -48,7 +49,7 @@ class MonteCarlo
 	// Minimise the specified model
 	bool minimise(Model *target, double, double);
 	// Run disordered builder
-	bool disorder(Model *target);
+	bool disorder(Model *target, PartitioningScheme *scheme);
 
 	/*
 	// Subroutines

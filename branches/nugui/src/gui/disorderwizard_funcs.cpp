@@ -168,7 +168,7 @@ void DisorderWizard::pageChanged(int id)
 			for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
 			{
 				// Update grid and icon for PartitioningScheme
-				ps->updatePartitions(TRUE);
+				ps->updatePartitions(50,50,50,TRUE);
 				qitem = new QTreeWidgetItem(ui.PartitionTree);
 				partitioningSchemeItems_.add(qitem, ps);
 				setPartitionData(qitem,ps);
@@ -242,6 +242,10 @@ void DisorderWizard::rejected()
 void DisorderWizard::accepted()
 {
 	printf("ACCEPTED\n");
+	
+	// Ready to run disordered builder!
+	if (targetType_ == DisorderWizard::ExistingTarget) mc.disorder(existingModel_, partitioningScheme_);
+	else mc.disorder(newModel_, partitioningScheme_);
 }
 
 /*
@@ -324,7 +328,7 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	// Run custom dialog for scheme
 	if (partitioningScheme_ == NULL) return;
 	partitioningScheme_->runOptions();
-	partitioningScheme_->updatePartitions(TRUE);
+	partitioningScheme_->updatePartitions(50,50,50,TRUE);
 	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.containsData(partitioningScheme_);
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);
@@ -374,7 +378,7 @@ void DisorderWizard::on_ComponentFreeDensityCheck_clicked(bool checked)
 void DisorderWizard::on_ComponentAllowRotationsCheck_clicked(bool checked)
 {
 	if ((componentTarget_ == NULL) || refreshing_) return;
-	componentTarget_->setComponentMoveAllowed(MonteCarlo::Rotation, checked);
+	componentTarget_->setComponentMoveAllowed(MonteCarlo::Rotate, checked);
 	setComponentData(componentTarget_);
 }
 
