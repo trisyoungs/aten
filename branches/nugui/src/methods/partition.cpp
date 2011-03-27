@@ -235,6 +235,11 @@ bool PartitioningScheme::initialise()
 		return FALSE;
 	}
 	partitions_.clear();
+	for (int n = 0; n<maxparts; ++n)
+	{
+		PartitionData *pd = partitions_.add();
+		pd->setId(n);
+	}
 	
 	msg.exit("PartitioningScheme::initialise");
 	return TRUE;

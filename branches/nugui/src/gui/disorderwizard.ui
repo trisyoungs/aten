@@ -993,13 +993,7 @@
    <attribute name="pageId">
     <string notr="true">5</string>
    </attribute>
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
-    <property name="spacing">
-     <number>4</number>
-    </property>
-    <property name="margin">
-     <number>2</number>
-    </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
      <widget class="QTreeWidget" name="EditComponentsTree">
       <property name="mouseTracking">
@@ -1040,101 +1034,185 @@
      </widget>
     </item>
     <item>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="ComponentPopulationLabel">
+     <layout class="QVBoxLayout" name="verticalLayout_10">
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="TargetPartitionLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Target Partition</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="ComponentTargetPartitionCombo">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="insertPolicy">
+           <enum>QComboBox::NoInsert</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="InsertionStyleGroup">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text">
-         <string>Population</string>
+        <property name="title">
+         <string>Insertion Policy</string>
         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_8">
+         <item>
+          <widget class="QRadioButton" name="NumberPolicyRadio">
+           <property name="text">
+            <string>Exact Number</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="DensityPolicyRadio">
+           <property name="text">
+            <string>Specific Density</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="NumberAndDensityPolicyRadio">
+           <property name="text">
+            <string>Exact Number / Density</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="RelativePolicyRadio">
+           <property name="text">
+            <string>Relative Number / Exact Density</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QLabel" name="ComponentPopulationLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Population</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="ComponentPopulationSpin">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000000000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="ComponentDensityLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Density</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="ComponentDensitySpin">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="suffix">
+              <string> g/cm3</string>
+             </property>
+             <property name="decimals">
+              <number>5</number>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="ComponentPopulationSpin">
-        <property name="minimum">
-         <number>1</number>
+      <item>
+       <widget class="QGroupBox" name="MovesGroup">
+        <property name="title">
+         <string>Move Control</string>
         </property>
-        <property name="maximum">
-         <number>1000000000</number>
-        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <item>
+          <widget class="QCheckBox" name="ComponentAllowRotationsCheck">
+           <property name="text">
+            <string>Allow component to be rotated</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ComponentAllowTranslationsCheck">
+           <property name="text">
+            <string>Allow component to be translated</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QCheckBox" name="ComponentBulkCheck">
-        <property name="text">
-         <string>Bulk?</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="ComponentDensityLabel">
-        <property name="text">
-         <string>Density</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="ComponentDensitySpin">
-        <property name="decimals">
-         <number>5</number>
-        </property>
-        <property name="singleStep">
-         <double>0.100000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QCheckBox" name="ComponentFreeDensityCheck">
-        <property name="text">
-         <string>Free</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="3">
-       <widget class="QCheckBox" name="ComponentAllowRotationsCheck">
-        <property name="text">
-         <string>Allow component to be rotated</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="QCheckBox" name="ComponentAllowTranslationsCheck">
-        <property name="text">
-         <string>Allow component to be translated</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QComboBox" name="ComponentTargetPartitionCombo">
-        <property name="insertPolicy">
-         <enum>QComboBox::NoInsert</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="TargetPartitionLabel">
-        <property name="text">
-         <string>Target Partition</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <spacer name="verticalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </item>

@@ -68,10 +68,12 @@ class DisorderWizard : public QWizard
 	// Step 4 / 5 - Select component models
 	// Step 5 / 5 - Select component populations and partition assignments
 	void on_EditComponentsTablecurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void on_NumberPolicyRadio_clicked(bool checked);
+	void on_DensityPolicyRadio_clicked(bool checked);
+	void on_NumberAndDensityPolicyRadio_clicked(bool checked);
+	void on_RelativePolicyRadio_clicked(bool checked);
 	void on_ComponentPopulationSpin_valueChanged(int value);
-	void on_ComponentBulkCheck_clicked(bool checked);
 	void on_ComponentDensitySpin_valueChanged(double value);
-	void on_ComponentFreeDensityCheck_clicked(bool checked);
 	void on_ComponentAllowRotationsCheck_clicked(bool checked);
 	void on_ComponentAllowTranslationsCheck_clicked(bool checked);
 	void on_ComponentTargetPartitionCombo_currentIndexChanged(int index);

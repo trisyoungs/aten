@@ -35,7 +35,7 @@ void Aten::openPartitions()
 
 	// Generate default partition ('none')
 	PartitioningScheme *ps = partitioningSchemes_.add();
-	bool success = ps->schemeDefinition().generateFromString("string name() { return 'None'; } string description() { return 'No partitioning'; } int partition(double x, double y, double z) { return 0; } string partitionname(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int maxpartitions() { return 1; }", TRUE);
+	bool success = ps->schemeDefinition().generateFromString("string name() { return 'None'; } string description() { return 'No partitioning'; } int partition(double x, double y, double z) { return 0; } string partitionname(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int maxpartitions() { return 1; }", "Default Partitioning", TRUE);
 	if (success) success = ps->initialise();
 	if (!success)
 	{

@@ -86,12 +86,27 @@ void DisorderWizard::updateComponentControls()
 {
 	if ((componentTarget_ == NULL) || refreshing_) return;
 	refreshing_ = TRUE;
-	ui.ComponentBulkCheck->setChecked(componentTarget_->componentIsBulk());
+	switch (componentTarget_->componentInsertionPolicy())
+	{
+		case (Model::NoPolicy):
+			componentTarget_->setComponentInsertionPolicy(Model::NumberPolicy);
+		case (Model::NumberPolicy):
+			ui.NumberPolicyRadio->setChecked(TRUE);
+			break;
+		case (Model::DensityPolicy):
+			ui.DensityPolicyRadio->setChecked(TRUE);
+			break;
+		case (Model::NumberAndDensityPolicy):
+			ui.NumberAndDensityPolicyRadio->setChecked(TRUE);
+			break;
+		case (Model::RelativePolicy):
+			ui.RelativePolicyRadio->setChecked(TRUE);
+			break;
+	}
 	ui.ComponentPopulationSpin->setValue(componentTarget_->componentPopulation());
-	ui.ComponentPopulationSpin->setDisabled(componentTarget_->componentIsBulk());
-	ui.ComponentFreeDensityCheck->setChecked(componentTarget_->componentHasFreeDensity());
+	ui.ComponentPopulationSpin->setDisabled(componentTarget_->componentInsertionPolicy() == Model::DensityPolicy);
 	ui.ComponentDensitySpin->setValue(componentTarget_->componentDensity());
-	ui.ComponentDensitySpin->setDisabled(componentTarget_->componentHasFreeDensity());
+	ui.ComponentDensitySpin->setDisabled(componentTarget_->componentInsertionPolicy() == Model::NumberPolicy);
 	
 	refreshing_ = FALSE;
 }
@@ -181,6 +196,9 @@ void DisorderWizard::pageChanged(int id)
 			break;
 		// Step 4 / 5 - Select component models
 		case (4):
+			// Enable/disable relative populations checkbox
+			ui.DensityPolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
+			ui.RelativePolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
 			ui.ChooseComponentsTree->clear();
 			ui.ChooseComponentsTree->setColumnCount(2);
 			for (m = aten.models(); m != NULL; m = m->next)
@@ -198,7 +216,7 @@ void DisorderWizard::pageChanged(int id)
 		// Step 5 / 5 - Select component populations and partition assignments
 		case (5):
 			// Flag all components as not required except those selected in the ChooseComponentsTree
-			for (m = aten.models(); m != NULL; m = m->next) m->setComponentIsRequired(FALSE);
+			for (m = aten.models(); m != NULL; m = m->next) m->setComponentInsertionPolicy(Model::NoPolicy);
 			ui.EditComponentsTree->clear();
 			ui.EditComponentsTree->setColumnCount(2);
 			componentModelItems_.clear();
@@ -212,7 +230,7 @@ void DisorderWizard::pageChanged(int id)
 					printf("Error: Found a NULL model reference when populating EditComponentsTree.\n");
 					continue;
 				}
-				m->setComponentIsRequired(TRUE);
+				m->setComponentInsertionPolicy(Model::NumberPolicy);
 				item = new TTreeWidgetItem(ui.EditComponentsTree);
 				item->data.set(VTypes::ModelData, m);
 				componentModelItems_.add(item, m);
@@ -356,6 +374,23 @@ void DisorderWizard::on_EditComponentsTablecurrentItemChanged(QTreeWidgetItem *c
 	updateComponentControls();
 }
 
+void DisorderWizard::on_NumberPolicyRadio_clicked(bool checked)
+{
+	XXX
+}
+
+void DisorderWizard::on_DensityPolicyRadio_clicked(bool checked)
+{
+}
+
+void DisorderWizard::on_NumberAndDensityPolicyRadio_clicked(bool checked)
+{
+}
+
+void DisorderWizard::on_RelativePolicyRadio_clicked(bool checked)
+{
+}
+
 void DisorderWizard::on_ComponentPopulationSpin_valueChanged(int value)
 {
 	if ((componentTarget_ == NULL) || refreshing_) return;
@@ -363,25 +398,10 @@ void DisorderWizard::on_ComponentPopulationSpin_valueChanged(int value)
 	setComponentData(componentTarget_);
 }
 
-void DisorderWizard::on_ComponentBulkCheck_clicked(bool checked)
-{
-	if ((componentTarget_ == NULL) || refreshing_) return;
-	componentTarget_->setComponentIsBulk(checked);
-	setComponentData(componentTarget_);
-	
-}
-
 void DisorderWizard::on_ComponentDensitySpin_valueChanged(double value)
 {
 	if ((componentTarget_ == NULL) || refreshing_) return;
 	componentTarget_->setComponentDensity(value);
-	setComponentData(componentTarget_);
-}
-
-void DisorderWizard::on_ComponentFreeDensityCheck_clicked(bool checked)
-{
-	if ((componentTarget_ == NULL) || refreshing_) return;
-	componentTarget_->setComponentHasFreeDensity(checked);
 	setComponentData(componentTarget_);
 }
 

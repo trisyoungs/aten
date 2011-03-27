@@ -49,7 +49,7 @@ class MonteCarlo
 	// Minimise the specified model
 	bool minimise(Model *target, double, double);
 	// Run disordered builder
-	bool disorder(Model *target, PartitioningScheme *scheme, bool fixedCell);
+	bool disorder(Model* destmodel, PartitioningScheme* scheme, bool fixedCell);
 
 	/*
 	// Subroutines

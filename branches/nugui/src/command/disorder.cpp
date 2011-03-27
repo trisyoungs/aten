@@ -39,7 +39,7 @@ bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
 	rv.reset();
-	if (!mc.disorder(obj.m, scheme)) return FALSE;
+	if (!mc.disorder(obj.m, scheme, c->argb(1))) return FALSE;
 	return TRUE;
 }
 

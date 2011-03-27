@@ -341,7 +341,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	Refitem<Model,PartitionData*> *component;
 	PartitionData *pd;
 	Atom *i;
-	int n, id;
+	int n, id, cycle;
 	Vec3<double> r;
 
 	// Step 1 - Construct cell lists in scheme
@@ -412,9 +412,9 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			totalVolume += (m->componentPopulation() * m->mass() / AVOGADRO) / (m->componentDensity() * 1.0E-24);
 		}
 		msg.print("From the components specified, the new cell will have a volume of %f cubic Angstroms.\n", totalVolume);
-		double factor = totalVolume**(1.0/3.0) / targetModel_->cell()->volume()**(1.0/3.0);
+		double factor = pow(totalVolume,1.0/3.0) / pow(targetModel_->cell()->volume(),1.0/3.0);
 		Matrix axes = targetModel_->cell()->axes();
-		axes *= factor;
+		axes.applyScaling(factor,factor,factor);
 		targetModel_->cell()->set(axes);
 		msg.print("Based on original cell, scaling factor is %f, giving new a cell specification of:\n", factor);
 		targetModel_->cell()->print();
@@ -438,8 +438,12 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		msg.print("%2i %8s\t%10.2f\t%8.5f\n", pd->id(), scheme->partitionName(pd->id()), pd->volume(), pd->density()); 
 	}
 	
-	// All setup and ready - do the build
-	
+	// All set up and ready - do the build
+	for (cycle = 1; cycle <= 100; ++cycle)
+	{
+		// Each cycle will consist of one round of insertions, one round of deletions, and one round of shaking
+		// If an exact population was 
+	}
 }
 
 // // MC Insertion

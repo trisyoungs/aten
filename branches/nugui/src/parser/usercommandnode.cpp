@@ -158,7 +158,7 @@ bool UserCommandNode::initialise()
 }
 
 // Set function pointer
-void userCommandNode::setFunction(Tree *func)
+void UserCommandNode::setFunction(Tree *func)
 {
 	function_ = func;
 }
