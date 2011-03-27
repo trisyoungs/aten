@@ -952,7 +952,6 @@ TreeNode *Tree::addWidget(TreeNode *arglist)
 	msg.enter("Tree::addWidget");
 	// Wrap the variable and add it to the arguments_ list
 	WidgetNode *node = new WidgetNode();
-	arguments_.own(node);
 	node->setParent(this);
 	// Store in reflist also...
 	widgets_.add(node);

@@ -19,9 +19,6 @@
 		<listitem>
 			<para>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</para>
 		</listitem>
-		<listitem>
-			<para>Drag/drop disordered system creation via ModelList widget?</para>
-		</listitem>
 	</orderedlist>
 </sect5>
 
@@ -30,9 +27,6 @@
 	<orderedlist>
 		<listitem>
 			<para>Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)</para>
-		</listitem>
-		<listitem>
-			<para>Reading xyz trajectory from disk (i.e. not cached) appears to be broken, reading only some frames properly</para>
 		</listitem>
 		<listitem>
 			<para>Bond drawing exacly in XY plane is sometimes incorrect? E.g. data/test/gold.xyz atoms 220 and 228</para>

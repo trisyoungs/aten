@@ -103,7 +103,6 @@ bool UserCommandNode::execute(ReturnValue &rv)
 	Refitem<TreeNode,int> *value = args_.first();
 	ReturnValue varval;
 	Variable *v;
-	printf("There are %i arguments in the UserCommandNode args_ list and %i in the FUNCTIONs argument args_ list\n", args_.nItems(), function_->nArgs());
 	for (TreeNode *arg = function_->args(); arg != NULL; arg = arg->next)
 	{
 		// If 'value' is not NULL, execute it and get the value to pass to the argument
@@ -115,7 +114,6 @@ bool UserCommandNode::execute(ReturnValue &rv)
 		}
 		else
 		{
-			printf("VType = %i\n", arg->nodeType());
 			// Presumably a required argument?
 			v = ((VariableNode*) arg)->variable();
 			if (v->initialValue() == NULL) printf("Required argument not fulfilled?\n");

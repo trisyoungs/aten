@@ -144,6 +144,9 @@ Cli cliSwitches[] = {
 	{ Cli::PackSwitch,		'\0',"pack",		0,
 		"",
 		"Force generation of symmetry-equivalent atoms from spacegroup information" },
+	{ Cli::NoPartitionsSwitch,	'\0',"nopartitions",	0,
+		"",
+		"Prevent loading of partitions on startup" },
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
@@ -309,6 +312,10 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Restrict include loading on startup
 				case (Cli::NoIncludesSwitch):
 					prefs.setLoadIncludes(FALSE);
+					break;
+				// Restrict partition loading on startup
+				case (Cli::NoPartitionsSwitch):
+					prefs.setLoadPartitions(FALSE);
 					break;
 				// Display help
 				case (Cli::HelpSwitch):

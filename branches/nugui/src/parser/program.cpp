@@ -139,6 +139,10 @@ void Program::finalise()
 			filter->executeCustomDialog(TRUE);
 		}
 	}
+	// Generate widgets in global functions
+	for (Tree *t = functions_.first(); t != NULL; t = t->next)
+	{
+	}
 	msg.exit("Program::finalise");
 }
 
