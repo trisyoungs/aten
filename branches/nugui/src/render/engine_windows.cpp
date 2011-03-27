@@ -234,10 +234,9 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 		if (ps != NULL)
 		{
 			// Grab the grid structure and list of partitions from the scheme
-			List<PartitionData> &partitions = ps->partitions();
 			Grid &grid = ps->grid();
 
-			for (PartitionData *pd = partitions.first(); pd != NULL; pd = pd->next)
+			for (PartitionData *pd = ps->partitions(); pd != NULL; pd = pd->next)
 			{
 				if (pd->id() == 0) continue;
 				

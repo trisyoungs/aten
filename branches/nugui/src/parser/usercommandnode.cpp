@@ -157,6 +157,12 @@ bool UserCommandNode::initialise()
 	return FALSE;
 }
 
+// Set function pointer
+void userCommandNode::setFunction(Tree *func)
+{
+	function_ = func;
+}
+
 // Create, run, and free a single command with simple argument list
 bool UserCommandNode::run(Tree *func, ReturnValue &rv, const char *arglist ...)
 {

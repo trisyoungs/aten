@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>483</width>
-    <height>389</height>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,23 +45,7 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetMinimumSize</enum>
       </property>
-      <item row="0" column="0" colspan="2">
-       <widget class="QRadioButton" name="TargetExistingRadio">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Use Existing Model</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <widget class="QRadioButton" name="TargetGenerateRadio">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -74,7 +58,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QLabel" name="label">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -94,14 +78,14 @@
          </font>
         </property>
         <property name="text">
-         <string>Select a loaded model which already has a cell definition as the target for the disordered builder. The model may have existing contents which will be preserved during the build.</string>
+         <string>Select a loaded model which already has a cell definition as the target for the disordered builder. The model may have existing contents which will be preserved during the build. An optional partitioning scheme may be applied.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -117,7 +101,7 @@
         </property>
        </spacer>
       </item>
-      <item row="4" column="1">
+      <item row="5" column="1">
        <widget class="QLabel" name="label_2">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -131,14 +115,14 @@
          </font>
         </property>
         <property name="text">
-         <string>A new model will be created and used as the target for the disordered builder. The unit cell will be defined in the next step.</string>
+         <string>A new model will be created and used as the target for the disordered builder. The unit cell will be defined in the next step, and an optional partitioning scheme may be applied.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
+      <item row="7" column="1">
        <widget class="QLabel" name="label_3">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -152,14 +136,14 @@
          </font>
         </property>
         <property name="text">
-         <string>A new model will be created and used as the target for the disordered builder. The shape of the cell will be defined in the next step, while the final size will depend on the specified contents.</string>
+         <string>A new model will be created and used as the target for the disordered builder. The shape of the cell will be defined in the next step, while the final size will depend on the specified contents. No partitioning scheme other than 'none' may be selected in this mode.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="4" column="0" colspan="2">
        <widget class="QRadioButton" name="TargetNewRadio">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -169,6 +153,22 @@
         </property>
         <property name="text">
          <string>Create New Model and Define Cell</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QRadioButton" name="TargetExistingRadio">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Use Existing Model</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

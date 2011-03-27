@@ -109,10 +109,10 @@ double PartitionData::volume()
 }
 
 // Adjust partition density based on supplied model
-void PartitionData::adjustReducedMass(Model *source, bool subtract)
+void PartitionData::adjustReducedMass(Atom *i, bool subtract)
 {
-	if (subtract) reducedMass_ -= source->mass() / AVOGADRO;
-	else reducedMass_ += source->mass() / AVOGADRO;
+	if (subtract) reducedMass_ -= elements().atomicMass(i) / AVOGADRO;
+	else reducedMass_ += elements().atomicMass(i) / AVOGADRO;
 }
 
 // Return current density of partition
@@ -136,6 +136,14 @@ PartitioningScheme::PartitioningScheme()
 	partitionFunction_ = NULL;
 	checkFunction_ = NULL;
 	partitionNameFunction_ = NULL;
+	
+	// Setup local UserCommandNodes
+	partitionFunctionNode_.setParent(&tree_);
+	partitionFunctionNode_.addArgument(&xVariable_);
+	partitionFunctionNode_.addArgument(&yVariable_);
+	partitionFunctionNode_.addArgument(&zVariable_);
+	partitionNameNode_.setParent(&tree_);
+	partitionNameNode_.addArgument(&idVariable_);
 }
 
 // Destructor
@@ -196,6 +204,7 @@ bool PartitioningScheme::initialise()
 		msg.exit("PartitioningScheme::initialise");
 		return FALSE;
 	}
+	partitionFunctionNode_.setFunction(partitionFunction_);
 
 	// Locate 'partitionname' function
 	partitionNameFunction_ = schemeDefinition_.findGlobalFunction("partitionname");
@@ -206,6 +215,7 @@ bool PartitioningScheme::initialise()
 		msg.exit("PartitioningScheme::initialise");
 		return FALSE;
 	}
+	partitionNameNode_.setFunction(partitionNameFunction_);
 
 	// Locate 'maxpartitions' function
 	func = schemeDefinition_.findGlobalFunction("maxpartitions");
@@ -279,34 +289,21 @@ void PartitioningScheme::updatePartitions(int nx, int ny, int nz, bool createGri
 	// Coordinates {xyz} will be in the centre of the grid 'cells'
 	double x, y, z;
 
-	// Setup a local UserCommandNode (for speed)
-	Tree tree;
-	UserCommandNode pf(partitionFunction_);
-	pf.setParent(&tree);
-	List<TreeNode> args;
-	DoubleVariable *xvar = new DoubleVariable(x, FALSE);
-	DoubleVariable *yvar = new DoubleVariable(y, FALSE);
-	DoubleVariable *zvar = new DoubleVariable(z, FALSE);
-	args.own(xvar);
-	args.own(yvar);
-	args.own(zvar);
-	pf.addListArguments(args.first());
-
 	// Okay, do the calculation
 	x = 0.5*dx;
 	for (i=0; i<npoints.x; ++i)
 	{
-		xvar->setFromDouble(x);
+		xVariable_.setFromDouble(x);
 		y = 0.5*dy;
 		for (j=0; j<npoints.y; ++j)
 		{
-			yvar->setFromDouble(y);
+			yVariable_.setFromDouble(y);
 			z = 0.5*dz;
 			for (k=0; k<npoints.z; ++k)
 			{
-				zvar->setFromDouble(z);
+				zVariable_.setFromDouble(z);
 				// Get integer id of the partition at this location
-				success = pf.execute(rv);
+				success = partitionFunctionNode_.execute(rv);
 				pid = rv.asInteger();
 				
 				if (createGrid) data[i][j][k] = pid;
@@ -328,9 +325,35 @@ int PartitioningScheme::nPartitions()
 }
 
 // Return list object containing partition information
-List<PartitionData> &PartitioningScheme::partitions()
+PartitionData *PartitioningScheme::partitions()
 {
-	return partitions_;
+	return partitions_.first();
+}
+
+// Return nth partition in list
+PartitionData *PartitioningScheme::partition(int id)
+{
+	return partitions_[id];
+}
+
+// Return name of nth partition in list
+const char *PartitioningScheme::partitionName(int id)
+{
+	ReturnValue rv(id);
+	idVariable_.set(rv);
+	partitionNameNode_.execute(rv);
+	return rv.asString();
+}
+
+// Return partition in which simple (unit) coordinate falls
+int PartitioningScheme::partitionId(double x, double y, double z)
+{
+	ReturnValue rv;
+	xVariable_.setFromDouble(x);
+	yVariable_.setFromDouble(y);
+	zVariable_.setFromDouble(z);
+	partitionFunctionNode_.execute(rv);
+	return rv.asInteger();
 }
 
 // Return the grid structure

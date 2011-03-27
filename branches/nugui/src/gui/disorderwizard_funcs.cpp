@@ -111,6 +111,7 @@ void DisorderWizard::pageChanged(int id)
 	TTreeWidgetItem *item, *selectitem;
 	QTreeWidgetItem *qitem;
 	Model *m;
+	Dnchar text;
 	int count;
 	switch (id)
 	{
@@ -221,6 +222,13 @@ void DisorderWizard::pageChanged(int id)
 			ui.EditComponentsTree->resizeColumnToContents(0);
 			ui.EditComponentsTree->resizeColumnToContents(1);
 			ui.EditComponentsTree->setCurrentItem(selectitem);
+			// Refresh items in partition combo box
+			ui.ComponentTargetPartitionCombo->clear();
+			for (int n = 0; n < partitioningScheme_->nPartitions(); ++n)
+			{
+				text.sprintf("%i %s", n, partitioningScheme_->partitionName(n));
+				ui.ComponentTargetPartitionCombo->addItem(text.get());
+			}
 			updateComponentControls();
 			break;
 	}
@@ -244,8 +252,10 @@ void DisorderWizard::accepted()
 	printf("ACCEPTED\n");
 	
 	// Ready to run disordered builder!
-	if (targetType_ == DisorderWizard::ExistingTarget) mc.disorder(existingModel_, partitioningScheme_);
-	else mc.disorder(newModel_, partitioningScheme_);
+	bool success;
+	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(existingModel_, partitioningScheme_, TRUE);
+	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(newModel_, partitioningScheme_, TRUE);
+	else success = mc.disorder(newModel_, partitioningScheme_, FALSE);
 }
 
 /*

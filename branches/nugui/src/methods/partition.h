@@ -26,6 +26,9 @@
 #include "classes/grid.h"
 #include "render/primitive.h"
 #include "parser/program.h"
+#include "parser/usercommandnode.h"
+#include "parser/double.h"
+#include "parser/integer.h"
 
 #define CELLCHUNKSIZE 1000
 
@@ -87,7 +90,7 @@ class PartitionData
 	// Return volume of partition
 	double volume();
 	// Adjust partition reduced mass contents
-	void adjustReducedMass(Model *source, bool subtract = FALSE);
+	void adjustReducedMass(Atom *i, bool subtract = FALSE);
 	// Return current density of partition
 	double density();
 };
@@ -144,16 +147,27 @@ class PartitioningScheme
 	Grid grid_;
 	// Icon of illustrative grid
 	QIcon icon_;
+	// Tree parent for UserCommandNode holding 'partition()' function
+	Tree tree_;
+	// User command nodes for varions functions
+	UserCommandNode partitionFunctionNode_, partitionNameNode_;
+	// Variables to hold passed coordinates
+	DoubleVariable xVariable_, yVariable_, zVariable_;
+	IntegerVariable idVariable_;
 	
 	public:
 	// Update partition information (after load or change in options)
 	void updatePartitions(int nx, int ny, int nz, bool createGrid);
 	// Return number of partitions now recognised in grid
 	int nPartitions();
+	// Return first partition in list
+	PartitionData *partitions();
+	// Return nth partition in list
+	PartitionData *partition(int id);
+	// Return name of nth partition in list
+	const char *partitionName(int id);
 	// Return partition in which simple (unit) coordinate falls
 	int partitionId(double x, double y, double z);
-	// Return list object containing partition information
-	List<PartitionData> &partitions();
 	// Return the grid structure
 	Grid &grid();
 	// Return icon containing illustrative partitions

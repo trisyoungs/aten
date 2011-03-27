@@ -334,13 +334,15 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 }
 
 // Disorder Builder
-bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme)
+bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fixedCell)
 {
 	msg.enter("MonteCarlo::disorder");
-	Refitem<Model,PartitioningData*> *component;
+	Model *m;
+	Refitem<Model,PartitionData*> *component;
 	PartitionData *pd;
 	Atom *i;
 	int n, id;
+	Vec3<double> r;
 
 	// Step 1 - Construct cell lists in scheme
 	if (scheme == NULL)
@@ -356,7 +358,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme)
 	Model *targetModel_ = destmodel;
 	List<Model> temporaryModels_;
 	Reflist<Model, PartitionData*> components_;
-	for (Model *m = aten.models(); m != NULL; m = m->next)
+	for (m = aten.models(); m != NULL; m = m->next)
 	{
 		if (!m->componentIsRequired()) continue;
 		Model *newmodel = temporaryModels_.add();
@@ -369,7 +371,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme)
 			msg.exit("MonteCarlo::disorder");
 			return FALSE;
 		}
-		components_.add(newmodel, scheme->partitions()[id]);
+		components_.add(newmodel, scheme->partition(id));
 	}
 	if (components_.nItems() == 0)
 	{
@@ -378,20 +380,66 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme)
 		return FALSE;
 	}
 
-	// Step 3 - Determine partition volumes and current partition densities (arising from existing model contents)
+	// Step 3 - Determine cell size (if applicable) and perform some sanity checks
+	if (!fixedCell)
+	{
+		// If we have a free or as-yet-undefined cell, the existing model MUST NOT contain any existing atoms
+		if (targetModel_->nAtoms() != 0)
+		{
+			msg.print("Error: For disorder building with an unspecified cell size the cell cannot contain any existing atoms.\n");
+			msg.exit("MonteCarlo::disorder");
+			return FALSE;
+		}
+		// So, we must decide on the final volume of the cell - this means that both a population and a density for each 
+		// component must have been specified - i.e. no 'bulk' components and no 'free' densities
+		double totalVolume = 0.0;
+		for (component = components_.first(); component != NULL; component = component->next)
+		{
+			m = component->item;
+			if (m->componentIsBulk())
+			{
+				msg.print("Error: For disorder building with an unspecified cell size every component must have a population and density specified (component '%s' is specified as 'bulk').\n", m->name());
+				msg.exit("MonteCarlo::disorder");
+				return FALSE;
+			}
+			if (m->componentHasFreeDensity())
+			{
+				msg.print("Error: For disorder building with an unspecified cell size every component must have a population and density specified (component '%s' is specified with 'free' density).\n", m->name());
+				msg.exit("MonteCarlo::disorder");
+				return FALSE;
+			}
+			// All ok, so add component to volume
+			totalVolume += (m->componentPopulation() * m->mass() / AVOGADRO) / (m->componentDensity() * 1.0E-24);
+		}
+		msg.print("From the components specified, the new cell will have a volume of %f cubic Angstroms.\n", totalVolume);
+		double factor = totalVolume**(1.0/3.0) / targetModel_->cell()->volume()**(1.0/3.0);
+		Matrix axes = targetModel_->cell()->axes();
+		axes *= factor;
+		targetModel_->cell()->set(axes);
+		msg.print("Based on original cell, scaling factor is %f, giving new a cell specification of:\n", factor);
+		targetModel_->cell()->print();
+	}
+
+	// Step 4 - Determine partition volumes and current partition densities (arising from existing model contents)
 	double volumeElement = targetModel_->cell()->volume() / (npoints.x*npoints.y*npoints.z);
 	for (pd = scheme->partitions(); pd != NULL; pd = pd->next) pd->calculateVolume(volumeElement);
 	// The target model may contain atoms already, so this must be subtracted from the relevant partitions
 	for (i = targetModel_->atoms(); i != NULL; i = i->next)
 	{
-		id = scheme->
+		r = i->r();
+		targetModel_->cell()->fold(r, NULL, NULL);
+		r = targetModel_->cell()->realToFrac(r);
+		id = scheme->partitionId(r.x, r.y, r.z);
+		scheme->partition(id)->adjustReducedMass(i);
 	}
-	
-	
-	for (component = components_.first(); component != NULL; component = component->next)
+	msg.print("Partition\t\tVolume\tDensity\n");
+	for (pd = scheme->partitions(); pd != NULL; pd = pd->next)
 	{
-// 		component->
+		msg.print("%2i %8s\t%10.2f\t%8.5f\n", pd->id(), scheme->partitionName(pd->id()), pd->volume(), pd->density()); 
 	}
+	
+	// All setup and ready - do the build
+	
 }
 
 // // MC Insertion

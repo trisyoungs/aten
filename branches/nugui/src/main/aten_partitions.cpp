@@ -33,6 +33,18 @@ void Aten::openPartitions()
 	nPartitionsFailed_ = 0;
 	failedPartitions_.clear();
 
+	// Generate default partition ('none')
+	PartitioningScheme *ps = partitioningSchemes_.add();
+	bool success = ps->schemeDefinition().generateFromString("string name() { return 'None'; } string description() { return 'No partitioning'; } int partition(double x, double y, double z) { return 0; } string partitionname(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int maxpartitions() { return 1; }", TRUE);
+	if (success) success = ps->initialise();
+	if (!success)
+	{
+		msg.print("Failed to create default partition!\n");
+		failedPartitions_.add()->set("none");
+		nfailed ++;
+		partitioningSchemes_.remove(ps);
+	}
+	
 	// Construct a list of possible locations for the Partitions
 	QStringList paths;
 	if (!aten.dataDir_.isEmpty())
