@@ -432,7 +432,8 @@ PartitionData *PartitioningScheme::partition(int id)
 // Return name of nth partition in list
 const char *PartitioningScheme::partitionName(int id)
 {
-	static ReturnValue rv(id);
+	static ReturnValue rv;
+	rv.set(id);
 	idVariable_.set(rv);
 	partitionNameNode_.execute(rv);
 	return rv.asString();

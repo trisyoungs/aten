@@ -29,6 +29,7 @@
 #include "gui/selectpattern.h"
 #include "gui/selectvariable.h"
 #include "gui/selectelement.h"
+#include "gui/progress.h"
 #include "gui/about.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
@@ -59,7 +60,6 @@
 #include "base/sysfunc.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
-#include <QtGui/QProgressBar>
 
 // External Declarations
 GuiQt gui;
@@ -192,6 +192,7 @@ void GuiQt::run()
 	aboutDialog = new AtenAbout(mainWindow);
 	viewBasisDialog = new AtenViewBasis(mainWindow);
 	viewEigenvectorDialog = new AtenViewEigenvector(mainWindow);
+	progressDialog = new AtenProgress(mainWindow);
 	zmatrixWindow = new AtenZMatrix(mainWindow);
 	
 	// ...dock widgets
@@ -492,7 +493,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	return TRUE;
 }
 
-// Enable / disable GUI (except progress bar group)
+// Enable / disable GUI
 void GuiQt::setWindowsEnabled(bool b)
 {
 	// Disable/enable some key widgets on the main form
@@ -505,111 +506,4 @@ void GuiQt::setWindowsEnabled(bool b)
 	mainWindow->ui.MainToolbar->setEnabled(b);
 	
 	app->processEvents();
-}
-
-/*
-// Progress Dialogs
-*/
-
-// Notify that the progress indicator should be canceled
-void GuiQt::notifyProgressCanceled()
-{
-	progressCanceled_ = TRUE;
-}
-
-// Instantiate a progress dialog
-void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
-{
-	// Reset our QTime object...
-	time_.setHMS(0,0,0);
-	time_.start();
-	progressCurrentStep_ = 0;
-	progressStepsToDo_ = stepstodo;
-	progressPercent_ = 0;
-	progressCanceled_ = FALSE;
-	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!doesExist_)
-	{
-		// Don't print anything if we're in quiet mode
-		if (msg.isQuiet() || (time_.elapsed() < 2000) ) return;
-		// Print out the empty progress indicator
-		printf("--- %s\n", jobtitle);
-		printf("Progress [-]                              (  0%%)");
-		fflush(stdout);
-	}
-	else mainWindow->updateProgressIndicator(TRUE, stepstodo, 0, jobtitle, "");
-}
-
-// Terminate the progress dialog
-void GuiQt::progressTerminate()
-{
-	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!doesExist_)
-	{
-		if (progressPercent_ == -1) return;
-		if (time_.elapsed() >= 500) printf("\n");
-	}
-	else
-	{
-		// Hide the progress bar and re-enable widgets
-		mainWindow->updateProgressIndicator(FALSE);
-		setWindowsEnabled(TRUE);
-		app->processEvents();
-	}
-	progressPercent_ = -1;
-}
-
-// Update the progress dialog
-bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
-{
-	progressCurrentStep_ = (currentstep == -1 ? progressCurrentStep_+1 : currentstep);
-	double dpercent = double(progressCurrentStep_) / double(progressStepsToDo_);
-	static QTime remtime;
-	static Dnchar etatext;
-	// Show the progress bar if enough time has elapsed since the start of the operation...
-	// If the GUI doesn't exist, call the text-based progress indicator instead
-	// Calculate ETA
-	remtime.setHMS(0,0,0);
-	remtime = remtime.addMSecs( time_.elapsed() * ((1.0 - dpercent) / dpercent) );
-	if (!doesExist_)
-	{
-		static char twister[4] = { '-', '\\', '|', '/' };
-		static int n, ndots, c, percent;
-		// Don't print anything if we're in quiet mode
-		if (msg.isQuiet() || (time_.elapsed() < 500) ) return TRUE;
-		// Work out percentage and print dots and spaces
-		percent = int(dpercent * 100.0);
-		ndots = int(dpercent * 30.0);
-		dpercent *= 100.0;
-		// Always print the header and twister character
-		if (shorttext == NULL) printf("\rProgress [%c]", twister[c]);
-		// Increase the twister character
-		++c;
-		c = c%4;
-		// New dots or percentage to output?
-		if (percent != progressPercent_)
-		{
-			if (shorttext == NULL)
-			{
-				for (n=0; n<ndots; n++) printf(".");
-				for (n=ndots; n<30; n++) printf(" ");
-			}
-			// Lastly, print percentage and ETA
-			etatext.sprintf("(%-3i%%, ETA %02i:%02i:%02i)",percent, remtime.hour(), remtime.minute(), remtime.second());
-			if (shorttext == NULL) printf("%s", etatext.get());
-			else shorttext->set(etatext);
-			fflush(stdout);
-			progressPercent_ = percent;
-		}
-	}
-	else if (time_.elapsed() >= 500)
-	{
-		setWindowsEnabled(FALSE);
-		etatext.sprintf("ETA %02i:%02i:%02i", remtime.hour(), remtime.minute(), remtime.second());
-		mainWindow->updateProgressIndicator(TRUE, -1, progressCurrentStep_, NULL, etatext);
-		app->processEvents();
-	}
-	app->processEvents();
-	// Check to see if the abort button was pressed
-	return (!progressCanceled_);
 }

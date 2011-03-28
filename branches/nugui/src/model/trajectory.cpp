@@ -175,11 +175,11 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	if ((nTrajectoryFileFrames_ * trajectoryFrameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
-		gui.progressCreate("Caching Frames", nTrajectoryFileFrames_);
+// 		int progId = gui.progressDialog->create("Caching Frames", nTrajectoryFileFrames_);
 		// Read all frames from trajectory file
 		for (int n=1; n<nTrajectoryFileFrames_; n++)
 		{
-			if (!gui.progressUpdate(n)) break;
+// 			if (!gui.gui.progressDialog->create(progId,n)) break;
 			newframe = addTrajectoryFrame();
 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 			if ((!success) || (rv.asInteger() != 1))
@@ -190,7 +190,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 			}
 			newframe->enableUndoRedo();
 		}
-		gui.progressTerminate();
+// 		gui.gui.progressDialog->create(progId);
 		nTrajectoryFileFrames_ = 0;
 		trajectoryFramesAreCached_ = TRUE;
 		trajectoryParser_.closeFile();

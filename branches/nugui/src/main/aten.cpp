@@ -638,19 +638,19 @@ const char *Aten::atenDir() const
 // Initialise a progress indicator
 void Aten::initialiseProgress(const char *jobtitle, int totalsteps)
 {
-	gui.progressCreate(jobtitle, totalsteps);
+// 	gui.progressCreate(jobtitle, totalsteps);
 }
 
 // Update the number of steps (returns if the dialog was canceled)
 bool Aten::updateProgress(int currentstep)
 {
-	return gui.progressUpdate(currentstep);
+// 	return gui.progressUpdate(currentstep);
 }
 
 // Terminate the current progress
 void Aten::cancelProgress()
 {
-	gui.progressTerminate();
+// 	gui.progressTerminate();   TGAY
 }
 
 /*

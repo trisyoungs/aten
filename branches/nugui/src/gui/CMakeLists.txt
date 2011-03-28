@@ -48,6 +48,7 @@ set(qtproject_SRCS
   mouseactions.cpp
   position_funcs.cpp
   prefs_funcs.cpp
+  progress_funcs.cpp
   select_funcs.cpp
   selectelement_funcs.cpp
   selectfilter_funcs.cpp
@@ -101,6 +102,7 @@ SET(pro_MOC_HDRS
   modellist.h
   position.h
   prefs.h
+  progress.h
   select.h
   selectelement.h
   selectfilter.h
@@ -145,6 +147,7 @@ SET(pro_UIS
   modellist.ui
   position.ui
   prefs.ui
+  progress.ui
   select.ui
   selectelement.ui
   selectfilter.ui

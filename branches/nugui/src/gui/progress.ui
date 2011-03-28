@@ -1,13 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ProgressDialog</class>
- <widget class="QDialog" name="ProgressDialog">
+ <class>AtenProgress</class>
+ <widget class="QDialog" name="AtenProgress">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>259</width>
-    <height>116</height>
+    <height>131</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
@@ -17,7 +24,17 @@
     <number>2</number>
    </property>
    <item>
-    <widget class="QLabel" name="InfoLabel">
+    <widget class="QLabel" name="JobTitleLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="SecondaryJobTitleLabel">
      <property name="text">
       <string>TextLabel</string>
      </property>

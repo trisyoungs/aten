@@ -225,12 +225,6 @@ void AtenForm::cancelCurrentMode()
 	ui.actionSelectAtoms->trigger();
 }
 
-// Cancel progress indicator
-void AtenForm::progressCancel()
-{
-	gui.notifyProgressCanceled();
-}
-
 // Load recent file
 void AtenForm::loadRecent()
 {
@@ -392,14 +386,4 @@ void AtenForm::setActiveUserAction(UserAction::Action ua)
 void AtenForm::setMessageLabel(const char *s)
 {
 	messageLabel_->setText(s);
-}
-
-// Setup or update progress indicator
-void AtenForm::updateProgressIndicator(bool visible, int maximum, int value, const char *title, const char *eta)
-{
-	if (maximum != -1) progressBar_->setMaximum(maximum);
-	if (value != -1) progressBar_->setValue(value);
-	if (title != NULL) progressTitle_->setText(title);
-	if (eta != NULL) progressEta_->setText(eta);
-	progressIndicator_->setVisible(visible);
 }

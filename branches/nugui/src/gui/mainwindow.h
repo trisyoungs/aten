@@ -296,8 +296,6 @@ class AtenForm : public QMainWindow
 	private slots:
 	// Change current user action
 	void uaButtonClicked(int id);
-	// Cancel progress dialog
-	void progressCancel();
 
 	public:
 	// Update undo/redo labels
@@ -306,8 +304,6 @@ class AtenForm : public QMainWindow
 	void setActiveUserAction(UserAction::Action ua);
 	// Set message label text
 	void setMessageLabel(const char *s);
-	// Setup or update progress indicator
-	void updateProgressIndicator(bool visible, int maximum = -1, int value = -1, const char *title = NULL, const char *eta = NULL);
 	// String lists to hold file dialog filter definitions
 	QString loadModelFilters, saveModelFilters, loadTrajectoryFilters, saveTrajectoryFilters, loadExpressionFilters, saveExpressionFilters, saveBitmapFilters, saveVectorFilters, loadScriptFilters, loadGridFilters, saveGridFilters;
 	// Filter set from save model dialog

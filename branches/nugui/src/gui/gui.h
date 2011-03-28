@@ -29,8 +29,8 @@ class AtenForm;
 class AtenAbout;
 class AtenPrefs;
 class AtenForcefieldEditor;
+class AtenProgress;
 class QApplication;
-class QProgressDialog;
 
 // Forward Declarations 2 - Dialogs
 class AtenLoadModel;
@@ -126,7 +126,7 @@ class GuiQt
 	bool saveBeforeClose();
 	// Save image of current view
 	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 85);
-	// Enable / disable GUI (except progress bar group)
+	// Enable / disable GUI
 	void setWindowsEnabled(bool b);
 
 
@@ -216,6 +216,8 @@ class GuiQt
 	AtenViewBasis *viewBasisDialog;
 	// View eigenvector dialog
 	AtenViewEigenvector *viewEigenvectorDialog;
+	// Progress indicator
+	AtenProgress *progressDialog;
 
 
 	/*
@@ -228,28 +230,6 @@ class GuiQt
 	void updateContextMenu();
 	// Call the atompopup menu
 	void callContextMenu(Atom*, int, int);
-
-
-	/*
-	// Progress Dialog
-	*/
-	private:
-	// QTime object (used to prevent showing of progress indicator if the operation will be quick)
-	QTime time_;
-	// Indicator that the 'Cancel' button was pressed
-	bool progressCanceled_;
-	// Variables for the position and maximum of the text progress dialog
-	int progressStepsToDo_, progressPercent_, progressCurrentStep_;
-
-	public:
-	// Notify that the progress indicator should be canceled
-	void notifyProgressCanceled();
-	// Instantiate a progress dialog
-	void progressCreate(const char *jobtitle, int stepstodo);
-	// Update the progress dialog
-	bool progressUpdate(int currentstep = -1, Dnchar *shorttext = NULL);
-	// Terminate the progress dialog
-	void progressTerminate();
 };
 
 extern GuiQt gui;

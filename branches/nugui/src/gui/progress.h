@@ -23,9 +23,11 @@
 #define ATEN_PROGRESSDIALOG_H
 
 #include "gui/ui_progress.h"
+#include "base/dnchar.h"
+#include <QtCore/QTime>
 
 // Progress Dialog
-class ProgressDialog : public QDialog
+class AtenProgress : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -42,33 +44,40 @@ class ProgressDialog : public QDialog
 	/*
 	// Local Objects / Variables
 	*/
-        private:
-        // QTime object (used to prevent showing of progress indicator if the operation will be quick)
-        QTime time_;
-        // Indicator that the 'Cancel' button was pressed
-        bool progressCanceled_;
-        // Variables for the position and maximum of the text progress dialog
-        int progressStepsToDo_, progressPercent_, progressCurrentStep_;
+	private:
+	// QTime object (used to prevent showing of progress indicator if the operation will be quick)
+	QTime time_;
+	// Indicator that the 'Cancel' button was pressed
+	bool progressCanceled_;
+	// Variables for the position and maximum of the text progress dialog
+	int progressStepsToDo_, progressPercent_, progressCurrentStep_;
+	// ETA and Jobtitle texts
+	Dnchar etaText_, jobTitle_, secondaryTitle_;
+	// Flags to indicate whether indicator has primary (and secondary) titles
+	bool primaryJob_, secondaryJob_;
+	
+	private:
+	// Update dialog
+	void updateWidgets();
 
-        public:
-        // Notify that the progress indicator should be canceled
-        void notifyProgressCanceled();
-        // Instantiate a progress dialog
-        void progressCreate(const char *jobtitle, int stepstodo);
-        // Update the progress dialog
-        bool progressUpdate(int currentstep = -1, Dnchar *shorttext = NULL);
-        // Terminate the progress dialog
-        void progressTerminate();
-
+	public:
+	// Notify that the progress indicator should be canceled
+	void notifyProgressCanceled();
+	// Instantiate a progress dialog
+	int create(const char* jobtitle, int stepstodo, bool allowSecondary = FALSE);
+	// Update the progress dialog
+	bool update(int id, int currentstep = -1, Dnchar *shorttext = NULL);
+	// Terminate the progress dialog
+	void terminate(int id);
 
 	/*
 	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
-	ProgressDialog(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	AtenProgress(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::ProgressDialog ui;
+	Ui::AtenProgress ui;
 };
 
 #endif
