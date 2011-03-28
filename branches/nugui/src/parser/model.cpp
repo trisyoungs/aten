@@ -56,11 +56,10 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "atoms",		VTypes::AtomData,		-1, TRUE },
 	{ "bonds",		VTypes::BondData,		-1, TRUE },
 	{ "cell",		VTypes::CellData,		0, FALSE },
-	{ "componentbulk",	VTypes::IntegerData,		0, FALSE },
 	{ "componentdensity",	VTypes::DoubleData,		0, FALSE },
-	{ "componentfree",	VTypes::IntegerData,		0, FALSE },
+	{ "componentpartition",	VTypes::IntegerData,		0, FALSE },
+	{ "componentpolicy",	VTypes::StringData,		0, FALSE },
 	{ "componentpopulation",VTypes::IntegerData,		0, FALSE },
-	{ "componentregion",	VTypes::IntegerData,		0, FALSE },
 	{ "distances",		VTypes::MeasurementData,	-1, TRUE },
 	{ "eigenvectors",	VTypes::EigenvectorData,	-1, TRUE },
 	{ "energy",		VTypes::EnergyStoreData,	0, TRUE },
@@ -280,17 +279,14 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::Celldata):
 			rv.set(VTypes::CellData, ptr->cell());
 			break;
-		case (ModelVariable::ComponentBulk):
-			rv.set(ptr->componentIsBulk());
-			break;
 		case (ModelVariable::ComponentDensity):
 			rv.set(ptr->componentDensity());
 			break;
-		case (ModelVariable::ComponentFree):
-			rv.set(ptr->componentHasFreeDensity());
-			break;
 		case (ModelVariable::ComponentPartition):
 			rv.set(ptr->componentPartition());
+			break;
+		case (ModelVariable::ComponentPolicy):
+			rv.set( Model::insertionPolicy(ptr->componentInsertionPolicy()) );
 			break;
 		case (ModelVariable::ComponentPopulation):
 			rv.set(ptr->componentPopulation());
@@ -582,6 +578,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		return FALSE;
 	}
 	// Get current data from ReturnValue
+	Model::InsertionPolicy inspol;
 	Model *ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if (result && (ptr == NULL))
 	{
@@ -593,17 +590,16 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		case (ModelVariable::Celldata):
 			ptr->setCell( ((UnitCell*) newvalue.asPointer(VTypes::CellData)) );
 			break;
-		case (ModelVariable::ComponentBulk):
-			ptr->setComponentIsBulk( newvalue.asInteger() );
-			break;
 		case (ModelVariable::ComponentDensity):
 			ptr->setComponentDensity( newvalue.asDouble() );
 			break;
-		case (ModelVariable::ComponentFree):
-			ptr->setComponentHasFreeDensity( newvalue.asInteger() );
-			break;
 		case (ModelVariable::ComponentPartition):
 			ptr->setComponentPartition( newvalue.asInteger() );
+			break;
+		case (ModelVariable::ComponentPolicy):
+			inspol = Model::insertionPolicy(newvalue.asString(), TRUE);
+			if (inspol == Model::nInsertionPolicies) result = FALSE;
+			else ptr->setComponentInsertionPolicy(inspol);
 			break;
 		case (ModelVariable::ComponentPopulation):
 			ptr->setComponentPopulation( newvalue.asInteger() );

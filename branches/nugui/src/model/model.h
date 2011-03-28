@@ -36,7 +36,6 @@
 #include "classes/basisshell.h"
 #define SGCOREDEF__
 #include "base/sginfo.h"
-#include "methods/mc.h"
 #include "base/vibration.h"
 #include "classes/zmatrix.h"
 
@@ -67,7 +66,9 @@ class Model
 	// Model types
 	enum ModelType { ParentModelType, TrajectoryFrameType, VibrationFrameType };
 	// Component Insertion Policies
-	enum InsertionPolicy { NoPolicy, NumberPolicy, DensityPolicy, NumberAndDensityPolicy, RelativePolicy };
+	enum InsertionPolicy { NoPolicy, NumberPolicy, DensityPolicy, NumberAndDensityPolicy, RelativePolicy, nInsertionPolicies };
+	static InsertionPolicy insertionPolicy(const char *name, bool reporterror = 0);
+	static const char *insertionPolicy(InsertionPolicy);
 	// Friend declarations
 	friend class IdShiftEvent;
 
@@ -1070,17 +1071,15 @@ class Model
 	*/
 	private:
 	// Insertion policy for the component
-	Model::InsertionPolicy componentPolicy_;
-	// Flag indicating whether component is required in build
-	bool componentIsRequired_;
+	Model::InsertionPolicy componentInsertionPolicy_;
 	// Index of partition the model is restricted to
 	int componentPartition_;
 	// Number of requested copies
 	int componentPopulation_;
 	// Requested density
 	double componentDensity_;
-	// Lists which MC move types are allowed for this Component
-	bool componentMoveAllowed_[MonteCarlo::nMoveTypes];
+	// Whether the component is rotatable
+	bool componentRotatable_;
 
 	public:
 	// Set the insertion policy for the component
@@ -1099,10 +1098,10 @@ class Model
 	void setComponentDensity(double d);
 	// Return the requested density for the component
 	double componentDensity() const;
-	// Set a specific move type for the Component
-	void setComponentMoveAllowed(MonteCarlo::MoveType m, bool b);
-	// Set whether the Component may be translated
-	bool componentMoveAllowed(MonteCarlo::MoveType m) const;
+	// Set whether the component is rotatable
+	void setComponentRotatable(bool b);
+	// Return whether the component is rotatable
+	bool componentRotatable();
 
 
 	/*

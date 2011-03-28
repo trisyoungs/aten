@@ -55,6 +55,7 @@ void Program::clear()
 {
 	functions_.clear();
 	filters_.clear();
+	mainProgram_.reset();
 }
 
 // Set name of forest

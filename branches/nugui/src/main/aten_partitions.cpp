@@ -35,7 +35,7 @@ void Aten::openPartitions()
 
 	// Generate default partition ('none')
 	PartitioningScheme *ps = partitioningSchemes_.add();
-	bool success = ps->schemeDefinition().generateFromString("string name() { return 'None'; } string description() { return 'No partitioning'; } int partition(double x, double y, double z) { return 0; } string partitionname(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int maxpartitions() { return 1; }", "Default Partitioning", TRUE);
+	bool success = ps->schemeDefinition().generateFromString("string name = 'None', description = 'No partitioning'; int partition(double x, double y, double z) { return 0; } string partitionname(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int npartitions = 1, roughgrid[3] = { 2,2,2 }, finegrid[3] = {2,2,2};", "Default Partitioning", FALSE);
 	if (success) success = ps->initialise();
 	if (!success)
 	{
@@ -107,7 +107,7 @@ int Aten::parsePartitionsDir(const char *path)
 		filename += "/";
 		filename += partitionlist.at(i);
 		PartitioningScheme *ps = partitioningSchemes_.add();
-		bool success = ps->schemeDefinition().generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(partitionlist.at(i)), TRUE);
+		bool success = ps->schemeDefinition().generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(partitionlist.at(i)), FALSE);
 		if (success) success = ps->initialise();
 		
 		if (!success)

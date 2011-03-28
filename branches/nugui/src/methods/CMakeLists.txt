@@ -2,6 +2,7 @@ add_library(methods
 calculable.h 
 cg.h 
 delaunay.h
+disorderdata.h
 linemin.h 
 mc.h 
 md.h 
@@ -13,6 +14,8 @@ sd.h
 calculable.cpp 
 cg.cpp 
 delaunay.cpp
+disorder.cpp
+disorderdata.cpp
 linemin.cpp 
 mc.cpp 
 md.cpp 

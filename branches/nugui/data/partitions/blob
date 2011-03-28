@@ -1,20 +1,31 @@
 # Example partition definition for Aten
-# Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 ub a cubuc cell.
+# Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 in a cubic cell.
 # Shearing / scaling of all coordinates is performed internally by Aten when necessary.
 
 # Name / Description
-// Two simple functions which return the name and description of the partitioning scheme
-string name() { return "Blob"; }
-string description() { return "Simple spherical region"; }
+string name = "Sphere";
+string description = "Simple spherical region";
 
-# Every partition definition *must* contain a 'partition' function
-# When constructing the insertion grid, Aten will call this function to determine which points on the grid fall within which partitions.
-# Unit cell coordinates are always given. The function should return the integer ID number of the partition in which the point
-# falls, or zero to mean the point falls in no partition at all (i.e. it is elsewhere in the cell)
-# Partitions *must* be numbered consecutively from zero upwards.
+# Grid size information
+# Two sets of gridpoints arrays must be given - the 'rough' grid is used to probe the partitions and overlay the rendered model in the GUI,
+# while the second 'fine' grid is used when actually performing the calculation. Partition functions which generate curved volumes should
+# use fine grid values of around 100.
+int roughgrid[3] = { 40,40,40 };
+int finegrid[3] = { 100,100,100 };
+
+# Number of partitions
+# The total possible number of partitions, *including* the unit cell itself.
+int npartitions = 2;
+
+# Every partition definition *must* contain 'partition' and 'partitionname' functions
 int partition(double x, double y, double z)
 {
-	// Variables should be listed here using the 'options' keyword (so that they may be displayed in the GUI
+	# When constructing the insertion grid, Aten will call this function to determine which points on the grid fall within which partitions.
+	# Unit cell coordinates are always given. The function should return the integer ID number of the partition in which the point
+	# falls, or zero to mean the point falls in no partition at all (i.e. it is elsewhere in the cell)
+	# Partitions *must* be numbered consecutively from zero upwards.
+
+	// Variables should be listed here using the 'options' keyword (so that they may be displayed in the GUI)
 	option("Sphere ", "label");
 	double spherex = option("X", "doublespin", 0.0, 1.0, 0.1, 0.5);
 	double spherey = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5);
@@ -41,9 +52,3 @@ string partitionname(int id)
 			return "UNKNOWN";
 	}
 }
-
-int maxpartitions()
-{
-	return 2;
-}
-

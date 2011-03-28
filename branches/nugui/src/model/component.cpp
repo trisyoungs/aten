@@ -20,39 +20,43 @@
 */
 
 #include "model/model.h"
+#include "base/sysfunc.h"
 
-// Set whether component is required in build
-void Model::setComponentIsRequired(bool b)
+// Insertion Policies
+const char *InsertionPolicyKeywords[Model::nInsertionPolicies] = { "none", "number", "density", "numderanddensity", "relative" };
+Model::InsertionPolicy Model::insertionPolicy(const char *s, bool reporterror)
 {
-	componentIsRequired_ = b;
+	Model::InsertionPolicy pol = (Model::InsertionPolicy) enumSearch("insertion policy", Model::nInsertionPolicies, InsertionPolicyKeywords, s, reporterror);
+	if ((pol == Model::nInsertionPolicies) && reporterror) enumPrintValid(Model::nInsertionPolicies,InsertionPolicyKeywords);
+	return pol;
+}
+const char *Model::insertionPolicy(Model::InsertionPolicy pol)
+{
+	return InsertionPolicyKeywords[pol];
 }
 
-// Return whether component is required in build
-bool Model::componentIsRequired()
+// Set the insertion policy for the component
+void Model::setComponentInsertionPolicy(Model::InsertionPolicy policy)
 {
-	return componentIsRequired_;
+	componentInsertionPolicy_ = policy;
+}
+
+// Return the insertion policy for the component
+Model::InsertionPolicy Model::componentInsertionPolicy()
+{
+	return componentInsertionPolicy_;
 }
 
 // Set target component partition for model
 void Model::setComponentPartition(int id)
 {
+	componentPartition_ = id;
 }
 
 // Return region data for model
 int Model::componentPartition()
 {
-}
-
-// Set the Component's pattern
-void Model::setComponentPattern(Pattern *p)
-{
-	componentPattern_ = p;
-}
-
-// Return the Component's pattern
-Pattern *Model::componentPattern() const
-{
-	return componentPattern_;
+	return componentPartition_;
 }
 
 // Set the requested number of molecules
@@ -67,18 +71,6 @@ int Model::componentPopulation() const
 	return componentPopulation_;
 }
 
-// Set whether the component is a bulk component
-void Model::setComponentIsBulk(bool b)
-{
-	componentIsBulk_ = b;
-}
-
-// Return whether component is a bulk component
-bool Model::componentIsBulk()
-{
-	return componentIsBulk_;
-}
-
 // Set the requested density for the component
 void Model::setComponentDensity(double d)
 {
@@ -91,26 +83,14 @@ double Model::componentDensity() const
 	return componentDensity_;
 }
 
-// Set whether the component has free density or not
-void Model::setComponentHasFreeDensity(bool b)
+// Set whether the component is rotatable
+void Model::setComponentRotatable(bool b)
 {
-	componentHasFreeDensity_ = b;
+	componentRotatable_ = b;
 }
 
-// Return whether component has free density
-bool Model::componentHasFreeDensity()
+// Return whether the component is rotatable
+bool Model::componentRotatable()
 {
-	return componentHasFreeDensity_;
-}
-
-// Set a specific move type for the Component
-void Model::setComponentMoveAllowed(MonteCarlo::MoveType m, bool b)
-{
-	componentMoveAllowed_[m] = b;
-}
-
-// Set whether the Component may be translated
-bool Model::componentMoveAllowed(MonteCarlo::MoveType m) const
-{
-	return componentMoveAllowed_;
+	return componentRotatable_;
 }

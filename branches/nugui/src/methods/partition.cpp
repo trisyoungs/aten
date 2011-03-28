@@ -66,6 +66,18 @@ int PartitionData::id()
 	return id_;
 }
 
+// Set name of partition
+void PartitionData::setName(const char *name)
+{
+	name_ = name;
+}
+
+// Return name of partition
+const char *PartitionData::name()
+{
+	return name_.get();
+}
+
 // Clear cells list
 void PartitionData::clear()
 {
@@ -73,6 +85,7 @@ void PartitionData::clear()
 	nCells_ = 0;
 	volume_ = 0.0;
 	reducedMass_ = 0.0;
+	name_.clear();
 }
 
 // Add cell to list
@@ -115,6 +128,12 @@ void PartitionData::adjustReducedMass(Atom *i, bool subtract)
 	else reducedMass_ += elements().atomicMass(i) / AVOGADRO;
 }
 
+// Adjust partition density based on supplied model
+void PartitionData::adjustReducedMass(Model *m, bool subtract)
+{
+	for (Atom *i = m->atoms(); i != NULL; i = i->next) adjustReducedMass(i, subtract);
+}
+
 // Return current density of partition
 double PartitionData::density()
 {
@@ -134,7 +153,6 @@ PartitioningScheme::PartitioningScheme()
 	
 	// Private variables
 	partitionFunction_ = NULL;
-	checkFunction_ = NULL;
 	partitionNameFunction_ = NULL;
 	
 	// Setup local UserCommandNodes
@@ -164,39 +182,89 @@ bool PartitioningScheme::initialise()
 
 	Tree *func;
 	ReturnValue rv;
+	bool success;
+	Variable *v;
+	int scopelevel, nparts;
 	
 	// Retrieve name
-	func = schemeDefinition_.findGlobalFunction("name");
-	if (func != NULL)
+	v = schemeDefinition_.mainProgram()->findVariableInScope("name", scopelevel);
+	if (v != NULL)
 	{
-		func->execute(rv);
+		v->initialise();
+		v->execute(rv);
 		name_ = rv.asString();
 	}
 	else
 	{
-		msg.print("No 'name' function defined in this partitioning scheme.\n");
+		msg.print("No 'name' variable defined in this partitioning scheme.\n");
 		name_ = "???";
 	}
 
 	// Retrieve description
-	func = schemeDefinition_.findGlobalFunction("description");
-	if (func != NULL)
+	v = schemeDefinition_.mainProgram()->findVariableInScope("description", scopelevel);
+	if (v != NULL)
 	{
-		func->execute(rv);
+		v->initialise();
+		v->execute(rv);
 		description_ = rv.asString();
 	}
 	else
 	{
-		msg.print("No 'description' function defined in this partitioning scheme.\n");
+		msg.print("No 'description' variable defined in this partitioning scheme.\n");
 		description_ = "???";
 	}
 
-	// Was a 'checkvalue' function provided?
-	checkFunction_ = schemeDefinition_.findGlobalFunction("checkvalues");
-	if (checkFunction_) msg.print(Messenger::Verbose, "  --> Found 'checkvalue' function in partitioning scheme '%s'.\n", name_.get());
+	// Locate 'npartitions' variable
+	v = schemeDefinition_.mainProgram()->findVariableInScope("npartitions", scopelevel);
+	if (v == NULL)
+	{
+		msg.print("Error: No 'npartitions' variable defined in partitioning scheme '%s'\n", name_.get());
+		msg.exit("PartitioningScheme::initialise");
+		return FALSE;
+	}
+	msg.print(Messenger::Verbose, "  --> Found 'npartitions' variable in partitioning scheme '%s'.\n", name_.get());
+	v->initialise();
+	success = v->execute(rv);
+	nparts  = rv.asInteger();
+	if (nparts < 1)
+	{
+		msg.print("Error: Invalid 'npartitions' (%i) found in partitioning scheme '%s'\n", nparts, name_.get());
+		msg.exit("PartitioningScheme::initialise");
+		return FALSE;
+	}
+	
+	// Retrieve grid information
+	v = schemeDefinition_.mainProgram()->findVariableInScope("roughgrid", scopelevel);
+	if (v != NULL)
+	{
+		v->initialise();
+		v->execute(rv);
+		roughGridSize_.set(rv.asInteger(0,success), rv.asInteger(1,success), rv.asInteger(2,success));
+		msg.print(Messenger::Verbose, "  --> Rough grid size for scheme '%s' is %i %i %i\n", name_.get(), roughGridSize_.x, roughGridSize_.y, roughGridSize_.z);
+	}
+	else
+	{
+		msg.print("Error: No 'roughgrid' variable defined in partitioning scheme '%s'.\n", name_.get());
+		msg.exit("PartitioningScheme::initialise");
+		return FALSE;
+	}
+	v = schemeDefinition_.mainProgram()->findVariableInScope("finegrid", scopelevel);
+	if (v != NULL)
+	{
+		v->initialise();
+		v->execute(rv);
+		fineGridSize_.set(rv.asInteger(0,success), rv.asInteger(1,success), rv.asInteger(2,success));
+		msg.print(Messenger::Verbose, "  --> Fine grid size for scheme '%s' is %i %i %i\n", name_.get(), fineGridSize_.x, fineGridSize_.y, fineGridSize_.z);
+	}
+	else
+	{
+		msg.print("Error: No 'finegrid' variable defined in partitioning scheme '%s'.\n", name_.get());
+		msg.exit("PartitioningScheme::initialise");
+		return FALSE;
+	}
 	
 	// Locate 'partition' function
-	partitionFunction_ = schemeDefinition_.findGlobalFunction("partition");
+	partitionFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partition");
 	if (partitionFunction_) msg.print(Messenger::Verbose, "  --> Found 'partition' function in partitioning scheme '%s'.\n", name_.get());
 	else
 	{
@@ -207,7 +275,7 @@ bool PartitioningScheme::initialise()
 	partitionFunctionNode_.setFunction(partitionFunction_);
 
 	// Locate 'partitionname' function
-	partitionNameFunction_ = schemeDefinition_.findGlobalFunction("partitionname");
+	partitionNameFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partitionname");
 	if (partitionNameFunction_) msg.print(Messenger::Verbose, "  --> Found 'partitionname' function in partitioning scheme '%s'.\n", name_.get());
 	else
 	{
@@ -216,29 +284,17 @@ bool PartitioningScheme::initialise()
 		return FALSE;
 	}
 	partitionNameNode_.setFunction(partitionNameFunction_);
-
-	// Locate 'maxpartitions' function
-	func = schemeDefinition_.findGlobalFunction("maxpartitions");
-	if (func) msg.print(Messenger::Verbose, "  --> Found 'maxpartitions' function in partitioning scheme '%s'.\n", name_.get());
-	else
-	{
-		msg.print("Error: No 'maxpartitions' function defined in partitioning scheme '%s'\n", name_.get());
-		msg.exit("PartitioningScheme::initialise");
-		return FALSE;
-	}
-	bool success = func->execute(rv);
-	int maxparts = rv.asInteger();
-	if (maxparts < 1)
-	{
-		msg.print("Error: Invalid 'maxpartitions' (%i) returned by partitioning scheme '%s'\n", maxparts, name_.get());
-		msg.exit("PartitioningScheme::initialise");
-		return FALSE;
-	}
+	
+	// Now can set up basic partition list
 	partitions_.clear();
-	for (int n = 0; n<maxparts; ++n)
+	for (int n = 0; n<nparts; ++n)
 	{
 		PartitionData *pd = partitions_.add();
 		pd->setId(n);
+		rv.set(n);
+		idVariable_.set(rv);
+		partitionNameNode_.execute(rv);
+		pd->setName(rv.asString());
 	}
 	
 	msg.exit("PartitioningScheme::initialise");
@@ -272,18 +328,23 @@ bool PartitioningScheme::runOptions()
 }
 
 // Update partition information (after load or change in options)
-void PartitioningScheme::updatePartitions(int nx, int ny, int nz, bool createGrid)
+void PartitioningScheme::updatePartitions(bool useRoughGrid)
 {
 	msg.enter("PartitioningScheme::updatePartitions");
 	
 	// Recalculate grid points (and icon if requested)
-	Vec3<int> npoints(nx,ny,nz);
+	Vec3<int> npoints;
 	double ***data;
-	if (createGrid)
+	
+	// If we're using the rough grid, we'll assume that we're also supposed to be filling a Grid structure as well
+	if (useRoughGrid)
 	{
+		npoints = roughGridSize_;
 		grid_.initialise(Grid::RegularXYZData, npoints);
 		data = grid_.data3d();
 	}
+	else npoints = fineGridSize_;
+	
 	// Clear partition data
 	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next) pd->clear();
 
@@ -311,7 +372,7 @@ void PartitioningScheme::updatePartitions(int nx, int ny, int nz, bool createGri
 				success = partitionFunctionNode_.execute(rv);
 				pid = rv.asInteger();
 				
-				if (createGrid) data[i][j][k] = pid;
+				if (useRoughGrid) data[i][j][k] = pid;
 				else partitions_[pid]->addCell(i,j,k);
 				z += dz;
 			}
@@ -344,7 +405,7 @@ PartitionData *PartitioningScheme::partition(int id)
 // Return name of nth partition in list
 const char *PartitioningScheme::partitionName(int id)
 {
-	ReturnValue rv(id);
+	static ReturnValue rv(id);
 	idVariable_.set(rv);
 	partitionNameNode_.execute(rv);
 	return rv.asString();
@@ -371,4 +432,10 @@ Grid &PartitioningScheme::grid()
 QIcon &PartitioningScheme::icon()
 {
 	return icon_;
+}
+
+// Return fine grid size
+Vec3<int> PartitioningScheme::fineGridSize()
+{
+	return fineGridSize_;
 }

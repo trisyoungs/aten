@@ -86,18 +86,11 @@ Model::Model()
 	trajectoryCurrentFrame_ = NULL;
 
 	// Component
-	componentIsRequired_ = FALSE;
-	componentPattern_ = NULL;
+	componentInsertionPolicy_ = Model::NoPolicy;
 	componentPartition_ = 0;
-	componentPopulation_ = 1;
+	componentPopulation_ = 0;
 	componentDensity_ = 1.0;
-	componentIsBulk_ = FALSE;
-	componentHasFreeDensity_ = FALSE;
-	componentMoveAllowed_[MonteCarlo::Insert] = TRUE;
-	componentMoveAllowed_[MonteCarlo::Delete] = FALSE;
-	componentMoveAllowed_[MonteCarlo::Translate] = TRUE;
-	componentMoveAllowed_[MonteCarlo::Rotate] = TRUE;
-	componentMoveAllowed_[MonteCarlo::ZMatrix] = FALSE;
+	componentRotatable_ = TRUE;
 
 	// Misc Function Data
 	bondingCuboids_ = NULL;
@@ -436,6 +429,8 @@ void Model::copy(Model *srcmodel)
 {
 	// Clear any current contents of the model
 	clear();
+	// Copy name
+	name_ = srcmodel->name_;
 	// Copy atoms
 	for (Atom *i = srcmodel->atoms(); i != NULL; i = i->next) addCopy(i);
 	// Copy bonds
@@ -443,13 +438,11 @@ void Model::copy(Model *srcmodel)
 	// Copy unit cell
 	cell_ = srcmodel->cell_;
 	// Copy component information
+	componentInsertionPolicy_ = srcmodel->componentInsertionPolicy_;
 	componentDensity_ = srcmodel->componentDensity_;
-	componentHasFreeDensity_ = srcmodel->componentHasFreeDensity_;
 	componentPartition_ = srcmodel->componentPartition_;
 	componentPopulation_ = srcmodel->componentPopulation_;
-	componentIsBulk_ = srcmodel->componentIsBulk_;
-	componentIsRequired_ = srcmodel->componentIsRequired_;
-	for (int n = 0; n < MonteCarlo::nMoveTypes; ++n) componentMoveAllowed_[n] = srcmodel->componentMoveAllowed_[n];
+	componentRotatable_ = srcmodel->componentRotatable_;
 }
 
 // Copy atom data from specified model

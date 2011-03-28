@@ -63,6 +63,8 @@ class PartitionData
 	private:
 	// Integer id of partition
 	int id_;
+	// Name of the partition
+	Dnchar name_;
 	// Number of cells in partition
 	int nCells_;
 	// List of basic coordinates of cells
@@ -79,6 +81,10 @@ class PartitionData
 	void setId(int id);
 	// Return id of partition
 	int id();
+	// Set name of partition
+	void setName(const char *name);
+	// Return name of partition
+	const char *name();
 	// Clear cells list
 	void clear();
 	// Add cell to list
@@ -91,6 +97,8 @@ class PartitionData
 	double volume();
 	// Adjust partition reduced mass contents
 	void adjustReducedMass(Atom *i, bool subtract = FALSE);
+	// Adjust partition reduced mass contents (from Model)
+	void adjustReducedMass(Model *m, bool subtract = FALSE);
 	// Return current density of partition
 	double density();
 };
@@ -115,8 +123,6 @@ class PartitioningScheme
 	Dnchar name_;
 	// Description of scheme (retrieved from description() function)
 	Dnchar description_;
-	// Pointer to checkvalues() function (if defined)
-	Tree *checkFunction_;
 	// Pointer to partition() function
 	Tree *partitionFunction_;
 	// Pointer to partitionname() function
@@ -154,10 +160,14 @@ class PartitioningScheme
 	// Variables to hold passed coordinates
 	DoubleVariable xVariable_, yVariable_, zVariable_;
 	IntegerVariable idVariable_;
+	// Grid size for rough approximation
+	Vec3<int> roughGridSize_;
+	// Fine grid size (used for actual calculation)
+	Vec3<int> fineGridSize_;
 	
 	public:
 	// Update partition information (after load or change in options)
-	void updatePartitions(int nx, int ny, int nz, bool createGrid);
+	void updatePartitions(bool useRoughGrid);
 	// Return number of partitions now recognised in grid
 	int nPartitions();
 	// Return first partition in list
@@ -172,6 +182,8 @@ class PartitioningScheme
 	Grid &grid();
 	// Return icon containing illustrative partitions
 	QIcon &icon();
+	// Return fine grid size
+	Vec3<int> fineGridSize();
 };
 
 #endif

@@ -252,7 +252,6 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 				Matrix mat = gui.disorderWizard->cell()->axes();
 				Vec3<int> npoints = grid.nPoints();
 				mat.applyScaling(1.0/npoints.x, 1.0/npoints.y, 1.0/npoints.z);
-				mat.print();
 				grid.setAxes(mat);
 				grid.setLowerPrimaryCutoff(pd->id()-0.5);
 				grid.setUpperPrimaryCutoff(pd->id()+0.5);

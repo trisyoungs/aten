@@ -60,14 +60,17 @@ class DisorderWizard : public QWizard
 	void on_TargetGenerateRadio_clicked(bool checked);
 	// Step 2 / 5 - Select model or define unit cell
 	void on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void on_ExistingModelTree_itemSelectionChanged();
 	void setCellAbsolute(double value);
 	void setCellRelative(double value);
 	// Step 3 / 5 - Select partitioning scheme for cell
-	void on_PartitionSchemeOptionsButton_clicked(bool checked);
 	void on_PartitionTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void on_PartitionTree_itemSelectionChanged();
+	void on_PartitionSchemeOptionsButton_clicked(bool checked);
 	// Step 4 / 5 - Select component models
+	void on_ChooseComponentsTree_itemSelectionChanged();
 	// Step 5 / 5 - Select component populations and partition assignments
-	void on_EditComponentsTablecurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void on_EditComponentsTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 	void on_NumberPolicyRadio_clicked(bool checked);
 	void on_DensityPolicyRadio_clicked(bool checked);
 	void on_NumberAndDensityPolicyRadio_clicked(bool checked);
@@ -75,7 +78,6 @@ class DisorderWizard : public QWizard
 	void on_ComponentPopulationSpin_valueChanged(int value);
 	void on_ComponentDensitySpin_valueChanged(double value);
 	void on_ComponentAllowRotationsCheck_clicked(bool checked);
-	void on_ComponentAllowTranslationsCheck_clicked(bool checked);
 	void on_ComponentTargetPartitionCombo_currentIndexChanged(int index);
 	
 	
@@ -83,7 +85,7 @@ class DisorderWizard : public QWizard
 	// Local variables
 	*/
 	private:
-	// Whether the windos is currently refreshing controls
+	// Whether the window is currently refreshing controls
 	bool refreshing_;
 	// Target model type
 	DisorderWizard::TargetModelType targetType_;

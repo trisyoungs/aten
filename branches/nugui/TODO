@@ -5,7 +5,10 @@
 			<para>Different colouring of component partitions</para>
 		</listitem>
 		<listitem>
-			<para>Rewrite progress indicator to cope for situations where no percentage progress is available</para>
+			<para>Add progress indicator for partition update - needs ProgressIndicator 'nudge' function?</para>
+		</listitem>
+		<listitem>
+			<para>Rewrite progress indicator, and add ability to cope with situations where no percentage progress is available</para>
 		</listitem>
 		<listitem>
 			<para>More verbosity for all commands</para>

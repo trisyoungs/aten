@@ -25,6 +25,7 @@
 #include "gui/disorderwizard.h"
 #include "gui/ttreewidgetitem.h"
 #include "model/model.h"
+#include "methods/mc.h"
 #include "base/sysfunc.h"
 #include "parser/commandnode.h"
 
@@ -107,7 +108,7 @@ void DisorderWizard::updateComponentControls()
 	ui.ComponentPopulationSpin->setDisabled(componentTarget_->componentInsertionPolicy() == Model::DensityPolicy);
 	ui.ComponentDensitySpin->setValue(componentTarget_->componentDensity());
 	ui.ComponentDensitySpin->setDisabled(componentTarget_->componentInsertionPolicy() == Model::NumberPolicy);
-	
+	ui.ComponentAllowRotationsCheck->setChecked(componentTarget_->componentRotatable());
 	refreshing_ = FALSE;
 }
 
@@ -123,8 +124,8 @@ void DisorderWizard::setPartitionData(QTreeWidgetItem *target, PartitioningSchem
 // Different page selected in the wizard...
 void DisorderWizard::pageChanged(int id)
 {
-	TTreeWidgetItem *item, *selectitem;
-	QTreeWidgetItem *qitem;
+	TTreeWidgetItem *item;
+	QTreeWidgetItem *qitem, *selectitem;
 	Model *m;
 	Dnchar text;
 	int count;
@@ -184,11 +185,14 @@ void DisorderWizard::pageChanged(int id)
 			for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
 			{
 				// Update grid and icon for PartitioningScheme
-				ps->updatePartitions(50,50,50,TRUE);
+				ps->updatePartitions(TRUE);
 				qitem = new QTreeWidgetItem(ui.PartitionTree);
 				partitioningSchemeItems_.add(qitem, ps);
 				setPartitionData(qitem,ps);
-				if (selectitem == NULL) selectitem = item;
+				if (selectitem == NULL) selectitem = qitem;
+				// If the selected mode is DisorderWizard::GenerateTarget then we only allow the simple unit cell partitioning
+				// Since it is always the first in the list, we cna just exit early.
+				if (targetType_ == DisorderWizard::GenerateTarget) break;
 			}
 			ui.PartitionTree->resizeColumnToContents(0);
 			ui.PartitionTree->resizeColumnToContents(1);
@@ -197,8 +201,10 @@ void DisorderWizard::pageChanged(int id)
 		// Step 4 / 5 - Select component models
 		case (4):
 			// Enable/disable relative populations checkbox
+			ui.NumberPolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
 			ui.DensityPolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
 			ui.RelativePolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
+			ui.NumberAndDensityPolicyRadio->setChecked(targetType_ == DisorderWizard::GenerateTarget);
 			ui.ChooseComponentsTree->clear();
 			ui.ChooseComponentsTree->setColumnCount(2);
 			for (m = aten.models(); m != NULL; m = m->next)
@@ -212,6 +218,8 @@ void DisorderWizard::pageChanged(int id)
 			}
 			ui.ChooseComponentsTree->resizeColumnToContents(0);
 			ui.ChooseComponentsTree->resizeColumnToContents(1);
+			// No selection by default, so disable Next button
+			button(QWizard::NextButton)->setEnabled(FALSE);
 			break;
 		// Step 5 / 5 - Select component populations and partition assignments
 		case (5):
@@ -254,7 +262,6 @@ void DisorderWizard::pageChanged(int id)
 
 void DisorderWizard::rejected()
 {
-	printf("REJECTED\n");
 	// If a new model was created, remove it here
 	if (newModel_ != NULL)
 	{
@@ -262,13 +269,11 @@ void DisorderWizard::rejected()
 		newModel_ = NULL;
 	}
 	existingModel_ = NULL;
-	printf("CLEANUP DONE\n");
+	gui.update(GuiQt::AllTarget);
 }
 
 void DisorderWizard::accepted()
 {
-	printf("ACCEPTED\n");
-	
 	// Ready to run disordered builder!
 	bool success;
 	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(existingModel_, partitioningScheme_, TRUE);
@@ -310,6 +315,15 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *cu
 	gui.update(GuiQt::AllTarget);
 }
 
+void DisorderWizard::on_ExistingModelTree_itemSelectionChanged()
+{
+	// Get number of selected items in tree
+	int nselected = ui.ExistingModelTree->selectedItems().size();
+	// Get button pointer
+	QAbstractButton *nextButton = button(QWizard::NextButton);
+	nextButton->setEnabled(nselected != 0);
+}
+
 // Grab values from defined cell controls
 void DisorderWizard::setCellAbsolute(double value)
 {
@@ -338,6 +352,15 @@ void DisorderWizard::setCellRelative(double value)
 // Step 3 / 5 - Select partitioning scheme for cell
 */
 
+void DisorderWizard::on_PartitionTree_itemSelectionChanged()
+{
+	// Get number of selected items in tree
+	int nselected = ui.PartitionTree->selectedItems().size();
+	// Get button pointer
+	QAbstractButton *nextButton = button(QWizard::NextButton);
+	nextButton->setEnabled(nselected != 0);
+}
+
 void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
 	if (current == NULL) return;
@@ -356,7 +379,7 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	// Run custom dialog for scheme
 	if (partitioningScheme_ == NULL) return;
 	partitioningScheme_->runOptions();
-	partitioningScheme_->updatePartitions(50,50,50,TRUE);
+	partitioningScheme_->updatePartitions(TRUE);
 	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.containsData(partitioningScheme_);
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);
@@ -364,9 +387,18 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 
 // Step 4 / 5 - Select component models
 
+void DisorderWizard::on_ChooseComponentsTree_itemSelectionChanged()
+{
+	// Get number of selected items in tree
+	int nselected = ui.ChooseComponentsTree->selectedItems().size();
+	// Get button pointer
+	QAbstractButton *nextButton = button(QWizard::NextButton);
+	nextButton->setEnabled(nselected != 0);
+}
+
 // Step 5 / 5 - Select component populations and partition assignments
 
-void DisorderWizard::on_EditComponentsTablecurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void DisorderWizard::on_EditComponentsTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
 	Refitem<QTreeWidgetItem, Model*> *ri = componentModelItems_.contains(current);
 	if (ri == NULL) return;
@@ -376,19 +408,34 @@ void DisorderWizard::on_EditComponentsTablecurrentItemChanged(QTreeWidgetItem *c
 
 void DisorderWizard::on_NumberPolicyRadio_clicked(bool checked)
 {
-	XXX
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	if (checked) componentTarget_->setComponentInsertionPolicy(Model::NumberPolicy);
+	setComponentData(componentTarget_);
+	updateComponentControls();
 }
 
 void DisorderWizard::on_DensityPolicyRadio_clicked(bool checked)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	if (checked) componentTarget_->setComponentInsertionPolicy(Model::DensityPolicy);
+	setComponentData(componentTarget_);
+	updateComponentControls();
 }
 
 void DisorderWizard::on_NumberAndDensityPolicyRadio_clicked(bool checked)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	if (checked) componentTarget_->setComponentInsertionPolicy(Model::NumberAndDensityPolicy);
+	setComponentData(componentTarget_);
+	updateComponentControls();
 }
 
 void DisorderWizard::on_RelativePolicyRadio_clicked(bool checked)
 {
+	if ((componentTarget_ == NULL) || refreshing_) return;
+	if (checked) componentTarget_->setComponentInsertionPolicy(Model::RelativePolicy);
+	setComponentData(componentTarget_);
+	updateComponentControls();
 }
 
 void DisorderWizard::on_ComponentPopulationSpin_valueChanged(int value)
@@ -408,14 +455,7 @@ void DisorderWizard::on_ComponentDensitySpin_valueChanged(double value)
 void DisorderWizard::on_ComponentAllowRotationsCheck_clicked(bool checked)
 {
 	if ((componentTarget_ == NULL) || refreshing_) return;
-	componentTarget_->setComponentMoveAllowed(MonteCarlo::Rotate, checked);
-	setComponentData(componentTarget_);
-}
-
-void DisorderWizard::on_ComponentAllowTranslationsCheck_clicked(bool checked)
-{
-	if ((componentTarget_ == NULL) || refreshing_) return;
-	componentTarget_->setComponentMoveAllowed(MonteCarlo::Translate, checked);
+	componentTarget_->setComponentRotatable(checked);
 	setComponentData(componentTarget_);
 }
 
