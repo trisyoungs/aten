@@ -35,6 +35,7 @@ DisorderData::DisorderData()
 	nDeleted_ = 0;
 	partitionData_ = NULL;
 	scaleFactor_ = 1.5;
+	moleculeId_ = -1;
 }
 
 /*
@@ -115,11 +116,17 @@ double DisorderData::partitionDensity()
 	return partitionData_->density();
 }
 
+// Return partition pointer
+PartitionData *DisorderData::partition()
+{
+	return partitionData_;
+}
+
 // Copy contents of component across to specified model
 void DisorderData::copyTo(Model *target)
 {
 	clipboard_.copyAll(&targetModel_);
-	clipboard_.pasteToModel(target);
+	clipboard_.pasteToModel(target, FALSE);
 }
 
 /*
@@ -130,6 +137,7 @@ void DisorderData::copyTo(Model *target)
 void DisorderData::prepareCandidate(const Matrix& volumeElement)
 {
 	static Matrix rotation;
+	moleculeId_ = -1;
 	// First, select a random cell from the list in the PartitionData
 	int *ijk = partitionData_->randomCell();
 	// Now, select a random unit position from within this cell, and add the two
@@ -147,6 +155,87 @@ void DisorderData::prepareCandidate(const Matrix& volumeElement)
 	}
 	// Centre the sourceModel_ at the random position, and we're done
 	sourceModel_.centre(pos);
+}
+
+// Accept candidate model into rest of population
+void DisorderData::acceptCandidate()
+{
+	if (moleculeId_ == -1)
+	{
+		// Copy sourcemodel to targetModel_
+		clipboard_.copyAll(&sourceModel_);
+		clipboard_.pasteToModel(&targetModel_, FALSE);
+		// Update density of target partition
+		partitionData_->adjustReducedMass(&sourceModel_);
+		++nAdded_;
+		// Reset failures counter
+		nFailed_ = 0;
+	}
+	else
+	{
+		// Overwrite old atomic coordinates with those currently in sourceModel_
+		for (int i=0; i<sourceModel_.nAtoms(); ++i) targetModel_.atom(moleculeId_*sourceModel_.nAtoms()+i)->r() = sourceModel_.atom(i)->r();
+	}
+}
+
+// Reject candidate model
+void DisorderData::rejectCandidate()
+{
+	++nFailed_;
+}
+
+// Select a random molecule from the current ensemble, and place in sourceModel_
+void DisorderData::selectCandidate()
+{
+	if (nAdded_ == 0)
+	{
+		moleculeId_ = -1;
+		return;
+	}
+	// Pick random molecule id, select those atoms and 
+	int i;
+	moleculeId_ = AtenMath::randomi(nAdded_);
+	targetModel_.selectNone();
+	for (int i=moleculeId_*sourceModel_.nAtoms(); i < (moleculeId_+1)*sourceModel_.nAtoms(); ++i) targetModel_.selectAtom(i);
+	clipboard_.copySelection(&targetModel_);
+	sourceModel_.clear();
+	clipboard_.pasteToModel(&sourceModel_);
+}
+
+// Delete selected candidate
+void DisorderData::deleteCandidate()
+{
+	if (moleculeId_ == -1) printf("Internal Error: No candidate to delete in DisorderData.\n");
+	else
+	{
+		targetModel_.selectNone();
+		for (int i=moleculeId_*sourceModel_.nAtoms(); i < (moleculeId_+1)*sourceModel_.nAtoms(); ++i) targetModel_.selectAtom(i);
+		targetModel_.selectionDelete();
+		partitionData_->adjustReducedMass(&sourceModel_, TRUE);
+		--nAdded_;
+		moleculeId_ = -1;
+	}
+}
+
+// Tweak molecule position / rotation, and place in sourceModel_
+void DisorderData::tweakCandidate(double maxDistance, double maxAngle)
+{
+	// Are we rotating the model as well?
+	static Matrix rotation;
+	Vec3<double> shift;
+	if (sourceModel_.componentRotatable())
+	{
+		// Get current centre of molecule
+		Vec3<double> oldCentre = sourceModel_.selectionCentreOfGeometry();
+		sourceModel_.centre(0.0,0.0,0.0);
+		rotation.createRotationXY(AtenMath::random()*maxAngle, AtenMath::random()*maxAngle);
+		for (Atom *i = sourceModel_.atoms(); i != NULL; i = i->next) i->r() = rotation * i->r();
+		sourceModel_.centre(oldCentre);
+	}
+	// Apply a random shift to the position
+	shift.randomUnit();
+	shift *= maxDistance;
+	sourceModel_.translateSelectionLocal(shift);
 }
 
 // Calculate overlap penalty of candidate with supplied model
@@ -189,27 +278,16 @@ bool DisorderData::otherOverlapPenalty(DisorderData *first, UnitCell *globalCell
 	return FALSE;
 }
 
-// Accept candidate model into rest of population
-void DisorderData::acceptCandidate()
-{
-	// Copy sourcemodel to targetModel_
-	clipboard_.copyAll(&sourceModel_);
-	clipboard_.pasteToModel(&targetModel_, FALSE);
-	// Update density of target partition
-	partitionData_->adjustReducedMass(&sourceModel_);
-	++nAdded_;
-}
-
-// Reject candidate model
-void DisorderData::rejectCandidate()
-{
-	++nFailed_;
-}
-
 // Return number of copies added
 int DisorderData::nAdded()
 {
 	return nAdded_;
+}
+
+// Return number of successive failures since last successful insertion
+int DisorderData::nFailed()
+{
+	return nFailed_;
 }
 
 // Adjust radius scale factor

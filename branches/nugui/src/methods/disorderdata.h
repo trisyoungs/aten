@@ -66,6 +66,8 @@ class DisorderData
 	const char *partitionName();
 	// Return density of target partition
 	double partitionDensity();
+	// Return partition pointer
+	PartitionData *partition();
 	// Copy contents of component across to specified model
 	void copyTo(Model *target);
 
@@ -76,7 +78,7 @@ class DisorderData
 	private:
 	// Number of copies added
 	int nAdded_;
-	// Number of insertion attempts failed
+	// Number of insertion attempts failed since last successful insertion
 	int nFailed_;
 	// Number of copies deleted
 	int nDeleted_;
@@ -84,22 +86,32 @@ class DisorderData
 	Clipboard clipboard_;
 	// Scaling factor for atomic radii in penalty function
 	double scaleFactor_;
+	// Id of molecule selected from current ensemble (if any)
+	int moleculeId_;
 	
 	public:
 	// Prepare copy of sourcemodel in random position (and orientation) in assigned partition
 	void prepareCandidate(const Matrix &volumeElement);
+	// Accept candidate model into rest of population
+	void acceptCandidate();
+	// Reject candidate model
+	void rejectCandidate();
+	// Select a random molecule from the current ensemble, and place in sourceModel_
+	void selectCandidate();
+	// Delete selected candidate
+	void deleteCandidate();
+	// Tweak molecule position / rotation, and place in sourceModel_
+	void tweakCandidate(double maxDistance, double maxAngle);
 	// Calculate overlap penalty of candidate with supplied model
 	bool modelOverlapPenalty(Model *other, UnitCell *globalCell);
 	// Calculate overlap penalty of candidate with rest of population
 	bool selfOverlapPenalty(UnitCell *globalCell);
 	// Calculate overlap penalty of candidate with all other insertion models
 	bool otherOverlapPenalty(DisorderData *first, UnitCell *globalCell);
-	// Accept candidate model into rest of population
-	void acceptCandidate();
-	// Reject candidate model
-	void rejectCandidate();
 	// Return number of copies added
 	int nAdded();
+	// Return number of successive failures since last successful insertion
+	int nFailed();
 	// Adjust radius scale factor
 	double adjustScaleFactor(double multiplier, double minimumValue);
 	// Return current radius scale factor

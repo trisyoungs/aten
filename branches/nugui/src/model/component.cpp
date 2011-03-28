@@ -23,7 +23,7 @@
 #include "base/sysfunc.h"
 
 // Insertion Policies
-const char *InsertionPolicyKeywords[Model::nInsertionPolicies] = { "none", "number", "density", "numderanddensity", "relative" };
+const char *InsertionPolicyKeywords[Model::nInsertionPolicies] = { "none", "number", "density", "both", "relative" };
 Model::InsertionPolicy Model::insertionPolicy(const char *s, bool reporterror)
 {
 	Model::InsertionPolicy pol = (Model::InsertionPolicy) enumSearch("insertion policy", Model::nInsertionPolicies, InsertionPolicyKeywords, s, reporterror);

@@ -12,10 +12,9 @@ int npartitions = 2;
 # Every partition definition *must* contain 'partition' and 'partitionname' functions
 int partition(double x, double y, double z)
 {
-	option("Cylinder ", "label");
-	double cyly = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5);
-	double cylz = option("Z", "doublespin", 0.0, 1.0, 0.1, 0.5);
-	double radius = option("R", "doublespin", 0.001, 1.0, 0.1, 0.1, "newline");
+	double cyly = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Cylinder Properties");
+	double cylz = option("Z", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Cylinder Properties");
+	double radius = option("R", "doublespin", 0.001, 1.0, 0.1, 0.1, "newline", "span=4", "group=Cylinder Properties");
 
 	// Check 1 - Is the point inside the defined cylinder (region 1)
 	double rij = sqrt( (y-cyly)*(y-cyly) + (z-cylz)*(z-cylz));

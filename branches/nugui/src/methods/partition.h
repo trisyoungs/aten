@@ -29,6 +29,7 @@
 #include "parser/usercommandnode.h"
 #include "parser/double.h"
 #include "parser/integer.h"
+#include "methods/disorderdata.h"
 
 #define CELLCHUNKSIZE 1000
 
@@ -75,6 +76,8 @@ class PartitionData
 	double volume_;
 	// Current reduced atomic mass present in partition
 	double reducedMass_;
+	// Reflist of components targeting this partition
+	Reflist<DisorderData,int> components_;
 	
 	public:
 	// Set id of partition
@@ -82,7 +85,7 @@ class PartitionData
 	// Return id of partition
 	int id();
 	// Set name of partition
-	void setName(const char *name);
+	void setName(const char *s);
 	// Return name of partition
 	const char *name();
 	// Clear cells list
@@ -101,6 +104,14 @@ class PartitionData
 	void adjustReducedMass(Model *m, bool subtract = FALSE);
 	// Return current density of partition
 	double density();
+	// Clear component list
+	void clearComponents();
+	// Add specified component to list
+	void addComponent(DisorderData *component);
+	// Return number of components in list
+	int nComponents();
+	// Return nth component in list
+	DisorderData *component(int id);
 };
 
 // Partitioning Scheme for Disordered Builder
@@ -170,6 +181,8 @@ class PartitioningScheme
 	void updatePartitions(bool useRoughGrid);
 	// Return number of partitions now recognised in grid
 	int nPartitions();
+	// Clear partition component lists
+	void clearComponentLists();
 	// Return first partition in list
 	PartitionData *partitions();
 	// Return nth partition in list

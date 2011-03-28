@@ -67,9 +67,9 @@ int PartitionData::id()
 }
 
 // Set name of partition
-void PartitionData::setName(const char *name)
+void PartitionData::setName(const char *s)
 {
-	name_ = name;
+	name_ = s;
 }
 
 // Return name of partition
@@ -85,7 +85,6 @@ void PartitionData::clear()
 	nCells_ = 0;
 	volume_ = 0.0;
 	reducedMass_ = 0.0;
-	name_.clear();
 }
 
 // Add cell to list
@@ -138,6 +137,31 @@ void PartitionData::adjustReducedMass(Model *m, bool subtract)
 double PartitionData::density()
 {
 	return reducedMass_ / (volume_ * 1.0E-24);
+}
+
+// Clear component list
+void PartitionData::clearComponents()
+{
+	components_.clear();
+}
+
+// Add specified component to list
+void PartitionData::addComponent(DisorderData *component)
+{
+	components_.add(component);
+}
+
+// Return number of components in list
+int PartitionData::nComponents()
+{
+	return components_.nItems();
+}
+
+// Return nth component in list
+DisorderData *PartitionData::component(int id)
+{
+	if ((id < 0) || (id >= components_.nItems())) return NULL;
+	return components_[id]->item;
 }
 
 /*
@@ -291,10 +315,7 @@ bool PartitioningScheme::initialise()
 	{
 		PartitionData *pd = partitions_.add();
 		pd->setId(n);
-		rv.set(n);
-		idVariable_.set(rv);
-		partitionNameNode_.execute(rv);
-		pd->setName(rv.asString());
+		pd->setName(partitionName(n));
 	}
 	
 	msg.exit("PartitioningScheme::initialise");
@@ -388,6 +409,12 @@ void PartitioningScheme::updatePartitions(bool useRoughGrid)
 int PartitioningScheme::nPartitions()
 {
 	return partitions_.nItems();
+}
+
+// Clear partition component lists
+void PartitioningScheme::clearComponentLists()
+{
+	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next) pd->clearComponents();
 }
 
 // Return list object containing partition information

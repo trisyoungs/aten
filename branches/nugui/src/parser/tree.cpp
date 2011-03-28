@@ -144,10 +144,21 @@ void Tree::reset()
 	nodes_.clear();
 	scopeStack_.clear();
 	statements_.clear();
-	// Re-own the root node
+	// Cast rootnode into ScopeNode (if possible)
+	ScopeNode *scope = NULL;
+	if (rootnode->nodeType() == TreeNode::ScopedNode) scope = (ScopeNode*) rootnode;
+	else printf("Internal Error: Failed to cast rootnode into a ScopeNode in Tree::reset().\n");
+	
+	// Re-own the root node and clear its variable list
 	nodes_.own(rootnode);
-	scopeStack_.add( (ScopeNode*) rootnode);
 	statements_.add(rootnode);
+	if (scope)
+	{
+		scopeStack_.add( (ScopeNode*) rootnode);
+		scope->variables.clear();
+		scope->createGlobalVariables();
+	}
+	
 	msg.exit("Tree::reset");
 }
 

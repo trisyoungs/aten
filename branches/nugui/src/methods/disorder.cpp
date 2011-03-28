@@ -31,14 +31,29 @@
 bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fixedCell)
 {
 	msg.enter("MonteCarlo::disorder");
-	DisorderData *component;
+	DisorderData *component, *other;
+	Refitem<DisorderData,int> *ri;
 	PartitionData *pd;
 	Atom *i;
-	int n, id, cycle, nSatisfied;
+	int n, id, cycle, nSatisfied, nInsertions, nRelative = 0;
 	Vec3<double> r;
 	UnitCell *cell;
-	double accuracy = 0.02, delta;
-
+	double delta, firstRelative, firstActual, expectedPop;
+	bool isRelative;
+	
+	// The accuracy parameter determines what percentage error we will allow in actual vs requested densities
+	double accuracy = 0.01;
+	// The maxfailures limit is the number of successive failed insertions we allow before we reduce the scale factor
+	int maxFailures = 5;
+	// The reductionfactor is the factor by which we multiply scale factors after reaching the limit of unsuccessful insertions
+	double reductionFactor = 0.95;
+	// Number of tweaks to attempt, per component, per cycle
+	int nTweaks = 5;
+	// Maximum distance to translate molecule in tweak
+	double deltaDistance = 1.0;
+	// Maximum angle (each around X and Y) to rotate molecule in tweak
+	double deltaAngle = 20.0;
+	
 	// Step 1 - Construct cell lists in scheme
 	if (scheme == NULL)
 	{
@@ -50,14 +65,17 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	Vec3<int> npoints = scheme->fineGridSize();
 	msg.print("Generating fine-grained partition data...\n");
 	scheme->updatePartitions(FALSE);
+	scheme->clearComponentLists();
 
 	// Step 2 - Construct list of components with partition references, taking copies of all component models
+	// List all models with RelativePolicy at the start of the list, and store a reflist of the components in the original model order
+	// Also, build up reverse list of components associated to partitions
 	Model *targetModel_ = destmodel;
 	cell = targetModel_->cell();
 	List<DisorderData> components_;
+	Reflist<DisorderData, int> componentsOrder_;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		m->print();
 		if (m->componentInsertionPolicy() == Model::NoPolicy) continue;
 		// Check that we can get the requested partition
 		int id = m->componentPartition();
@@ -67,13 +85,16 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			msg.exit("MonteCarlo::disorder");
 			return FALSE;
 		}
-		component = components_.add();
+		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.insert(NULL) : components_.add());
 		msg.print("Initialising component model '%s'...\n", m->name());
 		if (!component->initialise(m, scheme->partition(id)))
 		{
 			msg.exit("MonteCarlo::disorder");
 			return FALSE;
 		}
+		componentsOrder_.add(component);
+		// Add component to partition's own list
+		scheme->partition(id)->addComponent(component);
 	}
 	if (components_.nItems() == 0)
 	{
@@ -137,17 +158,17 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	msg.print("Partition\t\tVolume\tDensity\n");
 	for (pd = scheme->partitions(); pd != NULL; pd = pd->next)
 	{
-		msg.print("%2i %8s\t%10.2f\t%8.5f\n", pd->id(), scheme->partitionName(pd->id()), pd->volume(), pd->density()); 
+		msg.print("%2i %8s\t%10.2f\t%8.5f\n", pd->id(), pd->name(), pd->volume(), pd->density()); 
 	}
 	
 	// All set up and ready - do the build
-	msg.print("Cycle  Component    Region    Population     Density\n");
+	msg.print("Cycle  Component    Region    Population (Requested)  Density (Requested)  RSF\n");
 	for (cycle = 1; cycle <= 500; ++cycle)
 	{
-		// Each cycle will consist of one round of insertions, one round of adjustments, and one round of shaking
+		// Each cycle will consist of one round of insertions and deletions, and one round of MC shaking (tweaking)
 		
 		/*
-		// Insertions
+		// Insertions / Deletions
 		*/
 		nSatisfied = 0;
 		for (component = components_.first(); component != NULL; component = component->next)
@@ -162,7 +183,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 						continue;
 					}
 					break;
-				// For density policy, check the current density of the component's target partition
+				// For density (and relative) policy, check the current density of the component's target partition
 				case (Model::DensityPolicy):
 					delta = fabs(1.0 - component->requestedDensity() / component->partitionDensity());
 					if (delta < accuracy)
@@ -171,32 +192,152 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 						continue;
 					}
 					break;
+				// For number and density, we obviously require both to be satisfied
+				case (Model::NumberAndDensityPolicy):
+					delta = fabs(1.0 - component->requestedDensity() / component->partitionDensity());
+					if ((delta < accuracy) && (component->requestedPopulation() == component->nAdded()))
+					{
+						nSatisfied++;
+						continue;
+					}
+					break;
+				// For the relative policy, the requested densities and the relative populations are important
+				case (Model::RelativePolicy):
+					if (component->nAdded() == 0) break;
+					delta = fabs(1.0 - component->requestedDensity() / component->partitionDensity());
+					// Calculate raltive population ratio with the first relative component
+					firstRelative = components_.first()->requestedPopulation();
+					firstActual = components_.first()->nAdded();
+					expectedPop = (component->requestedPopulation() / firstRelative) * firstActual;
+					isRelative = fabs(1.0 - expectedPop / component->nAdded()) < accuracy;
+// 					printf("Population relative expected = %f, actual = %i, delta = %f\n", expectedPop, component->nAdded(), fabs(1.0 - expectedPop / component->nAdded()));
+					if ((delta < accuracy) && isRelative)
+					{
+						nSatisfied++;
+						continue;
+					}
+					break;
 			}
 			
 			// Termination condition for this component not satisfied, so more molecules needed!
-			// Prepare a new candidate and do a test insertion
-			component->prepareCandidate(volumeElement);
-			// Test component against its own population...
-			if (component->selfOverlapPenalty(cell) > 0.0) component->rejectCandidate();
-			else if (component->modelOverlapPenalty(targetModel_, cell)) component->rejectCandidate();
-			else if (component->otherOverlapPenalty(components_.first(), cell)) component->rejectCandidate();
-			else component->acceptCandidate();
+			if (component->insertionPolicy() == Model::RelativePolicy)
+			{
+				// If this relative component is already relative to the first in the list, the it is just a case of adding some more
+				if (isRelative) nInsertions = component->requestedPopulation();
+				else
+				{
+					// Depending on the expected population, we either insert or delete
+					nInsertions = expectedPop - component->nAdded();
+				}
+			}
+			else nInsertions = 1;
+			
+			// Prepare/select nTrial candidates and do some test insertions or deletions
+			if (nInsertions == 0) continue;
+			else if (nInsertions > 0) for (n=0; n<nInsertions; ++n)
+			{
+				/*
+				// Insertion
+				*/
+				component->prepareCandidate(volumeElement);
+				// Test component against its own population...
+				if (component->selfOverlapPenalty(cell) > 0.0) component->rejectCandidate();
+				else if (component->modelOverlapPenalty(targetModel_, cell)) component->rejectCandidate();
+				else if (component->otherOverlapPenalty(components_.first(), cell)) component->rejectCandidate();
+				else
+				{
+					// Happy days! This position is fine, so insert the molecule and continue the loop
+					component->acceptCandidate();
+					continue;
+				}
+				
+				// We are here, so we failed again. Have we reached our successive failures limit?
+				if (component->nFailed() >= maxFailures) component->adjustScaleFactor(reductionFactor, 1.15);
+			}
+			else for (n=nInsertions; n < 0; ++n)
+			{
+				/*
+				// Deletions
+				*/
+				component->selectCandidate();
+				component->deleteCandidate();
+			}
 		}
 
-		// Print summary of cycle
+		/*
+		// Tweaks
+		*/
 		for (component = components_.first(); component != NULL; component = component->next)
 		{
-			switch (component->insertionPolicy())
+			for (n = 0; n< nTweaks; ++n)
 			{
-				case (Model::NumberPolicy):
-					msg.print("%5i %-15s %-10s %-6i           --   %5.3f\n", cycle, component->modelName(), component->partitionName(), component->nAdded(), component->scaleFactor());
-					break;
+				// Select a candidate molecule, tweak it, and do a test insertion
+				component->selectCandidate();
+				component->tweakCandidate(deltaDistance, deltaAngle);
+				// Test component against its own population...
+				if (component->selfOverlapPenalty(cell) > 0.0) continue;
+				else if (component->modelOverlapPenalty(targetModel_, cell)) continue;
+				else if (component->otherOverlapPenalty(components_.first(), cell)) continue;
+				else
+				{
+					// Happy days! This position is fine, so store new coordinates and continue the loop
+					component->acceptCandidate();
+					continue;
+				}
 			}
+		}
+		// Check densities of all components - if higher than requested, delete some molecules randomly from all components targetting the same partition
+		for (component = components_.first(); component != NULL; component = component->next)
+		{
+			if (component->requestedDensity() > component->partitionDensity()) continue;
+			// Uh-oh - density is higher. Let's delete stuff...
+			while (component->requestedDensity() < component->partitionDensity())
+			{
+				// Pick a random component from the partition's list
+				pd = component->partition();
+				id = AtenMath::randomi(pd->nComponents());
+				other = pd->component(id);
+				if (other == NULL) printf("Baaaaaad error.\n");
+				else
+				{
+					other->selectCandidate();
+					other->deleteCandidate();
+				}
+			}
+		}
+		
+		/*
+		// Cycle Summary
+		*/
+		for (component = components_.first(); component != NULL; component = component->next)
+		{
+			msg.print("%-5i   %-15s %-10s  %-5i ", cycle, component->modelName(), component->partitionName(), component->nAdded());
+			
+			if (component->insertionPolicy() == Model::DensityPolicy) msg.print("( N/A )  ");
+			else if (component->insertionPolicy() == Model::RelativePolicy) msg.print("(R%-4i)  ", component->requestedPopulation());
+			else msg.print("(%-5i)  ", component->requestedPopulation());
+			
+			msg.print("%8.5f  ", component->partitionDensity());
+			if (component->insertionPolicy() == Model::NumberPolicy) msg.print("(   N/A  )  ");
+			else msg.print("(%8.5f)  ", component->requestedDensity());
+			
+			msg.print("%5.3f\n", component->scaleFactor());
+		}
+		
+		// Finished?
+		if (nSatisfied == components_.nItems())
+		{
+			msg.print("Done.\n");
+			break;
 		}
 	}
 	
-	// Done - Copy component model contents across to targetModel_
-	for (component = components_.first(); component != NULL; component = component->next) component->copyTo(targetModel_);
+	// Print summary
 	
+	// Copy component model contents across to targetModel_, in the order they were originally listed
+	for (ri = componentsOrder_.first(); ri != NULL; ri = ri->next) ri->item->copyTo(targetModel_);
+	
+	msg.enter("MonteCarlo::disorder");
+	return TRUE;
 }
 

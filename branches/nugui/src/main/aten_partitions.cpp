@@ -136,7 +136,7 @@ bool Aten::openPartition(const char *filename)
 	msg.enter("Aten::openPartition");
 	// Construct partitions Program...
 	PartitioningScheme *ps = partitioningSchemes_.add();
-	bool success = ps->schemeDefinition().generateFromFile(filename, filename, TRUE);
+	bool success = ps->schemeDefinition().generateFromFile(filename, filename, FALSE);
 	if (success) success = ps->initialise();
 	
 	if (success)

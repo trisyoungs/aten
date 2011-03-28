@@ -229,6 +229,7 @@ void GuiQt::run()
 	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY
 
 	// Set the modality of some dialogs
+	disorderWizard->setModal(FALSE);
 	prefsDialog->setModal(TRUE);
 	forcefieldEditorDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);

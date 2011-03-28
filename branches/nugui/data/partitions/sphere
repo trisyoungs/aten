@@ -26,11 +26,10 @@ int partition(double x, double y, double z)
 	# Partitions *must* be numbered consecutively from zero upwards.
 
 	// Variables should be listed here using the 'options' keyword (so that they may be displayed in the GUI)
-	option("Sphere ", "label");
-	double spherex = option("X", "doublespin", 0.0, 1.0, 0.1, 0.5);
-	double spherey = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5);
-	double spherez = option("Z", "doublespin", 0.0, 1.0, 0.1, 0.5);
-	double spherer = option("R", "doublespin", 0.001, 1.0, 0.1, 0.1, "newline");
+	double spherex = option("X", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Sphere Properties");
+	double spherey = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Sphere Properties");
+	double spherez = option("Z", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Sphere Properties");
+	double spherer = option("R", "doublespin", 0.001, 1.0, 0.1, 0.1, "newline", "span=3","group=Sphere Properties");
 
 	// Check 1 - Is the point inside the defined sphere (region 1)
 	double rij = sqrt( (x-spherex)*(x-spherex) + (y-spherey)*(y-spherey) + (z-spherez)*(z-spherez));

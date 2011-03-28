@@ -149,6 +149,7 @@ void DisorderWizard::pageChanged(int id)
 			{
 				newModel_ = aten.addModel();
 				aten.setCurrentModel(newModel_, TRUE);
+				newModel_->setName("Disorder Model");
 				gui.update(GuiQt::AllTarget);
 			}
 			
@@ -383,6 +384,10 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.containsData(partitioningScheme_);
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);
+	partitioningScheme_ = ri->data;
+	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Visual);
+	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Visual);
+	gui.update(GuiQt::CanvasTarget);
 }
 
 // Step 4 / 5 - Select component models
