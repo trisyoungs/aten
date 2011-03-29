@@ -14,7 +14,7 @@ int partition(double x, double y, double z)
 {
 	double cylx = option("X", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Cylinder Properties");
 	double cyly = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Cylinder Properties");
-	double radius = option("R", "doublespin", 0.001, 1.0, 0.1, 0.1, "newline", "span=4", "group=Cylinder Properties");
+	double radius = option("R", "doublespin", 0.001, 1.0, 0.1, 0.35, "newline", "span=4", "group=Cylinder Properties");
 
 	// Check 1 - Is the point inside the defined cylinder (region 1)
 	double rij = sqrt( (x-cylx)*(x-cylx) + (y-cyly)*(y-cyly));

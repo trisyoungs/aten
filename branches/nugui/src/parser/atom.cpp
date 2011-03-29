@@ -416,7 +416,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			break;
 		case (AtomVariable::Selected):
 			ptr->parent()->beginUndoState("(De)select atom");
-			newvalue.asBool() ? ptr->parent()->deselectAtom(i) : ptr->parent()->selectAtom(ptr);
+			newvalue.asBool() ? ptr->parent()->selectAtom(ptr) : ptr->parent()->deselectAtom(ptr);
 			ptr->parent()->endUndoState();
 			break;
 		case (AtomVariable::Style):

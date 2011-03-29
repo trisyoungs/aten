@@ -120,7 +120,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				break;
 		}
 		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.insert(NULL) : components_.add());
-		msg.print("Initialising component model '%s'...\n", m->name());
+		msg.print("Initialising component model '%s' for partition '%s'...\n", m->name(), scheme->partitionName(id));
 		if (!component->initialise(m, scheme->partition(id)))
 		{
 			msg.exit("MonteCarlo::disorder");
@@ -296,7 +296,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				// Deletions
 				*/
 // 				printf("Deletion %i on component %p\n", n, component);
-				if (AtenMath::random() < 0.90) continue;
+// 				if (AtenMath::random() < 0.90) continue;
 				if (!component->selectCandidate()) break;
 				component->deleteCandidate();
 			}
@@ -376,6 +376,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			msg.print("Done.\n");
 			break;
 		}
+		gui.processMessages();
 	}
 	
 	// Print summary

@@ -101,7 +101,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	# Variable declaration
 	model srcmodel= aten.frame;
 	pattern p;
-	int nmols, n, m, mol, nresb, nresa, nrest, nrot, idj, count;
+	int nmols, n, m, o, mol, nresb, nresa, nrest, nrot, idj, count;
 	double rij, mass;
 	vector com, r;
 	atom i, j;
@@ -247,7 +247,16 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 					writelinef("%5i%5i\n", b.id[1], b.id[2]);
 					srcmodel.selectnone();
 					srcmodel.selecttree(p.atoms[b.id[1]], bnd);
-					srcmodel.deselect(b.id[1], b.id[2]);
+					// Check here the number of selected atoms - if greater than half the atoms in the molecule then we're better off with the inverse selection!
+					if (srcmodel.nselected > 0.5*p.nmolatoms)
+					{
+						for (o=1; o<=p.nmolatoms; ++o)
+						{
+							if (p.atoms[o].selected) p.atoms[o].selected = FALSE;
+							else p.atoms[o].selected = TRUE;
+						}
+					}
+					srcmodel.deselect(p.atoms[b.id[1]], p.atoms[b.id[2]]);
 					for (j in srcmodel.selection) writelinef(" %4i", j.id-p.firstatomid+1);
 					writelinef("\n");
 				}
@@ -261,7 +270,8 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	for (ffatom ffa in srcmodel.fftypes)
 	{
 		if ((ffa.form != "lj") && (ffa.form != "ljgeom")) error("Error: Atom type '%s' contains short-range parameters of an incompatible type with EPSR (%s).\n", ffa.name, ffa.form);
-		writelinef(" %3s %3s    %1i\n", ffa.name, aten.elements[ffa.z].symbol, 0);
+		if (ffa.z == 1) writelinef(" %3s %3s    %1i\n", ffa.name, aten.elements[ffa.z].symbol, 1);
+		else writelinef(" %3s %3s    %1i\n", ffa.name, aten.elements[ffa.z].symbol, 0);
 
 		// Masses - for H atoms, write deuterium mass instead
 		if (ffa.z == 1) mass = 2.0;
