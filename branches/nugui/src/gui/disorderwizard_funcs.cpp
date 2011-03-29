@@ -78,7 +78,11 @@ void DisorderWizard::setComponentData(Model *m)
 	Refitem<QTreeWidgetItem, Model*> *ri = componentModelItems_.containsData(m);
 	if (ri == NULL) return;
 	ri->item->setIcon(0, m->icon());
-	Dnchar text(-1,"%s\n", m->name());	//TGAY
+	Dnchar text;
+	text.sprintf("%s\nPolicy: %s", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()));
+	if (m->componentInsertionPolicy() != Model::DensityPolicy) text.strcatf("\nPopulation: %i", m->componentPopulation());
+	if (m->componentInsertionPolicy() != Model::NumberPolicy) text.strcatf("\nDensity: %f", m->componentDensity());
+	text.strcatf("\nPartition: %i %s", m->componentPartition(), partitioningScheme_->partitionName(m->componentPartition()));
 	ri->item->setText(1, text.get());
 	ri->item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 }
@@ -109,6 +113,8 @@ void DisorderWizard::updateComponentControls()
 	ui.ComponentDensitySpin->setValue(componentTarget_->componentDensity());
 	ui.ComponentDensitySpin->setDisabled(componentTarget_->componentInsertionPolicy() == Model::NumberPolicy);
 	ui.ComponentAllowRotationsCheck->setChecked(componentTarget_->componentRotatable());
+	if (componentTarget_->componentPartition() >= partitioningScheme_->nPartitions()) componentTarget_->setComponentPartition(0);
+	ui.ComponentTargetPartitionCombo->setCurrentIndex(componentTarget_->componentPartition());
 	refreshing_ = FALSE;
 }
 
@@ -150,6 +156,8 @@ void DisorderWizard::pageChanged(int id)
 				newModel_ = aten.addModel();
 				aten.setCurrentModel(newModel_, TRUE);
 				newModel_->setName("Disorder Model");
+				if (targetType_ == DisorderWizard::NewTarget) setCellAbsolute(0.0);
+				else setCellRelative(0.0);
 				gui.update(GuiQt::AllTarget);
 			}
 			
@@ -202,6 +210,7 @@ void DisorderWizard::pageChanged(int id)
 		// Step 4 / 5 - Select component models
 		case (4):
 			// Enable/disable relative populations checkbox
+			refreshing_ = TRUE;
 			ui.NumberPolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
 			ui.DensityPolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
 			ui.RelativePolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
@@ -216,18 +225,16 @@ void DisorderWizard::pageChanged(int id)
 				item->setIcon(0,m->icon());
 				item->setText(1,m->name());
 				item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
-				// Force policy if necessary
-				m->setComponentInsertionPolicy(targetType_ == DisorderWizard::GenerateTarget ? Model::NumberAndDensityPolicy : Model::NumberPolicy);
 			}
+			refreshing_ = FALSE;
 			ui.ChooseComponentsTree->resizeColumnToContents(0);
 			ui.ChooseComponentsTree->resizeColumnToContents(1);
+			updateComponentControls();
 			// No selection by default, so disable Next button
 			button(QWizard::NextButton)->setEnabled(FALSE);
 			break;
 		// Step 5 / 5 - Select component populations and partition assignments
 		case (5):
-			// Flag all components as not required except those selected in the ChooseComponentsTree
-			for (m = aten.models(); m != NULL; m = m->next) m->setComponentInsertionPolicy(Model::NoPolicy);
 			ui.EditComponentsTree->clear();
 			ui.EditComponentsTree->setColumnCount(2);
 			componentModelItems_.clear();
@@ -241,16 +248,19 @@ void DisorderWizard::pageChanged(int id)
 					printf("Error: Found a NULL model reference when populating EditComponentsTree.\n");
 					continue;
 				}
-				m->setComponentInsertionPolicy(Model::NumberPolicy);
+				// Force policy if necessary
+				if (targetType_ == DisorderWizard::GenerateTarget) m->setComponentInsertionPolicy(Model::NumberAndDensityPolicy);
 				item = new TTreeWidgetItem(ui.EditComponentsTree);
 				item->data.set(VTypes::ModelData, m);
 				componentModelItems_.add(item, m);
 				setComponentData(m);
 				if (selectitem == NULL) selectitem = item;
 			}
+			// Flag all components not required as having no insertion policy
+			for (m = aten.models(); m != NULL; m = m->next) if (!componentModelItems_.containsData(m)) m->setComponentInsertionPolicy(Model::NoPolicy);
+			ui.EditComponentsTree->setCurrentItem(selectitem);
 			ui.EditComponentsTree->resizeColumnToContents(0);
 			ui.EditComponentsTree->resizeColumnToContents(1);
-			ui.EditComponentsTree->setCurrentItem(selectitem);
 			// Refresh items in partition combo box
 			ui.ComponentTargetPartitionCombo->clear();
 			for (int n = 0; n < partitioningScheme_->nPartitions(); ++n)
