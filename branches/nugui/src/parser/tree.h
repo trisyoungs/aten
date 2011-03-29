@@ -27,6 +27,7 @@
 #include "parser/widgetnode.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
+#include "parser/scopenode.h"
 #include "command/commands.h"
 #include "templates/namemap.h"
 #include "templates/list.h"
@@ -162,6 +163,10 @@ class Tree
 	/*
 	// Variables / Constants
 	*/
+	private:
+	// Local ScopeNode
+	ScopeNode localScope_;
+
 	public:
 	// Add constant value to tompost scope
 	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
@@ -183,8 +188,8 @@ class Tree
 	Variable *findVariableInScope(const char *name, int &scopelevel);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
-	// Search for named variable declaration in this tree's scope
-	Variable *findVariableDeclaration(const char *name);
+	// Return local scope's variable list
+	const VariableList &localVariables() const;
 
 
 	/*

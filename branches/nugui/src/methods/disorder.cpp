@@ -228,8 +228,8 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 					break;
 				// For number and density, we obviously require both to be satisfied
 				case (Model::NumberAndDensityPolicy):
-					delta = fabs(1.0 - component->partitionDensity() / component->requestedDensity());
-					if ((delta < accuracy) && (component->requestedPopulation() == component->nAdded()))
+// 					delta = fabs(1.0 - component->partitionDensity() / component->requestedDensity());
+					if (component->requestedPopulation() == component->nAdded())
 					{
 						nSatisfied++;
 						continue;

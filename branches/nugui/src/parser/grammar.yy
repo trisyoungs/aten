@@ -666,7 +666,7 @@ pushfunc:
 	/* empty */					{
 		msg.print(Messenger::Parse,"PARSER : pushfunc : function/statement '%s'\n", yylval.name->get());
 		$$ = cmdparser.pushFunction(yylval.name->get(), declaredType);
-		cmdparser.pushScope();
+/* 		cmdparser.pushScope(); */
 		}
 	;
 

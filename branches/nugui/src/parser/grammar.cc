@@ -3208,7 +3208,7 @@ yyreduce:
     {
 		msg.print(Messenger::Parse,"PARSER : pushfunc : function/statement '%s'\n", yylval.name->get());
 		(yyval.tree) = cmdparser.pushFunction(yylval.name->get(), declaredType);
-		cmdparser.pushScope();
+/* 		cmdparser.pushScope(); */
 		}
     break;
 

@@ -183,6 +183,7 @@ WidgetNode::WidgetNode()
 	next = NULL;
 
 	// Private variables
+	nodeType_ = TreeNode::GuiWidgetNode;
 	controlType_ = WidgetNode::nGuiControls;
 	returnType_ = VTypes::NoData;
 	widget_ = NULL;

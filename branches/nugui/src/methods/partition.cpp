@@ -357,7 +357,8 @@ Variable *PartitioningScheme::findVariable(const char *name)
 		return NULL;
 	}
 	int scope;
-// 	schemeDefinition_.
+
+	// All user-definable variables are widgets, so search 
 	Variable *result = partitionFunction_->findVariableInScope(name, scope);
 	if (result) return result;
 	else

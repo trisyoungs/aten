@@ -810,10 +810,10 @@ TreeNode *Tree::wrapVariable(Variable *var, TreeNode *arrayindex)
 	return vnode;
 }
 
-// Search for named variable declaration in this tree's ScopeNode
-Variable *Tree::findVariableDeclaration(const char *name)
+// Return local scope's variable list
+const VariableList &Tree::localVariables() const
 {
-// 	for (TreeNode *node = n	TGAY
+	return localScope_.variables;
 }
 
 /*
@@ -933,6 +933,9 @@ Tree *Tree::addLocalFunction(const char *funcname)
 	result->setName(funcname);
 	result->setType(Tree::FunctionTree);
 	result->setParent(parent_);
+	// Manually push this Tree's internal ScopeNode onto the stack
+	scopeStack_.add(&localScope_,Command::NoFunction);
+	msg.print(Messenger::Parse, "ScopeNode %p is pushed (local function scope).\n", &localScope_);
 	return result;
 }
 

@@ -69,8 +69,7 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 	msg.print("Current component specification:\n");
 	Vec3<double> v1, v2;
 	Dnchar text;
-	msg.print("                                                      Centre                 Geometry\n");
-	msg.print("Model        nMols  I D T R Z    Region         X       Y       Z       X       Y       Z     Overlap\n");
+	msg.print("Model           Policy       Partition       Population   Density\n");
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 // 		ComponentRegion *r = m->region();
