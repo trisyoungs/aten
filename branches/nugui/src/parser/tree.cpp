@@ -52,7 +52,8 @@ Tree::Tree()
 	type_ = Tree::UnknownTree;
 	readOptions_ = LineParser::Defaults;
 	customDialog_ = NULL;
-
+	localScope_ = NULL;
+	
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -574,6 +575,8 @@ TreeNode *Tree::pushScope(Command::Function func)
 	ScopeNode *node = new ScopeNode();
 	nodes_.own(node);
 	scopeStack_.add(node,func);
+	// The second scope node added to the tree will be the basic local one (in the case of a function)
+	if (scopeStack_.nItems() == 2) localScope_ = node;
 	msg.print(Messenger::Parse, "ScopeNode %p is pushed.\n", node);
 	return node;
 }
@@ -813,7 +816,7 @@ TreeNode *Tree::wrapVariable(Variable *var, TreeNode *arrayindex)
 // Return local scope's variable list
 const VariableList &Tree::localVariables() const
 {
-	return localScope_.variables;
+	return localScope_->variables;
 }
 
 /*
@@ -933,9 +936,6 @@ Tree *Tree::addLocalFunction(const char *funcname)
 	result->setName(funcname);
 	result->setType(Tree::FunctionTree);
 	result->setParent(parent_);
-	// Manually push this Tree's internal ScopeNode onto the stack
-	scopeStack_.add(&localScope_,Command::NoFunction);
-	msg.print(Messenger::Parse, "ScopeNode %p is pushed (local function scope).\n", &localScope_);
 	return result;
 }
 

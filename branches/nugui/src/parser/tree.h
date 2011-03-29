@@ -27,7 +27,7 @@
 #include "parser/widgetnode.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
-#include "parser/scopenode.h"
+#include "parser/variablelist.h"
 #include "command/commands.h"
 #include "templates/namemap.h"
 #include "templates/list.h"
@@ -164,8 +164,8 @@ class Tree
 	// Variables / Constants
 	*/
 	private:
-	// Local ScopeNode
-	ScopeNode localScope_;
+	// Pointer to local ScopeNode (for functions)
+	ScopeNode *localScope_;
 
 	public:
 	// Add constant value to tompost scope

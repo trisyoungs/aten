@@ -358,13 +358,15 @@ Variable *PartitioningScheme::findVariable(const char *name)
 	}
 	int scope;
 
-	// All user-definable variables are widgets, so search 
-	Variable *result = partitionFunction_->findVariableInScope(name, scope);
+	// All user-definable variables are widgets, so search just for widgets
+	Variable *result = partitionFunction_->localVariables().find(name);
+	
 	if (result) return result;
 	else
 	{
 		msg.print("Error: Variable '%s' does not exist in partition function for scheme '%s'\n", name, name_.get());
 		msg.print("Available variables are:\n");
+		for (Variable *v = partitionFunction_->localVariables().variables(); v != NULL; v = (Variable*)v->next) msg.print("  %10s  (%s)\n", v->name(), VTypes::dataType(v->returnType()));
 	}
 	return NULL;
 }

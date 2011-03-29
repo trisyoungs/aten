@@ -56,6 +56,8 @@ DisorderWizard::DisorderWizard(QWidget *parent) : QWizard(parent)
 // Run dialog, initialising any values first
 int DisorderWizard::run()
 {
+	// Make sure page 1 is the starting page
+	restart();
 	// If there are no loaded models with periodicity, disable this option on page 1
 	int nperiodic = 0;
 	for (Model *m = aten.models(); m != NULL; m = m->next) if (m->cell()->type() != UnitCell::NoCell) ++nperiodic;

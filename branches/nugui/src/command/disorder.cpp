@@ -50,13 +50,6 @@ bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		}
 		else return FALSE;
 	}
-	
-	for (scheme = aten.partitioningSchemes(); scheme != NULL; scheme = scheme->next) if (strcmp(c->argc(0), scheme->name()) == 0) break;
-	if (scheme == NULL) 
-	{
-		msg.print("Error: Can't find scheme '%s'.\n", c->argc(0));
-		return FALSE;
-	}
 	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
 	rv.reset();
 	if (!mc.disorder(obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE)) return FALSE;
