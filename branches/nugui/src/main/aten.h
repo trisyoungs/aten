@@ -179,9 +179,9 @@ class Aten
 	// Programs containing partitioning schemes
 	List<PartitioningScheme> partitioningSchemes_;
 	// How many partitioning files had errors on startup
-	int nPartitionsFailed_;
+	int nPartitioningSchemesFailed_;
 	// Filenames (including paths) of partitions that failed to load
-	List<Dnchar> failedPartitions_;
+	List<Dnchar> failedPartitioningSchemes_;
 	// Parse directory index and load includes
 	int parsePartitionsDir(const char *path);
 	
@@ -201,11 +201,11 @@ class Aten
 	// Load partition from specified filename
 	bool openPartition(const char *filename);
 	// Whether partitions loaded succesfully on startup
-	int nPartitionsFailed() const;
+	int nPartitioningSchemesFailed() const;
 	// Return first item in failed partitions list
-	Dnchar *failedPartitions() const;
-	// Recalculate grids for all partitioning schemes
-	void recalculatePartitions() const;
+	Dnchar *failedPartitioningSchemes() const;
+	// Find named partitioning scheme
+	PartitioningScheme *findPartitioningScheme(const char *name);
 	// Return first partitioning scheme in the list
 	PartitioningScheme *partitioningSchemes();
 	// Return nth partitioning scheme in the list

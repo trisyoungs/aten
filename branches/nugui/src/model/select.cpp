@@ -175,7 +175,7 @@ void Model::selectionDelete(bool markonly)
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
 		}
-		if (!aten.updateProgress(++count)) cancelled = TRUE;
+// 		if (!aten.updateProgress(++count)) cancelled = TRUE;	TGAY
 		if (cancelled) break;
 	}
 	// 2) Delete the actual atoms
@@ -191,7 +191,7 @@ void Model::selectionDelete(bool markonly)
 				i = tempi;
 			}
 			else i = i->prev;
-			if (!aten.updateProgress(++count)) break;
+// 			if (!aten.updateProgress(++count)) break;	TGAY
 		}
 	}
 	aten.cancelProgress();

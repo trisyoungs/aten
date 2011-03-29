@@ -24,13 +24,33 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "methods/mc.h"
+#include "base/sysfunc.h"
 
 // Performs MC insertion ('disorder <scheme>')
 bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	// Find the specified scheme
-	PartitioningScheme *scheme;
+	// Parse the first option so we can get at any options
+	LineParser parser;
+	parser.getArgsDelim(LineParser::Defaults, c->argc(0));
+	// First argument should always be the scheme name
+	PartitioningScheme *scheme = aten.findPartitioningScheme(parser.argc(0));
+	if (scheme == NULL) return FALSE;
+	// Loop over remaining arguments
+	ReturnValue value;
+	for (int n = 1; n < parser.nArgs(); ++n)
+	{
+		Variable *var = scheme->findVariable(beforeStr(parser.argc(n),"="));
+		if (var != NULL)
+		{
+			value.set(afterStr(parser.argc(n),"="));
+			var->set(value);
+			var->execute(value);
+			msg.print(" Variable '%s' in scheme '%s' now has value %s\n", var->name(), scheme->name(), value.asString());
+		}
+		else return FALSE;
+	}
+	
 	for (scheme = aten.partitioningSchemes(); scheme != NULL; scheme = scheme->next) if (strcmp(c->argc(0), scheme->name()) == 0) break;
 	if (scheme == NULL) 
 	{

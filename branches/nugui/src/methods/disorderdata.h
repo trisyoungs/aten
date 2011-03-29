@@ -97,7 +97,7 @@ class DisorderData
 	// Reject candidate model
 	void rejectCandidate();
 	// Select a random molecule from the current ensemble, and place in sourceModel_
-	void selectCandidate();
+	bool selectCandidate();
 	// Delete selected candidate
 	void deleteCandidate();
 	// Tweak molecule position / rotation, and place in sourceModel_

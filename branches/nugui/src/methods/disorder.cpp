@@ -35,6 +35,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	Refitem<DisorderData,int> *ri;
 	PartitionData *pd;
 	Atom *i;
+	Dnchar cycleText;
 	int n, id, cycle, nSatisfied, nInsertions, nRelative = 0;
 	Vec3<double> r;
 	UnitCell *cell;
@@ -48,7 +49,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	// The reductionfactor is the factor by which we multiply scale factors after reaching the limit of unsuccessful insertions
 	double reductionFactor = 0.95;
 	// Number of tweaks to attempt, per component, per cycle
-	int nTweaks = 5;
+	int nTweaks = 0;
 	// Maximum distance to translate molecule in tweak
 	double deltaDistance = 1.0;
 	// Maximum angle (each around X and Y) to rotate molecule in tweak
@@ -84,6 +85,39 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			msg.print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.\n", m->name(), id, scheme->name());
 			msg.exit("MonteCarlo::disorder");
 			return FALSE;
+		}
+		// Do some quick checks on the component to see if its valid
+		switch (m->componentInsertionPolicy())
+		{
+			case (Model::NumberPolicy):
+				if (m->componentPopulation() == 0) msg.print("Warning: Population for component '%s' is set to zero.\n", m->name());
+				break;
+			case (Model::DensityPolicy):
+				if (m->componentDensity() < 0.01) msg.print("Warning: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
+				break;
+			case (Model::NumberAndDensityPolicy):
+				if (m->componentPopulation() == 0) msg.print("Warning: Population for component '%s' is set to zero.\n", m->name());
+				if (m->componentDensity() < 0.01)
+				{
+					msg.print("Error: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
+					msg.exit("MonteCarlo::disorder");
+					return FALSE;
+				}
+				break;
+			case (Model::RelativePolicy):
+				if (m->componentPopulation() == 0)
+				{
+					msg.print("Error: Population must be specified for component '%s' since it's policy is 'relative'.\n", m->name());
+					msg.exit("MonteCarlo::disorder");
+					return FALSE;
+				}
+				if (m->componentDensity() < 0.01)
+				{
+					msg.print("Error: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
+					msg.exit("MonteCarlo::disorder");
+					return FALSE;
+				}
+				break;
 		}
 		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.insert(NULL) : components_.add());
 		msg.print("Initialising component model '%s'...\n", m->name());
@@ -163,7 +197,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	
 	// All set up and ready - do the build
 	msg.print("Cycle  Component    Region    Population (Requested)  Density (Requested)  RSF\n");
-	for (cycle = 1; cycle <= 500; ++cycle)
+	for (cycle = 1; cycle <= 5000; ++cycle)
 	{
 		// Each cycle will consist of one round of insertions and deletions, and one round of MC shaking (tweaking)
 		
@@ -185,7 +219,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 					break;
 				// For density (and relative) policy, check the current density of the component's target partition
 				case (Model::DensityPolicy):
-					delta = fabs(1.0 - component->requestedDensity() / component->partitionDensity());
+					delta = fabs(1.0 - component->partitionDensity() / component->requestedDensity());
 					if (delta < accuracy)
 					{
 						nSatisfied++;
@@ -194,7 +228,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 					break;
 				// For number and density, we obviously require both to be satisfied
 				case (Model::NumberAndDensityPolicy):
-					delta = fabs(1.0 - component->requestedDensity() / component->partitionDensity());
+					delta = fabs(1.0 - component->partitionDensity() / component->requestedDensity());
 					if ((delta < accuracy) && (component->requestedPopulation() == component->nAdded()))
 					{
 						nSatisfied++;
@@ -203,13 +237,14 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 					break;
 				// For the relative policy, the requested densities and the relative populations are important
 				case (Model::RelativePolicy):
-					if (component->nAdded() == 0) break;
-					delta = fabs(1.0 - component->requestedDensity() / component->partitionDensity());
+// 					if (component->nAdded() == 0) break;
+					delta = fabs(1.0 - component->partitionDensity() / component->requestedDensity());
 					// Calculate raltive population ratio with the first relative component
 					firstRelative = components_.first()->requestedPopulation();
 					firstActual = components_.first()->nAdded();
 					expectedPop = (component->requestedPopulation() / firstRelative) * firstActual;
-					isRelative = fabs(1.0 - expectedPop / component->nAdded()) < accuracy;
+					if (component->nAdded() == 0) isRelative = TRUE;
+					else isRelative = fabs(1.0 - expectedPop / component->nAdded()) < accuracy;
 // 					printf("Population relative expected = %f, actual = %i, delta = %f\n", expectedPop, component->nAdded(), fabs(1.0 - expectedPop / component->nAdded()));
 					if ((delta < accuracy) && isRelative)
 					{
@@ -231,7 +266,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				}
 			}
 			else nInsertions = 1;
-			
+// 			printf("nInsertions for component %s is %i\n", component->modelName(), nInsertions);
 			// Prepare/select nTrial candidates and do some test insertions or deletions
 			if (nInsertions == 0) continue;
 			else if (nInsertions > 0) for (n=0; n<nInsertions; ++n)
@@ -239,6 +274,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				/*
 				// Insertion
 				*/
+// 				printf("Insertion %i on component %p\n", n, component);
 				component->prepareCandidate(volumeElement);
 				// Test component against its own population...
 				if (component->selfOverlapPenalty(cell) > 0.0) component->rejectCandidate();
@@ -259,7 +295,9 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				/*
 				// Deletions
 				*/
-				component->selectCandidate();
+// 				printf("Deletion %i on component %p\n", n, component);
+				if (AtenMath::random() < 0.90) continue;
+				if (!component->selectCandidate()) break;
 				component->deleteCandidate();
 			}
 		}
@@ -269,10 +307,11 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		*/
 		for (component = components_.first(); component != NULL; component = component->next)
 		{
-			for (n = 0; n< nTweaks; ++n)
+			for (n = 0; n < nTweaks; ++n)
 			{
 				// Select a candidate molecule, tweak it, and do a test insertion
-				component->selectCandidate();
+// 				printf("Tweak %i on component %s\n", n, component->modelName());
+				if (!component->selectCandidate()) break;
 				component->tweakCandidate(deltaDistance, deltaAngle);
 				// Test component against its own population...
 				if (component->selfOverlapPenalty(cell) > 0.0) continue;
@@ -291,6 +330,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		{
 			if (component->requestedDensity() > component->partitionDensity()) continue;
 			// Uh-oh - density is higher. Let's delete stuff...
+// 			printf("Density in region '%s' is higher than requested...\n", component->partitionName());
 			while (component->requestedDensity() < component->partitionDensity())
 			{
 				// Pick a random component from the partition's list
@@ -300,7 +340,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				if (other == NULL) printf("Baaaaaad error.\n");
 				else
 				{
-					other->selectCandidate();
+					if (!other->selectCandidate()) break;
 					other->deleteCandidate();
 				}
 			}
@@ -309,19 +349,25 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		/*
 		// Cycle Summary
 		*/
+		cycleText.sprintf("%-5i", cycle);
 		for (component = components_.first(); component != NULL; component = component->next)
 		{
-			msg.print("%-5i   %-15s %-10s  %-5i ", cycle, component->modelName(), component->partitionName(), component->nAdded());
-			
-			if (component->insertionPolicy() == Model::DensityPolicy) msg.print("( N/A )  ");
-			else if (component->insertionPolicy() == Model::RelativePolicy) msg.print("(R%-4i)  ", component->requestedPopulation());
-			else msg.print("(%-5i)  ", component->requestedPopulation());
-			
-			msg.print("%8.5f  ", component->partitionDensity());
-			if (component->insertionPolicy() == Model::NumberPolicy) msg.print("(   N/A  )  ");
-			else msg.print("(%8.5f)  ", component->requestedDensity());
-			
-			msg.print("%5.3f\n", component->scaleFactor());
+			switch (component->insertionPolicy())
+			{
+				case (Model::NumberPolicy):
+					msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
+					break;
+				case (Model::DensityPolicy):
+					msg.print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+					break;
+				case (Model::NumberAndDensityPolicy):
+					msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+					break;
+				case (Model::RelativePolicy):
+					msg.print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+					break;
+			}
+			cycleText.clear();
 		}
 		
 		// Finished?

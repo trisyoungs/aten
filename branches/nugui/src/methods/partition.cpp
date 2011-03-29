@@ -348,6 +348,26 @@ bool PartitioningScheme::runOptions()
 	return partitionFunction_->executeCustomDialog();
 }
 
+// Find and return named variable in partitionFunction_
+Variable *PartitioningScheme::findVariable(const char *name)
+{
+	if (partitionFunction_ == NULL)
+	{
+		msg.print("Internal Error: No partitionFunction_ defined for variable search.\n");
+		return NULL;
+	}
+	int scope;
+// 	schemeDefinition_.
+	Variable *result = partitionFunction_->findVariableInScope(name, scope);
+	if (result) return result;
+	else
+	{
+		msg.print("Error: Variable '%s' does not exist in partition function for scheme '%s'\n", name, name_.get());
+		msg.print("Available variables are:\n");
+	}
+	return NULL;
+}
+
 // Update partition information (after load or change in options)
 void PartitioningScheme::updatePartitions(bool useRoughGrid)
 {

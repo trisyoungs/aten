@@ -185,12 +185,12 @@ void DisorderData::rejectCandidate()
 }
 
 // Select a random molecule from the current ensemble, and place in sourceModel_
-void DisorderData::selectCandidate()
+bool DisorderData::selectCandidate()
 {
 	if (nAdded_ == 0)
 	{
 		moleculeId_ = -1;
-		return;
+		return FALSE;
 	}
 	// Pick random molecule id, select those atoms and 
 	int i;
@@ -200,6 +200,7 @@ void DisorderData::selectCandidate()
 	clipboard_.copySelection(&targetModel_);
 	sourceModel_.clear();
 	clipboard_.pasteToModel(&sourceModel_);
+	return TRUE;
 }
 
 // Delete selected candidate

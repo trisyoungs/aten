@@ -810,6 +810,12 @@ TreeNode *Tree::wrapVariable(Variable *var, TreeNode *arrayindex)
 	return vnode;
 }
 
+// Search for named variable declaration in this tree's ScopeNode
+Variable *Tree::findVariableDeclaration(const char *name)
+{
+// 	for (TreeNode *node = n	TGAY
+}
+
 /*
 // Paths
 */

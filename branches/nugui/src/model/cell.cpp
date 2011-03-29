@@ -513,7 +513,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				i = j;
 			}
 			else i = i->next;
-			if (!aten.updateProgress(++count)) break;
+// 			if (!aten.updateProgress(++count)) break;	TGAY
 		}
 		aten.cancelProgress();
 	}

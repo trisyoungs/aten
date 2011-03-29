@@ -30,8 +30,8 @@ void Aten::openPartitions()
 	bool found = FALSE;
 	int nfailed;
 
-	nPartitionsFailed_ = 0;
-	failedPartitions_.clear();
+	nPartitioningSchemesFailed_ = 0;
+	failedPartitioningSchemes_.clear();
 
 	// Generate default partition ('none')
 	PartitioningScheme *ps = partitioningSchemes_.add();
@@ -40,7 +40,7 @@ void Aten::openPartitions()
 	if (!success)
 	{
 		msg.print("Failed to create default partition!\n");
-		failedPartitions_.add()->set("none");
+		failedPartitioningSchemes_.add()->set("none");
 		nfailed ++;
 		partitioningSchemes_.remove(ps);
 	}
@@ -68,7 +68,7 @@ void Aten::openPartitions()
 		nfailed = parsePartitionsDir(path);
 		if (nfailed == -1) continue;	// Directory not found
 		found = TRUE;
-		nPartitionsFailed_ += nfailed;
+		nPartitioningSchemesFailed_ += nfailed;
 		dataDir_ = qPrintable(QDir::toNativeSeparators(paths.at(i)));
 		break;
 	}
@@ -80,7 +80,7 @@ void Aten::openPartitions()
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
 	msg.print(Messenger::Verbose, "Looking for user partitions in '%s'...\n", path.get());
 	nfailed = parsePartitionsDir(path);
-	if (nfailed > 0) nPartitionsFailed_ += nfailed;
+	if (nfailed > 0) nPartitioningSchemesFailed_ += nfailed;
 
 	msg.exit("Aten::openPartitions");
 }
@@ -113,7 +113,7 @@ int Aten::parsePartitionsDir(const char *path)
 		if (!success)
 		{
 			msg.print("Failed to load partitions from '%s'...\n", qPrintable(partitionlist.at(i)));
-			failedPartitions_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );
+			failedPartitioningSchemes_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );
 			nfailed ++;
 			partitioningSchemes_.remove(ps);
 		}
@@ -142,7 +142,7 @@ bool Aten::openPartition(const char *filename)
 	if (success)
 	{
 		msg.print("Failed to load Partitions from '%s'...\n", filename);
-		failedPartitions_.add()->set( filename );
+		failedPartitioningSchemes_.add()->set( filename );
 		partitioningSchemes_.remove(ps);
 		msg.exit("Aten::openPartition");
 		return FALSE;
@@ -152,15 +152,30 @@ bool Aten::openPartition(const char *filename)
 }
 
 // Return status of partition load on startup
-int Aten::nPartitionsFailed() const
+int Aten::nPartitioningSchemesFailed() const
 {
-	return nPartitionsFailed_;
+	return nPartitioningSchemesFailed_;
 }
 
 // Return list of failed partitions
-Dnchar *Aten::failedPartitions() const
+Dnchar *Aten::failedPartitioningSchemes() const
 {
-	return failedPartitions_.first();
+	return failedPartitioningSchemes_.first();
+}
+
+// Find partitioning scheme by name
+PartitioningScheme  *Aten::findPartitioningScheme(const char *name)
+{
+	PartitioningScheme *scheme;
+	for (scheme = aten.partitioningSchemes(); scheme != NULL; scheme = scheme->next) if (strcmp(name, scheme->name()) == 0) break;
+	if (scheme == NULL) 
+	{
+		msg.print("Error: No such scheme '%s'.\n", name);
+		msg.print("Available schemes are:\n");
+		for (scheme = aten.partitioningSchemes(); scheme != NULL; scheme = scheme->next) msg.print("  %10s  %s\n", scheme->name(), scheme->description());
+		return NULL;
+	}
+	else return scheme;
 }
 
 // Return first partitioning scheme in the list

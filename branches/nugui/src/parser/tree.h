@@ -183,6 +183,8 @@ class Tree
 	Variable *findVariableInScope(const char *name, int &scopelevel);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
+	// Search for named variable declaration in this tree's scope
+	Variable *findVariableDeclaration(const char *name);
 
 
 	/*

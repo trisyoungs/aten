@@ -216,6 +216,8 @@ void DisorderWizard::pageChanged(int id)
 				item->setIcon(0,m->icon());
 				item->setText(1,m->name());
 				item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
+				// Force policy if necessary
+				m->setComponentInsertionPolicy(targetType_ == DisorderWizard::GenerateTarget ? Model::NumberAndDensityPolicy : Model::NumberPolicy);
 			}
 			ui.ChooseComponentsTree->resizeColumnToContents(0);
 			ui.ChooseComponentsTree->resizeColumnToContents(1);

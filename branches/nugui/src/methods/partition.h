@@ -152,6 +152,8 @@ class PartitioningScheme
 	bool hasOptions();
 	// Execute dialog for user-definable options in partition function
 	bool runOptions();
+	// Find and return named variable in partitionFunction_
+	Variable *findVariable(const char *name);
 
 
 	/*
