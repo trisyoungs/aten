@@ -209,6 +209,7 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 {
 	Model *m = aten.currentModel();
 	aten.closeModel(m);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Save the current view as a bitmap image.
