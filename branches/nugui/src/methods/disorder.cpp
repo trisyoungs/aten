@@ -329,9 +329,10 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		for (component = components_.first(); component != NULL; component = component->next)
 		{
 			if (component->requestedDensity() > component->partitionDensity()) continue;
+			if (component->insertionPolicy() == Model::NumberAndDensityPolicy) continue;
 			// Uh-oh - density is higher. Let's delete stuff...
-// 			printf("Density in region '%s' is higher than requested...\n", component->partitionName());
-			while (component->requestedDensity() < component->partitionDensity())
+			printf("Density in region '%s' is higher than requested...\n", component->partitionName());
+			while (fabs(1.0 - component->partitionDensity() / component->requestedDensity()) > accuracy)
 			{
 				// Pick a random component from the partition's list
 				pd = component->partition();

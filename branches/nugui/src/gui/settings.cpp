@@ -111,9 +111,7 @@ void AtenForm::saveSettings()
 		if (actionRecentFile[n]->isVisible()) settings_.setValue(key,actionRecentFile[n]->data().toString());
 		else settings_.remove(key);
 	}
-	
-	// Toolbar visibility / position
-	settings_.setValue("MainWinPositions", gui.mainWindow->saveState() );
+
 	// Command toolbar history
 	QStringList history = gui.commandWidget->commandList();
 	for (n=0; n < history.count(); ++n)
@@ -132,6 +130,17 @@ void AtenForm::saveSettings()
 		settings_.setValue(key, prog->filename());
 		++n;
 	}
+	
+	// Synchronise (i.e. save) changes to settings
+	settings_.sync();
+}
+
+
+// Save default window state
+void AtenForm::on_actionStoreDefaultWindowState_triggered(bool checked)
+{
+	// Toolbar visibility / position
+	settings_.setValue("MainWinPositions", gui.mainWindow->saveState() );
 	
 	// Synchronise (i.e. save) changes to settings
 	settings_.sync();

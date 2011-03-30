@@ -102,7 +102,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	model srcmodel= aten.frame;
 	pattern p;
 	int nmols, n, m, o, mol, nresb, nresa, nrest, nrot, idj, count;
-	double rij, mass;
+	double rij, mass, boxsize;
 	vector com, r;
 	atom i, j;
 	bound b;
@@ -126,13 +126,33 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 
 	// First, some checks. We need valid patterns and a cubic cell.
 	if (!createexpression(FALSE,TRUE)) error("Error: Can't write ATO file without valid forcefield types assigned to all atoms.\n");
-	if (srcmodel.cell.type != "cubic") error("Error: System must have a cubic cell.\n");
 
 	// Line 1 : nmols, box dimension, temperature
 	// First determine total number of molecules
 	nmols = 0;      
 	for (p in srcmodel.patterns) nmols += p.nmols;
-	writelinef("  %4i %13.6e  %13.6e\n",nmols,srcmodel.cell.a,temperature);
+	if (srcmodel.cell.type == "cubic")
+	{
+		boxsize = srcmodel.cell.a;
+		writelinef("  %4i %13.6e  %13.6e\n",nmols,srcmodel.cell.a,temperature);
+	}
+	else
+	{
+		// Set boxsize here to be zero (it is used elsewhere to shift by half-cell amounts, so this will prevent it)
+		boxsize = 0.0;
+		// Determine maximum extent of system
+		printf("Model has no cell definition - determining molecular extent...\n");
+		double maxrij = 0.0;
+		for (atom i = srcmodel.atoms; i; ++i)
+		{
+			for (atom j = ++i; j; ++j)
+			{
+				rij = geometry(i,j);
+				if (rij > maxrij) maxrij = rij;
+			}
+		}
+		writelinef("  %4i %13.6e  %13.6e\n",nmols,maxrij*2.0,temperature);
+	}
 
 	// Line 2 : Tol, step sizes (intra trans, headgroup rot, mol rot, mol trans), vibrational temp
 	writelinef("  %10.3e  %10.3e  %10.3e  %10.3e  %10.3e  %10.3e\n", epsr_tol, epsr_itrans, epsr_hrot, epsr_mrot, epsr_mtrans, epsr_vtemp);
@@ -146,7 +166,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		{
 			++mol;
 			// Write centre of mass
-			com = p.com(m) - srcmodel.cell.a*0.5;
+			com = p.com(m) - boxsize*0.5;
 			writelinef("   %-2i %13.6e %13.6e %13.6e %13.6e %13.6e %13.6e %5i\n",p.nmolatoms,com.x,com.y,com.z,0.0,0.0,0.0,mol);
 
 			// Write atom information
@@ -156,7 +176,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 				else writelinef(" %-3s     %5i\n", i.type.name, n);
 
 				// Get mim vector to COM
-				r = srcmodel.cell.mimd(i.r - srcmodel.cell.a*0.5, com);
+				r = srcmodel.cell.mimd(i.r - boxsize*0.5, com);
 				writelinef(" %12.5e %12.5e %12.5e\n", r.x, r.y, r.z);
 
 				// Restraint information
@@ -257,7 +277,15 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 						}
 					}
 					srcmodel.deselect(p.atoms[b.id[1]], p.atoms[b.id[2]]);
-					for (j in srcmodel.selection) writelinef(" %4i", j.id-p.firstatomid+1);
+					// List of rotating atoms should be given 14 per line (13 + natoms on the first line)
+					count = 1;
+					writelinef(" %4i", srcmodel.nselected);
+					for (j in srcmodel.selection)
+					{
+						if (count%14 == 0) writelinef("\n");
+						writelinef(" %4i", j.id-p.firstatomid+1);
+						++count;
+					}
 					writelinef("\n");
 				}
 			}

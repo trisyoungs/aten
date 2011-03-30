@@ -145,6 +145,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "selectionaddhydrogen",VTypes::NoData,	Command::arguments(Command::SelectionAddHydrogen),	Command::argText(Command::SelectionAddHydrogen) },
 	{ "selectnone",		VTypes::NoData,		Command::arguments(Command::SelectNone),	Command::argText(Command::SelectNone) },
 	{ "selecttree",		VTypes::NoData,		Command::arguments(Command::SelectTree),	Command::argText(Command::SelectTree) },
+	{ "setupcomponent",	VTypes::NoData,		Command::arguments(Command::SetupComponent),	Command::argText(Command::SetupComponent) },
 	{ "shiftdown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::argText(Command::ShiftDown) },
 	{ "shiftup",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::argText(Command::ShiftUp) },
 	{ "showall",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::argText(Command::ShowAll) },
@@ -757,6 +758,9 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			break;
  		case (ModelVariable::SelectTree):
 			result = aten.commands.call(Command::SelectTree, node, rv, bundle);
+			break;
+ 		case (ModelVariable::SetupComponent):
+			result = aten.commands.call(Command::SetupComponent, node, rv, bundle);
 			break;
  		case (ModelVariable::ShiftDown):
 			result = aten.commands.call(Command::ShiftDown, node, rv, bundle);

@@ -2,6 +2,12 @@
 
 	<orderedlist>
 		<listitem>
+			<para>Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made</para>
+		</listitem>
+		<listitem>
+			<para>Update manual - remove references to old region information in disordered builder.  New GUI images.</para>
+		</listitem>
+		<listitem>
 			<para>Different colouring of component partitions</para>
 		</listitem>
 		<listitem>

@@ -174,6 +174,7 @@ void Command::initPointers()
 	// Disordered build commands
 	pointers_[Disorder] = &Command::function_Disorder;
 	pointers_[ListComponents] = &Command::function_ListComponents;
+	pointers_[SetupComponent] = &Command::function_SetupComponent;
 	pointers_[VdwScale] = &Command::function_VdwScale;
 
 	// Edit Commands

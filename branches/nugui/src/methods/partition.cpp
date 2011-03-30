@@ -342,33 +342,54 @@ bool PartitioningScheme::hasOptions()
 }
 
 // Execute dialog for user-definable options in partition function
-bool PartitioningScheme::runOptions()
+bool PartitioningScheme::runOptions(bool storeValuesOnly)
 {
-	if (partitionFunction_ == NULL) return FALSE;
-	return partitionFunction_->executeCustomDialog();
+	if (!hasOptions()) return FALSE;
+	Dnchar text(-1,"Options for scheme '%s'", name_.get());
+	return partitionFunction_->executeCustomDialog(storeValuesOnly, text.get());
 }
 
 // Find and return named variable in partitionFunction_
-Variable *PartitioningScheme::findVariable(const char *name)
+bool PartitioningScheme::setVariable(const char *name, const char *value)
 {
+	msg.enter("PartitioningScheme::setVariable");
 	if (partitionFunction_ == NULL)
 	{
 		msg.print("Internal Error: No partitionFunction_ defined for variable search.\n");
-		return NULL;
+		msg.exit("PartitioningScheme::setVariable");
+		return FALSE;
 	}
 	int scope;
 
 	// All user-definable variables are widgets, so search just for widgets
 	Variable *result = partitionFunction_->localVariables().find(name);
 	
-	if (result) return result;
+	if (result)
+	{
+		// Found variable - is it's initial value assigned from a GuiWidgetNode?
+		if (result->initialValue() == NULL) return result;
+		ReturnValue rv(value);
+		if (result->initialValue()->nodeType() == TreeNode::GuiWidgetNode)
+		{
+			msg.print(Messenger::Verbose, "Located WidgetNode corresponding to variable '%s'\n", name);
+			WidgetNode *widget = (WidgetNode*) result->initialValue();
+			widget->setWidgetValue(rv);
+		}
+		// Set variable value regardless
+		result->set(rv);
+		result->execute(rv);
+		msg.print(" Variable '%s' in scheme '%s' now has value %s\n", result->name(), name_.get(), rv.asString());
+		msg.exit("PartitioningScheme::setVariable");
+		return TRUE;
+	}
 	else
 	{
 		msg.print("Error: Variable '%s' does not exist in partition function for scheme '%s'\n", name, name_.get());
 		msg.print("Available variables are:\n");
 		for (Variable *v = partitionFunction_->localVariables().variables(); v != NULL; v = (Variable*)v->next) msg.print("  %10s  (%s)\n", v->name(), VTypes::dataType(v->returnType()));
 	}
-	return NULL;
+	msg.exit("PartitioningScheme::setVariable");
+	return FALSE;
 }
 
 // Update partition information (after load or change in options)

@@ -55,7 +55,7 @@ set(qtproject_SRCS
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
-  systemactions.cpp
+  settingsactions.cpp
   tcanvas_funcs.cpp
   tcanvas_input.cpp
   tcanvas_render.cpp

@@ -40,18 +40,12 @@ bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ReturnValue value;
 	for (int n = 1; n < parser.nArgs(); ++n)
 	{
-		Variable *var = scheme->findVariable(beforeStr(parser.argc(n),"="));
-		if (var != NULL)
-		{
-			value.set(afterStr(parser.argc(n),"="));
-			var->set(value);
-			var->execute(value);
-			msg.print(" Variable '%s' in scheme '%s' now has value %s\n", var->name(), scheme->name(), value.asString());
-		}
-		else return FALSE;
+		if (!scheme->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 	}
 	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
 	rv.reset();
+	// Get custom values from dialog (if scheme has one)
+	scheme->runOptions(TRUE);
 	if (!mc.disorder(obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE)) return FALSE;
 	return TRUE;
 }
@@ -62,24 +56,27 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 	msg.print("Current component specification:\n");
 	Vec3<double> v1, v2;
 	Dnchar text;
-	msg.print("Model           Policy       Partition       Population   Density\n");
+	msg.print("Model           Policy     Partition  Population   Density\n");
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-// 		ComponentRegion *r = m->region();
-// 		v1 = r->centre();
-// 		v2 = r->geometry();
-// 		text.sprintf("%-10s  %5i  %s %s %s %s %s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
-// 			m->name(),m->nRequested(),
-// 			(m->isMoveAllowed(MonteCarlo::Insert) ? "+" : " "),
-// 			(m->isMoveAllowed(MonteCarlo::Delete) ? "+" : " "),
-// 			(m->isMoveAllowed(MonteCarlo::Translate) ? "+" : " "),
-// 			(m->isMoveAllowed(MonteCarlo::Rotate) ? "+" : " "),
-// 			(m->isMoveAllowed(MonteCarlo::ZMatrix) ? "+" : " "),
-// 			ComponentRegion::regionShape(r->shape()),
-// 			v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
-// 		msg.print(text);
+		if (m->cell()->type() != UnitCell::NoCell) continue;
+		msg.print("%-15s %-10s     %i        %5i    %8.4f\n", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition(), m->componentPopulation(), m->componentDensity());
 	}
 	rv.reset();
+	return TRUE;
+}
+
+// Setup current model as component for disorder builder
+bool Command::function_SetupComponent(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Model::InsertionPolicy policy = Model::insertionPolicy(c->argc(0), TRUE);
+	if (policy == Model::nInsertionPolicies) return FALSE;
+	obj.m->setComponentInsertionPolicy(policy);
+	if (c->hasArg(1)) obj.m->setComponentPartition(c->argi(1));
+	if (c->hasArg(2)) obj.m->setComponentPopulation(c->argi(2));
+	if (c->hasArg(3)) obj.m->setComponentDensity(c->argd(3));
+	if (c->hasArg(4)) obj.m->setComponentRotatable(c->argb(4));
 	return TRUE;
 }
 

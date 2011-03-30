@@ -238,6 +238,7 @@ class AtenForm : public QMainWindow
 	void on_actionPreferences_triggered(bool checked);
 	void on_actionReloadFilters_triggered(bool checked);
 	void on_actionShowToolBox_triggered(bool checked);
+	void on_actionStoreDefaultWindowState_triggered(bool checked);
 
 
 	/*

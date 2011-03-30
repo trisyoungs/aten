@@ -151,9 +151,9 @@ class PartitioningScheme
 	// Return whether the partition function has any user-definable options
 	bool hasOptions();
 	// Execute dialog for user-definable options in partition function
-	bool runOptions();
-	// Find and return named variable in partitionFunction_
-	Variable *findVariable(const char *name);
+	bool runOptions(bool storeOnly = FALSE);
+	// Set named variable in partitionFunction_'s local scope
+	bool setVariable(const char *name, const char *value);
 
 
 	/*
