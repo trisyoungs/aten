@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Glyphs Window
+	*** Glyphs Dock Widget
 	*** src/gui/glyphs.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -28,8 +28,8 @@
 // Forward Declarations
 class Glyph;
 
-// Glyphs window
-class AtenGlyphs : public QDialog
+// Glyphs dock widget
+class GlyphsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -38,15 +38,12 @@ class AtenGlyphs : public QDialog
 	// Window Functions
 	*/
 	public:
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Show the window
-	void showWindow();
-	// Update window
+	// Show the widget
+	void showWidget();
+	// Update widget
 	void refresh();
 
 	private slots:
-	void dialogFinished(int result);
 	void on_GlyphList_currentRowChanged(int row);
 	void on_GlyphList_itemSelectionChanged();
 	void on_GlyphTypeCombo_currentIndexChanged(int row);
@@ -95,6 +92,8 @@ class AtenGlyphs : public QDialog
 	void dataValueChanged(int id, int component, double value);
 	void dataValueChanged(int id, double x, double y, double z);
 	void dataColourChanged(int id);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables and functions
@@ -122,10 +121,9 @@ class AtenGlyphs : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenGlyphs(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenGlyphs();
+	GlyphsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::GlyphsDialog ui;
+	Ui::GlyphsWidget ui;
 };
 
 #endif

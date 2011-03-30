@@ -1,5 +1,5 @@
 /*
-	*** Qt canvas 2D render functions
+	*** TCanvas 2D Rendering Functions
 	*** src/gui/tcanvas_render.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -24,7 +24,7 @@
 #include "base/sysfunc.h"
 
 // Draw 2D objects with QPainted
-void TCanvas::render2D(QPainter &painter)
+void TCanvas::render2D(QPainter &painter, Model *source)
 {
 	// Variables
 	static Dnchar text;
@@ -70,8 +70,8 @@ void TCanvas::render2D(QPainter &painter)
 		case (UserAction::DrawAtomAction):
 		case (UserAction::DrawChainAction):
 			// Get pixel 'length' in Angstrom terms at current draw depth
-			r = screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
-			r -= screenToModel(contextWidth_/2, contextHeight_/2, currentDrawDepth_);
+			r = source->screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
+			r -= source->screenToModel(contextWidth_/2, contextHeight_/2, currentDrawDepth_);
 			dx = 10.0 / r.magnitude();
 			
 			halfw = contextWidth_ / 2.0;

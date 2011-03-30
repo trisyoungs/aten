@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Position Window
+	*** Position Dock Widget
 	*** src/gui/position.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_POSITIONWINDOW_H
-#define ATEN_POSITIONWINDOW_H
+#ifndef ATEN_POSITIONWIDGET_H
+#define ATEN_POSITIONWIDGET_H
 
 #include "gui/ui_position.h"
 
 // Atom position window
-class AtenPosition : public QDialog
+class PositionWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -34,12 +34,11 @@ class AtenPosition : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	private:
 	void flipSelection(int axis);
 	void translateSelection(int axis, int dir);
 	private slots:
-	void dialogFinished(int result);
 	// Centre
 	void on_DefineCentreButton_clicked(bool checked);
 	void on_CentreSelectionButton_clicked(bool checked);
@@ -66,6 +65,8 @@ class AtenPosition : public QDialog
 	void on_RepositionSelectionButton_clicked(bool on);
 	void on_DefineRepositionReferenceButton_clicked(bool on);
 	void on_DefineRepositionTargetButton_clicked(bool on);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables
@@ -77,10 +78,9 @@ class AtenPosition : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenPosition(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenPosition();
+	PositionWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::PositionDialog ui;
+	Ui::PositionWidget ui;
 };
 
 #endif

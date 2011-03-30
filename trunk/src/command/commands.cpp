@@ -22,7 +22,7 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
-#include "base/bundle.h"
+#include "model/bundle.h"
 #include "parser/tree.h"
 
 // Static singleton
@@ -30,33 +30,38 @@ Command commands;
 
 /* Argument Specification Tokens:
        Char	Meaning		Acceptable Types in VTypes
-	N	Number		IntegerData, DoubleData
-	I	Integer		IntegerData
-	R	Real		DoubleData
+	A	Atom/Id		IntegerData, AtomData
+	B	Boolean		Any
 	C	Character	StringData
+	D	Double		DoubleData
+	E	Element		StringData,IntegerData,DoubleData,AtomData
+	F	Frcefld/ID/Name	ForcefieldData, IntegerData, StringData
+	G	Grid/ID		GridData, StringData, IntegerData
+	H	Bond		BondData
+	I	Integer		IntegerData
+	J	Atom		AtomData
+	K	<free>
+	L	<free>
+	M	Model/ID/Name	ModelData, StringData, IntegerData
+	N	Number		IntegerData, DoubleData
+	O	FFAtom		ForcefieldAtomData
+	P	Pattern/ID/Name	PatternData, StringData, IntegerData
+	Q	<free>
+	R	Real		DoubleData
 	S	Any Simple	IntegerData, DoubleData, StringData
 	T	Exact Simple	IntegerData, StringData
 	U	Vector		VectorData
-	B	Boolean		Any
-	E	Element		StringData,IntegerData,DoubleData,AtomData
-	A	Atom/Id		IntegerData, AtomData
-	M	Model/ID/Name	ModelData, StringData, IntegerData
-	F	Frcefld/ID/Name	ForcefieldData, IntegerData, StringData
-	P	Pattern/ID/Name	PatternData, StringData, IntegerData
-	O	FFAtom		ForcefieldAtomData
-	G	Grid/ID		GridData, StringData, IntegerData
-	X	Pointer		Any pointer object
 	V	Variable	Any simple variable (not path)
+	W	Vector/Atom	VectorData or AtomData (using position vector)
+	X	Pointer		Any pointer object
+	Y	<free>
 	Z	Any		Any
 	*	<Repeat>	Any number of the last type again
 	^	<Require Var>	Next token must be a modifiable variable and not a constant
 	[]	<Cluster>	Surrounds groups of optional arguments that must be specified together
 	|	<Or>		Separates alternative lists of arguments for the command
 	&	<Array>		Next token must be an array
-	/	<type Or>	Specifies an argument may be one of two types
 	2-9	<NRepeat>	Next argument should occur N times
-	
-	Current Usage List: ABCEFGIMNOPRSTUVXZ*^[]|&/23456789
 */
 
 // Command action
@@ -425,42 +430,15 @@ CommandData Command::data[Command::nCommands] = {
 		"Set the value for an existing colourscale point" },
 
 	// Disordered Builder Commands
-	{ "disorder",		"N",		VTypes::NoData,
-		"int nsteps",
+	{ "disorder",		"Cbb",		VTypes::IntegerData,
+		"string schemename, bool fixedcell = TRUE, bool relative = FALSE",
 		"Run the disordered builder" },
 	{ "listcomponents",	"",		VTypes::NoData,
 		"",
 		"Print a list of the components requested in the disordered builder" },
-	{ "regioncentre",	"NNN",		VTypes::NoData,
-		"double x, double y, double z",
-		"Set the region centre of the current model" },
-	{ "regioncentrefrac",	"NNN",		VTypes::NoData,
-		"double x, double y, double z",
-		"Set the region centre of the current model (fractional coordinates)" },
-	{ "regiongeometry",	"NNN",		VTypes::NoData,
-		"double x, double y, double z",
-		"Set the region geometry of the current model" },
-	{ "regiongeometryfrac",	"NNN",		VTypes::NoData,
-		"double x, double y, double z",
-		"Set the region geometry of the current model (fractional coordinates)" },
-	{ "regionoverlap",	"B",		VTypes::NoData,
-		"bool allowoverlap",
-		"Set the overlap flag of the current model" },
-	{ "regionrotation",	"NN",		VTypes::NoData,
-		"double rotx, double roty",
-		"Set the x and y axis rotations for the current region" },
-	{ "regionshape",	"C",		VTypes::NoData,
-		"string shape",
-		"Set the region shape of the current model" },
-	{ "setnmols",		"N",		VTypes::NoData,
-		"int n",
-		"Set the number of molecules required for the component" },
-	{ "setregion",		"CNNNNNNb",	VTypes::NoData,
-		"string shape, double cx, double cy, double cz, double x, double y, double z, bool allowoverlap = TRUE",
-		"Set the shape, centre, size, and overlap flag of the region for the current model" },
-	{ "setregionfrac",	"CNNNNNNb",	VTypes::NoData,
-		"string shape, double cx, double cy, double cz, double x, double y, double z, bool allowoverlap = TRUE",
-		"Set the shape, centre, size, and overlap flag of the region for the current model (fractional coordinates)" },
+	{ "setupcomponent",	"Cnnnb",	VTypes::NoData,
+		"string policy, int partition = 0, int population = 0, double density = 0.0, bool rotate = TRUE",
+		"Setup the current model's component information for the disorder builder" },
 	{ "vdwscale",		"n",		VTypes::DoubleData,
 		"[double scale]",
 		"Retrieve (or set) the VDW scaling factor to use in the disordered builder" },
@@ -588,8 +566,8 @@ CommandData Command::data[Command::nCommands] = {
 	{ "clearexpression",	"",		VTypes::NoData,
 		"",
 		"Clear the current model's expression" },
-	{ "createexpression",	"bb",		VTypes::NoData,
-		"bool nointra = FALSE, bool allowdummy = FALSE",
+	{ "createexpression",	"bbb",		VTypes::IntegerData,
+		"bool nointra = FALSE, bool allowdummy = FALSE, bool assignCharges = TRUE",
 		"Create a forcefield expression for the current model" },
 	{ "currentff",		"f",		VTypes::ForcefieldData,
 		"string|int|forcefield f = null",
@@ -660,8 +638,8 @@ CommandData Command::data[Command::nCommands] = {
 	{ "printtype",		"N",		VTypes::NoData,
 		"int i",
 		"Print the internal NETA description details of type ID 'i' in the current forcefield" },
-	{ "recreateexpression",	"bb",		VTypes::NoData,
-		"bool nointra = FALSE, bool allowdummy = FALSE",
+	{ "recreateexpression",	"bbb",		VTypes::NoData,
+		"bool nointra = FALSE, bool allowdummy = FALSE, bool assignCharges = TRUE",
 		"Delete any existing expression, then create a forcefield expression for the current model" },
 	{ "saveexpression",	"CC",		VTypes::IntegerData,
 		"string format, string filename",
@@ -807,6 +785,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "savebitmap",		"CCnnn",	VTypes::NoData,
 		"string format, string filename, int width = -1, int height = -1, int quality = -1",
 		"Save the current model view as a bitmap image: formats available are bmp, jpg, png, ppm, xbm, and xpm" },
+	{ "savemovie",		"Cnnnnnnn",	VTypes::NoData,
+		"string filename, int width = -1, int height = -1, int quality = -1, int firstframe = 1, int lastframe = <last>, int frameskip = 0, int fps = 25",
+		"Save a movie of the trajectory associated with the current model" },
 	{ "savevector",		"CC",		VTypes::NoData,
 		"string format, string filename",
 		"Save the current model view as a vector image: formats available are ps, eps, tex, pdf, svg, and pgf" },
@@ -1023,8 +1004,8 @@ CommandData Command::data[Command::nCommands] = {
 	{ "clearpatterns",	"",		VTypes::NoData,
 		"",
 		"Remove all pattern definitions from the current model" },
-	{ "createpatterns",	"",		VTypes::NoData,
-		"",
+	{ "createpatterns",	"b",		VTypes::IntegerData,
+		"bool acceptdefault = TRUE",
 		"Automatically determine pattern definitions for the current model" },
 	{ "currentpattern",	"p",		VTypes::PatternData,
 		"string|int|pattern p = null",
@@ -1196,6 +1177,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "selectradial",	"AN",		VTypes::IntegerData,
 		"atom|int target, double radius",
 		"Select all atoms less than some distance from a central atom" },
+	{ "selecttree",		"Ah",		VTypes::IntegerData,
+		"atom|int i, bond exclude = NULL",
+		"Select all atoms which are within a given distance of each other" },
 	{ "selecttype",		"EC",		VTypes::IntegerData,
 		"element el, string neta",
 		"Select all atoms that match the provided atomtype description (returning the number matched)" },

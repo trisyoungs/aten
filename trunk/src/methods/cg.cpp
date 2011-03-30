@@ -91,16 +91,16 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
 	msg.print("Init  %12.5e  %12.5e        ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 
-	gui.progressCreate("Minimising (CG)", nCycles_);
+// 	gui.progressCreate("Minimising (CG)", nCycles_);
 
 	srcmodel->normaliseForces(1.0, TRUE);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Perform linesearch along the gradient vector
-		if (!gui.progressUpdate(cycle, &etatext)) linedone = TRUE;
-		else
-		{
+// 		if (!gui.progressUpdate(cycle, &etatext)) linedone = TRUE;
+// 		else
+// 		{
 			newEnergy = oldEnergy;
 			newRms = oldRms;
 			newEnergy = lineMinimise(srcmodel);
@@ -108,12 +108,12 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 			newRms = srcmodel->rmsForce();
 			// Check convergence criteria
 			if ((fabs(deltaEnergy) < econ) && (newRms < fcon)) converged = TRUE;
-		}
+// 		}
 
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update(FALSE, FALSE, FALSE, FALSE);
+		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
 
 		// Store old forces and calculate new forces at the new line-minimised position
 		for (i=0; i<srcmodel->nAtoms()*3; i += 3)
@@ -158,7 +158,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 			}
 		}
 	}
-	gui.progressTerminate();
+// 	gui.progressTerminate();
 
 	if (converged) msg.print("Conjugate gradient converged in %i steps.\n",cycle+1);
 	else msg.print("Conjugate gradient did not converge within %i steps.\n",nCycles_);

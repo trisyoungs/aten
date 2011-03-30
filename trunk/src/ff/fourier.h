@@ -25,7 +25,7 @@
 #include "templates/vector3.h"
 
 // Forward declarations
-class Cell;
+class UnitCell;
 class Model;
 
 // Fourier
@@ -38,7 +38,7 @@ class FourierData
 	Vec3<double> **rCos, **rSin;
 	int nAtoms, kMax;
 	Vec3<int> kVec;
-	Cell *cell;
+	UnitCell *cell;
 	// Parameters used in Ewald sum.
 	double alpha, alphaSq;
 	// Class Functions

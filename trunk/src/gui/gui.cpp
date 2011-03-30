@@ -29,25 +29,29 @@
 #include "gui/selectpattern.h"
 #include "gui/selectvariable.h"
 #include "gui/selectelement.h"
+#include "gui/progress.h"
 #include "gui/about.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
-#include "gui/grids.h"
-#include "gui/disorder.h"
+#include "gui/disorderwizard.h"
 #include "gui/atomlist.h"
-#include "gui/forcefields.h"
-#include "gui/fragment.h"
-#include "gui/celldefine.h"
+#include "gui/build.h"
+#include "gui/celldefinition.h"
 #include "gui/celltransform.h"
 #include "gui/command.h"
-#include "gui/build.h"
+#include "gui/forcefields.h"
+#include "gui/fragments.h"
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
+#include "gui/grids.h"
 #include "gui/md.h"
-#include "gui/minimiser.h"
-#include "gui/transform.h"
-#include "gui/select.h"
+#include "gui/messages.h"
+#include "gui/modellist.h"
 #include "gui/position.h"
+#include "gui/select.h"
+#include "gui/toolbox.h"
+#include "gui/trajectory.h"
+#include "gui/transform.h"
 #include "gui/vibrations.h"
 #include "gui/viewbasis.h"
 #include "gui/vieweigenvector.h"
@@ -56,7 +60,6 @@
 #include "base/sysfunc.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
-#include <QtGui/QProgressBar>
 
 // External Declarations
 GuiQt gui;
@@ -87,9 +90,6 @@ const char *GuiQt::bitmapFormatExtension(GuiQt::BitmapFormat bf)
 GuiQt::GuiQt()
 {
 	doesExist_ = FALSE;
-	isAvailable_ = FALSE;
-	trajectoryPlaying_ = FALSE;
-	trajectoryTimerId_ = -1;
 	app = NULL;
 	mainWindow = NULL;
 	mainWidget = NULL;
@@ -103,28 +103,27 @@ GuiQt::GuiQt()
 	viewBasisDialog = NULL;
 	viewEigenvectorDialog = NULL;
 	aboutDialog = NULL;
-	atomlistWindow = NULL;
-	buildWindow = NULL;
-	cellDefineWindow = NULL;
-	cellTransformWindow = NULL;
-	commandWindow = NULL;
-	disorderWindow = NULL;
-	forcefieldsWindow = NULL;
-	fragmentWindow = NULL;
-	geometryWindow = NULL;
-	glyphsWindow = NULL;
-	gridsWindow = NULL;
-	mdWindow = NULL;
-	minimiserWindow = NULL;
-	positionWindow = NULL;
-	transformWindow = NULL;
-	vibrationsWindow = NULL;
 	zmatrixWindow = NULL;
-}
-
-// Destructor
-GuiQt::~GuiQt()
-{
+	
+	atomListWidget = NULL;
+	buildWidget = NULL;
+	cellDefinitionWidget = NULL;
+	cellTransformWidget = NULL;
+	commandWidget = NULL;
+	disorderWizard = NULL;
+	forcefieldsWidget = NULL;
+	fragmentsWidget = NULL;
+	geometryWidget = NULL;
+	glyphsWidget = NULL;
+	gridsWidget = NULL;
+	mdWidget = NULL;
+	messagesWidget = NULL;
+	modelListWidget = NULL;
+	positionWidget = NULL;
+	toolBoxWidget = NULL;
+	trajectoryWidget = NULL;
+	transformWidget = NULL;
+	vibrationsWidget = NULL;
 }
 
 /*
@@ -151,7 +150,7 @@ void GuiQt::initialise(int &argc, char **argv)
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");
 	QCoreApplication::setApplicationName("Aten");
 
-	// Create GUI window here (used to be done in Gui Qt::run(), but this would cause GLX crashes under some circumstances, apparently as a result of the lack of ownership of the TCanvas)
+	// Create GUI window here (used to be done in GuiQt::run(), but this would cause GLX crashes under some circumstances, apparently as a result of the lack of ownership of the TCanvas)
 	mainWindow = new AtenForm;
 
 	// Create the main QGLWidget
@@ -193,47 +192,45 @@ void GuiQt::run()
 	aboutDialog = new AtenAbout(mainWindow);
 	viewBasisDialog = new AtenViewBasis(mainWindow);
 	viewEigenvectorDialog = new AtenViewEigenvector(mainWindow);
-	// ...tool windows
-	atomlistWindow = new AtenAtomlist(mainWindow, Qt::Window|Qt::Tool);
-	buildWindow = new AtenBuild(mainWindow, Qt::Window|Qt::Tool);
-	cellDefineWindow = new AtenCellDefine(mainWindow, Qt::Window|Qt::Tool);
-	cellTransformWindow = new AtenCellTransform(mainWindow, Qt::Window|Qt::Tool);
-	commandWindow = new AtenCommand(mainWindow, Qt::Window|Qt::Tool);
-	disorderWindow = new AtenDisorder(mainWindow, Qt::Window|Qt::Tool);
-	forcefieldsWindow = new AtenForcefields(mainWindow, Qt::Window|Qt::Tool);
-	fragmentWindow = new AtenFragment(mainWindow, Qt::Window|Qt::Tool);
-	geometryWindow = new AtenGeometry(mainWindow, Qt::Window|Qt::Tool);
-	glyphsWindow = new AtenGlyphs(mainWindow, Qt::Window|Qt::Tool);
-	gridsWindow = new AtenGrids(mainWindow, Qt::Window|Qt::Tool);
-	mdWindow = new AtenMD(mainWindow, Qt::Window|Qt::Tool);
-	minimiserWindow = new AtenMinimiser(mainWindow, Qt::Window|Qt::Tool);
-	positionWindow = new AtenPosition(mainWindow, Qt::Window|Qt::Tool);
-	selectWindow = new AtenSelect(mainWindow, Qt::Window|Qt::Tool);
-	transformWindow = new AtenTransform(mainWindow, Qt::Window|Qt::Tool);
-	vibrationsWindow = new AtenVibrations(mainWindow, Qt::Window|Qt::Tool);
-	zmatrixWindow = new AtenZMatrix(mainWindow);	// Modal dialog
-
+	progressDialog = new AtenProgress(mainWindow);
+	zmatrixWindow = new AtenZMatrix(mainWindow);
+	
+	// ...dock widgets
+	atomListWidget = new AtomListWidget(mainWindow, Qt::Tool);
+	buildWidget = new BuildWidget(mainWindow, Qt::Tool);
+	cellDefinitionWidget = new CellDefinitionWidget(mainWindow, Qt::Tool);
+	cellTransformWidget = new CellTransformWidget(mainWindow, Qt::Tool);
+	commandWidget = new CommandWidget(mainWindow, Qt::Tool);
+	disorderWizard = new DisorderWizard(mainWindow);
+	forcefieldsWidget = new ForcefieldsWidget(mainWindow, Qt::Tool);
+	fragmentsWidget = new FragmentsWidget(mainWindow, Qt::Tool);
+	geometryWidget = new GeometryWidget(mainWindow, Qt::Tool);
+	glyphsWidget = new GlyphsWidget(mainWindow, Qt::Tool);
+	gridsWidget = new GridsWidget(mainWindow, Qt::Tool);
+	mdWidget = new MDWidget(mainWindow, Qt::Tool);
+	messagesWidget = new MessagesWidget(mainWindow, Qt::Tool);
+	modelListWidget = new ModelListWidget(mainWindow, Qt::Tool);
+	positionWidget = new PositionWidget(mainWindow, Qt::Tool);
+	selectWidget = new SelectWidget(mainWindow, Qt::Tool);
+	toolBoxWidget = new ToolBoxWidget(mainWindow, Qt::Tool);
+	trajectoryWidget = new TrajectoryWidget(mainWindow, Qt::Tool);
+	transformWidget = new TransformWidget(mainWindow, Qt::Tool);
+	vibrationsWidget = new VibrationsWidget(mainWindow, Qt::Tool);
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << trajectoryWidget << transformWidget << vibrationsWidget;
+	toolBoxWidget->show();
+	
 	// Connect Finished signal of tool windows to finished slots in structure
-	QObject::connect(atomlistWindow, SIGNAL(finished(int)), atomlistWindow, SLOT(dialogFinished(int)));
-	QObject::connect(buildWindow, SIGNAL(finished(int)), buildWindow, SLOT(dialogFinished(int)));
-	QObject::connect(cellDefineWindow, SIGNAL(finished(int)), cellDefineWindow, SLOT(dialogFinished(int)));
-	QObject::connect(cellTransformWindow, SIGNAL(finished(int)), cellTransformWindow, SLOT(dialogFinished(int)));
-	QObject::connect(commandWindow, SIGNAL(finished(int)), commandWindow, SLOT(dialogFinished(int)));
-	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));
-	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));
-	QObject::connect(fragmentWindow, SIGNAL(finished(int)), fragmentWindow, SLOT(dialogFinished(int)));
-	QObject::connect(geometryWindow, SIGNAL(finished(int)), geometryWindow, SLOT(dialogFinished(int)));
-	QObject::connect(glyphsWindow, SIGNAL(finished(int)), glyphsWindow, SLOT(dialogFinished(int)));
-	QObject::connect(gridsWindow, SIGNAL(finished(int)), gridsWindow, SLOT(dialogFinished(int)));
-	QObject::connect(mdWindow, SIGNAL(finished(int)), mdWindow, SLOT(dialogFinished(int)));
-	QObject::connect(minimiserWindow, SIGNAL(finished(int)), minimiserWindow, SLOT(dialogFinished(int)));
-	QObject::connect(positionWindow, SIGNAL(finished(int)), positionWindow, SLOT(dialogFinished(int)));
-	QObject::connect(selectWindow, SIGNAL(finished(int)), selectWindow, SLOT(dialogFinished(int)));
-	QObject::connect(transformWindow, SIGNAL(finished(int)), transformWindow, SLOT(dialogFinished(int)));
-	QObject::connect(vibrationsWindow, SIGNAL(finished(int)), vibrationsWindow, SLOT(dialogFinished(int)));
-	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));
+	foreach( QDockWidget *obj, dockWidgets_)
+	{
+		QObject::connect(obj, SIGNAL(visibilityChanged(bool)), toolBoxWidget, SLOT(dockWidgetVisibilityChanged(bool)));
+		QObject::connect(obj, SIGNAL(topLevelChanged(bool)), toolBoxWidget, SLOT(dockWidgetTopLevelChanged(bool)));
+		// Add every dock widget to a dock area (annoying to have to do it, but prevents 'stuck' dock widgets on some versions)
+		mainWindow->addDockWidget(Qt::RightDockWidgetArea, obj);
+	}
+	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY
 
 	// Set the modality of some dialogs
+	disorderWizard->setModal(FALSE);
 	prefsDialog->setModal(TRUE);
 	forcefieldEditorDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);
@@ -244,14 +241,7 @@ void GuiQt::run()
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
-	glyphsWindow->finaliseUi();
-	prefsDialog->finaliseUi();
-	forcefieldEditorDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
-	selectFilterDialog->finaliseUi();
-	selectPatternDialog->finaliseUi();
-	selectVariableDialog->finaliseUi();
-	selectElementDialog->finaliseUi();
 
 	// Temporarily disable drawing on the main canvas again
 	gui.mainWidget->disableDrawing();
@@ -259,42 +249,31 @@ void GuiQt::run()
 	// Set controls in the windows
 	mainWindow->setControls();
 	prefsDialog->setControls();
-	forcefieldEditorDialog->setControls();
 	loadModelDialog->setControls();
-	selectFilterDialog->setControls();
-	selectPatternDialog->setControls();
-	selectVariableDialog->setControls();
-	fragmentWindow->refresh();
+	fragmentsWidget->refresh();
+	commandWidget->refresh();
 
-	// Show the widgets in the GUI and flag it as existing
+	// Show the main window, and flag it as existing
 	mainWindow->show();
 	doesExist_ = TRUE;
 
 	// Refresh the necessary windows
-	gridsWindow->refresh();
-	forcefieldsWindow->refresh();
-	disorderWindow->refresh();
-	mdWindow->refresh();
-	cellDefineWindow->refresh();
-	cellTransformWindow->refresh();
+	gridsWidget->refresh();
+	forcefieldsWidget->refresh();
+	mdWidget->refresh();
+	cellDefinitionWidget->refresh();
+	cellTransformWidget->refresh();
 	mainWindow->update();
-	commandWindow->refreshScripts();
+	commandWidget->refreshScripts();
+	modelListWidget->refresh();
+	atomListWidget->refresh();
+	toolBoxWidget->updateButtons();
+
+	// Reset view of all loaded models
+	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
 
 	gui.mainWidget->enableDrawing();
-
-	// Add loaded models to tabbar (and reset the view while we're here)
-	// Must remember the current model, since adding the tabs will change it (in the currentChanged callback)
-	Model *currentm = aten.currentModel();
-	int tabid, currenttab = 0;
-	for (Model *m = aten.models(); m != NULL; m = m->next)
-	{
-		tabid = mainWindow->addModelTab(m);
-		if (m == currentm) currenttab = tabid;
-		if (!prefs.keepView()) m->resetView();
-	}
-	mainWindow->ui.ModelTabs->setCurrentIndex(currenttab);
-
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget->postRedisplay(TRUE);
 
 	// Display message box warning if there was a filter load error
 	if (aten.nFiltersFailed() == -1)
@@ -321,9 +300,9 @@ void GuiQt::run()
 	}
 
 	// Add GNU GPL message to statusbox
-	msg.print("Aten version %s (%s@%s) built on %s, Copyright (C) 2007-2011  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
-	msg.print("Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
-	msg.print("Aten comes with ABSOLUTELY NO WARRANTY.\n");
+	msg.print("<b>Aten</b> version %s (%s@%s) built on %s, Copyright (C) 2007-2011  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
+	msg.print("<b>Aten</b> uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
+	msg.print("<b>Aten</b> comes with ABSOLUTELY NO WARRANTY.\n");
 	msg.print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
 	msg.print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
@@ -340,89 +319,82 @@ void GuiQt::run()
 */
 
 // Update GUI after model change (or different model selected) (accessible wrapper to call AtenForm's function)
-void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, bool updateGlyphs, bool updateGrids)
+void GuiQt::update(int targets)
 {
 	if (!doesExist_) return;
-	// Refresh aspects of main window
+
+	// Refresh aspects of main window and dock widgets
 	mainWindow->update();
-	// Update contents of the atom list
-	if (updateAtoms) atomlistWindow->refresh();
-	// Update contents of the glyph list
-	if (updateGlyphs) glyphsWindow->refresh();
-	// Update contents of the grid window
-	if (updateGrids) gridsWindow->refresh();
-	// Update selection window
-	selectWindow->refresh();
-	// Update vibrations window
-	vibrationsWindow->refresh();
-	// Update the contents of the cell page
-	if (updateCell)
-	{
-		cellDefineWindow->refresh();
-		cellTransformWindow->refresh();
-		disorderWindow->refresh();
-	}
-	// Update forcefields in the forcefield window
-	if (updateForcefield) forcefieldsWindow->refresh();
-	// Update context menu items
 	updateContextMenu();
-	// Update geometry page
-	geometryWindow->refresh();
-	// Request redraw of the main canvas
-	gui.mainWidget->postRedisplay();
-}
+	
+	if (targets&GuiQt::ModelsTarget) modelListWidget->refresh();
+	if (targets&GuiQt::GeometryTarget) geometryWidget->refresh();
+	if (targets&GuiQt::SelectTarget) selectWidget->refresh();
+	if (targets&GuiQt::VibrationsTarget) vibrationsWidget->refresh();
+	if (targets&GuiQt::TrajectoryTarget) trajectoryWidget->refresh();
 
-// Update statusbar
-void GuiQt::updateStatusBar(bool clear)
-{
-	static Dnchar text(512);
-	static UserAction::Action lastAction = UserAction::NoAction;
-	// Initialise string if NoAction
-	if (lastAction == UserAction::NoAction) text.clear();
-	// If current action is not the same as the last action, recreate string
-	if (lastAction != mainWidget->selectedMode())
+	// Update contents of the atom list
+	if (targets&GuiQt::AtomsTarget) atomListWidget->refresh();
+
+	// Update contents of the glyph list
+	if (targets&GuiQt::GlyphsTarget) glyphsWidget->refresh();
+
+	// Update contents of the grid window
+	if (targets&GuiQt::GridsTarget) gridsWidget->refresh();
+
+	// Update the contents of the cell page
+	if (targets&GuiQt::CellTarget)
 	{
-		lastAction = mainWidget->selectedMode();
-		text.clear();
-		text.strcat("<b>");
-		text.strcat(UserActions[lastAction].name);
-		text.strcat(":</b> ");
-		text.strcat(UserActions[lastAction].unModified);
-		if (UserActions[lastAction].shiftModified[0] != '\0')
-		{
-			text.strcat(", <b>+shift</b> ");
-			text.strcat(UserActions[lastAction].shiftModified);
-		}
-		if (UserActions[lastAction].ctrlModified[0] != '\0')
-		{
-			text.strcat(", <b>+ctrl</b> ");
-			text.strcat(UserActions[lastAction].ctrlModified);
-		}
-		if (UserActions[lastAction].altModified[0] != '\0')
-		{
-			text.strcat(", <b>+alt</b> ");
-			text.strcat(UserActions[lastAction].altModified);
-		}
+		cellDefinitionWidget->refresh();
+		cellTransformWidget->refresh();
 	}
-	// Set text in statusbar widget
-	if (clear) mainWindow->messageLabel->setText("");
-	else mainWindow->messageLabel->setText(text.get());
+
+	// Update forcefields in the forcefield widget
+	if (targets&GuiQt::ForcefieldsTarget) forcefieldsWidget->refresh();
+
+	if (targets&GuiQt::StatusBarTarget)
+	{
+		static Dnchar text(512);
+		static UserAction::Action lastAction = UserAction::NoAction;
+		
+		// Initialise string if NoAction
+		if (lastAction == UserAction::NoAction) text.clear();
+		
+		// If current action is not the same as the last action, recreate string
+		if (lastAction != mainWidget->selectedMode())
+		{
+			lastAction = mainWidget->selectedMode();
+			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
+			if (UserActions[lastAction].shiftModified[0] != '\0') text.strcatf(", <b>+shift</b> %s", UserActions[lastAction].shiftModified);
+			if (UserActions[lastAction].ctrlModified[0] != '\0') text.strcatf(", <b>+ctrl</b> %s", UserActions[lastAction].ctrlModified);
+			if (UserActions[lastAction].altModified[0] != '\0') text.strcatf(", <b>+alt</b> %s", UserActions[lastAction].altModified);
+		}
+		// Set text in statusbar widget
+// 		if (clear) mainWindow->setMessageLabel("");  TGAY
+		mainWindow->setMessageLabel(text);
+	}
+	
+	// Request redraw of the main canvas
+	if (targets&GuiQt::CanvasTarget) gui.mainWidget->postRedisplay();
 }
 
+// Return the PID of Aten
+int GuiQt::pid()
+{
+	return (app == NULL ? 0 : app->applicationPid());
+}
+
+// Process application messages
+void GuiQt::processMessages()
+{
+	if (app != NULL) app->processEvents();
+}
 
 /*
 // Methods
 */
 
-// Add model to GUI list, in this case a tab in the ModelTabs widget
-void GuiQt::addModel(Model *m)
-{
-	if (!doesExist_) return;
-	mainWindow->addModelTab(m);
-	m->resetView();
-	gui.update(TRUE,TRUE,TRUE);
-}
-
+// Print message
 void GuiQt::printMessage(const char *s)
 {
 	static char str[8096];
@@ -431,21 +403,13 @@ void GuiQt::printMessage(const char *s)
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
-	mainWindow->ui.TextDisplay->append(str);
-	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
+	messagesWidget->ui.MessagesBrowser->append(str);
+// 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());  TGAY
 }
 
-// Remove model from list
-void GuiQt::removeModel(int id)
-{
-	if (!doesExist_) return;
-	mainWindow->ui.ModelTabs->removeTab(id);
-	gui.update();
-}
-
+// Check the status of all models, asking to save before close if necessary
 bool GuiQt::saveBeforeClose()
 {
-	// Check the status of all models, asking to save before close if necessary
 	Dnchar text;
 	int returnvalue;
 	ReturnValue rv;
@@ -493,9 +457,6 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 		return FALSE;
 	}
 
-	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
-	int screenbits = prefs.screenObjects();
-	prefs.setScreenObjects(prefs.offScreenObjects());
 	QPixmap pixmap;
 	// Get current widget geometry if none was specified
 	if (width == 0) width = mainWidget->width();
@@ -506,10 +467,10 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	prefs.setLabelSize(newlabelsize);
 
 	mainWidget->setOffScreenRendering(TRUE);
-	mainWidget->postRedisplay();
+	mainWidget->postRedisplay(TRUE);
 
 	// Flag any surfaces to be rerendered for use in this context
-	aten.current.rs->rerenderGrids();
+// 	aten.current.rs()->rerenderGrids();
 
 	if (prefs.useFrameBuffer() == FALSE) pixmap = mainWidget->renderPixmap(width, height, FALSE);
 	else
@@ -520,10 +481,9 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 
 	mainWidget->setOffScreenRendering(FALSE);
 	if (!prefs.reusePrimitiveQuality()) mainWidget->reinitialisePrimitives();
-	prefs.setScreenObjects(screenbits);
 
 	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
-	aten.current.rs->rerenderGrids();
+// 	aten.current.rs()->rerenderGrids();
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);
@@ -533,188 +493,17 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	return TRUE;
 }
 
-// Enable / disable GUI (except progress bar group)
+// Enable / disable GUI
 void GuiQt::setWindowsEnabled(bool b)
 {
-	// Disable some key widgets on the main form
+	// Disable/enable some key widgets on the main form
 	mainWindow->ui.ViewFrame->setEnabled(b);
-	atomlistWindow->setEnabled(b);
-	buildWindow->setEnabled(b);
-	cellDefineWindow->setEnabled(b);
-	cellTransformWindow->setEnabled(b);
-	commandWindow->setEnabled(b);
-	disorderWindow->setEnabled(b);
-	forcefieldsWindow->setEnabled(b);
-	geometryWindow->setEnabled(b);
-	glyphsWindow->setEnabled(b);
-	gridsWindow->setEnabled(b);
-	minimiserWindow->setEnabled(b);
-	positionWindow->setEnabled(b);
-	transformWindow->setEnabled(b);
-	vibrationsWindow->setEnabled(b);
-	mainWindow->ui.BondToolbar->setEnabled(b);
-	mainWindow->ui.DrawToolbar->setEnabled(b);
-	mainWindow->ui.EditToolbar->setEnabled(b);
-	mainWindow->ui.FileToolbar->setEnabled(b);
-	mainWindow->ui.ForcefieldsToolbar->setEnabled(b);
-	mainWindow->ui.MeasureToolbar->setEnabled(b);
-	mainWindow->ui.MouseToolbar->setEnabled(b);
-	mainWindow->ui.SelectToolbar->setEnabled(b);
-	mainWindow->ui.TrajectoryToolbar->setEnabled(b);
-	mainWindow->ui.WindowToolbar->setEnabled(b);
-	mainWindow->setWidgetsEnabled(b);
+
+	// ...and all the dock widgets...
+	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", b);
+
+	// ...and the main toolbar
+	mainWindow->ui.MainToolbar->setEnabled(b);
+	
 	app->processEvents();
-}
-
-/*
-// Progress Dialogs
-*/
-
-// Notify that the progress indicator should be canceled
-void GuiQt::notifyProgressCanceled()
-{
-	progressCanceled_ = TRUE;
-}
-
-// Instantiate a progress dialog
-void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
-{
-	// Reset our QTime object...
-	time_.setHMS(0,0,0);
-	time_.start();
-	progressCurrentStep_ = 0;
-	progressStepsToDo_ = stepstodo;
-	progressPercent_ = 0;
-	progressCanceled_ = FALSE;
-	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!doesExist_)
-	{
-		// Don't print anything if we're in quiet mode
-		if (msg.isQuiet() || (time_.elapsed() < 2000) ) return;
-		// Print out the empty progress indicator
-		printf("--- %s\n", jobtitle);
-		printf("Progress [-]                              (  0%%)");
-		fflush(stdout);
-	}
-	else
-	{
-		mainWindow->progressBar->setMaximum(stepstodo);
-		mainWindow->progressBar->setValue(0);
-		mainWindow->progressTitle->setText(jobtitle);
-		mainWindow->progressEta->setText("");
-	}
-}
-
-// Terminate the progress dialog
-void GuiQt::progressTerminate()
-{
-	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!doesExist_)
-	{
-		if (progressPercent_ == -1) return;
-		if (time_.elapsed() >= 500) printf("\n");
-	}
-	else
-	{
-		// Hide the progress bar and re-enable widgets
-		mainWindow->progressIndicator->setVisible(FALSE);
-		setWindowsEnabled(TRUE);
-		app->processEvents();
-	}
-	progressPercent_ = -1;
-}
-
-// Update the progress dialog
-bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
-{
-	progressCurrentStep_ = (currentstep == -1 ? progressCurrentStep_+1 : currentstep);
-	double dpercent = double(progressCurrentStep_) / double(progressStepsToDo_);
-	static QTime remtime;
-	static Dnchar etatext;
-	// Show the progress bar if enough time has elapsed since the start of the operation...
-	// If the GUI doesn't exist, call the text-based progress indicator instead
-	// Calculate ETA
-	remtime.setHMS(0,0,0);
-	remtime = remtime.addMSecs( time_.elapsed() * ((1.0 - dpercent) / dpercent) );
-	if (!doesExist_)
-	{
-		static char twister[4] = { '-', '\\', '|', '/' };
-		static int n, ndots, c, percent;
-		// Don't print anything if we're in quiet mode
-		if (msg.isQuiet() || (time_.elapsed() < 500) ) return TRUE;
-		// Work out percentage and print dots and spaces
-		percent = int(dpercent * 100.0);
-		ndots = int(dpercent * 30.0);
-		dpercent *= 100.0;
-		// Always print the header and twister character
-		if (shorttext == NULL) printf("\rProgress [%c]", twister[c]);
-		// Increase the twister character
-		++c;
-		c = c%4;
-		// New dots or percentage to output?
-		if (percent != progressPercent_)
-		{
-			if (shorttext == NULL)
-			{
-				for (n=0; n<ndots; n++) printf(".");
-				for (n=ndots; n<30; n++) printf(" ");
-			}
-			// Lastly, print percentage and ETA
-			etatext.sprintf("(%-3i%%, ETA %02i:%02i:%02i)",percent, remtime.hour(), remtime.minute(), remtime.second());
-			if (shorttext == NULL) printf("%s", etatext.get());
-			else shorttext->set(etatext);
-			fflush(stdout);
-			progressPercent_ = percent;
-		}
-	}
-	else if (time_.elapsed() >= 500)
-	{
-		setWindowsEnabled(FALSE);
-		mainWindow->progressIndicator->setVisible(TRUE);
-		mainWindow->progressBar->setValue(progressCurrentStep_);
-		etatext.sprintf("ETA %02i:%02i:%02i", remtime.hour(), remtime.minute(), remtime.second());
-		mainWindow->progressEta->setText(etatext.get());
-		app->processEvents();
-	}
-	// Check to see if the abort button was pressed
-	return (!progressCanceled_);
-}
-
-/*
-// Trajectory
-*/
-
-// Return state of trajectory playback
-bool GuiQt::isTrajectoryPlaying()
-{
-	return trajectoryPlaying_;
-}
-
-// Set state of trajectory playback
-void GuiQt::setTrajectoryPlaying(bool b)
-{
-	trajectoryPlaying_ = b;
-}
-
-// Return trajectory timer id
-int GuiQt::trajectoryTimerId()
-{
-	return trajectoryTimerId_;
-}
-
-// Set state of trajectory playback
-void GuiQt::setTrajectoryTimerId(int i)
-{
-	trajectoryTimerId_ = i;
-}
-
-// Stop trajectory playback
-void GuiQt::stopTrajectoryPlayback()
-{
-	mainWidget->killTimer(trajectoryTimerId_);
-	mainWindow->ui.actionTrajectoryPlayPause->setChecked(FALSE);
-	trajectoryPlaying_ = FALSE;
-	gui.mainWidget->setEditable(TRUE);
-	mainWindow->updateTrajectoryControls();
-	update();
 }

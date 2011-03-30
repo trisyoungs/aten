@@ -145,6 +145,8 @@ class LineParser
 	int getDoubleArray(double *array, int count);
 	// Write line to file
 	bool writeLine(const char *s);
+	// Write formatter line to file
+	bool writeLineF(const char *fmt ...);
 
 
 	/*

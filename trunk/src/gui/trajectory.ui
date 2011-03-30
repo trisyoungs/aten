@@ -1,0 +1,347 @@
+<ui version="4.0">
+ <class>TrajectoryWidget</class>
+ <widget class="QDockWidget" name="TrajectoryWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>270</width>
+    <height>89</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::AllDockWidgetAreas</set>
+  </property>
+  <property name="windowTitle">
+   <string>Trajectory</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item>
+     <layout class="QVBoxLayout" name="VerticalLayout">
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="HorizontalLayout">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QWidget" name="ControlsWidget" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="spacing">
+            <number>4</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QToolButton" name="TrajectorySwitchButton">
+             <property name="minimumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="icons.qrc">
+               <normaloff>:/playback/icons/traj_view.svg</normaloff>:/playback/icons/traj_view.svg</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>13</width>
+               <height>17</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QToolButton" name="TrajectoryFirstFrameButton">
+             <property name="minimumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="icons.qrc">
+               <normaloff>:/playback/icons/traj_first.svg</normaloff>:/playback/icons/traj_first.svg</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="TrajectoryPreviousFrameButton">
+             <property name="minimumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="icons.qrc">
+               <normaloff>:/playback/icons/traj_prev.svg</normaloff>:/playback/icons/traj_prev.svg</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="TrajectoryPlayPauseButton">
+             <property name="minimumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="icons.qrc">
+               <normaloff>:/playback/icons/traj_playpause.svg</normaloff>:/playback/icons/traj_playpause.svg</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="TrajectoryNextFrameButton">
+             <property name="minimumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="icons.qrc">
+               <normaloff>:/playback/icons/traj_next.svg</normaloff>:/playback/icons/traj_next.svg</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="TrajectoryLastFrameButton">
+             <property name="minimumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>30</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="icons.qrc">
+               <normaloff>:/playback/icons/traj_last.svg</normaloff>:/playback/icons/traj_last.svg</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QWidget" name="FrameSelectWidget" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QSpinBox" name="TrajectoryFrameSpin">
+           <property name="toolTip">
+            <string>Current frame number</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="TrajectoryFrameSlider">
+           <property name="toolTip">
+            <string>Current frame number</string>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="TrajectoryDelaySpin">
+           <property name="toolTip">
+            <string>Delay between frames</string>
+           </property>
+           <property name="suffix">
+            <string> ms</string>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>TrajectoryFrameSpin</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>TrajectoryFrameSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>101</x>
+     <y>76</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>TrajectoryFrameSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>TrajectoryFrameSpin</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>165</x>
+     <y>81</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>33</x>
+     <y>82</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -156,7 +156,7 @@ bool ZMatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	ReturnValue temprv;
-	ZMatrix *ptr= (ZMatrix*) rv.asPointer(VTypes::ZMatrixData, result);
+	ZMatrix *ptr = (ZMatrix*) rv.asPointer(VTypes::ZMatrixData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixData));
@@ -381,7 +381,7 @@ bool ZMatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	ZMatrix *ptr= (ZMatrix*) sourcerv.asPointer(VTypes::ZMatrixData, result);
+	ZMatrix *ptr = (ZMatrix*) sourcerv.asPointer(VTypes::ZMatrixData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixData));
@@ -489,7 +489,7 @@ bool ZMatrixVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ZMatrix *ptr= (ZMatrix*) rv.asPointer(VTypes::ZMatrixData, result);
+	ZMatrix *ptr = (ZMatrix*) rv.asPointer(VTypes::ZMatrixData, result);
 	if (result) switch (i)
 	{
 		default:

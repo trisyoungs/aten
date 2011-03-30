@@ -1,5 +1,5 @@
 /*
-	*** Qt atom transform interface
+	*** Transform Dock Widget
 	*** src/gui/transform_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -20,44 +20,40 @@
 */
 
 #include "main/aten.h"
-#include "gui/mainwindow.h"
 #include "gui/transform.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
 // Constructor
-AtenTransform::AtenTransform(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+TransformWidget::TransformWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 }
 
-// Destructor
-AtenTransform::~AtenTransform()
+void TransformWidget::showWidget()
 {
-}
-
-void AtenTransform::showWindow()
-{
-	//if (shouldRefresh_) refresh();
 	show();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 /*
 // Rotations
 */
 
-void AtenTransform::on_RotateClockwiseButton_clicked(bool on)
+void TransformWidget::on_RotateClockwiseButton_clicked(bool on)
 {
 	rotateSelection(1);
 }
 
-void AtenTransform::on_RotateAnticlockwiseButton_clicked(bool on)
+void TransformWidget::on_RotateAnticlockwiseButton_clicked(bool on)
 {
 	rotateSelection(-1);
 }
 
-void AtenTransform::on_RotateDefineOriginButton_clicked(bool on)
+void TransformWidget::on_RotateDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
 	Vec3<double> v = aten.currentModelOrFrame()->selectionCentreOfGeometry();
@@ -67,7 +63,7 @@ void AtenTransform::on_RotateDefineOriginButton_clicked(bool on)
 	ui.RotateOriginZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_RotateDefineAxisButton_clicked(bool on)
+void TransformWidget::on_RotateDefineAxisButton_clicked(bool on)
 {
 	// Get geometric centre of selection and current origin
 	Vec3<double> v, o;
@@ -84,23 +80,23 @@ void AtenTransform::on_RotateDefineAxisButton_clicked(bool on)
 
 void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.RotatePickAxisButton->setChecked(FALSE);
+	gui.transformWidget->ui.RotatePickAxisButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
-	gui.transformWindow->ui.RotateAxisXSpin->setValue(v.x);
-	gui.transformWindow->ui.RotateAxisYSpin->setValue(v.y);
-	gui.transformWindow->ui.RotateAxisZSpin->setValue(v.z);
+	gui.transformWidget->ui.RotateAxisXSpin->setValue(v.x);
+	gui.transformWidget->ui.RotateAxisYSpin->setValue(v.y);
+	gui.transformWidget->ui.RotateAxisZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_RotatePickAxisButton_clicked(bool on)
+void TransformWidget::on_RotatePickAxisButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&rotatePickAxisButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickTransformRotateAxisAction,2,&rotatePickAxisButton_callback);
 }
 
-void AtenTransform::rotateSelection(double direction)
+void TransformWidget::rotateSelection(double direction)
 {
 	Vec3<double> v, o;
 	v.x = ui.RotateAxisXSpin->value();
@@ -112,14 +108,14 @@ void AtenTransform::rotateSelection(double direction)
 	CommandNode::run(Command::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
 	Model *m = aten.currentModelOrFrame();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
 // Matrix Transform
 */
 
-void AtenTransform::on_TransformApplyButton_clicked(bool on)
+void TransformWidget::on_TransformApplyButton_clicked(bool on)
 {
 	// Put values into our matrix...
 	Matrix mat;
@@ -132,100 +128,100 @@ void AtenTransform::on_TransformApplyButton_clicked(bool on)
 	CommandNode::run(Command::MatrixTransform, "dddddddddddd", mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], v.x, v.y, v.z);
 
 	aten.currentModelOrFrame()->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void transformDefineAButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.TransformDefineAButton->setChecked(FALSE);
+	gui.transformWidget->ui.TransformDefineAButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
 void transformDefineBButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.TransformDefineBButton->setChecked(FALSE);
+	gui.transformWidget->ui.TransformDefineBButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
 void transformDefineCButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.TransformDefineCButton->setChecked(FALSE);
+	gui.transformWidget->ui.TransformDefineCButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformDefineAButton_clicked(bool on)
+void TransformWidget::on_TransformDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&transformDefineAButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineAAction,2,&transformDefineAButton_callback);
 }
 
-void AtenTransform::on_TransformDefineBButton_clicked(bool on)
+void TransformWidget::on_TransformDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&transformDefineBButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineBAction,2,&transformDefineBButton_callback);
 }
 
-void AtenTransform::on_TransformDefineCButton_clicked(bool on)
+void TransformWidget::on_TransformDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&transformDefineCButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineCAction,2,&transformDefineCButton_callback);
 }
 
-void AtenTransform::on_TransformNormaliseAButton_clicked(bool on)
+void TransformWidget::on_TransformNormaliseAButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.TransformMatrixAXSpin->value(), ui.TransformMatrixAYSpin->value(), ui.TransformMatrixAZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformNormaliseBButton_clicked(bool on)
+void TransformWidget::on_TransformNormaliseBButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.TransformMatrixBXSpin->value(), ui.TransformMatrixBYSpin->value(), ui.TransformMatrixBZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformNormaliseCButton_clicked(bool on)
+void TransformWidget::on_TransformNormaliseCButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.TransformMatrixCXSpin->value(), ui.TransformMatrixCYSpin->value(), ui.TransformMatrixCZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformOrthogonaliseAButton_clicked(bool on)
+void TransformWidget::on_TransformOrthogonaliseAButton_clicked(bool on)
 {
 	// Orthogonalise vector from x vector (or y vector)
  	Vec3<double> v, ref;
@@ -233,12 +229,12 @@ void AtenTransform::on_TransformOrthogonaliseAButton_clicked(bool on)
 	ref.set(ui.TransformMatrixBXSpin->value(), ui.TransformMatrixBYSpin->value(), ui.TransformMatrixBZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformOrthogonaliseBButton_clicked(bool on)
+void TransformWidget::on_TransformOrthogonaliseBButton_clicked(bool on)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -246,12 +242,12 @@ void AtenTransform::on_TransformOrthogonaliseBButton_clicked(bool on)
 	ref.set(ui.TransformMatrixAXSpin->value(), ui.TransformMatrixAYSpin->value(), ui.TransformMatrixAZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformOrthogonaliseCButton_clicked(bool on)
+void TransformWidget::on_TransformOrthogonaliseCButton_clicked(bool on)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -259,12 +255,12 @@ void AtenTransform::on_TransformOrthogonaliseCButton_clicked(bool on)
 	ref.set(ui.TransformMatrixAXSpin->value(), ui.TransformMatrixAYSpin->value(), ui.TransformMatrixAZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformGenerateAButton_clicked(bool on)
+void TransformWidget::on_TransformGenerateAButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -272,24 +268,24 @@ void AtenTransform::on_TransformGenerateAButton_clicked(bool on)
 	v2.set(ui.TransformMatrixCXSpin->value(), ui.TransformMatrixCYSpin->value(), ui.TransformMatrixCZSpin->value());
 	v = v1 * v2;
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformGenerateBButton_clicked(bool on)
+void TransformWidget::on_TransformGenerateBButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
 	v1.set(ui.TransformMatrixAXSpin->value(), ui.TransformMatrixAYSpin->value(), ui.TransformMatrixAZSpin->value());
 	v2.set(ui.TransformMatrixCXSpin->value(), ui.TransformMatrixCYSpin->value(), ui.TransformMatrixCZSpin->value());
 	v = v1 * v2;
-	gui.transformWindow->ui.TransformMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformGenerateCButton_clicked(bool on)
+void TransformWidget::on_TransformGenerateCButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -297,22 +293,22 @@ void AtenTransform::on_TransformGenerateCButton_clicked(bool on)
 	v2.set(ui.TransformMatrixBXSpin->value(), ui.TransformMatrixBYSpin->value(), ui.TransformMatrixBZSpin->value());
 	v = v1 * v2;
 	v.normalise();
-	gui.transformWindow->ui.TransformMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.TransformMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.TransformMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.TransformMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.TransformMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_TransformOriginCellCentreButton_clicked(bool on)
+void TransformWidget::on_TransformOriginCellCentreButton_clicked(bool on)
 {
 	Vec3<double> o;
-	if (aten.currentModelOrFrame()->cell()->type() == Cell::NoCell) o.set(0.0,0.0,0.0);
+	if (aten.currentModelOrFrame()->cell()->type() == UnitCell::NoCell) o.set(0.0,0.0,0.0);
 	else o = aten.currentModelOrFrame()->cell()->centre();
 	ui.TransformOriginXSpin->setValue(o.x);
 	ui.TransformOriginYSpin->setValue(o.y);
 	ui.TransformOriginZSpin->setValue(o.z);
 }
 
-void AtenTransform::on_TransformDefineOriginButton_clicked(bool on)
+void TransformWidget::on_TransformDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
 	Vec3<double> v = aten.currentModelOrFrame()->selectionCentreOfGeometry();
@@ -326,7 +322,7 @@ void AtenTransform::on_TransformDefineOriginButton_clicked(bool on)
 // Matrix Transformation 
 */
 
-void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
+void TransformWidget::on_ConvertRotateIntoButton_clicked(bool on)
 {
 	// Put values into our matrices...
 	Matrix source, target, rotmat;
@@ -343,101 +339,100 @@ void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
 	CommandNode::run(Command::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[4], source[5], source[6], source[8], source[9], source[10], target[0], target[1], target[2], target[4], target[5], target[6], target[8], target[9], target[10], v.x, v.y, v.z);
 
 	aten.currentModelOrFrame()->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
-	gui.mainWidget->postRedisplay();
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void convertDefineSourceAButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.ConvertSourceDefineAButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertSourceDefineAButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
 void convertDefineSourceBButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.ConvertSourceDefineBButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertSourceDefineBButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
 void convertDefineSourceCButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.ConvertSourceDefineCButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertSourceDefineCButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceDefineAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertDefineSourceAButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceAAction,2,&convertDefineSourceAButton_callback);
 }
 
-void AtenTransform::on_ConvertSourceDefineBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertDefineSourceBButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceBAction,2,&convertDefineSourceBButton_callback);
 }
 
-void AtenTransform::on_ConvertSourceDefineCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertDefineSourceCButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceCAction,2,&convertDefineSourceCButton_callback);
 }
 
-void AtenTransform::on_ConvertSourceNormaliseAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.ConvertSourceMatrixAXSpin->value(), ui.ConvertSourceMatrixAYSpin->value(), ui.ConvertSourceMatrixAZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceNormaliseBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceNormaliseBButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.ConvertSourceMatrixBXSpin->value(), ui.ConvertSourceMatrixBYSpin->value(), ui.ConvertSourceMatrixBZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceNormaliseCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceNormaliseCButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.ConvertSourceMatrixCXSpin->value(), ui.ConvertSourceMatrixCYSpin->value(), ui.ConvertSourceMatrixCZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceOrthogonaliseAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceOrthogonaliseAButton_clicked(bool on)
 {
 	// Orthogonalise vector from x vector (or y vector)
  	Vec3<double> v, ref;
@@ -445,12 +440,12 @@ void AtenTransform::on_ConvertSourceOrthogonaliseAButton_clicked(bool on)
 	ref.set(ui.ConvertSourceMatrixBXSpin->value(), ui.ConvertSourceMatrixBYSpin->value(), ui.ConvertSourceMatrixBZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceOrthogonaliseBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceOrthogonaliseBButton_clicked(bool on)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -458,12 +453,12 @@ void AtenTransform::on_ConvertSourceOrthogonaliseBButton_clicked(bool on)
 	ref.set(ui.ConvertSourceMatrixAXSpin->value(), ui.ConvertSourceMatrixAYSpin->value(), ui.ConvertSourceMatrixAZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceOrthogonaliseCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceOrthogonaliseCButton_clicked(bool on)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -471,12 +466,12 @@ void AtenTransform::on_ConvertSourceOrthogonaliseCButton_clicked(bool on)
 	ref.set(ui.ConvertSourceMatrixAXSpin->value(), ui.ConvertSourceMatrixAYSpin->value(), ui.ConvertSourceMatrixAZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceGenerateAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceGenerateAButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -484,24 +479,24 @@ void AtenTransform::on_ConvertSourceGenerateAButton_clicked(bool on)
 	v2.set(ui.ConvertSourceMatrixCXSpin->value(), ui.ConvertSourceMatrixCYSpin->value(), ui.ConvertSourceMatrixCZSpin->value());
 	v = v1 * v2;
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceGenerateBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceGenerateBButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
 	v1.set(ui.ConvertSourceMatrixAXSpin->value(), ui.ConvertSourceMatrixAYSpin->value(), ui.ConvertSourceMatrixAZSpin->value());
 	v2.set(ui.ConvertSourceMatrixCXSpin->value(), ui.ConvertSourceMatrixCYSpin->value(), ui.ConvertSourceMatrixCZSpin->value());
 	v = v1 * v2;
-	gui.transformWindow->ui.ConvertSourceMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertSourceGenerateCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceGenerateCButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -509,22 +504,22 @@ void AtenTransform::on_ConvertSourceGenerateCButton_clicked(bool on)
 	v2.set(ui.ConvertSourceMatrixBXSpin->value(), ui.ConvertSourceMatrixBYSpin->value(), ui.ConvertSourceMatrixBZSpin->value());
 	v = v1 * v2;
 	v.normalise();
-	gui.transformWindow->ui.ConvertSourceMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertSourceMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertSourceMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertSourceMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertOriginCellCentreButton_clicked(bool on)
+void TransformWidget::on_ConvertOriginCellCentreButton_clicked(bool on)
 {
 	Vec3<double> o;
-	if (aten.currentModelOrFrame()->cell()->type() == Cell::NoCell) o.set(0.0,0.0,0.0);
+	if (aten.currentModelOrFrame()->cell()->type() == UnitCell::NoCell) o.set(0.0,0.0,0.0);
 	else o = aten.currentModelOrFrame()->cell()->centre();
 	ui.ConvertOriginXSpin->setValue(o.x);
 	ui.ConvertOriginYSpin->setValue(o.y);
 	ui.ConvertOriginZSpin->setValue(o.z);
 }
 
-void AtenTransform::on_ConvertDefineOriginButton_clicked(bool on)
+void TransformWidget::on_ConvertDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
 	Vec3<double> v = aten.currentModelOrFrame()->selectionCentreOfGeometry();
@@ -536,95 +531,95 @@ void AtenTransform::on_ConvertDefineOriginButton_clicked(bool on)
 
 void convertTargetDefineAButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.ConvertTargetDefineAButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertTargetDefineAButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
 }
 
 void convertTargetDefineBButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.ConvertTargetDefineBButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertTargetDefineBButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
 }
 
 void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.ConvertTargetDefineCButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertTargetDefineCButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetDefineAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertTargetDefineAButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetAAction,2,&convertTargetDefineAButton_callback);
 }
 
-void AtenTransform::on_ConvertTargetDefineBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertTargetDefineBButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetBAction,2,&convertTargetDefineBButton_callback);
 }
 
-void AtenTransform::on_ConvertTargetDefineCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&convertTargetDefineCButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetCAction,2,&convertTargetDefineCButton_callback);
 }
 
-void AtenTransform::on_ConvertTargetNormaliseAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.ConvertTargetMatrixAXSpin->value(), ui.ConvertTargetMatrixAYSpin->value(), ui.ConvertTargetMatrixAZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetNormaliseBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetNormaliseBButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.ConvertTargetMatrixBXSpin->value(), ui.ConvertTargetMatrixBYSpin->value(), ui.ConvertTargetMatrixBZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetNormaliseCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetNormaliseCButton_clicked(bool on)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
 	v.set(ui.ConvertTargetMatrixCXSpin->value(), ui.ConvertTargetMatrixCYSpin->value(), ui.ConvertTargetMatrixCZSpin->value());
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetOrthogonaliseAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetOrthogonaliseAButton_clicked(bool on)
 {
 	// Orthogonalise vector from x vector (or y vector)
  	Vec3<double> v, ref;
@@ -632,12 +627,12 @@ void AtenTransform::on_ConvertTargetOrthogonaliseAButton_clicked(bool on)
 	ref.set(ui.ConvertTargetMatrixBXSpin->value(), ui.ConvertTargetMatrixBYSpin->value(), ui.ConvertTargetMatrixBZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetOrthogonaliseBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetOrthogonaliseBButton_clicked(bool on)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -645,12 +640,12 @@ void AtenTransform::on_ConvertTargetOrthogonaliseBButton_clicked(bool on)
 	ref.set(ui.ConvertTargetMatrixAXSpin->value(), ui.ConvertTargetMatrixAYSpin->value(), ui.ConvertTargetMatrixAZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetOrthogonaliseCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetOrthogonaliseCButton_clicked(bool on)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -658,12 +653,12 @@ void AtenTransform::on_ConvertTargetOrthogonaliseCButton_clicked(bool on)
 	ref.set(ui.ConvertTargetMatrixAXSpin->value(), ui.ConvertTargetMatrixAYSpin->value(), ui.ConvertTargetMatrixAZSpin->value());
 	v.orthogonalise(ref);
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetGenerateAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetGenerateAButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -671,24 +666,24 @@ void AtenTransform::on_ConvertTargetGenerateAButton_clicked(bool on)
 	v2.set(ui.ConvertTargetMatrixCXSpin->value(), ui.ConvertTargetMatrixCYSpin->value(), ui.ConvertTargetMatrixCZSpin->value());
 	v = v1 * v2;
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetGenerateBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetGenerateBButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
 	v1.set(ui.ConvertTargetMatrixAXSpin->value(), ui.ConvertTargetMatrixAYSpin->value(), ui.ConvertTargetMatrixAZSpin->value());
 	v2.set(ui.ConvertTargetMatrixCXSpin->value(), ui.ConvertTargetMatrixCYSpin->value(), ui.ConvertTargetMatrixCZSpin->value());
 	v = v1 * v2;
-	gui.transformWindow->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_ConvertTargetGenerateCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetGenerateCButton_clicked(bool on)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -696,12 +691,15 @@ void AtenTransform::on_ConvertTargetGenerateCButton_clicked(bool on)
 	v2.set(ui.ConvertTargetMatrixBXSpin->value(), ui.ConvertTargetMatrixBYSpin->value(), ui.ConvertTargetMatrixBZSpin->value());
 	v = v1 * v2;
 	v.normalise();
-	gui.transformWindow->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
+	gui.transformWidget->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
+	gui.transformWidget->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
+	gui.transformWidget->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::dialogFinished(int result)
+void TransformWidget::closeEvent(QCloseEvent *event)
 {
-	gui.mainWindow->ui.actionTransformWindow->setChecked(FALSE);
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.TransformButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	event->accept();
 }

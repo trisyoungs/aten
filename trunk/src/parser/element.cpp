@@ -279,7 +279,7 @@ bool ElementVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Element *ptr= (Element*) rv.asPointer(VTypes::ElementData, result);
+	Element *ptr = (Element*) rv.asPointer(VTypes::ElementData, result);
 	if (result) switch (i)
 	{
 		default:

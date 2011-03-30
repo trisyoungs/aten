@@ -55,6 +55,7 @@ void Program::clear()
 {
 	functions_.clear();
 	filters_.clear();
+	mainProgram_.reset();
 }
 
 // Set name of forest
@@ -139,6 +140,10 @@ void Program::finalise()
 			filter->executeCustomDialog(TRUE);
 		}
 	}
+	// Generate widgets in global functions
+	for (Tree *t = functions_.first(); t != NULL; t = t->next)
+	{
+	}
 	msg.exit("Program::finalise");
 }
 
@@ -182,7 +187,7 @@ Tree *Program::globalFunctions()
 }
 
 // Execute specified global function
-bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist ...)
+bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist, ...)
 {
 	msg.enter("Program::executeGlobalFunction");
 	// First, locate funciton with the name supplied
@@ -223,7 +228,7 @@ bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const
 				var = new ForcefieldBoundVariable(va_arg(vars, ForcefieldBound*));
 				break;
 			default:
-				printf("Invalid argument specifier '%c' in Program::executeGlobalFunctin.\n", *c);
+				printf("Invalid argument specifier '%c' in Program::executeGlobalFunction.\n", *c);
 				var = NULL;
 				break;
 		}

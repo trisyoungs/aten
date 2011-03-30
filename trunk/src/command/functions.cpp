@@ -174,16 +174,7 @@ void Command::initPointers()
 	// Disordered build commands
 	pointers_[Disorder] = &Command::function_Disorder;
 	pointers_[ListComponents] = &Command::function_ListComponents;
-	pointers_[RegionCentre] = &Command::function_RegionCentre;
-	pointers_[RegionCentreFrac] = &Command::function_RegionCentreFrac;
-	pointers_[RegionGeometry] = &Command::function_RegionGeometry;
-	pointers_[RegionGeometryFrac] = &Command::function_RegionGeometryFrac;
-	pointers_[RegionOverlaps] = &Command::function_RegionOverlaps;
-	pointers_[RegionRotation] = &Command::function_RegionRotation;
-	pointers_[RegionShape] = &Command::function_RegionShape;
-	pointers_[SetNMols] = &Command::function_SetNMols;
-	pointers_[SetRegion] = &Command::function_SetRegion;
-	pointers_[SetRegionFrac] = &Command::function_SetRegionFrac;
+	pointers_[SetupComponent] = &Command::function_SetupComponent;
 	pointers_[VdwScale] = &Command::function_VdwScale;
 
 	// Edit Commands
@@ -311,6 +302,7 @@ void Command::initPointers()
 
 	// Image Commands
 	pointers_[SaveBitmap] = &Command::function_SaveBitmap;
+	pointers_[SaveMovie] = &Command::function_SaveMovie;
 	pointers_[SaveVector] = &Command::function_SaveVector;
 
 	// Labeling Commands
@@ -457,6 +449,7 @@ void Command::initPointers()
 	pointers_[SelectOutsideCell] = &Command::function_SelectOutsideCell;
 	pointers_[SelectPattern] = &Command::function_SelectPattern;
 	pointers_[SelectRadial] = &Command::function_SelectRadial;
+	pointers_[SelectTree] = &Command::function_SelectTree;
 	pointers_[SelectType] = &Command::function_SelectType;
 	
 	// Site Commands

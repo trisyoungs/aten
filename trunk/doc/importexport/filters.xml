@@ -513,7 +513,7 @@ string runtype = option(&quot;"Run Type"&quot;, &quot;"combo"&quot;, &quot;check
 					<row>
 						<entry>state</entry>
 						<entry>value@name?action</entry>
-						<entry>Some control over the states / content of other controls is possible using the 'state' command. The 'value' part indicates when the change detailed in 'action' is performed on the control 'name'. Since a direct equality comparison between the current value of the control and the state-change 'value' is made, only integer and string values make sense here. The control 'name' is the target control for the specified 'action', where 'action' is one of 'checked', 'disable', 'enable', 'items', or 'originalitems'. For those actions that take a property value (e.g. 'checked') the format of the line is then 'value@name?action=property'.</entry>
+						<entry>Some control over the states / content of other controls is possible using the 'state' command. The 'value' part indicates when the change detailed in 'action' is performed on the control 'name'. Since a direct equality comparison between the current value of the control and the state-change 'value' is made, only integer and string values make sense here. The control 'name' is the target control for the specified 'action', where 'action' is one of 'checked', 'disable', 'enable', 'items', 'minimum', 'maximum', 'originalitems', 'step', or 'value'. For those actions that take a property value (e.g. 'checked') the format of the line is then 'value@name?action=property'.</entry>
 					</row>
 					<row>
 						<entry>tab</entry>

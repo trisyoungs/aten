@@ -98,6 +98,31 @@ mcminimise(20);
 		</note>
 	
 	</section>
+
+	<section id="command.ref.mopacminimise"><title>mopacminimise</title>
+		<indexterm><primary>commands</primary><secondary>mopacminimise</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mopacminimise</function></funcdef>
+				<paramdef>string <parameter>options = "BFGS PM6 RHF SINGLET"</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Optimises the current model using the external MOPAC program (Copyright 2007, Stewart Computational Chemistry). Note that the program must be installed correctly as per the instructions provided with it, and the path to the MOPAC executable must be set in Aten's preferences, as well as a suitable temporary working directory. The optional argument allows a specific MOPAC command to be provided for the minimisation, but sensible defaults are used if this is not provided.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+mopacminimise();
+		</synopsis>
+		<para>minimises the current model with the default options listed above.</para>
+
+		<synopsis>
+mopacminimise("UHF TRIPLET PM6-DH2");
+		</synopsis>
+		<para>minimises the current model assuming a triplet state with the UHF method and the PM6-DH2 hamiltoniain.</para>
+		
+	</section>
 	
 	<section id="command.ref.sdminimise"><title>sdminimise</title>
 		<indexterm><primary>commands</primary><secondary>sdminimise</secondary></indexterm>

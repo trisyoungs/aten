@@ -1,7 +1,7 @@
 /*
-	*** Qt Radio Group Box
+	*** TRadioGroup - Custom group of QRadioButtons
 	*** src/gui/tradiogroupbox.uih
-	Copyright T. Youngs 2007
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 

@@ -63,6 +63,7 @@ bool Command::function_Message(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("[%s] %s\n",c->argc(0), fmt->string());
 		if (gui.exists()) QMessageBox::information(NULL, c->argc(0), fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
+	else return FALSE;
 	return TRUE;
 }
 
@@ -82,7 +83,8 @@ bool Command::function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		printf("Error - No format defined in 'printf' command.\n");
 		return FALSE;
 	}
-	if (fmt->writeToString()) msg.print("%s",fmt->string());
+	if (fmt->writeToString()) msg.print(Messenger::Always, "%s", fmt->string());
+	else return FALSE;
 	return TRUE;
 }
 
@@ -97,6 +99,7 @@ bool Command::function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	if (!msg.isOutputActive(Messenger::Verbose)) return TRUE;
 	if (fmt->writeToString()) msg.print(Messenger::Verbose, "%s\n",fmt->string());
+	else return FALSE;
 	return TRUE;
 }
 

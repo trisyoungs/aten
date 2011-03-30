@@ -27,6 +27,7 @@
 #include "parser/widgetnode.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
+#include "parser/variablelist.h"
 #include "command/commands.h"
 #include "templates/namemap.h"
 #include "templates/list.h"
@@ -162,6 +163,10 @@ class Tree
 	/*
 	// Variables / Constants
 	*/
+	private:
+	// Pointer to local ScopeNode (for functions)
+	ScopeNode *localScope_;
+
 	public:
 	// Add constant value to tompost scope
 	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
@@ -183,6 +188,8 @@ class Tree
 	Variable *findVariableInScope(const char *name, int &scopelevel);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
+	// Return local scope's variable list
+	const VariableList &localVariables() const;
 
 
 	/*
@@ -245,6 +252,10 @@ class Tree
 	const char *widgetValuec(const char *name);
 	// Retrieve current value of named widget triplet as a vector
 	Vec3<double> widgetValue3d(const char *name1, const char *name2, const char *name3);
+	// Set current value of named widget
+	void setWidgetValue(const char *name, ReturnValue value);
+	// Set property of named widget (via a state change)
+	bool setWidgetProperty(const char *name, const char *property, ReturnValue value);
 
 
 	/*

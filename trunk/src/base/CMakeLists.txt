@@ -3,8 +3,8 @@ atomaddress.cpp
 atom.cpp
 atom_geometry.cpp
 bond.cpp
-bundle.cpp
 cell.cpp
+choice.cpp
 colourscalepoint.cpp
 dnchar.cpp
 doubleexp.cpp
@@ -18,15 +18,14 @@ matrix.cpp
 measurement.cpp
 messenger.cpp
 pattern.cpp
-region.cpp
 sysfunc.cpp
 vibration.cpp
 wrapint.cpp
 atomaddress.h
 atom.h
 bond.h
-bundle.h
 cell.h
+choice.h
 colourscalepoint.h
 constants.h
 dnchar.h
@@ -41,7 +40,6 @@ matrix.h
 measurement.h
 messenger.h
 pattern.h
-region.h
 sysfunc.h
 vibration.h
 wrapint.h

@@ -141,19 +141,6 @@ Prefs::EnergyUnit Prefs::energyUnit(const char *s, bool reporterror)
 	return eu;
 }
 
-// View Objects
-const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions", "surfaces" };
-Prefs::ViewObject Prefs::viewObject(const char *s, bool reporterror)
-{
-	Prefs::ViewObject vo = (Prefs::ViewObject) enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s);
-	if ((vo == Prefs::nViewObjects) && reporterror) enumPrintValid(Prefs::nViewObjects,ViewObjectKeywords);
-	return vo;
-}
-const char *Prefs::viewObject(Prefs::ViewObject vo)
-{
-	return ViewObjectKeywords[vo];
-}
-
 // Guide Geometries
 const char *GG_strings[Prefs::nGuideGeometries] = { "Square", "Hexagonal" };
 
@@ -177,6 +164,7 @@ Prefs::Prefs()
 
 	// Rendering / Quality Options
 	globeSize_ = 75;
+	viewRotationGlobe_ = TRUE;
 	spotlightActive_ = TRUE;
 	spotlightColour_[Prefs::AmbientComponent][0] = 0.0;
 	spotlightColour_[Prefs::AmbientComponent][1] = 0.0;
@@ -214,9 +202,7 @@ Prefs::Prefs()
 	transparencyNBins_ = 1000;
 	transparencyBinStartZ_ = 0.0;
 	transparencyBinWidth_ = 0.2;
-	// Screen Objects
-	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
-	offScreenObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
+	frameCurrentModel_ = TRUE;
 
 	// Build
 	showGuide_ = FALSE;
@@ -271,25 +257,30 @@ Prefs::Prefs()
 	modelUpdate_ = 5;
 	energyUpdate_ = 5;
 	maxRingSize_ = 6;
-	maxRings_ = 20;
+	maxRings_ = 100;
 	maxCuboids_ = 100;
 	replicateFold_ = TRUE;
 	replicateTrim_ = TRUE;
 	forceRhombohedral_ = FALSE;
 	augmentAfterRebond_ = TRUE;
-	warning1056_ = TRUE;
+	warning1056_ = FALSE;
 	loadIncludes_ = TRUE;
+	loadPartitions_ = TRUE;
 	loadFragments_ = TRUE;
 	generateFragmentIcons_ = TRUE;
+	commonElements_ = "H,C,N,O,Cl";
+	maxUndoLevels_ = -1;
+	loadQtSettings_ = TRUE;
+	maxImproperDist_ = 5.0;
 	loadFilters_ = TRUE;
 	readPipe_ = FALSE;
 	
 	// File
-	bondOnLoad_ = Prefs::SwitchAsFilter;
-	foldOnLoad_ = Prefs::SwitchAsFilter;
-	centreOnLoad_ = Prefs::SwitchAsFilter;
-	packOnLoad_ = Prefs::SwitchAsFilter;
-	cacheLimit_ = 1024;
+	bondOnLoad_ = Choice::Default;
+	foldOnLoad_ = Choice::Default;
+	centreOnLoad_ = Choice::Default;
+	packOnLoad_ = Choice::Default;
+	cacheLimit_ = 512000;
 	zMapType_ = ElementMap::AutoZMap;
 	fixedZMapType_ = FALSE;
 	coordsInBohr_ = FALSE;
@@ -314,12 +305,11 @@ Prefs::Prefs()
 	electrostaticsMethod_ = Electrostatics::EwaldAuto;
 	calculateIntra_ = TRUE;
 	calculateVdw_ = TRUE;
-	calculateElec_ = FALSE;
 	ewaldKMax_.set(5,5,5);
 	ewaldAlpha_ = 0.5;
 	ewaldPrecision_.set(5.0, -6);
-	vdwCutoff_ = 10.0;
-	elecCutoff_ = 10.0;
+	vdwCutoff_ = 50.0;
+	elecCutoff_ = 50.0;
 	vdwScale_ = 1.0;
 	validEwaldAuto_ = FALSE;
 	combinationRules_[Combine::ArithmeticRule] = "c = (a+b)*0.5";
@@ -333,13 +323,11 @@ Prefs::Prefs()
 	distanceLabelFormat_ = "%0.3f ";
 	angleLabelFormat_ = "%0.2f";
 	labelSize_ = 10;
-	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
 	mouseMoveFilter_ = 10;
 	useFrameBuffer_ = FALSE;
-	maxUndoLevels_ = -1;
-	loadQtSettings_ = TRUE;
-	maxImproperDist_ = 5.0;
+	renderDashedAromatics_ = TRUE;
+	nModelsPerRow_ = 2;
 
 	// External programs
 #ifdef _WIN32
@@ -347,6 +335,8 @@ Prefs::Prefs()
 #else
 	tempDir_ = "/tmp";
 #endif
+	encoderExe_ = "/usr/bin/mencoder";
+	encoderArguments_ = "mf://FILES -ovc x264 -fps FPS -v -o OUTPUT";
 }
 
 // Load user preferences file
@@ -423,57 +413,43 @@ bool Prefs::save(const char *filename)
 }
 
 /*
-// Rendering - View Objects
+// Rendering
 */
 
-// Set the visibility of an object on-screen
-void Prefs::setVisibleOnScreen(ViewObject vo, bool b)
+// Return whether to frame current model in view
+bool Prefs::frameCurrentModel()
 {
-	if (b && (!(screenObjects_&(1 << vo)))) screenObjects_ += (1 << vo);
-	else if ((!b) && (screenObjects_&(1 << vo))) screenObjects_ -= (1 << vo);
+	return frameCurrentModel_;
 }
 
-// Set the visibility of an object off-screen
-void Prefs::setVisibleOffScreen(ViewObject vo, bool b)
+// Set whether to frame current model in view
+void Prefs::setFrameCurrentModel(bool b)
 {
-	if (b && (!(offScreenObjects_&(1 << vo)))) offScreenObjects_ += (1 << vo);
-	else if ((!b) && (offScreenObjects_&(1 << vo))) offScreenObjects_ -= (1 << vo);
+	frameCurrentModel_ = b;
 }
 
-// Return whether the specified object is visible (i.e. should be rendered) on screen
-bool Prefs::isVisibleOnScreen(ViewObject vo)
+// Return whether to frame whole view
+bool Prefs::frameWholeView()
 {
-	return (screenObjects_&(1 << vo) ? TRUE : FALSE);
+	return frameWholeView_;
 }
 
-// Return whether the specified object is visible (i.e. should be rendered) offscreen on saved images
-bool Prefs::isVisibleOffScreen(ViewObject vo)
+// Set whether to frame whole view
+void Prefs::setFrameWholeView(bool b)
 {
-	return (offScreenObjects_&(1 << vo) ? TRUE : FALSE);
+	frameWholeView_ = b;
 }
 
-// Return screenobjects bitvector
-int Prefs::screenObjects() const
+// Return whether to draw rotation globe
+bool Prefs::viewRotationGlobe()
 {
-	return screenObjects_;
+	return viewRotationGlobe_;
 }
 
-// Set screenobjects bitvector
-void Prefs::setScreenObjects(int i)
+// Set whether to draw rotation globe
+void Prefs::setViewRotationGlobe(bool b)
 {
-	screenObjects_ = i;
-}
-
-// Return offscreenobjects bitvector
-int Prefs::offScreenObjects() const
-{
-	return offScreenObjects_;
-}
-
-// Set offscreenobjects bitvector
-void Prefs::setOffScreenObjects(int i)
-{
-	offScreenObjects_ = i;
+	viewRotationGlobe_ = b;
 }
 
 // Set the drawing style of models
@@ -669,6 +645,12 @@ GLdouble Prefs::atomStyleRadius(Atom::DrawStyle ds) const
 	return atomStyleRadius_[(int)ds];
 }
 
+// Return atom radii array
+GLdouble *Prefs::atomStyleRadii()
+{
+	return atomStyleRadius_;
+}
+
 // Sets the tube size in DS_TUBE
 void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 {
@@ -679,6 +661,12 @@ void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 GLdouble Prefs::bondStyleRadius(Atom::DrawStyle ds) const
 {
 	return bondStyleRadius_[ds];
+}
+
+// Return bond radii array
+GLdouble *Prefs::bondStyleRadii()
+{
+	return bondStyleRadius_;
 }
 
 // Sets the scale of selected atoms
@@ -1070,6 +1058,12 @@ Prefs::MouseAction Prefs::mouseAction(Prefs::MouseButton mb) const
 	return mouseAction_[mb];
 }
 
+// Return array of (derived) mouse action texts
+Dnchar *Prefs::mouseActionTexts()
+{
+	return mouseActionTexts_;
+}
+
 // Sets the modifier key for the specified action
 void Prefs::setKeyAction(Prefs::ModifierKey mk, Prefs::KeyAction ka)
 {
@@ -1081,6 +1075,12 @@ void Prefs::setKeyAction(Prefs::ModifierKey mk, Prefs::KeyAction ka)
 Prefs::KeyAction Prefs::keyAction(Prefs::ModifierKey mk) const
 {
 	return keyAction_[mk];
+}
+
+// Return array of (derived) key action texts
+Dnchar *Prefs::keyActionTexts()
+{
+	return keyActionTexts_;
 }
 
 // Sets the zoom throttle
@@ -1100,49 +1100,49 @@ double Prefs::zoomThrottle() const
 */
 
 // Sets whether to calculate bonding on model load
-void Prefs::setBondOnLoad(FilterSwitch s)
+void Prefs::setBondOnLoad(Choice s)
 {
 	bondOnLoad_ = s;
 }
 
 // Whether bonding should be recalculated on model load
-Prefs::FilterSwitch Prefs::bondOnLoad() const
+Choice Prefs::bondOnLoad() const
 {
 	return bondOnLoad_;
 }
 
 // Sets whether to centre molecule on load
-void Prefs::setCentreOnLoad(Prefs::FilterSwitch s)
+void Prefs::setCentreOnLoad(Choice s)
 {
 	centreOnLoad_ = s;
 }
 
 // Whether molecule should be centred on model load
-Prefs::FilterSwitch Prefs::centreOnLoad() const
+Choice Prefs::centreOnLoad() const
 {
 	return centreOnLoad_;
 }
 
 // Sets whether to fold atomic positions after model load
-void Prefs::setFoldOnLoad(Prefs::FilterSwitch s)
+void Prefs::setFoldOnLoad(Choice s)
 {
 	foldOnLoad_ = s;
 }
 
 // Whether atoms should be folded after model load
-Prefs::FilterSwitch Prefs::foldOnLoad() const
+Choice Prefs::foldOnLoad() const
 {
 	return foldOnLoad_;
 }
 
 // Sets whether to apply symmetry operators (pack) on load
-void Prefs::setPackOnLoad(Prefs::FilterSwitch s)
+void Prefs::setPackOnLoad(Choice s)
 {
 	packOnLoad_ = s;
 }
 
 // Whether atoms should be packed (with symmetry operations) after model load
-Prefs::FilterSwitch Prefs::packOnLoad() const
+Choice Prefs::packOnLoad() const
 {
 	return packOnLoad_;
 }
@@ -1330,7 +1330,6 @@ bool Prefs::shouldUpdateModel(int n)
 	else return (n%modelUpdate_ == 0 ? TRUE : FALSE);
 }
 
-
 // Set the energy update frequency
 void Prefs::setEnergyUpdate(int n)
 {
@@ -1471,6 +1470,18 @@ void Prefs::setLoadIncludes(bool b)
 	loadIncludes_ = b;
 }
 
+// Whether to load partitions on startup
+bool Prefs::loadPartitions() const
+{
+	return loadPartitions_;
+}
+
+// Set whether to load partitions on startup
+void Prefs::setLoadPartitions(bool b)
+{
+	loadPartitions_ = b;
+}
+
 // Whether to load fragments on startup
 bool Prefs::loadFragments() const
 {
@@ -1505,6 +1516,54 @@ bool Prefs::readPipe() const
 void Prefs::setReadPipe(bool b)
 {
 	readPipe_ = b;
+}
+
+// Set list of common elements in SelectElement dialog
+void Prefs::setCommonElements(const char *s)
+{
+	commonElements_ = s;
+}
+
+// Return list of common elements to use in SelectElement dialog
+const char *Prefs::commonElements() const
+{
+	return commonElements_.get();
+}
+
+// Set the maximum number of undo levels allowed
+void Prefs::setMaxUndoLevels(int n)
+{
+	maxUndoLevels_ = n;
+}
+
+// Return the maximum number of undo levels allowed
+int Prefs::maxUndoLevels() const
+{
+	return maxUndoLevels_;
+}
+
+// Return whether to load Qt window/toolbar settings on startup
+bool Prefs::loadQtSettings()
+{
+	return loadQtSettings_;
+}
+
+// Whether to load Qt window/toolbar settings on startup
+void Prefs::setLoadQtSettings(bool b)
+{
+	loadQtSettings_ = b;
+}
+
+// Return maximum distance allowed between consecutive improper torsion atoms
+double Prefs::maxImproperDist() const
+{
+	return maxImproperDist_;
+}
+
+// Set maximum distance allowed between consecutive improper torsion atoms
+void Prefs::setMaxImproperDist(double r)
+{
+	maxImproperDist_ = r;
 }
 
 /*
@@ -1545,18 +1604,6 @@ void Prefs::setCalculateVdw(bool b)
 bool Prefs::calculateVdw() const
 {
 	return calculateVdw_;
-}
-
-// Sets whether to calculate electrostatic interactions
-void Prefs::setCalculateElec(bool b)
-{
-	calculateElec_ = b;
-}
-
-// Return whether to calculate electrostatic interactions
-bool Prefs::calculateElec() const
-{
-	return calculateElec_;
 }
 
 // Sets the Ewald k-vector extents
@@ -1657,44 +1704,10 @@ const char *Prefs::combinationRule(Combine::CombinationRule cr) const
 	return combinationRules_[cr].get();
 }
 
-/*
-// General prefs
-*/
-
-// Set the maximum number of undo levels allowed
-void Prefs::setMaxUndoLevels(int n)
+// Return array of combination rule equations
+Dnchar *Prefs::combinationRules()
 {
-	maxUndoLevels_ = n;
-}
-
-// Return the maximum number of undo levels allowed
-int Prefs::maxUndoLevels() const
-{
-	return maxUndoLevels_;
-}
-
-// Return whether to load Qt window/toolbar settings on startup
-bool Prefs::loadQtSettings()
-{
-	return loadQtSettings_;
-}
-
-// Whether to load Qt window/toolbar settings on startup
-void Prefs::setLoadQtSettings(bool b)
-{
-	loadQtSettings_ = b;
-}
-
-// Return maximum distance allowed between consecutive improper torsion atoms
-double Prefs::maxImproperDist() const
-{
-	return maxImproperDist_;
-}
-
-// Set maximum distance allowed between consecutive improper torsion atoms
-void Prefs::setMaxImproperDist(double r)
-{
-	maxImproperDist_ = r;
+	return combinationRules_;
 }
 
 /*
@@ -1756,6 +1769,12 @@ void Prefs::setManualSwapBuffers(bool on)
 }
 
 // Return whether manual buffer swapping is enabled
+bool Prefs::manualSwapBuffers() const
+{
+	return manualSwapBuffers_;
+}
+
+// Return whether manual buffer swapping is enabled
 bool Prefs::useFrameBuffer() const
 {
 	return useFrameBuffer_;
@@ -1779,7 +1798,7 @@ void Prefs::setRenderDashedAromatics(bool b)
 	renderDashedAromatics_ = b;
 }
 
-// Return mouse move event filter ratio
+// Return mouse move event filter rate
 int Prefs::mouseMoveFilter()
 {
 	return mouseMoveFilter_;
@@ -1791,22 +1810,16 @@ void Prefs::setMouseMoveFilter(int i)
 	mouseMoveFilter_ = i;
 }
 
-// Return whether manual buffer swapping is enabled
-bool Prefs::manualSwapBuffers() const
+// Return number of models per row when viewing multiple models
+int Prefs::nModelsPerRow()
 {
-	return manualSwapBuffers_;
+	return nModelsPerRow_;
 }
 
-// Set list of common elements in SelectElement dialog
-void Prefs::setCommonElements(const char *s)
+// Set number of models per row when viewing multiple models
+void Prefs::setNModelsPerRow(int n)
 {
-	commonElements_ = s;
-}
-
-// Return list of common elements to use in SelectElement dialog
-const char *Prefs::commonElements() const
-{
-	return commonElements_.get();
+	nModelsPerRow_ = n;
 }
 
 /*
@@ -1826,13 +1839,37 @@ const char *Prefs::tempDir() const
 }
 
 // Location of MOPAC executable
-void Prefs::setMopacExe(const char *path)
+void Prefs::setMopacExe(const char *exe)
 {
-	mopacExe_ = path;
+	mopacExe_ = exe;
 }
 
 // Return the location of the MOPAC executable
 const char *Prefs::mopacExe() const
 {
 	return mopacExe_.get();
+}
+
+// Encoder command
+void Prefs::setEncoderExe(const char *exe)
+{
+	encoderExe_ = exe;
+}
+
+// Return encoder command
+const char *Prefs::encoderExe() const
+{
+	return encoderExe_.get();
+}
+
+// Encoder arguments
+void Prefs::setEncoderArguments(const char *arguments)
+{
+	encoderArguments_ = arguments;
+}
+
+// Return encoder arguments
+const char *Prefs::encoderArguments() const
+{
+	return encoderArguments_.get();
 }

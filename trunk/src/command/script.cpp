@@ -48,7 +48,7 @@ bool Command::function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	else prog->setName(c->argc(0));
 	rv.reset();
 	// Update GUI
-	if (gui.exists()) gui.commandWindow->refreshScripts();
+	if (gui.exists()) gui.commandWidget->refreshScripts();
 	return TRUE;
 }
 

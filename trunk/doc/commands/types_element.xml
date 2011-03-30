@@ -1,24 +1,3 @@
-	<section id="command.types.element"><title>Element Type</title>
-		
-		<indexterm zone="command.types.element"><primary>types</primary><secondary>element</secondary></indexterm>
-		
-		<table frame='all' pgwide='1' tocentry='1'><title>Element Type Members</title>
-			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<thead>
-					<row>
-						<entry>Member</entry>
-						<entry>Type</entry>
-						<entry>Access</entry>
-						<entry>Description</entry>
-					</row>
-				</thead>
-				<tbody>
-					<row>
-						<entry>elements</entry>
-						<entry><link linkend="command.types.element">element</link></entry>
-						<entry>ro</entry>
-						<entry>Array of element data (masses, symbols, names, etc.)</entry>
-					</row>
 					<row>
 						<entry>ambient</entry>
 						<entry>double[4]</entry>

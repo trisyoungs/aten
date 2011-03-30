@@ -36,7 +36,6 @@ bool Log::operator==(Log &l) const
 	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return FALSE;
 	if (logs_[Log::Visual] != l.logs_[Log::Visual]) return FALSE;
 	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return FALSE;
-// 	if (logs_[Log::Camera] != l.logs_[Log::Camera]) return FALSE;
 	if (logs_[Log::Glyphs] != l.logs_[Log::Glyphs]) return FALSE;
 // 	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return FALSE;
 // 	if (logs_[Log::Total] != l.logs_[Log::Total]) return FALSE;
@@ -63,8 +62,7 @@ void Log::setLog(Log::LogType lt, int value)
 void Log::add(Log::LogType cl)
 {
 	logs_[cl] ++;
-	// For all logs except Log::CameraLog we also update the total log
-	if (cl != Log::Camera) logs_[Log::Total] ++;
+	logs_[Log::Total] ++;
 }
 
 // Return the log quantity specified
@@ -94,5 +92,5 @@ bool Log::isModified() const
 // Print logs
 void Log::print() const
 {
-	msg.print("Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Glyph [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Visual], logs_[Log::Selection], logs_[Log::Camera], logs_[Log::Glyphs], logs_[Log::Misc], logs_[Log::Total]); 
+	msg.print("Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Glyph [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Visual], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Misc], logs_[Log::Total]); 
 }

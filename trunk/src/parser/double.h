@@ -41,6 +41,8 @@ class DoubleVariable : public Variable
 	bool execute(ReturnValue &rv);
 	// Set from returnvalue node
 	bool set(ReturnValue &rv);
+	// Set from double data
+	bool setFromDouble(double d);
 	// Reset node
 	void reset();
 

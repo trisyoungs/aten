@@ -39,7 +39,7 @@ class StateChange
 	// List pointers
 	StateChange *prev, *next;
 	// State change actions
-	enum StateAction { CheckedAction, DisableAction, EnableAction, ItemsAction, OriginalItemsAction, SwitchStackAcion, nStateActions };
+	enum StateAction { CheckedAction, DisableAction, EnableAction, ItemsAction, MaximumAction, MinimumAction, OriginalItemsAction, StepAction, SwitchStackAcion, ValueAction, nStateActions };
 	static StateAction stateAction(const char *s, bool reporterror = FALSE);
 	static const char *stateAction(StateAction sa);
 
@@ -126,8 +126,10 @@ class WidgetNode : public TreeNode
 	List<StateChange> stateChanges_;
 
 	public:
-	// Set return value
-	void setReturnValue(const ReturnValue &rv);
+	// Set return value accessed from value get calls
+	void setReturnValue(ReturnValue &rv);
+	// Set widget value from supplied ReturnValue
+	void setWidgetValue(ReturnValue &rv);
 	// Set argument list from parser-joined treenodes
 	bool addJoinedArguments(TreeNode *arglist);
 	// Return type of GUI control

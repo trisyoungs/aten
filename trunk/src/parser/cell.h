@@ -26,14 +26,14 @@
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Cell;
+class UnitCell;
 
 // Cell Variable
 class CellVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	CellVariable(Cell *i = NULL, bool constant = FALSE);
+	CellVariable(UnitCell *i = NULL, bool constant = FALSE);
 	~CellVariable();
 
 	/*
@@ -43,7 +43,7 @@ class CellVariable : public PointerVariable
 	// Accessor list
 	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, Centre, CentreX, CentreY, CentreZ, Density, Matrix, SpacegroupId, SpacegroupName, Type, Volume, nAccessors };
 	// Function list
-	enum Functions { DummyFunction, nFunctions };
+	enum Functions { MinimumImage, MinimumImageDistance, TranslateAtom, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

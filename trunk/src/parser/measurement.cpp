@@ -254,7 +254,7 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Measurement *ptr= (Measurement*) sourcerv.asPointer(VTypes::MeasurementData, result);
+	Measurement *ptr = (Measurement*) sourcerv.asPointer(VTypes::MeasurementData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
@@ -284,7 +284,7 @@ bool MeasurementVariable::performFunction(int i, ReturnValue &rv, TreeNode *node
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Measurement *ptr= (Measurement*) rv.asPointer(VTypes::MeasurementData, result);
+	Measurement *ptr = (Measurement*) rv.asPointer(VTypes::MeasurementData, result);
 	if (result) switch (i)
 	{
 		default:

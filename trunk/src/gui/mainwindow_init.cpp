@@ -23,7 +23,10 @@
 #include "main/version.h"
 #include "parser/tree.h"
 #include "gui/mainwindow.h"
+#include "gui/build.h"
+#include "gui/geometry.h"
 #include "gui/gui.h"
+#include "gui/toolbox.h"
 #include "gui/tcanvas.uih"
 #include "gui/grids.h"
 
@@ -47,6 +50,13 @@ void AtenForm::finaliseUi()
 		ui.RecentMenu->addAction(actionRecentFile[n]);
 	}
 
+	// Populate QActionGroup for main toolbar selection actions
+	uaSelectActions_ = new QActionGroup(this);
+	uaSelectActions_->addAction(ui.actionSelectAtoms);
+	uaSelectActions_->addAction(ui.actionSelectMolecules);
+	uaSelectActions_->addAction(ui.actionSelectElement);
+	uaSelectActions_->addAction(ui.actionNoAction);
+	
 	// Create QActionGroup for draw styles
 	QActionGroup *group = new QActionGroup(this);
 	actionGroups_.add(group);
@@ -72,27 +82,6 @@ void AtenForm::finaliseUi()
 	group->addAction(ui.actionMouseRotate);
 	group->addAction(ui.actionMouseTranslate);
 
-	// Hide some toolbars initially
-	ui.BondToolbar->setVisible(FALSE);
-	//ui.DrawToolbar->setVisible(FALSE);
-	ui.ForcefieldsToolbar->setVisible(FALSE);
-	ui.MeasureToolbar->setVisible(FALSE);
-	ui.TrajectoryToolbar->setVisible(FALSE);
-
-	// Add combobox to ForcefieldsToolbar
-	forcefieldCombo_ = new QComboBox(ui.ForcefieldsToolbar);
-	ui.ForcefieldsToolbar->addWidget(forcefieldCombo_);
-	ui.ForcefieldsToolbar->setMinimumSize(128,16);
-	QObject::connect(forcefieldCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(forcefieldCombo_currentIndexChanged(int)));
-
-	// Add extra widgets to trajectory toolbar
-	trajectorySlider_ = new QSlider(Qt::Horizontal, ui.TrajectoryToolbar);
-	ui.TrajectoryToolbar->addWidget(trajectorySlider_);
-	QObject::connect(trajectorySlider_, SIGNAL(sliderMoved(int)), this, SLOT(trajectorySlider_sliderMoved(int)));
-	trajectorySpin_ = new QSpinBox(ui.TrajectoryToolbar);
-	ui.TrajectoryToolbar->addWidget(trajectorySpin_);
-	QObject::connect(trajectorySpin_, SIGNAL(valueChanged(int)), this, SLOT(trajectorySpin_valueChanged(int)));
-
 	// Create QActionGroup for perspective / orthographic views
 	group = new QActionGroup(this);
 	actionGroups_.add(group);
@@ -102,8 +91,8 @@ void AtenForm::finaliseUi()
 	// Create QActionGroup for model / trajectory render source
 	group = new QActionGroup(this);
 	actionGroups_.add(group);
-	group->addAction(ui.actionViewModel);
-	group->addAction(ui.actionViewTrajectory);
+	group->addAction(ui.actionTrajectoryModel);
+	group->addAction(ui.actionTrajectoryFrames);
 
 	// Add the previously-created QGLWidget to the main interface, and set up calls
 	QVBoxLayout *vbox = new QVBoxLayout();
@@ -136,46 +125,29 @@ void AtenForm::finaliseUi()
 			break;
 	}
 
-	// Add bond tolerance spinbox to Bond Toolbar
-	bondToleranceSpin_ = new QDoubleSpinBox(ui.BondToolbar);
-	bondToleranceSpin_->setRange(0.0, 100.0);
-	bondToleranceSpin_->setSingleStep(0.01);
-	ui.BondToolbar->addWidget(bondToleranceSpin_);
-	QObject::connect(bondToleranceSpin_, SIGNAL(valueChanged(double)), this, SLOT(bondTolerance_valueChanged(double)));
-
-	// Create master group for toolbar buttons that change user action modes
-	uaGroup = new QActionGroup(this);
-	// Select Toolbar
-	uaGroup->addAction(ui.actionSelectAtoms);
-	uaGroup->addAction(ui.actionSelectMolecules);
-	uaGroup->addAction(ui.actionSelectElement);
-	// Draw Toolbar
-	uaGroup->addAction(ui.actionDrawAtom);
-	uaGroup->addAction(ui.actionDrawChain);
-	uaGroup->addAction(ui.actionDrawFragment);
-	uaGroup->addAction(ui.actionDeleteAtom);
-	uaGroup->addAction(ui.actionTransmuteAtom);
-	uaGroup->addAction(ui.actionBondSingle);
-	uaGroup->addAction(ui.actionBondDouble);
-	uaGroup->addAction(ui.actionBondTriple);
-	uaGroup->addAction(ui.actionDeleteBond);
-	uaGroup->addAction(ui.actionAddHydrogenAtom);
-	uaGroup->addAction(ui.actionAtomProbe);
-	// Measure Toolbar
-	uaGroup->addAction(ui.actionMeasureDistance);
-	uaGroup->addAction(ui.actionMeasureAngle);
-	uaGroup->addAction(ui.actionMeasureTorsion);
-	// Invisible tool button for PickAtomsAction
-	dummyToolButton = new QAction(this);
-	dummyToolButton->setCheckable(TRUE);
-	uaGroup->addAction(dummyToolButton);
-
-	// Create a subgroup for the element select buttons
-	QActionGroup *elementGroup = new QActionGroup(this);
-	elementGroup->addAction(ui.actionElementH);
-	elementGroup->addAction(ui.actionElementC);
-	elementGroup->addAction(ui.actionElementN);
-	elementGroup->addAction(ui.actionElementCustom);
+	// Create master group for buttons that change user action modes
+	uaDummyButton_ = new QToolButton(this);
+	uaDummyButton_->setCheckable(TRUE);
+	uaDummyButton_->setVisible(FALSE);
+	uaButtons_.addButton(uaDummyButton_);
+	// -- From Build Dock Widget
+	uaButtons_.addButton(gui.buildWidget->ui.DrawAtomButton, UserAction::DrawAtomAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawChainButton, UserAction::DrawChainAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawFragmentButton, UserAction::DrawFragmentAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawDeleteAtomButton, UserAction::DrawDeleteAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawTransmuteButton, UserAction::DrawTransmuteAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawAddHButton, UserAction::DrawAddHydrogenAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawSingleBondButton, UserAction::DrawBondSingleAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawDoubleBondButton, UserAction::DrawBondDoubleAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawTripleBondButton, UserAction::DrawBondTripleAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawDeleteBondButton, UserAction::DrawDeleteBondAction);
+	// -- From Geometry Dock Widget
+	uaButtons_.addButton(gui.geometryWidget->ui.MeasureDistanceButton, UserAction::MeasureDistanceAction);
+	uaButtons_.addButton(gui.geometryWidget->ui.MeasureAngleButton, UserAction::MeasureAngleAction);
+	uaButtons_.addButton(gui.geometryWidget->ui.MeasureTorsionButton, UserAction::MeasureTorsionAction);
+	
+	// Connect buttonPressed signal of button group to our handler
+	QObject::connect(&uaButtons_, SIGNAL(buttonClicked(int)), this, SLOT(uaButtonClicked(int)));
 
 	/*
 	// Statusbar
@@ -186,46 +158,46 @@ void AtenForm::finaliseUi()
 	ui.MainWindowStatusBar->addPermanentWidget(frame,1);
 	// Message label
 	QHBoxLayout *lablayout = new QHBoxLayout(frame);
-	messageLabel = new QLabel(this);
-	messageLabel->setTextFormat(Qt::RichText);
-	messageLabel->setWordWrap(TRUE);
-	QFont font = messageLabel->font();
+	messageLabel_ = new QLabel(this);
+	messageLabel_->setTextFormat(Qt::RichText);
+	messageLabel_->setWordWrap(TRUE);
+	QFont font = messageLabel_->font();
 	font.setPointSize(8);
-	messageLabel->setFont(font);
-	lablayout->addWidget(messageLabel, 100);
+	messageLabel_->setFont(font);
+	lablayout->addWidget(messageLabel_, 100);
 	QFrame *sep = new QFrame;
 	sep->setFrameStyle(QFrame::VLine);
 	lablayout->addWidget(sep,0);
 	// Info labels
 	QVBoxLayout *infolayout = new QVBoxLayout;
 	infolayout->setSizeConstraint(QLayout::SetMaximumSize);
-	infoLabel1 = new QLabel(this);
-	infoLabel1->setFont(font);
-	infolayout->addWidget(infoLabel1);
-	infoLabel2 = new QLabel(this);
-	infoLabel2->setFont(font);
-	infolayout->addWidget(infoLabel2);
+	infoLabel1_ = new QLabel(this);
+	infoLabel1_->setFont(font);
+	infolayout->addWidget(infoLabel1_);
+	infoLabel2_ = new QLabel(this);
+	infoLabel2_->setFont(font);
+	infolayout->addWidget(infoLabel2_);
 	lablayout->addLayout(infolayout,0);
 	// Progress indicator
-	progressIndicator = new QFrame(this);
-	progressIndicator->setContentsMargins(0,0,0,0);
-	QGridLayout *layout = new QGridLayout(progressIndicator);
+	progressIndicator_ = new QFrame(this);
+	progressIndicator_->setContentsMargins(0,0,0,0);
+	QGridLayout *layout = new QGridLayout(progressIndicator_);
 	layout->setMargin(0);
-	progressBar = new QProgressBar(this);
-	progressBar->setMaximumWidth(100);
-	progressTitle = new QLabel(this,0);
-	progressTitle->setFont(font);
-	progressEta = new QLabel(this,0);
-	progressEta->setFont(font);
-	progressButton = new QPushButton(this);
-	progressButton->setText("Cancel");
-	QObject::connect(progressButton, SIGNAL(clicked()), this, SLOT(progressCancel()));
-	layout->addWidget(progressTitle, 0,0,1,2, Qt::AlignHCenter);
-	layout->addWidget(progressBar, 1,0,1,1);
-	layout->addWidget(progressButton, 1,1,1,1);
-	layout->addWidget(progressEta, 2,0,1,2, Qt::AlignHCenter);
-	progressIndicator->setVisible(FALSE);
-	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,0);
+	progressBar_ = new QProgressBar(this);
+	progressBar_->setMaximumWidth(100);
+	progressTitle_ = new QLabel(this,0);
+	progressTitle_->setFont(font);
+	progressEta_ = new QLabel(this,0);
+	progressEta_->setFont(font);
+	progressButton_ = new QPushButton(this);
+	progressButton_->setText("Cancel");
+	QObject::connect(progressButton_, SIGNAL(clicked()), this, SLOT(progressCancel()));
+	layout->addWidget(progressTitle_, 0,0,1,2, Qt::AlignHCenter);
+	layout->addWidget(progressBar_, 1,0,1,1);
+	layout->addWidget(progressButton_, 1,1,1,1);
+	layout->addWidget(progressEta_, 2,0,1,2, Qt::AlignHCenter);
+	progressIndicator_->setVisible(FALSE);
+	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator_,0);
 
 	// Create glyph actions for Selection (atom context) menu
 	QMenu *menu = new QMenu(this);
@@ -271,7 +243,7 @@ void AtenForm::createDialogFilters()
 		loadTrajectoryFilters += ";;";
 		loadTrajectoryFilters += ri->item->filter.description();
 	}
-	ui.actionFileAddTrajectory->setEnabled(!loadTrajectoryFilters.isEmpty());
+	ui.actionTrajectoryOpen->setEnabled(!loadTrajectoryFilters.isEmpty());
 
 	// Model Export
 	saveModelFilters.clear();
@@ -306,7 +278,7 @@ void AtenForm::createDialogFilters()
 		saveExpressionFilters += ri->item->filter.description();
 	}
 	// Check for empty filters list
-	ui.actionFileSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
+	ui.actionSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
 
 	// Grid import
 	loadGridFilters.clear();
@@ -316,7 +288,7 @@ void AtenForm::createDialogFilters()
 		loadGridFilters += ";;";
 		loadGridFilters += ri->item->filter.description();
 	}
-	gui.gridsWindow->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
+	gui.gridsWidget->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
 
 	// Create open script dialog
 	loadScriptFilters.clear();
@@ -329,43 +301,16 @@ void AtenForm::createDialogFilters()
 void AtenForm::setControls()
 {
 	msg.enter("AtenForm::setControls");
+	
 	// Set correct Atom::DrawStyle on toolbar
-	switch (prefs.renderStyle())
-	{
-		case (Atom::StickStyle):
-			ui.actionStyleStick->setChecked(TRUE);
-			break;
-		case (Atom::TubeStyle):
-			ui.actionStyleTube->setChecked(TRUE);
-			break;
-		case (Atom::SphereStyle):
-			ui.actionStyleSphere->setChecked(TRUE);
-			break;
-		case (Atom::ScaledStyle):
-			ui.actionStyleScaled->setChecked(TRUE);
-			break;
-		case (Atom::IndividualStyle):
-			ui.actionStyleIndividual->setChecked(TRUE);
-			break;
-		default:
-			break;
-	}
-	// Set some menu items
+	setActiveStyleAction(prefs.renderStyle());
+
+	// Set view perspective/orthographic
 	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
+
 	// Set correct colour scheme menuitem
-	switch (prefs.colourScheme())
-	{
-		case (Prefs::ElementScheme): ui.actionSchemeElement->setChecked(TRUE); break;
-		case (Prefs::ChargeScheme): ui.actionSchemeCharge->setChecked(TRUE); break;
-		case (Prefs::ForceScheme): ui.actionSchemeForce->setChecked(TRUE); break;
-		//case (Prefs::VelocityScheme): ui.actionSchemeVelocity->setChecked(TRUE); break;
-		default:
-			break;
-	}
-	// Set controls on Bond toolbar 
-	bondToleranceSpin_->setValue(prefs.bondTolerance());
-	// Set the initial configuration of the splitter
-	ui.MainSplitter->setSizes( QList<int>() << 500 << 64 );
+	setActiveSchemeAction(prefs.colourScheme());
+
 	msg.exit("AtenForm::setControls");
 }
 

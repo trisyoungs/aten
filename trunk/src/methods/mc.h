@@ -23,13 +23,12 @@
 #define ATEN_MONTECARLO_H
 
 #include "templates/list.h"
-#include "base/region.h"
 #include "base/dnchar.h"
 
 // Forward declarations
 class Model;
-class Cell;
 class Pattern;
+class PartitioningScheme;
 
 // Monte Carlo
 class MonteCarlo
@@ -48,9 +47,9 @@ class MonteCarlo
 	MonteCarlo();
 	~MonteCarlo();
 	// Minimise the specified model
-	bool minimise(Model*, double, double);
+	bool minimise(Model *target, double, double);
 	// Run disordered builder
-	bool disorder(Model*);
+	bool disorder(Model* destmodel, PartitioningScheme* scheme, bool fixedCell);
 
 	/*
 	// Subroutines

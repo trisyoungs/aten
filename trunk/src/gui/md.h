@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: MD Window
+	*** MD Dock Widget
 	*** src/gui/md.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MDWINDOW_H
-#define ATEN_MDWINDOW_H
+#ifndef ATEN_MDWIDGET_H
+#define ATEN_MDWIDGET_H
 
 #include "gui/ui_md.h"
 
 // MD control window
-class AtenMD : public QDialog
+class MDWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -36,10 +36,8 @@ class AtenMD : public QDialog
 	private:
 	bool refreshing_;
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
-	private slots:
-	void dialogFinished(int result);
 
 	/*
 	// Widget Signals
@@ -51,19 +49,17 @@ class AtenMD : public QDialog
 	void on_TimeStepMantissaSpin_valueChanged(double value);
 	void on_TimeStepExponentSpin_valueChanged(int value);
 	void on_RunMDButton_clicked(bool checked);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Widgets
 	*/
 	public:
 	// Constructor
-	AtenMD(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Destructor
-	~AtenMD();
+	MDWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::MDDialog ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
+	Ui::MDWidget ui;
 };
 
 #endif

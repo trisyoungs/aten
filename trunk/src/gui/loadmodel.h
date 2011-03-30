@@ -1,7 +1,7 @@
 /*
-	*** Qt loadmodel window declaration
+	*** Load Model Window
 	*** src/gui/loadmodel.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 

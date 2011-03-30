@@ -160,5 +160,34 @@
 				</tbody>
 			</tgroup>
 		</table>
-	
+
+		<table frame='all' pgwide='1' tocentry='1'><title>UnitCell Type Functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>mim ( Atom <emphasis>i</emphasis>, Atom <emphasis>j</emphasis> )</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>Returns a vector containing the minimum image coordinates of the atom <emphasis>i</emphasis> with respect to the reference atom <emphasis>j</emphasis>. Note that the coordinates of both <emphasis>i</emphasis> and <emphasis>j</emphasis> are not modified in any way.</entry>
+					</row>
+					<row>
+						<entry>mimd ( Atom <emphasis>i</emphasis>, Atom <emphasis>j</emphasis> )</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>Returns the minimum image vector between the atom <emphasis>i</emphasis> and the reference atom <emphasis>j</emphasis>. Note that the coordinates of both <emphasis>i</emphasis> and <emphasis>j</emphasis> are not modified in any way.</entry>
+					</row>
+					<row>
+						<entry>translateatom ( Atom <emphasis>i</emphasis>, double <emphasis>dx</emphasis>, double <emphasis>dy</emphasis>, double <emphasis>dz</emphasis> )</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>Returns a vector corresponding to the original coordinates of atom <emphasis>i</emphasis> translated by the specified fractional cell amounts in each cell axis direction. Note that the existing coordinates of <emphasis>i</emphasis> are not modified in any way.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
 	</section>

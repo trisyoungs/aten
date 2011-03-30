@@ -165,7 +165,7 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 	start1 = (lonemolecule == -1 ? 0 : lonemolecule);
@@ -221,7 +221,7 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 	// Outer loop over molecules in *this* pattern
 	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -314,7 +314,7 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -371,7 +371,7 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	aoff1 = startAtom_;
 	//printf("Pattern IDs are %i (this) and %i\n",id_, otherPattern->id_);
 
@@ -428,7 +428,7 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 //
 // Assume p(r) is equal to the (bulk) number density at r > rcut.
 */
-bool Pattern::vdwCorrectEnergy(Cell *cell, EnergyStore *estore)
+bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 {
 	// Calculate the long-range correction to the VDW energy
 	msg.enter("Pattern::vdwCorrectEnergy");

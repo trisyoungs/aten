@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: Atomlist window functions
+	*** Atom List Dock Widget
 	*** src/gui/atomlist_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/atomlist.h"
+#include "gui/toolbox.h"
 #include "model/model.h"
 #include "main/aten.h"
 #include "parser/commandnode.h"
@@ -34,7 +35,7 @@
 */
 
 // Constructor
-AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+AtomListWidget::AtomListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 	
@@ -42,8 +43,7 @@ AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 	listStructurePoint_ = -1;
 	listSelectionPoint_ = -1;
 	listLastModel_ = NULL;
-	shouldRefresh_ = FALSE;
-	listPosition_ = -1;
+	shouldRefresh_ = TRUE;
 	lastClicked_ = NULL;
 	lastHovered_ = NULL;
 	viewingByAtom_ = TRUE;
@@ -53,19 +53,16 @@ AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 	QObject::connect(ui.AtomTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
 }
 
-// Destructor
-AtenAtomlist::~AtenAtomlist()
+void AtomListWidget::showWidget()
 {
-}
-
-void AtenAtomlist::showWindow()
-{
-	if (shouldRefresh_) refresh();
 	show();
+	if (shouldRefresh_) refresh();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 // Update slection states of TTreeWidgetItems from selection in model
-void AtenAtomlist::updateSelection()
+void AtomListWidget::updateSelection()
 {
 	//printf("Selection has been updated.\n");
 	TTreeWidgetItem *ti;
@@ -79,35 +76,35 @@ void AtenAtomlist::updateSelection()
 		if (i != NULL) item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
 	gui.mainWidget->enableDrawing();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget);
 }
 
 // Set column data for specified item
-void AtenAtomlist::setColumns(TTreeWidgetItem *twi)
+void AtomListWidget::setColumns(TTreeWidgetItem *twi)
 {
 	static Vec3<double> r;
 	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
-	if (i == NULL) printf("AtenAtomlist::setColumns <<<< NULL atom pointer found >>>>\n");
+	if (i == NULL) printf("AtomListWidget::setColumns <<<< NULL atom pointer found >>>>\n");
 	else
 	{
-		twi->setText(AtenAtomlist::IdData, itoa(i->id()+1));
-		twi->setText(AtenAtomlist::ElementData, elements().symbol(i));
+		twi->setText(AtomListWidget::IdData, itoa(i->id()+1));
+		twi->setText(AtomListWidget::ElementData, elements().symbol(i));
 		r = i->r();
-		twi->setText(AtenAtomlist::RxData, ftoa(r.x));
-		twi->setText(AtenAtomlist::RyData, ftoa(r.y));
-		twi->setText(AtenAtomlist::RzData, ftoa(r.z));
+		twi->setText(AtomListWidget::RxData, ftoa(r.x));
+		twi->setText(AtomListWidget::RyData, ftoa(r.y));
+		twi->setText(AtomListWidget::RzData, ftoa(r.z));
 	}
 }
 
 // Refresh the atom list
-void AtenAtomlist::refresh(bool forceupdate)
+void AtomListWidget::refresh(bool forceupdate)
 {
-	msg.enter("AtenAtomlist::refresh");
+	msg.enter("AtomListWidget::refresh");
 	// If the atom list page is not visible, don't do anything
-	if (!gui.atomlistWindow->isVisible())
+	if (!gui.atomListWidget->isVisible())
 	{
 		shouldRefresh_ = TRUE;
-		msg.exit("AtenAtomlist::refresh");
+		msg.exit("AtomListWidget::refresh");
 		return;
 	}
 	Model *m = aten.currentModelOrFrame();
@@ -124,7 +121,7 @@ void AtenAtomlist::refresh(bool forceupdate)
 	Refitem<TTreeWidgetItem,int> *ri;
 	Atom *i;
 	int mol, n, count;
-	if (forceupdate || (gui.atomlistWindow->listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates))))
+	if (forceupdate || (gui.atomListWidget->listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates))))
 	{
 		// Clear the current list
 		ui.AtomTree->clear();
@@ -181,10 +178,10 @@ void AtenAtomlist::refresh(bool forceupdate)
 			}
 		}
 		// Set new log points
-		gui.atomlistWindow->listStructurePoint_ = m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates);
-		gui.atomlistWindow->listSelectionPoint_ = m->changeLog.log(Log::Selection);
+		gui.atomListWidget->listStructurePoint_ = m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates);
+		gui.atomListWidget->listSelectionPoint_ = m->changeLog.log(Log::Selection);
 	}
-	else if (gui.atomlistWindow->listSelectionPoint_ != m->changeLog.log(Log::Selection))
+	else if (gui.atomListWidget->listSelectionPoint_ != m->changeLog.log(Log::Selection))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		if (viewingByAtom_)
@@ -199,10 +196,10 @@ void AtenAtomlist::refresh(bool forceupdate)
 		listSelectionPoint_ = m->changeLog.log(Log::Selection);
 	}
 	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
-	msg.exit("AtenAtomlist::refresh");
+	msg.exit("AtomListWidget::refresh");
 }
 
-void AtenAtomlist::on_ViewByAtomButton_clicked(bool checked)
+void AtomListWidget::on_ViewByAtomButton_clicked(bool checked)
 {
 	// Check previous state and refresh if necessary
 	if (!viewingByAtom_)
@@ -213,7 +210,7 @@ void AtenAtomlist::on_ViewByAtomButton_clicked(bool checked)
 	else viewingByAtom_ = TRUE;
 }
 
-void AtenAtomlist::on_ViewByPatternButton_clicked(bool checked)
+void AtomListWidget::on_ViewByPatternButton_clicked(bool checked)
 {
 	// Must clear selection in the current model
 	if (viewingByAtom_)
@@ -224,53 +221,48 @@ void AtenAtomlist::on_ViewByPatternButton_clicked(bool checked)
 	else viewingByAtom_ = FALSE;
 }
 
-void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
+void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 {
 	peekScrollBar();
 	CommandNode::run(Command::ShiftUp, "i", 1);
 	refresh();
 	pokeScrollBar();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget);
 }
 
-void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
+void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 {
 	peekScrollBar();
 	CommandNode::run(Command::ShiftDown, "i", 1);
 	refresh();
 	pokeScrollBar();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget);
 }
 
-void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
+void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MoveToStart, "");
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget);
 }
 
-void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
+void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MoveToEnd, "");
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget);
 }
 
-void AtenAtomlist::peekScrollBar()
+void AtomListWidget::peekScrollBar()
 {
 }
 
-void AtenAtomlist::pokeScrollBar()
+void AtomListWidget::pokeScrollBar()
 {
-}
-
-void AtenAtomlist::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionAtomlistWindow->setChecked(FALSE);
 }
 
 // Return item under mouse (if any)
-TTreeWidgetItem *AtenAtomlist::itemUnderMouse(const QPoint &pos)
+TTreeWidgetItem *AtomListWidget::itemUnderMouse(const QPoint &pos)
 {
 	QTreeWidgetItem *qwi = ui.AtomTree->itemAt(pos);
 	if (qwi == NULL) return NULL;
@@ -278,7 +270,7 @@ TTreeWidgetItem *AtenAtomlist::itemUnderMouse(const QPoint &pos)
 }
 
 // Toggle the selection state in the model
-void AtenAtomlist::toggleItem(TTreeWidgetItem *twi)
+void AtomListWidget::toggleItem(TTreeWidgetItem *twi)
 {
 	// Check for no item or header item
 	if (twi == NULL) return;
@@ -290,7 +282,7 @@ void AtenAtomlist::toggleItem(TTreeWidgetItem *twi)
 }
 
 // Select tree widget item *and* model atom, provided the tree widget item is not selected already
-void AtenAtomlist::selectItem(TTreeWidgetItem *twi)
+void AtomListWidget::selectItem(TTreeWidgetItem *twi)
 {
 	if (twi == NULL) return;
 	if (twi->isSelected()) return;
@@ -300,7 +292,7 @@ void AtenAtomlist::selectItem(TTreeWidgetItem *twi)
 }
 
 // Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
-void AtenAtomlist::deselectItem(TTreeWidgetItem *twi)
+void AtomListWidget::deselectItem(TTreeWidgetItem *twi)
 {
 	if (twi == NULL) return;
 	if (!twi->isSelected()) return;
@@ -309,7 +301,7 @@ void AtenAtomlist::deselectItem(TTreeWidgetItem *twi)
 	listLastModel_->deselectAtom(i);
 }
 
-void AtenAtomlist::treeMousePressEvent(QMouseEvent *event)
+void AtomListWidget::treeMousePressEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
 	// Start an undo state for the model
@@ -336,15 +328,15 @@ void AtenAtomlist::treeMousePressEvent(QMouseEvent *event)
 	lastHovered_ = lastClicked_;
 }
 
-void AtenAtomlist::treeMouseReleaseEvent(QMouseEvent *event)
+void AtomListWidget::treeMouseReleaseEvent(QMouseEvent *event)
 {
 // 	printf("Mouse release event.\n");
 	lastHovered_ = NULL;
 	listLastModel_->endUndoState();
-	gui.update(FALSE, FALSE, FALSE);
+	gui.update(GuiQt::CanvasTarget);
 }
 
-void AtenAtomlist::treeMouseMoveEvent(QMouseEvent *event)
+void AtomListWidget::treeMouseMoveEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
 // 	printf("Mouse move event.\n");
@@ -354,6 +346,14 @@ void AtenAtomlist::treeMouseMoveEvent(QMouseEvent *event)
 	{
 		toggleItem(twi);
 		lastHovered_ = twi;
-		gui.update(FALSE, FALSE, FALSE);
+		gui.update(GuiQt::CanvasTarget);
 	}
+}
+
+void AtomListWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	event->accept();
 }

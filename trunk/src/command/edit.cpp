@@ -29,9 +29,9 @@
 bool Command::function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	aten.userClipboard->copySelection(obj.rs);
+	aten.userClipboard->copySelection(obj.rs());
 	msg.print("%i atoms copied to clipboard.\n", aten.userClipboard->nAtoms());
-	msg.print(Messenger::Verbose, "Copied selection (%i atoms) from model %s\n", aten.userClipboard->nAtoms(), obj.rs->name());
+	msg.print(Messenger::Verbose, "Copied selection (%i atoms) from model %s\n", aten.userClipboard->nAtoms(), obj.rs()->name());
 	return TRUE;
 }
 
@@ -39,9 +39,9 @@ bool Command::function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Cut %i atom%s\n",obj.rs->nSelected(),(obj.rs->nSelected() == 1 ? "" : "s"));
-	aten.userClipboard->cutSelection(obj.rs);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Cut %i atom%s\n",obj.rs()->nSelected(),(obj.rs()->nSelected() == 1 ? "" : "s"));
+	aten.userClipboard->cutSelection(obj.rs());
+	obj.rs()->endUndoState();
 	msg.print("%i atoms cut to clipboard.\n", aten.userClipboard->nAtoms());
 	return TRUE;
 }
@@ -50,10 +50,10 @@ bool Command::function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Delete(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	int n = obj.rs->nSelected();
-	obj.rs->beginUndoState("Delete %i atom%s\n", n, (n == 1 ? "" : "s"));
-	obj.rs->selectionDelete();
-	obj.rs->endUndoState();
+	int n = obj.rs()->nSelected();
+	obj.rs()->beginUndoState("Delete %i atom%s\n", n, (n == 1 ? "" : "s"));
+	obj.rs()->selectionDelete();
+	obj.rs()->endUndoState();
 	msg.print("%i atom%s deleted from model.\n", n, (n == 1 ? "" : "s"));
 	return TRUE;
 }
@@ -63,14 +63,14 @@ bool Command::function_Paste(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int n = aten.userClipboard->nAtoms();
-	obj.rs->beginUndoState("Paste %i atom%s\n", n, (n == 1 ? "" : "s"));
-	if (!c->hasArg(2)) aten.userClipboard->pasteToModel(obj.rs);
+	obj.rs()->beginUndoState("Paste %i atom%s\n", n, (n == 1 ? "" : "s"));
+	if (!c->hasArg(2)) aten.userClipboard->pasteToModel(obj.rs());
 	else
 	{
 		Vec3<double> shift = c->arg3d(0);
-		aten.userClipboard->pasteToModel(obj.rs, shift);
+		aten.userClipboard->pasteToModel(obj.rs(), shift);
 	}
-	obj.rs->endUndoState();
+	obj.rs()->endUndoState();
 	msg.print("%i atom%s pasted to model.\n", n, (n == 1 ? "" : "s"));
 	return TRUE;
 }
@@ -79,7 +79,7 @@ bool Command::function_Paste(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->redo();
+	obj.rs()->redo();
 	return TRUE;
 }
 
@@ -87,7 +87,7 @@ bool Command::function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Undo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->undo();
+	obj.rs()->undo();
 	return TRUE;
 }
 

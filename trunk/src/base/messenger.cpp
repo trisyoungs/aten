@@ -102,12 +102,36 @@ void Messenger::print(const char *fmt ...) const
 	va_end(arguments);
 }
 
+// Print rich message (for GUI, plain for console) including html formatting
+void Messenger::richPrint(const char *fmt ...) const
+{
+	// First, construct the string as usual
+	va_list arguments;
+	static char msgs[8096];
+	msgs[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into msgs[]
+	va_start(arguments,fmt);
+	vsprintf(msgs,fmt,arguments);
+	va_end(arguments);
+
+	// Send to GUI
+	if (gui.exists()) gui.printMessage(msgs);
+	else if (!quiet_)
+	{
+		// Get plaintext string to send to stdout.
+		// Importantly, if we find an anchor in the text we must retain the displayed text of the link
+		QString textString(msgs);
+		textString.remove( QRegExp( "<(?:a|b|p|/)[^>]*>", Qt::CaseInsensitive ) );
+		printf("%s\n",qPrintable(textString));
+	}
+}
+
 // Standard message in specific output level
 void Messenger::print(Messenger::OutputType ot, const char *fmt ...) const
 {
 	// Print to the text view in the main window if it has been initialised.
-	// If program is in quiet mode, don't print anything except Messenger::Error calls
-	if (quiet_ && (ot != Messenger::Error)) return;
+	// If program is in quiet mode, don't print anything except Messenger::Always calls
+	if (quiet_ && (ot != Messenger::Always)) return;
 	va_list arguments;
 	static char msgs[8096];
 	msgs[0] = '\0';
@@ -115,7 +139,7 @@ void Messenger::print(Messenger::OutputType ot, const char *fmt ...) const
 	va_start(arguments,fmt);
 	vsprintf(msgs,fmt,arguments);
 	// Print message to stdout, but only if specified output type is active
-	if (ot == Messenger::Error)
+	if (ot == Messenger::Always)
 	{
 		if (gui.exists()) gui.printMessage(msgs);
 		printf("%s",msgs);

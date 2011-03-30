@@ -22,13 +22,14 @@
 #ifndef ATEN_ATEN_H
 #define ATEN_ATEN_H
 
-#include "base/bundle.h"
 #include "base/dnchar.h"
 #include "base/kvmap.h"
+#include "model/bundle.h"
 #include "model/fragment.h"
 #include "templates/list.h"
 #include "parser/program.h"
 #include "parser/variablelist.h"
+#include "methods/partition.h"
 
 // Forward Declarations
 class Model;
@@ -71,14 +72,16 @@ class Aten
 	List<Model> workingModels_;
 	// Current target list for new generation of models
 	Aten::TargetModelList targetModelList_;
-
+	// Reflist of visible models
+	Reflist<Model,int> visibleModels_;
+	
 	public:
 	// Set usage of working model list
 	void setUseWorkingList(bool b);
 	// Return list of working models
 	Model *workingModels() const;
 	// Sets the current active model for editing
-	void setCurrentModel(Model*);
+	void setCurrentModel(Model *m, bool deselectOthers = FALSE);
 	// Return current active model for editing
 	Model *currentModel() const;
 	// Return current active model for editing, accounting for trajectory frames
@@ -98,9 +101,19 @@ class Aten
 	// Add a new model to the workspace
 	Model* addModel();
 	// Remove specified model from the list
-	void removeModel(Model*);
+	void removeModel(Model *m);
+	// Close specified model, saving first if requested
+	bool closeModel(Model *m);
 	// Find model by name
 	Model *findModel(const char *name) const;
+	// Set visible flag for specified model
+	void setModelVisible(Model *m, bool visible);
+	// Return number of visible models
+	int nVisibleModels();
+	// Return reflist of visible models
+	Refitem<Model, int> *visibleModels();
+	// Return n'th visible model
+	Model *visibleModel(int id);
 
 
 	/*
@@ -152,7 +165,7 @@ class Aten
 
 	
 	/*
-	// Global Functions
+	// Global Function Includes and Partitioning Schemes
 	*/
 	private:
 	// Program containing all globally-defined include functions
@@ -163,6 +176,14 @@ class Aten
 	List<Dnchar> failedIncludes_;
 	// Parse directory index and load includes
 	int parseIncludeDir(const char *path);
+	// Programs containing partitioning schemes
+	List<PartitioningScheme> partitioningSchemes_;
+	// How many partitioning files had errors on startup
+	int nPartitioningSchemesFailed_;
+	// Filenames (including paths) of partitions that failed to load
+	List<Dnchar> failedPartitioningSchemes_;
+	// Parse directory index and load includes
+	int parsePartitionsDir(const char *path);
 	
 	public:
 	// Load global include functions
@@ -175,8 +196,22 @@ class Aten
 	Dnchar *failedIncludes() const;
 	// Find global include function by name
 	Tree *findIncludeFunction(const char *name);
+	// Load global partition functions
+	void openPartitions();
+	// Load partition from specified filename
+	bool openPartition(const char *filename);
+	// Whether partitions loaded succesfully on startup
+	int nPartitioningSchemesFailed() const;
+	// Return first item in failed partitions list
+	Dnchar *failedPartitioningSchemes() const;
+	// Find named partitioning scheme
+	PartitioningScheme *findPartitioningScheme(const char *name);
+	// Return first partitioning scheme in the list
+	PartitioningScheme *partitioningSchemes();
+	// Return nth partitioning scheme in the list
+	PartitioningScheme *partitioningSchemes(int index);
 
-	
+
 	/*
 	// Forcefields
 	*/

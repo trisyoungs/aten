@@ -32,11 +32,6 @@ AtenViewEigenvector::AtenViewEigenvector(QWidget *parent, Qt::WindowFlags flags)
 	ui.setupUi(this);
 }
 
-// Destructor
-AtenViewEigenvector::~AtenViewEigenvector()
-{
-}
-
 void AtenViewEigenvector::showWindow(Model *m, int id)
 {
 	// Update contents

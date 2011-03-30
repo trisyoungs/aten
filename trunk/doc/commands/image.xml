@@ -80,5 +80,35 @@ savebitmap(&quot;png&quot;, &quot;big.png&quot;, 5000, 5000, 10);
 		<para>saves an enormous, highly uncompressed png.</para>
 
 	</section>
+
+	<section id="command.ref.savemovie"><title>savemovie</title>
+		<indexterm><primary>commands</primary><secondary>savemovie</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>savemovie</function></funcdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef>int <parameter>width</parameter> = -1</paramdef>
+				<paramdef>int <parameter>height</parameter> = -1</paramdef>
+				<paramdef>int <parameter>quality</parameter> = -1</paramdef>
+				<paramdef>int <parameter>firstframe</parameter> = 1</paramdef>
+				<paramdef>int <parameter>lastframe</parameter> = &lt;last&gt;</paramdef>
+				<paramdef>int <parameter>interval</parameter> = 1</paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		
+		<para>Saves a movie of the trajectory associated to the current model. Note that a valid movie encoder must be installed (such as <ulink url="http://www.mplayerhq.hu">mencoder</ulink>) and arguments must be set in the program preferences (see the <link linkend="command.types.preferences">Prefs</link> variable). Aten will first save a series of png images of the width, height and quality specified to the temporary directory (also specified in the preferences) before passing them all to the provided encoder command.  The encoder arguments should contain both the text 'FILES' and 'OUTPUT' - when it comes to running the commane, Aten will substitute 'FILES' for a wildcard list of image files, and 'OUTPUT' for the target movie filename.  Note that the format of the output movie is entirely guided by the options passed to the encoder command.</para>
+		
+		<para>As with the <link linkend="command.ref.savebitmap">savebitmap</link> command, if <emphasis>width</emphasis> and <emphasis>height</emphasis> are not specified the current dimensions of the view are used (800x600 if no GUI is present), and the <emphasis>quality</emphasis> option determines the compression used on saved images. The other arguments are self-explanatory - <emphasis>firstframe</emphasis> and <emphasis>lastframe</emphasis> give the range of trajectory frames which will be saved, while the <emphasis>interval</emphasis> value determines the 'stride' between frames (i.e. '1' for every frame, '2' for every other frame, '10' for every tenth frame etc.).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+savemovie(&quot;traj.mpg&quot;, 1024, 1024, -1, 50, 1000, 50);
+		</synopsis>
+		<para>saves a movie called 'traj.mpg' with size 1024x1024, beginning at frame 50 and writing every 50th frame until frame 1000.</para>
+
+	</section>
 	
 </section>

@@ -29,6 +29,8 @@
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "parser/filterdata.h"
+#include "gui/gui.h"
+#include "gui/tprocess.uih"
 
 // Local variables
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
@@ -41,10 +43,10 @@ bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	cg.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	cg.minimise(obj.rs, econverge, fconverge);
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	cg.minimise(obj.rs(), econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", TRUE);
 	rv.reset();
 	return TRUE;
 }
@@ -73,10 +75,10 @@ bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	mc.minimise(obj.rs, econverge, fconverge);
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	mc.minimise(obj.rs(), econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Monte Carlo)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Monte Carlo)", TRUE);
 	rv.reset();
 	return TRUE;
 }
@@ -86,13 +88,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
-	// Check that we can run system commands
-	int cmdresult = system(NULL);
-	if (cmdresult == 0)
-	{
-		msg.print("Error: Unable to run system commands.\n");
-		return FALSE;
-	}
+
 	// Grab pointers to MOPAC import and export filters
 	Tree *mopacexport = aten.findFilter(FilterData::ModelExport, "mopac");
 	if (mopacexport == NULL)
@@ -113,39 +109,66 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		return FALSE;
 	}
 	// Grab/create various filenames and paths
-	static int runid = 1;
-	Dnchar mopacinput, mopacoutput, mopaccmd;
-	mopacinput.sprintf("%s%caten-mopac%05i.mop", prefs.tempDir(), PATHSEP, runid);
-	mopacoutput.sprintf("%s%caten-mopac%05i.arc", prefs.tempDir(), PATHSEP, runid);
-	mopaccmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacinput.get());
-	msg.print(Messenger::Verbose, "Command to run will be '%s'\n", mopaccmd.get());
-	// Create copy of current model so as not to disturb filename/filter values
-	Model tempmodel;
-	//printf("Target for minimisation = %p\n", obj.rs);
-	tempmodel.copy(aten.currentModelOrFrame());
-	tempmodel.setFilter(mopacexport);
-	tempmodel.setFilename(mopacinput);
-	// Save the input file... construct temporary bundle object containing our model pointer
-	bool result = TRUE;
-	Bundle bundle(&tempmodel);
-	ReturnValue temprv;
-	result = CommandNode::run(Command::SaveModel, bundle, "cc", "mopac", mopacinput.get());
+	TProcess mopacProcess;
+	Dnchar mopacInput, mopacArc, mopacCmd, mopacOut;
+	int runid;
+	// Determine unique filename
+	do
+	{
+		runid = AtenMath::randomi(RAND_MAX);
+		mopacInput.sprintf("%s%caten-mopac-%i-%i.mop", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+	} while (fileExists(mopacInput));
+	mopacArc.sprintf("%s%caten-mopac-%i-%i.arc", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+	mopacOut.sprintf("%s%caten-mopac-%i-%i.out", prefs.tempDir(), '/', gui.pid(), runid);
+	mopacCmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacInput.get());
+	msg.print("Command to run will be '%s'\n", mopacCmd.get());
+	
+	// Save input file
+	LineParser parser(mopacInput, TRUE);
+	int opt;
+	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s\n",c->argc(0));
+	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
+	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", mopacInput.get());
+	parser.writeLineF("Temporary MOPAC Job Output : %s\n", mopacArc.get());	
+	for (Atom *i = aten.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
+	{
+		opt = 1 - i->isPositionFixed();
+		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
+	}
+	if (aten.currentModelOrFrame()->cell()->type() != UnitCell::NoCell)
+	{
+		Matrix mat = aten.currentModelOrFrame()->cell()->axes();
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[0], mat[1], mat[2]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[4], mat[5], mat[6]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[8], mat[9], mat[10]);
+	}
+	parser.closeFile();
+	
 	// Ready to run command....
-	cmdresult = system(mopaccmd.get());
-	if (cmdresult != 0)
+	if (!mopacProcess.execute(mopacCmd, NULL, mopacOut))
 	{
 		msg.print("Error: Failed to run MOPAC. Is it installed correctly?\n");
 		return FALSE;
 	}
-	// Check for existence of output file....
-	if (!fileExists(mopacoutput))
+
+	// Follow output here...
+	while (!mopacProcess.finished())
 	{
-		msg.print("Error: Can't locate MOPAC output '%s'.\n", mopacoutput.get());
+		// Is output file already present?
+		while (mopacProcess.outputAvailable()) mopacProcess.printLineToMessages();
+		gui.processMessages();
+	}
+	
+	// Check for existence of output file....
+	if (!fileExists(mopacArc))
+	{
+		msg.print("Error: Can't locate MOPAC output '%s'.\n", mopacArc.get());
 		return FALSE;
 	}
+
 	// Time to load in the results
 	aten.setUseWorkingList(TRUE);
-	result = CommandNode::run(Command::LoadModel, "c", mopacoutput.get());
+	int result = CommandNode::run(Command::LoadModel, "c", mopacArc.get());
 	// There should now be a model in the working model list (our results)
 	Model *m = aten.workingModels();
 	if (m == NULL)
@@ -153,19 +176,26 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		msg.print("Error: No results model found.\n");
 		return FALSE;
 	}
-	// Copy the atoms back into our tempmodel
+
+	// Cleanup
+	QFile::remove(mopacArc.get());
+	QFile::remove(mopacOut.get());
+	QFile::remove(mopacInput.get());
+
+	// Copy the atoms into a temporary model
+	Model tempmodel;
 	tempmodel.copy(m);
 	aten.setUseWorkingList(FALSE);
 	// Start a new undostate in the original model
 	//printf("Target for new coords = %p\n", obj.rs);
-	obj.rs->beginUndoState("MOPAC geometry optimisation");
-	Atom *i, *j = obj.rs->atoms();
+	obj.rs()->beginUndoState("MOPAC geometry optimisation");
+	Atom *i, *j = obj.rs()->atoms();
 	for (i = tempmodel.atoms(); i != NULL; i = i->next)
 	{
-		obj.rs->positionAtom(j, i->r());
+		obj.rs()->positionAtom(j, i->r());
 		j = j->next;
 	}
-	obj.rs->endUndoState();
+	obj.rs()->endUndoState();
 	
 	return TRUE;
 }
@@ -178,10 +208,10 @@ bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	sd.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	sd.minimise(obj.rs, econverge, fconverge, c->hasArg(1) ? c->argb(1) : FALSE);
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	sd.minimise(obj.rs(), econverge, fconverge, c->hasArg(1) ? c->argb(1) : FALSE);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs->finalizeTransform(oldpos, "Minimise (Steepest Descent)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Steepest Descent)", TRUE);
 	rv.reset();
 	return TRUE;
 }

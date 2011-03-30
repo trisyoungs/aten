@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Command/Script Window
+	*** Command Dock Widget
 	*** src/gui/command.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,15 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_COMMANDWINDOW_H
-#define ATEN_COMMANDWINDOW_H
+#ifndef ATEN_COMMANDWIDGET_H
+#define ATEN_COMMANDWIDGET_H
 
 #include "gui/ui_command.h"
 #include "templates/reflist.h"
 #include "parser/program.h"
 
 // Script/command window
-class AtenCommand : public QDialog
+class CommandWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -36,18 +36,17 @@ class AtenCommand : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
-	private slots:
-	void dialogFinished(int result);
-
 
 	/*
 	// Prompt Page
 	*/
 	private slots:
 	void on_CommandPrompt_returnPressed();
-
+	protected:
+	void closeEvent(QCloseEvent *event);
+	
 	public:
 	// Set list of commands in command tab
 	void setCommandList(QStringList cmds);
@@ -90,6 +89,7 @@ class AtenCommand : public QDialog
 	public:
 	void refreshScripts(bool refreshactions = TRUE, bool refreshlist = TRUE);
 
+	
 	/*
 	// Command Index Page
 	*/
@@ -107,15 +107,11 @@ class AtenCommand : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenCommand(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Destructor
-	~AtenCommand();
+	CommandWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::CommandDialog ui;
+	Ui::CommandWidget ui;
 	// Finalise widgets (things that couldn't be done in Qt Designer)
 	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/selectvariable.h"
 #include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include "parser/commandnode.h"
@@ -36,20 +37,10 @@ AtenZMatrix::AtenZMatrix(QWidget *parent, Qt::WindowFlags flags) : QDialog(paren
 	ui.setupUi(this);
 }
 
-// Destructor
-AtenZMatrix::~AtenZMatrix()
-{
-}
-
 void AtenZMatrix::showWindow()
 {
 	refresh();
 	show();
-}
-
-void AtenZMatrix::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionZMatrixEditorWindow->setChecked(FALSE);
 }
 
 // Refresh the zmatrix
@@ -217,7 +208,7 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 	if (changed)
 	{
 		// New value has already been put into zmatrix structure, so update model and refresh window
-		gui.update(TRUE);
+		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 		refresh();
 	}
 }
@@ -244,7 +235,7 @@ void AtenZMatrix::on_VariablesTable_itemChanged(QTableWidgetItem *w)
 	if (column == 1)
 	{
 		if (var != NULL) zMatrix_->setVariable(var, atof(qPrintable(w->text())));
-		gui.update(TRUE);
+		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 		refresh();
 	}
 }
@@ -257,7 +248,7 @@ void AtenZMatrix::on_ShiftUpButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::ShiftUp, "i", 1);
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
@@ -268,7 +259,7 @@ void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::ShiftDown, "i", 1);
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
@@ -279,7 +270,7 @@ void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::MoveToStart, "");
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
@@ -290,5 +281,11 @@ void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::MoveToEnd, "");
 	refresh();
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+void AtenZMatrix::dialogFinished(int result)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.ZMatrixButton->setChecked(FALSE);
 }

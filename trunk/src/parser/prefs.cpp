@@ -58,7 +58,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "bondstyleradius",		VTypes::DoubleData,		Atom::nDrawStyles, FALSE },
 	{ "bondtolerance",		VTypes::DoubleData,		0, FALSE },
 	{ "cachelimit",			VTypes::IntegerData,		0, FALSE },
-	{ "calculateelec",		VTypes::IntegerData,		0, FALSE },
 	{ "calculateintra",		VTypes::IntegerData,		0, FALSE },
 	{ "calculatevdw",		VTypes::IntegerData,		0, FALSE },
 	{ "clipfar",			VTypes::DoubleData,		0, FALSE },
@@ -75,18 +74,22 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "distancelabelformat",	VTypes::StringData,		0, FALSE },
 	{ "eleccutoff",			VTypes::DoubleData,		0, FALSE },
 	{ "elecmethod",			VTypes::StringData,		0, FALSE },
+	{ "encoderargs",		VTypes::StringData,		0, FALSE },
+	{ "encoderexe",			VTypes::StringData,		0, FALSE },
 	{ "energyunit",			VTypes::StringData,		0, FALSE },
 	{ "energyupdate",		VTypes::IntegerData,		0, FALSE },
 	{ "ewaldalpha",			VTypes::DoubleData,		0, FALSE },
 	{ "ewaldkmax",			VTypes::IntegerData,		3, FALSE },
 	{ "ewaldprecision",		VTypes::DoubleData,		0, FALSE },
 	{ "forcerhombohedral",		VTypes::IntegerData,		0, FALSE },
+	{ "framecurrentmodel",		VTypes::IntegerData,		0, FALSE },
+	{ "framewholemodel",		VTypes::IntegerData,		0, FALSE },
 	{ "globeaxescolour",		VTypes::DoubleData,		4, FALSE },
 	{ "globecolour",		VTypes::DoubleData,		4, FALSE },
 	{ "globesize",			VTypes::IntegerData,		0, FALSE },
 	{ "glyphcolour",		VTypes::DoubleData,		4, FALSE },
 	{ "hdistance",			VTypes::DoubleData,		0, FALSE },
-	{ "imagequality",		VTypes::IntegerData	,	0, FALSE },
+	{ "imagequality",		VTypes::IntegerData,		0, FALSE },
 	{ "keyaction",			VTypes::StringData,		Prefs::nModifierKeys, FALSE },
 	{ "labelsize",			VTypes::IntegerData,		0, FALSE },
 	{ "levelofdetailstartz",	VTypes::DoubleData,		0, FALSE },
@@ -104,7 +107,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "mousemovefilter",		VTypes::IntegerData,		0, FALSE },
 	{ "multisampling",		VTypes::IntegerData,		0, FALSE },
 	{ "noqtsettings",		VTypes::IntegerData,		0, FALSE },
-	{ "offscreenobjects",		VTypes::IntegerData,		0, FALSE },
 	{ "perspective"	,		VTypes::IntegerData,		0, FALSE },
 	{ "perspectivefov",		VTypes::DoubleData,		0, FALSE },
 	{ "polygonaliasing",		VTypes::IntegerData,		0, FALSE },
@@ -113,7 +115,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "replicatefold",		VTypes::IntegerData,		0, FALSE },
 	{ "replicatetrim",		VTypes::IntegerData,		0, FALSE },
 	{ "reusequality",		VTypes::IntegerData,		0, FALSE },
-	{ "screenobjects",		VTypes::IntegerData,		0, FALSE },
 	{ "selectionscale",		VTypes::DoubleData,		0, FALSE },
 	{ "shininess",			VTypes::IntegerData,		0, FALSE },
 	{ "specularcolour",		VTypes::DoubleData,		4, FALSE },
@@ -135,6 +136,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "vdwcutoff",			VTypes::DoubleData,		0, FALSE },
 	{ "vdwscale",			VTypes::DoubleData,		0, FALSE },
 	{ "vibrationarrowcolour",	VTypes::DoubleData,		4, FALSE },
+	{ "viewrotationglobe",		VTypes::IntegerData,		0, FALSE },
 	{ "warn1056",			VTypes::IntegerData,		0, FALSE },
 	{ "zmap",			VTypes::StringData,		0, FALSE },
 	{ "zoomthrottle",		VTypes::DoubleData,		0, FALSE }
@@ -248,7 +250,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
-			else rv.setArray( VTypes::DoubleData, &ptr->atomStyleRadius_, Atom::nDrawStyles);
+			else rv.setArray( VTypes::DoubleData, ptr->atomStyleRadii(), Atom::nDrawStyles);
 			break;
 		case (PreferencesVariable::BackCull):
 			rv.set( ptr->backfaceCulling() );
@@ -259,16 +261,13 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::BondStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
-			else rv.setArray( VTypes::DoubleData, &ptr->bondStyleRadius_, Atom::nDrawStyles);
+			else rv.setArray( VTypes::DoubleData, ptr->bondStyleRadii(), Atom::nDrawStyles);
 			break;
 		case (PreferencesVariable::BondTolerance):
 			rv.set(ptr->bondTolerance());
 			break;
 		case (PreferencesVariable::CacheLimit):
 			rv.set(ptr->cacheLimit());
-			break;
-		case (PreferencesVariable::CalculateElec):
-			rv.set(ptr->calculateElec());
 			break;
 		case (PreferencesVariable::CalculateIntra):
 			rv.set(ptr->calculateIntra());
@@ -290,7 +289,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::CombinationRule):
 			if (hasArrayIndex) rv.set( ptr->combinationRule( (Combine::CombinationRule) (arrayIndex-1)) );
-			else rv.setArray( VTypes::StringData, &ptr->combinationRules_, Combine::nCombinationRules);
+			else rv.setArray( VTypes::StringData, ptr->combinationRules(), Combine::nCombinationRules);
 			break;
 		case (PreferencesVariable::CommonElements):
 			rv.set(ptr->commonElements());
@@ -319,6 +318,12 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::ElecMethod):
 			rv.set(Electrostatics::elecMethod(ptr->electrostaticsMethod()));
 			break;
+		case (PreferencesVariable::EncoderArgs):
+			rv.set( ptr->encoderArguments() );
+			break;
+		case (PreferencesVariable::EncoderExe):
+			rv.set( ptr->encoderExe() );
+			break;
 		case (PreferencesVariable::EnergyUnit):
 			rv.set(Prefs::energyUnit(ptr->energyUnit()));
 			break;
@@ -337,6 +342,12 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
+			break;
+		case (PreferencesVariable::FrameCurrentModel):
+			rv.set (ptr->frameCurrentModel() );
+			break;
+		case (PreferencesVariable::FrameWholeView):
+			rv.set (ptr->frameWholeView() );
 			break;
 		case (PreferencesVariable::GlobeAxesColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlobeAxesColour)[arrayIndex-1] );
@@ -361,7 +372,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::KeyAction):
 			if (hasArrayIndex) rv.set(Prefs::keyAction( ptr->keyAction((Prefs::ModifierKey) (arrayIndex-1))) );
-			else rv.setArray( VTypes::StringData, &ptr->keyActionTexts_, Prefs::nModifierKeys);
+			else rv.setArray( VTypes::StringData, ptr->keyActionTexts(), Prefs::nModifierKeys);
 			break;
 		case (PreferencesVariable::LabelSize):
 			rv.set( ptr->labelSize() );
@@ -401,7 +412,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::MouseAction):
 			if (hasArrayIndex) rv.set(Prefs::mouseAction( ptr->mouseAction((Prefs::MouseButton) (arrayIndex-1))) );
-			else rv.setArray( VTypes::StringData, &ptr->mouseActionTexts_, Prefs::nMouseButtons);
+			else rv.setArray( VTypes::StringData, ptr->mouseActionTexts(), Prefs::nMouseButtons);
 			break;
 		case (PreferencesVariable::MouseMoveFilter):
 			rv.set( ptr->mouseMoveFilter() );
@@ -411,9 +422,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::NoQtSettings):
 			rv.set( ptr->loadQtSettings() );
-			break;
-		case (PreferencesVariable::OffScreenObjects):
-			rv.set( ptr->offScreenObjects() );
 			break;
 		case (PreferencesVariable::Perspective):
 			rv.set( ptr->hasPerspective() );
@@ -438,9 +446,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::ReuseQuality):
 			rv.set( ptr->reusePrimitiveQuality() );
-			break;
-		case (PreferencesVariable::ScreenObjects):
-			rv.set( ptr->screenObjects() );
 			break;
 		case (PreferencesVariable::SelectionScale):
 			rv.set( ptr->selectionScale() );
@@ -513,6 +518,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::VibrationArrowColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::VibrationArrowColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::VibrationArrowColour), 4);
+			break;
+		case (PreferencesVariable::ViewRotationGlobe):
+			rv.set( ptr->viewRotationGlobe() );
 			break;
 		case (PreferencesVariable::Warn1056):
 			rv.set( ptr->warning1056() );
@@ -593,7 +601,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Prefs *ptr= (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
+	Prefs *ptr = (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
@@ -643,9 +651,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::CacheLimit):
 			ptr->setCacheLimit( newvalue.asInteger(result) );
-			break;
-		case (PreferencesVariable::CalculateElec):
-			ptr->setCalculateElec( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::CalculateIntra):
 			ptr->setCalculateIntra( newvalue.asBool() );
@@ -708,6 +713,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (em != Electrostatics::nElectrostatics) ptr->setElectrostaticsMethod(em);
 			else result = FALSE;
 			break;
+		case (PreferencesVariable::EncoderArgs):
+			ptr->setEncoderArguments( newvalue.asString(result) );
+			break;
+		case (PreferencesVariable::EncoderExe):
+			ptr->setEncoderExe( newvalue.asString(result) );
+			break;
 		case (PreferencesVariable::EnergyUnit):
 			eu = Prefs::energyUnit( newvalue.asString(result), TRUE );
 			if (eu != Prefs::nEnergyUnits) ptr->setEnergyUnit(eu);
@@ -729,6 +740,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::FrameCurrentModel):
+			ptr->setFrameCurrentModel( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::FrameWholeView):
+			ptr->setFrameWholeView( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::GlobeAxesColour):
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(n, result));
@@ -842,9 +859,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::NoQtSettings):
 			ptr->setLoadQtSettings( newvalue.asBool() );
 			break;
-		case (PreferencesVariable::OffScreenObjects):
-			ptr->setOffScreenObjects( newvalue.asInteger(result) );
-			break;
 		case (PreferencesVariable::Perspective):
 			ptr->setPerspective( newvalue.asBool() );
 			break;
@@ -870,9 +884,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::ReuseQuality):
 			ptr->setReusePrimitiveQuality( newvalue.asBool() );
-			break;
-		case (PreferencesVariable::ScreenObjects):
-			ptr->setScreenObjects( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::SelectionScale):
 			ptr->setSelectionScale( newvalue.asDouble(result) );
@@ -956,6 +967,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			else if (hasArrayIndex) ptr->setColour(Prefs::VibrationArrowColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(result));
 			break;
+		case (PreferencesVariable::ViewRotationGlobe):
+			ptr->setViewRotationGlobe( newvalue.asBool() );
+			break;
 		case (PreferencesVariable::Warn1056):
 			ptr->setWarning1056( newvalue.asBool() );
 			break;
@@ -975,7 +989,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	// Update model and main view
 	if (result)
 	{
-		if (aten.current.rs != NULL) aten.current.rs->changeLog.add(Log::Visual);
+		if (aten.current.rs() != NULL) aten.current.rs()->changeLog.add(Log::Visual);
 		gui.mainWidget->postRedisplay();
 	}
 	msg.exit("PreferencesVariable::setAccessor");
@@ -995,7 +1009,7 @@ bool PreferencesVariable::performFunction(int i, ReturnValue &rv, TreeNode *node
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Prefs *ptr= (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
+	Prefs *ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
 	if (result) switch (i)
 	{
 		default:

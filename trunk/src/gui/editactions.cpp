@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: Editing actions
+	*** Edit Menu Actions
 	*** src/gui/editactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -27,41 +27,37 @@
 #include "model/clipboard.h"
 #include "parser/commandnode.h"
 
-/*
-// Editing Actions
-*/
-
 void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Command::Undo, "");
 	gui.mainWidget->postRedisplay();
-	gui.update();
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Command::Redo, "");
 	gui.mainWidget->postRedisplay();
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void AtenForm::on_actionEditCut_triggered(bool checked)
 {
 	CommandNode::run(Command::Cut, "");
-	gui.update(TRUE,FALSE,TRUE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void AtenForm::on_actionEditCopy_triggered(bool checked)
 {
 	CommandNode::run(Command::Copy, "");
-	gui.update(FALSE,FALSE,TRUE);
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
 	CommandNode::run(Command::Paste, "");
 	gui.mainWidget->postRedisplay();
-	gui.update(TRUE,FALSE,TRUE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
@@ -74,37 +70,36 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 		Vec3<double> r = dialog.widgetValue3d("X", "Y", "Z");
 		CommandNode::run(Command::Paste, "ddd", r.x, r.y, r.z);
 		gui.mainWidget->postRedisplay();
-		gui.update(TRUE,FALSE,TRUE);
+		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 	}
 }
 
 void AtenForm::on_actionEditDelete_triggered(bool checked)
 {
 	CommandNode::run(Command::Delete, "");
-	gui.update(TRUE,FALSE,TRUE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void AtenForm::on_actionEditSelectAll_triggered(bool checked)
+void AtenForm::on_actionSelectionAll_triggered(bool checked)
 {
 	CommandNode::run(Command::SelectAll, "");
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void AtenForm::on_actionEditSelectNone_triggered(bool checked)
+void AtenForm::on_actionSelectionNone_triggered(bool checked)
 {
 	CommandNode::run(Command::SelectNone, "");
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void AtenForm::on_actionEditInvert_triggered(bool checked)
+void AtenForm::on_actionSelectionInvert_triggered(bool checked)
 {
 	CommandNode::run(Command::Invert, "");
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void AtenForm::on_actionEditSelectExpand_triggered(bool on)
+void AtenForm::on_actionSelectionExpand_triggered(bool on)
 {
 	CommandNode::run(Command::Expand, "");
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
-

@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Vibrations Window
+	*** Vibrations Dock Widget
 	*** src/gui/vibrations.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VIBRATIONSWINDOW_H
-#define ATEN_VIBRATIONSWINDOW_H
+#ifndef ATEN_VIBRATIONSWIDGET_H
+#define ATEN_VIBRATIONSWIDGET_H
 
 #include "gui/ui_vibrations.h"
 
 // Vibrations window
-class AtenVibrations : public QDialog
+class VibrationsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -34,10 +34,10 @@ class AtenVibrations : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
+	void updateInToolBox();
 	private slots:
-	void dialogFinished(int result);
 	void on_VibrationsList_currentRowChanged(int row);
 	void on_PlayPauseVibration_clicked(bool checked);
 	void on_ShowVectorsCheck_clicked(bool checked);
@@ -53,6 +53,7 @@ class AtenVibrations : public QDialog
 	void resetTimer(int delay);
 	protected:
 	void timerEvent(QTimerEvent*);
+	void closeEvent(QCloseEvent *event);
 
 
 	/*
@@ -75,10 +76,9 @@ class AtenVibrations : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenVibrations(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenVibrations();
+	VibrationsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::VibrationsDialog ui;
+	Ui::VibrationsWidget ui;
 };
 
 #endif

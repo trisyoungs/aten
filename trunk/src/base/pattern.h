@@ -38,7 +38,7 @@ class Atomtype;
 class ComponentRegion;
 class Model;
 class Ring;
-class Cell;
+class UnitCell;
 
 // Structures to hold/point to forcefield descriptions in patterns.
 class PatternAtom
@@ -370,7 +370,7 @@ class Pattern
 	// Calculate interpattern Vdw energy (or for specific molecule)
 	bool vdwInterPatternEnergy(Model *source, Pattern *other, EnergyStore *estore, int molecule = -1);
 	// Calculate Vdw correction energy for pattern
-	bool vdwCorrectEnergy(Cell*, EnergyStore *estore);
+	bool vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore);
 	// Calculate intrapattern coulomb energy (or for specific molecule)
 	void coulombIntraPatternEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate interpattern coulomb energy (or for specific molecule)
@@ -425,6 +425,8 @@ class Pattern
 	int nRings();
 	// Returns the first ring in the ring list
 	Ring *rings();
+	// Returns whether atom id i is in a ring, or both atoms i and j are in the same ring
+	bool atomsInRing(int i, int j = -1);
 	// Reset the atom environment flags
 	void clearEnvironments();
 	// Set atom environments

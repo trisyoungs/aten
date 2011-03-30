@@ -1,5 +1,5 @@
 /*
-	*** Qt Command / Script dialog functions
+	*** Command Dock Widget
 	*** src/gui/command_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -22,46 +22,40 @@
 #include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "gui/command.h"
 #include "parser/scopenode.h"
 #include "base/sysfunc.h"
 
 // Constructor
-AtenCommand::AtenCommand(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+CommandWidget::CommandWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 	repopulateCommandList(NULL);
 	refreshScripts();
 }
 
-// Destructor
-AtenCommand::~AtenCommand()
+void CommandWidget::showWidget()
 {
-}
-
-void AtenCommand::showWindow()
-{
-	refresh();
 	show();
+	refresh();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
-void AtenCommand::refresh()
+void CommandWidget::refresh()
 {
-}
-
-void AtenCommand::dialogFinished(int result)
-{
-	gui.mainWindow->ui.actionCommandWindow->setChecked(FALSE);
+	updateVariableList();
 }
 
 // Set list of commands in command tab
-void AtenCommand::setCommandList(QStringList cmds)
+void CommandWidget::setCommandList(QStringList cmds)
 {
 	ui.CommandPrompt->setCommandList(cmds);
 }
 
 // Return list of commands stored in command tab
-QStringList AtenCommand::commandList()
+QStringList CommandWidget::commandList()
 {
 	return ui.CommandPrompt->commandList();
 }
@@ -70,7 +64,7 @@ QStringList AtenCommand::commandList()
 // Prompt Tab
 */
 
-void AtenCommand::on_CommandPrompt_returnPressed()
+void CommandWidget::on_CommandPrompt_returnPressed()
 {
 	Program tempScript;
 	// Grab the current text of the line edit (and clear it at the same time)
@@ -80,7 +74,7 @@ void AtenCommand::on_CommandPrompt_returnPressed()
 		tempScript.execute(result);
 	}
 	// Force update of the GUI?
-	if (ui.PromptForceUpdateCheck->isChecked()) gui.update();
+	if (ui.PromptForceUpdateCheck->isChecked()) gui.update(GuiQt::CanvasTarget);
 }
 
 /*
@@ -88,7 +82,7 @@ void AtenCommand::on_CommandPrompt_returnPressed()
 */
 
 // Update variable list
-void AtenCommand::updateVariableList()
+void CommandWidget::updateVariableList()
 {
 	// Count number of variables
 	int count = 0;
@@ -126,7 +120,7 @@ void AtenCommand::updateVariableList()
 	}
 }
 
-void AtenCommand::on_InteractivePrompt_returnPressed()
+void CommandWidget::on_InteractivePrompt_returnPressed()
 {
 	// Grab the current text of the line edit (and clear it at the same time)
 	interactiveProgram_.mainProgram()->reset();
@@ -137,14 +131,14 @@ void AtenCommand::on_InteractivePrompt_returnPressed()
 		updateVariableList();
 	}
 	// Force update of the GUI?
-	if (ui.InteractiveForceUpdateCheck->isChecked()) gui.update();
+	if (ui.InteractiveForceUpdateCheck->isChecked()) gui.update(GuiQt::CanvasTarget);
 }
 
 /*
 // Scripts Tab
 */
 
-void AtenCommand::refreshScripts(bool refreshactions, bool refreshlist)
+void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 {
 	// Refresh list
 	if (refreshlist)
@@ -177,7 +171,7 @@ void AtenCommand::refreshScripts(bool refreshactions, bool refreshlist)
 	}
 }
 
-void AtenCommand::on_OpenScriptButton_clicked(bool v)
+void CommandWidget::on_OpenScriptButton_clicked(bool v)
 {
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
@@ -202,7 +196,7 @@ void AtenCommand::on_OpenScriptButton_clicked(bool v)
 	}
 }
 
-void AtenCommand::on_ReloadAllButton_clicked(bool checked)
+void CommandWidget::on_ReloadAllButton_clicked(bool checked)
 {
 	// Cycle over scripts, clearing and reloading
 	Program *script = aten.scripts(), *xscript;
@@ -255,13 +249,13 @@ void AtenCommand::on_ReloadAllButton_clicked(bool checked)
 	refreshScripts();
 }
 
-void AtenCommand::on_ScriptsList_currentRowChanged(int row)
+void CommandWidget::on_ScriptsList_currentRowChanged(int row)
 {
 	if (row == -1) ui.RunSelectedButton->setEnabled(FALSE);
 	else ui.RunSelectedButton->setEnabled(TRUE);
 }
 
-void AtenCommand::on_RunSelectedButton_clicked(bool checked)
+void CommandWidget::on_RunSelectedButton_clicked(bool checked)
 {
 	int row = ui.ScriptsList->currentRow();
 	if (row == -1) return;
@@ -273,16 +267,16 @@ void AtenCommand::on_RunSelectedButton_clicked(bool checked)
 		ReturnValue result;
 		script->execute(result, TRUE);
 	}
-	gui.update();
+	gui.update(GuiQt::AllTarget);
 }
 
-void AtenCommand::runScript()
+void CommandWidget::runScript()
 {
 	// First, try to cast the sender into a QAction
 	QAction *action = qobject_cast<QAction*> (sender());
 	if (!action)
 	{
-		printf("AtenCommand::runScript - Critical - sender was not a QAction.\n");
+		printf("CommandWidget::runScript - Critical - sender was not a QAction.\n");
 		return;
 	}
 	// Find the relevant Script entry...
@@ -295,14 +289,14 @@ void AtenCommand::runScript()
 		ReturnValue result;
 		ri->data->execute(result, TRUE);
 	}
-	gui.update();
+	gui.update(GuiQt::AllTarget);
 }
 
 /*
 // Command Index Page
 */
 
-void AtenCommand::repopulateCommandList(const char *search)
+void CommandWidget::repopulateCommandList(const char *search)
 {
 	ui.CommandList->clear();
 	for (int cf = Command::Declarations+1; cf < Command::nCommands; ++cf)
@@ -314,18 +308,18 @@ void AtenCommand::repopulateCommandList(const char *search)
 	}
 }
 
-void AtenCommand::on_ClearSearchButton_clicked(bool checked)
+void CommandWidget::on_ClearSearchButton_clicked(bool checked)
 {
 	ui.CommandSearchEdit->clear();
 	repopulateCommandList(NULL);
 }
 
-void AtenCommand::on_CommandSearchEdit_textChanged(QString text)
+void CommandWidget::on_CommandSearchEdit_textChanged(QString text)
 {
 	repopulateCommandList(qPrintable(text));
 }
 
-void AtenCommand::on_CommandList_currentTextChanged(const QString &text)
+void CommandWidget::on_CommandList_currentTextChanged(const QString &text)
 {
 	ui.CommandEdit->clear();
 	if (ui.CommandList->currentRow() == -1) return;
@@ -335,4 +329,12 @@ void AtenCommand::on_CommandList_currentTextChanged(const QString &text)
 	Dnchar cmdtext;
  	cmdtext.sprintf("<b>%s(%s)</b><br/>%s", commands.data[cf].keyword, commands.data[cf].hasArguments() ? commands.data[cf].argText : "", commands.data[cf].syntax);
 	ui.CommandEdit->insertHtml(cmdtext.get());
+}
+
+void CommandWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.CommandButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	event->accept();
 }

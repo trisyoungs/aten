@@ -1,5 +1,5 @@
 /*
-	*** Qt position functions interface
+	*** Position Dock Widget
 	*** src/gui/position_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -21,59 +21,55 @@
 
 #include "main/aten.h"
 #include "gui/position.h"
-#include "gui/mainwindow.h"
+#include "gui/toolbox.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 #include "base/sysfunc.h"
 
 // Constructor
-AtenPosition::AtenPosition(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+PositionWidget::PositionWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 }
 
-// Destructor
-AtenPosition::~AtenPosition()
+void PositionWidget::showWidget()
 {
-}
-
-void AtenPosition::showWindow()
-{
-	//if (shouldRefresh_) refresh();
 	show();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 /*
 // Flip
 */
 
-void AtenPosition::on_FlipXButton_clicked(bool checked)
+void PositionWidget::on_FlipXButton_clicked(bool checked)
 {
 	flipSelection(0);
 }
 
-void AtenPosition::on_FlipYButton_clicked(bool checked)
+void PositionWidget::on_FlipYButton_clicked(bool checked)
 {
 	flipSelection(1);
 }
 
-void AtenPosition::on_FlipZButton_clicked(bool checked)
+void PositionWidget::on_FlipZButton_clicked(bool checked)
 {
 	flipSelection(2);
 }
 
-void AtenPosition::flipSelection(int axis)
+void PositionWidget::flipSelection(int axis)
 {
 	CommandNode::run(Command::Mirror, "i", axis);
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
 // Centre
 */
 
-void AtenPosition::on_DefineCentreButton_clicked(bool checked)
+void PositionWidget::on_DefineCentreButton_clicked(bool checked)
 {
 	// Get centre of current selection
 	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
@@ -82,49 +78,49 @@ void AtenPosition::on_DefineCentreButton_clicked(bool checked)
 	ui.CentreZSpin->setValue(centre.z);
 }
 
-void AtenPosition::on_CentreSelectionButton_clicked(bool checked)
+void PositionWidget::on_CentreSelectionButton_clicked(bool checked)
 {
 	Vec3<double> centre(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	Vec3<int> lock(ui.CentreLockXCheck->isChecked(), ui.CentreLockYCheck->isChecked(), ui.CentreLockZCheck->isChecked());
 	CommandNode::run(Command::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
 // Translate Functions
 */
 
-void AtenPosition::on_TranslatePosXButton_clicked(bool on)
+void PositionWidget::on_TranslatePosXButton_clicked(bool on)
 {
 	translateSelection(0, 1);
 }
 
-void AtenPosition::on_TranslatePosYButton_clicked(bool on)
+void PositionWidget::on_TranslatePosYButton_clicked(bool on)
 {
 	translateSelection(1, 1);
 }
 
-void AtenPosition::on_TranslatePosZButton_clicked(bool on)
+void PositionWidget::on_TranslatePosZButton_clicked(bool on)
 {
 	translateSelection(2, 1);
 }
 
-void AtenPosition::on_TranslateNegXButton_clicked(bool on)
+void PositionWidget::on_TranslateNegXButton_clicked(bool on)
 {
 	translateSelection(0, -1);
 }
 
-void AtenPosition::on_TranslateNegYButton_clicked(bool on)
+void PositionWidget::on_TranslateNegYButton_clicked(bool on)
 {
 	translateSelection(1, -1);
 }
 
-void AtenPosition::on_TranslateNegZButton_clicked(bool on)
+void PositionWidget::on_TranslateNegZButton_clicked(bool on)
 {
 	translateSelection(2, -1);
 }
 
-void AtenPosition::translateSelection(int axis, int dir)
+void PositionWidget::translateSelection(int axis, int dir)
 {
 	double step = ui.TranslateShiftSpin->value();	
 	Vec3<double> tvec;
@@ -148,7 +144,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 	else if (ui.TranslateCellFrameRadio->isChecked())
 	{
 		// Translate selection in the cell axes of the model
-		if (m->cell()->type() == Cell::NoCell)
+		if (m->cell()->type() == UnitCell::NoCell)
 		{
 			msg.print("No unit cell defined for model.\n");
 			return;
@@ -160,7 +156,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 	}
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
@@ -169,23 +165,23 @@ void AtenPosition::translateSelection(int axis, int dir)
 
 void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.positionWindow->ui.DefineVectorButton->setChecked(FALSE);
+	gui.positionWidget->ui.DefineVectorButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
-	gui.positionWindow->ui.VectorShiftXSpin->setValue(v.x);
-	gui.positionWindow->ui.VectorShiftYSpin->setValue(v.y);
-	gui.positionWindow->ui.VectorShiftZSpin->setValue(v.z);
-	gui.positionWindow->ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+	gui.positionWidget->ui.VectorShiftXSpin->setValue(v.x);
+	gui.positionWidget->ui.VectorShiftYSpin->setValue(v.y);
+	gui.positionWidget->ui.VectorShiftZSpin->setValue(v.z);
+	gui.positionWidget->ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
-void AtenPosition::on_DefineVectorButton_clicked(bool on)
+void PositionWidget::on_DefineVectorButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->beginManualPick(2,&shiftPickAxisButton_callback);
+	gui.mainWidget->setSelectedMode(UserAction::PickPositionVectorShiftAction,2,&shiftPickAxisButton_callback);
 }
 
-void AtenPosition::on_NormaliseVectorButton_clicked(bool on)
+void PositionWidget::on_NormaliseVectorButton_clicked(bool on)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();
@@ -198,7 +194,7 @@ void AtenPosition::on_NormaliseVectorButton_clicked(bool on)
 	ui.VectorMagnitudeLabel->setText("1.0");
 }
 
-void AtenPosition::on_VectorShiftXSpin_valueChanged(double value)
+void PositionWidget::on_VectorShiftXSpin_valueChanged(double value)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();
@@ -207,7 +203,7 @@ void AtenPosition::on_VectorShiftXSpin_valueChanged(double value)
 	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
-void AtenPosition::on_VectorShiftYSpin_valueChanged(double value)
+void PositionWidget::on_VectorShiftYSpin_valueChanged(double value)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();
@@ -216,7 +212,7 @@ void AtenPosition::on_VectorShiftYSpin_valueChanged(double value)
 	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
-void AtenPosition::on_VectorShiftZSpin_valueChanged(double value)
+void PositionWidget::on_VectorShiftZSpin_valueChanged(double value)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();
@@ -225,7 +221,7 @@ void AtenPosition::on_VectorShiftZSpin_valueChanged(double value)
 	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
-void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
+void PositionWidget::on_VectorShiftPositiveButton_clicked(bool checked)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();
@@ -237,10 +233,10 @@ void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
+void PositionWidget::on_VectorShiftNegativeButton_clicked(bool checked)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();
@@ -252,14 +248,14 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 /*
 // Move
 */
 
-void AtenPosition::on_RepositionSelectionButton_clicked(bool on)
+void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 {
 	Vec3<double> v;
 	v.x = ui.RepositionTargetXSpin->value() - ui.RepositionReferenceXSpin->value();
@@ -270,10 +266,10 @@ void AtenPosition::on_RepositionSelectionButton_clicked(bool on)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(TRUE,FALSE,FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void AtenPosition::on_DefineRepositionReferenceButton_clicked(bool on)
+void PositionWidget::on_DefineRepositionReferenceButton_clicked(bool on)
 {
 	// Get centre of current selection
 	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
@@ -282,7 +278,7 @@ void AtenPosition::on_DefineRepositionReferenceButton_clicked(bool on)
 	ui.RepositionReferenceZSpin->setValue(centre.z);
 }
 
-void AtenPosition::on_DefineRepositionTargetButton_clicked(bool on)
+void PositionWidget::on_DefineRepositionTargetButton_clicked(bool on)
 {
 	// Get centre of current selection
 	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
@@ -291,7 +287,10 @@ void AtenPosition::on_DefineRepositionTargetButton_clicked(bool on)
 	ui.RepositionTargetZSpin->setValue(centre.z);
 }
 
-void AtenPosition::dialogFinished(int result)
+void PositionWidget::closeEvent(QCloseEvent *event)
 {
-	gui.mainWindow->ui.actionPositionWindow->setChecked(FALSE);
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.PositionButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	event->accept();
 }

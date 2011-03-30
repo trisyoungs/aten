@@ -559,14 +559,14 @@ void PrimitiveGroup::sendToGL(int lod)
 */
 
 // Constructor
-GridPrimitive::GridPrimitive()
+GridPrimitive::GridPrimitive(Grid *source)
 {
 	// Public variables
 	prev = NULL;
 	next = NULL;
 
 	// Private variables
-	source_ = NULL;
+	source_ = source;
 	primaryIsTransparent_ = FALSE;
 	secondaryIsTransparent_ = FALSE;
 }

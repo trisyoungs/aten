@@ -31,17 +31,7 @@ AtenPrefs::AtenPrefs(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 	refreshing_ = FALSE;
-}
 
-// Destructor
-AtenPrefs::~AtenPrefs()
-{
-}
-
-// Finalise GUI
-void AtenPrefs::finaliseUi()
-{
-	msg.enter("AtenPrefs::finaliseUi");
 	int i;
 	// Add elements to element list and select first item
 	QListWidgetItem *item;
@@ -51,7 +41,6 @@ void AtenPrefs::finaliseUi()
 		item->setText(elements().name(i));
 	}
 	ui.ElementList->setCurrentRow(0);
-	msg.exit("AtenPrefs::finaliseUi");
 }
 
 // Set controls
@@ -116,23 +105,8 @@ void AtenPrefs::setControls()
 	ui.FarClipSpin->setValue(prefs.clipFar());
 	ui.NearDepthSpin->setValue(prefs.depthNear());
 	ui.FarDepthSpin->setValue(prefs.depthFar());
-	// View Page - Scene Objects tab
-	ui.GlobeVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewGlobe));
-	ui.CellVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewCell));
-	ui.AxesVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewCellAxes));
-	ui.AtomsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewAtoms));
-	ui.LabelsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewLabels));
-	ui.MeasurementsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewMeasurements));
-	ui.RegionsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewRegions));
-	ui.SurfacesVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewSurfaces));
-	ui.GlobeVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewGlobe));
-	ui.CellVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewCell));
-	ui.AxesVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewCellAxes));
-	ui.AtomsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewAtoms));
-	ui.LabelsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewLabels));
-	ui.MeasurementsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewMeasurements));
-	ui.RegionsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewRegions));
-	ui.SurfacesVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewSurfaces));
+	ui.FrameCurrentModelCheck->setChecked(prefs.frameCurrentModel());
+	ui.FrameWholeViewCheck->setChecked(prefs.frameWholeView());
 
 	// Set controls in interaction page
 	ui.LeftMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::LeftButton));
@@ -171,7 +145,7 @@ void AtenPrefs::setControls()
 	// Set controls in Energy/FF page
 	ui.CalculateIntraCheck->setChecked(prefs.calculateIntra());
 	ui.CalculateVdwCheck->setChecked(prefs.calculateVdw());
-	ui.CalculateElecCheck->setChecked(prefs.calculateElec());
+	ui.ElectrostaticMethodCombo->setCurrentIndex(prefs.electrostaticsMethod());
 	ui.VdwCutoffSpin->setValue(prefs.vdwCutoff());
 	ui.ElecCutoffSpin->setValue(prefs.elecCutoff());
 	ui.EwaldPrecisionMantissaSpin->setValue(prefs.ewaldPrecision().mantissa());
@@ -192,6 +166,8 @@ void AtenPrefs::setControls()
 	// External Programs
 	ui.TemporaryDirEdit->setText(prefs.tempDir());
 	ui.MopacExecutableEdit->setText(prefs.mopacExe());
+	ui.EncoderExecutableEdit->setText(prefs.encoderExe());
+	ui.EncoderArgumentsEdit->setText(prefs.encoderArguments());
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
@@ -579,99 +555,16 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 	gui.mainWidget->postRedisplay();
 }
 
-/*
-// View Page - Scene Objects tab
-*/
-
-void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state, bool onscreen)
+void AtenPrefs::on_FrameCurrentModelCheck_clicked(bool checked)
 {
-	if (onscreen)
-	{
-		prefs.setVisibleOnScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
-		aten.currentModel()->changeLog.add(Log::Visual);
-	}
-	else prefs.setVisibleOffScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
+	prefs.setFrameCurrentModel(checked);
 	gui.mainWidget->postRedisplay();
 }
 
-void AtenPrefs::on_AtomsVisibleCheck_stateChanged(int state)
+void AtenPrefs::on_FrameWholeViewCheck_clicked(bool checked)
 {
-	setVisibleObject(Prefs::ViewAtoms, state, TRUE);
-}
-
-void AtenPrefs::on_CellVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewCell, state, TRUE);
-}
-
-void AtenPrefs::on_AxesVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewCellAxes, state, TRUE);
-}
-
-void AtenPrefs::on_GlobeVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewGlobe, state, TRUE);
-}
-
-void AtenPrefs::on_LabelsVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewLabels, state, TRUE);
-}
-
-void AtenPrefs::on_MeasurementsVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewMeasurements, state, TRUE);
-}
-
-void AtenPrefs::on_RegionsVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewRegions, state, TRUE);
-}
-
-void AtenPrefs::on_SurfacesVisibleCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewSurfaces, state, TRUE);
-}
-
-void AtenPrefs::on_AtomsVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewAtoms, state, FALSE);
-}
-
-void AtenPrefs::on_CellVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewCell, state, FALSE);
-}
-
-void AtenPrefs::on_AxesVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewCellAxes, state, FALSE);
-}
-
-void AtenPrefs::on_GlobeVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewGlobe, state, FALSE);
-}
-
-void AtenPrefs::on_LabelsVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewLabels, state, FALSE);
-}
-
-void AtenPrefs::on_MeasurementsVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewMeasurements, state, FALSE);
-}
-
-void AtenPrefs::on_RegionsVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewRegions, state, FALSE);
-}
-
-void AtenPrefs::on_SurfacesVisibleImageCheck_stateChanged(int state)
-{
-	setVisibleObject(Prefs::ViewSurfaces, state, FALSE);
+	prefs.setFrameWholeView(checked);
+	gui.mainWidget->postRedisplay();
 }
 
 /*
@@ -965,9 +858,9 @@ void AtenPrefs::on_CalculateVdwCheck_stateChanged(int state)
 	prefs.setCalculateVdw(state);
 }
 
-void AtenPrefs::on_CalculateElecCheck_stateChanged(int state)
+void AtenPrefs::on_ElectrostaticMethodCombo_currentIndexChanged(int index)
 {
-	prefs.setCalculateElec(state);
+	prefs.setElectrostaticsMethod( (Electrostatics::ElecMethod) index);
 }
 
 void AtenPrefs::on_VdwCutoffSpin_valueChanged(double d)
@@ -1066,7 +959,7 @@ void AtenPrefs::on_TemporaryDirEdit_textEdited(const QString &text)
 void AtenPrefs::on_MopacExecutableButton_clicked(bool checked)
 {
 	// Call a fileselector....
-	QString filename = QFileDialog::getOpenFileName(this, "Select MOPAC executable", prefs.mopacExe());
+	QString filename = QFileDialog::getOpenFileName(this, "Select MOPAC Executable", prefs.mopacExe());
 	if (!filename.isEmpty())
 	{
 		prefs.setMopacExe( qPrintable(filename) );
@@ -1077,4 +970,25 @@ void AtenPrefs::on_MopacExecutableButton_clicked(bool checked)
 void AtenPrefs::on_MopacExecutableEdit_textEdited(const QString &text)
 {
 	prefs.setMopacExe( qPrintable(text) );
+}
+
+void AtenPrefs::on_EncoderExecutableButton_clicked(bool checked)
+{
+	// Call a fileselector....
+	QString filename = QFileDialog::getOpenFileName(this, "Select Video Encoder Executable", prefs.mopacExe());
+	if (!filename.isEmpty())
+	{
+		prefs.setEncoderExe( qPrintable(filename) );
+		ui.EncoderExecutableEdit->setText(filename);
+	}
+}
+
+void AtenPrefs::on_EncoderExecutableEdit_textEdited(const QString &text)
+{
+	prefs.setEncoderExe( qPrintable(text) );
+}
+
+void AtenPrefs::on_EncoderArgumentsEdit_textEdited(const QString &text)
+{
+	prefs.setEncoderArguments( qPrintable(text) );
 }

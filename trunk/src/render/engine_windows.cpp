@@ -23,7 +23,9 @@
 #include "model/model.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
+#include "gui/disorderwizard.h"
 #include "gui/vibrations.h"
+#include "main/aten.h"
 
 // Render addition elements related to visible windows
 void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas)
@@ -36,9 +38,9 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 	double rij, phi;
 
 	// Vibrations Window - Draw vibration arrows
-	if ((gui.vibrationsWindow->isVisible()) && (gui.vibrationsWindow->ui.ShowVectorsCheck->isChecked()))
+	if ((gui.vibrationsWidget->isVisible()) && (gui.vibrationsWidget->ui.ShowVectorsCheck->isChecked()))
 	{
-		int row = gui.vibrationsWindow->ui.VibrationsList->currentRow();
+		int row = gui.vibrationsWidget->ui.VibrationsList->currentRow();
 		if (row != -1)
 		{
 			prefs.copyColour(Prefs::VibrationArrowColour, colour);
@@ -47,7 +49,7 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 			// Grab displacements array
 			Vibration *vib = m->vibration(row);
 			// Get vector scale factor
-			double scale = gui.vibrationsWindow->ui.VectorScaleSpin->value();
+			double scale = gui.vibrationsWidget->ui.VectorScaleSpin->value();
 			if (vib != NULL)
 			{
 				Vec3<double> *disp = vib->displacements();
@@ -99,18 +101,21 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 	}
 
 	// Cell Transform Window
-	if (gui.cellTransformWindow->isVisible())
+	if (gui.cellTransformWidget->isVisible())
 	{
-		switch (gui.cellTransformWindow->ui.CellTransformTabs->currentIndex())
+		Vec3<int> hkl;
+		int n, i, j, anindex = -1, notanindex = -1, ncoords = 0;
+		Vec3<double> coords[4], origin;
+		switch (gui.cellTransformWidget->ui.CellTransformTabs->currentIndex())
 		{
 			// Replicate tab - draw on end results of replication
 			case (0):
-				r1.x = gui.cellTransformWindow->ui.CellReplicateNegXSpin->value();
-				r1.y = gui.cellTransformWindow->ui.CellReplicateNegYSpin->value();
-				r1.z = gui.cellTransformWindow->ui.CellReplicateNegZSpin->value();
-				r2.x = gui.cellTransformWindow->ui.CellReplicatePosXSpin->value();
-				r2.y = gui.cellTransformWindow->ui.CellReplicatePosYSpin->value();
-				r2.z = gui.cellTransformWindow->ui.CellReplicatePosZSpin->value();
+				r1.x = gui.cellTransformWidget->ui.CellReplicateNegXSpin->value();
+				r1.y = gui.cellTransformWidget->ui.CellReplicateNegYSpin->value();
+				r1.z = gui.cellTransformWidget->ui.CellReplicateNegZSpin->value();
+				r2.x = gui.cellTransformWidget->ui.CellReplicatePosXSpin->value();
+				r2.y = gui.cellTransformWidget->ui.CellReplicatePosYSpin->value();
+				r2.z = gui.cellTransformWidget->ui.CellReplicatePosZSpin->value();
 				ineg.set(ceil(r1.x), ceil(r1.y), ceil(r1.z));
 				ipos.set(floor(r2.x), floor(r2.y), floor(r2.z));
 				prefs.copyColour(Prefs::UnitCellColour, colour);
@@ -153,6 +158,108 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 				}
 				glDisable(GL_LINE_STIPPLE);
 				glPopMatrix();
+			// Miller Plane tab
+			case (3):
+				hkl.set(gui.cellTransformWidget->ui.MillerHSpin->value(), gui.cellTransformWidget->ui.MillerKSpin->value(), gui.cellTransformWidget->ui.MillerLSpin->value());
+				if ((hkl.x == 0) && (hkl.y == 0) && (hkl.z == 0)) return;
+				// Plane Eq : hx + ky + lz = 1    (h, k, and l are reciprocals)
+				for (n=0; n<3; ++n)
+				{
+					if (hkl[n] != 0)
+					{
+						coords[ncoords++].set(n, 1.0 / hkl[n]);
+						anindex = n;
+					}
+					else notanindex = n;
+				}
+				// Generate other coordinates if necessary
+				if (ncoords == 1)
+				{
+					// {100}
+					i = (anindex+1)%3;
+					j = (i+1)%3;
+					for (n=1; n<4; ++n) coords[n] = coords[0];
+					coords[1].set(i, 1.0);
+					coords[2].set(i, 1.0);
+					coords[2].set(j, 1.0);
+					coords[3].set(j, 1.0);
+					ncoords = 4;
+				}
+				else if (ncoords == 2)
+				{
+					// {110}
+					coords[2] = coords[1];
+					coords[2].set(notanindex, 1.0);
+					coords[3] = coords[0];
+					coords[3].set(notanindex, 1.0);
+					ncoords = 4;
+				}
+				glPushMatrix();
+				glMultMatrixd(source->cell()->axes().matrix());
+				if (ncoords == 3)
+				{
+					glBegin(GL_TRIANGLES);
+						glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+						glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+						glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+						glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
+						glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
+						glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
+					glEnd();
+				}
+				else
+				{
+					glBegin(GL_QUADS);
+						glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+						glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+						glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+						glVertex3d(coords[3].x, coords[3].y, coords[3].z);
+						glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
+						glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
+						glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
+						glVertex3d(1-coords[3].x, 1-coords[3].y, 1-coords[3].z);
+					glEnd();
+				}
+				break;
+		}
+	}
+
+	// Disorder Wizard
+	static List<GridPrimitive> disorderGridPrimitives_;
+	disorderGridPrimitives_.clear();
+	if ((gui.disorderWizard->isVisible()) && (gui.disorderWizard->currentId() > 2))
+	{
+		// Get currently-selected partitioning scheme
+		PartitioningScheme *ps = gui.disorderWizard->partitioningScheme();
+		if (ps != NULL)
+		{
+			// Grab the grid structure and list of partitions from the scheme
+			Grid &grid = ps->grid();
+
+			for (PartitionData *pd = ps->partitions(); pd != NULL; pd = pd->next)
+			{
+				if (pd->id() == 0) continue;
+				
+				colour[0] = 0.0;	//TGAY
+				colour[1] = 0.0;
+				colour[2] = 0.0;
+				colour[3] = 1.0;
+				prefs.copyColour(Prefs::VibrationArrowColour, colour);
+				// Construct a surface for each partition in the model (except 0 == unit cell)
+				GridPrimitive *prim = disorderGridPrimitives_.add();
+				prim->setSource(&ps->grid());
+				
+				Matrix mat = gui.disorderWizard->cell()->axes();
+				Vec3<int> npoints = grid.nPoints();
+				mat.applyScaling(1.0/npoints.x, 1.0/npoints.y, 1.0/npoints.z);
+				grid.setAxes(mat);
+				grid.setLowerPrimaryCutoff(pd->id()-0.5);
+				grid.setUpperPrimaryCutoff(pd->id()+0.5);
+				prim->createSurfaceMarchingCubes();
+				A = baseTransform;
+				A.multiplyRotation(mat);
+				renderPrimitive(&prim->primaryPrimitive(), TRUE, colour, A, GL_FILL);
+			}
 		}
 	}
 }

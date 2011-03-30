@@ -114,7 +114,7 @@ void Pattern::angleForces(Model *srcmodel)
 	ForcefieldBound *ffb;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{

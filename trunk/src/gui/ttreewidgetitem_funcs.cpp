@@ -1,5 +1,5 @@
 /*
-	*** Qt TTreeWidgetItem functions
+	*** TTreeWidgetItem Functions
 	*** src/gui/ttreewidgetitem_funcs.cpp
 	Copyright T. Youngs 2007-2011
 

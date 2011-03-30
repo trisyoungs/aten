@@ -170,7 +170,19 @@ ForcefieldAtom *Forcefield::findByTypeId(int i, ForcefieldAtom *excluding)
 	return result;
 }
 
-	// Find type define
+// Return number of type defines in forcefield
+int Forcefield::nTypeDefines()
+{
+	return typeDefines_.nItems();
+}
+
+// Return type defines list
+Neta *Forcefield::typeDefines()
+{
+	return typeDefines_.first();
+}
+
+// Find type define
 Neta *Forcefield::typeDefine(const char *name)
 {
 	Neta *node;

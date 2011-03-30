@@ -163,7 +163,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Grid *ptr= (Grid*) rv.asPointer(VTypes::GridData, result);
+	Grid *ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
@@ -293,7 +293,7 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Grid *ptr= (Grid*) sourcerv.asPointer(VTypes::GridData, result);
+	Grid *ptr = (Grid*) sourcerv.asPointer(VTypes::GridData, result);
 	int n;
 	if (result && (ptr == NULL))
 	{

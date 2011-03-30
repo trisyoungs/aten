@@ -56,6 +56,10 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "atoms",		VTypes::AtomData,		-1, TRUE },
 	{ "bonds",		VTypes::BondData,		-1, TRUE },
 	{ "cell",		VTypes::CellData,		0, FALSE },
+	{ "componentdensity",	VTypes::DoubleData,		0, FALSE },
+	{ "componentpartition",	VTypes::IntegerData,		0, FALSE },
+	{ "componentpolicy",	VTypes::StringData,		0, FALSE },
+	{ "componentpopulation",VTypes::IntegerData,		0, FALSE },
 	{ "distances",		VTypes::MeasurementData,	-1, TRUE },
 	{ "eigenvectors",	VTypes::EigenvectorData,	-1, TRUE },
 	{ "energy",		VTypes::EnergyStoreData,	0, TRUE },
@@ -88,13 +92,11 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nglyphs",		VTypes::IntegerData,		0, TRUE },
 	{ "ngrids",		VTypes::IntegerData,		0, TRUE },
 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
-	{ "nrequested",		VTypes::IntegerData,		0, FALSE },
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "nunknown",		VTypes::IntegerData,		0, TRUE },
 	{ "nvibrations",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
-	{ "region",		VTypes::RegionData,		0, TRUE },
 	{ "selection",		VTypes::AtomData,		-1, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
 	{ "vibrations",		VTypes::VibrationData,		0, TRUE },
@@ -104,7 +106,9 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "addhydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::argText(Command::AddHydrogen) },
+	{ "angleenergy",	VTypes::DoubleData,	"",						"" },
 	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::argText(Command::Augment) },
+	{ "bondenergy",		VTypes::DoubleData,	"",						"" },
 	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::argText(Command::Charge) },
 	{ "clearbonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::argText(Command::ClearBonds) },
 	{ "clearcharges",	VTypes::NoData,		Command::arguments(Command::ClearCharges),	Command::argText(Command::ClearCharges) },
@@ -112,8 +116,12 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::argText(Command::Copy) },
 	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::argText(Command::Cut) },
 	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::argText(Command::Delete) },
+	{ "deselect",		VTypes::NoData,		Command::arguments(Command::DeSelect),		Command::argText(Command::DeSelect) },
+	{ "elecenergy",		VTypes::DoubleData,	"",						"" },
 	{ "expand",		VTypes::NoData,		Command::arguments(Command::Expand),		Command::argText(Command::Expand) },
 	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::argText(Command::Finalise) },
+	{ "interenergy",	VTypes::DoubleData,	"",						"" },
+	{ "intraenergy",	VTypes::DoubleData,	"",						"" },
 	{ "movetoend",		VTypes::NoData,		Command::arguments(Command::MoveToEnd),		Command::argText(Command::MoveToEnd) },
 	{ "movetostart",	VTypes::NoData,		Command::arguments(Command::MoveToStart),	Command::argText(Command::MoveToStart) },
 	{ "newatom",		VTypes::AtomData,	Command::arguments(Command::NewAtom),		Command::argText(Command::NewAtom) },
@@ -132,15 +140,20 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "redo",		VTypes::NoData,		Command::arguments(Command::Redo),		Command::argText(Command::Redo) },
 	{ "reorder",		VTypes::NoData,		Command::arguments(Command::ReOrder),		Command::argText(Command::ReOrder) },
 	{ "savebitmap",		VTypes::NoData,		Command::arguments(Command::SaveBitmap),	Command::argText(Command::SaveBitmap) },
+	{ "select",		VTypes::NoData,		Command::arguments(Command::Select),		Command::argText(Command::Select) },
 	{ "selectall",		VTypes::NoData,		Command::arguments(Command::SelectAll),		Command::argText(Command::SelectAll) },
 	{ "selectionaddhydrogen",VTypes::NoData,	Command::arguments(Command::SelectionAddHydrogen),	Command::argText(Command::SelectionAddHydrogen) },
 	{ "selectnone",		VTypes::NoData,		Command::arguments(Command::SelectNone),	Command::argText(Command::SelectNone) },
+	{ "selecttree",		VTypes::NoData,		Command::arguments(Command::SelectTree),	Command::argText(Command::SelectTree) },
+	{ "setupcomponent",	VTypes::NoData,		Command::arguments(Command::SetupComponent),	Command::argText(Command::SetupComponent) },
 	{ "shiftdown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::argText(Command::ShiftDown) },
 	{ "shiftup",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::argText(Command::ShiftUp) },
 	{ "showall",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::argText(Command::ShowAll) },
-	{ "toangstroms",	VTypes::NoData,		"",						"Convert cell and atom coordinates from Bohr to Angstroms" },
+	{ "toangstroms",	VTypes::NoData,		"",						"" },
+	{ "torsionenergy",	VTypes::DoubleData,	"",						"" },
 	{ "transmute",		VTypes::NoData,		Command::arguments(Command::Transmute),		Command::argText(Command::Transmute) },
-	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::argText(Command::Undo) }
+	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::argText(Command::Undo) },
+	{ "vdwenergy",		VTypes::DoubleData,	"",						"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -229,7 +242,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Model *ptr= (Model*) rv.asPointer(VTypes::ModelData, result);
+	Model *ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
@@ -266,6 +279,18 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			break;
 		case (ModelVariable::Celldata):
 			rv.set(VTypes::CellData, ptr->cell());
+			break;
+		case (ModelVariable::ComponentDensity):
+			rv.set(ptr->componentDensity());
+			break;
+		case (ModelVariable::ComponentPartition):
+			rv.set(ptr->componentPartition());
+			break;
+		case (ModelVariable::ComponentPolicy):
+			rv.set( Model::insertionPolicy(ptr->componentInsertionPolicy()) );
+			break;
+		case (ModelVariable::ComponentPopulation):
+			rv.set(ptr->componentPopulation());
 			break;
 		case (ModelVariable::Distances):
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->distanceMeasurements());
@@ -438,9 +463,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::NPatterns):
 			rv.set(ptr->nPatterns());
 			break;
-		case (ModelVariable::NRequested):
-			rv.set(ptr->nRequested());
-			break;
 		case (ModelVariable::NSelected):
 			rv.set(ptr->nSelected());
 			break;
@@ -461,9 +483,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
-			break;
-		case (ModelVariable::Region):
-			rv.set(VTypes::RegionData, ptr->region());
 			break;
 		case (ModelVariable::Selection):
 			if (!hasArrayIndex)
@@ -560,7 +579,8 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Model *ptr= (Model*) sourcerv.asPointer(VTypes::ModelData, result);
+	Model::InsertionPolicy inspol;
+	Model *ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
@@ -569,16 +589,27 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Celldata):
-			ptr->setCell( ((Cell*) newvalue.asPointer(VTypes::CellData)) );
+			ptr->setCell( ((UnitCell*) newvalue.asPointer(VTypes::CellData)) );
+			break;
+		case (ModelVariable::ComponentDensity):
+			ptr->setComponentDensity( newvalue.asDouble() );
+			break;
+		case (ModelVariable::ComponentPartition):
+			ptr->setComponentPartition( newvalue.asInteger() );
+			break;
+		case (ModelVariable::ComponentPolicy):
+			inspol = Model::insertionPolicy(newvalue.asString(), TRUE);
+			if (inspol == Model::nInsertionPolicies) result = FALSE;
+			else ptr->setComponentInsertionPolicy(inspol);
+			break;
+		case (ModelVariable::ComponentPopulation):
+			ptr->setComponentPopulation( newvalue.asInteger() );
 			break;
 		case (ModelVariable::FField):
 			ptr->setForcefield( (Forcefield*) newvalue.asPointer(VTypes::ForcefieldData) );
 			break;
 		case (ModelVariable::Name):
 			ptr->setName(newvalue.asString());
-			break;
-		case (ModelVariable::NRequested):
-			ptr->setNRequested(newvalue.asInteger());
 			break;
 		default:
 			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -602,7 +633,7 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Model *ptr= (Model*) rv.asPointer(VTypes::ModelData, result);
+	Model *ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
 	// Construct temporary bundle object containing our model pointer
 	Bundle bundle(ptr);
 // 	ReturnValue temprv;
@@ -611,8 +642,14 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		case (ModelVariable::AddHydrogen):
 			result = aten.commands.call(Command::AddHydrogen, node, rv, bundle);
 			break;
+		case (ModelVariable::AngleEnergy):
+			rv.set( ptr->angleEnergy(ptr, result));
+			break;
  		case (ModelVariable::Augment):
 			result = aten.commands.call(Command::Augment, node, rv, bundle);
+			break;
+		case (ModelVariable::BondEnergy):
+			rv.set( ptr->bondEnergy(ptr, result));
 			break;
  		case (ModelVariable::Charge):
 			result = aten.commands.call(Command::Charge, node, rv, bundle);
@@ -635,11 +672,23 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::Delete):
 			result = aten.commands.call(Command::Delete, node, rv, bundle);
 			break;
+		case (ModelVariable::DeSelect):
+			result = aten.commands.call(Command::DeSelect, node, rv, bundle);
+			break;
+		case (ModelVariable::ElectrostaticEnergy):
+			rv.set( ptr->electrostaticEnergy(ptr, result));
+			break;
  		case (ModelVariable::Expand):
 			result = aten.commands.call(Command::Expand, node, rv, bundle);
 			break;
  		case (ModelVariable::Finalise):
 			result = aten.commands.call(Command::Finalise, node, rv, bundle);
+			break;
+		case (ModelVariable::InterEnergy):
+			rv.set( ptr->intermolecularEnergy(ptr, result));
+			break;
+		case (ModelVariable::IntraEnergy):
+			rv.set( ptr->intramolecularEnergy(ptr, result));
 			break;
  		case (ModelVariable::MoveToEnd):
 			result = aten.commands.call(Command::MoveToEnd, node, rv, bundle);
@@ -695,6 +744,9 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::SaveBitmap):
 			result = aten.commands.call(Command::SaveBitmap, node, rv, bundle);
 			break;
+ 		case (ModelVariable::Select):
+			result = aten.commands.call(Command::Select, node, rv, bundle);
+			break;
  		case (ModelVariable::SelectAll):
 			result = aten.commands.call(Command::SelectAll, node, rv, bundle);
 			break;
@@ -704,23 +756,35 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::SelectNone):
 			result = aten.commands.call(Command::SelectNone, node, rv, bundle);
 			break;
+ 		case (ModelVariable::SelectTree):
+			result = aten.commands.call(Command::SelectTree, node, rv, bundle);
+			break;
+ 		case (ModelVariable::SetupComponent):
+			result = aten.commands.call(Command::SetupComponent, node, rv, bundle);
+			break;
  		case (ModelVariable::ShiftDown):
 			result = aten.commands.call(Command::ShiftDown, node, rv, bundle);
 			break;
  		case (ModelVariable::ShiftUp):
 			result = aten.commands.call(Command::ShiftUp, node, rv, bundle);
 			break;
- 		case (ModelVariable::ShowAll):
+		case (ModelVariable::ShowAll):
 			result = aten.commands.call(Command::ShowAll, node, rv, bundle);
 			break;
  		case (ModelVariable::ToAngstroms):
 			ptr->bohrToAngstrom();
+			break;
+ 		case (ModelVariable::TorsionEnergy):
+			rv.set( ptr->torsionEnergy(ptr, result));
 			break;
  		case (ModelVariable::Transmute):
 			result = aten.commands.call(Command::Transmute, node, rv, bundle);
 			break;
  		case (ModelVariable::Undo):
 			result = aten.commands.call(Command::Undo, node, rv, bundle);
+			break;
+		case (ModelVariable::VdwEnergy):
+			rv.set( ptr->vdwEnergy(ptr, result));
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ModelVariable.\n", functionData[i].name);

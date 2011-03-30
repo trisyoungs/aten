@@ -1,6 +1,6 @@
 /*
-	*** Qt trajectory actions
-	*** src/gui/action_funcs.cpp
+	*** Trajectory Actions
+	*** src/gui/trajectoryactions.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -22,89 +22,120 @@
 #include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/trajectory.h"
 #include "gui/tcanvas.uih"
+#include "gui/tprocess.uih"
 #include "model/model.h"
+#include "parser/commandnode.h"
+#include "base/sysfunc.h"
 
-/*
-// Trajectory Actions
-*/
-
-void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
+// Add trajectory to model
+void AtenForm::on_actionTrajectoryOpen_triggered(bool checked)
 {
-	// Switch render focus from the model to the trajectory (or vice versa)
-	if (checked) aten.currentModel()->setRenderSource(Model::TrajectorySource);
-	else aten.currentModel()->setRenderSource(Model::ModelSource);
-	Model *m = aten.currentModelOrFrame();
-	m->changeLog.add(Log::Camera);
-	gui.update(TRUE, TRUE, FALSE, TRUE, TRUE);
+	Tree *filter;
+	Model *m = aten.currentModel();
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), loadTrajectoryFilters, &selFilter);
+	if (!filename.isEmpty())
+	{
+		// Store path for next use
+		currentDirectory_.setPath(filename);
+		// Find the filter that was selected
+		filter = aten.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
+		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
+		if (filter != NULL)
+		{
+			m->initialiseTrajectory(qPrintable(filename), filter);
+			updateTrajectoryMenu();
+		}
+		else msg.print( "Couldn't determine trajectory file format.\n");
+		gui.update(GuiQt::AllTarget);
+	}
 }
 
-void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
+// Remove associated trajectory to model
+void AtenForm::on_actionTrajectoryRemove_triggered(bool checked)
 {
-	aten.currentModel()->seekNextTrajectoryFrame();
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.update(TRUE,TRUE,FALSE);
+	// TGAY TODO
 }
 
-void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
+// Switch render focus from the model's trajectory to the model.
+void AtenForm::on_actionTrajectoryModel_triggered(bool checked)
 {
-	aten.currentModel()->seekPreviousTrajectoryFrame();
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.update(TRUE,TRUE,FALSE);
+	aten.currentModel()->setRenderSource(Model::ModelSource);
+	gui.trajectoryWidget->refresh();
+	gui.update(GuiQt::AllTarget);
+}
+
+// Switch render focus from the model to the model's trajectory
+void AtenForm::on_actionTrajectoryFrames_triggered(bool checked)
+{
+	aten.currentModel()->setRenderSource(Model::TrajectorySource);
+	gui.trajectoryWidget->refresh();
+	gui.update(GuiQt::AllTarget);
 }
 
 void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstTrajectoryFrame();
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.update(TRUE,TRUE,FALSE);
+	gui.trajectoryWidget->refresh();
+	gui.update(GuiQt::AllTarget);
 }
 
 void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekLastTrajectoryFrame();
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.update(TRUE,TRUE,FALSE);
+	gui.trajectoryWidget->refresh();
+	gui.update(GuiQt::AllTarget);
 }
 
 void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 {
-	// If button is depressed, begin playback
-	if (checked)
-	{
-		gui.setTrajectoryTimerId(gui.mainWidget->startTimer(100));
-		gui.setTrajectoryPlaying(TRUE);
-		gui.mainWidget->setEditable(FALSE);
-	}
-	else
-	{
-		gui.mainWidget->killTimer(gui.trajectoryTimerId());
-		gui.setTrajectoryPlaying(FALSE);
-		gui.mainWidget->setEditable(TRUE);
-	}
-	updateTrajectoryControls();
+	gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->setChecked(checked);
+// 	gui.update(GuiQt::AllTarget);
 }
 
-void AtenForm::trajectorySlider_sliderMoved(int i)
+void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 {
-	if (trajectoryToolbarRefreshing_) return;
-	trajectoryToolbarRefreshing_ = TRUE;
-	// Slider range is from 1-NFrames, so pass (N-1) to the seekFrame function
-	aten.current.m->seekTrajectoryFrame(i-1);
-	// Set corresponding value in Spin control
-	trajectorySpin_->setValue(i);
-	trajectoryToolbarRefreshing_ = FALSE;
-	gui.mainWidget->postRedisplay();
-}
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
+	int width, height;
+	
+	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Interval', 'intspin', 1, 9999999, 0, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
 
-void AtenForm::trajectorySpin_valueChanged(int i)
-{
-	if (trajectoryToolbarRefreshing_) return;
-	trajectoryToolbarRefreshing_ = TRUE;
-	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
-	aten.current.m->seekTrajectoryFrame(i-1);
-	// Set corresponding value in Spin control
-	trajectorySlider_->setValue(i);
-	trajectoryToolbarRefreshing_ = FALSE;
-	gui.mainWidget->postRedisplay();
+	Model *m = aten.currentModel();
+
+	// Poke values into dialog widgets and execute
+	dialog.setWidgetValue("Image Size", ReturnValue(geometry.get()));
+	dialog.setWidgetProperty("First Frame", "maximum", m->nTrajectoryFrames());
+	dialog.setWidgetProperty("Last Frame", "maximum", m->nTrajectoryFrames());
+	dialog.setWidgetProperty("Last Frame", "value", m->nTrajectoryFrames());
+	if (!dialog.executeCustomDialog(FALSE)) return;
+
+	// Retrieve widget values
+	geometry = dialog.widgetValuec("Image Size");
+	width = atoi(beforeChar(geometry,'x'));
+	height = atoi(afterChar(geometry,'x'));
+	if ((width < 1) || (height < 1))
+	{
+		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
+		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
+		return;
+	}
+	int firstframe = dialog.widgetValuei("First Frame") - 1;
+	int lastframe = dialog.widgetValuei("Last Frame") - 1;
+	int frameskip = dialog.widgetValuei("Frame Interval");
+	int fps = dialog.widgetValuei("Movie FPS");
+	
+	// Get movie filename
+	static QString selectedFilter("All Files (*.*)");
+	static QDir currentDirectory_(aten.workDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Movie", currentDirectory_.path(), "All Files (*.*)", &selectedFilter);
+	if (filename.isEmpty()) return;
+	// Store path for next use
+	currentDirectory_.setPath(filename);
+	
+	// Generate movie file...
+	CommandNode::run(Command::SaveMovie, "ciiiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip, fps);
 }

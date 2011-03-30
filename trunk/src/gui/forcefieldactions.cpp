@@ -1,5 +1,5 @@
 /*
-	*** Qt forcefield action functions
+	*** Forcefield Menu Actions
 	*** src/gui/forcefieldactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -19,66 +19,150 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "main/aten.h"
+#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/forcefields.h"
-#include "gui/gui.h"
-#include "gui/minimiser.h"
-#include "main/aten.h"
+#include "gui/selectfilter.h"
 #include "model/model.h"
-#include "ff/forcefield.h"
 #include "parser/commandnode.h"
+#include "base/sysfunc.h"
 
-// Local variables
-bool updating_ = FALSE;
-
-void AtenForm::on_actionMinimise_triggered(bool on)
+// Open forcefield file
+void AtenForm::on_actionOpenForcefield_triggered(bool checked)
 {
-	// Activate the slot for the 'Minimise' button on the minimiser window
-	gui.minimiserWindow->doMinimisation();
+	// Call routine in forcefields window...
+	gui.forcefieldsWidget->loadForcefield();
 }
 
-void AtenForm::on_actionCalculateEnergy_triggered(bool on)
+// Open expression file
+void AtenForm::on_actionOpenExpression_triggered(bool checked)
 {
-	bool result;
-	if (aten.current.rs == aten.current.m) result = CommandNode::run(Command::ModelEnergy, "");
-	else result = CommandNode::run(Command::FrameEnergy, "");
-	// Print energy
-	if (result) aten.currentModel()->renderSourceModel()->energy.print();
-}
-
-void AtenForm::on_actionCalculateForces_triggered(bool on)
-{
-	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelForces, "");
-	else CommandNode::run(Command::FrameForces, "");
-}
-
-void AtenForm::refreshForcefieldCombo()
-{
-	if (forcefieldCombo_ == NULL) return;
-	updating_ = TRUE;
-	QStringList slist;
-	int def = -1, n = 0;
-	slist << "<No Forcefield>";
-	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
+	Tree *filter;
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getOpenFileName(this, "Open Expression", currentDirectory_.path(), gui.mainWindow->loadExpressionFilters, &selFilter);
+	if (!filename.isEmpty())
 	{
-		n++;
-		if (ff == aten.defaultForcefield()) def = n;
-		slist << ff->name();
+		// Store path for next use
+		currentDirectory_.setPath(filename);
+		// Find the filter that was selected
+		filter = aten.findFilterByDescription(FilterData::ExpressionImport, qPrintable(selFilter));
+		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::ExpressionImport);
+		if (filter != NULL)
+		{
+			// Run any import options in the filter
+			if (!filter->executeCustomDialog()) return;
+			if (filter != NULL) filter->executeRead(qPrintable(filename));
+		}
 	}
-	forcefieldCombo_->clear();
-	forcefieldCombo_->addItems(slist);
-	forcefieldCombo_->setEnabled( n == 0 ? FALSE : TRUE );
-	// Select whichever forcefield is marked as the default
-	if (def != -1) forcefieldCombo_->setCurrentIndex(def);
-	else forcefieldCombo_->setCurrentIndex(0);
-	updating_ = FALSE;
+	gui.mainWidget->postRedisplay();
 }
 
-void AtenForm::forcefieldCombo_currentIndexChanged(int i)
+// Save expression
+void AtenForm::on_actionSaveExpression_triggered(bool checked)
 {
-	if (updating_) return;
-	// Set the new default forcefield in the master and refresh the forcefields page
-	Forcefield *ff = (i == 0 ? NULL : aten.forcefield(i-1));
-	aten.setDefaultForcefield(ff);
-	gui.forcefieldsWindow->refresh();
+	Tree *filter;
+	static QString selectedFilter(aten.filters(FilterData::ExpressionExport)->item->filter.name());
+	static QDir currentDirectory_(aten.workDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters);
+	if (!filename.isEmpty())
+	{
+		// Store path for next use
+		currentDirectory_.setPath(filename);
+		// Grab file extension and search for it in our current lists...
+		Dnchar ext = afterLastChar(qPrintable(filename), '.');
+		// Does this extension uniquely identify a specific filter?
+		Reflist<Tree,int> filters;
+		if (ext.isEmpty())
+		{
+			QFileInfo fileInfo( filename );
+			// Does this filename uniquely identify a specific filter?
+			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+			{
+				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
+			}
+			msg.print(Messenger::Verbose, "Exact filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+			if (filters.nItems() != 0) filter = gui.selectFilterDialog->selectFilter("Exact name matches one or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
+			else
+			{
+				filter = gui.selectFilterDialog->selectFilter("Couldn't determine format to save expression in.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
+				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				{
+					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+				}
+			}
+		}
+		else
+		{
+			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+			{
+				if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
+			}
+			msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+			if (filters.nItems() == 1) filter = filters.first()->item;
+			else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches two or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
+			else
+			{
+				filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
+				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				{
+					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+				}
+			}
+		}
+		Model *m = aten.currentModelOrFrame();
+		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
+		else
+		{
+			// Run any export options in the filter
+			if (!filter->executeCustomDialog()) return;
+			if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
+			else msg.print("Failed to save expression for model '%s'.\n", m->name());
+		}
+	}
 }
+
+// Create patterns for model
+void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
+{
+	aten.currentModelOrFrame()->autocreatePatterns();
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+// Remove patterns from model
+void AtenForm::on_actionModelRemovePatterns_triggered(bool checked)
+{
+	aten.currentModelOrFrame()->clearPatterns();
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+// List patterns in model
+void AtenForm::on_actionModelListPatterns_triggered(bool checked)
+{
+	aten.currentModelOrFrame()->printPatterns();
+}
+
+// Perform forcefield typing in model
+void AtenForm::on_actionModelFFType_triggered(bool checked)
+{
+	aten.currentModelOrFrame()->typeAll();
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+// // Remove typing from model
+void AtenForm::on_actionModelFFUntype_triggered(bool checked)
+{
+	aten.currentModelOrFrame()->removeTyping();
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+// Create energy expression for model
+void AtenForm::on_actionModelCreateExpression_triggered(bool checked)
+{
+	aten.currentModelOrFrame()->createExpression();
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+

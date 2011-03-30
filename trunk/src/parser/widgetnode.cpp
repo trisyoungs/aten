@@ -52,7 +52,7 @@ WidgetNode::GuiQtOption WidgetNode::guiQtOption(const char *s, bool reporterror)
 }
 
 // State change actions
-const char *StateActionKeywords[StateChange::nStateActions] = { "checked", "disable", "enable", "items", "originalitems", "switchstack" };
+const char *StateActionKeywords[StateChange::nStateActions] = { "checked", "disable", "enable", "items", "maximum", "minimum", "originalitems", "step", "switchstack", "value" };
 StateChange::StateAction StateChange::stateAction(const char *s, bool reporterror)
 {
         StateChange::StateAction sa = (StateChange::StateAction) enumSearch("state action", StateChange::nStateActions, StateActionKeywords, s);
@@ -183,6 +183,7 @@ WidgetNode::WidgetNode()
 	next = NULL;
 
 	// Private variables
+	nodeType_ = TreeNode::GuiWidgetNode;
 	controlType_ = WidgetNode::nGuiControls;
 	returnType_ = VTypes::NoData;
 	widget_ = NULL;
@@ -202,9 +203,95 @@ WidgetNode::~WidgetNode()
 }
 
 // Set return value
-void WidgetNode::setReturnValue(const ReturnValue &rv)
+void WidgetNode::setReturnValue(ReturnValue &rv)
 {
 	returnValue_ = rv;
+}
+
+// Set widget value from supplied ReturnValue
+void WidgetNode::setWidgetValue(ReturnValue &rv)
+{
+	msg.enter("WidgetNode::setWidgetValue");
+	QLineEdit *lineedit;
+	QCheckBox *checkbox;
+	QLabel *label;
+	QSpinBox *spinbox;
+	QDoubleSpinBox *dspinbox;
+	QComboBox *combo;
+	QRadioButton *radio;
+	QButtonGroup *buttongroup;
+	QAbstractButton *button;
+	switch (controlType_)
+	{
+		case (WidgetNode::EditControl):
+			lineedit = qobject_cast<QLineEdit*> (widget_);
+			if (lineedit) lineedit->setText(rv.asString());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of edit control.\n");
+			break;
+		case (WidgetNode::IntegerComboControl):
+		case (WidgetNode::ComboControl):
+			combo = qobject_cast<QComboBox*> (widget_);
+			if (combo)
+			{
+				// If an integer was supplied, just set the index. Otherwise, search for string
+				if (rv.type() == VTypes::IntegerData) combo->setCurrentIndex(rv.asInteger());
+				else if (rv.type() == VTypes::StringData)
+				{
+					// Search for combo item corresponding to supplied text
+					int id = combo->findText(rv.asString());
+					if (id == -1) printf("WidgetNode::setWidgetValue() - Couldn't find text in (int)combo control.\n");
+					else combo->setCurrentIndex(id);
+				}
+				else printf("WidgetNode::setWidgetValue() - Couldn't set text of (int)combo control.\n");
+			}
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of (int)combo control.\n");
+			break;
+		case (WidgetNode::DoubleSpinControl):
+			dspinbox = qobject_cast<QDoubleSpinBox*> (widget_);
+			if (dspinbox) dspinbox->setValue(rv.asDouble());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of doublespin control.\n");
+			break;
+		case (WidgetNode::CheckControl):
+			checkbox = qobject_cast<QCheckBox*> (widget_);
+			if (checkbox) checkbox->setChecked(rv.asBool());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set state of check control.\n");
+			break;
+		case (WidgetNode::RadioButtonControl):
+			radio = qobject_cast<QRadioButton*> (widget_);
+			if (radio) checkbox->setChecked(rv.asBool());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set state of radio control.\n");
+			break;
+		case (WidgetNode::StringRadioGroupControl):
+		case (WidgetNode::RadioGroupControl):
+			buttongroup = qobject_cast<QButtonGroup*> (object_);
+			if (buttongroup)
+			{
+				if (rv.type() == VTypes::IntegerData)
+				{
+					// Search for button with supplied id
+					button = buttongroup->button(rv.asInteger());
+					if (button == NULL) printf("WidgetNode::setWidgetValue() - Couldn't find button %i in buttongroup.\n", rv.asInteger());
+					else button->setChecked(TRUE);
+				}
+				else printf("WidgetNode::setWidgetValue() - Can only set active buttongroup member from an integer id.\n");
+			}
+			else printf("WidgetNode::setWidgetValue() - Couldn't set radiogroup control.\n");
+			break;
+		case (WidgetNode::IntegerSpinControl):
+			spinbox = qobject_cast<QSpinBox*> (widget_);
+			if (spinbox) dspinbox->setValue(rv.asInteger());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of intspin control.\n");
+			break;
+		case (WidgetNode::LabelControl):
+			lineedit = qobject_cast<QLineEdit*> (widget_);
+			if (lineedit) lineedit->setText(rv.asString());
+			else printf("WidgetNode::setWidgetValue() - Couldn't set text of edit control.\n");
+			break;
+		case (WidgetNode::StackControl):
+			printf("WidgetNode::setWidgetValue() - Couldn't set stack control.\n");
+			break;
+	}
+	msg.exit("WidgetNode::setWidgetValue");
 }
 
 // Set argument list from parser-joined treenodes
@@ -307,9 +394,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("max", arg, "Error: No maximum value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
 			if (arg != NULL) arg = arg->nextArgument;
-			if (!setData("start", arg, "Error: No starting value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
-			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("step", arg, "Error: No step value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
+			if (arg != NULL) arg = arg->nextArgument;
+			if (!setData("start", arg, "Error: No starting value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
 			if (arg != NULL) arg = arg->nextArgument;
 			result = TRUE;
 			break;
@@ -325,9 +412,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			arg = arg->nextArgument;
 			if (!setData("max", arg, "Error: No maximum value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
-			if (!setData("start", arg, "Error: No starting value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
-			arg = arg->nextArgument;
 			if (!setData("step", arg, "Error: No step value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
+			arg = arg->nextArgument;
+			if (!setData("start", arg, "Error: No starting value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
 			result = TRUE;
 			break;

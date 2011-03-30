@@ -14,12 +14,6 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>elements</entry>
-						<entry><link linkend="command.types.element">element</link></entry>
-						<entry>ro</entry>
-						<entry>Array of element data (masses, symbols, names, etc.)</entry>
-					</row>
-					<row>
 						<entry>data</entry>
 						<entry>double</entry>
 						<entry>ro</entry>

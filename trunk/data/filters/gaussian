@@ -13,14 +13,14 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 	# Job type
 	string runtyp = option("Run Type", "combo", "SP,Opt,Freq,IRC,IRCMax,Scan,Polar,ADMP,BOMD,Force,Stable,Volume", 2, "tab=Job Control@Job Specification", "state@runstack?switchstack");
 	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "tab=Job Control@Job Specification");
-	int charge = option("Charge", "intspin", -1000, 1000, 0, 1, "tab=Job Control@Job Specification");
+	int charge = option("Charge", "intspin", -1000, 1000, 1, 0, "tab=Job Control@Job Specification");
 	option("runstack","stack",12,2,"tab=Job Control@Job Specification", "span=6", "newline");
 	# -- SP
 	option("No Options", "label", "group=runstack_1");
 	# -- Opt
 	string opt_method = option("Optimisation Type", "combo", "<default>,QST2,QST3,TS,Saddle=1,Saddle=2,Conical", 1, "group=runstack_2");
-	int opt_maxcycles = option("MaxCycles", "intspin", 0, 1000, 0, 10, "group=runstack_2", "newline");
-	int opt_maxstep = option("MaxStep", "intspin", 0, 1000, 0, 10, "group=runstack_2");
+	int opt_maxcycles = option("MaxCycles", "intspin", 0, 1000, 10, 0, "group=runstack_2", "newline");
+	int opt_maxstep = option("MaxStep", "intspin", 0, 1000, 10, 0, "group=runstack_2");
 	int opt_restart = option("Restart", "check", 0, "group=runstack_2");
 	# -- Freq
 	option("No Options (yet)", "label", "group=runstack_3");

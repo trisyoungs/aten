@@ -52,7 +52,8 @@ Tree::Tree()
 	type_ = Tree::UnknownTree;
 	readOptions_ = LineParser::Defaults;
 	customDialog_ = NULL;
-
+	localScope_ = NULL;
+	
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -144,10 +145,21 @@ void Tree::reset()
 	nodes_.clear();
 	scopeStack_.clear();
 	statements_.clear();
-	// Re-own the root node
+	// Cast rootnode into ScopeNode (if possible)
+	ScopeNode *scope = NULL;
+	if (rootnode->nodeType() == TreeNode::ScopedNode) scope = (ScopeNode*) rootnode;
+	else printf("Internal Error: Failed to cast rootnode into a ScopeNode in Tree::reset().\n");
+	
+	// Re-own the root node and clear its variable list
 	nodes_.own(rootnode);
-	scopeStack_.add( (ScopeNode*) rootnode);
 	statements_.add(rootnode);
+	if (scope)
+	{
+		scopeStack_.add( (ScopeNode*) rootnode);
+		scope->variables.clear();
+		scope->createGlobalVariables();
+	}
+	
 	msg.exit("Tree::reset");
 }
 
@@ -563,6 +575,8 @@ TreeNode *Tree::pushScope(Command::Function func)
 	ScopeNode *node = new ScopeNode();
 	nodes_.own(node);
 	scopeStack_.add(node,func);
+	// The second scope node added to the tree will be the basic local one (in the case of a function)
+	if (scopeStack_.nItems() == 2) localScope_ = node;
 	msg.print(Messenger::Parse, "ScopeNode %p is pushed.\n", node);
 	return node;
 }
@@ -799,6 +813,12 @@ TreeNode *Tree::wrapVariable(Variable *var, TreeNode *arrayindex)
 	return vnode;
 }
 
+// Return local scope's variable list
+const VariableList &Tree::localVariables() const
+{
+	return localScope_->variables;
+}
+
 /*
 // Paths
 */
@@ -809,7 +829,6 @@ TreeNode *Tree::createPath(TreeNode *node)
 	msg.enter("Tree::createPath");
 	VariableNode *vnode = (VariableNode*) node;
 	pathStack_.add(vnode, vnode);
-// 	nodes_.own(vnode);	// Should not be called, since the passed *node is already owned by the tree
 	msg.print(Messenger::Parse, "A new path has been started, beginning from variable '%s'.\n", vnode->name());
 	msg.exit("Tree::createPath");
 	return vnode;
@@ -932,11 +951,9 @@ bool Tree::addLocalFunctionArguments(TreeNode *arglist)
 	VariableNode *vnode;
 	// Rewind to head of arguments list
 	for (first = arglist; first != NULL; first = first->prevArgument) if (first->prevArgument == NULL) break;
-	// Wrap the argument variables supplied, checking for duplicates
+	// Wrap the argument variables supplied
 	for (node = first; node != NULL; node = node->nextArgument)
 	{
-		// Search existing arguments - TGAY necessary, or is this handled by grammar?
-// 		for (oldnode = arguments_.first(); oldnode != NULL; 
 		Variable *var = (Variable*) node;
 		vnode = new VariableNode(var);
 		arguments_.own(vnode);
@@ -955,7 +972,6 @@ TreeNode *Tree::addWidget(TreeNode *arglist)
 	msg.enter("Tree::addWidget");
 	// Wrap the variable and add it to the arguments_ list
 	WidgetNode *node = new WidgetNode();
-	arguments_.own(node);
 	node->setParent(this);
 	// Store in reflist also...
 	widgets_.add(node);
@@ -1056,7 +1072,7 @@ const char *Tree::widgetValuec(const char *name)
 {
 	WidgetNode *node = findWidget(name);
 	if (node == NULL) return "NULL";
-	ReturnValue rv;
+	static ReturnValue rv;
 	node->execute(rv);
 	return rv.asString();
 }
@@ -1082,4 +1098,27 @@ Vec3<double> Tree::widgetValue3d(const char *name1, const char *name2, const cha
 	node->execute(rv);
 	result.z = rv.asDouble();
 	return result;
+}
+
+// Set current value of named widget
+void Tree::setWidgetValue(const char *name, ReturnValue value)
+{
+	WidgetNode *node = findWidget(name);
+	if (node == NULL) return;
+	node->setWidgetValue(value);
+}
+
+// Set property of named widget (via a state change)
+bool Tree::setWidgetProperty(const char *name, const char *property, ReturnValue value)
+{
+	// First, find named widget
+	WidgetNode *node = findWidget(name);
+	if (node == NULL) return FALSE;
+	// Next, find state change property
+	StateChange::StateAction action = StateChange::stateAction(property, TRUE);
+	if (action == StateChange::nStateActions) return FALSE;
+	StateChange sc;
+	sc.setTargetWidget(name);
+	sc.setChange(action, value.asString());
+	customDialog_->performStateChange(&sc);
 }

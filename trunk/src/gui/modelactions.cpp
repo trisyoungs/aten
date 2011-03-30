@@ -1,5 +1,5 @@
 /*
-	*** Qt model actions
+	*** Model Actions
 	*** src/gui/modelactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -25,85 +25,7 @@
 #include "model/model.h"
 #include "parser/commandnode.h"
 
-/*
-// Model Menu Actions
-*/
-
-void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->autocreatePatterns();
-	gui.update(TRUE,FALSE,FALSE);
-}
-
-void AtenForm::on_actionModelRemovePatterns_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->clearPatterns();
-	gui.update(TRUE,FALSE,FALSE);
-}
-
-void AtenForm::on_actionModelListPatterns_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->printPatterns();
-	gui.update(TRUE,FALSE,FALSE);
-}
-
-
-void AtenForm::on_actionModelFFType_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->typeAll();
-	gui.update(TRUE,FALSE,FALSE);
-}
-
-void AtenForm::on_actionModelFFUntype_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->removeTyping();
-	gui.update(TRUE,FALSE,FALSE);
-}
-
-void AtenForm::on_actionModelCreateExpression_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->createExpression();
-	gui.update(TRUE,FALSE,FALSE);
-}
-
-void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
-{
-	CommandNode::run(Command::Fold, "");
-	gui.update(TRUE,FALSE,FALSE);
-}
-
-void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
-{
-	CommandNode::run(Command::FoldMolecules, "");
-	gui.update(TRUE,FALSE,FALSE);
-}
-
-void AtenForm::on_actionModelNext_triggered(bool checked)
-{
-	// Get current ID of modeltabs, increase it, and check we're still within range
-	int newid = ui.ModelTabs->currentIndex();
-	newid ++;
-	if (newid > (aten.nModels() - 1)) newid = 0;
-	// Activate new model tab
-	ui.ModelTabs->setCurrentIndex(newid);
-}
-
-void AtenForm::on_actionModelPrevious_triggered(bool checked)
-{
-	// Get current ID of modeltabs, decrease it, and check we're still within range
-	int newid = ui.ModelTabs->currentIndex();
-	newid --;
-	if (newid < 0) newid = aten.nModels() - 1;
-	// Activate new model tab
-	ui.ModelTabs->setCurrentIndex(newid);
-}
-
-void AtenForm::on_actionModelShowAll_triggered(bool checked)
-{
-	CommandNode::run(Command::ShowAll, "");
-	gui.update(TRUE,FALSE,FALSE);
-}
-
+// Rename model
 void AtenForm::on_actionModelRename_triggered(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
@@ -112,7 +34,81 @@ void AtenForm::on_actionModelRename_triggered(bool checked)
 	if (ok && !text.isEmpty())
 	{
 		CommandNode::run(Command::SetName, "c", qPrintable(text));
-		refreshModelTabs();
 		updateWindowTitle();
 	}
+}
+
+// Fold atoms in model
+void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
+{
+	CommandNode::run(Command::Fold, "");
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+// Fold molecules in model
+void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
+{
+	CommandNode::run(Command::FoldMolecules, "");
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+// Move to next model in list
+void AtenForm::on_actionModelNext_triggered(bool checked)
+{
+	// If multiple models are visible, step along to next visible model. Otherwise, just next in list
+	if (aten.nVisibleModels() > 1)
+	{
+		// Find current model in visible models list...
+		Refitem<Model,int> *ri;
+		for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten.currentModel()) break;
+		if (ri == NULL)
+		{
+			printf("Internal Error : Failed to find current model in visible models list.\n");
+			return;
+		}
+		aten.setCurrentModel(ri->next == NULL ? aten.visibleModels()->item : ri->next->item);
+	}
+	else
+	{
+		Model *m = aten.currentModel();
+		aten.setCurrentModel(m->next == NULL ? aten.models() : m->next);
+	}
+	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget-GuiQt::ModelsTarget);
+}
+
+// Move to previous model in list
+void AtenForm::on_actionModelPrevious_triggered(bool checked)
+{
+	// If multiple models are visible, step back to previous visible model. Otherwise, just previous in list
+	if (aten.nVisibleModels() > 1)
+	{
+		// Find current model in visible models list...
+		Refitem<Model,int> *ri;
+		for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten.currentModel()) break;
+		if (ri == NULL)
+		{
+			printf("Internal Error : Failed to find current model in visible models list.\n");
+			return;
+		}
+		aten.setCurrentModel(ri->prev == NULL ? aten.visibleModels()->item : ri->prev->item);
+	}
+	else
+	{
+		Model *m = aten.currentModel();
+		aten.setCurrentModel(m->prev == NULL ? aten.models() : m->prev);
+	}
+	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget-GuiQt::ModelsTarget);
+}
+
+// Show all atoms in current model
+void AtenForm::on_actionModelShowAll_triggered(bool checked)
+{
+	CommandNode::run(Command::ShowAll, "");
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+// List all measurements in model
+void AtenForm::on_actionListMeasurements_triggered(bool on)
+{
+	aten.currentModelOrFrame()->listMeasurements();
 }

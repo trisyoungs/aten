@@ -1,4 +1,5 @@
 add_library(model
+bundle.h
 clipboard.h
 fragment.h
 model.h
@@ -7,6 +8,7 @@ undostate.h
 atom.cpp 
 bond.cpp 
 build.cpp 
+bundle.cpp
 cell.cpp 
 clipboard.cpp
 component.cpp

@@ -161,7 +161,7 @@ bool Forcefield::readDefines()
 	bool done;
 	Neta *neta;
 	done = FALSE;
-	// Format of lines is 'ffid typename element description [text]'
+	// Format of lines is 'name "neta"'
 	do
 	{
 		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);

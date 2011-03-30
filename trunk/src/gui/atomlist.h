@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Atomlist Window
+	*** Atom List Dock Widget
 	*** src/gui/atomlist.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ATOMLISTWINDOW_H
-#define ATEN_ATOMLISTWINDOW_H
+#ifndef ATEN_ATOMLISTWIDGET_H
+#define ATEN_ATOMLISTWIDGET_H
 
 #include "gui/ui_atomlist.h"
 #include <QtCore/QThread>
@@ -28,8 +28,8 @@
 // Forward declarations
 class Model;
 
-// Atom list
-class AtenAtomlist : public QDialog
+// AtomList dock widget
+class AtomListWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -42,7 +42,7 @@ class AtenAtomlist : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh(bool forceupdate = FALSE);
 	private:
 	void peekScrollBar();
@@ -59,11 +59,12 @@ class AtenAtomlist : public QDialog
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);
 	void on_MoveToEndButton_clicked(bool checked);
-	void dialogFinished(int result);
 	void updateSelection();
 	void treeMousePressEvent(QMouseEvent *event);
 	void treeMouseReleaseEvent(QMouseEvent *event);
 	void treeMouseMoveEvent(QMouseEvent *event);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables
@@ -77,8 +78,6 @@ class AtenAtomlist : public QDialog
 	Model *listLastModel_;
 	// Whether the widget should refresh when it is next shown
 	bool shouldRefresh_;
-	// Position of list slider
-	int listPosition_;
 	// Last clicked and 'moved over' TTreeWidgetItem in the AtomList
 	TTreeWidgetItem *lastClicked_, *lastHovered_;
 
@@ -87,12 +86,9 @@ class AtenAtomlist : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenAtomlist(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenAtomlist();
+	AtomListWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::AtomlistDialog ui;
-	// Friends
-	friend class AtomlistRefreshThread;
+	Ui::AtomListWidget ui;
 };
 
 #endif

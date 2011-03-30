@@ -175,11 +175,11 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	if ((nTrajectoryFileFrames_ * trajectoryFrameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
-		gui.progressCreate("Caching Frames", nTrajectoryFileFrames_);
+// 		int progId = gui.progressDialog->create("Caching Frames", nTrajectoryFileFrames_);
 		// Read all frames from trajectory file
 		for (int n=1; n<nTrajectoryFileFrames_; n++)
 		{
-			if (!gui.progressUpdate(n)) break;
+// 			if (!gui.gui.progressDialog->create(progId,n)) break;
 			newframe = addTrajectoryFrame();
 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 			if ((!success) || (rv.asInteger() != 1))
@@ -190,7 +190,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 			}
 			newframe->enableUndoRedo();
 		}
-		gui.progressTerminate();
+// 		gui.gui.progressDialog->create(progId);
 		nTrajectoryFileFrames_ = 0;
 		trajectoryFramesAreCached_ = TRUE;
 		trajectoryParser_.closeFile();
@@ -347,7 +347,7 @@ void Model::seekLastTrajectoryFrame()
 }
 
 // Seek to specified frame
-void Model::seekTrajectoryFrame(int frameno)
+void Model::seekTrajectoryFrame(int frameno, bool quiet)
 {
 	// Seek to the previous frame in the trajectory
 	msg.enter("Model::seekTrajectoryFrame");
@@ -419,9 +419,10 @@ void Model::seekTrajectoryFrame(int frameno)
 			}
 		}
 		trajectoryCurrentFrame_->changeLog.add(Log::Visual);
+		// Reset log flag for pixeldata so we redraw every frame change
+		pixelDataLogPoint_ = -1;
 	}
 	trajectoryFrameIndex_ = frameno;
-	changeLog.add(Log::Visual);
-	msg.print("Seek to frame %i\n", trajectoryFrameIndex_+1);
+	if (!quiet) msg.print("Seek to frame %i\n", trajectoryFrameIndex_+1);
 	msg.exit("Model::seekTrajectoryFrame");
 }

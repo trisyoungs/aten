@@ -1,0 +1,11 @@
+<section id="examples.example4"><title>Calculating a Torsion Energy Profile</title>
+
+	<para>This example demonstrates a simple energy analysis procedure in which we load a model and perform a scan of a geometric parameter, calculating the energy at each step. The methanol model and OPLS-AA forcefield (both supplied with Aten) are used by the command, but of course can easily be substituted with your own choices. The command first sets the electrostatic calculation method to be the simple Coulomb sum (since the methanol model is non-periodic) and prior to the loop starting a text header is written. The loop iterates a variable 'phi' over the range -180 to +180 degrees in steps of 5, and is used to set the torsion angle between atoms 2, 1, 4, and 6 (corresponding to one of the H-C-O-H torsions in the model). A line of output is written for each torsion angle considered, providing the total torsion, van der Waals, and electrostatic energy of the system at this geometry.</para>
+	
+	<synopsis>
+aten --ff oplsaa.ff data/test/methanol.inp -q -c 'aten.prefs.elecmethod = "coulomb"; printf("Torsion Angle   E(Torsion)     E(VDW)     E(Coulomb)\n"); for (double phi = -180.0; phi &lt;= 180.0; phi += 5) { settorsion(2,1,4,6,phi); printf("%12.6f %12.6f %12.6f %12.6f\n", phi, aten.model.torsionenergy(), aten.model.vdwenergy(), aten.model.elecenergy()); } quit();'
+	</synopsis>
+
+	<para>Note that the use of the '-q' options means that only fundamental error messages and user output (through the printf statements in the command) is printed - all of Aten's other working information is suppressed.</para>
+
+</section>

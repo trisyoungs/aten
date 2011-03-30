@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Forcefields Window
+	*** Forcefields Dock Window
 	*** src/gui/forcefields.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,17 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FORCEFIELDSWINDOW_H
-#define ATEN_FORCEFIELDSWINDOW_H
+#ifndef ATEN_FORCEFIELDSWIDGET_H
+#define ATEN_FORCEFIELDSWIDGET_H
 
 #include "gui/ui_forcefields.h"
 
 // Forward Declarations
 class QFileDialog;
-class TListWidgetItem;
 
-// Forcefields window
-class AtenForcefields : public QDialog
+// Minimiser window
+class ForcefieldsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -38,49 +37,61 @@ class AtenForcefields : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	// Minimisation algorithms
+	enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, nMinimiserMethods };
+	void showWidget();
 	void refresh();
 	void refreshTypes();
 	void loadForcefield();
+	void saveForcefield();
 	private slots:
+	// Energy Tab
+	void on_CurrentEnergyButton_clicked(bool checked);
+	void on_CurrentForcesButton_clicked(bool checked);
+	void on_ForcefieldMinimiseButton_clicked(bool checked);
+	void on_MopacMinimiseButton_clicked(bool checked);
+	// Forcefields Tab
+	void on_ForcefieldCombo_currentIndexChanged(int index);
+	void on_OpenForcefieldButton_clicked(bool checked);
+	void on_SaveForcefieldButton_clicked(bool checked);
+	void on_CloseForcefieldButton_clicked(bool checked);
+	void on_EditForcefieldButton_clicked(bool checked);
 	void on_TypeModelButton_clicked(bool checked);
 	void on_UntypeModelButton_clicked(bool checked);
+	void on_AssignFFToCurrentButton_clicked(bool checked);
+	void on_AssignFFToAllButton_clicked(bool checked);
+	void on_AssignFFToPatternButton_clicked(bool clicked);
+	void on_CreateExpressionButton_clicked(bool clicked);
+	// Manual Typing Tab
 	void on_ManualTypeSetButton_clicked(bool checked);
 	void on_ManualTypeClearButton_clicked(bool checked);
 	void on_ManualTypeTestButton_clicked(bool checked);
 	void on_ManualTypeEdit_returnPressed();
-	void on_LoadForcefieldButton_clicked(bool checked);
-	void on_RemoveForcefieldButton_clicked(bool checked);
-	void on_EditForcefieldButton_clicked(bool checked);
-	void on_AssignFFToCurrentButton_clicked(bool checked);
-	void on_AssignFFToAllButton_clicked(bool checked);
-	void on_AssignFFToPatternButton_clicked(bool clicked);
-	void on_ForcefieldList_currentRowChanged(int row);
-	void on_ForcefieldList_itemClicked(QListWidgetItem *item);
-	void dialogFinished(int result);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Local variables
 	*/
 	private:
+	// Whether the widget is currently refreshing
+	bool refreshing_;
 	// Element selected in Type filter
 	int typelistElement_;
-	// Whether window contents should be refreshed when shown
-	bool shouldRefresh_;
-	// Current checked item (default forcefield) if any
-	TListWidgetItem *checkedItem_;
 
+	public:
+	// File dialogs for forcefields
+	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
+	
+	
 	/*
 	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenForcefields(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenForcefields();
+	ForcefieldsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::ForcefieldsDialog ui;
-	// File dialogs for forcefields
-	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
+	Ui::ForcefieldsWidget ui;
 };
 
 #endif

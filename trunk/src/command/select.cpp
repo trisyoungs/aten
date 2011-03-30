@@ -160,11 +160,11 @@ bool Command::function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
-	int nselected = obj.rs->nSelected();
+	int nselected = obj.rs()->nSelected();
 	bool result = TRUE;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
-	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs, c->argNode(i), TRUE)) { result = FALSE; break; }
-	rv.set(nselected - obj.rs->nSelected());
+	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs(), c->argNode(i), TRUE)) { result = FALSE; break; }
+	rv.set(nselected - obj.rs()->nSelected());
 	return result;
 }
 
@@ -173,7 +173,7 @@ bool Command::function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValu
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
-	int nselected = obj.rs->nSelected();
+	int nselected = obj.rs()->nSelected();
 	bool result = TRUE;
 	// Write formatted string, then pass this to select()
 	Format *format = c->createFormat(0,1);
@@ -187,9 +187,9 @@ bool Command::function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValu
 	for (int i=0; i<parser.nArgs(); i++)
 	{
 		StringVariable stringvar(parser.argc(i));
-		if (!selectAtoms(obj.rs, &stringvar, TRUE)) { result = FALSE; break; }
+		if (!selectAtoms(obj.rs(), &stringvar, TRUE)) { result = FALSE; break; }
 	}
-	rv.set(nselected - obj.rs->nSelected());
+	rv.set(nselected - obj.rs()->nSelected());
 	return result;
 }
 
@@ -198,16 +198,16 @@ bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
-	if (obj.rs->autocreatePatterns())
+	if (obj.rs()->autocreatePatterns())
 	{
 		// Store current number of selected atoms
-		int nselected = obj.rs->nSelected();
-		obj.rs->beginUndoState("Deselect %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
-		int result = obj.rs->selectType(c->argz(0), c->argc(1), FALSE, TRUE);
-		obj.rs->endUndoState();
+		int nselected = obj.rs()->nSelected();
+		obj.rs()->beginUndoState("Deselect %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
+		int result = obj.rs()->selectType(c->argz(0), c->argc(1), FALSE, TRUE);
+		obj.rs()->endUndoState();
 		if (result != -1)
 		{
-			rv.set(nselected - obj.rs->nSelected());
+			rv.set(nselected - obj.rs()->nSelected());
 			return TRUE;
 		}
 	}
@@ -220,12 +220,12 @@ bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Expand current selection");
-	int nselected = obj.rs->nSelected();
-	if (c->hasArg(0)) for (int n=0; n<c->argi(0); ++n) obj.rs->selectionExpand();
-	else obj.rs->selectionExpand();
-	obj.rs->endUndoState();
-	rv.set( obj.rs->nSelected() - nselected );
+	obj.rs()->beginUndoState("Expand current selection");
+	int nselected = obj.rs()->nSelected();
+	if (c->hasArg(0)) for (int n=0; n<c->argi(0); ++n) obj.rs()->selectionExpand();
+	else obj.rs()->selectionExpand();
+	obj.rs()->endUndoState();
+	rv.set( obj.rs()->nSelected() - nselected );
 	return TRUE;
 }
 
@@ -233,10 +233,10 @@ bool Command::function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Select all atoms");
-	obj.rs->selectAll();
-	obj.rs->endUndoState();
-	rv.set( obj.rs->nSelected() );
+	obj.rs()->beginUndoState("Select all atoms");
+	obj.rs()->selectAll();
+	obj.rs()->endUndoState();
+	rv.set( obj.rs()->nSelected() );
 	return TRUE;
 }
 
@@ -245,11 +245,11 @@ bool Command::function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
-	int nselected = obj.rs->nSelected();
+	int nselected = obj.rs()->nSelected();
 	bool result = TRUE;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
-	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs, c->argNode(i), FALSE)) { result = FALSE; break; }
-	rv.set(obj.rs->nSelected() - nselected);
+	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs(), c->argNode(i), FALSE)) { result = FALSE; break; }
+	rv.set(obj.rs()->nSelected() - nselected);
 	return result;
 }
 
@@ -257,26 +257,26 @@ bool Command::function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Forcefield *ff = obj.rs->forcefield();
+	Forcefield *ff = obj.rs()->forcefield();
 	if (ff == NULL)
 	{
 		msg.print("No forcefield associated to model.\n");
 		return FALSE;
 	}
 	// Store current number of selected atoms
-	int nselected = obj.rs->nSelected();
+	int nselected = obj.rs()->nSelected();
 	ForcefieldAtom *ffa;
-	obj.rs->beginUndoState("Select by forcefield type (%s)", c->argc(0));
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next)
+	obj.rs()->beginUndoState("Select by forcefield type (%s)", c->argc(0));
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next)
 	{
 		ffa = i->type();
 		if (ffa != NULL)
 		{
-			if (ff->matchType(ffa->name(),c->argc(0)) != 0) obj.rs->selectAtom(i);
+			if (ff->matchType(ffa->name(),c->argc(0)) != 0) obj.rs()->selectAtom(i);
 		}
 	}
-	obj.rs->endUndoState();
-	rv.set(obj.rs->nSelected() - nselected);
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
 	return TRUE;
 }
 
@@ -285,7 +285,7 @@ bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue 
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
-	int nselected = obj.rs->nSelected();
+	int nselected = obj.rs()->nSelected();
 	bool result = TRUE;
 	// Write formatted string, then pass this to select()
 	Format *format = c->createFormat(0,1);
@@ -299,9 +299,9 @@ bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue 
 	for (int i=0; i<parser.nArgs(); i++)
 	{
 		StringVariable stringvar(parser.argc(i));
-		if (!selectAtoms(obj.rs, &stringvar, FALSE)) { result = FALSE; break; }
+		if (!selectAtoms(obj.rs(), &stringvar, FALSE)) { result = FALSE; break; }
 	}
-	rv.set(obj.rs->nSelected() - nselected);
+	rv.set(obj.rs()->nSelected() - nselected);
 	return result;
 }
 
@@ -309,11 +309,11 @@ bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue 
 bool Command::function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	int nselected = obj.rs->nSelected();
-	obj.rs->beginUndoState("Select %s inside cell", c->hasArg(0) ? "molecules" : "atoms");
-	obj.rs->selectInsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
-	obj.rs->endUndoState();
-	rv.set(obj.rs->nSelected() - nselected);
+	int nselected = obj.rs()->nSelected();
+	obj.rs()->beginUndoState("Select %s inside cell", c->hasArg(0) ? "molecules" : "atoms");
+	obj.rs()->selectInsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
 	return TRUE;
 }
 
@@ -321,7 +321,7 @@ bool Command::function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue
 bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vec3<double> v = obj.rs->selectionCentreOfGeometry();
+	Vec3<double> v = obj.rs()->selectionCentreOfGeometry();
 	rv.set(v);
 	return TRUE;
 }
@@ -330,7 +330,7 @@ bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vec3<double> v = obj.rs->selectionCentreOfMass();
+	Vec3<double> v = obj.rs()->selectionCentreOfMass();
 	rv.set(v);
 	return TRUE;
 }
@@ -339,10 +339,10 @@ bool Command::function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Invert selection");
-	obj.rs->selectionInvert();
-	obj.rs->endUndoState();
-	rv.set( obj.rs->nSelected() );
+	obj.rs()->beginUndoState("Invert selection");
+	obj.rs()->selectionInvert();
+	obj.rs()->endUndoState();
+	rv.set( obj.rs()->nSelected() );
 	return TRUE;
 }
 
@@ -350,10 +350,10 @@ bool Command::function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Select atoms from Miller plane (%i%i%i)", c->argi(0), c->argi(1), c->argi(2));	
-	obj.rs->selectNone();
-	obj.rs->selectMiller(c->argi(0), c->argi(1), c->argi(2), c->hasArg(3) ? c->argb(3) : FALSE);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Select atoms from Miller plane (%i%i%i)", c->argi(0), c->argi(1), c->argi(2));	
+	obj.rs()->selectNone();
+	obj.rs()->selectMiller(c->argi(0), c->argi(1), c->argi(2), c->hasArg(3) ? c->argb(3) : FALSE);
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -362,12 +362,12 @@ bool Command::function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_SelectMolecule(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	int nselected = obj.rs->nSelected();
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
-	obj.rs->beginUndoState("Select bound fragment/molecule");
-	obj.rs->selectTree(i);
-	obj.rs->endUndoState();
-	rv.set(obj.rs->nSelected() - nselected);
+	int nselected = obj.rs()->nSelected();
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	obj.rs()->beginUndoState("Select bound fragment/molecule");
+	obj.rs()->selectTree(i);
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
 	return TRUE;
 }
 
@@ -375,11 +375,11 @@ bool Command::function_SelectMolecule(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_SelectLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	int nselected = obj.rs->nSelected();
-	obj.rs->beginUndoState("Select atoms near line");
-	obj.rs->selectLine(c->arg3d(0), c->arg3d(3), c->argd(6));
-	obj.rs->endUndoState();
-	rv.set(obj.rs->nSelected() - nselected);
+	int nselected = obj.rs()->nSelected();
+	obj.rs()->beginUndoState("Select atoms near line");
+	obj.rs()->selectLine(c->arg3d(0), c->arg3d(3), c->argd(6));
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
 	return TRUE;
 }
 
@@ -387,9 +387,9 @@ bool Command::function_SelectLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Deselect all atoms");
-	obj.rs->selectNone();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Deselect all atoms");
+	obj.rs()->selectNone();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -399,10 +399,10 @@ bool Command::function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double tol = c->hasArg(0) ? c->argd(0) : 0.2;
-	obj.rs->beginUndoState("Select overlapping atoms (within %f)", tol);
-	obj.rs->selectOverlaps(tol);
-	obj.rs->endUndoState();
-	rv.set(obj.rs->nSelected());
+	obj.rs()->beginUndoState("Select overlapping atoms (within %f)", tol);
+	obj.rs()->selectOverlaps(tol);
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected());
 	return TRUE;
 }
 
@@ -410,11 +410,11 @@ bool Command::function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	int nselected = obj.rs->nSelected();
-	obj.rs->beginUndoState("Select %s outside cell", c->hasArg(0) ? "molecules" : "atoms");
-	obj.rs->selectOutsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
-	obj.rs->endUndoState();
-	rv.set(obj.rs->nSelected() - nselected);
+	int nselected = obj.rs()->nSelected();
+	obj.rs()->beginUndoState("Select %s outside cell", c->hasArg(0) ? "molecules" : "atoms");
+	obj.rs()->selectOutsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
 	return TRUE;
 }
 
@@ -425,24 +425,24 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 	Pattern *p = NULL;
 	if (c->hasArg(0))
 	{
-		if (c->argType(0) == VTypes::IntegerData) p = obj.rs->pattern(c->argi(0)-1);
-		else p = obj.rs->findPattern(c->argc(0));
+		if (c->argType(0) == VTypes::IntegerData) p = obj.rs()->pattern(c->argi(0)-1);
+		else p = obj.rs()->findPattern(c->argc(0));
 	}
 	else p = obj.p;
-	int nselected = obj.rs->nSelected();
+	int nselected = obj.rs()->nSelected();
 	if (p == NULL) msg.print("No pattern in which to select atoms.\n");
 	else
 	{
-		obj.rs->beginUndoState("Select pattern '%s'", p->name());
+		obj.rs()->beginUndoState("Select pattern '%s'", p->name());
 		Atom *i = p->firstAtom();
 		for (int n=0; n<p->totalAtoms(); n++)
 		{
-			obj.rs->selectAtom(i);
+			obj.rs()->selectAtom(i);
 			i = i->next;
 		}
-		obj.rs->endUndoState();
+		obj.rs()->endUndoState();
 	}
-	rv.set(obj.rs->nSelected() - nselected);
+	rv.set(obj.rs()->nSelected() - nselected);
 	return TRUE;
 }
 
@@ -450,13 +450,28 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL) return FALSE;
-	int nselected = obj.rs->nSelected();
-	obj.rs->beginUndoState("Radial selection %8.4f from atom %i", c->argd(1), i->id()+1);
-	obj.rs->selectRadial(i, c->argd(1));
-	obj.rs->endUndoState();
-	rv.set(obj.rs->nSelected() - nselected);
+	int nselected = obj.rs()->nSelected();
+	obj.rs()->beginUndoState("Radial selection %8.4f from atom %i", c->argd(1), i->id()+1);
+	obj.rs()->selectRadial(i, c->argd(1));
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
+	return TRUE;
+}
+
+// Select all atoms within a distance of target atom
+bool Command::function_SelectTree(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	if (i == NULL) return FALSE;
+	Bond *b = c->hasArg(1) ? (Bond*) c->argp(1, VTypes::BondData) : NULL;
+	int nselected = obj.rs()->nSelected();
+	obj.rs()->beginUndoState("Tree selection from atom %i", i->id()+1);
+	obj.rs()->selectTree(i, FALSE, FALSE, b);
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
 	return TRUE;
 }
 
@@ -464,16 +479,16 @@ bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.rs->autocreatePatterns())
+	if (obj.rs()->autocreatePatterns())
 	{
 		// Store current number of selected atoms
-		int nselected = obj.rs->nSelected();
-		obj.rs->beginUndoState("Select %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
-		int result = obj.rs->selectType(c->argz(0), c->argc(1));
-		obj.rs->endUndoState();
+		int nselected = obj.rs()->nSelected();
+		obj.rs()->beginUndoState("Select %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
+		int result = obj.rs()->selectType(c->argz(0), c->argc(1));
+		obj.rs()->endUndoState();
 		if (result != -1)
 		{
-			rv.set(obj.rs->nSelected() - nselected);
+			rv.set(obj.rs()->nSelected() - nselected);
 			return TRUE;
 		}
 	}

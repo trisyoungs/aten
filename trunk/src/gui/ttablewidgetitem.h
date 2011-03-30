@@ -1,7 +1,7 @@
 /*
-	*** Qt tablewidget item
+	*** TTableWidgetItem - QTableWidgetItem with custom data structure
 	*** src/gui/ttablewidgetitem.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
