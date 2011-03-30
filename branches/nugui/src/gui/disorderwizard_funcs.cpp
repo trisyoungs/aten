@@ -50,7 +50,12 @@ DisorderWizard::DisorderWizard(QWidget *parent) : QWizard(parent)
 	QObject::connect(ui.CellRelativeCSpin, SIGNAL(valueChanged(double)), SLOT(setCellRelative(double)));
 
 	// Private variables
-	DisorderWizard::TargetModelType targetType_;
+	DisorderWizard::TargetModelType targetType_ = DisorderWizard::ExistingTarget;
+	existingModel_ = NULL;
+	newModel_ = NULL;
+	partitioningScheme_ = NULL;
+	componentTarget_ = NULL;
+	refreshing_ = FALSE;
 }
 
 // Run dialog, initialising any values first
