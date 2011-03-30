@@ -23,6 +23,7 @@
 #include "model/model.h"
 #include "gui/gui.h"
 #include "classes/prefs.h"
+#include "base/progress.h"	
 #include <fstream>
 
 // Set the format of the trajectory
@@ -175,11 +176,11 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	if ((nTrajectoryFileFrames_ * trajectoryFrameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
-// 		int progId = gui.progressDialog->create("Caching Frames", nTrajectoryFileFrames_);
+ 		int pid = progress.initialise("Caching Frames", nTrajectoryFileFrames_, TRUE, FALSE);
 		// Read all frames from trajectory file
 		for (int n=1; n<nTrajectoryFileFrames_; n++)
 		{
-// 			if (!gui.gui.progressDialog->create(progId,n)) break;
+ 			if (!progress.update(pid,n)) break;
 			newframe = addTrajectoryFrame();
 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 			if ((!success) || (rv.asInteger() != 1))
@@ -190,7 +191,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 			}
 			newframe->enableUndoRedo();
 		}
-// 		gui.gui.progressDialog->create(progId);
+ 		progress.terminate(pid);
 		nTrajectoryFileFrames_ = 0;
 		trajectoryFramesAreCached_ = TRUE;
 		trajectoryParser_.closeFile();

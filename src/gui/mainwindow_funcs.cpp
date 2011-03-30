@@ -50,11 +50,6 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 	infoLabel1_ = NULL;
 	infoLabel2_ = NULL;
 	messageLabel_ = NULL;
-	progressBar_ = NULL;
-	progressTitle_ = NULL;
-	progressEta_ = NULL;
-	progressButton_ = NULL;
-	progressIndicator_ = NULL;
 
 	ui.setupUi(this);
 }
@@ -66,11 +61,6 @@ AtenForm::~AtenForm()
 	if (infoLabel1_ != NULL) delete infoLabel1_;
 	if (infoLabel2_ != NULL) delete infoLabel2_;
 	if (messageLabel_ != NULL) delete messageLabel_;
-	if (progressBar_ != NULL) delete progressBar_;
-	if (progressTitle_ != NULL) delete progressTitle_;
-	if (progressEta_ != NULL) delete progressEta_;
-	if (progressButton_ != NULL) delete progressButton_;
-	if (progressIndicator_ != NULL) delete progressIndicator_;
 }
 
 // Catch window close event

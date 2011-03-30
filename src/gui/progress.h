@@ -1,6 +1,6 @@
 /*
 	*** Progress Dialog
-	*** src/gui/dialog.h
+	*** src/gui/progress.h
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.

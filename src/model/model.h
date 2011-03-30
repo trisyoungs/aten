@@ -653,11 +653,11 @@ class Model
 
 	public:
 	// Create a new pattern node (nmols,natoms,name)
-	Pattern *addPattern(int, int, const char*);
+	Pattern *addPattern(int nmols, int atomspermol, const char *name);
 	// Cut the pattern from the list
-	void cutPattern(Pattern*);
+	void cutPattern(Pattern *pattern);
 	// Own the specified pattern (bool = whether to set ownermodel)
-	void ownPattern(Pattern*, bool);
+	void ownPattern(Pattern *pattern, bool setparent);
 	// Number of nodes in pattern
 	int nPatterns() const;
 	// Return the first pattern node of the model

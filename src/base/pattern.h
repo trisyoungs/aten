@@ -160,7 +160,7 @@ class Pattern
 
 	public:
 	// Sets up variables in pattern
-	void initialise(int, int, int, int);
+	void initialise(int id, int startatom, int nmols, int atomspermol);
 	// Takes the supplied atom and places a copy in the local list 
 	Atom *appendCopy(Atom *source);
 	// Delete a number of atoms from the end of the list

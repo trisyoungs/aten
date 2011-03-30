@@ -357,18 +357,6 @@ class Aten
 
 
 	/*
-	// Progress Indicators
-	*/
-	public:
-	// Initialise a progress indicator
-	void initialiseProgress(const char *jobtitle, int totalsteps);
-	// Update the number of steps (returns if the dialog was canceled)
-	bool updateProgress(int currentstep = -1);
-	// Terminate the current progress
-	void cancelProgress();
-
-
-	/*
 	// CLI
 	*/
 	private:

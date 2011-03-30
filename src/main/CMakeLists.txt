@@ -4,6 +4,7 @@ cli.h
 version.h 
 aten.cpp
 aten_filters.cpp
+aten_fragments.cpp
 aten_includes.cpp
 aten_partitions.cpp
 cli.cpp 

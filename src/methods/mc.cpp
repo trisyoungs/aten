@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "main/aten.h"
 #include "model/model.h"
 #include "methods/mc.h"
 #include "model/clipboard.h"
 #include "gui/gui.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
+#include "base/progress.h"
 
 // Static Singleton
 MonteCarlo mc;
@@ -222,7 +222,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	Pattern *p = NULL;
 
 	// Start progess indicator
-// 	if (gui.exists()) gui.progressCreate("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert);
+	int pid = progress.initialise("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert, FALSE, TRUE);
 
 	// Loop over MC cycles
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -231,7 +231,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 		for (move=0; move<MonteCarlo::Insert; ++move)
 		{
 			// Update progress indicator
-// 			if (gui.exists() && (!gui.progressUpdate(-1, &etatext))) break;
+ 			if (!progress.update(pid)) break;
 
 			acceptanceRatio_[0][move] = 0;
 			// If this move type isn't moveAllowed_ then continue onto the next
@@ -320,7 +320,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 		elast = ecurrent;
 
 	} // Loop over MC cycles
-// 	if (gui.exists()) gui.progressTerminate();
+	progress.terminate(pid);
 
 	// Print final energy
 	enew = srcmodel->totalEnergy(srcmodel, success);

@@ -23,6 +23,7 @@
 #include "model/model.h"
 #include "ff/energystore.h"
 #include "gui/gui.h"
+#include "base/progress.h"
 
 // Static Singleton
 MethodSd sd;
@@ -86,16 +87,16 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	newRms = srcmodel->rmsForce();
 
 	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
-	msg.print("Init  %12.5e       ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
-// 	gui.progressCreate("Minimising (SD)", nCycles_);
+	msg.print("Init  %12.5e       ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
+	int pid = progress.initialise("Minimising (SD)", nCycles_, FALSE, TRUE);
 
 	stepsize = 1.0;
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Perform linesearch along the gradient vector
-// 		if (!gui.progressUpdate(cycle, &etatext)) lineDone = TRUE;
-// 		else
-// 		{
+ 		if (!progress.update(pid, cycle)) lineDone = TRUE;
+		else
+		{
 			// Simple method begins here
 			oldEnergy = newEnergy;
 			oldRms = newRms;
@@ -132,16 +133,16 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 				break;
 			}
 
-// 		}
+		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
 
 		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
 
 		if (lineDone || converged) break;
 	}
-// 	gui.progressTerminate();
+	progress.terminate(pid);
 
 	if (converged) msg.print("Steepest descent converged in %i steps.\n",cycle+1);
 	else msg.print("Steepest descent did not converge within %i steps.\n",nCycles_);

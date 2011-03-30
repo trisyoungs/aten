@@ -71,9 +71,9 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 	msg.print(Messenger::Verbose,"New pattern '%s' added - startatom %i, %i mols, %i atoms per mol.\n",patname,start,mols,numatoms);
 	if ((start + mols*numatoms) == atoms_.nItems())
 	{
-		msg.print("Pattern description completed (spans %i atoms).\n",atoms_.nItems());
+		msg.print("Messenger::Verbose,Pattern description completed (spans %i atoms).\n",atoms_.nItems());
 		energy.resize(patterns_.nItems());
-		msg.print("Done.\n");
+		msg.print("Messenger::Verbose,Done.\n");
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
 		patternsPoint_ = changeLog.log(Log::Structure);
 	}
@@ -234,14 +234,11 @@ bool Model::autocreatePatterns(bool acceptDefault)
 			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\n");
 			msg.print("Problem occurred in pattern %i whilst selecting from atom %i.\n", patterns_.nItems()+1, i->id()+1);
 			msg.print("Pattern for model will be 1*N.\n");
-// 			msg.print("Offending molecule has been selected.\n");
+
 			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead
 			patterns_.clear();
 			nmols = 0;
-// 			selectAll();
-// 			selectionEmpirical(emp);
-// 			msg.print("Added default pattern: %s\n", emp.get());
-// 			p = addPattern(1, atoms_.nItems(), emp.get());
+
 			msg.print("Added default pattern.\n");
 			p = addPattern(1, atoms_.nItems(), "default");
 			defaultpattern = TRUE;
@@ -324,7 +321,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 			{
 				// Not the same as the last stored pattern, so store old data and start a new one
 				msg.print("New pattern found: %s\n",emp.get());
-				p = addPattern(nmols,patclip.nAtoms(),emp.get());
+				p = addPattern(nmols, patclip.nAtoms(), emp.get());
 				patclip.copyMarked(this);
 				selectionEmpirical(emp, TRUE);
 				nmols = 1;
@@ -340,8 +337,6 @@ bool Model::autocreatePatterns(bool acceptDefault)
 
 	// Describe the atoms / rings in the patterns
 	describeAtoms();
-	// Deselect all atoms (unless the default pattern was forced)
-// 	selectNone(TRUE);
 
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
 	// Don't store new point if a defaultpattern was created and acceptdefault == FALSE

@@ -620,10 +620,10 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 	// Store parameters
 	id_ = patid;
 	nMolecules_ = mols;			// Number of molecules in pattern
-	nAtoms_ = atomsmol;		// Number of atoms per molecule
-	totalAtoms_ = mols*nAtoms_;	// Total number of atoms described by the pattern
-	startAtom_ = start;		// Starting atom (integer position in atom list)
-	endAtom_ = start + nAtoms_ - 1;	// Last atom in first molecule (integer position in atom list)
+	nAtoms_ = atomsmol;			// Number of atoms per molecule
+	totalAtoms_ = mols*nAtoms_;		// Total number of atoms described by the pattern
+	startAtom_ = start;			// Starting atom (integer position in atom list)
+	endAtom_ = start + nAtoms_ - 1;		// Last atom in first molecule (integer position in atom list)
 	// Set atom pointers
 	if (startAtom_ > parent_->nAtoms())
 	{
@@ -1200,7 +1200,7 @@ void Pattern::findRings()
 		if (!okay) break;
 	}
 	if ((!okay) && (rings_.nItems() == prefs.maxRings())) msg.print("Maximum number of rings (%i) reached for pattern '%s'...\n", prefs.maxRings(), name_.get());
-	msg.print("Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
+	msg.print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
 	msg.exit("Pattern::findRings");
 }
 

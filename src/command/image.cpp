@@ -21,7 +21,6 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/tcanvas.uih"
@@ -29,6 +28,7 @@
 #include "model/model.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
+#include "base/progress.h"
 
 // Save current view as bitmap image
 bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
@@ -126,7 +126,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	prefs.setLabelSize(newlabelsize);
 
 	gui.mainWidget->setOffScreenRendering(TRUE);
-	aten.initialiseProgress("Save movie frames", lastframe-firstframe);
+	int progid = progress.initialise("Save movie frames", lastframe-firstframe, FALSE, FALSE);
 	bool canceled = FALSE;
 	for (int n = firstframe; n <= lastframe; n += frameskip)
 	{
@@ -141,14 +141,14 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			pixmap = QPixmap::fromImage(image);
 		}
 		pixmap.save(basename.get(), "png", -1);
-		if (!aten.updateProgress(n))
+		if (!progress.update(progid,n))
 		{
 			canceled = TRUE;
 			msg.print("Canceled.\n");
 			break;
 		}
 	}
-	aten.cancelProgress();
+	progress.terminate(progid);
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
@@ -185,14 +185,14 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	
 	// Cleanup
-	aten.initialiseProgress("Cleaning up", lastframe-firstframe);
+	bool pid = progress.initialise("Cleaning up", lastframe-firstframe, TRUE, FALSE);
 	for (int n = firstframe; n <= lastframe; n += frameskip)
 	{
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
 		QFile::remove(basename.get());
-		aten.updateProgress(n);
+		progress.update(pid,n);
 	}
-	aten.cancelProgress();
+	progress.terminate(pid);
 	
 	return TRUE;
 }
