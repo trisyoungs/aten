@@ -204,6 +204,13 @@ void Neta::print() const
 	else printf("   None defined.\n");
 }
 
+// Print Atom Type data to Dnchar supplied
+void Neta::netaPrint(Dnchar &target) const
+{
+	target.clear();
+	if (description_ != NULL) description_->netaPrint(target);
+}
+
 // Clone nodes (and own them) beginning from the node supplied
 NetaNode *Neta::clone(NetaNode *topnode)
 {

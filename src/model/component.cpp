@@ -20,46 +20,77 @@
 */
 
 #include "model/model.h"
+#include "base/sysfunc.h"
+
+// Insertion Policies
+const char *InsertionPolicyKeywords[Model::nInsertionPolicies] = { "none", "number", "density", "both", "relative" };
+Model::InsertionPolicy Model::insertionPolicy(const char *s, bool reporterror)
+{
+	Model::InsertionPolicy pol = (Model::InsertionPolicy) enumSearch("insertion policy", Model::nInsertionPolicies, InsertionPolicyKeywords, s, reporterror);
+	if ((pol == Model::nInsertionPolicies) && reporterror) enumPrintValid(Model::nInsertionPolicies,InsertionPolicyKeywords);
+	return pol;
+}
+const char *Model::insertionPolicy(Model::InsertionPolicy pol)
+{
+	return InsertionPolicyKeywords[pol];
+}
+
+// Set the insertion policy for the component
+void Model::setComponentInsertionPolicy(Model::InsertionPolicy policy)
+{
+	componentInsertionPolicy_ = policy;
+}
+
+// Return the insertion policy for the component
+Model::InsertionPolicy Model::componentInsertionPolicy()
+{
+	return componentInsertionPolicy_;
+}
+
+// Set target component partition for model
+void Model::setComponentPartition(int id)
+{
+	componentPartition_ = id;
+}
 
 // Return region data for model
-ComponentRegion *Model::region()
+int Model::componentPartition()
 {
-	return &region_;
-}
-
-// Set the Component's pattern
-void Model::setComponentPattern(Pattern *p)
-{
-        componentPattern_ = p;
-}
-
-// Return the Component's pattern
-Pattern *Model::componentPattern() const
-{
-        return componentPattern_;
+	return componentPartition_;
 }
 
 // Set the requested number of molecules
-void Model::setNRequested(int i)
+void Model::setComponentPopulation(int i)
 {
-        nRequested_ = i;
+	componentPopulation_ = i;
 }
 
 // Return the requested number of molecules
-int Model::nRequested() const
+int Model::componentPopulation() const
 {
-        return nRequested_;
+	return componentPopulation_;
 }
 
-// Set a specific move type for the Component
-void Model::setMoveAllowed(MonteCarlo::MoveType m, bool b)
+// Set the requested density for the component
+void Model::setComponentDensity(double d)
 {
-        moveAllowed_[m] = b;
+	componentDensity_ = d;
 }
 
-// Set whether the Component may be translated
-bool Model::isMoveAllowed(MonteCarlo::MoveType m) const
+// Return the requested density for the component
+double Model::componentDensity() const
 {
-        return moveAllowed_[m];
+	return componentDensity_;
 }
 
+// Set whether the component is rotatable
+void Model::setComponentRotatable(bool b)
+{
+	componentRotatable_ = b;
+}
+
+// Return whether the component is rotatable
+bool Model::componentRotatable()
+{
+	return componentRotatable_;
+}

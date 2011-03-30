@@ -123,14 +123,17 @@ bool Command::function_ClearExpression(CommandNode *c, Bundle &obj, ReturnValue 
 	return TRUE;
 }
 
-// Create energy expression for current model ('createexpression(bool nointra, bool allowdummy)'}
+// Create energy expression for current model ('createexpression(bool nointra, bool allowdummy, bool assigncharges)'}
 bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->autocreatePatterns()) return FALSE;
-	bool nointra = c->hasArg(0) ? c->argb(0) : FALSE;
-	if (!obj.m->createExpression(nointra)) return FALSE;
-	rv.reset();
+	Choice noIntra, allowDummy, assignCharges;
+	noIntra = c->hasArg(0) ? c->argb(0) : Choice::Default;
+	allowDummy = c->hasArg(1) ? c->argb(1) : Choice::Default;
+	assignCharges = c->hasArg(2) ? c->argb(2) : Choice::Default;
+	bool result = obj.m->createExpression(noIntra, allowDummy, assignCharges);
+	rv.set(result);
 	return TRUE;
 }
 
@@ -342,7 +345,7 @@ bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.m->setAtomType(i, ffa, TRUE);
 		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
 	}
-	else for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next)
+	else for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		obj.m->setAtomType(ri->item, ffa, TRUE);
 		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", ri->item->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
@@ -362,7 +365,7 @@ bool Command::function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (i == NULL) return FALSE;
 		obj.m->setAtomType(i, i->type(), FALSE);
 	}
-	else for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) obj.m->setAtomType(ri->item, ri->item->type(), TRUE);
+	else for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.m->setAtomType(ri->item, ri->item->type(), TRUE);
 	obj.m->changeLog.add(Log::Structure);
 	rv.reset();
 	return TRUE;
@@ -374,7 +377,7 @@ bool Command::function_GenerateAngle(CommandNode *c, Bundle &obj, ReturnValue &r
 	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
 	// Find named atoms in forcefield
 	Atom *atoms[3];
-	for (int i=0; i<3; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs->atom(c->argi(i)-1));
+	for (int i=0; i<3; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs()->atom(c->argi(i)-1));
 	// Check atom and associated type pointers
 	for (int i=0; i<3; ++i)
 	{
@@ -402,7 +405,7 @@ bool Command::function_GenerateBond(CommandNode *c, Bundle &obj, ReturnValue &rv
 	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
 	// Find named atoms in forcefield
 	Atom *atoms[2];
-	for (int i=0; i<2; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs->atom(c->argi(i)-1));
+	for (int i=0; i<2; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs()->atom(c->argi(i)-1));
 	// Check atom and associated type pointers
 	for (int i=0; i<2; ++i)
 	{
@@ -430,7 +433,7 @@ bool Command::function_GenerateTorsion(CommandNode *c, Bundle &obj, ReturnValue 
 	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
 	// Find named atoms in forcefield
 	Atom *atoms[4];
-	for (int i=0; i<4; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs->atom(c->argi(i)-1));
+	for (int i=0; i<4; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs()->atom(c->argi(i)-1));
 	// Check atom and associated type pointers
 	for (int i=0; i<4; ++i)
 	{
@@ -457,7 +460,7 @@ bool Command::function_GenerateVdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
 	// Find named atoms in forcefield
-	Atom *i = (c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0, VTypes::AtomData) : obj.rs->atom(c->argi(0)-1));
+	Atom *i = (c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0, VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1));
 	// Check atom and associated type pointers
 	if (i == NULL)
 	{
@@ -594,7 +597,7 @@ bool Command::function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	msg.print("Current Energy Setup:\n");
 	msg.print("Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
 	msg.print("       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
-	msg.print("      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
+	msg.print("      Electrostatics : %s\n", Electrostatics::elecMethod(prefs.electrostaticsMethod()));
 	msg.print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
 	rv.reset();
 	return TRUE;
@@ -617,14 +620,17 @@ bool Command::function_PrintType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Recreate energy expression for current model ('createexpression(bool nointra)'}
+// Recreate energy expression for current model ('recreateexpression(bool nointra, bool allowdummy, bool assigncharges)'}
 bool Command::function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->clearExpression();
 	if (!obj.m->autocreatePatterns()) return FALSE;
-	bool nointra = c->hasArg(0) ? c->argb(0) : FALSE;
-	if (!obj.m->createExpression(nointra)) return FALSE;
+	Choice noIntra, allowDummy, assignCharges;
+	noIntra = c->hasArg(0) ? c->argb(0) : Choice::Default;
+	allowDummy = c->hasArg(1) ? c->argb(1) : Choice::Default;
+	assignCharges = c->hasArg(2) ? c->argb(2) : Choice::Default;
+	if (!obj.m->createExpression(noIntra, allowDummy, assignCharges)) return FALSE;
 	rv.reset();
 	return TRUE;
 }
@@ -642,8 +648,8 @@ bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &
 		return FALSE;
 	}
 	bool result = filter->executeWrite(c->argc(1));
-	if (result) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", obj.rs->name(), c->argc(1), filter->filter.name());
-	else msg.print("Failed to save expression for model '%s'.\n", obj.rs->name());
+	if (result) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", obj.rs()->name(), c->argc(1), filter->filter.name());
+	else msg.print("Failed to save expression for model '%s'.\n", obj.rs()->name());
 	return result;
 }
 

@@ -23,7 +23,8 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/geometry.h"
-#include "gui/fragment.h"
+#include "gui/toolbox.h"
+#include "gui/fragments.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
@@ -118,7 +119,7 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 	if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
 	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id()+1);
 	target = NULL;
-	gui.update(FALSE,FALSE,FALSE);
+	gui.mainWidget->postRedisplay();
 }
 
 // Clear atom labels
@@ -128,7 +129,7 @@ void AtenForm::removeAtomLabels(bool all)
 	else if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
 	else CommandNode::run(Command::RemoveLabels, "i", target->id()+1);
 	target = NULL;
-	gui.update(FALSE,FALSE,FALSE);
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionAtomLabelID_triggered(bool checked)
@@ -171,7 +172,7 @@ void AtenForm::on_actionAtomColourReset_triggered(bool checked)
 {
 	CommandNode::run(Command::RecolourAtoms, "");
 	target = NULL;
-	gui.update(FALSE,FALSE,FALSE);
+	gui.mainWidget->postRedisplay();
 }
 
 // Reset atom custom colour to element colour
@@ -189,7 +190,7 @@ void AtenForm::on_actionAtomColourSet_triggered(bool checked)
 	// Store new colour
 	CommandNode::run(Command::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	target = NULL;
-	gui.update(FALSE,FALSE,FALSE);
+	gui.mainWidget->postRedisplay();
 }
 
 // Set atom hidden
@@ -205,7 +206,7 @@ void AtenForm::setAtomHidden(bool hidden)
 		if (hidden) CommandNode::run(Command::Hide, "i", target->id()+1);
 		else CommandNode::run(Command::Show, "i", target->id()+1);
 	}
-	gui.update(TRUE, FALSE, FALSE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void AtenForm::on_actionAtomHide_triggered(bool checked)
@@ -222,45 +223,42 @@ void AtenForm::on_actionAtomFixPosition_triggered(bool checked)
 {
 	if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::Fix, "");
 	else CommandNode::run(Command::Fix, "i", target->id()+1);
-	gui.update(FALSE,FALSE,FALSE);
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionAtomFreePosition_triggered(bool checked)
 {
 	if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::Free, "");
 	else CommandNode::run(Command::Free, "i", target->id()+1);
-	gui.update(FALSE,FALSE,FALSE);
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionSetBondLength_triggered(bool checked)
 {
-	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
-	gui.geometryWindow->showWindow();
+	gui.geometryWidget->showWidget();
 }
 
 void AtenForm::on_actionSetBondAngle_triggered(bool checked)
 {
-	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
-	gui.geometryWindow->showWindow();
+	gui.geometryWidget->showWidget();
 }
 
 void AtenForm::on_actionSetTorsionAngle_triggered(bool checked)
 {
-	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
-	gui.geometryWindow->showWindow();
+	gui.geometryWidget->showWidget();
 }
 
 void AtenForm::on_actionCentreAtOrigin_triggered(bool checked)
 {
 	CommandNode::run(Command::Centre, "ddd", 0.0, 0.0, 0.0);
-	gui.update(FALSE,FALSE,FALSE);
+	gui.mainWidget->postRedisplay();
 }
 
 void AtenForm::on_actionCreateFragment_triggered(bool checked)
 {
 	Model *viewTarget = gui.mainWidget->displayModel();
 	aten.addFragmentFromSelection(viewTarget, "Selections");
-	gui.fragmentWindow->refresh();
+	gui.fragmentsWidget->refresh();
 }
 
 void AtenForm::createGlyph()
@@ -291,6 +289,6 @@ void AtenForm::createGlyph()
 		CommandNode::run(Command::GlyphAtomR, "ii", n, ri->item->id()+1);
 		n++;
 	}
-	gui.update(FALSE,FALSE,FALSE,TRUE);
+	gui.update(GuiQt::CanvasTarget+GuiQt::GlyphsTarget);
 }
 

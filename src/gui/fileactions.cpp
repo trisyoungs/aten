@@ -1,5 +1,5 @@
 /*
-	*** Qt file actions
+	*** File Actions
 	*** src/gui/fileactions.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -37,6 +37,8 @@ void AtenForm::on_actionFileNew_triggered(bool checked)
 {
 	Model *m = aten.addModel();
 	m->enableUndoRedo();
+	// Update GUI
+	gui.update(GuiQt::AllTarget);
 }
 
 // Open existing file
@@ -50,11 +52,12 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 		if (filter == NULL) filter = aten.probeFile(gui.loadModelDialog->selectedFilename(), FilterData::ModelImport);
 		if (filter != NULL)
 		{
+			// Run any import options in the filter
+			if (!filter->executeCustomDialog()) return;
 			filter->executeRead(gui.loadModelDialog->selectedFilename());
 			addRecent(gui.loadModelDialog->selectedFilename());
-			refreshModelTabs();
 			aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-			gui.update();
+			gui.update(GuiQt::AllTarget);
 		}
 	}
 }
@@ -144,7 +147,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 			msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
 		}
 		else msg.print("Failed to save model '%s'.\n", m->name());
-		gui.update(FALSE,FALSE,FALSE);
+		gui.update();
 	}
 }
 
@@ -190,7 +193,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 		t->executeWrite(filename.get());
 		m->changeLog.updateSavePoint();
 	}	
-	gui.update(FALSE,FALSE,FALSE);
+	gui.update();
 }
 
 // Modify export options for current model's associated filter
@@ -204,71 +207,44 @@ void AtenForm::on_actionExportOptions_triggered(bool checked)
 // Close current model
 void AtenForm::on_actionFileClose_triggered(bool checked)
 {
-	// If the current model has been modified, ask for confirmation before we close it
-	Dnchar text;
-	Tree *filter;
 	Model *m = aten.currentModel();
-	if (m->changeLog.isModified())
-	{
-		// Create a model message dialog
-		text.sprintf("Model '%s' has been modified.\n", m->name());
-		int returnvalue = QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
-		switch (returnvalue)
-		{
-			// Discard changes
-			case (QMessageBox::Discard):
-				aten.removeModel(m);
-				break;
-			// Cancel quit and return to app
-			case (QMessageBox::Cancel):
-				return;
-			// Save model before quit
-			case (QMessageBox::Save):
-				// If model has a filter set, just save it
-				filter = m->filter();
-				if (filter != NULL) filter->executeWrite(m->filename());
-				else if (runSaveModelDialog())
-				{
-					// Run options dialog
-					if (!saveModelFilter->executeCustomDialog())
-					{
-						msg.print("Not saved.\n");
-						return;
-					}
-					m->setFilter(saveModelFilter);
-					m->setFilename(saveModelFilename.get());
-					saveModelFilter->executeWrite(saveModelFilename.get());
-				}
-				else return;
-				aten.removeModel(m);
-				break;
-		}
-	}
-	else aten.removeModel(m);
+	aten.closeModel(m);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Save the current view as a bitmap image.
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Get geometry from user - initial setup is to use current canvas geometry
-	Dnchar geometry, message;
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
 	int width, height;
-	bool ok;
-	geometry.sprintf("%ix%i\n", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
-	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry.get(), &ok);
-	if (ok && (!text.isEmpty()))
+	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
+	bool currentframemodel, currentframeview, viewglobe;
+	
+	static Tree dialog("Save Image Options","option('Size', 'edit', '10x10'); option('choices', 'radiogroup'); option('No frames', 'radio', 'choices', 1, 'newline', 'span=2'); option('Frame current model', 'radio', 'choices', 0, 'newline', 'span=2'); option('Frame whole view', 'radio', 'choices', 0, 'newline', 'span=2'); option('Frame current model and whole view', 'radio', 'choices', 0, 'newline', 'span=2'); ");
+
+	// Poke values into dialog widgets and execute
+	dialog.setWidgetValue("Size", ReturnValue(geometry.get()));
+	dialog.setWidgetValue("choices", ReturnValue(framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) ));
+	if (!dialog.executeCustomDialog(FALSE)) return;
+
+	// Get values from dialog
+	geometry = dialog.widgetValuec("Size");
+	width = atoi(beforeChar(geometry,'x'));
+	height = atoi(afterChar(geometry,'x'));
+	if ((width < 1) || (height < 1))
 	{
-		geometry = qPrintable(text);
-		width = atoi(beforeChar(geometry,'x'));
-		height = atoi(afterChar(geometry,'x'));
-		if ((width < 1) || (height < 1))
-		{
-			message.sprintf("The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
-			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
-			return;
-		}
+		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
+		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
+		return;
 	}
-	else return;
+	int choice = dialog.widgetValuei("choices");
+	framemodel = choice%2 == 0;
+	frameview = choice > 2;
+	currentframemodel = prefs.frameCurrentModel();
+	currentframeview = prefs.frameWholeView();
+	viewglobe = prefs.viewRotationGlobe();
+	
 	// Get filename from user
 	GuiQt::BitmapFormat bf;
 	static QString selectedFilter("Windows Bitmap (*.bmp)");
@@ -284,124 +260,19 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// If we didn't recognise the extension, complain and quit
 		if (bf == GuiQt::nBitmapFormats) 
 		{
-			message.sprintf("Bitmap format not recognised - '%s'.\n", ext.get());
+			Dnchar message(-1, "Bitmap format not recognised - '%s'.\n", ext.get());
 			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		}
-		else if (!gui.saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
-	}
-}
-
-// Add trajectory to model
-void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
-{
-	Tree *filter;
-	Model *m = aten.currentModel();
-	static QDir currentDirectory_(aten.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), loadTrajectoryFilters, &selFilter);
-	if (!filename.isEmpty())
-	{
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		// Find the filter that was selected
-		filter = aten.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
-		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
-		if (filter != NULL)
-		{
-			m->initialiseTrajectory(qPrintable(filename), filter);
-			// Ensure trajectory toolbar is visible and View->Trajectory is selected
-			ui.TrajectoryToolbar->setVisible(TRUE);
-			ui.actionViewTrajectory->setChecked(TRUE);
-			updateTrajectoryControls();
-		}
-		else msg.print( "Couldn't determine trajectory file format.\n");
-		gui.update();
-	}
-}
-
-// Open expression file
-void AtenForm::on_actionFileOpenExpression_triggered(bool checked)
-{
-	Tree *filter;
-	static QDir currentDirectory_(aten.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Expression", currentDirectory_.path(), gui.mainWindow->loadExpressionFilters, &selFilter);
-	if (!filename.isEmpty())
-	{
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		// Find the filter that was selected
-		filter = aten.findFilterByDescription(FilterData::ExpressionImport, qPrintable(selFilter));
-		if (filter != NULL) filter->executeRead(qPrintable(filename));
 		else
 		{
-			filter = aten.probeFile(qPrintable(filename), FilterData::ExpressionImport);
-			if (filter != NULL) filter->executeRead(qPrintable(filename));
+			prefs.setFrameCurrentModel(framemodel);
+			prefs.setFrameWholeView(frameview);
+			prefs.setViewRotationGlobe(FALSE);
+			if (!gui.saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
+			prefs.setFrameCurrentModel(currentframemodel);
+			prefs.setFrameWholeView(currentframeview);
+			prefs.setViewRotationGlobe(viewglobe);
 		}
-	}
-	gui.gridsWindow->refresh();
-	gui.mainWidget->postRedisplay();
-}
-
-// Save expression
-void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
-{
-	Tree *filter;
-	static QString selectedFilter(aten.filters(FilterData::ExpressionExport)->item->filter.name());
-	static QDir currentDirectory_(aten.workDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters);
-	if (!filename.isEmpty())
-	{
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		// Grab file extension and search for it in our current lists...
-		Dnchar ext = afterLastChar(qPrintable(filename), '.');
-		// Does this extension uniquely identify a specific filter?
-		Reflist<Tree,int> filters;
-		if (ext.isEmpty())
-		{
-			QFileInfo fileInfo( filename );
-			// Does this filename uniquely identify a specific filter?
-			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
-			{
-				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
-			}
-			msg.print(Messenger::Verbose, "Exact filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
-			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
-			if (filters.nItems() != 0) filter = gui.selectFilterDialog->selectFilter("Exact name matches one or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
-			else
-			{
-				filter = gui.selectFilterDialog->selectFilter("Couldn't determine format to save expression in.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
-				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
-				{
-					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
-				}
-			}
-		}
-		else
-		{
-			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
-			{
-				if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
-			}
-			msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
-			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
-			if (filters.nItems() == 1) filter = filters.first()->item;
-			else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches two or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
-			else
-			{
-				filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
-				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
-				{
-					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
-				}
-			}
-		}
-		Model *m = aten.currentModelOrFrame();
-		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
-		else if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
-		else msg.print("Failed to save expression for model '%s'.\n", m->name());
 	}
 }
 
@@ -409,14 +280,7 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {
 	// Call routine in grids window...
-	gui.gridsWindow->loadGrid();
-}
-
-// Open forcefield file
-void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
-{
-	// Call routine in forcefields window...
-	gui.forcefieldsWindow->loadForcefield();
+	gui.gridsWidget->loadGrid();
 }
 
 // Quit program

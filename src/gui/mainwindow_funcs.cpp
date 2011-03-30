@@ -22,26 +22,9 @@
 #include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
-#include "gui/disorder.h"
-#include "gui/geometry.h"
-#include "gui/grids.h"
-#include "gui/glyphs.h"
-#include "gui/build.h"
-#include "gui/celltransform.h"
-#include "gui/celldefine.h"
-#include "gui/command.h"
-#include "gui/transform.h"
-#include "gui/position.h"
-#include "gui/atomlist.h"
-#include "gui/select.h"
-#include "gui/forcefields.h"
-#include "gui/fragment.h"
-#include "gui/md.h"
-#include "gui/minimiser.h"
-#include "gui/vibrations.h"
-#include "gui/zmatrix.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
+#include "gui/trajectory.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
 #include "gui/about.h"
@@ -62,21 +45,16 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
 	// Private variables
 	saveModelFilter = NULL;
-	customElement_ = 8;
-	forcefieldCombo_ = NULL;
-	trajectoryToolbarRefreshing_ = FALSE;
 
 	// Public variables
-	infoLabel1 = NULL;
-	infoLabel2 = NULL;
-	messageLabel = NULL;
-	progressBar = NULL;
-	progressTitle = NULL;
-	progressEta = NULL;
-	progressButton = NULL;
-	progressIndicator = NULL;
-	uaGroup = NULL;
-	dummyToolButton = NULL;
+	infoLabel1_ = NULL;
+	infoLabel2_ = NULL;
+	messageLabel_ = NULL;
+	progressBar_ = NULL;
+	progressTitle_ = NULL;
+	progressEta_ = NULL;
+	progressButton_ = NULL;
+	progressIndicator_ = NULL;
 
 	ui.setupUi(this);
 }
@@ -85,16 +63,14 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 AtenForm::~AtenForm()
 {
 	// No need (i.e. do not) delete: dummyToolButton.
-	if (infoLabel1 != NULL) delete infoLabel1;
-	if (infoLabel2 != NULL) delete infoLabel2;
-	if (messageLabel != NULL) delete messageLabel;
-	if (progressBar != NULL) delete progressBar;
-	if (progressTitle != NULL) delete progressTitle;
-	if (progressEta != NULL) delete progressEta;
-	if (progressButton != NULL) delete progressButton;
-	if (progressIndicator != NULL) delete progressIndicator;
-// 	if (uaGroup != NULL) delete uaGroup;
-// 	for (Refitem<QActionGroup,int> *ri = actionGroups_.first(); ri != NULL; ri = ri->next) delete ri->item;
+	if (infoLabel1_ != NULL) delete infoLabel1_;
+	if (infoLabel2_ != NULL) delete infoLabel2_;
+	if (messageLabel_ != NULL) delete messageLabel_;
+	if (progressBar_ != NULL) delete progressBar_;
+	if (progressTitle_ != NULL) delete progressTitle_;
+	if (progressEta_ != NULL) delete progressEta_;
+	if (progressButton_ != NULL) delete progressButton_;
+	if (progressIndicator_ != NULL) delete progressIndicator_;
 }
 
 // Catch window close event
@@ -118,7 +94,6 @@ void AtenForm::closeEvent(QCloseEvent *event)
 // 		delete gui.glyphsWindow;
 // 		delete gui.gridsWindow;
 // 		delete gui.mdWindow;
-// 		delete gui.minimiserWindow;
 // 		delete gui.positionWindow;
 // 		delete gui.selectWindow;
 // 		delete gui.transformWindow;
@@ -154,20 +129,10 @@ void AtenForm::update()
 			s += itoa(m->nTrajectoryFrames());
 			s += ") ";
 		}
-		// Make sure the trajectory toolbar is visible
-		ui.TrajectoryToolbar->setDisabled(FALSE);
-		ui.TrajectoryToolbar->setVisible(TRUE);
-		// Menu controls (and toolbar)
-		updateTrajectoryControls();
-		// Update current tab text
-		updateModelTabName(-1, m);
+		gui.trajectoryWidget->refresh();
 	}
-	else
-	{
-		// Make sure the trajectory toolbar is visible
-		ui.TrajectoryToolbar->setDisabled(TRUE);
-// 		ui.TrajectoryToolbar->setVisible(FALSE);
-	}
+	updateTrajectoryMenu();
+
 	m = m->renderSourceModel();
 	s += itoa(m->nAtoms());
 	s += " Atoms ";
@@ -186,12 +151,12 @@ void AtenForm::update()
 	}
 	s += ftoa(m->mass());
 	s += " g mol<sup>-1</sup> ";
-	infoLabel1->setText(s);
+	infoLabel1_->setText(s);
 	// Second label - cell information
-	Cell::CellType ct = m->cell()->type();
-	if (ct != Cell::NoCell)
+	UnitCell::CellType ct = m->cell()->type();
+	if (ct != UnitCell::NoCell)
 	{
-		s = Cell::cellType(ct);
+		s = UnitCell::cellType(ct);
 		s += ", ";
 		s += ftoa(m->density());
 		switch (prefs.densityUnit())
@@ -207,7 +172,7 @@ void AtenForm::update()
 		}
 	}
 	else s = "Non-periodic";
-	infoLabel2->setText(s);
+	infoLabel2_->setText(s);
 	// Update save button status
 	ui.actionFileSave->setEnabled( m->changeLog.isModified() );
 	// Enable the Atom menu if one or more atoms are selected
@@ -224,81 +189,24 @@ void AtenForm::update()
 	updateWindowTitle();
 }
 
-// Rename specified (or current if -1) tab
-void AtenForm::updateModelTabName(int tabid, Model *m)
-{
-	if (tabid < 0) tabid = ui.ModelTabs->currentIndex();
-	Dnchar title;
-	if (m->nTrajectoryFrames() == 0) title.sprintf("%s", m->name());
-	else if (m->renderSourceModel() == m) title.sprintf("%s (Parent of %i frames)", m->name(), m->nTrajectoryFrames());
-	else title.sprintf("%s (Frame %i of %i)", m->name(), m->trajectoryFrameIndex()+1, m->nTrajectoryFrames());
-	ui.ModelTabs->setTabText(tabid, title.get());
-}
-
-// Update trajectory controls
-void AtenForm::updateTrajectoryControls()
+// Update trajectory menu
+void AtenForm::updateTrajectoryMenu()
 {
 	if (!gui.exists()) return;
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
-	if (m->nTrajectoryFrames() == 0) ui.TrajectoryToolbar->setDisabled(TRUE);
-	else
-	{
-		// If the trajectory is playing, desensitise all but the play/pause button
-		if (gui.isTrajectoryPlaying())
-		{
-			ui.actionTrajectoryViewTrajectory->setDisabled(TRUE);
-			ui.actionTrajectoryFirstFrame->setDisabled(TRUE);
-			ui.actionTrajectoryPreviousFrame->setDisabled(TRUE);
-			ui.actionTrajectoryNextFrame->setDisabled(TRUE);
-			ui.actionTrajectoryLastFrame->setDisabled(TRUE);
-			ui.actionTrajectoryPlayPause->setDisabled(FALSE);
-			setTrajectoryToolbarActive(FALSE);
-		}
-		else
-		{
-			ui.actionTrajectoryViewTrajectory->setDisabled(FALSE);
-			ui.actionTrajectoryFirstFrame->setDisabled(FALSE);
-			ui.actionTrajectoryPreviousFrame->setDisabled(FALSE);
-			ui.actionTrajectoryNextFrame->setDisabled(FALSE);
-			ui.actionTrajectoryLastFrame->setDisabled(FALSE);
-			ui.actionTrajectoryPlayPause->setDisabled(FALSE);
-			setTrajectoryToolbarActive(TRUE);
-		}
-		ui.actionViewTrajectory->setDisabled(FALSE);
-		// Select the correct view action
-		if (m->renderSource() == Model::ModelSource)
-		{
-			ui.actionViewModel->setChecked(TRUE);
-			ui.actionTrajectoryViewTrajectory->setChecked(FALSE);
-		}
-		else
-		{
-			ui.actionViewTrajectory->setChecked(TRUE);
-			ui.actionTrajectoryViewTrajectory->setChecked(TRUE);
-		}
-		// Set slider and spinbox
-		updateTrajectoryToolbar();
-	}
-}
-
-// Update trajectory toolbar controls
-void AtenForm::updateTrajectoryToolbar()
-{
-	trajectoryToolbarRefreshing_ = TRUE;
-	trajectorySlider_->setMinimum(1);
-	trajectorySlider_->setMaximum(aten.currentModel()->nTrajectoryFrames());
-	trajectorySlider_->setValue(aten.currentModel()->trajectoryFrameIndex()+1);
-	trajectorySpin_->setRange(1,aten.currentModel()->nTrajectoryFrames());
-	trajectorySpin_->setValue(aten.currentModel()->trajectoryFrameIndex()+1);
-	trajectoryToolbarRefreshing_ = FALSE;
-}
-
-// Set the active status of some controls on the trajectory toolbar
-void AtenForm::setTrajectoryToolbarActive(bool active)
-{
-	trajectorySlider_->setEnabled(active);
-	trajectorySpin_->setEnabled(active);
+	bool hastrj = (m->nTrajectoryFrames() != 0);
+	ui.actionTrajectoryRemove->setEnabled(hastrj);
+	ui.actionTrajectoryFirstFrame->setEnabled(hastrj);
+	ui.actionTrajectoryLastFrame->setEnabled(hastrj);
+	ui.actionTrajectoryPlayPause->setEnabled(hastrj);
+	ui.actionTrajectoryPlayPause->setChecked( gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
+	ui.actionTrajectoryFrames->setEnabled(hastrj);
+	ui.actionTrajectorySaveMovie->setEnabled(hastrj);
+	// Select the correct view action
+	if (m->renderSource() == Model::ModelSource)
+	ui.actionTrajectoryModel->setChecked(m->renderSource() == Model::ModelSource);
+	ui.actionTrajectoryFrames->setChecked(m->renderSource() == Model::TrajectorySource);
 }
 
 // Refresh window title
@@ -311,72 +219,10 @@ void AtenForm::updateWindowTitle()
 	setWindowTitle(title.get());
 }
 
-// Add model tab
-int AtenForm::addModelTab(Model *m)
-{
-	if (!gui.exists()) return -1;
-	// Create new tab in ModelTabs QTabBar
-	int tabid = ui.ModelTabs->addTab("Unnamed");
-	ui.ModelTabs->setCurrentIndex(tabid);
-	updateModelTabName(tabid, m);
-	return tabid;
-}
-
 // Cancel any current mode and return to select
 void AtenForm::cancelCurrentMode()
 {
 	ui.actionSelectAtoms->trigger();
-}
-
-/*
-// Model Navigation / Management
-*/
-
-void AtenForm::on_ModelTabs_currentChanged(int n)
-{
-	msg.enter("AtenForm::on_ModelTabs_currentChanged");
-	// Different model tab has been selected, so set aten.currentmodel to reflect it.
-	aten.setCurrentModel(aten.model(n));
-	gui.update(TRUE,TRUE,TRUE);
-	msg.exit("AtenForm::on_ModelTabs_currentChanged");
-}
-
-void AtenForm::on_ModelTabs_doubleClicked(int tabid)
-{
-	msg.enter("AtenForm::on_ModelTabs_doubleClicked");
-	// Different model tab has been selected, so set aten.currentmodel to reflect it.
-	Model *m = aten.model(tabid);
-	if (m == NULL) return;
-	bool ok;
-	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
-	if (ok && !text.isEmpty())
-	{
-		CommandNode::run(Command::SetName, "c", qPrintable(text));
-		updateModelTabName(tabid, m);
-		updateWindowTitle();
-		gui.disorderWindow->refresh();
-	}
-	msg.exit("AtenForm::on_ModelTabs_doubleClicked");
-}
-
-void AtenForm::refreshModelTabs()
-{
-	msg.enter("AtenForm::refreshModelTabs");
-	// Set names on tabs
-	int tabid = 0;
-	for (Model *m = aten.models(); m != NULL; m = m->next)
-	{
-		updateModelTabName(tabid, m);
-		tabid ++;
-	}
-	gui.disorderWindow->refresh();
-	msg.exit("AtenForm::refreshModelTabs");
-}
-
-// Cancel progress indicator
-void AtenForm::progressCancel()
-{
-	gui.notifyProgressCanceled();
 }
 
 // Load recent file
@@ -402,6 +248,8 @@ void AtenForm::loadRecent()
 		{
 			msg.print(Messenger::Verbose,"Matched filename to loaded model.\n");
 			aten.setCurrentModel(m);
+			// Update GUI
+			gui.update(GuiQt::AllTarget);
 			return;
 		}
 	}
@@ -456,6 +304,16 @@ void AtenForm::addRecent(const char *filename)
 	actionRecentFile[last]->setVisible(TRUE);
 }
 
+void AtenForm::on_actionAboutAten_triggered(bool checked)
+{
+	gui.aboutDialog->showWindow();
+}
+
+void AtenForm::on_actionAboutQt_triggered(bool checked)
+{
+	QMessageBox::aboutQt(this, "About Qt");
+}
+
 // Update undo/redo actions in Edit menu
 void AtenForm::updateUndoRedo()
 {
@@ -486,160 +344,46 @@ void AtenForm::updateUndoRedo()
 	}
 }
 
-// Enable/disable manually-created widgets
-void AtenForm::setWidgetsEnabled(bool b)
+// Change current user action
+void AtenForm::uaButtonClicked(int id)
 {
-	// Must manually enable all widgets added to toolbars by hand. Bug in Qt?
-	forcefieldCombo_->setEnabled(b);
-	trajectorySlider_->setEnabled(b);
-	trajectorySpin_->setEnabled(b);
-	bondToleranceSpin_->setEnabled(b);
+	QAbstractButton *button;
+	// Check button correspondiong to supplied index
+	button = uaButtons_.button(id);
+	if (button == NULL) printf("Internal Error: AtenForm::uaButtonClicked - No button associated to id %i\n", id);
+	else if (button->isChecked()) gui.mainWidget->setSelectedMode((UserAction::Action) id);
 }
 
-/*
-// Window Show / Hide Functions
-*/
-
-void AtenForm::on_actionAtomlistWindow_triggered(bool checked)
+// Set action/button to reflect supplied user action
+void AtenForm::setActiveUserAction(UserAction::Action ua)
 {
-	if (checked)
+	// Set (check) relevant action or button based on supplied UserAction
+	QAbstractButton *button;
+	switch (ua)
 	{
-		gui.atomlistWindow->showWindow();
-		gui.atomlistWindow->refresh();
+		// No active mode
+		case (UserAction::NoAction):
+			uaDummyButton_->setChecked(TRUE);
+			ui.actionNoAction->setChecked(TRUE);
+			break;
+		// Three select QActions on main ToolBar
+		case (UserAction::SelectAction):
+		case (UserAction::SelectMoleculeAction):
+		case (UserAction::SelectElementAction):
+			uaDummyButton_->setChecked(TRUE);
+			break;
+		// All other actions are related to buttons elsewhere in the GUI
+		default:
+			ui.actionNoAction->setChecked(TRUE);
+			button = uaButtons_.button(ua);
+			if (button == NULL) printf("No button associated to user action %i.\n");
+			else button->setChecked(TRUE);
+			break;
 	}
-	else gui.atomlistWindow->hide();
 }
 
-void AtenForm::on_actionBuildWindow_triggered(bool checked)
+// Set message label text
+void AtenForm::setMessageLabel(const char *s)
 {
-	if (checked) gui.buildWindow->showWindow();
-	else gui.buildWindow->hide();
-}
-
-void AtenForm::on_actionTransformWindow_triggered(bool checked)
-{
-	if (checked) gui.transformWindow->showWindow();
-	else gui.transformWindow->hide();
-}
-
-void AtenForm::on_actionSelectWindow_triggered(bool checked)
-{
-	if (checked) gui.selectWindow->showWindow();
-	else gui.selectWindow->hide();
-}
-
-void AtenForm::on_actionPositionWindow_triggered(bool checked)
-{
-	if (checked) gui.positionWindow->showWindow();
-	else gui.positionWindow->hide();
-}
-
-void AtenForm::on_actionCellDefineWindow_triggered(bool checked)
-{
-	if (checked)
-	{
-		gui.cellDefineWindow->showWindow();
-		gui.cellDefineWindow->refresh();
-	}
-	else gui.cellDefineWindow->hide();
-}
-
-void AtenForm::on_actionCellTransformWindow_triggered(bool checked)
-{
-	if (checked)
-	{
-		gui.cellTransformWindow->showWindow();
-		gui.cellTransformWindow->refresh();
-	}
-	else gui.cellTransformWindow->hide();
-}
-
-void AtenForm::on_actionCommandWindow_triggered(bool checked)
-{
-	if (checked)
-	{
-		gui.commandWindow->showWindow();
-		gui.commandWindow->refresh();
-	}
-	else gui.commandWindow->hide();
-}
-
-void AtenForm::on_actionMinimiserWindow_triggered(bool checked)
-{
-	if (checked) gui.minimiserWindow->showWindow();
-	else gui.minimiserWindow->hide();
-}
-
-void AtenForm::on_actionDisorderWindow_triggered(bool checked)
-{
-	if (checked) gui.disorderWindow->showWindow();
-	else gui.disorderWindow->hide();
-}
-
-void AtenForm::on_actionForcefieldsWindow_triggered(bool checked)
-{
-	if (checked)
-	{
-		gui.forcefieldsWindow->showWindow();
-		gui.forcefieldsWindow->refresh();
-	}
-	else gui.forcefieldsWindow->hide();
-}
-
-void AtenForm::on_actionFragmentWindow_triggered(bool checked)
-{
-	if (checked) gui.fragmentWindow->showWindow();
-	else gui.fragmentWindow->hide();
-}
-
-void AtenForm::on_actionGeometryWindow_triggered(bool checked)
-{
-	if (checked) gui.geometryWindow->showWindow();
-	else gui.geometryWindow->hide();
-}
-
-void AtenForm::on_actionGridsWindow_triggered(bool checked)
-{
-	if (checked) gui.gridsWindow->showWindow();
-	else gui.gridsWindow->hide();
-}
-
-void AtenForm::on_actionGlyphsWindow_triggered(bool checked)
-{
-	if (checked) gui.glyphsWindow->showWindow();
-	else gui.glyphsWindow->hide();
-}
-
-void AtenForm::on_actionMolecularDynamicsWindow_triggered(bool checked)
-{
-	if (checked) gui.mdWindow->showWindow();
-	else gui.mdWindow->hide();
-}
-
-// void AtenForm::on_actionAnalyseWindow_triggered(bool checked)
-// {
-//	if (checked) gui.analyseWindow->showWindow();
-//	else gui.analyseWindow->hide();
-// }
-
-void AtenForm::on_actionVibrationsWindow_triggered(bool checked)
-{
-	if (checked) gui.vibrationsWindow->showWindow();
-	else gui.vibrationsWindow->hide();
-}
-
-void AtenForm::on_actionZMatrixEditorWindow_triggered(bool checked)
-{
-	if (checked) gui.zmatrixWindow->showWindow();
-	else gui.zmatrixWindow->hide();
-}
-
-void AtenForm::on_actionAboutAten_triggered(bool checked)
-{
-	gui.aboutDialog->showWindow();
-}
-
-void AtenForm::on_actionAboutQt_triggered(bool checked)
-{
-	QMessageBox::aboutQt(this, "About Qt");
+	messageLabel_->setText(s);
 }

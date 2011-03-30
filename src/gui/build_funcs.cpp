@@ -1,5 +1,5 @@
 /*
-	*** Qt build window functions
+	*** Build Dock Widget
 	*** src/gui/build_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -22,29 +22,164 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/build.h"
+#include "gui/toolbox.h"
+#include "gui/selectelement.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
 // Constructor
-AtenBuild::AtenBuild(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
+	// Set up interface
 	ui.setupUi(this);
-}
-
-// Destructor
-AtenBuild::~AtenBuild()
-{
+	
+	// Create a subgroup for the element select buttons
+	QButtonGroup *elementGroup = new QButtonGroup(this);
+	elementGroup->addButton(ui.ElementHButton);
+	elementGroup->addButton(ui.ElementCButton);
+	elementGroup->addButton(ui.ElementNButton);
+	elementGroup->addButton(ui.ElementCustomButton);
+	
+	// Add items to submenus for Rebond and Clear buttons
+	ui.DrawRebondMenuButton->addMenuItem("Model (no augment)", BuildWidget::ModelNoAugmentItem);
+	ui.DrawRebondMenuButton->addMenuItem("Selection", BuildWidget::SelectionItem);
+	ui.DrawRebondMenuButton->addMenuItem("Selection (no augment)", BuildWidget::SelectionNoAugmentItem);
+	ui.DrawRebondMenuButton->addMenuItem("Within Patterns", BuildWidget::PatternsItem);
+	ui.DrawRebondMenuButton->addMenuItem("Within Patterns (no augment)", BuildWidget::PatternsNoAugmentItem);
+	ui.DrawClearBondingMenuButton->addMenuItem("Selection", 0);
+	
+	// Private variables
+	customElement_ = 9;
 }
 
 // Show window
-void AtenBuild::showWindow()
+void BuildWidget::showWidget()
 {
-	//if (shouldRefresh_) refresh();
 	show();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
-void AtenBuild::on_AddAtomButton_clicked(bool on)
+/*
+// Edit Tab - Draw
+*/
+void BuildWidget::on_ElementHButton_clicked(bool checked)
+{
+	if (checked) gui.mainWidget->setSketchElement(1);
+}
+
+void BuildWidget::on_ElementCButton_clicked(bool checked)
+{
+	if (checked) gui.mainWidget->setSketchElement(6);
+}
+
+void BuildWidget::on_ElementNButton_clicked(bool checked)
+{
+	if (checked) gui.mainWidget->setSketchElement(7);
+}
+
+void BuildWidget::on_ElementOButton_clicked(bool checked)
+{
+	if (checked) gui.mainWidget->setSketchElement(8);
+}
+
+void BuildWidget::on_ElementCustomButton_clicked(bool checked)
+{
+	if (checked) gui.mainWidget->setSketchElement(customElement_);
+}
+
+void BuildWidget::on_ElementPickButton_clicked(bool checked)
+{
+	// Call the select element dialog...
+	int newel = gui.selectElementDialog->selectElement();
+	if (newel != -1)
+	{
+		// Set text of custom element button
+		ui.ElementCustomButton->setText( elements().symbol(newel) );
+		customElement_ = newel;
+		// Activate custom element button
+		ui.ElementCustomButton->setChecked(TRUE);
+		gui.mainWidget->setSketchElement(customElement_);
+	}
+}
+
+void BuildWidget::on_DrawAddHModelButton_clicked(bool checked)
+{
+	CommandNode::run(Command::AddHydrogen, "");
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+void BuildWidget::on_DrawTransmuteSelectionButton_clicked(bool checked)
+{
+	CommandNode::run(Command::Transmute, "i", gui.mainWidget->sketchElement());
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+}
+
+/*
+// Edit Tab - Bond
+*/
+
+void BuildWidget::on_DrawRebondButton_clicked(bool checked)
+{
+	CommandNode::run(Command::ReBond, "");
+	gui.update(GuiQt::CanvasTarget);
+}
+
+void BuildWidget::on_DrawClearBondingButton_clicked(bool checked)
+{
+	CommandNode::run(Command::ClearBonds, "");
+	gui.update(GuiQt::CanvasTarget);
+}
+
+void BuildWidget::on_DrawRebondMenuButton_menuItemClicked(int menuItemId)
+{
+	switch (menuItemId)
+	{
+		case (BuildWidget::ModelNoAugmentItem):
+			CommandNode::run(Command::ReBond, "i", 1);
+			break;
+		case (BuildWidget::SelectionItem):
+			CommandNode::run(Command::ReBondSelection, "");
+			break;
+		case (BuildWidget::SelectionNoAugmentItem):
+			CommandNode::run(Command::ReBondSelection, "i", 1);
+			break;
+		case (BuildWidget::PatternsItem):
+			CommandNode::run(Command::ReBondPatterns, "");
+			break;
+		case (BuildWidget::PatternsNoAugmentItem):
+			CommandNode::run(Command::ReBondPatterns, "i", 1);
+			break;
+		default:
+			printf("BuildWidget - Unhandled menu item from DrawRebondButton.\n");
+			break;
+	}
+	gui.update(GuiQt::CanvasTarget);
+}
+
+void BuildWidget::on_DrawClearBondingMenuButton_menuItemClicked(int menuItemId)
+{
+	// Only one action to consider,,.
+	if (menuItemId == 0)
+	{
+		CommandNode::run(Command::ClearSelectedBonds, "");
+		gui.update(GuiQt::CanvasTarget);
+	}
+	else printf("BuildWidget - Unhandled menu item from DrawRebondButton.\n");
+}
+
+void BuildWidget::on_DrawAugmentButton_clicked(bool checked)
+{
+	CommandNode::run(Command::Augment, "");
+	gui.update(GuiQt::CanvasTarget);
+}
+
+/*
+// Tools Tab - Add Atom
+*/
+
+void BuildWidget::on_AddAtomButton_clicked(bool on)
 {
 	if (ui.AddAtomFractionalCheck->isChecked())
 	{
@@ -54,10 +189,13 @@ void AtenBuild::on_AddAtomButton_clicked(bool on)
 	{
 		CommandNode::run(Command::NewAtom, "iddd", gui.mainWidget->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
-	gui.update();
+	gui.update(GuiQt::CanvasTarget);
 }
 
-void AtenBuild::dialogFinished(int result)
+void BuildWidget::closeEvent(QCloseEvent *event)
 {
-	gui.mainWindow->ui.actionBuildWindow->setChecked(FALSE);
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.BuildButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	event->accept();
 }

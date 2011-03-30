@@ -69,6 +69,27 @@ Dnchar::Dnchar(const char *s)
 	set(s);
 }
 
+Dnchar::Dnchar(int dummyparameter, const char *fmt, ...)
+{
+	// Private variables
+	data_ = NULL;
+	size_ = 0;
+	endPosition_ = 0;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into s[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	set(s);
+}
+
 // Copy constructor
 Dnchar::Dnchar(const Dnchar &source)
 {

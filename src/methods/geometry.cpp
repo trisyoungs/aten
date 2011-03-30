@@ -102,7 +102,7 @@ void Geometry::accumulate(Model *sourcemodel)
 	msg.enter("Geometry::accumulate");
 	int m1, m2, m3, m4, bin;
 	static Vec3<double> centre1, centre2, centre3, centre4;
-	Cell *cell = sourcemodel->cell();
+	UnitCell *cell = sourcemodel->cell();
 	double geom;
 	if (nSites_ == 2)
 	{

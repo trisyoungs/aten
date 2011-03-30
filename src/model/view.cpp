@@ -27,6 +27,8 @@
 void Model::setRenderSource(Model::RenderSource rs)
 {
 	renderSource_ = rs;
+	// Log a visual change here so we make sure that the GUI is updated properly
+	changeLog.add(Log::Visual);
 }
 
 // Return rendering source
@@ -60,19 +62,82 @@ bool Model::renderFromVibration()
 	return renderFromVibration_;
 }
 
+// Return whether stored pixel data is valid
+bool Model::pixelDataIsValid(int currentwidth, int currentheight, Model *source, int logpoint)
+{
+	if (parent_ != NULL) return parent_->pixelDataIsValid(currentwidth, currentheight, source, logpoint);
+	else
+	{
+// 		printf("Model [%s] : data = %p, wxh = %ix%i, new wxh = %ix%i, source = %p, newsource = %p, lp = %i, newlp = %i\n", name_.get(), pixelData_, pixelDataWidth_, pixelDataHeight_, currentwidth, currentheight, pixelDataSource_, source, pixelDataLogPoint_, logpoint);
+		// First, check for presence of array data
+		if (pixelData_ == NULL) return FALSE;
+		// Second, check width and height
+		if ((currentwidth != pixelDataWidth_) || (currentheight != pixelDataHeight_)) return FALSE;
+		// Third, check model source
+		if (pixelDataSource_ != source) return FALSE;
+		// Lastly, check logpoint
+		return (pixelDataLogPoint_ == logpoint);
+	}
+}
+
+// Prepare pixel data buffer
+void Model::preparePixelData(int width, int height, Model *source, int logpoint)
+{
+	// Forward to parent model if one is defined
+	if (parent_ != NULL) parent_->preparePixelData(width, height, source, logpoint);
+	else
+	{
+		// Reallocate array if necessary
+		if ((width != pixelDataWidth_) || (height != pixelDataHeight_))
+		{
+			// Deallocate old array if necessary
+			if (pixelData_ != NULL) delete[] pixelData_;
+			pixelDataWidth_ = width;
+			pixelDataHeight_ = height;
+			pixelData_ = new GLubyte[4*pixelDataWidth_*pixelDataHeight_];
+		}
+		// Set new log point and source model
+		pixelDataSource_ = source;
+		pixelDataLogPoint_ = logpoint;
+	}
+}
+
+// Return pixel data buffer pointer
+GLubyte *Model::pixelData()
+{
+	if (parent_ != NULL) return parent_->pixelData();
+	else return pixelData_;
+}
+
 // Set the current modelview matrix
 void Model::setModelViewMatrix(Matrix &rmat)
 {
 	if (parent_ == NULL) modelViewMatrix_ = rmat;
 	else parent_->setModelViewMatrix(rmat);
-	// Log camera change
-	changeLog.add(Log::Camera);
 }
 
 // Return the current modelview matrix
 Matrix &Model::modelViewMatrix()
 {
 	return (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
+}
+
+// Return the viewportMatrix
+GLint *Model::viewportMatrix()
+{
+	return (parent_ == NULL ? viewportMatrix_ : parent_->viewportMatrix());
+}
+
+// Return current projection matrix
+Matrix &Model::modelProjectionMatrix()
+{
+	return (parent_ == NULL ? modelProjectionMatrix_ : parent_->modelProjectionMatrix());
+}
+
+// Return current globe projection matrix
+Matrix &Model::globeProjectionMatrix()
+{
+	return (parent_ == NULL ? globeProjectionMatrix_ : parent_->globeProjectionMatrix());
 }
 
 // Spin the model about the z axis
@@ -91,8 +156,6 @@ void Model::zRotateView(double dz)
 		modelViewMatrix_ = newrotmat * modelViewMatrix_;
 	}
 	else parent_->zRotateView(dz);
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::zRotateView");
 }
 
@@ -108,8 +171,7 @@ void Model::adjustCamera(double dx, double dy, double dz)
 		if (modelViewMatrix_[14] > -1.0) modelViewMatrix_[14] = -1.0;
 	}
 	else parent_->adjustCamera(dx, dy, dz);
-	// Log camera change
-	changeLog.add(Log::Camera);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::adjustCamera");
 }
 
@@ -121,7 +183,7 @@ void Model::adjustZoom(bool zoomin)
 	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz);
-	gui.mainWidget->doProjection();
+	changeLog.add(Log::Visual);
 	msg.exit("Model::adjustZoom");
 }
 
@@ -153,16 +215,13 @@ void Model::resetView()
 	// Need to do a check for the viability of the canvas first...
 	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
 	{
-		// TODO Resetting orthographic view is broken, since modelProjectionMatrix_ (in engine_) is not updated
-		// after changing zoom factor (relevant call to glOrtho)
 		do
 		{
 			// Adjust z-translation by 1 Angstrom
 			mview[14] -= 1.0;
 			// Project our local atom and grab the z screen coordinate
-			if (!prefs.hasPerspective()) gui.mainWidget->doProjection();
-			gui.mainWidget->updateTransformation(mview, cell_.centre());
-			gui.mainWidget->modelToWorld(target, &screenr);
+			setupView(0, 0, gui.mainWidget->contextWidth(), gui.mainWidget->contextHeight());
+			modelToWorld(target, &screenr);
 			done = TRUE;
 			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
 			if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
@@ -170,8 +229,7 @@ void Model::resetView()
 		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
-	// Log camera change
-	changeLog.add(Log::Camera);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::resetView");
 }
 
@@ -190,8 +248,7 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 		modelViewMatrix_ = newrotmat * oldrotmat;
 	}
 	else parent_->axisRotateView(vec, angle);
-	// Log camera change
-	changeLog.add(Log::Camera);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::axisRotateView");
 }
 
@@ -208,8 +265,7 @@ void Model::setRotation(double rotx, double roty)
 		modelViewMatrix_.copyTranslationAndScaling(temp);
 	}
 	else parent_->setRotation(rotx, roty);
-	// Log camera change
-	changeLog.add(Log::Camera);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::setRotation");
 }
 
@@ -233,8 +289,7 @@ void Model::rotateView(double dx, double dy)
 		modelViewMatrix_ = newrotmat * modelViewMatrix_;
 	}
 	else parent_->rotateView(dx, dy);
-	// Log camera change
-	changeLog.add(Log::Camera);
+	changeLog.add(Log::Visual);
 	msg.exit("Model::rotateView");
 }
 
@@ -258,8 +313,6 @@ void Model::viewAlong(double x, double y, double z)
 	v.toSpherical();
 	// setRotation() expects the degrees of rotation about the x and y axes respectively
 	setRotation(-v.y,fabs(v.z-180.0));
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlong");
 }
 
@@ -274,7 +327,128 @@ void Model::viewAlongCell(double x, double y, double z)
 	v.toSpherical();
 	// setRotation() expects the degrees of rotation about the x and y axes respectively
 	setRotation(-v.y,fabs(v.z-180.0));
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlongCell");
+}
+
+
+// Set-up viewport and projection matrices
+void Model::setupView(GLint x, GLint y, GLint w, GLint h)
+{
+	if (parent_ == NULL)
+	{
+		// Setup and store viewport matrix
+		viewportMatrix_[0] = x;
+		viewportMatrix_[1] = y;
+		viewportMatrix_[2] = w;
+		viewportMatrix_[3] = h;
+		glViewport( x, y, w, h );
+		glMatrixMode(GL_PROJECTION);
+		
+		// Create projection matrix for rotation globe
+		glLoadIdentity();
+		glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
+		glGetDoublev(GL_PROJECTION_MATRIX, globeProjectionMatrix_.matrix());
+		
+		// Create projection matrix for model
+		glLoadIdentity();
+		GLdouble top, bottom, aspect = (GLdouble) w / (GLdouble) h;
+		if (prefs.hasPerspective())
+		{
+			// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
+			bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
+			top = -bottom;
+			glFrustum(aspect*top, aspect*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
+		}
+		else
+		{
+			top = tan(prefs.perspectiveFov() / DEGRAD) * modelViewMatrix_[14];
+			bottom = -top;
+			glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
+		}
+		glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
+		glMatrixMode(GL_MODELVIEW);
+	}
+	else parent_->setupView(x, y, w, h);
+}
+
+// Project given model coordinates into world coordinates (and screen coordinates if requested)
+Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, double screenradius)
+{
+	msg.enter("Model::modelToWorld");
+	static Vec3<double> worldr;
+	static Matrix vmat;
+	Vec4<double> pos, temp, tempscreen;
+	// Projection formula is : worldr = P x M x modelr
+	pos.set(modelr, 1.0);
+	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
+	vmat = modelViewMatrix();
+	vmat.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
+	temp = vmat * pos;
+	worldr.set(temp.x, temp.y, temp.z);
+	// Calculate 2D screen coordinates - Multiply world coordinates by P
+	if (screenr != NULL)
+	{
+		*screenr = modelProjectionMatrix() * temp;
+		screenr->x /= screenr->w;
+		screenr->y /= screenr->w;
+		screenr->x = viewportMatrix()[0] + viewportMatrix()[2]*(screenr->x+1)*0.5;
+		screenr->y = viewportMatrix()[1] + viewportMatrix()[3]*(screenr->y+1)*0.5;
+		screenr->z = screenr->z / screenr->w;
+		// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
+		if (screenradius > 0.0)
+		{
+			temp.x += screenradius;
+			tempscreen = modelProjectionMatrix() * temp;
+			tempscreen.x /= tempscreen.w;
+			screenr->w = fabs( (viewportMatrix()[0] + viewportMatrix()[2]*(tempscreen.x+1)*0.5) - screenr->x);
+		}
+	}
+	msg.exit("Model::modelToWorld");
+	return worldr;
+}
+
+// Convert screen coordinates into modelspace coordinates
+Vec3<double> &Model::screenToModel(int x, int y, double z)
+{
+	msg.enter("Model::screenToModel");
+	static Vec3<double> modelr;
+	Vec4<double> temp, worldr;
+	int newx, newy;
+	double dx, dy;
+	
+	// Grab transformation matrix, apply cell centre correction, and invert
+	Matrix itransform = modelViewMatrix_;
+	itransform.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
+	itransform.invert();
+	
+	// Mirror y-coordinate
+	y = viewportMatrix()[3] - y;
+
+	// Project points at guide z-position and two other points along literal x and y to get scaling factors for screen coordinates
+	worldr.set(0.0,0.0,z, 1.0);
+	temp = modelProjectionMatrix() * worldr;
+	newx = viewportMatrix()[0] + viewportMatrix()[2]*(temp.x / temp.w + 1.0)*0.5;
+	newy = viewportMatrix()[1] + viewportMatrix()[3]*(temp.y / temp.w + 1.0)*0.5;
+		
+	for (int n=0; n<10; ++n)
+	{
+		// Determine new (better) coordinate from a yardstick centred at current world coordinates
+		temp = modelProjectionMatrix() * Vec4<double>(worldr.x+1.0, worldr.y+1.0, worldr.z, worldr.w);
+		dx = viewportMatrix()[0] + viewportMatrix()[2]*(temp.x / temp.w + 1.0)*0.5 - newx;
+		dy = viewportMatrix()[1] + viewportMatrix()[3]*(temp.y / temp.w + 1.0)*0.5 - newy;
+
+		worldr.add((x-newx)/dx, (y-newy)/dy, 0.0, 0.0);
+// 		printf ("N=%i", n); worldr.print();
+		temp = modelProjectionMatrix() * worldr;
+		newx = viewportMatrix()[0] + viewportMatrix()[2]*(temp.x / temp.w + 1.0)*0.5;
+		newy = viewportMatrix()[1] + viewportMatrix()[3]*(temp.y / temp.w + 1.0)*0.5;
+// 		printf("NEW dx = %f, dy = %f, wantedxy = %f, %f\n", newx, newy, x, y);
+		if ((x == newx) && (y == newy)) break;
+	}
+	
+	// Finally, invert to model coordinates
+	modelr = itransform * Vec3<double>(worldr.x, worldr.y, worldr.z);
+	
+	msg.exit("Model::screenToModel");
+	return modelr;
 }

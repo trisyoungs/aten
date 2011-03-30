@@ -29,7 +29,7 @@ class Messenger
 	// Constructor
 	Messenger();
 	// Messaging output types
-	enum OutputType { All, Calls, Commands, Error, GL, Parse, Test, Typing, Verbose, nOutputTypes };
+	enum OutputType { All, Calls, Commands, Always, GL, Parse, Test, Typing, Verbose, nOutputTypes };
 	// Convert text string to debug mode
 	static OutputType outputType(const char *name, bool reporterror = 0);
 	// Convert debug mode to text string
@@ -64,6 +64,8 @@ class Messenger
 	public:
 	// Print normal message
 	void print(const char* ...) const;
+	// Print rich message (for GUI, plain for console) including html formatting
+	void richPrint(const char* ...) const;
 	// Print message in specific output level
 	void print(Messenger::OutputType, const char* ...) const;
 	// Entrances / exits to / from subroutines

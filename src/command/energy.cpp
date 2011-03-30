@@ -64,7 +64,6 @@ bool Command::function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &
 	}
 	// Set method
 	prefs.setElectrostaticsMethod(em);
-	prefs.setCalculateElec(em == Electrostatics::None ? FALSE : TRUE);
 	return TRUE;
 }
 
@@ -75,7 +74,7 @@ bool Command::function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	double energy;
 	bool success;
 	if (!obj.m->createExpression()) return FALSE;
-	energy = obj.m->totalEnergy(obj.rs, success);
+	energy = obj.m->totalEnergy(obj.rs(), success);
 	rv.set(energy);
 	return success;
 }
@@ -96,7 +95,7 @@ bool Command::function_ModelEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PrintElec(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.m->energy.printElecMatrix(obj.rs);
+	obj.m->energy.printElecMatrix(obj.rs());
 	rv.reset();
 	return TRUE;
 }
@@ -123,7 +122,7 @@ bool Command::function_PrintEwald(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PrintInter(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.m->energy.printInterMatrix(obj.rs);
+	obj.m->energy.printInterMatrix(obj.rs());
 	rv.reset();
 	return TRUE;
 }
@@ -132,7 +131,7 @@ bool Command::function_PrintInter(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PrintIntra(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.m->energy.printIntraMatrix(obj.rs);
+	obj.m->energy.printIntraMatrix(obj.rs());
 	rv.reset();
 	return TRUE;
 }
@@ -150,7 +149,7 @@ bool Command::function_PrintSummary(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.m->energy.printVdwMatrix(obj.rs);
+	obj.m->energy.printVdwMatrix(obj.rs());
 	rv.reset();
 	return TRUE;
 }

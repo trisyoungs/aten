@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: View Basis Dialog
+	*** View Basis Dialog
 	*** src/gui/viewbasis.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -58,7 +58,6 @@ class AtenViewBasis : public QDialog
 	public:
 	// Constructor / Destructor
 	AtenViewBasis(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenViewBasis();
 	// Main form declaration
 	Ui::ViewBasisDialog ui;
 };

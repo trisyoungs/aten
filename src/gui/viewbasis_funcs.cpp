@@ -35,11 +35,6 @@ AtenViewBasis::AtenViewBasis(QWidget *parent, Qt::WindowFlags flags) : QDialog(p
 	ui.setupUi(this);
 }
 
-// Destructor
-AtenViewBasis::~AtenViewBasis()
-{
-}
-
 void AtenViewBasis::showWindow(Model *m)
 {
 	// Clear old contents

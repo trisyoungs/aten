@@ -31,7 +31,7 @@ class Log
 	// Operator == (test equivalence of all log values except Total)
 	bool operator==(Log &l) const;
 	// Log types
-	enum LogType { Structure, Coordinates, Visual, Selection, Camera, Glyphs, Misc, Total, nLogTypes };
+	enum LogType { Structure, Coordinates, Visual, Selection, Glyphs, Misc, Total, nLogTypes };
 	// Structure  : create/destroy atoms/bonds, change elements, change order of atoms
 	// Coordinate : atomic coordinates
 	// Visual     : visual changes that require re-rendering

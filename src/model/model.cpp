@@ -31,17 +31,22 @@
 #include "classes/forcefieldatom.h"
 #include "base/elements.h"
 #include "base/pattern.h"
+#include "gui/gui.h"
 
 // Constructors
 Model::Model()
 {
 	// Private variables
 	parent_ = NULL;
-// 	type_ = Model::ParentModel;
+	visible_ = FALSE;
 
 	// Camera / View / render
 	modelViewMatrix_.setIdentity();
 	modelViewMatrix_[14] = -10.0;
+	pixelData_ = NULL;
+	pixelDataLogPoint_ = -1;
+	pixelDataWidth_ = -1;
+	pixelDataHeight_ = -1;
 	renderSource_ = Model::ModelSource;
 	renderFromVibration_ = FALSE;
 
@@ -80,15 +85,12 @@ Model::Model()
 	trajectoryPlaying_ = FALSE;
 	trajectoryCurrentFrame_ = NULL;
 
-	// Disordered builder
-	componentPattern_ = NULL;
-	nRequested_ = 0;
-	region_.setParent(this);
-	moveAllowed_[MonteCarlo::Insert] = TRUE;
-	moveAllowed_[MonteCarlo::Delete] = FALSE;
-	moveAllowed_[MonteCarlo::Translate] = TRUE;
-	moveAllowed_[MonteCarlo::Rotate] = TRUE;
-	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
+	// Component
+	componentInsertionPolicy_ = Model::NoPolicy;
+	componentPartition_ = 0;
+	componentPopulation_ = 0;
+	componentDensity_ = 1.0;
+	componentRotatable_ = TRUE;
 
 	// Misc Function Data
 	bondingCuboids_ = NULL;
@@ -208,6 +210,51 @@ Model::ModelType Model::type()
 	return type_;
 }
 
+// Regenerate icon
+void Model::regenerateIcon()
+{
+	// Generate pixmap for fragment, keeping current primitive quality
+	bool reusePrims = prefs.reusePrimitiveQuality();
+	prefs.setReusePrimitiveQuality(TRUE);
+	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
+	
+	prefs.setFrameCurrentModel(FALSE);
+	prefs.setFrameWholeView(FALSE);
+	prefs.setViewRotationGlobe(FALSE);
+	gui.mainWidget->setRenderSource(this);
+	gui.mainWidget->setOffScreenRendering(TRUE);
+
+	if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget->renderPixmap(100, 100, FALSE);
+	else icon_ = QPixmap::fromImage(gui.mainWidget->grabFrameBuffer());
+
+	prefs.setFrameCurrentModel(framemodel);
+	prefs.setFrameWholeView(frameview);
+	prefs.setViewRotationGlobe(viewglobe);
+	
+	gui.mainWidget->setRenderSource(NULL);
+
+	gui.mainWidget->setOffScreenRendering(FALSE);
+	prefs.setReusePrimitiveQuality(reusePrims);
+}
+
+// Return icon
+QIcon &Model::icon()
+{
+	return icon_;
+}
+
+// Set whether model is visible
+void Model::setVisible(bool b)
+{
+	visible_ = b;
+}
+
+// Return whether model is visible
+bool Model::isVisible()
+{
+	return visible_;
+}
+
 /*
 // Labelling
 */
@@ -258,24 +305,28 @@ void Model::clearLabels(Atom *i)
 void Model::clearAllLabels()
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) clearLabels(i);
+	changeLog.add(Log::Visual);
 }
 
 // Clear all labels in selection
 void Model::selectionClearLabels()
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) clearLabels(i);
+	changeLog.add(Log::Visual);
 }
 
 // Remove specific labels in selection
 void Model::selectionRemoveLabels(Atom::AtomLabel al)
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) removeLabel(i, al);
+	changeLog.add(Log::Visual);
 }
 
 // Add atom labels
 void Model::selectionAddLabels(Atom::AtomLabel al)
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addLabel(i, al);
+	changeLog.add(Log::Visual);
 }
 
 /*
@@ -297,13 +348,12 @@ void Model::printCoords() const
 // Bohr to Angstrom
 void Model::bohrToAngstrom()
 {
-	// Convert coordinates and cell from Bohr to Angstrom
 	msg.enter("Model::bohrToAngstrom");
 	// Coordinates
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
 	// Cell
-	Cell::CellType ct = cell_.type();
-	if (ct != Cell::NoCell)
+	UnitCell::CellType ct = cell_.type();
+	if (ct != UnitCell::NoCell)
 	{
 		Vec3<double> lengths = cell_.lengths();
 		lengths *= ANGBOHR;
@@ -336,9 +386,9 @@ void Model::print() const
 	msg.print("   Name : %s\n", name_.get());
 	msg.print("   File : %s\n", filename_.get());
 	msg.print("   Mass : %f\n", mass_);
-	if (cell_.type() != Cell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", Cell::cellType(cell_.type()), density_, Prefs::densityUnit(prefs.densityUnit()));
+	if (cell_.type() != UnitCell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", UnitCell::cellType(cell_.type()), density_, Prefs::densityUnit(prefs.densityUnit()));
 	msg.print("  Atoms : %i\n", atoms_.nItems());
-	msg.print(" Id     El   FFType    FFId           X             Y             Z              Q        S  \n");
+	msg.print(" Id     El   FFType    FFId         X             Y             Z              Q      Sel Fix\n");
 	// Print from pattern definition if possible, otherwise just use model atom list
 	Atom *i;
 	int n;
@@ -379,12 +429,20 @@ void Model::copy(Model *srcmodel)
 {
 	// Clear any current contents of the model
 	clear();
+	// Copy name
+	name_ = srcmodel->name_;
 	// Copy atoms
 	for (Atom *i = srcmodel->atoms(); i != NULL; i = i->next) addCopy(i);
 	// Copy bonds
 	for (Bond *b = srcmodel->bonds(); b != NULL; b = b->next) bondAtoms(b->atomI()->id(), b->atomJ()->id(), b->type());
 	// Copy unit cell
 	cell_ = srcmodel->cell_;
+	// Copy component information
+	componentInsertionPolicy_ = srcmodel->componentInsertionPolicy_;
+	componentDensity_ = srcmodel->componentDensity_;
+	componentPartition_ = srcmodel->componentPartition_;
+	componentPopulation_ = srcmodel->componentPopulation_;
+	componentRotatable_ = srcmodel->componentRotatable_;
 }
 
 // Copy atom data from specified model

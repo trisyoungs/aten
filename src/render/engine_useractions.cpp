@@ -24,7 +24,7 @@
 #include "model/fragment.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
-#include "gui/fragment.h"
+#include "gui/fragments.h"
 
 // Render addition elements related to selected/active UserActions
 void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanvas *canvas)
@@ -34,6 +34,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 	GLfloat colour[4], colour_j[4];
 	Atom::DrawStyle style_i, style_j;
 	Vec3<double> pos, rmouse, v;
+	Bond::BondType bt = Bond::Single;
 	double radius_i, radius_j;
 	Dnchar text;
 	Fragment *frag;
@@ -63,12 +64,16 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 		}
 	}
 
-	
 	// Active user actions
 	i = canvas->atomClicked();
 	switch (canvas->activeMode())
 	{
 		// Draw on bond and new atom for chain drawing (if mode is active)
+		case (UserAction::DrawBondSingleAction):
+		case (UserAction::DrawBondDoubleAction):
+		case (UserAction::DrawBondTripleAction):
+			if (i == NULL) i = (gui.mainWidget->pickedAtoms() != NULL ? gui.mainWidget->pickedAtoms()->item : NULL);
+			bt = (Bond::BondType) (1+canvas->activeMode()-UserAction::DrawBondSingleAction);
 		case (UserAction::DrawChainAction):
 			if (i == NULL) break;
 			pos = i->r();
@@ -83,7 +88,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			if (j == NULL)
 			{
 				j = &tempj;
-				v = screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
+				v = source->screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
 				style_j = (prefs.renderStyle() == Atom::IndividualStyle ? Atom::StickStyle : prefs.renderStyle());
 				j->setStyle(style_j);
 			}
@@ -126,7 +131,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			A.applyTranslation(pos);
 			
 			// Render new (temporary) bond
-			renderBond(A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, Bond::Single, 0, prefs.selectionScale());
+			renderBond(A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, bt, 0, prefs.selectionScale());
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
@@ -140,15 +145,15 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 	{
 		// Draw on fragment (as long as mode is selected)
 		case (UserAction::DrawFragmentAction):
-			if (gui.fragmentWindow->currentFragment() == NULL) break;
-			frag = gui.fragmentWindow->currentFragment();
+			if (gui.fragmentsWidget->currentFragment() == NULL) break;
+			frag = gui.fragmentsWidget->currentFragment();
 			j = source->atomOnScreen(canvas->rMouseLast().x, canvas->rMouseLast().y);
 			if ((i != NULL) || (j != NULL))
 			{
 				// Atom is now fragment anchor point - make sure we select a non-null atom i or j
 				if (i != NULL) j = i;
 				pos = j->r();
-				Model *m = frag->anchoredModel(j, canvas->keyModifier(Prefs::ShiftKey), gui.fragmentWindow->bondId());
+				Model *m = frag->anchoredModel(j, canvas->keyModifier(Prefs::ShiftKey), gui.fragmentsWidget->bondId());
 
 				A = modelTransformationMatrix_;
 				A.applyTranslation(pos);	
@@ -162,10 +167,10 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			}
 			else
 			{
-				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
+				// No atom under the mouse pointer, so draw on at the prefs drawing depth in its current orientation
 				// Get drawing point origin, translate to it, and render the stored model
-				if (canvas->activeMode() == UserAction::DrawFragmentAction) pos = screenToModel(canvas->rMouseDown().x, canvas->rMouseDown().y, prefs.drawDepth());
-				else pos = screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());
+				if (canvas->activeMode() == UserAction::DrawFragmentAction) pos = source->screenToModel(canvas->rMouseDown().x, canvas->rMouseDown().y, prefs.drawDepth());
+				else pos = source->screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());
 				A = modelTransformationMatrix_;
 				A.applyTranslation(pos);
 				renderModel(frag->orientedModel(), A, canvas);

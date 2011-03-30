@@ -67,17 +67,17 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addangle",		VTypes::NoData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
-	{ "addbond",		VTypes::NoData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
-	{ "addinter",		VTypes::NoData,	Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
-	{ "addtorsion",		VTypes::NoData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
-	{ "addtype",		VTypes::IntegerData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
-	{ "finalise",		VTypes::NoData, Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) },
-	{ "findangle",		VTypes::ForcefieldBoundData, "CCC",	"string typei, string typej, string typek" },
-	{ "findbond",		VTypes::ForcefieldBoundData, "CC",	"string typei, string typej" },
-	{ "findimproper",	VTypes::ForcefieldBoundData, "CCCC",	"string typei, string typej, string typek, string typel" },
-	{ "findtorsion",	VTypes::ForcefieldBoundData, "CCCC",	"string typei, string typej, string typek, string typel" },
-	{ "findureybradley",	VTypes::ForcefieldBoundData, "CCC",	"string typei, string typej, string typek" }
+	{ "addangle",		VTypes::NoData,			Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
+	{ "addbond",		VTypes::NoData,			Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
+	{ "addinter",		VTypes::NoData,			Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
+	{ "addtorsion",		VTypes::NoData,			Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
+	{ "addtype",		VTypes::ForcefieldAtomData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
+	{ "finalise",		VTypes::NoData, 		Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) },
+	{ "findangle",		VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" },
+	{ "findbond",		VTypes::ForcefieldBoundData, 	"CC",					"string typei, string typej" },
+	{ "findimproper",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
+	{ "findtorsion",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
+	{ "findureybradley",	VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -166,7 +166,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Forcefield *ptr= (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
+	Forcefield *ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
@@ -271,7 +271,7 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Forcefield *ptr= (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
+	Forcefield *ptr = (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));

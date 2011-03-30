@@ -1,7 +1,7 @@
 /*
 	*** User actions
 	*** src/gui/useractions.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -28,7 +28,7 @@ class UserAction
 	public:
 
 	// Actions
-	enum Action { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction, nUserActions };
+	enum Action { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, PickPositionVectorShiftAction, PickTransformRotateAxisAction, PickTransformDefineAAction, PickTransformDefineBAction, PickTransformDefineCAction, PickConvertDefineSourceAAction, PickConvertDefineSourceBAction, PickConvertDefineSourceCAction, PickConvertDefineTargetAAction, PickConvertDefineTargetBAction, PickConvertDefineTargetCAction, nUserActions };
 
 	// Action texts
 	const char *name;

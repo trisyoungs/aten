@@ -85,7 +85,7 @@ class Program
 	// Return first defined global function
 	Tree *globalFunctions();
 	// Execute specified global function
-	bool executeGlobalFunction(const char *name, ReturnValue &rv, const char *arglist ...);
+	bool executeGlobalFunction(const char *name, ReturnValue &rv, const char* arglist, ...);
 	// Delete specified tree
 	void deleteTree(Tree *t);
 	// Return whether the Program is being generated from a filterfile

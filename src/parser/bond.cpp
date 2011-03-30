@@ -149,7 +149,7 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Bond *ptr= (Bond*) rv.asPointer(VTypes::BondData, result);
+	Bond *ptr = (Bond*) rv.asPointer(VTypes::BondData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BondData));
@@ -239,7 +239,7 @@ bool BondVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Bond *ptr= (Bond*) sourcerv.asPointer(VTypes::BondData, result);
+	Bond *ptr = (Bond*) sourcerv.asPointer(VTypes::BondData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BondData));
@@ -269,7 +269,7 @@ bool BondVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Bond *ptr= (Bond*) rv.asPointer(VTypes::BondData, result);
+	Bond *ptr = (Bond*) rv.asPointer(VTypes::BondData, result);
 	if (result) switch (i)
 	{
 		case (BondVariable::Partner):

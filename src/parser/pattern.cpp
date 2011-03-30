@@ -50,8 +50,6 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 	{ "angles", 	VTypes::PatternBoundData,	-1, TRUE },
 	{ "atoms", 	VTypes::AtomData,		-1, TRUE },
 	{ "bonds", 	VTypes::PatternBoundData,	-1, TRUE },
-	{ "cog", 	VTypes::VectorData,		-1, TRUE },
-	{ "com", 	VTypes::VectorData,		-1, TRUE },
 	{ "ffangles",	VTypes::ForcefieldBoundData,	0, TRUE },
 	{ "ffbonds",	VTypes::ForcefieldBoundData,	0, TRUE },
 	{ "fftorsions",	VTypes::ForcefieldBoundData,	0, TRUE },
@@ -78,7 +76,9 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor PatternVariable::functionData[PatternVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "atomsinring",	VTypes::IntegerData,	"Ii",	"int i, int j = -1" },
+	{ "cog", 		VTypes::VectorData,	"I",	"int id" },
+	{ "com", 		VTypes::VectorData,	"I",	"int id" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -167,7 +167,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Pattern *ptr= (Pattern*) rv.asPointer(VTypes::PatternData, result);
+	Pattern *ptr = (Pattern*) rv.asPointer(VTypes::PatternData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternData));
@@ -201,12 +201,6 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
-			break;
-		case (PatternVariable::Cog):
-			rv.set(ptr->calculateCog(arrayIndex-1));
-			break;
-		case (PatternVariable::Com):
-			rv.set(ptr->calculateCom(arrayIndex-1));
 			break;
 		case (PatternVariable::FFAngles):
 			if (!hasArrayIndex)
@@ -390,7 +384,7 @@ bool PatternVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Pattern *ptr= (Pattern*) sourcerv.asPointer(VTypes::PatternData, result);
+	Pattern *ptr = (Pattern*) sourcerv.asPointer(VTypes::PatternData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternData));
@@ -430,9 +424,43 @@ bool PatternVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Pattern *ptr= (Pattern*) rv.asPointer(VTypes::PatternData, result);
+	Pattern *ptr = (Pattern*) rv.asPointer(VTypes::PatternData, result);
+	int index, id_i, id_j;
 	if (result) switch (i)
 	{
+		case (PatternVariable::AtomsInRing):
+			id_i = node->argi(0) - 1;
+			if ((id_i < 0) || (id_i >= ptr->nAtoms()))
+			{
+				msg.print("First atom id %i is out of range for 'atomsinring' function in pattern '%s'.\n", id_i, ptr->name());
+				result = FALSE;
+			}
+			id_j = node->hasArg(1) ? node->argi(1)-1 : -1;
+			if ((id_j != -1) && (id_j < 0) || (id_j >= ptr->nAtoms()))
+			{
+				msg.print("Second atom id %i is out of range for 'atomsinring' function in pattern '%s'.\n", id_j, ptr->name());
+				result = FALSE;
+			}
+			if (result) rv.set(ptr->atomsInRing(id_i, id_j));
+			break;
+		case (PatternVariable::Cog):
+			index = node->argi(0);
+			if ((index < 1) || (index > ptr->nMolecules()))
+			{
+				msg.print("Molecule id %i is out of range for 'cog' function in pattern '%s'.\n", index, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(ptr->calculateCog(index-1));
+			break;
+		case (PatternVariable::Com):
+			index = node->argi(0);
+			if ((index < 1) || (index > ptr->nMolecules()))
+			{
+				msg.print("Molecule id %i is out of range for 'com' function in pattern '%s'.\n", index, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(ptr->calculateCom(index-1));
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in PatternVariable.\n", functionData[i].name);
 			result = FALSE;

@@ -49,8 +49,6 @@ class Fragment
 	Atom *masterLinkAtom_;
 	// Bond partner for link atom (if any)
 	Atom *masterLinkPartner_;
-	// QPixmap containing miniature picture of fragment
-	QIcon icon_;
 	// Set link partner
 	void setLinkPartner();
 
@@ -59,9 +57,7 @@ class Fragment
 	bool setMasterModel(Model *m);
 	// Return model pointer
 	Model *masterModel();
-	// Set icon for fragment
-	void setIcon(QPixmap &pixmap);
-	// Return icon
+	// Return icon (from masterModel_)
 	QIcon &icon();
 	// Cycle link atom
 	void cycleLinkAtom();

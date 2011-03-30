@@ -24,6 +24,7 @@
 #include "classes/forcefieldatom.h"
 #include "main/aten.h"
 #include "gui/gui.h"
+#include "gui/forcefields.h"
 
 // Return the forcefield used by the model
 Forcefield *Model::forcefield()
@@ -134,10 +135,16 @@ void Model::setForcefield(Forcefield *newff)
 }
 
 // Create full forcefield expression for model
-bool Model::createExpression(bool vdwOnly, bool allowDummy)
+bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
 	msg.enter("Model::createExpression");
+	
+	// Resolve supplied choices
+	vdwOnly.resolve(FALSE);
+	allowDummy.resolve(FALSE);
+	assignCharges.resolve( gui.exists() ? gui.forcefieldsWidget->ui.AssignFFChargesCheck->isChecked() : TRUE);
+	
 	// 0) If the expression is already valid, just update scaling terms in pattern matrices and return
 	if (isExpressionValid() && (vdwOnly == expressionVdwOnly_))
 	{
@@ -156,13 +163,15 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 	expressionPoint_ = -1;
 	if (expressionVdwOnly_) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
 	else msg.print("Creating expression for model %s...\n",name_.get());
-	// 1) Assign internal atom type data (hybridisations).
+	
+	// 1) Assign forcefield types to all atoms
 	if (!typeAll())
 	{
 		msg.print("Couldn't type atoms.\n");
 		msg.exit("Model::createExpression");
 		return FALSE;
 	}
+	
 	// 2) Remove old expression data and create new
 	bool done;
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
@@ -192,7 +201,6 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 					if (dialog.executeCustomDialog(FALSE, title.get()))
 					{
 						int choice = dialog.widgetValuei("choices");
-						printf("CHOICE = %i\n", choice);
 						if (choice == 1)
 						{
 							msg.exit("Model::createExpression");
@@ -216,36 +224,36 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 		}
 		p->createMatrices();
 	}
+	
 	// 3) Check the electrostatic setup for the model
-	if (prefs.calculateElec())
+	Electrostatics::ElecMethod emodel = prefs.electrostaticsMethod();
+	switch (emodel)
 	{
-		Electrostatics::ElecMethod emodel = prefs.electrostaticsMethod();
-		switch (emodel)
-		{
-			case (Electrostatics::None):
-				msg.print("Electrostatics are off.\n");
-				break;
-			case (Electrostatics::Coulomb):
-				if (cell_.type() != Cell::NoCell) msg.print("!!! Coulomb sum requested for periodic model.\n");
-				break;
-			default: // Ewald - issue warnings, but don't return FALSE
-				if (cell_.type() == Cell::NoCell)
-				{
-					msg.print("!!! Ewald sum cannot be used for a non-periodic model.\n");
-					//msg.exit("Model::createExpression");
-					//return FALSE;
-				}
-				break;
-		}
+		case (Electrostatics::None):
+			break;
+		case (Electrostatics::Coulomb):
+			if (cell_.type() != UnitCell::NoCell) msg.print("!!! Coulomb sum requested for periodic model.\n");
+			break;
+		default: // Ewald - issue warnings, but don't return FALSE
+			if (cell_.type() == UnitCell::NoCell)
+			{
+				msg.print("!!! Ewald sum cannot be used for a non-periodic model.\n");
+				//msg.exit("Model::createExpression");
+				//return FALSE;
+			}
+			break;
 	}
+	
 	// 4) Create master (Model) forcefield term lists
 	createForcefieldLists();
-	// 5) Assign charges to atoms
-	if (!assignForcefieldCharges())
+	
+	// 5) Assign charges to atoms (if requested)
+	if (assignCharges && (!assignForcefieldCharges()))
 	{
 		msg.exit("Model::createExpression");
 		return FALSE;
 	}
+	
 	// 6) Create VDW lookup table of combined parameters
 	combinationTable_.clear();
 	PointerPair<ForcefieldAtom,double> *pp;
@@ -278,6 +286,7 @@ bool Model::createExpression(bool vdwOnly, bool allowDummy)
 
 		}
 	}
+	
 	expressionPoint_ = changeLog.log(Log::Structure);
 	msg.exit("Model::createExpression");
 	return TRUE;

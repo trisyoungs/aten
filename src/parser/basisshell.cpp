@@ -148,7 +148,7 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	BasisShell *ptr= (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
+	BasisShell *ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
@@ -240,7 +240,7 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	BasisShell *ptr= (BasisShell*) sourcerv.asPointer(VTypes::BasisShellData, result);
+	BasisShell *ptr = (BasisShell*) sourcerv.asPointer(VTypes::BasisShellData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
@@ -279,7 +279,7 @@ bool BasisShellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	BasisShell *ptr= (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
+	BasisShell *ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
 	BasisPrimitive *prim;
 	int n;
 	if (result) switch (i)

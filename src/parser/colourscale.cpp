@@ -147,7 +147,7 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ColourScale *ptr= (ColourScale*) rv.asPointer(VTypes::ColourScaleData, result);
+	ColourScale *ptr = (ColourScale*) rv.asPointer(VTypes::ColourScaleData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ColourScaleData));
@@ -236,7 +236,7 @@ bool ColourScaleVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	ColourScale *ptr= (ColourScale*) sourcerv.asPointer(VTypes::ColourScaleData, result);
+	ColourScale *ptr = (ColourScale*) sourcerv.asPointer(VTypes::ColourScaleData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ColourScaleData));
@@ -266,7 +266,7 @@ bool ColourScaleVariable::performFunction(int i, ReturnValue &rv, TreeNode *node
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ColourScale *ptr= (ColourScale*) rv.asPointer(VTypes::ColourScaleData, result);
+	ColourScale *ptr = (ColourScale*) rv.asPointer(VTypes::ColourScaleData, result);
 	GLfloat colour[4];
 	if (result) switch (i)
 	{

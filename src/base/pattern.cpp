@@ -589,6 +589,23 @@ Ring *Pattern::rings()
 	return rings_.first();
 }
 
+// Returns whether atom id i is in a ring, or both atoms i and j are in the same ring
+bool Pattern::atomsInRing(int id_i, int id_j)
+{
+	if (id_j == -1)
+	{
+		Atom *i = atoms_[id_i]->atom();
+		for (Ring *r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return TRUE;
+	}
+	else
+	{
+		Atom *i = atoms_[id_i]->atom();
+		Atom *j = atoms_[id_j]->atom();
+		for (Ring *r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return TRUE;
+	}
+	return FALSE;
+}
+
 // Initialise
 void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 {
@@ -969,7 +986,7 @@ Vec3<double> Pattern::calculateCog(int mol, Model *srcmodel)
 	if (srcmodel == NULL) srcmodel = parent_;
 	msg.print(Messenger::Verbose,"Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	cog.zero();
 	Atom **modelatoms = srcmodel->atomArray();
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
@@ -995,8 +1012,8 @@ Vec3<double> Pattern::calculateCom(int mol, Model *srcmodel)
 	static Vec3<double> mim_i;
 	int offset = startAtom_ + mol*nAtoms_;
 	com.zero();
-	msg.print(Messenger::Verbose,"molecule_com : Offset = %i\n",offset);
-	Cell *cell = srcmodel->cell();
+	msg.print(Messenger::Verbose,"molecule_com : Offset = %i\n", offset);
+	UnitCell *cell = srcmodel->cell();
 	Atom **modelatoms = srcmodel->atomArray();
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
 	{

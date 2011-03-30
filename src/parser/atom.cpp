@@ -174,7 +174,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
+	Atom *ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
@@ -183,13 +183,13 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (AtomVariable::Bonds):
-			if (!hasArrayIndex) rv.set( VTypes::BondData, ptr->bonds() == NULL ? NULL : ptr->bonds()->item );
+			if (!hasArrayIndex) rv.set( VTypes::BondData, ptr->bonds() == NULL ? NULL : ptr->bonds()->item, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
 				msg.print("Bond array index (%i) is out of bounds for atom '%i'\n", arrayIndex, ptr->id()+1);
 				result = FALSE;
 			}
-			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item);
+			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item, ptr->bond(arrayIndex-1));
 			break;
 		case (AtomVariable::Colour):
 			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );
@@ -340,7 +340,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	int n;
 	Atom::DrawStyle ds;
 	Element *el;
-	Atom *ptr= (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
+	Atom *ptr = (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
@@ -416,7 +416,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			break;
 		case (AtomVariable::Selected):
 			ptr->parent()->beginUndoState("(De)select atom");
-			newvalue.asBool() ? ptr->parent()->deselectAtom(i) : ptr->parent()->selectAtom(ptr);
+			newvalue.asBool() ? ptr->parent()->selectAtom(ptr) : ptr->parent()->deselectAtom(ptr);
 			ptr->parent()->endUndoState();
 			break;
 		case (AtomVariable::Style):
@@ -462,7 +462,7 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
+	Atom *ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if (result) switch (i)
 	{
 		case (AtomVariable::FindBond):

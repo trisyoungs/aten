@@ -61,7 +61,11 @@ void LineMinimiser::gradientMove(Model *srcmodel, double delta)
 	msg.enter("LineMinimiser::gradientMove");
 	Atom **srcatoms = srcmodel->atomArray();
 	Atom **destatoms = tempModel_.atomArray();
-	for (int i=0; i<srcmodel->nAtoms(); ++i) destatoms[i]->r() = srcatoms[i]->r() + srcatoms[i]->f() * delta;
+	for (int i=0; i<srcmodel->nAtoms(); ++i)
+	{
+		destatoms[i]->r() = srcatoms[i]->r();
+		if (!srcatoms[i]->isPositionFixed()) destatoms[i]->r() += srcatoms[i]->f() * delta;
+	}
 	msg.exit("LineMinimiser::gradientMove");
 }
 

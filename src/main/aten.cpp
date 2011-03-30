@@ -24,8 +24,8 @@
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include "gui/mainwindow.h"
-#include "gui/disorder.h"
 #include "gui/grids.h"
+#include "gui/modellist.h"
 #include "model/model.h"
 #include "model/clipboard.h"
 #include "ff/forcefield.h"
@@ -132,7 +132,7 @@ const char *Aten::typeExportConvert(const char *oldname) const
 */
 
 // Set the active model
-void Aten::setCurrentModel(Model *m)
+void Aten::setCurrentModel(Model *m, bool deselectOthers)
 {
 	msg.enter("Aten::setCurrentModel");
 	if (m == NULL)
@@ -143,18 +143,16 @@ void Aten::setCurrentModel(Model *m)
 	}
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
-	current.rs = (current.m == NULL ? NULL : current.m->renderSourceModel());
 	// Set other Bundle objects based on model
 	current.p = m->patterns();
 	current.g = m->grids();
 	current.i = NULL;
-	// Set the title of the main window to reflect the version
-	Dnchar title;
-	title.sprintf("Aten (%s) - %s [%s]", ATENVERSION, current.m->name(), current.m->filename());
-	if (gui.exists())
+	// Deselect all other models if specified
+	if (deselectOthers)
 	{
-		gui.mainWindow->setWindowTitle(title.get());
-		gui.gridsWindow->refresh();
+		visibleModels_.clear();
+		// Add to visible list
+		visibleModels_.add(m);
 	}
 	msg.exit("Aten::setCurrentModel");
 }
@@ -249,8 +247,6 @@ Model *Aten::addModel()
 			newname.sprintf("Unnamed%03i", ++modelId_);
 			m->setName(newname);
 			m->changeLog.reset();
-			gui.addModel(m);
-			gui.disorderWindow->refresh();
 			setCurrentModel(m);
 			break;
 		case (Aten::FragmentLibraryList):
@@ -283,18 +279,65 @@ void Aten::removeModel(Model *xmodel)
 	// Remove this model from the model_list in the main window
 	msg.enter("Aten::removeModel");
 	Model *m;
-	// Unset the datamodel for the canvas
 	// Delete the current model, but don't allow there to be zero models...
-	// (if possible, set the active row to the next model, otherwise the previous)
 	if (models_.nItems() == 1) m = aten.addModel();
 	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
 	setCurrentModel(m);
-	// Delete the old model (GUI first, then master)
+	// Delete the old model
 	int id = models_.indexOf(xmodel);
 	models_.remove(xmodel);
-	gui.removeModel(id);
-	gui.disorderWindow->refresh();
+	visibleModels_.remove(xmodel);
 	msg.exit("Aten::removeModel");
+}
+
+// Close specified model, saving first if requested
+bool Aten::closeModel(Model *m)
+{
+	// If the current model has been modified, ask for confirmation before we close it
+	Dnchar text;
+	Tree *filter;
+	if (m->changeLog.isModified())
+	{
+		// Create a modal message dialog
+		text.sprintf("Model '%s' has been modified.\n", m->name());
+		int returnvalue = QMessageBox::warning(gui.mainWindow, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+		switch (returnvalue)
+		{
+			// Discard changes
+			case (QMessageBox::Discard):
+				aten.removeModel(m);
+				// Update GUI
+				gui.update(GuiQt::AllTarget);
+				break;
+				// Cancel close
+			case (QMessageBox::Cancel):
+				return FALSE;
+				// Save model before quit
+			case (QMessageBox::Save):
+				// If model has a filter set, just save it
+				filter = m->filter();
+				if (filter != NULL) filter->executeWrite(m->filename());
+				else if (gui.mainWindow->runSaveModelDialog())
+				{
+					// Run options dialog
+					if (!gui.mainWindow->saveModelFilter->executeCustomDialog())
+					{
+						msg.print("Not saved.\n");
+						return FALSE;
+					}
+					m->setFilter(gui.mainWindow->saveModelFilter);
+					m->setFilename(gui.mainWindow->saveModelFilename.get());
+					gui.mainWindow->saveModelFilter->executeWrite(gui.mainWindow->saveModelFilename.get());
+				}
+				else return FALSE;
+				aten.removeModel(m);
+				// Update GUI
+				gui.update(GuiQt::AllTarget);
+				break;
+		}
+	}
+	else aten.removeModel(m);
+	return TRUE;
 }
 
 // Find model by name
@@ -306,6 +349,42 @@ Model *Aten::findModel(const char *s) const
 	for (result = models_.first(); result != NULL; result = result->next) if (strcmp(s,result->name()) == 0) break;
 	msg.exit("Aten::findModel");
 	return result ;
+}
+
+// Set visible flag for specified model
+void Aten::setModelVisible(Model *m, bool visible)
+{
+	// Check model pointer
+	if (m == NULL) return;
+	m->setVisible(visible);
+	// Search list for specified model
+	Refitem<Model,int> *ri = visibleModels_.contains(m);
+	if ((ri == NULL) && visible) visibleModels_.add(m);
+	else if ((ri != NULL) && (!visible)) visibleModels_.remove(m);
+// 	gui.update(GuiQt::CanvasTarget);   TGAY
+}
+
+// Return number of visible models
+int Aten::nVisibleModels()
+{
+	return visibleModels_.nItems();
+}
+
+// Return reflist of visible models
+Refitem<Model,int> *Aten::visibleModels()
+{
+	return visibleModels_.first();
+}
+
+// Return n'th visible model
+Model *Aten::visibleModel(int id)
+{
+	if ((id < 0) || (id >= visibleModels_.nItems()))
+	{
+		printf("Index %i is out of range for visible model list.\n", id);
+		return NULL;
+	}
+	return visibleModels_[id]->item;
 }
 
 /*
@@ -559,19 +638,19 @@ const char *Aten::atenDir() const
 // Initialise a progress indicator
 void Aten::initialiseProgress(const char *jobtitle, int totalsteps)
 {
-	gui.progressCreate(jobtitle, totalsteps);
+// 	gui.progressCreate(jobtitle, totalsteps);
 }
 
 // Update the number of steps (returns if the dialog was canceled)
 bool Aten::updateProgress(int currentstep)
 {
-	return gui.progressUpdate(currentstep);
+// 	return gui.progressUpdate(currentstep);
 }
 
 // Terminate the current progress
 void Aten::cancelProgress()
 {
-	gui.progressTerminate();
+// 	gui.progressTerminate();   TGAY
 }
 
 /*

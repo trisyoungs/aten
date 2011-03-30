@@ -32,7 +32,7 @@
 */
 
 // Constructor
-CellVariable::CellVariable(Cell *ptr, bool constant)
+CellVariable::CellVariable(UnitCell *ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::CellData;
@@ -80,7 +80,9 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "mim",		VTypes::VectorData,	"WW",		"atom i | vector u, atom j | vector v" },
+	{ "mimd",		VTypes::VectorData,	"WW",		"atom i | vector u, atom j | vector v" },
+	{ "translateatom",	VTypes::VectorData,	"JNNN",		"atom i, double dx, double dy, double dz" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -169,7 +171,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Cell *ptr= (Cell*) rv.asPointer(VTypes::CellData, result);
+	UnitCell *ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
@@ -224,7 +226,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(ptr->spacegroup());
 			break;
 		case (CellVariable::Type):
-			rv.set(lowerCase(Cell::cellType(ptr->type())));
+			rv.set(lowerCase(UnitCell::cellType(ptr->type())));
 			break;
 		case (CellVariable::Volume):
 			rv.set(ptr->volume());
@@ -299,7 +301,7 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Cell *ptr = (Cell*) sourcerv.asPointer(VTypes::CellData, result);
+	UnitCell *ptr = (UnitCell*) sourcerv.asPointer(VTypes::CellData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
@@ -323,11 +325,11 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		case (CellVariable::CY):
 		case (CellVariable::CZ):
 			// Cast accessor into a CellParameter
-			ptr->parent()->setCell( (Cell::CellParameter) acc, newvalue.asDouble());
+			ptr->parent()->setCell( (UnitCell::CellParameter) acc, newvalue.asDouble());
 			break;
 		case (CellVariable::Matrix):
 			// Cast accessor into a CellParameter
-			ptr->parent()->setCell( (Cell::CellParameter) ((arrayIndex-1) + Cell::CellAX), newvalue.asDouble());
+			ptr->parent()->setCell( (UnitCell::CellParameter) ((arrayIndex-1) + UnitCell::CellAX), newvalue.asDouble());
 			break;
 		case (CellVariable::SpacegroupId):
 			ptr->parent()->setSpacegroup( newvalue.asString() );
@@ -354,9 +356,75 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Cell *ptr= (Cell*) rv.asPointer(VTypes::CellData, result);
+	Atom *ii, *jj;
+	Vec3<double> v1, v2;
+	UnitCell *ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if (result) switch (i)
 	{
+		case (CellVariable::MinimumImage):
+			if (node->argType(0) == VTypes::VectorData) v1 = node->argv(0);
+			else
+			{
+				ii = (Atom*) node->argp(0, VTypes::AtomData);
+				if (ii == NULL)
+				{
+					msg.print("Error: Source atom given to cell 'mim' function is NULL.\n");
+					result = FALSE;
+					break;
+				}
+				v1 = ii->r();
+			}
+			if (node->argType(1) == VTypes::VectorData) v2 = node->argv(1);
+			else
+			{
+				jj = (Atom*) node->argp(1, VTypes::AtomData);
+				if (jj == NULL)
+				{
+					msg.print("Error: Reference atom given to cell 'mim' function is NULL.\n");
+					result = FALSE;
+					break;
+				}
+				v2 = jj->r();
+			}
+			rv.set(ptr->mim(v1,v2));
+			break;
+		case (CellVariable::MinimumImageDistance):
+			if (node->argType(0) == VTypes::VectorData) v1 = node->argv(0);
+			else
+			{
+				ii = (Atom*) node->argp(0, VTypes::AtomData);
+				if (ii == NULL)
+				{
+					msg.print("Error: Source atom given to cell 'mimd' function is NULL.\n");
+					result = FALSE;
+					break;
+				}
+				v1 = ii->r();
+			}
+			if (node->argType(1) == VTypes::VectorData) v2 = node->argv(1);
+			else
+			{
+				jj = (Atom*) node->argp(1, VTypes::AtomData);
+				if (jj == NULL)
+				{
+					msg.print("Error: Reference atom given to cell 'mimd' function is NULL.\n");
+					result = FALSE;
+					break;
+				}
+				v2 = jj->r();
+			}
+			rv.set(ptr->mimd(v1,v2));
+			break;
+		case (CellVariable::TranslateAtom):
+			ii = (Atom*) node->argp(0, VTypes::AtomData);
+			if (ii == NULL)
+			{
+				msg.print("Error: Target atom given to cell 'translateatom' function is NULL.\n");
+				result = FALSE;
+				break;
+			}
+			rv.set(ii->r() + ptr->fracToReal( node->arg3d(1) ));
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in CellVariable.\n", functionData[i].name);
 			result = FALSE;

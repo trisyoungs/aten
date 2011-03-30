@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="/arrows" >
+  <qresource prefix="/arrows">
     <file>icons/arrow_anticlockwise.svg</file>
     <file>icons/arrow_clockwise.svg</file>
     <file>icons/arrow_down.svg</file>
@@ -11,7 +11,8 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
-  <qresource prefix="/basic" >
+  <qresource prefix="/basic">
+    <file>icons/basic_menuarrow.svg</file>
     <file>icons/basic_cross.svg</file>
     <file>icons/basic_colour.svg</file>
     <file>icons/basic_define.svg</file>
@@ -19,7 +20,7 @@
     <file>icons/basic_pick.svg</file>
     <file>icons/basic_plus.svg</file>
   </qresource>
-  <qresource prefix="/bond" >
+  <qresource prefix="/bond">
     <file>icons/bond_augment.svg</file>
     <file>icons/bond_calc.svg</file>
     <file>icons/bond_calcsel.svg</file>
@@ -30,7 +31,8 @@
     <file>icons/bond_single.svg</file>
     <file>icons/bond_triple.svg</file>
   </qresource>
-  <qresource prefix="/build" >
+  <qresource prefix="/build">
+    <file>icons/build_o.svg</file>
     <file>icons/build_transmutesel.svg</file>
     <file>icons/build_fragment.svg</file>
     <file>icons/build_c.svg</file>
@@ -45,14 +47,14 @@
     <file>icons/build_ptable.svg</file>
     <file>icons/build_transmute.svg</file>
   </qresource>
-  <qresource prefix="/draw_styles" >
+  <qresource prefix="/draw_styles">
     <file>icons/style_individual.svg</file>
     <file>icons/style_scaled.svg</file>
     <file>icons/style_sphere.svg</file>
     <file>icons/style_stick.svg</file>
     <file>icons/style_tube.svg</file>
   </qresource>
-  <qresource prefix="/edit" >
+  <qresource prefix="/edit">
     <file>icons/edit_copy.svg</file>
     <file>icons/edit_cut.svg</file>
     <file>icons/edit_delete.svg</file>
@@ -60,7 +62,7 @@
     <file>icons/edit_redo.svg</file>
     <file>icons/edit_undo.svg</file>
   </qresource>
-  <qresource prefix="/file" >
+  <qresource prefix="/file">
     <file>icons/file_close.svg</file>
     <file>icons/file_new.svg</file>
     <file>icons/file_open.svg</file>
@@ -68,12 +70,12 @@
     <file>icons/file_saveas.svg</file>
     <file>icons/file_saveimage.svg</file>
   </qresource>
-  <qresource prefix="/forcefield" >
+  <qresource prefix="/forcefield">
     <file>icons/forcefield_energy.svg</file>
     <file>icons/forcefield_forces.svg</file>
     <file>icons/forcefield_minimise.svg</file>
   </qresource>
-  <qresource prefix="/geometry" >
+  <qresource prefix="/geometry">
     <file>icons/measure_angle.svg</file>
     <file>icons/measure_anglesel.svg</file>
     <file>icons/measure_distance.svg</file>
@@ -82,19 +84,19 @@
     <file>icons/measure_torsion.svg</file>
     <file>icons/measure_torsionsel.svg</file>
   </qresource>
-  <qresource prefix="/model" >
+  <qresource prefix="/model">
     <file>icons/model_foldatoms.svg</file>
     <file>icons/model_foldmolecules.svg</file>
     <file>icons/model_next.svg</file>
     <file>icons/model_prev.svg</file>
     <file>icons/model_rename.svg</file>
   </qresource>
-  <qresource prefix="/mouse" >
+  <qresource prefix="/mouse">
     <file>icons/mouse_interact.svg</file>
     <file>icons/mouse_rotate.svg</file>
     <file>icons/mouse_translate.svg</file>
   </qresource>
-  <qresource prefix="/playback" >
+  <qresource prefix="/playback">
     <file>icons/traj_first.svg</file>
     <file>icons/traj_last.svg</file>
     <file>icons/traj_next.svg</file>
@@ -102,15 +104,15 @@
     <file>icons/traj_prev.svg</file>
     <file>icons/traj_view.svg</file>
   </qresource>
-  <qresource prefix="position" >
+  <qresource prefix="position">
     <file>icons/position_flipx.svg</file>
     <file>icons/position_flipy.svg</file>
     <file>icons/position_flipz.svg</file>
   </qresource>
-  <qresource prefix="/program" >
+  <qresource prefix="/program">
     <file>icons/aten.png</file>
   </qresource>
-  <qresource prefix="/select" >
+  <qresource prefix="/select">
     <file>icons/select_all.svg</file>
     <file>icons/select_atoms.svg</file>
     <file>icons/select_element.svg</file>
@@ -119,7 +121,7 @@
     <file>icons/select_molecules.svg</file>
     <file>icons/select_none.svg</file>
   </qresource>
-  <qresource prefix="/stackicons" >
+  <qresource prefix="/stackicons">
     <file>icons/stack_select.svg</file>
     <file>icons/stack_vibrations.svg</file>
     <file>icons/stack_zmatrix.svg</file>
@@ -139,12 +141,12 @@
     <file>icons/stack_surfaces.svg</file>
     <file>icons/stack_transform.svg</file>
   </qresource>
-  <qresource prefix="/vector" >
+  <qresource prefix="/vector">
     <file>icons/vector_generatexp.svg</file>
     <file>icons/vector_normalise.svg</file>
     <file>icons/vector_orthogonalise.svg</file>
   </qresource>
-  <qresource prefix="/view" >
+  <qresource prefix="/view">
     <file>icons/view_zoomin.svg</file>
     <file>icons/view_zoomout.svg</file>
   </qresource>

@@ -167,7 +167,7 @@ void Pattern::torsionForces(Model *srcmodel)
 	static double k1, k2, k3, k4, s;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
+	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{

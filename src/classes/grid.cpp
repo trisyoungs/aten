@@ -24,6 +24,7 @@
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
+#include "model/model.h"
 #include <QtOpenGL/QtOpenGL>
 
 // Grid data types
@@ -133,7 +134,7 @@ Grid::Grid()
 	periodic_ = FALSE;
 	loopOrder_.set(0,1,2);
 	colourScale_ = 0;
-	//prefs.colourScale[0].addLink(this);
+	parent_ = NULL;
 	useColourScale_ = FALSE;
 	useDataForZ_ = TRUE;
 	totalPositiveSum_ = 0.0;
@@ -255,7 +256,7 @@ bool Grid::initialise(GridType gt, Vec3<int> npoints)
 		default:
 			break;
 	}
-	++log_;
+	logChange();
 	msg.exit("Grid::initialise");
 	return result;
 }
@@ -264,6 +265,18 @@ bool Grid::initialise(GridType gt, Vec3<int> npoints)
 Grid::GridType Grid::type() const
 {
 	return type_;
+}
+
+// Return parent model
+Model *Grid::parent()
+{
+	return parent_;
+}
+
+// Set parent model
+void Grid::setParent(Model *parent)
+{
+	parent_ = parent;
 }
 
 /*
@@ -286,7 +299,7 @@ Vec3<double> Grid::lengths() const
 void Grid::setOrigin(const Vec3<double> v)
 {
 	origin_ = v;
-	++log_;
+	logChange();
 }
 
 // Return the origin of the Grid data
@@ -376,7 +389,7 @@ void Grid::calculateBounds()
 void Grid::setLowerPrimaryCutoff(double d)
 {
 	lowerPrimaryCutoff_ = d;
-	++log_;
+	logChange();
 }
 
 // Return lower isovalue cutoff for primary surface
@@ -389,7 +402,7 @@ double Grid::lowerPrimaryCutoff() const
 void Grid::setUpperPrimaryCutoff(double d)
 {
 	upperPrimaryCutoff_ = d;
-	++log_;
+	logChange();
 }
 
 // Return upper isovalue cutoff for primary surface
@@ -413,7 +426,7 @@ bool Grid::withinPrimaryCutoff(double d) const
 void Grid::setLowerSecondaryCutoff(double d)
 {
 	lowerSecondaryCutoff_ = d;
-	++log_;
+	logChange();
 }
 
 // Return lower isovalue cutoff for secondary surface
@@ -426,7 +439,7 @@ double Grid::lowerSecondaryCutoff() const
 void Grid::setUpperSecondaryCutoff(double d)
 {
 	upperSecondaryCutoff_ = d;
-	++log_;
+	logChange();
 }
 
 // Return upper isovalue cutoff for secondary surface
@@ -482,16 +495,11 @@ void Grid::updateRenderPoint()
 	renderPoint_ = log_;
 }
 
-// Request re-rendering of the surface inside a new display list
-void Grid::requestRerender()
-{
-	++log_;
-}
-
 // Set whether the surface is visible
 void Grid::setVisible(bool v)
 {
 	visible_ = v;
+	logChange();
 }
 
 // Return whether the surface is visible
@@ -504,7 +512,7 @@ bool Grid::isVisible() const
 void Grid::setStyle(Grid::SurfaceStyle ss)
 {
 	style_ = ss;
-	++log_;
+	logChange();
 }
 
 // Return the rendering style of the surface
@@ -517,7 +525,7 @@ Grid::SurfaceStyle Grid::style() const
 void Grid::setPrimaryAlpha(double a)
 {
 	primaryColour_[3] = a;
-	++log_;
+	logChange();
 }
 
 // Return alpha value of the primary colour
@@ -530,7 +538,7 @@ double Grid::primaryAlpha() const
 void Grid::setSecondaryAlpha(double a)
 {
 	secondaryColour_[3] = a;
-	++log_;
+	logChange();
 }
 
 // Return alpha value of the secondary colour
@@ -573,6 +581,7 @@ void Grid::copySecondaryColour(GLfloat *col)
 void Grid::logChange()
 {
 	++log_;
+	if (parent_ != NULL) parent_->changeLog.add(Log::Visual);
 }
 
 // Set the colourscale associated with the data
@@ -584,13 +593,13 @@ void Grid::setColourScale(int id)
 		// Remove link in old colourscale if necessary
 		if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 		useColourScale_ = FALSE;
-		++log_;
+		logChange();
 		return;
 	}
 	// Remove old colourscale link (if one existed)
 	if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 	colourScale_ = id;
-	++log_;
+	logChange();
 	prefs.colourScale[colourScale_].addLink(this);
 	useColourScale_ = TRUE;
 	int i, j, k;
@@ -628,7 +637,7 @@ int Grid::colourScale() const
 void Grid::setUseColourScale(bool b)
 {
 	useColourScale_ = b;
-	++log_;
+	logChange();
 }
 
 // Whether the surface uses the defined colour scale or not
@@ -641,7 +650,7 @@ bool Grid::useColourScale() const
 void Grid::setUseDataForZ(bool b)
 {
 	useDataForZ_ = b;
-	++log_;
+	logChange();
 }
 
 // Whether to use data2d_ value sfor z-component of 2D surface
@@ -830,7 +839,7 @@ void Grid::clear()
 }
 
 // Return pointer to the underlying cell structure
-Cell *Grid::cell()
+UnitCell *Grid::cell()
 {
 	return &cell_;
 }
@@ -839,21 +848,21 @@ Cell *Grid::cell()
 void Grid::setAxes(double r)
 {
 	cell_.set( Vec3<double>(r,r,r), Vec3<double>(90.0, 90.0, 90.0) );
-	++log_;
+	logChange();
 }
 
 // Set spacing for an orthorhombic grid
 void Grid::setAxes(const Vec3<double> v)
 {
 	cell_.set( v, Vec3<double>(90.0, 90.0, 90.0) );
-	++log_;
+	logChange();
 }
 
 // Set spacing for a parallelepiped grid
 void Grid::setAxes(const Matrix axes)
 {
 	cell_.set(axes);
-	++log_;
+	logChange();
 }
 
 // Update minimum / maximum based on supplied value
@@ -940,7 +949,7 @@ void Grid::addFreePoint(double x, double y, double z, double value)
 	GridPoint *gp = gridPoints_.add();
 	gp->r().set(x, y, z);
 	gp->setValue(value);
-	++log_;
+	logChange();
 	type_ = Grid::FreeXYZData;
 }
 
@@ -950,7 +959,7 @@ void Grid::setPrimaryColour(double r, double g, double b, double a)
 	primaryColour_[1] = g;
 	primaryColour_[2] = b;
 	if (a >= 0.0) primaryColour_[3] = a;
-	++log_;
+	logChange();
 }
 
 void Grid::setSecondaryColour(double r, double g, double b, double a)
@@ -959,7 +968,7 @@ void Grid::setSecondaryColour(double r, double g, double b, double a)
 	secondaryColour_[1] = g;
 	secondaryColour_[2] = b;
 	if (a >= 0.0) secondaryColour_[3] = a;
-	++log_;
+	logChange();
 }
 
 // Convert Bohr to Angstrom
@@ -977,7 +986,7 @@ void Grid::bohrToAngstrom()
 void Grid::setUseSecondary(bool b)
 {
 	useSecondary_ = b;
-	++log_;
+	logChange();
 }
 
 // Returns whether to use both signs of a symmetric isovalue distribution
@@ -990,7 +999,7 @@ bool Grid::useSecondary() const
 void Grid::setPeriodic(bool b)
 {
 	periodic_ = b;
-	++log_;
+	logChange();
 }
 
 // Return whether the grid data is periodic
@@ -1015,14 +1024,14 @@ bool Grid::outlineVolume() const
 void Grid::setShift(int i, int j, int k)
 {
 	shift_.set(i,j,k);
-	++log_;
+	logChange();
 }
 
 // Set single shift amount
 void Grid::setShift(int id, int i)
 {
 	shift_.set(id, i);
-	++log_;
+	logChange();
 }
 
 // Return shift amount

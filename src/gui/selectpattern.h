@@ -1,7 +1,7 @@
 /*
-	*** Qt select pattern dialog declaration
+	*** Select Pattern Dialog
 	*** src/gui/selectpattern.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -66,10 +66,6 @@ class AtenSelectPattern : public QDialog
 	AtenSelectPattern(QWidget *parent = 0);
 	// Main form declaration
 	Ui::SelectPatternDialog ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

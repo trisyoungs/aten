@@ -27,16 +27,7 @@
 AtenSelectElement::AtenSelectElement(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
-}
 
-// Set controls
-void AtenSelectElement::setControls()
-{
-}
-
-// Finalise GUI
-void AtenSelectElement::finaliseUi()
-{
 	// Create periodic table buttons
 	QGridLayout *gl = new QGridLayout;
 	QLabel *label;

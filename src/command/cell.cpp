@@ -33,7 +33,7 @@ bool Command::function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Convert argument to generator
-	Generator *gen = obj.rs->cell()->addGenerator();
+	Generator *gen = obj.rs()->cell()->addGenerator();
 	if (!gen->set(c->argc(0)))
 	{
 		msg.print("Failed to create new generator definition.\n");
@@ -47,8 +47,8 @@ bool Command::function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
-	if (cp != Cell::nCellParameters) obj.rs->cell()->setParameter(cp, c->argd(1), TRUE);
+	UnitCell::CellParameter cp = UnitCell::cellParameter(c->argc(0));
+	if (cp != UnitCell::nCellParameters) obj.rs()->cell()->setParameter(cp, c->argd(1), TRUE);
 	rv.reset();
 	return TRUE;
 }
@@ -57,10 +57,10 @@ bool Command::function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.rs->cell()->type() == Cell::NoCell) obj.rs->beginUndoState("Add Cell");
-	else obj.rs->beginUndoState("Edit Cell");
-	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
-	obj.rs->endUndoState();
+	if (obj.rs()->cell()->type() == UnitCell::NoCell) obj.rs()->beginUndoState("Add Cell");
+	else obj.rs()->beginUndoState("Edit Cell");
+	obj.rs()->setCell(c->arg3d(0), c->arg3d(3));
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -73,9 +73,9 @@ bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	mat.setColumn(0, c->arg3d(0), 0.0);
 	mat.setColumn(1, c->arg3d(3), 0.0);
 	mat.setColumn(2, c->arg3d(6), 0.0);
-	obj.rs->beginUndoState("Set cell");
-	obj.rs->setCell(mat);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Set cell");
+	obj.rs()->setCell(mat);
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -86,11 +86,11 @@ bool Command::function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->parent()->parser() == NULL)
 	{
-		obj.rs->beginUndoState("Fold Atoms");
-		obj.rs->foldAllAtoms();
-		obj.rs->endUndoState();
+		obj.rs()->beginUndoState("Fold Atoms");
+		obj.rs()->foldAllAtoms();
+		obj.rs()->endUndoState();
 	}
-	else if (prefs.foldOnLoad() != Prefs::SwitchOff) obj.rs->foldAllAtoms();
+	else if (prefs.foldOnLoad() != Choice::No) obj.rs()->foldAllAtoms();
 	rv.reset();
 	return TRUE;
 }
@@ -99,9 +99,9 @@ bool Command::function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_FoldMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Fold Molecules");
-	obj.rs->foldAllMolecules();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Fold Molecules");
+	obj.rs()->foldAllMolecules();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -110,9 +110,9 @@ bool Command::function_FoldMolecules(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Convert fractional to real coordinates");
-	obj.rs->fracToReal();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Convert fractional to real coordinates");
+	obj.rs()->fracToReal();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -121,10 +121,10 @@ bool Command::function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_MillerCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Cleave along Miller plane (%i%i%i)", c->argi(0), c->argi(1), c->argi(2));
-	obj.rs->selectMiller(c->argi(0), c->argi(1), c->argi(2), c->hasArg(3) ? c->argb(3) : FALSE);
-	obj.rs->selectionDelete();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Cleave along Miller plane (%i%i%i)", c->argi(0), c->argi(1), c->argi(2));
+	obj.rs()->selectMiller(c->argi(0), c->argi(1), c->argi(2), c->hasArg(3) ? c->argb(3) : FALSE);
+	obj.rs()->selectionDelete();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -133,9 +133,9 @@ bool Command::function_MillerCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Remove cell");
-	obj.rs->removeCell();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Remove cell");
+	obj.rs()->removeCell();
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -146,11 +146,11 @@ bool Command::function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!c->parent()->isFilter())
 	{
-		obj.rs->beginUndoState("Pack Cell");
-		obj.rs->pack();
-		obj.rs->endUndoState();
+		obj.rs()->beginUndoState("Pack Cell");
+		obj.rs()->pack();
+		obj.rs()->endUndoState();
 	}
-	else if (prefs.packOnLoad() != Prefs::SwitchOff) obj.rs->pack();
+	else if (prefs.packOnLoad() != Choice::No) obj.rs()->pack();
 	rv.reset();
 	return TRUE;
 }
@@ -159,8 +159,8 @@ bool Command::function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PrintCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	msg.print("Unit cell type for model '%s' is %s\n", obj.rs->name(), Cell::cellType(obj.rs->cell()->type()));
-	if (obj.rs->cell()->type() != Cell::NoCell) obj.rs->cell()->print();
+	msg.print("Unit cell type for model '%s' is %s\n", obj.rs()->name(), UnitCell::cellType(obj.rs()->cell()->type()));
+	if (obj.rs()->cell()->type() != UnitCell::NoCell) obj.rs()->cell()->print();
 	rv.reset();
 	return TRUE;
 }
@@ -169,9 +169,9 @@ bool Command::function_PrintCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Replicate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Replicate cell");
-	obj.rs->replicateCell(c->arg3d(0), c->arg3d(3));
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Replicate cell");
+	obj.rs()->replicateCell(c->arg3d(0), c->arg3d(3));
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -206,9 +206,9 @@ bool Command::function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			break;
 	}
 	double angle = c->argd(1);
-	obj.rs->beginUndoState("Rotate cell %fdeg about %c-axis", angle, 88+axis);
-	obj.rs->rotateCell(axis, angle);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Rotate cell %fdeg about %c-axis", angle, 88+axis);
+	obj.rs()->rotateCell(axis, angle);
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -217,9 +217,9 @@ bool Command::function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Scale cell and atoms");
-	obj.rs->scaleCell(c->arg3d(0), FALSE, c->hasArg(3) ? c->argb(3) : FALSE);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Scale cell and atoms");
+	obj.rs()->scaleCell(c->arg3d(0), FALSE, c->hasArg(3) ? c->argb(3) : FALSE);
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -228,9 +228,9 @@ bool Command::function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Scale cell and molecule centres");
-	bool result = obj.rs->scaleCell(c->arg3d(0), TRUE, c->hasArg(3) ? c->argb(3) : FALSE);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Scale cell and molecule centres");
+	bool result = obj.rs()->scaleCell(c->arg3d(0), TRUE, c->hasArg(3) ? c->argb(3) : FALSE);
+	obj.rs()->endUndoState();
 	rv.reset();
 	return (result ? TRUE : FALSE);
 }
@@ -239,8 +239,8 @@ bool Command::function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
-	if (cp != Cell::nCellParameters) obj.rs->cell()->setParameter(cp, c->argd(1));
+	UnitCell::CellParameter cp = UnitCell::cellParameter(c->argc(0));
+	if (cp != UnitCell::nCellParameters) obj.rs()->cell()->setParameter(cp, c->argd(1));
 	rv.reset();
 	return TRUE;
 }
@@ -289,7 +289,7 @@ bool Command::function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	obj.rs->setSpacegroup(c->argc(0));
+	obj.rs()->setSpacegroup(c->argc(0));
 	rv.reset();
 	return TRUE;
 }

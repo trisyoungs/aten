@@ -1,1026 +1,82 @@
-<ui version="4.0" >
- <class>GlyphsDialog</class>
- <widget class="QDialog" name="GlyphsDialog" >
-  <property name="geometry" >
+<ui version="4.0">
+ <class>GlyphsWidget</class>
+ <widget class="QDockWidget" name="GlyphsWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>574</width>
-    <height>493</height>
+    <width>571</width>
+    <height>520</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+  </property>
+  <property name="windowTitle">
    <string>Glyphs</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="icons.qrc" >
-    <normaloff>:/stackicons/icons/stack_glyphs.svg</normaloff>:/stackicons/icons/stack_glyphs.svg</iconset>
-  </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_22" >
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout_3" >
-     <item>
-      <widget class="QGroupBox" name="GlyphBox" >
-       <property name="title" >
-        <string>Glyphs in Current Model</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout" >
-        <property name="spacing" >
-         <number>2</number>
-        </property>
-        <property name="margin" >
-         <number>6</number>
-        </property>
-        <item>
-         <widget class="QListWidget" name="GlyphList" >
-          <property name="editTriggers" >
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="selectionMode" >
-           <enum>QAbstractItemView::ExtendedSelection</enum>
-          </property>
-          <property name="selectionBehavior" >
-           <enum>QAbstractItemView::SelectRows</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" >
-          <property name="spacing" >
-           <number>4</number>
-          </property>
-          <property name="margin" >
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="GlyphAddButton" >
-            <property name="text" >
-             <string>Add</string>
-            </property>
-            <property name="autoDefault" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="GlyphDeleteSelectedButton" >
-            <property name="text" >
-             <string>Delete Selected</string>
-            </property>
-            <property name="autoDefault" >
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="GlyphSelectGroup" >
-       <property name="title" >
-        <string>Select</string>
-       </property>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
-         <number>4</number>
-        </property>
-        <item>
-         <widget class="QPushButton" name="GlyphSelectAllButton" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>All</string>
-          </property>
-          <property name="autoDefault" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="GlyphSelectNoneButton" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>None</string>
-          </property>
-          <property name="autoDefault" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="GlyphInvertSelectionButton" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>Invert</string>
-          </property>
-          <property name="autoDefault" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="GlyphHideGroup" >
-       <property name="title" >
-        <string>Hide</string>
-       </property>
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
-         <number>2</number>
-        </property>
-        <item>
-         <widget class="QPushButton" name="GlyphHideAllButton" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>All</string>
-          </property>
-          <property name="autoDefault" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="GlyphHideNoneButton" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>None</string>
-          </property>
-          <property name="autoDefault" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="GlyphHideSelectedButton" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>Selected</string>
-          </property>
-          <property name="autoDefault" >
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="PropertiesBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title" >
-      <string>Properties</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2" >
-      <property name="spacing" >
-       <number>2</number>
-      </property>
-      <property name="margin" >
-       <number>6</number>
-      </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <layout class="QGridLayout" name="gridLayout_5" >
-        <item row="0" column="0" >
-         <widget class="QLabel" name="TypeLabel" >
-          <property name="text" >
-           <string>Type</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" >
-         <widget class="QComboBox" name="GlyphTypeCombo" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="insertPolicy" >
-           <enum>QComboBox::NoInsert</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="GlyphTextLabel" >
-          <property name="text" >
-           <string>Text</string>
-          </property>
-          <property name="textFormat" >
-           <enum>Qt::PlainText</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" >
-         <widget class="QLineEdit" name="GlyphLineEdit" />
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="GlyphVisibleCheck" >
-        <property name="text" >
-         <string>Visible</string>
+       <widget class="QGroupBox" name="GlyphBox">
+        <property name="title">
+         <string>Glyphs in Current Model</string>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="Data1Group" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="title" >
-         <string>Data 1</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_18" >
-         <property name="spacing" >
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
           <number>2</number>
          </property>
-         <property name="margin" >
-          <number>2</number>
+         <property name="margin">
+          <number>6</number>
          </property>
          <item>
-          <layout class="QGridLayout" name="gridLayout" >
-           <property name="spacing" >
-            <number>0</number>
+          <widget class="QListWidget" name="GlyphList">
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
            </property>
-           <item row="0" column="1" >
-            <widget class="TColourFrame" name="Data1ColourFrame" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="frameShape" >
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow" >
-              <enum>QFrame::Raised</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1" >
-            <widget class="QPushButton" name="Data1ColourButton" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize" >
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize" >
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="text" >
-              <string/>
-             </property>
-             <property name="icon" >
-              <iconset resource="icons.qrc" >
-               <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
-             </property>
-             <property name="autoDefault" >
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" >
-            <layout class="QHBoxLayout" name="horizontalLayout_5" >
-             <property name="spacing" >
-              <number>2</number>
-             </property>
-             <item>
-              <widget class="QRadioButton" name="Data1ValueRadio" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QWidget" native="1" name="Data1ValueGroup" >
-               <property name="sizePolicy" >
-                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout" >
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <property name="margin" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data1ValueXSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>X-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data1ValueYSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Y-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data1ValueZSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Z-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="0" >
-            <layout class="QHBoxLayout" name="horizontalLayout_4" >
-             <property name="spacing" >
-              <number>2</number>
-             </property>
-             <item>
-              <widget class="QWidget" native="1" name="widget" >
-               <property name="sizePolicy" >
-                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_3" >
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <property name="margin" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QRadioButton" name="Data1AtomRadio" >
-                  <property name="text" >
-                   <string>Atom</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QWidget" native="1" name="Data1AtomGroup" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_23" >
-                   <property name="spacing" >
-                    <number>2</number>
-                   </property>
-                   <property name="margin" >
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QSpinBox" name="Data1AtomIdSpin" >
-                     <property name="minimum" >
-                      <number>1</number>
-                     </property>
-                     <property name="maximum" >
-                      <number>10000000</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="Data1AtomCombo" >
-                     <property name="insertPolicy" >
-                      <enum>QComboBox::NoInsert</enum>
-                     </property>
-                     <item>
-                      <property name="text" >
-                       <string>Position</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text" >
-                       <string>Force</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text" >
-                       <string>Velocity</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+          </widget>
          </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="Data2Group" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="title" >
-         <string>Data 2</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_19" >
-         <property name="spacing" >
-          <number>2</number>
-         </property>
-         <property name="margin" >
-          <number>2</number>
-         </property>
          <item>
-          <layout class="QGridLayout" name="gridLayout_2" >
-           <property name="spacing" >
+          <layout class="QHBoxLayout" name="_2">
+           <property name="spacing">
+            <number>4</number>
+           </property>
+           <property name="margin">
             <number>0</number>
            </property>
-           <item row="0" column="0" >
-            <layout class="QHBoxLayout" name="horizontalLayout_6" >
-             <property name="spacing" >
-              <number>2</number>
+           <item>
+            <widget class="QPushButton" name="GlyphAddButton">
+             <property name="text">
+              <string>Add</string>
              </property>
-             <item>
-              <widget class="QWidget" native="1" name="widget_3" >
-               <property name="sizePolicy" >
-                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_7" >
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <property name="margin" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QRadioButton" name="Data2AtomRadio" >
-                  <property name="text" >
-                   <string>Atom</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QWidget" native="1" name="Data2AtomGroup" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Preferred" hsizetype="MinimumExpanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_24" >
-                   <property name="spacing" >
-                    <number>2</number>
-                   </property>
-                   <property name="margin" >
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QSpinBox" name="Data2AtomIdSpin" >
-                     <property name="minimum" >
-                      <number>1</number>
-                     </property>
-                     <property name="maximum" >
-                      <number>10000000</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="Data2AtomCombo" >
-                     <property name="insertPolicy" >
-                      <enum>QComboBox::NoInsert</enum>
-                     </property>
-                     <item>
-                      <property name="text" >
-                       <string>Position</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text" >
-                       <string>Force</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text" >
-                       <string>Velocity</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="1" >
-            <widget class="TColourFrame" name="Data2ColourFrame" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="frameShape" >
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow" >
-              <enum>QFrame::Raised</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1" >
-            <widget class="QPushButton" name="Data2ColourButton" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize" >
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize" >
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="text" >
-              <string/>
-             </property>
-             <property name="icon" >
-              <iconset resource="icons.qrc" >
-               <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
-             </property>
-             <property name="autoDefault" >
+             <property name="autoDefault">
               <bool>false</bool>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" >
-            <layout class="QHBoxLayout" name="horizontalLayout_8" >
-             <property name="spacing" >
-              <number>2</number>
+           <item>
+            <widget class="QPushButton" name="GlyphDeleteSelectedButton">
+             <property name="text">
+              <string>Delete Selected</string>
              </property>
-             <item>
-              <widget class="QRadioButton" name="Data2ValueRadio" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QWidget" native="1" name="Data2ValueGroup" >
-               <property name="sizePolicy" >
-                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_9" >
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <property name="margin" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data2ValueXSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>X-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data2ValueYSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Y-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data2ValueZSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Z-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="Data3Group" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="title" >
-         <string>Data 3</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_20" >
-         <property name="spacing" >
-          <number>2</number>
-         </property>
-         <property name="margin" >
-          <number>2</number>
-         </property>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_3" >
-           <property name="spacing" >
-            <number>0</number>
-           </property>
-           <item row="1" column="0" >
-            <layout class="QHBoxLayout" name="horizontalLayout_10" >
-             <property name="spacing" >
-              <number>2</number>
-             </property>
-             <item>
-              <widget class="QRadioButton" name="Data3ValueRadio" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QWidget" native="1" name="Data3ValueGroup" >
-               <property name="sizePolicy" >
-                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_11" >
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <property name="margin" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data3ValueXSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>X-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data3ValueYSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Y-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data3ValueZSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Z-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="0" >
-            <layout class="QHBoxLayout" name="horizontalLayout_12" >
-             <property name="spacing" >
-              <number>2</number>
-             </property>
-             <item>
-              <widget class="QWidget" native="1" name="widget_6" >
-               <property name="sizePolicy" >
-                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_13" >
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <property name="margin" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QRadioButton" name="Data3AtomRadio" >
-                  <property name="text" >
-                   <string>Atom</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QWidget" native="1" name="Data3AtomGroup" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_25" >
-                   <property name="spacing" >
-                    <number>2</number>
-                   </property>
-                   <property name="margin" >
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QSpinBox" name="Data3AtomIdSpin" >
-                     <property name="minimum" >
-                      <number>1</number>
-                     </property>
-                     <property name="maximum" >
-                      <number>10000000</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="Data3AtomCombo" >
-                     <property name="insertPolicy" >
-                      <enum>QComboBox::NoInsert</enum>
-                     </property>
-                     <item>
-                      <property name="text" >
-                       <string>Position</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text" >
-                       <string>Force</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text" >
-                       <string>Velocity</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="1" column="1" >
-            <widget class="QPushButton" name="Data3ColourButton" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize" >
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize" >
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="text" >
-              <string/>
-             </property>
-             <property name="icon" >
-              <iconset resource="icons.qrc" >
-               <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
-             </property>
-             <property name="autoDefault" >
+             <property name="autoDefault">
               <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1" >
-            <widget class="TColourFrame" name="Data3ColourFrame" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="frameShape" >
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow" >
-              <enum>QFrame::Raised</enum>
              </property>
             </widget>
            </item>
@@ -1030,265 +86,1242 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="Data4Group" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QGroupBox" name="GlyphSelectGroup">
+        <property name="title">
+         <string>Select</string>
         </property>
-        <property name="title" >
-         <string>Data 4</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_21" >
-         <property name="spacing" >
-          <number>2</number>
+        <layout class="QHBoxLayout" name="_3">
+         <property name="spacing">
+          <number>4</number>
          </property>
-         <property name="margin" >
+         <item>
+          <widget class="QPushButton" name="GlyphSelectAllButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>All</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="GlyphSelectNoneButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>None</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="GlyphInvertSelectionButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Invert</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="GlyphHideGroup">
+        <property name="title">
+         <string>Hide</string>
+        </property>
+        <layout class="QHBoxLayout" name="_4">
+         <property name="spacing">
           <number>2</number>
          </property>
          <item>
-          <layout class="QGridLayout" name="gridLayout_4" >
-           <property name="spacing" >
-            <number>0</number>
+          <widget class="QPushButton" name="GlyphHideAllButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <item row="1" column="1" >
-            <widget class="QPushButton" name="Data4ColourButton" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize" >
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize" >
-              <size>
-               <width>30</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="text" >
-              <string/>
-             </property>
-             <property name="icon" >
-              <iconset resource="icons.qrc" >
-               <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
-             </property>
-             <property name="autoDefault" >
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" >
-            <layout class="QHBoxLayout" name="horizontalLayout_14" >
-             <property name="spacing" >
-              <number>2</number>
-             </property>
-             <item>
-              <widget class="QRadioButton" name="Data4ValueRadio" >
-               <property name="text" >
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QWidget" native="1" name="Data4ValueGroup" >
-               <property name="sizePolicy" >
-                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_15" >
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <property name="margin" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data4ValueXSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>X-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data4ValueYSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Y-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="Data4ValueZSpin" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Z-coordinate of glyph data</string>
-                  </property>
-                  <property name="decimals" >
-                   <number>5</number>
-                  </property>
-                  <property name="minimum" >
-                   <double>-100000000.000000000000000</double>
-                  </property>
-                  <property name="maximum" >
-                   <double>10000000.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="0" >
-            <layout class="QHBoxLayout" name="horizontalLayout_16" >
-             <property name="spacing" >
-              <number>2</number>
-             </property>
-             <item>
-              <widget class="QWidget" native="1" name="widget_8" >
-               <property name="sizePolicy" >
-                <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_17" >
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <property name="margin" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QRadioButton" name="Data4AtomRadio" >
-                  <property name="text" >
-                   <string>Atom</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QWidget" native="1" name="Data4AtomGroup" >
-                  <property name="sizePolicy" >
-                   <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_26" >
-                   <property name="spacing" >
-                    <number>2</number>
-                   </property>
-                   <property name="margin" >
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QSpinBox" name="Data4AtomIdSpin" >
-                     <property name="minimum" >
-                      <number>1</number>
-                     </property>
-                     <property name="maximum" >
-                      <number>10000000</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="Data4AtomCombo" >
-                     <property name="insertPolicy" >
-                      <enum>QComboBox::NoInsert</enum>
-                     </property>
-                     <item>
-                      <property name="text" >
-                       <string>Position</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text" >
-                       <string>Force</string>
-                      </property>
-                     </item>
-                     <item>
-                      <property name="text" >
-                       <string>Velocity</string>
-                      </property>
-                     </item>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="1" >
-            <widget class="TColourFrame" name="Data4ColourFrame" >
-             <property name="sizePolicy" >
-              <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="frameShape" >
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow" >
-              <enum>QFrame::Raised</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
+           <property name="text">
+            <string>All</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="GlyphHideNoneButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>None</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="GlyphHideSelectedButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Selected</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-  </layout>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="PropertiesBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="title">
+       <string>Properties</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="margin">
+        <number>6</number>
+       </property>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0">
+          <widget class="QLabel" name="TypeLabel">
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="GlyphTypeCombo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="insertPolicy">
+            <enum>QComboBox::NoInsert</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="GlyphTextLabel">
+           <property name="text">
+            <string>Text</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::PlainText</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="GlyphLineEdit"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="GlyphVisibleCheck">
+         <property name="text">
+          <string>Visible</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="Data1Group">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Data 1</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_18">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="margin">
+           <number>2</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" name="gridLayout">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="TColourFrame" name="Data1ColourFrame">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="Data1ColourButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QRadioButton" name="Data1ValueRadio">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="Data1ValueGroup" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data1ValueXSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>X-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data1ValueYSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Y-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data1ValueZSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Z-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QWidget" name="widget" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="Data1AtomRadio">
+                   <property name="text">
+                    <string>Atom</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="Data1AtomGroup" native="true">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_23">
+                    <property name="spacing">
+                     <number>2</number>
+                    </property>
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QSpinBox" name="Data1AtomIdSpin">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>10000000</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="Data1AtomCombo">
+                      <property name="insertPolicy">
+                       <enum>QComboBox::NoInsert</enum>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Position</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Force</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Velocity</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="Data2Group">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Data 2</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_19">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="margin">
+           <number>2</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QWidget" name="widget_3" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="Data2AtomRadio">
+                   <property name="text">
+                    <string>Atom</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="Data2AtomGroup" native="true">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_24">
+                    <property name="spacing">
+                     <number>2</number>
+                    </property>
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QSpinBox" name="Data2AtomIdSpin">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>10000000</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="Data2AtomCombo">
+                      <property name="insertPolicy">
+                       <enum>QComboBox::NoInsert</enum>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Position</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Force</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Velocity</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <widget class="TColourFrame" name="Data2ColourFrame">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="Data2ColourButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QRadioButton" name="Data2ValueRadio">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="Data2ValueGroup" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_9">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data2ValueXSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>X-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data2ValueYSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Y-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data2ValueZSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Z-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="Data3Group">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Data 3</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_20">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="margin">
+           <number>2</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QRadioButton" name="Data3ValueRadio">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="Data3ValueGroup" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_11">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data3ValueXSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>X-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data3ValueYSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Y-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data3ValueZSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Z-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QWidget" name="widget_6" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="Data3AtomRadio">
+                   <property name="text">
+                    <string>Atom</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="Data3AtomGroup" native="true">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_25">
+                    <property name="spacing">
+                     <number>2</number>
+                    </property>
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QSpinBox" name="Data3AtomIdSpin">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>10000000</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="Data3AtomCombo">
+                      <property name="insertPolicy">
+                       <enum>QComboBox::NoInsert</enum>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Position</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Force</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Velocity</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="Data3ColourButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="TColourFrame" name="Data3ColourFrame">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="Data4Group">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Data 4</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_21">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="margin">
+           <number>2</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="Data4ColourButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="autoDefault">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_14">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QRadioButton" name="Data4ValueRadio">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="Data4ValueGroup" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_15">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data4ValueXSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>X-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data4ValueYSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Y-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="Data4ValueZSpin">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Z-coordinate of glyph data</string>
+                   </property>
+                   <property name="decimals">
+                    <number>5</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-100000000.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10000000.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_16">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QWidget" name="widget_8" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_17">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="Data4AtomRadio">
+                   <property name="text">
+                    <string>Atom</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="Data4AtomGroup" native="true">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_26">
+                    <property name="spacing">
+                     <number>2</number>
+                    </property>
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QSpinBox" name="Data4AtomIdSpin">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>10000000</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="Data4AtomCombo">
+                      <property name="insertPolicy">
+                       <enum>QComboBox::NoInsert</enum>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Position</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Force</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Velocity</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <widget class="TColourFrame" name="Data4ColourFrame">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
@@ -1299,7 +1332,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="icons.qrc" />
+  <include location="icons.qrc"/>
  </resources>
  <connections/>
 </ui>

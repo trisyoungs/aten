@@ -1,5 +1,5 @@
 /*
-	*** Model definition
+	*** Main Model Class
 	*** src/model/model.h
 	Copyright T. Youngs 2007-2011
 
@@ -32,10 +32,10 @@
 #include "base/atom.h"
 #include "base/lineparser.h"
 #include "base/eigenvector.h"
+#include "base/choice.h"
 #include "classes/basisshell.h"
 #define SGCOREDEF__
 #include "base/sginfo.h"
-#include "methods/mc.h"
 #include "base/vibration.h"
 #include "classes/zmatrix.h"
 
@@ -65,6 +65,10 @@ class Model
 	enum RenderSource { ModelSource, TrajectorySource };
 	// Model types
 	enum ModelType { ParentModelType, TrajectoryFrameType, VibrationFrameType };
+	// Component Insertion Policies
+	enum InsertionPolicy { NoPolicy, NumberPolicy, DensityPolicy, NumberAndDensityPolicy, RelativePolicy, nInsertionPolicies };
+	static InsertionPolicy insertionPolicy(const char *name, bool reporterror = 0);
+	static const char *insertionPolicy(InsertionPolicy);
 	// Friend declarations
 	friend class IdShiftEvent;
 
@@ -83,6 +87,10 @@ class Model
 	Model *parent_;
 	// Type of model
 	ModelType type_;
+	// QIcon containing miniature picture of model
+	QIcon icon_;
+	// Whether model is visible
+	bool visible_;
 
 	public:
 	// Sets the filename of the model
@@ -117,6 +125,14 @@ class Model
 	void setType(Model::ModelType mt);
 	// Return model type
 	Model::ModelType type();
+	// Regenerate icon
+	void regenerateIcon();
+	// Return icon
+	QIcon &icon();
+	// Set whether model is visible
+	void setVisible(bool b);
+	// Return whether model is visible
+	bool isVisible();
 
 
 	/*
@@ -227,7 +243,7 @@ class Model
 	*/
 	private:
 	// Cell definition (also contains reciprocal cell definition)
-	Cell cell_;
+	UnitCell cell_;
 	// Density of model (if periodic)
 	double density_;
 	// Calculate the density of the model
@@ -237,15 +253,15 @@ class Model
 
 	public:
 	// Return pointer to unit cell structure
-	Cell *cell();
+	UnitCell *cell();
 	// Set cell (vectors)
 	void setCell(Vec3<double> lengths, Vec3<double> angles);
 	// Set cell (axes)
 	void setCell(Matrix axes);
 	// Set cell (parameter)
-	void setCell(Cell::CellParameter cp, double value);
+	void setCell(UnitCell::CellParameter cp, double value);
 	// Set cell (other Cell pointer)
-	void setCell(Cell *newcell);
+	void setCell(UnitCell *newcell);
 	// Remove cell definition
 	void removeCell();
 	// Fold all atoms into the cell
@@ -422,6 +438,12 @@ class Model
 	Matrix modelViewMatrix_;
 	// Inverse of the view matrix
 	Matrix modelViewMatrixInverse_;
+	// Viewport matrix for model
+	GLint viewportMatrix_[4];
+	// Projection matrix for model
+	Matrix modelProjectionMatrix_;
+	// Projection matrix for globe
+	Matrix globeProjectionMatrix_;
 
 	private:
 	// Calculate and return inverse of current view matrix
@@ -432,6 +454,12 @@ class Model
 	Matrix &modelViewMatrix();
 	// Set the current modelview matrix
 	void setModelViewMatrix(Matrix &mvmat);
+	// Return the viewportMatrix
+	GLint *viewportMatrix();
+	// Return current projection matrix
+	Matrix &modelProjectionMatrix();
+	// Return current globe projection matrix
+	Matrix &globeProjectionMatrix();
 	// Set view to be along the specified cartesian axis
 	void viewAlong(double x, double y, double z);
 	// Set view to be along the specified cell axis
@@ -450,6 +478,12 @@ class Model
 	void adjustZoom(bool zoomin);
 	// Reset modelview matrix and camera position
 	void resetView();
+	// Set-up viewport and projection matrices
+	void setupView(GLint x, GLint y, GLint w, GLint h);
+	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
+	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
+	// Convert screen coordinates into modelspace coordinates
+	Vec3<double> &screenToModel(int x, int y, double z);
 
 
 	/*
@@ -553,7 +587,7 @@ class Model
 	// Return the unique type specified
 	Refitem<ForcefieldAtom,int> *uniqueForcefieldType(int i);
 	// Create total energy function shell for the model
-	bool createExpression(bool vdwOnly = FALSE, bool allowDummy = FALSE);
+	bool createExpression(Choice vdwOnly = Choice::Default, Choice allowDummy = Choice::Default, Choice assignCharges = Choice::Default);
 	// Return whether the expression is valid
 	bool isExpressionValid() const;
 	// Clear the current expression
@@ -580,6 +614,20 @@ class Model
 	double totalEnergy(Model *config, bool &success);
 	// Calculate (and return) the total interaction energy of the specified pattern molecule with the remainder
 	double moleculeEnergy(Model *config, Pattern *molpattern, int molecule, bool &success);
+	// Calculate and return the total angle energy of the model
+	double angleEnergy(Model *config, bool &success);
+	// Calculate and return the total bond energy of the model
+	double bondEnergy(Model *config, bool &success);
+	// Calculate and return the total electrostatic energy of the model
+	double electrostaticEnergy(Model *config, bool &success);
+	// Calculate and return the total intermolecular energy of the model
+	double intermolecularEnergy(Model *config, bool &success);
+	// Calculate and return the total intramolecular energy of the model
+	double intramolecularEnergy(Model *config, bool &success);
+	// Calculate and return the total torsion energy of the model
+	double torsionEnergy(Model *config, bool &success);
+	// Calculate and return the total van der Waals energy of the model
+	double vdwEnergy(Model *config, bool &success);
 	// Calculate forces in the specified model configuration
 	bool calculateForces(Model *config);
 	// Prints out atomic forces
@@ -685,7 +733,7 @@ class Model
 
 
 	/*
-	// Geometry (using staticatoms[])
+	// Geometry
 	*/
 	public:
 	// Calculate distance
@@ -799,14 +847,22 @@ class Model
 	// Seek to previous frame
 	void seekPreviousTrajectoryFrame();
 	// Seek to specified frame
-	void seekTrajectoryFrame(int frameno);
+	void seekTrajectoryFrame(int frameno, bool quiet = FALSE);
 
 
 	/*
 	// Rendering Source
 	*/
 	private:
-	// Where to get 
+	// Stored pixel data from last render
+	GLubyte *pixelData_;
+	// Model source of stored pixel data
+	Model *pixelDataSource_;
+	// Logpoint of last stored pixel data
+	int pixelDataLogPoint_;
+	// Width and height of stored pixel data
+	int pixelDataWidth_, pixelDataHeight_;
+	// Where to get render source data
 	RenderSource renderSource_;
 	// Flags whether to draw from associated vibration instead of model
 	bool renderFromVibration_;
@@ -822,6 +878,12 @@ class Model
 	void setRenderFromVibration(bool b);
 	// Return whether to render from vibration frames
 	bool renderFromVibration();
+	// Return whether stored pixel data is valid
+	bool pixelDataIsValid(int currentwidth, int currentheight, Model *source, int logpoint);
+	// Prepare pixel data buffer
+	void preparePixelData(int width, int height, Model *source, int logpoint);
+	// Return pixel data buffer pointer
+	GLubyte *pixelData();
 
 
 	/*
@@ -1008,30 +1070,38 @@ class Model
 	// Component Definition (for disordered builder only)
 	*/
 	private:
-	// Definition of region the Component is restricted to
-	ComponentRegion region_;
-	// Pointer to the Components related pattern
-	Pattern *componentPattern_;
+	// Insertion policy for the component
+	Model::InsertionPolicy componentInsertionPolicy_;
+	// Index of partition the model is restricted to
+	int componentPartition_;
 	// Number of requested copies
-	int nRequested_;
-	// Lists which MC move types are allowed for this Component
-	bool moveAllowed_[MonteCarlo::nMoveTypes];
+	int componentPopulation_;
+	// Requested density
+	double componentDensity_;
+	// Whether the component is rotatable
+	bool componentRotatable_;
 
 	public:
+	// Set the insertion policy for the component
+	void setComponentInsertionPolicy(Model::InsertionPolicy policy);
+	// Return the insertion policy for the component
+	Model::InsertionPolicy componentInsertionPolicy();
+	// Set target component partition for model
+	void setComponentPartition(int id);
 	// Return region data for model
-	ComponentRegion *region();
-	// Set the Component's pattern
-	void setComponentPattern(Pattern *p);
-	// Return the Component's pattern
-	Pattern *componentPattern() const;
+	int componentPartition();
 	// Set the requested number of molecules
-	void setNRequested(int i);
+	void setComponentPopulation(int i);
 	// Return the requested number of molecules
-	int nRequested() const;
-	// Set a specific move type for the Component
-	void setMoveAllowed(MonteCarlo::MoveType m, bool b);
-	// Set whether the Component may be translated
-	bool isMoveAllowed(MonteCarlo::MoveType m) const;
+	int componentPopulation() const;
+	// Set the requested density for the component
+	void setComponentDensity(double d);
+	// Return the requested density for the component
+	double componentDensity() const;
+	// Set whether the component is rotatable
+	void setComponentRotatable(bool b);
+	// Return whether the component is rotatable
+	bool componentRotatable();
 
 
 	/*
@@ -1052,8 +1122,6 @@ class Model
 	Grid *addGrid();
 	// Remove surface
 	void removeGrid(Grid *s);
-	// Request rerendering of all grid data
-	void rerenderGrids();
 
 
 	/*

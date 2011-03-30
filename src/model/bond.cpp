@@ -184,7 +184,7 @@ void Model::initialiseBondingCuboids()
 		nCuboids_ = 0;
 		if (atoms_.nItems() == 0) return;
 		// Determine the number of cuboids to partition our space into
-		if (cell_.type() == Cell::NoCell)
+		if (cell_.type() == UnitCell::NoCell)
 		{
 			for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 			{
@@ -251,7 +251,7 @@ void Model::freeBondingCuboids()
 void Model::addAtomToCuboid(Atom *i)
 {
 	int x,y,z;
-	Vec3<double> r = (cell_.type() == Cell::NoCell ? i->r() : cell_.realToFrac(i->r()));
+	Vec3<double> r = (cell_.type() == UnitCell::NoCell ? i->r() : cell_.realToFrac(i->r()));
 	r -= extentMin_;
 	double radius = elements().atomicRadius(i->element());
 	x = int(r.x / cuboidSize_.x);

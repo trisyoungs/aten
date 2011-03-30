@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: ZMatrix Window
+	*** ZMatrix Window
 	*** src/gui/zmatrix.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -68,7 +68,6 @@ class AtenZMatrix : public QDialog
 	public:
 	// Constructor / Destructor
 	AtenZMatrix(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenZMatrix();
 	// Main form declaration
 	Ui::ZMatrixDialog ui;
 };

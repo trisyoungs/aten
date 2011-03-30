@@ -404,7 +404,7 @@ bool Format::writeToString()
 	char bit[4096];
 	createdString_[0] = '\0';
 	ReturnValue rv;
-	bool result = FALSE;
+	bool result = TRUE;
 	// Cycle through the list of FormatChunks
 	for (FormatChunk *chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
 	{
@@ -462,6 +462,7 @@ bool Format::writeToString()
 				msg.exit("Format::writeToString");
 				return FALSE;
 		}
+		if (!result) break;
 	}
 	// If this was originally a delimited chunk, append a newline
 	if (delimited_) strcat(createdString_, "\n");

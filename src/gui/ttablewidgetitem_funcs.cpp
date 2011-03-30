@@ -1,5 +1,5 @@
 /*
-	*** Qt TTableWidgetItem functions
+	*** TTableWidgetItem Functions
 	*** src/gui/ttablewidgetitem_funcs.cpp
 	Copyright T. Youngs 2007-2011
 

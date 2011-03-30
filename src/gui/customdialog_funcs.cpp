@@ -52,7 +52,9 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 	QCheckBox *check;
 	QLineEdit *line;
 	QStackedWidget *stack;
-	QButtonGroup *radio;
+	QButtonGroup *buttongroup;
+	QAbstractButton *button;
+	QLabel *label;
 	Dnchar data;
 	LineParser lp;
 	int n;
@@ -78,9 +80,15 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 			break;
 		// RadioGroup
 		case (WidgetNode::RadioGroupControl):
-			radio = (QButtonGroup*) node->widget();
+			buttongroup = (QButtonGroup*) node->widget();
 			switch (sc->changeAction())
 			{
+				case (StateChange::ValueAction):
+					// Search for button with supplied id
+					button = buttongroup->button(sc->changeDataAsInteger());
+					if (button == NULL) printf("Warning - Couldn't find button %i in buttongroup.\n", sc->changeDataAsInteger());
+					else button->setChecked(TRUE);
+					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
 			}
@@ -108,6 +116,9 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
 					combo->setCurrentIndex(0);
 					break;
+				case (StateChange::ValueAction):
+					combo->setCurrentIndex(sc->changeDataAsInteger());
+					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
 			}
@@ -122,6 +133,18 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 					break;
 				case (StateChange::EnableAction):
 					doublespin->setEnabled(TRUE);
+					break;
+				case (StateChange::MinimumAction):
+					doublespin->setMinimum(sc->changeDataAsDouble());
+					break;
+				case (StateChange::MaximumAction):
+					doublespin->setMaximum(sc->changeDataAsDouble());
+					break;
+				case (StateChange::StepAction):
+					doublespin->setSingleStep(sc->changeDataAsDouble());
+					break;
+				case (StateChange::ValueAction):
+					doublespin->setValue(sc->changeDataAsDouble());
 					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
@@ -153,12 +176,33 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 				case (StateChange::EnableAction):
 					spin->setEnabled(TRUE);
 					break;
+				case (StateChange::MinimumAction):
+					spin->setMinimum(sc->changeDataAsInteger());
+					break;
+				case (StateChange::MaximumAction):
+					spin->setMaximum(sc->changeDataAsInteger());
+					break;
+				case (StateChange::StepAction):
+					spin->setSingleStep(sc->changeDataAsInteger());
+					break;
+				case (StateChange::ValueAction):
+					spin->setValue(sc->changeDataAsInteger());
+					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
 			}
 			break;
 		// Label
 		case (WidgetNode::LabelControl):
+			label = (QLabel*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::ValueAction):
+					label->setText(sc->changeData());
+					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
 			break;
 		// Stack control
 		case (WidgetNode::StackControl):
@@ -435,10 +479,10 @@ QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo, KVTable<Dncha
 	if (bg == NULL)
 	{
 		QButtonGroup *butgroup = new QButtonGroup();
-		butgroup->addButton(radio, butgroup->buttons().count());
+		butgroup->addButton(radio, 1);
 		buttonGroups.add(data, butgroup);
 	}
-	else bg->value()->addButton(radio, bg->value()->buttons().count());
+	else bg->value()->addButton(radio, bg->value()->buttons().count()+1);
 	// Critical : state
 	if (!gfo->data("state", data)) printf("Critical: No state found when constructing QRadioButton.\n");
 	radio->setChecked(data.asInteger());
@@ -451,17 +495,17 @@ QButtonGroup *AtenCustomDialog::createRadioGroup(WidgetNode *gfo, KVTable<Dnchar
 {
 	msg.enter("AtenCustomDialog::createRadioGroup");
 	// Search for existing button group
-	QButtonGroup *radio;
+	QButtonGroup *buttongroup;
 	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups.search(gfo->name());
 	if (bg == NULL)
 	{
-		radio = new QButtonGroup(this);
-		buttonGroups.add(gfo->name(), radio);
-		QObject::connect(radio, SIGNAL(buttonClicked(int)), this, SLOT(buttonGroupWidget_buttonClicked(int)));
+		buttongroup = new QButtonGroup(this);
+		buttonGroups.add(gfo->name(), buttongroup);
+		QObject::connect(buttongroup, SIGNAL(buttonClicked(int)), this, SLOT(buttonGroupWidget_buttonClicked(int)));
 	}
-	else radio = bg->value();
+	else buttongroup = bg->value();
 	msg.exit("AtenCustomDialog::createRadioGroup");
-	return radio;
+	return buttongroup;
 }
 
 // Create combo box from data in specified GuiFilterOption
@@ -763,7 +807,7 @@ void AtenCustomDialog::storeValues()
 				break;
 			case (WidgetNode::RadioGroupControl):
 				button = ((QButtonGroup*) (gfo->object()))->checkedButton();
-				rv.set( ((QButtonGroup*) (gfo->object()))->checkedId()+1);
+				rv.set( ((QButtonGroup*) (gfo->object()))->checkedId());
 				break;
 			case (WidgetNode::StringRadioGroupControl):
 				button = ((QButtonGroup*) (gfo->object()))->checkedButton();
@@ -783,6 +827,9 @@ void AtenCustomDialog::storeValues()
 				break;
 			case (WidgetNode::IntegerSpinControl):
 				rv.set( ((QSpinBox*) (gfo->widget()))->value());
+				break;
+			case (WidgetNode::RadioButtonControl):
+				rv.set( ((QRadioButton*) (gfo->widget()))->isChecked());
 				break;
 			case (WidgetNode::LabelControl):
 				break;

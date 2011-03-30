@@ -118,12 +118,14 @@ clearexpression();
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-	   			<funcdef>void <function>createexpression</function></funcdef>
+	   			<funcdef>int <function>createexpression</function></funcdef>
 				<paramdef>bool <parameter>nointra = FALSE</parameter></paramdef>
+				<paramdef>bool <parameter>nodummy = FALSE</parameter></paramdef>
+				<paramdef>bool <parameter>assigncharges = TRUE</parameter></paramdef>
 				<void/>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Creates a suitable energy description for the current model. The optional 'nointra' flag can be used to force the creation of an expression containing only atomtype (i.e. van der Waals) terms.</para>
+		<para>Creates a suitable energy description for the current model. The optional flags control exactly what is in the created expression, or how it is created. The 'nointra' flag can be used to force the creation of an expression containing only atomtype (i.e. van der Waals) terms - in such a case, patterns will contain no definitions of intramolecular bonds, angles, and torsions whatsoever. The 'allowdummy' option indicates whether dummy intramolecular terms (of simple functional form and with all parameters set to zero) should be automatically added to the energy expression should no suitable terms be found in the associated forcefield(s). Finally, 'assigncharges' specifies whether to assign charges to atoms from their assigned forcefield types (TRUE) or to leave atomic charges as they currently are (FALSE).</para>
 		
 		<para>For example:</para>
 		<synopsis>

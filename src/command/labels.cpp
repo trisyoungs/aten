@@ -27,9 +27,9 @@
 bool Command::function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Clear all labels in selection");
-	obj.rs->selectionClearLabels();
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Clear all labels in selection");
+	obj.rs()->selectionClearLabels();
+	obj.rs()->endUndoState();
 	return TRUE;
 }
 
@@ -41,17 +41,18 @@ bool Command::function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (al == Atom::nLabelTypes) return FALSE;
 	if (c->hasArg(1))
 	{
-		Atom *i = obj.rs->atom(c->argi(1)-1);
+		Atom *i = obj.rs()->atom(c->argi(1)-1);
 		if (i == NULL) return FALSE;
-		obj.rs->beginUndoState("Label atom");
-		obj.rs->addLabel(i, al);
-		obj.rs->endUndoState();
+		obj.rs()->beginUndoState("Label atom");
+		obj.rs()->addLabel(i, al);
+		obj.rs()->endUndoState();
+		obj.rs()->changeLog.add(Log::Visual);
 	}
 	else
 	{
-		obj.rs->beginUndoState("Label selection");
-		obj.rs->selectionAddLabels(al);
-		obj.rs->endUndoState();
+		obj.rs()->beginUndoState("Label selection");
+		obj.rs()->selectionAddLabels(al);
+		obj.rs()->endUndoState();
 	}
 	rv.reset();
 	return TRUE;
@@ -65,17 +66,17 @@ bool Command::function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (al == Atom::nLabelTypes) return FALSE;
 	if (c->hasArg(1))
 	{
-		Atom *i = obj.rs->atom(c->argi(1)-1);
+		Atom *i = obj.rs()->atom(c->argi(1)-1);
 		if (i == NULL) return FALSE;
-		obj.rs->beginUndoState("Remove label from atom");
-		obj.rs->removeLabel(i, al);
-		obj.rs->endUndoState();
+		obj.rs()->beginUndoState("Remove label from atom");
+		obj.rs()->removeLabel(i, al);
+		obj.rs()->endUndoState();
 	}
 	else
 	{
-		obj.rs->beginUndoState("Remove labels from selection");
-		obj.rs->selectionRemoveLabels(al);
-		obj.rs->endUndoState();
+		obj.rs()->beginUndoState("Remove labels from selection");
+		obj.rs()->selectionRemoveLabels(al);
+		obj.rs()->endUndoState();
 	}
 	rv.reset();
 	return TRUE;
@@ -87,17 +88,17 @@ bool Command::function_RemoveLabels(CommandNode *c, Bundle &obj, ReturnValue &rv
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))
 	{
-		Atom *i = obj.rs->atom(c->argi(0)-1);
+		Atom *i = obj.rs()->atom(c->argi(0)-1);
 		if (i == NULL) return FALSE;
-		obj.rs->beginUndoState("Remove all labels from atom");
-		obj.rs->clearLabels(i);
-		obj.rs->endUndoState();
+		obj.rs()->beginUndoState("Remove all labels from atom");
+		obj.rs()->clearLabels(i);
+		obj.rs()->endUndoState();
 	}
 	else
 	{
-		obj.rs->beginUndoState("Remove all labels from selection");
-		obj.rs->selectionClearLabels();
-		obj.rs->endUndoState();
+		obj.rs()->beginUndoState("Remove all labels from selection");
+		obj.rs()->selectionClearLabels();
+		obj.rs()->endUndoState();
 	}
 	rv.reset();
 	return TRUE;

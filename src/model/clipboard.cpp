@@ -158,7 +158,7 @@ void Clipboard::copyBonds()
 				b->setType(oldbond->type());
 			}
 		}
-		if (!aten.updateProgress()) break;
+// 		if (!aten.updateProgress()) break;   TGAY
 	}
 	aten.cancelProgress();
 	msg.exit("Clipboard::copyBonds");
@@ -177,13 +177,13 @@ void Clipboard::copySelection(Model *m)
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
 	// Copy atoms
-	aten.initialiseProgress("Copying atoms to clipboard", m->nAtoms());
-	for (Atom *i = m->atoms(); i != NULL; i = i->next)
+// 	aten.initialiseProgress("Copying atoms to clipboard", m->nAtoms());
+	for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next)
 	{
-		if (i->isSelected()) copyAtom(i);
-		if (!aten.updateProgress()) break;
+		copyAtom(ri->item);
+// 		if (!aten.updateProgress()) break;
 	}
-	aten.cancelProgress();
+// 	aten.cancelProgress();
 	// Copy bonds
 	copyBonds();
 	msg.exit("Clipboard::copySelection");
@@ -251,7 +251,7 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 		if (selectpasted) m->selectAtom(pastedi);
 		// Store reference to the newly-pasted atom
 		i->setAtomPointer(pastedi);
-		aten.updateProgress(++count);
+		aten.updateProgress(++count);	// TGAY
 	}
 	aten.cancelProgress();
 	// Add in bonds to pasted atoms

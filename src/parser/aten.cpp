@@ -301,7 +301,7 @@ bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Aten *ptr= (Aten*) sourcerv.asPointer(VTypes::AtenData, result);
+	Aten *ptr = (Aten*) sourcerv.asPointer(VTypes::AtenData, result);
 	switch (acc)
 	{
 		default:
@@ -328,7 +328,7 @@ bool AtenVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	bool result = TRUE;
 	int el;
 	Prefs::EnergyUnit eu;
-	Aten *ptr= (Aten*) rv.asPointer(VTypes::AtenData, result);
+	Aten *ptr = (Aten*) rv.asPointer(VTypes::AtenData, result);
 	if (result) switch (i)
 	{
 		case (AtenVariable::ConvertEnergy):

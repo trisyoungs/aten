@@ -36,7 +36,7 @@ bool Command::function_CreateAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> v;
-	for (int n = 0; n < c->argi(0); n++) obj.i = obj.rs->addAtom(0, v);
+	for (int n = 0; n < c->argi(0); n++) obj.i = obj.rs()->addAtom(0, v);
 	rv.reset();
 	return TRUE;
 }
@@ -72,6 +72,8 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 		{
 			aten.setCurrentModel(m);
 			msg.print("Current model is now '%s'.\n", aten.current.m->name());
+			// Update GUI
+			gui.update(GuiQt::AllTarget);
 		}
 	}
 	else msg.print("Current model is '%s'.\n", aten.current.m->name());
@@ -100,9 +102,9 @@ bool Command::function_DeleteModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 
 	if (m != NULL) 
 	{
-		// If the selected model 
 		aten.removeModel(m);
-		gui.update(FALSE, FALSE, FALSE);
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 		return TRUE;
 	}
 	else
@@ -130,11 +132,12 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	obj.m->resetView();
 	obj.m->calculateMass();
 	obj.m->selectNone();
+	obj.m->regenerateIcon();
 	// Print out some useful info on the model that we've just read in
-	msg.print(Messenger::Verbose, "Model  : %s\n",obj.m->name());
-	msg.print(Messenger::Verbose, "Atoms  : %i\n",obj.m->nAtoms());
-	msg.print(Messenger::Verbose, "Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
-	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
+	msg.print(Messenger::Verbose, "Model  : %s\n", obj.m->name());
+	msg.print(Messenger::Verbose, "Atoms  : %i\n", obj.m->nAtoms());
+	msg.print(Messenger::Verbose, "Cell   : %s\n", UnitCell::cellType(obj.m->cell()->type()));
+	if (obj.m->cell()->type() != UnitCell::NoCell) obj.m->cell()->print();
 	// If a trajectory exists for this model, by default we view from trajectory in the GUI
 	if (obj.m->nTrajectoryFrames() > 0) obj.m->setRenderSource(Model::TrajectorySource);
 	// Lastly, reset all the log points and start afresh
@@ -153,8 +156,8 @@ bool Command::function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
-		obj.p = NULL;
-		obj.i = m->atoms();
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	else return FALSE;
 	return TRUE;
@@ -179,9 +182,8 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(m);
 		m->setRenderSource(Model::ModelSource);
-		gui.update(FALSE, FALSE, FALSE);
-		obj.p = NULL;
-		obj.i = m->atoms();
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 		return TRUE;
 	}
 	else
@@ -195,7 +197,7 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Info(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->renderSourceModel()->print();
+	obj.rs()->print();
 	rv.reset();
 	return TRUE;
 }
@@ -208,8 +210,8 @@ bool Command::function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
-		obj.p = NULL;
-		obj.i = m->atoms();
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	else return FALSE;
 	return TRUE;
@@ -252,7 +254,7 @@ bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_LogInfo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->renderSourceModel()->printLogs();
+	obj.rs()->renderSourceModel()->printLogs();
 	rv.reset();
 	return TRUE;
 }
@@ -261,7 +263,7 @@ bool Command::function_LogInfo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m == obj.rs)
+	if (obj.m == obj.rs())
 	{
 		printf("Cannot perform model templating in the parent model.\n");
 		return FALSE;
@@ -271,7 +273,7 @@ bool Command::function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &r
 	Atom *j;
 	for (obj.i = obj.m->atoms(); obj.i != NULL; obj.i = obj.i->next)
 	{
-		j = obj.rs->addAtom(obj.i->element(), v);
+		j = obj.rs()->addAtom(obj.i->element(), v);
 		j->copyStyle(obj.i);
 	}
 	rv.reset();
@@ -287,6 +289,8 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(VTypes::ModelData, obj.m);
+	// Update GUI
+	gui.update(GuiQt::AllTarget);
 	return TRUE;
 }
 
@@ -299,6 +303,8 @@ bool Command::function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	rv.set(VTypes::ModelData, obj.m);
 	return TRUE;
@@ -309,13 +315,15 @@ bool Command::function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Check for parent frame
-	if (obj.rs->parent() == NULL)
+	if (obj.rs()->parent() == NULL)
 	{
 		msg.print("This model doesn't have a parent.\n");
 		return FALSE;
 	}
 	obj.m->setRenderSource(Model::ModelSource);
 	aten.setCurrentModel(obj.m);
+	// Update GUI
+	gui.update(GuiQt::AllTarget);
 	return TRUE;
 }
 
@@ -328,6 +336,8 @@ bool Command::function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	rv.set(VTypes::ModelData, obj.m);
 	return TRUE;
@@ -347,16 +357,16 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("Not saved.\n");
 		return FALSE;
 	}
-	obj.rs->setFilter(filter);
-	obj.rs->setFilename(c->argc(1));
+	obj.rs()->setFilter(filter);
+	obj.rs()->setFilename(c->argc(1));
 	filter->executeCustomDialog(TRUE);
-	bool result = filter->executeWrite(obj.rs->filename());
+	bool result = filter->executeWrite(obj.rs()->filename());
 	if (result)
 	{
-		obj.rs->changeLog.updateSavePoint();
-		msg.print("Model '%s' saved to file '%s' (%s)\n", obj.rs->name(), obj.rs->filename(), filter->filter.name());
+		obj.rs()->changeLog.updateSavePoint();
+		msg.print("Model '%s' saved to file '%s' (%s)\n", obj.rs()->name(), obj.rs()->filename(), filter->filter.name());
 	}
-	else msg.print("Failed to save model '%s'.\n", obj.rs->name());
+	else msg.print("Failed to save model '%s'.\n", obj.rs()->name());
 	rv.set(result);
 	return TRUE;
 }
@@ -377,7 +387,7 @@ bool Command::function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &r
 		return FALSE;
 	}
 	// Is anything selected in the source model?
-	if (obj.rs->nSelected() == 0)
+	if (obj.rs()->nSelected() == 0)
 	{
 		msg.print("Nothing selected in current model - nothing to save.\n");
 		rv.set(FALSE);
@@ -386,13 +396,12 @@ bool Command::function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Create a copy of the current basic model info, and then copy the selection of atoms
 	Model m;
 	Clipboard clip;
-	m.setCell(obj.rs->cell());
+	m.setCell(obj.rs()->cell());
 	m.setFilter(filter);
 	m.setFilename(c->argc(1));
-	clip.copySelection(obj.rs);
+	clip.copySelection(obj.rs());
 	clip.pasteToModel(&m, FALSE);
 	Bundle oldbundle = obj;
-	obj.rs = &m;
 	obj.m = &m;
 	bool result = filter->executeWrite(m.filename());
 	obj = oldbundle;
@@ -406,10 +415,10 @@ bool Command::function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Rename Model");
-	obj.rs->setName(c->argc(0));
-	obj.rs->endUndoState();
-	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
+	obj.rs()->beginUndoState("Rename Model");
+	obj.rs()->setName(c->argc(0));
+	obj.rs()->endUndoState();
+	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs()->name());
 	return TRUE;
 }
 
@@ -417,9 +426,9 @@ bool Command::function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Show all atoms", obj.rs->nSelected());
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->atomSetHidden(i,FALSE);
-	obj.rs->endUndoState();
+	obj.rs()->beginUndoState("Show all atoms", obj.rs()->nSelected());
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) obj.rs()->atomSetHidden(i,FALSE);
+	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;
 }

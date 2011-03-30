@@ -497,7 +497,6 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						
 						// Store minimal alpha value in order to determine transparency
 						if (col2[3] < minalpha2) minalpha2 = col2[3];
-// 						glVertex3d(r.x, r.y, r.z);
 					}
 				}
 			}

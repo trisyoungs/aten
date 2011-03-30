@@ -14,25 +14,24 @@ set(qtproject_SRCS
   useractions.h
   useractions.cpp
   gui.h 
+  tcombobox.h
   ttreewidgetitem.h
   ttablewidgetitem.h
   tlistwidgetitem.h 
   about_funcs.cpp
   atomlist_funcs.cpp
-  bondactions.cpp
   build_funcs.cpp
-  celldefine_funcs.cpp
+  celldefinition_funcs.cpp
   celltransform_funcs.cpp
   contextmenu_funcs.cpp
   command_funcs.cpp
-  disorder_funcs.cpp
-  drawactions.cpp
+  disorderwizard_funcs.cpp
   editactions.cpp
   ffeditor_funcs.cpp
   fileactions.cpp
   forcefieldactions.cpp
   forcefields_funcs.cpp
-  fragment_funcs.cpp
+  fragments_funcs.cpp
   geometry_funcs.cpp
   glyphs_funcs.cpp
   grids_funcs.cpp
@@ -43,29 +42,33 @@ set(qtproject_SRCS
   mainwindow_funcs.cpp
   mainwindow_init.cpp
   md_funcs.cpp
-  measureactions.cpp
-  minimiser_funcs.cpp
+  messages_funcs.cpp
   modelactions.cpp
+  modellist_funcs.cpp
   mouseactions.cpp
   position_funcs.cpp
   prefs_funcs.cpp
+  progress_funcs.cpp
   select_funcs.cpp
-  selectactions.cpp
   selectelement_funcs.cpp
   selectfilter_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
-  styleactions.cpp
-  systemactions.cpp
+  settingsactions.cpp
   tcanvas_funcs.cpp
   tcanvas_input.cpp
   tcanvas_render.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
+  tmenubutton_funcs.cpp
   tlistwidgetitem_funcs.cpp
+  toolbaractions.cpp
+  toolbox_funcs.cpp
   trajectoryactions.cpp
+  trajectory_funcs.cpp
   transform_funcs.cpp
+  tprocess_funcs.cpp
   tprompt_funcs.cpp
   ttablewidgetitem_funcs.cpp
   ttreewidgetitem_funcs.cpp
@@ -80,13 +83,13 @@ SET(pro_MOC_HDRS
   about.h
   atomlist.h
   build.h
-  celldefine.h
+  celldefinition.h
   celltransform.h
   command.h
-  disorder.h
+  disorderwizard.h
   ffeditor.h
   forcefields.h
-  fragment.h
+  fragments.h
   geometry.h
   glyphs.h
   grids.h
@@ -95,14 +98,18 @@ SET(pro_MOC_HDRS
   loadmodel.h
   mainwindow.h
   md.h
-  minimiser.h
+  messages.h
+  modellist.h
   position.h
   prefs.h
+  progress.h
   select.h
   selectelement.h
   selectfilter.h
   selectpattern.h
   selectvariable.h
+  toolbox.h
+  trajectory.h
   transform.h
   vibrations.h
   viewbasis.h
@@ -110,9 +117,10 @@ SET(pro_MOC_HDRS
   zmatrix.h
   tcanvas.uih
   tcolourframe.uih
+  tmenubutton.uih
+  tprocess.uih
   tprompt.uih
   tradiogroup.uih
-  ttabbar.uih
   ttreewidget.uih
 )
 QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)
@@ -121,28 +129,32 @@ SET(pro_UIS
   about.ui
   atomlist.ui
   build.ui
-  celldefine.ui
+  celldefinition.ui
   celltransform.ui
   command.ui
-  disorder.ui
+  customdialog.ui
+  disorderwizard.ui
   ffeditor.ui
   forcefields.ui
-  fragment.ui
+  fragments.ui
   geometry.ui
   glyphs.ui
   grids.ui
-  customdialog.ui
   loadmodel.ui
   mainwindow.ui
   md.ui
-  minimiser.ui
+  messages.ui
+  modellist.ui
   position.ui
   prefs.ui
+  progress.ui
   select.ui
   selectelement.ui
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
+  toolbox.ui
+  trajectory.ui
   transform.ui
   vibrations.ui
   viewbasis.ui

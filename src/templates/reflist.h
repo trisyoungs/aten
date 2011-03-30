@@ -100,6 +100,8 @@ template <class T, class D> class Reflist
 	Refitem<T,D> *operator[](int);
 	// Search references for item
 	Refitem<T,D> *contains(T *item);
+	// Search references for data
+	Refitem<T,D> *containsData(D data);
 	// Clear the list of all references
 	void clear();
 	// Move head of list to tail of list
@@ -329,6 +331,15 @@ template <class T, class D> Refitem<T,D>* Reflist<T,D>::contains(T *xitem)
 	// Search references for specified item
 	Refitem<T,D> *r;
 	for (r = listHead_; r != NULL; r = r->next) if (r->item == xitem) break;
+	return r;
+}
+
+// Search for data
+template <class T, class D> Refitem<T,D>* Reflist<T,D>::containsData(D data)
+{
+	// Search references for specified data
+	Refitem<T,D> *r;
+	for (r = listHead_; r != NULL; r = r->next) if (r->data == data) break;
 	return r;
 }
 

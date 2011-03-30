@@ -1,0 +1,36 @@
+# Name / Description
+string name = "SlabYZ";
+string description = "Slab in YZ Plane";
+
+# Grid size information
+int roughgrid[3] = { 40,40,40 };
+int finegrid[3] = { 100,100,100 };
+
+# Number of partitions
+int npartitions = 2;
+
+# Every partition definition *must* contain 'partition' and 'partitionname' functions
+int partition(double x, double y, double z)
+{
+	double startx = option("Start X", "doublespin", 0.0, 1.0, 0.1, 0.4, "group=Slab Properties");
+	double endx = option("End X", "doublespin", 0.0, 1.0, 0.1, 0.6, "group=Slab Properties");
+
+	// Check 1 - Is the point inside the slab (region 1)
+	if ((x >= startx) && (x <= endx)) return 1;
+
+	// Not inside any defined regions, so return '0' for 'inside rest of cell'
+	return 0;
+}
+
+string partitionname(int id)
+{
+	switch(id)
+	{
+		case (0):
+			return "Unit Cell";
+		case (1):
+			return "Slab";
+		default:
+			return "UNKNOWN";
+	}
+}

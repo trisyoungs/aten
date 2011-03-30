@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: Geometry Window
+	*** Geometry Dock Widget
 	*** src/gui/geometry.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GEOMETRYWINDOW_H
-#define ATEN_GEOMETRYWINDOW_H
+#ifndef ATEN_GEOMETRYWIDGET_H
+#define ATEN_GEOMETRYWIDGET_H
 
 #include "gui/ui_geometry.h"
 
 // Geometry window
-class AtenGeometry : public QDialog
+class GeometryWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -34,19 +34,31 @@ class AtenGeometry : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh();
+	private:
+	void updateTabs();
+	void updateLabels();
 	private slots:
-	void dialogFinished(int result);
+	// Measure Tab
+	void on_MeasureDistanceSelectionButton_clicked(bool checked);
+	void on_MeasureAngleSelectionButton_clicked(bool checked);
+	void on_MeasureTorsionSelectionButton_clicked(bool checked);
+	void on_MeasureClearAllButton_clicked(bool checked);
+	// Distance Tab
 	void on_SetNewDistanceButton_clicked(bool checked);
 	void on_NudgeDistancePlusButton_clicked(bool checked);
 	void on_NudgeDistanceMinusButton_clicked(bool checked);
+	// Angle Tab
 	void on_SetNewAngleButton_clicked(bool checked);
 	void on_NudgeAnglePlusButton_clicked(bool checked);
 	void on_NudgeAngleMinusButton_clicked(bool checked);
+	// Torsion Tab
 	void on_SetNewTorsionButton_clicked(bool checked);
 	void on_NudgeTorsionPlusButton_clicked(bool checked);
 	void on_NudgeTorsionMinusButton_clicked(bool checked);
+	protected:
+	void closeEvent(QCloseEvent *event);
 
 	/*
 	// Public Functions
@@ -58,15 +70,9 @@ class AtenGeometry : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenGeometry(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Destructor
-	~AtenGeometry();
+	GeometryWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	// Main form declaration
-	Ui::GeometryDialog ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
+	Ui::GeometryWidget ui;
 };
 
 #endif

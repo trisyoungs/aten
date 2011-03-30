@@ -364,6 +364,12 @@ void CommandParser::popTree()
 		// Can use the 'isFilter' member function to check for the lack of a proper type
 		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
 	}
+	// Create any custom dialog stuff here...
+	if (ri->item->widgets() != NULL)
+	{
+		ri->item->createCustomDialog(ri->item->name());
+		ri->item->executeCustomDialog(TRUE);
+	}
 	msg.print(Messenger::Parse, "Removing tree %p from stack (%i remain).\n", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
 	// Set current tree target to the top tree now on the stack

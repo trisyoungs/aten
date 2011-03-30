@@ -1,5 +1,5 @@
 /*
-	*** Qt canvas functions
+	*** TCanvas Functions
 	*** src/gui/tcanvas_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -34,11 +34,13 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	contextHeight_ = 0;
 	valid_ = FALSE;
 	// Render Target
-	displayModel_ = NULL;
 	displayFrameId_ = -1;
 	useCurrentModel_ = TRUE;
 	renderSource_ = NULL;
+	redrawActiveModel_ = FALSE;
+	noPixelData_ = FALSE;
 	// Rendering
+	noPixelData_ = FALSE;
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
 	renderOffScreen_ = FALSE;
@@ -46,7 +48,7 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	// Atom Selection
 	atomClicked_ = NULL;
 	pickEnabled_ = FALSE;
-	actionBeforePick_ = NULL;
+	actionBeforePick_ = UserAction::NoAction;
 	pickAtomsCallback_ = NULL;
 	nAtomsToPick_ = -1;
 	// Mouse Input
@@ -112,7 +114,9 @@ void TCanvas::probeFeatures()
 // Return the current display model
 Model *TCanvas::displayModel() const
 {
-	return displayModel_;
+	Model *source = (useCurrentModel_ ? aten.currentModelOrFrame() : renderSource_);
+	if (source != NULL) source = (source->renderFromVibration() ? source->vibrationCurrentFrame() : source);
+	return source;
 }
 
 // Set the rendering source to the supplied model (reverts to useCurrentModel_ if a NULL pointer is supplied)
@@ -130,6 +134,26 @@ void TCanvas::setRenderSource(Model *source)
 	}
 }
 
+// Determine target model based on clicked position on TCanvas
+Model *TCanvas::modelAt(int x, int y)
+{
+	int nrows, py, px, id;
+	
+	// Is only one model displayed?
+	if (aten.nVisibleModels() <= 1) return aten.currentModel();
+
+	// Determine whether we need to change Aten's currentmodel based on click position on the canvas
+	nrows = aten.nVisibleModels()/prefs.nModelsPerRow() + (aten.nVisibleModels()%prefs.nModelsPerRow() == 0 ? 0 : 1);
+	py = contextHeight_ / nrows;
+	px = (aten.nVisibleModels() == 1 ? contextWidth_ : contextWidth_ / prefs.nModelsPerRow());
+
+	// Work out model index...
+	id = (y/py)*prefs.nModelsPerRow() + x/px;
+
+	// In the case of clicking in a blank part of the canvas with no model (i.e. bottom-right corner) return a safe model pointer
+	return (id >= aten.nVisibleModels() ? aten.currentModel() : aten.visibleModel(id));
+}
+
 /*
 // Rendering Functions
 */
@@ -143,6 +167,7 @@ void TCanvas::initializeGL()
 	// Image quality to use depends on current drawing target...
 	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality());
 	else engine_.createPrimitives(prefs.primitiveQuality());
+	engine_.initialiseGL();
 	msg.exit("TCanvas::initializeGL");
 }
 
@@ -150,88 +175,230 @@ void TCanvas::initializeGL()
 void TCanvas::paintGL()
 {
 	static QFont font;
-	static Model *lastDisplayed_ = NULL;
+	static QBrush solidbrush(Qt::NoBrush);
+	QPen pen;
+	QColor color;
+	QRect currentBox;
+	Refitem<Model,int> *first, localri;
+	int px, py, nperrow = prefs.nModelsPerRow(), nrows, col, row, nmodels;
+	bool usepixels, modelIsCurrentModel;
+	Model *m;
 
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
-	if ((!valid_) || drawing_) return;
+	if ((!valid_) || drawing_ || (aten.currentModel() == NULL)) return;
 	
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
-	// all OpenGL calls should be made after the QPainter is constructed, and befor the QPainter
+	// all OpenGL calls should be made after the QPainter is constructed, and before the QPainter
 	// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
 	// so here it is done in the 'wrong' order.
 	
-	if (useCurrentModel_) displayModel_ = aten.currentModelOrFrame();
-	else displayModel_ = renderSource_;
-	
-	if (displayModel_ != NULL)
+	// Set the first item to consider - if we are rendering from a specific model (useCurrentModel_ == FALSE) use the local listitem
+	if (useCurrentModel_)
 	{
-		// Vibration frame?
-		if (displayModel_->renderFromVibration()) displayModel_ = displayModel_->vibrationCurrentFrame();
-		else displayModel_ = displayModel_->renderSourceModel();
-		
-		// Render model
-		msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
-		
-		// If the canvas is still restricted, don't draw anything
-		if (noDraw_)
+		nmodels = aten.nVisibleModels();
+		if (nmodels == 0)
 		{
-			msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
-			return;
+			localri.item = aten.currentModel();
+			nmodels = 1;
+			first = &localri;
 		}
-		checkGlError();
-		
-		// Begin the GL commands
-		if (!beginGl())
-		{
-			msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
-			return;
-		}
-		checkGlError();
-		
-		// Check the supplied model against the previous one rendered to see if we must outdate the display list
-		if (lastDisplayed_ != displayModel_)
-		{
-			// Clear the picked atoms list
-			pickedAtoms_.clear();
-		}
-		msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", displayModel_, displayModel_->changeLog.log(Log::Total));
-		
-		// If this is a trajectory frame, check its ID against the last one rendered
-		if (displayModel_->parent() != NULL)
-		{
-			displayFrameId_ = displayModel_->parent()->trajectoryFrameIndex();
-			msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
-		}
-		
-		// Render 3D elements (with OpenGL)
-		msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
-		engine_.initialiseGL();
-		checkGlError();
-		msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		engine_.render3D(displayModel_, this);
-		//glFlush();
-		endGl();
-		checkGlError();
-
-		// Render 2D elements (with QPainter)
-		QPainter painter(this);
-		font.setPointSize(prefs.labelSize());
-		painter.setFont(font);
-		painter.setRenderHint(QPainter::Antialiasing);
-		engine_.renderText(painter, this);
-		render2D(painter);
-		painter.end();
-	
-		msg.print(Messenger::GL, " --> RENDERING END\n");
-		lastDisplayed_ = displayModel_;
+		else first = aten.visibleModels();
 	}
 	else
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-// 		printf("TCanvas has no model to render.\n");
+		// Quick check for NULL pointer
+		if (renderSource_ == NULL) return;
+		localri.item = renderSource_;
+		first = &localri;
+		nmodels = 1;
 	}
+	if (first == NULL) return;
+	
+	// Begin the GL commands
+	if (!beginGl())
+	{
+		msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
+		return;
+	}
+	
+	// Clear view
+	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
+	glViewport(0,0,contextWidth_,contextHeight_);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	// Set up some useful values
+	nrows = nmodels/nperrow + (nmodels%nperrow == 0 ? 0 : 1);
+	py = contextHeight_ / nrows;
+	px = (nmodels == 1 ? contextWidth_ : contextWidth_ / nperrow);
+	
+	// Clear text lists in renderengine before we start the model loop
+	engine_.clearTextLists();
+
+	// Loop over model refitems in list (or single refitem)
+	col = 0;
+	row = 0;
+	for (Refitem<Model,int> *ri = first; ri != NULL; ri = ri->next)
+	{
+		// Grab model pointer
+		m = ri->item;
+		if (m == NULL) continue;
+
+		// Store coordinates for box if this is the current model
+		if ((m == aten.currentModel()) && useCurrentModel_)
+		{
+			modelIsCurrentModel = TRUE;
+			currentBox.setRect(col*px, row*py, px, py);
+		}
+		else modelIsCurrentModel = FALSE;
+
+		// Vibration frame?
+		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
+		else m = m->renderSourceModel();
+
+		// If the stored model pixel data is out of date or rerendering has specifically been requested, redraw the model
+		usepixels = TRUE;
+		if (redrawActiveModel_ && (ri->item == aten.currentModel())) usepixels = FALSE;
+		else if (noPixelData_) usepixels = FALSE;
+		else if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total))) usepixels = FALSE;
+
+		if (usepixels)
+		{
+			// Setup flat projection for pixel rendering
+			glViewport(0,0,contextWidth_,contextHeight_);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho(0.0, (double)contextWidth_, 0.0, (double)contextHeight_, -1.0, 1.0);
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			glRasterPos2i(col*px, contextHeight_-(row+1)*py);
+			glDrawPixels(px, py, GL_RGBA, GL_UNSIGNED_BYTE, m->pixelData());
+		}
+		else
+		{
+			// Determine desired pixel range and set up view(port)
+			checkGlError();
+			m->setupView(col*px, contextHeight_-(row+1)*py, px, py);
+		
+			// Clear triangle lists and render the 3D parts of the model
+			engine_.clearTriangleLists();
+			render3D(m, modelIsCurrentModel);
+		}
+
+		// Increase counters
+		++col;
+		if (col%nperrow == 0)
+		{
+			col = 0;
+			++row;
+		}
+	}
+	endGl();
+	
+	// Render text elements for all models (with QPainter)
+	QPainter painter(this);
+	font.setPointSize(prefs.labelSize());
+	painter.setFont(font);
+	painter.setRenderHint(QPainter::Antialiasing);
+	engine_.renderText(painter, this);
+	
+	// Render 2D mode embellishments for current model (with QPainter)
+	m = useCurrentModel_ ? aten.currentModel() : renderSource_;
+	if (m != NULL)
+	{
+		m = m->renderFromVibration() ? m->vibrationCurrentFrame() : m->renderSourceModel();
+		render2D(painter, m);
+	}
+
+	// Store pixel data for models that need it
+	col = 0;
+	row = 0;
+	glReadBuffer(GL_BACK);
+	glViewport(0,0,contextWidth_,contextHeight_);
+	for (Refitem<Model,int> *ri = first; ri != NULL; ri = ri->next)
+	{
+		// Grab model pointer
+		m = ri->item;
+		if (m == NULL) continue;
+
+		// Vibration frame?
+		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
+		else m = m->renderSourceModel();
+		
+		// If the stored model pixel data is out of date re-copy pixel data
+		if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)))
+		{
+			m->preparePixelData(px,py,m,m->changeLog.log(Log::Total));
+			glReadPixels(col*px, contextHeight_-(row+1)*py, px, py, GL_RGBA, GL_UNSIGNED_BYTE, m->pixelData());
+		}
+
+		// Increase counters
+		++col;
+		if (col%nperrow == 0)
+		{
+			col = 0;
+			++row;
+		}
+	}
+
+	// Draw box around current model
+	color.setRgbF(0.0,0.0,0.0,1.0);
+	pen.setColor(color);
+	pen.setWidth(2);
+	painter.setBrush(solidbrush);
+	painter.setPen(Qt::SolidLine);
+	painter.setPen(pen);
+	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
+	if (prefs.frameWholeView())
+	{
+		currentBox.setRect(0,0,contextWidth_,contextHeight_);
+		painter.drawRect(currentBox);
+	}
+	painter.end();
+	
+	// Finally, swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();
+}
+
+// Render 3D objects for current displayModel_
+void TCanvas::render3D(Model *source, bool currentModel)
+{	
+	// Valid pointer set?
+	if (source == NULL) return;
+
+	// Render model
+	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
+	
+	// If the canvas is still restricted, don't draw anything
+	if (noDraw_)
+	{
+		msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
+		return;
+	}
+	checkGlError();
+
+	// Check the supplied model against the previous one rendered to see if we must outdate the display list
+	// 	if (lastDisplayed_ != source)
+// 	{
+// 		// Clear the picked atoms list
+// 		pickedAtoms_.clear();
+// 	}
+	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
+	
+	// If this is a trajectory frame, check its ID against the last one rendered
+	if (source->parent() != NULL)
+	{
+		displayFrameId_ = source->parent()->trajectoryFrameIndex();
+		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
+	}
+	
+	// Render 3D elements (with OpenGL)
+	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
+	checkGlError();
+	engine_.render3D(source, this, currentModel);
+	//glFlush();
+	checkGlError();
+
+	msg.print(Messenger::GL, " --> RENDERING END\n");
 }
 
 // Resize function
@@ -240,11 +407,6 @@ void TCanvas::resizeGL(int newwidth, int newheight)
 	// Store the new width and height of the widget and re-do projection
 	contextWidth_ = (GLsizei) newwidth;
 	contextHeight_ = (GLsizei) newheight;
-	doProjection(contextWidth_, contextHeight_);
-	// Flag that render source needs to be reprojected
-	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
-	if (prefs.manualSwapBuffers()) swapBuffers();
-	// 	if (canvas_->displayModel() != NULL) canvas_->displayModel()->changeLog.add(Log::Camera);  //BROKEN? Necessary?
 }
 
 // Begin GL
@@ -302,6 +464,12 @@ void TCanvas::disableDrawing()
 void TCanvas::setOffScreenRendering(bool b)
 {
 	renderOffScreen_ = b;
+	// Make sure here that the current (correct) context width and height are stored
+	if (!b) 
+	{
+		contextWidth_ = (GLsizei) gui.mainWidget->width();
+		contextHeight_ = (GLsizei) gui.mainWidget->height();
+	}
 }
 
 // Return whether offscreen rendering is being performed
@@ -311,11 +479,12 @@ bool TCanvas::offScreenRendering() const
 }
 
 // Refresh widget
-void TCanvas::postRedisplay()
+void TCanvas::postRedisplay(bool noImages, bool redrawActive)
 {
 	if ((!valid_) || drawing_) return;
+	noPixelData_ = noImages;
+	redrawActiveModel_ = redrawActive;
 	updateGL();
-// 	if (prefs.manualSwapBuffers()) swapBuffers();
 }
 
 // Update view matrix stored in RenderEngine
@@ -338,68 +507,11 @@ void TCanvas::reinitialiseTransparency()
 	engine_.initialiseTransparency();
 }
 
-// Calculate Projection
-void TCanvas::doProjection(int newwidth, int newheight)
-{
-	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
-	if (!valid_) return;
-	msg.enter("Canvas::doProjection");
-	// Check source
-	if (beginGl())
-	{
-		// Set the viewport size to the whole area and grab the matrix
-		contextWidth_ = (GLsizei) (newwidth == -1 ? width() : newwidth);
-		contextHeight_ = (GLsizei) (newheight == -1 ? height() : newheight);
-		// Need to get view z-depth (zoom) from current model
-		Model *source;
-		if (useCurrentModel_) source = aten.currentModelOrFrame();
-		else source = renderSource_;
-		if (source == NULL) engine_.setupView(0, 0, contextWidth_, contextHeight_, 1.0);
-		else
-		{
-			// Vibration frame?
-			if (source->renderFromVibration()) source = source->vibrationCurrentFrame();
-			else source = source->renderSourceModel();
-			engine_.setupView(0, 0, contextWidth_, contextHeight_, source->modelViewMatrix()[14] );
-		}
-		endGl();
-	}
-	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
-	msg.exit("Canvas::doProjection");
-}
-
-// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-Vec3<double> &TCanvas::modelToWorld(Vec3<double> pos, Vec4<double> *screenr, double screenradius)
-{
-	return engine_.modelToWorld(pos, screenr, screenradius);
-}
-
-// Convert screen coordinates into modelspace coordinates
-Vec3<double> &TCanvas::screenToModel(double x, double y, double z)
-{
-	return engine_.screenToModel(x, y, z);
-}
-
 /*
 // Other Qt Virtuals
 */
+
 void TCanvas::focusOutEvent(QFocusEvent *event)
 {
-	gui.updateStatusBar(TRUE);
-}
-
-void TCanvas::timerEvent(QTimerEvent *event)
-{
-	// Move on to the next frame in the trajectory
-	// Check that we're not still drawing the last frame from the last timerEvent
-	if (DONTDRAW) printf("Still drawing previous frame.\n");
-	else
-	{
-		DONTDRAW = TRUE;
-		Model *m = aten.currentModel();
-		m->seekNextTrajectoryFrame();
-		if (m->trajectoryFrameIndex() == m->nTrajectoryFrames()-1) gui.stopTrajectoryPlayback();
-		gui.update(FALSE,FALSE,FALSE);
-		DONTDRAW = FALSE;
-	}
+	gui.update(GuiQt::StatusBarTarget);
 }

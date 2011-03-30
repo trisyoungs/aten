@@ -292,6 +292,27 @@ int nclose = selectradial(10, 4.5);
 		
 	</section>
 	
+	<section id="command.ref.selecttree"><title>selecttree</title>
+		<indexterm><primary>commands</primary><secondary>selecttree</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>selecttree</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>bond <parameter>exclude</parameter> = NULL</paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Select all atoms which are reachable by following chemical bonds, starting from (and including) atom <emphasis>i</emphasis>. If a bond to <emphasis>exclude</emphasis> is provided, then this connection will not be followed during the selection process. This is useful when one wishes to select a 'headgroup' fragment attached to an atom, without selecting the rest of the molecule. The number of atoms selected by the process is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+int nclose = selecttree(99);
+		</synopsis>
+		<para>selects all atoms reachable by following chemical bonds from (and including) atom 99.</para>
+		
+	</section>
+
 	<section id="command.ref.selecttype"><title>selecttype</title>
 		<indexterm><primary>commands</primary><secondary>selecttype</secondary></indexterm>
 		

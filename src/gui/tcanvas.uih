@@ -1,7 +1,7 @@
 /*
-	*** Qt canvas
+	*** TCanvas - GL Drawing class based on QGLWidget
 	*** src/gui/tcanvas.uih
-	Copyright T. Youngs 2007
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -65,8 +65,6 @@ class TCanvas : public QGLWidget
 	// Render Target
 	*/
 	private:
-	// Actual model being rendered by the canvas
-	Model *displayModel_;
 	// ID of last trajectory frame displayed (if any)
 	int displayFrameId_;
 	// Flag whether to use Aten's current model as rendering source (the default)
@@ -79,6 +77,8 @@ class TCanvas : public QGLWidget
 	Model *displayModel() const;
 	// Set the rendering source to the supplied model (reverts to useCurrentModel_ if a NULL pointer is supplied)
 	void setRenderSource(Model *source);
+	// Determine target model based on clicked position on TCanvas
+	Model *modelAt(int x, int y);
 	
 	
 	/*
@@ -91,7 +91,7 @@ class TCanvas : public QGLWidget
 	bool noDraw_;
 	// Flag used by some sub-rendering processes (e.g. surfaces) in order to decide which display list to use
 	bool renderOffScreen_;
-	// Timer for mouse move events
+	// Time counter for mouse move events
 	QTime mouseMoveCounter_;
 	// Rendering engine
 	RenderEngine engine_;
@@ -105,14 +105,20 @@ class TCanvas : public QGLWidget
 	void resizeGL(int, int);
 
 	private:
+	// Flag specifying that stored model pixel data should not be used
+	bool noPixelData_;
+	// Flag specifying that the active model should be redrawn regardless of pixeldata availability
+	bool redrawActiveModel_;
 	// Begin construct for any OpenGL commands
 	bool beginGl();
 	// Finish OpenGL commands
 	void endGl();
 	// Check for GL error
 	void checkGlError();
+	// Render 3D objects for current displayModel_
+	void render3D(Model *source, bool currentModel);
 	// Draw 2D objects with supplied QPainter
-	void render2D(QPainter &painter);
+	void render2D(QPainter &painter, Model *source);
 	
 	public:
 	// Enable rendering
@@ -127,52 +133,14 @@ class TCanvas : public QGLWidget
 	void reinitialisePrimitives(bool force = FALSE);
 	// Reinitialise transparency correction
 	void reinitialiseTransparency();
-	// Reset the projection matrix based on the current canvas geometry
-	void doProjection(int newwidth = -1, int newheight = -1);
 	// Update Canvas
-	void postRedisplay();
+	void postRedisplay(bool noImages = FALSE, bool redrawActive = FALSE);
 	// Update view matrix stored in RenderEngine
 	void updateTransformation(Matrix &mat, Vec3<double> cellcentre);
 	// Render a scene based on the specified model
 	void renderModel(Model *m);
-	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-	Vec3<double> &modelToWorld(Vec3<double> pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
-	// Convert screen coordinates into modelspace coordinates
-	Vec3<double> &screenToModel(double x, double y, double z);
-	
-	
-	/*
-	// Atom Selection
-	*/
-	private:
-	// Number of atoms to pick in PickAtomsAction
-	int nAtomsToPick_;
-	// User action before picking mode was entered
-	QAction *actionBeforePick_;
-	// List of picked atoms
-	Reflist<Atom,int> pickedAtoms_;
-	// Pointer to callback function when PickAtomsAction exits
-	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
-	// Atom that was clicked at the start of a mouse press event
-	Atom *atomClicked_;
-	// Whether we are selecting atoms and placing them in the subsel list	
-	bool pickEnabled_;
-	// Reflist of selected atoms and their positions so manipulations may be un-done
-	Reflist< Atom,Vec3<double> > oldPositions_;
-		
-	public:
-	// Returns the clicked atom within a mouse click event
-	Atom *atomClicked();
-	// Clears the subsel of atoms
-	void clearPicked();
-	// Manually enter picking mode to select N atoms
-	void beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*));
-	// End manual picking
-	void endManualPick(bool resetaction);
-	// Return start of picked atom list
-	Refitem<Atom,int> *pickedAtoms();
-	
-	
+
+
 	/*
 	// Mouse Input
 	*/
@@ -237,6 +205,20 @@ class TCanvas : public QGLWidget
 	short int sketchElement_;
 	// Whether to accept editing actions (i.e. anything other than view manipulation)
 	bool editable_;
+	// Number of atoms to pick in PickAtomsAction
+	int nAtomsToPick_;
+	// User action before picking mode was entered
+	UserAction::Action actionBeforePick_;
+	// List of picked atoms
+	Reflist<Atom,int> pickedAtoms_;
+	// Pointer to callback function when PickAtomsAction exits
+	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
+	// Atom that was clicked at the start of a mouse press event
+	Atom *atomClicked_;
+	// Whether we are selecting atoms and placing them in the subsel list	
+	bool pickEnabled_;
+	// Reflist of selected atoms and their positions so manipulations may be un-done
+	Reflist< Atom,Vec3<double> > oldPositions_;
 
 	private:
 	// Begin an action on the model (called from MouseButtondown)
@@ -248,7 +230,7 @@ class TCanvas : public QGLWidget
 	// Set the active mode to the current user mode
 	void useSelectedMode();
 	// Sets the currently selected interact mode
-	void setSelectedMode(UserAction::Action ua);
+	void setSelectedMode(UserAction::Action ua, int atomsToPick = -1, void (*callback)(Reflist<Atom,int>*) = NULL);
 	// Return the currently selected mode
 	UserAction::Action selectedMode() const;
 	// Return the currently active mode
@@ -263,6 +245,14 @@ class TCanvas : public QGLWidget
 	void setEditable(bool b);
 	// Return whether to accept editing actions (i.e. anything other than view manipulation)
 	bool editable();
+	// Returns the clicked atom within a mouse click event
+	Atom *atomClicked();
+	// Clears the subsel of atoms
+	void clearPicked();
+	// End manual picking
+	void endddManualPick(bool resetaction);
+	// Return start of picked atom list
+	Refitem<Atom,int> *pickedAtoms();
 	
 	
 	/*
@@ -270,7 +260,6 @@ class TCanvas : public QGLWidget
 	*/
 	protected:
 	void focusOutEvent(QFocusEvent *event);
-	void timerEvent(QTimerEvent*);
 };
 
 #endif

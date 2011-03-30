@@ -28,9 +28,10 @@
 #include "base/elements.h"
 #include "classes/colourscale.h"
 #include "base/dnchar.h"
+#include "base/choice.h"
 
 // Forward declarations
-class Cell;
+class UnitCell;
 
 // Prefs
 class Prefs
@@ -68,16 +69,10 @@ class Prefs
 	enum DensityUnit { GramsPerCm, AtomsPerAngstrom, nDensityUnits };
 	static const char *densityUnit(DensityUnit);
 	static DensityUnit densityUnit(const char *name, bool reporterror = 0);
-	// View Objects
-	enum ViewObject { ViewAtoms, ViewCell, ViewCellAxes, ViewCellRepeat, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
-	static ViewObject viewObject(const char *name, bool reporterror = 0);
-	static const char *viewObject(ViewObject);
 	// Atom colouring scheme
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, CustomScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char *name, bool reporterror = 0);
 	static const char *colouringScheme(ColouringScheme cs);
-	// Filter override switches
-	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };
 	// Drawing guide geometry
 	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
 	// Spotlight Components
@@ -90,16 +85,18 @@ class Prefs
 	bool load(const char *filename);
 	// Save preferences to file
 	bool save(const char *filename);
-	// Friend class
-	friend class PreferencesVariable;
 
 
 	/*
 	// Rendering - View Objects
 	*/
 	private:
-	// List of visibilities of renderable objects on screen and off-screen (on image)
-	int screenObjects_, offScreenObjects_;
+	// Whether to frame current model in view
+	bool frameCurrentModel_;
+	// Whether to frame whole view
+	bool frameWholeView_;
+	// Rotation globe style
+	bool viewRotationGlobe_;
 	// Repeat units in positive xyz directions
 	Vec3<int> repeatCellsPos_;
 	// Repeat units in negative xyz directions
@@ -130,22 +127,18 @@ class Prefs
 	double transparencyBinWidth_;
 
 	public:
-	// Set the visibility of an object on-screen
-	void setVisibleOnScreen(ViewObject vo, bool b);
-	// Set the visibility of an object off-screen
-	void setVisibleOffScreen(ViewObject vo, bool b);
-	// Return whether the specified object is visible (i.e. should be rendered)
-	bool isVisibleOnScreen(ViewObject vo);
-	// Return whether the specified object is visible (i.e. should be rendered) offscreen
-	bool isVisibleOffScreen(ViewObject vo);
-	// Return screenobjects bitvector
-	int screenObjects() const;
-	// Set screenobjects bitvector
-	void setScreenObjects(int i);
-	// Return screenobjects bitvector
-	int offScreenObjects() const;
-	// Set imageobjects bitvector
-	void setOffScreenObjects(int i);
+	// Return whether to frame current model in view
+	bool frameCurrentModel();
+	// Set whether to frame current model in view
+	void setFrameCurrentModel(bool b);
+	// Return whether to frame whole view
+	bool frameWholeView();
+	// Set whether to frame whole view
+	void setFrameWholeView(bool b);
+	// Return whether to draw rotation globe
+	bool viewRotationGlobe();
+	// Set whether to draw rotation globe
+	void setViewRotationGlobe(bool b);
 	// Return the styled radius of an atom calculated from the element and draw style
 	double styleRadius(Atom*) const;
 	// Set the drawing style of models
@@ -234,10 +227,14 @@ class Prefs
 	void setAtomStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the specified atom radius
 	GLdouble atomStyleRadius(Atom::DrawStyle ds) const;
+	// Return atom radii array
+	GLdouble *atomStyleRadii();
 	// Sets the bond radius used in Scaled and Sphere styles
 	void setBondStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the bond radius used in Scaled and Sphere styles
 	GLdouble bondStyleRadius(Atom::DrawStyle ds) const;
+	// Return bond radii array
+	GLdouble *bondStyleRadii();
 	// Sets the scale of selected atoms
 	void setSelectionScale(double f);
 	// Return the scale of selected atoms
@@ -282,10 +279,10 @@ class Prefs
 	// Rendering - Options
 	*/
 	private:
-        // C-style format for distance label values
-        Dnchar distanceLabelFormat_;
-        // C-style format for angle label values
-        Dnchar angleLabelFormat_;
+	// C-style format for distance label values
+	Dnchar distanceLabelFormat_;
+	// C-style format for angle label values
+	Dnchar angleLabelFormat_;
 	// Pointsize for labels
 	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
@@ -296,18 +293,20 @@ class Prefs
 	bool useFrameBuffer_;
 	// Whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics_;
-	// Mouse move event filter ratio
+	// Mouse move event filter rate
 	int mouseMoveFilter_;
+	// Number of models per row when viewing multiple models
+	int nModelsPerRow_;
 
 	public:
-        // Set C-style format for distance label values
-        void setDistanceLabelFormat(const char *format);
-        // Return C-style format for distance label values
-        const char *distanceLabelFormat();
-        // Set C-style format for angle label values
-        void setAngleLabelFormat(const char *format);
-        // Return C-style format for angle label values
-        const char *angleLabelFormat();
+	// Set C-style format for distance label values
+	void setDistanceLabelFormat(const char *format);
+	// Return C-style format for distance label values
+	const char *distanceLabelFormat();
+	// Set C-style format for angle label values
+	void setAngleLabelFormat(const char *format);
+	// Return C-style format for angle label values
+	const char *angleLabelFormat();
 	// Set the pointsize of labels in the model
 	void setLabelSize(int size);
 	// Return the current label pointsize
@@ -332,8 +331,12 @@ class Prefs
 	int mouseMoveFilter();
 	// Set mouse move event filter ratio
 	void setMouseMoveFilter(int i);
+	// Return number of models per row when viewing multiple models
+	int nModelsPerRow();
+	// Set number of models per row when viewing multiple models
+	void setNModelsPerRow(int n);
 
-	
+
 	/*
 	// GL Options
 	*/
@@ -423,13 +426,13 @@ class Prefs
 	*/
 	private:
 	// Recalculate bonding when model has loaded
-	FilterSwitch bondOnLoad_;
+	Choice bondOnLoad_;
 	// Centre non-periodic models on load
-	FilterSwitch centreOnLoad_;
+	Choice centreOnLoad_;
 	// Fold atomic positions after model load
-	FilterSwitch foldOnLoad_;
+	Choice foldOnLoad_;
 	// Whether to apply symmetry operators to get crystal packing on load
-	FilterSwitch packOnLoad_;
+	Choice packOnLoad_;
 	// Whether to load in all coordinate sets from a file
 	bool loadAllCoords_;
 	// Convert coordinates from Bohr to Angstrom on load
@@ -449,21 +452,21 @@ class Prefs
 
 	public:
 	// Sets whether to calculate bonding on model load
-	void setBondOnLoad(FilterSwitch s);
+	void setBondOnLoad(Choice s);
 	// Whether bonding should be recalculated on model load
-	FilterSwitch bondOnLoad() const;
+	Choice bondOnLoad() const;
 	// Sets whether to centre molecule on load
-	void setCentreOnLoad(FilterSwitch s);
+	void setCentreOnLoad(Choice s);
 	// Whether molecule should be centred on model load
-	FilterSwitch centreOnLoad() const;
+	Choice centreOnLoad() const;
 	// Sets whether to fold atomic positions after model load
-	void setFoldOnLoad(FilterSwitch s);
+	void setFoldOnLoad(Choice s);
 	// Whether atoms should be folded after model load
-	FilterSwitch foldOnLoad() const;
+	Choice foldOnLoad() const;
 	// Sets whether to apply symmetry operators (pack) on load
-	void setPackOnLoad(FilterSwitch s);
+	void setPackOnLoad(Choice s);
 	// Whether atoms should be packed (with symmetry operations) after model load
-	FilterSwitch packOnLoad() const;
+	Choice packOnLoad() const;
 	// Set the cache limit (in kb) for trajectory files
 	void setCacheLimit(int i);
 	// Return the cache limit for trajectory files
@@ -565,10 +568,14 @@ class Prefs
 	void setMouseAction(MouseButton mb, MouseAction ma);
 	// Return the action associated with the specified mouse button
 	MouseAction mouseAction(MouseButton mb) const;
+	// Return array of (derived) mouse action texts
+	Dnchar *mouseActionTexts();
 	// Sets the modifier key for the specified action
 	void setKeyAction(ModifierKey mk, KeyAction ka);
 	// Return the action associated with the specified keymod button
 	KeyAction keyAction(ModifierKey mk) const;
+	// Return array of (derived) key action texts
+	Dnchar *keyActionTexts();
 	// Sets the zoom throttle
 	void setZoomThrottle(double throtvalue);
 	// Returns the zoom throttle
@@ -609,6 +616,8 @@ class Prefs
 	bool loadFilters_;
 	// Whether to load includes on startup
 	bool loadIncludes_;
+	// Whether to load partitions on startup
+	bool loadPartitions_;
 	// Whether to load fragments on startup
 	bool loadFragments_;
 	// Whether to generate icons for loaded fragments
@@ -685,6 +694,10 @@ class Prefs
 	bool loadIncludes() const;
 	// Set whether to load includes on startup
 	void setLoadIncludes(bool b);
+	// Whether to load partitions on startup
+	bool loadPartitions() const;
+	// Set whether to load partitions on startup
+	void setLoadPartitions(bool b);
 	// Whether to load fragments on startup
 	bool loadFragments() const;
 	// Set whether to load fragments on startup
@@ -777,10 +790,6 @@ class Prefs
 	void setCalculateVdw(bool b);
 	// Return whether to calculate VDW interactions
 	bool calculateVdw() const;
-	// Sets whether to calculate electrostatic interactions
-	void setCalculateElec(bool b);
-	// Return whether to calculate electrostatic interactions
-	bool calculateElec() const;
 	// Sets the Ewald k-vector extents
 	void setEwaldKMax(int element, int i);
 	void setEwaldKMax(int a, int b, int c);
@@ -796,7 +805,7 @@ class Prefs
 	// Set the short-range and electrostatic cutoffs
 	void setCutoffs(double vcut, double ecut);
 	// Estimate Ewald sum parameters for the current unit cell
-	void estimateEwaldParameters(Cell*);
+	void estimateEwaldParameters(UnitCell *cell);
 	// Return the validity of automatic Ewald params (invalidated on cell change)
 	bool hasValidEwaldAuto() const;
 	// Flag the Ewald auto params as invalid
@@ -817,6 +826,8 @@ class Prefs
 	void setCombinationRule(Combine::CombinationRule cr, const char *s);
 	// Return combination rule equation
 	const char *combinationRule(Combine::CombinationRule cr) const;
+	// Return array of combination rule equations
+	Dnchar *combinationRules();
 
 
 	/*
@@ -827,6 +838,10 @@ class Prefs
 	Dnchar tempDir_;
 	// Location of MOPAC executable
 	Dnchar mopacExe_;
+	// Video encoder executable
+	Dnchar encoderExe_;
+	// Video encoder arguments
+	Dnchar encoderArguments_;
 
 	public:
 	// Set temp directory
@@ -834,9 +849,17 @@ class Prefs
 	// Return the temp directory path
 	const char *tempDir() const;
 	// Location of MOPAC executable
-	void setMopacExe(const char *path);
+	void setMopacExe(const char *exe);
 	// Return the location of the MOPAC executable
 	const char *mopacExe() const;
+	// Video encoder command
+	void setEncoderExe(const char *exe);
+	// Return the video encoder command
+	const char *encoderExe() const;
+	// Video encoder arguments
+	void setEncoderArguments(const char *arguments);
+	// Return the video encoder arguments
+	const char *encoderArguments() const;
 };
 
 extern Prefs prefs;

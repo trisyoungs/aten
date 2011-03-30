@@ -1,0 +1,38 @@
+# Name / Description
+string name = "CylinderZ";
+string description = "Cylinder along Z-Axis";
+
+# Grid size information
+int roughgrid[3] = { 40,40,40 };
+int finegrid[3] = { 100,100,100 };
+
+# Number of partitions
+int npartitions = 2;
+
+# Every partition definition *must* contain 'partition' and 'partitionname' functions
+int partition(double x, double y, double z)
+{
+	double cylx = option("X", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Cylinder Properties");
+	double cyly = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Cylinder Properties");
+	double radius = option("R", "doublespin", 0.001, 1.0, 0.1, 0.1, "newline", "span=4", "group=Cylinder Properties");
+
+	// Check 1 - Is the point inside the defined cylinder (region 1)
+	double rij = sqrt( (x-cylx)*(x-cylx) + (y-cyly)*(y-cyly));
+	if (rij <= radius) return 1;
+
+	// Not inside any defined regions, so return '0' for 'inside rest of cell'
+	return 0;
+}
+
+string partitionname(int id)
+{
+	switch(id)
+	{
+		case (0):
+			return "Unit Cell";
+		case (1):
+			return "Cylinder";
+		default:
+			return "UNKNOWN";
+	}
+}

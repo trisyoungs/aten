@@ -1,5 +1,5 @@
 /*
-	*** Qt MD dialog functions
+	*** MD Dock Widget
 	*** src/gui/md_funcs.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -22,11 +22,12 @@
 #include "main/aten.h"
 #include "methods/md.h"
 #include "gui/gui.h"
+#include "gui/toolbox.h"
 #include "gui/mainwindow.h"
 #include "gui/md.h"
 
 // Constructor
-AtenMD::AtenMD(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+MDWidget::MDWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
 	ui.setupUi(this);
 
@@ -36,18 +37,15 @@ AtenMD::AtenMD(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 	// Public variables
 }
 
-// Destructor
-AtenMD::~AtenMD()
+void MDWidget::showWidget()
 {
-}
-
-void AtenMD::showWindow()
-{
-	refresh();
 	show();
+	refresh();
+	// Make sure toolbutton is in correct state
+	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
-void AtenMD::refresh()
+void MDWidget::refresh()
 {
 	// Set controls to reflect values in singleton MDEngine
 	refreshing_ = TRUE;
@@ -63,37 +61,37 @@ void AtenMD::refresh()
 // Control Page
 */
 
-void AtenMD::on_TemperatureSpin_valueChanged(double value)
+void MDWidget::on_TemperatureSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 	md.setTemperature(value);
 }
 
-void AtenMD::on_PressureSpin_valueChanged(double value)
+void MDWidget::on_PressureSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 	md.setPressure(value);
 }
 
-void AtenMD::on_NStepsSpin_valueChanged(int value)
+void MDWidget::on_NStepsSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 	md.setNSteps(value);
 }
 
-void AtenMD::on_TimeStepMantissaSpin_valueChanged(double value)
+void MDWidget::on_TimeStepMantissaSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 	md.timeStep().setMantissa(value);
 }
 
-void AtenMD::on_TimeStepExponentSpin_valueChanged(int value)
+void MDWidget::on_TimeStepExponentSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 	md.timeStep().setExponent(value);
 }
 
-void AtenMD::on_RunMDButton_clicked(bool checked)
+void MDWidget::on_RunMDButton_clicked(bool checked)
 {
 	md.run();
 }
@@ -106,8 +104,10 @@ void AtenMD::on_RunMDButton_clicked(bool checked)
 // Extra Page
 */
 
-void AtenMD::dialogFinished(int result)
+void MDWidget::closeEvent(QCloseEvent *event)
 {
-	gui.mainWindow->ui.actionMolecularDynamicsWindow->setChecked(FALSE);
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.MDButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	event->accept();
 }
-

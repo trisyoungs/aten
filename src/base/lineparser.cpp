@@ -25,6 +25,7 @@
 #include "base/constants.h"
 #include "base/messenger.h"
 #include <string.h>
+#include <stdarg.h>
 
 // Parse options
 const char *ParseOptionKeywords[LineParser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies" };
@@ -259,7 +260,7 @@ int LineParser::readNextLine(int optionMask)
 	}
 	if (file_->eof())
 	{
-		msg.exit("LineParser::readLine");
+		msg.exit("LineParser::readNextLine");
 		return -1;
 	}
 	// Loop until we get 'suitable' line from file
@@ -277,6 +278,12 @@ int LineParser::readNextLine(int optionMask)
 			}
 			else if (chr == '\n') break;
 			line_[lineLength_++] = chr;
+			// Check here for overfilling the line_ buffer - perhaps it's a binary file?
+			if (lineLength_ == MAXLINELENGTH)
+			{
+				msg.exit("LineParser::readNextLine");
+				return -1;
+			}
 		}
 		line_[lineLength_] = '\0';
 		msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
@@ -897,6 +904,29 @@ bool LineParser::writeLine(const char *s)
 	}
 	*file_ << s;
 	msg.exit("LineParser::writeLine");
+	return TRUE;
+}
+
+// Write formatter line to file
+bool LineParser::writeLineF(const char *fmt ...)
+{
+	msg.enter("LineParser::writeLine");
+	if (readOnly_)
+	{
+		msg.print("Unable to write formatted line - destination file was opened read-only!\n");
+		msg.exit("LineParser::writeLineF");
+		return FALSE;
+	}
+	
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into s[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	*file_ << s;
+	msg.exit("LineParser::writeLineF");
 	return TRUE;
 }
 

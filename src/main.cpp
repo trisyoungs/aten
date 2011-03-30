@@ -68,6 +68,9 @@ int main(int argc, char *argv[])
 	// Load in fragments
 	if (prefs.loadFragments()) aten.openFragments();
 	
+	// Load in partitions
+	if (prefs.loadPartitions()) aten.openPartitions();
+	
 	// Load in user preferences
 	Dnchar filename;
 	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);

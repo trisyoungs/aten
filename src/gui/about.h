@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: About Window
+	*** About Window
 	*** src/gui/about.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -49,7 +49,6 @@ class AtenAbout : public QDialog
 	public:
 	// Constructor / Destructor
 	AtenAbout(QWidget *parent = 0);
-	~AtenAbout();
 	// Main form declaration
 	Ui::AboutDialog ui;
 };

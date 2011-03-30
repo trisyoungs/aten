@@ -1,7 +1,7 @@
 /*
-	*** Qt GUI: View Eigenvector Dialog
+	*** View Eigenvector Dialog
 	*** src/gui/vieweigenvector.h
-	Copyright T. Youngs 2007-2010
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -51,7 +51,6 @@ class AtenViewEigenvector : public QDialog
 	public:
 	// Constructor / Destructor
 	AtenViewEigenvector(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	~AtenViewEigenvector();
 	// Main form declaration
 	Ui::ViewEigenvectorDialog ui;
 };

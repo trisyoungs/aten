@@ -144,6 +144,9 @@ Cli cliSwitches[] = {
 	{ Cli::PackSwitch,		'\0',"pack",		0,
 		"",
 		"Force generation of symmetry-equivalent atoms from spacegroup information" },
+	{ Cli::NoPartitionsSwitch,	'\0',"nopartitions",	0,
+		"",
+		"Prevent loading of partitions on startup" },
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
@@ -282,7 +285,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			{
 				case (Cli::AtenDataSwitch):
 					aten.setDataDir(argtext.get());
-					printf("Will search for filters in '%s'.\n", argtext.get());
+					msg.print("Will search for filters in '%s'.\n", argtext.get());
 					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
@@ -310,6 +313,10 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (Cli::NoIncludesSwitch):
 					prefs.setLoadIncludes(FALSE);
 					break;
+				// Restrict partition loading on startup
+				case (Cli::NoPartitionsSwitch):
+					prefs.setLoadPartitions(FALSE);
+					break;
 				// Display help
 				case (Cli::HelpSwitch):
 					printUsage();
@@ -321,7 +328,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
-					printf("Verbosity enabled.\n");
+					msg.print("Verbosity enabled.\n");
 					msg.addOutputType(Messenger::Verbose);
 					break;
 				// Print version and exit
@@ -364,7 +371,7 @@ int Aten::parseCli(int argc, char *argv[])
 			// Manually-exclude some specific (and extremely annoying) extraneous command line options
 			if (strncmp(argv[argn],"-psn",4) == 0)
 			{
-				printf("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
+				msg.print("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
 				continue;
 			}
 			// Is this a long or short option?
@@ -446,7 +453,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Force bonding calculation of atoms on load
 				case (Cli::BondSwitch):
-					prefs.setBondOnLoad(Prefs::SwitchOn);
+					prefs.setBondOnLoad(TRUE);
 					break;
 				// Set trajectory cache limit
 				case (Cli::CacheSwitch):
@@ -454,7 +461,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Force model centering on load (for non-periodic systems)
 				case (Cli::CentreSwitch):
-					prefs.setCentreOnLoad(Prefs::SwitchOn);
+					prefs.setCentreOnLoad(TRUE);
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
@@ -509,7 +516,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):
-					prefs.setFoldOnLoad(Prefs::SwitchOn);
+					prefs.setFoldOnLoad(TRUE);
 					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
@@ -561,7 +568,7 @@ int Aten::parseCli(int argc, char *argv[])
 						if (interactiveScript.generateFromString(line)) interactiveScript.execute(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
-						delete line;
+						free(line);
 					} while (aten.programMode() == Aten::InteractiveMode);
 					//aten.set_program_mode(PM_NONE);
 					break;
@@ -614,7 +621,11 @@ int Aten::parseCli(int argc, char *argv[])
 							return -1;
 						}
 						el = elements().findAlpha(afterChar(parser.argc(n), '='));
-						if (el == 0) printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+						if (el == 0)
+						{
+							printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+							return -1;
+						}
 						else
 						{
 							nmi = typeImportMap.add();
@@ -629,19 +640,19 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					prefs.setBondOnLoad(Prefs::SwitchOff);
+					prefs.setBondOnLoad(FALSE);
 					break;
 				// Prohibit model centering on load (for non-periodic systems)
 				case (Cli::NoCentreSwitch):
-					prefs.setCentreOnLoad(Prefs::SwitchOff);
+					prefs.setCentreOnLoad(FALSE);
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
-					prefs.setFoldOnLoad(Prefs::SwitchOff);
+					prefs.setFoldOnLoad(FALSE);
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
-					prefs.setPackOnLoad(Prefs::SwitchOff);
+					prefs.setPackOnLoad(FALSE);
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):
@@ -649,7 +660,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit packing (application of symmetry operators) on load
 				case (Cli::PackSwitch):
-					prefs.setPackOnLoad(Prefs::SwitchOn);
+					prefs.setPackOnLoad(TRUE);
 					break;
 				// Read and execute commads from pipe
 				case (Cli::PipeSwitch):
@@ -674,7 +685,11 @@ int Aten::parseCli(int argc, char *argv[])
 				// Associate trajectory with last loaded model
 				case (Cli::TrajectorySwitch):
 					// Check for a current model
-					if (current.m == NULL) printf("There is no current model to associate a trajectory to.\n");
+					if (current.m == NULL)
+					{
+						printf("There is no current model to associate a trajectory to.\n");
+						return -1;
+					}
 					else
 					{
 						Tree *f = probeFile(argtext.get(), FilterData::TrajectoryImport);

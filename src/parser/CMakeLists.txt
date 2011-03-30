@@ -32,7 +32,6 @@ patternbound.h
 prefs.h
 program.h
 pvariable.h
-region.h
 returnvalue.h
 scopenode.h
 site.h
@@ -82,7 +81,6 @@ patternbound.cpp
 prefs.cpp
 program.cpp
 pvariable.cpp
-region.cpp
 returnvalue.cpp
 scopenode.cpp
 site.cpp

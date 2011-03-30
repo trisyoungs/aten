@@ -175,7 +175,7 @@ void Model::selectionDelete(bool markonly)
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
 		}
-		if (!aten.updateProgress(++count)) cancelled = TRUE;
+// 		if (!aten.updateProgress(++count)) cancelled = TRUE;	TGAY
 		if (cancelled) break;
 	}
 	// 2) Delete the actual atoms
@@ -191,7 +191,7 @@ void Model::selectionDelete(bool markonly)
 				i = tempi;
 			}
 			else i = i->prev;
-			if (!aten.updateProgress(++count)) break;
+// 			if (!aten.updateProgress(++count)) break;	TGAY
 		}
 	}
 	aten.cancelProgress();
@@ -245,7 +245,7 @@ Atom *Model::atomOnScreen(double x1, double y1)
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		wr = -gui.mainWidget->modelToWorld(i->r(), &sr, prefs.styleRadius(i));
+		wr = -modelToWorld(i->r(), &sr, prefs.styleRadius(i));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
@@ -289,7 +289,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		gui.mainWidget->modelToWorld(i->r(), &sr);
+		modelToWorld(i->r(), &sr);
 		if ((sr.x >= x1) && (sr.x <= x2) && (sr.y >= y1) && (sr.y <= y2)) (deselect ? deselectAtom(i) : selectAtom(i));
 	}
 	msg.exit("Model::selectBox");
@@ -591,7 +591,7 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
 {
 	msg.enter("Model::selectMiller");
-	if (cell_.type() == Cell::NoCell)
+	if (cell_.type() == UnitCell::NoCell)
 	{
 		msg.print("Can't use Miller planes on a non-periodic model.\n");
 		msg.exit("Model::selectMiller");

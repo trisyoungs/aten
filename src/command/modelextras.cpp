@@ -31,7 +31,7 @@ bool Command::function_NewBasisShell(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Get shell type argument
 	BasisShell::BasisShellType bft = BasisShell::basisShellType(c->argc(1), TRUE);
 	if (bft == BasisShell::nBasisShellTypes) return FALSE;
-	BasisShell *bf = obj.rs->addBasisShell();
+	BasisShell *bf = obj.rs()->addBasisShell();
 	bf->setAtomId(c->argi(0)-1);
 	bf->setType(bft);
 	rv.set(VTypes::BasisShellData, bf);
@@ -43,8 +43,8 @@ bool Command::function_NewEigenvector(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Optional argument is size of vector. If not present, use current size of basis function array
-	int size = c->hasArg(0) ? c->argi(0) : obj.rs->nCartesianBasisFunctions();
-	Eigenvector *vec = obj.rs->addEigenvector();
+	int size = c->hasArg(0) ? c->argi(0) : obj.rs()->nCartesianBasisFunctions();
+	Eigenvector *vec = obj.rs()->addEigenvector();
 	vec->initialise(size);
 	rv.set(VTypes::EigenvectorData, vec);
 	return TRUE;
@@ -54,9 +54,9 @@ bool Command::function_NewEigenvector(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vibration *v = obj.rs->renderSourceModel()->addVibration();
+	Vibration *v = obj.rs()->addVibration();
 	if (c->hasArg(0)) v->setName(c->argc(0));
-	msg.print(Messenger::Verbose, "Added vibration to model '%s'\n", obj.rs->name());
+	msg.print(Messenger::Verbose, "Added vibration to model '%s'\n", obj.rs()->name());
 	rv.set(VTypes::VibrationData, v);
 	return TRUE;
 }
@@ -66,7 +66,7 @@ bool Command::function_PrintZMatrix(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab (and create) zmatrix for current model
-	ZMatrix *zmat = obj.rs->zMatrix();
+	ZMatrix *zmat = obj.rs()->zMatrix();
 	if (zmat == NULL) return FALSE;
 	
 	Atom *i, *j, *k, *l;

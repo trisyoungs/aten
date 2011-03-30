@@ -22,7 +22,7 @@
 #ifndef ATEN_COMMANDS_H
 #define ATEN_COMMANDS_H
 
-#include "base/bundle.h"
+#include "model/bundle.h"
 #include "parser/returnvalue.h"
 
 // Forward declarations
@@ -215,16 +215,7 @@ class Command
 		// Disordered build commands
 		Disorder,
 		ListComponents,
-		RegionCentre,
-		RegionCentreFrac,
-		RegionGeometry,
-		RegionGeometryFrac,
-		RegionOverlaps,
-		RegionRotation,
-		RegionShape,
-		SetNMols,
-		SetRegion,
-		SetRegionFrac,
+		SetupComponent,
 		VdwScale,
 	
 		// Edit commands
@@ -351,6 +342,7 @@ class Command
 	
 		// Image Commands
 		SaveBitmap,
+		SaveMovie,
 		SaveVector,
 	
 		// Labeling commands
@@ -497,6 +489,7 @@ class Command
 		SelectOutsideCell,
 		SelectPattern,
 		SelectRadial,
+		SelectTree,
 		SelectType,
 
 		// Site Commands
@@ -699,16 +692,7 @@ class Command
 	// Disordered build commands
 	static bool function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_RegionCentre(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_RegionCentreFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_RegionGeometry(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_RegionGeometryFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_RegionOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_RegionRotation(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_RegionShape(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_SetNMols(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_SetRegion(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_SetRegionFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetupComponent(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_VdwScale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Edit commands
 	static bool function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -827,6 +811,7 @@ class Command
 	static bool function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Image Commands
 	static bool function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveVector(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Labeling commands
 	static bool function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -961,6 +946,7 @@ class Command
 	static bool function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectTree(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Site Commands
 	static bool function_GetSite(CommandNode *c, Bundle &obj, ReturnValue &rv);
