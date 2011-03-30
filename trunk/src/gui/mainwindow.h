@@ -288,11 +288,6 @@ class AtenForm : public QMainWindow
 	QButtonGroup uaButtons_;
 	// Text labels for model information and UI messages in status bar
 	QLabel *infoLabel1_, *infoLabel2_, *messageLabel_;
-	// Statusbar progress indicator widgets
-	QProgressBar *progressBar_;
-	QLabel *progressTitle_, *progressEta_;
-	QPushButton *progressButton_;
-	QFrame *progressIndicator_;
 
 	private slots:
 	// Change current user action

@@ -18,6 +18,7 @@ matrix.cpp
 measurement.cpp
 messenger.cpp
 pattern.cpp
+progress.cpp
 sysfunc.cpp
 vibration.cpp
 wrapint.cpp
@@ -40,6 +41,7 @@ matrix.h
 measurement.h
 messenger.h
 pattern.h
+progress.h
 sysfunc.h
 vibration.h
 wrapint.h

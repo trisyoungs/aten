@@ -36,7 +36,6 @@ AC_PROG_YACC
 QTMOC="moc"
 QTRCC="rcc"
 QTUIC="uic"
-OLDQT="FALSE"
 AC_ARG_WITH([qtmoc],[AC_HELP_STRING([--with-qtmoc=<executable>],
     [Specify Qt4 Meta-Object Compiler tool (moc) [default="moc"]])], ,
     [with_qtmoc="moc"])
@@ -46,14 +45,9 @@ AC_ARG_WITH([qtuic],[AC_HELP_STRING([--with-qtuic=<executable>],
 AC_ARG_WITH([qtrcc],[AC_HELP_STRING([--with-qtrcc=<executable],
     [Specify Qt4 Resource Compiler tool (rcc) [default="rcc"]])], ,
     [with_qtrcc="rcc"])
-AC_ARG_WITH([oldqt],[AC_HELP_STRING([--with-oldqt],
-    [Specify that an old version of Qt4 (4.2) should be accounted for [default="FALSE"]])],
-    [with_oldqt="TRUE"],
-    [with_oldqt="FALSE"])
 QTMOC="$with_qtmoc"
 QTRCC="$with_qtrcc"
 QTUIC="$with_qtuic"
-OLDQT="$with_oldqt"
 
 # Readline include dir
 RLINCDIR=""
@@ -117,9 +111,6 @@ if test "x$with_qt" = "x"; then
 fi
 GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses"
 GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
-if test "x$with_oldqt" = "xTRUE"; then
-  GUI_CFLAGS="$GUI_CFLAGS -DATEN_OLDQT"
-fi
 
 
 VERSION=ATEN_VERSION

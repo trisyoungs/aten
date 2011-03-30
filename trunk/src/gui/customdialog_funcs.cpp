@@ -445,9 +445,9 @@ QGridLayout *AtenCustomDialog::createGridLayout(QWidget *parent)
 {
 	msg.enter("AtenCustomDialog::createGridLayout");
 	QGridLayout *layout = new QGridLayout(parent);
-#ifndef ATEN_OLDQT
+	#if QT_VERSION >= 0x040600
 	layout->setContentsMargins(2,2,2,2);
-#endif
+	#endif
 	layout->setSpacing(2);
 	msg.exit("AtenCustomDialog::createGridLayout");
 	return layout;

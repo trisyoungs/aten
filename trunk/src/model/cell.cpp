@@ -26,7 +26,7 @@
 #include "model/undostate.h"
 #include "base/spacegroup.h"
 #include "base/generator.h"
-#include "main/aten.h"
+#include "base/progress.h"
 #include "classes/prefs.h"
 
 // Return pointer to unit cell structure
@@ -453,7 +453,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 
 	// Set up progress indicator
 	count = ( (ipos.x - ineg.x) + 1) * ( (ipos.y - ineg.y) + 1) * ( (ipos.z - ineg.z) + 1);
-	aten.initialiseProgress("Creating cell copies...", count);
+	bool pid = progress.initialise("Creating cell copies...", count, TRUE, FALSE);
 
 	// Create cell copies
 	count = 0;
@@ -471,13 +471,13 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				//tvec.print();
 				clip.pasteToModel(this,tvec);
 				msg.print(Messenger::Verbose,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
-				if (!aten.updateProgress()) stop = TRUE;
+				if (!progress.update(pid)) stop = TRUE;
 			}
 			if (stop) break;
 		}
 		if (stop) break;
 	}
-	aten.cancelProgress();
+	progress.terminate(pid);
 
 	// Select all atoms and shift if negative replication values were provided
 	selectAll();
@@ -495,7 +495,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		Vec3<double> fracr;
 		Matrix cellinverse = cell_.inverse();
 	
-		aten.initialiseProgress("Trimming excess atoms...", atoms_.nItems());
+		int pid = progress.initialise("Trimming excess atoms...", atoms_.nItems(), TRUE, FALSE);
 		i = atoms_.first();
 		count = 0;
 		while (i != NULL)
@@ -513,9 +513,9 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				i = j;
 			}
 			else i = i->next;
-// 			if (!aten.updateProgress(++count)) break;	TGAY
+			if (!progress.update(pid,++count)) break;
 		}
-		aten.cancelProgress();
+		progress.terminate(pid);
 	}
 
 	changeLog.add(Log::Structure);

@@ -19,12 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "main/aten.h"
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
 #include "classes/neta_parser.h"
 #include "base/pattern.h"
+#include "base/progress.h"
 #include "gui/gui.h"
 
 // Return the number of selected atoms
@@ -156,7 +156,7 @@ void Model::selectionDelete(bool markonly)
 	Atom *i, *tempi;
 	int count = 0;
 	bool cancelled = FALSE;
-	aten.initialiseProgress("Deleting atoms...", atoms_.nItems()*2);
+	bool pid = progress.initialise("Deleting atoms...", atoms_.nItems()*2, TRUE, FALSE);
 	// Attempt to be clever here for the sake of undo/redo, while avoiding renumbering at every step.
 	// 1) First, delete all measurements and bonds to the selected atoms
 	Refitem<Bond,int> *bref;
@@ -175,7 +175,7 @@ void Model::selectionDelete(bool markonly)
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
 		}
-// 		if (!aten.updateProgress(++count)) cancelled = TRUE;	TGAY
+ 		if (!progress.update(pid,++count)) cancelled = TRUE;
 		if (cancelled) break;
 	}
 	// 2) Delete the actual atoms
@@ -191,10 +191,10 @@ void Model::selectionDelete(bool markonly)
 				i = tempi;
 			}
 			else i = i->prev;
-// 			if (!aten.updateProgress(++count)) break;	TGAY
+			if (!progress.update(pid,++count)) break;
 		}
 	}
-	aten.cancelProgress();
+	progress.terminate(pid);
 	// Renumber atoms and recalculate density here, since we request deletion with no updates
 	renumberAtoms();
 	calculateDensity();

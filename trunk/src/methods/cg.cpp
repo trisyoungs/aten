@@ -23,6 +23,7 @@
 #include "model/model.h"
 #include "ff/energystore.h"
 #include "gui/gui.h"
+#include "base/progress.h"
 
 // Static Singleton
 MethodCg cg;
@@ -89,18 +90,18 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	initialise(srcmodel);
 
 	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
-	msg.print("Init  %12.5e  %12.5e        ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
+	msg.print("Init  %12.5e  %12.5e        ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
 
-// 	gui.progressCreate("Minimising (CG)", nCycles_);
+	int pid = progress.initialise("Minimising (CG)", nCycles_, FALSE, TRUE);
 
 	srcmodel->normaliseForces(1.0, TRUE);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Perform linesearch along the gradient vector
-// 		if (!gui.progressUpdate(cycle, &etatext)) linedone = TRUE;
-// 		else
-// 		{
+		if (!progress.update(pid, cycle)) linedone = TRUE;
+		else
+		{
 			newEnergy = oldEnergy;
 			newRms = oldRms;
 			newEnergy = lineMinimise(srcmodel);
@@ -108,10 +109,10 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 			newRms = srcmodel->rmsForce();
 			// Check convergence criteria
 			if ((fabs(deltaEnergy) < econ) && (newRms < fcon)) converged = TRUE;
-// 		}
+		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
 
 		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
 
@@ -158,7 +159,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 			}
 		}
 	}
-// 	gui.progressTerminate();
+ 	progress.terminate(pid);
 
 	if (converged) msg.print("Conjugate gradient converged in %i steps.\n",cycle+1);
 	else msg.print("Conjugate gradient did not converge within %i steps.\n",nCycles_);

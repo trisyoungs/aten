@@ -178,26 +178,6 @@ void AtenForm::finaliseUi()
 	infoLabel2_->setFont(font);
 	infolayout->addWidget(infoLabel2_);
 	lablayout->addLayout(infolayout,0);
-	// Progress indicator
-	progressIndicator_ = new QFrame(this);
-	progressIndicator_->setContentsMargins(0,0,0,0);
-	QGridLayout *layout = new QGridLayout(progressIndicator_);
-	layout->setMargin(0);
-	progressBar_ = new QProgressBar(this);
-	progressBar_->setMaximumWidth(100);
-	progressTitle_ = new QLabel(this,0);
-	progressTitle_->setFont(font);
-	progressEta_ = new QLabel(this,0);
-	progressEta_->setFont(font);
-	progressButton_ = new QPushButton(this);
-	progressButton_->setText("Cancel");
-	QObject::connect(progressButton_, SIGNAL(clicked()), this, SLOT(progressCancel()));
-	layout->addWidget(progressTitle_, 0,0,1,2, Qt::AlignHCenter);
-	layout->addWidget(progressBar_, 1,0,1,1);
-	layout->addWidget(progressButton_, 1,1,1,1);
-	layout->addWidget(progressEta_, 2,0,1,2, Qt::AlignHCenter);
-	progressIndicator_->setVisible(FALSE);
-	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator_,0);
 
 	// Create glyph actions for Selection (atom context) menu
 	QMenu *menu = new QMenu(this);
