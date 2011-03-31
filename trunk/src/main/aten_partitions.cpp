@@ -167,15 +167,21 @@ Dnchar *Aten::failedPartitioningSchemes() const
 PartitioningScheme  *Aten::findPartitioningScheme(const char *name)
 {
 	PartitioningScheme *scheme;
-	for (scheme = aten.partitioningSchemes(); scheme != NULL; scheme = scheme->next) if (strcmp(name, scheme->name()) == 0) break;
+	for (scheme = partitioningSchemes_.first(); scheme != NULL; scheme = scheme->next) if (strcmp(name, scheme->name()) == 0) break;
 	if (scheme == NULL) 
 	{
 		msg.print("Error: No such scheme '%s'.\n", name);
 		msg.print("Available schemes are:\n");
-		for (scheme = aten.partitioningSchemes(); scheme != NULL; scheme = scheme->next) msg.print("  %10s  %s\n", scheme->name(), scheme->description());
+		for (scheme = partitioningSchemes_.first(); scheme != NULL; scheme = scheme->next) msg.print("  %10s  %s\n", scheme->name(), scheme->description());
 		return NULL;
 	}
 	else return scheme;
+}
+
+// Return number of partitioning schemes in the list
+int Aten::nPartitioningSchemes()
+{
+	return partitioningSchemes_.nItems();
 }
 
 // Return first partitioning scheme in the list

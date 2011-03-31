@@ -68,7 +68,7 @@ int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool isMi
 		else if (!hidden_)
 		{
 			// Don't print anything if we're in quiet mode
-			if (!msg.isQuiet() && (!(time_.elapsed() < 250)))
+			if (!msg.isQuiet() && (!(time_.elapsed() < 1000)))
 			{
 				// Print out the empty progress indicator
 				printf("--- %s\n", jobtitle);
@@ -103,7 +103,8 @@ bool ProgressIndicator::update(int id, int currentstep)
 	double dpercent = double(currentStep_) / double(stepsToDo_);
 	static QTime remtime;
 	static char twister[4] = { '-', '\\', '|', '/' };
-	int n, ndots, c, percent;
+	int n, ndots, percent;
+	static int c;
 	
 	// Show the progress bar if enough time has elapsed since the start of the operation...
 	// If the GUI doesn't exist, call the text-based progress indicator instead
@@ -126,7 +127,7 @@ bool ProgressIndicator::update(int id, int currentstep)
 			// Has enough time elapsed for us to show the progress indicator?
 			if (time_.elapsed() > 1000) gui.updateProgressDialog();
 		}
-		else if (!hidden_)
+		else if ((!hidden_) && (time_.elapsed() > 1000))
 		{
 			etaText_.sprintf("(%-3i%%, ETA %02i:%02i:%02i)", percent, remtime.hour(), remtime.minute(), remtime.second());
 			printf("\rProgress [%c]", twister[c]);

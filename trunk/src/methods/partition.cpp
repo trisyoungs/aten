@@ -24,6 +24,7 @@
 #include "parser/usercommandnode.h"
 #include "model/model.h"
 #include "base/mathfunc.h"
+#include "base/progress.h"
 
 /*
 // Partition Cell Data
@@ -421,6 +422,8 @@ void PartitioningScheme::updatePartitions(bool useRoughGrid)
 	double x, y, z;
 
 	// Okay, do the calculation
+	Dnchar text(-1, "Generating Partition Data for Scheme '%s'", name_.get());
+	int progid = progress.initialise(text.get(), npoints.x, TRUE, FALSE);
 	x = 0.5*dx;
 	for (i=0; i<npoints.x; ++i)
 	{
@@ -444,7 +447,9 @@ void PartitioningScheme::updatePartitions(bool useRoughGrid)
 			y += dy;
 		}
 		x += dx;
+		progress.update(progid);
 	}
+	progress.terminate(progid);
 
 	msg.exit("PartitioningScheme::updatePartitions");
 }

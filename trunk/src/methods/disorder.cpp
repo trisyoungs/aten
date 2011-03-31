@@ -26,6 +26,7 @@
 #include "model/clipboard.h"
 #include "gui/gui.h"
 #include "base/sysfunc.h"
+#include "base/progress.h"
 
 // Disorder Builder
 bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fixedCell)
@@ -196,6 +197,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	}
 	
 	// All set up and ready - do the build
+	int pid = progress.initialise("Performing Disorder build", -1, FALSE, !gui.exists());
 	msg.print("Cycle  Component    Region    Population (Requested)  Density (Requested)  RSF\n");
 	for (cycle = 1; cycle <= 5000; ++cycle)
 	{
@@ -377,9 +379,12 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			msg.print("Done.\n");
 			break;
 		}
+
 		gui.processMessages();
+		progress.update(pid);
 	}
-	
+	progress.terminate(pid);
+
 	// Print summary
 	
 	// Copy component model contents across to targetModel_, in the order they were originally listed

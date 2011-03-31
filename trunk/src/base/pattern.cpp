@@ -613,7 +613,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 	msg.enter("Pattern::initialise");
 	if (parent_ == NULL)
 	{
-		printf("Owner model has not been set in pattern!\n");
+		printf("Internal Error: Owner model has not been set in pattern!\n");
 		msg.exit("Pattern::initialise");
 		return;
 	}
@@ -639,7 +639,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 		for (int n=0; n<startAtom_; n++) i = i->next;
 		firstAtom_ = i;
 	}
-	msg.print("New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_+1, nMolecules_, nAtoms_, totalAtoms_, name_.get());
+	msg.print(Messenger::Verbose, "New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_+1, nMolecules_, nAtoms_, totalAtoms_, name_.get());
 	msg.exit("Pattern::initialise");
 }
 
@@ -647,13 +647,13 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 void Pattern::empty()
 {
 	// Set all variables to reflect an empty pattern
-	msg.enter("Pattern::empty_pattern");
+	msg.enter("Pattern::empty");
 	// Zero everything except nAtoms_
 	firstAtom_ = NULL;
 	lastAtom_ = NULL;
 	nMolecules_ = 0;
 	totalAtoms_ = 0;
-	msg.exit("Pattern::empty_pattern");
+	msg.exit("Pattern::empty");
 }
 
 // Set contents of pattern

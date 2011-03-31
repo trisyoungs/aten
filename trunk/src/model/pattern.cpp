@@ -77,7 +77,7 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
 		patternsPoint_ = changeLog.log(Log::Structure);
 	}
-	else if ((start + mols*numatoms) > atoms_.nItems()) msg.print("New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname,(start + mols*numatoms) - atoms_.nItems());
+	else if ((start + mols*numatoms) > atoms_.nItems()) msg.print(Messenger::Verbose,"New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname,(start + mols*numatoms) - atoms_.nItems());
 	msg.exit("Model::addPattern");
 	return newpnode;
 }
@@ -320,7 +320,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 			else
 			{
 				// Not the same as the last stored pattern, so store old data and start a new one
-				msg.print("New pattern found: %s\n",emp.get());
+				msg.print(Messenger::Verbose,"New pattern found: %s\n",emp.get());
 				p = addPattern(nmols, patclip.nAtoms(), emp.get());
 				patclip.copyMarked(this);
 				selectionEmpirical(emp, TRUE);
@@ -331,7 +331,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 	// Store last pattern data 
 	if (nmols != 0)
 	{
-		msg.print("New pattern found: %s\n", emp.get());
+		msg.print(Messenger::Verbose,"New pattern found: %s\n", emp.get());
 		p = addPattern(nmols, patclip.nAtoms(), emp.get());
 	}
 

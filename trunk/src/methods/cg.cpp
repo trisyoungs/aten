@@ -92,7 +92,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
 	msg.print("Init  %12.5e  %12.5e        ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
 
-	int pid = progress.initialise("Minimising (CG)", nCycles_, FALSE, TRUE);
+	int pid = progress.initialise("Minimising (CG)", nCycles_, FALSE, !gui.exists());
 
 	srcmodel->normaliseForces(1.0, TRUE);
 
