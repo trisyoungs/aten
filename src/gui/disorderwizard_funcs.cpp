@@ -27,6 +27,7 @@
 #include "model/model.h"
 #include "methods/mc.h"
 #include "base/sysfunc.h"
+#include "base/progress.h"
 #include "parser/commandnode.h"
 
 // Constructor
@@ -75,6 +76,15 @@ int DisorderWizard::run()
 	partitioningScheme_ = NULL;
 	componentTarget_ = NULL;
 	refreshing_ = FALSE;
+	
+	// Update partition grids
+	int pid = progress.initialise("Generating Partition Info", aten.nPartitioningSchemes(), FALSE, FALSE);
+	for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
+	{
+		ps->updatePartitions(TRUE);
+		progress.update(pid);
+	}
+	progress.terminate(pid);
 	return exec();
 }
 
@@ -198,10 +208,9 @@ void DisorderWizard::pageChanged(int id)
 			ui.PartitionTree->setColumnCount(2);
 			partitioningSchemeItems_.clear();
 			selectitem = NULL;
+			
 			for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
 			{
-				// Update grid and icon for PartitioningScheme
-				ps->updatePartitions(TRUE);
 				qitem = new QTreeWidgetItem(ui.PartitionTree);
 				partitioningSchemeItems_.add(qitem, ps);
 				setPartitionData(qitem,ps);
@@ -299,6 +308,8 @@ void DisorderWizard::accepted()
 	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(existingModel_, partitioningScheme_, TRUE);
 	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(newModel_, partitioningScheme_, TRUE);
 	else success = mc.disorder(newModel_, partitioningScheme_, FALSE);
+	aten.currentModel()->changeLog.add(Log::Visual);
+	gui.update(GuiQt::AllTarget);
 }
 
 /*

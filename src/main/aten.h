@@ -206,6 +206,8 @@ class Aten
 	Dnchar *failedPartitioningSchemes() const;
 	// Find named partitioning scheme
 	PartitioningScheme *findPartitioningScheme(const char *name);
+	// Return number of partitioning schemes in the list
+	int nPartitioningSchemes();
 	// Return first partitioning scheme in the list
 	PartitioningScheme *partitioningSchemes();
 	// Return nth partitioning scheme in the list

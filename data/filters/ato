@@ -68,8 +68,8 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		if (!readline(nrot)) error("Error reading nrotations for atom %i of molecule %i.\n", n+1, m+1);
 		for (n=0; n<nrot; ++n)
 		{
-			// Skip ROT line
-			skipline();
+			// Skip ROT and axis lines
+			skipline(2);
 			// Read in number of atoms and find next number of lines to discard
 			readline(nrotatoms);
 			skipline(nrotatoms/14);

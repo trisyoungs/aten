@@ -176,6 +176,7 @@ void GuiQt::run()
 	{
 		Model *m = aten.addModel();
 		m->enableUndoRedo();
+		m->regenerateIcon();
 	}
 
 	// Initialise Qt's icons resource

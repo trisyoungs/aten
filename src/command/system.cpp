@@ -72,8 +72,6 @@ bool Command::function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		// Set program mode and start gui
 		aten.setProgramMode(Aten::GuiMode);
-		// Add empty model if none were specified on the command line
-		if (aten.nModels() == 0) aten.addModel();
 		gui.run();
 	}
 	return TRUE;

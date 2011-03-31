@@ -222,7 +222,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	Pattern *p = NULL;
 
 	// Start progess indicator
-	int pid = progress.initialise("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert, FALSE, TRUE);
+	int pid = progress.initialise("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert, FALSE, !gui.exists());
 
 	// Loop over MC cycles
 	for (cycle=0; cycle<nCycles_; cycle++)
