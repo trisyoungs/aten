@@ -103,17 +103,17 @@ class DisorderData
 	// Tweak molecule position / rotation, and place in sourceModel_
 	void tweakCandidate(double maxDistance, double maxAngle);
 	// Calculate overlap penalty of candidate with supplied model
-	bool modelOverlapPenalty(Model *other, UnitCell *globalCell);
+	bool modelOverlaps(Model *other, UnitCell *globalCell);
 	// Calculate overlap penalty of candidate with rest of population
-	bool selfOverlapPenalty(UnitCell *globalCell);
+	bool selfOverlaps(UnitCell *globalCell);
 	// Calculate overlap penalty of candidate with all other insertion models
-	bool otherOverlapPenalty(DisorderData *first, UnitCell *globalCell);
+	bool otherOverlaps(DisorderData *first, UnitCell *globalCell);
 	// Return number of copies added
 	int nAdded();
 	// Return number of successive failures since last successful insertion
 	int nFailed();
 	// Adjust radius scale factor
-	double adjustScaleFactor(double multiplier, double minimumValue);
+	bool adjustScaleFactor(double multiplier, double minimumValue);
 	// Return current radius scale factor
 	double scaleFactor();
 };

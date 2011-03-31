@@ -71,9 +71,9 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 	msg.print(Messenger::Verbose,"New pattern '%s' added - startatom %i, %i mols, %i atoms per mol.\n",patname,start,mols,numatoms);
 	if ((start + mols*numatoms) == atoms_.nItems())
 	{
-		msg.print("Messenger::Verbose,Pattern description completed (spans %i atoms).\n",atoms_.nItems());
+		msg.print(Messenger::Verbose,"Pattern description completed (spans %i atoms).\n",atoms_.nItems());
 		energy.resize(patterns_.nItems());
-		msg.print("Messenger::Verbose,Done.\n");
+		msg.print(Messenger::Verbose,"Done.\n");
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
 		patternsPoint_ = changeLog.log(Log::Structure);
 	}

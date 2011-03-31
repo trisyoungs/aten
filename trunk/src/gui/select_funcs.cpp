@@ -40,7 +40,7 @@ void SelectWidget::showWidget()
 	show();
 	refresh();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.SelectButton->setChecked(TRUE);
 }
 
 void SelectWidget::on_SelectAllButton_clicked(bool on)

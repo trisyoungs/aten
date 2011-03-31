@@ -64,14 +64,15 @@ int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool isMi
 		hidden_ = hidden;
 		jobTitle_ = jobtitle;
 		// If the GUI doesn't exist, call the text-based progress indicator
-		if (!gui.exists() && (!hidden_))
+		if (gui.exists()) gui.initialiseProgressDialog();
+		else if (!hidden_)
 		{
 			// Don't print anything if we're in quiet mode
 			if (!msg.isQuiet() && (!(time_.elapsed() < 250)))
 			{
 				// Print out the empty progress indicator
 				printf("--- %s\n", jobtitle);
-				printf("ProgressIndicator [-]                              (  0%%)");
+				printf("Progress [-]                              (  0%%)");
 				fflush(stdout);
 			}
 		}
@@ -97,42 +98,53 @@ int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool isMi
 // Update the progress dialog
 bool ProgressIndicator::update(int id, int currentstep)
 {
-	if (id != 1) return TRUE;
+	if (id != 1) return (!canceled_);
 	currentStep_ = (currentstep == -1 ? currentStep_+1 : currentstep);
 	double dpercent = double(currentStep_) / double(stepsToDo_);
 	static QTime remtime;
+	static char twister[4] = { '-', '\\', '|', '/' };
+	int n, ndots, c, percent;
+	
 	// Show the progress bar if enough time has elapsed since the start of the operation...
 	// If the GUI doesn't exist, call the text-based progress indicator instead
+	
 	// Calculate ETA
 	remtime.setHMS(0,0,0);
 	remtime = remtime.addMSecs( time_.elapsed() * ((1.0 - dpercent) / dpercent) );
-	if (!gui.exists())
+
+	// Work out new percentage
+	percent = int(dpercent * 100.0);
+	ndots = int(dpercent * 30.0);
+	dpercent *= 100.0;
+
+	// Has job completion percentage changed much? If so, update
+	if (percent != percent_)
 	{
-		static char twister[4] = { '-', '\\', '|', '/' };
-		static int n, ndots, c, percent;
-		// Don't print anything if we're in quiet mode
-		if (msg.isQuiet() || (time_.elapsed() < 500) ) return TRUE;
-		// Work out percentage and print dots and spaces
-		percent = int(dpercent * 100.0);
-		ndots = int(dpercent * 30.0);
-		dpercent *= 100.0;
-		// Always print the header and twister character
-		if (!hidden_) printf("\rProgress [%c]", twister[c]);
-		// Increase the twister character
-		++c;
-		c = c%4;
-		// New dots or percentage to output?
-		if (percent != percent_)
+		if (gui.exists())
 		{
+			etaText_.sprintf("%02i:%02i:%02i)", remtime.hour(), remtime.minute(), remtime.second());
+			// Has enough time elapsed for us to show the progress indicator?
+			if (time_.elapsed() > 1000) gui.updateProgressDialog();
+		}
+		else if (!hidden_)
+		{
+			etaText_.sprintf("(%-3i%%, ETA %02i:%02i:%02i)", percent, remtime.hour(), remtime.minute(), remtime.second());
+			printf("\rProgress [%c]", twister[c]);
+			// Increase the twister character
+			++c;
+			c = c%4;
+
 			for (n=0; n<ndots; n++) printf(".");
 			for (n=ndots; n<30; n++) printf(" ");
 			// Lastly, print percentage and ETA
-			etaText_.sprintf("(%-3i%%, ETA %02i:%02i:%02i)", percent, remtime.hour(), remtime.minute(), remtime.second());
 			printf("%s", etaText_.get());
-			if (!hidden_) fflush(stdout);
-			percent_ = percent;
+			fflush(stdout);
 		}
 	}
+	
+	// Update percentage completion
+	percent_ = percent;
+
 	// Return the internal status of the progress indicator
 	return (!canceled_);
 }
@@ -141,8 +153,6 @@ bool ProgressIndicator::update(int id, int currentstep)
 void ProgressIndicator::terminate(int id)
 {
 	if (id == -1) return;
-	// If the GUI doesn't exist, call the text-based progress indicator
-// 	if (gui.exists()) CALL PROGRESS!
 	if (id == 2)
 	{
 		hasMinorJob_ = FALSE;
@@ -150,7 +160,8 @@ void ProgressIndicator::terminate(int id)
 		return;
 	}
 	if (percent_ == -1) return;
-	if ((time_.elapsed() >= 250) && (!hidden_)) printf("\n");
+	if (gui.exists()) gui.terminateProgressDialog();
+	else if ((time_.elapsed() >= 250) && (!hidden_)) printf("\n");
 	hasJob_ = FALSE;
 	jobTitle_ = "";
 	percent_ = -1;

@@ -38,7 +38,7 @@ void GeometryWidget::showWidget()
 	refresh();
 	show();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.GeometryButton->setChecked(TRUE);
 }
 
 // Update active tab and labels

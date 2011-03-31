@@ -8,7 +8,7 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 {
 	// Variables
 	atom i;
-	int nmols,m,n,l,natoms,nres,nrot,count,done,id;
+	int nmols,m,n,l,natoms,nres,nrot,count,done,id,nrotatoms;
 	element el;
 	double boxsize, temp, eps, sigma, mass, q;
 	string atomname, elname,line;
@@ -64,9 +64,16 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		}
 
 		// Discard molecular rotations
+		// There are 14 atoms per line - first line contains number of atoms followed by (up to) 13 indices
 		if (!readline(nrot)) error("Error reading nrotations for atom %i of molecule %i.\n", n+1, m+1);
-		skipline((nres-1) / 5);
-		skipline(3*nrot);
+		for (n=0; n<nrot; ++n)
+		{
+			// Skip ROT line
+			skipline();
+			// Read in number of atoms and find next number of lines to discard
+			readline(nrotatoms);
+			skipline(nrotatoms/14);
+		}
 
 		count += natoms;
 	}

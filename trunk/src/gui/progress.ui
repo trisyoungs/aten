@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>AtenProgress</class>
  <widget class="QDialog" name="AtenProgress">
@@ -6,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>259</width>
-    <height>131</height>
+    <height>161</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,7 +34,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="SecondaryJobTitleLabel">
+    <widget class="QLabel" name="MinorJobTitleLabel">
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -140,6 +141,12 @@
        <property name="icon">
         <iconset resource="icons.qrc">
          <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>16</height>
+        </size>
        </property>
       </widget>
      </item>

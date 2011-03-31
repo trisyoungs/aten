@@ -41,7 +41,7 @@ void CellTransformWidget::showWidget()
 {
 	show();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.CellTransformButton->setChecked(TRUE);
 }
 
 // Refresh window
@@ -94,31 +94,37 @@ void CellTransformWidget::on_CellReplicateTrimCheck_clicked(bool checked)
 
 void CellTransformWidget::on_CellReplicateNegXSpin_valueChanged(double d)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicateNegYSpin_valueChanged(double d)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicateNegZSpin_valueChanged(double d)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosXSpin_valueChanged(double d)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosYSpin_valueChanged(double d)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosZSpin_valueChanged(double d)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
@@ -184,26 +190,31 @@ void CellTransformWidget::on_MillerSelectButton_clicked(bool checked)
 
 void CellTransformWidget::on_MillerHSpin_valueChanged(int value)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_MillerKSpin_valueChanged(int value)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_MillerLSpin_valueChanged(int value)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_MillerInRadio_clicked(bool checked)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 
 void CellTransformWidget::on_MillerOutRadio_clicked(bool checked)
 {
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainWidget->postRedisplay();
 }
 

@@ -36,6 +36,7 @@ void TColourFrame::paintEvent(QPaintEvent *event)
 	painter.setBackgroundMode(Qt::OpaqueMode);
 	painter.setBrush(brush_);
 	painter.drawRect(0,0,width(),height());
+	painter.end();
 }
 
 // Set colour to be displayed in frame (from QColor)

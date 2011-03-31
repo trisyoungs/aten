@@ -314,8 +314,20 @@ void GuiQt::run()
 	msg.exit("GuiQt::run");
 }
 
+// Return the PID of Aten
+int GuiQt::pid()
+{
+	return (app == NULL ? 0 : app->applicationPid());
+}
+
+// Process application messages
+void GuiQt::processMessages()
+{
+	if (app != NULL) app->processEvents();
+}
+
 /*
-// Refresh Wrapper
+// Refresh Functions
 */
 
 // Update GUI after model change (or different model selected) (accessible wrapper to call AtenForm's function)
@@ -378,16 +390,49 @@ void GuiQt::update(int targets)
 	if (targets&GuiQt::CanvasTarget) gui.mainWidget->postRedisplay();
 }
 
-// Return the PID of Aten
-int GuiQt::pid()
+// Initialise (but don't show) the progress dialog
+void GuiQt::initialiseProgressDialog()
 {
-	return (app == NULL ? 0 : app->applicationPid());
+	progressDialog->initialise();
+	
+	app->processEvents();
 }
 
-// Process application messages
-void GuiQt::processMessages()
+// Update progress dialog, showing the window and disabling GUI in the process
+void GuiQt::updateProgressDialog()
 {
-	if (app != NULL) app->processEvents();
+	if (progressDialog->isHidden())
+	{
+		// Disable all the dock widgets..
+		foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", FALSE);
+
+		// ...and the main toolbar...
+		mainWindow->ui.MainToolbar->setEnabled(FALSE);
+		
+		// ...and set the canvas to be read only (so it can still be rotated etc.
+		mainWidget->setEditable(FALSE);
+		
+		progressDialog->show();
+	}
+	
+	progressDialog->updateProgress();
+}
+
+// Send signal to close progress dialog
+void GuiQt::terminateProgressDialog()
+{
+	progressDialog->terminate();
+	
+	// Enable all the dock widgets..
+	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", TRUE);
+
+	// ...and the main toolbar...
+	mainWindow->ui.MainToolbar->setEnabled(TRUE);
+	
+	// ...and set the canvas to be editable again
+	mainWidget->setEditable(TRUE);
+	
+	app->processEvents();
 }
 
 /*
@@ -491,19 +536,4 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	pixmap.save(filename, GuiQt::bitmapFormatExtension(bf), quality);
 	msg.print("Saved current view as '%s' [%ix%i %s]\n", filename, width, height, GuiQt::bitmapFormatFilter(bf));
 	return TRUE;
-}
-
-// Enable / disable GUI
-void GuiQt::setWindowsEnabled(bool b)
-{
-	// Disable/enable some key widgets on the main form
-	mainWindow->ui.ViewFrame->setEnabled(b);
-
-	// ...and all the dock widgets...
-	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", b);
-
-	// ...and the main toolbar
-	mainWindow->ui.MainToolbar->setEnabled(b);
-	
-	app->processEvents();
 }
