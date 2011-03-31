@@ -307,6 +307,9 @@ void GuiQt::run()
 	msg.print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
 	msg.print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
+	// Attempt to detect corrupt screen (requiring manualswapbuffers to be set in order to fix it)
+	QTimer::singleShot(2000, mainWidget, SLOT(isRenderingOk()));
+	
 	// Enter main message processing loop
 	app->exec();
 

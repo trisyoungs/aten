@@ -71,10 +71,8 @@ int main(int argc, char *argv[])
 	// Load in partitions
 	if (prefs.loadPartitions()) aten.openPartitions();
 	
-	// Load in user preferences
-	Dnchar filename;
-	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
-	if (!prefs.load(filename)) return -1;
+	// Load in program and user preferences
+	if (!prefs.load()) return -1;
 	
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
 	if (aten.parseCli(argc,argv) == -1) return -1;
