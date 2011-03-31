@@ -82,7 +82,7 @@ class Prefs
 	// Constructor
 	Prefs();
 	// Load preferences from file
-	bool load(const char *filename);
+	bool load();
 	// Save preferences to file
 	bool save(const char *filename);
 

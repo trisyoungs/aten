@@ -105,3 +105,80 @@ void TCanvas::render2D(QPainter &painter, Model *source)
 	}
 }
 
+// Render 3D objects for current displayModel_
+void TCanvas::render3D(Model *source, bool currentModel)
+{	
+	// Valid pointer set?
+	if (source == NULL) return;
+
+	// Render model
+	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
+	
+	// If the canvas is still restricted, don't draw anything
+	if (noDraw_)
+	{
+		msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
+		return;
+	}
+	checkGlError();
+
+	// Check the supplied model against the previous one rendered to see if we must outdate the display list
+	// 	if (lastDisplayed_ != source)
+// 	{
+// 		// Clear the picked atoms list
+// 		pickedAtoms_.clear();
+// 	}
+	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
+	
+	// If this is a trajectory frame, check its ID against the last one rendered
+	if (source->parent() != NULL)
+	{
+		displayFrameId_ = source->parent()->trajectoryFrameIndex();
+		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
+	}
+	
+	// Render 3D elements (with OpenGL)
+	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
+	checkGlError();
+	engine_.render3D(source, this, currentModel);
+	//glFlush();
+	checkGlError();
+
+	msg.print(Messenger::GL, " --> RENDERING END\n");
+}
+
+// Attempt to detect/check for corrupt rendering
+void TCanvas::isRenderingOk()
+{
+	msg.enter("TCanvas::isRenderingOk");
+	if (!beginGl())
+	{
+		msg.print("Failed to test rendering...\n");
+		return;
+	}
+	
+	// Setup standard viewport
+	glViewport(0,0,contextWidth_,contextHeight_);
+	
+	// Set clear colour to pure black
+	glClearColor(0.0f,0.0f,0.0f,1.0f);
+	glClearColor(1.0f,1.0f,1.0f,1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Create a temporary array and grab pixels from the current buffer
+	GLubyte *pixelData_ = new GLubyte[4*contextWidth_*contextHeight_];
+	glReadPixels(0,0,contextWidth_,contextHeight_, GL_RGBA, GL_UNSIGNED_BYTE, pixelData_);
+
+	// Check first 999 values - clear color was pure white, so all GLubyte values should be 255
+	bool result = TRUE;
+	for (int n = 0; n < 999; ++n) if (pixelData_[n] != 255) result = FALSE;
+
+	// If we failed, set aten.prefs.manualswapbuffers and raise a message
+	if (!result)
+	{
+		prefs.setManualSwapBuffers(TRUE);
+		QMessageBox::information(NULL, "Rendering Check", "Aten detected that it's rendering was producing corrupt images (a bit like those Magic Eye pictures back in the Nineties). To attempt to remedy this, manual buffer swapping has been activated. If the main rendering canvas now displays everything correctly, you can add the line 'aten.prefs.manualswapbuffers = TRUE;' to your personal '.aten/user.dat' file in your home directory.");
+	}
+	
+	msg.exit("TCanvas::isRenderingOk");
+}

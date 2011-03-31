@@ -340,21 +340,32 @@ Prefs::Prefs()
 }
 
 // Load user preferences file
-bool Prefs::load(const char *filename)
+bool Prefs::load()
 {
 	msg.enter("Prefs::load");
-	msg.print("Looking for user preferences file '%s'...\n", filename);
-	if (!fileExists(filename))
-	{
-		msg.print("User preferences file not found. Inappropriate / boring defaults will be used.\n");
-		msg.exit("Prefs::load");
-		return TRUE;
-	}
+	Dnchar filename;
 	ReturnValue rv;
-	bool result = aten.prefsCommands.generateFromFile(filename, "User Preferences");
-	if (result) result = aten.prefsCommands.execute(rv);
+	bool result;
+	// Program preferences
+	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
+	msg.print("Looking for program preferences file '%s'...\n", filename.get());
+	if (!fileExists(filename)) msg.print("Program preferences file not found at '%s'.\n", filename.get());
+	else
+	{
+		result = aten.prefsCommands.generateFromFile(filename, "Program Preferences");
+		if (result) result = aten.prefsCommands.execute(rv);
+	}
+	// User preferences
+	filename.sprintf("%s%c%s%cuser.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
+	msg.print("Looking for user preferences file '%s'...\n", filename.get());
+	if (!fileExists(filename)) msg.print("User preferences file not found at '%s'.\n", filename.get());
+	else
+	{
+		result = aten.prefsCommands.generateFromFile(filename, "User Preferences");
+		if (result) result = aten.prefsCommands.execute(rv);
+	}
 	msg.exit("Prefs::load");
-	return result;
+	return TRUE;
 }
 
 // Save user preferences file

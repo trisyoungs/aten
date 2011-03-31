@@ -104,6 +104,11 @@ class TCanvas : public QGLWidget
 	// Resize function
 	void resizeGL(int, int);
 
+	public slots:
+	// Attempt to detect/check for corrupt rendering
+	void isRenderingOk();
+
+	
 	private:
 	// Flag specifying that stored model pixel data should not be used
 	bool noPixelData_;
@@ -137,8 +142,6 @@ class TCanvas : public QGLWidget
 	void postRedisplay(bool noImages = FALSE, bool redrawActive = FALSE);
 	// Update view matrix stored in RenderEngine
 	void updateTransformation(Matrix &mat, Vec3<double> cellcentre);
-	// Render a scene based on the specified model
-	void renderModel(Model *m);
 
 
 	/*

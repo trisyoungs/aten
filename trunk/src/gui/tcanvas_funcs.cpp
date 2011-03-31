@@ -360,48 +360,6 @@ void TCanvas::paintGL()
 	if (prefs.manualSwapBuffers()) swapBuffers();
 }
 
-// Render 3D objects for current displayModel_
-void TCanvas::render3D(Model *source, bool currentModel)
-{	
-	// Valid pointer set?
-	if (source == NULL) return;
-
-	// Render model
-	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
-	
-	// If the canvas is still restricted, don't draw anything
-	if (noDraw_)
-	{
-		msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
-		return;
-	}
-	checkGlError();
-
-	// Check the supplied model against the previous one rendered to see if we must outdate the display list
-	// 	if (lastDisplayed_ != source)
-// 	{
-// 		// Clear the picked atoms list
-// 		pickedAtoms_.clear();
-// 	}
-	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
-	
-	// If this is a trajectory frame, check its ID against the last one rendered
-	if (source->parent() != NULL)
-	{
-		displayFrameId_ = source->parent()->trajectoryFrameIndex();
-		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
-	}
-	
-	// Render 3D elements (with OpenGL)
-	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
-	checkGlError();
-	engine_.render3D(source, this, currentModel);
-	//glFlush();
-	checkGlError();
-
-	msg.print(Messenger::GL, " --> RENDERING END\n");
-}
-
 // Resize function
 void TCanvas::resizeGL(int newwidth, int newheight)
 {
