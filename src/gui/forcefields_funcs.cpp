@@ -73,7 +73,7 @@ void ForcefieldsWidget::showWidget()
 	show();
 	refresh();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.ForcefieldsButton->setChecked(TRUE);
 }
 
 void ForcefieldsWidget::refresh()

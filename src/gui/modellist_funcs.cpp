@@ -57,7 +57,7 @@ void ModelListWidget::showWidget()
 	show();
 	refresh();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.ModelListButton->setChecked(TRUE);
 }
 
 // Refresh the model list

@@ -47,7 +47,7 @@ void FragmentsWidget::showWidget()
 {
 	show();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.FragmentsButton->setChecked(TRUE);
 }
 
 // Increment bond id value

@@ -295,7 +295,8 @@ void TCanvas::paintGL()
 	endGl();
 	
 	// Render text elements for all models (with QPainter)
-	QPainter painter(this);
+	QPainter painter;
+	painter.begin(this);
 	font.setPointSize(prefs.labelSize());
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);

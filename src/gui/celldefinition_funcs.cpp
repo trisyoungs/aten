@@ -44,7 +44,7 @@ void CellDefinitionWidget::showWidget()
 	show();
 	refresh();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.CellDefinitionButton->setChecked(TRUE);
 }
 
 void CellDefinitionWidget::refreshMatrix()

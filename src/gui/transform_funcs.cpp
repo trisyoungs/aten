@@ -36,7 +36,7 @@ void TransformWidget::showWidget()
 {
 	show();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.TransformButton->setChecked(TRUE);
 }
 
 /*

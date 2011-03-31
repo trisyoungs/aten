@@ -87,14 +87,6 @@ class GuiQt
 
 
 	/*
-	// Refresh Functions
-	*/
-	public:
-	// Refreshes all widgets to do with the model
-	void update(int targets = 0);
-
-
-	/*
 	// General Functions
 	*/
 	private:
@@ -115,6 +107,20 @@ class GuiQt
 
 
 	/*
+	// Refresh Functions
+	*/
+	public:
+	// Refreshes all widgets to do with the model
+	void update(int targets = 0);
+	// Initialise (but don't show) the progress dialog
+	void initialiseProgressDialog();
+	// Update progress dialog, showing the window and disabling GUI in the process
+	void updateProgressDialog();
+	// Send signal to close progress dialog
+	void terminateProgressDialog();
+
+
+	/*
 	// Methods
 	*/
 	public:
@@ -126,8 +132,6 @@ class GuiQt
 	bool saveBeforeClose();
 	// Save image of current view
 	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 85);
-	// Enable / disable GUI
-	void setWindowsEnabled(bool b);
 
 
 	/*

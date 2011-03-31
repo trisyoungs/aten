@@ -277,9 +277,9 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 // 				printf("Insertion %i on component %p\n", n, component);
 				component->prepareCandidate(volumeElement);
 				// Test component against its own population...
-				if (component->selfOverlapPenalty(cell) > 0.0) component->rejectCandidate();
-				else if (component->modelOverlapPenalty(targetModel_, cell)) component->rejectCandidate();
-				else if (component->otherOverlapPenalty(components_.first(), cell)) component->rejectCandidate();
+				if (component->selfOverlaps(cell)) component->rejectCandidate();
+				else if (component->modelOverlaps(targetModel_, cell)) component->rejectCandidate();
+				else if (component->otherOverlaps(components_.first(), cell)) component->rejectCandidate();
 				else
 				{
 					// Happy days! This position is fine, so insert the molecule and continue the loop
@@ -314,9 +314,9 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				if (!component->selectCandidate()) break;
 				component->tweakCandidate(deltaDistance, deltaAngle);
 				// Test component against its own population...
-				if (component->selfOverlapPenalty(cell) > 0.0) continue;
-				else if (component->modelOverlapPenalty(targetModel_, cell)) continue;
-				else if (component->otherOverlapPenalty(components_.first(), cell)) continue;
+				if (component->selfOverlaps(cell) > 0.0) continue;
+				else if (component->modelOverlaps(targetModel_, cell)) continue;
+				else if (component->otherOverlaps(components_.first(), cell)) continue;
 				else
 				{
 					// Happy days! This position is fine, so store new coordinates and continue the loop

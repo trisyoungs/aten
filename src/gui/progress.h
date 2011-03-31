@@ -45,30 +45,17 @@ class AtenProgress : public QDialog
 	// Local Objects / Variables
 	*/
 	private:
-	// QTime object (used to prevent showing of progress indicator if the operation will be quick)
-	QTime time_;
-	// Indicator that the 'Cancel' button was pressed
-	bool progressCanceled_;
-	// Variables for the position and maximum of the text progress dialog
-	int progressStepsToDo_, progressPercent_, progressCurrentStep_;
-	// ETA and Jobtitle texts
-	Dnchar etaText_, jobTitle_, secondaryTitle_;
-	// Flags to indicate whether indicator has primary (and secondary) titles
-	bool primaryJob_, secondaryJob_;
+	// Set minor job title (if one exists)
+	void setMinorJobTitle();
 	
-	private:
-	// Update dialog
-	void updateWidgets();
-
 	public:
-	// Notify that the progress indicator should be canceled
-	void notifyProgressCanceled();
-	// Instantiate a progress dialog
-	int create(const char* jobtitle, int stepstodo, bool allowSecondary = FALSE);
-	// Update the progress dialog
-	bool update(int id, int currentstep = -1, Dnchar *shorttext = NULL);
-	// Terminate the progress dialog
-	void terminate(int id);
+	// Initialise dialog, setting all widget values and titles (but not making it visible)
+	void initialise();
+	// Update dialog, setting new secondary job title if necessary
+	void updateProgress();
+	// Close dialog window
+	void terminate();
+
 
 	/*
 	// Dialog

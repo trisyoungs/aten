@@ -193,7 +193,6 @@ bool DisorderData::selectCandidate()
 		return FALSE;
 	}
 	// Pick random molecule id, select those atoms and 
-	int i;
 	moleculeId_ = AtenMath::randomi(nAdded_);
 	targetModel_.selectNone();
 	for (int i=moleculeId_*sourceModel_.nAtoms(); i < (moleculeId_+1)*sourceModel_.nAtoms(); ++i) targetModel_.selectAtom(i);
@@ -240,9 +239,9 @@ void DisorderData::tweakCandidate(double maxDistance, double maxAngle)
 }
 
 // Calculate overlap penalty of candidate with supplied model
-bool DisorderData::modelOverlapPenalty(Model *other, UnitCell *globalCell)
+bool DisorderData::modelOverlaps(Model *other, UnitCell *globalCell)
 {
-	double rij, ri, rj;
+	double rij, ri;
 	Atom **ii = other->atomArray(), **jj = sourceModel_.atomArray();
 	int i, j;
 	// Perform double loop over candidate molecule atoms and supplied model atoms
@@ -262,19 +261,19 @@ bool DisorderData::modelOverlapPenalty(Model *other, UnitCell *globalCell)
 }
 
 // Calculate overlap penalty of candidate with rest of population
-bool DisorderData::selfOverlapPenalty(UnitCell *globalCell)
+bool DisorderData::selfOverlaps(UnitCell *globalCell)
 {
-	return modelOverlapPenalty(&targetModel_, globalCell);
+	return modelOverlaps(&targetModel_, globalCell);
 }
 
 // Calculate overlap penalty of candidate with all other insertion models
-bool DisorderData::otherOverlapPenalty(DisorderData *first, UnitCell *globalCell)
+bool DisorderData::otherOverlaps(DisorderData *first, UnitCell *globalCell)
 {
 	// Go through list of DisorderedData
 	for (DisorderData *dd = first; dd != NULL; dd = dd->next)
 	{
 		if (dd == this) continue;
-		if (modelOverlapPenalty(&dd->targetModel_, globalCell)) return TRUE;
+		if (modelOverlaps(&dd->targetModel_, globalCell)) return TRUE;
 	}
 	return FALSE;
 }
@@ -292,10 +291,15 @@ int DisorderData::nFailed()
 }
 
 // Adjust radius scale factor
-double DisorderData::adjustScaleFactor(double multiplier, double minimumValue)
+bool DisorderData::adjustScaleFactor(double multiplier, double minimumValue)
 {
 	// Multiply the scale factor, but never let it go below the supplied minimumValue
-	if (multiplier*scaleFactor_ > minimumValue) scaleFactor_ *= multiplier;
+	if (multiplier*scaleFactor_ > minimumValue)
+	{
+		scaleFactor_ *= multiplier;
+		return TRUE;
+	}
+	else return FALSE;
 }
 
 // Return current radius scale factor

@@ -158,6 +158,7 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 				}
 				glDisable(GL_LINE_STIPPLE);
 				glPopMatrix();
+				break;
 			// Miller Plane tab
 			case (3):
 				hkl.set(gui.cellTransformWidget->ui.MillerHSpin->value(), gui.cellTransformWidget->ui.MillerKSpin->value(), gui.cellTransformWidget->ui.MillerLSpin->value());

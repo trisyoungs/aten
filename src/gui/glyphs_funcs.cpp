@@ -90,7 +90,7 @@ void GlyphsWidget::showWidget()
 	show();
 	if (shouldRefresh_) refresh();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.GlyphsButton->setChecked(TRUE);
 }
 
 // Add item to list
