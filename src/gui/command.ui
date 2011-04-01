@@ -20,10 +20,6 @@
     <pointsize>8</pointsize>
    </font>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/stackicons/icons/stack_command.svg</normaloff>:/stackicons/icons/stack_command.svg</iconset>
-  </property>
   <property name="floating">
    <bool>true</bool>
   </property>
@@ -254,7 +250,7 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>22</height>
+              <height>25</height>
              </size>
             </property>
             <property name="text">
@@ -266,8 +262,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>12</width>
-              <height>12</height>
+              <width>16</width>
+              <height>16</height>
              </size>
             </property>
             <property name="toolButtonStyle">
@@ -346,12 +342,30 @@
           </item>
           <item>
            <widget class="QToolButton" name="ClearSearchButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>24</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>24</height>
+             </size>
+            </property>
             <property name="text">
              <string>...</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
               <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
             </property>
            </widget>
           </item>
