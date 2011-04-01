@@ -21,10 +21,6 @@
     <height>223</height>
    </size>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/stackicons/icons/stack_celledit.svg</normaloff>:/stackicons/icons/stack_celledit.svg</iconset>
-  </property>
   <property name="floating">
    <bool>true</bool>
   </property>
@@ -293,6 +289,19 @@
          </layout>
         </item>
         <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="_6">
           <property name="spacing">
            <number>4</number>
@@ -352,19 +361,6 @@
            </spacer>
           </item>
          </layout>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>
@@ -1086,6 +1082,19 @@
          </widget>
         </item>
         <item>
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="_17">
           <property name="spacing">
            <number>4</number>
@@ -1164,19 +1173,6 @@
            </spacer>
           </item>
          </layout>
-        </item>
-        <item>
-         <spacer>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>

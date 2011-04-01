@@ -15,10 +15,6 @@
     <height>226</height>
    </size>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
-  </property>
   <property name="floating">
    <bool>true</bool>
   </property>

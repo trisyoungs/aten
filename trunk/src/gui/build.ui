@@ -32,10 +32,6 @@
     <pointsize>8</pointsize>
    </font>
   </property>
-  <property name="windowIcon">
-   <iconset resource="icons.qrc">
-    <normaloff>:/stackicons/icons/stack_build.svg</normaloff>:/stackicons/icons/stack_build.svg</iconset>
-  </property>
   <property name="floating">
    <bool>true</bool>
   </property>
