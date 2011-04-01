@@ -671,8 +671,13 @@ int Aten::parseCli(int argc, char *argv[])
 					script = aten.addScript();
 					if (script->generateFromFile(argtext.get(), "CliScript"))
 					{
+						printf("SUccessfully generated script.\n");
 						aten.setProgramMode(Aten::CommandMode);
-						if (!script->execute(rv)) aten.setProgramMode(Aten::NoMode);
+						if (!script->execute(rv))
+						{
+							printf("lkjdlfkjl\n");
+							return -1;
+						}
 						// Need to check program mode after each script since it can be changed
 						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);
 					}
