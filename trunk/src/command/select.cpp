@@ -272,7 +272,7 @@ bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv
 		ffa = i->type();
 		if (ffa != NULL)
 		{
-			if (ff->matchType(ffa->name(),c->argc(0)) != 0) obj.rs()->selectAtom(i);
+			if (ff->matchType(ffa->name(),c->argc(0)) < 10) obj.rs()->selectAtom(i);
 		}
 	}
 	obj.rs()->endUndoState();

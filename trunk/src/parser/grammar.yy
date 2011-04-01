@@ -166,10 +166,12 @@ variable:
 function:
 	FUNCCALL '(' ')'				{
 		$$ = cmdparser.addFunction( (Command::Function) $1);
+		if ($$ == NULL) YYABORT;
 		msg.print(Messenger::Parse,"PARSER : function : function '%s'\n", commands.data[(Command::Function) $1].keyword);
 		}
 	| FUNCCALL '(' expressionlist ')'		{
 		$$ = cmdparser.addFunctionWithArglist( (Command::Function) $1,$3);
+		if ($$ == NULL) YYABORT;
 		msg.print(Messenger::Parse,"PARSER : function : function '%s' with exprlist\n", commands.data[(Command::Function) $1].keyword);
 		}
 	| FUNCCALL error				{
@@ -182,10 +184,12 @@ function:
 userfunction:
 	USERFUNCCALL '(' ')'				{
 		$$ = cmdparser.addUserFunction($1);
+		if ($$ == NULL) YYABORT;
 		msg.print(Messenger::Parse,"PARSER : userfunction : function '%s'\n", $1->name());
 		}
 	| USERFUNCCALL '(' expressionlist ')'		{
 		$$ = cmdparser.addUserFunction($1,$3);
+		if ($$ == NULL) YYABORT;
 		msg.print(Messenger::Parse,"PARSER : userfunction : function '%s' with expressionlist\n", $1->name());
 		}
 	| USERFUNCCALL error				{
@@ -202,6 +206,7 @@ userfunction:
 widget:
 	OPTION '(' expressionlist ')'			{
 		$$ = cmdparser.addWidget($3);
+		if ($$ == NULL) YYABORT;
 		}
 	;
 
@@ -209,6 +214,7 @@ widget:
 ARRAYCONST:
 	'{' expressionlist '}'				{
 		$$ = cmdparser.addArrayConstant($2);
+		if ($$ == NULL) YYABORT;
 		}
 	;
 

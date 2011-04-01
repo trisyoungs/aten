@@ -302,7 +302,7 @@ Prefs::Prefs()
 	densityUnit_ = Prefs::GramsPerCm;
 
 	// Energy
-	electrostaticsMethod_ = Electrostatics::EwaldAuto;
+	electrostaticsMethod_ = Electrostatics::Coulomb;
 	calculateIntra_ = TRUE;
 	calculateVdw_ = TRUE;
 	ewaldKMax_.set(5,5,5);
