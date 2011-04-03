@@ -138,15 +138,15 @@ Cli cliSwitches[] = {
 	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
 		"",
 		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
+	{ Cli::NoPartitionsSwitch,	'\0',"nopartitions",	0,
+		"",
+		"Prevent loading of partitions on startup" },
 	{ Cli::NoQtSettingsSwitch,	'\0',"noqtsettings",	0,
 		"",
 		"Don't load in Qt window/toolbar settings on startup" },
 	{ Cli::PackSwitch,		'\0',"pack",		0,
 		"",
 		"Force generation of symmetry-equivalent atoms from spacegroup information" },
-	{ Cli::NoPartitionsSwitch,	'\0',"nopartitions",	0,
-		"",
-		"Prevent loading of partitions on startup" },
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
@@ -438,6 +438,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::NoFragmentsSwitch):
 				case (Cli::NoFragmentIconsSwitch):
 				case (Cli::NoIncludesSwitch):
+				case (Cli::NoPartitionsSwitch):
 				case (Cli::QuietSwitch):
 				case (Cli::VerboseSwitch):
 				case (Cli::VersionSwitch):
