@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>GridsWidget</class>
  <widget class="QDockWidget" name="GridsWidget">
@@ -723,7 +724,7 @@
         <item>
          <widget class="QGroupBox" name="GridOriginGroup">
           <property name="title">
-           <string>GroupBox</string>
+           <string>Origin</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <property name="spacing">
