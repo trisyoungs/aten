@@ -171,7 +171,11 @@ void TCanvas::isRenderingOk()
 
 	// Check first 10% of values in array - clear color was pure white, so all GLubyte values should be 255
 	bool result = TRUE;
-	for (int n = 0; n < 4*contextWidth_*contextHeight_*0.1; ++n) if (pixelData_[n] != 255) result = FALSE;
+	for (int n = 0; n < 4*contextWidth_*contextHeight_*0.1; ++n)
+	{
+		msg.print(Messenger::GL,"isRenderingOkay - Pixel data value %i is %i\n", n, pixelData_[n]);
+		if (pixelData_[n] != 255) result = FALSE;
+	}
 
 	// If we failed, set aten.prefs.manualswapbuffers and raise a message
 	if (!result)
@@ -179,6 +183,11 @@ void TCanvas::isRenderingOk()
 		prefs.setManualSwapBuffers(TRUE);
 		QMessageBox::information(NULL, "Rendering Check", "Aten detected that it's rendering was producing corrupt images (a bit like those Magic Eye pictures back in the Nineties). To attempt to remedy this, manual buffer swapping has been activated. If the main rendering canvas now displays everything correctly, you can add the line 'aten.prefs.manualswapbuffers = TRUE;' to your personal '.aten/user.dat' file in your home directory.");
 	}
+
+	// Set the clear colour back to the user-defined value
+	GLfloat col[4];
+	prefs.copyColour(Prefs::BackgroundColour, col);
+	glClearColor(col[0],col[1],col[2],col[3]);
 	
 	endGl();
 	
