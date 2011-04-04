@@ -51,8 +51,15 @@ bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	if (c->hasArg(4)) quality = c->argi(4);
 
+	// Set some options, remembering current values
+	bool viewglobe = prefs.viewRotationGlobe();
+	prefs.setViewRotationGlobe(FALSE);
+
 	rv.reset();
-	return (gui.saveImage(c->argc(1), bf, width, height, quality) ? TRUE : FALSE);
+	bool result = gui.saveImage(c->argc(1), bf, width, height, quality);
+
+	prefs.setViewRotationGlobe(viewglobe);
+	return result;
 }
 
 // Save current view a vector graphic
