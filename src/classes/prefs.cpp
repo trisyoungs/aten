@@ -345,25 +345,46 @@ bool Prefs::load()
 	msg.enter("Prefs::load");
 	Dnchar filename;
 	ReturnValue rv;
-	bool result;
+	bool result, found;
 	// Program preferences
+	found = FALSE;
 	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
 	msg.print("Looking for program preferences file '%s'...\n", filename.get());
-	if (!fileExists(filename)) msg.print("Program preferences file not found at '%s'.\n", filename.get());
+	if (fileExists(filename)) found = TRUE;
 	else
 	{
-		result = aten.prefsCommands.generateFromFile(filename, "Program Preferences");
-		if (result) result = aten.prefsCommands.execute(rv);
+		// Try .txt extension instead
+		filename.sprintf("%s%c%s%cprefs.txt", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
+		msg.print("Looking for program preferences file '%s'...\n", filename.get());
+		if (fileExists(filename)) found = TRUE;
+		
 	}
+	if (found)
+	{
+		Program prefscmds;
+		result = prefscmds.generateFromFile(filename, "Program Preferences");
+		if (result) result = prefscmds.execute(rv);
+	}
+	else msg.print("Program preferences file not found.\n");
 	// User preferences
+	found = FALSE;
 	filename.sprintf("%s%c%s%cuser.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
 	msg.print("Looking for user preferences file '%s'...\n", filename.get());
-	if (!fileExists(filename)) msg.print("User preferences file not found at '%s'.\n", filename.get());
+	if (fileExists(filename)) found = TRUE;
 	else
 	{
-		result = aten.prefsCommands.generateFromFile(filename, "User Preferences");
-		if (result) result = aten.prefsCommands.execute(rv);
+		// Try .txt extension instead
+		filename.sprintf("%s%c%s%cuser.txt", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
+		msg.print("Looking for user preferences file '%s'...\n", filename.get());
+		if (fileExists(filename)) found = TRUE;
 	}
+	if (found)
+	{
+		Program prefscmds;
+		result = prefscmds.generateFromFile(filename, "User Preferences");
+		if (result) result = prefscmds.execute(rv);
+	}
+	else msg.print("User preferences file not found.\n");
 	msg.exit("Prefs::load");
 	return TRUE;
 }
@@ -1883,4 +1904,28 @@ void Prefs::setEncoderArguments(const char *arguments)
 const char *Prefs::encoderArguments() const
 {
 	return encoderArguments_.get();
+}
+
+// Video encoder post-process command
+void Prefs::setEncoderPostExe(const char *exe)
+{
+	encoderPostExe_ = exe;
+}
+
+// Return the video encoder post-process command
+const char *Prefs::encoderPostExe() const
+{
+	return encoderPostExe_.get();
+}
+
+// Video encoder post-process arguments
+void Prefs::setEncoderPostArguments(const char *arguments)
+{
+	encoderPostArguments_ = arguments;
+}
+
+// Return the video encoder post-process arguments
+const char *Prefs::encoderPostArguments() const
+{
+	return encoderPostArguments_.get();
 }

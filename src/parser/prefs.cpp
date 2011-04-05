@@ -76,6 +76,8 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "elecmethod",			VTypes::StringData,		0, FALSE },
 	{ "encoderargs",		VTypes::StringData,		0, FALSE },
 	{ "encoderexe",			VTypes::StringData,		0, FALSE },
+	{ "encoderpostargs",		VTypes::StringData,		0, FALSE },
+	{ "encoderpostexe",		VTypes::StringData,		0, FALSE },
 	{ "energyunit",			VTypes::StringData,		0, FALSE },
 	{ "energyupdate",		VTypes::IntegerData,		0, FALSE },
 	{ "ewaldalpha",			VTypes::DoubleData,		0, FALSE },
@@ -323,6 +325,12 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::EncoderExe):
 			rv.set( ptr->encoderExe() );
+			break;
+		case (PreferencesVariable::EncoderPostArgs):
+			rv.set( ptr->encoderPostArguments() );
+			break;
+		case (PreferencesVariable::EncoderPostExe):
+			rv.set( ptr->encoderPostExe() );
 			break;
 		case (PreferencesVariable::EnergyUnit):
 			rv.set(Prefs::energyUnit(ptr->energyUnit()));
@@ -718,6 +726,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::EncoderExe):
 			ptr->setEncoderExe( newvalue.asString(result) );
+			break;
+		case (PreferencesVariable::EncoderPostArgs):
+			ptr->setEncoderPostArguments( newvalue.asString(result) );
+			break;
+		case (PreferencesVariable::EncoderPostExe):
+			ptr->setEncoderPostExe( newvalue.asString(result) );
 			break;
 		case (PreferencesVariable::EnergyUnit):
 			eu = Prefs::energyUnit( newvalue.asString(result), TRUE );

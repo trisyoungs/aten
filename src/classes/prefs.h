@@ -842,6 +842,10 @@ class Prefs
 	Dnchar encoderExe_;
 	// Video encoder arguments
 	Dnchar encoderArguments_;
+	// Video encoder post-process executable
+	Dnchar encoderPostExe_;
+	// Video encoder post-process arguments
+	Dnchar encoderPostArguments_;
 
 	public:
 	// Set temp directory
@@ -860,6 +864,14 @@ class Prefs
 	void setEncoderArguments(const char *arguments);
 	// Return the video encoder arguments
 	const char *encoderArguments() const;
+	// Video encoder post-process command
+	void setEncoderPostExe(const char *exe);
+	// Return the video encoder post-process command
+	const char *encoderPostExe() const;
+	// Video encoder post-process arguments
+	void setEncoderPostArguments(const char *arguments);
+	// Return the video encoder post-process arguments
+	const char *encoderPostArguments() const;
 };
 
 extern Prefs prefs;

@@ -68,12 +68,12 @@ int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool isMi
 		else if (!hidden_)
 		{
 			// Don't print anything if we're in quiet mode
-			if (!msg.isQuiet() && (!(time_.elapsed() < 1000)))
+			if (!msg.isQuiet())
 			{
+				printf("%s\n", jobtitle);
 				// Print out the empty progress indicator
-				printf("--- %s\n", jobtitle);
-				printf("Progress [-]                              (  0%%)");
-				fflush(stdout);
+// 				printf("Progress [-]                              (  0%%)");
+// 				fflush(stdout);
 			}
 		}
 		hasJob_ = TRUE;
