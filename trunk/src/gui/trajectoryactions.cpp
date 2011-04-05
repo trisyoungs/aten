@@ -139,3 +139,8 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	// Generate movie file...
 	CommandNode::run(Command::SaveMovie, "ciiiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip, fps);
 }
+
+void AtenForm::on_actionTrajectoryInheritParentStyle_triggered(bool checked)
+{
+	// TODO
+}

@@ -97,6 +97,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nunknown",		VTypes::IntegerData,		0, TRUE },
 	{ "nvibrations",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
+	{ "propagatestyle",	VTypes::IntegerData,		0, FALSE },
 	{ "selection",		VTypes::AtomData,		-1, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
 	{ "vibrations",		VTypes::VibrationData,		0, TRUE },
@@ -484,6 +485,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
 			break;
+		case (ModelVariable::PropagateStyle):
+			rv.set(ptr->trajectoryPropagateParentStyle());
+			break;
 		case (ModelVariable::Selection):
 			if (!hasArrayIndex)
 			{
@@ -611,6 +615,10 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		case (ModelVariable::Name):
 			ptr->setName(newvalue.asString());
 			break;
+		case (ModelVariable::PropagateStyle):
+			ptr->setTrajectoryPropagateParentStyle( newvalue.asBool() );
+			break;
+
 		default:
 			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
