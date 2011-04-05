@@ -293,6 +293,10 @@ void Atom::copyStyle(Atom *source)
 {
 	style_ = source->style_;
 	hidden_ = source->hidden_;
+	colour_[0] = source->colour_[0];
+	colour_[1] = source->colour_[1];
+	colour_[2] = source->colour_[2];
+	colour_[3] = source->colour_[3];	
 }
 
 // Print

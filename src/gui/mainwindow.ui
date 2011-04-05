@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
@@ -292,6 +293,8 @@
     <addaction name="separator"/>
     <addaction name="actionTrajectoryModel"/>
     <addaction name="actionTrajectoryFrames"/>
+    <addaction name="separator"/>
+    <addaction name="actionTrajectoryInheritParentStyle"/>
     <addaction name="separator"/>
     <addaction name="actionTrajectoryFirstFrame"/>
     <addaction name="actionTrajectoryPlayPause"/>
@@ -1473,6 +1476,17 @@
   <action name="actionStoreDefaultWindowState">
    <property name="text">
     <string>Store Default &amp;Window State</string>
+   </property>
+  </action>
+  <action name="actionTrajectoryInheritParentStyle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Inherit Parent Style</string>
+   </property>
+   <property name="toolTip">
+    <string>Whether trajectory frames should inherit atom styles from the parent model</string>
    </property>
   </action>
  </widget>

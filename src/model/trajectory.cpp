@@ -414,6 +414,8 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 					msg.exit("Model::seekTrajectoryFrame");
 					return;
 				}
+				// Apply styling (if required)
+				trajectoryCurrentFrame_->copyParentStyle();
 				// Store new frame offset
 				trajectoryHighestFrameOffset_++;
 				trajectoryOffsets_[trajectoryHighestFrameOffset_] = trajectoryParser_.tellg();
@@ -427,3 +429,39 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 	if (!quiet) msg.print("Seek to frame %i\n", trajectoryFrameIndex_+1);
 	msg.exit("Model::seekTrajectoryFrame");
 }
+
+
+// Propagate parent model's atom styles to (this) trajectory frame
+void Model::copyParentStyle()
+{
+	msg.enter("Model::copyParentStyle");
+	if (parent_ == NULL)
+	{
+		printf("Internal Error: No parent model defined to copy style from.\n");
+		msg.exit("Model::copyParentStyle");
+	}
+	// Perform only one check - that the number of atoms is the same
+	if (parent_->nAtoms() != atoms_.nItems())
+	{
+		msg.print("Error: Can't copy parent model's atom style becuase it has a different number of atoms (%i cf. %i)\n", parent_->nAtoms(), atoms_.nItems());
+		msg.exit("Model::copyParentStyle");
+	}
+	// Do the loop
+	Atom **ii = parent_->atomArray(), **jj = atomArray();
+	for (int n=0; n<atoms_.nItems(); ++n) jj[n]->copyStyle(ii[n]);
+	changeLog.add(Log::Visual);
+	msg.exit("Model::copyParentStyle");
+}
+
+// Return whether to propagate atom sty	les and colours from parent model to trajectory frames
+bool Model::trajectoryPropagateParentStyle()
+{
+	return trajectoryPropagateParentStyle_;
+}
+
+// Set whether to propagate atom styles and colours from parent model to trajectory frames
+void Model::setTrajectoryPropagateParentStyle(bool b)
+{
+	trajectoryPropagateParentStyle_ = b;
+}	
+	

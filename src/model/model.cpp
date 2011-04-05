@@ -84,7 +84,8 @@ Model::Model()
 	trajectoryFrameIndex_ = -1;
 	trajectoryPlaying_ = FALSE;
 	trajectoryCurrentFrame_ = NULL;
-
+	trajectoryPropagateParentStyle_ = FALSE;
+	
 	// Component
 	componentInsertionPolicy_ = Model::NoPolicy;
 	componentPartition_ = 0;

@@ -814,6 +814,12 @@ class Model
 	bool trajectoryPlaying_;
 	// Current trajectory frame (Model*) to be drawn
 	Model *trajectoryCurrentFrame_;
+	// Whether to propagate atom styles and colours from parent model to trajectory frames
+	bool trajectoryPropagateParentStyle_;
+	
+	private:
+	// Propagate parent model's atom styles to (this) trajectory frame
+	void copyParentStyle();
 
 	public:
 	// Add frame to trajectory
@@ -848,6 +854,10 @@ class Model
 	void seekPreviousTrajectoryFrame();
 	// Seek to specified frame
 	void seekTrajectoryFrame(int frameno, bool quiet = FALSE);
+	// Return whether to propagate atom styles and colours from parent model to trajectory frames
+	bool trajectoryPropagateParentStyle();
+	// Set whether to propagate atom styles and colours from parent model to trajectory frames
+	void setTrajectoryPropagateParentStyle(bool b);
 
 
 	/*
