@@ -463,5 +463,10 @@ bool Model::trajectoryPropagateParentStyle()
 void Model::setTrajectoryPropagateParentStyle(bool b)
 {
 	trajectoryPropagateParentStyle_ = b;
-}	
-	
+}
+
+// Copy style of the parent to all its trajectory frames
+void Model::applyStyleToFrames()
+{
+	for (Model *m = trajectoryFrames_.first(); m != NULL; m = m->next) m->copyParentStyle();
+}

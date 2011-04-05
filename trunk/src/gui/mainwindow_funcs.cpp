@@ -189,7 +189,6 @@ void AtenForm::updateTrajectoryMenu()
 	ui.actionTrajectoryRemove->setEnabled(hastrj);
 	ui.actionTrajectoryFirstFrame->setEnabled(hastrj);
 	ui.actionTrajectoryLastFrame->setEnabled(hastrj);
-	ui.actionTrajectoryInheritParentStyle->setEnabled(hastrj);
 	ui.actionTrajectoryInheritParentStyle->setChecked(m->trajectoryPropagateParentStyle());
 	ui.actionTrajectoryPlayPause->setEnabled(hastrj);
 	ui.actionTrajectoryPlayPause->setChecked( gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
