@@ -142,5 +142,9 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 
 void AtenForm::on_actionTrajectoryInheritParentStyle_triggered(bool checked)
 {
-	// TODO
+	if (!checked) return;
+	// If a trajectory is already associated, change its style now
+	Model *m = aten.currentModel();
+	if (m->nTrajectoryFrames() == 0) return;
+	else m->applyStyleToFrames();
 }

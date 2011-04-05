@@ -816,10 +816,6 @@ class Model
 	Model *trajectoryCurrentFrame_;
 	// Whether to propagate atom styles and colours from parent model to trajectory frames
 	bool trajectoryPropagateParentStyle_;
-	
-	private:
-	// Propagate parent model's atom styles to (this) trajectory frame
-	void copyParentStyle();
 
 	public:
 	// Add frame to trajectory
@@ -858,6 +854,10 @@ class Model
 	bool trajectoryPropagateParentStyle();
 	// Set whether to propagate atom styles and colours from parent model to trajectory frames
 	void setTrajectoryPropagateParentStyle(bool b);
+	// Propagate parent model's atom styles to (this) trajectory frame
+	void copyParentStyle();
+	// Copy style of the parent to all its trajectory frames
+	void applyStyleToFrames();
 
 
 	/*
