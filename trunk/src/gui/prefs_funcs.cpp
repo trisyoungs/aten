@@ -168,6 +168,8 @@ void AtenPrefs::setControls()
 	ui.MopacExecutableEdit->setText(prefs.mopacExe());
 	ui.EncoderExecutableEdit->setText(prefs.encoderExe());
 	ui.EncoderArgumentsEdit->setText(prefs.encoderArguments());
+	ui.EncoderPostExecutableEdit->setText(prefs.encoderPostExe());
+	ui.EncoderPostArgumentsEdit->setText(prefs.encoderPostArguments());
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
@@ -991,4 +993,25 @@ void AtenPrefs::on_EncoderExecutableEdit_textEdited(const QString &text)
 void AtenPrefs::on_EncoderArgumentsEdit_textEdited(const QString &text)
 {
 	prefs.setEncoderArguments( qPrintable(text) );
+}
+
+void AtenPrefs::on_EncoderPostExecutableButton_clicked(bool checked)
+{
+	// Call a fileselector....
+	QString filename = QFileDialog::getOpenFileName(this, "Select Video Post-Processor Executable", prefs.mopacExe());
+	if (!filename.isEmpty())
+	{
+		prefs.setEncoderPostExe( qPrintable(filename) );
+		ui.EncoderPostExecutableEdit->setText(filename);
+	}
+}
+
+void AtenPrefs::on_EncoderPostExecutableEdit_textEdited(const QString &text)
+{
+	prefs.setEncoderPostExe( qPrintable(text) );
+}
+
+void AtenPrefs::on_EncoderPostArgumentsEdit_textEdited(const QString &text)
+{
+	prefs.setEncoderPostArguments( qPrintable(text) );
 }

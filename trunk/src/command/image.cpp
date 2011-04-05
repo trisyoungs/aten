@@ -133,7 +133,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	prefs.setLabelSize(newlabelsize);
 
 	gui.mainWidget->setOffScreenRendering(TRUE);
-	int progid = progress.initialise("Save movie frames", lastframe-firstframe, FALSE, FALSE);
+	int progid = progress.initialise("Saving movie frames...", lastframe-firstframe, FALSE, FALSE);
 	bool canceled = FALSE;
 	for (int n = firstframe; n <= lastframe; n += frameskip)
 	{
@@ -190,9 +190,35 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
 		gui.processMessages();
 	}
-	
+
+	// Run secondary, post-process command (if one was given)
+	if (prefs.encoderPostExe() != NULL)
+	{
+		TProcess postProcess;
+		// Grab encoder command and replace
+		QString encoderArgs = prefs.encoderPostArguments();
+		Dnchar filename(-1, "\"%s\"", c->argc(0));
+		encoderArgs.replace("OUTPUT", filename.get());
+		encoderArgs.replace("FILES", basename.get());
+		encoderArgs.replace("FPS", itoa(fps));
+		msg.print("Command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
+		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
+		{
+			msg.print("Error: Failed to run encoder post-processing command.\n");
+			return FALSE;
+		}
+		
+			// Follow output here...
+		while (!postProcess.finished())
+		{
+			// Is output file already present?
+			while (postProcess.outputAvailable()) postProcess.printLineToMessages();
+			gui.processMessages();
+		}
+	}
+
 	// Cleanup
-	bool pid = progress.initialise("Cleaning up", lastframe-firstframe, TRUE, FALSE);
+	bool pid = progress.initialise("Cleaning up...", lastframe-firstframe, TRUE, FALSE);
 	for (int n = firstframe; n <= lastframe; n += frameskip)
 	{
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);

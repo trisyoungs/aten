@@ -406,8 +406,7 @@ class Aten
 	public:
 	// Command Definitions
 	Command commands;
-	// Preferences file commands
-	Program prefsCommands;
+
 
 	/*
 	// Fragment Library
