@@ -223,42 +223,42 @@ ARRAYCONST:
 /* ----------- */
 
 assignment:
-	variable '=' expression				{ $$ = cmdparser.addOperator(Command::OperatorAssignment,$1,$3); }
-	| variable '=' ARRAYCONST			{ $$ = cmdparser.addOperator(Command::OperatorAssignment,$1,$3); }
+	variable '=' expression				{ $$ = cmdparser.addOperator(Command::OperatorAssignment,$1,$3); if ($$ == NULL) YYABORT; }
+	| variable '=' ARRAYCONST			{ $$ = cmdparser.addOperator(Command::OperatorAssignment,$1,$3); if ($$ == NULL) YYABORT; }
 	| variable '=' error				{ msg.print("Mangled expression used in assignment.\n"); YYABORT; }
 	;
 
 /* Expression */
 expression:
-	constant					{ $$ = $1; }
-	| function					{ $$ = $1; }
-	| userfunction					{ $$ = $1; }
-	| variable PEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentPlus,$1,$3); }
-	| variable MEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentSubtract,$1,$3); }
-	| variable TEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentMultiply,$1,$3); }
-	| variable DEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentDivide,$1,$3); }
-	| '-' expression %prec UMINUS			{ $$ = cmdparser.addOperator(Command::OperatorNegate, $2); }
-	| variable PLUSPLUS				{ $$ = cmdparser.addOperator(Command::OperatorPostfixIncrease, $1);  }
-	| variable MINUSMINUS				{ $$ = cmdparser.addOperator(Command::OperatorPostfixDecrease, $1); }
-	| PLUSPLUS variable				{ $$ = cmdparser.addOperator(Command::OperatorPrefixIncrease, $2); }
-	| MINUSMINUS variable				{ $$ = cmdparser.addOperator(Command::OperatorPrefixDecrease, $2); }
-	| variable					{ $$ = $1; }
-	| expression '+' expression			{ $$ = cmdparser.addOperator(Command::OperatorAdd, $1, $3); }
-	| expression '-' expression			{ $$ = cmdparser.addOperator(Command::OperatorSubtract, $1, $3); }
-	| expression '*' expression			{ $$ = cmdparser.addOperator(Command::OperatorMultiply, $1, $3); }
-	| expression '/' expression			{ $$ = cmdparser.addOperator(Command::OperatorDivide, $1, $3); }
-	| expression '^' expression			{ $$ = cmdparser.addOperator(Command::OperatorPower, $1, $3); }
-	| expression '%' expression			{ $$ = cmdparser.addOperator(Command::OperatorModulus, $1, $3); }
-	| expression EQ expression			{ $$ = cmdparser.addOperator(Command::OperatorEqualTo, $1, $3); }
-	| expression NEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorNotEqualTo, $1, $3); }
-	| expression '>' expression			{ $$ = cmdparser.addOperator(Command::OperatorGreaterThan, $1, $3); }
-	| expression GEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorGreaterThanEqualTo, $1, $3); }
-	| expression '<' expression			{ $$ = cmdparser.addOperator(Command::OperatorLessThan, $1, $3); }
-	| expression LEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorLessThanEqualTo, $1, $3); }
-	| expression AND expression			{ $$ = cmdparser.addOperator(Command::OperatorAnd, $1, $3); }
-	| expression OR expression			{ $$ = cmdparser.addOperator(Command::OperatorOr, $1, $3); }
-	| '(' expression ')'				{ $$ = $2; }
-	| '!' expression				{ $$ = cmdparser.addOperator(Command::OperatorNot, $2); }
+	constant					{ $$ = $1; if ($$ == NULL) YYABORT; }
+	| function					{ $$ = $1; if ($$ == NULL) YYABORT; }
+	| userfunction					{ $$ = $1; if ($$ == NULL) YYABORT; }
+	| variable PEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentPlus,$1,$3); if ($$ == NULL) YYABORT; }
+	| variable MEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentSubtract,$1,$3); if ($$ == NULL) YYABORT; }
+	| variable TEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentMultiply,$1,$3); if ($$ == NULL) YYABORT; }
+	| variable DEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentDivide,$1,$3); if ($$ == NULL) YYABORT; }
+	| '-' expression %prec UMINUS			{ $$ = cmdparser.addOperator(Command::OperatorNegate, $2); if ($$ == NULL) YYABORT; }
+	| variable PLUSPLUS				{ $$ = cmdparser.addOperator(Command::OperatorPostfixIncrease, $1);  if ($$ == NULL) YYABORT; }
+	| variable MINUSMINUS				{ $$ = cmdparser.addOperator(Command::OperatorPostfixDecrease, $1); if ($$ == NULL) YYABORT; }
+	| PLUSPLUS variable				{ $$ = cmdparser.addOperator(Command::OperatorPrefixIncrease, $2); if ($$ == NULL) YYABORT; }
+	| MINUSMINUS variable				{ $$ = cmdparser.addOperator(Command::OperatorPrefixDecrease, $2); if ($$ == NULL) YYABORT; }
+	| variable					{ $$ = $1; if ($$ == NULL) YYABORT; }
+	| expression '+' expression			{ $$ = cmdparser.addOperator(Command::OperatorAdd, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '-' expression			{ $$ = cmdparser.addOperator(Command::OperatorSubtract, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '*' expression			{ $$ = cmdparser.addOperator(Command::OperatorMultiply, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '/' expression			{ $$ = cmdparser.addOperator(Command::OperatorDivide, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '^' expression			{ $$ = cmdparser.addOperator(Command::OperatorPower, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '%' expression			{ $$ = cmdparser.addOperator(Command::OperatorModulus, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression EQ expression			{ $$ = cmdparser.addOperator(Command::OperatorEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression NEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorNotEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '>' expression			{ $$ = cmdparser.addOperator(Command::OperatorGreaterThan, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression GEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorGreaterThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '<' expression			{ $$ = cmdparser.addOperator(Command::OperatorLessThan, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression LEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorLessThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression AND expression			{ $$ = cmdparser.addOperator(Command::OperatorAnd, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression OR expression			{ $$ = cmdparser.addOperator(Command::OperatorOr, $1, $3); if ($$ == NULL) YYABORT; }
+	| '(' expression ')'				{ $$ = $2; if ($$ == NULL) YYABORT; }
+	| '!' expression				{ $$ = cmdparser.addOperator(Command::OperatorNot, $2); if ($$ == NULL) YYABORT; }
 	| NEWTOKEN					{ msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
 	;
 

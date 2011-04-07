@@ -1,27 +1,3 @@
-<sect5><title>Current TODO</title>
-
-	<orderedlist>
-		<listitem>
-			<para>Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made</para>
-		</listitem>
-		<listitem>
-			<para>Different colouring of component partitions</para>
-		</listitem>
-		<listitem>
-			<para>More verbosity for all commands</para>
-		</listitem>
-		<listitem>
-			<para>Save forcefield!</para>
-		</listitem>
-		<listitem>
-			<para>Editing info for multiple grids at once.</para>
-		</listitem>
-		<listitem>
-			<para>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</para>
-		</listitem>
-	</orderedlist>
-</sect5>
-
 <sect5><title>Known Bugs</title>
 
 	<orderedlist>
@@ -44,9 +20,30 @@
 
 </sect5>
 
-<sect5><title>General TODO</title>
+<sect5><title>Current TODO</title>
 
 	<orderedlist>
+		<listitem>
+			<para>Add 'select by command' method, where supplied code is inserted into a standard 'for' loop.</para>
+		</listitem>
+		<listitem>
+			<para>Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made</para>
+		</listitem>
+		<listitem>
+			<para>Different colouring of component partitions</para>
+		</listitem>
+		<listitem>
+			<para>More verbosity for all commands</para>
+		</listitem>
+		<listitem>
+			<para>Save forcefield!</para>
+		</listitem>
+		<listitem>
+			<para>Editing info for multiple grids at once.</para>
+		</listitem>
+		<listitem>
+			<para>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</para>
+		</listitem>
 		<listitem>
 			<para>Add filter type to export generic 'data', e.g. measurements list</para>
 		</listitem>
