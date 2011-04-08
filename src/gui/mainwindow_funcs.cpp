@@ -185,19 +185,23 @@ void AtenForm::updateTrajectoryMenu()
 	if (!gui.exists()) return;
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
+	Model::RenderSource rs = m->renderSource();
 	bool hastrj = (m->nTrajectoryFrames() != 0);
+	int framenatoms = hastrj ? m->trajectoryCurrentFrame()->nAtoms() : -1;
 	ui.actionTrajectoryRemove->setEnabled(hastrj);
+	ui.actionTrajectoryInheritParentStyle->setChecked(m->trajectoryPropagateParentStyle());
+	ui.actionTrajectoryInheritParentStyle->setEnabled(m->nAtoms() == framenatoms);
+	ui.actionTrajectoryCopyStyleToParent->setEnabled((rs == Model::TrajectorySource) && (m->nAtoms() == framenatoms));
+	ui.actionTrajectoryPropagateStyleFromHere->setEnabled((rs == Model::TrajectorySource) && m->trajectoryIsCached());
 	ui.actionTrajectoryFirstFrame->setEnabled(hastrj);
 	ui.actionTrajectoryLastFrame->setEnabled(hastrj);
-	ui.actionTrajectoryInheritParentStyle->setChecked(m->trajectoryPropagateParentStyle());
 	ui.actionTrajectoryPlayPause->setEnabled(hastrj);
 	ui.actionTrajectoryPlayPause->setChecked( gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
 	ui.actionTrajectoryFrames->setEnabled(hastrj);
 	ui.actionTrajectorySaveMovie->setEnabled(hastrj);
 	// Select the correct view action
-	if (m->renderSource() == Model::ModelSource)
-	ui.actionTrajectoryModel->setChecked(m->renderSource() == Model::ModelSource);
-	ui.actionTrajectoryFrames->setChecked(m->renderSource() == Model::TrajectorySource);
+	ui.actionTrajectoryModel->setChecked(rs == Model::ModelSource);
+	ui.actionTrajectoryFrames->setChecked(rs == Model::TrajectorySource);
 }
 
 // Refresh window title

@@ -58,7 +58,11 @@ void AtenForm::on_actionTrajectoryOpen_triggered(bool checked)
 // Remove associated trajectory to model
 void AtenForm::on_actionTrajectoryRemove_triggered(bool checked)
 {
-	// TGAY TODO
+	Model *m = aten.currentModel();
+	// Set view to be the parent model before we do anything
+	ui.actionTrajectoryModel->trigger();
+	m->clearTrajectory();
+	gui.update();
 }
 
 // Switch render focus from the model's trajectory to the model.
@@ -146,5 +150,22 @@ void AtenForm::on_actionTrajectoryInheritParentStyle_triggered(bool checked)
 	// If a trajectory is already associated, change its style now
 	Model *m = aten.currentModel();
 	if (m->nTrajectoryFrames() == 0) return;
-	else m->applyStyleToFrames();
+	else m->trajectoryCopyAtomStyle(m);
+}
+
+void AtenForm::on_actionTrajectoryCopyStyleToParent_triggered(bool checked)
+{
+	Model *m = aten.currentModel();
+	Model *frame = m->trajectoryCurrentFrame();
+	if ((m == NULL) || (frame == NULL)) return;
+	m->copyAtomStyle(frame);
+}
+
+void AtenForm::on_actionTrajectoryPropagateStyleFromHere_triggered(bool checked)
+{
+	
+	Model *m = aten.currentModel();
+	Model *frame = m->trajectoryCurrentFrame();
+	if ((m == NULL) || (frame == NULL)) return;
+	m->trajectoryCopyAtomStyle(frame);
 }
