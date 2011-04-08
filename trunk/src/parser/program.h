@@ -65,11 +65,11 @@ class Program
 	// Return associated filename (if any)
 	const char *filename();
 	// Generate program from string 
-	bool generateFromString(const char *s, const char *name = NULL, bool dontpushtree = FALSE);
+	bool generateFromString(const char *s, const char *name = NULL, bool dontpushtree = FALSE, bool clearExisting = TRUE);
 	// Generate program from string list
-	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL, bool dontpushtree = FALSE);
+	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL, bool dontpushtree = FALSE, bool clearExisting = TRUE);
 	// Generate program from input file
-	bool generateFromFile(const char *filename, const char *name = NULL, bool dontpushtree = FALSE, bool isFilterFile = FALSE);
+	bool generateFromFile(const char *filename, const char *name = NULL, bool dontpushtree = FALSE, bool clearExisting = TRUE, bool isFilterFile = FALSE);
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program

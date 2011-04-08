@@ -105,11 +105,11 @@ class CommandParser
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
 	// Populate target forest from specified character string
-	bool generateFromString(Program *prog, const char *s, bool dontpushtree = FALSE);
+	bool generateFromString(Program *prog, const char *s, bool dontpushtree = FALSE, bool clearExisting = TRUE);
 	// Populate target forest from specified string list
-	bool generateFromStringList(Program *prog, Dnchar *stringListHead, bool dontpushtree = FALSE);
+	bool generateFromStringList(Program *prog, Dnchar *stringListHead, bool dontpushtree = FALSE, bool clearExisting = TRUE);
 	// Populate target forest from specified file(name)
-	bool generateFromFile(Program *prog, const char *filename, bool dontpushtree = FALSE);
+	bool generateFromFile(Program *prog, const char *filename, bool dontpushtree = FALSE, bool clearExisting = TRUE);
 
 	public:
 	// Return current tree target, raising warning and setting fail flag if no tree is defined...

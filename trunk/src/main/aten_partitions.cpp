@@ -76,7 +76,7 @@ void Aten::openPartitions()
 	if (!found) msg.print("No partitions found in any known default locations.\n");
 
 	// Try to load user partitions - we don't mind if the directory doesn't exist...
-	path.sprintf("%s%c.aten%cpartitions%c", homeDir_.get(), PATHSEP, PATHSEP, PATHSEP);
+	path.sprintf("%s%c%s%cpartitions%c", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP);
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
 	msg.print(Messenger::Verbose, "Looking for user partitions in '%s'...\n", path.get());
 	nfailed = parsePartitionsDir(path);

@@ -244,33 +244,33 @@ bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const
 }
 
 // Generate forest from string 
-bool Program::generateFromString(const char *s, const char *name, bool dontpushtree)
+bool Program::generateFromString(const char *s, const char *name, bool dontpushtree, bool clearExisting)
 {
 	msg.enter("Program::generateFromString");
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
-	bool result = cmdparser.generateFromString(this, s, initialPushTree_);
+	bool result = cmdparser.generateFromString(this, s, initialPushTree_, clearExisting);
 	finalise();
 	msg.exit("Program::generateFromString");
 	return result;
 }
 
 // Generate forest from string list
-bool Program::generateFromStringList(Dnchar *stringListHead, const char *name, bool dontpushtree)
+bool Program::generateFromStringList(Dnchar *stringListHead, const char *name, bool dontpushtree, bool clearExisting)
 {
 	msg.enter("Program::generateFromStringList");
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
-	bool result = cmdparser.generateFromStringList(this, stringListHead, initialPushTree_);
+	bool result = cmdparser.generateFromStringList(this, stringListHead, initialPushTree_, clearExisting);
 	finalise();
 	msg.exit("Program::generateFromStringList");
 	return result;
 }
 
 // Generate forest from input file
-bool Program::generateFromFile(const char *filename, const char *name, bool dontpushtree, bool isFilterFile)
+bool Program::generateFromFile(const char *filename, const char *name, bool dontpushtree, bool clearExisting, bool isFilterFile)
 {
 	msg.enter("Program::generateFromFile");
 	filename_ = absoluteFilePath(filename);
@@ -278,7 +278,7 @@ bool Program::generateFromFile(const char *filename, const char *name, bool dont
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
 	initialPushTree_ = dontpushtree;
-	bool result = cmdparser.generateFromFile(this, filename, initialPushTree_);
+	bool result = cmdparser.generateFromFile(this, filename, initialPushTree_, clearExisting);
 	finalise();
 	msg.exit("Program::generateFromFile");
 	return result;
