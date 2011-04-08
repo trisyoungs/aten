@@ -54,15 +54,22 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 			{
 				Vec3<double> *disp = vib->displacements();
 				// Cycle over model atoms and draw associated displacement vectors
-				int count = 0;
-				for (Atom *i = source->atoms(); i != NULL; i = i->next)
+				Atom *i, **ii = source->atomArray();
+				for (int n = 0; n < source->nAtoms(); ++n)
 				{
+					// Get atom pointer
+					i = ii[n];
+
+					// Skip hidden atoms
+					if (i->isHidden()) continue;
+
 					// Grab atom position and calculated level of detail
 					r1 = i->r();
+					
 					lod = levelOfDetail(r1, canvas);
 					if (lod == -1) continue;
 					
-					r2 = disp[count]*scale;
+					r2 = disp[n]*scale;
 					// Create basic transformation matrix
 					A = baseTransform;
 					A.applyTranslation(r1);
@@ -93,7 +100,6 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 						A.applyScaling(2.0,2.0,0.1/0.9);
 						renderPrimitive(cones_, lod, colour, A, GL_FILL);
 					}
-					++count;
 				}
 			}
 			else printf("Internal Error : Couldn't get vibration from model.\n");

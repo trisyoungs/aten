@@ -127,7 +127,7 @@ Vibration *Model::vibration(int n)
 }
 
  // Generate trajectory for n'th vibration
-void Model::generateVibration(int index)
+void Model::generateVibration(int index, int nsteps)
 {
 	msg.enter("Model::generateVibration");
 	// Delete old vibrations
@@ -152,7 +152,6 @@ void Model::generateVibration(int index)
 		return;
 	}
 	// Ready to generate frames
-	int nsteps = 20;
 	double delta, stepdelta = 1.0 / nsteps;
 	int k;
 	Clipboard clip;
@@ -165,7 +164,10 @@ void Model::generateVibration(int index)
 		Model *m = vibrationFrames_.add();
 		m->setParent(this);
 		m->setType(Model::VibrationFrameType);
-		clip.pasteToModel(m, FALSE);	
+		clip.pasteToModel(m, FALSE);
+		
+		// Honour existing 'hidden' status of atoms
+		
 
 		// To loop over original atom coordinates
 		int count = 0;
