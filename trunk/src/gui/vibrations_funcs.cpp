@@ -72,6 +72,8 @@ void VibrationsWidget::refresh()
 		ui.VibrationsList->addItem(text.get());
 	}
 	ui.VibrationsList->setCurrentRow(0);
+	// Disable widgets if there are no vibrations loaded
+	ui.VibrationsTabWidget->setDisabled(count == 0);
 	refreshing_ = FALSE;
 	refreshDisplacements();
 	msg.exit("VibrationsWidget::refresh");

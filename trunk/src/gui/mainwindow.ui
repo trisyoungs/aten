@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
@@ -295,6 +294,8 @@
     <addaction name="actionTrajectoryFrames"/>
     <addaction name="separator"/>
     <addaction name="actionTrajectoryInheritParentStyle"/>
+    <addaction name="actionTrajectoryPropagateStyleFromHere"/>
+    <addaction name="actionTrajectoryCopyStyleToParent"/>
     <addaction name="separator"/>
     <addaction name="actionTrajectoryFirstFrame"/>
     <addaction name="actionTrajectoryPlayPause"/>
@@ -1487,6 +1488,22 @@
    </property>
    <property name="toolTip">
     <string>Whether trajectory frames should inherit atom styles from the parent model</string>
+   </property>
+  </action>
+  <action name="actionTrajectoryPropagateStyleFromHere">
+   <property name="text">
+    <string>Propagate Style From Here</string>
+   </property>
+   <property name="toolTip">
+    <string>Propagate atom styles from the current frame to all other frames</string>
+   </property>
+  </action>
+  <action name="actionTrajectoryCopyStyleToParent">
+   <property name="text">
+    <string>Copy Style to Parent</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy this frame's style to the parent model</string>
    </property>
   </action>
  </widget>

@@ -209,6 +209,8 @@ class AtenForm : public QMainWindow
 	void on_actionTrajectoryOpen_triggered(bool checked);
 	void on_actionTrajectoryRemove_triggered(bool checked);
 	void on_actionTrajectoryInheritParentStyle_triggered(bool checked);
+	void on_actionTrajectoryCopyStyleToParent_triggered(bool checked);
+	void on_actionTrajectoryPropagateStyleFromHere_triggered(bool checked);
 	void on_actionTrajectoryFirstFrame_triggered(bool checked);
 	void on_actionTrajectoryLastFrame_triggered(bool checked);
 	void on_actionTrajectoryPlayPause_triggered(bool checked);

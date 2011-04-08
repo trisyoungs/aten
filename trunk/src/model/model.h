@@ -236,6 +236,8 @@ class Model
 	double forcefieldMass() const;
 	// Return number of unknown atoms in the model
 	int nUnknownAtoms() const;
+	// Copy atom style from specified model
+	void copyAtomStyle(Model *source);
 
 
 	/*
@@ -487,7 +489,7 @@ class Model
 
 
 	/*
-	// Other Properties
+	// Atom Labels
 	*/
 	public:
 	// Add label to atom
@@ -854,10 +856,8 @@ class Model
 	bool trajectoryPropagateParentStyle();
 	// Set whether to propagate atom styles and colours from parent model to trajectory frames
 	void setTrajectoryPropagateParentStyle(bool b);
-	// Propagate parent model's atom styles to (this) trajectory frame
-	void copyParentStyle();
-	// Copy style of the parent to all its trajectory frames
-	void applyStyleToFrames();
+	// Copy style of the supplied model to all trajectory frames
+	void trajectoryCopyAtomStyle(Model *source);
 
 
 	/*

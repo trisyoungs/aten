@@ -414,8 +414,8 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 					msg.exit("Model::seekTrajectoryFrame");
 					return;
 				}
-				// Apply styling (if required)
-				trajectoryCurrentFrame_->copyParentStyle();
+				// Apply styling from parent (if required)
+				if (trajectoryPropagateParentStyle_) trajectoryCurrentFrame_->copyAtomStyle(parent_);
 				// Store new frame offset
 				trajectoryHighestFrameOffset_++;
 				trajectoryOffsets_[trajectoryHighestFrameOffset_] = trajectoryParser_.tellg();
@@ -430,29 +430,6 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 	msg.exit("Model::seekTrajectoryFrame");
 }
 
-
-// Propagate parent model's atom styles to (this) trajectory frame
-void Model::copyParentStyle()
-{
-	msg.enter("Model::copyParentStyle");
-	if (parent_ == NULL)
-	{
-		printf("Internal Error: No parent model defined to copy style from.\n");
-		msg.exit("Model::copyParentStyle");
-	}
-	// Perform only one check - that the number of atoms is the same
-	if (parent_->nAtoms() != atoms_.nItems())
-	{
-		msg.print("Error: Can't copy parent model's atom style becuase it has a different number of atoms (%i cf. %i)\n", parent_->nAtoms(), atoms_.nItems());
-		msg.exit("Model::copyParentStyle");
-	}
-	// Do the loop
-	Atom **ii = parent_->atomArray(), **jj = atomArray();
-	for (int n=0; n<atoms_.nItems(); ++n) jj[n]->copyStyle(ii[n]);
-	changeLog.add(Log::Visual);
-	msg.exit("Model::copyParentStyle");
-}
-
 // Return whether to propagate atom sty	les and colours from parent model to trajectory frames
 bool Model::trajectoryPropagateParentStyle()
 {
@@ -465,8 +442,22 @@ void Model::setTrajectoryPropagateParentStyle(bool b)
 	trajectoryPropagateParentStyle_ = b;
 }
 
-// Copy style of the parent to all its trajectory frames
-void Model::applyStyleToFrames()
+// Copy style of the supplied model to all trajectory frames
+void Model::trajectoryCopyAtomStyle(Model *source)
 {
-	for (Model *m = trajectoryFrames_.first(); m != NULL; m = m->next) m->copyParentStyle();
+	msg.enter("Model::trajectoryCopyAtomStyle");
+	if (source == NULL)
+	{
+		msg.print("Internal Error: NULL model pointer passed to Model::trajectoryCopyAtomStyle.\n");
+		msg.exit("Model::trajectoryCopyAtomStyle");
+		return;
+	}
+	int pid = progress.initialise("Applying style to trajectory frames...", trajectoryFrames_.nItems(), FALSE, FALSE);
+	for (Model *m = trajectoryFrames_.first(); m != NULL; m = m->next)
+	{
+		if (m != source) m->copyAtomStyle(source);
+		progress.update(pid);
+	}
+	progress.terminate(pid);
+	msg.exit("Model::trajectoryCopyAtomStyle");
 }
