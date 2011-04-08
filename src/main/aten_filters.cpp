@@ -76,7 +76,7 @@ void Aten::openFilters()
 	}
 
 	// Try to load user filters - we don't mind if the directory doesn't exist...
-	path.sprintf("%s%c.aten%cfilters%c", homeDir_.get(), PATHSEP, PATHSEP, PATHSEP);
+	path.sprintf("%s%c%s%cfilters%c", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP);
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
 	msg.print(Messenger::Verbose, "Looking for user filters in '%s'...\n", path.get());
 	nfailed = parseFilterDir(path);
@@ -100,7 +100,7 @@ bool Aten::openFilter(const char *filename)
 	msg.enter("Aten::openFilter");
 	// Construct filter Program...
 	Program *f = filterPrograms_.add();
-	if (!f->generateFromFile(filename, filename, TRUE, TRUE))
+	if (!f->generateFromFile(filename, filename, TRUE, TRUE, TRUE))
 	{
 		msg.print("Failed to load filters from '%s'...\n", filename);
 		failedFilters_.add()->set( filename );
@@ -188,7 +188,7 @@ int Aten::parseFilterDir(const char *path)
 		QString filename(path);
 		filename += "/";
 		filename += filterlist.at(i);
-		if (!f->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterlist.at(i)), TRUE, TRUE))
+		if (!f->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterlist.at(i)), TRUE, TRUE, TRUE))
 		{
 			msg.print("Failed to load filters from '%s'...\n", qPrintable(filterlist.at(i)));
 			failedFilters_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );

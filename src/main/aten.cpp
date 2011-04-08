@@ -420,7 +420,7 @@ Forcefield *Aten::loadForcefield(const char *filename)
 		else
 		{
 			// Last try - user home datadir/ff
-			filepath.sprintf("%s%c.aten%cff%c%s", homeDir_.get(), PATHSEP, PATHSEP, PATHSEP, filename);
+			filepath.sprintf("%s%c%s%cff%c%s", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP, filename);
 			msg.print(Messenger::Verbose,"Looking for forcefield in user's data directory (%s)...\n",filepath.get());
 			if (fileExists(filepath)) result = newff->load(filepath);
 			else

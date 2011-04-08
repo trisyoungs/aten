@@ -143,7 +143,7 @@ void Aten::openFragments()
 	nfailed = parseFragmentDir(path, "Ungrouped");
 
 	// Try to load user fragments - we don't mind if the directory doesn't exist...
-	path.sprintf("%s%c.aten%cfragments%c", homeDir_.get(), PATHSEP, PATHSEP, PATHSEP);
+	path.sprintf("%s%c%s%cfragments%c", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP);
 	msg.print(Messenger::Verbose, "Looking for user fragments in '%s'...\n", path.get());
 	nfailed = parseFragmentDir(path, "Ungrouped");
 

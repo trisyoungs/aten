@@ -191,10 +191,10 @@ bool CommandParser::generate()
 }
 
 // Fill target forest from specified character string
-bool CommandParser::generateFromString(Program *prog, const char *s, bool dontpushtree)
+bool CommandParser::generateFromString(Program *prog, const char *s, bool dontpushtree, bool clearExisting)
 {
 	msg.enter("CommandParser::generateFromString");
-	// Clear any data in the existing forest
+	// Clear any data in the existing forest (if requested)
 	if (prog == NULL)
 	{
 		printf("Internal Error: No Forest passed to CommandParser::generateFromString.\n");
@@ -202,7 +202,7 @@ bool CommandParser::generateFromString(Program *prog, const char *s, bool dontpu
 		return FALSE;
 	}
 	program_ = prog;
-	program_->clear();
+	if (clearExisting) program_->clear();
 	if (!dontpushtree)
 	{
 		tree_ = program_->mainProgram();
@@ -222,7 +222,7 @@ bool CommandParser::generateFromString(Program *prog, const char *s, bool dontpu
 }
 
 // Populate target forest from specified string list
-bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead, bool dontpushtree)
+bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead, bool dontpushtree, bool clearExisting)
 {
 	msg.enter("CommandParser::generateFromStringList");
 	// Clear any data in the existing forest
@@ -233,7 +233,7 @@ bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead
 		return FALSE;
 	}
 	program_ = prog;
-	program_->clear();
+	if (clearExisting) program_->clear();
 	if (!dontpushtree)
 	{
 		tree_ = program_->mainProgram();
@@ -254,10 +254,10 @@ bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead
 }
 
 // Fill target forest from specified character string
-bool CommandParser::generateFromFile(Program *prog, const char *filename, bool dontpushtree)
+bool CommandParser::generateFromFile(Program *prog, const char *filename, bool dontpushtree, bool clearExisting)
 {
 	msg.enter("CommandParser::generateFromFile");
-	// Clear any data in the existing forest
+	// Clear any data in the existing forest (if reqeusted)
 	if (prog == NULL)
 	{
 		printf("Internal Error: No Forest passed to CommandParser::generateFromFile.\n");
@@ -265,7 +265,7 @@ bool CommandParser::generateFromFile(Program *prog, const char *filename, bool d
 		return FALSE;
 	}
 	program_ = prog;
-	program_->clear();
+	if (clearExisting) program_->clear();
 	if (!dontpushtree)
 	{
 		tree_ = program_->mainProgram();
