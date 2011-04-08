@@ -282,7 +282,9 @@ void Atom::copy(Atom *source)
 	type_ = source->type_;
 	fixedType_ = source->fixedType_;
 	labels_ = source->labels_;
+	hidden_ = source->hidden_;
 	for (int n=0; n<4; ++n) colour_[n] = source->colour_[n];
+	hidden_ = source->hidden_;
 	// Do NOT copy selection or marked state (set to FALSE)
 	selected_ = FALSE;
 	marked_ = FALSE;

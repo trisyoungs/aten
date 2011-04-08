@@ -126,7 +126,7 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 		stopTimer();
 		Model *m = aten.currentModelOrFrame();
 		m->setRenderFromVibration(FALSE);
-		m->generateVibration(ui.VibrationsList->currentRow());
+		m->generateVibration(ui.VibrationsList->currentRow(), 20);
 		m->setRenderFromVibration(TRUE);
 		resetTimer(ui.DelaySpin->value());
 	}
@@ -149,7 +149,7 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		vibrationPlaying_ = TRUE;
 		this->setEnabled(TRUE);
 		Model *m = aten.currentModelOrFrame();
-		m->generateVibration(ui.VibrationsList->currentRow());
+		m->generateVibration(ui.VibrationsList->currentRow(), 20);
 		m->setRenderFromVibration(TRUE);
 		gui.mainWidget->setEditable(FALSE);
 		resetTimer(ui.DelaySpin->value());

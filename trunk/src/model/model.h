@@ -1203,7 +1203,7 @@ class Model
 	// Return n'th vibration
 	Vibration *vibration(int n);
 	// Generate trajectory for n'th vibration
-	void generateVibration(int index);
+	void generateVibration(int index, int nsteps);
 	// Return current vibration frame
 	Model *vibrationCurrentFrame();
 	// Move on to next/prev frame (depending on current playback direction)
