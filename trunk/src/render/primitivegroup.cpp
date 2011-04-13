@@ -19,15 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//#define GL_GLEXT_PROTOTYPES
 #include "render/primitivegroup.h"
-//#include "base/messenger.h"
-//#include "base/constants.h"
 #include "classes/prefs.h"
-//#include "gui/tcanvas.uih"
-//#include <QtOpenGL/QGLWidget>
-//#include <stdio.h>
-//#include <math.h>
 
 // Constructor
 PrimitiveGroup::PrimitiveGroup()
@@ -52,10 +45,16 @@ void PrimitiveGroup::clear()
 	primitives_ = new Primitive[nPrimitives_];
 }
 
-// Create VBOs for all stored primitives in the group
+// Push new instance of all primitives in group
 void PrimitiveGroup::pushInstance(const QGLContext *context)
 {
 	for (int n=0; n<nPrimitives_; ++n) primitives_[n].pushInstance(context);
+}
+
+// Pop topmost instance for all primitives in group
+void PrimitiveGroup::popInstance()
+{
+	for (int n=0; n<nPrimitives_; ++n) primitives_[n].popInstance();
 }
 
 // Return primitive corresponding to level of detail specified

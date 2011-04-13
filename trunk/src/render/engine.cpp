@@ -210,6 +210,7 @@ void RenderPrimitives::createPrimitives(int quality)
 // Create instance for primitives
 void RenderPrimitives::pushInstance(const QGLContext* context)
 {
+	msg.enter("RenderPrimitives::pushInstance");
 	for (int n=0; n<Atom::nDrawStyles; ++n)
 	{
 		atoms_[n].pushInstance(context);
@@ -239,6 +240,43 @@ void RenderPrimitives::pushInstance(const QGLContext* context)
 	cellAxes_.pushInstance(context);
 	rotationGlobe_.pushInstance(context);
 	rotationGlobeAxes_.pushInstance(context);
+	msg.exit("RenderPrimitives::pushInstance");
+}
+
+// Pop topmost instance for primitives
+void RenderPrimitives::popInstance()
+{
+	msg.enter("RenderPrimitives::popInstance");
+	for (int n=0; n<Atom::nDrawStyles; ++n)
+	{
+		atoms_[n].popInstance();
+		selectedAtoms_[n].popInstance();
+		for (int m=0; m<Bond::nBondTypes; ++m)
+		{
+			bonds_[n][m].popInstance();
+			selectedBonds_[n][m].popInstance();
+		}
+	}
+	for (int n=0; n<elements().nElements(); ++n)
+	{
+		scaledAtoms_[n].popInstance();
+		selectedScaledAtoms_[n].popInstance();
+	}
+	tubeRings_.popInstance();
+	segmentedTubeRings_.popInstance();
+	lineRings_.popInstance();
+	segmentedLineRings_.popInstance();
+	spheres_.popInstance();
+	cubes_.popInstance();
+	originCubes_.popInstance();
+	cylinders_.popInstance();
+	cones_.popInstance();
+	wireCube_.popInstance();
+	crossedCube_.popInstance();
+	cellAxes_.popInstance();
+	rotationGlobe_.popInstance();
+	rotationGlobeAxes_.popInstance();
+	msg.exit("RenderPrimitives::popInstance");
 }
 
 /*

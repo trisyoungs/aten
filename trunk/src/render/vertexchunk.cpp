@@ -19,13 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//#define GL_GLEXT_PROTOTYPES
 #include "render/vertexchunk.h"
-//#include "base/messenger.h"
-//#include "base/constants.h"
-//#include "classes/prefs.h"
-//#include "gui/tcanvas.uih"
-//#include <QtOpenGL/QGLWidget>
 #include <stdio.h>
 #include <math.h>
 

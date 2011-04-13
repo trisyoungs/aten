@@ -141,11 +141,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
 		gui.mainWidget()->postRedisplay(TRUE);
 
-		if (prefs.useFrameBuffer() == FALSE)
-		{
-			pixmap = gui.mainWidget()->renderPixmap(width, height, FALSE);
-			gui.mainWidget()->popInstance();
-		}
+		if (prefs.useFrameBuffer() == FALSE) pixmap = gui.mainWidget()->renderPixmap(width, height, FALSE);
 		else
 		{
 			QImage image = gui.mainWidget()->grabFrameBuffer();
