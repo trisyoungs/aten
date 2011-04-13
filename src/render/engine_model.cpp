@@ -271,7 +271,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			
 			// Add text object
 			r2 = source->modelToWorld(i->r(), &screenr);
-			if (r2.z < -1.0) renderTextPrimitive(RenderEngine::LabelText, screenr.x, screenr.y, text.get());
+			if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, text.get());
 		}
 		
 		// Bonds
@@ -543,16 +543,15 @@ void RenderEngine::renderGrids(Model *source)
 }
 
 // Render glyphs
-void RenderEngine::renderGlyphs(Model *source, TCanvas *canvas)
+void RenderEngine::renderGlyphs(Model *source)
 {
 	Matrix A, B;
 	Vec3<double> r1, r2, r3, r4;
-	Vec4<double> screenr;
 	RenderEngine::TriangleStyle ts;
 	GLfloat colour_i[4], colour_j[4], colour_k[4], colour_l[4], textcolour[4];
 	double phi, rij;
 
-	// Copy text colour
+	// Copy text colour (for highlighint selected glyphs)
 	prefs.copyColour(Prefs::TextColour, textcolour);
 	
 	for (Glyph *g = source->glyphs(); g != NULL; g = g->next)
@@ -560,7 +559,7 @@ void RenderEngine::renderGlyphs(Model *source, TCanvas *canvas)
 		// Check if glyph is visible
 		if (!g->isVisible()) continue;
 		
-		// Determine level of detail for glyph
+		// Grab first coordinate (always used)
 		r1 = g->data(0)->vector();
 		
 		switch (g->type())
@@ -709,14 +708,9 @@ void RenderEngine::renderGlyphs(Model *source, TCanvas *canvas)
 					else renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_LINE, 1.0);
 				}
 				break;
-			// Text in 2D coordinates - left-hand origin = data[0]
+			// Text - handled in RenderEngine::renderTextGlyphs()
 			case (Glyph::TextGlyph):
-				renderTextPrimitive(RenderEngine::GlyphText, r1.x, canvas->contextHeight()-r1.y, g->text());
-				break;
-			// Text in 3D coordinates - left-hand origin = data[0]
 			case (Glyph::Text3DGlyph):
-				r2 = source->modelToWorld(r1, &screenr);
-				if (r2.z < -1.0) renderTextPrimitive(RenderEngine::GlyphText, screenr.x, screenr.y, g->text());
 				break;
 			// Tube arrow - tail = data[0], head = data[1]
 			case (Glyph::TubeArrowGlyph):
@@ -772,15 +766,49 @@ void RenderEngine::renderGlyphs(Model *source, TCanvas *canvas)
 	renderPrimitive(RenderEngine::GlyphObject, &glyphTriangles_[RenderEngine::TransparentTriangle], TRUE, NULL, A);
 }
 
+// Render text glyphs
+void RenderEngine::renderTextGlyphs(Model *source, TCanvas *canvas)
+{
+	Vec3<double> r1, r2;
+	Vec4<double> screenr;
+	GLfloat textcolour[4];
+	Glyph *g;
+
+	// Copy text colour
+	prefs.copyColour(Prefs::TextColour, textcolour);
+	
+	for (Refitem<Glyph,int> *ri = source->textGlyphs(); ri != NULL; ri = ri->next)
+	{
+		// Get glyph pointer
+		g = ri->item;
+
+		// Check if glyph is visible
+		if (!g->isVisible()) continue;
+		
+		// Grab first coordinate (always used)
+		r1 = g->data(0)->vector();
+		
+		if (g->type() == Glyph::TextGlyph) renderTextPrimitive(r1.x, canvas->contextHeight()-r1.y, g->text());
+		else if (g->type() == Glyph::Text3DGlyph)
+		{
+			r2 = source->modelToWorld(r1, &screenr);
+			if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, g->text());
+		}
+		else printf("Internal Error: Found non-text glyph in textglyphs list...\n");
+	}
+}
+
 // Render additional model information (measurements etc.)
 void RenderEngine::renderModelOverlays(Model *source)
 {
-	Vec3<double> r1, r2, r3, r4, pos, rji, rjk;
+	Vec3<double> r1, r2, r3, r4, rji, rjk, pos;
 	Vec4<double> screenr;
 	GLfloat colour[4];
-	Matrix A;
 	double gamma, t;
-	Atom **atoms;
+	int labels;
+	Dnchar text(512);
+	Atom **atoms, *i;
+	ForcefieldAtom *ffa;
 
 	// Clear depth buffer to force lines on top of existing primitives,
 	glDisable(GL_DEPTH_TEST);
@@ -788,6 +816,41 @@ void RenderEngine::renderModelOverlays(Model *source)
 	// Set colour
 	prefs.copyColour(Prefs::TextColour, colour);
 	glColor4fv(colour);
+	
+	// Atoms and Bonds
+	atoms = source->atomArray();
+	for (int n = 0; n<source->nAtoms(); ++n)
+	{
+		// Get atom pointer
+		i = atoms[n];
+		
+		// Skip hidden atoms
+		if (i->isHidden()) continue;
+		
+		// Labels
+		labels = i->labels();
+		if (labels == 0) continue;
+		
+		// Grab forcefield atom pointer
+		ffa = i->type();
+		
+		// Blank label string
+		text.clear();
+		// Now add on all parts of the label that are required
+		if (labels&(1 << Atom::IdLabel)) text.strcatf("%i ", i->id()+1);
+		if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", elements().symbol(i));
+		if (labels&(1 << Atom::TypeLabel))
+		{
+			if (ffa == NULL) text.strcat("[None] ");
+			else text.strcatf("[%i %s] ", ffa->typeId(), ffa->name());
+		}
+		if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
+		if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", i->charge());
+		
+		// Add text object
+		r2 = source->modelToWorld(i->r(), &screenr);
+		if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, text.get());
+	}
 	
 	// Measurements
 	// Apply standard transformation matrix to OpenGL so we may just use local atom positions for vertices
@@ -809,7 +872,7 @@ void RenderEngine::renderModelOverlays(Model *source)
 		glEnd();
 		r4 = (r1+r2)*0.5;
 		r3 = source->modelToWorld(r4, &screenr);
-		if (r3.z < -1.0) renderTextPrimitive(RenderEngine::MiscText, screenr.x, screenr.y, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
+		if (r3.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
 	}
 	
 	// Angles
@@ -850,7 +913,7 @@ void RenderEngine::renderModelOverlays(Model *source)
 		source->modelToWorld(r2, &screenr);
 		gamma = screenr.x;
 		r3 = source->modelToWorld(r4, &screenr);
-		if (r3.z < -1.0) renderTextPrimitive(RenderEngine::MiscText, screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma > screenr.x);
+		if (r3.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma > screenr.x);
 	}
 	
 	// Torsions
@@ -871,7 +934,7 @@ void RenderEngine::renderModelOverlays(Model *source)
 		glEnd();
 		r1 = (r2+r3)*0.5;
 		r4 = source->modelToWorld(r1, &screenr);
-		if (r4.z < -1.0) renderTextPrimitive(RenderEngine::MiscText, screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176);
+		if (r4.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176);
 	}
 	
 	// Re-enable depth buffer

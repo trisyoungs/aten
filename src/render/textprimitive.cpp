@@ -27,24 +27,24 @@
 */
 
 // Set data
-void TextPrimitive::set(bool is3D, double x, double y, double z, bool rightalign, QString &text)
+void TextPrimitive::set(int x, int y, bool rightalign, const char *text)
 {
-	coordsAre3D_ = is3D;
-	r_.set(x,y,z);
+	x_ = x;
+	y_ = y;
 	rightAlign_ = rightalign;
 	text_ = text;
-	
 }
 
-// Return 2D coordinates of text on screen (calculated if necessary)
-Vec3<int> TextPrimitive::r(Matrix &modelTransform)
+// Return x coordinate
+int TextPrimitive::x()
 {
-	if (coordsAre3D_)
-	{
-		Vec3<double> temp = r * modelTransform;
-		return Vec3<int>(temp.x, temp.y, 0);
-	}
-	else return Vec3<int>(r_.x, r_.y, 0);
+	return x_;
+}
+
+// Return y coordinate
+int TextPrimitive::y()
+{
+	return y_;
 }
 
 // Return text to render
@@ -86,34 +86,30 @@ bool TextPrimitiveChunk::full()
 	return (nTextPrimitives_ == TEXTCHUNKSIZE);
 }
 
-// Add primitive to list
+// Add primitive to chunk
 void TextPrimitiveChunk::add(int x, int y, const char *text, QChar addChar, bool rightAlign)
 {
-	textPrimitives_[nTextPrimitives_].x = x;
-	textPrimitives_[nTextPrimitives_].y = y;
-	textPrimitives_[nTextPrimitives_].text = text;
-	if (addChar != 0) textPrimitives_[nTextPrimitives_].text += addChar;
-	textPrimitives_[nTextPrimitives_].rightAlign = rightAlign;
+	textPrimitives_[nTextPrimitives_].set(x, y, rightAlign, text);
+	if (addChar != 0) textPrimitives_[nTextPrimitives_].text() += addChar;
 	++nTextPrimitives_;
 }
 
-// Render all primitives in list
+// Render all primitives in chunk
 void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
 {
 	// Grab contextHeight
 	QRect rect;
 	int height = canvas->contextHeight();
 	int pointsize = prefs.labelSize();
-	int textx = textPrimitives_[n].x(), texty = textPrimitives_[n].y();
 	if (prefs.useNiceText())
 	{
 		for (int n=0; n<nTextPrimitives_; ++n)
 		{
-			rect = painter.boundingRect(textPrimitives_[n].x, height-textPrimitives_[n].y-pointsize, 1, -1, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
-			painter.drawText(rect, textPrimitives_[n].rightAlign ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text);
+			rect = painter.boundingRect(textPrimitives_[n].x(), height-textPrimitives_[n].y()-pointsize, 1, -1, textPrimitives_[n].rightAlign() ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text());
+			painter.drawText(rect, textPrimitives_[n].rightAlign() ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text());
 		}
 	}
-	else for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x, height-textPrimitives_[n].y-pointsize, textPrimitives_[n].text);
+	else for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x(), height-textPrimitives_[n].y()-pointsize, textPrimitives_[n].text());
 }
 
 /*
@@ -136,7 +132,6 @@ void TextPrimitiveList::forgetAll()
 // Set data from literal coordinates and text
 void TextPrimitiveList::add(int x, int y, const char *text, QChar addChar, bool rightAlign)
 {
-	// If we are rendering with nice text (i.e. QPainter) store info for later
 	if (currentChunk_ == NULL) currentChunk_ = textPrimitives_.add();
 	else if (currentChunk_->full()) currentChunk_ = textPrimitives_.add();
 	// Add primitive and set data

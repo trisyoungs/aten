@@ -64,8 +64,6 @@ TCanvas::TCanvas(QGLContext *ctxt, QWidget *parent) : QGLWidget(ctxt, parent)
 
 	// Prevent QPainter from autofilling widget background
 	setAutoFillBackground(FALSE);
-	
-	printf("CONTEXT in TCanvas constructor: passed = %p, from widget = %p\n", ctxt, context());
 }
 
 /*
@@ -174,7 +172,6 @@ void TCanvas::initializeGL()
 	if ((context() == gui.mainContext()) && prefs.useVBOs())
 	{
 		// Get Extensions string and check for presence of 'GL_ARB_vertex_buffer_object'
-		printf("In initialiseGL, current context is %p, widget's context is %p\n", QGLContext::currentContext(), context());
 		const GLubyte *glexts = NULL;
 		glexts = glGetString( GL_EXTENSIONS );
 		msg.print(Messenger::Verbose, "Available GL Extensions are : %s\n", glexts);

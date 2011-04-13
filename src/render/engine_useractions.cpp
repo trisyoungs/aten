@@ -135,7 +135,7 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
-			renderTextPrimitive(RenderEngine::MiscText, rmouse.x, canvas->contextHeight()-rmouse.y, text.get(), 0x212b);
+			renderTextPrimitive(rmouse.x, canvas->contextHeight()-rmouse.y, text.get(), 0x212b);
 			break;
 	}
 	

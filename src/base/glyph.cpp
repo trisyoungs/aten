@@ -201,6 +201,8 @@ Glyph::Glyph()
 	visible_ = TRUE;
 	solid_ = TRUE;
 	rotation_ = NULL;
+	type_ = Glyph::nGlyphTypes;
+	parent_ = NULL;
 
 	// Public variables
 	prev = NULL;
