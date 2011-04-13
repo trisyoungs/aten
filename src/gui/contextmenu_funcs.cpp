@@ -35,17 +35,17 @@ Atom *target = NULL;
 void GuiQt::updateContextMenu()
 {
 	msg.enter("GuiQt::updateContextMenu");
-	Model *viewTarget = gui.mainWidget->displayModel();
+	Model *viewTarget = gui.mainWidget()->displayModel();
 	// Enable bond, angle, and torsion editing
 	int nselected = (viewTarget == NULL ? 0 : viewTarget->nSelected());
-	mainWindow->ui.actionSetBondLength->setEnabled(FALSE);
-	mainWindow->ui.actionSetBondAngle->setEnabled(FALSE);
-	mainWindow->ui.actionSetTorsionAngle->setEnabled(FALSE);
-	if (nselected == 2) mainWindow->ui.actionSetBondLength->setEnabled(TRUE);
-	else if (nselected == 3) mainWindow->ui.actionSetBondAngle->setEnabled(TRUE);
-	else if (nselected == 4) mainWindow->ui.actionSetTorsionAngle->setEnabled(TRUE);
+	mainWindow_->ui.actionSetBondLength->setEnabled(FALSE);
+	mainWindow_->ui.actionSetBondAngle->setEnabled(FALSE);
+	mainWindow_->ui.actionSetTorsionAngle->setEnabled(FALSE);
+	if (nselected == 2) mainWindow_->ui.actionSetBondLength->setEnabled(TRUE);
+	else if (nselected == 3) mainWindow_->ui.actionSetBondAngle->setEnabled(TRUE);
+	else if (nselected == 4) mainWindow_->ui.actionSetTorsionAngle->setEnabled(TRUE);
 	// (De)Activate glyph menu items based on number of atoms selected
-	mainWindow->activateGlyphActions(nselected);
+	mainWindow_->activateGlyphActions(nselected);
 	msg.exit("GuiQt::updateContextMenu");
 }
 
@@ -64,27 +64,27 @@ void GuiQt::callContextMenu(Atom *undermouse, int x, int y)
 	// If the atom under the mouse is selected, just run the popup. If it is not selected, deselect everything else and select it
 	QPoint pos(x,y);
 //	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
-	Model *viewTarget = gui.mainWidget->displayModel();
+	Model *viewTarget = gui.mainWidget()->displayModel();
 	if (!target->isSelected())
 	{
 		viewTarget->beginUndoState("Select atom (Context Menu)");
 		viewTarget->selectNone();
 		viewTarget->selectAtom(target);
 		viewTarget->endUndoState();
-		gui.mainWidget->postRedisplay();
+		gui.mainWidget()->postRedisplay();
 		// Make sure context menu items are enabled, since nothing may have been selected beforehand
-		mainWindow->ui.AtomContextMenu->setEnabled(TRUE);
+		mainWindow_->ui.AtomContextMenu->setEnabled(TRUE);
 	}
 	// Atom selection may have just changed, so update context menu
 	updateContextMenu();
 	// Run the popup
-	mainWindow->ui.AtomContextMenu->exec(pos);
+	mainWindow_->ui.AtomContextMenu->exec(pos);
 }
 
 // Set atom style
 void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
-	if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
+	if ((target == NULL) || (gui.mainWidget()->displayModel()->nSelected() > 1)) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
 	else CommandNode::run(Command::AtomStyle, "ci", Atom::drawStyle(ds), target->id()+1);
 	target = NULL;
 }
@@ -92,44 +92,44 @@ void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 void AtenForm::on_actionAtomStyleStick_triggered(bool checked)
 {
 	setAtomStyle(Atom::StickStyle);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenForm::on_actionAtomStyleTube_triggered(bool checked)
 {
 	setAtomStyle(Atom::TubeStyle);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenForm::on_actionAtomStyleSphere_triggered(bool checked)
 {
 	setAtomStyle(Atom::SphereStyle);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 {
 	setAtomStyle(Atom::ScaledStyle);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set atom labels
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
-	if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
+	if ((target == NULL) || (gui.mainWidget()->displayModel()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
 	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id()+1);
 	target = NULL;
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Clear atom labels
 void AtenForm::removeAtomLabels(bool all)
 {
 	if (all) CommandNode::run(Command::ClearLabels, "");
-	else if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
+	else if ((target == NULL) || (gui.mainWidget()->displayModel()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
 	else CommandNode::run(Command::RemoveLabels, "i", target->id()+1);
 	target = NULL;
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenForm::on_actionAtomLabelID_triggered(bool checked)
@@ -172,7 +172,7 @@ void AtenForm::on_actionAtomColourReset_triggered(bool checked)
 {
 	CommandNode::run(Command::RecolourAtoms, "");
 	target = NULL;
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Reset atom custom colour to element colour
@@ -190,13 +190,13 @@ void AtenForm::on_actionAtomColourSet_triggered(bool checked)
 	// Store new colour
 	CommandNode::run(Command::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	target = NULL;
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set atom hidden
 void AtenForm::setAtomHidden(bool hidden)
 {
-	if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) 
+	if ((target == NULL) || (gui.mainWidget()->displayModel()->nSelected() > 1)) 
 	{
 		if (hidden) CommandNode::run(Command::Hide, "");
 		else CommandNode::run(Command::Show, "");
@@ -221,16 +221,16 @@ void AtenForm::on_actionAtomProbe_triggered(bool checked)
 
 void AtenForm::on_actionAtomFixPosition_triggered(bool checked)
 {
-	if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::Fix, "");
+	if ((target == NULL) || (gui.mainWidget()->displayModel()->nSelected() > 1)) CommandNode::run(Command::Fix, "");
 	else CommandNode::run(Command::Fix, "i", target->id()+1);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenForm::on_actionAtomFreePosition_triggered(bool checked)
 {
-	if ((target == NULL) || (gui.mainWidget->displayModel()->nSelected() > 1)) CommandNode::run(Command::Free, "");
+	if ((target == NULL) || (gui.mainWidget()->displayModel()->nSelected() > 1)) CommandNode::run(Command::Free, "");
 	else CommandNode::run(Command::Free, "i", target->id()+1);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenForm::on_actionSetBondLength_triggered(bool checked)
@@ -251,12 +251,12 @@ void AtenForm::on_actionSetTorsionAngle_triggered(bool checked)
 void AtenForm::on_actionCentreAtOrigin_triggered(bool checked)
 {
 	CommandNode::run(Command::Centre, "ddd", 0.0, 0.0, 0.0);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenForm::on_actionCreateFragment_triggered(bool checked)
 {
-	Model *viewTarget = gui.mainWidget->displayModel();
+	Model *viewTarget = gui.mainWidget()->displayModel();
 	aten.addFragmentFromSelection(viewTarget, "Selections");
 	gui.fragmentsWidget->refresh();
 }
@@ -282,7 +282,7 @@ void AtenForm::createGlyph()
 	// Create glyph in model
 	CommandNode::run(Command::NewGlyph, "c", Glyph::glyphType(gt));
 	// Set data to atom selection
-	Model *viewTarget = gui.mainWidget->displayModel();
+	Model *viewTarget = gui.mainWidget()->displayModel();
 	n = 1;
 	for (Refitem<Atom,int> *ri = viewTarget->selection(); ri != NULL; ri = ri->next)
 	{

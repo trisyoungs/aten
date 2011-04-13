@@ -27,7 +27,7 @@
 #include "gui/fragments.h"
 
 // Render addition elements related to selected/active UserActions
-void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanvas *canvas)
+void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 {
 	Matrix A;
 	Atom *i, *j, tempj;
@@ -39,12 +39,12 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 	Dnchar text;
 	Fragment *frag;
 
-	// Draw on the selection highlights (for atoms in canvas.subsel)
+	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
 	for (Refitem<Atom,int> *ri = canvas->pickedAtoms(); ri != NULL; ri = ri->next)
 	{
 		i = ri->item;
 		// Move to local atom position
-		A = modelTransformationMatrix_;
+		A.setIdentity();
 		A.applyTranslation(i->r());
 		prefs.copyColour(Prefs::TextColour, colour);
 		// Draw a wireframe sphere at the atoms position
@@ -53,13 +53,13 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 		{
 			case (Atom::StickStyle):
 			case (Atom::TubeStyle):
-				renderPrimitive(selectedAtoms_[Atom::TubeStyle], 0, colour, A, GL_LINE);
+				renderPrimitive(RenderEngine::MiscObject, selectedAtoms_[Atom::TubeStyle], colour, A, GL_LINE);
 				break;
 			case (Atom::SphereStyle):
-				renderPrimitive(selectedAtoms_[Atom::SphereStyle], 0, colour, A, GL_LINE);
+				renderPrimitive(RenderEngine::MiscObject, selectedAtoms_[Atom::SphereStyle], colour, A, GL_LINE);
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(selectedScaledAtoms_[i->element()], 0, colour, A, GL_LINE);
+				renderPrimitive(RenderEngine::MiscObject, selectedScaledAtoms_[i->element()], colour, A, GL_LINE);
 				break;
 		}
 	}
@@ -72,7 +72,7 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 		case (UserAction::DrawBondSingleAction):
 		case (UserAction::DrawBondDoubleAction):
 		case (UserAction::DrawBondTripleAction):
-			if (i == NULL) i = (gui.mainWidget->pickedAtoms() != NULL ? gui.mainWidget->pickedAtoms()->item : NULL);
+			if (i == NULL) i = (gui.mainWidget()->pickedAtoms() != NULL ? gui.mainWidget()->pickedAtoms()->item : NULL);
 			bt = (Bond::BondType) (1+canvas->activeMode()-UserAction::DrawBondSingleAction);
 		case (UserAction::DrawChainAction):
 			if (i == NULL) break;
@@ -131,11 +131,11 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 			A.applyTranslation(pos);
 			
 			// Render new (temporary) bond
-			renderBond(A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, bt, 0, prefs.selectionScale());
+			renderBond(A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale());
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
-			renderTextPrimitive(rmouse.x, canvas->contextHeight()-rmouse.y, text.get(), 0x212b);
+			renderTextPrimitive(RenderEngine::MiscText, rmouse.x, canvas->contextHeight()-rmouse.y, text.get(), 0x212b);
 			break;
 	}
 	
@@ -155,14 +155,14 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 				pos = j->r();
 				Model *m = frag->anchoredModel(j, canvas->keyModifier(Prefs::ShiftKey), gui.fragmentsWidget->bondId());
 
-				A = modelTransformationMatrix_;
-				A.applyTranslation(pos);	
+				A.setIdentity();
+				A.applyTranslation(pos);
 				// Did we find a valid anchor point?
-				if (m != NULL) renderModel(m, A, canvas);
+				if (m != NULL) renderModel(m, A);
 				else
 				{
 					prefs.copyColour(Prefs::TextColour, colour);
-					renderPrimitive(&crossedCube_, FALSE, colour, A, GL_LINE, 2.0);
+					renderPrimitive(RenderEngine::MiscObject, &crossedCube_, FALSE, colour, A, GL_LINE, 2.0);
 				}
 			}
 			else
@@ -171,19 +171,10 @@ void RenderEngine::renderUserActions(Model *source, Matrix baseTransform, TCanva
 				// Get drawing point origin, translate to it, and render the stored model
 				if (canvas->activeMode() == UserAction::DrawFragmentAction) pos = source->screenToModel(canvas->rMouseDown().x, canvas->rMouseDown().y, prefs.drawDepth());
 				else pos = source->screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());
-				A = modelTransformationMatrix_;
+				A.setIdentity();;
 				A.applyTranslation(pos);
-				renderModel(frag->orientedModel(), A, canvas);
+				renderModel(frag->orientedModel(), A);
 			}
 			break;
 	}
-
-	// All 3D primitive objects have now been filtered, so add triangles, then sort and send to GL
-	renderPrimitive(&glyphTriangles_[RenderEngine::SolidTriangle], FALSE, NULL, modelTransformationMatrix_);
-	renderPrimitive(&glyphTriangles_[RenderEngine::WireTriangle], FALSE, NULL, modelTransformationMatrix_, GL_LINE);
-	renderPrimitive(&glyphTriangles_[RenderEngine::TransparentTriangle], TRUE, NULL, modelTransformationMatrix_);
-	sortAndSendGL();
-	
-	// Render overlays
-	renderModelOverlays(source, modelTransformationMatrix_, canvas);
 }

@@ -34,12 +34,28 @@ bool Log::operator==(Log &l) const
 {
 	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return FALSE;
 	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return FALSE;
-	if (logs_[Log::Visual] != l.logs_[Log::Visual]) return FALSE;
+	if (logs_[Log::Style] != l.logs_[Log::Style]) return FALSE;
+	if (logs_[Log::Camera] != l.logs_[Log::Camera]) return FALSE;
 	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return FALSE;
 	if (logs_[Log::Glyphs] != l.logs_[Log::Glyphs]) return FALSE;
-// 	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return FALSE;
-// 	if (logs_[Log::Total] != l.logs_[Log::Total]) return FALSE;
+	if (logs_[Log::Grids] != l.logs_[Log::Grids]) return FALSE;
+	if (logs_[Log::Labels] != l.logs_[Log::Labels]) return FALSE;
+	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return FALSE;
 	return TRUE;
+}
+
+bool Log::operator!=(Log &l) const
+{
+	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return TRUE;
+	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return TRUE;
+	if (logs_[Log::Style] != l.logs_[Log::Style]) return TRUE;
+	if (logs_[Log::Camera] != l.logs_[Log::Camera]) return TRUE;
+	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return TRUE;
+	if (logs_[Log::Glyphs] != l.logs_[Log::Glyphs]) return TRUE;
+	if (logs_[Log::Grids] != l.logs_[Log::Grids]) return TRUE;
+	if (logs_[Log::Labels] != l.logs_[Log::Labels]) return TRUE;
+	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return TRUE;
+	return FALSE;
 }
 
 // Reset all logs to zero
@@ -89,8 +105,14 @@ bool Log::isModified() const
 	return (savePoint_ == currentSavePoint() ? FALSE : TRUE);
 }
 
+// Return is specified log quantity is same between this and supplied Log
+bool Log::isSame(Log::LogType lt, Log &other)
+{
+	return (logs_[lt] == other.logs_[lt]);
+}
+
 // Print logs
 void Log::print() const
 {
-	msg.print("Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Glyph [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Visual], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Misc], logs_[Log::Total]); 
+	msg.print("Structure [%i], Coordinates [%i], Style [%i], Camera [%i], Selection [%i], Glyphs [%i], Grids [%i], Lables [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Style], logs_[Log::Camera], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Grids], logs_[Log::Labels], logs_[Log::Misc], logs_[Log::Total]); 
 }

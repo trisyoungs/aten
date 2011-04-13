@@ -186,8 +186,8 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 	prefs = prefsBackup_;
 	elements().restoreData();
 
-	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	aten.currentModel()->changeLog.add(Log::Style);
+	gui.mainWidget()->postRedisplay();
 	reject();
 }
 
@@ -236,8 +236,8 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	ui.ElementColourFrame->setColour(newcol);
 	ui.ElementColourFrame->update();
 	// Re-set atom colours in model(s)
-	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	aten.currentModel()->changeLog.add(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
@@ -247,8 +247,8 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 	if (el == -1) return;
 	elements().setAtomicRadius(el, value);
 	// Re-draw models
-	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	aten.currentModel()->changeLog.add(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 /*
@@ -258,8 +258,8 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 void AtenPrefs::updateAfterViewPrefs(bool force)
 {
 	if (refreshing_) return;
-	gui.mainWidget->reinitialisePrimitives(force);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->reinitialisePrimitives(force);
+	gui.mainWidget()->postRedisplay();
 }
 
 /*
@@ -323,25 +323,25 @@ void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
 void AtenPrefs::on_AngleLabelFormatEdit_textEdited(const QString &text)
 {
 	prefs.setAngleLabelFormat( qPrintable(text) );
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_DistanceLabelFormatEdit_textEdited(const QString &text)
 {
 	prefs.setDistanceLabelFormat( qPrintable(text) );
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_LabelSizeSpin_valueChanged(int value)
 {
 	prefs.setLabelSize(value);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_RenderDashedAromaticsCheck_clicked(bool checked)
 {
 	prefs.setRenderDashedAromatics(checked);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
@@ -360,9 +360,9 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 	// Store new colour
 	prefs.setColour(pencol, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.ColoursTable->item(row, 1)->setBackgroundColor(newcol);
-	aten.currentModel()->changeLog.add(Log::Visual);
+	aten.currentModel()->changeLog.add(Log::Style);
 	// Update display
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 /*
@@ -417,49 +417,49 @@ void AtenPrefs::on_LevelOfDetailWidthSpin_valueChanged(double value)
 void AtenPrefs::on_TransparencyGroup_clicked(bool checked)
 {
 	prefs.setTransparencyCorrect(checked);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_TransparencyNSlicesSpin_valueChanged(int value)
 {
 	prefs.setTransparencyNBins(value);
 	if (refreshing_) return;
-	gui.mainWidget->reinitialiseTransparency();
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->reinitialiseTransparency();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_TransparencyStartZSpin_valueChanged(double value)
 {
 	prefs.setTransparencyBinStartZ(value);
 	if (refreshing_) return;
-	gui.mainWidget->reinitialiseTransparency();
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->reinitialiseTransparency();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_TransparencyBinWidthSpin_valueChanged(double value)
 {
 	prefs.setTransparencyBinWidth(value);
 	if (refreshing_) return;
-	gui.mainWidget->reinitialiseTransparency();
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->reinitialiseTransparency();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_FarClipSpin_valueChanged(double value)
 {
 	prefs.setClipFar(value);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_FarDepthSpin_valueChanged(int value)
 {
 	prefs.setDepthFar(value);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_NearClipSpin_valueChanged(double value)
 {
 	prefs.setClipNear(value);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_NearDepthSpin_valueChanged(int value)
@@ -477,25 +477,25 @@ void AtenPrefs::on_LineAliasingCheck_stateChanged(int state)
 void AtenPrefs::on_PolygonAliasingCheck_stateChanged(int state)
 {
 	prefs.setPolygonAliasing(state == Qt::Checked);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_MultiSamplingCheck_stateChanged(int state)
 {
 	prefs.setMultiSampling(state == Qt::Checked);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_SpotlightGroup_clicked(bool checked)
 {
 	prefs.setSpotlightActive(checked);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::spotlightPosChanged(int i, double value)
 {
 	prefs.setSpotlightPosition(i, (GLfloat) value);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_SpotlightPositionXSpin_valueChanged(double value)
@@ -532,7 +532,7 @@ void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 	colframe->setColour(newcol);
 	colframe->update();
 	// Update display
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_SpotlightAmbientColourButton_clicked(bool checked)
@@ -553,20 +553,20 @@ void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 {
 	prefs.setShininess(value);
-	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	aten.currentModel()->changeLog.add(Log::Camera);
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_FrameCurrentModelCheck_clicked(bool checked)
 {
 	prefs.setFrameCurrentModel(checked);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_FrameWholeViewCheck_clicked(bool checked)
 {
 	prefs.setFrameWholeView(checked);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 /*
@@ -682,8 +682,8 @@ void AtenPrefs::on_PointValueSpin_valueChanged(double d)
 	prefs.colourScale[scale].setPointValue(id, d);
 	ui.ScalePointsTable->item(id, 0)->setText(ftoa(d));
 	// Update display
-	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	aten.currentModel()->changeLog.add(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_PointColourButton_clicked(bool checked)
@@ -708,8 +708,8 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	ui.PointColourFrame->update();
 	ui.ScalePointsTable->item(id, 1)->setBackgroundColor(newcol);
 	// Update display
-	aten.currentModel()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	aten.currentModel()->changeLog.add(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_AddPointButton_clicked(bool checked)
@@ -742,7 +742,7 @@ void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem *item)
 	if (row == -1) return;
 	// Look at checked state
 	prefs.colourScale[row].setVisible( (item->checkState() == Qt::Checked ? TRUE : FALSE) );
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem *item)
@@ -755,7 +755,7 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem *item)
 	if (ok && !text.isEmpty())
 	{
 		prefs.colourScale[row].setName( qPrintable(text) );
-		gui.mainWidget->postRedisplay();
+		gui.mainWidget()->postRedisplay();
 	}
 }
 

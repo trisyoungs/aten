@@ -39,6 +39,7 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 		else currentVertexChunk_ = currentVertexChunk_->next;
 	}
 	currentVertexChunk_->defineVertex(x,y,z,nx,ny,nz,calcCentroid);
+	++nDefinedVertices_;
 }
 
 // Define next vertex and normal with colour (as array)
@@ -59,6 +60,7 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 		else currentVertexChunk_ = currentVertexChunk_->next;
 	}
 	currentVertexChunk_->defineVertex(x,y,z,nx,ny,nz,colour,calcCentroid);
+	++nDefinedVertices_;
 }
 
 // Define next vertex and normal with colour
@@ -79,6 +81,7 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 		else currentVertexChunk_ = currentVertexChunk_->next;
 	}
 	currentVertexChunk_->defineVertex(x,y,z,nx,ny,nz,r,g,b,a,calcCentroid);
+	++nDefinedVertices_;
 }
 
 // Define triangle

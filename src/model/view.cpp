@@ -28,7 +28,7 @@ void Model::setRenderSource(Model::RenderSource rs)
 {
 	renderSource_ = rs;
 	// Log a visual change here so we make sure that the GUI is updated properly
-	changeLog.add(Log::Visual);
+// 	changeLog.add(Log::Visual);
 }
 
 // Return rendering source
@@ -171,7 +171,7 @@ void Model::adjustCamera(double dx, double dy, double dz)
 		if (modelViewMatrix_[14] > -1.0) modelViewMatrix_[14] = -1.0;
 	}
 	else parent_->adjustCamera(dx, dy, dz);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::adjustCamera");
 }
 
@@ -183,7 +183,7 @@ void Model::adjustZoom(bool zoomin)
 	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::adjustZoom");
 }
 
@@ -213,23 +213,23 @@ void Model::resetView()
 
 	// Now, adjust camera matrix so that this atom is on-screen.
 	// Need to do a check for the viability of the canvas first...
-	if (gui.mainWidget->isValid() && (atoms_.nItems() != 0))
+	if (gui.mainWidget()->isValid() && (atoms_.nItems() != 0))
 	{
 		do
 		{
 			// Adjust z-translation by 1 Angstrom
 			mview[14] -= 1.0;
 			// Project our local atom and grab the z screen coordinate
-			setupView(0, 0, gui.mainWidget->contextWidth(), gui.mainWidget->contextHeight());
+			setupView(0, 0, gui.mainWidget()->contextWidth(), gui.mainWidget()->contextHeight());
 			modelToWorld(target, &screenr);
 			done = TRUE;
-			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget->width())) done = FALSE;
-			if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget->height())) done = FALSE;
+			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget()->width())) done = FALSE;
+			if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget()->height())) done = FALSE;
 			if (screenr.z < 0.0) done = FALSE;
 		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::resetView");
 }
 
@@ -248,7 +248,7 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 		modelViewMatrix_ = newrotmat * oldrotmat;
 	}
 	else parent_->axisRotateView(vec, angle);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::axisRotateView");
 }
 
@@ -265,7 +265,7 @@ void Model::setRotation(double rotx, double roty)
 		modelViewMatrix_.copyTranslationAndScaling(temp);
 	}
 	else parent_->setRotation(rotx, roty);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::setRotation");
 }
 
@@ -289,7 +289,7 @@ void Model::rotateView(double dx, double dy)
 		modelViewMatrix_ = newrotmat * modelViewMatrix_;
 	}
 	else parent_->rotateView(dx, dy);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::rotateView");
 }
 

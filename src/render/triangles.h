@@ -50,7 +50,7 @@ class TriangleChopper
 	// Empty all stored triangles, but retain storage
 	void emptyTriangles();
 	// Store primitive's triangles
-	void storeTriangles(PrimitiveInfo *pinfo);
+	void storeTriangles(PrimitiveInfo *pinfo, Matrix &transform);
 	// Sent triangles to GL (in correct order)
 	void sendToGL();
 };

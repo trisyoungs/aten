@@ -103,7 +103,7 @@ class Glyph
 	static GlyphType glyphType(const char *name, bool reporterror = 0);
 	static int nGlyphData(GlyphType gt);
 	// Glyph options
-	enum GlyphOption { GlyphColourOption, GlyphLineWidthOption, GlyphSolidOption, GlyphTextOption, GlyphWireOption, nGlyphOptions };
+	enum GlyphOption { GlyphColourOption, GlyphSolidOption, GlyphTextOption, GlyphWireOption, nGlyphOptions };
 	static const char *glyphOption(GlyphOption gt);
 	static GlyphOption glyphOption(const char *name, bool reporterror = 0);
 
@@ -167,8 +167,6 @@ class Glyph
 	bool visible_;
 	// Whether Glyph should be drawn with filled polygons (where possible)
 	bool solid_;
-	// Line width to use when drawing
-	GLfloat lineWidth_;
 
 	public:
 	// Set whether the Glyph is selected
@@ -183,10 +181,6 @@ class Glyph
 	void setSolid(bool issolid);
 	// Return whether the Glyph should be drawn as a solid
 	bool isSolid() const;
-	// Set the linewidth of the glyph
-	void setLineWidth(GLfloat width);
-	// Return the linewidth of the glyph
-	GLfloat lineWidth() const;
 };
 
 #endif

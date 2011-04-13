@@ -30,14 +30,14 @@
 void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Command::Undo, "");
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Command::Redo, "");
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	gui.update(GuiQt::CanvasTarget);
 }
 
@@ -56,7 +56,7 @@ void AtenForm::on_actionEditCopy_triggered(bool checked)
 void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
 	CommandNode::run(Command::Paste, "");
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -69,7 +69,7 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 	{
 		Vec3<double> r = dialog.widgetValue3d("X", "Y", "Z");
 		CommandNode::run(Command::Paste, "ddd", r.x, r.y, r.z);
-		gui.mainWidget->postRedisplay();
+		gui.mainWidget()->postRedisplay();
 		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 	}
 }

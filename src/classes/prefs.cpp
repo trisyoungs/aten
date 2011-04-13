@@ -187,6 +187,7 @@ Prefs::Prefs()
 	polygonAliasing_ = FALSE;
 	multiSampling_ = TRUE;
 	backfaceCulling_ = FALSE;
+	useVBOs_ = FALSE;
 	shininess_ = 100;
 	clipNear_ = 0.5;
 	clipFar_ = 2000.0;
@@ -942,6 +943,18 @@ void Prefs::setShininess(int n)
 GLint Prefs::shininess() const
 {
 	return shininess_;
+}
+
+// Sets whether to use VBOs
+void Prefs::setUseVBOs(bool b)
+{
+	useVBOs_ = b;
+}
+
+// Return whether to use VBOs
+bool Prefs::useVBOs()
+{
+	return useVBOs_;
 }
 
 /*

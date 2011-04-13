@@ -358,7 +358,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 			ignore = FALSE;
 			break;
 		case (Qt::Key_Escape):
-			gui.mainWindow->cancelCurrentMode();
+			gui.mainWindow()->cancelCurrentMode();
 			refresh = TRUE;
 			ignore = FALSE;
 			break;
@@ -366,14 +366,14 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 		case (Qt::Key_F8):
 			n = prefs.renderStyle() + 1;
 			if (n == Atom::nDrawStyles) n = 0;
-			gui.mainWindow->setActiveStyleAction( (Atom::DrawStyle) n);
+			gui.mainWindow()->setActiveStyleAction( (Atom::DrawStyle) n);
 			ignore = FALSE;
 			break;
 		// Cycle colouring styles
 		case (Qt::Key_F9):
 			n = prefs.colourScheme() + 1;
 			if (n == Prefs::nColouringSchemes) n = 0;
-			gui.mainWindow->setActiveSchemeAction( (Prefs::ColouringScheme) n);
+			gui.mainWindow()->setActiveSchemeAction( (Prefs::ColouringScheme) n);
 			ignore = FALSE;
 			break;
 		default:
@@ -527,7 +527,7 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 
 	// Finally, set the mode and refresh
 	selectedMode_ = ua;
-	gui.mainWindow->setActiveUserAction(ua);
+	gui.mainWindow()->setActiveUserAction(ua);
 	
 	// Change mouse cursor depending on mode
 	if (selectedMode_ == UserAction::SelectAction) setCursor(Qt::ArrowCursor);
@@ -982,7 +982,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			// If a previous callback was defined then call it before we move on
 			if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
 			pickAtomsCallback_ = NULL;
-			gui.mainWindow->setActiveUserAction(actionBeforePick_);
+			gui.mainWindow()->setActiveUserAction(actionBeforePick_);
 			pickedAtoms_.clear();
 			nAtomsToPick_ = -1;
 			break;

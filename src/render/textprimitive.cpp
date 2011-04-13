@@ -23,8 +23,46 @@
 #include "gui/tcanvas.uih"
 
 /*
+// Text Primitive
+*/
+
+// Set data
+void TextPrimitive::set(bool is3D, double x, double y, double z, bool rightalign, QString &text)
+{
+	coordsAre3D_ = is3D;
+	r_.set(x,y,z);
+	rightAlign_ = rightalign;
+	text_ = text;
+	
+}
+
+// Return 2D coordinates of text on screen (calculated if necessary)
+Vec3<int> TextPrimitive::r(Matrix &modelTransform)
+{
+	if (coordsAre3D_)
+	{
+		Vec3<double> temp = r * modelTransform;
+		return Vec3<int>(temp.x, temp.y, 0);
+	}
+	else return Vec3<int>(r_.x, r_.y, 0);
+}
+
+// Return text to render
+QString &TextPrimitive::text()
+{
+	return text_;
+}
+
+// Return whether to right-align text
+bool TextPrimitive::rightAlign()
+{
+	return rightAlign_;
+}
+
+/*
 // Text Primitive Chunk
 */
+
 // Constructor
 TextPrimitiveChunk::TextPrimitiveChunk()
 {
@@ -66,6 +104,7 @@ void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
 	QRect rect;
 	int height = canvas->contextHeight();
 	int pointsize = prefs.labelSize();
+	int textx = textPrimitives_[n].x(), texty = textPrimitives_[n].y();
 	if (prefs.useNiceText())
 	{
 		for (int n=0; n<nTextPrimitives_; ++n)

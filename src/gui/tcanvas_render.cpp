@@ -26,6 +26,7 @@
 // Draw 2D objects with QPainted
 void TCanvas::render2D(QPainter &painter, Model *source)
 {
+	msg.enter("TCanvas::render2D");
 	// Variables
 	static Dnchar text;
 	QColor color;
@@ -103,6 +104,7 @@ void TCanvas::render2D(QPainter &painter, Model *source)
 		default:
 			break;
 	}
+	msg.exit("TCanvas::render2D");
 }
 
 // Render 3D objects for current displayModel_
@@ -110,7 +112,8 @@ void TCanvas::render3D(Model *source, bool currentModel)
 {	
 	// Valid pointer set?
 	if (source == NULL) return;
-
+	msg.enter("TCanvas::render3D");
+	
 	// Render model
 	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
 	
@@ -118,6 +121,7 @@ void TCanvas::render3D(Model *source, bool currentModel)
 	if (noDraw_)
 	{
 		msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
+		msg.exit("TCanvas::render3D");
 		return;
 	}
 	checkGlError();
@@ -136,7 +140,7 @@ void TCanvas::render3D(Model *source, bool currentModel)
 		displayFrameId_ = source->parent()->trajectoryFrameIndex();
 		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 	}
-	
+		
 	// Render 3D elements (with OpenGL)
 	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
 	checkGlError();
@@ -145,6 +149,7 @@ void TCanvas::render3D(Model *source, bool currentModel)
 	checkGlError();
 
 	msg.print(Messenger::GL, " --> RENDERING END\n");
+	msg.exit("TCanvas::render3D");
 }
 
 // Attempt to detect/check for corrupt rendering

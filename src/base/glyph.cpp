@@ -49,7 +49,7 @@ int Glyph::nGlyphData(Glyph::GlyphType gt)
 }
 
 // Glyph options
-const char *GlyphOptionKeywords[Glyph::nGlyphOptions] = { "colour", "linewidth", "solid", "text", "wire" };
+const char *GlyphOptionKeywords[Glyph::nGlyphOptions] = { "colour", "solid", "text", "wire" };
 const char *Glyph::glyphOption(Glyph::GlyphOption go)
 {
 	return GlyphOptionKeywords[go];
@@ -200,7 +200,6 @@ Glyph::Glyph()
 	selected_ = FALSE;
 	visible_ = TRUE;
 	solid_ = TRUE;
-	lineWidth_ = 1.0f;
 	rotation_ = NULL;
 
 	// Public variables
@@ -216,7 +215,6 @@ void Glyph::operator=(Glyph &source)
 	selected_ = source.selected_;
 	visible_ = source.visible_;
 	solid_ = source.solid_;
-	lineWidth_ = source.lineWidth_;
 	// Rotation matrix (if it exists)
 	if (rotation_ != NULL) delete rotation_;
 	if (source.rotation_ == NULL) rotation_ = NULL;
@@ -338,18 +336,6 @@ void Glyph::setSolid(bool issolid)
 bool Glyph::isSolid() const
 {
 	return solid_;
-}
-
-// Set the linewidth of the glyph
-void Glyph::setLineWidth(GLfloat width)
-{
-	lineWidth_ = width;
-}
-
-// Return the linewidth of the glyph
-GLfloat Glyph::lineWidth() const
-{
-	return lineWidth_;
 }
 
 // Return whether glyph has been rotated

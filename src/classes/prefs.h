@@ -357,6 +357,8 @@ class Prefs
 	GLint depthNear_, depthFar_;
 	// Near and far clipping planes for glPerspective() and glFrustum();
 	GLdouble clipNear_, clipFar_;
+	// Flag whether to use VBOs
+	bool useVBOs_;
 
 	public:
 	// Set status of fog (depth cueing)
@@ -399,6 +401,10 @@ class Prefs
 	void setShininess(int n);
 	// Return the current shininess of GL objects
 	GLint shininess() const;
+	// Sets whether to use VBOs
+	void setUseVBOs(bool b);
+	// Return whether to use VBOs
+	bool useVBOs();
 
 
 	/*

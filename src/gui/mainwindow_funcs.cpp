@@ -87,7 +87,7 @@ void AtenForm::closeEvent(QCloseEvent *event)
 // 		delete gui.positionWindow;
 // 		delete gui.selectWindow;
 // 		delete gui.transformWindow;
-		gui.app->exit(0);
+		gui.application()->exit(0);
 	}
 	else event->ignore();
 }
@@ -254,8 +254,8 @@ void AtenForm::loadRecent()
 	{
 		ReturnValue rv;
 		filter->executeRead(filename.get(), rv);
-		aten.currentModel()->changeLog.add(Log::Visual);
-		gui.mainWidget->postRedisplay();
+		aten.currentModel()->changeLog.add(Log::Camera);
+		gui.mainWidget()->postRedisplay();
 	}
 	else
 	{
@@ -346,7 +346,7 @@ void AtenForm::uaButtonClicked(int id)
 	// Check button correspondiong to supplied index
 	button = uaButtons_.button(id);
 	if (button == NULL) printf("Internal Error: AtenForm::uaButtonClicked - No button associated to id %i\n", id);
-	else if (button->isChecked()) gui.mainWidget->setSelectedMode((UserAction::Action) id);
+	else if (button->isChecked()) gui.mainWidget()->setSelectedMode((UserAction::Action) id);
 }
 
 // Set action/button to reflect supplied user action

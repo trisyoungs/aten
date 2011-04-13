@@ -57,7 +57,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 			if (!filter->executeCustomDialog()) return;
 			filter->executeRead(gui.loadModelDialog->selectedFilename());
 			addRecent(gui.loadModelDialog->selectedFilename());
-			aten.currentModelOrFrame()->changeLog.add(Log::Visual);
+			aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 			gui.update(GuiQt::AllTarget);
 		}
 	}
@@ -217,7 +217,7 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Get geometry from user - initial setup is to use current canvas geometry
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget->width(), (int) gui.mainWidget->height());
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
 	int width, height;
 	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
 	bool currentframemodel, currentframeview, viewglobe;
@@ -289,6 +289,6 @@ void AtenForm::on_actionFileQuit_triggered(bool checked)
 {
 	if (!gui.saveBeforeClose()) return;
 	saveSettings();
-	gui.app->exit(0);
+	gui.application()->exit(0);
 }
 
