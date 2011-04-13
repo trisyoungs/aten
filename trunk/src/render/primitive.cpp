@@ -1,5 +1,5 @@
 /*
-	*** Rendering Primitive
+	*** Primitive
 	*** src/render/primitive.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -29,201 +29,47 @@
 #include <stdio.h>
 #include <math.h>
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i*sizeof(GLfloat)))
-
 /*
-// Vertex Chunk
+// Primitive Instance
 */
 
-// Constructor / Destructor
-VertexChunk::VertexChunk()
+// Constructor
+PrimitiveInstance::PrimitiveInstance()
 {
 	// Public variables
-	next = NULL;
 	prev = NULL;
+	next = NULL;
 	
 	// Private variables
-	vertexData_ = NULL;
-	centroids_ = NULL;
-	verticesPerType_ = 0;
-	dataPerVertex_ = 0;
-	nDefinedVertices_ = 0;
-	maxVertices_ = -1;
-	nDefinedTypes_ = 0;
-	type_ = GL_TRIANGLES;
+	context_ = NULL;
+	type_ = PrimitiveInstance::ListInstance;
+	id_ = 0;
 }
 
-VertexChunk::~VertexChunk()
+// Set data
+void PrimitiveInstance::set(const QGLContext *context, PrimitiveInstance::InstanceType type, GLuint id)
 {
-	if (vertexData_ != NULL) delete[] vertexData_;
-	if (centroids_ != NULL) delete[] centroids_;
-}
-
-// Update (or finalise) centroid for current primitive type
-void VertexChunk::updateCentroid(GLfloat x, GLfloat y, GLfloat z, bool finalise)
-{
-	// Accumulate centroid
-	int coff = nDefinedTypes_*3;
-	centroids_[coff] += x;
-	centroids_[coff+1] += y;
-	centroids_[coff+2] += z;
-	// Finalise centroid?
-	if (finalise)
-	{
-		centroids_[coff] /= verticesPerType_;
-		centroids_[coff+1] /= verticesPerType_;
-		centroids_[coff+2] /= verticesPerType_;	
-	}
-}
-
-// Initialise structure
-void VertexChunk::initialise(GLenum type, bool colourData)
-{
+	context_ = context;
 	type_ = type;
-	dataPerVertex_ = (colourData ? 10 : 6);
-	if (type_ == GL_TRIANGLES) verticesPerType_ = 3;
-	else if (type_ == GL_LINES) verticesPerType_ = 2;
-	else if (type_ == GL_POINTS) verticesPerType_ = 1;
-	else printf("Warning - Invalid GLenum type given to VertexChunk::initialise (%i)\n", type_);
-	maxVertices_ = VERTEXCHUNKSIZE*verticesPerType_;
-	nDefinedVertices_ = 0;
-	nDefinedTypes_ = 0;
-	vertexData_ = new GLfloat[maxVertices_*dataPerVertex_];
-	centroids_ = new GLfloat[VERTEXCHUNKSIZE*3];
-	for (int n=0; n<VERTEXCHUNKSIZE*3; ++n) centroids_[n] = 0.0f;
+	id_ = id;
 }
 
-// Define next vertex and normal
-void VertexChunk::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
+// Return context to which primitive instance is associated
+const QGLContext *PrimitiveInstance::context()
 {
-	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for VertexChunk reached.\n");
-	int index = nDefinedVertices_*dataPerVertex_;
-	if (dataPerVertex_ == 10)
-	{
-		printf("Internal Error: No colour specified in vertex creation, but the primitive requires one.\n");
-		index += 4;
-	}
-	// Store normal
-	vertexData_[index++] = nx;
-	vertexData_[index++] = ny;
-	vertexData_[index++] = nz;
-	// Store vertex
-	vertexData_[index++] = x;
-	vertexData_[index++] = y;
-	vertexData_[index++] = z;
-	// Increase vertex counter
-	++nDefinedVertices_;
-	// Update centroid
-	bool finalise = (nDefinedVertices_%verticesPerType_) == 0;
-	if (calcCentroid) updateCentroid(x, y, z, finalise);
-	if (finalise) ++nDefinedTypes_;
+	return context_;
 }
 
-// Define next vertex and normal with specific colour (as array)
-void VertexChunk::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid)
+// Return type of instance
+PrimitiveInstance::InstanceType PrimitiveInstance::type()
 {
-	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for VertexChunk reached.\n");
-	int index = nDefinedVertices_*dataPerVertex_;
-	// Store colour
-	if (dataPerVertex_ != 10) printf("Internal Error: Colour specified in vertex creation, but it is not required for primitive.\n");
-	else
-	{
-		vertexData_[index++] = colour[0];
-		vertexData_[index++] = colour[1];
-		vertexData_[index++] = colour[2];
-		vertexData_[index++] = colour[3];
-	}
-	// Store normal
-	vertexData_[index++] = nx;
-	vertexData_[index++] = ny;
-	vertexData_[index++] = nz;
-	// Store vertex
-	vertexData_[index++] = x;
-	vertexData_[index++] = y;
-	vertexData_[index++] = z;
-	// Increase vertex counter
-	++nDefinedVertices_;
-	// Update centroid
-	bool finalise = (nDefinedVertices_%verticesPerType_) == 0;
-	if (calcCentroid) updateCentroid(x, y, z, finalise);
-	if (finalise) ++nDefinedTypes_;
+	return type_;
 }
 
-// Define next vertex and normal with specific colour
-void VertexChunk::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid)
+// Return OpenGL ID of instance
+int PrimitiveInstance::id()
 {
-	if (nDefinedVertices_ == maxVertices_) printf("Internal Error: Vertex limit for VertexChunk reached.\n");
-	int index = nDefinedVertices_*dataPerVertex_;
-	// Store colour
-	if (dataPerVertex_ != 10) printf("Internal Error: Colour specified in vertex creation, but it is not required for primitive.\n");
-	else
-	{
-		vertexData_[index++] = r;
-		vertexData_[index++] = g;
-		vertexData_[index++] = b;
-		vertexData_[index++] = a;
-	}
-	// Store normal
-	vertexData_[index++] = nx;
-	vertexData_[index++] = ny;
-	vertexData_[index++] = nz;
-	// Store vertex
-	vertexData_[index++] = x;
-	vertexData_[index++] = y;
-	vertexData_[index++] = z;
-	// Increase vertex counter
-	++nDefinedVertices_;
-	// Update centroid
-	bool finalise = (nDefinedVertices_%verticesPerType_) == 0;
-	if (calcCentroid) updateCentroid(x, y, z, finalise);
-	if (finalise) ++nDefinedTypes_;
-}
-
-// Return whether current array is full
-bool VertexChunk::full()
-{
-	return (nDefinedVertices_ == maxVertices_);
-}
-
-// Forget all vertex data currently stored in array (but retain array)
-void VertexChunk::forgetAll()
-{
-	nDefinedTypes_ = 0;
-	nDefinedVertices_ = 0;
-	for (int n=0; n<VERTEXCHUNKSIZE*3; ++n) centroids_[n] = 0.0f;
-}
-
-// Return number of defined primitive (GL) types
-int VertexChunk::nDefinedTypes()
-{
-	return nDefinedTypes_;
-}
-
-// Return vertex array
-GLfloat *VertexChunk::vertexData()
-{
-	return vertexData_;
-}
-
-// Return centroid array
-GLfloat *VertexChunk::centroids()
-{
-	return centroids_;
-}
-
-// Return number of defined vertices in chunk
-int VertexChunk::nDefinedVertices()
-{
-	return nDefinedVertices_;
-}
-
-// Send to OpenGL (i.e. render)
-void VertexChunk::sendToGL()
-{
-	if (nDefinedVertices_ == 0) return;
-	// Does the vertex data contain colour-per-vertex information?
-	glInterleavedArrays(dataPerVertex_ == 10 ? GL_C4F_N3F_V3F : GL_N3F_V3F, 0, vertexData_);
-	glDrawArrays(type_, 0, nDefinedVertices_);
+	return id_;
 }
 
 /*
@@ -238,8 +84,6 @@ Primitive::Primitive()
 	type_ = GL_TRIANGLES;
 	prev = NULL;
 	next = NULL;
-	idVBO_ = 0;
-	hasVBO_ = FALSE;
 	nDefinedVertices_ = 0;
 }
 
@@ -300,9 +144,9 @@ void Primitive::createCross(double width, int naxes)
 			vert[j] = (i == j ? width : 0.0);
 			norm[j] = (j == 0 ? 1.0 : 0.0);
 		}
-		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2]);
+		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2], TRUE);
 		vert[i] = -vert[i];
-		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2]);
+		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2], TRUE);
 	}
 }
 
@@ -332,8 +176,8 @@ void Primitive::createWireCube(double size)
 		// Generate lines
 		for (j=0; j<3; ++j)
 		{
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
-			defineVertex(j == 0 ? -r[0] : r[0], j == 1 ? -r[1] : r[1], j == 2 ? -r[2] : r[2], 1.0, 0.0, 0.0);	
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0, TRUE);
+			defineVertex(j == 0 ? -r[0] : r[0], j == 1 ? -r[1] : r[1], j == 2 ? -r[2] : r[2], 1.0, 0.0, 0.0, TRUE);
 		}
 	}
 }
@@ -352,15 +196,15 @@ void Primitive::createCrossedCube(double size)
 		{
 			// Determine single coordinate on positive face from which to determine all others
 			for (j = 0; j<3; ++j) r[j] = (j == i ? 0.55*size*sign : 0.4*size);
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0, TRUE);
 			r[(i+1)%3] = -r[(i+1)%3];
 			r[(i+2)%3] = -r[(i+2)%3];
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0, TRUE);
 			r[(i+1)%3] = -r[(i+1)%3];
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0, TRUE);
 			r[(i+1)%3] = -r[(i+1)%3];
 			r[(i+2)%3] = -r[(i+2)%3];
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0, TRUE);
 		}
 	}
 }
@@ -395,21 +239,21 @@ void Primitive::createCube(double size, int nsubs, double ox, double oy, double 
 				vertex[1] = oy + i*veca[1] + j*vecb[1];
 				vertex[2] = oz + i*veca[2] + j*vecb[2];
 				// Define trangle vertices for 'lower' plane
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
 
 				// Define trangle vertices for 'upper' plane
 				vertex[plane] += size;
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
 			}
 		}
 	}
@@ -463,65 +307,73 @@ bool Primitive::colouredVertexData()
 	return colouredVertexData_;
 }
 
-// Create VBO from current vertex chunk list
-void Primitive::createVBO()
+// Push instance of primitive
+void Primitive::pushInstance(const QGLContext *context)
 {
-	msg.enter("Primitive::createVBO");
-	// Prepare local array of data to pass to VBO
-	int offset, n;
-	if (nDefinedVertices_ == -1)
+	msg.enter("Primitive::pushInstance");
+	
+	// Vertex buffer object or plain old display list?
+	if (prefs.useVBOs())
 	{
-		printf("Error: No data in Primitive with which to create VBO.\n");
-		hasVBO_ = FALSE;
-		msg.exit("Primitive::createVBO");
-		return;
+		// Prepare local array of data to pass to VBO
+		int offset, n;
+		GLuint idVBO;
+		if (nDefinedVertices_ == -1)
+		{
+			printf("Error: No data in Primitive with which to create VBO.\n");
+			msg.exit("Primitive::pushInstance");
+			return;
+		}
+		
+		// Determine total size of array (in bytes) for VBO
+		int vboSize = nDefinedVertices_ * (colouredVertexData_ ? 10 : 6) * sizeof(GLfloat);
+		
+		// Generate VBO
+		glGenBuffers(1, &idVBO);
+
+		// Bind VBO
+		glBindBuffer(GL_ARRAY_BUFFER, idVBO);
+		
+		// Initialise VBO data, but don't copy anything here
+		glBufferData(GL_ARRAY_BUFFER, vboSize, NULL, GL_STATIC_DRAW);
+
+	// 	GLfloat *bufdat = (GLfloat*) glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+	// // 	for (int n=0; n<30; ++n) printf("Buffer data %i is %f\n", n, bufdat[n]);
+	// 	glUnmapBuffer(GL_ARRAY_BUFFER);
+		
+		// Loop over stored VertexChunks and copy data to VBO
+		offset = 0;
+		int chunksize;
+		for (VertexChunk *chunk = vertexChunks_.first(); chunk != NULL; chunk = chunk->next)
+		{
+			chunksize = chunk->nDefinedVertices()*(colouredVertexData_ ? 10 : 6)*sizeof(GLfloat);
+			glBufferSubData(GL_ARRAY_BUFFER_ARB, offset, chunksize, chunk->vertexData());
+			offset += chunksize;
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
+		// Store data
+		PrimitiveInstance *pi = instances_.add();
+		pi->set(context, PrimitiveInstance::VBOInstance, idVBO);
 	}
-	
-	// Determine total size of array (in bytes) for VBO
-	int vboSize = nDefinedVertices_ * (colouredVertexData_ ? 10 : 6) * sizeof(GLfloat);
-	
-	// Remove old VBO first (if one exists)
-	if (idVBO_ != 0) glDeleteBuffers(1, &idVBO_);
-	
-	// Generate VBO
-	glGenBuffers(1, &idVBO_);
-
-	// Bind VBO
-	glBindBuffer(GL_ARRAY_BUFFER, idVBO_);
-	
-	// Initialise VBO data, but don't copy anything here
-	glBufferData(GL_ARRAY_BUFFER, vboSize, NULL, GL_STATIC_DRAW);
-
-// 	GLfloat *bufdat = (GLfloat*) glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
-// // 	for (int n=0; n<30; ++n) printf("Buffer data %i is %f\n", n, bufdat[n]);
-// 	glUnmapBuffer(GL_ARRAY_BUFFER);
-	
-	// Loop over stored VertexChunks and copy data to VBO
-	offset = 0;
-	int chunksize;
-	for (VertexChunk *chunk = vertexChunks_.first(); chunk != NULL; chunk = chunk->next)
+	else
 	{
-		chunksize = chunk->nDefinedVertices()*(colouredVertexData_ ? 10 : 6)*sizeof(GLfloat);
-		glBufferSubData(GL_ARRAY_BUFFER_ARB, offset, chunksize, chunk->vertexData());
-		offset += chunksize;
 	}
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	// Set flag
-	hasVBO_ = TRUE;
-	msg.exit("Primitive::createVBO");
+	msg.exit("Primitive::pushInstance");
 }
 
 // Send to OpenGL (i.e. render)
 void Primitive::sendToGL()
 {
-	glEnableClientState(GL_VERTEX_ARRAY);
-	// Do we have a VBO (and we're allowed to use it?)
-	if (hasVBO_ && prefs.useVBOs())
+	// Grab topmost instance
+	PrimitiveInstance *pi = instances_.last();
+	if (pi == NULL) printf("Internal Error: No instance on stack in primitive.\n");
+	else if (pi->type() == PrimitiveInstance::VBOInstance)
 	{
-		// Bind VBO
+		glEnableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_INDEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, idVBO_);
+		// Bind VBO
+		glBindBuffer(GL_ARRAY_BUFFER, pi->id());
 
 		glInterleavedArrays(colouredVertexData_ ? GL_C4F_N3F_V3F : GL_N3F_V3F, 0, NULL);
 		glDrawArrays(type_, 0, nDefinedVertices_);
@@ -532,198 +384,6 @@ void Primitive::sendToGL()
 		glDisableClientState(GL_NORMAL_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);
 	}
-	else for (VertexChunk *chunk = vertexChunks_.first(); chunk != NULL; chunk = chunk->next) chunk->sendToGL();
-	glDisableClientState(GL_VERTEX_ARRAY);
+	else glCallList(pi->id());
 }
 
-/*
-// Primitive Info
-*/
-
-// Constructor
-PrimitiveInfo::PrimitiveInfo()
-{
-	// Private variables
-	primitive_ = NULL;
-	primitiveGroup_ = NULL;
-	fillMode_ = GL_FILL;
-	lineWidth_ = 1.0f;
-	colour_[0] = 0.0;
-	colour_[1] = 0.0;
-	colour_[2] = 0.0;
-	colour_[3] = 1.0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
-}
-
-// Set primitive info data
-void PrimitiveInfo::set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
-{
-	primitive_ = prim;
-	localTransform_ = transform;
-	fillMode_ = fillMode;
-	lineWidth_ = lineWidth;
-	if (colour != NULL) for (int n=0; n<4; ++n) colour_[n] = colour[n];
-}
-
-// Set primitive info data
-void PrimitiveInfo::set(PrimitiveGroup *pg, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
-{
-	primitiveGroup_ = pg;
-	localTransform_ = transform;
-	fillMode_ = fillMode;
-	lineWidth_ = lineWidth;
-	if (colour != NULL) for (int n=0; n<4; ++n) colour_[n] = colour[n];
-}
-
-// Return pointer to primitive
-Primitive *PrimitiveInfo::primitive()
-{
-	return primitive_;
-}
-
-// Return pointer to primitive, selected from group (based on level of detail)
-Primitive *PrimitiveInfo::primitive(Matrix &modeltransform)
-{
-	// Determine LOD for primitive based on supplied transform and stored matrix
-	Matrix A = modeltransform * localTransform_;
-	// If z is greater than 0 (i.e. it's behind the viewer), we are rendering to an offscreen bitmap, or 
-	if ((A[14] > 0) || (-A[14] < prefs.levelOfDetailStartZ())) return &primitiveGroup_->primitive(0);
-	return &primitiveGroup_->primitive(int((-A[14]-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth()));
-}
-
-// Return pointer to best primitive in the group
-Primitive *PrimitiveInfo::bestPrimitive()
-{
-	return &primitiveGroup_->primitive(0);
-}
-
-// Return local transformation of primitive
-Matrix &PrimitiveInfo::localTransform()
-{
-	return localTransform_;
-}
-
-// Return colour array
-GLfloat *PrimitiveInfo::colour()
-{
-	return colour_;
-}
-
-// Return polygon fill mode
-GLenum PrimitiveInfo::fillMode()
-{
-	return fillMode_;
-}
-
-// Return line width
-GLfloat PrimitiveInfo::lineWidth()
-{
-	return lineWidth_;
-}
-
-/*
-// Primitive Group
-*/
-
-// Constructor
-PrimitiveGroup::PrimitiveGroup()
-{
-	primitives_ = NULL;
-	nPrimitives_ = 0;
-
-	clear();
-}
-
-PrimitiveGroup::~PrimitiveGroup()
-{
-	if (primitives_ != NULL) delete[] primitives_;
-	nPrimitives_ = 0;
-}
-
-// Clear old primitives array and allocate new one
-void PrimitiveGroup::clear()
-{
-	if (primitives_ != NULL) delete[] primitives_;
-	nPrimitives_ = prefs.levelsOfDetail();
-	primitives_ = new Primitive[nPrimitives_];
-}
-
-// Create VBOs for all stored primitives in the group
-void PrimitiveGroup::createVBOs()
-{
-	for (int n=0; n<nPrimitives_; ++n) primitives_[n].createVBO();
-}
-
-// Return primitive corresponding to level of detail specified
-Primitive &PrimitiveGroup::primitive(int lod)
-{
-	// Clamp LOD to allowable range
-	if (lod < 0) return primitives_[0];
-	else if (lod >= nPrimitives_) return primitives_[nPrimitives_-1];
-	else return primitives_[lod];
-}
-
-// Send to OpenGL (i.e. render) at specified level of detail
-void PrimitiveGroup::sendToGL(int lod)
-{
-	// Clamp lod to allowable range for this PrimitiveGroup
-	if (lod < 0) lod = 0;
-	else if (lod >= nPrimitives_) lod = nPrimitives_-1;
-	primitives_[lod].sendToGL();
-}
-
-/*
-// Grid Primitive
-*/
-
-// Constructor
-GridPrimitive::GridPrimitive(Grid *source)
-{
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
-	// Private variables
-	source_ = source;
-	primaryIsTransparent_ = FALSE;
-	secondaryIsTransparent_ = FALSE;
-}
-
-// Return primary primitive
-Primitive &GridPrimitive::primaryPrimitive()
-{
-	return primaryPrimitive_;
-}
-
-// Return secondary primitive
-Primitive &GridPrimitive::secondaryPrimitive()
-{
-	return secondaryPrimitive_;
-}
-
-// Set source grid pointer
-void GridPrimitive::setSource(Grid *g)
-{
-	source_ = g;
-}
-
-// Return source grid pointer
-Grid *GridPrimitive::source()
-{
-	return source_;
-}
-
-// Return whether primary primitive contains any transparent triangles (and must be rendered through the chopper)
-bool GridPrimitive::primaryIsTransparent()
-{
-	return primaryIsTransparent_;
-}
-
-// Return whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
-bool GridPrimitive::secondaryIsTransparent()
-{
-	return secondaryIsTransparent_;
-}

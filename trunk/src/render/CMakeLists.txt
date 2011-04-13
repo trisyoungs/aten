@@ -1,17 +1,25 @@
 add_library(render
 engine.h
+gridprimitive.h
 primitive.h
+primitivegroup.h
+primitiveinfo.h
 textprimitive.h
 triangles.h
+vertexchunk.h
 engine.cpp
 engine_model.cpp
 engine_useractions.cpp
 engine_windows.cpp
+gridprimitive.cpp
 primitive.cpp
+primitivegroup.cpp
+primitiveinfo.cpp
 primitive_surface.cpp
 primitive_vertex.cpp
 textprimitive.cpp
 triangles.cpp
+vertexchunk.cpp
 )
 
 include_directories(

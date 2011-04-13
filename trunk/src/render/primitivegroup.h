@@ -1,6 +1,6 @@
 /*
-	*** Triangle Storage Class
-	*** src/render/triangles.h
+	*** Primitive Group
+	*** src/render/primitivegroup.h
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -19,44 +19,40 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TRIANGLES_H
-#define ATEN_TRIANGLES_H
+#ifndef ATEN_PRIMITIVEGROUP_H
+#define ATEN_PRIMITIVEGROUP_H
 
 #include "render/primitive.h"
 #include "base/matrix.h"
 
 // Forward Declarations
-class PrimitiveInfo;
+class QGLContext;
 
-// Triangle Chopper
-class TriangleChopper
+// Primitive Group
+class PrimitiveGroup
 {
 	public:
 	// Constructor / Destructor
-	TriangleChopper();
-	~TriangleChopper();
+	PrimitiveGroup();
+	~PrimitiveGroup();
 
 	private:
-	// Starting z-depth of chopper
-	double startZ_;
-	// Number of slices
-	int nSlices_;
-	// Slice width
-	double sliceWidth_;
-	// Triangle Lists
-	Primitive *triangleLists_;
-	// Clear all existing trianglelists
-	void clear();
-	
+	// Array of Primitives, corresponding to different levels of detail
+	Primitive *primitives_;
+	// Number of primitives in array (copied from Prefs)
+	int nPrimitives_;
+
 	public:
-	// Initialise structure
-	void initialise(double startz, int nbins, double slicewidth);
-	// Empty all stored triangles, but retain storage
-	void emptyTriangles();
-	// Store primitive's triangles
-	void storeTriangles(PrimitiveInfo *pinfo, Matrix &transform);
-	// Sent triangles to GL (in correct order)
-	void sendToGL();
+	// Clear old primitives array and allocate new one
+	void clear();
+	// Create instance for all stored primitives in the group
+	void pushInstance(const QGLContext *context);
+	// Pop topmost instance
+	void popInstance();
+	// Return primitive corresponding to level of detail specified
+	Primitive &primitive(int lod);
+	// Send to OpenGL (i.e. render) at specified level of detail
+	void sendToGL(int lod);
 };
 
 #endif

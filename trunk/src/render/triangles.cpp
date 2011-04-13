@@ -1,6 +1,6 @@
 /*
-	*** Polygon Class
-	*** src/render/polygon.cpp
+	*** Triangle Chopper
+	*** src/render/triangles.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -19,7 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define NOMINMAX
 #include "render/triangles.h"
+#include "render/primitiveinfo.h"
+#include <algorithm>
+
 using namespace std;
 
 /*

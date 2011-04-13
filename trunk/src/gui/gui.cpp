@@ -530,8 +530,8 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	}
 
 	mainWidget_->setOffScreenRendering(FALSE);
-	if (!prefs.reusePrimitiveQuality()) mainWidget_->reinitialisePrimitives();
-
+	// TGAY Was reinitialisePrimitives, now should be popInstance?
+	
 	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
 // 	aten.current.rs()->rerenderGrids();
 
