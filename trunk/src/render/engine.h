@@ -46,8 +46,6 @@ class RenderEngine
 	enum TriangleStyle { SolidTriangle, TransparentTriangle, WireTriangle, nTriangleStyles };
 	// Objects for rendering
 	enum RenderingObject { BasicObject, AtomSelectionObject, GridObject, GlyphObject, MiscObject, nRenderingObjects };
-	// Text types for rendering
-	enum TextType { LabelText, GlyphText, MiscText, nTextTypes };
 
 	
 	/*
@@ -109,8 +107,8 @@ class RenderEngine
 	// List of filtered primitives
 	List<PrimitiveInfo> transparentPrimitives_[RenderEngine::nRenderingObjects];
 	// Text primitives
-	TextPrimitiveList textPrimitives_[RenderEngine::nTextTypes];
-	// Triangle overs33r
+	TextPrimitiveList textPrimitives_;
+	// Triangle
 	TriangleChopper triangleChopper_;
 	// Grid primitives (for all models)
 	List<GridPrimitive> gridPrimitives_;
@@ -120,18 +118,14 @@ class RenderEngine
 	Primitive glyphLines_;
 	// Flags indicating which primitive lists are open for rebuilding
 	bool activePrimitiveLists_[RenderEngine::nRenderingObjects];
-	// Flags indicating which text primitive lists are open for rebuilding
-	bool activeTextPrimitiveLists_[RenderEngine::nTextTypes];
 
 	private:
 	// Render primitive from primitive group in specified colour and level of detail
 	void renderPrimitive(RenderEngine::RenderingObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Render primitive in specified colour
 	void renderPrimitive(RenderEngine::RenderingObject obj, Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
-	// Add text primitive for rendering later (2D coordinates)
-	void renderTextPrimitive(RenderEngine::TextType type, int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
-	// Add text primitive for rendering later (3D coordinates)
-	void renderTextPrimitive(RenderEngine::TextType type, Vec3<double> v, const char *text, QChar addChar = 0, bool rightalign = FALSE);
+	// Add text primitive for rendering later
+	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Search for primitive associated to specified Grid pointer
 	GridPrimitive *findGridPrimitive(Grid *g);
 	// Remove grid primitive from list (if it exists)
@@ -146,9 +140,11 @@ class RenderEngine
 	void renderCell(Model *source);
 	// Render grids
 	void renderGrids(Model *source);
-	// Render glyphs
-	void renderGlyphs(Model *source, TCanvas *canvas);
-	// Render additional model information (measurements etc.) which need to appear on top of everything else
+	// Render 3D glyphs
+	void renderGlyphs(Model* source);
+	// Render text glyphs
+	void renderTextGlyphs(Model *source, TCanvas *canvas);
+	// Render additional model information (labels, measurements etc.) which need to appear on top of everything else
 	void renderModelOverlays(Model *source);
 	// Render addition elements related to selected/active UserActions
 	void renderUserActions(Model *source, TCanvas *canvas);

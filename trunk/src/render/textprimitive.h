@@ -36,20 +36,20 @@ class TCanvas;
 class TextPrimitive
 {
 	private:
-	// Coordinates in 3D (xyz) or 2D (xy only)
-	Vec3<double> r_;
+	// Screen coordinates
+	int x_, y_;
 	// Whether to right-align text
 	bool rightAlign_;
-	// Whether text position is stored in 3D coordinates
-	bool coordsAre3D_;
 	// Text to render
 	QString text_;
 	
 	public:
 	// Set data
-	void set(bool is3D, double x, double y, double z, bool rightalign, QString &text);
-	// Return (2D) coordinates of text on screen (calculated if necessary)
-	Vec3<int> r(Matrix &modelTransform);
+	void set(int x, int y, bool rightalign, const char *text);
+	// Return x coordinate
+	int x();
+	// Return y coordinate
+	int y();
 	// Return text to render
 	QString &text();
 	// Return whether to right-align text
@@ -78,8 +78,8 @@ class TextPrimitiveChunk
 	bool full();
 	// Add primitive to list
 	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
-	// Render all primitives in list
-	void renderAll(QPainter &painter, TCanvas *canvas);
+	// Render all primitives in chunk
+	void renderAll(QPainter& painter, TCanvas* canvas);
 };
 
 // Text Primitive List
@@ -98,10 +98,10 @@ class TextPrimitiveList
 	public:
 	// Forget all text primitives, but keeping lists intact
 	void forgetAll();
-	// Add new primitive object
+	// Add primitive to list
 	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
-	// Return top of primitives list
-	void renderAll(QPainter &painter, int canvasHeight, Matrix &modelTransform);
+	// Render all primitives in list
+	void renderAll(QPainter& painter, TCanvas* canvas);
 };
 
 #endif

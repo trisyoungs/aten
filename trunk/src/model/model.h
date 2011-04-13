@@ -1022,6 +1022,8 @@ class Model
 	private:
 	// List of glyphs within model
 	List<Glyph> glyphs_;
+	// Reflist of text glyphs in model
+	Reflist<Glyph,int> textGlyphs_;
 
 	public:
 	// Create new glyph in this model
@@ -1032,6 +1034,8 @@ class Model
 	int nGlyphs() const;
 	// Return first glyph in list (if any)
 	Glyph *glyphs() const;
+	// Return first text glyph in list (if any)
+	Refitem<Glyph,int> *textGlyphs() const;
 	// Return specific glyph
 	Glyph *glyph(int n);
 	// Return vector for data point in Glyph

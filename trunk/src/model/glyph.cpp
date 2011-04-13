@@ -31,6 +31,7 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 	Glyph *newglyph = glyphs_.add();
 	newglyph->setParent(this);
 	newglyph->setType(gt);
+	if ((gt == Glyph::TextGlyph) || (gt == Glyph::Text3DGlyph)) textGlyphs_.add(newglyph);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -44,6 +45,7 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 // Remove specified glyph from model
 void Model::removeGlyph(Glyph *g)
 {
+	if ((g->type() == Glyph::TextGlyph) || (g->type() == Glyph::Text3DGlyph)) textGlyphs_.remove(g);
 	glyphs_.remove(g);
 	changeLog.add(Log::Glyphs);
 }
@@ -58,6 +60,12 @@ int Model::nGlyphs() const
 Glyph *Model::glyphs() const
 {
 	return glyphs_.first();
+}
+
+// Return first text glyph in list (if any)
+Refitem<Glyph,int> *Model::textGlyphs() const
+{
+	return textGlyphs_.first();
 }
 
 // Return specific glyph

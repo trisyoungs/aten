@@ -24,7 +24,7 @@
 
 	<orderedlist>
 		<listitem>
-			<para>Added 'save movie' number of frames in generated vibration options to Vibration window</para>
+			<para>Add 'save movie', number of frames, frame slider, to Vibration window, and convert into a dialog instead of a dockwidget for safety</para>
 		</listitem>
 		<listitem>
 			<para>Add 'select by command' method, where supplied code is inserted into a standard 'for' loop.</para>

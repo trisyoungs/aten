@@ -259,11 +259,6 @@ void RenderEngine::calculateAdjustments()
 // Create VBOs for all standard primitives
 void RenderEngine::createVBOs()
 {
-	// Make sure main context is current
-	printf("in CREATEVBOs, context is currently %p\n", QGLContext::currentContext());
-	printf("widget context is %p\n", gui.mainWidget()->context());
-// 	gui.mainWidget()->makeCurrent();
-	printf("in CREATEVBOs, current context is now %p\n", QGLContext::currentContext());
 	for (int n=0; n<Atom::nDrawStyles; ++n)
 	{
 		atoms_[n].createVBOs();
@@ -347,10 +342,9 @@ void RenderEngine::renderPrimitive(RenderEngine::RenderingObject obj, Primitive*
 }
 
 // Add text primitive for rendering later
-void RenderEngine::renderTextPrimitive(RenderEngine::TextType type, int x, int y, const char *text, QChar addChar, bool rightalign)
+void RenderEngine::renderTextPrimitive(int x, int y, const char *text, QChar addChar, bool rightalign)
 {
-	if (!activeTextPrimitiveLists_[type]) return;
-	textPrimitives_[type].add(x, y, text, addChar, rightalign);
+	textPrimitives_.add(x, y, text, addChar, rightalign);
 }
 
 // Search for primitive associated to specified Grid pointer
@@ -515,7 +509,7 @@ void RenderEngine::initialiseGL()
 // Render text objects (with supplied QPainter)
 void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 {
-	for (int n=0; n<RenderEngine::nTextTypes; ++n) textPrimitives_[n].renderAll(painter, canvas->contextHeight(), modelTransformationMatrix_);
+	textPrimitives_.renderAll(painter, canvas);
 }
 
 // Render 3D
@@ -569,7 +563,6 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 	// By default, regenerate all lists (the case if the source model pointer has changed)
 	int n;
 	for (n=0; n<RenderEngine::nRenderingObjects; ++n) activePrimitiveLists_[n] = TRUE;
-	for (n=0; n<RenderEngine::nTextTypes; ++n) activeTextPrimitiveLists_[n] = TRUE;
 	if (lastSource_ == source)
 	{
 		// Check model logs against logs stored when the lists were last generated
@@ -586,22 +579,10 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 			activePrimitiveLists_[RenderEngine::BasicObject] = FALSE;
 			activePrimitiveLists_[RenderEngine::AtomSelectionObject] = !lastLog_.isSame(Log::Selection, source->changeLog);
 		}
-
-		// Labels must be rerendered on (some) Structure changes, as well as on Coordinates shift
-		if (redobasic || !lastLog_.isSame(Log::Labels,source->changeLog)) activeTextPrimitiveLists_[RenderEngine::LabelText] = TRUE;
-		else activeTextPrimitiveLists_[RenderEngine::LabelText] = FALSE;
 		
 		// Glyphs must be redone on basic change (since they may follow atom coordinates
-		if (redobasic || !lastLog_.isSame(Log::Glyphs, source->changeLog))
-		{
-			activeTextPrimitiveLists_[RenderEngine::GlyphText] = TRUE;
-			activePrimitiveLists_[RenderEngine::GlyphObject]  = TRUE;
-		}
-		else
-		{
-			activeTextPrimitiveLists_[RenderEngine::GlyphText] = FALSE;
-			activePrimitiveLists_[RenderEngine::GlyphObject]  = FALSE;
-		}
+		if (redobasic || !lastLog_.isSame(Log::Glyphs, source->changeLog)) activePrimitiveLists_[RenderEngine::GlyphObject]  = TRUE;
+		else activePrimitiveLists_[RenderEngine::GlyphObject]  = FALSE;
 		
 		// Grids only depend on their own log
 		if (!lastLog_.isSame(Log::Grids, source->changeLog)) activePrimitiveLists_[RenderEngine::GridObject] = TRUE;
@@ -613,7 +594,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 		solidPrimitives_[n].clear();
 		transparentPrimitives_[n].clear();
 	}
-	for (n=0; n<RenderEngine::nTextTypes; ++n) if (activeTextPrimitiveLists_[n]) textPrimitives_[n].forgetAll();
+	textPrimitives_.forgetAll();
 	
 	// Extra lists to clear for Glyphs
 	if (activePrimitiveLists_[RenderEngine::GlyphObject])
@@ -629,7 +610,8 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 	// Draw main model (atoms, bonds, etc.)
 	if (activePrimitiveLists_[RenderEngine::BasicObject] || activePrimitiveLists_[RenderEngine::AtomSelectionObject]) renderModel(source);
 	// Draw model glyphs
-	if (activePrimitiveLists_[RenderEngine::GlyphObject]) renderGlyphs(source, gui.mainWidget());
+	if (activePrimitiveLists_[RenderEngine::GlyphObject]) renderGlyphs(source);
+	renderTextGlyphs(source, gui.mainWidget());
 	// Draw model grids
 	if (activePrimitiveLists_[RenderEngine::GridObject]) renderGrids(source);
 	
@@ -649,11 +631,4 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 	
 	// Render overlays
 	renderModelOverlays(source);
-		static int count = 0;
-	if (count == 0)
-	{
-		if (prefs.useVBOs()) createVBOs();
-		count = 1;
-	}
-
 }

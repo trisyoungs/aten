@@ -158,7 +158,6 @@ void GuiQt::initialise(int &argc, char **argv)
 	QGLFormat format;
 	format.setSampleBuffers(TRUE);
 	mainContext_ = new QGLContext(format);
-	printf("Context for main window = %p\n", mainContext_);
 
 	// Create the widget
 	mainWidget_ = new TCanvas(mainContext_, mainWindow_);
