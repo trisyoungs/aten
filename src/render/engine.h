@@ -23,7 +23,9 @@
 #define ATEN_RENDERENGINE_H
 
 #include "render/triangles.h"
-#include "render/primitive.h"
+#include "render/primitivegroup.h"
+#include "render/primitiveinfo.h"
+#include "render/gridprimitive.h"
 #include "render/textprimitive.h"
 #include "base/log.h"
 #include "templates/vector3.h"
@@ -34,30 +36,27 @@
 // Forward declarations
 class Model;
 class TCanvas;
+class RenderEngine;
+class QGLContext;
 
-// Render Engine
-class RenderEngine
+// Rendering Primitives
+class RenderPrimitives
 {
 	public:
 	// Constructor / Destructor
-	RenderEngine();
-	~RenderEngine();
-	// Style enum for ease of coding
-	enum TriangleStyle { SolidTriangle, TransparentTriangle, WireTriangle, nTriangleStyles };
-	// Objects for rendering
-	enum RenderingObject { BasicObject, AtomSelectionObject, GridObject, GlyphObject, MiscObject, nRenderingObjects };
-
+	RenderPrimitives();
+	~RenderPrimitives();
+	// Declare RenderEngine as a Friend
+	friend class RenderEngine;
 	
 	/*
 	// Primitives
 	*/
 	private:
-	// Quality setting that primitives were last generated at
+	// Quality setting that primitives were generated at
 	int primitiveQuality_;
 	// Atom styles
 	PrimitiveGroup atoms_[Atom::nDrawStyles], *scaledAtoms_;
-	// Atom bond adjustment distances
-	double sphereAtomAdjustment_, *scaledAtomAdjustments_;
 	// Selected atom styles
 	PrimitiveGroup selectedAtoms_[Atom::nDrawStyles], *selectedScaledAtoms_;
 	// Bond styles
@@ -73,15 +72,26 @@ class RenderEngine
 
 	public:
 	// (Re)Generate primitive vertex arrays with specified quality
-	void createPrimitives(int quality, bool force = FALSE);
-	// (Re)initialise transparency filter
-	void initialiseTransparency();
-	// Calculate atom/bond adjustments
-	void calculateAdjustments();
-	// Create VBOs for all standard primitives
-	void createVBOs();
+	void createPrimitives(int quality);
+	// Push instance layer for all primitives
+	void pushInstance(const QGLContext *context);
+	// Pop last instance layer
+	void popInstance();
+};
 
-	
+// Render Engine
+class RenderEngine
+{
+	public:
+	// Constructor / Destructor
+	RenderEngine();
+	~RenderEngine();
+	// Style enum for ease of coding
+	enum TriangleStyle { SolidTriangle, TransparentTriangle, WireTriangle, nTriangleStyles };
+	// Objects for rendering
+	enum RenderingObject { BasicObject, AtomSelectionObject, GridObject, GlyphObject, MiscObject, nRenderingObjects };
+
+
 	/*
 	// View Control
 	*/
@@ -95,9 +105,15 @@ class RenderEngine
 
 
 	/*
-	// Rendering Functions and Primitive Lists
+	// Rendering Functions and Filtered Primitive Lists
 	*/
 	private:
+	// Atom bond adjustment distances
+	double sphereAtomAdjustment_, *scaledAtomAdjustments_;
+	// Normal (0, display) and high-quality (offscreen, 1) primitives
+	RenderPrimitives primitives_[2];
+	// Current primitive source quality (0 or 1)
+	int Q_;
 	// Last rendered model
 	Model *lastSource_;
 	// Logs for last rendered source model
@@ -120,6 +136,8 @@ class RenderEngine
 	bool activePrimitiveLists_[RenderEngine::nRenderingObjects];
 
 	private:
+	// Calculate atom/bond adjustments
+	void calculateAdjustments();
 	// Render primitive from primitive group in specified colour and level of detail
 	void renderPrimitive(RenderEngine::RenderingObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Render primitive in specified colour
@@ -152,12 +170,20 @@ class RenderEngine
 	void renderWindowExtras(Model *source);
 
 	public:
+	// (Re)initialise transparency filter
+	void initialiseTransparency();
 	// Initialise GL
 	void initialiseGL();
+	// Push primitives instance (in specified quality)
+	void pushInstance(bool highQuality, const QGLContext *context);
+	// Pop topmost primitive instance
+	void popInstance(bool highQuality);
+	// Update all primitives (following prefs change, etc.)
+	void updatePrimitives(const QGLContext *context);
 	// Render text objects (with supplied QPainter)
 	void renderText(QPainter &painter, TCanvas *canvas);
 	// Render 3D elements with OpenGL
-	void render3D(Model* source, TCanvas* canvas, bool currentModel);
+	void render3D(bool highQuality, Model* source, TCanvas* canvas, bool currentModel);
 };
 
 #endif

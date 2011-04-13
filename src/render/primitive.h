@@ -1,5 +1,5 @@
 /*
-	*** Rendering Primitive
+	*** Primitive
 	*** src/render/primitive.h
 	Copyright T. Youngs 2007-2011
 
@@ -22,72 +22,40 @@
 #ifndef ATEN_PRIMITIVE_H
 #define ATEN_PRIMITIVE_H
 
-#include <QtGui/QtGui>
 #include "templates/list.h"
-#include "base/matrix.h"
-
-#define VERTEXCHUNKSIZE 102
+#include "render/vertexchunk.h"
 
 // Forward Declarations
-class TCanvas;
-class Grid;
-class PrimitiveGroup;
+class QGLContext;
 
-// Chunk of triangles
-class VertexChunk
+// Primitive Instance
+class PrimitiveInstance
 {
 	public:
-	// Constructor / Destructor
-	VertexChunk();
-	~VertexChunk();
+	// Constructor
+	PrimitiveInstance();
 	// List pointers
-	VertexChunk *prev, *next;
+	PrimitiveInstance *prev, *next;
+	// Instance Type
+	enum InstanceType { ListInstance, VBOInstance };
 	
 	private:
-	// Vertex data array (containing normal and possibly colour data)
-	GLfloat *vertexData_;
-	// Centroid array
-	GLfloat *centroids_;
-	// Number of data points per vertex (NR=6, CNR=10)
-	int dataPerVertex_;
-	// Number of defined vertices in current chunk
-	int nDefinedVertices_;
-	// NUmber of primitive types (nDefinedVertices/verticesPerType) currently defined
-	int nDefinedTypes_;
-	// Maximum number of allowable vertices
-	int maxVertices_;
-	// Primitive type (GL)
-	GLenum type_;
-	// Number of vertices per primitive type
-	int verticesPerType_;
-	
-	private:
-	// Update (and finalise) centroid for current primitive type
-	void updateCentroid(GLfloat x, GLfloat y, GLfloat z, bool finalise);
+	// Context to which primitive instance is associated
+	const QGLContext *context_;
+	// Type of instance
+	InstanceType type_;
+	// OpenGL ID of instance
+	GLuint id_;
 	
 	public:
-	// Initialise structure
-	void initialise(GLenum type, bool colourData);
-	// Forget all vertex data currently stored in array (but retain array)
-	void forgetAll();
-	// Define next vertex and normal
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
-	// Define next vertex, normal, and colour (as array)
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid = TRUE);
-	// Define next vertex, normal, and colour
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid = TRUE);
-	// Return whether current array is full
-	bool full();
-	// Return number of defined primitive (GL) types
-	int nDefinedTypes();
-	// Return vertex array
-	GLfloat *vertexData();
-	// Return centroid array
-	GLfloat *centroids();
-	// Return number of defined vertices in chunk
-	int nDefinedVertices();
-	// Send to OpenGL (i.e. render)
-	void sendToGL();
+	// Set data
+	void set(const QGLContext *context, PrimitiveInstance::InstanceType type, GLuint id);
+	// Return context to which primitive instance is associated
+	const QGLContext *context();
+	// Return type of instance
+	InstanceType type();
+	// Return OpenGL ID of instance
+	int id();
 };
 
 // Rendering Primitive
@@ -115,10 +83,8 @@ class Primitive
 	int nDefinedVertices_;
 	// GL object drawing method
 	GLenum type_;
-	// Flag specifying whether a VBO exists for this primitive
-	bool hasVBO_;
-	// ID of OpenGL VBO
-	GLuint idVBO_;
+	// Stack of OpenGL VBO or display list IDs and the contexts in which they were created
+	List<PrimitiveInstance> instances_;
 
 	public:
 	// Clear existing data (including deleting arrays)
@@ -133,8 +99,10 @@ class Primitive
 	void setColourData(bool b);
 	// Return whether vertex data contains colour information
 	bool colouredVertexData();
-	// Create VBO from current vertex chunk list
-	void createVBO();
+	// Push instance layer from current vertex chunk list
+	void pushInstance(const QGLContext *context);
+	// Pop topmost instance layer
+	void popInstance();
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
 	
@@ -144,11 +112,11 @@ class Primitive
 	*/
 	public:
 	// Define next vertex and normal
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid);
 	// Define next vertex, normal, and colour (as array)
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid = TRUE);
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid);
 	// Define next vertex, normal, and colour
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid = TRUE);
+	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
 	// Define triangle fromn supplied array data, unique colour per vertex
 	void defineTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
 	// Define triangle with single colour per vertex
@@ -181,115 +149,6 @@ class Primitive
 	void createCellAxes();
 	// Create rotation globe axes
 	void createRotationGlobeAxes(int nstacks, int nslices);
-};
-
-// Primitive Info
-class PrimitiveInfo
-{
-	public:
-	// Constructor
-	PrimitiveInfo();
-	// List pointer
-	PrimitiveInfo *prev, *next;
-
-	private:
-	// Target primitive (if not primitive group)
-	Primitive *primitive_;
-	// Target primitive group (if not primitive)
-	PrimitiveGroup *primitiveGroup_;
-	// Local transformation of primitive
-	Matrix localTransform_;
-	// Colour of primitive (if vertexData_ doesn't contain colour information)
-	GLfloat colour_[4];
-	// Whether to draw the primitive as filled or wireframe polygons
-	GLenum fillMode_;
-	// GL object line width (if type_ == GL_LINE or chunk primitive type == GL_LINES)
-	GLfloat lineWidth_;
-	
-	public:
-	// Set primitive info data
-	void set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
-	// Set primitive info data
-	void set(PrimitiveGroup *pg, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
-	// Return pointer to stored primitive
-	Primitive *primitive();
-	// Return pointer to primitive, selected from group (based on level of detail)
-	Primitive *primitive(Matrix& modeltransform);
-	// Return pointer to best primitive in group
-	Primitive *bestPrimitive();
-	// Return local transformation of primitive
-	Matrix &localTransform();
-	// Return colour array
-	GLfloat *colour();
-	// Return polygon fill mode
-	GLenum fillMode();
-	// Return line width
-	GLfloat lineWidth();
-};
-
-// Primitive Group
-class PrimitiveGroup
-{
-	public:
-	// Constructor / Destructor
-	PrimitiveGroup();
-	~PrimitiveGroup();
-
-	private:
-	// Array of Primitives, corresponding to different levels of detail
-	Primitive *primitives_;
-	// Number of primitives in array (copied from Prefs)
-	int nPrimitives_;
-
-	public:
-	// Clear old primitives array and allocate new one
-	void clear();
-	// Create VBOs for all stored primitives in the group
-	void createVBOs();
-	// Return primitive corresponding to level of detail specified
-	Primitive &primitive(int lod);
-	// Send to OpenGL (i.e. render) at specified level of detail
-	void sendToGL(int lod);
-};
-
-// Grid Primitive
-class GridPrimitive
-{
-	public:
-	// Constructor
-	GridPrimitive(Grid *source = NULL);
-	// List pointers
-	GridPrimitive *prev, *next;
-
-	private:
-	// Primitive containing generated porimary surface
-	Primitive primaryPrimitive_;
-	// Primitive containing generated secondary surface
-	Primitive secondaryPrimitive_;
-	// Grid from which primitive was created
-	Grid *source_;
-	// Whether primary primitive contains any transparent triangles (and must be rendered through the chopper)
-	bool primaryIsTransparent_;
-	// Whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
-	bool secondaryIsTransparent_;
-	
-	public:
-	// Return primary primitive
-	Primitive &primaryPrimitive();
-	// Return secondary primitive
-	Primitive &secondaryPrimitive();
-	// Set source grid pointer
-	void setSource(Grid *g);
-	// Return source grid pointer
-	Grid *source();
-	// Return whether primary primitive contains any transparent triangles (and must be rendered through the chopper)
-	bool primaryIsTransparent();
-	// Return whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
-	bool secondaryIsTransparent();
-	// Create 2D (heightmap-style) surface
-	void createSurface2D();
-	// Create 3D isosurface using Marching Cubes algorithm
-	void createSurfaceMarchingCubes();
 };
 
 #endif

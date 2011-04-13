@@ -141,7 +141,11 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
 		gui.mainWidget()->postRedisplay(TRUE);
 
-		if (prefs.useFrameBuffer() == FALSE) pixmap = gui.mainWidget()->renderPixmap(width, height, FALSE);
+		if (prefs.useFrameBuffer() == FALSE)
+		{
+			pixmap = gui.mainWidget()->renderPixmap(width, height, FALSE);
+			gui.mainWidget()->popInstance();
+		}
 		else
 		{
 			QImage image = gui.mainWidget()->grabFrameBuffer();
@@ -160,7 +164,6 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
 	gui.mainWidget()->setOffScreenRendering(FALSE);
-	if (!prefs.reusePrimitiveQuality()) gui.mainWidget()->reinitialisePrimitives();
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);

@@ -85,17 +85,17 @@ void RenderEngine::renderWindowExtras(Model *source)
 						// Move to endpoint
 						A.applyTranslation(0.0,0.0,rij*0.9);
 						A.applyScaling(rij*0.02,rij*0.02,rij*0.1);
-						renderPrimitive(RenderEngine::MiscObject, cones_, colour, A, GL_LINE);
+						renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].cones_, colour, A, GL_LINE);
 					}
 					else
 					{
 						// Draw cylinder
 						A.applyScaling(rij*0.05,rij*0.05,rij*0.9);
-						renderPrimitive(RenderEngine::MiscObject, cylinders_, colour, A, GL_FILL);
+						renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].cylinders_, colour, A, GL_FILL);
 						// Move to endpoint
 						A.applyTranslation(0.0,0.0,1.0);
 						A.applyScaling(2.0,2.0,0.1/0.9);
-						renderPrimitive(RenderEngine::MiscObject, cones_, colour, A, GL_FILL);
+						renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].cones_, colour, A, GL_FILL);
 					}
 				}
 			}
@@ -154,7 +154,7 @@ void RenderEngine::renderWindowExtras(Model *source)
 							glPushMatrix();
 							glTranslated(translate.x, translate.y, translate.z);
 							glScaled(scale.x, scale.y, scale.z);
-							wireCube_.sendToGL();
+							primitives_[Q_].wireCube_.sendToGL();
 							glPopMatrix();
 						}
 					}

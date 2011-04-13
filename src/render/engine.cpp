@@ -32,48 +32,34 @@
 #include "glext.h"
 #endif
 
+/*
+// Render Primitives
+*/
+
 // Constructor
-RenderEngine::RenderEngine()
+RenderPrimitives::RenderPrimitives()
 {
 	// Primitives
 	scaledAtoms_ = new PrimitiveGroup[elements().nElements()];
 	selectedScaledAtoms_ = new PrimitiveGroup[elements().nElements()];
-	scaledAtomAdjustments_ = new double[elements().nElements()];
 	primitiveQuality_ = -1;
-	glyphTriangles_[RenderEngine::SolidTriangle].setColourData(TRUE);
-	glyphTriangles_[RenderEngine::TransparentTriangle].setColourData(TRUE);
-	glyphTriangles_[RenderEngine::WireTriangle].setColourData(TRUE);
-	glyphLines_.setColourData(TRUE);
-	glyphLines_.setType(GL_LINES);
-	initialiseTransparency();
-	calculateAdjustments();
-	lastSource_ = NULL;
 }
 
 // Destructor
-RenderEngine::~RenderEngine()
+RenderPrimitives::~RenderPrimitives()
 {
 	delete[] scaledAtoms_;
 	delete[] selectedScaledAtoms_;
-	delete[] scaledAtomAdjustments_;
 }
 
-/*
-// Primitive Generation
-*/
-
 // (Re)Generate primitives
-void RenderEngine::createPrimitives(int quality, bool force)
+void RenderPrimitives::createPrimitives(int quality)
 {
-	msg.enter("RenderEngine::createPrimitives");
+	msg.enter("RenderPrimitives::createPrimitives");
 	double radius, lodratio, aradius[Atom::nDrawStyles], bradius[Atom::nDrawStyles], selscale;
 	int n, m, lod, nstacks, nslices;
-	if ((!force) && (primitiveQuality_ == quality))
-	{
-		msg.exit("RenderEngine::createPrimitives");
-		return;
-	}
 	primitiveQuality_ = quality;
+
 	// Clear old primitive groups
 	for (n=0; n<Atom::nDrawStyles; ++n)
 	{
@@ -217,17 +203,76 @@ void RenderEngine::createPrimitives(int quality, bool force)
 	cellAxes_.createCellAxes();
 	rotationGlobe_.plotSphere(0.75,10,13);
 	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
-	
-	// Recalculate adjustments for bond positioning
-	calculateAdjustments();
-	
-	msg.exit("RenderEngine::createPrimitives");
+
+	msg.exit("RenderPrimitives::createPrimitives");
 }
 
-// (Re)initialise transparency filter
-void RenderEngine::initialiseTransparency()
+// Create instance for primitives
+void RenderPrimitives::pushInstance(const QGLContext* context)
 {
-	triangleChopper_.initialise(prefs.transparencyBinStartZ(), prefs.transparencyNBins(), prefs.transparencyBinWidth());
+	for (int n=0; n<Atom::nDrawStyles; ++n)
+	{
+		atoms_[n].pushInstance(context);
+		selectedAtoms_[n].pushInstance(context);
+		for (int m=0; m<Bond::nBondTypes; ++m)
+		{
+			bonds_[n][m].pushInstance(context);
+			selectedBonds_[n][m].pushInstance(context);
+		}
+	}
+	for (int n=0; n<elements().nElements(); ++n)
+	{
+		scaledAtoms_[n].pushInstance(context);
+		selectedScaledAtoms_[n].pushInstance(context);
+	}
+	tubeRings_.pushInstance(context);
+	segmentedTubeRings_.pushInstance(context);
+	lineRings_.pushInstance(context);
+	segmentedLineRings_.pushInstance(context);
+	spheres_.pushInstance(context);
+	cubes_.pushInstance(context);
+	originCubes_.pushInstance(context);
+	cylinders_.pushInstance(context);
+	cones_.pushInstance(context);
+	wireCube_.pushInstance(context);
+	crossedCube_.pushInstance(context);
+	cellAxes_.pushInstance(context);
+	rotationGlobe_.pushInstance(context);
+	rotationGlobeAxes_.pushInstance(context);
+}
+
+/*
+// Render Engine
+*/
+
+// Constructor
+RenderEngine::RenderEngine()
+{
+	// Primitives
+	glyphTriangles_[RenderEngine::SolidTriangle].setColourData(TRUE);
+	glyphTriangles_[RenderEngine::TransparentTriangle].setColourData(TRUE);
+	glyphTriangles_[RenderEngine::WireTriangle].setColourData(TRUE);
+	glyphLines_.setColourData(TRUE);
+	glyphLines_.setType(GL_LINES);
+	initialiseTransparency();
+	scaledAtomAdjustments_ = new double[elements().nElements()];
+	primitives_[0].createPrimitives(prefs.primitiveQuality());
+	primitives_[1].createPrimitives(prefs.imagePrimitiveQuality());
+	lastSource_ = NULL;
+	Q_ = 0;
+}
+
+// Destructor
+RenderEngine::~RenderEngine()
+{
+	delete[] scaledAtomAdjustments_;
+}
+
+// Update transformation matrix
+void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
+{
+	modelTransformationMatrix_ = mat;
+	modelTransformationMatrix_.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
 }
 
 // Calculate atom/bond adjustments
@@ -255,55 +300,6 @@ void RenderEngine::calculateAdjustments()
 		scaledAtomAdjustments_[i] = (atomradius - atomradius*cos(theta));
 	}
 }
-
-// Create VBOs for all standard primitives
-void RenderEngine::createVBOs()
-{
-	for (int n=0; n<Atom::nDrawStyles; ++n)
-	{
-		atoms_[n].createVBOs();
-		selectedAtoms_[n].createVBOs();	
-		for (int m=0; m<Bond::nBondTypes; ++m)
-		{
-			bonds_[n][m].createVBOs();
-			selectedBonds_[n][m].createVBOs();
-		}
-	}
-	for (int n=0; n<elements().nElements(); ++n)
-	{
-		scaledAtoms_[n].createVBOs();
-		selectedScaledAtoms_[n].createVBOs();
-	}
-	tubeRings_.createVBOs();
-	segmentedTubeRings_.createVBOs();
-	lineRings_.createVBOs();
-	segmentedLineRings_.createVBOs();
-	spheres_.createVBOs();
-	cubes_.createVBOs();
-	originCubes_.createVBOs();
-	cylinders_.createVBOs();
-	cones_.createVBOs();
-	wireCube_.createVBO();
-	crossedCube_.createVBO();
-	cellAxes_.createVBO();
-	rotationGlobe_.createVBO();
-	rotationGlobeAxes_.createVBO();
-}
-
-/*
-// View Control
-*/
-
-// Update transformation matrix
-void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
-{
-	modelTransformationMatrix_ = mat;
-	modelTransformationMatrix_.applyTranslation(-cellcentre.x, -cellcentre.y, -cellcentre.z);
-}
-
-/*
-// Object Rendering
-*/
 
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
 void RenderEngine::renderPrimitive(RenderEngine::RenderingObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
@@ -429,6 +425,12 @@ void RenderEngine::sortAndSendGL()
 	}
 }
 
+// (Re)initialise transparency filter
+void RenderEngine::initialiseTransparency()
+{
+	triangleChopper_.initialise(prefs.transparencyBinStartZ(), prefs.transparencyNBins(), prefs.transparencyBinWidth());
+}
+
 // Set OpenGL options ready for drawing
 void RenderEngine::initialiseGL()
 {
@@ -506,6 +508,35 @@ void RenderEngine::initialiseGL()
 	msg.exit("RenderEngine::initialiseGL");
 }
 
+// Push primitives instance (in specified quality)
+void RenderEngine::pushInstance(bool highQuality, const QGLContext *context)
+{
+	primitives_[highQuality].pushInstance(context);
+}
+
+// Pop topmost primitive instance
+void RenderEngine::popInstance(bool highQuality)
+{
+	primitives_[highQuality].popInstance();
+}
+
+// Update all primitives (following prefs change, etc.)
+void RenderEngine::updatePrimitives(const QGLContext *context)
+{
+	// Regenerate vertex information
+	primitives_[0].createPrimitives(prefs.primitiveQuality());
+	primitives_[1].createPrimitives(prefs.imagePrimitiveQuality());
+	
+	// Generate new VBOs / display lists - pop and push a context
+	primitives_[0].popInstance();
+	primitives_[1].popInstance();
+	primitives_[0].pushInstance(context);
+	primitives_[1].pushInstance(context);
+	
+	// Recalculate adjustments for bond positioning
+	calculateAdjustments();
+}
+
 // Render text objects (with supplied QPainter)
 void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 {
@@ -513,7 +544,7 @@ void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 }
 
 // Render 3D
-void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
+void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bool currentModel)
 {
 	GLfloat colour[4];
 
@@ -523,6 +554,9 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 	// Set target matrix mode and reset it, and set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
+
+	// Store quality specifier
+	Q_ = highQuality ? 1 : 0;
 
 	// Grab model-specific viewport
 	GLint *vp = source->viewportMatrix();
@@ -545,10 +579,10 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 		prefs.copyColour(Prefs::GlobeColour, colour);
 		glColor4fv(colour);
 		glNormal3d(0.0,0.0,1.0);
-		rotationGlobe_.sendToGL();
+		primitives_[Q_].rotationGlobe_.sendToGL();
 		prefs.copyColour(Prefs::GlobeAxesColour, colour);
 		glColor4fv(colour);
-		rotationGlobeAxes_.sendToGL();
+		primitives_[Q_].rotationGlobeAxes_.sendToGL();
 	}
 	
 	// Prepare for model rendering

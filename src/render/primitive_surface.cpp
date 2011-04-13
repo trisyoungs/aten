@@ -1,5 +1,5 @@
 /*
-	*** Rendering Primitive - Surface Generation
+	*** Primitive - Surface Generation
 	*** src/render/primitive_surface.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "render/primitive.h"
+#include "render/gridprimitive.h"
 #include "classes/grid.h"
 #include "classes/prefs.h"
 #include "classes/grid.h"

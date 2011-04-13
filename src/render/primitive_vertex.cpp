@@ -1,5 +1,5 @@
 /*
-	*** Rendering Primitive - Vertex Generation
+	*** Primitive - Vertex Generation
 	*** src/render/primitive_vertex.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -20,6 +20,9 @@
 */
 
 #include "render/primitive.h"
+#include "base/constants.h"
+#include "templates/vector3.h"
+#include <math.h>
 
 // Define next vertex and normal
 void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid)
@@ -139,14 +142,14 @@ void Primitive::plotSphere(double radius, int nstacks, int nslices)
 			y1 = sin(slice1);
 			
 			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
-			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+			defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0, TRUE);
+			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, TRUE);
+			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, TRUE);
 			
 			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
-			defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
+			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, TRUE);
+			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, TRUE);
+			defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1, TRUE);
 		}
 	}
 	msg.exit("Primitive::plotSphere");
@@ -187,14 +190,14 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 			vert[3] = normal[1]*(startradius-(n+1)*dradius) + deltarj*(n+1);
 			
 			// Triangle 1
-			defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+			defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
+			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
+			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
  
 			// Triangle 2
-			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-			defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
+			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
+			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
+			defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
 
 		}
 	}
@@ -245,14 +248,14 @@ void Primitive::plotRing(double radius, double width, int nstacks, int nslices, 
 				vert[3] = normal[3]*width + r2;
 	
 				// Triangle 1
-				defineVertex(vert[0].x, vert[0].y, vert[0].z, normal[0].x, normal[0].y, normal[0].z);
-				defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[1].x, normal[1].y, normal[1].z);
-				defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[2].x, normal[2].y, normal[2].z);
+				defineVertex(vert[0].x, vert[0].y, vert[0].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
+				defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
+				defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[2].x, normal[2].y, normal[2].z, TRUE);
 				
 				// Triangle 2
-				defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[1].x, normal[1].y, normal[1].z);
-				defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[2].x, normal[2].y, normal[2].z);
-				defineVertex(vert[3].x, vert[3].y, vert[3].z, normal[3].x, normal[3].y, normal[3].z);
+				defineVertex(vert[1].x, vert[1].y, vert[1].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
+				defineVertex(vert[2].x, vert[2].y, vert[2].z, normal[2].x, normal[2].y, normal[2].z, TRUE);
+				defineVertex(vert[3].x, vert[3].y, vert[3].z, normal[3].x, normal[3].y, normal[3].z, TRUE);
 			}
 		}
 	}
@@ -285,8 +288,8 @@ void Primitive::plotCircle(double radius, int nstacks, int nsegments, bool segme
 			r1.set(cosphi1*radius, sinphi1*radius, 0.0);
 			r2.set(cosphi2*radius, sinphi2*radius, 0.0);
 	
-			defineVertex(r1.x, r1.y, r1.z, 0.0, 0.0, 1.0);
-			defineVertex(r2.x, r2.y, r2.z, 0.0, 0.0, 1.0);
+			defineVertex(r1.x, r1.y, r1.z, 0.0, 0.0, 1.0, TRUE);
+			defineVertex(r2.x, r2.y, r2.z, 0.0, 0.0, 1.0, TRUE);
 		}
 	}
 }

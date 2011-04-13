@@ -84,17 +84,17 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	switch (style_i)
 	{
 		case (Atom::StickStyle):
-			if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, bonds_[style_i][bt], colour_i, A, GL_LINE, selvisible > 0.0 ? 3.0 : 1.0);
-			else renderPrimitive(RenderEngine::AtomSelectionObject, bonds_[style_i][bt], colour_i, A, GL_LINE, 1.0);
+			if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A, GL_LINE, selvisible > 0.0 ? 3.0 : 1.0);
+			else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A, GL_LINE, 1.0);
 			// Move to centre of visible bond, ready for next bond half
 			A.applyTranslationZ(1.0);
 			break;
 		case (Atom::TubeStyle):
-			renderPrimitive(RenderEngine::BasicObject, bonds_[style_i][bt], colour_i, A);
+			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A);
 			if (i->isSelected() && (selvisible > 0.0))
 			{
 				colour_i[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, selectedBonds_[style_i][bt], colour_i, A);
+				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], colour_i, A);
 				colour_i[3] = alpha_i;
 			}
 			// Move to centre of visible bond, ready for next bond half
@@ -102,14 +102,14 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			break;
 		case (Atom::SphereStyle):
 		case (Atom::ScaledStyle):
-			renderPrimitive(RenderEngine::BasicObject, bonds_[style_i][bt], colour_i, A);
+			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A);
 			if (i->isSelected() && (selvisible > 0.0))
 			{
 				// Move to edge of selected atom and apply selection bond scaling
 				A.applyTranslationZ((selscale*radius_i-radius_i) / dvisible);
 				A.applyScalingZ(selvisible/dvisible);
 				colour_i[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, selectedBonds_[style_i][bt], colour_i, A);
+				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], colour_i, A);
 				colour_i[3] = alpha_i;
 				// Move to centrepoint and reverse scaling back to 'dvisible'
 				A.applyTranslationZ(1.0);
@@ -123,28 +123,28 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	switch (style_j)
 	{
 		case (Atom::StickStyle):
-			if (j->isSelected()) renderPrimitive(RenderEngine::BasicObject, bonds_[style_j][bt], colour_j, A, GL_LINE, selvisible > 0.0 ? 3.0 : 1.0);
-			else renderPrimitive(RenderEngine::AtomSelectionObject, bonds_[style_j][bt], colour_j, A, GL_LINE, 1.0);
+			if (j->isSelected()) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A, GL_LINE, selvisible > 0.0 ? 3.0 : 1.0);
+			else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A, GL_LINE, 1.0);
 			// Move to centre of visible bond, ready for next bond half
 			A.applyTranslationZ(1.0);
 			break;
 		case (Atom::TubeStyle):
-			renderPrimitive(RenderEngine::BasicObject, bonds_[style_j][bt], colour_j, A);
+			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A);
 			if (j->isSelected())
 			{
 				colour_j[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, selectedBonds_[style_j][bt], colour_j, A);
+				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, A);
 				colour_j[3] = alpha_j;
 			}
 			break;
 		case (Atom::SphereStyle):
 		case (Atom::ScaledStyle):
-			renderPrimitive(RenderEngine::BasicObject, bonds_[style_j][bt], colour_j, A);
+			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A);
 			if (j->isSelected() && (selvisible > 0.0))
 			{
 				A.applyScalingZ(selvisible / dvisible);
 				colour_j[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, selectedBonds_[style_j][bt], colour_j, A);
+				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, A);
 				colour_j[3] = alpha_j;
 			}
 			break;
@@ -225,26 +225,26 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			case (Atom::StickStyle):
 				if (i->nBonds() == 0)
 				{
-					if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, atoms_[style_i], colour_i, atomtransform, 3.0);
-					else renderPrimitive(RenderEngine::AtomSelectionObject, atoms_[style_i], colour_i, atomtransform, GL_LINE, 1.0);
+					if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].atoms_[style_i], colour_i, atomtransform, 3.0);
+					else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].atoms_[style_i], colour_i, atomtransform, GL_LINE, 1.0);
 				}
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
-				renderPrimitive(RenderEngine::BasicObject, atoms_[style_i], colour_i, atomtransform);
+				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].atoms_[style_i], colour_i, atomtransform);
 				if (i->isSelected())
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, selectedAtoms_[style_i], colour_i, atomtransform);
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedAtoms_[style_i], colour_i, atomtransform);
 					colour_i[3] = alpha_i;
 				}
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(RenderEngine::BasicObject, scaledAtoms_[i->element()], colour_i, atomtransform);
+				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].scaledAtoms_[i->element()], colour_i, atomtransform);
 				if (i->isSelected())
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, selectedScaledAtoms_[i->element()], colour_i, atomtransform);
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedScaledAtoms_[i->element()], colour_i, atomtransform);
 					colour_i[3] = alpha_i;
 				}
 				break;
@@ -269,7 +269,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
 			if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", i->charge());
 			
-			// Add text object
+			// primitives_[Q_]. text object
 			r2 = source->modelToWorld(i->r(), &screenr);
 			if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, text.get());
 		}
@@ -400,13 +400,13 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 					// Render ring
 					if (prefs.renderDashedAromatics())
 					{
-						if (globalstyle == Atom::StickStyle) renderPrimitive(RenderEngine::BasicObject, segmentedLineRings_, colour_i, atomtransform);
-						else renderPrimitive(RenderEngine::BasicObject, segmentedTubeRings_, colour_i, atomtransform);
+						if (globalstyle == Atom::StickStyle) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].segmentedLineRings_, colour_i, atomtransform);
+						else renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].segmentedTubeRings_, colour_i, atomtransform);
 					}
 					else
 					{
-						if (globalstyle == Atom::StickStyle) renderPrimitive(RenderEngine::BasicObject, lineRings_, colour_i, atomtransform);
-						else renderPrimitive(RenderEngine::BasicObject, tubeRings_, colour_i, atomtransform);
+						if (globalstyle == Atom::StickStyle) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].lineRings_, colour_i, atomtransform);
+						else renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].tubeRings_, colour_i, atomtransform);
 					}
 
 					id_i += p->nAtoms();
@@ -462,13 +462,13 @@ void RenderEngine::renderCell(Model *source)
 	glColor4fv(colour);
 	Matrix A = source->modelViewMatrix() * source->cell()->axes();
 	glMultMatrixd(A.matrix());
-	wireCube_.sendToGL();
+	primitives_[Q_].wireCube_.sendToGL();
 	glTranslated(-0.5, -0.5, -0.5);
 	Vec3<double> v = source->cell()->lengths();
 	glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
 	prefs.copyColour(Prefs::UnitCellAxesColour, colour);
 	glColor4fv(colour);
-	cellAxes_.sendToGL();
+	primitives_[Q_].cellAxes_.sendToGL();
 	msg.exit("RenderEngine::renderCell");
 }
 
@@ -536,7 +536,7 @@ void RenderEngine::renderGrids(Model *source)
 			A.columnMultiply(0, g->nPoints().x);
 			A.columnMultiply(1, g->nPoints().y);
 			A.columnMultiply(2, g->nPoints().z);
-			renderPrimitive(RenderEngine::GridObject, originCubes_, textcolour, A, GL_LINE, 1.0);
+			renderPrimitive(RenderEngine::GridObject, primitives_[Q_].originCubes_, textcolour, A, GL_LINE, 1.0);
 		}
 	}
 
@@ -586,7 +586,7 @@ void RenderEngine::renderGlyphs(Model *source)
 				// Move to endpoint
 				A.applyTranslationZ(rij*0.9);
 				A.applyScaling(0.2,0.2,rij*0.1);
-				renderPrimitive(RenderEngine::GlyphObject, cones_, colour_i, A, GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour_i, A, GL_LINE);
 				break;
 			// Line - start = data[0], end = data[1]
 			case (Glyph::LineGlyph):
@@ -606,25 +606,25 @@ void RenderEngine::renderGlyphs(Model *source)
 				A.applyScaling(r2.x, r2.y, r2.z);
 				if (g->isSolid())
 				{
-					if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_FILL);
-					else renderPrimitive(RenderEngine::GlyphObject, cubes_, colour_i, A, GL_FILL);
+					if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, colour_i, A, GL_FILL);
+					else renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cubes_, colour_i, A, GL_FILL);
 					if (g->isSelected())
 					{
-						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, spheres_, textcolour, A, GL_LINE, 2.0);
-						else renderPrimitive(RenderEngine::GlyphObject, cubes_, textcolour, A, GL_LINE, 2.0);
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, textcolour, A, GL_LINE, 2.0);
+						else renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cubes_, textcolour, A, GL_LINE, 2.0);
 					}
 				}
 				else
 				{
 					if (g->isSelected())
 					{
-						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, spheres_, textcolour, A, GL_LINE, 3.0);
-						else renderPrimitive(RenderEngine::GlyphObject, cubes_, textcolour, A, GL_LINE, 3);
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, textcolour, A, GL_LINE, 3.0);
+						else renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cubes_, textcolour, A, GL_LINE, 3);
 					}
 					else
 					{
-						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_LINE, 1.0);
-						else renderPrimitive(RenderEngine::GlyphObject, cubes_, colour_i, A, GL_LINE, 1.0);
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, colour_i, A, GL_LINE, 1.0);
+						else renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cubes_, colour_i, A, GL_LINE, 1.0);
 					}
 				}
 				break;
@@ -699,13 +699,13 @@ void RenderEngine::renderGlyphs(Model *source)
 				A.multiplyRotation(B);
 				if (g->isSolid())
 				{
-					renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_FILL);
-					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, spheres_, textcolour, A, GL_LINE, 2.0);
+					renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, colour_i, A, GL_FILL);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, textcolour, A, GL_LINE, 2.0);
 				}
 				else
 				{
-					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, spheres_, textcolour, A, GL_LINE, 3.0);
-					else renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_LINE, 1.0);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, textcolour, A, GL_LINE, 3.0);
+					else renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, colour_i, A, GL_LINE, 1.0);
 				}
 				break;
 			// Text - handled in RenderEngine::renderTextGlyphs()
@@ -727,11 +727,11 @@ void RenderEngine::renderGlyphs(Model *source)
 				else A.applyRotationAxis(-r3.y, r3.x, 0.0, phi, TRUE);
 				// Draw cylinder
 				A.applyScaling(0.1,0.1,rij*0.9);
-				renderPrimitive(RenderEngine::GlyphObject, cylinders_, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cylinders_, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
 				A.applyTranslationZ(1.0);
 				A.applyScaling(2.0,2.0,0.1/0.9);
-				renderPrimitive(RenderEngine::GlyphObject, cones_, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
 				break;
 			// Vector - tail = data[0], head = data[1]
 			case (Glyph::VectorGlyph):
@@ -755,7 +755,7 @@ void RenderEngine::renderGlyphs(Model *source)
 				// Move to endpoint
 				A.applyTranslationZ(rij*0.9);
 				A.applyScaling(0.2, 0.2, rij*0.1);
-				renderPrimitive(RenderEngine::GlyphObject, cones_, colour_i, A, GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour_i, A, GL_LINE);
 				break;
 		}
 	}

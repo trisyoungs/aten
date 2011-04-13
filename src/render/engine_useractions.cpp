@@ -53,13 +53,13 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 		{
 			case (Atom::StickStyle):
 			case (Atom::TubeStyle):
-				renderPrimitive(RenderEngine::MiscObject, selectedAtoms_[Atom::TubeStyle], colour, A, GL_LINE);
+				renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].selectedAtoms_[Atom::TubeStyle], colour, A, GL_LINE);
 				break;
 			case (Atom::SphereStyle):
-				renderPrimitive(RenderEngine::MiscObject, selectedAtoms_[Atom::SphereStyle], colour, A, GL_LINE);
+				renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].selectedAtoms_[Atom::SphereStyle], colour, A, GL_LINE);
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(RenderEngine::MiscObject, selectedScaledAtoms_[i->element()], colour, A, GL_LINE);
+				renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].selectedScaledAtoms_[i->element()], colour, A, GL_LINE);
 				break;
 		}
 	}
@@ -162,7 +162,7 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 				else
 				{
 					prefs.copyColour(Prefs::TextColour, colour);
-					renderPrimitive(RenderEngine::MiscObject, &crossedCube_, FALSE, colour, A, GL_LINE, 2.0);
+					renderPrimitive(RenderEngine::MiscObject, &primitives_[Q_].crossedCube_, FALSE, colour, A, GL_LINE, 2.0);
 				}
 			}
 			else

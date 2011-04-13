@@ -158,18 +158,15 @@ void TCanvas::initializeGL()
 	// Initialize GL
 	msg.enter("TCanvas::initializeGL");
 	valid_ = TRUE;
-	// Image quality to use depends on current drawing target...
-	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality());
-	else engine_.createPrimitives(prefs.primitiveQuality());
-	engine_.initialiseGL();
 	
-	// Create VBOs, if requested.
+	// Check VBO capability, if requested
 	// There are some things to consider here, namely that we can *only* use and create VBOs on the mainWidget's context.
 	// The major reason it that, since QGLWidget::renderPixmap() seems to fail regularly when reusing the main context (and
 	// which cannot be done at all on Windows platforms) we either have to regenerate and manage a secondary set of 
 	// VBOs when rendering to offscreen bitmaps, or simply not use VBOs when rendering offscreen bitmaps.
 	// The latter is simpler, so this function and the main rendering call take note of which context is being used.
-	if ((context() == gui.mainContext()) && prefs.useVBOs())
+	static int count = 0;
+	if ((count == 0) && prefs.useVBOs())
 	{
 		// Get Extensions string and check for presence of 'GL_ARB_vertex_buffer_object'
 		const GLubyte *glexts = NULL;
@@ -180,8 +177,15 @@ void TCanvas::initializeGL()
 			printf("Error: VBOs requested but the extension is not available.\n");
 			prefs.setUseVBOs(FALSE);
 		}
-		else engine_.createVBOs();
+		++count;
 	}
+
+	// Push a primitives instance in the rendering engine
+	engine_.pushInstance(offScreenRendering(), context());
+	
+	// Setup basic GL stuff
+	engine_.initialiseGL();
+	
 	msg.exit("TCanvas::initializeGL");
 }
 
@@ -486,11 +490,9 @@ void TCanvas::updateTransformation(Matrix& mat, Vec3< double > cellcentre)
 }
 
 // Reinitialise primitives
-void TCanvas::reinitialisePrimitives(bool force)
+void TCanvas::updatePrimitives()
 {
-	// Image quality to use depends on current drawing target...
-	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality(), force);
-	else engine_.createPrimitives(prefs.primitiveQuality(), force);
+	engine_.updatePrimitives(context());
 }
 
 // Reinitialise transparency correction

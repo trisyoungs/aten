@@ -131,8 +131,8 @@ class TCanvas : public QGLWidget
 	void setOffScreenRendering(bool b);
 	// Return whether offscreen rendering is being performed
 	bool offScreenRendering() const;
-	// Reinitialise primitives
-	void reinitialisePrimitives(bool force = FALSE);
+	// Update primitives (after, e.g., change in preferences)
+	void updatePrimitives();
 	// Reinitialise transparency correction
 	void reinitialiseTransparency();
 	// Update Canvas
