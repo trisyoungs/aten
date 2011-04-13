@@ -31,6 +31,7 @@
 // Forward Declarations
 class TCanvas;
 class Grid;
+class PrimitiveGroup;
 
 // Chunk of triangles
 class VertexChunk
@@ -83,6 +84,8 @@ class VertexChunk
 	GLfloat *vertexData();
 	// Return centroid array
 	GLfloat *centroids();
+	// Return number of defined vertices in chunk
+	int nDefinedVertices();
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
 };
@@ -108,20 +111,30 @@ class Primitive
 	VertexChunk *currentVertexChunk_;
 	// Whether vertexData_ array also contains colour information
 	bool colouredVertexData_;
+	// Number of vertices that have been defined
+	int nDefinedVertices_;
 	// GL object drawing method
 	GLenum type_;
+	// Flag specifying whether a VBO exists for this primitive
+	bool hasVBO_;
+	// ID of OpenGL VBO
+	GLuint idVBO_;
 
 	public:
 	// Clear existing data (including deleting arrays)
 	void clear();
 	// Forget all data, leaving arrays intact
 	void forgetAll();
+	// Set GL drawing primitive type
+	void setType(GLenum type);
 	// Return vertex array
 	VertexChunk *vertexChunks();
 	// Flag whether primitive should contain colour data information for each vertex
 	void setColourData(bool b);
 	// Return whether vertex data contains colour information
 	bool colouredVertexData();
+	// Create VBO from current vertex chunk list
+	void createVBO();
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
 	
@@ -180,8 +193,10 @@ class PrimitiveInfo
 	PrimitiveInfo *prev, *next;
 
 	private:
-	// Target primitive
+	// Target primitive (if not primitive group)
 	Primitive *primitive_;
+	// Target primitive group (if not primitive)
+	PrimitiveGroup *primitiveGroup_;
 	// Local transformation of primitive
 	Matrix localTransform_;
 	// Colour of primitive (if vertexData_ doesn't contain colour information)
@@ -194,8 +209,14 @@ class PrimitiveInfo
 	public:
 	// Set primitive info data
 	void set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
-	// Return pointer to primitive
+	// Set primitive info data
+	void set(PrimitiveGroup *pg, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
+	// Return pointer to stored primitive
 	Primitive *primitive();
+	// Return pointer to primitive, selected from group (based on level of detail)
+	Primitive *primitive(Matrix& modeltransform);
+	// Return pointer to best primitive in group
+	Primitive *bestPrimitive();
 	// Return local transformation of primitive
 	Matrix &localTransform();
 	// Return colour array
@@ -223,6 +244,8 @@ class PrimitiveGroup
 	public:
 	// Clear old primitives array and allocate new one
 	void clear();
+	// Create VBOs for all stored primitives in the group
+	void createVBOs();
 	// Return primitive corresponding to level of detail specified
 	Primitive &primitive(int lod);
 	// Send to OpenGL (i.e. render) at specified level of detail

@@ -23,6 +23,8 @@
 #define ATEN_TEXTPRIMITIVE_H
 
 #include <QtGui/QtGui>
+#include "templates/vector3.h"
+#include "base/matrix.h"
 #include "templates/list.h"
 
 #define TEXTCHUNKSIZE 100
@@ -33,13 +35,25 @@ class TCanvas;
 // Text Primitive
 class TextPrimitive
 {
-	public:
-	// Coordinates on screen
-	int x, y;
-	// Text to render
-	QString text;
+	private:
+	// Coordinates in 3D (xyz) or 2D (xy only)
+	Vec3<double> r_;
 	// Whether to right-align text
-	bool rightAlign;
+	bool rightAlign_;
+	// Whether text position is stored in 3D coordinates
+	bool coordsAre3D_;
+	// Text to render
+	QString text_;
+	
+	public:
+	// Set data
+	void set(bool is3D, double x, double y, double z, bool rightalign, QString &text);
+	// Return (2D) coordinates of text on screen (calculated if necessary)
+	Vec3<int> r(Matrix &modelTransform);
+	// Return text to render
+	QString &text();
+	// Return whether to right-align text
+	bool rightAlign();
 };
 
 // Text Primitive Chunk
@@ -87,7 +101,7 @@ class TextPrimitiveList
 	// Add new primitive object
 	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
 	// Return top of primitives list
-	void renderAll(QPainter &painter, TCanvas *canvas);
+	void renderAll(QPainter &painter, int canvasHeight, Matrix &modelTransform);
 };
 
 #endif

@@ -287,9 +287,6 @@ bool Command::function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				}
 				for (int d = 0; d<obj.gl->nData(); ++d) obj.gl->data(d)->setColour(rgba.x, rgba.y, rgba.z, rgba.w);
 				break;
-			case (Glyph::GlyphLineWidthOption):
-				obj.gl->setLineWidth((GLfloat) atof(value.get()));
-				break;
 			case (Glyph::GlyphSolidOption):
 				obj.gl->setSolid(TRUE);
 				break;

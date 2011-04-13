@@ -45,8 +45,8 @@ void Aten::openIncludes()
 	paths << "/usr/share/aten";
 	paths << "/usr/local/share/aten";
 	paths << "../share/aten";
-	paths << gui.app->applicationDirPath() + "/../share/aten";
-	paths << gui.app->applicationDirPath() + "/../SharedSupport";
+	paths << gui.application()->applicationDirPath() + "/../share/aten";
+	paths << gui.application()->applicationDirPath() + "/../SharedSupport";
 
 	for (int i=0; i < paths.size(); i++)
 	{

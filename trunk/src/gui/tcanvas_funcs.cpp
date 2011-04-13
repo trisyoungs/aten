@@ -27,7 +27,7 @@
 bool DONTDRAW = FALSE;
 
 // Constructor
-TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, parent)
+TCanvas::TCanvas(QGLContext *ctxt, QWidget *parent) : QGLWidget(ctxt, parent)
 {
 	// Character / Setup
 	contextWidth_ = 0;
@@ -64,6 +64,8 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 
 	// Prevent QPainter from autofilling widget background
 	setAutoFillBackground(FALSE);
+	
+	printf("CONTEXT in TCanvas constructor: passed = %p, from widget = %p\n", ctxt, context());
 }
 
 /*
@@ -80,12 +82,6 @@ GLsizei TCanvas::contextHeight() const
 GLsizei TCanvas::contextWidth() const
 {
 	return contextWidth_;
-}
-
-// Return if the canvas is valid
-bool TCanvas::isValid() const
-{
-	return valid_;
 }
 
 // Probe features
@@ -168,12 +164,34 @@ void TCanvas::initializeGL()
 	if (renderOffScreen_ && (!prefs.reusePrimitiveQuality())) engine_.createPrimitives(prefs.imagePrimitiveQuality());
 	else engine_.createPrimitives(prefs.primitiveQuality());
 	engine_.initialiseGL();
+	
+	// Create VBOs, if requested.
+	// There are some things to consider here, namely that we can *only* use and create VBOs on the mainWidget's context.
+	// The major reason it that, since QGLWidget::renderPixmap() seems to fail regularly when reusing the main context (and
+	// which cannot be done at all on Windows platforms) we either have to regenerate and manage a secondary set of 
+	// VBOs when rendering to offscreen bitmaps, or simply not use VBOs when rendering offscreen bitmaps.
+	// The latter is simpler, so this function and the main rendering call take note of which context is being used.
+	if ((context() == gui.mainContext()) && prefs.useVBOs())
+	{
+		// Get Extensions string and check for presence of 'GL_ARB_vertex_buffer_object'
+		printf("In initialiseGL, current context is %p, widget's context is %p\n", QGLContext::currentContext(), context());
+		const GLubyte *glexts = NULL;
+		glexts = glGetString( GL_EXTENSIONS );
+		msg.print(Messenger::Verbose, "Available GL Extensions are : %s\n", glexts);
+		if (strstr( (const char *) glexts, "GL_ARB_vertex_buffer_object") == 0)
+		{
+			printf("Error: VBOs requested but the extension is not available.\n");
+			prefs.setUseVBOs(FALSE);
+		}
+		else engine_.createVBOs();
+	}
 	msg.exit("TCanvas::initializeGL");
 }
 
 // General repaint callback
 void TCanvas::paintGL()
 {
+	msg.enter("TCanvas::paintGL");
 	static QFont font;
 	static QBrush solidbrush(Qt::NoBrush);
 	QPen pen;
@@ -185,7 +203,15 @@ void TCanvas::paintGL()
 	Model *m;
 
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
-	if ((!valid_) || drawing_ || (aten.currentModel() == NULL)) return;
+	if ((!valid_) || drawing_ || (aten.currentModel() == NULL))
+	{
+		msg.exit("TCanvas::paintGL");
+		return;
+	}
+	
+	// Disable VBO usage if the main context is not currently in use (i.e. we are rendering to an offscreen bitmap)
+	bool vbostate = prefs.useVBOs();
+	if (vbostate && (context() != gui.mainContext())) prefs.setUseVBOs(FALSE);
 	
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
 	// all OpenGL calls should be made after the QPainter is constructed, and before the QPainter
@@ -207,17 +233,28 @@ void TCanvas::paintGL()
 	else
 	{
 		// Quick check for NULL pointer
-		if (renderSource_ == NULL) return;
+		if (renderSource_ == NULL)
+		{
+			msg.exit("TCanvas::paintGL");
+			prefs.setUseVBOs(vbostate);
+			return;
+		}
 		localri.item = renderSource_;
 		first = &localri;
 		nmodels = 1;
 	}
-	if (first == NULL) return;
+	if (first == NULL)
+	{
+		msg.exit("TCanvas::paintGL");
+		prefs.setUseVBOs(vbostate);
+		return;
+	}
 	
 	// Begin the GL commands
 	if (!beginGl())
 	{
 		msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
+		msg.exit("TCanvas::paintGL");
 		return;
 	}
 	
@@ -231,9 +268,6 @@ void TCanvas::paintGL()
 	py = contextHeight_ / nrows;
 	px = (nmodels == 1 ? contextWidth_ : contextWidth_ / nperrow);
 	
-	// Clear text lists in renderengine before we start the model loop
-	engine_.clearTextLists();
-
 	// Loop over model refitems in list (or single refitem)
 	col = 0;
 	row = 0;
@@ -279,8 +313,7 @@ void TCanvas::paintGL()
 			checkGlError();
 			m->setupView(col*px, contextHeight_-(row+1)*py, px, py);
 		
-			// Clear triangle lists and render the 3D parts of the model
-			engine_.clearTriangleLists();
+			// Render the 3D parts of the model
 			render3D(m, modelIsCurrentModel);
 		}
 
@@ -348,6 +381,7 @@ void TCanvas::paintGL()
 	painter.setBrush(solidbrush);
 	painter.setPen(Qt::SolidLine);
 	painter.setPen(pen);
+
 	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
 	if (prefs.frameWholeView())
 	{
@@ -356,8 +390,10 @@ void TCanvas::paintGL()
 	}
 	painter.end();
 	
-	// Finally, swap buffers if necessary
+	// Finally, swap buffers if necessary and reinstate VBO status
 	if (prefs.manualSwapBuffers()) swapBuffers();
+	prefs.setUseVBOs(vbostate);
+	msg.exit("TCanvas::paintGL");
 }
 
 // Resize function
@@ -426,8 +462,8 @@ void TCanvas::setOffScreenRendering(bool b)
 	// Make sure here that the current (correct) context width and height are stored
 	if (!b) 
 	{
-		contextWidth_ = (GLsizei) gui.mainWidget->width();
-		contextHeight_ = (GLsizei) gui.mainWidget->height();
+		contextWidth_ = (GLsizei) gui.mainWidget()->width();
+		contextHeight_ = (GLsizei) gui.mainWidget()->height();
 	}
 }
 

@@ -109,15 +109,15 @@ void TrajectoryWidget::on_TrajectoryPlayPauseButton_clicked(bool checked)
 	{
 		trajectoryTimerId_ = startTimer(100);
 		trajectoryPlaying_ = TRUE;
-		gui.mainWidget->setEditable(FALSE);
+		gui.mainWidget()->setEditable(FALSE);
 	}
 	else
 	{
 		killTimer(trajectoryTimerId_);
 		trajectoryPlaying_ = FALSE;
-		gui.mainWidget->setEditable(TRUE);
+		gui.mainWidget()->setEditable(TRUE);
 	}
-	gui.mainWindow->updateTrajectoryMenu();
+	gui.mainWindow()->updateTrajectoryMenu();
 }
 
 // Frame position slider adjusted
@@ -130,7 +130,7 @@ void TrajectoryWidget::on_TrajectoryFrameSlider_valueChanged(int value)
 	// Set corresponding value in Spin control
 // 	trajectorySpin_->setValue(value);
 	refreshing_ = FALSE;
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Frame spinbox value adjusted
@@ -143,7 +143,7 @@ void TrajectoryWidget::on_TrajectoryFrameSpin_valueChanged(int value)
 	// Set corresponding value in Spin control
 // 	trajectorySlider_->setValue(value);
 	refreshing_ = FALSE;
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void TrajectoryWidget::timerEvent(QTimerEvent *event)
@@ -175,6 +175,6 @@ void TrajectoryWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.TrajectoryButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	if (this->isFloating()) gui.mainWidget()->postRedisplay();
 	event->accept();
 }

@@ -118,7 +118,7 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	refreshDisplacements();
-	if (ui.ShowVectorsCheck->isChecked()) gui.mainWidget->postRedisplay();
+	if (ui.ShowVectorsCheck->isChecked()) gui.mainWidget()->postRedisplay();
 	// If currently playing a trajectory, regenerate it
 	if (ui.PlayPauseVibration->isChecked())
 	{
@@ -134,12 +134,12 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 
 void VibrationsWidget::on_ShowVectorsCheck_clicked(bool checked)
 {
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void VibrationsWidget::on_VectorScaleSpin_valueChanged(double value)
 {
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
@@ -151,7 +151,7 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		Model *m = aten.currentModelOrFrame();
 		m->generateVibration(ui.VibrationsList->currentRow(), 20);
 		m->setRenderFromVibration(TRUE);
-		gui.mainWidget->setEditable(FALSE);
+		gui.mainWidget()->setEditable(FALSE);
 		resetTimer(ui.DelaySpin->value());
 	}
 	else
@@ -161,8 +161,8 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		vibrationTimerId_ = -1;
 		Model *m = aten.currentModelOrFrame();
 		m->setRenderFromVibration(FALSE);
-		gui.mainWidget->postRedisplay();
-		gui.mainWidget->setEditable(TRUE);
+		gui.mainWidget()->postRedisplay();
+		gui.mainWidget()->setEditable(TRUE);
 	}
 }
 
@@ -201,7 +201,7 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 		DONTDRAW = TRUE;
 		Model *m = aten.currentModelOrFrame();
 		m->vibrationNextFrame();
-		gui.mainWidget->postRedisplay();
+		gui.mainWidget()->postRedisplay();
 		DONTDRAW = FALSE;
 	}
 }
@@ -210,6 +210,6 @@ void VibrationsWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.VibrationsButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	if (this->isFloating()) gui.mainWidget()->postRedisplay();
 	event->accept();
 }

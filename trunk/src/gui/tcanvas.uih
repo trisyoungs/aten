@@ -55,8 +55,6 @@ class TCanvas : public QGLWidget
 	GLsizei contextHeight() const;
 	// Return the current width of the drawing area
 	GLsizei contextWidth() const;
-	// Return if the canvas is valid
-	bool isValid() const;
 	// Probe widget/context/format features
 	void probeFeatures();
 	
@@ -108,7 +106,6 @@ class TCanvas : public QGLWidget
 	// Attempt to detect/check for corrupt rendering
 	void isRenderingOk();
 
-	
 	private:
 	// Flag specifying that stored model pixel data should not be used
 	bool noPixelData_;

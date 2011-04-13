@@ -638,7 +638,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
 			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
-			gui.mainWidget->reinitialisePrimitives(TRUE);
+			gui.mainWidget()->reinitialisePrimitives(TRUE);
 			break;
 		case (PreferencesVariable::BackCull):
 			ptr->setBackfaceCulling(newvalue.asBool());
@@ -652,7 +652,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setBondStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
 			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
-			gui.mainWidget->reinitialisePrimitives(TRUE);
+			gui.mainWidget()->reinitialisePrimitives(TRUE);
 			break;
 		case (PreferencesVariable::BondTolerance):
 			ptr->setBondTolerance( newvalue.asDouble(result) );
@@ -816,7 +816,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::LevelsOfDetail):
 			ptr->setLevelsOfDetail( newvalue.asInteger(result) );
-			gui.mainWidget->reinitialisePrimitives(TRUE);
+			gui.mainWidget()->reinitialisePrimitives(TRUE);
 			break;
 		case (PreferencesVariable::LineAliasing):
 			ptr->setLineAliasing( newvalue.asBool() );
@@ -901,7 +901,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::SelectionScale):
 			ptr->setSelectionScale( newvalue.asDouble(result) );
-			gui.mainWidget->reinitialisePrimitives(TRUE);
+			gui.mainWidget()->reinitialisePrimitives(TRUE);
 			break;
 		case (PreferencesVariable::Shininess):
 			ptr->setShininess( newvalue.asInteger(result) );
@@ -1000,12 +1000,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			result = FALSE;
 			break;
 	}
-	// Update model and main view
-	if (result)
-	{
-		if (aten.current.rs() != NULL) aten.current.rs()->changeLog.add(Log::Visual);
-		gui.mainWidget->postRedisplay();
-	}
+	// Update model and main view  TGAY necessary?
+// 	if (result)
+// 	{
+// 		if (aten.current.rs() != NULL) aten.current.rs()->changeLog.add(Log::Visual);
+// 		gui.mainWidget()->postRedisplay();
+// 	}
 	msg.exit("PreferencesVariable::setAccessor");
 	return result;
 }

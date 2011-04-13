@@ -43,8 +43,11 @@ RenderEngine::RenderEngine()
 	glyphTriangles_[RenderEngine::SolidTriangle].setColourData(TRUE);
 	glyphTriangles_[RenderEngine::TransparentTriangle].setColourData(TRUE);
 	glyphTriangles_[RenderEngine::WireTriangle].setColourData(TRUE);
+	glyphLines_.setColourData(TRUE);
+	glyphLines_.setType(GL_LINES);
 	initialiseTransparency();
 	calculateAdjustments();
+	lastSource_ = NULL;
 }
 
 // Destructor
@@ -214,8 +217,10 @@ void RenderEngine::createPrimitives(int quality, bool force)
 	cellAxes_.createCellAxes();
 	rotationGlobe_.plotSphere(0.75,10,13);
 	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
+	
 	// Recalculate adjustments for bond positioning
 	calculateAdjustments();
+	
 	msg.exit("RenderEngine::createPrimitives");
 }
 
@@ -251,6 +256,45 @@ void RenderEngine::calculateAdjustments()
 	}
 }
 
+// Create VBOs for all standard primitives
+void RenderEngine::createVBOs()
+{
+	// Make sure main context is current
+	printf("in CREATEVBOs, context is currently %p\n", QGLContext::currentContext());
+	printf("widget context is %p\n", gui.mainWidget()->context());
+// 	gui.mainWidget()->makeCurrent();
+	printf("in CREATEVBOs, current context is now %p\n", QGLContext::currentContext());
+	for (int n=0; n<Atom::nDrawStyles; ++n)
+	{
+		atoms_[n].createVBOs();
+		selectedAtoms_[n].createVBOs();	
+		for (int m=0; m<Bond::nBondTypes; ++m)
+		{
+			bonds_[n][m].createVBOs();
+			selectedBonds_[n][m].createVBOs();
+		}
+	}
+	for (int n=0; n<elements().nElements(); ++n)
+	{
+		scaledAtoms_[n].createVBOs();
+		selectedScaledAtoms_[n].createVBOs();
+	}
+	tubeRings_.createVBOs();
+	segmentedTubeRings_.createVBOs();
+	lineRings_.createVBOs();
+	segmentedLineRings_.createVBOs();
+	spheres_.createVBOs();
+	cubes_.createVBOs();
+	originCubes_.createVBOs();
+	cylinders_.createVBOs();
+	cones_.createVBOs();
+	wireCube_.createVBO();
+	crossedCube_.createVBO();
+	cellAxes_.createVBO();
+	rotationGlobe_.createVBO();
+	rotationGlobeAxes_.createVBO();
+}
+
 /*
 // View Control
 */
@@ -266,58 +310,47 @@ void RenderEngine::setTransformationMatrix(Matrix &mat, Vec3<double> cellcentre)
 // Object Rendering
 */
 
-// Return level of detail for supplied coordinate (return -1 for 'behind viewer')
-int RenderEngine::levelOfDetail(Vec3<double> &r, TCanvas *canvas)
-{
-	// If z is less than 0, don't even bother continuing since its behind the viewer
-	double z = -(r.x*modelTransformationMatrix_[2] + r.y*modelTransformationMatrix_[6] + r.z*modelTransformationMatrix_[10] + modelTransformationMatrix_[14]);
-	if (z < 0) return -1;
-	// If we are rendering to an offscreen bitmap, don't bother with levelofdetal calculation (always return best quality)
-	if (canvas->offScreenRendering()) return 0;
-	// Determine level of detail to use for primitives
-	if (z < prefs.levelOfDetailStartZ()) return 0;
-	else return int((z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth());
-
-}
-
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
+void RenderEngine::renderPrimitive(RenderEngine::RenderingObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
 {
+	if (!activePrimitiveLists_[obj]) return;
 	if ((colour[3] > 0.99f) || (fillMode != GL_FILL))
 	{
 		// Add primitive info to solid objects list
-		PrimitiveInfo *pi = solidPrimitives_.add();
-		pi->set(&pg.primitive(lod), colour, transform, fillMode, lineWidth);
+		PrimitiveInfo *pi = solidPrimitives_[obj].add();
+		pi->set(&pg, colour, transform, fillMode, lineWidth);
 	}
 	else
 	{
 		// Add primitive info to transparent objects list
-		PrimitiveInfo *pi = transparentPrimitives_.add();
-		pi->set(&pg.primitive(lod), colour, transform);
+		PrimitiveInfo *pi = transparentPrimitives_[obj].add();
+		pi->set(&pg, colour, transform);
 	}
 }
 
 // Render primitive in specified colour
-void RenderEngine::renderPrimitive(Primitive* primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
+void RenderEngine::renderPrimitive(RenderEngine::RenderingObject obj, Primitive* primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
 {
+	if (!activePrimitiveLists_[obj]) return;
 	if ((!isTransparent) || (fillMode != GL_FILL) || ((colour != NULL) && (colour[3] > 0.99f)))
 	{
 		// Add primitive info to solid objects list
-		PrimitiveInfo *pi = solidPrimitives_.add();
+		PrimitiveInfo *pi = solidPrimitives_[obj].add();
 		pi->set(primitive, colour, transform, fillMode, lineWidth);
 	}
 	else
 	{
 		// Add primitive info to transparent objects list
-		PrimitiveInfo *pi = transparentPrimitives_.add();
+		PrimitiveInfo *pi = transparentPrimitives_[obj].add();
 		pi->set(primitive, colour, transform);
 	}
 }
 
 // Add text primitive for rendering later
-void RenderEngine::renderTextPrimitive(int x, int y, const char *text, QChar addChar, bool rightalign)
+void RenderEngine::renderTextPrimitive(RenderEngine::TextType type, int x, int y, const char *text, QChar addChar, bool rightalign)
 {
-	textPrimitives_.add(x, y, text, addChar, rightalign);
+	if (!activeTextPrimitiveLists_[type]) return;
+	textPrimitives_[type].add(x, y, text, addChar, rightalign);
 }
 
 // Search for primitive associated to specified Grid pointer
@@ -339,42 +372,66 @@ void RenderEngine::removeGridPrimitive(Grid *g)
 // Sort and render filtered polygons by depth
 void RenderEngine::sortAndSendGL()
 {
-	// Transform and render each solid primitive in the list
-	for (PrimitiveInfo *pi = solidPrimitives_.first(); pi != NULL; pi = pi->next)
+	Matrix A ;
+	Primitive *prim;
+	bool offscreen = gui.mainWidget()->offScreenRendering();
+	
+	// Transform and render each solid primitive in each list
+	for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
 	{
-		// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
-		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
-		glPolygonMode(GL_FRONT_AND_BACK, pi->fillMode());
-		if (pi->fillMode() == GL_LINE)
+		for (PrimitiveInfo *pi = solidPrimitives_[n].first(); pi != NULL; pi = pi->next)
 		{
-			glLineWidth(pi->lineWidth());
-			glDisable(GL_LIGHTING);
-		}
-		glLoadMatrixd(pi->localTransform().matrix());
-		pi->primitive()->sendToGL();
-		if (pi->fillMode() == GL_LINE)
-		{
-			glLineWidth(1.0);
-			glEnable(GL_LIGHTING);
+			// If the info structure has a pointer to a primitive in it, use that.
+			// Otherwise, work out a level of detail value to pass to the primitive group referenced.
+			prim = pi->primitive();
+			if (prim == NULL) prim = (offscreen ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
+			
+			// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
+			if (!prim->colouredVertexData()) glColor4fv(pi->colour());
+			glPolygonMode(GL_FRONT_AND_BACK, pi->fillMode());
+			if (pi->fillMode() == GL_LINE)
+			{
+				glLineWidth(pi->lineWidth());
+				glDisable(GL_LIGHTING);
+			}
+			A = modelTransformationMatrix_ * pi->localTransform();
+			glLoadMatrixd(A.matrix());
+			prim->sendToGL();
+			
+			if (pi->fillMode() == GL_LINE)
+			{
+				glLineWidth(1.0);
+				glEnable(GL_LIGHTING);
+			}
 		}
 	}
 	
-	// Transform and render each transparent primitive in the list, unless transparencyCorrect_ is off.
+	// Transform and render each transparent primitive in each list, unless transparencyCorrect_ is off.
 	if (prefs.transparencyCorrect())
 	{
 		triangleChopper_.emptyTriangles();
-		for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next) triangleChopper_.storeTriangles(pi);
+		for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
+			for (PrimitiveInfo *pi = transparentPrimitives_[n].first(); pi != NULL; pi = pi->next) triangleChopper_.storeTriangles(pi, modelTransformationMatrix_);
 		glLoadIdentity();
+// 		glLoadMatrixd(modelTransformationMatrix_.matrix());
 		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		triangleChopper_.sendToGL();
 		glPopClientAttrib();
 	}
-	else for (PrimitiveInfo *pi = transparentPrimitives_.first(); pi != NULL; pi = pi->next)
+	else for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
 	{
-		if (!pi->primitive()->colouredVertexData()) glColor4fv(pi->colour());
-		glLoadMatrixd(pi->localTransform().matrix());
-		pi->primitive()->sendToGL();
+		for (PrimitiveInfo *pi = transparentPrimitives_[n].first(); pi != NULL; pi = pi->next)
+		{
+			// If the info structure has a pointer to a primitive in it, use that.
+			// Otherwise, work out a level of detail value to pass to the primitive group referenced.
+			prim = pi->primitive();
+			if (prim == NULL) prim = (offscreen ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
+			if (!prim->colouredVertexData()) glColor4fv(pi->colour());
+			A = modelTransformationMatrix_ * pi->localTransform();
+			glLoadMatrixd(A.matrix());
+			prim->sendToGL();
+		}
 	}
 }
 
@@ -455,26 +512,10 @@ void RenderEngine::initialiseGL()
 	msg.exit("RenderEngine::initialiseGL");
 }
 
-// Clear all triangle primitive lists
-void RenderEngine::clearTriangleLists()
-{
-	solidPrimitives_.clear();
-	transparentPrimitives_.clear();
-	glyphTriangles_[RenderEngine::SolidTriangle].forgetAll();
-	glyphTriangles_[RenderEngine::TransparentTriangle].forgetAll();
-	glyphTriangles_[RenderEngine::WireTriangle].forgetAll();
-}
-
-// Clear all text primitive lists
-void RenderEngine::clearTextLists()
-{
-	textPrimitives_.forgetAll();
-}
-
 // Render text objects (with supplied QPainter)
 void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 {
-	textPrimitives_.renderAll(painter, canvas);
+	for (int n=0; n<RenderEngine::nTextTypes; ++n) textPrimitives_[n].renderAll(painter, canvas->contextHeight(), modelTransformationMatrix_);
 }
 
 // Render 3D
@@ -509,6 +550,7 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 		glMultMatrixd(A.matrix());
 		prefs.copyColour(Prefs::GlobeColour, colour);
 		glColor4fv(colour);
+		glNormal3d(0.0,0.0,1.0);
 		rotationGlobe_.sendToGL();
 		prefs.copyColour(Prefs::GlobeAxesColour, colour);
 		glColor4fv(colour);
@@ -523,23 +565,95 @@ void RenderEngine::render3D(Model *source, TCanvas *canvas, bool currentModel)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	// Draw main model
-	renderModel(source, modelTransformationMatrix_, canvas);
+	// Clear the necessary triangle lists (i.e. only those for which the content may have changed)
+	// By default, regenerate all lists (the case if the source model pointer has changed)
+	int n;
+	for (n=0; n<RenderEngine::nRenderingObjects; ++n) activePrimitiveLists_[n] = TRUE;
+	for (n=0; n<RenderEngine::nTextTypes; ++n) activeTextPrimitiveLists_[n] = TRUE;
+	if (lastSource_ == source)
+	{
+		// Check model logs against logs stored when the lists were last generated
+		bool redobasic = !lastLog_.isSame(Log::Coordinates,source->changeLog);
+		if (!redobasic) redobasic = !lastLog_.isSame(Log::Structure,source->changeLog);
+		// If the model style has changed, need to rerender both basic and selection lists. Otherwise, depends on other logs
+		if (redobasic || (!lastLog_.isSame(Log::Style,source->changeLog)))
+		{
+			activePrimitiveLists_[RenderEngine::BasicObject] = TRUE;
+			activePrimitiveLists_[RenderEngine::AtomSelectionObject] = TRUE;
+		}
+		else
+		{
+			activePrimitiveLists_[RenderEngine::BasicObject] = FALSE;
+			activePrimitiveLists_[RenderEngine::AtomSelectionObject] = !lastLog_.isSame(Log::Selection, source->changeLog);
+		}
+
+		// Labels must be rerendered on (some) Structure changes, as well as on Coordinates shift
+		if (redobasic || !lastLog_.isSame(Log::Labels,source->changeLog)) activeTextPrimitiveLists_[RenderEngine::LabelText] = TRUE;
+		else activeTextPrimitiveLists_[RenderEngine::LabelText] = FALSE;
+		
+		// Glyphs must be redone on basic change (since they may follow atom coordinates
+		if (redobasic || !lastLog_.isSame(Log::Glyphs, source->changeLog))
+		{
+			activeTextPrimitiveLists_[RenderEngine::GlyphText] = TRUE;
+			activePrimitiveLists_[RenderEngine::GlyphObject]  = TRUE;
+		}
+		else
+		{
+			activeTextPrimitiveLists_[RenderEngine::GlyphText] = FALSE;
+			activePrimitiveLists_[RenderEngine::GlyphObject]  = FALSE;
+		}
+		
+		// Grids only depend on their own log
+		if (!lastLog_.isSame(Log::Grids, source->changeLog)) activePrimitiveLists_[RenderEngine::GridObject] = TRUE;
+	}
+	
+	// Clear flagged lists
+	for (n=0; n<RenderEngine::nRenderingObjects; ++n) if (activePrimitiveLists_[n])
+	{
+		solidPrimitives_[n].clear();
+		transparentPrimitives_[n].clear();
+	}
+	for (n=0; n<RenderEngine::nTextTypes; ++n) if (activeTextPrimitiveLists_[n]) textPrimitives_[n].forgetAll();
+	
+	// Extra lists to clear for Glyphs
+	if (activePrimitiveLists_[RenderEngine::GlyphObject])
+	{
+		glyphTriangles_[RenderEngine::SolidTriangle].forgetAll();
+		glyphTriangles_[RenderEngine::TransparentTriangle].forgetAll();
+		glyphTriangles_[RenderEngine::WireTriangle].forgetAll();
+		glyphLines_.forgetAll();
+	}
+	
+	// Always draw unit cell, regardless of list status
+	renderCell(source);
+	// Draw main model (atoms, bonds, etc.)
+	if (activePrimitiveLists_[RenderEngine::BasicObject] || activePrimitiveLists_[RenderEngine::AtomSelectionObject]) renderModel(source);
+	// Draw model glyphs
+	if (activePrimitiveLists_[RenderEngine::GlyphObject]) renderGlyphs(source, gui.mainWidget());
+	// Draw model grids
+	if (activePrimitiveLists_[RenderEngine::GridObject]) renderGrids(source);
+	
+	lastSource_ = source;
+	lastLog_ = source->changeLog;
 	
 	if (gui.exists())
 	{
 		// Render embellshments for current UserAction
-		renderUserActions(source, modelTransformationMatrix_, canvas);	
+		renderUserActions(source, gui.mainWidget());	
 		// Render extras arising from open tool windows (current model only)
-		if (currentModel) renderWindowExtras(source, modelTransformationMatrix_, canvas);
+		if (currentModel) renderWindowExtras(source);
 	}
 
-	// All 3D primitive objects have now been filtered, so add triangles, then sort and send to GL
-	renderPrimitive(&glyphTriangles_[RenderEngine::SolidTriangle], FALSE, NULL, modelTransformationMatrix_);
-	renderPrimitive(&glyphTriangles_[RenderEngine::WireTriangle], FALSE, NULL, modelTransformationMatrix_, GL_LINE);
-	renderPrimitive(&glyphTriangles_[RenderEngine::TransparentTriangle], TRUE, NULL, modelTransformationMatrix_);
+	// All 3D primitive objects have now been filtered, so sort and send to GL
 	sortAndSendGL();
 	
 	// Render overlays
-	renderModelOverlays(source, modelTransformationMatrix_, canvas);
+	renderModelOverlays(source);
+		static int count = 0;
+	if (count == 0)
+	{
+		if (prefs.useVBOs()) createVBOs();
+		count = 1;
+	}
+
 }

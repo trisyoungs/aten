@@ -359,7 +359,7 @@ void Model::atomSetHidden(Atom *i, bool hidden)
 	if (i->isHidden() != hidden)
 	{
 		i->setHidden(hidden);
-		changeLog.add(Log::Visual);
+		changeLog.add(Log::Style);
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
@@ -376,7 +376,7 @@ void Model::atomSetFixed(Atom *i, bool fixed)
 	if (i->isPositionFixed() != fixed)
 	{
 		i->setPositionFixed(fixed);
-		changeLog.add(Log::Visual);
+		changeLog.add(Log::Style);
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
@@ -415,7 +415,7 @@ void Model::atomSetColour(Atom *i, double r, double g, double b, double a)
 	}
 	// Now set the colour....
 	i->setColour(r, g, b, a);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Style);
 }
 
 // Reset custom colour of specified atom
@@ -434,7 +434,7 @@ void Model::atomResetColour(Atom *i)
 	}
 	// Now set the colour....
 	i->setColour(newcol[0], newcol[1], newcol[2], newcol[3]);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Style);
 }
 
 // Set style of individual atom
@@ -443,7 +443,7 @@ void Model::atomSetStyle(Atom *i, Atom::DrawStyle ds)
 	// Sets all atoms currently selected to have the drawing style specified
 	Atom::DrawStyle oldstyle = i->style();
 	i->setStyle(ds);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Style);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -585,6 +585,6 @@ void Model::copyAtomStyle(Model *source)
 	// Do the loop
 	Atom **ii = source->atomArray(), **jj = atomArray();
 	for (int n=0; n<atoms_.nItems(); ++n) jj[n]->copyStyle(ii[n]);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Style);
 	msg.exit("Model::copyAtomStyle");
 }

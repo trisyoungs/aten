@@ -41,7 +41,7 @@ void AtenForm::on_actionOpenExpression_triggered(bool checked)
 	Tree *filter;
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Expression", currentDirectory_.path(), gui.mainWindow->loadExpressionFilters, &selFilter);
+	QString filename = QFileDialog::getOpenFileName(this, "Open Expression", currentDirectory_.path(), gui.mainWindow()->loadExpressionFilters, &selFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -56,7 +56,7 @@ void AtenForm::on_actionOpenExpression_triggered(bool checked)
 			if (filter != NULL) filter->executeRead(qPrintable(filename));
 		}
 	}
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Save expression

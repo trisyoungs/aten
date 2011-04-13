@@ -32,7 +32,7 @@ bool Command::function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->axisRotateView(c->arg3d(0), c->argd(3));
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -51,7 +51,7 @@ bool Command::function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Orthographic(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setPerspective(FALSE);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -61,7 +61,7 @@ bool Command::function_Perspective(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setPerspective(TRUE);
 	if (c->hasArg(0)) prefs.setPerspectiveFov(c->argd(0));
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -70,7 +70,7 @@ bool Command::function_Perspective(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	obj.rs()->resetView();
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -80,7 +80,7 @@ bool Command::function_RotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->rotateView(c->argd(1), c->argd(0));
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -109,18 +109,25 @@ bool Command::function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("Can't perform rendering speedtest without the GUI.\n");
 		return FALSE;
 	}
-	clock_t tstart = clock();
-	// Loop over n renders (or 100 of no variable given)
-	int nrenders = (c->hasArg(0) ? c->argi(0) : 100);
+	QTime total, split;
+	int msec;
+	total.start();
+	split.start();
+	// Loop over n renders (or 1000 if no variable given)
+	int nrenders = (c->hasArg(0) ? c->argi(0) : 1000);
 	for (int n=0; n < nrenders; n ++)
 	{
+		// (Re)start split timer
+		if ((n>0) && (n%100 == 0))
+		{
+			msec = split.restart();
+			msg.print("100 render average = %6.1f fps\n", 1000.0 / msec);
+		}
 		obj.rs()->rotateView(5.0,0.0);
-		gui.mainWidget->postRedisplay();
+		gui.mainWidget()->postRedisplay();
 	}
-	clock_t tfinish = clock();
-	printf("%f    %f    %f \n", double(tstart), double(tfinish), double(CLOCKS_PER_SEC));
-	double nsec = (tfinish-tstart) / double(CLOCKS_PER_SEC);
-	msg.print("SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
+	msec = total.elapsed();
+	msg.print("Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, msec/1000.0, nrenders/(msec/1000.0));
 	rv.reset();
 	return TRUE;
 }
@@ -130,7 +137,7 @@ bool Command::function_TranslateView(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->adjustCamera(c->argd(0), c->argd(1), c->argd(2));
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -141,7 +148,7 @@ bool Command::function_ViewAlong(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs()->viewAlong(c->argd(0), c->argd(1), c->argd(2));
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -152,7 +159,7 @@ bool Command::function_ViewAlongCell(CommandNode *c, Bundle &obj, ReturnValue &r
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs()->viewAlongCell(c->argd(0), c->argd(1), c->argd(2));
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -162,7 +169,7 @@ bool Command::function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->adjustCamera(0.0,0.0,c->argd(0));
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }
@@ -172,7 +179,7 @@ bool Command::function_ZRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->zRotateView(-c->argd(0));
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 	rv.reset();
 	return TRUE;
 }

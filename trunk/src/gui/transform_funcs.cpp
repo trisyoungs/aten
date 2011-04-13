@@ -93,7 +93,7 @@ void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_RotatePickAxisButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickTransformRotateAxisAction,2,&rotatePickAxisButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickTransformRotateAxisAction,2,&rotatePickAxisButton_callback);
 }
 
 void TransformWidget::rotateSelection(double direction)
@@ -173,19 +173,19 @@ void transformDefineCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_TransformDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineAAction,2,&transformDefineAButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickTransformDefineAAction,2,&transformDefineAButton_callback);
 }
 
 void TransformWidget::on_TransformDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineBAction,2,&transformDefineBButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickTransformDefineBAction,2,&transformDefineBButton_callback);
 }
 
 void TransformWidget::on_TransformDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickTransformDefineCAction,2,&transformDefineCButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickTransformDefineCAction,2,&transformDefineCButton_callback);
 }
 
 void TransformWidget::on_TransformNormaliseAButton_clicked(bool on)
@@ -384,19 +384,19 @@ void convertDefineSourceCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_ConvertSourceDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceAAction,2,&convertDefineSourceAButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineSourceAAction,2,&convertDefineSourceAButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceBAction,2,&convertDefineSourceBButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineSourceBAction,2,&convertDefineSourceBButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineSourceCAction,2,&convertDefineSourceCButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineSourceCAction,2,&convertDefineSourceCButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool on)
@@ -571,19 +571,19 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_ConvertTargetDefineAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetAAction,2,&convertTargetDefineAButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineTargetAAction,2,&convertTargetDefineAButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetDefineBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetBAction,2,&convertTargetDefineBButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineTargetBAction,2,&convertTargetDefineBButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetDefineCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget->setSelectedMode(UserAction::PickConvertDefineTargetCAction,2,&convertTargetDefineCButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineTargetCAction,2,&convertTargetDefineCButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool on)
@@ -700,6 +700,6 @@ void TransformWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.TransformButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	if (this->isFloating()) gui.mainWidget()->postRedisplay();
 	event->accept();
 }

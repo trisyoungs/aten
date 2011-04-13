@@ -258,7 +258,7 @@ void Model::seekFirstTrajectoryFrame()
 		trajectoryFrameIndex_ = 0;
 	}
 	else seekTrajectoryFrame(0);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::seekFirstTrajectoryFrame");
 }
 
@@ -286,7 +286,7 @@ void Model::seekNextTrajectoryFrame()
 		trajectoryCurrentFrame_ = trajectoryCurrentFrame_->next;
 	}
 	else seekTrajectoryFrame(trajectoryFrameIndex_+1);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	//printf("Frame = %p, parent = %p (model = %p)\n",trajectoryCurrentFrame_,trajectoryCurrentFrame_->trajectoryParent_,this);
 	msg.exit("Model::seekNextTrajectoryFrame");
 }
@@ -315,7 +315,7 @@ void Model::seekPreviousTrajectoryFrame()
 		trajectoryCurrentFrame_ = trajectoryCurrentFrame_->prev;
 	}
 	else seekTrajectoryFrame(trajectoryFrameIndex_-1);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::seekPreviousTrajectoryFrame");
 }
 
@@ -343,7 +343,7 @@ void Model::seekLastTrajectoryFrame()
 		trajectoryFrameIndex_ = nTrajectoryFrames()-1;
 	}
 	else seekTrajectoryFrame(nTrajectoryFrames()-1);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::seekLastTrajectoryFrame");
 }
 
@@ -421,7 +421,8 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 				trajectoryOffsets_[trajectoryHighestFrameOffset_] = trajectoryParser_.tellg();
 			}
 		}
-		trajectoryCurrentFrame_->changeLog.add(Log::Visual);
+		trajectoryCurrentFrame_->changeLog.add(Log::Camera);
+		trajectoryCurrentFrame_->changeLog.add(Log::Structure);
 		// Reset log flag for pixeldata so we redraw every frame change
 		pixelDataLogPoint_ = -1;
 	}

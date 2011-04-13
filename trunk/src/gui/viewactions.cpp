@@ -28,21 +28,21 @@
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Zoom out
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Reset view
 void AtenForm::on_actionViewReset_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->resetView();
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set perspective view
@@ -50,14 +50,14 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
-	gui.mainWidget->postRedisplay(TRUE);
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 // Set orthographic view
 void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
-	gui.mainWidget->postRedisplay(TRUE);
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 // Set view along cartesian axis supplied
@@ -65,7 +65,7 @@ void AtenForm::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified axis
 	aten.currentModelOrFrame()->viewAlong(x,y,z);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set view along Cell axis supplied
@@ -73,7 +73,7 @@ void AtenForm::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified cell axis
 	aten.currentModelOrFrame()->viewAlongCell(x,y,z);
-	gui.mainWidget->postRedisplay();
+	gui.mainWidget()->postRedisplay();
 }
 
 void AtenForm::on_actionViewSetCartesianPosX_triggered(bool checked)
@@ -141,8 +141,8 @@ void AtenForm::on_actionSchemeElement_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
-	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
-	gui.mainWidget->postRedisplay();
+	aten.visibleLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set current colouring scheme to charge
@@ -150,7 +150,8 @@ void AtenForm::on_actionSchemeCharge_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
-	gui.mainWidget->postRedisplay(TRUE);
+	aten.visibleLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 // Set current colouring scheme to force
@@ -158,7 +159,8 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
-	gui.mainWidget->postRedisplay(TRUE);
+	aten.visibleLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 // Set current colouring scheme to velocity
@@ -166,7 +168,8 @@ void AtenForm::on_actionSchemeVelocity_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::VelocityScheme);
-	gui.mainWidget->postRedisplay(TRUE);
+	aten.visibleLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 // Set current colouring scheme to custom
@@ -174,7 +177,8 @@ void AtenForm::on_actionSchemeCustom_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::CustomScheme);
-	gui.mainWidget->postRedisplay(TRUE);
+	aten.visibleLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 // Set scheme actions to reflect supplied Prefs::ColouringScheme
@@ -186,5 +190,6 @@ void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
 	else if (cs == Prefs::VelocityScheme) ui.actionSchemeVelocity->setChecked(TRUE);
 	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
 	prefs.setColourScheme(cs);
-	gui.mainWidget->postRedisplay(TRUE);
+	aten.visibleLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE);
 }

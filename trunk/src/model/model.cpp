@@ -222,19 +222,19 @@ void Model::regenerateIcon()
 	prefs.setFrameCurrentModel(FALSE);
 	prefs.setFrameWholeView(FALSE);
 	prefs.setViewRotationGlobe(FALSE);
-	gui.mainWidget->setRenderSource(this);
-	gui.mainWidget->setOffScreenRendering(TRUE);
+	gui.mainWidget()->setRenderSource(this);
+	gui.mainWidget()->setOffScreenRendering(TRUE);
 
-	if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget->renderPixmap(100, 100, FALSE);
-	else icon_ = QPixmap::fromImage(gui.mainWidget->grabFrameBuffer());
+	if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget()->renderPixmap(100, 100, FALSE);
+	else icon_ = QPixmap::fromImage(gui.mainWidget()->grabFrameBuffer());
 
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
 	
-	gui.mainWidget->setRenderSource(NULL);
+	gui.mainWidget()->setRenderSource(NULL);
 
-	gui.mainWidget->setOffScreenRendering(FALSE);
+	gui.mainWidget()->setOffScreenRendering(FALSE);
 	prefs.setReusePrimitiveQuality(reusePrims);
 }
 
@@ -272,6 +272,7 @@ void Model::addLabel(Atom *i, Atom::AtomLabel al)
 		newchange->set(i->id(), oldlabels, i->labels());
 		recordingState_->addEvent(newchange);
 	}
+	changeLog.add(Log::Labels);
 }
 
 // Remove atom label
@@ -286,6 +287,7 @@ void Model::removeLabel(Atom *i, Atom::AtomLabel al)
 		newchange->set(i->id(), oldlabels, i->labels());
 		recordingState_->addEvent(newchange);
 	}
+	changeLog.add(Log::Labels);
 }
 
 // Clear labelling from atom
@@ -300,34 +302,35 @@ void Model::clearLabels(Atom *i)
 		newchange->set(i->id(), oldlabels, 0);
 		recordingState_->addEvent(newchange);
 	}
+	changeLog.add(Log::Labels);
 }
 
 // Clear atom labelling
 void Model::clearAllLabels()
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) clearLabels(i);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Labels);
 }
 
 // Clear all labels in selection
 void Model::selectionClearLabels()
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) clearLabels(i);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Labels);
 }
 
 // Remove specific labels in selection
 void Model::selectionRemoveLabels(Atom::AtomLabel al)
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) removeLabel(i, al);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Labels);
 }
 
 // Add atom labels
 void Model::selectionAddLabels(Atom::AtomLabel al)
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addLabel(i, al);
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Labels);
 }
 
 /*

@@ -28,7 +28,6 @@
 Glyph *Model::addGlyph(Glyph::GlyphType gt)
 {
 	changeLog.add(Log::Glyphs);
-	changeLog.add(Log::Visual);
 	Glyph *newglyph = glyphs_.add();
 	newglyph->setParent(this);
 	newglyph->setType(gt);
@@ -47,7 +46,6 @@ void Model::removeGlyph(Glyph *g)
 {
 	glyphs_.remove(g);
 	changeLog.add(Log::Glyphs);
-	changeLog.add(Log::Visual);	
 }
 
 // Return number of defined glyphs

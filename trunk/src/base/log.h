@@ -30,16 +30,19 @@ class Log
 	Log();
 	// Operator == (test equivalence of all log values except Total)
 	bool operator==(Log &l) const;
+	bool operator!=(Log &l) const;
 	// Log types
-	enum LogType { Structure, Coordinates, Visual, Selection, Glyphs, Misc, Total, nLogTypes };
-	// Structure  : create/destroy atoms/bonds, change elements, change order of atoms
-	// Coordinate : atomic coordinates
-	// Visual     : visual changes that require re-rendering
-	// Selection  : atom selection
-	// Camera     : view (mainly used to flag reprojection)
-	// Glyph      : glyphs
-	// Misc       : miscellaneous changes (e.g. title changes)
-	// Total      : sum of all changes
+	enum LogType { Structure, Coordinates, Camera, Style, Selection, Grids, Glyphs, Labels, Misc, Total, nLogTypes };
+	// Structure	: create/destroy atoms/bonds, change elements, change order of atoms
+	// Coordinate	: atomic coordinates
+	// Style	: visual changes that require re-rendering
+	// Selection	: atom selection
+	// Camera	: view (mainly used to flag reprojection)
+	// Glyphs	: glyphs
+	// Grids	: grids
+	// Labels	: atom labels
+	// Misc		: miscellaneous changes (e.g. title changes)
+	// Total	: sum of all changes
 
 	private:
 	// Integer 'logs' of model changes
@@ -62,6 +65,8 @@ class Log
 	void updateSavePoint();
 	// Return if the model has been modified since last being saved
 	bool isModified() const;
+	// Return is specified log quantity is same between this and supplied Log
+	bool isSame(Log::LogType lt, Log &other);
 	// Print logs
 	void print() const;
 };

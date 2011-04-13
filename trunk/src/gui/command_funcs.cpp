@@ -151,7 +151,7 @@ void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 	{
 		for (Refitem<QAction, Program*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
 		{
-			gui.mainWindow->ui.ScriptsMenu->removeAction(sa->item);
+			gui.mainWindow()->ui.ScriptsMenu->removeAction(sa->item);
 			// Free Reflist QActions
 			delete sa->item;
 		}
@@ -166,7 +166,7 @@ void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 			qa->setText(prog->name());
 			QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
 			scriptActions_.add(qa, prog);
-			gui.mainWindow->ui.ScriptsMenu->addAction(qa);
+			gui.mainWindow()->ui.ScriptsMenu->addAction(qa);
 		}
 	}
 }
@@ -175,7 +175,7 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 {
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Script", currentDirectory_.path(), gui.mainWindow->loadScriptFilters, &selFilter);
+	QString filename = QFileDialog::getOpenFileName(this, "Open Script", currentDirectory_.path(), gui.mainWindow()->loadScriptFilters, &selFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -335,6 +335,6 @@ void CommandWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.CommandButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	if (this->isFloating()) gui.mainWidget()->postRedisplay();
 	event->accept();
 }

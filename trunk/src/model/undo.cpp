@@ -51,7 +51,7 @@ UndoState *Model::currentRedoState()
 }
 
 // Start recording a new undo state
-void Model::beginUndoState(const char *fmt ...)
+void Model::beginUndoState(const char *fmt, ...)
 {
 	if (!undoRedoEnabled_) return;
 	msg.enter("Model::beginUndoState");
@@ -75,7 +75,7 @@ void Model::beginUndoState(const char *fmt ...)
 	recordingState_->setDescription(msgs);
 	recordingState_->setStartLogs(changeLog);
 	msg.print(Messenger::Verbose,"Undo list prepped for new state.\n");
-	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i, visual = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection), changeLog.log(Log::Visual));
+	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i, camera = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection), changeLog.log(Log::Camera));
 	msg.exit("Model::beginUndoState");
 }
 
@@ -128,9 +128,8 @@ void Model::undo()
 		currentUndoState_->undo(this);
 		changeLog.setLog(Log::Structure, currentUndoState_->startLog(Log::Structure));
 		changeLog.setLog(Log::Coordinates, currentUndoState_->startLog(Log::Coordinates));
-		changeLog.setLog(Log::Visual, currentUndoState_->startLog(Log::Visual));
-		// Log a visual change 
-// 		changeLog.add(Log::Visual);
+		changeLog.setLog(Log::Camera, currentUndoState_->startLog(Log::Camera));
+		changeLog.setLog(Log::Style, currentUndoState_->startLog(Log::Style));
 		// Set new undo/redo pointers
 		currentRedoState_ = currentUndoState_;
 		currentUndoState_ = currentUndoState_->prev;
@@ -150,9 +149,8 @@ void Model::redo()
 		currentRedoState_->redo(this);
 		changeLog.setLog(Log::Structure, currentRedoState_->endLog(Log::Structure));
 		changeLog.setLog(Log::Coordinates, currentRedoState_->endLog(Log::Coordinates));
-		changeLog.setLog(Log::Visual, currentRedoState_->endLog(Log::Visual));
-		// Log a visual change if necessary
-// 		if (currentRedoState_->doLogsDiffer()) changeLog.add(Log::Visual);
+		changeLog.setLog(Log::Camera, currentUndoState_->endLog(Log::Camera));
+		changeLog.setLog(Log::Style, currentUndoState_->endLog(Log::Style));
 		// Set new undo/redo pointers
 		currentUndoState_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;

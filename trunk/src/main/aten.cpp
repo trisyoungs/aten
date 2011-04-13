@@ -300,7 +300,7 @@ bool Aten::closeModel(Model *m)
 	{
 		// Create a modal message dialog
 		text.sprintf("Model '%s' has been modified.\n", m->name());
-		int returnvalue = QMessageBox::warning(gui.mainWindow, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+		int returnvalue = QMessageBox::warning(gui.mainWindow(), "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
 		switch (returnvalue)
 		{
 			// Discard changes
@@ -317,17 +317,17 @@ bool Aten::closeModel(Model *m)
 				// If model has a filter set, just save it
 				filter = m->filter();
 				if (filter != NULL) filter->executeWrite(m->filename());
-				else if (gui.mainWindow->runSaveModelDialog())
+				else if (gui.mainWindow()->runSaveModelDialog())
 				{
 					// Run options dialog
-					if (!gui.mainWindow->saveModelFilter->executeCustomDialog())
+					if (!gui.mainWindow()->saveModelFilter->executeCustomDialog())
 					{
 						msg.print("Not saved.\n");
 						return FALSE;
 					}
-					m->setFilter(gui.mainWindow->saveModelFilter);
-					m->setFilename(gui.mainWindow->saveModelFilename.get());
-					gui.mainWindow->saveModelFilter->executeWrite(gui.mainWindow->saveModelFilename.get());
+					m->setFilter(gui.mainWindow()->saveModelFilter);
+					m->setFilename(gui.mainWindow()->saveModelFilename.get());
+					gui.mainWindow()->saveModelFilter->executeWrite(gui.mainWindow()->saveModelFilename.get());
 				}
 				else return FALSE;
 				aten.removeModel(m);
@@ -385,6 +385,13 @@ Model *Aten::visibleModel(int id)
 		return NULL;
 	}
 	return visibleModels_[id]->item;
+}
+
+// Log specified change(s) in all visible models
+void Aten::visibleLogChange(Log::LogType log)
+{
+	for (Refitem<Model,int> *ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->changeLog.add(log);
+	current.m->changeLog.add(log);
 }
 
 /*

@@ -114,7 +114,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Coordinates);
 
 	msg.exit("Model::rotateSelectionWorld");
 }
@@ -145,7 +145,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Coordinates);
 
 	msg.exit("Model::rotateSelectionVector");
 }
@@ -170,7 +170,7 @@ void Model::rotateSelectionZaxis(double dz)
 	// Update model measurements
 	updateMeasurements();
 	
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Coordinates);
 	msg.exit("Model::rotateSelectionZaxis");
 }
 
@@ -194,7 +194,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Coordinates);
 	msg.exit("Model::translateSelectionWorld");
 }
 
@@ -208,7 +208,7 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec, bool markonly)
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Coordinates);
 
 	msg.exit("Model::translateSelectionLocal");
 }
@@ -232,7 +232,7 @@ void Model::mirrorSelectionLocal(int axis, bool markonly)
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Coordinates);
 
 	msg.exit("Model::mirrorSelectionLocal");
 }
@@ -270,7 +270,7 @@ void Model::matrixTransformSelection(Vec3<double> origin, Matrix matrix, bool ma
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Visual);
+	changeLog.add(Log::Coordinates);
 
 	msg.exit("Model::matrixTransformSelection");
 }

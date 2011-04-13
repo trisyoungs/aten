@@ -165,6 +165,9 @@ Cli cliSwitches[] = {
 	{ Cli::UndoLevelSwitch,		'u',"undolevels",	1,
 		"<nlevels>",
 		"Set the maximum number of undo levels per model (-1 = unlimited)" },
+	{ Cli::VBOSwitch,		'\0',"vbo",		0,
+		"",
+		"Flags that Aten should attempt to use Vertex Buffer Objects for rendering (experimental)" },
 	{ Cli::VerboseSwitch,		'v',"verbose",		0,
 		"",
 		"Enable verbose program output" },
@@ -326,6 +329,10 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (Cli::QuietSwitch):
 					msg.setQuiet(TRUE);
 					break;
+				// Turn on VBO usage
+				case (Cli::VBOSwitch):
+					prefs.setUseVBOs(TRUE);
+					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
 					msg.print("Verbosity enabled.\n");
@@ -440,6 +447,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::NoIncludesSwitch):
 				case (Cli::NoPartitionsSwitch):
 				case (Cli::QuietSwitch):
+				case (Cli::VBOSwitch):
 				case (Cli::VerboseSwitch):
 				case (Cli::VersionSwitch):
 					break;

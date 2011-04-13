@@ -308,7 +308,7 @@ void DisorderWizard::accepted()
 	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(existingModel_, partitioningScheme_, TRUE);
 	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(newModel_, partitioningScheme_, TRUE);
 	else success = mc.disorder(newModel_, partitioningScheme_, FALSE);
-	aten.currentModel()->changeLog.add(Log::Visual);
+	aten.currentModel()->changeLog.add(Log::Structure);
 	gui.update(GuiQt::AllTarget);
 }
 
@@ -342,7 +342,7 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *cu
 	existingModel_ = (Model*) twi->data.asPointer(VTypes::ModelData);
 	if (existingModel_ == NULL) return;
 	aten.setCurrentModel(existingModel_, TRUE);
-	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Visual);
+	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
 	gui.update(GuiQt::AllTarget);
 }
 
@@ -398,8 +398,8 @@ void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem *curren
 	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.contains(current);
 	if (ri == NULL) return;
 	partitioningScheme_ = ri->data;
-	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Visual);
-	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Visual);
+	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
+	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Camera);
 	gui.update(GuiQt::CanvasTarget);
 	// Enable/disable options button based on presence of custom dialog widgets...
 	ui.PartitionSchemeOptionsButton->setEnabled(partitioningScheme_->hasOptions());
@@ -415,8 +415,8 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);
 	partitioningScheme_ = ri->data;
-	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Visual);
-	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Visual);
+	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
+	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Camera);
 	gui.update(GuiQt::CanvasTarget);
 }
 

@@ -28,13 +28,13 @@
 #include "main/aten.h"
 
 // Render addition elements related to visible windows
-void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas)
+void RenderEngine::renderWindowExtras(Model *source)
 {
 	Vec3<double> r1, r2, translate, scale;
 	Vec3<int> ineg, ipos;
 	GLfloat colour[4];
 	Matrix A;
-	int lod, i, j, k;
+	int i, j, k;
 	double rij, phi;
 
 	// Vibrations Window - Draw vibration arrows
@@ -66,12 +66,9 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 					// Grab atom position and calculated level of detail
 					r1 = i->r();
 					
-					lod = levelOfDetail(r1, canvas);
-					if (lod == -1) continue;
-					
 					r2 = disp[n]*scale;
 					// Create basic transformation matrix
-					A = baseTransform;
+					A.setIdentity();
 					A.applyTranslation(r1);
 					rij = r2.magnitude();
 					phi = DEGRAD * acos(r2.z/rij);
@@ -88,17 +85,17 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 						// Move to endpoint
 						A.applyTranslation(0.0,0.0,rij*0.9);
 						A.applyScaling(rij*0.02,rij*0.02,rij*0.1);
-						renderPrimitive(cones_, lod, colour, A, GL_LINE);
+						renderPrimitive(RenderEngine::MiscObject, cones_, colour, A, GL_LINE);
 					}
 					else
 					{
 						// Draw cylinder
 						A.applyScaling(rij*0.05,rij*0.05,rij*0.9);
-						renderPrimitive(cylinders_, lod, colour, A, GL_FILL);
+						renderPrimitive(RenderEngine::MiscObject, cylinders_, colour, A, GL_FILL);
 						// Move to endpoint
 						A.applyTranslation(0.0,0.0,1.0);
 						A.applyScaling(2.0,2.0,0.1/0.9);
-						renderPrimitive(cones_, lod, colour, A, GL_FILL);
+						renderPrimitive(RenderEngine::MiscObject, cones_, colour, A, GL_FILL);
 					}
 				}
 			}
@@ -263,9 +260,9 @@ void RenderEngine::renderWindowExtras(Model *source, Matrix baseTransform, TCanv
 				grid.setLowerPrimaryCutoff(pd->id()-0.5);
 				grid.setUpperPrimaryCutoff(pd->id()+0.5);
 				prim->createSurfaceMarchingCubes();
-				A = baseTransform;
+				A.setIdentity();
 				A.multiplyRotation(mat);
-				renderPrimitive(&prim->primaryPrimitive(), TRUE, colour, A, GL_FILL);
+				renderPrimitive(RenderEngine::MiscObject, &prim->primaryPrimitive(), TRUE, colour, A, GL_FILL);
 			}
 		}
 	}

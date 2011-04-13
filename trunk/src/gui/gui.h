@@ -137,11 +137,29 @@ class GuiQt
 	/*
 	// Windows / Subwindows
 	*/
+	private:
+	// Main application
+	QApplication *application_;
+	// Main window
+	AtenForm *mainWindow_;
+	// Main rendering canvas
+	TCanvas *mainWidget_;
+	// QGLContext associated to TCanvas
+	QGLContext *mainContext_;
+
 	public:
+	// Return main view Widget
+	TCanvas *mainWidget();
+	// Return main view context
+	QGLContext *mainContext();
 	// Main application structure
-	QApplication *app;
+	QApplication *application();
 	// Main Window
-	AtenForm *mainWindow;
+	AtenForm *mainWindow();
+	// Update context menu
+	void updateContextMenu();
+	// Call the atompopup menu
+	void callContextMenu(Atom*, int, int);
 	// Zmatrix window
 	AtenZMatrix *zmatrixWindow;
 
@@ -222,18 +240,6 @@ class GuiQt
 	AtenViewEigenvector *viewEigenvectorDialog;
 	// Progress indicator
 	AtenProgress *progressDialog;
-
-
-	/*
-	// Canvas
-	*/
-	public:
-	// Main view Widget
-	TCanvas *mainWidget;
-	// Update context menu
-	void updateContextMenu();
-	// Call the atompopup menu
-	void callContextMenu(Atom*, int, int);
 };
 
 extern GuiQt gui;

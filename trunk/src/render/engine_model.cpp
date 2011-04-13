@@ -29,7 +29,7 @@
 #include "base/sysfunc.h"
 
 // Render bond
-void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b)
+void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b)
 {
 	double dvisible, selvisible, factor, rij, phi;
 	Vec3<double> ri, rj, localx, localy, localz;
@@ -84,16 +84,17 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	switch (style_i)
 	{
 		case (Atom::StickStyle):
-			renderPrimitive(bonds_[style_i][bt], lod, colour_i, A, GL_LINE, (i->isSelected() && (selvisible > 0.0)) ? 3.0 : 1.0);
+			if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, bonds_[style_i][bt], colour_i, A, GL_LINE, selvisible > 0.0 ? 3.0 : 1.0);
+			else renderPrimitive(RenderEngine::AtomSelectionObject, bonds_[style_i][bt], colour_i, A, GL_LINE, 1.0);
 			// Move to centre of visible bond, ready for next bond half
 			A.applyTranslationZ(1.0);
 			break;
 		case (Atom::TubeStyle):
-			renderPrimitive(bonds_[style_i][bt], lod, colour_i, A);
+			renderPrimitive(RenderEngine::BasicObject, bonds_[style_i][bt], colour_i, A);
 			if (i->isSelected() && (selvisible > 0.0))
 			{
 				colour_i[3] = 0.5f;
-				renderPrimitive(selectedBonds_[style_i][bt], lod, colour_i, A);
+				renderPrimitive(RenderEngine::AtomSelectionObject, selectedBonds_[style_i][bt], colour_i, A);
 				colour_i[3] = alpha_i;
 			}
 			// Move to centre of visible bond, ready for next bond half
@@ -101,14 +102,14 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			break;
 		case (Atom::SphereStyle):
 		case (Atom::ScaledStyle):
-			renderPrimitive(bonds_[style_i][bt], lod, colour_i, A);
+			renderPrimitive(RenderEngine::BasicObject, bonds_[style_i][bt], colour_i, A);
 			if (i->isSelected() && (selvisible > 0.0))
 			{
 				// Move to edge of selected atom and apply selection bond scaling
 				A.applyTranslationZ((selscale*radius_i-radius_i) / dvisible);
 				A.applyScalingZ(selvisible/dvisible);
 				colour_i[3] = 0.5f;
-				renderPrimitive(selectedBonds_[style_i][bt], lod, colour_i, A);
+				renderPrimitive(RenderEngine::AtomSelectionObject, selectedBonds_[style_i][bt], colour_i, A);
 				colour_i[3] = alpha_i;
 				// Move to centrepoint and reverse scaling back to 'dvisible'
 				A.applyTranslationZ(1.0);
@@ -122,27 +123,28 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	switch (style_j)
 	{
 		case (Atom::StickStyle):
-			renderPrimitive(bonds_[style_j][bt], lod, colour_j, A, GL_LINE, (j->isSelected() && (selvisible > 0.0)) ? 3.0 : 1.0);
+			if (j->isSelected()) renderPrimitive(RenderEngine::BasicObject, bonds_[style_j][bt], colour_j, A, GL_LINE, selvisible > 0.0 ? 3.0 : 1.0);
+			else renderPrimitive(RenderEngine::AtomSelectionObject, bonds_[style_j][bt], colour_j, A, GL_LINE, 1.0);
 			// Move to centre of visible bond, ready for next bond half
 			A.applyTranslationZ(1.0);
 			break;
 		case (Atom::TubeStyle):
-			renderPrimitive(bonds_[style_j][bt], lod, colour_j, A);
+			renderPrimitive(RenderEngine::BasicObject, bonds_[style_j][bt], colour_j, A);
 			if (j->isSelected())
 			{
 				colour_j[3] = 0.5f;
-				renderPrimitive(selectedBonds_[style_j][bt], lod, colour_j, A);
+				renderPrimitive(RenderEngine::AtomSelectionObject, selectedBonds_[style_j][bt], colour_j, A);
 				colour_j[3] = alpha_j;
 			}
 			break;
 		case (Atom::SphereStyle):
 		case (Atom::ScaledStyle):
-			renderPrimitive(bonds_[style_j][bt], lod, colour_j, A);
+			renderPrimitive(RenderEngine::BasicObject, bonds_[style_j][bt], colour_j, A);
 			if (j->isSelected() && (selvisible > 0.0))
 			{
 				A.applyScalingZ(selvisible / dvisible);
 				colour_j[3] = 0.5f;
-				renderPrimitive(selectedBonds_[style_j][bt], lod, colour_j, A);
+				renderPrimitive(RenderEngine::AtomSelectionObject, selectedBonds_[style_j][bt], colour_j, A);
 				colour_j[3] = alpha_j;
 			}
 			break;
@@ -150,13 +152,14 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 }
 
 // Render basic model information (atoms, bonds, labels, and glyphs)
-void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *canvas)
+void RenderEngine::renderModel(Model *source, Matrix basetransform)
 {
-	GLfloat colour_i[4], colour_j[4], alpha_i, colour_k[4], colour_l[4], textcolour[4];
+	msg.enter("RenderEngine::renderModel");
+	GLfloat colour_i[4], colour_j[4], alpha_i, colour_k[4], colour_l[4];
 	GLenum style;
-	int lod, id_i, labels, m, n;
+	int id_i, labels, m, n;
 	Dnchar text;
-	double selscale, z, radius_i, radius_j, rij, phi, mag, best;
+	double selscale, z, radius_i, radius_j, phi, mag, best;
 	Atom *i, *j, **atoms;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
@@ -166,34 +169,11 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 	Atom::DrawStyle style_i, style_j, globalstyle;
 	Prefs::ColouringScheme scheme;
 	ForcefieldAtom *ffa;
-	RenderEngine::TriangleStyle ts;
 	
-	// Grab global style values and text colour
+	// Grab global style values
 	scheme = prefs.colourScheme();
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
-	prefs.copyColour(Prefs::TextColour, textcolour);
-	
-	// Render cell and cell axes
-	if (source->cell()->type() != UnitCell::NoCell)
-	{
-		prefs.copyColour(Prefs::UnitCellColour, colour_i);
-		glColor4fv(colour_i);
-		A = source->modelViewMatrix() * source->cell()->axes();
-		glMultMatrixd(A.matrix());
-		wireCube_.sendToGL();
-		glTranslated(-0.5, -0.5, -0.5);
-		v = source->cell()->lengths();
-		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
-		prefs.copyColour(Prefs::UnitCellAxesColour, colour_i);
-		glColor4fv(colour_i);
-		cellAxes_.sendToGL();
-	}
-
-	// We will apply the basic transformation matrix to OpenGL here, so we can draw simple line primitives using just model coordinates
-	// Consequently, glMultMatrixd() and glLoadIdentity(), as well as all other OpenGL matrix manipulators, should not be used past this point!
-	glLoadIdentity();
-	glMultMatrixd(baseTransform.matrix());
 	
 	// Atoms and Bonds
 	atoms = source->atomArray();
@@ -207,13 +187,9 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		
 		// Grab atom coordinate - we'll need it a lot
 		pos = i->r();
-		
-		// Calculate projected Z distance from viewer
-		lod = levelOfDetail(pos, canvas);
-		if (lod == -1) continue;
-		
+
 		// Move to local atom position
-		atomtransform = baseTransform;
+		atomtransform = basetransform;
 		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
 		
 		// Select colour
@@ -247,29 +223,33 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		switch (style_i)
 		{
 			case (Atom::StickStyle):
-				if (i->nBonds() == 0) renderPrimitive(atoms_[style_i], lod, colour_i, atomtransform, GL_LINE, i->isSelected() ? 3.0 : 1.0);
+				if (i->nBonds() == 0)
+				{
+					if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, atoms_[style_i], colour_i, atomtransform, 3.0);
+					else renderPrimitive(RenderEngine::AtomSelectionObject, atoms_[style_i], colour_i, atomtransform, GL_LINE, 1.0);
+				}
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
-				renderPrimitive(atoms_[style_i], lod, colour_i, atomtransform);
+				renderPrimitive(RenderEngine::BasicObject, atoms_[style_i], colour_i, atomtransform);
 				if (i->isSelected())
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(selectedAtoms_[style_i], lod, colour_i, atomtransform);
+					renderPrimitive(RenderEngine::AtomSelectionObject, selectedAtoms_[style_i], colour_i, atomtransform);
 					colour_i[3] = alpha_i;
 				}
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(scaledAtoms_[i->element()], lod, colour_i, atomtransform);
+				renderPrimitive(RenderEngine::BasicObject, scaledAtoms_[i->element()], colour_i, atomtransform);
 				if (i->isSelected())
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(selectedScaledAtoms_[i->element()], lod, colour_i, atomtransform);
+					renderPrimitive(RenderEngine::AtomSelectionObject, selectedScaledAtoms_[i->element()], colour_i, atomtransform);
 					colour_i[3] = alpha_i;
 				}
 				break;
 		}
-		
+
 		// Labels
 		labels = i->labels();
 		if (labels != 0)
@@ -291,7 +271,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			
 			// Add text object
 			r2 = source->modelToWorld(i->r(), &screenr);
-			if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, text.get());
+			if (r2.z < -1.0) renderTextPrimitive(RenderEngine::LabelText, screenr.x, screenr.y, text.get());
 		}
 		
 		// Bonds
@@ -339,7 +319,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			v = source->cell()->mimd(j, i);
 			
 			// Render bond
-			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), lod, selscale, rb->item);
+			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item);
 		}
 		
 	}
@@ -375,8 +355,6 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 						pos += source->cell()->mim(j->r(), r1);
 					}
 					pos /= r->nAtoms();
-					lod = levelOfDetail(pos, canvas);
-					if (lod == -1) continue;
 
 					// Determine average vector magnitude of ring atoms and y-axis vector (closest 90deg vector)
 					mag = 0.0;
@@ -411,7 +389,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 					mag -= radius_i*0.9;
 					mag *= 0.75;
 					// Construct transformation matrix
-					atomtransform = baseTransform;
+					atomtransform = basetransform;
 					atomtransform.applyTranslation(pos.x, pos.y, pos.z);
 					A.setColumn(0, r1*mag, 0.0);
 					A.setColumn(1, r2*mag, 0.0);
@@ -422,13 +400,13 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 					// Render ring
 					if (prefs.renderDashedAromatics())
 					{
-						if (globalstyle == Atom::StickStyle) renderPrimitive(segmentedLineRings_, lod, colour_i, atomtransform);
-						else renderPrimitive(segmentedTubeRings_, lod, colour_i, atomtransform);
+						if (globalstyle == Atom::StickStyle) renderPrimitive(RenderEngine::BasicObject, segmentedLineRings_, colour_i, atomtransform);
+						else renderPrimitive(RenderEngine::BasicObject, segmentedTubeRings_, colour_i, atomtransform);
 					}
 					else
 					{
-						if (globalstyle == Atom::StickStyle) renderPrimitive(lineRings_, lod, colour_i, atomtransform);
-						else renderPrimitive(tubeRings_, lod, colour_i, atomtransform);
+						if (globalstyle == Atom::StickStyle) renderPrimitive(RenderEngine::BasicObject, lineRings_, colour_i, atomtransform);
+						else renderPrimitive(RenderEngine::BasicObject, tubeRings_, colour_i, atomtransform);
 					}
 
 					id_i += p->nAtoms();
@@ -437,7 +415,73 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		}
 	}
 	
-	// Grid Data
+	// Hydrogen bonds
+	atoms = source->atomArray();
+	for (n = 0; n<source->nAtoms()-1; ++n)
+	{
+		// Get atom pointer
+		i = atoms[n];
+		
+		// Skip hidden atoms
+		if (i->isHidden()) continue;
+		
+		// Skip non-hydrogen atoms
+		if (i->element() != 1) continue;
+		
+		// Grab atom coordinate - we'll need it a lot
+		pos = i->r();
+
+		// Move to local atom position
+		atomtransform = basetransform;
+		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
+		
+		// Loop over other atoms
+		for (m = n; m<source->nAtoms(); ++m)
+		{
+			j = atoms[m];
+
+			// Skip hidden atoms
+			if (i->isHidden()) continue;
+			
+			// Get distance i-j
+// 			v = source->mimd(i,j);
+			
+			// Get element types
+		}
+	}
+	msg.exit("RenderEngine::renderModel");
+}
+
+// Render model cell
+void RenderEngine::renderCell(Model *source)
+{
+	if (source->cell()->type() == UnitCell::NoCell) return;
+	msg.enter("RenderEngine::renderCell");
+	GLfloat colour[4];
+	prefs.copyColour(Prefs::UnitCellColour, colour);
+	glColor4fv(colour);
+	Matrix A = source->modelViewMatrix() * source->cell()->axes();
+	glMultMatrixd(A.matrix());
+	wireCube_.sendToGL();
+	glTranslated(-0.5, -0.5, -0.5);
+	Vec3<double> v = source->cell()->lengths();
+	glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
+	prefs.copyColour(Prefs::UnitCellAxesColour, colour);
+	glColor4fv(colour);
+	cellAxes_.sendToGL();
+	msg.exit("RenderEngine::renderCell");
+}
+
+// Render grids
+void RenderEngine::renderGrids(Model *source)
+{
+	Matrix A;
+	GLenum style;
+	GLfloat colour[4], textcolour[4];
+	
+	// Copy text colour
+	prefs.copyColour(Prefs::TextColour, textcolour);
+	
 	// Cycle over grids stored in current model
 	for (Grid *g = source->grids(); g != NULL; g = g->next)
 	{
@@ -465,25 +509,25 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		}
 		
 		// Grid primitive now exists (or has been updated) so create transformation and render it
-		A = baseTransform;
+		A.setIdentity();
 		A.applyTranslation(g->origin());
 		A.multiplyRotation(g->axes());
 		if (g->style() == Grid::TriangleSurface) style = GL_LINE;
 		else if (g->style() == Grid::SolidSurface) style = GL_FILL;
 		else style = GL_POINTS;
-		if (g->useColourScale()) renderPrimitive(&gp->primaryPrimitive(), gp->primaryIsTransparent(), NULL, A, style);
+		if (g->useColourScale()) renderPrimitive(RenderEngine::GridObject, &gp->primaryPrimitive(), gp->primaryIsTransparent(), NULL, A, style);
 		else
 		{
-			g->copyPrimaryColour(colour_i);
-			renderPrimitive(&gp->primaryPrimitive(), gp->primaryIsTransparent(), colour_i, A, style);
+			g->copyPrimaryColour(colour);
+			renderPrimitive(RenderEngine::GridObject, &gp->primaryPrimitive(), gp->primaryIsTransparent(), colour, A, style);
 		}
 		if (g->useSecondary())
 		{
-			if (g->useColourScale()) renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), NULL, A, style);
+			if (g->useColourScale()) renderPrimitive(RenderEngine::GridObject, &gp->secondaryPrimitive(), gp->secondaryIsTransparent(), NULL, A, style);
 			else
 			{
-				g->copySecondaryColour(colour_i);
-				renderPrimitive(&gp->secondaryPrimitive(), gp->secondaryIsTransparent(), colour_i, A, style);
+				g->copySecondaryColour(colour);
+				renderPrimitive(RenderEngine::GridObject, &gp->secondaryPrimitive(), gp->secondaryIsTransparent(), colour, A, style);
 			}
 		}
 		// Render volume outline
@@ -492,11 +536,25 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			A.columnMultiply(0, g->nPoints().x);
 			A.columnMultiply(1, g->nPoints().y);
 			A.columnMultiply(2, g->nPoints().z);
-			renderPrimitive(originCubes_, 1, textcolour, A, GL_LINE, 1.0);
+			renderPrimitive(RenderEngine::GridObject, originCubes_, textcolour, A, GL_LINE, 1.0);
 		}
 	}
+
+}
+
+// Render glyphs
+void RenderEngine::renderGlyphs(Model *source, TCanvas *canvas)
+{
+	Matrix A, B;
+	Vec3<double> r1, r2, r3, r4;
+	Vec4<double> screenr;
+	RenderEngine::TriangleStyle ts;
+	GLfloat colour_i[4], colour_j[4], colour_k[4], colour_l[4], textcolour[4];
+	double phi, rij;
+
+	// Copy text colour
+	prefs.copyColour(Prefs::TextColour, textcolour);
 	
-	// Glyphs
 	for (Glyph *g = source->glyphs(); g != NULL; g = g->next)
 	{
 		// Check if glyph is visible
@@ -504,8 +562,6 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 		
 		// Determine level of detail for glyph
 		r1 = g->data(0)->vector();
-		lod = levelOfDetail(r1, canvas);
-		if (lod == -1) continue;
 		
 		switch (g->type())
 		{
@@ -513,7 +569,6 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			case (Glyph::ArrowGlyph):
 				r2 = g->data(1)->vector();
 				g->data(0)->copyColour(colour_i);
-				glLineWidth(g->lineWidth());
 				glColor4fv(colour_i);
 				// Draw simple line from tail to head points
 				glBegin(GL_LINES);
@@ -521,7 +576,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				glVertex3d(r2.x, r2.y, r2.z);
 				glEnd();
 				// Draw cylinder arrowhead in wireframe
-				A = baseTransform;
+				A.setIdentity();
 				A.applyTranslation(r1);
 				r3 = r2-r1;
 				rij = r3.magnitude();
@@ -532,50 +587,45 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				// Move to endpoint
 				A.applyTranslationZ(rij*0.9);
 				A.applyScaling(0.2,0.2,rij*0.1);
-				renderPrimitive(cones_, lod, colour_i, A, GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, cones_, colour_i, A, GL_LINE);
 				break;
 			// Line - start = data[0], end = data[1]
 			case (Glyph::LineGlyph):
 				r2 = g->data(1)->vector();
 				g->data(0)->copyColour(colour_i);
-				glLineWidth(g->lineWidth());
-				glColor4fv(colour_i);
-				// Draw simple line from tail to head points
-				glBegin(GL_LINES);
-				glVertex3d(r1.x, r1.y, r1.z);
-				glVertex3d(r2.x, r2.y, r2.z);
-				glEnd();
+				glyphLines_.defineVertex(r1.x, r1.y, r1.z, 0.0, 0.0, 1.0, colour_i[0], colour_i[1], colour_i[2], colour_i[3], FALSE);
+				glyphLines_.defineVertex(r2.x, r2.y, r2.z, 0.0, 0.0, 1.0, colour_i[0], colour_i[1], colour_i[2], colour_i[3], FALSE);
 				break;
 			// Sphere or Cube - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):
 			case (Glyph::CubeGlyph):
 				r2 = g->data(1)->vector();
 				g->data(0)->copyColour(colour_i);
-				A = baseTransform;
+				A.setIdentity();
 				A.applyTranslation(r1.x, r1.y, r1.z);
 				if (g->rotated()) A *= (*g->matrix());
 				A.applyScaling(r2.x, r2.y, r2.z);
 				if (g->isSolid())
 				{
-					if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, colour_i, A, GL_FILL);
-					else renderPrimitive(cubes_, lod, colour_i, A, GL_FILL);
+					if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_FILL);
+					else renderPrimitive(RenderEngine::GlyphObject, cubes_, colour_i, A, GL_FILL);
 					if (g->isSelected())
 					{
-						if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, 2.0);
-						else renderPrimitive(cubes_, lod, textcolour, A, GL_LINE, 2.0);
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, spheres_, textcolour, A, GL_LINE, 2.0);
+						else renderPrimitive(RenderEngine::GlyphObject, cubes_, textcolour, A, GL_LINE, 2.0);
 					}
 				}
 				else
 				{
 					if (g->isSelected())
 					{
-						if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, g->lineWidth()+2);
-						else renderPrimitive(cubes_, lod, textcolour, A, GL_LINE, g->lineWidth()+2);
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, spheres_, textcolour, A, GL_LINE, 3.0);
+						else renderPrimitive(RenderEngine::GlyphObject, cubes_, textcolour, A, GL_LINE, 3);
 					}
 					else
 					{
-						if (g->type() == Glyph::SphereGlyph) renderPrimitive(spheres_, lod, colour_i, A, GL_LINE, g->lineWidth());
-						else renderPrimitive(cubes_, lod, colour_i, A, GL_LINE, g->lineWidth());
+						if (g->type() == Glyph::SphereGlyph) renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_LINE, 1.0);
+						else renderPrimitive(RenderEngine::GlyphObject, cubes_, colour_i, A, GL_LINE, 1.0);
 					}
 				}
 				break;
@@ -634,7 +684,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 			case (Glyph::EllipsoidGlyph):
 			case (Glyph::EllipsoidXYZGlyph):
 				g->data(0)->copyColour(colour_i);
-				A = baseTransform;
+				A.setIdentity();
 				A.applyTranslation(r1.x, r1.y, r1.z);
 				r2 = g->data(1)->vector() - r1;
 				r3 = g->data(2)->vector() - r1;
@@ -650,30 +700,30 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				A.multiplyRotation(B);
 				if (g->isSolid())
 				{
-					renderPrimitive(spheres_, lod, colour_i, A, GL_FILL);
-					if (g->isSelected()) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, 2.0);
+					renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_FILL);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, spheres_, textcolour, A, GL_LINE, 2.0);
 				}
 				else
 				{
-					if (g->isSelected()) renderPrimitive(spheres_, lod, textcolour, A, GL_LINE, g->lineWidth()+2);
-					else renderPrimitive(spheres_, lod, colour_i, A, GL_LINE, g->lineWidth());
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, spheres_, textcolour, A, GL_LINE, 3.0);
+					else renderPrimitive(RenderEngine::GlyphObject, spheres_, colour_i, A, GL_LINE, 1.0);
 				}
 				break;
 			// Text in 2D coordinates - left-hand origin = data[0]
 			case (Glyph::TextGlyph):
-				renderTextPrimitive(r1.x, canvas->contextHeight()-r1.y, g->text());
+				renderTextPrimitive(RenderEngine::GlyphText, r1.x, canvas->contextHeight()-r1.y, g->text());
 				break;
 			// Text in 3D coordinates - left-hand origin = data[0]
 			case (Glyph::Text3DGlyph):
 				r2 = source->modelToWorld(r1, &screenr);
-				if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, g->text());
+				if (r2.z < -1.0) renderTextPrimitive(RenderEngine::GlyphText, screenr.x, screenr.y, g->text());
 				break;
 			// Tube arrow - tail = data[0], head = data[1]
 			case (Glyph::TubeArrowGlyph):
 				r2 = g->data(1)->vector();
 				g->data(0)->copyColour(colour_i);
 				// Draw cylinder body and arrowhead
-				A = baseTransform;
+				A.setIdentity();
 				A.applyTranslation(r1);
 				r3 = r2-r1;
 				rij = r3.magnitude();
@@ -683,18 +733,17 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				else A.applyRotationAxis(-r3.y, r3.x, 0.0, phi, TRUE);
 				// Draw cylinder
 				A.applyScaling(0.1,0.1,rij*0.9);
-				renderPrimitive(cylinders_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, cylinders_, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
 				A.applyTranslationZ(1.0);
 				A.applyScaling(2.0,2.0,0.1/0.9);
-				renderPrimitive(cones_, lod, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, cones_, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
 				break;
 			// Vector - tail = data[0], head = data[1]
 			case (Glyph::VectorGlyph):
 				r2 = g->data(1)->vector();
 				r1 -= r2*0.5;
 				g->data(0)->copyColour(colour_i);
-				glLineWidth(g->lineWidth());
 				glColor4fv(colour_i);
 				// Draw simple line from tail to head points
 				glBegin(GL_LINES);
@@ -702,7 +751,7 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				glVertex3d(r1.x+r2.x, r1.y+r2.y, r1.z+r2.z);
 				glEnd();
 				// Draw cylinder arrowhead in wireframe
-				A = baseTransform;
+				A.setIdentity();
 				A.applyTranslation(r1);
 				rij = r2.magnitude();
 				phi = DEGRAD * acos(r2.z/rij);
@@ -712,14 +761,19 @@ void RenderEngine::renderModel(Model *source, Matrix baseTransform, TCanvas *can
 				// Move to endpoint
 				A.applyTranslationZ(rij*0.9);
 				A.applyScaling(0.2, 0.2, rij*0.1);
-				renderPrimitive(cones_, lod, colour_i, A, GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, cones_, colour_i, A, GL_LINE);
 				break;
 		}
 	}
+	
+	A.setIdentity();
+	renderPrimitive(RenderEngine::GlyphObject, &glyphTriangles_[RenderEngine::SolidTriangle], FALSE, NULL, A);
+	renderPrimitive(RenderEngine::GlyphObject, &glyphTriangles_[RenderEngine::WireTriangle], FALSE, NULL, A, GL_LINE);
+	renderPrimitive(RenderEngine::GlyphObject, &glyphTriangles_[RenderEngine::TransparentTriangle], TRUE, NULL, A);
 }
 
 // Render additional model information (measurements etc.)
-void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCanvas *canvas)
+void RenderEngine::renderModelOverlays(Model *source)
 {
 	Vec3<double> r1, r2, r3, r4, pos, rji, rjk;
 	Vec4<double> screenr;
@@ -739,7 +793,7 @@ void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCan
 	// Apply standard transformation matrix to OpenGL so we may just use local atom positions for vertices
 	// Load model transformation matrix
 	glLoadIdentity();
-	glMultMatrixd(baseTransform.matrix());
+	glMultMatrixd(modelTransformationMatrix_.matrix());
 	
 	// Distances
 	for (Measurement *m = source->distanceMeasurements(); m != NULL; m = m->next)
@@ -755,7 +809,7 @@ void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCan
 		glEnd();
 		r4 = (r1+r2)*0.5;
 		r3 = source->modelToWorld(r4, &screenr);
-		if (r3.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
+		if (r3.z < -1.0) renderTextPrimitive(RenderEngine::MiscText, screenr.x, screenr.y, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
 	}
 	
 	// Angles
@@ -796,7 +850,7 @@ void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCan
 		source->modelToWorld(r2, &screenr);
 		gamma = screenr.x;
 		r3 = source->modelToWorld(r4, &screenr);
-		if (r3.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma > screenr.x);
+		if (r3.z < -1.0) renderTextPrimitive(RenderEngine::MiscText, screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma > screenr.x);
 	}
 	
 	// Torsions
@@ -817,7 +871,7 @@ void RenderEngine::renderModelOverlays(Model *source, Matrix baseTransform, TCan
 		glEnd();
 		r1 = (r2+r3)*0.5;
 		r4 = source->modelToWorld(r1, &screenr);
-		if (r4.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176);
+		if (r4.z < -1.0) renderTextPrimitive(RenderEngine::MiscText, screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176);
 	}
 	
 	// Re-enable depth buffer

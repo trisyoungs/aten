@@ -25,6 +25,7 @@
 #include "render/triangles.h"
 #include "render/primitive.h"
 #include "render/textprimitive.h"
+#include "base/log.h"
 #include "templates/vector3.h"
 #include "base/atom.h"
 #include "base/bond.h"
@@ -43,6 +44,10 @@ class RenderEngine
 	~RenderEngine();
 	// Style enum for ease of coding
 	enum TriangleStyle { SolidTriangle, TransparentTriangle, WireTriangle, nTriangleStyles };
+	// Objects for rendering
+	enum RenderingObject { BasicObject, AtomSelectionObject, GridObject, GlyphObject, MiscObject, nRenderingObjects };
+	// Text types for rendering
+	enum TextType { LabelText, GlyphText, MiscText, nTextTypes };
 
 	
 	/*
@@ -75,6 +80,8 @@ class RenderEngine
 	void initialiseTransparency();
 	// Calculate atom/bond adjustments
 	void calculateAdjustments();
+	// Create VBOs for all standard primitives
+	void createVBOs();
 
 	
 	/*
@@ -93,28 +100,38 @@ class RenderEngine
 	// Rendering Functions and Primitive Lists
 	*/
 	private:
+	// Last rendered model
+	Model *lastSource_;
+	// Logs for last rendered source model
+	Log lastLog_;
 	// List of filtered solid primitives
-	List<PrimitiveInfo> solidPrimitives_;
+	List<PrimitiveInfo> solidPrimitives_[RenderEngine::nRenderingObjects];
 	// List of filtered primitives
-	List<PrimitiveInfo> transparentPrimitives_;
+	List<PrimitiveInfo> transparentPrimitives_[RenderEngine::nRenderingObjects];
 	// Text primitives
-	TextPrimitiveList textPrimitives_;
-	// Triangle 'sorter'
+	TextPrimitiveList textPrimitives_[RenderEngine::nTextTypes];
+	// Triangle overs33r
 	TriangleChopper triangleChopper_;
 	// Grid primitives (for all models)
 	List<GridPrimitive> gridPrimitives_;
 	// Glyph triangle primitives
 	Primitive glyphTriangles_[RenderEngine::nTriangleStyles];
+	// Glyph line primitives
+	Primitive glyphLines_;
+	// Flags indicating which primitive lists are open for rebuilding
+	bool activePrimitiveLists_[RenderEngine::nRenderingObjects];
+	// Flags indicating which text primitive lists are open for rebuilding
+	bool activeTextPrimitiveLists_[RenderEngine::nTextTypes];
 
 	private:
-	// Return level of detail for supplied coordinate
-	int levelOfDetail(Vec3<double> &r, TCanvas *canvas);
 	// Render primitive from primitive group in specified colour and level of detail
-	void renderPrimitive(PrimitiveGroup& pg, int lod, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
+	void renderPrimitive(RenderEngine::RenderingObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Render primitive in specified colour
-	void renderPrimitive(Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
-	// Add text primitive for rendering later
-	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
+	void renderPrimitive(RenderEngine::RenderingObject obj, Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
+	// Add text primitive for rendering later (2D coordinates)
+	void renderTextPrimitive(RenderEngine::TextType type, int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
+	// Add text primitive for rendering later (3D coordinates)
+	void renderTextPrimitive(RenderEngine::TextType type, Vec3<double> v, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Search for primitive associated to specified Grid pointer
 	GridPrimitive *findGridPrimitive(Grid *g);
 	// Remove grid primitive from list (if it exists)
@@ -122,23 +139,25 @@ class RenderEngine
 	// Sort and render filtered polygons by depth
 	void sortAndSendGL();
 	// Render bond
-	void renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, int lod, double selscale, Bond *b = NULL);
-	// Render basic model information (atoms, bonds, labels, and glyphs)
-	void renderModel(Model *source, Matrix baseTransform, TCanvas *canvas);
+	void renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b = NULL);
+	// Render basic model information (atoms, bonds, labels)
+	void renderModel(Model *source, Matrix basetransform = Matrix());
+	// Render model cell
+	void renderCell(Model *source);
+	// Render grids
+	void renderGrids(Model *source);
+	// Render glyphs
+	void renderGlyphs(Model *source, TCanvas *canvas);
 	// Render additional model information (measurements etc.) which need to appear on top of everything else
-	void renderModelOverlays(Model *source, Matrix baseTransform, TCanvas *canvas);
+	void renderModelOverlays(Model *source);
 	// Render addition elements related to selected/active UserActions
-	void renderUserActions(Model *source, Matrix baseTransform, TCanvas *canvas);
+	void renderUserActions(Model *source, TCanvas *canvas);
 	// Render addition elements related to visible windows
-	void renderWindowExtras(Model *source, Matrix baseTransform, TCanvas *canvas);
+	void renderWindowExtras(Model *source);
 
 	public:
 	// Initialise GL
 	void initialiseGL();
-	// Clear all triangle primitive lists
-	void clearTriangleLists();
-	// Clear all text primitive lists
-	void clearTextLists();
 	// Render text objects (with supplied QPainter)
 	void renderText(QPainter &painter, TCanvas *canvas);
 	// Render 3D elements with OpenGL

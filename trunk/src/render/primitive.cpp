@@ -19,13 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define GL_GLEXT_PROTOTYPES
 #include "render/primitive.h"
 #include "base/messenger.h"
 #include "base/constants.h"
 #include "classes/prefs.h"
 #include "gui/tcanvas.uih"
+#include <QtOpenGL/QGLWidget>
 #include <stdio.h>
 #include <math.h>
+
+#define BUFFER_OFFSET(i) ((char *)NULL + (i*sizeof(GLfloat)))
 
 /*
 // Vertex Chunk
@@ -77,7 +81,7 @@ void VertexChunk::initialise(GLenum type, bool colourData)
 {
 	type_ = type;
 	dataPerVertex_ = (colourData ? 10 : 6);
-	if (type == GL_TRIANGLES) verticesPerType_ = 3;
+	if (type_ == GL_TRIANGLES) verticesPerType_ = 3;
 	else if (type_ == GL_LINES) verticesPerType_ = 2;
 	else if (type_ == GL_POINTS) verticesPerType_ = 1;
 	else printf("Warning - Invalid GLenum type given to VertexChunk::initialise (%i)\n", type_);
@@ -207,6 +211,12 @@ GLfloat *VertexChunk::centroids()
 	return centroids_;
 }
 
+// Return number of defined vertices in chunk
+int VertexChunk::nDefinedVertices()
+{
+	return nDefinedVertices_;
+}
+
 // Send to OpenGL (i.e. render)
 void VertexChunk::sendToGL()
 {
@@ -228,6 +238,9 @@ Primitive::Primitive()
 	type_ = GL_TRIANGLES;
 	prev = NULL;
 	next = NULL;
+	idVBO_ = 0;
+	hasVBO_ = FALSE;
+	nDefinedVertices_ = 0;
 }
 
 // Destructor
@@ -247,6 +260,7 @@ void Primitive::clear()
 {
 	vertexChunks_.clear();
 	currentVertexChunk_ = NULL;
+	nDefinedVertices_ = 0;
 }
 
 // Forget all data, leaving arrays intact
@@ -254,6 +268,13 @@ void Primitive::forgetAll()
 {
 	for (VertexChunk *v = vertexChunks_.first(); v != NULL; v = v->next) v->forgetAll();
 	currentVertexChunk_ = vertexChunks_.first();
+	nDefinedVertices_ = 0;
+}
+
+// Set GL drawing primitive type
+void Primitive::setType(GLenum type)
+{
+	type_ = type;
 }
 
 /*
@@ -442,10 +463,77 @@ bool Primitive::colouredVertexData()
 	return colouredVertexData_;
 }
 
+// Create VBO from current vertex chunk list
+void Primitive::createVBO()
+{
+	msg.enter("Primitive::createVBO");
+	// Prepare local array of data to pass to VBO
+	int offset, n;
+	if (nDefinedVertices_ == -1)
+	{
+		printf("Error: No data in Primitive with which to create VBO.\n");
+		hasVBO_ = FALSE;
+		msg.exit("Primitive::createVBO");
+		return;
+	}
+	
+	// Determine total size of array (in bytes) for VBO
+	int vboSize = nDefinedVertices_ * (colouredVertexData_ ? 10 : 6) * sizeof(GLfloat);
+	
+	// Remove old VBO first (if one exists)
+	if (idVBO_ != 0) glDeleteBuffers(1, &idVBO_);
+	
+	// Generate VBO
+	glGenBuffers(1, &idVBO_);
+
+	// Bind VBO
+	glBindBuffer(GL_ARRAY_BUFFER, idVBO_);
+	
+	// Initialise VBO data, but don't copy anything here
+	glBufferData(GL_ARRAY_BUFFER, vboSize, NULL, GL_STATIC_DRAW);
+
+// 	GLfloat *bufdat = (GLfloat*) glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
+// // 	for (int n=0; n<30; ++n) printf("Buffer data %i is %f\n", n, bufdat[n]);
+// 	glUnmapBuffer(GL_ARRAY_BUFFER);
+	
+	// Loop over stored VertexChunks and copy data to VBO
+	offset = 0;
+	int chunksize;
+	for (VertexChunk *chunk = vertexChunks_.first(); chunk != NULL; chunk = chunk->next)
+	{
+		chunksize = chunk->nDefinedVertices()*(colouredVertexData_ ? 10 : 6)*sizeof(GLfloat);
+		glBufferSubData(GL_ARRAY_BUFFER_ARB, offset, chunksize, chunk->vertexData());
+		offset += chunksize;
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	// Set flag
+	hasVBO_ = TRUE;
+	msg.exit("Primitive::createVBO");
+}
+
 // Send to OpenGL (i.e. render)
 void Primitive::sendToGL()
 {
-	for (VertexChunk *chunk = vertexChunks_.first(); chunk != NULL; chunk = chunk->next) chunk->sendToGL();
+	glEnableClientState(GL_VERTEX_ARRAY);
+	// Do we have a VBO (and we're allowed to use it?)
+	if (hasVBO_ && prefs.useVBOs())
+	{
+		// Bind VBO
+		glDisableClientState(GL_INDEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, idVBO_);
+
+		glInterleavedArrays(colouredVertexData_ ? GL_C4F_N3F_V3F : GL_N3F_V3F, 0, NULL);
+		glDrawArrays(type_, 0, nDefinedVertices_);
+
+		// Revert to normal operation - pass 0 as VBO index
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
+		glDisableClientState(GL_COLOR_ARRAY);
+	}
+	else for (VertexChunk *chunk = vertexChunks_.first(); chunk != NULL; chunk = chunk->next) chunk->sendToGL();
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /*
@@ -457,6 +545,7 @@ PrimitiveInfo::PrimitiveInfo()
 {
 	// Private variables
 	primitive_ = NULL;
+	primitiveGroup_ = NULL;
 	fillMode_ = GL_FILL;
 	lineWidth_ = 1.0f;
 	colour_[0] = 0.0;
@@ -470,9 +559,19 @@ PrimitiveInfo::PrimitiveInfo()
 }
 
 // Set primitive info data
-void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
+void PrimitiveInfo::set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
 {
 	primitive_ = prim;
+	localTransform_ = transform;
+	fillMode_ = fillMode;
+	lineWidth_ = lineWidth;
+	if (colour != NULL) for (int n=0; n<4; ++n) colour_[n] = colour[n];
+}
+
+// Set primitive info data
+void PrimitiveInfo::set(PrimitiveGroup *pg, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
+{
+	primitiveGroup_ = pg;
 	localTransform_ = transform;
 	fillMode_ = fillMode;
 	lineWidth_ = lineWidth;
@@ -483,6 +582,22 @@ void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, Matrix& transform, GLe
 Primitive *PrimitiveInfo::primitive()
 {
 	return primitive_;
+}
+
+// Return pointer to primitive, selected from group (based on level of detail)
+Primitive *PrimitiveInfo::primitive(Matrix &modeltransform)
+{
+	// Determine LOD for primitive based on supplied transform and stored matrix
+	Matrix A = modeltransform * localTransform_;
+	// If z is greater than 0 (i.e. it's behind the viewer), we are rendering to an offscreen bitmap, or 
+	if ((A[14] > 0) || (-A[14] < prefs.levelOfDetailStartZ())) return &primitiveGroup_->primitive(0);
+	return &primitiveGroup_->primitive(int((-A[14]-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth()));
+}
+
+// Return pointer to best primitive in the group
+Primitive *PrimitiveInfo::bestPrimitive()
+{
+	return &primitiveGroup_->primitive(0);
 }
 
 // Return local transformation of primitive
@@ -534,6 +649,12 @@ void PrimitiveGroup::clear()
 	if (primitives_ != NULL) delete[] primitives_;
 	nPrimitives_ = prefs.levelsOfDetail();
 	primitives_ = new Primitive[nPrimitives_];
+}
+
+// Create VBOs for all stored primitives in the group
+void PrimitiveGroup::createVBOs()
+{
+	for (int n=0; n<nPrimitives_; ++n) primitives_[n].createVBO();
 }
 
 // Return primitive corresponding to level of detail specified

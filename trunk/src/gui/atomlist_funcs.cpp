@@ -67,7 +67,7 @@ void AtomListWidget::updateSelection()
 	//printf("Selection has been updated.\n");
 	TTreeWidgetItem *ti;
 	Atom *i;
-	gui.mainWidget->disableDrawing();
+	gui.mainWidget()->disableDrawing();
 	Model *m = aten.currentModelOrFrame();
 	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
 	{
@@ -75,7 +75,7 @@ void AtomListWidget::updateSelection()
 		i = (Atom*) ti->data.asPointer(VTypes::AtomData);
 		if (i != NULL) item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
-	gui.mainWidget->enableDrawing();
+	gui.mainWidget()->enableDrawing();
 	gui.update(GuiQt::CanvasTarget);
 }
 
@@ -354,6 +354,6 @@ void AtomListWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.AtomListButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget->postRedisplay();
+	if (this->isFloating()) gui.mainWidget()->postRedisplay();
 	event->accept();
 }

@@ -106,10 +106,10 @@ int main(int argc, char *argv[])
 	}
 
 	// Delete the main TCanvas
-	delete gui.mainWindow;
+	delete gui.mainWindow();
 
 	// Delete the main QApplication
-	delete gui.app;
+	delete gui.application();
 
 	// Done.
 	return 0;
