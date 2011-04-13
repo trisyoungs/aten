@@ -394,6 +394,7 @@ void TCanvas::paintGL()
 	// Finally, swap buffers if necessary and reinstate VBO status
 	if (prefs.manualSwapBuffers()) swapBuffers();
 	prefs.setUseVBOs(vbostate);
+	// TGAY TODO Pop instance here if rendering to offscreen canvas
 	msg.exit("TCanvas::paintGL");
 }
 
@@ -457,7 +458,7 @@ void TCanvas::disableDrawing()
 }
 
 // Set whether offscreen rendering is being performed
-void TCanvas::setOffScreenRendering(bool b)
+void TCanvas::setOffScreenRendering(bool b, bool highQuality)
 {
 	renderOffScreen_ = b;
 	// Make sure here that the current (correct) context width and height are stored
@@ -466,12 +467,19 @@ void TCanvas::setOffScreenRendering(bool b)
 		contextWidth_ = (GLsizei) gui.mainWidget()->width();
 		contextHeight_ = (GLsizei) gui.mainWidget()->height();
 	}
+	else highQualityOffScreen_ = highQuality;
 }
 
 // Return whether offscreen rendering is being performed
 bool TCanvas::offScreenRendering() const
 {
 	return renderOffScreen_;
+}
+
+// Return whether to use high quality offscreen rendering (or normal quality)
+bool TCanvas::highQualityOffScreen() const
+{
+	return highQualityOffScreen_;
 }
 
 // Refresh widget

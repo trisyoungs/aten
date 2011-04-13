@@ -501,9 +501,11 @@ bool GuiQt::saveBeforeClose()
 // Save image of current view
 bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality)
 {
+	msg.enter("GuiQt::saveImage");
 	if (bf == GuiQt::nBitmapFormats)
 	{
 		msg.print("Invalid bitmap format given to Gui::saveImage().\n");
+		msg.exit("GuiQt::saveImage");
 		return FALSE;
 	}
 
@@ -516,11 +518,8 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	int newlabelsize = int (oldlabelsize*( (1.0*height / mainWidget_->height()) ));
 	prefs.setLabelSize(newlabelsize);
 
-	mainWidget_->setOffScreenRendering(TRUE);
+	mainWidget_->setOffScreenRendering(TRUE, TRUE);
 	mainWidget_->postRedisplay(TRUE);
-
-	// Flag any surfaces to be rerendered for use in this context
-// 	aten.current.rs()->rerenderGrids();
 
 	if (prefs.useFrameBuffer() == FALSE) pixmap = mainWidget_->renderPixmap(width, height, FALSE);
 	else
@@ -529,17 +528,15 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 		pixmap = QPixmap::fromImage(image);
 	}
 
-	mainWidget_->setOffScreenRendering(FALSE);
-	// TGAY Was reinitialisePrimitives, now should be popInstance?
-	
-	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
-// 	aten.current.rs()->rerenderGrids();
+	mainWidget_->setOffScreenRendering(FALSE, FALSE);
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);
 
 	pixmap.save(filename, GuiQt::bitmapFormatExtension(bf), quality);
 	msg.print("Saved current view as '%s' [%ix%i %s]\n", filename, width, height, GuiQt::bitmapFormatFilter(bf));
+
+	msg.exit("GuiQt::saveImage");
 	return TRUE;
 }
 

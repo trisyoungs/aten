@@ -21,13 +21,7 @@
 
 #define GL_GLEXT_PROTOTYPES
 #include "render/primitive.h"
-#include "base/messenger.h"
-#include "base/constants.h"
 #include "classes/prefs.h"
-#include "gui/tcanvas.uih"
-#include <QtOpenGL/QGLWidget>
-#include <stdio.h>
-#include <math.h>
 
 /*
 // Primitive Instance
@@ -358,8 +352,23 @@ void Primitive::pushInstance(const QGLContext *context)
 	}
 	else
 	{
+		// Generate display list
+		int listId = glGenLists(1);
+		glNewList(listId, GL_COMPILE);
+		for (VertexChunk *chunk = vertexChunks_.first(); chunk != NULL; chunk = chunk->next) chunk->sendToGL();
+		glEndList();
+
+		// Store data
+		PrimitiveInstance *pi = instances_.add();
+		pi->set(context, PrimitiveInstance::ListInstance, listId);
 	}
 	msg.exit("Primitive::pushInstance");
+}
+
+// Pop topmost instance on primitive's stack
+void Primitive::popInstance()
+{
+	instances_.removeLast();
 }
 
 // Send to OpenGL (i.e. render)

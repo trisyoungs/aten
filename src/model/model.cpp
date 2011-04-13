@@ -214,16 +214,14 @@ Model::ModelType Model::type()
 // Regenerate icon
 void Model::regenerateIcon()
 {
-	// Generate pixmap for fragment, keeping current primitive quality
-	bool reusePrims = prefs.reusePrimitiveQuality();
-	prefs.setReusePrimitiveQuality(TRUE);
+	msg.enter("Model::regenerateIcon");
 	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
 	
 	prefs.setFrameCurrentModel(FALSE);
 	prefs.setFrameWholeView(FALSE);
 	prefs.setViewRotationGlobe(FALSE);
 	gui.mainWidget()->setRenderSource(this);
-	gui.mainWidget()->setOffScreenRendering(TRUE);
+	gui.mainWidget()->setOffScreenRendering(TRUE, FALSE);
 
 	if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget()->renderPixmap(100, 100, FALSE);
 	else icon_ = QPixmap::fromImage(gui.mainWidget()->grabFrameBuffer());
@@ -234,8 +232,8 @@ void Model::regenerateIcon()
 	
 	gui.mainWidget()->setRenderSource(NULL);
 
-	gui.mainWidget()->setOffScreenRendering(FALSE);
-	prefs.setReusePrimitiveQuality(reusePrims);
+	gui.mainWidget()->setOffScreenRendering(FALSE, FALSEr);
+	msg.exit("Model::regenerateIcon");
 }
 
 // Return icon
