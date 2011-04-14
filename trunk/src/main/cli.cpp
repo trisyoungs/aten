@@ -135,6 +135,9 @@ Cli cliSwitches[] = {
 	{ Cli::NoIncludesSwitch,	'\0',"noincludes",	0,
 		"",
 		"Prevent loading of includes on startup" },
+	{ Cli::NoListsSwitch,		'\0',"nolists",		0,
+		"",
+		"Disable use of OpenGL display lists" },
 	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
 		"",
 		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
@@ -167,7 +170,7 @@ Cli cliSwitches[] = {
 		"Set the maximum number of undo levels per model (-1 = unlimited)" },
 	{ Cli::VBOSwitch,		'\0',"vbo",		0,
 		"",
-		"Flags that Aten should attempt to use Vertex Buffer Objects for rendering (experimental)" },
+		"Use OpenGL Vertex Buffer Objects for rendering" },
 	{ Cli::VerboseSwitch,		'v',"verbose",		0,
 		"",
 		"Enable verbose program output" },
@@ -320,6 +323,11 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (Cli::NoPartitionsSwitch):
 					prefs.setLoadPartitions(FALSE);
 					break;
+				// Turn off display list usage
+				case (Cli::NoListsSwitch):
+					msg.print("OpenGL display lists will not be used.\n");
+					prefs.setInstanceType(PrimitiveInstance::NoInstance);
+					break;
 				// Display help
 				case (Cli::HelpSwitch):
 					printUsage();
@@ -331,7 +339,8 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Turn on VBO usage
 				case (Cli::VBOSwitch):
-					prefs.setUseVBOs(TRUE);
+					msg.print("OpenGL Vertex Buffer Objects will be used.\n");
+					prefs.setInstanceType(PrimitiveInstance::VBOInstance);
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
@@ -445,6 +454,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::NoFragmentsSwitch):
 				case (Cli::NoFragmentIconsSwitch):
 				case (Cli::NoIncludesSwitch):
+				case (Cli::NoListsSwitch):
 				case (Cli::NoPartitionsSwitch):
 				case (Cli::QuietSwitch):
 				case (Cli::VBOSwitch):

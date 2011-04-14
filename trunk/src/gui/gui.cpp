@@ -140,6 +140,7 @@ bool GuiQt::exists()
 // Initialise QApplication and the main QGlWidget
 void GuiQt::initialise(int &argc, char **argv)
 {
+	msg.enter("GuiQt::initialise");
 	// Create the QApplication
 	#if QT_VERSION >= 0x040600
 	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL);
@@ -158,6 +159,7 @@ void GuiQt::initialise(int &argc, char **argv)
 	QGLFormat format;
 	format.setSampleBuffers(TRUE);
 	mainContext_ = new QGLContext(format);
+	msg.print(Messenger::Verbose, "Main widget context is %p\n", mainContext_);
 
 	// Create the widget
 	mainWidget_ = new TCanvas(mainContext_, mainWindow_);
@@ -165,6 +167,7 @@ void GuiQt::initialise(int &argc, char **argv)
 	mainWidget_->setGeometry(0,0,800,600);
 	mainWidget_->setCursor(Qt::ArrowCursor);
 	mainWidget_->enableDrawing();
+	msg.exit("GuiQt::initialise");
 }
 
 // Initialise and create GUI
@@ -518,17 +521,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	int newlabelsize = int (oldlabelsize*( (1.0*height / mainWidget_->height()) ));
 	prefs.setLabelSize(newlabelsize);
 
-	mainWidget_->setOffScreenRendering(TRUE, TRUE);
-	mainWidget_->postRedisplay(TRUE);
-
-	if (prefs.useFrameBuffer() == FALSE) pixmap = mainWidget_->renderPixmap(width, height, FALSE);
-	else
-	{
-		QImage image = mainWidget_->grabFrameBuffer();
-		pixmap = QPixmap::fromImage(image);
-	}
-
-	mainWidget_->setOffScreenRendering(FALSE, FALSE);
+	pixmap = gui.mainWidget()->generateImage(width, height, TRUE);
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);

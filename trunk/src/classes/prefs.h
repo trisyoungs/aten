@@ -29,6 +29,7 @@
 #include "classes/colourscale.h"
 #include "base/dnchar.h"
 #include "base/choice.h"
+#include "render/primitive.h"
 
 // Forward declarations
 class UnitCell;
@@ -357,8 +358,8 @@ class Prefs
 	GLint depthNear_, depthFar_;
 	// Near and far clipping planes for glPerspective() and glFrustum();
 	GLdouble clipNear_, clipFar_;
-	// Flag whether to use VBOs
-	bool useVBOs_;
+	// Which primitive instance type to use
+	PrimitiveInstance::InstanceType instanceType_;
 
 	public:
 	// Set status of fog (depth cueing)
@@ -401,10 +402,10 @@ class Prefs
 	void setShininess(int n);
 	// Return the current shininess of GL objects
 	GLint shininess() const;
-	// Sets whether to use VBOs
-	void setUseVBOs(bool b);
-	// Return whether to use VBOs
-	bool useVBOs();
+	// Set which primitive instance type to use
+	void setInstanceType(PrimitiveInstance::InstanceType type);
+	// Return which primitive instance type to use
+	PrimitiveInstance::InstanceType instanceType();
 
 
 	/*

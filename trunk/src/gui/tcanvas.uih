@@ -87,8 +87,8 @@ class TCanvas : public QGLWidget
 	bool drawing_;
 	// Flag to prevent rendering (used to restrict unnecessary renders before canvas is even visible)
 	bool noDraw_;
-	// Flag used by some sub-rendering processes (e.g. surfaces) in order to decide which display list to use
-	bool renderOffScreen_;
+	// Flag stating whether high-quality primitives should be used for rendering
+	bool highQuality_;
 	// Time counter for mouse move events
 	QTime mouseMoveCounter_;
 	// Rendering engine
@@ -127,10 +127,8 @@ class TCanvas : public QGLWidget
 	void enableDrawing();
 	// Disable rendering
 	void disableDrawing();
-	// Set whether offscreen rendering is being performed
-	void setOffScreenRendering(bool b);
-	// Return whether offscreen rendering is being performed
-	bool offScreenRendering() const;
+	// Return whether rendering should use high quality primitives
+	bool highQuality() const;
 	// Update primitives (after, e.g., change in preferences)
 	void updatePrimitives();
 	// Reinitialise transparency correction
@@ -139,6 +137,8 @@ class TCanvas : public QGLWidget
 	void postRedisplay(bool noImages = FALSE, bool redrawActive = FALSE);
 	// Update view matrix stored in RenderEngine
 	void updateTransformation(Matrix &mat, Vec3<double> cellcentre);
+	// Render or grab image
+	QPixmap generateImage(int w, int h, bool highQuality);
 
 
 	/*

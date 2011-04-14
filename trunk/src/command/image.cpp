@@ -132,7 +132,6 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainWidget()->height()) ));
 	prefs.setLabelSize(newlabelsize);
 
-	gui.mainWidget()->setOffScreenRendering(TRUE);
 	int progid = progress.initialise("Saving movie frames...", lastframe-firstframe, FALSE, FALSE);
 	bool canceled = FALSE;
 	for (int n = firstframe; n <= lastframe; n += frameskip)
@@ -141,12 +140,8 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
 		gui.mainWidget()->postRedisplay(TRUE);
 
-		if (prefs.useFrameBuffer() == FALSE) pixmap = gui.mainWidget()->renderPixmap(width, height, FALSE);
-		else
-		{
-			QImage image = gui.mainWidget()->grabFrameBuffer();
-			pixmap = QPixmap::fromImage(image);
-		}
+		pixmap = gui.mainWidget()->generateImage(width, height, TRUE);
+
 		pixmap.save(basename.get(), "png", -1);
 		if (!progress.update(progid,n))
 		{
@@ -159,7 +154,6 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
-	gui.mainWidget()->setOffScreenRendering(FALSE);
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);
