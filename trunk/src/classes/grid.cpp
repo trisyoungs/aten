@@ -1012,6 +1012,7 @@ bool Grid::periodic() const
 void Grid::setOutlineVolume(bool b)
 {
 	outlineVolume_ = b;
+	logChange();
 }
 
 // Return whether to outline grid volume

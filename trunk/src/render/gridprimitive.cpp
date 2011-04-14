@@ -40,6 +40,10 @@ GridPrimitive::GridPrimitive(Grid *source)
 	source_ = source;
 	primaryIsTransparent_ = FALSE;
 	secondaryIsTransparent_ = FALSE;
+	
+	// Set both primitives to use no instances
+	primaryPrimitive_.setNoInstances();
+	secondaryPrimitive_.setNoInstances();
 }
 
 // Return primary primitive
