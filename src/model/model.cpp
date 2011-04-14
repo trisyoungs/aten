@@ -221,18 +221,14 @@ void Model::regenerateIcon()
 	prefs.setFrameWholeView(FALSE);
 	prefs.setViewRotationGlobe(FALSE);
 	gui.mainWidget()->setRenderSource(this);
-	gui.mainWidget()->setOffScreenRendering(TRUE, FALSE);
 
-	if (prefs.useFrameBuffer() == FALSE) icon_ = gui.mainWidget()->renderPixmap(100, 100, FALSE);
-	else icon_ = QPixmap::fromImage(gui.mainWidget()->grabFrameBuffer());
+	icon_ = gui.mainWidget()->generateImage(100, 100, FALSE);
 
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
-	
 	gui.mainWidget()->setRenderSource(NULL);
-
-	gui.mainWidget()->setOffScreenRendering(FALSE, FALSEr);
+	
 	msg.exit("Model::regenerateIcon");
 }
 

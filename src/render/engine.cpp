@@ -287,17 +287,21 @@ void RenderPrimitives::popInstance()
 RenderEngine::RenderEngine()
 {
 	// Primitives
-	glyphTriangles_[RenderEngine::SolidTriangle].setColourData(TRUE);
-	glyphTriangles_[RenderEngine::TransparentTriangle].setColourData(TRUE);
-	glyphTriangles_[RenderEngine::WireTriangle].setColourData(TRUE);
+	for (int n=0; n<nTriangleStyles; ++n)
+	{
+		glyphTriangles_[n].setColourData(TRUE);
+		glyphTriangles_[n].setNoInstances();
+	}
 	glyphLines_.setColourData(TRUE);
 	glyphLines_.setType(GL_LINES);
+	glyphLines_.setNoInstances();
 	initialiseTransparency();
 	scaledAtomAdjustments_ = new double[elements().nElements()];
 	primitives_[0].createPrimitives(prefs.primitiveQuality());
 	primitives_[1].createPrimitives(prefs.imagePrimitiveQuality());
 	lastSource_ = NULL;
 	Q_ = 0;
+	calculateAdjustments();
 }
 
 // Destructor
@@ -402,7 +406,6 @@ void RenderEngine::sortAndSendGL()
 {
 	Matrix A ;
 	Primitive *prim;
-	bool offscreen = gui.mainWidget()->offScreenRendering();
 	
 	// Transform and render each solid primitive in each list
 	for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
@@ -412,7 +415,7 @@ void RenderEngine::sortAndSendGL()
 			// If the info structure has a pointer to a primitive in it, use that.
 			// Otherwise, work out a level of detail value to pass to the primitive group referenced.
 			prim = pi->primitive();
-			if (prim == NULL) prim = (offscreen ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
+			if (prim == NULL) prim = (Q_ == 1 ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
 			
 			// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
 			if (!prim->colouredVertexData()) glColor4fv(pi->colour());
@@ -454,7 +457,7 @@ void RenderEngine::sortAndSendGL()
 			// If the info structure has a pointer to a primitive in it, use that.
 			// Otherwise, work out a level of detail value to pass to the primitive group referenced.
 			prim = pi->primitive();
-			if (prim == NULL) prim = (offscreen ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
+			if (prim == NULL) prim = (Q_ == 1 ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
 			if (!prim->colouredVertexData()) glColor4fv(pi->colour());
 			A = modelTransformationMatrix_ * pi->localTransform();
 			glLoadMatrixd(A.matrix());
@@ -549,6 +552,8 @@ void RenderEngine::initialiseGL()
 // Push primitives instance (in specified quality)
 void RenderEngine::pushInstance(bool highQuality, const QGLContext *context)
 {
+	msg.print(Messenger::Verbose, "Pushing primitive instance for context %p\n", context);
+	if (context == gui.mainContext()) msg.print(Messenger::Verbose, "This instance is associated to the main context.\n");
 	primitives_[highQuality].pushInstance(context);
 }
 

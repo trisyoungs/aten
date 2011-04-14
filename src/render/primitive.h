@@ -37,7 +37,7 @@ class PrimitiveInstance
 	// List pointers
 	PrimitiveInstance *prev, *next;
 	// Instance Type
-	enum InstanceType { ListInstance, VBOInstance };
+	enum InstanceType { NoInstance, ListInstance, VBOInstance };
 	
 	private:
 	// Context to which primitive instance is associated
@@ -85,6 +85,8 @@ class Primitive
 	GLenum type_;
 	// Stack of OpenGL VBO or display list IDs and the contexts in which they were created
 	List<PrimitiveInstance> instances_;
+	// Flag stating whether or not instances should be used for this primitive
+	bool useInstances_;
 
 	public:
 	// Clear existing data (including deleting arrays)
@@ -99,6 +101,8 @@ class Primitive
 	void setColourData(bool b);
 	// Return whether vertex data contains colour information
 	bool colouredVertexData();
+	// Flag that this primitive should not use instances (rendering will use vertex arrays)
+	void setNoInstances();
 	// Push instance layer from current vertex chunk list
 	void pushInstance(const QGLContext *context);
 	// Pop topmost instance layer

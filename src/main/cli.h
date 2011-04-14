@@ -27,7 +27,7 @@ class Cli
 {
 	public:
 	// Command line switches
-	enum CliSwitch { AtenDataSwitch, BatchSwitch, BohrSwitch, BondSwitch, CacheSwitch, CentreSwitch, CommandSwitch, DebugSwitch, DoubleSwitch, ExportSwitch, ExportMapSwitch, ExpressionSwitch, FilterSwitch, ForcefieldSwitch, FoldSwitch, FormatSwitch, GridSwitch, HelpSwitch, IntSwitch, InteractiveSwitch, KeepNamesSwitch, KeepTypesSwitch, KeepViewSwitch, LoadFromListSwitch, MapSwitch, NewModelSwitch, NoBondSwitch, NoCentreSwitch, NoFiltersSwitch, NoFoldSwitch, NoFragmentsSwitch, NoFragmentIconsSwitch, NoIncludesSwitch, NoPackSwitch, NoPartitionsSwitch, NoQtSettingsSwitch, PackSwitch, PipeSwitch, QuietSwitch, ScriptSwitch, StringSwitch, TrajectorySwitch, UndoLevelSwitch, VBOSwitch, VerboseSwitch, VersionSwitch, ZmapSwitch, nSwitchItems };
+	enum CliSwitch { AtenDataSwitch, BatchSwitch, BohrSwitch, BondSwitch, CacheSwitch, CentreSwitch, CommandSwitch, DebugSwitch, DoubleSwitch, ExportSwitch, ExportMapSwitch, ExpressionSwitch, FilterSwitch, ForcefieldSwitch, FoldSwitch, FormatSwitch, GridSwitch, HelpSwitch, IntSwitch, InteractiveSwitch, KeepNamesSwitch, KeepTypesSwitch, KeepViewSwitch, LoadFromListSwitch, MapSwitch, NewModelSwitch, NoBondSwitch, NoCentreSwitch, NoFiltersSwitch, NoFoldSwitch, NoFragmentsSwitch, NoFragmentIconsSwitch, NoIncludesSwitch, NoListsSwitch, NoPackSwitch, NoPartitionsSwitch, NoQtSettingsSwitch, PackSwitch, PipeSwitch, QuietSwitch, ScriptSwitch, StringSwitch, TrajectorySwitch, UndoLevelSwitch, VBOSwitch, VerboseSwitch, VersionSwitch, ZmapSwitch, nSwitchItems };
 
 	/*
 	// Description of command line option

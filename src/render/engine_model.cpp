@@ -475,6 +475,7 @@ void RenderEngine::renderCell(Model *source)
 // Render grids
 void RenderEngine::renderGrids(Model *source)
 {
+	msg.enter("RenderEngine::renderGrids");
 	Matrix A;
 	GLenum style;
 	GLfloat colour[4], textcolour[4];
@@ -539,12 +540,13 @@ void RenderEngine::renderGrids(Model *source)
 			renderPrimitive(RenderEngine::GridObject, primitives_[Q_].originCubes_, textcolour, A, GL_LINE, 1.0);
 		}
 	}
-
+	msg.exit("RenderEngine::renderGrids");
 }
 
 // Render glyphs
 void RenderEngine::renderGlyphs(Model *source)
 {
+	msg.enter("RenderEngine::renderGlyphs");
 	Matrix A, B;
 	Vec3<double> r1, r2, r3, r4;
 	RenderEngine::TriangleStyle ts;
@@ -764,6 +766,7 @@ void RenderEngine::renderGlyphs(Model *source)
 	renderPrimitive(RenderEngine::GlyphObject, &glyphTriangles_[RenderEngine::SolidTriangle], FALSE, NULL, A);
 	renderPrimitive(RenderEngine::GlyphObject, &glyphTriangles_[RenderEngine::WireTriangle], FALSE, NULL, A, GL_LINE);
 	renderPrimitive(RenderEngine::GlyphObject, &glyphTriangles_[RenderEngine::TransparentTriangle], TRUE, NULL, A);
+	msg.exit("RenderEngine::renderGlyphs");
 }
 
 // Render text glyphs

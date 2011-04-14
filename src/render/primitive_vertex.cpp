@@ -116,7 +116,6 @@ void Primitive::plotLine(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat
 // Create vertices of sphere with specified radius and quality
 void Primitive::plotSphere(double radius, int nstacks, int nslices)
 {
-	msg.enter("Primitive::plotSphere");
 	int i, j, count;
 	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1;
 	
@@ -152,7 +151,6 @@ void Primitive::plotSphere(double radius, int nstacks, int nslices)
 			defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1, TRUE);
 		}
 	}
-	msg.exit("Primitive::plotSphere");
 }
 
 // Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified

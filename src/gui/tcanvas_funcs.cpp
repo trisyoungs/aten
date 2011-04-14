@@ -43,7 +43,7 @@ TCanvas::TCanvas(QGLContext *ctxt, QWidget *parent) : QGLWidget(ctxt, parent)
 	noPixelData_ = FALSE;
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
-	renderOffScreen_ = FALSE;
+	highQuality_ = FALSE;
 	mouseMoveCounter_.start();
 	// Atom Selection
 	atomClicked_ = NULL;
@@ -166,7 +166,7 @@ void TCanvas::initializeGL()
 	// VBOs when rendering to offscreen bitmaps, or simply not use VBOs when rendering offscreen bitmaps.
 	// The latter is simpler, so this function and the main rendering call take note of which context is being used.
 	static int count = 0;
-	if ((count == 0) && prefs.useVBOs())
+	if ((count == 0) && (prefs.instanceType() == PrimitiveInstance::VBOInstance))
 	{
 		// Get Extensions string and check for presence of 'GL_ARB_vertex_buffer_object'
 		const GLubyte *glexts = NULL;
@@ -174,18 +174,19 @@ void TCanvas::initializeGL()
 		msg.print(Messenger::Verbose, "Available GL Extensions are : %s\n", glexts);
 		if (strstr( (const char *) glexts, "GL_ARB_vertex_buffer_object") == 0)
 		{
-			printf("Error: VBOs requested but the extension is not available.\n");
-			prefs.setUseVBOs(FALSE);
+			printf("Error: VBOs requested but the extension is not available. Falling back to display lists.\n");
+			prefs.setInstanceType(PrimitiveInstance::ListInstance);
 		}
 		++count;
 	}
 
-	// Push a primitives instance in the rendering engine
-	engine_.pushInstance(offScreenRendering(), context());
-	
+
 	// Setup basic GL stuff
 	engine_.initialiseGL();
-	
+
+	// Push a primitives instance in the rendering engine
+	engine_.pushInstance(highQuality_, context());
+
 	msg.exit("TCanvas::initializeGL");
 }
 
@@ -209,11 +210,7 @@ void TCanvas::paintGL()
 		msg.exit("TCanvas::paintGL");
 		return;
 	}
-	
-	// Disable VBO usage if the main context is not currently in use (i.e. we are rendering to an offscreen bitmap)
-	bool vbostate = prefs.useVBOs();
-	if (vbostate && (context() != gui.mainContext())) prefs.setUseVBOs(FALSE);
-	
+
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
 	// all OpenGL calls should be made after the QPainter is constructed, and before the QPainter
 	// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
@@ -237,7 +234,6 @@ void TCanvas::paintGL()
 		if (renderSource_ == NULL)
 		{
 			msg.exit("TCanvas::paintGL");
-			prefs.setUseVBOs(vbostate);
 			return;
 		}
 		localri.item = renderSource_;
@@ -247,7 +243,6 @@ void TCanvas::paintGL()
 	if (first == NULL)
 	{
 		msg.exit("TCanvas::paintGL");
-		prefs.setUseVBOs(vbostate);
 		return;
 	}
 	
@@ -393,15 +388,14 @@ void TCanvas::paintGL()
 	
 	// Finally, swap buffers if necessary and reinstate VBO status
 	if (prefs.manualSwapBuffers()) swapBuffers();
-	prefs.setUseVBOs(vbostate);
-	// TGAY TODO Pop instance here if rendering to offscreen canvas
+
 	msg.exit("TCanvas::paintGL");
 }
 
 // Resize function
 void TCanvas::resizeGL(int newwidth, int newheight)
 {
-	// Store the new width and height of the widget and re-do projection
+	// Store the new width and height of the widget
 	contextWidth_ = (GLsizei) newwidth;
 	contextHeight_ = (GLsizei) newheight;
 }
@@ -457,29 +451,10 @@ void TCanvas::disableDrawing()
 	noDraw_ = TRUE;
 }
 
-// Set whether offscreen rendering is being performed
-void TCanvas::setOffScreenRendering(bool b, bool highQuality)
+// Return whether rendering should use high quality primitives
+bool TCanvas::highQuality() const
 {
-	renderOffScreen_ = b;
-	// Make sure here that the current (correct) context width and height are stored
-	if (!b) 
-	{
-		contextWidth_ = (GLsizei) gui.mainWidget()->width();
-		contextHeight_ = (GLsizei) gui.mainWidget()->height();
-	}
-	else highQualityOffScreen_ = highQuality;
-}
-
-// Return whether offscreen rendering is being performed
-bool TCanvas::offScreenRendering() const
-{
-	return renderOffScreen_;
-}
-
-// Return whether to use high quality offscreen rendering (or normal quality)
-bool TCanvas::highQualityOffScreen() const
-{
-	return highQualityOffScreen_;
+	return highQuality_;
 }
 
 // Refresh widget
@@ -495,6 +470,35 @@ void TCanvas::postRedisplay(bool noImages, bool redrawActive)
 void TCanvas::updateTransformation(Matrix& mat, Vec3< double > cellcentre)
 {
 	engine_.setTransformationMatrix(mat, cellcentre);
+}
+
+// Render or grab image
+QPixmap TCanvas::generateImage(int w, int h, bool highQuality)
+{
+	// Store current quality value
+	bool oldquality = highQuality_;
+	highQuality_ = highQuality;
+	if (prefs.useFrameBuffer() == FALSE)
+	{
+		// Generate offscreen bitmap (a temporary context will be created)
+		QPixmap pixmap = gui.mainWidget()->renderPixmap(w, h, FALSE);
+		// Pop topmost instance of primitives (which were associated to temporary context)
+		engine_.popInstance(highQuality_);
+		// Ensure correct widget context size is stored
+		contextWidth_ = (GLsizei) width();
+		contextHeight_ = (GLsizei) height();
+		// Revert to old quality setting
+		highQuality_ = oldquality;
+		return pixmap;
+	}
+	else
+	{
+		if (highQuality != oldquality) postRedisplay();
+		QImage image = gui.mainWidget()->grabFrameBuffer();
+		// Revert to old quality setting
+		highQuality_ = oldquality;
+		return QPixmap::fromImage(image);
+	}
 }
 
 // Reinitialise primitives

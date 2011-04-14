@@ -187,7 +187,7 @@ Prefs::Prefs()
 	polygonAliasing_ = FALSE;
 	multiSampling_ = TRUE;
 	backfaceCulling_ = FALSE;
-	useVBOs_ = FALSE;
+	instanceType_ = PrimitiveInstance::ListInstance;
 	shininess_ = 100;
 	clipNear_ = 0.5;
 	clipFar_ = 2000.0;
@@ -945,16 +945,16 @@ GLint Prefs::shininess() const
 	return shininess_;
 }
 
-// Sets whether to use VBOs
-void Prefs::setUseVBOs(bool b)
+// Set which primitive instance type to use
+void Prefs::setInstanceType(PrimitiveInstance::InstanceType type)
 {
-	useVBOs_ = b;
+	instanceType_ = type;
 }
 
-// Return whether to use VBOs
-bool Prefs::useVBOs()
+// Return which primitive instance type to use
+PrimitiveInstance::InstanceType Prefs::instanceType()
 {
-	return useVBOs_;
+	return instanceType_;
 }
 
 /*
