@@ -33,7 +33,6 @@ class TTreeWidget : public QTreeWidget
 
 	public:
 	TTreeWidget(QWidget *parent) : QTreeWidget(parent) {};
-	//~TCanvas();
 
 	private:
 	// List of TTreeViewWidgets that this TTreeWidget contains

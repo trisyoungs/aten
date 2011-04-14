@@ -44,6 +44,7 @@ AtomListWidget::AtomListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	listSelectionPoint_ = -1;
 	listLastModel_ = NULL;
 	shouldRefresh_ = TRUE;
+	refreshing_ = FALSE;
 	lastClicked_ = NULL;
 	lastHovered_ = NULL;
 	viewingByAtom_ = TRUE;
@@ -97,8 +98,9 @@ void AtomListWidget::setColumns(TTreeWidgetItem *twi)
 }
 
 // Refresh the atom list
-void AtomListWidget::refresh(bool forceupdate)
+void AtomListWidget::refresh()
 {
+	if (refreshing_) return;
 	msg.enter("AtomListWidget::refresh");
 	// If the atom list page is not visible, don't do anything
 	if (!gui.atomListWidget->isVisible())
@@ -107,6 +109,7 @@ void AtomListWidget::refresh(bool forceupdate)
 		msg.exit("AtomListWidget::refresh");
 		return;
 	}
+	refreshing_ = TRUE;
 	Model *m = aten.currentModelOrFrame();
 	// Check this model against the last one we represented in the list
 	if (m != listLastModel_)
@@ -121,7 +124,7 @@ void AtomListWidget::refresh(bool forceupdate)
 	Refitem<TTreeWidgetItem,int> *ri;
 	Atom *i;
 	int mol, n, count;
-	if (forceupdate || (gui.atomListWidget->listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates))))
+	if (listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates)))
 	{
 		// Clear the current list
 		ui.AtomTree->clear();
@@ -178,10 +181,10 @@ void AtomListWidget::refresh(bool forceupdate)
 			}
 		}
 		// Set new log points
-		gui.atomListWidget->listStructurePoint_ = m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates);
-		gui.atomListWidget->listSelectionPoint_ = m->changeLog.log(Log::Selection);
+		listStructurePoint_ = m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates);
+		listSelectionPoint_ = m->changeLog.log(Log::Selection);
 	}
-	else if (gui.atomListWidget->listSelectionPoint_ != m->changeLog.log(Log::Selection))
+	else if (listSelectionPoint_ != m->changeLog.log(Log::Selection))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		if (viewingByAtom_)
@@ -192,10 +195,17 @@ void AtomListWidget::refresh(bool forceupdate)
 				if (i != NULL) ri->item->setSelected(i->isSelected());
 			}
 		}
-		else refresh(TRUE);
+		else
+		{
+			refreshing_ = FALSE;
+			listSelectionPoint_ = -1;
+			listStructurePoint_ = -1;
+			refresh();
+		}
 		listSelectionPoint_ = m->changeLog.log(Log::Selection);
 	}
 	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
+	refreshing_ = FALSE;
 	msg.exit("AtomListWidget::refresh");
 }
 
@@ -205,7 +215,10 @@ void AtomListWidget::on_ViewByAtomButton_clicked(bool checked)
 	if (!viewingByAtom_)
 	{
 		viewingByAtom_ = TRUE;
-		refresh(TRUE);
+		refreshing_ = FALSE;
+		listSelectionPoint_ = -1;
+		listStructurePoint_ = -1;
+		refresh();
 	}
 	else viewingByAtom_ = TRUE;
 }
@@ -216,7 +229,10 @@ void AtomListWidget::on_ViewByPatternButton_clicked(bool checked)
 	if (viewingByAtom_)
 	{
 		viewingByAtom_ = FALSE;
-		refresh(TRUE);
+		refreshing_ = FALSE;
+		listSelectionPoint_ = -1;
+		listStructurePoint_ = -1;
+		refresh();
 	}
 	else viewingByAtom_ = FALSE;
 }
