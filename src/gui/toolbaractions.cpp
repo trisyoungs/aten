@@ -28,40 +28,40 @@
 void AtenForm::on_actionStyleStick_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::StickStyle);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set current rendering style to tube
 void AtenForm::on_actionStyleTube_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::TubeStyle);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set current rendering style to sphere
 void AtenForm::on_actionStyleSphere_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::SphereStyle);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set current rendering style to scaled
 void AtenForm::on_actionStyleScaled_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::ScaledStyle);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set current rendering style to individual
 void AtenForm::on_actionStyleIndividual_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::IndividualStyle);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set corresponding action to supplied Atom::DrawStyle

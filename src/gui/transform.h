@@ -44,9 +44,9 @@ class TransformWidget : public QDockWidget
 	void on_RotateClockwiseButton_clicked(bool on);
 	void on_RotateAnticlockwiseButton_clicked(bool on);
 	// Matrix Transform
-	void on_TransformDefineAButton_clicked(bool on);
-	void on_TransformDefineBButton_clicked(bool on);
-	void on_TransformDefineCButton_clicked(bool on);
+	void on_TransformPickAButton_clicked(bool on);
+	void on_TransformPickBButton_clicked(bool on);
+	void on_TransformPickCButton_clicked(bool on);
 	void on_TransformNormaliseAButton_clicked(bool on);
 	void on_TransformNormaliseBButton_clicked(bool on);
 	void on_TransformNormaliseCButton_clicked(bool on);
@@ -61,9 +61,9 @@ class TransformWidget : public QDockWidget
 	void on_TransformDefineOriginButton_clicked(bool on);
 	// Matrix Convert
 	void on_ConvertRotateIntoButton_clicked(bool on);
-	void on_ConvertSourceDefineAButton_clicked(bool on);
-	void on_ConvertSourceDefineBButton_clicked(bool on);
-	void on_ConvertSourceDefineCButton_clicked(bool on);
+	void on_ConvertSourcePickAButton_clicked(bool on);
+	void on_ConvertSourcePickBButton_clicked(bool on);
+	void on_ConvertSourcePickCButton_clicked(bool on);
 	void on_ConvertSourceNormaliseAButton_clicked(bool on);
 	void on_ConvertSourceNormaliseBButton_clicked(bool on);
 	void on_ConvertSourceNormaliseCButton_clicked(bool on);
@@ -75,9 +75,9 @@ class TransformWidget : public QDockWidget
 	void on_ConvertSourceGenerateCButton_clicked(bool on);
 	void on_ConvertOriginCellCentreButton_clicked(bool on);
 	void on_ConvertDefineOriginButton_clicked(bool on);
-	void on_ConvertTargetDefineAButton_clicked(bool on);
-	void on_ConvertTargetDefineBButton_clicked(bool on);
-	void on_ConvertTargetDefineCButton_clicked(bool on);
+	void on_ConvertTargetPickAButton_clicked(bool on);
+	void on_ConvertTargetPickBButton_clicked(bool on);
+	void on_ConvertTargetPickCButton_clicked(bool on);
 	void on_ConvertTargetNormaliseAButton_clicked(bool on);
 	void on_ConvertTargetNormaliseBButton_clicked(bool on);
 	void on_ConvertTargetNormaliseCButton_clicked(bool on);

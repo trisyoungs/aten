@@ -141,7 +141,7 @@ void AtenForm::on_actionSchemeElement_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
-	aten.visibleLogChange(Log::Style);
+	aten.globalLogChange(Log::Style);
 	gui.mainWidget()->postRedisplay();
 }
 
@@ -150,8 +150,8 @@ void AtenForm::on_actionSchemeCharge_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set current colouring scheme to force
@@ -159,8 +159,8 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set current colouring scheme to velocity
@@ -168,8 +168,8 @@ void AtenForm::on_actionSchemeVelocity_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::VelocityScheme);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set current colouring scheme to custom
@@ -177,8 +177,8 @@ void AtenForm::on_actionSchemeCustom_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::CustomScheme);
-	aten.visibleLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
 }
 
 // Set scheme actions to reflect supplied Prefs::ColouringScheme
@@ -190,6 +190,6 @@ void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
 	else if (cs == Prefs::VelocityScheme) ui.actionSchemeVelocity->setChecked(TRUE);
 	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
 	prefs.setColourScheme(cs);
-	aten.visibleLogChange(Log::Style);
+	aten.globalLogChange(Log::Style);
 	gui.mainWidget()->postRedisplay(TRUE);
 }

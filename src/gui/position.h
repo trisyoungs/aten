@@ -47,13 +47,13 @@ class PositionWidget : public QDockWidget
 	void on_FlipYButton_clicked(bool checked);
 	void on_FlipZButton_clicked(bool checked);
 	// Shift
-	void on_DefineVectorButton_clicked(bool checked);
-	void on_NormaliseVectorButton_clicked(bool checked);
-	void on_VectorShiftXSpin_valueChanged(double value);
-	void on_VectorShiftYSpin_valueChanged(double value);
-	void on_VectorShiftZSpin_valueChanged(double value);
-	void on_VectorShiftPositiveButton_clicked(bool checked);
-	void on_VectorShiftNegativeButton_clicked(bool checked);
+	void on_ShiftPickVectorButton_clicked(bool checked);
+	void on_ShiftNormaliseVectorButton_clicked(bool checked);
+	void on_ShiftVectorXSpin_valueChanged(double value);
+	void on_ShiftVectorYSpin_valueChanged(double value);
+	void on_ShiftVectorZSpin_valueChanged(double value);
+	void on_ShiftVectorPositiveButton_clicked(bool checked);
+	void on_ShiftVectorNegativeButton_clicked(bool checked);
 	// Translate
 	void on_TranslatePosXButton_clicked(bool on);
 	void on_TranslatePosYButton_clicked(bool on);
@@ -63,8 +63,8 @@ class PositionWidget : public QDockWidget
 	void on_TranslateNegZButton_clicked(bool on);
 	// Reposition
 	void on_RepositionSelectionButton_clicked(bool on);
-	void on_DefineRepositionReferenceButton_clicked(bool on);
-	void on_DefineRepositionTargetButton_clicked(bool on);
+	void on_RepositionDefineReferenceButton_clicked(bool on);
+	void on_RepositionDefineTargetButton_clicked(bool on);
 	protected:
 	void closeEvent(QCloseEvent *event);
 

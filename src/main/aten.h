@@ -114,8 +114,8 @@ class Aten
 	Refitem<Model, int> *visibleModels();
 	// Return n'th visible model
 	Model *visibleModel(int id);
-	// Log specified change(s) in all visible models
-	void visibleLogChange(Log::LogType);
+	// Log specified change(s) in all models
+	void globalLogChange(Log::LogType);
 
 
 	/*

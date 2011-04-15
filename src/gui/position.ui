@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PositionWidget</class>
  <widget class="QDockWidget" name="PositionWidget">
@@ -980,7 +981,7 @@
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="VectorShiftZSpin">
+              <widget class="QDoubleSpinBox" name="ShiftVectorZSpin">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -999,7 +1000,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="VectorShiftXSpin">
+              <widget class="QDoubleSpinBox" name="ShiftVectorXSpin">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1018,7 +1019,7 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="VectorShiftYSpin">
+              <widget class="QDoubleSpinBox" name="ShiftVectorYSpin">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1056,7 +1057,7 @@
               </widget>
              </item>
              <item row="0" column="2">
-              <widget class="QPushButton" name="DefineVectorButton">
+              <widget class="QPushButton" name="ShiftPickVectorButton">
                <property name="minimumSize">
                 <size>
                  <width>32</width>
@@ -1094,7 +1095,7 @@
               </widget>
              </item>
              <item row="1" column="2">
-              <widget class="QPushButton" name="NormaliseVectorButton">
+              <widget class="QPushButton" name="ShiftNormaliseVectorButton">
                <property name="minimumSize">
                 <size>
                  <width>60</width>
@@ -1152,7 +1153,7 @@
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="VectorDeltaSpin">
+              <widget class="QDoubleSpinBox" name="ShiftVectorDeltaSpin">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1177,7 +1178,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QLabel" name="VectorMagnitudeLabel">
+              <widget class="QLabel" name="ShiftVectorMagnitudeLabel">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -1226,7 +1227,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="VectorShiftPositiveButton">
+           <widget class="QPushButton" name="ShiftVectorShiftPositiveButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1267,7 +1268,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="VectorShiftNegativeButton">
+           <widget class="QPushButton" name="ShiftVectorShiftNegativeButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>1</horstretch>
@@ -1469,7 +1470,7 @@
                 </widget>
                </item>
                <item row="3" column="0" colspan="2">
-                <widget class="QPushButton" name="DefineRepositionReferenceButton">
+                <widget class="QPushButton" name="RepositionDefineReferenceButton">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -1643,7 +1644,7 @@
                 </widget>
                </item>
                <item row="3" column="0" colspan="2">
-                <widget class="QPushButton" name="DefineRepositionTargetButton">
+                <widget class="QPushButton" name="RepositionDefineTargetButton">
                  <property name="minimumSize">
                   <size>
                    <width>32</width>
