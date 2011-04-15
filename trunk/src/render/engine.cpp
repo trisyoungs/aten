@@ -292,6 +292,10 @@ RenderEngine::RenderEngine()
 		glyphTriangles_[n].setColourData(TRUE);
 		glyphTriangles_[n].setNoInstances();
 	}
+	stickLines_.setColourData(TRUE);
+	stickLines_.setType(GL_LINES);
+	stickSelectedLines_.setColourData(TRUE);
+	stickSelectedLines_.setType(GL_LINES);
 	glyphLines_.setColourData(TRUE);
 	glyphLines_.setType(GL_LINES);
 	glyphLines_.setNoInstances();
@@ -300,6 +304,7 @@ RenderEngine::RenderEngine()
 	primitives_[0].createPrimitives(prefs.primitiveQuality());
 	primitives_[1].createPrimitives(prefs.imagePrimitiveQuality());
 	lastSource_ = NULL;
+	rebuildSticks_ = FALSE;
 	Q_ = 0;
 	calculateAdjustments();
 }
@@ -437,6 +442,15 @@ void RenderEngine::sortAndSendGL()
 		}
 	}
 	
+	// Draw stick primitives
+	glDisable(GL_LIGHTING);
+	glLoadMatrixd(modelTransformationMatrix_.matrix());
+	glLineWidth(2.0);
+	stickLines_.sendToGL();
+	glLineWidth(4.0);
+	stickSelectedLines_.sendToGL();
+	glEnable(GL_LIGHTING);
+	
 	// Transform and render each transparent primitive in each list, unless transparencyCorrect_ is off.
 	if (prefs.transparencyCorrect())
 	{
@@ -555,12 +569,17 @@ void RenderEngine::pushInstance(bool highQuality, const QGLContext *context)
 	msg.print(Messenger::Verbose, "Pushing primitive instance for context %p\n", context);
 	if (context == gui.mainContext()) msg.print(Messenger::Verbose, "This instance is associated to the main context.\n");
 	primitives_[highQuality].pushInstance(context);
+	// Push separate instance of the stick primitives
+	stickLines_.pushInstance(context);
+	stickSelectedLines_.pushInstance(context);
 }
 
 // Pop topmost primitive instance
 void RenderEngine::popInstance(bool highQuality)
 {
 	primitives_[highQuality].popInstance();
+	stickLines_.popInstance();
+	stickSelectedLines_.popInstance();
 }
 
 // Update all primitives (following prefs change, etc.)
@@ -657,6 +676,15 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 			activePrimitiveLists_[RenderEngine::AtomSelectionObject] = !lastLog_.isSame(Log::Selection, source->changeLog);
 		}
 		
+		// Stick style primitives
+		if (redobasic || (!lastLog_.isSame(Log::Style,source->changeLog)) || (!lastLog_.isSame(Log::Selection,source->changeLog)))
+		{
+			stickLines_.forgetAll();
+			stickSelectedLines_.forgetAll();
+			rebuildSticks_ = TRUE;
+		}
+		else rebuildSticks_ = FALSE;
+		
 		// Glyphs must be redone on basic change (since they may follow atom coordinates
 		if (redobasic || !lastLog_.isSame(Log::Glyphs, source->changeLog)) activePrimitiveLists_[RenderEngine::GlyphObject]  = TRUE;
 		else activePrimitiveLists_[RenderEngine::GlyphObject]  = FALSE;
@@ -701,6 +729,15 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 		renderUserActions(source, gui.mainWidget());	
 		// Render extras arising from open tool windows (current model only)
 		if (currentModel) renderWindowExtras(source);
+	}
+
+	// If the stick primitives were regenerated, need to create a new instance (after popping the old one)
+	if (rebuildSticks_)
+	{
+		stickLines_.popInstance();
+		stickSelectedLines_.popInstance();
+		stickLines_.pushInstance(gui.mainContext());
+		stickSelectedLines_.pushInstance(gui.mainContext());
 	}
 
 	// All 3D primitive objects have now been filtered, so sort and send to GL

@@ -122,6 +122,8 @@ class RenderEngine
 	List<PrimitiveInfo> solidPrimitives_[RenderEngine::nRenderingObjects];
 	// List of filtered primitives
 	List<PrimitiveInfo> transparentPrimitives_[RenderEngine::nRenderingObjects];
+	// Basic (model) line primitive (for stick styles)
+	Primitive stickLines_, stickSelectedLines_;
 	// Text primitives
 	TextPrimitiveList textPrimitives_;
 	// Triangle
@@ -134,6 +136,8 @@ class RenderEngine
 	Primitive glyphLines_;
 	// Flags indicating which primitive lists are open for rebuilding
 	bool activePrimitiveLists_[RenderEngine::nRenderingObjects];
+	// Flag stating whether to rebuild stick primitives
+	bool rebuildSticks_;
 
 	private:
 	// Calculate atom/bond adjustments

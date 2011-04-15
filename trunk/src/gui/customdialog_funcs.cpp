@@ -35,6 +35,13 @@ AtenCustomDialog::AtenCustomDialog(QWidget *parent) : QDialog(parent)
 	parentTree_ = NULL;
 }
 
+// Destructor
+AtenCustomDialog::~AtenCustomDialog()
+{
+	// Remove any self-generated QButtonGroups
+// 	for (KVData<Dnchar,QButtonGroup*> *bg = button.first(); bg != NULL; bg = bg->next) delete bg->value();
+}
+
 // Perform specified state change
 void AtenCustomDialog::performStateChange(StateChange *sc)
 {

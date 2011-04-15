@@ -32,7 +32,7 @@
 void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b)
 {
 	double dvisible, selvisible, factor, rij, phi;
-	Vec3<double> ri, rj, localx, localy, localz;
+	Vec3<double> ri, rj, localx, localy, localz, stickpos;
 	GLfloat alpha_i, alpha_j;
 
 	// Store copies of alpha values
@@ -84,8 +84,19 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	switch (style_i)
 	{
 		case (Atom::StickStyle):
-			if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A, GL_LINE, selvisible > 0.0 ? 3.0 : 1.0);
-			else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A, GL_LINE, 1.0);
+			if (!rebuildSticks_) break;
+			// First vertex is at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
+			stickpos = A * Vec3<double>(0.0,0.0,1.0);
+			if (i->isSelected())
+			{
+				stickSelectedLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
+				stickSelectedLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
+			}
+			else 
+			{
+				stickLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
+				stickLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
+			}
 			// Move to centre of visible bond, ready for next bond half
 			A.applyTranslationZ(1.0);
 			break;
@@ -123,10 +134,19 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	switch (style_j)
 	{
 		case (Atom::StickStyle):
-			if (j->isSelected()) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A, GL_LINE, selvisible > 0.0 ? 3.0 : 1.0);
-			else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A, GL_LINE, 1.0);
-			// Move to centre of visible bond, ready for next bond half
-			A.applyTranslationZ(1.0);
+			if (!rebuildSticks_) break;
+			// First vertex is *still* at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
+			stickpos = A * Vec3<double>(0.0,0.0,1.0);
+			if (j->isSelected())
+			{
+				stickSelectedLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_j, FALSE);
+				stickSelectedLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
+			}
+			else 
+			{
+				stickLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_j, FALSE);
+				stickLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
+			}
 			break;
 		case (Atom::TubeStyle):
 			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A);
