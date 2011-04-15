@@ -290,6 +290,7 @@ void TCanvas::paintGL()
 
 		// If the stored model pixel data is out of date or rerendering has specifically been requested, redraw the model
 		usepixels = TRUE;
+// 		printf("For Model %s, global noPixelData_ and redrawActive flags are %i and %i, logpoint is %i, and pixel data validity is %i\n", ri->item->name(), noPixelData_, redrawActiveModel_, m->changeLog.log(Log::Total), m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)));
 		if (redrawActiveModel_ && (ri->item == aten.currentModel())) usepixels = FALSE;
 		else if (noPixelData_) usepixels = FALSE;
 		else if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total))) usepixels = FALSE;

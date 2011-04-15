@@ -693,6 +693,11 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 		// Grids only depend on their own log
 		if (!lastLog_.isSame(Log::Grids, source->changeLog)) activePrimitiveLists_[RenderEngine::GridObject] = TRUE;
 	}
+	else
+	{
+		stickLines_.forgetAll();
+		stickSelectedLines_.forgetAll();
+	}
 	
 	// Clear flagged lists
 	for (n=0; n<RenderEngine::nRenderingObjects; ++n) if (activePrimitiveLists_[n])

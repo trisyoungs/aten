@@ -479,7 +479,7 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	}
 	
 	// If previous action was a Pick action then finalise it first
-	if (selectedMode_ >= UserAction::PickPositionVectorShiftAction)
+	if (selectedMode_ >= UserAction::ShiftPickVectorAction)
 	{
 		// If a previous callback was defined then call it before we move on
 		if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
@@ -499,17 +499,17 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	// Prepare canvas for the selected action
 	switch (ua)
 	{
-		case (UserAction::PickPositionVectorShiftAction):
-		case (UserAction::PickTransformRotateAxisAction):
-		case (UserAction::PickTransformDefineAAction):
-		case (UserAction::PickTransformDefineBAction):
-		case (UserAction::PickTransformDefineCAction):
-		case (UserAction::PickConvertDefineSourceAAction):
-		case (UserAction::PickConvertDefineSourceBAction):
-		case (UserAction::PickConvertDefineSourceCAction):
-		case (UserAction::PickConvertDefineTargetAAction):
-		case (UserAction::PickConvertDefineTargetBAction):
-		case (UserAction::PickConvertDefineTargetCAction):
+		case (UserAction::ShiftPickVectorAction):
+		case (UserAction::RotatePickAxisAction):
+		case (UserAction::TransformPickAAction):
+		case (UserAction::TransformPickBAction):
+		case (UserAction::TransformPickCAction):
+		case (UserAction::ConvertSourcePickAAction):
+		case (UserAction::ConvertSourcePickBAction):
+		case (UserAction::ConvertSourcePickCAction):
+		case (UserAction::ConvertTargetPickAAction):
+		case (UserAction::ConvertTargetPickBAction):
+		case (UserAction::ConvertTargetPickCAction):
 		case (UserAction::MeasureDistanceAction):
 		case (UserAction::MeasureAngleAction):
 		case (UserAction::MeasureTorsionAction):
@@ -966,17 +966,17 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		case (UserAction::ZoomAction):
 			break;
 		// Manual picking modes (for axis definitions etc.)
-		case (UserAction::PickPositionVectorShiftAction):
-		case (UserAction::PickTransformRotateAxisAction):
-		case (UserAction::PickTransformDefineAAction):
-		case (UserAction::PickTransformDefineBAction):
-		case (UserAction::PickTransformDefineCAction):
-		case (UserAction::PickConvertDefineSourceAAction):
-		case (UserAction::PickConvertDefineSourceBAction):
-		case (UserAction::PickConvertDefineSourceCAction):
-		case (UserAction::PickConvertDefineTargetAAction):
-		case (UserAction::PickConvertDefineTargetBAction):
-		case (UserAction::PickConvertDefineTargetCAction):
+		case (UserAction::ShiftPickVectorAction):
+		case (UserAction::RotatePickAxisAction):
+		case (UserAction::TransformPickAAction):
+		case (UserAction::TransformPickBAction):
+		case (UserAction::TransformPickCAction):
+		case (UserAction::ConvertSourcePickAAction):
+		case (UserAction::ConvertSourcePickBAction):
+		case (UserAction::ConvertSourcePickCAction):
+		case (UserAction::ConvertTargetPickAAction):
+		case (UserAction::ConvertTargetPickBAction):
+		case (UserAction::ConvertTargetPickCAction):
 			// Have we picked the right number of atoms?
 			if (pickedAtoms_.nItems() != nAtomsToPick_) break;
 			// If a previous callback was defined then call it before we move on

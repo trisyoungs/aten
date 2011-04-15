@@ -93,7 +93,7 @@ void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_RotatePickAxisButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickTransformRotateAxisAction,2,&rotatePickAxisButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::RotatePickAxisAction,2,&rotatePickAxisButton_callback);
 }
 
 void TransformWidget::rotateSelection(double direction)
@@ -131,9 +131,9 @@ void TransformWidget::on_TransformApplyButton_clicked(bool on)
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void transformDefineAButton_callback(Reflist<Atom,int> *picked)
+void transformPickAButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.TransformDefineAButton->setChecked(FALSE);
+	gui.transformWidget->ui.TransformPickAButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -144,9 +144,9 @@ void transformDefineAButton_callback(Reflist<Atom,int> *picked)
 	gui.transformWidget->ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
-void transformDefineBButton_callback(Reflist<Atom,int> *picked)
+void transformPickBButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.TransformDefineBButton->setChecked(FALSE);
+	gui.transformWidget->ui.TransformPickBButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -157,9 +157,9 @@ void transformDefineBButton_callback(Reflist<Atom,int> *picked)
 	gui.transformWidget->ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
-void transformDefineCButton_callback(Reflist<Atom,int> *picked)
+void transformPickCButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.TransformDefineCButton->setChecked(FALSE);
+	gui.transformWidget->ui.TransformPickCButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -170,22 +170,22 @@ void transformDefineCButton_callback(Reflist<Atom,int> *picked)
 	gui.transformWidget->ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformDefineAButton_clicked(bool on)
+void TransformWidget::on_TransformPickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickTransformDefineAAction,2,&transformDefineAButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::TransformPickAAction,2,&transformPickAButton_callback);
 }
 
-void TransformWidget::on_TransformDefineBButton_clicked(bool on)
+void TransformWidget::on_TransformPickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickTransformDefineBAction,2,&transformDefineBButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::TransformPickBAction,2,&transformPickBButton_callback);
 }
 
-void TransformWidget::on_TransformDefineCButton_clicked(bool on)
+void TransformWidget::on_TransformPickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickTransformDefineCAction,2,&transformDefineCButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::TransformPickCAction,2,&transformPickCButton_callback);
 }
 
 void TransformWidget::on_TransformNormaliseAButton_clicked(bool on)
@@ -342,9 +342,9 @@ void TransformWidget::on_ConvertRotateIntoButton_clicked(bool on)
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void convertDefineSourceAButton_callback(Reflist<Atom,int> *picked)
+void convertSourcePickAButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.ConvertSourceDefineAButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertSourcePickAButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -355,9 +355,9 @@ void convertDefineSourceAButton_callback(Reflist<Atom,int> *picked)
 	gui.transformWidget->ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
-void convertDefineSourceBButton_callback(Reflist<Atom,int> *picked)
+void convertSourcePickBButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.ConvertSourceDefineBButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertSourcePickBButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -368,9 +368,9 @@ void convertDefineSourceBButton_callback(Reflist<Atom,int> *picked)
 	gui.transformWidget->ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
-void convertDefineSourceCButton_callback(Reflist<Atom,int> *picked)
+void convertSourcePickCButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.ConvertSourceDefineCButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertSourcePickCButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -381,22 +381,22 @@ void convertDefineSourceCButton_callback(Reflist<Atom,int> *picked)
 	gui.transformWidget->ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceDefineAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourcePickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineSourceAAction,2,&convertDefineSourceAButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::ConvertSourcePickAAction,2,&convertSourcePickAButton_callback);
 }
 
-void TransformWidget::on_ConvertSourceDefineBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourcePickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineSourceBAction,2,&convertDefineSourceBButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::ConvertSourcePickBAction,2,&convertSourcePickBButton_callback);
 }
 
-void TransformWidget::on_ConvertSourceDefineCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourcePickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineSourceCAction,2,&convertDefineSourceCButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::ConvertSourcePickCAction,2,&convertSourcePickCButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool on)
@@ -531,7 +531,7 @@ void TransformWidget::on_ConvertDefineOriginButton_clicked(bool on)
 
 void convertTargetDefineAButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.ConvertTargetDefineAButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertTargetPickAButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -544,7 +544,7 @@ void convertTargetDefineAButton_callback(Reflist<Atom,int> *picked)
 
 void convertTargetDefineBButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.ConvertTargetDefineBButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertTargetPickBButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -557,7 +557,7 @@ void convertTargetDefineBButton_callback(Reflist<Atom,int> *picked)
 
 void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWidget->ui.ConvertTargetDefineCButton->setChecked(FALSE);
+	gui.transformWidget->ui.ConvertTargetPickCButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
@@ -568,22 +568,22 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 	gui.transformWidget->ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetDefineAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetPickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineTargetAAction,2,&convertTargetDefineAButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::ConvertTargetPickAAction,2,&convertTargetDefineAButton_callback);
 }
 
-void TransformWidget::on_ConvertTargetDefineBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetPickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineTargetBAction,2,&convertTargetDefineBButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::ConvertTargetPickBAction,2,&convertTargetDefineBButton_callback);
 }
 
-void TransformWidget::on_ConvertTargetDefineCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetPickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickConvertDefineTargetCAction,2,&convertTargetDefineCButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::ConvertTargetPickCAction,2,&convertTargetDefineCButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool on)

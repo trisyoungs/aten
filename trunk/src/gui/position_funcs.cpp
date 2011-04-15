@@ -165,69 +165,69 @@ void PositionWidget::translateSelection(int axis, int dir)
 
 void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.positionWidget->ui.DefineVectorButton->setChecked(FALSE);
+	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
-	gui.positionWidget->ui.VectorShiftXSpin->setValue(v.x);
-	gui.positionWidget->ui.VectorShiftYSpin->setValue(v.y);
-	gui.positionWidget->ui.VectorShiftZSpin->setValue(v.z);
-	gui.positionWidget->ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+	gui.positionWidget->ui.ShiftVectorXSpin->setValue(v.x);
+	gui.positionWidget->ui.ShiftVectorYSpin->setValue(v.y);
+	gui.positionWidget->ui.ShiftVectorZSpin->setValue(v.z);
+	gui.positionWidget->ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
-void PositionWidget::on_DefineVectorButton_clicked(bool on)
+void PositionWidget::on_ShiftPickVectorButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::PickPositionVectorShiftAction,2,&shiftPickAxisButton_callback);
+	gui.mainWidget()->setSelectedMode(UserAction::ShiftPickVectorAction,2,&shiftPickAxisButton_callback);
 }
 
-void PositionWidget::on_NormaliseVectorButton_clicked(bool on)
+void PositionWidget::on_ShiftNormaliseVectorButton_clicked(bool on)
 {
 	Vec3<double> v;
-	v.x = ui.VectorShiftXSpin->value();
-	v.y = ui.VectorShiftYSpin->value();
-	v.z = ui.VectorShiftZSpin->value();
+	v.x = ui.ShiftVectorXSpin->value();
+	v.y = ui.ShiftVectorYSpin->value();
+	v.z = ui.ShiftVectorZSpin->value();
 	v.normalise();
-	ui.VectorShiftXSpin->setValue(v.x);
-	ui.VectorShiftYSpin->setValue(v.y);
-	ui.VectorShiftZSpin->setValue(v.z);
-	ui.VectorMagnitudeLabel->setText("1.0");
+	ui.ShiftVectorXSpin->setValue(v.x);
+	ui.ShiftVectorYSpin->setValue(v.y);
+	ui.ShiftVectorZSpin->setValue(v.z);
+	ui.ShiftVectorMagnitudeLabel->setText("1.0");
 }
 
-void PositionWidget::on_VectorShiftXSpin_valueChanged(double value)
+void PositionWidget::on_ShiftVectorXSpin_valueChanged(double value)
 {
 	Vec3<double> v;
-	v.x = ui.VectorShiftXSpin->value();
-	v.y = ui.VectorShiftYSpin->value();
-	v.z = ui.VectorShiftZSpin->value();
-	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+	v.x = ui.ShiftVectorXSpin->value();
+	v.y = ui.ShiftVectorYSpin->value();
+	v.z = ui.ShiftVectorZSpin->value();
+	ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
-void PositionWidget::on_VectorShiftYSpin_valueChanged(double value)
+void PositionWidget::on_ShiftVectorYSpin_valueChanged(double value)
 {
 	Vec3<double> v;
-	v.x = ui.VectorShiftXSpin->value();
-	v.y = ui.VectorShiftYSpin->value();
-	v.z = ui.VectorShiftZSpin->value();
-	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+	v.x = ui.ShiftVectorXSpin->value();
+	v.y = ui.ShiftVectorYSpin->value();
+	v.z = ui.ShiftVectorZSpin->value();
+	ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
-void PositionWidget::on_VectorShiftZSpin_valueChanged(double value)
+void PositionWidget::on_ShiftVectorZSpin_valueChanged(double value)
 {
 	Vec3<double> v;
-	v.x = ui.VectorShiftXSpin->value();
-	v.y = ui.VectorShiftYSpin->value();
-	v.z = ui.VectorShiftZSpin->value();
-	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+	v.x = ui.ShiftVectorXSpin->value();
+	v.y = ui.ShiftVectorYSpin->value();
+	v.z = ui.ShiftVectorZSpin->value();
+	ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
-void PositionWidget::on_VectorShiftPositiveButton_clicked(bool checked)
+void PositionWidget::on_ShiftVectorPositiveButton_clicked(bool checked)
 {
 	Vec3<double> v;
-	v.x = ui.VectorShiftXSpin->value();
-	v.y = ui.VectorShiftYSpin->value();
-	v.z = ui.VectorShiftZSpin->value();
-	v *= ui.VectorDeltaSpin->value();
+	v.x = ui.ShiftVectorXSpin->value();
+	v.y = ui.ShiftVectorYSpin->value();
+	v.z = ui.ShiftVectorZSpin->value();
+	v *= ui.ShiftVectorDeltaSpin->value();
 	Model *m = aten.currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
@@ -236,13 +236,13 @@ void PositionWidget::on_VectorShiftPositiveButton_clicked(bool checked)
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void PositionWidget::on_VectorShiftNegativeButton_clicked(bool checked)
+void PositionWidget::on_ShiftVectorNegativeButton_clicked(bool checked)
 {
 	Vec3<double> v;
-	v.x = ui.VectorShiftXSpin->value();
-	v.y = ui.VectorShiftYSpin->value();
-	v.z = ui.VectorShiftZSpin->value();
-	v *= -ui.VectorDeltaSpin->value();
+	v.x = ui.ShiftVectorXSpin->value();
+	v.y = ui.ShiftVectorYSpin->value();
+	v.z = ui.ShiftVectorZSpin->value();
+	v *= -ui.ShiftVectorDeltaSpin->value();
 	Model *m = aten.currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
@@ -269,7 +269,7 @@ void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void PositionWidget::on_DefineRepositionReferenceButton_clicked(bool on)
+void PositionWidget::on_RepositionDefineReferenceButton_clicked(bool on)
 {
 	// Get centre of current selection
 	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
@@ -278,7 +278,7 @@ void PositionWidget::on_DefineRepositionReferenceButton_clicked(bool on)
 	ui.RepositionReferenceZSpin->setValue(centre.z);
 }
 
-void PositionWidget::on_DefineRepositionTargetButton_clicked(bool on)
+void PositionWidget::on_RepositionDefineTargetButton_clicked(bool on)
 {
 	// Get centre of current selection
 	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();

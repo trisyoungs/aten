@@ -16,6 +16,9 @@
 		<listitem>
 			<para>Atom list update is super-slow when changing selection in big systems - This is an issue qith Qt, and doesn't appear to have a resolution at present.</para>
 		</listitem>
+		<listitem>
+			<para>Progress indicators following Disorder wizard usage appear to be prevented from appearing</para>
+		</listitem>
 	</orderedlist>
 
 </sect5>
@@ -61,9 +64,6 @@
 		</listitem>
 		<listitem>
 			<para>Allow (somehow) rotation of fragments without drawing them *or* rotating main view</para>
-		</listitem>
-		<listitem>
-			<para>Test matrix-transform of models</para>
 		</listitem>
 		<listitem>
 			<para>Add on glyph selection methods (a la box select with the mouse)</para>

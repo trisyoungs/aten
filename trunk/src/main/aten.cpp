@@ -387,11 +387,11 @@ Model *Aten::visibleModel(int id)
 	return visibleModels_[id]->item;
 }
 
-// Log specified change(s) in all visible models
-void Aten::visibleLogChange(Log::LogType log)
+// Log specified change(s) in all models
+void Aten::globalLogChange(Log::LogType log)
 {
-	for (Refitem<Model,int> *ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->changeLog.add(log);
-	current.m->changeLog.add(log);
+	// Loop over all loaded models and log change in their current rendersource
+	for (Model *m = models_.first(); m != NULL; m = m->next) m->renderSourceModel()->changeLog.add(log);
 }
 
 /*

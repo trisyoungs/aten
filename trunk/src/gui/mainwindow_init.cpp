@@ -25,6 +25,8 @@
 #include "gui/mainwindow.h"
 #include "gui/build.h"
 #include "gui/geometry.h"
+#include "gui/position.h"
+#include "gui/transform.h"
 #include "gui/gui.h"
 #include "gui/toolbox.h"
 #include "gui/tcanvas.uih"
@@ -145,6 +147,18 @@ void AtenForm::finaliseUi()
 	uaButtons_.addButton(gui.geometryWidget->ui.MeasureDistanceButton, UserAction::MeasureDistanceAction);
 	uaButtons_.addButton(gui.geometryWidget->ui.MeasureAngleButton, UserAction::MeasureAngleAction);
 	uaButtons_.addButton(gui.geometryWidget->ui.MeasureTorsionButton, UserAction::MeasureTorsionAction);
+	// -- From Position Dock Widget
+	uaButtons_.addButton(gui.positionWidget->ui.ShiftPickVectorButton, UserAction::ShiftPickVectorAction);
+	// -- From Transform Dock Widget
+	uaButtons_.addButton(gui.transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
+	uaButtons_.addButton(gui.transformWidget->ui.TransformPickBButton, UserAction::TransformPickBAction);
+	uaButtons_.addButton(gui.transformWidget->ui.TransformPickCButton, UserAction::TransformPickCAction);
+	uaButtons_.addButton(gui.transformWidget->ui.ConvertSourcePickAButton, UserAction::ConvertSourcePickAAction);
+	uaButtons_.addButton(gui.transformWidget->ui.ConvertSourcePickBButton, UserAction::ConvertSourcePickBAction);
+	uaButtons_.addButton(gui.transformWidget->ui.ConvertSourcePickCButton, UserAction::ConvertSourcePickCAction);
+	uaButtons_.addButton(gui.transformWidget->ui.ConvertTargetPickAButton, UserAction::ConvertTargetPickAAction);
+	uaButtons_.addButton(gui.transformWidget->ui.ConvertTargetPickBButton, UserAction::ConvertTargetPickBAction);
+	uaButtons_.addButton(gui.transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
 	
 	// Connect buttonPressed signal of button group to our handler
 	QObject::connect(&uaButtons_, SIGNAL(buttonClicked(int)), this, SLOT(uaButtonClicked(int)));
