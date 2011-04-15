@@ -103,8 +103,9 @@ class AtenCustomDialog : public QDialog
 	// Widgets
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AtenCustomDialog(QWidget *parent = 0);
+	~AtenCustomDialog();
 	// Main form declaration
 	Ui::AtenCustomDialog ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)
