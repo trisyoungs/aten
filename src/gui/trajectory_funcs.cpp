@@ -107,7 +107,7 @@ void TrajectoryWidget::on_TrajectoryPlayPauseButton_clicked(bool checked)
 	// If button is depressed, begin playback
 	if (checked)
 	{
-		trajectoryTimerId_ = startTimer(100);
+		trajectoryTimerId_ = startTimer(ui.TrajectoryDelaySpin->value());
 		trajectoryPlaying_ = TRUE;
 		gui.mainWidget()->setEditable(FALSE);
 	}

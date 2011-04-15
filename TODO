@@ -27,9 +27,6 @@
 			<para>Add 'save movie', number of frames, frame slider, to Vibration window, and convert into a dialog instead of a dockwidget for safety</para>
 		</listitem>
 		<listitem>
-			<para>Add 'select by command' method, where supplied code is inserted into a standard 'for' loop.</para>
-		</listitem>
-		<listitem>
 			<para>Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made</para>
 		</listitem>
 		<listitem>

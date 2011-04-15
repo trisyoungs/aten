@@ -285,8 +285,8 @@ void TCanvas::paintGL()
 		else modelIsCurrentModel = FALSE;
 
 		// Vibration frame?
+		m = m->renderSourceModel();
 		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
-		else m = m->renderSourceModel();
 
 		// If the stored model pixel data is out of date or rerendering has specifically been requested, redraw the model
 		usepixels = TRUE;
@@ -354,9 +354,9 @@ void TCanvas::paintGL()
 		if (m == NULL) continue;
 
 		// Vibration frame?
+		m = m->renderSourceModel();
 		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
-		else m = m->renderSourceModel();
-		
+
 		// If the stored model pixel data is out of date re-copy pixel data
 		if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)))
 		{

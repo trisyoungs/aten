@@ -199,7 +199,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	// All set up and ready - do the build
 	int pid = progress.initialise("Performing Disorder build", -1, FALSE, !gui.exists());
 	msg.print("Cycle  Component    Region    Population (Requested)  Density (Requested)  RSF\n");
-	for (cycle = 1; cycle <= 5000; ++cycle)
+	for (cycle = 1; cycle <= 100000; ++cycle)
 	{
 		// Each cycle will consist of one round of insertions and deletions, and one round of MC shaking (tweaking)
 		
@@ -352,25 +352,28 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		/*
 		// Cycle Summary
 		*/
-		cycleText.sprintf("%-5i", cycle);
-		for (component = components_.first(); component != NULL; component = component->next)
+		if ((cycle-1)%100 == 0)
 		{
-			switch (component->insertionPolicy())
+			cycleText.sprintf("%-5i", cycle);
+			for (component = components_.first(); component != NULL; component = component->next)
 			{
-				case (Model::NumberPolicy):
-					msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
-					break;
-				case (Model::DensityPolicy):
-					msg.print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
-					break;
-				case (Model::NumberAndDensityPolicy):
-					msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
-					break;
-				case (Model::RelativePolicy):
-					msg.print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
-					break;
+				switch (component->insertionPolicy())
+				{
+					case (Model::NumberPolicy):
+						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
+						break;
+					case (Model::DensityPolicy):
+						msg.print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						break;
+					case (Model::NumberAndDensityPolicy):
+						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						break;
+					case (Model::RelativePolicy):
+						msg.print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						break;
+				}
+				cycleText.clear();
 			}
-			cycleText.clear();
 		}
 		
 		// Finished?

@@ -188,7 +188,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 			for (n=0; n<9; n++) source[(n/3)*4 + n%3] = c->argd(n);
 			for (n=9; n<18; n++) target[((n-9)/3)*4 + n%3] = c->argd(n);
 			// Get origin if provided
-			if (c->nArgs() == 21) o.set(c->argd(12), c->argd(13), c->argd(14));
+			if (c->nArgs() == 21) o.set(c->argd(18), c->argd(19), c->argd(20));
 			break;
 		default:
 			return FALSE;
@@ -202,8 +202,13 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 		target.print();
 	}
 	// Generate necessary rotation matrix
-	target = target.transpose();
+	source.invert();
 	Matrix rotmat = target * source;
+	if (msg.isOutputActive(Messenger::Verbose))
+	{
+		msg.print("Generated rotation matrix:\n");
+		rotmat.print();
+	}
 	// Perform transformation
 	obj.rs()->beginUndoState("Transform %i atom(s)", obj.rs()->nSelected());
 	obj.rs()->matrixTransformSelection(o, rotmat);

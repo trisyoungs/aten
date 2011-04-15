@@ -104,7 +104,8 @@ class GuiQt
 	int pid();
 	// Process application messages
 	void processMessages();
-
+	// Set interactivity (to full or zero), except for main view camera changes
+	void setInteractive(bool interactive);
 
 	/*
 	// Refresh Functions
@@ -160,8 +161,6 @@ class GuiQt
 	void updateContextMenu();
 	// Call the atompopup menu
 	void callContextMenu(Atom*, int, int);
-	// Zmatrix window
-	AtenZMatrix *zmatrixWindow;
 
 	
 	/*
@@ -240,6 +239,8 @@ class GuiQt
 	AtenViewEigenvector *viewEigenvectorDialog;
 	// Progress indicator
 	AtenProgress *progressDialog;
+	// Zmatrix window
+	AtenZMatrix *zmatrixDialog;
 };
 
 extern GuiQt gui;

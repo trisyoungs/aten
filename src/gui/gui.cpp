@@ -104,7 +104,7 @@ GuiQt::GuiQt()
 	viewBasisDialog = NULL;
 	viewEigenvectorDialog = NULL;
 	aboutDialog = NULL;
-	zmatrixWindow = NULL;
+	zmatrixDialog = NULL;
 	
 	atomListWidget = NULL;
 	buildWidget = NULL;
@@ -198,7 +198,7 @@ void GuiQt::run()
 	viewBasisDialog = new AtenViewBasis(mainWindow_);
 	viewEigenvectorDialog = new AtenViewEigenvector(mainWindow_);
 	progressDialog = new AtenProgress(mainWindow_);
-	zmatrixWindow = new AtenZMatrix(mainWindow_);
+	zmatrixDialog = new AtenZMatrix(mainWindow_);
 	
 	// ...dock widgets
 	atomListWidget = new AtomListWidget(mainWindow_, Qt::Tool);
@@ -232,7 +232,7 @@ void GuiQt::run()
 		// Add every dock widget to a dock area (annoying to have to do it, but prevents 'stuck' dock widgets on some versions)
 		mainWindow_->addDockWidget(Qt::RightDockWidgetArea, obj);
 	}
-	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));// TGAY
+	QObject::connect(zmatrixDialog, SIGNAL(finished(int)), zmatrixDialog, SLOT(dialogFinished(int)));// TGAY
 
 	// Set the modality of some dialogs
 	disorderWizard->setModal(FALSE);
@@ -334,6 +334,19 @@ void GuiQt::processMessages()
 	if (application_ != NULL) application_->processEvents();
 }
 
+// Set interactivity (to full or zero), except for main view camera changes
+void GuiQt::setInteractive(bool interactive)
+{
+	// Set enabled status of all the dock widgets..
+	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", interactive);
+
+	// ...and the main toolbar...
+	mainWindow_->ui.MainToolbar->setEnabled(interactive);
+	
+	// ...and set the canvas 'editability'
+	mainWidget_->setEditable(interactive);
+}
+
 /*
 // Refresh Functions
 */
@@ -411,15 +424,7 @@ void GuiQt::updateProgressDialog()
 {
 	if (progressDialog->isHidden())
 	{
-		// Disable all the dock widgets..
-		foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", FALSE);
-
-		// ...and the main toolbar...
-		mainWindow_->ui.MainToolbar->setEnabled(FALSE);
-		
-		// ...and set the canvas to be read only (so it can still be rotated etc.
-		mainWidget_->setEditable(FALSE);
-		
+		setInteractive(FALSE);
 		progressDialog->show();
 	}
 	
@@ -430,16 +435,7 @@ void GuiQt::updateProgressDialog()
 void GuiQt::terminateProgressDialog()
 {
 	progressDialog->terminate();
-	
-	// Enable all the dock widgets..
-	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", TRUE);
-
-	// ...and the main toolbar...
-	mainWindow_->ui.MainToolbar->setEnabled(TRUE);
-	
-	// ...and set the canvas to be editable again
-	mainWidget_->setEditable(TRUE);
-	
+	setInteractive(TRUE);	
 	application_->processEvents();
 }
 
