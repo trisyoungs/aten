@@ -450,6 +450,7 @@ void RenderEngine::sortAndSendGL()
 	glLineWidth(4.0);
 	stickSelectedLines_.sendToGL();
 	glEnable(GL_LIGHTING);
+	glLineWidth(1.0);
 	
 	// Transform and render each transparent primitive in each list, unless transparencyCorrect_ is off.
 	if (prefs.transparencyCorrect())

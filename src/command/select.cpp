@@ -20,6 +20,8 @@
 */
 
 #include "parser/commandnode.h"
+#include "parser/usercommandnode.h"
+#include "parser/atom.h"
 #include "parser/variable.h"
 #include "command/commands.h"
 #include "model/model.h"
@@ -168,6 +170,47 @@ bool Command::function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return result;
 }
 
+// Deselect using conditional code
+bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	int nselected = obj.rs()->nSelected();
+	// Construct program
+	Dnchar code(-1, "int internalDeselectAtom(atom i) { %s; return FALSE; }", c->argc(0));
+	Program program;
+	if (!program.generateFromString(code, "selectioncode"))
+	{
+		msg.print("Error: Couldn't construct selection code.\n");
+		rv.reset();
+		return FALSE;
+	}
+	// Get global function and set up variable and UserCommandNode
+	Tree *function = program.mainProgram()->findLocalFunction("internalDeselectAtom");
+	if (function == NULL)
+	{
+		msg.print("Internal Error: Couldn't find generated deselection function.\n");
+		return FALSE;
+	}
+	Tree tree;
+	UserCommandNode functionNode;
+	functionNode.setParent(&tree);
+	functionNode.setFunction(function);
+	AtomVariable atomVariable;
+	functionNode.addArgument(&atomVariable);
+	obj.rs()->beginUndoState("Deselect atoms by for loop");
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next)
+	{
+		// Poke atom value 
+		rv.set(VTypes::AtomData, i);
+		atomVariable.set(rv);
+		functionNode.execute(rv);
+		if (rv.asBool()) obj.rs()->deselectAtom(i);
+	}
+	obj.rs()->endUndoState();
+	rv.set(nselected - obj.rs()->nSelected());
+	return TRUE;
+}
+
 // Deselect atom, range of atoms, or elements ('deselectf("")')
 bool Command::function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -229,6 +272,17 @@ bool Command::function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Invert selection
+bool Command::function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs()->beginUndoState("Invert selection");
+	obj.rs()->selectionInvert();
+	obj.rs()->endUndoState();
+	rv.set( obj.rs()->nSelected() );
+	return TRUE;
+}
+
 // Select all ('selectall')
 bool Command::function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -253,6 +307,24 @@ bool Command::function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return result;
 }
 
+// Get selection centre of geometry ('selectioncog')
+bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Vec3<double> v = obj.rs()->selectionCentreOfGeometry();
+	rv.set(v);
+	return TRUE;
+}
+
+// Get selection centre of mass ('selectioncom')
+bool Command::function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Vec3<double> v = obj.rs()->selectionCentreOfMass();
+	rv.set(v);
+	return TRUE;
+}
+
 // Select by forcefield type ('selecffttype <fftype>')
 bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -274,6 +346,47 @@ bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv
 		{
 			if (ff->matchType(ffa->name(),c->argc(0)) < 10) obj.rs()->selectAtom(i);
 		}
+	}
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
+	return TRUE;
+}
+
+// Select using conditional code
+bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	int nselected = obj.rs()->nSelected();
+	// Construct program
+	Dnchar code(-1, "int internalSelectAtom(atom i) { %s; return FALSE; }", c->argc(0));
+	Program program;
+	if (!program.generateFromString(code, "selectioncode"))
+	{
+		msg.print("Error: Couldn't construct selection code.\n");
+		rv.reset();
+		return FALSE;
+	}
+	// Get global function and set up variable and UserCommandNode
+	Tree *function = program.mainProgram()->findLocalFunction("internalSelectAtom");
+	if (function == NULL)
+	{
+		msg.print("Internal Error: Couldn't find generated selection function.\n");
+		return FALSE;
+	}
+	Tree tree;
+	UserCommandNode functionNode;
+	functionNode.setParent(&tree);
+	functionNode.setFunction(function);
+	AtomVariable atomVariable;
+	functionNode.addArgument(&atomVariable);
+	obj.rs()->beginUndoState("Select atoms by for loop");
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next)
+	{
+		// Poke atom value 
+		rv.set(VTypes::AtomData, i);
+		atomVariable.set(rv);
+		functionNode.execute(rv);
+		if (rv.asBool()) obj.rs()->selectAtom(i);
 	}
 	obj.rs()->endUndoState();
 	rv.set(obj.rs()->nSelected() - nselected);
@@ -314,35 +427,6 @@ bool Command::function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue
 	obj.rs()->selectInsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
 	obj.rs()->endUndoState();
 	rv.set(obj.rs()->nSelected() - nselected);
-	return TRUE;
-}
-
-// Get selection centre of geometry ('selectioncog')
-bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vec3<double> v = obj.rs()->selectionCentreOfGeometry();
-	rv.set(v);
-	return TRUE;
-}
-
-// Get selection centre of mass ('selectioncom')
-bool Command::function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vec3<double> v = obj.rs()->selectionCentreOfMass();
-	rv.set(v);
-	return TRUE;
-}
-
-// Invert selection
-bool Command::function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs()->beginUndoState("Invert selection");
-	obj.rs()->selectionInvert();
-	obj.rs()->endUndoState();
-	rv.set( obj.rs()->nSelected() );
 	return TRUE;
 }
 
