@@ -31,6 +31,7 @@
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
 #include "gui/grids.h"
+#include "gui/mainwindow.h"
 #include "gui/md.h"
 #include "gui/messages.h"
 #include "gui/modellist.h"
@@ -180,14 +181,20 @@ void ToolBoxWidget::on_TransformButton_clicked(bool checked)
 
 void ToolBoxWidget::on_VibrationsButton_clicked(bool checked)
 {
-	if (checked) gui.vibrationsWidget->showWidget();
+	if (checked)
+	{
+		// Disable remainder of GUI and set canvas to be read-only
+		gui.setInteractive(FALSE);
+		gui.vibrationsWidget->setEnabled(TRUE);
+		gui.vibrationsWidget->showWidget();
+	}
 	else gui.vibrationsWidget->hide();
 }
 
 void ToolBoxWidget::on_ZMatrixButton_clicked(bool checked)
 {
-	if (checked) gui.zmatrixWindow->show();
-	else gui.zmatrixWindow->hide();
+	if (checked) gui.zmatrixDialog->show();
+	else gui.zmatrixDialog->hide();
 }
 
 void ToolBoxWidget::dockWidgetVisibilityChanged(bool visibility)

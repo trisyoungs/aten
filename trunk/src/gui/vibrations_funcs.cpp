@@ -209,7 +209,10 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 void VibrationsWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	Model *m = aten.currentModelOrFrame();
+	m->setRenderFromVibration(FALSE);
 	gui.toolBoxWidget->ui.VibrationsButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget()->postRedisplay();
+	gui.setInteractive(TRUE);
+	gui.mainWidget()->postRedisplay();
 	event->accept();
 }

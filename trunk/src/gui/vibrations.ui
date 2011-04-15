@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>VibrationsWidget</class>
  <widget class="QDockWidget" name="VibrationsWidget">
@@ -5,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
+    <width>279</width>
     <height>324</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>270</width>
+    <width>279</width>
     <height>251</height>
    </size>
   </property>
@@ -24,7 +25,7 @@
    <bool>true</bool>
   </property>
   <property name="allowedAreas">
-   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   <set>Qt::NoDockWidgetArea</set>
   </property>
   <property name="windowTitle">
    <string>Vibrations</string>
@@ -184,25 +185,15 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+          <widget class="QSlider" name="FrameSlider">
+           <property name="minimum">
+            <number>1</number>
            </property>
-           <property name="text">
-            <string>Delay</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="DelaySlider">
            <property name="maximum">
-            <number>200</number>
+            <number>20</number>
            </property>
            <property name="value">
-            <number>50</number>
+            <number>1</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -211,12 +202,15 @@
             <enum>QSlider::TicksBelow</enum>
            </property>
            <property name="tickInterval">
-            <number>10</number>
+            <number>2</number>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QSpinBox" name="DelaySpin">
+           <property name="toolTip">
+            <string>Delay between frames when playing</string>
+           </property>
            <property name="suffix">
             <string>ms</string>
            </property>
@@ -239,24 +233,18 @@
           <number>2</number>
          </property>
          <item>
-          <widget class="QCheckBox" name="ShowVectorsCheck">
+          <widget class="QCheckBox" name="PingPongCheck">
            <property name="text">
-            <string>Show vectors</string>
+            <string>Ping Pong</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+          <widget class="QCheckBox" name="ShowVectorsCheck">
+           <property name="text">
+            <string>Show Vectors</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label">
@@ -273,6 +261,12 @@
          </item>
          <item>
           <widget class="QDoubleSpinBox" name="VectorScaleSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="toolTip">
             <string>Scaling factor applied to rendered displacement arrows</string>
            </property>
@@ -280,7 +274,7 @@
             <double>0.100000000000000</double>
            </property>
            <property name="value">
-            <double>1.000000000000000</double>
+            <double>2.000000000000000</double>
            </property>
           </widget>
          </item>
