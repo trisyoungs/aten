@@ -178,9 +178,9 @@ Prefs::Prefs()
 	spotlightColour_[Prefs::SpecularComponent][1] = 0.7;
 	spotlightColour_[Prefs::SpecularComponent][2] = 0.7;
 	spotlightColour_[Prefs::SpecularComponent][3] = 1.0;
-	spotlightPosition_[0] = 1.0;
-	spotlightPosition_[1] = 1.0;
-	spotlightPosition_[2] = 1.0;
+	spotlightPosition_[0] = 100.0;
+	spotlightPosition_[1] = 100.0;
+	spotlightPosition_[2] = 100.0;
 	spotlightPosition_[3] = 0.0;
 	depthCue_ = FALSE;
 	lineAliasing_ = TRUE;

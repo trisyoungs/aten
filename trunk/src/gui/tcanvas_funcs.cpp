@@ -181,8 +181,8 @@ void TCanvas::initializeGL()
 	}
 
 
-	// Setup basic GL stuff
-	engine_.initialiseGL();
+// 	// Setup basic GL stuff
+// 	engine_.initialiseGL();
 
 	// Push a primitives instance in the rendering engine
 	engine_.pushInstance(highQuality_, context());
@@ -210,6 +210,9 @@ void TCanvas::paintGL()
 		msg.exit("TCanvas::paintGL");
 		return;
 	}
+
+	// Setup basic GL stuff
+	engine_.initialiseGL();
 
 	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
 	// all OpenGL calls should be made after the QPainter is constructed, and before the QPainter
@@ -467,7 +470,7 @@ void TCanvas::postRedisplay(bool noImages, bool redrawActive)
 }
 
 // Update view matrix stored in RenderEngine
-void TCanvas::updateTransformation(Matrix& mat, Vec3< double > cellcentre)
+void TCanvas::updateTransformation(Matrix& mat, Vec3<double> cellcentre)
 {
 	engine_.setTransformationMatrix(mat, cellcentre);
 }
@@ -480,8 +483,10 @@ QPixmap TCanvas::generateImage(int w, int h, bool highQuality)
 	highQuality_ = highQuality;
 	if (prefs.useFrameBuffer() == FALSE)
 	{
+		// Refresh canvas if exactly the same size, to prevent widget from grabbing current view (inc. rotation globe)
+		if ((w == width()) && (h == height())) postRedisplay();
 		// Generate offscreen bitmap (a temporary context will be created)
-		QPixmap pixmap = gui.mainWidget()->renderPixmap(w, h, FALSE);
+		QPixmap pixmap = renderPixmap(w, h, FALSE);
 		// Pop topmost instance of primitives (which were associated to temporary context)
 		engine_.popInstance(highQuality_);
 		// Ensure correct widget context size is stored
@@ -494,7 +499,7 @@ QPixmap TCanvas::generateImage(int w, int h, bool highQuality)
 	else
 	{
 		if (highQuality != oldquality) postRedisplay();
-		QImage image = gui.mainWidget()->grabFrameBuffer();
+		QImage image = grabFrameBuffer();
 		// Revert to old quality setting
 		highQuality_ = oldquality;
 		return QPixmap::fromImage(image);

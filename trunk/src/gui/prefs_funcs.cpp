@@ -477,25 +477,25 @@ void AtenPrefs::on_LineAliasingCheck_stateChanged(int state)
 void AtenPrefs::on_PolygonAliasingCheck_stateChanged(int state)
 {
 	prefs.setPolygonAliasing(state == Qt::Checked);
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 void AtenPrefs::on_MultiSamplingCheck_stateChanged(int state)
 {
 	prefs.setMultiSampling(state == Qt::Checked);
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 void AtenPrefs::on_SpotlightGroup_clicked(bool checked)
 {
 	prefs.setSpotlightActive(checked);
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 void AtenPrefs::spotlightPosChanged(int i, double value)
 {
 	prefs.setSpotlightPosition(i, (GLfloat) value);
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(TRUE,TRUE);
 }
 
 void AtenPrefs::on_SpotlightPositionXSpin_valueChanged(double value)
@@ -532,7 +532,7 @@ void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 	colframe->setColour(newcol);
 	colframe->update();
 	// Update display
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(TRUE);
 }
 
 void AtenPrefs::on_SpotlightAmbientColourButton_clicked(bool checked)

@@ -39,7 +39,7 @@ AtenCustomDialog::AtenCustomDialog(QWidget *parent) : QDialog(parent)
 AtenCustomDialog::~AtenCustomDialog()
 {
 	// Remove any self-generated QButtonGroups
-// 	for (KVData<Dnchar,QButtonGroup*> *bg = button.first(); bg != NULL; bg = bg->next) delete bg->value();
+	for (KVData<Dnchar,QButtonGroup*> *bg = buttonGroups_.pairs(); bg != NULL; bg = bg->next) delete bg->value();
 }
 
 // Perform specified state change
@@ -474,7 +474,7 @@ QCheckBox *AtenCustomDialog::createCheckBox(WidgetNode *gfo)
 }
 
 // Create radio button from data in specified WidgetNode
-QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups)
+QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo)
 {
 	msg.enter("AtenCustomDialog::createRadioButton");
 	QRadioButton *radio = new QRadioButton(gfo->name());
@@ -482,12 +482,12 @@ QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo, KVTable<Dncha
 	// Critical : parent buttongroup
 	if (!gfo->data("buttongroup", data)) printf("Critical: No parent buttongroup found when constructing QRadioButton.\n");
 	// Search to see if specific key is in the table
-	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups.search(data);
+	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups_.search(data);
 	if (bg == NULL)
 	{
 		QButtonGroup *butgroup = new QButtonGroup();
 		butgroup->addButton(radio, 1);
-		buttonGroups.add(data, butgroup);
+		buttonGroups_.add(data, butgroup);
 	}
 	else bg->value()->addButton(radio, bg->value()->buttons().count()+1);
 	// Critical : state
@@ -498,16 +498,16 @@ QRadioButton *AtenCustomDialog::createRadioButton(WidgetNode *gfo, KVTable<Dncha
 }
 
 // Create radiogroup from data in specified GuiFilterOption
-QButtonGroup *AtenCustomDialog::createRadioGroup(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups)
+QButtonGroup *AtenCustomDialog::createRadioGroup(WidgetNode* gfo)
 {
 	msg.enter("AtenCustomDialog::createRadioGroup");
 	// Search for existing button group
 	QButtonGroup *buttongroup;
-	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups.search(gfo->name());
+	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups_.search(gfo->name());
 	if (bg == NULL)
 	{
 		buttongroup = new QButtonGroup(this);
-		buttonGroups.add(gfo->name(), buttongroup);
+		buttonGroups_.add(gfo->name(), buttongroup);
 		QObject::connect(buttongroup, SIGNAL(buttonClicked(int)), this, SLOT(buttonGroupWidget_buttonClicked(int)));
 	}
 	else buttongroup = bg->value();
@@ -637,8 +637,6 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 	int span, labelspan, alignment;
 	bool newline;
 	LayoutList layouts;
-	KVTable<Dnchar,QButtonGroup*> buttonGroups, *bg;
-	KVTable<Dnchar,QStackWidget*> stackWidgets;
 	Reflist<QTabWidget,Dnchar> tabwidgets;
 	Refitem<QTabWidget,Dnchar> *tabref;
 	Dnchar name;
@@ -732,14 +730,14 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 				break;
 			// RadioButton - data: buttongroup, state)
 			case (WidgetNode::RadioButtonControl):
-				widget = createRadioButton(gfo, buttonGroups);
+				widget = createRadioButton(gfo);
 				currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
 			// RadioGroup
 			case (WidgetNode::RadioGroupControl):
 			case (WidgetNode::StringRadioGroupControl):
-				object = createRadioGroup(gfo, buttonGroups);
+				object = createRadioGroup(gfo);
 				gfo->setObject(object);
 				break;
 			// Combo Box - data:  items, default

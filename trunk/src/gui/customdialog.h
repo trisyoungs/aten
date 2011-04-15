@@ -67,6 +67,10 @@ class AtenCustomDialog : public QDialog
 	QGridLayout *mainLayout_;
 	// Parent tree target
 	Tree *parentTree_;
+	// List of local QButtonGroups
+	KVTable<Dnchar,QButtonGroup*> buttonGroups_;
+	// List of local QStackWidgets
+	KVTable<Dnchar,QStackWidget*> stackWidgets_;
 	// Create simple label
 	QLabel *createLabel(const char *text, int alignment);
 	// Create empty grid layout
@@ -74,9 +78,9 @@ class AtenCustomDialog : public QDialog
 	// Create check box from data in specified WidgetNode
 	QCheckBox *createCheckBox(WidgetNode *gfo);
 	// Create radio button from data in specified WidgetNode
-	QRadioButton *createRadioButton(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups);
+	QRadioButton *createRadioButton(WidgetNode *gfo);
 	// Create radiogroup from data in specified WidgetNode
-	QButtonGroup *createRadioGroup(WidgetNode *gfo, KVTable<Dnchar,QButtonGroup*> &buttonGroups);
+	QButtonGroup *createRadioGroup(WidgetNode *gfo);
 	// Create combo box from data in specified GuiFilterOption
 	QComboBox *createComboBox(WidgetNode *gfo);
 	// Create double spin edit from data in specified GuiFilterOption

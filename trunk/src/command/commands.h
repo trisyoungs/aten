@@ -470,6 +470,7 @@ class Command
 
 		// Select Commands
 		DeSelect,
+		DeSelectFor,
 		DeSelectFormatted,
 		DeSelectType,
 		Expand,
@@ -477,6 +478,7 @@ class Command
 		Select,
 		SelectAll,
 		SelectFFType,
+		SelectFor,
 		SelectFormatted,
 		SelectInsideCell,
 		SelectionCog,
@@ -927,6 +929,7 @@ class Command
 	static bool function_RunScript(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Select Commands
 	static bool function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -934,6 +937,7 @@ class Command
 	static bool function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv);

@@ -121,6 +121,8 @@ template <class K, class V> class KVTable
 	V value(K key);
 	// Retrieve value associated to key, also setting success flag if the key was/wasn't found
 	V value(K key, bool &success);
+	// Return first pair in list
+	KVData<K,V> *pairs();
 };
 
 // Constructor
@@ -181,6 +183,12 @@ template <class K, class V> V KVTable<K,V>::value(K key, bool &success)
 	for (KVData<K,V> *kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (key == kvp->key()) return kvp->value();
 	success = FALSE;
 	return V();
+}
+
+// Return first pair in list
+template <class K, class V> KVData<K,V> *KVTable<K,V>::pairs()
+{
+	return pairs_.first();
 }
 
 #endif

@@ -430,6 +430,7 @@ void Command::initPointers()
 
 	// Select Commands
 	pointers_[DeSelect] = &Command::function_DeSelect;
+	pointers_[DeSelectFor] = &Command::function_DeSelectFor;
 	pointers_[DeSelectFormatted] = &Command::function_DeSelectFormatted;
 	pointers_[DeSelectType] = &Command::function_DeSelectType;
 	pointers_[Expand] = &Command::function_Expand;
@@ -437,6 +438,7 @@ void Command::initPointers()
 	pointers_[Select] = &Command::function_Select;
 	pointers_[SelectAll] = &Command::function_SelectAll;
 	pointers_[SelectFFType] = &Command::function_SelectFFType;
+	pointers_[SelectFor] = &Command::function_SelectFor;
 	pointers_[SelectFormatted] = &Command::function_SelectFormatted;
 	pointers_[SelectInsideCell] = &Command::function_SelectInsideCell;
 	pointers_[SelectionCog] = &Command::function_SelectionCog;
