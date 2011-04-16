@@ -109,7 +109,6 @@ void TCanvas::probeFeatures()
 Model *TCanvas::displayModel() const
 {
 	Model *source = (useCurrentModel_ ? aten.currentModelOrFrame() : renderSource_);
-	if (source != NULL) source = (source->renderFromVibration() ? source->vibrationCurrentFrame() : source);
 	return source;
 }
 
@@ -286,7 +285,7 @@ void TCanvas::paintGL()
 
 		// Vibration frame?
 		m = m->renderSourceModel();
-		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
+		if (m->renderFromVibration() && (m->vibrationCurrentFrame() != NULL)) m = m->vibrationCurrentFrame();
 
 		// If the stored model pixel data is out of date or rerendering has specifically been requested, redraw the model
 		usepixels = TRUE;
@@ -356,7 +355,7 @@ void TCanvas::paintGL()
 
 		// Vibration frame?
 		m = m->renderSourceModel();
-		if (m->renderFromVibration()) m = m->vibrationCurrentFrame();
+		if (m->renderFromVibration() && (m->vibrationCurrentFrame() != NULL)) m = m->vibrationCurrentFrame();
 
 		// If the stored model pixel data is out of date re-copy pixel data
 		if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)))

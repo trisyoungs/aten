@@ -444,8 +444,6 @@ class Model
 	GLint viewportMatrix_[4];
 	// Projection matrix for model
 	Matrix modelProjectionMatrix_;
-	// Projection matrix for globe
-	Matrix globeProjectionMatrix_;
 
 	private:
 	// Calculate and return inverse of current view matrix
@@ -460,8 +458,6 @@ class Model
 	GLint *viewportMatrix();
 	// Return current projection matrix
 	Matrix &modelProjectionMatrix();
-	// Return current globe projection matrix
-	Matrix &globeProjectionMatrix();
 	// Set view to be along the specified cartesian axis
 	void viewAlong(double x, double y, double z);
 	// Set view to be along the specified cell axis
@@ -1196,6 +1192,8 @@ class Model
 	Model *vibrationCurrentFrame_;
 	// Direction of current playback
 	bool vibrationForward_;
+	// Integer index of current frame (0-(nsteps-1))
+	int vibrationFrameIndex_;
 
 	public:
 	// Add a new vibration to the model
@@ -1212,6 +1210,10 @@ class Model
 	Model *vibrationCurrentFrame();
 	// Move on to next/prev frame (depending on current playback direction)
 	void vibrationNextFrame();
+	// Return index of current vibration frame
+	int vibrationFrameIndex();
+	// Set current frame index 
+	void setVibrationFrameIndex(int index);
 };
 
 #endif

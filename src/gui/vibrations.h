@@ -36,14 +36,15 @@ class VibrationsWidget : public QDockWidget
 	public:
 	void showWidget();
 	void refresh();
-	void updateInToolBox();
 	private slots:
 	void on_VibrationsList_currentRowChanged(int row);
 	void on_PlayPauseVibration_clicked(bool checked);
 	void on_ShowVectorsCheck_clicked(bool checked);
 	void on_VectorScaleSpin_valueChanged(double value);
-	void on_DelaySlider_valueChanged(int value);
+	void on_FrameSlider_valueChanged(int value);
 	void on_DelaySpin_valueChanged(int value);
+	void on_SaveImageButton_clicked(bool checked);
+	void on_SaveMovieButton_clicked(bool checked);
 	private:
 	// Refresh displacements table
 	void refreshDisplacements();
@@ -62,8 +63,6 @@ class VibrationsWidget : public QDockWidget
 	private:
 	// Whether the window is currently refreshing
 	bool refreshing_;
-	// Whether the window should be refreshed when next shown
-	bool shouldRefresh_;
 	// Whether the trajectory is currently playing
 	bool vibrationPlaying_;
 	// ID of rtrajectory timer

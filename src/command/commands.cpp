@@ -788,9 +788,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "savemovie",		"Cnnnnnnn",	VTypes::NoData,
 		"string filename, int width = -1, int height = -1, int quality = -1, int firstframe = 1, int lastframe = <last>, int frameskip = 0, int fps = 25",
 		"Save a movie of the trajectory associated with the current model" },
-	{ "savevector",		"CC",		VTypes::NoData,
-		"string format, string filename",
-		"Save the current model view as a vector image: formats available are ps, eps, tex, pdf, svg, and pgf" },
+	{ "savevibrationmovie",	"CNNNNNNN",	VTypes::NoData,
+		"string filename, int width, int height, int quality, int vibrationId, int framespercycle, int ncycles, int fps",
+		"Save the specified vibration of the current model as a movie" },
 	
 	// Labeling commands
 	{ "clearlabels",	"",		VTypes::NoData,

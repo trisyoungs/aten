@@ -338,7 +338,7 @@ void GuiQt::processMessages()
 void GuiQt::setInteractive(bool interactive)
 {
 	// Set enabled status of all the dock widgets..
-	foreach( QObject *obj, dockWidgets_) obj->setProperty( "enabled", interactive);
+	foreach( QObject *obj, dockWidgets_) obj->setProperty("enabled", interactive);
 
 	// ...and the main toolbar...
 	mainWindow_->ui.MainToolbar->setEnabled(interactive);
@@ -422,12 +422,7 @@ void GuiQt::initialiseProgressDialog()
 // Update progress dialog, showing the window and disabling GUI in the process
 void GuiQt::updateProgressDialog()
 {
-	if (progressDialog->isHidden())
-	{
-		setInteractive(FALSE);
-		progressDialog->show();
-	}
-	
+	if (progressDialog->isHidden()) progressDialog->show();
 	progressDialog->updateProgress();
 }
 
@@ -435,7 +430,6 @@ void GuiQt::updateProgressDialog()
 void GuiQt::terminateProgressDialog()
 {
 	progressDialog->terminate();
-	setInteractive(TRUE);	
 	application_->processEvents();
 }
 

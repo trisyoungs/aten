@@ -133,6 +133,8 @@ void Model::generateVibration(int index, int nsteps)
 	// Delete old vibrations
 	vibrationCurrentFrame_ = NULL;
 	vibrationFrames_.clear();
+	vibrationFrameIndex_ = -1;
+
 	// Check vibration index
 	if ((index < 0) || (index >= vibrations_.nItems()))
 	{
@@ -140,10 +142,12 @@ void Model::generateVibration(int index, int nsteps)
 		msg.exit("Model::generateVibration");
 		return;
 	}
+
 	// Grab necessary pointers
 	Vibration *vib = vibrations_[index];
 	double freq = vib->frequency();
 	Vec3<double> *displacements = vib->displacements();
+
 	// Check number of atoms against number of defined displacements
 	if (vib->nDisplacements() != atoms_.nItems())
 	{
@@ -151,6 +155,7 @@ void Model::generateVibration(int index, int nsteps)
 		msg.exit("Model::generateVibration");
 		return;
 	}
+
 	// Ready to generate frames
 	double delta, stepdelta = 1.0 / nsteps;
 	int k;
@@ -166,9 +171,6 @@ void Model::generateVibration(int index, int nsteps)
 		m->setType(Model::VibrationFrameType);
 		clip.pasteToModel(m, FALSE);
 		
-		// Honour existing 'hidden' status of atoms
-		
-
 		// To loop over original atom coordinates
 		int count = 0;
 		for (Atom *i = m->atoms(); i != NULL; i = i->next)
@@ -177,8 +179,10 @@ void Model::generateVibration(int index, int nsteps)
 			++count;
 		}
 	}
+	
 	// Reset variables
 	vibrationForward_ = TRUE;
+	vibrationFrameIndex_ = 0;
 	vibrationCurrentFrame_ = vibrationFrames_.first();
 	msg.exit("Model::generateVibration");
 }
@@ -187,6 +191,19 @@ void Model::generateVibration(int index, int nsteps)
 Model *Model::vibrationCurrentFrame()
 {
 	return vibrationCurrentFrame_;
+}
+
+// Set current frame index 
+void Model::setVibrationFrameIndex(int index)
+{
+	// Check frame range
+	if ((index < 0) || (index >= vibrationFrames_.nItems()))
+	{
+		msg.print("Internal Error: Vibration frame index %i is out of range (vibration contains %i frames).\n", index, vibrationFrames_.nItems());
+		return;
+	}
+	vibrationCurrentFrame_ = vibrationFrames_[index];
+	vibrationFrameIndex_ = index;
 }
 
 // Move on to next/prev frame (depending on current playback direction)
@@ -218,5 +235,13 @@ void Model::vibrationNextFrame()
 		}
 		else vibrationCurrentFrame_ = vibrationCurrentFrame_->prev;
 	}
+	if (vibrationForward_) ++vibrationFrameIndex_;
+	else --vibrationFrameIndex_;
 	msg.exit("Model::vibrationNextFrame");
+}
+
+// Return index of current vibration frame
+int Model::vibrationFrameIndex()
+{
+	return vibrationFrameIndex_;
 }

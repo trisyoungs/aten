@@ -33,7 +33,6 @@ VibrationsWidget::VibrationsWidget(QWidget *parent, Qt::WindowFlags flags) : QDo
 {
 	// Private variables
 	refreshing_ = FALSE;
-	shouldRefresh_ = TRUE;
 	vibrationTimerId_ = -1;
 	vibrationPlaying_ = FALSE;
 	DONTDRAW = FALSE;
@@ -45,7 +44,7 @@ VibrationsWidget::VibrationsWidget(QWidget *parent, Qt::WindowFlags flags) : QDo
 void VibrationsWidget::showWidget()
 {
 	show();
-	if (shouldRefresh_) refresh();
+	refresh();
 	// Make sure toolbutton is in correct state
 	gui.toolBoxWidget->ui.VibrationsButton->setChecked(TRUE);
 }
@@ -54,12 +53,6 @@ void VibrationsWidget::showWidget()
 void VibrationsWidget::refresh()
 {
 	msg.enter("VibrationsWidget::refresh");
-	if (!gui.vibrationsWidget->isVisible())
-	{
-		shouldRefresh_ = TRUE;
-		msg.exit("VibrationsWidget::refresh");
-		return;
-	}
 	refreshing_ = TRUE;
 	Model *m = aten.currentModelOrFrame();
 	Dnchar text;
@@ -73,6 +66,22 @@ void VibrationsWidget::refresh()
 	}
 	ui.VibrationsList->setCurrentRow(0);
 	// Disable widgets if there are no vibrations loaded
+	if (count == 0)
+	{
+		m->setRenderFromVibration(FALSE);
+		ui.PlayPauseVibration->setEnabled(FALSE);
+		ui.FrameSlider->setEnabled(FALSE);
+		ui.SaveImageButton->setEnabled(FALSE);
+		ui.SaveMovieButton->setEnabled(FALSE);
+	}
+	else
+	{
+		m->setRenderFromVibration(TRUE);
+		ui.PlayPauseVibration->setEnabled(TRUE);
+		ui.FrameSlider->setEnabled(TRUE);
+		ui.SaveImageButton->setEnabled(TRUE);
+		ui.SaveMovieButton->setEnabled(TRUE);
+	}
 	ui.VibrationsTabWidget->setDisabled(count == 0);
 	refreshing_ = FALSE;
 	refreshDisplacements();
@@ -119,17 +128,14 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 	if (refreshing_) return;
 	refreshDisplacements();
 	if (ui.ShowVectorsCheck->isChecked()) gui.mainWidget()->postRedisplay();
-	// If currently playing a trajectory, regenerate it
-	if (ui.PlayPauseVibration->isChecked())
-	{
-		// Stop current timer, generate new vibration frames, and restart
-		stopTimer();
-		Model *m = aten.currentModelOrFrame();
-		m->setRenderFromVibration(FALSE);
-		m->generateVibration(ui.VibrationsList->currentRow(), 20);
-		m->setRenderFromVibration(TRUE);
-		resetTimer(ui.DelaySpin->value());
-	}
+	// Regenerate vibration trajectory
+	// Stop current timer (if playing) - we'll restart it afterwards
+	bool wasplaying = ui.PlayPauseVibration->isChecked();
+	if (wasplaying) stopTimer();
+	Model *m = aten.currentModelOrFrame();
+	m->generateVibration(ui.VibrationsList->currentRow(), 20);
+	m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
+	if (wasplaying) resetTimer(ui.DelaySpin->value());
 }
 
 void VibrationsWidget::on_ShowVectorsCheck_clicked(bool checked)
@@ -149,9 +155,9 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		vibrationPlaying_ = TRUE;
 		this->setEnabled(TRUE);
 		Model *m = aten.currentModelOrFrame();
-		m->generateVibration(ui.VibrationsList->currentRow(), 20);
-		m->setRenderFromVibration(TRUE);
-		gui.mainWidget()->setEditable(FALSE);
+		ui.FrameSlider->setEnabled(FALSE);
+		ui.SaveImageButton->setEnabled(FALSE);
+		ui.SaveMovieButton->setEnabled(FALSE);
 		resetTimer(ui.DelaySpin->value());
 	}
 	else
@@ -160,22 +166,69 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		this->killTimer(vibrationTimerId_);
 		vibrationTimerId_ = -1;
 		Model *m = aten.currentModelOrFrame();
-		m->setRenderFromVibration(FALSE);
+		ui.FrameSlider->setEnabled(TRUE);
+		ui.SaveImageButton->setEnabled(TRUE);
+		ui.SaveMovieButton->setEnabled(TRUE);
 		gui.mainWidget()->postRedisplay();
-		gui.mainWidget()->setEditable(TRUE);
 	}
 }
 
-void VibrationsWidget::on_DelaySlider_valueChanged(int value)
+void VibrationsWidget::on_FrameSlider_valueChanged(int value)
 {
-	if (vibrationTimerId_ == -1) return;
-	resetTimer(value);
+	if (vibrationPlaying_) return;
+	Model *m = aten.currentModelOrFrame();
+	m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
+	gui.mainWidget()->postRedisplay();
 }
 
 void VibrationsWidget::on_DelaySpin_valueChanged(int value)
 {
 	if (vibrationTimerId_ == -1) return;
 	resetTimer(value);
+}
+
+void VibrationsWidget::on_SaveImageButton_clicked(bool checked)
+{
+	gui.mainWindow()->ui.actionFileSaveImage->trigger();
+}
+
+void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
+{
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
+	int width, height;
+	
+	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('Cycles', 'intspin', 1, 1000, 1, 1, 'newline'); option('Frames per Vibration', 'intspin', 1, 1000, 25, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
+
+	Model *m = aten.currentModel();
+
+	// Poke values into dialog widgets and execute
+	dialog.setWidgetValue("Image Size", ReturnValue(geometry.get()));
+	if (!dialog.executeCustomDialog(FALSE)) return;
+
+	// Retrieve widget values
+	geometry = dialog.widgetValuec("Image Size");
+	width = atoi(beforeChar(geometry,'x'));
+	height = atoi(afterChar(geometry,'x'));
+	if ((width < 1) || (height < 1))
+	{
+		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
+		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
+		return;
+	}
+	int ncycles = dialog.widgetValuei("Cycles");
+	int fpv = dialog.widgetValuei("Frames per Vibration");
+	int fps = dialog.widgetValuei("Movie FPS");
+	
+	// Get movie filename
+	static QString selectedFilter("All Files (*.*)");
+	static QDir currentDirectory_(aten.workDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Movie", currentDirectory_.path(), "All Files (*.*)", &selectedFilter);
+	if (filename.isEmpty()) return;
+	// Store path for next use
+	currentDirectory_.setPath(filename);
+	
+	// Generate movie file...
+	CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpv, ncycles, fps);
 }
 
 // Stop current timer (if any)
@@ -201,6 +254,7 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 		DONTDRAW = TRUE;
 		Model *m = aten.currentModelOrFrame();
 		m->vibrationNextFrame();
+		ui.FrameSlider->setValue(m->vibrationFrameIndex()+1);
 		gui.mainWidget()->postRedisplay();
 		DONTDRAW = FALSE;
 	}

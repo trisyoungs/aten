@@ -632,7 +632,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 		glViewport(vp[0]+vp[2]-n,vp[1],n,n);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glMultMatrixd(source->globeProjectionMatrix().matrix());
+		glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		Matrix A = modelTransformationMatrix_;
@@ -651,8 +651,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	// Prepare for model rendering
 	glViewport(vp[0], vp[1], vp[2], vp[3]);
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glMultMatrixd(source->modelProjectionMatrix().matrix());
+	glLoadMatrixd(source->modelProjectionMatrix().matrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	

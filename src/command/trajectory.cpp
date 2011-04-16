@@ -64,7 +64,7 @@ bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.rs()->bohrToAngstrom();
 	obj.rs()->renumberAtoms();
-	obj.rs()->resetView();
+	if (!prefs.keepView()) obj.rs()->resetView();
 	obj.rs()->calculateMass();
 	obj.rs()->selectNone();
 	obj.rs()->changeLog.reset();

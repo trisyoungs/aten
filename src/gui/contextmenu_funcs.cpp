@@ -61,6 +61,7 @@ void GuiQt::callContextMenu(Atom *undermouse, int x, int y)
 	// If there is no atom under the mouse, then exit
 	target = undermouse;
 	if (target == NULL) return;
+
 	// If the atom under the mouse is selected, just run the popup. If it is not selected, deselect everything else and select it
 	QPoint pos(x,y);
 //	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
@@ -75,6 +76,7 @@ void GuiQt::callContextMenu(Atom *undermouse, int x, int y)
 		// Make sure context menu items are enabled, since nothing may have been selected beforehand
 		mainWindow_->ui.AtomContextMenu->setEnabled(TRUE);
 	}
+	
 	// Atom selection may have just changed, so update context menu
 	updateContextMenu();
 	// Run the popup

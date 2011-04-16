@@ -19,6 +19,12 @@
 		<listitem>
 			<para>Progress indicators following Disorder wizard usage appear to be prevented from appearing</para>
 		</listitem>
+		<listitem>
+			<para>Rendering vibrations in stick style appears not to work.</para>
+		</listitem>
+		<listitem>
+			<para>Program colours are slightly 'odd' - i.e. vibration colour is listed as a different colour than is used.</para>
+		</listitem>
 	</orderedlist>
 
 </sect5>
@@ -26,9 +32,6 @@
 <sect5><title>Current TODO</title>
 
 	<orderedlist>
-		<listitem>
-			<para>Add 'save movie', number of frames, frame slider, to Vibration window, and convert into a dialog instead of a dockwidget for safety</para>
-		</listitem>
 		<listitem>
 			<para>Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made</para>
 		</listitem>
@@ -95,13 +98,7 @@
 			<para>Remove references to old region information in disordered builder.</para>
 		</listitem>
 		<listitem>
-			<para>New GUI images.</para>
-		</listitem>
-		<listitem>
 			<para>List of keyboard shortcuts</para>
-		</listitem>
-		<listitem>
-			<para>New description for Select window</para>
 		</listitem>
 		<listitem>
 			<para>Topic: Colourscales</para>
