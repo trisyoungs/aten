@@ -62,23 +62,6 @@ bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return result;
 }
 
-// Save current view a vector graphic
-bool Command::function_SaveVector(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-// 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-// 	vector_format vf = VIF_from_text(c->argc(0));
-// 	if (vf == VIF_NITEMS)
-// 	{
-// 		msg.print("Unrecognised vector format '%s'.\n",c->argc(0));
-// 		return FALSE;
-// 	}
-// 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
-// 	gui.mainView.saveVector(obj.rs, vf, c->argc(1));
-	rv.reset();
-	msg.print("Saving images in vector format is not yet available.\n");
-	return FALSE;
-}
-
 // Save movie of current trajectory
 bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -221,4 +204,10 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	progress.terminate(pid);
 	
 	return TRUE;
+}
+
+// Save movie of specified vibration frame
+bool Command::function_SaveVibrationMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+// CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpv, ncycles, fps);
 }

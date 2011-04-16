@@ -41,6 +41,7 @@ FragmentsWidget::FragmentsWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 	// Private variables
 	currentFragment_ = NULL;
 	bondId_ = 0;
+	iconsGenerated_ = FALSE;
 }
 
 void FragmentsWidget::showWidget()
@@ -101,8 +102,9 @@ void FragmentsWidget::refresh()
 		group->setFlags(Qt::ItemIsEnabled);
 		ui.FragmentTree->setItemExpanded(group, TRUE);
 		group->setText(0, fg->name());
-		//group->setFirstColumnSpanned(TRUE);	// Removed, since not present in Qt4.2
-
+#if QT_VERSION >= 0x040300
+		group->setFirstColumnSpanned(TRUE);
+#endif
 		column = 0;
 		// Go through fragments in group
 		for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
@@ -125,6 +127,10 @@ void FragmentsWidget::refresh()
 			}
 			tabitem = new TTableWidgetItem();
 			tabitem->data.set(VTypes::ModelData, f);		// No VTypes::FragmentData, so set as a Model instead
+			
+			// Generate icon if necessary (first run only) and alloeed (through prefs)
+			if ((!iconsGenerated_) && prefs.generateFragmentIcons()) f->masterModel()->regenerateIcon();
+
 			tabitem->setIcon(f->icon());
 			tabitem->setToolTip(f->masterModel()->name());
 			ui.FragmentTable->setItem(row, column, tabitem);
@@ -141,9 +147,11 @@ void FragmentsWidget::refresh()
 			if (currentFragment_ == f) item->setSelected(TRUE);
 		}
 	}
+	
 	// Resize columns and rows
 	for (int n=0; n<3; n++) ui.FragmentTree->resizeColumnToContents(n);
 	ui.FragmentTable->resizeRowsToContents();
+	iconsGenerated_ = TRUE;
 	msg.exit("FragmentsWidget::refresh");
 }
 

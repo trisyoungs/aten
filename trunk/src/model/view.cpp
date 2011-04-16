@@ -134,12 +134,6 @@ Matrix &Model::modelProjectionMatrix()
 	return (parent_ == NULL ? modelProjectionMatrix_ : parent_->modelProjectionMatrix());
 }
 
-// Return current globe projection matrix
-Matrix &Model::globeProjectionMatrix()
-{
-	return (parent_ == NULL ? globeProjectionMatrix_ : parent_->globeProjectionMatrix());
-}
-
 // Spin the model about the z axis
 void Model::zRotateView(double dz)
 {
@@ -194,9 +188,10 @@ void Model::resetView()
 	msg.enter("Model::resetView");
 	Vec3<double> extremes, rabs, target;
 	Vec4<double> screenr;
+	int width, height;
 	bool done = FALSE;
 	double rad;
-	Matrix &mview = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix_);
+	Matrix &mview = modelViewMatrix();
 	mview.setIdentity();
 	mview.setColumn(3,0.0,0.0,0.0,1.0);
 	// Fit model to screen
@@ -212,19 +207,34 @@ void Model::resetView()
 	target = (cell_.lengths() * 0.5) + extremes;
 
 	// Now, adjust camera matrix so that this atom is on-screen.
+	// If the GUI exists then use the width and height from the widget context.
+	// If not, use an arbitrary 100x100 canvas size.
+	if (gui.exists())
+	{
+		width = gui.mainWidget()->contextWidth();
+		height = gui.mainWidget()->contextHeight();
+	}
+	else
+	{
+		width = 100;
+		height = 100;
+	}
+	setupView(0, 0, width, height);
+
 	// Need to do a check for the viability of the canvas first...
-	if (gui.mainWidget()->isValid() && (atoms_.nItems() != 0))
+	if (atoms_.nItems() > 0)
 	{
 		do
 		{
-			// Adjust z-translation by 1 Angstrom
+			// Adjust z-translation by 1 Angstrom. Orthographic view needs the projection matrix to be recreated every time
 			mview[14] -= 1.0;
+			if (!prefs.hasPerspective()) setupView(0, 0, width, height);
+
 			// Project our local atom and grab the z screen coordinate
-			setupView(0, 0, gui.mainWidget()->contextWidth(), gui.mainWidget()->contextHeight());
 			modelToWorld(target, &screenr);
 			done = TRUE;
-			if ((screenr.x < 0.0) || (screenr.x > gui.mainWidget()->width())) done = FALSE;
-			if ((screenr.y < 0.0) || (screenr.y > gui.mainWidget()->height())) done = FALSE;
+			if ((screenr.x < 0.0) || (screenr.x > width)) done = FALSE;
+			if ((screenr.y < 0.0) || (screenr.y > height)) done = FALSE;
 			if (screenr.z < 0.0) done = FALSE;
 		} while (!done);
 	}
@@ -341,32 +351,47 @@ void Model::setupView(GLint x, GLint y, GLint w, GLint h)
 		viewportMatrix_[1] = y;
 		viewportMatrix_[2] = w;
 		viewportMatrix_[3] = h;
-		glViewport( x, y, w, h );
-		glMatrixMode(GL_PROJECTION);
-		
-		// Create projection matrix for rotation globe
-		glLoadIdentity();
-		glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
-		glGetDoublev(GL_PROJECTION_MATRIX, globeProjectionMatrix_.matrix());
 		
 		// Create projection matrix for model
-		glLoadIdentity();
-		GLdouble top, bottom, aspect = (GLdouble) w / (GLdouble) h;
+		GLdouble top, bottom, right, left, aspect = (GLdouble) w / (GLdouble) h;
 		if (prefs.hasPerspective())
 		{
 			// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
-			bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
-			top = -bottom;
-			glFrustum(aspect*top, aspect*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
+			top = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
+			bottom = -top;
+			left = -aspect*top;
+			right = aspect*top;
+			modelProjectionMatrix_.setColumn(0, (prefs.clipNear()*2.0) / (right-left), 0.0, 0.0, 0.0);
+			modelProjectionMatrix_.setColumn(1, 0.0, (prefs.clipNear()*2.0) / (top-bottom), 0.0, 0.0);
+			modelProjectionMatrix_.setColumn(2, (right+left)/(right-left), (top+bottom)/(top-bottom), -(prefs.clipFar()+prefs.clipNear())/(prefs.clipFar()-prefs.clipNear()), -1.0);
+			modelProjectionMatrix_.setColumn(3, 0.0, 0.0, -(2.0*prefs.clipNear()*prefs.clipFar()) / (prefs.clipFar()-prefs.clipNear()), 0.0);
+			// Equivalent to the following code:
+			// glMatrixMode(GL_PROJECTION);
+			// glLoadIdentity();
+			// top = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
+			// bottom = -top;
+			// glFrustum(aspect*bottom, aspect*top, bottom, top, prefs.clipNear(), prefs.clipFar());
+			// glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
 		}
 		else
 		{
 			top = tan(prefs.perspectiveFov() / DEGRAD) * modelViewMatrix_[14];
 			bottom = -top;
-			glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
+			left = aspect*top;
+			right = aspect*bottom;
+
+			modelProjectionMatrix_.setColumn(0, 2.0 / (right-left), 0.0, 0.0, (right+left)/(right-left));
+			modelProjectionMatrix_.setColumn(1, 0.0, 2.0 / (top-bottom), 0.0, (top+bottom)/(top-bottom));
+			modelProjectionMatrix_.setColumn(2, 0.0, 0.0, -2.0/(prefs.clipFar()+prefs.clipFar()), 0.0);
+			modelProjectionMatrix_.setColumn(3, 0.0, 0.0, 0.0, 1.0);
+			// Equivalent to the following code:
+			// glMatrixMode(GL_PROJECTION);
+			// glLoadIdentity();
+			// top = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
+			// bottom = -top;
+			// glOrtho(aspect*top, aspect*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
+			// glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
 		}
-		glGetDoublev(GL_PROJECTION_MATRIX, modelProjectionMatrix_.matrix());
-		glMatrixMode(GL_MODELVIEW);
 	}
 	else parent_->setupView(x, y, w, h);
 }

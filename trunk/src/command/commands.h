@@ -343,7 +343,7 @@ class Command
 		// Image Commands
 		SaveBitmap,
 		SaveMovie,
-		SaveVector,
+		SaveVibrationMovie,
 	
 		// Labeling commands
 		ClearLabels,
@@ -814,7 +814,7 @@ class Command
 	// Image Commands
 	static bool function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_SaveVector(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveVibrationMovie(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Labeling commands
 	static bool function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv);

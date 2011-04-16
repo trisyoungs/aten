@@ -303,7 +303,7 @@ void Command::initPointers()
 	// Image Commands
 	pointers_[SaveBitmap] = &Command::function_SaveBitmap;
 	pointers_[SaveMovie] = &Command::function_SaveMovie;
-	pointers_[SaveVector] = &Command::function_SaveVector;
+	pointers_[SaveVibrationMovie] = &Command::function_SaveVibrationMovie;
 
 	// Labeling Commands
 	pointers_[ClearLabels] = &Command::function_ClearLabels;

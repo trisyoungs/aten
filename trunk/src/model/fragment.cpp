@@ -84,9 +84,6 @@ bool Fragment::setMasterModel(Model *m)
 	masterModel_->centre(0.0,0.0,0.0,FALSE,FALSE,FALSE);
 	masterModel_->selectNone();
 
-	// Generate icon for fragment
-	if (prefs.generateFragmentIcons()) masterModel_->regenerateIcon();
-
 	// Final tweaks to master model - put link atom at 0,0,0
 	masterModel_->markAll();
 	masterModel_->translateSelectionLocal(-masterLinkAtom_->r(), TRUE);

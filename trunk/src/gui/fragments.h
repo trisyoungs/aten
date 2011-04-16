@@ -58,6 +58,8 @@ class FragmentsWidget : public QDockWidget
 	// Local variables
 	*/
 	private:
+	// Whether fragment icons have been generated yet
+	bool iconsGenerated_;
 	// Current drawing fragment
 	Fragment *currentFragment_;
 	// Text string to filter fragments by

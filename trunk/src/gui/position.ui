@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>256</height>
+    <height>265</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>256</height>
+    <height>265</height>
    </size>
   </property>
   <property name="floating">
@@ -1227,7 +1227,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="ShiftVectorShiftPositiveButton">
+           <widget class="QPushButton" name="ShiftVectorPositiveButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1268,7 +1268,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="ShiftVectorShiftNegativeButton">
+           <widget class="QPushButton" name="ShiftVectorNegativeButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>1</horstretch>

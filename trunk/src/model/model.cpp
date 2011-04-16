@@ -106,6 +106,7 @@ Model::Model()
 	// Vibration info
 	vibrationCurrentFrame_ = NULL;
 	vibrationForward_ = TRUE;
+	vibrationFrameIndex_ = -1;
 
 	// Public variables
 	next = NULL;
