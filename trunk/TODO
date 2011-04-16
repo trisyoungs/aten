@@ -22,9 +22,6 @@
 		<listitem>
 			<para>Rendering vibrations in stick style appears not to work.</para>
 		</listitem>
-		<listitem>
-			<para>Program colours are slightly 'odd' - i.e. vibration colour is listed as a different colour than is used.</para>
-		</listitem>
 	</orderedlist>
 
 </sect5>
