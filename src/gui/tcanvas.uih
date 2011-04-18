@@ -93,6 +93,10 @@ class TCanvas : public QGLWidget
 	QTime mouseMoveCounter_;
 	// Rendering engine
 	RenderEngine engine_;
+	// Flag specifying that stored model pixel data should not be used
+	bool noPixelData_;
+	// Flag specifying that the active model should be redrawn regardless of pixeldata availability
+	bool redrawActiveModel_;
 	
 	protected:
 	// Initialise context widget (when created by Qt)
@@ -107,10 +111,6 @@ class TCanvas : public QGLWidget
 	void isRenderingOk();
 
 	private:
-	// Flag specifying that stored model pixel data should not be used
-	bool noPixelData_;
-	// Flag specifying that the active model should be redrawn regardless of pixeldata availability
-	bool redrawActiveModel_;
 	// Begin construct for any OpenGL commands
 	bool beginGl();
 	// Finish OpenGL commands

@@ -227,7 +227,12 @@ template <class T> T *List<T>::insert(T* newprev)
 // Own an existing item
 template <class T> void List<T>::own(T* olditem)
 {
-	// In the interests of 'pointer cleanliness, refuse to own the item if its pointers are not NULL
+	if (olditem == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::own().\n");
+		return;
+	}
+	// In the interests of 'pointer etiquette', refuse to own the item if its pointers are not NULL
 	if ((olditem->next != NULL) || (olditem->prev != NULL))
 	{
 		printf("list::own <<<< List refused to own an item that still had ties >>>>\n");
@@ -244,6 +249,11 @@ template <class T> void List<T>::own(T* olditem)
 // Disown the item, but do not delete it
 template <class T> void List<T>::disown(T* xitem)
 {
+	if (xitem == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::disown().\n");
+		return;
+	}
 	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
 	xitem->next == NULL ? listTail_ = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
 	xitem->next = NULL;
@@ -255,6 +265,11 @@ template <class T> void List<T>::disown(T* xitem)
 // Remove the specified item from the list
 template <class T> void List<T>::remove(T *xitem)
 {
+	if (xitem == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::remove().\n");
+		return;
+	}
 	// Delete a specific item from the list
 	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
 	xitem->next == NULL ? listTail_ = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
@@ -266,6 +281,11 @@ template <class T> void List<T>::remove(T *xitem)
 // Remove last item from the list
 template <class T> void List<T>::removeLast()
 {
+	if (listTail_ == NULL)
+	{
+		printf("Internal Error: No last item to delete in list.\n");
+		return;
+	}
 	// Delete a specific item from the list
 	T *xitem = listTail_;
 	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
@@ -286,6 +306,11 @@ template <class T> bool List<T>::contains(T *searchitem)
 // Remove the specified item from the list, returning the next
 template <class T> T* List<T>::removeAndGetNext(T *xitem)
 {
+	if (xitem == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::removeAndGetNext().\n");
+		return NULL;
+	}
 	// Delete a specific item from the list, and return the next in the list
 	T* result = xitem->next;
 	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
@@ -299,6 +324,11 @@ template <class T> T* List<T>::removeAndGetNext(T *xitem)
 // Cut - Bridge items over specified item
 template <class T> void List<T>::cut(T *item)
 {
+	if (item == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::cut().\n");
+		return;
+	}
 	T *prev, *next;
 	prev = item->prev;
 	next = item->next;
@@ -352,7 +382,7 @@ template <class T> int List<T>::indexOf(T* item) const
 	}
 	if (result == nItems_)
 	{
-		printf("list::index_of <<<< Supplied item is not in this list >>>>.\n");
+		printf("Internal Error: List::indexOf could not find supplied item.\n");
 		result = -1;
 	}
 	return result;
@@ -361,6 +391,11 @@ template <class T> int List<T>::indexOf(T* item) const
 // Return item at given position
 template <class T> T *List<T>::itemAt(int n)
 {
+	if ((n < 0) || (n >= nItems_))
+	{
+		printf("Internal Error: List array index %i is out of bounds in List<T>::itemAt().\n", n);
+		return NULL;
+	}
 	return array()[n];
 }
 
@@ -394,6 +429,11 @@ template <class T> T **List<T>::array()
 // Swap items
 template <class T> void List<T>::swapItems(T* item1, T* item2)
 {
+	if ((item1 == NULL) || (item2 == NULL))
+	{
+		printf("Internal Error: NULL pointer(s) passed to List<T>::swapItems(%p,%p).\n", item1, item2);
+		return;
+	}
 	// If the items are adjacent, swap the pointers 'outside' the pair and swap the next/prev between them
 	T *n1, *n2, *p1, *p2;
 	if ((item1->next == item2) || (item2->next == item1))
@@ -452,6 +492,11 @@ template <class T> void List<T>::swapItems(T* item1, T* item2)
 // Shift item towards head
 template <class T> void List<T>::shiftUp(T* item)
 {
+	if (item == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::shiftUp().\n");
+		return;
+	}
 	// If the item is already at the head of the list, return NULL.
 	if (listHead_ == item) return;
 	swapItems(item->prev,item);
@@ -461,6 +506,11 @@ template <class T> void List<T>::shiftUp(T* item)
 // Shift item towards tail
 template <class T> void List<T>::shiftDown(T* item)
 {
+	if (item == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::shiftDown().\n");
+		return;
+	}
 	// If the item is already at the tail of the list, return.
 	if (listTail_ == item) return;
 	swapItems(item->next,item);
@@ -470,6 +520,11 @@ template <class T> void List<T>::shiftDown(T* item)
 // Move item to end
 template <class T> void List<T>::moveToEnd(T* item)
 {
+	if (item == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::moveToEnd().\n");
+		return;
+	}
 	// If the item is already at the tail, exit
 	if (listTail_ == item) return;
 	cut(item);
@@ -483,6 +538,11 @@ template <class T> void List<T>::moveToEnd(T* item)
 // Move item to start
 template <class T> void List<T>::moveToStart(T* item)
 {
+	if (item == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to List<T>::moveToStart().\n");
+		return;
+	}
 	// If the item is already at the head, exit
 	if (listHead_ == item) return;
 	cut(item);
@@ -499,13 +559,13 @@ template <class T> void List<T>::move(int target, int delta)
 	// Check positions
 	if ((target < 0) || (target >= nItems_))
 	{
-		printf("list::move <<<< Old position (%i) is out of range of list (0 - %i) >>>>\n",target,nItems_);
+		printf("Internal Error: Old position (%i) is out of range (0 - %i) in List<T>::move\n", target, nItems_);
 		return;
 	}
 	int newpos = target + delta;
 	if ((newpos < 0) || (newpos >= nItems_))
 	{
-		printf("list::move <<<< New position (%i) is out of range of list (0 - %i) >>>>\n",newpos,nItems_);
+		printf("Internal Error: New position (%i) is out of range (0 - %i) in List<T>::move\n", newpos, nItems_);
 		return;
 	}
 	// Get pointer to item that we're moving and shift it

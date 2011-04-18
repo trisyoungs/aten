@@ -28,9 +28,6 @@
 #include "gui/tcanvas.uih"
 #include "main/aten.h"
 #include <math.h>
-#ifdef _WIN32
-#include "glext.h"
-#endif
 
 /*
 // Render Primitives
@@ -43,6 +40,7 @@ RenderPrimitives::RenderPrimitives()
 	scaledAtoms_ = new PrimitiveGroup[elements().nElements()];
 	selectedScaledAtoms_ = new PrimitiveGroup[elements().nElements()];
 	primitiveQuality_ = -1;
+	stackSize_ = 0;
 }
 
 // Destructor
@@ -50,6 +48,12 @@ RenderPrimitives::~RenderPrimitives()
 {
 	delete[] scaledAtoms_;
 	delete[] selectedScaledAtoms_;
+}
+
+// Return current primitive instance stacksize
+int RenderPrimitives::stackSize()
+{
+	return stackSize_;
 }
 
 // (Re)Generate primitives
@@ -591,10 +595,11 @@ void RenderEngine::updatePrimitives(const QGLContext *context)
 	primitives_[1].createPrimitives(prefs.imagePrimitiveQuality());
 	
 	// Generate new VBOs / display lists - pop and push a context
-	primitives_[0].popInstance();
-	primitives_[1].popInstance();
-	primitives_[0].pushInstance(context);
-	primitives_[1].pushInstance(context);
+	for (int n=0; n<2; ++n) if (primitives_[n].stackSize() != 0)
+	{
+		primitives_[0].popInstance();
+		primitives_[0].pushInstance(context);
+	}
 	
 	// Recalculate adjustments for bond positioning
 	calculateAdjustments();

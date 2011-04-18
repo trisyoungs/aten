@@ -283,6 +283,11 @@ template <class T, class D> void Reflist<T,D>::own(Refitem<T,D> *olditem)
 // Remove Refitem from list
 template <class T, class D> void Reflist<T,D>::remove(Refitem<T,D> *xitem)
 {
+	if (xitem == NULL)
+	{
+		printf("Internal Error: NULL pointer passed to Reflist<T,D>::remove().\n");
+		return;
+	}
 	// Delete a specific Refitem from the list
 	xitem->prev == NULL ? listHead_ = xitem->next : xitem->prev->next = xitem->next;
 	xitem->next == NULL ? listTail_ = xitem->prev : xitem->next->prev = xitem->prev;
@@ -294,6 +299,11 @@ template <class T, class D> void Reflist<T,D>::remove(Refitem<T,D> *xitem)
 // Remove first item from list
 template <class T, class D> void Reflist<T,D>::removeFirst()
 {
+	if (listHead_ == NULL)
+	{
+		printf("Internal Error: No item to delete in  Reflist<T,D>::removeFirst().\n");
+		return;
+	}
 	remove(listHead_);
 	regenerate_ = 1;
 }
@@ -301,6 +311,11 @@ template <class T, class D> void Reflist<T,D>::removeFirst()
 // Remove last item from list
 template <class T, class D> void Reflist<T,D>::removeLast()
 {
+	if (listTail_ == NULL)
+	{
+		printf("Internal Error: No item to delete in  Reflist<T,D>::removeFirst().\n");
+		return;
+	}
 	remove(listTail_);
 	regenerate_ = 1;
 }
@@ -318,7 +333,7 @@ template <class T, class D> Refitem<T,D>* Reflist<T,D>::operator[](int index)
 {
 	if ((index < 0) || (index >= nItems_))
 	{
-		printf("reflist::[] <<<< SEVERE - Array index (%i) out of bounds (0-%i) >>>>\n",index,nItems_-1);
+		printf("Internal Error: Array index (%i) out of bounds (0-%i) in Reflist<T,D>::operator[]\n",index,nItems_-1);
 		return NULL;
 	}
 	// Use array() function to return item
@@ -394,7 +409,7 @@ template <class T, class D> void Reflist<T,D>::fillArray(int n, T **data)
 		count ++;
 		if (count == n) break;
 		ri = ri->next;
-		if (ri == NULL) printf("Reflist::fillArray <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
+		if (ri == NULL) printf("Internal Error: Not enough items in list (requested %i, had %i) in Reflist::fillArray()\n",n,nItems_);
 	}
 	regenerate_ = 1;
 }
@@ -402,6 +417,11 @@ template <class T, class D> void Reflist<T,D>::fillArray(int n, T **data)
 // Swap the two items specified
 template <class T, class D> void Reflist<T,D>::swap(T *item1, T *item2)
 {
+	if ((item1 == NULL) || (item2 == NULL))
+	{
+		printf("Internal Error: NULL pointer(s) passed to Reflist<T,D>::swap().\n", item1, item2);
+		return;
+	}
 	T *prev1 = item1->prev, *next1 = item1->next;
 	item1->prev = item2->prev;
 	item1->next = item2->next;

@@ -22,7 +22,6 @@
 #ifndef ATEN_PRIMITIVEINFO_H
 #define ATEN_PRIMITIVEINFO_H
 
-#include <GL/gl.h>
 #include "base/matrix.h"
 
 // Forward Declarations

@@ -947,7 +947,7 @@ bool Tree::addLocalFunctionArguments(TreeNode *arglist)
 		printf("Internal Error: Target tree is not a function.\n");
 		return NULL;
 	}
-	TreeNode *first, *node, *oldnode;
+	TreeNode *first, *node;
 	VariableNode *vnode;
 	// Rewind to head of arguments list
 	for (first = arglist; first != NULL; first = first->prevArgument) if (first->prevArgument == NULL) break;
@@ -1121,4 +1121,5 @@ bool Tree::setWidgetProperty(const char *name, const char *property, ReturnValue
 	sc.setTargetWidget(name);
 	sc.setChange(action, value.asString());
 	customDialog_->performStateChange(&sc);
+	return TRUE;
 }

@@ -22,7 +22,14 @@
 #ifndef ATEN_VERTEXCHUNK_H
 #define ATEN_VERTEXCHUNK_H
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#ifdef _MAC
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #include "base/constants.h"
 
 #define VERTEXCHUNKSIZE 102

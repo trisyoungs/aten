@@ -28,7 +28,7 @@ void Aten::openPartitions()
 	msg.enter("Aten::openPartitions");
 	Dnchar path;
 	bool found = FALSE;
-	int nfailed;
+	int nfailed = 0;
 
 	nPartitioningSchemesFailed_ = 0;
 	failedPartitioningSchemes_.clear();

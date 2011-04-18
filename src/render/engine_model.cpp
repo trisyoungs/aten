@@ -667,14 +667,14 @@ void RenderEngine::renderGlyphs(Model *source)
 					else ts = RenderEngine::SolidTriangle;
 				}
 				else ts = RenderEngine::WireTriangle;
-				glyphTriangles_[ts].defineVertex(r1.x, r1.y, r1.z, r4.x, r4.y, r4.z, colour_i);
-				glyphTriangles_[ts].defineVertex(r2.x, r2.y, r2.z, r4.x, r4.y, r4.z, colour_j);
-				glyphTriangles_[ts].defineVertex(r3.x, r3.y, r3.z, r4.x, r4.y, r4.z, colour_k);
+				glyphTriangles_[ts].defineVertex(r1.x, r1.y, r1.z, r4.x, r4.y, r4.z, colour_i, TRUE);
+				glyphTriangles_[ts].defineVertex(r2.x, r2.y, r2.z, r4.x, r4.y, r4.z, colour_j, TRUE);
+				glyphTriangles_[ts].defineVertex(r3.x, r3.y, r3.z, r4.x, r4.y, r4.z, colour_k, TRUE);
 				if (g->isSelected())
 				{
-					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r1.x, r1.y, r1.z, r4.x, r4.y, r4.z, textcolour);
-					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r2.x, r2.y, r2.z, r4.x, r4.y, r4.z, textcolour);
-					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r3.x, r3.y, r3.z, r4.x, r4.y, r4.z, textcolour);
+					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r1.x, r1.y, r1.z, r4.x, r4.y, r4.z, textcolour, TRUE);
+					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r2.x, r2.y, r2.z, r4.x, r4.y, r4.z, textcolour, TRUE);
+					glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r3.x, r3.y, r3.z, r4.x, r4.y, r4.z, textcolour, TRUE);
 				}
 				if (g->type() == Glyph::QuadGlyph)
 				{
@@ -689,14 +689,14 @@ void RenderEngine::renderGlyphs(Model *source)
 						else ts = RenderEngine::SolidTriangle;
 					}
 					else ts = RenderEngine::WireTriangle;
-					glyphTriangles_[ts].defineVertex(r1.x, r1.y, r1.z, r2.x, r2.y, r2.z, colour_i);
-					glyphTriangles_[ts].defineVertex(r3.x, r3.y, r3.z, r2.x, r2.y, r2.z, colour_k);
-					glyphTriangles_[ts].defineVertex(r4.x, r4.y, r4.z, r2.x, r2.y, r2.z, colour_l);
+					glyphTriangles_[ts].defineVertex(r1.x, r1.y, r1.z, r2.x, r2.y, r2.z, colour_i, TRUE);
+					glyphTriangles_[ts].defineVertex(r3.x, r3.y, r3.z, r2.x, r2.y, r2.z, colour_k, TRUE);
+					glyphTriangles_[ts].defineVertex(r4.x, r4.y, r4.z, r2.x, r2.y, r2.z, colour_l, TRUE);
 					if (g->isSelected())
 					{
-						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r1.x, r1.y, r1.z, r2.x, r2.y, r2.z, textcolour);
-						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r3.x, r3.y, r3.z, r2.x, r2.y, r2.z, textcolour);
-						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r4.x, r4.y, r4.z, r2.x, r2.y, r2.z, textcolour);
+						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r1.x, r1.y, r1.z, r2.x, r2.y, r2.z, textcolour, TRUE);
+						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r3.x, r3.y, r3.z, r2.x, r2.y, r2.z, textcolour, TRUE);
+						glyphTriangles_[RenderEngine::WireTriangle].defineVertex(r4.x, r4.y, r4.z, r2.x, r2.y, r2.z, textcolour, TRUE);
 					}
 				}
 				break;

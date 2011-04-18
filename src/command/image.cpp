@@ -209,5 +209,6 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Save movie of specified vibration frame
 bool Command::function_SaveVibrationMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-// CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpv, ncycles, fps);
+	// CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpv, ncycles, fps);
+	return FALSE;
 }

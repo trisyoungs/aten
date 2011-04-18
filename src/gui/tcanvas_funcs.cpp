@@ -176,12 +176,23 @@ void TCanvas::initializeGL()
 			printf("Error: VBOs requested but the extension is not available. Falling back to display lists.\n");
 			prefs.setInstanceType(PrimitiveInstance::ListInstance);
 		}
+		else
+		{
+			// Store VBO function pointers (Windows only)
+			#ifdef _WIN32
+			Primitive::glGenBuffers = (PFNGLGENBUFFERSPROC) wglGetProcAddress("glGenBuffers");
+			Primitive::glBindBuffer = (PFNGLBINDBUFFERPROC) wglGetProcAddress("glBindBuffer");
+			Primitive::glBufferData = (PFNGLBUFFERDATAPROC) wglGetProcAddress("glBufferData");
+			Primitive::glDeleteBuffers = (PFNGLDELETEBUFFERSPROC) wglGetProcAddress("glDeleteBuffers");
+			if ((Primitive::glGenBuffers == NULL) || (Primitive::glBindBuffer == NULL) || (Primitive::glBufferData == NULL) || (Primitive::glDeleteBuffers == NULL))
+			{
+				printf("Error: VBOs requested but the relevant procedures could not be located. Falling back to display lists.\n");
+				prefs.setInstanceType(PrimitiveInstance::ListInstance);
+			}
+			#endif
+		}
 		++count;
 	}
-
-
-// 	// Setup basic GL stuff
-// 	engine_.initialiseGL();
 
 	// Push a primitives instance in the rendering engine
 	engine_.pushInstance(highQuality_, context());
