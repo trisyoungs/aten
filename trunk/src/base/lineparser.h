@@ -118,11 +118,11 @@ class LineParser
 	// Read line from file and do delimited parse
 	int getArgsDelim(int optionMask);
 	// Get rest of line starting at next delimited part
-	bool getRestDelim(int optionMask, Dnchar *destarg = NULL);
+	bool getRestDelim(Dnchar *destarg = NULL);
 	// Set line and parse using delimiters
 	void getArgsDelim(int optionMask, const char *s);
 	// Get next delimited chunk from file (not line)
-	bool getCharsDelim(int optionMask, Dnchar *destarg = NULL);
+	bool getCharsDelim(Dnchar *destarg = NULL);
 	// Get next delimited chunk from string, removing grabbed part
 	bool getCharsDelim(int optionMask, Dnchar *source, Dnchar *destarg);
 	// Read next line from internal source file, setting as parsing source

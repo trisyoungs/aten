@@ -20,8 +20,22 @@
 */
 
 #define GL_GLEXT_PROTOTYPES
+#ifdef _WIN32
+#include <windows.h>
+#include <GL/gl.h>
+#include "glext.h"
+#endif
 #include "render/primitive.h"
 #include "classes/prefs.h"
+
+// Declare static VBO functions (Windows only)
+#ifdef _WIN32
+PFNGLGENBUFFERSPROC Primitive::glGenBuffers = NULL;
+PFNGLBINDBUFFERPROC Primitive::glBindBuffer = NULL;
+PFNGLBUFFERDATAPROC Primitive::glBufferData = NULL;
+PFNGLBUFFERSUBDATAPROC Primitive::glBufferSubData = NULL;
+PFNGLDELETEBUFFERSPROC Primitive::glDeleteBuffers = NULL;
+#endif
 
 /*
 // Primitive Instance
@@ -317,7 +331,7 @@ void Primitive::pushInstance(const QGLContext *context)
 	if (prefs.instanceType() == PrimitiveInstance::VBOInstance)
 	{
 		// Prepare local array of data to pass to VBO
-		int offset, n;
+		int offset;
 		GLuint idVBO;
 		if (nDefinedVertices_ == -1)
 		{

@@ -22,6 +22,11 @@
 #ifndef ATEN_PRIMITIVE_H
 #define ATEN_PRIMITIVE_H
 
+#ifdef _WIN32
+#include <windows.h>
+#include <GL/gl.h>
+#include "glext.h"
+#endif
 #include "templates/list.h"
 #include "render/vertexchunk.h"
 
@@ -67,7 +72,14 @@ class Primitive
 	~Primitive();
 	// List pointer
 	Primitive *prev, *next;
-
+	// VBO function pointers (Windows only)
+	#ifdef _WIN32
+	static PFNGLGENBUFFERSPROC glGenBuffers;
+	static PFNGLBINDBUFFERPROC glBindBuffer;
+	static PFNGLBUFFERDATAPROC glBufferData;
+	static PFNGLBUFFERSUBDATAPROC glBufferSubData;
+	static PFNGLDELETEBUFFERSPROC glDeleteBuffers;
+	#endif
 
 	/*
 	// Data

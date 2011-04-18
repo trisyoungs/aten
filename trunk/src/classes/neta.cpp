@@ -421,7 +421,7 @@ NetaNode *NetaContextNode::innerNeta()
 // Clone node structure
 NetaNode *NetaContextNode::clone(Neta *newparent)
 {
-	printf("NetaContextNode::clone() should never be called.\n");
+	printf("NetaContextNode::clone() should never be called (supposed new parent was %p).\n", newparent);
 	return NULL;
 }
 

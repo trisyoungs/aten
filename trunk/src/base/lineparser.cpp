@@ -551,8 +551,8 @@ int LineParser::getArgsDelim(int optionMask)
 	return 0;
 }
 
-// Get rest of current line starting at next delimited part (and put into supplied arg if supplied)
-bool LineParser::getRestDelim(int optionMask, Dnchar* destarg)
+// Get rest of current line starting at next delimited part (and put into destination argument if supplied)
+bool LineParser::getRestDelim(Dnchar* destarg)
 {
 	msg.enter("LineParser::getRestDelim");
 	int arglen = 0, n, length;
@@ -611,7 +611,7 @@ void LineParser::getArgsDelim(int optionMask, const char* s)
 }
 
 // Get next delimited chunk from file (not line)
-bool LineParser::getCharsDelim(int optionMask, Dnchar *destarg)
+bool LineParser::getCharsDelim(Dnchar *destarg)
 {
 	int length = 0;
 	bool result = TRUE;

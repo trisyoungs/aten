@@ -19,6 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef _WIN32
+#include <windows.h>
+#include <GL/gl.h>
+#endif
 #include "render/primitiveinfo.h"
 #include "render/primitivegroup.h"
 #include "classes/prefs.h"

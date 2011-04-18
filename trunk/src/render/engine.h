@@ -22,6 +22,11 @@
 #ifndef ATEN_RENDERENGINE_H
 #define ATEN_RENDERENGINE_H
 
+#ifdef _WIN32
+#include <windows.h>
+#include <GL/gl.h>
+#include "glext.h"
+#endif
 #include "render/triangles.h"
 #include "render/primitivegroup.h"
 #include "render/primitiveinfo.h"
@@ -55,6 +60,8 @@ class RenderPrimitives
 	private:
 	// Quality setting that primitives were generated at
 	int primitiveQuality_;
+	// Stack size counter
+	int stackSize_;
 	// Atom styles
 	PrimitiveGroup atoms_[Atom::nDrawStyles], *scaledAtoms_;
 	// Selected atom styles
@@ -71,6 +78,8 @@ class RenderPrimitives
 	Primitive wireCube_, crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
 
 	public:
+	// Return current primitive instance stacksize
+	int stackSize();
 	// (Re)Generate primitive vertex arrays with specified quality
 	void createPrimitives(int quality);
 	// Push instance layer for all primitives

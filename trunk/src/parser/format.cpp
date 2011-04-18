@@ -347,7 +347,7 @@ int Format::executeRead(LineParser *parser, int optionMask)
 				break;
 			case (FormatChunk::GreedyDelimitedChunk):
 				// Get rest of line, starting from next delimited argument
-				parser->getRestDelim(optionMask, &bit);
+				parser->getRestDelim(&bit);
 				if (!bit.isEmpty()) nparsed ++;
 				break;
 			case (FormatChunk::FormattedChunk):

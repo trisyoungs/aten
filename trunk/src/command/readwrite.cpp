@@ -125,7 +125,7 @@ bool Command::function_NextArg(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	Dnchar arg;
-	rv.set( c->parent()->parser()->getCharsDelim(LineParser::Defaults, &arg) );
+	rv.set( c->parent()->parser()->getCharsDelim(&arg) );
 	ReturnValue argrv;
 	argrv.set(arg.get());
 	c->setArg(0, argrv);
