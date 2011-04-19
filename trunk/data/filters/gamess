@@ -423,7 +423,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	# Stationary point location options ($STATPT), placed in 'opts' tabs
 	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");
 	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
-	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 20, 5, "tab=$STATPT@opts");
+	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 5, 20, "tab=$STATPT@opts");
 	int statpt_ifolow = option("IFOLOW", "intspin", 1, 100000, 1, 1, "tab=$STATPT@opts", "newline");
 	string statpt_stpt = option("STPT", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
 	double statpt_ststep = option("STSTEP", "doublespin", 0.0, 1.0, 0.005, 0.01, "tab=$STATPT@opts");

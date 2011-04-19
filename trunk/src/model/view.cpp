@@ -375,10 +375,10 @@ void Model::setupView(GLint x, GLint y, GLint w, GLint h)
 		}
 		else
 		{
-			top = tan(prefs.perspectiveFov() / DEGRAD) * modelViewMatrix_[14];
+			top = -tan(prefs.perspectiveFov() / DEGRAD) * modelViewMatrix_[14];
 			bottom = -top;
-			left = aspect*top;
-			right = aspect*bottom;
+			left = -aspect*top;
+			right = aspect*top;
 
 			modelProjectionMatrix_.setColumn(0, 2.0 / (right-left), 0.0, 0.0, (right+left)/(right-left));
 			modelProjectionMatrix_.setColumn(1, 0.0, 2.0 / (top-bottom), 0.0, (top+bottom)/(top-bottom));
