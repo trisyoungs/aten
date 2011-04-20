@@ -819,6 +819,42 @@ const VariableList &Tree::localVariables() const
 	return localScope_->variables;
 }
 
+// Set named variable (including WidgetNodes) in this tree's local scope
+bool Tree::setVariable(const char *name, const char *value)
+{
+	msg.enter("Tree::setVariable");
+
+	// All user-definable variables are widgets, so search just for widgets
+	Variable *result = localVariables().find(name);
+	
+	if (result)
+	{
+		// Found variable - is it's initial value assigned from a GuiWidgetNode?
+		if (result->initialValue() == NULL) return result;
+		ReturnValue rv(value);
+		if (result->initialValue()->nodeType() == TreeNode::GuiWidgetNode)
+		{
+			msg.print(Messenger::Verbose, "Located WidgetNode corresponding to variable '%s'\n", name);
+			WidgetNode *widget = (WidgetNode*) result->initialValue();
+			widget->setWidgetValue(rv);
+		}
+		// Set variable value regardless
+		result->set(rv);
+		result->execute(rv);
+		msg.print(Messenger::Verbose, "Variable '%s' in '%s' now has value %s\n", result->name(), name_.get(), rv.asString());
+		msg.exit("Tree::setVariable");
+		return TRUE;
+	}
+	else
+	{
+		msg.print("Error: Variable '%s' does not exist in '%s'\n", name, name_.get());
+		msg.print("Available variables are:\n");
+		for (Variable *v = localVariables().variables(); v != NULL; v = (Variable*)v->next) msg.print("  %10s  (%s)\n", v->name(), VTypes::dataType(v->returnType()));
+	}
+	msg.exit("Tree::setVariable");
+	return FALSE;
+}
+
 /*
 // Paths
 */

@@ -361,7 +361,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 // Parse CLI options, after filters / prefs have been loaded
 int Aten::parseCli(int argc, char *argv[])
 {
-	int argn, opt, ntried = 0, n, el;
+	int argn, opt, ntried = 0, n, el, i;
 	bool isShort, hasArg;
 	char *line;
 	Dnchar arg, argtext, varname, varvalue, prompt;
@@ -501,13 +501,25 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
-					f = aten.findFilter(FilterData::ModelExport, argtext.get());
+					// Parse the first option so we can get the filter nickname and any filter options
+					parser.getArgsDelim(LineParser::Defaults, argtext.get());
+					
+					// First part of argument is nickname
+					f = aten.findFilter(FilterData::ModelExport, parser.argc(0));
+					// Check that a suitable format was found
 					if (f == NULL)
 					{
 						// Print list of valid filter nicknames
 						aten.printValidNicknames(FilterData::ModelExport);
 						return -1;
 					}
+
+					// Loop over remaining arguments to set filter options
+					for (i = 1; i < parser.nArgs(); ++i)
+					{
+						if (!f->setVariable(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
+					}
+					
 					aten.setExportFilter(f);
 					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
 					else aten.setProgramMode(Aten::BatchExportMode);

@@ -258,7 +258,7 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 			break;
 		case (WidgetNode::RadioButtonControl):
 			radio = qobject_cast<QRadioButton*> (widget_);
-			if (radio) checkbox->setChecked(rv.asBool());
+			if (radio) radio->setChecked(rv.asBool());
 			else printf("WidgetNode::setWidgetValue() - Couldn't set state of radio control.\n");
 			break;
 		case (WidgetNode::StringRadioGroupControl):
@@ -279,7 +279,7 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 			break;
 		case (WidgetNode::IntegerSpinControl):
 			spinbox = qobject_cast<QSpinBox*> (widget_);
-			if (spinbox) dspinbox->setValue(rv.asInteger());
+			if (spinbox) spinbox->setValue(rv.asInteger());
 			else printf("WidgetNode::setWidgetValue() - Couldn't set text of intspin control.\n");
 			break;
 		case (WidgetNode::LabelControl):
