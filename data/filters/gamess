@@ -397,7 +397,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	string scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
 	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
 	int charge = option("Charge", "intspin", -1000, 1000, 1, 0, "group=Job Control ($CONTRL)");
-	string dfttyp = option("DFT Type", "combo", "NONE,'SVWN (...local DFT)','BLYP (...pure DFT GGA)',PW91,B97-D,PBE,PBEsol,'B3LYP (...hybrid DFT GGA)',X3LYP,PBE0,'TPSS (...pure DFT meta-GGA)',TPSSm,'TPSSh (...hybrid DFT meta-GGA)',M06,'SLATER (...pure exchange)',BECKE,GILL,OPTX,PW91X,PBEX,'VWN (...pure correlation)',VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,'SVWN (...combinations)',BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, "group=Job Control ($CONTRL)", "newline");
+	string dfttyp = option("DFT Type", "combo", "NONE,SVWN,BLYP,PW91,B97-D,PBE,PBEsol,B3LYP,X3LYP,PBE0,TPSS,TPSSm,TPSSh,M06,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, "group=Job Control ($CONTRL)", "newline");
 	string tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
 	string mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
 	string cityp = option("CI Type", "combo", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, "group=Job Control ($CONTRL)");
@@ -481,7 +481,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	# Write $CONTRL line(s)
 	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", scftyp, runtyp, coord, charge, mult);
 	line = "";
-	if (dfttyp != "NONE") line += " DFTTYP=" + beforestr(dfttyp," ",TRUE);
+	if (dfttyp != "NONE") line += " DFTTYP=" + dfttyp;
 	if (tddft != "NONE") line += " TDDFT=" + tddft;
 	if (mplevl != "0") line += " MPLEVL=" + mplevl;
 	if (cityp != "NONE") line += " CITYP=" + cityp;

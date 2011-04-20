@@ -37,6 +37,11 @@ void Aten::exportModels()
 {
 	msg.enter("Aten::exportModels");
 	Dnchar filename;
+	
+	// Get widget option values for export filter
+	exportFilter_->executeCustomDialog(TRUE);
+	
+	// Loop over loaded models
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		aten.setCurrentModel(m);
@@ -105,6 +110,10 @@ void Aten::saveModels()
 			msg.print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), t->filter.nickname());
 			continue;
 		}
+
+		// Get custom widget options for filter
+		t->executeCustomDialog(TRUE);
+		
 		Dnchar filename;
 		filename = m->filename();
 		if (!filename.isEmpty()) t->executeWrite(m->filename());

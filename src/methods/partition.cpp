@@ -350,9 +350,9 @@ bool PartitioningScheme::runOptions(bool storeValuesOnly)
 	return partitionFunction_->executeCustomDialog(storeValuesOnly, text.get());
 }
 
-// Find and return named variable in partitionFunction_
+// Find and set named variable in partitionFunction_
 bool PartitioningScheme::setVariable(const char *name, const char *value)
-{
+{	
 	msg.enter("PartitioningScheme::setVariable");
 	if (partitionFunction_ == NULL)
 	{
@@ -360,37 +360,8 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 		msg.exit("PartitioningScheme::setVariable");
 		return FALSE;
 	}
-	int scope;
-
-	// All user-definable variables are widgets, so search just for widgets
-	Variable *result = partitionFunction_->localVariables().find(name);
-	
-	if (result)
-	{
-		// Found variable - is it's initial value assigned from a GuiWidgetNode?
-		if (result->initialValue() == NULL) return result;
-		ReturnValue rv(value);
-		if (result->initialValue()->nodeType() == TreeNode::GuiWidgetNode)
-		{
-			msg.print(Messenger::Verbose, "Located WidgetNode corresponding to variable '%s'\n", name);
-			WidgetNode *widget = (WidgetNode*) result->initialValue();
-			widget->setWidgetValue(rv);
-		}
-		// Set variable value regardless
-		result->set(rv);
-		result->execute(rv);
-		msg.print(" Variable '%s' in scheme '%s' now has value %s\n", result->name(), name_.get(), rv.asString());
-		msg.exit("PartitioningScheme::setVariable");
-		return TRUE;
-	}
-	else
-	{
-		msg.print("Error: Variable '%s' does not exist in partition function for scheme '%s'\n", name, name_.get());
-		msg.print("Available variables are:\n");
-		for (Variable *v = partitionFunction_->localVariables().variables(); v != NULL; v = (Variable*)v->next) msg.print("  %10s  (%s)\n", v->name(), VTypes::dataType(v->returnType()));
-	}
+	return partitionFunction_->setVariable(name, value);
 	msg.exit("PartitioningScheme::setVariable");
-	return FALSE;
 }
 
 // Update partition information (after load or change in options)

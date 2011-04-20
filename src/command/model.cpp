@@ -347,8 +347,13 @@ bool Command::function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	// Find filter with a nickname matching that given in argc(0)
-	Tree *filter = aten.findFilter(FilterData::ModelExport, c->argc(0));
+
+	// Parse the first option so we can get the filter nickname and any filter options
+	LineParser parser;
+	parser.getArgsDelim(LineParser::Defaults, c->argc(0));
+	
+	// First part of argument is nickname
+	Tree *filter = aten.findFilter(FilterData::ModelExport, parser.argc(0));
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{
@@ -357,6 +362,14 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("Not saved.\n");
 		return FALSE;
 	}
+
+	// Loop over remaining arguments
+	ReturnValue value;
+	for (int n = 1; n < parser.nArgs(); ++n)
+	{
+		if (!filter->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+	}
+	
 	obj.rs()->setFilter(filter);
 	obj.rs()->setFilename(c->argc(1));
 	filter->executeCustomDialog(TRUE);

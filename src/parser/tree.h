@@ -190,6 +190,8 @@ class Tree
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 	// Return local scope's variable list
 	const VariableList &localVariables() const;
+	// Set named variable (including WidgetNodes) in this tree's local scope
+	bool setVariable(const char *name, const char *value);
 
 
 	/*
