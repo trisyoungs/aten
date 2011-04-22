@@ -69,22 +69,38 @@ void GridsWidget::refresh()
 	// Clear and refresh the grids list
 	refreshing_ = TRUE;
 	ui.GridList->clear();
-	TListWidgetItem *item;
-	Model *m = aten.currentModelOrFrame();
-	for (Grid *g = m->grids(); g != NULL; g = g->next)
+	Model *m;
+	if (ui.ShowAllGridsCheck->isChecked())
 	{
-		item = new TListWidgetItem(ui.GridList);
-		item->setText(g->name());
-		item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
-		item->data.set(VTypes::GridData, g);
+		// Need to loop over models, frames (if any) and grids
+		for (m = aten.models(); m != NULL; m = m->next)
+		{
+			if (m->hasTrajectory())
+			{
+				// If it's *not* a cached trajectory, only do the current frame
+				if (!m->trajectoryIsCached()) for (Grid *g = m->trajectoryCurrentFrame()->grids(); g != NULL; g = g->next) addGridToList(g);
+				else
+				{
+					for (int n=0; n<m->nTrajectoryFrames(); ++n)
+						for (Grid *g = m->trajectoryFrame(n)->grids(); g != NULL; g = g->next) addGridToList(g);
+				}
+			}
+			else for (Grid *g = m->grids(); g != NULL; g = g->next) addGridToList(g);
+		}
+	}
+	else 
+	{
+		m = aten.currentModelOrFrame();
+		for (Grid *g = m->grids(); g != NULL; g = g->next) addGridToList(g);
 	}
 	// Select the first item
-	if (m->nGrids() != 0) ui.GridList->setCurrentRow(0);
+	ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
 
 	// Update orbital page
 	QTableWidgetItem *tabitem;
 	ui.OrbitalTable->clear();
+	m = aten.currentModelOrFrame();
 	ui.OrbitalTable->setRowCount(m->nEigenvectors());
 	int count = 0;
 	for (Eigenvector *vec = m->eigenvectors(); vec != NULL; vec = vec->next)
@@ -109,30 +125,33 @@ void GridsWidget::refresh()
 
 Grid *GridsWidget::getCurrentGrid()
 {
-	Model *m = aten.currentModelOrFrame();
-	if (m == NULL)
-	{
-		printf("Internal Error: No current model in Grids window.\n");
-		return NULL;
-	}
-	int row = ui.GridList->currentRow();
-	if (row == -1) return NULL;
-	else return m->grid(row);
+	// Return first selected grid in widget
+	QList<QListWidgetItem*> selection = ui.GridList->selectedItems();
+	if (selection.size() == 0) return NULL;
+	TListWidgetItem *item = (TListWidgetItem*) selection.first();
+	Grid *g = (Grid*) item->data.asPointer(VTypes::GridData);
+	return g;
+}
+
+void GridsWidget::addGridToList(Grid *g)
+{
+	TListWidgetItem *item = new TListWidgetItem(ui.GridList);
+	item->setText(g->name());
+	item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
+	item->data.set(VTypes::GridData, g);
 }
 
 void GridsWidget::refreshGridInfo()
 {
 	msg.enter("GridsWidget::refreshGridInfo");
 	// Get the current row selected in the grid list
-	Grid *g;
-	Model *m = aten.currentModelOrFrame();
-	int row = ui.GridList->currentRow();
-	if (row == -1)
+	Grid *g = getCurrentGrid();
+	if (g == NULL)
 	{
 		msg.exit("GridsWidget::refreshGridInfo");
 		return;
 	}
-	else g = m->grid(row);
+
 	refreshing_ = TRUE;
 	// Set minimum, maximum, and cutoff, and stepsizes for spins
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
@@ -265,15 +284,18 @@ void GridsWidget::on_actionGridCut_triggered(bool checked)
 
 void GridsWidget::on_actionGridDelete_triggered(bool checked)
 {
-	// Get the current row selected in the grid list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
-	m->removeGrid(g);
+	if (refreshing_) return;
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		Model *m = g->parent();
+		m->removeGrid(g);
+	}
 	refresh();
-	if (row == m->nGrids()) row --;
-	if (m->nGrids() != 0) ui.GridList->setCurrentRow(row);
 	gui.mainWidget()->postRedisplay();
 }
 
@@ -409,29 +431,46 @@ void GridsWidget::on_GridList_itemClicked(QListWidgetItem *item)
 	gui.mainWidget()->postRedisplay();
 }
 
+void GridsWidget::on_ShowAllGridsCheck_clicked(bool checked)
+{
+	refresh();
+}
+
 void GridsWidget::gridOriginChanged(int component, double value)
 {
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	// Get and re-set origin
-	static Vec3<double> o;
-	o = g->origin();
-	o.set(component, value);
-	g->setOrigin(o);
+	if (refreshing_) return;
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		// Get and re-set origin
+		static Vec3<double> o;
+		o = g->origin();
+		o.set(component, value);
+		g->setOrigin(o);
+	}
 	gui.mainWidget()->postRedisplay();
 }
 
 void GridsWidget::gridAxisChanged(int axis, int component, double value)
 {
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	// Get and re-set axes
-	Matrix axes;
-	axes = g->axes();
-	axes[axis*4+component] = value;
-	g->setAxes(axes);
+	if (refreshing_) return;
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		// Get and re-set axes
+		Matrix axes;
+		axes = g->axes();
+		axes[axis*4+component] = value;
+		g->setAxes(axes);
+	}
 	gui.mainWidget()->postRedisplay();
 }
 
@@ -445,10 +484,16 @@ void GridsWidget::on_GridList_currentRowChanged(int row)
 void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
+	if (refreshing_) return;
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
+	}
 	refreshGridInfo();
 	gui.mainWidget()->postRedisplay();
 }
@@ -456,10 +501,15 @@ void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
+	}
 	refreshGridInfo();
 	gui.mainWidget()->postRedisplay();
 }
@@ -467,10 +517,15 @@ void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
+	}
 	refreshGridInfo();
 	gui.mainWidget()->postRedisplay();
 }
@@ -478,10 +533,15 @@ void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
+	}
 	refreshGridInfo();
 	gui.mainWidget()->postRedisplay();
 }
@@ -489,32 +549,45 @@ void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	g->setStyle(Grid::SurfaceStyle (index));
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setStyle(Grid::SurfaceStyle (index));
+	}
 	gui.mainWidget()->postRedisplay();
 }
 
 void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
-	Grid *g = m->grid(row);
-	g->setOutlineVolume(checked);
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setOutlineVolume(checked);
+	}
 	gui.mainWidget()->postRedisplay();
 }
 
 void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	g->setPeriodic(checked);
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setPeriodic(checked);
+	}
 	gui.mainWidget()->postRedisplay();
 }
 
@@ -533,7 +606,14 @@ void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	g->setPrimaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	// Get currently selected grid(s) and set data
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setPrimaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	}
 	ui.GridPrimaryColourFrame->setColour(newcol);
 	ui.GridPrimaryColourFrame->update();
 	gui.mainWidget()->postRedisplay();
@@ -554,7 +634,14 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	g->setSecondaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	// Get currently selected grid(s) and set data
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setSecondaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	}
 	ui.GridSecondaryColourFrame->setColour(newcol);
 	ui.GridSecondaryColourFrame->update();
 	gui.mainWidget()->postRedisplay();
@@ -563,10 +650,15 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	g->setColourScale(n-1);
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setColourScale(n-1);
+	}
 	QString scalename = "(";
 	scalename += prefs.colourScale[g->colourScale()].name();
 	scalename += ")";
@@ -577,12 +669,17 @@ void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	g->setUseSecondary(checked);
-	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
-	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setUseSecondary(checked);
+		ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
+		ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
+	}
 	gui.mainWidget()->postRedisplay();
 }
 
@@ -594,30 +691,35 @@ void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 void GridsWidget::gridShiftChanged()
 {
 	if (refreshing_) return;
-	// Get current grid and set data
-	Grid *g = getCurrentGrid();
-	if (g == NULL) return;
-	// Grab old shift values
-	Vec3<int> oldshift = g->shift();
-	g->setShift(ui.GridShiftXSpin->value(), ui.GridShiftYSpin->value(), ui.GridShiftZSpin->value());
-	if (ui.ShiftAtomNoneRadio->isChecked() == FALSE)
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
-		Model *m = aten.currentModelOrFrame();
-		// Determine shift amount...
-		Vec3<int> delta = g->shift() - oldshift;
-		Vec3<double> vec;
-		vec += g->axes().columnAsVec3(0) * delta.x;
-		vec += g->axes().columnAsVec3(1) * delta.y;
-		vec += g->axes().columnAsVec3(2) * delta.z;
-		// Move atoms....
-		m->beginUndoState("Shift atoms with grid");
-		if (ui.ShiftAtomAllRadio->isChecked())
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		// Grab old shift values
+		Vec3<int> oldshift = g->shift();
+		g->setShift(ui.GridShiftXSpin->value(), ui.GridShiftYSpin->value(), ui.GridShiftZSpin->value());
+		if (ui.ShiftAtomNoneRadio->isChecked() == FALSE)
 		{
-			m->markAll();
-			m->translateSelectionLocal(vec, TRUE);
+			Model *m = g->parent();
+			// Determine shift amount...
+			Vec3<int> delta = g->shift() - oldshift;
+			Vec3<double> vec;
+			vec += g->axes().columnAsVec3(0) * delta.x;
+			vec += g->axes().columnAsVec3(1) * delta.y;
+			vec += g->axes().columnAsVec3(2) * delta.z;
+			// Move atoms....
+			m->beginUndoState("Shift atoms with grid");
+			if (ui.ShiftAtomAllRadio->isChecked())
+			{
+				m->markAll();
+				m->translateSelectionLocal(vec, TRUE);
+			}
+			else m->translateSelectionLocal(vec, FALSE);
+			m->endUndoState();
 		}
-		else m->translateSelectionLocal(vec, FALSE);
-		m->endUndoState();
 	}
 	gui.mainWidget()->postRedisplay();
 }

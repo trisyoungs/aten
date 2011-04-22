@@ -452,7 +452,6 @@ void GuiQt::printMessage(const char *s)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
 	messagesWidget->ui.MessagesBrowser->append(str);
-// 	mainWindow_->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow_->ui.TextDisplay->verticalScrollBar()->maximum());  TGAY
 }
 
 // Check the status of all models, asking to save before close if necessary

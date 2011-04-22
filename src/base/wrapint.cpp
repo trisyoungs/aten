@@ -22,10 +22,10 @@
 #include "base/wrapint.h"
 
 // Constructor
-WrapInt::WrapInt()
+WrapInt::WrapInt(int minvalue, int maxvalue)
 {
-	minimum_ = 0;
-	maximum_ = 0;
+	minimum_ = minvalue;
+	maximum_ = maxvalue;
 	range_ = 1;
 	value_ = 0;
 }

@@ -26,6 +26,7 @@
 #include "gui/disorderwizard.h"
 #include "gui/vibrations.h"
 #include "main/aten.h"
+#include "base/wrapint.h"
 
 // Render addition elements related to visible windows
 void RenderEngine::renderWindowExtras(Model *source)
@@ -240,15 +241,19 @@ void RenderEngine::renderWindowExtras(Model *source)
 			// Grab the grid structure and list of partitions from the scheme
 			Grid &grid = ps->grid();
 
+			// Initialise colour counter
+			int colcount = 0;
+
 			for (PartitionData *pd = ps->partitions(); pd != NULL; pd = pd->next)
 			{
 				if (pd->id() == 0) continue;
 				
-				colour[0] = 0.0;	//TGAY
-				colour[1] = 0.0;
-				colour[2] = 0.0;
-				colour[3] = 1.0;
-				prefs.copyColour(Prefs::VibrationArrowColour, colour);
+				// Use first three bits of colcount to set our colour values
+				colour[0] = colcount%1 ? 1.0 : 0.0;
+				colour[1] = colcount%2 ? 1.0 : 0.0;
+				colour[2] = colcount%4 ? 1.0 : 0.0;
+				colour[3] = 0.75;
+
 				// Construct a surface for each partition in the model (except 0 == unit cell)
 				GridPrimitive *prim = disorderGridPrimitives_.add();
 				prim->setSource(&ps->grid());
@@ -263,6 +268,10 @@ void RenderEngine::renderWindowExtras(Model *source)
 				A.setIdentity();
 				A.multiplyRotation(mat);
 				renderPrimitive(RenderEngine::MiscObject, &prim->primaryPrimitive(), TRUE, colour, A, GL_FILL);
+				
+				// Increase colour counter
+				++colcount;
+				if (colcount > 7) colcount = 0;
 			}
 		}
 	}

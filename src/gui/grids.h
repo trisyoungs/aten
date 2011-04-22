@@ -43,6 +43,7 @@ class GridsWidget : public QDockWidget
 	void loadGrid();
 	private:
 	Grid *getCurrentGrid();
+	void addGridToList(Grid *g);
 	void refreshGridInfo();
 	void gridOriginChanged(int component, double value);
 	void gridAxisChanged(int axis, int component, double value);
@@ -57,6 +58,7 @@ class GridsWidget : public QDockWidget
 	// List
 	void on_GridList_currentRowChanged(int row);
 	void on_GridList_itemClicked(QListWidgetItem *item);
+	void on_ShowAllGridsCheck_clicked(bool checked);
 	// Data / Cutoff Page
 	void on_GridLowerCutoffSpin_editingFinished();
 	void on_GridUpperCutoffSpin_editingFinished();
