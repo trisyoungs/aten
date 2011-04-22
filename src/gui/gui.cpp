@@ -325,7 +325,12 @@ void GuiQt::run()
 // Return the PID of Aten
 int GuiQt::pid()
 {
+	#if QT_VERSION >= 0x040400
 	return (application_ == NULL ? 0 : application_->applicationPid());
+	#else
+	static int pid = AtenMath::random(50000)+1000;
+	return pid;
+	#endif
 }
 
 // Process application messages

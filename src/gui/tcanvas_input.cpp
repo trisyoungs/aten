@@ -493,6 +493,8 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	pickAtomsCallback_ = callback;
 	nAtomsToPick_ = atomsToPick;
 
+	printf("SETSELECTEDMODE %i, natomstopick = %i\n", selectedMode_, nAtomsToPick_);
+	
 	// Clear any old selection (from e.g. bonding, measurements....)
 	clearPicked();
 	
@@ -977,6 +979,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 		case (UserAction::ConvertTargetPickAAction):
 		case (UserAction::ConvertTargetPickBAction):
 		case (UserAction::ConvertTargetPickCAction):
+			printf("Current number of atoms picked = %i, wanted = %i\n", pickedAtoms_.nItems(), nAtomsToPick_);
 			// Have we picked the right number of atoms?
 			if (pickedAtoms_.nItems() != nAtomsToPick_) break;
 			// If a previous callback was defined then call it before we move on
