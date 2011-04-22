@@ -26,8 +26,8 @@
 class WrapInt
 {
 	public:
-	// Constructor / Destructor
-	WrapInt();
+	// Constructor
+	WrapInt(int minvalue = 0, int maxvalue = 0);
 
 	/*
 	// Data

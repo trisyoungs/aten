@@ -252,7 +252,7 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 		if (selectpasted) m->selectAtom(pastedi);
 		// Store reference to the newly-pasted atom
 		i->setAtomPointer(pastedi);
-		progress.update(pid,++count);	// TGAY
+		progress.update(pid,++count);
 	}
 	progress.terminate(pid);
 	// Add in bonds to pasted atoms
