@@ -58,8 +58,10 @@ class RenderPrimitives
 	// Primitives
 	*/
 	private:
-	// Quality setting that primitives were generated at
-	int primitiveQuality_;
+	// Quality setting that primitives should be next generated at
+	int requestedQuality_;
+	// Quality setting that primitives were last generated at (if at all)
+	int currentQuality_;
 	// Stack size counter
 	int stackSize_;
 	// Atom styles
@@ -78,10 +80,12 @@ class RenderPrimitives
 	Primitive wireCube_, crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
 
 	public:
+	// Set the desired primitive quality
+	void setQuality(int quality);	
 	// Return current primitive instance stacksize
 	int stackSize();
-	// (Re)Generate primitive vertex arrays with specified quality
-	void createPrimitives(int quality);
+	// (Re)Generate primitive vertex arrays (if necessary)
+	void recreatePrimitives();
 	// Push instance layer for all primitives
 	void pushInstance(const QGLContext *context);
 	// Pop last instance layer

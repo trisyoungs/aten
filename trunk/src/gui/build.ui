@@ -295,24 +295,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="WindowText">
@@ -432,24 +414,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </inactive>
                  <disabled>
                   <colorrole role="WindowText">
@@ -566,24 +530,6 @@
                      <red>207</red>
                      <green>173</green>
                      <blue>173</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -1091,24 +1037,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="WindowText">
@@ -1228,24 +1156,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </inactive>
                  <disabled>
                   <colorrole role="WindowText">
@@ -1362,24 +1272,6 @@
                      <red>188</red>
                      <green>184</green>
                      <blue>207</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -1544,24 +1436,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="WindowText">
@@ -1681,24 +1555,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </inactive>
                  <disabled>
                   <colorrole role="WindowText">
@@ -1815,24 +1671,6 @@
                      <red>188</red>
                      <green>184</green>
                      <blue>207</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -2095,24 +1933,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="WindowText">
@@ -2232,24 +2052,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </inactive>
                  <disabled>
                   <colorrole role="WindowText">
@@ -2366,24 +2168,6 @@
                      <red>207</red>
                      <green>173</green>
                      <blue>173</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -2586,24 +2370,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="WindowText">
@@ -2723,24 +2489,6 @@
                     </color>
                    </brush>
                   </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
                  </inactive>
                  <disabled>
                   <colorrole role="WindowText">
@@ -2857,24 +2605,6 @@
                      <red>188</red>
                      <green>184</green>
                      <blue>207</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipBase">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>255</red>
-                     <green>255</green>
-                     <blue>220</blue>
-                    </color>
-                   </brush>
-                  </colorrole>
-                  <colorrole role="ToolTipText">
-                   <brush brushstyle="SolidPattern">
-                    <color alpha="255">
-                     <red>0</red>
-                     <green>0</green>
-                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -3057,24 +2787,6 @@
                       </color>
                      </brush>
                     </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
                    </active>
                    <inactive>
                     <colorrole role="WindowText">
@@ -3194,24 +2906,6 @@
                       </color>
                      </brush>
                     </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
                    </inactive>
                    <disabled>
                     <colorrole role="WindowText">
@@ -3328,24 +3022,6 @@
                        <red>188</red>
                        <green>184</green>
                        <blue>207</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
                       </color>
                      </brush>
                     </colorrole>
@@ -3510,24 +3186,6 @@
                       </color>
                      </brush>
                     </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
                    </active>
                    <inactive>
                     <colorrole role="WindowText">
@@ -3647,24 +3305,6 @@
                       </color>
                      </brush>
                     </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
                    </inactive>
                    <disabled>
                     <colorrole role="WindowText">
@@ -3781,24 +3421,6 @@
                        <red>188</red>
                        <green>184</green>
                        <blue>207</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
                       </color>
                      </brush>
                     </colorrole>
@@ -3976,24 +3598,6 @@
                       </color>
                      </brush>
                     </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
                    </active>
                    <inactive>
                     <colorrole role="WindowText">
@@ -4113,24 +3717,6 @@
                       </color>
                      </brush>
                     </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
                    </inactive>
                    <disabled>
                     <colorrole role="WindowText">
@@ -4247,24 +3833,6 @@
                        <red>188</red>
                        <green>184</green>
                        <blue>207</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
                       </color>
                      </brush>
                     </colorrole>
@@ -4429,24 +3997,6 @@
                       </color>
                      </brush>
                     </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
                    </active>
                    <inactive>
                     <colorrole role="WindowText">
@@ -4566,24 +4116,6 @@
                       </color>
                      </brush>
                     </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
                    </inactive>
                    <disabled>
                     <colorrole role="WindowText">
@@ -4700,24 +4232,6 @@
                        <red>188</red>
                        <green>184</green>
                        <blue>207</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipBase">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>255</red>
-                       <green>255</green>
-                       <blue>220</blue>
-                      </color>
-                     </brush>
-                    </colorrole>
-                    <colorrole role="ToolTipText">
-                     <brush brushstyle="SolidPattern">
-                      <color alpha="255">
-                       <red>0</red>
-                       <green>0</green>
-                       <blue>0</blue>
                       </color>
                      </brush>
                     </colorrole>

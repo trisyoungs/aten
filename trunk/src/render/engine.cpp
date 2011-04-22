@@ -39,7 +39,8 @@ RenderPrimitives::RenderPrimitives()
 	// Primitives
 	scaledAtoms_ = new PrimitiveGroup[elements().nElements()];
 	selectedScaledAtoms_ = new PrimitiveGroup[elements().nElements()];
-	primitiveQuality_ = -1;
+	requestedQuality_ = -1;
+	currentQuality_ = -1;
 	stackSize_ = 0;
 }
 
@@ -50,6 +51,12 @@ RenderPrimitives::~RenderPrimitives()
 	delete[] selectedScaledAtoms_;
 }
 
+// Set the desired primitive quality
+void RenderPrimitives::setQuality(int quality)
+{
+	requestedQuality_ = quality;
+}
+	
 // Return current primitive instance stacksize
 int RenderPrimitives::stackSize()
 {
@@ -57,12 +64,20 @@ int RenderPrimitives::stackSize()
 }
 
 // (Re)Generate primitives
-void RenderPrimitives::createPrimitives(int quality)
+void RenderPrimitives::recreatePrimitives()
 {
-	msg.enter("RenderPrimitives::createPrimitives");
+	msg.enter("RenderPrimitives::recreatePrimitives");
 	double radius, lodratio, aradius[Atom::nDrawStyles], bradius[Atom::nDrawStyles], selscale;
 	int n, m, lod, nstacks, nslices;
-	primitiveQuality_ = quality;
+	
+	// If current quality is the same as the requested quality, do nothing
+	if (requestedQuality_ == currentQuality_)
+	{
+		msg.exit("RenderPrimitives::recreatePrimitives");
+		return;
+	}
+	
+	currentQuality_ = requestedQuality_;
 
 	// Clear old primitive groups
 	for (n=0; n<Atom::nDrawStyles; ++n)
@@ -108,8 +123,8 @@ void RenderPrimitives::createPrimitives(int quality)
 	{
 		// Calculate general level-of-detail ratio, which ranges from 1 (at lod=0) to 0 (at lod=nlevels)
 		lodratio = 1.0 - (double (lod+1)/prefs.levelsOfDetail());
-		nstacks = max(3,(int) (quality*lodratio*0.75));
-		nslices = max(3,(int) (quality*lodratio*1.5));
+		nstacks = max(3,(int) (currentQuality_*lodratio*0.75));
+		nslices = max(3,(int) (currentQuality_*lodratio*1.5));
 		
 		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
 		atoms_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
@@ -127,8 +142,8 @@ void RenderPrimitives::createPrimitives(int quality)
 		}
 		
 		// Bond primitive accuracy
-		nstacks = max(1,(int) (quality*lodratio*0.25));
-		nslices = max(3,(int) (quality*lodratio));
+		nstacks = max(1,(int) (currentQuality_*lodratio*0.25));
+		nslices = max(3,(int) (currentQuality_*lodratio));
 		
 		// All Stick styles, all bond types
 		bonds_[Atom::StickStyle][Bond::Single].primitive(lod).plotLine(0,0,0,0,0,1);
@@ -188,10 +203,10 @@ void RenderPrimitives::createPrimitives(int quality)
 		selectedBonds_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33*selscale, bradius[Atom::ScaledStyle]*0.33*selscale, nstacks, nslices);
 		
 		// Other primitives
-		nstacks = max(3,(int) (quality*lodratio*0.75));
-		nslices = max(3,(int) (quality*lodratio*1.5));
-		cubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)), -0.5, -0.5, -0.5);
-		originCubes_.primitive(lod).createCube(1.0, max(1, int(quality*lodratio)), 0.0, 0.0, 0.0);
+		nstacks = max(3,(int) (currentQuality_*lodratio*0.75));
+		nslices = max(3,(int) (currentQuality_*lodratio*1.5));
+		cubes_.primitive(lod).createCube(1.0, max(1, int(currentQuality_*lodratio)), -0.5, -0.5, -0.5);
+		originCubes_.primitive(lod).createCube(1.0, max(1, int(currentQuality_*lodratio)), 0.0, 0.0, 0.0);
 		spheres_.primitive(lod).plotSphere(1.0, nstacks, nslices);
 		cylinders_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,1.0,nstacks, nslices);
 		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,0.0,nstacks,nslices);
@@ -208,13 +223,18 @@ void RenderPrimitives::createPrimitives(int quality)
 	rotationGlobe_.plotSphere(0.75,10,13);
 	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
 
-	msg.exit("RenderPrimitives::createPrimitives");
+	msg.exit("RenderPrimitives::recreatePrimitives");
 }
 
 // Create instance for primitives
 void RenderPrimitives::pushInstance(const QGLContext* context)
 {
 	msg.enter("RenderPrimitives::pushInstance");
+	
+	// Recreate primitives
+	recreatePrimitives();
+	
+	// Push instances
 	for (int n=0; n<Atom::nDrawStyles; ++n)
 	{
 		atoms_[n].pushInstance(context);
@@ -305,8 +325,8 @@ RenderEngine::RenderEngine()
 	glyphLines_.setNoInstances();
 	initialiseTransparency();
 	scaledAtomAdjustments_ = new double[elements().nElements()];
-	primitives_[0].createPrimitives(prefs.primitiveQuality());
-	primitives_[1].createPrimitives(prefs.imagePrimitiveQuality());
+	primitives_[0].setQuality(prefs.primitiveQuality());
+	primitives_[1].setQuality(prefs.imagePrimitiveQuality());
 	lastSource_ = NULL;
 	rebuildSticks_ = FALSE;
 	Q_ = 0;
@@ -590,15 +610,15 @@ void RenderEngine::popInstance(bool highQuality)
 // Update all primitives (following prefs change, etc.)
 void RenderEngine::updatePrimitives(const QGLContext *context)
 {
-	// Regenerate vertex information
-	primitives_[0].createPrimitives(prefs.primitiveQuality());
-	primitives_[1].createPrimitives(prefs.imagePrimitiveQuality());
+	// Set (possibly new) quality
+	primitives_[0].setQuality(prefs.primitiveQuality());
+	primitives_[1].setQuality(prefs.imagePrimitiveQuality());
 	
 	// Generate new VBOs / display lists - pop and push a context
 	for (int n=0; n<2; ++n) if (primitives_[n].stackSize() != 0)
 	{
-		primitives_[0].popInstance();
-		primitives_[0].pushInstance(context);
+		primitives_[n].popInstance();
+		primitives_[n].pushInstance(context);
 	}
 	
 	// Recalculate adjustments for bond positioning

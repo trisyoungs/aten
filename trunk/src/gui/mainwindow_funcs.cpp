@@ -346,7 +346,12 @@ void AtenForm::uaButtonClicked(int id)
 	// Check button correspondiong to supplied index
 	button = uaButtons_.button(id);
 	if (button == NULL) printf("Internal Error: AtenForm::uaButtonClicked - No button associated to id %i\n", id);
-	else if (button->isChecked()) gui.mainWidget()->setSelectedMode((UserAction::Action) id);
+	else if (button->isChecked())
+	{
+		// Activate the relevant mode, bu tonly if it isn't already active
+		if (gui.mainWidget()->selectedMode() == (UserAction::Action) id) return;
+		gui.mainWidget()->setSelectedMode((UserAction::Action) id);
+	}
 }
 
 // Set action/button to reflect supplied user action
