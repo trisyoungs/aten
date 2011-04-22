@@ -98,11 +98,14 @@ class AtenPrefs : public QDialog
 	void on_SphereBondRadiusSpin_valueChanged(double value);
 	void on_ScaledBondRadiusSpin_valueChanged(double value);
 	void on_SelectionScaleSpin_valueChanged(double value);
-	void on_ColoursTable_cellDoubleClicked(int row, int column);
 	void on_AngleLabelFormatEdit_textEdited(const QString &text);
 	void on_DistanceLabelFormatEdit_textEdited(const QString &text);
 	void on_LabelSizeSpin_valueChanged(int value);
 	void on_RenderDashedAromaticsCheck_clicked(bool checked);
+	void on_DrawHydrogenBondsCheck_clicked(bool checked);
+	void on_HydrogenBondDotRadiusSpin_valueChanged(double value);
+	// Colours page
+	void on_ColoursTable_cellDoubleClicked(int row, int column);
 	// Rendering / Quality page
 	void on_LevelOfDetailNLevelsSpin_valueChanged(int value);
 	void on_LevelOfDetailStartZSpin_valueChanged(double value);

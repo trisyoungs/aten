@@ -22,6 +22,9 @@
 		<listitem>
 			<para>Rendering vibrations in stick style appears not to work.</para>
 		</listitem>
+		<listitem>
+			<para>When using default display lists for rendering, stick lists are cleared but still appear (e.g. when crateing a new model)</para>
+		</listitem>
 	</orderedlist>
 
 </sect5>
@@ -52,9 +55,6 @@
 		</listitem>
 		<listitem>
 			<para>Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?</para>
-		</listitem>
-		<listitem>
-			<para>Script to add glyphs to represent H-bonds between pair of selected atoms</para>
 		</listitem>
 		<listitem>
 			<para>Update script to perform conformational searching on molecule (add GUI options)</para>

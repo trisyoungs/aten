@@ -177,10 +177,10 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 	msg.enter("RenderEngine::renderModel");
 	GLfloat colour_i[4], colour_j[4], alpha_i, colour_k[4], colour_l[4];
 	GLenum style;
-	int id_i, labels, m, n;
+	int id_i, labels, m, n, el_i, el_j;
 	Dnchar text;
-	double selscale, z, radius_i, radius_j, phi, mag, best;
-	Atom *i, *j, **atoms;
+	double selscale, z, radius_i, radius_j, phi, mag, best, delta;
+	Atom *i, *j, *k, *l, **atoms;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
 	Matrix atomtransform, A, B;
@@ -436,37 +436,115 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 	}
 	
 	// Hydrogen bonds
-	atoms = source->atomArray();
-	for (n = 0; n<source->nAtoms()-1; ++n)
+	if (prefs.drawHydrogenBonds())
 	{
-		// Get atom pointer
-		i = atoms[n];
-		
-		// Skip hidden atoms
-		if (i->isHidden()) continue;
-		
-		// Skip non-hydrogen atoms
-		if (i->element() != 1) continue;
-		
-		// Grab atom coordinate - we'll need it a lot
-		pos = i->r();
-
-		// Move to local atom position
-		atomtransform = basetransform;
-		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
-		
-		// Loop over other atoms
-		for (m = n; m<source->nAtoms(); ++m)
+		double dotradius = prefs.hydrogenBondDotRadius();
+		atoms = source->atomArray();
+		prefs.copyColour(Prefs::HydrogenBondColour, colour_i);
+		for (n = 0; n<source->nAtoms(); ++n)
 		{
-			j = atoms[m];
-
+			// Get atom pointer
+			i = atoms[n];
+			
 			// Skip hidden atoms
 			if (i->isHidden()) continue;
 			
-			// Get distance i-j
-// 			v = source->mimd(i,j);
+			// Skip non-hydrogen atoms (i.e. 'i' is *always* the hydrogen atom)
+			if (i->element() != 1) continue;
 			
-			// Get element types
+			// Get bond partner of the hydrogen atom (if there isn't on, skip it)
+			if (i->nBonds() != 1) continue;
+			k = i->bonds()->item->partner(i);
+
+			// Grab atom coordinate and style
+			pos = i->r();
+			style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
+			if (style_i <= Atom::TubeStyle) radius_i = 0.0;
+			else if (style_i == Atom::ScaledStyle) radius_i = prefs.styleRadius(i) - scaledAtomAdjustments_[i->element()];
+			else radius_i = prefs.styleRadius(i) - sphereAtomAdjustment_;
+			
+			// Loop over other atoms
+			for (m = 0; m<source->nAtoms(); ++m)
+			{
+				j = atoms[m];
+
+				// Skip hidden atoms
+				if (j->isHidden()) continue;
+				
+				// Is i bound to j?
+				if (i->findBond(j) != NULL) continue;
+				
+				// Element check
+				el_j = j->element();
+				if ((el_j != 7) && (el_j != 8) && (el_j != 8) && (elements().group(el_j) != 17)) continue;
+				
+				// Get (any) bond partner of atom j
+				l = j->nBonds() == 0 ? NULL : j->bonds()->item->partner(j);
+
+				// Apply the rules as given in:
+				// "Satisfying Hydrogen-Bonding Potential in Proteins"
+				// I. K. McDonald and J. M. Thornton, J. Mol. Biol. 238, 777793 (1994)
+
+				// Rule 1 - Distance D-A is less than 3.9 Angstroms
+				if (source->cell()->distance(k,j) > 3.9) continue;
+				
+				// Rule 2 - Distance H-A is less than 2.5 Angstroms
+				v = source->cell()->mimd(j,i);
+				mag = v.magnitude();
+				if (mag > 2.5) continue;
+				
+				// Rule 3 - Angle D-H-A is greater than 90 degrees
+				if (source->cell()->angle(k,i,j) <= 90.0) continue;
+				
+				// Rule 4 - Angle A'-A-D is greater than 90 degrees (only if atom j has a bond partner)
+				if ((l != NULL) && (source->cell()->angle(k,j,l) <= 90.0)) continue;
+				
+				// Rule 5 - Angle A'-A-H is greater than 90 degrees (only if atom j has a bond partner)
+				if ((l != NULL) && (source->cell()->angle(i,j,l) <= 90.0)) continue;
+				
+				// If we get here then its a hydrogen bond.
+				// First, determine the 'drawable' region between the two atoms i,j
+				// Adjust for atom radii in current style
+				style_j = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
+				if (style_j <= Atom::TubeStyle) radius_j = 0.0;
+				else if (style_j == Atom::ScaledStyle) radius_j = prefs.styleRadius(j) - scaledAtomAdjustments_[j->element()];
+				else radius_j = prefs.styleRadius(j) - sphereAtomAdjustment_;
+				// Get normalised i-j vector
+				r1 = v;
+				r1.normalise();
+				// Adjust starting position of drawing to the very closest point we will allow (where i and first dot would touch)
+				pos += r1 * (radius_i + dotradius);
+				// Adjust magnitude to be the available space between the two atoms
+				mag -= (radius_i + radius_j + 2.0*dotradius);
+				if (mag < 0.0) continue;
+				
+				// Determine spacing between dots (may be negative if there isn't enough room)
+				delta = (mag - 6.0*dotradius) < 0.0 ? -1.0 : mag / 4.0;
+				
+				// The matrix 'atomtransform' will only contain the translation. Scaling will be applied to its copy in 'A'
+				atomtransform = basetransform;
+				atomtransform.applyTranslation(pos);
+				
+				// H-bond dot 1
+				if (delta > 0.0) atomtransform.applyTranslation(r1*delta);
+				A = atomtransform;
+				A.applyScaling(dotradius, dotradius, dotradius);
+				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].spheres_, colour_i, A);
+				
+				// H-bond dot 2
+				if (delta > 0.0) atomtransform.applyTranslation(r1*delta);
+				else atomtransform.applyTranslation(r1*mag*0.5);
+				A = atomtransform;
+				A.applyScaling(dotradius, dotradius, dotradius);
+				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].spheres_, colour_i, A);
+				
+				// H-bond dot 3
+				if (delta > 0.0) atomtransform.applyTranslation(r1*delta);
+				else atomtransform.applyTranslation(r1*mag*0.5);
+				A = atomtransform;
+				A.applyScaling(dotradius, dotradius, dotradius);
+				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].spheres_, colour_i, A);
+			}
 		}
 	}
 	msg.exit("RenderEngine::renderModel");

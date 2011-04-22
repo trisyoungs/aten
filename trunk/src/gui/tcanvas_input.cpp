@@ -492,8 +492,6 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	actionBeforePick_ = selectedMode_;
 	pickAtomsCallback_ = callback;
 	nAtomsToPick_ = atomsToPick;
-
-	printf("SETSELECTEDMODE %i, natomstopick = %i\n", selectedMode_, nAtomsToPick_);
 	
 	// Clear any old selection (from e.g. bonding, measurements....)
 	clearPicked();

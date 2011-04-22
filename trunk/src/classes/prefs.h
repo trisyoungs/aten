@@ -1,6 +1,6 @@
 /*
-	*** Preferences storage
-	*** src/base/prefs.h
+	*** Preferences Storage
+	*** src/classes/prefs.h
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -58,7 +58,7 @@ class Prefs
 	static KeyAction keyAction(const char *name, bool reporterror = 0);
 	static const char *keyAction(KeyAction);
 	// Property/Object Colours
-	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, nObjectColours };
+	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, nObjectColours };
 	static const char *objectColour(ObjectColour);
 	static const char *objectColourName(ObjectColour);
 	static ObjectColour objectColour(const char *name, bool reporterror = 0);
@@ -298,7 +298,11 @@ class Prefs
 	int mouseMoveFilter_;
 	// Number of models per row when viewing multiple models
 	int nModelsPerRow_;
-
+	// Whether to auto-detect and draw hydrogen bonds
+	bool drawHydrogenBonds_;
+	// Radius of hydrogen bond dots
+	double hydrogenBondDotRadius_;
+	
 	public:
 	// Set C-style format for distance label values
 	void setDistanceLabelFormat(const char *format);
@@ -336,6 +340,14 @@ class Prefs
 	int nModelsPerRow();
 	// Set number of models per row when viewing multiple models
 	void setNModelsPerRow(int n);
+	// Return whether to auto-detect and draw hydrogen bonds
+	bool drawHydrogenBonds();
+	// Set whether to auto-detect and draw hydrogen bonds
+	void setDrawHydrogenBonds(bool b);
+	// Return radius of hydrogen bond dots
+	double hydrogenBondDotRadius();
+	// Set radius of hydrogen bond dots
+	void setHydrogenBondDotRadius(double r);
 
 
 	/*

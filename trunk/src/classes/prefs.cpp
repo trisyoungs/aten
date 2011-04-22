@@ -1,6 +1,6 @@
 /*
-	*** Preferences storage
-	*** src/base/prefs.cpp
+	*** Preferences Storage
+	*** src/classes/prefs.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -97,8 +97,8 @@ const char *Prefs::keyAction(Prefs::KeyAction i)
 }
 
 // Colours
-const char *ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "globeaxes", "globe", "glyph", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow" };
-const char *ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow" };
+const char *ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "globeaxes", "globe", "glyph", "hbond", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow" };
+const char *ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Hydrogen Bond", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow" };
 Prefs::ObjectColour Prefs::objectColour(const char *s, bool reporterror)
 {
 	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
@@ -234,6 +234,7 @@ Prefs::Prefs()
 	setColour(Prefs::GlyphDefaultColour, 0.0, 0.0, 1.0, 0.7);
 	setColour(Prefs::GlobeColour, 0.9, 0.9, 0.9, 1.0);
 	setColour(Prefs::GlobeAxesColour, 0.5, 0.5, 0.5, 1.0);
+	setColour(Prefs::HydrogenBondColour, 0.7, 0.7, 0.7, 1.0);
 	setColour(Prefs::SpecularColour, 0.9, 0.9, 0.9, 1.0);
 	setColour(Prefs::TextColour, 0.0, 0.0, 0.0, 1.0);
 	setColour(Prefs::UnitCellColour, 0.0, 0.0, 0.0, 1.0);
@@ -319,7 +320,7 @@ Prefs::Prefs()
 	combinationRules_[Combine::CustomRule2] = "c = a+b";
 	combinationRules_[Combine::CustomRule3] = "c = a+b";
 
-	// General Program (including compatibility) options
+	// Rendering Options
 	useNiceText_ = TRUE;
 	distanceLabelFormat_ = "%0.3f ";
 	angleLabelFormat_ = "%0.2f";
@@ -329,6 +330,8 @@ Prefs::Prefs()
 	useFrameBuffer_ = FALSE;
 	renderDashedAromatics_ = TRUE;
 	nModelsPerRow_ = 2;
+	drawHydrogenBonds_ = FALSE;
+	hydrogenBondDotRadius_ = 0.075;
 
 	// External programs
 #ifdef _WIN32
@@ -1865,6 +1868,30 @@ int Prefs::nModelsPerRow()
 void Prefs::setNModelsPerRow(int n)
 {
 	nModelsPerRow_ = n;
+}
+
+// Return whether to auto-detect and draw hydrogen bonds
+bool Prefs::drawHydrogenBonds()
+{
+	return drawHydrogenBonds_;
+}
+
+// Set whether to auto-detect and draw hydrogen bonds
+void Prefs::setDrawHydrogenBonds(bool b)
+{
+	drawHydrogenBonds_ = b;
+}
+
+// Return radius of hydrogen bond dots
+double Prefs::hydrogenBondDotRadius()
+{
+	return hydrogenBondDotRadius_;
+}
+
+// Set radius of hydrogen bond dots
+void Prefs::setHydrogenBondDotRadius(double r)
+{
+	hydrogenBondDotRadius_ = r;
 }
 
 /*
