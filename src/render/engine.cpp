@@ -721,6 +721,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	{
 		stickLines_.forgetAll();
 		stickSelectedLines_.forgetAll();
+		rebuildSticks_ = TRUE;
 	}
 	
 	// Clear flagged lists

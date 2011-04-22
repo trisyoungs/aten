@@ -90,6 +90,8 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "globecolour",		VTypes::DoubleData,		4, FALSE },
 	{ "globesize",			VTypes::IntegerData,		0, FALSE },
 	{ "glyphcolour",		VTypes::DoubleData,		4, FALSE },
+	{ "hbonds",			VTypes::IntegerData,		0, FALSE },
+	{ "hbonddotradius",		VTypes::DoubleData,		0, FALSE },
 	{ "hdistance",			VTypes::DoubleData,		0, FALSE },
 	{ "imagequality",		VTypes::IntegerData,		0, FALSE },
 	{ "keyaction",			VTypes::StringData,		Prefs::nModifierKeys, FALSE },
@@ -371,6 +373,12 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::GlyphDefaultColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlyphDefaultColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlyphDefaultColour), 4);
+			break;
+		case (PreferencesVariable::HBonds):
+			rv.set( ptr->drawHydrogenBonds() );
+			break;
+		case (PreferencesVariable::HBondDotRadius):
+			rv.set( ptr->hydrogenBondDotRadius() );
 			break;
 		case (PreferencesVariable::HDistance):
 			rv.set( ptr->hydrogenDistance() );
@@ -778,6 +786,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphDefaultColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::HBonds):
+			ptr->setDrawHydrogenBonds( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::HBondDotRadius):
+			ptr->setHydrogenBondDotRadius( newvalue.asDouble() );
 			break;
 		case (PreferencesVariable::HDistance):
 			ptr->setHydrogenDistance( newvalue.asDouble(result) );

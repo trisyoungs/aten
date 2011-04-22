@@ -67,6 +67,9 @@ void AtenPrefs::setControls()
 	ui.DistanceLabelFormatEdit->setText(prefs.distanceLabelFormat());
 	ui.LabelSizeSpin->setValue(prefs.labelSize());
 	ui.RenderDashedAromaticsCheck->setChecked(prefs.renderDashedAromatics());
+	ui.DrawHydrogenBondsCheck->setChecked(prefs.drawHydrogenBonds());
+	ui.HydrogenBondDotRadiusSpin->setValue(prefs.hydrogenBondDotRadius());
+	// View Page - Colours Tab
 	ui.ColoursTable->setRowCount(Prefs::nObjectColours);
 	QColor qcol;
 	for (int n = 0; n < Prefs::nObjectColours; ++n)
@@ -341,8 +344,30 @@ void AtenPrefs::on_LabelSizeSpin_valueChanged(int value)
 void AtenPrefs::on_RenderDashedAromaticsCheck_clicked(bool checked)
 {
 	prefs.setRenderDashedAromatics(checked);
+	aten.globalLogChange(Log::Style);
 	gui.mainWidget()->postRedisplay();
 }
+
+void AtenPrefs::on_DrawHydrogenBondsCheck_clicked(bool checked)
+{
+	prefs.setDrawHydrogenBonds(checked);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay();
+}
+
+void AtenPrefs::on_HydrogenBondDotRadiusSpin_valueChanged(double value)
+{
+	prefs.setHydrogenBondDotRadius(value);
+	if (prefs.drawHydrogenBonds())
+	{
+		aten.globalLogChange(Log::Style);
+		gui.mainWidget()->postRedisplay();
+	}
+}
+
+/*
+// View Page - Colours Tab
+*/
 
 void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 {
