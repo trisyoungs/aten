@@ -209,7 +209,7 @@ void WidgetNode::setReturnValue(ReturnValue &rv)
 }
 
 // Set widget value from supplied ReturnValue
-void WidgetNode::setWidgetValue(ReturnValue &rv)
+bool WidgetNode::setWidgetValue(ReturnValue &rv)
 {
 	msg.enter("WidgetNode::setWidgetValue");
 	QLineEdit *lineedit;
@@ -221,12 +221,17 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 	QRadioButton *radio;
 	QButtonGroup *buttongroup;
 	QAbstractButton *button;
+	bool result = TRUE;
 	switch (controlType_)
 	{
 		case (WidgetNode::EditControl):
 			lineedit = qobject_cast<QLineEdit*> (widget_);
 			if (lineedit) lineedit->setText(rv.asString());
-			else printf("WidgetNode::setWidgetValue() - Couldn't set text of edit control.\n");
+			else
+			{
+				msg.print("WidgetNode::setWidgetValue() - Couldn't set text of edit control.\n");
+				result = FALSE;
+			}
 			break;
 		case (WidgetNode::IntegerComboControl):
 		case (WidgetNode::ComboControl):
@@ -234,12 +239,26 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 			if (combo)
 			{
 				// If an integer was supplied, just set the index. Otherwise, search for string
-				if (rv.type() == VTypes::IntegerData) combo->setCurrentIndex(rv.asInteger());
+				if (rv.type() == VTypes::IntegerData)
+				{
+					// Check range of argument
+					int id = rv.asInteger()-1;
+					if ((id < 0) || (id >= combo->count()))
+					{
+						msg.print("Error: Index %i is out of range for Combo.\n", id+1);
+						result = FALSE;
+					}
+					else combo->setCurrentIndex(rv.asInteger());
+				}
 				else if (rv.type() == VTypes::StringData)
 				{
 					// Search for combo item corresponding to supplied text
 					int id = combo->findText(rv.asString());
-					if (id == -1) printf("WidgetNode::setWidgetValue() - Couldn't find text in (int)combo control.\n");
+					if (id == -1)
+					{
+						msg.print("Error: Combo has no option '%s'.\n", rv.asString());
+						result = FALSE;
+					}
 					else combo->setCurrentIndex(id);
 				}
 				else printf("WidgetNode::setWidgetValue() - Couldn't set text of (int)combo control.\n");
@@ -249,12 +268,20 @@ void WidgetNode::setWidgetValue(ReturnValue &rv)
 		case (WidgetNode::DoubleSpinControl):
 			dspinbox = qobject_cast<QDoubleSpinBox*> (widget_);
 			if (dspinbox) dspinbox->setValue(rv.asDouble());
-			else printf("WidgetNode::setWidgetValue() - Couldn't set text of doublespin control.\n");
+			else
+			{
+				msg.print("WidgetNode::setWidgetValue() - Couldn't set text of doublespin control.\n");
+				result = FALSE;
+			}
 			break;
 		case (WidgetNode::CheckControl):
 			checkbox = qobject_cast<QCheckBox*> (widget_);
 			if (checkbox) checkbox->setChecked(rv.asBool());
-			else printf("WidgetNode::setWidgetValue() - Couldn't set state of check control.\n");
+			else
+			{
+				msg.print("WidgetNode::setWidgetValue() - Couldn't set state of check control.\n");
+				result = FALSE;
+			}
 			break;
 		case (WidgetNode::RadioButtonControl):
 			radio = qobject_cast<QRadioButton*> (widget_);

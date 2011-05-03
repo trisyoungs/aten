@@ -329,13 +329,30 @@ Vec4<double> Matrix::columnAsVec4(int col)
 	return vec;
 }
 
-// Set specified column from supplied values
-void Matrix::setColumn(int col, double x, double y, double z, double w)
+// Set specified row from supplied triplet of values
+void Matrix::setRow(int row, double x, double y, double z)
 {
-	matrix_[col*4] = x;
-	matrix_[col*4+1] = y;
-	matrix_[col*4+2] = z;
-	matrix_[col*4+3] = w;
+	matrix_[row] = x;
+	matrix_[4+row] = y;
+	matrix_[8+row] = z;
+}
+
+// Set specified row from supplied values
+void Matrix::setRow(int row, double x, double y, double z, double w)
+{
+	matrix_[row] = x;
+	matrix_[4+row] = y;
+	matrix_[8+row] = z;
+	matrix_[12+row] = w;
+}
+
+// Set specified column from supplied values
+void Matrix::setColumn(int col, double a, double b, double c, double d)
+{
+	matrix_[col*4] = a;
+	matrix_[col*4+1] = b;
+	matrix_[col*4+2] = c;
+	matrix_[col*4+3] = d;
 }
 
 // Set specified column from supplied Vec3
@@ -357,12 +374,12 @@ void Matrix::setColumn(int col, Vec4<double> vec)
 }
 
 // Adjust specified column from supplied values
-void Matrix::adjustColumn(int col, double x, double y, double z, double w)
+void Matrix::adjustColumn(int col, double a, double b, double c, double d)
 {
-	matrix_[col*4] += x;
-	matrix_[col*4+1] += y;
-	matrix_[col*4+2] += z;
-	matrix_[col*4+3] += w;
+	matrix_[col*4] += a;
+	matrix_[col*4+1] += b;
+	matrix_[col*4+2] += c;
+	matrix_[col*4+3] += d;
 }
 
 // Adjust specified column from supplied Vec3
