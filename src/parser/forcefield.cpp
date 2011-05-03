@@ -67,10 +67,10 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addangle",		VTypes::NoData,			Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
-	{ "addbond",		VTypes::NoData,			Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
+	{ "addangle",		VTypes::ForcefieldBoundData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
+	{ "addbond",		VTypes::ForcefieldBoundData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
 	{ "addinter",		VTypes::NoData,			Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
-	{ "addtorsion",		VTypes::NoData,			Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
+	{ "addtorsion",		VTypes::ForcefieldBoundData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
 	{ "addtype",		VTypes::ForcefieldAtomData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
 	{ "finalise",		VTypes::NoData, 		Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) },
 	{ "findangle",		VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" },
