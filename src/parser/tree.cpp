@@ -50,7 +50,7 @@ Tree::Tree()
 	acceptedFail_ = Command::NoFunction;
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
-	readOptions_ = LineParser::Defaults;
+	readOptions_ = 0;
 	customDialog_ = NULL;
 	localScope_ = NULL;
 	
@@ -69,7 +69,7 @@ Tree::Tree(const char *name, const char *commands)
 	acceptedFail_ = Command::NoFunction;
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
-	readOptions_ = LineParser::Defaults;
+	readOptions_ = 0;
 	customDialog_ = NULL;
 
 	// Public variables

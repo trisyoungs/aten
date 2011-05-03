@@ -502,7 +502,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
 					// Parse the first option so we can get the filter nickname and any filter options
-					parser.getArgsDelim(LineParser::Defaults, argtext.get());
+					parser.getArgsDelim(0, argtext.get());
 					
 					// First part of argument is nickname
 					f = aten.findFilter(FilterData::ModelExport, parser.argc(0));
@@ -527,7 +527,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set export type remappings
 				case (Cli::ExportMapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(LineParser::Defaults, argtext.get());
+					parser.getArgsDelim(0, argtext.get());
 					if (strchr(parser.argc(n),'=') == NULL)
 					{
 						printf("Mangled exportmap value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
@@ -632,7 +632,7 @@ int Aten::parseCli(int argc, char *argv[])
 					if (!parser.openFile(argtext.get())) return -1;
 					while (!parser.eofOrBlank())
 					{
-						parser.readNextLine(LineParser::Defaults);
+						parser.readNextLine(LineParser::StripComments);
 						ntried ++;
 						if (modelfilter != NULL) f = modelfilter;
 						else f = aten.probeFile(parser.line(), FilterData::ModelImport);
@@ -643,7 +643,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set type mappings
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(LineParser::Defaults, argtext.get());
+					parser.getArgsDelim(0, argtext.get());
 					for (n=0; n<parser.nArgs(); n++)
 					{
 						if (strchr(parser.argc(n),'=') == NULL)

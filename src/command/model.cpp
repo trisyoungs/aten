@@ -350,7 +350,7 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 
 	// Parse the first option so we can get the filter nickname and any filter options
 	LineParser parser;
-	parser.getArgsDelim(LineParser::Defaults, c->argc(0));
+	parser.getArgsDelim(0, c->argc(0));
 	
 	// First part of argument is nickname
 	Tree *filter = aten.findFilter(FilterData::ModelExport, parser.argc(0));

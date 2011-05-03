@@ -70,7 +70,7 @@ bool Generator::set(const char *s)
 	const char *c;
 	
 	// Split line into three arguments
-	lp.getArgsDelim(LineParser::Defaults, s);
+	lp.getArgsDelim(0, s);
 	if (lp.nArgs() != 3)
 	{
 		msg.print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.\n", s);

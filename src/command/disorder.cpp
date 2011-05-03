@@ -32,7 +32,7 @@ bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Parse the first option so we can get at any options
 	LineParser parser;
-	parser.getArgsDelim(LineParser::Defaults, c->argc(0));
+	parser.getArgsDelim(0, c->argc(0));
 	// First argument should always be the scheme name
 	PartitioningScheme *scheme = aten.findPartitioningScheme(parser.argc(0));
 	if (scheme == NULL) return FALSE;

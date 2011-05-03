@@ -76,7 +76,7 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	do
 	{
 		// Get line from file
-		int result = c->parent()->parser()->readNextLine(LineParser::Defaults);
+		int result = c->parent()->parser()->readNextLine(c->parent()->readOptions());
 		if (result != 0) break;
 		// Check for string
 		if (strstr(c->parent()->parser()->line(), c->argc(0)) != '\0')
@@ -106,7 +106,7 @@ bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("No valid filesource available for the 'getline' command.\n");
 		return FALSE;
 	}
-	int result = c->parent()->parser()->readNextLine(LineParser::Defaults);
+	int result = c->parent()->parser()->readNextLine(c->parent()->readOptions());
 	ReturnValue val;
 	if (result == 0) val.set(c->parent()->parser()->line());
 	else val.set("");
@@ -137,7 +137,7 @@ bool Command::function_NextVariableArg(CommandNode *c, Bundle &obj, ReturnValue 
 {
 	Dnchar source = c->argc(0);
 	Dnchar arg;
-	rv.set( c->parent()->parser()->getCharsDelim(LineParser::Defaults, &source, &arg) );
+	rv.set( c->parent()->parser()->getCharsDelim(c->parent()->readOptions(), &source, &arg) );
 	ReturnValue argrv;
 	argrv.set(arg.get());
 	c->setArg(1, argrv);

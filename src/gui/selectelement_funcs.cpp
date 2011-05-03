@@ -143,7 +143,7 @@ void AtenSelectElement::addCommonButtons(const char *buttonlist)
 	commonButtons_.clear();
 	// Parse element list
 	LineParser parser;
-	parser.getArgsDelim(LineParser::Defaults, buttonlist);
+	parser.getArgsDelim(0, buttonlist);
 	int n,z;
 	for (n=0; n<parser.nArgs(); n++)
 	{

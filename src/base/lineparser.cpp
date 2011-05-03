@@ -28,7 +28,7 @@
 #include <stdarg.h>
 
 // Parse options
-const char *ParseOptionKeywords[LineParser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies" };
+const char *ParseOptionKeywords[LineParser::nParseOptions] = { "stripcomments", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies" };
 LineParser::ParseOption LineParser::parseOption(const char *s)
 {
 	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
@@ -263,6 +263,7 @@ int LineParser::readNextLine(int optionMask)
 		msg.exit("LineParser::readNextLine");
 		return -1;
 	}
+	
 	// Loop until we get 'suitable' line from file
 	int nchars, nspaces, result = 0;
 	do
@@ -289,7 +290,7 @@ int LineParser::readNextLine(int optionMask)
 		msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 
 		// Remove comments from line
-		removeComments(line_);
+		if (optionMask&LineParser::StripComments) removeComments(line_);
 		
 		// If we are skipping blank lines, check for a blank line here
 		if (optionMask&LineParser::SkipBlanks)
@@ -937,7 +938,7 @@ int LineParser::skipLines(int nlines)
 	int result;
 	for (int n=0; n<nlines; n++)
 	{
-		result = readNextLine(LineParser::Defaults);
+		result = readNextLine(0);
 		if (result != 0)
 		{
 			msg.exit("LineParser::skipLines");
