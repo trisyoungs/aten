@@ -39,7 +39,7 @@ bool Command::function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(2))
 	{
 		LineParser parser;
-		parser.getArgsDelim(LineParser::Defaults, c->argc(2));
+		parser.getArgsDelim(0, c->argc(2));
 		for (int n=0; n<parser.nArgs(); n++)
 		{
 			ListItem<int> *li = obj.s->atoms.add();
@@ -93,7 +93,7 @@ bool Command::function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ListItem<int> *li;
 	LineParser parser;
 	// Parse atom list for x-axis
-	parser.getArgsDelim(LineParser::Defaults, c->argc(0));
+	parser.getArgsDelim(0, c->argc(0));
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		li = obj.s->xAxisAtoms.add();
@@ -101,7 +101,7 @@ bool Command::function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		li->setValue(parser.argi(n) - 1);
 	}
 	// Parse atom list for y-axis
-	parser.getArgsDelim(LineParser::Defaults, c->argc(1));
+	parser.getArgsDelim(0, c->argc(1));
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		li = obj.s->yAxisAtoms.add();

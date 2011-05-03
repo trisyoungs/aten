@@ -277,7 +277,7 @@ bool Command::function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			case (Glyph::GlyphColourOption):
 				// Colour should have been supplied as a hex value
 				// Break up the value argument into three (four) RGB(A) values
-				lp2.getArgsDelim(LineParser::Defaults, value.get());
+				lp2.getArgsDelim(0, value.get());
 				if (lp.nArgs() == 3) rgba.set(lp.argd(0), lp.argd(1), lp.argd(2), 1.0);
 				else if (lp.nArgs() == 4) rgba.set(lp.argd(0), lp.argd(1), lp.argd(2), lp.argd(3));
 				else

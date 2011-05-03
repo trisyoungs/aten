@@ -11,9 +11,6 @@
 			<para>Rebonding model also folds atoms, making --nofold irrelevant</para>
 		</listitem>
 		<listitem>
-			<para>Reading spacegroup info and packing from certain cifs with Pnmmm symmetry is incorrect (c.f. Mercury)</para>
-		</listitem>
-		<listitem>
 			<para>Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.</para>
 		</listitem>
 		<listitem>
@@ -82,21 +79,3 @@
 
 </sect5>
 
-<sect5><title>Doc TODO</title>
-
-	<orderedlist>
-		<listitem>
-			<para>Remove references to old region information in disordered builder.</para>
-		</listitem>
-		<listitem>
-			<para>List of keyboard shortcuts</para>
-		</listitem>
-		<listitem>
-			<para>Topic: Colourscales</para>
-		</listitem>
-		<listitem>
-			<para>Topic: Glyphs</para>
-		</listitem>
-	</orderedlist>
-
-</sect5>

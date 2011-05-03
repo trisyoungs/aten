@@ -72,7 +72,7 @@ char NetaParser::getChar()
 		// If the stringPos_ is equal to the string length, read in another line
 		if (stringPos_ == stringLength_)
 		{
-			if (parser_.readNextLine(LineParser::Defaults) != 0) return 0;
+			if (parser_.readNextLine(0) != 0) return 0;
 			stringSource_ = parser_.line();
 			stringLength_ = stringSource_.length();
 			stringPos_ = 0;

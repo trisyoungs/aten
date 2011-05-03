@@ -226,7 +226,7 @@ bool Command::function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (int n=1; n<c->nArgs(); ++n)
 	{
 		// Split command into comma-delimited sections
-		parser.getArgsDelim(LineParser::Defaults, c->argc(n));
+		parser.getArgsDelim(0, c->argc(n));
 		for (int i=0; i<parser.nArgs(); ++i)
 		{
 			for (ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next)
@@ -244,7 +244,7 @@ bool Command::function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	LineParser parser;
 	for (int m=0; m<c->nArgs(); m++)
 	{
-		parser.getArgsDelim(LineParser::Defaults, c->argc(m));
+		parser.getArgsDelim(0, c->argc(m));
 		for (int n=0; n<parser.nArgs(); n++)
 		{
 			if (strchr(parser.argc(n),'=') == NULL)
@@ -562,7 +562,7 @@ bool Command::function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	LineParser parser;
 	for (int m=0; m<c->nArgs(); m++)
 	{
-		parser.getArgsDelim(LineParser::Defaults, c->argc(m));
+		parser.getArgsDelim(0, c->argc(m));
 		for (int n=0; n<parser.nArgs(); n++)
 		{
 			if (strchr(parser.argc(n),'=') == NULL)

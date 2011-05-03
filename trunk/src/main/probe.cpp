@@ -69,7 +69,7 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 				parser.rewind();
 				for (n = 0; n<t->filter.nLinesToSearch(); n++)
 				{
-					m = parser.readNextLine(LineParser::Defaults);
+					m = parser.readNextLine(0);
 					if (m == -1) break;
 					if (m == 1)
 					{

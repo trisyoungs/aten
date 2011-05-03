@@ -15,6 +15,7 @@ filter(type="importmodel", name="Cambridge Structural Database", nickname="csd",
 
 	# Set the zmapping style to only consider the first alphabetic characters in atom symbols (i.e. trimming numbers)
 	aten.prefs.zmap = "firstalpha";
+	removereadoption("skipblanks");
 	
 	# Begin loop over entries in file
 	while (!eof())
