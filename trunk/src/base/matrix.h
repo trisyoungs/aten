@@ -87,14 +87,18 @@ class Matrix
 	Vec3<double> columnAsVec3(int col);
 	// Copy column contents to supplied Vec4
 	Vec4<double> columnAsVec4(int col);
+	// Set specified row from supplied triplet of values
+	void setRow(int row, double x, double y, double z);
+	// Set specified row from supplied values
+	void setRow(int row, double x, double y, double z, double w);
 	// Set specified column from supplied values
-	void setColumn(int col, double x, double y, double z, double w);
+	void setColumn(int col, double a, double b, double c, double d);
 	// Set specified column from supplied Vec3
 	void setColumn(int col, Vec3<double> vec, double w);
 	// Set specified column from supplied Vec4
 	void setColumn(int col, Vec4<double> vec);
 	// Adjust specified column from supplied values
-	void adjustColumn(int col, double x, double y, double z, double w);
+	void adjustColumn(int col, double a, double b, double c, double d);
 	// Adjust specified column from supplied Vec3
 	void adjustColumn(int col, Vec3<double> vec, double w);
 	// Adjust specified column from supplied Vec4

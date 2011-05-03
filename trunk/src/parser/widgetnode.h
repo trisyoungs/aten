@@ -129,7 +129,7 @@ class WidgetNode : public TreeNode
 	// Set return value accessed from value get calls
 	void setReturnValue(ReturnValue &rv);
 	// Set widget value from supplied ReturnValue
-	void setWidgetValue(ReturnValue &rv);
+	bool setWidgetValue(ReturnValue &rv);
 	// Set argument list from parser-joined treenodes
 	bool addJoinedArguments(TreeNode *arglist);
 	// Return type of GUI control

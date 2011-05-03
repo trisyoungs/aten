@@ -274,7 +274,8 @@ void Model::pack()
 		msg.exit("Model::pack");
 		return;
 	}
-	// Generators work on the current selection, so select all atoms currently in the cell
+	
+	// Generators work on the current selection, so mark all atoms currently in the cell
 	selectAll(TRUE);
 	if (cell_.spacegroupId() != 0)
 	{
@@ -301,9 +302,9 @@ void Model::pack()
 				
 				for (iList = 0; iList < spacegroup_.nList; iList++, lsmx++)
 				{
-					gen.setRotation(0, f*lsmx->s.R[0], f*lsmx->s.R[1], f*lsmx->s.R[2]);
-					gen.setRotation(1, f*lsmx->s.R[3], f*lsmx->s.R[4], f*lsmx->s.R[5]);
-					gen.setRotation(2, f*lsmx->s.R[6], f*lsmx->s.R[7], f*lsmx->s.R[8]);
+					gen.setRotationRow(0, f*lsmx->s.R[0], f*lsmx->s.R[1], f*lsmx->s.R[2]);
+					gen.setRotationRow(1, f*lsmx->s.R[3], f*lsmx->s.R[4], f*lsmx->s.R[5]);
+					gen.setRotationRow(2, f*lsmx->s.R[6], f*lsmx->s.R[7], f*lsmx->s.R[8]);
 
 					gen.setTranslation( iModPositive(f * lsmx->s.T[0] + TrV[0], STBF), iModPositive(f * lsmx->s.T[1] + TrV[1], STBF), iModPositive(f * lsmx->s.T[2] + TrV[2], STBF), STBF);
 				
@@ -317,6 +318,7 @@ void Model::pack()
 	 	msg.print("Packing cell from manually-defined generator list...\n");
 		for (Generator *g = cell_.generators(); g != NULL; g = g->next) pack(g);
 	}
+	
 	// Select overlapping atoms and delete
 	selectOverlaps(0.1, TRUE);
 	selectionDelete(TRUE);

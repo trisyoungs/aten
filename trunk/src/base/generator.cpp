@@ -34,6 +34,32 @@ Generator::Generator()
 	next = NULL;
 }
 
+// Set partial element of matrix or translation vector
+void Generator::setMatrixPart(int row, const char *s)
+{
+	// The string provided either contains (-)xyz, or a translation amount
+	const char *c;
+	int multiplier = 0;
+	// Check for plus/minus signs
+	c = &s[0];
+	if (*c == '-') multiplier = -1;
+	else if (*c == '+') multiplier = 1;
+	// Skip to next character if necessary
+	if (multiplier == 0) multiplier = 1;
+	else c = &s[1];
+	//printf("MULTIPLIER = %i, original=[%s], now=[%s]\n", multiplier, s, c);
+	// Now, check if this character is x, y, or z.
+	if ( (*c >= 88) && (*c <= 90) ) matrix_[(*c-88)*4+row] = multiplier;
+	else if ( (*c >= 120) && (*c <= 122) ) matrix_[(*c-120)*4+row] = multiplier;
+	else
+	{
+		// Must be a number, and hence part of the translation vector
+		int num = atoi(beforeChar(s,'/')), denom = atoi(afterChar(s,'/'));
+		double t = (double) num / (double) denom;
+		matrix_[12+row] = t;
+	}
+}
+
 // Set from plain text string
 bool Generator::set(const char *s)
 {
@@ -42,16 +68,21 @@ bool Generator::set(const char *s)
 	char part[32], sub[16];
 	int n, count;
 	const char *c;
+	
 	// Split line into three arguments
 	lp.getArgsDelim(LineParser::Defaults, s);
 	if (lp.nArgs() != 3)
 	{
 		msg.print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.\n", s);
 		msg.exit("Generator::set");
-		return FALSE;	
+		return FALSE;
 	}
-	// Loop over arguments and set parameters
-	for (n=0; n<3; n++)
+	
+	// Clear any existing data
+	matrix_.zero();
+	
+	// Loop over arguments (equivalent to rows in matrix) and set parameters
+	for (n=0; n<3; ++n)
 	{
 		// Copy parser argument into temporary string
 		strcpy(part, lp.argc(n));
@@ -68,8 +99,8 @@ bool Generator::set(const char *s)
 				count = 0;
 			}
 			sub[count] = *c;
-			count ++;
-			c ++;
+			++count;
+			++c;
 		}
 		// Check for remaining 'item'
 		if (count != 0)
@@ -77,45 +108,16 @@ bool Generator::set(const char *s)
 			sub[count] = '\0';
 			setMatrixPart(n, sub);
 		}
-		//printf("PART=[%s], SUB=[%s]\n", part, sub);
 	}
+
 	msg.exit("Generator::set");
 	return TRUE;
 }
 
-// Set partial element of matrix or translation vector
-bool Generator::setMatrixPart(int col, const char *s)
+// Set rotation matrix row (not including translation vector)
+void Generator::setRotationRow(int row, double x, double y, double z)
 {
-	// The string provided either contains (-)xyz, or a translation amount
-	const char *c;
-	int multiplier = 0;
-	// Check for plus/minus signs
-	c = &s[0];
-	if (*c == '-') multiplier = -1;
-	else if (*c == '+') multiplier = 1;
-	// Skip to next character if necessary
-	if (multiplier == 0) multiplier = 1;
-	else c = &s[1];
-	//printf("MULTIPLIER = %i, original=[%s], now=[%s]\n", multiplier, s, c);
-	// Now, check if this character is x, y, or z.
-	if ( (*c >= 88) && (*c <= 90) ) matrix_[col*4 + (*c-88)] = multiplier;     // BROKEN?
-	else if ( (*c >= 120) && (*c <= 122) ) matrix_[col*4 + (*c-120)] = multiplier;
-	else
-	{
-		// Must be a number....
-		int num = atoi(s);
-//  		printf("Translation integer is %i.\n", num);
-		matrix_[12+col] = num / (1.0*STBF);
-// 		translation.set(row, value);
-	}
-	return TRUE;
-}
-
-// Set rotation matrix col
-void Generator::setRotation(int col, double x, double y, double z)
-{
-	if ((col < 0) || (col > 3)) printf("Generator: Rotation matrix column %i is out of range.\n", col);
-	else matrix_.setColumn(col, x, y, z, matrix_[col*4+3]);
+	matrix_.setRow(row, x, y, z);
 }
 
 // Set translation column
@@ -124,7 +126,6 @@ void Generator::setTranslation(double tx, double ty, double tz, double divisor)
 	matrix_[12] = tx/divisor;
 	matrix_[13] = ty/divisor;
 	matrix_[14] = tz/divisor;
-// 	matrix_.print();
 }
 
 // Return name of generator

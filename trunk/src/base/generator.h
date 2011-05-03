@@ -43,14 +43,14 @@ class Generator
 	Dnchar name_;
 	// Generator matrix
 	Matrix matrix_;
-	// Set partial element of matrix
-	bool setMatrixPart(int col, const char* s);
+	// Set partial element of matrix in specified row
+	void setMatrixPart(int row, const char *s);
 
 	public:
 	// Set from XYZ-style name
 	bool set(const char *xyz);
-	// Set rotation matrix row
-	void setRotation(int col, double x, double y, double z);
+	// Set rotation matrix row (not including translation vector)
+	void setRotationRow(int row, double x, double y, double z);
 	// Set translation column
 	void setTranslation(double tx, double ty, double tz, double divisor);
 	// Return text 'name' of generator

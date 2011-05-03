@@ -23,7 +23,7 @@
 			<para>Rendering vibrations in stick style appears not to work.</para>
 		</listitem>
 		<listitem>
-			<para>When using default display lists for rendering, stick lists are cleared but still appear (e.g. when crateing a new model)</para>
+			<para>When using default display lists for rendering, stick lists are cleared but still appear (e.g. when creating a new model)</para>
 		</listitem>
 	</orderedlist>
 
