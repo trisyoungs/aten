@@ -61,6 +61,7 @@ void Aten::addFragmentFromSelection(Model *source, const char *parentgroup)
 	// Store the last model on the list.
 	Fragment *f = fg->addFragment();
 	if (!f->setMasterModel(m)) fg->removeFragment(f);
+	else m->regenerateIcon();
 
 	// Return model creation to main list
 	targetModelList_ = Aten::MainModelList;

@@ -223,6 +223,7 @@ void Model::regenerateIcon()
 	prefs.setViewRotationGlobe(FALSE);
 	gui.mainWidget()->setRenderSource(this);
 
+	changeLog.add(Log::Style);
 	icon_ = gui.mainWidget()->generateImage(100, 100, FALSE);
 
 	prefs.setFrameCurrentModel(framemodel);

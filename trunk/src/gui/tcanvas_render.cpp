@@ -144,7 +144,7 @@ void TCanvas::render3D(Model *source, bool currentModel)
 	// Render 3D elements (with OpenGL)
 	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
 	checkGlError();
-	engine_.render3D(highQuality_, source, this, currentModel);
+	engine_.render3D(highQuality_, source, this, currentModel, selectedMode_ == UserAction::DrawFragmentAction);
 	//glFlush();
 	checkGlError();
 
@@ -186,7 +186,7 @@ void TCanvas::isRenderingOk()
 	if (!result)
 	{
 		prefs.setManualSwapBuffers(TRUE);
-		QMessageBox::information(NULL, "Rendering Check", "Aten detected that it's rendering was producing corrupt images (a bit like those Magic Eye pictures back in the Nineties). To attempt to remedy this, manual buffer swapping has been activated. If the main rendering canvas now displays everything correctly, you can add the line 'aten.prefs.manualswapbuffers = TRUE;' to your personal '.aten/user.dat' file in your home directory.");
+		QMessageBox::information(NULL, "Rendering Check", "Aten detected that it's rendering was producing corrupt images. To attempt to remedy this, manual buffer swapping has been activated. If the main rendering canvas now displays everything correctly, you can add the line 'aten.prefs.manualswapbuffers = TRUE;' to your personal '.aten/user.dat' file in your home directory.");
 	}
 
 	// Set the clear colour back to the user-defined value

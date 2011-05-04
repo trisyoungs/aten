@@ -181,6 +181,7 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 				{
 					if (atomClicked_ == NULL) gui.fragmentsWidget->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
 					else gui.fragmentsWidget->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
+					postRedisplay(FALSE,TRUE);
 				}
 				break;
 			case (UserAction::TransformRotateXYAction):
@@ -404,7 +405,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 			break;
 	}
 	// Update display if necessary
-	if (refresh) postRedisplay();
+	if (refresh) postRedisplay(FALSE,TRUE);
 	if (ignore) event->ignore();
 }
 
