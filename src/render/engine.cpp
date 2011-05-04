@@ -632,7 +632,7 @@ void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 }
 
 // Render 3D
-void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bool currentModel)
+void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bool currentModel, bool updateAllLists)
 {
 	GLfloat colour[4];
 
@@ -684,7 +684,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	// By default, regenerate all lists (the case if the source model pointer has changed)
 	int n;
 	for (n=0; n<RenderEngine::nRenderingObjects; ++n) activePrimitiveLists_[n] = TRUE;
-	if (lastSource_ == source)
+	if ((lastSource_ == source) && (!updateAllLists))
 	{
 		// Check model logs against logs stored when the lists were last generated
 		bool redobasic = !lastLog_.isSame(Log::Coordinates,source->changeLog);

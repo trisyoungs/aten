@@ -54,7 +54,7 @@ void FragmentsWidget::showWidget()
 // Increment bond id value
 void FragmentsWidget::increaseBondId()
 {
-	bondId_++;
+	++bondId_;
 }
 
 // Return bondId (as reference so it can be reset by associated Fragment routines)
@@ -74,11 +74,17 @@ void FragmentsWidget::refresh()
 {
 	msg.enter("FragmentsWidget::refresh");
 
+	if ((!gui.exists()) || (!isVisible()))
+	{
+		msg.exit("FragmentsWidget::refresh");
+		return;
+	}
+	
 	TTreeWidgetItem *item, *group;
 	TTableWidgetItem *tabitem;
 	ui.FragmentTree->clear();
 	ui.FragmentTable->clear();
-
+	
 	int row = 0, nperrow = 5, column = 0;
 
 	ui.FragmentTable->setColumnCount(nperrow);
@@ -93,7 +99,7 @@ void FragmentsWidget::refresh()
 		// New row, if column counter is not zero
 		if (column != 0)
 		{
-			row++;
+			++row;
 			ui.FragmentTable->setRowCount(row+1);
 		}
 
