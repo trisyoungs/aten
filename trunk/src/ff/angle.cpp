@@ -185,7 +185,7 @@ void Pattern::angleForces(Model *srcmodel)
 			// Exception for BondConstraint term...
 			if (pb->data()->angleForm() == AngleFunctions::BondConstraint)
 			{
-				fi = (mim_ik / rij) * du_dtheta;
+				fi = -(mim_ik / rij) * du_dtheta;
 				fj = 0.0;
 				fk = -fi;
 			}
