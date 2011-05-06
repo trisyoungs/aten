@@ -85,9 +85,9 @@ class RenderPrimitives
 	// Return current primitive instance stacksize
 	int stackSize();
 	// (Re)Generate primitive vertex arrays (if necessary)
-	void recreatePrimitives();
+	void recreatePrimitives(bool force = FALSE);
 	// Push instance layer for all primitives
-	void pushInstance(const QGLContext *context);
+	void pushInstance(const QGLContext *context, bool forceRegenerate = FALSE);
 	// Pop last instance layer
 	void popInstance();
 };
@@ -196,7 +196,7 @@ class RenderEngine
 	// Pop topmost primitive instance
 	void popInstance(bool highQuality);
 	// Update all primitives (following prefs change, etc.)
-	void updatePrimitives(const QGLContext *context);
+	void updatePrimitives(const QGLContext *context, bool regenerate = FALSE);
 	// Render text objects (with supplied QPainter)
 	void renderText(QPainter &painter, TCanvas *canvas);
 	// Render 3D elements with OpenGL

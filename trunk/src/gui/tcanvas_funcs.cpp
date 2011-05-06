@@ -518,9 +518,9 @@ QPixmap TCanvas::generateImage(int w, int h, bool highQuality)
 }
 
 // Reinitialise primitives
-void TCanvas::updatePrimitives()
+void TCanvas::updatePrimitives(bool force)
 {
-	engine_.updatePrimitives(context());
+	engine_.updatePrimitives(context(), force);
 }
 
 // Reinitialise transparency correction

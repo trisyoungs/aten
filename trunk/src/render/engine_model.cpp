@@ -175,11 +175,10 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 void RenderEngine::renderModel(Model *source, Matrix basetransform)
 {
 	msg.enter("RenderEngine::renderModel");
-	GLfloat colour_i[4], colour_j[4], alpha_i, colour_k[4], colour_l[4];
-	GLenum style;
-	int id_i, labels, m, n, el_i, el_j;
+	GLfloat colour_i[4], colour_j[4], alpha_i;;
+	int id_i, labels, m, n, el_j;
 	Dnchar text;
-	double selscale, z, radius_i, radius_j, phi, mag, best, delta;
+	double selscale, radius_i, radius_j, phi, mag, best, delta;
 	Atom *i, *j, *k, *l, **atoms;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
