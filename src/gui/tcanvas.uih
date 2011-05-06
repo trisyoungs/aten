@@ -130,7 +130,7 @@ class TCanvas : public QGLWidget
 	// Return whether rendering should use high quality primitives
 	bool highQuality() const;
 	// Update primitives (after, e.g., change in preferences)
-	void updatePrimitives();
+	void updatePrimitives(bool force = FALSE);
 	// Reinitialise transparency correction
 	void reinitialiseTransparency();
 	// Update Canvas

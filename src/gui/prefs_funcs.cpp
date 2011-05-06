@@ -261,8 +261,9 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 void AtenPrefs::updateAfterViewPrefs(bool force)
 {
 	if (refreshing_) return;
-	gui.mainWidget()->updatePrimitives();
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->updatePrimitives(force);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE,TRUE);
 }
 
 /*

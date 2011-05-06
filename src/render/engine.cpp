@@ -64,14 +64,14 @@ int RenderPrimitives::stackSize()
 }
 
 // (Re)Generate primitives
-void RenderPrimitives::recreatePrimitives()
+void RenderPrimitives::recreatePrimitives(bool force)
 {
 	msg.enter("RenderPrimitives::recreatePrimitives");
 	double radius, lodratio, aradius[Atom::nDrawStyles], bradius[Atom::nDrawStyles], selscale;
 	int n, m, lod, nstacks, nslices;
 	
 	// If current quality is the same as the requested quality, do nothing
-	if (requestedQuality_ == currentQuality_)
+	if ((requestedQuality_ == currentQuality_) && (!force))
 	{
 		msg.exit("RenderPrimitives::recreatePrimitives");
 		return;
@@ -227,12 +227,12 @@ void RenderPrimitives::recreatePrimitives()
 }
 
 // Create instance for primitives
-void RenderPrimitives::pushInstance(const QGLContext* context)
+void RenderPrimitives::pushInstance(const QGLContext* context, bool forceRegenerate)
 {
 	msg.enter("RenderPrimitives::pushInstance");
 	
 	// Recreate primitives
-	recreatePrimitives();
+	recreatePrimitives(forceRegenerate);
 	
 	// Push instances
 	for (int n=0; n<Atom::nDrawStyles; ++n)
@@ -264,6 +264,10 @@ void RenderPrimitives::pushInstance(const QGLContext* context)
 	cellAxes_.pushInstance(context);
 	rotationGlobe_.pushInstance(context);
 	rotationGlobeAxes_.pushInstance(context);
+
+	// Increase stacksize
+	++stackSize_;
+
 	msg.exit("RenderPrimitives::pushInstance");
 }
 
@@ -300,6 +304,10 @@ void RenderPrimitives::popInstance()
 	cellAxes_.popInstance();
 	rotationGlobe_.popInstance();
 	rotationGlobeAxes_.popInstance();
+
+	// Increase stacksize
+	--stackSize_;
+
 	msg.exit("RenderPrimitives::popInstance");
 }
 
@@ -608,21 +616,22 @@ void RenderEngine::popInstance(bool highQuality)
 }
 
 // Update all primitives (following prefs change, etc.)
-void RenderEngine::updatePrimitives(const QGLContext *context)
+void RenderEngine::updatePrimitives(const QGLContext *context, bool force)
 {
 	// Set (possibly new) quality
 	primitives_[0].setQuality(prefs.primitiveQuality());
 	primitives_[1].setQuality(prefs.imagePrimitiveQuality());
 	
+	// Recalculate adjustments for bond positioning
+	calculateAdjustments();
+
 	// Generate new VBOs / display lists - pop and push a context
 	for (int n=0; n<2; ++n) if (primitives_[n].stackSize() != 0)
 	{
 		primitives_[n].popInstance();
-		primitives_[n].pushInstance(context);
+		primitives_[n].pushInstance(context, force);
 	}
 	
-	// Recalculate adjustments for bond positioning
-	calculateAdjustments();
 }
 
 // Render text objects (with supplied QPainter)

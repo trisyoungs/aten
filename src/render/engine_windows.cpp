@@ -108,7 +108,7 @@ void RenderEngine::renderWindowExtras(Model *source)
 	if (gui.cellTransformWidget->isVisible())
 	{
 		Vec3<int> hkl;
-		int n, i, j, anindex = -1, notanindex = -1, ncoords = 0;
+		int n, anindex = -1, notanindex = -1, ncoords = 0;
 		Vec3<double> coords[4], origin;
 		switch (gui.cellTransformWidget->ui.CellTransformTabs->currentIndex())
 		{
