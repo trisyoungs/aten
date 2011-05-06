@@ -70,7 +70,7 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 		}
 		else
 		{
-			aten.setCurrentModel(m);
+			aten.setCurrentModel(m,TRUE);
 			msg.print("Current model is now '%s'.\n", aten.current.m->name());
 			// Update GUI
 			gui.update(GuiQt::AllTarget);
@@ -155,7 +155,7 @@ bool Command::function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
-		aten.setCurrentModel(m);
+		aten.setCurrentModel(m,TRUE);
 		// Update GUI
 		gui.update(GuiQt::AllTarget);
 	}
@@ -180,7 +180,7 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
-		aten.setCurrentModel(m);
+		aten.setCurrentModel(m,TRUE);
 		m->setRenderSource(Model::ModelSource);
 		// Update GUI
 		gui.update(GuiQt::AllTarget);
@@ -209,7 +209,7 @@ bool Command::function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
-		aten.setCurrentModel(m);
+		aten.setCurrentModel(m,TRUE);
 		// Update GUI
 		gui.update(GuiQt::AllTarget);
 	}
@@ -301,7 +301,7 @@ bool Command::function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.m->next == NULL) msg.print("Already at last loaded model.\n");
 	else
 	{
-		aten.setCurrentModel(obj.m->next);
+		aten.setCurrentModel(obj.m->next, TRUE);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
 		// Update GUI
 		gui.update(GuiQt::AllTarget);
@@ -321,7 +321,7 @@ bool Command::function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->setRenderSource(Model::ModelSource);
-	aten.setCurrentModel(obj.m);
+	aten.setCurrentModel(obj.m, TRUE);
 	// Update GUI
 	gui.update(GuiQt::AllTarget);
 	return TRUE;
@@ -334,7 +334,7 @@ bool Command::function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.m->prev == NULL) msg.print("Already at first loaded model.\n");
 	else
 	{
-		aten.setCurrentModel(obj.m->prev);
+		aten.setCurrentModel(obj.m->prev, TRUE);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
 		// Update GUI
 		gui.update(GuiQt::AllTarget);

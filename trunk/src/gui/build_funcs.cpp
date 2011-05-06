@@ -39,6 +39,7 @@ BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 	elementGroup->addButton(ui.ElementHButton);
 	elementGroup->addButton(ui.ElementCButton);
 	elementGroup->addButton(ui.ElementNButton);
+	elementGroup->addButton(ui.ElementOButton);
 	elementGroup->addButton(ui.ElementCustomButton);
 	
 	// Add items to submenus for Rebond and Clear buttons

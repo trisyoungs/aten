@@ -247,7 +247,7 @@ Model *Aten::addModel()
 			newname.sprintf("Unnamed%03i", ++modelId_);
 			m->setName(newname);
 			m->changeLog.reset();
-			setCurrentModel(m);
+			setCurrentModel(m, TRUE);
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();
