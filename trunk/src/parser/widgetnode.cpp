@@ -319,6 +319,7 @@ bool WidgetNode::setWidgetValue(ReturnValue &rv)
 			break;
 	}
 	msg.exit("WidgetNode::setWidgetValue");
+	return result;
 }
 
 // Set argument list from parser-joined treenodes
