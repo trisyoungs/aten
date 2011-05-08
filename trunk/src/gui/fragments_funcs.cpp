@@ -47,6 +47,7 @@ FragmentsWidget::FragmentsWidget(QWidget *parent, Qt::WindowFlags flags) : QDock
 void FragmentsWidget::showWidget()
 {
 	show();
+	refresh();
 	// Make sure toolbutton is in correct state
 	gui.toolBoxWidget->ui.FragmentsButton->setChecked(TRUE);
 }
