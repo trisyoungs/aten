@@ -290,7 +290,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				}
 				
 				// We are here, so we failed again. Have we reached our successive failures limit?
-				if (component->nFailed() >= maxFailures) component->adjustScaleFactor(reductionFactor, 1.15);
+				if (component->nFailed() >= maxFailures) component->adjustScaleFactor(reductionFactor, 1.0);
 			}
 			else for (n=nInsertions; n < 0; ++n)
 			{
@@ -331,9 +331,9 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		for (component = components_.first(); component != NULL; component = component->next)
 		{
 			if (component->requestedDensity() > component->partitionDensity()) continue;
-			if (component->insertionPolicy() == Model::NumberAndDensityPolicy) continue;
+			if (component->insertionPolicy() == Model::NumberPolicy) continue;
 			// Uh-oh - density is higher. Let's delete stuff...
-			printf("Density in region '%s' is higher than requested...\n", component->partitionName());
+// 			printf("Density in region '%s' is higher than requested...\n", component->partitionName());
 			while (fabs(1.0 - component->partitionDensity() / component->requestedDensity()) > accuracy)
 			{
 				// Pick a random component from the partition's list

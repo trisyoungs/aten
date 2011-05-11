@@ -285,7 +285,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(ptr->componentDensity());
 			break;
 		case (ModelVariable::ComponentPartition):
-			rv.set(ptr->componentPartition());
+			rv.set(ptr->componentPartition()+1);
 			break;
 		case (ModelVariable::ComponentPolicy):
 			rv.set( Model::insertionPolicy(ptr->componentInsertionPolicy()) );
@@ -599,7 +599,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 			ptr->setComponentDensity( newvalue.asDouble() );
 			break;
 		case (ModelVariable::ComponentPartition):
-			ptr->setComponentPartition( newvalue.asInteger() );
+			ptr->setComponentPartition( newvalue.asInteger()-1 );
 			break;
 		case (ModelVariable::ComponentPolicy):
 			inspol = Model::insertionPolicy(newvalue.asString(), TRUE);

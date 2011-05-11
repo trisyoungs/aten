@@ -128,7 +128,7 @@ Grid *GridsWidget::getCurrentGrid()
 	// Return first selected grid in widget
 	QList<QListWidgetItem*> selection = ui.GridList->selectedItems();
 	if (selection.size() == 0) return NULL;
-	TListWidgetItem *item = (TListWidgetItem*) selection.first();
+	TListWidgetItem *item = (TListWidgetItem*) ui.GridList->currentItem();
 	Grid *g = (Grid*) item->data.asPointer(VTypes::GridData);
 	return g;
 }
@@ -419,23 +419,6 @@ void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
 	gui.mainWidget()->postRedisplay();
 }
 
-// Item in grid list has changed?
-void GridsWidget::on_GridList_itemClicked(QListWidgetItem *item)
-{
-	// Cast item to our own TListWidgetItem
-	TListWidgetItem *titem = (TListWidgetItem*) item;
-	// Get grid associated to item
-	Grid *g = (Grid*) titem->data.asPointer(VTypes::GridData);
-	// Look at checked state
-	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
-	gui.mainWidget()->postRedisplay();
-}
-
-void GridsWidget::on_ShowAllGridsCheck_clicked(bool checked)
-{
-	refresh();
-}
-
 void GridsWidget::gridOriginChanged(int component, double value)
 {
 	if (refreshing_) return;
@@ -481,9 +464,30 @@ void GridsWidget::on_GridList_currentRowChanged(int row)
 	if (row != -1) refreshGridInfo();
 }
 
+// Item in grid list has changed?
+void GridsWidget::on_GridList_itemClicked(QListWidgetItem *item)
+{
+	// Cast item to our own TListWidgetItem
+	TListWidgetItem *titem = (TListWidgetItem*) item;
+	// Get grid associated to item
+	Grid *g = (Grid*) titem->data.asPointer(VTypes::GridData);
+	// Look at checked state
+	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
+	gui.mainWidget()->postRedisplay();
+}
+
+void GridsWidget::on_GridList_itemSelectionChanged()
+{
+	refreshGridInfo();
+}
+
+void GridsWidget::on_ShowAllGridsCheck_clicked(bool checked)
+{
+	refresh();
+}
+
 void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 {
-	if (refreshing_) return;
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid *g;
