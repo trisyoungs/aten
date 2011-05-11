@@ -32,7 +32,7 @@
 void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b)
 {
 	double dvisible, selvisible, factor, rij, phi;
-	Vec3<double> ri, rj, localx, localy, localz, stickpos;
+	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx;
 	GLfloat alpha_i, alpha_j;
 
 	// Store copies of alpha values
@@ -87,6 +87,7 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			if (!rebuildSticks_) break;
 			// First vertex is at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
 			stickpos = A * Vec3<double>(0.0,0.0,1.0);
+			// Determine how many sticks to draw (bond multiplicity : aromatic still counts as one bond)
 			if (i->isSelected())
 			{
 				stickSelectedLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
@@ -94,8 +95,29 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			}
 			else 
 			{
-				stickLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
-				stickLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
+				switch (bt)
+				{
+					case (Bond::Double):
+						dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle)*0.5,0.0,0.0);
+						stickLines_.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+						break;
+					case (Bond::Triple):
+						dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle),0.0,0.0);
+						stickLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+						break;
+					default:
+						stickLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
+						stickLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
+						break;
+				}
 			}
 			// Move to centre of visible bond, ready for next bond half
 			A.applyTranslationZ(1.0);
@@ -144,8 +166,29 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			}
 			else 
 			{
-				stickLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_j, FALSE);
-				stickLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
+				switch (bt)
+				{
+					case (Bond::Double):
+						dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle)*0.5,0.0,0.0);
+						stickLines_.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+						break;
+					case (Bond::Triple):
+						dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle),0.0,0.0);
+						stickLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+						break;
+					default:
+						stickLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_j, FALSE);
+						stickLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
+						break;
+				}
 			}
 			break;
 		case (Atom::TubeStyle):

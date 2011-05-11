@@ -57,6 +57,7 @@ class GridsWidget : public QDockWidget
 	void on_actionGridPaste_triggered(bool checked);
 	// List
 	void on_GridList_currentRowChanged(int row);
+	void on_GridList_itemSelectionChanged();
 	void on_GridList_itemClicked(QListWidgetItem *item);
 	void on_ShowAllGridsCheck_clicked(bool checked);
 	// Data / Cutoff Page
