@@ -133,7 +133,7 @@ bool Command::function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set (positive) colour for grid
-bool Command::function_GridColourPrimary(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (c->hasArg(3)) obj.g->setPrimaryColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));

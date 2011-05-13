@@ -283,7 +283,7 @@ void Command::initPointers()
 	pointers_[GetGrid] = &Command::function_GetGrid;
 	pointers_[GridAlpha] = &Command::function_GridAlpha;
 	pointers_[GridAxes] = &Command::function_GridAxes;
-	pointers_[GridColourPrimary] = &Command::function_GridColourPrimary;
+	pointers_[GridColour] = &Command::function_GridColour;
 	pointers_[GridColourSecondary] = &Command::function_GridColourSecondary;
 	pointers_[GridColourscale] = &Command::function_GridColourscale;
 	pointers_[GridCubic] = &Command::function_GridCubic;

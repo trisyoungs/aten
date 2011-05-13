@@ -732,7 +732,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "gridaxes",		"NNNNNNNNN",	VTypes::NoData,
 		"double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz",
 		"Set axis system for the current grid" },
-	{ "gridcolourprimary",		"NNNn",		VTypes::NoData,
+	{ "gridcolour",		"NNNn",		VTypes::NoData,
 		"double r, double g, double b, double a = 1.0",
 		"Set the colour of the primary grid surface (when not using a colourscale)" },
 	{ "gridcoloursecondary",	"NNNn",		VTypes::NoData,

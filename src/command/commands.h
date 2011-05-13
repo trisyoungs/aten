@@ -323,7 +323,7 @@ class Command
 		GetGrid,
 		GridAlpha,
 		GridAxes,
-		GridColourPrimary,
+		GridColour,
 		GridColourSecondary,
 		GridColourscale,
 		GridCubic,
@@ -795,7 +795,7 @@ class Command
 	static bool function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_GridColourPrimary(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridColourSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridColourscale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv);
