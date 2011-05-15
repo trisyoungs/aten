@@ -196,7 +196,7 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 	}
 }
 
-void CommandWidget::on_ReloadAllButton_clicked(bool checked)
+void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 {
 	// Cycle over scripts, clearing and reloading
 	Program *script = aten.scripts(), *xscript;
@@ -251,11 +251,11 @@ void CommandWidget::on_ReloadAllButton_clicked(bool checked)
 
 void CommandWidget::on_ScriptsList_currentRowChanged(int row)
 {
-	if (row == -1) ui.RunSelectedButton->setEnabled(FALSE);
-	else ui.RunSelectedButton->setEnabled(TRUE);
+	ui.RunSelectedScriptButton->setEnabled(row != -1);
+	ui.RemoveSelectedScriptButton->setEnabled(row != -1);
 }
 
-void CommandWidget::on_RunSelectedButton_clicked(bool checked)
+void CommandWidget::on_RunSelectedScriptButton_clicked(bool checked)
 {
 	int row = ui.ScriptsList->currentRow();
 	if (row == -1) return;
@@ -268,6 +268,16 @@ void CommandWidget::on_RunSelectedButton_clicked(bool checked)
 		script->execute(result, TRUE);
 	}
 	gui.update(GuiQt::AllTarget);
+}
+
+void CommandWidget::on_RemoveSelectedScriptButton_clicked(bool checked)
+{
+	int row = ui.ScriptsList->currentRow();
+	if (row == -1) return;
+	Program *script = aten.script(row);
+	if (script != NULL) aten.removeScript(script);
+	// Better refresh the window and lists
+	refreshScripts();
 }
 
 void CommandWidget::runScript()

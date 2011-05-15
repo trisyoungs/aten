@@ -232,9 +232,6 @@
          <number>2</number>
         </property>
         <item>
-         <widget class="QListWidget" name="ScriptsList"/>
-        </item>
-        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <property name="spacing">
            <number>4</number>
@@ -272,7 +269,19 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="ReloadAllButton">
+           <widget class="QPushButton" name="ReloadAllScriptsButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
             <property name="text">
              <string>Reload All</string>
             </property>
@@ -291,10 +300,55 @@
             </property>
            </spacer>
           </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QListWidget" name="ScriptsList"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <property name="spacing">
+           <number>4</number>
+          </property>
           <item>
-           <widget class="QPushButton" name="RunSelectedButton">
+           <widget class="QPushButton" name="RemoveSelectedScriptButton">
             <property name="enabled">
              <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Remove Selected</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="RunSelectedScriptButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
             </property>
             <property name="text">
              <string>Run Selected</string>
