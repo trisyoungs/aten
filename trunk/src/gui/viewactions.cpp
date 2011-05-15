@@ -193,3 +193,11 @@ void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
 	aten.globalLogChange(Log::Style);
 	gui.mainWidget()->postRedisplay(TRUE);
 }
+
+// Toggle detection and siaply of hydrogen bonds in models
+void AtenForm::on_actionDetectDisplayHBonds_triggered(bool checked)
+{
+	prefs.setDrawHydrogenBonds(checked);
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE);
+}

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
@@ -69,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>782</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu">
@@ -148,16 +149,6 @@
      <addaction name="actionViewSetCellNegY"/>
      <addaction name="actionViewSetCellNegZ"/>
     </widget>
-    <widget class="QMenu" name="StyleMenu">
-     <property name="title">
-      <string>Render Style</string>
-     </property>
-     <addaction name="actionStyleStick"/>
-     <addaction name="actionStyleTube"/>
-     <addaction name="actionStyleSphere"/>
-     <addaction name="actionStyleScaled"/>
-     <addaction name="actionStyleIndividual"/>
-    </widget>
     <widget class="QMenu" name="SchemeMenu">
      <property name="title">
       <string>Atom Colours</string>
@@ -167,6 +158,16 @@
      <addaction name="actionSchemeForce"/>
      <addaction name="actionSchemeVelocity"/>
      <addaction name="actionSchemeCustom"/>
+    </widget>
+    <widget class="QMenu" name="StyleMenu">
+     <property name="title">
+      <string>Render Style</string>
+     </property>
+     <addaction name="actionStyleStick"/>
+     <addaction name="actionStyleTube"/>
+     <addaction name="actionStyleSphere"/>
+     <addaction name="actionStyleScaled"/>
+     <addaction name="actionStyleIndividual"/>
     </widget>
     <addaction name="actionViewReset"/>
     <addaction name="actionViewZoomIn"/>
@@ -179,6 +180,7 @@
     <addaction name="StyleMenu"/>
     <addaction name="SchemeMenu"/>
     <addaction name="separator"/>
+    <addaction name="actionDetectDisplayHBonds"/>
    </widget>
    <widget class="QMenu" name="ModelMenu">
     <property name="title">
@@ -1504,6 +1506,17 @@
    </property>
    <property name="toolTip">
     <string>Copy this frame's style to the parent model</string>
+   </property>
+  </action>
+  <action name="actionDetectDisplayHBonds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Detect/Display H-Bonds</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
    </property>
   </action>
  </widget>

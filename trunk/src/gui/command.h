@@ -80,8 +80,9 @@ class CommandWidget : public QDockWidget
 	Reflist<QAction, Program*> scriptActions_;
 	
 	private slots:
-	void on_ReloadAllButton_clicked(bool checked);
-	void on_RunSelectedButton_clicked(bool checked);
+	void on_ReloadAllScriptsButton_clicked(bool checked);
+	void on_RunSelectedScriptButton_clicked(bool checked);
+	void on_RemoveSelectedScriptButton_clicked(bool checked);
 	void on_OpenScriptButton_clicked(bool checked);
 	void on_ScriptsList_currentRowChanged(int row);
 	void runScript();

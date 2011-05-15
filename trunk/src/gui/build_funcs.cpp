@@ -138,7 +138,7 @@ void BuildWidget::on_DrawRebondMenuButton_menuItemClicked(int menuItemId)
 	switch (menuItemId)
 	{
 		case (BuildWidget::ModelNoAugmentItem):
-			CommandNode::run(Command::ReBond, "i", 1);
+			CommandNode::run(Command::ReBond, "i", 0);
 			break;
 		case (BuildWidget::SelectionItem):
 			CommandNode::run(Command::ReBondSelection, "");
