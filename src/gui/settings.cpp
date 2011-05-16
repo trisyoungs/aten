@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/command.h"
+#include "gui/toolbox.h"
 #include "main/aten.h"
 #include <QtCore/QSettings>
 
@@ -43,9 +44,16 @@ void AtenForm::loadSettings()
 		key += itoa(n);
 		if (settings_.contains(key)) addRecent(qPrintable(settings_.value(key).toString()));
 	}
-	// Toolbar visibility / position
-	if (prefs.loadQtSettings() && settings_.contains("MainWinPositions")) gui.mainWindow()->restoreState( settings_.value("MainWinPositions").toByteArray());
 	
+	// Toolbar visibility / position
+	if (prefs.loadQtSettings())
+	{
+		if (settings_.contains("MainWinPositions")) gui.mainWindow()->restoreState( settings_.value("MainWinPositions").toByteArray());
+		if (settings_.contains("MainWinGeometries")) gui.mainWindow()->restoreGeometry( settings_.value("MainWinGeometries").toByteArray());
+		if (settings_.contains("MainWinSize")) resize(settings_.value("mainwin_size", QSize(400, 400)).toSize());
+		if (settings_.contains("MainWinPosition")) move(settings_.value("mainwin_pos", QPoint(200, 200)).toPoint());
+	}
+
 	// Command toolbar history
 	QStringList history;
 	n = 0;
@@ -141,7 +149,10 @@ void AtenForm::on_actionStoreDefaultWindowState_triggered(bool checked)
 {
 	// Toolbar visibility / position
 	settings_.setValue("MainWinPositions", gui.mainWindow()->saveState() );
-	
+	settings_.setValue("MainWinGeometries", gui.mainWindow()->saveGeometry() );
+	settings_.value("MainWinSize", size());
+	settings_.value("MainWinPosition", pos());
+
 	// Synchronise (i.e. save) changes to settings
 	settings_.sync();
 }

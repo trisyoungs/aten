@@ -222,10 +222,10 @@ void GuiQt::run()
 	transformWidget = new TransformWidget(mainWindow_, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(mainWindow_, Qt::Tool);
 	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << selectWidget << toolBoxWidget << trajectoryWidget << transformWidget << vibrationsWidget;
-	toolBoxWidget->show();
+// 	toolBoxWidget->show();
 	
 	// Connect Finished signal of tool windows to finished slots in structure
-	foreach( QDockWidget *obj, dockWidgets_)
+	foreach (QDockWidget *obj, dockWidgets_)
 	{
 		QObject::connect(obj, SIGNAL(visibilityChanged(bool)), toolBoxWidget, SLOT(dockWidgetVisibilityChanged(bool)));
 		QObject::connect(obj, SIGNAL(topLevelChanged(bool)), toolBoxWidget, SLOT(dockWidgetTopLevelChanged(bool)));
