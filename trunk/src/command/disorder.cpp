@@ -46,8 +46,8 @@ bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.reset();
 	// Get custom values from dialog (if scheme has one)
 	scheme->runOptions(TRUE);
-	if (!mc.disorder(obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE)) return FALSE;
-	return TRUE;
+	bool result = mc.disorder(obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE);
+	return result;
 }
 
 // Print current component list ('listcomponents')
@@ -73,18 +73,10 @@ bool Command::function_SetupComponent(CommandNode *c, Bundle &obj, ReturnValue &
 	Model::InsertionPolicy policy = Model::insertionPolicy(c->argc(0), TRUE);
 	if (policy == Model::nInsertionPolicies) return FALSE;
 	obj.m->setComponentInsertionPolicy(policy);
-	if (c->hasArg(1)) obj.m->setComponentPartition(c->argi(1));
+	if (c->hasArg(1)) obj.m->setComponentPartition(c->argi(1)-1);
 	if (c->hasArg(2)) obj.m->setComponentPopulation(c->argi(2));
 	if (c->hasArg(3)) obj.m->setComponentDensity(c->argd(3));
 	if (c->hasArg(4)) obj.m->setComponentRotatable(c->argb(4));
-	return TRUE;
-}
-
-// Set vdw radius scaling for method ('vdwscale <scale>')
-bool Command::function_VdwScale(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (c->hasArg(0)) mc.setVdwScale(c->argd(0));
-	rv.set(mc.vdwScale());
 	return TRUE;
 }
 
