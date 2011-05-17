@@ -216,7 +216,6 @@ class Command
 		Disorder,
 		ListComponents,
 		SetupComponent,
-		VdwScale,
 	
 		// Edit commands
 		Copy,
