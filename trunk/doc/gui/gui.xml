@@ -1,9 +1,0 @@
-<section id="gui.overview"><title>GUI Overview</title>
-
-	<para>Most of the main window is taken up with a canvas which is used to display and edit models and take input from the user. A set of tabs directly above the main view shows the title of each loaded model currently available. The model being displayed on the main canvas (the 'current' model) is the one for which all input and editing tools will act on.</para>
-
-	<para>Each of the mouse buttons has a different action on the canvas, each of which can be set to the users taste in the preferences (menu item Settings-&gt;Preferences on Linux/Windows). In addition the Shift, Ctrl, and Alt keys modify or augment these default actions performed by the mouse. At the foot of the window is a message box (where output and errors are thrown) and a status bar reflecting the content of the current model displayed, listing the number of atoms and the number of selected atoms (bold value in parentheses, but only if there are selected atoms), the mass of the model, and the cell type and density (if the model is periodic).</para>
-
-	<para>Toolbars at the top of the window contain most commonly-used tools (strangely enough...), for example drawing atoms and bonds, selecting atoms etc. Not all are shown by default - right-clicking in the general region of the toolbars brings up a context menu allowing the available toolbars to be shown and hidden. A toolbar of icons starting off on the right-hand side of the window provides quick access to different <link linkend="gui.toolwindows">Tool Windows</link> for more complex building and editing tools.</para>
-
-</section>
