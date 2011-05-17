@@ -5,7 +5,7 @@
 			<para>Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)</para>
 		</listitem>
 		<listitem>
-			<para>Bond drawing exacly in XY plane is sometimes incorrect? E.g. data/test/gold.xyz atoms 220 and 228</para>
+			<para>Multiple bond drawing broken for exactly linear cases (due to bad bond plane) e.g. CO2 or data/test/gold.xyz atoms 220 and 228</para>
 		</listitem>
 		<listitem>
 			<para>Rebonding model also folds atoms, making --nofold irrelevant</para>
@@ -21,6 +21,9 @@
 		</listitem>
 		<listitem>
 			<para>When using default display lists for rendering, stick lists are cleared but still appear (e.g. when creating a new model)</para>
+		</listitem>
+		<listitem>
+			<para>Disorder builder does not create an undo state.</para>
 		</listitem>
 	</orderedlist>
 
