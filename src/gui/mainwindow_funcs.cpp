@@ -376,7 +376,7 @@ void AtenForm::setActiveUserAction(UserAction::Action ua)
 		default:
 			ui.actionNoAction->setChecked(TRUE);
 			button = uaButtons_.button(ua);
-			if (button == NULL) printf("No button associated to user action %i.\n");
+			if (button == NULL) printf("No button associated to user action %i.\n", ua);
 			else button->setChecked(TRUE);
 			break;
 	}
