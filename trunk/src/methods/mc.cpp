@@ -68,7 +68,6 @@ MonteCarlo::MonteCarlo()
 	acceptanceEnergy_[MonteCarlo::Delete] = 0.0;
 	acceptanceRatio_ = NULL;
 	acceptanceRatioSize_ = 0;
-	vdwScale_ = 1.0;
 	temperature_ = 300.0;
 	nCycles_ = 100;
 }
@@ -137,18 +136,6 @@ void MonteCarlo::setNCycles(int i)
 int MonteCarlo::nCycles() const
 {
 	return nCycles_;
-}
-
-// Sets the vDW radius scale
-void MonteCarlo::setVdwScale(double d)
-{
-	vdwScale_ = d;
-}
-
-// Return the VDW radius scale
-double MonteCarlo::vdwScale() const
-{
-	return vdwScale_;
 }
 
 // Create ratio acceptance array

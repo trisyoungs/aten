@@ -1728,18 +1728,6 @@ double Prefs::elecCutoff() const
 	return elecCutoff_;
 }
 
-// Sets the vdw radius scaling factor
-void Prefs::setVdwScale(double d)
-{
-	vdwScale_ = d;
-}
-
-// Return the VDW radius scaling factor
-double Prefs::vdwScale() const
-{
-	return vdwScale_;
-}
-
 // Set combination rule equation
 void Prefs::setCombinationRule(Combine::CombinationRule cr, const char *s)
 {

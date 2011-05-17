@@ -27,7 +27,7 @@
 #include "base/pattern.h"
 
 // Calculate energy for specified interaction
-double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, double scale, int i, int j)
+double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, int i, int j)
 {
 	static double U, epsilon, sigma, sigmar2, sigmar6, r6, ar12, br6, pwr, a, b, c, d, forcek, eq, expo;
 	switch (type)
@@ -39,7 +39,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, dou
 		case (VdwFunctions::InversePower):
 			// U = epsilon * (r / rij) ** n
 			epsilon = params[VdwFunctions::InversePowerEpsilon];
-			sigma = params[VdwFunctions::InversePowerR] * scale;
+			sigma = params[VdwFunctions::InversePowerR];
 			pwr = params[VdwFunctions::InversePowerN];
 			U = epsilon * pow(sigma / rij, pwr);
 			break;
@@ -47,7 +47,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, dou
 		case (VdwFunctions::LjGeometric):
 			// U = 4 * epsilon * [ (s/rij)**12 - (s/rij)**6 ]
 			epsilon = params[VdwFunctions::LjEpsilon];
-			sigma = params[VdwFunctions::LjSigma] * scale;
+			sigma = params[VdwFunctions::LjSigma];
 			sigmar2 = sigma / rij;
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -76,7 +76,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, dou
 			// U = E0 * ( (1 - exp( -k(rij - r0) ) )**2 - 1)
 			d = params[VdwFunctions::MorseD];
 			forcek = params[VdwFunctions::MorseK];
-			eq = params[VdwFunctions::MorseEq] * scale;
+			eq = params[VdwFunctions::MorseEq];
 			rij -= eq;
 			expo = 1.0 - exp( -forcek * rij );
 			U = d * ( expo*expo - 1.0);
@@ -89,7 +89,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, dou
 }
 
 // Calculate forces for specified interaction (return force on atom i)
-Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, double *params, double scale, int i, int j)
+Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, double *params, int i, int j)
 {
 	static double du_dr, epsilon, sigma, sigmar2, sigmar6, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
 	static Vec3<double> fi;
@@ -102,7 +102,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 		case (VdwFunctions::InversePower):
 			// dU/dr = -n * epsilon * (sigma / r)**(n-1) * (sigma/ r**2)
 			epsilon = params[VdwFunctions::InversePowerEpsilon];
-			sigma = params[VdwFunctions::InversePowerR] * scale;
+			sigma = params[VdwFunctions::InversePowerR];
 			pwr = params[VdwFunctions::InversePowerN];
 			du_dr = -pwr * epsilon * pow(sigma / rij, (pwr - 1.0)) * (sigma / (rij*rij));
 			break;
@@ -110,7 +110,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 		case (VdwFunctions::LjGeometric):
 			// dU/dr = 48 * epsilon * ( sigma**12/r**13 - 0.5 * sigma**6/r**7)
 			epsilon = params[VdwFunctions::LjEpsilon];
-			sigma = params[VdwFunctions::LjSigma] * scale;
+			sigma = params[VdwFunctions::LjSigma];
 			sigmar2 = (sigma / rij);
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -139,7 +139,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			// dU/dr = 2.0 * k * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
 			d = params[VdwFunctions::MorseD];
 			forcek = params[VdwFunctions::MorseK];
-			eq = params[VdwFunctions::MorseEq] * scale;
+			eq = params[VdwFunctions::MorseEq];
 			expo = exp( -forcek * (rij - eq) );
 			du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 			break;
@@ -159,11 +159,10 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 	msg.enter("Pattern::vdwIntraPatternEnergy");
 	int aoff, m1, i, j, start1, finish1, con;
 	Vec3<double> mim_i;
-	double U, rij, energy_inter, energy_intra, cutoff, vrs;
+	double U, rij, energy_inter, energy_intra, cutoff;
 	PatternAtom *pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
@@ -194,7 +193,7 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 					pp = parent_->combinedParameters(atoms_[i]->data(), atoms_[j]->data());
 					if (pp == NULL) break;
 					// Calculate the energy contribution
-					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, pp->data(), vrs, i, j);
+					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, pp->data(), i, j);
 					con == 0 ? energy_inter += U : energy_intra += (con == 3 ? U * vdwScaleMatrix_[i][j] : U);
 				}
 			}
@@ -215,11 +214,10 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 	msg.enter("Pattern::vdwInterPatternEnergy");
 	static int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> mim_i;
-	static double rij, energy_inter, cutoff, vrs, U;
+	static double rij, energy_inter, cutoff, U;
 	PatternAtom *pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
@@ -284,7 +282,7 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 					pp = parent_->combinedParameters(atoms_[i]->data(), otherPattern->atoms_[j]->data());
 					if (pp == NULL) break;
 					// Calculate the energy contribution
-					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, pp->data(), vrs, i, j);
+					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, pp->data(), i, j);
 					energy_inter += U;;
 				}
 			}
@@ -308,11 +306,10 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 	msg.enter("Pattern::vdwIntraPatternForces");
 	int i,j,aoff,m1,con;
 	Vec3<double> mim_i, f_i, tempf;
-	double cutoff, vrs, rij;
+	double cutoff, rij;
 	PatternAtom *pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
@@ -342,7 +339,7 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 					if (pp == NULL) break;
 
 					// Calculate force contribution
-					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pp->data(), vrs, i, j);
+					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pp->data(), i, j);
 					if (con == 3) tempf *= vdwScaleMatrix_[i][j];
 					f_i -= tempf;
 					modelatoms[j+aoff]->f() += tempf;
@@ -365,11 +362,10 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 	msg.enter("Pattern::vdwInterPatternForces");
 	int i,j,aoff1,aoff2,m1,m2,start,finish;
 	Vec3<double> mim_i, f_i, tempf;
-	double rij, cutoff, vrs;
+	double rij, cutoff;
 	PatternAtom *pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	aoff1 = startAtom_;
@@ -403,7 +399,7 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 					if (pp == NULL) break;
 
 					// Calculate force contribution
-					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pp->data(), vrs, i, j);
+					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pp->data(), i, j);
 					f_i -= tempf;
 					modelatoms[j+aoff2]->f() += tempf;
 				}
@@ -438,7 +434,6 @@ bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 	PatternAtom *pai, *paj;
 	double *paramsi, *paramsj;
 	cutoff = prefs.vdwCutoff();
-	vrs = prefs.vdwScale();
 	// The way the patterns are stored does not give direct access to the number of different
 	// atom types used *or* the number densities of each. So, assume each atom in the pattern 
 	// molecule is a unique VDW type and that the number density is nMolecules_/cellvolume
