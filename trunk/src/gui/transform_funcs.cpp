@@ -125,7 +125,7 @@ void TransformWidget::on_TransformApplyButton_clicked(bool on)
 	// ...and grab coordinate origin
 	Vec3<double> v;
 	v.set(ui.TransformOriginXSpin->value(), ui.TransformOriginYSpin->value(), ui.TransformOriginZSpin->value());
-	CommandNode::run(Command::MatrixTransform, "dddddddddddd", mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], v.x, v.y, v.z);
+	CommandNode::run(Command::MatrixTransform, "dddddddddddd", mat[0], mat[1], mat[2], mat[4], mat[5], mat[6], mat[8], mat[9], mat[10], v.x, v.y, v.z);
 
 	aten.currentModelOrFrame()->updateMeasurements();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
