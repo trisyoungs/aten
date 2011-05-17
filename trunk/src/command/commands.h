@@ -694,7 +694,6 @@ class Command
 	static bool function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetupComponent(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_VdwScale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Edit commands
 	static bool function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv);
