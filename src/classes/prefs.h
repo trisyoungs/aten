@@ -837,10 +837,6 @@ class Prefs
 	void setElecCutoff(double d);
 	// Return the electrostatic cutoff radius
 	double elecCutoff() const;
-	// Sets the vdw radius scaling factor
-	void setVdwScale(double d);
-	// Return the VDW radius scaling factor
-	double vdwScale() const;
 	// Set combination rule equation
 	void setCombinationRule(Combine::CombinationRule cr, const char *s);
 	// Return combination rule equation

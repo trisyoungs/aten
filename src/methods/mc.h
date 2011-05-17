@@ -76,8 +76,6 @@ class MonteCarlo
 	int nCycles_;
 	// Energy differences below which to accept moves
 	double acceptanceEnergy_[nMoveTypes];
-	// Scaling factor for VDW radius in disorder method
-	double vdwScale_;
 	// Temperature for Boltzmann probabilities
 	double temperature_;
 
@@ -102,10 +100,6 @@ class MonteCarlo
 	void setNCycles(int i);
 	// Get ntrials for MC move
 	int nCycles() const;
-	// Sets the vDW radius scale
-	void setVdwScale(double d);
-	// Return current vdw radius scale
-	double vdwScale() const;
 	// Set MC temperature for Boltzmann probabilities
 	void setTemperature(double t);
 	// Return current MC temperature
