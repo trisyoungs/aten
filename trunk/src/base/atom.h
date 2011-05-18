@@ -206,7 +206,7 @@ class Atom
 	// Returns bond pointer between this and atom 'j' (if it exists)
 	Bond *findBond(Atom *j);
 	// Determine bond plane
-	Vec3<double> findBondPlane(Atom*, Bond*, const Vec3<double>&);
+	Vec3<double> findBondPlane(Atom *other, Bond *excludedBond, const Vec3<double> &vij);
 	// Return next best vector for addition of new atom
 	Vec3<double> nextBondVector();
 

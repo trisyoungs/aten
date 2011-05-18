@@ -547,46 +547,48 @@ void Atom::addBoundToReflist(Reflist<Atom,int> *rlist)
 }
 
 // Find plane of three atoms
-Vec3<double> Atom::findBondPlane(Atom *j, Bond *b, const Vec3<double> &rij)
+Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<double> &vij)
 {
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
-	static Vec3<double> rk, xp1, xp2;
-	Refitem<Bond,int> *brefi = NULL, *brefj = NULL;
-	bool done = FALSE;
-	// If the supplied ij bond is aromatic, attempt to find another aromatic bond...
-	if (b->type() == Bond::Aromatic)
+	Vec3<double> rk, xp, vijnorm;
+	Refitem<Bond,int> *bref;
+	Atom *partner;
+
+	vijnorm = vij;
+	vijnorm.normalise();
+
+	// Determine which bond list and atom partner to use
+	if (bonds_.nItems() > 1)
 	{
-		if (id_ > j->id())
-		{
-			for (brefi = bonds_.first(); brefi != NULL; brefi = brefi->next) if ((brefi->item != b) && (brefi->item->type() == Bond::Aromatic)) break;
-			if (brefi != NULL) rk = brefi->item->partner(this)->r_;
-		}
-		else
-		{
-			for (brefi = j->bonds_.first(); brefi != NULL; brefi = brefi->next) if ((brefi->item != b) && (brefi->item->type() == Bond::Aromatic)) break;
-			if (brefi != NULL) rk = brefi->item->partner(j)->r_;
-		}
-		done = (brefi != NULL);
+		// Can define from another bond on 'this'
+		bref = bonds_.first();
+		partner = other;
 	}
-	// Do we need to calculate a normal bond vector with some other atom, or the aromatic condition failed?
-	if (!done)
+	else
 	{
-		brefi = bonds_.first();
-		brefj = j->bonds_.first();
-		if (bonds_.nItems() > 1)	// Can define from another bond on 'this'
-			b == brefi->item ? rk = brefi->next->item->partner(this)->r_ : rk = brefi->item->partner(this)->r_;
-		else if (j->bonds_.nItems() > 1)// Can define from another bond on j
-			this == brefj->item->partner(j) ? rk = brefj->next->item->partner(j)->r_ : rk = brefj->item->partner(j)->r_;
-		else rk = rij.orthogonal();		// Default, just in case
+		// Must define from a bond on 'other'
+		if (other == NULL) return vijnorm.orthogonal();
+		bref = other->bonds_.first();
+		partner = this;
 	}
-	// Now, take cross product of rij and (repositioned) rk -> perpendicular vector
-	rk -= r_;
-	xp1 = rij * rk;
-	// Cross product of this new vector with rij -> bond plane vector.
-	// Get this vector, normalise and take a fraction of it
-	xp2 = xp1 * rij;
-	xp2.normalise();
-	return xp2;
+	
+	// Find suitable second bond
+	for (bref = bref; bref != NULL; bref = bref->next)
+	{
+		if (excludedBond == bref->item) continue;
+		// Found a suitable bond - is it linear?
+		rk = bref->item->partner(this)->r_ - r_;
+		rk.normalise();
+		if (rk.dp(vijnorm) > 0.999) continue;
+		
+		// Get cross-products to determint bond plane vector
+		xp = (vijnorm * rk) * vijnorm;
+	}
+
+	// Default, just in case
+	if (bref == NULL) return vijnorm.orthogonal();
+
+	return xp;
 }
 
 /*
