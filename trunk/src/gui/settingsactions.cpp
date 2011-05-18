@@ -49,5 +49,12 @@ void AtenForm::on_actionShowToolBox_triggered(bool checked)
 {
 	gui.toolBoxWidget->setVisible(TRUE);
 	gui.toolBoxWidget->setFloating(TRUE);
-// 	gui.toolBoxWidget->
+	gui.toolBoxWidget->move(200,200);
+}
+
+// Toggle manualswapbuffers option
+void AtenForm::on_actionManualSwapBuffers_triggered(bool checked)
+{
+	prefs.setManualSwapBuffers(checked);
+	gui.mainWidget()->postRedisplay();
 }

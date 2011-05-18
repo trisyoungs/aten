@@ -242,6 +242,7 @@ class AtenForm : public QMainWindow
 	void on_actionReloadFilters_triggered(bool checked);
 	void on_actionShowToolBox_triggered(bool checked);
 	void on_actionStoreDefaultWindowState_triggered(bool checked);
+	void on_actionManualSwapBuffers_triggered(bool checked);
 
 
 	/*
@@ -297,6 +298,8 @@ class AtenForm : public QMainWindow
 	void uaButtonClicked(int id);
 
 	public:
+	// Update any controls related to Prefs values etc.
+	void updateControls();
 	// Update undo/redo labels
 	void updateUndoRedo();
 	// Set action/button to reflect supplied user action

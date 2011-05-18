@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/prefs.h"
+#include "gui/mainwindow.h"
 #include "gui/selectelement.h"
 #include "gui/tcombobox.h"
 #include "model/model.h"
@@ -182,7 +183,16 @@ void AtenPrefs::setControls()
 	msg.exit("AtenPrefs::setControls");
 }
 
-// Close window
+// Close window (accepted)
+void AtenPrefs::on_PrefsOkButton_clicked(bool checked)
+{
+	// Copy old preferences values back into main structure, update view and close window
+	gui.mainWidget()->postRedisplay();
+	gui.mainWindow()->updateControls();
+	accept();
+}
+
+// Close window (rejected)
 void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 {
 	// Copy old preferences values back into main structure, update view and close window
@@ -191,6 +201,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 
 	aten.currentModel()->changeLog.add(Log::Style);
 	gui.mainWidget()->postRedisplay();
+	gui.mainWindow()->updateControls();
 	reject();
 }
 

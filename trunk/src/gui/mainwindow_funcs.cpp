@@ -309,6 +309,13 @@ void AtenForm::on_actionAboutQt_triggered(bool checked)
 	QMessageBox::aboutQt(this, "About Qt");
 }
 
+// Update any controls related to Prefs values etc.
+void AtenForm::updateControls()
+{
+	ui.actionManualSwapBuffers->setChecked(prefs.manualSwapBuffers());
+	ui.actionDetectDisplayHBonds->setChecked(prefs.drawHydrogenBonds());
+}
+
 // Update undo/redo actions in Edit menu
 void AtenForm::updateUndoRedo()
 {
