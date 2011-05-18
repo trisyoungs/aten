@@ -105,7 +105,6 @@ int *PartitionData::randomCell()
 {
 	// Generate random number between 0 and nCells_-1
 	int id = AtenMath::randomi(nCells_);
-	int listid = id/CELLCHUNKSIZE;
 	return &cells_[id/CELLCHUNKSIZE]->data[(id%CELLCHUNKSIZE)*3];
 }
 
@@ -205,7 +204,6 @@ bool PartitioningScheme::initialise()
 {
 	msg.enter("PartitioningScheme::initialise");
 
-	Tree *func;
 	ReturnValue rv;
 	bool success;
 	Variable *v;
