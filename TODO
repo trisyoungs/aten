@@ -39,9 +39,6 @@
 			<para>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</para>
 		</listitem>
 		<listitem>
-			<para>Add filter type to export generic 'data', e.g. measurements list</para>
-		</listitem>
-		<listitem>
 			<para>Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?</para>
 		</listitem>
 		<listitem>
