@@ -63,7 +63,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 	allForcefieldTypes_.clear();
 	// Get forcefield to use - we should be guaranteed to find one at this point, but check anyway...
 	Forcefield *ff = (forcefield_ == NULL ? parent_->forcefield() : forcefield_);
-	if (ff == NULL) ff = aten.defaultForcefield();
+	if (ff == NULL) ff = aten.currentForcefield();
 	if (ff == NULL)
 	{
 		msg.print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());

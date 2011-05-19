@@ -222,8 +222,6 @@ class Aten
 	private:
 	// List of loaded forcefields
 	List<Forcefield> forcefields_;
-	// Default forcefield to use when no other has been applied
-	Forcefield *defaultForcefield_;
 
 	public:
 	// Add a new forcefield
@@ -232,10 +230,6 @@ class Aten
 	Forcefield *loadForcefield(const char *filename);
 	// Find forcefield by name
 	Forcefield *findForcefield(const char *name) const;
-	// Set the default forcefield
-	void setDefaultForcefield(Forcefield *ff);
-	// Get the current default forcefield
-	Forcefield *defaultForcefield() const;
 	// Return the first ff in the list
 	Forcefield *forcefields() const;
 	// Return the nth forcefield in the list

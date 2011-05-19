@@ -605,7 +605,7 @@ int ElementMap::ffToZ(const char *s) const
 }
 
 // Search for element named 'query' in the list of known elements
-int ElementMap::find(const char *query) const
+int ElementMap::find(const char *query, ElementMap::ZMapType zmt) const
 {
 	// Get the element number from the element name provided.
 	msg.enter("ElementMap::find");
@@ -617,7 +617,7 @@ int ElementMap::find(const char *query) const
 		return 0;
 	}
 	// Convert the query string according to the specified rule
-	switch (prefs.zMapType())
+	switch (zmt == ElementMap::nZMapTypes ? prefs.zMapType() : zmt)
 	{
 		// Automatic determination
 		case (ElementMap::AutoZMap):
@@ -665,21 +665,3 @@ int ElementMap::find(const char *query) const
 	msg.exit("ElementMap::find");
 	return ((result == -1) ? 0 : result);
 }
-
-// Search for element named 'query' in the list of known elements, using the specified algorithm
-int ElementMap::find(const char *query, ElementMap::ZMapType zmt) const
-{
-	// Store the old zmapping type, and temporarily set a new one
-	ElementMap::ZMapType last = prefs.zMapType();
-	prefs.setZMapType(zmt);
-	int result = find(query);
-	prefs.setZMapType(last);
-	return result;
-}
-
-// Search for element named 'query' in the list of known elements
-int ElementMap::findAlpha(const char *query) const
-{
-	return find(query, ElementMap::AlphaZMap);
-}
-

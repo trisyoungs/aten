@@ -537,8 +537,10 @@ const char *Pattern::name() const
 
 // Sets the forcefield to use in the pattern
 void Pattern::setForcefield(Forcefield *newff)
-{
+{	
 	forcefield_ = newff;
+	if (forcefield_ != NULL) msg.print("Forcefield '%s' is now assigned to pattern '%s'.\n", forcefield_->name(), name());
+	else msg.print("Pattern '%s' now has no associated forcefield.\n", name());
 }
 
 // Gets the forcefield associated with the pattern
@@ -1576,7 +1578,7 @@ bool Pattern::typeAtoms()
 		if (ff == NULL)
 		{
 			msg.print("Typing pattern %s (using default forcefield)...", name());
-			ff = aten.defaultForcefield();
+			ff = aten.currentForcefield();
 		}
 		else msg.print("Typing pattern %s (inheriting Model's forcefield '%s')...", name(), ff->name());
 	}
@@ -1590,7 +1592,7 @@ bool Pattern::typeAtoms()
 	// Loop over atoms in the pattern's molecule
 	i = firstAtom_;
 	nfailed = 0;
-	for (a=0; a<nAtoms_; a++)
+	for (a=0; a<nAtoms_; ++a)
 	{
 		// Check to see if this atom type has been manually set
 		if (i->hasFixedType())

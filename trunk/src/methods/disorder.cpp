@@ -81,9 +81,9 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		if (m->componentInsertionPolicy() == Model::NoPolicy) continue;
 		// Check that we can get the requested partition
 		int id = m->componentPartition();
-		if ((id < -1) || (id >= scheme->nPartitions()))
+		if ((id < 0) || (id >= scheme->nPartitions()))
 		{
-			msg.print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.\n", m->name(), id, scheme->name());
+			msg.print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.\n", m->name(), id+1, scheme->name());
 			msg.exit("MonteCarlo::disorder");
 			return FALSE;
 		}

@@ -54,6 +54,7 @@ class Element
 	// Formal charges for bond orders 0 - 8
 	int formalCharges[9];
 
+
 	/*
 	// Data by Z
 	*/
@@ -104,14 +105,11 @@ class ElementMap
 	void backupData();
 	// Restore default element values
 	void restoreData();
-	// Return atomic number of element in string
-	int find(const char*) const;
-	// Return atomic number of element in string, specifying algorithm
-	int find(const char*, ElementMap::ZMapType) const;
-	// Return atomic number of element provided using standard Alpha mapping
-	int findAlpha(const char *) const;
+	// Return atomic number of element in string using supplied method (if specified)
+	int find(const char *query, ElementMap::ZMapType = ElementMap::nZMapTypes) const;
 	// Return number of defined elements
 	int nElements() const;
+
 
 	/*
 	// Data by Z
@@ -138,6 +136,7 @@ class ElementMap
 	// Set colour component of element
 	void setColour(int i, int rgb, double value);
 	void setColour(int i, double r, double g, double b);
+
 
 	/*
 	// Data by atom*

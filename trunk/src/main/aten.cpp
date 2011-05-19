@@ -58,7 +58,6 @@ Aten::Aten()
 	homeDir_ = "/tmp";
 	atenDir_ = ".aten";
 	#endif
-	defaultForcefield_ = NULL;
 	nFiltersFailed_ = 0;
 	dataDirSet_ = FALSE;
 
@@ -401,7 +400,6 @@ Forcefield *Aten::addForcefield(const char *name)
 {
 	current.ff = forcefields_.add();
 	if (name != NULL) current.ff->setName(name);
-	if (forcefields_.nItems() == 1) setDefaultForcefield(current.ff);
 	return current.ff;
 }
 
@@ -438,12 +436,7 @@ Forcefield *Aten::loadForcefield(const char *filename)
 	if (result)
 	{
 		current.ff = newff;
-		// If this is the first (only) forcefield loaded, make it the default
-		if (forcefields_.nItems() == 1)
-		{
-			defaultForcefield_ = newff;
-			msg.print("Forcefield '%s' is now the default.\n", newff->name());
-		}
+		msg.print("Forcefield '%s' is now the default.\n", newff->name());
 	}
 	else
 	{
@@ -467,7 +460,7 @@ void Aten::removeForcefield(Forcefield *xff)
 	// Finally, delete the ff
 	forcefields_.remove(xff);
 	// Set a new default if necessary
-	if (defaultForcefield_ == xff) defaultForcefield_ = forcefields_.first();
+	if (current.ff == xff) current.ff = forcefields_.first();
 	msg.exit("Aten::removeForcefield");
 }
 
@@ -527,14 +520,6 @@ void Aten::dereferenceForcefield(Forcefield *xff)
 	msg.exit("Aten::dereferenceForcefield");
 }
 
-// Set the default forcefield
-void Aten::setDefaultForcefield(Forcefield *ff)
-{
-	defaultForcefield_ = ff;
-	if (defaultForcefield_ == NULL) msg.print("Default forcefield has been unset.\n");
-	else msg.print("Default forcefield is now '%s'.\n", defaultForcefield_->name());
-}
-
 // Return the first ff in the list
 Forcefield *Aten::forcefields() const
 {
@@ -557,12 +542,14 @@ int Aten::nForcefields() const
 void Aten::setCurrentForcefield(Forcefield *ff)
 {
 	current.ff = ff;
+	if (current.ff == NULL) msg.print("Default forcefield has been unset.\n");
+	else msg.print("Default forcefield is now '%s'.\n", current.ff->name());
 }
 
 // Set active forcefield by ID
 void Aten::setCurrentForcefield(int id)
 {
-	current.ff = forcefields_[id];
+	setCurrentForcefield(forcefields_[id]);
 }
 
 // Return the active forcefield
@@ -575,12 +562,6 @@ Forcefield *Aten::currentForcefield() const
 int Aten::currentForcefieldId() const
 {
 	return forcefields_.indexOf(current.ff);
-}
-
-// Get the current default forcefield
-Forcefield *Aten::defaultForcefield() const
-{
-	return defaultForcefield_;
 }
 
 /*

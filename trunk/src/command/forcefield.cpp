@@ -166,19 +166,6 @@ bool Command::function_CurrentFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Set default forcefield ('defaultff <ff>')
-bool Command::function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	Forcefield *ff = NULL;
-	if (c->argType(0) == VTypes::ForcefieldData) ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
-	else if (c->argType(0) == VTypes::StringData) ff = aten.findForcefield(c->argc(0));
-	else msg.print("Invalid type (%s) given to 'defaultff'.\n", VTypes::dataType(c->argType(0)));
-	if (ff == NULL) return FALSE;
-	aten.setDefaultForcefield(ff);
-	rv.reset();
-	return TRUE;
-}
-
 // Delete forcefield
 bool Command::function_DeleteFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -570,7 +557,7 @@ bool Command::function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				msg.print("Mangled map value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
 				continue;
 			}
-			el = elements().findAlpha(afterChar(parser.argc(n), '='));
+			el = elements().find(afterChar(parser.argc(n), '='), ElementMap::AlphaZMap);
 			if (el == 0) msg.print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 			else
 			{

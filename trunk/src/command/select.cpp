@@ -109,7 +109,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 				}
 				else
 				{
-					i = elements().findAlpha(from);
+					i = elements().find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
 						msg.print("Unrecognised element (%s) in select.\n", from.get());
@@ -131,13 +131,13 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 				}
 				else
 				{
-					i = elements().findAlpha(from);
+					i = elements().find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
 						msg.print("Unrecognised element (%s) on left-hand side of range.\n", from.get());
 						return FALSE;
 					}
-					j = elements().findAlpha(to);
+					j = elements().find(to, ElementMap::AlphaZMap);
 					if (j == 0)
 					{
 						msg.print("Unrecognised element (%s) on right-hand side of range.\n", to.get());
