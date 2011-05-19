@@ -261,9 +261,10 @@ class Command
 		AngleDef,
 		AutoConversionUnit,
 		BondDef,
-		ClearMap,
 		ClearExportMap,
 		ClearExpression,
+		ClearMap,
+		ClearTypes,
 		CreateExpression,
 		CurrentFF,
 		DeleteFF,
@@ -733,9 +734,10 @@ class Command
 	static bool function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_AutoConversionUnit(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearTypes(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CurrentFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DeleteFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
