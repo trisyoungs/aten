@@ -495,7 +495,7 @@ QPixmap TCanvas::generateImage(int w, int h, bool highQuality)
 	if (prefs.useFrameBuffer() == FALSE)
 	{
 		// Refresh canvas if exactly the same size, to prevent widget from grabbing current view (inc. rotation globe)
-		if ((w == width()) && (h == height())) postRedisplay();
+		if ((w == width()) && (h == height())) postRedisplay(TRUE);
 		// Generate offscreen bitmap (a temporary context will be created)
 		QPixmap pixmap = renderPixmap(w, h, FALSE);
 		// Pop topmost instance of primitives (which were associated to temporary context)

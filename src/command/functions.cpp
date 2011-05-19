@@ -221,9 +221,10 @@ void Command::initPointers()
         pointers_[AngleDef] = &Command::function_AngleDef;
 	pointers_[AutoConversionUnit] = &Command::function_AutoConversionUnit;
 	pointers_[BondDef] = &Command::function_BondDef;
-	pointers_[ClearMap] = &Command::function_ClearMap;
 	pointers_[ClearExportMap] = &Command::function_ClearExportMap;
 	pointers_[ClearExpression] = &Command::function_ClearExpression;
+	pointers_[ClearMap] = &Command::function_ClearMap;
+	pointers_[ClearTypes] = &Command::function_ClearTypes;
 	pointers_[CreateExpression] = &Command::function_CreateExpression;
 	pointers_[CurrentFF] = &Command::function_CurrentFF;
 	pointers_[DeleteFF] = &Command::function_DeleteFF;

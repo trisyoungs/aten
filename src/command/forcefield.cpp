@@ -98,14 +98,6 @@ bool Command::function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Clear manual type mapping list ('clearmap')
-bool Command::function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	aten.typeImportMap.clear();
-	rv.reset();
-	return TRUE;
-}
-
 // Clear manual export type mapping list ('clearexportmap')
 bool Command::function_ClearExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -119,6 +111,23 @@ bool Command::function_ClearExpression(CommandNode *c, Bundle &obj, ReturnValue 
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->clearExpression();
+	rv.reset();
+	return TRUE;
+}
+
+// Clear manual type mapping list ('clearmap')
+bool Command::function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	aten.typeImportMap.clear();
+	rv.reset();
+	return TRUE;
+}
+
+// Clear atom types from current model
+bool Command::function_ClearTypes(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.m->removeTyping();
 	rv.reset();
 	return TRUE;
 }
