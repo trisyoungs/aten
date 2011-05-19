@@ -152,6 +152,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 		msg.exit("Model::createExpression");
 		return TRUE;
 	}
+
 	// Reset some variables
 	prefs.invalidateEwaldAuto();
 	forcefieldAngles_.clear();

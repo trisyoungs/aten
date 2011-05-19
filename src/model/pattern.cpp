@@ -68,16 +68,22 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 	newpnode->setParent(this);
 	newpnode->setName(patname);
 	newpnode->initialise(patterns_.nItems()-1,start,mols,numatoms);
-	msg.print(Messenger::Verbose,"New pattern '%s' added - startatom %i, %i mols, %i atoms per mol.\n",patname,start,mols,numatoms);
+	msg.print("New pattern '%s' added - startatom %i, %i mols, %i atoms per mol.\n", patname , start+1, mols, numatoms);
 	if ((start + mols*numatoms) == atoms_.nItems())
 	{
-		msg.print(Messenger::Verbose,"Pattern description completed (spans %i atoms).\n",atoms_.nItems());
+		msg.print("Pattern description completed (spans %i atoms).\n",atoms_.nItems());
 		energy.resize(patterns_.nItems());
-		msg.print(Messenger::Verbose,"Done.\n");
+		msg.print("Done.\n");
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
 		patternsPoint_ = changeLog.log(Log::Structure);
 	}
-	else if ((start + mols*numatoms) > atoms_.nItems()) msg.print(Messenger::Verbose,"New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname,(start + mols*numatoms) - atoms_.nItems());
+	else if ((start + mols*numatoms) > atoms_.nItems())
+	{
+		msg.print("New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname, (start + mols*numatoms) - atoms_.nItems());
+		msg.print("Not added.\n");
+		patterns_.remove(newpnode);
+		newpnode = NULL;
+	}
 	msg.exit("Model::addPattern");
 	return newpnode;
 }
@@ -191,7 +197,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 	emp.createEmpty(1024);
 	Pattern *p;
 	Refitem<Bond,int> *rb;
-	Atom *i, *clipi;
+	Atom *i, *clipi, *selectSource;
 	Refitem<Atom,int> *isel;
 	// Check current pattern first...
 	if (arePatternsValid())
@@ -219,6 +225,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 		selectNone(TRUE);
 		// Select molecule starting at atom 'i' and calculate fingerprint
 		selectTree(i, TRUE);
+		selectSource = i;
 		// We insist that the molecule consists of consecutively ordered atoms, otherwise we can't proceed, so count the number of selected
 		// atoms in those that we now skip (if != nselected then we must force a 1*N pattern)
 		nsel2 = 0;
@@ -232,7 +239,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 		if (nsel2 != marked_.nItems())
 		{
 			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\n");
-			msg.print("Problem occurred in pattern %i whilst selecting from atom %i.\n", patterns_.nItems()+1, i->id()+1);
+			msg.print("Problem occurred in pattern %i whilst selecting from atom %i.\n", patterns_.nItems()+1, selectSource->id()+1);
 			msg.print("Pattern for model will be 1*N.\n");
 
 			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead

@@ -94,7 +94,7 @@ void ForcefieldsWidget::refresh()
 	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 	{
 		n++;
-		if (ff == aten.defaultForcefield()) def = n;
+		if (ff == aten.currentForcefield()) def = n;
 		slist << ff->name();
 	}
 	ui.ForcefieldCombo->clear();
@@ -235,8 +235,8 @@ void ForcefieldsWidget::on_ForcefieldCombo_currentIndexChanged(int index)
 {
 	if (refreshing_) return;
 	// Set the new default forcefield in the master and refresh the forcefields page
-	Forcefield *ff = (index == 0 ? NULL : aten.forcefield(index-1));
-	aten.setDefaultForcefield(ff);
+	if (index == 0) aten.setCurrentForcefield( (Forcefield*) NULL);
+	else aten.setCurrentForcefield(index-1);
 	refreshTypes();
 }
 

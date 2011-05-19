@@ -239,7 +239,7 @@ bool Forcefield::readTypes()
 			return FALSE;
 		}
 		ffa->setName(ffparser.argc(1));
-		int el = elements().findAlpha(ffparser.argc(2));
+		int el = elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
 		ffa->setElement(el);
 		ffa->setEquivalent(ffparser.argc(1));
 		ffa->neta()->setCharacterElement(el);
@@ -300,7 +300,7 @@ bool Forcefield::readUnitedAtomTypes()
 		ffa->setEquivalent(ffparser.argc(1));
 		ffa->setElement(-1);
 		ffa->setElementMass(ffparser.argd(3));
-		ffa->neta()->setCharacterElement(elements().findAlpha(ffparser.argc(2)));
+		ffa->neta()->setCharacterElement(elements().find(ffparser.argc(2), ElementMap::AlphaZMap));
 		if (!ffa->setNeta(ffparser.argc(4), this))
 		{
 			msg.exit("Forcefield::readUnitedAtomTypes");
