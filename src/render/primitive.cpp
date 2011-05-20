@@ -124,6 +124,12 @@ void Primitive::forgetAll()
 	nDefinedVertices_ = 0;
 }
 
+// Return number of vertices currently defined in primitive
+int Primitive::nDefinedVertices()
+{
+	return nDefinedVertices_;
+}
+
 // Set GL drawing primitive type
 void Primitive::setType(GLenum type)
 {
@@ -386,10 +392,20 @@ void Primitive::pushInstance(const QGLContext *context)
 }
 
 // Pop topmost instance on primitive's stack
-void Primitive::popInstance()
+void Primitive::popInstance(const QGLContext *context)
 {
 	// Does this primitive use instances?
 	if (!useInstances_) return;
+	PrimitiveInstance *pi = instances_.last();
+	if (pi != NULL)
+	{
+		if (pi->context() == context)
+		{
+			// Vertex buffer object or plain old display list?
+			if (pi->type() == PrimitiveInstance::VBOInstance) { GLuint bufid  = pi->id(); glDeleteBuffers(1, &bufid); }
+			else glDeleteLists(pi->id(),1);
+		}
+	}
 	instances_.removeLast();
 }
 
@@ -398,10 +414,9 @@ void Primitive::sendToGL()
 {
 	if (useInstances_)
 	{
-// 		printf("THere are currently %i instances in this primitive's stack\n", instances_.nItems());
 		// Grab topmost instance
 		PrimitiveInstance *pi = instances_.last();
-		if (pi == NULL) printf("Internal Error: No instance on stack in primitive.\n");
+		if (pi == NULL) printf("Internal Error: No instance on stack in primitive %p.\n", this);
 		else if (pi->type() == PrimitiveInstance::VBOInstance)
 		{
 			glEnableClientState(GL_VERTEX_ARRAY);

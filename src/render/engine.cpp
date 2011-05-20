@@ -76,7 +76,7 @@ void RenderPrimitives::recreatePrimitives(bool force)
 		msg.exit("RenderPrimitives::recreatePrimitives");
 		return;
 	}
-	
+
 	currentQuality_ = requestedQuality_;
 
 	// Clear old primitive groups
@@ -272,40 +272,40 @@ void RenderPrimitives::pushInstance(const QGLContext* context, bool forceRegener
 }
 
 // Pop topmost instance for primitives
-void RenderPrimitives::popInstance()
+void RenderPrimitives::popInstance(const QGLContext *context)
 {
 	msg.enter("RenderPrimitives::popInstance");
 	for (int n=0; n<Atom::nDrawStyles; ++n)
 	{
-		atoms_[n].popInstance();
-		selectedAtoms_[n].popInstance();
+		atoms_[n].popInstance(context);
+		selectedAtoms_[n].popInstance(context);
 		for (int m=0; m<Bond::nBondTypes; ++m)
 		{
-			bonds_[n][m].popInstance();
-			selectedBonds_[n][m].popInstance();
+			bonds_[n][m].popInstance(context);
+			selectedBonds_[n][m].popInstance(context);
 		}
 	}
 	for (int n=0; n<elements().nElements(); ++n)
 	{
-		scaledAtoms_[n].popInstance();
-		selectedScaledAtoms_[n].popInstance();
+		scaledAtoms_[n].popInstance(context);
+		selectedScaledAtoms_[n].popInstance(context);
 	}
-	tubeRings_.popInstance();
-	segmentedTubeRings_.popInstance();
-	lineRings_.popInstance();
-	segmentedLineRings_.popInstance();
-	spheres_.popInstance();
-	cubes_.popInstance();
-	originCubes_.popInstance();
-	cylinders_.popInstance();
-	cones_.popInstance();
-	wireCube_.popInstance();
-	crossedCube_.popInstance();
-	cellAxes_.popInstance();
-	rotationGlobe_.popInstance();
-	rotationGlobeAxes_.popInstance();
+	tubeRings_.popInstance(context);
+	segmentedTubeRings_.popInstance(context);
+	lineRings_.popInstance(context);
+	segmentedLineRings_.popInstance(context);
+	spheres_.popInstance(context);
+	cubes_.popInstance(context);
+	originCubes_.popInstance(context);
+	cylinders_.popInstance(context);
+	cones_.popInstance(context);
+	wireCube_.popInstance(context);
+	crossedCube_.popInstance(context);
+	cellAxes_.popInstance(context);
+	rotationGlobe_.popInstance(context);
+	rotationGlobeAxes_.popInstance(context);
 
-	// Increase stacksize
+	// Decrease stacksize
 	--stackSize_;
 
 	msg.exit("RenderPrimitives::popInstance");
@@ -338,6 +338,7 @@ RenderEngine::RenderEngine()
 	lastSource_ = NULL;
 	rebuildSticks_ = FALSE;
 	Q_ = 0;
+	clearListsFlag_ = FALSE;
 	calculateAdjustments();
 }
 
@@ -599,7 +600,7 @@ void RenderEngine::initialiseGL()
 // Push primitives instance (in specified quality)
 void RenderEngine::pushInstance(bool highQuality, const QGLContext *context)
 {
-	msg.print(Messenger::Verbose, "Pushing primitive instance for context %p\n", context);
+	msg.print(Messenger::Verbose, "Pushing %s quality primitive instance for context %p\n", highQuality ? "high" : "normal", context);
 	if (context == gui.mainContext()) msg.print(Messenger::Verbose, "This instance is associated to the main context.\n");
 	primitives_[highQuality].pushInstance(context);
 	// Push separate instance of the stick primitives
@@ -608,11 +609,12 @@ void RenderEngine::pushInstance(bool highQuality, const QGLContext *context)
 }
 
 // Pop topmost primitive instance
-void RenderEngine::popInstance(bool highQuality)
+void RenderEngine::popInstance(bool highQuality, const QGLContext *context)
 {
-	primitives_[highQuality].popInstance();
-	stickLines_.popInstance();
-	stickSelectedLines_.popInstance();
+	msg.print(Messenger::Verbose, "Popping %s quality primitive instance\n", highQuality ? "high" : "normal");
+	primitives_[highQuality].popInstance(context);
+	stickLines_.popInstance(context);
+	stickSelectedLines_.popInstance(context);
 }
 
 // Update all primitives (following prefs change, etc.)
@@ -628,7 +630,7 @@ void RenderEngine::updatePrimitives(const QGLContext *context, bool force)
 	// Generate new VBOs / display lists - pop and push a context
 	for (int n=0; n<2; ++n) if (primitives_[n].stackSize() != 0)
 	{
-		primitives_[n].popInstance();
+		primitives_[n].popInstance(context);
 		primitives_[n].pushInstance(context, force);
 	}
 	
@@ -640,8 +642,14 @@ void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
 	textPrimitives_.renderAll(painter, canvas);
 }
 
+// Flag that next render should clear all primitive lists
+void RenderEngine::flagClearLists()
+{
+	clearListsFlag_ = TRUE;
+}
+
 // Render 3D
-void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bool currentModel, bool updateAllLists)
+void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bool currentModel)
 {
 	GLfloat colour[4];
 
@@ -688,12 +696,12 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	glLoadMatrixd(source->modelProjectionMatrix().matrix());
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
 	// Clear the necessary triangle lists (i.e. only those for which the content may have changed)
 	// By default, regenerate all lists (the case if the source model pointer has changed)
 	int n;
 	for (n=0; n<RenderEngine::nRenderingObjects; ++n) activePrimitiveLists_[n] = TRUE;
-	if ((lastSource_ == source) && (!updateAllLists))
+	if ((lastSource_ == source) && (!clearListsFlag_))
 	{
 		// Check model logs against logs stored when the lists were last generated
 		bool redobasic = !lastLog_.isSame(Log::Coordinates,source->changeLog);
@@ -732,7 +740,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 		stickSelectedLines_.forgetAll();
 		rebuildSticks_ = TRUE;
 	}
-	
+
 	// Clear flagged lists
 	for (n=0; n<RenderEngine::nRenderingObjects; ++n) if (activePrimitiveLists_[n])
 	{
@@ -774,10 +782,11 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	// If the stick primitives were regenerated, need to create a new instance (after popping the old one)
 	if (rebuildSticks_)
 	{
-		stickLines_.popInstance();
-		stickSelectedLines_.popInstance();
-		stickLines_.pushInstance(gui.mainContext());
-		stickSelectedLines_.pushInstance(gui.mainContext());
+		const QGLContext *context = gui.mainWidget()->context();
+		stickLines_.popInstance(context);
+		stickSelectedLines_.popInstance(context);
+		stickLines_.pushInstance(context);
+		stickSelectedLines_.pushInstance(context);
 	}
 
 	// All 3D primitive objects have now been filtered, so sort and send to GL
@@ -785,4 +794,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	
 	// Render overlays
 	renderModelOverlays(source);
+	
+	// Reset the clear lists flag
+	clearListsFlag_ = FALSE;
 }

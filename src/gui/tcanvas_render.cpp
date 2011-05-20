@@ -144,7 +144,8 @@ void TCanvas::render3D(Model *source, bool currentModel)
 	// Render 3D elements (with OpenGL)
 	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
 	checkGlError();
-	engine_.render3D(highQuality_, source, this, currentModel, selectedMode_ == UserAction::DrawFragmentAction);
+	if (selectedMode_ == UserAction::DrawFragmentAction) engine_.flagClearLists();
+	engine_.render3D(highQuality_, source, this, currentModel);
 	//glFlush();
 	checkGlError();
 

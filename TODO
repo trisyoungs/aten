@@ -33,7 +33,7 @@
 			<para>Quick-command hotkey - F10?  Bring up simple messagebox with edit window, and run command when enter is pressed.</para>
 		</listitem>
 		<listitem>
-			<para>Add method to Check current pattern definition so that it doesn't have to be removed so often.</para>
+			<para>Add method to check current pattern definition so that it doesn't have to be removed so often.</para>
 		</listitem>
 		<listitem>
 			<para>Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made. Retain Pattern and Forcefield information for inserted components in build. Fix unwanted printing of clipboard messages (from progress indicator) when running from CLI.</para>
