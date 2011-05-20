@@ -52,9 +52,9 @@ void PrimitiveGroup::pushInstance(const QGLContext *context)
 }
 
 // Pop topmost instance for all primitives in group
-void PrimitiveGroup::popInstance()
+void PrimitiveGroup::popInstance(const QGLContext *context)
 {
-	for (int n=0; n<nPrimitives_; ++n) primitives_[n].popInstance();
+	for (int n=0; n<nPrimitives_; ++n) primitives_[n].popInstance(context);
 }
 
 // Return primitive corresponding to level of detail specified

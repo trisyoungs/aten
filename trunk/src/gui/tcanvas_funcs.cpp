@@ -494,12 +494,13 @@ QPixmap TCanvas::generateImage(int w, int h, bool highQuality)
 	highQuality_ = highQuality;
 	if (prefs.useFrameBuffer() == FALSE)
 	{
-		// Refresh canvas if exactly the same size, to prevent widget from grabbing current view (inc. rotation globe)
-		if ((w == width()) && (h == height())) postRedisplay(TRUE);
+		// Set some flags so that the main view is redrawn properly, clearing lists and preventing image use
+		noPixelData_ = TRUE;
+		engine_.flagClearLists();
 		// Generate offscreen bitmap (a temporary context will be created)
 		QPixmap pixmap = renderPixmap(w, h, FALSE);
 		// Pop topmost instance of primitives (which were associated to temporary context)
-		engine_.popInstance(highQuality_);
+		engine_.popInstance(highQuality_, context());
 		// Ensure correct widget context size is stored
 		contextWidth_ = (GLsizei) width();
 		contextHeight_ = (GLsizei) height();

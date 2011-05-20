@@ -105,6 +105,8 @@ class Primitive
 	void clear();
 	// Forget all data, leaving arrays intact
 	void forgetAll();
+	// Return number of vertices currently defined in primitive
+	int nDefinedVertices();
 	// Set GL drawing primitive type
 	void setType(GLenum type);
 	// Return vertex array
@@ -118,7 +120,7 @@ class Primitive
 	// Push instance layer from current vertex chunk list
 	void pushInstance(const QGLContext *context);
 	// Pop topmost instance layer
-	void popInstance();
+	void popInstance(const QGLContext *context);
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
 	

@@ -89,7 +89,7 @@ class RenderPrimitives
 	// Push instance layer for all primitives
 	void pushInstance(const QGLContext *context, bool forceRegenerate = FALSE);
 	// Pop last instance layer
-	void popInstance();
+	void popInstance(const QGLContext *context);
 };
 
 // Render Engine
@@ -125,6 +125,8 @@ class RenderEngine
 	double sphereAtomAdjustment_, *scaledAtomAdjustments_;
 	// Normal (0, display) and high-quality (offscreen, 1) primitives
 	RenderPrimitives primitives_[2];
+	// Flag indicating that next render should completely clear all filtered primitive lists
+	bool clearListsFlag_;
 	// Current primitive source quality (0 or 1)
 	int Q_;
 	// Last rendered model
@@ -194,13 +196,15 @@ class RenderEngine
 	// Push primitives instance (in specified quality)
 	void pushInstance(bool highQuality, const QGLContext *context);
 	// Pop topmost primitive instance
-	void popInstance(bool highQuality);
+	void popInstance(bool highQuality, const QGLContext *context);
 	// Update all primitives (following prefs change, etc.)
 	void updatePrimitives(const QGLContext *context, bool regenerate = FALSE);
 	// Render text objects (with supplied QPainter)
 	void renderText(QPainter &painter, TCanvas *canvas);
+	// Flag that next render should clear all primitive lists
+	void flagClearLists();
 	// Render 3D elements with OpenGL
-	void render3D(bool highQuality, Model* source, TCanvas* canvas, bool currentModel, bool updateAllLists = FALSE);
+	void render3D(bool highQuality, Model* source, TCanvas* canvas, bool currentModel);
 };
 
 #endif

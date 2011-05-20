@@ -48,7 +48,7 @@ class PrimitiveGroup
 	// Create instance for all stored primitives in the group
 	void pushInstance(const QGLContext *context);
 	// Pop topmost instance
-	void popInstance();
+	void popInstance(const QGLContext *context);
 	// Return primitive corresponding to level of detail specified
 	Primitive &primitive(int lod);
 	// Send to OpenGL (i.e. render) at specified level of detail
