@@ -4,8 +4,6 @@ Known Bugs
 o Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)
 o Rebonding model also folds atoms, making --nofold irrelevant
 o Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.
-o Progress indicators following Disorder wizard usage appear to be prevented from appearing
-o Disorder builder does not create an undo state.
 o Changing between models leaves text labels from previous model visible until view is moved.
 
 Current TODO
@@ -13,7 +11,7 @@ Current TODO
 
 o Quick-command hotkey - F10?  Bring up simple messagebox with edit window, and run command when enter is pressed.
 o Add method to check current pattern definition so that it doesn't have to be removed so often.
-o Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made. Retain Pattern and Forcefield information for inserted components in build. Fix unwanted printing of clipboard messages (from progress indicator) when running from CLI.
+o Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made. Retain Pattern and Forcefield information for inserted components in build.
 o More verbosity for all commands
 o Save forcefield!
 o Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?

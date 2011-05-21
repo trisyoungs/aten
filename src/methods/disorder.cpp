@@ -269,6 +269,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			}
 			else nInsertions = 1;
 // 			printf("nInsertions for component %s is %i\n", component->modelName(), nInsertions);
+
 			// Prepare/select nTrial candidates and do some test insertions or deletions
 			if (nInsertions == 0) continue;
 			else if (nInsertions > 0) for (n=0; n<nInsertions; ++n)
@@ -327,6 +328,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				}
 			}
 		}
+		
 		// Check densities of all components - if higher than requested, delete some molecules randomly from all components targetting the same partition
 		for (component = components_.first(); component != NULL; component = component->next)
 		{
@@ -334,7 +336,8 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			if (component->insertionPolicy() == Model::NumberPolicy) continue;
 			// Uh-oh - density is higher. Let's delete stuff...
 // 			printf("Density in region '%s' is higher than requested...\n", component->partitionName());
-			while (fabs(1.0 - component->partitionDensity() / component->requestedDensity()) > accuracy)
+// 			while (fabs(1.0 - component->partitionDensity() / component->requestedDensity()) > accuracy)
+			while (component->partitionDensity() > component->requestedDensity())
 			{
 				// Pick a random component from the partition's list
 				pd = component->partition();
@@ -388,11 +391,11 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	}
 	progress.terminate(pid);
 
-	// Print summary
-	
 	// Copy component model contents across to targetModel_, in the order they were originally listed
+	targetModel_->beginUndoState("Disorder build");
 	for (ri = componentsOrder_.first(); ri != NULL; ri = ri->next) ri->item->copyTo(targetModel_);
-	
+	targetModel_->endUndoState();
+
 	msg.enter("MonteCarlo::disorder");
 	return TRUE;
 }

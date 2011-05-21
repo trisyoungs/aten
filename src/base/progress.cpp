@@ -51,7 +51,8 @@ int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool isMi
 	// If a secondary job is already running, just return -1
 
 	// If no job is currently active in the progress indicator, instantiate this one as a primary job regardless of 'isMinor'
-	if (!hasJob_)
+	if ((!hasJob_) && (isMinor)) return -1;
+	else if (!hasJob_)
 	{
 		// We are starting a primary progress dialog, so set up from scratch.
 		// Reset our QTime object...
