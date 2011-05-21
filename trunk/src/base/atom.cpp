@@ -552,7 +552,7 @@ Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<dou
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	Vec3<double> rk, xp, vijnorm;
 	Refitem<Bond,int> *bref;
-	Atom *partner;
+	Atom *origin;
 
 	vijnorm = vij;
 	vijnorm.normalise();
@@ -562,14 +562,15 @@ Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<dou
 	{
 		// Can define from another bond on 'this'
 		bref = bonds_.first();
-		partner = other;
+		origin = this;
 	}
 	else
 	{
 		// Must define from a bond on 'other'
 		if (other == NULL) return vijnorm.orthogonal();
 		bref = other->bonds_.first();
-		partner = this;
+		origin = other;
+		vijnorm = -vijnorm;
 	}
 	
 	// Find suitable second bond
@@ -577,12 +578,13 @@ Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<dou
 	{
 		if (excludedBond == bref->item) continue;
 		// Found a suitable bond - is it linear?
-		rk = bref->item->partner(this)->r_ - r_;
+		rk = bref->item->partner(origin)->r_ - origin->r_;
 		rk.normalise();
-		if (rk.dp(vijnorm) > 0.999) continue;
+		if (fabs(rk.dp(vijnorm)) > 0.999) continue;
 		
-		// Get cross-products to determint bond plane vector
-		xp = (vijnorm * rk) * vijnorm;
+		// Get cross-products to determine bond plane vector
+ 		xp = (vijnorm * rk) * vijnorm;
+		break;
 	}
 
 	// Default, just in case
