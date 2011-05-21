@@ -209,32 +209,17 @@ void AtomListWidget::refresh()
 	msg.exit("AtomListWidget::refresh");
 }
 
-void AtomListWidget::on_ViewByAtomButton_clicked(bool checked)
+void AtomListWidget::on_ViewStyleCombo_currentIndexChanged(int index)
 {
 	// Check previous state and refresh if necessary
-	if (!viewingByAtom_)
+	if (index == viewingByAtom_)
 	{
-		viewingByAtom_ = TRUE;
+		viewingByAtom_ = !index;
 		refreshing_ = FALSE;
 		listSelectionPoint_ = -1;
 		listStructurePoint_ = -1;
 		refresh();
 	}
-	else viewingByAtom_ = TRUE;
-}
-
-void AtomListWidget::on_ViewByPatternButton_clicked(bool checked)
-{
-	// Must clear selection in the current model
-	if (viewingByAtom_)
-	{
-		viewingByAtom_ = FALSE;
-		refreshing_ = FALSE;
-		listSelectionPoint_ = -1;
-		listStructurePoint_ = -1;
-		refresh();
-	}
-	else viewingByAtom_ = FALSE;
 }
 
 void AtomListWidget::on_ShiftUpButton_clicked(bool checked)

@@ -89,14 +89,22 @@ int main(int argc, char *argv[])
 		case (Aten::GuiMode):
 			gui.run();
 			break;
-		case (Aten::BatchExportMode):
-			aten.exportModels();
-			break;
-		case (Aten::BatchProcessMode):
+		case (Aten::BatchMode):
+			msg.print("Batch mode in effect - models will be processed and saved.\n");
 			aten.processModels();
 			aten.saveModels();
 			break;
-		case (Aten::ProcessAndExportMode):
+		case (Aten::ExportMode):
+			msg.print("Export mode in effect - models will be exported to the specified format.\n");
+			aten.exportModels();
+			break;
+		case (Aten::ProcessMode):
+			msg.print("Process mode in effect - models will be processed and loaded in the GUI.\n");
+			aten.processModels();
+			gui.run();
+			break;
+		case (Aten::BatchExportMode):
+			msg.print("BatchExport mode in effect - models will be processed and exported to the specified format.\n");
 			aten.processModels();
 			aten.exportModels();
 			break;

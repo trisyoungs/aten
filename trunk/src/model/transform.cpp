@@ -203,6 +203,7 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec, bool markonly)
 {
 	// Translate the model's current selection by the vector supplied.
 	msg.enter("Model::translateSelectionLocal");
+
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next) translateAtom(ri->item,tvec);
 
 	// Update model measurements

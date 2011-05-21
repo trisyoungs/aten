@@ -41,7 +41,7 @@ Cli cliSwitches[] = {
 		"Set the data location to the supplied directory (and don't read $ATENDATA)" },
 	{ Cli::BatchSwitch,		'\0',"batch",		0,
 		"",
-		"Run any commands supplied with -c or --command on all models and save" },
+		"Run any commands supplied with -c or --command on all models and save in the original format" },
 	{ Cli::BohrSwitch,		'b',"bohr",		0,
 		"",
 		"Converts model/grid atomic positions from Bohr to Angstrom" },
@@ -153,6 +153,9 @@ Cli cliSwitches[] = {
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
+	{ Cli::ProcessSwitch,		'\0',"process",		0,
+		"",
+		"Run any commands supplied with -c or --command on all models (but don't save)" },
 	{ Cli::QuietSwitch,		'q',"quiet",		0,
 		"",
 		"Run silently, reporting only errors that stop the program" },
@@ -461,10 +464,15 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::VerboseSwitch):
 				case (Cli::VersionSwitch):
 					break;
-				// Enable batch processing mode
+				// Enable batch mode
 				case (Cli::BatchSwitch):
-					if (aten.programMode() == Aten::BatchExportMode) aten.setProgramMode(Aten::ProcessAndExportMode);
-					else aten.setProgramMode(Aten::BatchProcessMode);
+					if (aten.programMode() == Aten::ProcessMode)
+					{
+						printf("Error: --batch and --process options are mutually exclusive.\n");
+						return -1;
+					}
+					else if (aten.programMode() == Aten::ExportMode) aten.setProgramMode(Aten::BatchExportMode);
+					else aten.setProgramMode(Aten::BatchMode);
 					break;
 				// Convert coordinates from Bohr to Angstrom
 				case (Cli::BohrSwitch):
@@ -484,7 +492,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
-					if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
+					if ((aten.programMode() == Aten::BatchMode) || (aten.programMode() == Aten::ProcessMode) || (aten.programMode() == Aten::BatchExportMode))
 					{
 						script = aten.addBatchCommand();
 						if (!script->generateFromString(argtext.get(), "batchcommand")) return -1;
@@ -501,6 +509,12 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
+					if (aten.programMode() == Aten::ProcessMode)
+					{
+						printf("Error: --export and --process options are mutually exclusive.\n");
+						return -1;
+					}
+
 					// Parse the first option so we can get the filter nickname and any filter options
 					parser.getArgsDelim(0, argtext.get());
 					
@@ -521,8 +535,8 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 					
 					aten.setExportFilter(f);
-					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
-					else aten.setProgramMode(Aten::BatchExportMode);
+					if (aten.programMode() == Aten::BatchMode) aten.setProgramMode(Aten::BatchExportMode);
+					else aten.setProgramMode(Aten::ExportMode);
 					break;
 				// Set export type remappings
 				case (Cli::ExportMapSwitch):
@@ -697,6 +711,15 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::PipeSwitch):
 					prefs.setReadPipe(TRUE);
 					break;
+				// Enable processing mode
+				case (Cli::ProcessSwitch):
+					if ((aten.programMode() == Aten::ExportMode) || (aten.programMode() == Aten::BatchExportMode) || (aten.programMode() == Aten::BatchMode))
+					{
+						printf("Error: --process and --batch / --export options are mutually exclusive.\n");
+						return -1;
+					}
+					else aten.setProgramMode(Aten::ProcessMode);
+					break;
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = aten.addScript();
@@ -786,7 +809,7 @@ int Aten::parseCli(int argc, char *argv[])
 			s->set(line);
 		}
 		// Create and execute commands
-		if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
+		if ((aten.programMode() == Aten::BatchMode) || (aten.programMode() == Aten::ProcessMode) || (aten.programMode() == Aten::BatchExportMode))
 		{
 			script = aten.addBatchCommand();
 			if (!script->generateFromStringList(commands.first(), "batchcommand")) return -1;
