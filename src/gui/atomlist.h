@@ -53,8 +53,7 @@ class AtomListWidget : public QDockWidget
 	void selectItem(TTreeWidgetItem *twi);
 	void deselectItem(TTreeWidgetItem *twi);
 	private slots:
-	void on_ViewByAtomButton_clicked(bool checked);
-	void on_ViewByPatternButton_clicked(bool checked);
+	void on_ViewStyleCombo_currentIndexChanged(int index);
 	void on_ShiftUpButton_clicked(bool checked);
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);

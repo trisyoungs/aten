@@ -1,84 +1,37 @@
-<sect5><title>Known Bugs</title>
+Known Bugs
+----------
 
-	<orderedlist>
-		<listitem>
-			<para>Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)</para>
-		</listitem>
-		<listitem>
-			<para>Rebonding model also folds atoms, making --nofold irrelevant</para>
-		</listitem>
-		<listitem>
-			<para>Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.</para>
-		</listitem>
-		<listitem>
-			<para>Progress indicators following Disorder wizard usage appear to be prevented from appearing</para>
-		</listitem>
-		<listitem>
-			<para>When using default display lists for rendering, stick lists are cleared but still appear (e.g. when creating a new model)</para>
-		</listitem>
-		<listitem>
-			<para>Disorder builder does not create an undo state.</para>
-		</listitem>
-		<listitem>
-			<para>Changing between models leaves text labels from previous model visible until view is moved.</para>
-		</listitem>
-	</orderedlist>
+o Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)
+o Rebonding model also folds atoms, making --nofold irrelevant
+o Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.
+o Progress indicators following Disorder wizard usage appear to be prevented from appearing
+o Disorder builder does not create an undo state.
+o Changing between models leaves text labels from previous model visible until view is moved.
 
-</sect5>
+Current TODO
+------------
 
-<sect5><title>Current TODO</title>
+o Quick-command hotkey - F10?  Bring up simple messagebox with edit window, and run command when enter is pressed.
+o Add method to check current pattern definition so that it doesn't have to be removed so often.
+o Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made. Retain Pattern and Forcefield information for inserted components in build. Fix unwanted printing of clipboard messages (from progress indicator) when running from CLI.
+o More verbosity for all commands
+o Save forcefield!
+o Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?
+o Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?
+o Update script to perform conformational searching on molecule (add GUI options)
+o Glyph Undo/Redo
+o Allow (somehow) rotation of fragments without drawing them *or* rotating main view
+o Add on glyph selection methods (a la box select with the mouse)
 
-	<orderedlist>
-		<listitem>
-			<para>Quick-command hotkey - F10?  Bring up simple messagebox with edit window, and run command when enter is pressed.</para>
-		</listitem>
-		<listitem>
-			<para>Add method to check current pattern definition so that it doesn't have to be removed so often.</para>
-		</listitem>
-		<listitem>
-			<para>Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made. Retain Pattern and Forcefield information for inserted components in build. Fix unwanted printing of clipboard messages (from progress indicator) when running from CLI.</para>
-		</listitem>
-		<listitem>
-			<para>More verbosity for all commands</para>
-		</listitem>
-		<listitem>
-			<para>Save forcefield!</para>
-		</listitem>
-		<listitem>
-			<para>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</para>
-		</listitem>
-		<listitem>
-			<para>Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?</para>
-		</listitem>
-		<listitem>
-			<para>Update script to perform conformational searching on molecule (add GUI options)</para>
-		</listitem>
-		<listitem>
-			<para>Glyph Undo/Redo</para>
-		</listitem>
-		<listitem>
-			<para>Allow (somehow) rotation of fragments without drawing them *or* rotating main view</para>
-		</listitem>
-		<listitem>
-			<para>Add on glyph selection methods (a la box select with the mouse)</para>
-		</listitem>
-	</orderedlist>
+Filter TODO
+-----------
 
-</sect5>
+o Add options to FIELD import filter, allowing application of pattern to model.
+o Add more options to GAMESS-US inp filter: MD options
+o Storage of grid data in AKF format
 
-<sect5><title>Filter TODO</title>
+Manual TODO
+-----------
 
-	<orderedlist>
-		<listitem>
-			<para>Add options to FIELD import filter, allowing application of pattern to model.</para>
-		</listitem>
-		<listitem>
-			<para>Add more options to GAMESS-US inp filter: MD options</para>
-		</listitem>
-		<listitem>
-			<para>Storage of grid data in AKF format</para>
-		</listitem>
-	</orderedlist>
-
-</sect5>
-
+o Add --process switch and explain processing modes more clearly.
+o Add new image for atom list

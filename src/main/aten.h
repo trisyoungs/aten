@@ -45,7 +45,7 @@ class Aten
 	Aten();
 	~Aten();
 	// Program mode enum
-	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, BatchExportMode, BatchProcessMode, ProcessAndExportMode, NoMode };
+	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, ExportMode, BatchMode, ProcessMode, BatchExportMode, NoMode };
 	// Target list for model creation
 	enum TargetModelList { MainModelList, FragmentLibraryList, WorkingModelList };
 	// Remove all dynamic data
