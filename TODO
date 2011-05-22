@@ -4,7 +4,6 @@ Known Bugs
 o Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)
 o Rebonding model also folds atoms, making --nofold irrelevant
 o Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.
-o Changing between models leaves text labels from previous model visible until view is moved.
 
 Current TODO
 ------------

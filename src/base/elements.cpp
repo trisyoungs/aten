@@ -612,7 +612,7 @@ int ElementMap::find(const char *query, ElementMap::ZMapType zmt) const
 	int result = -1;
 	if (query[0] == '\0')
 	{
-		printf("Warning: Element search requested on blank string.\n");
+		msg.print("Warning: Element search requested on blank string.\n");
 		msg.exit("ElementMap::find");
 		return 0;
 	}

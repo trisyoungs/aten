@@ -648,6 +648,12 @@ void RenderEngine::flagClearLists()
 	clearListsFlag_ = TRUE;
 }
 
+// Clear text primitive list
+void RenderEngine::forgetTextPrimitives()
+{
+	textPrimitives_.forgetAll();
+}
+
 // Render 3D
 void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bool currentModel)
 {
@@ -747,7 +753,6 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 		solidPrimitives_[n].clear();
 		transparentPrimitives_[n].clear();
 	}
-	textPrimitives_.forgetAll();
 	
 	// Extra lists to clear for Glyphs
 	if (activePrimitiveLists_[RenderEngine::GlyphObject])

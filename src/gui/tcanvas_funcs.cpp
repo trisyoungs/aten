@@ -271,6 +271,7 @@ void TCanvas::paintGL()
 	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
 	glViewport(0,0,contextWidth_,contextHeight_);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	engine_.forgetTextPrimitives();
 	
 	// Set up some useful values
 	nrows = nmodels/nperrow + (nmodels%nperrow == 0 ? 0 : 1);
