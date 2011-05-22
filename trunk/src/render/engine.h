@@ -203,6 +203,8 @@ class RenderEngine
 	void renderText(QPainter &painter, TCanvas *canvas);
 	// Flag that next render should clear all primitive lists
 	void flagClearLists();
+	// Forget all stored text primitives
+	void forgetTextPrimitives();
 	// Render 3D elements with OpenGL
 	void render3D(bool highQuality, Model* source, TCanvas* canvas, bool currentModel);
 };
