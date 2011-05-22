@@ -19,7 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "main/cli.h"
 #include "main/aten.h"
 #include "main/version.h"

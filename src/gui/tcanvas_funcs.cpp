@@ -118,7 +118,7 @@ void TCanvas::setRenderSource(Model *source)
 	if (source == NULL)
 	{
 		useCurrentModel_ = TRUE;
-		renderSource_ = NULL ;
+		renderSource_ = NULL;
 	}
 	else
 	{

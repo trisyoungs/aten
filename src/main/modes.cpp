@@ -44,7 +44,7 @@ void Aten::exportModels()
 	// Loop over loaded models
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		aten.setCurrentModel(m);
+		aten.setCurrentModel(m, TRUE);
 		// Generate new filename for model.
 		filename = m->filename();
 		int n = filename.rFind('.', '/', '\\');
@@ -85,7 +85,7 @@ void Aten::processModels()
 		for (Program *cmd = batchCommands_.first(); cmd != NULL; cmd = cmd->next)
 		{
 			// Set the current model
-			aten.setCurrentModel(m);
+			aten.setCurrentModel(m, TRUE);
 			// Run the command list
 			if (!cmd->execute(rv)) return;
 		}
@@ -97,7 +97,7 @@ void Aten::saveModels()
 {
 	for (Model *m = models_.first(); m != NULL; m = m->next)
 	{
-		setCurrentModel(m);
+		setCurrentModel(m, TRUE);
 		// Check model's filter - it will be the import filter, so try to get the partner
 		Tree *t = m->filter();
 		if (t == NULL)
