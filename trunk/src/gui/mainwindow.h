@@ -118,6 +118,7 @@ class AtenForm : public QMainWindow
 	void on_actionSelectionNone_triggered(bool checked);
 	void on_actionSelectionExpand_triggered(bool checked);
 	void on_actionSelectionInvert_triggered(bool checked);
+	void on_actionEditQuickCommand_triggered(bool checked);
 
 
 	/*

@@ -8,7 +8,6 @@ o Atom list update is super-slow when changing selection in big systems - This i
 Current TODO
 ------------
 
-o Quick-command hotkey - F10?  Bring up simple messagebox with edit window, and run command when enter is pressed.
 o Add method to check current pattern definition so that it doesn't have to be removed so often.
 o Relax system after disorder build, performing tweaks at increasingly higher scalefactors until no moves can be made. Retain Pattern and Forcefield information for inserted components in build.
 o More verbosity for all commands
@@ -32,3 +31,4 @@ Manual TODO
 
 o Add --process switch and explain processing modes more clearly.
 o Add new image for atom list
+o F10 Shortcut - run Quick Command
