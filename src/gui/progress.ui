@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>AtenProgress</class>
  <widget class="QDialog" name="AtenProgress">
@@ -37,7 +38,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="MinorJobTitleLabel">
+    <widget class="QLabel" name="SubTitleLabel">
      <property name="text">
       <string>TextLabel</string>
      </property>

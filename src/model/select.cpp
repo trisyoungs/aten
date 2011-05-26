@@ -156,13 +156,12 @@ void Model::selectionDelete(bool markonly)
 	Atom *i, *tempi;
 	int count = 0;
 	bool cancelled = FALSE;
-	bool pid = progress.initialise("Deleting atoms...", atoms_.nItems()*2, TRUE, FALSE);
+	bool pid = progress.initialise("Deleting atoms...", selection_.nItems()*2, FALSE);
 	// Attempt to be clever here for the sake of undo/redo, while avoiding renumbering at every step.
 	// 1) First, delete all measurements and bonds to the selected atoms
 	Refitem<Bond,int> *bref;
-	for (i = atoms_.first(); i != NULL; i = i->next)
+	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
-		if (!i->isSelected(markonly)) continue;
 		// Remove measurements
 		removeMeasurements(i);
 		// Delete All Bonds To Specific Atom
@@ -175,7 +174,7 @@ void Model::selectionDelete(bool markonly)
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
 		}
- 		if (!progress.update(pid,++count)) cancelled = TRUE;
+		if (!progress.update(pid)) cancelled = TRUE;
 		if (cancelled) break;
 	}
 	// 2) Delete the actual atoms

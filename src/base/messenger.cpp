@@ -86,7 +86,7 @@ bool Messenger::isQuiet() const
 }
 
 // Standard message
-void Messenger::print(const char *fmt ...) const
+void Messenger::print(const char *fmt, ...) const
 {
 	// Print to the text view in the main window if it has been initialised.
 	// If program is in quiet mode, don't print anything to stdout
@@ -103,7 +103,7 @@ void Messenger::print(const char *fmt ...) const
 }
 
 // Print rich message (for GUI, plain for console) including html formatting
-void Messenger::richPrint(const char *fmt ...) const
+void Messenger::richPrint(const char *fmt, ...) const
 {
 	// First, construct the string as usual
 	va_list arguments;
@@ -127,7 +127,7 @@ void Messenger::richPrint(const char *fmt ...) const
 }
 
 // Standard message in specific output level
-void Messenger::print(Messenger::OutputType ot, const char *fmt ...) const
+void Messenger::print(Messenger::OutputType ot, const char *fmt, ...) const
 {
 	// Print to the text view in the main window if it has been initialised.
 	// If program is in quiet mode, don't print anything except Messenger::Always calls

@@ -23,7 +23,7 @@
 #include "model/model.h"
 #include "base/sysfunc.h"
 
-// Draw 2D objects with QPainted
+// Draw 2D objects with QPainter
 void TCanvas::render2D(QPainter &painter, Model *source)
 {
 	msg.enter("TCanvas::render2D");
@@ -37,6 +37,7 @@ void TCanvas::render2D(QPainter &painter, Model *source)
 	int i, skip, n;
 	double dx, halfw;
 
+	
 	// Text Primitives
 	prefs.copyColour(Prefs::TextColour, colour);
 	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
@@ -116,15 +117,6 @@ void TCanvas::render3D(Model *source, bool currentModel)
 	
 	// Render model
 	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
-	
-	// If the canvas is still restricted, don't draw anything
-	if (noDraw_)
-	{
-		msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
-		msg.exit("TCanvas::render3D");
-		return;
-	}
-	checkGlError();
 
 	// Check the supplied model against the previous one rendered to see if we must outdate the display list
 	// 	if (lastDisplayed_ != source)

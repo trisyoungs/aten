@@ -392,7 +392,7 @@ void PartitioningScheme::updatePartitions(bool useRoughGrid)
 
 	// Okay, do the calculation
 	Dnchar text(-1, "Generating Partition Data for Scheme '%s'", name_.get());
-	int progid = progress.initialise(text.get(), npoints.x, TRUE, FALSE);
+	int progid = progress.initialise(text.get(), npoints.x, FALSE);
 	x = 0.5*dx;
 	for (i=0; i<npoints.x; ++i)
 	{

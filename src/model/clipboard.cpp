@@ -145,7 +145,6 @@ void Clipboard::copyBonds()
 	// Go through pairs of oldptrs in the atoms list and check for bonds, adding to our list as we go.
 	// The bonds we generate will point to pairs of Clipatoms.
 	Bond *oldbond;
-	int pid = progress.initialise("Copying bonds to clipboard", atoms_.nItems(), TRUE, FALSE);
 	for (Clipatom *ii = atoms_.first(); ii != NULL; ii = ii->getNext())
 	{
 		for (Clipatom *jj = ii->getNext(); jj != NULL; jj = jj->getNext())
@@ -159,9 +158,7 @@ void Clipboard::copyBonds()
 				b->setType(oldbond->type());
 			}
 		}
-		if (!progress.update(pid)) break;
 	}
-	progress.terminate(pid);
 	msg.exit("Clipboard::copyBonds");
 }
 
@@ -178,15 +175,12 @@ void Clipboard::copySelection(Model *m)
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
 	// Copy atoms
-	bool pid = progress.initialise("Copying atoms to clipboard", m->nAtoms(), TRUE, FALSE);
-	for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next)
-	{
-		copyAtom(ri->item);
-		if (!progress.update(pid)) break;
-	}
-	progress.terminate(pid);
+	msg.print("Copying atoms...");
+	for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next) copyAtom(ri->item);
 	// Copy bonds
+	msg.print("bonds...");
 	copyBonds();
+	msg.print(" Done.\n");
 	msg.exit("Clipboard::copySelection");
 }
 
@@ -242,7 +236,6 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 	msg.enter("Clipboard::pasteToModel");
 	Atom *pastedi;
 	if (selectpasted) m->selectNone();
-	bool pid = progress.initialise("Pasting atoms", atoms_.nItems(), TRUE, FALSE);
 	int count = 0;
 	for (Clipatom *i = atoms_.first(); i != NULL; i = i->getNext())
 	{
@@ -252,9 +245,7 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 		if (selectpasted) m->selectAtom(pastedi);
 		// Store reference to the newly-pasted atom
 		i->setAtomPointer(pastedi);
-		progress.update(pid,++count);
 	}
-	progress.terminate(pid);
 	// Add in bonds to pasted atoms
 	pasteBonds(m);
 	msg.exit("Clipboard::pasteToModel");

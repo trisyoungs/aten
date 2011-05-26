@@ -88,7 +88,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 
 	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
 	msg.print("Init  %12.5e       ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
-	int pid = progress.initialise("Minimising (SD)", nCycles_, FALSE, !gui.exists());
+	int pid = progress.initialise("Minimising (SD)", nCycles_, !gui.exists());
 
 	stepsize = 1.0;
 	for (cycle=0; cycle<nCycles_; cycle++)

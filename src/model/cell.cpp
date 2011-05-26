@@ -455,7 +455,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 
 	// Set up progress indicator
 	count = ( (ipos.x - ineg.x) + 1) * ( (ipos.y - ineg.y) + 1) * ( (ipos.z - ineg.z) + 1);
-	bool pid = progress.initialise("Creating cell copies...", count, TRUE, FALSE);
+	bool pid = progress.initialise("Creating cell copies...", count, FALSE);
 
 	// Create cell copies
 	count = 0;
@@ -497,7 +497,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		Vec3<double> fracr;
 		Matrix cellinverse = cell_.inverse();
 	
-		int pid = progress.initialise("Trimming excess atoms...", atoms_.nItems(), TRUE, FALSE);
+		int pid = progress.initialise("Trimming excess atoms...", atoms_.nItems(), FALSE);
 		i = atoms_.first();
 		count = 0;
 		while (i != NULL)

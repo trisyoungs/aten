@@ -33,28 +33,34 @@ TCanvas::TCanvas(QGLContext *ctxt, QWidget *parent) : QGLWidget(ctxt, parent)
 	contextWidth_ = 0;
 	contextHeight_ = 0;
 	valid_ = FALSE;
+
 	// Render Target
 	displayFrameId_ = -1;
 	useCurrentModel_ = TRUE;
 	renderSource_ = NULL;
 	redrawActiveModel_ = FALSE;
 	noPixelData_ = FALSE;
+
 	// Rendering
+	drawingTarget_ = TCanvas::NoTarget;
 	noPixelData_ = FALSE;
 	drawing_ = FALSE;
-	noDraw_ = TRUE;
 	highQuality_ = FALSE;
 	mouseMoveCounter_.start();
+
 	// Atom Selection
 	atomClicked_ = NULL;
 	pickEnabled_ = FALSE;
 	actionBeforePick_ = UserAction::NoAction;
 	pickAtomsCallback_ = NULL;
 	nAtomsToPick_ = -1;
+
 	// Mouse Input
 	for (int i=0; i<3; i++) mouseButton_[i] = FALSE;
+
 	// Key Input
 	for (int i=0; i<3; i++) keyModifier_[i] = FALSE;
+
 	// User Actions
 	activeMode_ = UserAction::NoAction;
 	selectedMode_ = UserAction::SelectAction;
@@ -215,7 +221,7 @@ void TCanvas::paintGL()
 	Model *m;
 
 	// Do nothing if the canvas is not valid, or we are still drawing from last time.
-	if ((!valid_) || drawing_ || (aten.currentModel() == NULL))
+	if ((!valid_) || drawing_ || (drawingTarget_ == TCanvas::NoTarget) || (aten.currentModel() == NULL))
 	{
 		msg.exit("TCanvas::paintGL");
 		return;
@@ -401,8 +407,11 @@ void TCanvas::paintGL()
 	}
 	painter.end();
 	
-	// Finally, swap buffers if necessary and reinstate VBO status
+	// Swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();
+	
+	// Special case when rendering to Pixmap - must delete associated context
+	if (drawingTarget_ == TCanvas::PixmapTarget) engine_.popInstance(highQuality_, context());
 
 	msg.exit("TCanvas::paintGL");
 }
@@ -454,16 +463,16 @@ void TCanvas::checkGlError()
 	}
 }
 
-// Enable drawing
-void TCanvas::enableDrawing()
+// Set current drawing target (none, screen, or pixmap)
+void TCanvas::setDrawingTarget(TCanvas::DrawingTarget dt)
 {
-	noDraw_ = FALSE;
+	drawingTarget_ = dt;
 }
 
-// Disable drawing
-void TCanvas::disableDrawing()
+// Return current drawing target (none, screen, or pixmap)
+TCanvas::DrawingTarget TCanvas::drawingTarget()
 {
-	noDraw_ = TRUE;
+	return drawingTarget_;
 }
 
 // Return whether rendering should use high quality primitives
@@ -498,10 +507,18 @@ QPixmap TCanvas::generateImage(int w, int h, bool highQuality)
 		// Set some flags so that the main view is redrawn properly, clearing lists and preventing image use
 		noPixelData_ = TRUE;
 		engine_.flagClearLists();
+		
+		// Specify that we are about to render offscreen (so instance can be automatically removed)
+		TCanvas::DrawingTarget oldTarget = drawingTarget_;
+		drawingTarget_ = TCanvas::PixmapTarget;
+
 		// Generate offscreen bitmap (a temporary context will be created)
 		QPixmap pixmap = renderPixmap(w, h, FALSE);
-		// Pop topmost instance of primitives (which were associated to temporary context)
-		engine_.popInstance(highQuality_, context());
+		
+		// Return to last rendering mode, and flag for rendering list regeneration again
+		drawingTarget_ = oldTarget;
+		engine_.flagClearLists();
+		
 		// Ensure correct widget context size is stored
 		contextWidth_ = (GLsizei) width();
 		contextHeight_ = (GLsizei) height();

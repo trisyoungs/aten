@@ -1,5 +1,5 @@
 /*
-	*** ProgressIndicator Indicator
+	*** Progress Indicator
 	*** src/base/progress.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -32,7 +32,6 @@ ProgressIndicator::ProgressIndicator()
 {
 	// Private variables
 	hasJob_ = FALSE;
-	hasMinorJob_ = FALSE;
 	canceled_ = FALSE;
 	hidden_ = FALSE;
 }
@@ -44,15 +43,10 @@ void ProgressIndicator::notifyCanceled()
 }
 
 // Instantiate a new progress dialog (or a sub-job of the current one
-int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool isMinor, bool hidden)
+int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool hidden)
 {
-	// We will return 1 to indicate that the primary progress indicator was created, and 2 for secondary
-	// The secondary indicator is only displayed if specifically allowed by the allowSecondary flag
-	// If a secondary job is already running, just return -1
-
-	// If no job is currently active in the progress indicator, instantiate this one as a primary job regardless of 'isMinor'
-	if ((!hasJob_) && (isMinor)) return -1;
-	else if (!hasJob_)
+	// Check if a progress indicator job already exists
+	if (!hasJob_)
 	{
 		// We are starting a primary progress dialog, so set up from scratch.
 		// Reset our QTime object...
@@ -82,22 +76,13 @@ int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool isMi
 	}
 	else
 	{
-		// We already have a running job - is this new job also a major task?
-		if (!isMinor)
-		{
-			printf("Internal Error: Progress indicator already has a primary job.\n");
-			return -1;
-		}
-		
-		// Minor job....
-		minorJobTitle_ = jobtitle;
-		hasMinorJob_ = TRUE;
+		subTitle_ = jobtitle;
 		return 2;
 	}
 }
 
 // Update the progress dialog
-bool ProgressIndicator::update(int id, int currentstep)
+bool ProgressIndicator::update(int id, int currentstep, const char *subtitle)
 {
 	if (id != 1) return (!canceled_);
 	currentStep_ = (currentstep == -1 ? currentStep_+1 : currentstep);
@@ -114,6 +99,9 @@ bool ProgressIndicator::update(int id, int currentstep)
 	remtime.setHMS(0,0,0);
 	remtime = remtime.addMSecs( time_.elapsed() * ((1.0 - dpercent) / dpercent) );
 
+	// Set new subtitle if one was specified
+	if (subtitle != NULL) subTitle_ = subtitle;
+	
 	// Work out new percentage
 	percent = int(dpercent * 100.0);
 	ndots = int(dpercent * 30.0);
@@ -157,8 +145,7 @@ void ProgressIndicator::terminate(int id)
 	if (id == -1) return;
 	if (id == 2)
 	{
-		hasMinorJob_ = FALSE;
-		minorJobTitle_ = "";
+		subTitle_ = "";
 		return;
 	}
 	if (percent_ == -1) return;
@@ -175,12 +162,6 @@ bool ProgressIndicator::hasJob()
 	return hasJob_;
 }
 
-// Return whether a minor job is in progress
-bool ProgressIndicator::hasMinorJob()
-{
-	return hasMinorJob_;
-}
-
 // Return ETA (as text)
 const char *ProgressIndicator::eta()
 {
@@ -194,9 +175,9 @@ const char *ProgressIndicator::jobTitle()
 }
 
 // Return minor job title
-const char *ProgressIndicator::minorJobTitle()
+const char *ProgressIndicator::subTitle()
 {
-	return minorJobTitle_.get();
+	return subTitle_.get();
 }
 
 // Return number of steps to do

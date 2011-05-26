@@ -105,7 +105,7 @@ bool Command::function_Null(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Quit main program
 bool Command::function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Set program mode here, in case we are running in PM_COMMAND
+	// Set program mode here
 	aten.setProgramMode(Aten::NoMode);
 	// If the GUI is active, close it...
 	if (gui.exists()) gui.saveBeforeClose();

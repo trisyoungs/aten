@@ -115,7 +115,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainWidget()->height()) ));
 	prefs.setLabelSize(newlabelsize);
 
-	int progid = progress.initialise("Saving movie frames...", lastframe-firstframe, FALSE, FALSE);
+	int progid = progress.initialise("Saving movie frames...", lastframe-firstframe, FALSE);
 	bool canceled = FALSE;
 	for (int n = firstframe; n <= lastframe; n += frameskip)
 	{
@@ -194,7 +194,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 
 	// Cleanup
-	bool pid = progress.initialise("Cleaning up...", lastframe-firstframe, TRUE, FALSE);
+	bool pid = progress.initialise("Cleaning up...", lastframe-firstframe, FALSE);
 	for (int n = firstframe; n <= lastframe; n += frameskip)
 	{
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);

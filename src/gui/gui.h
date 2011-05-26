@@ -145,14 +145,12 @@ class GuiQt
 	AtenForm *mainWindow_;
 	// Main rendering canvas
 	TCanvas *mainWidget_;
-	// QGLContext associated to TCanvas
+	// Original QGLContext, created in initialise()
 	QGLContext *mainContext_;
 
 	public:
 	// Return main view Widget
 	TCanvas *mainWidget();
-	// Return main view context
-	QGLContext *mainContext();
 	// Main application structure
 	QApplication *application();
 	// Main Window

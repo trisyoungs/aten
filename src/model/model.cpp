@@ -124,6 +124,7 @@ Model::~Model()
 	distanceMeasurements_.clear();
 	angleMeasurements_.clear();
 	torsionMeasurements_.clear();
+	if (pixelData_ != NULL) delete[] pixelData_;
 	// Delete sginfo arrays
 	delete[] spacegroup_.ListSeitzMx;
 	delete[] spacegroup_.ListRotMxInfo;

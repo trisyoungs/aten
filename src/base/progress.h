@@ -41,9 +41,9 @@ class ProgressIndicator
 	// Variables for the position and maximum of the text progress dialog
 	int stepsToDo_, percent_, currentStep_;
 	// ETA and Jobtitle texts
-	Dnchar etaText_, jobTitle_, minorJobTitle_;
-	// Flags to indicate whether indicator has major (and minor) titles
-	bool hasJob_, hasMinorJob_;
+	Dnchar etaText_, jobTitle_, subTitle_;
+	// Flags to indicate whether indicator is active
+	bool hasJob_;
 	// Whether text indicator should be printed out
 	bool hidden_;
 	
@@ -51,21 +51,19 @@ class ProgressIndicator
 	// Notify that the progress indicator should be canceled
 	void notifyCanceled();
 	// Instantiate a new progress dialog (or a sub-job) of the current one
-	int initialise(const char* jobtitle, int stepstodo, bool isMinor, bool hidden);
+	int initialise(const char* jobtitle, int stepstodo, bool hidden);
 	// Update the progress dialog
-	bool update(int id, int currentstep = -1);
+	bool update(int id, int currentstep = -1, const char *subtitle = NULL);
 	// Terminate the progress dialog
 	void terminate(int id);
 	// Return whether a major job is in progress
 	bool hasJob();
-	// Return whether a minor job is in progress
-	bool hasMinorJob();
 	// Return ETA (as text)
 	const char *eta();
 	// Return major job title
 	const char *jobTitle();
 	// Return minor job title
-	const char *minorJobTitle();
+	const char *subTitle();
 	// Return number of steps to do
 	int stepsToDo();
 	// Return current step number

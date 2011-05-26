@@ -176,7 +176,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	if ((nTrajectoryFileFrames_ * trajectoryFrameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
- 		int pid = progress.initialise("Caching Frames", nTrajectoryFileFrames_, TRUE, FALSE);
+ 		int pid = progress.initialise("Caching Frames", nTrajectoryFileFrames_, FALSE);
 		// Read all frames from trajectory file
 		for (int n=1; n<nTrajectoryFileFrames_; n++)
 		{
@@ -453,7 +453,7 @@ void Model::trajectoryCopyAtomStyle(Model *source)
 		msg.exit("Model::trajectoryCopyAtomStyle");
 		return;
 	}
-	int pid = progress.initialise("Applying style to trajectory frames...", trajectoryFrames_.nItems(), FALSE, FALSE);
+	int pid = progress.initialise("Applying style to trajectory frames...", trajectoryFrames_.nItems(), FALSE);
 	for (Model *m = trajectoryFrames_.first(); m != NULL; m = m->next)
 	{
 		if (m != source) m->copyAtomStyle(source);
