@@ -197,7 +197,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	}
 	
 	// All set up and ready - do the build
-	int pid = progress.initialise("Performing Disorder build", -1, FALSE, !gui.exists());
+	int pid = progress.initialise("Performing Disorder build", -1, !gui.exists());
 	msg.print("Cycle  Component    Region    Population (Requested)  Density (Requested)  RSF\n");
 	for (cycle = 1; cycle <= 100000; ++cycle)
 	{

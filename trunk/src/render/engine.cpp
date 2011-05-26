@@ -601,7 +601,6 @@ void RenderEngine::initialiseGL()
 void RenderEngine::pushInstance(bool highQuality, const QGLContext *context)
 {
 	msg.print(Messenger::Verbose, "Pushing %s quality primitive instance for context %p\n", highQuality ? "high" : "normal", context);
-	if (context == gui.mainContext()) msg.print(Messenger::Verbose, "This instance is associated to the main context.\n");
 	primitives_[highQuality].pushInstance(context);
 	// Push separate instance of the stick primitives
 	stickLines_.pushInstance(context);
@@ -611,7 +610,7 @@ void RenderEngine::pushInstance(bool highQuality, const QGLContext *context)
 // Pop topmost primitive instance
 void RenderEngine::popInstance(bool highQuality, const QGLContext *context)
 {
-	msg.print(Messenger::Verbose, "Popping %s quality primitive instance\n", highQuality ? "high" : "normal");
+	msg.print(Messenger::Verbose, "Popping %s quality primitive instance for context %p\n", highQuality ? "high" : "normal", context);
 	primitives_[highQuality].popInstance(context);
 	stickLines_.popInstance(context);
 	stickSelectedLines_.popInstance(context);

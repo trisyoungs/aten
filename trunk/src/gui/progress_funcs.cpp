@@ -35,17 +35,17 @@ void AtenProgress::on_CancelButton_clicked(bool checked)
 }
 
 // Set minor job title (if one exists)
-void AtenProgress::setMinorJobTitle()
+void AtenProgress::setSubTitle()
 {
-	if (progress.hasMinorJob())
+	if (progress.subTitle() != "")
 	{
-		ui.MinorJobTitleLabel->setText(progress.minorJobTitle());
-		ui.MinorJobTitleLabel->setEnabled(TRUE);
+		ui.SubTitleLabel->setText(progress.subTitle());
+		ui.SubTitleLabel->setEnabled(TRUE);
 	}
 	else
 	{
-		ui.MinorJobTitleLabel->setEnabled(FALSE);
-		ui.MinorJobTitleLabel->setText("---");
+		ui.SubTitleLabel->setEnabled(FALSE);
+		ui.SubTitleLabel->setText("---");
 	}
 }
 
@@ -56,7 +56,7 @@ void AtenProgress::initialise()
 	ui.ProgressBar->setValue(progress.currentStep());
 	ui.JobTitleLabel->setText(progress.jobTitle());
 	ui.TimeRemainingLabel->setText(progress.eta());
-	setMinorJobTitle();
+	setSubTitle();
 	gui.processMessages();
 }
 
@@ -65,7 +65,7 @@ void AtenProgress::updateProgress()
 {
 	ui.ProgressBar->setValue(progress.currentStep());
 	ui.TimeRemainingLabel->setText(progress.eta());
-	setMinorJobTitle();
+	setSubTitle();
 	gui.processMessages();
 }
 

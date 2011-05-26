@@ -62,13 +62,12 @@ void AtomListWidget::showWidget()
 	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
-// Update slection states of TTreeWidgetItems from selection in model
+// Update selection states of TTreeWidgetItems from selection in model
 void AtomListWidget::updateSelection()
 {
 	//printf("Selection has been updated.\n");
 	TTreeWidgetItem *ti;
 	Atom *i;
-	gui.mainWidget()->disableDrawing();
 	Model *m = aten.currentModelOrFrame();
 	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
 	{
@@ -76,7 +75,6 @@ void AtomListWidget::updateSelection()
 		i = (Atom*) ti->data.asPointer(VTypes::AtomData);
 		if (i != NULL) item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
-	gui.mainWidget()->enableDrawing();
 	gui.update(GuiQt::CanvasTarget);
 }
 

@@ -78,11 +78,11 @@ int DisorderWizard::run()
 	refreshing_ = FALSE;
 	
 	// Update partition grids
-	int pid = progress.initialise("Generating Partition Info", aten.nPartitioningSchemes(), FALSE, FALSE);
+	int pid = progress.initialise("Generating Partition Info", aten.nPartitioningSchemes(), FALSE);
 	for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
 	{
+		progress.update(pid, -1, ps->name());
 		ps->updatePartitions(TRUE);
-		progress.update(pid);
 	}
 	progress.terminate(pid);
 	return exec();

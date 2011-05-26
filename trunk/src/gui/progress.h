@@ -23,7 +23,6 @@
 #define ATEN_PROGRESSDIALOG_H
 
 #include "gui/ui_progress.h"
-#include "base/dnchar.h"
 #include <QtCore/QTime>
 
 // Progress Dialog
@@ -45,8 +44,8 @@ class AtenProgress : public QDialog
 	// Local Objects / Variables
 	*/
 	private:
-	// Set minor job title (if one exists)
-	void setMinorJobTitle();
+	// Set subtitle (if one exists)
+	void setSubTitle();
 	
 	public:
 	// Initialise dialog, setting all widget values and titles (but not making it visible)

@@ -50,7 +50,7 @@ class Messenger
 	// Add an output type to the output bitvector
 	void addOutputType(Messenger::OutputType);
 	// Remove an output type from the output bitvector
-	void removeOutputType(Messenger::OutputType);	
+	void removeOutputType(Messenger::OutputType);
 	// Returns whether the specified output type is active
 	bool isOutputActive(Messenger::OutputType) const;
 	// Set status of quiet mode
@@ -63,11 +63,11 @@ class Messenger
 	*/
 	public:
 	// Print normal message
-	void print(const char* ...) const;
+	void print(const char*, ...) const;
 	// Print rich message (for GUI, plain for console) including html formatting
-	void richPrint(const char* ...) const;
+	void richPrint(const char*, ...) const;
 	// Print message in specific output level
-	void print(Messenger::OutputType, const char* ...) const;
+	void print(Messenger::OutputType, const char*, ...) const;
 	// Entrances / exits to / from subroutines
 	void enter(const char *callname);
 	void exit(const char *callname);

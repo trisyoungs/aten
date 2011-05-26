@@ -159,14 +159,12 @@ void GuiQt::initialise(int &argc, char **argv)
 	QGLFormat format;
 	format.setSampleBuffers(TRUE);
 	mainContext_ = new QGLContext(format);
-	msg.print(Messenger::Verbose, "Main widget context is %p\n", mainContext_);
 
 	// Create the widget
 	mainWidget_ = new TCanvas(mainContext_, mainWindow_);
 	mainWidget_->probeFeatures();
 	mainWidget_->setGeometry(0,0,800,600);
 	mainWidget_->setCursor(Qt::ArrowCursor);
-	mainWidget_->enableDrawing();
 	msg.exit("GuiQt::initialise");
 }
 
@@ -248,9 +246,6 @@ void GuiQt::run()
 	mainWindow_->finaliseUi();
 	loadModelDialog->finaliseUi();
 
-	// Temporarily disable drawing on the main canvas again
-	gui.mainWidget()->disableDrawing();
-
 	// Set controls in the windows
 	mainWindow_->setControls();
 	prefsDialog->setControls();
@@ -277,7 +272,7 @@ void GuiQt::run()
 	// Reset view of all loaded models
 	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
 
-	gui.mainWidget()->enableDrawing();
+	gui.mainWidget()->setDrawingTarget(TCanvas::ScreenTarget);
 	gui.mainWidget()->postRedisplay(TRUE);
 
 	// Display message box warning if there was a filter load error
@@ -314,7 +309,7 @@ void GuiQt::run()
 	// Set some preferences back to their default values
 	prefs.setZMapType(ElementMap::AutoZMap, FALSE);
 	prefs.setKeepView(FALSE);
-			
+
 	// Attempt to detect corrupt screen (requiring manualswapbuffers to be set in order to fix it)
 // 	QTimer::singleShot(2000, mainWidget_, SLOT(isRenderingOk()));
 	
@@ -535,12 +530,6 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 TCanvas *GuiQt::mainWidget()
 {
 	return mainWidget_;
-}
-
-// Return main view context
-QGLContext *GuiQt::mainContext()
-{
-	return mainContext_;
 }
 
 // Main application structure

@@ -40,6 +40,8 @@ class TCanvas : public QGLWidget
 	public:
 	// Constructor
 	TCanvas(QGLContext *context, QWidget *parent);
+	// Drawing Targets enum
+	enum DrawingTarget { NoTarget, ScreenTarget, PixmapTarget };
 	
 	/*
 	// Character / Setup
@@ -85,8 +87,8 @@ class TCanvas : public QGLWidget
 	private:
 	// Flag indicating if we are currently drawing to this canvas
 	bool drawing_;
-	// Flag to prevent rendering (used to restrict unnecessary renders before canvas is even visible)
-	bool noDraw_;
+	// Current drawing target (none, screen, or pixmap)
+	DrawingTarget drawingTarget_;
 	// Flag stating whether high-quality primitives should be used for rendering
 	bool highQuality_;
 	// Time counter for mouse move events
@@ -123,10 +125,10 @@ class TCanvas : public QGLWidget
 	void render2D(QPainter &painter, Model *source);
 	
 	public:
-	// Enable rendering
-	void enableDrawing();
-	// Disable rendering
-	void disableDrawing();
+	// Set current drawing target (none, screen, or pixmap)
+	void setDrawingTarget(DrawingTarget dt);
+	// Return current drawing target (none, screen, or pixmap)
+	DrawingTarget drawingTarget();
 	// Return whether rendering should use high quality primitives
 	bool highQuality() const;
 	// Update primitives (after, e.g., change in preferences)
