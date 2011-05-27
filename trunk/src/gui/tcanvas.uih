@@ -38,8 +38,9 @@ class TCanvas : public QGLWidget
 	Q_OBJECT
 
 	public:
-	// Constructor
+	// Constructor / Destructor
 	TCanvas(QGLContext *context, QWidget *parent);
+	~TCanvas();
 	// Drawing Targets enum
 	enum DrawingTarget { NoTarget, ScreenTarget, PixmapTarget };
 	

@@ -12,6 +12,7 @@ o Flickering Progress Dialog, e.g. when using disordered builder on Windows
 Current TODO
 ------------
 
+o Replace different sphere size/style primitives with simple unit sphere and use matrix scaling instead (GL_NORMALISE is enabled anyway)
 o When setting new atom colours from prefs window, changes are not reflected in the models.
 o When setting atom colours, automatically change to relevant scheme (and print message)
 o Add method to check current pattern definition so that it doesn't have to be removed so often.

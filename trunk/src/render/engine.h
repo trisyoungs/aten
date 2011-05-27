@@ -64,10 +64,10 @@ class RenderPrimitives
 	int currentQuality_;
 	// Stack size counter
 	int stackSize_;
-	// Atom styles
-	PrimitiveGroup atoms_[Atom::nDrawStyles], *scaledAtoms_;
+	// Atom
+	PrimitiveGroup atom_, stickAtom_;
 	// Selected atom styles
-	PrimitiveGroup selectedAtoms_[Atom::nDrawStyles], *selectedScaledAtoms_;
+	PrimitiveGroup selectedAtom_;
 	// Bond styles
 	PrimitiveGroup bonds_[Atom::nDrawStyles][Bond::nBondTypes];
 	// Selected bond styles

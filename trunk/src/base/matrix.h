@@ -114,6 +114,7 @@ class Matrix
 	// Orthogonalise rotation matrix column w.r.t. one (or two) other columns)
 	void orthogonaliseColumn(int targetcol, int orthcol1, int orthocol2 = -1);
 
+
 	/*
 	// Rotations
 	*/

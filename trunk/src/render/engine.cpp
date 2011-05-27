@@ -37,8 +37,6 @@
 RenderPrimitives::RenderPrimitives()
 {
 	// Primitives
-	scaledAtoms_ = new PrimitiveGroup[elements().nElements()];
-	selectedScaledAtoms_ = new PrimitiveGroup[elements().nElements()];
 	requestedQuality_ = -1;
 	currentQuality_ = -1;
 	stackSize_ = 0;
@@ -47,8 +45,6 @@ RenderPrimitives::RenderPrimitives()
 // Destructor
 RenderPrimitives::~RenderPrimitives()
 {
-	delete[] scaledAtoms_;
-	delete[] selectedScaledAtoms_;
 }
 
 // Set the desired primitive quality
@@ -80,20 +76,16 @@ void RenderPrimitives::recreatePrimitives(bool force)
 	currentQuality_ = requestedQuality_;
 
 	// Clear old primitive groups
+	atom_.clear();
+	stickAtom_.clear();
+	selectedAtom_.clear();
 	for (n=0; n<Atom::nDrawStyles; ++n)
 	{
-		atoms_[n].clear();
-		selectedAtoms_[n].clear();	
 		for (m=0; m<Bond::nBondTypes; ++m)
 		{
 			bonds_[n][m].clear();
 			selectedBonds_[n][m].clear();
 		}
-	}
-	for (n=0; n<elements().nElements(); ++n)
-	{
-		scaledAtoms_[n].clear();
-		selectedScaledAtoms_[n].clear();
 	}
 	tubeRings_.clear();
 	segmentedTubeRings_.clear();
@@ -127,32 +119,13 @@ void RenderPrimitives::recreatePrimitives(bool force)
 		nslices = max(3,(int) (currentQuality_*lodratio*1.5));
 		
 		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
-		atoms_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
-		atoms_[Atom::TubeStyle].primitive(lod).plotSphere(aradius[Atom::TubeStyle], nstacks, nslices);
-		atoms_[Atom::SphereStyle].primitive(lod).plotSphere(aradius[Atom::SphereStyle], nstacks, nslices);
-		selectedAtoms_[Atom::TubeStyle].primitive(lod).plotSphere(aradius[Atom::TubeStyle]*selscale, nstacks, nslices);
-		selectedAtoms_[Atom::SphereStyle].primitive(lod).plotSphere(aradius[Atom::SphereStyle]*selscale, nstacks, nslices);
-		
-		// Atom Styles (Atom::ScaledStyle)
-		for (n = 0; n<elements().nElements(); ++n)
-		{
-			radius = aradius[Atom::ScaledStyle] * elements().el[n].atomicRadius;
-			scaledAtoms_[n].primitive(lod).plotSphere(radius, nstacks, nslices);
-			selectedScaledAtoms_[n].primitive(lod).plotSphere(radius*selscale, nstacks, nslices);
-		}
+		stickAtom_.primitive(lod).createCross(0.5,3-lod);
+		atom_.primitive(lod).plotSphere(1.0, nstacks, nslices);
+		selectedAtom_.primitive(lod).plotSphere(selscale, nstacks, nslices);
 		
 		// Bond primitive accuracy
 		nstacks = max(1,(int) (currentQuality_*lodratio*0.25));
 		nslices = max(3,(int) (currentQuality_*lodratio));
-		
-		// All Stick styles, all bond types
-		bonds_[Atom::StickStyle][Bond::Single].primitive(lod).plotLine(0,0,0,0,0,1);
-		bonds_[Atom::StickStyle][Bond::Aromatic].primitive(lod).plotLine(0,0,0,0,0,1);
-		bonds_[Atom::StickStyle][Bond::Double].primitive(lod).plotLine(-bradius[Atom::StickStyle]*0.5,0,0,-bradius[Atom::StickStyle]*0.5,0,1);
-		bonds_[Atom::StickStyle][Bond::Double].primitive(lod).plotLine(bradius[Atom::StickStyle]*0.5,0,0,bradius[Atom::StickStyle]*0.5,0,1);
-		bonds_[Atom::StickStyle][Bond::Triple].primitive(lod).plotLine(0,0,0,0,0,1);
-		bonds_[Atom::StickStyle][Bond::Triple].primitive(lod).plotLine(-bradius[Atom::StickStyle]*0.66,0,0,-bradius[Atom::StickStyle]*0.66,0,1);
-		bonds_[Atom::StickStyle][Bond::Triple].primitive(lod).plotLine(bradius[Atom::StickStyle]*0.66,0,0,bradius[Atom::StickStyle]*0.66,0,1);
 		
 		// All sphere styles - Single and Aromatic Bonds
 		bonds_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
@@ -235,20 +208,16 @@ void RenderPrimitives::pushInstance(const QGLContext* context, bool forceRegener
 	recreatePrimitives(forceRegenerate);
 	
 	// Push instances
+	atom_.pushInstance(context);
+	stickAtom_.pushInstance(context);
+	selectedAtom_.pushInstance(context);
 	for (int n=0; n<Atom::nDrawStyles; ++n)
 	{
-		atoms_[n].pushInstance(context);
-		selectedAtoms_[n].pushInstance(context);
 		for (int m=0; m<Bond::nBondTypes; ++m)
 		{
 			bonds_[n][m].pushInstance(context);
 			selectedBonds_[n][m].pushInstance(context);
 		}
-	}
-	for (int n=0; n<elements().nElements(); ++n)
-	{
-		scaledAtoms_[n].pushInstance(context);
-		selectedScaledAtoms_[n].pushInstance(context);
 	}
 	tubeRings_.pushInstance(context);
 	segmentedTubeRings_.pushInstance(context);
@@ -275,20 +244,16 @@ void RenderPrimitives::pushInstance(const QGLContext* context, bool forceRegener
 void RenderPrimitives::popInstance(const QGLContext *context)
 {
 	msg.enter("RenderPrimitives::popInstance");
+	atom_.popInstance(context);
+	stickAtom_.popInstance(context);
+	selectedAtom_.popInstance(context);
 	for (int n=0; n<Atom::nDrawStyles; ++n)
 	{
-		atoms_[n].popInstance(context);
-		selectedAtoms_[n].popInstance(context);
 		for (int m=0; m<Bond::nBondTypes; ++m)
 		{
 			bonds_[n][m].popInstance(context);
 			selectedBonds_[n][m].popInstance(context);
 		}
-	}
-	for (int n=0; n<elements().nElements(); ++n)
-	{
-		scaledAtoms_[n].popInstance(context);
-		selectedScaledAtoms_[n].popInstance(context);
 	}
 	tubeRings_.popInstance(context);
 	segmentedTubeRings_.popInstance(context);
