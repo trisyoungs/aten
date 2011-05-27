@@ -66,6 +66,7 @@ void AtenPrefs::setControls()
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
 	ui.AngleLabelFormatEdit->setText(prefs.angleLabelFormat());
 	ui.DistanceLabelFormatEdit->setText(prefs.distanceLabelFormat());
+	ui.ChargeLabelFormatEdit->setText(prefs.chargeLabelFormat());
 	ui.LabelSizeSpin->setValue(prefs.labelSize());
 	ui.RenderDashedAromaticsCheck->setChecked(prefs.renderDashedAromatics());
 	ui.DrawHydrogenBondsCheck->setChecked(prefs.drawHydrogenBonds());
@@ -347,6 +348,12 @@ void AtenPrefs::on_DistanceLabelFormatEdit_textEdited(const QString &text)
 	gui.mainWidget()->postRedisplay();
 }
 
+void AtenPrefs::on_ChargeLabelFormatEdit_textEdited(const QString &text)
+{
+	prefs.setChargeLabelFormat( qPrintable(text) );
+	gui.mainWidget()->postRedisplay();
+}
+
 void AtenPrefs::on_LabelSizeSpin_valueChanged(int value)
 {
 	prefs.setLabelSize(value);
@@ -375,6 +382,18 @@ void AtenPrefs::on_HydrogenBondDotRadiusSpin_valueChanged(double value)
 		aten.globalLogChange(Log::Style);
 		gui.mainWidget()->postRedisplay();
 	}
+}
+
+void AtenPrefs::on_StickLineNormalWidthSpin_valueChanged(double value)
+{
+	prefs.setStickLineNormalWidth(value);
+	gui.mainWidget()->postRedisplay();
+}
+
+void AtenPrefs::on_StickLineSelectedWidthSpin_valueChanged(double value)
+{
+	prefs.setStickLineSelectedWidth(value);
+	gui.mainWidget()->postRedisplay();
 }
 
 /*

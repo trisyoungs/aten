@@ -276,8 +276,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 		{
 			if (i->nBonds() == 0)
 			{
-				if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].stickAtom_, colour_i, atomtransform, 3.0);
-				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].stickAtom_, colour_i, atomtransform, GL_LINE, 1.0);
+				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].stickAtom_, colour_i, atomtransform, GL_LINE, i->isSelected() ? prefs.stickLineSelectedWidth() : prefs.stickLineNormalWidth());
 			}
 		}
 		else
@@ -295,30 +294,6 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			}
 		}
 
-		// Labels
-		labels = i->labels();
-		if (labels != 0)
-		{
-			ffa = i->type();
-			
-			// Blank label string
-			text.clear();
-			// Now add on all parts of the label that are required
-			if (labels&(1 << Atom::IdLabel)) text.strcatf("%i ", i->id()+1);
-			if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", elements().symbol(i));
-			if (labels&(1 << Atom::TypeLabel))
-			{
-				if (ffa == NULL) text.strcat("[None] ");
-				else text.strcatf("[%i %s] ", ffa->typeId(), ffa->name());
-			}
-			if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
-			if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", i->charge());
-			
-			// primitives_[Q_]. text object
-			r2 = source->modelToWorld(i->r(), &screenr);
-			if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, text.get());
-		}
-		
 		// Bonds
 		// Grab some useful values from atom i
 		id_i = i->id();
@@ -971,7 +946,7 @@ void RenderEngine::renderModelOverlays(Model *source)
 			else text.strcatf("[%i %s] ", ffa->typeId(), ffa->name());
 		}
 		if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
-		if (labels&(1 << Atom::ChargeLabel)) text.strcatf("(%f e)", i->charge());
+		if (labels&(1 << Atom::ChargeLabel)) text.strcatf(prefs.chargeLabelFormat(), i->charge());
 		
 		// Add text object
 		r2 = source->modelToWorld(i->r(), &screenr);

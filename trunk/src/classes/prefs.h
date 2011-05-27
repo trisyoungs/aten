@@ -222,6 +222,10 @@ class Prefs
 	double spotlightColour_[Prefs::nColourComponents][4];
 	// Spotlight position
 	double spotlightPosition_[4];
+	// Line width for normal stick atoms
+	double stickLineNormalWidth_;
+	// Line width for selected stick atoms
+	double stickLineSelectedWidth_;
 
 	public:
 	// Sets the specified atom size to the given value
@@ -274,6 +278,14 @@ class Prefs
 	void setScaleSegments(int nsegments);
 	// Get number of segments in colour scale
 	int nScaleSegments() const;
+	// Set line width for normal stick atoms
+	void setStickLineNormalWidth(double width);
+	// Return line width for normal stick atoms
+	double stickLineNormalWidth();
+	// Set line width for selected stick atoms
+	void setStickLineSelectedWidth(double width);
+	// Return line width for selected stick atoms
+	double stickLineSelectedWidth();
 
 
 	/*
@@ -284,6 +296,8 @@ class Prefs
 	Dnchar distanceLabelFormat_;
 	// C-style format for angle label values
 	Dnchar angleLabelFormat_;
+	// C-style format for charge label values
+	Dnchar chargeLabelFormat_;
 	// Pointsize for labels
 	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
@@ -312,6 +326,10 @@ class Prefs
 	void setAngleLabelFormat(const char *format);
 	// Return C-style format for angle label values
 	const char *angleLabelFormat();
+	// Set C-style format for charge label values
+	void setChargeLabelFormat(const char *format);
+	// Return C-style format for charge label values
+	const char *chargeLabelFormat();
 	// Set the pointsize of labels in the model
 	void setLabelSize(int size);
 	// Return the current label pointsize

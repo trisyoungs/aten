@@ -158,6 +158,8 @@ Prefs::Prefs()
 	bondStyleRadius_[Atom::TubeStyle] = 0.15;
 	bondStyleRadius_[Atom::SphereStyle] = 0.15;
 	bondStyleRadius_[Atom::ScaledStyle] = 0.15;
+	stickLineNormalWidth_ = 2.0;
+	stickLineSelectedWidth_ = 4.0;
 	selectionScale_ = 1.5;
 	perspective_ = TRUE;
 	perspectiveFov_ = 20.0;
@@ -324,6 +326,7 @@ Prefs::Prefs()
 	useNiceText_ = TRUE;
 	distanceLabelFormat_ = "%0.3f ";
 	angleLabelFormat_ = "%0.2f";
+	chargeLabelFormat_ = "(%0.3f e)";
 	labelSize_ = 10;
 	manualSwapBuffers_ = FALSE;
 	mouseMoveFilter_ = 10;
@@ -821,6 +824,30 @@ void Prefs::setColourScheme(Prefs::ColouringScheme cs)
 Prefs::ColouringScheme Prefs::colourScheme() const
 {
 	return colourScheme_;
+}
+
+// Set line width for normal stick atoms
+void Prefs::setStickLineNormalWidth(double width)
+{
+	stickLineNormalWidth_ = width;
+}
+
+// Return line width for normal stick atoms
+double Prefs::stickLineNormalWidth()
+{
+	return stickLineNormalWidth_;
+}
+
+// Set line width for selected stick atoms
+void Prefs::setStickLineSelectedWidth(double width)
+{
+	stickLineSelectedWidth_ = width;
+}
+
+// Return line width for selected stick atoms
+double Prefs::stickLineSelectedWidth()
+{
+	return stickLineSelectedWidth_;
 }
 
 /*
@@ -1772,6 +1799,18 @@ void Prefs::setAngleLabelFormat(const char *format)
 const char *Prefs::angleLabelFormat()
 {
 	return angleLabelFormat_.get();
+}
+
+// Set C-style format for charge label values
+void Prefs::setChargeLabelFormat(const char *format)
+{
+	chargeLabelFormat_ = format;
+}
+
+// Return C-style format for charge label values
+const char *Prefs::chargeLabelFormat()
+{
+	return chargeLabelFormat_.get();
 }
 
 // Set the scale of labels in the model
