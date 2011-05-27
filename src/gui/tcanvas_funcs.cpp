@@ -72,6 +72,12 @@ TCanvas::TCanvas(QGLContext *ctxt, QWidget *parent) : QGLWidget(ctxt, parent)
 	setAutoFillBackground(FALSE);
 }
 
+// Destructor
+TCanvas::~TCanvas()
+{
+// 	printf("Destroying TCanvas\n");
+}
+
 /*
 // Character
 */

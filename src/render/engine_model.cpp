@@ -210,6 +210,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 	int id_i, labels, m, n, el_j;
 	Dnchar text;
 	double selscale, radius_i, radius_j, phi, mag, best, delta;
+	double aradius[Atom::nDrawStyles];
 	Atom *i, *j, *k, *l, **atoms;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
@@ -220,10 +221,11 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 	Prefs::ColouringScheme scheme;
 	ForcefieldAtom *ffa;
 	
-	// Grab global style values
+	// Grab global style values and atom radii
 	scheme = prefs.colourScheme();
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
+	for (n=0; n<Atom::nDrawStyles; ++n) aradius[n] = prefs.atomStyleRadius( (Atom::DrawStyle) n);
 	
 	// Atoms and Bonds
 	atoms = source->atomArray();
@@ -267,37 +269,30 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 		// Store copy of alpha value
 		alpha_i = colour_i[3];
 		
-		// Get atom style
+		// Get atom style and render associated object
 		style_i = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
 		
-		switch (style_i)
+		if (style_i == Atom::StickStyle)
 		{
-			case (Atom::StickStyle):
-				if (i->nBonds() == 0)
-				{
-					if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].atoms_[style_i], colour_i, atomtransform, 3.0);
-					else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].atoms_[style_i], colour_i, atomtransform, GL_LINE, 1.0);
-				}
-				break;
-			case (Atom::TubeStyle):
-			case (Atom::SphereStyle):
-				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].atoms_[style_i], colour_i, atomtransform);
-				if (i->isSelected())
-				{
-					colour_i[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedAtoms_[style_i], colour_i, atomtransform);
-					colour_i[3] = alpha_i;
-				}
-				break;
-			case (Atom::ScaledStyle):
-				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].scaledAtoms_[i->element()], colour_i, atomtransform);
-				if (i->isSelected())
-				{
-					colour_i[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedScaledAtoms_[i->element()], colour_i, atomtransform);
-					colour_i[3] = alpha_i;
-				}
-				break;
+			if (i->nBonds() == 0)
+			{
+				if (i->isSelected()) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].stickAtom_, colour_i, atomtransform, 3.0);
+				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].stickAtom_, colour_i, atomtransform, GL_LINE, 1.0);
+			}
+		}
+		else
+		{
+			radius_i = aradius[style_i];
+			if (style_i == Atom::ScaledStyle) radius_i *= elements().el[i->element()].atomicRadius;
+			A = atomtransform;
+			A.applyScaling(radius_i,radius_i,radius_i);
+			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].atom_, colour_i, A);
+			if (i->isSelected())
+			{
+				colour_i[3] = 0.5f;
+				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedAtom_, colour_i, A);
+				colour_i[3] = alpha_i;
+			}
 		}
 
 		// Labels

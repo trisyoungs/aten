@@ -49,19 +49,10 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 		prefs.copyColour(Prefs::TextColour, colour);
 		// Draw a wireframe sphere at the atoms position
 		style_i = (prefs.renderStyle() == Atom::IndividualStyle ? i->style() : prefs.renderStyle());
-		switch (style_i)
-		{
-			case (Atom::StickStyle):
-			case (Atom::TubeStyle):
-				renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].selectedAtoms_[Atom::TubeStyle], colour, A, GL_LINE);
-				break;
-			case (Atom::SphereStyle):
-				renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].selectedAtoms_[Atom::SphereStyle], colour, A, GL_LINE);
-				break;
-			case (Atom::ScaledStyle):
-				renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].selectedScaledAtoms_[i->element()], colour, A, GL_LINE);
-				break;
-		}
+		radius_i = prefs.atomStyleRadius(style_i);
+		if (style_i == Atom::ScaledStyle) radius_i *= elements().el[i->element()].atomicRadius;
+		A.applyScaling(radius_i, radius_i, radius_i);
+		renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].selectedAtom_, colour, A, GL_LINE);
 	}
 
 	// Active user actions

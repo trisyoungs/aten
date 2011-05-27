@@ -761,7 +761,7 @@ void Matrix::applyScalingXY(double scalex, double scaley)
 	applyScalingY(scaley);
 }
 
-// Apply a x scaling to the matrix
+// Apply an x scaling to the matrix
 void Matrix::applyScalingX(double scale)
 {
 	matrix_[0] *= scale;
