@@ -60,6 +60,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "cachelimit",			VTypes::IntegerData,		0, FALSE },
 	{ "calculateintra",		VTypes::IntegerData,		0, FALSE },
 	{ "calculatevdw",		VTypes::IntegerData,		0, FALSE },
+	{ "chargelabelformat",		VTypes::StringData,		0, FALSE },
 	{ "clipfar",			VTypes::DoubleData,		0, FALSE },
 	{ "clipnear",			VTypes::DoubleData,		0, FALSE },
 	{ "colourscales",		VTypes::ColourScaleData,	10, TRUE },
@@ -127,6 +128,8 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "spotlightdiffuse",		VTypes::DoubleData,		4, FALSE },
 	{ "spotlightposition",		VTypes::DoubleData,		4, FALSE },
 	{ "spotlightspecular",		VTypes::DoubleData,		4, FALSE },
+	{ "sticknormalwidth",		VTypes::DoubleData,		4, FALSE },
+	{ "stickselectedwidth",		VTypes::DoubleData,		4, FALSE },
 	{ "tempdir",			VTypes::StringData,		0, FALSE },
 	{ "textcolour",			VTypes::DoubleData,		4, FALSE },
 	{ "transparencybinstartz",	VTypes::DoubleData,		0, FALSE },
@@ -277,6 +280,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::CalculateVdw):
 			rv.set(ptr->calculateVdw());
+			break;
+		case (PreferencesVariable::ChargeLabelFormat):
+			rv.set(prefs.chargeLabelFormat());
 			break;
 		case (PreferencesVariable::ClipFar):
 			rv.set(ptr->clipFar());
@@ -491,6 +497,12 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			if (hasArrayIndex) rv.set( ptr->spotlightColour(Prefs::SpecularComponent)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->spotlightColour(Prefs::SpecularComponent), 4);
 			break;
+		case (PreferencesVariable::StickNormalWidth):
+			rv.set( ptr->stickLineNormalWidth() );
+			break;
+		case (PreferencesVariable::StickSelectedWidth):
+			rv.set( ptr->stickLineSelectedWidth() );
+			break;
 		case (PreferencesVariable::TempDir):
 			rv.set( ptr->tempDir() );
 			break;
@@ -669,6 +681,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::CalculateVdw):
 			ptr->setCalculateVdw( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::ChargeLabelFormat):
+			prefs.setChargeLabelFormat( newvalue.asString(result) );
 			break;
 		case (PreferencesVariable::ClipFar):
 			ptr->setClipFar( newvalue.asDouble(result) );
@@ -943,6 +958,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::SpecularComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::StickNormalWidth):
+			ptr->setStickLineNormalWidth(newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::StickSelectedWidth):
+			ptr->setStickLineSelectedWidth(newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::TempDir):
 			ptr->setTempDir( newvalue.asString(result) );

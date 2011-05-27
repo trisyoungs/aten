@@ -101,10 +101,13 @@ class AtenPrefs : public QDialog
 	void on_SelectionScaleSpin_valueChanged(double value);
 	void on_AngleLabelFormatEdit_textEdited(const QString &text);
 	void on_DistanceLabelFormatEdit_textEdited(const QString &text);
+	void on_ChargeLabelFormatEdit_textEdited(const QString &text);
 	void on_LabelSizeSpin_valueChanged(int value);
 	void on_RenderDashedAromaticsCheck_clicked(bool checked);
 	void on_DrawHydrogenBondsCheck_clicked(bool checked);
 	void on_HydrogenBondDotRadiusSpin_valueChanged(double value);
+	void on_StickLineNormalWidthSpin_valueChanged(double value);
+	void on_StickLineSelectedWidthSpin_valueChanged(double value);
 	// Colours page
 	void on_ColoursTable_cellDoubleClicked(int row, int column);
 	// Rendering / Quality page

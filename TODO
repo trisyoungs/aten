@@ -8,11 +8,11 @@ o Z-Matrix editor does not calculate z-matrix when first shown
 o Fragment builder does not clear properly once closed, and takes a little too long to raise for the first time (add progress indicator)
 o 'New Model' action does not deselect other selected models to make new model the only visible one.
 o Flickering Progress Dialog, e.g. when using disordered builder on Windows
+o Selected stick atoms with no bonds are invisible
 
 Current TODO
 ------------
 
-o Replace different sphere size/style primitives with simple unit sphere and use matrix scaling instead (GL_NORMALISE is enabled anyway)
 o When setting new atom colours from prefs window, changes are not reflected in the models.
 o When setting atom colours, automatically change to relevant scheme (and print message)
 o Add method to check current pattern definition so that it doesn't have to be removed so often.
@@ -39,3 +39,4 @@ Manual TODO
 o Add --process switch and explain processing modes more clearly.
 o Add new image for atom list
 o F10 Shortcut - run Quick Command
+o Prefs accessors - chargelabelformat, sticknormalwidth, stickselectedwidth.

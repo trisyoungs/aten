@@ -443,9 +443,9 @@ void RenderEngine::sortAndSendGL()
 	// Draw stick primitives
 	glDisable(GL_LIGHTING);
 	glLoadMatrixd(modelTransformationMatrix_.matrix());
-	glLineWidth(2.0);
+	glLineWidth(prefs.stickLineNormalWidth());
 	stickLines_.sendToGL();
-	glLineWidth(4.0);
+	glLineWidth(prefs.stickLineSelectedWidth());
 	stickSelectedLines_.sendToGL();
 	glEnable(GL_LIGHTING);
 	glLineWidth(1.0);
@@ -457,7 +457,6 @@ void RenderEngine::sortAndSendGL()
 		for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
 			for (PrimitiveInfo *pi = transparentPrimitives_[n].first(); pi != NULL; pi = pi->next) triangleChopper_.storeTriangles(pi, modelTransformationMatrix_);
 		glLoadIdentity();
-// 		glLoadMatrixd(modelTransformationMatrix_.matrix());
 		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		triangleChopper_.sendToGL();
