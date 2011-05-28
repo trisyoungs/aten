@@ -103,7 +103,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Dnchar basename;
 	do
 	{
-		runid = AtenMath::randomi(RAND_MAX);
+		runid = AtenMath::randomimax();
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, 0);
 	} while (fileExists(basename));
 	

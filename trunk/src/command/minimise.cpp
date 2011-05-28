@@ -115,7 +115,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Determine unique filename
 	do
 	{
-		runid = AtenMath::randomi(RAND_MAX);
+		runid = AtenMath::randomimax();
 		mopacInput.sprintf("%s%caten-mopac-%i-%i.mop", prefs.tempDir(), PATHSEP, gui.pid(), runid);
 	} while (fileExists(mopacInput));
 	mopacArc.sprintf("%s%caten-mopac-%i-%i.arc", prefs.tempDir(), PATHSEP, gui.pid(), runid);

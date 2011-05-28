@@ -8,7 +8,6 @@ o Z-Matrix editor does not calculate z-matrix when first shown
 o Fragment builder does not clear properly once closed, and takes a little too long to raise for the first time (add progress indicator)
 o 'New Model' action does not deselect other selected models to make new model the only visible one.
 o Flickering Progress Dialog, e.g. when using disordered builder on Windows
-o Selected stick atoms with no bonds are invisible
 
 Current TODO
 ------------
@@ -42,3 +41,4 @@ o F10 Shortcut - run Quick Command
 o Prefs accessors - chargelabelformat, sticknormalwidth, stickselectedwidth.
 o Chapter / Section on Basic View / Imaging.
 o What to do about the FAQ?  Maintain as separate Word document / PDF / single-page HTML?
+o New commands 'random' and 'randomi'.

@@ -437,7 +437,7 @@ CommandData Command::data[Command::nCommands] = {
 		"",
 		"Print a list of the components requested in the disordered builder" },
 	{ "setupcomponent",	"Cnnnb",	VTypes::NoData,
-		"string policy, int partition = 0, int population = 0, double density = 0.0, bool rotate = TRUE",
+		"string policy, int partition = 1, int population = 0, double density = 0.0, bool rotate = TRUE",
 		"Setup the current model's component information for the disorder builder" },
 
 	// Edit commands
@@ -842,7 +842,7 @@ CommandData Command::data[Command::nCommands] = {
 		"Return a random number between 0.0 and 1.0, exclusive of 1.0" },
 	{ "randomi",		"i",		VTypes::IntegerData,
 		"int max = 0",
-		"Return a random integer between 0 and MAXINT-1, or 0 and the max value provided (inclusive of the max value)" },
+		"Return a random integer between 0 and MAXINT-1, or 0 and (max-1) inclusive" },
 	{ "sin",		"N",		VTypes::DoubleData,
 		"double degrees",
 		"Return sine of specified angle (supplied in degrees)" },

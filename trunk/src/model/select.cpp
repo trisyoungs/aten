@@ -94,6 +94,10 @@ void Model::selectAtom(Atom *i, bool markonly)
 // Select Atom by ID
 void Model::selectAtom(int id, bool markonly)
 {
+	if ((id < 0) || (id >= atoms_.nItems()))
+	{
+		printf("Internal Error: Invalid atom id %i requested for %s (nAtoms = %i)\n", id, markonly ? "marking" : "selection", atoms_.nItems());
+	}
 	Atom *i = atom(id);
 	if (i != NULL) selectAtom(i, markonly);
 }
@@ -130,6 +134,10 @@ void Model::deselectAtom(Atom *i, bool markonly)
 // Deselect Atom by ID
 void Model::deselectAtom(int id, bool markonly)
 {
+	if ((id < 0) || (id >= atoms_.nItems()))
+	{
+		printf("Internal Error: Invalid atom id %i requested for %s (nAtoms = %i)\n", id, markonly ? "unmarking" : "deselection", atoms_.nItems());
+	}
 	Atom *i = atom(id);
 	if (i != NULL) deselectAtom(i, markonly);
 }
@@ -156,12 +164,12 @@ void Model::selectionDelete(bool markonly)
 	Atom *i, *tempi;
 	int count = 0;
 	bool cancelled = FALSE;
-	bool pid = progress.initialise("Deleting atoms...", selection_.nItems()*2, FALSE);
 	// Attempt to be clever here for the sake of undo/redo, while avoiding renumbering at every step.
 	// 1) First, delete all measurements and bonds to the selected atoms
 	Refitem<Bond,int> *bref;
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
+		i = ri->item;
 		// Remove measurements
 		removeMeasurements(i);
 		// Delete All Bonds To Specific Atom
@@ -174,7 +182,6 @@ void Model::selectionDelete(bool markonly)
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
 		}
-		if (!progress.update(pid)) cancelled = TRUE;
 		if (cancelled) break;
 	}
 	// 2) Delete the actual atoms
@@ -190,10 +197,8 @@ void Model::selectionDelete(bool markonly)
 				i = tempi;
 			}
 			else i = i->prev;
-			if (!progress.update(pid,++count)) break;
 		}
 	}
-	progress.terminate(pid);
 	// Renumber atoms and recalculate density here, since we request deletion with no updates
 	renumberAtoms();
 	calculateDensity();

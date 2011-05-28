@@ -62,7 +62,7 @@ bool DisorderData::initialise(Model *sourceModel, PartitionData *partitionData)
 		return FALSE;
 	}
 	
-	// Make copy of source model and centre it at zero, remove an labels, measurements etc., and leave selected
+	// Make copy of source model and centre it at zero, remove any labels, measurements etc., and leave selected
 	sourceModel_.copy(sourceModel);
 	sourceModel_.selectAll();
 	sourceModel_.centre(0.0, 0.0, 0.0);
@@ -125,7 +125,7 @@ PartitionData *DisorderData::partition()
 // Copy contents of component across to specified model
 void DisorderData::copyTo(Model *target)
 {
-	clipboard_.copyAll(&targetModel_);
+	clipboard_.copyAll(&targetModel_, TRUE);
 	clipboard_.pasteToModel(target, FALSE);
 }
 
@@ -163,7 +163,7 @@ void DisorderData::acceptCandidate()
 	if (moleculeId_ == -1)
 	{
 		// Copy sourcemodel to targetModel_
-		clipboard_.copyAll(&sourceModel_);
+		clipboard_.copyAll(&sourceModel_, TRUE);
 		clipboard_.pasteToModel(&targetModel_, FALSE);
 		// Update density of target partition
 		partitionData_->adjustReducedMass(&sourceModel_);
@@ -192,11 +192,11 @@ bool DisorderData::selectCandidate()
 		moleculeId_ = -1;
 		return FALSE;
 	}
-	// Pick random molecule id, select those atoms and 
+	// Pick random molecule id, select those atoms and copy/paste it
 	moleculeId_ = AtenMath::randomi(nAdded_);
 	targetModel_.selectNone();
 	for (int i=moleculeId_*sourceModel_.nAtoms(); i < (moleculeId_+1)*sourceModel_.nAtoms(); ++i) targetModel_.selectAtom(i);
-	clipboard_.copySelection(&targetModel_);
+	clipboard_.copySelection(&targetModel_, TRUE);
 	sourceModel_.clear();
 	clipboard_.pasteToModel(&sourceModel_);
 	return TRUE;

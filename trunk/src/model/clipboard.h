@@ -134,11 +134,11 @@ class Clipboard
 
 	public:
 	// Copy all selected atoms in the specified model to the Clipboard
-	void copySelection(Model *m);
+	void copySelection(Model *m, bool quiet = FALSE);
 	// Copy all marked atoms in the specified model
 	void copyMarked(Model *m);
 	// Copy all atoms in the specified model to the Clipboard
-	void copyAll(Model*);
+	void copyAll(Model* m, bool quiet = FALSE);
 	// Cut atom selection from specified model
 	void cutSelection(Model*);
 	// Paste Clipboard contents into the model
