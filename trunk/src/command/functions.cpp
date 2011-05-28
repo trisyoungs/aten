@@ -322,6 +322,8 @@ void Command::initPointers()
 	pointers_[Log] = &Command::function_Log;
 	pointers_[Nint] = &Command::function_Nint;
 	pointers_[Normalise] = &Command::function_Normalise;
+	pointers_[Random] = &Command::function_Random;
+	pointers_[Randomi] = &Command::function_Randomi;
 	pointers_[Sin] = &Command::function_Sin;
 	pointers_[Sqrt] = &Command::function_Sqrt;
 	pointers_[Tan] = &Command::function_Tan;

@@ -89,7 +89,7 @@ class Tree
 	// Return return-type of tree
 	VTypes::DataType returnType() const;
 	// Reset Tree, ready for new statement(s) to be added
-	void reset();
+	void reset(bool clearVariables = TRUE);
 
 
 	/*

@@ -140,31 +140,6 @@ void Primitive::setType(GLenum type)
 // Primitive Generation
 */
 
-// Create vertices of cross with specified width
-void Primitive::createCross(double width, int naxes)
-{
-	int i,j,count, limit = max(1,naxes);
-	GLfloat vert[3], norm[3];
-
-	// Clear existing data first (if it exists)
-	type_ = GL_LINES;
-	forgetAll();
-	
-
-	count = 0;
-	for (i=0; i<limit; ++i)
-	{
-		for (j=0; j<3; ++j)
-		{
-			vert[j] = (i == j ? width : 0.0);
-			norm[j] = (j == 0 ? 1.0 : 0.0);
-		}
-		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2], TRUE);
-		vert[i] = -vert[i];
-		defineVertex(vert[0], vert[1], vert[2], norm[0], norm[1], norm[2], TRUE);
-	}
-}
-
 // Create wireframe cube centred at zero
 void Primitive::createWireCube(double size)
 {

@@ -106,13 +106,27 @@ bool Command::function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Return random real number between 0.0 and 1.0, exclusive of 1.0
+bool Command::function_Random(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( AtenMath::random() );
+	return TRUE;
+}
+
+// Return random integer number between 0 and MAXINT-1 or the maximum value supplied
+bool Command::function_Randomi(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (c->hasArg(0)) rv.set( AtenMath::randomi(c->argi(0)) );
+	else rv.set( AtenMath::randomimax() );
+	return TRUE;
+}
+
 // Return sine of argument (supplied in degrees)
 bool Command::function_Sin(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( sin(c->argd(0) / DEGRAD) );
 	return TRUE;
 }
-
 
 // Return square root of argument
 bool Command::function_Sqrt(CommandNode *c, Bundle &obj, ReturnValue &rv)

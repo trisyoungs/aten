@@ -33,7 +33,8 @@ class AtenMath
 	// Random number generation
 	public:
 	static double random();
-	static int randomi(int);
+	static int randomimax();
+	static int randomi(int range);
 
 	// Integer power function
 	public:

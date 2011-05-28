@@ -136,7 +136,7 @@ VTypes::DataType Tree::returnType() const
 }
 
 // Reset Tree, ready for new statement(s) to be added
-void Tree::reset()
+void Tree::reset(bool clearVariables)
 {
 	msg.enter("Tree::reset");
 	// Remove all nodes and statements except the first (which was the original root ScopeNode)
@@ -156,8 +156,11 @@ void Tree::reset()
 	if (scope)
 	{
 		scopeStack_.add( (ScopeNode*) rootnode);
-		scope->variables.clear();
-		scope->createGlobalVariables();
+		if (clearVariables)
+		{
+			scope->variables.clear();
+			scope->createGlobalVariables();
+		}
 	}
 	
 	msg.exit("Tree::reset");

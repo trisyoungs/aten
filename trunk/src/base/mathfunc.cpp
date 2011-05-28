@@ -48,16 +48,24 @@ double AtenMath::erf(double x)
 double AtenMath::random()
 {
 	// Simple random number generator from C++ stdlib.
-	// Returns numbers from 0.0 to 1.0, exclusive of 1.0.
+	// Returns numbers from 0.0 to 1.0 inclusive.
 	// TODO Better generator
-	return (double(rand()-1) / RAND_MAX);
+	return (double(rand()) / RAND_MAX);
 }
 
-// Random number generator (0 - range-1)
-int AtenMath::randomi(int range)
+// Random number generator (o - RAND_MAX)
+int AtenMath::randomimax()
 {
 	// Returns a random number from 0->(range-1) inclusive.
-	return int(range * random());
+	return rand();
+}
+
+// Random number generator (0 - range)
+int AtenMath::randomi(int range)
+{
+	// Returns a random number from 0->(range) inclusive.
+	// Do so by excluding 1.0 from the random number generator, so all integers will have equal probability
+	return int((range+1) * (double(rand()-1) / RAND_MAX));
 }
 
 // Integer power function

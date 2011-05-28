@@ -77,7 +77,6 @@ void RenderPrimitives::recreatePrimitives(bool force)
 
 	// Clear old primitive groups
 	atom_.clear();
-	stickAtom_.clear();
 	selectedAtom_.clear();
 	for (n=0; n<Atom::nDrawStyles; ++n)
 	{
@@ -119,7 +118,6 @@ void RenderPrimitives::recreatePrimitives(bool force)
 		nslices = max(3,(int) (currentQuality_*lodratio*1.5));
 		
 		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
-		stickAtom_.primitive(lod).createCross(0.5,3-lod);
 		atom_.primitive(lod).plotSphere(1.0, nstacks, nslices);
 		selectedAtom_.primitive(lod).plotSphere(selscale, nstacks, nslices);
 		
@@ -209,7 +207,6 @@ void RenderPrimitives::pushInstance(const QGLContext* context, bool forceRegener
 	
 	// Push instances
 	atom_.pushInstance(context);
-	stickAtom_.pushInstance(context);
 	selectedAtom_.pushInstance(context);
 	for (int n=0; n<Atom::nDrawStyles; ++n)
 	{
@@ -245,7 +242,6 @@ void RenderPrimitives::popInstance(const QGLContext *context)
 {
 	msg.enter("RenderPrimitives::popInstance");
 	atom_.popInstance(context);
-	stickAtom_.popInstance(context);
 	selectedAtom_.popInstance(context);
 	for (int n=0; n<Atom::nDrawStyles; ++n)
 	{

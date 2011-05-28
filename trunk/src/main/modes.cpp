@@ -60,8 +60,12 @@ void Aten::exportModels()
 		}
 		m->setFilter(exportFilter_);
 		m->setFilename(filename);
+		
+		// Temporarily disable undo/redo for the model, save, and re-enable
+		m->disableUndoRedo();
 		if (exportFilter_->executeWrite(filename)) msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), filename.get(), exportFilter_->filter.name());
 		else msg.print("Failed to save model '%s'.\n", m->name());
+		m->enableUndoRedo();
 	}
 	msg.exit("Aten::exportModels");
 }

@@ -274,9 +274,11 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 		
 		if (style_i == Atom::StickStyle)
 		{
+			// Only need to draw something if the atom has no bonds
 			if (i->nBonds() == 0)
 			{
-				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].stickAtom_, colour_i, atomtransform, GL_LINE, i->isSelected() ? prefs.stickLineSelectedWidth() : prefs.stickLineNormalWidth());
+				if (i->isSelected()) stickSelectedLines_.plotCross(0.5, atomtransform, colour_i);
+				else stickLines_.plotCross(0.5, atomtransform, colour_i);
 			}
 		}
 		else

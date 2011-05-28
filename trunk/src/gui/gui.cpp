@@ -477,6 +477,8 @@ bool GuiQt::saveBeforeClose()
 					return FALSE;
 				// Save model before quit
 				case (QMessageBox::Save):
+					// Temporarily disable undo/redo for the model, save, and re-enable
+					m->disableUndoRedo();
 					// If model has a filter set, just save it
 					f = m->filter();
 					if (f != NULL) f->executeWrite(m->filename(), rv);
@@ -486,7 +488,12 @@ bool GuiQt::saveBeforeClose()
 						m->setFilename(mainWindow_->saveModelFilename.get());
 						mainWindow_->saveModelFilter->executeWrite(m->filename(), rv);
 					}
-					else return FALSE;
+					else
+					{
+						m->enableUndoRedo();
+						return FALSE;
+					}
+					m->enableUndoRedo();
 					break;
 			}
 		}
