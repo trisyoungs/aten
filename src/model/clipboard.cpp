@@ -163,7 +163,7 @@ void Clipboard::copyBonds()
 }
 
 // Copy selection
-void Clipboard::copySelection(Model *m)
+void Clipboard::copySelection(Model* m, bool quiet)
 {
 	msg.enter("Clipboard::copySelection");
 	if (m->nSelected() == 0)
@@ -172,15 +172,19 @@ void Clipboard::copySelection(Model *m)
 		msg.exit("Clipboard::copySelection");
 		return;
 	}
+	
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
+	
 	// Copy atoms
-	msg.print("Copying atoms...");
+	if (!quiet) msg.print("Copying %i atoms from model '%s'...", m->nSelected(), m->name());
 	for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next) copyAtom(ri->item);
+	
 	// Copy bonds
-	msg.print("bonds...");
+	if (!quiet) msg.print("bonds...");
 	copyBonds();
-	msg.print(" Done.\n");
+	if (!quiet) msg.print(" Done.\n");
+	
 	msg.exit("Clipboard::copySelection");
 }
 
@@ -194,25 +198,36 @@ void Clipboard::copyMarked(Model *m)
 		msg.exit("Clipboard::copyMarked");
 		return;
 	}
+	
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
+	
 	// Copy atoms
 	for (Refitem<Atom,int> *ri = m->selection(TRUE); ri != NULL; ri = ri->next) copyAtom(ri->item);
+	
 	// Copy bonds
 	copyBonds();
+	
 	msg.exit("Clipboard::copyMarked");
 }
 
 // Copy model
-void Clipboard::copyAll(Model *m)
+void Clipboard::copyAll(Model *m, bool quiet)
 {
 	msg.enter("Clipboard::copyAll");
+	
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
+	
+	// Copy atoms
+	if (!quiet) msg.print("Copying all atoms from model '%s'...", m->name());
 	for (Atom *i = m->atoms(); i != NULL; i = i->next) copyAtom(i);
-	msg.print(Messenger::Verbose, "Copied %i atoms from model %s\n", atoms_.nItems(), m->name());
+	if (!quiet) msg.print("bonds...");
+	
 	// Copy bonds
 	copyBonds();
+	if (!quiet) msg.print(" Done.\n");
+	
 	msg.exit("Clipboard::copyAll");
 }
 

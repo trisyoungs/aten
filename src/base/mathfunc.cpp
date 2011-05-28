@@ -60,12 +60,11 @@ int AtenMath::randomimax()
 	return rand();
 }
 
-// Random number generator (0 - range)
+// Random number generator (0 - range-1)
 int AtenMath::randomi(int range)
 {
-	// Returns a random number from 0->(range) inclusive.
-	// Do so by excluding 1.0 from the random number generator, so all integers will have equal probability
-	return int((range+1) * (double(rand()-1) / RAND_MAX));
+	// Returns a random number from 0->(range-1) inclusive.
+	return int(range * (double(rand()-1) / RAND_MAX));
 }
 
 // Integer power function

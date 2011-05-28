@@ -116,7 +116,7 @@ bool Command::function_Random(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Return random integer number between 0 and MAXINT-1 or the maximum value supplied
 bool Command::function_Randomi(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (c->hasArg(0)) rv.set( AtenMath::randomi(c->argi(0)) );
+	if (c->hasArg(0)) rv.set( AtenMath::randomi( c->argi(0)) );
 	else rv.set( AtenMath::randomimax() );
 	return TRUE;
 }
