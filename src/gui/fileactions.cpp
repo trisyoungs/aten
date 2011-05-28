@@ -142,12 +142,15 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 		m = aten.currentModelOrFrame();
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
+		// Temporarily disable undo/redo for the model, save, and re-enable
+		m->disableUndoRedo();
 		if (saveModelFilter->executeWrite(saveModelFilename.get()))
 		{
 			m->changeLog.updateSavePoint();
 			msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
 		}
 		else msg.print("Failed to save model '%s'.\n", m->name());
+		m->enableUndoRedo();
 		gui.update();
 	}
 }
@@ -175,13 +178,15 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 			}
 			m->setFilter(saveModelFilter);
 			m->setFilename(saveModelFilename.get());
+			// Temporarily disable undo/redo for the model, save, and re-enable
+			m->disableUndoRedo();
 			if (saveModelFilter->executeWrite(saveModelFilename.get()))
 			{
 				m->changeLog.updateSavePoint();
 				msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
 			}
 			else msg.print("Failed to save model '%s'.\n", m->name());
-			//refreshModelTabs();
+			m->enableUndoRedo();
 		}
 	}
 	else
@@ -191,9 +196,12 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 			msg.print("Not saved.\n");
 			return;
 		}
+		// Temporarily disable undo/redo for the model, save, and re-enable
+		m->disableUndoRedo();
 		t->executeWrite(filename.get());
 		m->changeLog.updateSavePoint();
-	}	
+		m->enableUndoRedo();
+	}
 	gui.update();
 }
 

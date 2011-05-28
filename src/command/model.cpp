@@ -368,6 +368,8 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs()->setFilter(filter);
 	obj.rs()->setFilename(c->argc(1));
 	filter->executeCustomDialog(TRUE);
+	// Temporarily disable undo/redo for the model, save, and re-enable
+	obj.rs()->disableUndoRedo();
 	bool result = filter->executeWrite(obj.rs()->filename());
 	if (result)
 	{
@@ -375,6 +377,7 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("Model '%s' saved to file '%s' (%s)\n", obj.rs()->name(), obj.rs()->filename(), filter->filter.name());
 	}
 	else msg.print("Failed to save model '%s'.\n", obj.rs()->name());
+	obj.rs()->enableUndoRedo();
 	rv.set(result);
 	return TRUE;
 }
@@ -411,7 +414,10 @@ bool Command::function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &r
 	clip.pasteToModel(&m, FALSE);
 	Bundle oldbundle = obj;
 	obj.m = &m;
+	// Temporarily disable undo/redo for the model, save, and re-enable
+	obj.rs()->disableUndoRedo();
 	bool result = filter->executeWrite(m.filename());
+	obj.rs()->enableUndoRedo();
 	obj = oldbundle;
 	if (result) msg.print("Selection from model '%s' saved to file '%s' (%s)\n", m.name(), m.filename(), filter->filter.name());
 	else msg.print("Failed to save selection from model '%s'.\n", m.name());

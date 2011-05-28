@@ -65,7 +65,7 @@ class RenderPrimitives
 	// Stack size counter
 	int stackSize_;
 	// Atom
-	PrimitiveGroup atom_, stickAtom_;
+	PrimitiveGroup atom_;
 	// Selected atom styles
 	PrimitiveGroup selectedAtom_;
 	// Bond styles

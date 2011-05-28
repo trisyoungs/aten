@@ -291,3 +291,15 @@ void Primitive::plotCircle(double radius, int nstacks, int nsegments, bool segme
 		}
 	}
 }
+
+// Create vertices of cross with specified width
+void Primitive::plotCross(double halfWidth, Matrix &transform, GLfloat colour[4])
+{
+	Vec3<double> v, centre(transform[12], transform[13], transform[14]);
+	for (int i=0; i<3; ++i)
+	{
+		v = transform.columnAsVec3(i) * halfWidth;
+		defineVertex(centre.x+v.x, centre.y+v.y, centre.z+v.z, 1.0, 1.0, 1.0, colour[0], colour[1], colour[2], colour[3], FALSE);
+		defineVertex(centre.x-v.x, centre.y-v.y, centre.z-v.z, 1.0, 1.0, 1.0, colour[0], colour[1], colour[2], colour[3], FALSE);
+	}
+}

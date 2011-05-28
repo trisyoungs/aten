@@ -312,6 +312,8 @@ bool Aten::closeModel(Model *m)
 				return FALSE;
 				// Save model before quit
 			case (QMessageBox::Save):
+				// Temporarily disable undo/redo for the model, save, and re-enable
+				m->disableUndoRedo();
 				// If model has a filter set, just save it
 				filter = m->filter();
 				if (filter != NULL) filter->executeWrite(m->filename());
@@ -321,13 +323,18 @@ bool Aten::closeModel(Model *m)
 					if (!gui.mainWindow()->saveModelFilter->executeCustomDialog())
 					{
 						msg.print("Not saved.\n");
+						m->enableUndoRedo();
 						return FALSE;
 					}
 					m->setFilter(gui.mainWindow()->saveModelFilter);
 					m->setFilename(gui.mainWindow()->saveModelFilename.get());
 					gui.mainWindow()->saveModelFilter->executeWrite(gui.mainWindow()->saveModelFilename.get());
 				}
-				else return FALSE;
+				else
+				{
+					m->enableUndoRedo();
+					return FALSE;
+				}
 				aten.removeModel(m);
 				// Update GUI
 				gui.update(GuiQt::AllTarget);

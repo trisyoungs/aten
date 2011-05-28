@@ -608,13 +608,12 @@ int Aten::parseCli(int argc, char *argv[])
 					{
 						// Get string from user
 						line = readline(prompt);
-						interactiveScript.mainProgram()->reset();
+						interactiveScript.mainProgram()->reset(FALSE);
 						if (interactiveScript.generateFromString(line)) interactiveScript.execute(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
 						free(line);
 					} while (aten.programMode() == Aten::InteractiveMode);
-					//aten.set_program_mode(PM_NONE);
 					break;
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):

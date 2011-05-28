@@ -1,5 +1,5 @@
 /*
-	*** Qt prefs window functions
+	*** Preferences Window functions
 	*** src/gui/prefs_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -71,6 +71,8 @@ void AtenPrefs::setControls()
 	ui.RenderDashedAromaticsCheck->setChecked(prefs.renderDashedAromatics());
 	ui.DrawHydrogenBondsCheck->setChecked(prefs.drawHydrogenBonds());
 	ui.HydrogenBondDotRadiusSpin->setValue(prefs.hydrogenBondDotRadius());
+	ui.StickLineNormalWidthSpin->setValue(prefs.stickLineNormalWidth());
+	ui.StickLineSelectedWidthSpin->setValue(prefs.stickLineSelectedWidth());
 	// View Page - Colours Tab
 	ui.ColoursTable->setRowCount(Prefs::nObjectColours);
 	QColor qcol;

@@ -1,7 +1,8 @@
 # Coordinate (ATO) file for Empirical Potential Structure Refinement (EPSR) software ( (C) Rutherford Appleton Labs )
 # Created:	 23/03/2011
-# Last modified: 23/03/2011
+# Last modified: 28/05/2011
 # ChangeLog:
+# 	28/05/2011 : Added writing of random numbers on export. Fixed import to recognise end of LJ specifications.
 # 	23/03/2011 : Initial version.
 
 filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato", glob="*.ato", id=18)
@@ -11,7 +12,7 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	int nmols,m,n,l,natoms,nres,nrot,count,done,id,nrotatoms;
 	element el;
 	double boxsize, temp, eps, sigma, mass, q;
-	string atomname, elname,line;
+	string atomname, elname, line, dummy;
 	vector com, r, phi;
 	ffatom ffa;
 
@@ -89,7 +90,9 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		// Two lines per atomtype
 		//   name, symbol, 0/isomass
 		//   epsilon  sigma  mass  charge
-		if (!readline(atomname, elname)) error("Error reading atomtype information %i.\n", count);
+		if (!readline(atomname, elname, dummy)) error("Error reading atomtype information %i.\n", count);
+		// If 'dummy' is empty, chances are we've gone on to the fmole numbers (which has no third data)
+		if (dummy == "") break;
 		if (!readline(eps, sigma, mass, q)) error("Error reading atomtype LJ information %i.\n", count);
 		el = aten.findelement(elname);
 		if (el == 0) break;
@@ -315,8 +318,13 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	}
 	
 	// Extra data
+
 	// Used by fmole to keep non-bonded atoms apart
 	writelinef(" %10.4e  %10.4e\n", 1.0, 3.0);
+
+	// Random numbers for restart purposes
+	for (n=0; n<15; ++n) writelinef(" %i", randomi());
+	writelinef("\n");
 	
 }
 

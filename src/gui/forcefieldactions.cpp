@@ -119,8 +119,11 @@ void AtenForm::on_actionSaveExpression_triggered(bool checked)
 		{
 			// Run any export options in the filter
 			if (!filter->executeCustomDialog()) return;
+			// Temporarily disable undo/redo for the model, save expression, and re-enable
+			m->disableUndoRedo();
 			if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
 			else msg.print("Failed to save expression for model '%s'.\n", m->name());
+			m->enableUndoRedo();
 		}
 	}
 }

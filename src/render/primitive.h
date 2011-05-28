@@ -29,6 +29,7 @@
 #endif
 #include "templates/list.h"
 #include "render/vertexchunk.h"
+#include "base/matrix.h"
 
 // Forward Declarations
 class QGLContext;
@@ -149,14 +150,14 @@ class Primitive
 	void plotRing(double radius, double width, int nstacks, int nslices, int nsegments, bool segmented = FALSE);
 	// Plot circle of specified radius
 	void plotCircle(double radius, int nstacks, int nsegments, bool segmented = FALSE);
+	// Create vertices of cross with specified width
+	void plotCross(double halfWidth, Matrix &transform, GLfloat colour[4]);
 
 
 	/*
 	// Primitive Generation
 	*/
 	public:
-	// Create vertices of cross with specified width
-	void createCross(double width, int naxes);
 	// Create wireframe cube centred at zero
 	void createWireCube(double size);
 	// Create wireframe, crossed, cube centred at zero

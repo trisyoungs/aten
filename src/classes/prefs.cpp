@@ -353,6 +353,7 @@ bool Prefs::load()
 	Dnchar filename;
 	ReturnValue rv;
 	bool result, found;
+
 	// Program preferences
 	found = FALSE;
 	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
@@ -364,15 +365,16 @@ bool Prefs::load()
 		filename.sprintf("%s%c%s%cprefs.txt", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
 		msg.print("Looking for program preferences file '%s'...\n", filename.get());
 		if (fileExists(filename)) found = TRUE;
-		
 	}
 	if (found)
 	{
+		msg.print("Program preferences file found in '%s'\n", filename.get());
 		Program prefscmds;
 		result = prefscmds.generateFromFile(filename, "Program Preferences");
 		if (result) result = prefscmds.execute(rv);
 	}
 	else msg.print("Program preferences file not found.\n");
+
 	// User preferences
 	found = FALSE;
 	filename.sprintf("%s%c%s%cuser.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
@@ -387,6 +389,7 @@ bool Prefs::load()
 	}
 	if (found)
 	{
+		msg.print("User preferences file found in '%s'\n", filename.get());
 		Program prefscmds;
 		result = prefscmds.generateFromFile(filename, "User Preferences");
 		if (result) result = prefscmds.execute(rv);

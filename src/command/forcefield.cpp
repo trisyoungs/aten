@@ -643,7 +643,10 @@ bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &
 		msg.print("script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
 		return FALSE;
 	}
+	// Temporarily disable undo/redo for the model, save, and re-enable
+	obj.rs()->disableUndoRedo();
 	bool result = filter->executeWrite(c->argc(1));
+	obj.rs()->enableUndoRedo();
 	if (result) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", obj.rs()->name(), c->argc(1), filter->filter.name());
 	else msg.print("Failed to save expression for model '%s'.\n", obj.rs()->name());
 	return result;

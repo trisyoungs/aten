@@ -362,6 +362,8 @@ class Command
 		Log,
 		Nint,
 		Normalise,
+		Random,
+		Randomi,
 		Sin,
 		Sqrt,
 		Tan,
@@ -830,6 +832,8 @@ class Command
 	static bool function_Log(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Nint(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Random(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Randomi(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Sin(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Sqrt(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Tan(CommandNode *c, Bundle &obj, ReturnValue &rv);
