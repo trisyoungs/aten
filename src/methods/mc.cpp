@@ -48,6 +48,7 @@ MonteCarlo::MoveType MonteCarlo::moveType(const char *s, bool reporterror)
 MonteCarlo::MonteCarlo()
 {
 	// Private variables
+	// Monte Carlo
 	maxStep_[MonteCarlo::Translate] = 1.0;
 	maxStep_[MonteCarlo::Rotate] = 20.0;
 	maxStep_[MonteCarlo::ZMatrix] = 0.0;
@@ -70,6 +71,17 @@ MonteCarlo::MonteCarlo()
 	acceptanceRatioSize_ = 0;
 	temperature_ = 300.0;
 	nCycles_ = 100;
+	// Disorder builder
+	disorderAccuracy_ = 0.01;
+	disorderMaxFailures_ = 5;
+	disorderReductionFactor_ = 0.98;
+	disorderMinimumScaleFactor_ = 0.95;
+	disorderMaximumScaleFactor_ = 1.30;
+	disorderNTweaks_ = 5;
+	disorderDeltaDistance_ = 0.3;
+	disorderDeltaAngle_ = 5.0;
+	disorderMaxCycles_ = 10000;
+	disorderMaxRecoveryCycles_ = 100;
 }
 
 // Destructor
@@ -152,6 +164,126 @@ void MonteCarlo::createRatioArray(int newsize)
 	acceptanceRatioSize_ = newsize;
 	// Zero the elements
 	for (n=0; n<newsize; n++) for (m=0; m<MonteCarlo::nMoveTypes; m++) acceptanceRatio_[n][m] = 0.0;
+}
+
+// Set maximum number of disorder cycles to perform
+void MonteCarlo::setDisorderMaxCycles(int ncycles)
+{
+	disorderMaxCycles_ = ncycles;
+}
+
+// Return maximum number of disorder cycles to perform
+int MonteCarlo::disorderMaxCycles()
+{
+	return disorderMaxCycles_;
+}
+
+// Set maximum number of recovery cycles to perform
+void MonteCarlo::setDisorderMaxRecoveryCycles(int ncycles)
+{
+	disorderMaxRecoveryCycles_ = ncycles;
+}
+
+// Return maximum number of recovery cycles to perform
+int MonteCarlo::disorderMaxRecoveryCycles()
+{
+	return disorderMaxRecoveryCycles_;
+}
+
+// Set percentage error allowed in actual vs requested densities
+void MonteCarlo::setDisorderAccuracy(double accuracy)
+{
+	disorderAccuracy_ = accuracy;
+}
+
+// Return percentage error allowed in actual vs requested densities
+double MonteCarlo::disorderAccuracy()
+{
+	return disorderAccuracy_;
+}
+
+// Set number of successive failed insertions allowed before component scale factor is reduced
+void MonteCarlo::setDisorderMaxFailures(int maxfails)
+{
+	disorderMaxFailures_ = maxfails;
+}
+
+// Return number of successive failed insertions allowed before component scale factor is reduced
+int MonteCarlo::disorderMaxFailures()
+{
+	return disorderMaxFailures_;
+}
+
+// Set factor by which to reduce scale factors after reaching the limit of unsuccessful insertions
+void MonteCarlo::setDisorderReductionFactor(double factor)
+{
+	disorderReductionFactor_ = factor;
+}
+
+// Return factor by which to reduce scale factors after reaching the limit of unsuccessful insertions
+double MonteCarlo::disorderReductionFactor()
+{
+	return disorderReductionFactor_;
+}
+
+// Set minimum scale factor to allow
+void MonteCarlo::setDisorderMinimumScaleFactor(double factor)
+{
+	disorderMinimumScaleFactor_ = factor;
+}
+
+// Return minimum scale factor to allow
+double MonteCarlo::disorderMinimumScaleFactor()
+{
+	return disorderMinimumScaleFactor_;
+}
+
+// Set maximum scale factor to allow
+void MonteCarlo::setDisorderMaximumScaleFactor(double factor)
+{
+	disorderMaximumScaleFactor_ = factor;
+}
+
+// Return maximum scale factor to allow
+double MonteCarlo::disorderMaximumScaleFactor()
+{
+	return disorderMaximumScaleFactor_;
+}
+
+// Set number of tweaks to attempt, per component, per cycle
+void MonteCarlo::setDisorderNTweaks(int ntweaks)
+{
+	disorderNTweaks_ = ntweaks;
+}
+
+// Retur number of tweaks to attempt, per component, per cycle
+int MonteCarlo::disorderNTweaks()
+{
+	return disorderNTweaks_;
+}
+
+// Set maximum distance to translate molecule in tweak
+void MonteCarlo::setDisorderDeltaDistance(double distance)
+{
+	disorderDeltaDistance_ = distance;
+}
+
+// Return maximum distance to translate molecule in tweak
+double MonteCarlo::disorderDeltaDistance()
+{
+	return disorderDeltaDistance_;
+}
+
+// Set maximum angle (each around X and Y) to rotate molecule in tweak
+void MonteCarlo::setDisorderDeltaAngle(double angle)
+{
+	disorderDeltaAngle_ = angle;
+}
+
+// Return maximum angle (each around X and Y) to rotate molecule in tweak
+double MonteCarlo::disorderDeltaAngle()
+{
+	return disorderDeltaAngle_;
 }
 
 // MC Geometry Minimise

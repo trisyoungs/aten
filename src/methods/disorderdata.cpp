@@ -21,6 +21,7 @@
 
 #include "methods/disorderdata.h"
 #include "methods/partition.h"
+#include "methods/mc.h"
 
 // Constructor
 DisorderData::DisorderData()
@@ -34,7 +35,7 @@ DisorderData::DisorderData()
 	nFailed_ = 0;
 	nDeleted_ = 0;
 	partitionData_ = NULL;
-	scaleFactor_ = 1.5;
+	scaleFactor_ = mc.disorderMaximumScaleFactor();
 	moleculeId_ = -1;
 }
 
@@ -98,10 +99,10 @@ const char *DisorderData::modelName()
 	return sourceModel_.name();
 }
 
-// Return mass of sourcemodel
-double DisorderData::modelMass()
+// Return reference to source model
+Model &DisorderData::sourceModel()
 {
-	return sourceModel_.mass();
+	return sourceModel_;
 }
 
 // Return name of target partition
@@ -218,11 +219,11 @@ void DisorderData::deleteCandidate()
 }
 
 // Tweak molecule position / rotation, and place in sourceModel_
-void DisorderData::tweakCandidate(double maxDistance, double maxAngle)
+void DisorderData::tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme *scheme)
 {
 	// Are we rotating the model as well?
 	static Matrix rotation;
-	Vec3<double> shift;
+	Vec3<double> shift, cog;
 	if (sourceModel_.componentRotatable())
 	{
 		// Get current centre of molecule
@@ -232,10 +233,16 @@ void DisorderData::tweakCandidate(double maxDistance, double maxAngle)
 		for (Atom *i = sourceModel_.atoms(); i != NULL; i = i->next) i->r() = rotation * i->r();
 		sourceModel_.centre(oldCentre);
 	}
-	// Apply a random shift to the position
-	shift.randomUnit();
-	shift *= maxDistance;
-	sourceModel_.translateSelectionLocal(shift);
+	// Apply a random shift to the position, but ensure that the centre of geometry stays in the same region
+	for (int i=0; i<5; ++i)
+	{
+		shift.randomUnit();
+		shift *= maxDistance;
+		sourceModel_.translateSelectionLocal(shift);
+		cog = sourceModel_.cell()->realToFrac(sourceModel_.selectionCentreOfGeometry());
+		if (scheme->partitionId(cog.x, cog.y, cog.z) == partitionData_->id()) return;
+		sourceModel_.translateSelectionLocal(-shift);
+	}
 }
 
 // Calculate overlap penalty of candidate with supplied model
@@ -247,6 +254,9 @@ bool DisorderData::modelOverlaps(Model *other, UnitCell *globalCell)
 	// Perform double loop over candidate molecule atoms and supplied model atoms
 	for (i = 0; i < other->nAtoms(); ++i)
 	{
+		// Disregard current selected molecule, if 'other == sourceModel_'
+		if ((other == &targetModel_) && (i >= moleculeId_*sourceModel_.nAtoms()) && (i < (moleculeId_+1)*sourceModel_.nAtoms())) continue;
+		
 		ri = scaleFactor_*elements().atomicRadius(ii[i]);
 		for (j = 0; j < sourceModel_.nAtoms(); ++j)
 		{
@@ -291,15 +301,13 @@ int DisorderData::nFailed()
 }
 
 // Adjust radius scale factor
-bool DisorderData::adjustScaleFactor(double multiplier, double minimumValue)
+void DisorderData::adjustScaleFactor(double multiplier, double minimumValue, double maximumValue)
 {
-	// Multiply the scale factor, but never let it go below the supplied minimumValue
-	if (multiplier*scaleFactor_ > minimumValue)
-	{
-		scaleFactor_ *= multiplier;
-		return TRUE;
-	}
-	else return FALSE;
+	// Multiply the scale factor, but never let it go outside the range supplied
+	scaleFactor_ *= multiplier;
+	if (scaleFactor_ < minimumValue) scaleFactor_ = minimumValue;
+	else if (scaleFactor_ > maximumValue) scaleFactor_ = maximumValue;
+	nFailed_ = 0;
 }
 
 // Return current radius scale factor

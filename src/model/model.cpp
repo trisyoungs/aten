@@ -444,6 +444,8 @@ void Model::copy(Model *srcmodel)
 	componentPartition_ = srcmodel->componentPartition_;
 	componentPopulation_ = srcmodel->componentPopulation_;
 	componentRotatable_ = srcmodel->componentRotatable_;
+	// Copy forcefield pointer
+	forcefield_ = srcmodel->forcefield_;
 }
 
 // Copy atom data from specified model
