@@ -79,8 +79,9 @@ class DisorderWizard : public QWizard
 	void on_ComponentDensitySpin_valueChanged(double value);
 	void on_ComponentAllowRotationsCheck_clicked(bool checked);
 	void on_ComponentTargetPartitionCombo_currentIndexChanged(int index);
-	
-	
+	void on_MethodOptionsButton_clicked(bool checked);
+
+
 	/*
 	// Local variables
 	*/

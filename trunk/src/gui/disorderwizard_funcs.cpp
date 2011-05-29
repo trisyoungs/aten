@@ -23,6 +23,7 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/disorderwizard.h"
+#include "gui/disorderoptions.h"
 #include "gui/ttreewidgetitem.h"
 #include "model/model.h"
 #include "methods/mc.h"
@@ -62,8 +63,6 @@ DisorderWizard::DisorderWizard(QWidget *parent) : QWizard(parent)
 // Run dialog, initialising any values first
 int DisorderWizard::run()
 {
-	// Make sure page 1 is the starting page
-	restart();
 	// If there are no loaded models with periodicity, disable this option on page 1
 	int nperiodic = 0;
 	for (Model *m = aten.models(); m != NULL; m = m->next) if (m->cell()->type() != UnitCell::NoCell) ++nperiodic;
@@ -76,6 +75,9 @@ int DisorderWizard::run()
 	partitioningScheme_ = NULL;
 	componentTarget_ = NULL;
 	refreshing_ = FALSE;
+	
+	// Make sure page 1 is the starting page
+	restart();
 	
 	// Update partition grids
 	int pid = progress.initialise("Generating Partition Info", aten.nPartitioningSchemes(), FALSE);
@@ -272,11 +274,13 @@ void DisorderWizard::pageChanged(int id)
 				setComponentData(m);
 				if (selectitem == NULL) selectitem = item;
 			}
+
 			// Flag all components not required as having no insertion policy
 			for (m = aten.models(); m != NULL; m = m->next) if (!componentModelItems_.containsData(m)) m->setComponentInsertionPolicy(Model::NoPolicy);
 			ui.EditComponentsTree->setCurrentItem(selectitem);
 			ui.EditComponentsTree->resizeColumnToContents(0);
 			ui.EditComponentsTree->resizeColumnToContents(1);
+
 			// Refresh items in partition combo box
 			ui.ComponentTargetPartitionCombo->clear();
 			for (int n = 0; n < partitioningScheme_->nPartitions(); ++n)
@@ -309,6 +313,8 @@ void DisorderWizard::accepted()
 	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(newModel_, partitioningScheme_, TRUE);
 	else success = mc.disorder(newModel_, partitioningScheme_, FALSE);
 	aten.currentModel()->changeLog.add(Log::Structure);
+	newModel_ = NULL;
+	existingModel_ = NULL;
 	gui.update(GuiQt::AllTarget);
 }
 
@@ -499,6 +505,12 @@ void DisorderWizard::on_ComponentTargetPartitionCombo_currentIndexChanged(int in
 	if ((componentTarget_ == NULL) || refreshing_) return;
 	componentTarget_->setComponentPartition(index);
 	setComponentData(componentTarget_);
+}
+
+void DisorderWizard::on_MethodOptionsButton_clicked(bool checked)
+{
+	DisorderOptions disorderOptions(this);
+	disorderOptions.exec();
 }
 
 /*

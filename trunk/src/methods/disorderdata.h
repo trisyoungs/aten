@@ -27,6 +27,7 @@
 
 // Forward declarations
 class PartitionData;
+class PartitioningScheme;
 
 // Insertion Data Class for Disorder builder
 class DisorderData
@@ -60,8 +61,8 @@ class DisorderData
 	double requestedDensity();
 	// Return name of sourcemodel
 	const char *modelName();
-	// Return mass of sourcemodel
-	double modelMass();
+	// Returnreference to sourcemodel
+	Model &sourceModel();
 	// Return name of target partition
 	const char *partitionName();
 	// Return density of target partition
@@ -101,7 +102,7 @@ class DisorderData
 	// Delete selected candidate
 	void deleteCandidate();
 	// Tweak molecule position / rotation, and place in sourceModel_
-	void tweakCandidate(double maxDistance, double maxAngle);
+	void tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme *scheme);
 	// Calculate overlap penalty of candidate with supplied model
 	bool modelOverlaps(Model *other, UnitCell *globalCell);
 	// Calculate overlap penalty of candidate with rest of population
@@ -113,7 +114,7 @@ class DisorderData
 	// Return number of successive failures since last successful insertion
 	int nFailed();
 	// Adjust radius scale factor
-	bool adjustScaleFactor(double multiplier, double minimumValue);
+	void adjustScaleFactor(double multiplier, double minimumValue, double maximumValue = 100.0);
 	// Return current radius scale factor
 	double scaleFactor();
 };

@@ -86,6 +86,7 @@ void PartitionData::clear()
 	nCells_ = 0;
 	volume_ = 0.0;
 	reducedMass_ = 0.0;
+	currentCellChunk_ = NULL;
 }
 
 // Add cell to list
@@ -391,7 +392,7 @@ void PartitioningScheme::updatePartitions(bool useRoughGrid)
 	double x, y, z;
 
 	// Okay, do the calculation
-	Dnchar text(-1, "Generating Partition Data for Scheme '%s'", name_.get());
+	Dnchar text(-1, "Generating partition data for scheme '%s'", name_.get());
 	int progid = progress.initialise(text.get(), npoints.x, FALSE);
 	x = 0.5*dx;
 	for (i=0; i<npoints.x; ++i)

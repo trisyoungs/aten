@@ -199,7 +199,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
 		QFile::remove(basename.get());
-		progress.update(pid,n);
+		if (!progress.update(pid,n)) break;
 	}
 	progress.terminate(pid);
 	

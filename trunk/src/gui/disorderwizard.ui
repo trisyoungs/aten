@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>DisorderWizard</class>
  <widget class="QWizard" name="DisorderWizard">
@@ -1165,6 +1166,9 @@
              <property name="maximum">
               <number>1000000000</number>
              </property>
+             <property name="value">
+              <number>0</number>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -1228,6 +1232,13 @@
           </spacer>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="MethodOptionsButton">
+        <property name="text">
+         <string>Method Options ...</string>
+        </property>
        </widget>
       </item>
      </layout>

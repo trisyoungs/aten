@@ -34,22 +34,14 @@ class PartitioningScheme;
 class MonteCarlo
 {
 	public:
+	// Constructor / Destructor
+	MonteCarlo();
+	~MonteCarlo();
 	// Monte Carlo move types
 	enum MoveType { Translate, Rotate, ZMatrix, Insert, Delete, nMoveTypes };
 	static const char *moveTypeKeyword(MoveType);
 	static MoveType moveType(const char *name, bool reporterror = 0);
 
-	/*
-	// Main Routines
-	*/
-	public:
-	// Constructor / Destructor
-	MonteCarlo();
-	~MonteCarlo();
-	// Minimise the specified model
-	bool minimise(Model *target, double, double);
-	// Run disordered builder
-	bool disorder(Model* destmodel, PartitioningScheme* scheme, bool fixedCell);
 
 	/*
 	// Subroutines
@@ -57,6 +49,7 @@ class MonteCarlo
 	public:
 	// Create acceptance ratio array
 	void createRatioArray(int);
+
 
 	/*
 	// MC Move Probabilities, step sizes, trial numbers
@@ -104,6 +97,84 @@ class MonteCarlo
 	void setTemperature(double t);
 	// Return current MC temperature
 	double temperature() const;
+
+
+	/*
+	// Disorder Builder Variables
+	*/
+	private:
+	// Maximum number of disorder cycles to perform
+	int disorderMaxCycles_;
+	// Maximum number of recovery cycles to perform
+	int disorderMaxRecoveryCycles_;
+	// Percentage error we will allow in actual vs requested densities
+	double disorderAccuracy_;
+	// Number of successive failed insertions allowed before component scale factor is reduced
+	int disorderMaxFailures_;
+	// Factor by which to reduce scale factors after reaching the limit of unsuccessful insertions
+	double disorderReductionFactor_;
+	// Minimum scale factor to allow
+	double disorderMinimumScaleFactor_;
+	// Maximum scale factor to allow
+	double disorderMaximumScaleFactor_;
+	// Number of tweaks to attempt, per component, per cycle
+	int disorderNTweaks_;
+	// Maximum distance to translate molecule in tweak
+	double disorderDeltaDistance_;
+	// Maximum angle (each around X and Y) to rotate molecule in tweak
+	double disorderDeltaAngle_;
+
+	public:
+	// Set maximum number of disorder cycles to perform
+	void setDisorderMaxCycles(int ncycles);
+	// Return maximum number of disorder cycles to perform
+	int disorderMaxCycles();
+	// Set maximum number of recovery cycles to perform
+	void setDisorderMaxRecoveryCycles(int ncycles);
+	// Return maximum number of recovery cycles to perform
+	int disorderMaxRecoveryCycles();
+	// Set percentage error allowed in actual vs requested densities
+	void setDisorderAccuracy(double accuracy);
+	// Return percentage error allowed in actual vs requested densities
+	double disorderAccuracy();
+	// Set number of successive failed insertions allowed before component scale factor is reduced
+	void setDisorderMaxFailures(int maxfails);
+	// Return number of successive failed insertions allowed before component scale factor is reduced
+	int disorderMaxFailures();
+	// Set factor by which to reduce scale factors after reaching the limit of unsuccessful insertions
+	void setDisorderReductionFactor(double factor);
+	// Return factor by which to reduce scale factors after reaching the limit of unsuccessful insertions
+	double disorderReductionFactor();
+	// Set minimum scale factor to allow
+	void setDisorderMinimumScaleFactor(double factor);
+	// Return minimum scale factor to allow
+	double disorderMinimumScaleFactor();
+	// Set maximum scale factor to allow
+	void setDisorderMaximumScaleFactor(double factor);
+	// Return maximum scale factor to allow
+	double disorderMaximumScaleFactor();
+	// Set number of tweaks to attempt, per component, per cycle
+	void setDisorderNTweaks(int ntweaks);
+	// Retur number of tweaks to attempt, per component, per cycle
+	int disorderNTweaks();
+	// Set maximum distance to translate molecule in tweak
+	void setDisorderDeltaDistance(double distance);
+	// Return maximum distance to translate molecule in tweak
+	double disorderDeltaDistance();
+	// Set maximum angle (each around X and Y) to rotate molecule in tweak
+	void setDisorderDeltaAngle(double angle);
+	// Return maximum angle (each around X and Y) to rotate molecule in tweak
+	double disorderDeltaAngle();
+
+
+	/*
+	// Main Routines
+	*/
+	public:
+	// Minimise the specified model
+	bool minimise(Model *target, double, double);
+	// Run disordered builder
+	bool disorder(Model* destmodel, PartitioningScheme* scheme, bool fixedCell);
 };
 
 // Static Singleton
