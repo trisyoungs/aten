@@ -4,16 +4,13 @@ Known Bugs
 o Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)
 o Rebonding model also folds atoms, making --nofold irrelevant
 o Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.
-o Z-Matrix editor does not calculate z-matrix when first shown
-o Fragment builder does not clear properly once closed, and takes a little too long to raise for the first time (add progress indicator)
+o Fragment builder does not clear properly once closed.
 o 'New Model' action does not deselect other selected models to make new model the only visible one.
 o Flickering Progress Dialog, e.g. when using disordered builder on Windows
 
 Current TODO
 ------------
 
-o When setting new atom colours from prefs window, changes are not reflected in the models.
-o When setting atom colours, automatically change to relevant scheme (and print message)
 o Add method to check current pattern definition so that it doesn't have to be removed so often.
 o More verbosity for all commands
 o Save forcefield!

@@ -193,7 +193,7 @@ void ToolBoxWidget::on_VibrationsButton_clicked(bool checked)
 
 void ToolBoxWidget::on_ZMatrixButton_clicked(bool checked)
 {
-	if (checked) gui.zmatrixDialog->show();
+	if (checked) gui.zmatrixDialog->showWidget();
 	else gui.zmatrixDialog->hide();
 }
 

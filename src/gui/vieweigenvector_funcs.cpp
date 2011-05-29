@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: View Eigenvector dialog functions
+	*** View Eigenvector dialog functions
 	*** src/gui/vieweigenvector_funcs.cpp
 	Copyright T. Youngs 2007-2011
 

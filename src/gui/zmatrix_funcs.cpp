@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: ZMatrix window functions
+	*** ZMatrix Dock Widget
 	*** src/gui/zmatrix_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -37,7 +37,7 @@ AtenZMatrix::AtenZMatrix(QWidget *parent, Qt::WindowFlags flags) : QDialog(paren
 	ui.setupUi(this);
 }
 
-void AtenZMatrix::showWindow()
+void AtenZMatrix::showWidget()
 {
 	refresh();
 	show();
