@@ -20,6 +20,7 @@
 */
 
 #include "base/sysfunc.h"
+#include "base/progress.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
@@ -91,6 +92,23 @@ void FragmentsWidget::refresh()
 	ui.FragmentTable->setColumnCount(nperrow);
 	ui.FragmentTable->setRowCount(1);
 
+	// Generate icon if necessary (first run only) and allowed (through prefs)
+	if ((!iconsGenerated_) && prefs.generateFragmentIcons())
+	{
+		int nfragments = 0;
+		for (FragmentGroup *fg = aten.fragmentGroups(); fg != NULL; fg = fg->next) nfragments += fg->nFragments();
+		int pid = progress.initialise("Initialising fragment icons", nfragments, FALSE);
+		for (FragmentGroup *fg = aten.fragmentGroups(); fg != NULL; fg = fg->next)
+		{
+			for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
+			{
+				f->masterModel()->regenerateIcon();
+				progress.update(pid, -1, f->masterModel()->name());
+			}
+		}
+		progress.terminate(pid);
+	}
+
 	// Go through all available fragment groups
 	for (FragmentGroup *fg = aten.fragmentGroups(); fg != NULL; fg = fg->next)
 	{
@@ -112,6 +130,7 @@ void FragmentsWidget::refresh()
 #if QT_VERSION >= 0x040300
 		group->setFirstColumnSpanned(TRUE);
 #endif
+
 		column = 0;
 		// Go through fragments in group
 		for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
@@ -134,9 +153,6 @@ void FragmentsWidget::refresh()
 			}
 			tabitem = new TTableWidgetItem();
 			tabitem->data.set(VTypes::ModelData, f);		// No VTypes::FragmentData, so set as a Model instead
-			
-			// Generate icon if necessary (first run only) and alloeed (through prefs)
-			if ((!iconsGenerated_) && prefs.generateFragmentIcons()) f->masterModel()->regenerateIcon();
 
 			tabitem->setIcon(f->icon());
 			tabitem->setToolTip(f->masterModel()->name());

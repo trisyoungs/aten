@@ -63,7 +63,7 @@ class Element
 	void copyColour(GLfloat *v);
 	// Set ambient colour component of element
 	void setColour(int rgb, double value);
-	void setColour(double r, double g, double b);
+	void setColour(double r, double g, double b, double a);
 };
 
 // Element map
@@ -134,8 +134,8 @@ class ElementMap
 	// Copy the colour of the element into the array provided
 	void copyColour(int i, GLfloat *v) const;
 	// Set colour component of element
-	void setColour(int i, int rgb, double value);
-	void setColour(int i, double r, double g, double b);
+	void setColour(int i, int rgba, double value);
+	void setColour(int i, double r, double g, double b, double a);
 
 
 	/*

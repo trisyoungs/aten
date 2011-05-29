@@ -190,8 +190,9 @@ void AtenPrefs::setControls()
 void AtenPrefs::on_PrefsOkButton_clicked(bool checked)
 {
 	// Copy old preferences values back into main structure, update view and close window
-	gui.mainWidget()->postRedisplay();
 	gui.mainWindow()->updateControls();
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE,TRUE);
 	accept();
 }
 
@@ -202,9 +203,9 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 	prefs = prefsBackup_;
 	elements().restoreData();
 
-	aten.currentModel()->changeLog.add(Log::Style);
-	gui.mainWidget()->postRedisplay();
 	gui.mainWindow()->updateControls();
+	aten.globalLogChange(Log::Style);
+	gui.mainWidget()->postRedisplay(TRUE,TRUE);
 	reject();
 }
 
@@ -249,7 +250,7 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	elements().setColour(el, newcol.redF(), newcol.greenF(), newcol.blueF());
+	elements().setColour(el, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.ElementColourFrame->setColour(newcol);
 	ui.ElementColourFrame->update();
 	// Re-set atom colours in model(s)

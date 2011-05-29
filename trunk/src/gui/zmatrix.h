@@ -42,7 +42,7 @@ class AtenZMatrix : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow();
+	void showWidget();
 	void refresh(bool forceupdate = FALSE);
 	private slots:
 	void dialogFinished(int result);

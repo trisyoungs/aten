@@ -61,11 +61,11 @@ const char *ElementMap::zMapType(ElementMap::ZMapType zm)
 // Lutetium and Lawrencium are assigned to group 3, with Lanthanum and Actinium the first elements in the lanthanide and actinide series.
 */
 
-//	  Z	Mass  		Name         		Symbol			Group	Radius  Vlncy	AmbientRGBA		DiffuseRGBA
+//	  Z	Mass  		Name         		Symbol			Group	Radius  RGBA		
 Element ElementMap::el[] = {
-	{ 0,	0.000,		"Dummy","DUMMY",	"XX","XX",		0,	0.00,	{ 0.5,0.5,0.5,1.0 },	
+	{ 0,	0.000,		"Dummy","DUMMY",	"XX","XX",		0,	0.00,	{ 0.5,0.5,0.5,1.0 },
 		{ 0,0,0,0,0,0,0,0,0 },	{ 0,0,0,0,0,0,0,0,0 } },
-	{ 1,	1.008,		"Hydrogen","HYDROGEN",	"H","H",		1,	0.31,	{ 0.87,0.87,0.87,1.0 },	
+	{ 1,	1.008,		"Hydrogen","HYDROGEN",	"H","H",		1,	0.31,	{ 0.87,0.87,0.87,1.0 },
 		{ 2,0,32,32,32,32,32,32,32 },	{ 1,0,-1,0,0,0,0,0,0 } },
 	{ 2,	4.003,		"Helium","HELIUM",	"He","HE",		18,	0.28,	{ 1.0,0.784,0.784,1.0 },
 		{ 8,0,32,32,32,32,32,32,32 },	{ 0,0,0,0,0,0,0,0,0 } },
@@ -310,11 +310,12 @@ void Element::setColour(int rgb, double value)
 }
 
 // Set colour component
-void Element::setColour(double r, double g, double b)
+void Element::setColour(double r, double g, double b, double a)
 {
 	colour[0] = r;
 	colour[1] = g;
 	colour[2] = b;
+	colour[3] = a;
 }
 
 // Return colour in supplied vector
@@ -480,9 +481,9 @@ void ElementMap::setColour(int i, int rgb, double value)
 }
 
 // Set ambient colour component
-void ElementMap::setColour(int i, double r, double g, double b)
+void ElementMap::setColour(int i, double r, double g, double b, double a)
 {
-	el[i].setColour(r, g, b);
+	el[i].setColour(r, g, b, a);
 }
 
 // Return ambient colour in supplied vector
