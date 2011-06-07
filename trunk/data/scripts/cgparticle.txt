@@ -16,7 +16,7 @@ for (n=1; n<7; ++n)
 rebond();
 selectall();
 copy();
-setnmols(200);
+setupcomponent("number", 1, 200);
 
 # Create fluorobenzene model
 newmodel("fluorobenzene");
@@ -24,7 +24,7 @@ paste();
 selectnone();
 select(H);
 transmute(F);
-setnmols(200);
+setupcomponent("number", 1, 200);
 
 # Create naphthalene model
 newmodel("naphthalene");
@@ -38,15 +38,12 @@ for (n=1; n<11; ++n)
 newbond(1, 10, "double");
 newbond(5, 10);
 addhydrogen();
-setnmols(100);
+setupcomponent("number", 1, 100);
 
 # Create mixture model
 newmodel("mixture");
 cell(100, 60, 25, 90, 90, 90);
-loadff("uff.ff");
-vdwscale(0.6);
-disorder(4);
-mcminimise(5);
+disorder("None");
 
 # Fold molecules into cell and add ellipsoids
 foldmolecules();

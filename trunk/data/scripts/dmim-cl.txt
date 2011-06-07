@@ -2,7 +2,9 @@
 # Script to create disordered [dmim]Cl system
 #
 
-int n = 10;
+# Define number of ion pairs and required density
+int npairs = 100;
+double density = 1.1016;  # g/cm3 at 450 K
 
 # Load Canongia Lopes ionic liquids forcefield (giving it a nickname of 'ilff')
 # This will become the current forcefield (used by the 'ff' commands later on)
@@ -10,10 +12,8 @@ loadff("data/ff/cldp-il.ff", "ilff");
 
 # Prepare first component to add in - [dmim] cation
 # Load model from file and call it 'dmim'
-double mass;
 loadmodel("data/test/siesta-dmim.xyz","dmim");
-mass = aten.model.mass;
-setnmols(10);
+setupcomponent("both", 1, npairs, density);
 
 # Associate the current forcefield (the only one) to the model
 ffmodel();
@@ -31,8 +31,7 @@ info();
 # Create a new model (naming it 'chloride') and draw a chloride atom
 newmodel("chloride");
 newatom(Cl);
-setnmols(n);
-mass += aten.model.mass;
+setupcomponent("both", 1, npairs, density);
 
 # Associate forcefield to the model
 ffmodel();
@@ -48,35 +47,19 @@ info();
 
 # New we're ready to use these two components to create a new system.
 # First, create another empty model (called 'box') and create a cubic
-# cell in it
+# cell in it. The disorder builder will adjust its size to suit.
 newmodel("box");
-double density = 1.1016;  # g/cm3 at 450 K
-double mvol = (mass / density) * 1.0E24 / 6.02213E23;
-double l = (n * mvol)^(1.0/3.0);
-cell(l,l,l,90,90,90);
-
-# Associate the forcefield with the box (there are no atoms in it, but it still needs a valid forcefield)
-ffmodel();
-
-# Request that we want 100 molecules maximum of each (how many you end up with will vary)
-
-# Tweak the Monte Carlo parameters for the disordered insertion
-mcntrials("insert",100);
-mcaccept("insert",500.0);
-printmc();
-
-# Request the Ewald sum for electrostatics (or none for just VDW intermolecular energies)
-#elec ewald 0.256 10 10 10
-#elec none
+cell(1.0,1.0,1.0,90,90,90);
 
 # Print out the current component list for the disordered builder
 listcomponents();
 
-# To squeeze more molecule in, we can adjust the VDW radii of all atoms with this scale factor
-vdwscale(0.75);
-
 # Begin! Run the Monte Carlo for 10 cycles
-disorder(100);
+disorder("None", FALSE);
+
+# Request the Ewald sum for electrostatics (or none for just VDW intermolecular energies)
+#elec ewald 0.256 10 10 10
+#elec none
 
 # Save out the current model (will be 'box', since it was the last created) as a DL_POLY config file
 savemodel("dlpoly", "dmimcl.CONFIG");

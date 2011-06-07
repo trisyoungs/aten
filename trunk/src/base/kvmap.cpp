@@ -107,3 +107,8 @@ const char *KVMap::value(const char *key)
 	return NULL;
 }
 
+// Return first key in list
+KVPair *KVMap::pairs()
+{
+	return pairs_.first();
+}

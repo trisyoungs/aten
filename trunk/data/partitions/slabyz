@@ -12,11 +12,11 @@ int npartitions = 2;
 # Every partition definition *must* contain 'partition' and 'partitionname' functions
 int partition(double x, double y, double z)
 {
-	double startx = option("Start X", "doublespin", 0.0, 1.0, 0.1, 0.4, "group=Slab Properties");
-	double endx = option("End X", "doublespin", 0.0, 1.0, 0.1, 0.6, "group=Slab Properties");
+	double start = option("Start X", "doublespin", 0.0, 1.0, 0.1, 0.4, "group=Slab Properties");
+	double end = option("End X", "doublespin", 0.0, 1.0, 0.1, 0.6, "group=Slab Properties");
 
 	// Check 1 - Is the point inside the slab (region 1)
-	if ((x >= startx) && (x <= endx)) return 1;
+	if ((x >= start) && (x <= end)) return 1;
 
 	// Not inside any defined regions, so return '0' for 'inside rest of cell'
 	return 0;

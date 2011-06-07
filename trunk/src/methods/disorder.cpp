@@ -192,7 +192,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	msg.print("Partition\t\tVolume\tDensity\n");
 	for (pd = scheme->partitions(); pd != NULL; pd = pd->next)
 	{
-		msg.print("%2i %8s\t%10.2f\t%8.5f\n", pd->id(), pd->name(), pd->volume(), pd->density()); 
+		msg.print("%2i %8s\t%10.2f\t%8.5f\n", pd->id()+1, pd->name(), pd->volume(), pd->density()); 
 	}
 	
 	// All set up and ready - do the build

@@ -95,6 +95,8 @@ template <class T> class List
 	int nItems() const;
 	// Returns the list head
 	T *first() const;
+	// Returns the second item in the list
+	T *second() const;
 	// Returns the list tail
 	T *last() const;
 	// Append an item to the list
@@ -184,6 +186,12 @@ template <class T> int List<T>::nItems() const
 template <class T> T *List<T>::first() const
 {
 	return listHead_;
+}
+
+// Returns second item in the list
+template <class T> T *List<T>::second() const
+{
+	return (listHead_ == NULL ? NULL : listHead_->next);
 }
 
 // Returns the list tail

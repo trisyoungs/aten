@@ -315,3 +315,4 @@ double DisorderData::scaleFactor()
 {
 	return scaleFactor_;
 }
+

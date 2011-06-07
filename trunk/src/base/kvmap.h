@@ -78,6 +78,8 @@ class KVMap
 	KVPair *search(const char *key);
 	// Retrieve value associated to key
 	const char *value(const char *key);
+	// Return first key in list
+	KVPair *pairs();
 };
 
 #endif
