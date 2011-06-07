@@ -60,7 +60,7 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		if (m->cell()->type() != UnitCell::NoCell) continue;
-		msg.print("%-15s %-10s     %i        %5i    %8.4f\n", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition(), m->componentPopulation(), m->componentDensity());
+		msg.print("%-15s %-10s     %i        %5i    %8.4f\n", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
 	}
 	rv.reset();
 	return TRUE;

@@ -285,7 +285,7 @@ void DisorderWizard::pageChanged(int id)
 			ui.ComponentTargetPartitionCombo->clear();
 			for (int n = 0; n < partitioningScheme_->nPartitions(); ++n)
 			{
-				text.sprintf("%i %s", n, partitioningScheme_->partitionName(n));
+				text.sprintf("%i %s", n+1, partitioningScheme_->partitionName(n));
 				ui.ComponentTargetPartitionCombo->addItem(text.get());
 			}
 			updateComponentControls();

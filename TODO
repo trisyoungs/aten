@@ -7,13 +7,20 @@ o Atom list update is super-slow when changing selection in big systems - This i
 o Fragment builder does not clear properly once closed.
 o 'New Model' action does not deselect other selected models to make new model the only visible one.
 o Flickering Progress Dialog, e.g. when using disordered builder on Windows
+o Select actions on toolbar don't update Selection window
+o Visualisation of target cells for Replicate is broken for parallelepiped cells (angles of replicants appear to be double the original).
+o Undoing cell changes with the Cell Define window open does not change the cell window itself, and the original values are re-set when closing the window.
+o Model List images do not update. Can the main view be grabbed and shrunk down to icon size? Maybe in a QThread?
+o Tetrahedron glyph display is broken (e.g. in watermethane.txt script). All glyphs?
 
 Current TODO
 ------------
 
+o Cancel mode if a tool window is closed when one of its modes is selected?
+o PovRay export
+o Save forcefield!
 o Add method to check current pattern definition so that it doesn't have to be removed so often.
 o More verbosity for all commands
-o Save forcefield!
 o Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?
 o Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?
 o Update script to perform conformational searching on molecule (add GUI options)
@@ -31,9 +38,7 @@ o Storage of grid data in AKF format
 Manual TODO
 -----------
 
-o Add --process switch and explain processing modes more clearly.
 o Add new image for atom list
-o F10 Shortcut - run Quick Command
 o Prefs accessors - chargelabelformat, sticknormalwidth, stickselectedwidth.
 o Chapter / Section on Basic View / Imaging.
 o What to do about the FAQ?  Maintain as separate Word document / PDF / single-page HTML?

@@ -306,9 +306,9 @@ class Forcefield
 
 	public:
 	// Load Forcefield from the filename supplied
-	bool load(const char*);
-	// Save forcefield to the filename supplied
-	bool save(const char *filename);
+	bool load(const char *filename);
+	// Save forcefield under its current filename
+	bool save();
 
 
 	/*

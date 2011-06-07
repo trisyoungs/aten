@@ -1,5 +1,5 @@
 /*
-	*** Monte Carlo methods
+	*** Monte Carlo Methods
 	*** src/methods/mc.cpp
 	Copyright T. Youngs 2007-2011
 
@@ -332,7 +332,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	currentVdwEnergy = srcmodel->energy.vdw();
 	currentElecEnergy = srcmodel->energy.electrostatic();
 	elast = ecurrent;
-	msg.print("       %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
+	msg.print("--     %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
 
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
@@ -423,7 +423,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			if (nTrials_[move] != 0) acceptanceRatio_[0][move] /= nTrials_[move];
 		} // Loop over MC moves
 
-		if (prefs.shouldUpdateEnergy(cycle+1))
+		if (prefs.shouldUpdateEnergy(cycle))
 		{
 			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
 			for (n=0; n<MonteCarlo::nMoveTypes; n++) s.strcatf(" %3i", int(acceptanceRatio_[0][n]*100.0));

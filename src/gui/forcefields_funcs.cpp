@@ -1,6 +1,6 @@
 /*
-	*** Minimiser Dock Widget
-	*** src/gui/minimise_funcs.cpp
+	*** FF/Energy Dock Widget
+	*** src/gui/forcefields_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -157,18 +157,6 @@ void ForcefieldsWidget::loadForcefield()
 	}
 }
 
-// Save forcefield (public function)
-void ForcefieldsWidget::saveForcefield()
-{
-// 	static QDir currentDirectory_(aten.dataDir());
-// 	QString filename = QFileDialog::getSFileName(this, "Select Forcefield", currentDirectory_.path());
-// 	if (!filename.isEmpty())
-// 	{
-// 		aten.loadForcefield(qPrintable(filename));
-// 		refresh();
-// 	}
-}
-
 /*
 // Energy Tab
 */
@@ -249,7 +237,36 @@ void ForcefieldsWidget::on_OpenForcefieldButton_clicked(bool checked)
 // Save forcefield 
 void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 {
-	saveForcefield();
+	// Get current forcefield
+	Forcefield *ff = aten.currentForcefield();
+	if (ff == NULL) return;
+
+	// Does forcefield have a valid filename? If not, call the other routine....
+	QString filename = ff->filename();
+	if (filename.isEmpty()) ui.SaveForcefieldAsButton->click();
+	else
+	{
+		// Save forcefield under filename currently in 'filenanme'
+		msg.print("Saving forcefield '%s' to file '%s'.\n", ff->name(), ff->filename());
+		ff->save();
+	}
+}
+
+// Save forcefield 
+void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
+{
+	// Get current forcefield
+	Forcefield *ff = aten.currentForcefield();
+	if (ff == NULL) return;
+
+	static QDir currentDirectory_(aten.dataDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Forcefield", currentDirectory_.path());
+	if (filename.isEmpty()) return;
+	ff->setFilename(qPrintable(filename));
+	
+	// Save forcefield under filename currently in 'filenanme'
+	msg.print("Saving forcefield '%s' to file '%s'.\n", ff->name(), ff->filename());
+	ff->save();
 }
 
 // Remove selected forcefield in list
