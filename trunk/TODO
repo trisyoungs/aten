@@ -38,10 +38,7 @@ Manual TODO
 -----------
 
 o Add new image for atom list
-o Prefs accessors - chargelabelformat, sticknormalwidth, stickselectedwidth.
 o Chapter / Section on Basic View / Imaging.
-o What to do about the FAQ?  Maintain as separate Word document / PDF / single-page HTML?
-o New commands 'random' and 'randomi'.
 o Disorder builder method information and section.
 0 Disorder builder preferences:
 	// The accuracy parameter determines what percentage error we will allow in actual vs requested densities
