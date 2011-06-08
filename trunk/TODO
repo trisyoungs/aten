@@ -7,7 +7,6 @@ o Atom list update is super-slow when changing selection in big systems - This i
 o Fragment builder does not clear properly once closed.
 o 'New Model' action does not deselect other selected models to make new model the only visible one.
 o Flickering Progress Dialog, e.g. when using disordered builder on Windows
-o Select actions on toolbar don't update Selection window
 o Visualisation of target cells for Replicate is broken for parallelepiped cells (angles of replicants appear to be double the original).
 o Undoing cell changes with the Cell Define window open does not change the cell window itself, and the original values are re-set when closing the window.
 o Model List images do not update. Can the main view be grabbed and shrunk down to icon size? Maybe in a QThread?
