@@ -124,9 +124,9 @@ FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 		{ Combine::GeometricRule, Combine::GeometricRule, Combine::GeometricRule } },
 	{ "Morse", "morse", 3,
-		{ "K", "Eq. Dist", "D" },
-		{ "k", "eq", "d" },
-		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+		{ "D", "K", "Eq. Dist" },
+		{ "d", "k", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 		{ Combine::GeometricRule, Combine::ArithmeticRule, Combine::GeometricRule } }
 };
 VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char *s, bool reporterror)
@@ -181,9 +181,9 @@ FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Morse", "morse", 3,
-		{ "E(D)", "Beta", "Eq. Distance" },
-		{ "d", "beta", "eq" },
-		{ 1, 1, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
+		{ "D", "K", "Eq. Distance" },
+		{ "d", "k", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 BondFunctions::BondFunction BondFunctions::bondFunction(const char *s, bool reporterror)
 {

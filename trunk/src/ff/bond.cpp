@@ -70,7 +70,7 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 				case (BondFunctions::Morse):
 					// U = E0 * (1 - exp( -B(rij - r0) ) )**2
 					d = ffb->parameter(BondFunctions::MorseD);
-					beta = fabs(ffb->parameter(BondFunctions::MorseB));
+					beta = fabs(ffb->parameter(BondFunctions::MorseK));
 					eq = ffb->parameter(BondFunctions::MorseEq);
 					rij -= eq;
 					expo = 1.0 - exp( -beta * rij );
@@ -138,7 +138,7 @@ void Pattern::bondForces(Model *srcmodel)
 				case (BondFunctions::Morse):
 					// dU/dr = 2 * beta * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
 					d = ffb->parameter(BondFunctions::MorseD);
-					beta = fabs(ffb->parameter(BondFunctions::MorseB));
+					beta = fabs(ffb->parameter(BondFunctions::MorseK));
 					eq = ffb->parameter(BondFunctions::MorseEq);
 					expo = exp( -beta * (rij - eq) );
 					du_dr = 2.0 * beta * d * (1.0 - expo) * expo;

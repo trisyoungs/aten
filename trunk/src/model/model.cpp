@@ -1,5 +1,5 @@
 /*
-	*** Model functions
+	*** Model Functions
 	*** src/model/model.cpp
 	Copyright T. Youngs 2007-2011
 
