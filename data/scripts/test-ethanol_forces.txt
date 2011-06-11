@@ -52,7 +52,6 @@ aten.prefs.ewaldkmax = {8,8,8};
 vector v;
 
 # Electrostatics (via Ewald sum)
-aten.prefs.calculateelec = TRUE;
 aten.prefs.calculateintra = FALSE;
 aten.prefs.calculatevdw = FALSE;
 modelforces();
@@ -65,7 +64,7 @@ for (int i=1; i<=aten.model.natoms; ++i)
 rmse_elec = sqrt(rmse_elec / aten.model.natoms);
 
 # Intramolecular terms
-aten.prefs.calculateelec = FALSE;
+aten.prefs.elecmethod = "none";
 aten.prefs.calculateintra = TRUE;
 aten.prefs.calculatevdw = FALSE;
 modelforces();
@@ -78,7 +77,7 @@ for (int i=1; i<=aten.model.natoms; ++i)
 rmse_intra = sqrt(rmse_intra / aten.model.natoms);
 
 # Short-range (vdW)
-aten.prefs.calculateelec = FALSE;
+aten.prefs.elecmethod = "none";
 aten.prefs.calculateintra = FALSE;
 aten.prefs.calculatevdw = TRUE;
 modelforces();

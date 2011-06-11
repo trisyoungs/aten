@@ -138,7 +138,7 @@ errors += testvdw(tol,2, water_types[2], 22.142, 2.571, 0.0, 0.0, 0.0, 0.0);
 printf("\n=================================\n");
 printf("Test 2) Methane\n");
 printf("=================================\n");
-string methane_types[4] = { "C_3", "H_", "H_", "H_" };
+string methane_types[5] = { "C_3", "H_", "H_", "H_", "H_" };
 newmodel("methane");
 newatom(C,0,0,0);
 addhydrogen();

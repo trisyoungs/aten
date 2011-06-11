@@ -81,7 +81,7 @@ namespace VdwFunctions
 	enum LjABParameter { LjA, LjB };
 	enum BuckinghamParameter { BuckinghamA, BuckinghamB, BuckinghamC };
 	enum InversePowerParameter { InversePowerEpsilon, InversePowerR, InversePowerN  };
-	enum MorseParameter { MorseK, MorseEq, MorseD };
+	enum MorseParameter { MorseD, MorseK, MorseEq };
 }
 
 // Bond Potential Functions
@@ -94,7 +94,7 @@ namespace BondFunctions
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum ConstraintParameter { ConstraintK, ConstraintEq };
-	enum MorseParameter { MorseD, MorseB, MorseEq };
+	enum MorseParameter { MorseD, MorseK, MorseEq };
 }
 
 // Angle potential forms
