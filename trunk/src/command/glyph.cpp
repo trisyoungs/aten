@@ -251,7 +251,7 @@ bool Command::function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Get glyph style
-	Glyph::GlyphType gt = Glyph::glyphType(c->argc(0));
+	Glyph::GlyphType gt = Glyph::glyphType(c->argc(0), TRUE);
 	if (gt == Glyph::nGlyphTypes)
 	{
 		msg.print("Unrecognised glyph style '%s'.\n", c->argc(0));

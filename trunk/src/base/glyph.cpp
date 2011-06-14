@@ -272,6 +272,7 @@ void Glyph::setType(GlyphType gt)
 	switch (gt)
 	{
 		case (Glyph::ArrowGlyph):
+		case (Glyph::TubeArrowGlyph):
 		case (Glyph::VectorGlyph):
 			data_[1]->setVector(0.0,1.0,0.0);
 			break;

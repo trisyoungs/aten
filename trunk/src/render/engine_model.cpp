@@ -828,11 +828,11 @@ void RenderEngine::renderGlyphs(Model *source)
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
 				else A.applyRotationAxis(-r3.y, r3.x, 0.0, phi, TRUE);
 				// Draw cylinder
-				A.applyScaling(0.1,0.1,rij*0.9);
+				A.applyScaling(0.1,0.1,rij*0.80);
 				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cylinders_, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
 				A.applyTranslationZ(1.0);
-				A.applyScaling(2.0,2.0,0.1/0.9);
+				A.applyScaling(2.0,2.0,0.2/0.8);
 				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour_i, A, g->isSolid() ? GL_FILL : GL_LINE);
 				break;
 			// Vector - tail = data[0], head = data[1]
