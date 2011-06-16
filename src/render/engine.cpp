@@ -738,7 +738,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	if (gui.exists())
 	{
 		// Render embellshments for current UserAction
-		renderUserActions(source, gui.mainWidget());	
+		renderUserActions(source, gui.mainWidget());
 		// Render extras arising from open tool windows (current model only)
 		if (currentModel) renderWindowExtras(source);
 	}
