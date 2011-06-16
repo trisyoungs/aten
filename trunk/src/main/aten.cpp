@@ -149,6 +149,8 @@ void Aten::setCurrentModel(Model *m, bool deselectOthers)
 	// Deselect all other models if specified
 	if (deselectOthers)
 	{
+		// Unset visible flags on all currently-visible models
+		for (Refitem<Model,int> *ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->setVisible(FALSE);
 		visibleModels_.clear();
 		// Add to visible list
 		visibleModels_.add(m);

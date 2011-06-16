@@ -560,6 +560,7 @@ void RenderEngine::renderCell(Model *source)
 	GLfloat colour[4];
 	prefs.copyColour(Prefs::UnitCellColour, colour);
 	glColor4fv(colour);
+	glLoadIdentity();
 	Matrix A = source->modelViewMatrix() * source->cell()->axes();
 	glMultMatrixd(A.matrix());
 	primitives_[Q_].wireCube_.sendToGL();

@@ -5,9 +5,7 @@ o Function arguments can be passed to array-requiring paths without complaint (e
 o Rebonding model also folds atoms, making --nofold irrelevant
 o Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.
 o Fragment builder does not clear properly once closed.
-o 'New Model' action does not deselect other selected models to make new model the only visible one.
 o Flickering Progress Dialog, e.g. when using disordered builder on Windows
-o Visualisation of target cells for Replicate is broken for parallelepiped cells (angles of replicants appear to be double the original).
 o Undoing cell changes with the Cell Define window open does not change the cell window itself, and the original values are re-set when closing the window.
 o Model List images do not update. Can the main view be grabbed and shrunk down to icon size? Maybe in a QThread?
 o Tetrahedron glyph display is broken (e.g. in watermethane.txt script). All glyphs?

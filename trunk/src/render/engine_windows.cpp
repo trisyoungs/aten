@@ -124,9 +124,9 @@ void RenderEngine::renderWindowExtras(Model *source)
 				ipos.set(floor(r2.x), floor(r2.y), floor(r2.z));
 				prefs.copyColour(Prefs::UnitCellColour, colour);
 				glColor4fv(colour);
-				glPushMatrix();
-				glMultMatrixd(source->cell()->axes().matrix());
-				glTranslated(0.5, 0.5, 0.5);
+				glLoadIdentity();
+				A = source->modelViewMatrix() * source->cell()->axes();
+				glMultMatrixd(A.matrix());
 				glEnable(GL_LINE_STIPPLE);
 				glLineStipple(1,0x5555);
 				for (i = ineg.x-1; i<=ipos.x; ++i)
@@ -161,7 +161,6 @@ void RenderEngine::renderWindowExtras(Model *source)
 					}
 				}
 				glDisable(GL_LINE_STIPPLE);
-				glPopMatrix();
 				break;
 			// Miller Plane tab
 			case (3):
