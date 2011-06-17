@@ -1197,6 +1197,37 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>CellTransformTabs</tabstop>
+  <tabstop>CellReplicateNegXSpin</tabstop>
+  <tabstop>CellReplicateNegYSpin</tabstop>
+  <tabstop>CellReplicateNegZSpin</tabstop>
+  <tabstop>CellReplicatePosXSpin</tabstop>
+  <tabstop>CellReplicatePosYSpin</tabstop>
+  <tabstop>CellReplicatePosZSpin</tabstop>
+  <tabstop>CellReplicateFoldCheck</tabstop>
+  <tabstop>CellReplicateTrimCheck</tabstop>
+  <tabstop>CellReplicateButton</tabstop>
+  <tabstop>CellScaleXSpin</tabstop>
+  <tabstop>CellScaleYSpin</tabstop>
+  <tabstop>CellScaleZSpin</tabstop>
+  <tabstop>CellScaleUseCogsCheck</tabstop>
+  <tabstop>CellScaleCalculateEnergyCheck</tabstop>
+  <tabstop>CellScaleButton</tabstop>
+  <tabstop>CellRotateXAnticlockwise</tabstop>
+  <tabstop>CellRotateXClockwise</tabstop>
+  <tabstop>CellRotateYAnticlockwise</tabstop>
+  <tabstop>CellRotateYClockwise</tabstop>
+  <tabstop>CellRotateZAnticlockwise</tabstop>
+  <tabstop>CellRotateZClockwise</tabstop>
+  <tabstop>MillerHSpin</tabstop>
+  <tabstop>MillerKSpin</tabstop>
+  <tabstop>MillerLSpin</tabstop>
+  <tabstop>MillerInRadio</tabstop>
+  <tabstop>MillerOutRadio</tabstop>
+  <tabstop>MillerSelectButton</tabstop>
+  <tabstop>MillerCutButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

@@ -9,7 +9,6 @@ o Flickering Progress Dialog, e.g. when using disordered builder on Windows
 o Undoing cell changes with the Cell Define window open does not change the cell window itself, and the original values are re-set when closing the window.
 o Model List images do not update. Can the main view be grabbed and shrunk down to icon size? Maybe in a QThread?
 o Tetrahedron glyph display is broken (e.g. in watermethane.txt script). All glyphs?
-o Tab ordering on many tool windows is erratic
 
 Current TODO
 ------------

@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>273</width>
-    <height>332</height>
+    <height>305</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +18,7 @@
   <property name="minimumSize">
    <size>
     <width>273</width>
-    <height>332</height>
+    <height>305</height>
    </size>
   </property>
   <property name="maximumSize">

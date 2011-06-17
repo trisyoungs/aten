@@ -1765,6 +1765,47 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>CentreXSpin</tabstop>
+  <tabstop>CentreYSpin</tabstop>
+  <tabstop>CentreZSpin</tabstop>
+  <tabstop>DefineCentreButton</tabstop>
+  <tabstop>CentreLockXCheck</tabstop>
+  <tabstop>CentreLockYCheck</tabstop>
+  <tabstop>CentreLockZCheck</tabstop>
+  <tabstop>CentreSelectionButton</tabstop>
+  <tabstop>FlipXButton</tabstop>
+  <tabstop>FlipYButton</tabstop>
+  <tabstop>FlipZButton</tabstop>
+  <tabstop>TranslateModelFrameRadio</tabstop>
+  <tabstop>TranslateWorldFrameRadio</tabstop>
+  <tabstop>TranslateCellFrameRadio</tabstop>
+  <tabstop>TranslateShiftSpin</tabstop>
+  <tabstop>TranslateNegXButton</tabstop>
+  <tabstop>TranslatePosYButton</tabstop>
+  <tabstop>TranslatePosXButton</tabstop>
+  <tabstop>TranslateNegZButton</tabstop>
+  <tabstop>TranslateNegYButton</tabstop>
+  <tabstop>TranslatePosZButton</tabstop>
+  <tabstop>ShiftVectorXSpin</tabstop>
+  <tabstop>ShiftVectorYSpin</tabstop>
+  <tabstop>ShiftVectorZSpin</tabstop>
+  <tabstop>ShiftPickVectorButton</tabstop>
+  <tabstop>ShiftNormaliseVectorButton</tabstop>
+  <tabstop>ShiftVectorDeltaSpin</tabstop>
+  <tabstop>ShiftVectorPositiveButton</tabstop>
+  <tabstop>ShiftVectorNegativeButton</tabstop>
+  <tabstop>RepositionReferenceXSpin</tabstop>
+  <tabstop>RepositionReferenceYSpin</tabstop>
+  <tabstop>RepositionReferenceZSpin</tabstop>
+  <tabstop>RepositionDefineReferenceButton</tabstop>
+  <tabstop>RepositionTargetXSpin</tabstop>
+  <tabstop>RepositionTargetYSpin</tabstop>
+  <tabstop>RepositionTargetZSpin</tabstop>
+  <tabstop>RepositionDefineTargetButton</tabstop>
+  <tabstop>RepositionSelectionButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>
