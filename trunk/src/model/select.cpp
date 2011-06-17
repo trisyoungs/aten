@@ -535,7 +535,7 @@ void Model::selectInsideCell(bool moleculecogs, bool markonly)
 	// If using molecule COGs, need a valid pattern definition
 	if (moleculecogs)
 	{
-		autocreatePatterns();
+		createPatterns();
 		int m,n,id = 0;
 		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 		{
@@ -567,7 +567,7 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 	// If using molecule COGs, need a valid pattern definition
 	if (moleculecogs)
 	{
-		autocreatePatterns();
+		createPatterns();
 		int m,n,id = 0;
 		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 		{

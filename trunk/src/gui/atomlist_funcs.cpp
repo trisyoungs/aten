@@ -143,7 +143,7 @@ void AtomListWidget::refresh()
 		else
 		{
 			// We must have at least the default pattern definition...
-			m->autocreatePatterns(TRUE);
+			m->createPatterns();
 			// Get pointer to first atom in model. We'll skip through it numerically in each pattern
 			for (p = m->patterns(); p != NULL; p = p->next)
 			{

@@ -153,6 +153,7 @@ class AtenForm : public QMainWindow
 	void on_actionSchemeCustom_triggered(bool checked);
 	void on_actionDetectDisplayHBonds_triggered(bool checked);
 
+
 	/*
 	// Selection Menu / Actions (doubles as Atom Context Menu)
 	*/

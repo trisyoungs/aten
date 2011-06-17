@@ -136,7 +136,7 @@ bool Command::function_ClearTypes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!obj.m->autocreatePatterns()) return FALSE;
+	if (!obj.m->createPatterns()) return FALSE;
 	Choice noIntra, allowDummy, assignCharges;
 	noIntra = c->hasArg(0) ? c->argb(0) : Choice::Default;
 	allowDummy = c->hasArg(1) ? c->argb(1) : Choice::Default;
@@ -621,7 +621,7 @@ bool Command::function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnVal
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->clearExpression();
-	if (!obj.m->autocreatePatterns()) return FALSE;
+	if (!obj.m->createPatterns()) return FALSE;
 	Choice noIntra, allowDummy, assignCharges;
 	noIntra = c->hasArg(0) ? c->argb(0) : Choice::Default;
 	allowDummy = c->hasArg(1) ? c->argb(1) : Choice::Default;
@@ -740,7 +740,7 @@ bool Command::function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	else
 	{
-		if (obj.m->autocreatePatterns())
+		if (obj.m->createPatterns())
 		{
 			// Prepare for typing
 			obj.m->describeAtoms();

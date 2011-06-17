@@ -241,7 +241,7 @@ bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
-	if (obj.rs()->autocreatePatterns())
+	if (obj.rs()->createPatterns())
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs()->nSelected();
@@ -563,7 +563,7 @@ bool Command::function_SelectTree(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.rs()->autocreatePatterns())
+	if (obj.rs()->createPatterns())
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs()->nSelected();

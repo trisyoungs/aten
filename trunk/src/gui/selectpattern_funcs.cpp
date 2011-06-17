@@ -59,8 +59,8 @@ Pattern *AtenSelectPattern::selectPattern(Model *source)
 	// If model is NULL return NULL
 	if (currentModel_ == NULL) return NULL;
 
-	// First, call autocreatePatterns...
-	if (!currentModel_->autocreatePatterns()) return NULL;
+	// First, call createPatterns...
+	if (!currentModel_->createPatterns()) return NULL;
 
 	// If there are no patterns in the model, return NULL
 	if (currentModel_->nPatterns() == 0) return NULL;

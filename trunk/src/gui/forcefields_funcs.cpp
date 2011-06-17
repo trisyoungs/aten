@@ -369,7 +369,7 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 	{
 		Model *m = aten.currentModel();
 		Neta *at = ffa->neta();
-		if (m->autocreatePatterns())
+		if (m->createPatterns())
 		{
 			msg.print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->name(), ffa->typeId(), ff->name());
 			// Prepare for typing
