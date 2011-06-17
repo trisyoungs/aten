@@ -134,7 +134,7 @@ bool Model::typeAll()
 	// to other molecules at the end.
 	msg.enter("Model::typeAll");
 	// Must have a valid pattern...
-	autocreatePatterns();
+	createPatterns();
 	if (!arePatternsValid())
 	{
 		msg.print("Atom typing cannot be performed without valid patterns.\n Check pattern definition.\n");

@@ -26,7 +26,7 @@ SUBWINDOW_FUNCS = about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefinit
 
 MAINWINDOW_UI = icons.qrc ffeditor.ui loadmodel.ui prefs.ui progress.ui selectelement.ui selectfilter.ui selectpattern.ui selectvariable.ui mainwindow.ui
 MAINWINDOW_FUNCS = contextmenu_funcs.cpp ffeditor_funcs.cpp gui.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_funcs.cpp mainwindow_init.cpp prefs_funcs.cpp progress_funcs.cpp select_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
-MAINWINDOW_ACTIONS = editactions.cpp fileactions.cpp forcefieldactions.cpp modelactions.cpp mouseactions.cpp settingsactions.cpp toolbaractions.cpp trajectoryactions.cpp viewactions.cpp
+MAINWINDOW_ACTIONS = mainmenuactions.cpp mouseactions.cpp toolbaractions.cpp
 
 WIDGET_UI = tcolourframe.uih ttreewidget.uih tcanvas.uih tmenubutton.uih tprocess.uih tprompt.uih tradiogroup.uih
 WIDGET_FUNCS = tcanvas_funcs.cpp tcanvas_input.cpp tcanvas_render.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp

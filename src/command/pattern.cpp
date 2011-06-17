@@ -37,7 +37,7 @@ bool Command::function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	rv.set( obj.m->autocreatePatterns(c->hasArg(0) ? c->argb(0) : TRUE));
+	rv.set( obj.m->createPatterns() );
 	return TRUE;
 }
 

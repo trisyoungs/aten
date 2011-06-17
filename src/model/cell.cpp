@@ -149,7 +149,7 @@ void Model::foldAllMolecules()
 	Atom *i, *first = NULL;
 	Pattern *p;
 	// Molecular fold - fold first atom, others in molecule are MIM'd to this point
-	if (!autocreatePatterns(FALSE))
+	if (!createPatterns())
 	{
 		msg.print("Molecular fold cannot be performed without a valid pattern definition.\n");
 		msg.exit("Model::foldAllMolecules");
@@ -345,8 +345,9 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	}
 	if (usecog)
 	{
- 		if (!autocreatePatterns(!usecog))
+ 		if (!createPatterns())
 		{
+			msg.print("Cell contents cannot be scaled by their centres of geometry if a proper pattern definition does not exist.\n");
 			msg.exit("Model::scaleCell");
 			return FALSE;
 		}

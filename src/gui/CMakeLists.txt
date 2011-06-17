@@ -27,10 +27,7 @@ set(qtproject_SRCS
   command_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
-  editactions.cpp
   ffeditor_funcs.cpp
-  fileactions.cpp
-  forcefieldactions.cpp
   forcefields_funcs.cpp
   fragments_funcs.cpp
   geometry_funcs.cpp
@@ -40,11 +37,11 @@ set(qtproject_SRCS
   customdialog_funcs.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
+  mainmenuactions.cpp
   mainwindow_funcs.cpp
   mainwindow_init.cpp
   md_funcs.cpp
   messages_funcs.cpp
-  modelactions.cpp
   modellist_funcs.cpp
   mouseactions.cpp
   position_funcs.cpp
@@ -56,7 +53,6 @@ set(qtproject_SRCS
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
-  settingsactions.cpp
   tcanvas_funcs.cpp
   tcanvas_input.cpp
   tcanvas_render.cpp
@@ -66,7 +62,6 @@ set(qtproject_SRCS
   tlistwidgetitem_funcs.cpp
   toolbaractions.cpp
   toolbox_funcs.cpp
-  trajectoryactions.cpp
   trajectory_funcs.cpp
   transform_funcs.cpp
   tprocess_funcs.cpp
@@ -74,7 +69,6 @@ set(qtproject_SRCS
   ttablewidgetitem_funcs.cpp
   ttreewidgetitem_funcs.cpp
   vibrations_funcs.cpp
-  viewactions.cpp
   viewbasis_funcs.cpp
   vieweigenvector_funcs.cpp
   zmatrix_funcs.cpp

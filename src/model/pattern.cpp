@@ -136,7 +136,7 @@ Atomaddress Model::locateAtom(Atom *i)
 	int patternno, molno, atomno, id;
 	Pattern *p;
 	Atomaddress result;
-	if (!autocreatePatterns())
+	if (!createPatterns())
 	{
 		msg.print("Model::locateAtom : No valid pattern available for model.\n");
 		msg.exit("Model::locateAtom");
@@ -186,10 +186,10 @@ void Model::clearPatterns()
 }
 
 // Autocreate patterns
-bool Model::autocreatePatterns()
+bool Model::createPatterns()
 {
 	// Determine the pattern (molecule) layout of the model
-	msg.enter("Model::autocreatePatterns");
+	msg.enter("Model::createPatterns");
 	int n, atomid, nsel2, nmols, idi, idj, idoff, count;
 	bool same;
 	Dnchar emp;
@@ -202,7 +202,7 @@ bool Model::autocreatePatterns()
 	// Check current pattern first...
 	if (arePatternsValid())
 	{
-		msg.exit("Model::autocreatePatterns");
+		msg.exit("Model::createPatterns");
 		return TRUE;
 	}
 	// Delete all old nodes first.
@@ -213,7 +213,7 @@ bool Model::autocreatePatterns()
 	{
 		msg.print("No patterns defined for model '%s' - no atoms present.\n",name_.get());
 		patternsPoint_ = changeLog.log(Log::Structure);
-		msg.exit("Model::autocreatePatterns");
+		msg.exit("Model::createPatterns");
 		return TRUE;
 	}
 	// To autodetect, we start off at atoms_head in the model, tree-select this atom and copy the selection to the clipboard. Use the clipboard to check subsequent selections, and if its the same just increase the nmols counter by one. If it's different, assume its the start of a new type of molecule and reset the counters.
@@ -247,7 +247,7 @@ bool Model::autocreatePatterns()
 			nmols = 0;
 
 			msg.print("Pattern creation failed.\n");
-			msg.exit("Model::autocreatePatterns");
+			msg.exit("Model::createPatterns");
 			return FALSE;
 		}
 		// If this is the first pass (molecule), copy the selection. If not, compare it
@@ -347,8 +347,16 @@ bool Model::autocreatePatterns()
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
 	patternsPoint_ = changeLog.log(Log::Structure);
 
-	msg.exit("Model::autocreatePatterns");
+	msg.exit("Model::createPatterns");
 	return TRUE;
+}
+
+// Create default pattern
+Pattern *Model::createDefaultPattern()
+{
+	clearPatterns();
+	Pattern *p = addPattern(1, atoms_.nItems(), "Default");
+	return p;
 }
 
 // Find pattern by name
@@ -418,6 +426,7 @@ bool Model::validatePatterns()
 {
 	msg.enter("Model::validatePatterns");
 	// Cycle over patterns, checking atom and bond fingerprints of molecules against the first in each
+	// TODO
 	msg.exit("Model::validatePatterns");
 	return TRUE;
 }

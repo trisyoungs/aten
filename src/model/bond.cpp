@@ -549,7 +549,7 @@ void Model::changeBond(Bond *b, Bond::BondType bt)
 void Model::augmentBonding()
 {
 	msg.enter("Model::augmentBonding");
-	if (!autocreatePatterns())
+	if (!createPatterns())
 	{
 		msg.print("Can't augment bonding without a valid pattern.\n");
 		msg.exit("Model::augmentBonding");
