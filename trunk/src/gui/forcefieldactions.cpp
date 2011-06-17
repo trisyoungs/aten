@@ -155,7 +155,7 @@ void AtenForm::on_actionModelFFType_triggered(bool checked)
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-// // Remove typing from model
+// Remove typing from model
 void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->removeTyping();
@@ -169,3 +169,8 @@ void AtenForm::on_actionModelCreateExpression_triggered(bool checked)
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
+// Add default pattern
+void AtenForm::on_actionModelAddDefaultPattern_triggered(bool checked)
+{
+	XXXaten.currentModelOrFrame()->printPatterns();
+}
