@@ -233,6 +233,7 @@ class AtenForm : public QMainWindow
 	void on_actionModelFFType_triggered(bool checked);
 	void on_actionModelFFUntype_triggered(bool checked);
 	void on_actionModelCreateExpression_triggered(bool checked);
+	void on_actionModelAddDefaultPattern_triggered(bool checked);
 
 
 	/*

@@ -669,7 +669,7 @@ class Model
 	// Find pattern by name
 	Pattern *findPattern(const char *name) const;
 	// Autocreate patterns for the model
-	bool autocreatePatterns(bool acceptDefault = TRUE);
+	bool autocreatePatterns();
 	// Validate current pattern definition
 	bool validatePatterns();
 	// Clear the current pattern definition

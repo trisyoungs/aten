@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
@@ -287,6 +288,8 @@
     <addaction name="actionModelFFType"/>
     <addaction name="actionModelFFUntype"/>
     <addaction name="actionModelCreateExpression"/>
+    <addaction name="separator"/>
+    <addaction name="actionModelAddDefaultPattern"/>
    </widget>
    <widget class="QMenu" name="menuTrajectory">
     <property name="title">
@@ -1540,6 +1543,11 @@
    </property>
    <property name="shortcut">
     <string>F10</string>
+   </property>
+  </action>
+  <action name="actionModelAddDefaultPattern">
+   <property name="text">
+    <string>Add Default Pattern</string>
    </property>
   </action>
  </widget>

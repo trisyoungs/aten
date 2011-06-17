@@ -186,12 +186,12 @@ void Model::clearPatterns()
 }
 
 // Autocreate patterns
-bool Model::autocreatePatterns(bool acceptDefault)
+bool Model::autocreatePatterns()
 {
 	// Determine the pattern (molecule) layout of the model
 	msg.enter("Model::autocreatePatterns");
 	int n, atomid, nsel2, nmols, idi, idj, idoff, count;
-	bool same, defaultpattern = FALSE;
+	bool same;
 	Dnchar emp;
 	Clipboard patclip;
 	emp.createEmpty(1024);
@@ -246,10 +246,9 @@ bool Model::autocreatePatterns(bool acceptDefault)
 			patterns_.clear();
 			nmols = 0;
 
-			msg.print("Added default pattern.\n");
-			p = addPattern(1, atoms_.nItems(), "default");
-			defaultpattern = TRUE;
-			break;
+			msg.print("Pattern creation failed.\n");
+			msg.exit("Model::autocreatePatterns");
+			return FALSE;
 		}
 		// If this is the first pass (molecule), copy the selection. If not, compare it
 		if (nmols == 0)
@@ -346,11 +345,10 @@ bool Model::autocreatePatterns(bool acceptDefault)
 	describeAtoms();
 
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
-	// Don't store new point if a defaultpattern was created and acceptdefault == FALSE
-	if ((!defaultpattern) || (defaultpattern && acceptDefault)) patternsPoint_ = changeLog.log(Log::Structure);
+	patternsPoint_ = changeLog.log(Log::Structure);
 
 	msg.exit("Model::autocreatePatterns");
-	return (!defaultpattern ? TRUE : acceptDefault);
+	return TRUE;
 }
 
 // Find pattern by name
