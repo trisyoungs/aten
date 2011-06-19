@@ -136,6 +136,8 @@ class Primitive
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid);
 	// Define next vertex, normal, and colour
 	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
+	// Define next vertex, normal, and colour (as Vec3<double>s and array)
+	void defineVertex(Vec3<double> &v, Vec3<double> &u, GLfloat *colour, bool calcCentroid);
 	// Define triangle fromn supplied array data, unique colour per vertex
 	void defineTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
 	// Define triangle with single colour per vertex

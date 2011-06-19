@@ -197,7 +197,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	
 	// All set up and ready - do the build
 	int pid = progress.initialise("Performing Disorder build", disorderMaxCycles_, !gui.exists());
-	msg.print("Cycle  Component    Region    Population (Requested)  Density (Requested)  RSF\n");
+	msg.print("Cycle   Component       Region      Pop   (Req)     Density  (Req)       RSF\n");
 	for (cycle = 1; cycle <= disorderMaxCycles_; ++cycle)
 	{
 		// Each cycle will consist of one round of insertions and deletions, and one round of MC shaking (tweaking)

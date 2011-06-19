@@ -8,6 +8,7 @@ textprimitive.h
 triangles.h
 vertexchunk.h
 engine.cpp
+engine_glyph.cpp
 engine_model.cpp
 engine_useractions.cpp
 engine_windows.cpp

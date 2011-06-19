@@ -70,10 +70,10 @@ GlyphsWidget::GlyphsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget
 	dataColourFrame[1] = ui.Data2ColourFrame;
 	dataColourFrame[2] = ui.Data3ColourFrame;
 	dataColourFrame[3] = ui.Data4ColourFrame;
-	dataGroupBox[0] = ui.Data1Group;
-	dataGroupBox[1] = ui.Data2Group;
-	dataGroupBox[2] = ui.Data3Group;
-	dataGroupBox[3] = ui.Data4Group;
+	dataTabWidget[0] = ui.Vertex1Tab;
+	dataTabWidget[1] = ui.Vertex2Tab;
+	dataTabWidget[2] = ui.Vertex3Tab;
+	dataTabWidget[3] = ui.Vertex4Tab;
 	dataAtomWidget[0] = ui.Data1AtomGroup;
 	dataAtomWidget[1] = ui.Data2AtomGroup;
 	dataAtomWidget[2] = ui.Data3AtomGroup;
@@ -165,7 +165,7 @@ void GlyphsWidget::updateControls(Glyph *g)
 	if (g == NULL)
 	{
 		ui.PropertiesBox->setEnabled(FALSE);
-		for (int n=0; n<MAXGLYPHDATA; ++n) dataGroupBox[n]->setEnabled(FALSE);
+		for (int n=0; n<MAXGLYPHDATA; ++n) dataTabWidget[n]->setEnabled(FALSE);
 	}
 	else
 	{
@@ -174,7 +174,7 @@ void GlyphsWidget::updateControls(Glyph *g)
 		for (int n=0; n<g->nData(); ++n)
 		{
 			GlyphData *gd = g->data(n);
-			dataGroupBox[n]->setEnabled(TRUE);
+			dataTabWidget[n]->setEnabled(TRUE);
 			if (gd->atomSetLast())
 			{
 				dataAtomWidget[n]->setEnabled(TRUE);
@@ -192,7 +192,7 @@ void GlyphsWidget::updateControls(Glyph *g)
 // 			dataColourFrame[n]->setColour(gd->colour());
 // 			dataColourFrame[n]->update();
 		}
-		for (int n=g->nData(); n<MAXGLYPHDATA; ++n) dataGroupBox[n]->setEnabled(FALSE);
+		for (int n=g->nData(); n<MAXGLYPHDATA; ++n) dataTabWidget[n]->setEnabled(FALSE);
 	}
 }
 
@@ -209,7 +209,7 @@ void GlyphsWidget::on_GlyphList_currentRowChanged(int row)
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
 		g->setSelected(ui.GlyphList->item(i)->isSelected());
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(FALSE, TRUE);
 }
 
 void GlyphsWidget::on_GlyphList_itemSelectionChanged()
@@ -312,21 +312,21 @@ void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 		g->setSelected( ui.GlyphList->item(i)->isSelected());
 	}
 	refreshing_ = FALSE;
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(FALSE, TRUE);
 }
 
 void GlyphsWidget::on_GlyphHideAllButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(FALSE, TRUE);
 }
 
 void GlyphsWidget::on_GlyphHideNoneButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(TRUE);
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(FALSE, TRUE);
 }
 
 void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
@@ -337,7 +337,7 @@ void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
 		g->setVisible(FALSE);
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(FALSE, TRUE);
 }
 
 void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
@@ -360,7 +360,7 @@ void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
 		item->setText(s);
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainWidget()->postRedisplay();
+	gui.mainWidget()->postRedisplay(FALSE, TRUE);
 }
 
 void GlyphsWidget::on_GlyphLineEdit_returnPressed()
