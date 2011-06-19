@@ -87,6 +87,27 @@ void Primitive::defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloa
 	++nDefinedVertices_;
 }
 
+// Define next vertex, normal, and colour (as Vec3<double>s and array)
+void Primitive::defineVertex(Vec3<double> &v, Vec3<double> &u, GLfloat *colour, bool calcCentroid)
+{
+	if (currentVertexChunk_ == NULL)
+	{
+		currentVertexChunk_ = vertexChunks_.add();
+		currentVertexChunk_->initialise(type_, colouredVertexData_);
+	}
+	else if (currentVertexChunk_->full())
+	{
+		if (currentVertexChunk_->next == NULL)
+		{
+			currentVertexChunk_ = vertexChunks_.add();
+			currentVertexChunk_->initialise(type_, colouredVertexData_);
+		}
+		else currentVertexChunk_ = currentVertexChunk_->next;
+	}
+	currentVertexChunk_->defineVertex(v.x,v.y,v.z,u.x,u.y,u.z,colour,calcCentroid);
+	++nDefinedVertices_;
+}
+
 // Define triangle
 void Primitive::defineTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour)
 {

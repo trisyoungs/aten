@@ -195,8 +195,8 @@ glyph triangle 3
 2 68 1 0 0 0 0 1 0 0.2
 3 69 1 0 0 0 1 1 1 0.2
 endglyph
-atom 70 H  3 -3 0 0.0 tube 
-atom 71 H  3 -7 0 0.0 tube
+atom 70 H  3 -7 0 0.0 tube
+atom 71 H  3 -3 0 0.0 tube 
 atom 72 H  7 -7 0 0.0 tube
 atom 73 H  7 -3 0 0.0 tube
 glyph quad 4
@@ -205,8 +205,8 @@ glyph quad 4
 3 72 1 0 0 0 0 0 0 1.0
 4 73 1 0 0 0 0 0 0 1.0
 endglyph
-atom 74 H  8 -3 0 0.0 tube 
-atom 75 H  8 -7 0 0.0 tube
+atom 74 H  8 -7 0 0.0 tube
+atom 75 H  8 -3 0 0.0 tube 
 atom 76 H  12 -7 0 0.0 tube
 atom 77 H  12 -3 0 0.0 tube
 glyph quad 4

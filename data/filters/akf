@@ -26,6 +26,8 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 	while (!eof())
 	{
 		readlinef("%s%r",keywd,line);
+		if (keywd == "") continue;
+
 		if (keywd == "atom")
 		{
 			readvar(line,i,e,rx,ry,rz,q,style,colour[1],colour[2],colour[3],colour[4]);
@@ -55,6 +57,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			# First 'n' lines are the 'n' data points for the glyph
 			for (int n=1; n<=ndata; ++n)
 			{
+				# Format:   <DataNo> <AtomID or 0 for vector> <AtomData Type> <vx> <vy> <vz> <r> <g> <b> <a>
 				readline(l,i,atomdata,v.x,v.y,v.z,g.data[l].colour[1],g.data[l].colour[2],g.data[l].colour[3],g.data[l].colour[4]);
 				if (i <= 0) g.data[l].vector = v;
 				else g.data[l].atom = aten.model.atoms[i];
