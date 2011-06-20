@@ -192,8 +192,8 @@ void AtenForm::on_actionAtomColourSet_triggered(bool checked)
 	// Store new colour
 	CommandNode::run(Command::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	target = NULL;
-	// Set menu option automatically
-	ui.actionSchemeCustom->trigger();
+	// Set colour scheme menu option automatically if necessary
+	if (prefs.colourScheme() != Prefs::CustomScheme) ui.actionSchemeCustom->trigger();
 	msg.print("Colouring scheme changed to 'custom'.\n");
 	gui.mainWidget()->postRedisplay();
 }
