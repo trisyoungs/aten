@@ -238,15 +238,13 @@ bool Model::createPatterns()
 		}
 		if (nsel2 != marked_.nItems())
 		{
-			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\n");
+			msg.print("Pattern creation failed because of bad atom ordering or the presence of additional bonds.\n");
 			msg.print("Problem occurred in pattern %i whilst selecting from atom %i.\n", patterns_.nItems()+1, selectSource->id()+1);
-			msg.print("Pattern for model will be 1*N.\n");
 
-			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead
+			// Remove any patterns added so far
 			patterns_.clear();
 			nmols = 0;
 
-			msg.print("Pattern creation failed.\n");
 			msg.exit("Model::createPatterns");
 			return FALSE;
 		}
