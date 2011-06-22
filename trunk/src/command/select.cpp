@@ -211,7 +211,7 @@ bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Deselect atom, range of atoms, or elements ('deselectf("")')
+// Deselect by formatted string
 bool Command::function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
@@ -393,7 +393,7 @@ bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Deselect atom, range of atoms, or elements ('deselectf("")')
+// Select by formatted string
 bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;

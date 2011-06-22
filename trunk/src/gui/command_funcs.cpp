@@ -125,7 +125,7 @@ void CommandWidget::on_InteractivePrompt_returnPressed()
 {
 	// Grab the current text of the line edit (and clear it at the same time)
 	interactiveProgram_.mainProgram()->reset(FALSE);
-	if (interactiveProgram_.generateFromString(ui.InteractivePrompt->getText()))
+	if (interactiveProgram_.generateFromString(ui.InteractivePrompt->getText(), "InteractivePromptCommand", FALSE, FALSE))
 	{
 		ReturnValue result;
 		interactiveProgram_.execute(result);
