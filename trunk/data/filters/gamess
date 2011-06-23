@@ -505,7 +505,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		if (statpt_hssend == ".TRUE.") line += " HSSEND=.TRUE.";
 		writelinef("%s $END\n", line);
 		if (runtyp == "SADPOINT") writelinef(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", statpt_ifolow, statpt_stpt, statpt_ststep);
-		if (statpt_ifreez != "") writelinef(" $STATPT IFREEZ=%s $END\n", statpt_ifreez);
+		if (statpt_ifreez != "") writelinef(" $STATPT IFREEZ(1)=%s $END\n", statpt_ifreez);
 	}
 	else if (runtyp == "IRC") writelinef(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
 
