@@ -175,8 +175,8 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("Requested ID for new atom (%i) is out of range (target model has %i atoms).\n", id, obj.rs()->nAtoms());
 		return FALSE;
 	}
-	if (c->hasArg(4)) aten.current.i = obj.rs()->addAtom(el, c->arg3d(1), id-1);
-	else aten.current.i = obj.rs()->addAtomAtPen(el, id-1);
+	Vec3<double> pos = (c->hasArg(4) ? c->arg3d(2) : obj.rs()->penPosition());
+	aten.current.i = obj.rs()->addAtomWithId(el, pos, id-1);
 	// Add the name to the model's namesForcefield, if requested and it exists
 	if (prefs.keepNames())
 	{

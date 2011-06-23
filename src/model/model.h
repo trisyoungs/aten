@@ -169,7 +169,7 @@ class Model
 	// Create a new atom with specified id
 	Atom *addAtomWithId(short int el, Vec3<double> r, int atomid);
 	// Create a new atom at the Model's current pen position
-	Atom *addAtomAtPen(short int el, int position = -1);
+	Atom *addAtomAtPen(short int el);
 	// Create copy of supplied atom
 	Atom *addCopy(Atom *source);
 	// Create copy of supplied atom at the specified position

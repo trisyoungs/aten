@@ -89,9 +89,9 @@ Atom *Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 }
 
 // Create a new atom at the Model's current pen position
-Atom *Model::addAtomAtPen(short int el, int targetid)
+Atom *Model::addAtomAtPen(short int el)
 {
-	return addAtom(el, penPosition_, targetid);
+	return addAtom(el, penPosition_);
 }
 
 // Add atom copy
