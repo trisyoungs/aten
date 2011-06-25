@@ -6,7 +6,6 @@ o Rebonding model also folds atoms, making --nofold irrelevant
 o Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.
 o Fragment builder does not clear properly once closed.
 o Flickering Progress Dialog, e.g. when using disordered builder on Windows
-o Undoing cell changes with the Cell Define window open does not change the cell window itself, and the original values are re-set when closing the window.
 o Model List images do not update. Can the main view be grabbed and shrunk down to icon size? Maybe in a QThread?
 o Glyph list not update on model load.
 o Model not updated when changing glyph selection?
