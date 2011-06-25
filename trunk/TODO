@@ -15,7 +15,6 @@ o Segfault in Model::regenerateIcon() from Qt's renderText (laptop)?
 Current TODO
 ------------
 
-o Cancel mode if a tool window is closed when one of its modes is selected?
 o PovRay export
 o Save forcefield!
 o Add method to check current pattern definition so that it doesn't have to be removed so often.

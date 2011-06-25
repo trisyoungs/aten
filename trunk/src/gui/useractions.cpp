@@ -20,6 +20,7 @@
 */
 
 #include "gui/useractions.h"
+#include "base/constants.h"
 
 // User action texts (name, nomod, shift, ctrl, alt)
 UserAction UserActions[] = {
@@ -169,4 +170,69 @@ UserAction UserActions[] = {
 		"",
 		"" }
 	};
+
+// Action group checks
+bool UserAction::isBuildWidgetAction(UserAction::Action ua)
+{
+	switch (ua)
+	{
+		case (DrawAtomAction):
+		case (DrawChainAction):
+		case (DrawFragmentAction):
+		case (DrawTransmuteAction):
+		case (DrawDeleteAction):
+		case (DrawBondSingleAction):
+		case (DrawBondDoubleAction):
+		case (DrawBondTripleAction):
+		case (DrawDeleteBondAction):
+		case (DrawAddHydrogenAction):
+			return TRUE;
+		default:
+			return FALSE;
+	}
+}
+
+bool UserAction::isGeometryWidgetAction(UserAction::Action ua)
+{
+	switch (ua)
+	{
+		case (MeasureDistanceAction):
+		case (MeasureAngleAction):
+		case (MeasureTorsionAction):
+			return TRUE;
+		default:
+			return FALSE;
+	}
+}
+
+bool UserAction::isPositionWidgetAction(UserAction::Action ua)
+{
+	switch (ua)
+	{
+		case (ShiftPickVectorAction):
+			return TRUE;
+		default:
+			return FALSE;
+	}
+}
+
+bool UserAction::isTransformWidgetAction(UserAction::Action ua)
+{
+	switch (ua)
+	{
+		case (RotatePickAxisAction):
+		case (TransformPickAAction):
+		case (TransformPickBAction):
+		case (TransformPickCAction):
+		case (ConvertSourcePickAAction):
+		case (ConvertSourcePickBAction):
+		case (ConvertSourcePickCAction):
+		case (ConvertTargetPickAAction):
+		case (ConvertTargetPickBAction):
+		case (ConvertTargetPickCAction):
+			return TRUE;
+		default:
+			return FALSE;
+	}
+}
 

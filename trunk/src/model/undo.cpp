@@ -117,7 +117,7 @@ void Model::endUndoState()
 	msg.exit("Model::endUndoState");
 }
 
-// Perform actions in current UndoState
+// Perform actions in current Undo state
 void Model::undo()
 {
 	msg.enter("Model::undo");
@@ -128,17 +128,20 @@ void Model::undo()
 		currentUndoState_->undo(this);
 		changeLog.setLog(Log::Structure, currentUndoState_->startLog(Log::Structure));
 		changeLog.setLog(Log::Coordinates, currentUndoState_->startLog(Log::Coordinates));
-		changeLog.setLog(Log::Camera, currentUndoState_->startLog(Log::Camera));
+		changeLog.setLog(Log::Selection, currentUndoState_->startLog(Log::Selection));
 		changeLog.setLog(Log::Style, currentUndoState_->startLog(Log::Style));
+		changeLog.setLog(Log::Cell, currentUndoState_->startLog(Log::Cell));
+		changeLog.setLog(Log::Misc, currentUndoState_->startLog(Log::Misc));
+		changeLog.setLog(Log::Glyphs, currentUndoState_->startLog(Log::Glyphs));
+		changeLog.setLog(Log::Grids, currentUndoState_->startLog(Log::Grids));
 		// Set new undo/redo pointers
 		currentRedoState_ = currentUndoState_;
 		currentUndoState_ = currentUndoState_->prev;
 	}
-	//listUndoStates();
 	msg.exit("Model::undo");
 }
 
-// Perform actions in current UndoState
+// Perform actions in current Redo state
 void Model::redo()
 {
 	msg.enter("Model::redo");
@@ -147,15 +150,21 @@ void Model::redo()
 	{
 		// Undo the changes
 		currentRedoState_->redo(this);
+		changeLog.setLog(Log::Structure, currentRedoState_->startLog(Log::Structure));
+		changeLog.setLog(Log::Coordinates, currentRedoState_->startLog(Log::Coordinates));
+		changeLog.setLog(Log::Selection, currentRedoState_->startLog(Log::Selection));
+		changeLog.setLog(Log::Style, currentRedoState_->startLog(Log::Style));
+		changeLog.setLog(Log::Cell, currentRedoState_->startLog(Log::Cell));
+		changeLog.setLog(Log::Misc, currentRedoState_->startLog(Log::Misc));
+		changeLog.setLog(Log::Glyphs, currentRedoState_->startLog(Log::Glyphs));
 		changeLog.setLog(Log::Structure, currentRedoState_->endLog(Log::Structure));
 		changeLog.setLog(Log::Coordinates, currentRedoState_->endLog(Log::Coordinates));
-		changeLog.setLog(Log::Camera, currentUndoState_->endLog(Log::Camera));
-		changeLog.setLog(Log::Style, currentUndoState_->endLog(Log::Style));
+		changeLog.setLog(Log::Camera, currentRedoState_->endLog(Log::Camera));
+		changeLog.setLog(Log::Style, currentRedoState_->endLog(Log::Style));
 		// Set new undo/redo pointers
 		currentUndoState_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;
 	}
-	//listUndoStates();
 	msg.exit("Model::redo");
 }
 

@@ -315,20 +315,20 @@ void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Command::Undo, "");
 	gui.mainWidget()->postRedisplay();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::CellTarget+GuiQt::GlyphsTarget);
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Command::Redo, "");
 	gui.mainWidget()->postRedisplay();
-	gui.update(GuiQt::CanvasTarget+GuiQt::SelectTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::CellTarget+GuiQt::GlyphsTarget);
 }
 
 void AtenForm::on_actionEditCut_triggered(bool checked)
 {
 	CommandNode::run(Command::Cut, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
 }
 
 void AtenForm::on_actionEditCopy_triggered(bool checked)
@@ -405,6 +405,7 @@ void AtenForm::on_actionEditQuickCommand_triggered(bool on)
 			{
 				ReturnValue rv;
 				program.execute(rv);
+				gui.update(GuiQt::AllTarget);
 				break;
 			}
 			else
