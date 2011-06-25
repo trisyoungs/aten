@@ -32,12 +32,13 @@ class Log
 	bool operator==(Log &l) const;
 	bool operator!=(Log &l) const;
 	// Log types
-	enum LogType { Structure, Coordinates, Camera, Style, Selection, Grids, Glyphs, Labels, Misc, Total, nLogTypes };
+	enum LogType { Structure, Coordinates, Camera, Cell, Style, Selection, Grids, Glyphs, Labels, Misc, Total, nLogTypes };
 	// Structure	: create/destroy atoms/bonds, change elements, change order of atoms
 	// Coordinate	: atomic coordinates
-	// Style	: visual changes that require re-rendering
+	// Cell		: unit cell
+	// Style	: visual changes that require re-rendering of many objects in the model (e.g. atom colours have changed)
 	// Selection	: atom selection
-	// Camera	: view (mainly used to flag reprojection)
+	// Camera	: view (mainly used to flag redrawing of model)
 	// Glyphs	: glyphs
 	// Grids	: grids
 	// Labels	: atom labels

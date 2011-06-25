@@ -36,6 +36,12 @@ class UserAction
 	const char *shiftModified;
 	const char *ctrlModified;
 	const char *altModified;
+
+	// Action group checks
+	static bool isBuildWidgetAction(UserAction::Action ua);
+	static bool isGeometryWidgetAction(UserAction::Action ua);
+	static bool isPositionWidgetAction(UserAction::Action ua);
+	static bool isTransformWidgetAction(UserAction::Action ua);
 };
 
 extern UserAction UserActions[];

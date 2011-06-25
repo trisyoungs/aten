@@ -34,6 +34,7 @@ bool Log::operator==(Log &l) const
 {
 	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return FALSE;
 	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return FALSE;
+	if (logs_[Log::Cell] != l.logs_[Log::Cell]) return FALSE;
 	if (logs_[Log::Style] != l.logs_[Log::Style]) return FALSE;
 	if (logs_[Log::Camera] != l.logs_[Log::Camera]) return FALSE;
 	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return FALSE;
@@ -48,6 +49,7 @@ bool Log::operator!=(Log &l) const
 {
 	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return TRUE;
 	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return TRUE;
+	if (logs_[Log::Cell] != l.logs_[Log::Cell]) return TRUE;
 	if (logs_[Log::Style] != l.logs_[Log::Style]) return TRUE;
 	if (logs_[Log::Camera] != l.logs_[Log::Camera]) return TRUE;
 	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return TRUE;
@@ -90,7 +92,7 @@ int Log::log(Log::LogType cl) const
 // Return current 'save' point of the model (sum of specific logs)
 int Log::currentSavePoint() const
 {
-	return (logs_[Log::Structure] + logs_[Log::Coordinates] + logs_[Log::Misc]);
+	return (logs_[Log::Structure] + logs_[Log::Coordinates] + logs_[Log::Cell] + logs_[Log::Misc]);
 }
 
 // Set the save point log for the model
@@ -114,5 +116,5 @@ bool Log::isSame(Log::LogType lt, Log &other)
 // Print logs
 void Log::print() const
 {
-	msg.print("Structure [%i], Coordinates [%i], Style [%i], Camera [%i], Selection [%i], Glyphs [%i], Grids [%i], Lables [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Style], logs_[Log::Camera], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Grids], logs_[Log::Labels], logs_[Log::Misc], logs_[Log::Total]); 
+	msg.print("Structure [%i], Coordinates [%i], Cell [%i], Style [%i], Camera [%i], Selection [%i], Glyphs [%i], Grids [%i], Labels [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Cell], logs_[Log::Style], logs_[Log::Camera], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Grids], logs_[Log::Labels], logs_[Log::Misc], logs_[Log::Total]); 
 }
