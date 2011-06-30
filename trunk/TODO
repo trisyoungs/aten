@@ -15,9 +15,8 @@ Current TODO
 ------------
 
 o PovRay export
-o Save forcefield!
+o Save forcefield needs to be able to distinguish between types and uatypes, and 'convert' data is not yet written.
 o Add method to check current pattern definition so that it doesn't have to be removed so often.
-o More verbosity for all commands
 o Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?
 o Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?
 o Update script to perform conformational searching on molecule (add GUI options)

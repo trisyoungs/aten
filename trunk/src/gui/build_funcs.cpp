@@ -65,6 +65,7 @@ void BuildWidget::showWidget()
 /*
 // Edit Tab - Draw
 */
+
 void BuildWidget::on_ElementHButton_clicked(bool checked)
 {
 	if (checked) gui.mainWidget()->setSketchElement(1);
@@ -191,6 +192,30 @@ void BuildWidget::on_AddAtomButton_clicked(bool on)
 		CommandNode::run(Command::NewAtom, "iddd", gui.mainWidget()->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
 	gui.update(GuiQt::CanvasTarget);
+}
+
+/*
+// Options Tab
+*/
+
+void BuildWidget::on_BondToleranceSlider_valueChanged(int value)
+{
+	// Convert integer value to real value
+	double tolerance = double(value)/1000.0;
+	// Set spinbox
+	ui.BondToleranceSpin->setValue(tolerance);
+	// Set prefs value
+	prefs.setBondTolerance(tolerance);
+}
+
+void BuildWidget::on_BondToleranceSpin_valueChanged(double value)
+{
+	// Convert integer value to real value
+	int tolerance = int(value*1000.0);
+	// Set slider
+	ui.BondToleranceSlider->setValue(tolerance);
+	// Set prefs value
+	prefs.setBondTolerance(value);
 }
 
 void BuildWidget::closeEvent(QCloseEvent *event)

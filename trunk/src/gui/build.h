@@ -58,6 +58,8 @@ class BuildWidget : public QDockWidget
 	// Tools Tab - Add Atom
 	void on_AddAtomButton_clicked(bool checked);
 	// Options Tab
+	void on_BondToleranceSlider_valueChanged(int value);
+	void on_BondToleranceSpin_valueChanged(double value);
 	protected:
 	void closeEvent(QCloseEvent *event);
 

@@ -99,8 +99,9 @@ template <class T> void NameMap<T>::set(const char *name, T data)
 template <class T> class NameMapList
 {
 	public:
-	// Constructor / Destructor
+	// Constructor
 	NameMapList<T>(T defaultvalue);
+	NameMapList<T>();
 
 	/*
 	// Data
@@ -112,8 +113,14 @@ template <class T> class NameMapList
 	List< NameMap<T> > data_;
 
 	public:
+	// Set default value
+	void setDefaultValue(T defaultvalue);
 	// Create new entry
 	int add(const char *name, T data);
+	// Return number of items defined
+	int nItems();
+	// Return first data item in list
+	NameMap<T> *first();
 	// Return data item associated to name
 	T data(const char *name) const;
 	// Return nth data item associated to name
@@ -124,10 +131,20 @@ template <class T> class NameMapList
 	int index(const char *name);
 };
 
-// Constructor
+// Constructors
 template <class T> NameMapList<T>::NameMapList(T defaultvalue)
 {
 	// Private variables
+	defaultValue_ = defaultvalue;
+}
+
+template <class T> NameMapList<T>::NameMapList()
+{
+}
+
+// Set default value
+template <class T> void NameMapList<T>::setDefaultValue(T defaultvalue)
+{
 	defaultValue_ = defaultvalue;
 }
 
@@ -149,6 +166,18 @@ template <class T> int NameMapList<T>::add(const char *name, T data)
 	}
 	nm->set(name, data);
 	return n;
+}
+
+// Return number of items defined
+template <class T> int NameMapList<T>::nItems()
+{
+	return data_.nItems();
+}
+
+// Return first data item in list
+template<class T> NameMap<T> *NameMapList<T>::first()
+{
+	return data_.first();
 }
 
 // Retrieve item by name

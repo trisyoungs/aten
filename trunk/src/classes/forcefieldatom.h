@@ -62,8 +62,6 @@ class ForcefieldAtom
 	Neta neta_;
 	// Parameter data
 	double params_[MAXFFPARAMDATA];
-	// Generator data (if present in a rule-based Forcefield)
-	double *generator_;
 	// Atomic charge
 	double charge_;
 	// Parent forcefield
@@ -120,14 +118,6 @@ class ForcefieldAtom
 	double parameter(int i) const;
 	// Returns parameter array pointer
 	double *parameters();
-	// Set generator data
-	void setGenerator(int i, double d);
-	// Initialise generator array
-	void initialiseGenerator();
-	// Return generator data array
-	double *generator();
-	// Return single generator value
-	double generator(int i) const;
 	// Set the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
 	void setElement(int n);
 	// Return the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)

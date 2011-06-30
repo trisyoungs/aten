@@ -318,8 +318,10 @@ bool Forcefield::readUnitedAtomTypes()
 bool Forcefield::readData(const char *vars)
 {
 	msg.enter("Forcefield::readData");
+	// Store current number of data defined, since there may be multiple 'data' blocks given
+	int lastn = typeData_.nItems();
 	// First, parse list of data items to get name
-	NameMapList<VTypes::DataType> items(VTypes::nDataTypes);
+	typeData_.setDefaultValue(VTypes::nDataTypes);
 	LineParser parser;
 	parser.getArgsDelim(LineParser::SkipBlanks, vars);
 	int n;
@@ -333,15 +335,15 @@ bool Forcefield::readData(const char *vars)
 			msg.exit("Forcefield::readData");
 			return FALSE;
 		}
-		items.add(parser.argc(n+1), vt);
+		typeData_.add(parser.argc(n+1), vt);
 	}
 	// Next, each line contains the forcefield atom to which the data relates, the type name (for bookkeeping, nothing more)
 	// and then the data in the order specified in the header above.
 	bool done = FALSE;
-	int nadded = 0, success;
+	int nadded = 0, success, index;
 	do
 	{
-		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::UseQuotes+LineParser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg.print("File error while reading atom type data.\n");
@@ -366,18 +368,20 @@ bool Forcefield::readData(const char *vars)
 			if (!ffparser.hasArg(n))
 			{
 				msg.print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).\n", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
-				break;
+				continue;
 			}
-			switch (items.data(n-2))
+			index = lastn + n - 2;
+			printf("index = %i, name = %s\n", index, typeData_.name(index));
+			switch (typeData_.data(index))
 			{
 				case (VTypes::IntegerData):
-					ffa->addData(items.name(n-2), ffparser.argi(n));
+					ffa->addData(typeData_.name(index), ffparser.argi(n));
 					break;
 				case (VTypes::DoubleData):
-					ffa->addData(items.name(n-2), ffparser.argd(n));
+					ffa->addData(typeData_.name(index), ffparser.argd(n));
 					break;
 				case (VTypes::StringData):
-					ffa->addData(items.name(n-2), ffparser.argc(n));
+					ffa->addData(typeData_.name(index), ffparser.argc(n));
 					break;
 				default:
 					msg.print("Error: Unsuitable datatype for data item %i.\n", n-1);
@@ -392,92 +396,11 @@ bool Forcefield::readData(const char *vars)
 	return TRUE;
 }
 
-// Read generator data
-bool Forcefield::readGenerator(const char *vars)
-{
-	// Read in generator data for atom types in rule-based forcefields
-	// We expect there to be the same number of sets of data as there are types...
-	// Argument to 'generator' keyword is number of data per atom
-	msg.enter("Forcefield::readGenerator");
-	int count, success, n;
-	ForcefieldAtom *ffa;
-	bool done = FALSE;
-	// First, parse list of data items to get names and types of variables
-	NameMapList<VTypes::DataType> items(VTypes::nDataTypes);
-	LineParser parser;
-	parser.getArgsDelim(LineParser::SkipBlanks, vars);
-	for (n=0; n<parser.nArgs(); n += 2)
-	{
-		// Determine data type
-		VTypes::DataType vt = VTypes::dataType(parser.argc(n));
-		if (vt == VTypes::nDataTypes)
-		{
-			msg.print("Unrecognised type ('%s') found in list in 'generator' block header.\n", parser.argc(0));
-			msg.exit("Forcefield::readGenerator");
-			return FALSE;
-		}
-		items.add(parser.argc(n+1), vt);
-	}
-	count = 0;
-	do
-	{
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
-		if (success != 0)
-		{
-			if (success == 1) msg.print("File error while reading generator data for atom %i.\n",count+1);
-			if (success == -1) msg.print("End of file while reading generator data for atom %i.\n",count+1);
-			msg.exit("Forcefield::readGenerator");
-			return FALSE;
-		}
-		if (strcmp(ffparser.argc(0),"end") == 0) break;
-		// Search for this ffatom ID and retrieve it
-		ffa = findType(ffparser.argi(0));
-		if (ffa == NULL)
-		{
-			msg.print("Error: forcefield type ID '%i' has not been specified, so can't add generator data to it.\n", ffparser.argi(0));
-			msg.exit("Forcefield::readGenerator");
-			return FALSE;
-		}
-		count ++;
-		// Get data from lines in the order it was specified above
-		for (n=2; n<ffparser.nArgs(); ++n)
-		{
-			// If the parser argument is blank we've run out of arguments early
-			if (!ffparser.hasArg(n))
-			{
-				msg.print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).\n", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
-				break;
-			}
-			switch (items.data(n-2))
-			{
-				case (VTypes::IntegerData):
-					ffa->addData(items.name(n-2), ffparser.argi(n));
-					break;
-				case (VTypes::DoubleData):
-					ffa->addData(items.name(n-2), ffparser.argd(n));
-					break;
-				case (VTypes::StringData):
-					ffa->addData(items.name(n-2), ffparser.argc(n));
-					break;
-				default:
-					msg.print("Error: Unsuitable datatype for data item %i.\n", n-1);
-					msg.exit("Forcefield::readGenerator");
-					return TRUE;
-			}
-		}
-	} while (!done);
-	if (count != types_.nItems()-1) msg.print("Warning: Not all atom types had generator data defined (%i missing).\n", types_.nItems()-count-1);
-	msg.print("\t: Read in generator data for %i atomtypes.\n", count);
-	msg.exit("Forcefield::readGenerator");
-	return TRUE;
-}
-
 // Read in generator function definitions
 bool Forcefield::readFunctions()
 {
 	msg.enter("Forcefield::readFunctions");
 	// Store every line from the file up to the next 'end' block
-	List<Dnchar> stringList;
 	bool done = FALSE;
 	int success;
 	do
@@ -493,20 +416,20 @@ bool Forcefield::readFunctions()
 		if (strcmp(ffparser.argc(0),"end") != 0)
 		{
 			// Add line to internal list and continue
-			Dnchar *newline = stringList.add();
+			Dnchar *newline = generatorFunctionText_.add();
 			newline->set(ffparser.line());
 		}
 		else done = TRUE;
 	} while (!done);
 	// Check for empty string list
-	if (stringList.nItems() == 0)
+	if (generatorFunctionText_.nItems() == 0)
 	{
 		msg.print("Found an empty 'functions' block - ignored.\n");
 		msg.exit("Forcefield::readFunctions");
 		return TRUE;
 	}
 	// Now, attempt to parser the lines we just read in to create functions....
-	bool result = generatorFunctions_.generateFromStringList(stringList.first(), "GeneratorFuncs", TRUE);
+	bool result = generatorFunctions_.generateFromStringList(generatorFunctionText_.first(), "GeneratorFuncs", TRUE);
 	// Search for functions we recognise
 	vdwGenerator_ = generatorFunctions_.findGlobalFunction("vdwgenerator");
 	if (vdwGenerator_) msg.print("\t: Found 'vdwgenerator' function.\n");

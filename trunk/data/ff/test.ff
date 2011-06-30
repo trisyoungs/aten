@@ -85,7 +85,7 @@ end
 # In forcefields for which parameters are calculated on-the-fly, the set of generating data constants for each atom type are
 # listed in a 'generator' block. The syntax is similar to the 'data' block above, with the data types and names specified first.
 # We will define the generator data for only the ethane types here...
-generator "double sigma, double eps, double k, double theta "
+data "double sigma, double eps, double k, double theta"
 10	CH3	3.25	0.2	1000.0	109.5
 end
 
@@ -93,7 +93,7 @@ end
 # generator function is called (if one exists). The functions themselves have strict declarations that must be followed.
 # Functions are defined in one or more 'function' blocks
 function
-int generatebond(ffbound newterm, atom i, atom j)
+int bondgenerator(ffbound newterm, atom i, atom j)
 {
 	printf("Here we are in the bond generation function.\n");
 	printf("The atoms passed are have assigned equivalent types of '%s' and '%s'.\n", i.type.equivalent,j.type.equivalent);
