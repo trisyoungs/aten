@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
@@ -74,7 +75,7 @@
    </property>
    <widget class="QMenu" name="SettingsMenu">
     <property name="title">
-     <string>Se&amp;ttings</string>
+     <string>Sett&amp;ings</string>
     </property>
     <addaction name="actionPreferences"/>
     <addaction name="separator"/>
@@ -271,9 +272,9 @@
      <string>Scri&amp;pts</string>
     </property>
    </widget>
-   <widget class="QMenu" name="ExpressionMenu">
+   <widget class="QMenu" name="ForcefieldMenu">
     <property name="title">
-     <string>Forcefield</string>
+     <string>F&amp;orcefield</string>
     </property>
     <addaction name="actionOpenForcefield"/>
     <addaction name="separator"/>
@@ -290,9 +291,9 @@
     <addaction name="separator"/>
     <addaction name="actionModelAddDefaultPattern"/>
    </widget>
-   <widget class="QMenu" name="menuTrajectory">
+   <widget class="QMenu" name="TrajectoryMenu">
     <property name="title">
-     <string>Trajectory</string>
+     <string>&amp;Trajectory</string>
     </property>
     <addaction name="actionTrajectoryOpen"/>
     <addaction name="actionTrajectoryRemove"/>
@@ -315,8 +316,8 @@
    <addaction name="ViewMenu"/>
    <addaction name="AtomContextMenu"/>
    <addaction name="ModelMenu"/>
-   <addaction name="menuTrajectory"/>
-   <addaction name="ExpressionMenu"/>
+   <addaction name="TrajectoryMenu"/>
+   <addaction name="ForcefieldMenu"/>
    <addaction name="SettingsMenu"/>
    <addaction name="ScriptsMenu"/>
    <addaction name="HelpMenu"/>

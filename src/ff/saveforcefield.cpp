@@ -30,7 +30,7 @@
 bool Forcefield::save()
 {
 	msg.enter("Forcefield::save");
-	bool done, okay;
+	bool done, okay, result = TRUE;
 	int success, n, m;
 	Prefs::EnergyUnit ffunit;
 
@@ -49,7 +49,7 @@ bool Forcefield::save()
 	// Global type definitions
 	if (typeDefines_.nItems() != 0)
 	{
-		ffparser.writeLine("defines");
+		ffparser.writeLine("defines\n");
 		Dnchar typedefine;
 		for (Neta *neta = typeDefines_.first(); neta != NULL; neta = neta->next)
 		{
@@ -64,7 +64,7 @@ bool Forcefield::save()
 	if (types_.nItems() != 0)
 	{
 		ffparser.writeLine("types\n");
-		for (ForcefieldAtom *ffa = types_.first(); ffa != NULL; ffa = ffa->next)
+		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{
 			if (ffa->description() == NULL) ffparser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString());
 			else ffparser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
@@ -73,13 +73,11 @@ bool Forcefield::save()
 	}
 
 	// Atomtype Equivalents
-	// TGAY The original lines from the file will need to be stored in the Forcefield Structure, and so editing in the GUI needs to be allowed
-	
 	// Loop over defined atomtypes, checking equivalent name with atomtype name. If different, search the KVMap for the equivalent name. If found, add the atomtype name to the list, otherwise start a new entry and add it to that
 	KVMap equivalentMap;
 	KVPair *kvp;
 	Dnchar tname(100);
-	for (ForcefieldAtom *ffa = types_.first(); ffa != NULL; ffa = ffa->next)
+	for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 	{
 		// Are equivalent and type names the same? If so, just continue.
 		if (strcmp(ffa->equivalent(),ffa->name()) == 0) continue;
@@ -102,21 +100,94 @@ bool Forcefield::save()
 	if (equivalentMap.nPairs() != 0)
 	{
 		ffparser.writeLine("equivalents\n");
-		for (kvp = equivalentMap.pairs(); kvp != NULL; kvp = kvp->next)
+		for (kvp = equivalentMap.pairs(); kvp != NULL; kvp = kvp->next) ffparser.writeLineF("%s\t%s\n", kvp->key(), kvp->value());
+		ffparser.writeLine("end\n\n");
+	}
+
+	// Data block
+	if (typeData_.nItems() > 0)
+	{
+		// Write header, including variable type/name definitions
+		ffparser.writeLine("data \"");
+		for (NameMap<VTypes::DataType> *nm = typeData_.first(); nm != NULL; nm = nm->next)
 		{
-			ffparser.writeLineF("%s\t%s\n", kvp->key(), kvp->value());
+			switch (nm->data())
+			{
+				case (VTypes::IntegerData):
+				case (VTypes::DoubleData):
+				case (VTypes::StringData):
+					ffparser.writeLineF("%s %s", VTypes::dataType(nm->data()), nm->name());
+					break;
+				default:
+					msg.print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
+					result = FALSE;
+					continue;
+			}
+			if (nm->next != NULL) ffparser.writeLine(", ");
+		}
+		ffparser.writeLine("\"\n");
+
+		Variable *v;
+		ReturnValue rv;
+		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
+		{
+			ffparser.writeLineF("%i\t%s\t", ffa->typeId(), ffa->name());
+			for (NameMap<VTypes::DataType> *nm = typeData_.first(); nm != NULL; nm = nm->next)
+			{
+				// Find data...
+				v = ffa->data(nm->name());
+				if (v == NULL)
+				{
+					msg.print("Warning: Data '%s' has not been defined in type '%s' (id %i).\n", nm->name(), ffa->name(), ffa->typeId());
+					switch (nm->data())
+					{
+						case (VTypes::IntegerData):
+							rv.set(0);
+							break;
+						case (VTypes::DoubleData):
+							rv.set(0.0);
+							break;
+						case (VTypes::StringData):
+							rv.set("NULL");
+							break;
+						default:
+							rv.reset();
+					}
+				}
+				else v->execute(rv);
+				switch (nm->data())
+				{
+					case (VTypes::IntegerData):
+						ffparser.writeLineF("%i", rv.asInteger());
+						break;
+					case (VTypes::DoubleData):
+						ffparser.writeLineF("%e", rv.asDouble());
+						break;
+					case (VTypes::StringData):
+						ffparser.writeLineF("\"%s\"", rv.asString());
+						break;
+					default:
+						msg.print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
+						result = FALSE;
+						continue;
+				}
+				if (nm->next != NULL) ffparser.writeLine("\t");
+				else ffparser.writeLine("\n");
+			}
 		}
 		ffparser.writeLine("end\n\n");
 	}
-	
-	// Data block *and* Convert list
-	// TGAY Needs storage of original data types and names (NameMap) in FF structure (convert list already stored?)
 
-	// Functions
-	// TGAY How to write this? Probably best to store original lines from file rather than regenerate from stored Trees.
+	// Generator Functions
+	if (generatorFunctionText_.nItems() > 0)
+	{
+		ffparser.writeLine("function\n");
+		for (Dnchar *d = generatorFunctionText_.first(); d != NULL; d = d->next) ffparser.writeLineF("%s\n", d->get());
+		ffparser.writeLine("end\n\n");
+	}
 	
 	// Intermolecular potential definition
-	if (types_.nItems() != 0)
+	if (types_.nItems() > 0)
 	{
 		// First, get populations of specified parameters in each VDW form
 		int count[VdwFunctions::nVdwFunctions];
@@ -139,7 +210,7 @@ bool Forcefield::save()
 	}
 
 	// Bond potential definition
-	if (bonds_.nItems() != 0)
+	if (bonds_.nItems() > 0)
 	{
 		// First, get populations of specified parameters in each bond form
 		int count[BondFunctions::nBondFunctions];
@@ -162,7 +233,7 @@ bool Forcefield::save()
 	}
 
 	// Angle potential definition
-	if (angles_.nItems() != 0)
+	if (angles_.nItems() > 0)
 	{
 		// First, get populations of specified parameters in each angle form
 		int count[AngleFunctions::nAngleFunctions];
@@ -186,7 +257,7 @@ bool Forcefield::save()
 
 	// Torsion potential definition
 	// TGAY Scaling Factors for torsions - makes things a bit more complicated!
-	if (torsions_.nItems() != 0)
+	if (torsions_.nItems() > 0)
 	{
 		// First, get populations of specified parameters in each angle form
 		int count[TorsionFunctions::nTorsionFunctions];
@@ -209,7 +280,7 @@ bool Forcefield::save()
 	}
 
 	// Improper torsion potential definition
-	if (impropers_.nItems() != 0)
+	if (impropers_.nItems() > 0)
 	{
 		// First, get populations of specified parameters in each angle form
 		int count[TorsionFunctions::nTorsionFunctions];
@@ -232,7 +303,7 @@ bool Forcefield::save()
 	}
 
 	// Urey-Bradley potential definition
-	if (ureyBradleys_.nItems() != 0)
+	if (ureyBradleys_.nItems() > 0)
 	{
 		// First, get populations of specified parameters in each bond form
 		int count[BondFunctions::nBondFunctions];

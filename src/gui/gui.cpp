@@ -257,7 +257,7 @@ void GuiQt::run()
 	mainWindow_->show();
 	doesExist_ = TRUE;
 
-	// Refresh the necessary windows
+	// Refresh the necessary windows, including the mainwindow
 	gridsWidget->refresh();
 	forcefieldsWidget->refresh();
 	mdWidget->refresh();
@@ -268,6 +268,7 @@ void GuiQt::run()
 	modelListWidget->refresh();
 	atomListWidget->refresh();
 	toolBoxWidget->updateButtons();
+	gui.mainWindow()->updateControls();
 
 	// Reset view of all loaded models
 	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();

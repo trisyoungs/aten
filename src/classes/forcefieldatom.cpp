@@ -34,7 +34,6 @@ ForcefieldAtom::ForcefieldAtom()
 	typeId_ = -1;
 	charge_ = 0.0;
 	vdwForm_ = VdwFunctions::None;
-	generator_ = NULL;
 	parent_ = NULL;
 	neta_.setParentForcefieldAtom(this);
 	element_ = 0;
@@ -47,7 +46,6 @@ ForcefieldAtom::ForcefieldAtom()
 // Destructor
 ForcefieldAtom::~ForcefieldAtom()
 {
-	if (generator_ != NULL) delete[] generator_;
 }
 
 // Set parent forcefield
@@ -181,36 +179,6 @@ double ForcefieldAtom::parameter(int i) const
 double *ForcefieldAtom::parameters()
 {
 	return params_;
-}
-
-// Initialise generator array
-void ForcefieldAtom::initialiseGenerator()
-{
-	if (generator_ != NULL) msg.print("Warning - replacing existing generator data for typeId %i (%s)\n", typeId_, name_.get());
-	generator_ = new double[MAXFFGENDATA];
-}
-
-// Set generator data
-void ForcefieldAtom::setGenerator(int i, double d)
-{
-	// Check the limit of the position provided
-	if ((i < 0) || (i > MAXFFGENDATA)) printf("setGenerator() - index %i is out of range.\n", i);
-	else generator_[i] = d;
-}
-
-// Return generator data structure
-double *ForcefieldAtom::generator()
-{
-	return generator_;
-}
-
-// Return single generator value
-double ForcefieldAtom::generator(int i) const
-{
-	// Check the limit of the position provided
-	if ((i < 0) || (i > MAXFFGENDATA)) printf("generator() - index %i is out of range.\n", i);
-	else return generator_[i];
-	return 0.0;
 }
 
 // Set the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)

@@ -1,5 +1,5 @@
 /*
-	*** Molecular mechanics Forcefield
+	*** Molecular Mechanics Forcefield
 	*** src/ff/forcefield.h
 	Copyright T. Youngs 2007-2011
 
@@ -28,6 +28,7 @@
 #include "classes/neta.h"
 #include "ff/forms.h"
 #include "parser/program.h"
+#include "templates/namemap.h"
 
 // Forward declarations
 class Atom;
@@ -48,6 +49,7 @@ class Forcefield
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;
+
 
 	/*
 	// Specification
@@ -81,8 +83,10 @@ class Forcefield
 	private:
 	// List of type defines
 	List<Neta> typeDefines_;
-	// Atom type name and dispersion data array
+	// List of defined atom types
 	List<ForcefieldAtom> types_;
+	// List of data items provided for each atom type (if any)
+	NameMapList<VTypes::DataType> typeData_;
 
 	public:
 	// Returns the number of atom types specified in the Forcefield
@@ -225,6 +229,8 @@ class Forcefield
 	private:
 	// List of data values that have units of energy (and thus should be converted)
 	List<Dnchar> energyData_;
+	// Generator function program listings
+	List<Dnchar> generatorFunctionText_;
 	// Container for generator functions defined in this forcefield
 	Program generatorFunctions_;
 	// Pointer to vdw generation function (if one is defined)
@@ -271,7 +277,7 @@ class Forcefield
 	int matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char *typei, const char *typej);
 	// Match names of supplied typenames and test names 
 	int matchTypes(const char *testi, const char *testj, const char *typei, const char *typej);
-	
+
 
 	/*
 	// File
@@ -285,8 +291,6 @@ class Forcefield
 	bool readUnitedAtomTypes();
 	// Reads in extra data for atoms
 	bool readData(const char *vars);
-	// Reads in generator data for atoms (rule-based ff)
-	bool readGenerator(const char *vars);
 	// Read in generator function definitions
 	bool readFunctions();
 	// Reads in and applies equivalent atomtype names

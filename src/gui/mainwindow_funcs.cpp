@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
+#include "gui/build.h"
 #include "gui/loadmodel.h"
 #include "gui/trajectory.h"
 #include "gui/ffeditor.h"
@@ -314,6 +315,8 @@ void AtenForm::updateControls()
 {
 	ui.actionManualSwapBuffers->setChecked(prefs.manualSwapBuffers());
 	ui.actionDetectDisplayHBonds->setChecked(prefs.drawHydrogenBonds());
+	gui.buildWidget->ui.BondToleranceSpin->setValue(prefs.bondTolerance());
+	gui.buildWidget->ui.BondToleranceSlider->setValue(int(prefs.bondTolerance()*1000.0));
 }
 
 // Update undo/redo actions in Edit menu
