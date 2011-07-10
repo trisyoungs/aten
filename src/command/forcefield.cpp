@@ -635,14 +635,30 @@ bool Command::function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnVal
 bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	// Find filter with a nickname matching that given in argc(0)
-	Tree *filter = aten.findFilter(FilterData::ExpressionExport, c->argc(0));
+	
+	
+	// Parse the first option so we can get the filter nickname and any filter options
+	LineParser parser;
+	parser.getArgsDelim(LineParser::UseQuotes, c->argc(0));
+	
+	// First part of argument is nickname
+	Tree *filter = aten.findFilter(FilterData::ExpressionExport, parser.argc(0));
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{
-		msg.print("script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
+		// Print list of valid filter nicknames
+		aten.printValidNicknames(FilterData::ExpressionExport);
+		msg.print("Not saved.\n");
 		return FALSE;
 	}
+
+	// Loop over remaining arguments
+	ReturnValue value;
+	for (int n = 1; n < parser.nArgs(); ++n)
+	{
+		if (!filter->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+	}
+
 	// Temporarily disable undo/redo for the model, save, and re-enable
 	obj.rs()->disableUndoRedo();
 	bool result = filter->executeWrite(c->argc(1));
