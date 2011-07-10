@@ -393,20 +393,21 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	#
 
 	# General control options ($CONTRL)
-	string runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
-	string scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
-	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
-	int charge = option("Charge", "intspin", -1000, 1000, 1, 0, "group=Job Control ($CONTRL)");
-	string dfttyp = option("DFT Type", "combo", "NONE,SVWN,BLYP,PW91,B97-D,PBE,PBEsol,B3LYP,X3LYP,PBE0,TPSS,TPSSm,TPSSh,M06,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, "group=Job Control ($CONTRL)", "newline");
-	string tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
-	string mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
-	string cityp = option("CI Type", "combo", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, "group=Job Control ($CONTRL)");
-	string cctyp = option("CC Type", "combo", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, "group=Job Control ($CONTRL)", "newline");
-	string relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
-	string exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
-	string pp = option("Pseudo", "combo", "NONE,READ,SBKJC,HW,MCP", 1, "group=Job Control ($CONTRL)");
-	string coord = option("Coord Type", "combo", "CART,ZMT", 1, "group=Job Control ($CONTRL)", "newline");
-	int cart_symbols = option("Use Symbols", "check", 1, "group=Job Control ($CONTRL)");
+	string contrl_runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
+	string contrl_scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
+	int contrl_mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
+	int contrl_charge = option("Charge", "intspin", -1000, 1000, 1, 0, "group=Job Control ($CONTRL)");
+	string contrl_dfttyp = option("DFT Type", "combo", "NONE,SVWN,BLYP,PW91,B97-D,PBE,PBEsol,B3LYP,X3LYP,PBE0,TPSS,TPSSm,TPSSh,M06,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, "group=Job Control ($CONTRL)", "newline");
+	string contrl_tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
+	string contrl_mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
+	string contrl_cityp = option("CI Type", "combo", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, "group=Job Control ($CONTRL)");
+	string contrl_cctyp = option("CC Type", "combo", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, "group=Job Control ($CONTRL)", "newline");
+	string contrl_relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
+	string contrl_exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
+	string contrl_pp = option("Pseudo", "combo", "NONE,READ,SBKJC,HW,MCP", 1, "group=Job Control ($CONTRL)");
+	string contrl_coord = option("Coord Type", "combo", "CART,ZMT", 1, "group=Job Control ($CONTRL)", "newline");
+	int cart_symbols = option("Use Symbols", "check", 1, "group=Job Control ($CONTRL)", "span=2");
+	int contrl_maxit = option("Max SCF It.", "intspin", 1,1000,10,30, "group=Job Control ($CONTRL)");
 
 	# Basis set specification ($BASIS)
 	string basis_gbasis = option("Basis", "combo", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, "group=Basis Set ($BASIS)", "newline");
@@ -474,40 +475,49 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	double grid_zvecy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
 	double grid_zvecz = option("Z", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
 
+	# PCM options ($PCM), placed in 'opts' tab
+	string pcm_solvnt = option("Solvent", "combo", "NONE,WATER,CH3OH,CLFORM,METHYCL,BENZENE,CLBENZ,NEPTANE,ANILINE,C2H5OH,CTCL,12DCLET,TOLUENE,NITMET,CYCHEX,ACETONE", 1, "tab=$PCM@opts", "newline");
+
+
 	#
 	# Write Data
 	#
 	string line;
 	# Write $CONTRL line(s)
-	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", scftyp, runtyp, coord, charge, mult);
+	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", contrl_scftyp, contrl_runtyp, contrl_coord, contrl_charge, contrl_mult);
 	line = "";
-	if (dfttyp != "NONE") line += " DFTTYP=" + dfttyp;
-	if (tddft != "NONE") line += " TDDFT=" + tddft;
-	if (mplevl != "0") line += " MPLEVL=" + mplevl;
-	if (cityp != "NONE") line += " CITYP=" + cityp;
-	if (cctyp != "NONE") line += " CCTYP=" + cctyp;
-	if (pp != "NONE") line += " ECPTYP=" + pp;
+	if (contrl_dfttyp != "NONE") line += " DFTTYP=" + contrl_dfttyp;
+	if (contrl_tddft != "NONE") line += " TDDFT=" + contrl_tddft;
+	if (contrl_mplevl != "0") line += " MPLEVL=" + contrl_mplevl;
+	if (contrl_cityp != "NONE") line += " CITYP=" + contrl_cityp;
+	if (contrl_cctyp != "NONE") line += " CCTYP=" + contrl_cctyp;
+	if (contrl_pp != "NONE") line += " ECPTYP=" + contrl_pp;
+	if (contrl_maxit != 30) line += " MAXIT=" + itoa(contrl_maxit);
 	if (line != "") writelinef(" $CONTRL%s $END\n", line);
 
 	# Write $BASIS line(s)
 	if ((basis_gbasis == "STO") || (basis_gbasis == "N21") || (basis_gbasis == "N31") || (basis_gbasis == "N311"))
 	{
-		writelinef(" $BASIS GBASIS=%s NGAUSS=%i NDFUNC=%i NPFUNC=%i $END\n", basis_gbasis, basis_ngauss, basis_ndfunc, basis_npfunc);
-		writelinef(" $BASIS NFFUNC=%i DIFFSP=%s DIFFS=%s $END\n", basis_nffunc, basis_diffsp, basis_diffs);
+		sprintf(line, "GBASIS=%s NGAUSS=%i", basis_gbasis, basis_ngauss);
+		if (basis_ndfunc != 0) line += " NDFUNC=" + itoa(basis_ndfunc);
+		if (basis_npfunc != 0) line += " NPFUNC=" + itoa(basis_npfunc);
+		if (basis_nffunc != 0) line += " NFFUNC=" + itoa(basis_nffunc);
+		writelinef(" $BASIS %s $END\n", line);
+		if (basis_diffsp == ".TRUE." || basis_diffs == ".TRUE.") writelinef(" $BASIS DIFFSP=%s DIFFS=%s $END\n", basis_diffsp, basis_diffs);
 	}
 	else writelinef(" $BASIS GBASIS=%s $END\n", basis_gbasis);
 
 	# Write additional groups, depending on job type
-	if ((runtyp == "OPTIMIZE") || (runtyp == "SADPOINT"))
+	if ((contrl_runtyp == "OPTIMIZE") || (contrl_runtyp == "SADPOINT"))
 	{
 		writevarf(line, " $STATPT METHOD=%s NSTEP=%i OPTTOL=%f HESS=%s", statpt_method, statpt_nstep, statpt_opttol, statpt_hess);
 		if (statpt_ihrep != 0) line += " IHREP=" + itoa(statpt_ihrep);
 		if (statpt_hssend == ".TRUE.") line += " HSSEND=.TRUE.";
 		writelinef("%s $END\n", line);
-		if (runtyp == "SADPOINT") writelinef(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", statpt_ifolow, statpt_stpt, statpt_ststep);
+		if (contrl_runtyp == "SADPOINT") writelinef(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", statpt_ifolow, statpt_stpt, statpt_ststep);
 		if (statpt_ifreez != "") writelinef(" $STATPT IFREEZ(1)=%s $END\n", statpt_ifreez);
 	}
-	else if (runtyp == "IRC") writelinef(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
+	else if (contrl_runtyp == "IRC") writelinef(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
 
 	# Write $ELDENS if required
 	if (eldens_ieden == 1) writelinef(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", eldens_morb, eldens_where, eldens_output);
@@ -529,6 +539,12 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		if (grid_modgrd == 1) writelinef(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END\n", grid_zvecx, grid_zvecy, grid_zvecz);
 	}
 
+	# Write $PCM if required
+	if (pcm_solvnt != "NONE")
+	{
+		writelinef(" $PCM SOLVNT=%s $END\n", pcm_solvnt);
+	}
+
 	# Write $SYSTEM, $GUESS, and $SCF groups
 	writeline(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
 	writeline(" $GUESS GUESS=HUCKEL $END");
@@ -538,7 +554,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	writeline(" $DATA");
 	writeline(aten.frame.name);
 	writeline("C1");
-	if (coord == "CART")
+	if (contrl_coord == "CART")
 	{
 		if (cart_symbols) for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.symbol,i.z*1.0,i.rx,i.ry,i.rz);
 		else for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);

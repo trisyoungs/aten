@@ -515,7 +515,7 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 
 					// Parse the first option so we can get the filter nickname and any filter options
-					parser.getArgsDelim(0, argtext.get());
+					parser.getArgsDelim(LineParser::UseQuotes, argtext.get());
 					
 					// First part of argument is nickname
 					f = aten.findFilter(FilterData::ModelExport, parser.argc(0));
@@ -530,6 +530,7 @@ int Aten::parseCli(int argc, char *argv[])
 					// Loop over remaining arguments to set filter options
 					for (i = 1; i < parser.nArgs(); ++i)
 					{
+						printf("Processing ARG=[%s], VALUE=[%s]\n", beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="));
 						if (!f->setVariable(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
 					}
 					
