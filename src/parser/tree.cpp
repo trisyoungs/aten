@@ -1040,6 +1040,7 @@ Refitem<WidgetNode,int> *Tree::widgets()
 // Create custom dialog from defined widgets
 void Tree::createCustomDialog(const char *title)
 {
+	if (gui.applicationType() == QApplication::Tty) return;
 	customDialog_ = new AtenCustomDialog(NULL);
 	customDialog_->createWidgets(title, this);
 }

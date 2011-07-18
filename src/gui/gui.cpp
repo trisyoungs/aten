@@ -145,26 +145,36 @@ void GuiQt::initialise(int &argc, char **argv)
 	#if QT_VERSION >= 0x040600
 	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL);
 	#endif
-	application_ = new QApplication(argc, argv);
-
+	
+	#ifdef Q_OS_LINUX
+	applicationType_ = getenv("DISPLAY") == NULL ? QApplication::Tty : QApplication::GuiClient;
+	#else
+	applicationType_ = QApplication::GuiClient;
+	#endif
+	application_ = new QApplication(argc, argv, applicationType_);
+	
 	// Initialise application name, organisation and author
 	QCoreApplication::setOrganizationName("ProjectAten");
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");
 	QCoreApplication::setApplicationName("Aten");
 
 	// Create GUI window here (used to be done in GuiQt::run(), but this would cause GLX crashes under some circumstances, apparently as a result of the lack of ownership of the TCanvas)
-	mainWindow_ = new AtenForm;
+	if (applicationType_ == QApplication::GuiClient)
+	{
+		mainWindow_ = new AtenForm;
 
-	// Create the main QGLWidget
-	QGLFormat format;
-	format.setSampleBuffers(TRUE);
-	mainContext_ = new QGLContext(format);
+		// Create the main QGLWidget
+		QGLFormat format;
+		format.setSampleBuffers(TRUE);
+		mainContext_ = new QGLContext(format);
 
-	// Create the widget
-	mainWidget_ = new TCanvas(mainContext_, mainWindow_);
-	mainWidget_->probeFeatures();
-	mainWidget_->setGeometry(0,0,800,600);
-	mainWidget_->setCursor(Qt::ArrowCursor);
+		// Create the widget
+		mainWidget_ = new TCanvas(mainContext_, mainWindow_);
+		mainWidget_->probeFeatures();
+		mainWidget_->setGeometry(0,0,800,600);
+		mainWidget_->setCursor(Qt::ArrowCursor);
+	}
+	
 	msg.exit("GuiQt::initialise");
 }
 
@@ -172,6 +182,14 @@ void GuiQt::initialise(int &argc, char **argv)
 void GuiQt::run()
 {
 	msg.enter("GuiQt::run");
+	
+	// Check application type
+	if (applicationType_ == QApplication::Tty)
+	{
+		msg.print("Can't launch GUI when running in console mode.\n");
+		msg.exit("GuiQt::run");
+		return;
+	}
 
 	// If no model loaded, add one
 	if (aten.nModels() == 0)
@@ -544,6 +562,12 @@ TCanvas *GuiQt::mainWidget()
 QApplication *GuiQt::application()
 {
 	return application_;
+}
+
+// Return type of application initialised
+QApplication::Type GuiQt::applicationType()
+{
+	return applicationType_;
 }
 
 // Main Window

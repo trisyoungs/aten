@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 	switch (aten.programMode())
 	{
 		case (Aten::GuiMode):
-			gui.run();
+			if (gui.applicationType() != QApplication::Tty) gui.run();
 			break;
 		case (Aten::BatchMode):
 			msg.print("Batch mode in effect - models will be processed and saved.\n");
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Delete the main TCanvas
-	delete gui.mainWindow();
+	if (gui.mainWindow() != NULL) delete gui.mainWindow();
 
 	// Delete the main QApplication
 	delete gui.application();
