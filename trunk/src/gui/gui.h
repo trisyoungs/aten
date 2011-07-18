@@ -147,12 +147,16 @@ class GuiQt
 	TCanvas *mainWidget_;
 	// Original QGLContext, created in initialise()
 	QGLContext *mainContext_;
+	// Type of application initialised
+	QApplication::Type applicationType_;
 
 	public:
 	// Return main view Widget
 	TCanvas *mainWidget();
 	// Main application structure
 	QApplication *application();
+	// Return type of application initialised
+	QApplication::Type applicationType();
 	// Main Window
 	AtenForm *mainWindow();
 	// Update context menu

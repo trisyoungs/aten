@@ -227,17 +227,40 @@ bool Command::function_ListModels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Load model ('loadmodel <filename> [name]')
+// Load model from file
 bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Tree *filter = aten.probeFile(c->argc(0), FilterData::ModelImport);
+	Tree *filter;
+	
+	// Was a specific filter nickname provided?
+	if (c->hasArg(1))
+	{
+		LineParser parser;
+		parser.getArgsDelim(0, c->argc(1));
+		// First part of argument is nickname
+		filter = aten.findFilter(FilterData::ModelImport, parser.argc(0));
+		// Check that a suitable format was found
+		if (filter == NULL)
+		{
+			// Print list of valid filter nicknames
+			aten.printValidNicknames(FilterData::ModelImport);
+			msg.print("Not loaded.\n");
+			return FALSE;
+		}
+		// Loop over remaining arguments
+		ReturnValue value;
+		for (int n = 1; n < parser.nArgs(); ++n)
+		{
+			if (!filter->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+		}
+	}
+	else filter = aten.probeFile(c->argc(0), FilterData::ModelImport);
 	rv.set(0);
 	if (filter == NULL) return FALSE;
 	int oldnmodels = aten.nModels();
 	if (filter->executeRead(c->argc(0)))
 	{
 		Model *m = aten.currentModel();
-		if (c->hasArg(1)) m->setName(c->argc(1));
 		obj.i = m->atoms();
 		rv.set(VTypes::ModelData, m);
 	}

@@ -216,6 +216,7 @@ Model::ModelType Model::type()
 // Regenerate icon
 void Model::regenerateIcon()
 {
+	if (gui.applicationType() == QApplication::Tty) return;
 	msg.enter("Model::regenerateIcon");
 	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
 	
