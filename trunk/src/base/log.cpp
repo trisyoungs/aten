@@ -22,6 +22,7 @@
 #include "base/constants.h"
 #include "base/messenger.h"
 #include "base/log.h"
+#include <stdio.h>
 
 // Constructor
 Log::Log()
@@ -90,21 +91,21 @@ int Log::log(Log::LogType cl) const
 }
 
 // Return current 'save' point of the model (sum of specific logs)
-int Log::currentSavePoint() const
+int Log::currentLogPoint() const
 {
-	return (logs_[Log::Structure] + logs_[Log::Coordinates] + logs_[Log::Cell] + logs_[Log::Misc]);
+	return (logs_[Log::Structure] + logs_[Log::Coordinates] + logs_[Log::Cell] + logs_[Log::Misc] + logs_[Log::Glyphs] + logs_[Log::Grids] + logs_[Log::Labels] + logs_[Log::Selection]);
 }
 
 // Set the save point log for the model
 void Log::updateSavePoint()
 {
-	savePoint_ = currentSavePoint();
+	savePoint_ = currentLogPoint();
 }
 
 // Return if the log has been modified since last being saved
 bool Log::isModified() const
 {
-	return (savePoint_ == currentSavePoint() ? FALSE : TRUE);
+	return (savePoint_ == currentLogPoint() ? FALSE : TRUE);
 }
 
 // Return is specified log quantity is same between this and supplied Log
@@ -116,5 +117,5 @@ bool Log::isSame(Log::LogType lt, Log &other)
 // Print logs
 void Log::print() const
 {
-	msg.print("Structure [%i], Coordinates [%i], Cell [%i], Style [%i], Camera [%i], Selection [%i], Glyphs [%i], Grids [%i], Labels [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Cell], logs_[Log::Style], logs_[Log::Camera], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Grids], logs_[Log::Labels], logs_[Log::Misc], logs_[Log::Total]); 
+	printf("Structure [%i], Coordinates [%i], Cell [%i], Style [%i], Camera [%i], Selection [%i], Glyphs [%i], Grids [%i], Labels [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Cell], logs_[Log::Style], logs_[Log::Camera], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Grids], logs_[Log::Labels], logs_[Log::Misc], logs_[Log::Total]); 
 }
