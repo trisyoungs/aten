@@ -150,17 +150,14 @@ void Model::redo()
 	{
 		// Undo the changes
 		currentRedoState_->redo(this);
-		changeLog.setLog(Log::Structure, currentRedoState_->startLog(Log::Structure));
-		changeLog.setLog(Log::Coordinates, currentRedoState_->startLog(Log::Coordinates));
-		changeLog.setLog(Log::Selection, currentRedoState_->startLog(Log::Selection));
-		changeLog.setLog(Log::Style, currentRedoState_->startLog(Log::Style));
-		changeLog.setLog(Log::Cell, currentRedoState_->startLog(Log::Cell));
-		changeLog.setLog(Log::Misc, currentRedoState_->startLog(Log::Misc));
-		changeLog.setLog(Log::Glyphs, currentRedoState_->startLog(Log::Glyphs));
 		changeLog.setLog(Log::Structure, currentRedoState_->endLog(Log::Structure));
 		changeLog.setLog(Log::Coordinates, currentRedoState_->endLog(Log::Coordinates));
-		changeLog.setLog(Log::Camera, currentRedoState_->endLog(Log::Camera));
+		changeLog.setLog(Log::Selection, currentRedoState_->endLog(Log::Selection));
 		changeLog.setLog(Log::Style, currentRedoState_->endLog(Log::Style));
+		changeLog.setLog(Log::Cell, currentRedoState_->endLog(Log::Cell));
+		changeLog.setLog(Log::Misc, currentRedoState_->endLog(Log::Misc));
+		changeLog.setLog(Log::Glyphs, currentRedoState_->endLog(Log::Glyphs));
+		changeLog.setLog(Log::Grids, currentRedoState_->endLog(Log::Grids));
 		// Set new undo/redo pointers
 		currentUndoState_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;

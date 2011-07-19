@@ -108,6 +108,11 @@ bool UndoState::doLogsDiffer() const
 	if (startLogs_.log(Log::Selection) != endLogs_.log(Log::Selection)) return TRUE;
 	if (startLogs_.log(Log::Camera) != endLogs_.log(Log::Camera)) return TRUE;
 	if (startLogs_.log(Log::Style) != endLogs_.log(Log::Style)) return TRUE;
+	if (startLogs_.log(Log::Cell) != endLogs_.log(Log::Cell)) return TRUE;
+	if (startLogs_.log(Log::Labels) != endLogs_.log(Log::Labels)) return TRUE;
+	if (startLogs_.log(Log::Glyphs) != endLogs_.log(Log::Glyphs)) return TRUE;
+	if (startLogs_.log(Log::Grids) != endLogs_.log(Log::Grids)) return TRUE;
+	if (startLogs_.log(Log::Misc) != endLogs_.log(Log::Misc)) return TRUE;
 	return FALSE;
 }
 
