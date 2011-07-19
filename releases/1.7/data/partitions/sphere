@@ -1,0 +1,52 @@
+# Example partition definition for Aten
+# Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 in a cubic cell.
+# Shearing / scaling of all coordinates is performed internally by Aten when necessary.
+
+# Name / Description
+string name = "Sphere";
+string description = "Simple spherical region";
+
+# Grid size information
+# Two sets of gridpoints arrays must be given - the 'rough' grid is used to probe the partitions and overlay the rendered model in the GUI,
+# while the second 'fine' grid is used when actually performing the calculation. Partition functions which generate curved volumes should
+# use fine grid values of around 100.
+int roughgrid[3] = { 40,40,40 };
+int finegrid[3] = { 100,100,100 };
+
+# Number of partitions
+# The total possible number of partitions, *including* the unit cell itself.
+int npartitions = 2;
+
+# Every partition definition *must* contain 'partition' and 'partitionname' functions
+int partition(double px, double py, double pz)
+{
+	# When constructing the insertion grid, Aten will call this function to determine which points on the grid fall within which partitions.
+	# Unit cell coordinates are always given. The function should return the integer ID number of the partition in which the point
+	# falls, or zero to mean the point falls in no partition at all (i.e. it is elsewhere in the cell)
+	# Partitions *must* be numbered consecutively from zero upwards.
+
+	// Variables should be listed here using the 'options' keyword (so that they may be displayed in the GUI)
+	double x = option("X", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Sphere Properties");
+	double y = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Sphere Properties");
+	double z = option("Z", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Sphere Properties");
+	double r = option("R", "doublespin", 0.001, 1.0, 0.1, 0.3, "newline", "span=3","group=Sphere Properties");
+
+	// Check 1 - Is the point inside the defined sphere (region 1)
+	if (( (px-x)*(px-x) + (py-y)*(py-y) + (pz-z)*(pz-z) ) <= (r*r)) return 1;
+
+	// Not inside any defined regions, so return '0' for 'inside rest of cell'
+	return 0;
+}
+
+string partitionname(int id)
+{
+	switch(id)
+	{
+		case (0):
+			return "Unit Cell";
+		case (1):
+			return "Sphere";
+		default:
+			return "UNKNOWN";
+	}
+}

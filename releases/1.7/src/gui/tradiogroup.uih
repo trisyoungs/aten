@@ -1,0 +1,101 @@
+/*
+	*** TRadioGroup - Custom group of QRadioButtons
+	*** src/gui/tradiogroupbox.uih
+	Copyright T. Youngs 2007-2011
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_TRADIOGROUP_H
+#define ATEN_TRADIOGROUP_H
+
+#include <QtGui/QGroupBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QVBoxLayout>
+#include <QtCore/QObject>
+#include "base/lineparser.h"
+#include "templates/reflist.h"
+
+class TRadioGroup : public QGroupBox
+{
+	Q_OBJECT
+
+	private:
+	// Layout containing child radioboxes
+	QVBoxLayout *layout_;
+	// List of radio items contained in group
+	Reflist<QRadioButton,int> items_;
+
+	private slots:
+	void radioItemClicked(bool checked)
+	{
+		QRadioButton *radio = qobject_cast<QRadioButton*> (sender());
+		if (!radio) printf("Critical - Couldn't cast sender into a QRadioButton.\n");
+		// Find calling object in list...
+		Refitem<QRadioButton,int> *ri = items_.contains(radio);
+		if (ri == NULL) printf("Critical - Couldn't find sender QRadioButton in items list.\n");
+		else if (ri->item->isChecked()) emit(currentIndexChanged(ri->data));
+	}
+
+	public:
+	TRadioGroup(QWidget *parent = NULL, const char *items = NULL) : QGroupBox(parent)
+	{
+		layout_ = new QVBoxLayout;
+		setLayout(layout_);
+		// Was a list of items provided?
+		if (items != NULL)
+		{
+			QRadioButton *radio;
+			LineParser lp;
+			lp.getArgsDelim(LineParser::UseQuotes, items);
+			for (int n=0; n<lp.nArgs(); ++n)
+			{
+ 				radio = new QRadioButton(lp.argc(n));
+				layout_->addWidget(radio);
+				if (n == 0) radio->setChecked(TRUE);
+				items_.add(radio,n);
+				// Set up signals
+				QObject::connect(radio,SIGNAL(clicked(bool)),this,SLOT(radioItemClicked(bool)));
+			}
+		}
+	}
+	void addItem(const char *text)
+	{
+		QRadioButton *radio = new QRadioButton(text);
+		layout_->addWidget(radio);
+		items_.add(radio,items_.nItems());
+		// Set up signals
+		QObject::connect(radio,SIGNAL(clicked(bool)),this,SLOT(radioItemClicked(bool)));
+	}
+	void setCurrentIndex(int index)
+	{
+		// Check range of supplied index
+		if ((index < 0) || (index >= items_.nItems())) printf("Index %i is out of range for TRadioGroup.\n", index);
+		else items_[index]->item->setChecked(TRUE);
+	}
+	int currentIndex()
+	{
+		// Search through list for current checked item
+		for (Refitem<QRadioButton,int> *ri = items_.first(); ri != NULL; ri = ri->next) if (ri->item->isChecked()) return ri->data;
+		return -1;
+	}
+
+	signals:
+	void currentIndexChanged(int index);
+};
+
+#endif
+

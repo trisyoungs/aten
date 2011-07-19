@@ -1,0 +1,163 @@
+# Mopac input file (for v1.2+)
+# Created:	 13/04/2009
+# Last modified: 07/12/2009
+# ChangeLog:
+#	07/12/2009 - Fixed (uncommented) 'newatom' line in importmodel filter, which had been taken out for some reason. Tweaked '+' and '&' detection.
+#	18/06/2010 - Fixed 'arc' import filter for big systems with atom coordinates 1000 or greater
+# Notes:
+#   Cartesian coordinate format is assumed
+
+filter(type="importmodel", name="Mopac Control File", nickname="mopac", extension="mop", glob="*.mop", id=4)
+{
+	# Variable declaration
+	int natoms,n,cellcount = 0,fx,fy,fz,ntitle=2, morekeywords, lesstitle;
+	string e,line,title;
+	double rx,ry,rz;
+	vector v[3];
+
+	# Discard keyword lines.
+	# A '+' in a line indicates that another line of keywords will follow.
+	# A '&' in a line indicates that a title/description line is replaced by keywords.
+	while (getline(line))
+	{
+		if (contains(line,"&") == 0) { ntitle--; continue; }
+		if (contains(line,"+") != 0) continue;	# Read another line of keywords
+		break;
+	}
+
+	# Description lines follow, unless replaced by keyword lines with '&' in previous lines
+	title = "Mopac Input";
+	if (ntitle > 0) getline(title);
+	if (ntitle > 1)	getline(line);
+	newmodel(title);
+
+	# All remaining lines make up the geometry
+	while (!eof())
+	{
+		readline(e,rx,fx,ry,fy,rz,fy);
+		# If the element is 'Tv' its part of the cell specification
+		if (e == "Tv")
+		{
+			++cellcount;
+			if (cellcount < 4)
+			{
+				v[cellcount].x = rx;
+				v[cellcount].y = ry;
+				v[cellcount].z = rz;
+			}
+			else printf("Extra translation vector data found - ignored...\n");
+		}
+		else newatom(e,rx,ry,rz);
+	}
+
+	# Were we supplied with a full cell description?
+	if (cellcount >= 3) cellaxes(v[1].x,v[1].y,v[1].z,v[2].x,v[2].y,v[2].z,v[3].x,v[3].y,v[3].z);
+
+	rebond();
+	finalisemodel();
+}
+
+filter(type="exportmodel", name="Mopac Control File", nickname="mopac", extension="mop", glob="*.mop", id=4)
+{
+	# Variable declaration
+	int n,f;
+	string control1;
+	double rx,ry,rz;
+	atom i;
+	model m = aten.frame;
+	
+	# Widgets
+	string jobtype = option("JobType", "combo", "'1SCF (Single SCF)','EF (Optimisation)','BFGS (Optimisation)','FORCE (Vibrations)','FORCETS (Vibrations)'", 3, "group=Method");
+	string hamil = option("Hamiltonian", "combo", "AM1,MNDO,MNDOD,PM3,PM6,PM6-DH2,RM1", 5, "group=Method");
+	string scftyp = option("SCF Type", "combo", "RHF,UHF", 1, "group=Method");
+	string state = option("State", "combo", "SINGLET,EXCITED,DOUBLET,TRIPLET,QUARTET,QUINTET,SEXTET,SEPTET,OCTET,NONET", 1, "group=Method");
+	int charge = option("Charge", "intspin", -100, 100, 1, 0, "group=Method");
+	int precise = option("Precise", "check", 0, "group=Method", "newline");
+	int bfgs = option("BFGS", "check", 0, "group=Method");
+	int campking = option("Camp King", "check", 0, "group=Method");
+	int mozyme = option("Mozyme", "check", 0, "group=Method");
+	string control2 = option("Extra Keywords", "edit", "", "newline");
+
+	# Generate control lines
+	control1 = beforestr(jobtype," ",TRUE) + " " + hamil + " " + scftyp + " ";
+	if (charge != 0) control1 += itoa(charge) + " ";
+	if (state != "SINGLET") control1 += state + " ";
+	if (precise) control1 += "PRECISE ";
+	if (campking) control1 += "KING ";
+	if (control2 != "") control1 += "+";
+	writeline(control1);
+	if (control2 != "") writeline(control2);
+	writeline(m.name);
+	writeline("Coordinates churned out by Aten.");
+	for (i = m.atoms; i != 0; ++i)
+	{
+		f = 1 - i.fixed;
+		writelinef("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", i.symbol, i.rx, f, i.ry, f, i.rz, f);
+	}
+
+	# Write translation vector for cell
+	if (m.cell.type <> "none")
+	{
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.ax,m.cell.ay,m.cell.az);
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.bx,m.cell.by,m.cell.bz);
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.cx,m.cell.cy,m.cell.cz);
+	}
+}
+
+filter(type="importmodel", name="Mopac Archive File", nickname="mopacarc", extension="arc", glob="*.arc", id=16)
+{
+	# Variable declaration
+	int natoms,n,cellcount = 0,ntitle=2, morekeywords, lesstitle;
+	string e,line,title;
+	double rx,ry,rz,q;
+	atom i;
+	vector v[3];
+
+	# Search for geometry data in file...
+	if (find("FINAL GEOMETRY OBTAINED") == 0) error("No geometry found in file.");
+
+	# Discard keyword lines.
+	# A '+' in a line indicates that another line of keywords will follow.
+	# A '&' in a line indicates that a title/description line is replaced by keywords.
+	while (getline(line))
+	{
+		if (contains(line,"&") == 0) { ntitle--; continue; }
+		if (contains(line,"+") != 0) continue;	# Read another line of keywords
+		break;
+	}
+
+	# Description lines follow, unless replaced by keyword lines with '&' in previous lines
+	title = "Mopac Archive";
+	if (ntitle > 0) getline(title);
+	if (ntitle > 1)	getline(line);
+	newmodel(title);
+
+	# All remaining lines make up the geometry
+	while (!eof())
+	{
+		readlinef("%3s  %13f   %13f   %13f   %f",e,rx,ry,rz,q);
+		# If the element is 'Tv' its part of the cell specification
+		if (e == " Tv")
+		{
+			++cellcount;
+			if (cellcount < 4)
+			{
+				v[cellcount].x = rx;
+				v[cellcount].y = ry;
+				v[cellcount].z = rz;
+			}
+			else printf("Extra translation vector data found - ignored...\n");
+		}
+		else
+		{
+			i = newatom(e,rx,ry,rz);
+			i.q = q;
+		}
+	}
+
+	# Were we supplied with a full cell description?
+	if (cellcount >= 3) cellaxes(v[1].x,v[1].y,v[1].z,v[2].x,v[2].y,v[2].z,v[3].x,v[3].y,v[3].z);
+
+	rebond();
+	finalisemodel();
+}

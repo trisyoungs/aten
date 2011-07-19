@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   width="100"
+   height="100"
+   id="svg2">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3197">
+      <stop
+         id="stop3199"
+         style="stop-color:#e4e1e1;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3201"
+         style="stop-color:#e4af00;stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3189">
+      <stop
+         id="stop3191"
+         style="stop-color:#000000;stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3193"
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1" />
+    </linearGradient>
+    <radialGradient
+       cx="50.059151"
+       cy="48.853989"
+       r="42.138134"
+       fx="50.059151"
+       fy="48.853989"
+       id="radialGradient3195"
+       xlink:href="#linearGradient3189"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.002472,0,0,1.1236113,99.145344,-6.0566389)" />
+    <radialGradient
+       cx="50.059151"
+       cy="48.853989"
+       r="42.138134"
+       fx="50.059151"
+       fy="48.853989"
+       id="radialGradient3203"
+       xlink:href="#linearGradient3197"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.002472,0,0,1.1236113,99.145344,-6.0566389)" />
+  </defs>
+  <path
+     d="M 53.655307,17.827468 L 55.063867,7.6182966 L 27.540537,22.451188 L 55.063867,37.284079 L 53.655307,27.370824 C 71.049422,27.370824 85.170574,41.49198 85.170574,58.886094 C 85.170574,76.280209 71.049412,90.401367 53.655307,90.401367 C 36.261192,90.401367 22.14002,76.280211 22.140031,58.886094 C 22.140031,50.189038 25.682918,42.322815 31.387471,36.618263 L 24.618351,29.849137 C 17.912728,35.609593 12.59668,47.554672 12.59668,58.886094 C 12.596669,81.548936 30.992452,99.944707 53.655307,99.944707 C 76.318141,99.944707 94.713932,81.548938 94.713932,58.886094 C 94.713932,36.223247 76.318151,17.827468 53.655307,17.827468 L 53.655307,17.827468 z"
+     id="path3211"
+     style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none" />
+  <path
+     d="M 48.962444,12.882218 L 50.371004,2.6730457 L 22.847682,17.505938 L 50.371004,32.338829 L 48.962444,22.425574 C 66.356558,22.425574 80.477713,36.54673 80.477713,53.940844 C 80.477713,71.334959 66.356556,85.456111 48.962444,85.456113 C 31.568326,85.456113 17.447164,71.334961 17.447175,53.940844 C 17.447175,45.243788 20.990061,37.377565 26.694608,31.673013 L 19.925486,24.903887 C 13.21987,30.664343 7.9038207,42.609421 7.9038207,53.940844 C 7.9038113,76.603686 26.299594,94.99947 48.962444,94.99947 C 71.625284,94.999471 90.02107,76.603688 90.02107,53.940844 C 90.02107,31.277997 71.625287,12.882218 48.962444,12.882218 L 48.962444,12.882218 z"
+     id="path3205"
+     style="fill:none;stroke:#000000;stroke-width:5.23550463;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <path
+     d="M 48.962446,12.882218 L 50.371006,2.6730457 L 22.847679,17.505938 L 50.371006,32.338829 L 48.962446,22.425575 C 66.35656,22.425575 80.477715,36.54673 80.477715,53.940844 C 80.477715,71.334959 66.356558,85.456111 48.962446,85.456113 C 31.568331,85.456113 17.447171,71.334961 17.447176,53.940844 C 17.447176,45.243788 20.990062,37.377565 26.694614,31.673013 L 19.925489,24.903888 C 13.219868,30.664343 7.9038197,42.609421 7.9038197,53.940844 C 7.9038187,76.603686 26.2996,94.99947 48.962446,94.99947 C 71.625286,94.999471 90.021071,76.603688 90.021071,53.940844 C 90.021071,31.277997 71.625289,12.882218 48.962446,12.882218 L 48.962446,12.882218 z"
+     id="path3176"
+     style="fill:url(#radialGradient3203);fill-opacity:1;fill-rule:evenodd;stroke:url(#radialGradient3195);stroke-width:2.36734438;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1" />
+</svg>
