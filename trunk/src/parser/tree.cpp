@@ -839,7 +839,7 @@ bool Tree::setVariable(const char *name, const char *value)
 		{
 			msg.print(Messenger::Verbose, "Located WidgetNode corresponding to variable '%s'\n", name);
 			WidgetNode *widget = (WidgetNode*) result->initialValue();
-			if (!widget->setWidgetValue(rv))
+			if ((!widget->setWidgetValue(rv)) && (gui.applicationType() != QApplication::Tty))
 			{
 				msg.print("Error: Failed to set value '%s' in option variable '%s'.\n", value, name);
 				msg.exit("Tree::setVariable");
