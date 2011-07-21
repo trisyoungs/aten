@@ -247,7 +247,7 @@ void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 	else
 	{
 		// Save forcefield under filename currently in 'filenanme'
-		msg.print("Saving forcefield '%s' to file '%s'.\n", ff->name(), ff->filename());
+		msg.print("Saving forcefield '%s' to file '%s'...\n", ff->name(), ff->filename());
 		ff->save();
 	}
 }
@@ -265,7 +265,7 @@ void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
 	ff->setFilename(qPrintable(filename));
 	
 	// Save forcefield under filename currently in 'filenanme'
-	msg.print("Saving forcefield '%s' to file '%s'.\n", ff->name(), ff->filename());
+	msg.print("Saving forcefield '%s' to file '%s'...\n", ff->name(), ff->filename());
 	ff->save();
 }
 
