@@ -218,6 +218,8 @@ void AtenForm::updateWindowTitle()
 // Cancel any current mode and return to select
 void AtenForm::cancelCurrentMode()
 {
+	// If the previous mode was DrawFragment, flag a complete redraw of the current model
+	if (gui.mainWidget()->selectedMode() == UserAction::DrawFragmentAction) aten.currentModel()->changeLog.add(Log::Style);
 	ui.actionSelectAtoms->trigger();
 }
 

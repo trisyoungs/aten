@@ -797,7 +797,6 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 // Store widget values back into the associated tree variables
 void AtenCustomDialog::storeValues()
 {
-	printf("Here we are....\n");
 	msg.enter("AtenCustomDialog::storeValues");
 	WidgetNode *gfo;
 	ReturnValue rv;
