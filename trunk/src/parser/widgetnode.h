@@ -126,6 +126,12 @@ class WidgetNode : public TreeNode
 	List<StateChange> stateChanges_;
 
 	public:
+	// Set integer return value accessed from value get calls
+	void setReturnValue(int i);
+	// Set double return value accessed from value get calls
+	void setReturnValue(double d);
+	// Set string return value accessed from value get calls
+	void setReturnValue(const char *s);
 	// Set return value accessed from value get calls
 	void setReturnValue(ReturnValue &rv);
 	// Set widget value from supplied ReturnValue

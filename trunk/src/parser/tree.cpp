@@ -839,7 +839,8 @@ bool Tree::setVariable(const char *name, const char *value)
 		{
 			msg.print(Messenger::Verbose, "Located WidgetNode corresponding to variable '%s'\n", name);
 			WidgetNode *widget = (WidgetNode*) result->initialValue();
-			if ((!widget->setWidgetValue(rv)) && (gui.applicationType() != QApplication::Tty))
+			if (gui.applicationType() == QApplication::Tty) widget->setReturnValue(rv);
+			else if (!widget->setWidgetValue(rv))
 			{
 				msg.print("Error: Failed to set value '%s' in option variable '%s'.\n", value, name);
 				msg.exit("Tree::setVariable");
@@ -1040,9 +1041,11 @@ Refitem<WidgetNode,int> *Tree::widgets()
 // Create custom dialog from defined widgets
 void Tree::createCustomDialog(const char *title)
 {
-	if (gui.applicationType() == QApplication::Tty) return;
-	customDialog_ = new AtenCustomDialog(NULL);
-	customDialog_->createWidgets(title, this);
+	if (gui.applicationType() != QApplication::Tty)
+	{
+		customDialog_ = new AtenCustomDialog(NULL);
+		customDialog_->createWidgets(title, this);
+	}
 }
 
 // Return custom dialog (if any)

@@ -203,7 +203,7 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 	cutoffsq *= cutoffsq;
 	alphasq = alpha * alpha;
 	kmax = fourier.kMax;
-	//printf("Cutoffsq = %f  (%f)\n",cutoffsq,sqrt(cutoffsq));
+// 	printf("Cutoffsq = %f  (%f)\n",cutoffsq,sqrt(cutoffsq));
 
 	for (kx=-fourier.kVec.x; kx<=fourier.kVec.x; kx++)
 	for (ky=-fourier.kVec.y; ky<=fourier.kVec.y; ky++)
@@ -424,6 +424,7 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 		}
 		aoff1 += nAtoms_;
 	}
+	
 	msg.exit("Pattern::ewaldRealInterPatternForces");
 }
 
@@ -504,6 +505,7 @@ void Pattern::ewaldReciprocalForces(Model *srcmodel)
 	//if (i == 0) printf("%i %i %i  %8.4f %8.4f %8.4f %8.4f\n",kx,ky,kz,force,kvec.x,kvec.y,kvec.z);
 		}
 	}
+
 	msg.exit("Pattern::ewaldReciprocalForces");
 }
 

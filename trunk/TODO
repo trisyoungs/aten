@@ -10,6 +10,7 @@ o Model List images do not update. Can the main view be grabbed and shrunk down 
 o Glyph list not update on model load.
 o Model not updated when changing glyph selection?
 o Segfault in Model::regenerateIcon() from Qt's renderText (laptop)?
+o Running in console mode, relations between widgets (e.g. radio group buttons) are not honoured correctly
 
 Current TODO
 ------------
