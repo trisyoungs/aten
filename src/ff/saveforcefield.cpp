@@ -33,9 +33,10 @@ bool Forcefield::save()
 	bool done, okay, result = TRUE;
 	int success, n, m;
 	Prefs::EnergyUnit ffunit;
-
+	LineParser parser;
+	
 	// Open file for writing
-	if (!ffparser.openFile(filename_, TRUE))
+	if (!parser.openFile(filename_, TRUE))
 	{
 		msg.print("Couldn't open file '%s' for writing..\n", filename_.get());
 		msg.exit("Forcefield::save");
@@ -43,33 +44,33 @@ bool Forcefield::save()
 	}
 
 	// Write forcefield name and energy units
-	ffparser.writeLineF("name \"%s\"\n\n", name_.get());
-	ffparser.writeLineF("units %s\n\n", Prefs::energyUnit(energyUnit_));
+	parser.writeLineF("name \"%s\"\n\n", name_.get());
+	parser.writeLineF("units %s\n\n", Prefs::energyUnit(energyUnit_));
 
 	// Global type definitions
 	if (typeDefines_.nItems() != 0)
 	{
-		ffparser.writeLine("defines\n");
+		parser.writeLine("defines\n");
 		Dnchar typedefine;
 		for (Neta *neta = typeDefines_.first(); neta != NULL; neta = neta->next)
 		{
 			neta->netaPrint(typedefine);
-			ffparser.writeLineF("%s\t\"%s\"\n", neta->name(), typedefine.get());
+			parser.writeLineF("%s\t\"%s\"\n", neta->name(), typedefine.get());
 		}
-		ffparser.writeLine("end\n\n");
+		parser.writeLine("end\n\n");
 	}
 
 	// Atomtype definitions
 	// TODO TGAY How to distinguish between types and UAtypes?
 	if (types_.nItems() != 0)
 	{
-		ffparser.writeLine("types\n");
+		parser.writeLine("types\n");
 		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{
-			if (ffa->description() == NULL) ffparser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString());
-			else ffparser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
+			if (ffa->description() == NULL) parser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString());
+			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
 		}
-		ffparser.writeLine("end\n\n");
+		parser.writeLine("end\n\n");
 	}
 
 	// Atomtype Equivalents
@@ -99,16 +100,16 @@ bool Forcefield::save()
 	// Now, loop over stored lists and write out to file
 	if (equivalentMap.nPairs() != 0)
 	{
-		ffparser.writeLine("equivalents\n");
-		for (kvp = equivalentMap.pairs(); kvp != NULL; kvp = kvp->next) ffparser.writeLineF("%s\t%s\n", kvp->key(), kvp->value());
-		ffparser.writeLine("end\n\n");
+		parser.writeLine("equivalents\n");
+		for (kvp = equivalentMap.pairs(); kvp != NULL; kvp = kvp->next) parser.writeLineF("%s\t%s\n", kvp->key(), kvp->value());
+		parser.writeLine("end\n\n");
 	}
 
 	// Data block
 	if (typeData_.nItems() > 0)
 	{
 		// Write header, including variable type/name definitions
-		ffparser.writeLine("data \"");
+		parser.writeLine("data \"");
 		for (NameMap<VTypes::DataType> *nm = typeData_.first(); nm != NULL; nm = nm->next)
 		{
 			switch (nm->data())
@@ -116,22 +117,22 @@ bool Forcefield::save()
 				case (VTypes::IntegerData):
 				case (VTypes::DoubleData):
 				case (VTypes::StringData):
-					ffparser.writeLineF("%s %s", VTypes::dataType(nm->data()), nm->name());
+					parser.writeLineF("%s %s", VTypes::dataType(nm->data()), nm->name());
 					break;
 				default:
 					msg.print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
 					result = FALSE;
 					continue;
 			}
-			if (nm->next != NULL) ffparser.writeLine(", ");
+			if (nm->next != NULL) parser.writeLine(", ");
 		}
-		ffparser.writeLine("\"\n");
+		parser.writeLine("\"\n");
 
 		Variable *v;
 		ReturnValue rv;
 		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{
-			ffparser.writeLineF("%i\t%s\t", ffa->typeId(), ffa->name());
+			parser.writeLineF("%i\t%s\t", ffa->typeId(), ffa->name());
 			for (NameMap<VTypes::DataType> *nm = typeData_.first(); nm != NULL; nm = nm->next)
 			{
 				// Find data...
@@ -158,32 +159,32 @@ bool Forcefield::save()
 				switch (nm->data())
 				{
 					case (VTypes::IntegerData):
-						ffparser.writeLineF("%i", rv.asInteger());
+						parser.writeLineF("%i", rv.asInteger());
 						break;
 					case (VTypes::DoubleData):
-						ffparser.writeLineF("%e", rv.asDouble());
+						parser.writeLineF("%e", rv.asDouble());
 						break;
 					case (VTypes::StringData):
-						ffparser.writeLineF("\"%s\"", rv.asString());
+						parser.writeLineF("\"%s\"", rv.asString());
 						break;
 					default:
 						msg.print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
 						result = FALSE;
 						continue;
 				}
-				if (nm->next != NULL) ffparser.writeLine("\t");
-				else ffparser.writeLine("\n");
+				if (nm->next != NULL) parser.writeLine("\t");
+				else parser.writeLine("\n");
 			}
 		}
-		ffparser.writeLine("end\n\n");
+		parser.writeLine("end\n\n");
 	}
 
 	// Generator Functions
 	if (generatorFunctionText_.nItems() > 0)
 	{
-		ffparser.writeLine("function\n");
-		for (Dnchar *d = generatorFunctionText_.first(); d != NULL; d = d->next) ffparser.writeLineF("%s\n", d->get());
-		ffparser.writeLine("end\n\n");
+		parser.writeLine("function\n");
+		for (Dnchar *d = generatorFunctionText_.first(); d != NULL; d = d->next) parser.writeLineF("%s\n", d->get());
+		parser.writeLine("end\n\n");
 	}
 	
 	// Intermolecular potential definition
@@ -197,15 +198,15 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < VdwFunctions::nVdwFunctions; ++n) if (count[n] != 0)
 		{
-			ffparser.writeLineF("inter %s\n", VdwFunctions::VdwFunctions[n].keyword);
+			parser.writeLineF("inter %s\n", VdwFunctions::VdwFunctions[n].keyword);
 			for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 			{
 				if (ffa->vdwForm() != n) continue;
-				ffparser.writeLineF("%i\t%s\t%f", ffa->typeId(), ffa->name(), ffa->charge());
-				for (m=0; m<VdwFunctions::VdwFunctions[n].nParameters; ++m) ffparser.writeLineF("\t%f", ffa->parameter(m));
-				ffparser.writeLine("\n");
+				parser.writeLineF("%i\t%s\t%f", ffa->typeId(), ffa->name(), ffa->charge());
+				for (m=0; m<VdwFunctions::VdwFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffa->parameter(m));
+				parser.writeLine("\n");
 			}
-			ffparser.writeLine("end\n\n");
+			parser.writeLine("end\n\n");
 		}
 	}
 
@@ -220,15 +221,15 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < BondFunctions::nBondFunctions; ++n) if (count[n] != 0)
 		{
-			ffparser.writeLineF("bonds %s\n", BondFunctions::BondFunctions[n].keyword);
+			parser.writeLineF("bonds %s\n", BondFunctions::BondFunctions[n].keyword);
 			for (ForcefieldBound *ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->bondForm() != n) continue;
-				ffparser.writeLineF("%s\t%s", ffb->typeName(0), ffb->typeName(1));
-				for (m=0; m<BondFunctions::BondFunctions[n].nParameters; ++m) ffparser.writeLineF("\t%f", ffb->parameter(m));
-				ffparser.writeLineF("\n");
+				parser.writeLineF("%s\t%s", ffb->typeName(0), ffb->typeName(1));
+				for (m=0; m<BondFunctions::BondFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffb->parameter(m));
+				parser.writeLineF("\n");
 			}
-			ffparser.writeLine("end\n\n");
+			parser.writeLine("end\n\n");
 		}
 	}
 
@@ -243,15 +244,15 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < AngleFunctions::nAngleFunctions; ++n) if (count[n] != 0)
 		{
-			ffparser.writeLineF("angles %s\n", AngleFunctions::AngleFunctions[n].keyword);
+			parser.writeLineF("angles %s\n", AngleFunctions::AngleFunctions[n].keyword);
 			for (ForcefieldBound *ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->angleForm() != n) continue;
-				ffparser.writeLineF("%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2));
-				for (m=0; m<AngleFunctions::AngleFunctions[n].nParameters; ++m) ffparser.writeLineF("\t%f", ffb->parameter(m));
-				ffparser.writeLineF("\n");
+				parser.writeLineF("%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2));
+				for (m=0; m<AngleFunctions::AngleFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffb->parameter(m));
+				parser.writeLineF("\n");
 			}
-			ffparser.writeLine("end\n\n");
+			parser.writeLine("end\n\n");
 		}
 	}
 
@@ -267,15 +268,15 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < TorsionFunctions::nTorsionFunctions; ++n) if (count[n] != 0)
 		{
-			ffparser.writeLineF("torsions %s\n", TorsionFunctions::TorsionFunctions[n].keyword);
+			parser.writeLineF("torsions %s\n", TorsionFunctions::TorsionFunctions[n].keyword);
 			for (ForcefieldBound *ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->torsionForm() != n) continue;
-				ffparser.writeLineF("%s\t%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3));
-				for (m=0; m<TorsionFunctions::TorsionFunctions[n].nParameters; ++m) ffparser.writeLineF("\t%f", ffb->parameter(m));
-				ffparser.writeLineF("\n");
+				parser.writeLineF("%s\t%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3));
+				for (m=0; m<TorsionFunctions::TorsionFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffb->parameter(m));
+				parser.writeLineF("\n");
 			}
-			ffparser.writeLine("end\n\n");
+			parser.writeLine("end\n\n");
 		}
 	}
 
@@ -290,15 +291,15 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < TorsionFunctions::nTorsionFunctions; ++n) if (count[n] != 0)
 		{
-			ffparser.writeLineF("impropers %s\n", TorsionFunctions::TorsionFunctions[n].keyword);
+			parser.writeLineF("impropers %s\n", TorsionFunctions::TorsionFunctions[n].keyword);
 			for (ForcefieldBound *ffb = impropers_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->torsionForm() != n) continue;
-				ffparser.writeLineF("%s\t%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3));
-				for (m=0; m<TorsionFunctions::TorsionFunctions[n].nParameters; ++m) ffparser.writeLineF("\t%f", ffb->parameter(m));
-				ffparser.writeLineF("\n");
+				parser.writeLineF("%s\t%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3));
+				for (m=0; m<TorsionFunctions::TorsionFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffb->parameter(m));
+				parser.writeLineF("\n");
 			}
-			ffparser.writeLine("end\n\n");
+			parser.writeLine("end\n\n");
 		}
 	}
 
@@ -313,17 +314,19 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < BondFunctions::nBondFunctions; ++n) if (count[n] != 0)
 		{
-			ffparser.writeLineF("ureybradleys %s\n", BondFunctions::BondFunctions[n].keyword);
+			parser.writeLineF("ureybradleys %s\n", BondFunctions::BondFunctions[n].keyword);
 			for (ForcefieldBound *ffb = ureyBradleys_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->bondForm() != n) continue;
-				ffparser.writeLineF("%s\t%s", ffb->typeName(0), ffb->typeName(1));
-				for (int n=0; n<BondFunctions::BondFunctions[n].nParameters; ++n) ffparser.writeLineF("\t%f", ffb->parameter(n));
-				ffparser.writeLineF("\n");
+				parser.writeLineF("%s\t%s", ffb->typeName(0), ffb->typeName(1));
+				for (int n=0; n<BondFunctions::BondFunctions[n].nParameters; ++n) parser.writeLineF("\t%f", ffb->parameter(n));
+				parser.writeLineF("\n");
 			}
-			ffparser.writeLine("end\n\n");
+			parser.writeLine("end\n\n");
 		}
 	}
+
+	msg.print("Done.\n");
 
 	msg.exit("Forcefield::save");
 	return TRUE;

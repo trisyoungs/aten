@@ -606,7 +606,7 @@ filter(type="importexpression",name="DL_POLY Forcefield Specification", extensio
 					// Create new definition
 					null(ffb);
 					if (form == "cos") ffb = torsiondef("cos", names[i], names[j], names[k], names[l], data[1], data[3], data[2]);
-					else if (form == "cos3") ffb = torsiondef("cos", names[i], names[j], names[k], names[l], data[1], data[3], data[2]);
+					else if (form == "cos3") ffb = torsiondef("cos3", names[i], names[j], names[k], names[l], data[1], data[2], data[3]);
 					else if (form == "opls") ffb = torsiondef("cos3c", names[i], names[j], names[k], names[l], data[1], data[2], data[3], data[4]);
 					else printf("Functional form of torsion term (%s) is not present in Aten.\n", form);
 					if (ffb != NULL) { ffb.escale = data[4]; ffb.vscale = data[5]; }
