@@ -202,6 +202,24 @@ WidgetNode::~WidgetNode()
 {
 }
 
+// Set integer return value accessed from value get calls
+void WidgetNode::setReturnValue(int i)
+{
+	returnValue_ = i;
+}
+
+// Set double return value accessed from value get calls
+void WidgetNode::setReturnValue(double d)
+{
+	returnValue_ = d;
+}
+
+// Set string return value accessed from value get calls
+void WidgetNode::setReturnValue(const char *s)
+{
+	returnValue_ = s;
+}
+
 // Set return value
 void WidgetNode::setReturnValue(ReturnValue &rv)
 {
@@ -330,6 +348,7 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 	TreeNode *arg;
 	for (arg = arglist; arg != NULL; arg = arg->prevArgument) if (arg->prevArgument == NULL) break;
 	ReturnValue rv;
+	Dnchar value;
 
 	// First argument is the control name
 	if (arg == NULL)
@@ -392,6 +411,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 		case (WidgetNode::CheckControl):
 			if (!setData("state", arg, "Error: No initial state supplied for 'check' GUI filter option - 'off' assumed.\n", TRUE, "0")) break;
 			if (arg != NULL) arg = arg->nextArgument;
+			// Set default return value
+			data("state", value);
+			returnValue_ = value.asInteger();
 			result = TRUE;
 			break;
 		// Check Box - option("Title", "check", "buttongroup", int state)
@@ -400,6 +422,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("state", arg, "Error: No initial state supplied for 'radiobutton' GUI filter option.\n", TRUE, "0")) break;
 			if (arg != NULL) arg = arg->nextArgument;
+			// Set default return value
+			data("state", value);
+			returnValue_ = value.asInteger();
 			result = TRUE;
 			break;
 		// RadioGroup 'containers'
@@ -414,6 +439,20 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			if (arg != NULL) arg = arg->nextArgument;
 			setData("default", arg, "No default value supplied for 'combo' GUI filter option - '1' assumed.\n", TRUE, "1");
 			if (arg != NULL) arg = arg->nextArgument;
+			// Set default return value
+			if (controlType_ == WidgetNode::ComboControl)
+			{
+				data("items", value);
+				LineParser parser;
+				parser.getArgsDelim(LineParser::UseQuotes, value);
+				data("default", value);
+				returnValue_ = parser.argc(value.asInteger()-1);
+			}
+			else
+			{
+				data("default", value);
+				returnValue_ = value.asInteger();
+			}
 			result = TRUE;
 			break;
 		// Double Spin Edit - option("Title", "spin", double min, double max, double start, double step)
@@ -426,12 +465,18 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			if (arg != NULL) arg = arg->nextArgument;
 			if (!setData("start", arg, "Error: No starting value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
 			if (arg != NULL) arg = arg->nextArgument;
+			// Set default return value
+			data("start", value);
+			returnValue_ = value.asDouble();
 			result = TRUE;
 			break;
 		// Spin Edit - option("Title", "edit", string text = "")
 		case (WidgetNode::EditControl):
 			setData("text", arg, "No default string supplied for 'edit' GUI filter option - empty string assumed.\n", TRUE, "");
 			if (arg != NULL) arg = arg->nextArgument;
+			// Set default return value
+			data("text", value);
+			returnValue_ = value;
 			result = TRUE;
 			break;
 		// Integer Spin Edit - option("Title", "spin", int min, int max, int start, int step)
@@ -444,6 +489,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			arg = arg->nextArgument;
 			if (!setData("start", arg, "Error: No starting value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
+			// Set default return value
+			data("start", value);
+			returnValue_ = value.asInteger();
 			result = TRUE;
 			break;
 		// Stack - number of pages, initial page number
