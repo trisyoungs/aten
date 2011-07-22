@@ -46,6 +46,12 @@ fi
 # Determine current svn version number and increase it by one.
 OLDREV=`svn info -r HEAD | grep Revision | sed "s/Revision: \([0-9]*\)/\1/g"`
 let NEWREV=OLDREV+1
+# Check for failed svn command
+if [ "$NEWREV" = "1" ]
+then
+  echo "Failed."
+  exit 1
+fi
 echo "Current version is revision $OLDREV - committed version will be revision $NEWREV..."
 
 # Determine svn URL
