@@ -89,6 +89,8 @@ class DisorderData
 	double scaleFactor_;
 	// Id of molecule selected from current ensemble (if any)
 	int moleculeId_;
+	// Counting variable
+	int count_;
 	
 	public:
 	// Prepare copy of sourcemodel in random position (and orientation) in assigned partition
@@ -97,17 +99,17 @@ class DisorderData
 	void acceptCandidate();
 	// Reject candidate model
 	void rejectCandidate();
-	// Select a random molecule from the current ensemble, and place in sourceModel_
-	bool selectCandidate();
+	// Select a random (or specific, if supplied) molecule from the current ensemble, and place in sourceModel_
+	bool selectCandidate(int id = -1);
 	// Delete selected candidate
 	void deleteCandidate();
 	// Tweak molecule position / rotation, and place in sourceModel_
 	void tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme *scheme);
-	// Calculate overlap penalty of candidate with supplied model
+	// Determine whether candidate molecule overlaps with supplied model
 	bool modelOverlaps(Model *other, UnitCell *globalCell);
-	// Calculate overlap penalty of candidate with rest of population
+	// Determine whether candidate molecule overlaps rest of population
 	bool selfOverlaps(UnitCell *globalCell);
-	// Calculate overlap penalty of candidate with all other insertion models
+	// Determine whether candidate molecule overlaps with all other insertion models
 	bool otherOverlaps(DisorderData *first, UnitCell *globalCell);
 	// Return number of copies added
 	int nAdded();
@@ -117,6 +119,12 @@ class DisorderData
 	void adjustScaleFactor(double multiplier, double minimumValue, double maximumValue = 100.0);
 	// Return current radius scale factor
 	double scaleFactor();
+	// Reset counting variable
+	void resetCount();
+	// Increase counting variable
+	void increaseCount(int delta = 1);
+	// Return counting variable
+	int count();
 };
 
 #endif

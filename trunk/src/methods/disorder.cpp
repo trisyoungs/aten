@@ -38,7 +38,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	PartitionData *pd;
 	Atom *i;
 	Dnchar cycleText;
-	int n, id, cycle, nSatisfied, nInsertions, nRelative = 0, count, totalToAdd = 0;
+	int n, m, id, cycle, nSatisfied, nInsertions, nRelative = 0, totalToAdd = 0;
 	Vec3<double> r;
 	UnitCell *cell;
 	double delta, firstRelative, firstActual, expectedPop;
@@ -197,7 +197,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	
 	// All set up and ready - do the build
 	int pid = progress.initialise("Performing Disorder build", disorderMaxCycles_, !gui.exists());
-	msg.print("Cycle   Component       Region      Pop   (Req)     Density  (Req)       RSF\n");
+	msg.print("Cycle   Component       Region      Pop   (Req)     Density  (Req)        RSF\n");
 	for (cycle = 1; cycle <= disorderMaxCycles_; ++cycle)
 	{
 		// Each cycle will consist of one round of insertions and deletions, and one round of MC shaking (tweaking)
@@ -394,36 +394,48 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	progress.terminate(pid);
 	
 	// Perform a relaxation on the system by attempting to get the component scale ratios back as high as possible
-	pid = progress.initialise("Performing recovery", disorderMaxRecoveryCycles_, !gui.exists());
-	for (cycle=1; cycle<=disorderMaxRecoveryCycles_; ++cycle)
+	pid = progress.initialise("Performing Recovery", disorderRecoveryMaxCycles_, !gui.exists());
+	msg.print("Target scale factor is %f\n", disorderMaximumScaleFactor_);
+	
+	msg.print("Cycle   Component       Region      Pop   (Req)     Density  (Req)        RSF    Frac\n");
+	for (cycle=1; cycle<=disorderRecoveryMaxCycles_; ++cycle)
 	{
 		nSatisfied = 0;
 		for (component = components_.first(); component != NULL; component = component->next)
 		{
-			// Check for achievement of required scale factor. Do so here so we run at least one full cycle of tweaks before stopping.
-			if (fabs(component->scaleFactor()-disorderMaximumScaleFactor_) < 0.001) ++nSatisfied;
-
-			count = 0;
-			for (n = 0; n < 100; ++n)
+			component->resetCount();
+			// Check each molecule in turn for overlaps - if it does, tweak it...
+			for (n = 0; n < component->nAdded(); ++n)
 			{
-				// Select a candidate molecule, tweak it, and do a test insertion
-// 				printf("Tweak %i on component %s\n", n, component->modelName());
-				if (!component->selectCandidate()) break;
-				component->tweakCandidate(disorderDeltaDistance_, disorderDeltaAngle_, scheme);
-				// Test component against its own population...
-				if (component->selfOverlaps(cell)) continue;
-				else if (component->modelOverlaps(targetModel_, cell)) continue;
-				else if (component->otherOverlaps(components_.first(), cell)) continue;
-				else
+				if (!component->selectCandidate(n)) continue;
+				if (component->selfOverlaps(cell) || component->modelOverlaps(targetModel_, cell) || component->otherOverlaps(components_.first(), cell))
 				{
-					// Happy days! This position is fine, so store new coordinates and continue the loop
-					component->acceptCandidate();
-					++count;
-					continue;
+					// Run a number of tweaks to try and remove overlaps
+					for (m=0; m<disorderRecoveryMaxTweaks_; ++m)
+					{
+						component->tweakCandidate(disorderDeltaDistance_, disorderDeltaAngle_, scheme);
+						// Test candidate molecule for overlaps
+						if (component->selfOverlaps(cell)) continue;
+						else if (component->modelOverlaps(targetModel_, cell)) continue;
+						else if (component->otherOverlaps(components_.first(), cell)) continue;
+						else
+						{
+							// Happy days! This position is fine, so store new coordinates and continue the loop
+							component->acceptCandidate();
+							component->increaseCount();
+							break;
+						}
+					}
 				}
+				else component->increaseCount();
 			}
 // 			printf("Success count for component %s is %i\n", component->modelName(), count);
-			if (count >= 25) component->adjustScaleFactor(1.0+(1-disorderReductionFactor_), disorderMinimumScaleFactor_, disorderMaximumScaleFactor_);
+			if (double(component->count())/component->nAdded() >= disorderRecoveryThreshold_)
+			{
+				component->adjustScaleFactor(1.0+(1-disorderReductionFactor_), disorderMinimumScaleFactor_, disorderMaximumScaleFactor_);
+				// Check for achievement of required scale factor.
+				if (fabs(component->scaleFactor()-disorderMaximumScaleFactor_) < disorderAccuracy_) ++nSatisfied;
+			}
 		}
 		
 		/*
@@ -437,16 +449,16 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				switch (component->insertionPolicy())
 				{
 					case (Model::NumberPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
+						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::DensityPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						msg.print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::NumberAndDensityPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::RelativePolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						msg.print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 				}
 				cycleText.clear();

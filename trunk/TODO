@@ -4,18 +4,18 @@
 <li>Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)</li>
 <li>Rebonding model also folds atoms, making --nofold irrelevant</li>
 <li>Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.</li>
-<li>Fragment builder does not clear properly once closed.</li>
 <li>Flickering Progress Dialog, e.g. when using disordered builder on Windows</li>
 <li>Model List images do not update. Can the main view be grabbed and shrunk down to icon size? Maybe in a QThread?</li>
 <li>Glyph list not update on model load.</li>
 <li>Model not updated when changing glyph selection?</li>
 <li>Segfault in Model::regenerateIcon() from Qt's renderText (laptop)?</li>
+<li>Running in console mode, relations between widgets (e.g. radio group buttons) are not honoured correctly</li>
 </ul>
-o Running in console mode, relations between widgets (e.g. radio group buttons) are not honoured correctly
 
 <h1>Current TODO</h1>
 
 <ul>
+<li>Added global variable to access and set MonteCarlo parameters (specifically disorder builder params).</li>
 <li>PovRay export</li>
 <li>Save forcefield needs to be able to distinguish between types and uatypes, and 'convert' data is not yet written.</li>
 <li>Add method to check current pattern definition so that it doesn't have to be removed so often.</li>
@@ -25,7 +25,6 @@ o Running in console mode, relations between widgets (e.g. radio group buttons) 
 <li>Glyph Undo/Redo</li>
 <li>Allow (somehow) rotation of fragments without drawing them *or* rotating main view</li>
 <li>Add on glyph selection methods (a la box select with the mouse)</li>
-<li>Manual - Chapter / Section on Basic View / Imaging.</li>
 </ul>
 
 <h1>Filter TODO</h1>
@@ -40,5 +39,5 @@ o Running in console mode, relations between widgets (e.g. radio group buttons) 
 
 <ul>
 <li>Add new image for atom list, glyph window, and disorder options</li>
-<li>Disorder builder method information and section.</li>
+<li>Chapter / Section on Basic View / Imaging.</li>
 </ul>

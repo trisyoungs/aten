@@ -186,15 +186,27 @@ void DisorderData::rejectCandidate()
 }
 
 // Select a random molecule from the current ensemble, and place in sourceModel_
-bool DisorderData::selectCandidate()
+bool DisorderData::selectCandidate(int id)
 {
 	if (nAdded_ == 0)
 	{
 		moleculeId_ = -1;
 		return FALSE;
 	}
-	// Pick random molecule id, select those atoms and copy/paste it
-	moleculeId_ = AtenMath::randomi(nAdded_);
+	// If an id was supplied, select it. Otherwise choose random molecule
+	if (id != -1)
+	{
+		if (id < 0 || id >= nAdded_)
+		{
+			printf("Internal Error: Molecule id %i is out of range in DisorderData::selectCandidate().\n", id);
+			moleculeId_ = -1;
+			return FALSE;
+		}
+		moleculeId_ = id;
+	}
+	else moleculeId_ = AtenMath::randomi(nAdded_);
+	
+	// Select all atoms in target molecule and copy/paste them
 	targetModel_.selectNone();
 	for (int i=moleculeId_*sourceModel_.nAtoms(); i < (moleculeId_+1)*sourceModel_.nAtoms(); ++i) targetModel_.selectAtom(i);
 	clipboard_.copySelection(&targetModel_, TRUE);
@@ -245,7 +257,7 @@ void DisorderData::tweakCandidate(double maxDistance, double maxAngle, Partition
 	}
 }
 
-// Calculate overlap penalty of candidate with supplied model
+// Determine whether candidate molecule overlaps with supplied model
 bool DisorderData::modelOverlaps(Model *other, UnitCell *globalCell)
 {
 	double rij, ri;
@@ -270,13 +282,13 @@ bool DisorderData::modelOverlaps(Model *other, UnitCell *globalCell)
 	return FALSE;
 }
 
-// Calculate overlap penalty of candidate with rest of population
+// Determine whether candidate molecule overlaps rest of population
 bool DisorderData::selfOverlaps(UnitCell *globalCell)
 {
 	return modelOverlaps(&targetModel_, globalCell);
 }
 
-// Calculate overlap penalty of candidate with all other insertion models
+// Determine whether candidate molecule overlaps with all other insertion models
 bool DisorderData::otherOverlaps(DisorderData *first, UnitCell *globalCell)
 {
 	// Go through list of DisorderedData
@@ -316,3 +328,20 @@ double DisorderData::scaleFactor()
 	return scaleFactor_;
 }
 
+// Reset counting variable
+void DisorderData::resetCount()
+{
+	count_ = 0;
+}
+
+// Increase counting variable
+void DisorderData::increaseCount(int delta)
+{
+	count_ += delta;
+}
+
+// Return counting variable
+int DisorderData::count()
+{
+	return count_;
+}
