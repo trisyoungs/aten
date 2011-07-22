@@ -36,7 +36,9 @@ DisorderOptions::DisorderOptions(QWidget *parent)
 	ui.NTweaksSpin->setValue(mc.disorderNTweaks());
 	ui.DistanceTweakSpin->setValue(mc.disorderDeltaDistance());
 	ui.AngleTweakSpin->setValue(mc.disorderDeltaAngle());
-	ui.MaxRecoveryCyclesSpin->setValue(mc.disorderMaxRecoveryCycles());
+	ui.RecoveryMaxCyclesSpin->setValue(mc.disorderRecoveryMaxCycles());
+	ui.RecoveryMaxTweaksSpin->setValue(mc.disorderRecoveryMaxTweaks());
+	ui.RecoveryThresholdSpin->setValue(mc.disorderRecoveryThreshold());
 }
 
 void DisorderOptions::on_CancelButton_clicked(bool checked)
@@ -56,7 +58,9 @@ void DisorderOptions::on_OkButton_clicked(bool checked)
 	mc.setDisorderNTweaks(ui.NTweaksSpin->value());
 	mc.setDisorderDeltaDistance(ui.DistanceTweakSpin->value());
 	mc.setDisorderDeltaAngle(ui.AngleTweakSpin->value());
-	mc.setDisorderMaxRecoveryCycles(ui.MaxRecoveryCyclesSpin->value());
+	mc.setDisorderRecoveryMaxCycles(ui.RecoveryMaxCyclesSpin->value());
+	mc.setDisorderRecoveryMaxTweaks(ui.RecoveryMaxTweaksSpin->value());
+	mc.setDisorderRecoveryThreshold(ui.RecoveryThresholdSpin->value());
 	accept();
 }
 

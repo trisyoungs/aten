@@ -105,8 +105,6 @@ class MonteCarlo
 	private:
 	// Maximum number of disorder cycles to perform
 	int disorderMaxCycles_;
-	// Maximum number of recovery cycles to perform
-	int disorderMaxRecoveryCycles_;
 	// Percentage error we will allow in actual vs requested densities
 	double disorderAccuracy_;
 	// Number of successive failed insertions allowed before component scale factor is reduced
@@ -123,16 +121,18 @@ class MonteCarlo
 	double disorderDeltaDistance_;
 	// Maximum angle (each around X and Y) to rotate molecule in tweak
 	double disorderDeltaAngle_;
+	// Maximum number of recovery cycles to perform
+	int disorderRecoveryMaxCycles_;
+	// Maximum number of tweaks, per molecule per component, in recovery
+	int disorderRecoveryMaxTweaks_;
+	// Fraction of non-overlapping component molecules required for success
+	double disorderRecoveryThreshold_;
 
 	public:
 	// Set maximum number of disorder cycles to perform
 	void setDisorderMaxCycles(int ncycles);
 	// Return maximum number of disorder cycles to perform
 	int disorderMaxCycles();
-	// Set maximum number of recovery cycles to perform
-	void setDisorderMaxRecoveryCycles(int ncycles);
-	// Return maximum number of recovery cycles to perform
-	int disorderMaxRecoveryCycles();
 	// Set percentage error allowed in actual vs requested densities
 	void setDisorderAccuracy(double accuracy);
 	// Return percentage error allowed in actual vs requested densities
@@ -165,8 +165,20 @@ class MonteCarlo
 	void setDisorderDeltaAngle(double angle);
 	// Return maximum angle (each around X and Y) to rotate molecule in tweak
 	double disorderDeltaAngle();
-
-
+	// Set maximum number of recovery cycles to perform
+	void setDisorderRecoveryMaxCycles(int ncycles);
+	// Return maximum number of recovery cycles to perform
+	int disorderRecoveryMaxCycles();
+	// Set maximum number of tweaks, per molecule per component, in recovery
+	void setDisorderRecoveryMaxTweaks(int n);
+	// Return maximum number of tweaks, per molecule per component, in recovery
+	int disorderRecoveryMaxTweaks();
+	// Set fraction of non-overlapping component molecules required for success
+	void setDisorderRecoveryThreshold(double d);
+	// Return fraction of non-overlapping component molecules required for success
+	double disorderRecoveryThreshold();
+	
+	
 	/*
 	// Main Routines
 	*/

@@ -76,12 +76,14 @@ MonteCarlo::MonteCarlo()
 	disorderMaxFailures_ = 5;
 	disorderReductionFactor_ = 0.98;
 	disorderMinimumScaleFactor_ = 0.95;
-	disorderMaximumScaleFactor_ = 1.30;
+	disorderMaximumScaleFactor_ = 2.0;
 	disorderNTweaks_ = 5;
 	disorderDeltaDistance_ = 0.3;
 	disorderDeltaAngle_ = 5.0;
 	disorderMaxCycles_ = 10000;
-	disorderMaxRecoveryCycles_ = 100;
+	disorderRecoveryMaxCycles_ = 100;
+	disorderRecoveryMaxTweaks_ = 10;
+	disorderRecoveryThreshold_ = 0.90;
 }
 
 // Destructor
@@ -178,18 +180,6 @@ int MonteCarlo::disorderMaxCycles()
 	return disorderMaxCycles_;
 }
 
-// Set maximum number of recovery cycles to perform
-void MonteCarlo::setDisorderMaxRecoveryCycles(int ncycles)
-{
-	disorderMaxRecoveryCycles_ = ncycles;
-}
-
-// Return maximum number of recovery cycles to perform
-int MonteCarlo::disorderMaxRecoveryCycles()
-{
-	return disorderMaxRecoveryCycles_;
-}
-
 // Set percentage error allowed in actual vs requested densities
 void MonteCarlo::setDisorderAccuracy(double accuracy)
 {
@@ -284,6 +274,42 @@ void MonteCarlo::setDisorderDeltaAngle(double angle)
 double MonteCarlo::disorderDeltaAngle()
 {
 	return disorderDeltaAngle_;
+}
+
+// Set maximum number of recovery cycles to perform
+void MonteCarlo::setDisorderRecoveryMaxCycles(int ncycles)
+{
+	disorderRecoveryMaxCycles_ = ncycles;
+}
+
+// Return maximum number of recovery cycles to perform
+int MonteCarlo::disorderRecoveryMaxCycles()
+{
+	return disorderRecoveryMaxCycles_;
+}
+
+// Set maximum number of tweaks, per molecule per component, in recovery
+void MonteCarlo::setDisorderRecoveryMaxTweaks(int n)
+{
+	disorderRecoveryMaxTweaks_ = n;
+}
+
+// Return maximum number of tweaks, per molecule per component, in recovery
+int MonteCarlo::disorderRecoveryMaxTweaks()
+{
+	return disorderRecoveryMaxTweaks_;
+}
+
+// Set fraction of non-overlapping component molecules required for success
+void MonteCarlo::setDisorderRecoveryThreshold(double d)
+{
+	disorderRecoveryThreshold_ = d;
+}
+
+// Return fraction of non-overlapping component molecules required for success
+double MonteCarlo::disorderRecoveryThreshold()
+{
+	return disorderRecoveryThreshold_;
 }
 
 // MC Geometry Minimise
