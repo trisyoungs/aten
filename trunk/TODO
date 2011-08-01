@@ -10,6 +10,7 @@
 <li>Model not updated when changing glyph selection?</li>
 <li>Segfault in Model::regenerateIcon() from Qt's renderText (laptop)?</li>
 <li>Running in console mode, relations between widgets (e.g. radio group buttons) are not honoured correctly</li>
+<li>Previous/Next model menu shortcuts do not update view.</li>
 </ul>
 
 <h1>Current TODO</h1>
