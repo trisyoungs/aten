@@ -152,6 +152,18 @@ int MonteCarlo::nCycles() const
 	return nCycles_;
 }
 
+// Set MC temperature for Boltzmann probabilities
+void MonteCarlo::setTemperature(double t)
+{
+	temperature_ = t;
+}
+
+// Return current MC temperature
+double MonteCarlo::temperature() const
+{
+	return temperature_;
+}
+
 // Create ratio acceptance array
 void MonteCarlo::createRatioArray(int newsize)
 {

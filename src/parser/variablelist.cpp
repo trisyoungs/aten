@@ -145,6 +145,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::ModelData):
 			v = (Variable*) new ModelVariable(NULL, FALSE);
 			break;
+		case (VTypes::MonteCarloData):
+			v = (Variable*) new AtenVariable();
+			break;
 		case (VTypes::PatternData):
 			v = (Variable*) new PatternVariable(NULL, FALSE);
 			break;

@@ -140,9 +140,8 @@ void Aten::setCurrentModel(Model *m, bool deselectOthers)
 		msg.exit("Aten::setCurrentModel");
 		return;
 	}
-	// Set current.m and tell the mainview canvas to display it
+	// Set Bundle pointers
 	current.m = m;
-	// Set other Bundle objects based on model
 	current.p = m->patterns();
 	current.g = m->grids();
 	current.i = NULL;
@@ -152,9 +151,9 @@ void Aten::setCurrentModel(Model *m, bool deselectOthers)
 		// Unset visible flags on all currently-visible models
 		for (Refitem<Model,int> *ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->setVisible(FALSE);
 		visibleModels_.clear();
-		// Add to visible list
-		visibleModels_.add(m);
 	}
+	// Its the current model, so it must be visible also... add to visible list
+	setModelVisible(m, TRUE);
 	msg.exit("Aten::setCurrentModel");
 }
 

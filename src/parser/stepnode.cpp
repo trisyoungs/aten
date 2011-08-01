@@ -37,6 +37,7 @@
 #include "parser/glyph.h"
 #include "parser/glyphdata.h"
 #include "parser/grid.h"
+#include "parser/mc.h"
 #include "parser/measurement.h"
 #include "parser/model.h"
 #include "parser/pattern.h"
@@ -204,6 +205,10 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = ModelVariable::performFunction(accessor_, rv, this);
 			else result = ModelVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::MonteCarloData):
+			if (functionAccessor_) result = MonteCarloVariable::performFunction(accessor_, rv, this);
+			else result = MonteCarloVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::PatternData):
 			if (functionAccessor_) result = PatternVariable::performFunction(accessor_, rv, this);
 			else result = PatternVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -309,6 +314,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::ModelData):
 			printf("%s", ModelVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::MonteCarloData):
+			printf("%s", MonteCarloVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::PatternData):
 			printf("%s", PatternVariable::accessorData[accessor_].name);
@@ -431,6 +439,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::ModelData):
 			result = ModelVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::MonteCarloData):
+			result = MonteCarloVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::PatternData):
 			result = PatternVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -541,6 +552,9 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::ModelData):
 			result = ModelVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::MonteCarloData):
+			result = MonteCarloVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::PatternData):
 			result = PatternVariable::accessorSearch(s, arrayindex, arglist);
