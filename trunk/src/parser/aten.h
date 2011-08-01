@@ -59,7 +59,7 @@ class AtenVariable : public Variable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Elements, Frame, Modeldata, Models, NElements, NModels, Preferences, nAccessors };
+	enum Accessors { Elements, Frame, MC, Modeldata, Models, NElements, NModels, Preferences, nAccessors };
 	// Function list
 	enum Functions { ConvertEnergy, FindElement, nFunctions };
 	// Search variable access list for provided accessor

@@ -651,9 +651,9 @@ void AtenForm::on_actionModelNext_triggered(bool checked)
 	else
 	{
 		Model *m = aten.currentModel();
-		aten.setCurrentModel(m->next == NULL ? aten.models() : m->next);
+		aten.setCurrentModel(m->next == NULL ? aten.models() : m->next, TRUE);
 	}
-	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget-GuiQt::ModelsTarget);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Move to previous model in list
@@ -670,14 +670,16 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 			printf("Internal Error : Failed to find current model in visible models list.\n");
 			return;
 		}
-		aten.setCurrentModel(ri->prev == NULL ? aten.visibleModels()->item : ri->prev->item);
+		// If previous pointer is NULL, need to get the last item in the list by hand
+		if (ri->prev != NULL) aten.setCurrentModel(ri->prev->item);
+		else for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->next == NULL) aten.setCurrentModel(ri->item);
 	}
 	else
 	{
 		Model *m = aten.currentModel();
-		aten.setCurrentModel(m->prev == NULL ? aten.models() : m->prev);
+		aten.setCurrentModel(m->prev == NULL ? aten.model(aten.nModels()-1) : m->prev, TRUE);
 	}
-	gui.update(GuiQt::CanvasTarget+GuiQt::AllTarget-GuiQt::ModelsTarget);
+	gui.update(GuiQt::AllTarget);
 }
 
 // Show all atoms in current model

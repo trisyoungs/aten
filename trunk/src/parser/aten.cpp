@@ -25,6 +25,7 @@
 #include "classes/prefs.h"
 #include "model/model.h"
 #include "main/aten.h"
+#include "methods/mc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -87,6 +88,7 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 	{ "elements",	VTypes::ElementData,		elements().nElements(), TRUE },
 	{ "frame",	VTypes::ModelData,		0, TRUE },
+	{ "mc",		VTypes::MonteCarloData,		0, TRUE },
 	{ "model",	VTypes::ModelData,		0, TRUE },
 	{ "models",	VTypes::ModelData,		-1, TRUE },
 	{ "nelements",	VTypes::IntegerData,		0, TRUE },
@@ -204,6 +206,9 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			break;
 		case (AtenVariable::Frame):
 			rv.set(VTypes::ModelData, aten.currentModel()->renderSourceModel());
+			break;
+		case (AtenVariable::MC):
+			rv.set(VTypes::MonteCarloData, &mc);
 			break;
 		case (AtenVariable::Modeldata):
 			rv.set(VTypes::ModelData, aten.currentModel());
