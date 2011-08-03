@@ -49,6 +49,9 @@ Aten::Aten()
 
 	// Program control / settings (not prefs)
 	typeExportMapping_ = FALSE;
+	redirectedImagesActive_ = FALSE;
+	redirectedImageFormat_ = "";
+	redirectedImageCount_ = 0;
 
 	// Misc 
 	#ifdef _WIN32
@@ -124,6 +127,34 @@ const char *Aten::typeExportConvert(const char *oldname) const
 	if (!typeExportMapping_) return oldname;
 	KVPair *kvp = aten.typeExportMap.search(oldname);
 	return (kvp == NULL ? oldname : kvp->value());
+}
+
+// Return whether saveImage redirect is active (for scripted movie making)
+bool Aten::redirectedImagesActive()
+{
+	return redirectedImagesActive_;
+}
+
+// Initialise image redirection
+void Aten::initialiseImageRedirect(const char *filenameFormat)
+{
+	redirectedImageCount_ = 0;
+	redirectedImageFormat_ = filenameFormat;
+	redirectedImagesActive_ = TRUE;
+}
+
+// Return next filename for image redirection
+const char *Aten::nextRedirectedFilename()
+{
+	static Dnchar filename;
+	filename.sprintf(redirectedImageFormat_.get(), redirectedImageCount_++);
+	return filename.get();
+}
+
+// Cancel image redirection
+void Aten::cancelImageRedirect()
+{
+	redirectedImagesActive_ = FALSE;
 }
 
 /*

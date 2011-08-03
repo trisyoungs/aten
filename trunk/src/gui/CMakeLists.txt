@@ -47,6 +47,7 @@ set(qtproject_SRCS
   position_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
+  scriptmovie_funcs.cpp
   select_funcs.cpp
   selectelement_funcs.cpp
   selectfilter_funcs.cpp
@@ -99,6 +100,7 @@ SET(pro_MOC_HDRS
   position.h
   prefs.h
   progress.h
+  scriptmovie.h
   select.h
   selectelement.h
   selectfilter.h
@@ -145,6 +147,7 @@ SET(pro_UIS
   position.ui
   prefs.ui
   progress.ui
+  scriptmovie.ui
   select.ui
   selectelement.ui
   selectfilter.ui

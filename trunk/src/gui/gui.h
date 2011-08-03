@@ -58,6 +58,7 @@ class MDWidget;
 class MessagesWidget;
 class ModelListWidget;
 class PositionWidget;
+class ScriptMovieWidget;
 class SelectWidget;
 class ToolBoxWidget;
 class TrajectoryWidget;
@@ -203,6 +204,8 @@ class GuiQt
 	ModelListWidget *modelListWidget;
 	// Atom positioning dock widget
 	PositionWidget *positionWidget;
+	// Scripted movie dock widget
+	ScriptMovieWidget *scriptMovieWidget;
 	// Atom selection dock widget
 	SelectWidget *selectWidget;
 	// Toolbox dock widget

@@ -50,6 +50,7 @@ class ToolBoxWidget : public QDockWidget
 	void on_MDButton_clicked(bool checked);
 	void on_MessagesButton_clicked(bool checked);
 	void on_PositionButton_clicked(bool checked);
+	void on_ScriptMovieButton_clicked(bool checked);
 	void on_SelectButton_clicked(bool checked);
 	void on_TrajectoryButton_clicked(bool checked);
 	void on_TransformButton_clicked(bool checked);
