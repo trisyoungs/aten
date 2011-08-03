@@ -267,7 +267,7 @@ class Aten
 	
 
 	/*
-	// Program locations
+	// Program Locations
 	*/
 	private:
 	// Location of user's home directory
@@ -340,6 +340,13 @@ class Aten
 	private:
 	// Whether type export conversion is enabled
 	bool typeExportMapping_;
+	// Whether saveImage redirect is active (for scripted movie making)
+	bool redirectedImagesActive_;
+	// Format string (containing only a single variable integer) for image redirect filenames
+	Dnchar redirectedImageFormat_;
+	// Current count for image file (increased each time redirectedImageFilename() is called)
+	int redirectedImageCount_;
+	
 
 	public:
 	// Element map name conversions to apply on load
@@ -352,6 +359,14 @@ class Aten
 	bool typeExportMapping() const;
 	// Convert supplied type name according to export type map
 	const char *typeExportConvert(const char *s) const;
+	// Return whether saveImage redirect is active (for scripted movie making)
+	bool redirectedImagesActive();
+	// Initialise image redirection
+	void initialiseImageRedirect(const char *filenameFormat);
+	// Return next filename for image redirection
+	const char *nextRedirectedFilename();
+	// Cancel image redirection
+	void cancelImageRedirect();
 
 
 	/*

@@ -36,6 +36,7 @@
 #include "gui/messages.h"
 #include "gui/modellist.h"
 #include "gui/position.h"
+#include "gui/scriptmovie.h"
 #include "gui/select.h"
 #include "gui/toolbox.h"
 #include "gui/trajectory.h"
@@ -66,6 +67,7 @@ void ToolBoxWidget::updateButtons()
 	ui.MDButton->setChecked(gui.mdWidget->isVisible());
 	ui.MessagesButton->setChecked(gui.messagesWidget->isVisible());
 	ui.PositionButton->setChecked(gui.positionWidget->isVisible());
+	ui.ScriptMovieButton->setChecked(gui.scriptMovieWidget->isVisible());
 	ui.SelectButton->setChecked(gui.selectWidget->isVisible());
 	ui.TrajectoryButton->setChecked(gui.trajectoryWidget->isVisible());
 	ui.TransformButton->setChecked(gui.transformWidget->isVisible());
@@ -159,6 +161,12 @@ void ToolBoxWidget::on_PositionButton_clicked(bool checked)
 {
 	if (checked) gui.positionWidget->showWidget();
 	else gui.positionWidget->hide();
+}
+
+void ToolBoxWidget::on_ScriptMovieButton_clicked(bool checked)
+{
+	if (checked) gui.scriptMovieWidget->showWidget();
+	else gui.scriptMovieWidget->hide();
 }
 
 void ToolBoxWidget::on_SelectButton_clicked(bool checked)
