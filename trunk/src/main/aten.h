@@ -346,6 +346,8 @@ class Aten
 	Dnchar redirectedImageFormat_;
 	// Current count for image file (increased each time redirectedImageFilename() is called)
 	int redirectedImageCount_;
+	// Maximum allowed images to be saved before 'saveimage' command raises an error
+	int maxRedirectedImages_;
 	
 
 	public:
@@ -362,11 +364,11 @@ class Aten
 	// Return whether saveImage redirect is active (for scripted movie making)
 	bool redirectedImagesActive();
 	// Initialise image redirection
-	void initialiseImageRedirect(const char *filenameFormat);
+	void initialiseImageRedirect(const char *filenameFormat, int maxFrames);
 	// Return next filename for image redirection
 	const char *nextRedirectedFilename();
-	// Cancel image redirection
-	void cancelImageRedirect();
+	// Cancel image redirection, returning number of images saved
+	int cancelImageRedirect();
 
 
 	/*

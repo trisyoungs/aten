@@ -52,6 +52,7 @@ Aten::Aten()
 	redirectedImagesActive_ = FALSE;
 	redirectedImageFormat_ = "";
 	redirectedImageCount_ = 0;
+	maxRedirectedImages_ = 100;
 
 	// Misc 
 	#ifdef _WIN32
@@ -136,9 +137,10 @@ bool Aten::redirectedImagesActive()
 }
 
 // Initialise image redirection
-void Aten::initialiseImageRedirect(const char *filenameFormat)
+void Aten::initialiseImageRedirect(const char *filenameFormat, int maxImages)
 {
 	redirectedImageCount_ = 0;
+	maxRedirectedImages_ = maxImages;
 	redirectedImageFormat_ = filenameFormat;
 	redirectedImagesActive_ = TRUE;
 }
@@ -146,15 +148,17 @@ void Aten::initialiseImageRedirect(const char *filenameFormat)
 // Return next filename for image redirection
 const char *Aten::nextRedirectedFilename()
 {
+	if (redirectedImageCount_ == maxRedirectedImages_) return NULL;
 	static Dnchar filename;
 	filename.sprintf(redirectedImageFormat_.get(), redirectedImageCount_++);
 	return filename.get();
 }
 
 // Cancel image redirection
-void Aten::cancelImageRedirect()
+int Aten::cancelImageRedirect()
 {
 	redirectedImagesActive_ = FALSE;
+	return redirectedImageCount_;
 }
 
 /*

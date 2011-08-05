@@ -15,7 +15,7 @@
 <h1>Current TODO</h1>
 
 <ul>
-<li>Added global variable to access and set MonteCarlo parameters (specifically disorder builder params).</li>
+<li>Saving of movies for vibrations.</li>
 <li>PovRay export</li>
 <li>Save forcefield needs to be able to distinguish between types and uatypes, and 'convert' data is not yet written.</li>
 <li>Add method to check current pattern definition so that it doesn't have to be removed so often.</li>
