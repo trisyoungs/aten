@@ -1,0 +1,46 @@
+# Simple script to calculate the dipole moment of the current model and add it as a vector glyph.
+# This only works for neutral, non-periodic systems.
+
+vector dip, cog;
+double mag;
+atom i;
+model m = aten.frame;
+
+# Check that we have enough atoms to do the calculation
+if (m.natoms < 2) error("Less than two atoms in the model - no dipole to calculate!");
+
+dip = 0.0;
+cog = 0.0;
+
+# Perform a loop over all atoms in the current model
+for (i = m.atoms; i; ++i)
+{
+	dip.x += i.rx*i.q;
+	dip.y += i.ry*i.q;
+	dip.z += i.rz*i.q;
+	cog.x += i.rx;
+	cog.y += i.ry;
+	cog.z += i.rz;
+}
+
+# Change units and finalise values
+# 1 Debye = 1E-21 C m2 s-1 div. by speed of light in vacuum
+#	  = 3.335641E-30 C m
+#  Calc'd = e A
+#	  = 1.602177E-19 C A
+#	  = 1.602177E-29 C m
+# So, Calc'd -> Debye conversion factor is:
+#	  = 1.602177E-29 / 3.335641E-30
+#	  = 4.80321
+dip *= 4.80321;
+mag = dip.mag;
+cog /= m.natoms;
+
+# Add glyph to model
+glyph g = newglyph("vector");
+g.data[1].vector = cog;
+g.data[2].vector = dip;
+
+# Print data
+printf("Centre-of-geometry is at x=%f, y=%f, z=%f\n", cog.x, cog.y, cog.z);
+printf("Dipole moment is x=%f, y=%f, z=%f, |d|=%f\n", dip.x, dip.y, dip.z, mag);
