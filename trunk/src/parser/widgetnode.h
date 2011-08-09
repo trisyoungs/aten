@@ -102,7 +102,7 @@ class WidgetNode : public TreeNode
 	static GuiControl guiControl(const char *s, bool reporterror = FALSE);
 	static const char *guiControl(GuiControl got);
 	// Options for Qt layout
-	enum GuiQtOption { CentreOption, DisabledOption, GroupNameOption, LabelSpanOption, LeftOption, NewLineOption, ParentSpanOption, SpanOption, StateOption, TabsOption, nGuiQtOptions };
+	enum GuiQtOption { CentreOption, DisabledOption, GroupNameOption, HiddenOption, LabelSpanOption, LeftOption, NewLineOption, ParentSpanOption, SpanOption, StateOption, TabsOption, nGuiQtOptions };
 	static GuiQtOption guiQtOption(const char *s, bool reporterror = FALSE);
 	static const char *guiQtOption(GuiQtOption gqo);
 	// Widget parent types
@@ -172,6 +172,8 @@ class WidgetNode : public TreeNode
 	bool widgetNewLine_;
 	// Whether the widget is enabled
 	bool widgetEnabled_;
+	// Whether the control is visible
+	bool widgetVisible_;
 
 	public:
 	// Set option from argument
@@ -196,6 +198,8 @@ class WidgetNode : public TreeNode
 	QWidget *widget();
 	// Return whether widget is enabled
 	bool widgetEnabled();
+	// Return whether widget is visible
+	bool widgetVisible();
 	// Set object pointer
 	void setObject(QObject *obj);
 	// Return object pointer
