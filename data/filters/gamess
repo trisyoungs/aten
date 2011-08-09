@@ -392,7 +392,18 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	# GUI Control Definitions
 	#
 
-	# General control options ($CONTRL)
+	dialog ui = createDialog("GAMESS-US Export Options");
+	widget layout, w;
+	# General control options group ($CONTRL)
+	ui.addWidget(layout = ui.addGroup("Job Control ($CONTRL)"), 1, 1, 0, 0);
+	layout.addWidget(ui.addCombo("contrl_runtyp", "Run Type", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5), 1, 1, 1, 1);
+	
+
+	#tabs = ui.addTabs();
+	#widget w = tabs.addPage("Job Control ($CONTRL)");
+	int result = ui.runAndFree();
+
+
 	string contrl_runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
 	string contrl_scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
 	int contrl_mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");

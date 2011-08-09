@@ -161,6 +161,10 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = ColourScalePointVariable::performFunction(accessor_, rv, this);
 			else result = ColourScalePointVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::DialogData):
+			if (functionAccessor_) result = DialogVariable::performFunction(accessor_, rv, this);
+			else result = DialogVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::EigenvectorData):
 			if (functionAccessor_) result = EigenvectorVariable::performFunction(accessor_, rv, this);
 			else result = EigenvectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -281,6 +285,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::ColourScalePointData):
 			printf("%s", ColourScalePointVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::DialogData):
+			printf("%s", DialogVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::EigenvectorData):
 			printf("%s", EigenvectorVariable::accessorData[accessor_].name);
@@ -406,6 +413,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::ColourScalePointData):
 			result = ColourScalePointVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::DialogData):
+			result = DialogVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::EigenvectorData):
 			result = EigenvectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -519,6 +529,9 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::ColourScalePointData):
 			result = ColourScalePointVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::DialogData):
+			result = DialogVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::EigenvectorData):
 			result = EigenvectorVariable::accessorSearch(s, arrayindex, arglist);

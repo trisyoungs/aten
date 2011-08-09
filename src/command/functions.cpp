@@ -343,10 +343,10 @@ void Command::initPointers()
 	pointers_[MeasureSelected] = &Command::function_MeasureSelected;
 
 	// Messaging Commands
-	pointers_[Dialog] = &Command::function_Dialog;
+	pointers_[CreateDialog] = &Command::function_CreateDialog;
+	pointers_[DefaultDialog] = &Command::function_DefaultDialog;
 	pointers_[Error] = &Command::function_Error;
 	pointers_[Message] = &Command::function_Message;
-	pointers_[Option] = &Command::function_Option;
 	pointers_[Printf] = &Command::function_Printf;
 	pointers_[Verbose] = &Command::function_Verbose;
 
