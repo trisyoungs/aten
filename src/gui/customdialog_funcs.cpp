@@ -298,10 +298,12 @@ void AtenCustomDialog::comboWidget_currentIndexChanged(int row)
 		else if (node->controlType() == WidgetNode::IntegerComboControl)
 		{
 			if ((row+1) == sc->stateValueAsInteger()) performStateChange(sc);
+			else if (strcmp(sc->stateValue(),"*") == 0) performStateChange(sc);
 		}
 		else if (node->controlType() == WidgetNode::ComboControl)
 		{
 			if (strcmp(qPrintable(combo->currentText()), sc->stateValue()) == 0) performStateChange(sc);
+			else if (strcmp(sc->stateValue(),"*") == 0) performStateChange(sc);
 		}
 	}
 	refreshing_ = FALSE;
@@ -635,7 +637,7 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 	QGridLayout *gridl;
 	QTabWidget *tabw;
 	int span, labelspan, alignment;
-	bool newline;
+	bool newline, visible;
 	LayoutList layouts;
 	Reflist<QTabWidget,Dnchar> tabwidgets;
 	Refitem<QTabWidget,Dnchar> *tabref;
@@ -666,49 +668,52 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 	{
 		gfo = ri->item;
 		// We will add to the main widget, unless another is specified (i.e. a group)
-		if (gfo->widgetParentType() == WidgetNode::NoParent) currentlayout = mainlayout;
-		else
+		if (gfo->widgetVisible())
 		{
-			// Find the specified layout (or create it)
-			currentlayout = layouts.find(gfo->widgetParentName());
-			if (currentlayout == NULL)
+			if (gfo->widgetParentType() == WidgetNode::NoParent) currentlayout = mainlayout;
+			else
 			{
-				if (gfo->widgetParentType() == WidgetNode::GroupBoxParent)
+				// Find the specified layout (or create it)
+				currentlayout = layouts.find(gfo->widgetParentName());
+				if (currentlayout == NULL)
 				{
-					// Create a new QGroupBox in the main widget (for now...)
-					group = new QGroupBox();
-					group->setTitle(gfo->widgetParentName());
-					mainlayout->addWidget(group, gfo->widgetParentSpan(), gfo->widgetNewLine());
-					gridl = createGridLayout(group);
-					currentlayout = layouts.add(gfo->widgetParentName(), gridl);
-				}
-				else if (gfo->widgetParentType() == WidgetNode::TabWidgetParent)
-				{
-					// Format of name should be 'page@tabwidget'
-					// Two possibilities -  1) the 'tabwidget' does exist but the page doesn't
-					//			2) the 'tabwidget' doesn't exit, and nor does the page
-					// So, search for tabwidget...
-					name = afterChar(gfo->widgetParentName(), '@');
-// 					printf("Searching for tab '%s'\n", name.get());
-					for (tabref = tabwidgets.first(); tabref != NULL; tabref = tabref->next)
-						if (name == tabref->data) break;
-					if (tabref == NULL)
+					if (gfo->widgetParentType() == WidgetNode::GroupBoxParent)
 					{
-// 						printf("No tab found. Creating both tab and page.\n");
-						tabw = new QTabWidget();
-						mainlayout->addWidget(tabw, gfo->widgetParentSpan(), gfo->widgetNewLine());
-						tabwidgets.add(tabw, name);
+						// Create a new QGroupBox in the main widget (for now...)
+						group = new QGroupBox();
+						group->setTitle(gfo->widgetParentName());
+						mainlayout->addWidget(group, gfo->widgetParentSpan(), gfo->widgetNewLine());
+						gridl = createGridLayout(group);
+						currentlayout = layouts.add(gfo->widgetParentName(), gridl);
 					}
-					else
+					else if (gfo->widgetParentType() == WidgetNode::TabWidgetParent)
 					{
-// 						printf("Tab widget found - adding new page.\n");
-						tabw = tabref->item;
+						// Format of name should be 'page@tabwidget'
+						// Two possibilities -  1) the 'tabwidget' does exist but the page doesn't
+						//			2) the 'tabwidget' doesn't exit, and nor does the page
+						// So, search for tabwidget...
+						name = afterChar(gfo->widgetParentName(), '@');
+	// 					printf("Searching for tab '%s'\n", name.get());
+						for (tabref = tabwidgets.first(); tabref != NULL; tabref = tabref->next)
+							if (name == tabref->data) break;
+						if (tabref == NULL)
+						{
+	// 						printf("No tab found. Creating both tab and page.\n");
+							tabw = new QTabWidget();
+							mainlayout->addWidget(tabw, gfo->widgetParentSpan(), gfo->widgetNewLine());
+							tabwidgets.add(tabw, name);
+						}
+						else
+						{
+	// 						printf("Tab widget found - adding new page.\n");
+							tabw = tabref->item;
+						}
+						widget = new QWidget(tabw);
+						gridl = createGridLayout(widget);
+						currentlayout = layouts.add(gfo->widgetParentName(), gridl);
+						name = beforeChar(gfo->widgetParentName(), '@');
+						tabw->addTab(widget, name.get());
 					}
-					widget = new QWidget(tabw);
-					gridl = createGridLayout(widget);
-					currentlayout = layouts.add(gfo->widgetParentName(), gridl);
-					name = beforeChar(gfo->widgetParentName(), '@');
-					tabw->addTab(widget, name.get());
 				}
 			}
 		}
@@ -718,6 +723,7 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 		labelspan = gfo->widgetLabelSpan();
 		newline = gfo->widgetNewLine();
 		alignment = gfo->widgetLabelAlignment();
+		visible = gfo->widgetVisible();
 
 		// Now create the widget
 		switch (gfo->controlType())
@@ -725,13 +731,13 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 			// Check Box - data: state)
 			case (WidgetNode::CheckControl):
 				widget = createCheckBox(gfo);
-				currentlayout->addWidget(widget, span, newline);
+				if (visible) currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
 			// RadioButton - data: buttongroup, state)
 			case (WidgetNode::RadioButtonControl):
 				widget = createRadioButton(gfo);
-				currentlayout->addWidget(widget, span, newline);
+				if (visible) currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
 			// RadioGroup
@@ -744,45 +750,45 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 			case (WidgetNode::IntegerComboControl):
 			case (WidgetNode::ComboControl):
 				widget = createLabel(gfo->name(), alignment);
-				currentlayout->addWidget(widget, labelspan, newline);
+				if (visible) currentlayout->addWidget(widget, labelspan, newline);
 				widget = createComboBox(gfo);
-				currentlayout->addWidget(widget, span, FALSE);
+				if (visible) currentlayout->addWidget(widget, span, FALSE);
 				gfo->setWidget(widget);
 				break;
 			// Double Spin Edit - data: min, max, start
 			case (WidgetNode::DoubleSpinControl):
 				widget = createLabel(gfo->name(), alignment);
-				currentlayout->addWidget(widget, labelspan, newline);
+				if (visible) currentlayout->addWidget(widget, labelspan, newline);
 				widget = createDoubleSpinBox(gfo);
-				currentlayout->addWidget(widget, span, FALSE);
+				if (visible) currentlayout->addWidget(widget, span, FALSE);
 				gfo->setWidget(widget);
 				break;
 			// Text Edit - data: text
 			case (WidgetNode::EditControl):
 				widget = createLabel(gfo->name(), alignment);
-				currentlayout->addWidget(widget, labelspan, newline);
+				if (visible) currentlayout->addWidget(widget, labelspan, newline);
 				widget = createLineEdit(gfo);
-				currentlayout->addWidget(widget, span, FALSE);
+				if (visible) currentlayout->addWidget(widget, span, FALSE);
 				gfo->setWidget(widget);
 				break;
 			// Integer Spin Edit - data: min, max, start
 			case (WidgetNode::IntegerSpinControl):
 				widget = createLabel(gfo->name(), alignment);
-				currentlayout->addWidget(widget, labelspan, newline);
+				if (visible) currentlayout->addWidget(widget, labelspan, newline);
 				widget = createSpinBox(gfo);
-				currentlayout->addWidget(widget, span, FALSE);
+				if (visible) currentlayout->addWidget(widget, span, FALSE);
 				gfo->setWidget(widget);
 				break;
 			// Stack - data: npages, index
 			case (WidgetNode::StackControl):
 				widget = createStackedWidget(gfo, layouts);
-				currentlayout->addWidget(widget, span, newline);
+				if (visible) currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
 			// Label
 			case (WidgetNode::LabelControl):
 				widget = createLabel(gfo->name(), alignment);
-				currentlayout->addWidget(widget, labelspan, newline);
+				if (visible) currentlayout->addWidget(widget, labelspan, newline);
 				gfo->setWidget(widget);
 				break;
 		}

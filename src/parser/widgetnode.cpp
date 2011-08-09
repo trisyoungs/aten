@@ -39,7 +39,7 @@ WidgetNode::GuiControl WidgetNode::guiControl(const char *s, bool reporterror)
 }
 
 // Options for Qt layout
-const char *GuiQtOptionKeywords[WidgetNode::nGuiQtOptions] = { "centre", "disabled", "group", "labelspan", "left", "newline", "parentspan", "span", "state", "tab" };
+const char *GuiQtOptionKeywords[WidgetNode::nGuiQtOptions] = { "centre", "disabled", "group", "hidden", "labelspan", "left", "newline", "parentspan", "span", "state", "tab" };
 const char *WidgetNode::guiQtOption(GuiQtOption gqo)
 {
 	return GuiQtOptionKeywords[gqo];
@@ -195,6 +195,7 @@ WidgetNode::WidgetNode()
 	widgetLabelSpan_ = 1;
 	widgetNewLine_ = FALSE;
 	widgetEnabled_ = TRUE;
+	widgetVisible_ = TRUE;
 }
 
 // Destructor
@@ -595,6 +596,9 @@ void WidgetNode::setOption(TreeNode *arg)
 			widgetParentType_ = WidgetNode::GroupBoxParent;
 			widgetParentName_ = argdata;
 			break;
+		case (WidgetNode::HiddenOption):
+			widgetVisible_ = FALSE;
+			break;
 		case (WidgetNode::LabelSpanOption):
 			widgetLabelSpan_ = argdata.asInteger();
 			break;
@@ -701,6 +705,12 @@ QWidget *WidgetNode::widget()
 bool WidgetNode::widgetEnabled()
 {
 	return widgetEnabled_;
+}
+
+// Return whether widget is visible
+bool WidgetNode::widgetVisible()
+{
+	return widgetVisible_;
 }
 
 // Set object pointer

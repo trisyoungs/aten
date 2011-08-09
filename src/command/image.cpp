@@ -29,6 +29,7 @@
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "base/progress.h"
+#include "main/aten.h"
 
 // Save current view as bitmap image
 bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
@@ -56,7 +57,10 @@ bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	prefs.setViewRotationGlobe(FALSE);
 
 	rv.reset();
-	bool result = gui.saveImage(c->argc(1), bf, width, height, quality);
+	bool result;
+	// Has image saving been redirected? If so, use filename provided by Aten
+ 	if (aten.redirectedImagesActive()) result = gui.saveImage(aten.nextRedirectedFilename(), bf, width, height, quality);
+ 	else result = gui.saveImage(c->argc(1), bf, width, height, quality);
 
 	prefs.setViewRotationGlobe(viewglobe);
 	return result;
