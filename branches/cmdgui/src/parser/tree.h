@@ -24,17 +24,10 @@
 
 #include <iostream>
 #include "parser/filterdata.h"
-#include "parser/widgetnode.h"
-#include "parser/returnvalue.h"
-#include "parser/variable.h"
 #include "parser/variablelist.h"
+#include "parser/treegui.h"
 #include "command/commands.h"
-#include "templates/namemap.h"
-#include "templates/list.h"
-#include "templates/reflist.h"
 #include "base/dnchar.h"
-#include "base/elements.h"
-#include "base/lineparser.h"
 
 // Forward declarations
 class TreeNode;
@@ -42,7 +35,6 @@ class ScopeNode;
 class VariableNode;
 class StepNode;
 class Program;
-class AtenCustomDialog;
 
 // Tree
 class Tree
@@ -221,43 +213,17 @@ class Tree
 
 
 	/*
-	// Custom Dialog Widgets
+	// Qt/CLI GUI Definition
 	*/
 	private:
-	// List of user-defined widgets for custom dialog / filter options
-	Reflist<WidgetNode,int> widgets_;
-	// Custom dialog containing ready-created set of controls
-	AtenCustomDialog *customDialog_;
+	// Default GUI dialog, run at start of Program execution
+	TreeGui defaultDialog_;
 
 	public:
-	// Add new (GUI-based) filter option linked to a variable
-	TreeNode *addWidget(TreeNode *arglist);
-	// Return first item in list of filter options
-	Refitem<WidgetNode,int> *widgets();
-	// Locate named widget
-	WidgetNode *findWidget(const char *name);
-	// Locate widget with specified widget pointer
-	WidgetNode *findWidget(QWidget *widget);
-	// Locate widget with specified object pointer
-	WidgetNode *findWidgetObject(QObject *obj);
-	// Create custom dialog from defined widgets (if there are any)
-	void createCustomDialog(const char *title = NULL);
-	// Return custom dialog (if any)
-	AtenCustomDialog *customDialog();
-	// Execute defined custom dialog (if one exists, just return TRUE if not)
-	bool executeCustomDialog(bool getvaluesonly = FALSE, const char *newtitle = NULL);
-	// Retrieve current value of named widget as a double
-	double widgetValued(const char *name);
-	// Retrieve current value of named widget as an integer
-	int widgetValuei(const char *name);
-	// Retrieve current value of named widget as a string
-	const char *widgetValuec(const char *name);
-	// Retrieve current value of named widget triplet as a vector
-	Vec3<double> widgetValue3d(const char *name1, const char *name2, const char *name3);
-	// Set current value of named widget
-	void setWidgetValue(const char *name, ReturnValue value);
-	// Set property of named widget (via a state change)
-	bool setWidgetProperty(const char *name, const char *property, ReturnValue value);
+	// Return default dialog structure
+	TreeGui &defaultDialog();
+	// Execute default dialog (if it exists), or just store values
+	bool runDefaultDialog(bool storeonly = FALSE);
 
 
 	/*

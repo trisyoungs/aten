@@ -10,6 +10,7 @@ character.h
 colourscale.h
 colourscalepoint.h
 commandnode.h
+dialog.h
 double.h
 eigenvector.h
 element.h
@@ -38,6 +39,7 @@ scopenode.h
 site.h
 stepnode.h
 tree.h
+treegui.h
 treenode.h
 usercommandnode.h
 variable.h
@@ -46,7 +48,7 @@ variablenode.h
 vector.h
 vibration.h
 vtypes.h
-widgetnode.h
+widget.h
 zmatrix.h
 zmatrixelement.h
 aten.cpp
@@ -59,6 +61,7 @@ character.cpp
 colourscale.cpp
 colourscalepoint.cpp
 commandnode.cpp
+dialog.cpp
 double.cpp
 eigenvector.cpp
 element.cpp
@@ -88,8 +91,9 @@ scopenode.cpp
 site.cpp
 stepnode.cpp
 tree.cpp
-treenode.cpp
 tree_opcheck.cpp
+treegui.cpp
+treenode.cpp
 usercommandnode.cpp
 variable.cpp
 variablelist.cpp
@@ -97,7 +101,7 @@ variablenode.cpp
 vector.cpp
 vibration.cpp
 vtypes.cpp
-widgetnode.cpp
+widget.cpp
 zmatrix.cpp
 zmatrixelement.cpp
 )

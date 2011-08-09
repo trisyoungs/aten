@@ -236,12 +236,6 @@ int CommandParser::lex()
 				return DOUBLECONST;
 			}
 
-			// OPTION keywords
-			if (strcmp(token,"option") == 0)
-			{
-				return OPTION;
-			}
-
 			// Element symbol?
 			for (n=0; n<elements().nElements(); ++n) if (strcmp(token,elements().symbol(n)) == 0) break;
 			if (n < elements().nElements())

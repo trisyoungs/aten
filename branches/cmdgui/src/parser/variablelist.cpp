@@ -29,6 +29,7 @@
 #include "parser/character.h"
 #include "parser/colourscale.h"
 #include "parser/colourscalepoint.h"
+#include "parser/dialog.h"
 #include "parser/double.h"
 #include "parser/eigenvector.h"
 #include "parser/element.h"
@@ -114,6 +115,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 			break;
 		case (VTypes::ColourScalePointData):
 			v = (Variable*) new ColourScalePointVariable(NULL, FALSE);
+			break;
+		case (VTypes::DialogData):
+			v = (Variable*) new DialogVariable(NULL, FALSE);
 			break;
 		case (VTypes::EigenvectorData):
 			v = (Variable*) new EigenvectorVariable(NULL, FALSE);
@@ -205,6 +209,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::ColourScalePointData):
 			var = new ColourScalePointArrayVariable(sizeexpr);
+			break;
+		case (VTypes::DialogData):
+			var = new DialogArrayVariable(sizeexpr);
 			break;
 		case (VTypes::EigenvectorData):
 			var = new EigenvectorArrayVariable(sizeexpr);

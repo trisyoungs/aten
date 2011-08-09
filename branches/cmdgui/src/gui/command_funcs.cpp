@@ -206,12 +206,19 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 		// Check that the file still exists
 		if (!fileExists(script->filename()))
 		{
-			Tree dialog("Error Finding Script", "option('The script file could not be found.','label'); option('choice','radiogroup','\"Delete the entry for this scriptfile (it will not reappear when Aten restarts)\",\"Do not delete the entry (and skip this script)\"',1,'newline');");
-			Dnchar text;
-			text.sprintf("Script '%s'", script->filename());
-			if (dialog.executeCustomDialog(FALSE, text))
+			Tree dialog;
+			TreeGuiWidget *group;
+			TreeGui &ui = dialog.defaultDialog();
+			ui.setTitle("!! Error Finding Script !!");
+			ui.addWidget(ui.addLabel("", "The following script could not be found:"),1,1);
+			ui.addWidget(ui.addLabel("", script->filename()),1,2);
+			group = ui.addButtonGroup("choice");
+			group->addButton(ui.addWidget(ui.addRadioButton("delete", "Delete the entry for this scriptfile (it will not reappear when Aten restarts)", 0), 1,3));
+			group->addButton(ui.addWidget(ui.addRadioButton("skip", "Do not delete the entry and skip loading this script", 0), 1,4));
+// 			Tree dialog("Error Finding Script", "option('The script file could not be found.','label'); option('choice','radiogroup','\"Delete the entry for this scriptfile (it will not reappear when Aten restarts)\",\"Do not delete the entry (and skip this script)\"',1,'newline');");
+			if (dialog.runDefaultDialog())
 			{
-				int choice = dialog.widgetValuei("choice");
+				int choice = ui.asInteger("choice");
 				if (choice == 1)
 				{
 					xscript = script->next;
@@ -224,11 +231,20 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 		}
 		else if (!script->reload())
 		{
-			Tree dialog("Error Loading Script", "option('The script contained an error (see messagebox for details).','label'); option('choice','radiogroup','\"Retry (changes have just been made to the file)\",\"Delete the entry for this scriptfile (it will not reappear when Aten restarts)\",\"Do not delete the entry and skip this script\"',1,'newline');");
-			Dnchar text;
-			if (dialog.executeCustomDialog(FALSE, text))
+			Tree dialog;
+			TreeGuiWidget *group;
+			TreeGui &ui = dialog.defaultDialog();
+			ui.setTitle("!! Error Loading Script !!");
+			ui.addWidget(ui.addLabel("", "The following script contained an error (see MessageBox for more details):"),1,1);
+			ui.addWidget(ui.addLabel("", script->filename()),1,2);
+			group = ui.addButtonGroup("choice");
+			group->addButton(ui.addWidget(ui.addRadioButton("retry", "Retry (changes have just been made to the file)", 1), 1,3));
+			group->addButton(ui.addWidget(ui.addRadioButton("delete", "Delete the entry for this scriptfile (it will not reappear when Aten restarts)", 0), 1,4));
+			group->addButton(ui.addWidget(ui.addRadioButton("skip", "Do not delete the entry and skip loading this script", 0), 1,5));
+// 			Tree dialog("Error Loading Script", "option('The script contained an error (see messagebox for details).','label'); option('choice','radiogroup','\"Retry (changes have just been made to the file)\",\"Delete the entry for this scriptfile (it will not reappear when Aten restarts)\",\"Do not delete the entry and skip this script\"',1,'newline');");
+			if (dialog.runDefaultDialog())
 			{
-				int choice = dialog.widgetValuei("choice");
+				int choice = ui.asInteger("choice");
 				if (choice == 1)
 				{
 					// Do nothing - the loop will continue with the same script pointer (i.e. Retry loading)

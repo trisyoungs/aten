@@ -25,6 +25,7 @@
 #include "gui/gui.h"
 #include "gui/ui_customdialog.h"
 #include "gui/layoutlist.h"
+#include "templates/kvtable.h"
 
 // Forward Declarations
 class Tree;

@@ -383,10 +383,10 @@ class Command
 		MeasureSelected,
 	
 		// Messaging and GUI
-		Dialog,
+		CreateDialog,
+		DefaultDialog,
 		Error,
 		Message,
-		Option,
 		Printf,
 		Verbose,
 	
@@ -849,11 +849,11 @@ class Command
 	static bool function_ListMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_MeasureSelected(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	// Messaging
-	static bool function_Dialog(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	// Messaging / GUI
+	static bool function_CreateDialog(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DefaultDialog(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Message(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Option(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Minimisation Commands

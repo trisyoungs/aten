@@ -61,7 +61,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 		if (filter != NULL)
 		{
 			// Run any import options in the filter
-			if (!filter->executeCustomDialog()) return;
+			if (!filter->runDefaultDialog()) return;
 			filter->executeRead(gui.loadModelDialog->selectedFilename());
 			addRecent(gui.loadModelDialog->selectedFilename());
 			aten.currentModelOrFrame()->changeLog.add(Log::Camera);
@@ -141,7 +141,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	if (runSaveModelDialog())
 	{
 		// Run options dialog
-		if (!saveModelFilter->executeCustomDialog())
+		if (!saveModelFilter->runDefaultDialog())
 		{
 			msg.print("Not saved.\n");
 			return;
@@ -178,7 +178,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 		if (runSaveModelDialog())
 		{
 			// Run options dialog
-			if (!saveModelFilter->executeCustomDialog())
+			if (!saveModelFilter->runDefaultDialog())
 			{
 				msg.print("Not saved.\n");
 				return;
@@ -198,7 +198,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	}
 	else
 	{
-		if (!t->executeCustomDialog(TRUE))
+		if (!t->runDefaultDialog(TRUE))
 		{
 			msg.print("Not saved.\n");
 			return;
@@ -217,7 +217,7 @@ void AtenForm::on_actionExportOptions_triggered(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m->filter() == NULL) msg.print("No filter currently assigned to model '%s', so there are no export options.\n", m->name());
-	else m->filter()->executeCustomDialog();
+	else m->filter()->runDefaultDialog();
 }
 
 // Close current model
@@ -237,15 +237,27 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
 	bool currentframemodel, currentframeview, viewglobe;
 	
-	static Tree dialog("Save Image Options","option('Size', 'edit', '10x10'); option('choices', 'radiogroup'); option('No frames', 'radio', 'choices', 1, 'newline', 'span=2'); option('Frame current model', 'radio', 'choices', 0, 'newline', 'span=2'); option('Frame whole view', 'radio', 'choices', 0, 'newline', 'span=2'); option('Frame current model and whole view', 'radio', 'choices', 0, 'newline', 'span=2'); ");
+	Tree dialog;
+	TreeGuiWidget *group, *w;
+	TreeGui &ui = dialog.defaultDialog();
+	ui.setTitle("Save Image Options");
+	ui.addWidget(ui.addEdit("geometry", "Image Size", geometry.get()),1,1);
+	group = ui.addButtonGroup("framechoice");
+	group->addButton(ui.addWidget(ui.addRadioButton("noframes", "No Frames", 1), 1,2));
+	group->addButton(ui.addWidget(ui.addRadioButton("framemodel", "Frame Current Model", 0), 1,3));
+	group->addButton(ui.addWidget(ui.addRadioButton("frameview", "Frame Whole View", 0), 1,4));
+	group->addButton(ui.addWidget(ui.addRadioButton("frameboth", "Frame Current Model and View", 0), 1,5));
+	
+// 	static Tree dialog("Save Image Options","option('Size', 'edit', '10x10'); option('choices', 'radiogroup'); option('No frames', 'radio', 'choices', 1, 'newline', 'span=2'); option('Frame current model', 'radio', 'choices', 0, 'newline', 'span=2'); option('Frame whole view', 'radio', 'choices', 0, 'newline', 'span=2'); option('Frame current model and whole view', 'radio', 'choices', 0, 'newline', 'span=2'); ");
 
 	// Poke values into dialog widgets and execute
-	dialog.setWidgetValue("Size", ReturnValue(geometry.get()));
-	dialog.setWidgetValue("choices", ReturnValue(framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) ));
-	if (!dialog.executeCustomDialog(FALSE)) return;
+	ui.setValue("framechoice", framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) );
+// 	dialog.setWidgetValue("Size", ReturnValue(geometry.get()));
+// 	dialog.setWidgetValue("choices", ReturnValue(framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) ));
+	if (!dialog.runDefaultDialog(FALSE)) return;
 
 	// Get values from dialog
-	geometry = dialog.widgetValuec("Size");
+	geometry = ui.asCharacter("geometry");
 	width = atoi(beforeChar(geometry,'x'));
 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
@@ -254,7 +266,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}
-	int choice = dialog.widgetValuei("choices");
+	int choice = ui.asInteger("framechoice");
 	framemodel = choice%2 == 0;
 	frameview = choice > 2;
 	currentframemodel = prefs.frameCurrentModel();
@@ -347,11 +359,19 @@ void AtenForm::on_actionEditPaste_triggered(bool checked)
 void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 {
 	// Static tree containing a single tree with variables and dialog control definitions
-	static Tree dialog("Paste Translated", "option('Center of geometry of pasted atoms:', 'label', 'labelspan=6', 'left'); option('X', 'doublespin', -1e6, 1e6, 0.0, 1.0, 'newline'); option('Y', 'doublespin', -1e6, 1e6, 0.0, 1.0); option('Z', 'doublespin', -1e6, 1e6, 0.0, 1.0);");
+	Tree dialog;
+	TreeGui &ui = dialog.defaultDialog();
+	ui.setTitle("Paste Translated");
+	ui.addWidget(ui.addLabel("", "Center of geometry of pasted atoms:"), 1, 1);
+	ui.addWidget(ui.addDoubleSpin("newx", "New X", -1e6, 1e6, 1, 0.0),1,2);
+	ui.addWidget(ui.addDoubleSpin("newy", "New Y", -1e6, 1e6, 1, 0.0),1,3);
+	ui.addWidget(ui.addDoubleSpin("newz", "New Z", -1e6, 1e6, 1, 0.0),1,4);
+	
+// 	static Tree dialog("Paste Translated", "option('Center of geometry of pasted atoms:', 'label', 'labelspan=6', 'left'); option('X', 'doublespin', -1e6, 1e6, 0.0, 1.0, 'newline'); option('Y', 'doublespin', -1e6, 1e6, 0.0, 1.0); option('Z', 'doublespin', -1e6, 1e6, 0.0, 1.0);");
 	// Run the custom dialog
-	if (dialog.executeCustomDialog())
+	if (dialog.runDefaultDialog())
 	{
-		Vec3<double> r = dialog.widgetValue3d("X", "Y", "Z");
+		Vec3<double> r = ui.asVec3("newx", "newy", "newz");
 		CommandNode::run(Command::Paste, "ddd", r.x, r.y, r.z);
 		gui.mainWidget()->postRedisplay();
 		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
@@ -776,19 +796,21 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
 	int width, height;
 	
-	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Interval', 'intspin', 1, 9999999, 0, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
-
+// 	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Interval', 'intspin', 1, 9999999, 0, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
 	Model *m = aten.currentModel();
-
-	// Poke values into dialog widgets and execute
-	dialog.setWidgetValue("Image Size", ReturnValue(geometry.get()));
-	dialog.setWidgetProperty("First Frame", "maximum", m->nTrajectoryFrames());
-	dialog.setWidgetProperty("Last Frame", "maximum", m->nTrajectoryFrames());
-	dialog.setWidgetProperty("Last Frame", "value", m->nTrajectoryFrames());
-	if (!dialog.executeCustomDialog(FALSE)) return;
+	Tree dialog;
+	TreeGui &ui = dialog.defaultDialog();
+	ui.setTitle("Movie Options");
+	ui.addWidget(ui.addEdit("geometry", "Image Geometry", geometry),1,1);
+	ui.addWidget(ui.addIntegerSpin("firstframe", "First Frame", 1, m->nTrajectoryFrames(), 1, 1),1,2);
+	ui.addWidget(ui.addIntegerSpin("lastframe", "Last Frame", 1, m->nTrajectoryFrames(), 1, m->nTrajectoryFrames()),1,3);
+	ui.addWidget(ui.addIntegerSpin("frameskip", "Frame Skip", 0, 1e6, 1, 0),1,4);
+	ui.addWidget(ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25),1,5);
+	
+	if (!dialog.runDefaultDialog()) return;
 
 	// Retrieve widget values
-	geometry = dialog.widgetValuec("Image Size");
+	geometry = ui.asCharacter("geometry");
 	width = atoi(beforeChar(geometry,'x'));
 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
@@ -797,10 +819,10 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}
-	int firstframe = dialog.widgetValuei("First Frame") - 1;
-	int lastframe = dialog.widgetValuei("Last Frame") - 1;
-	int frameskip = dialog.widgetValuei("Frame Interval");
-	int fps = dialog.widgetValuei("Movie FPS");
+	int firstframe = ui.asInteger("firstframe") - 1;
+	int lastframe = ui.asInteger("lastframe") - 1;
+	int frameskip = ui.asInteger("frameskip");
+	int fps = ui.asInteger("fps");
 	
 	// Get movie filename
 	static QString selectedFilter("All Files (*.*)");
@@ -868,7 +890,7 @@ void AtenForm::on_actionOpenExpression_triggered(bool checked)
 		if (filter != NULL)
 		{
 			// Run any import options in the filter
-			if (!filter->executeCustomDialog()) return;
+			if (!filter->runDefaultDialog()) return;
 			if (filter != NULL) filter->executeRead(qPrintable(filename));
 		}
 	}
@@ -934,7 +956,7 @@ void AtenForm::on_actionSaveExpression_triggered(bool checked)
 		else
 		{
 			// Run any export options in the filter
-			if (!filter->executeCustomDialog()) return;
+			if (!filter->runDefaultDialog()) return;
 			// Temporarily disable undo/redo for the model, save expression, and re-enable
 			m->disableUndoRedo();
 			if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
