@@ -27,14 +27,15 @@
 
 // Forward Declarations
 class TreeNode;
+class TreeGuiWidget;
 
 // Dialog Variable
 class WidgetVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	AtenVariable();
-	~AtenVariable();
+	WidgetVariable(TreeGuiWidget *widget = NULL, bool constant = FALSE);
+	~WidgetVariable();
 
 	/*
 	// Set / Get

@@ -31,7 +31,7 @@
 WidgetVariable::WidgetVariable()
 {
 	// Private variables
-	returnType_ = VTypes::AtenData;
+	returnType_ = VTypes::WidgetData;
 	readOnly_ = TRUE;
 }
 

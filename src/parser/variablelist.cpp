@@ -161,6 +161,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::VibrationData):
 			v = (Variable*) new VibrationVariable(NULL, FALSE);
 			break;
+		case (VTypes::WidgetData):
+			v = (Variable*) new WidgetVariable(NULL, FALSE);
+			break;
 		case (VTypes::ZMatrixData):
 			v = (Variable*) new ZMatrixVariable(NULL, FALSE);
 			break;
@@ -260,6 +263,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::VibrationData):
 			var = new VibrationArrayVariable(sizeexpr);
+			break;
+		case (VTypes::WidgetData):
+			var = new WidgetArrayVariable(sizeexpr);
 			break;
 		case (VTypes::ZMatrixData):
 			var = new ZMatrixArrayVariable(sizeexpr);

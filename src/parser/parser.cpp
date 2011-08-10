@@ -290,35 +290,6 @@ bool CommandParser::generateFromFile(Program *prog, const char *filename, bool d
 	return result;
 }
 
-// Populate supplied tree with commands
-bool CommandParser::generateSingleTree(Tree *t, const char *name, const char *commands)
-{
-	msg.enter("CommandParser::generateSingleTree");
-	if (t == NULL)
-	{
-		msg.print("NULL Tree passed to CommandParser::generateSingleTree.\n");
-		return FALSE;
-	}
-	// Set the forest target to be our own local, static Forest
-	static Program localProgram;
-	program_ = &localProgram;
-	tree_ = t;
-	// 'Push' tree onto the stack
-	stack_.add(tree_, FALSE);
-	// Store the source string
-	stringSource_ = commands;
-	stringPos_ = 0;
-	stringLength_ = stringSource_.length();
-	msg.print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
-	source_ = CommandParser::StringSource;
-	bool result = generate();
-	// Generate widgets (if Tree has any)
-	if (tree_->widgets() != NULL) tree_->createCustomDialog(name);
-	reset();
-	msg.exit("CommandParser::generateSingleTree");
-	return result;
-}
-
 // Return current tree target, raising warning and setting fail flag if no tree is defined...
 Tree *CommandParser::tree()
 {
@@ -364,12 +335,14 @@ void CommandParser::popTree()
 		// Can use the 'isFilter' member function to check for the lack of a proper type
 		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
 	}
-	// Create any custom dialog stuff here...
-	if (ri->item->widgets() != NULL)
+	// If this was a 'defaultUi' function, execute it now
+	if (strcmp(ri->item->name(),"defaultUi") == 0)
 	{
-		ri->item->createCustomDialog(ri->item->name());
-		ri->item->executeCustomDialog(TRUE);
+		printf("THIS TREE *IS* CALLED defaultUi\n");
+		ReturnValue rv;
+		ri->item->execute(rv);
 	}
+	else printf("THIS TREE IS NOT CALLED defaultUi\n");
 	msg.print(Messenger::Parse, "Removing tree %p from stack (%i remain).\n", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
 	// Set current tree target to the top tree now on the stack
@@ -508,12 +481,6 @@ TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, T
 TreeNode *CommandParser::addArrayConstant(TreeNode *values)
 {
 	return tree()->addArrayConstant(values);
-}
-
-// Add new (GUI-based) filter option linked to a variable
-TreeNode *CommandParser::addWidget(TreeNode *arglist)
-{
-	return tree()->addWidget(arglist);
 }
 
 /*

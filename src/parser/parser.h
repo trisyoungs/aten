@@ -122,8 +122,6 @@ class CommandParser
 	void popTree();
 	// Discard current tree and its contents
 	void deleteCurrentTree();
-	// Populate supplied tree with commands
-	bool generateSingleTree(Tree *t, const char *name, const char *commands);
 
 
 	/*
@@ -170,10 +168,8 @@ class CommandParser
 	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add array 'constant'
 	TreeNode *addArrayConstant(TreeNode *values);
-	// Add new (GUI-based) filter option linked to a variable
-	TreeNode *addWidget(TreeNode *arglist);
-	
-	
+
+
 	/*
 	// Filters / GUI
 	*/

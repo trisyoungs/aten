@@ -22,17 +22,18 @@
 #include "parser/dialog.h"
 #include "parser/stepnode.h"
 //#include "base/constants.h"
-//#include "model/model.h"
+#include "parser/treegui.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 // Constructors
-DialogVariable::DialogVariable()
+DialogVariable::DialogVariable(TreeGui *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::AtenData;
-	readOnly_ = TRUE;
+	returnType_ = VTypes::DialogData;
+	readOnly_ = constant;
+	pointerData_ = ptr;
 }
 
 // Destructor
@@ -46,15 +47,23 @@ DialogVariable::~DialogVariable()
 
 // Accessor data
 Accessor DialogVariable::accessorData[DialogVariable::nAccessors] = {
-	{ "prefs",	VTypes::PreferencesData,	0, TRUE }
+	{ "title",		VTypes::StringData,	0, FALSE }
 };
 
 // Function data
 FunctionAccessor DialogVariable::functionData[DialogVariable::nFunctions] = {
-	{ "add",		VTypes::WidgetData,	"",	"" },
-	{ "add",		VTypes::NoData,		"",	"" },
-	{ "run",		VTypes::IntegerData,	"",	"" },
-	{ "lement",	VTypes::ElementData,	"S",	"string name" }
+	{ "addcheck",		VTypes::WidgetData,	"CCCI"	,	"string name, string label, int state" },
+	{ "addcombo",		VTypes::WidgetData,	"CCI",		"string name, string label, string items, int index" },
+	{ "adddoublespin",	VTypes::WidgetData,	"CCDDD",	"string name, string label, double min, double max, double step, double value" },
+	{ "addedit",		VTypes::WidgetData,	"CCC",		"string name, string label, string text" },
+	{ "addgroup",		VTypes::WidgetData,	"C",		"string name" },
+	{ "addintegerspin",	VTypes::WidgetData,	"CCIII",	"string name, string label, int min, int max, int step, int value" },
+	{ "addlabel",		VTypes::WidgetData,	"CC",		"string name, string text" },
+	{ "addpage",		VTypes::WidgetData,	"C",		"string label" },
+	{ "addradiobutton",	VTypes::WidgetData,	"CCI",		"string name, string label, int state"},
+	{ "addradiogroup",	VTypes::WidgetData,	"C",		"string name" },
+	{ "addtabs",		VTypes::WidgetData,	"C",		"string name" },
+	{ "addwidget",		VTypes::WidgetData,	"YIIii",	"widget w, int left, int top, int extrawidth, int extraheight" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -134,7 +143,7 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
-		if ((arrayIndex < (acc == DialogVariable::Elements ? 0 : 1)) || (arrayIndex > accessorData[i].arraySize))
+		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			msg.exit("DialogVariable::retrieveAccessor");
@@ -142,22 +151,12 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 		}
 	}
 	// Variables used in retrieval
-	Model *m = NULL;
 	bool result = TRUE;
+	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if (result) switch (acc)
 	{
-		case (DialogVariable::Elements):
-			if (hasArrayIndex)
-			{
-				if ((arrayIndex < 0) || (arrayIndex > elements().nElements()))
-				{
-					msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
-					result = FALSE;
-				}
-				else rv.set(VTypes::ElementData, &elements().el[arrayIndex]);
-				// Note: array index is not decreased by 1, since element 0 is 'XX'
-			}
-			else rv.set(VTypes::ElementData, &elements().el[0]);
+		case (DialogVariable::Title):
+			rv.set(ptr->name());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in DialogVariable.\n", accessorData[i].name);
@@ -229,7 +228,7 @@ bool DialogVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Aten *ptr = (Aten*) sourcerv.asPointer(VTypes::AtenData, result);
+	TreeGui *ptr = (TreeGui*) sourcerv.asPointer(VTypes::DialogData, result);
 	switch (acc)
 	{
 		default:
@@ -254,21 +253,10 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	int el;
-	Prefs::EnergyUnit eu;
-	Aten *ptr = (Aten*) rv.asPointer(VTypes::AtenData, result);
+	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if (result) switch (i)
 	{
-		case (DialogVariable::ConvertEnergy):
-			eu = Prefs::energyUnit(node->argc(1), TRUE);
-			if (eu == Prefs::nEnergyUnits) result = FALSE;
-			else rv.set( prefs.convertEnergy(node->argd(0), eu) );
-			break;
-		case (DialogVariable::FindElement):
-			el = elements().find(node->argc(0));
-			if (el != 0) rv.set(VTypes::ElementData, &elements().el[el]);
-			else rv.set(VTypes::ElementData, NULL);
-			break;
+
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in DialogVariable.\n", functionData[i].name);
 			result = FALSE;

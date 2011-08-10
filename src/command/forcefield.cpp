@@ -656,7 +656,7 @@ bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &
 	ReturnValue value;
 	for (int n = 1; n < parser.nArgs(); ++n)
 	{
-		if (!filter->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+		if (!filter->defaultDialog().setValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 	}
 
 	// Temporarily disable undo/redo for the model, save, and re-enable

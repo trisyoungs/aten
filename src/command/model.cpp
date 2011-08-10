@@ -251,7 +251,7 @@ bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		ReturnValue value;
 		for (int n = 1; n < parser.nArgs(); ++n)
 		{
-			if (!filter->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+			if (!filter->defaultDialog().setValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 		}
 	}
 	else filter = aten.probeFile(c->argc(0), FilterData::ModelImport);
@@ -385,12 +385,12 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ReturnValue value;
 	for (int n = 1; n < parser.nArgs(); ++n)
 	{
-		if (!filter->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+		if (!filter->defaultDialog().setValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 	}
 	
 	obj.rs()->setFilter(filter);
 	obj.rs()->setFilename(c->argc(1));
-	filter->executeCustomDialog(TRUE);
+
 	// Temporarily disable undo/redo for the model, save, and re-enable
 	obj.rs()->disableUndoRedo();
 	bool result = filter->executeWrite(obj.rs()->filename());

@@ -1,5 +1,5 @@
 /*
-	*** Tree GUI for CLI/Qt
+	*** Tree GUI for CLI
 	*** src/parser/treegui.h
 	Copyright T. Youngs 2007-2011
 
@@ -37,10 +37,48 @@
 #include "templates/vector3.h"
 
 // Forward declarations
-class AtenCustomDialog;
-class QWidget;
-class QObject;
+class AtenTreeGuiDialog;
+class QtWidgetObject;
 class TreeGui;
+
+// Widget Event Action
+class TreeGuiWidgetEventAction
+{
+	// Constructor / Destructor
+	TreeGuiWidgetEventAction();
+	~TreeGuiWidgetEventAction();
+	// List pointers
+	TreeGuiWidgetEventAction *prev, *next;
+};
+
+// Widget Event
+class TreeGuiWidgetEvent
+{
+	// Constructor / Destructor
+	TreeGuiWidgetEvent();
+	~TreeGuiWidgetEvent();
+	// List pointers
+	TreeGuiWidgetEvent *prev, *next;
+	// Event Qualifier
+	enum EventQualifier { IntegerQualifier, DoubleQualifier, StringQualifier };
+	
+	
+	private:
+	// Qualifying (min/max) integer values 
+	int minimumI_, maximumI_;
+	// Qualifying (min/max) double values 
+	double minimumD_, maximumD_;
+	// Qualifying string value
+	Dnchar matchS_;
+	
+	public:
+	// Set integer qualifying event
+	void setQualifier(int min, int max);
+	// Set double qualifying event
+	void setQualifier(double min, double max);
+	// Set string qualifying event
+	void setQualifier(const char *s);
+};
 
 // Widget in TreeGui
 class TreeGuiWidget
@@ -62,19 +100,25 @@ class TreeGuiWidget
 	// Type of widget
 	WidgetType type_;
 	// Pointer to partnered Qt widget (if GUI exists)
-	QWidget *widget_;
+	QWidget *qWidget_;
 	// Pointer to partnered QObject (if any)
-	QObject *object_;
+	QObject *qObject_;
 	// Local name used for reference and retrieval
 	Dnchar name_;
 	// Parent TreeGui
 	TreeGui *parent_;
 	
 	public:
-	// Set widget type
-	void setType(TreeGuiWidget::WidgetType type);
+	// Set widget type, name, and parent
+	void set(TreeGuiWidget::WidgetType type, const char *name, TreeGui *parent);
 	// Return widget type
 	TreeGuiWidget::WidgetType type();
+	// Return widget name
+	const char *name();
+	// Return widget parent
+	TreeGui *parent();
+	// Set corresponding Qt QWidget/QObject
+	void setQWidget(QtWidgetObject *widget);
 	
 	
 	/*
@@ -82,15 +126,61 @@ class TreeGuiWidget
 	*/
 	private:
 	// Integer minimum, maximum, and value (ComboWidget, IntegerSpinWidget, CheckWidget)
-	int minimimI_, maximumI_, valueI_;
+	int minimumI_, maximumI_, valueI_;
 	// Double minimum and maximum (DoubleSpinWidget)
 	double minimumD_, maximumD_, valueD_;
-	// Text (EditWidget, LabelWidget)
+	// Text (EditWidget, LabelWidget, DialogWidget)
 	Dnchar text_;
 	// Items list (ComboWidget)
 	List<Dnchar> items_;
+	// Flag indicating whether items list has recently changed (since last Qt update)
+	bool itemsChanged_;
+	// Whether widget is enabled
+	bool enabled_;
 	
-	
+	public:
+	// Set integer properties
+	bool setProperties(int min, int max, int value);
+	// Set double properties
+	bool setProperties(double min, double max, double value);
+	// Set string properties
+	bool setProperties(const char *s);
+	// Add text item
+	void addItem(const char *s);
+	// Return number of defined items
+	int nItems();
+	// Return whether integer value is within range
+	bool isGoodValue(int i, bool printError = FALSE);
+	// Return whether double value is within range
+	bool isGoodValue(double d, bool printError = FALSE);
+	// Return whether string is in list (returning index or 0 for FALSE)
+	int isInList(const char *s, bool printError = FALSE);
+	// Return current integer minimum
+	int minimumI();
+	// Return current integer maximum
+	int maximumI();
+	// Return current integer value
+	int valueI();
+	// Return current double minimum
+	int minimumD();
+	// Return current double maximum
+	int maximumD();
+	// Return current double value
+	int valueD();
+	// Return current text
+	const char *text();
+	// Return head of items list
+	Dnchar *items();
+	// Return whether items list has recently changed (since last Qt update)
+	bool itemsChanged();
+	// Reset items changed flag
+	void resetItemsChanged();
+	// Set whether widget is enabled
+	void setEnabled(bool b);
+	// Return whether widget is enabled
+	bool enabled();
+
+
 	/*
 	// Layout / Grouping
 	*/
@@ -103,6 +193,28 @@ class TreeGuiWidget
 	TreeGuiWidget *addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth = 0, int addToHeight = 0);
 	// Add button to button group (only valid for ButtonGroupWidget);
 	TreeGuiWidget *addButton(TreeGuiWidget *widget);
+	
+	
+	/*
+	// Value Access and Events
+	*/
+	private:
+	// List of events associated to this widget
+	List<TreeGuiWidgetEvent> events_;
+	
+	public:
+	// Return widget value as integer
+	int asInteger();
+	// Return widget value as double
+	double asDouble();
+	// Return widget value as character string
+	const char *asCharacter();
+	// Set widget value from integer (and perform events)
+	bool setValue(int i);
+	// Set widget value from double (and perform events)
+	bool setValue(double d);
+	// Set widget value from character string (and perform events)
+	bool setValue(const char *s);
 };
 
 // TreeGui
@@ -117,29 +229,19 @@ class TreeGui : public TreeGuiWidget
 
 
 	/*
-	// Basic Data
-	*/
-	private:
-	// Title of dialog
-	Dnchar title_;
-	
-	public:
-	// Set title of window
-	void setTitle(const char *title);
-	// Return title of window
-	const char *title();
-
-
-	/*
 	// Widgets
 	*/
 	private:
 	// List of user-defined widgets for custom dialog / filter options
 	List<TreeGuiWidget> widgets_;
 	// Qt dialog containing ready-created set of controls
-	AtenCustomDialog *customDialog_;
+	AtenTreeGuiDialog *qtTreeGui_;
 
 	public:
+	// Return number of defined widgets in GUI
+	int nWidgets();
+	// Search for named widget
+	TreeGuiWidget *findWidget(const char *name);
 	// Create new combo widget
 	TreeGuiWidget *addCombo(const char *name, const char *label, const char *items, int index);
 	// Create new integer spin widget
@@ -147,7 +249,7 @@ class TreeGui : public TreeGuiWidget
 	// Create new double spin widget
 	TreeGuiWidget *addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value);
 	// Create new label widget
-	TreeGuiWidget *addLabel(const char *name, const char *label);
+	TreeGuiWidget *addLabel(const char* text);
 	// Create new edit widget
 	TreeGuiWidget *addEdit(const char *name, const char *label, const char *text);
 	// Create new checkbox widget
@@ -155,11 +257,11 @@ class TreeGui : public TreeGuiWidget
 	// Create new tab widget
 	TreeGuiWidget *addTabs(const char *name);
 	// Create new page (only in tab widget)
-	TreeGuiWidget *addPage(const char *name);
+	TreeGuiWidget *addPage(const char *label);
 	// Create new group box
 	TreeGuiWidget *addGroup(const char *name);
-	// Create new (invisible) button group
-	TreeGuiWidget *addButtonGroup(const char *name);
+	// Create new (invisible) radio group
+	TreeGuiWidget *addRadioGroup(const char *name);
 	// Create new radio button
 	TreeGuiWidget *addRadioButton(const char *name, const char *label, int state);
 
@@ -169,11 +271,13 @@ class TreeGui : public TreeGuiWidget
 	*/
 	public:
 	// Set named widget's value from integer
-	void setValue(const char *name, int i);
+	bool setValue(const char* name, int i);
 	// Set named widget's value from double
-	void setValue(const char *name, double d);
+	bool setValue(const char *name, double d);
 	// Set named widget's value from string
-	void setValue(const char *name, const char *s);
+	bool setValue(const char *name, const char *s);
+	// Set widget value from character string (and perform events)
+	virtual bool setValue(const char *s);
 	// Return value in named widget as integer
 	int asInteger(const char *name);
 	// Return value in named widget as double
@@ -182,34 +286,14 @@ class TreeGui : public TreeGuiWidget
 	const char *asCharacter(const char *name);
 	// Return values in named widgets as Vec3<double>
 	Vec3<double> asVec3(const char *name1, const char *name2, const char *name3);
-// 	// Add new (GUI-based) filter option linked to a variable
-// 	TreeNode *addWidget(TreeNode *arglist);
-// 	// Return first item in list of filter options
-// 	Refitem<TreeGuiWidget,int> *widgets();
-// 	// Locate named widget
-// 	TreeGuiWidget *findWidget(const char *name);
-// 	// Locate widget with specified widget pointer
-// 	TreeGuiWidget *findWidget(QWidget *widget);
-// 	// Locate widget with specified object pointer
-// 	TreeGuiWidget *findWidgetObject(QObject *obj);
-// 	// Create custom dialog from defined widgets (if there are any)
-// 	void createCustomDialog(const char *title = NULL);
-// 	// Return custom dialog (if any)
-// 	AtenCustomDialog *customDialog();
-// 	// Execute defined custom dialog (if one exists, just return TRUE if not)
-// 	bool executeCustomDialog(bool getvaluesonly = FALSE, const char *newtitle = NULL);
-// 	// Retrieve current value of named widget as a double
-// 	double widgetValued(const char *name);
-// 	// Retrieve current value of named widget as an integer
-// 	int widgetValuei(const char *name);
-// 	// Retrieve current value of named widget as a string
-// 	const char *widgetValuec(const char *name);
-// 	// Retrieve current value of named widget triplet as a vector
-// 	Vec3<double> widgetValue3d(const char *name1, const char *name2, const char *name3);
-// 	// Set current value of named widget
-// 	void setWidgetValue(const char *name, ReturnValue value);
-// 	// Set property of named widget (via a state change)
-// 	bool setWidgetProperty(const char *name, const char *property, ReturnValue value);
+
+
+	/*
+	// Dialog Execution
+	*/
+	public:
+	// Show Qt dialog (if it exists)
+	bool execute();
 };
 
 #endif

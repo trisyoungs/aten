@@ -54,7 +54,7 @@ Command commands;
 	V	Variable	Any simple variable (not path)
 	W	Vector/Atom	VectorData or AtomData (using position vector)
 	X	Pointer		Any pointer object
-	Y	<free>
+	Y	Widget		WidgetData
 	Z	Any		Any
 	*	<Repeat>	Any number of the last type again
 	^	<Require Var>	Next token must be a modifiable variable and not a constant
@@ -888,9 +888,9 @@ CommandData Command::data[Command::nCommands] = {
 		"Measure all of the specified bound interaction type in the current atom selection" },
 
 	// Messaging and GUI
-	{ "createdialog",	"",		VTypes::DialogData,
-		"",
-		"Return new, empty dialog" },
+	{ "createdialog",	"c",		VTypes::DialogData,
+		"string title = <none>",
+		"Create and return new, empty dialog" },
 	{ "defaultdialog",	"",		VTypes::DialogData,
 		"",
 		"Return current default dialog" },

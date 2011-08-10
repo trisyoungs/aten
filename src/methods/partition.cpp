@@ -338,15 +338,14 @@ const char *PartitioningScheme::description()
 bool PartitioningScheme::hasOptions()
 {
 	if (partitionFunction_ == NULL) return FALSE;
-	return (partitionFunction_->widgets() ? TRUE : FALSE);
+	return (partitionFunction_->defaultDialog().nWidgets() > 0);
 }
 
 // Execute dialog for user-definable options in partition function
 bool PartitioningScheme::runOptions(bool storeValuesOnly)
 {
 	if (!hasOptions()) return FALSE;
-	Dnchar text(-1,"Options for scheme '%s'", name_.get());
-	return partitionFunction_->executeCustomDialog(storeValuesOnly, text.get());
+	return partitionFunction_->runDefaultDialog(storeValuesOnly);
 }
 
 // Find and set named variable in partitionFunction_
@@ -359,7 +358,7 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 		msg.exit("PartitioningScheme::setVariable");
 		return FALSE;
 	}
-	return partitionFunction_->setVariable(name, value);
+	return partitionFunction_->defaultDialog().setValue(name, value);
 	msg.exit("PartitioningScheme::setVariable");
 }
 

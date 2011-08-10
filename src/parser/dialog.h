@@ -22,19 +22,20 @@
 #ifndef ATEN_DIALOGVARIABLE_H
 #define ATEN_DIALOGVARIABLE_H
 
-#include "parser/variable.h"
+#include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
 class TreeNode;
+class TreeGui;
 
 // Dialog Variable
-class DialogVariable : public Variable
+class DialogVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	AtenVariable();
-	~AtenVariable();
+	DialogVariable(TreeGui *i = NULL, bool constant = FALSE);
+	~DialogVariable();
 
 	/*
 	// Set / Get
@@ -61,7 +62,7 @@ class DialogVariable : public Variable
 	// Accessor list
 	enum Accessors { Title, nAccessors };
 	// Function list
-	enum Functions { ConvertEnergy, FindElement, nFunctions };
+	enum Functions { AddCheck, AddCombo, ADdDoubleSpin, AddEdit, ADdGroup, AddIntegerSpin, AddLabel, AddPage, ADdRadioButton, AddRadioGroup, AddTabs, AddWidget, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

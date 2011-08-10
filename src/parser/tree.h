@@ -42,7 +42,6 @@ class Tree
 	public:
 	// Constructor / Destructor
 	Tree();
-	Tree(const char *name, const char *commands);
 	~Tree();
 	// List pointers
 	Tree *prev, *next;
@@ -182,8 +181,6 @@ class Tree
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 	// Return local scope's variable list
 	const VariableList &localVariables() const;
-	// Set named variable (including WidgetNodes) in this tree's local scope
-	bool setVariable(const char *name, const char *value);
 
 
 	/*
@@ -218,12 +215,16 @@ class Tree
 	private:
 	// Default GUI dialog, run at start of Program execution
 	TreeGui defaultDialog_;
+	// List of additional, temporary dialogs created by the tree
+	List<TreeGui> dialogs_;
 
 	public:
 	// Return default dialog structure
 	TreeGui &defaultDialog();
-	// Execute default dialog (if it exists), or just store values
-	bool runDefaultDialog(bool storeonly = FALSE);
+	// Create and return new, temporary dialog
+	TreeGui *createDialog(const char *title = NULL);
+	// Delete specified temporary dialog
+	bool deleteDialog(TreeGui *dialog);
 
 
 	/*

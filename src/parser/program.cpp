@@ -80,20 +80,20 @@ const char *Program::filename()
 void Program::finalise()
 {
 	msg.enter("Program::finalise");
-	// Create GUI controls for main program
-	if (mainProgram_.widgets() != NULL)
-	{
-		if (!mainProgram_.isFilter()) mainProgram_.createCustomDialog(name_.get());
-		else
-		{
-			Dnchar title;
-			if (mainProgram_.filter.isExportFilter()) title.sprintf("Export Options (%s)", mainProgram_.name());
-			else title.sprintf("Import Options (%s)", mainProgram_.name());
-			mainProgram_.createCustomDialog(title.get());
-		}
-		// Grab default values
-		mainProgram_.executeCustomDialog(TRUE);
-	}
+// 	// Create GUI controls for main program    TGAY XXX
+// 	if (mainProgram_.widgets() != NULL)
+// 	{
+// 		if (!mainProgram_.isFilter()) mainProgram_.createCustomDialog(name_.get());
+// 		else
+// 		{
+// 			Dnchar title;
+// 			if (mainProgram_.filter.isExportFilter()) title.sprintf("Export Options (%s)", mainProgram_.name());
+// 			else title.sprintf("Import Options (%s)", mainProgram_.name());
+// 			mainProgram_.createCustomDialog(title.get());
+// 		}
+// 		// Grab default values
+// 		mainProgram_.executeCustomDialog(TRUE);
+// 	}
 	// Cycle over generated filters
 	for (Tree *filter = filters_.first(); filter != NULL; filter = filter->next)
 	{
@@ -125,20 +125,20 @@ void Program::finalise()
 				filter->filter.setTrajectoryFrameFunction(func);
 			}
 		}
-		// Generate widgets (if Tree has any)
-		if (filter->widgets() != NULL)
-		{
-			if (!filter->isFilter()) filter->createCustomDialog(name_.get());
-			else
-			{
-				Dnchar title;
-				if (filter->filter.isExportFilter()) title.sprintf("Export Options (%s)", filter->filter.name());
-				else title.sprintf("Import Options (%s)", filter->filter.name());
-				filter->createCustomDialog(title.get());
-			}
-			// Grab default values
-			filter->executeCustomDialog(TRUE);
-		}
+// 		// Generate widgets (if Tree has any)  TGAY XXX
+// 		if (filter->widgets() != NULL)
+// 		{
+// 			if (!filter->isFilter()) filter->createCustomDialog(name_.get());
+// 			else
+// 			{
+// 				Dnchar title;
+// 				if (filter->filter.isExportFilter()) title.sprintf("Export Options (%s)", filter->filter.name());
+// 				else title.sprintf("Import Options (%s)", filter->filter.name());
+// 				filter->createCustomDialog(title.get());
+// 			}
+// 			// Grab default values
+// 			filter->executeCustomDialog(TRUE);
+// 		}
 	}
 	// Generate widgets in global functions
 	for (Tree *t = functions_.first(); t != NULL; t = t->next)
@@ -323,7 +323,7 @@ bool Program::execute(ReturnValue &rv, bool runOptions)
 {
 	msg.enter("Program::execute");
 	bool result = TRUE;
-	if (runOptions) result = mainProgram_.executeCustomDialog();
+	if (runOptions) result = mainProgram_.runDefaultDialog();
 	if (result) result = mainProgram_.execute(rv);
 	msg.exit("Program::execute");
 	return result;

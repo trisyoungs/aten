@@ -64,21 +64,20 @@
      ATEN_VOID = 280,
      ATEN_CONTINUE = 281,
      ATEN_BREAK = 282,
-     OPTION = 283,
-     ATEN_ELSE = 284,
-     OR = 285,
-     AND = 286,
-     DEQ = 287,
-     TEQ = 288,
-     MEQ = 289,
-     PEQ = 290,
-     NEQ = 291,
-     EQ = 292,
-     LEQ = 293,
-     GEQ = 294,
-     UMINUS = 295,
-     MINUSMINUS = 296,
-     PLUSPLUS = 297
+     ATEN_ELSE = 283,
+     OR = 284,
+     AND = 285,
+     DEQ = 286,
+     TEQ = 287,
+     MEQ = 288,
+     PEQ = 289,
+     NEQ = 290,
+     EQ = 291,
+     LEQ = 292,
+     GEQ = 293,
+     UMINUS = 294,
+     MINUSMINUS = 295,
+     PLUSPLUS = 296
    };
 #endif
 /* Tokens.  */
@@ -107,21 +106,20 @@
 #define ATEN_VOID 280
 #define ATEN_CONTINUE 281
 #define ATEN_BREAK 282
-#define OPTION 283
-#define ATEN_ELSE 284
-#define OR 285
-#define AND 286
-#define DEQ 287
-#define TEQ 288
-#define MEQ 289
-#define PEQ 290
-#define NEQ 291
-#define EQ 292
-#define LEQ 293
-#define GEQ 294
-#define UMINUS 295
-#define MINUSMINUS 296
-#define PLUSPLUS 297
+#define ATEN_ELSE 283
+#define OR 284
+#define AND 285
+#define DEQ 286
+#define TEQ 287
+#define MEQ 288
+#define PEQ 289
+#define NEQ 290
+#define EQ 291
+#define LEQ 292
+#define GEQ 293
+#define UMINUS 294
+#define MINUSMINUS 295
+#define PLUSPLUS 296
 
 
 
@@ -145,7 +143,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 149 "grammar.h"
+#line 147 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
