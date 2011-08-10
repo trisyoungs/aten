@@ -42,3 +42,6 @@
 <li>Add new image for atom list, glyph window, and disorder options.</li>
 <li>Chapter / Section on Basic View / Imaging.</li>
 </ul>
+
+<h1>Branch TODO</h1>
+<li>Store current dialog widget values so that, if canceled in the GUI, they may be restored</li>

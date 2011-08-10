@@ -46,7 +46,6 @@ TreeNode *tempNode;
 %token <tree> USERFUNCCALL
 %token <vtype> VTYPE
 %token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IN ATEN_RETURN FILTERBLOCK HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK
-%token OPTION
 %nonassoc ATEN_ELSE
 
 %left AND OR
@@ -59,7 +58,7 @@ TreeNode *tempNode;
 %right '!'
 %right '^'
 
-%type <node> constant expression expressionlist variable statement flowstatement statementlist block blockment assignment widget
+%type <node> constant expression expressionlist variable statement flowstatement statementlist block blockment assignment
 %type <node> declaration functiondeclaration caselabel caselist
 %type <node> ARRAYCONST function userfunction assignedvariablename variablelistitem variablelist typedvariablelistitem typedvariablelist
 %type <name> variablename
@@ -202,14 +201,6 @@ userfunction:
 /* Misc Objects */
 /* ------------ */
 
-/* Filter Option Definition */
-widget:
-	OPTION '(' expressionlist ')'			{
-		$$ = cmdparser.addWidget($3);
-		if ($$ == NULL) YYABORT;
-		}
-	;
-
 /* Array Vector Constant / Assignment Group */
 ARRAYCONST:
 	'{' expressionlist '}'				{
@@ -324,10 +315,6 @@ variablename:
 assignedvariablename:
 	variablename '=' ARRAYCONST			{
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with array assignment\n", tokenName.get());
-		$$ = cmdparser.addVariable(declaredType, &tokenName, $3);
-		}
-	| variablename '=' widget	 		{
-		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with widget assignment\n", tokenName.get());
 		$$ = cmdparser.addVariable(declaredType, &tokenName, $3);
 		}
 	| variablename '[' expression ']' '=' expression {
@@ -470,9 +457,6 @@ statement:
 		$$ = $1;
 		}
 	| flowstatement					{
-		$$ = $1;
-		}
-	| widget ';'					{
 		$$ = $1;
 		}
 	| functiondeclaration				{

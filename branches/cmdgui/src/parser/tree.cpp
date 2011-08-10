@@ -19,27 +19,27 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/customdialog.h"
-#include "parser/treenode.h"
+// #include "gui/customdialog.h"
+// #include "parser/treenode.h"
 #include "parser/scopenode.h"
-#include "parser/commandnode.h"
-#include "parser/usercommandnode.h"
+// #include "parser/commandnode.h"
+// #include "parser/usercommandnode.h"
 #include "parser/variablenode.h"
 #include "parser/stepnode.h"
-#include "parser/widgetnode.h"
-#include "parser/grammar.h"
-#include "parser/parser.h"
+// // #include "parser/widgetnode.h"
+// #include "parser/grammar.h"
+// #include "parser/parser.h"
 #include "parser/tree.h"
 #include "parser/character.h"
-#include "parser/vector.h"
+// #include "parser/vector.h"
 #include "parser/element.h"
-#include "parser/integer.h"
-#include "parser/double.h"
-#include "model/model.h"
-#include "base/sysfunc.h"
+// #include "parser/integer.h"
+// #include "parser/double.h"
+// #include "model/model.h"
+// #include "base/sysfunc.h"
 #include "classes/prefs.h"
 #include "main/aten.h"
-#include <stdarg.h>
+// #include <stdarg.h>
 
 // Constructors
 Tree::Tree()
@@ -51,7 +51,6 @@ Tree::Tree()
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
 	readOptions_ = 0;
-	customDialog_ = NULL;
 	localScope_ = NULL;
 	
 	// Public variables
@@ -60,25 +59,6 @@ Tree::Tree()
 
 	// Initialise
 	initialise();
-}
-
-Tree::Tree(const char *name, const char *commands)
-{
-	parent_ = NULL;
-	parser_ = NULL;
-	acceptedFail_ = Command::NoFunction;
-	name_ = "unnamed";
-	type_ = Tree::UnknownTree;
-	readOptions_ = 0;
-	customDialog_ = NULL;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
-	// Initialise
-	initialise();
-	cmdparser.generateSingleTree(this, name, commands);
 }
 
 // Destructor
@@ -218,7 +198,7 @@ void Tree::clear()
 	nodes_.clear();
 	statements_.clear();
 	scopeStack_.clear();
-	widgets_.clear();
+	dialogs_.clear();
 }
 
 // (Re)Initialise Tree
@@ -822,48 +802,6 @@ const VariableList &Tree::localVariables() const
 	return localScope_->variables;
 }
 
-// Set named variable (including WidgetNodes) in this tree's local scope
-bool Tree::setVariable(const char *name, const char *value)
-{
-	msg.enter("Tree::setVariable");
-
-	// All user-definable variables are widgets, so search just for widgets
-	Variable *result = localVariables().find(name);
-	
-	if (result)
-	{
-		// Found variable - is it's initial value assigned from a GuiWidgetNode?
-		if (result->initialValue() == NULL) return result;
-		ReturnValue rv(value);
-		if (result->initialValue()->nodeType() == TreeNode::GuiWidgetNode)
-		{
-			msg.print(Messenger::Verbose, "Located WidgetNode corresponding to variable '%s'\n", name);
-			WidgetNode *widget = (WidgetNode*) result->initialValue();
-			if (gui.applicationType() == QApplication::Tty) widget->setReturnValue(rv);
-			else if (!widget->setWidgetValue(rv))
-			{
-				msg.print("Error: Failed to set value '%s' in option variable '%s'.\n", value, name);
-				msg.exit("Tree::setVariable");
-				return FALSE;
-			}
-		}
-		// Set variable value regardless
-		result->set(rv);
-		result->execute(rv);
-		msg.print(Messenger::Verbose, "Variable '%s' in '%s' now has value %s\n", result->name(), name_.get(), rv.asString());
-		msg.exit("Tree::setVariable");
-		return TRUE;
-	}
-	else
-	{
-		msg.print("Error: Variable '%s' does not exist in '%s'\n", name, name_.get());
-		msg.print("Available variables are:\n");
-		for (Variable *v = localVariables().variables(); v != NULL; v = (Variable*)v->next) msg.print("  %10s  (%s)\n", v->name(), VTypes::dataType(v->returnType()));
-	}
-	msg.exit("Tree::setVariable");
-	return FALSE;
-}
-
 /*
 // Paths
 */
@@ -1008,166 +946,38 @@ bool Tree::addLocalFunctionArguments(TreeNode *arglist)
 }
 
 /*
-// Custom GUI Widgets
+// Custom Dialogs
 */
 
-// Add new (GUI-based) widget linked to a variable
-TreeNode *Tree::addWidget(TreeNode *arglist)
+// Return default dialog structure
+TreeGui &Tree::defaultDialog()
 {
-	msg.enter("Tree::addWidget");
-	// Wrap the variable and add it to the arguments_ list
-	WidgetNode *node = new WidgetNode();
-	node->setParent(this);
-	// Store in reflist also...
-	widgets_.add(node);
-	// Add arguments to node (also sets return type)
-	if (node->addJoinedArguments(arglist)) msg.print(Messenger::Parse, "Added GUI widget '%s'...\n", node->name());
-	else
+	return defaultDialog_;
+}
+
+// Create and return new, temporary dialog
+TreeGui *Tree::createDialog(const char *title)
+{
+	TreeGui *dialog = dialogs_.add();
+	dialog->setValue(title);
+	return dialog;
+}
+
+// Delete specified temporary dialog
+bool Tree::deleteDialog(TreeGui *dialog)
+{
+	// Check that this is not the defaultDialog
+	if (dialog == &defaultDialog_)
 	{
-		msg.print("Failed to add GUI widget.\n");
-		msg.exit("Tree::addWidget");
-		return NULL;
+		msg.print("Error: Cannot delete the default dialog.\n");
+		return FALSE;
 	}
-	msg.exit("Tree::addWidget");
-	return node;
-}
-
-// Return first item in list of widgets
-Refitem<WidgetNode,int> *Tree::widgets()
-{
-	return widgets_.first();
-}
-
-// Create custom dialog from defined widgets
-void Tree::createCustomDialog(const char *title)
-{
-	if (gui.applicationType() != QApplication::Tty)
+	// Search for specified dialog in list
+	if (dialogs_.contains(dialog))
 	{
-		customDialog_ = new AtenCustomDialog(NULL);
-		customDialog_->createWidgets(title, this);
-	}
-}
-
-// Return custom dialog (if any)
-AtenCustomDialog *Tree::customDialog()
-{
-	return customDialog_;
-}
-
-// Execute contained custom dialog
- bool Tree::executeCustomDialog(bool getvaluesonly, const char *newtitle)
-{
-	if (customDialog_ == NULL) return TRUE;
-	// Retitle dialog?
-	if (newtitle) customDialog_->setWindowTitle(newtitle);
-	if (getvaluesonly)
-	{
-		customDialog_->storeValues();
+		dialogs_.remove(dialog);
 		return TRUE;
 	}
-	return customDialog_->showDialog();
-}
-
-// Locate named widget
-WidgetNode *Tree::findWidget(const char *name)
-{
-	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next)
-	{
-		if (strcmp(name, ri->item->name()) == 0) return ri->item;
-	}
-	printf("Internal Error: Couldn't find widget named '%s' in tree '%s'.\n", name, name_.get());
-	return NULL;
-}
-
-// Locate named widget
-WidgetNode *Tree::findWidget(QWidget *widget)
-{
-	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next) if (ri->item->widget() == widget) return ri->item;
-	printf("Internal Error: Couldn't find widget %p in tree '%s'.\n", widget, name_.get());
-	return NULL;
-}
-
-// Locate widget with specified object pointer
-WidgetNode *Tree::findWidgetObject(QObject *obj)
-{	
-	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next) if (ri->item->object() == obj) return ri->item;
-	printf("Internal Error: Couldn't find widget %p in tree '%s'.\n", obj, name_.get());
-	return NULL;
-}
-
-// Retrieve current value of named widget as a double
-double Tree::widgetValued(const char *name)
-{
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return 0.0;
-	ReturnValue rv;
-	node->execute(rv);
-	return rv.asDouble();
-}
-
-// Retrieve current value of named widget as an integer
-int Tree::widgetValuei(const char *name)
-{
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return 0;
-	ReturnValue rv;
-	node->execute(rv);
-	return rv.asInteger();
-}
-
-// Retrieve current value of named widget as a string
-const char *Tree::widgetValuec(const char *name)
-{
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return "NULL";
-	static ReturnValue rv;
-	node->execute(rv);
-	return rv.asString();
-}
-
-// Retrieve current value of named widget triplet as a vector
-Vec3<double> Tree::widgetValue3d(const char *name1, const char *name2, const char *name3)
-{
-	ReturnValue rv;
-	Vec3<double> result;
-	// First value
-	WidgetNode *node = findWidget(name1);
-	if (node == NULL) result.x = 0.0;
-	node->execute(rv);
-	result.x = rv.asDouble();
-	// Second value
-	node = findWidget(name2);
-	if (node == NULL) result.y = 0.0;
-	node->execute(rv);
-	result.y = rv.asDouble();
-	// Third value
-	node = findWidget(name3);
-	if (node == NULL) result.z = 0.0;
-	node->execute(rv);
-	result.z = rv.asDouble();
-	return result;
-}
-
-// Set current value of named widget
-void Tree::setWidgetValue(const char *name, ReturnValue value)
-{
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return;
-	node->setWidgetValue(value);
-}
-
-// Set property of named widget (via a state change)
-bool Tree::setWidgetProperty(const char *name, const char *property, ReturnValue value)
-{
-	// First, find named widget
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return FALSE;
-	// Next, find state change property
-	StateChange::StateAction action = StateChange::stateAction(property, TRUE);
-	if (action == StateChange::nStateActions) return FALSE;
-	StateChange sc;
-	sc.setTargetWidget(name);
-	sc.setChange(action, value.asString());
-	customDialog_->performStateChange(&sc);
-	return TRUE;
+	msg.print("Error: Specified dialog '%s' is not owned by this Tree (%s).\n", dialog->name(), name_.get());
+	return FALSE;
 }

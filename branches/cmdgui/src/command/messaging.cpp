@@ -24,11 +24,18 @@
 #include "parser/tree.h"
 #include "gui/gui.h"
 
-// Write line to msg output and stop
-bool Command::function_Dialog(CommandNode *c, Bundle &obj, ReturnValue &rv)
+// Create and return TreeGui dialog
+bool Command::function_CreateDialog(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	printf("Dialog NOT IMPLEMENTED YET.\n");
-	return FALSE;
+	rv.set(VTypes::DialogData, c->parent()->createDialog(c->hasArg(0) ? c->argc(0) : "New Dialog"));
+	return TRUE;
+}
+
+// Return this Tree's default TreeGui dialog
+bool Command::function_DefaultDialog(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set(VTypes::DialogData, &c->parent()->defaultDialog());
+	return TRUE;
 }
 
 // Write line to msg output and stop
@@ -65,13 +72,6 @@ bool Command::function_Message(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	else return FALSE;
 	return TRUE;
-}
-
-// Create GUI option
-bool Command::function_Option(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	printf("THIS SHOULD NEVER BE CALLED\n");
-	return FALSE;
 }
 
 // Print formatted string
