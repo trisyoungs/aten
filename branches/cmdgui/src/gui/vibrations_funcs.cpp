@@ -197,8 +197,6 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
 	int width, height;
 	
-// 	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('Cycles', 'intspin', 1, 1000, 1, 1, 'newline'); option('Frames per Vibration', 'intspin', 1, 1000, 25, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
-
 	Tree dialog;
 	TreeGui &dialogui = dialog.defaultDialog();
 	dialogui.setValue("Vibration Movie Options");
@@ -207,7 +205,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	dialogui.addWidget(dialogui.addIntegerSpin("fpc", "Frames per Cycle", 1, 1000, 1, 25),1,3);
 	dialogui.addWidget(dialogui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25),1,2);
 
-	if (!dialog.runDefaultDialog()) return;
+	if (!dialog.defaultDialog().execute()) return;
 	
 	// Retrieve widget values
 	geometry = dialogui.asCharacter("geometry");
@@ -220,7 +218,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 		return;
 	}
 	int ncycles = dialogui.asInteger("cycles");
-	int fpv = dialogui.asInteger("fpc");
+	int fpc = dialogui.asInteger("fpc");
 	int fps = dialogui.asInteger("fps");
 	
 	// Get movie filename
@@ -232,7 +230,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	currentDirectory_.setPath(filename);
 	
 	// Generate movie file...
-	CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpv, ncycles, fps);
+	CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpc, ncycles, fps);
 }
 
 // Stop current timer (if any)

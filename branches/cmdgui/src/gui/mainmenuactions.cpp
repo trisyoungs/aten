@@ -242,7 +242,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	
 	// Poke values into dialog widgets and execute
 	ui.setValue("framechoice", framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) );
-	if (!dialog.runDefaultDialog(FALSE)) return;
+	if (!dialog.defaultDialog().execute()) return;
 
 	// Get values from dialog
 	geometry = ui.asCharacter("geometry");
@@ -357,7 +357,7 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 	
 // 	static Tree dialog("Paste Translated", "option('Center of geometry of pasted atoms:', 'label', 'labelspan=6', 'left'); option('X', 'doublespin', -1e6, 1e6, 0.0, 1.0, 'newline'); option('Y', 'doublespin', -1e6, 1e6, 0.0, 1.0); option('Z', 'doublespin', -1e6, 1e6, 0.0, 1.0);");
 	// Run the custom dialog
-	if (dialog.runDefaultDialog())
+	if (dialog.defaultDialog().execute())
 	{
 		Vec3<double> r = ui.asVec3("newx", "newy", "newz");
 		CommandNode::run(Command::Paste, "ddd", r.x, r.y, r.z);
@@ -795,7 +795,7 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	ui.addWidget(ui.addIntegerSpin("frameskip", "Frame Skip", 0, 1e6, 1, 0),1,4);
 	ui.addWidget(ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25),1,5);
 	
-	if (!dialog.runDefaultDialog()) return;
+	if (!dialog.defaultDialog().execute()) return;
 
 	// Retrieve widget values
 	geometry = ui.asCharacter("geometry");
@@ -878,7 +878,7 @@ void AtenForm::on_actionOpenExpression_triggered(bool checked)
 		if (filter != NULL)
 		{
 			// Run any import options in the filter
-			if (!filter->runDefaultDialog()) return;
+			if (!filter->defaultDialog().execute()) return;
 			if (filter != NULL) filter->executeRead(qPrintable(filename));
 		}
 	}
@@ -944,7 +944,7 @@ void AtenForm::on_actionSaveExpression_triggered(bool checked)
 		else
 		{
 			// Run any export options in the filter
-			if (!filter->runDefaultDialog()) return;
+			if (!filter->defaultDialog().execute()) return;
 			// Temporarily disable undo/redo for the model, save expression, and re-enable
 			m->disableUndoRedo();
 			if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());

@@ -196,7 +196,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 				{
 					// What to do?
 					Tree dialog;
-					TreeGuiWidget *group, *w;
+					TreeGuiWidget *group;
 					Dnchar title(-1,"Expression for Pattern '%s'", p->name());
 					TreeGui &ui = dialog.defaultDialog();
 					ui.setValue(title);
@@ -206,7 +206,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 					group->addButton(ui.addWidget(ui.addRadioButton("dummy", "Add in dummy parameters to complete expression (type=ignore)", 0), 1,3));
 					
 					// Run the custom dialog
-					if (dialog.runDefaultDialog())
+					if (dialog.defaultDialog().execute())
 					{
 						int choice = ui.asInteger("choice");
 						if (choice == 1)

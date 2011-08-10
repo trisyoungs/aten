@@ -22,45 +22,63 @@
 #include "gui/treegui.h"
 #include "parser/treegui.h"
 
-
+/*
 // Widget Event Action
-class TreeGuiWidgetEventAction
-{
-	// Constructor / Destructor
-	TreeGuiWidgetEventAction();
-	~TreeGuiWidgetEventAction();
-	// List pointers
-	TreeGuiWidgetEventAction *prev, *next;
-};
+*/
 
-// Widget Event
-class TreeGuiWidgetEvent
+// Constructor
+TreeGuiWidgetEventAction::TreeGuiWidgetEventAction()
 {
-	// Constructor / Destructor
-	TreeGuiWidgetEvent();
-	~TreeGuiWidgetEvent();
-	// List pointers
-	TreeGuiWidgetEvent *prev, *next;
-	// Event Qualifier
-	enum EventQualifier { IntegerQualifier, DoubleQualifier, StringQualifier };
-	
-	
-	private:
-	// Qualifying (min/max) integer values 
-	int minimumI_, maximumI_;
-	// Qualifying (min/max) double values 
-	double minimumD_, maximumD_;
-	// Qualifying string value
-	Dnchar matchS_;
-	
-	public:
-	// Set integer qualifying event
-	void setQualifier(int min, int max);
-	// Set double qualifying event
-	void setQualifier(double min, double max);
-	// Set string qualifying event
-	void setQualifier(const char *s);
-};
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+// Destructor
+TreeGuiWidgetEventAction~TreeGuiWidgetEventAction()
+{
+}
+
+/*
+// Widget Event
+*/
+
+// Constructor / Destructor
+TreeGuiWidgetEvent::TreeGuiWidgetEvent()
+{
+	// Private variables
+	type_ = TreeGuiWidgetEvent::nEventQualifiers;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+TreeGuiWidgetEvent::~TreeGuiWidgetEvent()
+{
+}
+
+// Set integer qualifying event
+void TreeGuiWidgetEvent::setQualifier(int min, int max)
+{
+	type_ = TreeGuiWidgetEvent::IntegerQualifier;
+	minimumI_ = min;
+	maximumI_ = max;
+}
+
+// Set double qualifying event
+void TreeGuiWidgetEvent::setQualifier(double min, double max)
+{
+	type_ = TreeGuiWidgetEvent::DoubleQualifier;
+	minimumD_ = min;
+	maximumD_ = max;
+}
+
+// Set string qualifying event
+void TreeGuiWidgetEvent::setQualifier(const char *s)
+{
+	XXX
+}
 
 /*
 // TreeGuiWidget

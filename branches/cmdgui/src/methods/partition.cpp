@@ -342,10 +342,10 @@ bool PartitioningScheme::hasOptions()
 }
 
 // Execute dialog for user-definable options in partition function
-bool PartitioningScheme::runOptions(bool storeValuesOnly)
+bool PartitioningScheme::runOptions()
 {
 	if (!hasOptions()) return FALSE;
-	return partitionFunction_->runDefaultDialog(storeValuesOnly);
+	return partitionFunction_->defaultDialog().execute();
 }
 
 // Find and set named variable in partitionFunction_
