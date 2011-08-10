@@ -89,7 +89,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	ui.addWidget(ui.addIntegerSpin("maxframes", "Maximum Frames", 1, 1e6, 100, 1000),1,2);
 	ui.addWidget(ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25),1,2);
 
-	if (!dialog.runDefaultDialog()) return;
+	if (!dialog.defaultDialog().execute()) return;
 
 	// Retrieve widget values
 	geometry = ui.asCharacter("geometry");

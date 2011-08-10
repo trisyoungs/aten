@@ -60,7 +60,7 @@ class TreeGuiWidgetEvent
 	// List pointers
 	TreeGuiWidgetEvent *prev, *next;
 	// Event Qualifier
-	enum EventQualifier { IntegerQualifier, DoubleQualifier, StringQualifier };
+	enum EventQualifier { IntegerQualifier, DoubleQualifier, StringQualifier, nEventQualifiers };
 	
 	
 	private:
@@ -225,7 +225,7 @@ class TreeGui : public TreeGuiWidget
 	TreeGui();
 	~TreeGui();
 	// List pointers
-	Tree *prev, *next;
+	TreeGui *prev, *next;
 
 
 	/*

@@ -323,7 +323,7 @@ bool Program::execute(ReturnValue &rv, bool runOptions)
 {
 	msg.enter("Program::execute");
 	bool result = TRUE;
-	if (runOptions) result = mainProgram_.runDefaultDialog();
+	if (runOptions) result = mainProgram_.defaultDialog().execute();
 	if (result) result = mainProgram_.execute(rv);
 	msg.exit("Program::execute");
 	return result;
