@@ -356,7 +356,7 @@ bool Aten::closeModel(Model *m)
 				else if (gui.mainWindow()->runSaveModelDialog())
 				{
 					// Run options dialog
-					if (!gui.mainWindow()->saveModelFilter->executeCustomDialog())
+					if (!gui.mainWindow()->saveModelFilter->defaultDialog().execute())
 					{
 						msg.print("Not saved.\n");
 						m->enableUndoRedo();

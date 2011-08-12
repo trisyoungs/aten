@@ -202,8 +202,8 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 					ui.setValue(title);
 					group->addWidget(ui.addLabel("One or more terms are missing from a pattern expression:"), 1,1);
 					group = ui.addRadioGroup("choice");
-					group->addButton(ui.addWidget(ui.addRadioButton("cancel", "Cancel expression generation", 1), 1,2));
-					group->addButton(ui.addWidget(ui.addRadioButton("dummy", "Add in dummy parameters to complete expression (type=ignore)", 0), 1,3));
+					ui.addWidget(group->addRadioButton("cancel", "Cancel expression generation", 1), 1,2);
+					ui.addWidget(group->addRadioButton("dummy", "Add in dummy parameters to complete expression (type=ignore)", 0), 1,3);
 					
 					// Run the custom dialog
 					if (dialog.defaultDialog().execute())

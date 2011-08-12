@@ -40,20 +40,61 @@ QtWidgetObject::QtWidgetObject()
 	treeGuiWidget_ = NULL;
 	qWidget_ = NULL;
 	qObject_ = NULL;
+	layout_ = NULL;
 }
 
 // Set TreeGuiWidget/QWidget pair
-void QtWidgetObject::set(TreeGuiWidget *widget, QWidget *wid)
+void QtWidgetObject::set(TreeGuiWidget *widget, QWidget *wid, const char *label, QGridLayout* layout)
 {
 	treeGuiWidget_ = widget;
 	qWidget_ = wid;
+	label_ = label;
+	layout_ = layout;
 }
 
 // Set TreeGuiWidget/QObject pair
-void QtWidgetObject::set(TreeGuiWidget *widget, QObject *obj)
+void QtWidgetObject::set(TreeGuiWidget* widget, QObject* obj, const char* label, QGridLayout* layout)
 {
 	treeGuiWidget_ = widget;
 	qObject_ = obj;
+	label_ = label;
+	layout_ = layout;
+}
+
+// Return whether currently refreshing
+bool QtWidgetObject::refreshing()
+{
+	return refreshing_;
+}
+
+// Return TreeGuiWidget to which Qt widget/object is associated
+TreeGuiWidget *QtWidgetObject::treeGuiWidget()
+{
+	return treeGuiWidget();
+}
+
+// Return associated QWidget (if not QObject)
+QWidget *QtWidgetObject::qWidget()
+{
+	return qWidget_;
+}
+
+// Return associated QObject (if not QWidget)
+QObject *QtWidgetObject::qObject()
+{
+	return qObject_;
+}
+
+// Return text for associated label
+const char *QtWidgetObject::label()
+{
+	return label_.get();
+}
+
+// Return widget's layout, if it has one
+QGridLayout *QtWidgetObject::layout()
+{
+	return layout_;
 }
 
 // Update associated QWidget / QObject based on treeGuiWidget_ data
@@ -67,7 +108,7 @@ void QtWidgetObject::update()
 		return;
 	}
 	// Now, check widget type to see what we do
-	if (treeGuiWidget_->type() == TreeGuiWidget::ButtonGroupWidget)
+	if (treeGuiWidget_->type() == TreeGuiWidget::RadioGroupWidget)
 	{
 		QButtonGroup *butgroup = (QButtonGroup*) qObject_;
 		if (!butgroup) printf("Critical Error: Couldn't cast stored qObject_ pointer into QButtonGroup.\n");
@@ -86,6 +127,7 @@ void QtWidgetObject::update()
 		{
 			check->setChecked(treeGuiWidget_->valueI() == 1);
 			check->setEnabled(treeGuiWidget_->enabled());
+			check->setVisible(treeGuiWidget_->visible());
 		}
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::ComboWidget)
@@ -103,8 +145,9 @@ void QtWidgetObject::update()
 			}
 			// Set current index
 			combo->setCurrentIndex(treeGuiWidget_->valueI());
-			// Set enabled property
+			// Set enabled and visible properties
 			combo->setEnabled(treeGuiWidget_->enabled());
+			combo->setVisible(treeGuiWidget_->visible());
 		}
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::DoubleSpinWidget)
@@ -116,6 +159,7 @@ void QtWidgetObject::update()
 			spin->setRange(treeGuiWidget_->minimumD(), treeGuiWidget_->maximumD());
 			spin->setValue(treeGuiWidget_->valueD());
 			spin->setEnabled(treeGuiWidget_->enabled());
+			spin->setVisible(treeGuiWidget_->visible());
 		}
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::EditWidget)
@@ -126,6 +170,7 @@ void QtWidgetObject::update()
 		{
 			edit->setText(treeGuiWidget_->text());
 			edit->setEnabled(treeGuiWidget_->enabled());
+			edit->setVisible(treeGuiWidget_->visible());
 		}
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::IntegerSpinWidget)
@@ -137,6 +182,7 @@ void QtWidgetObject::update()
 			spin->setRange(treeGuiWidget_->minimumI(), treeGuiWidget_->maximumI());
 			spin->setValue(treeGuiWidget_->valueI());
 			spin->setEnabled(treeGuiWidget_->enabled());
+			spin->setVisible(treeGuiWidget_->visible());
 		}
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::LabelWidget)
@@ -147,6 +193,7 @@ void QtWidgetObject::update()
 		{
 			label->setText(treeGuiWidget_->text());
 			label->setEnabled(treeGuiWidget_->enabled());
+			label->setVisible(treeGuiWidget_->visible());
 		}
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::RadioButtonWidget)
@@ -157,16 +204,23 @@ void QtWidgetObject::update()
 		{
 			button->setChecked(treeGuiWidget_->valueI() == 1);
 			button->setEnabled(treeGuiWidget_->enabled());
+			button->setVisible(treeGuiWidget_->visible());
 		}
 	}
 	else printf("Critical Error: No handler written to update Qt controls of this type.\n");
 	refreshing_ = FALSE;
 }
 
-// Return whether currently refreshing
-bool QtWidgetObject::refreshing()
+// Add widget to the layout in this widget (if it has one) at specified geometry
+bool QtWidgetObject::addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth, int addToHeight)
 {
-	return refreshing_;
+	// Safety check - make sure we have a layout
+	if (layout_ == NULL)
+	{
+		printf("Internal Error: No layout to add widget to.\n");
+		return FALSE;
+	}
+	
 }
 
 /*
@@ -190,65 +244,179 @@ AtenTreeGuiDialog::~AtenTreeGuiDialog()
 // 	for (KVData<Dnchar,QButtonGroup*> *bg = buttonGroups_.pairs(); bg != NULL; bg = bg->next) delete bg->value();
 }
 
+// Create new dialog layout
+QtWidgetObject *AtenTreeGuiDialog::addDialogLayout(TreeGui *widget)
+{
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	qtwo->set(widget, this, "", mainLayout_);
+	return qtwo;
+}
+
 // Create new combo widget
-QWidget *AtenTreeGuiDialog::addCombo(TreeGuiWidget *widget, const char *label, const char *items, int index)
+QtWidgetObject *AtenTreeGuiDialog::addCombo(TreeGuiWidget* widget, const char* label)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
 	QComboBox *combo = new QComboBox;
-	qtwo->set(widget, combo);
+	qtwo->set(widget, combo, label);
+	// Add items to combo and set current index
+	for (Dnchar *d = widget->items(); d != NULL; d = d->next) combo->addItem(d->get());
+	combo->setCurrentIndex(widget->valueI() - 1);
+	combo->setEnabled(widget->enabled());
+	combo->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new integer spin widget
-QWidget *AtenTreeGuiDialog::addIntegerSpin(TreeGuiWidget *widget, const char *label, int min, int max, int step, int value)
+QtWidgetObject *AtenTreeGuiDialog::addIntegerSpin(TreeGuiWidget* widget, const char* label, int step)
 {
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QSpinBox *spin = new QSpinBox;
+	qtwo->set(widget, spin, label);
+	spin->setRange(widget->minimumI(), widget->maximumI());
+	spin->setValue(widget->valueI());
+	spin->setSingleStep(step);
+	spin->setEnabled(widget->enabled());
+	spin->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new double spin widget
-QWidget *AtenTreeGuiDialog::addDoubleSpin(TreeGuiWidget *widget, const char *label, double min, double max, double step, double value)
+QtWidgetObject *AtenTreeGuiDialog::addDoubleSpin(TreeGuiWidget* widget, const char* label, double step)
 {
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QDoubleSpinBox *spin = new QDoubleSpinBox;
+	qtwo->set(widget, spin, label);
+	spin->setRange(widget->minimumD(), widget->maximumD());
+	spin->setValue(widget->valueD());
+	spin->setSingleStep(step);
+	spin->setEnabled(widget->enabled());
+	spin->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new label widget
-QWidget *AtenTreeGuiDialog::addLabel(TreeGuiWidget *widget, const char *text)
+QtWidgetObject *AtenTreeGuiDialog::addLabel(TreeGuiWidget *widget, const char *text)
 {
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QLabel *label = new QLabel;
+	qtwo->set(widget, label, text);
+	label->setText(text);
+	label->setEnabled(widget->enabled());
+	label->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new edit widget
-QWidget *AtenTreeGuiDialog::addEdit(TreeGuiWidget *widget, const char *label, const char *text)
+QtWidgetObject *AtenTreeGuiDialog::addEdit(TreeGuiWidget *widget, const char *label)
 {
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QLineEdit *edit = new QLineEdit;
+	qtwo->set(widget, edit, label);
+	edit->setText(widget->text());
+	edit->setEnabled(widget->enabled());
+	edit->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new checkbox widget
-QWidget *AtenTreeGuiDialog::addCheck(TreeGuiWidget *widget, const char *label, int state)
+QtWidgetObject *AtenTreeGuiDialog::addCheck(TreeGuiWidget* widget, const char* label)
 {
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QCheckBox *check = new QCheckBox;
+	qtwo->set(widget, check, "");
+	check->setText(label);
+	check->setEnabled(widget->enabled());
+	check->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new tab widget
-QWidget *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
+QtWidgetObject *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
 {
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QTabWidget *tabs = new QTabWidget;
+	qtwo->set(widget, tabs, "");
+	tabs->setEnabled(widget->enabled());
+	tabs->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new page (only in tab widget)
-QWidget *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, const char *label)
+QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget *tabWidget, const char *label)
 {
+	// Cast QWidget in tabWidget into QTabWidget
+	QtWidgetObject *wo = tabWidget->qtWidgetObject();
+	if (wo == NULL)
+	{
+		printf("Internal Error: Can't add page to tabwidget since supplied tabwidget doesn't have an associated QtWidgetObject.\n");
+		return NULL;
+	}
+	QTabWidget *tabs = static_cast<QTabWidget*>(wo->qWidget());
+	if (!tabs)
+	{
+		printf("Internal Error: Couldn't cast QWidget into QTabWidget.\n");
+		return NULL;
+	}
+	// Create new QtWidgetObject for page
+	QWidget *pageWidget = new QWidget();
+	QGridLayout *layout = new QGridLayout(pageWidget);
+        #if QT_VERSION >= 0x040600
+        layout->setContentsMargins(2,2,2,2);
+        #endif
+        layout->setSpacing(2);
+	int id = tabs->addTab(pageWidget, label);
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	qtwo->set(widget, pageWidget, "", layout);
+	pageWidget->setEnabled(widget->enabled());
+	pageWidget->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new group box
-QWidget *AtenTreeGuiDialog::addGroup(TreeGuiWidget *widget, const char *name)
+QtWidgetObject *AtenTreeGuiDialog::addGroup(TreeGuiWidget *widget, const char *label)
 {
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QGroupBox *group = new QGroupBox(label);
+	qtwo->set(widget, group, "");
+	group->setEnabled(widget->enabled());
+	group->setVisible(widget->visible());
+	return qtwo;
 }
 
 // Create new (invisible) radio group
-QObject *AtenTreeGuiDialog::addRadioGroup(const char *name)
+QtWidgetObject *AtenTreeGuiDialog::addRadioGroup(TreeGuiWidget* widget)
 {
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QButtonGroup *group = new QButtonGroup;
+	qtwo->set(widget, group, "");
+	return qtwo;
 }
 
 // Create new radio button
-QWidget *AtenTreeGuiDialog::addRadioButton(const char *name, const char *label, int state)
+QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char* name, const char* label, int id)
 {
+	// Cast QObject in groupWidget into QButtonGroup
+	QtWidgetObject *wo = groupWidget->qtWidgetObject();
+	if (wo == NULL)
+	{
+		printf("Internal Error: Can't add button to radiogroup widget since supplied widget doesn't have an associated QtWidgetObject.\n");
+		return NULL;
+	}
+	QButtonGroup *group = static_cast<QButtonGroup*>(wo->qObject());
+	if (!group)
+	{
+		printf("Internal Error: Couldn't cast QObject into QButtonGroup.\n");
+		return NULL;
+	}
+	// Create new QtWidgetObject for page
+	QRadioButton *radio = new QRadioButton(label);
+	group->addButton(radio, id);
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	qtwo->set(widget, radio, label);
+	radio->setEnabled(widget->enabled());
+	radio->setVisible(widget->visible());
+	return qtwo;
 }
-
-
 
 // // Perform specified state change
 // void AtenTreeGuiDialog::performStateChange(StateChange *sc)

@@ -21,6 +21,7 @@
 
 #include "gui/treegui.h"
 #include "parser/treegui.h"
+#include "base/sysfunc.h"
 
 /*
 // Widget Event Action
@@ -90,8 +91,7 @@ TreeGuiWidget::TreeGuiWidget()
 {
 	// Private variables
 	type_ = TreeGuiWidget::nWidgetTypes;
-	qWidget_ = NULL;
-	qObject_ = NULL;
+	qtWidgetObject_ = NULL;
 	parent_ = NULL;
 	minimumI_ = 0;
 	maximumI_ = 0;
@@ -101,6 +101,7 @@ TreeGuiWidget::TreeGuiWidget()
 	valueD_ = 0.0;
 	itemsChanged_ = FALSE;
 	enabled_ = TRUE;
+	visible_ = TRUE;
 	
 	// Public variables
 	prev = NULL;
@@ -139,15 +140,15 @@ TreeGui *TreeGuiWidget::parent()
 }
 
 // Set corresponding Qt QWidget
-void TreeGuiWidget::setQWidget(QWidget *widget)
+void TreeGuiWidget::setQtWidgetObject(QtWidgetObject *wo)
 {
-	qWidget_ = widget;
+	qtWidgetObject_ = wo;
 }
 
-// Set corresponding Qt QObject
-void TreeGuiWidget::setQObject(QObject *object)
+// Return associated qtWidgetObject
+QtWidgetObject *TreeGuiWidget::qtWidgetObject()
 {
-	qObject_ = object;
+	return qtWidgetObject_;
 }
 
 // Set integer properties
@@ -183,7 +184,7 @@ bool TreeGuiWidget::setProperties(double min, double max, double value)
 	minimumD_ = min;
 	maximumD_ = max;
 	// Check / set value
-	if ((value < minimumI_) || (value  > maximumI_))
+	if ((value < minimumD_) || (value  > maximumD_))
 	{
 		msg.print("Warning: Value given when setting widget double properties is out of defined limits (%f to %f) and has been reset to %f.\n", value, minimumD_, maximumD_, minimumD_);
 		valueD_ = minimumD_;
@@ -313,29 +314,178 @@ bool TreeGuiWidget::enabled()
 	return enabled_;
 }
 
-// Add widget to the layout in this widget (if it has one) at specified geometry, returning added widget for convenience
-TreeGuiWidget *TreeGuiWidget::addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth = 0, int addToHeight = 0)
+// Set whether widget is visible
+void TreeGuiWidget::setVisible(bool b)
 {
+	visible_ = b;
 }
 
-// Add button to button group (only valid for ButtonGroupWidget);
-TreeGuiWidget *TreeGuiWidget::addButton(TreeGuiWidget *widget)
+// Return whether widget is visible
+bool TreeGuiWidget::visible()
 {
+	return visible_;
 }
-	
+
+// Add widget to the layout in this widget (if it has one) at specified geometry, returning added widget for convenience
+TreeGuiWidget *TreeGuiWidget::addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth, int addToHeight)
+{
+	// Do we have an associated Qt widget? If not, then we have no GUI, so nothing to do.
+	if (qtWidgetObject_ == NULL) return widget;
+
+	// Check widget type - does it have a layout?
+	switch (type_)
+	{
+		case (TreeGuiWidget::DialogWidget):
+		case (TreeGuiWidget::PageWidget):
+		case (TreeGuiWidget::GroupWidget):
+			qtWidgetObject_->addWidget(widget, l, r, addToWidth, addToHeight);
+			break;
+		default:
+			msg.print("Error: Widget '%s' does not have a layout, and so addWidget() cannot be used.\n", name_.get());
+			return NULL;
+			break;
+	}
+	return widget;
+}
+
+// Create new radio button (only for RadioGroupWidget)
+TreeGuiWidget *TreeGuiWidget::addRadioButton(const char *name, const char *label, int state)
+{
+	// Is this a RadioGroup widget?
+	if (type_ != TreeGuiWidget::RadioGroupWidget)
+	{
+		msg.print("Error: Attempted to add a radiobutton to a non-radiogroup widget (%s).\n", name_.get());
+		return NULL;
+	}
+	// Create the new button and add it to the local list
+	TreeGuiWidget *radio = parent_->addButtonToGroup(name, label, this, buttonList_.nItems()+1);
+	if (radio) buttonList_.add(radio, buttonList_.nItems()+1);
+	return radio;
+}
+
+// Create new page (only in tab widget)
+TreeGuiWidget *TreeGuiWidget::addPage(const char* name, const char* label)
+{
+	// Is this a tab widget?
+	if (type_ != TreeGuiWidget::TabWidget)
+	{
+		msg.print("Error: Attempted to add a page to a non-tab widget (%s).\n", name_.get());
+		return NULL;
+	}
+	return parent_->addPageToTab(name, label, this);
+}
+
 // Return widget value as integer
 int TreeGuiWidget::asInteger()
 {
+	int result;
+	switch (type_)
+	{
+		case (TreeGuiWidget::DoubleSpinWidget):
+			msg.print("Warning: Converting double value to integer when retrieving doublespin widget's value (%s).\n", name_.get());
+			result = int(valueD_);
+			break;
+		case (TreeGuiWidget::RadioGroupWidget):
+		case (TreeGuiWidget::CheckWidget):
+		case (TreeGuiWidget::ComboWidget):
+		case (TreeGuiWidget::IntegerSpinWidget):
+		case (TreeGuiWidget::RadioButtonWidget):
+		case (TreeGuiWidget::TabWidget):
+		case (TreeGuiWidget::StackWidget):
+			result =valueI_;
+			break;
+		case (TreeGuiWidget::EditWidget):
+		case (TreeGuiWidget::LabelWidget):
+			msg.print("Warning: Converting string value to integer when retrieving widget value (%s).\n", name_.get());
+			result = atoi(text_.get());
+			break;
+		case (TreeGuiWidget::DialogWidget):
+		case (TreeGuiWidget::PageWidget):
+			msg.print("Warning: Don't know how to retrieve an integer value for this widget (%s).\n", name_.get());
+			result = 0;
+			break;
+		default:
+			printf("Internal Error: Control type not accounted for in TreeGuiWidget::asInteger.\n");
+			result = 0;
+			break;
+	}
+	return result;
 }
 
 // Return widget value as double
 double TreeGuiWidget::asDouble()
 {
+	double result;
+	switch (type_)
+	{
+		case (TreeGuiWidget::DoubleSpinWidget):
+			result = valueD_;
+			break;
+		case (TreeGuiWidget::RadioGroupWidget):
+		case (TreeGuiWidget::CheckWidget):
+		case (TreeGuiWidget::ComboWidget):
+		case (TreeGuiWidget::IntegerSpinWidget):
+		case (TreeGuiWidget::RadioButtonWidget):
+		case (TreeGuiWidget::TabWidget):
+		case (TreeGuiWidget::StackWidget):
+			msg.print("Warning: Converting integer value to double when retrieving doublespin widget (%s).\n", name_.get());
+			result = double(valueI_);
+			break;
+		case (TreeGuiWidget::EditWidget):
+		case (TreeGuiWidget::LabelWidget):
+			msg.print("Warning: Converting string value to double when retrieving widget value (%s).\n", name_.get());
+			result = atof(text_.get());
+			break;
+		case (TreeGuiWidget::DialogWidget):
+		case (TreeGuiWidget::PageWidget):
+			msg.print("Warning: Don't know how to retrieve a double value for this widget (%s).\n", name_.get());
+			result = 0.0;
+			break;
+		default:
+			printf("Internal Error: Control type not accounted for in TreeGuiWidget::asDouble.\n");
+			result = 0.0;
+			break;
+	}
+	return result;
 }
 
 // Return widget value as character string
 const char *TreeGuiWidget::asCharacter()
 {
+	static Dnchar result;
+	switch (type_)
+	{
+		case (TreeGuiWidget::DoubleSpinWidget):
+			msg.print("Warning: Converting double value to string when retrieving doublespin widget (%s).\n", name_.get());
+			result = ftoa(valueD_);
+			break;
+		case (TreeGuiWidget::RadioGroupWidget):
+		case (TreeGuiWidget::CheckWidget):
+		case (TreeGuiWidget::IntegerSpinWidget):
+		case (TreeGuiWidget::RadioButtonWidget):
+		case (TreeGuiWidget::TabWidget):
+		case (TreeGuiWidget::StackWidget):
+			msg.print("Warning: Converting integer value to string when retrieving doublespin widget (%s).\n", name_.get());
+			result = itoa(valueI_);
+			break;
+		case (TreeGuiWidget::ComboWidget):
+			result = items_[valueI_]->get();
+			break;
+		case (TreeGuiWidget::EditWidget):
+		case (TreeGuiWidget::LabelWidget):
+			result = text_;
+			break;
+		case (TreeGuiWidget::DialogWidget):
+		case (TreeGuiWidget::PageWidget):
+			msg.print("Warning: Don't know how to retrieve a string value for this widget (%s).\n", name_.get());
+			result = "NULL";
+			break;
+		default:
+			printf("Internal Error: Control type not accounted for in TreeGuiWidget::asCharacter.\n");
+			result = "NULL";
+			break;
+	}
+	return result.get();
 }
 
 // Set widget value from integer (and perform events)
@@ -344,32 +494,27 @@ bool TreeGuiWidget::setValue(int i)
 	// Success or the action we perform depends on the widget type
 	switch (type_)
 	{
-		case (TreeGuiWidget::ButtonGroupWidget):
+		case (TreeGuiWidget::DoubleSpinWidget):
+			msg.print("Warning: Converting integer value to double when setting doublespin widget (%s).\n", name_.get());
+		case (TreeGuiWidget::RadioGroupWidget):
+		case (TreeGuiWidget::CheckWidget):
+		case (TreeGuiWidget::ComboWidget):
+		case (TreeGuiWidget::IntegerSpinWidget):
+		case (TreeGuiWidget::RadioButtonWidget):
+		case (TreeGuiWidget::TabWidget):
+		case (TreeGuiWidget::StackWidget):
 			// Value must be within integer ranges
 			if (!isGoodValue(i)) return FALSE;
 			valueI_ = i;
 			break;
-		case (TreeGuiWidget::CheckWidget):
-			break;
-		case (TreeGuiWidget::ComboWidget):
+		case (TreeGuiWidget::EditWidget):
+		case (TreeGuiWidget::LabelWidget):
+			msg.print("Warning: Converting integer value to string when setting widget value (%s).\n", name_.get());
+			text_ = itoa(i);
 			break;
 		case (TreeGuiWidget::DialogWidget):
-			break;
-		case (TreeGuiWidget::DoubleSpinWidget):
-			break;
-		case (TreeGuiWidget::EditWidget):
-			break;
-		case (TreeGuiWidget::IntegerSpinWidget):
-			break;
-		case (TreeGuiWidget::LabelWidget):
-			break;
 		case (TreeGuiWidget::PageWidget):
-			break;
- 		case (TreeGuiWidget::RadioButtonWidget):
-			break;
-		case (TreeGuiWidget::StackWidget):
-			break;
-		case (TreeGuiWidget::TabWidget):
+			msg.print("Warning: Don't know what to do with an integer value for this widget (%s).\n", name_.get());
 			break;
 		default:
 			printf("Internal Error: Control type not accounted for in TreeGuiWidget::setValue(int).\n");
@@ -377,17 +522,107 @@ bool TreeGuiWidget::setValue(int i)
 	}
 	
 	// Update associated Qt control
-	if (parent_ != NULL) w
+	if (qtWidgetObject_ != NULL) qtWidgetObject_->update();
+	
+	// Check widget events
+	checkWidgetEvents();
 }
 
 // Set widget value from double (and perform events)
 bool TreeGuiWidget::setValue(double d)
 {
+	// Success or the action we perform depends on the widget type
+	switch (type_)
+	{
+		case (TreeGuiWidget::RadioGroupWidget):
+		case (TreeGuiWidget::CheckWidget):
+		case (TreeGuiWidget::ComboWidget):
+		case (TreeGuiWidget::IntegerSpinWidget):
+		case (TreeGuiWidget::RadioButtonWidget):
+		case (TreeGuiWidget::TabWidget):
+		case (TreeGuiWidget::StackWidget):
+			msg.print("Warning: Converting double value to integer when setting widget value (%s).\n", name_.get());
+		case (TreeGuiWidget::DoubleSpinWidget):
+			// Value must be within double ranges
+			if (!isGoodValue(d)) return FALSE;
+			valueD_ = d;
+			break;
+		case (TreeGuiWidget::EditWidget):
+		case (TreeGuiWidget::LabelWidget):
+			msg.print("Warning: Converting double value to string when setting widget value (%s).\n", name_.get());
+			text_ = ftoa(d);
+			break;
+		case (TreeGuiWidget::DialogWidget):
+		case (TreeGuiWidget::PageWidget):
+			msg.print("Warning: Don't know what to do with a double value for this widget (%s).\n", name_.get());
+			break;
+		default:
+			printf("Internal Error: Control type not accounted for in TreeGuiWidget::setValue(double).\n");
+			return FALSE;
+	}
+	
+	// Update associated Qt control
+	if (qtWidgetObject_ != NULL) qtWidgetObject_->update();
+	
+	// Check widget events
+	checkWidgetEvents();
 }
 
 // Set widget value from character string (and perform events)
 bool TreeGuiWidget::setValue(const char *s)
 {
+	// Success or the action we perform depends on the widget type
+	int i;
+	switch (type_)
+	{
+		case (TreeGuiWidget::RadioGroupWidget):
+		case (TreeGuiWidget::CheckWidget):
+			
+		case (TreeGuiWidget::IntegerSpinWidget):
+		case (TreeGuiWidget::RadioButtonWidget):
+		case (TreeGuiWidget::TabWidget):
+		case (TreeGuiWidget::StackWidget):
+		case (TreeGuiWidget::DoubleSpinWidget):
+			msg.print("Warning: Converting string value to integer when setting widget value (%s).\n", name_.get());
+			// Value must be within double ranges
+			i = atoi(s);
+			if (!isGoodValue(i)) return FALSE;
+			valueI_ = i;
+			break;
+		case (TreeGuiWidget::ComboWidget):
+			// For combobox widget, search the items list...
+			for (i = 0; i < items_.nItems(); ++i) if (*(items_[i]) == s) break;
+			if (i < items_.nItems()) valueI_ = i;
+			else
+			{
+				msg.print("Error: '%s' is not a valid value for this combo (%s).\n", s, name_.get());
+				return FALSE;
+			}
+			break;
+		case (TreeGuiWidget::EditWidget):
+		case (TreeGuiWidget::LabelWidget):
+			text_ = s;
+			break;
+		case (TreeGuiWidget::DialogWidget):
+		case (TreeGuiWidget::PageWidget):
+			msg.print("Warning: Don't know what to do with a double value for this widget (%s).\n", name_.get());
+			break;
+		default:
+			printf("Internal Error: Control type not accounted for in TreeGuiWidget::setValue(double).\n");
+			return FALSE;
+	}
+	
+	// Update associated Qt control
+	if (qtWidgetObject_ != NULL) qtWidgetObject_->update();
+	
+	// Check widget events
+	checkWidgetEvents();
+}
+
+// Check widget's events and act on them if necessary
+void TreeGuiWidget::checkWidgetEvents()
+{
+	XXX
 }
 
 /*
@@ -395,10 +630,14 @@ bool TreeGuiWidget::setValue(const char *s)
 */
 
 // Constructor
-TreeGui::TreeGui()
+TreeGui::TreeGui() : TreeGuiWidget()
 {
 	// Private variables
-	if (gui.applicationType() != QApplication::Tty) qtTreeGui_ = new AtenTreeGuiDialog;
+	if (gui.applicationType() != QApplication::Tty)
+	{
+		qtTreeGui_ = new AtenTreeGuiDialog;
+		setQtWidgetObject(qtTreeGui_->addDialogLayout(this));
+	}
 	else qtTreeGui_ = NULL;
 
 	// Public variables
@@ -411,16 +650,18 @@ TreeGui::~TreeGui()
 {
 }
 
-// Set title of dialog
-void TreeGui::setTitle(const char *title)
+// Create new widget of specified type
+TreeGuiWidget *TreeGui::createWidget(const char *name, TreeGuiWidget::WidgetType type)
 {
-	title_ = title;
-}
-
-// Return title of dialog
-const char *TreeGui::title()
-{
-	return title_.get();
+	// Does this name already exist?
+	if (findWidget(name))
+	{
+		msg.print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.\n", name);
+		return NULL;
+	}
+	TreeGuiWidget *widget = widgets_.add();
+	widget->set(type, name, this);
+	return widget;
 }
 
 // Return number of defined widgets in GUI
@@ -435,18 +676,12 @@ TreeGuiWidget *TreeGui::findWidget(const char *name)
 	for (TreeGuiWidget *result = widgets_.first(); result != NULL; result = result->next) if (strcmp(name,result->name()) == 0) return result;
 	return NULL;
 }
-
+	
 // Create new combo widget
 TreeGuiWidget *TreeGui::addCombo(const char *name, const char *label, const char *items, int index)
 {
-	// Does this name already exist?
-	if (findWidget(name))
-	{
-		msg.print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.\n", name);
-		return NULL;
-	}
-	TreeGuiWidget *widget = widgets_.add();
-	widget->set(TreeGuiWidget::ComboWidget, name, this);
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::ComboWidget);
+	if (widget == NULL) return NULL;
 	// Parse items list
 	LineParser parser;
 	parser.getArgsDelim(LineParser::UseQuotes, items);
@@ -457,21 +692,15 @@ TreeGuiWidget *TreeGui::addCombo(const char *name, const char *label, const char
 		widget->setProperties(1, parser.nArgs(), index);
 	}
 	// Create complementary Qt control?
-	if (qtTreeGui_ != NULL) widget->setQWidget(qtTreeGui_->addCombo(widget, label, items, index));
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addCombo(widget, label));
 	return widget;
 }
 
 // Create new integer spin widget
 TreeGuiWidget *TreeGui::addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value)
 {
-	// Does this name already exist?
-	if (findWidget(name))
-	{
-		msg.print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.\n", name);
-		return NULL;
-	}
-	TreeGuiWidget *widget = widgets_.add();
-	widget->set(TreeGuiWidget::IntegerSpinWidget, name, this);
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::IntegerSpinWidget);
+	if (widget == NULL) return NULL;
 	// Set control limits
 	if (!widget->setProperties(min, max, value))
 	{
@@ -479,25 +708,19 @@ TreeGuiWidget *TreeGui::addIntegerSpin(const char *name, const char *label, int 
 		return NULL;
 	}
 	// Create complementary Qt control?
-	if (qtTreeGui_ != NULL) widget->setQWidget(qtTreeGui_->addIntegerSpin(widget, label, min, max, step, value));
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addIntegerSpin(widget, label, step));
 	return widget;
 }
 
 // Create new double spin widget
 TreeGuiWidget *TreeGui::addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value)
 {
-	// Does this name already exist?
-	if (findWidget(name))
-	{
-		msg.print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.\n", name);
-		return NULL;
-	}
-	TreeGuiWidget *widget = widgets_.add();
-	widget->set(TreeGuiWidget::DoubleSpinWidget, name, this);
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::DoubleSpinWidget);
+	if (widget == NULL) return NULL;
 	// Set control limits
 	if (!widget->setProperties(min, max, value)) msg.print("Error when setting up double spin widget '%s'.\n", name);
 	// Create complementary Qt control?
-	if (qtTreeGui_ != NULL) widget->setQWidget(qtTreeGui_->addIntegerSpin(widget, label, min, max, step, value));
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addIntegerSpin(widget, label, step));
 	return widget;
 }
 
@@ -507,39 +730,27 @@ TreeGuiWidget *TreeGui::addLabel(const char *text)
 	TreeGuiWidget *widget = widgets_.add();
 	widget->set(TreeGuiWidget::LabelWidget, "_LABEL_", this);
 	// Create complementary Qt control?
-	if (qtTreeGui_ != NULL) widget->setQWidget(qtTreeGui_->addLabel(widget, text));
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addLabel(widget, text));
 	return widget;
 }
 
 // Create new edit widget
 TreeGuiWidget *TreeGui::addEdit(const char *name, const char *label, const char *text)
 {
-	// Does this name already exist?
-	if (findWidget(name))
-	{
-		msg.print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.\n", name);
-		return NULL;
-	}
-	TreeGuiWidget *widget = widgets_.add();
-	widget->set(TreeGuiWidget::EditWidget, name, this);
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::EditWidget);
+	if (widget == NULL) return NULL;
 	// Set control properties
 	if (!widget->setProperties(text)) msg.print("Error when setting up edit widget '%s'.\n", name);
 	// Create complementary Qt control?
-	if (qtTreeGui_ != NULL) widget->setQWidget(qtTreeGui_->addEdit(widget, label, text));
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addEdit(widget, label));
 	return widget;
 }
 
 // Create new checkbox widget
 TreeGuiWidget *TreeGui::addCheck(const char *name, const char *label, int state)
 {
-	// Does this name already exist?
-	if (findWidget(name))
-	{
-		msg.print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.\n", name);
-		return NULL;
-	}
-	TreeGuiWidget *widget = widgets_.add();
-	widget->set(TreeGuiWidget::CheckWidget, name, this);
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::CheckWidget);
+	if (widget == NULL) return NULL;
 	// Set control limits
 	if (!widget->setProperties(0, 1, state))
 	{
@@ -547,37 +758,62 @@ TreeGuiWidget *TreeGui::addCheck(const char *name, const char *label, int state)
 		return NULL;
 	}
 	// Create complementary Qt control?
-	if (qtTreeGui_ != NULL) widget->setQWidget(qtTreeGui_->addCheck(widget, label, state));
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addCheck(widget, label));
 	return widget;
 }
 
 // Create new tab widget
 TreeGuiWidget *TreeGui::addTabs(const char *name)
 {
-}
-
-// Create new page (only in tab widget)
-TreeGuiWidget *TreeGui::addPage(const char *label)
-{
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::TabWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addTabs(widget));
+	return widget;
 }
 
 // Create new group box
-TreeGuiWidget *TreeGui::addGroup(const char *name)
+TreeGuiWidget *TreeGui::addGroup(const char *name, const char *label)
 {
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::GroupWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addGroup(widget, label));
+	return widget;
 }
 
 // Create new (invisible) radio group
 TreeGuiWidget *TreeGui::addRadioGroup(const char *name)
 {
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::RadioGroupWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addRadioGroup(widget));
+	return widget;
 }
 
-// Create new radio button
-TreeGuiWidget *TreeGui::addRadioButton(const char *name, const char *label, int state)
+// Create new page in specified tab (called by TreeGuiWidget)
+TreeGuiWidget *TreeGui::addPageToTab(const char *name, const char *label, TreeGuiWidget *tabWidget)
 {
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::PageWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addPage(widget, tabWidget, label));
+	return widget;
+}
+
+// Create new radio button in specified radio group (called by TreeGuiWidget)
+TreeGuiWidget *TreeGui::addButtonToGroup(const char *name, const char *label, TreeGuiWidget *groupWidget, int buttonId)
+{
+	TreeGuiWidget *widget = createWidget(name, TreeGuiWidget::RadioButtonWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (qtTreeGui_ != NULL) widget->setQtWidgetObject(qtTreeGui_->addRadioButton(widget, groupWidget, name, label, buttonId));
+	return widget;
 }
 
 // Set named widget's value from integer
-bool TreeGui::setValue(const char *name, int i)
+bool TreeGui::setWidgetValue(const char *name, int i)
 {
 	// Find named widget
 	TreeGuiWidget *widget = findWidget(name);
@@ -590,7 +826,7 @@ bool TreeGui::setValue(const char *name, int i)
 }
 
 // Set named widget's value from double
-bool TreeGui::setValue(const char* name, double d)
+bool TreeGui::setWidgetValue(const char* name, double d)
 {
 	// Find named widget
 	TreeGuiWidget *widget = findWidget(name);
@@ -603,7 +839,7 @@ bool TreeGui::setValue(const char* name, double d)
 }
 
 // Set named widget's value from string
-bool TreeGui::setValue(const char* name, const char* s)
+bool TreeGui::setWidgetValue(const char* name, const char* s)
 {
 	// Find named widget
 	TreeGuiWidget *widget = findWidget(name);
@@ -618,28 +854,32 @@ bool TreeGui::setValue(const char* name, const char* s)
 // Return value in named widget as integer
 int TreeGui::asInteger(const char *name)
 {
+	XXX
 }
 
 // Return value in named widget as double
 double TreeGui::asDouble(const char *name)
 {
+	XXX
 }
 
 // Return value in named widget as character string
 const char *TreeGui::asCharacter(const char *name)
 {
+	XXX
 }
 
 // Return values in named widgets as Vec3<double>
 Vec3<double> TreeGui::asVec3(const char *name1, const char *name2, const char *name3)
 {
+	XXX
 }
 
-
 // Show Qt dialog (if it exists)
-void TreeGui::show()
+bool TreeGui::execute()
 {
-	if ((widgets_.nItems() > 0) && (qtTreeGui_ != NULL)) qtTreeGui_->showDialog();
+	if ((widgets_.nItems() > 0) && (qtTreeGui_ != NULL)) return qtTreeGui_->execute();
+	else return TRUE;
 }
 
 // // Add new (GUI-based) widget linked to a variable

@@ -21,6 +21,7 @@
 
 #include "parser/widget.h"
 #include "parser/stepnode.h"
+#include "parser/treegui.h"
 //#include "base/constants.h"
 //#include "model/model.h"
 #include <stdio.h>
@@ -28,11 +29,12 @@
 #include <string.h>
 
 // Constructors
-WidgetVariable::WidgetVariable()
+WidgetVariable::WidgetVariable(TreeGuiWidget *widget, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::WidgetData;
-	readOnly_ = TRUE;
+	readOnly_ = constant;
+	pointerData_ = widget;
 }
 
 // Destructor
@@ -140,22 +142,12 @@ bool WidgetVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 		}
 	}
 	// Variables used in retrieval
-	Model *m = NULL;
 	bool result = TRUE;
+	TreeGuiWidget *ptr = (TreeGuiWidget*) rv.asPointer(VTypes::WidgetData, result);
 	if (result) switch (acc)
 	{
 		case (WidgetVariable::Elements):
-			if (hasArrayIndex)
-			{
-				if ((arrayIndex < 0) || (arrayIndex > elements().nElements()))
-				{
-					msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
-					result = FALSE;
-				}
-				else rv.set(VTypes::ElementData, &elements().el[arrayIndex]);
-				// Note: array index is not decreased by 1, since element 0 is 'XX'
-			}
-			else rv.set(VTypes::ElementData, &elements().el[0]);
+
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in WidgetVariable.\n", accessorData[i].name);
@@ -227,7 +219,7 @@ bool WidgetVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Aten *ptr = (Aten*) sourcerv.asPointer(VTypes::AtenData, result);
+	TreeGuiWidget *ptr = (TreeGuiWidget*) sourcerv.asPointer(VTypes::WidgetData, result);
 	switch (acc)
 	{
 		default:
@@ -253,19 +245,12 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	int el;
-	Prefs::EnergyUnit eu;
-	Aten *ptr = (Aten*) rv.asPointer(VTypes::AtenData, result);
+	TreeGuiWidget *ptr = (TreeGuiWidget*) rv.asPointer(VTypes::WidgetData, result);
 	if (result) switch (i)
 	{
 		case (WidgetVariable::ConvertEnergy):
-			eu = Prefs::energyUnit(node->argc(1), TRUE);
-			if (eu == Prefs::nEnergyUnits) result = FALSE;
-			else rv.set( prefs.convertEnergy(node->argd(0), eu) );
 			break;
 		case (WidgetVariable::FindElement):
-			el = elements().find(node->argc(0));
-			if (el != 0) rv.set(VTypes::ElementData, &elements().el[el]);
-			else rv.set(VTypes::ElementData, NULL);
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in WidgetVariable.\n", functionData[i].name);
@@ -291,4 +276,26 @@ void WidgetVariable::printAccessors()
 		for (int n=0; n<WidgetVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
 		msg.print("\n");
 	}
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+WidgetArrayVariable::WidgetArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::WidgetData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *WidgetArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+{
+	return WidgetVariable::accessorSearch(s, arrayindex, arglist);
 }

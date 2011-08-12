@@ -235,13 +235,13 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	ui.setValue("Save Image Options");
 	ui.addWidget(ui.addEdit("geometry", "Image Size", geometry.get()),1,1);
 	group = ui.addRadioGroup("framechoice");
-	group->addButton(ui.addWidget(ui.addRadioButton("noframes", "No Frames", 1), 1,2));
-	group->addButton(ui.addWidget(ui.addRadioButton("framemodel", "Frame Current Model", 0), 1,3));
-	group->addButton(ui.addWidget(ui.addRadioButton("frameview", "Frame Whole View", 0), 1,4));
-	group->addButton(ui.addWidget(ui.addRadioButton("frameboth", "Frame Current Model and View", 0), 1,5));
+	ui.addWidget(group->addRadioButton("noframes", "No Frames", 1), 1,2);
+	ui.addWidget(group->addRadioButton("framemodel", "Frame Current Model", 0), 1,3);
+	ui.addWidget(group->addRadioButton("frameview", "Frame Whole View", 0), 1,4);
+	ui.addWidget(group->addRadioButton("frameboth", "Frame Current Model and View", 0), 1,5);
 	
 	// Poke values into dialog widgets and execute
-	ui.setValue("framechoice", framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) );
+	ui.setWidgetValue("framechoice", framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) );
 	if (!dialog.defaultDialog().execute()) return;
 
 	// Get values from dialog

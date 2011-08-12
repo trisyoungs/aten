@@ -358,7 +358,7 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 		msg.exit("PartitioningScheme::setVariable");
 		return FALSE;
 	}
-	return partitionFunction_->defaultDialog().setValue(name, value);
+	return partitionFunction_->defaultDialog().setWidgetValue(name, value);
 	msg.exit("PartitioningScheme::setVariable");
 }
 
