@@ -35,7 +35,7 @@ TreeGuiWidgetEventAction::TreeGuiWidgetEventAction()
 }
 
 // Destructor
-TreeGuiWidgetEventAction~TreeGuiWidgetEventAction()
+TreeGuiWidgetEventAction::~TreeGuiWidgetEventAction()
 {
 }
 
@@ -77,7 +77,8 @@ void TreeGuiWidgetEvent::setQualifier(double min, double max)
 // Set string qualifying event
 void TreeGuiWidgetEvent::setQualifier(const char *s)
 {
-	XXX
+	type_ = TreeGuiWidgetEvent::StringQualifier;
+	matchS_ = s;
 }
 
 /*
@@ -222,8 +223,8 @@ bool TreeGuiWidget::isGoodValue(int i, bool printError)
 // Return whether double value is within range
 bool TreeGuiWidget::isGoodValue(double d, bool printError)
 {
-	bool result = ((i >= minimumD_) && (i <= maximumD_));
-	if (!result && printError) msg.print("Error: Value %f is out of range for widget '%s'.\n\tValid range is %f to %f.\n", i, name_.get(), minimumD_, maximumD_);
+	bool result = ((d >= minimumD_) && (d <= maximumD_));
+	if (!result && printError) msg.print("Error: Value %f is out of range for widget '%s'.\n\tValid range is %f to %f.\n", d, name_.get(), minimumD_, maximumD_);
 	return result;
 }
 

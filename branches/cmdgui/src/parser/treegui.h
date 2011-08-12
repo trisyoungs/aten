@@ -44,6 +44,7 @@ class TreeGui;
 // Widget Event Action
 class TreeGuiWidgetEventAction
 {
+	public:
 	// Constructor / Destructor
 	TreeGuiWidgetEventAction();
 	~TreeGuiWidgetEventAction();
@@ -54,6 +55,7 @@ class TreeGuiWidgetEventAction
 // Widget Event
 class TreeGuiWidgetEvent
 {
+	public:
 	// Constructor / Destructor
 	TreeGuiWidgetEvent();
 	~TreeGuiWidgetEvent();
@@ -64,6 +66,8 @@ class TreeGuiWidgetEvent
 	
 	
 	private:
+	// Type of qualifying data
+	EventQualifier type_;
 	// Qualifying (min/max) integer values 
 	int minimumI_, maximumI_;
 	// Qualifying (min/max) double values 
