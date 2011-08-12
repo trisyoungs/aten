@@ -38,24 +38,6 @@ class DialogVariable : public PointerVariable
 	~DialogVariable();
 
 	/*
-	// Set / Get
-	*/
-	public:
-	// Return value of node
-	bool execute(ReturnValue &rv);
-	// Set from returnvalue node
-	bool set(ReturnValue &rv);
-	// Reset node
-	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
-
-	/*
 	// Access Data
 	*/
 	public:
@@ -79,6 +61,21 @@ class DialogVariable : public PointerVariable
 	static Accessor accessorData[nAccessors];
 	// Function Accessor data
 	static FunctionAccessor functionData[nFunctions];
+};
+
+// Dialog Array Variable
+class DialogArrayVariable : public PointerArrayVariable
+{
+	public:
+	// Constructor / Destructor
+	DialogArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Search variable access list for provided accessor
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 };
 
 #endif

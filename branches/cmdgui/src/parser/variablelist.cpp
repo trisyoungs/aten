@@ -46,6 +46,7 @@
 #include "parser/patternbound.h"
 #include "parser/vector.h"
 #include "parser/vibration.h"
+#include "parser/widget.h"
 #include "parser/zmatrix.h"
 #include "parser/zmatrixelement.h"
 #include <string.h>

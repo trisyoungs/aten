@@ -213,8 +213,8 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 			ui.addWidget(ui.addLabel("The following script could not be found:"),1,1);
 			ui.addWidget(ui.addLabel(script->filename()),1,2);
 			group = ui.addRadioGroup("choice");
-			group->addButton(ui.addWidget(ui.addRadioButton("delete", "Delete the entry for this scriptfile (it will not reappear when Aten restarts)", 0), 1,3));
-			group->addButton(ui.addWidget(ui.addRadioButton("skip", "Do not delete the entry and skip loading this script", 0), 1,4));
+			ui.addWidget(group->addRadioButton("delete", "Delete the entry for this scriptfile (it will not reappear when Aten restarts)", 0), 1,3);
+			ui.addWidget(group->addRadioButton("skip", "Do not delete the entry and skip loading this script", 0), 1,4);
 			if (dialog.defaultDialog().execute())
 			{
 				int choice = ui.asInteger("choice");
@@ -237,9 +237,9 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 			ui.addWidget(ui.addLabel("The following script contained an error (see MessageBox for more details):"),1,1);
 			ui.addWidget(ui.addLabel(script->filename()),1,2);
 			group = ui.addRadioGroup("choice");
-			group->addButton(ui.addWidget(ui.addRadioButton("retry", "Retry (changes have just been made to the file)", 1), 1,3));
-			group->addButton(ui.addWidget(ui.addRadioButton("delete", "Delete the entry for this scriptfile (it will not reappear when Aten restarts)", 0), 1,4));
-			group->addButton(ui.addWidget(ui.addRadioButton("skip", "Do not delete the entry and skip loading this script", 0), 1,5));
+			ui.addWidget(group->addRadioButton("retry", "Retry (changes have just been made to the file)", 1), 1,3);
+			ui.addWidget(group->addRadioButton("delete", "Delete the entry for this scriptfile (it will not reappear when Aten restarts)", 0), 1,4);
+			ui.addWidget(group->addRadioButton("skip", "Do not delete the entry and skip loading this script", 0), 1,5);
 			if (dialog.defaultDialog().execute())
 			{
 				int choice = ui.asInteger("choice");

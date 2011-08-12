@@ -21,7 +21,6 @@
 
 #include "parser/dialog.h"
 #include "parser/stepnode.h"
-//#include "base/constants.h"
 #include "parser/treegui.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -281,4 +280,26 @@ void DialogVariable::printAccessors()
 		for (int n=0; n<DialogVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
 		msg.print("\n");
 	}
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+DialogArrayVariable::DialogArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::DialogData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *DialogArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+{
+	return DialogVariable::accessorSearch(s, arrayindex, arglist);
 }

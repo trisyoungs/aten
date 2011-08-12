@@ -22,7 +22,7 @@
 #ifndef ATEN_WIDGETVARIABLE_H
 #define ATEN_WIDGETVARIABLE_H
 
-#include "parser/variable.h"
+#include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
@@ -30,30 +30,12 @@ class TreeNode;
 class TreeGuiWidget;
 
 // Dialog Variable
-class WidgetVariable : public Variable
+class WidgetVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
 	WidgetVariable(TreeGuiWidget *widget = NULL, bool constant = FALSE);
 	~WidgetVariable();
-
-	/*
-	// Set / Get
-	*/
-	public:
-	// Return value of node
-	bool execute(ReturnValue &rv);
-	// Set from returnvalue node
-	bool set(ReturnValue &rv);
-	// Reset node
-	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
 
 	/*
 	// Access Data
@@ -79,6 +61,21 @@ class WidgetVariable : public Variable
 	static Accessor accessorData[nAccessors];
 	// Function Accessor data
 	static FunctionAccessor functionData[nFunctions];
+};
+
+// Widget Array Variable
+class WidgetArrayVariable : public PointerArrayVariable
+{
+	public:
+	// Constructor / Destructor
+	WidgetArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Search variable access list for provided accessor
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 };
 
 #endif

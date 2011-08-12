@@ -39,24 +39,46 @@ class QtWidgetObject
 	QtWidgetObject *prev, *next;
 	
 	private:
+	// Whether widget(s) are being refreshed
+	static bool refreshing_;
 	// TreeGuiWidget to which Qt widget/object is associated
 	TreeGuiWidget *treeGuiWidget_;
 	// Associated QWidget (if not QObject)
 	QWidget *qWidget_;
 	// Associated QObject (if not QWidget)
 	QObject *qObject_;
-	// Whether widget(s) are being refreshed
-	static bool refreshing_;
+	// Text for associated label
+	Dnchar label_;
+	// Widget's layout, if it has one
+	QGridLayout *layout_;
 
 	public:
 	// Set TreeGuiWidget/QWidget pair
-	void set(TreeGuiWidget *widget, QWidget *wid);
+	void set(TreeGuiWidget *widget, QWidget *wid, const char *label, QGridLayout *layout = NULL);
 	// Set TreeGuiWidget/QObject pair
-	void set(TreeGuiWidget *widget, QObject *obj);
-	// Update associated QWidget / QObject based on treeGuiWidget_ data
-	void update();
+	void set(TreeGuiWidget *widget, QObject *obj, const char *label, QGridLayout *layout = NULL);
 	// Return whether currently refreshing
 	bool refreshing();
+	// Return TreeGuiWidget to which Qt widget/object is associated
+	TreeGuiWidget *treeGuiWidget();
+	// Return associated QWidget (if not QObject)
+	QWidget *qWidget();
+	// Return associated QObject (if not QWidget)
+	QObject *qObject();
+	// Return text for associated label
+	const char *label();
+	// Return widget's layout, if it has one
+	QGridLayout *layout();
+
+
+	/*
+	// Methods
+	*/
+	public:
+	// Update associated QWidget / QObject based on treeGuiWidget_ data
+	void update();
+	// Add widget to the stored layout (provided it has one) at specified geometry
+	bool addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth, int addToHeight);
 };
 
 // Tree Gui Qt Dialog
@@ -91,28 +113,30 @@ class AtenTreeGuiDialog : public QDialog
 	List<QtWidgetObject> widgetObjects_;
 	
 	public:
+	// Create new dialog layout
+	QtWidgetObject *addDialogLayout(TreeGui *widget);
 	// Create new combo widget
-	QWidget *addCombo(TreeGuiWidget *widget, const char *label, const char *items, int index);
+	QtWidgetObject *addCombo(TreeGuiWidget *widget, const char *label);
 	// Create new integer spin widget
-	QWidget *addIntegerSpin(TreeGuiWidget *widget, const char *label, int min, int max, int step, int value);
+	QtWidgetObject *addIntegerSpin(TreeGuiWidget *widget, const char *label, int step);
 	// Create new double spin widget
-	QWidget *addDoubleSpin(TreeGuiWidget *widget, const char *label, double min, double max, double step, double value);
+	QtWidgetObject *addDoubleSpin(TreeGuiWidget *widget, const char *label, double step);
 	// Create new label widget
-	QWidget *addLabel(TreeGuiWidget *widget, const char *text);
+	QtWidgetObject *addLabel(TreeGuiWidget *widget, const char *text);
 	// Create new edit widget
-	QWidget *addEdit(TreeGuiWidget *widget, const char *label, const char *text);
+	QtWidgetObject *addEdit(TreeGuiWidget *widget, const char *label);
 	// Create new checkbox widget
-	QWidget *addCheck(TreeGuiWidget *widget, const char *label, int state);
+	QtWidgetObject *addCheck(TreeGuiWidget *widget, const char *label);
 	// Create new tab widget
-	QWidget *addTabs(TreeGuiWidget *widget);
+	QtWidgetObject *addTabs(TreeGuiWidget *widget);
 	// Create new page (only in tab widget)
-	QWidget *addPage(TreeGuiWidget *widget, const char *label);
+	QtWidgetObject *addPage(TreeGuiWidget *widget, TreeGuiWidget *tabWidget, const char *label);
 	// Create new group box
-	QWidget *addGroup(TreeGuiWidget *widget, const char *label);
+	QtWidgetObject *addGroup(TreeGuiWidget *widget, const char *label);
 	// Create new (invisible) radio group
-	QObject *addRadioGroup(const char *name);
+	QtWidgetObject *addRadioGroup(TreeGuiWidget *widget);
 	// Create new radio button
-	QWidget *addRadioButton(const char *name, const char *label, int state);
+	QtWidgetObject *addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char *name, const char *label, int id);
 	// Perform specified state change
 // 	void performStateChange(StateChange *sc);
 	// Execute (show) dialog

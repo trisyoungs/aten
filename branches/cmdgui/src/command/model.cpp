@@ -251,7 +251,7 @@ bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		ReturnValue value;
 		for (int n = 1; n < parser.nArgs(); ++n)
 		{
-			if (!filter->defaultDialog().setValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+			if (!filter->defaultDialog().setWidgetValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 		}
 	}
 	else filter = aten.probeFile(c->argc(0), FilterData::ModelImport);
@@ -385,7 +385,7 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ReturnValue value;
 	for (int n = 1; n < parser.nArgs(); ++n)
 	{
-		if (!filter->defaultDialog().setValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+		if (!filter->defaultDialog().setWidgetValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 	}
 	
 	obj.rs()->setFilter(filter);

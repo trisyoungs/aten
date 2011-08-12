@@ -530,7 +530,7 @@ int Aten::parseCli(int argc, char *argv[])
 					// Loop over remaining arguments to set filter options
 					for (i = 1; i < parser.nArgs(); ++i)
 					{
-						if (!f->setVariable(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
+						if (!f->defaultDialog().setWidgetValue(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
 					}
 					
 					aten.setExportFilter(f);

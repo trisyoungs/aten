@@ -22,18 +22,8 @@
 #ifndef ATEN_TREEGUI_H
 #define ATEN_TREEGUI_H
 
-//#include <iostream>
-//#include "parser/filterdata.h"
-//#include "parser/returnvalue.h"
-//#include "parser/variable.h"
-//#include "parser/variablelist.h"
-//#include "command/commands.h"
-//#include "templates/namemap.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
-//#include "base/dnchar.h"
-//#include "base/elements.h"
-//#include "base/lineparser.h"
 #include "templates/vector3.h"
 
 // Forward declarations
@@ -90,11 +80,11 @@ class TreeGuiWidget
 	public:
 	// Constructor / Destructor
 	TreeGuiWidget();
-	~TreeGuiWidget();
+	virtual ~TreeGuiWidget();
 	// List pointers
 	TreeGuiWidget *prev, *next;
 	// Widget Types
-	enum WidgetType { ButtonGroupWidget, CheckWidget, ComboWidget, DialogWidget, DoubleSpinWidget, EditWidget, IntegerSpinWidget, LabelWidget, PageWidget,  RadioButtonWidget, StackWidget, TabWidget, nWidgetTypes };
+	enum WidgetType { CheckWidget, ComboWidget, DialogWidget, DoubleSpinWidget, EditWidget, GroupWidget, IntegerSpinWidget, LabelWidget, PageWidget, RadioButtonWidget, RadioGroupWidget, StackWidget, TabWidget, nWidgetTypes };
 	
 	
 	/*
@@ -103,10 +93,8 @@ class TreeGuiWidget
 	private:
 	// Type of widget
 	WidgetType type_;
-	// Pointer to partnered Qt widget (if GUI exists)
-	QWidget *qWidget_;
-	// Pointer to partnered QObject (if any)
-	QObject *qObject_;
+	// Pointer to partnered Qt widget/object (if there is one)
+	QtWidgetObject *qtWidgetObject_;
 	// Local name used for reference and retrieval
 	Dnchar name_;
 	// Parent TreeGui
@@ -122,7 +110,9 @@ class TreeGuiWidget
 	// Return widget parent
 	TreeGui *parent();
 	// Set corresponding Qt QWidget/QObject
-	void setQWidget(QtWidgetObject *widget);
+	void setQtWidgetObject(QtWidgetObject *wo);
+	// Return associated qtWidgetObject
+	QtWidgetObject *qtWidgetObject();
 	
 	
 	/*
@@ -141,6 +131,8 @@ class TreeGuiWidget
 	bool itemsChanged_;
 	// Whether widget is enabled
 	bool enabled_;
+	// Whether widget is visible
+	bool visible_;
 	
 	public:
 	// Set integer properties
@@ -183,6 +175,10 @@ class TreeGuiWidget
 	void setEnabled(bool b);
 	// Return whether widget is enabled
 	bool enabled();
+	// Set whether widget is visible
+	void setVisible(bool b);
+	// Return whether widget is visible
+	bool visible();
 
 
 	/*
@@ -195,9 +191,10 @@ class TreeGuiWidget
 	public:
 	// Add widget to the layout in this widget (if it has one) at specified geometry, returning added widget for convenience
 	TreeGuiWidget *addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth = 0, int addToHeight = 0);
-	// Add button to button group (only valid for ButtonGroupWidget);
-	TreeGuiWidget *addButton(TreeGuiWidget *widget);
-	
+	// Create new radio button (only for RadioGroupWidget)
+	TreeGuiWidget *addRadioButton(const char *name, const char *label, int state);
+	// Create new page (only valid for TabWidget)
+	TreeGuiWidget *addPage(const char *name, const char *label);
 	
 	/*
 	// Value Access and Events
@@ -219,6 +216,8 @@ class TreeGuiWidget
 	bool setValue(double d);
 	// Set widget value from character string (and perform events)
 	bool setValue(const char *s);
+	// Check widget's events and act on them if necessary
+	void checkWidgetEvents();
 };
 
 // TreeGui
@@ -240,6 +239,8 @@ class TreeGui : public TreeGuiWidget
 	List<TreeGuiWidget> widgets_;
 	// Qt dialog containing ready-created set of controls
 	AtenTreeGuiDialog *qtTreeGui_;
+	// Create basic widget of specified type
+	TreeGuiWidget *createWidget(const char *name, TreeGuiWidget::WidgetType type);
 
 	public:
 	// Return number of defined widgets in GUI
@@ -260,14 +261,14 @@ class TreeGui : public TreeGuiWidget
 	TreeGuiWidget *addCheck(const char *name, const char *label, int state);
 	// Create new tab widget
 	TreeGuiWidget *addTabs(const char *name);
-	// Create new page (only in tab widget)
-	TreeGuiWidget *addPage(const char *label);
 	// Create new group box
-	TreeGuiWidget *addGroup(const char *name);
+	TreeGuiWidget *addGroup(const char *name, const char *label);
 	// Create new (invisible) radio group
 	TreeGuiWidget *addRadioGroup(const char *name);
-	// Create new radio button
-	TreeGuiWidget *addRadioButton(const char *name, const char *label, int state);
+	// Create new page in specified tab (called by TreeGuiWidget)
+	TreeGuiWidget *addPageToTab(const char *name, const char *label, TreeGuiWidget *tabWidget);
+	// Create new radio button in specified radio group (called by TreeGuiWidget)
+	TreeGuiWidget *addButtonToGroup(const char *name, const char *label, TreeGuiWidget *groupWidget, int buttonId);
 
 
 	/*
@@ -275,13 +276,11 @@ class TreeGui : public TreeGuiWidget
 	*/
 	public:
 	// Set named widget's value from integer
-	bool setValue(const char* name, int i);
+	bool setWidgetValue(const char* name, int i);
 	// Set named widget's value from double
-	bool setValue(const char *name, double d);
+	bool setWidgetValue(const char *name, double d);
 	// Set named widget's value from string
-	bool setValue(const char *name, const char *s);
-	// Set widget value from character string (and perform events)
-	virtual bool setValue(const char *s);
+	bool setWidgetValue(const char *name, const char *s);
 	// Return value in named widget as integer
 	int asInteger(const char *name);
 	// Return value in named widget as double
