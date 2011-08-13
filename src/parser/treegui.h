@@ -40,6 +40,8 @@ class TreeGuiWidgetEventAction
 	~TreeGuiWidgetEventAction();
 	// List pointers
 	TreeGuiWidgetEventAction *prev, *next;
+	
+// 		private:
 };
 
 // Widget Event
@@ -66,12 +68,20 @@ class TreeGuiWidgetEvent
 	Dnchar matchS_;
 	
 	public:
+	// Return qualifier type
+	TreeGuiWidgetEvent::EventQualifier type();
 	// Set integer qualifying event
 	void setQualifier(int min, int max);
 	// Set double qualifying event
 	void setQualifier(double min, double max);
 	// Set string qualifying event
 	void setQualifier(const char *s);
+	// Return whether supplied integer value qualifies
+	bool qualifies(int i);
+	// Return whether supplied double value qualifies
+	bool qualifies(double d);
+	// Return whether supplied character value qualifies
+	bool qualifies(const char *s);
 };
 
 // Widget in TreeGui
@@ -188,14 +198,35 @@ class TreeGuiWidget
 	// List of buttons contained within this widget (if ButtonGroupWidget)
 	Reflist<TreeGuiWidget,int> buttonList_;
 
-	public:
+	private:
 	// Add widget to the layout in this widget (if it has one) at specified geometry, returning added widget for convenience
-	TreeGuiWidget *addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth = 0, int addToHeight = 0);
-	// Create new radio button (only for RadioGroupWidget)
-	TreeGuiWidget *addRadioButton(const char *name, const char *label, int state);
+	void addWidget(TreeGuiWidget* widget, int left, int top, int addToWidth = 0, int addToHeight = 0);
+
+	public:
+	// Create new combo widget
+	TreeGuiWidget *addCombo(const char *name, const char *label, const char *items, int index, int l, int t, int xw = 0, int xh = 0);
+	// Create new integer spin widget
+	TreeGuiWidget *addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value, int l, int t, int xw = 0, int xh = 0);
+	// Create new double spin widget
+	TreeGuiWidget *addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value, int l, int t, int xw = 0, int xh = 0);
+	// Create new label widget
+	TreeGuiWidget *addLabel(const char* text, int l, int t, int xw = 0, int xh = 0);
+	// Create new edit widget
+	TreeGuiWidget *addEdit(const char *name, const char *label, const char *text, int l, int t, int xw = 0, int xh = 0);
+	// Create new checkbox widget
+	TreeGuiWidget *addCheck(const char *name, const char *label, int state, int l, int t, int xw = 0, int xh = 0);
+	// Create new tab widget
+	TreeGuiWidget *addTabs(const char *name, int l, int t, int xw = 0, int xh = 0);
+	// Create new group box
+	TreeGuiWidget *addGroup(const char *name, const char *label, int l, int t, int xw = 0, int xh = 0);
+	// Create new (invisible) radio group
+	TreeGuiWidget *addRadioGroup(const char *name);
+	// Create new radio button in specified group
+	TreeGuiWidget *addRadioButton(const char* name, const char* label, const char *radioGroup, int state, int l, int t, int xw = 0, int xh = 0);
 	// Create new page (only valid for TabWidget)
 	TreeGuiWidget *addPage(const char *name, const char *label);
-	
+
+
 	/*
 	// Value Access and Events
 	*/
@@ -229,7 +260,9 @@ class TreeGui : public TreeGuiWidget
 	~TreeGui();
 	// List pointers
 	TreeGui *prev, *next;
-
+	// Friend classes
+	friend class TreeGuiWidget;
+	
 
 	/*
 	// Widgets
@@ -239,36 +272,20 @@ class TreeGui : public TreeGuiWidget
 	List<TreeGuiWidget> widgets_;
 	// Qt dialog containing ready-created set of controls
 	AtenTreeGuiDialog *qtTreeGui_;
+	
+	protected:
+	// Return qtTreeGui pointer
+	AtenTreeGuiDialog *qtTreeGui();
 	// Create basic widget of specified type
 	TreeGuiWidget *createWidget(const char *name, TreeGuiWidget::WidgetType type);
+	// Search for named widget
+	TreeGuiWidget *findWidget(const char *name);
+	// Create new page in specified tab (called by TreeGuiWidget)
+	TreeGuiWidget *addPageToTab(const char *name, const char *label, TreeGuiWidget *tabWidget);
 
 	public:
 	// Return number of defined widgets in GUI
 	int nWidgets();
-	// Search for named widget
-	TreeGuiWidget *findWidget(const char *name);
-	// Create new combo widget
-	TreeGuiWidget *addCombo(const char *name, const char *label, const char *items, int index);
-	// Create new integer spin widget
-	TreeGuiWidget *addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value);
-	// Create new double spin widget
-	TreeGuiWidget *addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value);
-	// Create new label widget
-	TreeGuiWidget *addLabel(const char* text);
-	// Create new edit widget
-	TreeGuiWidget *addEdit(const char *name, const char *label, const char *text);
-	// Create new checkbox widget
-	TreeGuiWidget *addCheck(const char *name, const char *label, int state);
-	// Create new tab widget
-	TreeGuiWidget *addTabs(const char *name);
-	// Create new group box
-	TreeGuiWidget *addGroup(const char *name, const char *label);
-	// Create new (invisible) radio group
-	TreeGuiWidget *addRadioGroup(const char *name);
-	// Create new page in specified tab (called by TreeGuiWidget)
-	TreeGuiWidget *addPageToTab(const char *name, const char *label, TreeGuiWidget *tabWidget);
-	// Create new radio button in specified radio group (called by TreeGuiWidget)
-	TreeGuiWidget *addButtonToGroup(const char *name, const char *label, TreeGuiWidget *groupWidget, int buttonId);
 
 
 	/*

@@ -25,6 +25,8 @@
 #include "main/aten.h"
 #include "base/sysfunc.h"
 
+bool QtWidgetObject::refreshing_ = FALSE;
+
 /*
 // Qt/TreeGuiWidget Map Object
 */

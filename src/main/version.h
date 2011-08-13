@@ -23,8 +23,8 @@
 #define ATEN_VERSION_H
 
 #define ATENVERSION "1.8"
-#define ATENREVISION "1717"
-#define ATENDATE "Fri 12 Aug - 19:17"
+#define ATENREVISION "1718"
+#define ATENDATE "Sat 13 Aug - 17:43"
 #define ATENURL "http://aten.googlecode.com/svn/branches/cmdgui"
 
 #endif
