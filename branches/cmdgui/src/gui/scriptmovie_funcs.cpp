@@ -85,9 +85,9 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	Tree dialog;
 	TreeGui &ui = dialog.defaultDialog();
 	ui.setValue("Movie Options");
-	ui.addWidget(ui.addEdit("geometry", "Image Geometry", geometry),1,1);
-	ui.addWidget(ui.addIntegerSpin("maxframes", "Maximum Frames", 1, 1e6, 100, 1000),1,2);
-	ui.addWidget(ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25),1,2);
+	ui.addEdit("geometry", "Image Geometry", geometry,1,1);
+	ui.addIntegerSpin("maxframes", "Maximum Frames", 1, 1e6, 100, 1000 ,1,2);
+	ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,2);
 
 	if (!dialog.defaultDialog().execute()) return;
 

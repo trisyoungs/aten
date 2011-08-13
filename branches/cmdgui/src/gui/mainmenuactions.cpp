@@ -233,12 +233,12 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	TreeGuiWidget *group, *w;
 	TreeGui &ui = dialog.defaultDialog();
 	ui.setValue("Save Image Options");
-	ui.addWidget(ui.addEdit("geometry", "Image Size", geometry.get()),1,1);
+	ui.addEdit("geometry", "Image Size", geometry.get(),1,1);
 	group = ui.addRadioGroup("framechoice");
-	ui.addWidget(group->addRadioButton("noframes", "No Frames", 1), 1,2);
-	ui.addWidget(group->addRadioButton("framemodel", "Frame Current Model", 0), 1,3);
-	ui.addWidget(group->addRadioButton("frameview", "Frame Whole View", 0), 1,4);
-	ui.addWidget(group->addRadioButton("frameboth", "Frame Current Model and View", 0), 1,5);
+	ui.addRadioButton("noframes", "No Frames", "framechoice", 1, 1,2);
+	ui.addRadioButton("framemodel", "Frame Current Model", "framechoice", 0, 1,3);
+	ui.addRadioButton("frameview", "Frame Whole View", "framechoice", 0, 1,4);
+	ui.addRadioButton("frameboth", "Frame Current Model and View", "framechoice", 0, 1,5);
 	
 	// Poke values into dialog widgets and execute
 	ui.setWidgetValue("framechoice", framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) );
@@ -350,10 +350,10 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 	Tree dialog;
 	TreeGui &ui = dialog.defaultDialog();
 	ui.setValue("Paste Translated");
-	ui.addWidget(ui.addLabel("Center of geometry of pasted atoms:"), 1, 1);
-	ui.addWidget(ui.addDoubleSpin("newx", "New X", -1e6, 1e6, 1, 0.0),1,2);
-	ui.addWidget(ui.addDoubleSpin("newy", "New Y", -1e6, 1e6, 1, 0.0),1,3);
-	ui.addWidget(ui.addDoubleSpin("newz", "New Z", -1e6, 1e6, 1, 0.0),1,4);
+	ui.addLabel("Center of geometry of pasted atoms:", 1, 1);
+	ui.addDoubleSpin("newx", "New X", -1e6, 1e6, 1, 0.0 ,1,2);
+	ui.addDoubleSpin("newy", "New Y", -1e6, 1e6, 1, 0.0 ,1,3);
+	ui.addDoubleSpin("newz", "New Z", -1e6, 1e6, 1, 0.0 ,1,4);
 	
 // 	static Tree dialog("Paste Translated", "option('Center of geometry of pasted atoms:', 'label', 'labelspan=6', 'left'); option('X', 'doublespin', -1e6, 1e6, 0.0, 1.0, 'newline'); option('Y', 'doublespin', -1e6, 1e6, 0.0, 1.0); option('Z', 'doublespin', -1e6, 1e6, 0.0, 1.0);");
 	// Run the custom dialog
@@ -789,11 +789,11 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	Tree dialog;
 	TreeGui &ui = dialog.defaultDialog();
 	ui.setValue("Movie Options");
-	ui.addWidget(ui.addEdit("geometry", "Image Geometry", geometry),1,1);
-	ui.addWidget(ui.addIntegerSpin("firstframe", "First Frame", 1, m->nTrajectoryFrames(), 1, 1),1,2);
-	ui.addWidget(ui.addIntegerSpin("lastframe", "Last Frame", 1, m->nTrajectoryFrames(), 1, m->nTrajectoryFrames()),1,3);
-	ui.addWidget(ui.addIntegerSpin("frameskip", "Frame Skip", 0, 1e6, 1, 0),1,4);
-	ui.addWidget(ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25),1,5);
+	ui.addEdit("geometry", "Image Geometry", geometry ,1,1);
+	ui.addIntegerSpin("firstframe", "First Frame", 1, m->nTrajectoryFrames(), 1, 1 ,1,2);
+	ui.addIntegerSpin("lastframe", "Last Frame", 1, m->nTrajectoryFrames(), 1, m->nTrajectoryFrames(),1,3);
+	ui.addIntegerSpin("frameskip", "Frame Skip", 0, 1e6, 1, 0 ,1,4);
+	ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,5);
 	
 	if (!dialog.defaultDialog().execute()) return;
 

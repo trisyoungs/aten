@@ -391,19 +391,99 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	#
 	# GUI Control Definitions
 	#
+	void defaultUi()
+	{
+		dialog ui = defaultdialog("GAMESS-US Export Options");
+		widget group, w;
+		# General control options group ($CONTRL)
+		group = ui.addGroup("Job Control ($CONTRL)", 1, 1);
+		group.addCombo("contrl_runtyp", "Run Type", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, 1, 1);
+		group.addCombo("contrl_scftyp", "SCF Type", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, 3, 1);
+		group.addIntegerSpin("contrl_mult", "Multiplicity", 1, 8, 1, 1, 5, 1);
+		group.addIntegerSpin("contrl_charge", "Charge", -1000, 1000, 1, 0, 7, 1);
+		group.addCombo("contrl_dfttyp", "DFT Type", "NONE,SVWN,BLYP,PW91,B97-D,PBE,PBEsol,B3LYP,X3LYP,PBE0,TPSS,TPSSm,TPSSh,M06,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, 1, 2);
+		group.addCombo("contrl_tddft", "TDDFT Type", "NONE,EXCITE", 1, 3, 2);
+		group.addCombo("contrl_mplevl", "MP Level", "0,2", 1, 5, 2);
+		group.addCombo("contrl_cityp", "CI Type", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, 7, 2);
+		group.addCombo("contrl_cctyp", "CC Type", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, 1, 3);
+	string contrl_relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
+	string contrl_exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
+	string contrl_pp = option("Pseudo", "combo", "NONE,READ,SBKJC,HW,MCP", 1, "group=Job Control ($CONTRL)");
+	string contrl_coord = option("Coord Type", "combo", "CART,ZMT", 1, "group=Job Control ($CONTRL)", "newline");
+	int cart_symbols = option("Use Symbols", "check", 1, "group=Job Control ($CONTRL)", "span=2");
+	int contrl_maxit = option("Max SCF It.", "intspin", 1,1000,10,30, "group=Job Control ($CONTRL)");
 
-	dialog ui = createDialog("GAMESS-US Export Options");
-	widget layout, w;
-	# General control options group ($CONTRL)
-	ui.addWidget(layout = ui.addGroup("Job Control ($CONTRL)"), 1, 1, 0, 0);
-	layout.addWidget(ui.addCombo("contrl_runtyp", "Run Type", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5), 1, 1, 1, 1);
-	
+	# Basis set specification ($BASIS)
+	string basis_gbasis = option("Basis", "combo", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, "group=Basis Set ($BASIS)", "newline");
+	int basis_ngauss = option("NGAUSS", "intspin", 3,8,1,6, "group=Basis Set ($BASIS)");
+	int basis_ndfunc = option("NDFUNC", "intspin", 0,3,1,0, "group=Basis Set ($BASIS)");
+	int basis_npfunc = option("NPFUNC", "intspin", 0,3,1,0, "group=Basis Set ($BASIS)");
+	int basis_nffunc = option("NFFUNC", "intspin", 0,1,1,0, "group=Basis Set ($BASIS)");
+	string basis_diffsp = option("DIFFSP", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
+	string basis_diffs = option("DIFFS", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
 
-	#tabs = ui.addTabs();
-	#widget w = tabs.addPage("Job Control ($CONTRL)");
-	int result = ui.runAndFree();
+	# DFT options ($DFT), placed in 'opts' tab
+	string dftgrid = option("DFT Method", "combo", "GRID,GRIDFREE", 1, "state=GRID@DFT Type?originalitems", "state=GRIDFREE@DFT Type?items=NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP", "tab=$DFT@opts", "newline");
+
+	# Stationary point location options ($STATPT), placed in 'opts' tabs
+	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");
+	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
+	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 5, 20, "tab=$STATPT@opts");
+	int statpt_ifolow = option("IFOLOW", "intspin", 1, 100000, 1, 1, "tab=$STATPT@opts", "newline");
+	string statpt_stpt = option("STPT", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
+	double statpt_ststep = option("STSTEP", "doublespin", 0.0, 1.0, 0.005, 0.01, "tab=$STATPT@opts");
+	string statpt_ifreez = option("IFREEZ", "edit", "", "tab=$STATPT@opts", "newline", "span=5");
+	string statpt_hess = option("HESS", "combo", "GUESS,READ,RDAB,RDALL,CALC", 1, "tab=$STATPT@opts", "newline");
+	int statpt_ihrep = option("IHREP", "intspin", 0, 1000, 1, 0, "tab=$STATPT@opts");
+	string statpt_hssend = option("HSSEND", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
+
+	# Intrinsic reaction coordinate run ($IRC), place in 'opts' tabs
+	string irc_forwrd = option("Forward", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
+	string irc_saddle = option("Saddle", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
+	double irc_stride = option("Stride", "doublespin", 0.001, 1.0, 0.05, 0.3, "tab=$IRC@opts");
+	int irc_npoint = option("NPoint", "intspin", 1, 1000, 5, 1, "tab=$IRC@opts");
+	string irc_pace = option("Pace", "combo", "GS2,LINEAR,QUAD,AMPC4,RK4", 1, "tab=$IRC@opts", "newline");
+
+	# Electron density calculation ($ELDENS), placed in 'opts' tabs
+	int eldens_ieden = option("Calculate", "check", 0, "tab=$ELDENS@opts", "newline");
+	int eldens_morb = option("MORB", "intspin", 0, 10000, 1, 0, "tab=$ELDENS@opts");
+	string eldens_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID", 2, "tab=$ELDENS@opts");
+	string eldens_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH", 3, "tab=$ELDENS@opts");
+
+	# Electrostatic potential calculation ($ELPOT), placed in 'opts' tabs
+	int elpot_iepot = option("Calculate", "check", 0, "tab=$ELPOT@opts", "newline");
+	string elpot_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, "tab=$ELPOT@opts");
+	string elpot_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH,NONE", 3, "tab=$ELPOT@opts");
+
+	# Point selection ($PDC), placed in 'opts' tabs
+	string pdc_ptsel = option("PTSEL", "combo", "GEODESIC,CONNOLLY,CHELPG", 1, "tab=$PDC@opts");
+	string pdc_constr = option("CONSTR", "combo", "NONE,CHARGE,DIPOLE,QUPOLE", 2, "tab=$PDC@opts");
+
+	# Grid specification ($GRID), placed in 'opts' tabs
+	int grid_modgrd = option("3D Grid", "check", 0, "tab=$GRID@opts", "newline");
+	double grid_size = option("Grid Increment", "doublespin", 0.00001, 2.0, 0.1, 0.25, "tab=$GRID@opts");
+	option("ORIGIN", "label", "newline", "tab=$GRID@opts");
+	double grid_originx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	double grid_originy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	double grid_originz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	option("XVEC", "label", "newline", "tab=$GRID@opts");
+	double grid_xvecx = option("X", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
+	double grid_xvecy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	double grid_xvecz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	option("YVEC", "label", "newline", "tab=$GRID@opts");
+	double grid_yvecx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	double grid_yvecy = option("Y", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
+	double grid_yvecz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	option("ZVEC", "label", "newline", "tab=$GRID@opts");
+	double grid_zvecx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	double grid_zvecy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
+	double grid_zvecz = option("Z", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
+
+	# PCM options ($PCM), placed in 'opts' tab
+	string pcm_solvnt = option("Solvent", "combo", "NONE,WATER,CH3OH,CLFORM,METHYCL,BENZENE,CLBENZ,NEPTANE,ANILINE,C2H5OH,CTCL,12DCLET,TOLUENE,NITMET,CYCHEX,ACETONE", 1, "tab=$PCM@opts", "newline");
 
 
+XXXX
 	string contrl_runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
 	string contrl_scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
 	int contrl_mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");

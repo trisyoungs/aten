@@ -19,27 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "gui/customdialog.h"
-// #include "parser/treenode.h"
 #include "parser/scopenode.h"
-// #include "parser/commandnode.h"
-// #include "parser/usercommandnode.h"
 #include "parser/variablenode.h"
 #include "parser/stepnode.h"
-// // #include "parser/widgetnode.h"
-// #include "parser/grammar.h"
-// #include "parser/parser.h"
 #include "parser/tree.h"
 #include "parser/character.h"
-// #include "parser/vector.h"
 #include "parser/element.h"
-// #include "parser/integer.h"
-// #include "parser/double.h"
-// #include "model/model.h"
-// #include "base/sysfunc.h"
 #include "classes/prefs.h"
 #include "main/aten.h"
-// #include <stdarg.h>
 
 // Constructors
 Tree::Tree()
