@@ -185,7 +185,6 @@ void Command::initPointers()
 	pointers_[Undo] = &Command::function_Undo;
 
 	// Energy Commands
-	pointers_[ECut] = &Command::function_ECut;
 	pointers_[Electrostatics] = &Command::function_Electrostatics;
 	pointers_[FrameEnergy] = &Command::function_FrameEnergy;
 	pointers_[ModelEnergy] = &Command::function_ModelEnergy;
@@ -196,7 +195,6 @@ void Command::initPointers()
 	pointers_[PrintEnergy] = &Command::function_PrintEnergy;
 	pointers_[PrintSummary] = &Command::function_PrintSummary;
 	pointers_[PrintVdw] = &Command::function_PrintVdw;
-	pointers_[VCut] = &Command::function_VCut;
 
 	// Flow control
 	pointers_[If] = &function_If;
@@ -329,10 +327,6 @@ void Command::initPointers()
 	pointers_[Tan] = &Command::function_Tan;
 
 	// MC Commands
-	pointers_[MCAccept] = &Command::function_MCAccept;
-	pointers_[MCAllow] = &Command::function_MCAllow;
-	pointers_[MCMaxStep] = &Command::function_MCMaxStep;
-	pointers_[MCNTrials] = &Command::function_MCNTrials;
 	pointers_[PrintMC] = &Command::function_PrintMC;
 
 	// Measurement Commands

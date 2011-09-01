@@ -42,9 +42,9 @@ class DialogVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Title, nAccessors };
+	enum Accessors { Enabled, Title, VerticalFill, Visible, nAccessors };
 	// Function list
-	enum Functions { AddCheck, AddCombo, ADdDoubleSpin, AddEdit, ADdGroup, AddIntegerSpin, AddLabel, AddPage, ADdRadioButton, AddRadioGroup, AddTabs, AddWidget, nFunctions };
+	enum Functions { AddButton, AddCheck, AddCombo, AddDoubleSpin, AddEdit, AddFrame, AddGroup, AddIntegerSpin, AddLabel, AddPage, AddRadioButton, AddRadioGroup, AddStack, AddTabs, Widget, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

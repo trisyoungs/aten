@@ -66,11 +66,11 @@ Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
 // Function data
 FunctionAccessor GlyphVariable::functionData[GlyphVariable::nFunctions] = {
 	{ "recolour",		VTypes::NoData,		"NNNn",	"double r, double g, double b, double a = 1.0" },
-	{ "resetrotation",	VTypes::NoData,		"",	"" },
+	{ "resetRotation",	VTypes::NoData,		"",	"" },
 	{ "rotate",		VTypes::NoData,		"NNNN",	"double x, double y, double z, double angle" },
-	{ "rotatex",		VTypes::NoData,		"N",	"double angle" },
-	{ "rotatey",		VTypes::NoData,		"N",	"double angle" },
-	{ "rotatez",		VTypes::NoData,		"N",	"double angle" }
+	{ "rotateX",		VTypes::NoData,		"N",	"double angle" },
+	{ "rotateY",		VTypes::NoData,		"N",	"double angle" },
+	{ "rotateZ",		VTypes::NoData,		"N",	"double angle" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -85,12 +85,13 @@ StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 	msg.enter("GlyphVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'glyph&' has no member or function named '%s'.\n", s);
 			printAccessors();

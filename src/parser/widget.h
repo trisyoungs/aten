@@ -42,9 +42,9 @@ class WidgetVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Elements, nAccessors };
+	enum Accessors { Enabled, VerticalFill, Visible, nAccessors };
 	// Function list
-	enum Functions { ConvertEnergy, FindElement, nFunctions };
+	enum Functions { AddButton, AddCheck, AddCombo, AddDoubleSpin, AddEdit, AddFrame, AddGroup, AddIntegerSpin, AddLabel, AddPage, AddRadioButton, AddRadioGroup, AddStack, AddTabs, OnDouble, OnInteger, OnString, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

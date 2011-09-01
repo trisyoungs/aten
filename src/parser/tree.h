@@ -237,6 +237,8 @@ class Tree
 	LineParser *parser_;
 	// Flag to indicate that recent failure of this token is known and we should continue
 	Command::Function acceptedFail_;
+	// Number of times tree has been run
+	int runCount_;
 
 	public:
 	// Add read option
@@ -267,6 +269,8 @@ class Tree
 	bool executeRead(const char *filename);
 	// Execute, with specified filename as data target (no return value)
 	bool executeWrite(const char *filename);
+	// Return number of times tree has been run
+	int runCount();
 };
 
 #endif

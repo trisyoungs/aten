@@ -25,8 +25,6 @@
 #include "main/aten.h"
 #include "base/sysfunc.h"
 
-bool QtWidgetObject::refreshing_ = FALSE;
-
 /*
 // Qt/TreeGuiWidget Map Object
 */
@@ -43,30 +41,27 @@ QtWidgetObject::QtWidgetObject()
 	qWidget_ = NULL;
 	qObject_ = NULL;
 	layout_ = NULL;
+	labelWidget_ = NULL;
+	nextLeft_ = 0;
+	nextTop_ = 0;
+	autoFillVertical_ = FALSE;
 }
 
 // Set TreeGuiWidget/QWidget pair
-void QtWidgetObject::set(TreeGuiWidget *widget, QWidget *wid, const char *label, QGridLayout* layout)
+void QtWidgetObject::set(TreeGuiWidget *widget, QWidget *wid, const char *label, QGridLayout *layout)
 {
 	treeGuiWidget_ = widget;
 	qWidget_ = wid;
-	label_ = label;
+	labelText_ = label;
 	layout_ = layout;
 }
 
 // Set TreeGuiWidget/QObject pair
-void QtWidgetObject::set(TreeGuiWidget* widget, QObject* obj, const char* label, QGridLayout* layout)
+void QtWidgetObject::set(TreeGuiWidget* widget, QObject* obj)
 {
 	treeGuiWidget_ = widget;
 	qObject_ = obj;
-	label_ = label;
-	layout_ = layout;
-}
-
-// Return whether currently refreshing
-bool QtWidgetObject::refreshing()
-{
-	return refreshing_;
+	layout_ = NULL;
 }
 
 // Return TreeGuiWidget to which Qt widget/object is associated
@@ -87,32 +82,129 @@ QObject *QtWidgetObject::qObject()
 	return qObject_;
 }
 
-// Return text for associated label
-const char *QtWidgetObject::label()
-{
-	return label_.get();
-}
-
 // Return widget's layout, if it has one
 QGridLayout *QtWidgetObject::layout()
 {
 	return layout_;
 }
 
-// Update associated QWidget / QObject based on treeGuiWidget_ data
-void QtWidgetObject::update()
+// Return whether to add widgets horizontally or vertically when using automatic fill
+bool QtWidgetObject::autoFillVertical()
 {
-	refreshing_ = TRUE;
+	return autoFillVertical_;
+}
+
+// Set whether to add widgets horizontally or vertically when using automatic fill
+void QtWidgetObject:: setAutoFillVertical(bool b)
+{
+	autoFillVertical_ = b;
+}
+
+// Update associated QWidget / QObject based on treeGuiWidget_ data
+void QtWidgetObject::updateQt()
+{
 	// Check treeGuiWidget_ pointer first
 	if (treeGuiWidget_ == NULL)
 	{
 		printf("Critical Error: treeGuiWidget_ pointer has not been set in QtWidgetObject.\n");
 		return;
 	}
-	// Now, check widget type to see what we do
-	if (treeGuiWidget_->type() == TreeGuiWidget::RadioGroupWidget)
+
+	// Do generic properties here
+	if (qWidget_ != NULL)
 	{
-		QButtonGroup *butgroup = (QButtonGroup*) qObject_;
+		qWidget_->setEnabled(treeGuiWidget_->enabled());
+		qWidget_->setVisible(treeGuiWidget_->visible());
+		// And corresponding label
+		if (labelWidget_ != NULL)
+		{
+			labelWidget_->setEnabled(treeGuiWidget_->enabled());
+			labelWidget_->setVisible(treeGuiWidget_->visible());
+		}
+	}
+
+	// Now, check widget type to see what we do
+	if (treeGuiWidget_->type() == TreeGuiWidget::ButtonWidget)
+	{
+		QPushButton *button = static_cast<QPushButton*>(qWidget_);
+		if (!button) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QPushButton.\n");
+	}
+	else if (treeGuiWidget_->type() == TreeGuiWidget::CheckWidget)
+	{
+		QCheckBox *check = static_cast<QCheckBox*>(qWidget_);
+		if (!check) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QCheckBox.\n");
+		else
+		{
+			check->setChecked(treeGuiWidget_->valueI() == 1);
+		}
+	}
+	else if (treeGuiWidget_->type() == TreeGuiWidget::ComboWidget)
+	{
+		QComboBox *combo = static_cast<QComboBox*>(qWidget_);
+		if (!combo) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QComboBox.\n");
+		else
+		{
+			// Has items list been modified since last update
+			if (treeGuiWidget_->propertyChanged(TreeGuiWidgetEvent::ItemsProperty))
+			{
+				combo->clear();
+				for (Dnchar *d = treeGuiWidget_->items(); d != NULL; d = d->next) combo->addItem(d->get());
+				treeGuiWidget_->resetChanged(TreeGuiWidgetEvent::ItemsProperty);
+			}
+			// Set current index
+			combo->setCurrentIndex(treeGuiWidget_->valueI()-1);
+		}
+	}
+	else if (treeGuiWidget_->type() == TreeGuiWidget::DoubleSpinWidget)
+	{
+		QDoubleSpinBox *spin = static_cast<QDoubleSpinBox*>(qWidget_);
+		if (!spin) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QDoubleSpinBox.\n");
+		else
+		{
+			spin->setRange(treeGuiWidget_->minimumD(), treeGuiWidget_->maximumD());
+			spin->setValue(treeGuiWidget_->valueD());
+		}
+	}
+	else if (treeGuiWidget_->type() == TreeGuiWidget::EditWidget)
+	{
+		QTextEdit *edit = static_cast<QTextEdit*>(qWidget_);
+		if (!edit) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QTextEdit.\n");
+		else
+		{
+			edit->setText(treeGuiWidget_->text());
+		}
+	}
+	else if (treeGuiWidget_->type() == TreeGuiWidget::IntegerSpinWidget)
+	{
+		QSpinBox *spin = static_cast<QSpinBox*>(qWidget_);
+		if (!spin) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QSpinBox.\n");
+		else
+		{
+			spin->setRange(treeGuiWidget_->minimumI(), treeGuiWidget_->maximumI());
+			spin->setValue(treeGuiWidget_->valueI());
+		}
+	}
+	else if (treeGuiWidget_->type() == TreeGuiWidget::LabelWidget)
+	{
+		QLabel *label = static_cast<QLabel*>(qWidget_);
+		if (!label) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QLabel.\n");
+		else
+		{
+			label->setText(treeGuiWidget_->text());
+		}
+	}
+	else if (treeGuiWidget_->type() == TreeGuiWidget::RadioButtonWidget)
+	{
+		QRadioButton *button = static_cast<QRadioButton*>(qWidget_);
+		if (!button) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QRadioButton.\n");
+		else
+		{
+			button->setChecked(treeGuiWidget_->valueI() == 1);
+		}
+	}
+	else if (treeGuiWidget_->type() == TreeGuiWidget::RadioGroupWidget)
+	{
+		QButtonGroup *butgroup = static_cast<QButtonGroup*>(qObject_);
 		if (!butgroup) printf("Critical Error: Couldn't cast stored qObject_ pointer into QButtonGroup.\n");
 		else
 		{
@@ -121,100 +213,72 @@ void QtWidgetObject::update()
 			else button->setChecked(TRUE);
 		}
 	}
+}
+
+// Update associated CLI widget based on QWidget / QObject data
+void QtWidgetObject::updateCLI()
+{
+	// Check treeGuiWidget_ pointer first
+	if (treeGuiWidget_ == NULL)
+	{
+		printf("Internal Error: treeGuiWidget_ pointer is NULL in updateCLI().\n");
+		return;
+	}
+
+	// Now, check widget type to see what we do
+	if (treeGuiWidget_->type() == TreeGuiWidget::RadioGroupWidget)
+	{
+		QButtonGroup *butgroup = static_cast<QButtonGroup*>(qObject_);
+		if (!butgroup) printf("Critical Error: Couldn't cast stored qObject_ pointer into QButtonGroup.\n");
+		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, butgroup->checkedId());
+		printf("RG SET id = %i\n", butgroup->checkedId());
+	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::CheckWidget)
 	{
-		QCheckBox *check = (QCheckBox*) qWidget_;
+		QCheckBox *check = static_cast<QCheckBox*>(qWidget_);
 		if (!check) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QCheckBox.\n");
-		else
-		{
-			check->setChecked(treeGuiWidget_->valueI() == 1);
-			check->setEnabled(treeGuiWidget_->enabled());
-			check->setVisible(treeGuiWidget_->visible());
-		}
+		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, check->isChecked());
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::ComboWidget)
 	{
-		QComboBox *combo = (QComboBox*) qWidget_;
+		QComboBox *combo = static_cast<QComboBox*>(qWidget_);
 		if (!combo) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QComboBox.\n");
-		else
-		{
-			// Has items list been modified since last update
-			if (treeGuiWidget_->itemsChanged())
-			{
-				combo->clear();
-				for (Dnchar *d = treeGuiWidget_->items(); d != NULL; d = d->next) combo->addItem(d->get());
-				treeGuiWidget_->resetItemsChanged();
-			}
-			// Set current index
-			combo->setCurrentIndex(treeGuiWidget_->valueI());
-			// Set enabled and visible properties
-			combo->setEnabled(treeGuiWidget_->enabled());
-			combo->setVisible(treeGuiWidget_->visible());
-		}
+		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, combo->currentIndex()+1);
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::DoubleSpinWidget)
 	{
-		QDoubleSpinBox *spin = (QDoubleSpinBox*) qWidget_;
+		QDoubleSpinBox *spin = static_cast<QDoubleSpinBox*>(qWidget_);
 		if (!spin) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QDoubleSpinBox.\n");
-		else
-		{
-			spin->setRange(treeGuiWidget_->minimumD(), treeGuiWidget_->maximumD());
-			spin->setValue(treeGuiWidget_->valueD());
-			spin->setEnabled(treeGuiWidget_->enabled());
-			spin->setVisible(treeGuiWidget_->visible());
-		}
+		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, spin->value());
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::EditWidget)
 	{
-		QTextEdit *edit = (QTextEdit*) qWidget_;
+		QLineEdit *edit = static_cast<QLineEdit*>(qWidget_);
 		if (!edit) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QTextEdit.\n");
-		else
-		{
-			edit->setText(treeGuiWidget_->text());
-			edit->setEnabled(treeGuiWidget_->enabled());
-			edit->setVisible(treeGuiWidget_->visible());
-		}
+		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, qPrintable(edit->text()));
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::IntegerSpinWidget)
 	{
-		QSpinBox *spin = (QSpinBox*) qWidget_;
+		QSpinBox *spin = static_cast<QSpinBox*>(qWidget_);
 		if (!spin) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QSpinBox.\n");
-		else
-		{
-			spin->setRange(treeGuiWidget_->minimumI(), treeGuiWidget_->maximumI());
-			spin->setValue(treeGuiWidget_->valueI());
-			spin->setEnabled(treeGuiWidget_->enabled());
-			spin->setVisible(treeGuiWidget_->visible());
-		}
+		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, spin->value());
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::LabelWidget)
 	{
-		QLabel *label = (QLabel*) qWidget_;
+		QLabel *label = static_cast<QLabel*>(qWidget_);
 		if (!label) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QLabel.\n");
-		else
-		{
-			label->setText(treeGuiWidget_->text());
-			label->setEnabled(treeGuiWidget_->enabled());
-			label->setVisible(treeGuiWidget_->visible());
-		}
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::RadioButtonWidget)
 	{
-		QRadioButton *button = (QRadioButton*) qWidget_;
+		QRadioButton *button = static_cast<QRadioButton*>(qWidget_);
 		if (!button) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QRadioButton.\n");
-		else
-		{
-			button->setChecked(treeGuiWidget_->valueI() == 1);
-			button->setEnabled(treeGuiWidget_->enabled());
-			button->setVisible(treeGuiWidget_->visible());
-		}
+		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, button->isChecked());
 	}
-	else printf("Critical Error: No handler written to update Qt controls of this type.\n");
-	refreshing_ = FALSE;
+	else printf("Internal Error: No handler written to update CLI controls of this type.\n");
 }
 
-// Add widget to the layout in this widget (if it has one) at specified geometry
-bool QtWidgetObject::addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth, int addToHeight)
+// Add widget to the layout in this widget (if it has one) at specified geometry, and with the specified label
+bool QtWidgetObject::addWidget(QtWidgetObject *qtwo, int l, int t, int addToWidth, int addToHeight)
 {
 	// Safety check - make sure we have a layout
 	if (layout_ == NULL)
@@ -223,6 +287,35 @@ bool QtWidgetObject::addWidget(TreeGuiWidget *widget, int l, int r, int addToWid
 		return FALSE;
 	}
 	
+	// Check that the TreeGuiWidget contains an actual Qt Widget
+	if (qtwo->qWidget_ == NULL)
+	{
+		printf("Internal Error: TreeGuiWidget contains no QWidget to add to layout (or contains a QObject instead).\n");
+		return FALSE;
+	}
+	
+	// Are we adding in a specifi position, or an automatic one?
+	if (l != -1)
+	{
+		nextLeft_ = l-1;
+		nextTop_ = t-1;
+	}
+	
+	// Some widgets have associated labels and take up two+ cells, and some don't.....
+	if (qtwo->labelText_.isEmpty())
+	{
+		layout_->addWidget(qtwo->qWidget_, nextTop_, nextLeft_, addToHeight+1, addToWidth+1, Qt::AlignCenter);
+		if (autoFillVertical_) nextTop_ += addToHeight+1;
+		else nextLeft_ += addToWidth+1;
+	}
+	else
+	{
+		qtwo->labelWidget_ = new QLabel(qtwo->labelText_.get());
+		layout_->addWidget(qtwo->labelWidget_, nextTop_, nextLeft_, 1, 1, Qt::AlignRight);
+		layout_->addWidget(qtwo->qWidget_, nextTop_, nextLeft_+1, addToHeight+1, addToWidth+1, Qt::AlignCenter);
+		if (autoFillVertical_) nextTop_ += addToHeight+1;
+		else nextLeft_ += addToWidth+2;
+	}
 }
 
 /*
@@ -232,8 +325,9 @@ bool QtWidgetObject::addWidget(TreeGuiWidget *widget, int l, int r, int addToWid
 // Constructor
 AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog(NULL)
 {
-	refreshing_ = FALSE;
+	updating_ = FALSE;
 	ui.setupUi(this);
+
 	// Add grid layout to MainFrame
 	mainLayout_ = new QGridLayout(ui.MainFrame);
 	parentTree_ = parent;
@@ -246,11 +340,286 @@ AtenTreeGuiDialog::~AtenTreeGuiDialog()
 // 	for (KVData<Dnchar,QButtonGroup*> *bg = buttonGroups_.pairs(); bg != NULL; bg = bg->next) delete bg->value();
 }
 
-// Create new dialog layout
-QtWidgetObject *AtenTreeGuiDialog::addDialogLayout(TreeGui *widget)
+// Generic function for button activation
+void AtenTreeGuiDialog::buttonWidget_clicked(bool checked)
+{
+	if (updating_ || (!isVisible())) return;
+	// Cast sender into button
+	updating_ = TRUE;
+	QPushButton *button = (QPushButton*) sender();
+	if (!button)
+	{
+		printf("AtenTreeGuiDialog::checkBoxWidget_clicked - Sender could not be cast to a QPushButton.\n");
+		return;
+	}
+
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == button) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::buttonWidget_valueChanged - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+	updating_ = FALSE;
+}
+
+// Generic function for checkbox activation
+void AtenTreeGuiDialog::checkBoxWidget_clicked(bool checked)
+{
+	if (updating_ || (!isVisible())) return;
+	// Cast sender into checkbox
+	updating_ = TRUE;
+	QCheckBox *check = (QCheckBox*) sender();
+	if (!check)
+	{
+		printf("AtenTreeGuiDialog::checkBoxWidget_clicked - Sender could not be cast to a QCheckBox.\n");
+		return;
+	}
+	
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == check) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::checkBoxWidget_valueChanged - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+	updating_ = FALSE;
+}
+
+// Generic function for combobox activation
+void AtenTreeGuiDialog::comboWidget_currentIndexChanged(int row)
+{
+	if (updating_ || (!isVisible())) return;
+	// Cast sender into combobox
+	updating_ = TRUE;
+	QComboBox *combo = (QComboBox*) sender();
+	if (!combo)
+	{
+		printf("AtenTreeGuiDialog::comboWidget_currentIndexChanged - Sender could not be cast to a QComboBox.\n");
+		return;
+	}
+	
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == combo) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::comboWidget_valueChanged - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+	updating_ = FALSE;
+}
+
+// Generic function for double spin activation
+void AtenTreeGuiDialog::doubleSpinWidget_valueChanged(double d)
+{
+	if (updating_ || (!isVisible())) return;
+	// Cast sender into double spin widget
+	updating_ = TRUE;
+	QDoubleSpinBox *spin = static_cast<QDoubleSpinBox*>(sender());
+	if (!spin)
+	{
+		printf("AtenTreeGuiDialog::doubleSpinWidget_valueChanged - Sender could not be cast to a QDoubleSpinBox.\n");
+		return;
+	}
+
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == spin) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::doubleSpinWidget_valueChanged - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+	updating_ = FALSE;
+}
+
+// Generic function for integer spin activation
+void AtenTreeGuiDialog::integerSpinWidget_valueChanged(int i)
+{
+	if (updating_ || (!isVisible())) return;
+	// Cast sender into integer spin widget
+	updating_ = TRUE;
+	QSpinBox *spin = static_cast<QSpinBox*>(sender());
+	if (!spin)
+	{
+		printf("AtenTreeGuiDialog::integerSpinWidget_valueChanged - Sender could not be cast to a QSpinBox.\n");
+		return;
+	}
+
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == spin) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::integerSpinWidget_valueChanged - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+	updating_ = FALSE;
+}
+
+// Generic function for radio group button activation
+void AtenTreeGuiDialog::radioGroupWidget_buttonClicked(QAbstractButton *button)
+{
+	if (updating_ || (!isVisible())) return;
+
+	// Cast sender into button group
+	updating_ = TRUE;
+	QButtonGroup *group = static_cast<QButtonGroup*>(sender());
+	if (!group)
+	{
+		printf("AtenTreeGuiDialog::radioGroupWidget_buttonClicked - Sender could not be cast to a QButtonGroup.\n");
+		return;
+	}
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qObject() == group) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::radioGroupWidget_buttonClicked - couldn't find associated QtWidgetObject for group.\n");
+		return;
+	}
+	qtwo->updateCLI();
+
+	// Now cast supplied abstract button into radio button
+	updating_ = TRUE;
+	QRadioButton *radio = static_cast<QRadioButton*>(button);
+	if (!radio)
+	{
+		printf("AtenTreeGuiDialog::radioGroupWidget_buttonClicked - Sent button* could not be cast to a QRadioButton.\n");
+		return;
+	}
+	// Search for widget definition in original tree...
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == radio) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::radioGroupWidget_buttonClicked - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+
+	updating_ = FALSE;
+}
+
+// Generic function for radio button activation
+void AtenTreeGuiDialog::radioButtonWidget_clicked(bool checked)
+{
+	if (updating_ || (!isVisible())) return;
+	// Cast sender into radiobutton
+	updating_ = TRUE;
+	QRadioButton *radio = static_cast<QRadioButton*>(sender());
+	if (!radio)
+	{
+		printf("AtenTreeGuiDialog::radioButtonWidget_clicked - Sender could not be cast to a QRadioButton.\n");
+		return;
+	}
+	
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == radio) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::radioButtonWidget_clicked - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+	updating_ = FALSE;
+}
+
+// Generic function for radio button activation
+void AtenTreeGuiDialog::editWidget_editingFinished()
+{
+	if (updating_ || (!isVisible())) return;
+	// Cast sender into lineedit
+	updating_ = TRUE;
+	QLineEdit *edit = static_cast<QLineEdit*>(sender());
+	if (!edit)
+	{
+		printf("AtenTreeGuiDialog::editWidget_editingFinished - Sender could not be cast to a QRadioButton.\n");
+		return;
+	}
+	
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == edit) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::editWidget_editingFinished - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+	updating_ = FALSE;
+}
+
+// Generic function for radio button activation
+void AtenTreeGuiDialog::tabsWidget_currentChanged(int id)
+{
+	if (updating_ || (!isVisible())) return;
+	// Cast sender into lineedit
+	updating_ = TRUE;
+	QTabWidget *tabs = static_cast<QTabWidget*>(sender());
+	if (!tabs)
+	{
+		printf("AtenTreeGuiDialog::tabsWidget_currentChanged - Sender could not be cast to a QTabWidget.\n");
+		return;
+	}
+	
+	// Search for widget definition in original tree...
+	QtWidgetObject *qtwo;
+	for (qtwo = widgetObjects_.first(); qtwo != NULL; qtwo = qtwo->next) if (qtwo->qWidget() == tabs) break;
+	if (qtwo == NULL)
+	{
+		printf("AtenTreeGuiDialog::tabsWidget_currentChanged - couldn't find associated QtWidgetObject.\n");
+		return;
+	}
+	qtwo->updateCLI();
+	updating_ = FALSE;
+}
+
+// Create new general layout for specified widget
+QGridLayout *AtenTreeGuiDialog::addLayout(QWidget* widget)
+{
+	// Create new QtWidgetObject for frame
+	QGridLayout *layout = new QGridLayout(widget);
+	#if QT_VERSION >= 0x040600
+	layout->setContentsMargins(2,2,2,2);
+	#endif
+	layout->setSpacing(2);
+	return layout;
+}
+
+// Create new button widget
+QtWidgetObject *AtenTreeGuiDialog::addButton(TreeGuiWidget* widget, const char* label)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	qtwo->set(widget, this, "", mainLayout_);
+	QPushButton *button = new QPushButton;
+	qtwo->set(widget, button);
+	button->setText(label);
+	button->setEnabled(widget->enabled());
+	button->setVisible(widget->visible());
+	// Connect signal to master slot
+	QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonWidget_clicked(bool)));
+	return qtwo;
+}
+
+// Create new checkbox widget
+QtWidgetObject *AtenTreeGuiDialog::addCheck(TreeGuiWidget* widget, const char* label)
+{
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QCheckBox *check = new QCheckBox;
+	qtwo->set(widget, check);
+	check->setText(label);
+	check->setEnabled(widget->enabled());
+	check->setVisible(widget->visible());
+	// Connect signal to master slot
+	QObject::connect(check, SIGNAL(clicked(bool)), this, SLOT(checkBoxWidget_clicked(bool)));
 	return qtwo;
 }
 
@@ -265,20 +634,16 @@ QtWidgetObject *AtenTreeGuiDialog::addCombo(TreeGuiWidget* widget, const char* l
 	combo->setCurrentIndex(widget->valueI() - 1);
 	combo->setEnabled(widget->enabled());
 	combo->setVisible(widget->visible());
+	// Connect signal to master slot
+	QObject::connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(comboWidget_currentIndexChanged(int)));
 	return qtwo;
 }
 
-// Create new integer spin widget
-QtWidgetObject *AtenTreeGuiDialog::addIntegerSpin(TreeGuiWidget* widget, const char* label, int step)
+// Create new dialog layout
+QtWidgetObject *AtenTreeGuiDialog::addDialogLayout(TreeGui *treeGui)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QSpinBox *spin = new QSpinBox;
-	qtwo->set(widget, spin, label);
-	spin->setRange(widget->minimumI(), widget->maximumI());
-	spin->setValue(widget->valueI());
-	spin->setSingleStep(step);
-	spin->setEnabled(widget->enabled());
-	spin->setVisible(widget->visible());
+	qtwo->set(treeGui, this, NULL, mainLayout_);
 	return qtwo;
 }
 
@@ -293,6 +658,66 @@ QtWidgetObject *AtenTreeGuiDialog::addDoubleSpin(TreeGuiWidget* widget, const ch
 	spin->setSingleStep(step);
 	spin->setEnabled(widget->enabled());
 	spin->setVisible(widget->visible());
+	// Connect signal to master slot
+	QObject::connect(spin, SIGNAL(valueChanged(double)), this, SLOT(doubleSpinWidget_valueChanged(double)));
+	return qtwo;
+}
+
+// Create new edit widget
+QtWidgetObject *AtenTreeGuiDialog::addEdit(TreeGuiWidget *widget, const char *label)
+{
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QLineEdit *edit = new QLineEdit;
+	qtwo->set(widget, edit, label);
+	edit->setText(widget->text());
+	edit->setEnabled(widget->enabled());
+	edit->setVisible(widget->visible());
+	// Connect signal to master slot
+	QObject::connect(edit, SIGNAL(editingFinished()), this, SLOT(editWidget_editingFinished()));
+	return qtwo;
+}
+
+// Create new frame widget
+QtWidgetObject *AtenTreeGuiDialog::addFrame(TreeGuiWidget *widget)
+{
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QFrame *frame = new QFrame;
+
+	QGridLayout *layout = addLayout(frame);
+
+	qtwo->set(widget, frame, NULL, layout);
+	frame->setEnabled(widget->enabled());
+	frame->setVisible(widget->visible());
+	return qtwo;
+}
+
+// Create new group box
+QtWidgetObject *AtenTreeGuiDialog::addGroup(TreeGuiWidget *widget, const char *label)
+{
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QGroupBox *group = new QGroupBox(label);
+
+	QGridLayout *layout = addLayout(group);
+
+	qtwo->set(widget, group, NULL, layout);
+	group->setEnabled(widget->enabled());
+	group->setVisible(widget->visible());
+	return qtwo;
+}
+
+// Create new integer spin widget
+QtWidgetObject *AtenTreeGuiDialog::addIntegerSpin(TreeGuiWidget* widget, const char* label, int step)
+{
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QSpinBox *spin = new QSpinBox;
+	qtwo->set(widget, spin, label);
+	spin->setRange(widget->minimumI(), widget->maximumI());
+	spin->setValue(widget->valueI());
+	spin->setSingleStep(step);
+	spin->setEnabled(widget->enabled());
+	spin->setVisible(widget->visible());
+	// Connect signal to master slot
+	QObject::connect(spin, SIGNAL(valueChanged(int)), this, SLOT(integerSpinWidget_valueChanged(int)));
 	return qtwo;
 }
 
@@ -308,80 +733,51 @@ QtWidgetObject *AtenTreeGuiDialog::addLabel(TreeGuiWidget *widget, const char *t
 	return qtwo;
 }
 
-// Create new edit widget
-QtWidgetObject *AtenTreeGuiDialog::addEdit(TreeGuiWidget *widget, const char *label)
+// Create new page (only in Tab widget or Stack widget)
+QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget *parentWidget, const char *label)
 {
-	QtWidgetObject *qtwo = widgetObjects_.add();
-	QLineEdit *edit = new QLineEdit;
-	qtwo->set(widget, edit, label);
-	edit->setText(widget->text());
-	edit->setEnabled(widget->enabled());
-	edit->setVisible(widget->visible());
-	return qtwo;
-}
-
-// Create new checkbox widget
-QtWidgetObject *AtenTreeGuiDialog::addCheck(TreeGuiWidget* widget, const char* label)
-{
-	QtWidgetObject *qtwo = widgetObjects_.add();
-	QCheckBox *check = new QCheckBox;
-	qtwo->set(widget, check, "");
-	check->setText(label);
-	check->setEnabled(widget->enabled());
-	check->setVisible(widget->visible());
-	return qtwo;
-}
-
-// Create new tab widget
-QtWidgetObject *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
-{
-	QtWidgetObject *qtwo = widgetObjects_.add();
-	QTabWidget *tabs = new QTabWidget;
-	qtwo->set(widget, tabs, "");
-	tabs->setEnabled(widget->enabled());
-	tabs->setVisible(widget->visible());
-	return qtwo;
-}
-
-// Create new page (only in tab widget)
-QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget *tabWidget, const char *label)
-{
-	// Cast QWidget in tabWidget into QTabWidget
-	QtWidgetObject *wo = tabWidget->qtWidgetObject();
+	// Grab widget object...
+	QtWidgetObject *wo = parentWidget->qtWidgetObject();
 	if (wo == NULL)
 	{
 		printf("Internal Error: Can't add page to tabwidget since supplied tabwidget doesn't have an associated QtWidgetObject.\n");
 		return NULL;
 	}
-	QTabWidget *tabs = static_cast<QTabWidget*>(wo->qWidget());
-	if (!tabs)
-	{
-		printf("Internal Error: Couldn't cast QWidget into QTabWidget.\n");
-		return NULL;
-	}
-	// Create new QtWidgetObject for page
+
+	// Create new page widget and layout
 	QWidget *pageWidget = new QWidget();
-	QGridLayout *layout = new QGridLayout(pageWidget);
-        #if QT_VERSION >= 0x040600
-        layout->setContentsMargins(2,2,2,2);
-        #endif
-        layout->setSpacing(2);
-	int id = tabs->addTab(pageWidget, label);
+	QGridLayout *layout = addLayout(pageWidget);
+
+	// Create widget object to return
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	qtwo->set(widget, pageWidget, "", layout);
+	qtwo->set(widget, pageWidget, NULL, layout);
 	pageWidget->setEnabled(widget->enabled());
 	pageWidget->setVisible(widget->visible());
-	return qtwo;
-}
 
-// Create new group box
-QtWidgetObject *AtenTreeGuiDialog::addGroup(TreeGuiWidget *widget, const char *label)
-{
-	QtWidgetObject *qtwo = widgetObjects_.add();
-	QGroupBox *group = new QGroupBox(label);
-	qtwo->set(widget, group, "");
-	group->setEnabled(widget->enabled());
-	group->setVisible(widget->visible());
+	// Cast parent widget into correct type, and add page
+	if (widget->type() == TreeGuiWidget::TabWidget)
+	{
+		// Cast QWidget in parentWidget into QTabWidget
+		QTabWidget *tabs = static_cast<QTabWidget*>(wo->qWidget());
+		if (!tabs)
+		{
+			printf("Internal Error: Couldn't cast QWidget into QTabWidget.\n");
+			return NULL;
+		}
+		int id = tabs->addTab(pageWidget, label);
+	}
+	else if (widget->type() == TreeGuiWidget::StackWidget)
+	{
+		// Cast QWidget in parentWidget into QStackedWidget
+		QStackedWidget *stack = static_cast<QStackedWidget*>(wo->qWidget());
+		if (!stack)
+		{
+			printf("Internal Error: Couldn't cast QWidget into QStackedWidget.\n");
+			return NULL;
+		}
+		int id = stack->addWidget(pageWidget);
+	}
+
 	return qtwo;
 }
 
@@ -390,7 +786,9 @@ QtWidgetObject *AtenTreeGuiDialog::addRadioGroup(TreeGuiWidget* widget)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
 	QButtonGroup *group = new QButtonGroup;
-	qtwo->set(widget, group, "");
+	qtwo->set(widget, group);
+	// Connect signal to master slot
+	QObject::connect(group, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(radioGroupWidget_buttonClicked(QAbstractButton*)));
 	return qtwo;
 }
 
@@ -414,602 +812,43 @@ QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGui
 	QRadioButton *radio = new QRadioButton(label);
 	group->addButton(radio, id);
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	qtwo->set(widget, radio, label);
+	qtwo->set(widget, radio);
 	radio->setEnabled(widget->enabled());
 	radio->setVisible(widget->visible());
+	radio->setChecked(widget->valueI() == 1);
+	// Connect signal to master slot
+	QObject::connect(radio, SIGNAL(clicked(bool)), this, SLOT(radioButtonWidget_clicked(bool)));
 	return qtwo;
 }
 
-// // Perform specified state change
-// void AtenTreeGuiDialog::performStateChange(StateChange *sc)
-// {
-// 	// First, find relevant widget definition
-// 	WidgetNode *node = parentTree_->findWidget(sc->targetWidget());
-// 	if (node == NULL)
-// 	{
-// 		printf("AtenTreeGuiDialog::performStateChange - Unable to locate widget '%s'.\n", sc->targetWidget());
-// 		return;
-// 	}
-// 	// Proceed based on widget type
-// 	QComboBox *combo;
-// 	QSpinBox *spin;
-// 	QDoubleSpinBox *doublespin;
-// 	QCheckBox *check;
-// 	QLineEdit *line;
-// 	QStackedWidget *stack;
-// 	QButtonGroup *buttongroup;
-// 	QAbstractButton *button;
-// 	QLabel *label;
-// 	Dnchar data;
-// 	LineParser lp;
-// 	int n;
-// 	switch (node->controlType())
-// 	{
-// 		// Check Box
-// 		case (WidgetNode::CheckControl):
-// 			check = (QCheckBox*) node->widget();
-// 			switch (sc->changeAction())
-// 			{
-// 				case (StateChange::CheckedAction):
-// 					check->setChecked(sc->changeDataAsBool());
-// 					break;
-// 				case (StateChange::DisableAction):
-// 					check->setEnabled(FALSE);
-// 					break;
-// 				case (StateChange::EnableAction):
-// 					check->setEnabled(TRUE);
-// 					break;
-// 				default:
-// 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
-// 			}
-// 			break;
-// 		// RadioGroup
-// 		case (WidgetNode::RadioGroupControl):
-// 			buttongroup = (QButtonGroup*) node->widget();
-// 			switch (sc->changeAction())
-// 			{
-// 				case (StateChange::ValueAction):
-// 					// Search for button with supplied id
-// 					button = buttongroup->button(sc->changeDataAsInteger());
-// 					if (button == NULL) printf("Warning - Couldn't find button %i in buttongroup.\n", sc->changeDataAsInteger());
-// 					else button->setChecked(TRUE);
-// 					break;
-// 				default:
-// 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
-// 			}
-// 			break;
-// 		// Combo Box
-// 		case (WidgetNode::IntegerComboControl):
-// 		case (WidgetNode::ComboControl):
-// 			combo = (QComboBox*) node->widget();
-// 			switch (sc->changeAction())
-// 			{
-// 				case (StateChange::DisableAction):
-// 					combo->setEnabled(FALSE);
-// 					break;
-// 				case (StateChange::EnableAction):
-// 					combo->setEnabled(TRUE);
-// 					break;
-// 				case (StateChange::ItemsAction):
-// 					lp.getArgsDelim(LineParser::UseQuotes, sc->changeData());
-// 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
-// 					combo->setCurrentIndex(0);
-// 					break;
-// 				case (StateChange::OriginalItemsAction):
-// 					if (!node->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
-// 					lp.getArgsDelim(LineParser::UseQuotes, data.get());
-// 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
-// 					combo->setCurrentIndex(0);
-// 					break;
-// 				case (StateChange::ValueAction):
-// 					combo->setCurrentIndex(sc->changeDataAsInteger());
-// 					break;
-// 				default:
-// 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
-// 			}
-// 			break;
-// 		// Double Spin Edit
-// 		case (WidgetNode::DoubleSpinControl):
-// 			doublespin = (QDoubleSpinBox*) node->widget();
-// 			switch (sc->changeAction())
-// 			{
-// 				case (StateChange::DisableAction):
-// 					doublespin->setEnabled(FALSE);
-// 					break;
-// 				case (StateChange::EnableAction):
-// 					doublespin->setEnabled(TRUE);
-// 					break;
-// 				case (StateChange::MinimumAction):
-// 					doublespin->setMinimum(sc->changeDataAsDouble());
-// 					break;
-// 				case (StateChange::MaximumAction):
-// 					doublespin->setMaximum(sc->changeDataAsDouble());
-// 					break;
-// 				case (StateChange::StepAction):
-// 					doublespin->setSingleStep(sc->changeDataAsDouble());
-// 					break;
-// 				case (StateChange::ValueAction):
-// 					doublespin->setValue(sc->changeDataAsDouble());
-// 					break;
-// 				default:
-// 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
-// 			}
-// 			break;
-// 		// Text Edit
-// 		case (WidgetNode::EditControl):
-// 			line = (QLineEdit*) node->widget();
-// 			switch (sc->changeAction())
-// 			{
-// 				case (StateChange::DisableAction):
-// 					line->setEnabled(FALSE);
-// 					break;
-// 				case (StateChange::EnableAction):
-// 					line->setEnabled(TRUE);
-// 					break;
-// 				default:
-// 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
-// 			}
-// 			break;
-// 		// Integer spin edit
-// 		case (WidgetNode::IntegerSpinControl):
-// 			spin = (QSpinBox*) node->widget();
-// 			switch (sc->changeAction())
-// 			{
-// 				case (StateChange::DisableAction):
-// 					spin->setEnabled(FALSE);
-// 					break;
-// 				case (StateChange::EnableAction):
-// 					spin->setEnabled(TRUE);
-// 					break;
-// 				case (StateChange::MinimumAction):
-// 					spin->setMinimum(sc->changeDataAsInteger());
-// 					break;
-// 				case (StateChange::MaximumAction):
-// 					spin->setMaximum(sc->changeDataAsInteger());
-// 					break;
-// 				case (StateChange::StepAction):
-// 					spin->setSingleStep(sc->changeDataAsInteger());
-// 					break;
-// 				case (StateChange::ValueAction):
-// 					spin->setValue(sc->changeDataAsInteger());
-// 					break;
-// 				default:
-// 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
-// 			}
-// 			break;
-// 		// Label
-// 		case (WidgetNode::LabelControl):
-// 			label = (QLabel*) node->widget();
-// 			switch (sc->changeAction())
-// 			{
-// 				case (StateChange::ValueAction):
-// 					label->setText(sc->changeData());
-// 					break;
-// 				default:
-// 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
-// 			}
-// 			break;
-// 		// Stack control
-// 		case (WidgetNode::StackControl):
-// 			stack = (QStackedWidget*) node->widget();
-// 			switch (sc->changeAction())
-// 			{
-// 				case (StateChange::DisableAction):
-// 					stack->setEnabled(FALSE);
-// 					break;
-// 				case (StateChange::EnableAction):
-// 					stack->setEnabled(TRUE);
-// 					break;
-// 				case (StateChange::SwitchStackAcion):
-// 					// Get new index
-// 					n = sc->stateValueAsInteger() - 1;
-// 					stack->setCurrentIndex(n);
-// 					break;
-// 				default:
-// 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
-// 			}
-// 			break;
-// // 	}
-// }
-
-// Generic function for checkbox activation
-void AtenTreeGuiDialog::checkBoxWidget_clicked(bool checked)
+// Create new tab widget
+QtWidgetObject *AtenTreeGuiDialog::addStack(TreeGuiWidget *widget)
 {
-	if (!isVisible()) return;
-	// Cast sender into checkbox
-	refreshing_ = TRUE;
-	QCheckBox *check = (QCheckBox*) sender();
-	if (!check)
-	{
-		printf("AtenTreeGuiDialog::checkBoxWidget_clicked - Sender could not be cast to a QCheckBox.\n");
-		return;
-	}
-// 	// Search for widget definition in original tree...
-// 	WidgetNode *node = parentTree_->findWidget(check);
-// 	if (node == NULL)
-// 	{
-// 		printf("AtenTreeGuiDialog::checkBoxWidget_clicked - couldn't find associated WidgetNode.\n");
-// 		return;
-// 	}
-// 	// Check all states defined in the widgetnode
-// 	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
-// 	{
-// 		if (sc->dynamicValue())
-// 		{
-// 			sc->setStateValue(checked);
-// 			performStateChange(sc);
-// 		}
-// 		else if (checked && ((int)sc->stateValueAsInteger() > 0)) performStateChange(sc);
-// 		else if ((!checked) && ((int)sc->stateValueAsInteger() < 1)) performStateChange(sc);
-// 	}
-	refreshing_ = FALSE;
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QStackedWidget *stack = new QStackedWidget;
+	qtwo->set(widget, stack, "");
+	stack->setEnabled(widget->enabled());
+	stack->setVisible(widget->visible());
+	return qtwo;
 }
 
-// Generic function for combobox activation
-void AtenTreeGuiDialog::comboWidget_currentIndexChanged(int row)
+// Create new tab widget
+QtWidgetObject *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
 {
-	if (!isVisible()) return;
-	// Cast sender into combobox
-	refreshing_ = TRUE;
-	QComboBox *combo = (QComboBox*) sender();
-	if (!combo)
-	{
-		printf("AtenTreeGuiDialog::comboWidget_currentIndexChanged - Sender could not be cast to a QComboBox.\n");
-		return;
-	}
-// 	// Search for widget definition in original tree...
-// 	WidgetNode *node = parentTree_->findWidget(combo);
-// 	if (node == NULL)
-// 	{
-// 		printf("AtenTreeGuiDialog::comboWidget_currentIndexChanged - couldn't find associated WidgetNode.\n");
-// 		return;
-// 	}
-// 	// Check all states defined in the widgetnode
-// 	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
-// 	{
-// 		// If StateChange has a dynamic value, set it now, otherwise compare by integer value or string depending on control type
-// 		if (sc->dynamicValue())
-// 		{
-// 			sc->setStateValue(row+1);
-// 			performStateChange(sc);
-// 		}
-// 		else if (node->controlType() == WidgetNode::IntegerComboControl)
-// 		{
-// 			if ((row+1) == sc->stateValueAsInteger()) performStateChange(sc);
-// 			else if (strcmp(sc->stateValue(),"*") == 0) performStateChange(sc);
-// 		}
-// 		else if (node->controlType() == WidgetNode::ComboControl)
-// 		{
-// 			if (strcmp(qPrintable(combo->currentText()), sc->stateValue()) == 0) performStateChange(sc);
-// 			else if (strcmp(sc->stateValue(),"*") == 0) performStateChange(sc);
-// 		}
-// 	}
-	refreshing_ = FALSE;
+	QtWidgetObject *qtwo = widgetObjects_.add();
+	QTabWidget *tabs = new QTabWidget;
+	qtwo->set(widget, tabs, "");
+	tabs->setEnabled(widget->enabled());
+	tabs->setVisible(widget->visible());
+	// Connect signal to master slot
+	QObject::connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabsWidget_currentChanged(int)));
+	return qtwo;
 }
 
-// Generic function for double spin activation
-void AtenTreeGuiDialog::doubleSpinWidget_valueChanged(double d)
-{
-	if (!isVisible()) return;
-	// Cast sender into checkbox
-	refreshing_ = TRUE;
-	QDoubleSpinBox *spin = (QDoubleSpinBox*) sender();
-	if (!spin)
-	{
-		printf("AtenTreeGuiDialog::doubleSpinWidget_valueChanged - Sender could not be cast to a QDoubleSpinBox.\n");
-		return;
-	}
-// 	// Search for widget definition in original tree...
-// 	WidgetNode *node = parentTree_->findWidget(spin);
-// 	if (node == NULL)
-// 	{
-// 		printf("AtenTreeGuiDialog::doubleSpinWidget_valueChanged - couldn't find associated WidgetNode.\n");
-// 		return;
-// 	}
-// 	// Check all states defined in the widgetnode
-// 	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
-// 	{
-// 		if (sc->dynamicValue())
-// 		{
-// 			sc->setStateValue(d);
-// 			performStateChange(sc);
-// 		}
-// 		else if (d == sc->stateValueAsDouble()) performStateChange(sc);
-// 	}
-	refreshing_ = FALSE;
-}
-
-// Generic function for integer spin activation
-void AtenTreeGuiDialog::integerSpinWidget_valueChanged(int i)
-{
-	if (!isVisible()) return;
-	// Cast sender into checkbox
-	refreshing_ = TRUE;
-	QSpinBox *spin = (QSpinBox*) sender();
-	if (!spin)
-	{
-		printf("AtenTreeGuiDialog::integerSpinWidget_valueChanged - Sender could not be cast to a QSpinBox.\n");
-		return;
-	}
-// 	// Search for widget definition in original tree...
-// 	WidgetNode *node = parentTree_->findWidget(spin);
-// 	if (node == NULL)
-// 	{
-// 		printf("AtenTreeGuiDialog::integerSpinWidget_valueChanged - couldn't find associated WidgetNode.\n");
-// 		return;
-// 	}
-// 	// Check all states defined in the widgetnode
-// 	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
-// 	{
-// 		if (sc->dynamicValue())
-// 		{
-// 			sc->setStateValue(i);
-// 			performStateChange(sc);
-// 		}
-// 		else if (i == sc->stateValueAsInteger()) performStateChange(sc);
-// 	}
-	refreshing_ = FALSE;
-}
-
-// Generic function for radio group button activation
-void AtenTreeGuiDialog::buttonGroupWidget_buttonClicked(int index)
-{
-	if (!isVisible()) return;
-	// Cast sender into checkbox
-	refreshing_ = TRUE;
-	QButtonGroup *radio = (QButtonGroup*) sender();
-	if (!radio)
-	{
-		printf("AtenTreeGuiDialog::buttonGroupWidget_buttonClicked - Sender could not be cast to a QButtonGroup.\n");
-		return;
-	}
-// 	// Search for widget definition in original tree...
-// 	WidgetNode *node = parentTree_->findWidgetObject(radio);
-// 	if (node == NULL)
-// 	{
-// 		printf("AtenTreeGuiDialog::buttonGroupWidget_buttonClicked - couldn't find associated WidgetNode.\n");
-// 		return;
-// 	}
-// 	// Check all states defined in the widgetnode
-// 	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
-// 	{
-// 		if (sc->dynamicValue())
-// 		{
-// 			sc->setStateValue(index+1);
-// 			performStateChange(sc);
-// 		}
-// 		else if (index == sc->stateValueAsInteger()) performStateChange(sc);
-// 	}
-	refreshing_ = FALSE;
-}
-
-// Generic function for radio button activation
-void AtenTreeGuiDialog::radioButtonWidget_clicked(bool checked)
-{
-	if (!isVisible()) return;
-	// Cast sender into radiobutton
-	refreshing_ = TRUE;
-	QRadioButton *check = (QRadioButton*) sender();
-	if (!check)
-	{
-		printf("AtenTreeGuiDialog::radioButtonWidget_clicked - Sender could not be cast to a QRadioButton.\n");
-		return;
-	}
-// 	// Search for widget definition in original tree...
-// 	WidgetNode *node = parentTree_->findWidget(check);
-// 	if (node == NULL)
-// 	{
-// 		printf("AtenTreeGuiDialog::radioButtonWidget_clicked - couldn't find associated WidgetNode.\n");
-// 		return;
-// 	}
-// 	// Check all states defined in the widgetnode
-// 	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
-// 	{
-// 		if (sc->dynamicValue())
-// 		{
-// 			sc->setStateValue(checked);
-// 			performStateChange(sc);
-// 		}
-// 		else if (checked && ((int)sc->stateValueAsInteger() > 0)) performStateChange(sc);
-// 		else if ((!checked) && ((int)sc->stateValueAsInteger() < 1)) performStateChange(sc);
-// 	}
-	refreshing_ = FALSE;
-}
-
-/*// Create simple label
-QLabel *AtenTreeGuiDialog::createLabel(const char *text, int alignment)
-{
-	msg.enter("AtenTreeGuiDialog::createLabel");
-	QLabel *label = new QLabel(text);
-	label->setAlignment(((Qt::Alignment) alignment)|Qt::AlignVCenter);
-	label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-	msg.exit("AtenTreeGuiDialog::createLabel");
-	return label;
-}
-
-// Create empty grid layout
-QGridLayout *AtenTreeGuiDialog::createGridLayout(QWidget *parent)
-{
-	msg.enter("AtenTreeGuiDialog::createGridLayout");
-	QGridLayout *layout = new QGridLayout(parent);
-	#if QT_VERSION >= 0x040600
-	layout->setContentsMargins(2,2,2,2);
-	#endif
-	layout->setSpacing(2);
-	msg.exit("AtenTreeGuiDialog::createGridLayout");
-	return layout;
-}
-
-// Create check box from data in specified GuiFilterOption
-QCheckBox *AtenTreeGuiDialog::createCheckBox(WidgetNode *gfo)
-{
-	msg.enter("AtenTreeGuiDialog::createCheckBox");
-	QCheckBox *check = new QCheckBox(gfo->name());
-	// Critical : state
-	Dnchar data;
-	if (!gfo->data("state", data)) printf("Critical: No state found when constructing QCheckBox.\n");
-	check->setChecked(data.asInteger());
-	msg.exit("AtenTreeGuiDialog::createCheckBox");
-	return check;
-}
-
-// Create radio button from data in specified WidgetNode
-QRadioButton *AtenTreeGuiDialog::createRadioButton(WidgetNode *gfo)
-{
-	msg.enter("AtenTreeGuiDialog::createRadioButton");
-	QRadioButton *radio = new QRadioButton(gfo->name());
-	Dnchar data;
-	// Critical : parent buttongroup
-	if (!gfo->data("buttongroup", data)) printf("Critical: No parent buttongroup found when constructing QRadioButton.\n");
-	// Search to see if specific key is in the table
-	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups_.search(data);
-	if (bg == NULL)
-	{
-		QButtonGroup *butgroup = new QButtonGroup();
-		butgroup->addButton(radio, 1);
-		buttonGroups_.add(data, butgroup);
-	}
-	else bg->value()->addButton(radio, bg->value()->buttons().count()+1);
-	// Critical : state
-	if (!gfo->data("state", data)) printf("Critical: No state found when constructing QRadioButton.\n");
-	radio->setChecked(data.asInteger());
-	msg.exit("AtenTreeGuiDialog::createRadioButton");
-	return radio;
-}
-
-// Create radiogroup from data in specified GuiFilterOption
-QButtonGroup *AtenTreeGuiDialog::createRadioGroup(WidgetNode* gfo)
-{
-	msg.enter("AtenTreeGuiDialog::createRadioGroup");
-	// Search for existing button group
-	QButtonGroup *buttongroup;
-	KVData<Dnchar,QButtonGroup*> *bg = buttonGroups_.search(gfo->name());
-	if (bg == NULL)
-	{
-		buttongroup = new QButtonGroup(this);
-		buttonGroups_.add(gfo->name(), buttongroup);
-		QObject::connect(buttongroup, SIGNAL(buttonClicked(int)), this, SLOT(buttonGroupWidget_buttonClicked(int)));
-	}
-	else buttongroup = bg->value();
-	msg.exit("AtenTreeGuiDialog::createRadioGroup");
-	return buttongroup;
-}
-
-// Create combo box from data in specified GuiFilterOption
-QComboBox *AtenTreeGuiDialog::createComboBox(WidgetNode *gfo)
-{
-	msg.enter("AtenTreeGuiDialog::createComboBox");
-	QComboBox *combo = new QComboBox();
-	QObject::connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(comboWidget_currentIndexChanged(int)));
-	// Critical : items list
-	Dnchar data;
-	if (!gfo->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
-	LineParser lp;
-	lp.getArgsDelim(LineParser::UseQuotes, data.get());
-	for (int n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
-	// Optional : default index (+1)
-	if (!gfo->data("default", data)) printf("Warning: Default value for QComboBox not set.\n");
-	combo->setCurrentIndex(data.asInteger()-1);
-	combo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	msg.exit("AtenTreeGuiDialog::createComboBox");
-	return combo;
-}
-
-// Create double spin edit from data in specified GuiFilterOption
-QDoubleSpinBox *AtenTreeGuiDialog::createDoubleSpinBox(WidgetNode *gfo)
-{
-	msg.enter("AtenTreeGuiDialog::createDoubleSpinBox");
-	QDoubleSpinBox *spin = new QDoubleSpinBox();
-	spin->setDecimals(5);
-	// Critical : minimum, maximum, start, and step values
-	Dnchar data;
-	if (!gfo->data("min", data)) printf("Critical: No minimum value found when constructing QDoubleSpinBox.\n");
-	double min = data.asDouble();
-	if (!gfo->data("max", data)) printf("Critical: No maximum value found when constructing QDoubleSpinBox.\n");
-	double max = data.asDouble();
-	spin->setRange(min, max);
-	if (!gfo->data("start", data)) printf("Critical: No start value found when constructing QDoubleSpinBox.\n");
-	double start = data.asDouble();
-	spin->setValue(start);
-	if (!gfo->data("step", data)) printf("Critical: No step value found when constructing QDoubleSpinBox.\n");
-	double step = data.asDouble();
-	spin->setSingleStep(step);
-	spin->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	msg.exit("AtenTreeGuiDialog::createDoubleSpinBox");
-	return spin;
-}
-
-// Create line edit from data in specified GuiFilterOption
-QLineEdit *AtenTreeGuiDialog::createLineEdit(WidgetNode *gfo)
-{
-	msg.enter("AtenTreeGuiDialog::createLineEdit");
-	QLineEdit *lineedit = new QLineEdit();
-	// Critical : text
-	Dnchar data;
-	if (!gfo->data("text", data)) printf("Critical: No text found when constructing QLineEdit.\n");
-	lineedit->setText(data.get());
-	lineedit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	msg.exit("AtenTreeGuiDialog::createLineEdit");
-	return lineedit;
-}
-
-// Create spin box from data in specified GuiFilterOption
-QSpinBox *AtenTreeGuiDialog::createSpinBox(WidgetNode *gfo)
-{
-	msg.enter("AtenTreeGuiDialog::createSpinBox");
-	QSpinBox *spin = new QSpinBox();
-	// Critical : minimum, maximum, start, and step values
-	Dnchar data;
-	if (!gfo->data("min", data)) printf("Critical: No minimum value found when constructing QSpinBox.\n");
-	int min = data.asInteger();
-	if (!gfo->data("max", data)) printf("Critical: No maximum value found when constructing QSpinBox.\n");
-	int max = data.asInteger();
-	spin->setRange(min, max);
-	if (!gfo->data("start", data)) printf("Critical: No start value found when constructing QSpinBox.\n");
-	int start = data.asInteger();
-	spin->setValue(start);
-	if (!gfo->data("step", data)) printf("Critical: No step value found when constructing QSpinBox.\n");
-	int step = data.asInteger();
-	spin->setSingleStep(step);
-	spin->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	msg.exit("AtenTreeGuiDialog::createSpinBox");
-	return spin;
-}
-
-// Create line edit from data in specified GuiFilterOption
-QStackedWidget *AtenTreeGuiDialog::createStackedWidget(WidgetNode* gfo, LayoutList& layoutList)
-{
-	msg.enter("AtenTreeGuiDialog::createStackedWidget");
-	QStackedWidget *stack = new QStackedWidget();
-	// Critical : pages
-	Dnchar data, name;
-	if (!gfo->data("pages", data)) printf("Critical: Number of pages not found whild constructing QStackWidget.\n");
-	else for (int n=0; n<data.asInteger(); ++n)
-	{
-		name.sprintf("%s_%i", gfo->name(), n+1);
-		LayoutData *ld = layoutList.find(name);
-		if (ld != NULL) printf("Critical: A stack named '%s' already exists...\n", gfo->name());
-		else
-		{
-			// Add a new page to the current QStackedWidget, along with an empty widget and a layout
-			QWidget *widget = new QWidget();
-			stack->addWidget(widget);
-			ld = layoutList.add(name, createGridLayout(widget));
-		}
-	}
-	// Critical : currentindex
-	if (!gfo->data("index", data)) printf("Critical: Initial page index not found whild constructing QStackWidget.\n");
-	else stack->setCurrentIndex(data.asInteger()-1);
-	
-	msg.exit("AtenTreeGuiDialog::createStackedWidget");
-	return stack;
-}
-*/
-
-
-// Call the dialog, displaying options for the specified filter
+// Execute (show) the custom dialog
 bool AtenTreeGuiDialog::execute()
 {
+	printf("WE ARE HERE...\n");
 	msg.enter("AtenTreeGuiDialog::execute");
 	if (parentTree_ == NULL)
 	{
@@ -1017,9 +856,9 @@ bool AtenTreeGuiDialog::execute()
 		msg.exit("AtenTreeGuiDialog::execute");
 		return FALSE;
 	}
-	refreshing_ = FALSE;
+	updating_ = FALSE;
 	bool result = (exec() == 1 ? TRUE : FALSE);
-	refreshing_ = TRUE;
+	updating_ = TRUE;
 // 	if (result) storeValues();
 	msg.exit("AtenTreeGuiDialog::execute");
 	return result;

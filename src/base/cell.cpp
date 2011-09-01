@@ -33,10 +33,10 @@ const char *UnitCell::cellType(UnitCell::CellType i)
 {
 	return CellTypeKeywords[i];
 }
-UnitCell::CellType UnitCell::cellType(const char *s, bool reporterror)
+UnitCell::CellType UnitCell::cellType(const char *s, bool reportError)
 {
 	UnitCell::CellType ct = (UnitCell::CellType) enumSearch("cell type",UnitCell::nCellTypes,CellTypeKeywords,s);
-	if ((ct == UnitCell::nCellTypes) && reporterror) enumPrintValid(UnitCell::nCellTypes,CellTypeKeywords);
+	if ((ct == UnitCell::nCellTypes) && reportError) enumPrintValid(UnitCell::nCellTypes,CellTypeKeywords);
 	return ct;
 }
 

@@ -181,7 +181,7 @@ bool isEmpty(char *s)
 }
 
 // Search enum list for text
-int enumSearch(const char *name, int maxn, const char **itemlist, const char *query, bool reporterror)
+int enumSearch(const char *name, int maxn, const char **itemlist, const char *query, bool reportError)
 {
 	static Dnchar lowerq, lowers;
 	int result = maxn, i;
@@ -195,7 +195,7 @@ int enumSearch(const char *name, int maxn, const char **itemlist, const char *qu
 			break;
 		}
 	}
-	if ((result == maxn) && (name[0] != '\0') && reporterror) printf("Unrecognised %s '%s'\n",name,query);
+	if ((result == maxn) && (name[0] != '\0') && reportError) printf("Unrecognised %s '%s'\n",name,query);
 	return result;
 }
 

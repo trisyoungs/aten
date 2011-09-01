@@ -209,7 +209,7 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 			Tree dialog;
 			TreeGuiWidget *group;
 			TreeGui &ui = dialog.defaultDialog();
-			ui.setValue("!! Error Finding Script !!");
+			ui.setProperty(TreeGuiWidgetEvent::TextProperty, "!! Error Finding Script !!");
 			ui.addLabel("The following script could not be found:",1,1);
 			ui.addLabel(script->filename(),1,2);
 			group = ui.addRadioGroup("choice");
@@ -233,7 +233,7 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 			Tree dialog;
 			TreeGuiWidget *group;
 			TreeGui &ui = dialog.defaultDialog();
-			ui.setValue("!! Error Loading Script !!");
+			ui.setProperty(TreeGuiWidgetEvent::TextProperty, "!! Error Loading Script !!");
 			ui.addLabel("The following script contained an error (see MessageBox for more details):",1,1);
 			ui.addLabel(script->filename(),1,2);
 			group = ui.addRadioGroup("choice");
@@ -280,7 +280,7 @@ void CommandWidget::on_RunSelectedScriptButton_clicked(bool checked)
 		// Execute the script
 		msg.print("Executing script '%s':\n", script->name());
 		ReturnValue result;
-		script->execute(result, TRUE);
+		script->execute(result);
 	}
 	gui.update(GuiQt::AllTarget);
 }
@@ -312,7 +312,7 @@ void CommandWidget::runScript()
 		// Execute the script
 		msg.print("Executing script '%s':\n", ri->data->name());
 		ReturnValue result;
-		ri->data->execute(result, TRUE);
+		ri->data->execute(result);
 	}
 	gui.update(GuiQt::AllTarget);
 }

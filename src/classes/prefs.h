@@ -43,36 +43,36 @@ class Prefs
 	public:
 	// Mouse buttons
 	enum MouseButton { LeftButton, MiddleButton, RightButton, WheelButton, nMouseButtons };
-	static MouseButton mouseButton(const char *name, bool reporterror = 0);
+	static MouseButton mouseButton(const char *name, bool reportError = 0);
 	static const char *mouseButton(MouseButton);
 	// Mouse Actions
 	enum MouseAction { NoAction, RotateAction, TranslateAction, InteractAction, ZoomAction, ZRotateAction, nMouseActions };
-	static MouseAction mouseAction(const char *name, bool reporterror = 0);
+	static MouseAction mouseAction(const char *name, bool reportError = 0);
 	static const char *mouseAction(MouseAction);
 	// Modifier keys
 	enum ModifierKey { ShiftKey, CtrlKey, AltKey, nModifierKeys };
-	static ModifierKey modifierKey(const char *name, bool reporterror = 0);
+	static ModifierKey modifierKey(const char *name, bool reportError = 0);
 	static const char *modifierKey(ModifierKey);
 	// Modifier actions
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
-	static KeyAction keyAction(const char *name, bool reporterror = 0);
+	static KeyAction keyAction(const char *name, bool reportError = 0);
 	static const char *keyAction(KeyAction);
 	// Property/Object Colours
 	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, nObjectColours };
 	static const char *objectColour(ObjectColour);
 	static const char *objectColourName(ObjectColour);
-	static ObjectColour objectColour(const char *name, bool reporterror = 0);
+	static ObjectColour objectColour(const char *name, bool reportError = 0);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, Kelvin, ElectronVolts, Hartree, nEnergyUnits };
 	static const char *energyUnit(EnergyUnit);
-	static EnergyUnit energyUnit(const char *name, bool reporterror = 0);
+	static EnergyUnit energyUnit(const char *name, bool reportError = 0);
 	// Density calculation units
 	enum DensityUnit { GramsPerCm, AtomsPerAngstrom, nDensityUnits };
 	static const char *densityUnit(DensityUnit);
-	static DensityUnit densityUnit(const char *name, bool reporterror = 0);
+	static DensityUnit densityUnit(const char *name, bool reportError = 0);
 	// Atom colouring scheme
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, CustomScheme, nColouringSchemes };
-	static ColouringScheme colouringScheme(const char *name, bool reporterror = 0);
+	static ColouringScheme colouringScheme(const char *name, bool reportError = 0);
 	static const char *colouringScheme(ColouringScheme cs);
 	// Drawing guide geometry
 	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
@@ -649,6 +649,8 @@ class Prefs
 	bool forceRhombohedral_;
 	// Display warning for version 1.5 (r1056) newness
 	bool warning1056_;
+	// Whether to allow deprecated command/function names (i.e. un-capitalised)
+	bool allowDeprecated_;
 	// Whether to load filters on startup
 	bool loadFilters_;
 	// Whether to load includes on startup
@@ -723,6 +725,8 @@ class Prefs
 	bool warning1056() const;
 	// Set whether to display warning for version 1.5 (r1056) newness
 	void setWarning1056(bool b);
+	// Return whether to allow deprecated command/function names (i.e. un-capitalised)
+	bool allowDeprecated() const;
 	// Whether to load filters on startup
 	bool loadFilters() const;
 	// Set whether to load filters on startup

@@ -50,33 +50,33 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 	{ "angles", 	VTypes::PatternBoundData,	-1, TRUE },
 	{ "atoms", 	VTypes::AtomData,		-1, TRUE },
 	{ "bonds", 	VTypes::PatternBoundData,	-1, TRUE },
-	{ "ffangles",	VTypes::ForcefieldBoundData,	0, TRUE },
-	{ "ffbonds",	VTypes::ForcefieldBoundData,	0, TRUE },
-	{ "fftorsions",	VTypes::ForcefieldBoundData,	0, TRUE },
-	{ "fftypes",	VTypes::ForcefieldAtomData,	0, TRUE },
+	{ "ffAngles",	VTypes::ForcefieldBoundData,	0, TRUE },
+	{ "ffBonds",	VTypes::ForcefieldBoundData,	0, TRUE },
+	{ "ffTorsions",	VTypes::ForcefieldBoundData,	0, TRUE },
+	{ "ffTypes",	VTypes::ForcefieldAtomData,	0, TRUE },
 	{ "ff",		VTypes::ForcefieldData,		0, FALSE },
-	{ "firstatom",	VTypes::AtomData,		0, TRUE },
-	{ "firstatomid",VTypes::IntegerData,		0, TRUE },
+	{ "firstAtom",	VTypes::AtomData,		0, TRUE },
+	{ "firstAtomId",VTypes::IntegerData,		0, TRUE },
 	{ "fixed",	VTypes::IntegerData,		0, FALSE },
-	{ "lastatom",	VTypes::AtomData,		0, TRUE },
-	{ "lastatomid",	VTypes::IntegerData,		0, TRUE },
+	{ "lastAtom",	VTypes::AtomData,		0, TRUE },
+	{ "lastAtomId",	VTypes::IntegerData,		0, TRUE },
 	{ "name",	VTypes::StringData,		0, FALSE },
-	{ "nangles",	VTypes::IntegerData,		0, TRUE },
-	{ "natoms",	VTypes::IntegerData,		0, TRUE },
-	{ "nbonds",	VTypes::IntegerData,		0, TRUE },
-	{ "nffangles",	VTypes::IntegerData,		0, TRUE },
-	{ "nffbonds",	VTypes::IntegerData,		0, TRUE },
-	{ "nfftorsions",VTypes::IntegerData,		0, TRUE },
-	{ "nfftypes",	VTypes::IntegerData,		0, TRUE },
-	{ "nmolatoms",	VTypes::IntegerData,		0, TRUE },
-	{ "nmols",	VTypes::IntegerData,		0, TRUE },
-	{ "ntorsions",	VTypes::IntegerData,		0, TRUE },
+	{ "nAngles",	VTypes::IntegerData,		0, TRUE },
+	{ "nAtoms",	VTypes::IntegerData,		0, TRUE },
+	{ "nBonds",	VTypes::IntegerData,		0, TRUE },
+	{ "nFFAngles",	VTypes::IntegerData,		0, TRUE },
+	{ "nFFBonds",	VTypes::IntegerData,		0, TRUE },
+	{ "nFFTorsions",VTypes::IntegerData,		0, TRUE },
+	{ "nFFTypes",	VTypes::IntegerData,		0, TRUE },
+	{ "nMolAtoms",	VTypes::IntegerData,		0, TRUE },
+	{ "nMols",	VTypes::IntegerData,		0, TRUE },
+	{ "nTorsions",	VTypes::IntegerData,		0, TRUE },
 	{ "torsions",	VTypes::PatternBoundData,	-1, TRUE }
 };
 
 // Function data
 FunctionAccessor PatternVariable::functionData[PatternVariable::nFunctions] = {
-	{ "atomsinring",	VTypes::IntegerData,	"Ii",	"int i, int j = -1" },
+	{ "atomsInRing",	VTypes::IntegerData,	"Ii",	"int i, int j = -1" },
 	{ "cog", 		VTypes::VectorData,	"I",	"int id" },
 	{ "com", 		VTypes::VectorData,	"I",	"int id" }
 };
@@ -93,12 +93,13 @@ StepNode *PatternVariable::accessorSearch(const char *s, TreeNode *arrayindex, T
 	msg.enter("PatternVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'pattern&' has no member or function named '%s'.\n", s);
 			printAccessors();

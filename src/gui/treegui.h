@@ -39,24 +39,28 @@ class QtWidgetObject
 	QtWidgetObject *prev, *next;
 	
 	private:
-	// Whether widget(s) are being refreshed
-	static bool refreshing_;
 	// TreeGuiWidget to which Qt widget/object is associated
 	TreeGuiWidget *treeGuiWidget_;
 	// Associated QWidget (if not QObject)
 	QWidget *qWidget_;
 	// Associated QObject (if not QWidget)
 	QObject *qObject_;
+	// Associated label widget, if any
+	QLabel *labelWidget_;
 	// Text for associated label
-	Dnchar label_;
+	Dnchar labelText_;
 	// Widget's layout, if it has one
 	QGridLayout *layout_;
+	// Next widget position for automatic layout
+	int nextLeft_, nextTop_;
+	// Flag specifying whether to add widgets horizontally or vertically when using automatic fill
+	bool autoFillVertical_;
 
 	public:
 	// Set TreeGuiWidget/QWidget pair
-	void set(TreeGuiWidget *widget, QWidget *wid, const char *label, QGridLayout *layout = NULL);
+	void set(TreeGuiWidget *widget, QWidget *wid, const char *label = NULL, QGridLayout *layout = NULL);
 	// Set TreeGuiWidget/QObject pair
-	void set(TreeGuiWidget *widget, QObject *obj, const char *label, QGridLayout *layout = NULL);
+	void set(TreeGuiWidget *widget, QObject *obj);
 	// Return whether currently refreshing
 	bool refreshing();
 	// Return TreeGuiWidget to which Qt widget/object is associated
@@ -65,10 +69,12 @@ class QtWidgetObject
 	QWidget *qWidget();
 	// Return associated QObject (if not QWidget)
 	QObject *qObject();
-	// Return text for associated label
-	const char *label();
 	// Return widget's layout, if it has one
 	QGridLayout *layout();
+	// Return whether to add widgets horizontally or vertically when using automatic fill
+	bool autoFillVertical();
+	// Set whether to add widgets horizontally or vertically when using automatic fill
+	void setAutoFillVertical(bool b);
 
 
 	/*
@@ -76,9 +82,11 @@ class QtWidgetObject
 	*/
 	public:
 	// Update associated QWidget / QObject based on treeGuiWidget_ data
-	void update();
+	void updateQt();
+	// Update associated CLI widget based on QWidget / QObject data
+	void updateCLI();
 	// Add widget to the stored layout (provided it has one) at specified geometry
-	bool addWidget(TreeGuiWidget *widget, int l, int r, int addToWidth, int addToHeight);
+	bool addWidget(QtWidgetObject *qtwo, int l, int t, int addToWidth, int addToHeight);
 };
 
 // Tree Gui Qt Dialog
@@ -91,54 +99,65 @@ class AtenTreeGuiDialog : public QDialog
 	// Generic Widget Functions
 	*/
 	private slots:
+	void buttonWidget_clicked(bool checked);
 	void checkBoxWidget_clicked(bool checked);
 	void comboWidget_currentIndexChanged(int row);
 	void doubleSpinWidget_valueChanged(double d);
+	void editWidget_editingFinished();
 	void integerSpinWidget_valueChanged(int i);
-	void buttonGroupWidget_buttonClicked(int id);
 	void radioButtonWidget_clicked(bool checked);
+	void radioGroupWidget_buttonClicked(QAbstractButton*);
+	void tabsWidget_currentChanged(int id);
 
 
 	/*
 	// Widgets
 	*/
 	private:
-	// Whether the window is currently refreshing its controls
-	bool refreshing_;
+	// Flag to prevent sending of update events
+	bool updating_;
 	// Main Grid layout
 	QGridLayout *mainLayout_;
 	// Associated TreeGui parent
 	TreeGui *parentTree_;
 	// List of Qt/TreeGui pairs
 	List<QtWidgetObject> widgetObjects_;
-	
+
+	private:
+	// Create new general layout for specified widget
+	QGridLayout *addLayout(QWidget *widget);
+
 	public:
-	// Create new dialog layout
-	QtWidgetObject *addDialogLayout(TreeGui *widget);
-	// Create new combo widget
-	QtWidgetObject *addCombo(TreeGuiWidget *widget, const char *label);
-	// Create new integer spin widget
-	QtWidgetObject *addIntegerSpin(TreeGuiWidget *widget, const char *label, int step);
-	// Create new double spin widget
-	QtWidgetObject *addDoubleSpin(TreeGuiWidget *widget, const char *label, double step);
-	// Create new label widget
-	QtWidgetObject *addLabel(TreeGuiWidget *widget, const char *text);
-	// Create new edit widget
-	QtWidgetObject *addEdit(TreeGuiWidget *widget, const char *label);
+	// Create new button widget
+	QtWidgetObject *addButton(TreeGuiWidget *widget, const char *label);
 	// Create new checkbox widget
 	QtWidgetObject *addCheck(TreeGuiWidget *widget, const char *label);
-	// Create new tab widget
-	QtWidgetObject *addTabs(TreeGuiWidget *widget);
-	// Create new page (only in tab widget)
-	QtWidgetObject *addPage(TreeGuiWidget *widget, TreeGuiWidget *tabWidget, const char *label);
+	// Create new combo widget
+	QtWidgetObject *addCombo(TreeGuiWidget *widget, const char *label);
+	// Create new dialog layout
+	QtWidgetObject *addDialogLayout(TreeGui *treeGui);
+	// Create new double spin widget
+	QtWidgetObject *addDoubleSpin(TreeGuiWidget *widget, const char *label, double step);
+	// Create new edit widget
+	QtWidgetObject *addEdit(TreeGuiWidget *widget, const char *label);
+	// Create new frame widget
+	QtWidgetObject *addFrame(TreeGuiWidget *widget);
 	// Create new group box
 	QtWidgetObject *addGroup(TreeGuiWidget *widget, const char *label);
-	// Create new (invisible) radio group
-	QtWidgetObject *addRadioGroup(TreeGuiWidget *widget);
+	// Create new integer spin widget
+	QtWidgetObject *addIntegerSpin(TreeGuiWidget *widget, const char *label, int step);
+	// Create new label widget
+	QtWidgetObject *addLabel(TreeGuiWidget *widget, const char *text);
+	// Create new page (only in tab widget)
+	QtWidgetObject *addPage(TreeGuiWidget *widget, TreeGuiWidget *tabWidget, const char *label);
 	// Create new radio button
 	QtWidgetObject *addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char *name, const char *label, int id);
-	// Perform specified state change
-// 	void performStateChange(StateChange *sc);
+	// Create new (invisible) radio group
+	QtWidgetObject *addRadioGroup(TreeGuiWidget *widget);
+	// Create new stack widget
+	QtWidgetObject *addStack(TreeGuiWidget *widget);
+	// Create new tab widget
+	QtWidgetObject *addTabs(TreeGuiWidget *widget);
 	// Execute (show) dialog
 	bool execute();
 

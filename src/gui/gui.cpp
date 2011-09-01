@@ -68,10 +68,10 @@ GuiQt gui;
 // Bitmap Image Formats (conform to allowable pixmap formats in Qt)
 const char *bitmapFormatFilters[GuiQt::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
 const char *bitmapFormatExtensions[GuiQt::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
-GuiQt::BitmapFormat GuiQt::bitmapFormat(const char *s, bool reporterror)
+GuiQt::BitmapFormat GuiQt::bitmapFormat(const char *s, bool reportError)
 {
 	GuiQt::BitmapFormat bf = (GuiQt::BitmapFormat) enumSearch("bitmap format",GuiQt::nBitmapFormats,bitmapFormatExtensions,s);
-	if ((bf == GuiQt::nBitmapFormats) && reporterror) enumPrintValid(GuiQt::nBitmapFormats,bitmapFormatExtensions);
+	if ((bf == GuiQt::nBitmapFormats) && reportError) enumPrintValid(GuiQt::nBitmapFormats,bitmapFormatExtensions);
 	return bf;
 }
 GuiQt::BitmapFormat GuiQt::bitmapFormatFromFilter(const char *s)

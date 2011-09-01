@@ -226,7 +226,6 @@ class Command
 		Undo,
 	
 		// Energy Commands
-		ECut,
 		Electrostatics,
 		FrameEnergy,
 		ModelEnergy,
@@ -237,7 +236,6 @@ class Command
 		PrintEnergy,
 		PrintSummary,
 		PrintVdw,
-		VCut,
 	
 		// Flow control
 		Break,
@@ -369,10 +367,6 @@ class Command
 		Tan,
 
 		// MC Commands
-		MCAccept,
-		MCAllow,
-		MCMaxStep,
-		MCNTrials,
 		PrintMC,
 	
 		// Measurements
@@ -704,7 +698,6 @@ class Command
 	static bool function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Undo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Energy Commands
-	static bool function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ModelEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -715,7 +708,6 @@ class Command
 	static bool function_PrintEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintSummary(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Flow control
 	static bool function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Case(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -838,10 +830,6 @@ class Command
 	static bool function_Sqrt(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Tan(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// MC Commands
-	static bool function_MCAccept(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_MCAllow(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_MCMaxStep(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_MCNTrials(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintMC(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Measurement and Geometry
 	static bool function_ClearMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv);

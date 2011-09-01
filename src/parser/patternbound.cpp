@@ -46,13 +46,13 @@ PatternBoundVariable::~PatternBoundVariable()
 // Accessor data
 Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = {
 	{ "data", 	VTypes::DoubleData,		MAXFFPARAMDATA, TRUE },
-	{ "escale", 	VTypes::DoubleData,		0, TRUE },
+	{ "eScale", 	VTypes::DoubleData,		0, TRUE },
 	{ "form", 	VTypes::StringData,		0, TRUE },
 	{ "id", 	VTypes::IntegerData,		MAXFFBOUNDTYPES, TRUE },
-	{ "termid",	VTypes::IntegerData,		0, TRUE },
+	{ "termId",	VTypes::IntegerData,		0, TRUE },
 	{ "type", 	VTypes::StringData,		0, TRUE },
-	{ "typenames", 	VTypes::StringData,		MAXFFBOUNDTYPES, TRUE },
-	{ "vscale",	VTypes::DoubleData,		0, TRUE }
+	{ "typeNames", 	VTypes::StringData,		MAXFFBOUNDTYPES, TRUE },
+	{ "vScale",	VTypes::DoubleData,		0, TRUE }
 };
 
 // Function data
@@ -72,12 +72,13 @@ StepNode *PatternBoundVariable::accessorSearch(const char *s, TreeNode *arrayind
 	msg.enter("PatternBoundVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'bound&' has no member or function named '%s'.\n", s);
 			printAccessors();

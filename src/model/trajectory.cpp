@@ -119,14 +119,14 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	trajectoryFrameFunction_ = f->filter.trajectoryFrameFunction();
 	if (trajectoryHeaderFunction_ == NULL)
 	{
-		msg.print("Error initialising trajectory: Filter '%s' contains no 'int readheader()' function.\n", trajectoryFilter_->filter.name());
+		msg.print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.\n", trajectoryFilter_->filter.name());
 		clearTrajectory();
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
 	if (trajectoryFrameFunction_ == NULL)
 	{
-		msg.print("Error initialising trajectory: Filter '%s' contains no 'int readframe()' function.\n", trajectoryFilter_->filter.name());
+		msg.print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.\n", trajectoryFilter_->filter.name());
 		clearTrajectory();
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;

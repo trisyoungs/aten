@@ -335,14 +335,6 @@ void CommandParser::popTree()
 		// Can use the 'isFilter' member function to check for the lack of a proper type
 		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
 	}
-	// If this was a 'defaultUi' function, execute it now
-	if (strcmp(ri->item->name(),"defaultUi") == 0)
-	{
-		printf("THIS TREE *IS* CALLED defaultUi\n");
-		ReturnValue rv;
-		ri->item->execute(rv);
-	}
-	else printf("THIS TREE IS NOT CALLED defaultUi\n");
 	msg.print(Messenger::Parse, "Removing tree %p from stack (%i remain).\n", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
 	// Set current tree target to the top tree now on the stack

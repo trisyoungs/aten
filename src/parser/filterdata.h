@@ -43,7 +43,7 @@ class FilterData
 	// Filter Types
 	enum FilterType { ModelImport, TrajectoryImport, ExpressionImport, GridImport, ModelExport, TrajectoryExport, ExpressionExport, GridExport, nFilterTypes };
 	static const char *filterType(FilterType ft);
-	static FilterType filterType(const char *s, bool reporterror = FALSE);
+	static FilterType filterType(const char *s, bool reportError = FALSE);
 	// Filter commands
 	enum FilterOption { ExactOption, ExtensionOption, GlobOption, IdOption, NameOption, NicknameOption, SearchOption, TypeOption, WithinOption, ZMapOption, nFilterOptions };
 	static FilterOption filterOption(const char *s);

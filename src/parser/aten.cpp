@@ -91,15 +91,15 @@ Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 	{ "mc",		VTypes::MonteCarloData,		0, TRUE },
 	{ "model",	VTypes::ModelData,		0, TRUE },
 	{ "models",	VTypes::ModelData,		-1, TRUE },
-	{ "nelements",	VTypes::IntegerData,		0, TRUE },
-	{ "nmodels",	VTypes::IntegerData,		0, TRUE },
+	{ "nElements",	VTypes::IntegerData,		0, TRUE },
+	{ "nModels",	VTypes::IntegerData,		0, TRUE },
 	{ "prefs",	VTypes::PreferencesData,	0, TRUE }
 };
 
 // Function data
 FunctionAccessor AtenVariable::functionData[AtenVariable::nFunctions] = {
-	{ "convertenergy",	VTypes::DoubleData,	"NS",	"double value, string oldunits" },
-	{ "findelement",	VTypes::ElementData,	"S",	"string name" }
+	{ "convertEnergy",	VTypes::DoubleData,	"NS",	"double value, string oldunits" },
+	{ "findElement",	VTypes::ElementData,	"S",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -114,12 +114,13 @@ StepNode *AtenVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 	msg.enter("AtenVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'aten&' has no member or function named '%s'.\n", s);
 			printAccessors();

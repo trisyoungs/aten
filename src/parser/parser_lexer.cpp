@@ -298,7 +298,7 @@ int CommandParser::lex()
 			}
 
 			// Is it one of Aten's function keywords?
-			for (n=0; n<Command::nCommands; n++) if (strcmp(token,Command::data[n].keyword) == 0) break;
+			n = commands.command(token);
 			if (n != Command::nCommands)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ... which is a function (->FUNCCALL).\n", tree_);

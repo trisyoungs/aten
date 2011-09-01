@@ -24,31 +24,43 @@
 #include "base/sysfunc.h"
 
 /*
-// Widget Event Action
-*/
-
-// Constructor
-TreeGuiWidgetEventAction::TreeGuiWidgetEventAction()
-{
-	// Public variables
-	prev = NULL;
-	next = NULL;
-}
-
-// Destructor
-TreeGuiWidgetEventAction::~TreeGuiWidgetEventAction()
-{
-}
-
-/*
 // Widget Event
 */
+
+// Event types
+const char *EventTypeKeywords[TreeGuiWidgetEvent::nEventTypes] = { "activate", "function", "sendbool", "senddouble", "sendinteger", "sendstring", "set" };
+TreeGuiWidgetEvent::EventType TreeGuiWidgetEvent::eventType(const char *s, bool reportError)
+{
+	TreeGuiWidgetEvent::EventType et = (TreeGuiWidgetEvent::EventType) enumSearch("event type", TreeGuiWidgetEvent::nEventTypes, EventTypeKeywords, s, reportError);
+	if ((et == TreeGuiWidgetEvent::nEventTypes) && reportError) enumPrintValid(TreeGuiWidgetEvent::nEventTypes,EventTypeKeywords);
+	return et;
+}
+const char *TreeGuiWidgetEvent::eventType(TreeGuiWidgetEvent::EventType i)
+{
+	return EventTypeKeywords[i];
+}
+
+// Event properties
+const char *EventPropertyKeywords[TreeGuiWidgetEvent::nEventProperties] = { "disabled", "enabled", "invisible", "items", "maximum", "minimum", "text", "value", "visible" };
+TreeGuiWidgetEvent::EventProperty TreeGuiWidgetEvent::eventProperty(const char *s, bool reportError)
+{
+	TreeGuiWidgetEvent::EventProperty ep = (TreeGuiWidgetEvent::EventProperty) enumSearch("event property", TreeGuiWidgetEvent::nEventProperties, EventPropertyKeywords, s, reportError);
+	if ((ep == TreeGuiWidgetEvent::nEventProperties) && reportError) enumPrintValid(TreeGuiWidgetEvent::nEventProperties,EventPropertyKeywords);
+	return ep;
+}
+const char *TreeGuiWidgetEvent::eventProperty(TreeGuiWidgetEvent::EventProperty i)
+{
+	return EventPropertyKeywords[i];
+}
 
 // Constructor / Destructor
 TreeGuiWidgetEvent::TreeGuiWidgetEvent()
 {
 	// Private variables
-	type_ = TreeGuiWidgetEvent::nEventQualifiers;
+	qualifier_ = TreeGuiWidgetEvent::nEventQualifiers;
+	type_ = TreeGuiWidgetEvent::nEventTypes;
+	targetWidget_ = NULL;
+	targetProperty_ = TreeGuiWidgetEvent::nEventProperties;
 
 	// Public variables
 	prev = NULL;
@@ -60,38 +72,76 @@ TreeGuiWidgetEvent::~TreeGuiWidgetEvent()
 }
 
 // Return qualifier type
-TreeGuiWidgetEvent::EventQualifier TreeGuiWidgetEvent::type()
+TreeGuiWidgetEvent::EventQualifier TreeGuiWidgetEvent::qualifier()
+{
+	return qualifier_;
+}
+
+// Return event type
+TreeGuiWidgetEvent::EventType TreeGuiWidgetEvent::type()
 {
 	return type_;
 }
 
-// Set integer qualifying event
-void TreeGuiWidgetEvent::setQualifier(int min, int max)
+// Return event property
+TreeGuiWidgetEvent::EventProperty TreeGuiWidgetEvent::targetProperty()
 {
-	type_ = TreeGuiWidgetEvent::IntegerQualifier;
+	return targetProperty_;
+}
+
+// Return target widget
+TreeGuiWidget *TreeGuiWidgetEvent::targetWidget()
+{
+	return targetWidget_;
+}
+
+// Set integer qualifying event
+void TreeGuiWidgetEvent::setQualifiers(int min, int max)
+{
+	qualifier_ = TreeGuiWidgetEvent::IntegerQualifier;
 	minimumI_ = min;
 	maximumI_ = max;
 }
 
 // Set double qualifying event
-void TreeGuiWidgetEvent::setQualifier(double min, double max)
+void TreeGuiWidgetEvent::setQualifiers(double min, double max)
 {
-	type_ = TreeGuiWidgetEvent::DoubleQualifier;
+	qualifier_ = TreeGuiWidgetEvent::DoubleQualifier;
 	minimumD_ = min;
 	maximumD_ = max;
 }
 
-// Set string qualifying event
-void TreeGuiWidgetEvent::setQualifier(const char *s)
+// Set string qualifying event (comma-separated list)
+void TreeGuiWidgetEvent::setQualifiers(const char *s)
 {
-	type_ = TreeGuiWidgetEvent::StringQualifier;
-	matchS_ = s;
+	qualifier_ = TreeGuiWidgetEvent::StringQualifier;
+	LineParser parser;
+	parser.getArgsDelim(LineParser::UseQuotes, s);
+	for (int n=0; n<parser.nArgs(); ++n)
+	{
+		Dnchar *d = matchS_.add();
+		d->set(parser.argc(n));
+	}
+}
+
+// Set remaining event data
+bool TreeGuiWidgetEvent::setEventData(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetwidget, TreeGuiWidgetEvent::EventProperty property)
+{
+	type_ = type;
+	targetWidget_ = targetwidget;
+	targetProperty_ = property;
+}
+
+// Return send data storage
+ReturnValue &TreeGuiWidgetEvent::sendValue()
+{
+	return sendValue_;
 }
 
 // Return whether supplied integer value qualifies
 bool TreeGuiWidgetEvent::qualifies(int i)
 {
-	if (type_ != TreeGuiWidgetEvent::IntegerQualifier)
+	if (qualifier_ != TreeGuiWidgetEvent::IntegerQualifier)
 	{
 		printf("Internal Error: Tried to qualify a value that isn't an integer.\n");
 		return FALSE;
@@ -103,7 +153,7 @@ bool TreeGuiWidgetEvent::qualifies(int i)
 // Return whether supplied double value qualifies
 bool TreeGuiWidgetEvent::qualifies(double d)
 {
-	if (type_ != TreeGuiWidgetEvent::DoubleQualifier)
+	if (qualifier_ != TreeGuiWidgetEvent::DoubleQualifier)
 	{
 		printf("Internal Error: Tried to qualify a value that isn't a double.\n");
 		return FALSE;
@@ -115,18 +165,32 @@ bool TreeGuiWidgetEvent::qualifies(double d)
 // Return whether supplied character value qualifies
 bool TreeGuiWidgetEvent::qualifies(const char *s)
 {
-	if (type_ != TreeGuiWidgetEvent::StringQualifier)
+	if (qualifier_ != TreeGuiWidgetEvent::StringQualifier)
 	{
 		printf("Internal Error: Tried to qualify a value that isn't a string.\n");
 		return FALSE;
 	}
-	if (matchS_ != s) return FALSE;
-	return TRUE;
+	// Go through list of matches
+	for (Dnchar *d = matchS_.first(); d != NULL; d = d->next) if (*d == s) return TRUE;
+	return FALSE;
 }
 
 /*
 // TreeGuiWidget
 */
+
+// Event properties
+const char *WidgetTypeKeywords[TreeGuiWidget::nWidgetTypes] = { "button", "combo", "dialog", "doublespin", "edit", "frame", "group", "integerspin", "label", "page", "radiobutton", "radiogroup", "stack", "tab" };
+TreeGuiWidget::WidgetType TreeGuiWidget::widgetType(const char *s, bool reportError)
+{
+	TreeGuiWidget::WidgetType wt = (TreeGuiWidget::WidgetType) enumSearch("widget type", TreeGuiWidget::nWidgetTypes, WidgetTypeKeywords, s, reportError);
+	if ((wt == TreeGuiWidget::nWidgetTypes) && reportError) enumPrintValid(TreeGuiWidget::nWidgetTypes,WidgetTypeKeywords);
+	return wt;
+}
+const char *TreeGuiWidget::widgetType(TreeGuiWidget::WidgetType i)
+{
+	return WidgetTypeKeywords[i];
+}
 
 // Constructor
 TreeGuiWidget::TreeGuiWidget()
@@ -141,7 +205,7 @@ TreeGuiWidget::TreeGuiWidget()
 	minimumD_ = 0.0;
 	maximumD_ = 0.0;
 	valueD_ = 0.0;
-	itemsChanged_ = FALSE;
+	for (int n = 0; n < TreeGuiWidgetEvent::nEventProperties; ++n) propertyChanged_[n] = FALSE;
 	enabled_ = TRUE;
 	visible_ = TRUE;
 	
@@ -194,16 +258,16 @@ QtWidgetObject *TreeGuiWidget::qtWidgetObject()
 }
 
 // Set integer properties
-bool TreeGuiWidget::setProperties(int min, int max, int value)
+bool TreeGuiWidget::setInitialProperties(int minval, int maxval, int value)
 {
 	// Check / set limits
-	if (max < min)
+	if (maxval < minval)
 	{
 		msg.print("Error setting widget integer properties: max > min.\n");
 		return FALSE;
 	}
-	minimumI_ = min;
-	maximumI_ = max;
+	minimumI_ = minval;
+	maximumI_ = maxval;
 	// Check / set value
 	if ((value < minimumI_) || (value  > maximumI_))
 	{
@@ -215,16 +279,16 @@ bool TreeGuiWidget::setProperties(int min, int max, int value)
 }
 
 // Set double properties
-bool TreeGuiWidget::setProperties(double min, double max, double value)
+bool TreeGuiWidget::setInitialProperties(double minval, double maxval, double value)
 {
 	// Check / set limits
-	if (max < min)
+	if (maxval < minval)
 	{
 		msg.print("Error setting widget double properties: max > min.\n");
 		return FALSE;
 	}
-	minimumD_ = min;
-	maximumD_ = max;
+	minimumD_ = minval;
+	maximumD_ = maxval;
 	// Check / set value
 	if ((value < minimumD_) || (value  > maximumD_))
 	{
@@ -236,7 +300,7 @@ bool TreeGuiWidget::setProperties(double min, double max, double value)
 }
 
 // Set string properties
-bool TreeGuiWidget::setProperties(const char *s)
+bool TreeGuiWidget::setInitialProperties(const char *s)
 {
 	text_ = s;
 }
@@ -246,7 +310,7 @@ void TreeGuiWidget::addItem(const char *s)
 {
 	Dnchar *d = items_.add();
 	d->set(s);
-	itemsChanged_= TRUE;
+	propertyChanged_[TreeGuiWidgetEvent::ItemsProperty] = TRUE;
 }
 
 // Return number of defined items
@@ -332,18 +396,6 @@ Dnchar *TreeGuiWidget::items()
 	return items_.first();
 }
 
-// Return whether items list has recently changed (since last Qt update)
-bool TreeGuiWidget::itemsChanged()
-{
-	return itemsChanged_;
-}
-
-// Reset items changed flag
-void TreeGuiWidget::resetItemsChanged()
-{
-	itemsChanged_ = FALSE;
-}
-
 // Set whether widget is enabled
 void TreeGuiWidget::setEnabled(bool b)
 {
@@ -368,6 +420,298 @@ bool TreeGuiWidget::visible()
 	return visible_;
 }
 
+// Set specified property
+bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, ReturnValue rv)
+{
+	// Do generic properties which are applicable to any widget type first
+	bool done = TRUE;
+	if (property == TreeGuiWidgetEvent::DisabledProperty)
+	{
+		enabled_ = !rv.asBool();
+		propertyChanged_[TreeGuiWidgetEvent::EnabledProperty] = TRUE;
+			printf("Setting disabled value for widget %s to %i\n", name_.get(), rv.asBool());
+	}
+	else if (property == TreeGuiWidgetEvent::EnabledProperty)
+	{
+		enabled_ = rv.asBool();
+		propertyChanged_[TreeGuiWidgetEvent::EnabledProperty] = TRUE;
+	}
+	else if (property == TreeGuiWidgetEvent::InvisibleProperty)
+	{
+		visible_ = !rv.asBool();
+		propertyChanged_[TreeGuiWidgetEvent::VisibleProperty] = TRUE;
+	}
+	else if (property == TreeGuiWidgetEvent::VisibleProperty)
+	{
+		visible_ = rv.asBool();
+		propertyChanged_[TreeGuiWidgetEvent::VisibleProperty] = TRUE;
+	}
+	else done = FALSE;
+	if (done)
+	{
+		if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
+		checkWidgetEvents();
+		return TRUE;
+	}
+
+	// All other properties must be checked against widget type
+	done = TRUE;
+	switch (type_)
+	{
+		// Widgets for which only 'text' value is valid
+		case (TreeGuiWidget::DialogWidget):
+		case (TreeGuiWidget::EditWidget):
+		case (TreeGuiWidget::LabelWidget):
+		case (TreeGuiWidget::GroupWidget):
+			if (property == TreeGuiWidgetEvent::TextProperty)
+			{
+				text_ = rv.asString();
+				propertyChanged_[TreeGuiWidgetEvent::TextProperty] = TRUE;
+			}
+			else done = FALSE;
+			break;
+		// Widgets for which only 'value' property is valid
+		case (TreeGuiWidget::ButtonWidget):
+		case (TreeGuiWidget::CheckWidget):
+		case (TreeGuiWidget::RadioButtonWidget):
+		case (TreeGuiWidget::RadioGroupWidget):
+		case (TreeGuiWidget::TabWidget):
+		case (TreeGuiWidget::StackWidget):
+			if (property == TreeGuiWidgetEvent::ValueProperty)
+			{
+				// Check range
+				int i = rv.asInteger();
+				if (!isGoodValue(i))
+				{
+					msg.print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.\n", i, name_.get(), minimumI_, maximumI_, i < minimumI_ ? minimumI_ : maximumI_);
+					i = i < minimumI_ ? minimumI_ : maximumI_;
+				}
+				valueI_ = i;
+				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+			}
+			else done = FALSE;
+			break;
+		// Spin widgets
+		case (TreeGuiWidget::IntegerSpinWidget):
+		case (TreeGuiWidget::DoubleSpinWidget):
+			if (property == TreeGuiWidgetEvent::ValueProperty)
+			{
+				// Check range
+				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (!isGoodValue(rv.asInteger())))
+				{
+					msg.print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.\n", rv.asInteger(), name_.get(), minimumI_, maximumI_, rv.asInteger() < minimumI_ ? minimumI_ : maximumI_);
+					rv = rv.asInteger() < minimumI_ ? minimumI_ : maximumI_;
+				}
+				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (!isGoodValue(rv.asDouble())))
+				{
+					msg.print("Dialog Warning: Value (%f) is out of range for this widget (%s) whose minimum/maximum values are %f and %f respectively. Value reset to %f.\n", rv.asDouble(), name_.get(), minimumD_, maximumD_, rv.asDouble() < minimumD_ ? minimumD_ : maximumD_);
+					rv = rv.asDouble() < minimumD_ ? minimumD_ : maximumD_;
+				}
+				if (type_ == TreeGuiWidget::IntegerSpinWidget) valueI_ = rv.asInteger();
+				else valueD_ = rv.asDouble();
+				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+			}
+			else if (property == TreeGuiWidgetEvent::MinimumProperty)
+			{
+				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (rv.asInteger() > maximumI_))
+				{
+					msg.print("Dialog Warning: Minimum (%i) is higher than the current maximum (%i) for this widget (%s). Value reset to %i.\n", rv.asInteger(), name_.get(), maximumI_, maximumI_);
+					rv = maximumI_;
+				}
+				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (rv.asDouble() > maximumD_))
+				{
+					msg.print("Dialog Warning: Minimum (%f) is higher than the current maximum (%f) for this widget (%s). Value reset to %f.\n", rv.asDouble(), name_.get(), maximumD_, maximumD_);
+					rv = maximumD_;
+				}
+				if (type_ == TreeGuiWidget::IntegerSpinWidget) minimumI_ = rv.asInteger();
+				else minimumD_ = rv.asDouble();
+				propertyChanged_[TreeGuiWidgetEvent::MinimumProperty] = TRUE;
+				// Check value is still in range
+				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (valueI_ < minimumI_))
+				{
+					valueI_ = minimumI_;
+					msg.print("Value of widget %s altered to conform to new min/max value.\n", name_.get());
+					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+				}
+				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (valueD_ < minimumD_))
+				{
+					valueD_ = minimumD_;
+					msg.print("Value of widget %s altered to conform to new min/max value.\n", name_.get());
+					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+				}
+			}
+			else if (property == TreeGuiWidgetEvent::MaximumProperty)
+			{
+				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (rv.asInteger() < minimumI_))
+				{
+					msg.print("Dialog Warning: Maximum (%i) is lower than the current minimum (%i) for this widget (%s). Value reset to %i.\n", rv.asInteger(), name_.get(), minimumI_, minimumI_);
+					rv = minimumI_;
+				}
+				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (rv.asDouble() < minimumD_))
+				{
+					msg.print("Dialog Warning: Maximum (%f) is lower than the current minimum (%f) for this widget (%s). Value reset to %f.\n", rv.asDouble(), name_.get(), minimumD_, minimumD_);
+					rv = minimumD_;
+				}
+				if (type_ == TreeGuiWidget::IntegerSpinWidget) maximumI_ = rv.asInteger();
+				else maximumD_ = rv.asDouble();
+				propertyChanged_[TreeGuiWidgetEvent::MaximumProperty] = TRUE;
+				// Check value is still in range
+				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (valueI_ > maximumI_))
+				{
+					valueI_ = maximumI_;
+					msg.print("Value of widget %s altered to conform to new min/max value.\n", name_.get());
+					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+				}
+				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (valueD_ > maximumD_))
+				{
+					valueD_ = maximumD_;
+					msg.print("Value of widget %s altered to conform to new min/max value.\n", name_.get());
+					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+				}
+			}
+			else done = FALSE;
+			break;
+		// Combo box widget
+		case (TreeGuiWidget::ComboWidget):
+			if (property == TreeGuiWidgetEvent::ValueProperty)
+			{
+				// Set depending on variable type stored in ReturnValue
+				int i;
+				if (rv.type() == VTypes::StringData)
+				{
+					// Search for stored string in items list
+					for (i = 0; i<items_.nItems(); ++i) if (*(items_[i]) == rv.asString()) break;
+					if (i == items_.nItems())
+					{
+						msg.print("Dialog Error: Item '%s' does not exist in the combo '%s'.\nValid values are:\n\t", rv.asString(), name_.get());
+						for (Dnchar *d = items_.first(); d != NULL; d = d->next)
+						{
+							if (d->next == NULL) msg.print("\"%s\"", d->get());
+							else msg.print("\"%s\", ", d->get());
+						}
+						return FALSE;
+					}
+					// Increase 'i' to conform to 1-N range
+					++i;
+				}
+				else i = rv.asInteger();
+				
+				// Check range
+				if (!isGoodValue(i))
+				{
+					msg.print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.\n", i, name_.get(), minimumI_, maximumI_, i < minimumI_ ? minimumI_ : maximumI_);
+					i = i < minimumI_ ? minimumI_ : maximumI_;
+				}
+				valueI_ = i;
+				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+			}
+			else if (property == TreeGuiWidgetEvent::ItemsProperty)
+			{
+				// Clear old items list
+				items_.clear();
+				// Parse new items list
+				LineParser parser;
+				parser.getArgsDelim(LineParser::UseQuotes, rv.asString());
+				if (parser.nArgs() == 0) msg.print("Dialog Warning: Recreated combo items list is empty.\n");
+				else
+				{
+					for (int n=0; n<parser.nArgs(); ++n) addItem(parser.argc(n));
+					propertyChanged_[TreeGuiWidgetEvent::ItemsProperty] = TRUE;
+					maximumI_ = parser.nArgs();
+					propertyChanged_[TreeGuiWidgetEvent::MaximumProperty] = TRUE;
+					if (valueI_ > maximumI_)
+					{
+						valueI_ = 1;
+						propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+					}
+				}
+			}
+			else done = FALSE;
+			break;
+		// Widgets which have no other settable properties
+		case (TreeGuiWidget::FrameWidget):
+		case (TreeGuiWidget::PageWidget):
+			done = FALSE;
+			break;
+		default:
+			printf("Internal Error: Widget type '%s' has not been accounted for in TreeGuiWidget::setProperty.\n", TreeGuiWidget::widgetType(type_));
+			break;
+	}
+
+	// Did we succeed?
+	if (!done)
+	{
+		msg.print("Cannot set '%s' property for a widget of type '%s' (%s)).\n", TreeGuiWidgetEvent::eventProperty(property), TreeGuiWidget::widgetType(type_), name_.get());
+		return FALSE;
+	}
+	else if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
+	checkWidgetEvents();
+
+	return TRUE;
+}
+
+// 'Activate' property, setting flag and executing events, but leaving value unchanged
+bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
+{
+// 	switch (property)
+// 	{
+// 		case (TreeGuiWidgetEvent::DisabledProperty):
+// 			setProperty(TreeGuiWidgetEvent::EnabledProperty, !enabled_);
+// 			break;
+// 		case (TreeGuiWidgetEvent::EnabledProperty):
+// 			setProperty(TreeGuiWidgetEvent::EnabledProperty, enabled_);
+// 			break;
+// 		case (TreeGuiWidgetEvent::InvisibleProperty):
+// 			setProperty(TreeGuiWidgetEvent::InvisibleProperty, !visible_);
+// 			break;
+// 		case (TreeGuiWidgetEvent::ItemsProperty):
+// 			setProperty(TreeGuiWidgetEvent::ItemsProperty, items
+// 			break;
+// 		case (TreeGuiWidgetEvent::MaximumProperty):
+// 			if (type_ == TreeGuiWidget::DoubleSpinWidget) setProperty(TreeGuiWidgetEvent::MaximumProperty, maximumD_);
+// 			else setProperty(TreeGuiWidgetEvent::MaximumProperty, maximumI_);
+// 			break;
+// 		case (TreeGuiWidgetEvent::MinimumProperty):
+// 			if (type_ == TreeGuiWidget::DoubleSpinWidget) setProperty(TreeGuiWidgetEvent::MinimumProperty, minimumD_);
+// 			else setProperty(TreeGuiWidgetEvent::MinimumProperty, minimumI_);
+// 			break;
+// 		case (TreeGuiWidgetEvent::TextProperty):
+// 			setProperty(TreeGuiWidgetEvent::TextProperty, text_.get());
+// 			break;
+// 		case (TreeGuiWidgetEvent::ValueProperty):
+// 			break;
+// 		case (TreeGuiWidgetEvent::VisibleProperty):
+// 			setProperty(TreeGuiWidgetEvent::VisibleProperty, visible_);
+// 			break;
+// 	}
+	printf("ACtivating property %s in widget %s\n", TreeGuiWidgetEvent::eventProperty(property), name_.get());
+	propertyChanged_[property] = TRUE;
+	if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
+	checkWidgetEvents();
+	
+	// If this was a radiogroup, activate the current button as well
+	if ((type_ == TreeGuiWidget::RadioGroupWidget) && (property == TreeGuiWidgetEvent::ValueProperty))
+	{
+		Refitem<TreeGuiWidget,int> *button = buttonList_[valueI_-1];
+		if (button == NULL) return FALSE;
+				printf("Current button is %s\n", button->item->name());
+		button->item->activateProperty(TreeGuiWidgetEvent::ValueProperty);
+	}
+	return TRUE;
+}
+
+// Return whether specified property has changed
+bool TreeGuiWidget::propertyChanged(TreeGuiWidgetEvent::EventProperty property)
+{
+	return propertyChanged_[property];
+}
+
+// Reset changed flag for specified property
+void TreeGuiWidget::resetChanged(TreeGuiWidgetEvent::EventProperty property)
+{
+	propertyChanged_[property] = FALSE;
+}
+
 // Add widget to the layout in this widget (if it has one) at specified geometry, returning added widget for convenience
 void TreeGuiWidget::addWidget(TreeGuiWidget *widget, int left, int top, int addToWidth, int addToHeight)
 {
@@ -381,9 +725,10 @@ void TreeGuiWidget::addWidget(TreeGuiWidget *widget, int left, int top, int addT
 	switch (type_)
 	{
 		case (TreeGuiWidget::DialogWidget):
-		case (TreeGuiWidget::PageWidget):
+		case (TreeGuiWidget::FrameWidget):
 		case (TreeGuiWidget::GroupWidget):
-			qtWidgetObject_->addWidget(widget, left, top, addToWidth, addToHeight);
+		case (TreeGuiWidget::PageWidget):
+			qtWidgetObject_->addWidget(widget->qtWidgetObject(), left, top, addToWidth, addToHeight);
 			break;
 		default:
 			msg.print("Error: Widget '%s' does not have a layout, and so addWidget() cannot be used.\n", name_.get());
@@ -392,9 +737,30 @@ void TreeGuiWidget::addWidget(TreeGuiWidget *widget, int left, int top, int addT
 	}
 }
 
-// Create new combo widget
-TreeGuiWidget *TreeGuiWidget::addCombo(const char *name, const char *label, const char *items, int index, int l, int r, int xw, int xh)
+// Create new checkbox widget
+TreeGuiWidget *TreeGuiWidget::addCheck(const char *name, const char *label, int state, int l, int t, int xw, int xh)
 {
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::CheckWidget);
+	if (widget == NULL) return NULL;
+	// Set control limits
+	if (!widget->setInitialProperties(0, 1, state))
+	{
+		msg.print("Error when setting up check widget '%s'.\n", name);
+		return NULL;
+	}
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addCheck(widget, label));
+		addWidget(widget, l, t, xw, xh);
+	}
+	return widget;
+}
+
+// Create new combo widget
+TreeGuiWidget *TreeGuiWidget::addCombo(const char *name, const char *label, const char *items, int index, int l, int t, int xw, int xh)
+{
+	printf("Boo! parent in addCombo = %p\n", parent_);
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::ComboWidget);
 	if (widget == NULL) return NULL;
 	// Parse items list
@@ -404,24 +770,84 @@ TreeGuiWidget *TreeGuiWidget::addCombo(const char *name, const char *label, cons
 	else
 	{
 		for (int n=0; n<parser.nArgs(); ++n) widget->addItem(parser.argc(n));
-		widget->setProperties(1, parser.nArgs(), index);
+		widget->setInitialProperties(1, parser.nArgs(), index);
 	}
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL)
 	{
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addCombo(widget, label));
-		addWidget(widget, l, r, xw, xh);
+		addWidget(widget, l, t, xw, xh);
+	}
+	return widget;
+}
+
+// Create new double spin widget
+TreeGuiWidget *TreeGuiWidget::addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value, int l, int t, int xw, int xh)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::DoubleSpinWidget);
+	if (widget == NULL) return NULL;
+	// Set control limits
+	if (!widget->setInitialProperties(min, max, value)) msg.print("Error when setting up double spin widget '%s'.\n", name);
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addIntegerSpin(widget, label, step));
+		addWidget(widget, l, t, xw, xh);
+	}
+	return widget;
+}
+
+// Create new edit widget
+TreeGuiWidget *TreeGuiWidget::addEdit(const char *name, const char *label, const char *text, int l, int t, int xw, int xh)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::EditWidget);
+	if (widget == NULL) return NULL;
+	// Set control properties
+	if (!widget->setInitialProperties(text)) msg.print("Error when setting up edit widget '%s'.\n", name);
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addEdit(widget, label));
+		addWidget(widget, l, t, xw, xh);
+	}
+	return widget;
+}
+
+// Create new frame widget
+TreeGuiWidget *TreeGuiWidget::addFrame(const char *name, int l, int t, int xw, int xh)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::FrameWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addFrame(widget));
+		addWidget(widget, l, t, xw, xh);
+	}
+	return widget;
+}
+
+// Create new group box
+TreeGuiWidget *TreeGuiWidget::addGroup(const char *name, const char *label, int l, int t, int xw, int xh)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::GroupWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addGroup(widget, label));
+		addWidget(widget, l, t, xw, xh);
 	}
 	return widget;
 }
 
 // Create new integer spin widget
-TreeGuiWidget *TreeGuiWidget::addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value, int l, int r, int xw, int xh)
+TreeGuiWidget *TreeGuiWidget::addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value, int l, int t, int xw, int xh)
 {
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::IntegerSpinWidget);
 	if (widget == NULL) return NULL;
 	// Set control limits
-	if (!widget->setProperties(min, max, value))
+	if (!widget->setInitialProperties(min, max, value))
 	{
 		msg.print("Error when setting up integer spin widget '%s'.\n", name);
 		return NULL;
@@ -430,142 +856,21 @@ TreeGuiWidget *TreeGuiWidget::addIntegerSpin(const char *name, const char *label
 	if (parent_->qtTreeGui() != NULL)
 	{
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addIntegerSpin(widget, label, step));
-		addWidget(widget, l, r, xw, xh);
-	}
-	return widget;
-}
-
-// Create new double spin widget
-TreeGuiWidget *TreeGuiWidget::addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value, int l, int r, int xw, int xh)
-{
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::DoubleSpinWidget);
-	if (widget == NULL) return NULL;
-	// Set control limits
-	if (!widget->setProperties(min, max, value)) msg.print("Error when setting up double spin widget '%s'.\n", name);
-	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL)
-	{
-		widget->setQtWidgetObject(parent_->qtTreeGui()->addIntegerSpin(widget, label, step));
-		addWidget(widget, l, r, xw, xh);
+		addWidget(widget, l, t, xw, xh);
 	}
 	return widget;
 }
 
 // Create new label widget
-TreeGuiWidget *TreeGuiWidget::addLabel(const char *text, int l, int r, int xw, int xh)
+TreeGuiWidget *TreeGuiWidget::addLabel(const char *text, int l, int t, int xw, int xh)
 {
 	TreeGuiWidget *widget = parent_->createWidget("", TreeGuiWidget::LabelWidget);
-	widget->setProperties(text);
+	widget->setInitialProperties(text);
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL) 
 	{
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addLabel(widget, text));
-		addWidget(widget, l, r, xw, xh);
-	}
-	return widget;
-}
-
-// Create new edit widget
-TreeGuiWidget *TreeGuiWidget::addEdit(const char *name, const char *label, const char *text, int l, int r, int xw, int xh)
-{
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::EditWidget);
-	if (widget == NULL) return NULL;
-	// Set control properties
-	if (!widget->setProperties(text)) msg.print("Error when setting up edit widget '%s'.\n", name);
-	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL)
-	{
-		widget->setQtWidgetObject(parent_->qtTreeGui()->addEdit(widget, label));
-		addWidget(widget, l, r, xw, xh);
-	}
-	return widget;
-}
-
-// Create new checkbox widget
-TreeGuiWidget *TreeGuiWidget::addCheck(const char *name, const char *label, int state, int l, int r, int xw, int xh)
-{
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::CheckWidget);
-	if (widget == NULL) return NULL;
-	// Set control limits
-	if (!widget->setProperties(0, 1, state))
-	{
-		msg.print("Error when setting up check widget '%s'.\n", name);
-		return NULL;
-	}
-	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL)
-	{
-		widget->setQtWidgetObject(parent_->qtTreeGui()->addCheck(widget, label));
-		addWidget(widget, l, r, xw, xh);
-	}
-	return widget;
-}
-
-// Create new tab widget
-TreeGuiWidget *TreeGuiWidget::addTabs(const char *name, int l, int r, int xw, int xh)
-{
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::TabWidget);
-	if (widget == NULL) return NULL;
-	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL)
-	{
-		widget->setQtWidgetObject(parent_->qtTreeGui()->addTabs(widget));
-		addWidget(widget, l, r, xw, xh);
-	}
-	return widget;
-}
-
-// Create new group box
-TreeGuiWidget *TreeGuiWidget::addGroup(const char *name, const char *label, int l, int r, int xw, int xh)
-{
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::GroupWidget);
-	if (widget == NULL) return NULL;
-	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL)
-	{
-		widget->setQtWidgetObject(parent_->qtTreeGui()->addGroup(widget, label));
-		addWidget(widget, l, r, xw, xh);
-	}
-	return widget;
-}
-
-// Create new (invisible) radio group
-TreeGuiWidget *TreeGuiWidget::addRadioGroup(const char *name)
-{
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::RadioGroupWidget);
-	if (widget == NULL) return NULL;
-	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL) widget->setQtWidgetObject(parent_->qtTreeGui()->addRadioGroup(widget));
-	return widget;
-}
-
-// Create new radio button
-TreeGuiWidget *TreeGuiWidget::addRadioButton(const char *name, const char *label, const char *radioGroup, int state, int l, int r, int xw, int xh)
-{
-	// Find named radioGroup
-	TreeGuiWidget *group = parent_->findWidget(radioGroup);
-	if (group == NULL)
-	{
-		msg.print("Error: Couldn't find radiogroup named '%s'.\n", radioGroup);
-		return NULL;
-	}
-	if (group->type() != TreeGuiWidget::RadioGroupWidget)
-	{
-		msg.print("Error: Attempted to add a radiobutton to a non-radiogroup widget (%s).\n", radioGroup);
-		return NULL;
-	}
-
-	// Create the new button and add it to the local list
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::RadioButtonWidget);
-	if (widget == NULL) return NULL;
-	int id = group->buttonList_.nItems()+1;
-	group->buttonList_.add(widget, id);
-
-	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL)
-	{
-		widget->setQtWidgetObject(parent_->qtTreeGui()->addRadioButton(widget, group, name, label, id));
-		addWidget(widget, l, r, xw, xh);
+		addWidget(widget, l, t, xw, xh);
 	}
 	return widget;
 }
@@ -583,6 +888,77 @@ TreeGuiWidget *TreeGuiWidget::addPage(const char* name, const char* label)
 	if (widget == NULL) return NULL;
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL) widget->setQtWidgetObject(parent_->qtTreeGui()->addPage(widget, this, label));
+	return widget;
+}
+
+// Create new (invisible) radio group
+TreeGuiWidget *TreeGuiWidget::addRadioGroup(const char *name)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::RadioGroupWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL) widget->setQtWidgetObject(parent_->qtTreeGui()->addRadioGroup(widget));
+	return widget;
+}
+
+// Create new radio button
+TreeGuiWidget *TreeGuiWidget::addRadioButton(const char *name, const char *label, const char *radioGroup, int state, int l, int t, int xw, int xh)
+{
+	// Find named radioGroup
+	TreeGuiWidget *group = parent_->findWidget(radioGroup);
+	if (group == NULL)
+	{
+		msg.print("Error: Couldn't find radiogroup named '%s'.\n", radioGroup);
+		return NULL;
+	}
+	if (group->type() != TreeGuiWidget::RadioGroupWidget)
+	{
+		msg.print("Error: Attempted to add a radiobutton to a non-radiogroup widget (%s).\n", radioGroup);
+		return NULL;
+	}
+
+	// Create the new button and add it to the local list
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::RadioButtonWidget);
+	if (widget == NULL) return NULL;
+	widget->setInitialProperties(0, 1, state);
+	int id = group->buttonList_.nItems()+1;
+	group->buttonList_.add(widget, id);
+	group->setInitialProperties(1, id, state == 1 ? id : (group->valueI_ == 0 ? 1 : group->valueI_));
+
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addRadioButton(widget, group, name, label, id));
+		addWidget(widget, l, t, xw, xh);
+	}
+	return widget;
+}
+
+// Create new tab widget
+TreeGuiWidget *TreeGuiWidget::addTabs(const char *name, int l, int t, int xw, int xh)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::TabWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addTabs(widget));
+		addWidget(widget, l, t, xw, xh);
+	}
+	return widget;
+}
+
+// Create new stack widget
+TreeGuiWidget *TreeGuiWidget::addStack(const char *name, int l, int t, int xw, int xh)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::StackWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addStack(widget));
+		addWidget(widget, l, t, xw, xh);
+	}
 	return widget;
 }
 
@@ -699,151 +1075,68 @@ const char *TreeGuiWidget::asCharacter()
 	return result.get();
 }
 
-// Set widget value from integer (and perform events)
-bool TreeGuiWidget::setValue(int i)
+// Add widget event
+TreeGuiWidgetEvent *TreeGuiWidget::addEvent(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetWidget, TreeGuiWidgetEvent::EventProperty property)
 {
-	// Success or the action we perform depends on the widget type
-	switch (type_)
-	{
-		case (TreeGuiWidget::DoubleSpinWidget):
-			msg.print("Warning: Converting integer value to double when setting doublespin widget (%s).\n", name_.get());
-		case (TreeGuiWidget::RadioGroupWidget):
-		case (TreeGuiWidget::CheckWidget):
-		case (TreeGuiWidget::ComboWidget):
-		case (TreeGuiWidget::IntegerSpinWidget):
-		case (TreeGuiWidget::RadioButtonWidget):
-		case (TreeGuiWidget::TabWidget):
-		case (TreeGuiWidget::StackWidget):
-			// Value must be within integer ranges
-			if (!isGoodValue(i)) return FALSE;
-			valueI_ = i;
-			break;
-		case (TreeGuiWidget::EditWidget):
-		case (TreeGuiWidget::LabelWidget):
-			msg.print("Warning: Converting integer value to string when setting widget value (%s).\n", name_.get());
-			text_ = itoa(i);
-			break;
-		case (TreeGuiWidget::DialogWidget):
-		case (TreeGuiWidget::PageWidget):
-			msg.print("Warning: Don't know what to do with an integer value for this widget (%s).\n", name_.get());
-			break;
-		default:
-			printf("Internal Error: Control type not accounted for in TreeGuiWidget::setValue(int).\n");
-			return FALSE;
-	}
-	
-	// Update associated Qt control
-	if (qtWidgetObject_ != NULL) qtWidgetObject_->update();
-	
-	// Check widget events
-	checkWidgetEvents();
-}
-
-// Set widget value from double (and perform events)
-bool TreeGuiWidget::setValue(double d)
-{
-	// Success or the action we perform depends on the widget type
-	switch (type_)
-	{
-		case (TreeGuiWidget::RadioGroupWidget):
-		case (TreeGuiWidget::CheckWidget):
-		case (TreeGuiWidget::ComboWidget):
-		case (TreeGuiWidget::IntegerSpinWidget):
-		case (TreeGuiWidget::RadioButtonWidget):
-		case (TreeGuiWidget::TabWidget):
-		case (TreeGuiWidget::StackWidget):
-			msg.print("Warning: Converting double value to integer when setting widget value (%s).\n", name_.get());
-		case (TreeGuiWidget::DoubleSpinWidget):
-			// Value must be within double ranges
-			if (!isGoodValue(d)) return FALSE;
-			valueD_ = d;
-			break;
-		case (TreeGuiWidget::EditWidget):
-		case (TreeGuiWidget::LabelWidget):
-			msg.print("Warning: Converting double value to string when setting widget value (%s).\n", name_.get());
-			text_ = ftoa(d);
-			break;
-		case (TreeGuiWidget::DialogWidget):
-		case (TreeGuiWidget::PageWidget):
-			msg.print("Warning: Don't know what to do with a double value for this widget (%s).\n", name_.get());
-			break;
-		default:
-			printf("Internal Error: Control type not accounted for in TreeGuiWidget::setValue(double).\n");
-			return FALSE;
-	}
-	
-	// Update associated Qt control
-	if (qtWidgetObject_ != NULL) qtWidgetObject_->update();
-	
-	// Check widget events
-	checkWidgetEvents();
-}
-
-// Set widget value from character string (and perform events)
-bool TreeGuiWidget::setValue(const char *s)
-{
-	// Success or the action we perform depends on the widget type
-	int i;
-	switch (type_)
-	{
-		case (TreeGuiWidget::RadioGroupWidget):
-		case (TreeGuiWidget::CheckWidget):
-			
-		case (TreeGuiWidget::IntegerSpinWidget):
-		case (TreeGuiWidget::RadioButtonWidget):
-		case (TreeGuiWidget::TabWidget):
-		case (TreeGuiWidget::StackWidget):
-		case (TreeGuiWidget::DoubleSpinWidget):
-			msg.print("Warning: Converting string value to integer when setting widget value (%s).\n", name_.get());
-			// Value must be within double ranges
-			i = atoi(s);
-			if (!isGoodValue(i)) return FALSE;
-			valueI_ = i;
-			break;
-		case (TreeGuiWidget::ComboWidget):
-			// For combobox widget, search the items list...
-			for (i = 0; i < items_.nItems(); ++i) if (*(items_[i]) == s) break;
-			if (i < items_.nItems()) valueI_ = i;
-			else
-			{
-				msg.print("Error: '%s' is not a valid value for this combo (%s).\n", s, name_.get());
-				return FALSE;
-			}
-			break;
-		case (TreeGuiWidget::EditWidget):
-		case (TreeGuiWidget::LabelWidget):
-			text_ = s;
-			break;
-		case (TreeGuiWidget::DialogWidget):
-		case (TreeGuiWidget::PageWidget):
-			msg.print("Warning: Don't know what to do with a double value for this widget (%s).\n", name_.get());
-			break;
-		default:
-			printf("Internal Error: Control type not accounted for in TreeGuiWidget::setValue(double).\n");
-			return FALSE;
-	}
-	
-	// Update associated Qt control
-	if (qtWidgetObject_ != NULL) qtWidgetObject_->update();
-	
-	// Check widget events
-	checkWidgetEvents();
+	TreeGuiWidgetEvent *event = events_.add();
+	event->setEventData(type, targetWidget, property);
+	return event;
 }
 
 // Check widget's events and act on them if necessary
 void TreeGuiWidget::checkWidgetEvents()
 {
-	printf("CHECKWIDGETEVENTS NEEDS TO BE DONE.\n");
+	printf("Nuimber of events for widget %s = %i\n", name_.get(), events_.nItems());
 	for (TreeGuiWidgetEvent *event = events_.first(); event != NULL; event = event->next)
 	{
 		// Check the type of event, and then check the widget's current value
 		bool qualifies;
-		if (event->type() == TreeGuiWidgetEvent::IntegerQualifier) qualifies = event->qualifies(asInteger());
-		else if (event->type() == TreeGuiWidgetEvent::DoubleQualifier) qualifies = event->qualifies(asDouble());
+		if (event->qualifier() == TreeGuiWidgetEvent::IntegerQualifier) qualifies = event->qualifies(asInteger());
+		else if (event->qualifier() == TreeGuiWidgetEvent::DoubleQualifier) qualifies = event->qualifies(asDouble());
 		else qualifies = event->qualifies(asCharacter());
 		
+		// Check for valid target widget
+		TreeGuiWidget *targetWidget = event->targetWidget();
+		if (targetWidget == NULL)
+		{
+			printf("Internal Error: Target widget in event is NULL.\n");
+			return;
+		}
+
+printf("Checking widget event type '%s' for widget %s, value is %i...\n", TreeGuiWidgetEvent::eventType(event->type()), name_.get(), asInteger());
 		// Should this event be performed
-// 		if (qualifies) event->perform();
+		if (qualifies)
+		{
+			// Set widget property, the value depending on the type of event
+			switch (event->type())
+			{
+				case (TreeGuiWidgetEvent::ActivateType):
+					targetWidget->activateProperty(event->targetProperty());
+					break;
+				case (TreeGuiWidgetEvent::SendBoolType):
+					targetWidget->setProperty(event->targetProperty(), TRUE);
+					break;
+				case (TreeGuiWidgetEvent::SendDoubleType):
+					targetWidget->setProperty(event->targetProperty(), asDouble());
+					break;
+				case (TreeGuiWidgetEvent::SendIntegerType):
+					targetWidget->setProperty(event->targetProperty(), asInteger());
+					break;
+				case (TreeGuiWidgetEvent::SendStringType):
+					targetWidget->setProperty(event->targetProperty(), asCharacter());
+					break;
+				case (TreeGuiWidgetEvent::SetPropertyType):
+					targetWidget->setProperty(event->targetProperty(), event->sendValue());
+					break;
+				default:
+					printf("Internal Error: Event type not recognised in TreeGuiWidget::checkWidgetEvents().\n");
+					break;
+			}
+		}
+		else if (event->type() == TreeGuiWidgetEvent::SendBoolType)
+		{
+			targetWidget->setProperty(event->targetProperty(), FALSE);
+		}
 	}
 }
 
@@ -857,11 +1150,14 @@ TreeGui::TreeGui() : TreeGuiWidget()
 	// Private variables
 	if (gui.applicationType() != QApplication::Tty)
 	{
-		qtTreeGui_ = new AtenTreeGuiDialog;
+		qtTreeGui_ = new AtenTreeGuiDialog(this);
 		setQtWidgetObject(qtTreeGui_->addDialogLayout(this));
 	}
 	else qtTreeGui_ = NULL;
+	set(TreeGuiWidget::DialogWidget, "DialogWidget", this);
 
+	printf("This TreeGui = %p\n", this);
+	
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -915,7 +1211,7 @@ bool TreeGui::setWidgetValue(const char *name, int i)
 		msg.print("Error: Can't set the value of widget named '%s' since it doesn't exist.\n", name);
 		return FALSE;
 	}
-	return widget->setValue(i);
+	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, i);
 }
 
 // Set named widget's value from double
@@ -928,7 +1224,7 @@ bool TreeGui::setWidgetValue(const char* name, double d)
 		msg.print("Error: Can't set the value of widget named '%s' since it doesn't exist.\n", name);
 		return FALSE;
 	}
-	return widget->setValue(d);
+	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, d);
 }
 
 // Set named widget's value from string
@@ -941,7 +1237,7 @@ bool TreeGui::setWidgetValue(const char* name, const char* s)
 		msg.print("Error: Can't set the value of widget named '%s' since it doesn't exist.\n", name);
 		return FALSE;
 	}
-	return widget->setValue(s);
+	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, s);
 }
 
 // Return value in named widget as integer
@@ -1017,167 +1313,7 @@ Vec3<double> TreeGui::asVec3(const char *name1, const char *name2, const char *n
 // Show Qt dialog (if it exists)
 bool TreeGui::execute()
 {
+// 	printf("EXECUTING TREE DIALOG %p nWidgets = %i, qtTreeGui_ = %p\n", this, widgets_.nItems(), qtTreeGui_);
 	if ((widgets_.nItems() > 0) && (qtTreeGui_ != NULL)) return qtTreeGui_->execute();
 	else return TRUE;
 }
-
-// // Add new (GUI-based) widget linked to a variable
-// TreeNode *TreeGui::addWidget(TreeNode *arglist)
-// {
-// 	msg.enter("TreeGui::addWidget");
-// 	// Wrap the variable and add it to the arguments_ list
-// 	WidgetNode *node = new WidgetNode();
-// 	node->setParent(this);
-// 	// Store in reflist also...
-// 	widgets_.add(node);
-// 	// Add arguments to node (also sets return type)
-// 	if (node->addJoinedArguments(arglist)) msg.print(Messenger::Parse, "Added GUI widget '%s'...\n", node->name());
-// 	else
-// 	{
-// 		msg.print("Failed to add GUI widget.\n");
-// 		msg.exit("TreeGui::addWidget");
-// 		return NULL;
-// 	}
-// 	msg.exit("TreeGui::addWidget");
-// 	return node;
-// }
-// 
-// // Return first item in list of widgets
-// Refitem<WidgetNode,int> *TreeGui::widgets()
-// {
-// 	return widgets_.first();
-// }
-// 
-// // Create custom dialog from defined widgets
-// void TreeGui::createCustomDialog(const char *title)
-// {
-// 	if (gui.applicationType() != QApplication::Tty)
-// 	{
-// 		customDialog_ = new AtenCustomDialog(NULL);
-// 		customDialog_->createWidgets(title, this);
-// 	}
-// }
-// 
-// // Return custom dialog (if any)
-// AtenCustomDialog *TreeGui::customDialog()
-// {
-// 	return customDialog_;
-// }
-// 
-// // Execute contained custom dialog
-//  bool TreeGui::executeCustomDialog(bool getvaluesonly, const char *newtitle)
-// {
-// 	if (customDialog_ == NULL) return TRUE;
-// 	// Retitle dialog?
-// 	if (newtitle) customDialog_->setWindowTitle(newtitle);
-// 	if (getvaluesonly)
-// 	{
-// 		customDialog_->storeValues();
-// 		return TRUE;
-// 	}
-// 	return customDialog_->showDialog();
-// }
-/*
-// Locate named widget
-WidgetNode *TreeGui::findWidget(const char *name)
-{
-	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next)
-	{
-		if (strcmp(name, ri->item->name()) == 0) return ri->item;
-	}
-	printf("Internal Error: Couldn't find widget named '%s' in tree '%s'.\n", name, name_.get());
-	return NULL;
-}
-
-// Locate named widget
-WidgetNode *TreeGui::findWidget(QWidget *widget)
-{
-	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next) if (ri->item->widget() == widget) return ri->item;
-	printf("Internal Error: Couldn't find widget %p in tree '%s'.\n", widget, name_.get());
-	return NULL;
-}
-
-// Locate widget with specified object pointer
-WidgetNode *TreeGui::findWidgetObject(QObject *obj)
-{	
-	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next) if (ri->item->object() == obj) return ri->item;
-	printf("Internal Error: Couldn't find widget %p in tree '%s'.\n", obj, name_.get());
-	return NULL;
-}
-
-// Retrieve current value of named widget as a double
-double TreeGui::widgetValued(const char *name)
-{
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return 0.0;
-	ReturnValue rv;
-	node->execute(rv);
-	return rv.asDouble();
-}
-
-// Retrieve current value of named widget as an integer
-int TreeGui::widgetValuei(const char *name)
-{
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return 0;
-	ReturnValue rv;
-	node->execute(rv);
-	return rv.asInteger();
-}
-
-// Retrieve current value of named widget as a string
-const char *TreeGui::widgetValuec(const char *name)
-{
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return "NULL";
-	static ReturnValue rv;
-	node->execute(rv);
-	return rv.asString();
-}
-
-// Retrieve current value of named widget triplet as a vector
-Vec3<double> TreeGui::widgetValue3d(const char *name1, const char *name2, const char *name3)
-{
-	ReturnValue rv;
-	Vec3<double> result;
-	// First value
-	WidgetNode *node = findWidget(name1);
-	if (node == NULL) result.x = 0.0;
-	node->execute(rv);
-	result.x = rv.asDouble();
-	// Second value
-	node = findWidget(name2);
-	if (node == NULL) result.y = 0.0;
-	node->execute(rv);
-	result.y = rv.asDouble();
-	// Third value
-	node = findWidget(name3);
-	if (node == NULL) result.z = 0.0;
-	node->execute(rv);
-	result.z = rv.asDouble();
-	return result;
-}
-
-// Set current value of named widget
-void TreeGui::setWidgetValue(const char *name, ReturnValue value)
-{
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return;
-	node->setWidgetValue(value);
-}
-
-// Set property of named widget (via a state change)
-bool TreeGui::setWidgetProperty(const char *name, const char *property, ReturnValue value)
-{
-	// First, find named widget
-	WidgetNode *node = findWidget(name);
-	if (node == NULL) return FALSE;
-	// Next, find state change property
-	StateChange::StateAction action = StateChange::stateAction(property, TRUE);
-	if (action == StateChange::nStateActions) return FALSE;
-	StateChange sc;
-	sc.setTargetWidget(name);
-	sc.setChange(action, value.asString());
-	customDialog_->performStateChange(&sc);
-	return TRUE;
-}*/

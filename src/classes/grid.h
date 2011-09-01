@@ -70,7 +70,7 @@ class Grid
 	Grid *prev, *next;
 	// Grid type
 	enum GridType { NoData, RegularXYData, RegularXYZData, FreeXYZData, nGridTypes };
-	static GridType gridType(const char *s, bool reporterror);
+	static GridType gridType(const char *s, bool reportError);
 	static const char *gridType(Grid::GridType gt);
 	// Surface rendering styles
 	enum SurfaceStyle { PointSurface, TriangleSurface, SolidSurface, nSurfaceStyles };

@@ -34,7 +34,7 @@ bool Command::function_CreateDialog(CommandNode *c, Bundle &obj, ReturnValue &rv
 // Return this Tree's default TreeGui dialog
 bool Command::function_DefaultDialog(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (c->hasArg(0)) c->parent()->defaultDialog().setProperties(c->argc(0));
+	if (c->hasArg(0)) c->parent()->defaultDialog().setInitialProperties(c->argc(0));
 	rv.set(VTypes::DialogData, &c->parent()->defaultDialog());
 	return TRUE;
 }

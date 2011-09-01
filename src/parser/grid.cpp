@@ -60,15 +60,15 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "ny",				VTypes::IntegerData,	0, TRUE },
 	{ "nz",				VTypes::IntegerData,	0, TRUE },
 	{ "origin", 			VTypes::VectorData,	0, FALSE },
-	{ "outlinevolume",		VTypes::IntegerData,	0, FALSE },
+	{ "outlineVolume",		VTypes::IntegerData,	0, FALSE },
 	{ "periodic",			VTypes::IntegerData,	0, FALSE },
-	{ "secondarycolour",		VTypes::DoubleData,	4, FALSE },
-	{ "secondarycutoff",		VTypes::DoubleData,	0, FALSE },
-	{ "secondaryuppercutoff",	VTypes::DoubleData,	0, FALSE },
-	{ "shiftx",			VTypes::IntegerData,	0, FALSE },
-	{ "shifty",			VTypes::IntegerData,	0, FALSE },
-	{ "shiftz",			VTypes::IntegerData,	0, FALSE },
-	{ "uppercutoff",		VTypes::DoubleData,	0, FALSE },
+	{ "secondaryColour",		VTypes::DoubleData,	4, FALSE },
+	{ "secondaryCutoff",		VTypes::DoubleData,	0, FALSE },
+	{ "secondaryUpperCutoff",	VTypes::DoubleData,	0, FALSE },
+	{ "shiftX",			VTypes::IntegerData,	0, FALSE },
+	{ "shiftY",			VTypes::IntegerData,	0, FALSE },
+	{ "shiftZ",			VTypes::IntegerData,	0, FALSE },
+	{ "upperCutoff",		VTypes::DoubleData,	0, FALSE },
 	{ "visible",			VTypes::IntegerData,	0, FALSE }
 };
 
@@ -89,12 +89,13 @@ StepNode *GridVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 	msg.enter("GridVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'grid&' has no member or function named '%s'.\n", s);
 			printAccessors();

@@ -24,46 +24,6 @@
 #include "methods/mc.h"
 #include "base/messenger.h"
 
-// Sets acceptance energy for moves ('mc accept <move> <energy>')
-bool Command::function_MCAccept(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0), TRUE);
-	if (mt == MonteCarlo::nMoveTypes) return FALSE;
-	mc.setAcceptanceEnergy(mt, c->argd(1));
-	rv.reset();
-	return TRUE;
-}
-
-// Sets allowances for moves ('mc allow <move> <on|off>')
-bool Command::function_MCAllow(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0), TRUE);
-	if (mt == MonteCarlo::nMoveTypes) return FALSE;
-	mc.setMoveAllowed(mt, c->argb(1));
-	rv.reset();
-	return TRUE;
-}
-
-// Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
-bool Command::function_MCMaxStep(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0), TRUE);
-	if (mt == MonteCarlo::nMoveTypes) return FALSE;
-	mc.setMaxStep(mt, c->argd(1));
-	rv.reset();
-	return TRUE;
-}
-
-// Sets ntrials for moves ('mc ntrials <move> <ntrials>')
-bool Command::function_MCNTrials(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0), TRUE);
-	if (mt == MonteCarlo::nMoveTypes) return FALSE;
-	mc.setNTrials(mt, c->argi(1));
-	rv.reset();
-	return TRUE;
-}
-
 // Prints the current MC params ('printmc')
 bool Command::function_PrintMC(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

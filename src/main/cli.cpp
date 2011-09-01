@@ -723,7 +723,7 @@ int Aten::parseCli(int argc, char *argv[])
 					script = aten.addScript();
 					if (script->generateFromFile(argtext.get(), "CliScript"))
 					{
-						msg.print("Successfully generated script.\n");
+						msg.print("Successfully loaded script.\n");
 						aten.setProgramMode(Aten::CommandMode);
 						if (!script->execute(rv))
 						{

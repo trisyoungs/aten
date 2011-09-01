@@ -22,6 +22,7 @@
 #include "parser/dialog.h"
 #include "parser/stepnode.h"
 #include "parser/treegui.h"
+#include "gui/treegui.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -46,23 +47,29 @@ DialogVariable::~DialogVariable()
 
 // Accessor data
 Accessor DialogVariable::accessorData[DialogVariable::nAccessors] = {
-	{ "title",		VTypes::StringData,	0, FALSE }
+	{ "enabled",		VTypes::IntegerData,	0, FALSE },
+	{ "title",		VTypes::StringData,	0, FALSE },
+	{ "verticalFill",	VTypes::IntegerData,	0, FALSE },
+	{ "visible",		VTypes::IntegerData,	0, FALSE }
 };
 
 // Function data
 FunctionAccessor DialogVariable::functionData[DialogVariable::nFunctions] = {
-	{ "addcheck",		VTypes::WidgetData,	"CCCI"	,	"string name, string label, int state" },
-	{ "addcombo",		VTypes::WidgetData,	"CCI",		"string name, string label, string items, int index" },
-	{ "adddoublespin",	VTypes::WidgetData,	"CCDDD",	"string name, string label, double min, double max, double step, double value" },
-	{ "addedit",		VTypes::WidgetData,	"CCC",		"string name, string label, string text" },
-	{ "addgroup",		VTypes::WidgetData,	"C",		"string name" },
-	{ "addintegerspin",	VTypes::WidgetData,	"CCIII",	"string name, string label, int min, int max, int step, int value" },
-	{ "addlabel",		VTypes::WidgetData,	"CC",		"string name, string text" },
-	{ "addpage",		VTypes::WidgetData,	"C",		"string label" },
-	{ "addradiobutton",	VTypes::WidgetData,	"CCI",		"string name, string label, int state"},
-	{ "addradiogroup",	VTypes::WidgetData,	"C",		"string name" },
-	{ "addtabs",		VTypes::WidgetData,	"C",		"string name" },
-	{ "addwidget",		VTypes::WidgetData,	"YIIii",	"widget w, int left, int top, int extrawidth, int extraheight" }
+	{ "addButton",		VTypes::WidgetData,"CCiiii",	"string name, string label, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addCheck",		VTypes::WidgetData,"CCIiiii",	"string name, string label, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addCombo",		VTypes::WidgetData,"CCCIiiii",	"string name, string label, string items, int index, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addDoubleSpin",	VTypes::WidgetData,"CCDDDDiiii","string name, string label, double min, double max, double step, double value, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addEdit",		VTypes::WidgetData,"CCCiiii",	"string name, string label, string text, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addFrame",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
+	{ "addGroup",		VTypes::WidgetData,"CCiiii",	"string name, string label, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
+	{ "addIntegerSpin",	VTypes::WidgetData,"CCIIIIiiii","string name, string label, int min, int max, int step, int value, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addLabel",		VTypes::WidgetData,"Ciiii",	"string text, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addPage",		VTypes::WidgetData,"CC",	"string name, string label" },
+	{ "addRadioButton",	VTypes::WidgetData,"CCCIiiii",	"string name, string label, string group, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0"},
+	{ "addRadioGroup",	VTypes::WidgetData,"C",		"string name" },
+	{ "addStack",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
+	{ "addTabs",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
+	{ "widget",		VTypes::WidgetData,"C",		"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -77,12 +84,13 @@ StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 	msg.enter("DialogVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'dialog&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -97,7 +105,7 @@ StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 			return NULL;
 		}
 		// Add and check supplied arguments...
-		result = new StepNode(i, VTypes::AtenData, functionData[i].returnType);
+		result = new StepNode(i, VTypes::DialogData, functionData[i].returnType);
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
@@ -115,7 +123,7 @@ StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::AtenData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		else result = new StepNode(i, VTypes::DialogData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("DialogVariable::accessorSearch");
 	return result;
@@ -154,8 +162,17 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if (result) switch (acc)
 	{
+		case (DialogVariable::Enabled):
+			rv.set(ptr->enabled());
+			break;
 		case (DialogVariable::Title):
-			rv.set(ptr->name());
+			rv.set(ptr->text());
+			break;
+		case (DialogVariable::VerticalFill):
+			rv.set(ptr->qtWidgetObject() == NULL ? FALSE : ptr->qtWidgetObject()->autoFillVertical());
+			break;
+		case (DialogVariable::Visible):
+			rv.set(ptr->visible());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in DialogVariable.\n", accessorData[i].name);
@@ -230,6 +247,18 @@ bool DialogVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	TreeGui *ptr = (TreeGui*) sourcerv.asPointer(VTypes::DialogData, result);
 	switch (acc)
 	{
+		case (DialogVariable::Enabled):
+			ptr->setEnabled(newvalue.asBool());
+			break;
+		case (DialogVariable::Title):
+			ptr->setProperty(TreeGuiWidgetEvent::TextProperty, newvalue.asString());
+			break;
+		case (DialogVariable::VerticalFill):
+			if (ptr->qtWidgetObject()) ptr->qtWidgetObject()->setAutoFillVertical(newvalue.asBool());
+			break;
+		case (DialogVariable::Visible):
+			ptr->setVisible(newvalue.asBool());
+			break;
 		default:
 			printf("DialogVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
@@ -251,11 +280,105 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		return FALSE;
 	}
 	// Get current data from ReturnValue
+	int xw, xh, l, t;
 	bool result = TRUE;
 	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if (result) switch (i)
 	{
-
+		case (DialogVariable::AddButton):
+			l = node->hasArg(2) ? node->argi(2) : -1;
+			t = node->hasArg(3) ? node->argi(3) : -1;
+			xw = node->hasArg(4) ? node->argi(4) : 0;
+			xh = node->hasArg(5) ? node->argi(5) : 0;
+			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddCheck):
+			l = node->hasArg(3) ? node->argi(3) : -1;
+			t = node->hasArg(4) ? node->argi(4) : -1;
+			xw = node->hasArg(5) ? node->argi(5) : 0;
+			xh = node->hasArg(6) ? node->argi(6) : 0;
+			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), node->argi(2), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddCombo):
+			l = node->hasArg(4) ? node->argi(4) : -1;
+			t = node->hasArg(5) ? node->argi(5) : -1;
+			xw = node->hasArg(6) ? node->argi(6) : 0;
+			xh = node->hasArg(7) ? node->argi(7) : 0;
+			rv.set(VTypes::WidgetData, ptr->addCombo(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddDoubleSpin):
+			l = node->hasArg(6) ? node->argi(6) : -1;
+			t = node->hasArg(7) ? node->argi(7) : -1;
+			xw = node->hasArg(8) ? node->argi(8) : 0;
+			xh = node->hasArg(9) ? node->argi(9) : 0;
+			rv.set(VTypes::WidgetData, ptr->addDoubleSpin(node->argc(0), node->argc(1), node->argd(2), node->argd(3), node->argd(4), node->argd(5), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddEdit):
+			l = node->hasArg(3) ? node->argi(3) : -1;
+			t = node->hasArg(4) ? node->argi(4) : -1;
+			xw = node->hasArg(5) ? node->argi(5) : 0;
+			xh = node->hasArg(6) ? node->argi(6) : 0;
+			rv.set(VTypes::WidgetData, ptr->addEdit(node->argc(0), node->argc(1), node->argc(2), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddFrame):
+			l = node->hasArg(2) ? node->argi(2) : -1;
+			t = node->hasArg(3) ? node->argi(3) : -1;
+			xw = node->hasArg(4) ? node->argi(4) : 1;
+			xh = node->hasArg(5) ? node->argi(5) : 0;
+			rv.set(VTypes::WidgetData, ptr->addFrame(node->argc(0), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddGroup):
+			l = node->hasArg(2) ? node->argi(2) : -1;
+			t = node->hasArg(3) ? node->argi(3) : -1;
+			xw = node->hasArg(4) ? node->argi(4) : 1;
+			xh = node->hasArg(5) ? node->argi(5) : 0;
+			rv.set(VTypes::WidgetData, ptr->addGroup(node->argc(0), node->argc(1), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddIntegerSpin):
+			l = node->hasArg(6) ? node->argi(6) : -1;
+			t = node->hasArg(7) ? node->argi(7) : -1;
+			xw = node->hasArg(8) ? node->argi(8) : 0;
+			xh = node->hasArg(9) ? node->argi(9) : 0;
+			rv.set(VTypes::WidgetData, ptr->addIntegerSpin(node->argc(0), node->argc(1), node->argi(2), node->argi(3), node->argi(4), node->argi(5), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddLabel):
+			l = node->hasArg(1) ? node->argi(1) : -1;
+			t = node->hasArg(2) ? node->argi(2) : -1;
+			xw = node->hasArg(3) ? node->argi(3) : 0;
+			xh = node->hasArg(4) ? node->argi(4) : 0;
+			rv.set(VTypes::WidgetData, ptr->addLabel(node->argc(0), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddPage):
+			rv.set(VTypes::WidgetData, ptr->addPage(node->argc(0), node->argc(1)));
+			break;
+		case (DialogVariable::AddRadioButton):
+			l = node->hasArg(4) ? node->argi(4) : -1;
+			t = node->hasArg(5) ? node->argi(5) : -1;
+			xw = node->hasArg(6) ? node->argi(6) : 0;
+			xh = node->hasArg(7) ? node->argi(7) : 0;
+			rv.set(VTypes::WidgetData, ptr->addRadioButton(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddRadioGroup):
+			rv.set(VTypes::WidgetData, ptr->addRadioGroup(node->argc(0)));
+			break;
+		case (DialogVariable::AddStack):
+			l = node->hasArg(1) ? node->argi(1) : -1;
+			t = node->hasArg(2) ? node->argi(2) : -1;
+			xw = node->hasArg(3) ? node->argi(3) : 1;
+			xh = node->hasArg(4) ? node->argi(4) : 0;
+			rv.set(VTypes::WidgetData, ptr->addStack(node->argc(0), l, t, xw, xh));
+			break;
+		case (DialogVariable::AddTabs):
+			l = node->hasArg(1) ? node->argi(1) : -1;
+			t = node->hasArg(2) ? node->argi(2) : -1;
+			xw = node->hasArg(3) ? node->argi(3) : 1;
+			xh = node->hasArg(4) ? node->argi(4) : 0;
+			rv.set(VTypes::WidgetData, ptr->addTabs(node->argc(0), l, t, xw, xh));
+			break;
+		case (DialogVariable::Widget):
+			rv.set(VTypes::WidgetData, ptr->findWidget(node->argc(0)));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in DialogVariable.\n", functionData[i].name);
 			result = FALSE;
