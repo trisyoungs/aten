@@ -50,13 +50,13 @@ ColourScaleVariable::~ColourScaleVariable()
 
 // Accessor data
 Accessor ColourScaleVariable::accessorData[ColourScaleVariable::nAccessors] = {
-	{ "npoints",	VTypes::IntegerData,		0, TRUE },
+	{ "nPoints",	VTypes::IntegerData,		0, TRUE },
 	{ "points",	VTypes::ColourScalePointData,	-1, TRUE }
 };
 
 // Function data
 FunctionAccessor ColourScaleVariable::functionData[ColourScaleVariable::nFunctions] = {
-	{ "addpoint",	VTypes::ColourScalePointData,	"NNNNn",	"double value, doublr r, double g, double b, double a = 1.0" },
+	{ "addPoint",	VTypes::ColourScalePointData,	"NNNNn",	"double value, doublr r, double g, double b, double a = 1.0" },
 	{ "clear",	VTypes::NoData,			"",		"" },
 	{ "colour",	VTypes::NoData,			"N^N^N^N^n",	"double value, double *r, double *g, double *b, double *a = NULL" }
 };
@@ -73,12 +73,13 @@ StepNode *ColourScaleVariable::accessorSearch(const char *s, TreeNode *arrayinde
 	msg.enter("ColourScaleVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'colourscale&' has no member or function named '%s'.\n", s);
 			printAccessors();

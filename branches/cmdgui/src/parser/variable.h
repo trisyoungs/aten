@@ -27,6 +27,10 @@
 #include "templates/vector3.h"
 #include <stdlib.h>
 
+// Forward Declarations
+class Accessor;
+class FunctionAccessor;
+
 // Variable
 class Variable : public TreeNode
 {
@@ -34,6 +38,7 @@ class Variable : public TreeNode
 	// Constructor / Destructor
 	Variable();
 	virtual ~Variable();
+
 
 	/*
 	// Variable Character
@@ -62,12 +67,23 @@ class Variable : public TreeNode
 	// Search accessors (if any) available for node
 	virtual StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 
+
 	/*
 	// Inherited Virtuals
 	*/
 	public:
 	// Initialise node
 	bool initialise();
+
+
+	/*
+	// Accessor Search
+	*/
+	public:
+	// Search accessor list provided
+	static int searchAccessor(const char *s, int nAccessors, Accessor *accessors);
+	// Search accessor list provided
+	static int searchAccessor(const char *s, int nAccessors, FunctionAccessor *accessors);
 };
 
 // Array Variable

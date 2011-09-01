@@ -39,10 +39,10 @@ ElementMap &elements()
 
 // ZMapping types
 const char *ZMapTypeKeywords[ElementMap::nZMapTypes] = { "Alpha", "FirstAlpha", "SingleAlpha", "Name", "Numeric", "FF", "Auto" };
-ElementMap::ZMapType ElementMap::zMapType(const char *s, bool reporterror)
+ElementMap::ZMapType ElementMap::zMapType(const char *s, bool reportError)
 {
 	ElementMap::ZMapType zm = (ElementMap::ZMapType) enumSearch("element mapping style", ElementMap::nZMapTypes, ZMapTypeKeywords, s);
-	if ((zm == nZMapTypes) && reporterror) enumPrintValid(ElementMap::nZMapTypes, ZMapTypeKeywords);
+	if ((zm == nZMapTypes) && reportError) enumPrintValid(ElementMap::nZMapTypes, ZMapTypeKeywords);
 	return zm;
 }
 const char *ElementMap::zMapType(ElementMap::ZMapType zm)

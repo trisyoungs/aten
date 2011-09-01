@@ -131,7 +131,7 @@ class ForcefieldAtom
 	void addData(const char *name, int i);
 	void addData(const char *name, const char *);
 	// Retrieve named variable
-	Variable *data(const char *s, bool reporterror = TRUE);
+	Variable *data(const char *s, bool reportError = TRUE);
 	// Return variable list
 	VariableList *data();
 };

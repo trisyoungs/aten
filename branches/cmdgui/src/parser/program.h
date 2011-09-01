@@ -91,7 +91,7 @@ class Program
 	// Return whether the Program is being generated from a filterfile
 	bool isFromFilterFile();
 	// Execute main program, including GUI options if specified
-	bool execute(ReturnValue &rv, bool runOptions = FALSE);
+	bool execute(ReturnValue &rv);
 	// Print program information
 	void print();
 };

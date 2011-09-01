@@ -199,7 +199,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	
 	Tree dialog;
 	TreeGui &dialogui = dialog.defaultDialog();
-	dialogui.setValue("Vibration Movie Options");
+	dialogui.setProperty(TreeGuiWidgetEvent::TextProperty, "Vibration Movie Options");
 	dialogui.addEdit("geometry", "Image Geometry", geometry,1,1);
 	dialogui.addIntegerSpin("cycles", "Number of Cycles", 1, 1000, 1, 10 ,1,2);
 	dialogui.addIntegerSpin("fpc", "Frames per Cycle", 1, 1000, 1, 25 ,1,3);

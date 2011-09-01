@@ -85,7 +85,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
-	{ "findbond",	VTypes::BondData,	"A",	"atom j" }
+	{ "findBond",	VTypes::BondData,	"A",	"Atom j" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -100,12 +100,13 @@ StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 	msg.enter("AtomVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'atom&' has no member or function named '%s'.\n", s);
 			printAccessors();

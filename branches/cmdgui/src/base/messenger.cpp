@@ -31,10 +31,10 @@ Messenger msg;
 
 // Message output types
 const char *OutputTypeKeywords[] = { "all", "calls", "commands", "_ERROR_", "gl", "parse", "test", "typing", "verbose" };
-Messenger::OutputType Messenger::outputType(const char *s, bool reporterror)
+Messenger::OutputType Messenger::outputType(const char *s, bool reportError)
 {
 	Messenger::OutputType ot = (Messenger::OutputType) enumSearch("output type",Messenger::nOutputTypes,OutputTypeKeywords,s);
-	if ((ot == Messenger::nOutputTypes) && reporterror) enumPrintValid(Messenger::nOutputTypes,OutputTypeKeywords);
+	if ((ot == Messenger::nOutputTypes) && reportError) enumPrintValid(Messenger::nOutputTypes,OutputTypeKeywords);
 	return ot;
 }
 const char *Messenger::outputType(Messenger::OutputType ot)

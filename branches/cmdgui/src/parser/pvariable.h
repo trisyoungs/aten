@@ -33,6 +33,7 @@ class PointerVariable : public Variable
 	// Pointer to parent Refitem structure, if valid
 	void *refitemData_;
 
+
 	/*
 	// Set / Get
 	*/

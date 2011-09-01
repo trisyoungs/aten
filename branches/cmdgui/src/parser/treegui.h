@@ -25,24 +25,13 @@
 #include "templates/list.h"
 #include "templates/reflist.h"
 #include "templates/vector3.h"
+#include "returnvalue.h"
 
 // Forward declarations
 class AtenTreeGuiDialog;
 class QtWidgetObject;
+class TreeGuiWidget;
 class TreeGui;
-
-// Widget Event Action
-class TreeGuiWidgetEventAction
-{
-	public:
-	// Constructor / Destructor
-	TreeGuiWidgetEventAction();
-	~TreeGuiWidgetEventAction();
-	// List pointers
-	TreeGuiWidgetEventAction *prev, *next;
-	
-// 		private:
-};
 
 // Widget Event
 class TreeGuiWidgetEvent
@@ -54,28 +43,53 @@ class TreeGuiWidgetEvent
 	// List pointers
 	TreeGuiWidgetEvent *prev, *next;
 	// Event Qualifier
-	enum EventQualifier { IntegerQualifier, DoubleQualifier, StringQualifier, nEventQualifiers };
-	
-	
+	enum EventQualifier { ClickQualifier, IntegerQualifier, DoubleQualifier, StringQualifier, nEventQualifiers };
+	// Event Type
+	enum EventType { ActivateType, ExecuteFunctionType, SendBoolType, SendDoubleType, SendIntegerType, SendStringType, SetPropertyType, nEventTypes };
+	static EventType eventType(const char *s, bool reportError = FALSE);
+	static const char *eventType(EventType i);
+	// Event Target Property
+	enum EventProperty { DisabledProperty, EnabledProperty, InvisibleProperty, ItemsProperty, MaximumProperty, MinimumProperty, TextProperty, ValueProperty, VisibleProperty, nEventProperties };
+	static EventProperty eventProperty(const char *s, bool reportError = FALSE);
+	static const char *eventProperty(EventProperty i);
+
 	private:
 	// Type of qualifying data
-	EventQualifier type_;
+	EventQualifier qualifier_;
+	// Type of event action
+	EventType type_;
+	// Target property
+	TreeGuiWidgetEvent::EventProperty targetProperty_;
+	// Target Widget
+	TreeGuiWidget *targetWidget_;
 	// Qualifying (min/max) integer values 
 	int minimumI_, maximumI_;
 	// Qualifying (min/max) double values 
 	double minimumD_, maximumD_;
-	// Qualifying string value
-	Dnchar matchS_;
-	
+	// Qualifying string value(s)
+	List<Dnchar> matchS_;
+	// Send value (if explicitly set)
+	ReturnValue sendValue_;
+
 	public:
 	// Return qualifier type
-	TreeGuiWidgetEvent::EventQualifier type();
+	TreeGuiWidgetEvent::EventQualifier qualifier();
+	// Return event type
+	TreeGuiWidgetEvent::EventType type();
+	// Return event property
+	TreeGuiWidgetEvent::EventProperty targetProperty();
+	// Return target widget
+	TreeGuiWidget *targetWidget();
 	// Set integer qualifying event
-	void setQualifier(int min, int max);
+	void setQualifiers(int imin, int imax);
 	// Set double qualifying event
-	void setQualifier(double min, double max);
-	// Set string qualifying event
-	void setQualifier(const char *s);
+	void setQualifiers(double dmin, double dmax);
+	// Set string qualifying event (comma-separated list)
+	void setQualifiers(const char *s);
+	// Set remaining event data
+	bool setEventData(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetwidget, TreeGuiWidgetEvent::EventProperty property);
+	// Return send data storage
+	ReturnValue &sendValue();
 	// Return whether supplied integer value qualifies
 	bool qualifies(int i);
 	// Return whether supplied double value qualifies
@@ -94,9 +108,11 @@ class TreeGuiWidget
 	// List pointers
 	TreeGuiWidget *prev, *next;
 	// Widget Types
-	enum WidgetType { CheckWidget, ComboWidget, DialogWidget, DoubleSpinWidget, EditWidget, GroupWidget, IntegerSpinWidget, LabelWidget, PageWidget, RadioButtonWidget, RadioGroupWidget, StackWidget, TabWidget, nWidgetTypes };
-	
-	
+	enum WidgetType { ButtonWidget, CheckWidget, ComboWidget, DialogWidget, DoubleSpinWidget, EditWidget, FrameWidget, GroupWidget, IntegerSpinWidget, LabelWidget, PageWidget, RadioButtonWidget, RadioGroupWidget, StackWidget, TabWidget, nWidgetTypes };
+	static WidgetType widgetType(const char *s, bool reportError = FALSE);
+	static const char *widgetType(WidgetType i);
+
+
 	/*
 	// Data
 	*/
@@ -137,20 +153,20 @@ class TreeGuiWidget
 	Dnchar text_;
 	// Items list (ComboWidget)
 	List<Dnchar> items_;
-	// Flag indicating whether items list has recently changed (since last Qt update)
-	bool itemsChanged_;
 	// Whether widget is enabled
 	bool enabled_;
 	// Whether widget is visible
 	bool visible_;
+	// Array of flags indicating whether properties have changed since last event check / update
+	bool propertyChanged_[TreeGuiWidgetEvent::nEventProperties];
 	
 	public:
 	// Set integer properties
-	bool setProperties(int min, int max, int value);
+	bool setInitialProperties(int min, int max, int value);
 	// Set double properties
-	bool setProperties(double min, double max, double value);
+	bool setInitialProperties(double min, double max, double value);
 	// Set string properties
-	bool setProperties(const char *s);
+	bool setInitialProperties(const char *s);
 	// Add text item
 	void addItem(const char *s);
 	// Return number of defined items
@@ -177,10 +193,6 @@ class TreeGuiWidget
 	const char *text();
 	// Return head of items list
 	Dnchar *items();
-	// Return whether items list has recently changed (since last Qt update)
-	bool itemsChanged();
-	// Reset items changed flag
-	void resetItemsChanged();
 	// Set whether widget is enabled
 	void setEnabled(bool b);
 	// Return whether widget is enabled
@@ -189,6 +201,14 @@ class TreeGuiWidget
 	void setVisible(bool b);
 	// Return whether widget is visible
 	bool visible();
+	// Set specified property
+	bool setProperty(TreeGuiWidgetEvent::EventProperty property, ReturnValue rv);
+	// 'Activate' property, setting flag and executing events, but leaving value unchanged
+	bool activateProperty(TreeGuiWidgetEvent::EventProperty property);
+	// Return whether specified property has changed
+	bool propertyChanged(TreeGuiWidgetEvent::EventProperty property);
+	// Reset changed flag for specified property
+	void resetChanged(TreeGuiWidgetEvent::EventProperty property);
 
 
 	/*
@@ -203,28 +223,34 @@ class TreeGuiWidget
 	void addWidget(TreeGuiWidget* widget, int left, int top, int addToWidth = 0, int addToHeight = 0);
 
 	public:
-	// Create new combo widget
-	TreeGuiWidget *addCombo(const char *name, const char *label, const char *items, int index, int l, int t, int xw = 0, int xh = 0);
-	// Create new integer spin widget
-	TreeGuiWidget *addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value, int l, int t, int xw = 0, int xh = 0);
-	// Create new double spin widget
-	TreeGuiWidget *addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value, int l, int t, int xw = 0, int xh = 0);
-	// Create new label widget
-	TreeGuiWidget *addLabel(const char* text, int l, int t, int xw = 0, int xh = 0);
-	// Create new edit widget
-	TreeGuiWidget *addEdit(const char *name, const char *label, const char *text, int l, int t, int xw = 0, int xh = 0);
+	// Create new button widget
+	TreeGuiWidget *addButton(const char *name, const char *label, int l, int t, int xw = 0, int xh = 0);
 	// Create new checkbox widget
 	TreeGuiWidget *addCheck(const char *name, const char *label, int state, int l, int t, int xw = 0, int xh = 0);
-	// Create new tab widget
-	TreeGuiWidget *addTabs(const char *name, int l, int t, int xw = 0, int xh = 0);
+	// Create new combo widget
+	TreeGuiWidget *addCombo(const char *name, const char *label, const char *items, int index, int l, int t, int xw = 0, int xh = 0);
+	// Create new double spin widget
+	TreeGuiWidget *addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value, int l, int t, int xw = 0, int xh = 0);
+	// Create new edit widget
+	TreeGuiWidget *addEdit(const char *name, const char *label, const char *text, int l, int t, int xw = 0, int xh = 0);
+	// Create new frame widget
+	TreeGuiWidget *addFrame(const char *name, int l, int t, int xw = 0, int xh = 0);
 	// Create new group box
 	TreeGuiWidget *addGroup(const char *name, const char *label, int l, int t, int xw = 0, int xh = 0);
-	// Create new (invisible) radio group
-	TreeGuiWidget *addRadioGroup(const char *name);
-	// Create new radio button in specified group
-	TreeGuiWidget *addRadioButton(const char* name, const char* label, const char *radioGroup, int state, int l, int t, int xw = 0, int xh = 0);
+	// Create new integer spin widget
+	TreeGuiWidget *addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value, int l, int t, int xw = 0, int xh = 0);
+	// Create new label widget
+	TreeGuiWidget *addLabel(const char* text, int l, int t, int xw = 0, int xh = 0);
 	// Create new page (only valid for TabWidget)
 	TreeGuiWidget *addPage(const char *name, const char *label);
+	// Create new radio button in specified group
+	TreeGuiWidget *addRadioButton(const char* name, const char* label, const char *radioGroup, int state, int l, int t, int xw = 0, int xh = 0);
+	// Create new (invisible) radio group
+	TreeGuiWidget *addRadioGroup(const char *name);
+	// Create new stack widget
+	TreeGuiWidget *addStack(const char *name, int l, int t, int xw = 0, int xh = 0);
+	// Create new tab widget
+	TreeGuiWidget *addTabs(const char *name, int l, int t, int xw = 0, int xh = 0);
 
 
 	/*
@@ -241,12 +267,8 @@ class TreeGuiWidget
 	double asDouble();
 	// Return widget value as character string
 	const char *asCharacter();
-	// Set widget value from integer (and perform events)
-	bool setValue(int i);
-	// Set widget value from double (and perform events)
-	bool setValue(double d);
-	// Set widget value from character string (and perform events)
-	bool setValue(const char *s);
+	// Add widget event
+	TreeGuiWidgetEvent *addEvent(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetWidget, TreeGuiWidgetEvent::EventProperty property);
 	// Check widget's events and act on them if necessary
 	void checkWidgetEvents();
 };
@@ -278,14 +300,14 @@ class TreeGui : public TreeGuiWidget
 	AtenTreeGuiDialog *qtTreeGui();
 	// Create basic widget of specified type
 	TreeGuiWidget *createWidget(const char *name, TreeGuiWidget::WidgetType type);
-	// Search for named widget
-	TreeGuiWidget *findWidget(const char *name);
 	// Create new page in specified tab (called by TreeGuiWidget)
 	TreeGuiWidget *addPageToTab(const char *name, const char *label, TreeGuiWidget *tabWidget);
 
 	public:
 	// Return number of defined widgets in GUI
 	int nWidgets();
+	// Search for named widget
+	TreeGuiWidget *findWidget(const char *name);
 
 
 	/*

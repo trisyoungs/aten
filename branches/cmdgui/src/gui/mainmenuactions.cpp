@@ -232,7 +232,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	Tree dialog;
 	TreeGuiWidget *group, *w;
 	TreeGui &ui = dialog.defaultDialog();
-	ui.setValue("Save Image Options");
+	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Save Image Options");
 	ui.addEdit("geometry", "Image Size", geometry.get(),1,1);
 	group = ui.addRadioGroup("framechoice");
 	ui.addRadioButton("noframes", "No Frames", "framechoice", 1, 1,2);
@@ -349,7 +349,7 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 	// Static tree containing a single tree with variables and dialog control definitions
 	Tree dialog;
 	TreeGui &ui = dialog.defaultDialog();
-	ui.setValue("Paste Translated");
+	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Paste Translated");
 	ui.addLabel("Center of geometry of pasted atoms:", 1, 1);
 	ui.addDoubleSpin("newx", "New X", -1e6, 1e6, 1, 0.0 ,1,2);
 	ui.addDoubleSpin("newy", "New Y", -1e6, 1e6, 1, 0.0 ,1,3);
@@ -788,7 +788,7 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	Model *m = aten.currentModel();
 	Tree dialog;
 	TreeGui &ui = dialog.defaultDialog();
-	ui.setValue("Movie Options");
+	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Movie Options");
 	ui.addEdit("geometry", "Image Geometry", geometry ,1,1);
 	ui.addIntegerSpin("firstframe", "First Frame", 1, m->nTrajectoryFrames(), 1, 1 ,1,2);
 	ui.addIntegerSpin("lastframe", "Last Frame", 1, m->nTrajectoryFrames(), 1, m->nTrajectoryFrames(),1,3);

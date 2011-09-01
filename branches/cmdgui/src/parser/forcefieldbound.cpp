@@ -52,15 +52,15 @@ ForcefieldBoundVariable::~ForcefieldBoundVariable()
 // Accessor data
 Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccessors] = {
 	{ "data",		VTypes::DoubleData,	MAXFFPARAMDATA, FALSE },
-	{ "datakeyword",	VTypes::StringData,	MAXFFPARAMDATA, TRUE },
-	{ "dataname",		VTypes::StringData,	MAXFFPARAMDATA, TRUE },
-	{ "escale",		VTypes::DoubleData,	0, FALSE },
+	{ "dataKeyword",	VTypes::StringData,	MAXFFPARAMDATA, TRUE },
+	{ "dataName",		VTypes::StringData,	MAXFFPARAMDATA, TRUE },
+	{ "eScale",		VTypes::DoubleData,	0, FALSE },
 	{ "form",		VTypes::StringData,	0, FALSE },
-	{ "natoms",		VTypes::IntegerData,	0, TRUE },
-	{ "nparams",		VTypes::IntegerData,	0, TRUE },
+	{ "nAtoms",		VTypes::IntegerData,	0, TRUE },
+	{ "nParams",		VTypes::IntegerData,	0, TRUE },
 	{ "type",		VTypes::StringData,	0, TRUE },
-	{ "typenames",		VTypes::StringData,	MAXFFPARAMDATA, FALSE },
-	{ "vscale",		VTypes::DoubleData,	0, FALSE }
+	{ "typeNames",		VTypes::StringData,	MAXFFPARAMDATA, FALSE },
+	{ "vScale",		VTypes::DoubleData,	0, FALSE }
 };
 
 // Function data
@@ -80,12 +80,13 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *array
 	msg.enter("ForcefieldBoundVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'ffbound&' has no member or function named '%s'.\n", s);
 			printAccessors();

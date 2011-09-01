@@ -33,10 +33,10 @@ Prefs prefs;
 
 // Colour Schemes
 const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity", "Custom" };
-Prefs::ColouringScheme Prefs::colouringScheme(const char *s, bool reporterror)
+Prefs::ColouringScheme Prefs::colouringScheme(const char *s, bool reportError)
 {
 	Prefs::ColouringScheme cs = (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
-	if ((cs == Prefs::nColouringSchemes) && reporterror) enumPrintValid(Prefs::nColouringSchemes,ColouringSchemeKeywords);
+	if ((cs == Prefs::nColouringSchemes) && reportError) enumPrintValid(Prefs::nColouringSchemes,ColouringSchemeKeywords);
 	return cs;
 }
 const char *Prefs::colouringScheme(ColouringScheme cs)
@@ -46,10 +46,10 @@ const char *Prefs::colouringScheme(ColouringScheme cs)
 
 // Mouse buttons
 const char *MouseButtonKeywords[Prefs::nMouseButtons] = { "Left", "Middle", "Right", "Wheel" };
-Prefs::MouseButton Prefs::mouseButton(const char *s, bool reporterror)
+Prefs::MouseButton Prefs::mouseButton(const char *s, bool reportError)
 {
 	Prefs::MouseButton mb = (Prefs::MouseButton) enumSearch("mouse button", Prefs::nMouseButtons, MouseButtonKeywords, s);
-	if ((mb == Prefs::nMouseButtons) && reporterror) enumPrintValid(Prefs::nMouseButtons,MouseButtonKeywords);
+	if ((mb == Prefs::nMouseButtons) && reportError) enumPrintValid(Prefs::nMouseButtons,MouseButtonKeywords);
 	return mb;
 }
 const char *Prefs::mouseButton(Prefs::MouseButton i)
@@ -59,10 +59,10 @@ const char *Prefs::mouseButton(Prefs::MouseButton i)
 
 // Mouse actions
 const char *MouseActionKeywords[Prefs::nMouseActions] = { "None", "Rotate", "Translate", "Interact", "Zoom", "Z-Rotate" };
-Prefs::MouseAction Prefs::mouseAction(const char *s, bool reporterror)
+Prefs::MouseAction Prefs::mouseAction(const char *s, bool reportError)
 {
 	Prefs::MouseAction ma = (Prefs::MouseAction) enumSearch("mouse action", Prefs::nMouseActions,  MouseActionKeywords, s);
-	if ((ma == Prefs::nMouseActions) && reporterror) enumPrintValid(Prefs::nMouseActions,MouseActionKeywords);
+	if ((ma == Prefs::nMouseActions) && reportError) enumPrintValid(Prefs::nMouseActions,MouseActionKeywords);
 	return ma;
 }
 const char *Prefs::mouseAction(Prefs::MouseAction i)
@@ -72,10 +72,10 @@ const char *Prefs::mouseAction(Prefs::MouseAction i)
 
 // Key modifiers
 const char *ModifierKeyKeywords[Prefs::nModifierKeys] = { "Shift", "Ctrl", "Alt" };
-Prefs::ModifierKey Prefs::modifierKey(const char *s, bool reporterror)
+Prefs::ModifierKey Prefs::modifierKey(const char *s, bool reportError)
 {
 	Prefs::ModifierKey mk = (Prefs::ModifierKey) enumSearch("modifier key", Prefs::nModifierKeys, ModifierKeyKeywords, s);
-	if ((mk == Prefs::nModifierKeys) && reporterror) enumPrintValid(Prefs::nModifierKeys,ModifierKeyKeywords);
+	if ((mk == Prefs::nModifierKeys) && reportError) enumPrintValid(Prefs::nModifierKeys,ModifierKeyKeywords);
 	return mk;
 }
 const char *Prefs::modifierKey(Prefs::ModifierKey i)
@@ -85,10 +85,10 @@ const char *Prefs::modifierKey(Prefs::ModifierKey i)
 
 // Key actions
 const char *KeyActionKeywords[Prefs::nKeyActions] = { "None", "Transform", "ZRotate" };
-Prefs::KeyAction Prefs::keyAction(const char *s, bool reporterror)
+Prefs::KeyAction Prefs::keyAction(const char *s, bool reportError)
 {
 	Prefs::KeyAction ka = (Prefs::KeyAction) enumSearch("key action", Prefs::nKeyActions, KeyActionKeywords, s);
-	if ((ka == Prefs::nKeyActions) && reporterror) enumPrintValid(Prefs::nKeyActions,KeyActionKeywords);
+	if ((ka == Prefs::nKeyActions) && reportError) enumPrintValid(Prefs::nKeyActions,KeyActionKeywords);
 	return ka;
 }
 const char *Prefs::keyAction(Prefs::KeyAction i)
@@ -99,10 +99,10 @@ const char *Prefs::keyAction(Prefs::KeyAction i)
 // Colours
 const char *ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "globeaxes", "globe", "glyph", "hbond", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow" };
 const char *ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Hydrogen Bond", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow" };
-Prefs::ObjectColour Prefs::objectColour(const char *s, bool reporterror)
+Prefs::ObjectColour Prefs::objectColour(const char *s, bool reportError)
 {
 	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
-	if ((pc == Prefs::nObjectColours) && reporterror) enumPrintValid(Prefs::nObjectColours,ObjectColourKeywords);
+	if ((pc == Prefs::nObjectColours) && reportError) enumPrintValid(Prefs::nObjectColours,ObjectColourKeywords);
 	return pc;
 }
 const char *Prefs::objectColour(Prefs::ObjectColour i)
@@ -120,10 +120,10 @@ const char *Prefs::densityUnit(Prefs::DensityUnit i)
 {
 	return DensityUnitKeywords[i];
 }
-Prefs::DensityUnit Prefs::densityUnit(const char *s, bool reporterror)
+Prefs::DensityUnit Prefs::densityUnit(const char *s, bool reportError)
 {
 	Prefs::DensityUnit du = (Prefs::DensityUnit) enumSearch("density unit", Prefs::nDensityUnits, DensityUnitKeywords, s);
-	if ((du == Prefs::nDensityUnits) && reporterror) enumPrintValid(Prefs::nDensityUnits,DensityUnitKeywords);
+	if ((du == Prefs::nDensityUnits) && reportError) enumPrintValid(Prefs::nDensityUnits,DensityUnitKeywords);
 	return du;
 }
 
@@ -134,10 +134,10 @@ const char *Prefs::energyUnit(Prefs::EnergyUnit i)
 {
 	return EnergyUnitKeywords[i];
 }
-Prefs::EnergyUnit Prefs::energyUnit(const char *s, bool reporterror)
+Prefs::EnergyUnit Prefs::energyUnit(const char *s, bool reportError)
 {
 	Prefs::EnergyUnit eu = (Prefs::EnergyUnit) enumSearch("energy unit", Prefs::nEnergyUnits, EnergyUnitKeywords, s);
-	if ((eu == Prefs::nEnergyUnits) && reporterror) enumPrintValid(Prefs::nEnergyUnits,EnergyUnitKeywords);
+	if ((eu == Prefs::nEnergyUnits) && reportError) enumPrintValid(Prefs::nEnergyUnits,EnergyUnitKeywords);
 	return eu;
 }
 
@@ -268,6 +268,7 @@ Prefs::Prefs()
 	forceRhombohedral_ = FALSE;
 	augmentAfterRebond_ = TRUE;
 	warning1056_ = FALSE;
+	allowDeprecated_ = TRUE;
 	loadIncludes_ = TRUE;
 	loadPartitions_ = TRUE;
 	loadFragments_ = TRUE;
@@ -1522,6 +1523,12 @@ bool Prefs::warning1056() const
 void Prefs::setWarning1056(bool b)
 {
 	warning1056_ = b;
+}
+
+// Return whether to allow deprecated command/function names (i.e. un-capitalised)
+bool Prefs::allowDeprecated() const
+{
+	return allowDeprecated_;
 }
 
 // Whether to load filters on startup

@@ -43,11 +43,11 @@ class Atom
 	Atom *prev, *next;
 	// Drawing style enum
 	enum DrawStyle { StickStyle, TubeStyle, SphereStyle, ScaledStyle, IndividualStyle, nDrawStyles };
-	static DrawStyle drawStyle(const char *name, bool reporterror = 0);
+	static DrawStyle drawStyle(const char *name, bool reportError = 0);
 	static const char *drawStyle(DrawStyle);	
 	// Atom label enum
 	enum AtomLabel { IdLabel, ElementLabel, TypeLabel, EquivLabel, ChargeLabel, nLabelTypes };
-	static AtomLabel atomLabel(const char *name, bool reporterror = 0);
+	static AtomLabel atomLabel(const char *name, bool reportError = 0);
 	static const char *atomLabel(Atom::AtomLabel);
 	// Hydrogen-add geometries enum
 	enum HAddGeom { LinearHydrogen, PlanarHydrogen, TetrahedralHydrogen };
@@ -58,7 +58,7 @@ class Atom
 	static const char *atomEnvironment(AtomEnvironment);
 	// Geometries about atomic centres
 	enum AtomGeometry { NoGeometry, UnboundGeometry, OneBondGeometry, LinearGeometry, TShapeGeometry, TrigPlanarGeometry, TetrahedralGeometry, SquarePlanarGeometry, TrigBipyramidGeometry, OctahedralGeometry, nAtomGeometries };
-	static AtomGeometry atomGeometry(const char *name, bool reporterror = 0);
+	static AtomGeometry atomGeometry(const char *name, bool reportError = 0);
 	static const char *atomGeometry(AtomGeometry);
 
 	private:

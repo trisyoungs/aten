@@ -17,12 +17,12 @@
 
 filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", extension="trj", glob="*.trj", zmap="name", search="GAMESS VERSION", id=11)
 {
-        int readheader()
+        int readHeader()
         {
                 return TRUE;
         }
 
-        int readframe()
+        int readFrame()
         {
 		int n, natm, nfrag, nqmmm, packettype, skip = 0;
 		string discard, symbol, line;
@@ -48,23 +48,23 @@ filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", 
 		if (packettype != 0)
 		{
 			# Read in number of atoms
-			readline(discard, natm, discard, nfrag, discard, nqmmm);
-			skipline(skip);
+			readLine(discard, natm, discard, nfrag, discard, nqmmm);
+			skipLine(skip);
 			# Read QM atom data (if present)
 			if (natm > 0)
 			{
-				skipline();
+				skipLine();
 				for (n=0; n<natm; ++n)
 				{
-					readline(symbol,ano,x,y,z);
-					newatom(symbol,x,y,z);
+					readLine(symbol,ano,x,y,z);
+					newAtom(symbol,x,y,z);
 				}
 			}
 			# Read fragment data (if present)
 			if (nfrag > 0)
 			{
 				error("Reading of fragment data from trajectory not implemented yet.");
-				skipline();
+				skipLine();
 				for (n=0; n<nfrag; ++n)
 				{
 				}
@@ -73,7 +73,7 @@ filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", 
 			if (nqmmm > 0)
 			{
 				error("Reading of QMMM data form trajectory not implemented yet.");
-				skipline();
+				skipLine();
 				for (n=0; n<nqmmm; ++n)
 				{
 				}
@@ -86,7 +86,7 @@ filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", 
 				{
 					for (n=1; n<=natm; ++n)
 					{
-						readline(x, y, z);
+						readLine(x, y, z);
 						m.atoms[n].v = { x, y, z};
 					}
 				}
@@ -94,10 +94,10 @@ filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", 
 			else if (packettype == 2)
 			{
 				# Discard mass-weighted gradient
-				skipline(natm+1);
+				skipLine(natm+1);
 			}
 			rebond();
-			finalisemodel();
+			finaliseModel();
 		}
 		else return FALSE;
 		return TRUE;
@@ -108,23 +108,23 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 {
 	# Variable declaration
 	int result,nstructures,natoms,n,l,lastshell,shell,count,orb_no[5];
-	atom i;
-	basisshell bas;
-	basisprimitive prim;
-	eigenvector orbs[5];
-	vibration vibs[5];
+	Atom i;
+	BasisShell bas;
+	BasisPrimitive prim;
+	EigenVector orbs[5];
+	Vibration vibs[5];
 	string line,e,name,discard,orb_symm[5],type, vib_imag[5], vib_symm[5];
 	double rx,ry,rz, exponent,coeff,orb_nrg[5], orb_coeff[5];
 	double vib_freq[5], vib_dx[5], vib_dy[5], vib_dz[5], vib_rmass[5], vib_ir[5];
 
 	# Create a new model, and store its pointer for use later
-	model m = newmodel(filterfilename());
+	model m = newModel(filterFilename());
 
 	# Find initial coordinates (in Bohr)
 	if (find("ATOM      ATOMIC                      COORDINATES (BOHR)"))
 	{
-		skipline();
-		while (readline(e,discard,rx,ry,rz) != 0) newatom(e,rx,ry,rz);
+		skipLine();
+		while (readLine(e,discard,rx,ry,rz) != 0) newAtom(e,rx,ry,rz);
 		bohr(aten.model);
 		rebond();
 	}
@@ -133,9 +133,9 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 	# Read in basis set information
 	if (find("ATOMIC BASIS SET"))
 	{
-		skipline(6);
+		skipLine(6);
 		# Loop over basis shell definitions, stopping when we find the text 'TOTAL'
-		readlinef("%s %s %i %f %r", e, name, n, exponent, line);
+		readLineF("%s %s %i %f %r", e, name, n, exponent, line);
 		#printf("%s %s %i %f [%s]\n", e, name, n, exponent, line);
 		lastshell = -1;
 		count = 0;
@@ -153,43 +153,43 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 				# Create new basis shell?
 				shell = atoi(e);
 				#if (lastshell != shell) printf("Lastn (%i) is != shell (%i), so creating a new shell...\n", lastshell, shell);
-				if (lastshell != shell) bas = m.newbasisshell(count, name);
+				if (lastshell != shell) bas = m.newBasisShell(count, name);
 				lastshell = shell;
 			}
 
 			# Store primitive's exponent and coefficient(s)
 			if (lastshell != 0)
 			{
-				prim = bas.addprimitive(exponent);
+				prim = bas.addPrimitive(exponent);
 				# Cycle over provided coefficients
-				while (nextvararg(line,coeff)) prim.addcoefficient(coeff);
+				while (nextVarArg(line,coeff)) prim.addCoefficient(coeff);
 			}
 
 			# Get next line, ignoring blanks
 			do
 			{
-				readlinef("%s %s %i %f %r", e, name, n, exponent, line);
+				readLineF("%s %s %i %f %r", e, name, n, exponent, line);
 			} while (e == "");
 			#printf("%s %s %i %f [%s]\n", e, name, n, exponent, line);
 		}
 		# We end up with the 'TOTAL NUMBER OF BASIS SET SHELLS' line (beginning at 'SET...'), so we can do a check
-		readvar(line, discard, discard, discard, n);
-		printf("         Number of basis set shells read in : %i\n", m.nbasisshells());
+		readVar(line, discard, discard, discard, n);
+		printf("         Number of basis set shells read in : %i\n", m.nBasisShells());
 		printf("            --> number specified in logfile : %i\n", n);
-		if (n != m.nbasisshells()) error("Failed to read in basis set information.");
+		if (n != m.nBasisShells()) error("Failed to read in basis set information.");
 		# Also, check the total number of cartesian basis functions
-		readlinef("%r", line);
-		n = atoi( afterstr(line,"=") );
-		printf("Number of implied cartesian basis functions : %i\n", m.nbasiscartesians());
+		readLineF("%r", line);
+		n = atoi( afterStr(line,"=") );
+		printf("Number of implied cartesian basis functions : %i\n", m.nBasisCartesians());
 		printf("            --> number specified in logfile : %i\n", n);
-		if (n != m.nbasiscartesians()) error("Failed to read in basis set information.");
+		if (n != m.nBasisCartesians()) error("Failed to read in basis set information.");
 	}
 
 	# Determine number of atoms - search for line containing 'TOTAL NUMBER OF ATOMS'
 	if (!find("TOTAL NUMBER OF ATOMS",line)) error("Couldn't determine number of atoms from GAMESS-US output.");
 
 	# Get number of atoms from line
-	readvarf(line, "%48*%i",natoms);
+	readVarF(line, "%48*%i",natoms);
 
 	# Now search for sets of coordinate
 	nstructures = 0;
@@ -198,23 +198,23 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 	{
 		# Found a set of coordinates. Skip 2 lines and then read coordinates
 		nstructures++;
-		skipline(2);
-		writevarf(name, "Frame %i", nstructures);
-		m = addframe(name);
+		skipLine(2);
+		writeVarF(name, "Frame %i", nstructures);
+		m = addFrame(name);
 		for (n=1; n<=natoms; ++n)
 		{
-			readline(e,discard,rx,ry,rz);
-			newatom(e,rx,ry,rz);
+			readLine(e,discard,rx,ry,rz);
+			newAtom(e,rx,ry,rz);
 		}
 		# Recalculate bonding
 		rebond();
-		finaliseframe();
+		finaliseFrame();
 	}
 
 	# Molecular orbitals?
 	if (find("MOLECULAR ORBITALS"))
 	{
-		skipline(2);
+		skipLine(2);
 		# MO information is provided 5 orbs per line, in the format:
 		#                     1          2          3          4
 		#                   -0.5942     0.2657     0.9175     1.5319
@@ -223,10 +223,10 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 		#    .  .  .  .
 		#    NC .  .  .   
 		# ...where NC is the number of cartesian basis functions.
-		for (n=1; n<m.nbasisshells(); n +=5)
+		for (n=1; n<m.nBasisShells(); n +=5)
 		{
 			# Read in orbital numbers as a sanity check
-			readline(discard);
+			readLine(discard);
 			# End of orbital specification?
 			if (atoi(discard) == 0) break;
 			else if (n != atoi(discard))
@@ -235,24 +235,24 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 				break;
 			}
 			# Read in eigenvalues and symmetry type
-			readline(orb_nrg[1], orb_nrg[2], orb_nrg[3], orb_nrg[4], orb_nrg[5]);
-			readline(orb_symm[1], orb_symm[2], orb_symm[3], orb_symm[4], orb_symm[5]);
+			readLine(orb_nrg[1], orb_nrg[2], orb_nrg[3], orb_nrg[4], orb_nrg[5]);
+			readLine(orb_symm[1], orb_symm[2], orb_symm[3], orb_symm[4], orb_symm[5]);
 			# Create eigenvectors
 			for (l=1; l<6; ++l)
 			{
-				if ((l+n-1) > m.nbasisshells()) break;
+				if ((l+n-1) > m.nBasisShells()) break;
 				verbose(" -- Created MO number %i with eigenvalue %f\n", l+n-1, orb_nrg[l]);
-				orbs[l] = m.neweigenvector();
+				orbs[l] = m.newEigenvector();
 				orbs[l].eigenvalue = orb_nrg[l];
 				orbs[l].name = orb_symm[l];
 			}
 			# Next lines contain coefficients...
-			for (count=1; count<=m.nbasiscartesians(); ++count)
+			for (count=1; count<=m.nBasisCartesians(); ++count)
 			{
-				readline(discard,e,shell,type,orb_coeff[1], orb_coeff[2], orb_coeff[3], orb_coeff[4], orb_coeff[5]);
+				readLine(discard,e,shell,type,orb_coeff[1], orb_coeff[2], orb_coeff[3], orb_coeff[4], orb_coeff[5]);
 				for (l=1; l<6; ++l)
 				{
-					if ((l+n-1) > m.nbasisshells()) break;
+					if ((l+n-1) > m.nBasisShells()) break;
 					orbs[l].vector[count] = orb_coeff[l];
 				}
 			}
@@ -266,10 +266,10 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 		# Skip warning of non-stationary point if present...
 		if (find("THIS IS NOT A STATIONARY POINT"))
 		{
-			skipline(3);
+			skipLine(3);
 			printf(" *** The frequencies correspond to a non-stationary point.\n");
 		}
-		else skipline(2);
+		else skipLine(2);
 		# Vibration information is provided 5 vibrations per line, in the format:
 		#                       1          2          3          4            5
 		#    FREQUENCY:      39.84 I     19.94       19.03       15.12       11.87
@@ -281,44 +281,44 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 		#    .  .  .  .
 		#    3N .  .  .   
 		# ...where N is the number of atoms in the model
-		for (n=1; n<3*m.natoms(); n +=5)
+		for (n=1; n<3*m.nAtoms(); n +=5)
 		{
 			# Read in vibration numbers as a sanity check
-			readline(discard);
+			readLine(discard);
 			if (n != atoi(discard))
 			{
 				printf("Failed to read in vibration information at vibration number %i (read [%s] from file)\n", n, discard);
 				break;
 			}
 			# Read in frequencies and imaginary flags
-			readlinef("%* %f%2s%f%2s%f%2s%f%2s%f%2s", vib_freq[1], vib_imag[1], vib_freq[2], vib_imag[2], vib_freq[3], vib_imag[3], vib_freq[4], vib_imag[4], vib_freq[5], vib_imag[5]);
-			readlinef("%18s %r", discard, line);
-			if (stripchars(discard," ") == "REDUCEDMASS:") readvar(line, vib_rmass[1], vib_rmass[2], vib_rmass[3], vib_rmass[4], vib_rmass[5]);
+			readLineF("%* %f%2s%f%2s%f%2s%f%2s%f%2s", vib_freq[1], vib_imag[1], vib_freq[2], vib_imag[2], vib_freq[3], vib_imag[3], vib_freq[4], vib_imag[4], vib_freq[5], vib_imag[5]);
+			readLineF("%18s %r", discard, line);
+			if (stripChars(discard," ") == "REDUCEDMASS:") readVar(line, vib_rmass[1], vib_rmass[2], vib_rmass[3], vib_rmass[4], vib_rmass[5]);
 			else
 			{
-				readvar(line, vib_symm[1], vib_symm[2], vib_symm[3], vib_symm[4], vib_symm[5]);
-				readline(discard, vib_rmass[1], vib_rmass[2], vib_rmass[3], vib_rmass[4], vib_rmass[5]);
+				readVar(line, vib_symm[1], vib_symm[2], vib_symm[3], vib_symm[4], vib_symm[5]);
+				readLine(discard, vib_rmass[1], vib_rmass[2], vib_rmass[3], vib_rmass[4], vib_rmass[5]);
 			}
-			readline(discard, vib_ir[1], vib_ir[2], vib_ir[3], vib_ir[4], vib_ir[5]);
+			readLine(discard, vib_ir[1], vib_ir[2], vib_ir[3], vib_ir[4], vib_ir[5]);
 			# Create vibrations
 			for (l=1; l<6; ++l)
 			{
-				if ((l+n-1) > 3*m.natoms()) break;
+				if ((l+n-1) > 3*m.nAtoms()) break;
 				if (contains(vib_imag[l],"I")) vib_freq[l] = -vib_freq[l];
 				verbose("Created vibration number %i with frequency %f\n", l+n-1, vib_freq[l]);
-				vibs[l] = m.newvibration();
+				vibs[l] = m.newVibration();
 				vibs[l].frequency = vib_freq[l];
 			}
-			skipline(1);
+			skipLine(1);
 			# Next lines contain atomic displacements
-			for (count=1; count<=m.natoms(); ++count)
+			for (count=1; count<=m.nAtoms(); ++count)
 			{
-				readline(discard,e,type,vib_dx[1], vib_dx[2], vib_dx[3], vib_dx[4], vib_dx[5]);
-				readline(type,vib_dy[1], vib_dy[2], vib_dy[3], vib_dy[4], vib_dy[5]);
-				readline(type,vib_dz[1], vib_dz[2], vib_dz[3], vib_dz[4], vib_dz[5]);
+				readLine(discard,e,type,vib_dx[1], vib_dx[2], vib_dx[3], vib_dx[4], vib_dx[5]);
+				readLine(type,vib_dy[1], vib_dy[2], vib_dy[3], vib_dy[4], vib_dy[5]);
+				readLine(type,vib_dz[1], vib_dz[2], vib_dz[3], vib_dz[4], vib_dz[5]);
 				for (l=1; l<6; ++l)
 				{
-					if ((l+n-1) > 3*m.natoms()) break;
+					if ((l+n-1) > 3*m.nAtoms()) break;
 				#	vibs[l].displacements[count] = { vib_dx[l], vib_dy[l], vib_dz[l] };
 					vibs[l].displacements[count].x = vib_dx[l] ;
 					vibs[l].displacements[count].y = vib_dy[l] ;
@@ -326,9 +326,9 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 				}
 			}
 			# Skip over Sayvetz information
-			skipline(11);
+			skipLine(11);
 		}
-		printf("Read in data for %i vibrations.\n", m.nvibrations());
+		printf("Read in data for %i vibrations.\n", m.nVibrations());
 	}
 
 	# Atomic Charges
@@ -341,13 +341,13 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 		# Now search for "NET CHARGES"
 		if (find("NET CHARGES"))
 		{
-			skipline(3);
-			for (i = m.atoms; i; ++i) readline(discard, i.q);
+			skipLine(3);
+			for (i = m.atoms; i; ++i) readLine(discard, i.q);
 			printf("Found and read in ESP charges.\n");
 		}
 	}
 
-	finalisemodel();
+	finaliseModel();
 }
 
 filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", zmap="name", id=5)
@@ -361,29 +361,29 @@ filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	if (!find("DATA")) error("Couldn't find 'DATA' section in input file.");
 
 	# Read in title card
-	getline(title);
-	newmodel(title);
+	getLine(title);
+	newModel(title);
 
 	# Skip over symmetry specification
-	readline(symm);
+	readLine(symm);
 	if (symm <> "C1")
 	{
 		# Single blank line means the master frame is in use, and only this line to skip
-		readline(symm);
-		if (symm != "") skipline();
+		readLine(symm);
+		if (symm != "") skipLine();
 	}
 	
 	# Coordinates follow, terminated by $END
-	readline(symbol,z,rx,ry,rz);
+	readLine(symbol,z,rx,ry,rz);
 	while (symbol != "$END")
 	{
-		newatom(symbol,rx,ry,rz);
-		readline(symbol,z,rx,ry,rz);
+		newAtom(symbol,rx,ry,rz);
+		readLine(symbol,z,rx,ry,rz);
 	}
 
 	# Done
 	rebond();
-	finalisemodel();
+	finaliseModel();
 }
 
 filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
@@ -393,158 +393,91 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	#
 	void defaultUi()
 	{
-		dialog ui = defaultdialog("GAMESS-US Export Options");
-		widget group, w;
+		dialog ui = defaultDialog("GAMESS-US Export Options");
+		widget group, w, tabs, page;
+
 		# General control options group ($CONTRL)
-		group = ui.addGroup("Job Control ($CONTRL)", 1, 1);
+		group = ui.addGroup("jobgroup", "Job Control ($CONTRL)", 1, 1);
 		group.addCombo("contrl_runtyp", "Run Type", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, 1, 1);
 		group.addCombo("contrl_scftyp", "SCF Type", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, 3, 1);
 		group.addIntegerSpin("contrl_mult", "Multiplicity", 1, 8, 1, 1, 5, 1);
 		group.addIntegerSpin("contrl_charge", "Charge", -1000, 1000, 1, 0, 7, 1);
-		group.addCombo("contrl_dfttyp", "DFT Type", "NONE,SVWN,BLYP,PW91,B97-D,PBE,PBEsol,B3LYP,X3LYP,PBE0,TPSS,TPSSm,TPSSh,M06,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, 1, 2);
+		w = group.addCombo("contrl_dft", "DFT", "NONE,GRID,GRIDFREE", 1, 1, 2);
+		#w.onStringValue("dftpage", "disabled", "NONE");
 		group.addCombo("contrl_tddft", "TDDFT Type", "NONE,EXCITE", 1, 3, 2);
 		group.addCombo("contrl_mplevl", "MP Level", "0,2", 1, 5, 2);
 		group.addCombo("contrl_cityp", "CI Type", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, 7, 2);
 		group.addCombo("contrl_cctyp", "CC Type", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, 1, 3);
-	string contrl_relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
-	string contrl_exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
-	string contrl_pp = option("Pseudo", "combo", "NONE,READ,SBKJC,HW,MCP", 1, "group=Job Control ($CONTRL)");
-	string contrl_coord = option("Coord Type", "combo", "CART,ZMT", 1, "group=Job Control ($CONTRL)", "newline");
-	int cart_symbols = option("Use Symbols", "check", 1, "group=Job Control ($CONTRL)", "span=2");
-	int contrl_maxit = option("Max SCF It.", "intspin", 1,1000,10,30, "group=Job Control ($CONTRL)");
+		group.addCombo("contrl_relwfn", "Rel. Wfn.", "NONE,DK,RESC,NESC", 1, 3, 3);
+		group.addCombo("contrl_exetyp", "Exe Type", "RUN,CHECK,DEBUG", 1, 5, 3);
+		group.addCombo("contrl_pp", "Pseudo", "NONE,READ,SBKJC,HW,MCP", 1, 7, 3);
+		group.addCombo("contrl_coord", "Coord Type", "UNIQUE,ZMT", 1, 1, 4);
+		group.addCheck("cart_symbols", "Use Symbols", 1, 3, 4, 1);
+		group.addIntegerSpin("contrl_maxit", "Max SCF It.", 1, 1000, 10, 30, 5, 4);
 
-	# Basis set specification ($BASIS)
-	string basis_gbasis = option("Basis", "combo", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, "group=Basis Set ($BASIS)", "newline");
-	int basis_ngauss = option("NGAUSS", "intspin", 3,8,1,6, "group=Basis Set ($BASIS)");
-	int basis_ndfunc = option("NDFUNC", "intspin", 0,3,1,0, "group=Basis Set ($BASIS)");
-	int basis_npfunc = option("NPFUNC", "intspin", 0,3,1,0, "group=Basis Set ($BASIS)");
-	int basis_nffunc = option("NFFUNC", "intspin", 0,1,1,0, "group=Basis Set ($BASIS)");
-	string basis_diffsp = option("DIFFSP", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
-	string basis_diffs = option("DIFFS", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
+		# Basis set specification ($BASIS)
+		group = ui.addGroup("basisgroup", "Basis Set ($BASIS)", 1, 2);
+		w = group.addCombo("basis_gbasis", "Basis", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, 1, 1);
+		#w.onIntegerValue(1, 9 TZV, "basisstack", "value", 1);
+		w = group.addStack("basisstack", 1, 2);
+		page = w.addPage("");
+		group.addIntegerSpin("basis_ngauss", "NGAUSS", 3, 8, 1, 6, 1, 1);
+		group.addIntegerSpin("basis_ndfunc", "NDFUNC", 0, 3, 1, 0, 3, 1);
+		group.addIntegerSpin("basis_npfunc", "NPFUNC", 0, 3, 1, 0, 5, 1);
+		group.addIntegerSpin("basis_nffunc", "NFFUNC", 0, 1, 1, 0, 7, 1);
+		group.addCheckBox("basis_diffsp", "DIFFSP", 0, 1, 2);
+		group.addCheckBox("basis_diffs", "DIFFS", 0, 3, 2);
 
-	# DFT options ($DFT), placed in 'opts' tab
-	string dftgrid = option("DFT Method", "combo", "GRID,GRIDFREE", 1, "state=GRID@DFT Type?originalitems", "state=GRIDFREE@DFT Type?items=NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP", "tab=$DFT@opts", "newline");
+		# Tabs containing various options
+		tabs = ui.addTabs("optiontabs", 1, 3);
+		
+		# DFT options ($DFT)
+		page = tabs.addPage("dftpage", "$DFT");
+		string griddfttyps = "NONE,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,EDF1,PW91,PBE,revPBE,RPBE,PBEsol,HCTH93,HCTH120,HCTH147,HCTH407,SOGGA,MOHLYP,B97-D,BHHLYP,B3PW91,B3LYP,B3LYP1,B97,B97-1,B97-2,B97-3,B97-K,B98,PBE0,X3LYP,CAMB3LYP,wB97,wB97X,wB97X-D,B2PLYP,wB97X-2,wB97X-2L,VS98,PKZB,tHCTH,tHCTHhyb,BMK,TPSS,TPSSh,TPSSm,revTPSS,M05,M05-2X,M06,M06-L,M06-2X,M06-HF,M08-HX,M08-SO";
+		string gridfreedfttyps = "NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP";
+		#w = page.addCombo("dftgrid", "DFT Method", "GRID,GRIDFREE", 1, 1, 1);
+		w.onInteger(1, 1, "contrl_dfttyp", "items", griddfttyps);
+		w.onInteger(2, 2, "contrl_dfttyp", "items", "NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP");
+		w.onInteger(1, 2, "contrl_dfttyp", "value", 2);
 
-	# Stationary point location options ($STATPT), placed in 'opts' tabs
-	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");
-	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
-	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 5, 20, "tab=$STATPT@opts");
-	int statpt_ifolow = option("IFOLOW", "intspin", 1, 100000, 1, 1, "tab=$STATPT@opts", "newline");
-	string statpt_stpt = option("STPT", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
-	double statpt_ststep = option("STSTEP", "doublespin", 0.0, 1.0, 0.005, 0.01, "tab=$STATPT@opts");
-	string statpt_ifreez = option("IFREEZ", "edit", "", "tab=$STATPT@opts", "newline", "span=5");
-	string statpt_hess = option("HESS", "combo", "GUESS,READ,RDAB,RDALL,CALC", 1, "tab=$STATPT@opts", "newline");
-	int statpt_ihrep = option("IHREP", "intspin", 0, 1000, 1, 0, "tab=$STATPT@opts");
-	string statpt_hssend = option("HSSEND", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
+		# Stationary point location options ($STATPT)
+		page = tabs.addPage("page_statpt", "$STATPT");
+		page.addCombo("statpt_method", "METHOD", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, 1, 1);
+		page.addDoubleSpin("statpt_opttol", "OPTTOL", 0.0, 1.0, 0.0001, 0.0001, 3, 1);
+		page.addIntegerSpin("statpt_nstep", "NSTEP", 1, 1000000, 5, 20, 5, 1);
+		page.addIntegerSpin("statpt_ifolow", "IFOLOW", 1, 100000, 1, 1, 1, 2); 
+		page.addCheck("statpt_stpt", "STPT", 0, 3, 2);
+		page.addDoubleSpin("statpt_ststep", "STSTEP", 0.0, 1.0, 0.005, 0.01, 5, 2);
+		page.addEdit("statpt_ifreez", "IFREEZ", "", 3, 5);
+		page.addCombo("statpt_hess", "HESS", "GUESS,READ,RDAB,RDALL,CALC", 1, 1, 4);
+		page.addIntegerSpin("statpt_ihrep", "IHREP", 0, 1000, 1, 0, 3, 4);
+		page.addCheck("statpt_hssend", "HSSEND", 0, 5, 4);
 
-	# Intrinsic reaction coordinate run ($IRC), place in 'opts' tabs
-	string irc_forwrd = option("Forward", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
-	string irc_saddle = option("Saddle", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
-	double irc_stride = option("Stride", "doublespin", 0.001, 1.0, 0.05, 0.3, "tab=$IRC@opts");
-	int irc_npoint = option("NPoint", "intspin", 1, 1000, 5, 1, "tab=$IRC@opts");
-	string irc_pace = option("Pace", "combo", "GS2,LINEAR,QUAD,AMPC4,RK4", 1, "tab=$IRC@opts", "newline");
+		# Intrinsic reaction coordinate run ($IRC)
+		page = tabs.addPage("page_irc", "$IRC");
+		page.addCheck("irc_forwrd", "FORWRD", 1, 1, 1);
+		page.addCheck("irc_saddle", "SADDLE", 1, 3, 1);
+		page.addDoubleSpin("irc_stride", "STRIDE", 0.001, 1.0, 0.05, 0.3, 5, 1);
+		page.addIntegerSpin("irc_npoint", "NPOINT", 1, 1000, 5, 1, 7, 1);
+		page.addCombo("irc_pace", "PACE", "GS2,LINEAR,QUAD,AMPC4,RK4", 1, 1, 2);
 
-	# Electron density calculation ($ELDENS), placed in 'opts' tabs
-	int eldens_ieden = option("Calculate", "check", 0, "tab=$ELDENS@opts", "newline");
-	int eldens_morb = option("MORB", "intspin", 0, 10000, 1, 0, "tab=$ELDENS@opts");
-	string eldens_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID", 2, "tab=$ELDENS@opts");
-	string eldens_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH", 3, "tab=$ELDENS@opts");
+		# Electron density calculation ($ELDENS)
+		page = tabs.addPage("page_eldens", "$ELDENS");
+		page.addCheck("eldens_ieden", "Calculate?", 0, 1, 1);
+		page.addIntegerSpin("eldens_morb", "MORB", 0, 10000, 1, 0, 3, 1);
+		page.addCombo("eldens_where", "WHERE", "COMASS,NUCLEI,POINTS,GRID", 2, 5, 1);
+		page.addCombo("eldens_output", "OUTPUT", "PUNCH,PAPER,BOTH", 3, 7, 1);
 
-	# Electrostatic potential calculation ($ELPOT), placed in 'opts' tabs
-	int elpot_iepot = option("Calculate", "check", 0, "tab=$ELPOT@opts", "newline");
-	string elpot_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, "tab=$ELPOT@opts");
-	string elpot_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH,NONE", 3, "tab=$ELPOT@opts");
+		# Electrostatic potential calculation ($ELPOT)
+		page = tabs.addPage("page_elpot", "$ELPOT");
+		page.addCheck("elpot_iepot", "Calculate", 0, 1, 1);
+		page.addCombo("elpot_where", "WHERE", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, 3, 1);
+		page.addCombo("elpot_output", "OUTPUT" "PUNCH,PAPER,BOTH,NONE", 3, 5, 1);
 
-	# Point selection ($PDC), placed in 'opts' tabs
-	string pdc_ptsel = option("PTSEL", "combo", "GEODESIC,CONNOLLY,CHELPG", 1, "tab=$PDC@opts");
-	string pdc_constr = option("CONSTR", "combo", "NONE,CHARGE,DIPOLE,QUPOLE", 2, "tab=$PDC@opts");
-
-	# Grid specification ($GRID), placed in 'opts' tabs
-	int grid_modgrd = option("3D Grid", "check", 0, "tab=$GRID@opts", "newline");
-	double grid_size = option("Grid Increment", "doublespin", 0.00001, 2.0, 0.1, 0.25, "tab=$GRID@opts");
-	option("ORIGIN", "label", "newline", "tab=$GRID@opts");
-	double grid_originx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_originy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_originz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	option("XVEC", "label", "newline", "tab=$GRID@opts");
-	double grid_xvecx = option("X", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
-	double grid_xvecy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_xvecz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	option("YVEC", "label", "newline", "tab=$GRID@opts");
-	double grid_yvecx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_yvecy = option("Y", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
-	double grid_yvecz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	option("ZVEC", "label", "newline", "tab=$GRID@opts");
-	double grid_zvecx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_zvecy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_zvecz = option("Z", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
-
-	# PCM options ($PCM), placed in 'opts' tab
-	string pcm_solvnt = option("Solvent", "combo", "NONE,WATER,CH3OH,CLFORM,METHYCL,BENZENE,CLBENZ,NEPTANE,ANILINE,C2H5OH,CTCL,12DCLET,TOLUENE,NITMET,CYCHEX,ACETONE", 1, "tab=$PCM@opts", "newline");
-
-
-XXXX
-	string contrl_runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
-	string contrl_scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
-	int contrl_mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
-	int contrl_charge = option("Charge", "intspin", -1000, 1000, 1, 0, "group=Job Control ($CONTRL)");
-	string contrl_dfttyp = option("DFT Type", "combo", "NONE,SVWN,BLYP,PW91,B97-D,PBE,PBEsol,B3LYP,X3LYP,PBE0,TPSS,TPSSm,TPSSh,M06,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, "group=Job Control ($CONTRL)", "newline");
-	string contrl_tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
-	string contrl_mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
-	string contrl_cityp = option("CI Type", "combo", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, "group=Job Control ($CONTRL)");
-	string contrl_cctyp = option("CC Type", "combo", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, "group=Job Control ($CONTRL)", "newline");
-	string contrl_relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
-	string contrl_exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
-	string contrl_pp = option("Pseudo", "combo", "NONE,READ,SBKJC,HW,MCP", 1, "group=Job Control ($CONTRL)");
-	string contrl_coord = option("Coord Type", "combo", "CART,ZMT", 1, "group=Job Control ($CONTRL)", "newline");
-	int cart_symbols = option("Use Symbols", "check", 1, "group=Job Control ($CONTRL)", "span=2");
-	int contrl_maxit = option("Max SCF It.", "intspin", 1,1000,10,30, "group=Job Control ($CONTRL)");
-
-	# Basis set specification ($BASIS)
-	string basis_gbasis = option("Basis", "combo", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, "group=Basis Set ($BASIS)", "newline");
-	int basis_ngauss = option("NGAUSS", "intspin", 3,8,1,6, "group=Basis Set ($BASIS)");
-	int basis_ndfunc = option("NDFUNC", "intspin", 0,3,1,0, "group=Basis Set ($BASIS)");
-	int basis_npfunc = option("NPFUNC", "intspin", 0,3,1,0, "group=Basis Set ($BASIS)");
-	int basis_nffunc = option("NFFUNC", "intspin", 0,1,1,0, "group=Basis Set ($BASIS)");
-	string basis_diffsp = option("DIFFSP", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
-	string basis_diffs = option("DIFFS", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
-
-	# DFT options ($DFT), placed in 'opts' tab
-	string dftgrid = option("DFT Method", "combo", "GRID,GRIDFREE", 1, "state=GRID@DFT Type?originalitems", "state=GRIDFREE@DFT Type?items=NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP", "tab=$DFT@opts", "newline");
-
-	# Stationary point location options ($STATPT), placed in 'opts' tabs
-	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");
-	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
-	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 5, 20, "tab=$STATPT@opts");
-	int statpt_ifolow = option("IFOLOW", "intspin", 1, 100000, 1, 1, "tab=$STATPT@opts", "newline");
-	string statpt_stpt = option("STPT", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
-	double statpt_ststep = option("STSTEP", "doublespin", 0.0, 1.0, 0.005, 0.01, "tab=$STATPT@opts");
-	string statpt_ifreez = option("IFREEZ", "edit", "", "tab=$STATPT@opts", "newline", "span=5");
-	string statpt_hess = option("HESS", "combo", "GUESS,READ,RDAB,RDALL,CALC", 1, "tab=$STATPT@opts", "newline");
-	int statpt_ihrep = option("IHREP", "intspin", 0, 1000, 1, 0, "tab=$STATPT@opts");
-	string statpt_hssend = option("HSSEND", "combo", ".TRUE.,.FALSE.", 2, "tab=$STATPT@opts");
-
-	# Intrinsic reaction coordinate run ($IRC), place in 'opts' tabs
-	string irc_forwrd = option("Forward", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
-	string irc_saddle = option("Saddle", "combo", ".TRUE.,.FALSE.", 1, "tab=$IRC@opts"); 
-	double irc_stride = option("Stride", "doublespin", 0.001, 1.0, 0.05, 0.3, "tab=$IRC@opts");
-	int irc_npoint = option("NPoint", "intspin", 1, 1000, 5, 1, "tab=$IRC@opts");
-	string irc_pace = option("Pace", "combo", "GS2,LINEAR,QUAD,AMPC4,RK4", 1, "tab=$IRC@opts", "newline");
-
-	# Electron density calculation ($ELDENS), placed in 'opts' tabs
-	int eldens_ieden = option("Calculate", "check", 0, "tab=$ELDENS@opts", "newline");
-	int eldens_morb = option("MORB", "intspin", 0, 10000, 1, 0, "tab=$ELDENS@opts");
-	string eldens_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID", 2, "tab=$ELDENS@opts");
-	string eldens_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH", 3, "tab=$ELDENS@opts");
-
-	# Electrostatic potential calculation ($ELPOT), placed in 'opts' tabs
-	int elpot_iepot = option("Calculate", "check", 0, "tab=$ELPOT@opts", "newline");
-	string elpot_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, "tab=$ELPOT@opts");
-	string elpot_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH,NONE", 3, "tab=$ELPOT@opts");
-
-	# Point selection ($PDC), placed in 'opts' tabs
-	string pdc_ptsel = option("PTSEL", "combo", "GEODESIC,CONNOLLY,CHELPG", 1, "tab=$PDC@opts");
-	string pdc_constr = option("CONSTR", "combo", "NONE,CHARGE,DIPOLE,QUPOLE", 2, "tab=$PDC@opts");
+		# Point selection ($PDC)
+		page = tabs.addPage("page_pdc", "$PDC");
+		page.addCombo("pdc_ptsel", "PTSEL", "GEODESIC,CONNOLLY,CHELPG", 1, 1, 1);
+		page.addCombo("pdc_constr", "CONSTR", "NONE,CHARGE,DIPOLE,QUPOLE", 2, 3, 1);
 
 	# Grid specification ($GRID), placed in 'opts' tabs
 	int grid_modgrd = option("3D Grid", "check", 0, "tab=$GRID@opts", "newline");
@@ -566,16 +499,21 @@ XXXX
 	double grid_zvecy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
 	double grid_zvecz = option("Z", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
 
-	# PCM options ($PCM), placed in 'opts' tab
-	string pcm_solvnt = option("Solvent", "combo", "NONE,WATER,CH3OH,CLFORM,METHYCL,BENZENE,CLBENZ,NEPTANE,ANILINE,C2H5OH,CTCL,12DCLET,TOLUENE,NITMET,CYCHEX,ACETONE", 1, "tab=$PCM@opts", "newline");
+		# PCM options ($PCM), placed in 'opts' tab
+		page = tabs.addPage("page_pcm", "$PCM");
+		page.addCombo("pcm_solvnt", "Solvent", "NONE,WATER,CH3OH,CLFORM,METHYCL,BENZENE,CLBENZ,NEPTANE,ANILINE,C2H5OH,CTCL,12DCLET,TOLUENE,NITMET,CYCHEX,ACETONE", 1, 1, 1);
 
+	};
+
+	# Grab default dialog pointer
+	dialog ui = defaultDialog();
 
 	#
 	# Write Data
 	#
 	string line;
 	# Write $CONTRL line(s)
-	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", contrl_scftyp, contrl_runtyp, contrl_coord, contrl_charge, contrl_mult);
+	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", ui.asString("contrl_scftyp"), ui.asString("contrl_runtyp"), ui.asString("contrl_coord"), ui.asInteger("contrl_charge"), ui.asInteger("contrl_mult"));
 	line = "";
 	if (contrl_dfttyp != "NONE") line += " DFTTYP=" + contrl_dfttyp;
 	if (contrl_tddft != "NONE") line += " TDDFT=" + contrl_tddft;

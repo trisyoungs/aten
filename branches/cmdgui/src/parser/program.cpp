@@ -80,20 +80,6 @@ const char *Program::filename()
 void Program::finalise()
 {
 	msg.enter("Program::finalise");
-// 	// Create GUI controls for main program    TGAY XXX
-// 	if (mainProgram_.widgets() != NULL)
-// 	{
-// 		if (!mainProgram_.isFilter()) mainProgram_.createCustomDialog(name_.get());
-// 		else
-// 		{
-// 			Dnchar title;
-// 			if (mainProgram_.filter.isExportFilter()) title.sprintf("Export Options (%s)", mainProgram_.name());
-// 			else title.sprintf("Import Options (%s)", mainProgram_.name());
-// 			mainProgram_.createCustomDialog(title.get());
-// 		}
-// 		// Grab default values
-// 		mainProgram_.executeCustomDialog(TRUE);
-// 	}
 	// Cycle over generated filters
 	for (Tree *filter = filters_.first(); filter != NULL; filter = filter->next)
 	{
@@ -101,48 +87,30 @@ void Program::finalise()
 		if (filter->isFilter())
 		{
 			aten.registerFilter(filter, filter->filter.type());
-			// For trajectory import filters, we expect to find the two functions readheader and readframe, both returning integers
+			// For trajectory import filters, we expect to find the two functions readHeader and readFrame, both returning integers
 			if (filter->filter.type() == FilterData::TrajectoryImport)
 			{
-				// Search for 'int readheader()' function
-				Tree *func = filter->findLocalFunction("readheader");
+				// Search for 'int readHeader()' function
+				Tree *func = filter->findLocalFunction("readHeader");
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readheader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
 				}
-				else msg.print("Warning: 'readheader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				else msg.print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
 				filter->filter.setTrajectoryHeaderFunction(func);
 
-				// Search for 'int readframe()' function
-				func = filter->findLocalFunction("readframe");
+				// Search for 'int readFrame()' function
+				func = filter->findLocalFunction("readFrame");
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readframe' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
 				}
-				else msg.print("Warning: 'readframe' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				else msg.print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
 				filter->filter.setTrajectoryFrameFunction(func);
 			}
 		}
-// 		// Generate widgets (if Tree has any)  TGAY XXX
-// 		if (filter->widgets() != NULL)
-// 		{
-// 			if (!filter->isFilter()) filter->createCustomDialog(name_.get());
-// 			else
-// 			{
-// 				Dnchar title;
-// 				if (filter->filter.isExportFilter()) title.sprintf("Export Options (%s)", filter->filter.name());
-// 				else title.sprintf("Import Options (%s)", filter->filter.name());
-// 				filter->createCustomDialog(title.get());
-// 			}
-// 			// Grab default values
-// 			filter->executeCustomDialog(TRUE);
-// 		}
-	}
-	// Generate widgets in global functions
-	for (Tree *t = functions_.first(); t != NULL; t = t->next)
-	{
 	}
 	msg.exit("Program::finalise");
 }
@@ -319,12 +287,10 @@ bool Program::isFromFilterFile()
 }
 
 // Execute all trees in forest
-bool Program::execute(ReturnValue &rv, bool runOptions)
+bool Program::execute(ReturnValue &rv)
 {
 	msg.enter("Program::execute");
-	bool result = TRUE;
-	if (runOptions) result = mainProgram_.defaultDialog().execute();
-	if (result) result = mainProgram_.execute(rv);
+	bool result = mainProgram_.execute(rv);
 	msg.exit("Program::execute");
 	return result;
 }

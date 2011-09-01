@@ -84,7 +84,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 // 	static Tree dialog("Save Scripted Movie","option('Image Size', 'edit', '10x10'); option('Maximum Frames', 'intspin', 1, 1000000, 1000, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
 	Tree dialog;
 	TreeGui &ui = dialog.defaultDialog();
-	ui.setValue("Movie Options");
+	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Movie Options");
 	ui.addEdit("geometry", "Image Geometry", geometry,1,1);
 	ui.addIntegerSpin("maxframes", "Maximum Frames", 1, 1e6, 100, 1000 ,1,2);
 	ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,2);

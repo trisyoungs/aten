@@ -39,7 +39,8 @@ Tree::Tree()
 	type_ = Tree::UnknownTree;
 	readOptions_ = 0;
 	localScope_ = NULL;
-	
+	runCount_ = 0;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -224,6 +225,31 @@ bool Tree::execute(ReturnValue &rv)
 	rv.reset();
 	ElementMap::ZMapType zm = ElementMap::nZMapTypes;
 	acceptedFail_ = Command::NoFunction;
+	
+	// Execute default dialog, if it exists and if the GUI has been started (or if the showOnCLI flag is set to TRUE)
+	for (Tree *func = functions_.first(); func != NULL; func = func->next)
+	{
+		// If this is the 'defaultUi' function, execute it first to create the widgets (unless it has already been run)
+		if (strcmp(func->name(),"defaultUi") == 0)
+		{
+			printf("THIS TREE *IS* CALLED defaultUi\n");
+			if (func->runCount() == 0)
+			{
+				ReturnValue rv;
+				func->execute(rv);
+			}
+			else msg.print(Messenger::Commands, "DefaultUi function has already been run.\n");
+			if (!func->defaultDialog().execute())
+			{
+				msg.print("Canceled (through dialog).\n");
+				return FALSE;
+			}
+		}
+		else printf("THIS TREE IS NOT CALLED defaultUi\n");
+	}
+
+	++runCount_;
+
 	// Perform any preparatory commands related to filter trees
 	if (isFilter())
 	{
@@ -372,6 +398,12 @@ bool Tree::executeWrite(const char *filename)
 {
 	ReturnValue rv;
 	return executeWrite(filename, rv);
+}
+
+// Return number of times tree has been run
+int Tree::runCount()
+{
+	return runCount_;
 }
 
 // Print tree
@@ -946,7 +978,7 @@ TreeGui &Tree::defaultDialog()
 TreeGui *Tree::createDialog(const char *title)
 {
 	TreeGui *dialog = dialogs_.add();
-	dialog->setValue(title);
+	dialog->setProperty(TreeGuiWidgetEvent::TextProperty, title);
 	return dialog;
 }
 
