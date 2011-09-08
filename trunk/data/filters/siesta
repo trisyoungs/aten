@@ -1,7 +1,8 @@
 # Siesta Flexible Data Format (for v1.2+)
 # Created:	 16/04/2009
-# Last modified: 30/09/2010
+# Last modified: 08/09/2011
 # ChangeLog:
+#		08/09/2011: Added filter for XV file
 #		30/09/2010: Added filter for siesta vectors file.
 # Notes:
 #	GGA (PBE) exchange assumed, with pseudos named 'H-PBE', 'C-PBE', etc.
@@ -188,3 +189,42 @@ filter(type="importmodel", name="Siesta Vectors File", nickname="siestavec", ext
 
 }
 
+filter(type="importmodel", name="Siesta XV Output", nickname="xv", extension="XV", glob="*.XV")
+{
+	# Variable declaration
+	int discard, el, natoms, nconfig = 1;
+	double x,y,z,fx,fy,fz;
+	vector v1,v2,v3;
+
+	model frame, m = newmodel(filterfilename());
+	while (!eof())
+	{
+		nconfig++;
+		frame = addframe(toa("Frame %i",nconfig));
+		# First three lines are cell specification
+		if (!readline(v1.x,v1.y,v1.z)) error("Error reading cell parameters for configuration %i", nconfig);
+		if (!readline(v2.x,v2.y,v2.z)) error("Error reading cell parameters for configuration %i", nconfig);
+		if (!readline(v3.x,v3.y,v3.z)) error("Error reading cell parameters for configuration %i", nconfig);
+		v1 *= ANGBOHR;
+		v2 *= ANGBOHR;
+		v3 *= ANGBOHR;
+		cellaxes(v1.x,v1.y,v1.z,v2.x,v2.y,v2.z,v3.x,v3.y,v3.z);
+		# Next line contains number of atoms to follow
+		readline(natoms);
+		for (int n=0; n<natoms; ++n)
+		{
+			if (!readline(discard,el,x,y,z,fx,fy,fz)) error("Error reading atomic positions for configuration %i", nconfig);
+			newatom(el,x*ANGBOHR,y*ANGBOHR,z*ANGBOHR,fx,fy,fz);
+		}
+		rebond();
+		finaliseframe();
+		# Copy this frame, ready to paste into parent model at end
+		selectall();
+		copy();
+		selectnone();
+	}
+	m.cell = frame.cell;
+	m.paste();
+	selectnone();
+	finalisemodel();
+}
