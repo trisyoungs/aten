@@ -54,6 +54,7 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 	{
 		// Search for old bond between atoms
 		Bond *b = i->findBond(j);
+		//printf("Atoms / Bond = %p-%p / %p\n", i, j, b);
 		// If we found one, just set the new bond order
 		if (b != NULL)
 		{
@@ -89,6 +90,7 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 			}
 		}
 	}
+	//printf("Done with bond atom...\n");
 	msg.exit("Model::bondAtoms");
 }
 
