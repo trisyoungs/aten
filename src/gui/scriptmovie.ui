@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ScriptMovieWidget</class>
  <widget class="QDockWidget" name="ScriptMovieWidget">
@@ -88,6 +87,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="SaveScriptButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>0</horstretch>

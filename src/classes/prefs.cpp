@@ -343,7 +343,10 @@ Prefs::Prefs()
 	tempDir_ = "/tmp";
 #endif
 	encoderExe_ = "/usr/bin/mencoder";
-	encoderArguments_ = "mf://FILES -ovc x264 -fps FPS -v -o OUTPUT";
+	encoderArguments_ = "-ovc lavc -lavcopts vcodec=msmpeg4v2:vpass=1:vbitrate=2343750:mbd=2:keyint=132:vqblur=1.0:cmp=2:subcmp=2:dia=2:mv0:last_pred=3 -mf type=png:fps=FPS -nosound -o /dev/null mf://FILES";
+	encoderPostExe_ = "/usr/bin/mencoder";
+	encoderPostArguments_ = "-ovc lavc -lavcopts vcodec=msmpeg4v2:vpass=2:vbitrate=2343750:mbd=2:keyint=132:vqblur=1.0:cmp=2:subcmp=2:dia=2:mv0:last_pred=3 -mf type=png:fps=FPS -nosound -o OUTPUT mf://FILES";
+// 	encoderArguments_ = "mf://FILES -ovc x264 -fps FPS -v -o OUTPUT";
 }
 
 // Load user preferences file

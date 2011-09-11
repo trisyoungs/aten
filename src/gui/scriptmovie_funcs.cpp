@@ -81,7 +81,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
 	int width, height;
 	
-	static Tree dialog("Save Scripted Movie","option('Image Size', 'edit', '10x10'); option('Maximum Frames', 'intspin', 1, 1000000, 1000, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
+	static Tree dialog("Save Scripted Movie","option('Image Size', 'edit', '10x10'); option('Maximum Frames', 'intspin', 1, 1000000, 10, 1000, 'newline'); option('Movie FPS', 'intspin', 1, 100, 1, 25, 'newline'); ");
 
 	Model *m = aten.currentModel();
 
@@ -179,6 +179,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	// Run secondary, post-process command (if one was given)
 	if (prefs.encoderPostExe() != NULL)
 	{
+// 		printf("Post encoder command given is [%s]\n", prefs.encoderPostExe());
 		TProcess postProcess;
 		// Grab encoder command and replace
 		QString encoderArgs = prefs.encoderPostArguments();
@@ -189,11 +190,8 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
 		{
 			msg.print("Error: Failed to run encoder post-processing command.\n");
-			return;
 		}
-		
-			// Follow output here...
-		while (!postProcess.finished())
+		else while (!postProcess.finished())
 		{
 			// Is output file already present?
 			while (postProcess.outputAvailable()) postProcess.printLineToMessages();

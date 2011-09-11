@@ -76,7 +76,15 @@ node:
 	| value						{ $$ = $1; }
 	| expander					{ $$ = $1; }
 	| bound						{ $$ = $1; }
-	| '$' TOKEN					{ $$ = netaparser.findDefine(netaparser.lastUnknownToken()); if ($$ == NULL) YYABORT; }
+	| '$' TOKEN					{
+		$$ = netaparser.findDefine(netaparser.lastUnknownToken());
+		if ($$ == NULL) { msg.print("Error: NETA description references a non-existent 'define' name (%s)\n", netaparser.lastUnknownToken()); YYABORT; }
+		}
+	| TOKEN					{
+		msg.print("Error: NETA description contains an unrecognised keyword (%s)\n", netaparser.lastUnknownToken());
+		YYABORT;
+		}
+	| INTCONST					{ msg.print("Error: Stray integer constant found in NETA description.\n"); YYABORT; }
 	;
 
 /* Keywords : NETA statements that are simple, individual words with no arguments, and that cannot be expanded */
@@ -87,7 +95,8 @@ keyword:
 
 /* Values : NETA statements that require a comparison operator and a value, and cannot be expanded */
 value:
-	NETAVAL saveval '=' INTCONST			{ $$ = netaparser.createValueNode(savedval, Neta::EqualTo, $4); }
+	NETAVAL saveval '=' '=' INTCONST		{ $$ = netaparser.createValueNode(savedval, Neta::EqualTo, $5); }
+	| NETAVAL saveval '=' INTCONST			{ $$ = netaparser.createValueNode(savedval, Neta::EqualTo, $4); }
 	| NETAVAL saveval '>' INTCONST			{ $$ = netaparser.createValueNode(savedval, Neta::GreaterThan, $4); }
 	| NETAVAL saveval '<' INTCONST			{ $$ = netaparser.createValueNode(savedval, Neta::LessThan, $4); }
 	| NETAVAL saveval GEQ INTCONST			{ $$ = netaparser.createValueNode(savedval, Neta::GreaterThanEqualTo, $4); }
