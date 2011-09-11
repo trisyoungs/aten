@@ -81,6 +81,10 @@ void VibrationsWidget::refresh()
 		ui.FrameSlider->setEnabled(TRUE);
 		ui.SaveImageButton->setEnabled(TRUE);
 		ui.SaveMovieButton->setEnabled(TRUE);
+	
+		Model *m = aten.currentModelOrFrame();
+		m->generateVibration(ui.VibrationsList->currentRow(), 20);
+		m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
 	}
 	ui.VibrationsTabWidget->setDisabled(count == 0);
 	refreshing_ = FALSE;

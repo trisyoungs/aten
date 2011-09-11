@@ -1,24 +1,23 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton implementation for Bison's Yacc-like parsers in C
-
-   Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   
+      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
    Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify
+   
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -29,7 +28,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -47,7 +46,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "2.3"
+#define YYBISON_VERSION "2.4.1"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -55,17 +54,67 @@
 /* Pure parsers.  */
 #define YYPURE 0
 
+/* Push parsers.  */
+#define YYPUSH 0
+
+/* Pull parsers.  */
+#define YYPULL 1
+
 /* Using locations.  */
 #define YYLSP_NEEDED 0
 
 /* Substitute the variable and function names.  */
-#define yyparse NetaParser_parse
-#define yylex   NetaParser_lex
-#define yyerror NetaParser_error
-#define yylval  NetaParser_lval
-#define yychar  NetaParser_char
-#define yydebug NetaParser_debug
-#define yynerrs NetaParser_nerrs
+#define yyparse         NetaParser_parse
+#define yylex           NetaParser_lex
+#define yyerror         NetaParser_error
+#define yylval          NetaParser_lval
+#define yychar          NetaParser_char
+#define yydebug         NetaParser_debug
+#define yynerrs         NetaParser_nerrs
+
+
+/* Copy the first part of user declarations.  */
+
+/* Line 189 of yacc.c  */
+#line 4 "neta_grammar.yy"
+
+
+/* Includes */
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include "classes/neta.h"
+#include "classes/neta_parser.h"
+
+/* Prototypes */
+int NetaParser_lex(void);
+void NetaParser_error(char *s);
+
+/* Local Variables */
+Neta::NetaValue savedval;
+
+
+
+/* Line 189 of yacc.c  */
+#line 100 "neta_grammar.cc"
+
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+
+/* Enabling verbose error messages.  */
+#ifdef YYERROR_VERBOSE
+# undef YYERROR_VERBOSE
+# define YYERROR_VERBOSE 1
+#else
+# define YYERROR_VERBOSE 0
+#endif
+
+/* Enabling the token table.  */
+#ifndef YYTOKEN_TABLE
+# define YYTOKEN_TABLE 0
+#endif
 
 
 /* Tokens.  */
@@ -113,48 +162,13 @@
 
 
 
-/* Copy the first part of user declarations.  */
-#line 4 "neta_grammar.yy"
-
-
-/* Includes */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include "classes/neta.h"
-#include "classes/neta_parser.h"
-
-/* Prototypes */
-int NetaParser_lex(void);
-void NetaParser_error(char *s);
-
-/* Local Variables */
-Neta::NetaValue savedval;
-
-
-
-/* Enabling traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 27 "neta_grammar.yy"
 {
+
+/* Line 214 of yacc.c  */
+#line 27 "neta_grammar.yy"
+
 	NetaNode *netanode;			/* Generic node pointer */
 	NetaBoundNode *boundnode;		/* Bound node pointer */
 	NetaRingNode *ringnode;			/* Ring node pointer */
@@ -164,22 +178,23 @@ typedef union YYSTYPE
 	Atom::AtomGeometry atomgeom;		/* NETA geometry ID */
 	Neta::NetaValue netaval;		/* NETA value ID */
 	Refitem<ForcefieldAtom,int> *typelist;	/* Pointer to head of created element/type list */
-}
-/* Line 187 of yacc.c.  */
-#line 170 "neta_grammar.cc"
-	YYSTYPE;
+
+
+
+/* Line 214 of yacc.c  */
+#line 186 "neta_grammar.cc"
+} YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
-# define YYSTYPE_IS_TRIVIAL 1
 #endif
-
 
 
 /* Copy the second part of user declarations.  */
 
 
-/* Line 216 of yacc.c.  */
-#line 183 "neta_grammar.cc"
+/* Line 264 of yacc.c  */
+#line 198 "neta_grammar.cc"
 
 #ifdef short
 # undef short
@@ -254,14 +269,14 @@ typedef short int yytype_int16;
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static int
-YYID (int i)
+YYID (int yyi)
 #else
 static int
-YYID (i)
-    int i;
+YYID (yyi)
+    int yyi;
 #endif
 {
-  return i;
+  return yyi;
 }
 #endif
 
@@ -342,9 +357,9 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
-  yytype_int16 yyss;
-  YYSTYPE yyvs;
-  };
+  yytype_int16 yyss_alloc;
+  YYSTYPE yyvs_alloc;
+};
 
 /* The size of the maximum gap between one aligned stack and the next.  */
 # define YYSTACK_GAP_MAXIMUM (sizeof (union yyalloc) - 1)
@@ -378,12 +393,12 @@ union yyalloc
    elements in the stack, and YYPTR gives the new location of the
    stack.  Advance YYPTR to a properly aligned location for the next
    stack.  */
-# define YYSTACK_RELOCATE(Stack)					\
+# define YYSTACK_RELOCATE(Stack_alloc, Stack)				\
     do									\
       {									\
 	YYSIZE_T yynewbytes;						\
-	YYCOPY (&yyptr->Stack, Stack, yysize);				\
-	Stack = &yyptr->Stack;						\
+	YYCOPY (&yyptr->Stack_alloc, Stack, yysize);			\
+	Stack = &yyptr->Stack_alloc;					\
 	yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
 	yyptr += yynewbytes / sizeof (*yyptr);				\
       }									\
@@ -392,18 +407,18 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  35
+#define YYFINAL  37
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   114
+#define YYLAST   120
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  33
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  16
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  49
+#define YYNRULES  52
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  89
+#define YYNSTATES  93
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -452,9 +467,10 @@ static const yytype_uint8 yyprhs[] =
 {
        0,     0,     3,     4,     6,     8,    12,    16,    20,    23,
       26,    29,    32,    34,    36,    38,    40,    43,    45,    47,
-      52,    57,    62,    67,    72,    77,    79,    81,    87,    95,
-     101,   103,   106,   109,   113,   117,   121,   125,   132,   139,
-     146,   148,   152,   154,   158,   160,   163,   164,   165,   166
+      49,    51,    57,    62,    67,    72,    77,    82,    87,    89,
+      91,    97,   105,   111,   113,   116,   119,   123,   127,   131,
+     135,   142,   149,   156,   158,   162,   164,   168,   170,   173,
+     174,   175,   176
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -464,7 +480,8 @@ static const yytype_int8 yyrhs[] =
       36,    -1,    35,    23,    35,    -1,    24,    35,    25,    -1,
       26,    37,    -1,    26,    38,    -1,    26,    39,    -1,    26,
       41,    -1,    37,    -1,    38,    -1,    39,    -1,    41,    -1,
-      27,    21,    -1,    16,    -1,    20,    -1,    17,    45,     6,
+      27,    21,    -1,    21,    -1,    13,    -1,    16,    -1,    20,
+      -1,    17,    45,     6,     6,    13,    -1,    17,    45,     6,
       13,    -1,    17,    45,     7,    13,    -1,    17,    45,     8,
       13,    -1,    17,    45,    12,    13,    -1,    17,    45,    11,
       13,    -1,    17,    45,     9,    13,    -1,    18,    -1,    19,
@@ -483,10 +500,11 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    59,    59,    60,    64,    65,    66,    67,    71,    72,
-      73,    74,    75,    76,    77,    78,    79,    84,    85,    90,
-      91,    92,    93,    94,    95,   100,   101,   102,   103,   104,
-     108,   109,   110,   111,   115,   116,   117,   118,   119,   120,
-     125,   126,   130,   131,   135,   136,   141,   146,   150,   154
+      73,    74,    75,    76,    77,    78,    79,    83,    87,    92,
+      93,    98,    99,   100,   101,   102,   103,   104,   109,   110,
+     111,   112,   113,   117,   118,   119,   120,   124,   125,   126,
+     127,   128,   129,   134,   135,   139,   140,   144,   145,   150,
+     155,   159,   163
 };
 #endif
 
@@ -521,20 +539,22 @@ static const yytype_uint16 yytoknum[] =
 static const yytype_uint8 yyr1[] =
 {
        0,    33,    34,    34,    35,    35,    35,    35,    36,    36,
-      36,    36,    36,    36,    36,    36,    36,    37,    37,    38,
-      38,    38,    38,    38,    38,    39,    39,    39,    39,    39,
-      40,    40,    40,    40,    41,    41,    41,    41,    41,    41,
-      42,    42,    43,    43,    44,    44,    45,    46,    47,    48
+      36,    36,    36,    36,    36,    36,    36,    36,    36,    37,
+      37,    38,    38,    38,    38,    38,    38,    38,    39,    39,
+      39,    39,    39,    40,    40,    40,    40,    41,    41,    41,
+      41,    41,    41,    42,    42,    43,    43,    44,    44,    45,
+      46,    47,    48
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     0,     1,     1,     3,     3,     3,     2,     2,
-       2,     2,     1,     1,     1,     1,     2,     1,     1,     4,
-       4,     4,     4,     4,     4,     1,     1,     5,     7,     5,
-       1,     2,     2,     3,     3,     3,     3,     6,     6,     6,
-       1,     3,     1,     3,     1,     2,     0,     0,     0,     0
+       2,     2,     1,     1,     1,     1,     2,     1,     1,     1,
+       1,     5,     4,     4,     4,     4,     4,     4,     1,     1,
+       5,     7,     5,     1,     2,     2,     3,     3,     3,     3,
+       6,     6,     6,     1,     3,     1,     3,     1,     2,     0,
+       0,     0,     0
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -542,45 +562,47 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     0,    17,    46,    25,    26,    18,     0,     0,     0,
-       0,     0,     0,     3,     4,    12,    13,    14,    15,    44,
-       0,     0,    49,    40,     0,    47,    48,     0,     8,     9,
-      10,    11,    16,    49,    49,     1,     0,     0,     0,    42,
-      45,    49,    36,     0,     0,     0,     0,     0,     0,     0,
-       0,     7,    49,    34,    49,    35,     5,     6,     0,    41,
-       0,    19,    20,    21,    24,    23,    22,     0,     0,     0,
-      30,     0,     0,    43,     0,    27,    31,     0,    29,     0,
-      32,     0,     0,    39,     0,    33,    37,    38,    28
+       2,     0,    18,    19,    49,    28,    29,    20,    17,     0,
+       0,     0,     0,     0,     0,     3,     4,    12,    13,    14,
+      15,    47,     0,     0,    52,    43,     0,    50,    51,     0,
+       8,     9,    10,    11,    16,    52,    52,     1,     0,     0,
+       0,    45,    48,    52,    39,     0,     0,     0,     0,     0,
+       0,     0,     0,     7,    52,    37,    52,    38,     5,     6,
+       0,    44,     0,     0,    22,    23,    24,    27,    26,    25,
+       0,     0,     0,    33,     0,     0,    46,     0,    21,    30,
+      34,     0,    32,     0,    35,     0,     0,    42,     0,    36,
+      40,    41,    31
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,    12,    13,    14,    15,    16,    17,    69,    18,    22,
-      38,    23,    24,    49,    50,    42
+      -1,    14,    15,    16,    17,    18,    19,    72,    20,    24,
+      40,    25,    26,    51,    52,    44
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -20
+#define YYPACT_NINF -22
 static const yytype_int8 yypact[] =
 {
-      -3,   -10,   -20,   -20,    13,    19,   -20,    -3,    57,   -16,
-     -10,   -10,     9,   -15,   -20,   -20,   -20,   -20,   -20,   -20,
-      21,    -1,    38,   -20,    82,   -20,   -20,    29,   -20,   -20,
-     -20,   -20,   -20,    44,    45,   -20,    30,    -3,   -12,   -20,
-     -20,   -20,   -20,    32,    65,    70,    90,    94,    98,    -3,
-      12,   -20,   -20,   -20,   -20,   -20,   -20,   -15,    21,   -20,
-      -3,   -20,   -20,   -20,   -20,   -20,   -20,    59,     0,     5,
-     -20,    -3,    -3,   -20,    74,   -20,   -20,    -3,   -20,     0,
-     -20,    79,    83,   -20,    87,   -20,   -20,   -20,   -20
+      -3,     8,   -22,   -22,   -22,   -20,    13,   -22,   -22,    -3,
+      59,   -12,     8,     8,    52,   -15,   -22,   -22,   -22,   -22,
+     -22,   -22,    21,    28,    57,   -22,    87,   -22,   -22,    41,
+     -22,   -22,   -22,   -22,   -22,    62,    65,   -22,    30,    -3,
+      23,   -22,   -22,   -22,   -22,    -1,    58,    77,    78,    95,
+      99,    -3,    54,   -22,   -22,   -22,   -22,   -22,   -22,   -15,
+      21,   -22,    -3,   103,   -22,   -22,   -22,   -22,   -22,   -22,
+      47,     0,     5,   -22,    -3,    -3,   -22,    79,   -22,   -22,
+     -22,    -3,   -22,     0,   -22,    84,    88,   -22,    92,   -22,
+     -22,   -22,   -22
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -20,   -20,    -5,    34,    84,   105,   106,   -20,    -8,    54,
-     -20,   -19,   -20,   -20,   -20,    46
+     -22,   -22,    -7,    80,    90,   109,   110,   -22,   -10,     7,
+     -22,   -21,   -22,   -22,   -22,    49
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -590,49 +612,52 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      31,    39,    27,     1,    19,    32,     1,    36,    37,    35,
-      58,     1,    40,     2,     3,     4,     5,     6,     1,    59,
-      20,     7,    21,     8,     9,    10,    11,    77,    10,    11,
-      78,    79,    57,    10,    11,    19,     1,    25,    68,    73,
-      10,    11,    70,    26,    67,    61,     2,     3,     4,     5,
-       6,    36,    37,    21,    51,    74,     8,     9,    10,    11,
-      76,    80,    41,     1,    33,    34,    81,    82,    52,    54,
-      56,    85,    84,     2,     3,     4,     5,     6,    62,    53,
-      55,    36,    37,    63,    75,    10,    11,    60,    43,    44,
-      45,    46,    28,    47,    48,     0,    36,    37,    71,    83,
-      72,    36,    37,    64,    86,    36,    37,    65,    87,    36,
-      37,    66,    88,    29,    30
+      33,    41,    29,     1,    27,    63,     1,    38,    39,    34,
+       2,     1,    64,     3,     4,     5,     6,     7,     8,    35,
+      36,     9,    21,    10,    11,    12,    13,    81,    12,    13,
+      82,    83,    59,    12,    13,    21,     1,    28,    22,    76,
+      23,    42,    73,     2,    70,    60,     3,     4,     5,     6,
+       7,     8,    37,    23,    61,    77,    10,    11,    12,    13,
+       1,    80,    84,    38,    39,     1,    53,    85,    86,    38,
+      39,    65,    79,    89,    88,     3,     4,     5,     6,     7,
+      71,    43,    12,    13,    55,    57,    54,    12,    13,    56,
+      66,    67,    62,    45,    46,    47,    48,     0,    49,    50,
+      30,    38,    39,    74,    87,    75,    38,    39,    68,    90,
+      38,    39,    69,    91,    38,    39,    78,    92,    58,    31,
+      32
 };
 
 static const yytype_int8 yycheck[] =
 {
-       8,    20,     7,     6,    14,    21,     6,    22,    23,     0,
-      22,     6,    13,    16,    17,    18,    19,    20,     6,    31,
-      30,    24,    32,    26,    27,    28,    29,    22,    28,    29,
-      25,    26,    37,    28,    29,    14,     6,    24,    26,    58,
-      28,    29,    50,    24,    49,    13,    16,    17,    18,    19,
-      20,    22,    23,    32,    25,    60,    26,    27,    28,    29,
-      68,    69,    24,     6,    10,    11,    71,    72,    24,    24,
-      36,    79,    77,    16,    17,    18,    19,    20,    13,    33,
-      34,    22,    23,    13,    25,    28,    29,    41,     6,     7,
-       8,     9,     8,    11,    12,    -1,    22,    23,    52,    25,
-      54,    22,    23,    13,    25,    22,    23,    13,    25,    22,
-      23,    13,    25,     8,     8
+      10,    22,     9,     6,    24,     6,     6,    22,    23,    21,
+      13,     6,    13,    16,    17,    18,    19,    20,    21,    12,
+      13,    24,    14,    26,    27,    28,    29,    22,    28,    29,
+      25,    26,    39,    28,    29,    14,     6,    24,    30,    60,
+      32,    13,    52,    13,    51,    22,    16,    17,    18,    19,
+      20,    21,     0,    32,    31,    62,    26,    27,    28,    29,
+       6,    71,    72,    22,    23,     6,    25,    74,    75,    22,
+      23,    13,    25,    83,    81,    16,    17,    18,    19,    20,
+      26,    24,    28,    29,    35,    36,    24,    28,    29,    24,
+      13,    13,    43,     6,     7,     8,     9,    -1,    11,    12,
+      10,    22,    23,    54,    25,    56,    22,    23,    13,    25,
+      22,    23,    13,    25,    22,    23,    13,    25,    38,    10,
+      10
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     6,    16,    17,    18,    19,    20,    24,    26,    27,
-      28,    29,    34,    35,    36,    37,    38,    39,    41,    14,
-      30,    32,    42,    44,    45,    24,    24,    35,    37,    38,
-      39,    41,    21,    42,    42,     0,    22,    23,    43,    44,
-      13,    24,    48,     6,     7,     8,     9,    11,    12,    46,
-      47,    25,    24,    48,    24,    48,    36,    35,    22,    31,
-      48,    13,    13,    13,    13,    13,    13,    35,    26,    40,
-      41,    48,    48,    44,    35,    25,    41,    22,    25,    26,
-      41,    35,    35,    25,    35,    41,    25,    25,    25
+       0,     6,    13,    16,    17,    18,    19,    20,    21,    24,
+      26,    27,    28,    29,    34,    35,    36,    37,    38,    39,
+      41,    14,    30,    32,    42,    44,    45,    24,    24,    35,
+      37,    38,    39,    41,    21,    42,    42,     0,    22,    23,
+      43,    44,    13,    24,    48,     6,     7,     8,     9,    11,
+      12,    46,    47,    25,    24,    48,    24,    48,    36,    35,
+      22,    31,    48,     6,    13,    13,    13,    13,    13,    13,
+      35,    26,    40,    41,    48,    48,    44,    35,    13,    25,
+      41,    22,    25,    26,    41,    35,    35,    25,    35,    41,
+      25,    25,    25
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -817,17 +842,20 @@ yy_symbol_print (yyoutput, yytype, yyvaluep)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_stack_print (yytype_int16 *bottom, yytype_int16 *top)
+yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)
 #else
 static void
-yy_stack_print (bottom, top)
-    yytype_int16 *bottom;
-    yytype_int16 *top;
+yy_stack_print (yybottom, yytop)
+    yytype_int16 *yybottom;
+    yytype_int16 *yytop;
 #endif
 {
   YYFPRINTF (stderr, "Stack now");
-  for (; bottom <= top; ++bottom)
-    YYFPRINTF (stderr, " %d", *bottom);
+  for (; yybottom <= yytop; yybottom++)
+    {
+      int yybot = *yybottom;
+      YYFPRINTF (stderr, " %d", yybot);
+    }
   YYFPRINTF (stderr, "\n");
 }
 
@@ -861,11 +889,11 @@ yy_reduce_print (yyvsp, yyrule)
   /* The symbols being reduced.  */
   for (yyi = 0; yyi < yynrhs; yyi++)
     {
-      fprintf (stderr, "   $%d = ", yyi + 1);
+      YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
 		       &(yyvsp[(yyi + 1) - (yynrhs)])
 		       		       );
-      fprintf (stderr, "\n");
+      YYFPRINTF (stderr, "\n");
     }
 }
 
@@ -1145,10 +1173,8 @@ yydestruct (yymsg, yytype, yyvaluep)
 	break;
     }
 }
-
 
 /* Prevent warnings from -Wmissing-prototypes.  */
-
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
 int yyparse (void *YYPARSE_PARAM);
@@ -1164,11 +1190,10 @@ int yyparse ();
 #endif /* ! YYPARSE_PARAM */
 
 
-
-/* The look-ahead symbol.  */
+/* The lookahead symbol.  */
 int yychar;
 
-/* The semantic value of the look-ahead symbol.  */
+/* The semantic value of the lookahead symbol.  */
 YYSTYPE yylval;
 
 /* Number of syntax errors so far.  */
@@ -1176,9 +1201,9 @@ int yynerrs;
 
 
 
-/*----------.
-| yyparse.  |
-`----------*/
+/*-------------------------.
+| yyparse or yypush_parse.  |
+`-------------------------*/
 
 #ifdef YYPARSE_PARAM
 #if (defined __STDC__ || defined __C99__FUNC__ \
@@ -1202,14 +1227,39 @@ yyparse ()
 #endif
 #endif
 {
-  
-  int yystate;
+
+
+    int yystate;
+    /* Number of tokens to shift before error messages enabled.  */
+    int yyerrstatus;
+
+    /* The stacks and their tools:
+       `yyss': related to states.
+       `yyvs': related to semantic values.
+
+       Refer to the stacks thru separate pointers, to allow yyoverflow
+       to reallocate them elsewhere.  */
+
+    /* The state stack.  */
+    yytype_int16 yyssa[YYINITDEPTH];
+    yytype_int16 *yyss;
+    yytype_int16 *yyssp;
+
+    /* The semantic value stack.  */
+    YYSTYPE yyvsa[YYINITDEPTH];
+    YYSTYPE *yyvs;
+    YYSTYPE *yyvsp;
+
+    YYSIZE_T yystacksize;
+
   int yyn;
   int yyresult;
-  /* Number of tokens to shift before error messages enabled.  */
-  int yyerrstatus;
-  /* Look-ahead token as an internal (translated) token number.  */
-  int yytoken = 0;
+  /* Lookahead token as an internal (translated) token number.  */
+  int yytoken;
+  /* The variables used to return semantic value and location from the
+     action routines.  */
+  YYSTYPE yyval;
+
 #if YYERROR_VERBOSE
   /* Buffer for error messages, and its allocated size.  */
   char yymsgbuf[128];
@@ -1217,51 +1267,28 @@ yyparse ()
   YYSIZE_T yymsg_alloc = sizeof yymsgbuf;
 #endif
 
-  /* Three stacks and their tools:
-     `yyss': related to states,
-     `yyvs': related to semantic values,
-     `yyls': related to locations.
-
-     Refer to the stacks thru separate pointers, to allow yyoverflow
-     to reallocate them elsewhere.  */
-
-  /* The state stack.  */
-  yytype_int16 yyssa[YYINITDEPTH];
-  yytype_int16 *yyss = yyssa;
-  yytype_int16 *yyssp;
-
-  /* The semantic value stack.  */
-  YYSTYPE yyvsa[YYINITDEPTH];
-  YYSTYPE *yyvs = yyvsa;
-  YYSTYPE *yyvsp;
-
-
-
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
-
-  YYSIZE_T yystacksize = YYINITDEPTH;
-
-  /* The variables used to return semantic value and location from the
-     action routines.  */
-  YYSTYPE yyval;
-
 
   /* The number of symbols on the RHS of the reduced rule.
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
+
+  yytoken = 0;
+  yyss = yyssa;
+  yyvs = yyvsa;
+  yystacksize = YYINITDEPTH;
 
   YYDPRINTF ((stderr, "Starting parse\n"));
 
   yystate = 0;
   yyerrstatus = 0;
   yynerrs = 0;
-  yychar = YYEMPTY;		/* Cause a token to be read.  */
+  yychar = YYEMPTY; /* Cause a token to be read.  */
 
   /* Initialize stack pointers.
      Waste one element of value and location stack
      so that they stay on the same level as the state stack.
      The wasted elements are never initialized.  */
-
   yyssp = yyss;
   yyvsp = yyvs;
 
@@ -1291,7 +1318,6 @@ yyparse ()
 	YYSTYPE *yyvs1 = yyvs;
 	yytype_int16 *yyss1 = yyss;
 
-
 	/* Each stack pointer address is followed by the size of the
 	   data in use in that stack, in bytes.  This used to be a
 	   conditional around just the two extra args, but that might
@@ -1299,7 +1325,6 @@ yyparse ()
 	yyoverflow (YY_("memory exhausted"),
 		    &yyss1, yysize * sizeof (*yyssp),
 		    &yyvs1, yysize * sizeof (*yyvsp),
-
 		    &yystacksize);
 
 	yyss = yyss1;
@@ -1322,9 +1347,8 @@ yyparse ()
 	  (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
 	if (! yyptr)
 	  goto yyexhaustedlab;
-	YYSTACK_RELOCATE (yyss);
-	YYSTACK_RELOCATE (yyvs);
-
+	YYSTACK_RELOCATE (yyss_alloc, yyss);
+	YYSTACK_RELOCATE (yyvs_alloc, yyvs);
 #  undef YYSTACK_RELOCATE
 	if (yyss1 != yyssa)
 	  YYSTACK_FREE (yyss1);
@@ -1335,7 +1359,6 @@ yyparse ()
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
 
-
       YYDPRINTF ((stderr, "Stack size increased to %lu\n",
 		  (unsigned long int) yystacksize));
 
@@ -1345,6 +1368,9 @@ yyparse ()
 
   YYDPRINTF ((stderr, "Entering state %d\n", yystate));
 
+  if (yystate == YYFINAL)
+    YYACCEPT;
+
   goto yybackup;
 
 /*-----------.
@@ -1353,16 +1379,16 @@ yyparse ()
 yybackup:
 
   /* Do appropriate processing given the current state.  Read a
-     look-ahead token if we need one and don't already have one.  */
+     lookahead token if we need one and don't already have one.  */
 
-  /* First try to decide what to do without reference to look-ahead token.  */
+  /* First try to decide what to do without reference to lookahead token.  */
   yyn = yypact[yystate];
   if (yyn == YYPACT_NINF)
     goto yydefault;
 
-  /* Not known => get a look-ahead token if don't already have one.  */
+  /* Not known => get a lookahead token if don't already have one.  */
 
-  /* YYCHAR is either YYEMPTY or YYEOF or a valid look-ahead symbol.  */
+  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
@@ -1394,20 +1420,16 @@ yybackup:
       goto yyreduce;
     }
 
-  if (yyn == YYFINAL)
-    YYACCEPT;
-
   /* Count tokens shifted since error; after three, turn off error
      status.  */
   if (yyerrstatus)
     yyerrstatus--;
 
-  /* Shift the look-ahead token.  */
+  /* Shift the lookahead token.  */
   YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
 
-  /* Discard the shifted token unless it is eof.  */
-  if (yychar != YYEOF)
-    yychar = YYEMPTY;
+  /* Discard the shifted token.  */
+  yychar = YYEMPTY;
 
   yystate = yyn;
   *++yyvsp = yylval;
@@ -1447,248 +1469,372 @@ yyreduce:
   switch (yyn)
     {
         case 2:
+
+/* Line 1455 of yacc.c  */
 #line 59 "neta_grammar.yy"
     { netaparser.setDescription(NULL); YYACCEPT; }
     break;
 
   case 3:
+
+/* Line 1455 of yacc.c  */
 #line 60 "neta_grammar.yy"
     { netaparser.setDescription((yyvsp[(1) - (1)].netanode)); YYACCEPT; }
     break;
 
   case 4:
+
+/* Line 1455 of yacc.c  */
 #line 64 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 5:
+
+/* Line 1455 of yacc.c  */
 #line 65 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.join(Neta::NetaAndLogic, (yyvsp[(1) - (3)].netanode), (yyvsp[(3) - (3)].netanode)); }
     break;
 
   case 6:
+
+/* Line 1455 of yacc.c  */
 #line 66 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.join(Neta::NetaOrLogic, (yyvsp[(1) - (3)].netanode), (yyvsp[(3) - (3)].netanode)); }
     break;
 
   case 7:
+
+/* Line 1455 of yacc.c  */
 #line 67 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(2) - (3)].netanode); }
     break;
 
   case 8:
+
+/* Line 1455 of yacc.c  */
 #line 71 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 9:
+
+/* Line 1455 of yacc.c  */
 #line 72 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 10:
+
+/* Line 1455 of yacc.c  */
 #line 73 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 11:
+
+/* Line 1455 of yacc.c  */
 #line 74 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 12:
+
+/* Line 1455 of yacc.c  */
 #line 75 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 13:
+
+/* Line 1455 of yacc.c  */
 #line 76 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 14:
+
+/* Line 1455 of yacc.c  */
 #line 77 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 15:
+
+/* Line 1455 of yacc.c  */
 #line 78 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 16:
+
+/* Line 1455 of yacc.c  */
 #line 79 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.findDefine(netaparser.lastUnknownToken()); if ((yyval.netanode) == NULL) YYABORT; }
+    {
+		(yyval.netanode) = netaparser.findDefine(netaparser.lastUnknownToken());
+		if ((yyval.netanode) == NULL) { msg.print("Error: NETA description references a non-existent 'define' name (%s)\n", netaparser.lastUnknownToken()); YYABORT; }
+		}
     break;
 
   case 17:
-#line 84 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createKeywordNode((yyvsp[(1) - (1)].netakey)); }
+
+/* Line 1455 of yacc.c  */
+#line 83 "neta_grammar.yy"
+    {
+		msg.print("Error: NETA description contains an unrecognised keyword (%s)\n", netaparser.lastUnknownToken());
+		YYABORT;
+		}
     break;
 
   case 18:
-#line 85 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createGeometryNode((yyvsp[(1) - (1)].atomgeom)); }
+
+/* Line 1455 of yacc.c  */
+#line 87 "neta_grammar.yy"
+    { msg.print("Error: Stray integer constant found in NETA description.\n"); YYABORT; }
     break;
 
   case 19:
-#line 90 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(4) - (4)].intconst)); }
+
+/* Line 1455 of yacc.c  */
+#line 92 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createKeywordNode((yyvsp[(1) - (1)].netakey)); }
     break;
 
   case 20:
-#line 91 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThan, (yyvsp[(4) - (4)].intconst)); }
+
+/* Line 1455 of yacc.c  */
+#line 93 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createGeometryNode((yyvsp[(1) - (1)].atomgeom)); }
     break;
 
   case 21:
-#line 92 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThan, (yyvsp[(4) - (4)].intconst)); }
+
+/* Line 1455 of yacc.c  */
+#line 98 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(5) - (5)].intconst)); }
     break;
 
   case 22:
-#line 93 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
+
+/* Line 1455 of yacc.c  */
+#line 99 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 23:
-#line 94 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
+
+/* Line 1455 of yacc.c  */
+#line 100 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThan, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 24:
-#line 95 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::NotEqualTo, (yyvsp[(4) - (4)].intconst)); }
+
+/* Line 1455 of yacc.c  */
+#line 101 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThan, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 25:
-#line 100 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createRingNode(); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 102 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 26:
-#line 101 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createChainNode(); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 103 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 27:
-#line 102 "neta_grammar.yy"
-    { (yyvsp[(3) - (5)].ringnode)->setInnerNeta((yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].ringnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 104 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::NotEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 28:
-#line 103 "neta_grammar.yy"
-    { (yyvsp[(3) - (7)].chainnode)->setInnerNeta((yyvsp[(6) - (7)].netanode),(yyvsp[(4) - (7)].netanode)); (yyval.netanode) = (yyvsp[(3) - (7)].chainnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 109 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createRingNode(); netaparser.popContext(); }
     break;
 
   case 29:
-#line 104 "neta_grammar.yy"
-    { (yyvsp[(3) - (5)].chainnode)->setInnerNeta(NULL,(yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].chainnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 110 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createChainNode(); netaparser.popContext(); }
     break;
 
   case 30:
-#line 108 "neta_grammar.yy"
-    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
+
+/* Line 1455 of yacc.c  */
+#line 111 "neta_grammar.yy"
+    { (yyvsp[(3) - (5)].ringnode)->setInnerNeta((yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].ringnode); netaparser.popContext(); }
     break;
 
   case 31:
-#line 109 "neta_grammar.yy"
-    { (yyval.netanode) = (yyvsp[(2) - (2)].netanode); (yyvsp[(2) - (2)].netanode)->setReverseLogic(); }
+
+/* Line 1455 of yacc.c  */
+#line 112 "neta_grammar.yy"
+    { (yyvsp[(3) - (7)].chainnode)->setInnerNeta((yyvsp[(6) - (7)].netanode),(yyvsp[(4) - (7)].netanode)); (yyval.netanode) = (yyvsp[(3) - (7)].chainnode); netaparser.popContext(); }
     break;
 
   case 32:
-#line 110 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.link((yyvsp[(1) - (2)].netanode),(yyvsp[(2) - (2)].netanode)); }
+
+/* Line 1455 of yacc.c  */
+#line 113 "neta_grammar.yy"
+    { (yyvsp[(3) - (5)].chainnode)->setInnerNeta(NULL,(yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].chainnode); netaparser.popContext(); }
     break;
 
   case 33:
-#line 111 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.link((yyvsp[(1) - (3)].netanode),(yyvsp[(3) - (3)].netanode)); (yyvsp[(3) - (3)].netanode)->setReverseLogic(); }
+
+/* Line 1455 of yacc.c  */
+#line 117 "neta_grammar.yy"
+    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 34:
-#line 115 "neta_grammar.yy"
-    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Any); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 118 "neta_grammar.yy"
+    { (yyval.netanode) = (yyvsp[(2) - (2)].netanode); (yyvsp[(2) - (2)].netanode)->setReverseLogic(); }
     break;
 
   case 35:
-#line 116 "neta_grammar.yy"
-    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Single); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 119 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.link((yyvsp[(1) - (2)].netanode),(yyvsp[(2) - (2)].netanode)); }
     break;
 
   case 36:
-#line 117 "neta_grammar.yy"
-    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Double); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 120 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.link((yyvsp[(1) - (3)].netanode),(yyvsp[(3) - (3)].netanode)); (yyvsp[(3) - (3)].netanode)->setReverseLogic(); }
     break;
 
   case 37:
-#line 118 "neta_grammar.yy"
-    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Any); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 124 "neta_grammar.yy"
+    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Any); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 38:
-#line 119 "neta_grammar.yy"
-    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Single); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 125 "neta_grammar.yy"
+    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Single); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 39:
-#line 120 "neta_grammar.yy"
-    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Double); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
+
+/* Line 1455 of yacc.c  */
+#line 126 "neta_grammar.yy"
+    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Double); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 40:
-#line 125 "neta_grammar.yy"
-    { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
+
+/* Line 1455 of yacc.c  */
+#line 127 "neta_grammar.yy"
+    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Any); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 41:
-#line 126 "neta_grammar.yy"
-    { (yyval.typelist) = (yyvsp[(2) - (3)].typelist); }
+
+/* Line 1455 of yacc.c  */
+#line 128 "neta_grammar.yy"
+    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Single); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 42:
-#line 130 "neta_grammar.yy"
-    { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
+
+/* Line 1455 of yacc.c  */
+#line 129 "neta_grammar.yy"
+    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Double); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 43:
-#line 131 "neta_grammar.yy"
-    { (yyval.typelist) = netaparser.joinElementTypes((yyvsp[(1) - (3)].typelist),(yyvsp[(3) - (3)].typelist)); }
+
+/* Line 1455 of yacc.c  */
+#line 134 "neta_grammar.yy"
+    { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
     break;
 
   case 44:
+
+/* Line 1455 of yacc.c  */
 #line 135 "neta_grammar.yy"
-    { (yyval.typelist) = netaparser.createElementType((yyvsp[(1) - (1)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
+    { (yyval.typelist) = (yyvsp[(2) - (3)].typelist); }
     break;
 
   case 45:
-#line 136 "neta_grammar.yy"
-    { (yyval.typelist) = netaparser.createElementType(-(yyvsp[(2) - (2)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
+
+/* Line 1455 of yacc.c  */
+#line 139 "neta_grammar.yy"
+    { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
     break;
 
   case 46:
-#line 141 "neta_grammar.yy"
-    { savedval = yylval.netaval; }
+
+/* Line 1455 of yacc.c  */
+#line 140 "neta_grammar.yy"
+    { (yyval.typelist) = netaparser.joinElementTypes((yyvsp[(1) - (3)].typelist),(yyvsp[(3) - (3)].typelist)); }
     break;
 
   case 47:
-#line 146 "neta_grammar.yy"
-    { (yyval.ringnode) = netaparser.createRingNode(); }
+
+/* Line 1455 of yacc.c  */
+#line 144 "neta_grammar.yy"
+    { (yyval.typelist) = netaparser.createElementType((yyvsp[(1) - (1)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
     break;
 
   case 48:
-#line 150 "neta_grammar.yy"
-    { (yyval.chainnode) = netaparser.createChainNode(); }
+
+/* Line 1455 of yacc.c  */
+#line 145 "neta_grammar.yy"
+    { (yyval.typelist) = netaparser.createElementType(-(yyvsp[(2) - (2)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
     break;
 
   case 49:
-#line 154 "neta_grammar.yy"
+
+/* Line 1455 of yacc.c  */
+#line 150 "neta_grammar.yy"
+    { savedval = yylval.netaval; }
+    break;
+
+  case 50:
+
+/* Line 1455 of yacc.c  */
+#line 155 "neta_grammar.yy"
+    { (yyval.ringnode) = netaparser.createRingNode(); }
+    break;
+
+  case 51:
+
+/* Line 1455 of yacc.c  */
+#line 159 "neta_grammar.yy"
+    { (yyval.chainnode) = netaparser.createChainNode(); }
+    break;
+
+  case 52:
+
+/* Line 1455 of yacc.c  */
+#line 163 "neta_grammar.yy"
     { (yyval.boundnode) = netaparser.createBoundNode(); }
     break;
 
 
-/* Line 1267 of yacc.c.  */
-#line 1692 "neta_grammar.cc"
+
+/* Line 1455 of yacc.c  */
+#line 1838 "neta_grammar.cc"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1698,7 +1844,6 @@ yyreduce:
   YY_STACK_PRINT (yyss, yyssp);
 
   *++yyvsp = yyval;
-
 
   /* Now `shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
@@ -1764,7 +1909,7 @@ yyerrlab:
 
   if (yyerrstatus == 3)
     {
-      /* If just tried and failed to reuse look-ahead token after an
+      /* If just tried and failed to reuse lookahead token after an
 	 error, discard it.  */
 
       if (yychar <= YYEOF)
@@ -1781,7 +1926,7 @@ yyerrlab:
 	}
     }
 
-  /* Else will try to reuse look-ahead token after shifting the error
+  /* Else will try to reuse lookahead token after shifting the error
      token.  */
   goto yyerrlab1;
 
@@ -1838,9 +1983,6 @@ yyerrlab1:
       YY_STACK_PRINT (yyss, yyssp);
     }
 
-  if (yyn == YYFINAL)
-    YYACCEPT;
-
   *++yyvsp = yylval;
 
 
@@ -1865,7 +2007,7 @@ yyabortlab:
   yyresult = 1;
   goto yyreturn;
 
-#ifndef yyoverflow
+#if !defined(yyoverflow) || YYERROR_VERBOSE
 /*-------------------------------------------------.
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
@@ -1876,7 +2018,7 @@ yyexhaustedlab:
 #endif
 
 yyreturn:
-  if (yychar != YYEOF && yychar != YYEMPTY)
+  if (yychar != YYEMPTY)
      yydestruct ("Cleanup: discarding lookahead",
 		 yytoken, &yylval);
   /* Do not reclaim the symbols of the rule which action triggered
@@ -1902,7 +2044,9 @@ yyreturn:
 }
 
 
-#line 157 "neta_grammar.yy"
+
+/* Line 1675 of yacc.c  */
+#line 166 "neta_grammar.yy"
 
 
 void yyerror(char *s)

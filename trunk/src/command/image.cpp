@@ -59,7 +59,16 @@ bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.reset();
 	bool result;
 	// Has image saving been redirected? If so, use filename provided by Aten
- 	if (aten.redirectedImagesActive()) result = gui.saveImage(aten.nextRedirectedFilename(), bf, width, height, quality);
+ 	if (aten.redirectedImagesActive())
+	{
+		const char *filename = aten.nextRedirectedFilename();
+		if (filename == NULL)
+		{
+			msg.print("Maximum number of frames for image redirect reached. Raising error...\n");
+			result = FALSE;
+		}
+		else result = gui.saveImage(filename, bf, width, height, quality);
+	}
  	else result = gui.saveImage(c->argc(1), bf, width, height, quality);
 
 	prefs.setViewRotationGlobe(viewglobe);

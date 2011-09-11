@@ -89,14 +89,13 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 				for (n = 0; n<t->filter.nLinesToSearch(); n++)
 				{
 					m = parser.readNextLine(0);
-printf("Searching for string [%s] in line [%s]\n", d->get(), parser.line());
 					if (m == -1) break;
 					if (m == 1)
 					{
 						msg.print("File error encountered while searching for identifying string.\n");
 						break;
 					}
-					else if (strstr(parser.line(), d->get()) == NULL)
+					else if (strstr(parser.line(), d->get()) != NULL)
 					{
 						found = TRUE;
 						break;
