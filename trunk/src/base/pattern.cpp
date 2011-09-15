@@ -1179,11 +1179,12 @@ void Pattern::findRings()
 {
 	msg.enter("Pattern::findRings");
 	int n, rsize;
-	bool okay = FALSE;
+	bool okay = TRUE;
 	Atom *i;
 	Ring path;
 	// Loop over atoms, searching for rings on each
 	i = firstAtom_;
+	printf(" MAXRINGSIZE = %i\n", prefs.maxRingSize());
 	for (n=0; n<nAtoms_; n++)
 	{
 		if (i->nBonds() > 1)
