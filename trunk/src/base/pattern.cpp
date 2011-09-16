@@ -1184,7 +1184,6 @@ void Pattern::findRings()
 	Ring path;
 	// Loop over atoms, searching for rings on each
 	i = firstAtom_;
-	printf(" MAXRINGSIZE = %i\n", prefs.maxRingSize());
 	for (n=0; n<nAtoms_; n++)
 	{
 		if (i->nBonds() > 1)
