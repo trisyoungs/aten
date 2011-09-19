@@ -1,0 +1,609 @@
+name "Molecular force field for ionic liquids (version 2010/09/16)"
+message "This forcefield is the work of K. Shimizu, A. Podgorsek, F. Hammami, L. Gontrani, J. Canongia Lopes, and A. Padua."
+message "Questions regarding the forcefield itself to: agilio.padua@univ-bpclermont.fr"
+message "Latest version donwloadable at: http://therm10.univ-bpclermont.fr/~apadua/"
+message "Reformatted for use in Aten by T. Youngs. Any mistakes arising from this conversion are"
+message "the sole responsibility of T. Youngs."
+
+defines
+imid	"ring(size=5,-N,-C,-N,-C,-C)"
+end
+
+types
+# dialkylimidazolium JPCB108:2038(2004)
+1	C1	C	"nbonds=4,-N(ring),-H,-H"			"First tetrahedral carbon in R group on ring nitrogen"
+2	C2	C	"nbonds=4,-C(noring,~[N,P]),-H(n=2),-C"		"Second carbon in R group (> ethyl)"
+3	CE	C	"nbonds=4,-C(noring,~[N,P]),-H(n=3)"		"Terminal carbon of ethyl R group"
+4	CS	C	"nbonds=4,-C(n=2),-H(n=2)"			"General carbon in R group"
+5	CT	C	"nbonds=4,~C(~C(-H(n=2)),~C),-H(n=3)"		"Terminal carbon in R group (> ethyl)"
+6	CR	C	"nbonds=3,-H,~&13,~[&13,&14]"			"Carbon adjacent to two nitrogens with alkyl groups"
+7	CW	C	"nbonds=3,-H,~C,~[&13,&14,&19]"			"Carbon adjacent to nitrogen (with alkyl group) and carbon"
+8	HA	H	"nbonds=1"					"???"
+9	HCR	H	"-&6"						"H on carbon adjacent to two N"
+10	HCW	H	"-&7"						"H on carbon adjacent to N and C"
+11	HC	H	"-C(-C,-H)"					"Hydrogen on other carbon in R group"
+12	H1	H	"-C(-N(ring(size=5)),-H)"			"Hydrogen on first carbon in R group"
+13	NA	N	"nbonds=3,$imid,~C(nh=1,n=2),~C"		"Nitrogen in dialkylimidazolium with alkyl group attached"
+# alkylimidazolium 	JPCB110:19586(2006)
+14	NAH	N	"nbonds=3,$imid,~C(nh=1,n=2),-H"		"Nitrogen with hydrogen attached"
+15	CRH	C	"nbonds=3,~&13,~&21,-H"				"Carbon adjacent to two nitrogens"
+16	CWH	C	"nbonds=3,-H,~C,~&21"				"Carbon adjacent to N with H attached"
+17	HNA	H	"-&14"						"Hydrogen on ring nitrogen"
+# dialkylmethylmidazolium 	JPCB112:5039(2008)
+18	CRM	C	"nbonds=3,~&19(n=2)"				"Methylated carbon adjacent to two nitrogens in 5-membered ring"
+19	NAM  	N	"$imid,~C(nh=1),~C(noring),~C(~C(noring,nh=3))"	"Ring nitrogen in dialkylmethylimidazolium"
+20	CCR	C	"-&18"						"Methyl carbon at C2 position"
+# alkenylimidazolium 	OPLS-AA: unpublished
+21	CM	C	""
+22	CMT	C	""
+23	HCM	H	""
+24	CAL	C	""
+25	HAL	H	""
+# alcohols 	OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+26	CTO	C	"-O(-H)"					"Alcohol carbon"
+27	H1O	H	"-&26"						"Hydrogen on alcoholic carbon"
+28	OH	O	"-&26,-H"					"Alcohol oxygen"
+29	HO	H	"-&28"						"Alcohol hydrogen"
+# alkoxy imidazolium 	JPCB114:3592(2010)
+30	C2O	C	"-C(nh=2,-N),-O(-H)"				"Carbon next to OH in hydroxyethyl group"
+# esters 	OPLS-AA JCC22:1340(2001)
+31	CC	C	"-C,=O,-O"					"Ester carbon"
+32	OC	O	"=&31"						"Carbonyl on ester carbon"
+33	OS	O	"-&31"						"Alkoxy oxygen on ester carbon"
+34	HOS	H	"-&35"						"Hydrogen on first alkoxy carbon"
+35	CMO	C	"nbonds=4,-&33"					"First alkoxy carbon"
+36	CEO	C	"-&35,nh=3"					"Carbon at end of ethoxy chain"
+# ether 	OPLS-AA
+37	OE	O	""
+# fluoroalkylimidazolium 	JPCB114:3592(2010) 
+38	C1H	C	""
+39	C3F	C	""
+# pyridinium 	JCSPerkin2:2365(1999)
+40	NAP	N	"nbonds=3,ring(size=6,-C(n=5))"			"Nitrogen in alkylpyridinium"
+41	CA1	C	"nbonds=3,ring(size=6),~N,~C,-H"		"Carbon in ring, adjacent to ring nitrogen (ortho)"
+42	CA2	C	"nbonds=3,ring(size=6),~C,-H,~C"		"Carbon in ring, adjacent to two carbons (meta)"
+43	CA3	C	"nbonds=3,ring(size=6),~C(n=2,~C(~N))"		"Carbon in ring, adjacent to two carbons (para)"
+44	HAP	H	"nbonds=1,~C(ring(size=6,-C(n=5),~N),~C)"	"Hydrogen on ring carbon"
+# ammonium (also pyrrolidinium) 	OPLS-AA JACS121:4827(1999), AMBER
+45	N3   	N	""
+46	H	H	""
+# phosphonium 	OPLS-AA
+47	P3	P	"nbonds=4,-C(n=4)"				"Phosphorus with four alkyl groups"
+48	C1P	C	"nbonds=4,-P(-C(n=3)),-H,-H,-C"			"First tetrahedral carbon in R group on phosphorus"
+# tetrafluoroborate anion
+49	B	B	"nbonds=4,-F(n=4)"				"Boron with four fluorines attached"
+50	FB	F	"nbonds=1,-B(-F(n=4))"				"Fluorine attached to boron in BF4"
+# hexafluorophosphate 	JCSPerkin2:2365(1999)
+51	P	P	"nbonds=6,-F(n=6)"				"Phosphorus with six fluorines attahed"
+52	F	F	"nbonds=1,-P(-F(n=6))"				"Fluorine attached to phosphorus in PF6"
+# nitrate 	JPCB108:2038(2004)
+53	ON	O	"nbonds=1,-N(-O,-O)"				"Oxygen attached to N in NO3"
+54	NN	N	"nbonds=3,-O(n=3)"				"Nitrogen with three oxygens attached"
+# chloride 	JPCB108:2038(2004)
+55	Cl	Cl	"unbound"					"Chloride ion"
+# bromide 	JPCB110:19586(2006)
+56	Br   	Br	"unbound"					"Bromide ion"
+# bistriflylamide 	JPCB108:16893(2004)
+57	F1	F	"-&58"						"Fluorine in TfO or NTf2"
+58	CBT	C	"-F(n=3),-S(~O(n>=2))"				"Fluorinated carbon in TfO or NTf2"
+59	SBT  	S	"~O(n>=2),-[C,F]"				"Sulfur in TfO, NTf2, or bis(fluorosulfonyl)imide"
+60	OBT	O	"~S(~O(n=2))"					"Oxygen in bistrifylamide"
+61	NBT	N	"~&59(n=2),nbonds=2"				"Nitrogen in bistrifylamide"
+# triflate anion 	JPCB108:16893(2004)
+62	OTF	O	"~S(~O(n=3))"					"Oxygen in triflate"
+# bis(fluorosulfonyl)amide
+63	FSI	F	"-&59"						"Fluorine on sulfur in bis(fluorosulfonyl)amide"
+# longer perfluoroalkanerosulfonylamides
+64	C1F	C	"-&59,-C"					"First fluorinated carbon in chain on sulfur"
+# perfluoroalkanes 	OPLS-AA JPCA105:4118(2001)
+65	CTF	C	"-F(n=3),-C"					"Terminal carbon in fluorinated chain"
+66	CSF	C	"-F(n=2),-C(n=2)"				"Middle carbon in fluorinated chain"
+67	F	F	"-[&64,&65,&66]"				"Fluorine in fluorinated chain"
+# dicyanamide 	JPCB110:19586(2006)
+68	N3A	N	"nbonds=2,-&69(n=2)"				"Central nitrogen in dicyanamide"
+69	CZA	C	"nbonds=2,~N(bond=triple),~N"			"Carbon in dicyanamide"
+70	NZA	N	"nbonds=1,~C(bond=triple)"			"Terminal nitrogen in dicyanamide"
+# alkylsulfates 	JPCB112:5039(2008)
+71	SO4  	S	"~O(n=3,nbonds=1),~O(-C)"			"Sulfur in alkylsulfate"
+72	OS4	O	"~&71,nbonds=1"					"Oxygen in alkylsulfate"
+73	OC4	O	"~&71,nbonds=2,-C"				"Linking oxygen in alkylsulfate"
+74	CS4	C	"~&73"						"First carbon in chain in alkylsulfate"
+75	HS4  	H	"-&74"						"Hydrogen on first carbon in chain in alkylsulfate"
+# alkylsulfonates 	JPCB112:5039(2008)
+76	SO3  	S	"~O(n=3,nbonds=1),-C"				"Sulfur in alkylsulfonate"
+77	OS3  	O	"~&76,nbonds=1"					"Oxygen in alkylsulfonate"
+78	CS3  	C	"-&76"						"First carbon in chain in alkylsulfonate"
+79	HS3  	H	"-&78"						"Hydrogen on first carbon in chain in alkylsulfonate"
+# acetate 	OPLS-AA
+80	O2   	O	"~&81"						"Acetate oxygen"
+81	CO2  	C	"-C(nh=3),~O(n=2)"				"Carbon with two oxygens in acetate"
+82	CTA  	C	"nh=3,-&81"					"Methyl carbon in acetate"
+end
+
+inter lj
+#ID	NAME	Q	Epsilon		Sigma
+# dialkylimidazolium JPCB108:2038(2004)
+1	C1	-0.17	0.27614		3.50
+2	C2	0.01	0.27614		3.50
+3	CE	-0.05	0.27614		3.50
+4	CS	-0.12	0.27614		3.50
+5	CT	-0.18	0.27614		3.50
+6	CR	-0.11	0.29288		3.55
+7	CW	-0.13	0.29288		3.55
+8	HA	0.21	0.12552		2.42
+9	HCR	0.21	0.12552		2.42
+10	HCW	0.21	0.12552		2.42
+11	HC	0.06	0.12552		2.50
+12	H1	0.13	0.12552		2.50
+13	NA	0.15	0.71128		3.25
+# alkylimidazolium 	JPCB110:19586(2006)
+14	NAH	-0.21	0.71128		3.25
+15	CRH	0.00	0.29288		3.55
+16	CWH	-0.03	0.29288		3.55
+17	HNA	0.37	0.00000		0.00
+# dialkylmethylmidazolium 	JPCB112:5039(2008)
+18	CRM	0.19	0.29288		3.55
+19	NAM	0.04	0.71128		3.25
+20	CCR	-0.26	0.27614		3.50
+# alkenylimidazolium 	OPLS-AA: unpublished
+21	CM	-0.115	0.31798		3.55
+22	CMT	-0.230	0.31798		3.55
+23	HCM	0.115	0.12552		2.42
+24	CAL	0.170	0.31798		3.55
+25	HAL	-0.020	0.12552		2.42
+# alcohols 	OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+26	CTO	0.145	0.27614		3.50
+27	H1O	0.040	0.12552		2.50
+28	OH	-0.683	0.71128		3.21
+29	HO	0.418	0.00000		0.00
+# alkoxy imidazolium 	JPCB114:3592(2010)
+30	C2O	0.275	0.27614		3.50
+# esters 	OPLS-AA JCC22:1340(2001)
+31	CC	0.51	0.43932		3.75
+32	OC	-0.43	0.87864		2.96
+33	OS	-0.33	0.71176		3.00
+34	HOS	0.03	0.06276		2.42
+35	CMO	0.16	0.27614		3.50
+36	CEO	0.19	0.27614		3.50
+# ether 	OPLS-AA
+37	OE	0.00	0.87864		2.96
+# fluoroalkylimidazolium 	JPCB114:3592(2010) 
+38	C1H	-0.05	0.27614		3.50
+39	C3F	0.12	0.27614		3.50
+# pyridinium 	JCSPerkin2:2365(1999)
+40	NAP	0.15	0.71128		3.25
+41	CA1	0.00	0.29288		3.55
+42	CA2	-0.07	0.29288		3.55
+43	CA3	0.02	0.29288		3.55
+44	HAP	0.15	0.12552		2.42
+# ammonium (also pyrrolidinium) 	OPLS-AA JACS121:4827(1999), AMBER
+45	N3	0.12	0.71128		3.25
+46	H	0.13	0.12552		2.50
+# phosphonium 	OPLS-AA
+47	P3	0.68	0.8368		3.74
+48	C1P	-0.31	0.27614		3.50
+# tetrafluoroborate anion
+49	B	0.96	0.3975		3.58
+50	FB	-0.49	0.2552		3.12
+# hexafluorophosphate 	JCSPerkin2:2365(1999)
+51	P	1.34	0.8368		3.74
+52	F	-0.39	0.2552		3.12
+# nitrate 	JPCB108:2038(2004)
+53	NN	0.95	0.3380		3.06
+54	ON	-0.65	0.6100		2.77
+# chloride 	JPCB108:2038(2004)
+55	Cl	-1.00	0.8300		3.65
+# bromide 	JPCB110:19586(2006)
+56	Br	-1.00	0.86		3.97
+# bistriflylamide 	JPCB108:16893(2004)
+57	F1	-0.16	0.22175		2.95
+58	CBT	0.35	0.27614		3.50
+59	SBT	1.02	1.04600		3.55
+60	OBT	-0.53	0.87864		2.96
+61	NBT	-0.66	0.71128		3.25
+# triflate anion 	JPCB108:16893(2004)
+62	OTF	-0.63	0.87864		2.96
+# bis(fluorosulfonyl)amide
+63	FSI	-0.13	0.22175		2.95
+# longer perfluoroalkanerosulfonylamides
+64	C1F	0.19	0.27614		3.50
+# perfluoroalkanes 	OPLS-AA JPCA105:4118(2001)
+65	CTF	0.36	0.27614		3.50
+66	CSF	0.24	0.27614		3.50
+67	F	-0.12	0.22175		2.95
+# dicyanamide 	JPCB110:19586(2006)
+68	N3A	-0.76	0.71128		3.25
+69	CZA	0.64	0.27614		3.30
+70	NZA	-0.76	0.71128		3.20
+# alkylsulfates 	JPCB112:5039(2008)
+71	SO4	1.18	1.04600		3.55
+72	OS4	-0.65	0.83700		3.15
+73	OC4	-0.45	0.58600		2.90
+74	CS4	0.22	0.27600		3.50
+75	HS4	0.00	0.12600		2.50
+# alkylsulfonates 	JPCB112:5039(2008)
+76	SO3	1.18	1.04600		3.55
+77	OS3	-0.68	0.83700		3.15
+78	CS3	-0.14	0.27600		3.50
+79	HS3	0.00	0.12600		2.50
+# acetate 	OPLS-AA
+80	O2	-0.80	0.87860		2.96
+81	CO2	0.70	0.43930		3.75
+82	CTA	-0.28	0.27614		3.50
+end
+
+equivalents
+HA	HCW HCR HNA HAP
+HC	H1 HOS HAL 	HS3 HS4
+F	F1 FSI
+CT	C1 C2 CE CS C1H CCR C1P CTO C2O CMO CEO CTA CAL 	CS3 CS4
+CM	CMT
+CF	CBT C1F C3F CSF CTF
+CA	CA1 CA2 CA3
+CR	CRH CRM
+CW	CWH
+NA	NAH NAM NAP
+OBT	OTF
+# Added by TY
+SO	SO3 SO4
+end
+
+bonds constraint
+# alkanes OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+HC	CT	2845	1.090
+# dialkylimidazolium JPCB108:2038(2004)
+CR	HA	2845	1.080
+CW	HA	2845	1.080
+# alkylimidazolium OPLS-AA JPCB110:19586(2006)
+NA	HA	3632	1.010
+# alkenylimidazolium OPLS-AA
+HCM	CM	2845.12	1.080
+# alcohols OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+HO	OH	4628	0.945
+# pyridinium OPLS-AA Theochem424:145(1998)
+CA	HA	3071	1.080
+# ammonium (also pyrrolidinium) OPLS-AA JACS121:4827(1999), AMBER
+H	N3	3632	1.010
+end
+
+bonds harmonic
+# alkanes OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+CT	CT	2242	1.529
+# dialkylimidazolium JPCB108:2038(2004)
+CR	NA	3992	1.315
+CW	NA	3574	1.378
+CW	CW	4352	1.341
+NA	CT	2820	1.466
+# dialkylimethylmidazolium
+CR	CT	2653	1.510
+# alkenylimidazolium OPLS-AA
+CT	CM	2652.65	1.510
+CM	CM	4594.03	1.340
+# alcohols OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+CT	OH	2678	1.410
+# esters OPLS-AA JCC22:1340(2001)
+CC	OC	4770.0	1.200
+CT	CC	2653.0	1.522
+CC	OS	1791.0	1.344
+CT	OS	2678.0	1.437
+# ethers OPLS-AA
+CT	OE	2678.0	1.437
+# pyridinium OPLS-AA Theochem424:145(1998)
+CA	CA	3925	1.380
+CA	NA	4042	1.340
+NA	CT	2820	1.480
+# ammonium (also pyrrolidinium) OPLS-AA JACS121:4827(1999), AMBER
+N3	CT	3071	1.471
+# phosphonium OPLS-AA JPCB110:19586(2006)
+P3	CT	3550	1.81
+# tetrafluoroborate 
+B	FB	3235	1.394
+# hexafluorophosphate JCSPerkin2:2365(1999)
+P	F	3100	1.606
+# nitrate JPCB108:2038(2004)
+NN	ON	5307	1.226
+# triflate and bistriflylamide JPCB108:16893(2004)
+#CBT  FBT  harm    1.323   3698
+CF	SBT	1950	1.818
+SBT	OBT	5331	1.437
+NBT	SBT	3137	1.570
+# bis(fluorosulfonyl)amide
+F	SBT	1879	1.575
+# longer perfluoroalkanerosulfonylamides
+# perfluoroalkanes OPLS-AA JPCA105:4118(2001)
+F	CF	3071.06	1.332
+CF	CF	2242.62	1.529
+CT	CF	2242.62	1.529
+# dicyanamide JPCB110:19586(2006)
+N3A	CZA	4206	1.310
+CZA	NZA	7746	1.157
+# alkylsulfates JPCB112:5039(2008)
+CT	OC4	745.8	1.402
+OS4	SO	5331	1.455
+OC4	SO	1789.6	1.633
+# alkylsulfonates JPCB112:5039(2008)
+CT	SO	1970	1.792
+OS3	SO	5331	1.455
+# acetate OPLS-AA JPCB (2004)
+CO2	O2	5489.0	1.250
+CT	CO2	2653.0	1.522
+end
+
+angles harmonic
+# alkanes OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+CT	CT	CT	488.3	112.7
+CT	CT	HC	313.8	110.7 
+HC	CT	HC	276.1	107.8 
+# dialkylimidazolium JPCB108:2038(2004)
+CW	NA	CR	585.8	108.0
+CW	NA	CT	585.8	125.6
+CR	NA	CT	585.8	126.4
+NA	CR	HA	292.9	125.1
+NA	CR	NA	585.8	109.8
+NA	CW	CW	585.8	107.1
+NA	CW	HA	292.9	122.0
+CW	CW	HA	292.9	130.9
+NA	CT	HC	313.8	110.7
+NA	CT	CT	488.3	112.7
+# alkylimlidazolium JPCB110:19586(2006)
+CR	NA	HA	292.9	125.4
+CW	NA	HA	292.9	126.6
+# dialkylimethylmidazolium JPCB112:5039(2008)
+CT	CR	NA	585.8	125.8
+CR	CT	HC	313.8	110.7  
+# alkenylimidazolium OPLS-AA
+CT	CT	CM	527.18	111.1
+CM	CM	CT	585.76	124.0
+HCM	CM	CM	292.88	120.0
+HCM	CM	CT	292.88	117.0
+HCM	CT	CM	292.88	109.5
+CM	CT	HC	292.88	109.5
+HCM	CM	HCM	292.88	114.3
+# alcohols OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+CT	CT	OH	418.40	109.50
+HC	CT	OH	292.88	109.50
+CT	OH	HO	460.24	108.50
+# esters OPLS-AA JCC22:1340(2001) 
+CT	CC	OC	669.00	125.00
+HC	CT	CC	313.80	109.50
+OS	CC	OC	694.50	125.00
+OS	CC	CT	677.80	110.00
+CT	OS	CC	694.50	115.00
+HC	CT	OS	418.40	109.50
+CT	CT	OS	418.40	109.50
+CT	CT	CC	527.18	111.10
+NA	CT	CC	500.00	112.7
+# ethers OPLS-AA
+#CT   CT   OE    harm      109.50   418.40
+#CT   OE   CT    harm      115.00   694.50
+#HC   CT   OE    harm      109.50   418.40
+# semifluorinated alkanes JPCA106:10116(2002)
+HC	CT	CF	313.80	110.70
+F	CF	CT	418.40	109.50
+CT	CF	CF	488.27	112.70
+CT	CT	CF	488.27	112.70
+# pyridinium OPLS-AA Theochem424:145(1998), JCSPerkin2:2365(1999) 
+CA	CA	CA	527.2	120.0
+CA	CA	HA	292.9	120.0
+CA	CA	NA	585.8	120.0
+CA	NA	CA	585.8	120.4
+CA	NA	CT	585.8	119.8
+NA	CA	HA	292.9	120.0
+NA	CT	HC	292.9	109.5
+# ammonium (also pyrrolidinium) OPLS-AA JACS121:4827(1999), AMBER
+N3	CT	CT	669.4	109.5
+CT	N3	CT	418.4	109.5
+HC	CT	N3	209.2	109.5
+H	N3	CT	418.4	109.5
+# phosphosphonium OPLS-AA JPCB110:19586(2006)
+CT	P3	CT	607.8	109.5
+HC	CT	P3	389.9	110.1
+CT	CT	P3	509.1	115.2
+# tetrafluoroborate anion
+FB	B	FB	669.5	109.5
+# hexafluorophosphate JCSPerkin2:2365(1999)
+F	P	F	1165	90.0
+# nitrate JPCB108:2038(2004)
+ON	NN	ON	1011	120.0
+# triflate and bistriflylamide JPCB108:16893(2004)
+#FBT  CBT  FBT   harm      107.1    781
+F	CF	SBT	694	111.7
+OBT	SBT	OBT	969	118.5
+CF	SBT	OBT	870	102.6
+NBT	SBT	OBT	789	113.6   
+NBT	SBT	CF	764	103.5   
+SBT	NBT	SBT	671	125.6   
+# bis(fluorosulfonyl)amide
+F	SBT	OBT	1077	104.1
+F	SBT	NBT	902	103.0   
+# longer perfluoroalkanerosulfonylamides
+SBT	CF	CF	418.4	115.9
+# perfluoroalkanes OPLS-AA JPCA105:4118(2001)
+F	CF	F	644.34	109.10
+F	CF	CF	418.40	109.50
+CF	CF	CF	488.27	112.70
+# dicyanamide JPCB110:19586(2006)
+CZA	N3A	CZA	362	118.5
+N3A	CZA	NZA	425	175.2
+# alkylsulfates JPCB112:5039(2008)
+OS4	SO	OS4	969.00	114.00
+OC4	SO	OS4	1239.62	103.50
+CT	OC4	SO	300.45	116.60
+HC	CT	OC4	488.68	109.70
+CT	CT	OC4	765.57	107.80
+# alkylsulfonates JPCB112:5039(2008)
+OS3	SO	OS3	969.00	114.00
+CT	SO	OS3	870.00	104.50
+HC	CT	SO	390.30	107.30
+CT	CT	SO	583.00	113.30
+# acetate OPLS-AA JPCB (2004)
+O2	CO2	O2	669.4	126.00
+CT	CO2	O2	585.8	117.00
+HC	CT	CO2	298.9	109.50
+end
+
+torsions cos3 0.5 0.5
+# i  j    k    l    type     v1         v2          v3          v4
+# alkanes OPLS-AA JACS118:11225(1996); JPC100:18010(1996)
+HC	CT	CT	HC	0.0000		0.0000		1.3305		0.0000
+CT	CT	CT	HC	0.0000		0.0000		1.5313		0.0000
+CT	CT	CT	CT	7.2800		-0.6569		1.1673		0.0000
+# dialkylimidazolium JPCB108:2038(2004)
+CW	NA	CR	NA	0.0000		19.4600		0.0000		0.0000
+CW	NA	CR	HA	0.0000		19.4600		0.0000		0.0000
+CT	NA	CR	NA	0.0000		19.4600		0.0000		0.0000
+CT	NA	CR	HA	0.0000		19.4600		0.0000		0.0000
+CR	NA	CW	CW	0.0000		12.5500		0.0000		0.0000
+CR	NA	CW	HA	0.0000		12.5500		0.0000		0.0000
+CT	NA	CW	CW	0.0000		12.5500		0.0000		0.0000
+CT	NA	CW	HA	0.0000		12.5500		0.0000		0.0000
+NA	CW	CW	NA	0.0000		44.9800		0.0000		0.0000
+NA	CW	CW	HA	0.0000		44.9800		0.0000		0.0000
+HA	CW	CW	HA	0.0000		44.9800		0.0000		0.0000
+CW	NA	CT	HC	0.0000		0.0000		0.5190		0.0000
+CR	NA	CT	HC	0.0000		0.0000		0.0000		0.0000
+CW	NA	CT	CT	-7.1535		6.1064		0.7939		0.0000
+CR	NA	CT	CT	-5.2691		0.0000		0.0000		0.0000
+NA	CT	CT	CT	-7.4797		3.1642		-1.2026		0.0000
+NA	CT	CT	HC	0.0000		0.0000		0.3670		0.0000
+# improper dialkylimidazolium ring AMBER
+#CR	CW	NA	C1	0.0000		8.3700		0.0000		0.0000
+#NA	NA	CR	HA	0.0000		9.2000		0.0000		0.0000
+#NA	CW	CW	HA	0.0000		9.2000		0.0000		0.0000
+# alkylimidazolium ring AMBER
+HA	NA	CR	NA	0.0000		19.4600		0.0000		0.0000
+HA	NA	CR	HA	0.0000		19.4600		0.0000		0.0000
+HA	NA	CW	CW	0.0000		12.5500		0.0000		0.0000
+HA	NA	CW	HA	0.0000		12.5500		0.0000		0.0000
+# improper alkylimidazolium ring AMBER
+#CR	CW	NA	HA	0.0000		8.3700		0.0000		0.0000
+# dialkylimethylmidazolium JPCB112:5039(2008)
+CW	NA	CR	CT	0.0000		19.4600		0.0000		0.0000
+CT	NA	CR	CT	0.0000		19.4600		0.0000		0.0000
+NA	CR	CT	HC	0.0000		0.0000		0.0000		0.0000
+# alkenylimidazolium (OPLS-AA)
+CT	CT	CM	HCM	0.0000		0.0000		1.3305		0.0000
+CM	CT	CT	H	0.0000		0.0000		1.5313		0.0000
+HCM	CM	CT	HC	0.0000		0.0000		1.3305		0.0000
+CT	CM	CM	HCM	0.0000		58.5760		0.0000		0.0000
+HCM	CM	CM	HCM	0.0000		58.5760		0.0000		0.0000
+HCM	CM	CT	HC	0.0000		0.0000		1.3305		0.0000
+CM	CM	CT	HC	0.0000		0.0000		-1.5565		0.0000
+CM	CT	CT	CT	5.4392		-0.2092		0.8368		0.0000
+HCM	CM	CT	HC	0.0000		0.0000		1.33051		0.0000
+CM	CM	CT	HC	0.0000		0.0000		-1.5565		0.0000
+CM	CT	CT	HC	0.0000		0.0000		1.5313		0.0000
+CM	CM	CT	CT	1.4477		1.6945		-3.7823		0.0000
+CM	CT	CT	NA	-6.5464		-0.9714		4.2205		0.0000
+# alcohols OPLS-AA JACS118:11225(1996); JPC100:18010(1996), AMBER98 (OCCO)
+HC	CT	OH	HO	0.0000		0.0000		1.8828		0.0000
+CT	CT	OH	HO	-1.4895		-0.7280		2.0585		0.0000
+HC	CT	CT	OH	0.0000		0.0000		1.9581		0.0000
+OH	CT	CT	OH	0.0000		-9.8324		1.2050		0.0000
+# alkoxy imidazolium
+NA	CT	CT	OH	-3.5787		-1.6564		4.9154		0.0000
+# esters OPLS-AA JCC22:1340(2001)
+CT	CT	CC	OC	0.0000		0.0000		0.0000		0.0000
+HC	CT	CC	OC	0.0000		0.0000		0.0000		0.0000
+CT	CT	CC	OS	0.0000		0.0000		-1.4853		0.0000
+HC	CT	CC	OS	0.0000		0.0000		0.5523		0.0000
+CT	CC	OS	CT	19.5351		21.4388		0.0000		0.0000
+OC	CC	OS	CT	0.0000		21.4388		0.0000		0.0000
+CC	OS	CT	HC	0.0000		0.0000		0.8284		0.0000
+CC	OS	CT	CT	-5.1045		-0.5272		1.7656		0.0000
+HC	CT	CT	CC	0.0000		0.0000		-1.4477		0.0000
+CT	CT	CT	CC	-7.1002		-1.9079		2.4476		0.0000
+HC	CT	CT	OS	0.0000		0.0000		1.6067		0.0000
+CT	CT	CT	OS	11.4307		-0.9581		2.0292		0.0000     
+CW	NA	CT	CC	4.1274		0.0000		0.0000		0.0000
+CR	NA	CT	CC	0.0000		0.0000		0.0000		0.0000
+NA	CT	CC	OC	-9.1642		14.1359		1.0771		0.0000
+NA	CT	CC	OS	0.0000		0.0000		0.0000		0.0000
+# ethers OPLS-AA
+#HC	CT	CT	OE	0.0000		0.0000		0.0000		0.0000
+#CT	CT	CT	OE	0.0000		0.0000		0.0000		0.0000     
+#OS	CT	CT	OE	0.0000		0.0000		0.0000		0.0000     
+#OE	CT	CT	OE	0.0000		0.0000		0.0000		0.0000     
+#HC	CT	OE	CT	0.0000		0.0000		0.0000		0.0000
+#CT	CT	OE	CT	0.0000		0.0000		0.0000		0.0000
+# semifluorinated alkanes JPCA:106:10116(2002)
+HC	CT	CF	F	0.0000		0.0000		1.2134		0.0000
+F	CF	CT	HC	0.0000		0.0000		1.2134		0.0000
+F	CF	CT	CT	0.0000		0.0000		1.9372		0.0000
+F	CF	CF	CT	0.0000		0.0000		2.7656		0.0000
+HC	CT	CT	CF	0.0000		0.0000		0.5565		0.0000
+HC	CT	CF	CF	0.0000		0.0000		0.7573		0.0000
+CF	CT	CT	NA	0.0000		0.0000		0.0000		0.0000
+# pyridinium AMBER (cycle) JPCB110:19586(2006)
+CA	CA	CA	CA	0.0000		30.3340		0.0000		0.0000
+NA	CA	CA	CA	0.0000		30.3340		0.0000		0.0000
+HA	CA	CA	CA	0.0000		30.3340		0.0000		0.0000
+HA	CA	CA	NA	0.0000		30.3340		0.0000		0.0000
+HA	CA	CA	HA	0.0000		30.3340		0.0000		0.0000
+CA	NA	CA	HA	0.0000		12.5520		0.0000		0.0000
+CT	NA	CA	HA	0.0000		12.5520		0.0000		0.0000
+CA	NA	CA	CA	0.0000		12.5520		0.0000		0.0000
+CT	NA	CA	CA	0.0000		12.5520		0.0000		0.0000
+HC	CT	NA	CA	0.0000		0.0000		0.0000		0.0000
+# improper pyridinium ring AMBER
+#CA	CA	CA	HA	0.0000		9.2000		0.0000		0.0000
+#CA	CA	NA	HA	0.0000		9.2000		0.0000		0.0000
+#CA	CA	NA	CT	0.0000		8.3700		0.0000		0.0000
+# ammonium (also pyrrolidinium) OPLS-AA JACS121:4827(1999)
+HC	CT	CT	N3	-4.2384		-2.9665		1.9790		0.0000
+CT	CT	CT	N3	10.0081		-2.8200		2.3012		0.0000
+CT	N3	CT	CT	1.7405		-0.5356		2.9079		0.0000
+HC	CT	N3	CT	0.0000		0.0000		2.3430		0.0000
+H	N3	CT	HC	0.0000		0.0000		0.0000		0.0000
+H	N3	CT	CT	0.0000		0.0000		0.0000		0.0000
+#Cholinium: unpublished (Ferid + Agilio)
+OH	CT	CT	N3	-44.0515	-5.4349		0.0000		0.0000
+# phosphonium OPLS-AA 
+CT	P3	CT	HC	0.0000		0.0000		0.9270		0.0000
+CT	P3	CT	CT	0.0000		0.0000		1.1330		0.0000
+P3	CT	CT	HC	0.0000		0.0000		0.4650		0.0000
+P3	CT	CT	CT	-3.2480		0.9880		-0.7150		0.0000
+# triflate and bistriflylamide JPCB108:16893(2004)
+OBT	SBT	CF	F	0.0000		0.0000		1.4510		0.0000
+NBT	SBT	CF	F	0.0000		0.0000		1.3220		0.0000
+OBT	SBT	NBT	SBT	0.0000		0.0000		-0.0150		0.0000
+SBT	NBT	SBT	CF	2.7730		-10.4200		-3.1950		0.0000
+# longer perfluoroalkanerosulfonylamides
+SBT	CF	CF	F	0.0000		0.0000		1.4530		0.0000
+OBT	SBT	CF	CF	0.0000		0.0000		-0.7400		0.0000
+NBT	SBT	CF	CF	-3.0940		0.0000		0.0000		0.0000
+# perfluoroalkanes OPLS-AA JPCA105:4118(2001)
+F	CF	CF	F	-10.4600	0.0000		1.0460		0.0000
+F	CF	CF	CF	1.2552		0.0000		1.6736		0.0000
+# dicyanamide JPCB110:19586(2006)
+NZA	CZA	N3A	CZA	4.0800		0.0000		0.0000		0.0000
+# alkylsulfates JPCB112:5039(2008)
+OS4	SO	OC4	CT	0.0000		0.0000		2.4815		0.0000
+SO	OC4	CT	HC	0.0000		0.0000		1.6858		0.0000
+SO	OC4	CT	CT	-6.0142		-3.1133		1.4941		0.0000
+OC4	CT	CT	HC	0.0000		0.0000		2.0698		0.0000
+OC4	CT	CT	CT	4.3893		-1.8273		2.9705		0.0000
+# alkylsulfonates JPCB112:5039(2008)
+OS3	SO	CT	HC	0.0000		0.0000		1.6250		0.0000
+OS3	SO	CT	CT	0.0000		0.0000		1.3938		0.0000
+SO	CT	CT	HC	0.0000		0.0000		1.3797		0.0000
+SO	CT	CT	CT	-16.1000	-2.0046		0.7674		0.0000
+# acetate OPLS-AA JPCB (2004)
+HC	CT	CO2	O2	0.0000		0.0000		0.0000		0.0000
+end
+
+torsions cos4 0.5 0.5
+# semifluorinated alkanes JPCA:106:10116(2002)
+CF	CF	CF	CT	14.6750		-0.9179		-2.8980		-2.0174
+CF	CF	CT	CT	-0.5881		-0.7642		-0.3170		-0.3179
+# pyridinium AMBER (cycle) JPCB110:19586(2006)
+CT	CT	NA	CA	0.0000		1.1120		0.0000		0.6900
+#Cholinium: unpublished (Ferid + Agilio)
+#OH	CT	CT	N3	-44.0515	-5.0148		0.0000		-3.1510
+# bis(fluorosulfonyl)amide
+F	SBT	NBT	SBT	13.4514		-12.3373	-8.4874		-2.8654
+# longer perfluoroalkanerosulfonylamides
+SBT	CF	CF	CF	50.0900		0.0000		-4.6260		-4.0080
+# perfluoroalkanes OPLS-AA JPCA105:4118(2001)
+CF	CF	CF	CF	27.7064		3.9664		-5.8074		-8.8617
+end

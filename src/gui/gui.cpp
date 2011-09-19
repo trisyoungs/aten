@@ -486,6 +486,7 @@ bool GuiQt::saveBeforeClose()
 	{
 		if (m->changeLog.isModified())
 		{
+			aten.setCurrentModel(m, TRUE);
 			// Create a model message dialog
 			text.sprintf("Model '%s' has been modified.\n", m->name());
 			returnvalue = QMessageBox::warning(mainWindow_, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);

@@ -52,7 +52,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodCg::minimise");
 	int cycle, i;
-	double newEnergy, oldEnergy, deltaEnergy = 0.0, oldRms, newRms, g_old_sq, gamma, g_current_sq;
+	double newEnergy, oldEnergy, deltaEnergy = 0.0, oldForce, newForce, deltaForce = 0.0, g_old_sq, gamma, g_current_sq;
 	double *g_old;
 	Vec3<double> f;
 	Atom **modelatoms;
@@ -80,7 +80,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	}
 
 	srcmodel->calculateForces(srcmodel);
-	newRms = srcmodel->rmsForce();
+	newForce = srcmodel->rmsForce();
 	srcmodel->energy.print();
 
 	converged = FALSE;
@@ -90,7 +90,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	initialise(srcmodel);
 
 	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
-	msg.print("Init  %12.5e  %12.5e        ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
+	msg.print("Init  %12.5e        ---           ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), gui.exists() ? "" : "--:--:--");
 
 	int pid = progress.initialise("Minimising (CG)", nCycles_, !gui.exists());
 
@@ -102,17 +102,19 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 		if (!progress.update(pid, cycle)) linedone = TRUE;
 		else
 		{
-			newEnergy = oldEnergy;
-			newRms = oldRms;
+			oldEnergy = newEnergy;
+			oldForce = newForce;
 			newEnergy = lineMinimise(srcmodel);
-			deltaEnergy = oldEnergy - newEnergy;
-			newRms = srcmodel->rmsForce();
+			newForce = srcmodel->rmsForce();
+			deltaEnergy = newEnergy - oldEnergy;
+			deltaForce = newForce - oldForce;
 			// Check convergence criteria
-			if ((fabs(deltaEnergy) < econ) && (newRms < fcon)) converged = TRUE;
+			if ((fabs(deltaEnergy) < econ) && (fabs(deltaForce) < fcon)) converged = TRUE;
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, newEnergy, deltaEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
+		if (converged) break;
 
 		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
 

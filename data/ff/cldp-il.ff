@@ -23,7 +23,7 @@ types
 11	HC	H	"-C(-C,-H)"					"Hydrogen on other carbon in R group"
 12	H1	H	"-C(-N(ring(size=5)),-H)"			"Hydrogen on first carbon in R group"
 13	NA	N	"nbonds=3,ring(size=5,~N,~N,~C(n=3)),~C(n=3)"	"Nitrogen with alkyl group attached"
-# Alkylimidazolium
+# Alkylimidazolium - JPCb 110, [10586 (2006)
 21	NAH	N	"nbonds=3,ring(size=5,~N,~C(n=3)),~C(n=2),-H"	"Nitrogen with hydrogen attached"
 22	CRH	C	"nbonds=3,~N(~C,~C),~N(-H),ring(size=5)"	"Carbon adjacent to two nitrogens"
 23	CWH	C	"nbonds=3,~N(~C,-H),~C,ring(size=5)"		"Carbon adjavent to N with H attached"
