@@ -11,7 +11,7 @@ end
 
 types
 # dialkylimidazolium JPCB108:2038(2004)
-1	C1	C	"nbonds=4,-N(ring),-H,-H"			"First tetrahedral carbon in R group on ring nitrogen"
+1	C1	C	"nbonds=4,-N,-H,-H"				"First tetrahedral carbon in R group on ring nitrogen"
 2	C2	C	"nbonds=4,-C(noring,~[N,P]),-H(n=2),-C"		"Second carbon in R group (> ethyl)"
 3	CE	C	"nbonds=4,-C(noring,~[N,P]),-H(n=3)"		"Terminal carbon of ethyl R group"
 4	CS	C	"nbonds=4,-C(n=2),-H(n=2)"			"General carbon in R group"
@@ -21,8 +21,8 @@ types
 8	HA	H	"nbonds=1"					"???"
 9	HCR	H	"-&6"						"H on carbon adjacent to two N"
 10	HCW	H	"-&7"						"H on carbon adjacent to N and C"
-11	HC	H	"-C(-C,-H)"					"Hydrogen on other carbon in R group"
-12	H1	H	"-C(-N(ring(size=5)),-H)"			"Hydrogen on first carbon in R group"
+11	HC	H	"-[&2,&3,&4,&5]"				"Hydrogen on other carbon in R group"
+12	H1	H	"-&1"						"Hydrogen on first carbon in R group"
 13	NA	N	"nbonds=3,$imid,~C(nh=1,n=2),~C"		"Nitrogen in dialkylimidazolium with alkyl group attached"
 # alkylimidazolium 	JPCB110:19586(2006)
 14	NAH	N	"nbonds=3,$imid,~C(nh=1,n=2),-H"		"Nitrogen with hydrogen attached"
@@ -191,7 +191,7 @@ inter lj
 # nitrate 	JPCB108:2038(2004)
 53	NN	0.95	0.3380		3.06
 54	ON	-0.65	0.6100		2.77
-# chloride 	JPCB108:2038(2004)
+# chloride 	JPCB110:19586(2006)  (corrected from JPCB108:2038(2004))
 55	Cl	-1.00	0.8300		3.65
 # bromide 	JPCB110:19586(2006)
 56	Br	-1.00	0.86		3.97
