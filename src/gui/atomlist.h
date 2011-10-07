@@ -34,10 +34,6 @@ class AtomListWidget : public QDockWidget
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
-	public:
-	// Atom data columns
-	enum DataColumns { IdData=1, ElementData, RxData, RyData, RzData };
-
 	/*
 	// Window Functions
 	*/
@@ -58,6 +54,13 @@ class AtomListWidget : public QDockWidget
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);
 	void on_MoveToEndButton_clicked(bool checked);
+	void on_ViewElementCheck_clicked(bool checked);
+	void on_ViewIdCheck_clicked(bool checked);
+	void on_ViewTypeCheck_clicked(bool checked);
+	void on_ViewXCheck_clicked(bool checked);
+	void on_ViewYCheck_clicked(bool checked);
+	void on_ViewZCheck_clicked(bool checked);
+	void on_ViewChargeCheck_clicked(bool checked);
 	void updateSelection();
 	void treeMousePressEvent(QMouseEvent *event);
 	void treeMouseReleaseEvent(QMouseEvent *event);
@@ -73,6 +76,8 @@ class AtomListWidget : public QDockWidget
 	int listStructurePoint_, listSelectionPoint_;
 	// Whether the current view is by atom (or not)
 	bool viewingByAtom_;
+	// Current visible atom data
+	bool viewAtomId_, viewAtomElement_, viewAtomType_, viewAtomX_, viewAtomY_, viewAtomZ_, viewAtomQ_;
 	// Last model displayed in list
 	Model *listLastModel_;
 	// Whether the widget should refresh when it is next shown

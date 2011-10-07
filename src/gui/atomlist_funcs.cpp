@@ -29,6 +29,7 @@
 #include "main/aten.h"
 #include "parser/commandnode.h"
 #include "gui/tcanvas.uih"
+#include "classes/forcefieldatom.h"
 
 /*
 // Atom list window
@@ -48,6 +49,13 @@ AtomListWidget::AtomListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	lastClicked_ = NULL;
 	lastHovered_ = NULL;
 	viewingByAtom_ = TRUE;
+	viewAtomId_ = ui.ViewIdCheck->isChecked();
+	viewAtomElement_ = ui.ViewElementCheck->isChecked();
+	viewAtomType_ = ui.ViewTypeCheck->isChecked();
+	viewAtomX_ = ui.ViewXCheck->isChecked();
+	viewAtomY_ = ui.ViewYCheck->isChecked();
+	viewAtomZ_ = ui.ViewZCheck->isChecked();
+	viewAtomQ_ = ui.ViewChargeCheck->isChecked();
 
 	QObject::connect(ui.AtomTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
 	QObject::connect(ui.AtomTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
@@ -86,12 +94,15 @@ void AtomListWidget::setColumns(TTreeWidgetItem *twi)
 	if (i == NULL) printf("AtomListWidget::setColumns <<<< NULL atom pointer found >>>>\n");
 	else
 	{
-		twi->setText(AtomListWidget::IdData, itoa(i->id()+1));
-		twi->setText(AtomListWidget::ElementData, elements().symbol(i));
+		int n = 0;
 		r = i->r();
-		twi->setText(AtomListWidget::RxData, ftoa(r.x));
-		twi->setText(AtomListWidget::RyData, ftoa(r.y));
-		twi->setText(AtomListWidget::RzData, ftoa(r.z));
+		if (viewAtomId_) twi->setText(++n, itoa(i->id()+1));
+		if (viewAtomElement_) twi->setText(++n, elements().symbol(i));
+		if (viewAtomType_) twi->setText(++n, (i->type() == NULL ? "" : i->type()->name()));
+		if (viewAtomX_) twi->setText(++n, ftoa(r.x));
+		if (viewAtomY_) twi->setText(++n, ftoa(r.x));
+		if (viewAtomZ_) twi->setText(++n, ftoa(r.y));
+		if (viewAtomQ_) twi->setText(++n, ftoa(i->charge()));
 	}
 }
 
@@ -116,17 +127,33 @@ void AtomListWidget::refresh()
 		listSelectionPoint_ = -1;
 	}
 	listLastModel_ = m;
+	
 	// Start the refresh
 	Pattern *p;
 	TTreeWidgetItem *item;
 	Refitem<TTreeWidgetItem,int> *ri;
 	Atom *i;
 	int mol, n, count;
+
 	if (listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates)))
 	{
 		// Clear the current list
 		ui.AtomTree->clear();
 		ui.AtomTree->clearAtomItems();
+		
+		// Redo column headings
+		ui.AtomTree->setColumnCount(1 + viewAtomId_+ viewAtomElement_+ viewAtomType_+ viewAtomX_+ viewAtomY_+ viewAtomZ_+ viewAtomQ_);
+		QStringList headerLabels;
+		headerLabels << (viewingByAtom_ ? "Atom" : "Pattern");
+		if (viewAtomId_) headerLabels << "ID";
+		if (viewAtomElement_) headerLabels << "El";
+		if (viewAtomType_) headerLabels << "FF";
+		if (viewAtomX_) headerLabels << "X";
+		if (viewAtomY_) headerLabels << "Y";
+		if (viewAtomZ_) headerLabels << "Z";
+		if (viewAtomQ_) headerLabels << "Q";
+		ui.AtomTree->setHeaderLabels(headerLabels);
+		
 		// If we're viewing all atoms, just add all atoms!
 		if (viewingByAtom_)
 		{
@@ -218,6 +245,62 @@ void AtomListWidget::on_ViewStyleCombo_currentIndexChanged(int index)
 		listStructurePoint_ = -1;
 		refresh();
 	}
+}
+
+void AtomListWidget::on_ViewElementCheck_clicked(bool checked)
+{
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	viewAtomElement_ = ui.ViewElementCheck->isChecked();
+	refresh();
+}
+
+void AtomListWidget::on_ViewIdCheck_clicked(bool checked)
+{
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	viewAtomId_ = ui.ViewIdCheck->isChecked();
+	refresh();
+}
+
+void AtomListWidget::on_ViewTypeCheck_clicked(bool checked)
+{
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	viewAtomType_ = ui.ViewTypeCheck->isChecked();
+	refresh();
+}
+
+void AtomListWidget::on_ViewXCheck_clicked(bool checked)
+{
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	viewAtomX_ = ui.ViewXCheck->isChecked();
+	refresh();
+}
+
+void AtomListWidget::on_ViewYCheck_clicked(bool checked)
+{
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	viewAtomY_ = ui.ViewYCheck->isChecked();
+	refresh();
+}
+
+void AtomListWidget::on_ViewZCheck_clicked(bool checked)
+{
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	viewAtomZ_ = ui.ViewZCheck->isChecked();
+	refresh();
+}
+
+void AtomListWidget::on_ViewChargeCheck_clicked(bool checked)
+{
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	viewAtomQ_ = ui.ViewChargeCheck->isChecked();
+	refresh();
 }
 
 void AtomListWidget::on_ShiftUpButton_clicked(bool checked)

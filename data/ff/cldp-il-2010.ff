@@ -18,11 +18,11 @@ types
 5	CT	C	"nbonds=4,~C(~C(-H(n=2)),~C),-H(n=3)"		"Terminal carbon in R group (> ethyl)"
 6	CR	C	"nbonds=3,-H,~&13,~[&13,&14]"			"Carbon adjacent to two nitrogens with alkyl groups"
 7	CW	C	"nbonds=3,-H,~C,~[&13,&14,&19]"			"Carbon adjacent to nitrogen (with alkyl group) and carbon"
-8	HA	H	"nbonds=1"					"???"
+#8	HA	H	"nbonds=1"					"???"
 9	HCR	H	"-&6"						"H on carbon adjacent to two N"
 10	HCW	H	"-&7"						"H on carbon adjacent to N and C"
-11	HC	H	"-[&2,&3,&4,&5]"				"Hydrogen on other carbon in R group"
-12	H1	H	"-&1"						"Hydrogen on first carbon in R group"
+11	HC	H	""						"Hydrogen on other carbon in R group"
+12	H1	H	"-C(-[N,P,S])"					"Hydrogen on first carbon in R group"
 13	NA	N	"nbonds=3,$imid,~C(nh=1,n=2),~C"		"Nitrogen in dialkylimidazolium with alkyl group attached"
 # alkylimidazolium 	JPCB110:19586(2006)
 14	NAH	N	"nbonds=3,$imid,~C(nh=1,n=2),-H"		"Nitrogen with hydrogen attached"
@@ -47,7 +47,7 @@ types
 # alkoxy imidazolium 	JPCB114:3592(2010)
 30	C2O	C	"-C(nh=2,-N),-O(-H)"				"Carbon next to OH in hydroxyethyl group"
 # esters 	OPLS-AA JCC22:1340(2001)
-31	CC	C	"-C,=O,-O"					"Ester carbon"
+31	CC	C	"-C,=O,-O(nbonds=2)"				"Ester carbon"
 32	OC	O	"=&31"						"Carbonyl on ester carbon"
 33	OS	O	"-&31"						"Alkoxy oxygen on ester carbon"
 34	HOS	H	"-&35"						"Hydrogen on first alkoxy carbon"
@@ -110,13 +110,13 @@ types
 74	CS4	C	"~&73"						"First carbon in chain in alkylsulfate"
 75	HS4  	H	"-&74"						"Hydrogen on first carbon in chain in alkylsulfate"
 # alkylsulfonates 	JPCB112:5039(2008)
-76	SO3  	S	"~O(n=3,nbonds=1),-C"				"Sulfur in alkylsulfonate"
+76	SO3  	S	"~O(n=3,nbonds=1),-C(-[H,C])"			"Sulfur in alkylsulfonate"
 77	OS3  	O	"~&76,nbonds=1"					"Oxygen in alkylsulfonate"
 78	CS3  	C	"-&76"						"First carbon in chain in alkylsulfonate"
 79	HS3  	H	"-&78"						"Hydrogen on first carbon in chain in alkylsulfonate"
 # acetate 	OPLS-AA
 80	O2   	O	"~&81"						"Acetate oxygen"
-81	CO2  	C	"-C(nh=3),~O(n=2)"				"Carbon with two oxygens in acetate"
+81	CO2  	C	"-C(nh=3),~O(n=2,nbonds=1)"			"Carbon with two oxygens in acetate"
 82	CTA  	C	"nh=3,-&81"					"Methyl carbon in acetate"
 end
 
@@ -130,7 +130,7 @@ inter lj
 5	CT	-0.18	0.27614		3.50
 6	CR	-0.11	0.29288		3.55
 7	CW	-0.13	0.29288		3.55
-8	HA	0.21	0.12552		2.42
+#8	HA	0.21	0.12552		2.42
 9	HCR	0.21	0.12552		2.42
 10	HCW	0.21	0.12552		2.42
 11	HC	0.06	0.12552		2.50
