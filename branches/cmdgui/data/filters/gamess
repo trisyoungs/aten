@@ -389,13 +389,13 @@ filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 
 filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
 {
-	#
 	# GUI Control Definitions
-	#
-	void defaultUi()
+	# Grab default dialog pointer
+	dialog ui = defaultDialog();
+	if (!ui.created)
 	{
 		dialog ui = defaultDialog("GAMESS-US Export Options");
-		widget group, w, tabs, page;
+		widget group, group2, w, tabs, page;
 
 		# General control options group ($CONTRL)
 		group = ui.addGroup("jobgroup", "Job Control ($CONTRL)", 1, 1);
@@ -419,27 +419,29 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		# Basis set specification ($BASIS)
 		group = ui.addGroup("basisgroup", "Basis Set ($BASIS)", 1, 2);
 		w = group.addCombo("basis_gbasis", "Basis", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, 1, 1);
-		#w.onIntegerValue(1, 9 TZV, "basisstack", "value", 1);
-		w = group.addStack("basisstack", 1, 2);
-		page = w.addPage();
-		group.addIntegerSpin("basis_ngauss", "NGAUSS", 3, 8, 1, 6, 1, 1);
-		group.addIntegerSpin("basis_ndfunc", "NDFUNC", 0, 3, 1, 0, 3, 1);
-		group.addIntegerSpin("basis_npfunc", "NPFUNC", 0, 3, 1, 0, 5, 1);
-		group.addIntegerSpin("basis_nffunc", "NFFUNC", 0, 1, 1, 0, 7, 1);
-		group.addCheckBox("basis_diffsp", "DIFFSP", 0, 1, 2);
-		group.addCheckBox("basis_diffs", "DIFFS", 0, 3, 2);
+
+		group.addIntegerSpin("basis_ngauss", "NGAUSS", 3, 6, 1, 6, 1, 1);
+		w.onInteger(3, 6, "sendbool", "basisstack", "enabled");
+		group2 = group.addGroup("suppbasisgroup", "Supplementary Functions");
+		group2.addIntegerSpin("basis_ndfunc", "NDFUNC", 0, 3, 1, 0, 3, 1);
+		group2.addIntegerSpin("basis_npfunc", "NPFUNC", 0, 3, 1, 0, 5, 1);
+		group2.addIntegerSpin("basis_nffunc", "NFFUNC", 0, 1, 1, 0, 7, 1);
+		group2.addCheck("basis_diffsp", "DIFFSP", 0, 1, 2);
+		group2.addCheck("basis_diffs", "DIFFS", 0, 3, 2);
+		w.onInteger(1, 10, "sendbool", "suppbasisgroup", "enabled");
 
 		# Tabs containing various options
 		tabs = ui.addTabs("optiontabs", 1, 3);
 		
 		# DFT options ($DFT)
 		page = tabs.addPage("dftpage", "$DFT");
-		string griddfttyps = "NONE,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,EDF1,PW91,PBE,revPBE,RPBE,PBEsol,HCTH93,HCTH120,HCTH147,HCTH407,SOGGA,MOHLYP,B97-D,BHHLYP,B3PW91,B3LYP,B3LYP1,B97,B97-1,B97-2,B97-3,B97-K,B98,PBE0,X3LYP,CAMB3LYP,wB97,wB97X,wB97X-D,B2PLYP,wB97X-2,wB97X-2L,VS98,PKZB,tHCTH,tHCTHhyb,BMK,TPSS,TPSSh,TPSSm,revTPSS,M05,M05-2X,M06,M06-L,M06-2X,M06-HF,M08-HX,M08-SO";
-		string gridfreedfttyps = "NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP";
-		#w = page.addCombo("dftgrid", "DFT Method", "GRID,GRIDFREE", 1, 1, 1);
-		w.onInteger(1, 1, "contrl_dfttyp", "items", griddfttyps);
-		w.onInteger(2, 2, "contrl_dfttyp", "items", "NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP");
-		w.onInteger(1, 2, "contrl_dfttyp", "value", 2);
+		string griddfttypes = "NONE,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,EDF1,PW91,PBE,revPBE,RPBE,PBEsol,HCTH93,HCTH120,HCTH147,HCTH407,SOGGA,MOHLYP,B97-D,BHHLYP,B3PW91,B3LYP,B3LYP1,B97,B97-1,B97-2,B97-3,B97-K,B98,PBE0,X3LYP,CAMB3LYP,wB97,wB97X,wB97X-D,B2PLYP,wB97X-2,wB97X-2L,VS98,PKZB,tHCTH,tHCTHhyb,BMK,TPSS,TPSSh,TPSSm,revTPSS,M05,M05-2X,M06,M06-L,M06-2X,M06-HF,M08-HX,M08-SO";
+		string gridfreedfttypes = "NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP";
+		w = page.addCombo("dftgrid", "DFT Method", "GRID,GRIDFREE", 1, 1, 1);
+		w.onInteger(1, 1, "sendstring", "contrl_dfttyp", "items", griddfttypes);
+		w.onInteger(2, 2, "sendstring", "contrl_dfttyp", "items", gridfreedfttypes);
+		w.onInteger(1, 2, "sendinteger", "contrl_dfttyp", "value", 2);
+		page.addCombo("control_dfttyp", "DFT Type", griddfttypes, 1);
 
 		# Stationary point location options ($STATPT)
 		page = tabs.addPage("page_statpt", "$STATPT");
@@ -473,41 +475,56 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		page = tabs.addPage("page_elpot", "$ELPOT");
 		page.addCheck("elpot_iepot", "Calculate", 0, 1, 1);
 		page.addCombo("elpot_where", "WHERE", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, 3, 1);
-		page.addCombo("elpot_output", "OUTPUT" "PUNCH,PAPER,BOTH,NONE", 3, 5, 1);
+		page.addCombo("elpot_output", "OUTPUT", "PUNCH,PAPER,BOTH,NONE", 3, 5, 1);
 
 		# Point selection ($PDC)
 		page = tabs.addPage("page_pdc", "$PDC");
 		page.addCombo("pdc_ptsel", "PTSEL", "GEODESIC,CONNOLLY,CHELPG", 1, 1, 1);
 		page.addCombo("pdc_constr", "CONSTR", "NONE,CHARGE,DIPOLE,QUPOLE", 2, 3, 1);
 
-	# Grid specification ($GRID), placed in 'opts' tabs
-	int grid_modgrd = option("3D Grid", "check", 0, "tab=$GRID@opts", "newline");
-	double grid_size = option("Grid Increment", "doublespin", 0.00001, 2.0, 0.1, 0.25, "tab=$GRID@opts");
-	option("ORIGIN", "label", "newline", "tab=$GRID@opts");
-	double grid_originx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_originy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_originz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	option("XVEC", "label", "newline", "tab=$GRID@opts");
-	double grid_xvecx = option("X", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
-	double grid_xvecy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_xvecz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	option("YVEC", "label", "newline", "tab=$GRID@opts");
-	double grid_yvecx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_yvecy = option("Y", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
-	double grid_yvecz = option("Z", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	option("ZVEC", "label", "newline", "tab=$GRID@opts");
-	double grid_zvecx = option("X", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_zvecy = option("Y", "doublespin", -1000.0, 1000, 1, -10.0, "tab=$GRID@opts");
-	double grid_zvecz = option("Z", "doublespin", -1000.0, 1000, 1,  10.0, "tab=$GRID@opts");
+		# Grid specification ($GRID), placed in 'opts' tabs
+		page = tabs.addPage("page_grid", "$GRID");
+		page.addCheck("grid_modgrd", "3D Grid", 0, 1, 1);
+		page.addDoubleSpin("grid_size", "Grid Increment", 0.00001, 2.0, 0.1, 0.25, 3, 1);
+		page.addLabel("ORIGIN", 2, 1);
+		page.addDoubleSpin("grid_originx", "X", -1000.0, 1000.0, 1.0, -10.0, 2, 2);
+		page.addDoubleSpin("grid_originy", "Y", -1000.0, 1000.0, 1.0, -10.0, 2, 4);
+		page.addDoubleSpin("grid_originz", "Z", -1000.0, 1000.0, 1.0, -10.0, 2, 6); 
+		page.addLabel("XVEC", 3, 1);
+		page.addDoubleSpin("grid_xvecx", "X", -1000.0, 1000.0, 1.0,  10.0, 3, 2);
+		page.addDoubleSpin("grid_xvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 3, 4);
+		page.addDoubleSpin("grid_xvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 3, 6);
+		page.addLabel("YVEC", 4, 1);
+		page.addDoubleSpin("grid_yvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 4, 2);
+		page.addDoubleSpin("grid_yvecy", "Y", -1000.0, 1000.0, 1.0,  10.0, 4, 4);
+		page.addDoubleSpin("grid_yvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 4, 6);
+		page.addLabel("ZVEC", 5, 1);
+		page.addDoubleSpin("grid_zvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 5, 2);
+		page.addDoubleSpin("grid_zvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 5, 4);
+		page.addDoubleSpin("grid_zvecz", "Z", -1000.0, 1000.0, 1.0,  10.0, 5, 6);
 
 		# PCM options ($PCM), placed in 'opts' tab
 		page = tabs.addPage("page_pcm", "$PCM");
-		page.addCombo("pcm_solvnt", "Solvent", "NONE,WATER,CH3OH,CLFORM,METHYCL,BENZENE,CLBENZ,NEPTANE,ANILINE,C2H5OH,CTCL,12DCLET,TOLUENE,NITMET,CYCHEX,ACETONE", 1, 1, 1);
-
-	};
-
-	# Grab default dialog pointer
-	dialog ui = defaultDialog();
+		w = page.addCombo("pcm_solvnt", "Solvent", "NONE,INPUT,WATER,CH3OH,CLFORM,METHYCL,BENZENE,CLBENZ,NEPTANE,ANILINE,C2H5OH,CTCL,12DCLET,TOLUENE,NITMET,CYCHEX,ACETONE", 1, 1, 1);
+		w.onInteger(2, 2, "sendbool", "pcminputgroup", "enabled");
+		w = page.addCheck("pcm_icav", "Calculate cavitation energy", 0, 2, 1, 3);
+		w.onInteger(0, 1, "sendbool", "pcm_tabs", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_tce", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_vmol", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_sten", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_dsten", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_cmf", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_tabs", "enabled");
+		group = page.addGroup("pcminputgroup", "Custom Solvent Definition", 3, 1, 5, 0);
+		group.addDoubleSpin("pcm_rsolv", "Radius", 0.0, 100.0, 0.1, 3.0);
+		group.addDoubleSpin("pcm_eps", "EPS", 0.0, 10000.0, 1.0, 20.0);
+		group.addDoubleSpin("pcm_epsinf", "EPSINF", 0.0, 10000.0, 1.0, 20.0);
+		group.addDoubleSpin("pcm_tce", "TCE", 0.0, 10000.0, 1.0, 20.0);
+		group.addDoubleSpin("pcm_vmol", "VMOL", 0.0, 10000.0, 1.0, 20.0);
+		group.addDoubleSpin("pcm_sten", "STEN", 0.0, 10000.0, 1.0, 20.0);
+		group.addDoubleSpin("pcm_dsten", "DSTEN", 0.0, 10000.0, 1.0, 20.0);
+		group.addDoubleSpin("pcm_cmf", "CMF", 0.0, 10000.0, 1.0, 20.0);
+	}
 
 	#
 	# Write Data
@@ -516,63 +533,71 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	# Write $CONTRL line(s)
 	writeLineF(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", ui.asString("contrl_scftyp"), ui.asString("contrl_runtyp"), ui.asString("contrl_coord"), ui.asInteger("contrl_charge"), ui.asInteger("contrl_mult"));
 	line = "";
-	if (contrl_dfttyp != "NONE") line += " DFTTYP=" + contrl_dfttyp;
-	if (contrl_tddft != "NONE") line += " TDDFT=" + contrl_tddft;
-	if (contrl_mplevl != "0") line += " MPLEVL=" + contrl_mplevl;
-	if (contrl_cityp != "NONE") line += " CITYP=" + contrl_cityp;
-	if (contrl_cctyp != "NONE") line += " CCTYP=" + contrl_cctyp;
-	if (contrl_pp != "NONE") line += " ECPTYP=" + contrl_pp;
-	if (contrl_maxit != 30) line += " MAXIT=" + itoa(contrl_maxit);
+	if (ui.asString("contrl_dfttyp") != "NONE") line += " DFTTYP=" + ui.asString("contrl_dfttyp");
+	if (ui.asString("contrl_tddft") != "NONE") line += " TDDFT=" + ui.asString("contrl_tddft");
+	if (ui.asInteger("contrl_mplevl") != 0) line += " MPLEVL=" + ui.asString("contrl_mplevl");
+	if (ui.asString("contrl_cityp") != "NONE") line += " CITYP=" + ui.asString("contrl_cityp");
+	if (ui.asString("contrl_cctyp") != "NONE") line += " CCTYP=" + ui.asString("contrl_cctyp");
+	if (ui.asString("contrl_pp") != "NONE") line += " ECPTYP=" + ui.asString("contrl_pp");
+	if (ui.asInteger("contrl_maxit") != 30) line += " MAXIT=" + ui.asString("contrl_maxit");
 	if (line != "") writeLineF(" $CONTRL%s $END\n", line);
 
 	# Write $BASIS line(s)
-	if ((basis_gbasis == "STO") || (basis_gbasis == "N21") || (basis_gbasis == "N31") || (basis_gbasis == "N311"))
+	if (ui.isRange("basis_gbasis", 3, 6))
 	{
-		sprintf(line, "GBASIS=%s NGAUSS=%i", basis_gbasis, basis_ngauss);
-		if (basis_ndfunc != 0) line += " NDFUNC=" + itoa(basis_ndfunc);
-		if (basis_npfunc != 0) line += " NPFUNC=" + itoa(basis_npfunc);
-		if (basis_nffunc != 0) line += " NFFUNC=" + itoa(basis_nffunc);
+		sprintf(line, "GBASIS=%s NGAUSS=%i", ui.asString("basis_gbasis"), ui.asInteger("basis_ngauss"));
+		if (ui.asInteger("basis_ndfunc") != 0) line += " NDFUNC=" + ui.asString("basis_ndfunc");
+		if (ui.asInteger("basis_npfunc") != 0) line += " NPFUNC=" + ui.asString("basis_npfunc");
+		if (ui.asInteger("basis_nffunc") != 0) line += " NFFUNC=" + ui.asString("basis_nffunc");
 		writeLineF(" $BASIS %s $END\n", line);
-		if (basis_diffsp == ".TRUE." || basis_diffs == ".TRUE.") writeLineF(" $BASIS DIFFSP=%s DIFFS=%s $END\n", basis_diffsp, basis_diffs);
+		if (ui.isString("basis_diffsp", ".TRUE.") || ui.isString("basis_diffs", ".TRUE.")) writeLineF(" $BASIS DIFFSP=%s DIFFS=%s $END\n", ui.asString("basis_diffsp"), ui.asString("basis_diffs"));
 	}
-	else writeLineF(" $BASIS GBASIS=%s $END\n", basis_gbasis);
+	else writeLineF(" $BASIS GBASIS=%s $END\n", ui.asString("basis_gbasis"));
 
 	# Write additional groups, depending on job type
-	if ((contrl_runtyp == "OPTIMIZE") || (contrl_runtyp == "SADPOINT"))
+	if (ui.isString("contrl_runtyp", "OPTIMIZE") || ui.isString("contrl_runtyp", "SADPOINT"))
 	{
-		writeVarF(line, " $STATPT METHOD=%s NSTEP=%i OPTTOL=%f HESS=%s", statpt_method, statpt_nstep, statpt_opttol, statpt_hess);
-		if (statpt_ihrep != 0) line += " IHREP=" + itoa(statpt_ihrep);
-		if (statpt_hssend == ".TRUE.") line += " HSSEND=.TRUE.";
+		writeVarF(line, " $STATPT METHOD=%s NSTEP=%i OPTTOL=%f HESS=%s", ui.asString("statpt_method"), ui.asInteger("statpt_nstep"), ui.asDouble("statpt_opttol"), ui.asString("statpt_hess"));
+		if (ui.asInteger("statpt_ihrep") != 0) line += " IHREP=" + ui.asString("statpt_ihrep");
+		if (ui.isString("statpt_hssend", ".TRUE.")) line += " HSSEND=.TRUE.";
 		writeLineF("%s $END\n", line);
-		if (contrl_runtyp == "SADPOINT") writeLineF(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", statpt_ifolow, statpt_stpt, statpt_ststep);
-		if (statpt_ifreez != "") writeLineF(" $STATPT IFREEZ(1)=%s $END\n", statpt_ifreez);
+		if (ui.isString("contrl_runtyp", "SADPOINT")) writeLineF(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", ui.asInteger("statpt_ifolow"), ui.asString("statpt_stpt"), ui.asDouble("statpt_ststep"));
+		if (ui.isString("statpt_ifreez", "")) writeLineF(" $STATPT IFREEZ(1)=%s $END\n", ui.asString("statpt_ifreez"));
 	}
-	else if (contrl_runtyp == "IRC") writeLineF(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
+	else if (ui.isString("contrl_runtyp", "IRC")) writeLineF(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", ui.asString("irc_pace"), ui.asString("irc_forwrd"), ui.asString("irc_saddle"), ui.asDouble("irc_stride"), ui.asInteger("irc_npoint"));
 
 	# Write $ELDENS if required
-	if (eldens_ieden == 1) writeLineF(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", eldens_morb, eldens_where, eldens_output);
+	if (ui.asInteger("eldens_ieden")) writeLineF(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", ui.asInteger("eldens_morb"), ui.asString("eldens_where"), ui.asString("eldens_output"));
 
 	# Write $ELPOT if required
-	if (elpot_iepot == 1)
+	if (ui.asInteger("elpot_iepot"))
 	{
-		writeLineF(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END\n", elpot_where, elpot_output);
-		if (elpot_where == "PDC") writeLineF(" $PDC PTSEL=%s CONSTR=%s $END\n", pdc_ptsel, pdc_constr);
+		writeLineF(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END\n", ui.asString("elpot_where"), ui.asString("elpot_output"));
+		if (ui.isString("elpot_where", "PDC")) writeLineF(" $PDC PTSEL=%s CONSTR=%s $END\n", ui.asString("pdc_ptsel"), ui.asString("pdc_constr"));
 	}
 
 	# Write $GRID if required
-	if ((eldens_where == "GRID") || (elpot_where == "GRID"))
+	if (ui.isString("eldens_where", "GRID") || ui.isString("elpot_where", "GRID"))
 	{
-		writeLineF(" $GRID MODGRD=%i UNITS=ANGS SIZE=%f $END\n", grid_modgrd, grid_size);
-		writeLineF(" $GRID ORIGIN(1)=%f ORIGIN(2)=%f ORIGIN(3)=%f $END\n", grid_originx, grid_originy, grid_originz);
-		writeLineF(" $GRID XVEC(1)=%f XVEC(2)=%f XVEC(3)=%f $END\n", grid_xvecx, grid_xvecy, grid_xvecz);
-		writeLineF(" $GRID YVEC(1)=%f YVEC(2)=%f YVEC(3)=%f $END\n", grid_yvecx, grid_yvecy, grid_yvecz);
-		if (grid_modgrd == 1) writeLineF(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END\n", grid_zvecx, grid_zvecy, grid_zvecz);
+		writeLineF(" $GRID MODGRD=%i UNITS=ANGS SIZE=%f $END\n", ui.asInteger("grid_modgrd"), ui.asDouble("grid_size"));
+		writeLineF(" $GRID ORIGIN(1)=%f ORIGIN(2)=%f ORIGIN(3)=%f $END\n", ui.asDouble("grid_originx"), ui.asDouble("grid_originy"), ui.asDouble("grid_originz"));
+		writeLineF(" $GRID XVEC(1)=%f XVEC(2)=%f XVEC(3)=%f $END\n", ui.asDouble("grid_xvecx"), ui.asDouble("grid_xvecy"), ui.asDouble("grid_xvecz"));
+		writeLineF(" $GRID YVEC(1)=%f YVEC(2)=%f YVEC(3)=%f $END\n", ui.asDouble("grid_yvecx"), ui.asDouble("grid_yvecy"), ui.asDouble("grid_yvecz"));
+		if (ui.asInteger("grid_modgrd")) writeLineF(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END\n", ui.asDouble("grid_zvecx"), ui.asDouble("grid_zvecy"), ui.asDouble("grid_zvecz"));
 	}
 
 	# Write $PCM if required
-	if (pcm_solvnt != "NONE")
+	if (ui.asString("pcm_solvnt") != "NONE")
 	{
-		writeLineF(" $PCM SOLVNT=%s $END\n", pcm_solvnt);
+		writeVarF(line, " $PCM SOLVNT=%s", ui.asString("pcm_solvnt"));
+		if (ui.asInteger("pcm_icav")) line += " ICAV=" + ui.asString("pcm_icav");
+		writeLineF("%s $END\n", line);
+		if (ui.isString("pcm_solvnt", "INPUT"))
+		{
+			writeLineF(" $PCM RSOLV=%f EPS=%f EPSINF=%f", ui.asDouble("pcm_rsolv"), ui.asDouble("pcm_eps"), ui.asDouble("pcm_epsinf"));
+			if (ui.asInteger("pcm_icav")) writeLineF(" TCE=%f VMOL=%f STEN=%f DSTEN=%f CMF=%f $END\n", ui.asDouble("pcm_tce"), ui.asDouble("pcm_vmol"), ui.asDouble("pcm_sten"), ui.asDouble("pcm_dsten"), ui.asDouble("pcm_cmf"));
+			else writeLineF(" $END\n");
+		}
 	}
 
 	# Write $SYSTEM, $GUESS, and $SCF groups
@@ -584,11 +609,11 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	writeLine(" $DATA");
 	writeLine(aten.frame.name);
 	writeLine("C1");
-	if (contrl_coord == "CART")
+	if (ui.isString("contrl_coord", "CART"))
 	{
-		if (cart_symbols) for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.symbol,i.z*1.0,i.rx,i.ry,i.rz);
+		if (ui.asInteger("cart_symbols")) for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.symbol,i.z*1.0,i.rx,i.ry,i.rz);
 		else for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
 	}
-	else writezmatrix(aten.frame);
+	else writeZMatrix(aten.frame);
 	writeLine(" $END");
 }
