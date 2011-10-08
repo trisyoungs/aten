@@ -422,9 +422,9 @@ bool CommandParser::addStatement(TreeNode *leaf)
 }
 
 // Add an operator to the Tree
-TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2)
+TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2, TreeNode *arg3)
 {
-	return tree()->addOperator(func, arg1, arg2);
+	return tree()->addOperator(func, arg1, arg2, arg3);
 }
 
 // Associate a command-based leaf node to the Tree
@@ -458,15 +458,15 @@ TreeNode *CommandParser::wrapVariable(Variable *var, TreeNode *arrayindex)
 }
 
 // Add variable to topmost ScopeNode
-TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue, bool global)
 {
-	return tree()->addVariable(type, name, initialValue);
+	return tree()->addVariable(type, name, initialValue, global);
 }
 
 // Add array variable to topmost ScopeNode
-TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
+TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue, bool global)
 {
-	return tree()->addArrayVariable(type, name, sizeexpr, initialvalue);
+	return tree()->addArrayVariable(type, name, sizeexpr, initialvalue, global);
 }
 
 // Add array 'constant'

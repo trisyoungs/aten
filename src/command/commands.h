@@ -82,6 +82,7 @@ class Command
 		OperatorEqualTo,
 		OperatorGreaterThan,
 		OperatorGreaterThanEqualTo,
+		OperatorInlineIf,
 		OperatorLessThan,
 		OperatorLessThanEqualTo,
 		OperatorModulus,

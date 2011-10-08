@@ -46,4 +46,4 @@
 <h1>Branch TODO</h1>
 <li>Store current dialog widget values so that, if canceled in the GUI, they may be restored</li>
 <li>Update manual - remove defunct commands, add new variable definitions for Dialog & Widget, rename all commands to follow C++ conventions.</li>
-<li>Doc - trajectory filters now look for readFrame and readHeader funcs.</li>
+<li>Doc - trajectory filters now look for readFrame and readHeader funcs, and Partitions for partitionName and partitionOptions.</li>

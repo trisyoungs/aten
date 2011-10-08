@@ -91,6 +91,8 @@ CommandData Command::data[Command::nCommands] = {
 		"Internal Operator (>)" },
 	{ ">=",			"..",		VTypes::NoData, "",
 		"Internal Operator (>=)" },
+	{ "?:",			"..",		VTypes::NoData, "",
+		"Internal Operator (?:)" },
 	{ "<",			"..",		VTypes::NoData, "",
 		"Internal Operator (<)" },
 	{ "<=",			"..",		VTypes::NoData, "",

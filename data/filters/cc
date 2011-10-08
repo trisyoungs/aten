@@ -1,7 +1,8 @@
 # Chem3D Cartesian Coordinates 1 and 2
 # Created:	 19/05/2010
-# Last modified: 19/05/2010
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 # Notes:	Only connectivity based on positions is supported. Atom type data is ignored.
 
 filter(type="importmodel",name="Chem3D Cartesian Coordinates", nickname="cc", extension="cc1,cc2", glob="*.cc*", id=34)
@@ -15,7 +16,7 @@ filter(type="importmodel",name="Chem3D Cartesian Coordinates", nickname="cc", ex
 	atom i;
 
 	# Read initial data
-	readline(natoms,e,b,c,alpha,beta,gamma,exponent);
+	readLine(natoms,e,b,c,alpha,beta,gamma,exponent);
 
 	# Was a cell specified?
 	if (e != "")
@@ -27,26 +28,26 @@ filter(type="importmodel",name="Chem3D Cartesian Coordinates", nickname="cc", ex
 
 	while (!eof())
 	{
-		m = newmodel(filterfilename());
+		m = newModel(filterFilename());
 		# Since the connection data is supplied at the same time as the atoms, we must create all atoms at once,
 		# and then set positions and bond them afterwards.
-		for (n=1; n<=natoms; ++n) i = newatom(0);
+		for (n=1; n<=natoms; ++n) i = newAtom(0);
 		for (n=1; n<=natoms; ++n)
 		{
-			readline(e,l,v.x,v.y,v.z,ffid,con[1],con[2],con[3],con[4],con[5],con[6],con[7],con[8],con[9],con[10]);
-			setelement(e,m.atoms[n]);
+			readLine(e,l,v.x,v.y,v.z,ffid,con[1],con[2],con[3],con[4],con[5],con[6],con[7],con[8],con[9],con[10]);
+			setElement(e,m.atoms[n]);
 			if (hascell) v /= 10.0^exponent;
 			m.atoms[n].r = v;
 			# Connections
 			for (l=1; l<=10; ++l)
 			{
 				if (con[l] == 0) break;
-				newbond(n,con[l]);
+				newBond(n,con[l]);
 			}
 		}
 		# Convert from fractional coordinates if necessary
-		if (hascell) fractoreal();
-		finalisemodel();
+		if (hascell) fracToReal();
+		finaliseModel();
 	}
 }
 

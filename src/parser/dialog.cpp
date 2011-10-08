@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <base/progress.h>
 
 // Constructors
 DialogVariable::DialogVariable(TreeGui *ptr, bool constant)
@@ -47,10 +48,9 @@ DialogVariable::~DialogVariable()
 
 // Accessor data
 Accessor DialogVariable::accessorData[DialogVariable::nAccessors] = {
-	{ "enabled",		VTypes::IntegerData,	0, FALSE },
+	{ "created",		VTypes::IntegerData,	0, FALSE },
 	{ "title",		VTypes::StringData,	0, FALSE },
-	{ "verticalFill",	VTypes::IntegerData,	0, FALSE },
-	{ "visible",		VTypes::IntegerData,	0, FALSE }
+	{ "verticalFill",	VTypes::IntegerData,	0, FALSE }
 };
 
 // Function data
@@ -69,6 +69,11 @@ FunctionAccessor DialogVariable::functionData[DialogVariable::nFunctions] = {
 	{ "addRadioGroup",	VTypes::WidgetData,"C",		"string name" },
 	{ "addStack",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "addTabs",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
+	{ "asDouble",		VTypes::DoubleData,"C",		"string name" },
+	{ "asInteger",		VTypes::IntegerData,"C",	"string name" },
+	{ "asString",		VTypes::StringData,"C",		"string name" },
+	{ "asVector",		VTypes::VectorData,"CCC",	"string name1, string name2, string name3" },
+	{ "show",		VTypes::IntegerData,"",		"" },
 	{ "widget",		VTypes::WidgetData,"C",		"string name" }
 };
 
@@ -162,17 +167,14 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if (result) switch (acc)
 	{
-		case (DialogVariable::Enabled):
-			rv.set(ptr->enabled());
+		case (DialogVariable::Created):
+			rv.set(ptr->created());
 			break;
 		case (DialogVariable::Title):
 			rv.set(ptr->text());
 			break;
 		case (DialogVariable::VerticalFill):
 			rv.set(ptr->qtWidgetObject() == NULL ? FALSE : ptr->qtWidgetObject()->autoFillVertical());
-			break;
-		case (DialogVariable::Visible):
-			rv.set(ptr->visible());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in DialogVariable.\n", accessorData[i].name);
@@ -247,17 +249,14 @@ bool DialogVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	TreeGui *ptr = (TreeGui*) sourcerv.asPointer(VTypes::DialogData, result);
 	switch (acc)
 	{
-		case (DialogVariable::Enabled):
-			ptr->setEnabled(newvalue.asBool());
+		case (DialogVariable::Created):
+			ptr->setCreated(newvalue.asBool());
 			break;
 		case (DialogVariable::Title):
 			ptr->setProperty(TreeGuiWidgetEvent::TextProperty, newvalue.asString());
 			break;
 		case (DialogVariable::VerticalFill):
 			if (ptr->qtWidgetObject()) ptr->qtWidgetObject()->setAutoFillVertical(newvalue.asBool());
-			break;
-		case (DialogVariable::Visible):
-			ptr->setVisible(newvalue.asBool());
 			break;
 		default:
 			printf("DialogVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -281,6 +280,8 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	int xw, xh, l, t;
+	Vec3<double> v;
+	TreeGuiWidget *w;
 	bool result = TRUE;
 	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if (result) switch (i)
@@ -374,6 +375,60 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(3) ? node->argi(3) : 1;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addTabs(node->argc(0), l, t, xw, xh));
+			break;
+		case (DialogVariable::AsDouble):
+			w = ptr->findWidget(node->argc(0));
+			if (w != NULL) rv.set(w->asDouble());
+			else
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				result = FALSE;
+			}
+			break;
+		case (DialogVariable::AsInteger):
+			w = ptr->findWidget(node->argc(0));
+			if (w != NULL) rv.set(w->asInteger());
+			else
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				result = FALSE;
+			}
+			break;
+		case (DialogVariable::AsString):
+			w = ptr->findWidget(node->argc(0));
+			if (w != NULL) rv.set(w->asCharacter());
+			else
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				result = FALSE;
+			}
+			break;
+		case (DialogVariable::AsVector):
+			w = ptr->findWidget(node->argc(0));
+			if (w != NULL) v.x = w->asDouble();
+			else
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				result = FALSE;
+			}
+			w = ptr->findWidget(node->argc(1));
+			if (w != NULL) v.y = w->asDouble();
+			else
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(1), ptr->name());
+				result = FALSE;
+			}
+			w = ptr->findWidget(node->argc(2));
+			if (w != NULL) v.z = w->asDouble();
+			else
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(2), ptr->name());
+				result = FALSE;
+			}
+			rv.set(v);
+			break;
+		case (DialogVariable::Show):
+			rv.set(ptr->execute());
 			break;
 		case (DialogVariable::Widget):
 			rv.set(VTypes::WidgetData, ptr->findWidget(node->argc(0)));

@@ -1,7 +1,8 @@
 # Simple-style volumetric data / probability density (for v1.2+)
 # Created:	 15/04/2009
-# Last modified: 03/05/2010
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 #	03/05/2010 - Adjusted to use modified grid commands
 # Notes:
 
@@ -14,31 +15,31 @@ filter(type="importgrid", name="Probability Density", nickname="pdens", extensio
 	double data;
 
 	# Create new grid
-	newgrid(filterfilename());
+	newGrid(filterFilename());
 
 	# First line contains number of gridpoints in each direction x,y,z
-	readline(nx, ny, nz);
+	readLine(nx, ny, nz);
 	printf("GridXYZ from file = %i %i %i\n", nx, ny, nz);
-	initgrid("regularxyz",nx,ny,nz);
+	initGrid("regularxyz",nx,ny,nz);
 
 	# Second line contains axis system
-	readline(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
-	gridaxes(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+	readLine(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+	gridAxes(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
 
 	# Third line contains grid origin (lower left-hand corner)
-	readline(origin.x, origin.y, origin.z);
-	gridorigin(origin.x, origin.y, origin.z);
+	readLine(origin.x, origin.y, origin.z);
+	gridOrigin(origin.x, origin.y, origin.z);
 
 	# Fourth line is loop order
-	readline(order);
-	gridlooporder(order);
+	readLine(order);
+	gridLoopOrder(order);
 
 	# Read in grid data
 	npoints = nx*ny*nz;
 	for (n=1; n<=npoints; ++n)
 	{
-		readline(data);
-		addnextgridpoint(data);
+		readLine(data);
+		addNextGridPoint(data);
 	}
-	finalisegrid();
+	finaliseGrid();
 }

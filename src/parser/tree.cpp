@@ -441,14 +441,15 @@ bool Tree::addStatement(TreeNode *leaf)
 }
 
 // Add an operator to the Tree
-TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2)
+TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2, TreeNode *arg3)
 {
 	msg.enter("Tree::addOperator");
 	// Check compatibility between supplied nodes and the operator, since we didn't check the types in the lexer.
 	VTypes::DataType rtype;
 	bool returnsarray;
 	if (arg2 == NULL) rtype = checkUnaryOperatorTypes(func, arg1->returnType(), arg1->returnsArray(), returnsarray);
-	else rtype = checkBinaryOperatorTypes(func, arg1->returnType(), arg1->returnsArray(), arg2->returnType(), arg2->returnsArray(), returnsarray);
+	else if (arg3 == NULL) rtype = checkBinaryOperatorTypes(func, arg1->returnType(), arg1->returnsArray(), arg2->returnType(), arg2->returnsArray(), returnsarray);
+	else rtype = checkTernaryOperatorTypes(func, arg1->returnType(), arg1->returnsArray(), arg2->returnType(), arg2->returnsArray(), arg3->returnType(), arg3->returnsArray(), returnsarray); 
 	if (rtype == VTypes::NoData) return NULL;
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
@@ -458,6 +459,7 @@ TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *ar
 	leaf->addArguments(1,arg1);
 	leaf->setParent(this);
 	if (arg2 != NULL) leaf->addArguments(1,arg2);
+	if (arg3 != NULL) leaf->addArguments(1,arg3);
 	leaf->setReturnType(rtype);
 	leaf->setReturnsArray(returnsarray);
 	msg.exit("Tree::addOperator");
@@ -662,16 +664,21 @@ TreeNode *Tree::addElementConstant(int el)
 }
 
 // Add variable to topmost scope
-TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue, bool global)
 {
 	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
-	// Get topmost scopenode
-// 	printf("nscope = %i, %p  %p\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
-	Refitem<ScopeNode,int> *ri = scopeStack_.last();
-	if (ri == NULL)
+	// Get topmost scopenode or, if global variable, the parent programs global scopenode
+	ScopeNode *scope;
+	if (global) scope = &parent_->globalScope();
+	else
 	{
-		printf("Internal Error: No current scope in which to define variable '%s'.\n", name->get());
-		return NULL;
+		Refitem<ScopeNode,int> *ri = scopeStack_.last();
+		if (ri == NULL)
+		{
+			printf("Internal Error: No current scope in which to define variable '%s'.\n", name->get());
+			return NULL;
+		}
+		scope = ri->item;
 	}
 	// Check initialvalue....
 	if ((initialValue != NULL) && (type != VTypes::VectorData))
@@ -683,36 +690,41 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 		}
 	}
 	// Create the supplied variable in the list of the topmost scope
-	Variable *var = ri->item->variables.create(type, name->get(), initialValue);
+	Variable *var = scope->variables.create(type, name->get(), initialValue);
 	if (!var)
 	{
 // 		printf("Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %p\n", name->get(), ri->item);
+	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %p\n", name->get(), scope);
 	return var;
 }
 
 // Add array variable to topmost ScopeNode using the most recently declared type
-TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
+TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue, bool global)
 {
 	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
-	// Get topmost scopenode
-// 	printf("nscope = %i, %p  %p\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
-	Refitem<ScopeNode,int> *ri = scopeStack_.last();
-	if (ri == NULL)
+	// Get topmost scopenode or, if global variable, the parent programs global scopenode
+	ScopeNode *scope;
+	if (global) scope = &parent_->globalScope();
+	else
 	{
-		printf("Internal Error: No current scope in which to define array variable '%s'.\n", name->get());
-		return NULL;
+		Refitem<ScopeNode,int> *ri = scopeStack_.last();
+		if (ri == NULL)
+		{
+			printf("Internal Error: No current scope in which to define array variable '%s'.\n", name->get());
+			return NULL;
+		}
+		scope = ri->item;
 	}
 	// Create the supplied variable in the list of the topmost scope
-	Variable *var = ri->item->variables.createArray(type, name->get(), sizeexpr, initialvalue);
+	Variable *var = scope->variables.createArray(type, name->get(), sizeexpr, initialvalue);
 	if (!var)
 	{
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-// 	printf("Created array variable '%s' in scopenode %p   %i\n", name->get(), ri->item, scopeStack_.nItems());
+	msg.print(Messenger::Parse, "Created array variable '%s' in scopenode %p\n", name->get(), scope);
 	return var;
 }
 
@@ -781,21 +793,34 @@ Variable *Tree::findVariableInScope(const char *name, int &scopelevel)
 	{
 		msg.print(Messenger::Parse," ... scopenode %p...\n", ri->item);
 		result = ri->item->variables.find(name);
-		if (result != NULL) break;
 		scopelevel --;
-	}
-	if (result == NULL)
-	{
-		result = aten.findPassedValue(name);
-		if (result == NULL) msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
-		else
+		if (result != NULL)
 		{
-			scopelevel = -99;
-			msg.print(Messenger::Parse, "...variable '%s' found as a passed value.\n", name);
+			msg.print(Messenger::Parse, "...variable '%s' found at a scope level of %i.\n", name, scopelevel);
+			return result;
 		}
 	}
-	else msg.print(Messenger::Parse, "...variable '%s' found at a scope level of %i.\n", name, scopelevel);
-	return result;
+	
+	// Didn't find the variable in any local scope - check global scope
+	result = parent_->globalScope().variables.find(name);
+	if (result != NULL)
+	{
+		scopelevel = -98;
+		msg.print(Messenger::Parse, "...variable '%s' found at global scope.\n", name);
+		return result;
+	}
+	
+	// Not in global scope - was it passed as a CLI value?
+	result = aten.findPassedValue(name);
+	if (result != NULL)
+	{
+		scopelevel = -99;
+		msg.print(Messenger::Parse, "...variable '%s' found as a passed value.\n", name);
+		return result;
+	}
+	
+	msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
+	return NULL;
 }
 
 // Wrap named variable (and array index)

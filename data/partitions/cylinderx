@@ -9,13 +9,31 @@ int finegrid[3] = { 100,100,100 };
 # Number of partitions
 int npartitions = 2;
 
-# Every partition definition *must* contain 'partition' and 'partitionname' functions
+# A partition may contain options set through the defaultDialog as follows
+global double y = 0.5, z = 0.5, r = 0.1;
+int partitionOptions()
+{
+	Dialog ui = defaultDialog();
+	if (!ui.created)
+	{
+		ui.verticalFill = TRUE;
+		ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
+		ui.addDoubleSpin("z", "Z", 0.0, 1.0, 0.1, z);
+		ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
+	}
+	if (ui.show())
+	{
+		y = ui.asInteger("y");
+		z = ui.asInteger("z");
+		r = ui.asInteger("r");
+		return TRUE;
+	}
+	else return FALSE;
+}
+
+# Every partition definition *must* contain 'partition' and 'partitionName' functions
 int partition(double px, double py, double pz)
 {
-	double y = option("Y", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Cylinder Properties");
-	double z = option("Z", "doublespin", 0.0, 1.0, 0.1, 0.5, "group=Cylinder Properties");
-	double r = option("R", "doublespin", 0.001, 1.0, 0.1, 0.1, "newline", "span=4", "group=Cylinder Properties");
-
 	// Check 1 - Is the point inside the defined cylinder (region 1)
 	if ( ((py-y)*(py-y) + (pz-z)*(pz-z)) <= (r*r)) return 1;
 
@@ -23,7 +41,7 @@ int partition(double px, double py, double pz)
 	return 0;
 }
 
-string partitionname(int id)
+string partitionName(int id)
 {
 	switch(id)
 	{

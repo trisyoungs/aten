@@ -136,8 +136,10 @@ class PartitioningScheme
 	Dnchar description_;
 	// Pointer to partition() function
 	Tree *partitionFunction_;
-	// Pointer to partitionname() function
+	// Pointer to partitionName() function
 	Tree *partitionNameFunction_;
+	// Pointer to partitionOptions() function
+	Tree *partitionOptionsFunction_;
 	
 	public:
 	// Return Program structure
@@ -148,10 +150,6 @@ class PartitioningScheme
 	const char *name();
 	// Return description of partitioning scheme
 	const char *description();
-	// Return whether the partition function has any user-definable options
-	bool hasOptions();
-	// Execute dialog for user-definable options in partition function
-	bool runOptions();
 	// Set named variable in partitionFunction_'s local scope
 	bool setVariable(const char *name, const char *value);
 
@@ -169,7 +167,9 @@ class PartitioningScheme
 	// Tree parent for UserCommandNode holding 'partition()' function
 	Tree tree_;
 	// User command nodes for varions functions
-	UserCommandNode partitionFunctionNode_, partitionNameNode_;
+	UserCommandNode partitionFunctionNode_, partitionNameNode_, partitionOptionsNode_;
+	// Whether scheme has any defined options
+	bool hasOptions_;
 	// Variables to hold passed coordinates
 	DoubleVariable xVariable_, yVariable_, zVariable_;
 	IntegerVariable idVariable_;
@@ -191,6 +191,10 @@ class PartitioningScheme
 	PartitionData *partition(int id);
 	// Return name of nth partition in list
 	const char *partitionName(int id);
+	// Return whether the partition function has any user-definable options
+	bool hasOptions();
+	// Execute dialog for user-definable options in partition function
+	bool showOptions();
 	// Return partition in which simple (unit) coordinate falls
 	int partitionId(double x, double y, double z);
 	// Return the grid structure
