@@ -429,7 +429,6 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 	{
 		enabled_ = !rv.asBool();
 		propertyChanged_[TreeGuiWidgetEvent::EnabledProperty] = TRUE;
-			printf("Setting disabled value for widget %s to %i\n", name_.get(), rv.asBool());
 	}
 	else if (property == TreeGuiWidgetEvent::EnabledProperty)
 	{
@@ -684,7 +683,6 @@ bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
 // 			setProperty(TreeGuiWidgetEvent::VisibleProperty, visible_);
 // 			break;
 // 	}
-	printf("ACtivating property %s in widget %s\n", TreeGuiWidgetEvent::eventProperty(property), name_.get());
 	propertyChanged_[property] = TRUE;
 	if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
 	checkWidgetEvents();
@@ -694,7 +692,6 @@ bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
 	{
 		Refitem<TreeGuiWidget,int> *button = buttonList_[valueI_-1];
 		if (button == NULL) return FALSE;
-				printf("Current button is %s\n", button->item->name());
 		button->item->activateProperty(TreeGuiWidgetEvent::ValueProperty);
 	}
 	return TRUE;
@@ -760,7 +757,6 @@ TreeGuiWidget *TreeGuiWidget::addCheck(const char *name, const char *label, int 
 // Create new combo widget
 TreeGuiWidget *TreeGuiWidget::addCombo(const char *name, const char *label, const char *items, int index, int l, int t, int xw, int xh)
 {
-	printf("Boo! parent in addCombo = %p\n", parent_);
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::ComboWidget);
 	if (widget == NULL) return NULL;
 	// Parse items list
@@ -1056,7 +1052,7 @@ const char *TreeGuiWidget::asCharacter()
 			result = itoa(valueI_);
 			break;
 		case (TreeGuiWidget::ComboWidget):
-			result = items_[valueI_]->get();
+			result = items_[valueI_-1]->get();
 			break;
 		case (TreeGuiWidget::EditWidget):
 		case (TreeGuiWidget::LabelWidget):
@@ -1086,7 +1082,6 @@ TreeGuiWidgetEvent *TreeGuiWidget::addEvent(TreeGuiWidgetEvent::EventType type, 
 // Check widget's events and act on them if necessary
 void TreeGuiWidget::checkWidgetEvents()
 {
-	printf("Nuimber of events for widget %s = %i\n", name_.get(), events_.nItems());
 	for (TreeGuiWidgetEvent *event = events_.first(); event != NULL; event = event->next)
 	{
 		// Check the type of event, and then check the widget's current value
@@ -1103,7 +1098,6 @@ void TreeGuiWidget::checkWidgetEvents()
 			return;
 		}
 
-printf("Checking widget event type '%s' for widget %s, value is %i...\n", TreeGuiWidgetEvent::eventType(event->type()), name_.get(), asInteger());
 		// Should this event be performed
 		if (qualifies)
 		{
@@ -1155,8 +1149,7 @@ TreeGui::TreeGui() : TreeGuiWidget()
 	}
 	else qtTreeGui_ = NULL;
 	set(TreeGuiWidget::DialogWidget, "DialogWidget", this);
-
-	printf("This TreeGui = %p\n", this);
+	created_ = FALSE;
 	
 	// Public variables
 	prev = NULL;
@@ -1199,6 +1192,18 @@ TreeGuiWidget *TreeGui::findWidget(const char *name)
 {
 	for (TreeGuiWidget *result = widgets_.first(); result != NULL; result = result->next) if (strcmp(name,result->name()) == 0) return result;
 	return NULL;
+}
+
+// Set whether dialog has been created
+void TreeGui::setCreated(bool b)
+{
+	created_ = b;
+}
+
+// Return whether dialog has been created
+bool TreeGui::created()
+{
+	return created_;
 }
 
 // Set named widget's value from integer

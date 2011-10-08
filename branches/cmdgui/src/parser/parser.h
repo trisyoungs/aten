@@ -151,7 +151,7 @@ class CommandParser
 	// Add a node representing a whole statement to the execution list
 	bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
-	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
+	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL, TreeNode *arg3 = NULL);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
@@ -160,12 +160,14 @@ class CommandParser
 	TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
 	// Add a declaration list
 	TreeNode *addDeclarations(TreeNode *declist);
+	// Add a global declaration list
+	TreeNode *addGlobalDeclarations(TreeNode *declist);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 	// Add variable to topmost ScopeNode
-	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL, bool global = FALSE);
 	// Add array variable to topmost ScopeNode
-	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
+	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL, bool global = FALSE);
 	// Add array 'constant'
 	TreeNode *addArrayConstant(TreeNode *values);
 

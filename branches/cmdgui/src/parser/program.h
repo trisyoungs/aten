@@ -24,6 +24,7 @@
 
 #include "base/dnchar.h"
 #include "parser/tree.h"
+#include "parser/scopenode.h"
 
 // Program
 class Program
@@ -46,15 +47,13 @@ class Program
 	Dnchar filename_;
 	// Main program
 	Tree mainProgram_;
-	// User-defined global functions (but local to this program)
-	List<Tree> functions_;
 	// List of filters belonging to this program
 	List<Tree> filters_;
 	// Whether this program is being populated from a filter file
 	bool fromFilterFile_;
 	// Whether or not a tree was pushed initially
 	bool initialPushTree_;
-
+	
 	public:
 	// Clear contents of program, including filters and functions
 	void clear();
@@ -78,14 +77,6 @@ class Program
 	Tree *mainProgram();
 	// Add a filter tree
 	Tree *addFilter();
-	// Add a new Program-global function tree
-	Tree *addGlobalFunction(const char *name);
-	// Search for existing global function
-	Tree *findGlobalFunction(const char *s);
-	// Return first defined global function
-	Tree *globalFunctions();
-	// Execute specified global function
-	bool executeGlobalFunction(const char *name, ReturnValue &rv, const char* arglist, ...);
 	// Delete specified tree
 	void deleteTree(Tree *t);
 	// Return whether the Program is being generated from a filterfile
@@ -94,6 +85,36 @@ class Program
 	bool execute(ReturnValue &rv);
 	// Print program information
 	void print();
+
+
+	/*
+	// Global Functions
+	*/
+	private:
+	// User-defined global functions (but local to this program)
+	List<Tree> globalFunctions_;
+
+	public:
+	// Add a new Program-global function tree
+	Tree *addGlobalFunction(const char *name);
+	// Search for existing global function
+	Tree *findGlobalFunction(const char *s);
+	// Return first defined global function
+	Tree *globalFunctions();
+	// Execute specified global function
+	bool executeGlobalFunction(const char *name, ReturnValue &rv, const char* arglist, ...);
+
+
+	/*
+	// Global Scope
+	*/
+	private:
+	// Global variable scopenode
+	ScopeNode globalScope_;
+
+	public:
+	// Return global scopenode
+	ScopeNode &globalScope();
 };
 
 #endif

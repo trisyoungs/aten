@@ -9,12 +9,29 @@ int finegrid[3] = { 100,100,100 };
 # Number of partitions
 int npartitions = 2;
 
-# Every partition definition *must* contain 'partition' and 'partitionname' functions
+# A partition may contain options set through the defaultDialog as follows
+global double start = 0.4, end = 0.6;
+int partitionOptions()
+{
+	Dialog ui = defaultDialog();
+	if (!ui.created)
+	{
+		ui.verticalFill = TRUE;
+		ui.addDoubleSpin("start", "Start", 0.0, 1.0, 0.1, start);
+		ui.addDoubleSpin("end", "End", 0.0, 1.0, 0.1, end);
+	}
+	if (ui.show())
+	{
+		start = ui.asInteger("start");
+		end = ui.asInteger("end");
+		return TRUE;
+	}
+	else return FALSE;
+}
+
+# Every partition definition *must* contain 'partition' and 'partitionName' functions
 int partition(double x, double y, double z)
 {
-	double start = option("Start Z", "doublespin", 0.0, 1.0, 0.1, 0.4, "group=Slab Properties");
-	double end = option("End Z", "doublespin", 0.0, 1.0, 0.1, 0.6, "group=Slab Properties");
-
 	// Check 1 - Is the point inside the slab (region 1)
 	if ((z >= start) && (z <= end)) return 1;
 
@@ -22,7 +39,7 @@ int partition(double x, double y, double z)
 	return 0;
 }
 
-string partitionname(int id)
+string partitionName(int id)
 {
 	switch(id)
 	{

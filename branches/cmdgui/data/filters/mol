@@ -1,7 +1,8 @@
 # MDL Mol File (for v1.2+)
 # Created:	 12/04/2009
-# Last modified: 12/04/2009
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 
 filter(type="importmodel",name="MDL Mol File", nickname="mol", extension="mol", glob="*.mol", id=10)
 {
@@ -11,25 +12,25 @@ filter(type="importmodel",name="MDL Mol File", nickname="mol", extension="mol", 
 	double rx,ry,rz;
 	
 	# Create default model
-	getline(title);
-	newmodel(title);
+	getLine(title);
+	newModel(title);
 	
-	skipline(2);
+	skipLine(2);
 	
-	readline(natoms,nbonds);
+	readLine(natoms,nbonds);
 	
 	for (n=0; n<natoms; ++n)
 	{
-		readline(rx,ry,rz,e);
-		newatom(e,rx,ry,rz);
+		readLine(rx,ry,rz,e);
+		newAtom(e,rx,ry,rz);
 	}
 	
 	for (n=0; n<nbonds; ++n)
 	{
-		readline(ii,jj,bondtype);
-		newbond(ii,jj,bondtype);
+		readLine(ii,jj,bondtype);
+		newBond(ii,jj,bondtype);
 	}
 	
-	finalisemodel();
+	finaliseModel();
 }
 

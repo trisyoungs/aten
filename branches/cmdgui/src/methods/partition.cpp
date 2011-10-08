@@ -298,17 +298,27 @@ bool PartitioningScheme::initialise()
 	}
 	partitionFunctionNode_.setFunction(partitionFunction_);
 
-	// Locate 'partitionname' function
-	partitionNameFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partitionname");
-	if (partitionNameFunction_) msg.print(Messenger::Verbose, "  --> Found 'partitionname' function in partitioning scheme '%s'.\n", name_.get());
+	// Locate 'partitionName' function
+	partitionNameFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partitionName");
+	if (partitionNameFunction_) msg.print(Messenger::Verbose, "  --> Found 'partitionName' function in partitioning scheme '%s'.\n", name_.get());
 	else
 	{
-		msg.print("Error: No 'partitionname' function defined in partitioning scheme '%s'\n", name_.get());
+		msg.print("Error: No 'partitionName' function defined in partitioning scheme '%s'\n", name_.get());
 		msg.exit("PartitioningScheme::initialise");
 		return FALSE;
 	}
 	partitionNameNode_.setFunction(partitionNameFunction_);
-	
+
+	// Locate 'partitionOptions' function (if one exists)
+	partitionOptionsFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partitionOptions");
+	if (partitionOptionsFunction_)
+	{
+		msg.print(Messenger::Verbose, "  --> Found 'partitionOptions' function in partitioning scheme '%s'.\n", name_.get());
+		partitionNameNode_.setFunction(partitionNameFunction_);
+		hasOptions_ = TRUE;
+	}
+	else hasOptions_ = FALSE;
+
 	// Now can set up basic partition list
 	partitions_.clear();
 	for (int n = 0; n<nparts; ++n)
@@ -332,20 +342,6 @@ const char *PartitioningScheme::name()
 const char *PartitioningScheme::description()
 {
 	return description_.get();
-}
-
-// Return whether the partition function has any user-definable options
-bool PartitioningScheme::hasOptions()
-{
-	if (partitionFunction_ == NULL) return FALSE;
-	return (partitionFunction_->defaultDialog().nWidgets() > 0);
-}
-
-// Execute dialog for user-definable options in partition function
-bool PartitioningScheme::runOptions()
-{
-	if (!hasOptions()) return FALSE;
-	return partitionFunction_->defaultDialog().execute();
 }
 
 // Find and set named variable in partitionFunction_
@@ -455,6 +451,21 @@ const char *PartitioningScheme::partitionName(int id)
 	idVariable_.set(rv);
 	partitionNameNode_.execute(rv);
 	return rv.asString();
+}
+
+// Return whether scheme has any defined options
+bool PartitioningScheme::hasOptions()
+{
+	return hasOptions_;
+}
+
+// Show (execute) options dialog
+bool PartitioningScheme::showOptions()
+{
+	if (!hasOptions_) return TRUE;
+	ReturnValue rv;
+	partitionOptionsNode_.execute(rv);
+	return rv.asBool();
 }
 
 // Return partition in which simple (unit) coordinate falls

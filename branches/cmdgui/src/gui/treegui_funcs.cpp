@@ -231,7 +231,6 @@ void QtWidgetObject::updateCLI()
 		QButtonGroup *butgroup = static_cast<QButtonGroup*>(qObject_);
 		if (!butgroup) printf("Critical Error: Couldn't cast stored qObject_ pointer into QButtonGroup.\n");
 		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, butgroup->checkedId());
-		printf("RG SET id = %i\n", butgroup->checkedId());
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::CheckWidget)
 	{
@@ -848,7 +847,6 @@ QtWidgetObject *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
 // Execute (show) the custom dialog
 bool AtenTreeGuiDialog::execute()
 {
-	printf("WE ARE HERE...\n");
 	msg.enter("AtenTreeGuiDialog::execute");
 	if (parentTree_ == NULL)
 	{
@@ -859,7 +857,6 @@ bool AtenTreeGuiDialog::execute()
 	updating_ = FALSE;
 	bool result = (exec() == 1 ? TRUE : FALSE);
 	updating_ = TRUE;
-// 	if (result) storeValues();
 	msg.exit("AtenTreeGuiDialog::execute");
 	return result;
 }

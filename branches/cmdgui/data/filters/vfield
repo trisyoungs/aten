@@ -1,7 +1,8 @@
 # Vector Field Data (for v1.2+)
 # Created:	 15/04/2009
-# Last modified: 15/04/2009
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 # Notes:
 #	Expected format per line is: x  y  z  vx  vy  vz
 
@@ -11,15 +12,15 @@ filter(type="importmodel", name="Vector Field", nickname="vf", extension="vf", g
 	int n,i,j,k,nx,ny,nz;
 	vector r, v;
 
-	newmodel(filterfilename());
+	newModel(filterFilename());
 
 	# Read vector data
 	while (!eof())
 	{
-		readline(r.x,r.y,r.z,v.x,v.y,v.z);
-		newglyph("vector");
-		glyphdata(1,r.x,r.y,r.z);
-		glyphdata(2,v.x,v.y,v.z);
+		readLine(r.x,r.y,r.z,v.x,v.y,v.z);
+		newGlyph("vector");
+		glyphData(1,r.x,r.y,r.z);
+		glyphData(2,v.x,v.y,v.z);
 	}
-	finalisemodel();
+	finaliseModel();
 }

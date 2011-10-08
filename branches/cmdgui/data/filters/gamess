@@ -1,7 +1,8 @@
 # GAMESS-US Input / Outputi, Logfile and Trajectory Filters (for v1.2+)
 # Created:	 14/04/2009
-# Last modified: 29/01/2011
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 #	29/01/2011 - Added COORD option to specify CART or ZMT
 #	28/01/2011 - Updated trajectory reader to handle IRC trajectory data
 #	15/12/2010 - Added basic trajectory reader
@@ -420,7 +421,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		w = group.addCombo("basis_gbasis", "Basis", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, 1, 1);
 		#w.onIntegerValue(1, 9 TZV, "basisstack", "value", 1);
 		w = group.addStack("basisstack", 1, 2);
-		page = w.addPage("");
+		page = w.addPage();
 		group.addIntegerSpin("basis_ngauss", "NGAUSS", 3, 8, 1, 6, 1, 1);
 		group.addIntegerSpin("basis_ndfunc", "NDFUNC", 0, 3, 1, 0, 3, 1);
 		group.addIntegerSpin("basis_npfunc", "NPFUNC", 0, 3, 1, 0, 5, 1);
@@ -513,7 +514,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	#
 	string line;
 	# Write $CONTRL line(s)
-	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", ui.asString("contrl_scftyp"), ui.asString("contrl_runtyp"), ui.asString("contrl_coord"), ui.asInteger("contrl_charge"), ui.asInteger("contrl_mult"));
+	writeLineF(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", ui.asString("contrl_scftyp"), ui.asString("contrl_runtyp"), ui.asString("contrl_coord"), ui.asInteger("contrl_charge"), ui.asInteger("contrl_mult"));
 	line = "";
 	if (contrl_dfttyp != "NONE") line += " DFTTYP=" + contrl_dfttyp;
 	if (contrl_tddft != "NONE") line += " TDDFT=" + contrl_tddft;
@@ -522,7 +523,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	if (contrl_cctyp != "NONE") line += " CCTYP=" + contrl_cctyp;
 	if (contrl_pp != "NONE") line += " ECPTYP=" + contrl_pp;
 	if (contrl_maxit != 30) line += " MAXIT=" + itoa(contrl_maxit);
-	if (line != "") writelinef(" $CONTRL%s $END\n", line);
+	if (line != "") writeLineF(" $CONTRL%s $END\n", line);
 
 	# Write $BASIS line(s)
 	if ((basis_gbasis == "STO") || (basis_gbasis == "N21") || (basis_gbasis == "N31") || (basis_gbasis == "N311"))
@@ -531,63 +532,63 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		if (basis_ndfunc != 0) line += " NDFUNC=" + itoa(basis_ndfunc);
 		if (basis_npfunc != 0) line += " NPFUNC=" + itoa(basis_npfunc);
 		if (basis_nffunc != 0) line += " NFFUNC=" + itoa(basis_nffunc);
-		writelinef(" $BASIS %s $END\n", line);
-		if (basis_diffsp == ".TRUE." || basis_diffs == ".TRUE.") writelinef(" $BASIS DIFFSP=%s DIFFS=%s $END\n", basis_diffsp, basis_diffs);
+		writeLineF(" $BASIS %s $END\n", line);
+		if (basis_diffsp == ".TRUE." || basis_diffs == ".TRUE.") writeLineF(" $BASIS DIFFSP=%s DIFFS=%s $END\n", basis_diffsp, basis_diffs);
 	}
-	else writelinef(" $BASIS GBASIS=%s $END\n", basis_gbasis);
+	else writeLineF(" $BASIS GBASIS=%s $END\n", basis_gbasis);
 
 	# Write additional groups, depending on job type
 	if ((contrl_runtyp == "OPTIMIZE") || (contrl_runtyp == "SADPOINT"))
 	{
-		writevarf(line, " $STATPT METHOD=%s NSTEP=%i OPTTOL=%f HESS=%s", statpt_method, statpt_nstep, statpt_opttol, statpt_hess);
+		writeVarF(line, " $STATPT METHOD=%s NSTEP=%i OPTTOL=%f HESS=%s", statpt_method, statpt_nstep, statpt_opttol, statpt_hess);
 		if (statpt_ihrep != 0) line += " IHREP=" + itoa(statpt_ihrep);
 		if (statpt_hssend == ".TRUE.") line += " HSSEND=.TRUE.";
-		writelinef("%s $END\n", line);
-		if (contrl_runtyp == "SADPOINT") writelinef(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", statpt_ifolow, statpt_stpt, statpt_ststep);
-		if (statpt_ifreez != "") writelinef(" $STATPT IFREEZ(1)=%s $END\n", statpt_ifreez);
+		writeLineF("%s $END\n", line);
+		if (contrl_runtyp == "SADPOINT") writeLineF(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", statpt_ifolow, statpt_stpt, statpt_ststep);
+		if (statpt_ifreez != "") writeLineF(" $STATPT IFREEZ(1)=%s $END\n", statpt_ifreez);
 	}
-	else if (contrl_runtyp == "IRC") writelinef(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
+	else if (contrl_runtyp == "IRC") writeLineF(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", irc_pace, irc_forwrd, irc_saddle, irc_stride, irc_npoint);
 
 	# Write $ELDENS if required
-	if (eldens_ieden == 1) writelinef(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", eldens_morb, eldens_where, eldens_output);
+	if (eldens_ieden == 1) writeLineF(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", eldens_morb, eldens_where, eldens_output);
 
 	# Write $ELPOT if required
 	if (elpot_iepot == 1)
 	{
-		writelinef(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END\n", elpot_where, elpot_output);
-		if (elpot_where == "PDC") writelinef(" $PDC PTSEL=%s CONSTR=%s $END\n", pdc_ptsel, pdc_constr);
+		writeLineF(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END\n", elpot_where, elpot_output);
+		if (elpot_where == "PDC") writeLineF(" $PDC PTSEL=%s CONSTR=%s $END\n", pdc_ptsel, pdc_constr);
 	}
 
 	# Write $GRID if required
 	if ((eldens_where == "GRID") || (elpot_where == "GRID"))
 	{
-		writelinef(" $GRID MODGRD=%i UNITS=ANGS SIZE=%f $END\n", grid_modgrd, grid_size);
-		writelinef(" $GRID ORIGIN(1)=%f ORIGIN(2)=%f ORIGIN(3)=%f $END\n", grid_originx, grid_originy, grid_originz);
-		writelinef(" $GRID XVEC(1)=%f XVEC(2)=%f XVEC(3)=%f $END\n", grid_xvecx, grid_xvecy, grid_xvecz);
-		writelinef(" $GRID YVEC(1)=%f YVEC(2)=%f YVEC(3)=%f $END\n", grid_yvecx, grid_yvecy, grid_yvecz);
-		if (grid_modgrd == 1) writelinef(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END\n", grid_zvecx, grid_zvecy, grid_zvecz);
+		writeLineF(" $GRID MODGRD=%i UNITS=ANGS SIZE=%f $END\n", grid_modgrd, grid_size);
+		writeLineF(" $GRID ORIGIN(1)=%f ORIGIN(2)=%f ORIGIN(3)=%f $END\n", grid_originx, grid_originy, grid_originz);
+		writeLineF(" $GRID XVEC(1)=%f XVEC(2)=%f XVEC(3)=%f $END\n", grid_xvecx, grid_xvecy, grid_xvecz);
+		writeLineF(" $GRID YVEC(1)=%f YVEC(2)=%f YVEC(3)=%f $END\n", grid_yvecx, grid_yvecy, grid_yvecz);
+		if (grid_modgrd == 1) writeLineF(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END\n", grid_zvecx, grid_zvecy, grid_zvecz);
 	}
 
 	# Write $PCM if required
 	if (pcm_solvnt != "NONE")
 	{
-		writelinef(" $PCM SOLVNT=%s $END\n", pcm_solvnt);
+		writeLineF(" $PCM SOLVNT=%s $END\n", pcm_solvnt);
 	}
 
 	# Write $SYSTEM, $GUESS, and $SCF groups
-	writeline(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
-	writeline(" $GUESS GUESS=HUCKEL $END");
-	writeline(" $SCF DIRSCF=.TRUE. $END");
+	writeLine(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
+	writeLine(" $GUESS GUESS=HUCKEL $END");
+	writeLine(" $SCF DIRSCF=.TRUE. $END");
 
 	# Now for the DATA section
-	writeline(" $DATA");
-	writeline(aten.frame.name);
-	writeline("C1");
+	writeLine(" $DATA");
+	writeLine(aten.frame.name);
+	writeLine("C1");
 	if (contrl_coord == "CART")
 	{
-		if (cart_symbols) for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.symbol,i.z*1.0,i.rx,i.ry,i.rz);
-		else for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
+		if (cart_symbols) for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.symbol,i.z*1.0,i.rx,i.ry,i.rz);
+		else for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
 	}
 	else writezmatrix(aten.frame);
-	writeline(" $END");
+	writeLine(" $END");
 }
