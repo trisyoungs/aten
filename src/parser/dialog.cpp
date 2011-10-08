@@ -73,6 +73,9 @@ FunctionAccessor DialogVariable::functionData[DialogVariable::nFunctions] = {
 	{ "asInteger",		VTypes::IntegerData,"C",	"string name" },
 	{ "asString",		VTypes::StringData,"C",		"string name" },
 	{ "asVector",		VTypes::VectorData,"CCC",	"string name1, string name2, string name3" },
+	{ "isInteger",		VTypes::IntegerData,"CI",	"string name, int value" },
+	{ "isRange",		VTypes::IntegerData,"CII",	"string name, int minvalue, int maxvalue" },
+	{ "isString",		VTypes::IntegerData,"CC",	"string name, string value" },
 	{ "show",		VTypes::IntegerData,"",		"" },
 	{ "widget",		VTypes::WidgetData,"C",		"string name" }
 };
@@ -426,6 +429,33 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 				result = FALSE;
 			}
 			rv.set(v);
+			break;
+		case (DialogVariable::IsInteger):
+			w = ptr->findWidget(node->argc(0));
+			if (w == NULL)
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				result = FALSE;
+			}
+			rv.set(w->asInteger() == node->argi(1));
+			break;
+		case (DialogVariable::IsRange):
+			w = ptr->findWidget(node->argc(0));
+			if (w == NULL)
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				result = FALSE;
+			}
+			rv.set((w->asInteger() >= node->argi(1)) && (w->asInteger() <= node->argi(2)));
+			break;
+		case (DialogVariable::IsString):
+			w = ptr->findWidget(node->argc(0));
+			if (w == NULL)
+			{
+				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				result = FALSE;
+			}
+			rv.set(strcmp(w->asCharacter(), node->argc(1)) == 0);
 			break;
 		case (DialogVariable::Show):
 			rv.set(ptr->execute());
