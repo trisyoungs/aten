@@ -15,18 +15,21 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 	double ax,ay,az,bx,by,bz,cx,cy,cz;
 	double rx,ry,rz,vx,vy,vz,fx,fy,fz;
 
-	void defaultUi()
+	# Create (if necessary) and execute dialog
+	dialog ui = defaultDialog();
+	if (!ui.created)
 	{
-		dialog ui = defaultDialog("DL_POLY Export Options");
+		ui.title = "DL_POLY Export Options";
 		widget group, w, tabs, page;
-		ui.addLabel("DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
-		ui.addLabel("while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
-		ui.addLabel("DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
+		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
 		ui.addCheck("cellshift", "Shift input coordinates by half cell", 1, 1, 4);
 	}
+	# Execute dialog
+	if (!ui.show()) error("Options dialog canceled.\n");
 
-	# Grab default dialog pointer and get values
-	dialog ui = defaultDialog();
+	# Get dialog values
 	int cellshift = ui.asInteger("cellshift");
 
 	#aten.prefs.zmap = "ff";
@@ -94,11 +97,14 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 		w = group.addRadioButton("radio1", "Coordinates", "keygroup", 1);
 		w = group.addRadioButton("radio2", "Coordinates and velocities", "keygroup", 1);
 		w = group.addRadioButton("radio3", "Coordinates, velocities and forces", "keygroup", 1);
-		ui.addLabel("DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5");
-		ui.addLabel("while Aten uses 0 to 1.0. The option below, if checked, will convert");
-		ui.addLabel("Aten to DL_POLY coordinates by shifting all atoms by one half of the unit cell.");
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5");
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert");
+		ui.addLabel("","Aten to DL_POLY coordinates by shifting all atoms by one half of the unit cell.");
 		ui.addCheck("cellshift", "Shift input coordinates by half cell", 1);
 	}
+	# Execute dialog
+	if (!ui.show()) error("Options dialog canceled.\n");
+
 	int keytrj = ui.asInteger("keygroup");
 	int cellshift = ui.asInteger("cellshift");
 
@@ -489,9 +495,9 @@ int elementByMass(double mass, double masstol)
 filter(type="importexpression",name="DL_POLY Forcefield Specification", extension="FIELD", glob="*FIELD",exact="FIELD",nickname="dlpoly")
 {
 	# Variable declaration
-	forcefield ff;
-	ffbound ffb;
-	ffatom at1, at2;
+	Forcefield ff;
+	FFBound ffb;
+	FFAtom at1, at2;
 	int i, j, k, l, m, n, natoms, nmols, mol, nrepeat, nbound, nvdw;
 	double mass, charge, qdiff, data[10];
 	string discard, s, keyword, form, name, names[100];
@@ -508,6 +514,8 @@ filter(type="importexpression",name="DL_POLY Forcefield Specification", extensio
 		ui.addDoubleSpin("masstol", "Mass Tolerance", 0.0, 1.0, 0.01, 0.01);
 		ui.addDoubleSpin("qtol", "Charge Tolerance", 0.0, 1.0, 0.01, 0.01);
 	}
+	# Execute dialog
+	if (!ui.show()) error("Options dialog canceled.\n");
 	int assumeua = ui.asInteger("assumeua"); 
 	int reducetypes = ui.asInteger("reducetypes");
 	double masstol = ui.asDouble("masstol");

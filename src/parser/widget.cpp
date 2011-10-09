@@ -62,7 +62,7 @@ FunctionAccessor WidgetVariable::functionData[WidgetVariable::nFunctions] = {
 	{ "addFrame",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "addGroup",		VTypes::WidgetData,"CCiiii",	"string name, string label, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "addIntegerSpin",	VTypes::WidgetData,"CCIIIIiiii","string name, string label, int min, int max, int step, int value, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
-	{ "addLabel",		VTypes::WidgetData,"Ciiii",	"string text, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addLabel",		VTypes::WidgetData,"CCiiii",	"string name, string text, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
 	{ "addPage",		VTypes::WidgetData,"CC",	"string name, string label" },
 	{ "addRadioButton",	VTypes::WidgetData,"CCCIiiii",	"string name, string label, string group, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0"},
 	{ "addRadioGroup",	VTypes::WidgetData,"C",		"string name" },
@@ -343,11 +343,11 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			rv.set(VTypes::WidgetData, ptr->addIntegerSpin(node->argc(0), node->argc(1), node->argi(2), node->argi(3), node->argi(4), node->argi(5), l, t, xw, xh));
 			break;
 		case (WidgetVariable::AddLabel):
-			l = node->hasArg(1) ? node->argi(1) : -1;
-			t = node->hasArg(2) ? node->argi(2) : -1;
-			xw = node->hasArg(3) ? node->argi(3) : 0;
-			xh = node->hasArg(4) ? node->argi(4) : 0;
-			rv.set(VTypes::WidgetData, ptr->addLabel(node->argc(0), l, t, xw, xh));
+			l = node->hasArg(1) ? node->argi(2) : -1;
+			t = node->hasArg(3) ? node->argi(3) : -1;
+			xw = node->hasArg(4) ? node->argi(4) : 0;
+			xh = node->hasArg(5) ? node->argi(5) : 0;
+			rv.set(VTypes::WidgetData, ptr->addLabel(node->argc(0), node->argc(1), l, t, xw, xh));
 			break;
 		case (WidgetVariable::AddPage):
 			rv.set(VTypes::WidgetData, ptr->addPage(node->argc(0), node->argc(1)));
