@@ -132,10 +132,29 @@ bool TreeGuiWidgetEvent::setEventData(TreeGuiWidgetEvent::EventType type, TreeGu
 	targetProperty_ = property;
 }
 
-// Return send data storage
-ReturnValue &TreeGuiWidgetEvent::sendValue()
+// Add send data to event
+ReturnValue *TreeGuiWidgetEvent::addSendValue()
 {
-	return sendValue_;
+	return sendValues_.add();
+}
+
+// Return number of send values defined
+int TreeGuiWidgetEvent::nSendValues()
+{
+	return sendValues_.nItems();
+}
+
+// Return relevant send data based on supplied widget value
+ReturnValue *TreeGuiWidgetEvent::sendValue(int widgetValue)
+{
+	if ((qualifier_ != TreeGuiWidgetEvent::IntegerQualifier) || sendValues_.nItems() == 1) return sendValues_[0];
+	else
+	{
+		// Dumb check - is the supplied value in range?
+		if (qualifies(widgetValue)) return sendValues_[widgetValue-minimumI_];
+		else printf("Internal Error: Tried to get a sendValue for a widgetValue which does not qualify.\n");
+		return NULL;
+	}
 }
 
 // Return whether supplied integer value qualifies
@@ -1120,7 +1139,8 @@ void TreeGuiWidget::checkWidgetEvents()
 					targetWidget->setProperty(event->targetProperty(), asCharacter());
 					break;
 				case (TreeGuiWidgetEvent::SetPropertyType):
-					targetWidget->setProperty(event->targetProperty(), event->sendValue());
+					// Check 'range' of event integer
+					targetWidget->setProperty(event->targetProperty(), *event->sendValue(asInteger()));
 					break;
 				default:
 					printf("Internal Error: Event type not recognised in TreeGuiWidget::checkWidgetEvents().\n");
