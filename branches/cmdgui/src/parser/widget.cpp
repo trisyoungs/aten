@@ -68,9 +68,8 @@ FunctionAccessor WidgetVariable::functionData[WidgetVariable::nFunctions] = {
 	{ "addRadioGroup",	VTypes::WidgetData,"C",		"string name" },
 	{ "addStack",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "addTabs",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
-	{ "onDouble",		VTypes::NoData,	   "DDCCCs",	"double minval, double maxval, string event, string widget, string property, double|int|string value = <auto>" },
-	{ "onInteger",		VTypes::NoData,	   "IICCCs",	"int minval, int maxval, string event, string widget, string property, double|int|string value = <auto>" },
-	{ "onRange",		VTypes::NoData,	   "IICCCS*",	"int minval, int maxval, string event, string widget, string property, double|int|string value ..." },
+	{ "onDouble",		VTypes::NoData,	   "DDCCCs*",	"double minval, double maxval, string event, string widget, string property, double|int|string value = <auto> ..." },
+	{ "onInteger",		VTypes::NoData,	   "IICCCs*",	"int minval, int maxval, string event, string widget, string property, double|int|string value = <auto> ..." },
 	{ "onString",		VTypes::NoData,	   "SCCCs",	"string text, string event, string widget, string property, double|int|string value = <auto>" }
 };
 
@@ -396,37 +395,41 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			// Set qualifying value or range
 			if (i == WidgetVariable::OnDouble) event->setQualifiers(node->argd(0), node->argd(1));
 			else event->setQualifiers(node->argi(0), node->argi(1));
-			// If a specific value was supplied, store it. Otherwise the widget's current value will be sent
-			if (node->hasArg(5)) node->arg(5, event->sendValue());
-			result = TRUE;
-			break;
-		case (WidgetVariable::OnRange):
-			rv.reset();
-			// Check supplied parameters
-			result = FALSE;
-			eventType = TreeGuiWidgetEvent::eventType(node->argc(2), TRUE);
-			if (eventType == TreeGuiWidgetEvent::nEventTypes) break;
-			targetWidget = ptr->parent()->findWidget(node->argc(3));
-			if (targetWidget == NULL)
+			// If a specific value(s) were supplied, store it. Otherwise the widget's current value will be sent
+			if (node->hasArg(5))
 			{
-				msg.print("Error: No widget named '%s' is defined in the current dialog.\n", node->argc(3));
-				break;
-			}
-			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(4), TRUE);
-			if (eventProperty == TreeGuiWidgetEvent::nEventProperties) break;
-			event = ptr->addEvent(eventType, targetWidget, eventProperty);
-			// Set qualifying value or range
-			event->setQualifiers(node->argi(0), node->argi(1));
-			// Values corresponding to each valid integer in the range should have been supplied
-			for (int n = node->argi(0); n<=node->argi(1); ++n)
-			{
-				if (!node->hasArg(5+n-node->argi(0)))
+				// Can't set more than one value for an onDouble event
+				if (i == WidgetVariable::OnDouble)
 				{
-					msg.print("Error: Not enough values supplied to 'onRange' function, based on integer range provided.\n");
-					result = FALSE;
-					break;
+					if (node->hasArg(6))
+					{
+						msg.print("Error: Can't set more than one send value for an 'onDouble' event.\n");
+						result = FALSE;
+					}
+					else
+					{
+						ReturnValue *sendValue = event->addSendValue();
+						node->arg(5, *sendValue);
+					}
 				}
-				XXX node->arg(5, event->sendValue()); Need list of sendValues.
+				else
+				{
+					// Values corresponding to each valid integer in the range may have been supplied
+					int range = node->argi(1) - node->argi(0) + 1;
+					for (int n = 0; n<range; ++n)
+					{
+						ReturnValue *sendValue = event->addSendValue();
+						node->arg(5+n, *sendValue);
+					}
+					// Check number of sendvalues supplied
+					if ((event->nSendValues() != 1) && (event->nSendValues() != range))
+					{
+						msg.print("Error: %s values (%i) supplied to 'onRange' function, based on integer range provided (expected (%i).\n", (event->nSendValues() < range ? "Not enough" : "Too many"), event->nSendValues(), range);
+						result = FALSE;
+						break;
+					}
+				}
+			
 			}
 			result = TRUE;
 			break;
@@ -448,7 +451,11 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			// Set qualifying value
 			event->setQualifiers(node->argc(0));
 			// If a specific value was supplied, store it. Otherwise the widget's current value will be sent
-			if (node->hasArg(4)) node->arg(4, event->sendValue());
+			if (node->hasArg(4))
+			{
+				ReturnValue *sendValue = event->addSendValue();
+				node->arg(4, *sendValue);
+			}
 			result = TRUE;
 			break;
 		default:

@@ -1,8 +1,8 @@
-# Gaussian Import/Export Filter
+# Gaussian 09 Import/Export Filter
 # Created:	 27/01/2011
 # Last modified: 02/09/2011
 # ChangeLog:
-#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8 and new GUI dialogs.
 #	08/08/2011 - Added polar function spec for 6-31G, 6-311G, D95, and D95V basis sets. Added Symmetry option. Tweaked layout.
 #	27/01/2011 - Initial version.
 # Notes:
@@ -70,96 +70,134 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 		tab = tabs.addPage("Job Options");
 		tab.addCombo("symmetry", "Symmetry", "Symmetry,NoSymmetry", 1);
 		tab.addCheck("symmetry_loose", "Loose", 0);
+		tab.addCombo("coords", "Coordinates", "Cartesian, ZMatrix", 1);
 	
 		# Basis Set
 		tab = tabs.addPage("Basis Set");
-		w = tab.addCombo("basis", "Basic Basis", "STO-3G,3-21G,6-21G,4-31G,6-31G,6-311G,D95V,D95,SHC,Stevens/Basch/Krauss,LanL2MB,LanL2DZ,SDD,SDDAll,Dunning,Alhrichs,MidiX,EPR,UGBS,MTSmall,DGauss,CBSB7", 5, 1, 1);
-		w2 = tab.addGroup("elements", "Elements", 1, 3);
+		w = tab.addCombo("basis", "Basic Basis", "STO-3G,3-21G,6-21G,4-31G,6-31G,6-311G,D95V,D95,SHC,SBK,LanL2MB,LanL2DZ,SDD,SDDAll,Dunning,Alhrichs,MidiX,EPR,UGBS,MTSmall,DGauss,CBSB7", 5);
+		tab.addCombo("subbasis", "Sub Basis", "<none>", 1);
+		w2 = tab.addGroup("elements", "Elements", 1, 2, 3);
 		w2.addLabel("elementlabel", "POOOP");
-		w2 = tab.addGroup("extrabasis", "Additional Basis Functions", 1, 3);
+		w2 = tab.addGroup("extrabasis", "Additional Basis Functions", 1, 3, 3);
 		w2.addCombo("diffuse", "Diffuse", "<none>", 1, 1, 1);
-		w2.addCombo("heavypolar", "Heavy Atom Polarisation", "<none>", 1, 1, 2);
-		w2.addCombo("lightpolar", "Light Atom Polarisation", "<none>", 1, 1, 3);
+		w2.addCombo("polar", "Polarisation (Heavy Atom, General)", "<none>", 1, 1, 2);
+		w2.addCombo("lightpolar", "Polarisation (Light Atom)", "<none>", 1, 1, 3);
 		# -- Link events to show valid options for extra basis functions, and display element text
-		w.onInteger
-
-		option("basisstack", "stack", 22, 5, "tab=Basis Set@Job Specification", "span=2", "newline");
-		# -- STO-3G
-		option("Elements: ???", "label", "group=basisstack_1", "labelspan=2");
-		# -- 3-21G
-		page.addLabel("Elements: H-Xe");
-		page.addCombo("basis_321g_diffuse", "Diffuse", "<none>,+", 1, "group=basisstack_2", "newline");
-		# -- 6-21G
-		page.addLabel("Elements: H-Cl");
-		page.addCombo("basis_621g_polar", "Polarisation", "<none>,*,**", 1, "group=basisstack_3", "newline");
-		# -- 4-31G
-		page.addLabel("Elements: H-Ne");
-		page.addCombo("basis_431g_polar", "Polarisation", "<none>,*,**", 1, "group=basisstack_4", "newline");
-		# -- 6-31G
-		page.addLabel("Elements: H-Kr");
-		page.addCombo("basis_631g_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_5", "newline");
-		page.addCombo("basis_631g_heavypolar", "Heavy Atom Polarisation", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_5", "newline");
-		page.addCombo("basis_631g_lightpolar", "Light Atom Polarisation", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_5", "newline");
-		# -- 6-311G
-		page.addLabel("Elements: H-Kr");
-		page.addCombo("basis_6311g_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_6", "newline");
-		page.addCombo("basis_6311g_heavypolar", "Heavy Atom Polarisation", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_6", "newline");
-		page.addCombo("basis_6311g_lightpolar", "Light Atom Polarisation", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_6", "newline");
-		# -- D95V
-		page.addLabel("Elements: H-Ne");
-		page.addCombo("basis_d95v_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_7", "newline");
-		page.addCombo("basis_d95v_heavypolar", "Heavy Atom Polarisation", "<none>,d", 1, "group=basisstack_7", "newline");
-		page.addCombo("basis_d95v_lightpolar", "Light Atom Polarisation", "<none>,p", 1, "group=basisstack_7", "newline");
-		# -- D95
-		option("Elements: H-Cl, except Na and Mg", "label", "group=basisstack_8", "labelspan=2");
-		page.addCombo("basis_d95_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_8", "newline");
-		page.addCombo("basis_d95_heavypolar", "Heavy Atom Polarisation", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_8", "newline");
-		page.addCombo("basis_d95_lightpolar", "Light Atom Polarisation", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_8", "newline");
-		# -- SHC
-		page.addLabel("Elements: H-Cl");
-		page.addCombo("basis_shc_polar", "Polarisation", "<none>,*", 1, "group=basisstack_9", "newline");
-		# -- Stevens/Basch/Krauss
-		page.addLabel("Elements: H-Rn");
-		page.addCombo("basis_sbk_type", "Basis", "CEP-4G,CEP-31G,CEP-121G", 1, "group=basisstack_10", "newline");
-		page.addCombo("basis_sbk_polar", "Polarisation", "<none>,*", 1, "group=basisstack_10", "newline");
-		# -- LanL2MB
-		option("Elements: H-La, Hf-Bi", "label", "group=basisstack_11", "labelspan=2");
-		# -- LanL2DZ
-		option("Elements: H, Li-La, Hf-Bi", "label", "group=basisstack_12", "labelspan=2");
-		# -- SDD
-		option("Elements: All, except Fr and Ra", "label", "group=basisstack_13", "labelspan=2");
-		# -- SDDAll
-		option("Elements: All, except Fr and Ra", "label", "group=basisstack_14", "labelspan=2");
-		# -- Dunning
-		option("Elements: H-Ar, Ca-Kr", "label", "group=basisstack_15", "labelspan=2");
-		page.addCombo("basis_dunning_type", "Basis", "cc-pVDZ,cc-pVTZ,cc-pVQZ,cc-pV5Z,cc-pV6Z", 1, "group=basisstack_15", "newline");
-		int basis_dunning_diffuse = option("Diffuse (AUG)", "check", 0, "group=basisstack_15", "newline");
-		# -- Alhrichs
-		option("Elements: All, except Fr and Ra", "label", "group=basisstack_16", "labelspan=2");
-		page.addCombo("basis_alhrichs_type", "Basis", "SV,SVP,TZV,TZVP,QZVP", 1, "group=basisstack_16", "newline");
-		# -- MidiX
-		option("Elements: H, C-F, S-Cl, I, Br", "label", "group=basisstack_17", "labelspan=2");
-		# -- EPR
-		option("Elements: H, C-F, S-Cl, I, Br", "label", "group=basisstack_18", "labelspan=2");
-		page.addCombo("basis_epr_type", "Basis", "EPR-II,EPR-III", 1, "group=basisstack_18", "newline");
-		# -- UGBS
-		page.addLabel("Elements: H-Lr");
-		page.addCombo("basis_ugbs_polar", "Polarisation", "<none>,1,2,3", 1, "group=basisstack_19", "newline");
-		page.addCombo("basis_ugbs_polartype", "Polarisation Type", "P,V,O", 1, "group=basisstack_19", "newline");
-		page.addCombo("basis_ugbs_diffuse", "Diffuse", "<none>,+,++,2+,2++", 1, "group=basisstack_19", "newline");
-		# -- MTSmall
-		page.addLabel("Elements: H-Ar");
-		# -- DGauss
-		page.addLabel("Elements: See Basis Options");
-		page.addCombo("basis_dgauss_type", "Basis", "'DGDZVP (H-Xe)','DGDZVP2 (H-F,Al-Ar,Sc-Zn)','DGTZVP (H,C-F,Al-Ar)'", 1, "group=basisstack_21", "newline");
-		# -- CBSB7
-		page.addLabel("Elements: H-Kr");
-		page.addCombo("basis_cbsb7_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_22", "newline");
-	
-		# Coordinates
-		int coordtype = option("coordgroup", "radiogroup");
-		option("Cartesian", "radio", "coordgroup", 1, "tab=Coordinates@Job Specification");
-		option("ZMatrix", "radio", "coordgroup", 0, "tab=Coordinates@Job Specification");
+		w.onRange(1, 22, "setproperty", "elementlabel", "text",
+			"???",						# -- STO-3G
+			"H-Xe",						# -- 3-21G
+			"H-Cl",						# -- 6-21G
+			"H-Ne",						# -- 4-31G
+			"H-Kr",						# -- 6-31G
+			"H-Kr",						# -- 6-311G
+			"H-Ne",						# -- D95V
+			"H-Cl, except Na and Mg",			# -- D95
+			"H-Cl",						# -- SHC
+			"H-Rn",						# -- Stevens/Basch/Krauss
+			"H-La, Hf-Bi",					# -- LanL2MB
+			"H, Li-La, Hf-Bi",				# -- LanL2DZ
+			"All, except Fr and Ra",			# -- SDD
+			"All, except Fr and Ra",			# -- SDDAll
+			"H-Ar, Ca-Kr",					# -- Dunning
+			"All, except Fr and Ra",			# -- Alhrichs
+			"H, C-F, S-Cl, I, Br",				# -- MidiX
+			"H, C-F, S-Cl, I, Br",				# -- EPR
+			"H-Lr",						# -- UGBS
+			"H-Ar",						# -- MTSmall
+			"See Basis Options",				# -- DGauss
+			"H-Kr");					# -- CBSB7
+		w.onRange(1, 22, "setproperty", "subbasis", "items",
+			"<none>",					# -- STO-3G
+			"<none>",					# -- 3-21G
+			"<none>",					# -- 6-21G
+			"<none>",					# -- 4-31G
+			"<none>",					# -- 6-31G
+			"<none>",					# -- 6-311G
+			"<none>",					# -- D95V
+			"<none>",					# -- D95
+			"<none>",					# -- SHC
+			"CEP-4G,CEP-31G,CEP-121G",			# -- Stevens/Basch/Krauss
+			"<none>",					# -- LanL2MB
+			"<none>",					# -- LanL2DZ
+			"<none>",					# -- SDD
+			"<none>",					# -- SDDAll
+			"cc-pVDZ,cc-pVTZ,cc-pVQZ,cc-pV5Z,cc-pV6Z",	# -- Dunning
+			"SV,SVP,TZV,TZVP,QZVP",				# -- Alhrichs
+			"<none>",					# -- MidiX
+			"EPR-II,EPR-III",				# -- EPR
+			"<none>",					# -- UGBS
+			"<none>",					# -- MTSmall
+			"'DGDZVP (H-Xe)','DGDZVP2 (H-F,Al-Ar,Sc-Zn)','DGTZVP (H,C-F,Al-Ar)'", # -- DGauss
+			"<none>");					# -- CBSB7
+		w.onRange(1, 22, "setproperty", "diffuse", "items",
+			"<none>",					# -- STO-3G
+			"<none>,+",					# -- 3-21G
+			"<none>",					# -- 6-21G
+			"<none>",					# -- 4-31G
+			"<none>,+,++",					# -- 6-31G
+			"<none>,+,++",					# -- 6-311G
+			"<none>,+,++",					# -- D95V
+			"<none>,+,++",					# -- D95
+			"<none>",					# -- SHC
+			"<none>",					# -- Stevens/Basch/Krauss
+			"<none>",					# -- LanL2MB
+			"<none>",					# -- LanL2DZ
+			"<none>",					# -- SDD
+			"<none>",					# -- SDDAll
+			"<none>,AUG",					# -- Dunning
+			"<none>",					# -- Alhrichs
+			"<none>",					# -- MidiX
+			"<none>",					# -- EPR
+			"<none>,+,++,2+,2++",				# -- UGBS
+			"<none>",					# -- MTSmall
+			"<none>",					# -- DGauss
+			"<none>,+,++");					# -- CBSB7
+		w.onRange(1, 22, "setproperty", "polar", "items",
+			"<none>",					# -- STO-3G
+			"<none>",					# -- 3-21G
+			"<none>,*,**",					# -- 6-21G
+			"<none>,*,**",					# -- 4-31G
+			"<none>,d,2d,3d,df,2df,3df",					# -- 6-31G
+			"<none>,d,2d,3d,df,2df,3df",					# -- 6-311G
+			"<none>,d",					# -- D95V
+			"<none>,d,2d,3d,df,2df,3df",					# -- D95
+			"<none>,*",					# -- SHC
+			"<none>,*",					# -- Stevens/Basch/Krauss
+			"<none>",					# -- LanL2MB
+			"<none>",					# -- LanL2DZ
+			"<none>",					# -- SDD
+			"<none>",					# -- SDDAll
+			"<none>",					# -- Dunning
+			"<none>",					# -- Alhrichs
+			"<none>",					# -- MidiX
+			"<none>",					# -- EPR
+			"<none>,1P,2P,3P,1V,2V,3V,1O,2O,3O",		# -- UGBS
+			"<none>",					# -- MTSmall
+			"<none>",					# -- DGauss
+			"<none>");					# -- CBSB7
+		w.onRange(1, 22, "setproperty", "lightpolar", "items",
+			"<none>",					# -- STO-3G
+			"<none>",					# -- 3-21G
+			"<none>",					# -- 6-21G
+			"<none>",					# -- 4-31G
+			"<none>,p,2p,3p,pd,2pd,3pd",			# -- 6-31G
+			"<none>,p,2p,3p,pd,2pd,3pd",			# -- 6-311G
+			"<none>,p",					# -- D95V
+			"<none>,p,2p,3p,pd,2pd,3pd",			# -- D95
+			"<none>",					# -- SHC
+			"<none>",					# -- Stevens/Basch/Krauss
+			"<none>",					# -- LanL2MB
+			"<none>",					# -- LanL2DZ
+			"<none>",					# -- SDD
+			"<none>",					# -- SDDAll
+			"<none>",					# -- Dunning
+			"<none>",					# -- Alhrichs
+			"<none>",					# -- MidiX
+			"<none>",					# -- EPR
+			"<none>",					# -- UGBS
+			"<none>",					# -- MTSmall
+			"<none>",					# -- DGauss
+			"<none>");					# -- CBSB7
 	}
 
 	#

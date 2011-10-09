@@ -68,8 +68,8 @@ class TreeGuiWidgetEvent
 	double minimumD_, maximumD_;
 	// Qualifying string value(s)
 	List<Dnchar> matchS_;
-	// Send value (if explicitly set)
-	ReturnValue sendValue_;
+	// Send value(s) (if explicitly set)
+	List<ReturnValue> sendValues_;
 
 	public:
 	// Return qualifier type
@@ -88,8 +88,12 @@ class TreeGuiWidgetEvent
 	void setQualifiers(const char *s);
 	// Set remaining event data
 	bool setEventData(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetwidget, TreeGuiWidgetEvent::EventProperty property);
-	// Return send data storage
-	ReturnValue &sendValue();
+	// Add send data to event
+	ReturnValue *addSendValue();
+	// Return number of send values defined
+	int nSendValues();
+	// Return specified send data based on supplied widget value
+	ReturnValue *sendValue(int widgetValue);
 	// Return whether supplied integer value qualifies
 	bool qualifies(int i);
 	// Return whether supplied double value qualifies
