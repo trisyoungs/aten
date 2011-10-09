@@ -350,7 +350,7 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 	Tree dialog;
 	TreeGui &ui = dialog.defaultDialog();
 	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Paste Translated");
-	ui.addLabel("Center of geometry of pasted atoms:", 1, 1);
+	ui.addLabel("","Center of geometry of pasted atoms:", 1, 1);
 	ui.addDoubleSpin("newx", "New X", -1e6, 1e6, 1, 0.0 ,1,2);
 	ui.addDoubleSpin("newy", "New Y", -1e6, 1e6, 1, 0.0 ,1,3);
 	ui.addDoubleSpin("newz", "New Z", -1e6, 1e6, 1, 0.0 ,1,4);

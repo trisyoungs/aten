@@ -876,10 +876,16 @@ TreeGuiWidget *TreeGuiWidget::addIntegerSpin(const char *name, const char *label
 	return widget;
 }
 
-// Create new label widget
+// Create new label widget (without name)
 TreeGuiWidget *TreeGuiWidget::addLabel(const char *text, int l, int t, int xw, int xh)
 {
-	TreeGuiWidget *widget = parent_->createWidget("", TreeGuiWidget::LabelWidget);
+	return addLabel(NULL, text, l, t, xw, xh);
+}
+
+// Create new label widget
+TreeGuiWidget *TreeGuiWidget::addLabel(const char *name, const char *text, int l, int t, int xw, int xh)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::LabelWidget);
 	widget->setInitialProperties(text);
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL) 

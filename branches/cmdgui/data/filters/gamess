@@ -394,7 +394,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	dialog ui = defaultDialog();
 	if (!ui.created)
 	{
-		dialog ui = defaultDialog("GAMESS-US Export Options");
+		ui.title = "GAMESS-US Export Options";
 		widget group, group2, w, tabs, page;
 
 		# General control options group ($CONTRL)
@@ -421,7 +421,6 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		w = group.addCombo("basis_gbasis", "Basis", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, 1, 1);
 
 		group.addIntegerSpin("basis_ngauss", "NGAUSS", 3, 6, 1, 6, 1, 1);
-		w.onInteger(3, 6, "sendbool", "basisstack", "enabled");
 		group2 = group.addGroup("suppbasisgroup", "Supplementary Functions");
 		group2.addIntegerSpin("basis_ndfunc", "NDFUNC", 0, 3, 1, 0, 3, 1);
 		group2.addIntegerSpin("basis_npfunc", "NPFUNC", 0, 3, 1, 0, 5, 1);
@@ -486,19 +485,19 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		page = tabs.addPage("page_grid", "$GRID");
 		page.addCheck("grid_modgrd", "3D Grid", 0, 1, 1);
 		page.addDoubleSpin("grid_size", "Grid Increment", 0.00001, 2.0, 0.1, 0.25, 3, 1);
-		page.addLabel("ORIGIN", 2, 1);
+		page.addLabel("","ORIGIN", 2, 1);
 		page.addDoubleSpin("grid_originx", "X", -1000.0, 1000.0, 1.0, -10.0, 2, 2);
 		page.addDoubleSpin("grid_originy", "Y", -1000.0, 1000.0, 1.0, -10.0, 2, 4);
 		page.addDoubleSpin("grid_originz", "Z", -1000.0, 1000.0, 1.0, -10.0, 2, 6); 
-		page.addLabel("XVEC", 3, 1);
+		page.addLabel("","XVEC", 3, 1);
 		page.addDoubleSpin("grid_xvecx", "X", -1000.0, 1000.0, 1.0,  10.0, 3, 2);
 		page.addDoubleSpin("grid_xvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 3, 4);
 		page.addDoubleSpin("grid_xvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 3, 6);
-		page.addLabel("YVEC", 4, 1);
+		page.addLabel("","YVEC", 4, 1);
 		page.addDoubleSpin("grid_yvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 4, 2);
 		page.addDoubleSpin("grid_yvecy", "Y", -1000.0, 1000.0, 1.0,  10.0, 4, 4);
 		page.addDoubleSpin("grid_yvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 4, 6);
-		page.addLabel("ZVEC", 5, 1);
+		page.addLabel("","ZVEC", 5, 1);
 		page.addDoubleSpin("grid_zvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 5, 2);
 		page.addDoubleSpin("grid_zvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 5, 4);
 		page.addDoubleSpin("grid_zvecz", "Z", -1000.0, 1000.0, 1.0,  10.0, 5, 6);
@@ -525,6 +524,8 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		group.addDoubleSpin("pcm_dsten", "DSTEN", 0.0, 10000.0, 1.0, 20.0);
 		group.addDoubleSpin("pcm_cmf", "CMF", 0.0, 10000.0, 1.0, 20.0);
 	}
+	# Execute dialog
+	if (!ui.show()) error("Options dialog canceled.\n");
 
 	#
 	# Write Data
