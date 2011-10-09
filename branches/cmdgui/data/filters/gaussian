@@ -14,89 +14,114 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 	dialog ui = defaultDialog();
 	if (!ui.created)
 	{
-		widget stack, page;
+		widget stack, page, tab, tabs = ui.addTabs("tabs");
 		# Job type
-		ui.addCombo("runtype", "Run Type", "SP,Opt,Freq,IRC,IRCMax,Scan,Polar,ADMP,BOMD,Force,Stable,Volume", 2);
-		ui.addIntegerSpin("mult", "Multiplicity", 1, 8, 1, 1);
-		ui.addIntegerSpin("charge", "Charge", -100, 100, 1, 0);
-		stack = ui.addStack("runstack", 2, 1, 5, 0);
+		tab = tabs.addPage("Job Type");
+		tab.addCombo("runtype", "Run Type", "SP,Opt,Freq,IRC,IRCMax,Scan,Polar,ADMP,BOMD,Force,Stable,Volume", 2);
+		tab.addIntegerSpin("mult", "Multiplicity", 1, 8, 1, 1);
+		tab.addIntegerSpin("charge", "Charge", -100, 100, 1, 0);
+		stack = tab.addStack("runstack", 1, 2, 5, 0);
 		# -- SP
 		page = stack.addPage("stack_sp", "");
 		page.addLabel("No Options");
 		# -- Opt
-		string opt_method = option("Optimisation Type", "combo", "<default>,QST2,QST3,TS,Saddle=1,Saddle=2,Conical", 1, "group=runstack_2");
-		int opt_maxcycles = option("MaxCycles", "intspin", 0, 1000, 10, 0, "group=runstack_2", "newline");
-		int opt_maxstep = option("MaxStep", "intspin", 0, 1000, 10, 0, "group=runstack_2");
-		int opt_restart = option("Restart", "check", 0, "group=runstack_2");
+		page = stack.addPage("stack_opt", "");
+		page.addCombo("opt_method", "Optimisation Type", "<default>,QST2,QST3,TS,Saddle=1,Saddle=2,Conical", 1, 1);
+		page.addIntegerSpin("opt_maxcycles", "MaxCycles", 0, 1000, 10, 30, 1, 2);
+		page.addIntegerSpin("opt_maxstep", "MaxStep", 0, 1000, 10, 30, 3, 2);
+		page.addCheck("opt_restart", "Restart", 0, 5, 2);
 		# -- Freq
-		option("No Options (yet)", "label", "group=runstack_3");
+		page = stack.addPage("stack_freq", "");
+		page.addLabel("No Options (yet)");
 		# -- IRC
-		option("No Options (yet)", "label", "group=runstack_4");
+		page = stack.addPage("stack_irc", "");
+		page.addLabel("No Options (yet)");
 		# -- IRCMax
-		option("No Options (yet)", "label", "group=runstack_5");
+		page = stack.addPage("stack_ircmax", "");
+		page.addLabel("No Options (yet)");
 		# -- Scan
-		option("No Options (yet)", "label", "group=runstack_6");
+		page = stack.addPage("stack_scan", "");
+		page.addLabel("No Options (yet)");
 		# -- Polar
-		option("No Options (yet)", "label", "group=runstack_7");
+		page = stack.addPage("stack_polar", "");
+		page.addLabel("No Options (yet)");
 		# -- ADMP
-		option("No Options (yet)", "label", "group=runstack_8");
+		page = stack.addPage("stack_admp", "");
+		page.addLabel("No Options (yet)");
 		# -- BOMD
-		option("No Options (yet)", "label", "group=runstack_9");
+		page = stack.addPage("stack_bomd", "");
+		page.addLabel("No Options (yet)");
 		# -- Force
-		option("No Options (yet)", "label", "group=runstack_10");
+		page = stack.addPage("stack_force", "");
+		page.addLabel("No Options (yet)");
 		# -- Stable
-		option("No Options (yet)", "label", "group=runstack_11");
+		page = stack.addPage("stack_stable", "");
+		page.addLabel("No Options (yet)");
 		# -- Volume
-		option("No Options (yet)", "label", "group=runstack_12");
+		page = stack.addPage("stack_volume", "");
+		page.addLabel("No Options (yet)");
+
 		# Model Chemistry
-		string modchem = option("Method", "combo", "AM1,PM3,PM3MM,PM6,PDDG,HF,CASSCF,MP2,MP3,MP4(DQ),MP4(SDQ),MP4(SDTQ),MP5,QCISD,CCD,CCSD,QCISD(T),QCISD(TQ),BD,EPT,CBS,G1,G2,G2MP2,G3,G3MP2,G3B3,G3MP2B3,G4,G4MP2,W1,CIS,TD,EOM,ZINDO,DFTB,CI,GVB", 6, "tab=Job Control@Job Specification", "newline");
-		string modchem_opt = option("", "combo", "<default>,R,U,RO", 1, "tab=Job Control@Job Specification");
+		tab = tabs.addPage("Model Chemistry");
+		tab.addCombo("modchem", "Method", "AM1,PM3,PM3MM,PM6,PDDG,HF,CASSCF,MP2,MP3,MP4(DQ),MP4(SDQ),MP4(SDTQ),MP5,QCISD,CCD,CCSD,QCISD(T),QCISD(TQ),BD,EPT,CBS,G1,G2,G2MP2,G3,G3MP2,G3B3,G3MP2B3,G4,G4MP2,W1,CIS,TD,EOM,ZINDO,DFTB,CI,GVB", 6, 1, 1, 2);
+		tab.addCombo("modchem_opt", "", "<default>,R,U,RO", 1);
 	
 		# Job Options
-		string symmetry = option("Symmetry", "combo", "Symmetry,NoSymmetry", 1, "tab=Job Options@Job Specification");
-		int symmetry_loose = option("Loose", "check", 0, "tab=Job Options@Job Specification");
+		tab = tabs.addPage("Job Options");
+		tab.addCombo("symmetry", "Symmetry", "Symmetry,NoSymmetry", 1);
+		tab.addCheck("symmetry_loose", "Loose", 0);
 	
 		# Basis Set
-		string basis = option("Basic Basis", "combo", "STO-3G,3-21G,6-21G,4-31G,6-31G,6-311G,D95V,D95,SHC,Stevens/Basch/Krauss,LanL2MB,LanL2DZ,SDD,SDDAll,Dunning,Alhrichs,MidiX,EPR,UGBS,MTSmall,DGauss,CBSB7", 5, "tab=Basis Set@Job Specification", "state@basisstack?switchstack");
+		tab = tabs.addPage("Basis Set");
+		w = tab.addCombo("basis", "Basic Basis", "STO-3G,3-21G,6-21G,4-31G,6-31G,6-311G,D95V,D95,SHC,Stevens/Basch/Krauss,LanL2MB,LanL2DZ,SDD,SDDAll,Dunning,Alhrichs,MidiX,EPR,UGBS,MTSmall,DGauss,CBSB7", 5, 1, 1);
+		w2 = tab.addGroup("elements", "Elements", 1, 3);
+		w2.addLabel("elementlabel", "POOOP");
+		w2 = tab.addGroup("extrabasis", "Additional Basis Functions", 1, 3);
+		w2.addCombo("diffuse", "Diffuse", "<none>", 1, 1, 1);
+		w2.addCombo("heavypolar", "Heavy Atom Polarisation", "<none>", 1, 1, 2);
+		w2.addCombo("lightpolar", "Light Atom Polarisation", "<none>", 1, 1, 3);
+		# -- Link events to show valid options for extra basis functions, and display element text
+		w.onInteger
+
 		option("basisstack", "stack", 22, 5, "tab=Basis Set@Job Specification", "span=2", "newline");
 		# -- STO-3G
 		option("Elements: ???", "label", "group=basisstack_1", "labelspan=2");
 		# -- 3-21G
-		option("Elements: H-Xe", "label", "group=basisstack_2", "labelspan=2");
-		string basis_321g_diffuse = option("Diffuse", "combo", "<none>,+", 1, "group=basisstack_2", "newline");
+		page.addLabel("Elements: H-Xe");
+		page.addCombo("basis_321g_diffuse", "Diffuse", "<none>,+", 1, "group=basisstack_2", "newline");
 		# -- 6-21G
-		option("Elements: H-Cl", "label", "group=basisstack_3", "labelspan=2");
-		string basis_621g_polar = option("Polarisation", "combo", "<none>,*,**", 1, "group=basisstack_3", "newline");
+		page.addLabel("Elements: H-Cl");
+		page.addCombo("basis_621g_polar", "Polarisation", "<none>,*,**", 1, "group=basisstack_3", "newline");
 		# -- 4-31G
-		option("Elements: H-Ne", "label", "group=basisstack_4", "labelspan=2");
-		string basis_431g_polar = option("Polarisation", "combo", "<none>,*,**", 1, "group=basisstack_4", "newline");
+		page.addLabel("Elements: H-Ne");
+		page.addCombo("basis_431g_polar", "Polarisation", "<none>,*,**", 1, "group=basisstack_4", "newline");
 		# -- 6-31G
-		option("Elements: H-Kr", "label", "group=basisstack_5", "labelspan=2");
-		string basis_631g_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_5", "newline");
-		string basis_631g_heavypolar = option("Heavy Atom Polarisation", "combo", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_5", "newline");
-		string basis_631g_lightpolar = option("Light Atom Polarisation", "combo", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_5", "newline");
+		page.addLabel("Elements: H-Kr");
+		page.addCombo("basis_631g_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_5", "newline");
+		page.addCombo("basis_631g_heavypolar", "Heavy Atom Polarisation", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_5", "newline");
+		page.addCombo("basis_631g_lightpolar", "Light Atom Polarisation", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_5", "newline");
 		# -- 6-311G
-		option("Elements: H-Kr", "label", "group=basisstack_6", "labelspan=2");
-		string basis_6311g_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_6", "newline");
-		string basis_6311g_heavypolar = option("Heavy Atom Polarisation", "combo", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_6", "newline");
-		string basis_6311g_lightpolar = option("Light Atom Polarisation", "combo", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_6", "newline");
+		page.addLabel("Elements: H-Kr");
+		page.addCombo("basis_6311g_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_6", "newline");
+		page.addCombo("basis_6311g_heavypolar", "Heavy Atom Polarisation", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_6", "newline");
+		page.addCombo("basis_6311g_lightpolar", "Light Atom Polarisation", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_6", "newline");
 		# -- D95V
-		option("Elements: H-Ne", "label", "group=basisstack_7", "labelspan=2");
-		string basis_d95v_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_7", "newline");
-		string basis_d95v_heavypolar = option("Heavy Atom Polarisation", "combo", "<none>,d", 1, "group=basisstack_7", "newline");
-		string basis_d95v_lightpolar = option("Light Atom Polarisation", "combo", "<none>,p", 1, "group=basisstack_7", "newline");
+		page.addLabel("Elements: H-Ne");
+		page.addCombo("basis_d95v_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_7", "newline");
+		page.addCombo("basis_d95v_heavypolar", "Heavy Atom Polarisation", "<none>,d", 1, "group=basisstack_7", "newline");
+		page.addCombo("basis_d95v_lightpolar", "Light Atom Polarisation", "<none>,p", 1, "group=basisstack_7", "newline");
 		# -- D95
 		option("Elements: H-Cl, except Na and Mg", "label", "group=basisstack_8", "labelspan=2");
-		string basis_d95_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_8", "newline");
-		string basis_d95_heavypolar = option("Heavy Atom Polarisation", "combo", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_8", "newline");
-		string basis_d95_lightpolar = option("Light Atom Polarisation", "combo", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_8", "newline");
+		page.addCombo("basis_d95_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_8", "newline");
+		page.addCombo("basis_d95_heavypolar", "Heavy Atom Polarisation", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_8", "newline");
+		page.addCombo("basis_d95_lightpolar", "Light Atom Polarisation", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_8", "newline");
 		# -- SHC
-		option("Elements: H-Cl", "label", "group=basisstack_9", "labelspan=2");
-		string basis_shc_polar = option("Polarisation", "combo", "<none>,*", 1, "group=basisstack_9", "newline");
+		page.addLabel("Elements: H-Cl");
+		page.addCombo("basis_shc_polar", "Polarisation", "<none>,*", 1, "group=basisstack_9", "newline");
 		# -- Stevens/Basch/Krauss
-		option("Elements: H-Rn", "label", "group=basisstack_10", "labelspan=2");
-		string basis_sbk_type = option("Basis", "combo", "CEP-4G,CEP-31G,CEP-121G", 1, "group=basisstack_10", "newline");
-		string basis_sbk_polar = option("Polarisation", "combo", "<none>,*", 1, "group=basisstack_10", "newline");
+		page.addLabel("Elements: H-Rn");
+		page.addCombo("basis_sbk_type", "Basis", "CEP-4G,CEP-31G,CEP-121G", 1, "group=basisstack_10", "newline");
+		page.addCombo("basis_sbk_polar", "Polarisation", "<none>,*", 1, "group=basisstack_10", "newline");
 		# -- LanL2MB
 		option("Elements: H-La, Hf-Bi", "label", "group=basisstack_11", "labelspan=2");
 		# -- LanL2DZ
@@ -107,29 +132,29 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 		option("Elements: All, except Fr and Ra", "label", "group=basisstack_14", "labelspan=2");
 		# -- Dunning
 		option("Elements: H-Ar, Ca-Kr", "label", "group=basisstack_15", "labelspan=2");
-		string basis_dunning_type = option("Basis", "combo", "cc-pVDZ,cc-pVTZ,cc-pVQZ,cc-pV5Z,cc-pV6Z", 1, "group=basisstack_15", "newline");
+		page.addCombo("basis_dunning_type", "Basis", "cc-pVDZ,cc-pVTZ,cc-pVQZ,cc-pV5Z,cc-pV6Z", 1, "group=basisstack_15", "newline");
 		int basis_dunning_diffuse = option("Diffuse (AUG)", "check", 0, "group=basisstack_15", "newline");
 		# -- Alhrichs
 		option("Elements: All, except Fr and Ra", "label", "group=basisstack_16", "labelspan=2");
-		string basis_alhrichs_type = option("Basis", "combo", "SV,SVP,TZV,TZVP,QZVP", 1, "group=basisstack_16", "newline");
+		page.addCombo("basis_alhrichs_type", "Basis", "SV,SVP,TZV,TZVP,QZVP", 1, "group=basisstack_16", "newline");
 		# -- MidiX
 		option("Elements: H, C-F, S-Cl, I, Br", "label", "group=basisstack_17", "labelspan=2");
 		# -- EPR
 		option("Elements: H, C-F, S-Cl, I, Br", "label", "group=basisstack_18", "labelspan=2");
-		string basis_epr_type = option("Basis", "combo", "EPR-II,EPR-III", 1, "group=basisstack_18", "newline");
+		page.addCombo("basis_epr_type", "Basis", "EPR-II,EPR-III", 1, "group=basisstack_18", "newline");
 		# -- UGBS
-		option("Elements: H-Lr", "label", "group=basisstack_19", "labelspan=2");
-		string basis_ugbs_polar = option("Polarisation", "combo", "<none>,1,2,3", 1, "group=basisstack_19", "newline");
-		string basis_ugbs_polartype = option("Polarisation Type", "combo", "P,V,O", 1, "group=basisstack_19", "newline");
-		string basis_ugbs_diffuse = option("Diffuse", "combo", "<none>,+,++,2+,2++", 1, "group=basisstack_19", "newline");
+		page.addLabel("Elements: H-Lr");
+		page.addCombo("basis_ugbs_polar", "Polarisation", "<none>,1,2,3", 1, "group=basisstack_19", "newline");
+		page.addCombo("basis_ugbs_polartype", "Polarisation Type", "P,V,O", 1, "group=basisstack_19", "newline");
+		page.addCombo("basis_ugbs_diffuse", "Diffuse", "<none>,+,++,2+,2++", 1, "group=basisstack_19", "newline");
 		# -- MTSmall
-		option("Elements: H-Ar", "label", "group=basisstack_20", "labelspan=2");
+		page.addLabel("Elements: H-Ar");
 		# -- DGauss
-		option("Elements: See Basis Options", "label", "group=basisstack_21", "labelspan=2");
-		string basis_dgauss_type = option("Basis", "combo", "'DGDZVP (H-Xe)','DGDZVP2 (H-F,Al-Ar,Sc-Zn)','DGTZVP (H,C-F,Al-Ar)'", 1, "group=basisstack_21", "newline");
+		page.addLabel("Elements: See Basis Options");
+		page.addCombo("basis_dgauss_type", "Basis", "'DGDZVP (H-Xe)','DGDZVP2 (H-F,Al-Ar,Sc-Zn)','DGTZVP (H,C-F,Al-Ar)'", 1, "group=basisstack_21", "newline");
 		# -- CBSB7
-		option("Elements: H-Kr", "label", "group=basisstack_22", "labelspan=2");
-		string basis_cbsb7_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_22", "newline");
+		page.addLabel("Elements: H-Kr");
+		page.addCombo("basis_cbsb7_diffuse", "Diffuse", "<none>,+,++", 1, "group=basisstack_22", "newline");
 	
 		# Coordinates
 		int coordtype = option("coordgroup", "radiogroup");
