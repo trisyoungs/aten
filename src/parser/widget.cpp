@@ -70,6 +70,7 @@ FunctionAccessor WidgetVariable::functionData[WidgetVariable::nFunctions] = {
 	{ "addTabs",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "onDouble",		VTypes::NoData,	   "DDCCCs",	"double minval, double maxval, string event, string widget, string property, double|int|string value = <auto>" },
 	{ "onInteger",		VTypes::NoData,	   "IICCCs",	"int minval, int maxval, string event, string widget, string property, double|int|string value = <auto>" },
+	{ "onRange",		VTypes::NoData,	   "IICCCS*",	"int minval, int maxval, string event, string widget, string property, double|int|string value ..." },
 	{ "onString",		VTypes::NoData,	   "SCCCs",	"string text, string event, string widget, string property, double|int|string value = <auto>" }
 };
 
@@ -397,6 +398,36 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			else event->setQualifiers(node->argi(0), node->argi(1));
 			// If a specific value was supplied, store it. Otherwise the widget's current value will be sent
 			if (node->hasArg(5)) node->arg(5, event->sendValue());
+			result = TRUE;
+			break;
+		case (WidgetVariable::OnRange):
+			rv.reset();
+			// Check supplied parameters
+			result = FALSE;
+			eventType = TreeGuiWidgetEvent::eventType(node->argc(2), TRUE);
+			if (eventType == TreeGuiWidgetEvent::nEventTypes) break;
+			targetWidget = ptr->parent()->findWidget(node->argc(3));
+			if (targetWidget == NULL)
+			{
+				msg.print("Error: No widget named '%s' is defined in the current dialog.\n", node->argc(3));
+				break;
+			}
+			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(4), TRUE);
+			if (eventProperty == TreeGuiWidgetEvent::nEventProperties) break;
+			event = ptr->addEvent(eventType, targetWidget, eventProperty);
+			// Set qualifying value or range
+			event->setQualifiers(node->argi(0), node->argi(1));
+			// Values corresponding to each valid integer in the range should have been supplied
+			for (int n = node->argi(0); n<=node->argi(1); ++n)
+			{
+				if (!node->hasArg(5+n-node->argi(0)))
+				{
+					msg.print("Error: Not enough values supplied to 'onRange' function, based on integer range provided.\n");
+					result = FALSE;
+					break;
+				}
+				XXX node->arg(5, event->sendValue()); Need list of sendValues.
+			}
 			result = TRUE;
 			break;
 		case (WidgetVariable::OnString):
