@@ -59,9 +59,9 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 AtenForm::~AtenForm()
 {
 	// No need (i.e. do not) delete: dummyToolButton.
-	if (infoLabel1_ != NULL) delete infoLabel1_;
-	if (infoLabel2_ != NULL) delete infoLabel2_;
-	if (messageLabel_ != NULL) delete messageLabel_;
+	//if (infoLabel1_ != NULL) delete infoLabel1_;
+	//if (infoLabel2_ != NULL) delete infoLabel2_;
+	//if (messageLabel_ != NULL) delete messageLabel_;
 }
 
 // Catch window close event

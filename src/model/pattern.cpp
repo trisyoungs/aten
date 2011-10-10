@@ -197,7 +197,8 @@ bool Model::createPatterns()
 	emp.createEmpty(1024);
 	Pattern *p;
 	Refitem<Bond,int> *rb;
-	Atom *i, *clipi, *selectSource;
+	Atom *i, *selectSource;
+	Clipatom *clipi;
 	Refitem<Atom,int> *isel;
 	// Check current pattern first...
 	if (arePatternsValid())
@@ -271,21 +272,21 @@ bool Model::createPatterns()
 				{
 					count++;
 					// Element check
-					if (clipi->element() != isel->item->element())
+					if (clipi->atom().element() != isel->item->element())
 					{
 						same = FALSE;
 						break;
 					}
 					// Fixed forcefield type check
-					if (clipi->hasFixedType() != isel->item->hasFixedType())
+					if (clipi->atom().hasFixedType() != isel->item->hasFixedType())
 					{
 						same = FALSE;
 						break;
 					}
-					else if (clipi->hasFixedType())
+					else if (clipi->atom().hasFixedType())
 					{
 						// Both have fixed type - make sure types are the same
-						if (clipi->type() != isel->item->type())
+						if (clipi->atom().type() != isel->item->type())
 						{
 							same = FALSE;
 							break;
