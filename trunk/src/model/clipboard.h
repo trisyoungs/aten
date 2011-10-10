@@ -32,26 +32,32 @@ class Model;
 class Clipatom;
 
 // Clipboard Atom
-class Clipatom : public Atom
+class Clipatom
 {
 	public:
 	// Constructor
 	Clipatom();
-	// Get the next Clipatom in the list
-	Clipatom* getNext();
+	// List pointers
+	Clipatom *prev, *next;
 
 	/*
-	// Atom Pointer
+	// Atom Data
 	*/
 	private:
+	// Atom information
+	Atom atom_; 
 	// Atom pointer to original atom (before any paste operation is called on the clipboard) or newly-pasted Atom thereafter
 	Atom *atomPointer_;
 
 	public:
-	// Set old atom pointer
+	// Copy atom information and store original pointer
+	void set(Atom *i);
+	// Set atom pointer
 	void setAtomPointer(Atom *i);
-	// Returns the atom pointer of the cloned atom
+	// Return the original/pasted atom pointer of the cloned atom
 	Atom *atomPointer();
+	// Return the new atom data structure
+	Atom &atom();
 };
 
 // Clipboard Bond
@@ -101,8 +107,10 @@ class Clipboard
 	void clear();
 	// After copying, fix the internal IDs to describe bonding
 	void fixBondIds();
-	// Copy specified atom to Clipboard
-	void copyAtom(Atom*);
+	// Copy atom to clipboard, inserting it into the current list in the correct (original) atom ID position
+	void copyAtom(Atom *i);
+	// Renumber copied atoms
+	void renumberAtoms();
 	// Return number of atoms in Clipboard
 	int nAtoms();
 	// Return list of copied atoms

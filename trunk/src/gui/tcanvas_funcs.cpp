@@ -217,7 +217,7 @@ void TCanvas::paintGL()
 {
 	msg.enter("TCanvas::paintGL");
 	static QFont font;
-	static QBrush solidbrush(Qt::NoBrush);
+	static QBrush nobrush(Qt::NoBrush);
 	QPen pen;
 	QColor color;
 	QRect currentBox;
@@ -401,7 +401,7 @@ void TCanvas::paintGL()
 	color.setRgbF(0.0,0.0,0.0,1.0);
 	pen.setColor(color);
 	pen.setWidth(2);
-	painter.setBrush(solidbrush);
+	painter.setBrush(nobrush);
 	painter.setPen(Qt::SolidLine);
 	painter.setPen(pen);
 

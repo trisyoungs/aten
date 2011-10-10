@@ -37,7 +37,6 @@ void TCanvas::render2D(QPainter &painter, Model *source)
 	int i, skip, n;
 	double dx, halfw;
 
-	
 	// Text Primitives
 	prefs.copyColour(Prefs::TextColour, colour);
 	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
