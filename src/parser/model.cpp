@@ -245,7 +245,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Model *ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
 		result = FALSE;
@@ -586,7 +586,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	// Get current data from ReturnValue
 	Model::InsertionPolicy inspol;
 	Model *ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
 		result = FALSE;

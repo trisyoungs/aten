@@ -161,7 +161,7 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Glyph *ptr = (Glyph*) rv.asPointer(VTypes::GlyphData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphData));
 		result = FALSE;
@@ -272,7 +272,7 @@ bool GlyphVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	}
 	// Get current data from ReturnValue
 	Glyph *ptr = (Glyph*) sourcerv.asPointer(VTypes::GlyphData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphData));
 		result = FALSE;

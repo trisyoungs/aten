@@ -151,6 +151,8 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		w.enabled = FALSE;
 		w.addDoubleSpin("restrain_dist_max", "Maximum Distance", 0.0, 10.0, 0.1, 2.4);
 		ui.widget("restrain_dist").onInteger(0, 1, "setbool", "restrain_dist_frame", "enabled");
+
+		ui.created = TRUE;
 	}
 
 	if (!ui.show()) error("Canceled through dialog.\n");

@@ -25,6 +25,7 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
 		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
 		ui.addCheck("cellshift", "Shift input coordinates by half cell", 1, 1, 4);
+		ui.created = TRUE;
 	}
 	# Execute dialog
 	if (!ui.show()) error("Options dialog canceled.\n");
@@ -101,6 +102,7 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert");
 		ui.addLabel("","Aten to DL_POLY coordinates by shifting all atoms by one half of the unit cell.");
 		ui.addCheck("cellshift", "Shift input coordinates by half cell", 1);
+		ui.created = TRUE;
 	}
 	# Execute dialog
 	if (!ui.show()) error("Options dialog canceled.\n");
@@ -513,6 +515,7 @@ filter(type="importexpression",name="DL_POLY Forcefield Specification", extensio
 		ui.addCheck("reducetypes", "Reduce Types", 1);
 		ui.addDoubleSpin("masstol", "Mass Tolerance", 0.0, 1.0, 0.01, 0.01);
 		ui.addDoubleSpin("qtol", "Charge Tolerance", 0.0, 1.0, 0.01, 0.01);
+		ui.created = TRUE;
 	}
 	# Execute dialog
 	if (!ui.show()) error("Options dialog canceled.\n");

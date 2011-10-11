@@ -160,7 +160,7 @@ bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	ZMatrixElement *ptr = (ZMatrixElement*) rv.asPointer(VTypes::ZMatrixElementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixElementData));
 		result = FALSE;
@@ -280,7 +280,7 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	}
 	// Get current data from ReturnValue
 	ZMatrixElement *ptr = (ZMatrixElement*) sourcerv.asPointer(VTypes::ZMatrixElementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixElementData));
 		result = FALSE;

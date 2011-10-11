@@ -144,6 +144,12 @@ int TreeGuiWidgetEvent::nSendValues()
 	return sendValues_.nItems();
 }
 
+// Return first send value in list
+ReturnValue *TreeGuiWidgetEvent::firstSendValue()
+{
+	return sendValues_.first();
+}
+
 // Return relevant send data based on supplied widget value
 ReturnValue *TreeGuiWidgetEvent::sendValue(int widgetValue)
 {
@@ -199,7 +205,7 @@ bool TreeGuiWidgetEvent::qualifies(const char *s)
 */
 
 // Event properties
-const char *WidgetTypeKeywords[TreeGuiWidget::nWidgetTypes] = { "button", "combo", "dialog", "doublespin", "edit", "frame", "group", "integerspin", "label", "page", "radiobutton", "radiogroup", "stack", "tab" };
+const char *WidgetTypeKeywords[TreeGuiWidget::nWidgetTypes] = { "button", "check", "combo", "dialog", "doublespin", "edit", "frame", "group", "integerspin", "label", "page", "radiobutton", "radiogroup", "stack", "tab" };
 TreeGuiWidget::WidgetType TreeGuiWidget::widgetType(const char *s, bool reportError)
 {
 	TreeGuiWidget::WidgetType wt = (TreeGuiWidget::WidgetType) enumSearch("widget type", TreeGuiWidget::nWidgetTypes, WidgetTypeKeywords, s, reportError);
@@ -322,6 +328,7 @@ bool TreeGuiWidget::setInitialProperties(double minval, double maxval, double va
 bool TreeGuiWidget::setInitialProperties(const char *s)
 {
 	text_ = s;
+	return TRUE;
 }
 
 // Add text item
@@ -896,17 +903,19 @@ TreeGuiWidget *TreeGuiWidget::addLabel(const char *name, const char *text, int l
 	return widget;
 }
 
-// Create new page (only in TabWidget)
-TreeGuiWidget *TreeGuiWidget::addPage(const char* name, const char* label)
+// Create new page (only in TabWidget and StackWidget)
+TreeGuiWidget *TreeGuiWidget::addPage(const char *name, const char *label)
 {
 	// Is this a tab widget?
-	if (type_ != TreeGuiWidget::TabWidget)
+	if ((type_ != TreeGuiWidget::TabWidget) && (type_ != TreeGuiWidget::StackWidget))
 	{
-		msg.print("Error: Attempted to add a page to a non-tab widget (%s).\n", name_.get());
+		msg.print("Error: Attempted to add a page to a widget that isn't a tab or a stack (%s).\n", name_.get());
 		return NULL;
 	}
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::PageWidget);
 	if (widget == NULL) return NULL;
+	// Update minimum and maximum
+	setInitialProperties(1, maximumI_+1, valueI_ == 0 ? 1 : valueI_);
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL) widget->setQtWidgetObject(parent_->qtTreeGui()->addPage(widget, this, label));
 	return widget;
@@ -1136,13 +1145,17 @@ void TreeGuiWidget::checkWidgetEvents()
 					targetWidget->setProperty(event->targetProperty(), TRUE);
 					break;
 				case (TreeGuiWidgetEvent::SendDoubleType):
-					targetWidget->setProperty(event->targetProperty(), asDouble());
+					if (event->nSendValues() == 0) targetWidget->setProperty(event->targetProperty(), asDouble());
+					else targetWidget->setProperty(event->targetProperty(), event->firstSendValue()->asDouble());
 					break;
 				case (TreeGuiWidgetEvent::SendIntegerType):
-					targetWidget->setProperty(event->targetProperty(), asInteger());
+					if (event->nSendValues() == 0) targetWidget->setProperty(event->targetProperty(), asInteger());
+					else if (event->nSendValues() == 1) targetWidget->setProperty(event->targetProperty(), event->firstSendValue()->asInteger());
+					else targetWidget->setProperty(event->targetProperty(), *event->sendValue(asInteger()));
 					break;
 				case (TreeGuiWidgetEvent::SendStringType):
-					targetWidget->setProperty(event->targetProperty(), asCharacter());
+					if (event->nSendValues() == 0) targetWidget->setProperty(event->targetProperty(), asCharacter());
+					else targetWidget->setProperty(event->targetProperty(), event->firstSendValue()->asString());
 					break;
 				case (TreeGuiWidgetEvent::SetPropertyType):
 					// Check 'range' of event integer
@@ -1197,13 +1210,19 @@ AtenTreeGuiDialog *TreeGui::qtTreeGui()
 TreeGuiWidget *TreeGui::createWidget(const char *name, TreeGuiWidget::WidgetType type)
 {
 	// Does this name already exist?
-	if ((name != "") && findWidget(name))
+	if (findWidget(name))
 	{
 		msg.print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.\n", name);
 		return NULL;
 	}
 	TreeGuiWidget *widget = widgets_.add();
-	widget->set(type, name, this);
+	// If a blank name was given, construct one
+	if (strcmp(name,"") == 0)
+	{
+		Dnchar newName(-1,"widget%03i", widgets_.nItems());
+		widget->set(type, newName, this);
+	}
+	else widget->set(type, name, this);
 	return widget;
 }
 

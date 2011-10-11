@@ -158,7 +158,7 @@ bool MonteCarloVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	// Variables used in retrieval
 	bool result;
 	MonteCarlo *ptr = (MonteCarlo*) rv.asPointer(VTypes::MonteCarloData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MonteCarloData));
 		result = FALSE;
@@ -278,7 +278,7 @@ bool MonteCarloVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	}
 	// Get current data from ReturnValue
 	MonteCarlo *ptr = (MonteCarlo*) sourcerv.asPointer(VTypes::MonteCarloData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MonteCarloData));
 		result = FALSE;

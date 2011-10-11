@@ -154,7 +154,7 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	EnergyStore *ptr = (EnergyStore*) rv.asPointer(VTypes::EnergyStoreData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EnergyStoreData));
 		result = FALSE;
@@ -253,7 +253,7 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	// Get current data from ReturnValue
 	EnergyStore *ptr = (EnergyStore*) sourcerv.asPointer(VTypes::EnergyStoreData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EnergyStoreData));
 		result = FALSE;

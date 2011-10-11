@@ -149,7 +149,7 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	ColourScale *ptr = (ColourScale*) rv.asPointer(VTypes::ColourScaleData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ColourScaleData));
 		result = FALSE;
@@ -238,7 +238,7 @@ bool ColourScaleVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	// Get current data from ReturnValue
 	ColourScale *ptr = (ColourScale*) sourcerv.asPointer(VTypes::ColourScaleData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ColourScaleData));
 		result = FALSE;

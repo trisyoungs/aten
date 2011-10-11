@@ -148,7 +148,7 @@ bool BasisPrimitiveVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	BasisPrimitive *ptr = (BasisPrimitive*) rv.asPointer(VTypes::BasisPrimitiveData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisPrimitiveData));
 		result = FALSE;
@@ -237,7 +237,7 @@ bool BasisPrimitiveVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	}
 	// Get current data from ReturnValue
 	BasisPrimitive *ptr = (BasisPrimitive*) sourcerv.asPointer(VTypes::BasisPrimitiveData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisPrimitiveData));
 		result = FALSE;

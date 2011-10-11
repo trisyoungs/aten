@@ -146,7 +146,7 @@ bool ColourScalePointVariable::retrieveAccessor(int i, ReturnValue &rv, bool has
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	ColourScalePoint *ptr = (ColourScalePoint*) rv.asPointer(VTypes::ColourScalePointData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ColourScalePointData));
 		result = FALSE;
@@ -228,7 +228,7 @@ bool ColourScalePointVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnV
 	}
 	// Get current data from ReturnValue
 	ColourScalePoint *ptr = (ColourScalePoint*) sourcerv.asPointer(VTypes::ColourScalePointData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ColourScalePointData));
 		result = FALSE;

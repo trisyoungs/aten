@@ -152,7 +152,7 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Eigenvector *ptr = (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EigenvectorData));
 		result = FALSE;
@@ -247,7 +247,7 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	// Get current data from ReturnValue
 	Eigenvector *ptr = (Eigenvector*) sourcerv.asPointer(VTypes::EigenvectorData, result);
 	int n;
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EigenvectorData));
 		result = FALSE;

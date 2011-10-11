@@ -165,7 +165,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	bool result = TRUE;
 	int n;
 	ForcefieldAtom *ptr = (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
 		result = FALSE;
@@ -316,7 +316,7 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	VdwFunctions::VdwFunction vf;
 	int n;
 	ForcefieldAtom *ptr = (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
 		result = FALSE;

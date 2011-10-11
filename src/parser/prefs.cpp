@@ -241,7 +241,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Variables used in retrieval
 	bool result;
 	Prefs *ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
 		result = FALSE;
@@ -627,7 +627,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	// Get current data from ReturnValue
 	Prefs *ptr = (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
 		result = FALSE;

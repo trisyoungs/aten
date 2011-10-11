@@ -148,7 +148,7 @@ bool SiteVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Site *ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
 		result = FALSE;
@@ -226,7 +226,7 @@ bool SiteVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	Site *ptr = (Site*) sourcerv.asPointer(VTypes::SiteData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
 		result = FALSE;

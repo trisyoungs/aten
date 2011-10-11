@@ -89,7 +89,6 @@ StepNode *WidgetVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
@@ -161,6 +160,11 @@ bool WidgetVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	// Variables used in retrieval
 	bool result = TRUE;
 	TreeGuiWidget *ptr = (TreeGuiWidget*) rv.asPointer(VTypes::WidgetData, result);
+	if ((!result) || (ptr == NULL))
+	{
+	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::WidgetData));
+	        result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (WidgetVariable::Enabled):
@@ -243,6 +247,11 @@ bool WidgetVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	}
 	// Get current data from ReturnValue
 	TreeGuiWidget *ptr = (TreeGuiWidget*) sourcerv.asPointer(VTypes::WidgetData, result);
+	if ((!result) || (ptr == NULL))
+	{
+	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::WidgetData));
+	        result = FALSE;
+	}
 	switch (acc)
 	{
 		case (WidgetVariable::Enabled):
@@ -284,6 +293,11 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	TreeGuiWidget *targetWidget;
 	bool result = TRUE;
 	TreeGuiWidget *ptr = (TreeGuiWidget*) rv.asPointer(VTypes::WidgetData, result);
+	if ((!result) || (ptr == NULL))
+	{
+	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::WidgetData));
+	        result = FALSE;
+	}
 	if (result) switch (i)
 	{
 		case (WidgetVariable::AddButton):
@@ -418,6 +432,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 					int range = node->argi(1) - node->argi(0) + 1;
 					for (int n = 0; n<range; ++n)
 					{
+						if (!node->hasArg(5+n)) break;
 						ReturnValue *sendValue = event->addSendValue();
 						node->arg(5+n, *sendValue);
 					}
