@@ -148,7 +148,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	PatternBound *ptr = (PatternBound*) rv.asPointer(VTypes::PatternBoundData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternBoundData));
 		result = FALSE;
@@ -310,7 +310,7 @@ bool PatternBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue
 	}
 	// Get current data from ReturnValue
 	PatternBound *ptr = (PatternBound*) sourcerv.asPointer(VTypes::PatternBoundData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternBoundData));
 		result = FALSE;

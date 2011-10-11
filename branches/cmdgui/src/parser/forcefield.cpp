@@ -168,7 +168,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Forcefield *ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
 		result = FALSE;
@@ -273,7 +273,7 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	}
 	// Get current data from ReturnValue
 	Forcefield *ptr = (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
 		result = FALSE;

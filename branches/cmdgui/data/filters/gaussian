@@ -199,6 +199,8 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 			"<none>",					# -- MTSmall
 			"<none>",					# -- DGauss
 			"<none>");					# -- CBSB7
+
+		ui.created = TRUE;
 	}
 	# Execute dialog
 	if (!ui.show()) error("Options dialog canceled.\n");

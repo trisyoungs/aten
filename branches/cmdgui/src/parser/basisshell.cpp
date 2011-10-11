@@ -150,7 +150,7 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	BasisShell *ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
 		result = FALSE;
@@ -242,7 +242,7 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	}
 	// Get current data from ReturnValue
 	BasisShell *ptr = (BasisShell*) sourcerv.asPointer(VTypes::BasisShellData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
 		result = FALSE;

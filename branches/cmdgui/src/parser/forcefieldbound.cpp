@@ -157,7 +157,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 	bool result = TRUE;
 	int n;
 	ForcefieldBound *ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
 		result = FALSE;
@@ -346,7 +346,7 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVa
 	}
 	// Get current data from ReturnValue
 	ForcefieldBound *ptr = (ForcefieldBound*) sourcerv.asPointer(VTypes::ForcefieldBoundData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
 		result = FALSE;

@@ -168,6 +168,11 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	// Variables used in retrieval
 	bool result = TRUE;
 	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
+	if ((!result) || (ptr == NULL))
+	{
+	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
+	        result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (DialogVariable::Created):
@@ -250,6 +255,11 @@ bool DialogVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	}
 	// Get current data from ReturnValue
 	TreeGui *ptr = (TreeGui*) sourcerv.asPointer(VTypes::DialogData, result);
+	if ((!result) || (ptr == NULL))
+	{
+	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
+	        result = FALSE;
+	}
 	switch (acc)
 	{
 		case (DialogVariable::Created):
@@ -287,6 +297,11 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	TreeGuiWidget *w;
 	bool result = TRUE;
 	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
+	if ((!result) || (ptr == NULL))
+	{
+	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
+	        result = FALSE;
+	}
 	if (result) switch (i)
 	{
 		case (DialogVariable::AddButton):

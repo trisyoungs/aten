@@ -92,6 +92,8 @@ class TreeGuiWidgetEvent
 	ReturnValue *addSendValue();
 	// Return number of send values defined
 	int nSendValues();
+	// Return first send value in list
+	ReturnValue *firstSendValue();
 	// Return specified send data based on supplied widget value
 	ReturnValue *sendValue(int widgetValue);
 	// Return whether supplied integer value qualifies

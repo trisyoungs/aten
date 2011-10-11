@@ -8,25 +8,30 @@ Dialog ui = defaultDialog();
 
 if (!ui.created)
 {
-	Widget w, group, w2;
+	Widget w, group, w2, tabs, page;
 
 	# Set title and vertical automatic filling of main dialog layout
 	ui.title = "UI Test";
-	ui.verticalFill = TRUE;
 
+	# Create a Tabs widget to store everything in
+	tabs = ui.addTabs("tabwidget");
+	# -- Page 1
+	page = tabs.addPage("page1", "Demo 1");
+	page.verticalFill = TRUE;
+	
 	# Create a combo box to display various items - we will attack it with various signals
-	ui.addCombo("combo", "Combo Box", "One,Two,Three,Four,Five", 1, 1, 1);
+	page.addCombo("combo", "Combo Box", "One,Two,Three,Four,Five", 1, 1, 1);
 
 	# Create some checkboxes (in a group) which can be used to disable/hide the combo box
-	group = ui.addGroup("group1", "Disable / Hide");
+	group = page.addGroup("group1", "Disable / Hide");
 	w = group.addCheck("check1", "Disable Combo Box?", FALSE);
 	w.onInteger(0, 1, "sendinteger", "combo", "disabled");
 	w = group.addCheck("check2", "Hide Combo Box?", FALSE);
 	w.onInteger(0, 1, "sendinteger", "combo", "invisible");
 
 	# Create some controls to allow the combobox contents to be changed
-	group = ui.addGroup("group2", "Combo Contents");
-	ui.addRadioGroup("contentsgroup");
+	group = page.addGroup("group2", "Combo Contents");
+	page.addRadioGroup("contentsgroup");
 	w = group.addRadioButton("radio1", "Numbers", "contentsgroup", 1);
 	w.onInteger(1, 1, "set", "combo", "items", "One,Two,Three,Four,Five");
 	w = group.addRadioButton("radio2", "Letters", "contentsgroup", 0);
@@ -37,7 +42,7 @@ if (!ui.created)
 
 	# Create another group here, allowing selection of Misc items list
 	# We will then link the final radio button created to activate this radiogroup and select the new combo items
-	group = ui.addGroup("group3", "Misc Choices");
+	group = page.addGroup("group3", "Misc Choices");
 	group.enabled = FALSE;
 	ui.addRadioGroup("musicgroup");
 	w = group.addRadioButton("radio5", "Modern", "musicgroup", 1);

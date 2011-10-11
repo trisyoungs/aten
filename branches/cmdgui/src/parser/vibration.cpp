@@ -150,7 +150,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIn
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Vibration *ptr = (Vibration*) rv.asPointer(VTypes::VibrationData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::VibrationData));
 		result = FALSE;
@@ -254,7 +254,7 @@ bool VibrationVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 	Vec3<double> v;
 	int n;
 	Vibration *ptr = (Vibration*) sourcerv.asPointer(VTypes::VibrationData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::VibrationData));
 		result = FALSE;

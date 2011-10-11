@@ -152,7 +152,7 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Measurement *ptr = (Measurement*) rv.asPointer(VTypes::MeasurementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
 		result = FALSE;
@@ -256,7 +256,7 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	// Get current data from ReturnValue
 	Measurement *ptr = (Measurement*) sourcerv.asPointer(VTypes::MeasurementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
 		result = FALSE;

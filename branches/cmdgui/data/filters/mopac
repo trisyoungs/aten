@@ -81,6 +81,7 @@ filter(type="exportmodel", name="Mopac Control File", nickname="mopac", extensio
 		ui.addCheck("campking", "Camp King", 0);
 		ui.addCheck("mozyme", "Mozyme", 0);
 		ui.addEdit("control2", "Extra Keywords", "", 1, 3);
+		ui.created = TRUE;
 	}
 
 	# Execute dialog

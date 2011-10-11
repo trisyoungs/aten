@@ -395,7 +395,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	if (!ui.created)
 	{
 		ui.title = "GAMESS-US Export Options";
-		widget group, group2, w, tabs, page;
+		widget group, group2, w, w2, tabs, page;
 
 		# General control options group ($CONTRL)
 		group = ui.addGroup("jobgroup", "Job Control ($CONTRL)", 1, 1);
@@ -420,14 +420,15 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		group = ui.addGroup("basisgroup", "Basis Set ($BASIS)", 1, 2);
 		w = group.addCombo("basis_gbasis", "Basis", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, 1, 1);
 
-		group.addIntegerSpin("basis_ngauss", "NGAUSS", 3, 6, 1, 6, 1, 1);
-		group2 = group.addGroup("suppbasisgroup", "Supplementary Functions");
+		group2 = group.addGroup("suppbasisgroup", "Supplementary Functions", 1, 2);
 		group2.addIntegerSpin("basis_ndfunc", "NDFUNC", 0, 3, 1, 0, 3, 1);
 		group2.addIntegerSpin("basis_npfunc", "NPFUNC", 0, 3, 1, 0, 5, 1);
 		group2.addIntegerSpin("basis_nffunc", "NFFUNC", 0, 1, 1, 0, 7, 1);
 		group2.addCheck("basis_diffsp", "DIFFSP", 0, 1, 2);
 		group2.addCheck("basis_diffs", "DIFFS", 0, 3, 2);
 		w.onInteger(1, 10, "sendbool", "suppbasisgroup", "enabled");
+		w = group.addIntegerSpin("basis_ngauss", "NGAUSS", 3, 6, 1, 6, 3, 1);
+		w.onInteger(3, 6, "sendbool", "basis_ngauss", "enabled");
 
 		# Tabs containing various options
 		tabs = ui.addTabs("optiontabs", 1, 3);
@@ -436,32 +437,32 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		page = tabs.addPage("dftpage", "$DFT");
 		string griddfttypes = "NONE,SLATER,BECKE,GILL,OPTX,PW91X,PBEX,VWN,VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN,BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,EDF1,PW91,PBE,revPBE,RPBE,PBEsol,HCTH93,HCTH120,HCTH147,HCTH407,SOGGA,MOHLYP,B97-D,BHHLYP,B3PW91,B3LYP,B3LYP1,B97,B97-1,B97-2,B97-3,B97-K,B98,PBE0,X3LYP,CAMB3LYP,wB97,wB97X,wB97X-D,B2PLYP,wB97X-2,wB97X-2L,VS98,PKZB,tHCTH,tHCTHhyb,BMK,TPSS,TPSSh,TPSSm,revTPSS,M05,M05-2X,M06,M06-L,M06-2X,M06-HF,M08-HX,M08-SO";
 		string gridfreedfttypes = "NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP";
+		page.addCombo("contrl_dfttyp", "DFT Type", griddfttypes, 1, 3, 1);
 		w = page.addCombo("dftgrid", "DFT Method", "GRID,GRIDFREE", 1, 1, 1);
 		w.onInteger(1, 1, "sendstring", "contrl_dfttyp", "items", griddfttypes);
 		w.onInteger(2, 2, "sendstring", "contrl_dfttyp", "items", gridfreedfttypes);
 		w.onInteger(1, 2, "sendinteger", "contrl_dfttyp", "value", 2);
-		page.addCombo("control_dfttyp", "DFT Type", griddfttypes, 1);
 
 		# Stationary point location options ($STATPT)
 		page = tabs.addPage("page_statpt", "$STATPT");
 		page.addCombo("statpt_method", "METHOD", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, 1, 1);
 		page.addDoubleSpin("statpt_opttol", "OPTTOL", 0.0, 1.0, 0.0001, 0.0001, 3, 1);
 		page.addIntegerSpin("statpt_nstep", "NSTEP", 1, 1000000, 5, 20, 5, 1);
-		page.addIntegerSpin("statpt_ifolow", "IFOLOW", 1, 100000, 1, 1, 1, 2); 
-		page.addCheck("statpt_stpt", "STPT", 0, 3, 2);
+		page.addIntegerSpin("statpt_ifolow", "IFOLOW", 1, 100000, 1, 1, 7, 1); 
+		page.addCombo("statpt_hess", "HESS", "GUESS,READ,RDAB,RDALL,CALC", 1, 1, 2);
+		page.addIntegerSpin("statpt_ihrep", "IHREP", 0, 1000, 1, 0, 3, 2);
 		page.addDoubleSpin("statpt_ststep", "STSTEP", 0.0, 1.0, 0.005, 0.01, 5, 2);
-		page.addEdit("statpt_ifreez", "IFREEZ", "", 3, 5);
-		page.addCombo("statpt_hess", "HESS", "GUESS,READ,RDAB,RDALL,CALC", 1, 1, 4);
-		page.addIntegerSpin("statpt_ihrep", "IHREP", 0, 1000, 1, 0, 3, 4);
-		page.addCheck("statpt_hssend", "HSSEND", 0, 5, 4);
+		page.addCheck("statpt_hssend", "HSSEND", 0, 6, 2);
+		page.addCheck("statpt_stpt", "Stationary Point", 0, 7, 2);
+		page.addEdit("statpt_ifreez", "IFREEZ", "", 1, 3, 6);
 
 		# Intrinsic reaction coordinate run ($IRC)
 		page = tabs.addPage("page_irc", "$IRC");
 		page.addCheck("irc_forwrd", "FORWRD", 1, 1, 1);
-		page.addCheck("irc_saddle", "SADDLE", 1, 3, 1);
-		page.addDoubleSpin("irc_stride", "STRIDE", 0.001, 1.0, 0.05, 0.3, 5, 1);
-		page.addIntegerSpin("irc_npoint", "NPOINT", 1, 1000, 5, 1, 7, 1);
-		page.addCombo("irc_pace", "PACE", "GS2,LINEAR,QUAD,AMPC4,RK4", 1, 1, 2);
+		page.addCheck("irc_saddle", "SADDLE", 1, 2, 1);
+		page.addDoubleSpin("irc_stride", "STRIDE", 0.001, 1.0, 0.05, 0.3, 3, 1);
+		page.addIntegerSpin("irc_npoint", "NPOINT", 1, 1000, 5, 1, 5, 1);
+		page.addCombo("irc_pace", "PACE", "GS2,LINEAR,QUAD,AMPC4,RK4", 1, 7, 1);
 
 		# Electron density calculation ($ELDENS)
 		page = tabs.addPage("page_eldens", "$ELDENS");
@@ -472,7 +473,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 
 		# Electrostatic potential calculation ($ELPOT)
 		page = tabs.addPage("page_elpot", "$ELPOT");
-		page.addCheck("elpot_iepot", "Calculate", 0, 1, 1);
+		page.addCheck("elpot_iepot", "Calculate?", 0, 1, 1);
 		page.addCombo("elpot_where", "WHERE", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, 3, 1);
 		page.addCombo("elpot_output", "OUTPUT", "PUNCH,PAPER,BOTH,NONE", 3, 5, 1);
 
@@ -483,38 +484,33 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 
 		# Grid specification ($GRID), placed in 'opts' tabs
 		page = tabs.addPage("page_grid", "$GRID");
-		page.addCheck("grid_modgrd", "3D Grid", 0, 1, 1);
-		page.addDoubleSpin("grid_size", "Grid Increment", 0.00001, 2.0, 0.1, 0.25, 3, 1);
-		page.addLabel("","ORIGIN", 2, 1);
-		page.addDoubleSpin("grid_originx", "X", -1000.0, 1000.0, 1.0, -10.0, 2, 2);
-		page.addDoubleSpin("grid_originy", "Y", -1000.0, 1000.0, 1.0, -10.0, 2, 4);
-		page.addDoubleSpin("grid_originz", "Z", -1000.0, 1000.0, 1.0, -10.0, 2, 6); 
-		page.addLabel("","XVEC", 3, 1);
-		page.addDoubleSpin("grid_xvecx", "X", -1000.0, 1000.0, 1.0,  10.0, 3, 2);
-		page.addDoubleSpin("grid_xvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 3, 4);
-		page.addDoubleSpin("grid_xvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 3, 6);
-		page.addLabel("","YVEC", 4, 1);
-		page.addDoubleSpin("grid_yvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 4, 2);
-		page.addDoubleSpin("grid_yvecy", "Y", -1000.0, 1000.0, 1.0,  10.0, 4, 4);
-		page.addDoubleSpin("grid_yvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 4, 6);
-		page.addLabel("","ZVEC", 5, 1);
-		page.addDoubleSpin("grid_zvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 5, 2);
-		page.addDoubleSpin("grid_zvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 5, 4);
-		page.addDoubleSpin("grid_zvecz", "Z", -1000.0, 1000.0, 1.0,  10.0, 5, 6);
+		w = page.addCheck("grid_modgrd", "3D Grid", 0, 1, 1);
+		page.addDoubleSpin("grid_size", "Grid Increment", 0.00001, 2.0, 0.1, 0.25, 2, 1);
+		group = page.addGroup("ogroup", "ORIGIN", 1, 2, 1);
+		group.addDoubleSpin("grid_originx", "X", -1000.0, 1000.0, 1.0, -10.0, 1, 3);
+		group.addDoubleSpin("grid_originy", "Y", -1000.0, 1000.0, 1.0, -10.0, 1, 4);
+		group.addDoubleSpin("grid_originz", "Z", -1000.0, 1000.0, 1.0, -10.0, 1, 5); 
+		group = page.addGroup("xgroup", "XVEC", 3, 2, 1);
+		group.addDoubleSpin("grid_xvecx", "X", -1000.0, 1000.0, 1.0,  10.0, 3, 3);
+		group.addDoubleSpin("grid_xvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 3, 4);
+		group.addDoubleSpin("grid_xvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 3, 5);
+		group = page.addGroup("ygroup", "YVEC", 5, 2, 1);
+		group.addDoubleSpin("grid_yvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 5, 3);
+		group.addDoubleSpin("grid_yvecy", "Y", -1000.0, 1000.0, 1.0,  10.0, 5, 4);
+		group.addDoubleSpin("grid_yvecz", "Z", -1000.0, 1000.0, 1.0, -10.0, 5, 5);
+		group = page.addGroup("zgroup", "ZVEC", 7, 2, 1);
+		group.addDoubleSpin("grid_zvecx", "X", -1000.0, 1000.0, 1.0, -10.0, 7, 3);
+		group.addDoubleSpin("grid_zvecy", "Y", -1000.0, 1000.0, 1.0, -10.0, 7, 4);
+		group.addDoubleSpin("grid_zvecz", "Z", -1000.0, 1000.0, 1.0,  10.0, 7, 5);
+		group.enabled = FALSE;
+		w.onInteger(1, 2, "sendbool", "zgroup", "enabled");
 
 		# PCM options ($PCM), placed in 'opts' tab
 		page = tabs.addPage("page_pcm", "$PCM");
-		w = page.addCombo("pcm_solvnt", "Solvent", "NONE,INPUT,WATER,CH3OH,CLFORM,METHYCL,BENZENE,CLBENZ,NEPTANE,ANILINE,C2H5OH,CTCL,12DCLET,TOLUENE,NITMET,CYCHEX,ACETONE", 1, 1, 1);
-		w.onInteger(2, 2, "sendbool", "pcminputgroup", "enabled");
-		w = page.addCheck("pcm_icav", "Calculate cavitation energy", 0, 2, 1, 3);
-		w.onInteger(0, 1, "sendbool", "pcm_tabs", "enabled");
-		w.onInteger(0, 1, "sendbool", "pcm_tce", "enabled");
-		w.onInteger(0, 1, "sendbool", "pcm_vmol", "enabled");
-		w.onInteger(0, 1, "sendbool", "pcm_sten", "enabled");
-		w.onInteger(0, 1, "sendbool", "pcm_dsten", "enabled");
-		w.onInteger(0, 1, "sendbool", "pcm_cmf", "enabled");
-		w.onInteger(0, 1, "sendbool", "pcm_tabs", "enabled");
-		group = page.addGroup("pcminputgroup", "Custom Solvent Definition", 3, 1, 5, 0);
+		w = page.addCombo("pcm_solvnt", "Solvent", "NONE,INPUT,'WATER (H2O)',CH3OH,'CLFORM (CHCl3)','METHYCL (CH2Cl2)','BENZENE (C6H6)','CLBENZ (C6H5Cl)','NEPTANE (C7H16)','ANILINE (C6H5NH2)',C2H5OH,'CTCL (CCl4)','12DCLET (C2H4Cl2)','TOLUENE (C6H5CH3)','NITMET (CH3NO2)','CYCHEX (C6H12)','ACETONE (CH3COCH3)',THF,'DMSO (DMETSOX)'", 1, 1, 1);
+		group = page.addGroup("pcminputgroup", "Custom Solvent Definition", 1, 2, 5, 0);
+		group.enabled = FALSE;
+		ui.widget("pcm_solvnt").onInteger(2, 2, "sendbool", "pcminputgroup", "enabled");
 		group.addDoubleSpin("pcm_rsolv", "Radius", 0.0, 100.0, 0.1, 3.0);
 		group.addDoubleSpin("pcm_eps", "EPS", 0.0, 10000.0, 1.0, 20.0);
 		group.addDoubleSpin("pcm_epsinf", "EPSINF", 0.0, 10000.0, 1.0, 20.0);
@@ -523,6 +519,14 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		group.addDoubleSpin("pcm_sten", "STEN", 0.0, 10000.0, 1.0, 20.0);
 		group.addDoubleSpin("pcm_dsten", "DSTEN", 0.0, 10000.0, 1.0, 20.0);
 		group.addDoubleSpin("pcm_cmf", "CMF", 0.0, 10000.0, 1.0, 20.0);
+		w.onInteger(2, 2, "sendbool", "pcminputgroup", "enabled");
+		w = page.addCheck("pcm_icav", "Calculate cavitation energy", 0, 3, 1);
+		w.onInteger(0, 1, "sendbool", "pcm_tce", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_vmol", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_sten", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_dsten", "enabled");
+		w.onInteger(0, 1, "sendbool", "pcm_cmf", "enabled");
+		ui.created = TRUE;
 	}
 	# Execute dialog
 	if (!ui.show()) error("Options dialog canceled.\n");
@@ -536,7 +540,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	line = "";
 	if (ui.asString("contrl_dfttyp") != "NONE") line += " DFTTYP=" + ui.asString("contrl_dfttyp");
 	if (ui.asString("contrl_tddft") != "NONE") line += " TDDFT=" + ui.asString("contrl_tddft");
-	if (ui.asInteger("contrl_mplevl") != 0) line += " MPLEVL=" + ui.asString("contrl_mplevl");
+	if (ui.asString("contrl_mplevl") != "0") line += " MPLEVL=" + ui.asString("contrl_mplevl");
 	if (ui.asString("contrl_cityp") != "NONE") line += " CITYP=" + ui.asString("contrl_cityp");
 	if (ui.asString("contrl_cctyp") != "NONE") line += " CCTYP=" + ui.asString("contrl_cctyp");
 	if (ui.asString("contrl_pp") != "NONE") line += " ECPTYP=" + ui.asString("contrl_pp");
@@ -563,7 +567,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		if (ui.isString("statpt_hssend", ".TRUE.")) line += " HSSEND=.TRUE.";
 		writeLineF("%s $END\n", line);
 		if (ui.isString("contrl_runtyp", "SADPOINT")) writeLineF(" $STATPT IFOLOW=%i STPT=%s STSTEP=%f $END\n", ui.asInteger("statpt_ifolow"), ui.asString("statpt_stpt"), ui.asDouble("statpt_ststep"));
-		if (ui.isString("statpt_ifreez", "")) writeLineF(" $STATPT IFREEZ(1)=%s $END\n", ui.asString("statpt_ifreez"));
+		if (!ui.isString("statpt_ifreez", "")) writeLineF(" $STATPT IFREEZ(1)=%s $END\n", ui.asString("statpt_ifreez"));
 	}
 	else if (ui.isString("contrl_runtyp", "IRC")) writeLineF(" $IRC PACE=%s FORWRD=%s SADDLE=%s STRIDE=%f NPOINT=%i $END\n", ui.asString("irc_pace"), ui.asString("irc_forwrd"), ui.asString("irc_saddle"), ui.asDouble("irc_stride"), ui.asInteger("irc_npoint"));
 
@@ -590,7 +594,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	# Write $PCM if required
 	if (ui.asString("pcm_solvnt") != "NONE")
 	{
-		writeVarF(line, " $PCM SOLVNT=%s", ui.asString("pcm_solvnt"));
+		writeVarF(line, " $PCM SOLVNT=%s", beforeStr(ui.asString("pcm_solvnt"), " "));
 		if (ui.asInteger("pcm_icav")) line += " ICAV=" + ui.asString("pcm_icav");
 		writeLineF("%s $END\n", line);
 		if (ui.isString("pcm_solvnt", "INPUT"))

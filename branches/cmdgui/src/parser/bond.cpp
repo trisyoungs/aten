@@ -151,7 +151,7 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Bond *ptr = (Bond*) rv.asPointer(VTypes::BondData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BondData));
 		result = FALSE;
@@ -241,7 +241,7 @@ bool BondVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	Bond *ptr = (Bond*) sourcerv.asPointer(VTypes::BondData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BondData));
 		result = FALSE;
