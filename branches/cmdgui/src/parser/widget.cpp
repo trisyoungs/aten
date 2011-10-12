@@ -66,6 +66,7 @@ FunctionAccessor WidgetVariable::functionData[WidgetVariable::nFunctions] = {
 	{ "addPage",		VTypes::WidgetData,"CC",	"string name, string label" },
 	{ "addRadioButton",	VTypes::WidgetData,"CCCIiiii",	"string name, string label, string group, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0"},
 	{ "addRadioGroup",	VTypes::WidgetData,"C",		"string name" },
+	{ "addSpacer",		VTypes::NoData,	   "IIiiii",	"int expandH, int expandV, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "addStack",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "addTabs",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "onDouble",		VTypes::NoData,	   "DDCCCs*",	"double minval, double maxval, string event, string widget, string property, double|int|string value = <auto> ..." },
@@ -306,6 +307,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddCheck):
 			l = node->hasArg(3) ? node->argi(3) : -1;
@@ -313,6 +315,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(5) ? node->argi(5) : 0;
 			xh = node->hasArg(6) ? node->argi(6) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), node->argi(2), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddCombo):
 			l = node->hasArg(4) ? node->argi(4) : -1;
@@ -320,6 +323,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(6) ? node->argi(6) : 0;
 			xh = node->hasArg(7) ? node->argi(7) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCombo(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddDoubleSpin):
 			l = node->hasArg(6) ? node->argi(6) : -1;
@@ -327,6 +331,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(8) ? node->argi(8) : 0;
 			xh = node->hasArg(9) ? node->argi(9) : 0;
 			rv.set(VTypes::WidgetData, ptr->addDoubleSpin(node->argc(0), node->argc(1), node->argd(2), node->argd(3), node->argd(4), node->argd(5), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddEdit):
 			l = node->hasArg(3) ? node->argi(3) : -1;
@@ -334,6 +339,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(5) ? node->argi(5) : 0;
 			xh = node->hasArg(6) ? node->argi(6) : 0;
 			rv.set(VTypes::WidgetData, ptr->addEdit(node->argc(0), node->argc(1), node->argc(2), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddFrame):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -341,6 +347,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(4) ? node->argi(4) : 1;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addFrame(node->argc(0), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddGroup):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -348,6 +355,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(4) ? node->argi(4) : 1;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addGroup(node->argc(0), node->argc(1), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddIntegerSpin):
 			l = node->hasArg(6) ? node->argi(6) : -1;
@@ -355,6 +363,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(8) ? node->argi(8) : 0;
 			xh = node->hasArg(9) ? node->argi(9) : 0;
 			rv.set(VTypes::WidgetData, ptr->addIntegerSpin(node->argc(0), node->argc(1), node->argi(2), node->argi(3), node->argi(4), node->argi(5), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddLabel):
 			l = node->hasArg(1) ? node->argi(2) : -1;
@@ -362,9 +371,11 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addLabel(node->argc(0), node->argc(1), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddPage):
 			rv.set(VTypes::WidgetData, ptr->addPage(node->argc(0), node->argc(1)));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddRadioButton):
 			l = node->hasArg(4) ? node->argi(4) : -1;
@@ -372,9 +383,19 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(6) ? node->argi(6) : 0;
 			xh = node->hasArg(7) ? node->argi(7) : 0;
 			rv.set(VTypes::WidgetData, ptr->addRadioButton(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddRadioGroup):
 			rv.set(VTypes::WidgetData, ptr->addRadioGroup(node->argc(0)));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			break;
+		case (WidgetVariable::AddSpacer):
+			l = node->hasArg(2) ? node->argi(2) : -1;
+			t = node->hasArg(3) ? node->argi(3) : -1;
+			xw = node->hasArg(4) ? node->argi(4) : 1;
+			xh = node->hasArg(5) ? node->argi(5) : 0;
+			if (!ptr->addSpacer(node->argb(0), node->argb(1), l, t, xw, xh))  result = FALSE;
+			rv.reset();
 			break;
 		case (WidgetVariable::AddStack):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -382,6 +403,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(3) ? node->argi(3) : 1;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addStack(node->argc(0), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddTabs):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -389,6 +411,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(3) ? node->argi(3) : 1;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addTabs(node->argc(0), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::OnDouble):
 		case (WidgetVariable::OnInteger):

@@ -67,6 +67,7 @@ FunctionAccessor DialogVariable::functionData[DialogVariable::nFunctions] = {
 	{ "addPage",		VTypes::WidgetData,"CC",	"string name, string label" },
 	{ "addRadioButton",	VTypes::WidgetData,"CCCIiiii",	"string name, string label, string group, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0"},
 	{ "addRadioGroup",	VTypes::WidgetData,"C",		"string name" },
+	{ "addSpacer",		VTypes::NoData,    "IIiiii",	"int expandH, int expandV, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "addStack",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "addTabs",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
 	{ "asDouble",		VTypes::DoubleData,"C",		"string name" },
@@ -310,6 +311,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddCheck):
 			l = node->hasArg(3) ? node->argi(3) : -1;
@@ -317,6 +319,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(5) ? node->argi(5) : 0;
 			xh = node->hasArg(6) ? node->argi(6) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), node->argi(2), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddCombo):
 			l = node->hasArg(4) ? node->argi(4) : -1;
@@ -324,6 +327,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(6) ? node->argi(6) : 0;
 			xh = node->hasArg(7) ? node->argi(7) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCombo(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddDoubleSpin):
 			l = node->hasArg(6) ? node->argi(6) : -1;
@@ -331,6 +335,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(8) ? node->argi(8) : 0;
 			xh = node->hasArg(9) ? node->argi(9) : 0;
 			rv.set(VTypes::WidgetData, ptr->addDoubleSpin(node->argc(0), node->argc(1), node->argd(2), node->argd(3), node->argd(4), node->argd(5), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddEdit):
 			l = node->hasArg(3) ? node->argi(3) : -1;
@@ -338,6 +343,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(5) ? node->argi(5) : 0;
 			xh = node->hasArg(6) ? node->argi(6) : 0;
 			rv.set(VTypes::WidgetData, ptr->addEdit(node->argc(0), node->argc(1), node->argc(2), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddFrame):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -345,6 +351,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(4) ? node->argi(4) : 1;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addFrame(node->argc(0), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddGroup):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -352,6 +359,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(4) ? node->argi(4) : 1;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addGroup(node->argc(0), node->argc(1), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddIntegerSpin):
 			l = node->hasArg(6) ? node->argi(6) : -1;
@@ -359,6 +367,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(8) ? node->argi(8) : 0;
 			xh = node->hasArg(9) ? node->argi(9) : 0;
 			rv.set(VTypes::WidgetData, ptr->addIntegerSpin(node->argc(0), node->argc(1), node->argi(2), node->argi(3), node->argi(4), node->argi(5), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddLabel):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -366,9 +375,11 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addLabel(node->argc(0), node->argc(1), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddPage):
 			rv.set(VTypes::WidgetData, ptr->addPage(node->argc(0), node->argc(1)));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddRadioButton):
 			l = node->hasArg(4) ? node->argi(4) : -1;
@@ -376,9 +387,11 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(6) ? node->argi(6) : 0;
 			xh = node->hasArg(7) ? node->argi(7) : 0;
 			rv.set(VTypes::WidgetData, ptr->addRadioButton(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddRadioGroup):
 			rv.set(VTypes::WidgetData, ptr->addRadioGroup(node->argc(0)));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddStack):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -386,6 +399,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(3) ? node->argi(3) : 1;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addStack(node->argc(0), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddTabs):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -393,6 +407,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			xw = node->hasArg(3) ? node->argi(3) : 1;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addTabs(node->argc(0), l, t, xw, xh));
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AsDouble):
 			w = ptr->findWidget(node->argc(0));

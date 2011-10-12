@@ -255,6 +255,8 @@ class TreeGuiWidget
 	TreeGuiWidget *addRadioButton(const char* name, const char* label, const char *radioGroup, int state, int l, int t, int xw = 0, int xh = 0);
 	// Create new (invisible) radio group
 	TreeGuiWidget *addRadioGroup(const char *name);
+	// Create new spacer
+	bool addSpacer(bool expandHorizontal, bool expandVertical, int l, int t, int xw = 0, int xh = 0);
 	// Create new stack widget
 	TreeGuiWidget *addStack(const char *name, int l, int t, int xw = 0, int xh = 0);
 	// Create new tab widget

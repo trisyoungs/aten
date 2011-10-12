@@ -678,37 +678,6 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 // 'Activate' property, setting flag and executing events, but leaving value unchanged
 bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
 {
-// 	switch (property)
-// 	{
-// 		case (TreeGuiWidgetEvent::DisabledProperty):
-// 			setProperty(TreeGuiWidgetEvent::EnabledProperty, !enabled_);
-// 			break;
-// 		case (TreeGuiWidgetEvent::EnabledProperty):
-// 			setProperty(TreeGuiWidgetEvent::EnabledProperty, enabled_);
-// 			break;
-// 		case (TreeGuiWidgetEvent::InvisibleProperty):
-// 			setProperty(TreeGuiWidgetEvent::InvisibleProperty, !visible_);
-// 			break;
-// 		case (TreeGuiWidgetEvent::ItemsProperty):
-// 			setProperty(TreeGuiWidgetEvent::ItemsProperty, items
-// 			break;
-// 		case (TreeGuiWidgetEvent::MaximumProperty):
-// 			if (type_ == TreeGuiWidget::DoubleSpinWidget) setProperty(TreeGuiWidgetEvent::MaximumProperty, maximumD_);
-// 			else setProperty(TreeGuiWidgetEvent::MaximumProperty, maximumI_);
-// 			break;
-// 		case (TreeGuiWidgetEvent::MinimumProperty):
-// 			if (type_ == TreeGuiWidget::DoubleSpinWidget) setProperty(TreeGuiWidgetEvent::MinimumProperty, minimumD_);
-// 			else setProperty(TreeGuiWidgetEvent::MinimumProperty, minimumI_);
-// 			break;
-// 		case (TreeGuiWidgetEvent::TextProperty):
-// 			setProperty(TreeGuiWidgetEvent::TextProperty, text_.get());
-// 			break;
-// 		case (TreeGuiWidgetEvent::ValueProperty):
-// 			break;
-// 		case (TreeGuiWidgetEvent::VisibleProperty):
-// 			setProperty(TreeGuiWidgetEvent::VisibleProperty, visible_);
-// 			break;
-// 	}
 	propertyChanged_[property] = TRUE;
 	if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
 	checkWidgetEvents();
@@ -921,16 +890,6 @@ TreeGuiWidget *TreeGuiWidget::addPage(const char *name, const char *label)
 	return widget;
 }
 
-// Create new (invisible) radio group
-TreeGuiWidget *TreeGuiWidget::addRadioGroup(const char *name)
-{
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::RadioGroupWidget);
-	if (widget == NULL) return NULL;
-	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL) widget->setQtWidgetObject(parent_->qtTreeGui()->addRadioGroup(widget));
-	return widget;
-}
-
 // Create new radio button
 TreeGuiWidget *TreeGuiWidget::addRadioButton(const char *name, const char *label, const char *radioGroup, int state, int l, int t, int xw, int xh)
 {
@@ -964,18 +923,42 @@ TreeGuiWidget *TreeGuiWidget::addRadioButton(const char *name, const char *label
 	return widget;
 }
 
-// Create new tab widget
-TreeGuiWidget *TreeGuiWidget::addTabs(const char *name, int l, int t, int xw, int xh)
+// Create new (invisible) radio group
+TreeGuiWidget *TreeGuiWidget::addRadioGroup(const char *name)
 {
-	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::TabWidget);
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::RadioGroupWidget);
 	if (widget == NULL) return NULL;
 	// Create complementary Qt control?
-	if (parent_->qtTreeGui() != NULL)
-	{
-		widget->setQtWidgetObject(parent_->qtTreeGui()->addTabs(widget));
-		addWidget(widget, l, t, xw, xh);
-	}
+	if (parent_->qtTreeGui() != NULL) widget->setQtWidgetObject(parent_->qtTreeGui()->addRadioGroup(widget));
 	return widget;
+}
+
+// Create new spacer
+bool TreeGuiWidget::addSpacer(bool expandHorizontal, bool expandVertical, int l, int t, int xw, int xh)
+{
+	// Do we have an associated Qt widget? If not, then we have no GUI, so nothing to do.
+	if (qtWidgetObject_ == NULL) return TRUE;
+	
+	// If l and r are both zero, this widget should not be added to any layout
+	if ((l == 0) && (t == 0)) return FALSE;
+
+	// Check widget type - does it have a layout?
+	bool result = FALSE;
+	switch (type_)
+	{
+		case (TreeGuiWidget::DialogWidget):
+		case (TreeGuiWidget::FrameWidget):
+		case (TreeGuiWidget::GroupWidget):
+		case (TreeGuiWidget::PageWidget):
+			result = qtWidgetObject_->addSpacer(expandHorizontal, expandVertical, l, t, xw, xh);
+			break;
+		default:
+			msg.print("Error: Widget '%s' does not have a layout, and so addSpacer() cannot be used.\n", name_.get());
+			result = FALSE;
+			break;
+	}
+
+	return result;
 }
 
 // Create new stack widget
@@ -987,6 +970,20 @@ TreeGuiWidget *TreeGuiWidget::addStack(const char *name, int l, int t, int xw, i
 	if (parent_->qtTreeGui() != NULL)
 	{
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addStack(widget));
+		addWidget(widget, l, t, xw, xh);
+	}
+	return widget;
+}
+
+// Create new tab widget
+TreeGuiWidget *TreeGuiWidget::addTabs(const char *name, int l, int t, int xw, int xh)
+{
+	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::TabWidget);
+	if (widget == NULL) return NULL;
+	// Create complementary Qt control?
+	if (parent_->qtTreeGui() != NULL)
+	{
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addTabs(widget));
 		addWidget(widget, l, t, xw, xh);
 	}
 	return widget;
