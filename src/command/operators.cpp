@@ -269,6 +269,24 @@ bool Command::function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, R
 	return b;
 }
 
+// Inline If
+bool Command::function_OperatorInlineIf(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Evaluate first argument (the IF part)
+	ReturnValue condition;
+	bool b = TRUE;
+	if (!c->arg(0,condition)) return FALSE;
+	if (condition.asBool())
+	{
+		if (!c->arg(1, rv)) b = FALSE;
+	}
+	else
+	{
+		if (!c->arg(2, rv)) b = FALSE;
+	}
+	return b;
+}
+
 // Less Than
 bool Command::function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

@@ -39,6 +39,7 @@ void Command::initPointers()
 	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
 	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;
 	pointers_[OperatorGreaterThanEqualTo] = &function_OperatorGreaterThanEqualTo;
+	pointers_[OperatorInlineIf] = &function_OperatorInlineIf;
 	pointers_[OperatorLessThan] = &function_OperatorLessThan;
 	pointers_[OperatorLessThanEqualTo] = &function_OperatorLessThanEqualTo;
 	pointers_[OperatorModulus] = &function_OperatorModulus;

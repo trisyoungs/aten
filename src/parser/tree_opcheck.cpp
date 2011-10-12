@@ -313,7 +313,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 // Check ternary operator type compatibility
 VTypes::DataType Tree::checkTernaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool &returnsarray)
 {
-		msg.enter("Tree::checkBinaryOperatorTypes");
+	msg.enter("Tree::checkBinaryOperatorTypes");
 	int id = VTypes::dataPair(type1, array1 ? 1 : -1, type2, array2 ? 1 : -1);
 	// Check for no data type
 	if (id == VTypes::UntypedData)

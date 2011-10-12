@@ -1016,6 +1016,7 @@ class Command
 	static bool function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorInlineIf(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorModulus(CommandNode *c, Bundle &obj, ReturnValue &rv);
