@@ -323,7 +323,7 @@ bool QtWidgetObject::addWidget(QtWidgetObject *qtwo, int l, int t, int addToWidt
 		return FALSE;
 	}
 	
-	// Are we adding in a specifi position, or an automatic one?
+	// Are we adding in a specific position, or an automatic one?
 	if (l != -1)
 	{
 		nextLeft_ = l-1;
@@ -345,6 +345,32 @@ bool QtWidgetObject::addWidget(QtWidgetObject *qtwo, int l, int t, int addToWidt
 		if (autoFillVertical_) nextTop_ += addToHeight+1;
 		else nextLeft_ += addToWidth+2;
 	}
+	return TRUE;
+}
+
+// Add widget to the stored layout (provided it has one) at specified geometry
+bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l, int t, int addToWidth, int addToHeight)
+{
+	// Safety check - make sure we have a layout
+	if (layout_ == NULL)
+	{
+		printf("Internal Error: No layout to add spacer to.\n");
+		return FALSE;
+	}
+
+	// Are we adding in a specific position, or an automatic one?
+	if (l != -1)
+	{
+		nextLeft_ = l-1;
+		nextTop_ = t-1;
+	}
+	
+	// Some widgets have associated labels and take up two+ cells, and some don't.....
+	QSpacerItem *spacer = new QSpacerItem(1, 1, expandHorizontal ? QSizePolicy::Expanding : QSizePolicy::Minimum, expandVertical ? QSizePolicy::Expanding : QSizePolicy::Minimum);
+	layout_->addItem(spacer, nextTop_, nextLeft_, addToHeight+1, addToWidth+1, Qt::AlignVCenter);
+	if (autoFillVertical_) nextTop_ += addToHeight+1;
+	else nextLeft_ += addToWidth+1;
+	return TRUE;
 }
 
 /*
@@ -738,7 +764,7 @@ QtWidgetObject *AtenTreeGuiDialog::addGroup(TreeGuiWidget *widget, const char *l
 	qtwo->set(widget, group, NULL, layout);
 	group->setEnabled(widget->enabled());
 	group->setVisible(widget->visible());
-	group->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	group->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	return qtwo;
 }
 
@@ -823,7 +849,7 @@ QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget 
 }
 
 // Create new (invisible) radio group
-QtWidgetObject *AtenTreeGuiDialog::addRadioGroup(TreeGuiWidget* widget)
+QtWidgetObject *AtenTreeGuiDialog::addRadioGroup(TreeGuiWidget *widget)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
 	QButtonGroup *group = new QButtonGroup;
@@ -834,7 +860,7 @@ QtWidgetObject *AtenTreeGuiDialog::addRadioGroup(TreeGuiWidget* widget)
 }
 
 // Create new radio button
-QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char* name, const char* label, int id)
+QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char *name, const char *label, int id)
 {
 	// Cast QObject in groupWidget into QButtonGroup
 	QtWidgetObject *wo = groupWidget->qtWidgetObject();

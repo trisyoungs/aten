@@ -87,6 +87,8 @@ class QtWidgetObject
 	void updateCLI();
 	// Add widget to the stored layout (provided it has one) at specified geometry
 	bool addWidget(QtWidgetObject *qtwo, int l, int t, int addToWidth, int addToHeight);
+	// Add widget to the stored layout (provided it has one) at specified geometry
+	bool addSpacer(bool expandHorizontal, bool expandVertical, int l, int t, int addToWidth, int addToHeight);
 };
 
 // Tree Gui Qt Dialog
