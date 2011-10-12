@@ -444,7 +444,11 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		group2.addCheck("basis_diffs", "DIFFS", 0, 3, 2);
 		w.onInteger(1, 10, "sendbool", "suppbasisgroup", "enabled");
 		w.onInteger(3, 6, "sendbool", "basis_ngauss", "enabled");
-		w.onInteger(11, 40, "sendbool", "contrl_isphere", "value");
+		w.onInteger(1, 10, "sendinteger", "contrl_isphere", "value", 0);
+		w.onInteger(11, 40, "sendinteger", "contrl_isphere", "value", 1);
+		w.onInteger(41, 42, "sendinteger", "contrl_isphere", "value", 0);
+		w.onInteger(43, 45, "sendinteger", "contrl_isphere", "value", 1);
+		w.onInteger(46, 52, "sendinteger", "contrl_isphere", "value", 0);
 
 		# Tabs containing various options
 		tabs = ui.addTabs("optiontabs", 1, 4);
