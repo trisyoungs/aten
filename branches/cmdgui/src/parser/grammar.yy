@@ -49,15 +49,28 @@ int globalDeclarations;
 %token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IIF ATEN_IN ATEN_GLOBAL ATEN_RETURN FILTERBLOCK HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK
 %nonassoc ATEN_ELSE
 
-%left AND OR
-%left '=' PEQ MEQ TEQ DEQ 
-%left GEQ LEQ EQ NEQ '>' '<'
+/* Higher line number == Higher precedence */
+/* Taken from cppreference.com */
+%right '=' PEQ MEQ TEQ DEQ 
+%right '?' ':'
+%left OR
+%left AND
+%left EQ NEQ
+%left '<' LEQ '>' GEQ
 %left '+' '-'
-%left '*' '/' '%' '?' ':'
-%right UMINUS
+%left '*' '/' '%' '^'
+%right UPLUS UMINUS '!'
 %left PLUSPLUS MINUSMINUS
-%right '!'
-%right '^'
+ 
+/* %left AND OR */
+/* %left '=' PEQ MEQ TEQ DEQ  */
+/* %left GEQ LEQ EQ NEQ '>' '<' */
+/* %left '+' '-' */
+/* %left '*' '/' '%'  */
+/* %right UMINUS '?' ':' */
+/* %left PLUSPLUS MINUSMINUS */
+/* %right '!' */
+/* %right '^' */
 
 %type <node> constant expression expressionlist variable statement flowstatement statementlist block blockment assignment
 %type <node> declaration functiondeclaration caselabel caselist

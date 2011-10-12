@@ -67,19 +67,20 @@
      ATEN_CONTINUE = 283,
      ATEN_BREAK = 284,
      ATEN_ELSE = 285,
-     OR = 286,
-     AND = 287,
-     DEQ = 288,
-     TEQ = 289,
-     MEQ = 290,
-     PEQ = 291,
+     DEQ = 286,
+     TEQ = 287,
+     MEQ = 288,
+     PEQ = 289,
+     OR = 290,
+     AND = 291,
      NEQ = 292,
      EQ = 293,
-     LEQ = 294,
-     GEQ = 295,
+     GEQ = 294,
+     LEQ = 295,
      UMINUS = 296,
-     MINUSMINUS = 297,
-     PLUSPLUS = 298
+     UPLUS = 297,
+     MINUSMINUS = 298,
+     PLUSPLUS = 299
    };
 #endif
 /* Tokens.  */
@@ -111,19 +112,20 @@
 #define ATEN_CONTINUE 283
 #define ATEN_BREAK 284
 #define ATEN_ELSE 285
-#define OR 286
-#define AND 287
-#define DEQ 288
-#define TEQ 289
-#define MEQ 290
-#define PEQ 291
+#define DEQ 286
+#define TEQ 287
+#define MEQ 288
+#define PEQ 289
+#define OR 290
+#define AND 291
 #define NEQ 292
 #define EQ 293
-#define LEQ 294
-#define GEQ 295
+#define GEQ 294
+#define LEQ 295
 #define UMINUS 296
-#define MINUSMINUS 297
-#define PLUSPLUS 298
+#define UPLUS 297
+#define MINUSMINUS 298
+#define PLUSPLUS 299
 
 
 
@@ -147,7 +149,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 151 "grammar.h"
+#line 153 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
