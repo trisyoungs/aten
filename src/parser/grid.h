@@ -43,7 +43,7 @@ class GridVariable : public PointerVariable
 	// Accessor list
         enum Accessors { Axes, Colour, Cutoff, Name, NX, NY, NZ, Origin, OutlineVolume, Periodic, SecondaryColour, SecondaryCutoff, SecondaryUpperCutoff, ShiftX, ShiftY, ShiftZ, Visible, UpperCutoff, nAccessors };
 	// Function list
-	enum Functions { Data, nFunctions };
+	enum Functions { Data, Shift, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors
