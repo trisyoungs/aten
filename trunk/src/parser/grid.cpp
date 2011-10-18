@@ -21,6 +21,7 @@
 
 #include "parser/grid.h"
 #include "parser/stepnode.h"
+#include "model/model.h"
 #include "classes/grid.h"
 #include "base/constants.h"
 #include "base/elements.h"
@@ -74,7 +75,8 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor GridVariable::functionData[GridVariable::nFunctions] = {
-	{ "data",	VTypes::DoubleData,	"IIi",	"int i, int j, int k = -1" }
+	{ "data",	VTypes::DoubleData,	"IIi",	"int i, int j, int k = -1" },
+	{ "shift",	VTypes::NoData,		"IIIi",	"int dx, int dy, int dz, bool shiftAtoms = FALSE" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -425,6 +427,23 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 					msg.print("Free (irregular) grid data cannot be accessed with the 'data' function.\n");
 					result = FALSE;
 					break;
+			}
+			break;
+		case (GridVariable::Shift):
+			ptr->setShift(ptr->shift().x+node->argi(0), ptr->shift().y+node->argi(1), ptr->shift().z+node->argi(2));
+			if (node->argb(3))
+			{
+				Model *m = ptr->parent();
+				// Determine shift amount...
+				Vec3<double> vec;
+				vec += ptr->axes().columnAsVec3(0) * node->argi(0);
+				vec += ptr->axes().columnAsVec3(1) * node->argi(1);
+				vec += ptr->axes().columnAsVec3(2) * node->argi(2);
+				// Move atoms....
+				m->beginUndoState("Shift atoms with grid");
+				m->markAll();
+				m->translateSelectionLocal(vec, TRUE);
+				m->endUndoState();
 			}
 			break;
 		default:

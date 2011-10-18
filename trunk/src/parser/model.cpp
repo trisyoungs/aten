@@ -408,7 +408,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				msg.print("Grid array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(VTypes::GridData, ptr->glyph(arrayIndex-1));
+			else rv.set(VTypes::GridData, ptr->grid(arrayIndex-1));
 			break;
 		case (ModelVariable::Id):
 			rv.set(aten.modelIndex(ptr)+1);
