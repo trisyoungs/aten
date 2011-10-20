@@ -65,7 +65,7 @@ int DisorderWizard::run()
 {
 	// If there are no loaded models with periodicity, disable this option on page 1
 	int nperiodic = 0;
-	for (Model *m = aten.models(); m != NULL; m = m->next) if (m->cell()->type() != UnitCell::NoCell) ++nperiodic;
+	for (Model *m = aten.models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) ++nperiodic;
 	ui.TargetExistingRadio->setEnabled(nperiodic != 0);
 	ui.TargetNewRadio->setChecked(nperiodic == 0);
 	ui.TargetExistingRadio->setChecked(nperiodic != 0);
@@ -191,7 +191,7 @@ void DisorderWizard::pageChanged(int id)
 				selectitem = NULL;
 				for (m = aten.models(); m != NULL; m = m->next)
 				{
-					if (m->cell()->type() == UnitCell::NoCell) continue;
+					if (m->renderSourceModel()->cell()->type() == UnitCell::NoCell) continue;
 					item = new TTreeWidgetItem(ui.ExistingModelTree);
 					item->data.set(VTypes::ModelData, m);
 					item->setIcon(0,m->icon());
@@ -237,7 +237,7 @@ void DisorderWizard::pageChanged(int id)
 			ui.ChooseComponentsTree->setColumnCount(2);
 			for (m = aten.models(); m != NULL; m = m->next)
 			{
-				if (m->cell()->type() != UnitCell::NoCell) continue;
+				if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) continue;
 				item = new TTreeWidgetItem(ui.ChooseComponentsTree);
 				item->data.set(VTypes::ModelData, m);
 				item->setIcon(0,m->icon());
@@ -347,6 +347,7 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *cu
 	TTreeWidgetItem *twi = (TTreeWidgetItem*) current;
 	existingModel_ = (Model*) twi->data.asPointer(VTypes::ModelData);
 	if (existingModel_ == NULL) return;
+	existingModel_ = existingModel_->renderSourceModel();
 	aten.setCurrentModel(existingModel_, TRUE);
 	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
 	gui.update(GuiQt::AllTarget);
