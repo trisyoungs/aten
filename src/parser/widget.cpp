@@ -366,7 +366,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (WidgetVariable::AddLabel):
-			l = node->hasArg(1) ? node->argi(2) : -1;
+			l = node->hasArg(2) ? node->argi(2) : -1;
 			t = node->hasArg(3) ? node->argi(3) : -1;
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;

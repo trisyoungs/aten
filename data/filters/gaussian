@@ -18,10 +18,11 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 		widget w, w2, stack, page, tab, tabs = ui.addTabs("tabs");
 		# Job type
 		tab = tabs.addPage("jobpage", "Job Type");
-		tab.addCombo("runtype", "Run Type", "SP,Opt,Freq,IRC,IRCMax,Scan,Polar,ADMP,BOMD,Force,Stable,Volume", 2);
+		w = tab.addCombo("runtype", "Run Type", "SP,Opt,Freq,IRC,IRCMax,Scan,Polar,ADMP,BOMD,Force,Stable,Volume", 2);
 		tab.addIntegerSpin("mult", "Multiplicity", 1, 8, 1, 1);
 		tab.addIntegerSpin("charge", "Charge", -100, 100, 1, 0);
 		stack = tab.addStack("runstack", 1, 2, 5, 0);
+		w.onInteger(1, 12, "sendinteger", "runstack", "value");
 		# -- SP
 		page = stack.addPage("stack_sp", "");
 		page.addLabel("","No Options");
@@ -84,7 +85,7 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 		w2.addCombo("polar", "Polarisation (Heavy Atom, General)", "<none>", 1, 1, 2);
 		w2.addCombo("lightpolar", "Polarisation (Light Atom)", "<none>", 1, 1, 3);
 		# -- Link events to show valid options for extra basis functions, and display element text
-		w.onInteger(1, 22, "setproperty", "elementlabel", "text",
+		w.onInteger(1, 22, "sendstring", "elementlabel", "text",
 			"???",						# -- STO-3G
 			"H-Xe",						# -- 3-21G
 			"H-Cl",						# -- 6-21G
@@ -107,7 +108,7 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 			"H-Ar",						# -- MTSmall
 			"See Basis Options",				# -- DGauss
 			"H-Kr");					# -- CBSB7
-		w.onInteger(1, 22, "setproperty", "subbasis", "items",
+		w.onInteger(1, 22, "sendstring", "subbasis", "items",
 			"<none>",					# -- STO-3G
 			"<none>",					# -- 3-21G
 			"<none>",					# -- 6-21G
@@ -130,7 +131,7 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 			"<none>",					# -- MTSmall
 			"'DGDZVP (H-Xe)','DGDZVP2 (H-F,Al-Ar,Sc-Zn)','DGTZVP (H,C-F,Al-Ar)'", # -- DGauss
 			"<none>");					# -- CBSB7
-		w.onInteger(1, 22, "setproperty", "diffuse", "items",
+		w.onInteger(1, 22, "sendstring", "diffuse", "items",
 			"<none>",					# -- STO-3G
 			"<none>,+",					# -- 3-21G
 			"<none>",					# -- 6-21G
@@ -153,7 +154,7 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 			"<none>",					# -- MTSmall
 			"<none>",					# -- DGauss
 			"<none>,+,++");					# -- CBSB7
-		w.onInteger(1, 22, "setproperty", "polar", "items",
+		w.onInteger(1, 22, "sendstring", "polar", "items",
 			"<none>",					# -- STO-3G
 			"<none>",					# -- 3-21G
 			"<none>,*,**",					# -- 6-21G
@@ -176,7 +177,7 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 			"<none>",					# -- MTSmall
 			"<none>",					# -- DGauss
 			"<none>");					# -- CBSB7
-		w.onInteger(1, 22, "setproperty", "lightpolar", "items",
+		w.onInteger(1, 22, "sendstring", "lightpolar", "items",
 			"<none>",					# -- STO-3G
 			"<none>",					# -- 3-21G
 			"<none>",					# -- 6-21G
