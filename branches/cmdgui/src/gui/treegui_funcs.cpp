@@ -339,8 +339,11 @@ bool QtWidgetObject::addWidget(QtWidgetObject *qtwo, int l, int t, int addToWidt
 	}
 	else
 	{
-		qtwo->labelWidget_ = new QLabel(qtwo->labelText_.get());
-		layout_->addWidget(qtwo->labelWidget_, nextTop_, nextLeft_, 1, 1, Qt::AlignRight);
+		if (qtwo->treeGuiWidget()->type() != TreeGuiWidget::LabelWidget)
+		{
+			qtwo->labelWidget_ = new QLabel(qtwo->labelText_.get());
+			layout_->addWidget(qtwo->labelWidget_, nextTop_, nextLeft_, 1, 1, Qt::AlignRight);
+		}
 		layout_->addWidget(qtwo->qWidget_, nextTop_, nextLeft_+1, addToHeight+1, addToWidth+1, Qt::AlignVCenter);
 		if (autoFillVertical_) nextTop_ += addToHeight+1;
 		else nextLeft_ += addToWidth+2;
