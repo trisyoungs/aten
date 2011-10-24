@@ -1,7 +1,8 @@
 # MSI Datafile version 3.8 (for v1.2+)
 # Created:	 15/04/2009
-# Last modified: 15/04/2009
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 # Notes:
 
 filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="msi", glob="*.msi", id=12)
@@ -13,8 +14,8 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 	double q;
 
 	# Request that parentheses are removed as we read lines
-	addreadoption("stripbrackets");
-	removereadoption("usequotes");
+	addReadOption("stripbrackets");
+	removeReadOption("usequotes");
 
 	# Read in each line as six arguments.
 	# If the first is not 'A' then it is the start of some data block.
@@ -23,12 +24,12 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 	cellvar = 0;
 	while (!eof())
 	{
-		# Read in whole lines and work with them instead of always using readline
-		getline(line);
+		# Read in whole lines and work with them instead of always using readLine
+		getLine(line);
 		# Parse the stored $line
-		readvar(line,ident,type,data,a,b,c);
+		readVar(line,ident,type,data,a,b,c);
 		# If the 'c' variable is '\' then we must read in the next line to get the real 'c'
-		if (c == "\\") { getline(line); readvar(line,c); }
+		if (c == "\\") { getLine(line); readVar(line,c); }
 		# Check for block specifiers
 		if (ident <> "A")
 		{
@@ -39,13 +40,13 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 			# Check the old 'block' value and perform end tasks
 			if (block == "A")
 			{
-				newatom(el, r.x, r.y, r.z);
-				setid(id);
-				setforces(f.x, f.y, f.z);
-				setcharge(q);
+				newAtom(el, r.x, r.y, r.z);
+				setId(id);
+				setForces(f.x, f.y, f.z);
+				setCharge(q);
 			}
-			else if (block == "B") newbondid(bondi,bondj);
-			else if (block == "M") newmodel(name);
+			else if (block == "B") newBondId(bondi,bondj);
+			else if (block == "M") newModel(name);
 			block = newblock;
 		}
 		else
@@ -79,12 +80,12 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 	# Apply unit cell if one was specified
 	if (cellvar == 3)
 	{
-		cellaxes(axes[1].x, axes[1].y, axes[1].z, axes[2].x, axes[2].y, axes[2].z, axes[3].x, axes[3].y, axes[3].z);
+		cellAxes(axes[1].x, axes[1].y, axes[1].z, axes[2].x, axes[2].y, axes[2].z, axes[3].x, axes[3].y, axes[3].z);
 		fold();
 	}
 	else if (cellvar != 0) printf("Warning: Incomplete / mangled cell definition in file.");
 
 	# Finalise model
-	finalisemodel();
+	finaliseModel();
 }
 

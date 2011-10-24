@@ -67,22 +67,22 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 	{ "cy",		VTypes::DoubleData,	0, FALSE },
 	{ "cz",		VTypes::DoubleData,	0, FALSE },
 	{ "centre",	VTypes::VectorData,	0, TRUE },
-	{ "centrex",	VTypes::DoubleData,	0, TRUE },
-	{ "centrey",	VTypes::DoubleData,	0, TRUE },
-	{ "centrez",	VTypes::DoubleData,	0, TRUE },
+	{ "centreX",	VTypes::DoubleData,	0, TRUE },
+	{ "centreY",	VTypes::DoubleData,	0, TRUE },
+	{ "centreZ",	VTypes::DoubleData,	0, TRUE },
 	{ "density",	VTypes::DoubleData,	0, TRUE },
 	{ "matrix", 	VTypes::DoubleData,	9, FALSE },
-	{ "sgid",	VTypes::IntegerData,	0, FALSE },
-	{ "sgname",	VTypes::StringData,	0, TRUE },
+	{ "sgId",	VTypes::IntegerData,	0, FALSE },
+	{ "sgName",	VTypes::StringData,	0, TRUE },
 	{ "type",	VTypes::StringData,	0, TRUE },
 	{ "volume",	VTypes::DoubleData,	0, TRUE },
 };
 
 // Function data
 FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
-	{ "mim",		VTypes::VectorData,	"WW",		"atom i | vector u, atom j | vector v" },
-	{ "mimd",		VTypes::VectorData,	"WW",		"atom i | vector u, atom j | vector v" },
-	{ "translateatom",	VTypes::VectorData,	"JNNN",		"atom i, double dx, double dy, double dz" }
+	{ "mim",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
+	{ "mimd",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
+	{ "translateAtom",	VTypes::VectorData,	"JNNN",		"Atom i, double dx, double dy, double dz" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -97,12 +97,13 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 	msg.enter("CellVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'cell&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -172,7 +173,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	UnitCell *ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
 		result = FALSE;
@@ -302,7 +303,7 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	UnitCell *ptr = (UnitCell*) sourcerv.asPointer(VTypes::CellData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
 		result = FALSE;

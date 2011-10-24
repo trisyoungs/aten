@@ -66,7 +66,7 @@ class BasisShell
 	BasisShell *prev, *next;
 	// Function Type
 	enum BasisShellType { NoType, SShellType, PShellType, DShellType, FShellType, GShellType, SPShellType, nBasisShellTypes };
-	static BasisShellType basisShellType(const char *s, bool reporterror = FALSE);
+	static BasisShellType basisShellType(const char *s, bool reportError = FALSE);
 	static const char *basisShellType(BasisShellType bft);
 	// Cartesian function names
 	static int nCartesianFunctions(BasisShellType bft);

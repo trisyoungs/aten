@@ -45,7 +45,7 @@ void removeComments(char *s);
 bool isEmpty(char *s);
 
 // Enum search and print
-int enumSearch(const char *name, int nitems, const char **list, const char *query, bool reporterror = 1);
+int enumSearch(const char *name, int nitems, const char **list, const char *query, bool reportError = 1);
 void enumPrintValid(int nitems, const char **list);
 
 // Files

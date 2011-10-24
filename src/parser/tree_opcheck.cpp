@@ -309,3 +309,33 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 	msg.exit("Tree::checkBinaryOperatorTypes");
 	return result;
 }
+
+// Check ternary operator type compatibility
+VTypes::DataType Tree::checkTernaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool &returnsarray)
+{
+	msg.enter("Tree::checkBinaryOperatorTypes");
+	int id = VTypes::dataPair(type1, array1 ? 1 : -1, type2, array2 ? 1 : -1);
+	// Check for no data type
+	if (id == VTypes::UntypedData)
+	{
+		// Check validity of left and rhs values
+		if (type1 == VTypes::NoData) msg.print("Error: LHS operator has no type and can't be assigned to.\n");
+		if (type2 == VTypes::NoData) msg.print("Error: RHS operator has no type and can't be assigned to.\n");
+		msg.exit("Tree::checkBinaryOperatorTypes");
+		return VTypes::NoData;
+	}
+	VTypes::DataType result = VTypes::NoData;
+	returnsarray = FALSE;
+	switch (func)
+	{
+		case (Command::OperatorInlineIf):
+			// Assume that type1 can always be resolved to a bool. Type2 and Type3 must be the same type.
+			if (type2 == type3) result = type2;
+			else msg.print("Error: Type mismatch in arguments for ternary operator '?:' - return value types are '%s' and '%s'.\n", VTypes::dataType(type2), VTypes::dataType(type3));
+			break;
+		default:
+			break;
+	}
+	msg.exit("Tree::checkTernaryOperatorTypes");
+	return result;
+}

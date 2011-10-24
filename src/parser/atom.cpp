@@ -56,9 +56,9 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "element",	VTypes::ElementData,		0, FALSE },
 	{ "f",		VTypes::VectorData,		0, FALSE },
 	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
-	{ "fracx",	VTypes::DoubleData,		0, FALSE },
-	{ "fracy",	VTypes::DoubleData,		0, FALSE },
-	{ "fracz",	VTypes::DoubleData,		0, FALSE },
+	{ "fracX",	VTypes::DoubleData,		0, FALSE },
+	{ "fracY",	VTypes::DoubleData,		0, FALSE },
+	{ "fracZ",	VTypes::DoubleData,		0, FALSE },
 	{ "fx",		VTypes::DoubleData,		0, FALSE },
 	{ "fy",		VTypes::DoubleData,		0, FALSE },
 	{ "fz",		VTypes::DoubleData,		0, FALSE },
@@ -66,7 +66,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "id",		VTypes::IntegerData,		0, TRUE },
 	{ "mass",	VTypes::DoubleData,		0, TRUE },
 	{ "name",	VTypes::StringData,		0, TRUE },
-	{ "nbonds",	VTypes::IntegerData,		0, TRUE },
+	{ "nBonds",	VTypes::IntegerData,		0, TRUE },
 	{ "q",		VTypes::DoubleData,		0, FALSE },
 	{ "r",		VTypes::VectorData,		0, FALSE },
 	{ "rx",		VTypes::DoubleData,		0, FALSE },
@@ -85,7 +85,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
-	{ "findbond",	VTypes::BondData,	"A",	"atom j" }
+	{ "findBond",	VTypes::BondData,	"A",	"Atom j" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -100,12 +100,13 @@ StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 	msg.enter("AtomVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'atom&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -175,7 +176,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Atom *ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
 		result = FALSE;
@@ -341,7 +342,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	Atom::DrawStyle ds;
 	Element *el;
 	Atom *ptr = (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
 		result = FALSE;

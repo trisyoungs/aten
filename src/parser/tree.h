@@ -24,17 +24,10 @@
 
 #include <iostream>
 #include "parser/filterdata.h"
-#include "parser/widgetnode.h"
-#include "parser/returnvalue.h"
-#include "parser/variable.h"
 #include "parser/variablelist.h"
+#include "parser/treegui.h"
 #include "command/commands.h"
-#include "templates/namemap.h"
-#include "templates/list.h"
-#include "templates/reflist.h"
 #include "base/dnchar.h"
-#include "base/elements.h"
-#include "base/lineparser.h"
 
 // Forward declarations
 class TreeNode;
@@ -42,7 +35,6 @@ class ScopeNode;
 class VariableNode;
 class StepNode;
 class Program;
-class AtenCustomDialog;
 
 // Tree
 class Tree
@@ -50,7 +42,6 @@ class Tree
 	public:
 	// Constructor / Destructor
 	Tree();
-	Tree(const char *name, const char *commands);
 	~Tree();
 	// List pointers
 	Tree *prev, *next;
@@ -116,6 +107,8 @@ class Tree
 	VTypes::DataType checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, bool array, bool &returnsarray);
 	// Check binary operator type compatibility
 	VTypes::DataType checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray);
+	// Check ternary operator type compatibility
+	VTypes::DataType checkTernaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool &returnsarray);
 	
 	public:
 	// Create a new path on the stack with the specified base 'variable'
@@ -139,7 +132,7 @@ class Tree
 	// Add a node representing a whole statement to the execution list
 	bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
-	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
+	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL, TreeNode *arg3 = NULL);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
@@ -179,9 +172,9 @@ class Tree
 	// Add Element constant
 	TreeNode *addElementConstant(int el);
 	// Add variable to topmost ScopeNode
-	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL, bool global = FALSE);
 	// Add array variable to topmost ScopeNode
-	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
+	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL, bool global = FALSE);
 	// Add array 'constant'
 	TreeNode *addArrayConstant(TreeNode *values);
 	// Search for variable in current scope
@@ -190,8 +183,6 @@ class Tree
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 	// Return local scope's variable list
 	const VariableList &localVariables() const;
-	// Set named variable (including WidgetNodes) in this tree's local scope
-	bool setVariable(const char *name, const char *value);
 
 
 	/*
@@ -221,43 +212,21 @@ class Tree
 
 
 	/*
-	// Custom Dialog Widgets
+	// Qt/CLI GUI Definition
 	*/
 	private:
-	// List of user-defined widgets for custom dialog / filter options
-	Reflist<WidgetNode,int> widgets_;
-	// Custom dialog containing ready-created set of controls
-	AtenCustomDialog *customDialog_;
+	// Default GUI dialog, run at start of Program execution
+	TreeGui defaultDialog_;
+	// List of additional, temporary dialogs created by the tree
+	List<TreeGui> dialogs_;
 
 	public:
-	// Add new (GUI-based) filter option linked to a variable
-	TreeNode *addWidget(TreeNode *arglist);
-	// Return first item in list of filter options
-	Refitem<WidgetNode,int> *widgets();
-	// Locate named widget
-	WidgetNode *findWidget(const char *name);
-	// Locate widget with specified widget pointer
-	WidgetNode *findWidget(QWidget *widget);
-	// Locate widget with specified object pointer
-	WidgetNode *findWidgetObject(QObject *obj);
-	// Create custom dialog from defined widgets (if there are any)
-	void createCustomDialog(const char *title = NULL);
-	// Return custom dialog (if any)
-	AtenCustomDialog *customDialog();
-	// Execute defined custom dialog (if one exists, just return TRUE if not)
-	bool executeCustomDialog(bool getvaluesonly = FALSE, const char *newtitle = NULL);
-	// Retrieve current value of named widget as a double
-	double widgetValued(const char *name);
-	// Retrieve current value of named widget as an integer
-	int widgetValuei(const char *name);
-	// Retrieve current value of named widget as a string
-	const char *widgetValuec(const char *name);
-	// Retrieve current value of named widget triplet as a vector
-	Vec3<double> widgetValue3d(const char *name1, const char *name2, const char *name3);
-	// Set current value of named widget
-	void setWidgetValue(const char *name, ReturnValue value);
-	// Set property of named widget (via a state change)
-	bool setWidgetProperty(const char *name, const char *property, ReturnValue value);
+	// Return default dialog structure
+	TreeGui &defaultDialog();
+	// Create and return new, temporary dialog
+	TreeGui *createDialog(const char *title = NULL);
+	// Delete specified temporary dialog
+	bool deleteDialog(TreeGui *dialog);
 
 
 	/*
@@ -270,6 +239,8 @@ class Tree
 	LineParser *parser_;
 	// Flag to indicate that recent failure of this token is known and we should continue
 	Command::Function acceptedFail_;
+	// Number of times tree has been run
+	int runCount_;
 
 	public:
 	// Add read option
@@ -300,6 +271,8 @@ class Tree
 	bool executeRead(const char *filename);
 	// Execute, with specified filename as data target (no return value)
 	bool executeWrite(const char *filename);
+	// Return number of times tree has been run
+	int runCount();
 };
 
 #endif

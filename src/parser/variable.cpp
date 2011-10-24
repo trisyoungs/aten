@@ -21,6 +21,9 @@
 
 #include "parser/variable.h"
 #include "parser/returnvalue.h"
+#include "parser/accessor.h"
+#include "classes/prefs.h"
+#include "base/sysfunc.h"
 #include <string.h>
 
 /*
@@ -142,6 +145,41 @@ StepNode *Variable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 	// Default is to return NULL since no accessors are defined
 	printf("Error: No accessors are available for a variable of type '%s'.\n", VTypes::dataType(returnType_));
 	return NULL;
+}
+
+// Search accessor list provided
+int Variable::searchAccessor(const char *s, int nAccessors, Accessor *accessors)
+{
+	for (int i = 0; i < nAccessors; ++i)
+	{
+		// Case sensitive search
+		if (strcmp(accessors[i].name,s) == 0) return i;
+		// Case insensitive search
+		if (prefs.allowDeprecated() && strcmp(lowerCase(accessors[i].name),s) == 0)
+		{
+			msg.print("Warning: '%s' is deprecated - use '%s' instead.\n", s, accessors[i].name);
+			return i;
+		}
+	}
+	return -1;
+}
+
+// Search accessor list provided
+int Variable::searchAccessor(const char *s, int nAccessors, FunctionAccessor *accessors)
+{
+	Dnchar lcase = lowerCase(s);
+	for (int i = 0; i < nAccessors; ++i)
+	{
+		// Case sensitive search
+		if (strcmp(accessors[i].name,s) == 0) return i;
+		// Case insensitive search
+		if (prefs.allowDeprecated() && strcmp(lowerCase(accessors[i].name),lcase) == 0)
+		{
+			msg.print("Warning: '%s' is deprecated - use '%s' instead.\n", s, accessors[i].name);
+			return i;
+		}
+	}
+	return -1;
 }
 
 /*

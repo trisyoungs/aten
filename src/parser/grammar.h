@@ -57,28 +57,30 @@
      ATEN_CASE = 273,
      ATEN_DEFAULT = 274,
      ATEN_IF = 275,
-     ATEN_IN = 276,
-     ATEN_RETURN = 277,
-     FILTERBLOCK = 278,
-     HELP = 279,
-     ATEN_VOID = 280,
-     ATEN_CONTINUE = 281,
-     ATEN_BREAK = 282,
-     OPTION = 283,
-     ATEN_ELSE = 284,
-     OR = 285,
-     AND = 286,
-     DEQ = 287,
-     TEQ = 288,
-     MEQ = 289,
-     PEQ = 290,
-     NEQ = 291,
-     EQ = 292,
-     LEQ = 293,
+     ATEN_IIF = 276,
+     ATEN_IN = 277,
+     ATEN_GLOBAL = 278,
+     ATEN_RETURN = 279,
+     FILTERBLOCK = 280,
+     HELP = 281,
+     ATEN_VOID = 282,
+     ATEN_CONTINUE = 283,
+     ATEN_BREAK = 284,
+     ATEN_ELSE = 285,
+     DEQ = 286,
+     TEQ = 287,
+     MEQ = 288,
+     PEQ = 289,
+     OR = 290,
+     AND = 291,
+     NEQ = 292,
+     EQ = 293,
      GEQ = 294,
-     UMINUS = 295,
-     MINUSMINUS = 296,
-     PLUSPLUS = 297
+     LEQ = 295,
+     UMINUS = 296,
+     UPLUS = 297,
+     MINUSMINUS = 298,
+     PLUSPLUS = 299
    };
 #endif
 /* Tokens.  */
@@ -100,28 +102,30 @@
 #define ATEN_CASE 273
 #define ATEN_DEFAULT 274
 #define ATEN_IF 275
-#define ATEN_IN 276
-#define ATEN_RETURN 277
-#define FILTERBLOCK 278
-#define HELP 279
-#define ATEN_VOID 280
-#define ATEN_CONTINUE 281
-#define ATEN_BREAK 282
-#define OPTION 283
-#define ATEN_ELSE 284
-#define OR 285
-#define AND 286
-#define DEQ 287
-#define TEQ 288
-#define MEQ 289
-#define PEQ 290
-#define NEQ 291
-#define EQ 292
-#define LEQ 293
+#define ATEN_IIF 276
+#define ATEN_IN 277
+#define ATEN_GLOBAL 278
+#define ATEN_RETURN 279
+#define FILTERBLOCK 280
+#define HELP 281
+#define ATEN_VOID 282
+#define ATEN_CONTINUE 283
+#define ATEN_BREAK 284
+#define ATEN_ELSE 285
+#define DEQ 286
+#define TEQ 287
+#define MEQ 288
+#define PEQ 289
+#define OR 290
+#define AND 291
+#define NEQ 292
+#define EQ 293
 #define GEQ 294
-#define UMINUS 295
-#define MINUSMINUS 296
-#define PLUSPLUS 297
+#define LEQ 295
+#define UMINUS 296
+#define UPLUS 297
+#define MINUSMINUS 298
+#define PLUSPLUS 299
 
 
 
@@ -131,7 +135,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 30 "grammar.yy"
+#line 31 "grammar.yy"
 
 	int functionId;			/* Function enum id */
 	Dnchar *name;			/* character pointer for names */
@@ -145,7 +149,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 149 "grammar.h"
+#line 153 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

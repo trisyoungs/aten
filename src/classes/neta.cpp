@@ -32,10 +32,10 @@
 // NETA Keywords
 const char *NetaKeywordKeywords[Neta::nNetaKeywords] = { "alphatic", "aromatic", "noring", "nonaromatic", "notself", "planar" };
 enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotSelfKeyword, nNetaKeywords };
-Neta::NetaKeyword Neta::netaKeyword(const char *s, bool reporterror)
+Neta::NetaKeyword Neta::netaKeyword(const char *s, bool reportError)
 {
-	Neta::NetaKeyword n = (Neta::NetaKeyword) enumSearch("NETA keyword",Neta::nNetaKeywords,NetaKeywordKeywords,s, reporterror);
-	if ((n == Neta::nNetaKeywords) && reporterror) enumPrintValid(Neta::nNetaKeywords,NetaKeywordKeywords);
+	Neta::NetaKeyword n = (Neta::NetaKeyword) enumSearch("NETA keyword",Neta::nNetaKeywords,NetaKeywordKeywords,s, reportError);
+	if ((n == Neta::nNetaKeywords) && reportError) enumPrintValid(Neta::nNetaKeywords,NetaKeywordKeywords);
 	return n;
 }
 const char *Neta::netaKeyword(Neta::NetaKeyword nk)
@@ -45,10 +45,10 @@ const char *Neta::netaKeyword(Neta::NetaKeyword nk)
 
 // NETA values
 const char *NetaValueKeywords[Neta::nNetaValues] = { "bond", "nbonds", "nh", "os", "n", "size" };
-Neta::NetaValue Neta::netaValue(const char *s, bool reporterror)
+Neta::NetaValue Neta::netaValue(const char *s, bool reportError)
 {
-	Neta::NetaValue n = (Neta::NetaValue) enumSearch("NETA value",Neta::nNetaValues,NetaValueKeywords,s, reporterror);
-	if ((n == Neta::nNetaValues) && reporterror) enumPrintValid(Neta::nNetaValues,NetaValueKeywords);
+	Neta::NetaValue n = (Neta::NetaValue) enumSearch("NETA value",Neta::nNetaValues,NetaValueKeywords,s, reportError);
+	if ((n == Neta::nNetaValues) && reportError) enumPrintValid(Neta::nNetaValues,NetaValueKeywords);
 	return n;
 }
 const char *Neta::netaValue(Neta::NetaValue nv)
@@ -58,10 +58,10 @@ const char *Neta::netaValue(Neta::NetaValue nv)
 
 // NETA expanders
 const char *NetaExpanderKeywords[Neta::nNetaExpanders] = { "-", "chain", "=", "ring" };
-Neta::NetaExpander Neta::netaExpander(const char *s, bool reporterror)
+Neta::NetaExpander Neta::netaExpander(const char *s, bool reportError)
 {
-	Neta::NetaExpander n = (Neta::NetaExpander) enumSearch("NETA expander",Neta::nNetaExpanders,NetaExpanderKeywords,s, reporterror);
-	if ((n == Neta::nNetaExpanders) && reporterror) enumPrintValid(Neta::nNetaExpanders,NetaExpanderKeywords);
+	Neta::NetaExpander n = (Neta::NetaExpander) enumSearch("NETA expander",Neta::nNetaExpanders,NetaExpanderKeywords,s, reportError);
+	if ((n == Neta::nNetaExpanders) && reportError) enumPrintValid(Neta::nNetaExpanders,NetaExpanderKeywords);
 	return n;
 }
 

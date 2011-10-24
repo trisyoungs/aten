@@ -51,16 +51,16 @@ ZMatrixVariable::~ZMatrixVariable()
 
 // Accessor data
 Accessor ZMatrixVariable::accessorData[ZMatrixVariable::nAccessors] = {
-	{ "anglenames",		VTypes::StringData,		-1, FALSE },
+	{ "angleNames",		VTypes::StringData,		-1, FALSE },
 	{ "angles",		VTypes::DoubleData,		-1, FALSE },
-	{ "distancenames",	VTypes::StringData,		-1, FALSE },
+	{ "distanceNames",	VTypes::StringData,		-1, FALSE },
 	{ "distances",		VTypes::DoubleData,		-1, FALSE },
 	{ "elements",		VTypes::ZMatrixElementData,	-1, TRUE },
-	{ "nangles",		VTypes::IntegerData,		0, TRUE },
-	{ "ndistances",		VTypes::IntegerData,		0, TRUE },
-	{ "nelements",		VTypes::IntegerData,		0, TRUE },
-	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
-	{ "torsionnames",	VTypes::StringData,		-1, FALSE },
+	{ "nAngles",		VTypes::IntegerData,		0, TRUE },
+	{ "nDistances",		VTypes::IntegerData,		0, TRUE },
+	{ "nElements",		VTypes::IntegerData,		0, TRUE },
+	{ "nTorsions",		VTypes::IntegerData,		0, TRUE },
+	{ "torsionNames",	VTypes::StringData,		-1, FALSE },
 	{ "torsions",		VTypes::DoubleData,		-1, FALSE },
 };
 
@@ -81,12 +81,13 @@ StepNode *ZMatrixVariable::accessorSearch(const char *s, TreeNode *arrayindex, T
 	msg.enter("ZMatrixVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'zmatrix&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -157,7 +158,7 @@ bool ZMatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	bool result = TRUE;
 	ReturnValue temprv;
 	ZMatrix *ptr = (ZMatrix*) rv.asPointer(VTypes::ZMatrixData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixData));
 		result = FALSE;
@@ -382,7 +383,7 @@ bool ZMatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	}
 	// Get current data from ReturnValue
 	ZMatrix *ptr = (ZMatrix*) sourcerv.asPointer(VTypes::ZMatrixData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixData));
 		result = FALSE;

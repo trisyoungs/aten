@@ -51,15 +51,15 @@ BasisShellVariable::~BasisShellVariable()
 
 // Accessor data
 Accessor BasisShellVariable::accessorData[BasisShellVariable::nAccessors] = {
-	{ "atomid",		VTypes::IntegerData,		0, FALSE },
-	{ "nprimitives",	VTypes::IntegerData,		0, TRUE },
+	{ "atomId",		VTypes::IntegerData,		0, FALSE },
+	{ "nPrimitives",	VTypes::IntegerData,		0, TRUE },
 	{ "primitives",		VTypes::BasisPrimitiveData,	-1, TRUE },
 	{ "type",		VTypes::StringData,		0, FALSE }
 };
 
 // Function data
 FunctionAccessor BasisShellVariable::functionData[BasisShellVariable::nFunctions] = {
-	{ "addprimitive",	VTypes::BasisPrimitiveData,	"Nn*",	"double exponent, double c1 = 0.0 ..." }
+	{ "addPrimitive",	VTypes::BasisPrimitiveData,	"Nn*",	"double exponent, double c1 = 0.0 ..." }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -74,12 +74,13 @@ StepNode *BasisShellVariable::accessorSearch(const char *s, TreeNode *arrayindex
 	msg.enter("BasisShellVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'basisshell&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -149,7 +150,7 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	BasisShell *ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
 		result = FALSE;
@@ -241,7 +242,7 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	}
 	// Get current data from ReturnValue
 	BasisShell *ptr = (BasisShell*) sourcerv.asPointer(VTypes::BasisShellData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
 		result = FALSE;

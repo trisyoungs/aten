@@ -79,7 +79,7 @@ class GuiQt
 	GuiQt();
 	// Bitmap Formats
 	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
-	static BitmapFormat bitmapFormat(const char *name, bool reporterror = 0);
+	static BitmapFormat bitmapFormat(const char *name, bool reportError = 0);
 	static BitmapFormat bitmapFormatFromFilter(const char *s);
 	static const char *bitmapFormatFilter(BitmapFormat bf);
 	static const char *bitmapFormatExtension(BitmapFormat bf);

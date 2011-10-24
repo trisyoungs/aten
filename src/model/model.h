@@ -67,7 +67,7 @@ class Model
 	enum ModelType { ParentModelType, TrajectoryFrameType, VibrationFrameType };
 	// Component Insertion Policies
 	enum InsertionPolicy { NoPolicy, NumberPolicy, DensityPolicy, NumberAndDensityPolicy, RelativePolicy, nInsertionPolicies };
-	static InsertionPolicy insertionPolicy(const char *name, bool reporterror = 0);
+	static InsertionPolicy insertionPolicy(const char *name, bool reportError = 0);
 	static const char *insertionPolicy(InsertionPolicy);
 	// Friend declarations
 	friend class IdShiftEvent;

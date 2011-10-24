@@ -201,16 +201,18 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
 	int width, height;
 	
-	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('Cycles', 'intspin', 1, 1000, 1, 1, 'newline'); option('Frames per Vibration', 'intspin', 1, 1000, 25, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
+	Tree dialog;
+	TreeGui &dialogui = dialog.defaultDialog();
+	dialogui.setProperty(TreeGuiWidgetEvent::TextProperty, "Vibration Movie Options");
+	dialogui.addEdit("geometry", "Image Geometry", geometry,1,1);
+	dialogui.addIntegerSpin("cycles", "Number of Cycles", 1, 1000, 1, 10 ,1,2);
+	dialogui.addIntegerSpin("fpc", "Frames per Cycle", 1, 1000, 1, 25 ,1,3);
+	dialogui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,2);
 
-	Model *m = aten.currentModel();
-
-	// Poke values into dialog widgets and execute
-	dialog.setWidgetValue("Image Size", ReturnValue(geometry.get()));
-	if (!dialog.executeCustomDialog(FALSE)) return;
-
+	if (!dialog.defaultDialog().execute()) return;
+	
 	// Retrieve widget values
-	geometry = dialog.widgetValuec("Image Size");
+	geometry = dialogui.asCharacter("geometry");
 	width = atoi(beforeChar(geometry,'x'));
 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
@@ -219,9 +221,9 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}
-	int ncycles = dialog.widgetValuei("Cycles");
-	int fpv = dialog.widgetValuei("Frames per Vibration");
-	int fps = dialog.widgetValuei("Movie FPS");
+	int ncycles = dialogui.asInteger("cycles");
+	int fpc = dialogui.asInteger("fpc");
+	int fps = dialogui.asInteger("fps");
 	
 	// Get movie filename
 	static QString selectedFilter("All Files (*.*)");
@@ -232,7 +234,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	currentDirectory_.setPath(filename);
 	
 	// Generate movie file...
-	CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpv, ncycles, fps);
+	CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpc, ncycles, fps);
 }
 
 // Stop current timer (if any)

@@ -509,6 +509,15 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 					result = FALSE;
 				}
 				break;
+			// Widget		(WidgetData)
+			case ('Y'):
+				if (rtype != VTypes::WidgetData)
+				{
+					if (altargs != NULL) { reset = TRUE; continue; }
+					msg.print("Argument %i to function '%s' must be a widget.\n", count+1, funcname);
+					result = FALSE;
+				}
+				break;
 			// Any
 			case ('Z'):
 				break;

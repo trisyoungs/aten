@@ -28,10 +28,10 @@ const char *FilterData::filterType(FilterData::FilterType ft)
 {
         return FilterTypeKeywords[ft];
 }
-FilterData::FilterType FilterData::filterType(const char *s, bool reporterror)
+FilterData::FilterType FilterData::filterType(const char *s, bool reportError)
 {
         FilterData::FilterType ft = (FilterData::FilterType) enumSearch("filter type", FilterData::nFilterTypes, FilterTypeKeywords, s);
-	if ((ft == FilterData::nFilterTypes) && reporterror) enumPrintValid(FilterData::nFilterTypes,FilterTypeKeywords);
+	if ((ft == FilterData::nFilterTypes) && reportError) enumPrintValid(FilterData::nFilterTypes,FilterTypeKeywords);
 	return ft;
 }
 

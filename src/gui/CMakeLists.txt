@@ -34,7 +34,6 @@ set(qtproject_SRCS
   glyphs_funcs.cpp
   grids_funcs.cpp
   gui.cpp
-  customdialog_funcs.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainmenuactions.cpp
@@ -65,6 +64,7 @@ set(qtproject_SRCS
   toolbox_funcs.cpp
   trajectory_funcs.cpp
   transform_funcs.cpp
+  treegui_funcs.cpp
   tprocess_funcs.cpp
   tprompt_funcs.cpp
   ttablewidgetitem_funcs.cpp
@@ -90,7 +90,6 @@ SET(pro_MOC_HDRS
   geometry.h
   glyphs.h
   grids.h
-  customdialog.h
   layoutlist.h
   loadmodel.h
   mainwindow.h
@@ -109,6 +108,7 @@ SET(pro_MOC_HDRS
   toolbox.h
   trajectory.h
   transform.h
+  treegui.h
   vibrations.h
   viewbasis.h
   vieweigenvector.h
@@ -130,7 +130,6 @@ SET(pro_UIS
   celldefinition.ui
   celltransform.ui
   command.ui
-  customdialog.ui
   disorderoptions.ui
   disorderwizard.ui
   ffeditor.ui
@@ -156,6 +155,7 @@ SET(pro_UIS
   toolbox.ui
   trajectory.ui
   transform.ui
+  treegui.ui
   vibrations.ui
   viewbasis.ui
   vieweigenvector.ui

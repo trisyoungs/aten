@@ -31,7 +31,7 @@ class Messenger
 	// Messaging output types
 	enum OutputType { All, Calls, Commands, Always, GL, Parse, Test, Typing, Verbose, nOutputTypes };
 	// Convert text string to debug mode
-	static OutputType outputType(const char *name, bool reporterror = 0);
+	static OutputType outputType(const char *name, bool reportError = 0);
 	// Convert debug mode to text string
 	static const char *outputType(OutputType ot);
 

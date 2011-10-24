@@ -1,7 +1,8 @@
 # Tripos (Sybyl) Mol2 filter (for v1.2+)
 # Created:	 12/04/2009
-# Last modified: 12/04/2009
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 
 filter(type="importmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
 {
@@ -15,37 +16,37 @@ filter(type="importmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extensio
 	# Read a line and parse it into '@<TRIPOS>' and keyword parts
 	while (!eof())
 	{
-		readlinef("%9s%s",tripos,keywd);
+		readLineF("%9s%s",tripos,keywd);
 		if (keywd == "MOLECULE")
 		{
 			# Molecule information
-			getline(title);
-			newmodel(title);
-			readline(natoms,nbonds);
+			getLine(title);
+			newModel(title);
+			readLine(natoms,nbonds);
 			# Skip the next four lines, which are type of molecule, charges used, and user comment
-			skipline(4);
+			skipLine(4);
 		}
 		else if (keywd == "ATOM")
 		{
 			for (n=0; n<natoms; ++n)
 			{
-				readline(id,e,rx,ry,rz);
-				newatom(e,rx,ry,rz);
+				readLine(id,e,rx,ry,rz);
+				newAtom(e,rx,ry,rz);
 			}
 		}
 		else if (keywd == "BOND")
 		{
 			for (n=0; n<nbonds; ++n)
 			{
-				readline(discard,ii,jj,bondtype);
-				newbond(ii,jj,bondtype);
+				readLine(discard,ii,jj,bondtype);
+				newBond(ii,jj,bondtype);
 			}
 		}
 		else if (keywd == "CRYSIN")
 		{
 			# Crystal cell information
 			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
-			readline(ca,cb,cc,alpha,beta,gamma,spgrp,setting);
+			readLine(ca,cb,cc,alpha,beta,gamma,spgrp,setting);
 			cell(ca,cb,cc,alpha,beta,gamma);
 			spacegroup(spgrp);
 		}
@@ -54,7 +55,7 @@ filter(type="importmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extensio
 	# Perform post-load operations
 	pack();
 	fold();
-	finalisemodel();
+	finaliseModel();
 }
 
 filter(type="exportmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
@@ -66,31 +67,31 @@ filter(type="exportmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extensio
 	model m = aten.frame;
 
 	# Write title section
-	writeline("@<TRIPOS>MOLECULE");
-	writeline(m.name);
-	writelinef("%i   %i\n", m.natoms, m.nbonds);
-	writeline("SMALL");
-	writeline("NO_CHARGES");
-	writeline("Coordinates churned out by Aten");
-	writeline("");
+	writeLine("@<TRIPOS>MOLECULE");
+	writeLine(m.name);
+	writeLineF("%i   %i\n", m.nAtoms, m.nBonds);
+	writeLine("SMALL");
+	writeLine("NO_CHARGES");
+	writeLine("Coordinates churned out by Aten");
+	writeLine("");
 	
 	# Write atoms section
-	writeline("@<TRIPOS>ATOM");
-	for (i = m.atoms; i != 0; ++i) writelinef("%6i  %5s  %10.5f  %10.5f  %10.5f\n",i.id,i.symbol,i.rx,i.ry,i.rz);
+	writeLine("@<TRIPOS>ATOM");
+	for (i = m.atoms; i != 0; ++i) writeLineF("%6i  %5s  %10.5f  %10.5f  %10.5f\n",i.id,i.symbol,i.rx,i.ry,i.rz);
 
 	# Write bonds section
-	if (m.nbonds > 0)
+	if (m.nBonds > 0)
 	{
-		writeline("@<TRIPOS>BOND");
+		writeLine("@<TRIPOS>BOND");
 		n = 0;
-		for (b=m.bonds; b != 0; ++b) writelinef("%5i  %5i  %5i  %s\n", ++n, b.i.id, b.j.id, b.type);
+		for (b=m.bonds; b != 0; ++b) writeLineF("%5i  %5i  %5i  %s\n", ++n, b.i.id, b.j.id, b.type);
 	}
 
 	# Write cell section (if the model has one)
 	if (m.cell.type <> "none")
 	{
-		writeline("@<TRIPOS>CRYSIN");
-		writeline(m.cell.a,m.cell.b,m.cell.c,m.cell.alpha,m.cell.beta,m.cell.gamma,m.cell.sgid,0);
+		writeLine("@<TRIPOS>CRYSIN");
+		writeLine(m.cell.a,m.cell.b,m.cell.c,m.cell.alpha,m.cell.beta,m.cell.gamma,m.cell.sgId,0);
 	}
 }
 

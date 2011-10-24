@@ -1,6 +1,6 @@
 <ui version="4.0">
- <class>AtenCustomDialog</class>
- <widget class="QDialog" name="AtenCustomDialog">
+ <class>AtenTreeGuiDialog</class>
+ <widget class="QDialog" name="AtenTreeGuiDialog">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>

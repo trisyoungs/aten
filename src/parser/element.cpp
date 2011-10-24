@@ -69,12 +69,13 @@ StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex, T
 	msg.enter("ElementVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'element&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -144,7 +145,7 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	// Get current data from ReturnValue
 	bool result;
 	Element *ptr = (Element*) rv.asPointer(VTypes::ElementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ElementData));
 		result = FALSE;
@@ -242,7 +243,7 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	// Get current data from ReturnValue
 	Element *ptr = (Element*) sourcerv.asPointer(VTypes::ElementData, result);
 	int n;
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ElementData));
 		result = FALSE;

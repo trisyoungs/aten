@@ -195,13 +195,19 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 				else
 				{
 					// What to do?
-					static Tree dialog("Expression For Pattern XXX", "option('One or more terms are missing from the pattern expression.', 'label', 'left'); option('choices', 'radiogroup'); option('Would you like to:', 'label', 'newline', 'left'); option('Cancel expression generation', 'radio', 'choices', 1, 'newline'); option('Add in dummy terms (type=ignore,params=0.0)', 'radio', 'choices', 0, 'newline');");
-					// Rename and run the custom dialog
-					Dnchar title;
-					title.sprintf("Expression for Pattern '%s'", p->name());
-					if (dialog.executeCustomDialog(FALSE, title.get()))
+					Tree dialog;
+					Dnchar title(-1,"Expression for Pattern '%s'", p->name());
+					TreeGui &ui = dialog.defaultDialog();
+					ui.setProperty(TreeGuiWidgetEvent::TextProperty, title.get());
+					ui.addLabel("", "One or more terms are missing from a pattern expression:", 1,1);
+					ui.addRadioGroup("choice");
+					ui.addRadioButton("cancel", "Cancel expression generation", "choice", 1, 1,2);
+					ui.addRadioButton("dummy", "Add in dummy parameters to complete expression (type=ignore)", "choice", 0, 1,3);
+					
+					// Run the custom dialog
+					if (dialog.defaultDialog().execute())
 					{
-						int choice = dialog.widgetValuei("choices");
+						int choice = ui.asInteger("choice");
 						if (choice == 1)
 						{
 							msg.exit("Model::createExpression");

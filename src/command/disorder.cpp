@@ -44,8 +44,6 @@ bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
 	rv.reset();
-	// Get custom values from dialog (if scheme has one)
-	scheme->runOptions(TRUE);
 	bool result = mc.disorder(obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE);
 	return result;
 }
