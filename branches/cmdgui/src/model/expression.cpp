@@ -199,7 +199,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 					Dnchar title(-1,"Expression for Pattern '%s'", p->name());
 					TreeGui &ui = dialog.defaultDialog();
 					ui.setProperty(TreeGuiWidgetEvent::TextProperty, title.get());
-					ui.addLabel("One or more terms are missing from a pattern expression:", 1,1);
+					ui.addLabel("", "One or more terms are missing from a pattern expression:", 1,1);
 					ui.addRadioGroup("choice");
 					ui.addRadioButton("cancel", "Cancel expression generation", "choice", 1, 1,2);
 					ui.addRadioButton("dummy", "Add in dummy parameters to complete expression (type=ignore)", "choice", 0, 1,3);

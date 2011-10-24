@@ -210,8 +210,8 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 			TreeGuiWidget *group;
 			TreeGui &ui = dialog.defaultDialog();
 			ui.setProperty(TreeGuiWidgetEvent::TextProperty, "!! Error Finding Script !!");
-			ui.addLabel("The following script could not be found:",1,1);
-			ui.addLabel(script->filename(),1,2);
+			ui.addLabel("", "The following script could not be found:",1,1);
+			ui.addLabel("", script->filename(),1,2);
 			group = ui.addRadioGroup("choice");
 			ui.addRadioButton("delete", "Delete the entry for this scriptfile (it will not reappear when Aten restarts)", "choice", 1, 1,3);
 			ui.addRadioButton("skip", "Do not delete the entry and skip loading this script", "choice", 0, 1,4);
@@ -234,8 +234,8 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 			TreeGuiWidget *group;
 			TreeGui &ui = dialog.defaultDialog();
 			ui.setProperty(TreeGuiWidgetEvent::TextProperty, "!! Error Loading Script !!");
-			ui.addLabel("The following script contained an error (see MessageBox for more details):",1,1);
-			ui.addLabel(script->filename(),1,2);
+			ui.addLabel("", "The following script contained an error (see MessageBox for more details):",1,1);
+			ui.addLabel("", script->filename(),1,2);
 			group = ui.addRadioGroup("choice");
 			ui.addRadioButton("retry", "Retry (changes have just been made to the file)", "choice", 1, 1,3);
 			ui.addRadioButton("delete", "Delete the entry for this scriptfile (it will not reappear when Aten restarts)", "choice", 0, 1,4);

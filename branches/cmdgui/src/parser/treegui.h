@@ -247,8 +247,6 @@ class TreeGuiWidget
 	TreeGuiWidget *addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value, int l, int t, int xw = 0, int xh = 0);
 	// Create new label widget
 	TreeGuiWidget *addLabel(const char *name, const char *text, int l, int t, int xw = 0, int xh = 0);
-	// Create new label widget (without name)
-	TreeGuiWidget *addLabel(const char *text, int l, int t, int xw = 0, int xh = 0);
 	// Create new page (only valid for TabWidget)
 	TreeGuiWidget *addPage(const char *name, const char *label);
 	// Create new radio button in specified group
