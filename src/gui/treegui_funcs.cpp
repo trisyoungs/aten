@@ -67,7 +67,7 @@ void QtWidgetObject::set(TreeGuiWidget* widget, QObject* obj)
 // Return TreeGuiWidget to which Qt widget/object is associated
 TreeGuiWidget *QtWidgetObject::treeGuiWidget()
 {
-	return treeGuiWidget();
+	return treeGuiWidget_;
 }
 
 // Return associated QWidget (if not QObject)

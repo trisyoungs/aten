@@ -449,6 +449,7 @@ bool TreeGuiWidget::visible()
 // Set specified property
 bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, ReturnValue rv)
 {
+	msg.enter("TreeGuiWidget::setProperty");
 	// Do generic properties which are applicable to any widget type first
 	bool done = TRUE;
 	if (property == TreeGuiWidgetEvent::DisabledProperty)
@@ -614,6 +615,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 							if (d->next == NULL) msg.print("\"%s\"", d->get());
 							else msg.print("\"%s\", ", d->get());
 						}
+						msg.exit("TreeGuiWidget::setProperty");
 						return FALSE;
 					}
 					// Increase 'i' to conform to 1-N range
@@ -667,17 +669,20 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 	if (!done)
 	{
 		msg.print("Cannot set '%s' property for a widget of type '%s' (%s)).\n", TreeGuiWidgetEvent::eventProperty(property), TreeGuiWidget::widgetType(type_), name_.get());
+		msg.exit("TreeGuiWidget::setProperty");
 		return FALSE;
 	}
 	else if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
 	checkWidgetEvents();
 
+	msg.exit("TreeGuiWidget::setProperty");
 	return TRUE;
 }
 
 // 'Activate' property, setting flag and executing events, but leaving value unchanged
 bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
 {
+	msg.enter("TreeGuiWidget::activateProperty");
 	propertyChanged_[property] = TRUE;
 	if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
 	checkWidgetEvents();
@@ -686,9 +691,14 @@ bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
 	if ((type_ == TreeGuiWidget::RadioGroupWidget) && (property == TreeGuiWidgetEvent::ValueProperty))
 	{
 		Refitem<TreeGuiWidget,int> *button = buttonList_[valueI_-1];
-		if (button == NULL) return FALSE;
+		if (button == NULL)
+		{
+			msg.exit("TreeGuiWidget::activateProperty");
+			return FALSE;
+		}
 		button->item->activateProperty(TreeGuiWidgetEvent::ValueProperty);
 	}
+	msg.exit("TreeGuiWidget::activateProperty");
 	return TRUE;
 }
 
@@ -707,11 +717,20 @@ void TreeGuiWidget::resetChanged(TreeGuiWidgetEvent::EventProperty property)
 // Add widget to the layout in this widget (if it has one) at specified geometry, returning added widget for convenience
 void TreeGuiWidget::addWidget(TreeGuiWidget *widget, int left, int top, int addToWidth, int addToHeight)
 {
+	msg.enter("TreeGuiWidget::addWidget");
 	// Do we have an associated Qt widget? If not, then we have no GUI, so nothing to do.
-	if (qtWidgetObject_ == NULL) return;
+	if (qtWidgetObject_ == NULL)
+	{
+		msg.exit("TreeGuiWidget::addWidget");
+		return;
+	}
 	
 	// If l and r are both zero, this widget should not be added to any layout
-	if ((left == 0) && (top == 0)) return;
+	if ((left == 0) && (top == 0))
+	{
+		msg.exit("TreeGuiWidget::addWidget");
+		return;
+	}
 
 	// Check widget type - does it have a layout?
 	switch (type_)
@@ -724,20 +743,27 @@ void TreeGuiWidget::addWidget(TreeGuiWidget *widget, int left, int top, int addT
 			break;
 		default:
 			msg.print("Error: Widget '%s' does not have a layout, and so addWidget() cannot be used.\n", name_.get());
-			return;
 			break;
 	}
+	msg.exit("TreeGuiWidget::addWidget");
 }
 
 // Create new checkbox widget
 TreeGuiWidget *TreeGuiWidget::addCheck(const char *name, const char *label, int state, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addCheck");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::CheckWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addCheck");
+		return NULL;
+	}
+
 	// Set control limits
 	if (!widget->setInitialProperties(0, 1, state))
 	{
 		msg.print("Error when setting up check widget '%s'.\n", name);
+		msg.exit("TreeGuiWidget::addCheck");
 		return NULL;
 	}
 	// Create complementary Qt control?
@@ -746,14 +772,21 @@ TreeGuiWidget *TreeGuiWidget::addCheck(const char *name, const char *label, int 
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addCheck(widget, label));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addCheck");
 	return widget;
 }
 
 // Create new combo widget
 TreeGuiWidget *TreeGuiWidget::addCombo(const char *name, const char *label, const char *items, int index, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addCombo");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::ComboWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addCombo");
+		return NULL;
+	}
+	
 	// Parse items list
 	LineParser parser;
 	parser.getArgsDelim(LineParser::UseQuotes, items);
@@ -769,14 +802,21 @@ TreeGuiWidget *TreeGuiWidget::addCombo(const char *name, const char *label, cons
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addCombo(widget, label));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addCombo");
 	return widget;
 }
 
 // Create new double spin widget
 TreeGuiWidget *TreeGuiWidget::addDoubleSpin(const char *name, const char *label, double min, double max, double step, double value, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addDoubleSpin");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::DoubleSpinWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addDoubleSpin");
+		return NULL;
+	}
+	
 	// Set control limits
 	if (!widget->setInitialProperties(min, max, value)) msg.print("Error when setting up double spin widget '%s'.\n", name);
 	// Create complementary Qt control?
@@ -785,14 +825,21 @@ TreeGuiWidget *TreeGuiWidget::addDoubleSpin(const char *name, const char *label,
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addIntegerSpin(widget, label, step));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addDoubleSpin");
 	return widget;
 }
 
 // Create new edit widget
 TreeGuiWidget *TreeGuiWidget::addEdit(const char *name, const char *label, const char *text, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addEdit");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::EditWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addEdit");
+		return NULL;
+	}
+	
 	// Set control properties
 	if (!widget->setInitialProperties(text)) msg.print("Error when setting up edit widget '%s'.\n", name);
 	// Create complementary Qt control?
@@ -801,42 +848,63 @@ TreeGuiWidget *TreeGuiWidget::addEdit(const char *name, const char *label, const
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addEdit(widget, label));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addEdit");
 	return widget;
 }
 
 // Create new frame widget
 TreeGuiWidget *TreeGuiWidget::addFrame(const char *name, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addFrame");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::FrameWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addFrame");
+		return NULL;
+	}
+	
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL)
 	{
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addFrame(widget));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addFrame");
 	return widget;
 }
 
 // Create new group box
 TreeGuiWidget *TreeGuiWidget::addGroup(const char *name, const char *label, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addGroup");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::GroupWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addGroup");
+		return NULL;
+	}
+	
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL)
 	{
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addGroup(widget, label));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addGroup");
 	return widget;
 }
 
 // Create new integer spin widget
 TreeGuiWidget *TreeGuiWidget::addIntegerSpin(const char *name, const char *label, int min, int max, int step, int value, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addIntegerSpin");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::IntegerSpinWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addIntegerSpin");
+		return NULL;
+	}
+	
 	// Set control limits
 	if (!widget->setInitialProperties(min, max, value))
 	{
@@ -849,18 +917,14 @@ TreeGuiWidget *TreeGuiWidget::addIntegerSpin(const char *name, const char *label
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addIntegerSpin(widget, label, step));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addIntegerSpin");
 	return widget;
-}
-
-// Create new label widget (without name)
-TreeGuiWidget *TreeGuiWidget::addLabel(const char *text, int l, int t, int xw, int xh)
-{
-	return addLabel(NULL, text, l, t, xw, xh);
 }
 
 // Create new label widget
 TreeGuiWidget *TreeGuiWidget::addLabel(const char *name, const char *text, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addLabel");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::LabelWidget);
 	widget->setInitialProperties(text);
 	// Create complementary Qt control?
@@ -869,46 +933,62 @@ TreeGuiWidget *TreeGuiWidget::addLabel(const char *name, const char *text, int l
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addLabel(widget, text));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addLabel");
 	return widget;
 }
 
 // Create new page (only in TabWidget and StackWidget)
 TreeGuiWidget *TreeGuiWidget::addPage(const char *name, const char *label)
 {
+	msg.enter("TreeGuiWidget::addPag");
 	// Is this a tab widget?
 	if ((type_ != TreeGuiWidget::TabWidget) && (type_ != TreeGuiWidget::StackWidget))
 	{
 		msg.print("Error: Attempted to add a page to a widget that isn't a tab or a stack (%s).\n", name_.get());
+		msg.exit("TreeGuiWidget::addPage");
 		return NULL;
 	}
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::PageWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addPage");
+		return NULL;
+	}
+	
 	// Update minimum and maximum
 	setInitialProperties(1, maximumI_+1, valueI_ == 0 ? 1 : valueI_);
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL) widget->setQtWidgetObject(parent_->qtTreeGui()->addPage(widget, this, label));
+	msg.exit("TreeGuiWidget::addPage");
 	return widget;
 }
 
 // Create new radio button
 TreeGuiWidget *TreeGuiWidget::addRadioButton(const char *name, const char *label, const char *radioGroup, int state, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addRadioButton");
 	// Find named radioGroup
 	TreeGuiWidget *group = parent_->findWidget(radioGroup);
 	if (group == NULL)
 	{
 		msg.print("Error: Couldn't find radiogroup named '%s'.\n", radioGroup);
+		msg.exit("TreeGuiWidget::addRadioButton");
 		return NULL;
 	}
 	if (group->type() != TreeGuiWidget::RadioGroupWidget)
 	{
 		msg.print("Error: Attempted to add a radiobutton to a non-radiogroup widget (%s).\n", radioGroup);
+		msg.exit("TreeGuiWidget::addRadioButton");
 		return NULL;
 	}
 
 	// Create the new button and add it to the local list
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::RadioButtonWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addRadioButton");
+		return NULL;
+	}
 	widget->setInitialProperties(0, 1, state);
 	int id = group->buttonList_.nItems()+1;
 	group->buttonList_.add(widget, id);
@@ -920,28 +1000,38 @@ TreeGuiWidget *TreeGuiWidget::addRadioButton(const char *name, const char *label
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addRadioButton(widget, group, name, label, id));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addRadioButton");
 	return widget;
 }
 
 // Create new (invisible) radio group
 TreeGuiWidget *TreeGuiWidget::addRadioGroup(const char *name)
 {
+	msg.enter("TreeGuiWidget::addRadioGroup");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::RadioGroupWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addRadioGroup");
+		return NULL;
+	}
+	
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL) widget->setQtWidgetObject(parent_->qtTreeGui()->addRadioGroup(widget));
+	msg.exit("TreeGuiWidget::addRadioGroup");
 	return widget;
 }
 
 // Create new spacer
 bool TreeGuiWidget::addSpacer(bool expandHorizontal, bool expandVertical, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addSpacer");
 	// Do we have an associated Qt widget? If not, then we have no GUI, so nothing to do.
-	if (qtWidgetObject_ == NULL) return TRUE;
+	if (qtWidgetObject_ == NULL)
+	{
+		msg.exit("TreeGuiWidget::addSpacer");
+		return NULL;
+	}
 	
-	// If l and r are both zero, this widget should not be added to any layout
-	if ((l == 0) && (t == 0)) return FALSE;
-
 	// Check widget type - does it have a layout?
 	bool result = FALSE;
 	switch (type_)
@@ -957,35 +1047,49 @@ bool TreeGuiWidget::addSpacer(bool expandHorizontal, bool expandVertical, int l,
 			result = FALSE;
 			break;
 	}
-
+	msg.exit("TreeGuiWidget::addSpacer");
 	return result;
 }
 
 // Create new stack widget
 TreeGuiWidget *TreeGuiWidget::addStack(const char *name, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addStack");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::StackWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addStack");
+		return NULL;
+	}
+	
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL)
 	{
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addStack(widget));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addStack");
 	return widget;
 }
 
 // Create new tab widget
 TreeGuiWidget *TreeGuiWidget::addTabs(const char *name, int l, int t, int xw, int xh)
 {
+	msg.enter("TreeGuiWidget::addTabs");
 	TreeGuiWidget *widget = parent_->createWidget(name, TreeGuiWidget::TabWidget);
-	if (widget == NULL) return NULL;
+	if (widget == NULL)
+	{
+		msg.exit("TreeGuiWidget::addTabs");
+		return NULL;
+	}
+	
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL)
 	{
 		widget->setQtWidgetObject(parent_->qtTreeGui()->addTabs(widget));
 		addWidget(widget, l, t, xw, xh);
 	}
+	msg.exit("TreeGuiWidget::addTabs");
 	return widget;
 }
 
