@@ -76,12 +76,13 @@ StepNode *MeasurementVariable::accessorSearch(const char *s, TreeNode *arrayinde
 	msg.enter("MeasurementVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'measurement&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -151,7 +152,7 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Measurement *ptr = (Measurement*) rv.asPointer(VTypes::MeasurementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
 		result = FALSE;
@@ -255,7 +256,7 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	// Get current data from ReturnValue
 	Measurement *ptr = (Measurement*) sourcerv.asPointer(VTypes::MeasurementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
 		result = FALSE;

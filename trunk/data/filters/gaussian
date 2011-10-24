@@ -1,8 +1,9 @@
-# Gaussian Import/Export Filter
+# Gaussian 09 Import/Export Filter
 # Created:	 27/01/2011
 # Last modified: 08/09/2011
 # ChangeLog:
 #	08/09/2011 - Added logfile import filter (from 'g03' filter)
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8 and new GUI dialogs.
 #	08/08/2011 - Added polar function spec for 6-31G, 6-311G, D95, and D95V basis sets. Added Symmetry option. Tweaked layout.
 #	27/01/2011 - Initial version.
 # Notes:
@@ -10,126 +11,202 @@
 
 filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension="gjf", glob="*.gjf", id=17)
 {
-	# Job type
-	string runtyp = option("Run Type", "combo", "SP,Opt,Freq,IRC,IRCMax,Scan,Polar,ADMP,BOMD,Force,Stable,Volume", 2, "tab=Job Control@Job Specification", "state@runstack?switchstack");
-	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "tab=Job Control@Job Specification");
-	int charge = option("Charge", "intspin", -1000, 1000, 1, 0, "tab=Job Control@Job Specification");
-	option("runstack","stack",12,2,"tab=Job Control@Job Specification", "span=6", "newline");
-	# -- SP
-	option("No Options", "label", "group=runstack_1");
-	# -- Opt
-	string opt_method = option("Optimisation Type", "combo", "<default>,QST2,QST3,TS,Saddle=1,Saddle=2,Conical", 1, "group=runstack_2");
-	int opt_maxcycles = option("MaxCycles", "intspin", 0, 1000, 10, 0, "group=runstack_2", "newline");
-	int opt_maxstep = option("MaxStep", "intspin", 0, 1000, 10, 0, "group=runstack_2");
-	int opt_restart = option("Restart", "check", 0, "group=runstack_2");
-	# -- Freq
-	option("No Options (yet)", "label", "group=runstack_3");
-	# -- IRC
-	option("No Options (yet)", "label", "group=runstack_4");
-	# -- IRCMax
-	option("No Options (yet)", "label", "group=runstack_5");
-	# -- Scan
-	option("No Options (yet)", "label", "group=runstack_6");
-	# -- Polar
-	option("No Options (yet)", "label", "group=runstack_7");
-	# -- ADMP
-	option("No Options (yet)", "label", "group=runstack_8");
-	# -- BOMD
-	option("No Options (yet)", "label", "group=runstack_9");
-	# -- Force
-	option("No Options (yet)", "label", "group=runstack_10");
-	# -- Stable
-	option("No Options (yet)", "label", "group=runstack_11");
-	# -- Volume
-	option("No Options (yet)", "label", "group=runstack_12");
-	# Model Chemistry
-	string modchem = option("Method", "combo", "AM1,PM3,PM3MM,PM6,PDDG,HF,CASSCF,MP2,MP3,MP4(DQ),MP4(SDQ),MP4(SDTQ),MP5,QCISD,CCD,CCSD,QCISD(T),QCISD(TQ),BD,EPT,CBS,G1,G2,G2MP2,G3,G3MP2,G3B3,G3MP2B3,G4,G4MP2,W1,CIS,TD,EOM,ZINDO,DFTB,CI,GVB", 6, "tab=Job Control@Job Specification", "newline");
-	string modchem_opt = option("", "combo", "<default>,R,U,RO", 1, "tab=Job Control@Job Specification");
+	# GUI Definition
+	dialog ui = defaultDialog();
+	if (!ui.created)
+	{
+		ui.title = "Gaussian09 Export Options";
+		widget w, w2, stack, page, tab, tabs = ui.addTabs("tabs");
+		# Job type
+		tab = tabs.addPage("jobpage", "Job Type");
+		w = tab.addCombo("runtype", "Run Type", "SP,Opt,Freq,IRC,IRCMax,Scan,Polar,ADMP,BOMD,Force,Stable,Volume", 2);
+		tab.addIntegerSpin("mult", "Multiplicity", 1, 8, 1, 1);
+		tab.addIntegerSpin("charge", "Charge", -100, 100, 1, 0);
+		stack = tab.addStack("runstack", 1, 2, 5, 0);
+		w.onInteger(1, 12, "sendinteger", "runstack", "value");
+		# -- SP
+		page = stack.addPage("stack_sp", "");
+		page.addLabel("","No Options");
+		# -- Opt
+		page = stack.addPage("stack_opt", "");
+		page.addCombo("opt_method", "Optimisation Type", "<default>,QST2,QST3,TS,Saddle=1,Saddle=2,Conical", 1, 1);
+		page.addIntegerSpin("opt_maxcycles", "MaxCycles", 0, 1000, 10, 30, 1, 2);
+		page.addIntegerSpin("opt_maxstep", "MaxStep", 0, 1000, 10, 30, 3, 2);
+		page.addCheck("opt_restart", "Restart", 0, 5, 2);
+		# -- Freq
+		page = stack.addPage("stack_freq", "");
+		page.addLabel("","No Options (yet)");
+		# -- IRC
+		page = stack.addPage("stack_irc", "");
+		page.addLabel("","No Options (yet)");
+		# -- IRCMax
+		page = stack.addPage("stack_ircmax", "");
+		page.addLabel("","No Options (yet)");
+		# -- Scan
+		page = stack.addPage("stack_scan", "");
+		page.addLabel("","No Options (yet)");
+		# -- Polar
+		page = stack.addPage("stack_polar", "");
+		page.addLabel("","No Options (yet)");
+		# -- ADMP
+		page = stack.addPage("stack_admp", "");
+		page.addLabel("","No Options (yet)");
+		# -- BOMD
+		page = stack.addPage("stack_bomd", "");
+		page.addLabel("","No Options (yet)");
+		# -- Force
+		page = stack.addPage("stack_force", "");
+		page.addLabel("","No Options (yet)");
+		# -- Stable
+		page = stack.addPage("stack_stable", "");
+		page.addLabel("","No Options (yet)");
+		# -- Volume
+		page = stack.addPage("stack_volume", "");
+		page.addLabel("","No Options (yet)");
 
-	# Job Options
-	string symmetry = option("Symmetry", "combo", "Symmetry,NoSymmetry", 1, "tab=Job Options@Job Specification");
-	int symmetry_loose = option("Loose", "check", 0, "tab=Job Options@Job Specification");
+		# Model Chemistry
+		tab = tabs.addPage("modchempage", "Model Chemistry");
+		tab.addCombo("modchem", "Method", "AM1,PM3,PM3MM,PM6,PDDG,HF,CASSCF,MP2,MP3,MP4(DQ),MP4(SDQ),MP4(SDTQ),MP5,QCISD,CCD,CCSD,QCISD(T),QCISD(TQ),BD,EPT,CBS,G1,G2,G2MP2,G3,G3MP2,G3B3,G3MP2B3,G4,G4MP2,W1,CIS,TD,EOM,ZINDO,DFTB,CI,GVB", 6, 1, 1, 2);
+		tab.addCombo("modchem_opt", "", "<default>,R,U,RO", 1);
+	
+		# Job Options
+		tab = tabs.addPage("joboptspage", "Job Options");
+		tab.addCombo("symmetry", "Symmetry", "Symmetry,NoSymmetry", 1);
+		tab.addCheck("symmetry_loose", "Loose", 0);
+		tab.addCombo("coords", "Coordinates", "Cartesian, ZMatrix", 1);
+	
+		# Basis Set
+		tab = tabs.addPage("basispage", "Basis Set");
+		w = tab.addCombo("basis", "Basic Basis", "STO-3,3-21,6-21,4-31,6-31,6-311,D95V,D95,SHC,SBK,LanL2MB,LanL2DZ,SDD,SDDAll,Dunning,Alhrichs,MidiX,EPR,UGBS,MTSmall,DGauss,CBSB7", 5);
+		tab.addCombo("subbasis", "Sub Basis", "<none>", 1);
+		w2 = tab.addGroup("elements", "Elements", 1, 2, 3);
+		w2.addLabel("elementlabel", "POOOP");
+		w2 = tab.addGroup("extrabasis", "Additional Basis Functions", 1, 3, 3);
+		w2.addCombo("diffuse", "Diffuse", "<none>", 1, 1, 1);
+		w2.addCombo("polar", "Polarisation (Heavy Atom, General)", "<none>", 1, 1, 2);
+		w2.addCombo("lightpolar", "Polarisation (Light Atom)", "<none>", 1, 1, 3);
+		# -- Link events to show valid options for extra basis functions, and display element text
+		w.onInteger(1, 22, "sendstring", "elementlabel", "text",
+			"???",						# -- STO-3G
+			"H-Xe",						# -- 3-21G
+			"H-Cl",						# -- 6-21G
+			"H-Ne",						# -- 4-31G
+			"H-Kr",						# -- 6-31G
+			"H-Kr",						# -- 6-311G
+			"H-Ne",						# -- D95V
+			"H-Cl, except Na and Mg",			# -- D95
+			"H-Cl",						# -- SHC
+			"H-Rn",						# -- Stevens/Basch/Krauss
+			"H-La, Hf-Bi",					# -- LanL2MB
+			"H, Li-La, Hf-Bi",				# -- LanL2DZ
+			"All, except Fr and Ra",			# -- SDD
+			"All, except Fr and Ra",			# -- SDDAll
+			"H-Ar, Ca-Kr",					# -- Dunning
+			"All, except Fr and Ra",			# -- Alhrichs
+			"H, C-F, S-Cl, I, Br",				# -- MidiX
+			"H, C-F, S-Cl, I, Br",				# -- EPR
+			"H-Lr",						# -- UGBS
+			"H-Ar",						# -- MTSmall
+			"See Basis Options",				# -- DGauss
+			"H-Kr");					# -- CBSB7
+		w.onInteger(1, 22, "sendstring", "subbasis", "items",
+			"<none>",					# -- STO-3G
+			"<none>",					# -- 3-21G
+			"<none>",					# -- 6-21G
+			"<none>",					# -- 4-31G
+			"<none>",					# -- 6-31G
+			"<none>",					# -- 6-311G
+			"<none>",					# -- D95V
+			"<none>",					# -- D95
+			"<none>",					# -- SHC
+			"CEP-4,CEP-31,CEP-121",				# -- Stevens/Basch/Krauss
+			"<none>",					# -- LanL2MB
+			"<none>",					# -- LanL2DZ
+			"<none>",					# -- SDD
+			"<none>",					# -- SDDAll
+			"cc-pVDZ,cc-pVTZ,cc-pVQZ,cc-pV5Z,cc-pV6Z",	# -- Dunning
+			"SV,SVP,TZV,TZVP,QZVP",				# -- Alhrichs
+			"<none>",					# -- MidiX
+			"EPR-II,EPR-III",				# -- EPR
+			"<none>",					# -- UGBS
+			"<none>",					# -- MTSmall
+			"'DGDZVP (H-Xe)','DGDZVP2 (H-F,Al-Ar,Sc-Zn)','DGTZVP (H,C-F,Al-Ar)'", # -- DGauss
+			"<none>");					# -- CBSB7
+		w.onInteger(1, 22, "sendstring", "diffuse", "items",
+			"<none>",					# -- STO-3G
+			"<none>,+",					# -- 3-21G
+			"<none>",					# -- 6-21G
+			"<none>",					# -- 4-31G
+			"<none>,+,++",					# -- 6-31G
+			"<none>,+,++",					# -- 6-311G
+			"<none>,+,++",					# -- D95V
+			"<none>,+,++",					# -- D95
+			"<none>",					# -- SHC
+			"<none>",					# -- Stevens/Basch/Krauss
+			"<none>",					# -- LanL2MB
+			"<none>",					# -- LanL2DZ
+			"<none>",					# -- SDD
+			"<none>",					# -- SDDAll
+			"<none>,AUG",					# -- Dunning
+			"<none>",					# -- Alhrichs
+			"<none>",					# -- MidiX
+			"<none>",					# -- EPR
+			"<none>,+,++,2+,2++",				# -- UGBS
+			"<none>",					# -- MTSmall
+			"<none>",					# -- DGauss
+			"<none>,+,++");					# -- CBSB7
+		w.onInteger(1, 22, "sendstring", "polar", "items",
+			"<none>",					# -- STO-3G
+			"<none>",					# -- 3-21G
+			"<none>,*,**",					# -- 6-21G
+			"<none>,*,**",					# -- 4-31G
+			"<none>,d,2d,3d,df,2df,3df",			# -- 6-31G
+			"<none>,d,2d,3d,df,2df,3df",			# -- 6-311G
+			"<none>,d",					# -- D95V
+			"<none>,d,2d,3d,df,2df,3df",			# -- D95
+			"<none>,*",					# -- SHC
+			"<none>,*",					# -- Stevens/Basch/Krauss
+			"<none>",					# -- LanL2MB
+			"<none>",					# -- LanL2DZ
+			"<none>",					# -- SDD
+			"<none>",					# -- SDDAll
+			"<none>",					# -- Dunning
+			"<none>",					# -- Alhrichs
+			"<none>",					# -- MidiX
+			"<none>",					# -- EPR
+			"<none>,1P,2P,3P,1V,2V,3V,1O,2O,3O",		# -- UGBS
+			"<none>",					# -- MTSmall
+			"<none>",					# -- DGauss
+			"<none>");					# -- CBSB7
+		w.onInteger(1, 22, "sendstring", "lightpolar", "items",
+			"<none>",					# -- STO-3G
+			"<none>",					# -- 3-21G
+			"<none>",					# -- 6-21G
+			"<none>",					# -- 4-31G
+			"<none>,p,2p,3p,pd,2pd,3pd",			# -- 6-31G
+			"<none>,p,2p,3p,pd,2pd,3pd",			# -- 6-311G
+			"<none>,p",					# -- D95V
+			"<none>,p,2p,3p,pd,2pd,3pd",			# -- D95
+			"<none>",					# -- SHC
+			"<none>",					# -- Stevens/Basch/Krauss
+			"<none>",					# -- LanL2MB
+			"<none>",					# -- LanL2DZ
+			"<none>",					# -- SDD
+			"<none>",					# -- SDDAll
+			"<none>",					# -- Dunning
+			"<none>",					# -- Alhrichs
+			"<none>",					# -- MidiX
+			"<none>",					# -- EPR
+			"<none>",					# -- UGBS
+			"<none>",					# -- MTSmall
+			"<none>",					# -- DGauss
+			"<none>");					# -- CBSB7
 
-	# Basis Set
-	string basis = option("Basic Basis", "combo", "STO-3G,3-21G,6-21G,4-31G,6-31G,6-311G,D95V,D95,SHC,Stevens/Basch/Krauss,LanL2MB,LanL2DZ,SDD,SDDAll,Dunning,Alhrichs,MidiX,EPR,UGBS,MTSmall,DGauss,CBSB7", 5, "tab=Basis Set@Job Specification", "state@basisstack?switchstack");
-	option("basisstack", "stack", 22, 5, "tab=Basis Set@Job Specification", "span=2", "newline");
-	# -- STO-3G
-	option("Elements: ???", "label", "group=basisstack_1", "labelspan=2");
-	# -- 3-21G
-	option("Elements: H-Xe", "label", "group=basisstack_2", "labelspan=2");
-	string basis_321g_diffuse = option("Diffuse", "combo", "<none>,+", 1, "group=basisstack_2", "newline");
-	# -- 6-21G
-	option("Elements: H-Cl", "label", "group=basisstack_3", "labelspan=2");
-	string basis_621g_polar = option("Polarisation", "combo", "<none>,*,**", 1, "group=basisstack_3", "newline");
-	# -- 4-31G
-	option("Elements: H-Ne", "label", "group=basisstack_4", "labelspan=2");
-	string basis_431g_polar = option("Polarisation", "combo", "<none>,*,**", 1, "group=basisstack_4", "newline");
-	# -- 6-31G
-	option("Elements: H-Kr", "label", "group=basisstack_5", "labelspan=2");
-	string basis_631g_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_5", "newline");
-	string basis_631g_heavypolar = option("Heavy Atom Polarisation", "combo", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_5", "newline");
-	string basis_631g_lightpolar = option("Light Atom Polarisation", "combo", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_5", "newline");
-	# -- 6-311G
-	option("Elements: H-Kr", "label", "group=basisstack_6", "labelspan=2");
-	string basis_6311g_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_6", "newline");
-	string basis_6311g_heavypolar = option("Heavy Atom Polarisation", "combo", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_6", "newline");
-	string basis_6311g_lightpolar = option("Light Atom Polarisation", "combo", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_6", "newline");
-	# -- D95V
-	option("Elements: H-Ne", "label", "group=basisstack_7", "labelspan=2");
-	string basis_d95v_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_7", "newline");
-	string basis_d95v_heavypolar = option("Heavy Atom Polarisation", "combo", "<none>,d", 1, "group=basisstack_7", "newline");
-	string basis_d95v_lightpolar = option("Light Atom Polarisation", "combo", "<none>,p", 1, "group=basisstack_7", "newline");
-	# -- D95
-	option("Elements: H-Cl, except Na and Mg", "label", "group=basisstack_8", "labelspan=2");
-	string basis_d95_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_8", "newline");
-	string basis_d95_heavypolar = option("Heavy Atom Polarisation", "combo", "<none>,d,2d,3d,df,2df,3df", 1, "group=basisstack_8", "newline");
-	string basis_d95_lightpolar = option("Light Atom Polarisation", "combo", "<none>,p,2p,3p,pd,2pd,3pd", 1, "group=basisstack_8", "newline");
-	# -- SHC
-	option("Elements: H-Cl", "label", "group=basisstack_9", "labelspan=2");
-	string basis_shc_polar = option("Polarisation", "combo", "<none>,*", 1, "group=basisstack_9", "newline");
-	# -- Stevens/Basch/Krauss
-	option("Elements: H-Rn", "label", "group=basisstack_10", "labelspan=2");
-	string basis_sbk_type = option("Basis", "combo", "CEP-4G,CEP-31G,CEP-121G", 1, "group=basisstack_10", "newline");
-	string basis_sbk_polar = option("Polarisation", "combo", "<none>,*", 1, "group=basisstack_10", "newline");
-	# -- LanL2MB
-	option("Elements: H-La, Hf-Bi", "label", "group=basisstack_11", "labelspan=2");
-	# -- LanL2DZ
-	option("Elements: H, Li-La, Hf-Bi", "label", "group=basisstack_12", "labelspan=2");
-	# -- SDD
-	option("Elements: All, except Fr and Ra", "label", "group=basisstack_13", "labelspan=2");
-	# -- SDDAll
-	option("Elements: All, except Fr and Ra", "label", "group=basisstack_14", "labelspan=2");
-	# -- Dunning
-	option("Elements: H-Ar, Ca-Kr", "label", "group=basisstack_15", "labelspan=2");
-	string basis_dunning_type = option("Basis", "combo", "cc-pVDZ,cc-pVTZ,cc-pVQZ,cc-pV5Z,cc-pV6Z", 1, "group=basisstack_15", "newline");
-	int basis_dunning_diffuse = option("Diffuse (AUG)", "check", 0, "group=basisstack_15", "newline");
-	# -- Alhrichs
-	option("Elements: All, except Fr and Ra", "label", "group=basisstack_16", "labelspan=2");
-	string basis_alhrichs_type = option("Basis", "combo", "SV,SVP,TZV,TZVP,QZVP", 1, "group=basisstack_16", "newline");
-	# -- MidiX
-	option("Elements: H, C-F, S-Cl, I, Br", "label", "group=basisstack_17", "labelspan=2");
-	# -- EPR
-	option("Elements: H, C-F, S-Cl, I, Br", "label", "group=basisstack_18", "labelspan=2");
-	string basis_epr_type = option("Basis", "combo", "EPR-II,EPR-III", 1, "group=basisstack_18", "newline");
-	# -- UGBS
-	option("Elements: H-Lr", "label", "group=basisstack_19", "labelspan=2");
-	string basis_ugbs_polar = option("Polarisation", "combo", "<none>,1,2,3", 1, "group=basisstack_19", "newline");
-	string basis_ugbs_polartype = option("Polarisation Type", "combo", "P,V,O", 1, "group=basisstack_19", "newline");
-	string basis_ugbs_diffuse = option("Diffuse", "combo", "<none>,+,++,2+,2++", 1, "group=basisstack_19", "newline");
-	# -- MTSmall
-	option("Elements: H-Ar", "label", "group=basisstack_20", "labelspan=2");
-	# -- DGauss
-	option("Elements: See Basis Options", "label", "group=basisstack_21", "labelspan=2");
-	string basis_dgauss_type = option("Basis", "combo", "'DGDZVP (H-Xe)','DGDZVP2 (H-F,Al-Ar,Sc-Zn)','DGTZVP (H,C-F,Al-Ar)'", 1, "group=basisstack_21", "newline");
-	# -- CBSB7
-	option("Elements: H-Kr", "label", "group=basisstack_22", "labelspan=2");
-	string basis_cbsb7_diffuse = option("Diffuse", "combo", "<none>,+,++", 1, "group=basisstack_22", "newline");
+		ui.created = TRUE;
+	}
+	# Execute dialog
+	if (!ui.show()) error("Options dialog canceled.\n");
 
-	# Coordinates
-	int coordtype = option("coordgroup", "radiogroup");
-	option("Cartesian", "radio", "coordgroup", 1, "tab=Coordinates@Job Specification");
-	option("ZMatrix", "radio", "coordgroup", 0, "tab=Coordinates@Job Specification");
-			
 	#
 	# Write Link0 Section
 	#
@@ -137,17 +214,17 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 
 	# Write Route Section - Run Type
 	string line, keyword, options;
-	switch (runtyp)
+	switch (ui.asString("runtyp"))
 	{
 		case ("SP"):
 			keyword = "# SP";
 			break;
 		case ("Opt"):
 			options = "";
-			if (opt_method != "<default>") options += opt_method;
-			if (opt_maxcycles != 0) { if (options != "") options += ","; options += "MaxCycles=" + itoa(opt_maxcycles); }
-			if (opt_maxstep != 0) { if (options != "") options += ","; options += "MaxStep=" + itoa(opt_maxstep); }
-			if (opt_restart) { if (options != "") options += ","; options += "Restart"; }
+			if (ui.asString("opt_method") != "<default>") options += ui.asString("opt_method");
+			if (ui.asInteger("opt_maxcycles") != 0) { if (options != "") options += ","; options += "MaxCycles=" + ui.asString("opt_maxcycles"); }
+			if (ui.asInteger("opt_maxstep") != 0) { if (options != "") options += ","; options += "MaxStep=" + ui.asString("opt_maxstep"); }
+			if (ui.asInteger("opt_restart")) { if (options != "") options += ",Restart"; }
 			if (options == "") keyword = "# Opt";
 			else keyword = toa("# Opt=(%s)", options);
 			break;
@@ -156,75 +233,40 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 	}
 	line = keyword;
 	# -- Add on other general options to this line
-	if (symmetry == "NoSymmetry") line += " NoSymm";
-	else if (symmetry_loose) line += " Symm=Loose";
+	if (ui.isString("symmetry", "NoSymmetry")) line += " NoSymm";
+	else if (ui.asInteger("symmetry_loose")) line += " Symm=Loose";
 	# -- Write line
-	writelinef("%s\n", line);
+	writeLineF("%s\n", line);
 
 	# Write Route Section - Method/Basis
 	line = "# ";
-	options = "";
-	if (modchem_opt != "<default>") line += modchem_opt;
-	line += modchem + "/";
-	switch (basis)
-	{
-		case ("3-21G"): if (basis_321g_diffuse == "<none>") options = "3-21G"; else options = "3-21+G"; break;
-		case ("6-21G"): if (basis_621g_polar == "<none>") options = "6-21G"; else options = "6-21G" + basis_621g_polar; break;
-		case ("4-31G"): if (basis_431g_polar == "<none>") options = "4-31G"; else options = "4-31G" + basis_431g_polar; break;
-		case ("6-31G"):
-			options = "6-31";
-			if (basis_631g_diffuse == "<none>") options += "G"; else options += basis_431g_polar + "G";
-			if (basis_631g_heavypolar != "<none>" && basis_631g_lightpolar != "<none>") options += toa("(%s,%s)",basis_631g_heavypolar,basis_631g_lightpolar);
-			else if (basis_631g_heavypolar != "<none>") options += toa("(%s)",basis_631g_heavypolar);
-			else if (basis_631g_lightpolar != "<none>") options += toa("(%s)",basis_631g_lightpolar);
-			break;
-		case ("6-311G"):
-			if (basis_6311g_diffuse == "<none>") options = "6-311G"; else options = "6-311" + basis_6311g_diffuse + "G"; break;
-			if (basis_6311g_heavypolar != "<none>" && basis_6311g_lightpolar != "<none>") options += toa("(%s,%s)",basis_6311g_heavypolar,basis_6311g_lightpolar);
-			else if (basis_6311g_heavypolar != "<none>") options += toa("(%s)",basis_6311g_heavypolar);
-			else if (basis_6311g_lightpolar != "<none>") options += toa("(%s)",basis_6311g_lightpolar);
-		case ("D95V"): 
-			options = "D95V";
-			if (basis_d95v_diffuse != "<none>") options += basis_d95v_diffuse;
-			if (basis_d95v_heavypolar != "<none>" && basis_d95v_lightpolar != "<none>") options += toa("(%s,%s)",basis_d95v_heavypolar,basis_d95v_lightpolar);
-			else if (basis_d95v_heavypolar != "<none>") options += toa("(%s)",basis_d95v_heavypolar);
-			else if (basis_d95v_lightpolar != "<none>") options += toa("(%s)",basis_d95v_lightpolar);
-			break;
-		case ("D95"): 
-			options = "D95";
-			if (basis_d95_diffuse != "<none>") options += basis_d95_diffuse;
-			if (basis_d95_heavypolar != "<none>" && basis_d95_lightpolar != "<none>") options += toa("(%s,%s)",basis_d95_heavypolar,basis_d95_lightpolar);
-			else if (basis_d95_heavypolar != "<none>") options += toa("(%s)",basis_d95_heavypolar);
-			else if (basis_d95_lightpolar != "<none>") options += toa("(%s)",basis_d95_lightpolar);
-			break;
-		case ("SHC"): if (basis_shc_polar == "<none>") options = "SHC"; else options = "SHC*"; break;
-		case ("Stevens/Basch/Krauss"): if (basis_sbk_polar == "<none>") options = basis_sbk_type; else options = basis_sbk_type + "*"; break;
-		case ("Dunning"): if (basis_dunning_diffuse) options = "AUG-" + basis_dunning_type; else options = basis_dunning_type; break;
-		case ("Alhrichs"): options = basis_alhrichs_type; break;
-		case ("EPR"): options = basis_epr_type; break;
-		case ("UGBS"):
-			options = "UGBS";
-			if (basis_ugbs_polar != "<none>") options += basis_ugbs_polar + basis_ugbs_polartype;
-			if (basis_ugbs_diffuse != "<none>") options += basis_ugbs_diffuse;
-			break;
-		case ("DGauss"): options = beforestr(basis_dgauss_type, " "); break;
-		case ("CBSB7"): if (basis_cbsb7_diffuse == "<none>") options = "CBSB7"; else options = "CBSB7" + basis_cbsb7_diffuse; break;
-		default:
-			options = basis;
-	}
+	if (ui.asString("modchem_opt") != "<default>") line += ui.asString("modchem_opt");
+	line += ui.asString("modchem") + "/";
+	# -- Construct basis set string
+	if (ui.asString("subbasis") == "<none>") options = ui.asString("basis");
+	else options = ui.asString("subbasis");
+	# -- Add on diffuse symbols fist (mainly for Pople and SBK basis sets)
+	if (ui.asString("diffuse") != "<none>") options += ui.asString("diffuse");
+	# -- Add on 'G' (Pople and SBK basis sets only)
+	if ((ui.asInteger("basis") <= 6) || (ui.asInteger("basis") == 10)) options += "G";
+	# -- Polarisation functions now - some basis sets use '*' notation, so treat these separately
+	if ((ui.asString("polar") != "<none>") && (ui.asString("lightpolar") != "<none>")) options += toa("(%s,%s)",ui.asString("polar"),ui.asString("lightpolar"));
+	else if (ui.asString("polar") != "<none>") options += toa("%s",ui.asString("polar"));
+	else if (ui.asString("lightpolar") != "<none>") options += toa("%s",ui.asString("lightpolar"));
+	# -- Done!
 	line += options;
-	writeline(line);
+	writeLine(line);
 	
 	# Blank line, title card, blank line
 	model m = aten.frame;
-	writelinef("\n%s\n\n",m.name);
+	writeLineF("\n%s\n\n",m.name);
 
 	# Charge and multiplicity
-	writelinef("%i %i\n", charge, mult);
+	writeLineF("%i %i\n", ui.asInteger("charge"), ui.asInteger("mult"));
 
 	# Atom coordinates (or z-matrix)
-	if (coordtype == 1) for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-5s  %12.6f %12.6f %12.6f\n", i.symbol,i.rx,i.ry,i.rz);
-	else writezmatrix(aten.frame);
+	if (ui.asInteger("coords") == 1) for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-5s  %12.6f %12.6f %12.6f\n", i.symbol,i.rx,i.ry,i.rz);
+	else writeZMatrix(aten.frame);
 }
 
 filter(type="importmodel", name="Gaussian03 Log File", nickname="g03log", extension="log", extension="out", glob="*.log|*.out", zmap="name", search="Gaussian(R) 03 program", id=911)
@@ -241,17 +283,17 @@ filter(type="importmodel", name="Gaussian03 Log File", nickname="g03log", extens
 	else if (find("Standard orientation:")) orientation = 2;
 	if (orientation == 0) error("Couldn't find any coordinates!");
 	# Skip four header lines
-	skipline(4);
+	skipLine(4);
 	# Create a new model, and store its pointer for use later
-	model m = newmodel(filterfilename());
+	model m = newModel(filterFilename());
 	natoms = 0;
 	do
 	{
-		readline(n, el, discard, rx, ry, rz);
+		readLine(n, el, discard, rx, ry, rz);
 		if (el != 0)
 		{
 			natoms++;
-			i = newatom(el,rx,ry,rz);
+			i = newAtom(el,rx,ry,rz);
 		}
 	} while (el != 0);
 	printf("There are %i atoms in the structure.\n", natoms);
@@ -268,20 +310,20 @@ filter(type="importmodel", name="Gaussian03 Log File", nickname="g03log", extens
 		{
 			# Found a set of coordinates. Skip 4 lines and then read coordinates
 			nstructures++;
-			skipline(4);
-			writevarf(name, "Frame %i", nstructures);
-			addframe(name);
+			skipLine(4);
+			writeVarF(name, "Frame %i", nstructures);
+			addFrame(name);
 			for (n=1; n<=natoms; ++n)
 			{
-				readline(n,el,discard,rx,ry,rz);
-				newatom(el,rx,ry,rz);
+				readLine(n,el,discard,rx,ry,rz);
+				newAtom(el,rx,ry,rz);
 			}
 			# Recalculate bonding
 			rebond();
-			finaliseframe();
+			finaliseFrame();
 		}
 	}
 
-	finalisemodel();
+	finaliseModel();
 }
 

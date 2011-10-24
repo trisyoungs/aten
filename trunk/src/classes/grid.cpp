@@ -29,10 +29,10 @@
 
 // Grid data types
 const char *GridTypeKeywords[Grid::nGridTypes] = { "none", "regularxy", "regularxyz", "freexyz" };
-Grid::GridType Grid::gridType(const char *s, bool reporterror)
+Grid::GridType Grid::gridType(const char *s, bool reportError)
 {
-	Grid::GridType gt = (Grid::GridType) enumSearch("grid type", Grid::nGridTypes, GridTypeKeywords, s, reporterror);
-	if ((gt == Grid::nGridTypes) && reporterror) enumPrintValid(Grid::nGridTypes,GridTypeKeywords);
+	Grid::GridType gt = (Grid::GridType) enumSearch("grid type", Grid::nGridTypes, GridTypeKeywords, s, reportError);
+	if ((gt == Grid::nGridTypes) && reportError) enumPrintValid(Grid::nGridTypes,GridTypeKeywords);
 	return gt;
 }
 const char *Grid::gridType(Grid::GridType i)

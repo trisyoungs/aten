@@ -29,6 +29,7 @@
 #include "parser/character.h"
 #include "parser/colourscale.h"
 #include "parser/colourscalepoint.h"
+#include "parser/dialog.h"
 #include "parser/double.h"
 #include "parser/eigenvector.h"
 #include "parser/element.h"
@@ -45,6 +46,7 @@
 #include "parser/patternbound.h"
 #include "parser/vector.h"
 #include "parser/vibration.h"
+#include "parser/widget.h"
 #include "parser/zmatrix.h"
 #include "parser/zmatrixelement.h"
 #include <string.h>
@@ -115,6 +117,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::ColourScalePointData):
 			v = (Variable*) new ColourScalePointVariable(NULL, FALSE);
 			break;
+		case (VTypes::DialogData):
+			v = (Variable*) new DialogVariable(NULL, FALSE);
+			break;
 		case (VTypes::EigenvectorData):
 			v = (Variable*) new EigenvectorVariable(NULL, FALSE);
 			break;
@@ -156,6 +161,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 			break;
 		case (VTypes::VibrationData):
 			v = (Variable*) new VibrationVariable(NULL, FALSE);
+			break;
+		case (VTypes::WidgetData):
+			v = (Variable*) new WidgetVariable(NULL, FALSE);
 			break;
 		case (VTypes::ZMatrixData):
 			v = (Variable*) new ZMatrixVariable(NULL, FALSE);
@@ -206,6 +214,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 		case (VTypes::ColourScalePointData):
 			var = new ColourScalePointArrayVariable(sizeexpr);
 			break;
+		case (VTypes::DialogData):
+			var = new DialogArrayVariable(sizeexpr);
+			break;
 		case (VTypes::EigenvectorData):
 			var = new EigenvectorArrayVariable(sizeexpr);
 			break;
@@ -253,6 +264,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::VibrationData):
 			var = new VibrationArrayVariable(sizeexpr);
+			break;
+		case (VTypes::WidgetData):
+			var = new WidgetArrayVariable(sizeexpr);
 			break;
 		case (VTypes::ZMatrixData):
 			var = new ZMatrixArrayVariable(sizeexpr);

@@ -28,6 +28,7 @@
 #include "parser/cell.h"
 #include "parser/colourscale.h"
 #include "parser/colourscalepoint.h"
+#include "parser/dialog.h"
 #include "parser/eigenvector.h"
 #include "parser/element.h"
 #include "parser/energystore.h"
@@ -46,6 +47,7 @@
 #include "parser/site.h"
 #include "parser/vector.h"
 #include "parser/vibration.h"
+#include "parser/widget.h"
 #include "parser/zmatrix.h"
 #include "parser/zmatrixelement.h"
 #include <string.h>
@@ -161,6 +163,10 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = ColourScalePointVariable::performFunction(accessor_, rv, this);
 			else result = ColourScalePointVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::DialogData):
+			if (functionAccessor_) result = DialogVariable::performFunction(accessor_, rv, this);
+			else result = DialogVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::EigenvectorData):
 			if (functionAccessor_) result = EigenvectorVariable::performFunction(accessor_, rv, this);
 			else result = EigenvectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -233,6 +239,10 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = VibrationVariable::performFunction(accessor_, rv, this);
 			else result = VibrationVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::WidgetData):
+			if (functionAccessor_) result = WidgetVariable::performFunction(accessor_, rv, this);
+			else result = WidgetVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::ZMatrixData):
 			if (functionAccessor_) result = ZMatrixVariable::performFunction(accessor_, rv, this);
 			else result = ZMatrixVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -281,6 +291,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::ColourScalePointData):
 			printf("%s", ColourScalePointVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::DialogData):
+			printf("%s", DialogVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::EigenvectorData):
 			printf("%s", EigenvectorVariable::accessorData[accessor_].name);
@@ -335,6 +348,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::VibrationData):
 			printf("%s", VectorVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::WidgetData):
+			printf("%s", WidgetVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::ZMatrixData):
 			printf("%s", ZMatrixVariable::accessorData[accessor_].name);
@@ -406,6 +422,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::ColourScalePointData):
 			result = ColourScalePointVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::DialogData):
+			result = DialogVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::EigenvectorData):
 			result = EigenvectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -459,6 +478,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 			break;
 		case (VTypes::VibrationData):
 			result = VibrationVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::WidgetData):
+			result = WidgetVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ZMatrixData):
 			result = ZMatrixVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
@@ -520,6 +542,9 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 		case (VTypes::ColourScalePointData):
 			result = ColourScalePointVariable::accessorSearch(s, arrayindex, arglist);
 			break;
+		case (VTypes::DialogData):
+			result = DialogVariable::accessorSearch(s, arrayindex, arglist);
+			break;
 		case (VTypes::EigenvectorData):
 			result = EigenvectorVariable::accessorSearch(s, arrayindex, arglist);
 			break;
@@ -570,6 +595,9 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::VectorData):
 			result = VectorVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::WidgetData):
+			result = WidgetVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::ZMatrixData):
 			result = ZMatrixVariable::accessorSearch(s, arrayindex, arglist);

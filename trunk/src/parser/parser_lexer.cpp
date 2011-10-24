@@ -236,12 +236,6 @@ int CommandParser::lex()
 				return DOUBLECONST;
 			}
 
-			// OPTION keywords
-			if (strcmp(token,"option") == 0)
-			{
-				return OPTION;
-			}
-
 			// Element symbol?
 			for (n=0; n<elements().nElements(); ++n) if (strcmp(token,elements().symbol(n)) == 0) break;
 			if (n < elements().nElements())
@@ -267,6 +261,7 @@ int CommandParser::lex()
 			else if (token == "void") n = ATEN_VOID;
 			else if (token == "help") n = HELP;
 			else if (token == "in") n = ATEN_IN;
+			else if (token == "global") n = ATEN_GLOBAL;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);
@@ -304,7 +299,7 @@ int CommandParser::lex()
 			}
 
 			// Is it one of Aten's function keywords?
-			for (n=0; n<Command::nCommands; n++) if (strcmp(token,Command::data[n].keyword) == 0) break;
+			n = commands.command(token);
 			if (n != Command::nCommands)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ... which is a function (->FUNCCALL).\n", tree_);
@@ -357,7 +352,7 @@ int CommandParser::lex()
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of brackets, comma, and semicolon
-	if ((c == '(') || (c == ')') || (c == ';') || (c == ',') || (c == '{') || (c == '}') || (c == '[') || (c == ']') || (c == '%') || (c == ':'))
+	if ((c == '(') || (c == ')') || (c == ';') || (c == ',') || (c == '{') || (c == '}') || (c == '[') || (c == ']') || (c == '%') || (c == ':') || (c == '?') || (c == ':'))
 	{
 		msg.print(Messenger::Parse, "LEXER (%p): found symbol [%c]\n",tree_,c);
 		return c;

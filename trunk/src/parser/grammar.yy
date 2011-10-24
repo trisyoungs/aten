@@ -20,6 +20,7 @@ Dnchar tokenName;
 List<Dnchar> stepNameStack;
 VTypes::DataType declaredType, funcType;
 TreeNode *tempNode;
+int globalDeclarations;
 
 %}
 
@@ -45,21 +46,33 @@ TreeNode *tempNode;
 %token <functionId> FUNCCALL
 %token <tree> USERFUNCCALL
 %token <vtype> VTYPE
-%token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IN ATEN_RETURN FILTERBLOCK HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK
-%token OPTION
+%token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IIF ATEN_IN ATEN_GLOBAL ATEN_RETURN FILTERBLOCK HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK
 %nonassoc ATEN_ELSE
 
-%left AND OR
-%left '=' PEQ MEQ TEQ DEQ 
-%left GEQ LEQ EQ NEQ '>' '<'
+/* Higher line number == Higher precedence */
+/* Taken from cppreference.com */
+%right '=' PEQ MEQ TEQ DEQ 
+%right '?' ':'
+%left OR
+%left AND
+%left EQ NEQ
+%left '<' LEQ '>' GEQ
 %left '+' '-'
-%left '*' '/' '%'
-%right UMINUS
+%left '*' '/' '%' '^'
+%right UPLUS UMINUS '!'
 %left PLUSPLUS MINUSMINUS
-%right '!'
-%right '^'
+ 
+/* %left AND OR */
+/* %left '=' PEQ MEQ TEQ DEQ  */
+/* %left GEQ LEQ EQ NEQ '>' '<' */
+/* %left '+' '-' */
+/* %left '*' '/' '%'  */
+/* %right UMINUS '?' ':' */
+/* %left PLUSPLUS MINUSMINUS */
+/* %right '!' */
+/* %right '^' */
 
-%type <node> constant expression expressionlist variable statement flowstatement statementlist block blockment assignment widget
+%type <node> constant expression expressionlist variable statement flowstatement statementlist block blockment assignment
 %type <node> declaration functiondeclaration caselabel caselist
 %type <node> ARRAYCONST function userfunction assignedvariablename variablelistitem variablelist typedvariablelistitem typedvariablelist
 %type <name> variablename
@@ -202,14 +215,6 @@ userfunction:
 /* Misc Objects */
 /* ------------ */
 
-/* Filter Option Definition */
-widget:
-	OPTION '(' expressionlist ')'			{
-		$$ = cmdparser.addWidget($3);
-		if ($$ == NULL) YYABORT;
-		}
-	;
-
 /* Array Vector Constant / Assignment Group */
 ARRAYCONST:
 	'{' expressionlist '}'				{
@@ -259,6 +264,7 @@ expression:
 	| expression OR expression			{ $$ = cmdparser.addOperator(Command::OperatorOr, $1, $3); if ($$ == NULL) YYABORT; }
 	| '(' expression ')'				{ $$ = $2; if ($$ == NULL) YYABORT; }
 	| '!' expression				{ $$ = cmdparser.addOperator(Command::OperatorNot, $2); if ($$ == NULL) YYABORT; }
+	| expression '?' expression ':' expression	{ $$ = cmdparser.addOperator(Command::OperatorInlineIf, $1, $3, $5); if ($$ == NULL) YYABORT; }
 	| NEWTOKEN					{ msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
 	;
 
@@ -324,23 +330,19 @@ variablename:
 assignedvariablename:
 	variablename '=' ARRAYCONST			{
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with array assignment\n", tokenName.get());
-		$$ = cmdparser.addVariable(declaredType, &tokenName, $3);
-		}
-	| variablename '=' widget	 		{
-		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with widget assignment\n", tokenName.get());
-		$$ = cmdparser.addVariable(declaredType, &tokenName, $3);
+		$$ = cmdparser.addVariable(declaredType, &tokenName, $3, globalDeclarations);
 		}
 	| variablename '[' expression ']' '=' expression {
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with expr assignment\n", tokenName.get());
-		$$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6);
+		$$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3, $6, globalDeclarations);
 		}
 	| variablename '[' expression ']' '=' ARRAYCONST {
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with array assignment\n", tokenName.get());
-		$$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6);
+		$$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3, $6, globalDeclarations);
 		}
 	| variablename '=' expression 			{
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr assignment\n", tokenName.get());
-		$$ = cmdparser.addVariable(declaredType, &tokenName, $3);
+		$$ = cmdparser.addVariable(declaredType, &tokenName, $3, globalDeclarations);
 		}
 	;
 
@@ -348,11 +350,11 @@ assignedvariablename:
 variablelistitem:
 	variablename					{
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s'\n", tokenName.get());
-		$$ = cmdparser.addVariable(declaredType, &tokenName);
+		$$ = cmdparser.addVariable(declaredType, &tokenName, NULL, globalDeclarations);
 		}
 	| variablename '[' expression ']' 		{
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s'\n", tokenName.get());
-		$$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3);
+		$$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3, NULL, globalDeclarations);
 		}
 	| assignedvariablename 				{
 		$$ = $1;
@@ -401,7 +403,12 @@ typedvariablelist:
 
 /* Variable Declaration Statement */
 declaration:
-	VTYPE savetype variablelist			{
+	ATEN_GLOBAL setglobal VTYPE savetype variablelist unsetglobal	{
+		msg.print(Messenger::Parse,"PARSER : global declaration : standard variable declaration list\n");
+		$$ = cmdparser.addDeclarations($5);
+		declaredType = VTypes::NoData;
+		}
+	| VTYPE savetype variablelist			{
 		msg.print(Messenger::Parse,"PARSER : declaration : standard variable declaration list\n");
 		$$ = cmdparser.addDeclarations($3);
 		declaredType = VTypes::NoData;
@@ -470,9 +477,6 @@ statement:
 		$$ = $1;
 		}
 	| flowstatement					{
-		$$ = $1;
-		}
-	| widget ';'					{
 		$$ = $1;
 		}
 	| functiondeclaration				{
@@ -681,6 +685,14 @@ pushfilter:
 		msg.print(Messenger::Parse,"PARSER : pushfilter : new filter definition\n");
 		cmdparser.pushFilter();
 		}
+	;
+
+setglobal:
+	/* empty */					{ globalDeclarations = TRUE; }
+	;
+
+unsetglobal:
+	/* empty */					{ globalDeclarations = FALSE; }
 	;
 
 %%

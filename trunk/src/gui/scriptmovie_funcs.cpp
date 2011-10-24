@@ -81,16 +81,17 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
 	int width, height;
 	
-	static Tree dialog("Save Scripted Movie","option('Image Size', 'edit', '10x10'); option('Maximum Frames', 'intspin', 1, 1000000, 10, 1000, 'newline'); option('Movie FPS', 'intspin', 1, 100, 1, 25, 'newline'); ");
+	Tree dialog;
+	TreeGui &ui = dialog.defaultDialog();
+	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Movie Options");
+	ui.addEdit("geometry", "Image Geometry", geometry,1,1);
+	ui.addIntegerSpin("maxframes", "Maximum Frames", 1, 1e6, 100, 1000 ,1,2);
+	ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,2);
 
-	Model *m = aten.currentModel();
-
-	// Poke values into dialog widgets and execute
-	dialog.setWidgetValue("Image Size", ReturnValue(geometry.get()));
-	if (!dialog.executeCustomDialog(FALSE)) return;
+	if (!dialog.defaultDialog().execute()) return;
 
 	// Retrieve widget values
-	geometry = dialog.widgetValuec("Image Size");
+	geometry = ui.asCharacter("geometry");
 	width = atoi(beforeChar(geometry,'x'));
 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
@@ -99,8 +100,8 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}
-	int maxframes = dialog.widgetValuei("Maximum Frames");
-	int fps = dialog.widgetValuei("Movie FPS");
+	int maxframes = ui.asInteger("maxframes");
+	int fps = ui.asInteger("fps");
 	
 	// Get movie filename
 	static QString selectedFilter("All Files (*.*)");

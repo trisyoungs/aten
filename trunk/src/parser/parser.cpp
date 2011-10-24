@@ -290,35 +290,6 @@ bool CommandParser::generateFromFile(Program *prog, const char *filename, bool d
 	return result;
 }
 
-// Populate supplied tree with commands
-bool CommandParser::generateSingleTree(Tree *t, const char *name, const char *commands)
-{
-	msg.enter("CommandParser::generateSingleTree");
-	if (t == NULL)
-	{
-		msg.print("NULL Tree passed to CommandParser::generateSingleTree.\n");
-		return FALSE;
-	}
-	// Set the forest target to be our own local, static Forest
-	static Program localProgram;
-	program_ = &localProgram;
-	tree_ = t;
-	// 'Push' tree onto the stack
-	stack_.add(tree_, FALSE);
-	// Store the source string
-	stringSource_ = commands;
-	stringPos_ = 0;
-	stringLength_ = stringSource_.length();
-	msg.print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
-	source_ = CommandParser::StringSource;
-	bool result = generate();
-	// Generate widgets (if Tree has any)
-	if (tree_->widgets() != NULL) tree_->createCustomDialog(name);
-	reset();
-	msg.exit("CommandParser::generateSingleTree");
-	return result;
-}
-
 // Return current tree target, raising warning and setting fail flag if no tree is defined...
 Tree *CommandParser::tree()
 {
@@ -363,12 +334,6 @@ void CommandParser::popTree()
 	{
 		// Can use the 'isFilter' member function to check for the lack of a proper type
 		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
-	}
-	// Create any custom dialog stuff here...
-	if (ri->item->widgets() != NULL)
-	{
-		ri->item->createCustomDialog(ri->item->name());
-		ri->item->executeCustomDialog(TRUE);
 	}
 	msg.print(Messenger::Parse, "Removing tree %p from stack (%i remain).\n", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
@@ -457,9 +422,9 @@ bool CommandParser::addStatement(TreeNode *leaf)
 }
 
 // Add an operator to the Tree
-TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2)
+TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2, TreeNode *arg3)
 {
-	return tree()->addOperator(func, arg1, arg2);
+	return tree()->addOperator(func, arg1, arg2, arg3);
 }
 
 // Associate a command-based leaf node to the Tree
@@ -493,27 +458,21 @@ TreeNode *CommandParser::wrapVariable(Variable *var, TreeNode *arrayindex)
 }
 
 // Add variable to topmost ScopeNode
-TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue, bool global)
 {
-	return tree()->addVariable(type, name, initialValue);
+	return tree()->addVariable(type, name, initialValue, global);
 }
 
 // Add array variable to topmost ScopeNode
-TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
+TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue, bool global)
 {
-	return tree()->addArrayVariable(type, name, sizeexpr, initialvalue);
+	return tree()->addArrayVariable(type, name, sizeexpr, initialvalue, global);
 }
 
 // Add array 'constant'
 TreeNode *CommandParser::addArrayConstant(TreeNode *values)
 {
 	return tree()->addArrayConstant(values);
-}
-
-// Add new (GUI-based) filter option linked to a variable
-TreeNode *CommandParser::addWidget(TreeNode *arglist)
-{
-	return tree()->addWidget(arglist);
 }
 
 /*

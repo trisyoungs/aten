@@ -24,10 +24,10 @@
 
 // Basis Function Types
 const char *BasisShellTypeKeywords[BasisShell::nBasisShellTypes] = { "none", "s", "p", "d", "f", "g", "l" };
-BasisShell::BasisShellType BasisShell::basisShellType(const char *s, bool reporterror)
+BasisShell::BasisShellType BasisShell::basisShellType(const char *s, bool reportError)
 {
-	BasisShell::BasisShellType bft = (BasisShell::BasisShellType) enumSearch("basis shell type", BasisShell::nBasisShellTypes, BasisShellTypeKeywords, s, reporterror);
-	if ((bft == BasisShell::nBasisShellTypes) && reporterror) enumPrintValid(BasisShell::nBasisShellTypes, BasisShellTypeKeywords);
+	BasisShell::BasisShellType bft = (BasisShell::BasisShellType) enumSearch("basis shell type", BasisShell::nBasisShellTypes, BasisShellTypeKeywords, s, reportError);
+	if ((bft == BasisShell::nBasisShellTypes) && reportError) enumPrintValid(BasisShell::nBasisShellTypes, BasisShellTypeKeywords);
 	return bft;
 }
 const char *BasisShell::basisShellType(BasisShell::BasisShellType bft)

@@ -1,10 +1,11 @@
 # Gromacs Configuration and Expression Files
 # Created:	 25/05/2010
-# Last modified: 12/11/2010
+# Last modified: 02/09/2011
 # ChangeLog:
-#	02/12/2010: Topology file output now uses FFatom mass when writing [atoms] section
-#	12/11/2010: Tweaked gro file output.
-#	18/10/2010: Addition of new topology file export filter
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
+#	02/12/2010 - Topology file output now uses FFatom mass when writing [atoms] section
+#	12/11/2010 - Tweaked gro file output.
+#	18/10/2010 - Addition of new topology file export filter
 
 filter(type="importmodel",name="GROMACS coordinates", nickname="gro", extension="gro", glob="*.gro", id=14)
 {
@@ -16,21 +17,21 @@ filter(type="importmodel",name="GROMACS coordinates", nickname="gro", extension=
 	atom i;
 
 	# Read data
-	getline(title);
-	newmodel(title);
-	readline(natoms);
+	getLine(title);
+	newModel(title);
+	readLine(natoms);
 	for (n=1; n<=natoms; ++n)
 	{
-		readlinef("%5i%-5s%-5s%5i%8.3f%8.3f%8.3f",resno,res,e,m,rx,ry,rz);
+		readLineF("%5i%-5s%-5s%5i%8.3f%8.3f%8.3f",resno,res,e,m,rx,ry,rz);
 		# Re-read element name to get rid of spaces
-		readvar(e,stripped);
-		i = newatom(stripped, rx*10.0, ry*10.0, rz*10.0);
+		readVar(e,stripped);
+		i = newAtom(stripped, rx*10.0, ry*10.0, rz*10.0);
 	}
-	readline(a,b,c);
+	readLine(a,b,c);
 	if ((a < 0.0001) || (b < 0.0001) || (c < 0.0001)) printf("No valid cell found.\n");
 	else cell(a*10.0,b*10.0,c*10.0,90,90,90);
 	rebond(FALSE);
-	finalisemodel();
+	finaliseModel();
 }
 
 filter(type="exportmodel",name="GROMACS coordinates", nickname="gro", extension="gro", glob="*.gro", id=14)
@@ -42,28 +43,28 @@ filter(type="exportmodel",name="GROMACS coordinates", nickname="gro", extension=
 	model m = aten.frame;
 
 	# Write data
-	writeline(m.name);
-	writeline(m.natoms);
+	writeLine(m.name);
+	writeLine(m.nAtoms);
 
 	count = 1;
 	molcount = 1;
 	for (pattern p = m.patterns; p; ++p)
 	{
-		i = p.firstatom;
-		for (mol=0; mol<p.nmols; ++mol)
+		i = p.firstAtom;
+		for (mol=0; mol<p.nMols; ++mol)
 		{
-			for (n=0; n<p.nmolatoms; ++n)
+			for (n=0; n<p.nMolAtoms; ++n)
 			{
-				if (i.type == 0) writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",molcount,substr(p.name,1,5),i.symbol,count,i.rx/10.0,i.ry/10.0,i.rz/10.0);
-				else writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",molcount,substr(p.name,1,5),i.type.name,count,i.rx/10.0,i.ry/10.0,i.rz/10.0);
+				if (i.type == 0) writeLineF("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",molcount,substr(p.name,1,5),i.symbol,count,i.rx/10.0,i.ry/10.0,i.rz/10.0);
+				else writeLineF("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",molcount,substr(p.name,1,5),i.type.name,count,i.rx/10.0,i.ry/10.0,i.rz/10.0);
 				++i;
 				++count;
 			}
 			++molcount;
 		}
 	}
-	if (m.cell.type == "none") writelinef("%9.5f%9.5f%9.5f\n",0.0,0.0,0.0);
-	else writelinef("%9.5f%9.5f%9.5f\n",m.cell.a/10.0,m.cell.b/10.0,m.cell.c/10.0);
+	if (m.cell.type == "none") writeLineF("%9.5f%9.5f%9.5f\n",0.0,0.0,0.0);
+	else writeLineF("%9.5f%9.5f%9.5f\n",m.cell.a/10.0,m.cell.b/10.0,m.cell.c/10.0);
 }
 
 filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="*.top",nickname="top", id=14)
@@ -81,75 +82,75 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 
 	# Note: All distances divided by 10 to convert to nm. Some force constant terms multiplied by 100 to convert to nm**2 (from A**2)
 	# Energy unit must be kj/mol, so set automatic conversion of ff energy parameters to kj
-	autoconversionunit("kj");
+	autoConversionUnit("kj");
 
 	# ---------------
 	# PARAMETER LEVEL
 	# ---------------
-	writeline(";Parameter level");
+	writeLine(";Parameter level");
 
 	# *** [ defaults ]
-	writeline("[ defaults ]");
-	writeline("; nbfunc    comb-rule     gen-pairs       fudgeLJ  fudgeQQ");
+	writeLine("[ defaults ]");
+	writeLine("; nbfunc    comb-rule     gen-pairs       fudgeLJ  fudgeQQ");
 	# Attempt to grab scaling factors from first torsion in model
-	if (m.nfftorsions > 0)
+	if (m.nFFTorsions > 0)
 	{
-		escale = m.fftorsions[1].escale;
-		vscale = m.fftorsions[1].vscale;
+		escale = m.ffTorsions[1].eScale;
+		vscale = m.ffTorsions[1].vScale;
 	}
 	# Only possible nbfunc values are 1 (LJ) or 2 (Buckingham), comb-rules are 2 (geom/arith) or 3 (geom/geom)
 	fi = m.atoms[1].type;
-	if (fi.form == "lj") writelinef("    1           2            no         %8.4f %8.4f\n",vscale,escale);
-	else if (fi.form == "ljgeom") writelinef("    1           3            no         %8.4f %8.4f\n",vscale,escale);
-	else if (fi.form == "buck") { uselj = FALSE; writelinef("    2           1            no         %8.4f %8.4f\n",vscale,escale); }
+	if (fi.form == "lj") writeLineF("    1           2            no         %8.4f %8.4f\n",vscale,escale);
+	else if (fi.form == "ljgeom") writeLineF("    1           3            no         %8.4f %8.4f\n",vscale,escale);
+	else if (fi.form == "buck") { uselj = FALSE; writeLineF("    2           1            no         %8.4f %8.4f\n",vscale,escale); }
 	else error("Short-range functional form '%s' is not supported by GROMACS.\n", fi.form);
 	
 	# *** [ atomtypes ]
-	writeline("\n[ atomtypes ]");
-	if (uselj) writeline(";type     mass        charge   ptype     param1     param2");
-	#else writeline("
-	for (fi = m.fftypes; fi; ++fi) writelinef("%-6s %10.5f %10.6f     A    %10.6f %10.6f\n",fi.name,fi.mass,fi.charge,fi.parameter("sigma")/10,fi.parameter("epsilon"));
+	writeLine("\n[ atomtypes ]");
+	if (uselj) writeLine(";type     mass        charge   ptype     param1     param2");
+	#else writeLine("
+	for (fi = m.ffTypes; fi; ++fi) writeLineF("%-6s %10.5f %10.6f     A    %10.6f %10.6f\n",fi.name,fi.mass,fi.charge,fi.parameter("sigma")/10,fi.parameter("epsilon"));
 
 	# ---------------
 	# MOLECULAR LEVEL
 	# ---------------
-	writelinef("\n;Molecular level");
+	writeLineF("\n;Molecular level");
 
 	for (p=m.patterns; p; ++p)
 	{
 		# *** [ moleculetype ]
-		writeline("\n[ moleculetype ]");
-		writeline("; moleculename   nrexcl");
-		writelinef("%15s      3\n", p.name);
+		writeLine("\n[ moleculetype ]");
+		writeLine("; moleculename   nrexcl");
+		writeLineF("%15s      3\n", p.name);
 
 		# *** [ atoms ]
-		writeline("\n[ atoms ]");
-		writeline("; atomnr  type   resnr  residue");
-		for (n=1; n<=p.nmolatoms; ++n) writelinef(" %6i   %-6s  1   %-6s   %-6s  0  %8.4f  %8.4f\n", n, p.atoms[n].type.name, p.name, p.atoms[n].type.name, p.atoms[n].q, p.atoms[n].type.mass);
+		writeLine("\n[ atoms ]");
+		writeLine("; atomnr  type   resnr  residue");
+		for (n=1; n<=p.nMolAtoms; ++n) writeLineF(" %6i   %-6s  1   %-6s   %-6s  0  %8.4f  %8.4f\n", n, p.atoms[n].type.name, p.name, p.atoms[n].type.name, p.atoms[n].q, p.atoms[n].type.mass);
 
 		nconstraints = 0;
 		nub = 0;
 		
 		# *** [ bonds ]
-		writelinef("\n[ bonds ]\n");
-		writeline(";    ai     aj   func   param1   param2   param3");
+		writeLineF("\n[ bonds ]\n");
+		writeLine(";    ai     aj   func   param1   param2   param3");
 		for (b = p.bonds; b; ++b)
 		{
 			if (b.type == "ub") ++nub;
-			else if (b.form == "harmonic") writelinef("%6i %6i      1   %9.5f %9.5f\n", b.id[1], b.id[2], b.parameter("eq")/10,b.parameter("k")*100);
-			else if (b.form == "morse") writelinef("%6i %6i      3   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.parameter("eq")/10,b.parameter("k")*100,b.parameter("beta")*10);
+			else if (b.form == "harmonic") writeLineF("%6i %6i      1   %9.5f %9.5f\n", b.id[1], b.id[2], b.parameter("eq")/10,b.parameter("k")*100);
+			else if (b.form == "morse") writeLineF("%6i %6i      3   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.parameter("eq")/10,b.parameter("k")*100,b.parameter("beta")*10);
 			else if (b.form == "constraint") ++nconstraints;
 			else
 			{
 				++nfailed[1];
 				printf("Bond potential form '%s' not supported by GROMACS.\n", b.form);
-				writelinef("%6i %6i   0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.data(1), b.data(2), b.data(3));
+				writeLineF("%6i %6i   0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.data(1), b.data(2), b.data(3));
 			}
 		}
 
 		# *** [ angles ]
-		writelinef("\n[ angles ]\n");
-		writeline(";    ai     aj     ak    func   param1   param2   param3");
+		writeLineF("\n[ angles ]\n");
+		writeLine(";    ai     aj     ak    func   param1   param2   param3");
 		for (b = p.angles; b; ++b)
 		{
 			if (b.form == "harmonic")
@@ -159,71 +160,71 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 				else for (b2=p.bonds; b2; ++b2) if ((b2.type == "ub") && (b.id[1] == b.id[1]) && (b.id[2] == b.id[2]) && (b.id[3] == b.id[3]))
 				{
 					hasub = TRUE;
-					writelinef("%6i %6i %6i      5   %9.5f %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.parameter("eq"),b.parameter("k"),b2.parameter("eq")*0.1, b2.parameter("k"));
+					writeLineF("%6i %6i %6i      5   %9.5f %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.parameter("eq"),b.parameter("k"),b2.parameter("eq")*0.1, b2.parameter("k"));
 					break;
 				}
-				if (!hasub) writelinef("%6i %6i %6i      1   %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.parameter("eq"),b.parameter("k"));
+				if (!hasub) writeLineF("%6i %6i %6i      1   %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.parameter("eq"),b.parameter("k"));
 			}
-			else if (b.form == "harmcos") writelinef("%6i %6i %6i      2   %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.parameter("eq"),b.parameter("k"));
+			else if (b.form == "harmcos") writeLineF("%6i %6i %6i      2   %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.parameter("eq"),b.parameter("k"));
 			else if (b.form == "bondconstraint") ++nconstraints;
 			else
 			{
 				++nfailed[2];
 				printf("Angle potential form '%s' not supported by GROMACS.\n", b.form);
-				writelinef("%6i %6i %6i      0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.data(1), b.data(2), b.data(3));
+				writeLineF("%6i %6i %6i      0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.data(1), b.data(2), b.data(3));
 			}
 		}
 
 		# *** [ dihedrals ]
-		writelinef("\n[ dihedrals ]\n");
-		writeline(";    ai     aj     ak     al    func   param1   param2   param3   param4");
+		writeLineF("\n[ dihedrals ]\n");
+		writeLine(";    ai     aj     ak     al    func   param1   param2   param3   param4");
 		for (b = p.torsions; b; ++b)
 		{
 			if (b.form == "cos")
 			{
 				# Aten allows variable 's' prefactor, but GROMACS assumes no prefactor (i.e. +1)...
 				double s = abs(b.parameter("s") - 1.0);
-				if (s < 0.01) writelinef("%6i %6i %6i %6i      1   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.parameter("eq"),b.parameter("k"),b.parameter("n"));
+				if (s < 0.01) writeLineF("%6i %6i %6i %6i      1   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.parameter("eq"),b.parameter("k"),b.parameter("n"));
 				else
 				{
 					++nfailed[3];
 					printf("Cosine torsion potential form must have a prefactor 's' of 1.0 in GROMACS, but this term has %f.\n", b.parameter("s"));
-					writelinef("%6i %6i %6i %6i      0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.parameter("eq"),b.parameter("k"),b.parameter("n"));
+					writeLineF("%6i %6i %6i %6i      0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.parameter("eq"),b.parameter("k"),b.parameter("n"));
 				}
 			}
-			else if (b.form == "cos3") writelinef("%6i %6i %6i %6i      5   %9.5f %9.5f %9.5f 0.0\n", b.id[1], b.id[2], b.id[3], b.id[4], b.parameter("k1"),b.parameter("k2"), b.parameter("k3"));
-			else if (b.form == "cos4") writelinef("%6i %6i %6i %6i      5   %9.5f %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.parameter("k1"),b.parameter("k2"), b.parameter("k3"), b.parameter("k4"));
+			else if (b.form == "cos3") writeLineF("%6i %6i %6i %6i      5   %9.5f %9.5f %9.5f 0.0\n", b.id[1], b.id[2], b.id[3], b.id[4], b.parameter("k1"),b.parameter("k2"), b.parameter("k3"));
+			else if (b.form == "cos4") writeLineF("%6i %6i %6i %6i      5   %9.5f %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.parameter("k1"),b.parameter("k2"), b.parameter("k3"), b.parameter("k4"));
 			else
 			{
 				++nfailed[3];
 				printf("Torsion potential form '%s' not supported by GROMACS.\n", b.form);
-				writelinef("%6i %6i %6i %6i      0   %9.5f %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.data(1), b.data(2), b.data(3), b.data(4));
+				writeLineF("%6i %6i %6i %6i      0   %9.5f %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.data(1), b.data(2), b.data(3), b.data(4));
 			}
 		}
 
 		# *** [ constraints ]
 		if (nconstraints != 0)
 		{
-			writelinef("\n[ constraints ]\n");
-			writeline(";    ai    aj   func   param1   param2   param3");
-			for (b = p.bonds; b; ++b) if (b.form == "constraint") writelinef("%6i %6i      1   %9.5f\n", b.id[1], b.id[2], b.parameter("eq")/10);
-			for (b = p.angles; b; ++b) if (b.form == "bondconstraint") writelinef("%6i %6i      1   %9.5f\n", b.id[1], b.id[3], b.parameter("eq")/10);
+			writeLineF("\n[ constraints ]\n");
+			writeLine(";    ai    aj   func   param1   param2   param3");
+			for (b = p.bonds; b; ++b) if (b.form == "constraint") writeLineF("%6i %6i      1   %9.5f\n", b.id[1], b.id[2], b.parameter("eq")/10);
+			for (b = p.angles; b; ++b) if (b.form == "bondconstraint") writeLineF("%6i %6i      1   %9.5f\n", b.id[1], b.id[3], b.parameter("eq")/10);
 		}
 	}	
 
 	# ------------
 	# SYSTEM LEVEL
 	# ------------
-	writeline("\n;System level");
+	writeLine("\n;System level");
 
 	# *** [ system ]
-	writeline("[ system ]");
-	writeline(m.name);
+	writeLine("[ system ]");
+	writeLine(m.name);
 
 	# *** [ molecules ]
-	writeline("[ molecules ]");
-	writeline("; moleculename     number");
-	for (p = m.patterns; p; ++p) writelinef("%15s      %i\n", p.name, p.nmols);
+	writeLine("[ molecules ]");
+	writeLine("; moleculename     number");
+	for (p = m.patterns; p; ++p) writeLineF("%15s      %i\n", p.name, p.nMols);
 
 	# ----
 	# Done
@@ -256,7 +257,7 @@ filter(type="exportexpression",name="Gromacs .rtp file Specification", extension
 	# Get current model
 	model m = aten.frame;
 	
-	typemodel();
+	typeModel();
 
 	#should make sure there is at least one pattern here
 	if (m.patterns)
@@ -266,7 +267,7 @@ filter(type="exportexpression",name="Gromacs .rtp file Specification", extension
 	else
 	{
 	printf("noone here but us chickens\n");
-	p = newpattern("NUN", 1, m.natoms);
+	p = newPattern("NUN", 1, m.nAtoms);
 	}
      
 	# Loop over patterns (molecule types)
@@ -279,24 +280,24 @@ filter(type="exportexpression",name="Gromacs .rtp file Specification", extension
 
 		if (p.name) # actually want if p.name is 4 chars in length and/or not the same as another potential p.name
 		{
-		writelinef("[ %4s ]\n", p.name);
+		writeLineF("[ %4s ]\n", p.name);
 		} 
 		else  
 		{
-		writelinef("[ MOL%i ]\n", k);
+		writeLineF("[ MOL%i ]\n", k);
 		}
 
-	writeline(" [ atoms ]");
-	a = p.firstatom;
-		for (n=1; n<=p.nmolatoms; ++n)
+	writeLine(" [ atoms ]");
+	a = p.firstAtom;
+		for (n=1; n<=p.nMolAtoms; ++n)
 		{
 
 			printf("Using : %s\n", a.type.ff.name);
 			if(a.type.ff.name == "Canongia Lopes & Padua Ionic Liquids (version 01/06/2006)"){
-			writelinef("   %3s%-4i    cldp_%-3i    %9.6f      1\n",a.symbol,n,a.type.id,a.q);
+			writeLineF("   %3s%-4i    cldp_%-3i    %9.6f      1\n",a.symbol,n,a.type.id,a.q);
 			}
 			else {
-			writelinef("   %3s%-4i    opls_%-3i    %9.6f      1\n",a.symbol,n,a.type.id,a.q);
+			writeLineF("   %3s%-4i    opls_%-3i    %9.6f      1\n",a.symbol,n,a.type.id,a.q);
 			}
 
 
@@ -304,11 +305,11 @@ filter(type="exportexpression",name="Gromacs .rtp file Specification", extension
 		}
 
     	# Bonds in pattern
-	writelinef(" [ bonds ]\n");
+	writeLineF(" [ bonds ]\n");
 	nc = 0;
-		for (n=1; n<=p.nbonds; ++n) if (p.bonds[n].form == "constraint") ++nc;
+		for (n=1; n<=p.nBonds; ++n) if (p.bonds[n].form == "constraint") ++nc;
 
-		for (n=1; n<=p.nbonds; ++n)
+		for (n=1; n<=p.nBonds; ++n)
 		{
 			# Grab bound pointer
 			b = p.bonds[n];
@@ -318,15 +319,15 @@ filter(type="exportexpression",name="Gromacs .rtp file Specification", extension
 			i=b.id[1];
 			j=b.id[2];
 
-#			writelinef("   %5s%i %5s%i\n",p.atoms[i].type.name,i,p.atoms[j].type.name,j);
-			writelinef("   %5s%i %5s%i\n",p.atoms[i].symbol,i,p.atoms[j].symbol,j);
+#			writeLineF("   %5s%i %5s%i\n",p.atoms[i].type.name,i,p.atoms[j].type.name,j);
+			writeLineF("   %5s%i %5s%i\n",p.atoms[i].symbol,i,p.atoms[j].symbol,j);
 
 
 			}
                    }
 
     	# Torsions in pattern
-	writelinef("\n  [dihedrals]\n");
+	writeLineF("\n  [dihedrals]\n");
 		# Grab bound pointer
 		for (b = p.torsions; b; ++b)
 		{
@@ -334,8 +335,8 @@ filter(type="exportexpression",name="Gromacs .rtp file Specification", extension
 			j=b.id[2];
 			k=b.id[3];
 			l=b.id[4];			
-#			writelinef("   %5s%i %5s%i %5s%i %5s%i   \n",p.atoms[i].type.name,i,p.atoms[j].type.name,j,p.atoms[k].type.name,k,p.atoms[l].type.name,l);
-			writelinef("   %5s%i %5s%i %5s%i %5s%i   \n",p.atoms[i].symbol,i,p.atoms[j].symbol,j,p.atoms[k].symbol,k,p.atoms[l].symbol,l);
+#			writeLineF("   %5s%i %5s%i %5s%i %5s%i   \n",p.atoms[i].type.name,i,p.atoms[j].type.name,j,p.atoms[k].type.name,k,p.atoms[l].type.name,l);
+			writeLineF("   %5s%i %5s%i %5s%i %5s%i   \n",p.atoms[i].symbol,i,p.atoms[j].symbol,j,p.atoms[k].symbol,k,p.atoms[l].symbol,l);
 
 
 		}

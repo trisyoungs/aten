@@ -54,14 +54,14 @@ class Neta
 	Neta *prev, *next;
 	// NETA Keywords
 	enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotSelfKeyword, PlanarKeyword, nNetaKeywords };
-	static NetaKeyword netaKeyword(const char *s, bool reporterror = FALSE);
+	static NetaKeyword netaKeyword(const char *s, bool reportError = FALSE);
 	static const char *netaKeyword(NetaKeyword nk);
 	// NETA expanders
 	enum NetaExpander { BoundExpanded, ChainExpander, DoublyBoundExpander, RingExpander, nNetaExpanders };
-	static NetaExpander netaExpander(const char *s, bool reporterror = FALSE);
+	static NetaExpander netaExpander(const char *s, bool reportError = FALSE);
 	// NETA values
 	enum NetaValue { BondValue, NBondsValue, NHydrogensValue, OxidationStateValue, RepeatValue, SizeValue, nNetaValues };
-	static NetaValue netaValue(const char *s, bool reporterror = FALSE);
+	static NetaValue netaValue(const char *s, bool reportError = FALSE);
 	static const char *netaValue(NetaValue nv);
 	// NETA Value comparison operators
 	enum NetaValueComparison { EqualTo, NotEqualTo, GreaterThan, LessThan, GreaterThanEqualTo, LessThanEqualTo, nNetaValueComparisons };

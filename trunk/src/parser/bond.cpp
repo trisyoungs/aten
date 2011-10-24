@@ -75,12 +75,13 @@ StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 	msg.enter("BondVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'bond&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -150,7 +151,7 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Bond *ptr = (Bond*) rv.asPointer(VTypes::BondData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BondData));
 		result = FALSE;
@@ -240,7 +241,7 @@ bool BondVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	Bond *ptr = (Bond*) sourcerv.asPointer(VTypes::BondData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BondData));
 		result = FALSE;

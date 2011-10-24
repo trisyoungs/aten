@@ -39,6 +39,7 @@ void Command::initPointers()
 	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
 	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;
 	pointers_[OperatorGreaterThanEqualTo] = &function_OperatorGreaterThanEqualTo;
+	pointers_[OperatorInlineIf] = &function_OperatorInlineIf;
 	pointers_[OperatorLessThan] = &function_OperatorLessThan;
 	pointers_[OperatorLessThanEqualTo] = &function_OperatorLessThanEqualTo;
 	pointers_[OperatorModulus] = &function_OperatorModulus;
@@ -185,7 +186,6 @@ void Command::initPointers()
 	pointers_[Undo] = &Command::function_Undo;
 
 	// Energy Commands
-	pointers_[ECut] = &Command::function_ECut;
 	pointers_[Electrostatics] = &Command::function_Electrostatics;
 	pointers_[FrameEnergy] = &Command::function_FrameEnergy;
 	pointers_[ModelEnergy] = &Command::function_ModelEnergy;
@@ -196,7 +196,6 @@ void Command::initPointers()
 	pointers_[PrintEnergy] = &Command::function_PrintEnergy;
 	pointers_[PrintSummary] = &Command::function_PrintSummary;
 	pointers_[PrintVdw] = &Command::function_PrintVdw;
-	pointers_[VCut] = &Command::function_VCut;
 
 	// Flow control
 	pointers_[If] = &function_If;
@@ -329,10 +328,6 @@ void Command::initPointers()
 	pointers_[Tan] = &Command::function_Tan;
 
 	// MC Commands
-	pointers_[MCAccept] = &Command::function_MCAccept;
-	pointers_[MCAllow] = &Command::function_MCAllow;
-	pointers_[MCMaxStep] = &Command::function_MCMaxStep;
-	pointers_[MCNTrials] = &Command::function_MCNTrials;
 	pointers_[PrintMC] = &Command::function_PrintMC;
 
 	// Measurement Commands
@@ -343,10 +338,10 @@ void Command::initPointers()
 	pointers_[MeasureSelected] = &Command::function_MeasureSelected;
 
 	// Messaging Commands
-	pointers_[Dialog] = &Command::function_Dialog;
+	pointers_[CreateDialog] = &Command::function_CreateDialog;
+	pointers_[DefaultDialog] = &Command::function_DefaultDialog;
 	pointers_[Error] = &Command::function_Error;
 	pointers_[Message] = &Command::function_Message;
-	pointers_[Option] = &Command::function_Option;
 	pointers_[Printf] = &Command::function_Printf;
 	pointers_[Verbose] = &Command::function_Verbose;
 

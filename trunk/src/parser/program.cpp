@@ -53,7 +53,8 @@ Program::~Program()
 // Clear forest
 void Program::clear()
 {
-	functions_.clear();
+	globalFunctions_.clear();
+	globalScope_.variables.clear();
 	filters_.clear();
 	mainProgram_.reset();
 }
@@ -80,20 +81,6 @@ const char *Program::filename()
 void Program::finalise()
 {
 	msg.enter("Program::finalise");
-	// Create GUI controls for main program
-	if (mainProgram_.widgets() != NULL)
-	{
-		if (!mainProgram_.isFilter()) mainProgram_.createCustomDialog(name_.get());
-		else
-		{
-			Dnchar title;
-			if (mainProgram_.filter.isExportFilter()) title.sprintf("Export Options (%s)", mainProgram_.name());
-			else title.sprintf("Import Options (%s)", mainProgram_.name());
-			mainProgram_.createCustomDialog(title.get());
-		}
-		// Grab default values
-		mainProgram_.executeCustomDialog(TRUE);
-	}
 	// Cycle over generated filters
 	for (Tree *filter = filters_.first(); filter != NULL; filter = filter->next)
 	{
@@ -101,48 +88,30 @@ void Program::finalise()
 		if (filter->isFilter())
 		{
 			aten.registerFilter(filter, filter->filter.type());
-			// For trajectory import filters, we expect to find the two functions readheader and readframe, both returning integers
+			// For trajectory import filters, we expect to find the two functions readHeader and readFrame, both returning integers
 			if (filter->filter.type() == FilterData::TrajectoryImport)
 			{
-				// Search for 'int readheader()' function
-				Tree *func = filter->findLocalFunction("readheader");
+				// Search for 'int readHeader()' function
+				Tree *func = filter->findLocalFunction("readHeader");
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readheader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
 				}
-				else msg.print("Warning: 'readheader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				else msg.print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
 				filter->filter.setTrajectoryHeaderFunction(func);
 
-				// Search for 'int readframe()' function
-				func = filter->findLocalFunction("readframe");
+				// Search for 'int readFrame()' function
+				func = filter->findLocalFunction("readFrame");
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readframe' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
 				}
-				else msg.print("Warning: 'readframe' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				else msg.print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
 				filter->filter.setTrajectoryFrameFunction(func);
 			}
 		}
-		// Generate widgets (if Tree has any)
-		if (filter->widgets() != NULL)
-		{
-			if (!filter->isFilter()) filter->createCustomDialog(name_.get());
-			else
-			{
-				Dnchar title;
-				if (filter->filter.isExportFilter()) title.sprintf("Export Options (%s)", filter->filter.name());
-				else title.sprintf("Import Options (%s)", filter->filter.name());
-				filter->createCustomDialog(title.get());
-			}
-			// Grab default values
-			filter->executeCustomDialog(TRUE);
-		}
-	}
-	// Generate widgets in global functions
-	for (Tree *t = functions_.first(); t != NULL; t = t->next)
-	{
 	}
 	msg.exit("Program::finalise");
 }
@@ -160,87 +129,6 @@ Tree *Program::addFilter()
 	tree->setParent(this);
 	tree->setType(Tree::FilterTree);
 	return tree;
-}
-
-// Add a Program-global function
-Tree *Program::addGlobalFunction(const char *name)
-{
-	Tree *tree = functions_.add();
-	tree->setName(name);
-	tree->setType(Tree::FunctionTree);
-	tree->setParent(this);
-	return tree;
-}
-
-// Search for existing global function
-Tree *Program::findGlobalFunction(const char *name)
-{
-	Tree *result;
-	for (result = functions_.first(); result != NULL; result = result->next) if (strcmp(result->name(),name) == 0) break;
-	return result;
-}
-
-// Return first defined global function...
-Tree *Program::globalFunctions()
-{
-	return functions_.first();
-}
-
-// Execute specified global function
-bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist, ...)
-{
-	msg.enter("Program::executeGlobalFunction");
-	// First, locate funciton with the name supplied
-	Tree *func = findGlobalFunction(funcname);
-	if (func == NULL)
-	{
-		printf("Error: No global function named '%s' exists in '%s'.\n", funcname, name_.get());
-		msg.exit("Program::executeGlobalFunction");
-		return FALSE;
-	}
-
-	// Construct list of arguments to pass to function
-	va_list vars;
-	va_start(vars, arglist);
-	List<TreeNode> args;
-	TreeNode *var;
-	for (const char *c = &arglist[0]; *c != '\0'; c++)
-	{
-		switch (*c)
-		{
-			case ('i'):
-				var = new IntegerVariable(va_arg(vars, int), TRUE);
-				break;
-			case ('d'):
-				var = new DoubleVariable(va_arg(vars, double), TRUE);
-				break;
-			case ('c'):
-			case ('s'):
-				var = new StringVariable(va_arg(vars, const char *), TRUE);
-				break;
-			case ('a'):
-				var = new AtomVariable(va_arg(vars, Atom*));
-				break;
-			case ('y'):
-				var = new ForcefieldAtomVariable(va_arg(vars, ForcefieldAtom*));
-				break;
-			case ('z'):
-				var = new ForcefieldBoundVariable(va_arg(vars, ForcefieldBound*));
-				break;
-			default:
-				printf("Invalid argument specifier '%c' in Program::executeGlobalFunction.\n", *c);
-				var = NULL;
-				break;
-		}
-		args.own(var);
-	}
-	va_end(vars);
-
-	// Now, pass all the info on to the static 'run' command in UserCommandNode
-	bool success = UserCommandNode::run(func,rv,args.first());
-
-	msg.exit("Program::executeGlobalFunction");
-	return success;
 }
 
 // Generate forest from string 
@@ -308,7 +196,7 @@ void Program::deleteTree(Tree *t)
 	if (t == NULL) return;
 	// Search for the specified tree...
 	if (filters_.contains(t)) filters_.remove(t);
-	else if (functions_.contains(t)) functions_.remove(t);
+	else if (globalFunctions_.contains(t)) globalFunctions_.remove(t);
 	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
 }
 
@@ -319,12 +207,10 @@ bool Program::isFromFilterFile()
 }
 
 // Execute all trees in forest
-bool Program::execute(ReturnValue &rv, bool runOptions)
+bool Program::execute(ReturnValue &rv)
 {
 	msg.enter("Program::execute");
-	bool result = TRUE;
-	if (runOptions) result = mainProgram_.executeCustomDialog();
-	if (result) result = mainProgram_.execute(rv);
+	bool result = mainProgram_.execute(rv);
 	msg.exit("Program::execute");
 	return result;
 }
@@ -332,10 +218,104 @@ bool Program::execute(ReturnValue &rv, bool runOptions)
 // Print forest information
 void Program::print()
 {
-	printf("Program '%s':\nContains: %i filters and %i functions.\n", name_.get(), filters_.nItems(), functions_.nItems());
+	printf("Program '%s':\nContains: %i filters and %i functions.\n", name_.get(), filters_.nItems(), globalFunctions_.nItems());
 	if (filters_.nItems() > 0) printf("  Trees:\n");
 	for (int n=0; n<filters_.nItems(); ++n) printf("     %-3i  %s\n", n+1, filters_[n]->name());
-	if (functions_.nItems() > 0) printf("  Functions:\n");
-	for (int n=0; n<functions_.nItems(); ++n) printf("     %-3i  %s\n", n+1, functions_[n]->name());
+	if (globalFunctions_.nItems() > 0) printf("  Functions:\n");
+	for (int n=0; n<globalFunctions_.nItems(); ++n) printf("     %-3i  %s\n", n+1, globalFunctions_[n]->name());
 }
 
+/*
+// Global Functions
+*/
+
+// Add a Program-global function
+Tree *Program::addGlobalFunction(const char *name)
+{
+	Tree *tree = globalFunctions_.add();
+	tree->setName(name);
+	tree->setType(Tree::FunctionTree);
+	tree->setParent(this);
+	return tree;
+}
+
+// Search for existing global function
+Tree *Program::findGlobalFunction(const char *name)
+{
+	Tree *result;
+	for (result = globalFunctions_.first(); result != NULL; result = result->next) if (strcmp(result->name(),name) == 0) break;
+	return result;
+}
+
+// Return first defined global function...
+Tree *Program::globalFunctions()
+{
+	return globalFunctions_.first();
+}
+
+// Execute specified global function
+bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist, ...)
+{
+	msg.enter("Program::executeGlobalFunction");
+	// First, locate funciton with the name supplied
+	Tree *func = findGlobalFunction(funcname);
+	if (func == NULL)
+	{
+		printf("Error: No global function named '%s' exists in '%s'.\n", funcname, name_.get());
+		msg.exit("Program::executeGlobalFunction");
+		return FALSE;
+	}
+
+	// Construct list of arguments to pass to function
+	va_list vars;
+	va_start(vars, arglist);
+	List<TreeNode> args;
+	TreeNode *var;
+	for (const char *c = &arglist[0]; *c != '\0'; c++)
+	{
+		switch (*c)
+		{
+			case ('i'):
+				var = new IntegerVariable(va_arg(vars, int), TRUE);
+				break;
+			case ('d'):
+				var = new DoubleVariable(va_arg(vars, double), TRUE);
+				break;
+			case ('c'):
+			case ('s'):
+				var = new StringVariable(va_arg(vars, const char *), TRUE);
+				break;
+			case ('a'):
+				var = new AtomVariable(va_arg(vars, Atom*));
+				break;
+			case ('y'):
+				var = new ForcefieldAtomVariable(va_arg(vars, ForcefieldAtom*));
+				break;
+			case ('z'):
+				var = new ForcefieldBoundVariable(va_arg(vars, ForcefieldBound*));
+				break;
+			default:
+				printf("Invalid argument specifier '%c' in Program::executeGlobalFunction.\n", *c);
+				var = NULL;
+				break;
+		}
+		args.own(var);
+	}
+	va_end(vars);
+
+	// Now, pass all the info on to the static 'run' command in UserCommandNode
+	bool success = UserCommandNode::run(func,rv,args.first());
+
+	msg.exit("Program::executeGlobalFunction");
+	return success;
+}
+
+/*
+// Global Variables
+*/
+
+// Return global scopenode
+ScopeNode &Program::globalScope()
+{
+	return globalScope_;
+}

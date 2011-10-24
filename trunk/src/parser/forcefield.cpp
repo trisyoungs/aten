@@ -54,30 +54,30 @@ ForcefieldVariable::~ForcefieldVariable()
 
 // Accessor data
 Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
-	{ "atomtypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
+	{ "atomTypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
 	{ "filename",		VTypes::StringData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
-	{ "nangles",		VTypes::IntegerData,		0, TRUE },
-	{ "natomtypes",		VTypes::IntegerData,		0, TRUE },
-	{ "nbonds",		VTypes::IntegerData,		0, TRUE },
-	{ "nimpropers",		VTypes::IntegerData,		0, TRUE },
-	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
+	{ "nAngles",		VTypes::IntegerData,		0, TRUE },
+	{ "nAtomTypes",		VTypes::IntegerData,		0, TRUE },
+	{ "nBonds",		VTypes::IntegerData,		0, TRUE },
+	{ "nImpropers",		VTypes::IntegerData,		0, TRUE },
+	{ "nTorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "units",		VTypes::StringData,		0, FALSE }
 };
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addangle",		VTypes::ForcefieldBoundData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
-	{ "addbond",		VTypes::ForcefieldBoundData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
-	{ "addinter",		VTypes::NoData,			Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
-	{ "addtorsion",		VTypes::ForcefieldBoundData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
-	{ "addtype",		VTypes::ForcefieldAtomData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
+	{ "addAngle",		VTypes::ForcefieldBoundData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
+	{ "addBond",		VTypes::ForcefieldBoundData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
+	{ "addInter",		VTypes::NoData,			Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
+	{ "addTorsion",		VTypes::ForcefieldBoundData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
+	{ "addType",		VTypes::ForcefieldAtomData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
 	{ "finalise",		VTypes::NoData, 		Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) },
-	{ "findangle",		VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" },
-	{ "findbond",		VTypes::ForcefieldBoundData, 	"CC",					"string typei, string typej" },
-	{ "findimproper",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
-	{ "findtorsion",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
-	{ "findureybradley",	VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" }
+	{ "findAngle",		VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" },
+	{ "findBond",		VTypes::ForcefieldBoundData, 	"CC",					"string typei, string typej" },
+	{ "findImproper",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
+	{ "findTorsion",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
+	{ "findUreyBradley",	VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -92,12 +92,13 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 	msg.enter("ForcefieldVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'forcefield&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -167,7 +168,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Forcefield *ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
 		result = FALSE;
@@ -272,7 +273,7 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	}
 	// Get current data from ReturnValue
 	Forcefield *ptr = (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
 		result = FALSE;

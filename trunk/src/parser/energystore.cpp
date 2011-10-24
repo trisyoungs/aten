@@ -57,7 +57,7 @@ Accessor EnergyStoreVariable::accessorData[EnergyStoreVariable::nAccessors] = {
 	{ "electrostatic",	VTypes::DoubleData,	0, TRUE },
 	{ "torsion",		VTypes::DoubleData,	0, TRUE },
 	{ "total",		VTypes::DoubleData,	0, TRUE },
-	{ "ureybradley",	VTypes::DoubleData,	0, TRUE },
+	{ "ureyBradley",	VTypes::DoubleData,	0, TRUE },
 	{ "vdw",		VTypes::DoubleData,	0, TRUE }
 };
 
@@ -78,12 +78,13 @@ StepNode *EnergyStoreVariable::accessorSearch(const char *s, TreeNode *arrayinde
 	msg.enter("EnergyStoreVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'energystore&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -153,7 +154,7 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	EnergyStore *ptr = (EnergyStore*) rv.asPointer(VTypes::EnergyStoreData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EnergyStoreData));
 		result = FALSE;
@@ -252,7 +253,7 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	// Get current data from ReturnValue
 	EnergyStore *ptr = (EnergyStore*) sourcerv.asPointer(VTypes::EnergyStoreData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EnergyStoreData));
 		result = FALSE;

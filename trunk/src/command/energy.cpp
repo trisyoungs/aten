@@ -24,14 +24,6 @@
 #include "classes/prefs.h"
 #include "model/model.h"
 
-// Set electrostatic cutoff radius
-bool Command::function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (c->hasArg(0)) prefs.setElecCutoff(c->argd(0));
-	rv.set(prefs.elecCutoff());
-	return TRUE;
-}
-
 // Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
 bool Command::function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -153,12 +145,3 @@ bool Command::function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.reset();
 	return TRUE;
 }
-
-// Set VDW cutoff radius
-bool Command::function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (c->hasArg(0)) prefs.setVdwCutoff(c->argd(0));
-	rv.set(prefs.vdwCutoff());
-	return TRUE;
-}
-

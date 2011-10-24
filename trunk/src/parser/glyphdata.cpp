@@ -75,12 +75,13 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 	msg.enter("GlyphDataVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'glyphdata&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -150,7 +151,7 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIn
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	GlyphData *ptr = (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphDataData));
 		result = FALSE;
@@ -241,7 +242,7 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 	}
 	// Get current data from ReturnValue
 	GlyphData *ptr = (GlyphData*) sourcerv.asPointer(VTypes::GlyphDataData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphDataData));
 		result = FALSE;

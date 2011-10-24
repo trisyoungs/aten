@@ -52,19 +52,19 @@ ZMatrixElementVariable::~ZMatrixElementVariable()
 // Accessor data
 Accessor ZMatrixElementVariable::accessorData[ZMatrixElementVariable::nAccessors] = {
 	{ "angle",		VTypes::DoubleData,	0, FALSE },
-	{ "angleatom",		VTypes::AtomData,	0, TRUE },
-	{ "anglename",		VTypes::StringData,	0, FALSE },
+	{ "angleAtom",		VTypes::AtomData,	0, TRUE },
+	{ "angleName",		VTypes::StringData,	0, FALSE },
 	{ "atom",		VTypes::AtomData,	4, TRUE },
 	{ "distance",		VTypes::DoubleData,	0, FALSE },
-	{ "distanceatom",	VTypes::AtomData,	0, TRUE },
-	{ "distancename",	VTypes::StringData,	0, FALSE },
-	{ "negateangle", 	VTypes::IntegerData,	0, FALSE },
-	{ "negatedistance", 	VTypes::IntegerData,	0, FALSE },
-	{ "negatetorsion", 	VTypes::IntegerData,	0, FALSE },
-	{ "targetatom",		VTypes::AtomData,	0, TRUE },
+	{ "distanceAtom",	VTypes::AtomData,	0, TRUE },
+	{ "distanceName",	VTypes::StringData,	0, FALSE },
+	{ "negateAngle", 	VTypes::IntegerData,	0, FALSE },
+	{ "negateDistance", 	VTypes::IntegerData,	0, FALSE },
+	{ "negateTorsion", 	VTypes::IntegerData,	0, FALSE },
+	{ "targetAtom",		VTypes::AtomData,	0, TRUE },
 	{ "torsion",		VTypes::DoubleData,	0, FALSE },
-	{ "torsionatom",	VTypes::AtomData,	0, TRUE },
-	{ "torsionname",	VTypes::StringData,	0, FALSE }
+	{ "torsionAtom",	VTypes::AtomData,	0, TRUE },
+	{ "torsionName",	VTypes::StringData,	0, FALSE }
 };
 
 // Function data
@@ -84,12 +84,13 @@ StepNode *ZMatrixElementVariable::accessorSearch(const char *s, TreeNode *arrayi
 	msg.enter("ZMatrixElementVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'zmatrixelement&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -159,7 +160,7 @@ bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	ZMatrixElement *ptr = (ZMatrixElement*) rv.asPointer(VTypes::ZMatrixElementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixElementData));
 		result = FALSE;
@@ -279,7 +280,7 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	}
 	// Get current data from ReturnValue
 	ZMatrixElement *ptr = (ZMatrixElement*) sourcerv.asPointer(VTypes::ZMatrixElementData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixElementData));
 		result = FALSE;

@@ -72,12 +72,13 @@ StepNode *SiteVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 	msg.enter("SiteVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'site&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -147,7 +148,7 @@ bool SiteVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Site *ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
 		result = FALSE;
@@ -225,7 +226,7 @@ bool SiteVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	Site *ptr = (Site*) sourcerv.asPointer(VTypes::SiteData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
 		result = FALSE;

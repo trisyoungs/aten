@@ -21,10 +21,8 @@
 
 #include "parser/mc.h"
 #include "parser/stepnode.h"
-//#include "base/constants.h"
 #include "methods/mc.h"
 #include "parser/commandnode.h"
-//#include "main/aten.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,28 +46,28 @@ MonteCarloVariable::~MonteCarloVariable()
 
 // Accessor data - name, type, arraysize, ro?
 Accessor MonteCarloVariable::accessorData[MonteCarloVariable::nAccessors] = {
-	{ "disorderaccuracy",		VTypes::DoubleData,	0, FALSE },
-	{ "disorderdeltaangle",		VTypes::DoubleData,	0, FALSE },
-	{ "disorderdeltadistance",	VTypes::DoubleData,	0, FALSE },
-	{ "disordermaxcycles",		VTypes::IntegerData,	0, FALSE },
-	{ "disordermaxfailures",	VTypes::IntegerData,	0, FALSE },
-	{ "disordermaximumscalefactor",	VTypes::DoubleData,	0, FALSE },
-	{ "disorderminimumscalefactor",	VTypes::DoubleData,	0, FALSE },
-	{ "disorderntweaks",		VTypes::IntegerData,	0, FALSE },
-	{ "disorderrecoverymaxcycles",	VTypes::IntegerData,	0, FALSE },
-	{ "disorderrecoverymaxtweaks",	VTypes::IntegerData,	0, FALSE },
-	{ "disorderrecoverythreshold",	VTypes::DoubleData,	0, FALSE },
-	{ "disorderreductionfactor",	VTypes::DoubleData,	0, FALSE },
-	{ "ncycles",			VTypes::IntegerData,	0, FALSE },
+	{ "disorderAccuracy",		VTypes::DoubleData,	0, FALSE },
+	{ "disorderDeltaAngle",		VTypes::DoubleData,	0, FALSE },
+	{ "disorderDeltaDistance",	VTypes::DoubleData,	0, FALSE },
+	{ "disorderMaxCycles",		VTypes::IntegerData,	0, FALSE },
+	{ "disorderMaxFailures",	VTypes::IntegerData,	0, FALSE },
+	{ "disorderMaximumScaleFactor",	VTypes::DoubleData,	0, FALSE },
+	{ "disorderMinimumScaleFactor",	VTypes::DoubleData,	0, FALSE },
+	{ "disorderNTweaks",		VTypes::IntegerData,	0, FALSE },
+	{ "disorderRecoveryMaxCycles",	VTypes::IntegerData,	0, FALSE },
+	{ "disorderRecoveryMaxTweaks",	VTypes::IntegerData,	0, FALSE },
+	{ "disorderRecoveryThreshold",	VTypes::DoubleData,	0, FALSE },
+	{ "disorderReductionFactor",	VTypes::DoubleData,	0, FALSE },
+	{ "nCycles",			VTypes::IntegerData,	0, FALSE },
 	{ "temperature",		VTypes::DoubleData,	0, FALSE }
 };
 
 // Function data
 FunctionAccessor MonteCarloVariable::functionData[MonteCarloVariable::nFunctions] = {
-	{ "eaccept",		VTypes::DoubleData,	"Cn", "string movetype, double newvalue = <not set>" },
-	{ "maxstep",		VTypes::DoubleData,	"Cn", "string movetype, double newvalue = <not set>" },
-	{ "moveallowed",	VTypes::IntegerData,	"Cn", "string movetype, int allowed = <not set>" },
-	{ "ntrials",		VTypes::IntegerData,	"Cn", "string movetype, int newvalue = <not set>" }
+	{ "eAccept",		VTypes::DoubleData,	"Cn", "string movetype, double newvalue = <not set>" },
+	{ "maxStep",		VTypes::DoubleData,	"Cn", "string movetype, double newvalue = <not set>" },
+	{ "moveAllowed",	VTypes::IntegerData,	"Cn", "string movetype, int allowed = <not set>" },
+	{ "nTrials",		VTypes::IntegerData,	"Cn", "string movetype, int newvalue = <not set>" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -84,12 +82,13 @@ StepNode *MonteCarloVariable::accessorSearch(const char *s, TreeNode *arrayindex
 	msg.enter("MonteCarloVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'mc&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -159,7 +158,7 @@ bool MonteCarloVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	// Variables used in retrieval
 	bool result;
 	MonteCarlo *ptr = (MonteCarlo*) rv.asPointer(VTypes::MonteCarloData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MonteCarloData));
 		result = FALSE;
@@ -279,7 +278,7 @@ bool MonteCarloVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	}
 	// Get current data from ReturnValue
 	MonteCarlo *ptr = (MonteCarlo*) sourcerv.asPointer(VTypes::MonteCarloData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MonteCarloData));
 		result = FALSE;

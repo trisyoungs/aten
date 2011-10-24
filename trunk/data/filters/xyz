@@ -1,7 +1,8 @@
 # XMol-style XYZ coordinates files (for v1.2+)
 # Created:	 25/03/2009
-# Last modified: 10/04/2009
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 
 filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
 {
@@ -14,17 +15,17 @@ filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension
 	# Read data
 	while (!eof())
 	{
-		readline(natoms);
-		getline(title);
-		newmodel(title);
+		readLine(natoms);
+		getLine(title);
+		newModel(title);
 		for (n=1; n<=natoms; ++n)
 		{
-			readline(e,rx,ry,rz,q);
-			i = newatom(e, rx, ry, rz);
+			readLine(e,rx,ry,rz,q);
+			i = newAtom(e, rx, ry, rz);
 			i.q = q;
 		}
 		rebond();
-		finalisemodel();
+		finaliseModel();
 	}
 }
 
@@ -33,19 +34,19 @@ filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.
 	# Variable declaration
 	model m = aten.frame;
 
-	writeline(m.natoms);
-	writeline(m.name);
-	for (atom i=m.atoms; i != 0; ++i) writelinef("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
+	writeLine(m.nAtoms);
+	writeLine(m.name);
+	for (atom i=m.atoms; i != 0; ++i) writeLineF("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
 }
 
 filter(type="importtrajectory",name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
 {
-	int readheader()
+	int readHeader()
 	{
 		return TRUE;
 	}
 
-	int readframe()
+	int readFrame()
 	{
 
 		# Variable declaration
@@ -55,12 +56,12 @@ filter(type="importtrajectory",name="XMol XYZ Coordinates", nickname="xyz", exte
 		atom i;
 
 		# Read frame
-		if (readline(natoms) == 0) return FALSE;
-		getline(title);
+		if (readLine(natoms) == 0) return FALSE;
+		getLine(title);
 		for (n=1; n<=natoms; ++n)
 		{
-			readline(e,rx,ry,rz,q);
-			i = newatom(e, rx, ry, rz);
+			readLine(e,rx,ry,rz,q);
+			i = newAtom(e, rx, ry, rz);
 			i.q = q;
 		}
 		rebond();

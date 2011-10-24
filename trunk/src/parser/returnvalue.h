@@ -22,7 +22,6 @@
 #ifndef ATEN_RETURNVALUE_H
 #define ATEN_RETURNVALUE_H
 
-#include "parser/returnvalue.h"
 #include "parser/vtypes.h"
 #include "base/dnchar.h"
 #include "templates/vector3.h"
@@ -43,6 +42,8 @@ class ReturnValue
 	void operator=(double d);
 	void operator=(int i);
 	void operator=(const char *s);
+	// List pointers
+	ReturnValue *prev, *next;
 
 
 	/*

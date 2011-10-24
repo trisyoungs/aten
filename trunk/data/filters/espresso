@@ -1,14 +1,15 @@
 # Quantum Espresso
 # Created:	 22/06/2010
-# Last modified: 22/06/2010
+# Last modified: 02/09/2011
 # ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 # Notes:
 #	Lattice type of cell is not accounted for (ibrav=0)
 
 filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", extension="in", glob="*.in", id=15)
 {
 	# Variable declaration
-	int n, el[aten.nelements], nspecies;
+	int n, el[aten.nElements], nspecies;
 	string e;
 	double rx,ry,rz;
 	atom i;
@@ -22,51 +23,51 @@ filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", e
 	for (i = m.atoms; i; ++i) if (el[i.z] == 0) el[i.z] = ++nspecies;
 	
 	# Write 'control', 'system', 'electrons', 'ions', and 'cell' sections
-	writeline("&control");
-	writeline("   calculation='vc-relax',");
-	writeline("   tstress=.true.,");
-	writeline("   pseudo_dir='/home/tyoungs/src/espresso-4.1.2/pseudo'");
-	writeline("/");
-	writeline("&system");
-	writeline("   ibrav=0,");
-	if (m.cell.type != "none") writelinef("   A=%f, B=%f, C=%f, cosAB=%f, cosAC=%f, cosBC=%f,\n",m.cell.a,m.cell.b,m.cell.c,cos(m.cell.alpha),cos(m.cell.beta),cos(m.cell.gamma));
-	writelinef("   nat=%i,\n",m.natoms);
-	writelinef("   ntyp=%i,\n",nspecies);
-	writeline("   ecutwfc=50.0,");
-	writeline("   ecutrho=200.0,");
-	writeline(" /");
-	writeline(" &electrons");
-	writeline("   mixing_beta=0.25,");
-	writeline("   conv_thr=1.0e-8");
-	writeline(" /");
-	writeline(" &IONS");
-	writeline("   ion_positions='from_input'");
-	writeline(" /");
-	writeline(" &cell");
-	writeline("   cell_dynamics='bfgs',");
-	writeline("   press=0.0");
-	writeline(" /");
+	writeLine("&control");
+	writeLine("   calculation='vc-relax',");
+	writeLine("   tstress=.true.,");
+	writeLine("   pseudo_dir='/home/tyoungs/src/espresso-4.1.2/pseudo'");
+	writeLine("/");
+	writeLine("&system");
+	writeLine("   ibrav=0,");
+	if (m.cell.type != "none") writeLineF("   A=%f, B=%f, C=%f, cosAB=%f, cosAC=%f, cosBC=%f,\n",m.cell.a,m.cell.b,m.cell.c,cos(m.cell.alpha),cos(m.cell.beta),cos(m.cell.gamma));
+	writeLineF("   nat=%i,\n",m.nAtoms);
+	writeLineF("   ntyp=%i,\n",nspecies);
+	writeLine("   ecutwfc=50.0,");
+	writeLine("   ecutrho=200.0,");
+	writeLine(" /");
+	writeLine(" &electrons");
+	writeLine("   mixing_beta=0.25,");
+	writeLine("   conv_thr=1.0e-8");
+	writeLine(" /");
+	writeLine(" &IONS");
+	writeLine("   ion_positions='from_input'");
+	writeLine(" /");
+	writeLine(" &cell");
+	writeLine("   cell_dynamics='bfgs',");
+	writeLine("   press=0.0");
+	writeLine(" /");
 
 	# Write atomic species data
-	writeline("ATOMIC_SPECIES");
-	for (n=1; n<=aten.nelements; n++) if (el[n] != 0) writelinef("%-5s  %10.4f  %s.UPF\n",aten.elements[n].symbol, aten.elements[n].mass, aten.elements[n].symbol);
+	writeLine("ATOMIC_SPECIES");
+	for (n=1; n<=aten.nElements; n++) if (el[n] != 0) writeLineF("%-5s  %10.4f  %s.UPF\n",aten.elements[n].symbol, aten.elements[n].mass, aten.elements[n].symbol);
 
 	# Write atomic positions data
-	writeline("ATOMIC_POSITIONS {angstrom}");
-	for (i = m.atoms; i; ++i) writelinef("%-5s   %14.8f %14.8f %14.8f\n",i.symbol,i.rx,i.ry,i.rz);
+	writeLine("ATOMIC_POSITIONS {angstrom}");
+	for (i = m.atoms; i; ++i) writeLineF("%-5s   %14.8f %14.8f %14.8f\n",i.symbol,i.rx,i.ry,i.rz);
 }
 
 # Subroutines
 int readcell(double alat)
 {
 	vector v1,v2,v3;
-	if (!readline(v1.x,v1.y,v1.z)) return 0;
-	if (!readline(v2.x,v2.y,v2.z)) return 0;
-	if (!readline(v3.x,v3.y,v3.z)) return 0;
+	if (!readLine(v1.x,v1.y,v1.z)) return 0;
+	if (!readLine(v2.x,v2.y,v2.z)) return 0;
+	if (!readLine(v3.x,v3.y,v3.z)) return 0;
 	v1 *= alat;
 	v2 *= alat;
 	v3 *= alat;
-	cellaxes(v1.x,v1.y,v1.z,v2.x,v2.y,v2.z,v3.x,v3.y,v3.z);
+	cellAxes(v1.x,v1.y,v1.z,v2.x,v2.y,v2.z,v3.x,v3.y,v3.z);
 	return 1;
 }
 
@@ -76,8 +77,8 @@ int readatoms(int natoms)
 	string el;
 	for (int n=0; n<natoms; ++n)
 	{
-		if (!readline(el,x,y,z)) return 0;
-		newatom(el,x,y,z);
+		if (!readLine(el,x,y,z)) return 0;
+		newAtom(el,x,y,z);
 	}
 	return 1;
 }
@@ -92,21 +93,21 @@ filter(type="importmodel", name="Quantum Espresso Output", nickname="espout", ex
 	# Locate lattice coordinate and number of atoms
 	if (find("lattice parameter (a_0)", line))
 	{
-		readvar(line,data,data,data,data,alat);
+		readVar(line,data,data,data,data,alat);
 		alat *= 0.52917720859;
 		printf("Lattice parameters is %f Angstroms\n", alat);
 	}
 	else printf("Failed to find lattice parameter.\n");
 	if (find("number of atoms/cell", line))
 	{
-		readvar(line,data,data,data,data,natoms);
+		readVar(line,data,data,data,data,natoms);
 		printf("Number of atoms in cell = %i\n", natoms); 
 	}
 	else error("Failed to find number of atoms in cell.");
 
 	# Search for first set of coordinates
 	if (!find("CELL_PARAMETERS")) error("Failed to find any cell parameters");
-	newmodel(filterfilename());
+	newModel(filterFilename());
 	if (!readcell(alat)) error("Error reading cell parameters");
 	if (!find("ATOMIC_POSITIONS")) error("Failed to find any coordinates");
 	if (!readatoms(natoms)) error("Error reading atomic positions");
@@ -117,12 +118,12 @@ filter(type="importmodel", name="Quantum Espresso Output", nickname="espout", ex
 		# Search for first set of coordinates
 		if (!find("CELL_PARAMETERS")) break;
 		nconfig++;
-		addframe(toa("Frame %i",nconfig));
+		addFrame(toa("Frame %i",nconfig));
 		if (!readcell(alat)) error("Error reading cell parameters for configuration %i", nconfig);
 		if (!find("ATOMIC_POSITIONS")) error("Failed to find any coordinates for configuration %i", nconfig);
 		if (!readatoms(natoms)) error("Error reading atomic positions for configuration %i", nconfig);
-		finaliseframe();
+		finaliseFrame();
 	}
-	finalisemodel();
+	finaliseModel();
 }
 

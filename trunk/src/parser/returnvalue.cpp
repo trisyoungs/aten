@@ -47,21 +47,41 @@ ReturnValue::ReturnValue()
 	arrayS_ = NULL;
 	arrayV_ = NULL;
 	arrayP_ = NULL;
+	
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), arraySize_(-1), valueI_(i)
 {
+	// Public variables
+	prev = NULL;
+	next = NULL;
+	
 }
 ReturnValue::ReturnValue(double d) : type_(VTypes::DoubleData), arraySize_(-1), valueD_(d)
 {
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), arraySize_(-1), valueS_(s)
 {
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), arraySize_(-1), valueV_(v)
 {
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 ReturnValue::ReturnValue(VTypes::DataType dt, void *ptr) : type_(dt), arraySize_(-1), valueP_(ptr)
 {
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 
 // Operator =

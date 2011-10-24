@@ -53,8 +53,8 @@ ForcefieldAtomVariable::~ForcefieldAtomVariable()
 Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors] = {
 	{ "charge",		VTypes::DoubleData,		0, FALSE },
 	{ "data",		VTypes::DoubleData,		MAXFFPARAMDATA, FALSE },
-	{ "datakeyword",	VTypes::StringData,		MAXFFPARAMDATA, TRUE },
-	{ "dataname",		VTypes::StringData,		MAXFFPARAMDATA, TRUE },
+	{ "dataKeyword",	VTypes::StringData,		MAXFFPARAMDATA, TRUE },
+	{ "dataName",		VTypes::StringData,		MAXFFPARAMDATA, TRUE },
 	{ "description",	VTypes::StringData,		0, FALSE },
 	{ "equivalent",		VTypes::StringData,		0, FALSE },
 	{ "ff",			VTypes::ForcefieldData,		0, TRUE },
@@ -63,16 +63,16 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 	{ "mass",		VTypes::DoubleData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
 	{ "neta",		VTypes::StringData,		0, FALSE },
-	{ "nparams",		VTypes::IntegerData,		0, TRUE },
+	{ "nParams",		VTypes::IntegerData,		0, TRUE },
 	{ "z",			VTypes::IntegerData,		0, FALSE }
 };
 
 // Function data
 FunctionAccessor ForcefieldAtomVariable::functionData[ForcefieldAtomVariable::nFunctions] = {
-	{ "combine",		VTypes::DoubleData,	"ON",	"ffatom j, int param" },
-	{ "datad",		VTypes::DoubleData,	"C",	"string name" },
-	{ "datai",		VTypes::IntegerData,	"C",	"string name" },
-	{ "datas",		VTypes::StringData,	"C",	"string name" },
+	{ "combine",		VTypes::DoubleData,	"ON",	"FFAtom j, int param" },
+	{ "dataD",		VTypes::DoubleData,	"C",	"string name" },
+	{ "dataI",		VTypes::IntegerData,	"C",	"string name" },
+	{ "dataS",		VTypes::StringData,	"C",	"string name" },
 	{ "parameter",		VTypes::DoubleData,	"C",	"string name" }
 };
 
@@ -88,12 +88,13 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 	msg.enter("ForcefieldAtomVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
+	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		if (i == nFunctions)
+		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		i = Variable::searchAccessor(s, nFunctions, functionData);
+		if (i == -1)
 		{
 			msg.print("Error: Type 'ffatom&' has no member or function named '%s'.\n", s);
 			printAccessors();
@@ -164,7 +165,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	bool result = TRUE;
 	int n;
 	ForcefieldAtom *ptr = (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
 		result = FALSE;
@@ -315,7 +316,7 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	VdwFunctions::VdwFunction vf;
 	int n;
 	ForcefieldAtom *ptr = (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
-	if (result && (ptr == NULL))
+	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
 		result = FALSE;

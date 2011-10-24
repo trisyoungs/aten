@@ -24,10 +24,10 @@
 
 // Insertion Policies
 const char *InsertionPolicyKeywords[Model::nInsertionPolicies] = { "none", "number", "density", "both", "relative" };
-Model::InsertionPolicy Model::insertionPolicy(const char *s, bool reporterror)
+Model::InsertionPolicy Model::insertionPolicy(const char *s, bool reportError)
 {
-	Model::InsertionPolicy pol = (Model::InsertionPolicy) enumSearch("insertion policy", Model::nInsertionPolicies, InsertionPolicyKeywords, s, reporterror);
-	if ((pol == Model::nInsertionPolicies) && reporterror) enumPrintValid(Model::nInsertionPolicies,InsertionPolicyKeywords);
+	Model::InsertionPolicy pol = (Model::InsertionPolicy) enumSearch("insertion policy", Model::nInsertionPolicies, InsertionPolicyKeywords, s, reportError);
+	if ((pol == Model::nInsertionPolicies) && reportError) enumPrintValid(Model::nInsertionPolicies,InsertionPolicyKeywords);
 	return pol;
 }
 const char *Model::insertionPolicy(Model::InsertionPolicy pol)

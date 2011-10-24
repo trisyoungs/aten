@@ -416,7 +416,8 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 {
 	// Run custom dialog for scheme
 	if (partitioningScheme_ == NULL) return;
-	partitioningScheme_->runOptions();
+	if (!partitioningScheme_->hasOptions()) return;
+	if (!partitioningScheme_->showOptions()) return;
 	partitioningScheme_->updatePartitions(TRUE);
 	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.containsData(partitioningScheme_);
 	if (ri == NULL) return;
