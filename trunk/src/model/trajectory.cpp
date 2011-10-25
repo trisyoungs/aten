@@ -82,7 +82,7 @@ void Model::clearTrajectory()
 	msg.enter("Model::clearTrajectory");
 	trajectoryFrames_.clear();
 	// Close file in parser
-	trajectoryParser_.closeFile();
+	trajectoryParser_.closeFiles();
 	if (trajectoryOffsets_ != NULL) delete[] trajectoryOffsets_;
 	trajectoryOffsets_ = NULL;
 	trajectoryHighestFrameOffset_ = -1;
@@ -105,7 +105,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	// Delete old frames and unset old file
 	clearTrajectory();
 	// Open the specified file
-	if (!trajectoryParser_.openFile(fname))
+	if (!trajectoryParser_.openInput(fname))
 	{
 		msg.print("Trajectory file '%s' couldn't be opened.\n",fname);
 		clearTrajectory();
@@ -194,7 +194,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
  		progress.terminate(pid);
 		nTrajectoryFileFrames_ = 0;
 		trajectoryFramesAreCached_ = TRUE;
-		trajectoryParser_.closeFile();
+		trajectoryParser_.closeFiles();
 		msg.print("Cached %i frames from file.\n", nTrajectoryFrames());
 	}
 	else

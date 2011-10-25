@@ -39,11 +39,12 @@ bool Command::function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGood()) rv.set(TRUE);
-/*	{
-		msg.print("No valid filesource available for the 'eof' command.\n");
+	if (c->parent()->parser() == NULL)
+	{
+		msg.print("Error: Tried to call 'eof' without a valid filesource.\n");
 		return FALSE;
-	}*/
+	}
+	else if (!c->parent()->parser()->isFileGoodForReading()) rv.set(TRUE);
 	else rv.set(c->parent()->parser()->eofOrBlank());
 	return TRUE;
 }
@@ -52,12 +53,17 @@ bool Command::function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGood())
+	if (c->parent()->parser() == NULL)
 	{
-		msg.print("The filterfilename' command can only be used from within a Filter.\n");
+		msg.print("Error: Tried to call 'filterFilename' without a valid filesource.\n");
 		return FALSE;
 	}
-	rv.set(c->parent()->parser()->filename());
+	else if (!c->parent()->parser()->isFileGoodForReading())
+	{
+		msg.print("The 'filterFilename' command can only be used from within an import filter.\n");
+		return FALSE;
+	}
+	rv.set(c->parent()->parser()->inputFilename());
 	return TRUE;
 }
 
@@ -103,7 +109,7 @@ bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'getline' command.\n");
+		msg.print("No valid filesource available for the 'getLine' command.\n");
 		return FALSE;
 	}
 	int result = c->parent()->parser()->readNextLine(c->parent()->readOptions());
@@ -121,7 +127,7 @@ bool Command::function_NextArg(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readnext' command.\n");
+		msg.print("No valid filesource available for the 'readNext' command.\n");
 		return FALSE;
 	}
 	Dnchar arg;
@@ -152,7 +158,7 @@ bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'peekchar' command.\n");
+		msg.print("No valid filesource available for the 'peekChar' command.\n");
 		return FALSE;
 	}
 	char s[2];
@@ -169,7 +175,7 @@ bool Command::function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'peekchari' command.\n");
+		msg.print("No valid filesource available for the 'peekCharI' command.\n");
 		return FALSE;
 	}
 	char s[2];
@@ -186,7 +192,7 @@ bool Command::function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readchars' command.\n");
+		msg.print("No valid filesource available for the 'readChars' command.\n");
 		return FALSE;
 	}
 	if (c->hasArg(1)) rv.set( c->parent()->parser()->getChars(c->argi(0), c->argb(1)) );
@@ -201,7 +207,7 @@ bool Command::function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readdouble' command.\n");
+		msg.print("No valid filesource available for the 'readDouble' command.\n");
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getDouble(c->hasArg(0) ? c->argi(0) : 0) );
@@ -215,26 +221,26 @@ bool Command::function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue 
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readdoublearray' command.\n");
+		msg.print("No valid filesource available for the 'readDoubleArray' command.\n");
 		return FALSE;
 	}
 	// Get the array pointer from the supplied argument, and check size against number of items requested
 	int count = c->argi(1);
 	if (c->argNode(0)->nodeType() != TreeNode::VarWrapperNode)
 	{
-		msg.print("Error: First argument to 'readdoublearray' is not a variable.\n");
+		msg.print("Error: First argument to 'readDoubleArray' is not a variable.\n");
 		return FALSE;
 	}
 	Variable *v = ((VariableNode*) c->argNode(0))->variable();
 	if ((v->nodeType() != TreeNode::ArrayVarNode) || (v->returnType() != VTypes::DoubleData))
 	{
-		msg.print("Error: Variable argument to 'readdoublearray' is not an array of doubles.\n");
+		msg.print("Error: Variable argument to 'readDoubleArray' is not an array of doubles.\n");
 		return FALSE;
 	}
 	DoubleArrayVariable *av = (DoubleArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
 	if (count > av->arraySize())
 	{
-		msg.print("Error: Requested number of data for 'readdoublearray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
+		msg.print("Error: Requested number of data for 'readDoubleArray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getDoubleArray( av->arrayData(), count) );
@@ -248,7 +254,7 @@ bool Command::function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readinteger' command.\n");
+		msg.print("No valid filesource available for the 'readInteger' command.\n");
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getInteger( c->hasArg(0) ? c->argi(0) : 0 ) );
@@ -262,26 +268,26 @@ bool Command::function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readintegerarray' command.\n");
+		msg.print("No valid filesource available for the 'readIntegerArray' command.\n");
 		return FALSE;
 	}
 	// Get the array pointer from the supplied argument, and check size against number of items requested
 	int count = c->argi(1);
 	if (c->argNode(0)->nodeType() != TreeNode::VarWrapperNode)
 	{
-		msg.print("Error: First argument to 'readintegerarray' is not a variable.\n");
+		msg.print("Error: First argument to 'readIntegerArray' is not a variable.\n");
 		return FALSE;
 	}
 	Variable *v = ((VariableNode*) c->argNode(0))->variable();
 	if ((v->nodeType() != TreeNode::ArrayVarNode) || (v->returnType() != VTypes::IntegerData))
 	{
-		msg.print("Error: Variable argument to 'readintegerarray' is not an array of integers.\n");
+		msg.print("Error: Variable argument to 'readIntegerArray' is not an array of integers.\n");
 		return FALSE;
 	}
 	IntegerArrayVariable *av = (IntegerArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
 	if (count > av->arraySize())
 	{
-		msg.print("Error: Requested number of data for 'readintegerarray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
+		msg.print("Error: Requested number of data for 'readIntegerArray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getIntegerArray( av->arrayData(), count) );
@@ -295,13 +301,13 @@ bool Command::function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readline' command.\n");
+		msg.print("No valid filesource available for the 'readLine' command.\n");
 		return FALSE;
 	}
 	Format *format = c->createFormat(-1,0);
 	if (format == NULL)
 	{
-		printf("Internal Error: No format node associated to command 'readline'.\n");
+		printf("Internal Error: No format node associated to command 'readLine'.\n");
 		return FALSE;
 	}
 	rv.set( format->read( c->parent()->parser(), c->parent()->readOptions() ) );
@@ -314,13 +320,13 @@ bool Command::function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValu
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readlinef' command.\n");
+		msg.print("No valid filesource available for the 'readLineF' command.\n");
 		return FALSE;
 	}
 	Format *format = c->createFormat(0,1);
 	if (format == NULL)
 	{
-		printf("Internal Error: No format node associated to command 'readlinef'.\n");
+		printf("Internal Error: No format node associated to command 'readLineF'.\n");
 		return FALSE;
 	}
 	rv.set( format->read( c->parent()->parser(), c->parent()->readOptions() ) );
@@ -333,7 +339,7 @@ bool Command::function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readnext' command.\n");
+		msg.print("No valid filesource available for the 'readNext' command.\n");
 		return FALSE;
 	}
 	Dnchar arg;
@@ -350,7 +356,7 @@ bool Command::function_ReadVariable(CommandNode *c, Bundle &obj, ReturnValue &rv
 	Format *format = c->createFormat(-1,1);
 	if (format == NULL)
 	{
-		printf("Internal Error: No format node associated to command 'readvar'.\n");
+		printf("Internal Error: No format node associated to command 'readVar'.\n");
 		return FALSE;
 	}
 	rv.set( format->read( c->argc(0), c->parent()->readOptions() ) );
@@ -363,7 +369,7 @@ bool Command::function_ReadVariableFormatted(CommandNode *c, Bundle &obj, Return
 	Format *format = c->createFormat(1,2);
 	if (format == NULL)
 	{
-		printf("Internal Error: No format node associated to command 'readvarf'.\n");
+		printf("Internal Error: No format node associated to command 'readVarF'.\n");
 		return FALSE;
 	}
 	rv.set( format->read( c->argc(0), c->parent()->readOptions() ) );
@@ -383,9 +389,9 @@ bool Command::function_RemoveReadOption(CommandNode *c, Bundle &obj, ReturnValue
 bool Command::function_Rewind(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGood())
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readchars' command.\n");
+		msg.print("No valid filesource available for the 'rewind' command.\n");
 		return FALSE;
 	}
 	c->parent()->parser()->rewind();
@@ -398,7 +404,7 @@ bool Command::function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'readchars' command.\n");
+		msg.print("No valid filesource available for the 'skipChars' command.\n");
 		return FALSE;
 	}
 	c->parent()->parser()->skipChars(c->argi(0));
@@ -411,7 +417,7 @@ bool Command::function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		msg.print("No valid filesource available for the 'skipline' command.\n");
+		msg.print("No valid filesource available for the 'skipLine' command.\n");
 		return FALSE;
 	}
 	c->parent()->parser()->skipLines( c->hasArg(0) ? c->argi(0) : 1 );
@@ -424,13 +430,13 @@ bool Command::function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForWriting())
 	{
-		msg.print("No valid filesource available for the 'writeline' command.\n");
+		msg.print("No valid filesource available for the 'writeLine' command.\n");
 		return FALSE;
 	}
 	Format *format = c->createFormat(-1,0);
 	if (format == NULL)
 	{
-		printf("Internal Error: No format node associated to command 'writeline'.\n");
+		printf("Internal Error: No format node associated to command 'writeLine'.\n");
 		return FALSE;
 	}
 	// Create the string to be output
@@ -449,13 +455,13 @@ bool Command::function_WriteLineFormatted(CommandNode *c, Bundle &obj, ReturnVal
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForWriting())
 	{
-		msg.print("No valid filesource available for the 'writelinef' command.\n");
+		msg.print("No valid filesource available for the 'writeLineF' command.\n");
 		return FALSE;
 	}
 	Format *format = c->createFormat(0,1);
 	if (format == NULL)
 	{
-		printf("Internal Error: No format node associated to command 'writelinef'.\n");
+		printf("Internal Error: No format node associated to command 'writeLineF'.\n");
 		return FALSE;
 	}
 	// Create the string to be output

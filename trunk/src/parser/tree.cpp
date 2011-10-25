@@ -225,28 +225,6 @@ bool Tree::execute(ReturnValue &rv)
 	rv.reset();
 	ElementMap::ZMapType zm = ElementMap::nZMapTypes;
 	acceptedFail_ = Command::NoFunction;
-	
-	// Execute default dialog, if it exists and if the GUI has been started (or if the showOnCLI flag is set to TRUE)
-	for (Tree *func = functions_.first(); func != NULL; func = func->next)
-	{
-		// If this is the 'defaultUi' function, execute it first to create the widgets (unless it has already been run)
-		if (strcmp(func->name(),"defaultUi") == 0)
-		{
-			printf("THIS TREE *IS* CALLED defaultUi\n");
-			if (func->runCount() == 0)
-			{
-				ReturnValue rv;
-				func->execute(rv);
-			}
-			else msg.print(Messenger::Commands, "DefaultUi function has already been run.\n");
-			if (!func->defaultDialog().execute())
-			{
-				msg.print("Canceled (through dialog).\n");
-				return FALSE;
-			}
-		}
-		else printf("THIS TREE IS NOT CALLED defaultUi\n");
-	}
 
 	++runCount_;
 
@@ -350,15 +328,16 @@ bool Tree::executeRead(const char *filename, ReturnValue &rv)
 	msg.enter("Tree::executeRead[filename]");
 	// Check for a previous parser pointer
 	if (parser_ != NULL) printf("Warning: LineParser already defined in executeRead.\n");
-	parser_ = new LineParser(filename);
-	if (!parser_->isFileGood())
+	parser_ = new LineParser;
+	parser_->openInput(filename);
+	if (!parser_->isFileGoodForReading())
 	{
 		msg.exit("Tree::executeRead[filename]");
 		return FALSE;
 	}
 	// Execute the commands
 	bool result = execute(rv);
-	parser_->closeFile();
+	parser_->closeFiles();
 	delete parser_;
 	parser_ = NULL;
 	msg.exit("Tree::executeRead[filename]");
@@ -371,17 +350,27 @@ bool Tree::executeWrite(const char *filename, ReturnValue &rv)
 	msg.enter("Tree::executeWrite[filename]");
 	// Check for a previous parser pointer
 	if (parser_ != NULL) printf("Warning: LineParser already defined in executeWrite.\n");
-	parser_ = new LineParser(filename, TRUE);
-	if (!parser_->isFileGood())
+	// If we are using directOutput_ open the target file here...
+	parser_ = new LineParser;
+	parser_->openOutput(filename, FALSE);
+	if (!parser_->isFileGoodForWriting())
 	{
 		msg.exit("Tree::executeWrite[filename]");
 		return FALSE;
 	}
+	
 	// Execute the commands
 	bool result = execute(rv);
-	parser_->closeFile();
+	
+	// If we were *not* using directOutput_ and the commands were executed successfully, write the cached data here
+	if (result) result = parser_->commitCache();
+	else msg.print("Command execution generated errors - cached data not written to file.\n");
+
+	// Done - tidy up
+	parser_->closeFiles();
 	delete parser_;
 	parser_ = NULL;
+
 	msg.exit("Tree::executeWrite[filename]");
 	return result;
 }

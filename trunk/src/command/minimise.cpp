@@ -124,7 +124,8 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	msg.print("Command to run will be '%s'\n", mopacCmd.get());
 	
 	// Save input file
-	LineParser parser(mopacInput, TRUE);
+	LineParser parser;
+	parser.openOutput(mopacInput, TRUE);
 	int opt;
 	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s\n",c->argc(0));
 	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
@@ -142,7 +143,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[4], mat[5], mat[6]);
 		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[8], mat[9], mat[10]);
 	}
-	parser.closeFile();
+	parser.closeFiles();
 	
 	// Ready to run command....
 	if (!mopacProcess.execute(mopacCmd, NULL, mopacOut))

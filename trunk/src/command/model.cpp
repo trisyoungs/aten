@@ -123,7 +123,7 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	{
 		Tree *t = c->parent();
 // 		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
-		obj.m->setFilename(c->parent()->parser()->filename());
+		obj.m->setFilename(c->parent()->parser()->inputFilename());
 		obj.m->setFilter(t->filter.partner());
 	}
 	// Do various necessary calculations

@@ -410,7 +410,8 @@ bool Prefs::save(const char *filename)
 	bool result = TRUE;
 	Dnchar line;
 	int n, i;
-	LineParser prefsfile(filename, TRUE);
+	LineParser prefsfile;
+	prefsfile.openOutput(filename, TRUE);
 	if (prefsfile.isFileGoodForWriting())
 	{
 		// First - loop over all element data, comparing it to the stored default values
@@ -453,7 +454,7 @@ bool Prefs::save(const char *filename)
 		}
 	}
 	else result = FALSE;
-	prefsfile.closeFile();
+	prefsfile.closeFiles();
 	msg.exit("Prefs::save");
 	return result;
 }

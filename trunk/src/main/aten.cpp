@@ -356,16 +356,14 @@ bool Aten::closeModel(Model *m)
 				if (filter != NULL) filter->executeWrite(m->filename());
 				else if (gui.mainWindow()->runSaveModelDialog())
 				{
-					// Run options dialog
-					if (!gui.mainWindow()->saveModelFilter->defaultDialog().execute())
+					m->setFilter(gui.mainWindow()->saveModelFilter);
+					m->setFilename(gui.mainWindow()->saveModelFilename.get());
+					if (!gui.mainWindow()->saveModelFilter->executeWrite(gui.mainWindow()->saveModelFilename.get()))
 					{
 						msg.print("Not saved.\n");
 						m->enableUndoRedo();
 						return FALSE;
 					}
-					m->setFilter(gui.mainWindow()->saveModelFilter);
-					m->setFilename(gui.mainWindow()->saveModelFilename.get());
-					gui.mainWindow()->saveModelFilter->executeWrite(gui.mainWindow()->saveModelFilename.get());
 				}
 				else
 				{
