@@ -20,10 +20,25 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	addReadOption("skipblanks");
 
 	// File header:
-	// 1 : nmols, box length, temperature
-	if (!readLine(nmols, boxsize, temp)) error("Failed to read header information from file.\n");
+	// Either  1   : nmols, box length, temperature   (for cubic systems)
+	//    or   2   : nmols,   temperature             (for non-cubic systems)
+	// followed by : A, B, C
+	//             : phib, thetac, phic
+	if (!readLine(nmols, boxsize, dummy)) error("Failed to read header information from file.\n");
 	newModel("ATO file");
-	cell(boxsize,boxsize,boxsize,90,90,90);
+	if (dummy == "")
+	{
+		printf("File contains specific unit cell information.\n");
+		double a, b, c, phib, thetac, phic;
+		if (!readline(a, b, c)) error("Failed to read unit cell lengths from file.\n");
+		if (!readline(phib, thetac, phic)) error("Failed to read unit cell lengths from file.\n");
+	}
+	else
+	{
+	}
+
+
+	//cell(boxsize,boxsize,boxsize,90,90,90);
 
 	// 2 : step sizes etc. (ignore)
 	skipLine();

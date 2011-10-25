@@ -87,7 +87,7 @@ class TreeGuiWidgetEvent
 	// Set string qualifying event (comma-separated list)
 	void setQualifiers(const char *s);
 	// Set remaining event data
-	bool setEventData(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetwidget, TreeGuiWidgetEvent::EventProperty property);
+	void setEventData(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetwidget, TreeGuiWidgetEvent::EventProperty property);
 	// Add send data to event
 	ReturnValue *addSendValue();
 	// Return number of send values defined

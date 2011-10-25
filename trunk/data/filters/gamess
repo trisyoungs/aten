@@ -2,6 +2,7 @@
 # Created:	 14/04/2009
 # Last modified: 02/09/2011
 # ChangeLog:
+#	25/10/2011 - Minor fixes
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 #	29/01/2011 - Added COORD option to specify CART or ZMT
 #	28/01/2011 - Updated trajectory reader to handle IRC trajectory data
@@ -408,7 +409,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		group2.addCombo("contrl_exetyp", "Exe Type", "RUN,CHECK,DEBUG", 1, 3, 1);
 		group2.addCombo("contrl_relwfn", "Rel. Wfn.", "NONE,DK,RESC,NESC", 1, 3, 2);
 		group2.addIntegerSpin("contrl_maxit", "Max SCF It.", 1, 1000, 10, 30, 3, 3);
-		group2.addCheck("contrl_coord", "ZMatrix", 0, 3, 4);
+		group2.addCheck("contrl_zmt", "ZMatrix", 0, 3, 4);
 		group2.addCheck("cart_symbols", "Use Symbols", 1, 4, 4);
 		# -- DFT options
 		group2 = group.addGroup("dftgroup", "DFT", 2, 1, 0, 1);
@@ -552,7 +553,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	#
 	string line;
 	# Write $CONTRL line(s)
-	writeLineF(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", ui.asString("contrl_scftyp"), ui.asString("contrl_runtyp"), ui.asString("contrl_coord"), ui.asInteger("contrl_charge"), ui.asInteger("contrl_mult"));
+	writeLineF(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=%s ICHARG=%i MULT=%i $END\n", ui.asString("contrl_scftyp"), ui.asString("contrl_runtyp"), ui.asInteger("contrl_zmt") ? "ZMAT" : "UNIQUE", ui.asInteger("contrl_charge"), ui.asInteger("contrl_mult"));
 	line = "";
 	if (ui.asString("contrl_dfttyp") != "NONE") line += " DFTTYP=" + ui.asString("contrl_dfttyp");
 	if (ui.asString("contrl_tddft") != "NONE") line += " TDDFT=" + ui.asString("contrl_tddft");
@@ -633,7 +634,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	writeLine(" $DATA");
 	writeLine(aten.frame.name);
 	writeLine("C1");
-	if (ui.isString("contrl_coord", "CART"))
+	if (ui.asInteger("contrl_zmt") == 0)
 	{
 		if (ui.asInteger("cart_symbols")) for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.symbol,i.z*1.0,i.rx,i.ry,i.rz);
 		else for (atom i = aten.frame.atoms; i != 0; ++i) writeLineF("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
