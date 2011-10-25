@@ -60,7 +60,7 @@ void CommandParser::reset()
 // Print error information and location
 void CommandParser::printErrorInfo()
 {
-	if (source_ != CommandParser::StringSource) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.filename());
+	if (source_ != CommandParser::StringSource) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.inputFilename());
 	// QUICK'n'DIRTY!
 	int i;
 	char *temp = new char[stringLength_+32];
@@ -273,8 +273,8 @@ bool CommandParser::generateFromFile(Program *prog, const char *filename, bool d
 		msg.print(Messenger::Parse, "Main program stacked - %p\n", tree_);
 	}
 	// Open the file
-	parser_.openFile(filename);
-	if (!parser_.isFileGood())
+	parser_.openInput(filename);
+	if (!parser_.isFileGoodForReading())
 	{
 		msg.exit("CommandParser::generateFromFile");
 		return FALSE;

@@ -641,7 +641,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load models from list in file
 				case (Cli::LoadFromListSwitch):
-					if (!parser.openFile(argtext.get())) return -1;
+					if (!parser.openInput(argtext.get())) return -1;
 					while (!parser.eofOrBlank())
 					{
 						parser.readNextLine(LineParser::StripComments);

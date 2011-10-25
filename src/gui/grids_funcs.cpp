@@ -238,8 +238,7 @@ void GridsWidget::loadGrid()
 		if (filter != NULL)
 		{
 			// Run any import options in the filter
-			if (!filter->defaultDialog().execute()) return;
-			filter->executeRead(qPrintable(filename));
+			if (!filter->executeRead(qPrintable(filename))) return;
 		}
 	}
 	refresh();

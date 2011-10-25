@@ -27,6 +27,7 @@
 #include "templates/list.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 #define MAXLINELENGTH 1024
@@ -40,7 +41,7 @@ class LineParser
 	public:
 	// Constructors / Destructor
 	LineParser();
-	LineParser(const char *ifilename, bool outputstream = FALSE);
+// 	LineParser(const char *ifilename, bool outputstream = FALSE, bool directOutput = FALSE);
 	~LineParser();
 	// Parse Options
 	enum ParseOption { StripComments=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, UseBraces=32, nParseOptions=6 };
@@ -51,8 +52,10 @@ class LineParser
 	// Source line/file and read options
 	*/
 	private:
-	// Filename of current file target (if any)
-	Dnchar filename_;
+	// Current input filename (if any)
+	Dnchar inputFilename_;
+	// CUrrent output filename (if any)
+	Dnchar outputFilename_;
 	// Line to parse
 	char line_[MAXLINELENGTH];
 	// Length of line_
@@ -61,16 +64,20 @@ class LineParser
 	int linePos_;
 	// Integer line number of last read line
 	int lastLineNo_;
-	// Source file (for reading or writing)
-	std::fstream *file_;
-	// Whether the file is for reading or writing
-	bool readOnly_;
+	// Source stream for reading
+	ifstream *inputFile_;
+	// Target stream for writing
+	ofstream *outputFile_;
+	// Target stream for cached writing
+	stringstream *cachedFile_;
 
 	public:
 	// Reset data
 	void reset();
-	// Return filename of opened (or recently closed) file
-	const char *filename() const;
+	// Return filename of current inputFile (if any)
+	const char *inputFilename() const;
+	// Return filename of current outputFile (if any)
+	const char *outputFilename() const;
 	// Return pointer to start of current line
 	const char *line() const;
 	// Set line target
@@ -79,27 +86,27 @@ class LineParser
 	int lastLineNo() const;
 	// Return read-only status of file
 	bool isFileReadOnly() const;
-	// Open new file for parsing or writing
-	bool openFile(const char *filename, bool outputstream = FALSE);
+	// Open new file for reading
+	bool openInput(const char *filename);
+	// Open new stream for writing
+	bool openOutput(const char *filename, bool directOutput);
 	// Close file(s)
-	void closeFile();
-	// Return whether current file source is good for reading/writing
-	bool isFileGood() const;
+	void closeFiles();
 	// Return whether current file source is good for reading
 	bool isFileGoodForReading() const;
 	// Return whether current file source is good for writing
 	bool isFileGoodForWriting() const;
-	// Tell current position of file stream
+	// Tell current position of input stream
 	streampos tellg() const;
-	// Peek next character in file
+	// Peek next character in input stream
 	char peek() const;
-	// Seek position in file
+	// Seek position in input stream
 	void seekg(streampos pos);
-	// Seek n bytes in specified direction
+	// Seek n bytes in specified direction in input stream
 	void seekg(streamoff off, ios_base::seekdir dir);
-	// Rewind file to start
+	// Rewind input stream to start
 	void rewind();
-	// Return whether the end of the file has been reached (or only whitespace remains)
+	// Return whether the end of the input stream has been reached (or only whitespace remains)
 	bool eofOrBlank() const;
 
 
@@ -107,6 +114,8 @@ class LineParser
 	// Read/Write Routines
 	*/
 	private:
+	// Whether output is cached or direct
+	bool directOutput_;
 	// Gets all delimited args from internal line
 	void getAllArgsDelim(int optionMask);
 
@@ -146,7 +155,9 @@ class LineParser
 	// Write line to file
 	bool writeLine(const char *s);
 	// Write formatter line to file
-	bool writeLineF(const char *fmt ...);
+	bool writeLineF(const char *fmt, ...);
+	// Commit cached output stream to actual output file
+	bool commitCache();
 
 
 	/*

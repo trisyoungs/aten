@@ -38,7 +38,7 @@ NetaParser::NetaParser()
 // Print error information and location
 void NetaParser::printErrorInfo()
 {
-	if (isFileSource_) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.filename());
+	if (isFileSource_) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.inputFilename());
 	// QUICK'n'DIRTY!
 	int i;
 	char *temp = new char[stringLength_+32];

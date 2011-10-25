@@ -57,9 +57,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 		if (filter == NULL) filter = aten.probeFile(gui.loadModelDialog->selectedFilename(), FilterData::ModelImport);
 		if (filter != NULL)
 		{
-			// Run any import options in the filter
-			if (!filter->defaultDialog().execute()) return;
-			filter->executeRead(gui.loadModelDialog->selectedFilename());
+			if (!filter->executeRead(gui.loadModelDialog->selectedFilename())) return;
 			addRecent(gui.loadModelDialog->selectedFilename());
 			aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 			gui.update(GuiQt::AllTarget);
@@ -137,12 +135,6 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	Model *m;
 	if (runSaveModelDialog())
 	{
-		// Run options dialog
-		if (!saveModelFilter->defaultDialog().execute())
-		{
-			msg.print("Not saved.\n");
-			return;
-		}
 		m = aten.currentModelOrFrame();
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
@@ -174,12 +166,6 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	{
 		if (runSaveModelDialog())
 		{
-			// Run options dialog
-			if (!saveModelFilter->defaultDialog().execute())
-			{
-				msg.print("Not saved.\n");
-				return;
-			}
 			m->setFilter(saveModelFilter);
 			m->setFilename(saveModelFilename.get());
 			// Temporarily disable undo/redo for the model, save, and re-enable
@@ -237,7 +223,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	group = ui.addRadioGroup("framechoice");
 	ui.addRadioButton("noframes", "No Frames", "framechoice", 1, 1,2);
 	ui.addRadioButton("framemodel", "Frame Current Model", "framechoice", 0, 1,3);
-	ui.addRadioButton("frameview", "Frame Whole View", "framechoice", 0, 1,4);
+	ui.addRadioButton("frameview", "FramDie Whole View", "framechoice", 0, 1,4);
 	ui.addRadioButton("frameboth", "Frame Current Model and View", "framechoice", 0, 1,5);
 	
 	// Poke values into dialog widgets and execute
@@ -355,7 +341,6 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 	ui.addDoubleSpin("newy", "New Y", -1e6, 1e6, 1, 0.0 ,1,3);
 	ui.addDoubleSpin("newz", "New Z", -1e6, 1e6, 1, 0.0 ,1,4);
 	
-// 	static Tree dialog("Paste Translated", "option('Center of geometry of pasted atoms:', 'label', 'labelspan=6', 'left'); option('X', 'doublespin', -1e6, 1e6, 0.0, 1.0, 'newline'); option('Y', 'doublespin', -1e6, 1e6, 0.0, 1.0); option('Z', 'doublespin', -1e6, 1e6, 0.0, 1.0);");
 	// Run the custom dialog
 	if (dialog.defaultDialog().execute())
 	{
@@ -877,9 +862,7 @@ void AtenForm::on_actionOpenExpression_triggered(bool checked)
 		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::ExpressionImport);
 		if (filter != NULL)
 		{
-			// Run any import options in the filter
-			if (!filter->defaultDialog().execute()) return;
-			if (filter != NULL) filter->executeRead(qPrintable(filename));
+			if (!filter->executeRead(qPrintable(filename))) return;
 		}
 	}
 	gui.mainWidget()->postRedisplay();
@@ -943,8 +926,6 @@ void AtenForm::on_actionSaveExpression_triggered(bool checked)
 		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
 		else
 		{
-			// Run any export options in the filter
-			if (!filter->defaultDialog().execute()) return;
 			// Temporarily disable undo/redo for the model, save expression, and re-enable
 			m->disableUndoRedo();
 			if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());

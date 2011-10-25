@@ -34,7 +34,7 @@ bool Forcefield::load(const char *filename)
 	int success, n;
 	Prefs::EnergyUnit ffunit;
 	// Open file for reading
-	ffparser.openFile(filename);
+	ffparser.openInput(filename);
 	// Store the filename of the forcefield
 	filename_.set(filename);
 	// Now follows blocks of keywords
@@ -47,7 +47,7 @@ bool Forcefield::load(const char *filename)
 		if (success == 1)
 		{
 			msg.print("Error reading FF directive.\n");
-			ffparser.closeFile();
+			ffparser.closeFiles();
 			msg.exit("Forcefield::load");
 			return FALSE;
 		}
@@ -136,11 +136,11 @@ bool Forcefield::load(const char *filename)
 			//msg.print("EreadVdwor reading forcefield file. Aborted.\n");
 			msg.print("Error at line %i of file.\n", ffparser.lastLineNo());
 			msg.exit("Forcefield::load");
-			ffparser.closeFile();
+			ffparser.closeFiles();
 			return FALSE;
 		}
 	} while (okay);
-	ffparser.closeFile();
+	ffparser.closeFiles();
 
 	// Check that some forcefield types were defined...
 	if (types_.nItems() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");

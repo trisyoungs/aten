@@ -81,7 +81,7 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 		if (t->filter.searchStrings() != NULL)
 		{
 			bool found = FALSE;
-			parser.openFile(filename);
+			parser.openInput(filename);
 			for (d = t->filter.searchStrings(); d != NULL; d = d->next)
 			{
 				// Make sure file is completely rewound
@@ -104,7 +104,7 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 				
 				if (found) break;
 			}
-			parser.closeFile();
+			parser.closeFiles();
 			if (!found) continue;
 		}
 

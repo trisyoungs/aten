@@ -36,7 +36,7 @@ bool Forcefield::save()
 	LineParser parser;
 	
 	// Open file for writing
-	if (!parser.openFile(filename_, TRUE))
+	if (!parser.openOutput(filename_, TRUE))
 	{
 		msg.print("Couldn't open file '%s' for writing..\n", filename_.get());
 		msg.exit("Forcefield::save");

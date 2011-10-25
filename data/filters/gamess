@@ -566,7 +566,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	if (line != "") writeLineF(" $CONTRL%s $END\n", line);
 
 	# Write $SYSTEM line
-	writeLineF(" $SYSTEM MEMDDI=%i TIMLIM=%i MWORDS=%i $END", ui.asInteger("system_memddi"), ui.asInteger("system_timlim"), ui.asInteger("system_mwords"));
+	writeLineF(" $SYSTEM MEMDDI=%i TIMLIM=%i MWORDS=%i $END\n", ui.asInteger("system_memddi"), ui.asInteger("system_timlim"), ui.asInteger("system_mwords"));
 
 	# Write $BASIS line(s)
 	if (ui.isRange("basis_gbasis", 3, 6))

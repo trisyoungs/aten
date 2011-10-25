@@ -100,8 +100,8 @@ void AtomListWidget::setColumns(TTreeWidgetItem *twi)
 		if (viewAtomElement_) twi->setText(++n, elements().symbol(i));
 		if (viewAtomType_) twi->setText(++n, (i->type() == NULL ? "" : i->type()->name()));
 		if (viewAtomX_) twi->setText(++n, ftoa(r.x));
-		if (viewAtomY_) twi->setText(++n, ftoa(r.x));
-		if (viewAtomZ_) twi->setText(++n, ftoa(r.y));
+		if (viewAtomY_) twi->setText(++n, ftoa(r.y));
+		if (viewAtomZ_) twi->setText(++n, ftoa(r.z));
 		if (viewAtomQ_) twi->setText(++n, ftoa(i->charge()));
 	}
 }
