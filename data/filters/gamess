@@ -562,10 +562,11 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	if (ui.asString("contrl_cctyp") != "NONE") line += " CCTYP=" + ui.asString("contrl_cctyp");
 	if (ui.asString("contrl_pp") != "NONE") line += " ECPTYP=" + ui.asString("contrl_pp");
 	if (ui.asInteger("contrl_maxit") != 30) line += " MAXIT=" + ui.asString("contrl_maxit");
+	if (ui.asInteger("contrl_isphere") == 1) line += " ISPHER=1";
 	if (line != "") writeLineF(" $CONTRL%s $END\n", line);
 
 	# Write $SYSTEM line
-	writeLine(" $SYSTEM MEMDDI=%i TIMLIM=%i MWORDS=%i $END", ui.asInteger("system_memddi"), ui.asInteger("system_timlim"), ui.asInteger("system_mwords"));
+	writeLineF(" $SYSTEM MEMDDI=%i TIMLIM=%i MWORDS=%i $END", ui.asInteger("system_memddi"), ui.asInteger("system_timlim"), ui.asInteger("system_mwords"));
 
 	# Write $BASIS line(s)
 	if (ui.isRange("basis_gbasis", 3, 6))
@@ -626,7 +627,6 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 	}
 
 	# Write $GUESS, and $SCF groups
-	writeLine(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
 	writeLine(" $GUESS GUESS=HUCKEL $END");
 	writeLine(" $SCF DIRSCF=.TRUE. $END");
 
