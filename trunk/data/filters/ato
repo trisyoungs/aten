@@ -32,13 +32,12 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		double a, b, c, phib, thetac, phic;
 		if (!readline(a, b, c)) error("Failed to read unit cell lengths from file.\n");
 		if (!readline(phib, thetac, phic)) error("Failed to read unit cell lengths from file.\n");
+		// phib = angle between a and b (== gamma)
+		// thetac = angle deviation from cartesian z (== 90-beta)  ?? CHECK
+		// phic = angle deviation from cartesian z (== 90-alpha)  ?? CHECK
+		cell(a, b, c, 90-phic, 90-thetac, phib);
 	}
-	else
-	{
-	}
-
-
-	//cell(boxsize,boxsize,boxsize,90,90,90);
+	else cell(boxsize,boxsize,boxsize,90,90,90);
 
 	// 2 : step sizes etc. (ignore)
 	skipLine();
