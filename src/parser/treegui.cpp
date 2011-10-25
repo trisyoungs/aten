@@ -125,7 +125,7 @@ void TreeGuiWidgetEvent::setQualifiers(const char *s)
 }
 
 // Set remaining event data
-bool TreeGuiWidgetEvent::setEventData(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetwidget, TreeGuiWidgetEvent::EventProperty property)
+void TreeGuiWidgetEvent::setEventData(TreeGuiWidgetEvent::EventType type, TreeGuiWidget *targetwidget, TreeGuiWidgetEvent::EventProperty property)
 {
 	type_ = type;
 	targetWidget_ = targetwidget;
