@@ -421,7 +421,7 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		w.onInteger(2, 2, "sendstring", "contrl_dfttyp", "items", gridfreedfttypes);
 		w.onInteger(1, 2, "sendinteger", "contrl_dfttyp", "value", 2);
 		group2.addCombo("contrl_tddft", "TDDFT Type", "NONE,EXCITE", 1, 1, 3);
-		group2.addSpacer(TRUE,TRUE,1,4);
+		group2.addSpacer(TRUE,TRUE,1,4,1);
 		# -- Post-HF Methods
 		group2 = group.addGroup("postgroup", "Post-HF", 3, 1, 0, 0);
 		group2.addCombo("contrl_mplevl", "MP Level", "0,2", 1, 5, 2);

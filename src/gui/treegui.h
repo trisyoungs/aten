@@ -26,6 +26,9 @@
 #include "gui/ui_treegui.h"
 #include "templates/list.h"
 
+// Default height for 'single-line' widgets
+#define WIDGETHEIGHT 20
+
 // Forward Declarations
 class TreeGui;
 
