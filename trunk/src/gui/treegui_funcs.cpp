@@ -331,19 +331,18 @@ bool QtWidgetObject::addWidget(QtWidgetObject *qtwo, int l, int t, int addToWidt
 	}
 	
 	// Some widgets have associated labels and take up two+ cells, and some don't.....
-	if (qtwo->labelText_.isEmpty())
+	if (qtwo->labelText_.isEmpty() || (qtwo->treeGuiWidget()->type() == TreeGuiWidget::LabelWidget))
 	{
-		layout_->addWidget(qtwo->qWidget_, nextTop_, nextLeft_, addToHeight+1, addToWidth+1, Qt::AlignVCenter);
+		layout_->addWidget(qtwo->qWidget_, nextTop_, nextLeft_, addToHeight+1, addToWidth+1); //, Qt::AlignVCenter);
 		if (autoFillVertical_) nextTop_ += addToHeight+1;
 		else nextLeft_ += addToWidth+1;
 	}
 	else
 	{
-		if (qtwo->treeGuiWidget()->type() != TreeGuiWidget::LabelWidget)
-		{
-			qtwo->labelWidget_ = new QLabel(qtwo->labelText_.get());
-			layout_->addWidget(qtwo->labelWidget_, nextTop_, nextLeft_, 1, 1, Qt::AlignRight);
-		}
+		qtwo->labelWidget_ = new QLabel(qtwo->labelText_.get());
+		qtwo->labelWidget_->setMinimumHeight(WIDGETHEIGHT);
+		qtwo->labelWidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+		layout_->addWidget(qtwo->labelWidget_, nextTop_, nextLeft_, 1, 1, Qt::AlignRight);
 		layout_->addWidget(qtwo->qWidget_, nextTop_, nextLeft_+1, addToHeight+1, addToWidth+1, Qt::AlignVCenter);
 		if (autoFillVertical_) nextTop_ += addToHeight+1;
 		else nextLeft_ += addToWidth+2;
@@ -369,8 +368,8 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
 	}
 	
 	// Some widgets have associated labels and take up two+ cells, and some don't.....
-	QSpacerItem *spacer = new QSpacerItem(1, 1, expandHorizontal ? QSizePolicy::Expanding : QSizePolicy::Minimum, expandVertical ? QSizePolicy::Expanding : QSizePolicy::Minimum);
-	layout_->addItem(spacer, nextTop_, nextLeft_, addToHeight+1, addToWidth+1, Qt::AlignVCenter);
+	QSpacerItem *spacer = new QSpacerItem(0, WIDGETHEIGHT, expandHorizontal ? QSizePolicy::Expanding : QSizePolicy::Minimum, expandVertical ? QSizePolicy::Expanding : QSizePolicy::Minimum);
+	layout_->addItem(spacer, nextTop_, nextLeft_, addToHeight+1, addToWidth+1);
 	if (autoFillVertical_) nextTop_ += addToHeight+1;
 	else nextLeft_ += addToWidth+1;
 	return TRUE;
@@ -407,7 +406,7 @@ void AtenTreeGuiDialog::buttonWidget_clicked(bool checked)
 	QPushButton *button = (QPushButton*) sender();
 	if (!button)
 	{
-		printf("AtenTreeGuiDialog::checkBoxWidget_clicked - Sender could not be cast to a QPushButton.\n");
+		printf("AtenTreeGuiDialog::checkBoxWidget_clicked - Sender could not be cast into a QPushButton.\n");
 		return;
 	}
 
@@ -432,7 +431,7 @@ void AtenTreeGuiDialog::checkBoxWidget_clicked(bool checked)
 	QCheckBox *check = (QCheckBox*) sender();
 	if (!check)
 	{
-		printf("AtenTreeGuiDialog::checkBoxWidget_clicked - Sender could not be cast to a QCheckBox.\n");
+		printf("AtenTreeGuiDialog::checkBoxWidget_clicked - Sender could not be cast into a QCheckBox.\n");
 		return;
 	}
 	
@@ -457,7 +456,7 @@ void AtenTreeGuiDialog::comboWidget_currentIndexChanged(int row)
 	QComboBox *combo = (QComboBox*) sender();
 	if (!combo)
 	{
-		printf("AtenTreeGuiDialog::comboWidget_currentIndexChanged - Sender could not be cast to a QComboBox.\n");
+		printf("AtenTreeGuiDialog::comboWidget_currentIndexChanged - Sender could not be cast into a QComboBox.\n");
 		return;
 	}
 	
@@ -482,7 +481,7 @@ void AtenTreeGuiDialog::doubleSpinWidget_valueChanged(double d)
 	QDoubleSpinBox *spin = static_cast<QDoubleSpinBox*>(sender());
 	if (!spin)
 	{
-		printf("AtenTreeGuiDialog::doubleSpinWidget_valueChanged - Sender could not be cast to a QDoubleSpinBox.\n");
+		printf("AtenTreeGuiDialog::doubleSpinWidget_valueChanged - Sender could not be cast into a QDoubleSpinBox.\n");
 		return;
 	}
 
@@ -507,7 +506,7 @@ void AtenTreeGuiDialog::integerSpinWidget_valueChanged(int i)
 	QSpinBox *spin = static_cast<QSpinBox*>(sender());
 	if (!spin)
 	{
-		printf("AtenTreeGuiDialog::integerSpinWidget_valueChanged - Sender could not be cast to a QSpinBox.\n");
+		printf("AtenTreeGuiDialog::integerSpinWidget_valueChanged - Sender could not be cast into a QSpinBox.\n");
 		return;
 	}
 
@@ -533,7 +532,7 @@ void AtenTreeGuiDialog::radioGroupWidget_buttonClicked(QAbstractButton *button)
 	QButtonGroup *group = static_cast<QButtonGroup*>(sender());
 	if (!group)
 	{
-		printf("AtenTreeGuiDialog::radioGroupWidget_buttonClicked - Sender could not be cast to a QButtonGroup.\n");
+		printf("AtenTreeGuiDialog::radioGroupWidget_buttonClicked - Sender could not be cast into a QButtonGroup.\n");
 		return;
 	}
 	// Search for widget definition in original tree...
@@ -551,7 +550,7 @@ void AtenTreeGuiDialog::radioGroupWidget_buttonClicked(QAbstractButton *button)
 	QRadioButton *radio = static_cast<QRadioButton*>(button);
 	if (!radio)
 	{
-		printf("AtenTreeGuiDialog::radioGroupWidget_buttonClicked - Sent button* could not be cast to a QRadioButton.\n");
+		printf("AtenTreeGuiDialog::radioGroupWidget_buttonClicked - Sent button* could not be cast into a QRadioButton.\n");
 		return;
 	}
 	// Search for widget definition in original tree...
@@ -575,7 +574,7 @@ void AtenTreeGuiDialog::radioButtonWidget_clicked(bool checked)
 	QRadioButton *radio = static_cast<QRadioButton*>(sender());
 	if (!radio)
 	{
-		printf("AtenTreeGuiDialog::radioButtonWidget_clicked - Sender could not be cast to a QRadioButton.\n");
+		printf("AtenTreeGuiDialog::radioButtonWidget_clicked - Sender could not be cast into a QRadioButton.\n");
 		return;
 	}
 	
@@ -600,7 +599,7 @@ void AtenTreeGuiDialog::editWidget_editingFinished()
 	QLineEdit *edit = static_cast<QLineEdit*>(sender());
 	if (!edit)
 	{
-		printf("AtenTreeGuiDialog::editWidget_editingFinished - Sender could not be cast to a QRadioButton.\n");
+		printf("AtenTreeGuiDialog::editWidget_editingFinished - Sender could not be cast into a QLineEdit.\n");
 		return;
 	}
 	
@@ -625,7 +624,7 @@ void AtenTreeGuiDialog::tabsWidget_currentChanged(int id)
 	QTabWidget *tabs = static_cast<QTabWidget*>(sender());
 	if (!tabs)
 	{
-		printf("AtenTreeGuiDialog::tabsWidget_currentChanged - Sender could not be cast to a QTabWidget.\n");
+		printf("AtenTreeGuiDialog::tabsWidget_currentChanged - Sender could not be cast into a QTabWidget.\n");
 		return;
 	}
 	
@@ -644,7 +643,6 @@ void AtenTreeGuiDialog::tabsWidget_currentChanged(int id)
 // Create new general layout for specified widget
 QGridLayout *AtenTreeGuiDialog::addLayout(QWidget* widget)
 {
-	// Create new QtWidgetObject for frame
 	QGridLayout *layout = new QGridLayout(widget);
 	#if QT_VERSION >= 0x040600
 	layout->setContentsMargins(2,2,2,2);
@@ -662,7 +660,8 @@ QtWidgetObject *AtenTreeGuiDialog::addButton(TreeGuiWidget* widget, const char* 
 	button->setText(label);
 	button->setEnabled(widget->enabled());
 	button->setVisible(widget->visible());
-	button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	button->setMinimumHeight(WIDGETHEIGHT);
+	button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	// Connect signal to master slot
 	QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(buttonWidget_clicked(bool)));
 	return qtwo;
@@ -677,7 +676,8 @@ QtWidgetObject *AtenTreeGuiDialog::addCheck(TreeGuiWidget* widget, const char* l
 	check->setText(label);
 	check->setEnabled(widget->enabled());
 	check->setVisible(widget->visible());
-	check->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	check->setMinimumHeight(WIDGETHEIGHT);
+	check->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	// Connect signal to master slot
 	QObject::connect(check, SIGNAL(clicked(bool)), this, SLOT(checkBoxWidget_clicked(bool)));
 	return qtwo;
@@ -694,7 +694,8 @@ QtWidgetObject *AtenTreeGuiDialog::addCombo(TreeGuiWidget* widget, const char* l
 	combo->setCurrentIndex(widget->valueI() - 1);
 	combo->setEnabled(widget->enabled());
 	combo->setVisible(widget->visible());
-	combo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	combo->setMinimumHeight(WIDGETHEIGHT);
+	combo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	// Connect signal to master slot
 	QObject::connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(comboWidget_currentIndexChanged(int)));
 	return qtwo;
@@ -720,7 +721,8 @@ QtWidgetObject *AtenTreeGuiDialog::addDoubleSpin(TreeGuiWidget* widget, const ch
 	spin->setDecimals(5);
 	spin->setEnabled(widget->enabled());
 	spin->setVisible(widget->visible());
-	spin->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	spin->setMinimumHeight(WIDGETHEIGHT);
+	spin->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	// Connect signal to master slot
 	QObject::connect(spin, SIGNAL(valueChanged(double)), this, SLOT(doubleSpinWidget_valueChanged(double)));
 	return qtwo;
@@ -735,7 +737,8 @@ QtWidgetObject *AtenTreeGuiDialog::addEdit(TreeGuiWidget *widget, const char *la
 	edit->setText(widget->text());
 	edit->setEnabled(widget->enabled());
 	edit->setVisible(widget->visible());
-	edit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	edit->setMinimumHeight(WIDGETHEIGHT);
+	edit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	// Connect signal to master slot
 	QObject::connect(edit, SIGNAL(editingFinished()), this, SLOT(editWidget_editingFinished()));
 	return qtwo;
@@ -752,7 +755,7 @@ QtWidgetObject *AtenTreeGuiDialog::addFrame(TreeGuiWidget *widget)
 	qtwo->set(widget, frame, NULL, layout);
 	frame->setEnabled(widget->enabled());
 	frame->setVisible(widget->visible());
-	frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	frame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	return qtwo;
 }
 
@@ -782,7 +785,8 @@ QtWidgetObject *AtenTreeGuiDialog::addIntegerSpin(TreeGuiWidget* widget, const c
 	spin->setSingleStep(step);
 	spin->setEnabled(widget->enabled());
 	spin->setVisible(widget->visible());
-	spin->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	spin->setMinimumHeight(WIDGETHEIGHT);
+	spin->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	// Connect signal to master slot
 	QObject::connect(spin, SIGNAL(valueChanged(int)), this, SLOT(integerSpinWidget_valueChanged(int)));
 	return qtwo;
@@ -797,7 +801,8 @@ QtWidgetObject *AtenTreeGuiDialog::addLabel(TreeGuiWidget *widget, const char *t
 	label->setText(text);
 	label->setEnabled(widget->enabled());
 	label->setVisible(widget->visible());
-	label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+	label->setMinimumHeight(WIDGETHEIGHT);
+	label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	return qtwo;
 }
 
@@ -821,7 +826,7 @@ QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget 
 	qtwo->set(widget, pageWidget, NULL, layout);
 	pageWidget->setEnabled(widget->enabled());
 	pageWidget->setVisible(widget->visible());
-	pageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	pageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	// Cast parent widget into correct type, and add page
 	if (parentWidget->type() == TreeGuiWidget::TabWidget)
@@ -886,7 +891,8 @@ QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGui
 	radio->setEnabled(widget->enabled());
 	radio->setVisible(widget->visible());
 	radio->setChecked(widget->valueI() == 1);
-	radio->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+	radio->setMinimumHeight(WIDGETHEIGHT);
+	radio->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	// Connect signal to master slot
 	QObject::connect(radio, SIGNAL(clicked(bool)), this, SLOT(radioButtonWidget_clicked(bool)));
 	return qtwo;
@@ -900,7 +906,7 @@ QtWidgetObject *AtenTreeGuiDialog::addStack(TreeGuiWidget *widget)
 	qtwo->set(widget, stack, "");
 	stack->setEnabled(widget->enabled());
 	stack->setVisible(widget->visible());
-	stack->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+	stack->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	return qtwo;
 }
 
@@ -912,7 +918,7 @@ QtWidgetObject *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
 	qtwo->set(widget, tabs, "");
 	tabs->setEnabled(widget->enabled());
 	tabs->setVisible(widget->visible());
-	tabs->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+	tabs->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	// Connect signal to master slot
 	QObject::connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabsWidget_currentChanged(int)));
 	return qtwo;
