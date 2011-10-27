@@ -30,8 +30,8 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	{
 		printf("File contains specific unit cell information.\n");
 		double a, b, c, phib, thetac, phic;
-		if (!readline(a, b, c)) error("Failed to read unit cell lengths from file.\n");
-		if (!readline(phib, thetac, phic)) error("Failed to read unit cell lengths from file.\n");
+		if (!readLine(a, b, c)) error("Failed to read unit cell lengths from file.\n");
+		if (!readLine(phib, thetac, phic)) error("Failed to read unit cell lengths from file.\n");
 		// phib = angle between a and b (== gamma)
 		// thetac = angle deviation from cartesian z (== 90-beta)  ?? CHECK
 		// phic = angle deviation from cartesian z (== 90-alpha)  ?? CHECK
@@ -63,7 +63,7 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			if (!readLine(r.x, r.y, r.z)) error("Error reading atom coordinates %i for molecule %i\n", n+1, m+1);
 			// Adjust for molecule centre of mass, and also apply a half-cell translation since EPSR uses -0.5 -> 0.5 coordinates
 			r += com;
-			r += boxsize/2.0;
+			r += aten.model.cell.centre;
 			// Create a new atom with element 0 - it will be set to a proper element later on
 			i = newAtom(0, r.x, r.y, r.z);
 			i.data = atomname;
@@ -138,10 +138,14 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	if (!ui.created)
 	{
 		Widget w, group;
+		ui.title = "ATO File Export Options";
 		ui.verticalFill = TRUE;
+
 		ui.addDoubleSpin("temperature", "Temperature", 0.0, 100000.0, 10.0, 300.0);
 		ui.addDoubleSpin("epsr_tol", "Tolerance", 0.0, 1.0, 0.1, 0.0);
-		group = ui.addGroup("stepsizes", "Step Sizes", 1, 2, 3);
+
+		# Step Sizes
+		group = ui.addGroup("stepsizes", "Step Sizes", -1, -1, 1);
 		group.verticalFill = TRUE;
 		group.addDoubleSpin("epsr_itrans", "Intramolecular Translations", 0.0, 100.0, 1.0, 1.5);
 		group.addDoubleSpin("epsr_hrot", "Headgroup Rotations", 0.0, 10.0, 0.1, 2.5);
@@ -149,26 +153,31 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		group.addDoubleSpin("epsr_mtrans", "Whole Molecule Translations", 0.0, 10.0, 0.01, 0.1);
 		ui.addDoubleSpin("epsr_vtemp", "Vibrational Temperature", 0.0, 1500.0, 10.0, 65.0);
 
-		group = ui.addGroup("restraints", "Restraints");
+		# Restraints
+		group = ui.addGroup("restraints", "Restraints", -1, -1, 1);
 		ui.addRadioGroup("restraintgroup");
-		group.addRadioButton("restrain_con", "Restrain Based on Connectivity", "restraintgroup", 1, 1, 1, 4);
-		w = group.addFrame("restrain_con_frame", 2, 2, 3);
+		group.addRadioButton("restrain_con", "Restrain Based on Connectivity", "restraintgroup", 1);
+		group.addRadioButton("restrain_dist", "Restrain Based on Distance", "restraintgroup", 0);
+		# -- by Connectivity
+		w = group.addFrame("restrain_con_frame", 1, 2);
 		ui.addRadioGroup("connectivitygroup");
+		w.verticalFill = TRUE;
 		w.addRadioButton("restrain_bonds", "Across Bonds", "connectivitygroup", 1);
 		w.addRadioButton("restrain_angles", "Across Angles","connectivitygroup",  0);
 		w.addRadioButton("restrain_torsions", "Across Torsions", "connectivitygroup", 0);
 		w.addDoubleSpin("restrain_con_max", "Maximum Distance", 0.0, 10.0, 0.1, 2.4);
-		ui.widget("restrain_con").onInteger(0, 1, "setbool", "restrain_con_frame", "enabled");
 
-		group.addRadioButton("restrain_dist", "Restrain Based on Distance", "restraingroup", 0, 1, 3, 4);
-		w = group.addFrame("restrain_dist_frame", 2, 4, 3);
+		w = group.addFrame("restrain_dist_frame", 2, 2);
 		w.enabled = FALSE;
 		w.addDoubleSpin("restrain_dist_max", "Maximum Distance", 0.0, 10.0, 0.1, 2.4);
-		ui.widget("restrain_dist").onInteger(0, 1, "setbool", "restrain_dist_frame", "enabled");
+
+		ui.widget("restrain_dist").onInteger(0, 1, "sendbool", "restrain_dist_frame", "enabled");
+		ui.widget("restrain_con").onInteger(0, 1, "sendbool", "restrain_con_frame", "enabled");
+		ui.widget("restrain_dist").onInteger(0, 1, "sendbool", "restrain_con_frame", "disabled");
+		ui.widget("restrain_con").onInteger(0, 1, "sendbool", "restrain_dist_frame", "disabled");
 
 		ui.created = TRUE;
 	}
-
 	if (!ui.show()) error("Canceled through dialog.\n");
 
 	// First, some checks. We need valid patterns and a cubic cell.
@@ -178,12 +187,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	// First determine total number of molecules
 	nmols = 0;      
 	for (p in srcmodel.patterns) nmols += p.nMols;
-	if (srcmodel.cell.type == "cubic")
-	{
-		boxsize = srcmodel.cell.a;
-		writeLineF("  %4i %13.6e  %13.6e\n",nmols,srcmodel.cell.a, ui.asDouble("temperature"));
-	}
-	else
+	if (srcmodel.cell.type == "none")
 	{
 		// Set boxsize here to be zero (it is used elsewhere to shift by half-cell amounts, so this will prevent it)
 		boxsize = 0.0;
@@ -199,6 +203,20 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			}
 		}
 		writeLineF("  %4i %13.6e  %13.6e\n", nmols, maxrij*2.0, ui.asDouble("temperature"));
+	}
+	else if (srcmodel.cell.type == "cubic")
+	{
+		boxsize = srcmodel.cell.a;
+		writeLineF("  %4i %13.6e  %13.6e\n",nmols,srcmodel.cell.a, ui.asDouble("temperature"));
+	}
+	else
+	{
+		writeLineF("  %4i %13.6e\n", nmols, ui.asDouble("temperature"));
+		writeLineF(" %12.6e  %12.6e  %12.6e\n", srcmodel.cell.a, srcmodel.cell.b, srcmodel.cell.c);
+		// Angles must be determined:
+		// thetac = angle deviation from cartesian z (== 90-beta)  ?? CHECK
+		// phic = angle deviation from cartesian z (== 90-alpha)  ?? CHECK
+		writeLineF(" %12.6e  %12.6e  %12.6e\n", srcmodel.cell.gamma, 90.0-srcmodel.cell.beta, 90.0-srcmodel.cell.alpha);
 	}
 
 	// Line 2 : Tol, step sizes (intra trans, headgroup rot, mol rot, mol trans), vibrational temp

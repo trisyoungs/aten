@@ -50,6 +50,7 @@ PreferencesVariable::~PreferencesVariable()
 
 // Accessor data - name, type, arraysize, ro?
 Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
+	{ "allowDialogs",		VTypes::IntegerData,		0, FALSE },
 	{ "angleLabelFormat",		VTypes::StringData,		0, FALSE },
 	{ "aromaticRingColour",		VTypes::DoubleData,		4, FALSE },
 	{ "atomStyleRadius",		VTypes::DoubleData,		Atom::nDrawStyles, FALSE },
@@ -248,6 +249,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	}
 	if (result) switch (acc)
 	{
+		case (PreferencesVariable::AllowDialogs):
+			rv.set(prefs.allowDialogs());
+			break;
 		case (PreferencesVariable::AngleLabelFormat):
 			rv.set(prefs.angleLabelFormat());
 			break;
@@ -643,6 +647,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	ElementMap::ZMapType zm;
 	if (result) switch (acc)
 	{
+		case (PreferencesVariable::AllowDialogs):
+			ptr->setAllowDialogs(newvalue.asBool());
+			break;
 		case (PreferencesVariable::AngleLabelFormat):
 			ptr->setAngleLabelFormat(newvalue.asString());
 			break;
