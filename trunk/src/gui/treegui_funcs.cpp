@@ -383,6 +383,7 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
 AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog(NULL)
 {
 	updating_ = FALSE;
+// 	setVisible(FALSE);
 	ui.setupUi(this);
 
 	// Add grid layout to MainFrame

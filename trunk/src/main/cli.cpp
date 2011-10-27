@@ -59,6 +59,9 @@ Cli cliSwitches[] = {
 	{ Cli::DebugSwitch,		'd',"debug",		2,
 		"[output]",
 		"Print out call debug information, or specific information if output type is supplied" },
+	{ Cli::DialogsSwitch,		'\0',"dialogs",		0,
+		"",
+		"Permit script/filter dialogs to be raised even if the main GUI doesn't exist" },
 	{ Cli::DoubleSwitch,		'\0',"double",		1,
 		"<var>=<value>",
 		"Pass a floating point <value> into Aten with variable name <var>" },
@@ -505,6 +508,10 @@ int Aten::parseCli(int argc, char *argv[])
 						}
 						else return -1;
 					}
+					break;
+				// Allow script/filter dialogs to be raised
+				case (Cli::DialogsSwitch):
+					prefs.setAllowDialogs(TRUE);
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):

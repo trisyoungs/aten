@@ -55,21 +55,21 @@ Accessor DialogVariable::accessorData[DialogVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor DialogVariable::functionData[DialogVariable::nFunctions] = {
-	{ "addButton",		VTypes::WidgetData,"CCiiii",	"string name, string label, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
-	{ "addCheck",		VTypes::WidgetData,"CCIiiii",	"string name, string label, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
-	{ "addCombo",		VTypes::WidgetData,"CCCIiiii",	"string name, string label, string items, int index, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
-	{ "addDoubleSpin",	VTypes::WidgetData,"CCDDDDiiii","string name, string label, double min, double max, double step, double value, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
-	{ "addEdit",		VTypes::WidgetData,"CCCiiii",	"string name, string label, string text, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
-	{ "addFrame",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
-	{ "addGroup",		VTypes::WidgetData,"CCiiii",	"string name, string label, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
+	{ "addButton",		VTypes::WidgetData,"CC[ii]ii",	"string name, string label, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addCheck",		VTypes::WidgetData,"CCI[ii]ii",	"string name, string label, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addCombo",		VTypes::WidgetData,"CCCI[ii]ii","string name, string label, string items, int index, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addDoubleSpin",	VTypes::WidgetData,"CCDDDD[ii]ii","string name, string label, double min, double max, double step, double value, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addEdit",		VTypes::WidgetData,"CCC[ii]ii",	"string name, string label, string text, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addFrame",		VTypes::WidgetData,"C[ii]ii",	"string name, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addGroup",		VTypes::WidgetData,"CC[ii]ii",	"string name, string label, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
 	{ "addIntegerSpin",	VTypes::WidgetData,"CCIIIIiiii","string name, string label, int min, int max, int step, int value, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
-	{ "addLabel",		VTypes::WidgetData,"CCiiii",	"string name, string text, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addLabel",		VTypes::WidgetData,"CC[ii]ii",	"string name, string text, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
 	{ "addPage",		VTypes::WidgetData,"CC",	"string name, string label" },
-	{ "addRadioButton",	VTypes::WidgetData,"CCCIiiii",	"string name, string label, string group, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0"},
+	{ "addRadioButton",	VTypes::WidgetData,"CCCI[ii]ii","string name, string label, string group, int state, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0"},
 	{ "addRadioGroup",	VTypes::WidgetData,"C",		"string name" },
-	{ "addSpacer",		VTypes::NoData,    "IIiiii",	"int expandH, int expandV, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
-	{ "addStack",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
-	{ "addTabs",		VTypes::WidgetData,"Ciiii",	"string name, int l = <auto>, int t = <auto>, int xw = 1, int xh = 0" },
+	{ "addSpacer",		VTypes::NoData,    "II[ii]ii",	"int expandH, int expandV, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addStack",		VTypes::WidgetData,"C[ii]ii",	"string name, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
+	{ "addTabs",		VTypes::WidgetData,"C[ii]ii",	"string name, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
 	{ "asDouble",		VTypes::DoubleData,"C",		"string name" },
 	{ "asInteger",		VTypes::IntegerData,"C",	"string name" },
 	{ "asString",		VTypes::StringData,"C",		"string name" },
@@ -346,17 +346,17 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddFrame):
-			l = node->hasArg(2) ? node->argi(2) : -1;
-			t = node->hasArg(3) ? node->argi(3) : -1;
-			xw = node->hasArg(4) ? node->argi(4) : 1;
-			xh = node->hasArg(5) ? node->argi(5) : 0;
+			l = node->hasArg(1) ? node->argi(1) : -1;
+			t = node->hasArg(2) ? node->argi(2) : -1;
+			xw = node->hasArg(3) ? node->argi(3) : 0;
+			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addFrame(node->argc(0), l, t, xw, xh));
 			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
 			break;
 		case (DialogVariable::AddGroup):
 			l = node->hasArg(2) ? node->argi(2) : -1;
 			t = node->hasArg(3) ? node->argi(3) : -1;
-			xw = node->hasArg(4) ? node->argi(4) : 1;
+			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addGroup(node->argc(0), node->argc(1), l, t, xw, xh));
 			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
@@ -396,7 +396,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		case (DialogVariable::AddStack):
 			l = node->hasArg(1) ? node->argi(1) : -1;
 			t = node->hasArg(2) ? node->argi(2) : -1;
-			xw = node->hasArg(3) ? node->argi(3) : 1;
+			xw = node->hasArg(3) ? node->argi(3) : 0;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addStack(node->argc(0), l, t, xw, xh));
 			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
@@ -404,7 +404,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		case (DialogVariable::AddTabs):
 			l = node->hasArg(1) ? node->argi(1) : -1;
 			t = node->hasArg(2) ? node->argi(2) : -1;
-			xw = node->hasArg(3) ? node->argi(3) : 1;
+			xw = node->hasArg(3) ? node->argi(3) : 0;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addTabs(node->argc(0), l, t, xw, xh));
 			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
@@ -488,7 +488,9 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			rv.set(strcmp(w->asCharacter(), node->argc(1)) == 0);
 			break;
 		case (DialogVariable::Show):
-			rv.set(ptr->execute());
+			// If the GUI exists, or it doesn't but we allow dialogs to be raised, show it
+			if (gui.exists() || prefs.allowDialogs()) rv.set(ptr->execute());
+			else rv.set(TRUE);
 			break;
 		case (DialogVariable::Widget):
 			rv.set(VTypes::WidgetData, ptr->findWidget(node->argc(0)));

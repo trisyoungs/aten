@@ -29,7 +29,7 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 		page.addLabel("","No Options");
 		# -- Opt
 		page = stack.addPage("stack_opt", "");
-		page.addCombo("opt_method", "Optimisation Type", "<default>,QST2,QST3,TS,Saddle=1,Saddle=2,Conical", 1, 1);
+		page.addCombo("opt_method", "Optimisation Type", "<default>,QST2,QST3,TS,Saddle=1,Saddle=2,Conical", 1);
 		page.addIntegerSpin("opt_maxcycles", "MaxCycles", 0, 1000, 10, 30, 1, 2);
 		page.addIntegerSpin("opt_maxstep", "MaxStep", 0, 1000, 10, 30, 3, 2);
 		page.addCheck("opt_restart", "Restart", 0, 5, 2);

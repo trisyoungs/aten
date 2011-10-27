@@ -663,6 +663,8 @@ class Prefs
 	bool generateFragmentIcons_;
 	// Whether to read and execute commands from piped input on startup
 	bool readPipe_;
+	// Whether to allow dialogs to be shown if the GUI is not yet active
+	bool allowDialogs_;
 	
 	public:
 	// Set the model update frequency
@@ -721,38 +723,41 @@ class Prefs
 	bool forceRhombohedral() const;
 	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
 	void setForceRhombohedral(bool b);
-	// Whether to display warning for version 1.5 (r1056) newness
+	// Return whether to display warning for version 1.5 (r1056) newness
 	bool warning1056() const;
 	// Set whether to display warning for version 1.5 (r1056) newness
 	void setWarning1056(bool b);
 	// Return whether to allow deprecated command/function names (i.e. un-capitalised)
 	bool allowDeprecated() const;
-	// Whether to load filters on startup
+	// Return whether to load filters on startup
 	bool loadFilters() const;
 	// Set whether to load filters on startup
 	void setLoadFilters(bool b);
-	// Whether to load includes on startup
+	// Return whether to load includes on startup
 	bool loadIncludes() const;
 	// Set whether to load includes on startup
 	void setLoadIncludes(bool b);
-	// Whether to load partitions on startup
+	// Return whether to load partitions on startup
 	bool loadPartitions() const;
 	// Set whether to load partitions on startup
 	void setLoadPartitions(bool b);
-	// Whether to load fragments on startup
+	// Return whether to load fragments on startup
 	bool loadFragments() const;
 	// Set whether to load fragments on startup
 	void setLoadFragments(bool b);
-	// Whether to generate icons for loaded fragments
+	// Return whether to generate icons for loaded fragments
 	bool generateFragmentIcons() const;
 	// Set whether to generate icons for loaded fragments
 	void setGenerateFragmentIcons(bool b);
-	// Whether to read and execute commands from piped input on startup
+	// Return whether to read and execute commands from piped input on startup
 	bool readPipe() const;
 	// Set whether to read and execute commands from piped input on startup
 	void setReadPipe(bool b);
-	
-	
+	// Return whether to allow dialogs to be shown if the GUI is not yet active
+	bool allowDialogs();
+	// Set whether to allow dialogs to be shown if the GUI is not yet active
+	void setAllowDialogs(bool b);
+
 
 	/*
 	// Units and Conversion

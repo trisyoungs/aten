@@ -279,6 +279,7 @@ Prefs::Prefs()
 	maxImproperDist_ = 5.0;
 	loadFilters_ = TRUE;
 	readPipe_ = FALSE;
+	allowDialogs_ = FALSE;
 	
 	// File
 	bondOnLoad_ = Choice::Default;
@@ -1605,6 +1606,18 @@ bool Prefs::readPipe() const
 void Prefs::setReadPipe(bool b)
 {
 	readPipe_ = b;
+}
+
+// Return whether to allow dialogs to be shown if the GUI is not yet active
+bool Prefs::allowDialogs()
+{
+	return allowDialogs_;
+}
+
+// Set whether to allow dialogs to be shown if the GUI is not yet active
+void Prefs::setAllowDialogs(bool b)
+{
+	allowDialogs_ = b;
 }
 
 // Set list of common elements in SelectElement dialog

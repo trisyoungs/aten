@@ -43,6 +43,7 @@
 <li>Information on MC accessors.</li>
 <li>Add new image for atom list, glyph window, and disorder options.</li>
 <li>Chapter / Section on Basic View / Imaging.</li>
+<li>New CLI option : --dialogs</li>
 </ul>
 
 <h1>Branch TODO</h1>
