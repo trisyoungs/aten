@@ -13,14 +13,11 @@ int npartitions = 2;
 global double x = 0.5, y = 0.5, r = 0.1;
 int partitionOptions()
 {
-	Dialog ui = defaultDialog();
-	if (!ui.created)
-	{
-		ui.verticalFill = TRUE;
-		ui.addDoubleSpin("x", "X", 0.0, 1.0, 0.1, x);
-		ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
-		ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
-	}
+	Dialog ui = createDialog("CylinderX Scheme Options");
+	ui.verticalFill = TRUE;
+	ui.addDoubleSpin("x", "X", 0.0, 1.0, 0.1, x);
+	ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
+	ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
 	if (ui.show())
 	{
 		x = ui.asInteger("x");
