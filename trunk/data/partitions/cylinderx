@@ -13,14 +13,11 @@ int npartitions = 2;
 global double y = 0.5, z = 0.5, r = 0.1;
 int partitionOptions()
 {
-	Dialog ui = defaultDialog();
-	if (!ui.created)
-	{
-		ui.verticalFill = TRUE;
-		ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
-		ui.addDoubleSpin("z", "Z", 0.0, 1.0, 0.1, z);
-		ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
-	}
+	Dialog ui = createDialog("CylinderX Scheme Options");
+	ui.verticalFill = TRUE;
+	ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
+	ui.addDoubleSpin("z", "Z", 0.0, 1.0, 0.1, z);
+	ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
 	if (ui.show())
 	{
 		y = ui.asInteger("y");
@@ -28,7 +25,7 @@ int partitionOptions()
 		r = ui.asInteger("r");
 		return TRUE;
 	}
-	else return FALSE;
+	return FALSE;
 }
 
 # Every partition definition *must* contain 'partition' and 'partitionName' functions

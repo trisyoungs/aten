@@ -277,6 +277,10 @@ bool Tree::execute(ReturnValue &rv)
 		}
 		if (!result) break;
 	}
+
+	// Delete any temporary dialogs
+	deleteDialogs();
+	
 	// Perform any finalisation commands related to filter trees
 	if (isFilter())
 	{
@@ -996,21 +1000,11 @@ TreeGui *Tree::createDialog(const char *title)
 	return dialog;
 }
 
-// Delete specified temporary dialog
-bool Tree::deleteDialog(TreeGui *dialog)
+// Delete temporary dialogs
+void Tree::deleteDialogs()
 {
-	// Check that this is not the defaultDialog
-	if (dialog == &defaultDialog_)
+	while (dialogs_.first() != NULL)
 	{
-		msg.print("Error: Cannot delete the default dialog.\n");
-		return FALSE;
+		dialogs_.removeLast();
 	}
-	// Search for specified dialog in list
-	if (dialogs_.contains(dialog))
-	{
-		dialogs_.remove(dialog);
-		return TRUE;
-	}
-	msg.print("Error: Specified dialog '%s' is not owned by this Tree (%s).\n", dialog->name(), name_.get());
-	return FALSE;
 }

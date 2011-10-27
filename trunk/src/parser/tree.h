@@ -225,8 +225,8 @@ class Tree
 	TreeGui &defaultDialog();
 	// Create and return new, temporary dialog
 	TreeGui *createDialog(const char *title = NULL);
-	// Delete specified temporary dialog
-	bool deleteDialog(TreeGui *dialog);
+	// Delete specified temporary dialogs
+	void deleteDialogs();
 
 
 	/*

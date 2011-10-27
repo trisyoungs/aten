@@ -314,7 +314,7 @@ bool PartitioningScheme::initialise()
 	if (partitionOptionsFunction_)
 	{
 		msg.print(Messenger::Verbose, "  --> Found 'partitionOptions' function in partitioning scheme '%s'.\n", name_.get());
-		partitionNameNode_.setFunction(partitionNameFunction_);
+		partitionOptionsNode_.setFunction(partitionOptionsFunction_);
 		hasOptions_ = TRUE;
 	}
 	else hasOptions_ = FALSE;
@@ -464,7 +464,9 @@ bool PartitioningScheme::showOptions()
 {
 	if (!hasOptions_) return TRUE;
 	ReturnValue rv;
+	printf("HERE\n");
 	partitionOptionsNode_.execute(rv);
+	printf("NOW HERE.\n");
 	return rv.asBool();
 }
 
