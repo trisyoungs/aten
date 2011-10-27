@@ -179,7 +179,8 @@ PartitioningScheme::PartitioningScheme()
 	// Private variables
 	partitionFunction_ = NULL;
 	partitionNameFunction_ = NULL;
-	
+	partitionOptionsFunction_ = NULL;
+
 	// Setup local UserCommandNodes
 	partitionFunctionNode_.setParent(&tree_);
 	partitionFunctionNode_.addArgument(&xVariable_);
@@ -187,6 +188,7 @@ PartitioningScheme::PartitioningScheme()
 	partitionFunctionNode_.addArgument(&zVariable_);
 	partitionNameNode_.setParent(&tree_);
 	partitionNameNode_.addArgument(&idVariable_);
+	partitionOptionsNode_.setParent(&tree_);
 }
 
 // Destructor
@@ -464,9 +466,7 @@ bool PartitioningScheme::showOptions()
 {
 	if (!hasOptions_) return TRUE;
 	ReturnValue rv;
-	printf("HERE\n");
 	partitionOptionsNode_.execute(rv);
-	printf("NOW HERE.\n");
 	return rv.asBool();
 }
 

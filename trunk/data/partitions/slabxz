@@ -13,13 +13,10 @@ int npartitions = 2;
 global double start = 0.4, end = 0.6;
 int partitionOptions()
 {
-	Dialog ui = defaultDialog();
-	if (!ui.created)
-	{
-		ui.verticalFill = TRUE;
-		ui.addDoubleSpin("start", "Start", 0.0, 1.0, 0.1, start);
-		ui.addDoubleSpin("end", "End", 0.0, 1.0, 0.1, end);
-	}
+	Dialog ui = createDialog("SlabXZ Scheme Options");
+	ui.verticalFill = TRUE;
+	ui.addDoubleSpin("start", "Start", 0.0, 1.0, 0.1, start);
+	ui.addDoubleSpin("end", "End", 0.0, 1.0, 0.1, end);
 	if (ui.show())
 	{
 		start = ui.asInteger("start");
