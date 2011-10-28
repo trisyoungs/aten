@@ -393,19 +393,19 @@ int TreeGuiWidget::valueI()
 }
 
 // Return current double minimum
-int TreeGuiWidget::minimumD()
+double TreeGuiWidget::minimumD()
 {
 	return minimumD_;
 }
 
 // Return current double maximum
-int TreeGuiWidget::maximumD()
+double TreeGuiWidget::maximumD()
 {
 	return maximumD_;
 }
 
 // Return current double value
-int TreeGuiWidget::valueD()
+double TreeGuiWidget::valueD()
 {
 	return valueD_;
 }
@@ -822,7 +822,7 @@ TreeGuiWidget *TreeGuiWidget::addDoubleSpin(const char *name, const char *label,
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL)
 	{
-		widget->setQtWidgetObject(parent_->qtTreeGui()->addIntegerSpin(widget, label, step));
+		widget->setQtWidgetObject(parent_->qtTreeGui()->addDoubleSpin(widget, label, step));
 		addWidget(widget, l, t, xw, xh);
 	}
 	msg.exit("TreeGuiWidget::addDoubleSpin");
@@ -1465,6 +1465,6 @@ Vec3<double> TreeGui::asVec3(const char *name1, const char *name2, const char *n
 bool TreeGui::execute()
 {
 // 	printf("EXECUTING TREE DIALOG %p nWidgets = %i, qtTreeGui_ = %p\n", this, widgets_.nItems(), qtTreeGui_);
-	if ((widgets_.nItems() > 0) && (qtTreeGui_ != NULL)) return qtTreeGui_->execute();
+	if ((widgets_.nItems() > 0) && (qtTreeGui_ != NULL)) return qtTreeGui_->execute(text());
 	else return TRUE;
 }

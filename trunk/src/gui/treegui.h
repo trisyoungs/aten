@@ -163,8 +163,8 @@ class AtenTreeGuiDialog : public QDialog
 	QtWidgetObject *addStack(TreeGuiWidget *widget);
 	// Create new tab widget
 	QtWidgetObject *addTabs(TreeGuiWidget *widget);
-	// Execute (show) dialog
-	bool execute();
+	// Execute (show) dialog with supplied title
+	bool execute(const char *title);
 
 
 	/*

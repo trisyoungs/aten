@@ -190,11 +190,11 @@ class TreeGuiWidget
 	// Return current integer value
 	int valueI();
 	// Return current double minimum
-	int minimumD();
+	double minimumD();
 	// Return current double maximum
-	int maximumD();
+	double maximumD();
 	// Return current double value
-	int valueD();
+	double valueD();
 	// Return current text
 	const char *text();
 	// Return head of items list
