@@ -368,7 +368,7 @@ bool Tree::executeWrite(const char *filename, ReturnValue &rv)
 	
 	// If we were *not* using directOutput_ and the commands were executed successfully, write the cached data here
 	if (result) result = parser_->commitCache();
-	else msg.print("Command execution generated errors - cached data not written to file.\n");
+	else msg.print("Command execution generated errors or was canceled (through a dialog) - cached data not written to file.\n");
 
 	// Done - tidy up
 	parser_->closeFiles();

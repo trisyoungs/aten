@@ -926,7 +926,7 @@ QtWidgetObject *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
 }
 
 // Execute (show) the custom dialog
-bool AtenTreeGuiDialog::execute()
+bool AtenTreeGuiDialog::execute(const char* title)
 {
 	msg.enter("AtenTreeGuiDialog::execute");
 	if (parentTree_ == NULL)
@@ -935,6 +935,11 @@ bool AtenTreeGuiDialog::execute()
 		msg.exit("AtenTreeGuiDialog::execute");
 		return FALSE;
 	}
+
+	// Set the title of the dialog...
+	setWindowTitle(title);
+	
+	// Run it...
 	updating_ = FALSE;
 	bool result = (exec() == 1 ? TRUE : FALSE);
 	updating_ = TRUE;

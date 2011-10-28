@@ -199,10 +199,11 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 					Dnchar title(-1,"Expression for Pattern '%s'", p->name());
 					TreeGui &ui = dialog.defaultDialog();
 					ui.setProperty(TreeGuiWidgetEvent::TextProperty, title.get());
-					ui.addLabel("", "One or more terms are missing from a pattern expression:", 1,1);
+					ui.addLabel("", "One or more forcefield terms are not availablefor this pattern:", 1, 1);
 					ui.addRadioGroup("choice");
-					ui.addRadioButton("cancel", "Cancel expression generation", "choice", 1, 1,2);
-					ui.addRadioButton("dummy", "Add in dummy parameters to complete expression (type=ignore)", "choice", 0, 1,3);
+					ui.addRadioButton("cancel", "Cancel expression generation", "choice", 1, 1, 2);
+					ui.addRadioButton("dummy", "Add dummy parameters to complete expression for this pattern", "choice", 0, 1, 3);
+					ui.addRadioButton("alldummy", "Add dummy parameters to complete expression for this pattern and any others which need it", "choice", 0, 1, 4);
 					
 					// Run the custom dialog
 					if (dialog.defaultDialog().execute())
@@ -217,6 +218,12 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 						{
 							// Flag generation of dummy terms in expression, and let the loop cycle
 							p->setAddDummyTerms(TRUE);
+							done = FALSE;
+						}
+						else if (choice == 3)
+						{
+							// Flag generation of dummy terms in expression for all patterns, and let the loop cycle
+							allowDummy = TRUE;
 							done = FALSE;
 						}
 					}
