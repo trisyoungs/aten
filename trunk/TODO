@@ -26,6 +26,7 @@
 <li>Glyph Undo/Redo</li>
 <li>Allow (somehow) rotation of fragments without drawing them *or* rotating main view</li>
 <li>Add on glyph selection methods (a la box select with the mouse)</li>
+<li>Store current dialog widget values so that, if canceled in the GUI, they may be restored</li>
 </ul>
 
 <h1>Filter TODO</h1>
@@ -45,11 +46,6 @@
 <li>Chapter / Section on Basic View / Imaging.</li>
 <li>Section on partitioning scheme files</li>
 <li>New CLI option : --dialogs</li>
-</ul>
-
-<h1>Branch TODO</h1>
-<ul>
-<li>Store current dialog widget values so that, if canceled in the GUI, they may be restored</li>
-<li>Update manual - remove defunct commands, add new variable definitions for Dialog & Widget, rename all commands to follow C++ conventions.</li>
+<li>New dialog code - remove defunct commands, add new variable definitions for Dialog & Widget, rename all commands to follow C++ conventions.</li>
 </ul>
 
