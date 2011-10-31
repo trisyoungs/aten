@@ -486,10 +486,18 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 	{
 		// Widgets for which only 'text' value is valid
 		case (TreeGuiWidget::DialogWidget):
-		case (TreeGuiWidget::EditWidget):
 		case (TreeGuiWidget::LabelWidget):
 		case (TreeGuiWidget::GroupWidget):
 			if (property == TreeGuiWidgetEvent::TextProperty)
+			{
+				text_ = rv.asString();
+				propertyChanged_[TreeGuiWidgetEvent::TextProperty] = TRUE;
+			}
+			else done = FALSE;
+			break;
+		// Edit widget - 'text' and 'value' do the same thing
+		case (TreeGuiWidget::EditWidget):
+			if ((property == TreeGuiWidgetEvent::TextProperty) || (property == TreeGuiWidgetEvent::ValueProperty))
 			{
 				text_ = rv.asString();
 				propertyChanged_[TreeGuiWidgetEvent::TextProperty] = TRUE;
