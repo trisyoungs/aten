@@ -469,8 +469,8 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		page.addCombo("statpt_hess", "HESS", "GUESS,READ,RDAB,RDALL,CALC", 1, 1, 2);
 		page.addIntegerSpin("statpt_ihrep", "IHREP", 0, 1000, 1, 0, 3, 2);
 		page.addDoubleSpin("statpt_ststep", "STSTEP", 0.0, 1.0, 0.005, 0.01, 5, 2);
-		page.addCheck("statpt_hssend", "HSSEND", 0, 6, 2);
-		page.addCheck("statpt_stpt", "Stationary Point", 0, 7, 2);
+		page.addCheck("statpt_hssend", "HSSEND", 0, 7, 2);
+		page.addCheck("statpt_stpt", "Stationary Point", 0, 8, 2);
 		page.addEdit("statpt_ifreez", "IFREEZ", "", 1, 3, 6);
 
 		# Intrinsic reaction coordinate run ($IRC)

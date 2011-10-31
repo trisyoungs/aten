@@ -167,7 +167,7 @@ void QtWidgetObject::updateQt()
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::EditWidget)
 	{
-		QTextEdit *edit = static_cast<QTextEdit*>(qWidget_);
+		QLineEdit *edit = static_cast<QLineEdit*>(qWidget_);
 		if (!edit) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QTextEdit.\n");
 		else
 		{
