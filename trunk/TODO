@@ -1,6 +1,8 @@
 <h1>Known Bugs</h1>
 
 <ul>
+<li>Dialog widget values cannot easily bet set now - create widgets at parse time?</li>
+<li>Dialogs are displayed after load when loading models from CLI, and dialog 'ghost' always appears no matter what</li>
 <li>Closing a loaded forcefield while atom type names are displayed on atoms causes crash</li>
 <li>Function arguments can be passed to array-requiring paths without complaint (e.g. old p.com, now a function)</li>
 <li>Rebonding model also folds atoms, making --nofold irrelevant</li>
@@ -16,6 +18,8 @@
 <h1>Current TODO</h1>
 
 <ul>
+<li>Context-sensitivity of messages - e.g. pattern name (select pattern atoms), failed pattern creation (select bad atom)</li>
+<li>Easier access (menu items?) to atom shift and reorder commands</li>
 <li>Saving of movies for vibrations.</li>
 <li>PovRay export</li>
 <li>Save forcefield needs to be able to distinguish between types and uatypes, and 'convert' data is not yet written.</li>

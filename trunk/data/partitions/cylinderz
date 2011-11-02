@@ -10,7 +10,7 @@ int finegrid[3] = { 100,100,100 };
 int npartitions = 2;
 
 # A partition may contain options set through the defaultDialog as follows
-global double x = 0.5, y = 0.5, r = 0.1;
+global double x = 0.5, y = 0.5, r = 0.2;
 int partitionOptions()
 {
 	Dialog ui = createDialog("CylinderX Scheme Options");
@@ -20,9 +20,9 @@ int partitionOptions()
 	ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
 	if (ui.show())
 	{
-		x = ui.asInteger("x");
-		y = ui.asInteger("y");
-		r = ui.asInteger("r");
+		x = ui.asDouble("x");
+		y = ui.asDouble("y");
+		r = ui.asDouble("r");
 		return TRUE;
 	}
 	else return FALSE;

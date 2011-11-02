@@ -137,16 +137,17 @@ bool Aten::openPartition(const char *filename)
 	// Construct partitions Program...
 	PartitioningScheme *ps = partitioningSchemes_.add();
 	bool success = ps->schemeDefinition().generateFromFile(filename, filename, FALSE);
-	if (success) success = ps->initialise();
+// 	if (success) success = 
 	
-	if (success)
+	if ((!success) || (!ps->initialise()))
 	{
-		msg.print("Failed to load Partitions from '%s'...\n", filename);
+		msg.print("Failed to load partition from '%s'...\n", filename);
 		failedPartitioningSchemes_.add()->set( filename );
 		partitioningSchemes_.remove(ps);
 		msg.exit("Aten::openPartition");
 		return FALSE;
 	}
+	
 	msg.exit("Aten::openPartition");
 	return TRUE;
 }
