@@ -321,6 +321,13 @@ bool PartitioningScheme::initialise()
 	}
 	else hasOptions_ = FALSE;
 
+	// Run main partition tree so all variables / globals are set
+	if (!schemeDefinition_.mainProgram()->execute(rv))
+	{
+		msg.print("Error: Failed to run through partitioning scheme code.\n");
+		return FALSE;
+	}
+
 	// Now can set up basic partition list
 	partitions_.clear();
 	for (int n = 0; n<nparts; ++n)
