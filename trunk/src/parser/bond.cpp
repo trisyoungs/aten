@@ -83,7 +83,7 @@ StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'bond&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'Bond&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("BondVariable::accessorSearch");
 			return NULL;
@@ -91,7 +91,7 @@ StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'bond&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'Bond&' function '%s'.\n", s);
 			msg.exit("BondVariable::accessorSearch");
 			return NULL;
 		}
@@ -100,7 +100,7 @@ StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'bond&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'Bond&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -114,7 +114,14 @@ StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::BondData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'Bond&' array member '%s'.\n", s);
+			msg.exit("BondVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::BondData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("BondVariable::accessorSearch");
 	return result;

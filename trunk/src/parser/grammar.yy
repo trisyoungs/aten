@@ -62,16 +62,6 @@ int globalDeclarations;
 %right UPLUS UMINUS '!'
 %left PLUSPLUS MINUSMINUS
  
-/* %left AND OR */
-/* %left '=' PEQ MEQ TEQ DEQ  */
-/* %left GEQ LEQ EQ NEQ '>' '<' */
-/* %left '+' '-' */
-/* %left '*' '/' '%'  */
-/* %right UMINUS '?' ':' */
-/* %left PLUSPLUS MINUSMINUS */
-/* %right '!' */
-/* %right '^' */
-
 %type <node> constant expression expressionlist variable statement flowstatement statementlist block blockment assignment
 %type <node> declaration functiondeclaration caselabel caselist
 %type <node> ARRAYCONST function userfunction assignedvariablename variablelistitem variablelist typedvariablelistitem typedvariablelist

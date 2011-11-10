@@ -83,7 +83,7 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'glyphdata&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'GlyphData&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("GlyphDataVariable::accessorSearch");
 			return NULL;
@@ -91,7 +91,7 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'glyphdata&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'GlyphData&' function '%s'.\n", s);
 			msg.exit("GlyphDataVariable::accessorSearch");
 			return NULL;
 		}
@@ -100,7 +100,7 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'glyphdata&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'GlyphData&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -114,7 +114,14 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::GlyphDataData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'GlyphData&' array member '%s'.\n", s);
+			msg.exit("GlyphDataVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::GlyphDataData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("GlyphDataVariable::accessorSearch");
 	return result;

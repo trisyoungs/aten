@@ -877,6 +877,12 @@ TreeNode *Tree::finalisePath()
 bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("Tree::expandPath");
+	// Check if both an arrayindex and an arglist were supplied, which is invalid
+	if ((arrayindex != NULL) && (arglist != NULL))
+	{
+		printf("Internal Error: Both an array index and an argument list were provided for a path step.\n");
+		return FALSE;
+	}
 	// Get last item on path stack
 	Refitem<VariableNode,TreeNode*> *ri = pathStack_.last();
 	if (ri == NULL)
@@ -885,6 +891,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
 		return FALSE;
 	}
 	msg.print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...\n", name->get(), ri->item->nArgs()+1, ri->item->name());
+	
 	// If the last step was an array and an array index was not give, we complain!
 	if (ri->item != ri->data)
 	{
@@ -896,6 +903,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
 			return FALSE;
 		}
 	}
+	
 	// Find next step accessor
 	StepNode *result = ri->data->findAccessor(name->get(), arrayindex, arglist);
 	// If we found a valid accessor, update the pathstack entry

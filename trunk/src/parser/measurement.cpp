@@ -84,7 +84,7 @@ StepNode *MeasurementVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'measurement&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'Measurement&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("MeasurementVariable::accessorSearch");
 			return NULL;
@@ -92,7 +92,7 @@ StepNode *MeasurementVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'measurement&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'Measurement&' function '%s'.\n", s);
 			msg.exit("MeasurementVariable::accessorSearch");
 			return NULL;
 		}
@@ -101,7 +101,7 @@ StepNode *MeasurementVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'measurement&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'Measurement&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -115,7 +115,14 @@ StepNode *MeasurementVariable::accessorSearch(const char *s, TreeNode *arrayinde
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::MeasurementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'Measurement&' array member '%s'.\n", s);
+			msg.exit("MeasurementVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::MeasurementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("MeasurementVariable::accessorSearch");
 	return result;

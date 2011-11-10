@@ -96,7 +96,7 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'ffatom&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'FFAtom&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("ForcefieldAtomVariable::accessorSearch");
 			return NULL;
@@ -104,7 +104,7 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'ffatom&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'FFAtom&' function '%s'.\n", s);
 			msg.exit("ForcefieldAtomVariable::accessorSearch");
 			return NULL;
 		}
@@ -113,7 +113,7 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'ffatom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'FFAtom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -127,7 +127,14 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'FFAtom&' array member '%s'.\n", s);
+			msg.exit("ForcefieldAtomVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("ForcefieldAtomVariable::accessorSearch");
 	return result;

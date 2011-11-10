@@ -1,6 +1,6 @@
 /*
 	*** Forcefield Variable and Array
-	*** src/parser/forcefield.cpp
+	*** src/parser/Forcefield.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -100,7 +100,7 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'forcefield&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'Forcefield&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("ForcefieldVariable::accessorSearch");
 			return NULL;
@@ -108,7 +108,7 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'forcefield&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'Forcefield&' function '%s'.\n", s);
 			msg.exit("ForcefieldVariable::accessorSearch");
 			return NULL;
 		}
@@ -117,7 +117,7 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'forcefield&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'Forcefield&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -131,7 +131,14 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'Forcefield&' array member '%s'.\n", s);
+			msg.exit("ForcefieldVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("ForcefieldVariable::accessorSearch");
 	return result;
@@ -312,7 +319,7 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Forcefield *ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
-	// Construct temporary bundle object containing our forcefield pointer
+	// Construct temporary bundle object containing our Forcefield pointer
 	Bundle bundle(ptr);
 	if (result) switch (i)
 	{

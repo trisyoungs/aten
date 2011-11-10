@@ -101,7 +101,7 @@ StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'dialog&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'Dialog&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("DialogVariable::accessorSearch");
 			return NULL;
@@ -109,7 +109,7 @@ StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'dialog&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'Dialog&' function '%s'.\n", s);
 			msg.exit("DialogVariable::accessorSearch");
 			return NULL;
 		}
@@ -118,7 +118,7 @@ StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'dialog&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'Dialog&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -132,7 +132,14 @@ StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::DialogData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'Dialog&' array member '%s'.\n", s);
+			msg.exit("DialogVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::DialogData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("DialogVariable::accessorSearch");
 	return result;

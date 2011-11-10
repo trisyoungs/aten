@@ -1,6 +1,6 @@
 /*
 	*** ColourScalePoint Variable and Array
-	*** src/parser/colourscalepoint.cpp
+	*** src/parser/ColourScalePoint.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -78,7 +78,7 @@ StepNode *ColourScalePointVariable::accessorSearch(const char *s, TreeNode *arra
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'colourscalepoint&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'ColourScalePoint&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("ColourScalePointVariable::accessorSearch");
 			return NULL;
@@ -86,7 +86,7 @@ StepNode *ColourScalePointVariable::accessorSearch(const char *s, TreeNode *arra
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'colourscalepoint&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'ColourScalePoint&' function '%s'.\n", s);
 			msg.exit("ColourScalePointVariable::accessorSearch");
 			return NULL;
 		}
@@ -95,7 +95,7 @@ StepNode *ColourScalePointVariable::accessorSearch(const char *s, TreeNode *arra
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'colourscalepoint&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'ColourScalePoint&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -109,7 +109,14 @@ StepNode *ColourScalePointVariable::accessorSearch(const char *s, TreeNode *arra
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::ColourScalePointData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'ColourScalePoint&' array member '%s'.\n", s);
+			msg.exit("ColourScalePointVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::ColourScalePointData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("ColourScalePointVariable::accessorSearch");
 	return result;

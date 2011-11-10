@@ -1,6 +1,6 @@
 /*
 	*** ColourScale Variable and Array
-	*** src/parser/colourscale.cpp
+	*** src/parser/ColourScale.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -81,7 +81,7 @@ StepNode *ColourScaleVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'colourscale&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'ColourScale&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("ColourScaleVariable::accessorSearch");
 			return NULL;
@@ -89,7 +89,7 @@ StepNode *ColourScaleVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'colourscale&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'ColourScale&' function '%s'.\n", s);
 			msg.exit("ColourScaleVariable::accessorSearch");
 			return NULL;
 		}
@@ -98,7 +98,7 @@ StepNode *ColourScaleVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'colourscale&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'ColourScale&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -112,7 +112,14 @@ StepNode *ColourScaleVariable::accessorSearch(const char *s, TreeNode *arrayinde
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::ColourScaleData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'ColourScale&' array member '%s'.\n", s);
+			msg.exit("ColourScalelVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::ColourScaleData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("ColourScaleVariable::accessorSearch");
 	return result;
@@ -162,7 +169,7 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (ColourScaleVariable::Point):
 			if ((arrayIndex < 1) || (arrayIndex > ptr->nPoints()))
 			{
-				msg.print("Array index %i is out of range for 'points' member in colourscale.\n");
+				msg.print("Array index %i is out of range for 'points' member in ColourScale.\n");
 				result = FALSE;
 			}
 			else rv.set(VTypes::ColourScalePointData, ptr->point(arrayIndex-1));
