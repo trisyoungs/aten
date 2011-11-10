@@ -19,7 +19,7 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 	dialog ui = defaultDialog();
 	if (!ui.created)
 	{
-		ui.title = "DL_POLY Export Options";
+		ui.title = "DL_POLY Import Options";
 		widget group, w, tabs, page;
 		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
 		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);

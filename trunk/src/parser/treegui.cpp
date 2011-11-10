@@ -477,6 +477,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 	{
 		if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
 		checkWidgetEvents();
+		msg.exit("TreeGuiWidget::setProperty");
 		return TRUE;
 	}
 
@@ -486,6 +487,14 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 	{
 		// Widgets for which only 'text' value is valid
 		case (TreeGuiWidget::DialogWidget):
+			if (property == TreeGuiWidgetEvent::TextProperty)
+			{
+				text_ = rv.asString();
+				msg.exit("TreeGuiWidget::setProperty");
+				return TRUE;
+			}
+			else done = FALSE;
+			break;
 		case (TreeGuiWidget::LabelWidget):
 		case (TreeGuiWidget::GroupWidget):
 			if (property == TreeGuiWidgetEvent::TextProperty)
@@ -1154,7 +1163,7 @@ double TreeGuiWidget::asDouble()
 		case (TreeGuiWidget::RadioButtonWidget):
 		case (TreeGuiWidget::TabWidget):
 		case (TreeGuiWidget::StackWidget):
-			msg.print("Warning: Converting integer value to double when retrieving doublespin widget (%s).\n", name_.get());
+			msg.print("Warning: Converting integer value to double when retrieving widget value (%s).\n", name_.get());
 			result = double(valueI_);
 			break;
 		case (TreeGuiWidget::EditWidget):
