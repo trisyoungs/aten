@@ -29,7 +29,6 @@ manual.
 
 2) Run './configure' without options use standard locations and build in the Qt GUI.
 	Use --prefix to specify the install location
-	Use --with-gui to specify a different gui (currently 'qt', 'gtk', or 'none')
 	Use --with-qt=framework to use native Qt installation from TrollTech on Macs,
 		otherwise use --with-qt=fink to use the Fink-installed version. Leave
 		blank to take your chances!

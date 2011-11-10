@@ -124,7 +124,14 @@ StepNode *WidgetVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::WidgetData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'Widget&' array member '%s'.\n", s);
+			msg.exit("WidgetVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::WidgetData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("WidgetVariable::accessorSearch");
 	return result;

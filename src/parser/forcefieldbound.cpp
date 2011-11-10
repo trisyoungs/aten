@@ -88,7 +88,7 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *array
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'ffbound&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'FFBound&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("ForcefieldBoundVariable::accessorSearch");
 			return NULL;
@@ -96,7 +96,7 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *array
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'ffbound&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'FFBound&' function '%s'.\n", s);
 			msg.exit("ForcefieldBoundVariable::accessorSearch");
 			return NULL;
 		}
@@ -105,7 +105,7 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *array
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'ffbound&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'FFBound&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -119,7 +119,14 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *array
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::ForcefieldBoundData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'FFBound&' array member '%s'.\n", s);
+			msg.exit("ForcefieldBoundVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::ForcefieldBoundData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("ForcefieldBoundVariable::accessorSearch");
 	return result;

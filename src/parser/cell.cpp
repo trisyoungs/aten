@@ -105,7 +105,7 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'cell&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'Cell&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("CellVariable::accessorSearch");
 			return NULL;
@@ -113,7 +113,7 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'cell&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'Cell&' function '%s'.\n", s);
 			msg.exit("CellVariable::accessorSearch");
 			return NULL;
 		}
@@ -122,7 +122,7 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'cell&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'Cell&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -136,7 +136,14 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::CellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'Cell&' array member '%s'.\n", s);
+			msg.exit("CellVariable::accessorSearch");
+			return NULL;
+		}
+		result = new StepNode(i, VTypes::CellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("CellVariable::accessorSearch");
 	return result;

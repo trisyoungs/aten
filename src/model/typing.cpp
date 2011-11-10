@@ -137,12 +137,24 @@ bool Model::typeAll()
 	createPatterns();
 	if (!arePatternsValid())
 	{
-		msg.print("Atom typing cannot be performed without valid patterns.\n Check pattern definition.\n");
+		msg.print("Atom typing cannot be performed without valid patterns.\nCheck pattern definition, atom ordering, and bond consistency between atoms, or add the default (1*N) pattern for a quick fix.\n");
 		msg.exit("Model::typeAll");
 		return FALSE;
 	}
-	if (forcefield_ == NULL) msg.print("Typing all patterns in model '%s' (no forcefield associated -- using default)...\n", name_.get());
-	else msg.print("Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
+
+	// If no forcefield is set in this model, grab it from the current default forcefield
+	if (forcefield_ == NULL)
+	{
+		if (aten.currentForcefield() != NULL) setForcefield(aten.currentForcefield());
+		else
+		{
+			msg.print("Error: No forcefield set in model, and no default forcefield is available.\n");
+			msg.exit("Model::typeAll");
+			return FALSE;
+		}
+	}
+	msg.print("Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
+	
 	// Assign forcefield types to atoms
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{

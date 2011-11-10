@@ -144,7 +144,7 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 			{
 				++nfailed[1];
 				printf("Bond potential form '%s' not supported by GROMACS.\n", b.form);
-				writeLineF("%6i %6i   0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.data(1), b.data(2), b.data(3));
+				writeLineF("%6i %6i   0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.data[1], b.data[2], b.data[3]);
 			}
 		}
 
@@ -171,7 +171,7 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 			{
 				++nfailed[2];
 				printf("Angle potential form '%s' not supported by GROMACS.\n", b.form);
-				writeLineF("%6i %6i %6i      0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.data(1), b.data(2), b.data(3));
+				writeLineF("%6i %6i %6i      0   %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.data[1], b.data[2], b.data[3]);
 			}
 		}
 
@@ -198,7 +198,7 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 			{
 				++nfailed[3];
 				printf("Torsion potential form '%s' not supported by GROMACS.\n", b.form);
-				writeLineF("%6i %6i %6i %6i      0   %9.5f %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.data(1), b.data(2), b.data(3), b.data(4));
+				writeLineF("%6i %6i %6i %6i      0   %9.5f %9.5f %9.5f %9.5f\n", b.id[1], b.id[2], b.id[3], b.id[4], b.data[1], b.data[2], b.data[3], b.data[4]);
 			}
 		}
 

@@ -164,14 +164,14 @@ StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'vector' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'Vector' has no member or function named '%s'.\n", s);
 			msg.exit("VectorVariable::accessorSearch");
 			return NULL;
 		}
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'vector' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'Vector' function '%s'.\n", s);
 			msg.exit("VectorVariable::accessorSearch");
 			return NULL;
 		}
@@ -180,7 +180,7 @@ StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'vector' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'Vector' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -193,6 +193,13 @@ StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		{
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
+		}
+		// Were we given an argument list when we didn't want one?
+		if (arglist != NULL)
+		{
+			msg.print("Error: Argument list given to 'Vector&' array member '%s'.\n", s);
+			msg.exit("VectorVariable::accessorSearch");
+			return NULL;
 		}
 		else result = new StepNode(i, VTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
