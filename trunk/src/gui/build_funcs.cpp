@@ -68,27 +68,27 @@ void BuildWidget::showWidget()
 
 void BuildWidget::on_ElementHButton_clicked(bool checked)
 {
-	if (checked) gui.mainWidget()->setSketchElement(1);
+	if (checked) gui.mainCanvas()->setSketchElement(1);
 }
 
 void BuildWidget::on_ElementCButton_clicked(bool checked)
 {
-	if (checked) gui.mainWidget()->setSketchElement(6);
+	if (checked) gui.mainCanvas()->setSketchElement(6);
 }
 
 void BuildWidget::on_ElementNButton_clicked(bool checked)
 {
-	if (checked) gui.mainWidget()->setSketchElement(7);
+	if (checked) gui.mainCanvas()->setSketchElement(7);
 }
 
 void BuildWidget::on_ElementOButton_clicked(bool checked)
 {
-	if (checked) gui.mainWidget()->setSketchElement(8);
+	if (checked) gui.mainCanvas()->setSketchElement(8);
 }
 
 void BuildWidget::on_ElementCustomButton_clicked(bool checked)
 {
-	if (checked) gui.mainWidget()->setSketchElement(customElement_);
+	if (checked) gui.mainCanvas()->setSketchElement(customElement_);
 }
 
 void BuildWidget::on_ElementPickButton_clicked(bool checked)
@@ -102,7 +102,7 @@ void BuildWidget::on_ElementPickButton_clicked(bool checked)
 		customElement_ = newel;
 		// Activate custom element button
 		ui.ElementCustomButton->setChecked(TRUE);
-		gui.mainWidget()->setSketchElement(customElement_);
+		gui.mainCanvas()->setSketchElement(customElement_);
 	}
 }
 
@@ -114,7 +114,7 @@ void BuildWidget::on_DrawAddHModelButton_clicked(bool checked)
 
 void BuildWidget::on_DrawTransmuteSelectionButton_clicked(bool checked)
 {
-	CommandNode::run(Command::Transmute, "i", gui.mainWidget()->sketchElement());
+	CommandNode::run(Command::Transmute, "i", gui.mainCanvas()->sketchElement());
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
@@ -185,11 +185,11 @@ void BuildWidget::on_AddAtomButton_clicked(bool on)
 {
 	if (ui.AddAtomFractionalCheck->isChecked())
 	{
-		CommandNode::run(Command::NewAtomFrac, "iddd", gui.mainWidget()->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+		CommandNode::run(Command::NewAtomFrac, "iddd", gui.mainCanvas()->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
 	else
 	{
-		CommandNode::run(Command::NewAtom, "iddd", gui.mainWidget()->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+		CommandNode::run(Command::NewAtom, "iddd", gui.mainCanvas()->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
 	gui.update(GuiQt::CanvasTarget);
 }
@@ -222,10 +222,10 @@ void BuildWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.BuildButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget()->postRedisplay();
+	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 
 	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isBuildWidgetAction(gui.mainWidget()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
+	if (UserAction::isBuildWidgetAction(gui.mainCanvas()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
 
 	event->accept();
 }

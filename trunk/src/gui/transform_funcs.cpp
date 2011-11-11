@@ -94,7 +94,7 @@ void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_RotatePickAxisButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::RotatePickAxisAction,2,&rotatePickAxisButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::RotatePickAxisAction,2,&rotatePickAxisButton_callback);
 }
 
 void TransformWidget::rotateSelection(double direction)
@@ -174,19 +174,19 @@ void transformPickCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_TransformPickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::TransformPickAAction,2,&transformPickAButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::TransformPickAAction,2,&transformPickAButton_callback);
 }
 
 void TransformWidget::on_TransformPickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::TransformPickBAction,2,&transformPickBButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::TransformPickBAction,2,&transformPickBButton_callback);
 }
 
 void TransformWidget::on_TransformPickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::TransformPickCAction,2,&transformPickCButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::TransformPickCAction,2,&transformPickCButton_callback);
 }
 
 void TransformWidget::on_TransformNormaliseAButton_clicked(bool on)
@@ -385,19 +385,19 @@ void convertSourcePickCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_ConvertSourcePickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::ConvertSourcePickAAction,2,&convertSourcePickAButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::ConvertSourcePickAAction,2,&convertSourcePickAButton_callback);
 }
 
 void TransformWidget::on_ConvertSourcePickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::ConvertSourcePickBAction,2,&convertSourcePickBButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::ConvertSourcePickBAction,2,&convertSourcePickBButton_callback);
 }
 
 void TransformWidget::on_ConvertSourcePickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::ConvertSourcePickCAction,2,&convertSourcePickCButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::ConvertSourcePickCAction,2,&convertSourcePickCButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool on)
@@ -572,19 +572,19 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_ConvertTargetPickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::ConvertTargetPickAAction,2,&convertTargetDefineAButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::ConvertTargetPickAAction,2,&convertTargetDefineAButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetPickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::ConvertTargetPickBAction,2,&convertTargetDefineBButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::ConvertTargetPickBAction,2,&convertTargetDefineBButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetPickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::ConvertTargetPickCAction,2,&convertTargetDefineCButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::ConvertTargetPickCAction,2,&convertTargetDefineCButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool on)
@@ -701,10 +701,10 @@ void TransformWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.TransformButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget()->postRedisplay();
+	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 
 	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isTransformWidgetAction(gui.mainWidget()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
+	if (UserAction::isTransformWidgetAction(gui.mainCanvas()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
 
 	event->accept();
 }

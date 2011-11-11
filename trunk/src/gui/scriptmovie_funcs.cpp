@@ -78,7 +78,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		return;
 	}
 	
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
 	int width, height;
 	
 	Tree dialog;
@@ -138,7 +138,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	
 	// Temporarily adjust label size...
 	int oldlabelsize = prefs.labelSize();
-	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainWidget()->height()) ));
+	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainCanvas()->height()) ));
 	prefs.setLabelSize(newlabelsize);
 
 	int progid = progress.initialise("Saving scripted movie frames...", -1, FALSE);
@@ -216,7 +216,7 @@ void ScriptMovieWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.ScriptMovieButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget()->postRedisplay();
+	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 
 	event->accept();
 }

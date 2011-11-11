@@ -95,37 +95,37 @@ void CellTransformWidget::on_CellReplicateTrimCheck_clicked(bool checked)
 void CellTransformWidget::on_CellReplicateNegXSpin_valueChanged(double d)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicateNegYSpin_valueChanged(double d)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicateNegZSpin_valueChanged(double d)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosXSpin_valueChanged(double d)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosYSpin_valueChanged(double d)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosZSpin_valueChanged(double d)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 /*
@@ -191,37 +191,37 @@ void CellTransformWidget::on_MillerSelectButton_clicked(bool checked)
 void CellTransformWidget::on_MillerHSpin_valueChanged(int value)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_MillerKSpin_valueChanged(int value)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_MillerLSpin_valueChanged(int value)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_MillerInRadio_clicked(bool checked)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::on_MillerOutRadio_clicked(bool checked)
 {
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void CellTransformWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.CellTransformButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget()->postRedisplay();
+	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

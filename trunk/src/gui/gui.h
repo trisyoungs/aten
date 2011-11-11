@@ -145,7 +145,7 @@ class GuiQt
 	// Main window
 	AtenForm *mainWindow_;
 	// Main rendering canvas
-	TCanvas *mainWidget_;
+	TCanvas *mainCanvas_;
 	// Original QGLContext, created in initialise()
 	QGLContext *mainContext_;
 	// Type of application initialised
@@ -153,7 +153,7 @@ class GuiQt
 
 	public:
 	// Return main view Widget
-	TCanvas *mainWidget();
+	TCanvas *mainCanvas();
 	// Main application structure
 	QApplication *application();
 	// Return type of application initialised

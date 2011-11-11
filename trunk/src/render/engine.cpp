@@ -728,7 +728,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	if (activePrimitiveLists_[RenderEngine::BasicObject] || activePrimitiveLists_[RenderEngine::AtomSelectionObject]) renderModel(source);
 	// Draw model glyphs
 	if (activePrimitiveLists_[RenderEngine::GlyphObject]) renderGlyphs(source);
-	renderTextGlyphs(source, gui.mainWidget());
+	renderTextGlyphs(source, gui.mainCanvas());
 	// Draw model grids
 	if (activePrimitiveLists_[RenderEngine::GridObject]) renderGrids(source);
 	
@@ -738,7 +738,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	if (gui.exists())
 	{
 		// Render embellshments for current UserAction
-		renderUserActions(source, gui.mainWidget());
+		renderUserActions(source, gui.mainCanvas());
 		// Render extras arising from open tool windows (current model only)
 		if (currentModel) renderWindowExtras(source);
 	}
@@ -746,7 +746,7 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 	// If the stick primitives were regenerated, need to create a new instance (after popping the old one)
 	if (rebuildSticks_)
 	{
-		const QGLContext *context = gui.mainWidget()->context();
+		const QGLContext *context = gui.mainCanvas()->context();
 		stickLines_.popInstance(context);
 		stickSelectedLines_.popInstance(context);
 		stickLines_.pushInstance(context);

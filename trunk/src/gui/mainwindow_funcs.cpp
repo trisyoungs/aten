@@ -219,7 +219,7 @@ void AtenForm::updateWindowTitle()
 void AtenForm::cancelCurrentMode()
 {
 	// If the previous mode was DrawFragment, flag a complete redraw of the current model
-	if (gui.mainWidget()->selectedMode() == UserAction::DrawFragmentAction) aten.currentModel()->changeLog.add(Log::Style);
+	if (gui.mainCanvas()->selectedMode() == UserAction::DrawFragmentAction) aten.currentModel()->changeLog.add(Log::Style);
 	ui.actionSelectAtoms->trigger();
 }
 
@@ -258,7 +258,7 @@ void AtenForm::loadRecent()
 		ReturnValue rv;
 		filter->executeRead(filename.get(), rv);
 		aten.currentModel()->changeLog.add(Log::Camera);
-		gui.mainWidget()->postRedisplay();
+		gui.mainCanvas()->postRedisplay();
 	}
 	else
 	{
@@ -361,8 +361,8 @@ void AtenForm::uaButtonClicked(int id)
 	else if (button->isChecked())
 	{
 		// Activate the relevant mode, bu tonly if it isn't already active
-		if (gui.mainWidget()->selectedMode() == (UserAction::Action) id) return;
-		gui.mainWidget()->setSelectedMode((UserAction::Action) id);
+		if (gui.mainCanvas()->selectedMode() == (UserAction::Action) id) return;
+		gui.mainCanvas()->setSelectedMode((UserAction::Action) id);
 	}
 }
 

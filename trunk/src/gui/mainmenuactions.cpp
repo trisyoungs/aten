@@ -210,7 +210,7 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Get geometry from user - initial setup is to use current canvas geometry
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
 	int width, height;
 	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
 	bool currentframemodel, currentframeview, viewglobe;
@@ -300,14 +300,14 @@ void AtenForm::on_actionFileQuit_triggered(bool checked)
 void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Command::Undo, "");
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::CellTarget+GuiQt::GlyphsTarget);
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Command::Redo, "");
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::CellTarget+GuiQt::GlyphsTarget);
 }
 
@@ -326,7 +326,7 @@ void AtenForm::on_actionEditCopy_triggered(bool checked)
 void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
 	CommandNode::run(Command::Paste, "");
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
 }
 
@@ -346,7 +346,7 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 	{
 		Vec3<double> r = ui.asVec3("newx", "newy", "newz");
 		CommandNode::run(Command::Paste, "ddd", r.x, r.y, r.z);
-		gui.mainWidget()->postRedisplay();
+		gui.mainCanvas()->postRedisplay();
 		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
 	}
 }
@@ -420,21 +420,21 @@ void AtenForm::on_actionEditQuickCommand_triggered(bool on)
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Zoom out
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Reset view
 void AtenForm::on_actionViewReset_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->resetView();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set perspective view
@@ -442,14 +442,14 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
-	gui.mainWidget()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay(TRUE);
 }
 
 // Set orthographic view
 void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
-	gui.mainWidget()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay(TRUE);
 }
 
 // Set view along cartesian axis supplied
@@ -457,7 +457,7 @@ void AtenForm::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified axis
 	aten.currentModelOrFrame()->viewAlong(x,y,z);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set view along Cell axis supplied
@@ -465,7 +465,7 @@ void AtenForm::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified cell axis
 	aten.currentModelOrFrame()->viewAlongCell(x,y,z);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void AtenForm::on_actionViewSetCartesianPosX_triggered(bool checked)
@@ -534,7 +534,7 @@ void AtenForm::on_actionSchemeElement_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set current colouring scheme to charge
@@ -543,7 +543,7 @@ void AtenForm::on_actionSchemeCharge_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set current colouring scheme to force
@@ -552,7 +552,7 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set current colouring scheme to velocity
@@ -561,7 +561,7 @@ void AtenForm::on_actionSchemeVelocity_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::VelocityScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set current colouring scheme to custom
@@ -570,7 +570,7 @@ void AtenForm::on_actionSchemeCustom_triggered(bool checked)
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::CustomScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set scheme actions to reflect supplied Prefs::ColouringScheme
@@ -583,7 +583,7 @@ void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
 	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
 	prefs.setColourScheme(cs);
 	aten.globalLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay(TRUE);
 }
 
 // Toggle detection and siaply of hydrogen bonds in models
@@ -591,7 +591,7 @@ void AtenForm::on_actionDetectDisplayHBonds_triggered(bool checked)
 {
 	prefs.setDrawHydrogenBonds(checked);
 	aten.globalLogChange(Log::Style);
-	gui.mainWidget()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay(TRUE);
 }
 
 /*
@@ -766,7 +766,7 @@ void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 
 void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 {
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
 	int width, height;
 	
 // 	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Interval', 'intspin', 1, 9999999, 0, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
@@ -865,7 +865,7 @@ void AtenForm::on_actionOpenExpression_triggered(bool checked)
 			if (!filter->executeRead(qPrintable(filename))) return;
 		}
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Save expression
@@ -1017,6 +1017,6 @@ void AtenForm::on_actionShowToolBox_triggered(bool checked)
 void AtenForm::on_actionManualSwapBuffers_triggered(bool checked)
 {
 	prefs.setManualSwapBuffers(checked);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 

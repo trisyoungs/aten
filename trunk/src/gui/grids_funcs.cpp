@@ -242,7 +242,7 @@ void GridsWidget::loadGrid()
 		}
 	}
 	refresh();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 	msg.exit("GridsWidget::loadGrid");
 }
 
@@ -278,7 +278,7 @@ void GridsWidget::on_actionGridCut_triggered(bool checked)
 	aten.copyGrid(g);
 	m->removeGrid(g);
 	refresh();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_actionGridDelete_triggered(bool checked)
@@ -295,7 +295,7 @@ void GridsWidget::on_actionGridDelete_triggered(bool checked)
 		m->removeGrid(g);
 	}
 	refresh();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_actionGridPaste_triggered(bool checked)
@@ -310,7 +310,7 @@ void GridsWidget::on_actionGridPaste_triggered(bool checked)
 	Grid *newgrid = m->addGrid();
 	*newgrid = *g;
 	refresh();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 /*
@@ -401,7 +401,7 @@ void GridsWidget::on_GridUseInternalColoursRadio_clicked(bool checked)
 	if (g == NULL) return;
 	ui.GridSecondaryColourButton->setEnabled(g->useSecondary());
 	g->setUseColourScale(FALSE);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
@@ -415,7 +415,7 @@ void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
 	Grid *g = getCurrentGrid();
 	if (g == NULL) return;
 	g->setUseColourScale(TRUE);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::gridOriginChanged(int component, double value)
@@ -434,7 +434,7 @@ void GridsWidget::gridOriginChanged(int component, double value)
 		o.set(component, value);
 		g->setOrigin(o);
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::gridAxisChanged(int axis, int component, double value)
@@ -453,7 +453,7 @@ void GridsWidget::gridAxisChanged(int axis, int component, double value)
 		axes[axis*4+component] = value;
 		g->setAxes(axes);
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridList_currentRowChanged(int row)
@@ -472,7 +472,7 @@ void GridsWidget::on_GridList_itemClicked(QListWidgetItem *item)
 	Grid *g = (Grid*) titem->data.asPointer(VTypes::GridData);
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridList_itemSelectionChanged()
@@ -498,7 +498,7 @@ void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 		g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
 	}
 	refreshGridInfo();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
@@ -514,7 +514,7 @@ void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 		g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
 	}
 	refreshGridInfo();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
@@ -530,7 +530,7 @@ void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 		g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
 	}
 	refreshGridInfo();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
@@ -546,7 +546,7 @@ void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 		g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
 	}
 	refreshGridInfo();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
@@ -561,7 +561,7 @@ void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
 		g->setStyle(Grid::SurfaceStyle (index));
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
@@ -576,7 +576,7 @@ void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
 		g->setOutlineVolume(checked);
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
@@ -591,7 +591,7 @@ void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
 		g->setPeriodic(checked);
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
@@ -619,7 +619,7 @@ void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 	}
 	ui.GridPrimaryColourFrame->setColour(newcol);
 	ui.GridPrimaryColourFrame->update();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
@@ -647,7 +647,7 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 	}
 	ui.GridSecondaryColourFrame->setColour(newcol);
 	ui.GridSecondaryColourFrame->update();
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
@@ -666,7 +666,7 @@ void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 	scalename += prefs.colourScale[g->colourScale()].name();
 	scalename += ")";
 	ui.GridColourscaleName->setText(scalename);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
@@ -683,7 +683,7 @@ void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 		ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
 		ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 
@@ -724,7 +724,7 @@ void GridsWidget::gridShiftChanged()
 			m->endUndoState();
 		}
 	}
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GridsWidget::on_ShiftGridPosXButton_clicked(bool checked)
@@ -859,6 +859,6 @@ void GridsWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.GridsButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget()->postRedisplay();
+	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

@@ -94,10 +94,10 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	
 	// Get arguments...
-	int width = c->hasArg(1) ? c->argi(1) : gui.mainWidget()->width();
-	if (width == -1) width = gui.mainWidget()->width();
-	int height = c->hasArg(2) ? c->argi(2) : gui.mainWidget()->height();
-	if (height == -1) height = gui.mainWidget()->height();
+	int width = c->hasArg(1) ? c->argi(1) : gui.mainCanvas()->width();
+	if (width == -1) width = gui.mainCanvas()->width();
+	int height = c->hasArg(2) ? c->argi(2) : gui.mainCanvas()->height();
+	if (height == -1) height = gui.mainCanvas()->height();
 	int quality = c->hasArg(3) ? c->argi(3) : -1;
 	int firstframe = c->hasArg(4) ? c->argi(4)-1 : 0;
 	int lastframe = c->hasArg(5) ? c->argi(5)-1 : obj.m->nTrajectoryFrames()-1;
@@ -125,7 +125,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	QImage image;
 	// Temporarily adjust label size...
 	int oldlabelsize = prefs.labelSize();
-	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainWidget()->height()) ));
+	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainCanvas()->height()) ));
 	prefs.setLabelSize(newlabelsize);
 
 	int progid = progress.initialise("Saving movie frames...", lastframe-firstframe, FALSE);
@@ -134,9 +134,9 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		obj.m->seekTrajectoryFrame(n, TRUE);
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
-		gui.mainWidget()->postRedisplay(TRUE);
+		gui.mainCanvas()->postRedisplay(TRUE);
 
-		pixmap = gui.mainWidget()->generateImage(width, height, TRUE);
+		pixmap = gui.mainCanvas()->generateImage(width, height, TRUE);
 
 		pixmap.save(basename.get(), "png", -1);
 		if (!progress.update(progid,n))

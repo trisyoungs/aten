@@ -179,7 +179,7 @@ void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 void PositionWidget::on_ShiftPickVectorButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainWidget()->setSelectedMode(UserAction::ShiftPickVectorAction,2,&shiftPickAxisButton_callback);
+	gui.mainCanvas()->setSelectedMode(UserAction::ShiftPickVectorAction,2,&shiftPickAxisButton_callback);
 }
 
 void PositionWidget::on_ShiftNormaliseVectorButton_clicked(bool on)
@@ -292,10 +292,10 @@ void PositionWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.PositionButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget()->postRedisplay();
+	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 
 	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isPositionWidgetAction(gui.mainWidget()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
+	if (UserAction::isPositionWidgetAction(gui.mainCanvas()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
 
 	event->accept();
 }

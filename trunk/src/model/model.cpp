@@ -223,15 +223,15 @@ void Model::regenerateIcon()
 	prefs.setFrameCurrentModel(FALSE);
 	prefs.setFrameWholeView(FALSE);
 	prefs.setViewRotationGlobe(FALSE);
-	gui.mainWidget()->setRenderSource(this);
+	gui.mainCanvas()->setRenderSource(this);
 
 	changeLog.add(Log::Style);
-	icon_ = gui.mainWidget()->generateImage(100, 100, FALSE);
+	icon_ = gui.mainCanvas()->generateImage(100, 100, FALSE);
 
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
-	gui.mainWidget()->setRenderSource(NULL);
+	gui.mainCanvas()->setRenderSource(NULL);
 	
 	msg.exit("Model::regenerateIcon");
 }

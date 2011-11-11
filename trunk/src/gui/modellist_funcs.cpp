@@ -149,7 +149,7 @@ void ModelListWidget::toggleItem(TTreeWidgetItem *twi)
 		}
 	}
 	refreshing_ = FALSE;
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Deselect all items in list (except the supplied item)
@@ -190,7 +190,7 @@ void ModelListWidget::on_RefreshIconsButton_clicked(bool checked)
 void ModelListWidget::on_ModelsPerRowSpin_valueChanged(int value)
 {
 	prefs.setNModelsPerRow(value);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Mouse pressed on ModelList
@@ -345,6 +345,6 @@ void ModelListWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	gui.toolBoxWidget->ui.ModelListButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainWidget()->postRedisplay();
+	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

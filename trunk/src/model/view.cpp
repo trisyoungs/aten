@@ -211,8 +211,8 @@ void Model::resetView()
 	// If not, use an arbitrary 100x100 canvas size.
 	if (gui.exists())
 	{
-		width = gui.mainWidget()->contextWidth();
-		height = gui.mainWidget()->contextHeight();
+		width = gui.mainCanvas()->contextWidth();
+		height = gui.mainCanvas()->contextHeight();
 	}
 	else
 	{
