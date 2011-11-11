@@ -63,7 +63,7 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 		case (UserAction::DrawBondSingleAction):
 		case (UserAction::DrawBondDoubleAction):
 		case (UserAction::DrawBondTripleAction):
-			if (i == NULL) i = (gui.mainWidget()->pickedAtoms() != NULL ? gui.mainWidget()->pickedAtoms()->item : NULL);
+			if (i == NULL) i = (gui.mainCanvas()->pickedAtoms() != NULL ? gui.mainCanvas()->pickedAtoms()->item : NULL);
 			bt = (Bond::BondType) (1+canvas->activeMode()-UserAction::DrawBondSingleAction);
 		case (UserAction::DrawChainAction):
 			if (i == NULL) break;

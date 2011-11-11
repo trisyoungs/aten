@@ -131,7 +131,7 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	refreshDisplacements();
-	if (ui.ShowVectorsCheck->isChecked()) gui.mainWidget()->postRedisplay();
+	if (ui.ShowVectorsCheck->isChecked()) gui.mainCanvas()->postRedisplay();
 	// Regenerate vibration trajectory
 	// Stop current timer (if playing) - we'll restart it afterwards
 	bool wasplaying = ui.PlayPauseVibration->isChecked();
@@ -144,12 +144,12 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 
 void VibrationsWidget::on_ShowVectorsCheck_clicked(bool checked)
 {
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void VibrationsWidget::on_VectorScaleSpin_valueChanged(double value)
 {
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
@@ -173,7 +173,7 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		ui.FrameSlider->setEnabled(TRUE);
 		ui.SaveImageButton->setEnabled(TRUE);
 		ui.SaveMovieButton->setEnabled(TRUE);
-		gui.mainWidget()->postRedisplay();
+		gui.mainCanvas()->postRedisplay();
 	}
 }
 
@@ -182,7 +182,7 @@ void VibrationsWidget::on_FrameSlider_valueChanged(int value)
 	if (vibrationPlaying_) return;
 	Model *m = aten.currentModelOrFrame();
 	m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 }
 
 void VibrationsWidget::on_DelaySpin_valueChanged(int value)
@@ -198,7 +198,7 @@ void VibrationsWidget::on_SaveImageButton_clicked(bool checked)
 
 void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 {
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainWidget()->width(), (int) gui.mainWidget()->height());
+	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
 	int width, height;
 	
 	Tree dialog;
@@ -261,7 +261,7 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 		Model *m = aten.currentModelOrFrame();
 		m->vibrationNextFrame();
 		ui.FrameSlider->setValue(m->vibrationFrameIndex()+1);
-		gui.mainWidget()->postRedisplay();
+		gui.mainCanvas()->postRedisplay();
 		DONTDRAW = FALSE;
 	}
 }
@@ -273,6 +273,6 @@ void VibrationsWidget::closeEvent(QCloseEvent *event)
 	m->setRenderFromVibration(FALSE);
 	gui.toolBoxWidget->ui.VibrationsButton->setChecked(FALSE);
 	gui.setInteractive(TRUE);
-	gui.mainWidget()->postRedisplay();
+	gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

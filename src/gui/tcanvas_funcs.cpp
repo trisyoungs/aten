@@ -212,13 +212,16 @@ void TCanvas::initializeGL()
 	msg.exit("TCanvas::initializeGL");
 }
 
-// General repaint callback
 void TCanvas::paintGL()
 {
+	if (drawingTarget_ == TCanvas::PixmapTarget) paintEvent(NULL);
+}
+
+// General repaint callback
+void TCanvas::paintEvent(QPaintEvent *event)
+{
 	msg.enter("TCanvas::paintGL");
-	static QFont font;
-	static QBrush nobrush(Qt::NoBrush);
-	QPen pen;
+
 	QColor color;
 	QRect currentBox;
 	Refitem<Model,int> *first, localri;
@@ -350,51 +353,24 @@ void TCanvas::paintGL()
 	}
 	endGl();
 	
-	// Render text elements for all models (with QPainter)
-	QPainter painter;
-	painter.begin(this);
+	// Start of QPainter code
+	static QFont font;
 	font.setPointSize(prefs.labelSize());
+	QBrush nobrush(Qt::NoBrush);
+	QPen pen;
+	QPainter painter(this);
+	
+	// Render text elements for all models (with QPainter)
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 	engine_.renderText(painter, this);
-	
+
 	// Render 2D mode embellishments for current model (with QPainter)
 	m = useCurrentModel_ ? aten.currentModel() : renderSource_;
 	if (m != NULL)
 	{
 		m = m->renderFromVibration() ? m->vibrationCurrentFrame() : m->renderSourceModel();
 		render2D(painter, m);
-	}
-
-	// Store pixel data for models that need it
-	col = 0;
-	row = 0;
-	glReadBuffer(GL_BACK);
-	glViewport(0,0,contextWidth_,contextHeight_);
-	for (Refitem<Model,int> *ri = first; ri != NULL; ri = ri->next)
-	{
-		// Grab model pointer
-		m = ri->item;
-		if (m == NULL) continue;
-
-		// Vibration frame?
-		m = m->renderSourceModel();
-		if (m->renderFromVibration() && (m->vibrationCurrentFrame() != NULL)) m = m->vibrationCurrentFrame();
-
-		// If the stored model pixel data is out of date re-copy pixel data
-		if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)))
-		{
-			m->preparePixelData(px,py,m,m->changeLog.log(Log::Total));
-			glReadPixels(col*px, contextHeight_-(row+1)*py, px, py, GL_RGBA, GL_UNSIGNED_BYTE, m->pixelData());
-		}
-
-		// Increase counters
-		++col;
-		if (col%nperrow == 0)
-		{
-			col = 0;
-			++row;
-		}
 	}
 
 	// Draw box around current model
@@ -412,9 +388,41 @@ void TCanvas::paintGL()
 		painter.drawRect(currentBox);
 	}
 	painter.end();
+
+	// Store pixel data for models that need it
+	col = 0;
+	row = 0;
+	glReadBuffer(GL_BACK);
+	glViewport(0,0,contextWidth_,contextHeight_);
+	for (Refitem<Model,int> *ri = first; ri != NULL; ri = ri->next)
+	{
+		// Grab model pointer
+		m = ri->item;
+		if (m == NULL) continue;
+		
+		// Vibration frame?
+		m = m->renderSourceModel();
+		if (m->renderFromVibration() && (m->vibrationCurrentFrame() != NULL)) m = m->vibrationCurrentFrame();
+		
+		// If the stored model pixel data is out of date re-copy pixel data
+// 		if (!m->pixelDataIsValid(px,py,m,m->changeLog.log(Log::Total)))
+// 		{
+// 			m->preparePixelData(px,py,m,m->changeLog.log(Log::Total));
+// 			glReadPixels(col*px, contextHeight_-(row+1)*py, px, py, GL_RGBA, GL_UNSIGNED_BYTE, m->pixelData());
+// 		}
+		
+		// Increase counters
+		++col;
+		if (col%nperrow == 0)
+		{
+			col = 0;
+			++row;
+		}
+	}
 	
 	// Swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();
+	swapBuffers();
 	
 	// Special case when rendering to Pixmap - must delete associated context
 	if (drawingTarget_ == TCanvas::PixmapTarget) engine_.popInstance(highQuality_, context());
@@ -493,7 +501,7 @@ void TCanvas::postRedisplay(bool noImages, bool redrawActive)
 	if ((!valid_) || drawing_) return;
 	noPixelData_ = noImages;
 	redrawActiveModel_ = redrawActive;
-	updateGL();
+	update();
 }
 
 // Update view matrix stored in RenderEngine
@@ -534,6 +542,9 @@ QPixmap TCanvas::generateImage(int w, int h, bool highQuality)
 	}
 	else
 	{
+		drawingTarget_ = TCanvas::PixmapTarget;
+		noPixelData_ = TRUE;
+		engine_.flagClearLists();
 		if (highQuality != oldquality) postRedisplay();
 		QImage image = grabFrameBuffer();
 		// Revert to old quality setting

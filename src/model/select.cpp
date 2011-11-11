@@ -245,7 +245,7 @@ Atom *Model::atomOnScreen(double x1, double y1)
 	Vec3<double> wr;
 	Vec4<double> sr;
 	double closestz = 10000.0, dist, nclip = prefs.clipNear();
-	y1 = gui.mainWidget()->contextHeight() - y1;
+	y1 = gui.mainCanvas()->contextHeight() - y1;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
@@ -275,8 +275,8 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	double t;
 	Atom *i;
 	Vec4<double> sr;
-	y1 = gui.mainWidget()->contextHeight() - y1;
-	y2 = gui.mainWidget()->contextHeight() - y2;
+	y1 = gui.mainCanvas()->contextHeight() - y1;
+	y2 = gui.mainCanvas()->contextHeight() - y2;
 	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
 	if (x1 > x2)
 	{

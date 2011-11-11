@@ -93,7 +93,7 @@ GuiQt::GuiQt()
 	doesExist_ = FALSE;
 	application_ = NULL;
 	mainWindow_ = NULL;
-	mainWidget_ = NULL;
+	mainCanvas_ = NULL;
 	mainContext_ = NULL;
 	prefsDialog = NULL;
 	forcefieldEditorDialog = NULL;
@@ -171,10 +171,10 @@ void GuiQt::initialise(int &argc, char **argv)
 		mainContext_ = new QGLContext(format);
 
 		// Create the widget
-		mainWidget_ = new TCanvas(mainContext_, mainWindow_);
-		mainWidget_->probeFeatures();
-		mainWidget_->setGeometry(0,0,800,600);
-		mainWidget_->setCursor(Qt::ArrowCursor);
+		mainCanvas_ = new TCanvas(mainContext_, mainWindow_);
+		mainCanvas_->probeFeatures();
+		mainCanvas_->setGeometry(0,0,800,600);
+		mainCanvas_->setCursor(Qt::ArrowCursor);
 	}
 	
 	msg.exit("GuiQt::initialise");
@@ -294,8 +294,8 @@ void GuiQt::run()
 	// Reset view of all loaded models
 	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
 
-	gui.mainWidget()->setDrawingTarget(TCanvas::ScreenTarget);
-	gui.mainWidget()->postRedisplay(TRUE);
+	gui.mainCanvas()->setDrawingTarget(TCanvas::ScreenTarget);
+	gui.mainCanvas()->postRedisplay(TRUE);
 
 	// Display message box warning if there was a filter load error
 	if (aten.nFiltersFailed() == -1)
@@ -333,7 +333,7 @@ void GuiQt::run()
 	prefs.setKeepView(FALSE);
 
 	// Attempt to detect corrupt screen (requiring manualswapbuffers to be set in order to fix it)
-// 	QTimer::singleShot(2000, mainWidget_, SLOT(isRenderingOk()));
+// 	QTimer::singleShot(2000, mainCanvas_, SLOT(isRenderingOk()));
 	
 	// Enter main message processing loop
 	application_->exec();
@@ -370,7 +370,7 @@ void GuiQt::setInteractive(bool interactive)
 	mainWindow_->ui.MainToolbar->setEnabled(interactive);
 	
 	// ...and set the canvas 'editability'
-	mainWidget_->setEditable(interactive);
+	mainCanvas_->setEditable(interactive);
 }
 
 /*
@@ -420,9 +420,9 @@ void GuiQt::update(int targets)
 		if (lastAction == UserAction::NoAction) text.clear();
 		
 		// If current action is not the same as the last action, recreate string
-		if (lastAction != mainWidget_->selectedMode())
+		if (lastAction != mainCanvas_->selectedMode())
 		{
-			lastAction = mainWidget_->selectedMode();
+			lastAction = mainCanvas_->selectedMode();
 			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
 			if (UserActions[lastAction].shiftModified[0] != '\0') text.strcatf(", <b>+shift</b> %s", UserActions[lastAction].shiftModified);
 			if (UserActions[lastAction].ctrlModified[0] != '\0') text.strcatf(", <b>+ctrl</b> %s", UserActions[lastAction].ctrlModified);
@@ -434,7 +434,7 @@ void GuiQt::update(int targets)
 	}
 	
 	// Request redraw of the main canvas
-	if (targets&GuiQt::CanvasTarget) gui.mainWidget()->postRedisplay();
+	if (targets&GuiQt::CanvasTarget) gui.mainCanvas()->postRedisplay();
 }
 
 // Initialise (but don't show) the progress dialog
@@ -536,15 +536,15 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	}
 
 	QPixmap pixmap;
-	// Get current widget geometry if none was specified
-	if (width == 0) width = mainWidget_->width();
-	if (height == 0) height = mainWidget_->height();
+	// Get current mainCanvas_ geometry if none was specified
+	if (width == 0) width = mainCanvas_->width();
+	if (height == 0) height = mainCanvas_->height();
 	// Temporarily adjust label size...
 	int oldlabelsize = prefs.labelSize();
-	int newlabelsize = int (oldlabelsize*( (1.0*height / mainWidget_->height()) ));
+	int newlabelsize = int (oldlabelsize*( (1.0*height / mainCanvas_->height()) ));
 	prefs.setLabelSize(newlabelsize);
 
-	pixmap = gui.mainWidget()->generateImage(width, height, TRUE);
+	pixmap = mainCanvas_->generateImage(width, height, TRUE);
 
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);
@@ -557,9 +557,9 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 }
 
 // Return main view Widget
-TCanvas *GuiQt::mainWidget()
+TCanvas *GuiQt::mainCanvas()
 {
-	return mainWidget_;
+	return mainCanvas_;
 }
 
 // Main application structure

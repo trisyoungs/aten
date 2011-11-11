@@ -99,10 +99,10 @@ void AtenForm::finaliseUi()
 	// Add the previously-created QGLWidget to the main interface, and set up calls
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->setMargin(0);
-	gui.mainWidget()->setParent(this);
-	gui.mainWidget()->setMouseTracking(TRUE);
-	gui.mainWidget()->setFocusPolicy(Qt::StrongFocus);
-	vbox->addWidget( (QWidget*) gui.mainWidget() );
+	gui.mainCanvas()->setParent(this);
+	gui.mainCanvas()->setMouseTracking(TRUE);
+	gui.mainCanvas()->setFocusPolicy(Qt::StrongFocus);
+	vbox->addWidget( (QWidget*) gui.mainCanvas() );
 	ui.ViewFrame->setLayout(vbox);
 
 	// Set correct Atom::DrawStyle on toolbar
