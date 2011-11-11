@@ -42,7 +42,7 @@ class DialogVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Created, Title, VerticalFill, nAccessors };
+	enum Accessors { Title, VerticalFill, nAccessors };
 	// Function list
 	enum Functions { AddButton, AddCheck, AddCombo, AddDoubleSpin, AddEdit, AddFrame, AddGroup, AddIntegerSpin, AddLabel, AddPage, AddRadioButton, AddRadioGroup, AddSpacer, AddStack, AddTabs, AsDouble, AsInteger, AsString, AsVector, IsInteger, IsRange, IsString, Show, Widget, nFunctions };
 	// Search variable access list for provided accessor

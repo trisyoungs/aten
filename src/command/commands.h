@@ -383,6 +383,7 @@ class Command
 		Error,
 		Message,
 		Printf,
+		ShowDefaultDialog,
 		Verbose,
 	
 		// Minimisation Commands
@@ -844,6 +845,7 @@ class Command
 	static bool function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Message(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShowDefaultDialog(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Minimisation Commands
 	static bool function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);

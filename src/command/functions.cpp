@@ -343,6 +343,7 @@ void Command::initPointers()
 	pointers_[Error] = &Command::function_Error;
 	pointers_[Message] = &Command::function_Message;
 	pointers_[Printf] = &Command::function_Printf;
+	pointers_[ShowDefaultDialog] = &Command::function_ShowDefaultDialog;
 	pointers_[Verbose] = &Command::function_Verbose;
 
 	// Minimisation Commands

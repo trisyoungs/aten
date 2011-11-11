@@ -302,8 +302,6 @@ class TreeGui : public TreeGuiWidget
 	List<TreeGuiWidget> widgets_;
 	// Qt dialog containing ready-created set of controls
 	AtenTreeGuiDialog *qtTreeGui_;
-	// Flag specifying whether the dialog has been created (most useful for defaultDialogs)
-	bool created_;
 	
 	protected:
 	// Return qtTreeGui pointer
@@ -318,10 +316,6 @@ class TreeGui : public TreeGuiWidget
 	int nWidgets();
 	// Search for named widget
 	TreeGuiWidget *findWidget(const char *name);
-	// Set whether dialog has been created
-	void setCreated(bool b);
-	// Return whether dialog has been created
-	bool created();
 
 
 	/*

@@ -11,9 +11,8 @@
 
 filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension="gjf", glob="*.gjf", id=17)
 {
-	# GUI Definition
-	dialog ui = defaultDialog();
-	if (!ui.created)
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
 	{
 		ui.title = "Gaussian09 Export Options";
 		widget w, w2, stack, page, tab, tabs = ui.addTabs("tabs");
@@ -201,11 +200,10 @@ filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension
 			"<none>",					# -- MTSmall
 			"<none>",					# -- DGauss
 			"<none>");					# -- CBSB7
-
-		ui.created = TRUE;
 	}
 	# Execute dialog
-	if (!ui.show()) error("Options dialog canceled.\n");
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+	Dialog ui = defaultDialog();
 
 	#
 	# Write Link0 Section

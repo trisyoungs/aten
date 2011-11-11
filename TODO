@@ -1,7 +1,7 @@
 <h1>Known Bugs</h1>
 
 <ul>
-<li>Dialog widget values cannot easily bet set now - create widgets at parse time?</li>
+<li>Dialog widget values cannot easily be set now - create widgets at parse time?</li>
 <li>Rebonding model also folds atoms, making --nofold irrelevant</li>
 <li>Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.</li>
 <li>Flickering Progress Dialog, e.g. when using disordered builder on Windows</li>
@@ -48,6 +48,6 @@
 <li>Section on partitioning scheme files</li>
 <li>New CLI option : --dialogs</li>
 <li>New operator for command language: ternary if</li>
-<li>New dialog code - remove defunct commands, add new variable definitions for Dialog & Widget, rename all commands to follow C++ conventions.</li>
+<li>New dialog code - remove defunct commands, add new variable definitions for Dialog & Widget, rename all commands to follow C++ conventions, add 'defaultDialog', 'showDefaultDialog' and 'createDialog' command descriptions.</li>
 </ul>
 

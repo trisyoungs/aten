@@ -72,7 +72,7 @@ class Program
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program
-	void finalise();
+	bool finalise();
 	// Return main program
 	Tree *mainProgram();
 	// Add a filter tree
