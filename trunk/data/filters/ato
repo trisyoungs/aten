@@ -133,9 +133,8 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	bound b;
 	bond bnd;
 
-	# Option Dialog
-	Dialog ui = defaultDialog();
-	if (!ui.created)
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
 	{
 		Widget w, group;
 		ui.title = "ATO File Export Options";
@@ -175,10 +174,9 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		ui.widget("restrain_con").onInteger(0, 1, "sendbool", "restrain_con_frame", "enabled");
 		ui.widget("restrain_dist").onInteger(0, 1, "sendbool", "restrain_con_frame", "disabled");
 		ui.widget("restrain_con").onInteger(0, 1, "sendbool", "restrain_dist_frame", "disabled");
-
-		ui.created = TRUE;
 	}
-	if (!ui.show()) error("Canceled through dialog.\n");
+	if (!showDefaultDialog()) error("Canceled through dialog.\n");
+	Dialog ui = defaultDialog();
 
 	// First, some checks. We need valid patterns and a cubic cell.
 	if (!createExpression(FALSE,TRUE)) error("Error: Can't write ATO file without valid forcefield types assigned to all atoms.\n");

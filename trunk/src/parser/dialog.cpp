@@ -48,7 +48,6 @@ DialogVariable::~DialogVariable()
 
 // Accessor data
 Accessor DialogVariable::accessorData[DialogVariable::nAccessors] = {
-	{ "created",		VTypes::IntegerData,	0, FALSE },
 	{ "title",		VTypes::StringData,	0, FALSE },
 	{ "verticalFill",	VTypes::IntegerData,	0, FALSE }
 };
@@ -183,9 +182,6 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	}
 	if (result) switch (acc)
 	{
-		case (DialogVariable::Created):
-			rv.set(ptr->created());
-			break;
 		case (DialogVariable::Title):
 			rv.set(ptr->text());
 			break;
@@ -270,9 +266,6 @@ bool DialogVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	}
 	switch (acc)
 	{
-		case (DialogVariable::Created):
-			ptr->setCreated(newvalue.asBool());
-			break;
 		case (DialogVariable::Title):
 			ptr->setProperty(TreeGuiWidgetEvent::TextProperty, newvalue.asString());
 			break;

@@ -89,6 +89,15 @@ bool Command::function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Show this Tree's default TreeGui dialog
+bool Command::function_ShowDefaultDialog(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (c->hasArg(0)) c->parent()->defaultDialog().setInitialProperties(c->argc(0));
+	if (gui.exists() || prefs.allowDialogs()) rv.set(c->parent()->defaultDialog().execute());
+	else rv.set(TRUE);
+	return TRUE;
+}
+
 // Print formatted string (in verbose output only)
 bool Command::function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

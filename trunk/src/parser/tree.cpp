@@ -25,6 +25,7 @@
 #include "parser/tree.h"
 #include "parser/character.h"
 #include "parser/element.h"
+#include "parser/dialog.h"
 #include "classes/prefs.h"
 #include "main/aten.h"
 
@@ -40,6 +41,8 @@ Tree::Tree()
 	readOptions_ = 0;
 	localScope_ = NULL;
 	runCount_ = 0;
+	createDefaultDialogFunction_ = NULL;
+	defaultDialogCreated_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -134,10 +137,44 @@ void Tree::reset(bool clearVariables)
 	msg.exit("Tree::reset");
 }
 
-// Return whether this tree is a filter
-bool Tree::isFilter() const
+// Finalise the tree contents, searching for specific functions etc.
+bool Tree::finalise()
 {
-	return (filter.type() != FilterData::nFilterTypes);
+	msg.enter("Tree::finalise");
+
+	// Does a createDialog function exist?
+	createDefaultDialogFunction_ = findLocalFunction("createDefaultDialog");
+	if (createDefaultDialogFunction_ != NULL)
+	{
+		// Does the function have the correct argument definition?
+		if ((createDefaultDialogFunction_->nArgs() != 1) || (createDefaultDialogFunction_->args()->returnType() != VTypes::DialogData))
+		{
+			msg.print("Error: a 'createDefaultDialog' function exists, but has the wrong argument definition (it should take a single argument of type Dialog).\n");
+			msg.exit("Tree::finalise");
+			return FALSE;
+		}
+		// Does the function have the correct return type?
+		if (createDefaultDialogFunction_->returnType() != VTypes::NoData)
+		{
+			msg.print("Error: a 'createDefaultDialog' function exists, but has the wrong return type (which should be 'void').\n");
+			msg.exit("Tree::finalise");
+			return FALSE;
+		}
+		msg.print(Messenger::Verbose, " --> Found 'createDefaultDialog' function in tree '%s'\n", name_.get());
+	}
+	
+	// Call finalise on any child trees
+	for (Tree *func = functions_.first(); func != NULL; func = func->next)
+	{
+		if (!func->finalise())
+		{
+			msg.exit("Tree::finalise");
+			return FALSE;
+		}
+	}
+
+	msg.exit("Tree::finalise");
+	return TRUE;
 }
 
 /*
@@ -991,12 +1028,37 @@ bool Tree::addLocalFunctionArguments(TreeNode *arglist)
 }
 
 /*
-// Custom Dialogs
+// Filter Properties
+*/
+
+// Return whether this tree is a filter
+bool Tree::isFilter() const
+{
+	return (filter.type() != FilterData::nFilterTypes);
+}
+
+/*
+// Qt/CLI GUI Definition
 */
 
 // Return default dialog structure
 TreeGui &Tree::defaultDialog()
 {
+	// Run the stored 'createDefaultDialog' function if it hasn't already been done
+	if (!defaultDialogCreated_)
+	{
+		if (createDefaultDialogFunction_ == NULL) defaultDialogCreated_ = TRUE;
+		else
+		{
+			UserCommandNode createFunc;
+			DialogVariable dialogVar(&defaultDialog_);
+			createFunc.setParent(this);
+			createFunc.addArgument(&dialogVar);
+			createFunc.setFunction(createDefaultDialogFunction_);
+			ReturnValue rv;
+			defaultDialogCreated_ = createFunc.execute(rv);
+		}
+	}
 	return defaultDialog_;
 }
 

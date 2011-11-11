@@ -78,9 +78,10 @@ const char *Program::filename()
 }
 
 // Finalise forest
-void Program::finalise()
+bool Program::finalise()
 {
 	msg.enter("Program::finalise");
+	
 	// Cycle over generated filters
 	for (Tree *filter = filters_.first(); filter != NULL; filter = filter->next)
 	{
@@ -96,7 +97,12 @@ void Program::finalise()
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+					if (func->returnType() != VTypes::IntegerData)
+					{
+						msg.print("Error: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+						msg.exit("Program::finalise");
+						return FALSE;
+					}
 				}
 				else msg.print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
 				filter->filter.setTrajectoryHeaderFunction(func);
@@ -106,14 +112,40 @@ void Program::finalise()
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+					if (func->returnType() != VTypes::IntegerData)
+					{
+						msg.print("Error: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+						msg.exit("Program::finalise");
+						return FALSE;
+					}
 				}
 				else msg.print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
 				filter->filter.setTrajectoryFrameFunction(func);
 			}
+			
+			// Finalise the tree
+			if (!filter->finalise())
+			{
+				msg.print("Error finalising filter '%s'.\n", filter->filter.name());
+				msg.exit("Program::finalise");
+				return FALSE;
+			}
 		}
 	}
+	
+	// Cycle over defined local functions and finalise
+	for (Tree *func = globalFunctions_.first(); func != NULL; func = func->next)
+	{
+		if (!func->finalise())
+		{
+			msg.print("Error finalising global function '%s'.\n", func->name());
+			msg.exit("Program::finalise");
+			return FALSE;
+		}
+	}
+	
 	msg.exit("Program::finalise");
+	return TRUE;
 }
 
 // Return main program
@@ -139,7 +171,7 @@ bool Program::generateFromString(const char *s, const char *name, bool dontpusht
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromString(this, s, initialPushTree_, clearExisting);
-	finalise();
+	if (result) result = finalise();
 	msg.exit("Program::generateFromString");
 	return result;
 }
@@ -152,7 +184,7 @@ bool Program::generateFromStringList(Dnchar *stringListHead, const char *name, b
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromStringList(this, stringListHead, initialPushTree_, clearExisting);
-	finalise();
+	if (result) result = finalise();
 	msg.exit("Program::generateFromStringList");
 	return result;
 }
@@ -167,7 +199,7 @@ bool Program::generateFromFile(const char *filename, const char *name, bool dont
 	fromFilterFile_ = isFilterFile;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromFile(this, filename, initialPushTree_, clearExisting);
-	finalise();
+	if (result) result = finalise();
 	msg.exit("Program::generateFromFile");
 	return result;
 }
@@ -185,7 +217,7 @@ bool Program::reload()
 	// Clear old data...
 	clear();
 	bool result = cmdparser.generateFromFile(this, filename_, initialPushTree_);
-	finalise();
+	if (result) result = finalise();
 	msg.exit("Program::reload");
 	return result;
 }

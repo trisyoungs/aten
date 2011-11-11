@@ -81,6 +81,8 @@ class Tree
 	VTypes::DataType returnType() const;
 	// Reset Tree, ready for new statement(s) to be added
 	void reset(bool clearVariables = TRUE);
+	// Finalise the tree contents, searching for specific functions etc.
+	bool finalise();
 
 
 	/*
@@ -217,6 +219,10 @@ class Tree
 	private:
 	// Default GUI dialog, run at start of Program execution
 	TreeGui defaultDialog_;
+	// Pointer to create function
+	Tree *createDefaultDialogFunction_;
+	// Whether createfunction has already been run
+	bool defaultDialogCreated_;
 	// List of additional, temporary dialogs created by the tree
 	List<TreeGui> dialogs_;
 

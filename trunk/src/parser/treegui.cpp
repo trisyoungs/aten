@@ -1127,7 +1127,7 @@ int TreeGuiWidget::asInteger()
 		case (TreeGuiWidget::RadioButtonWidget):
 		case (TreeGuiWidget::TabWidget):
 		case (TreeGuiWidget::StackWidget):
-			result =valueI_;
+			result = valueI_;
 			break;
 		case (TreeGuiWidget::EditWidget):
 		case (TreeGuiWidget::LabelWidget):
@@ -1306,7 +1306,6 @@ TreeGui::TreeGui() : TreeGuiWidget()
 	}
 	else qtTreeGui_ = NULL;
 	set(TreeGuiWidget::DialogWidget, "DialogWidget", this);
-	created_ = FALSE;
 	
 	// Public variables
 	prev = NULL;
@@ -1355,18 +1354,6 @@ TreeGuiWidget *TreeGui::findWidget(const char *name)
 {
 	for (TreeGuiWidget *result = widgets_.first(); result != NULL; result = result->next) if (strcmp(name,result->name()) == 0) return result;
 	return NULL;
-}
-
-// Set whether dialog has been created
-void TreeGui::setCreated(bool b)
-{
-	created_ = b;
-}
-
-// Return whether dialog has been created
-bool TreeGui::created()
-{
-	return created_;
 }
 
 // Set named widget's value from integer

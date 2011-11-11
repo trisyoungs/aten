@@ -391,9 +391,8 @@ filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
 {
 	# GUI Control Definitions
-	# Grab default dialog pointer
-	dialog ui = defaultDialog();
-	if (!ui.created)
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
 	{
 		ui.title = "GAMESS-US Export Options";
 		widget group, group2, w, w2, tabs, page;
@@ -543,10 +542,10 @@ filter(type="exportmodel", name="GAMESS-US Input", nickname="gamusinp", extensio
 		w.onInteger(0, 1, "sendbool", "pcm_sten", "enabled");
 		w.onInteger(0, 1, "sendbool", "pcm_dsten", "enabled");
 		w.onInteger(0, 1, "sendbool", "pcm_cmf", "enabled");
-		ui.created = TRUE;
 	}
 	# Execute dialog
-	if (!ui.show()) error("Options dialog canceled.\n");
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+	Dialog ui = defaultDialog();
 
 	#
 	# Write Data

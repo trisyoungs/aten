@@ -675,6 +675,7 @@ QtWidgetObject *AtenTreeGuiDialog::addCheck(TreeGuiWidget* widget, const char* l
 	QCheckBox *check = new QCheckBox;
 	qtwo->set(widget, check);
 	check->setText(label);
+	check->setChecked(widget->valueI());
 	check->setEnabled(widget->enabled());
 	check->setVisible(widget->visible());
 	check->setMinimumHeight(WIDGETHEIGHT);
