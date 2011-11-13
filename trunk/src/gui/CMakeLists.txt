@@ -43,6 +43,7 @@ set(qtproject_SRCS
   messages_funcs.cpp
   modellist_funcs.cpp
   mouseactions.cpp
+  pores_funcs.cpp
   position_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
@@ -96,6 +97,7 @@ SET(pro_MOC_HDRS
   md.h
   messages.h
   modellist.h
+  pores.h
   position.h
   prefs.h
   progress.h
@@ -143,6 +145,7 @@ SET(pro_UIS
   md.ui
   messages.ui
   modellist.ui
+  pores.ui
   position.ui
   prefs.ui
   progress.ui

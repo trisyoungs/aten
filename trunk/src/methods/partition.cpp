@@ -180,6 +180,7 @@ PartitioningScheme::PartitioningScheme()
 	partitionFunction_ = NULL;
 	partitionNameFunction_ = NULL;
 	partitionOptionsFunction_ = NULL;
+	absolute_ = FALSE;
 
 	// Setup local UserCommandNodes
 	partitionFunctionNode_.setParent(&tree_);
@@ -366,6 +367,13 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 	return partitionFunction_->defaultDialog().setWidgetValue(name, value);
 	msg.exit("PartitioningScheme::setVariable");
 }
+
+// Set whether scheme is absolute
+void PartitioningScheme::setAbsolute()
+{
+	absolute_ = TRUE;
+}
+
 
 // Update partition information (after load or change in options)
 void PartitioningScheme::updatePartitions(bool useRoughGrid)
