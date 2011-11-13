@@ -121,6 +121,8 @@ class PartitioningScheme
 	// Constructor / Destructor
 	PartitioningScheme();
 	~PartitioningScheme();
+	// Copy Constructor
+	PartitioningScheme(PartitioningScheme&);
 	// List pointers
 	PartitioningScheme *prev, *next;
 
@@ -158,6 +160,8 @@ class PartitioningScheme
 	// Partition Data
 	*/
 	private:
+	// Flag specifying whether contained data is absolute or freely-generated
+	bool absolute_;
 	// List of all possible partitions in scheme
 	List<PartitionData> partitions_;
 	// Grid structure holding illustrative partition data
@@ -179,6 +183,8 @@ class PartitioningScheme
 	Vec3<int> fineGridSize_;
 	
 	public:
+	// Set whether scheme is absolute
+	void setAbsolute();
 	// Update partition information (after load or change in options)
 	void updatePartitions(bool useRoughGrid);
 	// Return number of partitions now recognised in grid

@@ -122,6 +122,7 @@
     <file>icons/select_none.svg</file>
   </qresource>
   <qresource prefix="/stackicons">
+    <file>icons/stack_pores.svg</file>
     <file>icons/stack_select.svg</file>
     <file>icons/stack_vibrations.svg</file>
     <file>icons/stack_zmatrix.svg</file>
