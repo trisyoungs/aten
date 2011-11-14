@@ -28,6 +28,7 @@ model.cpp
 modelextras.cpp
 operators.cpp
 pattern.cpp
+pores.cpp
 readwrite.cpp
 script.cpp
 select.cpp

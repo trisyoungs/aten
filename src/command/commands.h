@@ -431,6 +431,12 @@ class Command
 		ListPatterns,
 		NewPattern,
 
+		// Pores commands
+		CreateScheme,
+		DrillPores,
+		SelectPores,
+		Terminate,
+
 		// Read / Write Commands
 		AddReadOption,
 		Eof,
@@ -888,6 +894,11 @@ class Command
 	static bool function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	// Pores commands
+	static bool function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DrillPores(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectPores(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Read / Write Commands
 	static bool function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &rv);

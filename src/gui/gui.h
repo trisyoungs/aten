@@ -57,6 +57,7 @@ class GridsWidget;
 class MDWidget;
 class MessagesWidget;
 class ModelListWidget;
+class PoresWidget;
 class PositionWidget;
 class ScriptMovieWidget;
 class SelectWidget;
@@ -202,6 +203,8 @@ class GuiQt
 	MessagesWidget *messagesWidget;
 	// Model List dock widget
 	ModelListWidget *modelListWidget;
+	// Pore builder dock widget
+	PoresWidget *poresWidget;
 	// Atom positioning dock widget
 	PositionWidget *positionWidget;
 	// Scripted movie dock widget
