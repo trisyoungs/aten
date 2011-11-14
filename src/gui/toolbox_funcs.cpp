@@ -35,6 +35,7 @@
 #include "gui/md.h"
 #include "gui/messages.h"
 #include "gui/modellist.h"
+#include "gui/pores.h"
 #include "gui/position.h"
 #include "gui/scriptmovie.h"
 #include "gui/select.h"
@@ -66,6 +67,7 @@ void ToolBoxWidget::updateButtons()
 	ui.ModelListButton->setChecked(gui.modelListWidget->isVisible());
 	ui.MDButton->setChecked(gui.mdWidget->isVisible());
 	ui.MessagesButton->setChecked(gui.messagesWidget->isVisible());
+	ui.PoresButton->setChecked(gui.poresWidget->isVisible());
 	ui.PositionButton->setChecked(gui.positionWidget->isVisible());
 	ui.ScriptMovieButton->setChecked(gui.scriptMovieWidget->isVisible());
 	ui.SelectButton->setChecked(gui.selectWidget->isVisible());
@@ -155,6 +157,12 @@ void ToolBoxWidget::on_MessagesButton_clicked(bool checked)
 {
 	if (checked) gui.messagesWidget->showWidget();
 	else gui.messagesWidget->hide();
+}
+
+void ToolBoxWidget::on_PoresButton_clicked(bool checked)
+{
+	if (checked) gui.poresWidget->showWidget();
+	else gui.poresWidget->hide();
 }
 
 void ToolBoxWidget::on_PositionButton_clicked(bool checked)

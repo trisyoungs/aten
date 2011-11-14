@@ -632,19 +632,27 @@ void Model::selectLine(Vec3<double> line, Vec3<double> point, double dr, bool ma
 		msg.exit("Model::selectLine");
 		return;
 	}
-	Vec3<double> r, v;
+	line.normalise();
+	Vec3<double> r, v, dummy, origin;
 	double xyyx, xzzx, yzzy, dist;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (int pass = 0; pass < 4; ++pass)
 	{
-		r = i->r() - point;
-		xyyx = line.x*r.y - line.y*r.x;
-		xzzx = line.x*r.z - line.z*r.x;
-		yzzy = line.y*r.z - line.z*r.y;
-		v.x = line.y*xyyx + line.z*xzzx;
-		v.y = line.z*yzzy - line.x*xyyx;
-		v.z = -line.x*xzzx - line.y*yzzy;
-		dist = v.magnitude() / denom;
-		if (dist < dr) selectAtom(i, markonly);
+		origin = point;
+		if (pass > 0) origin += cell_.axes().columnAsVec3(pass-1);
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			if (i->isSelected()) continue;
+			r = i->r() - origin;
+			xyyx = line.x*r.y - line.y*r.x;
+			xzzx = line.x*r.z - line.z*r.x;
+			yzzy = line.y*r.z - line.z*r.y;
+			v.x = line.y*xyyx + line.z*xzzx;
+			v.y = line.z*yzzy - line.x*xyyx;
+			v.z = -line.x*xzzx - line.y*yzzy;
+			v = cell_.mimd(v, dummy);
+			dist = v.magnitude();
+			if (dist < dr) selectAtom(i, markonly);
+		}
 	}
-	msg.exit("Model::selectLine");
+
 }

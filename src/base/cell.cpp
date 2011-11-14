@@ -471,7 +471,13 @@ void UnitCell::calculateInverse()
 // Minimum image position
 Vec3<double> UnitCell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 {
-	// Returns the minimum image coordinates of r1 with respect to r2.
+	return mimd(r1,r2)+r2;
+}
+
+// Minimum image vector
+Vec3<double> UnitCell::mimd(const Vec3<double> &r1, const Vec3<double> &r2) const
+{
+	// Returns the minimum image vector of r1 with respect to r2.
 	static Vec3<double> R;
 	static double half;
 	switch (type_)
@@ -480,58 +486,35 @@ Vec3<double> UnitCell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 		case (UnitCell::NoCell):
 			R = r1;
 			break;
-		// Cubic
+		// Cubic / Orthorhombic
 		case (UnitCell::CubicCell):
-			R .set(r1.x,r1.y,r1.z);
-			R -= r2;
-			half = lengths_.x * 0.5;
-			if (R.x < -half) R.x += lengths_.x;
-			else if (R.x > half) R.x -= lengths_.x;
-			if (R.y < -half) R.y += lengths_.x;
-			else if (R.y > half) R.y -= lengths_.x;
-			if (R.z < -half) R.z += lengths_.x;
-			else if (R.z > half) R.z -= lengths_.x;
-			R += r2;
-			break;
-		// Orthorhombic
 		case (UnitCell::OrthorhombicCell):
-			R .set(r1.x,r1.y,r1.z);
-			R -= r2;
-			half = lengths_.x * 0.5;
-			if (R.x < -half) R.x += lengths_.x;
-			else if (R.x > half) R.x -= lengths_.x;
-			half = lengths_.y * 0.5;
-			if (R.y < -half) R.y += lengths_.y;
-			else if (R.y > half) R.y -= lengths_.y;
-			half = lengths_.z * 0.5;
-			if (R.z < -half) R.z += lengths_.z;
-			else if (R.z > half) R.z -= lengths_.z;
-			R += r2;
+			R = r1 - r2;
+// 			half = lengths_.x * 0.5;
+// 			if (R.x < -half) R.x += lengths_.x;
+// 			else if (R.x > half) R.x -= lengths_.x;
+// 			if (R.y < -half) R.y += lengths_.x;
+// 			else if (R.y > half) R.y -= lengths_.x;
+// 			if (R.z < -half) R.z += lengths_.x;
+// 			else if (R.z > half) R.z -= lengths_.x;
+			R.x -= floor(R.x/lengths_.x + 0.5)*lengths_.x;
+			R.y -= floor(R.y/lengths_.y + 0.5)*lengths_.y;
+			R.z -= floor(R.z/lengths_.z + 0.5)*lengths_.z;
 			break;
 		// Parallelepiped 
 		default:
 			R = inverse_.transform(r1-r2);
-			// TODO Test speed of 'int' version
-			if (R.x < -0.5) R.x += 1.0;
+/*			if (R.x < -0.5) R.x += 1.0;
 			if (R.y < -0.5) R.y += 1.0;
 			if (R.z < -0.5) R.z += 1.0;
 			if (R.x > 0.5) R.x -= 1.0;
 			if (R.y > 0.5) R.y -= 1.0;
-			if (R.z > 0.5) R.z -= 1.0;
-			// R.x -= int(R.x);
-			// R.y -= int(R.y);
-			// R.z -= int(R.z);
-			R = axes_.transform(R) + r2;
+			if (R.z > 0.5) R.z -= 1.0;*/
+			R.x -= floor(R.x + 0.5);
+			R.y -= floor(R.y + 0.5);
+			R.z -= floor(R.z + 0.5);
+			R = axes_.transform(R);
 	}
-	return R;
-}
-
-// Minimum image vector
-Vec3<double> UnitCell::mimd(const Vec3<double> &r1, const Vec3<double> &r2) const
-{
-	static Vec3<double> R;
-	R = mim(r1,r2);
-	R -= r2;
 	return R;
 }
 

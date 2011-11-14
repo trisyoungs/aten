@@ -47,6 +47,7 @@
 #include "gui/md.h"
 #include "gui/messages.h"
 #include "gui/modellist.h"
+#include "gui/pores.h"
 #include "gui/position.h"
 #include "gui/scriptmovie.h"
 #include "gui/select.h"
@@ -234,13 +235,14 @@ void GuiQt::run()
 	messagesWidget = new MessagesWidget(mainWindow_, Qt::Tool);
 	modelListWidget = new ModelListWidget(mainWindow_, Qt::Tool);
 	positionWidget = new PositionWidget(mainWindow_, Qt::Tool);
+	poresWidget = new PoresWidget(mainWindow_, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(mainWindow_, Qt::Tool);
 	selectWidget = new SelectWidget(mainWindow_, Qt::Tool);
 	toolBoxWidget = new ToolBoxWidget(mainWindow_, Qt::Tool);
 	trajectoryWidget = new TrajectoryWidget(mainWindow_, Qt::Tool);
 	transformWidget = new TransformWidget(mainWindow_, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(mainWindow_, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << positionWidget << scriptMovieWidget << selectWidget << toolBoxWidget << trajectoryWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << mdWidget << messagesWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << toolBoxWidget << trajectoryWidget << transformWidget << vibrationsWidget;
 // 	toolBoxWidget->show();
 	
 	// Connect Finished signal of tool windows to finished slots in structure

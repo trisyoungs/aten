@@ -1014,6 +1014,20 @@ CommandData Command::data[Command::nCommands] = {
 		"string name, int nmolecules, int natoms",
 		"Add a pattern definition 'node' to the current model" },
 
+	// Pores commands
+	{ "createScheme",	"",		VTypes::NoData,
+		"",
+		"Create a partitioning scheme for the disorded builder from free spaces in the current model" },
+	{ "drillPores",		"CNNNn[nnn]",	VTypes::NoData,
+		"string poreType, double sizeParameter, int n1, int n2, int originFace = 3, double vx = 0.0, double vy = 0.0, double vz = 1.0",
+		"Drill an n1 x n2 array of pores in the current model" },
+	{ "selectPores",	"CNNNn[nnn]",	VTypes::NoData,
+		"string poreType, double sizeParameter, int n1, int n2, int originFace = 3, double vx = 0.0, double vy = 0.0, double vz = 1.0",
+		"Select atoms in an n1 x n2 array of pores in the current model" },
+	{ "terminate",		"",		VTypes::NoData,
+		"",
+		"Terminate atoms in the current selection" },
+
 	// Read / Write Commands
 	{ "addReadOption",	"C",		VTypes::NoData,
 		"string option",

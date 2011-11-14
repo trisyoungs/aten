@@ -32,7 +32,7 @@ PoresWidget::PoresWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 	ui.setupUi(this);
 	
 	// Private variables
-	//customElement_ = 9;
+	//partitioningScheme_.
 }
 
 // Show window
@@ -57,14 +57,32 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 		return;
 	}
 
-	// Grab the values of the pore array, vector, #]]]##]and determine first pore centre coordinates
+	// Grab some values so we are ready to run the command
 	int nx = ui.ArrayXSpin->value(), ny = ui.ArrayYSpin->value();
-	
-	
+	int face = ui.OriginPlaneCombo->currentIndex()+1;
+	Vec3<double> v(ui.PoreVectorX->value(), ui.PoreVectorY->value(), ui.PoreVectorZ->value());
+	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
+	double sizeParam = ui.PoreSizeSpin->value();
+	CommandNode::run(Command::SelectPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
 }
 
 void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 {
+	// First check - does the current model have a unit cell?
+	Model *m = aten.currentModelOrFrame();
+	if (m->cell()->type() == UnitCell::NoCell)
+	{
+		msg.print("Can't drill pores in a non-periodic model.\n");
+		return;
+	}
+
+	// Grab some values so we are ready to run the command
+	int nx = ui.ArrayXSpin->value(), ny = ui.ArrayYSpin->value();
+	int face = ui.OriginPlaneCombo->currentIndex()+1;
+	Vec3<double> v(ui.PoreVectorX->value(), ui.PoreVectorY->value(), ui.PoreVectorZ->value());
+	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
+	double sizeParam = ui.PoreSizeSpin->value();
+	CommandNode::run(Command::DrillPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
 }
 
 /*
@@ -76,3 +94,19 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 // Scheme Tab
 */
 
+void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
+{
+}
+
+void PoresWidget::on_CopySchemeButton_clicked(bool checked)
+{
+}
+
+void PoresWidget::closeEvent(QCloseEvent *event)
+{
+	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+	gui.toolBoxWidget->ui.PoresButton->setChecked(FALSE);
+	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
+
+	event->accept();
+}
