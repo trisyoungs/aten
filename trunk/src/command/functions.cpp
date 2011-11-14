@@ -420,6 +420,12 @@ void Command::initPointers()
 	pointers_[WriteVariable] = &Command::function_WriteVariable;
 	pointers_[WriteVariableFormatted] = &Command::function_WriteVariableFormatted;
 
+	// Pores Commands
+	pointers_[CreateScheme] = &Command::function_CreateScheme;
+	pointers_[DrillPores] = &Command::function_DrillPores;
+	pointers_[SelectPores] = &Command::function_SelectPores;
+	pointers_[Terminate] = &Command::function_Terminate;
+
 	// Script Commands
 	pointers_[ListScripts] = &Command::function_ListScripts;
 	pointers_[LoadScript] = &Command::function_LoadScript;

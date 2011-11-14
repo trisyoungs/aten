@@ -6616,7 +6616,7 @@
        </widget>
       </item>
       <item row="7" column="1">
-       <widget class="QToolButton" name="PoresBuilderButton">
+       <widget class="QToolButton" name="PoresButton">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>

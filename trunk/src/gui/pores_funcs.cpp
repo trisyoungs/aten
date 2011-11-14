@@ -40,16 +40,35 @@ void PoresWidget::showWidget()
 {
 	show();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.PoresBuilderButton->setChecked(TRUE);
+	gui.toolBoxWidget->ui.PoresButton->setChecked(TRUE);
 }
 
 /*
 // Drill Tab
 */
 
+void PoresWidget::on_PoreSelectButton_clicked(bool checked)
+{
+	// First check - does the current model have a unit cell?
+	Model *m = aten.currentModelOrFrame();
+	if (m->cell()->type() == UnitCell::NoCell)
+	{
+		msg.print("Can't drill pores in a non-periodic model.\n");
+		return;
+	}
+
+	// Grab the values of the pore array, vector, #]]]##]and determine first pore centre coordinates
+	int nx = ui.ArrayXSpin->value(), ny = ui.ArrayYSpin->value();
+	
+	
+}
+
+void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
+{
+}
 
 /*
-// Termiante Tab
+// Terminate Tab
 */
 
 
