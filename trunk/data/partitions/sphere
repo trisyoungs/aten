@@ -21,8 +21,7 @@ int npartitions = 2;
 global double x = 0.5, y = 0.5, z = 0.5, r = 0.3;
 int partitionOptions()
 {
-	Dialog ui = defaultDialog();
-	if (!ui.created)
+	void createDefaultDialog(Dialog ui)
 	{
 		ui.verticalFill = TRUE;
 		ui.addDoubleSpin("x", "x", 0.0, 1.0, 0.1, x);
@@ -30,6 +29,7 @@ int partitionOptions()
 		ui.addDoubleSpin("z", "Z", 0.0, 1.0, 0.1, z);
 		ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
 	}
+	Dialog ui = defaultDialog();
 	if (ui.show())
 	{
 		x = ui.asInteger("x");

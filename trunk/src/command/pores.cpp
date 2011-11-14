@@ -36,6 +36,36 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_DrillPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	
+	// Grab some parameters as variables to make readability easier
+	double sizeParam = c->argd(1);
+	int nA = c->argi(2), nB = c->argi(3), face = c->hasArg(4) ? c->argi(4) - 1 : 2;
+	Vec3<double> v;
+	if (c->hasArg(5)) v = c->arg3d(5);
+	else v.set(0.0,0.0,1.0);
+	
+	// Determine origin face vectors, and determine first pore centre coordinates
+	if ((face < 0) || (face > 2))
+	{
+		msg.print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).\n");
+		return FALSE;
+	}
+	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
+	Vec3<double> faceB = obj.rs()->cell()->axes().columnAsVec3((face+2)%3);
+	Vec3<double> deltaA = faceA / nA, deltaB = faceB / nB;
+	Vec3<double> origin = (deltaA + deltaB) * 0.5;
+	
+	obj.rs()->beginUndoState("Drill pores");
+	for (int a = 0; a < nA; ++a)
+	{
+		for (int b = 0; b < nB; ++b)
+		{
+			obj.rs()->selectLine(v, origin + deltaA*a + deltaB*b, sizeParam);
+		}
+	}
+	obj.rs()->selectionDelete();
+	obj.rs()->endUndoState();
+
 	return TRUE;
 }
 
@@ -43,6 +73,35 @@ bool Command::function_DrillPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SelectPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
+	// Grab some parameters as variables to make readability easier
+	double sizeParam = c->argd(1);
+	int nA = c->argi(2), nB = c->argi(3), face = c->hasArg(4) ? c->argi(4) - 1 : 2;
+	Vec3<double> v;
+	if (c->hasArg(5)) v = c->arg3d(5);
+	else v.set(0.0,0.0,1.0);
+	
+	// Determine origin face vectors, and determine first pore centre coordinates
+	if ((face < 0) || (face > 2))
+	{
+		msg.print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).\n");
+		return FALSE;
+	}
+	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
+	Vec3<double> faceB = obj.rs()->cell()->axes().columnAsVec3((face+2)%3);
+	Vec3<double> deltaA = faceA / nA, deltaB = faceB / nB;
+	Vec3<double> origin = (deltaA + deltaB) * 0.5;
+	
+	obj.rs()->beginUndoState("Select pore atoms");
+	for (int a = 0; a < nA; ++a)
+	{
+		for (int b = 0; b < nB; ++b)
+		{
+			obj.rs()->selectLine(v, origin + deltaA*a + deltaB*b, sizeParam);
+		}
+	}
+	obj.rs()->endUndoState();
+
 	return TRUE;
 }
 
