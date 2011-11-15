@@ -54,6 +54,12 @@ void Model::markSelectedAtoms()
 	msg.print(Messenger::Verbose, "There are now %i atoms marked.\n", marked_.nItems());
 }
 
+// Select marked atoms
+void Model::selectMarkedAtoms()
+{
+	for (Refitem<Atom,int> *ri = marked_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item);
+}
+
 // Select Atom
 void Model::selectAtom(Atom *i, bool markonly)
 {

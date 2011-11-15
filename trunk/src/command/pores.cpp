@@ -105,9 +105,54 @@ bool Command::function_SelectPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Terminate atoms with OH
+// Terminate atoms with 'H' or 'OH'
 bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	
+	// Loop over atoms in current selection
+	obj.rs()->selectNone(TRUE);
+	Atom *i;
+	obj.rs()->beginUndoState("Terminate atoms");
+	for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+	{
+		i = ri->item;
+		switch (i->element())
+		{
+			// Oxygen
+			case (8):
+				if (i->nBonds() == 0)
+				{
+					msg.print(" ... Warning: Found unbound oxygen in selection ...\n");
+					obj.rs()->selectAtom(TRUE);
+				}
+				else if (i->nBonds() == 1) obj.rs()->hydrogenSatisfy(i);
+				break;
+			// Silicon
+			case (14):
+				if (i->nBonds() == 0)
+				{
+					msg.print(" ... Warning: Found unbound silicon in selection ...\n");
+					obj.rs()->selectAtom(TRUE);
+				}
+				else for (int n=i->nBonds(); n<5; ++n)
+				{
+				}
+				break;
+			default:
+				msg.print(" ... Skipping atom %i (%s) in termination ...\n", i->id()+1, elements().symbol(i));
+				break;
+		}
+	}
+	
+	// Select any unbound atoms for inspection by the user
+	if (obj.rs()->nMarked() != 0)
+	{
+		msg.print("Viable unbound atoms were found in the provided selection, and remain selected in the model.\n");
+		obj.rs()->selectNone();
+		obj.rs()->selectMarkedAtoms();
+	}
+	obj.rs()->endUndoState();
+	
 	return TRUE;
 }

@@ -49,8 +49,6 @@ class Atom
 	enum AtomLabel { IdLabel, ElementLabel, TypeLabel, EquivLabel, ChargeLabel, nLabelTypes };
 	static AtomLabel atomLabel(const char *name, bool reportError = 0);
 	static const char *atomLabel(Atom::AtomLabel);
-	// Hydrogen-add geometries enum
-	enum HAddGeom { LinearHydrogen, PlanarHydrogen, TetrahedralHydrogen };
 	// Atom structure data
 	enum AtomData { AllData=0, PositionData=1, ForceData=2, VelocityData=4, ChargeData=8, FixedData=16, ElementData=32 };
 	// Atom environment
