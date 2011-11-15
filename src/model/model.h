@@ -372,6 +372,8 @@ class Model
 	void markAll();
 	// Match marked atoms to current selection
 	void markSelectedAtoms();
+	// Select marked atoms
+	void selectMarkedAtoms();
 	// Invert current atom selection
 	void selectionInvert(bool markonly = FALSE);
 	// Delete current atom selection
@@ -702,14 +704,14 @@ class Model
 	// Model Building
 	*/
 	private:
-	// Iteratively add hydrogens to the specified atom in the desired general geometry
-	void addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry);
 	// Pen orientation matrix
 	Matrix penOrientation_;
 	// Pen position
 	Vec3<double> penPosition_;
 
 	public:
+	// Add a single atom of the type specified to the atom specified
+	Atom *growAtom(Atom *target, int element, double distance, Atom::AtomGeometry geometry, bool bound = TRUE);
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogenSatisfy(Atom *target = NULL);
 	// Return the pen orientation matrix
