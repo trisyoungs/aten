@@ -185,7 +185,7 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 	{
 		Atom *linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
 		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
-		Vec3<double> ref = anchoredModel_.cell()->mimd(linkPartner, linkAtom);
+		Vec3<double> ref = anchoredModel_.cell()->mimVector(linkAtom, linkPartner);
 		ref.normalise();
 		anchoredModel_.rotateSelectionVector(Vec3<double>(), ref, -dy, TRUE);
 	}
@@ -206,14 +206,18 @@ Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond
 
 	// Determine vector along which our reference vector should point
 	Vec3<double> orientation;
-	if ((!replace) || (anchorpoint->nBonds()) == 0) orientation = anchorpoint->nextBondVector();
+	if ((!replace) || (anchorpoint->nBonds()) == 0)
+	{
+		// TODO Determine correct geometry to attach into
+		if (!anchorpoint->nextBondVector(orientation, Atom::TetrahedralGeometry)) orientation.zero();
+	}
 	else
 	{
 		// Clamp range of replaced atom id
 		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
 		// Grab atom along n'th bond
 		Refitem<Bond,int> *ri = anchorpoint->bond(replacebond);
-		orientation = anchorpoint->parent()->cell()->mimd(ri->item->partner(anchorpoint), anchorpoint);
+		orientation = anchorpoint->parent()->cell()->mimVector(anchorpoint, ri->item->partner(anchorpoint));
 		orientation.normalise();
 	}
 
@@ -230,7 +234,7 @@ Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond
 	{
 		Atom *linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
 		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
-		ref = anchoredModel_.cell()->mimd(linkPartner, linkAtom);
+		ref = anchoredModel_.cell()->mimVector(linkAtom, linkPartner);
 		ref.normalise();
 	}
 	else ref.zero();

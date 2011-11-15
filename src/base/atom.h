@@ -57,7 +57,8 @@ class Atom
 	// Geometries about atomic centres
 	enum AtomGeometry { NoGeometry, UnboundGeometry, OneBondGeometry, LinearGeometry, TShapeGeometry, TrigPlanarGeometry, TetrahedralGeometry, SquarePlanarGeometry, TrigBipyramidGeometry, OctahedralGeometry, nAtomGeometries };
 	static AtomGeometry atomGeometry(const char *name, bool reportError = 0);
-	static const char *atomGeometry(AtomGeometry);
+	static const char *atomGeometry(Atom::AtomGeometry ag);
+	static int atomGeometryNBonds(Atom::AtomGeometry ag);
 
 	private:
 	// Parent model
@@ -170,12 +171,6 @@ class Atom
 	/*
 	// Bonds / Bonding
 	*/
-	private:
-	// Return new atom vector for specified bond patterns / angles
-	Vec3<double> oneBondVector(Bond *b, double angle);
-	Vec3<double> twoBondVector(Bond *b1, Bond *b2, double angle);
-	Vec3<double> threeBondVector(Bond *b1, Bond *b2, Bond *b3, double angle, Atom::AtomGeometry reqgeom);
-
 	protected:
 	// Bond list for atom
 	Reflist<Bond,int> bonds_;
@@ -206,7 +201,7 @@ class Atom
 	// Determine bond plane
 	Vec3<double> findBondPlane(Atom *other, Bond *excludedBond, const Vec3<double> &vij);
 	// Return next best vector for addition of new atom
-	Vec3<double> nextBondVector();
+	bool nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry);
 
 
 	/*

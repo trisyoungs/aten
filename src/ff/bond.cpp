@@ -98,7 +98,7 @@ void Pattern::bondForces(Model *srcmodel)
 {
 	msg.enter("Pattern::bondForcess");
 	int i, j, m1, aoff;
-	static Vec3<double> mim_i, fi;
+	static Vec3<double> vec_ij, fi;
 	static double forcek, eq, rij, d, expo, du_dr, beta;
 	static ForcefieldBound *ffb;;
 	PatternBound *pb;
@@ -112,8 +112,8 @@ void Pattern::bondForces(Model *srcmodel)
 			// Calculate bond vector
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
-			mim_i = cell->mimd(modelatoms[j]->r(), modelatoms[i]->r());
-			rij = mim_i.magnitude();
+			vec_ij = cell->mimVector(modelatoms[i]->r(), modelatoms[j]->r());
+			rij = vec_ij.magnitude();
 			// Select energy function
 			ffb = pb->data();
 			switch (pb->data()->bondForm())
@@ -148,7 +148,7 @@ void Pattern::bondForces(Model *srcmodel)
 					break;
 			}
 			// Calculate forces
-			fi = (mim_i / rij) * -du_dr;
+			fi = (vec_ij / rij) * -du_dr;
 			modelatoms[i]->f() -= fi;
 			modelatoms[j]->f() += fi;
 		}

@@ -23,172 +23,239 @@
 #include "base/bond.h"
 #include "base/sysfunc.h"
 #include "model/model.h"
-#include "base/elements.h"
 
-// Return suitable vector based on one supplied bond
-Vec3<double> Atom::oneBondVector(Bond *b, double angle)
-{
-	Atom *j = b->partner(this);
-	Vec3<double> mim_a1 = parent_->cell()->mimd(this,j);
-	mim_a1.normalise();
-	// Create perpendicular vector to X-i...
-	int minel = mim_a1.absMinElement();
-	int onebelow = (minel+2)%3;
-	int oneabove = (minel+1)%3;
-	Vec3<double> perp;
-	perp.set(minel,0.0);
-	perp.set(onebelow,mim_a1.get(oneabove));
-	perp.set(oneabove,-mim_a1.get(onebelow));
-	perp.normalise();
-	// Final orientation depends on supplied angle
-	double theta = angle / DEGRAD;
-	return (-mim_a1 * cos(theta) + perp * sin(theta));
-}
-
-// Return suitable vector based on two supplied bonds
-Vec3<double> Atom::twoBondVector(Bond *b1, Bond *b2, double angle)
-{
-	// Get mim coordinates of the two bound atoms
-	Atom *a1 = b1->partner(this);
-	Atom *a2 = b2->partner(this);
-	Vec3<double> mim_a1, mim_a2, perp, tempv;
-	mim_a1 = parent_->cell()->mimd(a1,this);
-	mim_a1.normalise();
-	mim_a2 = parent_->cell()->mimd(a2,this);
-	mim_a2.normalise();
-	perp = mim_a1 * mim_a2;
-	// Pathological case where the two bonds are exactly opposite
-	if (perp.magnitude() < 0.0001) return oneBondVector(b1, 90.0);
-	// Otherwise, we're ok
-	perp.normalise();
-	tempv = mim_a1 + mim_a2;
-	tempv.normalise();
-	// Final orientation depends on supplied angle
-	double theta = angle / DEGRAD;
-	return (tempv * -cos(theta*0.5) + perp * -sin(theta*0.5));
-}
-
-// Return suitable vector based on three supplied bonds
-// TGAY What were parameters 'angle' and 'expgeom' for?
-Vec3<double> Atom::threeBondVector(Bond *b1, Bond *b2, Bond *b3, double angle, Atom::AtomGeometry expgeom)
-{
-	// Work out the three angles between the bonds
-	Vec3<double> result, v1;
-	Atom *a1 = b1->partner(this);
-	Atom *a2 = b2->partner(this);
-	Atom *a3 = b3->partner(this);
-	double angle1 = parent_->angle(a1,this,a3);
-	double angle2 = parent_->angle(a2,this,a3);
-	double angle3 = parent_->angle(a1,this,a2);
-	double avg = (angle1+angle2+angle3) / 3.0;
-	if (fabs(avg-90.0) < 10.0)
-	{
-		// Three bonds all at near-right angles
-		// Resulting vector can be opposite of any bond vector
-		result = oneBondVector(b1, 180.0);
-	}
-	else if (fabs(avg-120.0) < 10.0)
-	{
-		// T-shape geometry, more or less
-		// Resulting vector will be XP of two bonds forming a 90deg angle
-		if (angle1 < 120.0) result = parent_->cell()->mimd(a1,this) * parent_->cell()->mimd(a3,this);
-		else result = parent_->cell()->mimd(a2,this) * parent_->cell()->mimd(a3,this);
-		result.normalise();
-	}
-	else
-	{
-		result = parent_->cell()->mimd(a1,this);
-		result.normalise();
-		v1 = parent_->cell()->mimd(a2,this);
-		v1.normalise();
-		result += v1;
-		v1 = parent_->cell()->mimd(a3,this);
-		v1.normalise();
-		result += v1;
-		result *= -1.0;
-		result.normalise();
-	}
-	return result;
-}
-
-// Return next bext vector for addition of new atom
-Vec3<double> Atom::nextBondVector()
+// Return next best vector for addition of new atom
+bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 {
 	msg.enter("Atom::nextBondVector");
-	Vec3<double> vector;
-	int nsingle = parent_->countBondsToAtom(this,Bond::Single);
-	int ndouble = parent_->countBondsToAtom(this,Bond::Double);
-	int ntriple = parent_->countBondsToAtom(this,Bond::Triple);
-	switch (element_)
+
+	// Were we given a valid geometry?
+	switch (geometry)
 	{
-		case (0):
-			break;
-		// Hydrogen
-		case (1):
-			if (nBonds() == 0) vector.set(1.0,0.0,0.0);
-			break;
-		// Carbon
-		case (6):
-			switch (nBonds())
-			{
-				case (0):
-					vector.set(1.0,0.0,0.0);
-					break;
-				case (1):
-					if (ntriple == 1) vector = oneBondVector(bonds()->item, 180.0);
-					else if (ndouble == 1) vector = oneBondVector(bonds()->item, 120.0);
-					else vector = oneBondVector(bonds()->item, 109.5);
-					break;
-				case (2):
-					if (ndouble == 1) vector = twoBondVector(bonds_[0]->item, bonds_[1]->item, 120.0);
-					else if (nsingle == 2) vector = twoBondVector(bonds_[0]->item, bonds_[1]->item, 109.5);
-					break;
-				case (3):
-					if (nsingle == 3) vector = threeBondVector(bonds_[0]->item, bonds_[1]->item, bonds_[2]->item, 109.5, Atom::TetrahedralGeometry);
-			}
-			break;
-		// Nitrogen
-		case (7):
-			switch (nBonds())
-			{
-				case (0):
-					vector.set(1.0,0.0,0.0);
-					break;
-				case (1):
-					if (ndouble == 1) vector = oneBondVector(bonds()->item, 120.0);
-					else vector = oneBondVector(bonds()->item, 109.5);
-					break;
-				case (2):
-					if (ndouble == 1) vector = twoBondVector(bonds_[0]->item, bonds_[1]->item, 120.0);
-					else if (nsingle == 2) vector = twoBondVector(bonds_[0]->item, bonds_[1]->item, 109.5);
-					break;
-				case (3):
-					// Still allow one more bond, even though it would give a charged nitrogen
-					if (nsingle == 3) vector = threeBondVector(bonds_[0]->item, bonds_[1]->item, bonds_[2]->item, 109.5, Atom::TetrahedralGeometry);
-					break;
-			}
-			break;
-		// Oxygen
-		case (8):
-			switch (nBonds())
-			{
-				case (0):
-					vector.set(1.0,0.0,0.0);
-					break;
-				case (1):
-					if (ndouble == 1) vector = oneBondVector(bonds()->item, 120.0);
-					else vector = oneBondVector(bonds()->item, 109.5);
-					break;
-				case (2):
-					if (ndouble == 1) vector = twoBondVector(bonds_[0]->item, bonds_[1]->item, 120.0);
-					else if (nsingle == 2) vector = twoBondVector(bonds_[0]->item, bonds_[1]->item, 109.5);
-					break;
-			}
-			break;
-		default:
-			vector.set(1.0,0.0,0.0);
+		case (Atom::NoGeometry):
+		case (Atom::UnboundGeometry):
+			msg.print("Unsuitable atom geometry (%s) given to Model::growAtom\n", Atom::atomGeometry(geometry));
+			msg.exit("Atom::nextBondVector");
+			return FALSE;
 			break;
 	}
+	
+	// Only try to find a new bond if we have free bonds to add...
+	if (this->nBonds() >= Atom::atomGeometryNBonds(geometry))
+	{
+		msg.print("Attempted to grow an atom on an existing which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)\n", this->nBonds(), Atom::atomGeometry(geometry));
+		msg.exit("Atom::nextBondVector");
+		return FALSE;
+	}
+
+	// Now, find the next position for the required geometry
+	Atom *atoms[5];
+	static Vec3<double> vec[5], u, v;
+	Matrix rotMat;
+	static double **angleArray = NULL;
+	int n, m, o, p;
+	UnitCell *cell = parent_->cell();
+	bool foundAngle;
+	
+	// Create angle array if it doesn't already exist
+	if (angleArray == NULL)
+	{
+		angleArray = new double*[6];
+		for (n=0; n<6; ++n) angleArray[n] = new double[6];
+	}
+	for (n=0; n<6; ++n) for (m=0; m<6; ++m) angleArray[n][m] = (n == m ? 0.0 : -1.0);
+
+	// Set relevant basic angle before we begin...
+	double theta;
+	if (this->nBonds() == 0) theta = 0.0;
+	else switch (geometry)
+	{
+		case (Atom::LinearGeometry):
+			theta = 180.0 / DEGRAD;
+			break;
+		case (Atom::TrigPlanarGeometry):
+		case (Atom::TrigBipyramidGeometry):
+			theta = 120.0 / DEGRAD;
+			break;
+		case (Atom::TetrahedralGeometry):
+			theta = 109.5 / DEGRAD;
+			break;
+		case (Atom::TShapeGeometry):
+		case (Atom::OctahedralGeometry):
+		case (Atom::SquarePlanarGeometry):
+			theta = 90.0 / DEGRAD;
+			break;
+		default:
+			printf("Horribly unknown geometry type found here.\n");
+			break;
+	}
+	
+	// Determine position of the grown atom - we generate two vectors:
+	// u = new bond vector, perpendicular to 'v' but in correct plane
+	// v = is a 'reference' vector, generated from existing bonds, so that u can be rotated to form the desired angle with it
+	switch (this->nBonds())
+	{
+		// No bonds yet - just add in arbitrary position (along Y)
+		case (0):
+			vector.set(0.0,1.0,0.0);
+			u.set(1.0,0.0,0.0);
+			break;
+		// Single bond - add new atom at correct angle for geometry
+		case (1):
+			// Get only bond vector present and create perpendicular vector
+			atoms[0] = this->bonds()->item->partner(this);
+			v = cell->mimVector(this, atoms[0]);
+			v.normalise();
+			u = v.orthogonal();
+			vector = (v * cos(theta) + u * sin(theta));
+			break;
+		// Two bonds already present
+		case (2):
+			// For tetrahedal geometry, rotate one vector and around the axis defined by the other
+			// For all other geometries, rotate one vector around the perpendicular vector
+			atoms[0] = this->bonds()->item->partner(this);
+			atoms[1] = this->bonds()->next->item->partner(this);
+			u = cell->mimVector(this, atoms[0]);
+			u.normalise();
+			v = cell->mimVector(this, atoms[1]);
+			v.normalise();
+			// Check for pathological case where bonds are opposite each other (just select 90degree vector
+			if (fabs(u.dp(v)) > 0.99) vector = u.orthogonal();
+			else
+			{
+				if (geometry == Atom::TetrahedralGeometry) rotMat.createRotationAxis(u.x, u.y, u.z, 120.0, FALSE);
+				else
+				{
+					u = v * u;
+					u.normalise();
+					rotMat.createRotationAxis(u.x, u.y, u.z, theta*DEGRAD, FALSE);
+				}
+				vector = rotMat * v;
+			}
+			break;
+		// Three bonds already present
+		case (3):
+			for (n=0; n<3; ++n)
+			{
+				atoms[n] = bonds_[n]->item->partner(this);
+				vec[n] = cell->mimVector(this, atoms[n]);
+				vec[n].normalise();
+			}
+			switch (geometry)
+			{
+				case (Atom::TetrahedralGeometry):
+					// Pick a vector and rotate it 120 around the other
+					u = cell->mimVector(this, atoms[0]);
+					u.normalise();
+					v = cell->mimVector(this, atoms[1]);
+					v.normalise();
+					rotMat.createRotationAxis(u.x, u.y, u.z, 120.0, FALSE);
+					vector = rotMat * v;
+					// Check we have not overlapped with the other atom
+					u = cell->mimVector(this, atoms[2]);
+					u.normalise();
+					if (vector.dp(u) > 0.75) vector = rotMat * vector;
+					break;
+				case (Atom::TrigBipyramidGeometry):
+					// If we have an angle of 180deg between any two atoms, then add next atom in central plane
+					foundAngle = FALSE;
+					for (n=0; n<2; ++n)
+					{
+						for (m=n+1; m<3; ++m) if (vec[n].dp(vec[m]) < -0.75) { foundAngle = TRUE; break; }
+						if (foundAngle) break;
+					}
+					if (foundAngle)
+					{
+						// Next vector will be the sole 'in-plane' atom rotated around one of the other bonds
+						rotMat.createRotationAxis(vec[n].x, vec[n].y, vec[n].z, 120.0, FALSE);
+						o = (m+1)%3;
+						vector = rotMat * vec[o != n ? 0 : (o+1)%3];
+					}
+					else
+					{
+						// All atoms appear to be in plane, so add a perpendicular atom to this plane
+						vector = vec[0] * vec[1];
+						vector.normalise();
+					}
+					break;
+				case (Atom::OctahedralGeometry):
+				case (Atom::SquarePlanarGeometry):
+					// With three bonds, there is at least one atom not involved in a 180degree angle...
+					for (n=0; n<2; ++n) for (m=n+1; m<3; ++m) if (vec[n].dp(vec[m]) < -0.75)
+					{
+						angleArray[0][n] = 1.0;
+						angleArray[0][m] = 1.0;
+					}
+					// Search for element in array which is still negative (indicating no 180degree angle)
+					for (n=0; n<3; ++n)
+					{
+						if (angleArray[0][n] < 0.0)
+						{
+							vector = -vec[n];
+							break;
+						}
+					}
+					break;
+			}
+			break;
+		// Four bonds already present
+		case (4):
+			for (n=0; n<4; ++n)
+			{
+				atoms[n] = bonds_[n]->item->partner(this);
+				vec[n] = cell->mimVector(this, atoms[n]);
+				vec[n].normalise();
+			}
+			if (geometry == Atom::TrigBipyramidGeometry)
+			{
+				// Same as before: if we have an angle of 180deg between any two atoms, then add final atom in central plane
+				// Calculate all angles first
+				for (n=0; n<4; ++n) for (m=0; m<4; ++m) if (n != m) angleArray[n][m] = vec[n].dp(vec[m]);
+				foundAngle = FALSE;
+				for (n=0; n<3; ++n)
+				{
+					for (m=n+1; m<4; ++m)
+					{
+						if (angleArray[n][m] < -0.75)
+						{
+							foundAngle = TRUE;
+							// Find the other two atoms which aren't in the 180degree bond
+							o = n;
+							do { o = (o+1)%4; } while (o == m);
+							p = o;
+							do { p = (p+1)%4; } while (p == m);
+							rotMat.createRotationAxis(vec[n].x, vec[n].y, vec[n].z, 120.0, FALSE);
+							vector = rotMat * vec[o];
+							// Check we have not overlapped with the other atom
+							if (vector.dp(vec[p]) > 0.75) vector = rotMat * vector;
+						}
+					}
+					if (foundAngle) break;
+				}
+				if (!foundAngle)
+				{
+					// No sign of 180degree angle, so find bond which makes smallest average angle with the rest...
+					for (n=0; n<4; ++n) for (m=0; m<4; ++m) if (m != n) angleArray[n][n] += angleArray[n][m];
+					for (n=0; n<4; ++n) angleArray[n][n] = fabs(angleArray[n][n] / 3.0);
+					o = 0;
+					for (n=1; n<4; ++n) if (angleArray[n][n] < angleArray[o][o]) o = n;
+					vector = -vec[o];
+				}
+			}
+			else if (geometry == Atom::OctahedralGeometry)
+			{
+				// TODO
+			}
+			break;
+		// Five bonds already present
+		case (5):
+			// Only octahedral geometry relevant at this point
+			// TODO
+			break;
+	}
+
+	printf("Final vector is "); vector.print();
+
 	msg.exit("Atom::nextBondVector");
-	return vector;
+	return TRUE;
 }

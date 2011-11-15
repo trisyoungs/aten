@@ -655,7 +655,7 @@ void Model::selectLine(Vec3<double> line, Vec3<double> point, double dr, bool ma
 			v.x = line.y*xyyx + line.z*xzzx;
 			v.y = line.z*yzzy - line.x*xyyx;
 			v.z = -line.x*xzzx - line.y*yzzy;
-			v = cell_.mimd(v, dummy);
+			v = cell_.mimVector(v, dummy);
 			dist = v.magnitude();
 			if (dist < dr) selectAtom(i, markonly);
 		}

@@ -156,6 +156,7 @@ class Command
 		Bohr,
 		Chain,
 		EndChain,
+		GrowAtom,
 		InsertAtom,
 		Locate,
 		Move,
@@ -641,6 +642,7 @@ class Command
 	static bool function_Bohr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_EndChain(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GrowAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Locate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Move(CommandNode *c, Bundle &obj, ReturnValue &rv);

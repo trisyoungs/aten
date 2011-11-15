@@ -468,14 +468,8 @@ void UnitCell::calculateInverse()
 // Minimum Image Routines
 */
 
-// Minimum image position
-Vec3<double> UnitCell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
-{
-	return mimd(r1,r2)+r2;
-}
-
-// Minimum image vector of r1 with respect to reference point r2
-Vec3<double> UnitCell::mimd(const Vec3<double> &r1, const Vec3<double> &r2) const
+// Minimum image vector from r1 to r2
+Vec3<double> UnitCell::mimVector(const Vec3<double> &r1, const Vec3<double> &r2) const
 {
 	static Vec3<double> R;
 	static double half;
@@ -483,12 +477,12 @@ Vec3<double> UnitCell::mimd(const Vec3<double> &r1, const Vec3<double> &r2) cons
 	{
 		// No cell - just return r1
 		case (UnitCell::NoCell):
-			R = r1 - r2;
+			R = r2 - r1;
 			break;
 		// Cubic / Orthorhombic
 		case (UnitCell::CubicCell):
 		case (UnitCell::OrthorhombicCell):
-			R = r1 - r2;
+			R = r2 - r1;
 // 			half = lengths_.x * 0.5;
 // 			if (R.x < -half) R.x += lengths_.x;
 // 			else if (R.x > half) R.x -= lengths_.x;
@@ -502,7 +496,7 @@ Vec3<double> UnitCell::mimd(const Vec3<double> &r1, const Vec3<double> &r2) cons
 			break;
 		// Parallelepiped 
 		default:
-			R = inverse_.transform(r1-r2);
+			R = inverse_.transform(r2-r1);
 /*			if (R.x < -0.5) R.x += 1.0;
 			if (R.y < -0.5) R.y += 1.0;
 			if (R.z < -0.5) R.z += 1.0;
@@ -517,26 +511,34 @@ Vec3<double> UnitCell::mimd(const Vec3<double> &r1, const Vec3<double> &r2) cons
 	return R;
 }
 
-// Minimimum image routines with atom and vector pointers
+// Minimum image vector from i to r2
+Vec3<double> UnitCell::mimVector(Atom *i, const Vec3<double> &r2) const
+{
+	return mimVector(i->r(), r2);
+}
+
+// Minimum image vector from i to j
+Vec3<double> UnitCell::mimVector(Atom *i, Atom *j) const
+{
+	return mimVector(i->r(), j->r());
+}
+
+// Minimum image position of r1 with respect to r2
+Vec3<double> UnitCell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
+{
+	return mimVector(r2,r1) + r2;
+}
+
+// Minimum image position of i with respect to r2
 Vec3<double> UnitCell::mim(Atom *i, const Vec3<double> &r2) const
 {
-	return mim(i->r(),r2);
+	return mimVector(r2,i->r()) + i->r();
 }
 
-Vec3<double> UnitCell::mimd(Atom *i, const Vec3<double> &r2) const
-{
-	return mimd(i->r(),r2);
-}
-
-// Minimimum image routines with atom pointers
+// Minimum image position of i with respect to j
 Vec3<double> UnitCell::mim(Atom *i, Atom *j) const
 {
-	return mim(i->r(),j->r());
-}
-
-Vec3<double> UnitCell::mimd(Atom *i, Atom *j) const
-{
-	return mimd(i->r(),j->r());
+	return mimVector(j->r(),i->r()) + j->r();
 }
 
 // Fold atom
@@ -609,7 +611,7 @@ double UnitCell::distance(const Vec3<double> &r1, const Vec3<double> &r2, bool u
 {
 	// Calculate the distance between atoms i and j
 	static Vec3<double> mimi;
-	mimi = (useMim ? mimd(r1,r2) : r1-r2);
+	mimi = (useMim ? mimVector(r1,r2) : r1-r2);
 	return mimi.magnitude();
 }
 
@@ -621,14 +623,14 @@ double UnitCell::distance(Atom *i, Atom *j, bool useMim) const
 double UnitCell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<double> &r3, bool useMim) const
 {
 	// Calculate the angle formed between atoms i, j, and k
-	static Vec3<double> vecij, veckj;
+	static Vec3<double> vecji, vecjk;
 	static double dp, a;
-	vecij = (useMim ? mimd(r1,r2) : r1-r2);
-	veckj = (useMim ? mimd(r3,r2) : r3-r2);
+	vecji = (useMim ? mimVector(r2,r1) : r1-r2);
+	vecjk = (useMim ? mimVector(r2,r3) : r3-r2);
 	// Normalise vectors and calculate dot product and angle.
-	vecij.normalise();
-	veckj.normalise();
-	dp = vecij.dp(veckj);
+	vecji.normalise();
+	vecjk.normalise();
+	dp = vecji.dp(vecjk);
 	a = acos(dp);
 	return a * DEGRAD;
 }
@@ -643,16 +645,16 @@ double UnitCell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec
 	// Calculate the torsion angle formed between the atoms i, j, k, and l.
 	static Vec3<double> vecji, veckl, vecjk, veckj, mim_k, xpj, xpk;
 	static double dp, angle;
-	// Vector j->i (minimum image of i w.r.t. j)
-	vecji = (useMim ? mimd(i,j) : i-j);
+	// Vector j->i
+	vecji = (useMim ? mimVector(j,i) : i-j);
 	// Vectors j->k and k->j (minimum image of k w.r.t. j)
 	mim_k = (useMim ? mim(k,j) : k);
 	vecjk = mim_k - j;
 	veckj = -vecjk;
 	// Vector k->l (minimum image of l w.r.t. k (in turn w.r.t. j))
-	veckl = (useMim ? mimd(mim_k,l) : mim_k-l);
+	veckl = (useMim ? mimVector(mim_k,l) : l-mim_k);
 	// Calculate cross products
-	xpj = vecjk * vecji;
+	xpj = vecji * vecjk;
 	xpj.normalise();
 	xpk = veckj * veckl;
 	xpk.normalise();

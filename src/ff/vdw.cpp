@@ -158,7 +158,7 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
 	msg.enter("Pattern::vdwIntraPatternEnergy");
 	int aoff, m1, i, j, start1, finish1, con;
-	Vec3<double> mim_i;
+	Vec3<double> vec_ij;
 	double U, rij, energy_inter, energy_intra, cutoff;
 	PatternAtom *pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
@@ -177,17 +177,17 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 		i = -1;
 		for (pai = atoms_.first(); pai != atoms_.last(); pai = pai->next)
 		{
-			i++;
+			++i;
 			j = i;
 			for (paj = pai->next; paj != NULL; paj = paj->next)
 			{
-				j++;
+				++j;
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
 					// Check distance
-					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					// Find relevant (pre-combined) parameters
 					pp = parent_->combinedParameters(atoms_[i]->data(), atoms_[j]->data());
@@ -213,7 +213,7 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
 	msg.enter("Pattern::vdwInterPatternEnergy");
 	static int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
-	static Vec3<double> mim_i;
+	static Vec3<double> vec_ij;
 	static double rij, energy_inter, cutoff, U;
 	PatternAtom *pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
@@ -269,14 +269,14 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 			i = -1;
 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
 			{
-				i++;
+				++i;
 				j = -1;
 				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
 				{
-					j++;
+					++j;
 
-					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
+					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					// Find relevant (pre-combined) parameters
 					pp = parent_->combinedParameters(atoms_[i]->data(), otherPattern->atoms_[j]->data());
@@ -305,7 +305,7 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 	// those of all molecules.
 	msg.enter("Pattern::vdwIntraPatternForces");
 	int i,j,aoff,m1,con;
-	Vec3<double> mim_i, f_i, tempf;
+	Vec3<double> vec_ij, f_i, tempf;
 	double cutoff, rij;
 	PatternAtom *pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
@@ -330,8 +330,8 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 				if ((con > 2) || (con == 0))
 				{
 					// Check distance
-					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 
 					// Find relevant (pre-combined) parameters
@@ -339,10 +339,10 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 					if (pp == NULL) break;
 
 					// Calculate force contribution
-					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pp->data(), i, j);
+					tempf = VdwForces(atoms_[i]->data()->vdwForm(), vec_ij, rij, pp->data(), i, j);
 					if (con == 3) tempf *= vdwScaleMatrix_[i][j];
-					f_i += tempf;
-					modelatoms[j+aoff]->f() -= tempf;
+					f_i -= tempf;
+					modelatoms[j+aoff]->f() += tempf;
 				}
 			}
 			// Put the temporary forces back into the main array
@@ -361,7 +361,7 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 	// of this pnode and the one supplied
 	msg.enter("Pattern::vdwInterPatternForces");
 	int i,j,aoff1,aoff2,m1,m2,start,finish;
-	Vec3<double> mim_i, f_i, tempf;
+	Vec3<double> vec_ij, f_i, tempf;
 	double rij, cutoff;
 	PatternAtom *pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
@@ -383,15 +383,15 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 			i = -1;
 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
 			{
-				i++;
+				++i;
 				f_i = modelatoms[i+aoff1]->f();
 				j = -1;
 				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
 				{
-					j++;
+					++j;
 					// Check distance and get vector j->i
-					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
+					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 
 					// Find relevant (pre-combined) parameters
@@ -399,9 +399,9 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 					if (pp == NULL) break;
 
 					// Calculate force contribution
-					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pp->data(), i, j);
-					f_i += tempf;
-					modelatoms[j+aoff2]->f() -= tempf;
+					tempf = VdwForces(atoms_[i]->data()->vdwForm(), vec_ij, rij, pp->data(), i, j);
+					f_i -= tempf;
+					modelatoms[j+aoff2]->f() += tempf;
 				}
 				// Store temporary force array back into main force array
 				modelatoms[i+aoff1]->f() = f_i;

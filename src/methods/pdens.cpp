@@ -128,7 +128,7 @@ void Pdens::accumulate(Model *sourcemodel)
 		{
 			centre2 = sourcemodel->siteCentre(sites_[1],m2);
 			// Calculate minimum image vector and translate into local coordinate system...
-			mimd = axes.transform(cell->mimd(centre2,centre1));
+			mimd = axes.transform(cell->mimVector(centre1,centre2));
 			// ...and work out the gridpoint (convert to 0..totalSteps_ from -nsteps..0..+nsteps)
 			gridPoint.x = int(mimd.x / stepSize_);
 			gridPoint.y = int(mimd.y / stepSize_);

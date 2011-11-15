@@ -241,7 +241,7 @@ void Model::addEllipsoidGlyphs()
 		}
 // 		printf("Atom pointers are %p and %p\n", i, j);
 // 		printf("Distance is greatest (%f) between atoms %i and %i\n", best, i->id(), j->id());
-		centroid = i->r() + cell_.mimd(j,i) * 0.5;
+		centroid = i->r() + cell_.mimVector(i,j) * 0.5;
 // 		centroid.print();
 		mag = best * 0.5;
 		vecx = i->r() - centroid;

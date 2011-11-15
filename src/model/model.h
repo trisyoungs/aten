@@ -711,7 +711,7 @@ class Model
 
 	public:
 	// Add a single atom of the type specified to the atom specified
-	Atom *growAtom(Atom *target, int element, double distance, Atom::AtomGeometry geometry, bool bound = TRUE);
+	Atom *growAtom(Atom *target, short int element, double distance, Atom::AtomGeometry geometry, bool bound = TRUE);
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogenSatisfy(Atom *target = NULL);
 	// Return the pen orientation matrix
