@@ -112,6 +112,7 @@ void Command::initPointers()
 	pointers_[Bohr] = &Command::function_Bohr;
 	pointers_[Chain] = &Command::function_Chain;
 	pointers_[EndChain] = &Command::function_EndChain;
+	pointers_[GrowAtom] = &Command::function_GrowAtom;
 	pointers_[InsertAtom] = &Command::function_InsertAtom;
 	pointers_[Locate] = &Command::function_Locate;
 	pointers_[Move] = &Command::function_Move;

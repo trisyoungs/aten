@@ -161,6 +161,39 @@ bool Command::function_EndChain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Grow atom on target atom
+bool Command::function_GrowAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	
+	// Determine element (based on type of variable provided)
+	short int el = c->argz(0);
+
+	Atom *i;
+	ReturnValue v1;
+	if (!c->arg(1, v1)) return FALSE;
+	if (v1.type() == VTypes::IntegerData) i = obj.rs()->atom(v1.asInteger()-1);
+	else if (v1.type() == VTypes::AtomData) i = (Atom*) v1.asPointer(VTypes::AtomData);
+	else
+	{
+		msg.print("Second argument to 'growAtom' must be a variable of int or Atom type.\n");
+		return FALSE;
+	}
+	
+	// Check geometry specification
+	Atom::AtomGeometry ag = Atom::TetrahedralGeometry;
+	if (c->hasArg(2)) ag = Atom::atomGeometry(c->argc(2), TRUE);
+	if (ag == Atom::nAtomGeometries) return FALSE;
+	double distance;
+	if (c->hasArg(3)) distance = c->argd(3);
+	else distance = (elements().atomicRadius(i) + elements().atomicRadius(el));
+
+	obj.rs()->beginUndoState("Grow Atom");
+	aten.current.i = obj.rs()->growAtom(i, el, distance, ag, TRUE);
+	obj.rs()->endUndoState();
+	return TRUE;
+}
+
 // Draw unbound atom with ID specified ('insertatom <el> <id> [x y z]')
 bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

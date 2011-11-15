@@ -61,6 +61,7 @@ const char *Atom::atomEnvironment(Atom::AtomEnvironment ae)
 
 // Geometries about atomic centres
 const char *AtomGeometryKeywords[Atom::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
+int AtomGeometryNBonds[Atom::nAtomGeometries] = { 0, 0, 1, 2, 3, 3, 4, 4, 5, 6 };
 Atom::AtomGeometry Atom::atomGeometry(const char *s, bool reportError)
 {
 	Atom::AtomGeometry ag = (Atom::AtomGeometry) enumSearch("atom geometry",Atom::nAtomGeometries,AtomGeometryKeywords,s, reportError);
@@ -70,6 +71,10 @@ Atom::AtomGeometry Atom::atomGeometry(const char *s, bool reportError)
 const char *Atom::atomGeometry(Atom::AtomGeometry i)
 {
 	return AtomGeometryKeywords[i];
+}
+int Atom::atomGeometryNBonds(Atom::AtomGeometry ag)
+{
+	return AtomGeometryNBonds[ag];
 }
 
 // Constructor
@@ -513,10 +518,10 @@ bool Atom::isPlanar(double tolerance)
 	bool result = TRUE;
 	Refitem<Bond,int> *ri = bonds_.first();
 	// Take the first two bound atom vectors and get the cross product to define the plane's normal
-	Vec3<double> v1 = parent_->cell()->mimd(this, ri->item->partner(this));
+	Vec3<double> v1 = parent_->cell()->mimVector(this, ri->item->partner(this));
 	v1.normalise();
 	ri = ri->next;
-	Vec3<double> v2 = parent_->cell()->mimd(this, ri->item->partner(this));
+	Vec3<double> v2 = parent_->cell()->mimVector(this, ri->item->partner(this));
 	v2.normalise();
 	Vec3<double> normal = v1*v2;
 	double angle;
@@ -524,7 +529,7 @@ bool Atom::isPlanar(double tolerance)
 	for (ri = ri->next; ri != NULL; ri = ri->next)
 	{
 		// Calculate angle
-		v1 = parent_->cell()->mimd(this, ri->item->partner(this));
+		v1 = parent_->cell()->mimVector(this, ri->item->partner(this));
 		v1.normalise();
 		angle = fabs(acos(normal.dp(v1)) * DEGRAD - 90.0);
 // 		printf("Out-of-plane bond angle is %f degrees\n", angle);

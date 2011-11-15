@@ -338,7 +338,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			else radius_j = prefs.styleRadius(j) - sphereAtomAdjustment_;
 			
 			// Calculate vector i->j
-			v = source->cell()->mimd(j, i);
+			v = source->cell()->mimVector(i, j);
 			
 			// Render bond
 			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item);
@@ -391,7 +391,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 						// Grab atom pointer and get minimum image vector with centroid 'v'
 						i = atoms[id_i+ra->item->id()];
 						if (prefs.styleRadius(i) > radius_i) radius_i = prefs.styleRadius(i);
-						v = source->cell()->mimd(i->r(), pos);
+						v = source->cell()->mimVector(pos, i->r());
 						// Accumulate magnitude
 						mag += v.magnitude();
 						v.normalise();
@@ -491,7 +491,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 				if (source->cell()->distance(k,j) > 3.9) continue;
 				
 				// Rule 2 - Distance H-A is less than 2.5 Angstroms
-				v = source->cell()->mimd(j,i);
+				v = source->cell()->mimVector(i,j);
 				mag = v.magnitude();
 				if (mag > 2.5) continue;
 				

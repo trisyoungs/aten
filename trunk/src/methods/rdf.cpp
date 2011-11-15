@@ -126,7 +126,7 @@ void Rdf::accumulate(Model *sourcemodel)
 		{
 			centre2 = sourcemodel->siteCentre(sites_[1],m2);
 			// Calculate minimum image distance and bin
-			mimd = cell->mimd(centre2,centre1);
+			mimd = cell->mimVector(centre1,centre2);
 			// Add distance to data_ array
 			bin = int(mimd.magnitude() / binWidth_);
 	//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);

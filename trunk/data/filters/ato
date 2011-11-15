@@ -239,7 +239,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 				else writeLineF(" %-3s     %5i\n", i.type.name, n);
 
 				// Get mim vector to COM
-				r = srcmodel.cell.mimd(i.r - boxsize*0.5, com);
+				r = srcmodel.cell.mimVector(com, i.r - boxsize*0.5);
 				writeLineF(" %12.5e %12.5e %12.5e\n", r.x, r.y, r.z);
 
 				// Restraint information

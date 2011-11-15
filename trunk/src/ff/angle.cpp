@@ -108,7 +108,7 @@ void Pattern::angleForces(Model *srcmodel)
 {
 	msg.enter("Pattern::angleForcess");
 	int i,j,k,aoff,m1;
-	Vec3<double> vec_ij, vec_kj, fi, fj, fk, mim_ik;
+	Vec3<double> vec_ji, vec_jk, fi, fj, fk, vec_ik;
 	double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c1, c2, cosx, rij;
 	double du_dtheta, dtheta_dcostheta;
 	ForcefieldBound *ffb;
@@ -125,12 +125,12 @@ void Pattern::angleForces(Model *srcmodel)
 			j = pb->atomId(1) + aoff;
 			k = pb->atomId(2) + aoff;
 			// Minimum image w.r.t. atom j
-			vec_ij = cell->mimd(modelatoms[i]->r(),modelatoms[j]->r());
-			vec_kj = cell->mimd(modelatoms[k]->r(),modelatoms[j]->r());
+			vec_ji = cell->mimVector(modelatoms[j]->r(),modelatoms[i]->r());
+			vec_jk = cell->mimVector(modelatoms[j]->r(),modelatoms[k]->r());
 			// Normalise vectors, calculate dot product and angle.
-			mag_ij = vec_ij.magAndNormalise();
-			mag_kj = vec_kj.magAndNormalise();
-			dp = vec_ij.dp(vec_kj);
+			mag_ij = vec_ji.magAndNormalise();
+			mag_kj = vec_jk.magAndNormalise();
+			dp = vec_ji.dp(vec_jk);
 			theta = acos(dp);
 			dtheta_dcostheta = -1.0 / sin(theta);
 			ffb = pb->data();
@@ -173,8 +173,8 @@ void Pattern::angleForces(Model *srcmodel)
 					// dU/dr = forcek * (r - eq)
 					forcek = ffb->parameter(AngleFunctions::BondConstraintK);
 					eq = ffb->parameter(AngleFunctions::BondConstraintEq);
-					mim_ik = cell->mimd(modelatoms[k]->r(), modelatoms[i]->r());
-					rij = mim_ik.magnitude();
+					vec_ik = cell->mimVector(modelatoms[i]->r(), modelatoms[k]->r());
+					rij = vec_ik.magnitude();
 					du_dtheta = -forcek * (rij - eq);
 					break;
 				default:
@@ -185,7 +185,7 @@ void Pattern::angleForces(Model *srcmodel)
 			// Exception for BondConstraint term...
 			if (pb->data()->angleForm() == AngleFunctions::BondConstraint)
 			{
-				fi = -(mim_ik / rij) * du_dtheta;
+				fi = -(vec_ik / rij) * du_dtheta;
 				fj = 0.0;
 				fk = -fi;
 			}
@@ -194,9 +194,9 @@ void Pattern::angleForces(Model *srcmodel)
 				// Complete chain rule
 				du_dtheta *= dtheta_dcostheta;
 				// Calculate atomic forces
-				fi = vec_kj - vec_ij * dp;
+				fi = vec_jk - vec_ji * dp;
 				fi *= -du_dtheta / mag_ij;
-				fk = vec_ij - vec_kj * dp;
+				fk = vec_ji - vec_jk * dp;
 				fk *= -du_dtheta / mag_kj;
 				fj = fi + fk;
 			}

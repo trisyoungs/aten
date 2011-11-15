@@ -40,7 +40,7 @@ bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			i = obj.rs()->atom(c->argi(0)-1);
 			j = obj.rs()->atom(c->argi(1)-1);
 			if ((i == NULL) || (j == NULL)) return FALSE;
-			v = obj.rs()->cell()->mimd(j,i);
+			v = obj.rs()->cell()->mimVector(i,j);
 			angle = c->argd(2);
 			break;
 		// Axis and theta
@@ -53,7 +53,7 @@ bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			i = obj.rs()->atom(c->argi(0)-1);
 			j = obj.rs()->atom(c->argi(1)-1);
 			if ((i == NULL) || (j == NULL)) return FALSE;
-			v = obj.rs()->cell()->mimd(j,i);
+			v = obj.rs()->cell()->mimVector(i,j);
 			angle = c->argd(2);
 			o.set(c->argd(3), c->argd(4), c->argd(5));
 			break;
@@ -151,7 +151,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 					i = obj.rs()->atom(c->argi(n*2)-1);
 					j = obj.rs()->atom(c->argi(n*2+1)-1);
 					if ((i == NULL) || (j == NULL)) return FALSE;
-					v = obj.rs()->cell()->mimd(j,i);
+					v = obj.rs()->cell()->mimVector(i,j);
 					v.normalise();
 					source.setColumn(n, v, 0.0);
 				}
@@ -162,7 +162,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 					i = obj.rs()->atom(c->argi(n*2+6)-1);
 					j = obj.rs()->atom(c->argi(n*2+7)-1);
 					if ((i == NULL) || (j == NULL)) return FALSE;
-					v = obj.rs()->cell()->mimd(j,i);
+					v = obj.rs()->cell()->mimVector(i,j);
 					v.normalise();
 					target.setColumn(n, v, 0.0);
 				}
@@ -284,7 +284,7 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		}
 		else j = (Atom*) c->argp(n+1, VTypes::AtomData);
 		if ((i == NULL) || (j == NULL)) return FALSE;
-		v = obj.rs()->cell()->mimd(j,i);
+		v = obj.rs()->cell()->mimVector(i,j);
 		v.normalise();
 		source.setColumn(n/2, v, 0.0);
 	}
@@ -355,7 +355,7 @@ bool Command::function_SetAngle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Get current angle between the three atoms
 	double angle = obj.rs()->angle(i,j,k);
 	// Get cross product of bond vectors to define rotation axis
-	Vec3<double> v = obj.rs()->cell()->mimd(j,k) * obj.rs()->cell()->mimd(j,i);
+	Vec3<double> v = obj.rs()->cell()->mimVector(j,k) * obj.rs()->cell()->mimVector(j,i);
 	v.normalise();
 	double delta = c->argd(3) - angle;
 	obj.rs()->beginUndoState("Set angle between atoms");
@@ -394,7 +394,7 @@ bool Command::function_SetDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	// Grab the minimum image vector between the two atoms, and shift all those currently marked
-	Vec3<double> v = obj.rs()->cell()->mimd(j,i);
+	Vec3<double> v = obj.rs()->cell()->mimVector(i,j);
 	double delta = c->argd(2) - v.magnitude();
 	v.normalise();
 	v *= delta;
@@ -447,8 +447,8 @@ bool Command::function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	// Get current torsion between the four atoms
 	double angle = obj.rs()->torsion(i,j,k,l);
-	// Rotation vector will be vector j->k
-	Vec3<double> v = obj.rs()->cell()->mimd(j,k);
+	// Rotation vector will be vector k->j
+	Vec3<double> v = obj.rs()->cell()->mimVector(k,j);
 	v.normalise();
 	double delta = c->argd(4) - angle;
 	obj.rs()->beginUndoState("Set torsion between atoms");

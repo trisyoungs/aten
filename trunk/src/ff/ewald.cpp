@@ -66,7 +66,7 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, 
 	// Internal interaction of atoms in individual molecules within the pattern is considered.
 	msg.enter("Pattern::ewaldRealIntraPatternEnergy");
 	int i,j,aoff,m1,con;
-	Vec3<double> mim_i;
+	Vec3<double> vec_ij;
 	double rij, energy_inter, energy_intra, energy, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
@@ -85,8 +85,8 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, 
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
-					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) * AtenMath::erfc(alpha*rij) / rij;
 					con == 0 ? energy_inter += energy : energy_intra += (con == 3 ? energy * elecScaleMatrix_[i][j] : energy);
@@ -109,7 +109,7 @@ void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Ener
 	// 'energy; before multiplication by the charge of the second atom (a1)
 	msg.enter("Pattern::ewaldRealInterPatternEnergy");
 	static int i,j,aoff1,aoff2,m1,m2,finish1,start2,finish2,atomi,atomj;
-	static Vec3<double> mim_i;
+	static Vec3<double> vec_ij;
 	static double rij, energy_inter, energy, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
@@ -144,8 +144,8 @@ void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Ener
 				for (j=0; j<xpnode->nAtoms_; j++)
 				{
 					atomj = j + aoff2;
-					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
+					rij = vec_ij.magnitude();
 					if (rij < cutoff) energy  += (modelatoms[atomj]->charge() * AtenMath::erfc(alpha*rij) / rij);
 				}
 				energy *= modelatoms[atomi]->charge();
@@ -271,7 +271,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, EnergyStore *estore, int molec
 	static int aoff, m1, i, j, con;
 	static double molcorrect, energy, qprod, rij, chargesum, alpha;
 	alpha = prefs.ewaldAlpha();
-	static Vec3<double> mim_i;
+	static Vec3<double> vec_ij;
 	Atom **modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 
@@ -304,8 +304,8 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, EnergyStore *estore, int molec
 					// Take values from scaling matrix to determine degree of subtraction...
 					qprod = modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge();
 					qprod *= (1.0 - elecScaleMatrix_[i][j]);
-					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					rij = vec_ij.magnitude();
 					molcorrect += qprod *( AtenMath::erf(alpha*rij)/rij );
 				}
 			}
@@ -327,7 +327,7 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 	// Internal interaction of atoms in individual molecules within the pattern is considered.
 	msg.enter("Pattern::ewaldRealIntraPatternForces");
 	int i, j, aoff, m1, atomi, atomj, con;
-	Vec3<double> mim_i, tempf, f_i;
+	Vec3<double> vec_ij, tempf, f_i;
 	double rij, factor, qqrij3, alpharij, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
@@ -349,8 +349,8 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
-					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
+					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					alpharij = alpha * rij;
 					factor = AtenMath::erfc(alpharij) + 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
@@ -358,9 +358,9 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 					factor = factor * qqrij3 * prefs.elecConvert();
 					if (con == 3) factor *= elecScaleMatrix_[i][j];
 					// Sum forces
-					tempf = mim_i * factor;
-					f_i += tempf;
-					modelatoms[atomj]->f() -= tempf;
+					tempf = vec_ij * factor;
+					f_i -= tempf;
+					modelatoms[atomj]->f() += tempf;
 				}
 			}
 			// Re-store forces on atom i
@@ -377,7 +377,7 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 	// of this pattern and the one supplied. 
 	msg.enter("Pattern::ewaldRealInterPatternForces");
 	int i, j, aoff1, aoff2, m1, m2, start, finish, atomi, atomj;
-	Vec3<double> mim_i, f_i, tempf;
+	Vec3<double> vec_ij, f_i, tempf;
 	double rij, factor, alpharij, qqrij3, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
@@ -401,8 +401,8 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 				for (j=0; j<xpnode->nAtoms_; j++)
 				{
 					atomj = j + aoff2;
-					mim_i = cell->mimd(modelatoms[atomi]->r() ,modelatoms[atomj]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[atomi]->r() ,modelatoms[atomj]->r());
+					rij = vec_ij.magnitude();
 					if (rij < cutoff)
 					{
 						alpharij = alpha * rij;
@@ -410,11 +410,9 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 						qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
 						factor = factor * qqrij3 * prefs.elecConvert();
 						// Sum forces
-						tempf.x = mim_i.x * factor;
-						tempf.y = mim_i.y * factor;
-						tempf.z = mim_i.z * factor;
-						f_i += tempf;
-						modelatoms[atomj]->f() -= tempf;
+						tempf = vec_ij * factor;
+						f_i -= tempf;
+						modelatoms[atomj]->f() += tempf;
 					}
 				}
 				// Store the new forces on atom i
@@ -514,7 +512,7 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 	// Correct the Ewald forces due to bond / angle / torsion exclusions
 	msg.enter("Pattern::ewaldCorrectForces");
 	static int i, j, aoff, m1, atomi, atomj, con;
-	static Vec3<double> mim_i, tempf, f_i;
+	static Vec3<double> vec_ij, tempf, f_i;
 	static double rij, factor, qqrij3, alpharij, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
@@ -536,8 +534,8 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 				con = conMatrix_[i][j];
 				if ((con < 4) && (con > 0))
 				{
-					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
-					rij = mim_i.magnitude();
+					vec_ij = cell->mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
+					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					// Calculate force to subtract
 					alpharij = alpha * rij;
@@ -545,10 +543,10 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 					qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
 					factor = factor * qqrij3 * prefs.elecConvert();
 					factor *= (1.0 - elecScaleMatrix_[i][j]);
-					// Sum forces
-					tempf = mim_i * factor;
-					f_i -= tempf;
-					modelatoms[atomj]->f() += tempf;
+					// Sum forces (correcting force, so adding to f_i and subtracting from f_j)
+					tempf = vec_ij * factor;
+					f_i += tempf;
+					modelatoms[atomj]->f() -= tempf;
 				}
 			}
 			// Re-store forces on atom i

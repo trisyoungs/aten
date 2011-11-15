@@ -159,9 +159,9 @@ void Pattern::torsionForces(Model *srcmodel)
 	// Calculate force contributions from the torsions in this pattern with coordinates from *xcfg
 	msg.enter("Pattern::torsionForces");
 	int i,j,k,l,aoff,m1;
-	static Vec3<double> rij, rkj, rlk, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
+	static Vec3<double> vec_ji, vec_jk, vec_kl, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
 	Matrix dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
-	static double phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
+	static double phi, dp, forcek, period, eq, mag_ji, mag_jk, mag_kl, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
 	static Vec3<double> fi, fj, fk, fl;
 	ForcefieldBound *ffb;
 	static double k1, k2, k3, k4, s;
@@ -181,16 +181,16 @@ void Pattern::torsionForces(Model *srcmodel)
 			l = pb->atomId(3) + aoff;
 			ffb = pb->data();
 			// Calculate vectors between atoms
-			rij = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
-			rkj = cell->mimd(modelatoms[k]->r(), modelatoms[j]->r());
-			rlk = cell->mimd(modelatoms[l]->r(), modelatoms[k]->r());
-			mag_ij = rij.magnitude();
-			mag_kj = rkj.magnitude();
-			mag_lk = rlk.magnitude();
+			vec_ji = cell->mimVector(modelatoms[j]->r(), modelatoms[i]->r());
+			vec_jk = cell->mimVector(modelatoms[j]->r(), modelatoms[k]->r());
+			vec_kl = cell->mimVector(modelatoms[k]->r(), modelatoms[l]->r());
+			mag_ji = vec_ji.magnitude();
+			mag_jk = vec_jk.magnitude();
+			mag_kl = vec_kl.magnitude();
 // 			printf("i-j-k-l %i-%i-%i-%i MAGs %f %f %f\n",i,j,k,l, mag_ij,mag_kj, mag_lk);
 			// Calculate cross products and torsion angle formed (in radians)
-			xpj = rij * rkj;
-			xpk = rlk * rkj;
+			xpj = vec_ji * vec_jk;
+			xpk = vec_kl * vec_jk;
 			mag_xpj = xpj.magAndNormalise();
 			mag_xpk = xpk.magAndNormalise();
 			dp = xpj.dp(xpk);
@@ -222,12 +222,12 @@ void Pattern::torsionForces(Model *srcmodel)
 
 					  = (0,rij[z],-rij[y])
 			*/
-			dxpj_dij = make_cp_mat(rkj);
-			temp = -rij;
+			dxpj_dij = make_cp_mat(vec_jk);
+			temp = -vec_ji;
 			dxpj_dkj = make_cp_mat(temp);
-			temp = -rlk;
+			temp = -vec_kl;
 			dxpk_dkj = make_cp_mat(temp);
-			dxpk_dlk = make_cp_mat(rkj);
+			dxpk_dlk = make_cp_mat(vec_jk);
 			// Construct derivatives of cos(phi) w.r.t. perpendicular axes
 			dcos_dxpj = (xpk - xpj * dp) / mag_xpj;
 			dcos_dxpk = (xpj - xpk * dp) / mag_xpk;

@@ -184,13 +184,17 @@ class UnitCell
 	// Minimum image calculation
 	*/
 	public:
-	// Minimum image position of r1 with respect to reference point r2
-	Vec3<double> mimd(const Vec3<double> &r1, const Vec3<double> &r2) const;
-	Vec3<double> mimd(Atom *i, const Vec3<double> &r2) const;
-	Vec3<double> mimd(Atom *i, Atom *j) const;
-	// Minimum image vector r2 -> r1
+	// Minimum image vector from r1 to r2
+	Vec3<double> mimVector(const Vec3<double> &r1, const Vec3<double> &r2) const;
+	// Minimum image vector from i to r2
+	Vec3<double> mimVector(Atom *i, const Vec3<double> &r2) const;
+	// Minimum image vector from i to j
+	Vec3<double> mimVector(Atom *i, Atom *j) const;
+	// Minimum image position of r1 with respect to r2
 	Vec3<double> mim(const Vec3<double> &r1, const Vec3<double> &r2) const;
+	// Minimum image position of i with respect to r2
 	Vec3<double> mim(Atom *i, const Vec3<double> &r2) const;
+	// Minimum image position of i with respect to j
 	Vec3<double> mim(Atom *i, Atom *j) const;
 	void fold(Vec3<double> &r, Atom *i, Model *parent) const;
 	void fold(Atom *i, Model *parent) const;

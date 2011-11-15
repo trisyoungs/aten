@@ -81,7 +81,7 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 // Function data
 FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
 	{ "mim",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
-	{ "mimd",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
+	{ "mimVector",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
 	{ "translateAtom",	VTypes::VectorData,	"JNNN",		"Atom i, double dx, double dy, double dz" }
 };
 
@@ -396,7 +396,7 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			}
 			rv.set(ptr->mim(v1,v2));
 			break;
-		case (CellVariable::MinimumImageDistance):
+		case (CellVariable::MinimumImageVector):
 			if (node->argType(0) == VTypes::VectorData) v1 = node->argv(0);
 			else
 			{
@@ -421,7 +421,7 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 				}
 				v2 = jj->r();
 			}
-			rv.set(ptr->mimd(v1,v2));
+			rv.set(ptr->mimVector(v1,v2));
 			break;
 		case (CellVariable::TranslateAtom):
 			ii = (Atom*) node->argp(0, VTypes::AtomData);
