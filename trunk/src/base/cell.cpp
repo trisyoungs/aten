@@ -474,17 +474,16 @@ Vec3<double> UnitCell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 	return mimd(r1,r2)+r2;
 }
 
-// Minimum image vector
+// Minimum image vector of r1 with respect to reference point r2
 Vec3<double> UnitCell::mimd(const Vec3<double> &r1, const Vec3<double> &r2) const
 {
-	// Returns the minimum image vector of r1 with respect to r2.
 	static Vec3<double> R;
 	static double half;
 	switch (type_)
 	{
 		// No cell - just return r1
 		case (UnitCell::NoCell):
-			R = r1;
+			R = r1 - r2;
 			break;
 		// Cubic / Orthorhombic
 		case (UnitCell::CubicCell):
