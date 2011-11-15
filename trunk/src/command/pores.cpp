@@ -29,7 +29,7 @@
 bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	return TRUE;
+	return FALSE;
 }
 
 // Drill pores in current model
@@ -112,7 +112,7 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	
 	// Loop over atoms in current selection
 	obj.rs()->selectNone(TRUE);
-	Atom *i;
+	Atom *i, *j;
 	obj.rs()->beginUndoState("Terminate atoms");
 	for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
@@ -124,19 +124,22 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				if (i->nBonds() == 0)
 				{
 					msg.print(" ... Warning: Found unbound oxygen in selection ...\n");
-					obj.rs()->selectAtom(TRUE);
+					obj.rs()->selectAtom(i, TRUE);
 				}
-				else if (i->nBonds() == 1) obj.rs()->hydrogenSatisfy(i);
+				else if (i->nBonds() == 1) obj.rs()->growAtom(i, 1, 1.0, Atom::TetrahedralGeometry);
 				break;
 			// Silicon
 			case (14):
 				if (i->nBonds() == 0)
 				{
 					msg.print(" ... Warning: Found unbound silicon in selection ...\n");
-					obj.rs()->selectAtom(TRUE);
+					obj.rs()->selectAtom(i, TRUE);
 				}
-				else for (int n=i->nBonds(); n<5; ++n)
+				else for (int n=i->nBonds(); n<4; ++n)
 				{
+					// Must grow an oxygen onto the silicon, and then add a hydrogen to the oxygen
+					j = obj.rs()->growAtom(i, 8, 1.5, Atom::TetrahedralGeometry);
+					if (j != NULL) obj.rs()->growAtom(j, 1, 1.0, Atom::TetrahedralGeometry);
 				}
 				break;
 			default:

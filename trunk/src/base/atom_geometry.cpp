@@ -43,7 +43,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 	// Only try to find a new bond if we have free bonds to add...
 	if (this->nBonds() >= Atom::atomGeometryNBonds(geometry))
 	{
-		msg.print("Attempted to grow an atom on an existing which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)\n", this->nBonds(), Atom::atomGeometry(geometry));
+		msg.print("Attempted to grow an atom on an existing atom which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)\n", this->nBonds(), Atom::atomGeometry(geometry));
 		msg.exit("Atom::nextBondVector");
 		return FALSE;
 	}
@@ -254,7 +254,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 			break;
 	}
 
-	printf("Final vector is "); vector.print();
+// 	printf("Final vector is "); vector.print();
 
 	msg.exit("Atom::nextBondVector");
 	return TRUE;
