@@ -214,6 +214,8 @@ class Aten
 	PartitioningScheme *partitioningSchemes();
 	// Return nth partitioning scheme in the list
 	PartitioningScheme *partitioningSchemes(int index);
+	// Copy specified partitioning scheme and add it to the list
+	void addPartitioningScheme(PartitioningScheme &scheme);
 
 
 	/*

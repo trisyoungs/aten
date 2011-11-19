@@ -313,7 +313,8 @@ int facetriples[256][15] = {
 	{ 1, 3, 8, 9, 1, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 
 	{ 0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 
 	{ 0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, 
-	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+	{ 0, 3, 8, 11, 1, 2, 6, 10, 7, 4, 9, 5, -1, -1, -1 }
+// 	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
 };
 
 // Render volumetric isosurface with Marching Cubes
@@ -326,10 +327,10 @@ void GridPrimitive::createSurfaceMarchingCubes()
 	WrapInt i, j, k;
 	GLfloat col1[4], col2[4], minalpha1, minalpha2;
 	double ***data, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
-	// Grab the data pointer, surface cutoff, and primitive reference
 	data = source_->data3d();
 	bool secondary = source_->useSecondary(), periodic = source_->periodic();
 	cscale = source_->useColourScale() ? source_->colourScale() : -1;
+	bool fillVolume = source_->fillEnclosedVolume();
 
 	mult = 1.0;
 	// Get distances between grid points
@@ -423,7 +424,11 @@ void GridPrimitive::createSurfaceMarchingCubes()
 				if (source_->withinPrimaryCutoff(vertex[5])) cubetype += 32;
 				if (source_->withinPrimaryCutoff(vertex[6])) cubetype += 64;
 				if (source_->withinPrimaryCutoff(vertex[7])) cubetype += 128;
-				if (cubetype != 0)
+				if ((cubetype == 255) && fillVolume)
+				{
+					primaryPrimitive_.plotCube(1.0, 1, ii, jj, kk);
+				}
+				else if (cubetype != 0)
 				{
 					// Get edges from list and draw triangles or points
 					faces = facetriples[cubetype];

@@ -854,11 +854,6 @@
           </property>
           <item>
            <property name="text">
-            <string>Grid</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
             <string>Points</string>
            </property>
           </item>
@@ -890,6 +885,13 @@
            <widget class="QCheckBox" name="GridPeriodicCheck">
             <property name="text">
              <string>Periodic</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="GridFillEnclosedVolumeCheck">
+            <property name="text">
+             <string>Fill Volume</string>
             </property>
            </widget>
           </item>
@@ -1924,6 +1926,56 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>GridList</tabstop>
+  <tabstop>ShowAllGridsCheck</tabstop>
+  <tabstop>GridTabWidget</tabstop>
+  <tabstop>GridLowerCutoffSpin</tabstop>
+  <tabstop>GridUpperCutoffSpin</tabstop>
+  <tabstop>GridSecondaryCutoffCheck</tabstop>
+  <tabstop>GridLowerCutoff2Spin</tabstop>
+  <tabstop>GridUpperCutoff2Spin</tabstop>
+  <tabstop>GridAxesAXSpin</tabstop>
+  <tabstop>GridAxesAYSpin</tabstop>
+  <tabstop>GridAxesAZSpin</tabstop>
+  <tabstop>GridAxesBXSpin</tabstop>
+  <tabstop>GridAxesBYSpin</tabstop>
+  <tabstop>GridAxesBZSpin</tabstop>
+  <tabstop>GridAxesCXSpin</tabstop>
+  <tabstop>GridAxesCYSpin</tabstop>
+  <tabstop>GridAxesCZSpin</tabstop>
+  <tabstop>GridOriginXSpin</tabstop>
+  <tabstop>GridOriginYSpin</tabstop>
+  <tabstop>GridOriginZSpin</tabstop>
+  <tabstop>GridStyleCombo</tabstop>
+  <tabstop>GridOutlineVolumeCheck</tabstop>
+  <tabstop>GridUseColourScaleRadio</tabstop>
+  <tabstop>GridColourscaleSpin</tabstop>
+  <tabstop>GridUseInternalColoursRadio</tabstop>
+  <tabstop>GridPrimaryColourButton</tabstop>
+  <tabstop>GridSecondaryColourButton</tabstop>
+  <tabstop>ShiftGridNegXButton</tabstop>
+  <tabstop>ShiftGridPosYButton</tabstop>
+  <tabstop>ShiftGridPosXButton</tabstop>
+  <tabstop>ShiftGridNegZButton</tabstop>
+  <tabstop>ShiftGridNegYButton</tabstop>
+  <tabstop>ShiftGridPosZButton</tabstop>
+  <tabstop>GridShiftXSpin</tabstop>
+  <tabstop>GridShiftYSpin</tabstop>
+  <tabstop>GridShiftZSpin</tabstop>
+  <tabstop>ShiftAtomNoneRadio</tabstop>
+  <tabstop>ShiftAtomSelectionRadio</tabstop>
+  <tabstop>ShiftAtomAllRadio</tabstop>
+  <tabstop>OrbitalTable</tabstop>
+  <tabstop>ViewBasisButton</tabstop>
+  <tabstop>ViewEigenvectorButton</tabstop>
+  <tabstop>OrbitalCalculateButton</tabstop>
+  <tabstop>OrbitalOriginXSpin</tabstop>
+  <tabstop>OrbitalOriginYSpin</tabstop>
+  <tabstop>OrbitalOriginZSpin</tabstop>
+  <tabstop>OrbitalPointsSpin</tabstop>
+  <tabstop>OrbitalSpacingSpin</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

@@ -58,7 +58,6 @@ void Aten::openIncludes()
 		found = TRUE;
 		nIncludesFailed_ += nfailed;
 		dataDir_ = qPrintable(QDir::toNativeSeparators(paths.at(i)));
-		break;
 	}
 
 	if (!found) msg.print("No includes found in any known default locations.\n");
@@ -76,7 +75,7 @@ void Aten::openIncludes()
 	msg.exit("Aten::openIncludes");
 }
 
-// Parse filter index file (rooted in the path provided)
+// Parse include directory
 int Aten::parseIncludeDir(const char *path)
 {
 	msg.enter("Aten::parseIncludeDir");

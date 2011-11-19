@@ -266,6 +266,8 @@ class Grid
 	bool outlineVolume_;
 	// Offset (shift) when drawing grid volume
 	Vec3<int> shift_;
+	// Whether to fill enclosed volume
+	bool fillEnclosedVolume_;
 	
 	public:
 	// Increase the internal log
@@ -328,13 +330,21 @@ class Grid
 	void setShift(int id, int i);
 	// Return shift amount
 	Vec3<int> shift();
+	// Whether to fill enclosed volume
+	void setFillEnclosedVolume(bool b);
+	// Return whether to fill enclosed volume
+	bool fillEnclosedVolume();
+
 
 
 	/*
 	// Transformations
 	*/
 	public:
+	// Convert data from Bohr to Angstroms
 	void bohrToAngstrom();
+	// Modify region of data (adjacent gridpoints) (recursive)
+	int modifyRegion(int startX, int startY, int startZ, double minValue, double maxValue, double newValue, bool periodic);
 };
 
 #endif

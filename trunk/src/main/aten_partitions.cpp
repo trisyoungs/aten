@@ -36,7 +36,7 @@ void Aten::openPartitions()
 	// Generate default partition ('none')
 	PartitioningScheme *ps = partitioningSchemes_.add();
 	bool success = ps->schemeDefinition().generateFromString("string name = 'None', description = 'No partitioning'; int partition(double x, double y, double z) { return 0; } string partitionName(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int npartitions = 1, roughgrid[3] = { 2,2,2 }, finegrid[3] = {2,2,2};", "Default Partitioning", FALSE);
-	if (success) success = ps->initialise();
+	if (success) success = ps->initialiseFromProgram();
 	if (!success)
 	{
 		msg.print("Failed to create default partition!\n");
@@ -108,7 +108,7 @@ int Aten::parsePartitionsDir(const char *path)
 		filename += partitionlist.at(i);
 		PartitioningScheme *ps = partitioningSchemes_.add();
 		bool success = ps->schemeDefinition().generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(partitionlist.at(i)), FALSE);
-		if (success) success = ps->initialise();
+		if (success) success = ps->initialiseFromProgram();
 		
 		if (!success)
 		{
@@ -139,7 +139,7 @@ bool Aten::openPartition(const char *filename)
 	bool success = ps->schemeDefinition().generateFromFile(filename, filename, FALSE);
 // 	if (success) success = 
 	
-	if ((!success) || (!ps->initialise()))
+	if ((!success) || (!ps->initialiseFromProgram()))
 	{
 		msg.print("Failed to load partition from '%s'...\n", filename);
 		failedPartitioningSchemes_.add()->set( filename );
@@ -196,3 +196,11 @@ PartitioningScheme *Aten::partitioningSchemes(int index)
 {
 	return partitioningSchemes_[index];
 }
+
+// Copy specified partitioning scheme and add it to the list
+void Aten::addPartitioningScheme(PartitioningScheme &scheme)
+{
+	PartitioningScheme *newScheme = partitioningSchemes_.add();
+	newScheme->copy(scheme);
+}
+

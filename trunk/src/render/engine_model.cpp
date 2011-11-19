@@ -616,7 +616,7 @@ void RenderEngine::renderGrids(Model *source)
 		A.multiplyRotation(g->axes());
 		if (g->style() == Grid::TriangleSurface) style = GL_LINE;
 		else if (g->style() == Grid::SolidSurface) style = GL_FILL;
-		else style = GL_POINTS;
+		else style = GL_POINT;
 		if (g->useColourScale()) renderPrimitive(RenderEngine::GridObject, &gp->primaryPrimitive(), gp->primaryIsTransparent(), NULL, A, style);
 		else
 		{

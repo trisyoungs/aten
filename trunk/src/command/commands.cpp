@@ -30,7 +30,7 @@
 Command commands;
 
 /* Argument Specification Tokens:
-       Char	Meaning		Acceptable Types in VTypes
+	Char	Meaning		Acceptable Types in VTypes
 	A	Atom/Id		IntegerData, AtomData
 	B	Boolean		Any
 	C	Character	StringData
@@ -1018,8 +1018,8 @@ CommandData Command::data[Command::nCommands] = {
 		"Add a pattern definition 'node' to the current model" },
 
 	// Pores commands
-	{ "createScheme",	"",		VTypes::NoData,
-		"",
+	{ "createScheme",	"C[nnn]n",	VTypes::NoData,
+		"string name, int nx = 50, int ny = 50, int nz = 50, int atomExtent = 2",
 		"Create a partitioning scheme for the disorded builder from free spaces in the current model" },
 	{ "drillPores",		"CNNNn[nnn]",	VTypes::NoData,
 		"string poreType, double sizeParameter, int n1, int n2, int originFace = 3, double vx = 0.0, double vy = 0.0, double vz = 1.0",
