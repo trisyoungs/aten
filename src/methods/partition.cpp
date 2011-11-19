@@ -1,6 +1,6 @@
 /*
-	*** Monte Carlo methods
-	*** src/methods/mc.cpp
+	*** Partitioning Scheme
+	*** src/methods/partition.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -204,9 +204,9 @@ Program &PartitioningScheme::schemeDefinition()
 }
 
 // Setup scheme information from generated program structure
-bool PartitioningScheme::initialise()
+bool PartitioningScheme::initialiseFromProgram()
 {
-	msg.enter("PartitioningScheme::initialise");
+	msg.enter("PartitioningScheme::initialiseFromProgram");
 
 	ReturnValue rv;
 	bool success;
@@ -246,7 +246,7 @@ bool PartitioningScheme::initialise()
 	if (v == NULL)
 	{
 		msg.print("Error: No 'npartitions' variable defined in partitioning scheme '%s'\n", name_.get());
-		msg.exit("PartitioningScheme::initialise");
+		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	msg.print(Messenger::Verbose, "  --> Found 'npartitions' variable in partitioning scheme '%s'.\n", name_.get());
@@ -256,7 +256,7 @@ bool PartitioningScheme::initialise()
 	if (nparts < 1)
 	{
 		msg.print("Error: Invalid 'npartitions' (%i) found in partitioning scheme '%s'\n", nparts, name_.get());
-		msg.exit("PartitioningScheme::initialise");
+		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	
@@ -272,7 +272,7 @@ bool PartitioningScheme::initialise()
 	else
 	{
 		msg.print("Error: No 'roughgrid' variable defined in partitioning scheme '%s'.\n", name_.get());
-		msg.exit("PartitioningScheme::initialise");
+		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	v = schemeDefinition_.mainProgram()->findVariableInScope("finegrid", scopelevel);
@@ -286,7 +286,7 @@ bool PartitioningScheme::initialise()
 	else
 	{
 		msg.print("Error: No 'finegrid' variable defined in partitioning scheme '%s'.\n", name_.get());
-		msg.exit("PartitioningScheme::initialise");
+		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	
@@ -296,7 +296,7 @@ bool PartitioningScheme::initialise()
 	else
 	{
 		msg.print("Error: No 'partition' function defined in partitioning scheme '%s'\n", name_.get());
-		msg.exit("PartitioningScheme::initialise");
+		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	partitionFunctionNode_.setFunction(partitionFunction_);
@@ -307,7 +307,7 @@ bool PartitioningScheme::initialise()
 	else
 	{
 		msg.print("Error: No 'partitionName' function defined in partitioning scheme '%s'\n", name_.get());
-		msg.exit("PartitioningScheme::initialise");
+		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	partitionNameNode_.setFunction(partitionNameFunction_);
@@ -326,6 +326,7 @@ bool PartitioningScheme::initialise()
 	if (!schemeDefinition_.mainProgram()->execute(rv))
 	{
 		msg.print("Error: Failed to run through partitioning scheme code.\n");
+		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 
@@ -338,8 +339,16 @@ bool PartitioningScheme::initialise()
 		pd->setName(partitionName(n));
 	}
 	
-	msg.exit("PartitioningScheme::initialise");
+	msg.exit("PartitioningScheme::initialiseFromProgram");
 	return TRUE;
+}
+
+// Setup scheme information manually (for absolute grid data)
+void PartitioningScheme::initialiseAbsolute(const char *name, const char *description)
+{
+	name_ = name;
+	description_ = description;
+	absolute_ = TRUE;
 }
 
 // Return name of partitioning scheme
@@ -368,12 +377,32 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 	msg.exit("PartitioningScheme::setVariable");
 }
 
-// Set whether scheme is absolute
-void PartitioningScheme::setAbsolute()
+// Setup absolute grid, returning Grid in the process
+Grid *PartitioningScheme::setAbsoluteGrid(int nx, int ny, int nz)
 {
-	absolute_ = TRUE;
+	// Must have initialised to be absolute_...
+	if (!absolute_)
+	{
+		msg.print("Internal Error: PartitioningScheme was not initialised to be absolute, so can't set the grid in this way.\n");
+		return NULL;
+	}
+	fineGridSize_.set(nx, ny, nz);
+	grid_.initialise(Grid::RegularXYZData, fineGridSize_);
+	return &grid_;
 }
 
+// Return whether scheme is absolute
+bool PartitioningScheme::absolute()
+{
+	return absolute_;
+}
+
+// Create partition information from current grid data
+void PartitioningScheme::createPartitionsFromGrid()
+{
+	// TODO
+	// Loop over grid elements
+}
 
 // Update partition information (after load or change in options)
 void PartitioningScheme::updatePartitions(bool useRoughGrid)
@@ -512,4 +541,10 @@ QIcon &PartitioningScheme::icon()
 Vec3<int> PartitioningScheme::fineGridSize()
 {
 	return fineGridSize_;
+}
+
+// Copy data from specified partition
+void PartitioningScheme::copy(PartitioningScheme &source)
+{
+	
 }

@@ -131,6 +131,7 @@ Grid::Grid()
 	secondaryColour_[3] = 0.5;
 	useSecondary_ = FALSE;
 	outlineVolume_ = FALSE;
+	fillEnclosedVolume_ = FALSE;
 	periodic_ = FALSE;
 	loopOrder_.set(0,1,2);
 	colourScale_ = 0;
@@ -971,17 +972,6 @@ void Grid::setSecondaryColour(double r, double g, double b, double a)
 	logChange();
 }
 
-// Convert Bohr to Angstrom
-void Grid::bohrToAngstrom()
-{
-	// Only the axes and origin need to be modified...
-	Vec3<double> lengths = cell_.lengths();
-	Vec3<double> angles = cell_.angles();
-	lengths *= ANGBOHR;
-	cell_.set(lengths, angles);
-	origin_ *= ANGBOHR;
-}
-
 // Set whether to use both signs of a symmetric isovalue distribution
 void Grid::setUseSecondary(bool b)
 {
@@ -1039,4 +1029,142 @@ void Grid::setShift(int id, int i)
 Vec3<int> Grid::shift()
 {
 	return shift_;
+}
+
+// Whether to fill enclosed volume
+void Grid::setFillEnclosedVolume(bool b)
+{
+	fillEnclosedVolume_ = b;
+	logChange();
+}
+
+// Return whether to fill enclosed volume
+bool Grid::fillEnclosedVolume()
+{
+	return fillEnclosedVolume_;
+}
+
+/*
+// Transformations
+*/
+
+// Convert Bohr to Angstrom
+void Grid::bohrToAngstrom()
+{
+	// Only the axes and origin need to be modified...
+	Vec3<double> lengths = cell_.lengths();
+	Vec3<double> angles = cell_.angles();
+	lengths *= ANGBOHR;
+	cell_.set(lengths, angles);
+	origin_ *= ANGBOHR;
+}
+
+// Modify region of data (adjacent gridpoints) (recursive)
+int Grid::modifyRegion(int startX, int startY, int startZ, double minValue, double maxValue, double newValue, bool periodic)
+{
+	int i, j, k, x, y, z, nCells = 0;
+	double value;
+	List< ListItem< Vec3<int> > > queue;
+	ListItem< Vec3<int> > *li;
+	Vec3<int> v;
+	printf("Modify region - starting at %i %i %i, range = %f to %f, newValue = %f\n", startX, startY, startZ, minValue, maxValue, newValue);
+	if (type_ == Grid::RegularXYZData)
+	{
+		// Seed queue with the target cell...
+		li = queue.add();
+		li->value().set(startX, startY, startZ);
+
+		// Loop over queued points
+		while (queue.nItems() > 0)
+		{
+			// Grab last queued point
+			Vec3<int> &vec = queue.last()->value();
+
+			// If this cell value is not in the range required, remove point from queue and continue
+			value = data3d_[vec.x][vec.y][vec.z];
+			if ((value < minValue) || (value > maxValue))
+			{
+				queue.removeLast();
+				continue;
+			}
+
+			// It is in the range required, so change its value...
+			setData(vec.x, vec.y, vec.z, newValue);
+			// ...increase nCells...
+			++nCells;
+			// ...add valid adjacent cells to the queue...
+			for (x=0; x<3; ++x)
+			{
+				for (y=-1; y < 2; y+=2)
+				{
+					v = vec;
+					v.add(x, y);
+					// Fold position if necessary
+					if (v[x] < 0) { if (periodic) v.set(x,nPoints_[x]-1); else continue; }
+					else if (v[x] >= nPoints_[x]) { if (periodic) v.set(x,0); else continue; }
+					value = data3d_[v.x][v.y][v.z];
+					if ((value < minValue) || (value > maxValue)) continue;
+					else
+					{
+						// Insert a new item at the beginning of the list, so we can still removeLast on the original item later...
+						li = queue.insert(NULL);
+// 						printf("Queueing adjacent cell %i %i %i \n", x, y, z);
+						li->value().set(v.x,v.y,v.z);
+					}
+				}
+			}
+			// ...and finally remove it from the list
+			queue.removeLast();
+		}
+	}
+	else
+	{
+		// Seed queue with the target cell...
+		li = queue.add();
+		li->value().set(startX, startY, 0);
+
+		// Loop over queued points
+		while (queue.nItems() > 0)
+		{
+			// Grab last queued point
+			Vec3<int> &vec = queue.last()->value();
+
+			// If this cell value is not in the range required, remove point from queue and continue
+			value = data2d_[vec.x][vec.y];
+			if ((value < minValue) || (value > maxValue))
+			{
+				queue.removeLast();
+				continue;
+			}
+
+			// It is in the range required, so change its value...
+			setData(vec.x, vec.y, 0, newValue);
+			// ...increase nCells...
+			++nCells;
+			// ...add valid adjacent cells to the queue...
+			for (x=0; x<2; ++x)
+			{
+				for (y=-1; y < 2; y+=2)
+				{
+					v = vec;
+					v.add(x, y);
+					// Fold position if necessary
+					if (v[x] < 0) { if (periodic) v.set(x,nPoints_[x]-1); else continue; }
+					else if (v[x] >= nPoints_[x]) { if (periodic) v.set(x,0); else continue; }
+					value = data2d_[v.x][v.y];
+					if ((value < minValue) || (value > maxValue)) continue;
+					else
+					{
+						// Insert a new item at the beginning of the list, so we can still removeLast on the original item later...
+						li = queue.insert(NULL);
+// 						printf("Queueing adjacent cell %i %i %i \n", x, y, z);
+						li->value().set(v.x,v.y,0);
+					}
+				}
+			}
+			// ...and finally remove it from the list
+			queue.removeLast();
+		}
+	}
+	return nCells;
 }

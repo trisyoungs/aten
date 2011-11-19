@@ -542,71 +542,58 @@ Vec3<double> UnitCell::mim(Atom *i, Atom *j) const
 }
 
 // Fold atom
-void UnitCell::fold(Vec3<double> &r, Atom *i, Model *parent) const
+Vec3<double> UnitCell::fold(Vec3<double> &r) const
 {
 	// Folds the coordinates in 'r' into the defined unit cell
 	msg.enter("UnitCell::fold");
-	static Vec3<double> newr;
+	static Vec3<double> R;
 	switch (type_)
 	{
 		// No cell, so no image to fold into
 		case (UnitCell::NoCell):
+			R = r;
 			break;
 		// Cubic / Orthorhombic
 		case (UnitCell::CubicCell):
 		case (UnitCell::OrthorhombicCell):
-			newr = r;
-			if (newr.x < 0.0) newr.x -= int((newr.x-lengths_.x)/lengths_.x) * lengths_.x;
-			else if (newr.x > lengths_.x) newr.x -= int(newr.x/lengths_.x)* lengths_.x;
-			if (newr.y < 0.0) newr.y -= int((newr.y-lengths_.y)/lengths_.y)* lengths_.y;
-			else if (newr.y > lengths_.y) newr.y -= int(newr.y/lengths_.y)* lengths_.y;
-			if (newr.z < 0.0) newr.z -= int((newr.z-lengths_.z)/lengths_.z)* lengths_.z;
-			else if (newr.z > lengths_.z) newr.z -= int(newr.z/lengths_.z)* lengths_.z;
-/*			if (newr.x < 0.0) newr.x += lengths_.x;
-			else if (newr.x > lengths_.x) newr.x -= lengths_.x;
-			if (newr.y < 0.0) newr.y += lengths_.y;
-			else if (newr.y > lengths_.y) newr.y -= lengths_.y;
-			if (newr.z < 0.0) newr.z += lengths_.z;
-			else if (newr.z > lengths_.z) newr.z -= lengths_.z;*/
-			// Use model functions to store new position if we were given one
-			if (parent != NULL) parent->positionAtom(i, newr);
-			else r = newr;
+			R = r;
+			R.x -= floor(R.x/lengths_.x + 0.5)*lengths_.x;
+			R.y -= floor(R.y/lengths_.y + 0.5)*lengths_.y;
+			R.z -= floor(R.z/lengths_.z + 0.5)*lengths_.z;
 			break;
 		// Parallelepiped
 		default:
 			// Convert these coordinates into fractional cell coordinates...
-			newr = inverse_.transform(r);
-			if (newr.x < 0.0) newr.x -= int(newr.x-1.0);
-			else if (newr.x > 1.0) newr.x -= int(newr.x);
-			if (newr.y < 0.0) newr.y -= int(newr.y-1.0);
-			else if (newr.y > 1.0) newr.y -= int(newr.y);
-			if (newr.z < 0.0) newr.z -= int(newr.z-1.0);
-			else if (newr.z > 1.0) newr.z -= int(newr.z);
-// 			if (newr.x < 0.0) newr.x += 1.0;
-// 			else if (newr.x >= 1.0) newr.x -= 1.0;
-// 			if (newr.y < 0.0) newr.y += 1.0;
-// 			else if (newr.y >= 1.0) newr.y -= 1.0;
-// 			if (newr.z < 0.0) newr.z += 1.0;
-// 			else if (newr.z >= 1.0) newr.z -= 1.0;
-			// Convert back into world coordinates
-			newr = axes_.transform(newr);
-			// Use model functions to store new position if we were given one
-			if (parent != NULL) parent->positionAtom(i, newr);
-			else r = newr;
+			R = inverse_.transform(r);
+			R.x -= floor(R.x);
+			R.y -= floor(R.y);
+			R.z -= floor(R.z);
+			R = axes_.transform(R);
 			break;
 	}
 	msg.exit("UnitCell::fold");
+	return R;
 }
 
-void UnitCell::fold(Atom *i, Model *parent) const
+// Fold provided coordinates into unit cell
+Vec3<double> UnitCell::fold(Atom *i) const
 {
-	fold(i->r(), i, parent);
+	return fold(i->r());
+}
+
+// Fold fractional coordinates into cell
+void UnitCell::foldFrac(Vec3<double> &r)
+{
+	r.x -= floor(r.x);
+	r.y -= floor(r.y);
+	r.z -= floor(r.z);
 }
 
 /*
 // Geometry Calculation
 */
 
+// Calculate distance between supplied coordinates
 double UnitCell::distance(const Vec3<double> &r1, const Vec3<double> &r2, bool useMim) const
 {
 	// Calculate the distance between atoms i and j
@@ -615,11 +602,13 @@ double UnitCell::distance(const Vec3<double> &r1, const Vec3<double> &r2, bool u
 	return mimi.magnitude();
 }
 
+// Calculate distance between supplied atoms
 double UnitCell::distance(Atom *i, Atom *j, bool useMim) const
 {
 	return distance(i->r(),j->r(),useMim);
 }
 
+// Calculate angle between supplied coordinates
 double UnitCell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<double> &r3, bool useMim) const
 {
 	// Calculate the angle formed between atoms i, j, and k
@@ -635,11 +624,13 @@ double UnitCell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec
 	return a * DEGRAD;
 }
 
+// Calculate angle between supplied atoms
 double UnitCell::angle(Atom *i, Atom *j, Atom *k, bool useMim) const
 {
 	return angle(i->r(),j->r(),k->r(), useMim);
 }
 
+// Calculate torsion angle between supplied coordinates
 double UnitCell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<double> &k, const Vec3<double> &l, bool useMim) const
 {
 	// Calculate the torsion angle formed between the atoms i, j, k, and l.
@@ -669,6 +660,7 @@ double UnitCell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec
 	return angle * DEGRAD;
 }
 
+// Calculate torsion angle between supplied atoms
 double UnitCell::torsion(Atom *i, Atom *j, Atom *k, Atom *l, bool useMim) const
 {
 	return torsion(i->r(),j->r(),k->r(),l->r(), useMim);

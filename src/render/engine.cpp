@@ -424,6 +424,11 @@ void RenderEngine::sortAndSendGL()
 				glLineWidth(pi->lineWidth());
 				glDisable(GL_LIGHTING);
 			}
+			else if (pi->fillMode() == GL_POINT)
+			{
+				glPointSize(1.0);
+				glDisable(GL_LIGHTING);
+			}
 			A = modelTransformationMatrix_ * pi->localTransform();
 			glLoadMatrixd(A.matrix());
 			prim->sendToGL();
@@ -433,6 +438,7 @@ void RenderEngine::sortAndSendGL()
 				glLineWidth(1.0);
 				glEnable(GL_LIGHTING);
 			}
+			else if (pi->fillMode() == GL_POINT) glEnable(GL_LIGHTING);
 		}
 	}
 	

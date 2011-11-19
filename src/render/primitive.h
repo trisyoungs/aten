@@ -154,6 +154,8 @@ class Primitive
 	void plotCircle(double radius, int nstacks, int nsegments, bool segmented = FALSE);
 	// Create vertices of cross with specified width
 	void plotCross(double halfWidth, Matrix &transform, GLfloat colour[4]);
+	// Plot solid cube of specified size at specified origin, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
+	void plotCube(double size, int nsubs, double ox, double oy, double oz);
 
 
 	/*

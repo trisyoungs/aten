@@ -183,8 +183,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	// The target model may contain atoms already, so this must be subtracted from the relevant partitions
 	for (i = targetModel_->atoms(); i != NULL; i = i->next)
 	{
-		r = i->r();
-		targetModel_->cell()->fold(r, NULL, NULL);
+		r = targetModel_->cell()->fold(i->r());
 		r = targetModel_->cell()->realToFrac(r);
 		id = scheme->partitionId(r.x, r.y, r.z);
 		scheme->partition(id)->adjustReducedMass(i);

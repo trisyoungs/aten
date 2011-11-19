@@ -121,8 +121,6 @@ class PartitioningScheme
 	// Constructor / Destructor
 	PartitioningScheme();
 	~PartitioningScheme();
-	// Copy Constructor
-	PartitioningScheme(PartitioningScheme&);
 	// List pointers
 	PartitioningScheme *prev, *next;
 
@@ -147,7 +145,9 @@ class PartitioningScheme
 	// Return Program structure
 	Program &schemeDefinition();
 	// Setup scheme information from generated program structure
-	bool initialise();
+	bool initialiseFromProgram();
+	// Setup scheme information manually (for absolute grid data)
+	void initialiseAbsolute(const char *name, const char *description);
 	// Return name of partitioning scheme
 	const char *name();
 	// Return description of partitioning scheme
@@ -183,8 +183,12 @@ class PartitioningScheme
 	Vec3<int> fineGridSize_;
 	
 	public:
-	// Set whether scheme is absolute
-	void setAbsolute();
+	// Setup absolute grid and return it
+	Grid *setAbsoluteGrid(int nx, int ny, int nz);
+	// Return whether scheme contains absolute grid data
+	bool absolute();
+	// Create partition information from current grid data
+	void createPartitionsFromGrid();
 	// Update partition information (after load or change in options)
 	void updatePartitions(bool useRoughGrid);
 	// Return number of partitions now recognised in grid
@@ -209,6 +213,8 @@ class PartitioningScheme
 	QIcon &icon();
 	// Return fine grid size
 	Vec3<int> fineGridSize();
+	// Copy data from specified partition
+	void copy(PartitioningScheme &source);
 };
 
 #endif

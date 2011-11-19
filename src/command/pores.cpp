@@ -29,7 +29,121 @@
 bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	return FALSE;
+
+	Vec3<int> gridSize(50,50,50);
+	if (c->hasArg(3)) gridSize.set(c->argi(1), c->argi(2), c->argi(3));
+	int atomExtent = 2;
+	if (c->hasArg(4)) atomExtent = c->argi(4);
+
+	// Create temporary partitioning scheme structure
+	// XXX Grab and reuse structure from PoresWidget instead?
+	PartitioningScheme newScheme;
+	newScheme.initialiseAbsolute("Generated Scheme", "Scheme generated from model XXX");
+	Vec3<double> cellDelta(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
+	Grid *schemeGrid = newScheme.setAbsoluteGrid(gridSize.x, gridSize.y, gridSize.z);
+	//TEST
+	schemeGrid = obj.rs()->addGrid();
+	schemeGrid->initialise(Grid::RegularXYZData, gridSize);
+	Matrix gridAxes = obj.rs()->cell()->axes();
+	gridAxes.columnMultiply(0, cellDelta.x);
+	gridAxes.columnMultiply(1, cellDelta.y);
+	gridAxes.columnMultiply(2, cellDelta.z);
+	schemeGrid->setAxes(gridAxes);
+	// END TEST
+	double ***data = schemeGrid->data3d();
+	int minimumSize = gridSize.x*gridSize.y*gridSize.z*0.05;
+
+	// Set all grid data to -1.0 to start with (i.e. all space available)
+	int x, y, z, a, b, d, x2, y2, z2;
+	for (x=0; x<gridSize.x; ++x)
+	{
+		for (y=0; y<gridSize.y; ++y)
+		{
+			for (z=0; z<gridSize.z; ++z) data[x][y][z] = -1.0;
+		}
+	}
+	
+	// Now, zero individual cells which model atoms sit in
+	UnitCell *cell = obj.rs()->cell();
+	Vec3<double> r;
+	// Determine rough atom size (in grid cells....
+	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next)
+	{
+		// Work in fractional coordinates
+		// Atom centre...
+		r = cell->realToFrac(i->r());
+		UnitCell::foldFrac(r);
+		x = int(r.x/cellDelta.x);
+		y = int(r.y/cellDelta.y);
+		z = int(r.z/cellDelta.z);
+		schemeGrid->setData(x,y,z,0.0);
+		
+		// Check around atom
+		for (a=-atomExtent; a<=atomExtent; ++a)
+		{
+			for (b=-atomExtent; b<=atomExtent; ++b)
+			{
+				for (d=-atomExtent; d<=atomExtent; ++d)
+				{
+					r.set(a, b, d);
+					if (r.magnitude() > atomExtent*1.1) continue;
+					x2 = x + a;
+					y2 = y + b;
+					z2 = z + d;
+					if (x2 < 0) x2 += gridSize.x;
+					else if (x2 >= gridSize.x) x2 -= gridSize.x;
+					if (y2 < 0) y2 += gridSize.y;
+					else if (y2 >= gridSize.y) y2 -= gridSize.y;
+					if (z2 < 0) z2 += gridSize.z;
+					else if (z2 >= gridSize.z) z2 -= gridSize.z;
+					data[x2][y2][z2] = 0.0;
+				}
+			}
+		}
+	}
+
+	// The Grid data now contains 1.0 in each position which is free from any atoms
+	// Partition this data up by finding an element which is -1.0 and selecting its encompassing region
+	int nPartitions = 0, partitionSize;
+	for (x=0; x<gridSize.x; ++x)
+	{
+		for (y=0; y<gridSize.y; ++y)
+		{
+			for (z=0; z<gridSize.z; ++z)
+			{
+				if (data[x][y][z] > -0.5) continue;
+				
+				// Found a cell containing -1.0 - select its encompassing region
+				partitionSize = schemeGrid->modifyRegion(x, y, z, -1.5, -0.5, nPartitions+1.0, TRUE);
+				
+				// How big is this new region? Bigger than the minimum size requested?
+				if (partitionSize < minimumSize)
+				{
+					// Not big enough, so run modifyRegion again and zero it
+					schemeGrid->modifyRegion(x, y, z, nPartitions+0.5, nPartitions+1.5, 0.0, TRUE);
+					msg.print("Found a partition below the threshold size of %i\n", minimumSize);
+				}
+				else
+				{
+					++nPartitions;
+					msg.print("Found a partition containing %i grid cells.\n", partitionSize);
+				}
+			}
+		}
+	}
+	msg.print("Found %i partitions in the model.\n", nPartitions);
+
+// 	bool success = newScheme.schemeDefinition().generateFromString("string name = 'TEST', description = 'Scheme generated from model XXX'; string partitionName(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int npartitions = 1, roughgrid[3] = { 2,2,2 }, finegrid[3] = {2,2,2};", "Default Partitioning", FALSE);
+// 	if (success) success = ps->initialise();
+// 	if (!success)
+// 	{
+// 		msg.print("Failed to create default partition!\n");
+// 		failedPartitioningSchemes_.add()->set("none");
+// 		nfailed ++;
+// 		partitioningSchemes_.remove(ps);
+// 	}
+// 	
+	return TRUE;
 }
 
 // Drill pores in current model

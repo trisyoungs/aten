@@ -44,7 +44,7 @@ template <class T> class ListItem
 	// Set data object
 	void setValue(T value);
 	// Return data object
-	T value();
+	T &value();
 };
 
 // Constructor
@@ -61,7 +61,7 @@ template <class T> void ListItem<T>::setValue(T value)
 }
 
 // Set data object
-template <class T> T ListItem<T>::value()
+template <class T> T &ListItem<T>::value()
 {
 	return data_;
 }

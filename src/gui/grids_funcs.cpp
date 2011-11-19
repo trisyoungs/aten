@@ -201,6 +201,7 @@ void GridsWidget::refreshGridInfo()
 	// Set surface style data
 	ui.GridStyleCombo->setCurrentIndex(g->style());
 	ui.GridOutlineVolumeCheck->setChecked(g->outlineVolume());
+	ui.GridFillEnclosedVolumeCheck->setChecked(g->fillEnclosedVolume());
 	ui.GridPeriodicCheck->setChecked(g->periodic());
 	ui.GridPrimaryColourFrame->setColour(g->primaryColour());
 	ui.GridPrimaryColourFrame->update();
@@ -575,6 +576,21 @@ void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 		// Get grid pointer
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
 		g->setOutlineVolume(checked);
+	}
+	gui.mainCanvas()->postRedisplay();
+}
+
+void GridsWidget::on_GridFillEnclosedVolumeCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+	// Get currently selected grid(s) and set data
+	Grid *g;
+	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	{
+		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		// Get grid pointer
+		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g->setFillEnclosedVolume(checked);
 	}
 	gui.mainCanvas()->postRedisplay();
 }

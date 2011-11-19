@@ -204,50 +204,7 @@ void Primitive::createCube(double size, int nsubs, double ox, double oy, double 
 {
 	// Clear existing data first (if it exists)
 	forgetAll();
-	
-	// Create each face individually
-	GLfloat delta = (GLfloat) size/nsubs, veca[3], vecb[3], vertex[3];
-	int i, j, plane;
-	// Set general origin coordinate
-	// Loop over planes
-	for (plane=0; plane<3; ++plane)
-	{
-		// Define deltas for this plane
-		for (j=0; j<3; ++j)
-		{
-			veca[j] = 0.0;
-			vecb[j] = 0.0;
-		}
-		veca[(plane+1)%3] = delta;
-		vecb[(plane+2)%3] = delta;
-		// Loop over subdivisions in plane
-		for (i=0; i<nsubs; ++i)
-		{
-			for (j=0; j<nsubs; ++j)
-			{
-				vertex[0] = ox + i*veca[0] + j*vecb[0];
-				vertex[1] = oy + i*veca[1] + j*vecb[1];
-				vertex[2] = oz + i*veca[2] + j*vecb[2];
-				// Define trangle vertices for 'lower' plane
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
-
-				// Define trangle vertices for 'upper' plane
-				vertex[plane] += size;
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
-			}
-		}
-	}
-	
+	plotCube(size, nsubs, ox, oy, oz);
 }
 
 // Create cell axes

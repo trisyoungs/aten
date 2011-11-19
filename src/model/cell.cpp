@@ -141,7 +141,7 @@ void Model::foldAllAtoms()
 {
 	msg.enter("Model::foldAllAtoms");
 	// Standard fold - individual atoms
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) cell_.fold(i, this);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) positionAtom(i, cell_.fold(i));
 	changeLog.add(Log::Coordinates);
 	msg.exit("Model::foldAllAtoms");
 }
@@ -170,10 +170,10 @@ void Model::foldAllMolecules()
 				// If its the first atom, fold and store pointer. If not, MIM w.r.t. stored atom
 				if (n == 0)
 				{
-					cell_.fold(i, this);
+					positionAtom(i, cell_.fold(i));
 					first = i;
 				}
-				else i->r() = cell_.mim(i,first);
+				else positionAtom(i, cell_.mim(i,first));
 				i = i->next;
 			}
 		}
@@ -262,8 +262,8 @@ void Model::pack(Generator *gen)
 		// Apply the rotation and translation
 		newr = gen->matrix().transform(newr);
 // 		newr +=  cell_.transpose() * gen->translation;
-		i->r() = cell_.fracToReal(newr);
-		cell_.fold(i, this);
+		newr = cell_.fracToReal(newr);
+		positionAtom(i, newr);
 	}
 	msg.exit("Model::pack[generator]");
 }

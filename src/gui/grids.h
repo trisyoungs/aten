@@ -83,6 +83,7 @@ class GridsWidget : public QDockWidget
 	void on_GridStyleCombo_currentIndexChanged(int index);
 	void on_GridPeriodicCheck_clicked(bool checked);
 	void on_GridOutlineVolumeCheck_clicked(bool checked);
+	void on_GridFillEnclosedVolumeCheck_clicked(bool checked);
 	void on_GridPrimaryColourButton_clicked(bool checked);
 	void on_GridSecondaryColourButton_clicked(bool checked);
 	void on_GridColourscaleSpin_valueChanged(int n);

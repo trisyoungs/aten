@@ -196,18 +196,28 @@ class UnitCell
 	Vec3<double> mim(Atom *i, const Vec3<double> &r2) const;
 	// Minimum image position of i with respect to j
 	Vec3<double> mim(Atom *i, Atom *j) const;
-	void fold(Vec3<double> &r, Atom *i, Model *parent) const;
-	void fold(Atom *i, Model *parent) const;
+	// Fold specified atom coordinates into unit cell
+	Vec3<double> fold(Atom *i) const;
+	// Fold provided coordinates into unit cell
+	Vec3<double> fold(Vec3<double> &r) const;
+	// Fold fractional coordinates into cell
+	static void foldFrac(Vec3<double> &r);
 
 	/*
 	// Geometry calculation
 	*/
 	public:
+	// Calculate distance between supplied coordinates
 	double distance(const Vec3<double> &ri, const Vec3<double> &rj, bool useMim = TRUE) const;
+	// Calculate distance between supplied atoms
 	double distance(Atom *i, Atom *j, bool useMim = TRUE) const;
+	// Calculate angle between supplied coordinates
 	double angle(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, bool useMim = TRUE) const;
+	// Calculate angle between supplied atoms
 	double angle(Atom *i, Atom *j, Atom *k, bool useMim = TRUE) const;
+	// Calculate torsion angle between supplied coordinates
 	double torsion(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, const Vec3<double> &rl, bool useMim = TRUE) const;
+	// Calculate torsion angle between supplied atoms
 	double torsion(Atom *i, Atom *j, Atom *k, Atom *l, bool useMim = TRUE) const;
 };
 
