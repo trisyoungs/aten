@@ -44,7 +44,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	double delta, firstRelative, firstActual, expectedPop;
 	bool isRelative;
 	
-	// Step 1 - Construct cell lists in scheme
+	// Step 1 - Update cell lists in scheme (if required)
 	if (scheme == NULL)
 	{
 		msg.print("Error: NULL scheme pointer given to disorder builder.\n");
@@ -52,9 +52,11 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		return FALSE;
 	}
 	// If we are using the default 'cell' scheme, then no need to generate a fine mesh
-	Vec3<int> npoints = scheme->fineGridSize();
-	msg.print("Generating fine-grained partition data...\n");
-	scheme->updatePartitions(FALSE);
+	if (!scheme->staticData())
+	{
+		scheme->setGridSize(prefs.partitionGridSize());
+		scheme->recalculatePartitions();
+	}
 	scheme->clearComponentLists();
 
 	// Step 2 - Construct list of components with partition references, taking copies of all component models
@@ -176,10 +178,16 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	// Step 4 - Determine partition volumes and current partition densities (arising from existing model contents)
 	msg.print("Determining partition volumes and starting densities...\n");
 	Matrix volumeElement = targetModel_->cell()->axes();
-	volumeElement.applyScaling(1.0/npoints.x, 1.0/npoints.y, 1.0/npoints.z);
+	Vec3<int> gridSize = scheme->gridSize();
+	volumeElement.applyScaling(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
 	double elementVolume = volumeElement.determinant();
 
-	for (pd = scheme->partitions(); pd != NULL; pd = pd->next) pd->calculateVolume(elementVolume);
+	// Clear old mass data and reset volume
+	for (pd = scheme->partitions(); pd != NULL; pd = pd->next)
+	{
+		pd->calculateVolume(elementVolume);
+		pd->resetReducedMass();
+	}
 	// The target model may contain atoms already, so this must be subtracted from the relevant partitions
 	for (i = targetModel_->atoms(); i != NULL; i = i->next)
 	{

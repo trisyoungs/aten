@@ -359,7 +359,7 @@ int GuiQt::pid()
 // Process application messages
 void GuiQt::processMessages()
 {
-	if (application_ != NULL) application_->processEvents();
+	if (application_ != NULL) QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
 }
 
 // Set interactivity (to full or zero), except for main view camera changes

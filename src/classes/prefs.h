@@ -815,13 +815,12 @@ class Prefs
 	DoubleExp ewaldPrecision_;
 	// Cutoff distances for VDW and electrostatics
 	double vdwCutoff_, elecCutoff_;
-	// Scale factor for VDW radii (used in disorder build)
-	double vdwScale_;
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
 	// Combination rule equations
 	Dnchar combinationRules_[Combine::nCombinationRules];
-
+	// Grid size for PartitioningSchemes
+	Vec3<int> partitionGridSize_;
 
 	public:
 	// Sets the electrostatic model to use in energy/force calculation
@@ -870,6 +869,12 @@ class Prefs
 	const char *combinationRule(Combine::CombinationRule cr) const;
 	// Return array of combination rule equations
 	Dnchar *combinationRules();
+	// Set grid size for PartitioningSchemes
+	void setPartitionGridSize(Vec3<int> newSize);
+	// Set grid size for PartitioningSchemes (element)
+	void setPartitionGridSize(int element, int value);
+	// Return grid size for PartitioningSchemes
+	Vec3<int> partitionGridSize();
 
 
 	/*

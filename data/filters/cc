@@ -3,7 +3,9 @@
 # Last modified: 02/09/2011
 # ChangeLog:
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
-# Notes:	Only connectivity based on positions is supported. Atom type data is ignored.
+# Notes:
+#	Only connectivity based on positions is supported. Atom type data is ignored.
+
 
 filter(type="importmodel",name="Chem3D Cartesian Coordinates", nickname="cc", extension="cc1,cc2", glob="*.cc*", id=34)
 {

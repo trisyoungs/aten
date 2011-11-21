@@ -1,10 +1,10 @@
-message("Hydroxylated silica forcefield\n");
-message("Uses parameters of Lee and Rossky, J. Chem. Phys. 100, p3334 (1994).\n");
-message("Be aware - this forcefield includes extra parameters by T. Youngs:\n"
-message("Multiple OH groups in one Si atom are accounted for by using multiples of Si charge.\n");
-message("Bond, angle, and torsion terms have been added with estimated force constants.\n");
-message("The applicability / accuracy of these extra parameters is not guaranteed.\n");
-message("Positions of all Si and O atoms should be fixed.\n");
+message "Hydroxylated silica forcefield\n");
+message "Uses parameters of Lee and Rossky, J. Chem. Phys. 100, p3334 (1994).\n");
+message "Be aware - this forcefield includes extra parameters by T. Youngs:\n"
+message "Multiple OH groups in one Si atom are accounted for by using multiples of Si charge.\n");
+message "Bond, angle, and torsion terms have been added with estimated force constants.\n");
+message "The applicability / accuracy of these extra parameters is not guaranteed.\n");
+message "Positions of all Si and O atoms should be fixed.\n");
 
 name "Extended Lee & Rossky silica"
 

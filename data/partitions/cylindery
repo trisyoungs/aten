@@ -2,10 +2,6 @@
 string name = "CylinderY";
 string description = "Cylinder along Y-Axis";
 
-# Grid size information
-int roughgrid[3] = { 40,40,40 };
-int finegrid[3] = { 100,100,100 };
-
 # Number of partitions
 int npartitions = 2;
 

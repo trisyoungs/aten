@@ -45,6 +45,7 @@ class PoresWidget : public QDockWidget
 	void on_PoreSelectButton_clicked(bool checked);
 	void on_PoreSelectAndCutButton_clicked(bool checked);
 	// Terminate Tab
+	void on_TerminateButton_clicked(bool checked);
 	// Scheme Tab
 	void on_GenerateSchemeButton_clicked(bool checked);
 	void on_CopySchemeButton_clicked(bool checked);
@@ -56,7 +57,11 @@ class PoresWidget : public QDockWidget
 	*/
 	private:
 	// Partitioning scheme
-	PartitioningScheme partitioningScheme_;
+	static PartitioningScheme partitioningScheme_;
+	
+	public:
+	// Return the widgets partitioning scheme
+	static PartitioningScheme &partitioningScheme();
 
 	/*
 	// Dialog

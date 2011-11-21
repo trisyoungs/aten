@@ -81,7 +81,7 @@
        <string>Whether to show all grids (from all loaded models) or just those in the current model</string>
       </property>
       <property name="text">
-       <string>Show all grids</string>
+       <string>Show All Grids</string>
       </property>
      </widget>
     </item>

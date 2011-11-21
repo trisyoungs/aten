@@ -39,10 +39,7 @@
 <h1>Manual TODO</h1>
 
 <ul>
-<li>Update list of supported formats (esp SIESTA XV)</li>
-<li>Add new image for atom list, glyph window, and disorder options.</li>
-<li>Chapter / Section on Basic View / Imaging.</li>
-<li>Section on partitioning scheme files</li>
 <li>New dialog code description </li>
+<li>Topics: Colourscales, Glyphs, Grids, Partitioning Schemes</li>
 </ul>
 
