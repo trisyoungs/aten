@@ -24,34 +24,33 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
+#include "gui/pores.h"
 
 // Create a partitioning scheme from the current model
 bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
+	// Set command variables
 	Vec3<int> gridSize(50,50,50);
 	if (c->hasArg(3)) gridSize.set(c->argi(1), c->argi(2), c->argi(3));
+	double minSizePcnt = 0.05;
+	if (c->hasArg(4)) minSizePcnt = c->argd(4) / 100.0;
 	int atomExtent = 2;
-	if (c->hasArg(4)) atomExtent = c->argi(4);
+	if (c->hasArg(5)) atomExtent = c->argi(5);
+	bool copyToBuilder = FALSE;
+	if (c->hasArg(6)) copyToBuilder = c->argb(6);
 
 	// Create temporary partitioning scheme structure
-	// XXX Grab and reuse structure from PoresWidget instead?
-	PartitioningScheme newScheme;
-	newScheme.initialiseAbsolute("Generated Scheme", "Scheme generated from model XXX");
+	PartitioningScheme &scheme = PoresWidget::partitioningScheme();
+	scheme.initialiseAbsolute(c->argc(0), "Scheme generated from model");
 	Vec3<double> cellDelta(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
-	Grid *schemeGrid = newScheme.setAbsoluteGrid(gridSize.x, gridSize.y, gridSize.z);
-	//TEST
-	schemeGrid = obj.rs()->addGrid();
-	schemeGrid->initialise(Grid::RegularXYZData, gridSize);
-	Matrix gridAxes = obj.rs()->cell()->axes();
-	gridAxes.columnMultiply(0, cellDelta.x);
-	gridAxes.columnMultiply(1, cellDelta.y);
-	gridAxes.columnMultiply(2, cellDelta.z);
-	schemeGrid->setAxes(gridAxes);
-	// END TEST
-	double ***data = schemeGrid->data3d();
-	int minimumSize = gridSize.x*gridSize.y*gridSize.z*0.05;
+	scheme.setGridSize(gridSize);
+	Grid &schemeGrid = scheme.grid();
+	double volumeElement = obj.rs()->cell()->volume() / gridSize.dp(gridSize);
+	schemeGrid.setAxes(cellDelta);
+	double ***data = schemeGrid.data3d();
+	int minimumSize = gridSize.x*gridSize.y*gridSize.z*minSizePcnt;
 
 	// Set all grid data to -1.0 to start with (i.e. all space available)
 	int x, y, z, a, b, d, x2, y2, z2;
@@ -76,7 +75,7 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 		x = int(r.x/cellDelta.x);
 		y = int(r.y/cellDelta.y);
 		z = int(r.z/cellDelta.z);
-		schemeGrid->setData(x,y,z,0.0);
+		schemeGrid.setData(x,y,z,0.0);
 		
 		// Check around atom
 		for (a=-atomExtent; a<=atomExtent; ++a)
@@ -114,35 +113,32 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 				if (data[x][y][z] > -0.5) continue;
 				
 				// Found a cell containing -1.0 - select its encompassing region
-				partitionSize = schemeGrid->modifyRegion(x, y, z, -1.5, -0.5, nPartitions+1.0, TRUE);
+				partitionSize = schemeGrid.modifyRegion(x, y, z, -1.5, -0.5, nPartitions+1.0, TRUE);
 				
 				// How big is this new region? Bigger than the minimum size requested?
 				if (partitionSize < minimumSize)
 				{
 					// Not big enough, so run modifyRegion again and zero it
-					schemeGrid->modifyRegion(x, y, z, nPartitions+0.5, nPartitions+1.5, 0.0, TRUE);
-					msg.print("Found a partition below the threshold size of %i\n", minimumSize);
+					schemeGrid.modifyRegion(x, y, z, nPartitions+0.5, nPartitions+1.5, 0.0, TRUE);
+					msg.print("Found a partition of %i cells, which is below the threshold size of %i and will be ignored...\n", partitionSize, minimumSize);
 				}
 				else
 				{
 					++nPartitions;
-					msg.print("Found a partition containing %i grid cells.\n", partitionSize);
+					msg.print("Found a partition containing %i grid cells (volume = %f cubic Angstroms).\n", partitionSize, partitionSize * volumeElement);
 				}
 			}
 		}
 	}
 	msg.print("Found %i partitions in the model.\n", nPartitions);
+	rv.set(nPartitions);
+	
+	// Generate partitions from the new grid data
+	scheme.createPartitionsFromGrid();
 
-// 	bool success = newScheme.schemeDefinition().generateFromString("string name = 'TEST', description = 'Scheme generated from model XXX'; string partitionName(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int npartitions = 1, roughgrid[3] = { 2,2,2 }, finegrid[3] = {2,2,2};", "Default Partitioning", FALSE);
-// 	if (success) success = ps->initialise();
-// 	if (!success)
-// 	{
-// 		msg.print("Failed to create default partition!\n");
-// 		failedPartitioningSchemes_.add()->set("none");
-// 		nfailed ++;
-// 		partitioningSchemes_.remove(ps);
-// 	}
-// 	
+	// Copy to DIsorder builder, if required...
+	if (copyToBuilder) aten.addPartitioningScheme(scheme);
+	
 	return TRUE;
 }
 
@@ -207,6 +203,7 @@ bool Command::function_SelectPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Vec3<double> origin = (deltaA + deltaB) * 0.5;
 	
 	obj.rs()->beginUndoState("Select pore atoms");
+	obj.rs()->selectNone();
 	for (int a = 0; a < nA; ++a)
 	{
 		for (int b = 0; b < nB; ++b)
@@ -215,6 +212,7 @@ bool Command::function_SelectPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		}
 	}
 	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected());
 
 	return TRUE;
 }

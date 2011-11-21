@@ -25,6 +25,9 @@
 #include "gui/gui.h"
 #include "gui/toolbox.h"
 
+// Static members
+PartitioningScheme PoresWidget::partitioningScheme_;
+
 // Constructor
 PoresWidget::PoresWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
@@ -32,7 +35,7 @@ PoresWidget::PoresWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 	ui.setupUi(this);
 	
 	// Private variables
-	//partitioningScheme_.
+	partitioningScheme_.initialiseAbsolute("Generated Scheme", "Scheme generated from model");
 }
 
 // Show window
@@ -41,6 +44,12 @@ void PoresWidget::showWidget()
 	show();
 	// Make sure toolbutton is in correct state
 	gui.toolBoxWidget->ui.PoresButton->setChecked(TRUE);
+}
+
+// Return the widgets partitioning scheme
+PartitioningScheme &PoresWidget::partitioningScheme()
+{
+	return partitioningScheme_;
 }
 
 /*
@@ -64,6 +73,7 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
 	double sizeParam = ui.PoreSizeSpin->value();
 	CommandNode::run(Command::SelectPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
@@ -83,12 +93,27 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
 	double sizeParam = ui.PoreSizeSpin->value();
 	CommandNode::run(Command::DrillPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
+	gui.mainCanvas()->postRedisplay();
 }
 
 /*
 // Terminate Tab
 */
 
+void PoresWidget::on_TerminateButton_clicked(bool checked)
+{
+	// First check - are any atoms selected
+	Model *m = aten.currentModelOrFrame();
+	if (m->nSelected() == 0)
+	{
+		msg.print("No atoms selected in current model, so nothing to terminate.\n");
+		return;
+	}
+
+	// Run the command
+	CommandNode::run(Command::Terminate, "");
+	gui.mainCanvas()->postRedisplay();
+}
 
 /*
 // Scheme Tab
@@ -96,10 +121,40 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 
 void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 {
+	// First check - does the current model have a unit cell?
+	Model *m = aten.currentModelOrFrame();
+	if (m->cell()->type() == UnitCell::NoCell)
+	{
+		msg.print("Can't generate a partitioning scheme for a non-periodic model.\n");
+		return;
+	}
+
+	// Grab some values so we are ready to run the command
+	Dnchar name(-1, "Partitions for model '%s'", m->name());
+	Vec3<int> npoints(ui.PartitionGridXSpin->value(), ui.PartitionGridYSpin->value(), ui.PartitionGridZSpin->value());
+	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
+	int atomExtent = ui.AtomExtentSpin->value();
+	CommandNode::run(Command::CreateScheme, "ciiidii", name.get(), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 0);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 {
+	// First check - does the current model have a unit cell?
+	Model *m = aten.currentModelOrFrame();
+	if (m->cell()->type() == UnitCell::NoCell)
+	{
+		msg.print("Can't generate a partitioning scheme for a non-periodic model.\n");
+		return;
+	}
+
+	// Grab some values so we are ready to run the command
+	Dnchar name(-1, "Partitions for model '%s'", m->name());
+	Vec3<int> npoints(ui.PartitionGridXSpin->value(), ui.PartitionGridYSpin->value(), ui.PartitionGridZSpin->value());
+	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
+	int atomExtent = ui.AtomExtentSpin->value();
+	CommandNode::run(Command::CreateScheme, "ciiidii", name.get(), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 1);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void PoresWidget::closeEvent(QCloseEvent *event)

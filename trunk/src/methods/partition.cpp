@@ -25,6 +25,7 @@
 #include "model/model.h"
 #include "base/mathfunc.h"
 #include "base/progress.h"
+#include "classes/prefs.h"
 
 /*
 // Partition Cell Data
@@ -53,6 +54,23 @@ PartitionData::PartitionData()
 	id_ = -1;
 	nCells_ = 0;
 	currentCellChunk_ = NULL;
+}
+
+// Copy constructor
+PartitionData::PartitionData(const PartitionData &source)
+{
+	// Clear any old data
+	clear();
+	
+	name_ = source.name_;
+	id_ = source.id_;
+
+	// Step through cells list in source
+	for (PartitionCellData *pcd = source.cells_.first(); pcd != NULL; pcd = pcd ->next)
+	{
+		int *data = pcd->data;
+		for (int n=0; n<pcd->dataPos; n +=3) addCell(data[n], data[n+1], data[n+2]);
+	}
 }
 
 // Set id of partition
@@ -121,6 +139,12 @@ double PartitionData::volume()
 	return volume_;
 }
 
+// Reset reduced mass of partition
+void PartitionData::resetReducedMass()
+{
+	reducedMass_ = 0.0;
+}
+
 // Adjust partition density based on supplied model
 void PartitionData::adjustReducedMass(Atom *i, bool subtract)
 {
@@ -165,6 +189,12 @@ DisorderData *PartitionData::component(int id)
 	return components_[id]->item;
 }
 
+// Return grid primitive instance for this partition
+GridPrimitive &PartitionData::gridPrimitive()
+{
+	return gridPrimitive_;
+}
+
 /*
 // Partitioning Scheme
 */
@@ -180,7 +210,9 @@ PartitioningScheme::PartitioningScheme()
 	partitionFunction_ = NULL;
 	partitionNameFunction_ = NULL;
 	partitionOptionsFunction_ = NULL;
-	absolute_ = FALSE;
+	staticData_ = FALSE;
+	partitionLogPoint_ = -1;
+	changeLog_ = 0;
 
 	// Setup local UserCommandNodes
 	partitionFunctionNode_.setParent(&tree_);
@@ -260,35 +292,8 @@ bool PartitioningScheme::initialiseFromProgram()
 		return FALSE;
 	}
 	
-	// Retrieve grid information
-	v = schemeDefinition_.mainProgram()->findVariableInScope("roughgrid", scopelevel);
-	if (v != NULL)
-	{
-		v->initialise();
-		v->execute(rv);
-		roughGridSize_.set(rv.asInteger(0,success), rv.asInteger(1,success), rv.asInteger(2,success));
-		msg.print(Messenger::Verbose, "  --> Rough grid size for scheme '%s' is %i %i %i\n", name_.get(), roughGridSize_.x, roughGridSize_.y, roughGridSize_.z);
-	}
-	else
-	{
-		msg.print("Error: No 'roughgrid' variable defined in partitioning scheme '%s'.\n", name_.get());
-		msg.exit("PartitioningScheme::initialiseFromProgram");
-		return FALSE;
-	}
-	v = schemeDefinition_.mainProgram()->findVariableInScope("finegrid", scopelevel);
-	if (v != NULL)
-	{
-		v->initialise();
-		v->execute(rv);
-		fineGridSize_.set(rv.asInteger(0,success), rv.asInteger(1,success), rv.asInteger(2,success));
-		msg.print(Messenger::Verbose, "  --> Fine grid size for scheme '%s' is %i %i %i\n", name_.get(), fineGridSize_.x, fineGridSize_.y, fineGridSize_.z);
-	}
-	else
-	{
-		msg.print("Error: No 'finegrid' variable defined in partitioning scheme '%s'.\n", name_.get());
-		msg.exit("PartitioningScheme::initialiseFromProgram");
-		return FALSE;
-	}
+	// Set initial grid size (from prefs)
+	setGridSize(prefs.partitionGridSize());
 	
 	// Locate 'partition' function
 	partitionFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partition");
@@ -348,7 +353,14 @@ void PartitioningScheme::initialiseAbsolute(const char *name, const char *descri
 {
 	name_ = name;
 	description_ = description;
-	absolute_ = TRUE;
+	staticData_ = TRUE;
+}
+
+// Set name and description of scheme manually
+void PartitioningScheme::setName(const char *name, const char *description)
+{
+	name_ = name;
+	if (description != NULL) description_ = description;
 }
 
 // Return name of partitioning scheme
@@ -373,54 +385,97 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 		msg.exit("PartitioningScheme::setVariable");
 		return FALSE;
 	}
-	return partitionFunction_->defaultDialog().setWidgetValue(name, value);
+	bool result = partitionFunction_->defaultDialog().setWidgetValue(name, value);
+	if (result) ++changeLog_;
 	msg.exit("PartitioningScheme::setVariable");
+	return result;
 }
 
-// Setup absolute grid, returning Grid in the process
-Grid *PartitioningScheme::setAbsoluteGrid(int nx, int ny, int nz)
+// Return whether scheme contains static data
+bool PartitioningScheme::staticData()
 {
-	// Must have initialised to be absolute_...
-	if (!absolute_)
-	{
-		msg.print("Internal Error: PartitioningScheme was not initialised to be absolute, so can't set the grid in this way.\n");
-		return NULL;
-	}
-	fineGridSize_.set(nx, ny, nz);
-	grid_.initialise(Grid::RegularXYZData, fineGridSize_);
-	return &grid_;
-}
-
-// Return whether scheme is absolute
-bool PartitioningScheme::absolute()
-{
-	return absolute_;
+	return staticData_;
 }
 
 // Create partition information from current grid data
 void PartitioningScheme::createPartitionsFromGrid()
 {
-	// TODO
-	// Loop over grid elements
+	msg.enter("PartitioningScheme::createPartitionsFromGrid");
+	
+	// Remove old partition data and add default (cell) partition
+	partitions_.clear();
+	PartitionData *pd = partitions_.add();
+	pd->setId(0);
+	pd->setName("Excluded Space");
+	
+	// Loop over grid elements - we will add new partition nodes as we go...
+	int i, j, k, pid;
+	Vec3<int> npoints = grid_.nPoints();
+	double ***data = grid_.data3d();
+	for (i=0; i<npoints.x; ++i)
+	{
+		for (j=0; j<npoints.y; ++j)
+		{
+			for (k=0; k<npoints.z; ++k)
+			{
+				// Get partition id from grid
+				pid = floor(data[i][j][k] + 0.5);
+				if (pid < 0)
+				{
+					printf("Developer Oversight : Found a negative number in this scheme's grid.\n");
+					continue;
+				}
+				
+				// Check pid against number of partitions currently in list
+				while (pid >= partitions_.nItems())
+				{
+					pd = partitions_.add();
+					pd->setId(pid);
+					Dnchar name(-1, "Generated partition %i", pid);
+					pd->setName(name);
+				}
+				
+				// Add cell to list
+				partitions_[pid]->addCell(i, j, k);
+			}
+		}
+	}
+	
+	// Generate GridPrimitives for each partition
+	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next)
+	{
+		GridPrimitive &prim = pd->gridPrimitive();
+		prim.setSource(&grid_);
+		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
+		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
+		prim.createSurfaceMarchingCubes();
+	}
+	msg.exit("PartitioningScheme::createPartitionsFromGrid");
 }
 
-// Update partition information (after load or change in options)
-void PartitioningScheme::updatePartitions(bool useRoughGrid)
+// Recalculate partition information (after load or change in options)
+void PartitioningScheme::recalculatePartitions()
 {
 	msg.enter("PartitioningScheme::updatePartitions");
 	
-	// Recalculate grid points (and icon if requested)
-	Vec3<int> npoints;
-	double ***data;
-	
-	// If we're using the rough grid, we'll assume that we're also supposed to be filling a Grid structure as well
-	if (useRoughGrid)
+	// If this scheme contains static data then there's nothingn to be done
+	if (staticData_)
 	{
-		npoints = roughGridSize_;
-		grid_.initialise(Grid::RegularXYZData, npoints);
-		data = grid_.data3d();
+		msg.print(Messenger::Verbose, "Scheme '%s' contains static data, so nothing to recalculate.\n", name_.get());
+		msg.exit("PartitioningScheme::updatePartitions");
+		return;
 	}
-	else npoints = fineGridSize_;
+	
+	// If log point has not changed, do nothing
+	if (changeLog_ == partitionLogPoint_)
+	{
+		msg.print(Messenger::Verbose, "Log point for partitions in scheme '%s' is up to date.\n", name_.get());
+		msg.exit("PartitioningScheme::updatePartitions");
+		return;
+	}
+
+	// Recalculate grid points
+	double ***data = data = grid_.data3d();
 	
 	// Clear partition data
 	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next) pd->clear();
@@ -428,31 +483,31 @@ void PartitioningScheme::updatePartitions(bool useRoughGrid)
 	ReturnValue rv;
 	bool success;
 	int i, j, k, pid;
-	double dx = 1.0/npoints.x, dy = 1.0/npoints.y, dz = 1.0/npoints.z;
+	double dx = 1.0/gridSize_.x, dy = 1.0/gridSize_.y, dz = 1.0/gridSize_.z;
 	// Coordinates {xyz} will be in the centre of the grid 'cells'
 	double x, y, z;
 
 	// Okay, do the calculation
 	Dnchar text(-1, "Generating partition data for scheme '%s'", name_.get());
-	int progid = progress.initialise(text.get(), npoints.x, FALSE);
+	int progid = progress.initialise(text.get(), gridSize_.x, FALSE);
 	x = 0.5*dx;
-	for (i=0; i<npoints.x; ++i)
+	for (i=0; i<gridSize_.x; ++i)
 	{
 		xVariable_.setFromDouble(x);
 		y = 0.5*dy;
-		for (j=0; j<npoints.y; ++j)
+		for (j=0; j<gridSize_.y; ++j)
 		{
 			yVariable_.setFromDouble(y);
 			z = 0.5*dz;
-			for (k=0; k<npoints.z; ++k)
+			for (k=0; k<gridSize_.z; ++k)
 			{
 				zVariable_.setFromDouble(z);
 				// Get integer id of the partition at this location
 				success = partitionFunctionNode_.execute(rv);
 				pid = rv.asInteger();
 				
-				if (useRoughGrid) data[i][j][k] = pid;
-				else partitions_[pid]->addCell(i,j,k);
+				data[i][j][k] = pid;
+				partitions_[pid]->addCell(i,j,k);
 				z += dz;
 			}
 			y += dy;
@@ -461,6 +516,18 @@ void PartitioningScheme::updatePartitions(bool useRoughGrid)
 		progress.update(progid);
 	}
 	progress.terminate(progid);
+	
+	// Generate GridPrimitives for each partition
+	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next)
+	{
+		GridPrimitive &prim = pd->gridPrimitive();
+		prim.setSource(&grid_);
+		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
+		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
+		prim.createSurfaceMarchingCubes();
+	}
+	
+	partitionLogPoint_ = changeLog_;
 
 	msg.exit("PartitioningScheme::updatePartitions");
 }
@@ -537,14 +604,49 @@ QIcon &PartitioningScheme::icon()
 	return icon_;
 }
 
-// Return fine grid size
-Vec3<int> PartitioningScheme::fineGridSize()
+// Set gridsize to use for calculation
+void PartitioningScheme::setGridSize(Vec3<int> newSize)
 {
-	return fineGridSize_;
+	// Is this different from the stored values?
+	if ((newSize.x != gridSize_.x) || (newSize.y != gridSize_.y) || (newSize.z != gridSize_.z))
+	{
+		++changeLog_;
+		gridSize_ = newSize;
+		grid_.initialise(Grid::RegularXYZData, gridSize_);
+		grid_.setAxes( Vec3<double>(newSize.x, newSize.y, newSize.z) );
+	}
+}
+
+// Return last grid size used to calculated data
+Vec3<int> PartitioningScheme::gridSize()
+{
+	return gridSize_;
 }
 
 // Copy data from specified partition
 void PartitioningScheme::copy(PartitioningScheme &source)
 {
+	// Clear some things which we cannot copy
+	schemeDefinition_.clear();
+	partitionFunction_ = NULL;
+	partitionNameFunction_ = NULL;
+	partitionOptionsFunction_ = NULL;
 	
+	// Copied data will now be absolute...
+	staticData_ = TRUE;
+	hasOptions_ = FALSE;
+
+	// Copy basic data
+	name_ = source.name_;
+	description_ = source.description_;
+	
+	// Copy partition data
+	partitions_.clear();
+	PartitionData *newPartition;
+	int *data;
+	for (PartitionData *pd = source.partitions_.first(); pd != NULL; pd = pd->next)
+	{
+		newPartition = partitions_.add();
+		(*newPartition) = (*pd);
+	}
 }

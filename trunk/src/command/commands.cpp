@@ -1018,13 +1018,13 @@ CommandData Command::data[Command::nCommands] = {
 		"Add a pattern definition 'node' to the current model" },
 
 	// Pores commands
-	{ "createScheme",	"C[nnn]n",	VTypes::NoData,
-		"string name, int nx = 50, int ny = 50, int nz = 50, int atomExtent = 2",
-		"Create a partitioning scheme for the disorded builder from free spaces in the current model" },
+	{ "createScheme",	"C[nnn]nnb",	VTypes::IntegerData,
+		"string name, int nx = 50, int ny = 50, int nz = 50, double minSizePcnt = 0.05, int atomExtent = 2, bool copyToBuilder = TRUE",
+		"Create a partitioning scheme for the disorder builder from free space in the current model" },
 	{ "drillPores",		"CNNNn[nnn]",	VTypes::NoData,
 		"string poreType, double sizeParameter, int n1, int n2, int originFace = 3, double vx = 0.0, double vy = 0.0, double vz = 1.0",
 		"Drill an n1 x n2 array of pores in the current model" },
-	{ "selectPores",	"CNNNn[nnn]",	VTypes::NoData,
+	{ "selectPores",	"CNNNn[nnn]",	VTypes::IntegerData,
 		"string poreType, double sizeParameter, int n1, int n2, int originFace = 3, double vx = 0.0, double vy = 0.0, double vz = 1.0",
 		"Select atoms in an n1 x n2 array of pores in the current model" },
 	{ "terminate",		"",		VTypes::NoData,

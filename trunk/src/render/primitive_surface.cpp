@@ -449,7 +449,6 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						normal.normalise();
 						r.add(ii+v1[0], jj+v1[1], kk+v1[2]);
 						// Set triangle coordinates and add cube position
-						glNormal3d(normal.x, normal.y, normal.z);
 						if (cscale != -1)
 						{
 							prefs.colourScale[cscale].colour((a+b)/2.0, col1);
@@ -492,7 +491,6 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						normal.normalise();
 						r.add(ii+v1[0], jj+v1[1], kk+v1[2]);
 						// Set triangle coordinates and add cube position
-						glNormal3d(normal.x, normal.y, normal.z);
 						if (cscale != -1)
 						{
 							prefs.colourScale[cscale].colour((a+b)/2.0, col2);

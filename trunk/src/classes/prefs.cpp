@@ -316,13 +316,13 @@ Prefs::Prefs()
 	ewaldPrecision_.set(5.0, -6);
 	vdwCutoff_ = 50.0;
 	elecCutoff_ = 50.0;
-	vdwScale_ = 1.0;
 	validEwaldAuto_ = FALSE;
 	combinationRules_[Combine::ArithmeticRule] = "c = (a+b)*0.5";
 	combinationRules_[Combine::GeometricRule] = "c = sqrt(a*b)";
 	combinationRules_[Combine::CustomRule1] = "c = a+b";
 	combinationRules_[Combine::CustomRule2] = "c = a+b";
 	combinationRules_[Combine::CustomRule3] = "c = a+b";
+	partitionGridSize_.set(50,50,50);
 
 	// Rendering Options
 	useNiceText_ = TRUE;
@@ -1798,6 +1798,24 @@ const char *Prefs::combinationRule(Combine::CombinationRule cr) const
 Dnchar *Prefs::combinationRules()
 {
 	return combinationRules_;
+}
+
+// Set grid size for PartitioningSchemes
+void Prefs::setPartitionGridSize(Vec3<int> newSize)
+{
+	partitionGridSize_ = newSize;
+}
+
+// Set grid size for PartitioningSchemes (element)
+void Prefs::setPartitionGridSize(int element, int value)
+{
+	partitionGridSize_.set(element, value);
+}
+
+// Return grid size for PartitioningSchemes
+Vec3<int> Prefs::partitionGridSize()
+{
+	return partitionGridSize_;
 }
 
 /*

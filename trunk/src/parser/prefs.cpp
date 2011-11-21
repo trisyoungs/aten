@@ -113,6 +113,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "mouseMoveFilter",		VTypes::IntegerData,		0, FALSE },
 	{ "multiSampling",		VTypes::IntegerData,		0, FALSE },
 	{ "noQtSettings",		VTypes::IntegerData,		0, FALSE },
+	{ "partitionGrid",		VTypes::IntegerData,		3, FALSE },
 	{ "perspective"	,		VTypes::IntegerData,		0, FALSE },
 	{ "perspectiveFOV",		VTypes::DoubleData,		0, FALSE },
 	{ "polygonAliasing",		VTypes::IntegerData,		0, FALSE },
@@ -455,6 +456,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::NoQtSettings):
 			rv.set( ptr->loadQtSettings() );
+			break;
+		case (PreferencesVariable::PartitionGrid):
+			if (hasArrayIndex) rv.set( ptr->partitionGridSize()[arrayIndex-1] );
+			else rv.setArray(ptr->partitionGridSize());
 			break;
 		case (PreferencesVariable::Perspective):
 			rv.set( ptr->hasPerspective() );
@@ -912,6 +917,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::NoQtSettings):
 			ptr->setLoadQtSettings( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::PartitionGrid):
+			if (newvalue.arraySize() == 3) for (n=0; n<3; ++n) ptr->setPartitionGridSize(n, newvalue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setPartitionGridSize(arrayIndex-1, newvalue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setPartitionGridSize(n, newvalue.asInteger(result));
 			break;
 		case (PreferencesVariable::Perspective):
 			ptr->setPerspective( newvalue.asBool() );

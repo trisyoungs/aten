@@ -1067,7 +1067,7 @@ int Grid::modifyRegion(int startX, int startY, int startZ, double minValue, doub
 	List< ListItem< Vec3<int> > > queue;
 	ListItem< Vec3<int> > *li;
 	Vec3<int> v;
-	printf("Modify region - starting at %i %i %i, range = %f to %f, newValue = %f\n", startX, startY, startZ, minValue, maxValue, newValue);
+
 	if (type_ == Grid::RegularXYZData)
 	{
 		// Seed queue with the target cell...

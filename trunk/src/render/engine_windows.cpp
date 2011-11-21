@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/celltransform.h"
 #include "gui/disorderwizard.h"
+#include "gui/pores.h"
 #include "gui/vibrations.h"
 #include "main/aten.h"
 #include "base/wrapint.h"
@@ -228,50 +229,47 @@ void RenderEngine::renderWindowExtras(Model *source)
 		}
 	}
 
-	// Disorder Wizard
-	static List<GridPrimitive> disorderGridPrimitives_;
-	disorderGridPrimitives_.clear();
-	if ((gui.disorderWizard->isVisible()) && (gui.disorderWizard->currentId() > 2))
+	// Disorder Wizard / Pores Builder Partitioning Scheme Display
+	for (int n=0; n<2; ++n)
 	{
-		// Get currently-selected partitioning scheme
-		PartitioningScheme *ps = gui.disorderWizard->partitioningScheme();
-		if (ps != NULL)
+		// Get source partitioning scheme (n == 0 = disorder, n == 1 = pores)
+		PartitioningScheme *ps = NULL;
+		Matrix mat;
+		if (n == 0)
 		{
-			// Grab the grid structure and list of partitions from the scheme
-			Grid &grid = ps->grid();
+			if ((!gui.disorderWizard->isVisible()) || (gui.disorderWizard->currentId() <= 2)) continue;
+			ps = gui.disorderWizard->partitioningScheme();
+			mat = gui.disorderWizard->cell()->axes();
+		}
+		else if (n == 1)
+		{
+			if ((!gui.poresWidget->isVisible()) || (gui.poresWidget->ui.PoreTabWidget->currentIndex() != 2)) continue;
+			ps = &PoresWidget::partitioningScheme();
+			mat = aten.currentModelOrFrame()->cell()->axes();
+		}
 
-			// Initialise colour counter
-			int colcount = 0;
+		// Grab the grid size which the scheme uses and initialise colour counter
+		Vec3<int> nPoints = ps->gridSize();
+		mat.applyScaling(1.0/nPoints.x, 1.0/nPoints.y, 1.0/nPoints.z);
+		int colcount = 0;
 
-			for (PartitionData *pd = ps->partitions(); pd != NULL; pd = pd->next)
-			{
-				if (pd->id() == 0) continue;
-				
-				// Use first three bits of colcount to set our colour values
-				colour[0] = colcount%1 ? 1.0 : 0.0;
-				colour[1] = colcount%2 ? 1.0 : 0.0;
-				colour[2] = colcount%4 ? 1.0 : 0.0;
-				colour[3] = 0.75;
+		for (PartitionData *pd = ps->partitions(); pd != NULL; pd = pd->next)
+		{
+			if (pd->id() == 0) continue;
+			
+			// Use first three bits of colcount to set our colour values
+			colour[0] = colcount%1 ? 1.0 : 0.0;
+			colour[1] = colcount%2 ? 1.0 : 0.0;
+			colour[2] = colcount%4 ? 1.0 : 0.0;
+			colour[3] = 0.75;
 
-				// Construct a surface for each partition in the model (except 0 == unit cell)
-				GridPrimitive *prim = disorderGridPrimitives_.add();
-				prim->setSource(&ps->grid());
-				
-				Matrix mat = gui.disorderWizard->cell()->axes();
-				Vec3<int> npoints = grid.nPoints();
-				mat.applyScaling(1.0/npoints.x, 1.0/npoints.y, 1.0/npoints.z);
-				grid.setAxes(mat);
-				grid.setLowerPrimaryCutoff(pd->id()-0.5);
-				grid.setUpperPrimaryCutoff(pd->id()+0.5);
-				prim->createSurfaceMarchingCubes();
-				A.setIdentity();
-				A.multiplyRotation(mat);
-				renderPrimitive(RenderEngine::MiscObject, &prim->primaryPrimitive(), TRUE, colour, A, GL_FILL);
-				
-				// Increase colour counter
-				++colcount;
-				if (colcount > 7) colcount = 0;
-			}
+			// Partition surfaces will have already been constructed, so just display them
+			renderPrimitive(RenderEngine::MiscObject, &pd->gridPrimitive().primaryPrimitive(), TRUE, colour, mat, GL_FILL);
+			
+			// Increase colour counter
+			++colcount;
+			if (colcount > 7) colcount = 0;
 		}
 	}
+
 }

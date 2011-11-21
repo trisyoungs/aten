@@ -2,9 +2,9 @@
 # Created:	 16/04/2009
 # Last modified: 08/09/2011
 # ChangeLog:
-#	08/09/2011: Added filter for XV file
+#	08/09/2011 - Added filter for XV file
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
-#	30/09/2010: Added filter for siesta vectors file.
+#	30/09/2010 - Added filter for siesta vectors file.
 # Notes:
 #	GGA (PBE) exchange assumed, with pseudos named 'H-PBE', 'C-PBE', etc.
 

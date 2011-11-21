@@ -1,6 +1,9 @@
 <ui version="4.0">
  <class>AtenProgress</class>
  <widget class="QDialog" name="AtenProgress">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -149,10 +152,6 @@
        </property>
        <property name="text">
         <string>Cancel</string>
-       </property>
-       <property name="icon">
-        <iconset resource="icons.qrc">
-         <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
        </property>
        <property name="iconSize">
         <size>

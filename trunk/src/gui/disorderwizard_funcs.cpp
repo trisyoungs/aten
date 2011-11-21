@@ -84,7 +84,8 @@ int DisorderWizard::run()
 	for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
 	{
 		progress.update(pid, -1, ps->name());
-		ps->updatePartitions(TRUE);
+		ps->setGridSize(prefs.partitionGridSize());
+		ps->recalculatePartitions();
 	}
 	progress.terminate(pid);
 	return exec();
@@ -418,7 +419,7 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	if (partitioningScheme_ == NULL) return;
 	if (!partitioningScheme_->hasOptions()) return;
 	if (!partitioningScheme_->showOptions()) return;
-	partitioningScheme_->updatePartitions(TRUE);
+	partitioningScheme_->recalculatePartitions();
 	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.containsData(partitioningScheme_);
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);

@@ -24,7 +24,7 @@
 
 #include "base/dnchar.h"
 #include "classes/grid.h"
-#include "render/primitive.h"
+#include "render/gridprimitive.h"
 #include "parser/program.h"
 #include "parser/usercommandnode.h"
 #include "parser/double.h"
@@ -55,6 +55,8 @@ class PartitionData
 	public:
 	// Constructor
 	PartitionData();
+	// Copy constructor
+	PartitionData(const PartitionData&);
 	// List pointers
 	PartitionData *prev, *next;
 
@@ -78,6 +80,8 @@ class PartitionData
 	double reducedMass_;
 	// Reflist of components targeting this partition
 	Reflist<DisorderData,int> components_;
+	// Grid primitive instance for this partition
+	GridPrimitive gridPrimitive_;
 	
 	public:
 	// Set id of partition
@@ -98,6 +102,8 @@ class PartitionData
 	void calculateVolume(double velement);
 	// Return volume of partition
 	double volume();
+	// Reset reduced mass of partition
+	void resetReducedMass();
 	// Adjust partition reduced mass contents
 	void adjustReducedMass(Atom *i, bool subtract = FALSE);
 	// Adjust partition reduced mass contents (from Model)
@@ -112,6 +118,8 @@ class PartitionData
 	int nComponents();
 	// Return nth component in list
 	DisorderData *component(int id);
+	// Return grid primitive instance for this partition
+	GridPrimitive &gridPrimitive();
 };
 
 // Partitioning Scheme for Disordered Builder
@@ -148,6 +156,8 @@ class PartitioningScheme
 	bool initialiseFromProgram();
 	// Setup scheme information manually (for absolute grid data)
 	void initialiseAbsolute(const char *name, const char *description);
+	// Set name and description of scheme manually
+	void setName(const char *name, const char *description = NULL);
 	// Return name of partitioning scheme
 	const char *name();
 	// Return description of partitioning scheme
@@ -160,10 +170,14 @@ class PartitioningScheme
 	// Partition Data
 	*/
 	private:
-	// Flag specifying whether contained data is absolute or freely-generated
-	bool absolute_;
+	// Log counter for gridsize / variable changes
+	int changeLog_;
+	// Flag specifying whether contained partition and grid data is static
+	bool staticData_;
 	// List of all possible partitions in scheme
 	List<PartitionData> partitions_;
+	// Logpoint at which partitions were last generated
+	int partitionLogPoint_;
 	// Grid structure holding illustrative partition data
 	Grid grid_;
 	// Icon of illustrative grid
@@ -177,20 +191,16 @@ class PartitioningScheme
 	// Variables to hold passed coordinates
 	DoubleVariable xVariable_, yVariable_, zVariable_;
 	IntegerVariable idVariable_;
-	// Grid size for rough approximation
-	Vec3<int> roughGridSize_;
-	// Fine grid size (used for actual calculation)
-	Vec3<int> fineGridSize_;
+	// Grid size (used for last calculation of cell lists)
+	Vec3<int> gridSize_;
 	
 	public:
-	// Setup absolute grid and return it
-	Grid *setAbsoluteGrid(int nx, int ny, int nz);
-	// Return whether scheme contains absolute grid data
-	bool absolute();
+	// Return whether scheme contains static partition and grid data
+	bool staticData();
 	// Create partition information from current grid data
 	void createPartitionsFromGrid();
-	// Update partition information (after load or change in options)
-	void updatePartitions(bool useRoughGrid);
+	// Recalculate partition information (after load or change in options)
+	void recalculatePartitions();
 	// Return number of partitions now recognised in grid
 	int nPartitions();
 	// Clear partition component lists
@@ -211,8 +221,10 @@ class PartitioningScheme
 	Grid &grid();
 	// Return icon containing illustrative partitions
 	QIcon &icon();
-	// Return fine grid size
-	Vec3<int> fineGridSize();
+	// Set gridsize to use for calculation
+	void setGridSize(Vec3<int> newSize);
+	// Return last grid size used to calculated data
+	Vec3<int> gridSize();
 	// Copy data from specified partition
 	void copy(PartitioningScheme &source);
 };
