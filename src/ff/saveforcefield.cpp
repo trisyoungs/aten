@@ -24,6 +24,7 @@
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 #include "base/kvmap.h"
+#include "base/sysfunc.h"
 #include "templates/namemap.h"
 
 // Save the specified forcefield
@@ -61,13 +62,30 @@ bool Forcefield::save()
 	}
 
 	// Atomtype definitions
-	// TODO TGAY How to distinguish between types and UAtypes?
-	if (types_.nItems() != 0)
+	// Count UATypes first...
+	int nUATypes = 0;
+	for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next) if (ffa->isUnitedAtom()) ++nUATypes;
+	if ((types_.nItems() - nUATypes - 1) > 0)
 	{
 		parser.writeLine("types\n");
 		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{
-			if (ffa->description() == NULL) parser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString());
+			// Skip UATypes in this pass...
+			if (ffa->isUnitedAtom()) continue;
+			if (isEmpty(ffa->description())) parser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString());
+			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
+		}
+		parser.writeLine("end\n\n");
+	}
+	if (nUATypes > 0)
+	{
+		parser.writeLine("uatypes\n");
+		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
+		{
+			// Skip normal types in this pass...
+			if (!ffa->isUnitedAtom()) continue;
+				
+			if (isEmpty(ffa->description())) parser.writeLineF("%i\t%s\t%s\t%f\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->elementMass(), ffa->netaString());
 			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
 		}
 		parser.writeLine("end\n\n");

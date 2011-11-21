@@ -126,6 +126,8 @@ class ForcefieldAtom
 	void setElementMass(double d);
 	// Custom 'element' mass (or natural element name)
 	double elementMass() const;
+	// Return whether this is a united-atom type (i.e. has had its mass set explicitly)
+	bool isUnitedAtom() const;
 	// Add associated data
 	void addData(const char *name, double d);
 	void addData(const char *name, int i);

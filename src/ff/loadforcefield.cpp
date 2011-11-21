@@ -240,6 +240,12 @@ bool Forcefield::readTypes()
 		}
 		ffa->setName(ffparser.argc(1));
 		int el = elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
+		if (el == 0)
+		{
+			msg.print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).\n", ffparser.argc(2), ffa->name(), ffa->typeId());
+			msg.exit("Forcefield::readTypes");
+			return FALSE;
+		}
 		ffa->setElement(el);
 		ffa->setEquivalent(ffparser.argc(1));
 		ffa->neta()->setCharacterElement(el);
@@ -298,7 +304,14 @@ bool Forcefield::readUnitedAtomTypes()
 		}
 		ffa->setName(ffparser.argc(1));
 		ffa->setEquivalent(ffparser.argc(1));
-		ffa->setElement(-1);
+		int el = elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
+		if (el == 0)
+		{
+			msg.print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).\n", ffparser.argc(2), ffa->name(), ffa->typeId());
+			msg.exit("Forcefield::readUnitedAtomTypes");
+			return FALSE;
+		}
+		ffa->setElement(el);
 		ffa->setElementMass(ffparser.argd(3));
 		ffa->neta()->setCharacterElement(elements().find(ffparser.argc(2), ElementMap::AlphaZMap));
 		if (!ffa->setNeta(ffparser.argc(4), this))
@@ -371,7 +384,6 @@ bool Forcefield::readData(const char *vars)
 				continue;
 			}
 			index = lastn + n - 2;
-			printf("index = %i, name = %s\n", index, typeData_.name(index));
 			switch (typeData_.data(index))
 			{
 				case (VTypes::IntegerData):
