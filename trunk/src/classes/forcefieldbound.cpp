@@ -227,8 +227,8 @@ double ForcefieldBound::vdwScale() const
 	return vdwScale_;
 }
 
-// Return if supplied names match those store (in either 'direction')
-bool ForcefieldBound::namesMatch(const char *namei, const char *namej,const char *namek, const char *namel)
+// Return if supplied names match those stored (in either 'direction')
+bool ForcefieldBound::namesMatch(const char *namei, const char *namej, const char *namek, const char *namel)
 {
 	if (namek == NULL)
 	{

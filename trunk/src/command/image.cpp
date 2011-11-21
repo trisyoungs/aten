@@ -62,7 +62,7 @@ bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
  	if (aten.redirectedImagesActive())
 	{
 		const char *filename = aten.nextRedirectedFilename();
-		if (filename == NULL)
+		if (isEmpty(filename))
 		{
 			msg.print("Maximum number of frames for image redirect reached. Raising error...\n");
 			result = FALSE;

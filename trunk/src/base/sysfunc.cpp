@@ -162,9 +162,9 @@ void removeComments(char *s)
 }
 
 // Return whether string consists of empty whitespace characters only
-bool isEmpty(char *s)
+bool isEmpty(const char *s)
 {
-	for (char *c = s; *c != '\0'; ++c)
+	for (const char *c = s; *c != '\0'; ++c)
 	{
 		switch (*c)
 		{

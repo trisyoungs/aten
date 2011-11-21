@@ -37,6 +37,7 @@ ForcefieldAtom::ForcefieldAtom()
 	parent_ = NULL;
 	neta_.setParentForcefieldAtom(this);
 	element_ = 0;
+	elementMass_ = -1.0;
 
 	// Public variables
 	prev = NULL;
@@ -202,7 +203,13 @@ void ForcefieldAtom::setElementMass(double d)
 // Custom 'element' mass (or natural element mass)
 double ForcefieldAtom::elementMass() const
 {
-	return (element_ == -1 ? elementMass_ : elements().atomicMass(element_));
+	return (elementMass_ < 0.0 ? elements().atomicMass(element_) : elementMass_);
+}
+
+// Return whether this is a united-atom type (i.e. has had its mass set explicitly)
+bool ForcefieldAtom::isUnitedAtom() const
+{
+	return (elementMass_ > -0.5);
 }
 
 // Add associated data

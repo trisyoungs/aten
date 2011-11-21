@@ -22,6 +22,7 @@
 #include "gui/tprocess.uih"
 #include "base/messenger.h"
 #include "base/dnchar.h"
+#include "base/sysfunc.h"
 #include <stdio.h>
 
 // Constructor
@@ -53,7 +54,7 @@ bool TProcess::execute(const char *command, const char *args, const char *output
 	outputFile_.close();
 	stream_.flush();
 	stream_.setDevice(NULL);
-	if (outputfile == NULL) outputFileSpecified_ = FALSE;
+	if (isEmpty(outputfile)) outputFileSpecified_ = FALSE;
 	else
 	{
 		outputFile_.setFileName(outputfile);

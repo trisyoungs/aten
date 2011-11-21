@@ -58,7 +58,7 @@ bool Command::function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	int count = 0, n;
 	int length = strlen(c->argc(1));
-	const char *ch, *s = c->argc(0);
+	const char *s = c->argc(0), *ch;
 	while (*s != '\0')
 	{
 		ch = strstr(s, c->argc(1));
