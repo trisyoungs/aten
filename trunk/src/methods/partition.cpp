@@ -578,7 +578,9 @@ bool PartitioningScheme::showOptions()
 	if (!hasOptions_) return TRUE;
 	ReturnValue rv;
 	partitionOptionsNode_.execute(rv);
-	return rv.asBool();
+	bool result = rv.asBool();
+	if (result) ++changeLog_;
+	return result;
 }
 
 // Return partition in which simple (unit) coordinate falls

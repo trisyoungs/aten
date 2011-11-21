@@ -15,8 +15,8 @@ int partitionOptions()
 	ui.addDoubleSpin("end", "End", 0.0, 1.0, 0.1, end);
 	if (ui.show())
 	{
-		start = ui.asInteger("start");
-		end = ui.asInteger("end");
+		start = ui.asDouble("start");
+		end = ui.asDouble("end");
 		return TRUE;
 	}
 	else return FALSE;

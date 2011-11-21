@@ -14,21 +14,18 @@ int npartitions = 2;
 global double x = 0.5, y = 0.5, z = 0.5, r = 0.3;
 int partitionOptions()
 {
-	void createDefaultDialog(Dialog ui)
-	{
-		ui.verticalFill = TRUE;
-		ui.addDoubleSpin("x", "x", 0.0, 1.0, 0.1, x);
-		ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
-		ui.addDoubleSpin("z", "Z", 0.0, 1.0, 0.1, z);
-		ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
-	}
-	Dialog ui = defaultDialog();
+	Dialog ui = createDialog("Sphere Scheme Options");
+	ui.verticalFill = TRUE;
+	ui.addDoubleSpin("x", "x", 0.0, 1.0, 0.1, x);
+	ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
+	ui.addDoubleSpin("z", "Z", 0.0, 1.0, 0.1, z);
+	ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
 	if (ui.show())
 	{
-		x = ui.asInteger("x");
-		y = ui.asInteger("y");
-		z = ui.asInteger("z");
-		r = ui.asInteger("r");
+		x = ui.asDouble("x");
+		y = ui.asDouble("y");
+		z = ui.asDouble("z");
+		r = ui.asDouble("r");
 		return TRUE;
 	}
 	else return FALSE;
