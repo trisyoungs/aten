@@ -1584,7 +1584,7 @@ bool Pattern::typeAtoms()
 	}
 	else msg.print("Typing pattern %s (using associated forcefield '%s')...", name(), ff->name());	
 	if (ff == NULL)
-	{	
+	{
 		msg.print("Can't type pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());
 		msg.exit("Pattern::typeAtoms");
 		return FALSE;

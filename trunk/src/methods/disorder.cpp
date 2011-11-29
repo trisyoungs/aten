@@ -506,6 +506,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		Pattern *p = targetModel_->addPattern(ri->item->nAdded(), ri->item->sourceModel().nAtoms(), ri->item->modelName());
 		p->setForcefield(ri->item->sourceModel().forcefield());
 	}
+	targetModel_->describeAtoms();
 
 	msg.enter("MonteCarlo::disorder");
 	return TRUE;
