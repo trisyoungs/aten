@@ -321,6 +321,10 @@ class TreeGui : public TreeGuiWidget
 	/*
 	// Widget Value Set / Get
 	*/
+	private:
+	// List available widget names, types, and values
+	void listWidgets();
+
 	public:
 	// Set named widget's value from integer
 	bool setWidgetValue(const char* name, int i);

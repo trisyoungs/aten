@@ -1356,6 +1356,57 @@ TreeGuiWidget *TreeGui::findWidget(const char *name)
 	return NULL;
 }
 
+// List available widget names, types, and values
+void TreeGui::listWidgets()
+{
+	// For neatness, determine longest widget name in list...
+	TreeGuiWidget *widget;
+	int maxLen = 0, n;
+	for (widget = widgets_.first(); widget != NULL; widget = widget->next)
+	{
+		n = strlen(widget->name());
+		maxLen = max(maxLen, n);
+	}
+
+	// Construct formatting string for output
+	Dnchar fmt(-1, "%%-%is      %%-14s    ", maxLen);
+// 	printf("Formatting string is [%s]\n", fmt.get());
+	Dnchar s(1000);
+	for (widget = widgets_.first(); widget != NULL; widget = widget->next)
+	{
+		s.sprintf(fmt.get(), widget->name(), TreeGuiWidget::widgetType(widget->type()));
+		switch (widget->type())
+		{
+			case (TreeGuiWidget::DoubleSpinWidget):
+				s.strcatf("min=%f, max=%f, value=%f", widget->minimumD(), widget->maximumD(), widget->valueD()); 
+				break;
+			case (TreeGuiWidget::IntegerSpinWidget):
+				s.strcatf("min=%i, max=%i, value=%i", widget->minimumI(), widget->maximumI(), widget->valueI()); 
+				break;
+			case (TreeGuiWidget::CheckWidget):
+			case (TreeGuiWidget::RadioButtonWidget):
+				s.strcatf("value(index)=%i (%s)", widget->valueI(), widget->valueI() ? "checked" : "unchecked");
+				break;
+			case (TreeGuiWidget::RadioGroupWidget):
+			case (TreeGuiWidget::TabWidget):
+			case (TreeGuiWidget::StackWidget):
+				s.strcatf("value(index)=%i", widget->valueI());
+				break;
+			case (TreeGuiWidget::ComboWidget):
+				s.strcatf("value(index)=%i, value(string)='%s', values=(", widget->valueI(), widget->asCharacter());
+				for (Dnchar *item = widget->items(); item != NULL; item = item->next) s.strcatf("'%s'%s", item->get(), item->next != NULL ? ", " : ")");
+				break;
+			case (TreeGuiWidget::EditWidget):
+				s.strcatf("value(string)='%s'", widget->asCharacter());
+				break;
+			default:
+				// Nothing to print...
+				continue;
+		}
+		msg.print("%s\n", s.get());
+	}
+}
+
 // Set named widget's value from integer
 bool TreeGui::setWidgetValue(const char *name, int i)
 {
@@ -1363,7 +1414,9 @@ bool TreeGui::setWidgetValue(const char *name, int i)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't set the value of widget named '%s' since it doesn't exist.\n", name);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).\n", name);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, i);
@@ -1376,7 +1429,9 @@ bool TreeGui::setWidgetValue(const char* name, double d)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't set the value of widget named '%s' since it doesn't exist.\n", name);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).\n", name);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, d);
@@ -1389,7 +1444,9 @@ bool TreeGui::setWidgetValue(const char* name, const char* s)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't set the value of widget named '%s' since it doesn't exist.\n", name);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).\n", name);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, s);
@@ -1402,7 +1459,9 @@ int TreeGui::asInteger(const char *name)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't retrieve the integer value of widget named '%s' since it doesn't exist.\n", name);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling asInteger).\n", name);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	return widget->asInteger();
@@ -1415,7 +1474,9 @@ double TreeGui::asDouble(const char *name)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't retrieve the double value of widget named '%s' since it doesn't exist.\n", name);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling asDouble).\n", name);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	return widget->asDouble();
@@ -1428,7 +1489,9 @@ const char *TreeGui::asCharacter(const char *name)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't retrieve the string value of widget named '%s' since it doesn't exist.\n", name);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling asCharacter).\n", name);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	return widget->asCharacter();
@@ -1442,7 +1505,9 @@ Vec3<double> TreeGui::asVec3(const char *name1, const char *name2, const char *n
 	TreeGuiWidget *widget = findWidget(name1);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't retrieve the double value of widget named '%s' since it doesn't exist.\n", name1);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling asVector).\n", name1);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	v.x = widget->asDouble();
@@ -1450,7 +1515,9 @@ Vec3<double> TreeGui::asVec3(const char *name1, const char *name2, const char *n
 	widget = findWidget(name2);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't retrieve the double value of widget named '%s' since it doesn't exist.\n", name2);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling asVector).\n", name2);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	v.y = widget->asDouble();
@@ -1458,7 +1525,9 @@ Vec3<double> TreeGui::asVec3(const char *name1, const char *name2, const char *n
 	widget = findWidget(name3);
 	if (widget == NULL)
 	{
-		msg.print("Error: Can't retrieve the double value of widget named '%s' since it doesn't exist.\n", name3);
+		msg.print("Error: No widget named '%s' exists in this dialog (calling asVector).\n", name3);
+		msg.print("Valid widgets are:\n");
+		listWidgets();
 		return FALSE;
 	}
 	v.z = widget->asDouble();
