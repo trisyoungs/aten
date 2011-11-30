@@ -120,7 +120,7 @@ types
 82	CTA  	C	"nh=3,-&81"					"Methyl carbon in acetate"
 end
 
-inter lj
+inter ljgeom
 #ID	NAME	Q	Epsilon		Sigma
 # dialkylimidazolium JPCB108:2038(2004)
 1	C1	-0.17	0.27614		3.50

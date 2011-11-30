@@ -253,16 +253,40 @@ void Model::freeBondingCuboids()
 void Model::addAtomToCuboid(Atom *i)
 {
 	int x,y,z;
-	Vec3<double> r = (cell_.type() == UnitCell::NoCell ? i->r() : cell_.realToFrac(i->r()));
+	Vec3<double> r;
+	if (cell_.type() == UnitCell::NoCell)
+	{
+		// No unit cell to use, so just use normal coordinates
+		r = i->r();
+	}
+	else
+	{
+		// There is a unit cell, so we must fold the atoms coordinates into the box
+		
+		r = cell_.realToFrac(i->r());
+		cell_.foldFrac(r);
+	}
 	r -= extentMin_;
 	double radius = elements().atomicRadius(i->element());
 	x = int(r.x / cuboidSize_.x);
 	y = int(r.y / cuboidSize_.y);
 	z = int(r.z / cuboidSize_.z);
-	if (x == cuboidBoxes_.x) x = 0;
-	if (y == cuboidBoxes_.y) y = 0;
-	if (z == cuboidBoxes_.z) z = 0;
-// 	printf("Atom %i is in box %i-%i-%i=%i\n ", i->id(), x,y,z,x*cuboidYZ_+y*cuboidBoxes_.z+z);
+
+	// 'Fold' cuboid range, just in case
+	if (x < 0) x += cuboidBoxes_.x;
+	else if (x >= cuboidBoxes_.x) x -= cuboidBoxes_.x;
+	if (y < 0) y += cuboidBoxes_.y;
+	else if (y >= cuboidBoxes_.y) y -= cuboidBoxes_.y;
+	if (z < 0) z += cuboidBoxes_.z;
+	else if (z >= cuboidBoxes_.z) z -= cuboidBoxes_.z;
+	
+	int boxnumber = x*cuboidYZ_+y*cuboidBoxes_.z+z;
+	//printf("Atom %i is in box %i-%i-%i=%i\n ", i->id(), x,y,z,x*cuboidYZ_+y*cuboidBoxes_.z+z);
+	if ((boxnumber < 0) || (boxnumber >= nCuboids_)) 
+	{
+		printf("Fatal error : box number is out of range.\n");
+		return;
+	}
 	bondingCuboids_[x*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);
 	// Add to overlay box
 // 	printf("--> Original position"); r.print();

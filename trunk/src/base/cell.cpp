@@ -557,9 +557,9 @@ Vec3<double> UnitCell::fold(Vec3<double> &r) const
 		case (UnitCell::CubicCell):
 		case (UnitCell::OrthorhombicCell):
 			R = r;
-			R.x -= floor(R.x/lengths_.x + 0.5)*lengths_.x;
-			R.y -= floor(R.y/lengths_.y + 0.5)*lengths_.y;
-			R.z -= floor(R.z/lengths_.z + 0.5)*lengths_.z;
+			R.x -= floor(R.x/lengths_.x)*lengths_.x;
+			R.y -= floor(R.y/lengths_.y)*lengths_.y;
+			R.z -= floor(R.z/lengths_.z)*lengths_.z;
 			break;
 		// Parallelepiped
 		default:
