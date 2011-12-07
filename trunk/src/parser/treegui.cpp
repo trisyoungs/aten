@@ -629,7 +629,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 						msg.print("Dialog Error: Item '%s' does not exist in the combo '%s'.\nValid values are:\n\t", rv.asString(), name_.get());
 						for (Dnchar *d = items_.first(); d != NULL; d = d->next)
 						{
-							if (d->next == NULL) msg.print("\"%s\"", d->get());
+							if (d->next == NULL) msg.print("\"%s\"\n", d->get());
 							else msg.print("\"%s\", ", d->get());
 						}
 						msg.exit("TreeGuiWidget::setProperty");
