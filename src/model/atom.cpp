@@ -532,8 +532,6 @@ void Model::reduceMass(int element)
 	mass_ -= elements().atomicMass(element);
 	if (mass_ < 0.0) mass_ = 0.0;
 	if (element == 0) --nUnknownAtoms_;
-	// Recalculate density since mass has changed
-	calculateDensity();
 }
 
 // Increasethe mass (and unknown element count) of the model
@@ -541,8 +539,6 @@ void Model::increaseMass(int element)
 {
 	mass_ += elements().atomicMass(element);
 	if (element == 0) ++nUnknownAtoms_;
-	// Recalculate density since mass has changed
-	calculateDensity();
 }
 
 // Calculate mass
@@ -557,7 +553,6 @@ void Model::calculateMass()
 		mass_ += elements().atomicMass(i);
 		if (i->element() == 0) ++nUnknownAtoms_;
 	}
-	calculateDensity();
 	msg.exit("Model::calculateMass");
 }
 

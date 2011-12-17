@@ -205,9 +205,8 @@ void Model::selectionDelete(bool markonly)
 			else i = i->prev;
 		}
 	}
-	// Renumber atoms and recalculate density here, since we request deletion with no updates
+	// Renumber remaining atoms
 	renumberAtoms();
-	calculateDensity();
 	msg.exit("Model::selectionDelete");
 }
 

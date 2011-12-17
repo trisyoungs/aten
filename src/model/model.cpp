@@ -53,7 +53,6 @@ Model::Model()
 	// Properties
 	name_ = "NewModel";
 	mass_ = 0.0;
-	density_ = 0.0;
 	nUnknownAtoms_ = 0;
 	translateScale_ = 1.0;
 	forcefield_ = NULL;
@@ -388,7 +387,7 @@ void Model::print() const
 	msg.print("   Name : %s\n", name_.get());
 	msg.print("   File : %s\n", filename_.get());
 	msg.print("   Mass : %f\n", mass_);
-	if (cell_.type() != UnitCell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", UnitCell::cellType(cell_.type()), density_, Prefs::densityUnit(prefs.densityUnit()));
+	if (cell_.type() != UnitCell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", UnitCell::cellType(cell_.type()), density(), Prefs::densityUnit(prefs.densityUnit()));
 	msg.print("  Atoms : %i\n", atoms_.nItems());
 	msg.print(" Id     El   FFType    FFId         X             Y             Z              Q      Sel Fix\n");
 	// Print from pattern definition if possible, otherwise just use model atom list

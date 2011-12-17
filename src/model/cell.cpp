@@ -43,7 +43,6 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(lengths, angles);
-	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -64,7 +63,6 @@ void Model::setCell(Matrix axes)
 	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(axes);
-	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -85,7 +83,6 @@ void Model::setCell(UnitCell::CellParameter cp, double value)
 	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new parameter value
 	cell_.setParameter(cp, value);
-	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -107,7 +104,6 @@ void Model::setCell(UnitCell *newcell)
 		Matrix oldaxes = cell_.axes();
 		bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 		cell_ = *newcell;
-		calculateDensity();
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
@@ -577,31 +573,28 @@ void Model::fracToReal()
 	msg.exit("Model::fracToReal");
 }
 
-// Calculate the density of the system (if periodic)
-void Model::calculateDensity()
+// Calculate and return the density of the system (if periodic)
+double Model::density() const
 {
-	msg.enter("Model::calculateDensity");
+	msg.enter("Model::density");
+	double density;
 	if (cell_.type() != UnitCell::NoCell)
 	{
-		// Calculate density in the units specified by prefs.density_internal
+		// Calculate density in the units specified by prefs
 		switch (prefs.densityUnit())
 		{
 			case (Prefs::GramsPerCm):
-				density_ = (mass_ / AVOGADRO) / (cell_.volume() / 1.0E24);
+				density = (mass_ / AVOGADRO) / (cell_.volume() / 1.0E24);
 				break;
 			case (Prefs::AtomsPerAngstrom):
-				density_ = atoms_.nItems() / cell_.volume();
+				density = atoms_.nItems() / cell_.volume();
 				break;
 			default:
 				break;
 		}
 	}
-	else density_ = -1.0;
-	msg.exit("Model::calculateDensity");
+	else density = -1.0;
+	msg.exit("Model::density");
+	return density;
 }
 
-// Return the density of the model
-double Model::density() const
-{
-	return density_;
-}
