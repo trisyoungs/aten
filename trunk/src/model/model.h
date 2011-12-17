@@ -246,10 +246,6 @@ class Model
 	private:
 	// Cell definition (also contains reciprocal cell definition)
 	UnitCell cell_;
-	// Density of model (if periodic)
-	double density_;
-	// Calculate the density of the model
-	void calculateDensity();
 	// SGInfo structure
 	T_SgInfo spacegroup_;
 
