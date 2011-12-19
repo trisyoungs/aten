@@ -24,6 +24,7 @@
 #include "gui/pores.h"
 #include "gui/gui.h"
 #include "gui/toolbox.h"
+#include "base/sysfunc.h"
 
 // Static members
 PartitioningScheme PoresWidget::partitioningScheme_;
@@ -135,6 +136,23 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
 	int atomExtent = ui.AtomExtentSpin->value();
 	CommandNode::run(Command::CreateScheme, "ciiidii", name.get(), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 0);
+	
+	// Update info in window
+	double volume = 0.0;
+	Matrix volumeElement = m->cell()->axes();
+	volumeElement.applyScaling(1.0/npoints.x, 1.0/npoints.y, 1.0/npoints.z);
+	double elementVolume = volumeElement.determinant();
+	for (PartitionData *pd = partitioningScheme_.partitions()->next; pd != NULL; pd = pd->next)
+	{
+		pd->calculateVolume(elementVolume);
+		volume += pd->volume();
+	}
+	Dnchar s;
+	ui.PartitionNumberLabel->setText( itoa(partitioningScheme_.nPartitions()-1) );
+	s.sprintf("%10.2f", volume);
+	ui.PartitionVolumeLabel->setText( s.get() );
+	s.sprintf("%5.1f %%", 100.0*volume/m->cell()->volume());
+	ui.PartitionVolumePercentLabel->setText( s.get() );
 	gui.mainCanvas()->postRedisplay();
 }
 

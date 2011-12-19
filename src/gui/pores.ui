@@ -618,7 +618,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Number of Partitions in Scheme</string>
+             <string>Number of Detected Partitions</string>
             </property>
            </widget>
           </item>

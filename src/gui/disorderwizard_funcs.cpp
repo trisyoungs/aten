@@ -102,7 +102,7 @@ void DisorderWizard::setComponentData(Model *m)
 	text.sprintf("%s\nPolicy: %s", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()));
 	if (m->componentInsertionPolicy() != Model::DensityPolicy) text.strcatf("\nPopulation: %i", m->componentPopulation());
 	if (m->componentInsertionPolicy() != Model::NumberPolicy) text.strcatf("\nDensity: %f", m->componentDensity());
-	text.strcatf("\nPartition: %i %s", m->componentPartition(), partitioningScheme_->partitionName(m->componentPartition()));
+	text.strcatf("\nPartition: %i %s", m->componentPartition()+1, partitioningScheme_->partitionName(m->componentPartition()));
 	ri->item->setText(1, text.get());
 	ri->item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 }

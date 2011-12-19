@@ -67,7 +67,7 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 	}
 	
 	# Shift atoms if requested
-	if (cellshift)
+	if (cellshift && (imcon != 0))
 	{
 		selectAll();
 		translateCell(0.5,0.5,0.5);
@@ -137,7 +137,7 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 		i = m.atoms[n];
 		if (i.type == 0) writeLineF("%-8s%10i%20f\n",i.symbol,i.id,i.mass);
 		else writeLineF("%-8s%10i%20f\n",i.type.name,i.id,i.type.mass);
-		if (cellshift) v = m.cell.translateAtom(i,-0.5,-0.5,-0.5);
+		if (cellshift && (imcon != 0)) v = m.cell.translateAtom(i,-0.5,-0.5,-0.5);
 		else v = i.r;
 		writeLineF("%20.14f%20.14f%20.14f\n", v.x, v.y, v.z);
 		if (keytrj > 1) writeLineF("%20.14f%20.14f%20.14f\n",i.vx,i.vy,i.vz);

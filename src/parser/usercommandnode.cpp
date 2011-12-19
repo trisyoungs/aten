@@ -99,6 +99,9 @@ bool UserCommandNode::checkArguments()
 // Execute command
 bool UserCommandNode::execute(ReturnValue &rv)
 {
+	// Check for valid function
+	if (function_ == NULL) return FALSE;
+
 	// Poke arguments into the functions argument variables
 	Refitem<TreeNode,int> *value = args_.first();
 	ReturnValue varval;

@@ -56,17 +56,17 @@ PartitionData::PartitionData()
 	currentCellChunk_ = NULL;
 }
 
-// Copy constructor
-PartitionData::PartitionData(const PartitionData &source)
+// Copy data from specified PartitionData
+void PartitionData::copy(PartitionData *source)
 {
 	// Clear any old data
 	clear();
 	
-	name_ = source.name_;
-	id_ = source.id_;
+	name_ = source->name_;
+	id_ = source->id_;
 
 	// Step through cells list in source
-	for (PartitionCellData *pcd = source.cells_.first(); pcd != NULL; pcd = pcd ->next)
+	for (PartitionCellData *pcd = source->cells_.first(); pcd != NULL; pcd = pcd ->next)
 	{
 		int *data = pcd->data;
 		for (int n=0; n<pcd->dataPos; n +=3) addCell(data[n], data[n+1], data[n+2]);
@@ -117,6 +117,22 @@ void PartitionData::addCell(int ix, int iy, int iz)
 	currentCellChunk_->data[currentCellChunk_->dataPos+2] = iz;
 	currentCellChunk_->dataPos += 3;
 	++nCells_;
+}
+
+// Return whether specified cell is contained in the list
+bool PartitionData::contains(int ix, int iy, int iz)
+{
+	int n, div, mod;
+	for (n=0; n < nCells_; ++n)
+	{
+		div = n/CELLCHUNKSIZE;
+		mod = n%CELLCHUNKSIZE;
+		if (cells_[div]->data[mod*3] != ix) continue;
+		if (cells_[div]->data[mod*3+1] != iy) continue;
+		if (cells_[div]->data[mod*3+2] != iz) continue;
+		return TRUE;
+	}
+	return FALSE;
 }
 
 // Return random cell from list
@@ -586,12 +602,31 @@ bool PartitioningScheme::showOptions()
 // Return partition in which simple (unit) coordinate falls
 int PartitioningScheme::partitionId(double x, double y, double z)
 {
-	ReturnValue rv;
-	xVariable_.setFromDouble(x);
-	yVariable_.setFromDouble(y);
-	zVariable_.setFromDouble(z);
-	partitionFunctionNode_.execute(rv);
-	return rv.asInteger();
+	if (staticData_)
+	{
+		// Determine integer cell identity
+		int ix = x * gridSize_.x, iy = y * gridSize_.y, iz = z * gridSize_.z;
+		// Now search for cell in partition lists, starting at second partition (first proper one)
+		int id = 0;
+		for (PartitionData *pd = partitions_.second(); pd != NULL; pd = pd->next)
+		{
+			if (pd->contains(ix, iy, iz))
+			{
+				id = pd->id();
+				break;
+			}
+		}
+		return id;
+	}
+	else
+	{
+		ReturnValue rv;
+		xVariable_.setFromDouble(x);
+		yVariable_.setFromDouble(y);
+		zVariable_.setFromDouble(z);
+		partitionFunctionNode_.execute(rv);
+		return rv.asInteger();
+	}
 }
 
 // Return the grid structure
@@ -641,6 +676,7 @@ void PartitioningScheme::copy(PartitioningScheme &source)
 	// Copy basic data
 	name_ = source.name_;
 	description_ = source.description_;
+	gridSize_ = source.gridSize_;
 	
 	// Copy partition data
 	partitions_.clear();
@@ -649,6 +685,6 @@ void PartitioningScheme::copy(PartitioningScheme &source)
 	for (PartitionData *pd = source.partitions_.first(); pd != NULL; pd = pd->next)
 	{
 		newPartition = partitions_.add();
-		(*newPartition) = (*pd);
+		newPartition->copy(pd);
 	}
 }
