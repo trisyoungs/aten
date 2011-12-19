@@ -55,8 +55,6 @@ class PartitionData
 	public:
 	// Constructor
 	PartitionData();
-	// Copy constructor
-	PartitionData(const PartitionData&);
 	// List pointers
 	PartitionData *prev, *next;
 
@@ -84,6 +82,8 @@ class PartitionData
 	GridPrimitive gridPrimitive_;
 	
 	public:
+	// Copy data from specified PartitionData
+	void copy(PartitionData *source);
 	// Set id of partition
 	void setId(int id);
 	// Return id of partition
@@ -96,6 +96,8 @@ class PartitionData
 	void clear();
 	// Add cell to list
 	void addCell(int ix, int iy, int iz);
+	// Return whether specified cell is contained in the list
+	bool contains(int ix, int iy, int iz);
 	// Return random cell from list
 	int *randomCell();
 	// Calculate volume based on supplied volume element

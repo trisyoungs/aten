@@ -136,8 +136,12 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 	// Generate partitions from the new grid data
 	scheme.createPartitionsFromGrid();
 
-	// Copy to DIsorder builder, if required...
-	if (copyToBuilder) aten.addPartitioningScheme(scheme);
+	// Copy to Disorder builder, if required...
+	if (copyToBuilder)
+	{
+		aten.addPartitioningScheme(scheme);
+		msg.print("Copied scheme to disorder builder.\n");
+	}
 	
 	return TRUE;
 }

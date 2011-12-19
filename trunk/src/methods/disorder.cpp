@@ -71,6 +71,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		if (m->componentInsertionPolicy() == Model::NoPolicy) continue;
 		// Check that we can get the requested partition
 		int id = m->componentPartition();
+
 		if ((id < 0) || (id >= scheme->nPartitions()))
 		{
 			msg.print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.\n", m->name(), id+1, scheme->name());
@@ -188,7 +189,9 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 		pd->calculateVolume(elementVolume);
 		pd->resetReducedMass();
 	}
+	
 	// The target model may contain atoms already, so this must be subtracted from the relevant partitions
+	msg.print("Determining current partition densities...\n");
 	for (i = targetModel_->atoms(); i != NULL; i = i->next)
 	{
 		r = targetModel_->cell()->fold(i->r());

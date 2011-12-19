@@ -81,7 +81,7 @@ MonteCarlo::MonteCarlo()
 	disorderDeltaDistance_ = 0.3;
 	disorderDeltaAngle_ = 5.0;
 	disorderMaxCycles_ = 10000;
-	disorderRecoveryMaxCycles_ = 100;
+	disorderRecoveryMaxCycles_ = 30;
 	disorderRecoveryMaxTweaks_ = 10;
 	disorderRecoveryThreshold_ = 0.90;
 }
