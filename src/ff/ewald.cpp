@@ -194,6 +194,11 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 	cross_ab = rcell.columnAsVec3(0) * rcell.columnAsVec3(1);
 	cross_bc = rcell.columnAsVec3(1) * rcell.columnAsVec3(2);
 	cross_ca = rcell.columnAsVec3(2) * rcell.columnAsVec3(0);
+	printf("CVolume = %f\n", fourier.cell->volume());
+	printf("CrossAB "); cross_ab.print();
+	printf("CrossBC "); cross_bc.print();
+	printf("CrossCA "); cross_ca.print();
+	printf("RVolume = %f, mags = %f %f %f\n", rvolume, cross_ab.magnitude(), cross_bc.magnitude(), cross_ca.magnitude());
 	perpl.set(rvolume / cross_ab.magnitude(), rvolume / cross_bc.magnitude(), rvolume / cross_ca.magnitude());
 	perpl.x *= fourier.kVec.x;
 	perpl.y *= fourier.kVec.y;
@@ -203,7 +208,6 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 	cutoffsq *= cutoffsq;
 	alphasq = alpha * alpha;
 	kmax = fourier.kMax;
-// 	printf("Cutoffsq = %f  (%f)\n",cutoffsq,sqrt(cutoffsq));
 
 	for (kx=-fourier.kVec.x; kx<=fourier.kVec.x; kx++)
 	for (ky=-fourier.kVec.y; ky<=fourier.kVec.y; ky++)

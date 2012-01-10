@@ -92,7 +92,8 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("Error: Encoder excutable doesn't appear to exist ('%s').\n", prefs.encoderExe());
 		return FALSE;
 	}
-	
+	else msg.print(Messenger::Verbose, "Found encoder executable ('%s').\n", prefs.encoderExe());
+
 	// Get arguments...
 	int width = c->hasArg(1) ? c->argi(1) : gui.mainCanvas()->width();
 	if (width == -1) width = gui.mainCanvas()->width();
@@ -119,7 +120,8 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		runid = AtenMath::randomimax();
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, 0);
 	} while (fileExists(basename));
-	
+	msg.print("First temporary basename for movie images is '%s'.\n", basename.get());
+
 	// Save all frame images
 	QPixmap pixmap;
 	QImage image;
@@ -190,7 +192,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		encoderArgs.replace("OUTPUT", filename.get());
 		encoderArgs.replace("FILES", basename.get());
 		encoderArgs.replace("FPS", itoa(fps));
-		msg.print("Command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
+		msg.print("Post-process command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
 		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
 		{
 			msg.print("Error: Failed to run encoder post-processing command.\n");
