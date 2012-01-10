@@ -164,8 +164,11 @@ void removeComments(char *s)
 // Return whether string consists of empty whitespace characters only
 bool isEmpty(const char *s)
 {
+	if (s == NULL) return TRUE;
 	for (const char *c = s; *c != '\0'; ++c)
 	{
+		printf("%p\n", c);
+		printf("%c\n", *c);
 		switch (*c)
 		{
 			case (' '):
