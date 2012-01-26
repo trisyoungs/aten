@@ -424,9 +424,9 @@ void GridPrimitive::createSurfaceMarchingCubes()
 				if (source_->withinPrimaryCutoff(vertex[5])) cubetype += 32;
 				if (source_->withinPrimaryCutoff(vertex[6])) cubetype += 64;
 				if (source_->withinPrimaryCutoff(vertex[7])) cubetype += 128;
-				if ((cubetype == 255) && fillVolume)
+				if (cubetype == 255)
 				{
-					primaryPrimitive_.plotCube(1.0, 1, ii, jj, kk);
+					if (fillVolume) primaryPrimitive_.plotCube(1.0, 1, ii, jj, kk);
 				}
 				else if (cubetype != 0)
 				{

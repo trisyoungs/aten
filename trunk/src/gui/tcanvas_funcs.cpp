@@ -380,6 +380,7 @@ void TCanvas::paintEvent(QPaintEvent *event)
 	painter.setBrush(nobrush);
 	painter.setPen(Qt::SolidLine);
 	painter.setPen(pen);
+	//printf("CurrentBox =  %i %i %i %i\n", currentBox.x(), currentBox.y(), currentBox.width(), currentBox.height());
 
 	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
 	if (prefs.frameWholeView())
