@@ -100,9 +100,9 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int height = c->hasArg(2) ? c->argi(2) : gui.mainCanvas()->height();
 	if (height == -1) height = gui.mainCanvas()->height();
 	int quality = c->hasArg(3) ? c->argi(3) : -1;
-	int firstframe = c->hasArg(4) ? c->argi(4)-1 : 0;
+	int firstframe = c->hasArg(4) ? c->argi(4)-1 : 1;
 	int lastframe = c->hasArg(5) ? c->argi(5)-1 : obj.m->nTrajectoryFrames()-1;
-	int frameskip = c->hasArg(6) ? c->argi(6) : 1;
+	int frameskip = c->hasArg(6) ? c->argi(6) : 0;
 	int fps = c->hasArg(7) ? c->argi(7) : 25;
 
 	// Set offscreen rendering and save some current view preferences
@@ -132,7 +132,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 
 	int progid = progress.initialise("Saving movie frames...", lastframe-firstframe, FALSE);
 	bool canceled = FALSE;
-	for (int n = firstframe; n <= lastframe; n += frameskip)
+	for (int n = firstframe; n <= lastframe; n += (1+frameskip))
 	{
 		obj.m->seekTrajectoryFrame(n, TRUE);
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
@@ -210,7 +210,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 
 	// Cleanup
 	bool pid = progress.initialise("Cleaning up...", lastframe-firstframe, FALSE);
-	for (int n = firstframe; n <= lastframe; n += frameskip)
+	for (int n = firstframe; n <= lastframe; n += (1+frameskip))
 	{
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
 		QFile::remove(basename.get());

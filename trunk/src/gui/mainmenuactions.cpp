@@ -792,8 +792,8 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}
-	int firstframe = ui.asInteger("firstframe") - 1;
-	int lastframe = ui.asInteger("lastframe") - 1;
+	int firstframe = ui.asInteger("firstframe");
+	int lastframe = ui.asInteger("lastframe");
 	int frameskip = ui.asInteger("frameskip");
 	int fps = ui.asInteger("fps");
 	
