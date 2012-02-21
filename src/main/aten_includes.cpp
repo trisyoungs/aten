@@ -37,16 +37,19 @@ void Aten::openIncludes()
 	QStringList paths;
 	if (!aten.dataDir_.isEmpty())
 	{
-		msg.print(Messenger::Verbose, "$ATENDATA points to '%s'.\n", dataDir_.get());
+		msg.print(Messenger::Verbose, "Aten::openIncludes() - $ATENDATA points to '%s'.\n", dataDir_.get());
 		paths << dataDir_.get();
 	}
-	else msg.print(Messenger::Verbose, "$ATENDATA has not been set. Default locations will be searched...\n");
-	// Default locations
-	paths << "/usr/share/aten";
-	paths << "/usr/local/share/aten";
-	paths << "../share/aten";
-	paths << gui.application()->applicationDirPath() + "/../share/aten";
-	paths << gui.application()->applicationDirPath() + "/../SharedSupport";
+	else
+	{
+		msg.print(Messenger::Verbose, "$ATENDATA has not been set. Default locations will be searched...\n");
+		// Default locations
+		paths << "/usr/share/aten";
+		paths << "/usr/local/share/aten";
+		paths << "../share/aten";
+		paths << gui.application()->applicationDirPath() + "/../share/aten";
+		paths << gui.application()->applicationDirPath() + "/../SharedSupport";
+	}
 
 	for (int i=0; i < paths.size(); i++)
 	{
