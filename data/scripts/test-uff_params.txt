@@ -3,10 +3,10 @@
 printf("This script tests UFF type assignment and parameter generation against data taken from\nthe UFF implementation in MCCCS Towhee.\n\n");
 
 # Load forcefield and switch to Kelvin for units of energy
-loadff("uff.ff");
-aten.prefs.energyunit = "K";
+loadFF("uff.ff");
+aten.prefs.energyUnit = "K";
 int n;
-ffbound ffb;
+FFBound ffb;
 int errors = 0;
 double tol = 0.2;	# Percentage tolerance
 
@@ -15,7 +15,7 @@ int testbond(double tol, int i, int j, string si, string sj, double d1, double d
 {
 	int n, result = 0;
 	double diff[6], data[6] = { d1, d2, d3, d4, d5, d6 };
-	ffbound ffb = generatebond(i,j);
+	FFBound ffb = generateBond(i,j);
 	if (ffb)
 	{
 		for (n=1; n<=6; ++n) diff[n] =  ffb.data[n] - data[n];
@@ -38,7 +38,7 @@ int testangle(double tol, int i, int j, int k, string si, string sj, string sk, 
 {
 	int n, result = 0;
 	double diff[6], data[6] = { d1, d2, d3, d4, d5, d6 };
-	ffbound ffb = generateangle(i,j,k);
+	FFBound ffb = generateAngle(i,j,k);
 	if (ffb)
 	{
 		for (n=1; n<=6; ++n) diff[n] =  ffb.data[n] - data[n];
@@ -61,7 +61,7 @@ int testtorsion(double tol, int i, int j, int k, int l, string si, string sj, st
 {
 	int n, result = 0;
 	double diff[6], data[6] = { d1, d2, d3, d4, d5, d6 };
-	ffbound ffb = generatetorsion(i,j,k,l);
+	FFBound ffb = generateTorsion(i,j,k,l);
 	if (ffb)
 	{
 		for (n=1; n<=6; ++n) diff[n] =  ffb.data[n] - data[n];
@@ -100,7 +100,7 @@ int testvdw(double tol, int id, string si, double d1, double d2, double d3, doub
 {
 	int n, result = 0;
 	double diff[6], data[6] = { d1, d2, d3, d4, d5, d6 };
-	ffatom ffa = generatevdw(id);
+	ffatom ffa = generateVdw(id);
 	if (ffa)
 	{
 		for (n=1; n<=6; ++n) diff[n] =  ffa.data[n] - data[n];
@@ -124,8 +124,8 @@ printf("\n=================================\n");
 printf("Test 1) Water\n");
 printf("=================================\n");
 string water_types[3] = { "O_3", "H_", "H_" };
-loadmodel("data/test/water.xyz");
-typemodel();
+loadModel("data/test/water.xyz");
+typeModel();
 # Check assigned atom types
 for (n=1; n<=aten.model.natoms(); ++n) errors += testtype(n, water_types[n]);
 # Create and check intramolecular terms
@@ -139,10 +139,10 @@ printf("\n=================================\n");
 printf("Test 2) Methane\n");
 printf("=================================\n");
 string methane_types[5] = { "C_3", "H_", "H_", "H_", "H_" };
-newmodel("methane");
-newatom(C,0,0,0);
-addhydrogen();
-typemodel();
+newModel("methane");
+newAtom(C,0,0,0);
+addHydrogen();
+typeModel();
 # Check assigned atom types
 for (n=1; n<=aten.model.natoms(); ++n) errors += testtype(n, methane_types[n]);
 # Create and check intramolecular terms
@@ -156,9 +156,9 @@ printf("\n=================================\n");
 printf("Test 3) Benzene\n");
 printf("=================================\n");
 string benzene_types[12] = { "C_R", "H_", "C_R", "H_", "C_R", "H_", "C_R", "H_", "C_R", "H_", "C_R", "H_" };
-loadscript("data/scripts/benzene.txt", "benzene");
-runscript("benzene");
-typemodel();
+loadScript("data/scripts/benzene.txt", "benzene");
+runScript("benzene");
+typeModel();
 # Check assigned atom types
 for (n=1; n<=aten.model.natoms(); ++n) errors += testtype(n, benzene_types[n]);
 # Create and check intramolecular terms (N.B. fourth torsion parameter 's' is opposite sign since Towhee uses (1-cos) term in equation)
