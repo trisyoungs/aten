@@ -254,6 +254,7 @@ void DisorderWizard::pageChanged(int id)
 			break;
 		// Step 5 / 5 - Select component populations and partition assignments
 		case (5):
+			refreshing_ = TRUE;
 			ui.EditComponentsTree->clear();
 			ui.EditComponentsTree->setColumnCount(2);
 			componentModelItems_.clear();
@@ -289,6 +290,7 @@ void DisorderWizard::pageChanged(int id)
 				text.sprintf("%i %s", n+1, partitioningScheme_->partitionName(n));
 				ui.ComponentTargetPartitionCombo->addItem(text.get());
 			}
+			refreshing_ = FALSE;
 			updateComponentControls();
 			break;
 	}

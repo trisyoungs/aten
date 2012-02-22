@@ -58,8 +58,9 @@ int globalDeclarations;
 %left EQ NEQ
 %left '<' LEQ '>' GEQ
 %left '+' '-'
-%left '*' '/' '%' '^'
+%left '*' '/' '%'
 %right UPLUS UMINUS '!'
+%left '^'
 %left PLUSPLUS MINUSMINUS
  
 %type <node> constant expression expressionlist variable statement flowstatement statementlist block blockment assignment
