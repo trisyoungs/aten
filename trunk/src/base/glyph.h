@@ -97,7 +97,7 @@ class Glyph
 	// Operator =
 	void operator=(Glyph &source);
 	// Glyph style
-	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, TubeArrowGlyph, VectorGlyph, nGlyphTypes };
+	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, TubeArrowGlyph, TubeVectorGlyph, VectorGlyph, nGlyphTypes };
 	static const char *glyphType(GlyphType gt);
 	static const char *glyphTypeName(GlyphType gt);
 	static GlyphType glyphType(const char *name, bool reportError = 0);

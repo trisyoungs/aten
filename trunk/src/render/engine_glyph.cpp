@@ -264,12 +264,33 @@ void RenderEngine::renderGlyphs(Model *source)
 				A.applyScaling(2.0,2.0,arrowHeadLength/arrowBodyLength);
 				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
 				break;
-			// Vector - tail = data[0], head = data[1]
+			// Tube vector - centre = data[0], vector = data[1]
+			case (Glyph::TubeVectorGlyph):
+				r[1] = g->data(1)->vector();
+				r[0] -= r[1]*0.5;
+				g->data(0)->copyColour(colour[0]);
+				// Draw cylinder body and arrowhead
+				A.setIdentity();
+				A.applyTranslation(r[0]);
+				rij = r[1].magnitude();
+				phi = DEGRAD * acos(r[1].z/rij);
+				// Special case where the bond is exactly in the XY plane.
+				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
+				else A.applyRotationAxis(-r[1].y, r[1].x, 0.0, phi, TRUE);
+				// Draw cylinder
+				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cylinders_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				// Move to endpoint
+				A.applyTranslationZ(1.0);
+				A.applyScaling(2.0,2.0,arrowHeadLength/arrowBodyLength);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				break;
+			// Vector - center = data[0], vector = data[1]
 			case (Glyph::VectorGlyph):
 				r[1] = g->data(1)->vector();
 				r[0] -= r[1]*0.5;
 				g->data(0)->copyColour(colour[0]);
-				// Draw simple line from tail to head points
+				// Draw simple line from tail to head points, since we have adjusted along half the vector above
 				glyphLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0][0], colour[0][1], colour[0][2], colour[0][3], FALSE);
 				glyphLines_.defineVertex(r[0].x+r[1].x, r[0].y+r[1].y, r[0].z+r[1].z, 0.0, 0.0, 1.0, colour[0][0], colour[0][1], colour[0][2], colour[0][3], FALSE);
 				// Draw cylinder arrowhead in wireframe

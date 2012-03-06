@@ -26,9 +26,9 @@
 #include "model/model.h"
 
 // Glyph styles
-const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "cube", "ellipsoid", "ellipsoidxyz", "line", "quad", "svector", "sphere", "tetrahedron", "text", "text3d", "triangle", "tubearrow", "vector" };
-const char *GlyphTypeNames[Glyph::nGlyphTypes] = { "Arrow", "Cube", "Ellipsoid", "EllipsoidXYZ", "Line", "Quad", "SenseVector", "Sphere", "Tetrahedron", "Text", "Text3D", "Triangle", "Tubearrow", "Vector" };
-int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 4, 2, 4, 3, 2, 4, 1, 1, 3, 2, 2 };
+const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "cube", "ellipsoid", "ellipsoidxyz", "line", "quad", "svector", "sphere", "tetrahedron", "text", "text3d", "triangle", "tubearrow", "tubevector", "vector" };
+const char *GlyphTypeNames[Glyph::nGlyphTypes] = { "Arrow", "Cube", "Ellipsoid", "EllipsoidXYZ", "Line", "Quad", "SenseVector", "Sphere", "Tetrahedron", "Text", "Text3D", "Triangle", "TubeArrow", "TubeVector", "Vector" };
+int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 4, 2, 4, 3, 2, 4, 1, 1, 3, 2, 2, 2 };
 const char *Glyph::glyphType(Glyph::GlyphType gt)
 {
 	return GlyphTypeKeywords[gt];
@@ -273,6 +273,7 @@ void Glyph::setType(GlyphType gt)
 	{
 		case (Glyph::ArrowGlyph):
 		case (Glyph::TubeArrowGlyph):
+		case (Glyph::TubeVectorGlyph):
 		case (Glyph::VectorGlyph):
 			data_[1]->setVector(0.0,1.0,0.0);
 			break;
