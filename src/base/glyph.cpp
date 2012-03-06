@@ -266,24 +266,29 @@ Glyph::GlyphType Glyph::type() const
 // Set style of glyph (and set data vectors to default values)
 void Glyph::setType(GlyphType gt)
 {
-	// Create list of GlyphData
-	data_.createEmpty( Glyph::nGlyphData(gt) );
-	// Add default values, provided they have not already been set...
-	switch (gt)
+	// Create list of GlyphData and add default values, unless number of data match in new type match current type
+	if ((type_ == Glyph::nGlyphTypes) || (Glyph::nGlyphData(gt) != Glyph::nGlyphData(type_)))
 	{
-		case (Glyph::ArrowGlyph):
-		case (Glyph::TubeArrowGlyph):
-		case (Glyph::TubeVectorGlyph):
-		case (Glyph::VectorGlyph):
-			data_[1]->setVector(0.0,1.0,0.0);
-			break;
-		case (Glyph::SphereGlyph):
-		case (Glyph::CubeGlyph):
-			data_[1]->setVector(1.0,1.0,1.0);
-			break;
-		default:
-			break;
+		data_.createEmpty( Glyph::nGlyphData(gt) );
+		// Set default values for new type
+		switch (gt)
+		{
+			case (Glyph::ArrowGlyph):
+			case (Glyph::TubeArrowGlyph):
+			case (Glyph::TubeVectorGlyph):
+			case (Glyph::VectorGlyph):
+				data_[1]->setVector(0.0,1.0,0.0);
+				break;
+			case (Glyph::SphereGlyph):
+			case (Glyph::CubeGlyph):
+				data_[1]->setVector(1.0,1.0,1.0);
+				break;
+			default:
+				break;
+		}
 	}
+	
+	// Set new glyph type
 	type_ = gt;
 }
 

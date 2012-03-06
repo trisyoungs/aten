@@ -1,13 +1,13 @@
 # Simple script to calculate the dipole moment of the current model and add it as a vector glyph.
 # This only works for neutral, non-periodic systems.
 
-vector dip, cog;
+Vector dip, cog;
 double mag;
-atom i;
-model m = aten.frame;
+Atom i;
+Model m = aten.frame;
 
 # Check that we have enough atoms to do the calculation
-if (m.natoms < 2) error("Less than two atoms in the model - no dipole to calculate!");
+if (m.nAtoms < 2) error("Less than two atoms in the model - no dipole to calculate!");
 
 dip = 0.0;
 cog = 0.0;
@@ -34,12 +34,13 @@ for (i = m.atoms; i; ++i)
 #	  = 4.80321
 dip *= 4.80321;
 mag = dip.mag;
-cog /= m.natoms;
+cog /= m.nAtoms;
 
 # Add glyph to model
-glyph g = newglyph("vector");
-g.data[1].vector = cog;
+Glyph g = newGlyph("tubevector");
+g.data[1].vector = { cog.x, cog.y, cog.z };
 g.data[2].vector = dip;
+g.solid = TRUE;
 
 # Print data
 printf("Centre-of-geometry is at x=%f, y=%f, z=%f\n", cog.x, cog.y, cog.z);
