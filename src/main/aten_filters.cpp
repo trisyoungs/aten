@@ -38,12 +38,12 @@ void Aten::openFilters()
 	QStringList paths;
 	if (!aten.dataDir_.isEmpty())
 	{
-		msg.print(Messenger::Verbose, "Aten::openFilters() - $ATENDATA points to '%s'.\n", dataDir_.get());
+		msg.print(Messenger::Verbose, "Aten::openFilters() - data directory is '%s'.\n", dataDir_.get());
 		paths << dataDir_.get();
 	}
 	else
 	{
-		msg.print(Messenger::Verbose, "$ATENDATA has not been set. Default locations will be searched...\n");
+		msg.print(Messenger::Verbose, "Data directory has not yet been set. Default locations will be searched...\n");
 		// Default locations
 		paths << "/usr/share/aten";
 		paths << "/usr/local/share/aten";
