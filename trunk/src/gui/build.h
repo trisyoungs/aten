@@ -47,8 +47,9 @@ class BuildWidget : public QDockWidget
 	void on_ElementOButton_clicked(bool checked);
 	void on_ElementCustomButton_clicked(bool checked);
 	void on_ElementPickButton_clicked(bool checked);
-	void on_DrawAddHModelButton_clicked(bool checked);
-	void on_DrawTransmuteSelectionButton_clicked(bool checked);
+	void on_DrawGrowMenuButton_menuItemClicked(int menuItemId);
+	void on_DrawTransmuteMenuButton_menuItemClicked(int menuItemId);
+	void on_DrawAddHMenuButton_menuItemClicked(int menuItemId);
 	// Edit Tab - Bond
 	void on_DrawRebondButton_clicked(bool checked);
 	void on_DrawClearBondingButton_clicked(bool checked);
