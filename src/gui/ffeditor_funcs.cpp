@@ -129,7 +129,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setMinimumSize(64,24);
 		combo->addItems(slist);
 		combo->setCurrentIndex(ffa->vdwForm());
-		combo->setPointer(ffa);
+		combo->data.set(VTypes::ForcefieldAtomData, ffa);
 		ui.FFEditorAtomsTable->setCellWidget(count,AtomColumn::Form,combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(VdwFunctionChanged(int)));
 		for (int n=0; n<MAXFFPARAMDATA; n++)
@@ -160,7 +160,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
 		combo->setCurrentIndex(ffb->bondForm());
-		combo->setPointer(ffb);
+		combo->data.set(VTypes::ForcefieldBoundData, ffb);
 		ui.FFEditorBondsTable->setCellWidget(count, BondColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(BondFunctionChanged(int)));
 		for (int n=0; n<MAXFFPARAMDATA; n++)
@@ -193,7 +193,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
 		combo->setCurrentIndex(ffb->angleForm());
-		combo->setPointer(ffb);
+		combo->data.set(VTypes::ForcefieldBoundData, ffb);
 		ui.FFEditorAnglesTable->setCellWidget(count, AngleColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(AngleFunctionChanged(int)));
 		for (int n=0; n<MAXFFPARAMDATA; n++)
@@ -228,7 +228,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
 		combo->setCurrentIndex(ffb->torsionForm());
-		combo->setPointer(ffb);
+		combo->data.set(VTypes::ForcefieldBoundData, ffb);
 		ui.FFEditorTorsionsTable->setCellWidget(count, TorsionColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(TorsionFunctionChanged(int)));
 		item = new QTableWidgetItem(ffb->elecScale());
@@ -267,7 +267,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
 		combo->setCurrentIndex(ffb->torsionForm());
-		combo->setPointer(ffb);
+		combo->data.set(VTypes::ForcefieldBoundData, ffb);
 		ui.FFEditorImpropersTable->setCellWidget(count, TorsionColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(TorsionFunctionChanged(int)));
 		item = new QTableWidgetItem(ffb->elecScale());
@@ -304,7 +304,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
 		combo->setCurrentIndex(ffb->bondForm());
-		combo->setPointer(ffb);
+		combo->data.set(VTypes::ForcefieldBoundData, ffb);
 		ui.FFEditorUreyBradleysTable->setCellWidget(count, AngleColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(BondFunctionChanged(int)));
 		for (int n=0; n<MAXFFPARAMDATA; n++)
@@ -331,7 +331,7 @@ void AtenForcefieldEditor::boundFunctionChanged(TComboBox *sender, int i, Forcef
 		return;
 	}
 	// Get ForcefieldBound pointer and set data
-	ForcefieldBound *ffb = (ForcefieldBound*) sender->pointer();
+	ForcefieldBound *ffb = (ForcefieldBound*) sender->data.asPointer(VTypes::ForcefieldBoundData);
 	switch (bt)
 	{
 		case (ForcefieldBound::BondInteraction):
@@ -457,7 +457,7 @@ void AtenForcefieldEditor::VdwFunctionChanged(int index)
 		return;
 	}
 	// Get ForcefieldAtom pointer and set data
-	ForcefieldAtom *ffa = (ForcefieldAtom*) combo->pointer();
+	ForcefieldAtom *ffa = (ForcefieldAtom*) combo->data.asPointer(VTypes::ForcefieldAtomData);
 	ffa->setVdwForm( (VdwFunctions::VdwFunction) index);
 	updateVdwLabels(ffa);
 }

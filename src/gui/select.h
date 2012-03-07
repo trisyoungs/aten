@@ -36,11 +36,13 @@ class SelectWidget : public QDockWidget
 	public:
 	void refresh();
 	void showWidget();
+	void setHistories(QStringList select, QStringList forlist, QStringList netalist);
 	private slots:
 	void on_SelectAllButton_clicked(bool on);
 	void on_SelectNoneButton_clicked(bool on);
 	void on_SelectionExpandButton_clicked(bool on);
 	void on_SelectionInvertButton_clicked(bool on);
+	void on_SelectCombo_currentIndexChanged(int n);
 	void on_SelectButton_clicked(bool on);
 	void on_DeselectButton_clicked(bool on);
 	void on_TypeSelectElementButton_clicked(bool on);
@@ -53,6 +55,8 @@ class SelectWidget : public QDockWidget
 	// Local variables
 	*/
 	private:
+	// Whether window is refreshing
+	bool refreshing_;
 
 	/*
 	// Dialog

@@ -24,6 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/command.h"
 #include "gui/toolbox.h"
+#include "gui/select.h"
 #include "main/aten.h"
 #include <QtCore/QSettings>
 
@@ -33,18 +34,10 @@ void AtenForm::loadSettings()
 	QString key;
 	QFileInfo fi1, fi2;
 	Dnchar filename;
+	QStringList commandHistory, selectHistory, selectForHistory, selectNetaHistory;
 	Program *prog, *loadedscript;
 	int n;
-	
-	// Recent file entries
-	for (n=0; n<MAXRECENTFILES; n++)
-	{
-		// Construct settings value to search for
-		key = "RecentFile";
-		key += itoa(n);
-		if (settings_.contains(key)) addRecent(qPrintable(settings_.value(key).toString()));
-	}
-	
+
 	// Toolbar visibility / position
 	if (prefs.loadQtSettings())
 	{
@@ -54,93 +47,161 @@ void AtenForm::loadSettings()
 		if (settings_.contains("MainWinPosition")) move(settings_.value("mainwin_pos", QPoint(200, 200)).toPoint());
 	}
 
-	// Command toolbar history
-	QStringList history;
+	// Check for old command history information, read it, and then remove it
 	n = 0;
 	do
 	{
 		key = "CommandHistory";
 		key += itoa(n);
-		if (settings_.contains(key)) history << settings_.value(key).toString();
-		++n;
-	} while (settings_.contains(key));
-	gui.commandWidget->setCommandList(history);
-	
-	// Scripts
-	n = 0;
-	do
-	{
-		key = "Script";
-		key += itoa(n);
 		if (settings_.contains(key))
 		{
-			filename = qPrintable(settings_.value(key).toString());
-			// Has this script already been loaded?
-			// Use a couple of QFileInfo's to find out...
-			fi1.setFile(filename.get());
-			for (loadedscript = aten.scripts(); loadedscript != NULL; loadedscript = loadedscript->next)
-			{
-				fi2.setFile(loadedscript->filename());
-				if (fi1.canonicalFilePath() == fi2.canonicalFilePath()) break;
-			}
-			if (loadedscript != NULL)
-			{
-				printf("Script '%s' appears to have been loaded already. Will not load it a second time, and removed duplicate entry from settings.\n", filename.get());
-				settings_.remove(key);
-			}
-			else
-			{
-				prog = aten.addScript();
-				if (prog->generateFromFile(filename.get(), filename.get())) msg.print("Successfully loaded script file '%s'.\n", filename.get());
-				else
-				{
-					aten.removeScript(prog);
-					msg.print("Failed to load script file '%s'.\n", filename.get());
-					settings_.remove(key);
-				}
-			}
+			commandHistory << settings_.value(key).toString();
+			settings_.remove(key);
 		}
 		++n;
 	} while (settings_.contains(key));
+	settings_.sync();
+
+	// Probe user history file...
+	filename.sprintf("%s%c%s%chistory.txt", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
+	msg.print("Looking for program history file '%s'...\n", filename.get());
+	if (fileExists(filename))
+	{
+		msg.print("Program preferences file found in '%s'\n", filename.get());
+		LineParser parser;
+		Dnchar arg, data;
+		if (!parser.openInput(filename))
+		{
+			msg.print("Failed to open program history file.\n");
+			return;
+		}
+		while (!parser.eofOrBlank())
+		{
+			// Get first part of line - the identifier for the information which follows it
+			if (parser.readNextLine(LineParser::SkipBlanks) == 1) break;
+			if (!parser.getArgDelim(LineParser::SkipBlanks, &arg)) break;
+			// Get remainder of line, which is the data to store
+			if (!parser.getRestDelim(&data)) break;
+			// Determine history type
+			Prefs::HistoryType ht = Prefs::historyType(arg, TRUE);
+			if (ht == Prefs::nHistoryTypes) continue;
+			switch (ht)
+			{
+				case (Prefs::CommandHistory):
+					commandHistory << data.get();
+					break;
+				case (Prefs::RecentFileHistory):
+					addRecent(data);
+					break;
+				case (Prefs::ScriptHistory):
+					// Has this script already been loaded?
+					// Use a couple of QFileInfo's to find out...
+					fi1.setFile(data.get());
+					for (loadedscript = aten.scripts(); loadedscript != NULL; loadedscript = loadedscript->next)
+					{
+						fi2.setFile(loadedscript->filename());
+						if (fi1.canonicalFilePath() == fi2.canonicalFilePath()) break;
+					}
+					if (loadedscript != NULL)
+					{
+						printf("Script '%s' appears to have been loaded already - will not load it a second time.\n", data.get());
+					}
+					else
+					{
+						prog = aten.addScript();
+						if (prog->generateFromFile(data, data)) msg.print("Successfully loaded script file '%s'.\n", data.get());
+						else
+						{
+							aten.removeScript(prog);
+							msg.print("Failed to load script file '%s'.\n", data.get());
+						}
+					}
+					break;
+				case (Prefs::SelectForHistory):
+					selectForHistory << data.get();
+					break;
+				case (Prefs::SelectHistory):
+					selectHistory << data.get();
+					break;
+				case (Prefs::SelectNetaHistory):
+					selectNetaHistory << data.get();
+					break;
+			}
+		}
+		parser.closeFiles();
+	}
+	else msg.print("Program history file not found.\n");
+	
+	// Update GUI controls
+	gui.commandWidget->setCommandList(commandHistory);
+	gui.selectWidget->setHistories(selectHistory, selectForHistory, selectNetaHistory);
 }
 
 // Save Qt settings
 void AtenForm::saveSettings()
 {
-	QString key;
-	int n;
+	// Open new file for writing...
+	Dnchar filename;
+	filename.sprintf("%s%c%s%chistory.txt", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
+	msg.print("Savung program history file '%s'...", filename.get());
+	LineParser historyFile;
+	historyFile.openOutput(filename, TRUE);
 	
-	// Save the recent file entries
-	for (n=0; n<MAXRECENTFILES; n++)
+	if (historyFile.isFileGoodForWriting())
 	{
-		// Create name tag
-		key = "RecentFile";
-		key += itoa(n);
-		if (actionRecentFile[n]->isVisible()) settings_.setValue(key,actionRecentFile[n]->data().toString());
-		else settings_.remove(key);
-	}
+		Dnchar line;
+		int n;
+		QStringList history;
+		
+		// Recent file entries
+		for (n=0; n<MAXRECENTFILES; n++)
+		{
+			// Check file entry contains data (is visible in the GUI)
+			if (!actionRecentFile[n]->isVisible()) continue;
+			line.sprintf("RecentFile  %s\n", qPrintable(actionRecentFile[n]->data().toString()));
+			historyFile.writeLine(line);
+		}
+		
+		// Scripts
+		for (Program *prog = aten.scripts(); prog != NULL; prog = prog->next)
+		{
+			line.sprintf("Script  %s\n", prog->filename());
+			historyFile.writeLine(line);
+		}
 
-	// Command toolbar history
-	QStringList history = gui.commandWidget->commandList();
-	for (n=0; n < history.count(); ++n)
-	{
-		key = "CommandHistory";
-		key += itoa(n);
-		settings_.setValue(key, history[n]);
+		// Command toolbar history
+		history = gui.commandWidget->commandList();
+		for (n=0; n < history.count(); ++n)
+		{
+			line.sprintf("Command  %s\n", qPrintable(history[n]));
+			historyFile.writeLine(line);
+		}
+		
+		// Select combo history
+		for (n=0; n < gui.selectWidget->ui.SelectCombo->count(); ++n)
+		{
+			line.sprintf("Select  %s\n", qPrintable(gui.selectWidget->ui.SelectCombo->itemText(n)));
+			historyFile.writeLine(line);
+		}
+		
+		// SelectFor combo history
+		for (n=0; n < gui.selectWidget->ui.SelectForCombo->count(); ++n)
+		{
+			line.sprintf("SelectFor  %s\n", qPrintable(gui.selectWidget->ui.SelectForCombo->itemText(n)));
+			historyFile.writeLine(line);
+		}
+		
+		// SelectNeta combo history
+		for (n=0; n < gui.selectWidget->ui.SelectNetaCombo->count(); ++n)
+		{
+			line.sprintf("SelectNeta  %s\n", qPrintable(gui.selectWidget->ui.SelectNetaCombo->itemText(n)));
+			historyFile.writeLine(line);
+		}
+		
 	}
 	
-	// Scripts
-	n = 0;
-	for (Program *prog = aten.scripts(); prog != NULL; prog = prog->next)
-	{
-		key = "Script";
-		key += itoa(n);
-		settings_.setValue(key, prog->filename());
-		++n;
-	}
-	
-	// Synchronise (i.e. save) changes to settings
-	settings_.sync();
+	historyFile.closeFiles();
+	msg.print("Done.\n");
 }
 
 

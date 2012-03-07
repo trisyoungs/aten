@@ -100,12 +100,9 @@ void Model::selectAtom(Atom *i, bool markonly)
 // Select Atom by ID
 void Model::selectAtom(int id, bool markonly)
 {
-	if ((id < 0) || (id >= atoms_.nItems()))
-	{
-		printf("Internal Error: Invalid atom id %i requested for %s (nAtoms = %i)\n", id, markonly ? "marking" : "selection", atoms_.nItems());
-	}
 	Atom *i = atom(id);
-	if (i != NULL) selectAtom(i, markonly);
+	if (i == NULL) msg.print("Can't %s atom %i\n", markonly ? "mark" : "select", id+1);
+	else selectAtom(i, markonly);
 }
 
 // Deselect Atom
@@ -140,12 +137,9 @@ void Model::deselectAtom(Atom *i, bool markonly)
 // Deselect Atom by ID
 void Model::deselectAtom(int id, bool markonly)
 {
-	if ((id < 0) || (id >= atoms_.nItems()))
-	{
-		printf("Internal Error: Invalid atom id %i requested for %s (nAtoms = %i)\n", id, markonly ? "unmarking" : "deselection", atoms_.nItems());
-	}
 	Atom *i = atom(id);
-	if (i != NULL) deselectAtom(i, markonly);
+	if (i == NULL) msg.print("Can't %s atom %i\n", markonly ? "unmark" : "deselect", id+1);
+	else deselectAtom(i, markonly);
 }
 
 // Toggle Selection State

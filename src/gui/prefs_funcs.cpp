@@ -901,7 +901,7 @@ void AtenPrefs::updateParameterTable()
 		combo = new TComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(combrules);
-		combo->setInteger(n);
+		combo->data.set(n);
 		combo->setCurrentIndex(VdwFunctions::VdwFunctions[row].combinationRules[n]);
 		ui.ParameterTable->setCellWidget(n, 1, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(ParameterRuleChanged(int)));
@@ -987,7 +987,7 @@ void AtenPrefs::ParameterRuleChanged(int id)
 		msg.exit("AtenPrefs::ParameterRuleChanged");
 		return;
 	}
-	VdwFunctions::VdwFunctions[row].combinationRules[combo->integer()] = (Combine::CombinationRule) id;
+	VdwFunctions::VdwFunctions[row].combinationRules[combo->data.asInteger()] = (Combine::CombinationRule) id;
 // 	printf("SET %i %i %i\n", row, combo->integer(), id);
 	msg.exit("AtenPrefs::ParameterRuleChanged");
 }
