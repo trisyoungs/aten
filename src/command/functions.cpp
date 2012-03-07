@@ -126,6 +126,7 @@ void Command::initPointers()
 	pointers_[RotY] = &Command::function_RotY;
 	pointers_[RotZ] = &Command::function_RotZ;
 	pointers_[SelectionAddHydrogen] = &Command::function_SelectionAddHydrogen;
+	pointers_[SelectionGrowAtom] = &Command::function_SelectionGrowAtom;
 	pointers_[SetAngle] = &Command::function_SetAngle;
 	pointers_[SetDistance] = &Command::function_SetDistance;
 	pointers_[SetTorsion] = &Command::function_SetTorsion;

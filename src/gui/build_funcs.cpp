@@ -41,14 +41,28 @@ BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 	elementGroup->addButton(ui.ElementNButton);
 	elementGroup->addButton(ui.ElementOButton);
 	elementGroup->addButton(ui.ElementCustomButton);
+	ui.ElementCButton->setChecked(TRUE);
 	
-	// Add items to submenus for Rebond and Clear buttons
+	// Add items to submenus for buttons that need it
+	// -- Grow Atom
+	ui.DrawGrowMenuButton->addMenuItem("Selection", 0);
+	// -- Transmute
+	ui.DrawTransmuteMenuButton->addMenuItem("Selection", 0);
+	// -- Add Hydrogen
+	ui.DrawAddHMenuButton->addMenuItem("Selection", 0);
+	ui.DrawAddHMenuButton->addMenuItem("Model", 1);
+	// -- Rebond
 	ui.DrawRebondMenuButton->addMenuItem("Model (no augment)", BuildWidget::ModelNoAugmentItem);
 	ui.DrawRebondMenuButton->addMenuItem("Selection", BuildWidget::SelectionItem);
 	ui.DrawRebondMenuButton->addMenuItem("Selection (no augment)", BuildWidget::SelectionNoAugmentItem);
 	ui.DrawRebondMenuButton->addMenuItem("Within Patterns", BuildWidget::PatternsItem);
 	ui.DrawRebondMenuButton->addMenuItem("Within Patterns (no augment)", BuildWidget::PatternsNoAugmentItem);
+	// -- Clear Bonding
 	ui.DrawClearBondingMenuButton->addMenuItem("Selection", 0);
+
+	// Add geometry types to combo box, and select 'tetrahedral'
+	for (int n = 0; n < Atom::nAtomGeometries; ++n) ui.DrawGrowGeometryCombo->addItem(Atom::atomGeometry( (Atom::AtomGeometry) n));
+	ui.DrawGrowGeometryCombo->setCurrentIndex(Atom::TetrahedralGeometry);
 	
 	// Private variables
 	customElement_ = 9;
@@ -106,16 +120,51 @@ void BuildWidget::on_ElementPickButton_clicked(bool checked)
 	}
 }
 
-void BuildWidget::on_DrawAddHModelButton_clicked(bool checked)
+void BuildWidget::on_DrawGrowMenuButton_menuItemClicked(int menuItemId)
 {
-	CommandNode::run(Command::AddHydrogen, "");
+	// Get atom geometry from combo box
+	Atom::AtomGeometry ag = (Atom::AtomGeometry) ui.DrawGrowGeometryCombo->currentIndex();
+	switch (menuItemId)
+	{
+		case (0):
+			CommandNode::run(Command::SelectionGrowAtom, "ic", gui.mainCanvas()->sketchElement(), Atom::atomGeometry(ag));
+			break;
+		default:
+			printf("BuildWidget - Unhandled menu item from DrawGrowMenuButton.\n");
+			break;
+	}
+	gui.update(GuiQt::CanvasTarget);
+}
+
+void BuildWidget::on_DrawTransmuteMenuButton_menuItemClicked(int menuItemId)
+{
+	switch (menuItemId)
+	{
+		case (0):
+		CommandNode::run(Command::Transmute, "i", gui.mainCanvas()->sketchElement());
+			break;
+		default:
+			printf("BuildWidget - Unhandled menu item from DrawTransmuteMenuButton.\n");
+			break;
+	}
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
-void BuildWidget::on_DrawTransmuteSelectionButton_clicked(bool checked)
+void BuildWidget::on_DrawAddHMenuButton_menuItemClicked(int menuItemId)
 {
-	CommandNode::run(Command::Transmute, "i", gui.mainCanvas()->sketchElement());
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	switch (menuItemId)
+	{
+		case (0):
+			CommandNode::run(Command::SelectionAddHydrogen, "");
+			break;
+		case (1):
+			CommandNode::run(Command::AddHydrogen, "");
+			break;
+		default:
+			printf("BuildWidget - Unhandled menu item from DrawAddHMenuButton.\n");
+			break;
+	}
+	gui.update(GuiQt::AllTarget);
 }
 
 /*

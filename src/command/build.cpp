@@ -405,6 +405,32 @@ bool Command::function_SelectionAddHydrogen(CommandNode *c, Bundle &obj, ReturnV
 	return TRUE;
 }
 
+// Grow atom on to all atoms in selection
+bool Command::function_SelectionGrowAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	
+	// Determine element (based on type of variable provided)
+	short int el = c->argz(0);
+
+	// Check geometry specification
+	Atom::AtomGeometry ag = Atom::TetrahedralGeometry;
+	if (c->hasArg(1)) ag = Atom::atomGeometry(c->argc(1), TRUE);
+	if (ag == Atom::nAtomGeometries) return FALSE;
+	double distance;
+	if (c->hasArg(2)) distance = c->argd(2);
+
+	obj.rs()->beginUndoState("Selection Grow Atom");
+	for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+	{
+		// Set distance if no general distance was provided
+		if (!c->hasArg(2)) distance = (elements().atomicRadius(ri->item) + elements().atomicRadius(el));
+		obj.rs()->growAtom(ri->item, el, distance, ag, TRUE);
+	}
+	obj.rs()->endUndoState();
+	return TRUE;
+}
+
 // Shift the current selection down ('shiftdown [n]')
 bool Command::function_ShiftDown(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
