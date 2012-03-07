@@ -44,31 +44,31 @@ class Prefs
 	// Mouse buttons
 	enum MouseButton { LeftButton, MiddleButton, RightButton, WheelButton, nMouseButtons };
 	static MouseButton mouseButton(const char *name, bool reportError = 0);
-	static const char *mouseButton(MouseButton);
+	static const char *mouseButton(MouseButton mb);
 	// Mouse Actions
 	enum MouseAction { NoAction, RotateAction, TranslateAction, InteractAction, ZoomAction, ZRotateAction, nMouseActions };
 	static MouseAction mouseAction(const char *name, bool reportError = 0);
-	static const char *mouseAction(MouseAction);
+	static const char *mouseAction(MouseAction ma);
 	// Modifier keys
 	enum ModifierKey { ShiftKey, CtrlKey, AltKey, nModifierKeys };
 	static ModifierKey modifierKey(const char *name, bool reportError = 0);
-	static const char *modifierKey(ModifierKey);
+	static const char *modifierKey(ModifierKey mk);
 	// Modifier actions
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
 	static KeyAction keyAction(const char *name, bool reportError = 0);
-	static const char *keyAction(KeyAction);
+	static const char *keyAction(KeyAction ka);
 	// Property/Object Colours
 	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, nObjectColours };
-	static const char *objectColour(ObjectColour);
-	static const char *objectColourName(ObjectColour);
+	static const char *objectColour(ObjectColour oc);
+	static const char *objectColourName(ObjectColour oc);
 	static ObjectColour objectColour(const char *name, bool reportError = 0);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, Kelvin, ElectronVolts, Hartree, nEnergyUnits };
-	static const char *energyUnit(EnergyUnit);
+	static const char *energyUnit(EnergyUnit eu);
 	static EnergyUnit energyUnit(const char *name, bool reportError = 0);
 	// Density calculation units
 	enum DensityUnit { GramsPerCm, AtomsPerAngstrom, nDensityUnits };
-	static const char *densityUnit(DensityUnit);
+	static const char *densityUnit(DensityUnit du);
 	static DensityUnit densityUnit(const char *name, bool reportError = 0);
 	// Atom colouring scheme
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, CustomScheme, nColouringSchemes };
@@ -76,8 +76,12 @@ class Prefs
 	static const char *colouringScheme(ColouringScheme cs);
 	// Drawing guide geometry
 	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
-	// Spotlight Components
+	// OpenGL colour components
 	enum ColourComponent { AmbientComponent, DiffuseComponent, SpecularComponent, nColourComponents };
+	// GUI history types
+	enum HistoryType { CommandHistory, RecentFileHistory, ScriptHistory, SelectForHistory, SelectHistory, SelectNetaHistory, nHistoryTypes };
+	static const char *historyType(HistoryType ht);
+	static HistoryType historyType(const char *name, bool reportError = 0);
 
 	public:
 	// Constructor

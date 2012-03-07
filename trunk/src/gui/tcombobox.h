@@ -1,6 +1,6 @@
 /*
-	*** TTableWidget Class
-	*** src/gui/ttablewidgetitem.h
+	*** TComboBox Class
+	*** src/gui/tcombobox.h
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -19,38 +19,22 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TTABLEWIDGETATOM_H
-#define ATEN_TTABLEWIDGETATOM_H
+#ifndef ATEN_TCOMBOBOX_H
+#define ATEN_TCOMBOBOX_H
 
 #include <QtGui/QComboBox>
+#include "parser/returnvalue.h"
 
 // Forward Declarations
-class Model;
-
 class TComboBox : public QComboBox
 {
 	public:
 	// Constructor
 	TComboBox(QWidget *parent);
 
-	/*
-	// Associated Data
-	*/
-	private:
-	// Pointer data
-	void *pointer_;
-	// Integer data
-	int integer_;
-
 	public:
-	// Set the pointer in the widget
-	void setPointer(void *ptr);
-	// Return the pointer in the widget
-	void *pointer();
-	// Set the integer value in the widget
-	void setInteger(int i);
-	// Return the integer value in the widget
-	int integer();
+	// Associated data
+	ReturnValue data;
 };
 
 #endif

@@ -31,6 +31,9 @@
 // Constructor
 SelectWidget::SelectWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
 {
+	// Private variables
+	refreshing_ = FALSE;
+
 	ui.setupUi(this);
 }
 
@@ -41,6 +44,18 @@ void SelectWidget::showWidget()
 	refresh();
 	// Make sure toolbutton is in correct state
 	gui.toolBoxWidget->ui.SelectButton->setChecked(TRUE);
+}
+
+void SelectWidget::setHistories(QStringList select, QStringList forlist, QStringList netalist)
+{
+	refreshing_ = TRUE;
+	ui.SelectCombo->addItems(select);
+	ui.SelectForCombo->addItems(forlist);
+	ui.SelectNetaCombo->addItems(netalist);
+	ui.SelectCombo->setCurrentIndex(-1);
+	ui.SelectForCombo->setCurrentIndex(-1);
+	ui.SelectNetaCombo->setCurrentIndex(-1);
+	refreshing_ = FALSE;
 }
 
 void SelectWidget::on_SelectAllButton_clicked(bool on)
@@ -69,13 +84,13 @@ void SelectWidget::on_SelectionInvertButton_clicked(bool on)
 
 void SelectWidget::on_SelectButton_clicked(bool on)
 {
-	CommandNode::run(Command::Select, "c", qPrintable(ui.SelectionCombo->currentText()));
+	CommandNode::run(Command::Select, "c", qPrintable(ui.SelectCombo->currentText()));
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
 }
 
 void SelectWidget::on_DeselectButton_clicked(bool on)
 {
-	CommandNode::run(Command::DeSelect, "c", qPrintable(ui.SelectionCombo->currentText()));
+	CommandNode::run(Command::DeSelect, "c", qPrintable(ui.SelectCombo->currentText()));
 	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
 }
 
@@ -86,6 +101,11 @@ void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
 	if (newel != -1) ui.TypeElementEdit->setText( elements().symbol(newel) );
 }
 
+void SelectWidget::on_SelectCombo_currentIndexChanged(int n)
+{
+	if (refreshing_) return;
+}
+
 void SelectWidget::on_SelectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
@@ -93,7 +113,7 @@ void SelectWidget::on_SelectTypeButton_clicked(bool on)
 	if (el == 0) msg.print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
 	else
 	{
-		CommandNode::run(Command::SelectType, "ic", el, qPrintable(ui.TypeNetaCombo->currentText()));
+		CommandNode::run(Command::SelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
 		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
 	}
 }
@@ -105,7 +125,7 @@ void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 	if (el == 0) msg.print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
 	else
 	{
-		CommandNode::run(Command::DeSelectType, "ic", el, qPrintable(ui.TypeNetaCombo->currentText()));
+		CommandNode::run(Command::DeSelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
 		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
 	}
 }

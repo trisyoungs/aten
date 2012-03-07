@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>310</height>
+    <height>313</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +18,7 @@
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>310</height>
+    <height>313</height>
    </size>
   </property>
   <property name="font">
@@ -255,7 +255,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="SelectionCombo">
+           <widget class="QComboBox" name="SelectCombo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -384,7 +384,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="TypeNetaCombo">
+           <widget class="QComboBox" name="SelectNetaCombo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -562,7 +562,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="CodeCombo">
+           <widget class="QComboBox" name="SelectForCombo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>

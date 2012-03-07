@@ -60,6 +60,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 			if (!filter->executeRead(gui.loadModelDialog->selectedFilename())) return;
 			addRecent(gui.loadModelDialog->selectedFilename());
 			aten.currentModelOrFrame()->changeLog.add(Log::Camera);
+			aten.currentModelOrFrame()->regenerateIcon();
 			gui.update(GuiQt::AllTarget);
 		}
 	}

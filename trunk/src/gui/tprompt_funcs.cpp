@@ -1,6 +1,6 @@
 /*
 	*** TPrompt Functions
-	*** src/gui/tprompt.cpp
+	*** src/gui/tprompt_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.

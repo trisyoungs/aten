@@ -258,7 +258,9 @@ void AtenForm::loadRecent()
 		ReturnValue rv;
 		filter->executeRead(filename.get(), rv);
 		aten.currentModel()->changeLog.add(Log::Camera);
-		gui.mainCanvas()->postRedisplay();
+		aten.currentModel()->regenerateIcon();
+		// Update GUI
+		gui.update(GuiQt::AllTarget);
 	}
 	else
 	{

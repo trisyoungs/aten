@@ -1,6 +1,6 @@
 /*
 	*** TProcess Functions
-	*** src/gui/tprocess.cpp
+	*** src/gui/tprocess_funcs.cpp
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.

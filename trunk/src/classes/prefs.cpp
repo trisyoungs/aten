@@ -144,16 +144,29 @@ Prefs::EnergyUnit Prefs::energyUnit(const char *s, bool reportError)
 // Guide Geometries
 const char *GG_strings[Prefs::nGuideGeometries] = { "Square", "Hexagonal" };
 
+// GUI history types
+const char *HistoryTypeKeywords[Prefs::nHistoryTypes] = { "Command", "RecentFile", "Script", "SelectFor", "Select", "SelectNeta" };
+const char *Prefs::historyType(Prefs::HistoryType i)
+{
+	return HistoryTypeKeywords[i];
+}
+Prefs::HistoryType Prefs::historyType(const char *s, bool reportError)
+{
+	Prefs::HistoryType ht = (Prefs::HistoryType) enumSearch("history type", Prefs::nHistoryTypes, HistoryTypeKeywords, s);
+	if ((ht == Prefs::nHistoryTypes) && reportError) enumPrintValid(Prefs::nHistoryTypes,HistoryTypeKeywords);
+	return ht;
+}
+
 // Constructor
 Prefs::Prefs()
 {
 	// Rendering - Style
 	renderStyle_ = Atom::StickStyle;
 	colourScheme_ = Prefs::ElementScheme;
-	atomStyleRadius_[Atom::StickStyle] = 0.1;      // Only used as a selection radius
+	atomStyleRadius_[Atom::StickStyle] = 0.1;	// Only used as a selection radius
 	atomStyleRadius_[Atom::TubeStyle] = 0.15;
 	atomStyleRadius_[Atom::SphereStyle] = 0.35;
-	atomStyleRadius_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
+	atomStyleRadius_[Atom::ScaledStyle] = 1.0;	// Used as a general scaling factor for all atoms
 	bondStyleRadius_[Atom::StickStyle] = 0.1;	// Unused
 	bondStyleRadius_[Atom::TubeStyle] = 0.15;
 	bondStyleRadius_[Atom::SphereStyle] = 0.15;

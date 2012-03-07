@@ -71,11 +71,12 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 # Configure
 
 %if 0%{?suse_version}
-./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr 
+    export LIBS="$LIBS -lGL"
+    ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr 
 %endif
 
 %if 0%{?sles_version}
-./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr 
+    ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr 
 %endif
 
 
