@@ -1,7 +1,7 @@
 /*
 	*** Command Dock Widget
 	*** src/gui/command_funcs.cpp
-	Copyright T. Youngs 2007-2011
+	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
 

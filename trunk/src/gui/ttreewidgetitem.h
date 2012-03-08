@@ -1,7 +1,7 @@
 /*
 	*** TTreeWidgetItem - QTreeWidgetItem with custom data class
 	*** src/gui/ttreewidgetitem.h
-	Copyright T. Youngs 2007-2011
+	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
 
