@@ -1,7 +1,7 @@
 /*
 	*** TCanvas 2D Rendering Functions
 	*** src/gui/tcanvas_render.cpp
-	Copyright T. Youngs 2007-2011
+	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
 

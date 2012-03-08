@@ -1,7 +1,7 @@
 /*
 	*** Qt forcefield editor window functions
 	*** src/gui/ffeditor_funcs.cpp
-	Copyright T. Youngs 2007-2011
+	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
 

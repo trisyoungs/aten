@@ -1,7 +1,7 @@
 /*
 	*** NETA Parser Interface
 	*** src/classes/neta_parser.cpp
-	Copyright T. Youngs 2007-2011
+	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
 

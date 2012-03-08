@@ -1,7 +1,7 @@
 /*
 	*** Tree GUI for CLI
 	*** src/parser/treegui.cpp
-	Copyright T. Youngs 2007-2011
+	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
 
