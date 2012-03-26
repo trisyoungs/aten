@@ -454,11 +454,17 @@ bool Prefs::save(const char *filename)
 		for (i = 0; i < PreferencesVariable::nAccessors; ++i)
 		{
 			rv.set(VTypes::PreferencesData, this);
+			// Convert original new value to string representation
 			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
-			newvalue = rv.asString();
+			if (rv.type() == VTypes::DoubleData) newvalue.sprintf("%10.5e", rv.asDouble());
+			else newvalue = rv.asString();
+			
+			// Convert default value to string representation
 			rv.set(VTypes::PreferencesData, &defaults);
 			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
-			defaultvalue = rv.asString();
+			if (rv.type() == VTypes::DoubleData) defaultvalue.sprintf("%10.5e", rv.asDouble());
+			else defaultvalue = rv.asString();
+
 			// Compare the two strings - if different, write the prefs value to the file....
 // 			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultvalue.get(), newvalue.get());
 			if (strcmp(defaultvalue.get(), newvalue.get()) == 0) continue;

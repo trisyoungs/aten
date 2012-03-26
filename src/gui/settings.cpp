@@ -67,7 +67,7 @@ void AtenForm::loadSettings()
 	msg.print("Looking for program history file '%s'...\n", filename.get());
 	if (fileExists(filename))
 	{
-		msg.print("Program preferences file found in '%s'\n", filename.get());
+		msg.print("Program history file found in '%s'\n", filename.get());
 		LineParser parser;
 		Dnchar arg, data;
 		if (!parser.openInput(filename))
