@@ -22,6 +22,7 @@
 #include "base/doubleexp.h"
 #include <math.h>
 #include <stdio.h>
+#include <limits>
 
 // Constructor
 DoubleExp::DoubleExp(double mantissa, int exponent)
@@ -55,27 +56,10 @@ void DoubleExp::set(double mantissa, int exponent)
 // Set from normal value
 void DoubleExp::set(double value)
 {
-	exponent_ = 0;
-// 	printf("A value of %f gives ",value);
-	if (value > 1.0)
-	{
-		do
-		{
-			value /= 10.0;
-			exponent_++;
-		} while (value >= 10);
-	}
-	else if (value < 0.1)
-	{
-		do
-		{
-			value *= 10.0;
-			exponent_--;
-		} while (value < 1.0);
-	}
-	mantissa_ = value;
+	exponent_ = floor(log10(fabs(value)+std::numeric_limits<double>::min()));
+	mantissa_ = value / pow(10.0,exponent_);
 	recalculate();
-// 	printf("mantissa of %f and exponent of %i\n", value, mantissa_, exponent_);
+	printf("Inpu value %f gives mantissa of %f and exponent of %i\n", value, mantissa_, exponent_);
 }
 
 // Set mantissa

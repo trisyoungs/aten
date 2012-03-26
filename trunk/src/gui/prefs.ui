@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>529</height>
+    <width>435</width>
+    <height>536</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -3031,17 +3031,20 @@
             <item>
              <widget class="QDoubleSpinBox" name="EwaldPrecisionMantissaSpin">
               <property name="decimals">
-               <number>5</number>
+               <number>3</number>
               </property>
               <property name="maximum">
                <double>1.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QSpinBox" name="EwaldPrecisionExponentSpin">
               <property name="prefix">
-               <string>x10 </string>
+               <string>e</string>
               </property>
               <property name="minimum">
                <number>-100</number>
