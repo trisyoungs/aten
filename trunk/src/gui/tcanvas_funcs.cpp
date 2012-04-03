@@ -221,7 +221,6 @@ void TCanvas::paintGL()
 void TCanvas::paintEvent(QPaintEvent *event)
 {
 	msg.enter("TCanvas::paintGL");
-
 	QColor color;
 	QRect currentBox;
 	Refitem<Model,int> *first, localri;
@@ -273,7 +272,7 @@ void TCanvas::paintEvent(QPaintEvent *event)
 		msg.exit("TCanvas::paintGL");
 		return;
 	}
-	
+
 	// Begin the GL commands
 	if (!beginGl())
 	{
@@ -281,6 +280,7 @@ void TCanvas::paintEvent(QPaintEvent *event)
 		msg.exit("TCanvas::paintGL");
 		return;
 	}
+
 	
 	// Clear view
 	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
@@ -338,7 +338,7 @@ void TCanvas::paintEvent(QPaintEvent *event)
 			// Determine desired pixel range and set up view(port)
 			checkGlError();
 			m->setupView(col*px, contextHeight_-(row+1)*py, px, py);
-		
+
 			// Render the 3D parts of the model
 			render3D(m, modelIsCurrentModel);
 		}
@@ -380,7 +380,7 @@ void TCanvas::paintEvent(QPaintEvent *event)
 	painter.setBrush(nobrush);
 	painter.setPen(Qt::SolidLine);
 	painter.setPen(pen);
-	//printf("CurrentBox =  %i %i %i %i\n", currentBox.x(), currentBox.y(), currentBox.width(), currentBox.height());
+// 	printf("CurrentBox =  %i %i %i %i\n", currentBox.x(), currentBox.y(), currentBox.width(), currentBox.height());
 
 	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
 	if (prefs.frameWholeView())
@@ -423,7 +423,6 @@ void TCanvas::paintEvent(QPaintEvent *event)
 	
 	// Swap buffers if necessary
 	if (prefs.manualSwapBuffers()) swapBuffers();
-	swapBuffers();
 	
 	// Special case when rendering to Pixmap - must delete associated context
 	if (drawingTarget_ == TCanvas::PixmapTarget) engine_.popInstance(highQuality_, context());

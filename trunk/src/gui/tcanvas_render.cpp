@@ -115,15 +115,7 @@ void TCanvas::render3D(Model *source, bool currentModel)
 	msg.enter("TCanvas::render3D");
 	
 	// Render model
-	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
-
-	// Check the supplied model against the previous one rendered to see if we must outdate the display list
-	// 	if (lastDisplayed_ != source)
-// 	{
-// 		// Clear the picked atoms list
-// 		pickedAtoms_.clear();
-// 	}
-	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
+	msg.print(Messenger::GL, " --> RENDERING BEGIN : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
 	
 	// If this is a trajectory frame, check its ID against the last one rendered
 	if (source->parent() != NULL)
@@ -133,7 +125,6 @@ void TCanvas::render3D(Model *source, bool currentModel)
 	}
 		
 	// Render 3D elements (with OpenGL)
-	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
 	checkGlError();
 	if (selectedMode_ == UserAction::DrawFragmentAction) engine_.flagClearLists();
 	engine_.render3D(highQuality_, source, this, currentModel);

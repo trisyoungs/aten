@@ -907,6 +907,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (pickedAtoms_.nItems() == 1)
 			{
 				i = source->atomOnScreen(rMouseUp_.x,rMouseUp_.y);
+				if (i == NULL) break;
 				if (pickedAtoms_.last()->item != i) pickedAtoms_.add(i);
 			}
 			if (pickedAtoms_.nItems() != 2) break;

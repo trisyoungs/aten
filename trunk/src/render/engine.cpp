@@ -403,7 +403,7 @@ void RenderEngine::removeGridPrimitive(Grid *g)
 // Sort and render filtered polygons by depth
 void RenderEngine::sortAndSendGL()
 {
-	Matrix A ;
+	Matrix A;
 	Primitive *prim;
 	
 	// Transform and render each solid primitive in each list
@@ -654,13 +654,12 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 		glMultMatrixd(A.matrix());
 		prefs.copyColour(Prefs::GlobeColour, colour);
 		glColor4fv(colour);
-		glNormal3d(0.0,0.0,1.0);
 		primitives_[Q_].rotationGlobe_.sendToGL();
 		prefs.copyColour(Prefs::GlobeAxesColour, colour);
 		glColor4fv(colour);
 		primitives_[Q_].rotationGlobeAxes_.sendToGL();
 	}
-	
+
 	// Prepare for model rendering
 	glViewport(vp[0], vp[1], vp[2], vp[3]);
 	glMatrixMode(GL_PROJECTION);
@@ -761,10 +760,10 @@ void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bo
 
 	// All 3D primitive objects have now been filtered, so sort and send to GL
 	sortAndSendGL();
-	
+
 	// Render overlays
 	renderModelOverlays(source);
-	
+
 	// Reset the clear lists flag
 	clearListsFlag_ = FALSE;
 }
