@@ -334,7 +334,11 @@ void Primitive::popInstance(const QGLContext *context)
 		if (pi->context() == context)
 		{
 			// Vertex buffer object or plain old display list?
-			if (pi->type() == PrimitiveInstance::VBOInstance) { GLuint bufid  = pi->id(); glDeleteBuffers(1, &bufid); }
+			if (pi->type() == PrimitiveInstance::VBOInstance)
+			{
+				GLuint bufid  = pi->id();
+				glDeleteBuffers(1, &bufid);
+			}
 			else glDeleteLists(pi->id(),1);
 		}
 	}
