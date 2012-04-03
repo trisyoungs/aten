@@ -198,6 +198,41 @@ void AtenForm::on_actionAtomColourSet_triggered(bool checked)
 	gui.mainCanvas()->postRedisplay();
 }
 
+// Shift atom order up
+void AtenForm::on_actionOrderShiftUp_triggered(bool checked)
+{
+	CommandNode::run(Command::ShiftUp, "i", 1);
+	gui.update(GuiQt::CanvasTarget);
+}
+
+// Shift atom order down
+void AtenForm::on_actionOrderShiftDown_triggered(bool checked)
+{
+	CommandNode::run(Command::ShiftDown, "i", 1);
+	gui.update(GuiQt::CanvasTarget);
+}
+
+// Shift atoms to beginning of list
+void AtenForm::on_actionOrderMoveToStart_triggered(bool checked)
+{
+	CommandNode::run(Command::MoveToStart, "");
+	gui.update(GuiQt::CanvasTarget);
+}
+
+// Shift atoms to end of list
+void AtenForm::on_actionOrderMoveToEnd_triggered(bool checked)
+{
+	CommandNode::run(Command::MoveToEnd, "");
+	gui.update(GuiQt::CanvasTarget);
+}
+
+// Reorder atoms in current selection
+void AtenForm::on_actionOrderReorder_triggered(bool checked)
+{
+	CommandNode::run(Command::ReOrder, "");
+	gui.update(GuiQt::CanvasTarget);
+}
+
 // Set atom hidden
 void AtenForm::setAtomHidden(bool hidden)
 {
