@@ -69,7 +69,7 @@
      <x>0</x>
      <y>0</y>
      <width>781</width>
-     <height>19</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu">
@@ -234,9 +234,21 @@
      <addaction name="actionAtomColourReset"/>
      <addaction name="actionAtomColourSet"/>
     </widget>
+    <widget class="QMenu" name="AtomOrderMenu">
+     <property name="title">
+      <string>Order</string>
+     </property>
+     <addaction name="actionOrderShiftUp"/>
+     <addaction name="actionOrderShiftDown"/>
+     <addaction name="actionOrderMoveToStart"/>
+     <addaction name="actionOrderMoveToEnd"/>
+     <addaction name="separator"/>
+     <addaction name="actionOrderReorder"/>
+    </widget>
     <addaction name="AtomStyleMenu"/>
     <addaction name="AtomLabelsMenu"/>
     <addaction name="AtomColourMenu"/>
+    <addaction name="AtomOrderMenu"/>
     <addaction name="separator"/>
     <addaction name="actionAtomFixPosition"/>
     <addaction name="actionAtomFreePosition"/>
@@ -1547,6 +1559,31 @@
   <action name="actionModelAddDefaultPattern">
    <property name="text">
     <string>Add Default Pattern</string>
+   </property>
+  </action>
+  <action name="actionOrderShiftUp">
+   <property name="text">
+    <string>Shift Up</string>
+   </property>
+  </action>
+  <action name="actionOrderShiftDown">
+   <property name="text">
+    <string>Shift Down</string>
+   </property>
+  </action>
+  <action name="actionOrderMoveToStart">
+   <property name="text">
+    <string>Move to Start</string>
+   </property>
+  </action>
+  <action name="actionOrderMoveToEnd">
+   <property name="text">
+    <string>Move to End</string>
+   </property>
+  </action>
+  <action name="actionOrderReorder">
+   <property name="text">
+    <string>Reorder</string>
    </property>
   </action>
  </widget>

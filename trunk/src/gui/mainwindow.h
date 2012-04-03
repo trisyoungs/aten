@@ -179,6 +179,11 @@ class AtenForm : public QMainWindow
 	void on_actionAtomLabelClearAll_triggered(bool checked);
 	void on_actionAtomColourReset_triggered(bool checked);
 	void on_actionAtomColourSet_triggered(bool checked);
+	void on_actionOrderShiftUp_triggered(bool checked);
+	void on_actionOrderShiftDown_triggered(bool checked);
+	void on_actionOrderMoveToStart_triggered(bool checked);
+	void on_actionOrderMoveToEnd_triggered(bool checked);
+	void on_actionOrderReorder_triggered(bool checked);
 	void on_actionAtomHide_triggered(bool checked);
 	void on_actionAtomProbe_triggered(bool checked);
 	void on_actionAtomFixPosition_triggered(bool checked);
