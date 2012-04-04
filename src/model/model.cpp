@@ -408,7 +408,7 @@ void Model::print() const
 }
 
 // Print points information
-void Model::printLogs()  const
+void Model::printLogs() const
 {
 	msg.print("Logs for model '%s':\n",name_.get());
 	changeLog.print();

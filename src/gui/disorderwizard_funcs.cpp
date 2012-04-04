@@ -315,7 +315,8 @@ void DisorderWizard::accepted()
 	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(existingModel_, partitioningScheme_, TRUE);
 	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(newModel_, partitioningScheme_, TRUE);
 	else success = mc.disorder(newModel_, partitioningScheme_, FALSE);
-	aten.currentModel()->changeLog.add(Log::Structure);
+
+	// Clean up
 	newModel_ = NULL;
 	existingModel_ = NULL;
 	gui.update(GuiQt::AllTarget);

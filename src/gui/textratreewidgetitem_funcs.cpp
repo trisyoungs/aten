@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** TExtraTreeWidgetItem Functions
+	*** src/gui/textratreewidgetitem_funcs.cpp
 	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
@@ -19,12 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "gui/textratreewidgetitem.h"
 
-#define ATENVERSION "1.8"
-#define ATENREVISION "1790"
-#define ATENDATE "Wed 04 Apr - 11:49"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+// Constructor
+TExtraTreeWidgetItem::TExtraTreeWidgetItem(QTreeWidgetItem *parent) : QTreeWidgetItem(parent)
+{
+	// Private variables
+}
 
-#endif
+// Constructor
+TExtraTreeWidgetItem::TExtraTreeWidgetItem(QTreeWidget *parent) : QTreeWidgetItem(parent)
+{
+	// Private variables
+}

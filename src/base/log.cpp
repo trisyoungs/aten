@@ -117,5 +117,5 @@ bool Log::isSame(Log::LogType lt, Log &other)
 // Print logs
 void Log::print() const
 {
-	printf("Structure [%i], Coordinates [%i], Cell [%i], Style [%i], Camera [%i], Selection [%i], Glyphs [%i], Grids [%i], Labels [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Cell], logs_[Log::Style], logs_[Log::Camera], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Grids], logs_[Log::Labels], logs_[Log::Misc], logs_[Log::Total]); 
+	msg.print("Structure [%i], Coordinates [%i], Cell [%i], Style [%i], Camera [%i], Selection [%i], Glyphs [%i], Grids [%i], Labels [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Cell], logs_[Log::Style], logs_[Log::Camera], logs_[Log::Selection], logs_[Log::Glyphs], logs_[Log::Grids], logs_[Log::Labels], logs_[Log::Misc], logs_[Log::Total]); 
 }

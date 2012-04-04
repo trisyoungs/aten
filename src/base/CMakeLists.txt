@@ -6,6 +6,7 @@ bond.cpp
 cell.cpp
 choice.cpp
 colourscalepoint.cpp
+datastore.cpp
 dnchar.cpp
 doubleexp.cpp
 eigenvector.cpp
@@ -29,6 +30,7 @@ cell.h
 choice.h
 colourscalepoint.h
 constants.h
+datastore.h
 dnchar.h
 doubleexp.h
 eigenvector.h
