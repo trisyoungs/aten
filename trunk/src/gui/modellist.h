@@ -23,7 +23,7 @@
 #define ATEN_MODELLISTWIDGET_H
 
 #include "gui/ui_modellist.h"
-#include "gui/ttreewidgetitem.h"
+#include "gui/textratreewidgetitem.h"
 
 // Model List dock widget
 class ModelListWidget : public QDockWidget
@@ -38,9 +38,10 @@ class ModelListWidget : public QDockWidget
 	void showWidget();
 	void refresh();
 	private:
-	TTreeWidgetItem *itemUnderMouse(const QPoint &pos);
-	void toggleItem(TTreeWidgetItem *twi);
-	void deselectAll(TTreeWidgetItem* selectitem);
+	void updateItem(TExtraTreeWidgetItem *item);
+	TExtraTreeWidgetItem *itemUnderMouse(const QPoint &pos);
+	void toggleItem(TExtraTreeWidgetItem *twi);
+	void deselectAll(TExtraTreeWidgetItem* selectitem);
 	private slots:
 	void on_RefreshIconsButton_clicked(bool checked);
 	void on_ModelsPerRowSpin_valueChanged(int value);
@@ -64,8 +65,8 @@ class ModelListWidget : public QDockWidget
 	QMenu *contextMenu_;
 	// Whether the widget is currently refreshing
 	bool refreshing_;
-	// Last clicked and 'moved over' TTreeWidgetItem in the ModelList
-	TTreeWidgetItem *lastClicked_, *lastHovered_;
+	// Last clicked and 'moved over' TExtraTreeWidgetItem in the ModelList
+	TExtraTreeWidgetItem *lastClicked_, *lastHovered_;
 	
 	/*
 	// Dialog

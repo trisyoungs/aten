@@ -15,6 +15,7 @@ set(qtproject_SRCS
   useractions.cpp
   gui.h 
   tcombobox.h
+  textratreewidgetitem.h
   ttreewidgetitem.h
   ttablewidgetitem.h
   tlistwidgetitem.h 
@@ -69,6 +70,7 @@ set(qtproject_SRCS
   tprocess_funcs.cpp
   tprompt_funcs.cpp
   ttablewidgetitem_funcs.cpp
+  textratreewidgetitem_funcs.cpp
   ttreewidgetitem_funcs.cpp
   vibrations_funcs.cpp
   viewbasis_funcs.cpp

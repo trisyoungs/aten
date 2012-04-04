@@ -110,8 +110,13 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		if (dummy == "") break;
 		if (!readLine(eps, sigma, mass, q)) error("Error reading atomtype LJ information %i.\n", count);
 		el = aten.findElement(elname);
-		if (el == 0) break;
-		printf("       : Mapping atom name %s to %s.\n", atomname, el.symbol);
+		if (el == 0) 
+		{
+			printf("Failed to map element name '%s' to an element.  Attempting to use atomname (%s) instead...\n", elname, atomname);
+			el = aten.findElement(atomname);
+		}
+		if (el != 0) printf("       : Mapping atom name %s to %s.\n", atomname, el.symbol);
+		else printf("       : Mapping atom name %s to XXX (unknown).\n", atomname);
 		ffa = ff.addType(count, atomname, atomname, el, "", "");
 		for (i in aten.model.atoms) if (i.data == atomname) { i.element = el; i.type = ffa; }
 		ff.addInter("lj", count, q, eps, sigma);

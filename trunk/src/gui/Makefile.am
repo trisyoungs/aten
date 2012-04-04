@@ -29,12 +29,12 @@ MAINWINDOW_FUNCS = contextmenu_funcs.cpp ffeditor_funcs.cpp gui.cpp layoutlist.c
 MAINWINDOW_ACTIONS = mainmenuactions.cpp mouseactions.cpp toolbaractions.cpp
 
 WIDGET_UI = tcolourframe.uih ttreewidget.uih tcanvas.uih tmenubutton.uih tprocess.uih tprompt.uih tradiogroup.uih
-WIDGET_FUNCS = tcanvas_funcs.cpp tcanvas_input.cpp tcanvas_render.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
+WIDGET_FUNCS = tcanvas_funcs.cpp tcanvas_input.cpp tcanvas_render.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp textratreewidgetitem_funcs.cpp tlistwidgetitem_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
 
 CANVAS_FUNCS = useractions.cpp
 
 libgui_a_SOURCES = $(WIDGET_UI) $(SUBWINDOW_UI) $(MAINWINDOW_UI) $(CANVAS_FUNCS) $(WIDGET_FUNCS) gui.cpp $(MAINWINDOW_FUNCS) $(MAINWINDOW_ACTIONS) $(SUBWINDOW_FUNCS)
 
-noinst_HEADERS = about.h atomlist.h build.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h gui.h layoutlist.h loadmodel.h mainwindow.h md.h messages.h modellist.h pores.h position.h prefs.h progress.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h tcombobox.h tlistwidgetitem.h toolbox.h trajectory.h transform.h treegui.h ttablewidgetitem.h ttreewidgetitem.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
+noinst_HEADERS = about.h atomlist.h build.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h gui.h layoutlist.h loadmodel.h mainwindow.h md.h messages.h modellist.h pores.h position.h prefs.h progress.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h tcombobox.h textratreewidgetitem.h tlistwidgetitem.h toolbox.h trajectory.h transform.h treegui.h ttablewidgetitem.h ttreewidgetitem.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @GUI_CFLAGS@

@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** TExtraTreeWidgetItem - QTreeWidgetItem with custom data list
+	*** src/gui/textratreewidgetitem.h
 	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
@@ -19,12 +19,21 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#ifndef ATEN_TEXTRATREEWIDGETITEM_H
+#define ATEN_TEXTRATREEWIDGETITEM_H
 
-#define ATENVERSION "1.8"
-#define ATENREVISION "1790"
-#define ATENDATE "Wed 04 Apr - 11:49"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#include <QtGui/QTreeWidget>
+#include "templates/list.h"
+#include "base/datastore.h"
+
+// Custom QTreeWidgetItem with additional data storage
+class TExtraTreeWidgetItem : public QTreeWidgetItem, public DataStore
+{
+	public:
+	// Constructors
+	TExtraTreeWidgetItem(QTreeWidgetItem *parent);
+	TExtraTreeWidgetItem(QTreeWidget *parent);
+};
 
 #endif
+
