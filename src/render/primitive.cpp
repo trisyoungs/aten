@@ -213,27 +213,27 @@ void Primitive::createCellAxes()
 	int nstacks = max(3,(int) (prefs.primitiveQuality()*0.75));
 	int nslices = max(3,(int) (prefs.primitiveQuality()*1.5));
 
-	// Clear existing data first (if it exists) - need enough space for 6 cylinders
+	// Clear existing data first (if it exists)
 	forgetAll();
 	
 	// X axis
-	plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nstacks, nslices);
-	plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nstacks, nslices);
+	plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nstacks, nslices, TRUE, FALSE);
+	plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nstacks, nslices, TRUE, FALSE);
 
 	// Y axis
-	plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.1f, 0.1f, nstacks, nslices);
-	plotCylinder(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, 0.0f, nstacks, nslices);
+	plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.1f, 0.1f, nstacks, nslices, TRUE, FALSE);
+	plotCylinder(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, 0.0f, nstacks, nslices, TRUE, FALSE);
 	
 	// Z axis
-	plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.1f, 0.1f, nstacks, nslices);
-	plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nstacks, nslices);
+	plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.1f, 0.1f, nstacks, nslices, TRUE, FALSE);
+	plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nstacks, nslices, TRUE, FALSE);
 	
 }
 
 // Create rotation globe axes
 void Primitive::createRotationGlobeAxes(int nstacks, int nslices)
 {
-	// Create space for one sphere and three cylinders
+	// Clear existing data first (if it exists)
 	forgetAll();
 	
 	// Axis pointers

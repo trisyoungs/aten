@@ -141,44 +141,52 @@ void Primitive::plotSphere(double radius, int nstacks, int nslices)
 	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1;
 	
 	count = 0;
-	for (i = 0; i < nstacks; i++)
+	for (i = 1; i <= nstacks; ++i)
 	{
-		stack0 = PI * (-0.5 + (double) i / nstacks);
+		stack0 = PI * (-0.5 + (double) (i-1) / nstacks);
 		z0  = sin(stack0);
 		zr0 = cos(stack0);
 		
-		stack1 = PI * (-0.5 + (double) (i+1) / nstacks);
+		stack1 = PI * (-0.5 + (double) i / nstacks);
 		z1 = sin(stack1);
 		zr1 = cos(stack1);
 		
-		for (j = 0; j < nslices; j++)
+		for (j = 1; j <= nslices; ++j)
 		{
-			slice0 = 2 * PI * (double) j / nslices;
+			slice0 = 2 * PI * (double) (j-1) / nslices;
 			x0 = cos(slice0);
 			y0 = sin(slice0);
 			
-			slice1 = 2 * PI * (double) (j+1) / nslices;
+			slice1 = 2 * PI * (double) j / nslices;
 			x1 = cos(slice1);
 			y1 = sin(slice1);
 			
 			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0, TRUE);
-			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, TRUE);
-			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, TRUE);
+			// N.B Don't plot if i == 1, to avoid overlapping with subsequent vertices in this pass
+			if (i > 1)
+			{
+				defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0, TRUE);
+				defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, TRUE);
+				defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, TRUE);
+			}
 			
 			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, TRUE);
-			defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, TRUE);
-			defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1, TRUE);
+			// N.B. Don't plot if i == nstacks, to avoid overlapping with previous vertices in this pass
+			if (i < nstacks)
+			{
+				defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, TRUE);
+				defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, TRUE);
+				defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1, TRUE);
+			}
 		}
 	}
 }
 
 // Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
-void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices)
+void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices, bool capStart, bool capEnd)
 {
-	int n, m;
-	Vec3<GLfloat> u, v, vert[4], normal[2], deltarj, rj;
+	int i, j;
+	Vec3<GLfloat> u, v, w, vert[4], normal[2], deltarj, rj;
 	double d, dtheta, dradius;
 	
 	// Setup some variables
@@ -192,32 +200,55 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 	u.normalise();
 	v = rj * u;
 	v.normalise();
+	w = rj;
+	w.normalise();
 
 	// TODO Normal calculation for cones will be incorrect
 	
-	for (n=0; n<nstacks; ++n)
+	for (i=1; i <= nstacks; ++i)
 	{
-		for (m=0; m<nslices; ++m)
+		for (j = 1; j <= nslices; ++j)
 		{
-			d = m * dtheta;
+			d = (j-1) * dtheta;
 			normal[0] = u*cos(d) + v*sin(d);
-			vert[0] = normal[0]*(startradius-n*dradius) + deltarj*n;
-			vert[1] = normal[0]*(startradius-(n+1)*dradius) + deltarj*(n+1);
-			d = (m+1) * dtheta;
+			vert[0] = normal[0]*(startradius-(i-1)*dradius) + deltarj*(i-1);
+			vert[1] = normal[0]*(startradius-i*dradius) + deltarj*i;
+			d = j * dtheta;
 			normal[1] = u*cos(d) + v*sin(d);
-			vert[2] = normal[1]*(startradius-n*dradius) + deltarj*n;
-			vert[3] = normal[1]*(startradius-(n+1)*dradius) + deltarj*(n+1);
+			vert[2] = normal[1]*(startradius-(i-1)*dradius) + deltarj*(i-1);
+			vert[3] = normal[1]*(startradius-i*dradius) + deltarj*i;
 			
 			// Triangle 1
-			defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
-			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
-			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
+			if ((i > 1) || (startradius > 1.0e-5))
+			{
+				defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
+				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
+				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
+			}
  
 			// Triangle 2
-			defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
-			defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
-			defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
+			if ((i < nstacks) || (endradius > 1.0e-5))
+			{
+				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, TRUE);
+				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
+				defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z, TRUE);
+			}
+			
+			// Start cap
+			if ((i == 1) && (startradius > 1.0e-5) && capStart)
+			{
+				defineVertex(ox, oy, oz, -w.x, -w.y, -w.z, TRUE);
+				defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, -w.x, -w.y, -w.z, TRUE);
+				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, -w.x, -w.y, -w.z, TRUE);
+			}
 
+			// End cap
+			if ((i == nstacks) && (endradius > 1.0e-5) && capEnd)
+			{
+				defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z, TRUE);
+				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z, TRUE);
+				defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z, TRUE);
+			}
 		}
 	}
 }

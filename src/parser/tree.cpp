@@ -134,6 +134,9 @@ void Tree::reset(bool clearVariables)
 		}
 	}
 	
+	// Remove all local function nodes
+	functions_.clear();
+	
 	msg.exit("Tree::reset");
 }
 
