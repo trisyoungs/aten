@@ -61,10 +61,10 @@ AtomListWidget::AtomListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	AtomListItemDelegates[AtomListWidget::AtomIdItem] = NULL;
 	AtomListItemDelegates[AtomListWidget::AtomElementItem] = NULL;
 	AtomListItemDelegates[AtomListWidget::AtomTypeItem] = NULL;
-	AtomListItemDelegates[AtomListWidget::AtomXItem] = new TDoubleSpinDelegate();
-	AtomListItemDelegates[AtomListWidget::AtomYItem] = new TDoubleSpinDelegate();
-	AtomListItemDelegates[AtomListWidget::AtomZItem] = new TDoubleSpinDelegate();
-	AtomListItemDelegates[AtomListWidget::AtomQItem] = new TDoubleSpinDelegate();
+	AtomListItemDelegates[AtomListWidget::AtomXItem] = new TDoubleSpinDelegate(this);
+	AtomListItemDelegates[AtomListWidget::AtomYItem] = new TDoubleSpinDelegate(this);
+	AtomListItemDelegates[AtomListWidget::AtomZItem] = new TDoubleSpinDelegate(this);
+	AtomListItemDelegates[AtomListWidget::AtomQItem] = new TDoubleSpinDelegate(this);
 	
 	// Set initial display items
 	visibleItems_[AtomListWidget::AtomIdItem] = ui.ViewIdCheck->isChecked();
@@ -520,7 +520,7 @@ void AtomListWidget::tableMouseReleaseEvent(QMouseEvent *event)
 
 	prevClicked_ = lastClicked_;
 	lastHovered_ = NULL;
-	listLastModel_->endUndoState();
+	if (listLastModel_->recordingUndoState()) listLastModel_->endUndoState();
 	
 	refresh();
 	gui.update(GuiQt::CanvasTarget);
