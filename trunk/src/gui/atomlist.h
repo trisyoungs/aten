@@ -23,6 +23,9 @@
 #define ATEN_ATOMLISTWIDGET_H
 
 #include "gui/ui_atomlist.h"
+#include "base/atom.h"
+#include "templates/list.h"
+#include "templates/reflist.h"
 #include <QtCore/QThread>
 
 // Forward declarations
@@ -40,15 +43,16 @@ class AtomListWidget : public QDockWidget
 	public:
 	void showWidget();
 	void refresh();
+	enum AtomTableItem { AtomIdItem, AtomElementItem, AtomTypeItem, AtomXItem, AtomYItem, AtomZItem, AtomQItem, nAtomItems };
 	private:
-	void peekScrollBar();
-	void pokeScrollBar();
-	void setColumns(TTreeWidgetItem *twi);
-	TTreeWidgetItem *itemUnderMouse(const QPoint &pos);
-	void toggleItem(TTreeWidgetItem *twi);
-	void selectItem(TTreeWidgetItem *twi);
-	void deselectItem(TTreeWidgetItem *twi);
+	void recalculateRowSize();
+	void updateRow(int row);
+	void updateDisplayItems();
+	void updateSelection();
+	Atom *atomInRow(int row);
+	void toggleItem(Atom *i);
 	private slots:
+	void on_AtomTableScrollBar_valueChanged(int value);
 	void on_ViewStyleCombo_currentIndexChanged(int index);
 	void on_ShiftUpButton_clicked(bool checked);
 	void on_ShiftDownButton_clicked(bool checked);
@@ -61,31 +65,45 @@ class AtomListWidget : public QDockWidget
 	void on_ViewYCheck_clicked(bool checked);
 	void on_ViewZCheck_clicked(bool checked);
 	void on_ViewChargeCheck_clicked(bool checked);
-	void updateSelection();
-	void treeMousePressEvent(QMouseEvent *event);
-	void treeMouseReleaseEvent(QMouseEvent *event);
-	void treeMouseMoveEvent(QMouseEvent *event);
 	protected:
 	void closeEvent(QCloseEvent *event);
+	void resizeEvent(QResizeEvent *event);
+	void wheelEvent(QWheelEvent *event);
+	public slots:
+	void tableMousePressEvent(QMouseEvent *event);
+	void tableMouseReleaseEvent(QMouseEvent *event);
+	void tableMouseMoveEvent(QMouseEvent *event);
+	void tableMouseDoubleClickEvent(QMouseEvent *event);
+	void tableItemChanged(QTableWidgetItem *item);
 
 	/*
 	// Local variables
 	*/
 	private:
+	// Custom item delegates for each column
+	QItemDelegate *AtomListItemDelegates[AtomListWidget::nAtomItems];
 	// Log points of model info displayed in list
 	int listStructurePoint_, listSelectionPoint_;
 	// Whether the current view is by atom (or not)
 	bool viewingByAtom_;
-	// Current visible atom data
-	bool viewAtomId_, viewAtomElement_, viewAtomType_, viewAtomX_, viewAtomY_, viewAtomZ_, viewAtomQ_;
+	// Array of currently-visible items
+	bool visibleItems_[nAtomItems];
+	// List of currently-visible atom data
+	List< ListItem<int> > displayItems_;
 	// Last model displayed in list
 	Model *listLastModel_;
+	// Current root atom id of model (ID displayed in row 1)
+	int currentRootId_;
 	// Whether the widget should refresh when it is next shown
 	bool shouldRefresh_;
 	// Whether widget is currently refreshing
 	bool refreshing_;
-	// Last clicked and 'moved over' TTreeWidgetItem in the AtomList
-	TTreeWidgetItem *lastClicked_, *lastHovered_;
+	// Number of rows displayed in AtomTable
+	int maxTableRows_;
+	// Reflist of currently-displayed atoms
+	Reflist<Atom,int> atomItems_;
+	// Last clicked and 'moved over' Atom
+	Atom *prevClicked_, *lastClicked_, *lastHovered_;
 
 	/*
 	// Dialog

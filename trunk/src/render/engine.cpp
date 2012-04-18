@@ -40,6 +40,48 @@ RenderPrimitives::RenderPrimitives()
 	requestedQuality_ = -1;
 	currentQuality_ = -1;
 	stackSize_ = 0;
+	
+	// Set names of primitives (for bug-tracking)
+	atom_.setName("Atom");
+	selectedAtom_.setName("SelectedAtom");
+	bonds_[Atom::TubeStyle][Bond::Single].setName("Bond[Tube,Single]");
+	bonds_[Atom::SphereStyle][Bond::Single].setName("Bond[Sphere,Single]");
+	bonds_[Atom::ScaledStyle][Bond::Single].setName("Bond[Scaled,Single]");
+	selectedBonds_[Atom::TubeStyle][Bond::Single].setName("SelectedBond[Tube,Single]");
+	selectedBonds_[Atom::SphereStyle][Bond::Single].setName("SelectedBond[Sphere,Single]");
+	selectedBonds_[Atom::ScaledStyle][Bond::Single].setName("SelectedBond[Scaled,Single]");
+	bonds_[Atom::TubeStyle][Bond::Double].setName("Bond[Tube,Double]");
+	bonds_[Atom::SphereStyle][Bond::Double].setName("Bond[Sphere,Double]");
+	bonds_[Atom::ScaledStyle][Bond::Double].setName("Bond[Scaled,Double]");
+	selectedBonds_[Atom::TubeStyle][Bond::Double].setName("SelectedBond[Tube,Double]");
+	selectedBonds_[Atom::SphereStyle][Bond::Double].setName("SelectedBond[Sphere,Double]");
+	selectedBonds_[Atom::ScaledStyle][Bond::Double].setName("SelectedBond[Scaled,Double]");
+	bonds_[Atom::TubeStyle][Bond::Triple].setName("Bond[Tube,Triple]");
+	bonds_[Atom::SphereStyle][Bond::Triple].setName("Bond[Sphere,Triple]");
+	bonds_[Atom::ScaledStyle][Bond::Triple].setName("Bond[Scaled,Triple]");
+	selectedBonds_[Atom::TubeStyle][Bond::Triple].setName("SelectedBond[Tube,Triple]");
+	selectedBonds_[Atom::SphereStyle][Bond::Triple].setName("SelectedBond[Sphere,Triple]");
+	selectedBonds_[Atom::ScaledStyle][Bond::Triple].setName("SelectedBond[Scaled,Triple]");
+	bonds_[Atom::TubeStyle][Bond::Aromatic].setName("Bond[Tube,Aromatic]");
+	bonds_[Atom::SphereStyle][Bond::Aromatic].setName("Bond[Sphere,Aromatic]");
+	bonds_[Atom::ScaledStyle][Bond::Aromatic].setName("Bond[Scaled,Aromatic]");
+	selectedBonds_[Atom::TubeStyle][Bond::Aromatic].setName("SelectedBond[Tube,Aromatic]");
+	selectedBonds_[Atom::SphereStyle][Bond::Aromatic].setName("SelectedBond[Sphere,Aromatic]");
+	selectedBonds_[Atom::ScaledStyle][Bond::Aromatic].setName("SelectedBond[Scaled,Aromatic]");
+	cubes_.setName("Cubes");
+	originCubes_.setName("OriginCubes");
+	spheres_.setName("Spheres");
+	cylinders_.setName("Cylinders");
+	cones_.setName("Cones");
+	tubeRings_.setName("TubeRings");
+	segmentedTubeRings_.setName("SegmentedTubeRings");
+	lineRings_.setName("LineRings");
+	segmentedLineRings_.setName("SegmentedLineRings");
+	wireCube_.setName("WireCube");
+	crossedCube_.setName("CrossedCube");
+	cellAxes_.setName("CellAxes");
+	rotationGlobe_.setName("RotationGlobe");
+	rotationGlobeAxes_.setName("RotationGlobeAxes");
 }
 
 // Destructor
@@ -113,7 +155,7 @@ void RenderPrimitives::recreatePrimitives(bool force)
 	for (lod=0; lod < prefs.levelsOfDetail(); ++lod)
 	{
 		// Calculate general level-of-detail ratio, which ranges from 1 (at lod=0) to 0 (at lod=nlevels)
-		lodratio = 1.0 - (double (lod+1)/prefs.levelsOfDetail());
+		lodratio = 1.0 - (double (lod)/prefs.levelsOfDetail());
 		nstacks = max(3,(int) (currentQuality_*lodratio*0.75));
 		nslices = max(3,(int) (currentQuality_*lodratio*1.5));
 		
@@ -405,17 +447,17 @@ void RenderEngine::sortAndSendGL()
 {
 	Matrix A;
 	Primitive *prim;
-	
+
 	// Transform and render each solid primitive in each list
 	for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
 	{
 		for (PrimitiveInfo *pi = solidPrimitives_[n].first(); pi != NULL; pi = pi->next)
 		{
 			// If the info structure has a pointer to a primitive in it, use that.
-			// Otherwise, work out a level of detail value to pass to the primitive group referenced.
+			// Otherwise, retrieve a primitive with a suitable level of detail by passing the current model transformation matrix
 			prim = pi->primitive();
 			if (prim == NULL) prim = (Q_ == 1 ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
-			
+
 			// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
 			if (!prim->colouredVertexData()) glColor4fv(pi->colour());
 			glPolygonMode(GL_FRONT_AND_BACK, pi->fillMode());
@@ -441,7 +483,7 @@ void RenderEngine::sortAndSendGL()
 			else if (pi->fillMode() == GL_POINT) glEnable(GL_LIGHTING);
 		}
 	}
-	
+
 	// Draw stick primitives
 	glDisable(GL_LIGHTING);
 	glLoadMatrixd(modelTransformationMatrix_.matrix());
@@ -457,7 +499,12 @@ void RenderEngine::sortAndSendGL()
 	{
 		triangleChopper_.emptyTriangles();
 		for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
-			for (PrimitiveInfo *pi = transparentPrimitives_[n].first(); pi != NULL; pi = pi->next) triangleChopper_.storeTriangles(pi, modelTransformationMatrix_);
+		{
+			for (PrimitiveInfo *pi = transparentPrimitives_[n].first(); pi != NULL; pi = pi->next)
+			{
+				triangleChopper_.storeTriangles(pi, modelTransformationMatrix_);
+			}
+		}
 		glLoadIdentity();
 		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

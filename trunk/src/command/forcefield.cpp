@@ -652,12 +652,8 @@ bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &
 		return FALSE;
 	}
 
-	// Loop over remaining arguments
-	ReturnValue value;
-	for (int n = 1; n < parser.nArgs(); ++n)
-	{
-		if (!filter->defaultDialog().setWidgetValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
-	}
+	// Loop over remaining arguments which are widget/global variable assignments
+	for (int n = 1; n < parser.nArgs(); ++n) if (!filter->setAccessibleVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 
 	// Temporarily disable undo/redo for the model, save, and re-enable
 	obj.rs()->disableUndoRedo();
@@ -672,15 +668,19 @@ bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_SetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.reset();
+	
 	// First, get functional form
 	VdwFunctions::VdwFunction form = VdwFunctions::vdwFunction(c->argc(0), TRUE);
 	if (form == VdwFunctions::nVdwFunctions) return FALSE;
+	
 	// Next, get functional form parameter
 	int param = VdwFunctions::vdwParameter(form, c->argc(1), TRUE);
 	if (param == VdwFunctions::VdwFunctions[form].nParameters) return FALSE;
+	
 	// Finally, search combination rule
 	Combine::CombinationRule cr = Combine::combinationRule(c->argc(2), TRUE);
 	if (cr == Combine::nCombinationRules) return FALSE;
+	
 	// Everything OK, so set data
 	VdwFunctions::VdwFunctions[form].combinationRules[param] = cr;
 	return TRUE;
@@ -691,9 +691,11 @@ bool Command::function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
+	
 	// Get functional form of bond potential
 	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(c->argc(0), TRUE);
 	if (torsionstyle == TorsionFunctions::nTorsionFunctions) return FALSE;
+	
 	// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 	// If not, then check to see that it references an atomname in the atomtypes list
 	for (n=1; n<4; n++)
@@ -701,6 +703,7 @@ bool Command::function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
 			msg.print("\t... Warning - torsion atom '%s' does not exist in the forcefield!\n", c->argc(n));
 	}
+	
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addTorsion(torsionstyle);
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));

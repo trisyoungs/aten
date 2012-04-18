@@ -29,7 +29,11 @@
 #include "main/aten.h"
 #include "parser/commandnode.h"
 #include "gui/tcanvas.uih"
+#include "gui/tdoublespindelegate.uih"
 #include "classes/forcefieldatom.h"
+
+const char *AtomListItemHeader[AtomListWidget::nAtomItems] = { "ID", "El", "Type", "X", "Y", "Z", "Q" };
+bool AtomListItemDelegateType[AtomListWidget::nAtomItems] = { 0, 0, 0, 1, 1, 1, 1 };
 
 /*
 // Atom list window
@@ -46,64 +50,207 @@ AtomListWidget::AtomListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 	listLastModel_ = NULL;
 	shouldRefresh_ = TRUE;
 	refreshing_ = FALSE;
+	prevClicked_ = NULL;
 	lastClicked_ = NULL;
 	lastHovered_ = NULL;
 	viewingByAtom_ = TRUE;
-	viewAtomId_ = ui.ViewIdCheck->isChecked();
-	viewAtomElement_ = ui.ViewElementCheck->isChecked();
-	viewAtomType_ = ui.ViewTypeCheck->isChecked();
-	viewAtomX_ = ui.ViewXCheck->isChecked();
-	viewAtomY_ = ui.ViewYCheck->isChecked();
-	viewAtomZ_ = ui.ViewZCheck->isChecked();
-	viewAtomQ_ = ui.ViewChargeCheck->isChecked();
+	maxTableRows_ = 0;
+	currentRootId_ = 0;
 
-	QObject::connect(ui.AtomTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
-	QObject::connect(ui.AtomTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
-	QObject::connect(ui.AtomTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
+	// Set custom item delegates for each column
+	AtomListItemDelegates[AtomListWidget::AtomIdItem] = NULL;
+	AtomListItemDelegates[AtomListWidget::AtomElementItem] = NULL;
+	AtomListItemDelegates[AtomListWidget::AtomTypeItem] = NULL;
+	AtomListItemDelegates[AtomListWidget::AtomXItem] = new TDoubleSpinDelegate();
+	AtomListItemDelegates[AtomListWidget::AtomYItem] = new TDoubleSpinDelegate();
+	AtomListItemDelegates[AtomListWidget::AtomZItem] = new TDoubleSpinDelegate();
+	AtomListItemDelegates[AtomListWidget::AtomQItem] = new TDoubleSpinDelegate();
+	
+	// Set initial display items
+	visibleItems_[AtomListWidget::AtomIdItem] = ui.ViewIdCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomElementItem] = ui.ViewElementCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomTypeItem] = ui.ViewTypeCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomXItem] = ui.ViewXCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomYItem] = ui.ViewYCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomZItem] = ui.ViewZCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomQItem] = ui.ViewChargeCheck->isChecked();
+	updateDisplayItems();
+
+	// Connect mouse-tracking signals to AtomTable
+	QObject::connect(ui.AtomTable, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(tableMousePressEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomTable, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(tableMouseReleaseEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomTable, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(tableMouseMoveEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomTable, SIGNAL(mouseDoubleClickEvent(QMouseEvent*)), this, SLOT(tableMouseDoubleClickEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomTable, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(tableItemChanged(QTableWidgetItem*)));
 }
 
 void AtomListWidget::showWidget()
 {
 	show();
+	recalculateRowSize();
 	if (shouldRefresh_) refresh();
 	// Make sure toolbutton is in correct state
 	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
-// Update selection states of TTreeWidgetItems from selection in model
-void AtomListWidget::updateSelection()
+// Redetermine max number of visible rows
+void AtomListWidget::recalculateRowSize()
 {
-	//printf("Selection has been updated.\n");
-	TTreeWidgetItem *ti;
-	Atom *i;
-	Model *m = aten.currentModelOrFrame();
-	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
+	int requestedRowHeight = 20, currentRowHeight;
+	// Get current row height
+	if (ui.AtomTable->rowCount() == 0) ui.AtomTable->setRowCount(2);
+	ui.AtomTable->setRowHeight(1, requestedRowHeight);
+	currentRowHeight = ui.AtomTable->rowHeight(1);
+	
+	// Check new size of AtomTable, and determine new number of items to display (subtracting 1 because of the table header)
+	// --- Always subtract horizontal scrollbar height, since we can't reliably detect when or when not to subtract it
+	int tableHeight = ui.AtomTable->size().height();
+	tableHeight -= ui.AtomTable->horizontalScrollBar()->size().height();
+	maxTableRows_ = (tableHeight / currentRowHeight) - 1;
+	if (maxTableRows_ < 0) maxTableRows_ = 0;
+
+	// Create new table rows and their items
+	ui.AtomTable->setRowCount(maxTableRows_);
+	QTableWidgetItem *item;
+	for (int row=0; row<maxTableRows_; ++row)
 	{
-		ti = (TTreeWidgetItem*) item;
-		i = (Atom*) ti->data.asPointer(VTypes::AtomData);
-		if (i != NULL) item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
+		ui.AtomTable->setRowHeight(row, currentRowHeight);
 	}
-	gui.update(GuiQt::CanvasTarget);
+	
+	// Extend atom reference list to new size (if necessary)
+	Refitem<Atom,int> *ri;
+	for (int n=atomItems_.nItems(); n<maxTableRows_; ++n)
+	{
+		ri = atomItems_.add(NULL);
+		ri->data = n;
+	}
+	
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	refresh();
 }
 
 // Set column data for specified item
-void AtomListWidget::setColumns(TTreeWidgetItem *twi)
+void AtomListWidget::updateRow(int row)
 {
-	static Vec3<double> r;
-	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
-	if (i == NULL) printf("AtomListWidget::setColumns <<<< NULL atom pointer found >>>>\n");
-	else
+	if ((row < 0) || (row >= maxTableRows_))
 	{
-		int n = 0;
-		r = i->r();
-		if (viewAtomId_) twi->setText(++n, itoa(i->id()+1));
-		if (viewAtomElement_) twi->setText(++n, elements().symbol(i));
-		if (viewAtomType_) twi->setText(++n, (i->type() == NULL ? "" : i->type()->name()));
-		if (viewAtomX_) twi->setText(++n, ftoa(r.x));
-		if (viewAtomY_) twi->setText(++n, ftoa(r.y));
-		if (viewAtomZ_) twi->setText(++n, ftoa(r.z));
-		if (viewAtomQ_) twi->setText(++n, ftoa(i->charge()));
+		printf("Internal Error - Invalid row passed to AtomListWidget::updateRow()\n");
+		return;
 	}
+
+	// Go through visible data items, setting relevant column
+	QTableWidgetItem *item;
+	static Vec3<double> r;
+	Refitem<Atom,int> *ri = atomItems_[row];
+	if (ri == NULL)
+	{
+		printf("Internal Error - Couldn't get atom reference in AtomListWidget::updateRow()\n");
+		return;
+	}
+	Atom *i = ri->item;
+	if (i == NULL)
+	{
+		printf("Internal Error - NULL atom pointer found in AtomListWidget::updateRow()\n");
+		return;
+	}
+	r = i->r();
+	for (int column = 0; column < displayItems_.nItems(); ++column)
+	{
+		item = ui.AtomTable->item(row, column);
+		if (item == NULL)
+		{
+			item = new QTableWidgetItem();
+			ui.AtomTable->setItem(row, column, item);
+		}
+		switch (displayItems_[column]->value())
+		{
+			case (AtomListWidget::AtomIdItem):
+				item->setText(itoa(i->id()+1));
+				break;
+			case (AtomListWidget::AtomElementItem):
+				item->setText(elements().symbol(i));
+				break;
+			case (AtomListWidget::AtomTypeItem):
+				item->setText((i->type() == NULL ? "" : i->type()->name()));
+				break;
+			case (AtomListWidget::AtomXItem):
+				item->setText(ftoa(r.x));
+				break;
+			case (AtomListWidget::AtomYItem):
+				item->setText(ftoa(r.y));
+				break;
+			case (AtomListWidget::AtomZItem):
+				item->setText(ftoa(r.z));
+				break;
+			case (AtomListWidget::AtomQItem):
+				item->setText(ftoa(i->charge()));
+				break;
+		}
+		if (AtomListItemDelegateType[displayItems_[column]->value()] == 0) item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		else item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+	}
+}
+
+void AtomListWidget::updateDisplayItems()
+{
+	displayItems_.clear();
+	for (int n=0; n<AtomListWidget::nAtomItems; ++n)
+	{
+		if (visibleItems_[n])
+		{
+			ListItem<int> *item = displayItems_.add();
+			item->setValue(n);
+		}
+	}
+	
+	// Redo column headings and set delegates
+	ui.AtomTable->setColumnCount(displayItems_.nItems());
+	QStringList headerLabels;
+	int id;
+	for (int n=0; n<displayItems_.nItems(); ++n)
+	{
+		id = displayItems_[n]->value();
+		headerLabels << AtomListItemHeader[id];
+		if (AtomListItemDelegates[id] != NULL) ui.AtomTable->setItemDelegateForColumn(id, AtomListItemDelegates[id]);
+	}
+	ui.AtomTable->setHorizontalHeaderLabels(headerLabels);
+}
+
+// Set selection of items in list
+void AtomListWidget::updateSelection()
+{
+	// Clear selection in table
+	ui.AtomTable->clearSelection();
+
+	Refitem<Atom,int> *refAtom = atomItems_.first();
+	Atom *i;
+	for (int row = 0; row < ui.AtomTable->rowCount(); ++row)
+	{
+		// Get atom pointer corresponding to scrollbar top position
+		i = listLastModel_->atom(currentRootId_+row);
+		
+		// Check reference
+		if (refAtom == NULL)
+		{
+			printf("Internal Error: Reference atom is NULL in AtomListWidget::updateSelection()\n");
+			return;
+		}
+
+		// Select row if the atom is selected. Otherwise, no need to do anything
+		if (i->isSelected()) ui.AtomTable->selectRow(row);
+
+		refAtom = refAtom->next;
+	}
+}
+
+// Return atom corresponding to row ID provided
+Atom *AtomListWidget::atomInRow(int row)
+{
+	if ((row < 0) || (row > maxTableRows_)) return NULL;
+	Refitem<Atom,int> *ri = atomItems_[row];
+	if (ri == NULL) return NULL;
+	return ri->item;
 }
 
 // Refresh the atom list
@@ -119,119 +266,89 @@ void AtomListWidget::refresh()
 		return;
 	}
 	refreshing_ = TRUE;
+
+	// Check the current active model against the last one we represented in the list
+	bool updateSel = FALSE, updateAtoms = FALSE;
 	Model *m = aten.currentModelOrFrame();
-	// Check this model against the last one we represented in the list
 	if (m != listLastModel_)
 	{
 		listStructurePoint_ = -1;
 		listSelectionPoint_ = -1;
+		listLastModel_ = m;
+		updateSel = TRUE;
+		updateAtoms = TRUE;
 	}
-	listLastModel_ = m;
+	else
+	{
+		if (listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates))) updateAtoms = TRUE;
+		if (listSelectionPoint_ != m->changeLog.log(Log::Selection)) updateSel = TRUE;
+	}
+	
+	if ((!updateAtoms) && (!updateSel))
+	{
+		refreshing_ = FALSE;
+		msg.exit("AtomListWidget::refresh");
+		return;
+	}
+
+	// Set the scrollbar up
+	ui.AtomTableScrollBar->setMinimum(0);
+	int final = m->nAtoms() - maxTableRows_;
+	if (final < 0) final = 0;
+	ui.AtomTableScrollBar->setMaximum(final);
+	ui.AtomTableScrollBar->setPageStep(maxTableRows_);
+	
+	// Limit number of visible rows if necessary
+	ui.AtomTable->setRowCount((m->nAtoms() < maxTableRows_) ? m->nAtoms() : maxTableRows_);
 	
 	// Start the refresh
-	Pattern *p;
-	TTreeWidgetItem *item;
-	Refitem<TTreeWidgetItem,int> *ri;
+	currentRootId_ = ui.AtomTableScrollBar->value();
+// 	printf("Scrollbar value is now %i\n", atomId);
+	
+	Refitem<Atom,int> *refAtom = atomItems_.first();
 	Atom *i;
-	int mol, n, count;
-
-	if (listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates)))
+	for (int row = 0; row < ui.AtomTable->rowCount(); ++row)
 	{
-		// Clear the current list
-		ui.AtomTree->clear();
-		ui.AtomTree->clearAtomItems();
+		// Get atom pointer corresponding to scrollbar top position
+		i = m->atom(currentRootId_+row);
 		
-		// Redo column headings
-		ui.AtomTree->setColumnCount(1 + viewAtomId_+ viewAtomElement_+ viewAtomType_+ viewAtomX_+ viewAtomY_+ viewAtomZ_+ viewAtomQ_);
-		QStringList headerLabels;
-		headerLabels << (viewingByAtom_ ? "Atom" : "Pattern");
-		if (viewAtomId_) headerLabels << "ID";
-		if (viewAtomElement_) headerLabels << "El";
-		if (viewAtomType_) headerLabels << "FF";
-		if (viewAtomX_) headerLabels << "X";
-		if (viewAtomY_) headerLabels << "Y";
-		if (viewAtomZ_) headerLabels << "Z";
-		if (viewAtomQ_) headerLabels << "Q";
-		ui.AtomTree->setHeaderLabels(headerLabels);
-		
-		// If we're viewing all atoms, just add all atoms!
-		if (viewingByAtom_)
+		// Check reference
+		if (refAtom == NULL)
 		{
-			for (i = m->atoms(); i != NULL; i = i->next)
-			{
-				// Add the atom
-				item = ui.AtomTree->addTreeItem(ui.AtomTree);
-				item->data.set(VTypes::AtomData, i);
-				setColumns(item);
-				// Set the row selection property here.
-				item->setSelected(i->isSelected());
-			}
-		}
-		else
-		{
-			// We must have at least the default pattern definition...
-			m->createPatterns();
-			// Get pointer to first atom in model. We'll skip through it numerically in each pattern
-			for (p = m->patterns(); p != NULL; p = p->next)
-			{
-				// Create new root node for the pattern
-				TTreeWidgetItem *pat = new TTreeWidgetItem(ui.AtomTree);
-				ui.AtomTree->setItemExpanded(pat, TRUE);
-				pat->setText(0, p->name());
-				pat->data.set(VTypes::PatternData, p);
-				// Get first atom
-				i = p->firstAtom();
-				count = p->firstAtom()->id();
-				// Loop over atoms in molecule
-				for (n = 0; n<p->nAtoms(); n++)
-				{
-					// Create atom in the pattern root node
-					item = ui.AtomTree->addTreeItem(pat);
-					item->data.set(VTypes::AtomData, i);
-					setColumns(item);
-					if (i->isSelected()) item->setSelected(TRUE);
-					// Check related atoms in other molecules for selection state
-					for (mol = 1; mol<p->nMolecules(); mol++)
-					{
-						if (m->atom(count+mol*p->nAtoms())->isSelected() && (!item->isSelected()))
-						{
-							QBrush brush(Qt::Dense4Pattern);
-							item->setSelected(TRUE);
-							item->setForeground(3,brush);
-						}
-					}
-					count++;
-					i = i->next;
-				}
-			}
-		}
-		// Set new log points
-		listStructurePoint_ = m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates);
-		listSelectionPoint_ = m->changeLog.log(Log::Selection);
-	}
-	else if (listSelectionPoint_ != m->changeLog.log(Log::Selection))
-	{
-		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
-		if (viewingByAtom_)
-		{
-			for (ri = ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
-			{
-				i = (Atom*) ri->item->data.asPointer(VTypes::AtomData);
-				if (i != NULL) ri->item->setSelected(i->isSelected());
-			}
-		}
-		else
-		{
+			printf("Internal Error: Reference atom is NULL in AtomListWidget::refresh()\n");
 			refreshing_ = FALSE;
-			listSelectionPoint_ = -1;
-			listStructurePoint_ = -1;
-			refresh();
+			return;
 		}
-		listSelectionPoint_ = m->changeLog.log(Log::Selection);
+		
+		// Now check reference atom and update data if necessary
+		if (updateAtoms || (refAtom->item != i))
+		{
+			refAtom->item = i;
+			updateRow(row);
+		}
+
+		// Increase counters
+		refAtom = refAtom->next;
 	}
-	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
+
+	if (updateSel) updateSelection();
+	
+	// Set new log points
+	listStructurePoint_ = m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates);
+	listSelectionPoint_ = m->changeLog.log(Log::Selection);
+
+	// Resize columns to contents
+	for (int column = 0; column<displayItems_.nItems(); ++column) ui.AtomTable->resizeColumnToContents(column);
+
 	refreshing_ = FALSE;
 	msg.exit("AtomListWidget::refresh");
+}
+
+void AtomListWidget::on_AtomTableScrollBar_valueChanged(int value)
+{
+	listSelectionPoint_ = -1;
+	listStructurePoint_ = -1;
+	refresh();
 }
 
 void AtomListWidget::on_ViewStyleCombo_currentIndexChanged(int index)
@@ -251,7 +368,8 @@ void AtomListWidget::on_ViewElementCheck_clicked(bool checked)
 {
 	listSelectionPoint_ = -1;
 	listStructurePoint_ = -1;
-	viewAtomElement_ = ui.ViewElementCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomElementItem] = ui.ViewElementCheck->isChecked();
+	updateDisplayItems();
 	refresh();
 }
 
@@ -259,7 +377,8 @@ void AtomListWidget::on_ViewIdCheck_clicked(bool checked)
 {
 	listSelectionPoint_ = -1;
 	listStructurePoint_ = -1;
-	viewAtomId_ = ui.ViewIdCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomIdItem] = ui.ViewIdCheck->isChecked();
+	updateDisplayItems();
 	refresh();
 }
 
@@ -267,7 +386,8 @@ void AtomListWidget::on_ViewTypeCheck_clicked(bool checked)
 {
 	listSelectionPoint_ = -1;
 	listStructurePoint_ = -1;
-	viewAtomType_ = ui.ViewTypeCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomTypeItem] = ui.ViewTypeCheck->isChecked();
+	updateDisplayItems();
 	refresh();
 }
 
@@ -275,7 +395,8 @@ void AtomListWidget::on_ViewXCheck_clicked(bool checked)
 {
 	listSelectionPoint_ = -1;
 	listStructurePoint_ = -1;
-	viewAtomX_ = ui.ViewXCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomXItem] = ui.ViewXCheck->isChecked();
+	updateDisplayItems();
 	refresh();
 }
 
@@ -283,7 +404,8 @@ void AtomListWidget::on_ViewYCheck_clicked(bool checked)
 {
 	listSelectionPoint_ = -1;
 	listStructurePoint_ = -1;
-	viewAtomY_ = ui.ViewYCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomYItem] = ui.ViewYCheck->isChecked();
+	updateDisplayItems();
 	refresh();
 }
 
@@ -291,7 +413,8 @@ void AtomListWidget::on_ViewZCheck_clicked(bool checked)
 {
 	listSelectionPoint_ = -1;
 	listStructurePoint_ = -1;
-	viewAtomZ_ = ui.ViewZCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomZItem] = ui.ViewZCheck->isChecked();
+	updateDisplayItems();
 	refresh();
 }
 
@@ -299,25 +422,22 @@ void AtomListWidget::on_ViewChargeCheck_clicked(bool checked)
 {
 	listSelectionPoint_ = -1;
 	listStructurePoint_ = -1;
-	viewAtomQ_ = ui.ViewChargeCheck->isChecked();
+	visibleItems_[AtomListWidget::AtomQItem] = ui.ViewChargeCheck->isChecked();
+	updateDisplayItems();
 	refresh();
 }
 
 void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 {
-	peekScrollBar();
 	CommandNode::run(Command::ShiftUp, "i", 1);
 	refresh();
-	pokeScrollBar();
 	gui.update(GuiQt::CanvasTarget);
 }
 
 void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 {
-	peekScrollBar();
 	CommandNode::run(Command::ShiftDown, "i", 1);
 	refresh();
-	pokeScrollBar();
 	gui.update(GuiQt::CanvasTarget);
 }
 
@@ -335,101 +455,222 @@ void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
 	gui.update(GuiQt::CanvasTarget);
 }
 
-void AtomListWidget::peekScrollBar()
+//  the selection state in the model
+void AtomListWidget::toggleItem(Atom *i)
 {
+	// Swap selection status of atom, and update the list
+	if (i->isSelected()) listLastModel_->deselectAtom(i);
+	else listLastModel_->selectAtom(i);
+	updateSelection();
 }
 
-void AtomListWidget::pokeScrollBar()
+void AtomListWidget::tableMousePressEvent(QMouseEvent *event)
 {
-}
-
-// Return item under mouse (if any)
-TTreeWidgetItem *AtomListWidget::itemUnderMouse(const QPoint &pos)
-{
-	QTreeWidgetItem *qwi = ui.AtomTree->itemAt(pos);
-	if (qwi == NULL) return NULL;
-	else return (TTreeWidgetItem*) qwi;
-}
-
-// Toggle the selection state in the model
-void AtomListWidget::toggleItem(TTreeWidgetItem *twi)
-{
-	// Check for no item or header item
-	if (twi == NULL) return;
-	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
-	if (i == NULL) return;
-	bool state = twi->isSelected();
-	twi->setSelected(!state);
-	state ? listLastModel_->deselectAtom(i) : listLastModel_->selectAtom(i);
-}
-
-// Select tree widget item *and* model atom, provided the tree widget item is not selected already
-void AtomListWidget::selectItem(TTreeWidgetItem *twi)
-{
-	if (twi == NULL) return;
-	if (twi->isSelected()) return;
-	twi->setSelected(TRUE);
-	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
-	listLastModel_->selectAtom(i);
-}
-
-// Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
-void AtomListWidget::deselectItem(TTreeWidgetItem *twi)
-{
-	if (twi == NULL) return;
-	if (!twi->isSelected()) return;
-	twi->setSelected(FALSE);
-	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
-	listLastModel_->deselectAtom(i);
-}
-
-void AtomListWidget::treeMousePressEvent(QMouseEvent *event)
-{
-	if (!(event->buttons()&Qt::LeftButton)) return;
-	// Start an undo state for the model
-	listLastModel_->beginUndoState("Change selection through atomlist");
-	lastClicked_ = itemUnderMouse(event->pos());
-	// Check for header items to we can (un)collapse them or select all atoms within them
-	if (lastClicked_ != NULL)
+	if (!(event->buttons()&Qt::LeftButton))
 	{
-		// If the clicked item contains a pattern pointer, its a collapsible list item root node
-		if (lastClicked_->data.type() == VTypes::AtomData) toggleItem(lastClicked_);
-		else if (lastClicked_->data.type() == VTypes::PatternData)
-		{
-			// If the x-coordinate is less than 15, change the collapsed state of the item
-			if (event->x() < 15) lastClicked_->setExpanded(!lastClicked_->isExpanded());
-			else
-			{
-				if (event->modifiers()&Qt::ShiftModifier) for (int n=0; n < lastClicked_->childCount(); n++) deselectItem((TTreeWidgetItem*) lastClicked_->child(n));
-				else if (event->modifiers()&Qt::ControlModifier) for (int n=0; n < lastClicked_->childCount(); n++) toggleItem((TTreeWidgetItem*) lastClicked_->child(n));
-				else for (int n=0; n < lastClicked_->childCount(); n++) selectItem((TTreeWidgetItem*) lastClicked_->child(n));
-			}
-		}
-		else printf("Internal Error: Atomlist item contains an unrecognised pointer type.\n");
+		event->ignore();
+		return;
 	}
+
+	// Determine index of row under mouse, and whether it corresponds to a valid atom
+	int row = ui.AtomTable->rowAt(event->pos().y());
+
+	lastClicked_ = atomInRow(row);
 	lastHovered_ = lastClicked_;
+	if (lastClicked_ == NULL)
+	{
+		event->ignore();
+		return;
+	}
+
+	// Start an undo state for the model (if one doesn't already exist)
+	if (!listLastModel_->recordingUndoState()) listLastModel_->beginUndoState("Change selection through atomlist");
+	
+	toggleItem(lastClicked_);
 }
 
-void AtomListWidget::treeMouseReleaseEvent(QMouseEvent *event)
+void AtomListWidget::tableMouseReleaseEvent(QMouseEvent *event)
 {
-// 	printf("Mouse release event.\n");
+	bool shift = event->modifiers()&Qt::ShiftModifier;
+	int row = ui.AtomTable->rowAt(event->pos().y());
+	Atom *i = atomInRow(row);
+// 	printf("mouse release event. shift status is %i  %p  %p\n", shift, prevClicked_, i);
+
+	// If SHIFT was held, (de)select all atoms between the last clicked atom and this one
+	if (shift && (prevClicked_ != NULL) && (i != NULL))
+	{
+		// Determine IDs of first and last atom
+		int first = prevClicked_->id(), last = i->id();
+		if (first > last)
+		{
+			last = first;
+			first = i->id();
+		}
+
+		// Start an undo state for the model (if one doesn't already exist)
+		if (!listLastModel_->recordingUndoState()) listLastModel_->beginUndoState("Change selection through atomlist");
+
+// 		printf("First and last atoms are %i and %i\n", first, last);
+		for (int n=first; n<=last; ++n)
+		{
+			if (prevClicked_->isSelected()) listLastModel_->selectAtom(n);
+			else listLastModel_->deselectAtom(n);
+		}
+	}
+
+	prevClicked_ = lastClicked_;
 	lastHovered_ = NULL;
 	listLastModel_->endUndoState();
+	
+	refresh();
 	gui.update(GuiQt::CanvasTarget);
 }
 
-void AtomListWidget::treeMouseMoveEvent(QMouseEvent *event)
+void AtomListWidget::tableMouseMoveEvent(QMouseEvent *event)
 {
-	if (!(event->buttons()&Qt::LeftButton)) return;
-// 	printf("Mouse move event.\n");
-	TTreeWidgetItem *twi = itemUnderMouse(event->pos());
-	// If the current hovered item is the same as the last one, ignore it
-	if (twi != lastHovered_)
+	if (!(event->buttons()&Qt::LeftButton))
 	{
-		toggleItem(twi);
-		lastHovered_ = twi;
+		event->ignore();
+		return;
+	}
+
+	bool shift = event->modifiers()&Qt::ShiftModifier;
+	if (shift) return;
+	
+	int row = ui.AtomTable->rowAt(event->pos().y());
+	Atom *i = atomInRow(row);
+	
+	// If the hovered widget is NULL, then we are either above or below the visible widgets, so scroll the slider...
+	if (i == NULL)
+	{
+		int delta, y = event->pos().y();
+		int rowHeight = ui.AtomTable->rowHeight(0);
+		int oldValue = ui.AtomTableScrollBar->value();
+		int newValue = oldValue;
+
+		// Start an undo state for the model (if one doesn't already exist)
+		if (!listLastModel_->recordingUndoState()) listLastModel_->beginUndoState("Change selection through atomlist");
+
+		if (y < rowHeight) 
+		{
+			// Mouse at top (over header) so scroll up
+			delta = (rowHeight - y) / 2;
+			newValue -= delta;
+			if (newValue < 0) newValue = 0;
+			delta = oldValue - newValue;
+
+			// Before we set the scrollbar to the new value, set the selected state of the atoms between the last
+			// hovered one and the new position
+			bool lastSelected = lastHovered_->isSelected(); 
+			for (int n = 0; n < delta; ++n)
+			{
+				lastHovered_ = lastHovered_->prev;
+				printf("(De)Selecting atom %i\n", lastHovered_->id());
+				if (lastSelected) listLastModel_->selectAtom(lastHovered_);
+				else listLastModel_->deselectAtom(lastHovered_);
+			}
+		}
+		else
+		{	int row = ui.AtomTable->rowAt(event->pos().y());
+
+			// Mouse at bottom (over horizontal scroll bar area) so scroll down
+			delta = (y - (maxTableRows_*rowHeight)) / 2;
+			newValue += delta;
+			if (newValue > (listLastModel_->nAtoms()-maxTableRows_)) newValue = listLastModel_->nAtoms() - maxTableRows_;
+			delta = newValue - oldValue;
+
+			// Before we set the scrollbar to the new value, set the selected state of the atoms between the last
+			// hovered one and the new position
+			bool lastSelected = lastHovered_->isSelected(); 
+			for (int n = 0; n < delta; ++n)
+			{
+				lastHovered_ = lastHovered_->next;
+				printf("(De)Selecting atom %i\n", lastHovered_->id());
+				if (lastSelected) listLastModel_->selectAtom(lastHovered_);
+				else listLastModel_->deselectAtom(lastHovered_);
+			}
+		}
+
+		ui.AtomTableScrollBar->setValue(newValue);
+	}
+	else if (i != lastHovered_)
+	{
+		// If not NULL, and the current hovered item is not the same as the previous one, toggle the item
+		toggleItem(i);
+		lastHovered_ = i;
 		gui.update(GuiQt::CanvasTarget);
 	}
+}
+
+void AtomListWidget::tableMouseDoubleClickEvent(QMouseEvent *event)
+{
+	if (!(event->buttons()&Qt::LeftButton))
+	{
+		event->ignore();
+		return;
+	}
+
+	// Determine index of row under mouse, and whether it corresponds to a valid atom
+	int row = ui.AtomTable->rowAt(event->pos().y());
+
+	lastClicked_ = atomInRow(row);
+	lastHovered_ = lastClicked_;
+
+	QTableWidgetItem *item = ui.AtomTable->itemAt(event->pos());
+	if (item != NULL) ui.AtomTable->editItem(item);
+	
+	event->accept();
+}
+
+void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
+{
+	if (refreshing_) return;
+	int row = item->row(), column = item->column();
+	Atom *i = atomInRow(row);
+	if (i == NULL)
+	{
+		printf("Internal Error: NULL atom pointer in AtomListWidget::tableItemChanged.\n");
+		return;
+	}
+
+	// From the current visible columns list, determine where to poke the new value...
+	double valueD;
+	bool success;
+	Vec3<double> v;
+	int element;
+	switch (displayItems_[column]->value())
+	{
+		case (AtomListWidget::AtomXItem):
+		case (AtomListWidget::AtomYItem):
+		case (AtomListWidget::AtomZItem):
+			element = displayItems_[column]->value() - AtomListWidget::AtomXItem;
+			valueD = item->text().toDouble(&success);
+			v = i->r();
+			if (success)
+			{
+				listLastModel_->beginUndoState("Edit %c coordinate of atom %i", char(88+element), i->id()+1);
+				v[element] = valueD;
+				listLastModel_->positionAtom(i, v);
+				listLastModel_->endUndoState();
+			}
+			else item->setText(ftoa(v[element]));
+			break;
+		case (AtomListWidget::AtomQItem):
+			valueD = item->text().toDouble(&success);
+			if (success)
+			{
+				listLastModel_->beginUndoState("Edit charge of atom %i", i->id()+1);
+				listLastModel_->atomSetCharge(i, valueD);
+				listLastModel_->endUndoState();
+			}
+			else item->setText(ftoa(i->charge()));
+			break;
+		default:
+			printf("Internal Error: This column contains no editable data!\n");
+			break;
+	}
+
+	gui.update(GuiQt::CanvasTarget);
 }
 
 void AtomListWidget::closeEvent(QCloseEvent *event)
@@ -438,4 +679,17 @@ void AtomListWidget::closeEvent(QCloseEvent *event)
 	gui.toolBoxWidget->ui.AtomListButton->setChecked(FALSE);
 	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
+}
+
+void AtomListWidget::resizeEvent(QResizeEvent *event)
+{
+	recalculateRowSize();
+}
+
+void AtomListWidget::wheelEvent(QWheelEvent *event)
+{
+	// Grab current slider position
+	int pos = ui.AtomTableScrollBar->value();
+	pos -= ui.AtomTableScrollBar->pageStep() * (event->delta() / 120);
+	ui.AtomTableScrollBar->setValue(pos);
 }

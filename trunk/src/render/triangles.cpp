@@ -87,6 +87,7 @@ void TriangleChopper::storeTriangles(PrimitiveInfo* pinfo, Matrix& worldtransfor
 
 	Primitive *prim = pinfo->primitive();
 	if (prim == NULL) prim = pinfo->primitive(worldtransform);
+	if (prim->nDefinedVertices() == 0) return;
 
 	// For speed, different loops depending on type of vertexData...
 	if (prim->colouredVertexData())

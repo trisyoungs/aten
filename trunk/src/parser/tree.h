@@ -185,6 +185,8 @@ class Tree
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 	// Return local scope's variable list
 	const VariableList &localVariables() const;
+	// Return global scope's variable list
+	const VariableList &globalVariables() const;
 
 
 	/*
@@ -249,6 +251,8 @@ class Tree
 	int runCount_;
 
 	public:
+	// Set widget or global variable value
+	bool setAccessibleVariable(const char *name, const char *value);
 	// Add read option
 	void addReadOption(LineParser::ParseOption po);
 	// Remove read option

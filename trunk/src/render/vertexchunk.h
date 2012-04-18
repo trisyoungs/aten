@@ -32,7 +32,7 @@
 #endif
 #include "base/constants.h"
 
-#define VERTEXCHUNKSIZE 102
+#define VERTEXCHUNKSIZE 1020
 
 // Chunk of triangles
 class VertexChunk

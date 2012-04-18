@@ -62,6 +62,7 @@ set(qtproject_SRCS
   tcombobox_funcs.cpp
   tmenubutton_funcs.cpp
   tlistwidgetitem_funcs.cpp
+  tdoublespindelegate_funcs.cpp
   toolbaractions.cpp
   toolbox_funcs.cpp
   trajectory_funcs.cpp
@@ -118,11 +119,13 @@ SET(pro_MOC_HDRS
   vieweigenvector.h
   zmatrix.h
   tcanvas.uih
+  tdoublespindelegate.uih
   tcolourframe.uih
   tmenubutton.uih
   tprocess.uih
   tprompt.uih
   tradiogroup.uih
+  ttablewidget.uih
   ttreewidget.uih
 )
 QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)

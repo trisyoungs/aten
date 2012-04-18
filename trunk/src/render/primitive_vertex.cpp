@@ -204,7 +204,6 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 	w.normalise();
 
 	// TODO Normal calculation for cones will be incorrect
-	
 	for (i=1; i <= nstacks; ++i)
 	{
 		for (j = 1; j <= nslices; ++j)

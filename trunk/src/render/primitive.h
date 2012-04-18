@@ -30,6 +30,7 @@
 #include "templates/list.h"
 #include "render/vertexchunk.h"
 #include "base/matrix.h"
+#include "base/dnchar.h"
 
 // Forward Declarations
 class QGLContext;
@@ -100,6 +101,8 @@ class Primitive
 	List<PrimitiveInstance> instances_;
 	// Flag stating whether or not instances should be used for this primitive
 	bool useInstances_;
+	// Name of primitive (for easier bug-tracking)
+	Dnchar name_;
 
 	public:
 	// Clear existing data (including deleting arrays)
@@ -122,6 +125,10 @@ class Primitive
 	void pushInstance(const QGLContext *context);
 	// Pop topmost instance layer
 	void popInstance(const QGLContext *context);
+	// Set name of primitive
+	void setName(const char *s);
+	// Return name of primitive
+	const char *name();
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
 	

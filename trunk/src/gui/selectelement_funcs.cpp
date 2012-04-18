@@ -123,6 +123,11 @@ AtenSelectElement::AtenSelectElement(QWidget *parent) : QDialog(parent)
 	addCommonButtons(prefs.commonElements());
 }
 
+AtenSelectElement::~AtenSelectElement()
+{
+	if (elementButtons_ != NULL) delete[] elementButtons_;
+}
+
 QPushButton *AtenSelectElement::addCommonButton(int el)
 {
 	QPushButton *button = new QPushButton(this);

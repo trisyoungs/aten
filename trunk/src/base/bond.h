@@ -34,7 +34,7 @@ class Bond
 	// List pointers
 	Bond *prev, *next;
 	// Bond types
-	enum BondType { Any, Single, Double, Triple, Aromatic, nBondTypes };
+	enum BondType { Any = 0, Single, Double, Triple, Aromatic, nBondTypes };
 	// Bond type from text
 	static BondType bondType(const char *name, bool reportError = 0);
 	// Bond type from order

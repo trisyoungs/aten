@@ -94,6 +94,7 @@ Primitive::Primitive()
 	next = NULL;
 	nDefinedVertices_ = 0;
 	useInstances_ = prefs.instanceType() != PrimitiveInstance::NoInstance;
+	name_ = "<UnnamedPrimitive>";
 }
 
 // Destructor
@@ -134,6 +135,18 @@ int Primitive::nDefinedVertices()
 void Primitive::setType(GLenum type)
 {
 	type_ = type;
+}
+
+// Set name of primitive
+void Primitive::setName(const char *s)
+{
+	name_ = s;
+}
+
+// Return name of primitive
+const char *Primitive::name()
+{
+	return name_.get();
 }
 
 /*
@@ -265,13 +278,14 @@ void Primitive::pushInstance(const QGLContext *context)
 {
 	// Does this primitive use instances?
 	if (!useInstances_) return;
+
 	// Vertex buffer object or plain old display list?
 	if (prefs.instanceType() == PrimitiveInstance::VBOInstance)
 	{
 		// Prepare local array of data to pass to VBO
 		int offset;
 		GLuint idVBO;
-		if (nDefinedVertices_ == -1)
+		if (nDefinedVertices_ < 0)
 		{
 			printf("Error: No data in Primitive with which to create VBO.\n");
 			msg.exit("Primitive::pushInstance");
@@ -348,6 +362,10 @@ void Primitive::popInstance(const QGLContext *context)
 // Send to OpenGL (i.e. render)
 void Primitive::sendToGL()
 {
+	// If no vertices are defined, nothing to do...
+	if (nDefinedVertices_ == 0) return;
+	
+	// Check if using instances...
 	if (useInstances_)
 	{
 		// Grab topmost instance

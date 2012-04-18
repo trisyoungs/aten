@@ -1,7 +1,7 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
-	Copyright T. Youngs 2007-2012
+	*** TTableWidget - QTableWidget with mouse virtuals
+	*** src/gui/ttablewidget.uih
+	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
 
@@ -19,12 +19,26 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#ifndef ATEN_TTABLEWIDGET_H
+#define ATEN_TTABLEWIDGET_H
 
-#define ATENVERSION "1.8"
-#define ATENREVISION "1792"
-#define ATENDATE "Wed 18 Apr - 11:59"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#include "templates/reflist.h"
+#include "gui/ttreewidgetitem.h"
+#include <QtGui/QTableWidget>
+#include <QtCore/QObject>
+
+class TTableWidget : public QTableWidget
+{
+	Q_OBJECT
+
+	public:
+	TTableWidget(QWidget *parent) : QTableWidget(parent) {};
+
+	signals:
+	void mouseDoubleClickEvent(QMouseEvent *event);
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+};
 
 #endif

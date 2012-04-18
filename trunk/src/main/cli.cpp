@@ -116,6 +116,9 @@ Cli cliSwitches[] = {
 	{ Cli::NewModelSwitch,		'n',"new",		0,
 		"",
 		"Creates a new, empty model" },
+	{ Cli::NicknamesSwitch,		'\0',"nicknames",	0,
+		"",
+		"Show all available filter nicknames and quit" },
 	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
 		"",
 		"Prevent (re)calculation of bonding in the model" },
@@ -308,6 +311,11 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 						else return FALSE;
 					}
 					break;
+				// Display help
+				case (Cli::HelpSwitch):
+					printUsage();
+					return FALSE;
+					break;
 				// Restrict filter loading on startup
 				case (Cli::NoFiltersSwitch):
 					prefs.setLoadFilters(FALSE);
@@ -332,11 +340,6 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (Cli::NoListsSwitch):
 					msg.print("OpenGL display lists will not be used.\n");
 					prefs.setInstanceType(PrimitiveInstance::NoInstance);
-					break;
-				// Display help
-				case (Cli::HelpSwitch):
-					printUsage();
-					return FALSE;
 					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
@@ -534,11 +537,8 @@ int Aten::parseCli(int argc, char *argv[])
 						return -1;
 					}
 
-					// Loop over remaining arguments to set filter options
-					for (i = 1; i < parser.nArgs(); ++i)
-					{
-						if (!f->defaultDialog().setWidgetValue(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
-					}
+					// Loop over remaining arguments which are widget/global variable assignments
+					for (i = 1; i < parser.nArgs(); ++i) if (!f->setAccessibleVariable(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
 					
 					aten.setExportFilter(f);
 					if (aten.programMode() == Aten::BatchMode) aten.setProgramMode(Aten::BatchExportMode);
@@ -687,6 +687,15 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::NewModelSwitch):
 					m = aten.addModel();
 					m->enableUndoRedo();
+					break;
+				// Display filter nicknames and quit
+				case (Cli::NicknamesSwitch):
+					for (int ftype=0; ftype<FilterData::nFilterTypes; ++ftype)
+					{
+						printf("\n");
+						printValidNicknames( (FilterData::FilterType) ftype );
+					}
+					return -1;
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
