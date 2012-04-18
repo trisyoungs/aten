@@ -44,7 +44,7 @@ class LineParser
 // 	LineParser(const char *ifilename, bool outputstream = FALSE, bool directOutput = FALSE);
 	~LineParser();
 	// Parse Options
-	enum ParseOption { StripComments=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, UseBraces=32, nParseOptions=6 };
+	enum ParseOption { StripComments=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, UseBraces=32, NormalCommas=64, nParseOptions=7 };
 	static ParseOption parseOption(const char*);
 
 

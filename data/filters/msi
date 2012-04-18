@@ -8,8 +8,8 @@
 filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="msi", glob="*.msi", id=12)
 {
 	# Variable declarations
-	int n,cellvar,id,bondi,bondj;
-	string block,newblock,type,line,ident,data,a,b,c,el,name;
+	int n,cellvar,id,bondi,bondj,bondsymm;
+	string block,newblock,type,line,ident,data,a,b,c,el,name,sg;
 	vector r, f, axes[3];
 	double q;
 
@@ -34,18 +34,26 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 		if (ident <> "A")
 		{
 			if (type == "Model") newblock = "M";
-			else if (type == "Atom") { newblock = "A"; id = atoi(ident); }
-			else if (type == "Bond") newblock = "B";
+			else if (type == "Atom") { newblock = "A"; id = atoi(ident); el = ""; }
+			else if (type == "Bond") { newblock = "B"; bondsymm = FALSE; }
 			else newblock = "N";
 			# Check the old 'block' value and perform end tasks
 			if (block == "A")
 			{
-				newAtom(el, r.x, r.y, r.z);
-				setId(id);
-				setForces(f.x, f.y, f.z);
-				setCharge(q);
+				if (el == "") printf("Skipped atom (probably a symmetry copy)...\n");
+				else
+				{
+					newAtom(el, r.x, r.y, r.z);
+					setId(id);
+					setForces(f.x, f.y, f.z);
+					setCharge(q);
+				}
 			}
-			else if (block == "B") newBondId(bondi,bondj);
+			else if (block == "B")
+			{
+				if (bondsymm) printf("Skipped bond (probably a symmetry copy)...\n");
+				else newBondId(bondi,bondj);
+			}
 			else if (block == "M") newModel(name);
 			block = newblock;
 		}
@@ -59,6 +67,7 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 				else if (data == "A3") { axes[1].x = atof(a); axes[1].y = atof(b); axes[1].z = atof(c); ++cellvar; }
 				else if (data == "B3") { axes[2].x = atof(a); axes[2].y = atof(b); axes[2].z = atof(c); ++cellvar; }
 				else if (data == "C3") { axes[3].x = atof(a); axes[3].y = atof(b); axes[3].z = atof(c); ++cellvar; }
+				else if (data == "SpaceGroup") sg = a;
 			}
 			else if (block == "A")
 			{
@@ -73,6 +82,7 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 				# Bond block
 				if (data == "Atom1") bondi = atoi(a);
 				else if (data == "Atom2") bondj = atoi(a);
+				else if ((data == "SymType") && (a == "Symmetry")) bondsymm = TRUE;
 			}
 		}
 	}
@@ -82,6 +92,11 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 	{
 		cellAxes(axes[1].x, axes[1].y, axes[1].z, axes[2].x, axes[2].y, axes[2].z, axes[3].x, axes[3].y, axes[3].z);
 		fold();
+		if (sg != "")
+		{
+			spacegroup(sg);
+			pack();
+		}
 	}
 	else if (cellvar != 0) printf("Warning: Incomplete / mangled cell definition in file.");
 

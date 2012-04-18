@@ -18,9 +18,10 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 	int n,arg,cellspec,id_r[3],id_ts,id_lbl,id_gen,nread,inloop,nloopdata,fractional = TRUE;
 	double length[3],cellangle[3];
 
-	# Recognise quoting
+	# Recognise quoting, skip blanks, and don't split arguments when commas are encountered
 	addReadOption("skipblanks");
 	addReadOption("usequotes");
+	addReadOption("normalcommas");
 
 	model m = newModel("CifModel");
 	cellspec = 0;

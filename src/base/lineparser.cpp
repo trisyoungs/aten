@@ -28,7 +28,7 @@
 #include <stdarg.h>
 
 // Parse options
-const char *ParseOptionKeywords[LineParser::nParseOptions] = { "stripcomments", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies" };
+const char *ParseOptionKeywords[LineParser::nParseOptions] = { "stripcomments", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies", "normalcommas" };
 LineParser::ParseOption LineParser::parseOption(const char *s)
 {
 	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
@@ -395,14 +395,15 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 				break;
 			// Delimiters
 			// If we encounter one and arg length != 0 this signals the end of the argument.
+			case (','):	// Comma
+				if (optionMask&LineParser::NormalCommas)
+				{
+					tempArg_[arglen++] = c;
+					break;
+				}
 			case (9):	// Horizontal Tab
 			case (' '):	// Space
-			case (','):	// Comma
-				if (quotechar != '\0')
-				{
-					tempArg_[arglen] = c;
-					arglen ++;
-				}
+				if (quotechar != '\0') tempArg_[arglen++] = c;
 				else if (arglen != 0) done = TRUE;
 				break;
 			// Quote marks
@@ -417,21 +418,13 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 					hadquotes = TRUE;
 					done = TRUE;
 				}
-				else
-				{
-					tempArg_[arglen] = c;
-					arglen ++;
-				}
+				else tempArg_[arglen++] = c;
 				break;
 			// Curly brackets - treat in the same way as quotes
 			case ('{'):
 			case ('}'):
-				if (!(optionMask&LineParser::UseBraces))
-				{
-					// Just add as normal character
-					tempArg_[arglen] = c;
-					arglen ++;
-				}
+				// If explicitly not useing braces, add as normal character
+				if (!(optionMask&LineParser::UseBraces)) tempArg_[arglen++] = c;
 				else
 				{
 					// If the quotechar is a left brace and we have a right brace, stop quoting
@@ -441,11 +434,7 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 						break;
 					}
 					// If we are already quoting by some other means, add character and exit
-					if (quotechar != '\0')
-					{
-						tempArg_[arglen] = c;
-						arglen ++;
-					}
+					if (quotechar != '\0') tempArg_[arglen++] = c;
 					// No previous quoting, so begin quoting if '{'
 					if (c == '{') quotechar = '{';
 				}
@@ -454,8 +443,7 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
 				if (optionMask&LineParser::StripBrackets) break;
-				tempArg_[arglen] = c;
-				arglen ++;
+				tempArg_[arglen++] = c;
 				break;
 			// Comment markers
 			case ('#'):	// "#" Rest/all of line is a comment
@@ -464,12 +452,11 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 				break;
 			// Normal character
 			default: 
-				tempArg_[arglen] = c;
-				arglen ++;
+				tempArg_[arglen++] = c;
 				break;
 		}
 		// Increment line position
-		linePos_++;
+		++linePos_;
 		if (done || failed) break;
 	}
 	// Finalise argument
