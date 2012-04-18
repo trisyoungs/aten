@@ -401,7 +401,21 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 		msg.exit("PartitioningScheme::setVariable");
 		return FALSE;
 	}
-	bool result = partitionFunction_->defaultDialog().setWidgetValue(name, value);
+	// Search for global variable by that name...
+	bool result;
+	Variable *var = partitionFunction_->globalVariables().find(name);
+	if (var != NULL)
+	{
+		msg.print(Messenger::Verbose, "Found global variable '%s' in partitioning scheme '%s' - setting value to '%s'\n", name, name_.get(), value);
+		ReturnValue rv(value);
+		var->set(rv);
+		result = TRUE;
+	}
+	else
+	{
+		result = partitionFunction_->defaultDialog().setWidgetValue(name, value);
+	}
+
 	if (result) ++changeLog_;
 	msg.exit("PartitioningScheme::setVariable");
 	return result;

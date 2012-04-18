@@ -75,10 +75,13 @@ Primitive *PrimitiveInfo::primitive()
 Primitive *PrimitiveInfo::primitive(Matrix &modeltransform)
 {
 	// Determine LOD for primitive based on supplied transform and stored matrix
-	Matrix A = modeltransform * localTransform_;
-	// If z is greater than 0 (i.e. it's behind the viewer), we are rendering to an offscreen bitmap, or 
-	if ((A[14] > 0) || (-A[14] < prefs.levelOfDetailStartZ())) return &primitiveGroup_->primitive(0);
-	return &primitiveGroup_->primitive(int((-A[14]-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth()));
+	double z = modeltransform[2]*localTransform_[12] + modeltransform[6]*localTransform_[13] + modeltransform[10]*localTransform_[14] + modeltransform[14]*localTransform_[15];
+	// If z is greater than 0 (i.e. it's behind the viewer), we are rendering to an offscreen bitmap, or
+	int lod;
+	if ((z > 0) || (-z < prefs.levelOfDetailStartZ())) lod = 0;
+	else lod = (-z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth();
+	if (lod >= prefs.levelsOfDetail()) lod = prefs.levelsOfDetail()-1;
+	return &primitiveGroup_->primitive(lod);
 }
 
 // Return pointer to best primitive in the group

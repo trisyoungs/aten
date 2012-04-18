@@ -141,6 +141,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 		m->setFilename(saveModelFilename.get());
 		// Temporarily disable undo/redo for the model, save, and re-enable
 		m->disableUndoRedo();
+		
 		if (saveModelFilter->executeWrite(saveModelFilename.get()))
 		{
 			m->changeLog.updateSavePoint();

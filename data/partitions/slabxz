@@ -5,7 +5,7 @@ string description = "Slab in XZ Plane";
 # Number of partitions
 int npartitions = 2;
 
-# A partition may contain options set through the defaultDialog as follows
+# A partition may contain options set through a function called partitionOptions()...
 global double start = 0.4, end = 0.6;
 int partitionOptions()
 {

@@ -184,6 +184,34 @@ bool Tree::finalise()
 // Create / Execute
 */
 
+// Set widget or global variable value
+bool Tree::setAccessibleVariable(const char *name, const char *value)
+{
+	ReturnValue rv;
+	bool result = FALSE;
+	// Check for a widget first, then for a global variable
+	TreeGuiWidget *w = defaultDialog().findWidget(name);
+	if (w != NULL)
+	{
+		msg.print(Messenger::Verbose, "Found default dialog widget '%s' - setting value to '%s'\n", name, value);
+		result = defaultDialog().setWidgetValue(name, value);
+	}
+	else
+	{
+		Variable *var = globalVariables().find(name);
+		if (var != NULL)
+		{
+			msg.print(Messenger::Verbose, "Found global variable '%s' in filter '%s' - setting value to '%s'\n", name, value);
+			rv = value;
+			result = var->set(rv);
+		}
+	}
+	
+	// Success?
+	if (!result) msg.print("Error: Failed to find a widget (or a global variable) named '%s' in the current target.\n", name);
+	return result;
+}
+
 // Add read option
 void Tree::addReadOption(LineParser::ParseOption po)
 {
@@ -877,6 +905,12 @@ TreeNode *Tree::wrapVariable(Variable *var, TreeNode *arrayindex)
 const VariableList &Tree::localVariables() const
 {
 	return localScope_->variables;
+}
+
+// Return global scope's variable list
+const VariableList &Tree::globalVariables() const
+{
+	return parent_->globalScope().variables;
 }
 
 /*

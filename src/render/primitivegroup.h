@@ -39,8 +39,10 @@ class PrimitiveGroup
 	private:
 	// Array of Primitives, corresponding to different levels of detail
 	Primitive *primitives_;
-	// Number of primitives in array (copied from Prefs)
-	int nPrimitives_;
+	// Number of levels of detail catered for by this primitive (number of primitives in array)
+	int nLevelsOfDetail_;
+	// Base name of primitive group (for bug-tracking)
+	Dnchar name_;
 
 	public:
 	// Clear old primitives array and allocate new one
@@ -51,6 +53,8 @@ class PrimitiveGroup
 	void popInstance(const QGLContext *context);
 	// Return primitive corresponding to level of detail specified
 	Primitive &primitive(int lod);
+	// Set name of primitive group
+	void setName(const char *s);
 	// Send to OpenGL (i.e. render) at specified level of detail
 	void sendToGL(int lod);
 };

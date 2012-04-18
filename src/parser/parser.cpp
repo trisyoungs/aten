@@ -41,6 +41,7 @@ CommandParser::~CommandParser()
 // Reset values in parser, ready for next source
 void CommandParser::reset()
 {
+	parser_.closeFiles();
 	source_ = StringSource;
 	stringListSource_ = NULL;
 	stringPos_ = -1;
@@ -253,7 +254,7 @@ bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead
 	return result;
 }
 
-// Fill target forest from specified character string
+// Fill target forest from specified file
 bool CommandParser::generateFromFile(Program *prog, const char *filename, bool dontpushtree, bool clearExisting)
 {
 	msg.enter("CommandParser::generateFromFile");

@@ -37,6 +37,7 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Add '--nicknames' switch</li>
 <li>Add 'selectionGrowAtom' command.</li>
 <li>Update Build Window graphic and description.</li>
 <li>New dialog code description </li>

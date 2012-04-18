@@ -879,6 +879,7 @@ void AtenPrefs::on_ModelUpdateSpin_valueChanged(int value)
 
 void AtenPrefs::updateParameterTable()
 {
+	if (!isVisible()) return;
 	msg.enter("AtenPrefs::updateParameterTable");
 	int row = ui.FunctionalFormList->currentRow();
 	if (row == -1)

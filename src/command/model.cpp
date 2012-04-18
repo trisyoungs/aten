@@ -247,12 +247,9 @@ bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			msg.print("Not loaded.\n");
 			return FALSE;
 		}
-		// Loop over remaining arguments
-		ReturnValue value;
-		for (int n = 1; n < parser.nArgs(); ++n)
-		{
-			if (!filter->defaultDialog().setWidgetValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
-		}
+		
+		// Loop over remaining arguments which are widget/global variable assignments
+		for (int n = 1; n < parser.nArgs(); ++n) if (!filter->setAccessibleVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 	}
 	else filter = aten.probeFile(c->argc(0), FilterData::ModelImport);
 	rv.set(0);
@@ -381,12 +378,8 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 
-	// Loop over remaining arguments
-	ReturnValue value;
-	for (int n = 1; n < parser.nArgs(); ++n)
-	{
-		if (!filter->defaultDialog().setWidgetValue(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
-	}
+	// Loop over remaining arguments which are widget/global variable assignments
+	for (int n = 1; n < parser.nArgs(); ++n) if (!filter->setAccessibleVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 	
 	obj.rs()->setFilter(filter);
 	obj.rs()->setFilename(c->argc(1));

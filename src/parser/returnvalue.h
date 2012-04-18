@@ -30,13 +30,14 @@
 class ReturnValue
 {
 	public:
-	// Constructor
+	// Constructors / Destructor
 	ReturnValue();
 	ReturnValue(int i);
 	ReturnValue(double d);
 	ReturnValue(const char *s);
 	ReturnValue(Vec3<double> v);
 	ReturnValue(VTypes::DataType type, void *ptr);
+	~ReturnValue();
 	// Operator=
 	void operator=(const ReturnValue &rv);
 	void operator=(double d);

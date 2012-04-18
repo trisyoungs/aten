@@ -68,8 +68,9 @@ class AtenSelectElement : public QDialog
 	// Widgets
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AtenSelectElement(QWidget *parent = 0);
+	~AtenSelectElement();
 	// Main form declaration
 	Ui::SelectElementDialog ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)

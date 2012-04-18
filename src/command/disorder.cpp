@@ -30,18 +30,18 @@
 bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	
 	// Parse the first option so we can get at any options
 	LineParser parser;
 	parser.getArgsDelim(0, c->argc(0));
+	
 	// First argument should always be the scheme name
 	PartitioningScheme *scheme = aten.findPartitioningScheme(parser.argc(0));
 	if (scheme == NULL) return FALSE;
-	// Loop over remaining arguments
-	ReturnValue value;
-	for (int n = 1; n < parser.nArgs(); ++n)
-	{
-		if (!scheme->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
-	}
+	
+	// Loop over remaining arguments (widget/global variable assignments)
+	for (int n = 1; n < parser.nArgs(); ++n) if (!scheme->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+	
 	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
 	rv.reset();
 	bool result = mc.disorder(obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE);

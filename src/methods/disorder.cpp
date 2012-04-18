@@ -511,7 +511,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	}
 	targetModel_->printPatterns();
 	targetModel_->describeAtoms();
-targetModel_->printLogs();
+
 	msg.enter("MonteCarlo::disorder");
 	return TRUE;
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>AtomListWidget</class>
  <widget class="QDockWidget" name="AtomListWidget">
@@ -5,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
+    <width>272</width>
     <height>320</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>270</width>
-    <height>217</height>
+    <width>272</width>
+    <height>222</height>
    </size>
   </property>
   <property name="font">
@@ -31,54 +32,65 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="spacing">
+    <property name="margin">
      <number>2</number>
     </property>
-    <property name="margin">
-     <number>4</number>
-    </property>
     <item>
-     <widget class="TTreeWidget" name="AtomTree">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
       </property>
-      <property name="selectionMode">
-       <enum>QAbstractItemView::MultiSelection</enum>
-      </property>
-      <column>
-       <property name="text">
-        <string>Pattern</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>ID</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>E</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>X</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Y</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Z</string>
-       </property>
-      </column>
-     </widget>
+      <item>
+       <widget class="TTableWidget" name="AtomTable">
+        <property name="sizeIncrement">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="mouseTracking">
+         <bool>true</bool>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="showDropIndicator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="rowCount">
+         <number>0</number>
+        </property>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>15</number>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QScrollBar" name="AtomTableScrollBar">
+        <property name="sizeIncrement">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="_2">
@@ -349,9 +361,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>gui/ttreewidget.uih</header>
+   <class>TTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>gui/ttablewidget.uih</header>
   </customwidget>
  </customwidgets>
  <resources>

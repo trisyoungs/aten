@@ -117,6 +117,12 @@ void Model::endUndoState()
 	msg.exit("Model::endUndoState");
 }
 
+// Return whether an undo state is currently being recorded
+bool Model::recordingUndoState()
+{
+	return (recordingState_ != NULL);
+}
+
 // Perform actions in current Undo state
 void Model::undo()
 {

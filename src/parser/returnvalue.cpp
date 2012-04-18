@@ -167,6 +167,11 @@ void ReturnValue::operator=(const char *s)
 	valueS_ = s;
 }
 
+ReturnValue::~ReturnValue()
+{
+	clearArrayData();
+}
+
 // Clear any current array data
 void ReturnValue::clearArrayData()
 {
