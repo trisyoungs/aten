@@ -50,10 +50,9 @@ int MethodSd::nCycles() const
 // Minimise Energy w.r.t. coordinates by Steepest Descent
 void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 {
-	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodSd::minimise");
 	int cycle, nattempts;
-	double oldEnergy, newEnergy, deltaEnergy, oldForce, newForce, deltaForce, stepsize;
+	double oldEnergy, currentEnergy, deltaEnergy, lastPrintedEnergy, oldForce, newForce, deltaForce, stepsize;
 	bool lineDone, converged, success;
 	Dnchar etatext;
 
@@ -68,12 +67,13 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	}
 	
 	// Calculate initial reference energy and forces
-	newEnergy = srcmodel->totalEnergy(srcmodel, success);
+	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	if (!success)
 	{
 	        msg.exit("MethodSd::minimise");
 	        return;
 	}
+	lastPrintedEnergy = currentEnergy;
 	srcmodel->energy.print();
 
 	converged = FALSE;
@@ -87,7 +87,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	newForce = srcmodel->rmsForce();
 
 	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
-	msg.print("Init  %12.5e       ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), gui.exists() ? "" : "--:--:--");
+	msg.print("Init  %12.5e       ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), gui.exists() ? "" : "--:--:--");
 	int pid = progress.initialise("Minimising (SD)", nCycles_, !gui.exists());
 
 	stepsize = 1.0;
@@ -98,7 +98,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 		else
 		{
 			// Simple method begins here
-			oldEnergy = newEnergy;
+			oldEnergy = currentEnergy;
 			oldForce = newForce;
 
 			// Minimise along gradient vector
@@ -111,19 +111,19 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 				{
 					++nattempts;
 					gradientMove(srcmodel, stepsize);
-					newEnergy = srcmodel->totalEnergy(&tempModel_, success);
-					if (newEnergy > oldEnergy) stepsize *= 0.5;
-				} while (newEnergy > oldEnergy);
+					currentEnergy = srcmodel->totalEnergy(&tempModel_, success);
+					if (currentEnergy > oldEnergy) stepsize *= 0.5;
+				} while (currentEnergy > oldEnergy);
 				// If the very first attempt was successful, increase the stepsize again
 				if (nattempts == 1) stepsize *= 1.5;
 			}
-			else newEnergy = lineMinimise(srcmodel);
+			else currentEnergy = lineMinimise(srcmodel);
 			srcmodel->copyAtomData(&tempModel_, Atom::PositionData);
 
 			// Calculate forces ready for next cycle
 			srcmodel->calculateForces(srcmodel);
 			newForce = srcmodel->rmsForce();
-			deltaEnergy = newEnergy - oldEnergy;
+			deltaEnergy = currentEnergy - oldEnergy;
 			deltaForce = newForce - oldForce;
 
 			// Check convergence criteria
@@ -136,7 +136,11 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, newEnergy, deltaEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
+		if (prefs.shouldUpdateEnergy(cycle+1))
+		{
+			msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
+			lastPrintedEnergy = currentEnergy;
+		}
 
 		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
 
@@ -147,8 +151,9 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	if (converged) msg.print("Steepest descent converged in %i steps.\n",cycle+1);
 	else msg.print("Steepest descent did not converge within %i steps.\n",nCycles_);
 	msg.print("Final energy:\n");
-	newEnergy = srcmodel->totalEnergy(srcmodel, success);
+	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
+	
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 // 	srcmodel->calculateForces(srcmodel);
 	srcmodel->updateMeasurements();

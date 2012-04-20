@@ -75,6 +75,7 @@ bool AtenForm::runSaveModelDialog()
 	static QString selectedFilter(aten.filters(FilterData::ModelExport)->item->filter.name());
 	static QDir currentDirectory_(aten.workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(), saveModelFilters, &selectedFilter);
+
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -137,6 +138,11 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	if (runSaveModelDialog())
 	{
 		m = aten.currentModelOrFrame();
+		if (m == NULL)
+		{
+			printf("Internal Error: Model pointer is NULL in AtenForm::on_actionFileSaveAs_triggered.\n");
+			return;
+		}
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
 		// Temporarily disable undo/redo for the model, save, and re-enable

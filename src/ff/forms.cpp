@@ -80,15 +80,15 @@ bool Combine::regenerateEquations()
 // Execute combination rule with parameters specified
 double Combine::combine(Combine::CombinationRule cr, double a, double b)
 {
-	msg.enter("Combine::combineParameters");
+	msg.enter("Combine::combine");
 	ReturnValue rv;
 	if (!combinationRules_.executeGlobalFunction(Combine::combinationRule(cr), rv, "dd", a, b))
 	{
 		printf("Internal Error: Couldn't find function corresponding to combination rule.\n");
-		msg.exit("Forcefield::combineParameters");
+		msg.exit("Combine::combine");
 		return 0.0;
 	}
-	msg.exit("Combine::combineParameters");
+	msg.exit("Combine::combine");
 	return rv.asDouble();
 }
 

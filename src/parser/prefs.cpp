@@ -138,6 +138,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "transparencyBinWidth",	VTypes::DoubleData,		0, FALSE },
 	{ "transparencyCorrect",	VTypes::IntegerData,		0, FALSE },
 	{ "transparencyNBins",		VTypes::IntegerData,		0, FALSE },
+	{ "transparentSelection",	VTypes::IntegerData,		0, FALSE },
 	{ "unitCellAxesColour",		VTypes::DoubleData,		4, FALSE },
 	{ "unitCellColour",		VTypes::DoubleData,		4, FALSE },
 	{ "useFrameBuffer",		VTypes::IntegerData,		0, FALSE },
@@ -538,6 +539,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::TransparencyNBins):
 			rv.set( ptr->transparencyNBins() );
+			break;
+		case (PreferencesVariable::TransparentSelection):
+			rv.set( ptr->transparentSelectionStyle() );
 			break;
 		case (PreferencesVariable::UnitCellAxesColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellAxesColour)[arrayIndex-1] );
@@ -1009,6 +1013,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::TransparencyNBins):
 			ptr->setTransparencyNBins( newvalue.asInteger() );
+			break;
+		case (PreferencesVariable::TransparentSelection):
+			ptr->setTransparentSelectionStyle( newvalue.asInteger() );
 			break;
 		case (PreferencesVariable::UnitCellAxesColour):
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(n, result));

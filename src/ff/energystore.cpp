@@ -354,13 +354,13 @@ void EnergyStore::print()
 		return;
 	}
 	msg.print("Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
-	msg.print("        Bond : %13.6f\n",totalBond_);
-	msg.print("       Angle : %13.6f\n",totalAngle_);
-	msg.print("Urey-Bradley : %13.6f\n",totalUreyBradley_);
-	msg.print("     Torsion : %13.6f\n",totalTorsion_);
-	msg.print("         VDW : %13.6f (tail contribution : %13.6f)\n",totalVdw_,vdwTail_);
-	msg.print("        Elec : %13.6f\n",totalElectrostatic_);
-	msg.print("       TOTAL : %13.6f\n",total_);
+	msg.print("        Bond : %13.6e\n",totalBond_);
+	msg.print("       Angle : %13.6e\n",totalAngle_);
+	msg.print("Urey-Bradley : %13.6e\n",totalUreyBradley_);
+	msg.print("     Torsion : %13.6e\n",totalTorsion_);
+	msg.print("         VDW : %13.6e (tail contribution : %13.6e)\n",totalVdw_,vdwTail_);
+	msg.print("        Elec : %13.6e\n",totalElectrostatic_);
+	msg.print("       TOTAL : %13.6e\n",total_);
 	msg.exit("EnergyStore::print");
 }
 
@@ -389,11 +389,11 @@ void EnergyStore::printEwald()
 		return;
 	}
 	msg.print("Ewald Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
-	msg.print(" Real : %13.6f\n",totalEwaldReal_);
-	msg.print("Recip : %13.6f\n",totalEwaldRecip_);
-	msg.print(" Self : %13.6f\n",totalEwaldSelf_);
-	msg.print("  Mol : %13.6f\n",totalEwaldMol_);
-	msg.print("TOTAL : %13.6f\n",totalElectrostatic_);
+	msg.print(" Real : %13.6e\n",totalEwaldReal_);
+	msg.print("Recip : %13.6e\n",totalEwaldRecip_);
+	msg.print(" Self : %13.6e\n",totalEwaldSelf_);
+	msg.print("  Mol : %13.6e\n",totalEwaldMol_);
+	msg.print("TOTAL : %13.6e\n",totalElectrostatic_);
 	msg.exit("EnergyStore::printEwald");
 }
 

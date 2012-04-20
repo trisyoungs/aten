@@ -170,7 +170,7 @@ class RenderEngine
 	// Sort and render filtered polygons by depth
 	void sortAndSendGL();
 	// Render bond
-	void renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b = NULL);
+	void renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b = NULL, bool transparentSel = FALSE, GLfloat *penColour = NULL);
 	// Render basic model information (atoms, bonds, labels)
 	void renderModel(Model *source, Matrix basetransform = Matrix());
 	// Render model cell
