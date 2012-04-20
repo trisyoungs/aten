@@ -27,7 +27,6 @@
 // Probe model
 Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 {
-	// From the supplied filename and file type, determine (as best we can) the format of the file
 	msg.enter("Aten::probeFile");
 	// Before we do the proper checking, make sure that the file exists and is readable
 	ifstream probefile;
@@ -50,7 +49,7 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 	const char *dotpos;
 	Dnchar nameonly, *d;
 	Refitem<Tree,int> *ri;
-	Tree *t = NULL;
+	Tree *f = NULL, *result = NULL;
 
 	// Get position of file extention and pure filename
 	dotpos = strrchr(filename,'.');
@@ -60,33 +59,33 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 	// Go through list of filters and do checks...
 	for (ri = filters_[probetype].first(); ri != NULL; ri = ri->next)
 	{
-		t = ri->item;
+		f = ri->item;
 
 		// Check filename extensions *or* exact names (if either were provided)
-		if (t->filter.extensions() != NULL)
+		if (f->filter.extensions() != NULL)
 		{
 			// If a file extension is not present on the filename, then the filter is not a match
 			if (dotpos == NULL) continue;
 			// Otherwise, try to match extension - if no match, then the filter is not a match
-			for (d = t->filter.extensions(); d != NULL; d = d->next) if (*d == dotpos) break;
+			for (d = f->filter.extensions(); d != NULL; d = d->next) if (*d == dotpos) break;
 			if (d == NULL) continue;
 		}
-		else if (t->filter.exactNames() != NULL)
+		else if (f->filter.exactNames() != NULL)
 		{
-			for (d = t->filter.exactNames(); d != NULL; d = d->next) if (*d == nameonly) break;
+			for (d = f->filter.exactNames(); d != NULL; d = d->next) if (*d == nameonly) break;
 			if (d == NULL) continue;
 		}
 		
 		// Try to match text within files
-		if (t->filter.searchStrings() != NULL)
+		if (f->filter.searchStrings() != NULL)
 		{
 			bool found = FALSE;
 			parser.openInput(filename);
-			for (d = t->filter.searchStrings(); d != NULL; d = d->next)
+			for (d = f->filter.searchStrings(); d != NULL; d = d->next)
 			{
 				// Make sure file is completely rewound
 				parser.rewind();
-				for (n = 0; n<t->filter.nLinesToSearch(); n++)
+				for (n = 0; n<f->filter.nLinesToSearch(); n++)
 				{
 					m = parser.readNextLine(0);
 					if (m == -1) break;
@@ -109,11 +108,12 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 		}
 
 		// If we reach this point, then the filter is a match
+		result = f;
 		break;
 	}
 
-	if (t == NULL) msg.print("Couldn't determine format of file '%s'.\n",filename);
-	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n", t->filter.name());
+	if (result == NULL) msg.print("Couldn't determine format of file '%s'.\n",filename);
+	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n", result->filter.name());
 	msg.exit("Aten::probeFile");
-	return t;
+	return result;
 }
