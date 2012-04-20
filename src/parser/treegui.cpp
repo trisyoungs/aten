@@ -1315,7 +1315,6 @@ TreeGui::TreeGui() : TreeGuiWidget()
 // Destructor
 TreeGui::~TreeGui()
 {
-	if (qtTreeGui_ != NULL) delete qtTreeGui_;
 }
 
 // Return qtTreeGui pointer
