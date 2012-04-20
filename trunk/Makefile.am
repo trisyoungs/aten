@@ -5,7 +5,7 @@ SUFFIXES: .dt
 .dt.desktop:
 	sed -e "s:PREFIX:@INSTALLDIR@:" -e "s:VERSION:@VERSION@:" $< > $@
 
-EXTRA_DIST = src/gui/icons/*.* data/ff/* data/fftesting/* data/filters/* data/includes/* data/partitions/* data/test/* data/scripts/* TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt desktop.cmake Aten.dt extra/* data/fragments/*/*.akf
+EXTRA_DIST = src/gui/icons/*.* data/ff/* data/fftesting/* data/filters/* data/includes/* data/partitions/* data/test/* data/scripts/* TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt desktop.cmake Aten.dt extra/* data/fragments/*/*
 
 atendir = $(datadir)/aten
 aten_DATA = src/gui/icons/aten.png
@@ -31,12 +31,18 @@ scripts_DATA = data/scripts/*
 partitionsdir = $(atendir)/partitions
 partitions_DATA = data/partitions/*
 
+fragmentsroot = $(atendir)/fragments
+fragments1dir = $(fragmentsroot)/alkyl
+fragments1_DATA = data/fragments/alkyl/*
+fragments2dir = $(fragmentsroot)/aromatics
+fragments2_DATA = data/fragments/aromatics/*
+fragments3dir = $(fragmentsroot)/il-anions
+fragments3_DATA = data/fragments/il-anions/*
+fragments4dir = $(fragmentsroot)/il-cations
+fragments4_DATA = data/fragments/il-cations/*
+fragments5dir = $(fragmentsroot)/rings
+fragments5_DATA = data/fragments/rings/*
+
 desktopdir = @BUILDDIR@/usr/share/applications
 desktop_DATA = Aten.desktop
 
-install-data-hook:
-	mkdir $(DESTDIR)$(atendir)/fragments
-	cp -r data/fragments/* $(DESTDIR)$(atendir)/fragments/
-
-uninstall-hook:
-	rm -rf $(atendir)/fragments

@@ -340,8 +340,6 @@ void GuiQt::run()
 	// Enter main message processing loop
 	application_->exec();
 
-// 	delete mainWindow_;
-
 	msg.exit("GuiQt::run");
 }
 

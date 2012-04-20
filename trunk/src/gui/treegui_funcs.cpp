@@ -339,7 +339,7 @@ bool QtWidgetObject::addWidget(QtWidgetObject *qtwo, int l, int t, int addToWidt
 	}
 	else
 	{
-		qtwo->labelWidget_ = new QLabel(qtwo->labelText_.get());
+		qtwo->labelWidget_ = new QLabel(qtwo->labelText_.get(), qtwo->qWidget_);
 		qtwo->labelWidget_->setMinimumHeight(WIDGETHEIGHT);
 		qtwo->labelWidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 		layout_->addWidget(qtwo->labelWidget_, nextTop_, nextLeft_, 1, 1, Qt::AlignRight);
@@ -380,7 +380,7 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
 */
 
 // Constructor
-AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog(NULL)
+AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog(gui.mainWindow())
 {
 	updating_ = FALSE;
 // 	setVisible(FALSE);
@@ -656,7 +656,7 @@ QGridLayout *AtenTreeGuiDialog::addLayout(QWidget* widget)
 QtWidgetObject *AtenTreeGuiDialog::addButton(TreeGuiWidget* widget, const char* label)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QPushButton *button = new QPushButton;
+	QPushButton *button = new QPushButton(this);
 	qtwo->set(widget, button);
 	button->setText(label);
 	button->setEnabled(widget->enabled());
@@ -672,7 +672,7 @@ QtWidgetObject *AtenTreeGuiDialog::addButton(TreeGuiWidget* widget, const char* 
 QtWidgetObject *AtenTreeGuiDialog::addCheck(TreeGuiWidget* widget, const char* label)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QCheckBox *check = new QCheckBox;
+	QCheckBox *check = new QCheckBox(this);
 	qtwo->set(widget, check);
 	check->setText(label);
 	check->setChecked(widget->valueI());
@@ -689,7 +689,7 @@ QtWidgetObject *AtenTreeGuiDialog::addCheck(TreeGuiWidget* widget, const char* l
 QtWidgetObject *AtenTreeGuiDialog::addCombo(TreeGuiWidget* widget, const char* label)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QComboBox *combo = new QComboBox;
+	QComboBox *combo = new QComboBox(this);
 	qtwo->set(widget, combo, label);
 	// Add items to combo and set current index
 	for (Dnchar *d = widget->items(); d != NULL; d = d->next) combo->addItem(d->get());
@@ -715,7 +715,7 @@ QtWidgetObject *AtenTreeGuiDialog::addDialogLayout(TreeGui *treeGui)
 QtWidgetObject *AtenTreeGuiDialog::addDoubleSpin(TreeGuiWidget* widget, const char* label, double step)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QDoubleSpinBox *spin = new QDoubleSpinBox;
+	QDoubleSpinBox *spin = new QDoubleSpinBox(this);
 	qtwo->set(widget, spin, label);
 	spin->setRange(widget->minimumD(), widget->maximumD());
 	spin->setValue(widget->valueD());
@@ -734,7 +734,7 @@ QtWidgetObject *AtenTreeGuiDialog::addDoubleSpin(TreeGuiWidget* widget, const ch
 QtWidgetObject *AtenTreeGuiDialog::addEdit(TreeGuiWidget *widget, const char *label)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QLineEdit *edit = new QLineEdit;
+	QLineEdit *edit = new QLineEdit(this);
 	qtwo->set(widget, edit, label);
 	edit->setText(widget->text());
 	edit->setEnabled(widget->enabled());
@@ -780,7 +780,7 @@ QtWidgetObject *AtenTreeGuiDialog::addGroup(TreeGuiWidget *widget, const char *l
 QtWidgetObject *AtenTreeGuiDialog::addIntegerSpin(TreeGuiWidget* widget, const char* label, int step)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QSpinBox *spin = new QSpinBox;
+	QSpinBox *spin = new QSpinBox(this);
 	qtwo->set(widget, spin, label);
 	spin->setRange(widget->minimumI(), widget->maximumI());
 	spin->setValue(widget->valueI());
@@ -798,7 +798,7 @@ QtWidgetObject *AtenTreeGuiDialog::addIntegerSpin(TreeGuiWidget* widget, const c
 QtWidgetObject *AtenTreeGuiDialog::addLabel(TreeGuiWidget *widget, const char *text)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QLabel *label = new QLabel;
+	QLabel *label = new QLabel(this);
 	qtwo->set(widget, label, text);
 	label->setText(text);
 	label->setEnabled(widget->enabled());
@@ -820,7 +820,7 @@ QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget 
 	}
 
 	// Create new page widget and layout
-	QWidget *pageWidget = new QWidget();
+	QWidget *pageWidget = new QWidget(this);
 	QGridLayout *layout = addLayout(pageWidget);
 
 	// Create widget object to return
@@ -862,7 +862,7 @@ QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget 
 QtWidgetObject *AtenTreeGuiDialog::addRadioGroup(TreeGuiWidget *widget)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QButtonGroup *group = new QButtonGroup;
+	QButtonGroup *group = new QButtonGroup(this);
 	qtwo->set(widget, group);
 	// Connect signal to master slot
 	QObject::connect(group, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(radioGroupWidget_buttonClicked(QAbstractButton*)));
@@ -886,7 +886,7 @@ QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGui
 		return NULL;
 	}
 	// Create new QtWidgetObject for page
-	QRadioButton *radio = new QRadioButton(label);
+	QRadioButton *radio = new QRadioButton(label, this);
 	group->addButton(radio, id);
 	QtWidgetObject *qtwo = widgetObjects_.add();
 	qtwo->set(widget, radio);
@@ -904,7 +904,7 @@ QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGui
 QtWidgetObject *AtenTreeGuiDialog::addStack(TreeGuiWidget *widget)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QStackedWidget *stack = new QStackedWidget;
+	QStackedWidget *stack = new QStackedWidget(this);
 	qtwo->set(widget, stack, "");
 	stack->setEnabled(widget->enabled());
 	stack->setVisible(widget->visible());
@@ -916,7 +916,7 @@ QtWidgetObject *AtenTreeGuiDialog::addStack(TreeGuiWidget *widget)
 QtWidgetObject *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
-	QTabWidget *tabs = new QTabWidget;
+	QTabWidget *tabs = new QTabWidget(this);
 	qtwo->set(widget, tabs, "");
 	tabs->setEnabled(widget->enabled());
 	tabs->setVisible(widget->visible());
