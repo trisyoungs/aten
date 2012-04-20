@@ -58,7 +58,7 @@ class Prefs
 	static KeyAction keyAction(const char *name, bool reportError = 0);
 	static const char *keyAction(KeyAction ka);
 	// Property/Object Colours
-	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, nObjectColours };
+	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, WireSelectionColour, nObjectColours };
 	static const char *objectColour(ObjectColour oc);
 	static const char *objectColourName(ObjectColour oc);
 	static ObjectColour objectColour(const char *name, bool reportError = 0);
@@ -82,7 +82,7 @@ class Prefs
 	enum HistoryType { CommandHistory, RecentFileHistory, ScriptHistory, SelectForHistory, SelectHistory, SelectNetaHistory, nHistoryTypes };
 	static const char *historyType(HistoryType ht);
 	static HistoryType historyType(const char *name, bool reportError = 0);
-
+	
 	public:
 	// Constructor
 	Prefs();
@@ -230,6 +230,8 @@ class Prefs
 	double stickLineNormalWidth_;
 	// Line width for selected stick atoms
 	double stickLineSelectedWidth_;
+	// Whether to use fancy transparent objects for selection
+	bool transparentSelectionStyle_;
 
 	public:
 	// Sets the specified atom size to the given value
@@ -290,6 +292,10 @@ class Prefs
 	void setStickLineSelectedWidth(double width);
 	// Return line width for selected stick atoms
 	double stickLineSelectedWidth();
+	// Set whether to use fancy transparent objects for selection
+	void setTransparentSelectionStyle(bool b);
+	// Return whether to use fancy transparent objects for selection
+	bool transparentSelectionStyle();
 
 
 	/*

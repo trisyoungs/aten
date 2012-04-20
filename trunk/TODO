@@ -37,6 +37,8 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Add 'transparentSelectionStyle' prefs accessor.</li>
+<li>Add 'wireselection' colour enum definition.</li>
 <li>Add '--nicknames' switch</li>
 <li>Add 'normalcommas' read option</li>
 <li>Add 'selectionGrowAtom' command.</li>

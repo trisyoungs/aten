@@ -97,8 +97,8 @@ const char *Prefs::keyAction(Prefs::KeyAction i)
 }
 
 // Colours
-const char *ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "globeaxes", "globe", "glyph", "hbond", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow" };
-const char *ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Hydrogen Bond", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow" };
+const char *ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "globeaxes", "globe", "glyph", "hbond", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow", "wireselection" };
+const char *ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Hydrogen Bond", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow", "Wire Selection" };
 Prefs::ObjectColour Prefs::objectColour(const char *s, bool reportError)
 {
 	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
@@ -219,6 +219,7 @@ Prefs::Prefs()
 	transparencyBinStartZ_ = 0.0;
 	transparencyBinWidth_ = 0.2;
 	frameCurrentModel_ = TRUE;
+	transparentSelectionStyle_ = TRUE;
 
 	// Build
 	showGuide_ = FALSE;
@@ -255,6 +256,7 @@ Prefs::Prefs()
 	setColour(Prefs::UnitCellColour, 0.0, 0.0, 0.0, 1.0);
 	setColour(Prefs::UnitCellAxesColour, 0.8, 0.8, 0.8, 1.0);
 	setColour(Prefs::VibrationArrowColour, 0.8, 0.4, 0.4, 1.0);
+	setColour(Prefs::WireSelectionColour, 0.0, 0.0, 0.0, 1.0);
 
 	// Colour scales
 	colourScale[0].setName("Charge");
@@ -876,6 +878,18 @@ void Prefs::setStickLineSelectedWidth(double width)
 double Prefs::stickLineSelectedWidth()
 {
 	return stickLineSelectedWidth_;
+}
+
+// Set whether to use fancy transparent objects for selection
+void Prefs::setTransparentSelectionStyle(bool b)
+{
+	transparentSelectionStyle_ = b;
+}
+
+// Return whether to use fancy transparent objects for selection
+bool Prefs::transparentSelectionStyle()
+{
+	return transparentSelectionStyle_;
 }
 
 /*

@@ -29,7 +29,7 @@
 #include "base/sysfunc.h"
 
 // Render bond
-void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b)
+void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b, bool transparentSel, GLfloat *penColour)
 {
 	double dvisible, selvisible, factor, rij, phi;
 	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx;
@@ -121,9 +121,13 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A);
 			if (i->isSelected() && (selvisible > 0.0))
 			{
-				colour_i[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], colour_i, A);
-				colour_i[3] = alpha_i;
+				if (transparentSel)
+				{
+					colour_i[3] = 0.5f;
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], colour_i, A);
+					colour_i[3] = alpha_i;
+				}
+				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], penColour, A, GL_LINE);
 			}
 			// Move to centre of visible bond, ready for next bond half
 			A.applyTranslationZ(1.0);
@@ -136,9 +140,13 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 				// Move to edge of selected atom and apply selection bond scaling
 				A.applyTranslationZ((selscale*radius_i-radius_i) / dvisible);
 				A.applyScalingZ(selvisible/dvisible);
-				colour_i[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], colour_i, A);
-				colour_i[3] = alpha_i;
+				if (transparentSel)
+				{
+					colour_i[3] = 0.5f;
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], colour_i, A);
+					colour_i[3] = alpha_i;
+				}
+				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], penColour, A, GL_LINE);
 				// Move to centrepoint and reverse scaling back to 'dvisible'
 				A.applyTranslationZ(1.0);
 				A.applyScalingZ(dvisible/selvisible);
@@ -183,9 +191,13 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A);
 			if (j->isSelected())
 			{
-				colour_j[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, A);
-				colour_j[3] = alpha_j;
+				if (transparentSel)
+				{
+					colour_j[3] = 0.5f;
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, A);
+					colour_j[3] = alpha_j;
+				}
+				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], penColour, A, GL_LINE);
 			}
 			break;
 		case (Atom::SphereStyle):
@@ -194,9 +206,13 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			if (j->isSelected() && (selvisible > 0.0))
 			{
 				A.applyScalingZ(selvisible / dvisible);
-				colour_j[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, A);
-				colour_j[3] = alpha_j;
+				if (transparentSel)
+				{
+					colour_j[3] = 0.5f;
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, A);
+					colour_j[3] = alpha_j;
+				}
+				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], penColour, A, GL_LINE);
 			}
 			break;
 	}
@@ -206,7 +222,7 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 void RenderEngine::renderModel(Model *source, Matrix basetransform)
 {
 	msg.enter("RenderEngine::renderModel");
-	GLfloat colour_i[4], colour_j[4], alpha_i;;
+	GLfloat colour_i[4], colour_j[4], alpha_i, penColour[4];
 	int id_i, labels, m, n, el_j;
 	Dnchar text;
 	double selscale, radius_i, radius_j, phi, mag, best, delta;
@@ -226,6 +242,8 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
 	for (n=0; n<Atom::nDrawStyles; ++n) aradius[n] = prefs.atomStyleRadius( (Atom::DrawStyle) n);
+	bool transparentSel = prefs.transparentSelectionStyle();
+	prefs.copyColour(Prefs::TextColour, penColour);
 	
 	// Atoms and Bonds
 	atoms = source->atomArray();
@@ -290,9 +308,13 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].atom_, colour_i, A);
 			if (i->isSelected())
 			{
-				colour_i[3] = 0.5f;
-				renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedAtom_, colour_i, A);
-				colour_i[3] = alpha_i;
+				if (transparentSel)
+				{
+					colour_i[3] = 0.5f;
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedAtom_, colour_i, A);
+					colour_i[3] = alpha_i;
+				}
+				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedAtom_, penColour, A, GL_LINE);
 			}
 		}
 
@@ -341,7 +363,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			v = source->cell()->mimVector(i, j);
 			
 			// Render bond
-			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item);
+			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item, transparentSel, penColour);
 		}
 		
 	}

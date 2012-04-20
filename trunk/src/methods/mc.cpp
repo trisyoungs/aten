@@ -71,6 +71,7 @@ MonteCarlo::MonteCarlo()
 	acceptanceRatioSize_ = 0;
 	temperature_ = 300.0;
 	nCycles_ = 100;
+
 	// Disorder builder
 	disorderAccuracy_ = 0.01;
 	disorderMaxFailures_ = 5;
@@ -332,7 +333,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	msg.enter("MonteCarlo::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats;
 	Dnchar s;
-	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
+	double newEnergy, currentEnergy, lastPrintedEnergy, currentVdwEnergy, currentElecEnergy, phi, theta;
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	Vec3<double> v;
 	double beta = 1.0 / (prefs.gasConstant() * temperature_);
@@ -361,7 +362,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	msg.print(" Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%\n");
 
 	// Calculate initial reference energy
-	ecurrent = srcmodel->totalEnergy(srcmodel, success);
+	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	if (!success)
 	{
 		msg.exit("MonteCarlo::minimise");
@@ -369,8 +370,8 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	}
 	currentVdwEnergy = srcmodel->energy.vdw();
 	currentElecEnergy = srcmodel->energy.electrostatic();
-	elast = ecurrent;
-	msg.print("--     %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
+	lastPrintedEnergy = currentEnergy;
+	msg.print("--     %13.6e               %13.6e %13.6e\n", currentEnergy,  currentVdwEnergy, currentElecEnergy);
 
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
@@ -433,10 +434,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				}
 
 				// Get the energy of this new configuration.
-				enew = srcmodel->moleculeEnergy(srcmodel, p, mol, success);
+				newEnergy = srcmodel->moleculeEnergy(srcmodel, p, mol, success);
 
 				// If the energy has gone up, undo the move.
-				deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
+				deltaMoleculeEnergy = newEnergy - referenceMoleculeEnergy;
 				deltaVdwEnergy = srcmodel->energy.vdw() - referenceVdwEnergy;
 				deltaElecEnergy = srcmodel->energy.electrostatic() - referenceElecEnergy;
 
@@ -444,10 +445,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( AtenMath::random() < exp(-beta*deltaMoleculeEnergy) ))
 				{
 					// Update energy and move counters
-					//ecurrent = enew;
-					//currentVdwEnergy = srcmodel->energy.get_vdw();
-					//currentElecEnergy = srcmodel->energy.get_elec();
-					ecurrent += deltaMoleculeEnergy;
+					currentEnergy += deltaMoleculeEnergy;
 					currentVdwEnergy += deltaVdwEnergy;
 					currentElecEnergy += deltaElecEnergy;
 					acceptanceRatio_[0][move] ++;
@@ -463,24 +461,20 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, currentEnergy, currentEnergy-lastPrintedEnergy, currentVdwEnergy, currentElecEnergy);
 			for (n=0; n<MonteCarlo::nMoveTypes; n++) s.strcatf(" %3i", int(acceptanceRatio_[0][n]*100.0));
 			s.strcatf("  %s\n", etatext.get());
 			msg.print(s.get());
-			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-			//for (n=0; n<MonteCarlo::nMoveTypes; n++) msg.print(" %3i",int(acceptanceRatio_[0][n]*100.0));
-			//msg.print("\n");
+			lastPrintedEnergy = currentEnergy;
 		}
 		
 		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
-		
-		elast = ecurrent;
 
 	} // Loop over MC cycles
 	progress.terminate(pid);
 
 	// Print final energy
-	enew = srcmodel->totalEnergy(srcmodel, success);
+	newEnergy = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
 
 	// Finalise

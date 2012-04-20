@@ -295,7 +295,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 			for (i=0; i<VdwFunctions::VdwFunctions[ffa->vdwForm()].nParameters; ++i)
 			{
 				pp->setData(i, Combine::combine( crflags[i], ffa->parameter(i), ffb->parameter(i) ) );
-// 	printf("combined Parameter is %f, original = %f,%f\n", Combine::combine( crflags[i], ffa->parameter(i), ffb->parameter(i)), ffa->parameter(i), ffb->parameter(i));
+// 				printf("combined Parameter is %f, original = %f,%f\n", Combine::combine( crflags[i], ffa->parameter(i), ffb->parameter(i)), ffa->parameter(i), ffb->parameter(i));
 			}
 
 		}
