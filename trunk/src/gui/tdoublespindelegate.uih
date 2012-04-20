@@ -22,10 +22,10 @@
 #ifndef ATEN_TDOUBLESPINDELEGATE_H
 #define ATEN_TDOUBLESPINDELEGATE_H
 
-#include <QItemDelegate>
-#include <QModelIndex>
-#include <QObject>
-#include <QDoubleSpinBox>
+#include <QtGui/QItemDelegate>
+#include <QtCore/QModelIndex>
+#include <QtCore/QObject>
+#include <QtGui/QDoubleSpinBox>
 
 class TDoubleSpinDelegate : public QItemDelegate
 {
