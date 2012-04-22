@@ -433,9 +433,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 	static double energy, rho, cutoff, du_dr, sigma, epsilon, sigmar3, sigmar9, volume, vrs;
 	PatternAtom *pai, *paj;
 	double *paramsi, *paramsj;
-	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-
 	// The way the patterns are stored does not give direct access to the number of different
 	// atom types used *or* the number densities of each. So, assume each atom in the pattern 
 	// molecule is a unique VDW type and that the number density is nMolecules_/cellvolume
@@ -456,7 +454,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 				{
 					j++;
 					paramsj = paj->data()->parameters();
-// 					Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].combinationRules;
+					Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].combinationRules;
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
 						case (VdwFunctions::None):
@@ -466,15 +464,9 @@ bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 						case (VdwFunctions::Lj):
 						case (VdwFunctions::LjGeometric):
 							// U = 4/3 * eps * sigma**3 * ( 1/3 * (s/r)**9 - (s/r)**3
-// 							epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
-// 							sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * vrs;
+							epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
+							sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * vrs;
 				// 			a = Combine::combine( crflags[VdwFunctions::LjN], paramsi[VdwFunctions::LjN], paramsj[VdwFunctions::LjN] );
-							// Find relevant (pre-combined) parameters
-							pp = parent_->combinedParameters(p1->atoms_[i]->data(), p2->atoms_[j]->data());
-							if (pp == NULL) break;
-							
-							sigma = pp->data()[VdwFunctions::LjSigma];
-							epsilon = pp->data()[VdwFunctions::LjEpsilon];
 							sigmar9 = sigma / cutoff;
 							sigmar3 = sigmar9 * sigmar9 * sigmar9;
 							sigmar9 = sigmar3 * sigmar3 * sigmar3;
