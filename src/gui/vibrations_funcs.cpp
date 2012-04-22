@@ -206,8 +206,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	dialogui.setProperty(TreeGuiWidgetEvent::TextProperty, "Vibration Movie Options");
 	dialogui.addEdit("geometry", "Image Geometry", geometry,1,1);
 	dialogui.addIntegerSpin("cycles", "Number of Cycles", 1, 1000, 1, 10 ,1,2);
-	dialogui.addIntegerSpin("fpc", "Frames per Cycle", 1, 1000, 1, 25 ,1,3);
-	dialogui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,2);
+	dialogui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,3);
 
 	if (!dialog.defaultDialog().execute()) return;
 	
@@ -222,7 +221,6 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 		return;
 	}
 	int ncycles = dialogui.asInteger("cycles");
-	int fpc = dialogui.asInteger("fpc");
 	int fps = dialogui.asInteger("fps");
 	
 	// Get movie filename
@@ -234,7 +232,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	currentDirectory_.setPath(filename);
 	
 	// Generate movie file...
-	CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpc, ncycles, fps);
+	CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow()+1, 20, ncycles, fps);
 }
 
 // Stop current timer (if any)

@@ -2,19 +2,15 @@
 
 <ul>
 <li>Rebonding model also folds atoms, making --nofold irrelevant</li>
-<li>Atom list update is super-slow when changing selection in big systems - This is an issue with Qt, and doesn't appear to have a resolution at present.</li>
 <li>Flickering Progress Dialog, e.g. when using disordered builder on Windows</li>
-<li>Model List images do not update. Can the main view be grabbed and shrunk down to icon size? Maybe in a QThread?</li>
 <li>Glyph list not updated on model load.</li>
 <li>Model not updated when changing glyph selection?</li>
-<li>Segfault in Model::regenerateIcon() from Qt's renderText (laptop)?</li>
 </ul>
 
 <h1>Current TODO</h1>
 
 <ul>
 <li>Context-sensitivity of messages - e.g. pattern name (select pattern atoms), failed pattern creation (select bad atom)</li>
-<li>Saving of movies for vibrations.</li>
 <li>PovRay export</li>
 <li>Add method to check current pattern definition so that it doesn't have to be removed so often.</li>
 <li>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</li>

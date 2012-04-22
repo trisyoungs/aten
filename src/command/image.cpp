@@ -31,6 +31,141 @@
 #include "base/progress.h"
 #include "main/aten.h"
 
+
+// Pre-setup
+int movieSetup(bool pre, int height)
+{
+	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
+	static int oldlabelsize = prefs.labelSize();
+	if (pre)
+	{
+		// Check that defined encoder exe exists
+		if (!fileExists(prefs.encoderExe()))
+		{
+			msg.print("Error: Encoder excutable doesn't appear to exist ('%s').\n", prefs.encoderExe());
+			return FALSE;
+		}
+		else msg.print(Messenger::Verbose, "Found encoder executable ('%s').\n", prefs.encoderExe());
+
+		// Save some current view preferences
+		framemodel = prefs.frameCurrentModel();
+		frameview = prefs.frameWholeView();
+		viewglobe = prefs.viewRotationGlobe();
+		prefs.setFrameCurrentModel(FALSE);
+		prefs.setFrameWholeView(FALSE);
+		prefs.setViewRotationGlobe(FALSE);
+		
+		// Generate unique file basename
+		int runid;
+		Dnchar basename;
+		do
+		{
+			runid = AtenMath::randomimax();
+			basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, 0);
+		} while (fileExists(basename));
+		msg.print("First temporary basename for movie images is '%s'.\n", basename.get());
+
+		// Temporarily adjust label size...
+		oldlabelsize = prefs.labelSize();
+		int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainCanvas()->height()) ));
+		prefs.setLabelSize(newlabelsize);
+
+		return runid;
+	}
+	else
+	{
+		prefs.setFrameCurrentModel(framemodel);
+		prefs.setFrameWholeView(frameview);
+		prefs.setViewRotationGlobe(viewglobe);
+
+		// Restore label size
+		prefs.setLabelSize(oldlabelsize);
+	}
+}
+
+// Perform post-processing on saved movie frames
+bool moviePostProcess(QStringList files, int runid, const char *movieFilename, int fps)
+{
+	// Create filelist on disk
+	Dnchar framesFile(-1, "%s%caten-movie-%i-%i-files.txt", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+	LineParser parser;
+	parser.openOutput(framesFile, TRUE);
+	if (parser.isFileGoodForWriting())
+	{
+		foreach (QString str, files) parser.writeLineF("%s\n", qPrintable(str));
+		parser.closeFiles();
+	}
+	else
+	{
+		msg.print("Error: Couldn't create framelist file '%s'.\n", framesFile.get());
+		return FALSE;
+	}
+
+	// Now run external program to create movie
+	TProcess encoderProcess;
+	
+	// Grab encoder command and replace control strings
+	QString encoderArgs = prefs.encoderArguments();
+	Dnchar quotedMovieFilename(-1, "\"%s\"", movieFilename);
+	Dnchar atFramesFile(-1, "@\"%s\"", framesFile.get());
+	encoderArgs.replace("OUTPUT", quotedMovieFilename.get());
+	encoderArgs.replace("FILES", atFramesFile.get());
+	encoderArgs.replace("FPS", itoa(fps));
+	msg.print("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
+	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
+	{
+		msg.print("Error: Failed to run encoder command.\n");
+		return FALSE;
+	}
+
+	// Follow output here...
+	while (!encoderProcess.finished())
+	{
+		// Is output file already present?
+		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
+		gui.processMessages();
+	}
+
+	// Run secondary, post-process command (if one was given)
+	if (prefs.encoderPostExe() != NULL)
+	{
+		TProcess postProcess;
+		// Grab encoder command and replace
+		encoderArgs = prefs.encoderPostArguments();
+		encoderArgs.replace("OUTPUT", quotedMovieFilename.get());
+		encoderArgs.replace("FILES", atFramesFile.get());
+		encoderArgs.replace("FPS", itoa(fps));
+
+		msg.print("Post-process command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
+		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
+		{
+			msg.print("Error: Failed to run encoder post-processing command.\n");
+			return FALSE;
+		}
+		
+		// Follow output here...
+		while (!postProcess.finished())
+		{
+			// Is output file already present?
+			while (postProcess.outputAvailable()) postProcess.printLineToMessages();
+			gui.processMessages();
+		}
+	}
+
+	// Cleanup
+	QFile::remove(framesFile.get());
+	bool pid = progress.initialise("Cleaning up...", files.size(), FALSE);
+	int n = 0;
+	foreach (QString str, files)
+	{
+		QFile::remove(str);
+		if (!progress.update(pid,++n)) break;
+	}
+	progress.terminate(pid);	
+
+	return TRUE;
+}
+
 // Save current view as bitmap image
 bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -79,20 +214,13 @@ bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	// Check that a trajectory exists for the current model
 	if (!obj.m->hasTrajectory())
 	{
 		msg.print("No trajectory associated to current model.\n");
 		return FALSE;
 	}
-	
-	// Check that defined encoder exe exists
-	if (!fileExists(prefs.encoderExe()))
-	{
-		msg.print("Error: Encoder excutable doesn't appear to exist ('%s').\n", prefs.encoderExe());
-		return FALSE;
-	}
-	else msg.print(Messenger::Verbose, "Found encoder executable ('%s').\n", prefs.encoderExe());
 
 	// Get arguments...
 	int width = c->hasArg(1) ? c->argi(1) : gui.mainCanvas()->width();
@@ -100,47 +228,33 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int height = c->hasArg(2) ? c->argi(2) : gui.mainCanvas()->height();
 	if (height == -1) height = gui.mainCanvas()->height();
 	int quality = c->hasArg(3) ? c->argi(3) : -1;
-	int firstframe = c->hasArg(4) ? c->argi(4)-1 : 1;
-	int lastframe = c->hasArg(5) ? c->argi(5)-1 : obj.m->nTrajectoryFrames()-1;
-	int frameskip = c->hasArg(6) ? c->argi(6) : 0;
+	int firstFrame = c->hasArg(4) ? c->argi(4)-1 : 1;
+	int lastFrame = c->hasArg(5) ? c->argi(5)-1 : obj.m->nTrajectoryFrames()-1;
+	int frameSkip = c->hasArg(6) ? c->argi(6) : 0;
 	int fps = c->hasArg(7) ? c->argi(7) : 25;
 
-	// Set offscreen rendering and save some current view preferences
-	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
-	prefs.setFrameCurrentModel(FALSE);
-	prefs.setFrameWholeView(FALSE);
-	prefs.setViewRotationGlobe(FALSE);
-	obj.m->setRenderSource(Model::TrajectorySource);
-	
-	// Generate unique file basename
-	int runid;
-	Dnchar basename;
-	do
-	{
-		runid = AtenMath::randomimax();
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, 0);
-	} while (fileExists(basename));
-	msg.print("First temporary basename for movie images is '%s'.\n", basename.get());
+	// Check initial movie 'setup'
+	int runid = movieSetup(TRUE, height);
+	if (runid == -1 ) return FALSE;
 
-	// Save all frame images
+	// Save all trajectory frame images
 	QPixmap pixmap;
 	QImage image;
-	// Temporarily adjust label size...
-	int oldlabelsize = prefs.labelSize();
-	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainCanvas()->height()) ));
-	prefs.setLabelSize(newlabelsize);
-
-	int progid = progress.initialise("Saving movie frames...", lastframe-firstframe, FALSE);
+	obj.m->setRenderSource(Model::TrajectorySource);
+	int progid = progress.initialise("Saving trajectory movie frames...", lastFrame-firstFrame, FALSE);
 	bool canceled = FALSE;
-	for (int n = firstframe; n <= lastframe; n += (1+frameskip))
+	Dnchar basename;
+	QStringList files;
+	for (int n = firstFrame; n <= lastFrame; n += (1+frameSkip))
 	{
 		obj.m->seekTrajectoryFrame(n, TRUE);
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
 		gui.mainCanvas()->postRedisplay(TRUE);
 
 		pixmap = gui.mainCanvas()->generateImage(width, height, TRUE);
-
 		pixmap.save(basename.get(), "png", -1);
+		files << basename.get();
+
 		if (!progress.update(progid,n))
 		{
 			canceled = TRUE;
@@ -149,74 +263,14 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		}
 	}
 	progress.terminate(progid);
-	prefs.setFrameCurrentModel(framemodel);
-	prefs.setFrameWholeView(frameview);
-	prefs.setViewRotationGlobe(viewglobe);
 
-	// Restore label size
-	prefs.setLabelSize(oldlabelsize);
+	// Reset after movie frame creation
+	movieSetup(FALSE, -1);
+
+	// Perform post-processing of movie frames
+	if (!moviePostProcess(files, runid, c->argc(0), fps)) return FALSE;
 
 	if (canceled) return FALSE;
-	
-	// Now run external program to create movie
-	TProcess encoderProcess;
-	// Grab encoder command and replace
-	basename.sprintf("%s%caten-movie-%i-%i-*.png", prefs.tempDir(), PATHSEP, gui.pid(), runid);
-	QString encoderArgs = prefs.encoderArguments();
-	Dnchar filename(-1, "\"%s\"", c->argc(0));
-	encoderArgs.replace("OUTPUT", filename.get());
-	encoderArgs.replace("FILES", basename.get());
-	encoderArgs.replace("FPS", itoa(fps));
-	msg.print("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
-	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
-	{
-		msg.print("Error: Failed to run encoder command.\n");
-		return FALSE;
-	}
-
-	// Follow output here...
-	while (!encoderProcess.finished())
-	{
-		// Is output file already present?
-		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
-		gui.processMessages();
-	}
-
-	// Run secondary, post-process command (if one was given)
-	if (prefs.encoderPostExe() != NULL)
-	{
-		TProcess postProcess;
-		// Grab encoder command and replace
-		QString encoderArgs = prefs.encoderPostArguments();
-		Dnchar filename(-1, "\"%s\"", c->argc(0));
-		encoderArgs.replace("OUTPUT", filename.get());
-		encoderArgs.replace("FILES", basename.get());
-		encoderArgs.replace("FPS", itoa(fps));
-		msg.print("Post-process command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
-		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
-		{
-			msg.print("Error: Failed to run encoder post-processing command.\n");
-			return FALSE;
-		}
-		
-			// Follow output here...
-		while (!postProcess.finished())
-		{
-			// Is output file already present?
-			while (postProcess.outputAvailable()) postProcess.printLineToMessages();
-			gui.processMessages();
-		}
-	}
-
-	// Cleanup
-	bool pid = progress.initialise("Cleaning up...", lastframe-firstframe, FALSE);
-	for (int n = firstframe; n <= lastframe; n += (1+frameskip))
-	{
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
-		QFile::remove(basename.get());
-		if (!progress.update(pid,n)) break;
-	}
-	progress.terminate(pid);
 	
 	return TRUE;
 }
@@ -224,6 +278,90 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Save movie of specified vibration frame
 bool Command::function_SaveVibrationMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), fpv, ncycles, fps);
-	return FALSE;
+	// CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), nsteps, ncycles, fps);
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
+	// Get arguments...
+	int width = c->hasArg(1) ? c->argi(1) : gui.mainCanvas()->width();
+	if (width == -1) width = gui.mainCanvas()->width();
+	int height = c->hasArg(2) ? c->argi(2) : gui.mainCanvas()->height();
+	if (height == -1) height = gui.mainCanvas()->height();
+	int quality = c->hasArg(3) ? c->argi(3) : -1;
+	int vibrationId = c->argi(4) - 1;
+	int framesPerVibration = c->argi(5);
+	int nCycles = c->argi(6);
+	int fps = c->hasArg(7) ? c->argi(7) : 25;
+	bool fromVib = obj.rs()->renderFromVibration();
+
+	// Check that the specified vibration exists
+	Vibration *vib = obj.rs()->vibration(vibrationId);
+	if (!vib)
+	{
+		msg.print("Specified vibration (id %i) does not exist in current model.\n", vibrationId);
+		return FALSE;
+	}
+	
+	// Check initial movie 'setup'
+	int runid = movieSetup(TRUE, height);
+	if (runid == -1) return FALSE;
+
+	// Generate vibration frams info
+	obj.rs()->generateVibration(vibrationId, framesPerVibration);
+	obj.rs()->setVibrationFrameIndex(0);
+	obj.rs()->setRenderFromVibration(TRUE);
+
+	QPixmap pixmap;
+	QImage image;
+
+	int progid = progress.initialise("Saving vibration movie frames...", framesPerVibration, FALSE);
+	bool canceled = FALSE;
+	Dnchar basename;
+	for (int n = 0; n < framesPerVibration; ++n)
+	{
+		obj.rs()->setVibrationFrameIndex(n);
+		
+		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
+		gui.mainCanvas()->postRedisplay(TRUE);
+
+		pixmap = gui.mainCanvas()->generateImage(width, height, TRUE);
+		pixmap.save(basename.get(), "png", -1);
+		
+		if (!progress.update(progid,n))
+		{
+			canceled = TRUE;
+			msg.print("Canceled.\n");
+			break;
+		}
+	}
+	progress.terminate(progid);
+	obj.rs()->setRenderFromVibration(fromVib);
+
+	// Construct list of ping-pong'ed frame images
+	QStringList files;
+	int n;
+	for (int cycle = 0; cycle < nCycles; ++cycle)
+	{
+		// First half...
+		for (n=0; n<framesPerVibration; ++n)
+		{
+			basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
+			files << basename.get();
+		}
+		// First half...
+		for (n=framesPerVibration-1; n>0; --n)
+		{
+			basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
+			files << basename.get();
+		}
+	}
+
+	// Reset after movie frame creation
+	movieSetup(FALSE, -1);
+
+	// Perform post-processing of movie frames
+	if (!moviePostProcess(files, runid, c->argc(0), fps)) return FALSE;
+
+	if (canceled) return FALSE;
+	
+	return TRUE;
 }
