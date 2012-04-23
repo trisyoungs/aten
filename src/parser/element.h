@@ -41,7 +41,7 @@ class ElementVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Colour, Group, Mass, Name, Radius, Symbol, nAccessors };
+        enum Accessors { Colour, Group, Mass, Name, Radius, Symbol, Z, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

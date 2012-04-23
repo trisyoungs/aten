@@ -206,7 +206,7 @@ void Model::initialiseBondingCuboids()
 		else
 		{
 			// For periodic systems, we will use fractional coordinates to partition the atoms
-			foldAllAtoms();
+// 			foldAllAtoms();
 			extentMin_ = 0.0;
 			extentMax_ = 1.0;
 			extentRange_ = 1.0;
@@ -262,7 +262,6 @@ void Model::addAtomToCuboid(Atom *i)
 	else
 	{
 		// There is a unit cell, so we must fold the atoms coordinates into the box
-		
 		r = cell_.realToFrac(i->r());
 		cell_.foldFrac(r);
 	}

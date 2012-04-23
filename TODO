@@ -1,7 +1,6 @@
 <h1>Known Bugs</h1>
 
 <ul>
-<li>Rebonding model also folds atoms, making --nofold irrelevant</li>
 <li>Flickering Progress Dialog, e.g. when using disordered builder on Windows</li>
 <li>Glyph list not updated on model load.</li>
 <li>Model not updated when changing glyph selection?</li>

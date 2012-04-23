@@ -47,9 +47,10 @@ Accessor ElementVariable::accessorData[ElementVariable::nAccessors] = {
 	{ "colour",	VTypes::DoubleData,	4, FALSE },
 	{ "group",	VTypes::IntegerData,	0, TRUE },
 	{ "mass",	VTypes::DoubleData,	0, TRUE },
-	{ "name",	VTypes::DoubleData,	0, TRUE },
+	{ "name",	VTypes::StringData,	0, TRUE },
 	{ "radius",	VTypes::DoubleData,	0, FALSE },
-	{ "symbol",	VTypes::StringData,	0, TRUE }
+	{ "symbol",	VTypes::StringData,	0, TRUE },
+	{ "z",		VTypes::IntegerData,	0, TRUE }
 };
 
 // Function data
@@ -177,6 +178,9 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 			break;
 		case (ElementVariable::Symbol):
 			rv.set( ptr->symbol );
+			break;
+		case (ElementVariable::Z):
+			rv.set( ptr->z );
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ElementVariable.\n", accessorData[i].name);
