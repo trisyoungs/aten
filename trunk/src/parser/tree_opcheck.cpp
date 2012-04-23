@@ -267,6 +267,12 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 			}
 			break;
 		case (Command::OperatorAssignment):
+			// First, special case between Element& and int
+			if ((type1 == VTypes::ElementData) && (type2 == VTypes::IntegerData))
+			{
+				result = type1;
+				break;
+			}
 			switch (id)
 			{
 				case (VTypes::IntInt):

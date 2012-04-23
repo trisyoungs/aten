@@ -579,7 +579,17 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 		case (VTypes::DoubleData):
 		case (VTypes::StringData):
 		case (VTypes::VectorData):
-			if (arraySize_ == -1)
+			if ((type_ == VTypes::IntegerData) && (ptrtype == VTypes::ElementData))
+			{
+				int el = asInteger();
+				if ((el < 0) || (el > elements().nElements()))
+				{
+					msg.print("Warning: Conversion of integer value %i does not correspond to a defined element. Returning '0' (undefined element 'XX').\n", el);
+					el = 0;
+				}
+				return &elements().el[el];
+			}
+			else if (arraySize_ == -1)
 			{
 				msg.print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 				success = FALSE;
