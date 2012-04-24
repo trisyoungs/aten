@@ -255,7 +255,7 @@ class Model
 	// Set cell (parameter)
 	void setCell(UnitCell::CellParameter cp, double value);
 	// Set cell (other Cell pointer)
-	void setCell(UnitCell *newcell);
+	bool setCell(UnitCell *newcell);
 	// Remove cell definition
 	void removeCell();
 	// Fold all atoms into the cell
