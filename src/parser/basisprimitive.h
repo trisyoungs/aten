@@ -41,9 +41,9 @@ class BasisPrimitiveVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Exponent, Coefficients, nAccessors };
+        enum Accessors { Coefficients, Exponent, nAccessors };
 	// Function list
-	enum Functions { AddCoefficient, nFunctions };
+	enum Functions { AddCoefficient, Copy, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

@@ -150,6 +150,8 @@ class CommandParser
 	bool popScope();
 	// Add a node representing a whole statement to the execution list
 	bool addStatement(TreeNode *leaf);
+	// Add a 'new' node to the Tree
+	TreeNode *addNew(VTypes::DataType type);
 	// Add an operator to the Tree
 	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL, TreeNode *arg3 = NULL);
 	// Associate a command-based leaf node to the Tree

@@ -154,6 +154,9 @@ void ForcefieldsWidget::loadForcefield()
 	{
 		aten.loadForcefield(qPrintable(filename));
 		refresh();
+		
+		// Store path for next use
+		currentDirectory_.setPath(filename);
 	}
 }
 

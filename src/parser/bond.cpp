@@ -60,7 +60,7 @@ Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor BondVariable::functionData[BondVariable::nFunctions] = {
-	{ "partner",	VTypes::AtomData,	"A",	"atom i" }
+	{ "partner",	VTypes::AtomData,	"A",	"Atom i" }
 };
 
 // Search variable access list for provided accessor (call private static function)

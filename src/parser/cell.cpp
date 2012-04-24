@@ -24,6 +24,7 @@
 #include "base/cell.h"
 #include "base/sysfunc.h"
 #include "base/spacegroup.h"
+#include "classes/prefs.h"
 #include "model/model.h"
 #include <string.h>
 
@@ -80,6 +81,7 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
+	{ "copy",		VTypes::NoData,		"K",		"UnitCell cell" },
 	{ "mim",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
 	{ "mimVector",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
 	{ "translateAtom",	VTypes::VectorData,	"JNNN",		"Atom i, double dx, double dy, double dz" }
@@ -231,7 +233,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(ptr->spacegroupId());
 			break;
 		case (CellVariable::SpacegroupName):
-			rv.set(ptr->spacegroup());
+			rv.set(ptr->spacegroupName());
 			break;
 		case (CellVariable::Type):
 			rv.set(lowerCase(UnitCell::cellType(ptr->type())));
@@ -308,6 +310,7 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		msg.exit("CellVariable::setAccessor");
 		return FALSE;
 	}
+	
 	// Get current data from ReturnValue
 	UnitCell *ptr = (UnitCell*) sourcerv.asPointer(VTypes::CellData, result);
 	if ((!result) || (ptr == NULL))
@@ -315,6 +318,8 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
 		result = FALSE;
 	}
+	
+	Model *ptrParent = ptr->parent();
 	if (result) switch (acc)
 	{
 		case (CellVariable::A):
@@ -333,14 +338,16 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		case (CellVariable::CY):
 		case (CellVariable::CZ):
 			// Cast accessor into a CellParameter
-			ptr->parent()->setCell( (UnitCell::CellParameter) acc, newvalue.asDouble());
+			if (ptrParent) ptrParent->setCell( (UnitCell::CellParameter) acc, newvalue.asDouble());
+			else ptr->setParameter( (UnitCell::CellParameter) acc, newvalue.asDouble());
 			break;
 		case (CellVariable::Matrix):
 			// Cast accessor into a CellParameter
-			ptr->parent()->setCell( (UnitCell::CellParameter) ((arrayIndex-1) + UnitCell::CellAX), newvalue.asDouble());
+			if (ptrParent) ptrParent->setCell( (UnitCell::CellParameter) ((arrayIndex-1) + UnitCell::CellAX), newvalue.asDouble());
+			else ptr->setParameter( (UnitCell::CellParameter) ((arrayIndex-1) + UnitCell::CellAX), newvalue.asDouble());
 			break;
 		case (CellVariable::SpacegroupId):
-			ptr->parent()->setSpacegroup( newvalue.asString() );
+			ptr->setSpacegroup( newvalue.asString(), prefs.forceRhombohedral() );
 			break;
 		default:
 			printf("CellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -369,6 +376,10 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	UnitCell *ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if (result) switch (i)
 	{
+		case (CellVariable::Copy):
+			result = ptr->copy( (UnitCell*) node->argp(0, VTypes::CellData) );
+			rv.reset();
+			break;
 		case (CellVariable::MinimumImage):
 			if (node->argType(0) == VTypes::VectorData) v1 = node->argv(0);
 			else

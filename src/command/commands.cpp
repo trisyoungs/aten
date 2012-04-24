@@ -41,7 +41,7 @@ Command commands;
 	H	Bond		BondData
 	I	Integer		IntegerData
 	J	Atom		AtomData
-	K	<free>
+	K	UnitCell	UnitCell
 	L	<free>
 	M	Model/ID/Name	ModelData, StringData, IntegerData
 	N	Number		IntegerData, DoubleData

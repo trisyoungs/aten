@@ -334,7 +334,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int or an atom&.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be an int or an Atom.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -370,7 +370,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData) && (rtype != VTypes::ElementData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int, double, string or an atom&.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be an int, double, string or an Atom.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -379,7 +379,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ForcefieldData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int, a forcefield& or a string.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be an int, a Forcefield or a string.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -388,7 +388,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::GridData) ) //&& (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int or a grid&.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be an int or a Grid.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -397,7 +397,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if (rtype != VTypes::BondData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a bond&.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be a Bond.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -415,7 +415,16 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if (rtype != VTypes::AtomData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an atom&.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be an Atom.\n", count+1, funcname);
+					result = FALSE;
+				}
+				break;
+			// UnitCell		(CellData)
+			case ('K'):
+				if (rtype != VTypes::CellData)
+				{
+					if (altargs != NULL) { reset = TRUE; continue; }
+					msg.print("Argument %i to function '%s' must be a UnitCell.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -424,7 +433,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ModelData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int, a model& or a string.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be an int, a Model or a string.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -442,7 +451,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if (rtype != VTypes::ForcefieldAtomData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an ffatom&.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be an FFAtom.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -451,7 +460,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::PatternData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be an int, a pattern& or a string.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be an int, a Patternor a string.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -496,7 +505,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 				if ((rtype != VTypes::AtomData) && (rtype != VTypes::VectorData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					msg.print("Argument %i to function '%s' must be a vector or an atom&.\n", count+1, funcname);
+					msg.print("Argument %i to function '%s' must be a vector or an Atom.\n", count+1, funcname);
 					result = FALSE;
 				}
 				break;

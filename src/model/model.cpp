@@ -97,11 +97,6 @@ Model::Model()
 	bondingOverlays_ = NULL;
 	nCuboids_ = 0;
 
-	// Allocate SGInfo Seitz matrix arrays
-	spacegroup_.MaxList = 192;
-	spacegroup_.ListSeitzMx = new T_RTMx[192];
-	spacegroup_.ListRotMxInfo = new T_RotMxInfo[192];
-
 	// Vibration info
 	vibrationCurrentFrame_ = NULL;
 	vibrationForward_ = TRUE;
@@ -124,9 +119,6 @@ Model::~Model()
 	angleMeasurements_.clear();
 	torsionMeasurements_.clear();
 	if (pixelData_ != NULL) delete[] pixelData_;
-	// Delete sginfo arrays
-	delete[] spacegroup_.ListSeitzMx;
-	delete[] spacegroup_.ListRotMxInfo;
 }
 
 // Sets the filename of the model

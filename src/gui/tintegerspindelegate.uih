@@ -1,6 +1,6 @@
 /*
-	*** TDoubleSpinDelegate
-	*** src/gui/tdoublespindelegate.h
+	*** TIntegerSpinDelegate
+	*** src/gui/tintegerspindelegate.h
 	Copyright T. Youngs 2007-2011
 
 	This file is part of Aten.
@@ -19,25 +19,25 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TDOUBLESPINDELEGATE_H
-#define ATEN_TDOUBLESPINDELEGATE_H
+#ifndef ATEN_TINTEGERSPINDELEGATE_H
+#define ATEN_TINTEGERSPINDELEGATE_H
 
 #include <QtGui/QItemDelegate>
 #include <QtCore/QModelIndex>
 #include <QtCore/QObject>
-#include <QtGui/QDoubleSpinBox>
+#include <QtGui/QSpinBox>
 
-class TDoubleSpinDelegate : public QItemDelegate
+class TIntegerSpinDelegate : public QItemDelegate
 {
 	Q_OBJECT
 
 	private:
-	// Parameters for QDoubleSpinBox
-	double min_, max_, step_, nDecimals_;
+	// Parameters for QSpinBox
+	int min_, max_, step_;
 
 	public:
 	// Constructor
-	TDoubleSpinDelegate(QObject *parent = 0, double vmin = -1e6, double vmax = 1e6, double vstep = 1.0, double nDecimals = 5);
+	TIntegerSpinDelegate(QObject *parent = 0, int vmin = -1e6, int vmax = 1e6, int vstep = 1);
 	// Reimplemented virtual function to create editing widget
 	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 	// Set the data to appear when the editor is called

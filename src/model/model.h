@@ -34,8 +34,6 @@
 #include "base/eigenvector.h"
 #include "base/choice.h"
 #include "classes/basisshell.h"
-#define SGCOREDEF__
-#include "base/sginfo.h"
 #include "base/vibration.h"
 #include "classes/zmatrix.h"
 
@@ -246,8 +244,6 @@ class Model
 	private:
 	// Cell definition (also contains reciprocal cell definition)
 	UnitCell cell_;
-	// SGInfo structure
-	T_SgInfo spacegroup_;
 
 	public:
 	// Return pointer to unit cell structure
@@ -264,11 +260,9 @@ class Model
 	void removeCell();
 	// Fold all atoms into the cell
 	void foldAllAtoms();
-	// Set up spacegroup data for model (with sginfo)
-	void setSpacegroup(const char *s);
 	// Apply the given symmetry generator to the current atom selection in the model
 	void pack(Generator *gen);
-	// Apply the symmetry operators listed in the model's spacegroup
+	// Apply the symmetry operators listed in the model's cell's spacegroup
 	void pack();
 	// Fold all molecules into the cell
 	void foldAllMolecules();

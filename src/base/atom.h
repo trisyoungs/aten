@@ -70,9 +70,9 @@ class Atom
 	// Reset all data items in structure
 	void reset();
 	// Copy atom data from supplied atom
-	void copy(Atom*);
+	bool copy(Atom *source);
 	// Copy style data (no q, r, f, or v) from supplied atom
-	void copyStyle(Atom*);
+	void copyStyle(Atom *source);
 	// Print out all info about the atom
 	void print() const;
 	// One-line atom summary

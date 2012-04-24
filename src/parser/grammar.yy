@@ -46,7 +46,7 @@ int globalDeclarations;
 %token <functionId> FUNCCALL
 %token <tree> USERFUNCCALL
 %token <vtype> VTYPE
-%token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IIF ATEN_IN ATEN_GLOBAL ATEN_RETURN FILTERBLOCK HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK
+%token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IIF ATEN_IN ATEN_GLOBAL ATEN_RETURN FILTERBLOCK HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK ATEN_NEW
 %nonassoc ATEN_ELSE
 
 /* Higher line number == Higher precedence */
@@ -256,10 +256,11 @@ expression:
 	| '(' expression ')'				{ $$ = $2; if ($$ == NULL) YYABORT; }
 	| '!' expression				{ $$ = cmdparser.addOperator(Command::OperatorNot, $2); if ($$ == NULL) YYABORT; }
 	| expression '?' expression ':' expression	{ $$ = cmdparser.addOperator(Command::OperatorInlineIf, $1, $3, $5); if ($$ == NULL) YYABORT; }
+	| ATEN_NEW VTYPE				{ $$ = cmdparser.addNew(yylval.vtype); if ($$ == NULL) YYABORT; }
 	| NEWTOKEN					{ msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
 	;
 
-/* Expression LIst */
+/* Expression List */
 expressionlist:
 	expression					{
 		$$ = $1;
@@ -306,7 +307,7 @@ variablename:
 		YYABORT;
 		}
 	| VTYPE						{
-		msg.print(Messenger::Parse,"PARSER : variablename : variable type-name '%s'\n", VTypes::dataType( yylval.vtype));
+		msg.print(Messenger::Parse,"PARSER : variablename : variable type-name '%s'\n", VTypes::dataType(yylval.vtype));
 		msg.print("Error: Type-name used in variable declaration.\n");
 		YYABORT;
 		}

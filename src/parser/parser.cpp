@@ -422,6 +422,12 @@ bool CommandParser::addStatement(TreeNode *leaf)
 	return tree()->addStatement(leaf);
 }
 
+// Add a 'new' node to the Tree
+TreeNode *CommandParser::addNew(VTypes::DataType type)
+{
+	return tree()->addNew(type);
+}
+
 // Add an operator to the Tree
 TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2, TreeNode *arg3)
 {

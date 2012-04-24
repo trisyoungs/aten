@@ -181,6 +181,7 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
+
 		// Create script and model variables within it
 		Program *ca = aten.addScript();
 		if (ca->generateFromFile(qPrintable(filename)))

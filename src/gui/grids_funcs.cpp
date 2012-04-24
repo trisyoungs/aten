@@ -233,6 +233,7 @@ void GridsWidget::loadGrid()
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
+		
 		// Find the filter that was selected
 		filter = aten.findFilterByDescription(FilterData::GridImport, qPrintable(selFilter));
 		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::GridImport);

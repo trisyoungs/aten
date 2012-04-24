@@ -54,6 +54,7 @@ void ScriptMovieWidget::on_LoadScriptButton_clicked(bool on)
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
+
 		ui.ScriptTextEdit->clear();
 		QFile scriptFile(filename);
 		scriptFile.open(QIODevice::ReadOnly);
