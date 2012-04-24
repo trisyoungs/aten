@@ -1,7 +1,8 @@
 # Quantum Espresso
 # Created:	 22/06/2010
-# Last modified: 02/09/2011
+# Last modified: 24/04/2012
 # ChangeLog:
+#	24/04/2012 - Fixed exportmodel filter - cell information and format is now correct
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 # Notes:
 #	Lattice type of cell is not accounted for (ibrav=0)
@@ -30,7 +31,7 @@ filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", e
 	writeLine("/");
 	writeLine("&system");
 	writeLine("   ibrav=0,");
-	if (m.cell.type != "none") writeLineF("  celldm(1)=%f,\n", m.cell.a/ANGBOHR);
+	if (m.cell.type != "none") writeLineF("   celldm(1)=%f,\n", m.cell.a/ANGBOHR);
 	writeLineF("   nat=%i,\n",m.nAtoms);
 	writeLineF("   ntyp=%i,\n",nspecies);
 	writeLine("   ecutwfc=50.0,");
@@ -70,10 +71,10 @@ filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", e
 # Subroutines for output-file reading
 
 # Read next occurrence of unit cell (PWSCF)
-int readPWCell(double alat, UnitCell ucell)
+int readPWCell(UnitCell ucell, double alat, string alatKeywd)
 {
-	if (!find("crystal axes: (cart. coord. in units of a_0)")) return FALSE;
-	Vector v1,v2,v3;
+	string s = "crystal axes: (cart. coord. in units of " + alatKeywd + ")";
+	if (!find(s)) return FALSE;
 	if (!readLineF("%23* %f %f %f", ucell.ax,ucell.ay,ucell.az)) return 0;
 	if (!readLineF("%23* %f %f %f", ucell.bx,ucell.by,ucell.bz)) return 0;
 	if (!readLineF("%23* %f %f %f", ucell.cx,ucell.cy,ucell.cz)) return 0;
@@ -91,16 +92,59 @@ int readCPCell(UnitCell ucell)
 	return TRUE;
 }
 
-# Read coordinates (PWSCF)
-int readPWAtoms(int nAtoms, double alat, Model m)
+# Read atomic coordinates (PWSCF)
+int readPWAtoms(Model m, int nAtoms, double alat, string alatKeywd)
 {
-	if (!find("site n.     atom                  positions (a_0 units)")) return FALSE;
-	String el;
+	string s = "site n.     atom                  positions (" + alatKeywd + " units)";
+	if (!find(s)) return FALSE;
+	string el;
 	double x, y, z;
 	for (int n=0; n<nAtoms; ++n)
 	{
-		readLineF("%12*%10s%16*%f %f %f",  el, x, y, z);
+		readLineF("%12*%10s%16*%f %f %f", el, x, y, z);
 		m.newAtom(el, x*alat, y*alat, z*alat);
+	}
+	return TRUE;
+}
+
+# Read atomic forces (PWSCF)
+int readPWForces(Model m)
+{
+	if (!find("Forces acting on atoms (Ry/au):") ) return FALSE;
+	skipLine();
+	Vector f;
+	double conv = (13.60569253*96.4853365)/ANGBOHR;
+	for (int n=1; n<=m.nAtoms; ++n)
+	{
+		readLineF("%*%*%*%*%*%*%f%f%f",f.x, f.y, f.z);
+		# Forces in Ry/au, so convert to kJ/mol/Angstrom
+		f *= conv;
+		m.atoms[n].f = f;
+	}
+}
+
+# Read next occurrence of unit cell (PWSCF frame)
+int readPWCellFrame(UnitCell ucell, double alat, string alatKeywd)
+{
+	string s = "new lattice vectors (" + alatKeywd + " units)";
+	if (!find(s)) return FALSE;
+	if (!readLineF("%23* %f %f %f", ucell.ax,ucell.ay,ucell.az)) return 0;
+	if (!readLineF("%23* %f %f %f", ucell.bx,ucell.by,ucell.bz)) return 0;
+	if (!readLineF("%23* %f %f %f", ucell.cx,ucell.cy,ucell.cz)) return 0;
+	for (int n=1; n<=9; ++n) ucell.matrix[n] *= alat;
+	return TRUE;
+}
+
+# Read atomic coordinates (PWSCF frame)
+int readPWAtomsFrame(Model m, int nAtoms)
+{
+	if (!find("new positions in cryst coord")) return FALSE;
+	string el;
+	double x, y, z;
+	for (int n=0; n<nAtoms; ++n)
+	{
+		readLineF("%12*%10s%16*%f %f %f", el, x, y, z);
+		m.newAtomFrac(el, x, y, z);
 	}
 	return TRUE;
 }
@@ -120,46 +164,55 @@ int readAtoms(int nAtoms)
 filter(type="importmodel", name="Quantum Espresso Output (PWSCF)", nickname="qepwscf", extension="out", glob="*.out", search="PWSCF")
 {
 	# Variable declaration
-	int nAtoms, nConfigs = 1, cellType = 0, coordType = 0;
-	string keywd,data,line,unit;
+	int nAtoms, nConfigs = 1, atomForces = FALSE;
+	string keywd, discard, line, alatKeywd;
 	UnitCell ucell = new UnitCell;
 	double alat;
+	removeReadOption("skipblanks");
 
 	# Locate lattice coordinate and number of atoms
-	if (find("lattice parameter (a_0)", line))
+	if (find("lattice parameter", line))
 	{
-		readVar(line,data,data,data,data,alat);
+		addReadOption("stripbrackets");
+		readVar(line, discard, discard, alatKeywd, discard, alat);
+		removeReadOption("stripbrackets");
 		alat *= 0.52917720859;
-		printf("Lattice parameter is %f Angstroms\n", alat);
+		printf("Lattice parameter (%s) is %f Angstroms\n", alatKeywd, alat);
 	}
 	else printf("Failed to find lattice parameter.\n");
 
 	# Find number of atoms per basic cell
 	if (find("number of atoms/cell", line))
 	{
-		readVar(line,data,data,data,data,nAtoms);
+		readVar(line,discard,discard,discard,discard,nAtoms);
 		printf("Number of atoms in cell = %i\n", nAtoms); 
 	}
 	else error("Failed to find number of atoms in cell.");
 
 	# Read initial cell and coordinates
-	if (!readPWCell(alat,ucell)) error("Failed to find any cell parameters");
+	if (!readPWCell(ucell, alat, alatKeywd)) error("Failed to find any cell parameters");
 	Model m = newModel(filterFilename());
 	m.cell.copy(ucell);
-	#if (!find("ATOMIC_POSITIONS")) error("Failed to find any coordinates");
-	#if (!readAtoms(nAtoms)) error("Error reading atomic positions");
-	if (!readPWAtoms(nAtoms, alat, m)) error("No atomic coordinates found.");
-	
-	# Any others?
+	if (!readPWAtoms(m, nAtoms, alat, alatKeywd)) error("No atomic coordinates found.");
+	# Atomic forces?
+	atomForces = readPWForces(m);
+
+	# Any other configurations, e.g. from geometry optimisation?
 	while (!eof())
 	{
-		# Search for first set of coordinates
-		if (!find("CELL_PARAMETERS")) break;
-		nConfigs++;
-		addFrame(toa("Frame %i",nConfigs));
-		#if (!readCell(alat)) error("Error reading cell parameters for configuration %i", nConfigs);
-		if (!find("ATOMIC_POSITIONS")) error("Failed to find any coordinates for configuration %i", nConfigs);
-		if (!readAtoms(nAtoms)) error("Error reading atomic positions for configuration %i", nConfigs);
+		# Attempt to find new cell information
+		if (!readPWCellFrame(ucell, alat, alatKeywd)) break;
+		++nConfigs;
+		m = addFrame(toa("Frame %i",nConfigs));
+		m.cell.copy(ucell);
+		if (!readPWAtomsFrame(m, nAtoms))
+		{
+			printf("Failed to find atom coordinates for frame %i\n", nConfigs);
+			finaliseFrame();
+			break;
+		}
+		# Atomic forces?
+		if (atomForces) readPWForces(m);
 		finaliseFrame();
 	}
 	finaliseModel();

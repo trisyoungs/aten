@@ -165,7 +165,6 @@ bool NewNode::execute(ReturnValue &rv)
 	}
 	
 	// Set the value...
-	printf("NEWED addr = %p\n", object_);
 	rv.set(type_, object_);
 	
 	return TRUE;
