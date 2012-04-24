@@ -377,7 +377,8 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	if (result) switch (i)
 	{
 		case (CellVariable::Copy):
-			result = ptr->copy( (UnitCell*) node->argp(0, VTypes::CellData) );
+			if (ptr->parent()) result = ptr->parent()->setCell( (UnitCell*) node->argp(0, VTypes::CellData) );
+			else result = ptr->copy( (UnitCell*) node->argp(0, VTypes::CellData) );
 			rv.reset();
 			break;
 		case (CellVariable::MinimumImage):

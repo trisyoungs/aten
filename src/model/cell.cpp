@@ -96,9 +96,13 @@ void Model::setCell(UnitCell::CellParameter cp, double value)
 }
 
 // Set cell (other Cell pointer)
-void Model::setCell(UnitCell *newcell)
+bool Model::setCell(UnitCell *newcell)
 {
-	if (newcell == NULL) printf("Warning: NULL UnitCell pointer passed to Model::setCell().\n");
+	if (newcell == NULL)
+	{
+		msg.print("Error: NULL UnitCell pointer passed to Model::setCell().\n");
+		return FALSE;
+	}
 	else
 	{
 		Matrix oldaxes = cell_.axes();
@@ -114,6 +118,7 @@ void Model::setCell(UnitCell *newcell)
 	}
 	changeLog.add(Log::Camera);
 	changeLog.add(Log::Cell);
+	return TRUE;
 }
 
 // Remove cell
