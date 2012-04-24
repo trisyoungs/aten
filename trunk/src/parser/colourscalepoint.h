@@ -43,7 +43,7 @@ class ColourScalePointVariable : public PointerVariable
 	// Accessor list
 	enum Accessors { Colour, nAccessors };
 	// Function list
-	enum Functions { DummyFunction, nFunctions };
+	enum Functions { Copy, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

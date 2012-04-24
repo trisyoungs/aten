@@ -26,11 +26,11 @@ filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", e
 	writeLine("&control");
 	writeLine("   calculation='vc-relax',");
 	writeLine("   tstress=.true.,");
-	writeLine("   pseudo_dir='/home/tyoungs/src/espresso-4.1.2/pseudo'");
+	writeLine("   pseudo_dir='/home/user/src/espresso-4.3.2/pseudo'");
 	writeLine("/");
 	writeLine("&system");
 	writeLine("   ibrav=0,");
-	if (m.cell.type != "none") writeLineF("   A=%f, B=%f, C=%f, cosAB=%f, cosAC=%f, cosBC=%f,\n",m.cell.a,m.cell.b,m.cell.c,cos(m.cell.alpha),cos(m.cell.beta),cos(m.cell.gamma));
+	if (m.cell.type != "none") writeLineF("  celldm(1)=%f,\n", m.cell.a/ANGBOHR);
 	writeLineF("   nat=%i,\n",m.nAtoms);
 	writeLineF("   ntyp=%i,\n",nspecies);
 	writeLine("   ecutwfc=50.0,");
@@ -48,6 +48,16 @@ filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", e
 	writeLine("   press=0.0");
 	writeLine(" /");
 
+	# Write cell data
+	if (m.cell.type != "none")
+	{
+		writeLine("CELL_PARAMETERS");
+		double alat = m.cell.a;
+		writeLineF("    %f %f %f\n", m.cell.ax/alat, m.cell.ay/alat, m.cell.az/alat);
+		writeLineF("    %f %f %f\n", m.cell.bx/alat, m.cell.by/alat, m.cell.bz/alat);
+		writeLineF("    %f %f %f\n", m.cell.cx/alat, m.cell.cy/alat, m.cell.cz/alat);
+	}
+
 	# Write atomic species data
 	writeLine("ATOMIC_SPECIES");
 	for (n=1; n<=aten.nElements; n++) if (el[n] != 0) writeLineF("%-5s  %10.4f  %s.UPF\n",aten.elements[n].symbol, aten.elements[n].mass, aten.elements[n].symbol);
@@ -57,25 +67,49 @@ filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", e
 	for (i = m.atoms; i; ++i) writeLineF("%-5s   %14.8f %14.8f %14.8f\n",i.symbol,i.rx,i.ry,i.rz);
 }
 
-# Subroutines
-int readcell(double alat)
+# Subroutines for output-file reading
+
+# Read next occurrence of unit cell (PWSCF)
+int readPWCell(double alat, UnitCell ucell)
 {
-	vector v1,v2,v3;
-	if (!readLine(v1.x,v1.y,v1.z)) return 0;
-	if (!readLine(v2.x,v2.y,v2.z)) return 0;
-	if (!readLine(v3.x,v3.y,v3.z)) return 0;
-	v1 *= alat;
-	v2 *= alat;
-	v3 *= alat;
-	cellAxes(v1.x,v1.y,v1.z,v2.x,v2.y,v2.z,v3.x,v3.y,v3.z);
-	return 1;
+	if (!find("crystal axes: (cart. coord. in units of a_0)")) return FALSE;
+	Vector v1,v2,v3;
+	if (!readLineF("%23* %f %f %f", ucell.ax,ucell.ay,ucell.az)) return 0;
+	if (!readLineF("%23* %f %f %f", ucell.bx,ucell.by,ucell.bz)) return 0;
+	if (!readLineF("%23* %f %f %f", ucell.cx,ucell.cy,ucell.cz)) return 0;
+	for (int n=1; n<=9; ++n) ucell.matrix[n] *= alat;
+	return TRUE;
 }
 
-int readatoms(int natoms)
+# Read next occurrence of unit cell (CP)
+int readCPCell(UnitCell ucell)
+{
+	if (!find(" alat  = ")) return FALSE;
+	if (!readLineF("%* $* %f %f %f", ucell.ax,ucell.ay,ucell.az)) return 0;
+	if (!readLineF("%* $* %f %f %f", ucell.bx,ucell.by,ucell.bz)) return 0;
+	if (!readLineF("%* $* %f %f %f", ucell.cx,ucell.cy,ucell.cz)) return 0;
+	return TRUE;
+}
+
+# Read coordinates (PWSCF)
+int readPWAtoms(int nAtoms, double alat, Model m)
+{
+	if (!find("site n.     atom                  positions (a_0 units)")) return FALSE;
+	String el;
+	double x, y, z;
+	for (int n=0; n<nAtoms; ++n)
+	{
+		readLineF("%12*%10s%16*%f %f %f",  el, x, y, z);
+		m.newAtom(el, x*alat, y*alat, z*alat);
+	}
+	return TRUE;
+}
+
+int readAtoms(int nAtoms)
 {
 	double x,y,z;
 	string el;
-	for (int n=0; n<natoms; ++n)
+	for (int n=0; n<nAtoms; ++n)
 	{
 		if (!readLine(el,x,y,z)) return 0;
 		newAtom(el,x,y,z);
@@ -83,11 +117,12 @@ int readatoms(int natoms)
 	return 1;
 }
 
-filter(type="importmodel", name="Quantum Espresso Output", nickname="espout", extension="out", glob="*.out", search="Program PWSCF")
+filter(type="importmodel", name="Quantum Espresso Output (PWSCF)", nickname="qepwscf", extension="out", glob="*.out", search="PWSCF")
 {
 	# Variable declaration
-	int natoms, nconfig = 1;
+	int nAtoms, nConfigs = 1, cellType = 0, coordType = 0;
 	string keywd,data,line,unit;
+	UnitCell ucell = new UnitCell;
 	double alat;
 
 	# Locate lattice coordinate and number of atoms
@@ -95,33 +130,36 @@ filter(type="importmodel", name="Quantum Espresso Output", nickname="espout", ex
 	{
 		readVar(line,data,data,data,data,alat);
 		alat *= 0.52917720859;
-		printf("Lattice parameters is %f Angstroms\n", alat);
+		printf("Lattice parameter is %f Angstroms\n", alat);
 	}
 	else printf("Failed to find lattice parameter.\n");
+
+	# Find number of atoms per basic cell
 	if (find("number of atoms/cell", line))
 	{
-		readVar(line,data,data,data,data,natoms);
-		printf("Number of atoms in cell = %i\n", natoms); 
+		readVar(line,data,data,data,data,nAtoms);
+		printf("Number of atoms in cell = %i\n", nAtoms); 
 	}
 	else error("Failed to find number of atoms in cell.");
 
-	# Search for first set of coordinates
-	if (!find("CELL_PARAMETERS")) error("Failed to find any cell parameters");
-	newModel(filterFilename());
-	if (!readcell(alat)) error("Error reading cell parameters");
-	if (!find("ATOMIC_POSITIONS")) error("Failed to find any coordinates");
-	if (!readatoms(natoms)) error("Error reading atomic positions");
+	# Read initial cell and coordinates
+	if (!readPWCell(alat,ucell)) error("Failed to find any cell parameters");
+	Model m = newModel(filterFilename());
+	m.cell.copy(ucell);
+	#if (!find("ATOMIC_POSITIONS")) error("Failed to find any coordinates");
+	#if (!readAtoms(nAtoms)) error("Error reading atomic positions");
+	if (!readPWAtoms(nAtoms, alat, m)) error("No atomic coordinates found.");
 	
 	# Any others?
 	while (!eof())
 	{
 		# Search for first set of coordinates
 		if (!find("CELL_PARAMETERS")) break;
-		nconfig++;
-		addFrame(toa("Frame %i",nconfig));
-		if (!readcell(alat)) error("Error reading cell parameters for configuration %i", nconfig);
-		if (!find("ATOMIC_POSITIONS")) error("Failed to find any coordinates for configuration %i", nconfig);
-		if (!readatoms(natoms)) error("Error reading atomic positions for configuration %i", nconfig);
+		nConfigs++;
+		addFrame(toa("Frame %i",nConfigs));
+		#if (!readCell(alat)) error("Error reading cell parameters for configuration %i", nConfigs);
+		if (!find("ATOMIC_POSITIONS")) error("Failed to find any coordinates for configuration %i", nConfigs);
+		if (!readAtoms(nAtoms)) error("Error reading atomic positions for configuration %i", nConfigs);
 		finaliseFrame();
 	}
 	finaliseModel();

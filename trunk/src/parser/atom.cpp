@@ -85,6 +85,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
+	{ "copy",	VTypes::NoData,		"A",	"Atom j" },
 	{ "findBond",	VTypes::BondData,	"A",	"Atom j" }
 };
 
@@ -218,7 +219,12 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (AtomVariable::FracX):
 		case (AtomVariable::FracY):
 		case (AtomVariable::FracZ):
-			rv.set((ptr->parent()->cell()->inverse() * ptr->r()).get(acc - AtomVariable::FracX));
+			if (ptr->parent()) rv.set((ptr->parent()->cell()->inverse() * ptr->r()).get(acc - AtomVariable::FracX));
+			else
+			{
+				msg.print("Can't retrieve the fractional coordinate of an unparented Atom (since it has no associated UnitCell).\n");
+				result = FALSE;
+			}
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
@@ -354,6 +360,8 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
 		result = FALSE;
 	}
+	Model *ptrParent = ptr->parent();
+	
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{
@@ -374,26 +382,39 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			}
 			else if (&elements().el[ptr->element()] != el)
 			{
-				ptr->parent()->beginUndoState("Transmute atom");
-				ptr->parent()->transmuteAtom(ptr, el->z);
-				ptr->parent()->endUndoState();
+				if (ptrParent)
+				{
+					ptrParent->beginUndoState("Transmute atom");
+					ptrParent->transmuteAtom(ptr, el->z);
+					ptrParent->endUndoState();
+				}
+				else ptr->setElement(el->z);
 			}
 			break;
 		case (AtomVariable::F):
 			ptr->f() = newvalue.asVector();
 			break;
 		case (AtomVariable::Fixed):
-			ptr->parent()->atomSetFixed(ptr, newvalue.asBool());
+			if (ptrParent) ptrParent->atomSetFixed(ptr, newvalue.asBool());
+			else ptr->setPositionFixed(newvalue.asBool());
 			break;
 		case (AtomVariable::FracX):
 		case (AtomVariable::FracY):
 		case (AtomVariable::FracZ):
-			v = ptr->parent()->cell()->inverse() * ptr->r();
-			v.set(acc - AtomVariable::FracX, newvalue.asDouble());
-			v = ptr->parent()->cell()->fracToReal(v);
-			ptr->parent()->beginUndoState("Position atom (fractional coordinates)");
-			ptr->parent()->positionAtom(ptr, v);
-			ptr->parent()->endUndoState();
+			if (ptrParent)
+			{
+				v = ptrParent->cell()->inverse() * ptr->r();
+				v.set(acc - AtomVariable::FracX, newvalue.asDouble());
+				v = ptrParent->cell()->fracToReal(v);
+				ptrParent->beginUndoState("Position atom (fractional coordinates)");
+				ptrParent->positionAtom(ptr, v);
+				ptrParent->endUndoState();
+			}
+			else
+			{
+				msg.print("Can't set the fractional coordinate of an unparented Atom (since it has no associated UnitCell).\n");
+				result = FALSE;
+			}
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
@@ -401,31 +422,48 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->f().set(acc - AtomVariable::FX, newvalue.asDouble());
 			break;
 		case (AtomVariable::Hidden):
-			ptr->parent()->atomSetHidden(ptr, newvalue.asBool());
+			if (ptrParent) ptrParent->atomSetHidden(ptr, newvalue.asBool());
+			else ptr->setHidden( newvalue.asBool() );
 			break;
 		case (AtomVariable::Q):
-			ptr->parent()->beginUndoState("Charge atom");
-			ptr->parent()->atomSetCharge(ptr, newvalue.asDouble());
-			ptr->parent()->endUndoState();
+			if (ptrParent)
+			{
+				ptrParent->beginUndoState("Charge atom");
+				ptrParent->atomSetCharge(ptr, newvalue.asDouble());
+				ptrParent->endUndoState();
+			}
+			else ptr->setCharge(newvalue.asDouble());
 			break;
 		case (AtomVariable::R):
-			ptr->parent()->beginUndoState("Position atom");
-			ptr->parent()->positionAtom(ptr, newvalue.asVector());
-			ptr->parent()->endUndoState();
+			if (ptrParent)
+			{
+				ptrParent->beginUndoState("Position atom");
+				ptrParent->positionAtom(ptr, newvalue.asVector());
+				ptrParent->endUndoState();
+			}
+			else ptr->r() = newvalue.asVector();
 			break;
 		case (AtomVariable::RX):
 		case (AtomVariable::RY):
 		case (AtomVariable::RZ):
 			v = ptr->r();
 			v.set(acc - AtomVariable::RX, newvalue.asDouble());
-			ptr->parent()->beginUndoState("Position atom");
-			ptr->parent()->positionAtom(ptr, v);
-			ptr->parent()->endUndoState();
+			if (ptrParent)
+			{
+				ptrParent->beginUndoState("Position atom");
+				ptrParent->positionAtom(ptr, v);
+				ptrParent->endUndoState();
+			}
+			else ptr->r() = v;
 			break;
 		case (AtomVariable::Selected):
-			ptr->parent()->beginUndoState("(De)select atom");
-			newvalue.asBool() ? ptr->parent()->selectAtom(ptr) : ptr->parent()->deselectAtom(ptr);
-			ptr->parent()->endUndoState();
+			if (ptrParent)
+			{
+				ptrParent->beginUndoState("(De)select atom");
+				newvalue.asBool() ? ptrParent->selectAtom(ptr) : ptrParent->deselectAtom(ptr);
+				ptrParent->endUndoState();
+			}
+			else ptr->setSelected(newvalue.asBool());
 			break;
 		case (AtomVariable::Style):
 			ds = Atom::drawStyle( newvalue.asString() );
@@ -444,9 +482,13 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->v().set(acc - AtomVariable::VX, newvalue.asDouble());
 			break;
 		case (AtomVariable::Z):
-			ptr->parent()->beginUndoState("Transmute atom");
-			ptr->parent()->transmuteAtom(ptr, newvalue.asInteger());
-			ptr->parent()->endUndoState();
+			if (ptrParent)
+			{
+				ptrParent->beginUndoState("Transmute atom");
+				ptrParent->transmuteAtom(ptr, newvalue.asInteger());
+				ptrParent->endUndoState();
+			}
+			else ptr->setElement( newvalue.asInteger() );
 			break;
 		default:
 			printf("AtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -471,8 +513,27 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Atom *ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
+	Model *ptrParent = ptr->parent();
 	if (result) switch (i)
 	{
+		case (AtomVariable::Copy):
+			if (!((Atom*) node->argp(0, VTypes::AtomData)))
+			{
+				msg.print("Error: NULL pointer given to Atom's 'copy' function.\n");
+				result = FALSE;
+			}
+			else if (ptrParent)
+			{
+				Atom *i = (Atom*) node->argp(0, VTypes::AtomData);
+				ptrParent->beginUndoState("Copy atom data");
+				i->isSelected() ? ptrParent->selectAtom(ptr) : ptrParent->deselectAtom(ptr);
+				ptrParent->positionAtom(ptr, i->r());
+				if (ptr->element() != i->element()) ptrParent->transmuteAtom(ptr, i->element());
+				ptrParent->endUndoState();
+			}
+			else result = ptr->copy( (Atom*) node->argp(0, VTypes::AtomData) );
+			rv.reset();
+			break;
 		case (AtomVariable::FindBond):
 			rv.set(VTypes::BondData, ptr->findBond( (Atom*) node->argp(0, VTypes::AtomData) ) );
 			break;

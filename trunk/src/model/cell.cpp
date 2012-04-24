@@ -178,60 +178,6 @@ void Model::foldAllMolecules()
 	msg.exit("Model::foldAllMolecules");
 }
 
-// Set spacegroup info
-void Model::setSpacegroup(const char *sg)
-{
-	msg.enter("Model::setSpacegroup");
-	// This is basically a chunk of verbatim code from 'sgquick.c'
-
-	// Do a table lookup of the sg text (assume volume is 'A')
-	const T_TabSgName *tsgn = FindTabSgNameEntry(sg, 'A');
-	if (tsgn == NULL)
-	{
-		msg.print("Unable to find spacegroup '%s'.\n", sg);
-		msg.exit("Model::setSpacegroup");
-		return;
-	}
-	// Check for hexagonal basis, and whether to force rhombohedral basis
-	if (strcmp(tsgn->Extension, "H") == 0)
-	{
-		if (!prefs.forceRhombohedral()) msg.print("Warning: Spacegroup has hexagonal basis.\n");
-		else
-		{
-			Dnchar newname(128);
-			newname = tsgn->SgLabels;
-			newname.strcat(":R");
-			tsgn = FindTabSgNameEntry(newname.get(), 'A');
-			if (tsgn == NULL)
-			{
-				msg.print("Unable to find spacegroup '%s'.\n", sg);
-				msg.exit("Model::setSpacegroup");
-				return;
-			}
-			msg.print("Spacegroup %s forced into rhombohedral basis.\n", tsgn->SgLabels);
-		}
-	}
-	cell_.setSpacegroupId(tsgn->SgNumber);
-
-	// Initialize the SgInfo structure
-	InitSgInfo(&spacegroup_);
-	spacegroup_.TabSgName = tsgn;
-	
-	// Translate the Hall symbol and generate the whole group
-	ParseHallSymbol(tsgn->HallSymbol, &spacegroup_);
-	if (SgError != NULL) return;
-	
-	/* Do some book-keeping and derive crystal system, point group,
-	and - if not already set - find the entry in the internal
-	table of space group symbols
-	*/
-	CompleteSgInfo(&spacegroup_);
-
-	msg.print(Messenger::Verbose, "Space group belongs to the %s crystal system.\n", XS_Name[spacegroup_.XtalSystem]);
-
-	msg.exit("Model::setSpacegroup");
-}
-
 // Apply individual symmetry generator to current atom selection
 void Model::pack(Generator *gen)
 {
@@ -287,10 +233,11 @@ void Model::pack()
 		const int *TrV;
 		const T_RTMx *lsmx;
 		
-		nLoopInv = Sg_nLoopInv(&spacegroup_);
+		T_SgInfo *spacegroup = cell_.spacegroup();
+		nLoopInv = Sg_nLoopInv(spacegroup);
 		
-		nTrV = spacegroup_.LatticeInfo->nTrVector;
-		TrV = spacegroup_.LatticeInfo->TrVector;
+		nTrV = spacegroup->LatticeInfo->nTrVector;
+		TrV = spacegroup->LatticeInfo->TrVector;
 		
 		for (iTrV = 0; iTrV < nTrV; iTrV++, TrV += 3)
 		{
@@ -299,9 +246,9 @@ void Model::pack()
 				if (iLoopInv == 0) f =  1;
 				else               f = -1;
 		
-				lsmx = spacegroup_.ListSeitzMx;
+				lsmx = spacegroup->ListSeitzMx;
 				
-				for (iList = 0; iList < spacegroup_.nList; iList++, lsmx++)
+				for (iList = 0; iList < spacegroup->nList; iList++, lsmx++)
 				{
 					gen.setRotationRow(0, f*lsmx->s.R[0], f*lsmx->s.R[1], f*lsmx->s.R[2]);
 					gen.setRotationRow(1, f*lsmx->s.R[3], f*lsmx->s.R[4], f*lsmx->s.R[5]);

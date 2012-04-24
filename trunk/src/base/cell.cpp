@@ -60,9 +60,21 @@ UnitCell::UnitCell()
 	centre_.zero();
 	volume_ = 0.0;
 	reciprocalVolume_ = 0.0;
-	spacegroup_ = 0;
 	spacegroupId_ = 0;
 	parent_ = NULL;
+	
+	// Allocate SGInfo Seitz matrix arrays
+	spacegroup_.MaxList = 192;
+	spacegroup_.ListSeitzMx = new T_RTMx[192];
+	spacegroup_.ListRotMxInfo = new T_RotMxInfo[192];
+}
+
+// Destructor
+UnitCell::~UnitCell()
+{
+	// Delete sginfo arrays
+	delete[] spacegroup_.ListSeitzMx;
+	delete[] spacegroup_.ListRotMxInfo;
 }
 
 // Assignment operator
@@ -90,6 +102,15 @@ void UnitCell::setParent(Model *m)
 Model *UnitCell::parent()
 {
 	return parent_;
+}
+
+// Copy data from specified cell
+bool UnitCell::copy(UnitCell *source)
+{
+	if (source == NULL) return FALSE;
+	source->print();
+	(*this) = (*source);
+	return TRUE;
 }
 
 /*
@@ -283,11 +304,64 @@ double UnitCell::density() const
 	return density_;
 }
 
-// Sets the spacegroup Id
-void UnitCell::setSpacegroupId(int i)
+/*
+// Spacegroup
+*/
+
+// Set spacegroup from supplied spacegroup name
+bool UnitCell::setSpacegroup(const char *name, bool forceRhombohedral)
 {
-	if ((i < 0) || (i > 230)) msg.print( "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", i);
-	else spacegroupId_ = i;
+	msg.enter("UnitCell::setSpacegroup");
+	// This is basically a chunk of verbatim code from 'sgquick.c'
+
+	// Do a table lookup of the sg text (assume volume is 'A')
+	const T_TabSgName *tsgn = FindTabSgNameEntry(name, 'A');
+	if (tsgn == NULL)
+	{
+		msg.print("Unable to find spacegroup '%s'.\n", name);
+		msg.exit("UnitCell::setSpacegroup");
+		return FALSE;
+	}
+	// Check for hexagonal basis, and whether to force rhombohedral basis
+	if (strcmp(tsgn->Extension, "H") == 0)
+	{
+		if (!forceRhombohedral) msg.print("Warning: Spacegroup has hexagonal basis.\n");
+		else
+		{
+			Dnchar newname(128);
+			newname = tsgn->SgLabels;
+			newname.strcat(":R");
+			tsgn = FindTabSgNameEntry(newname.get(), 'A');
+			if (tsgn == NULL)
+			{
+				msg.print("Unable to find spacegroup '%s'.\n", name);
+				msg.exit("UnitCell::setSpacegroup");
+				return FALSE;
+			}
+			msg.print("Spacegroup %s forced into rhombohedral basis.\n", tsgn->SgLabels);
+		}
+	}
+	spacegroupId_ = tsgn->SgNumber;
+
+	// Initialize the SgInfo structure
+	InitSgInfo(&spacegroup_);
+	spacegroup_.TabSgName = tsgn;
+	
+	// Translate the Hall symbol and generate the whole group
+	ParseHallSymbol(tsgn->HallSymbol, &spacegroup_);
+	if (SgError != NULL) return FALSE;
+	
+	// Do some book-keeping and derive crystal system, point group, and - if not already set - find the entry in the internal table of space group symbols
+	CompleteSgInfo(&spacegroup_);
+
+	msg.print(Messenger::Verbose, "Space group belongs to the %s crystal system.\n", XS_Name[spacegroup_.XtalSystem]);
+	return TRUE;
+}
+
+// Return SgInfo spacegroup structure (if it exists)
+T_SgInfo *UnitCell::spacegroup()
+{
+	return &spacegroup_;
 }
 
 // Return the spacegroup Id
@@ -297,7 +371,7 @@ int UnitCell::spacegroupId() const
 }
 
 // Return the spacegroup name
-const char *UnitCell::spacegroup() const
+const char *UnitCell::spacegroupName() const
 {
 	return Spacegroups[spacegroupId_].name;
 }
@@ -320,6 +394,10 @@ Generator *UnitCell::generators()
 	return generators_.first();
 }
 
+/*
+// Internal Methods
+*/
+
 // Update dependent quantities
 void UnitCell::update()
 {
@@ -339,9 +417,9 @@ void UnitCell::determineType()
 	msg.enter("UnitCell::determineType");
 	// Compare cell angles....
 	int count = 0;
-	if (fabs(90.0 - angles_.x) < 1.0e-5) count ++;
-	if (fabs(90.0 - angles_.y) < 1.0e-5) count ++;
-	if (fabs(90.0 - angles_.z) < 1.0e-5) count ++;
+	if (fabs(90.0 - angles_.x) < 1.0e-5) ++count;
+	if (fabs(90.0 - angles_.y) < 1.0e-5) ++count;
+	if (fabs(90.0 - angles_.z) < 1.0e-5) ++count;
 	// If all sides are orthogonal then either cubic or orthorhombic (2 == monoclinic, 0 == triclinic)
 	if (count == 3)
 	{
@@ -352,12 +430,13 @@ void UnitCell::determineType()
 		if (count == 2) type_ = UnitCell::CubicCell;
 		else type_ = UnitCell::OrthorhombicCell;
 		// While we're here, symmetrise the matrix for cubic and orthorhombic cells
-		axes_[1] = 0.0;
-		axes_[2] = 0.0;
-		axes_[4] = 0.0;
-		axes_[6] = 0.0;
-		axes_[8] = 0.0;
-		axes_[9] = 0.0;
+		// Removed 24/04/12 since this breaks the ability to build up (set) the cell from individual cell parameters
+// 		axes_[1] = 0.0;
+// 		axes_[2] = 0.0;
+// 		axes_[4] = 0.0;
+// 		axes_[6] = 0.0;
+// 		axes_[8] = 0.0;
+// 		axes_[9] = 0.0;
 	}
 	else type_ = UnitCell::ParallelepipedCell;
 	msg.exit("UnitCell::determineType");

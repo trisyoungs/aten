@@ -1,10 +1,8 @@
+/* A Bison parser, made by GNU Bison 2.5.  */
 
-/* A Bison parser, made by GNU Bison 2.4.1.  */
-
-/* Skeleton interface for Bison's Yacc-like parsers in C
+/* Bison interface for Yacc-like parsers in C
    
-      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
-   Free Software Foundation, Inc.
+      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -66,21 +64,22 @@
      ATEN_VOID = 282,
      ATEN_CONTINUE = 283,
      ATEN_BREAK = 284,
-     ATEN_ELSE = 285,
-     DEQ = 286,
-     TEQ = 287,
-     MEQ = 288,
-     PEQ = 289,
-     OR = 290,
-     AND = 291,
-     NEQ = 292,
-     EQ = 293,
-     GEQ = 294,
-     LEQ = 295,
-     UMINUS = 296,
-     UPLUS = 297,
-     MINUSMINUS = 298,
-     PLUSPLUS = 299
+     ATEN_NEW = 285,
+     ATEN_ELSE = 286,
+     DEQ = 287,
+     TEQ = 288,
+     MEQ = 289,
+     PEQ = 290,
+     OR = 291,
+     AND = 292,
+     NEQ = 293,
+     EQ = 294,
+     GEQ = 295,
+     LEQ = 296,
+     UMINUS = 297,
+     UPLUS = 298,
+     MINUSMINUS = 299,
+     PLUSPLUS = 300
    };
 #endif
 /* Tokens.  */
@@ -111,21 +110,22 @@
 #define ATEN_VOID 282
 #define ATEN_CONTINUE 283
 #define ATEN_BREAK 284
-#define ATEN_ELSE 285
-#define DEQ 286
-#define TEQ 287
-#define MEQ 288
-#define PEQ 289
-#define OR 290
-#define AND 291
-#define NEQ 292
-#define EQ 293
-#define GEQ 294
-#define LEQ 295
-#define UMINUS 296
-#define UPLUS 297
-#define MINUSMINUS 298
-#define PLUSPLUS 299
+#define ATEN_NEW 285
+#define ATEN_ELSE 286
+#define DEQ 287
+#define TEQ 288
+#define MEQ 289
+#define PEQ 290
+#define OR 291
+#define AND 292
+#define NEQ 293
+#define EQ 294
+#define GEQ 295
+#define LEQ 296
+#define UMINUS 297
+#define UPLUS 298
+#define MINUSMINUS 299
+#define PLUSPLUS 300
 
 
 
@@ -134,7 +134,7 @@
 typedef union YYSTYPE
 {
 
-/* Line 1676 of yacc.c  */
+/* Line 2068 of yacc.c  */
 #line 31 "grammar.yy"
 
 	int functionId;			/* Function enum id */
@@ -148,7 +148,7 @@ typedef union YYSTYPE
 
 
 
-/* Line 1676 of yacc.c  */
+/* Line 2068 of yacc.c  */
 #line 153 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1

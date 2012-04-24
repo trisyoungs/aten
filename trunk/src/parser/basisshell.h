@@ -43,7 +43,7 @@ class BasisShellVariable : public PointerVariable
 	// Accessor list
         enum Accessors { AtomId, NPrimitives, Primitives, Type, nAccessors };
 	// Function list
-	enum Functions { AddPrimitive, nFunctions };
+	enum Functions { AddPrimitive, Copy, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

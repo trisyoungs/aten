@@ -712,6 +712,7 @@ void AtenForm::on_actionTrajectoryOpen_triggered(bool checked)
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
+		
 		// Find the filter that was selected
 		filter = aten.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
@@ -865,6 +866,7 @@ void AtenForm::on_actionOpenExpression_triggered(bool checked)
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
+		
 		// Find the filter that was selected
 		filter = aten.findFilterByDescription(FilterData::ExpressionImport, qPrintable(selFilter));
 		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::ExpressionImport);

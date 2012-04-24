@@ -32,6 +32,7 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Clarify use of pointers for non-POD objects, add 'new' usage description, and 'copy' member function for atom, bond, and unitcell types</li>
 <li>Add 'transparentSelectionStyle' prefs accessor.</li>
 <li>Add 'wireselection' colour enum definition.</li>
 <li>Add '--nicknames' switch</li>

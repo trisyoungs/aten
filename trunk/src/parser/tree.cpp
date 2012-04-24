@@ -26,6 +26,7 @@
 #include "parser/character.h"
 #include "parser/element.h"
 #include "parser/dialog.h"
+#include "parser/newnode.h"
 #include "classes/prefs.h"
 #include "main/aten.h"
 
@@ -512,10 +513,12 @@ TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *ar
 	else if (arg3 == NULL) rtype = checkBinaryOperatorTypes(func, arg1->returnType(), arg1->returnsArray(), arg2->returnType(), arg2->returnsArray(), returnsarray);
 	else rtype = checkTernaryOperatorTypes(func, arg1->returnType(), arg1->returnsArray(), arg2->returnType(), arg2->returnsArray(), arg3->returnType(), arg3->returnsArray(), returnsarray); 
 	if (rtype == VTypes::NoData) return NULL;
+	
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added operator '%s' (%p)...\n", Command::data[func].keyword, leaf);
+	
 	// Add arguments and set parent
 	leaf->addArguments(1,arg1);
 	leaf->setParent(this);
@@ -523,8 +526,35 @@ TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *ar
 	if (arg3 != NULL) leaf->addArguments(1,arg3);
 	leaf->setReturnType(rtype);
 	leaf->setReturnsArray(returnsarray);
+	
 	msg.exit("Tree::addOperator");
 	return leaf;
+}
+
+// Add a 'new' node to the Tree
+TreeNode *Tree::addNew(VTypes::DataType type)
+{
+	msg.enter("Tree::addNew");
+	
+	// Check supplied type....
+	if (type < VTypes::AtenData)
+	{
+		msg.print("Error : Plain datatypes cannot (and need not) be new'd in this way.\n");
+		msg.exit("Tree::addNew");
+		return NULL;
+	}
+	if (!VTypes::userCanCreate(type))
+	{
+		msg.print("Error : This datatype (%s) cannot be created in this way, or its usage is restricted by Aten.\n", VTypes::dataType(type));
+		msg.exit("Tree::addNew");
+		return NULL;
+	}
+	
+	// Create the new node
+	NewNode *node = new NewNode(type);
+
+	msg.exit("Tree::addNew");
+	return node;
 }
 
 // Add function-based leaf node to topmost branch on stack
@@ -535,11 +565,14 @@ TreeNode *Tree::addFunctionWithArglist(Command::Function func, TreeNode *arglist
 	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", Command::data[func].keyword, leaf);
+	
 	// Add argument list to node and set parent
 	leaf->addJoinedArguments(arglist);
 	leaf->setParent(this);
+	
 	// Store the function's return type
 	leaf->setReturnType(Command::data[func].returnType);
+	
 	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments(Command::data[func].arguments, Command::data[func].keyword))
 	{

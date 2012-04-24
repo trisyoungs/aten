@@ -58,7 +58,7 @@ Accessor ColourScaleVariable::accessorData[ColourScaleVariable::nAccessors] = {
 FunctionAccessor ColourScaleVariable::functionData[ColourScaleVariable::nFunctions] = {
 	{ "addPoint",	VTypes::ColourScalePointData,	"NNNNn",	"double value, doublr r, double g, double b, double a = 1.0" },
 	{ "clear",	VTypes::NoData,			"",		"" },
-	{ "colour",	VTypes::NoData,			"N^N^N^N^n",	"double value, double *r, double *g, double *b, double *a = NULL" }
+	{ "colour",	VTypes::NoData,			"N^N^N^N^n",	"double value, double *r, double *g, double *b, double *a = NULL" },
 };
 
 // Search variable access list for provided accessor (call private static function)

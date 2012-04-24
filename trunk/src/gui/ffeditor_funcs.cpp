@@ -22,6 +22,8 @@
 #include "base/sysfunc.h"
 #include "gui/ffeditor.h"
 #include "gui/tcombobox.h"
+#include "gui/tdoublespindelegate.uih"
+#include "gui/tintegerspindelegate.uih"
 #include "ff/forcefield.h"
 #include "model/model.h"
 #include "main/aten.h"
@@ -58,6 +60,21 @@ AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
 	// Private Variables
 	updating_ = FALSE;
 	targetForcefield_ = NULL;
+	
+	// Set item delegates for columns
+	int n;
+	ui.FFEditorTypesTable->setItemDelegateForColumn(TypeColumn::Id, new TIntegerSpinDelegate(this, 1, elements().nElements(), 1));
+	ui.FFEditorAtomsTable->setItemDelegateForColumn(AtomColumn::Charge, new TDoubleSpinDelegate(this));
+	for (n=AtomColumn::Data1; n<=AtomColumn::Data10; ++n) ui.FFEditorAtomsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
+	for (n=BondColumn::Data1; n<=BondColumn::Data10; ++n) ui.FFEditorBondsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
+	for (n=AngleColumn::Data1; n<=AngleColumn::Data10; ++n) ui.FFEditorAnglesTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
+	for (n=TorsionColumn::Data1; n<=TorsionColumn::Data10; ++n) ui.FFEditorTorsionsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
+	ui.FFEditorTorsionsTable->setItemDelegateForColumn(TorsionColumn::ElecScale, new TDoubleSpinDelegate(this));
+	ui.FFEditorTorsionsTable->setItemDelegateForColumn(TorsionColumn::VdwScale, new TDoubleSpinDelegate(this));
+	for (n=TorsionColumn::Data1; n<=TorsionColumn::Data10; ++n) ui.FFEditorImpropersTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
+	ui.FFEditorImpropersTable->setItemDelegateForColumn(TorsionColumn::ElecScale, new TDoubleSpinDelegate(this));
+	ui.FFEditorImpropersTable->setItemDelegateForColumn(TorsionColumn::VdwScale, new TDoubleSpinDelegate(this));
+	for (n=BondColumn::Data1; n<=BondColumn::Data10; ++n) ui.FFEditorUreyBradleysTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
 }
 
 // Populate widget with specified forcefield
@@ -291,7 +308,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	ui.FFEditorUreyBradleysTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
-	for (ForcefieldBound *ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
+	for (ForcefieldBound *ffb = ff->ureyBradleys(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
@@ -330,18 +347,24 @@ void AtenForcefieldEditor::boundFunctionChanged(TComboBox *sender, int i, Forcef
 		printf("AtenForcefieldEditor::boundFunctionChanged - Sender could not be cast to a TComboBox.\n");
 		return;
 	}
+
 	// Get ForcefieldBound pointer and set data
 	ForcefieldBound *ffb = (ForcefieldBound*) sender->data.asPointer(VTypes::ForcefieldBoundData);
 	switch (bt)
 	{
 		case (ForcefieldBound::BondInteraction):
 			ffb->setBondForm( (BondFunctions::BondFunction) i);
+			updateBondsLabels(ffb);
 			break;
 		case (ForcefieldBound::AngleInteraction):
 			ffb->setAngleForm( (AngleFunctions::AngleFunction) i);
+			if (ffb->type() == ForcefieldBound::UreyBradleyInteraction) updateUreyBradleysLabels(ffb);
+			else updateAnglesLabels(ffb);
 			break;
 		case (ForcefieldBound::TorsionInteraction):
 			ffb->setTorsionForm( (TorsionFunctions::TorsionFunction) i);
+			if (ffb->type() == ForcefieldBound::UreyBradleyInteraction) updateImpropersLabels(ffb);
+			else updateTorsionsLabels(ffb);
 			break;
 	}
 }
@@ -399,19 +422,19 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 		case (TypeColumn::Element):
 // 			ffa->setName(qPrintable(w->text()));
 			break;
-		// Character element
+		// Type name
 		case (TypeColumn::Name):
 			ffa->setName(qPrintable(w->text()));
 			break;
-		// Character element
+		// Equivalent name
 		case (TypeColumn::Equivalent):
 			ffa->setEquivalent(qPrintable(w->text()));
 			break;
-		// Character element
+		// NETA description
 		case (TypeColumn::NETAString):
 			// 			ffa->setName(qPrintable(w->text()));   //TODO
 			break;
-		// Character element
+		// Type (text) description
 		case (TypeColumn::Description):
 			ffa->setDescription(qPrintable(w->text()));
 			break;
@@ -440,8 +463,8 @@ void AtenForcefieldEditor::updateVdwLabels(ForcefieldAtom *ffa)
 	for (int n=0; n<VdwFunctions::VdwFunctions[vf].nParameters; ++n)
 	{
 		if (n != 0) text.strcat(", ");
-		if (VdwFunctions::VdwFunctions[vf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", VdwFunctions::VdwFunctions[vf].parameterKeywords);
-		else text.strcatf("%s", VdwFunctions::VdwFunctions[vf].parameterKeywords);
+		if (VdwFunctions::VdwFunctions[vf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", VdwFunctions::VdwFunctions[vf].parameterKeywords[n]);
+		else text.strcatf("%s", VdwFunctions::VdwFunctions[vf].parameterKeywords[n]);
 	}
 	ui.FFEditorAtomParametersLabel->setText(text.get());
 }
@@ -543,8 +566,8 @@ void AtenForcefieldEditor::updateBondsLabels(ForcefieldBound *ffb)
 	for (int n=0; n<BondFunctions::BondFunctions[bf].nParameters; ++n)
 	{
 		if (n != 0) text.strcat(", ");
-		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", BondFunctions::BondFunctions[bf].parameterKeywords);
-		else text.strcatf("%s", BondFunctions::BondFunctions[bf].parameterKeywords);
+		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", BondFunctions::BondFunctions[bf].parameterKeywords[n]);
+		else text.strcatf("%s", BondFunctions::BondFunctions[bf].parameterKeywords[n]);
 	}
 	ui.FFEditorBondParametersLabel->setText(text.get());
 }
@@ -601,7 +624,7 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemSelectionChanged()
 		updateBondsLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->bond(row+1);
+	ForcefieldBound *ffb = targetForcefield_->bond(row);
 	updateBondsLabels(ffb);
 }
 
@@ -626,8 +649,8 @@ void AtenForcefieldEditor::updateAnglesLabels(ForcefieldBound *ffb)
 	for (int n=0; n<AngleFunctions::AngleFunctions[bf].nParameters; ++n)
 	{
 		if (n != 0) text.strcat(", ");
-		if (AngleFunctions::AngleFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", AngleFunctions::AngleFunctions[bf].parameterKeywords);
-		else text.strcatf("%s", AngleFunctions::AngleFunctions[bf].parameterKeywords);
+		if (AngleFunctions::AngleFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", AngleFunctions::AngleFunctions[bf].parameterKeywords[n]);
+		else text.strcatf("%s", AngleFunctions::AngleFunctions[bf].parameterKeywords[n]);
 	}
 	ui.FFEditorAngleParametersLabel->setText(text.get());
 }
@@ -685,7 +708,7 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemSelectionChanged()
 		updateAnglesLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->angle(row+1);
+	ForcefieldBound *ffb = targetForcefield_->angle(row);
 	updateAnglesLabels(ffb);
 }
 
@@ -710,8 +733,8 @@ void AtenForcefieldEditor::updateTorsionsLabels(ForcefieldBound *ffb)
 	for (int n=0; n<TorsionFunctions::TorsionFunctions[bf].nParameters; ++n)
 	{
 		if (n != 0) text.strcat(", ");
-		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", TorsionFunctions::TorsionFunctions[bf].parameterKeywords);
-		else text.strcatf("%s", TorsionFunctions::TorsionFunctions[bf].parameterKeywords);
+		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]);
+		else text.strcatf("%s", TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]);
 	}
 	ui.FFEditorTorsionParametersLabel->setText(text.get());
 }
@@ -748,8 +771,14 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 		case (TorsionColumn::Form):
 			// Handled by AtenForcefieldEditor::TorsionsTableComboChanged
 			break;
-		// Scaling factors
-
+		// Electrostatic scaling factor
+		case (TorsionColumn::ElecScale):
+			ffb->setElecScale(atof(qPrintable(w->text())));
+			break;
+		// van der Waals scaling factor
+		case (TorsionColumn::VdwScale):
+			ffb->setVdwScale(atof(qPrintable(w->text())));
+			break;
 		// Parameter data
 		case (TorsionColumn::Data1):
 		case (TorsionColumn::Data2):
@@ -772,7 +801,7 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemSelectionChanged()
 		updateTorsionsLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->torsion(row+1);
+	ForcefieldBound *ffb = targetForcefield_->torsion(row);
 	updateTorsionsLabels(ffb);
 }
 
@@ -797,8 +826,8 @@ void AtenForcefieldEditor::updateImpropersLabels(ForcefieldBound *ffb)
 	for (int n=0; n<TorsionFunctions::TorsionFunctions[bf].nParameters; ++n)
 	{
 		if (n != 0) text.strcat(", ");
-		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", TorsionFunctions::TorsionFunctions[bf].parameterKeywords);
-		else text.strcatf("%s", TorsionFunctions::TorsionFunctions[bf].parameterKeywords);
+		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]);
+		else text.strcatf("%s", TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]);
 	}
 	ui.FFEditorImproperParametersLabel->setText(text.get());
 }
@@ -825,13 +854,11 @@ void AtenForcefieldEditor::on_FFEditorImpropersTable_itemChanged(QTableWidgetIte
 			n = column - TorsionColumn::Type1;
 			ffb->setTypeName(n, qPrintable(w->text()));
 			break;
-			// Potential form
+		// Potential form
 		case (TorsionColumn::Form):
 			// Handled by AtenForcefieldEditor::TorsionsTableComboChanged
 			break;
-			// Scaling factors
-			
-			// Parameter data
+		// Parameter data
 		case (TorsionColumn::Data1):
 		case (TorsionColumn::Data2):
 		case (TorsionColumn::Data3):
@@ -853,7 +880,7 @@ void AtenForcefieldEditor::on_FFEditorImpropersTable_itemSelectionChanged()
 		updateImpropersLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->improper(row+1);
+	ForcefieldBound *ffb = targetForcefield_->improper(row);
 	updateImpropersLabels(ffb);
 }
 
@@ -878,8 +905,8 @@ void AtenForcefieldEditor::updateUreyBradleysLabels(ForcefieldBound *ffb)
 	for (int n=0; n<BondFunctions::BondFunctions[bf].nParameters; ++n)
 	{
 		if (n != 0) text.strcat(", ");
-		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", BondFunctions::BondFunctions[bf].parameterKeywords);
-		else text.strcatf("%s", BondFunctions::BondFunctions[bf].parameterKeywords);
+		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", BondFunctions::BondFunctions[bf].parameterKeywords[n]);
+		else text.strcatf("%s", BondFunctions::BondFunctions[bf].parameterKeywords[n]);
 	}
 	ui.FFEditorUreyBradleyParametersLabel->setText(text.get());
 }
@@ -931,7 +958,7 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemSelectionChanged()
 		updateUreyBradleysLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->ureyBradley(row+1);
+	ForcefieldBound *ffb = targetForcefield_->ureyBradley(row);
 	updateUreyBradleysLabels(ffb);
 }
 

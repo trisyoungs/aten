@@ -26,6 +26,8 @@
 #include "base/dnchar.h"
 #include "templates/vector3.h"
 #include "templates/reflist.h"
+#define SGCOREDEF__
+#include "base/sginfo.h"
 
 // Forward declarations
 class Atom;
@@ -35,8 +37,9 @@ class Model;
 class UnitCell
 {
 	public:
-	// Constructor
+	// Constructor / Destructur
 	UnitCell();
+	~UnitCell();
 	// Cell types
 	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
 	static const char *cellType(CellType);
@@ -78,6 +81,8 @@ class UnitCell
 	void setParent(Model *m);
 	// Return parent model
 	Model *parent();
+	// Copy data from specified cell
+	bool copy(UnitCell *source);
 	// Print cell data
 	void print();
 	// Generate random position inside cell
@@ -126,18 +131,20 @@ class UnitCell
 	// Spacegroup
 	*/
 	private:
-	// Spacegroup name (if any)
-	Dnchar spacegroup_;
+	// SGInfo structure
+	T_SgInfo spacegroup_;
 	// Spacegroup ID (if any)
 	int spacegroupId_;
 	// Manual list of generators, if no spacegroup is set
 	List<Generator> generators_;
 
 	public:
-	// Return spacegroup name of the model
-	const char *spacegroup() const;
-	// Set the spacegroup to the spacegroup Id supplied
-	void setSpacegroupId(int i);
+	// Set spacegroup from supplied spacegroup name
+	bool setSpacegroup(const char *name, bool forceRhombohedral);
+	// Return SgInfo spacegroup structure (if it exists)
+	T_SgInfo *spacegroup();
+	// Return spacegroup name in defined SgInfo structure
+	const char *spacegroupName() const;
 	// Return the spacegroup of the model
 	int spacegroupId() const;
 	// Add manual generator

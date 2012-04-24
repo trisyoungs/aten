@@ -289,7 +289,7 @@ bool Command::function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	obj.rs()->setSpacegroup(c->argc(0));
+	obj.rs()->cell()->setSpacegroup(c->argc(0), prefs.forceRhombohedral());
 	rv.reset();
 	return TRUE;
 }

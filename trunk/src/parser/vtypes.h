@@ -33,6 +33,7 @@ class VTypes
 	static const char *dataType(DataType dt);
 	static const char *aDataType(DataType dt, int arraysize = -1);
 	static bool isPointer(DataType dt);
+	static bool userCanCreate(DataType dt);
 	static VTypes::DataType determineType(const char *s);
 	static int dataPair(DataType type1, int arraysize1, DataType type2, int arraysize2);
 	static int dataSinglet(DataType type1, int arraysize1);

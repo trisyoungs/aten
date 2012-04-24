@@ -28,6 +28,7 @@ integer.h
 mc.h
 measurement.h
 model.h
+newnode.h
 parser.h
 pattern.h
 patternbound.h
@@ -79,6 +80,7 @@ integer.cpp
 mc.cpp
 measurement.cpp
 model.cpp
+newnode.cpp
 parser.cpp
 parser_lexer.cpp
 pattern.cpp

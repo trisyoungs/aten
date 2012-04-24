@@ -203,8 +203,7 @@ int CommandParser::lex()
 				return VTYPE;
 			}
 
-			// Built-in numeric constants
-			// TRUE, FALSE, or NULL token?
+			// Built-in constants
 			if (token == "TRUE")
 			{
 				CommandParser_lval.intconst = 1;
@@ -262,6 +261,7 @@ int CommandParser::lex()
 			else if (token == "help") n = HELP;
 			else if (token == "in") n = ATEN_IN;
 			else if (token == "global") n = ATEN_GLOBAL;
+			else if (token == "new") n = ATEN_NEW;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);

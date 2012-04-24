@@ -1,6 +1,6 @@
 /*
-	*** TDoubleSpinDelegate Functions
-	*** src/gui/tdoublespindelegate_funcs.cpp
+	*** TIntegerSpinDelegate Functions
+	*** src/gui/tintegerspindelegate_funcs.cpp
 	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
@@ -19,43 +19,41 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tdoublespindelegate.uih"
+#include "gui/tintegerspindelegate.uih"
 
-TDoubleSpinDelegate::TDoubleSpinDelegate(QObject *parent, double vmin, double vmax, double vstep, double nDecimals) : QItemDelegate(parent)
+TIntegerSpinDelegate::TIntegerSpinDelegate(QObject *parent, int vmin, int vmax, int vstep) : QItemDelegate(parent)
 {
 	// Private variables
 	min_ = vmin;
 	max_ = vmax;
 	step_ = vstep;
-	nDecimals_ = nDecimals;
 }
 
 // Create editor
-QWidget *TDoubleSpinDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+QWidget *TIntegerSpinDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	// Create editor widget (in this case a double spin box) and set some properties
-	QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
+	QSpinBox *editor = new QSpinBox(parent);
 	editor->setMinimum(min_);
 	editor->setMaximum(max_);
 	editor->setSingleStep(step_);
-	editor->setDecimals(nDecimals_);
 
 	return editor;
 }
 
 // Set initial value in editor
-void TDoubleSpinDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void TIntegerSpinDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
 	double value = index.model()->data(index, Qt::EditRole).toDouble();
 
-	QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+	QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
 	spinBox->setValue(value);
 }
 
 // Get value from editing widget, and set back in model
-void TDoubleSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+void TIntegerSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-	QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+	QSpinBox *spinBox = static_cast<QSpinBox*>(editor);
 	spinBox->interpretText();
 	double value = spinBox->value();
 
@@ -63,7 +61,7 @@ void TDoubleSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel *mode
 }
 
 // Update widget geometry
-void TDoubleSpinDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void TIntegerSpinDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	editor->setGeometry(option.rect);
 }

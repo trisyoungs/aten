@@ -63,6 +63,7 @@ set(qtproject_SRCS
   tmenubutton_funcs.cpp
   tlistwidgetitem_funcs.cpp
   tdoublespindelegate_funcs.cpp
+  tintegerspindelegate_funcs.cpp
   toolbaractions.cpp
   toolbox_funcs.cpp
   trajectory_funcs.cpp
@@ -121,6 +122,7 @@ SET(pro_MOC_HDRS
   tcanvas.uih
   tdoublespindelegate.uih
   tcolourframe.uih
+  tintegerspindelegate.uih
   tmenubutton.uih
   tprocess.uih
   tprompt.uih

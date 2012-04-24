@@ -275,8 +275,9 @@ void Atom::reset()
 }
 
 // Copy atom data
-void Atom::copy(Atom *source)
+bool Atom::copy(Atom *source)
 {
+	if (source == NULL) return FALSE;
 	r_ = source->r_;
 	f_ = source->f_;
 	v_ = source->v_;
@@ -293,6 +294,7 @@ void Atom::copy(Atom *source)
 	// Do NOT copy selection or marked state (set to FALSE)
 	selected_ = FALSE;
 	marked_ = FALSE;
+	return TRUE;
 }
 
 // Copy atom style

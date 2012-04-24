@@ -51,8 +51,8 @@ BasisPrimitiveVariable::~BasisPrimitiveVariable()
 
 // Accessor data
 Accessor BasisPrimitiveVariable::accessorData[BasisPrimitiveVariable::nAccessors] = {
-	{ "exponent",		VTypes::DoubleData,	0, FALSE },
-	{ "coefficients",	VTypes::DoubleData,	-1, TRUE }
+	{ "coefficients",	VTypes::DoubleData,	-1, TRUE },
+	{ "exponent",		VTypes::DoubleData,	0, FALSE }
 };
 
 // Function data
