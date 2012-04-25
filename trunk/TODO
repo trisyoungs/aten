@@ -9,6 +9,7 @@
 <h1>Current TODO</h1>
 
 <ul>
+<li>Ability to have 'preferences' in filters - global variables in filter, coupled with suitable accessors through &aten?</li>
 <li>Context-sensitivity of messages - e.g. pattern name (select pattern atoms), failed pattern creation (select bad atom)</li>
 <li>PovRay export</li>
 <li>Add method to check current pattern definition so that it doesn't have to be removed so often.</li>
@@ -32,6 +33,7 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Add 'setproperty' function to widget type</li>
 <li>Clarify use of pointers for non-POD objects, add 'new' usage description, and 'copy' member function for atom, bond, and unitcell types</li>
 <li>Add 'transparentSelectionStyle' prefs accessor.</li>
 <li>Add 'wireselection' colour enum definition.</li>

@@ -669,6 +669,34 @@ void UnitCell::foldFrac(Vec3<double> &r)
 	r.z -= floor(r.z);
 }
 
+// Return whether specified coordinates are inside the current unit cell
+bool UnitCell::isInsideCell(Vec3<double> &v) const
+{
+	switch (type_)
+	{
+		// No cell, so no image to fold into
+		case (UnitCell::NoCell):
+			return FALSE;
+			break;
+		// Cubic / Orthorhombic
+		case (UnitCell::CubicCell):
+		case (UnitCell::OrthorhombicCell):
+			if ((v.x < 0.0) || (v.x > lengths_.x)) return FALSE;
+			if ((v.y < 0.0) || (v.y > lengths_.y)) return FALSE;
+			if ((v.z < 0.0) || (v.z > lengths_.z)) return FALSE;
+			break;
+		// Parallelepiped
+		default:
+			// Convert these coordinates into fractional cell coordinates...
+			Vec3<double> frac = inverse_.transform(v);
+			if ((frac.x < 0.0) || (frac.x > 1.0)) return FALSE;
+			if ((frac.y < 0.0) || (frac.y > 1.0)) return FALSE;
+			if ((frac.z < 0.0) || (frac.z > 1.0)) return FALSE;
+			break;
+	}
+	return TRUE;
+}
+
 /*
 // Geometry Calculation
 */

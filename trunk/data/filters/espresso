@@ -8,16 +8,44 @@
 # Notes:
 #	Lattice type of cell is not accounted for (ibrav=0)
 
-filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", extension="in", glob="*.in", id=15)
+filter(type="exportmodel", name="Quantum Espresso Input", nickname="qe", extension="in", glob="*.in", id=15)
 {
+	# General Options dialog
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "Quantum Espresso Export Options";
+		Widget group, w, w2;
+
+		# General control options group (&CONTROL)
+		group = ui.addGroup("controlgroup", "&CONTROL", 1, 1);
+		w = group.addCombo("control_calculation", "Calculation", "cp,scf,nscf,relax,vc-relax,vc-cp,cp-wf", 4, 1, 1);
+		group.addCombo("control_restart", "Restart Mode", "none,from_scratch,restart,reset_counters,upto", 1, 3, 1);
+		group.addEdit("control_title", "Title", "QE input exported from Aten", 1, 2, 2);
+		group.addEdit("control_pseudo", "Pseudo Dir", "/home/user/src/espresso-4.3.2/pseudos", 1, 3, 2);
+		group.addIntegerSpin("control_nstep", "NStep", 1, 100000, 1, 1, 1, 4);
+		group.addDoubleSpin("control_dt", "dt", 0.0, 10.0, 0.1, 1.0, 3, 4);
+		group.addCheck("control_tstress", "tstress", 0, 1, 5);
+		w.onInteger(5, 5, "sendbool", "control_tstress", "value");
+
+		# System definition (&SYSTEM)
+		group = ui.addGroup("systemgroup", "&SYSTEM", 2, 1);
+		w = group.addCombo("system_ibrav", "ibrav", "'0 - free', '1 - cubic P (sc)', '2 - cubic F (fcc)', '3 - cubic I (bcc)', '4 - Hexagonal and Trigonal P', '5 - Trigonal R (3fold axis c)', '-5 - Trigonal R (3fold axis <111>)', '6 - Tetragonal P (st)', '7 - Tetragonal I (bct)', '8 - Orthorhombic P', '9 - Orthorhombic base-centered(bco)', '10 - Orthorhombic face-centered', '11 - Orthorhombic body-centered', '12 - Monoclinic P (unique axis c)', '-12 - Monoclinic P (unique axis b)', '13 - Monoclinic base-centered', '14 - Triclinic'", 1, 1, 1, 1);
+		group.addDoubleSpin("system_totcharge", "tot_charge", -100.0, 100.0, 1.0, 0.0, 1, 2);
+		group.addDoubleSpin("system_ecutwfc", "ecutwfc", 0.0, 100000.0, 10.0, 50.0, 1, 3);
+		group.addDoubleSpin("system_ecutrho", "ecutrho", 0.0, 100000.0, 10.0, 200.0, 1, 4);
+	}
+	# Execute dialog
+	Dialog ui = defaultDialog();
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+
 	# Variable declaration
 	int n, el[aten.nElements], nspecies;
 	string e;
 	double rx,ry,rz;
-	atom i;
+	Atom i;
 
-	# Grab current model (or frame)
-	model m = aten.frame;
+	# Grab model pointer
+	Model m = aten.frame;
 
 	# Determine number of species (elements) used in model, and create element->species map
 	el = 0;
@@ -25,20 +53,70 @@ filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", e
 	for (i = m.atoms; i; ++i) if (el[i.z] == 0) el[i.z] = ++nspecies;
 	
 	# Write 'control', 'system', 'electrons', 'ions', and 'cell' sections
-	writeLine("&control");
-	writeLine("   calculation='vc-relax',");
-	writeLine("   tstress=.true.,");
-	writeLine("   pseudo_dir='/home/user/src/espresso-4.3.2/pseudo'");
+	writeLine("&CONTROL");
+	writeLineF("   title='%s',\n", ui.asString("control_title"));
+	writeLineF("   calculation='%s',\n", ui.asString("control_calculation"));
+	writeLineF("   tstress=%s,\n", ui.asInteger("control_tstress") ? ".TRUE." : ".FALSE.");
+	writeLineF("   pseudo_dir='%s'\n", ui.asString("control_pseudo"));
+	writeLineF("   restart='%s',\n", ui.asString("control_restart"));
+	writeLineF("   nstep=%i,\n", ui.asInteger("control_nstep"));
+	writeLineF("   dt=%f\n", ui.asDouble("control_dt"));
 	writeLine("/");
-	writeLine("&system");
-	writeLine("   ibrav=0,");
-	if (m.cell.type != "none") writeLineF("   celldm(1)=%f,\n", m.cell.a/ANGBOHR);
+	writeLine("&SYSTEM");
+	int ibrav;
+	readVarF(ui.asString("system_ibrav"), "%i", ibrav);
+	writeLine("   ibrav=%i,\n", ibrav);
+	switch (ibrav)
+	{
+		case (0):
+		case (1):
+		case (2):
+		case (3):
+			writeLineF("   celldm(1)=%f,\n", m.cell.a/ANGBOHR);
+			break;
+		case (4):
+		case (6):
+		case (7):
+			writeLineF("   celldm(1)=%f,\n", m.cell.a/ANGBOHR);
+			writeLineF("   celldm(3)=%f,\n", (m.cell.c/m.cell.a)/ANGBOHR);
+			break;
+		case (5):
+		case (-5):
+			writeLineF("   celldm(1)=%f,\n", m.cell.a/ANGBOHR);
+			writeLineF("   celldm(4)=%f,\n", cos(m.cell.alpha));
+			break;
+		case (8):
+		case (9):
+		case (10):
+		case (11):
+			writeLineF("   celldm(2)=%f,\n", (m.cell.b/m.cell.a)/ANGBOHR);
+			writeLineF("   celldm(3)=%f,\n", (m.cell.c/m.cell.a)/ANGBOHR);
+			break;
+		case (12):
+		case (13):
+			writeLineF("   celldm(2)=%f,\n", (m.cell.b/m.cell.a)/ANGBOHR);
+			writeLineF("   celldm(3)=%f,\n", (m.cell.c/m.cell.a)/ANGBOHR);
+			writeLineF("   celldm(4)=%f,\n", cos(m.cell.gamma));
+			break;
+		case (-12):
+			writeLineF("   celldm(2)=%f,\n", (m.cell.b/m.cell.a)/ANGBOHR);
+			writeLineF("   celldm(3)=%f,\n", (m.cell.c/m.cell.a)/ANGBOHR);
+			writeLineF("   celldm(5)=%f,\n", cos(m.cell.beta));
+			break;
+		case (14):
+			writeLineF("   celldm(2)=%f,\n", (m.cell.b/m.cell.a)/ANGBOHR);
+			writeLineF("   celldm(3)=%f,\n", (m.cell.c/m.cell.a)/ANGBOHR);
+			writeLineF("   celldm(4)=%f,\n", cos(m.cell.alpha));
+			writeLineF("   celldm(5)=%f,\n", cos(m.cell.beta));
+			writeLineF("   celldm(6)=%f,\n", cos(m.cell.gamma));
+			break;
+	}
 	writeLineF("   nat=%i,\n",m.nAtoms);
 	writeLineF("   ntyp=%i,\n",nspecies);
-	writeLine("   ecutwfc=50.0,");
-	writeLine("   ecutrho=200.0,");
+	writeLineF("   ecutwfc=%f,\n", ui.asDouble("system_ecutwfc"));
+	writeLineF("   ecutrho=%f,\n", ui.asDouble("system_ecutrho"));
 	writeLine(" /");
-	writeLine(" &electrons");
+	writeLine(" &ELECTRONS");
 	writeLine("   mixing_beta=0.25,");
 	writeLine("   conv_thr=1.0e-8");
 	writeLine(" /");

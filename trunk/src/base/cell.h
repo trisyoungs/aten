@@ -209,6 +209,9 @@ class UnitCell
 	Vec3<double> fold(Vec3<double> &r) const;
 	// Fold fractional coordinates into cell
 	static void foldFrac(Vec3<double> &r);
+	// Return whether specified coordinates are inside the current unit cell
+	bool isInsideCell(Vec3<double> &v) const;
+
 
 	/*
 	// Geometry calculation

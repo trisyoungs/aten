@@ -71,7 +71,8 @@ FunctionAccessor WidgetVariable::functionData[WidgetVariable::nFunctions] = {
 	{ "addTabs",		VTypes::WidgetData,"C[ii]ii",	"string name, int l = <auto>, int t = <auto>, int xw = 0, int xh = 0" },
 	{ "onDouble",		VTypes::NoData,	   "DDCCCs*",	"double minval, double maxval, string event, string widget, string property, double|int|string value = <auto> ..." },
 	{ "onInteger",		VTypes::NoData,	   "IICCCs*",	"int minval, int maxval, string event, string widget, string property, double|int|string value = <auto> ..." },
-	{ "onString",		VTypes::NoData,	   "SCCCs",	"string text, string event, string widget, string property, double|int|string value = <auto>" }
+	{ "onString",		VTypes::NoData,	   "CCCCs",	"string text, string event, string widget, string property, double|int|string value = <auto>" },
+	{ "setProperty",	VTypes::NoData,	   "Cs",	"string property, double|int|string value" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -299,6 +300,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	TreeGuiWidgetEvent::EventProperty eventProperty;
 	TreeGuiWidgetEvent::EventType eventType;
 	TreeGuiWidget *targetWidget;
+	ReturnValue value;
 	bool result = TRUE;
 	TreeGuiWidget *ptr = (TreeGuiWidget*) rv.asPointer(VTypes::WidgetData, result);
 	if ((!result) || (ptr == NULL))
@@ -502,6 +504,14 @@ bool WidgetVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 				node->arg(4, *sendValue);
 			}
 			result = TRUE;
+			break;
+		case (WidgetVariable::SetProperty):
+			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(0), TRUE);
+			if (eventProperty == TreeGuiWidgetEvent::nEventProperties) break;
+			if (node->argType(1) == VTypes::IntegerData) value.set(node->argi(1));
+			else if (node->argType(1) == VTypes::DoubleData) value.set(node->argd(1));
+			else value.set(node->argc(1));
+			result = ptr->setProperty(eventProperty, value);
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in WidgetVariable.\n", functionData[i].name);

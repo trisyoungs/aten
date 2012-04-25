@@ -96,6 +96,7 @@ Atom::Atom()
 	parent_ = NULL;
 	id_ = -1;
 	data_ = NULL;
+	tempBit_ = 0;
 	// Set initial custom colour to be black (since we have no element yet)
 	colour_[0] = 0.0;
 	colour_[1] = 0.0;
@@ -105,7 +106,6 @@ Atom::Atom()
 	// Public variables
 	next = NULL;
 	prev = NULL;
-	tempi = 0;
 }
 
 // Destructor
@@ -666,6 +666,42 @@ void Atom::setData(const char *s)
 	if (len == 0) return;
 	data_ = new char[len+1];
 	strcpy(data_, s);
+}
+
+// Clear temporary integer (or selected bit)
+void Atom::clearBit()
+{
+	tempBit_ = 0;
+}
+
+// Add bit to temporary integer
+void Atom::addBit(int bit)
+{
+	if (!hasBit(bit)) tempBit_ += bit;
+}
+
+// Remove bit from temporary integer
+void Atom::removeBit(int bit)
+{
+	if (hasBit(bit)) tempBit_ -= bit;
+}
+
+// Check presence of bit in temporary integer
+bool Atom::hasBit(int bit)
+{
+	return (tempBit_&bit);
+}
+
+// Set value of tempBit
+void Atom::setBit(int value)
+{
+	tempBit_ = value;
+}
+
+// Return value of tempBit
+int Atom::bit()
+{
+	return tempBit_;
 }
 
 /*

@@ -234,10 +234,10 @@ class Atom
 	int id_;
 	// Data attached to atom (if any)
 	char *data_;
+	// Temporary integer bitmask
+	int tempBit_;
 
 	public:
-	// Temporary integer variable
-	int tempi;
 	// Sets the atom id
 	void setId(int newid);
 	// Decreases the id of the atom by 1
@@ -248,6 +248,18 @@ class Atom
 	const char *data();
 	// Set data for atom
 	void setData(const char *s);
+	// Clear temporary integer
+	void clearBit();
+	// Add bit to temporary integer
+	void addBit(int bit);
+	// Remove bit from temporary integer
+	void removeBit(int bit);
+	// Check presence of bit in temporary integer
+	bool hasBit(int bit);
+	// Set value of tempBit
+	void setBit(int value);
+	// Return value of tempBit
+	int bit();
 
 
 	/*

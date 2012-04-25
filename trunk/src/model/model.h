@@ -192,12 +192,8 @@ class Model
 	void transmuteAtom(Atom *target, short int element);
 	// Renumber atoms in the model
 	void renumberAtoms(Atom *from = NULL);
-	// Reset tempi values of all atoms
-	void resetTempi(int);
 	// Return pointer to the atom with the specified id
-	Atom *findAtom(int);
-	// Return the (first) atom with matching tempi
-	Atom *findAtomByTempi(int);
+	Atom *findAtom(int id);
 	// Move selected atoms one place 'up' in the list
 	void shiftSelectionUp();
 	// Move selected atoms one place 'down' in the list
@@ -236,6 +232,8 @@ class Model
 	int nUnknownAtoms() const;
 	// Copy atom style from specified model
 	void copyAtomStyle(Model *source);
+	// Clear tempBits of all atoms
+	void clearAtomBits();
 
 
 	/*
@@ -244,6 +242,10 @@ class Model
 	private:
 	// Cell definition (also contains reciprocal cell definition)
 	UnitCell cell_;
+	// Reassemble molecule/fragment, beginning at supplied atom, returning COG (or COM) of atoms
+	Vec3<double> reassembleFragment(Atom *i, int referenceBit, int &count, bool centreOfMass = FALSE);
+	// Determine COG or COM of reassembled fragment without actually reassembling it
+	Vec3<double> reassembleFragment(Atom *i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass = FALSE);
 
 	public:
 	// Return pointer to unit cell structure
