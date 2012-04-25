@@ -107,8 +107,6 @@ bool Model::setCell(UnitCell *newcell)
 	{
 		Matrix oldaxes = cell_.axes();
 		bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
-		newcell->print();
-		printf("Type = %s\n", UnitCell::cellType(newcell->type()));
 		cell_ = *newcell;
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)

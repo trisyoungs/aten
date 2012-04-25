@@ -1,7 +1,8 @@
 # Quantum Espresso
 # Created:	 22/06/2010
-# Last modified: 24/04/2012
+# Last modified: 25/04/2012
 # ChangeLog:
+#	25/04/2012 - Added reading of trajectory information from PWSCF calculations
 #	24/04/2012 - Fixed exportmodel filter - cell information and format is now correct
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 # Notes:
@@ -126,11 +127,11 @@ int readPWForces(Model m)
 # Read next occurrence of unit cell (PWSCF frame)
 int readPWCellFrame(UnitCell ucell, double alat, string alatKeywd)
 {
-	string s = "new lattice vectors (" + alatKeywd + " units)";
+	string s = "new lattice vectors (" + alatKeywd + " unit)";
 	if (!find(s)) return FALSE;
-	if (!readLineF("%23* %f %f %f", ucell.ax,ucell.ay,ucell.az)) return 0;
-	if (!readLineF("%23* %f %f %f", ucell.bx,ucell.by,ucell.bz)) return 0;
-	if (!readLineF("%23* %f %f %f", ucell.cx,ucell.cy,ucell.cz)) return 0;
+	if (!readLine(ucell.ax, ucell.ay, ucell.az)) return 0;
+	if (!readLine(ucell.bx, ucell.by, ucell.bz)) return 0;
+	if (!readLine(ucell.cx, ucell.cy, ucell.cz)) return 0;
 	for (int n=1; n<=9; ++n) ucell.matrix[n] *= alat;
 	return TRUE;
 }
@@ -143,7 +144,7 @@ int readPWAtomsFrame(Model m, int nAtoms)
 	double x, y, z;
 	for (int n=0; n<nAtoms; ++n)
 	{
-		readLineF("%12*%10s%16*%f %f %f", el, x, y, z);
+		readLine(el, x, y, z);
 		m.newAtomFrac(el, x, y, z);
 	}
 	return TRUE;
@@ -194,6 +195,7 @@ filter(type="importmodel", name="Quantum Espresso Output (PWSCF)", nickname="qep
 	Model m = newModel(filterFilename());
 	m.cell.copy(ucell);
 	if (!readPWAtoms(m, nAtoms, alat, alatKeywd)) error("No atomic coordinates found.");
+	rebond();
 	# Atomic forces?
 	atomForces = readPWForces(m);
 
@@ -213,6 +215,7 @@ filter(type="importmodel", name="Quantum Espresso Output (PWSCF)", nickname="qep
 		}
 		# Atomic forces?
 		if (atomForces) readPWForces(m);
+		rebond();
 		finaliseFrame();
 	}
 	finaliseModel();

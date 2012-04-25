@@ -579,19 +579,28 @@ void RenderEngine::renderCell(Model *source)
 {
 	if (source->cell()->type() == UnitCell::NoCell) return;
 	msg.enter("RenderEngine::renderCell");
+	
+	// Copy colour for cell
 	GLfloat colour[4];
 	prefs.copyColour(Prefs::UnitCellColour, colour);
 	glColor4fv(colour);
+	
+	// Reset current view matrix and apply the cell's axes matrix
 	glLoadIdentity();
 	Matrix A = source->modelViewMatrix() * source->cell()->axes();
 	glMultMatrixd(A.matrix());
+	
+	// Draw a wire cube for the cell
 	primitives_[Q_].wireCube_.sendToGL();
+
+	// Copy colour for axes, move to llh corner, and draw them
+	prefs.copyColour(Prefs::UnitCellAxesColour, colour);
+	glColor4fv(colour);
 	glTranslated(-0.5, -0.5, -0.5);
 	Vec3<double> v = source->cell()->lengths();
 	glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
-	prefs.copyColour(Prefs::UnitCellAxesColour, colour);
-	glColor4fv(colour);
 	primitives_[Q_].cellAxes_.sendToGL();
+
 	msg.exit("RenderEngine::renderCell");
 }
 
