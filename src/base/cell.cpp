@@ -53,6 +53,7 @@ UnitCell::UnitCell()
 	// Private variables
 	type_ = UnitCell::NoCell;
 	axes_.zero();
+	axes_.setColumn(3, 0.0, 0.0, 0.0, 1.0);
 	inverse_.zero();
 	reciprocal_.zero();
 	lengths_.zero();
