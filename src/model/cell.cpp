@@ -29,6 +29,51 @@
 #include "base/progress.h"
 #include "classes/prefs.h"
 
+// Reassemble molecule/fragment, beginning at supplied atom, returning COG of atoms
+Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bool centreOfMass)
+{
+	i->addBit(referenceBit);
+	Atom *j;
+	Vec3<double> mim, total = i->r();
+	if (centreOfMass) total *= elements().atomicMass(i);
+	++count;
+	selectAtom(i, TRUE);
+	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+	{
+		j = bref->item->partner(i);
+		if (!j->hasBit(referenceBit))
+		{
+			// MIM this atom with 'i'
+			mim = cell_.mim(j, i);
+			positionAtom(j, mim);
+			total += reassembleFragment(j, referenceBit, count, centreOfMass);
+		}
+	}
+	return total;
+}
+
+// Determine COG or COM of reassembled fragment without actually reassembling it
+Vec3<double> Model::reassembleFragment(Atom *i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass)
+{
+	i->addBit(referenceBit);
+	Atom *j;
+	Vec3<double> mim, total = i->r();
+	if (centreOfMass) total *= elements().atomicMass(i);
+	++count;
+	selectAtom(i, TRUE);
+	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+	{
+		j = bref->item->partner(i);
+		if (!j->hasBit(referenceBit))
+		{
+			// MIM this atom with the supplied referencePos
+			mim = cell_.mim(j, referencePos);
+			total += reassembleFragment(j, mim, referenceBit, count, centreOfMass);
+		}
+	}
+	return total;
+}
+
 // Return pointer to unit cell structure
 UnitCell *Model::cell()
 {
@@ -151,35 +196,22 @@ void Model::foldAllAtoms()
 void Model::foldAllMolecules()
 {
 	msg.enter("Model::foldAllMolecules");
-	int n,m;
-	Atom *i, *first = NULL;
-	Pattern *p;
-	// Molecular fold - fold first atom, others in molecule are MIM'd to this point
-	if (!createPatterns())
+	int n, m, count;
+	Vec3<double> cog;
+	
+	// Loop over atoms, searching for one which hasn't yet been used.
+	clearAtomBits();
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		msg.print("Molecular fold cannot be performed without a valid pattern definition.\n");
-		msg.exit("Model::foldAllMolecules");
-		return;
+		if (i->hasBit(1)) continue;
+		count = 0;
+		selectNone(TRUE);
+		cog = reassembleFragment(i, 1, count, FALSE);
+		cog /= count;
+		// Is the centre of geometry inside the unit cell?
+		// If it isn't, translate all atoms so that it is.
+		if (!cell_.isInsideCell(cog)) translateSelectionLocal(cell_.fold(cog) - cog, TRUE);
 	}
-	i = atoms_.first();
-	for (p = patterns_.first(); p != NULL; p = p->next)
-	{
-		for (m=0; m<p->nMolecules(); m++)
-		{
-			for (n=0; n<p->nAtoms(); n++)
-			{
-				// If its the first atom, fold and store pointer. If not, MIM w.r.t. stored atom
-				if (n == 0)
-				{
-					positionAtom(i, cell_.fold(i));
-					first = i;
-				}
-				else positionAtom(i, cell_.mim(i,first));
-				i = i->next;
-			}
-		}
-	}
-	changeLog.add(Log::Coordinates);
 	msg.exit("Model::foldAllMolecules");
 }
 

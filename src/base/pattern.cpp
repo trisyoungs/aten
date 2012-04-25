@@ -989,13 +989,15 @@ Vec3<double> Pattern::calculateCog(int mol, Model *srcmodel)
 	msg.print(Messenger::Verbose,"Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
 	UnitCell *cell = srcmodel->cell();
-	cog.zero();
 	Atom **modelatoms = srcmodel->atomArray();
-	for (int a1=offset; a1<offset+nAtoms_; a1++)
+	cog = modelatoms[offset]->r();
+	for (int a1=1; a1 < nAtoms_; ++a1)
 	{
 		// Do minimum image w.r.t. first atom in molecule
-		mim_i = cell->mim(modelatoms[a1]->r(), modelatoms[offset]->r());
+// 		mim_i = cell->mim(modelatoms[a1]->r(), modelatoms[offset]->r());
+		mim_i = cell->mim(modelatoms[offset]->r(), cog / a1);
 		cog += mim_i;
+		++offset;
 	}
 	cog /= nAtoms_;
 	msg.exit("Pattern::calculateCog");
@@ -1156,18 +1158,6 @@ void Pattern::deleteAtomsFromEnd(int count)
 	msg.enter("Pattern::deleteAtomsFromEnd");
 	for (int n=0; n<count; n++) deleteAtom(lastAtom_);
 	msg.exit("Pattern::deleteAtomsFromEnd");
-}
-
-// Clear 'tempi' values of all atoms in pattern
-void Pattern::resetTempI(int value)
-{
-	// Sets the tempi variables of all atoms in the pattern to the value specified
-	Atom *i = firstAtom_;
-	for (int m=0; m<nAtoms_; m++)
-	{
-		i->tempi = value;
-		i = i->next;
-	}
 }
 
 /*
@@ -1613,10 +1603,12 @@ bool Pattern::typeAtoms()
 		// Loop over forcefield atom types
 		for (ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 		{
-			// Grab next atomtype and reset tempi variables
+			// Grab next atomtype
 			at = ffa->neta();
+
 			// First, check element is the same, otherwise skip
 			if (i->element() != at->characterElement()) continue;
+			
 			// See how well this ff description matches the environment of our atom 'i'
 			msg.print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i\n",ffa->typeId());
 			newmatch = at->matchAtom(i,&rings_,parent_);

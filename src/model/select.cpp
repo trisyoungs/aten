@@ -210,11 +210,11 @@ void Model::selectionExpand(bool markonly)
 	msg.enter("Model::selectionExpand");
 	Atom *i;
 	Refitem<Bond,int> *bref;
-	// Store the current selection state in i->tempi
-	for (i = atoms_.first(); i != NULL; i = i->next) i->tempi = i->isSelected(markonly);
+	// Store the current selection state in i->tempBit_
+	for (i = atoms_.first(); i != NULL; i = i->next) i->setBit(i->isSelected(markonly));
 	// Now use the temporary state to find atoms where we select atomic neighbours
 	for (i = atoms_.first(); i != NULL; i = i->next)
-		if (i->tempi) for (bref = i->bonds(); bref != NULL; bref = bref->next) selectAtom(bref->item->partner(i), markonly);
+		if (i->bit()) for (bref = i->bonds(); bref != NULL; bref = bref->next) selectAtom(bref->item->partner(i), markonly);
 	msg.exit("Model::selectionExpand");
 }
 
@@ -222,7 +222,33 @@ void Model::selectionExpand(bool markonly)
 void Model::selectAll(bool markonly)
 {
 	msg.enter("Model::selectAll");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected(markonly)) selectAtom(i, markonly);
+	if (markonly)
+	{
+		// Quicker to reconstruct the whole list, since it must be in ID order
+		marked_.clear();
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			i->setSelected(TRUE, TRUE);
+			marked_.add(i);
+		}
+	}
+	else
+	{
+		// Here, just add atoms which are not currently selected (i.e. we assume the atom selection flags and selection_ list reflect each other)
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected())
+		{
+			i->setSelected(TRUE);
+			// Add the change to the undo state (if there is one)
+			if (recordingState_ != NULL)
+			{
+				SelectEvent *newchange = new SelectEvent;
+				newchange->set(TRUE, i->id());
+				recordingState_->addEvent(newchange);
+			}
+			selection_.add(i);
+		}
+		changeLog.add(Log::Selection);
+	}
 	msg.exit("Model::selectAll");
 }
 
@@ -230,7 +256,27 @@ void Model::selectAll(bool markonly)
 void Model::selectNone(bool markonly)
 {
 	msg.enter("Model::selectNone");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected(markonly)) deselectAtom(i, markonly);
+	if (markonly)
+	{
+		for (Refitem<Atom,int> *ri = marked_.first(); ri != NULL; ri = ri->next) ri->item->setSelected(FALSE, TRUE);
+		marked_.clear();
+	}
+	else
+	{
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected())
+		{
+			i->setSelected(FALSE);
+			// Add the change to the undo state (if there is one)
+			if (recordingState_ != NULL)
+			{
+				SelectEvent *newchange = new SelectEvent;
+				newchange->set(FALSE, i->id());
+				recordingState_->addEvent(newchange);
+			}
+		}
+		changeLog.add(Log::Selection);
+		selection_.clear();
+	}
 	msg.exit("Model::selectNone");
 }
 
@@ -319,7 +365,7 @@ void Model::selectTree(Atom *i, bool markonly, bool deselect, Bond *omitbond)
 		{
 			if (deselect) deselectAtom(j, markonly);
 			else selectAtom(j, markonly);
-			this->selectTree(j, markonly, deselect, omitbond);
+			selectTree(j, markonly, deselect, omitbond);
 		}
 	}
 	msg.exit("Model::selectTree");
@@ -373,8 +419,6 @@ int Model::selectType(int element, const char *typedesc, bool markonly, bool des
 		Atom *i = p->firstAtom();
 		for (n=0; n<p->nAtoms(); n++)
 		{
-			p->resetTempI(0);
-			i->tempi = 1;
 			atomscore = testat.matchAtom(i,p->ringList(),this);
 			if (atomscore > 0)
 			{

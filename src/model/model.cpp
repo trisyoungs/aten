@@ -356,14 +356,6 @@ void Model::bohrToAngstrom()
 	msg.exit("Model::bohrToAngstrom");
 }
 
-// Reset atom tempi's
-void Model::resetTempi(int value)
-{
-	msg.enter("Model::resetTempi");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->tempi = value;
-	msg.exit("Model::resetTempi");
-}
-
 // Clear charges
 void Model::clearCharges()
 {

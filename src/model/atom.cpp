@@ -249,14 +249,6 @@ Atom *Model::findAtom(int id)
 	return i;
 }
 
-// Find atom by tempi
-Atom *Model::findAtomByTempi(int tempi)
-{
-	// Find an atom according to its tempi value
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->tempi == tempi) return i;
-	return NULL;
-}
-
 // Return the list index of the specified atom
 int Model::atomIndex(Atom *i) const
 {
@@ -267,8 +259,8 @@ int Model::atomIndex(Atom *i) const
 void Model::renumberAtoms(Atom *from)
 {
 	msg.enter("Model::renumberAtoms");
-	static int count;
-	static Atom *i;
+	int count;
+	Atom *i;
 	if (from == NULL)
 	{
 		count = 0;
@@ -279,11 +271,7 @@ void Model::renumberAtoms(Atom *from)
 		count = from->id() + 1;
 		i = from->next;
 	}
-	for (i = i; i != NULL; i = i->next)
-	{
-		i->setId(count);
-		count ++;
-	}
+	for (i = i; i != NULL; i = i->next) i->setId(count++);
 	msg.exit("Model::renumberAtoms");
 }
 
@@ -582,4 +570,10 @@ void Model::copyAtomStyle(Model *source)
 	for (int n=0; n<atoms_.nItems(); ++n) jj[n]->copyStyle(ii[n]);
 	changeLog.add(Log::Style);
 	msg.exit("Model::copyAtomStyle");
+}
+
+// Clear tempBits of all atoms
+void Model::clearAtomBits()
+{
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->clearBit();
 }

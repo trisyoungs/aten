@@ -351,7 +351,6 @@ void Ring::print() const
 	msg.print(Messenger::Verbose,"Ring has %i atoms: ",atoms_.nItems());
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
 		msg.print(Messenger::Verbose,"%s(%i),", elements().symbol(ra->item),ra->data);
-		//printf("%s(%i),",elements.el[ra->i->el].symbol.c_str(),ra->i->tempi);
 	msg.print(Messenger::Verbose,"\n");
 }
 

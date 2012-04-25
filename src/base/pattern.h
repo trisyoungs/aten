@@ -195,8 +195,6 @@ class Pattern
 	void calcTotalAtoms();
 	// Returns the total number of atoms in the pattern
 	int totalAtoms() const;
-	// Resets the 'tempi' variables of all atoms in the pattern to the given integer
-	void resetTempI(int);
 	// Sets the number of molecules in the pattern
 	void setNMolecules(int n);
 	// Returns the number of molecules in the pattern
