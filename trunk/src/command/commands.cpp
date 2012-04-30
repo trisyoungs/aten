@@ -317,7 +317,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "selectionAddHydrogen","",		VTypes::NoData,
 		"",
 		"Hydrogen satisfy selected atoms in model" },
-	{ "selectionGrowAtom",	"Ecn",		VTypes::AtomData,
+	{ "selectionGrowAtom",	"Ecn",		VTypes::NoData,
 		"Element el, string geometry = tetrahedral, double distance = <auto>",
 		"Grow an atom of the specified element onto each atom in the current selection, in the specified geometry" },
 	{ "shiftDown",		"n",		VTypes::NoData,

@@ -191,6 +191,7 @@ bool Command::function_GrowAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs()->beginUndoState("Grow Atom");
 	aten.current.i = obj.rs()->growAtom(i, el, distance, ag, TRUE);
 	obj.rs()->endUndoState();
+	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
@@ -428,6 +429,8 @@ bool Command::function_SelectionGrowAtom(CommandNode *c, Bundle &obj, ReturnValu
 		obj.rs()->growAtom(ri->item, el, distance, ag, TRUE);
 	}
 	obj.rs()->endUndoState();
+	rv.reset();
+
 	return TRUE;
 }
 
