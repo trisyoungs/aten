@@ -263,15 +263,15 @@ void Model::renumberAtoms(Atom *from)
 	Atom *i;
 	if (from == NULL)
 	{
-		count = 0;
+		count = -1;
 		i = atoms_.first();
 	}
 	else
 	{
-		count = from->id() + 1;
+		count = from->id();
 		i = from->next;
 	}
-	for (i = i; i != NULL; i = i->next) i->setId(count++);
+	for (i = i; i != NULL; i = i->next) i->setId(++count);
 	msg.exit("Model::renumberAtoms");
 }
 

@@ -152,6 +152,8 @@ class Model
 	void shiftAtomUp(Atom *i);
 	// Move specified atom one place 'down' in the list (to higher ID)
 	void shiftAtomDown(Atom *i);
+	// Move specified atom so it sits after the reference atom (or head of the list if NULL)
+	void moveAtomAfter(Atom *i, Atom *reference);
 	// Total mass of atoms in the model
 	double mass_;
 	// Number of atoms with unidentified element ('XX') in model

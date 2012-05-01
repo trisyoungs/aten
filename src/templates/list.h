@@ -155,9 +155,11 @@ template <class T> class List
 	// Move item at position 'old' by 'delta' positions (+/-)
 	void move(int target, int delta);
 	// Move item to end of list
-	void moveToEnd(T*);
+	void moveToEnd(T *item);
 	// Move item to start of list
-	void moveToStart(T*);
+	void moveToStart(T *item);
+	// Move item so it is after specified item
+	void moveAfter(T *item, T *reference);
 };
 
 // Constructors
@@ -525,6 +527,28 @@ template <class T> void List<T>::shiftDown(T* item)
 	regenerate_ = 1;
 }
 
+// Move item at position 'target' the specified number of places up (+ve) or down (-ve)
+template <class T> void List<T>::move(int target, int delta)
+{
+	// Check positions
+	if ((target < 0) || (target >= nItems_))
+	{
+		printf("Internal Error: Old position (%i) is out of range (0 - %i) in List<T>::move\n", target, nItems_-1);
+		return;
+	}
+	int newpos = target + delta;
+	if ((newpos < 0) || (newpos >= nItems_))
+	{
+		printf("Internal Error: New position (%i) is out of range (0 - %i) in List<T>::move\n", newpos, nItems_-1);
+		return;
+	}
+	// Get pointer to item that we're moving and shift it
+	T *olditem = array()[target];
+	for (int n=0; n<abs(delta); n++) (delta < 0 ? shiftUp(olditem) : shiftDown(olditem));
+	// Flag for regeneration
+	regenerate_ = 1;
+}
+
 // Move item to end
 template <class T> void List<T>::moveToEnd(T* item)
 {
@@ -561,25 +585,36 @@ template <class T> void List<T>::moveToStart(T* item)
 	regenerate_ = 1;
 }
 
-// Move item at position 'target' the specified number of places up (+ve) or down (-ve)
-template <class T> void List<T>::move(int target, int delta)
+// Move item so it is after specified item
+template <class T> void List<T>::moveAfter(T *item, T *reference)
 {
-	// Check positions
-	if ((target < 0) || (target >= nItems_))
+	// If 'reference' is NULL, then move to the start of the list
+	if (item == NULL)
 	{
-		printf("Internal Error: Old position (%i) is out of range (0 - %i) in List<T>::move\n", target, nItems_);
+		printf("Internal Error: NULL pointer passed to List<T>::moveAfter().\n");
 		return;
 	}
-	int newpos = target + delta;
-	if ((newpos < 0) || (newpos >= nItems_))
-	{
-		printf("Internal Error: New position (%i) is out of range (0 - %i) in List<T>::move\n", newpos, nItems_);
-		return;
-	}
-	// Get pointer to item that we're moving and shift it
-	T *olditem = array()[target];
-	for (int n=0; n<abs(delta); n++) (delta < 0 ? shiftUp(olditem) : shiftDown(olditem));
-	// Flag for regeneration
+
+	// Cut item out of list...
+	T *prev, *next;
+	prev = item->prev;
+	next = item->next;
+	if (prev == NULL) listHead_ = next;
+	else prev->next = next;
+	if (next == NULL) listTail_ = prev;
+	else next->prev = prev;
+
+	// ...and then re-insert it
+	// Get pointer to next item after newprev (our newnext)
+	T *newnext = (reference == NULL ? listHead_ : reference->next);
+	// Re-point reference and the new item
+	if (reference != NULL) reference->next = item;
+	else listHead_ = item;
+	item->prev = reference;
+	// Re-point newnext and the new item
+	if (newnext != NULL) newnext->prev = item;
+	else listTail_ = item;
+	item->next = newnext;
 	regenerate_ = 1;
 }
 

@@ -542,7 +542,7 @@ void IdShiftEvent::undo(Model *m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		msg.print(Messenger::Verbose,"Reversing atom shift - atom %i moves %i places\n", targetId_+delta_, -delta_);
-		m->atoms_.move(targetId_+delta_, delta_);
+		m->atoms_.move(targetId_+delta_, -delta_);
 	}
 	else
 	{

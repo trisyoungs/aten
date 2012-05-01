@@ -430,6 +430,7 @@ void AtomListWidget::on_ViewChargeCheck_clicked(bool checked)
 void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ShiftUp, "i", 1);
+	updateSelection();
 	refresh();
 	gui.update(GuiQt::CanvasTarget);
 }
@@ -437,6 +438,7 @@ void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ShiftDown, "i", 1);
+	updateSelection();
 	refresh();
 	gui.update(GuiQt::CanvasTarget);
 }
@@ -444,6 +446,7 @@ void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MoveToStart, "");
+	updateSelection();
 	refresh();
 	gui.update(GuiQt::CanvasTarget);
 }
@@ -451,6 +454,7 @@ void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
 void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MoveToEnd, "");
+	updateSelection();
 	refresh();
 	gui.update(GuiQt::CanvasTarget);
 }

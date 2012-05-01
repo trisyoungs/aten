@@ -9,6 +9,7 @@
 <h1>Current TODO</h1>
 
 <ul>
+<li>Make pattern detection aware of fixed atoms?</li>
 <li>Ability to have 'preferences' in filters - global variables in filter, coupled with suitable accessors through &aten?</li>
 <li>Context-sensitivity of messages - e.g. pattern name (select pattern atoms), failed pattern creation (select bad atom)</li>
 <li>PovRay export</li>
