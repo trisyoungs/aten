@@ -25,13 +25,17 @@
 #include "base/elements.h"
 #include "base/sysfunc.h"
 
+/*
+// Private Functions
+*/
+
 // Move specified atom up in the list (to lower ID)
 void Model::shiftAtomUp(Atom *i)
 {
 	msg.enter("Model::shiftAtomUp");
 	if (i == NULL)
 	{
-		printf("NULL Atom pointer passed to shiftAtomDown.");
+		printf("Internal Error: NULL Atom pointer passed to shiftAtomUp.");
 		msg.exit("Model::shiftAtomUp");
 		return;
 	}
@@ -60,7 +64,7 @@ void Model::shiftAtomDown(Atom *i)
 	msg.enter("Model::shiftAtomDown");
 	if (i == NULL)
 	{
-		printf("NULL Atom pointer passed to shiftAtomDown.");
+		printf("Internal Error: NULL Atom pointer passed to shiftAtomDown.");
 		msg.exit("Model::shiftAtomDown");
 		return;
 	}
@@ -82,6 +86,38 @@ void Model::shiftAtomDown(Atom *i)
 	changeLog.add(Log::Structure);
 	msg.exit("Model::shiftAtomDown");
 }
+
+// Move specified atom so it sits after the reference atom (or head of the list if NULL)
+void Model::moveAtomAfter(Atom *i, Atom *reference)
+{
+	msg.enter("Model::moveAtom");
+	if (i == NULL)
+	{
+		printf("Internal Error: NULL Atom pointer passed to Model::moveAtom.");
+		msg.exit("Model::moveAtom");
+		return;
+	}
+	int oldid = i->id();
+	int shift = (reference == NULL ? -i->id() : reference->id() - i->id() + 1);
+
+	// Move atom
+	atoms_.moveAfter(i, reference);
+	renumberAtoms();
+	
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		IdShiftEvent *newchange = new IdShiftEvent;
+		newchange->set(oldid, shift);
+		recordingState_->addEvent(newchange);
+	}
+	changeLog.add(Log::Structure);
+	msg.exit("Model::shiftAtomDown");
+}
+
+/*
+// Public Functions
+*/
 
 // Move atoms 'up'
 void Model::shiftSelectionUp()
@@ -133,18 +169,17 @@ void Model::shiftSelectionDown()
 void Model::moveSelectionToStart()
 {
 	msg.enter("Model::moveSelectionToStart");
-	int n;
 	Atom *next, *i;
-	// For each selected atom in the model, shift it to the end of the list
+	// For each selected atom in the model, shift it to the start of the list
 	i = atoms_.last();
-	for (n=0; n<atoms_.nItems(); n++)
+	for (int n=0; n<atoms_.nItems(); n++)
 	{
 		next = i->prev;
-		if (i->isSelected()) atoms_.moveToStart(i);
+		if (i->isSelected()) moveAtomAfter(i, NULL);
 		i = next;
 	}
 	// Renumber atoms
-	renumberAtoms();
+// 	renumberAtoms();
 	changeLog.add(Log::Structure);
 	msg.exit("Model::moveSelectionToStart");
 }
@@ -153,18 +188,13 @@ void Model::moveSelectionToStart()
 void Model::moveSelectionToEnd()
 {
 	msg.enter("Model::moveSelectionToEnd");
-	int n;
-	Atom *next, *i;
 	// For each selected atom in the model, shift it to the end of the list
-	i = atoms_.first();
-	for (n=0; n<atoms_.nItems(); n++)
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		next = i->next;
-		if (i->isSelected()) atoms_.moveToEnd(i);
-		i = next;
+		if (i->isSelected()) moveAtomAfter(i, atoms_.last());
 	}
 	// Renumber atoms
-	renumberAtoms();
+// 	renumberAtoms();
 	changeLog.add(Log::Structure);
 	msg.exit("Model::moveSelectionToEnd");
 }
