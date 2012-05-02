@@ -32,10 +32,11 @@
 void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b, bool transparentSel, GLfloat *penColour)
 {
 	double dvisible, selvisible, factor, rij, phi;
-	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx;
+	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx, normz;
 	GLfloat alpha_i, alpha_j;
 	Primitive *sticks[2] = { &stickLines_, &stickSelectedLines_ };
 	int stickList;
+	Matrix B;
 
 	// Store copies of alpha values
 	alpha_i = colour_i[3];
@@ -52,13 +53,19 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	// Determine bond plane rotation if a multiple bond
 	if (((bt == Bond::Double) || (bt == Bond::Triple)) && (b != NULL))
 	{
-		// Desired z-axis is already known ( = vijn)
-		// X axis is bond plane vector
-		// Y axis is xp of the two
-		localx = i->findBondPlane(j,b,localz);
-		localx = A.rotateVector(localx);
-		localz = A.rotateVector(localz);
-		localy = localx * localz;
+		// Desired z-axis is already known ( = vijn) so get normalised copy
+		normz = localz / rij;
+		
+		// X axis is bond plane vector...
+		localx = i->findBondPlane(j,b,normz,TRUE);
+
+		// Were these rotateVectors necessary? Don't think so... (Removed 02/05/12)
+// 		localx = A.rotateVector(localx);
+// 		localz = A.rotateVector(localz);
+
+		// Generate Y-axis from cross-product of z and x axes
+		localy = localx * normz;
+		localy.normalise();
 		A[0] = localx.x;
 		A[1] = localx.y;
 		A[2] = localx.z;
@@ -78,9 +85,15 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 		if (phi > 179.99) A.applyRotationX(phi);
 		else if (phi >= 0.01) A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
 	}
+	
 	// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
+	B = A;
 	A.applyTranslationZ(radius_i);
 	A.applyScalingZ(dvisible);
+	// Move matrix B to be centred on atom j
+	B.addTranslation(j->r() - i->r());
+	B.applyTranslationZ(-radius_j);
+	B.applyScalingZ(-dvisible);
 	
 	// Draw first bond half
 	switch (style_i)
@@ -161,58 +174,58 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 		case (Atom::StickStyle):
 			if (!rebuildSticks_) break;
 			// First vertex is *still* at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
-			stickpos = A * Vec3<double>(0.0,0.0,1.0);
+			stickpos = B * Vec3<double>(0.0,0.0,1.0);
 			stickList = j->isSelected() ? 1 : 0;
 			switch (bt)
 			{
 				case (Bond::Double):
 					dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle)*0.5,0.0,0.0);
-					sticks[stickList]->defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					sticks[stickList]->defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					sticks[stickList]->defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					break;
 				case (Bond::Triple):
 					dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle),0.0,0.0);
-					sticks[stickList]->defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_j, FALSE);
+					sticks[stickList]->defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					sticks[stickList]->defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					sticks[stickList]->defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					break;
 				default:
-					sticks[stickList]->defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_j, FALSE);
+					sticks[stickList]->defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
 					break;
 			}
 			break;
 		case (Atom::TubeStyle):
-			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A);
+			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, B);
 			if (j->isSelected())
 			{
 				if (transparentSel)
 				{
 					colour_j[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, A);
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, B);
 					colour_j[3] = alpha_j;
 				}
-				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], penColour, A, GL_LINE);
+				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], penColour, B, GL_LINE);
 			}
 			break;
 		case (Atom::SphereStyle):
 		case (Atom::ScaledStyle):
-			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, A);
+			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, B);
 			if (j->isSelected() && (selvisible > 0.0))
 			{
-				A.applyScalingZ(selvisible / dvisible);
+				B.applyScalingZ(selvisible / dvisible);
 				if (transparentSel)
 				{
 					colour_j[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, A);
+					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, B);
 					colour_j[3] = alpha_j;
 				}
-				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], penColour, A, GL_LINE);
+				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], penColour, B, GL_LINE);
 			}
 			break;
 	}
@@ -328,7 +341,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 		for (rb = i->bonds(); rb != NULL; rb = rb->next)
 		{
 			j = rb->item->partner(i);
-			if (j->id() > id_i) continue;
+			if (id_i > j->id()) continue;
 			
 			// Grab colour of second atom
 			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_j);

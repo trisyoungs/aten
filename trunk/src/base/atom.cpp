@@ -418,7 +418,7 @@ double Atom::bondOrder(Atom *j)
 	// Criticality check
 	if (b == NULL)
 	{
-		printf("bondOrder : Failed to find bond between atoms!\n");
+		printf("Atom::bondOrder : No bond exists between specified atoms.\n");
 		msg.exit("Atom::bondOrder");
 		return 0.0;
 	}
@@ -553,8 +553,8 @@ void Atom::addBoundToReflist(Reflist<Atom,int> *rlist)
 		rlist->add(bref->item->partner(this), bref->item->type());
 }
 
-// Find plane of three atoms
-Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<double> &vij)
+// Calculate bond plane (unit) vector
+Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<double> &vij, bool vijIsNormalised)
 {
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	Vec3<double> rk, xp, vijnorm;
@@ -562,7 +562,7 @@ Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<dou
 	Atom *origin;
 
 	vijnorm = vij;
-	vijnorm.normalise();
+	if (!vijIsNormalised) vijnorm.normalise();
 
 	// Determine which bond list and atom partner to use
 	if (bonds_.nItems() > 1)
@@ -574,7 +574,7 @@ Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<dou
 	else
 	{
 		// Must define from a bond on 'other'
-		if (other == NULL) return vijnorm.orthogonal();
+		if (other == NULL) return vijnorm.orthogonal(TRUE);
 		bref = other->bonds_.first();
 		origin = other;
 		vijnorm = -vijnorm;
@@ -588,14 +588,14 @@ Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<dou
 		rk = bref->item->partner(origin)->r_ - origin->r_;
 		rk.normalise();
 		if (fabs(rk.dp(vijnorm)) > 0.999) continue;
-		
-		// Get cross-products to determine bond plane vector
+		// Get cross-products to determine vector in bond *plane*
  		xp = (vijnorm * rk) * vijnorm;
+		xp.normalise();
 		break;
 	}
 
 	// Default, just in case
-	if (bref == NULL) return vijnorm.orthogonal();
+	if (bref == NULL) return vijnorm.orthogonal(TRUE);
 
 	return xp;
 }

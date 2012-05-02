@@ -735,11 +735,19 @@ void Matrix::applyTranslationZ(double dz)
 }
 
 // Add a translation to the matrix
-void Matrix::translate(double dx, double dy, double dz)
+void Matrix::addTranslation(double dx, double dy, double dz)
 {
 	matrix_[12] += dx;
 	matrix_[13] += dy;
 	matrix_[14] += dz;
+}
+
+// Add a translation to the matrix
+void Matrix::addTranslation(Vec3<double> v)
+{
+	matrix_[12] += v.x;
+	matrix_[13] += v.y;
+	matrix_[14] += v.z;
 }
 
 /*
