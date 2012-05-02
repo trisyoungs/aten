@@ -197,7 +197,7 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 
 	// Calculate orthogonal vectors
 	u = rj.orthogonal();
-	u.normalise();
+// 	u.normalise();
 	v = rj * u;
 	v.normalise();
 	w = rj;

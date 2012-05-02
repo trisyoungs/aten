@@ -106,7 +106,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 			atoms[0] = this->bonds()->item->partner(this);
 			v = cell->mimVector(this, atoms[0]);
 			v.normalise();
-			u = v.orthogonal();
+			u = v.orthogonal(TRUE);
 			vector = (v * cos(theta) + u * sin(theta));
 			break;
 		// Two bonds already present
@@ -120,7 +120,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 			v = cell->mimVector(this, atoms[1]);
 			v.normalise();
 			// Check for pathological case where bonds are opposite each other (just select 90degree vector
-			if (fabs(u.dp(v)) > 0.99) vector = u.orthogonal();
+			if (fabs(u.dp(v)) > 0.99) vector = u.orthogonal(TRUE);
 			else
 			{
 				if (geometry == Atom::TetrahedralGeometry) rotMat.createRotationAxis(u.x, u.y, u.z, 120.0, FALSE);

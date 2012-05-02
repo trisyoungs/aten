@@ -122,8 +122,8 @@ template <class T> class Vec3
 	void multiply(const Vec3<T> &v);
 	// Normalise the vector to unity
 	void normalise();
-	// Returns an orthogonal vector
-	Vec3<T> orthogonal() const;
+	// Returns an orthogonal unit vector
+	Vec3<T> orthogonal(bool isNormalised = FALSE) const;
 	// Orthogonalise (Gram-Schmidt) w.r.t. supplied vector
 	void orthogonalise(const Vec3<T>&);
 	// Orthogonalise (two vectors)
@@ -498,16 +498,18 @@ template <class T> void Vec3<T>::normalise()
 }
 
 // Get orthogonal vector
-template <class T> Vec3<T> Vec3<T>::orthogonal() const
+template <class T> Vec3<T> Vec3<T>::orthogonal(bool isNormalised) const
 {
-	// Returns a vector orthogonal to this vector
-	Vec3<T> result;
-	int a = absMaxElement();
-	if (a == 0) result.set(-y,x,0);
-	else result.set(-get(a),(a == 1 ? x : y),0);
-	result = result * (*this);
-	result.normalise();
-	return result;
+	// Static test vectors
+	static Vec3<T> unitX(1.0,0.0,0.0), unitY(0.0,1.0,0.0);
+	
+	// Normalise current vector unless told not to
+	Vec3<T> currentVec(x,y,z);
+	if (!isNormalised) currentVec.normalise();
+	
+	// Check dot product of unitX with the current vector - if greater than 0.5, use unitY instead
+	if (unitX.dp(currentVec) > 0.5) return currentVec * unitY;
+	else return currentVec * unitX;
 }
 
 // Orthogonalise

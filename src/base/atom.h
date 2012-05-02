@@ -198,8 +198,8 @@ class Atom
 	bool isPlanar(double tolerance);
 	// Returns bond pointer between this and atom 'j' (if it exists)
 	Bond *findBond(Atom *j);
-	// Determine bond plane
-	Vec3<double> findBondPlane(Atom *other, Bond *excludedBond, const Vec3<double> &vij);
+	// Calculate bond plane (unit) vector
+	Vec3<double> findBondPlane(Atom *other, Bond *excludedBond, const Vec3<double> &vij, bool vijIsNormalised);
 	// Return next best vector for addition of new atom
 	bool nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry);
 

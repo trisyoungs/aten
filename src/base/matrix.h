@@ -152,7 +152,9 @@ class Matrix
 	// Apply an Z-translation to the matrix (as glTranslated would do)
 	void applyTranslationZ(double dz);
 	// Add a translation to the matrix
-	void translate(double dx, double dy, double dz);
+	void addTranslation(Vec3<double> v);
+	// Add a translation to the matrix
+	void addTranslation(double dx, double dy, double dz);
 
 
 	/*
