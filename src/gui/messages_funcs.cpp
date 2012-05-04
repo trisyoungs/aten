@@ -45,7 +45,21 @@ void MessagesWidget::refresh()
 // A link in the text browser has been clicked 
 void MessagesWidget::on_MessagesBrowser_anchorClicked(const QUrl &link)
 {
-	printf("A link was clicked = [%s]\n", qPrintable(link.toString()));
+	// Attempt to construct a program based on the supplied target URL
+	Program program;
+	if (!program.generateFromString(qPrintable(link.toString()), "MessageLinkCommand"))
+	{
+		msg.print("Unable to construct commands from context link.\n");
+		return;
+	}
+	
+	// Execute the commands
+	ReturnValue rv;
+	program.execute(rv);
+	
+	// Re-focus to the main window canvas
+	gui.mainCanvas()->setFocus();
+	gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget);
 }
 	
 void MessagesWidget::closeEvent(QCloseEvent *event)

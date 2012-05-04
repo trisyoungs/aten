@@ -23,14 +23,14 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
 		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
 		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
-		ui.addCheck("cellshift", "Shift input coordinates by half cell", 1, 1, 4);
+		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1, 1, 4);
 	}
 	# Execute dialog
 	if (!showDefaultDialog()) error("Options dialog canceled.\n");
 
 	# Get dialog values
 	Dialog ui = defaultDialog();
-	int cellshift = ui.asInteger("cellshift");
+	int cellShift = ui.asInteger("cellShift");
 
 	#aten.prefs.zmap = "ff";
 
@@ -67,7 +67,7 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 	}
 	
 	# Shift atoms if requested
-	if (cellshift && (imcon != 0))
+	if (cellShift && (imcon != 0))
 	{
 		selectAll();
 		translateCell(0.5,0.5,0.5);
@@ -99,14 +99,14 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5");
 		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert");
 		ui.addLabel("","Aten to DL_POLY coordinates by shifting all atoms by one half of the unit cell.");
-		ui.addCheck("cellshift", "Shift input coordinates by half cell", 1);
+		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1);
 	}
 	# Execute dialog
 	if (!showDefaultDialog()) error("Options dialog canceled.\n");
 	Dialog ui = defaultDialog();
 
 	int keytrj = ui.asInteger("keygroup");
-	int cellshift = ui.asInteger("cellshift");
+	int cellShift = ui.asInteger("cellShift");
 
 	# Get current model
 	model m = aten.frame;
@@ -137,7 +137,7 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 		i = m.atoms[n];
 		if (i.type == 0) writeLineF("%-8s%10i%20f\n",i.symbol,i.id,i.mass);
 		else writeLineF("%-8s%10i%20f\n",i.type.name,i.id,i.type.mass);
-		if (cellshift && (imcon != 0)) v = m.cell.translateAtom(i,-0.5,-0.5,-0.5);
+		if (cellShift && (imcon != 0)) v = m.cell.translateAtom(i,-0.5,-0.5,-0.5);
 		else v = i.r;
 		writeLineF("%20.14f%20.14f%20.14f\n", v.x, v.y, v.z);
 		if (keytrj > 1) writeLineF("%20.14f%20.14f%20.14f\n",i.vx,i.vy,i.vz);
@@ -150,6 +150,25 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 {
 	# Since its a Fortran code, each record in the file is preceded and followed by an integer specifying
 	# the record size in characters.
+
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "DL_POLY Trajectory Import Options";
+		widget group, w, tabs, page;
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
+		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
+		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1, 1, 4);
+		ui.addCombo("rebondType", "Rebonding", "'None', 'Plain (no augment)', 'Full'", 2, 1, 5);
+	}
+	# Execute dialog
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+
+	# Get dialog values
+	Dialog ui = defaultDialog();
+	global int cellShift = ui.asInteger("cellShift");
+	global int rebondType = ui.asInteger("rebondType");
 
 	int readHeader()
 	{
@@ -203,6 +222,7 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		double axes[9];
 		string title;
 		int natoms, nstep, keytrj, imcon, n;
+		Model m = aten.frame;
 
 		# First data for frame is : nstep, $natoms, keytrj, imcon, tstep, all as doubles 
 		recsize = readInt(intsize);
@@ -245,7 +265,13 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		recsize = readInt(intsize);
 		if (!readDoubleArray(z,natoms)) { printf("Error reading z-coordinates from trajectory frame.\n"); return FALSE; }
 		recsize = readInt(intsize);
-		for (n = 1; n<= natoms; ++n) setCoords(x[n], y[n], z[n], n);
+		Vector v;
+		for (n = 1; n<= natoms; ++n)
+		{
+			v = { x[n], y[n], z[n] };
+			if (cellShift && (imcon != 0)) v += m.cell.fracToReal(0.5, 0.5, 0.5);
+			setCoords(v.x, v.y, v.z, n);
+		}
 
 		# Velocities
 		if (keytrj > 0)
@@ -279,13 +305,35 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 			for (n = 1; n<= natoms; ++n) setForces(x[n], y[n], z[n], n);
 		}
 
-		rebond();
+		# Rebond (if requested)
+		if (rebondType == 2) rebond(FALSE);
+		else if (rebondType == 3) rebond(TRUE);
+
 		return TRUE;
 	}
 }
 
 filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HISf", glob="*HISf", exact="HISTORY", nickname="dlpolyf")
 {
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "DL_POLY Trajectory Import Options";
+		widget group, w, tabs, page;
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
+		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
+		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1, 1, 4);
+		ui.addCombo("rebondType", "Rebonding", "'None', 'Plain (no augment)', 'Full'", 2, 1, 5);
+	}
+	# Execute dialog
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+
+	# Get dialog values
+	Dialog ui = defaultDialog();
+	global int cellShift = ui.asInteger("cellShift");
+	global int rebondType = ui.asInteger("rebondType");
+
 	int readHeader()
 	{
 		string title;
@@ -331,11 +379,14 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		}
 
 		# Now the atoms, velocities, and forces
+		Vector v;
+		if (cellShift) v = aten.frame.cell.fracToReal(0.5,0.5,0.5);
 		for (n=1; n<=natoms; ++n)
 		{
 			readLineF("%8s%10i%12.6f%12.6f", e, id, mass, q);
 			readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
-			setCoords(x.x, x.y, x.z, n);
+			if (cellShift) setCoords(x.x+v.x, x.y+v.y, x.z+v.z, n);
+			else setCoords(x.x, x.y, x.z, n);
 			if (keytrj > 0)
 			{
 				readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
@@ -347,7 +398,8 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 				setForces(x.x, x.y, x.z, n);
 			}
 		}
-		rebond();
+		if (rebondType == 2) rebond(FALSE);
+		else if (rebondType == 3) rebond(TRUE);
 		return TRUE;
 	}
 }

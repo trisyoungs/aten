@@ -58,7 +58,7 @@ Pattern *Model::pattern(int id)
 }
 
 // Add Pattern Node
-Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
+Pattern *Model::addPattern(int nMols, int nAtomsPerMol, const char *patname)
 {
 	msg.enter("Model::addPattern");
 	// Determine starting atom...
@@ -67,9 +67,10 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 	Pattern *newpnode = patterns_.add();
 	newpnode->setParent(this);
 	newpnode->setName(patname);
-	newpnode->initialise(patterns_.nItems()-1,start,mols,numatoms);
-	msg.print("New pattern '%s' added - startatom %i, %i mols, %i atoms per mol.\n", patname , start+1, mols, numatoms);
-	if ((start + mols*numatoms) == atoms_.nItems())
+	newpnode->initialise(patterns_.nItems()-1,start,nMols,nAtomsPerMol);
+	Dnchar linkCommand(-1, "<a href='Model m = getModel(\"%s\"); selectNone(); select(\"%i-%i\");'>Select</a>", name_.get(), start+1, start+nAtomsPerMol*nMols);
+	msg.richPrint("New pattern '%s' added - startatom %i, %i mols, %i atoms per mol. [%s]\n", patname , start+1, nMols, nAtomsPerMol, linkCommand.get());
+	if ((start + nMols*nAtomsPerMol) == atoms_.nItems())
 	{
 		msg.print("Pattern description completed (spans %i atoms).\n",atoms_.nItems());
 		energy.resize(patterns_.nItems());
@@ -77,9 +78,9 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
 		patternsPoint_ = changeLog.log(Log::Structure);
 	}
-	else if ((start + mols*numatoms) > atoms_.nItems())
+	else if ((start + nMols*nAtomsPerMol) > atoms_.nItems())
 	{
-		msg.print("New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname, (start + mols*numatoms) - atoms_.nItems());
+		msg.print("New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname, (start + nMols*nAtomsPerMol) - atoms_.nItems());
 		msg.print("Not added.\n");
 		patterns_.remove(newpnode);
 		newpnode = NULL;
@@ -239,8 +240,9 @@ bool Model::createPatterns()
 		}
 		if (nsel2 != marked_.nItems())
 		{
+			Dnchar linkCommand(-1, "<a href='Model m = getModel(\"%s\"); selectNone(); select(%i);'>Select Atom</a>, <a href='Model m = getModel(\"%s\"); selectNone(); selectTree(%i);'>Tree Select Atom</a>", name_.get(), selectSource->id()+1, name_.get(), selectSource->id()+1);
 			msg.print("Pattern creation failed because of bad atom ordering or the presence of additional bonds.\n");
-			msg.print("Problem occurred in pattern %i whilst selecting from atom %i.\n", patterns_.nItems()+1, selectSource->id()+1);
+			msg.richPrint("Problem occurred in pattern %i whilst selecting from atom %i. [%s]\n", patterns_.nItems()+1, selectSource->id()+1, linkCommand.get());
 
 			// Remove any patterns added so far
 			patterns_.clear();

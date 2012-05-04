@@ -113,7 +113,7 @@ bool Command::function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Tree *filter = aten.probeFile(c->argc(0), FilterData::TrajectoryImport);
 	if (filter == NULL) return FALSE;
-	bool result = obj.m->initialiseTrajectory(c->argc(0),filter);
+	bool result = obj.m->initialiseTrajectory(c->argc(0), filter);
 	rv.set(result);
 	return TRUE;
 }

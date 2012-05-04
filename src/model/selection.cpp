@@ -172,14 +172,12 @@ void Model::moveSelectionToStart()
 	Atom *next, *i;
 	// For each selected atom in the model, shift it to the start of the list
 	i = atoms_.last();
-	for (int n=0; n<atoms_.nItems(); n++)
+	for (int n=0; n<atoms_.nItems(); ++n)
 	{
 		next = i->prev;
 		if (i->isSelected()) moveAtomAfter(i, NULL);
 		i = next;
 	}
-	// Renumber atoms
-// 	renumberAtoms();
 	changeLog.add(Log::Structure);
 	msg.exit("Model::moveSelectionToStart");
 }
@@ -188,13 +186,14 @@ void Model::moveSelectionToStart()
 void Model::moveSelectionToEnd()
 {
 	msg.enter("Model::moveSelectionToEnd");
-	// For each selected atom in the model, shift it to the end of the list
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	// For each selected atom in the model, shift it to the end of the list, preserving their relative order
+	Atom *next, *i = atoms_.first();
+	for (int n=0; n<atoms_.nItems(); ++n)
 	{
+		next = i->next;
 		if (i->isSelected()) moveAtomAfter(i, atoms_.last());
+		i = next;
 	}
-	// Renumber atoms
-// 	renumberAtoms();
 	changeLog.add(Log::Structure);
 	msg.exit("Model::moveSelectionToEnd");
 }

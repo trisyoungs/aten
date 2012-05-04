@@ -82,9 +82,11 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 // Function data
 FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
 	{ "copy",		VTypes::NoData,		"K",		"UnitCell cell" },
+	{ "fracToReal",		VTypes::VectorData,	"NNN",		"double fracx, double fracy, double fracz" },
 	{ "mim",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
 	{ "mimVector",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
-	{ "translateAtom",	VTypes::VectorData,	"JNNN",		"Atom i, double dx, double dy, double dz" }
+	{ "realToFrac",		VTypes::VectorData,	"NNNNNN",	"double x, double y, double z" },
+	{ "translateAtom",	VTypes::VectorData,	"JNNN",		"Atom i, double fracx, double fracy, double fracz" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -381,6 +383,10 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			else result = ptr->copy( (UnitCell*) node->argp(0, VTypes::CellData) );
 			rv.reset();
 			break;
+		case (CellVariable::FracToReal):
+			v1 = node->argv(0);
+			rv.set(ptr->fracToReal(v1));
+			break;
 		case (CellVariable::MinimumImage):
 			if (node->argType(0) == VTypes::VectorData) v1 = node->argv(0);
 			else
@@ -415,7 +421,7 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 				ii = (Atom*) node->argp(0, VTypes::AtomData);
 				if (ii == NULL)
 				{
-					msg.print("Error: Source atom given to cell 'mimd' function is NULL.\n");
+					msg.print("Error: Source atom given to cell 'mimVector' function is NULL.\n");
 					result = FALSE;
 					break;
 				}
@@ -427,7 +433,7 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 				jj = (Atom*) node->argp(1, VTypes::AtomData);
 				if (jj == NULL)
 				{
-					msg.print("Error: Reference atom given to cell 'mimd' function is NULL.\n");
+					msg.print("Error: Reference atom given to cell 'mimVector' function is NULL.\n");
 					result = FALSE;
 					break;
 				}
@@ -435,11 +441,15 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			}
 			rv.set(ptr->mimVector(v1,v2));
 			break;
+		case (CellVariable::RealToFrac):
+			v1 = node->argv(0);
+			rv.set(ptr->realToFrac(v1));
+			break;
 		case (CellVariable::TranslateAtom):
 			ii = (Atom*) node->argp(0, VTypes::AtomData);
 			if (ii == NULL)
 			{
-				msg.print("Error: Target atom given to cell 'translateatom' function is NULL.\n");
+				msg.print("Error: Target atom given to cell 'translateAtom' function is NULL.\n");
 				result = FALSE;
 				break;
 			}
