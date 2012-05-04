@@ -646,8 +646,8 @@ class Model
 	int patternsPoint_;
 
 	public:
-	// Create a new pattern node (nmols,natoms,name)
-	Pattern *addPattern(int nmols, int atomspermol, const char *name);
+	// Create a new pattern node
+	Pattern *addPattern(int nMols, int nAtomsPerMol, const char *name);
 	// Cut the pattern from the list
 	void cutPattern(Pattern *pattern);
 	// Own the specified pattern (bool = whether to set ownermodel)

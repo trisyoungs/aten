@@ -472,6 +472,7 @@ void GuiQt::printMessage(const char *s)
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
+	messagesWidget->ui.MessagesBrowser->moveCursor(QTextCursor::End);
 	messagesWidget->ui.MessagesBrowser->append(str);
 }
 

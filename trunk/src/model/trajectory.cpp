@@ -102,8 +102,10 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	// Associate the supplied trajectory file with the model
 	msg.enter("Model::initialiseTrajectory");
 	bool success;
+	
 	// Delete old frames and unset old file
 	clearTrajectory();
+	
 	// Open the specified file
 	if (!trajectoryParser_.openInput(fname))
 	{
@@ -112,6 +114,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
+	
 	// Associate the file with the trajectory, and grab header and frame read functions
 	trajectoryFilename_ = fname;
 	trajectoryFilter_ = f;
@@ -132,6 +135,14 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		return FALSE;
 	}
 	ReturnValue rv;
+	
+	// Execute main filter program (in case there are dialog options etc.)
+	if (!f->execute(rv))
+	{
+		msg.exit("Model::initialiseTrajectory");
+		return FALSE;
+	}
+
 	// Read header
 	if (!trajectoryHeaderFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
 	{
@@ -140,6 +151,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
+	
 	// Store this file position, since it should represent the start of the frame data
 	streampos firstframe = trajectoryParser_.tellg();
 	// Determine frame size and number of frames in file
@@ -147,10 +159,10 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	//printf("Initialised config\n");
 	Model *newframe = addTrajectoryFrame();
 	setRenderSource(Model::TrajectorySource);
+
 	// Read first frame
 	if (!trajectoryFrameFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
 	{
-// 		printf("INteger result = %i\n", rv.asInteger());
 		msg.print("Error testing frame read from trajectory.\n");
 		clearTrajectory();
 		setRenderSource(Model::ModelSource);
@@ -165,8 +177,10 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	trajectoryParser_.seekg(0,ios::end);
 	streampos endoffile = trajectoryParser_.tellg();
 	nTrajectoryFileFrames_ = (endoffile - firstframe) / trajectoryFrameSize_;
+
 	// Skip back to end of first frame ready to read in next frame...
 	trajectoryParser_.seekg(secondframe);
+
 	// Pre-Cache frame(s)
 	msg.print("Successfully associated trajectory.\n"); 
 	msg.print("Number of frames in file : %i\n", nTrajectoryFileFrames_);

@@ -34,6 +34,10 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Add 'z' accessor to ElementVariable</li>
+<li>Added info for context-links in MessageBox text</li>
+<li>Return value for selectionGrowAtom? Should be void.</li>
+<li>CellVariable functions 'realToFrac' and 'fracToReal'</li>
 <li>Add pore alkoxylation script to examples</li>
 <li>Add 'setproperty' function to widget type</li>
 <li>Clarify use of pointers for non-POD objects, add 'new' usage description, and 'copy' member function for atom, bond, and unitcell types</li>
