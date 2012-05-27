@@ -1,7 +1,6 @@
 <h1>Known Bugs</h1>
 
 <ul>
-<li>Flickering Progress Dialog, e.g. when using disordered builder on Windows</li>
 <li>Glyph list not updated on model load.</li>
 <li>Model not updated when changing glyph selection?</li>
 </ul>
@@ -34,6 +33,7 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>growatom command - if a negative distance is provided, one is worked out from the atomic radii of the involved atoms</li>
 <li>Check/update description of 'global' variables (which are now only global to their root Tree and contained functions)</li>
 <li>Add 'z' accessor to ElementVariable</li>
 <li>Added info for context-links in MessageBox text</li>

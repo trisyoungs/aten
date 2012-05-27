@@ -28,7 +28,7 @@ class UserAction
 	public:
 
 	// Actions
-	enum Action { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ShiftPickVectorAction, RotatePickAxisAction, TransformPickAAction, TransformPickBAction, TransformPickCAction, ConvertSourcePickAAction, ConvertSourcePickBAction, ConvertSourcePickCAction, ConvertTargetPickAAction, ConvertTargetPickBAction, ConvertTargetPickCAction, nUserActions };
+	enum Action { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, DrawGrowAtomAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ShiftPickVectorAction, RotatePickAxisAction, TransformPickAAction, TransformPickBAction, TransformPickCAction, ConvertSourcePickAAction, ConvertSourcePickBAction, ConvertSourcePickCAction, ConvertTargetPickAAction, ConvertTargetPickBAction, ConvertTargetPickCAction, nUserActions };
 
 	// Action texts
 	const char *name;
