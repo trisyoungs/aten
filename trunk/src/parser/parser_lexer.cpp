@@ -276,18 +276,19 @@ int CommandParser::lex()
 			}
 
 			// Is it an existing variable in scope?
+			Variable *v;
 			if (tree_ != NULL)
 			{
 				// Search the variable lists currently in scope...
 				int scopelevel;
-				Variable *v = tree_->findVariableInScope(token, scopelevel);
+				v = tree_->findLocalVariable(token, scopelevel);
 				if (v != NULL)
 				{
 					if (scopelevel == 0)
 					{
-						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing local variable (->LOCALVAR)\n", tree_);
+						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in the same scope (->VARSAMESCOPE)\n", tree_);
 						CommandParser_lval.variable = v;
-						return LOCALVAR;
+						return VARSAMESCOPE;
 					}
 					else
 					{
@@ -296,6 +297,36 @@ int CommandParser::lex()
 						return VAR;
 					}
 				}
+			}
+
+			// Is it an existing variable in global scope?
+			for (Refitem<Tree,bool> *ri = stack_.first(); ri != NULL; ri = ri->next)
+			{
+				v = ri->item->globalVariables().find(token);
+				if (v != NULL)
+				{
+					if (tree_ == ri->item)
+					{
+						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in the same global scope (->VARSAMESCOPE)\n", tree_);
+						CommandParser_lval.variable = v;
+						return VARSAMESCOPE;
+					}
+					else
+					{
+						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in global scope (->VAR)\n", tree_);
+						CommandParser_lval.variable = v;
+						return VAR;
+					}
+				}
+			}
+			
+			// Not in global scope - was it passed as a CLI value?
+			v = aten.findPassedValue(token);
+			if (v != NULL)
+			{
+				msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing value passed through the CLI (->VAR).\n", tree_);
+				CommandParser_lval.variable = v;
+				return VAR;
 			}
 
 			// Is it one of Aten's function keywords?
@@ -323,7 +354,7 @@ int CommandParser::lex()
 			}
 
 			// Is it a user-defined function keyword in the global (Forest-wide) scope, or Aten's global scope?
-			func = program_->findGlobalFunction(token);
+			func = program_->findFunction(token);
 			if (func == NULL) func = aten.findIncludeFunction(token);
 			if (func != NULL)
 			{

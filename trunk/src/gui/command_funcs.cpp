@@ -68,7 +68,7 @@ void CommandWidget::on_CommandPrompt_returnPressed()
 {
 	Program tempScript;
 	// Grab the current text of the line edit (and clear it at the same time)
-	if (tempScript.generateFromString(ui.CommandPrompt->getText()))
+	if (tempScript.generateFromString(ui.CommandPrompt->getText(), "UserCommand", "Command Prompt Input"))
 	{
 		ReturnValue result;
 		tempScript.execute(result);

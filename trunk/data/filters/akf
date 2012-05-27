@@ -13,11 +13,11 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 {
 	# Variable declaration
 	int n,i,j,k,l,ndata,atomdata;
-	string e,keywd,line,type,style;
+	String e,keywd,line,type,style;
 	double rx,ry,rz, lengths[3], angs[3], q, colour[4];
-	glyph g;
+	Glyph g;
 	atom atm;
-	vector v;
+	Vector v;
 
 	newModel(filterFilename());
 
@@ -56,7 +56,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			readVar(line,type,ndata);
 			g = newGlyph(type);
 			# First 'n' lines are the 'n' data points for the glyph
-			for (int n=1; n<=ndata; ++n)
+			for (n=1; n<=ndata; ++n)
 			{
 				# Format:   <DataNo> <AtomID or 0 for vector> <AtomData Type> <vx> <vy> <vz> <r> <g> <b> <a>
 				readLine(l,i,atomdata,v.x,v.y,v.z,g.data[l].colour[1],g.data[l].colour[2],g.data[l].colour[3],g.data[l].colour[4]);

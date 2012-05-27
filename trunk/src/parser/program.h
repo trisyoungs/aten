@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FOREST_H
-#define ATEN_FOREST_H
+#ifndef ATEN_PROGRAM_H
+#define ATEN_PROGRAM_H
 
 #include "base/dnchar.h"
 #include "parser/tree.h"
@@ -38,7 +38,7 @@ class Program
 
 
 	/*
-	// Tree data
+	// Program data
 	*/
 	private:
 	// Name, if any
@@ -64,11 +64,11 @@ class Program
 	// Return associated filename (if any)
 	const char *filename();
 	// Generate program from string 
-	bool generateFromString(const char *s, const char *name = NULL, bool dontpushtree = FALSE, bool clearExisting = TRUE);
+	bool generateFromString(const char *s, const char *name, const char *sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Generate program from string list
-	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL, bool dontpushtree = FALSE, bool clearExisting = TRUE);
+	bool generateFromStringList(Dnchar *stringListHead, const char *name, const char *sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Generate program from input file
-	bool generateFromFile(const char *filename, const char *name = NULL, bool dontpushtree = FALSE, bool clearExisting = TRUE, bool isFilterFile = FALSE);
+	bool generateFromFile(const char *filename, const char *name = NULL, bool dontPushTree = FALSE, bool clearExisting = TRUE, bool isFilterFile = FALSE);
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program
@@ -79,7 +79,7 @@ class Program
 	Tree *addFilter();
 	// Delete specified tree
 	void deleteTree(Tree *t);
-	// Return whether the Program is being generated from a filterfile
+	// Return whether the Program is being generated from a filter file
 	bool isFromFilterFile();
 	// Execute main program, including GUI options if specified
 	bool execute(ReturnValue &rv);
@@ -88,33 +88,21 @@ class Program
 
 
 	/*
-	// Global Functions
+	// Program-Wide Functions
 	*/
 	private:
-	// User-defined global functions (but local to this program)
-	List<Tree> globalFunctions_;
+	// User-defined functions (local to this program)
+	List<Tree> functions_;
 
 	public:
 	// Add a new Program-global function tree
-	Tree *addGlobalFunction(const char *name);
+	Tree *addFunction(const char *name);
 	// Search for existing global function
-	Tree *findGlobalFunction(const char *s);
+	Tree *findFunction(const char *s);
 	// Return first defined global function
-	Tree *globalFunctions();
+	Tree *functions();
 	// Execute specified global function
-	bool executeGlobalFunction(const char *name, ReturnValue &rv, const char* arglist, ...);
-
-
-	/*
-	// Global Scope
-	*/
-	private:
-	// Global variable scopenode
-	ScopeNode globalScope_;
-
-	public:
-	// Return global scopenode
-	ScopeNode &globalScope();
+	bool executeFunction(const char *name, ReturnValue &rv, const char* arglist, ...);
 };
 
 #endif

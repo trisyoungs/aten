@@ -369,8 +369,8 @@ bool Tree::execute(ReturnValue &rv)
 	// Do a couple of things regardless of the type of tree
 	prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
 	// Print some final verbose output
-	if (isFilter()) msg.print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
-	else msg.print(Messenger::Parse, "Final result from execution of tree '%s' (in forest '%s') is %s\n", name_.get(), parent_->name(), rv.info());
+	if (isFilter()) msg.print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in Program '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
+	else msg.print(Messenger::Parse, "Final result from execution of tree '%s' (in Program '%s') is %s\n", name_.get(), parent_->name(), rv.info());
 	if (!result) msg.print(Messenger::Parse, "Execution FAILED.\n");
 	msg.exit("Tree::execute");
 	return result;
@@ -763,7 +763,7 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
 	// Get topmost scopenode or, if global variable, the parent programs global scopenode
 	ScopeNode *scope;
-	if (global) scope = &parent_->globalScope();
+	if (global) scope = &globalScope_;
 	else
 	{
 		Refitem<ScopeNode,int> *ri = scopeStack_.last();
@@ -800,7 +800,7 @@ TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *
 	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
 	// Get topmost scopenode or, if global variable, the parent programs global scopenode
 	ScopeNode *scope;
-	if (global) scope = &parent_->globalScope();
+	if (global) scope = &globalScope_;
 	else
 	{
 		Refitem<ScopeNode,int> *ri = scopeStack_.last();
@@ -877,7 +877,7 @@ TreeNode *Tree::addArrayConstant(TreeNode *values)
 }
 
 // Search for variable in current scope
-Variable *Tree::findVariableInScope(const char *name, int &scopelevel)
+Variable *Tree::findLocalVariable(const char *name, int &scopelevel)
 {
 	Variable *result = NULL;
 	scopelevel = 0;
@@ -887,33 +887,33 @@ Variable *Tree::findVariableInScope(const char *name, int &scopelevel)
 	{
 		msg.print(Messenger::Parse," ... scopenode %p...\n", ri->item);
 		result = ri->item->variables.find(name);
-		scopelevel --;
 		if (result != NULL)
 		{
 			msg.print(Messenger::Parse, "...variable '%s' found at a scope level of %i.\n", name, scopelevel);
 			return result;
 		}
+		--scopelevel;
 	}
 	
-	// Didn't find the variable in any local scope - check global scope
-	result = parent_->globalScope().variables.find(name);
-	if (result != NULL)
-	{
-		scopelevel = -98;
-		msg.print(Messenger::Parse, "...variable '%s' found at global scope.\n", name);
-		return result;
-	}
+// 	// Didn't find the variable in any local scope - check global scope
+// 	result = globalScope_.variables.find(name);
+// 	if (result != NULL)
+// 	{
+// 		scopelevel = 1;
+// 		msg.print(Messenger::Parse, "...variable '%s' found at global scope.\n", name);
+// 		return result;
+// 	}
 	
-	// Not in global scope - was it passed as a CLI value?
-	result = aten.findPassedValue(name);
-	if (result != NULL)
-	{
-		scopelevel = -99;
-		msg.print(Messenger::Parse, "...variable '%s' found as a passed value.\n", name);
-		return result;
-	}
+// 	// Not in global scope - was it passed as a CLI value?
+// 	result = aten.findPassedValue(name);
+// 	if (result != NULL)
+// 	{
+// 		scopelevel = 2;
+// 		msg.print(Messenger::Parse, "...variable '%s' found as a passed value.\n", name);
+// 		return result;
+// 	}
 	
-	msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
+	msg.print(Messenger::Parse, "...no variable '%s' found in any scope.\n", name);
 	return NULL;
 }
 
@@ -943,7 +943,7 @@ const VariableList &Tree::localVariables() const
 // Return global scope's variable list
 const VariableList &Tree::globalVariables() const
 {
-	return parent_->globalScope().variables;
+	return globalScope_.variables;
 }
 
 /*

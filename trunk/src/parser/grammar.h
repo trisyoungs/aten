@@ -44,7 +44,7 @@
      CHARCONST = 262,
      STEPTOKEN = 263,
      VAR = 264,
-     LOCALVAR = 265,
+     VARSAMESCOPE = 265,
      FUNCCALL = 266,
      USERFUNCCALL = 267,
      VTYPE = 268,
@@ -90,7 +90,7 @@
 #define CHARCONST 262
 #define STEPTOKEN 263
 #define VAR 264
-#define LOCALVAR 265
+#define VARSAMESCOPE 265
 #define FUNCCALL 266
 #define USERFUNCCALL 267
 #define VTYPE 268

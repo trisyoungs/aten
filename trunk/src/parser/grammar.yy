@@ -42,7 +42,7 @@ int globalDeclarations;
 %token <intconst> INTCONST ELEMENTCONST
 %token <doubleconst> DOUBLECONST
 %token <name> NEWTOKEN CHARCONST STEPTOKEN
-%token <variable> VAR LOCALVAR
+%token <variable> VAR VARSAMESCOPE
 %token <functionId> FUNCCALL
 %token <tree> USERFUNCCALL
 %token <vtype> VTYPE
@@ -144,11 +144,11 @@ variable:
 		$$ = cmdparser.wrapVariable($1);
 		if ($$ == NULL) { msg.print("Error in variable expression (code 2)\n"); YYABORT; }
 		}
-	| LOCALVAR '[' expression ']'			{
+	| VARSAMESCOPE '[' expression ']'			{
 		$$ = cmdparser.wrapVariable($1,$3);
 		if ($$ == NULL) { msg.print("Error in variable expression (code 3)\n"); YYABORT; }
 		}
-	| LOCALVAR					{
+	| VARSAMESCOPE					{
 		$$ = cmdparser.wrapVariable($1);
 		if ($$ == NULL) { msg.print("Error in variable expression (code 4)\n"); YYABORT; }
 		}
@@ -282,28 +282,32 @@ expressionlist:
 /* Conversion of allowable names to single token type */
 variablename:
 	VAR 						{
-		msg.print(Messenger::Parse,"PARSER : variablename : existing var '%s'\n", tokenName.get());
 		tokenName = yylval.variable->name();
+		msg.print(Messenger::Parse,"PARSER : variablename : existing var '%s'\n", tokenName.get());
+		msg.print("Warning - declaration of variable '%s' in %s hides a previous declaration.\n", tokenName.get(), cmdparser.sourceInfo());
 		$$ = &tokenName;
 		}
 	| FUNCCALL					{
-		msg.print(Messenger::Parse,"PARSER : variablename : existing built-in function '%s'\n", tokenName.get());
 		tokenName = Command::data[yylval.functionId].keyword;
+		msg.print(Messenger::Parse,"PARSER : variablename : existing built-in function '%s'\n", tokenName.get());
 		$$ = &tokenName;
 		}
-	| LOCALVAR					{
-		msg.print(Messenger::Parse,"PARSER : variablename : existing local var '%s'\n", tokenName.get());
-		msg.print("Error: Existing variable in local scope cannot be redeclared.\n");
+	| VARSAMESCOPE					{
+		tokenName = yylval.variable->name();
+		msg.print(Messenger::Parse,"PARSER : variablename : existing var '%s' in same scope\n", tokenName.get());
+		msg.print("Error: Declaration of variable '%s' in %s conflicts with a previous declaration.\n", tokenName.get(), cmdparser.sourceInfo());
 		YYABORT;
 		}
 	| constant					{
+		tokenName = yylval.variable->name();
 		msg.print(Messenger::Parse,"PARSER : variablename : constant '%s'\n", tokenName.get());
 		msg.print("Error: Constant value found in declaration.\n");
 		YYABORT;
 		}
 	| USERFUNCCALL					{
+		tokenName = yylval.tree->name();
 		msg.print(Messenger::Parse,"PARSER : variablename : existing user function '%s'\n", tokenName.get());
-		msg.print("Error: Existing user-defined function name cannot be redeclared.\n");
+		msg.print("Error: Existing user-defined function '%s' in %s cannot be redeclared.\n", tokenName.get(), cmdparser.sourceInfo());
 		YYABORT;
 		}
 	| VTYPE						{

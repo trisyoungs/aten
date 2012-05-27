@@ -355,7 +355,7 @@ int LineParser::readNextLine(int optionMask)
 		}
 		lineLength_ = strlen(line_);
 		linePos_ = 0;
-		lastLineNo_ ++;
+		++lastLineNo_;
 	} while (result != 0);
 // 	printf("LineParser Returned line = [%s], length = %i\n",line_,lineLength_);
 	msg.exit("LineParser::readNextLine");

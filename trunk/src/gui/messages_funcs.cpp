@@ -47,7 +47,7 @@ void MessagesWidget::on_MessagesBrowser_anchorClicked(const QUrl &link)
 {
 	// Attempt to construct a program based on the supplied target URL
 	Program program;
-	if (!program.generateFromString(qPrintable(link.toString()), "MessageLinkCommand"))
+	if (!program.generateFromString(qPrintable(link.toString()), "MessageLinkCommand", "Message Link Commane"))
 	{
 		msg.print("Unable to construct commands from context link.\n");
 		return;
