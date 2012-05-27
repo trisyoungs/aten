@@ -175,15 +175,17 @@ bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
+	
 	// Construct program
 	Dnchar code(-1, "int internalDeselectAtom(atom i) { %s; return FALSE; }", c->argc(0));
 	Program program;
-	if (!program.generateFromString(code, "selectioncode"))
+	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
 	{
 		msg.print("Error: Couldn't construct selection code.\n");
 		rv.reset();
 		return FALSE;
 	}
+	
 	// Get global function and set up variable and UserCommandNode
 	Tree *function = program.mainProgram()->findLocalFunction("internalDeselectAtom");
 	if (function == NULL)
@@ -360,7 +362,7 @@ bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Construct program
 	Dnchar code(-1, "int internalSelectAtom(atom i) { %s; return FALSE; }", c->argc(0));
 	Program program;
-	if (!program.generateFromString(code, "selectioncode"))
+	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
 	{
 		msg.print("Error: Couldn't construct selection code.\n");
 		rv.reset();

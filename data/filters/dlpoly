@@ -320,11 +320,12 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 	{
 		ui.title = "DL_POLY Trajectory Import Options";
 		widget group, w, tabs, page;
-		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
-		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
-		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1, 3);
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2, 3);
+		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3, 3);
 		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1, 1, 4);
-		ui.addCombo("rebondType", "Rebonding", "'None', 'Plain (no augment)', 'Full'", 2, 1, 5);
+		ui.addCombo("rebondType", "Rebonding", "'None', 'Plain (no augment)', 'Full'", 2, 2, 4);
+		ui.addCheck("strictFormat", "Demand strict format", 1, 1, 5);
 	}
 	# Execute dialog
 	if (!showDefaultDialog()) error("Options dialog canceled.\n");
@@ -333,6 +334,7 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 	Dialog ui = defaultDialog();
 	global int cellShift = ui.asInteger("cellShift");
 	global int rebondType = ui.asInteger("rebondType");
+	global int strictFormat = ui.asInteger("strictFormat");
 
 	int readHeader()
 	{
@@ -361,7 +363,8 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		double tstep, mass, q;
 
 		# Frame header - '"timestep"	nstep	natms	keytrj	imcon	tstep'
-		readLineF("%8s%10i%10i%10i%10i%12.6f", title, nstep, natoms, keytrj, imcon, tstep);
+		if (strictFormat) readLineF("%8s%10i%10i%10i%10i%12.6f", title, nstep, natoms, keytrj, imcon, tstep);
+		else readLine(title, nstep, natoms, keytrj, imcon, tstep);
 		title = "t = " + ftoa(tstep) + ", n = " + itoa(nstep);
 		setName(title);
 
@@ -372,16 +375,25 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		# Read cell if its present
 		if (imcon > 0)
 		{
-			readLineF("%12.4f%12.4f%12.4f",x.x, x.y, x.z);
-			readLineF("%12.4f%12.4f%12.4f",y.x, y.y, y.z);
-			readLineF("%12.4f%12.4f%12.4f",z.x, z.y, z.z);
+			if (strictFormat)
+			{
+				readLineF("%12.4f%12.4f%12.4f",x.x, x.y, x.z);
+				readLineF("%12.4f%12.4f%12.4f",y.x, y.y, y.z);
+				readLineF("%12.4f%12.4f%12.4f",z.x, z.y, z.z);
+			}
+			else
+			{
+				readLine(x.x, x.y, x.z);
+				readLine(y.x, y.y, y.z);
+				readLine(z.x, z.y, z.z);
+			}
 			cellAxes(x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z);
 		}
 
 		# Now the atoms, velocities, and forces
 		Vector v;
 		if (cellShift) v = aten.frame.cell.fracToReal(0.5,0.5,0.5);
-		for (n=1; n<=natoms; ++n)
+		if (strictFormat) for (n=1; n<=natoms; ++n)
 		{
 			readLineF("%8s%10i%12.6f%12.6f", e, id, mass, q);
 			readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
@@ -398,8 +410,28 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 				setForces(x.x, x.y, x.z, n);
 			}
 		}
+		else for (n=1; n<=natoms; ++n)
+		{
+			readLine(e, id, mass, q);
+			readLine(x.x, x.y, x.z);
+			if (cellShift) setCoords(x.x+v.x, x.y+v.y, x.z+v.z, n);
+			else setCoords(x.x, x.y, x.z, n);
+			if (keytrj > 0)
+			{
+				readLine(x.x, x.y, x.z);
+				setVelocities(x.x, x.y, x.z, n);
+			}
+			if (keytrj > 1)
+			{
+				readLine(x.x, x.y, x.z);
+				setForces(x.x, x.y, x.z, n);
+			}
+		}
+
+		# Rebond if requested
 		if (rebondType == 2) rebond(FALSE);
 		else if (rebondType == 3) rebond(TRUE);
+
 		return TRUE;
 	}
 }

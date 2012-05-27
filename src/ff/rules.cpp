@@ -83,7 +83,7 @@ bool Forcefield::generateVdw(Atom *i)
 	ForcefieldAtom *ffi = i->type();
 	// Call the generator function with the necessary arguments
 	ReturnValue rv;
-	if (!generatorFunctions_.executeGlobalFunction("vdwgenerator", rv, "y", ffi))
+	if (!generatorFunctions_.executeFunction("vdwgenerator", rv, "y", ffi))
 	{
 		msg.print("Error - Failed to generate Vdw function data for atom type.\n");
 		ffi->setVdwForm(VdwFunctions::None);
@@ -118,7 +118,7 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 	newbond->setTypeName(1, j->type()->equivalent());
 	// Call the generator function with the necessary arguments
 	ReturnValue rv;
-	if (!generatorFunctions_.executeGlobalFunction("bondgenerator", rv, "zaa", newbond, i, j))
+	if (!generatorFunctions_.executeFunction("bondgenerator", rv, "zaa", newbond, i, j))
 	{
 		msg.print("Error - Failed to generate function data for bond.\n");
 		newbond = NULL;
@@ -152,7 +152,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 	newangle->setTypeName(2, k->type()->equivalent());
 	// Call the generator function with the necessary arguments
 	ReturnValue rv;
-	if (!generatorFunctions_.executeGlobalFunction("anglegenerator", rv, "zaaa", newangle, i, j, k))
+	if (!generatorFunctions_.executeFunction("anglegenerator", rv, "zaaa", newangle, i, j, k))
 	{
 		msg.print("Error - Failed to generate function data for angle.\n");
 		newangle = NULL;
@@ -187,7 +187,7 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 	newtorsion->setTypeName(3, l->type()->equivalent());
 	// Call the generator function with the necessary arguments
 	ReturnValue rv;
-	if (!generatorFunctions_.executeGlobalFunction("torsiongenerator", rv, "zaaaa", newtorsion, i, j, k, l))
+	if (!generatorFunctions_.executeFunction("torsiongenerator", rv, "zaaaa", newtorsion, i, j, k, l))
 	{
 		msg.print("Error - Failed to generate function data for torsion.\n");
 		newtorsion = NULL;

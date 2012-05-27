@@ -9,13 +9,13 @@
 filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato", glob="*.ato", id=18)
 {
 	// Variables
-	atom i;
+	Atom i;
 	int nmols,m,n,l,natoms,nres,nrot,count,done,id,nrotatoms;
-	element el;
+	Element el;
 	double boxsize, temp, eps, sigma, mass, q;
-	string atomname, elname, line, dummy;
-	vector com, r, phi;
-	ffatom ffa;
+	String atomname, elname, line, dummy;
+	Vector com, r, phi;
+	FFAtom ffa;
 
 	addReadOption("skipblanks");
 
@@ -129,14 +129,14 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato", glob="*.ato", id=18)
 {
 	# Variable declaration
-	model srcmodel= aten.frame;
-	pattern p;
+	Model srcmodel = aten.frame;
+	Pattern p;
 	int nmols, n, m, o, mol, nresb, nresa, nrest, nrot, idj, count;
 	double rij, mass, boxsize;
-	vector com, r;
-	atom i, j;
-	bound b;
-	bond bnd;
+	Vector com, r;
+	Atom i, j;
+	Bound b;
+	Bond bnd;
 
 	# Main dialog creation function
 	void createDefaultDialog(Dialog ui)
@@ -197,9 +197,9 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		// Determine maximum extent of system
 		printf("Model has no cell definition - determining molecular extent...\n");
 		double maxrij = 0.0;
-		for (atom i = srcmodel.atoms; i; ++i)
+		for (i = srcmodel.atoms; i; ++i)
 		{
-			for (atom j = ++i; j; ++j)
+			for (j = ++i; j; ++j)
 			{
 				rij = geometry(i,j);
 				if (rij > maxrij) maxrij = rij;

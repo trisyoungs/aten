@@ -402,7 +402,7 @@ void AtenForm::on_actionEditQuickCommand_triggered(bool on)
 			// Store command and attempt to 'compile' it
 			command = qPrintable(text);
 			Program program;;
-			if (program.generateFromString(command, "Quick Command"))
+			if (program.generateFromString(command, "Quick Command", "QuickCommand"))
 			{
 				ReturnValue rv;
 				program.execute(rv);

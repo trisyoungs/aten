@@ -3,7 +3,7 @@ string name = "SlabXZ";
 string description = "Slab in XZ Plane";
 
 # Number of partitions
-int npartitions = 2;
+int nPartitions = 2;
 
 # A partition may contain options set through a function called partitionOptions()...
 global double start = 0.4, end = 0.6;

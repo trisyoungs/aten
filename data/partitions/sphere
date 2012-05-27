@@ -8,7 +8,7 @@ string description = "Simple spherical region";
 
 # Number of partitions
 # The total possible number of partitions, *including* the unit cell itself.
-int npartitions = 2;
+int nPartitions = 2;
 
 # A partition may contain options set through the defaultDialog as follows
 global double x = 0.5, y = 0.5, z = 0.5, r = 0.3;

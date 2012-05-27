@@ -26,12 +26,12 @@
 #include "parser/filterdata.h"
 #include "parser/variablelist.h"
 #include "parser/treegui.h"
+#include "parser/scopenode.h"
 #include "command/commands.h"
 #include "base/dnchar.h"
 
 // Forward declarations
 class TreeNode;
-class ScopeNode;
 class VariableNode;
 class StepNode;
 class Program;
@@ -163,9 +163,11 @@ class Tree
 	private:
 	// Pointer to local ScopeNode (for functions)
 	ScopeNode *localScope_;
+	// Variable list containing 'global' variable definitione
+	ScopeNode globalScope_;
 
 	public:
-	// Add constant value to tompost scope
+	// Add constant value to topmost scope
 	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
 	// Add integer constant
 	TreeNode *addConstant(int i);
@@ -181,8 +183,8 @@ class Tree
 	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL, bool global = FALSE);
 	// Add array 'constant'
 	TreeNode *addArrayConstant(TreeNode *values);
-	// Search for variable in current scope
-	Variable *findVariableInScope(const char *name, int &scopelevel);
+	// Search for variable in current local scope
+	Variable *findLocalVariable(const char *name, int &scopelevel);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 	// Return local scope's variable list
@@ -225,7 +227,7 @@ class Tree
 	TreeGui defaultDialog_;
 	// Pointer to create function
 	Tree *createDefaultDialogFunction_;
-	// Whether createfunction has already been run
+	// Whether create function has already been run
 	bool defaultDialogCreated_;
 	// List of additional, temporary dialogs created by the tree
 	List<TreeGui> dialogs_;

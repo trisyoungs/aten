@@ -378,7 +378,7 @@ int Aten::parseCli(int argc, char *argv[])
 	ElementMap::ZMapType zm;
 	NameMap<int> *nmi;
 	Model *m;
-	Program *script, tempforest;
+	Program *script, tempProgram;
 	ReturnValue rv;
 	Tree *f, *modelfilter = NULL;
 	Program interactiveScript;
@@ -500,14 +500,14 @@ int Aten::parseCli(int argc, char *argv[])
 					if ((aten.programMode() == Aten::BatchMode) || (aten.programMode() == Aten::ProcessMode) || (aten.programMode() == Aten::BatchExportMode))
 					{
 						script = aten.addBatchCommand();
-						if (!script->generateFromString(argtext.get(), "batchcommand")) return -1;
+						if (!script->generateFromString(argtext.get(), "BatchCommand", "Batch Command")) return -1;
 					}
 					else
 					{
-						tempforest.clear();
-						if (tempforest.generateFromString(argtext.get(), "CLI command"))
+						tempProgram.clear();
+						if (tempProgram.generateFromString(argtext.get(), "CLI Command", "CLI Command"))
 						{
-							if (!tempforest.execute(rv)) return -1;
+							if (!tempProgram.execute(rv)) return -1;
 						}
 						else return -1;
 					}
@@ -826,14 +826,14 @@ int Aten::parseCli(int argc, char *argv[])
 		if ((aten.programMode() == Aten::BatchMode) || (aten.programMode() == Aten::ProcessMode) || (aten.programMode() == Aten::BatchExportMode))
 		{
 			script = aten.addBatchCommand();
-			if (!script->generateFromStringList(commands.first(), "batchcommand")) return -1;
+			if (!script->generateFromStringList(commands.first(), "BatchCommand", "Batch Command")) return -1;
 		}
 		else
 		{
-			tempforest.clear();
-			if (tempforest.generateFromStringList(commands.first(), "CLI command (cin)"))
+			tempProgram.clear();
+			if (tempProgram.generateFromStringList(commands.first(), "CLI Command (cin)", "CLI Command from STDIN"))
 			{
-				if (!tempforest.execute(rv)) return -1;
+				if (!tempProgram.execute(rv)) return -1;
 			}
 			else return -1;
 		}

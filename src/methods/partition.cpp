@@ -262,7 +262,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	int scopelevel, nparts;
 	
 	// Retrieve name
-	v = schemeDefinition_.mainProgram()->findVariableInScope("name", scopelevel);
+	v = schemeDefinition_.mainProgram()->findLocalVariable("name", scopelevel);
 	if (v != NULL)
 	{
 		v->initialise();
@@ -276,7 +276,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	}
 
 	// Retrieve description
-	v = schemeDefinition_.mainProgram()->findVariableInScope("description", scopelevel);
+	v = schemeDefinition_.mainProgram()->findLocalVariable("description", scopelevel);
 	if (v != NULL)
 	{
 		v->initialise();
@@ -289,21 +289,21 @@ bool PartitioningScheme::initialiseFromProgram()
 		description_ = "???";
 	}
 
-	// Locate 'npartitions' variable
-	v = schemeDefinition_.mainProgram()->findVariableInScope("npartitions", scopelevel);
+	// Locate 'nPartitions' variable
+	v = schemeDefinition_.mainProgram()->findLocalVariable("nPartitions", scopelevel);
 	if (v == NULL)
 	{
-		msg.print("Error: No 'npartitions' variable defined in partitioning scheme '%s'\n", name_.get());
+		msg.print("Error: No 'nPartitions' variable defined in partitioning scheme '%s'\n", name_.get());
 		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
-	msg.print(Messenger::Verbose, "  --> Found 'npartitions' variable in partitioning scheme '%s'.\n", name_.get());
+	msg.print(Messenger::Verbose, "  --> Found 'nPartitions' variable in partitioning scheme '%s'.\n", name_.get());
 	v->initialise();
 	success = v->execute(rv);
 	nparts  = rv.asInteger();
 	if (nparts < 1)
 	{
-		msg.print("Error: Invalid 'npartitions' (%i) found in partitioning scheme '%s'\n", nparts, name_.get());
+		msg.print("Error: Invalid 'nPartitions' (%i) found in partitioning scheme '%s'\n", nparts, name_.get());
 		msg.exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}

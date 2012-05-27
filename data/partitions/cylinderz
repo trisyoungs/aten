@@ -3,7 +3,7 @@ string name = "CylinderZ";
 string description = "Cylinder along Z-Axis";
 
 # Number of partitions
-int npartitions = 2;
+int nPartitions = 2;
 
 # A partition may contain options set through a function called partitionOptions()...
 global double x = 0.5, y = 0.5, r = 0.2;

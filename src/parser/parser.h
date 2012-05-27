@@ -59,8 +59,8 @@ class CommandParser
 	int stringPos_, stringLength_, tokenStart_, functionStart_;
 	// Line parser
 	LineParser parser_;
-	// Line number in source file that we've just read
-	int lineNumber_;
+	// Local string used to construct source info
+	Dnchar sourceInfo_;
 	// Current input type to parser
 	ParserSource source_;
 	// Whether the next token to expect is a path step
@@ -85,10 +85,11 @@ class CommandParser
 	void print();
 	// Print error information and location
 	void printErrorInfo();
-	// Flag that the next token to expect is a path step
-	bool setExpectPathStep(bool b);
-	// Whether to treat the next alphanumeric token as a path step variable
-	bool expectPathStep();
+	// Set source information string (if not from a file)
+	void setSourceInfo(const char *s);
+	// Return short info on the current parsing source (filename, line number etc.)
+	const char *sourceInfo();
+
 
 	/*
 	// Tree Data
@@ -104,15 +105,15 @@ class CommandParser
 	bool failed_;
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
-	// Populate target forest from specified character string
-	bool generateFromString(Program *prog, const char *s, bool dontpushtree = FALSE, bool clearExisting = TRUE);
-	// Populate target forest from specified string list
-	bool generateFromStringList(Program *prog, Dnchar *stringListHead, bool dontpushtree = FALSE, bool clearExisting = TRUE);
-	// Populate target forest from specified file(name)
-	bool generateFromFile(Program *prog, const char *filename, bool dontpushtree = FALSE, bool clearExisting = TRUE);
+	// Populate target Program from specified character string
+	bool generateFromString(Program *prog, const char *s, const char *sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	// Populate target Program from specified string list
+	bool generateFromStringList(Program *prog, Dnchar *stringListHead, const char *sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	// Populate target Program from specified file(name)
+	bool generateFromFile(Program *prog, const char *filename, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 
 	public:
-	// Return current tree target, raising warning and setting fail flag if no tree is defined...
+	// Return current Tree target, raising warning and setting fail flag if no tree is defined...
 	Tree *tree();
 	// Push filter
 	void pushFilter();

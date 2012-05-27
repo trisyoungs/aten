@@ -73,7 +73,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 {
 	// First, attempt to generate script from supplied code
 	Program script;
-	if (!script.generateFromString(qPrintable(ui.ScriptTextEdit->toPlainText()), "ScriptedMovie"))
+	if (!script.generateFromString(qPrintable(ui.ScriptTextEdit->toPlainText()), "ScriptedMovie", "Scripted Movie Command"))
 	{
 		QMessageBox::warning(NULL, "Aten", "Couldn't compile script for movie generation.\nCheck message box for errors.", QMessageBox::Ok, QMessageBox::Ok);
 		return;

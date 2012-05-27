@@ -441,18 +441,18 @@ bool Forcefield::readFunctions()
 		return TRUE;
 	}
 	// Now, attempt to parser the lines we just read in to create functions....
-	bool result = generatorFunctions_.generateFromStringList(generatorFunctionText_.first(), "GeneratorFuncs", TRUE);
+	bool result = generatorFunctions_.generateFromStringList(generatorFunctionText_.first(), "GeneratorFuncs", "Generator Function", TRUE);
 	// Search for functions we recognise
-	vdwGenerator_ = generatorFunctions_.findGlobalFunction("vdwgenerator");
+	vdwGenerator_ = generatorFunctions_.findFunction("vdwgenerator");
 	if (vdwGenerator_) msg.print("\t: Found 'vdwgenerator' function.\n");
 	else msg.print("\t: Warning - No 'vdwgenerator' function defined.\n");
-	bondGenerator_ = generatorFunctions_.findGlobalFunction("bondgenerator");
+	bondGenerator_ = generatorFunctions_.findFunction("bondgenerator");
 	if (bondGenerator_) msg.print("\t: Found 'bondgenerator' function.\n");
 	else msg.print("\t: Warning - No 'bondgenerator' function defined.\n");
-	angleGenerator_ = generatorFunctions_.findGlobalFunction("anglegenerator");
+	angleGenerator_ = generatorFunctions_.findFunction("anglegenerator");
 	if (angleGenerator_) msg.print("\t: Found 'anglegenerator' function.\n");
 	else msg.print("\t: Warning - No 'anglegenerator' function defined.\n");
-	torsionGenerator_ = generatorFunctions_.findGlobalFunction("torsiongenerator");
+	torsionGenerator_ = generatorFunctions_.findFunction("torsiongenerator");
 	if (torsionGenerator_) msg.print("\t: Found 'torsiongenerator' function.\n");
 	else msg.print("\t: Warning - No 'torsiongenerator' function defined.\n");
 	msg.exit("Forcefield::readFunctions");

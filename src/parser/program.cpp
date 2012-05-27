@@ -1,6 +1,6 @@
 /*
 	*** Program
-	*** src/parser/forest.cpp
+	*** src/parser/program.cpp
 	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
@@ -50,22 +50,21 @@ Program::~Program()
 {
 }
 
-// Clear forest
+// Clear Program
 void Program::clear()
 {
-	globalFunctions_.clear();
-	globalScope_.variables.clear();
+	functions_.clear();
 	filters_.clear();
 	mainProgram_.reset();
 }
 
-// Set name of forest
+// Set name of Program
 void Program::setName(const char *s)
 {
 	name_ = s;
 }
 
-// Return name of forest
+// Return name of Program
 const char *Program::name()
 {
 	return name_.get();
@@ -77,7 +76,7 @@ const char *Program::filename()
 	return filename_.get();
 }
 
-// Finalise forest
+// Finalise Program
 bool Program::finalise()
 {
 	msg.enter("Program::finalise");
@@ -134,7 +133,7 @@ bool Program::finalise()
 	}
 	
 	// Cycle over defined local functions and finalise
-	for (Tree *func = globalFunctions_.first(); func != NULL; func = func->next)
+	for (Tree *func = functions_.first(); func != NULL; func = func->next)
 	{
 		if (!func->finalise())
 		{
@@ -163,33 +162,33 @@ Tree *Program::addFilter()
 	return tree;
 }
 
-// Generate forest from string 
-bool Program::generateFromString(const char *s, const char *name, bool dontpushtree, bool clearExisting)
+// Generate Program from string 
+bool Program::generateFromString(const char *s, const char *name, const char *sourceInfo, bool dontpushtree, bool clearExisting)
 {
 	msg.enter("Program::generateFromString");
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
-	bool result = cmdparser.generateFromString(this, s, initialPushTree_, clearExisting);
+	bool result = cmdparser.generateFromString(this, s, sourceInfo, initialPushTree_, clearExisting);
 	if (result) result = finalise();
 	msg.exit("Program::generateFromString");
 	return result;
 }
 
-// Generate forest from string list
-bool Program::generateFromStringList(Dnchar *stringListHead, const char *name, bool dontpushtree, bool clearExisting)
+// Generate Program from string list
+bool Program::generateFromStringList(Dnchar *stringListHead, const char *name, const char *sourceInfo, bool dontpushtree, bool clearExisting)
 {
 	msg.enter("Program::generateFromStringList");
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
-	bool result = cmdparser.generateFromStringList(this, stringListHead, initialPushTree_, clearExisting);
+	bool result = cmdparser.generateFromStringList(this, stringListHead, sourceInfo, initialPushTree_, clearExisting);
 	if (result) result = finalise();
 	msg.exit("Program::generateFromStringList");
 	return result;
 }
 
-// Generate forest from input file
+// Generate Program from input file
 bool Program::generateFromFile(const char *filename, const char *name, bool dontpushtree, bool clearExisting, bool isFilterFile)
 {
 	msg.enter("Program::generateFromFile");
@@ -204,7 +203,7 @@ bool Program::generateFromFile(const char *filename, const char *name, bool dont
 	return result;
 }
 
-// Reload forest (provided it was from a file...)
+// Reload Program (provided it was from a file...)
 bool Program::reload()
 {
 	msg.enter("Program::reload");
@@ -228,7 +227,7 @@ void Program::deleteTree(Tree *t)
 	if (t == NULL) return;
 	// Search for the specified tree...
 	if (filters_.contains(t)) filters_.remove(t);
-	else if (globalFunctions_.contains(t)) globalFunctions_.remove(t);
+	else if (functions_.contains(t)) functions_.remove(t);
 	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
 }
 
@@ -238,7 +237,7 @@ bool Program::isFromFilterFile()
 	return fromFilterFile_;
 }
 
-// Execute all trees in forest
+// Execute all trees in Program
 bool Program::execute(ReturnValue &rv)
 {
 	msg.enter("Program::execute");
@@ -247,14 +246,14 @@ bool Program::execute(ReturnValue &rv)
 	return result;
 }
 
-// Print forest information
+// Print Program information
 void Program::print()
 {
-	printf("Program '%s':\nContains: %i filters and %i functions.\n", name_.get(), filters_.nItems(), globalFunctions_.nItems());
+	printf("Program '%s':\nContains: %i filters and %i functions.\n", name_.get(), filters_.nItems(), functions_.nItems());
 	if (filters_.nItems() > 0) printf("  Trees:\n");
 	for (int n=0; n<filters_.nItems(); ++n) printf("     %-3i  %s\n", n+1, filters_[n]->name());
-	if (globalFunctions_.nItems() > 0) printf("  Functions:\n");
-	for (int n=0; n<globalFunctions_.nItems(); ++n) printf("     %-3i  %s\n", n+1, globalFunctions_[n]->name());
+	if (functions_.nItems() > 0) printf("  Functions:\n");
+	for (int n=0; n<functions_.nItems(); ++n) printf("     %-3i  %s\n", n+1, functions_[n]->name());
 }
 
 /*
@@ -262,9 +261,9 @@ void Program::print()
 */
 
 // Add a Program-global function
-Tree *Program::addGlobalFunction(const char *name)
+Tree *Program::addFunction(const char *name)
 {
-	Tree *tree = globalFunctions_.add();
+	Tree *tree = functions_.add();
 	tree->setName(name);
 	tree->setType(Tree::FunctionTree);
 	tree->setParent(this);
@@ -272,25 +271,25 @@ Tree *Program::addGlobalFunction(const char *name)
 }
 
 // Search for existing global function
-Tree *Program::findGlobalFunction(const char *name)
+Tree *Program::findFunction(const char *name)
 {
 	Tree *result;
-	for (result = globalFunctions_.first(); result != NULL; result = result->next) if (strcmp(result->name(),name) == 0) break;
+	for (result = functions_.first(); result != NULL; result = result->next) if (strcmp(result->name(),name) == 0) break;
 	return result;
 }
 
 // Return first defined global function...
-Tree *Program::globalFunctions()
+Tree *Program::functions()
 {
-	return globalFunctions_.first();
+	return functions_.first();
 }
 
 // Execute specified global function
-bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist, ...)
+bool Program::executeFunction(const char *funcname, ReturnValue &rv, const char *arglist, ...)
 {
 	msg.enter("Program::executeGlobalFunction");
-	// First, locate funciton with the name supplied
-	Tree *func = findGlobalFunction(funcname);
+	// First, locate function with the name supplied
+	Tree *func = findFunction(funcname);
 	if (func == NULL)
 	{
 		printf("Error: No global function named '%s' exists in '%s'.\n", funcname, name_.get());
@@ -340,14 +339,4 @@ bool Program::executeGlobalFunction(const char *funcname, ReturnValue &rv, const
 
 	msg.exit("Program::executeGlobalFunction");
 	return success;
-}
-
-/*
-// Global Variables
-*/
-
-// Return global scopenode
-ScopeNode &Program::globalScope()
-{
-	return globalScope_;
 }

@@ -72,7 +72,7 @@ bool Combine::regenerateEquations()
 		eqn = eqns.add();
 		eqn->sprintf("double %s(double a, double b) { double c = 0.0; %s; return c; }", Combine::combinationRule(cr), prefs.combinationRule(cr));
 	}
-	bool success = combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", TRUE);
+	bool success = combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", "Combination Rule", TRUE);
 	msg.exit("Combine::regenerateEquations");
 	return success;
 }
@@ -82,7 +82,7 @@ double Combine::combine(Combine::CombinationRule cr, double a, double b)
 {
 	msg.enter("Combine::combine");
 	ReturnValue rv;
-	if (!combinationRules_.executeGlobalFunction(Combine::combinationRule(cr), rv, "dd", a, b))
+	if (!combinationRules_.executeFunction(Combine::combinationRule(cr), rv, "dd", a, b))
 	{
 		printf("Internal Error: Couldn't find function corresponding to combination rule.\n");
 		msg.exit("Combine::combine");

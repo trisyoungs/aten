@@ -34,6 +34,7 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Check/update description of 'global' variables (which are now only global to their root Tree and contained functions)</li>
 <li>Add 'z' accessor to ElementVariable</li>
 <li>Added info for context-links in MessageBox text</li>
 <li>Return value for selectionGrowAtom? Should be void.</li>
