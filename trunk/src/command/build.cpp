@@ -186,7 +186,7 @@ bool Command::function_GrowAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (ag == Atom::nAtomGeometries) return FALSE;
 	double distance;
 	if (c->hasArg(3)) distance = c->argd(3);
-	else distance = (elements().atomicRadius(i) + elements().atomicRadius(el));
+	else distance = -1.0;
 
 	obj.rs()->beginUndoState("Grow Atom");
 	aten.current.i = obj.rs()->growAtom(i, el, distance, ag, TRUE);

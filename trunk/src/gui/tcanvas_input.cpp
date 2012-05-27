@@ -942,12 +942,30 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			pickedAtoms_.clear();
 			gui.update(GuiQt::CanvasTarget);
 			break;
-		// Misc
+		// Misc Building
 		case (UserAction::DrawAddHydrogenAction):
 			if (atomClicked_ != NULL)
 			{
 				source->beginUndoState("Add Hydrogen to Atom");
 				source->hydrogenSatisfy(atomClicked_);
+				source->endUndoState();
+				gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			}
+			break;
+		case (UserAction::DrawGrowAtomAction):
+			if (atomClicked_ != NULL)
+			{
+				Atom::AtomGeometry ag = (Atom::AtomGeometry) gui.buildWidget->ui.DrawGrowGeometryCombo->currentIndex();
+				if (shifted)
+				{
+					source->beginUndoState("Grow Atom (unbound)");
+					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, FALSE);
+				}
+				else
+				{
+					source->beginUndoState("Grow Atom");
+					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, TRUE);
+				}
 				source->endUndoState();
 				gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 			}

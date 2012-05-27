@@ -97,6 +97,10 @@ UserAction UserActions[] = {
 		"",
 		"",
 		"" },
+	{ "Grow Atom", "Click single atoms to grow additional atoms in selected geometry",
+		"grow without bonding",
+		"",
+		"" },
 	{ "Rotate (XY)", "Click-drag to rotate entire model",
 		"modify coordinates of current atom selection",
 		"",
@@ -186,6 +190,7 @@ bool UserAction::isBuildWidgetAction(UserAction::Action ua)
 		case (DrawBondTripleAction):
 		case (DrawDeleteBondAction):
 		case (DrawAddHydrogenAction):
+		case (DrawGrowAtomAction):
 			return TRUE;
 		default:
 			return FALSE;

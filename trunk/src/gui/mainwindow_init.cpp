@@ -139,6 +139,7 @@ void AtenForm::finaliseUi()
 	uaButtons_.addButton(gui.buildWidget->ui.DrawDeleteAtomButton, UserAction::DrawDeleteAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawTransmuteButton, UserAction::DrawTransmuteAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawAddHButton, UserAction::DrawAddHydrogenAction);
+	uaButtons_.addButton(gui.buildWidget->ui.DrawGrowButton, UserAction::DrawGrowAtomAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawSingleBondButton, UserAction::DrawBondSingleAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawDoubleBondButton, UserAction::DrawBondDoubleAction);
 	uaButtons_.addButton(gui.buildWidget->ui.DrawTripleBondButton, UserAction::DrawBondTripleAction);
