@@ -68,8 +68,7 @@ echo -n "        aten.dsc (Program Version) : "
 if [ "$#" -ge "2" ]
 then
   cp ./extra/aten.dsc ./extra/aten.dsc.orig
-  sed -e "s/Version: \([0-9a-z\.]\+\)/Version: $1.$2$3/g" ./extra/aten.dsc.orig > ./extra/aten.dsc
-  rm ./extra/aten.dsc.orig
+  sed -e "s/Version: \([0-9a-z\.]\+\)/Version: $1.$2$3/g" -e "s/^ \([a-z0-9]*\) \([0-9]*\) .*/ \1 \2 aten-$1.$2$3.tar.gz/g" ./extra/aten.dsc.orig > ./extra/aten.dsc
 fi
 grep 'Version:' ./extra/aten.dsc | sed -e 's/Version: \([0-9a-z\.]\+\)/\1/g'
 
