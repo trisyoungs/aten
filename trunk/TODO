@@ -50,5 +50,6 @@
 <li>Update Build Window graphic and description.</li>
 <li>New dialog code description </li>
 <li>Topics: Colourscales, Glyphs, Grids, Partitioning Schemes</li>
+<li>Add Cell realToFrac and fracToReal accessor functions?</li>
 </ul>
 

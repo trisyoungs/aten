@@ -733,6 +733,12 @@ Vec3<double> TreeNode::argv(int i)
 		printf("TreeNode::argv : Argument index %i is out of range (node = %p).\n", i, this);
 		return FALSE;
 	}
+	// For safety, check that the argument requested is actually a vector
+	if (argType(i) != VTypes::VectorData)
+	{
+		printf("Internal Error: Tried to retrieve a vector from an incompatible argument.\n");
+		return Vec3<double>();
+	}
 	static ReturnValue rv;
 	bool success;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
