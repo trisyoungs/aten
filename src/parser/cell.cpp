@@ -85,7 +85,7 @@ FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
 	{ "fracToReal",		VTypes::VectorData,	"NNN",		"double fracx, double fracy, double fracz" },
 	{ "mim",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
 	{ "mimVector",		VTypes::VectorData,	"WW",		"Atom i | vector u, Atom j | vector v" },
-	{ "realToFrac",		VTypes::VectorData,	"NNNNNN",	"double x, double y, double z" },
+	{ "realToFrac",		VTypes::VectorData,	"NNN",		"double x, double y, double z" },
 	{ "translateAtom",	VTypes::VectorData,	"JNNN",		"Atom i, double fracx, double fracy, double fracz" }
 };
 
@@ -384,7 +384,7 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			rv.reset();
 			break;
 		case (CellVariable::FracToReal):
-			v1 = node->argv(0);
+			v1 = node->arg3d(0);
 			rv.set(ptr->fracToReal(v1));
 			break;
 		case (CellVariable::MinimumImage):
@@ -442,7 +442,8 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			rv.set(ptr->mimVector(v1,v2));
 			break;
 		case (CellVariable::RealToFrac):
-			v1 = node->argv(0);
+			v1 = node->arg3d(0);
+			v1.print();
 			rv.set(ptr->realToFrac(v1));
 			break;
 		case (CellVariable::TranslateAtom):
