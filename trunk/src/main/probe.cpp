@@ -67,7 +67,14 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 			// If a file extension is not present on the filename, then the filter is not a match
 			if (dotpos == NULL) continue;
 			// Otherwise, try to match extension - if no match, then the filter is not a match
-			for (d = f->filter.extensions(); d != NULL; d = d->next) if (*d == dotpos) break;
+			for (d = f->filter.extensions(); d != NULL; d = d->next)
+			{
+				if (strcmp(d->get(),dotpos) == 0)
+				{
+					msg.print(Messenger::Verbose, "PROBE: Filter extension [%s] matches file extension.\n", d->get()); 
+					break;
+				}
+			}
 			if (d == NULL) continue;
 		}
 		else if (f->filter.exactNames() != NULL)
