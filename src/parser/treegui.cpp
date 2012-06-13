@@ -1191,7 +1191,7 @@ const char *TreeGuiWidget::asCharacter()
 	switch (type_)
 	{
 		case (TreeGuiWidget::DoubleSpinWidget):
-			msg.print("Warning: Converting double value to string when retrieving doublespin widget (%s).\n", name_.get());
+			msg.print(Messenger::Verbose, "Warning: Converting double value to string when retrieving doublespin widget (%s).\n", name_.get());
 			result = ftoa(valueD_);
 			break;
 		case (TreeGuiWidget::RadioGroupWidget):
@@ -1200,7 +1200,7 @@ const char *TreeGuiWidget::asCharacter()
 		case (TreeGuiWidget::RadioButtonWidget):
 		case (TreeGuiWidget::TabWidget):
 		case (TreeGuiWidget::StackWidget):
-			msg.print("Warning: Converting integer value to string when retrieving doublespin widget (%s).\n", name_.get());
+			msg.print(Messenger::Verbose, "Warning: Converting integer value to string when retrieving widget (%s).\n", name_.get());
 			result = itoa(valueI_);
 			break;
 		case (TreeGuiWidget::ComboWidget):
