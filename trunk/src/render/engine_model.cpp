@@ -127,8 +127,6 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 					sticks[stickList]->defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
 					break;
 			}
-			// Move to centre of visible bond, ready for next bond half
-			A.applyTranslationZ(1.0);
 			break;
 		case (Atom::TubeStyle):
 			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A);
@@ -142,8 +140,6 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 				}
 				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], penColour, A, GL_LINE);
 			}
-			// Move to centre of visible bond, ready for next bond half
-			A.applyTranslationZ(1.0);
 			break;
 		case (Atom::SphereStyle):
 		case (Atom::ScaledStyle):
@@ -160,11 +156,7 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 					colour_i[3] = alpha_i;
 				}
 				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], penColour, A, GL_LINE);
-				// Move to centrepoint and reverse scaling back to 'dvisible'
-				A.applyTranslationZ(1.0);
-				A.applyScalingZ(dvisible/selvisible);
 			}
-			else A.applyTranslationZ(1.0);
 			break;
 	}
 	
@@ -179,14 +171,14 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			switch (bt)
 			{
 				case (Bond::Double):
-					dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle)*0.5,0.0,0.0);
+					dx = B.rotateVector(prefs.atomStyleRadius(Atom::StickStyle)*0.5,0.0,0.0);
 					sticks[stickList]->defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					break;
 				case (Bond::Triple):
-					dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle),0.0,0.0);
+					dx = B.rotateVector(prefs.atomStyleRadius(Atom::StickStyle),0.0,0.0);
 					sticks[stickList]->defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
 					sticks[stickList]->defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
@@ -204,6 +196,7 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, B);
 			if (j->isSelected())
 			{
+				B.applyTranslationZ((selscale*radius_j-radius_j) / dvisible);
 				if (transparentSel)
 				{
 					colour_j[3] = 0.5f;
@@ -218,6 +211,7 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, B);
 			if (j->isSelected() && (selvisible > 0.0))
 			{
+				B.applyTranslationZ((selscale*radius_j-radius_j) / dvisible);
 				B.applyScalingZ(selvisible / dvisible);
 				if (transparentSel)
 				{
