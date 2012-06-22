@@ -862,9 +862,9 @@ int LineParser::getIntegerArray(int *array, int count)
 	if (inputFile_->fail())
 	{
 // 		closeFile();
-		return 0;
+		return 1;
 	}
-	return 1;
+	return 0;
 }
 
 // Return a double value from reading 'n' chars of an (unformatted) input file
@@ -906,9 +906,9 @@ int LineParser::getDoubleArray(double *array, int count)
 	if (inputFile_->fail())
 	{
 // 		closeFile();
-		return 0;
+		return 1;
 	}
-	return 1;
+	return 0;
 }
 
 // Write line to file

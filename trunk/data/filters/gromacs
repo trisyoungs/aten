@@ -70,20 +70,46 @@ filter(type="exportmodel",name="GROMACS coordinates", nickname="gro", extension=
 filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="*.top",nickname="top", id=14)
 {
 	# Variable declaration
-        pattern p;
-	atom i;
-	bound b, b2;
-	ffatom fi, fj;
+        Pattern p;
+	Atom i, j;
+	Bound b, b2;
+	FFAtom fi, fj;
 	double escale = 1.0, vscale = 1.0;
-	int uselj = TRUE, n, nconstraints, nfailed[3] = 0, nub, hasub;
+	int uselj = TRUE, n, nconstraints, nfailed[3] = 0, nub, hasub, chgrp;
 	
 	# Get current model
-	model m = aten.frame;
+	Model m = aten.frame;
 
 	# Note: All distances divided by 10 to convert to nm. Some force constant terms multiplied by 100 to convert to nm**2 (from A**2)
 	# Energy unit must be kj/mol, so set automatic conversion of ff energy parameters to kj
 	autoConversionUnit("kj");
 
+	# Assign charge groups to atoms in patterns
+	for (p=m.patterns; p; ++p)
+	{
+		# Zero atom 'bits' first
+		for (n=1; n<=p.nMolAtoms; ++n) p.atoms[n].bit = 0;
+		# Loop over atoms - if 'bit' is non-zero, continue. If only one bond, continue. If no bonds, assign chgrp.
+		chgrp = 1;
+		for (n=1; n<=p.nMolAtoms; ++n)
+		{
+			i = p.atoms[n];
+			if (i.nBonds == 0) i.bit = chgrp++;
+			else if (i.nBonds == 1) continue;
+			else
+			{
+				# All atoms attached to this atom which have only one bond will be part of the same charge group
+				for (Bond x = i.bonds; x; ++x)
+				{
+					j = x.partner(i);
+					if ((j.nBonds != 1) || (j.bit != 0)) continue;
+					j.bit = chgrp;
+				}
+				++chgrp;
+			}
+		}
+	}
+		
 	# ---------------
 	# PARAMETER LEVEL
 	# ---------------
@@ -126,7 +152,7 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 		# *** [ atoms ]
 		writeLine("\n[ atoms ]");
 		writeLine("; atomnr  type   resnr  residue");
-		for (n=1; n<=p.nMolAtoms; ++n) writeLineF(" %6i   %-6s  1   %-6s   %-6s  0  %8.4f  %8.4f\n", n, p.atoms[n].type.name, p.name, p.atoms[n].type.name, p.atoms[n].q, p.atoms[n].type.mass);
+		for (n=1; n<=p.nMolAtoms; ++n) writeLineF(" %6i   %-6s  1   %-6s   %-6s  %2i  %8.4f  %8.4f\n", n, p.atoms[n].type.name, p.name, p.atoms[n].type.name, p.atoms[n].bit, p.atoms[n].q, p.atoms[n].type.mass);
 
 		nconstraints = 0;
 		nub = 0;

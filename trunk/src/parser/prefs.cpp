@@ -147,6 +147,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, FALSE },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, FALSE },
 	{ "warn1056",			VTypes::IntegerData,		0, FALSE },
+	{ "wireSelectionColour",	VTypes::DoubleData,		4, FALSE },
 	{ "zMap",			VTypes::StringData,		0, FALSE },
 	{ "zoomThrottle",		VTypes::DoubleData,		0, FALSE }
 };
@@ -569,6 +570,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::Warn1056):
 			rv.set( ptr->warning1056() );
+			break;
+		case (PreferencesVariable::WireSelectionColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::WireSelectionColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::WireSelectionColour), 4);
 			break;
 		case (PreferencesVariable::ZMapping):
 			rv.set( ElementMap::zMapType( ptr->zMapType()) );
@@ -1046,6 +1051,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::Warn1056):
 			ptr->setWarning1056( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::WireSelectionColour):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::WireSelectionColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::ZMapping):
 			zm = ElementMap::zMapType( newvalue.asString(result), TRUE );
