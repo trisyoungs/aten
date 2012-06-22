@@ -3,6 +3,8 @@
 <ul>
 <li>Glyph list not updated on model load.</li>
 <li>Model not updated when changing glyph selection?</li>
+<li>Image saving is slow - code undergoing rewrite.</li>
+<li>Running from CLI with unset DISPLAY variable causes segfault.</li>
 </ul>
 
 <h1>Current TODO</h1>
@@ -10,7 +12,6 @@
 <ul>
 <li>Make pattern detection aware of fixed atoms?</li>
 <li>Ability to have 'preferences' in filters - global variables in filter, coupled with suitable accessors through &aten?</li>
-<li>Context-sensitivity of messages - e.g. pattern name (select pattern atoms), failed pattern creation (select bad atom)</li>
 <li>PovRay export</li>
 <li>Add method to check current pattern definition so that it doesn't have to be removed so often.</li>
 <li>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</li>
@@ -33,23 +34,11 @@
 <h1>Manual TODO</h1>
 
 <ul>
-<li>growatom command - if a negative distance is provided, one is worked out from the atomic radii of the involved atoms</li>
-<li>Check/update description of 'global' variables (which are now only global to their root Tree and contained functions)</li>
-<li>Add 'z' accessor to ElementVariable</li>
-<li>Added info for context-links in MessageBox text</li>
-<li>Return value for selectionGrowAtom? Should be void.</li>
-<li>CellVariable functions 'realToFrac' and 'fracToReal'</li>
 <li>Add pore alkoxylation script to examples</li>
-<li>Add 'setproperty' function to widget type</li>
-<li>Clarify use of pointers for non-POD objects, add 'new' usage description, and 'copy' member function for atom, bond, and unitcell types</li>
-<li>Add 'transparentSelectionStyle' prefs accessor.</li>
-<li>Add 'wireselection' colour enum definition.</li>
-<li>Add '--nicknames' switch</li>
+<li>Clarify use of pointers for non-POD objects, add 'new' usage description.</li>
 <li>Add 'normalcommas' read option</li>
-<li>Add 'selectionGrowAtom' command.</li>
 <li>Update Build Window graphic and description.</li>
 <li>New dialog code description </li>
 <li>Topics: Colourscales, Glyphs, Grids, Partitioning Schemes</li>
-<li>Add Cell realToFrac and fracToReal accessor functions?</li>
 </ul>
 

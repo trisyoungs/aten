@@ -50,6 +50,7 @@ AtomVariable::~AtomVariable()
 
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
+	{ "bit",	VTypes::IntegerData,		0, FALSE },
 	{ "bonds", 	VTypes::BondData,		-1, TRUE },
 	{ "colour",	VTypes::DoubleData,		4, FALSE },
 	{ "data",	VTypes::StringData,		0, FALSE },
@@ -85,8 +86,11 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
+	{ "addBit",	VTypes::NoData,		"I",	"int bit" },
 	{ "copy",	VTypes::NoData,		"A",	"Atom j" },
-	{ "findBond",	VTypes::BondData,	"A",	"Atom j" }
+	{ "findBond",	VTypes::BondData,	"A",	"Atom j" },
+	{ "hasBit",	VTypes::IntegerData,	"I",	"int bit" },
+	{ "removeBit",	VTypes::NoData,		"I",	"int bit" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -191,6 +195,9 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	if (result) switch (acc)
 	{
+		case (AtomVariable::Bit):
+			rv.set( ptr->bit() );
+			break;
 		case (AtomVariable::Bonds):
 			if (!hasArrayIndex) rv.set( VTypes::BondData, ptr->bonds() == NULL ? NULL : ptr->bonds()->item, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
@@ -365,6 +372,8 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{
+		case (AtomVariable::Bit):
+			ptr->setBit( newvalue.asInteger() );
 		case (AtomVariable::Colour):
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
@@ -516,6 +525,9 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	Model *ptrParent = ptr->parent();
 	if (result) switch (i)
 	{
+		case (AtomVariable::AddBit):
+			ptr->addBit( node->argi(0) );
+			break;
 		case (AtomVariable::Copy):
 			if (!((Atom*) node->argp(0, VTypes::AtomData)))
 			{
@@ -536,6 +548,12 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			break;
 		case (AtomVariable::FindBond):
 			rv.set(VTypes::BondData, ptr->findBond( (Atom*) node->argp(0, VTypes::AtomData) ) );
+			break;
+		case (AtomVariable::HasBit):
+			rv.set( ptr->hasBit( node->argi(0) ) );
+			break;
+		case (AtomVariable::RemoveBit):
+			ptr->removeBit( node->argi(0) );
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in AtomVariable.\n", functionData[i].name);
