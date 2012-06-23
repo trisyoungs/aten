@@ -91,8 +91,10 @@ void Model::clearTrajectory()
 	trajectoryFrameIndex_ = -1;
 	trajectoryFramesAreCached_ = FALSE;
 	trajectoryFilter_ = NULL;
+	trajectoryCurrentFrame_ = NULL;
 	trajectoryHeaderFunction_ = NULL;
 	trajectoryFrameFunction_ = NULL;
+	trajectoryPlaying_ = FALSE;
 	msg.exit("Model::clearTrajectory");
 }
 

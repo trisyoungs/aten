@@ -703,6 +703,10 @@ void AtenForm::on_actionListMeasurements_triggered(bool on)
 // Add trajectory to model
 void AtenForm::on_actionTrajectoryOpen_triggered(bool checked)
 {
+	// Stop playback, and set view to be the parent model before we do anything
+	gui.trajectoryWidget->stopTrajectoryPlayback();
+	ui.actionTrajectoryModel->trigger();
+
 	Tree *filter;
 	Model *m = aten.currentModel();
 	static QDir currentDirectory_(aten.workDir());
@@ -730,11 +734,13 @@ void AtenForm::on_actionTrajectoryOpen_triggered(bool checked)
 // Remove associated trajectory to model
 void AtenForm::on_actionTrajectoryRemove_triggered(bool checked)
 {
-	Model *m = aten.currentModel();
-	// Set view to be the parent model before we do anything
+	// Stop playback, and set view to be the parent model before we do anything
+	gui.trajectoryWidget->stopTrajectoryPlayback();
 	ui.actionTrajectoryModel->trigger();
+	
+	Model *m = aten.currentModel();
 	m->clearTrajectory();
-	gui.update();
+	gui.update(GuiQt::AllTarget);
 }
 
 // Switch render focus from the model's trajectory to the model.

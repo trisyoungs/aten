@@ -1,7 +1,8 @@
 # Gromacs Configuration and Expression Files
 # Created:	 25/05/2010
-# Last modified: 02/09/2011
+# Last modified: 23/06/2012
 # ChangeLog:
+# 	23/06/2012 - Added charge group options and automatic determination (based on bonding)
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 #	02/12/2010 - Topology file output now uses FFatom mass when writing [atoms] section
 #	12/11/2010 - Tweaked gro file output.
@@ -76,7 +77,25 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 	FFAtom fi, fj;
 	double escale = 1.0, vscale = 1.0;
 	int uselj = TRUE, n, nconstraints, nfailed[3] = 0, nub, hasub, chgrp;
-	
+
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "Gromacs Topology Export Options";
+		widget group, w;
+		ui.verticalFill = TRUE;
+		group = ui.addGroup("group", "Charge Group Definitions");
+		ui.addRadioGroup("chargegroup");
+		w = group.addRadioButton("radio1", "One charge group per molecule", "chargegroup", 0);
+		w = group.addRadioButton("radio2", "One charge group per atom", "chargegroup", 0);
+		w = group.addRadioButton("radio3", "One charge group per chemical unit", "chargegroup", 1);
+	}
+	# Execute dialog
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+	Dialog ui = defaultDialog();
+
+	int chgrptype = ui.asInteger("chargegroup");
+
 	# Get current model
 	Model m = aten.frame;
 
@@ -87,25 +106,31 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 	# Assign charge groups to atoms in patterns
 	for (p=m.patterns; p; ++p)
 	{
-		# Zero atom 'bits' first
-		for (n=1; n<=p.nMolAtoms; ++n) p.atoms[n].bit = 0;
-		# Loop over atoms - if 'bit' is non-zero, continue. If only one bond, continue. If no bonds, assign chgrp.
-		chgrp = 1;
-		for (n=1; n<=p.nMolAtoms; ++n)
+		if (chgrptype == 1) for (n=1; n<=p.nMolAtoms; ++n) p.atoms[n].bit = 1;
+		else if (chgrptype == 2) for (n=1; n<=p.nMolAtoms; ++n) p.atoms[n].bit = n;
+		else
 		{
-			i = p.atoms[n];
-			if (i.nBonds == 0) i.bit = chgrp++;
-			else if (i.nBonds == 1) continue;
-			else
+			# Zero atom 'bits' first
+			for (n=1; n<=p.nMolAtoms; ++n) p.atoms[n].bit = 0;
+			# Loop over atoms - if 'bit' is non-zero, continue. If only one bond, continue. If no bonds, assign chgrp.
+			chgrp = 1;
+			for (n=1; n<=p.nMolAtoms; ++n)
 			{
-				# All atoms attached to this atom which have only one bond will be part of the same charge group
-				for (Bond x = i.bonds; x; ++x)
+				i = p.atoms[n];
+				if (i.nBonds == 0) i.bit = chgrp++;
+				else if (i.nBonds == 1) continue;
+				else
 				{
-					j = x.partner(i);
-					if ((j.nBonds != 1) || (j.bit != 0)) continue;
-					j.bit = chgrp;
+					i.bit = chgrp;
+					# All atoms attached to this atom which have only one bond will be part of the same charge group
+					for (Bond x = i.bonds; x; ++x)
+					{
+						j = x.partner(i);
+						if ((j.nBonds != 1) || (j.bit != 0)) continue;
+						j.bit = chgrp;
+					}
+					++chgrp;
 				}
-				++chgrp;
 			}
 		}
 	}

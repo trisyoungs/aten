@@ -62,6 +62,13 @@ void TrajectoryWidget::refresh()
 		ui.TrajectoryFrameSpin->setRange(1, m->nTrajectoryFrames());
 		ui.TrajectoryFrameSpin->setValue(m->trajectoryFrameIndex()+1);
 	}
+	else
+	{
+		ui.TrajectoryFrameSlider->setRange(1, 1);
+		ui.TrajectoryFrameSlider->setValue(1);
+		ui.TrajectoryFrameSpin->setRange(1, 1);
+		ui.TrajectoryFrameSpin->setValue(1);
+	}
 	refreshing_ = FALSE;
 }
 
@@ -177,4 +184,14 @@ void TrajectoryWidget::closeEvent(QCloseEvent *event)
 	gui.toolBoxWidget->ui.TrajectoryButton->setChecked(FALSE);
 	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
+}
+
+// Stop trajectory playback
+void TrajectoryWidget::stopTrajectoryPlayback()
+{
+	if (ui.TrajectoryPlayPauseButton->isChecked())
+	{
+		ui.TrajectoryPlayPauseButton->click();
+		refresh();
+	}
 }
