@@ -117,9 +117,9 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 			for (n=1; n<=p.nMolAtoms; ++n)
 			{
 				i = p.atoms[n];
-				if (i.nBonds == 0) i.bit = chgrp++;
-				else if (i.nBonds == 1) continue;
-				else
+				i.bit = chgrp;
+				# All atoms attached to this atom which have only one bond will be part of the same charge group
+				for (Bond x = i.bonds; x; ++x)
 				{
 					i.bit = chgrp;
 					# All atoms attached to this atom which have only one bond will be part of the same charge group

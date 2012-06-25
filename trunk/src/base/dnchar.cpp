@@ -374,17 +374,24 @@ bool Dnchar::asBool() const
 bool Dnchar::isNumeric() const
 {
 	// Go through string - if we find a 'non-number' character, return false
-	for (char *c = data_; *c != '\0'; c++)
+	int nSymbols = 0, nChars = 0;
+	for (char *c = data_; *c != '\0'; ++c)
+	{
+		++nChars;
 		switch (*c)
 		{
-			case (' '): case ('0'): case ('1'): case ('2'): case ('3'): case ('4'): 
-			case ('.'): case ('5'): case ('6'): case ('7'): case ('8'): case ('9'): 
-			case ('e'): case ('E'): case ('+'): case ('-'):
+			case (' '): case ('e'): case ('E'):
+			case ('+'): case ('-'): case ('.'):
+				++nSymbols;
+				break;
+			case ('0'): case ('1'): case ('2'): case ('3'): case ('4'): 
+			case ('5'): case ('6'): case ('7'): case ('8'): case ('9'): 
 				break;
 			default:
 				return FALSE;
 		}
-	return TRUE;
+	}
+	return (nSymbols != nChars);
 }
 
 // Return the lowercase conversion of the string
