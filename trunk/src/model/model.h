@@ -194,8 +194,6 @@ class Model
 	void transmuteAtom(Atom *target, short int element);
 	// Renumber atoms in the model
 	void renumberAtoms(Atom *from = NULL);
-	// Return pointer to the atom with the specified id
-	Atom *findAtom(int id);
 	// Move selected atoms one place 'up' in the list
 	void shiftSelectionUp();
 	// Move selected atoms one place 'down' in the list

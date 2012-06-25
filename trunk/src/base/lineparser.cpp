@@ -424,7 +424,7 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 			case ('{'):
 			case ('}'):
 				// If explicitly not useing braces, add as normal character
-				if (!(optionMask&LineParser::UseBraces)) tempArg_[arglen++] = c;
+				if (!(optionMask&LineParser::UseCurlies)) tempArg_[arglen++] = c;
 				else
 				{
 					// If the quotechar is a left brace and we have a right brace, stop quoting
@@ -714,7 +714,7 @@ bool LineParser::getCharsDelim(int optionMask, Dnchar *source, Dnchar *destarg)
 			// Curly brackets - treat in the same way as quotes
 			case ('{'):
 			case ('}'):
-				if (!(optionMask&LineParser::UseBraces))
+				if (!(optionMask&LineParser::UseCurlies))
 				{
 					// Just add as normal character
 					tempArg_[arglen] = c;

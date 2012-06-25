@@ -82,38 +82,8 @@ bool Command::function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		else bt = (Bond::BondType) n;
 	}
 	// Add the bond
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
-	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
-	if ((i != NULL) && (j != NULL))
-	{
-		// Add the bond
-		obj.rs()->beginUndoState("Bond Atoms");
-		obj.rs()->bondAtoms(i, j, bt);
-		obj.rs()->endUndoState();
-	}
-	else msg.print("Can't bond atoms - one or both atoms not found.\n");
-	rv.reset();
-	return TRUE;
-}
-
-// Add bond between atoms with specified ids ('newbondid <id1> <id2> [bondtype]')
-bool Command::function_NewBondId(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	// Third (optional) argument gives bond type
-	Bond::BondType bt = Bond::Single;
-	if (c->hasArg(2))
-	{
-		// Attempt to convert the argument into a BondType.
-		// Try direct conversion from number (bond order) first
-		// If that fails, try string conversion. Then, give up.
-		int n = c->argi(2);
-		if ((n < 1) || (n > 3))	bt = Bond::bondType(c->argc(2));
-		else bt = (Bond::BondType) n;
-	}
-	// Find the atoms specified
-	Atom *i = obj.rs()->findAtom(c->argi(0));
-	Atom *j = obj.rs()->findAtom(c->argi(1));
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if ((i != NULL) && (j != NULL))
 	{
 		// Add the bond

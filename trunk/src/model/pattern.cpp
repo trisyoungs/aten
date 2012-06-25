@@ -201,12 +201,14 @@ bool Model::createPatterns()
 	Atom *i, *selectSource;
 	Clipatom *clipi;
 	Refitem<Atom,int> *isel;
+	
 	// Check current pattern first...
 	if (arePatternsValid())
 	{
 		msg.exit("Model::createPatterns");
 		return TRUE;
 	}
+	
 	// Delete all old nodes first.
 	msg.print("Autodetecting patterns for model '%s'..\n",name_.get());
 	patterns_.clear();
@@ -218,16 +220,19 @@ bool Model::createPatterns()
 		msg.exit("Model::createPatterns");
 		return TRUE;
 	}
-	// To autodetect, we start off at atoms_head in the model, tree-select this atom and copy the selection to the clipboard. Use the clipboard to check subsequent selections, and if its the same just increase the nmols counter by one. If it's different, assume its the start of a new type of molecule and reset the counters.
+	
+	// To autodetect, we start off at the first atom in the model, tree-select this atom and copy the selection to the clipboard. Use the clipboard to check subsequent selections, and if its the same just increase the nmols counter by one. If it's different, assume its the start of a new type of molecule and reset the counters.
 	atomid = 0;
 	nmols = 0;
 	i = atoms_.first();
 	while (atomid != atoms_.nItems())
 	{
 		selectNone(TRUE);
+		
 		// Select molecule starting at atom 'i' and calculate fingerprint
 		selectTree(i, TRUE);
 		selectSource = i;
+		
 		// We insist that the molecule consists of consecutively ordered atoms, otherwise we can't proceed, so count the number of selected
 		// atoms in those that we now skip (if != nselected then we must force a 1*N pattern)
 		nsel2 = 0;
@@ -266,19 +271,26 @@ bool Model::createPatterns()
 			if (marked_.nItems() != patclip.nAtoms()) same = FALSE;
 			else
 			{
-				/*
 				// Atoms
-				*/
 				clipi = patclip.atoms();
 				for (isel = marked_.first(); isel != NULL; isel = isel->next)
 				{
 					count++;
+					
 					// Element check
 					if (clipi->atom().element() != isel->item->element())
 					{
 						same = FALSE;
 						break;
 					}
+					
+					// Fixed position
+					if (clipi->atom().isPositionFixed() != isel->item->isPositionFixed())
+					{
+						same = FALSE;
+						break;
+					}
+
 					// Fixed forcefield type check
 					if (clipi->atom().hasFixedType() != isel->item->hasFixedType())
 					{
@@ -296,6 +308,7 @@ bool Model::createPatterns()
 					}
 					clipi = clipi->next;
 				}
+				
 				// Bonding between atoms (but only if atoms themselves check out)...
 				if (same)
 				{
@@ -309,7 +322,7 @@ bool Model::createPatterns()
 						{
 							idj = rb->item->partner(isel->item)->id() - idoff;
 							if (idi < idj) continue;
-							count++;
+							++count;
 							if (!patclip.hasBond(idi,idj))
 							{
 								same = FALSE;
@@ -322,8 +335,9 @@ bool Model::createPatterns()
 					if (count != patclip.nBonds()) same = FALSE;
 				}
 			}
+
 			// If we get to here with same == TRUE then we increase nmols. Otherwise, we create a new pattern.
-			if (same) nmols ++;
+			if (same) ++nmols;
 			else
 			{
 				// Not the same as the last stored pattern, so store old data and start a new one

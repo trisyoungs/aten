@@ -43,7 +43,7 @@ class LineParser
 	LineParser();
 	~LineParser();
 	// Parse Options
-	enum ParseOption { StripComments=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, UseBraces=32, NormalCommas=64, nParseOptions=7 };
+	enum ParseOption { StripComments=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, UseCurlies=32, NormalCommas=64, nParseOptions=7 };
 	static ParseOption parseOption(const char*);
 
 

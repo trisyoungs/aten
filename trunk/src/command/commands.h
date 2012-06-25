@@ -130,7 +130,6 @@ class Command
 		SetFX,
 		SetFY,
 		SetFZ,
-		SetId,
 		SetRX,
 		SetRY,
 		SetRZ,
@@ -146,7 +145,6 @@ class Command
 		ClearBonds,
 		ClearSelectedBonds,
 		NewBond,
-		NewBondId,
 		ReBond,
 		ReBondPatterns,
 		ReBondSelection,
@@ -619,7 +617,6 @@ class Command
 	static bool function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_SetId(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -634,7 +631,6 @@ class Command
 	static bool function_ClearBonds(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearSelectedBonds(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_NewBondId(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReBond(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReBondPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReBondSelection(CommandNode *c, Bundle &obj, ReturnValue &rv);

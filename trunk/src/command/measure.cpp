@@ -41,17 +41,17 @@ bool Command::function_GeometryCalc(CommandNode *c, Bundle &obj, ReturnValue &rv
 	Atom *atoms[4];
 	if (c->hasArg(3))
 	{
-		for (int n=0; n<4; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		for (int n=0; n<4; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->atom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
 		rv.set(obj.rs()->torsion(atoms[0], atoms[1], atoms[2], atoms[3]));
 	}
 	else if (c->hasArg(2))
 	{
-		for (int n=0; n<3; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		for (int n=0; n<3; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->atom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
 		rv.set(obj.rs()->angle(atoms[0], atoms[1], atoms[2]));
 	}
 	else
 	{
-		for (int n=0; n<2; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		for (int n=0; n<2; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->atom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
 		rv.set(obj.rs()->distance(atoms[0], atoms[1]));
 	}
 	return TRUE;
@@ -74,19 +74,19 @@ bool Command::function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(3))
 	{
 		obj.rs()->beginUndoState("Measure torsion");
-		for (int n=0; n<4; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		for (int n=0; n<4; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->atom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
 		rv.set(obj.rs()->addTorsionMeasurement(atoms[0], atoms[1], atoms[2], atoms[3]));
 	}
 	else if (c->hasArg(2))
 	{
 		obj.rs()->beginUndoState("Measure angle");
-		for (int n=0; n<3; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		for (int n=0; n<3; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->atom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
 		rv.set(obj.rs()->addAngleMeasurement(atoms[0], atoms[1], atoms[2]));
 	}
 	else
 	{
 		obj.rs()->beginUndoState("Measure distance");
-		for (int n=0; n<2; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		for (int n=0; n<2; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->atom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
 		rv.set(obj.rs()->addDistanceMeasurement(atoms[0], atoms[1]));
 	}
 	obj.rs()->endUndoState();
