@@ -108,6 +108,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "addHydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::argText(Command::AddHydrogen) },
 	{ "angleEnergy",	VTypes::DoubleData,	"",						"" },
+	{ "atomWithBit",	VTypes::AtomData,	"i",						"" },
 	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::argText(Command::Augment) },
 	{ "bondEnergy",		VTypes::DoubleData,	"",						"" },
 	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::argText(Command::Charge) },
@@ -129,7 +130,6 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "newAtomFrac",	VTypes::AtomData,	Command::arguments(Command::NewAtomFrac),	Command::argText(Command::NewAtomFrac) },
 	{ "newBasisShell",	VTypes::BasisShellData,	Command::arguments(Command::NewBasisShell),	Command::argText(Command::NewBasisShell) },
 	{ "newBond",		VTypes::BondData,	Command::arguments(Command::NewBond),		Command::argText(Command::NewBond) },
-	{ "newBondId",		VTypes::BondData,	Command::arguments(Command::NewBondId),		Command::argText(Command::NewBondId) },
 	{ "newEigenvector",	VTypes::EigenvectorData,Command::arguments(Command::NewEigenvector),	Command::argText(Command::NewEigenvector) },
 	{ "newGlyph",		VTypes::GlyphData,	Command::arguments(Command::NewGlyph),		Command::argText(Command::NewGlyph) },
 	{ "newGrid",		VTypes::GridData,	Command::arguments(Command::NewGrid),		Command::argText(Command::NewGrid) },
@@ -647,12 +647,15 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		msg.exit("ModelVariable::performFunction");
 		return FALSE;
 	}
+
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Model *ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
+	int bit;
+
 	// Construct temporary bundle object containing our model pointer
 	Bundle bundle(ptr);
-// 	ReturnValue temprv;
+
 	if (result) switch (i)
 	{
 		case (ModelVariable::AddHydrogen):
@@ -660,6 +663,11 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			break;
 		case (ModelVariable::AngleEnergy):
 			rv.set( ptr->angleEnergy(ptr, result));
+			break;
+		case (ModelVariable::AtomWithBit):
+			rv.reset();
+			bit = node->argi(0);
+			for (Atom *j = ptr->atoms(); j != NULL; j = j->next) if (j->bit() == bit) rv.set(VTypes::AtomData, j);
 			break;
  		case (ModelVariable::Augment):
 			result = aten.commands.call(Command::Augment, node, rv, bundle);
@@ -723,9 +731,6 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			break;
  		case (ModelVariable::NewBond):
 			result = aten.commands.call(Command::NewBond, node, rv, bundle);
-			break;
- 		case (ModelVariable::NewBondId):
-			result = aten.commands.call(Command::NewBondId, node, rv, bundle);
 			break;
  		case (ModelVariable::NewEigenvector):
 			result = aten.commands.call(Command::NewEigenvector, node, rv, bundle);

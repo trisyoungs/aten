@@ -222,17 +222,6 @@ bool Command::function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Set current atom ID
-bool Command::function_SetId(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
-	obj.i->setId(c->argi(0));
-	rv.reset();
-	return TRUE;
-}
-
 // Set current atom x coordinate
 bool Command::function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

@@ -449,7 +449,7 @@ bool Command::function_SelectMolecule(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	obj.rs()->beginUndoState("Select bound fragment/molecule");
 	obj.rs()->selectTree(i);
 	obj.rs()->endUndoState();
@@ -536,7 +536,7 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL) return FALSE;
 	int nselected = obj.rs()->nSelected();
 	obj.rs()->beginUndoState("Radial selection %8.4f from atom %i", c->argd(1), i->id()+1);
@@ -550,7 +550,7 @@ bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_SelectTree(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL) return FALSE;
 	Bond *b = c->hasArg(1) ? (Bond*) c->argp(1, VTypes::BondData) : NULL;
 	int nselected = obj.rs()->nSelected();

@@ -7,10 +7,10 @@
 <li>Running from CLI with unset DISPLAY variable causes segfault.</li>
 </ul>
 
-<h1>Current TODO</h1>
+<h1>General TODO</h1>
 
 <ul>
-<li>Make pattern detection aware of fixed atoms?</li>
+<li>Command language needs to be brought in line with C++ in terms of pointers / references etc.</li>
 <li>Ability to have 'preferences' in filters - global variables in filter, coupled with suitable accessors through &aten?</li>
 <li>PovRay export</li>
 <li>Add method to check current pattern definition so that it doesn't have to be removed so often.</li>
@@ -36,7 +36,6 @@
 <ul>
 <li>Add pore alkoxylation script to examples</li>
 <li>Clarify use of pointers for non-POD objects, add 'new' usage description.</li>
-<li>Add 'normalcommas' read option</li>
 <li>Update Build Window graphic and description.</li>
 <li>New dialog code description </li>
 <li>Topics: Colourscales, Glyphs, Grids, Partitioning Schemes</li>

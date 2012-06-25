@@ -86,7 +86,6 @@ void Command::initPointers()
 	pointers_[SetFX] = &Command::function_SetFX;
 	pointers_[SetFY] = &Command::function_SetFY;
 	pointers_[SetFZ] = &Command::function_SetFZ;
-	pointers_[SetId] = &Command::function_SetId;
 	pointers_[SetRX] = &Command::function_SetRX;
 	pointers_[SetRY] = &Command::function_SetRY;
 	pointers_[SetRZ] = &Command::function_SetRZ;
@@ -102,7 +101,6 @@ void Command::initPointers()
 	pointers_[ClearBonds] = &Command::function_ClearBonds;
 	pointers_[ClearSelectedBonds] = &Command::function_ClearSelectedBonds;
 	pointers_[NewBond] = &Command::function_NewBond;
-	pointers_[NewBondId] = &Command::function_NewBondId;
 	pointers_[ReBond] = &Command::function_ReBond;
 	pointers_[ReBondPatterns] = &Command::function_ReBondPatterns;
 	pointers_[ReBondSelection] = &Command::function_ReBondSelection;

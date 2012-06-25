@@ -239,16 +239,6 @@ void Model::clearAtoms()
 	msg.exit("Model::clearAtoms");
 }
 
-// Find atom
-Atom *Model::findAtom(int id)
-{
-	// Find an atom according to its internal id (useful when atom ids may have been set differently by import filters)
-	Atom *i;
-	for (i = atoms_.first(); i != NULL; i = i->next) if (id == i->id()) break;
-	if (i == NULL) msg.print("Warning - No atom with internal id %i exists in the current model.\n", id);
-	return i;
-}
-
 // Return the list index of the specified atom
 int Model::atomIndex(Atom *i) const
 {

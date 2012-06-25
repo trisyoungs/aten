@@ -1,7 +1,8 @@
 # DL_POLY Configuration Import / Export (for v1.2+)
 # Created:	 25/03/2009
-# Last modified: 02/09/2011
+# Last modified: 23/06/2012
 # ChangeLog:
+#	23/06/2012 - FIELD export now accounts for fixed atoms
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 # 	17/03/2011 - Added custom dialog options to control level or written data and half-cell shift in CONFIG files.
 # 	16/09/2009 - Expression export filter now uses atom type names rathern than ffbound type names. FF term loop styles updated.
@@ -469,7 +470,7 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		i = p.firstAtom;
 		for (n=0; n<p.nMolAtoms; ++n)
 		{
-			writeLineF("%-8s   %10.5f  %9.6f   1   0   1\n",i.type.name,i.type.mass,i.q);
+			writeLineF("%-8s   %10.5f  %9.6f   1   %i   1\n",i.type.name,i.type.mass,i.q,i.fixed);
 			++i;
 		}
 
