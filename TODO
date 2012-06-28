@@ -34,6 +34,7 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Add 'newPattern' and 'clearPattern' functions to ModelVariable</li>
 <li>Add pore alkoxylation script to examples</li>
 <li>Clarify use of pointers for non-POD objects, add 'new' usage description.</li>
 <li>Update Build Window graphic and description.</li>
