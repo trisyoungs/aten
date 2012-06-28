@@ -114,6 +114,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::argText(Command::Charge) },
 	{ "clearBonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::argText(Command::ClearBonds) },
 	{ "clearCharges",	VTypes::NoData,		Command::arguments(Command::ClearCharges),	Command::argText(Command::ClearCharges) },
+	{ "clearPatterns",	VTypes::NoData,		"",						Command::argText(Command::ClearPatterns) },
 	{ "clearSelectedBonds",	VTypes::NoData,		Command::arguments(Command::ClearSelectedBonds),Command::argText(Command::ClearSelectedBonds) },
 	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::argText(Command::Copy) },
 	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::argText(Command::Cut) },
@@ -133,6 +134,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "newEigenvector",	VTypes::EigenvectorData,Command::arguments(Command::NewEigenvector),	Command::argText(Command::NewEigenvector) },
 	{ "newGlyph",		VTypes::GlyphData,	Command::arguments(Command::NewGlyph),		Command::argText(Command::NewGlyph) },
 	{ "newGrid",		VTypes::GridData,	Command::arguments(Command::NewGrid),		Command::argText(Command::NewGrid) },
+	{ "newPattern",		VTypes::PatternData,	Command::arguments(Command::NewPattern),	Command::argText(Command::NewPattern) },
 	{ "newVibration",	VTypes::VibrationData,	Command::arguments(Command::NewVibration),	Command::argText(Command::NewVibration) },
 	{ "paste",		VTypes::NoData,		Command::arguments(Command::Paste),		Command::argText(Command::Paste) },
 	{ "rebond",		VTypes::NoData,		Command::arguments(Command::ReBond),		Command::argText(Command::ReBond) },
@@ -684,6 +686,10 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::ClearCharges):
 			result = aten.commands.call(Command::ClearCharges, node, rv, bundle);
 			break;
+		case (ModelVariable::ClearPatterns):
+			ptr->clearPatterns();
+			result = TRUE;
+			break;
  		case (ModelVariable::ClearSelectedBonds):
 			result = aten.commands.call(Command::ClearSelectedBonds, node, rv, bundle);
 			break;
@@ -740,6 +746,10 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			break;
  		case (ModelVariable::NewGrid):
 			result = aten.commands.call(Command::NewGrid, node, rv, bundle);
+			break;
+		case (ModelVariable::NewPattern):
+			rv.set(VTypes::PatternData,  ptr->addPattern(node->argc(0), node->argi(1), node->argi(2)) );
+			result = (rv.asPointer(VTypes::PatternData) != NULL);
 			break;
  		case (ModelVariable::NewVibration):
 			result = aten.commands.call(Command::NewVibration, node, rv, bundle);

@@ -82,6 +82,6 @@ bool Command::function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	rv.set(VTypes::PatternData, obj.m->addPattern(c->argi(1), c->argi(2), c->argc(0)));
+	rv.set(VTypes::PatternData, obj.m->addPattern(c->argc(0), c->argi(1), c->argi(2)));
 	return TRUE;
 }

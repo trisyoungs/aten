@@ -58,7 +58,7 @@ Pattern *Model::pattern(int id)
 }
 
 // Add Pattern Node
-Pattern *Model::addPattern(int nMols, int nAtomsPerMol, const char *patname)
+Pattern *Model::addPattern(const char *patternName, int nMols, int nAtomsPerMol)
 {
 	msg.enter("Model::addPattern");
 	// Determine starting atom...
@@ -66,10 +66,10 @@ Pattern *Model::addPattern(int nMols, int nAtomsPerMol, const char *patname)
 	int start = (lastp == NULL ? 0 : lastp->startAtom() + lastp->nMolecules() * lastp->nAtoms());
 	Pattern *newpnode = patterns_.add();
 	newpnode->setParent(this);
-	newpnode->setName(patname);
+	newpnode->setName(patternName);
 	newpnode->initialise(patterns_.nItems()-1,start,nMols,nAtomsPerMol);
 	Dnchar linkCommand(-1, "<a href='Model m = getModel(\"%s\"); selectNone(); select(\"%i-%i\");'>Select</a>", name_.get(), start+1, start+nAtomsPerMol*nMols);
-	msg.richPrint("New pattern '%s' added - startatom %i, %i mols, %i atoms per mol. [%s]\n", patname , start+1, nMols, nAtomsPerMol, linkCommand.get());
+	msg.richPrint("New pattern '%s' added - startatom %i, %i mols, %i atoms per mol. [%s]\n", patternName , start+1, nMols, nAtomsPerMol, linkCommand.get());
 	if ((start + nMols*nAtomsPerMol) == atoms_.nItems())
 	{
 		msg.print("Pattern description completed (spans %i atoms).\n",atoms_.nItems());
@@ -80,7 +80,7 @@ Pattern *Model::addPattern(int nMols, int nAtomsPerMol, const char *patname)
 	}
 	else if ((start + nMols*nAtomsPerMol) > atoms_.nItems())
 	{
-		msg.print("New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname, (start + nMols*nAtomsPerMol) - atoms_.nItems());
+		msg.print("New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patternName, (start + nMols*nAtomsPerMol) - atoms_.nItems());
 		msg.print("Not added.\n");
 		patterns_.remove(newpnode);
 		newpnode = NULL;
@@ -342,7 +342,7 @@ bool Model::createPatterns()
 			{
 				// Not the same as the last stored pattern, so store old data and start a new one
 				msg.print(Messenger::Verbose,"New pattern found: %s\n",emp.get());
-				p = addPattern(nmols, patclip.nAtoms(), emp.get());
+				p = addPattern(emp.get(), nmols, patclip.nAtoms());
 				patclip.copyMarked(this);
 				selectionEmpirical(emp, TRUE);
 				nmols = 1;
@@ -353,7 +353,7 @@ bool Model::createPatterns()
 	if (nmols != 0)
 	{
 		msg.print(Messenger::Verbose,"New pattern found: %s\n", emp.get());
-		p = addPattern(nmols, patclip.nAtoms(), emp.get());
+		p = addPattern(emp.get(), nmols, patclip.nAtoms());
 	}
 
 	// Describe the atoms / rings in the patterns
@@ -370,7 +370,7 @@ bool Model::createPatterns()
 Pattern *Model::createDefaultPattern()
 {
 	clearPatterns();
-	Pattern *p = addPattern(1, atoms_.nItems(), "Default");
+	Pattern *p = addPattern("Default", 1, atoms_.nItems());
 	return p;
 }
 

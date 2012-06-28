@@ -1011,7 +1011,7 @@ CommandData Command::data[Command::nCommands] = {
 		"",
 		"Print the pattern definition for the current model" },
 	{ "newPattern",		"CNN",		VTypes::PatternData,
-		"string name, int nmolecules, int natoms",
+		"string name, int nMolecules, int nAtoms",
 		"Add a pattern definition 'node' to the current model" },
 
 	// Pores commands

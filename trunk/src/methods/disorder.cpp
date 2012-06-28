@@ -506,7 +506,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			msg.print(" -- No pattern added for insertion model '%s' since zero molecules were added.\n", ri->item->modelName());
 			continue;
 		}
-		Pattern *p = targetModel_->addPattern(ri->item->nAdded(), ri->item->sourceModel().nAtoms(), ri->item->modelName());
+		Pattern *p = targetModel_->addPattern(ri->item->modelName(), ri->item->nAdded(), ri->item->sourceModel().nAtoms());
 		p->setForcefield(ri->item->sourceModel().forcefield());
 	}
 	targetModel_->printPatterns();
