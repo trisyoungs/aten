@@ -5,7 +5,7 @@
 # Check that a new version name was supplied
 if [ "$#" -eq "1" ]
 then
-  echo "Improper version number supplied (use 'changeversion MAJOR MINOR [EXTRA]', or no args to check existing files)"
+  echo "Improper version number supplied (use 'changeversion MAJOR MINOR', or no args to check existing files)"
   exit 1
 fi
 
@@ -21,7 +21,7 @@ echo -n "       version.h (Program Version) : "
 if [ "$#" -ge "2" ]
 then
   cp src/main/version.h src/main/version.h.orig
-  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2$3\"\1/g" src/main/version.h.orig > src/main/version.h
+  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/main/version.h.orig > src/main/version.h
 fi
 grep '#define ATENVERSION' src/main/version.h | sed -e 's/#define ATENVERSION "\([0-9a-z\.]\+\).*"/\1/g'
 
@@ -30,7 +30,7 @@ grep '#define ATENVERSION' src/main/version.h | sed -e 's/#define ATENVERSION "\
 if [ "$#" -ge "2" ]
 then
   cp ./CMakeLists.txt CMakeLists.txt.orig
-  sed -e "s/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/set(VERSION_MAJOR \"$1\")/g" -e "s/set(VERSION_MINOR \"\([0-9a-z\.]\+\)\")/set(VERSION_MINOR \"$2$3\")/g" ./CMakeLists.txt.orig > CMakeLists.txt
+  sed -e "s/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/set(VERSION_MAJOR \"$1\")/g" -e "s/set(VERSION_MINOR \"\([0-9a-z\.]\+\)\")/set(VERSION_MINOR \"$2\")/g" ./CMakeLists.txt.orig > CMakeLists.txt
 fi
 echo -n "  ./CMakeLists.txt (Major Version) : "
 grep 'set(VERSION_MAJOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MAJOR \"\([0-9a-z\.]\+\)\")/\1/g'
@@ -45,7 +45,7 @@ echo -n "  ./configure.ac (Package Version) : "
 if [ "$#" -ge "2" ]
 then
   cp ./configure.ac ./configure.ac.orig
-  sed -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9a-z\.]\+\)\])/m4_define([ATEN_VERSION],[$1.$2$3])/g" ./configure.ac.orig > ./configure.ac
+  sed -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9a-z\.]\+\)\])/m4_define([ATEN_VERSION],[$1.$2])/g" ./configure.ac.orig > ./configure.ac
 fi
 grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VERSION\],\[\([0-9a-z\.]\+\)\])/\1/g'
 
@@ -55,7 +55,7 @@ if [ "$#" -ge "2" ]
 then
   echo "Writing new specfile..."
   cp aten.spec temp.spec
-  sed -e "s/Version: [0-9a-z\.]\+/Version: $1.$2$3/g" temp.spec > aten.spec
+  sed -e "s/Version: [0-9a-z\.]\+/Version: $1.$2/g" temp.spec > aten.spec
   grep "Version:" aten.spec
   rm temp.spec
 else
@@ -68,7 +68,7 @@ echo -n "        aten.dsc (Program Version) : "
 if [ "$#" -ge "2" ]
 then
   cp ./extra/aten.dsc ./extra/aten.dsc.orig
-  sed -e "s/Version: \([0-9a-z\.]\+\)/Version: $1.$2$3/g" -e "s/^ \([a-z0-9]*\) \([0-9]*\) .*/ \1 \2 aten-$1.$2$3.tar.gz/g" ./extra/aten.dsc.orig > ./extra/aten.dsc
+  sed -e "s/Version: \([0-9a-z\.]\+\)/Version: $1.$2/g" -e "s/^ \([a-z0-9]*\) \([0-9]*\) .*/ \1 \2 aten-$1.$2.tar.gz/g" ./extra/aten.dsc.orig > ./extra/aten.dsc
 fi
 grep 'Version:' ./extra/aten.dsc | sed -e 's/Version: \([0-9a-z\.]\+\)/\1/g'
 

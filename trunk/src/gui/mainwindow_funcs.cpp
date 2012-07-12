@@ -211,7 +211,7 @@ void AtenForm::updateWindowTitle()
 	if (!gui.exists()) return;
 	Model *m = aten.currentModel();
 	Dnchar title;
-	title.sprintf("Aten (v%s r%s) - %s (%s)%s", ATENVERSION, ATENREVISION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
+	title.sprintf("Aten (v%s) - %s (%s)%s", ATENVERSION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
 	setWindowTitle(title.get());
 }
 
