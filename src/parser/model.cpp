@@ -748,7 +748,7 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = aten.commands.call(Command::NewGrid, node, rv, bundle);
 			break;
 		case (ModelVariable::NewPattern):
-			rv.set(VTypes::PatternData,  ptr->addPattern(node->argc(0), node->argi(1), node->argi(2)) );
+			rv.set(VTypes::PatternData, ptr->addPattern(node->argc(0), node->argi(1), node->argi(2)) );
 			result = (rv.asPointer(VTypes::PatternData) != NULL);
 			break;
  		case (ModelVariable::NewVibration):

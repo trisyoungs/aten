@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
 	// Print GPL license information
 	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2010  T. Youngs.\n", ATENVERSION);
-	msg.print(Messenger::Verbose, "Built from %s@%s.\n", ATENURL, ATENREVISION);
+	msg.print(Messenger::Verbose, "SVN repository is %s.\n", ATENURL);
 	msg.print(Messenger::Verbose, "Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
 	msg.print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
 	msg.print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
