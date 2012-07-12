@@ -324,7 +324,7 @@ void GuiQt::run()
 	}
 
 	// Add GNU GPL message to statusbox
-	msg.print("<b>Aten</b> version %s (from %s) built on %s, Copyright (C) 2007-2012  T. Youngs.\n", ATENVERSION, ATENURL, ATENDATE);
+	msg.print("<b>Aten</b> version %s (%s@%s) built on %s, Copyright (C) 2007-2012  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
 	msg.print("<b>Aten</b> uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
 	msg.print("<b>Aten</b> comes with ABSOLUTELY NO WARRANTY.\n");
 	msg.print("This is free software, and you are welcome to redistribute it under certain conditions.\n");

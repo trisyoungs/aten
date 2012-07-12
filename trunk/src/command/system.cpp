@@ -132,7 +132,7 @@ bool Command::function_Seed(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Print version information
 bool Command::function_Version(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	printf("Aten version %s, SVN repo %s.\n", ATENVERSION, ATENURL);
+	printf("Aten version %s, built from %s@%s.\n", ATENVERSION, ATENURL, ATENREVISION);
 	return TRUE;
 }
 
