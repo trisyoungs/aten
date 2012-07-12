@@ -7,6 +7,7 @@ COMMITMSG="none"
 COMMITTYPE="none"
 TEST="false"
 UPDATE="false"
+BETA=""
 
 # Parse CLI arguments / options
 USAGE1="commit [-F <filename>] [-m <text>] [-t]"
@@ -43,16 +44,26 @@ then
   svn update
 fi
 
+# Determine whether beta (trunk) version or other (i.e. release) version
+if `svn info | grep -q trunk`
+then
+  echo "Committing to trunk - version number and revision will be changed."
+  BETA="true"
+else
+  echo "Not committing to trunk - only revision will be changed."
+  BETA="false"
+fi
+
 # Determine current svn version number and increase it by one.
 OLDREV=`svn info -r HEAD | grep Revision | sed "s/Revision: \([0-9]*\)/\1/g"`
-let NEWREV=OLDREV+1
+let REVISION=OLDREV+1
 # Check for failed svn command
-if [ "$NEWREV" = "1" ]
+if [ "$REVISION" = "1" ]
 then
   echo "Failed."
   exit 1
 fi
-echo "Current version is revision $OLDREV - committed version will be revision $NEWREV..."
+echo "Current version is revision $OLDREV - committed version will be revision $REVISION..."
 
 # Determine svn URL
 URL=`svn info | grep URL | sed -e "s/URL: \(.*\)/\1/g" -e "s/https/http/g"`
@@ -61,14 +72,19 @@ echo "Subversion repository is: "$URL
 # Get current date and time
 DATE=`date "+%a %d %b - %H:%M"`
 
-# Change URL version information
-echo "Setting version information..."
+# Change URL revision information
+echo "Setting revision information..."
 
 if [ "$TEST" = "false" ]
 then
-  MAJOR=$(( NEWREV/1000 ))
-  MINOR=$(( NEWREV%1000 ))
-  ./changeversion $MAJOR $MINOR
+  MAJOR=$(( REVISION/1000 ))
+  MINOR=$(( REVISION%1000 ))
+  if [ "$BETA" = "true" ]
+  then
+    ./changeversion $MAJOR $MINOR $REVISION
+  else
+    ./changeversion 0 0 $REVISION
+  fi
 else
   ./changeversion
 fi

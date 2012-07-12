@@ -2,32 +2,40 @@
 
 # Change the version of the source code to the supplied value
 
-# Check that a new version name was supplied
-if [ "$#" -eq "1" ]
-then
-  echo "Improper version number supplied (use 'changeversion MAJOR MINOR', or no args to check existing files)"
-  exit 1
-fi
-
+# Check that a version information was correctly supplied
 if [ "$#" -eq "0" ]
 then
   echo "Checking current version numbers only..."
+elif [ "$#" -ne "3" ]
+then
+  echo "Improper version number supplied (use 'changeversion MAJOR MINOR REVISION', or no args to check existing files)"
+  exit 1
 else
   echo "Changing version numbers in files..."
+  if [ "$1" -eq "0" ]
+  then
+    echo "Only revision number will be changed..."
+    sed -i -e "s/#define ATENREVISION \"[0-9\.]\+\(.*\)\"/#define ATENREVISION \"$3\"\1/g" src/main/version.h
+    # That's it - no other files to change...
+    exit 0
+  fi
 fi
 
-
-echo -n "       version.h (Program Version) : "
-if [ "$#" -ge "2" ]
+# Program (version.h)
+if [ "$#" -eq "3" ]
 then
-  cp src/main/version.h src/main/version.h.orig
-  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/main/version.h.orig > src/main/version.h
+  #cp src/main/version.h src/main/version.h.orig
+  sed -i -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/main/version.h
+  sed -i -e "s/#define ATENREVISION \"[0-9\.]\+\(.*\)\"/#define ATENREVISION \"$3\"\1/g" src/main/version.h
 fi
+echo -n "       version.h (Program Version) : "
 grep '#define ATENVERSION' src/main/version.h | sed -e 's/#define ATENVERSION "\([0-9a-z\.]\+\).*"/\1/g'
+echo -n "       version.h (SVN Revision)    : "
+grep '#define ATENREVISION' src/main/version.h | sed -e 's/#define ATENREVISION "\([0-9a-z\.]\+\).*"/\1/g'
 
 
 # ./CMakeLists.txt
-if [ "$#" -ge "2" ]
+if [ "$#" -eq "3" ]
 then
   cp ./CMakeLists.txt CMakeLists.txt.orig
   sed -e "s/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/set(VERSION_MAJOR \"$1\")/g" -e "s/set(VERSION_MINOR \"\([0-9a-z\.]\+\)\")/set(VERSION_MINOR \"$2\")/g" ./CMakeLists.txt.orig > CMakeLists.txt
@@ -42,7 +50,7 @@ grep 'set(VERSION_PATCH' ./CMakeLists.txt | sed -e 's/set(VERSION_PATCH \"\([0-9
 
 # ./configure.ac
 echo -n "  ./configure.ac (Package Version) : "
-if [ "$#" -ge "2" ]
+if [ "$#" -eq "3" ]
 then
   cp ./configure.ac ./configure.ac.orig
   sed -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9a-z\.]\+\)\])/m4_define([ATEN_VERSION],[$1.$2])/g" ./configure.ac.orig > ./configure.ac
@@ -51,7 +59,7 @@ grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VE
 
 
 # Change specfile name and contents
-if [ "$#" -ge "2" ]
+if [ "$#" -eq "3" ]
 then
   echo "Writing new specfile..."
   cp aten.spec temp.spec
@@ -65,7 +73,7 @@ fi
 
 # ./extra/aten.dsc
 echo -n "        aten.dsc (Program Version) : "
-if [ "$#" -ge "2" ]
+if [ "$#" -eq "3" ]
 then
   cp ./extra/aten.dsc ./extra/aten.dsc.orig
   sed -e "s/Version: \([0-9a-z\.]\+\)/Version: $1.$2/g" -e "s/^ \([a-z0-9]*\) \([0-9]*\) .*/ \1 \2 aten-$1.$2.tar.gz/g" ./extra/aten.dsc.orig > ./extra/aten.dsc
