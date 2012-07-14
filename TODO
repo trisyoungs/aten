@@ -1,6 +1,7 @@
 <h1>Known Bugs</h1>
 
 <ul>
+<li>UnitCell:mim(Atom*,Vec3) returns incorrect position - where is it used?</li>
 <li>Glyph list not updated on model load.</li>
 <li>Model not updated when changing glyph selection?</li>
 <li>Image saving is slow - code undergoing rewrite.</li>
