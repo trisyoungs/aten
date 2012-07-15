@@ -69,13 +69,12 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 // Local save function
 bool AtenForm::runSaveModelDialog()
 {
-	saveModelFilter = NULL;
 	saveModelFilename.clear();
+	saveModelFilter = NULL;
 	Tree *filter = NULL;
-	static QString selectedFilter(aten.filters(FilterData::ModelExport)->item->filter.name());
+	static QString selectedFilter(aten.filters(FilterData::ModelExport) == NULL ? NULL : aten.filters(FilterData::ModelExport)->item->filter.name());
 	static QDir currentDirectory_(aten.workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(), saveModelFilters, &selectedFilter);
-
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -229,10 +228,10 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Save Image Options");
 	ui.addEdit("geometry", "Image Size", geometry.get(),1,1);
 	group = ui.addRadioGroup("framechoice");
-	ui.addRadioButton("noframes", "No Frames", "framechoice", 1, 1,2);
-	ui.addRadioButton("framemodel", "Frame Current Model", "framechoice", 0, 1,3);
-	ui.addRadioButton("frameview", "FramDie Whole View", "framechoice", 0, 1,4);
-	ui.addRadioButton("frameboth", "Frame Current Model and View", "framechoice", 0, 1,5);
+	ui.addRadioButton("noframes", "No Frames", "framechoice", 1, 1, 2, 1);
+	ui.addRadioButton("framemodel", "Frame Current Model", "framechoice", 0, 1, 3, 1);
+	ui.addRadioButton("frameview", "Frame Whole View", "framechoice", 0, 1, 4, 1);
+	ui.addRadioButton("frameboth", "Frame Current Model and View", "framechoice", 0, 1, 5, 1);
 	
 	// Poke values into dialog widgets and execute
 	ui.setWidgetValue("framechoice", framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) );
@@ -256,7 +255,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	viewglobe = prefs.viewRotationGlobe();
 	
 	// Get filename from user
-	GuiQt::BitmapFormat bf;
+	RenderEngine::BitmapFormat bf;
 	static QString selectedFilter("Windows Bitmap (*.bmp)");
 	static QDir currentDirectory_(aten.workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Bitmap", currentDirectory_.path(), saveBitmapFilters, &selectedFilter);
@@ -266,9 +265,9 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		currentDirectory_.setPath(filename);
 		// Grab filename extension and search for it
 		Dnchar ext = afterLastChar(qPrintable(filename), '.');
-		bf = GuiQt::bitmapFormat(ext.get());
+		bf = RenderEngine::bitmapFormat(ext.get());
 		// If we didn't recognise the extension, complain and quit
-		if (bf == GuiQt::nBitmapFormats) 
+		if (bf == RenderEngine::nBitmapFormats) 
 		{
 			Dnchar message(-1, "Bitmap format not recognised - '%s'.\n", ext.get());
 			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
@@ -278,7 +277,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 			prefs.setFrameCurrentModel(framemodel);
 			prefs.setFrameWholeView(frameview);
 			prefs.setViewRotationGlobe(FALSE);
-			if (!gui.saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
+			if (!engine().saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
 			prefs.setFrameCurrentModel(currentframemodel);
 			prefs.setFrameWholeView(currentframeview);
 			prefs.setViewRotationGlobe(viewglobe);
@@ -450,14 +449,14 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
-	gui.mainCanvas()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set orthographic view
 void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
-	gui.mainCanvas()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Set view along cartesian axis supplied
@@ -591,7 +590,7 @@ void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
 	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
 	prefs.setColourScheme(cs);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Toggle detection and siaply of hydrogen bonds in models
@@ -599,7 +598,7 @@ void AtenForm::on_actionDetectDisplayHBonds_triggered(bool checked)
 {
 	prefs.setDrawHydrogenBonds(checked);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 /*

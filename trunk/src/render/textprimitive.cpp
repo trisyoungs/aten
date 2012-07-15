@@ -95,21 +95,14 @@ void TextPrimitiveChunk::add(int x, int y, const char *text, QChar addChar, bool
 }
 
 // Render all primitives in chunk
-void TextPrimitiveChunk::renderAll(QPainter &painter, TCanvas *canvas)
+void TextPrimitiveChunk::renderAll(QPainter &painter, int verticalOffset)
 {
-	// Grab contextHeight
 	QRect rect;
-	int height = canvas->contextHeight();
-	int pointsize = prefs.labelSize();
-	if (prefs.useNiceText())
+	for (int n=0; n<nTextPrimitives_; ++n)
 	{
-		for (int n=0; n<nTextPrimitives_; ++n)
-		{
-			rect = painter.boundingRect(textPrimitives_[n].x(), height-textPrimitives_[n].y()-pointsize, 1, -1, textPrimitives_[n].rightAlign() ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text());
-			painter.drawText(rect, textPrimitives_[n].rightAlign() ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text());
-		}
+		rect = painter.boundingRect(textPrimitives_[n].x(), textPrimitives_[n].y()-verticalOffset, 1, -1, textPrimitives_[n].rightAlign() ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text());
+		painter.drawText(rect, textPrimitives_[n].rightAlign() ? Qt::AlignRight : Qt::AlignLeft, textPrimitives_[n].text());
 	}
-	else for (int n=0; n<nTextPrimitives_; ++n) canvas->renderText(textPrimitives_[n].x(), height-textPrimitives_[n].y()-pointsize, textPrimitives_[n].text());
 }
 
 /*
@@ -139,8 +132,8 @@ void TextPrimitiveList::add(int x, int y, const char *text, QChar addChar, bool 
 }
 
 // Render all primitives in list
-void TextPrimitiveList::renderAll(QPainter &painter, TCanvas *canvas)
+void TextPrimitiveList::renderAll(QPainter &painter, int verticalOffset)
 {
-	for (TextPrimitiveChunk *chunk = textPrimitives_.first(); chunk != NULL; chunk = chunk->next) chunk->renderAll(painter, canvas);
+	for (TextPrimitiveChunk *chunk = textPrimitives_.first(); chunk != NULL; chunk = chunk->next) chunk->renderAll(painter, verticalOffset);
 }
 

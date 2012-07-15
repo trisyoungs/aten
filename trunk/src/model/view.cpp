@@ -62,53 +62,6 @@ bool Model::renderFromVibration()
 	return renderFromVibration_;
 }
 
-// Return whether stored pixel data is valid
-bool Model::pixelDataIsValid(int currentwidth, int currentheight, Model *source, int logpoint)
-{
-	if (parent_ != NULL) return parent_->pixelDataIsValid(currentwidth, currentheight, source, logpoint);
-	else
-	{
-// 		printf("Model [%s] : data = %p, wxh = %ix%i, new wxh = %ix%i, source = %p, newsource = %p, lp = %i, newlp = %i\n", name_.get(), pixelData_, pixelDataWidth_, pixelDataHeight_, currentwidth, currentheight, pixelDataSource_, source, pixelDataLogPoint_, logpoint);
-		// First, check for presence of array data
-		if (pixelData_ == NULL) return FALSE;
-		// Second, check width and height
-		if ((currentwidth != pixelDataWidth_) || (currentheight != pixelDataHeight_)) return FALSE;
-		// Third, check model source
-		if (pixelDataSource_ != source) return FALSE;
-		// Lastly, check logpoint
-		return (pixelDataLogPoint_ == logpoint);
-	}
-}
-
-// Prepare pixel data buffer
-void Model::preparePixelData(int width, int height, Model *source, int logpoint)
-{
-	// Forward to parent model if one is defined
-	if (parent_ != NULL) parent_->preparePixelData(width, height, source, logpoint);
-	else
-	{
-		// Reallocate array if necessary
-		if ((width != pixelDataWidth_) || (height != pixelDataHeight_))
-		{
-			// Deallocate old array if necessary
-			if (pixelData_ != NULL) delete[] pixelData_;
-			pixelDataWidth_ = width;
-			pixelDataHeight_ = height;
-			pixelData_ = new GLubyte[4*pixelDataWidth_*pixelDataHeight_];
-		}
-		// Set new log point and source model
-		pixelDataSource_ = source;
-		pixelDataLogPoint_ = logpoint;
-	}
-}
-
-// Return pixel data buffer pointer
-GLubyte *Model::pixelData()
-{
-	if (parent_ != NULL) return parent_->pixelData();
-	else return pixelData_;
-}
-
 // Set the current modelview matrix
 void Model::setModelViewMatrix(Matrix &rmat)
 {

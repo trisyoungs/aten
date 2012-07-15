@@ -68,7 +68,7 @@ void RenderEngine::renderGlyphs(Model *source)
 				// Move to endpoint
 				A.applyTranslationZ(rij*arrowBodyLength);
 				A.applyScaling(0.2,0.2,rij*arrowHeadLength/arrowBodyLength);
-				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour[0], A, GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cones_, colour[0], A, GL_LINE);
 				break;
 			// Line - start = data[0], end = data[1]
 			case (Glyph::LineGlyph):
@@ -87,13 +87,13 @@ void RenderEngine::renderGlyphs(Model *source)
 				A.applyScaling(r[1]);
 				if (g->isSolid())
 				{
-					renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, colour[0], A, GL_FILL);
-					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, textcolour, A, GL_LINE, 2.0);
+					renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].spheres_, colour[0], A, GL_FILL);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].spheres_, textcolour, A, GL_LINE, 2.0);
 				}
 				else
 				{
-					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, textcolour, A, GL_LINE, 3.0);
-					else renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, colour[0], A, GL_LINE, 1.0);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].spheres_, textcolour, A, GL_LINE, 3.0);
+					else renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].spheres_, colour[0], A, GL_LINE, 1.0);
 				}
 				break;
 			// Cube - centre = data[0], scale = data[1]
@@ -106,13 +106,13 @@ void RenderEngine::renderGlyphs(Model *source)
 				A.applyScaling(r[1]);
 				if (g->isSolid())
 				{
-					renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cubes_, colour[0], A, GL_FILL);
-					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cubes_, textcolour, A, GL_LINE, 2.0);
+					renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cubes_, colour[0], A, GL_FILL);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cubes_, textcolour, A, GL_LINE, 2.0);
 				}
 				else
 				{
-					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cubes_, textcolour, A, GL_LINE, 3);
-					else renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cubes_, colour[0], A, GL_LINE, 1.0);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cubes_, textcolour, A, GL_LINE, 3);
+					else renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cubes_, colour[0], A, GL_LINE, 1.0);
 				}
 				break;
 			// Triangle - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
@@ -230,13 +230,13 @@ void RenderEngine::renderGlyphs(Model *source)
 				A.multiplyRotation(B);
 				if (g->isSolid())
 				{
-					renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, colour[0], A, GL_FILL);
-					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, textcolour, A, GL_LINE, 2.0);
+					renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].spheres_, colour[0], A, GL_FILL);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].spheres_, textcolour, A, GL_LINE, 2.0);
 				}
 				else
 				{
-					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, textcolour, A, GL_LINE, 3.0);
-					else renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].spheres_, colour[0], A, GL_LINE, 1.0);
+					if (g->isSelected()) renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].spheres_, textcolour, A, GL_LINE, 3.0);
+					else renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].spheres_, colour[0], A, GL_LINE, 1.0);
 				}
 				break;
 			// Text - handled in RenderEngine::renderTextGlyphs()
@@ -258,11 +258,11 @@ void RenderEngine::renderGlyphs(Model *source)
 				else A.applyRotationAxis(-r[2].y, r[2].x, 0.0, phi, TRUE);
 				// Draw cylinder
 				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
-				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cylinders_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cylinders_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
 				A.applyTranslationZ(1.0);
 				A.applyScaling(2.0,2.0,arrowHeadLength/arrowBodyLength);
-				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cones_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
 				break;
 			// Tube vector - centre = data[0], vector = data[1]
 			case (Glyph::TubeVectorGlyph):
@@ -279,11 +279,11 @@ void RenderEngine::renderGlyphs(Model *source)
 				else A.applyRotationAxis(-r[1].y, r[1].x, 0.0, phi, TRUE);
 				// Draw cylinder
 				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
-				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cylinders_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cylinders_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
 				A.applyTranslationZ(1.0);
 				A.applyScaling(2.0,2.0,arrowHeadLength/arrowBodyLength);
-				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cones_, colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
 				break;
 			// Vector - center = data[0], vector = data[1]
 			case (Glyph::VectorGlyph):
@@ -304,7 +304,7 @@ void RenderEngine::renderGlyphs(Model *source)
 				// Move to endpoint
 				A.applyTranslationZ(rij*arrowBodyLength);
 				A.applyScaling(0.2, 0.2, rij*arrowHeadLength/arrowBodyLength);
-				renderPrimitive(RenderEngine::GlyphObject, primitives_[Q_].cones_, colour[0], A, GL_LINE);
+				renderPrimitive(RenderEngine::GlyphObject, primitives_[set_].cones_, colour[0], A, GL_LINE);
 				break;
 		}
 	}
@@ -318,7 +318,7 @@ void RenderEngine::renderGlyphs(Model *source)
 }
 
 // Render text glyphs
-void RenderEngine::renderTextGlyphs(Model *source, TCanvas *canvas)
+void RenderEngine::renderTextGlyphs(Model *source)
 {
 	Vec3<double> r1, r2;
 	Vec4<double> screenr;
@@ -339,7 +339,7 @@ void RenderEngine::renderTextGlyphs(Model *source, TCanvas *canvas)
 		// Grab first coordinate (always used)
 		r1 = g->data(0)->vector();
 		
-		if (g->type() == Glyph::TextGlyph) renderTextPrimitive(r1.x, canvas->contextHeight()-r1.y, g->text());
+		if (g->type() == Glyph::TextGlyph) renderTextPrimitive(r1.x, r1.y, g->text());
 		else if (g->type() == Glyph::Text3DGlyph)
 		{
 			r2 = source->modelToWorld(r1, &screenr);

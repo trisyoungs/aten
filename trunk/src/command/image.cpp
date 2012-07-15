@@ -36,7 +36,6 @@
 int movieSetup(bool pre, int height)
 {
 	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
-	static int oldlabelsize = prefs.labelSize();
 	if (pre)
 	{
 		// Check that defined encoder exe exists
@@ -65,11 +64,6 @@ int movieSetup(bool pre, int height)
 		} while (fileExists(basename));
 		msg.print("First temporary basename for movie images is '%s'.\n", basename.get());
 
-		// Temporarily adjust label size...
-		oldlabelsize = prefs.labelSize();
-		int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainCanvas()->height()) ));
-		prefs.setLabelSize(newlabelsize);
-
 		return runid;
 	}
 	else
@@ -77,9 +71,6 @@ int movieSetup(bool pre, int height)
 		prefs.setFrameCurrentModel(framemodel);
 		prefs.setFrameWholeView(frameview);
 		prefs.setViewRotationGlobe(viewglobe);
-
-		// Restore label size
-		prefs.setLabelSize(oldlabelsize);
 	}
 }
 
@@ -172,8 +163,8 @@ bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
 	// Convert format to bitmap_format
-	GuiQt::BitmapFormat bf = GuiQt::bitmapFormat(c->argc(0));
-	if (bf == GuiQt::nBitmapFormats)
+	RenderEngine::BitmapFormat bf = RenderEngine::bitmapFormat(c->argc(0));
+	if (bf == RenderEngine::nBitmapFormats)
 	{
 		msg.print("Unrecognised bitmap format.\n");
 		return FALSE;
@@ -202,9 +193,9 @@ bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			msg.print("Maximum number of frames for image redirect reached. Raising error...\n");
 			result = FALSE;
 		}
-		else result = gui.saveImage(filename, bf, width, height, quality);
+		else result = engine().saveImage(filename, bf, width, height, quality);
 	}
- 	else result = gui.saveImage(c->argc(1), bf, width, height, quality);
+ 	else result = engine().saveImage(c->argc(1), bf, width, height, quality);
 
 	prefs.setViewRotationGlobe(viewglobe);
 	return result;
@@ -235,7 +226,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 
 	// Check initial movie 'setup'
 	int runid = movieSetup(TRUE, height);
-	if (runid == -1 ) return FALSE;
+	if (runid == -1) return FALSE;
 
 	// Save all trajectory frame images
 	QPixmap pixmap;
@@ -249,9 +240,9 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		obj.m->seekTrajectoryFrame(n, TRUE);
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
-		gui.mainCanvas()->postRedisplay(TRUE);
+// 		gui.mainCanvas()->postRedisplay();
 
-		pixmap = gui.mainCanvas()->generateImage(width, height, TRUE);
+		pixmap = engine().renderSceneImage(RenderEngine::HighQuality, width, height);
 		pixmap.save(basename.get(), "png", -1);
 		files << basename.get();
 
@@ -321,9 +312,9 @@ bool Command::function_SaveVibrationMovie(CommandNode *c, Bundle &obj, ReturnVal
 		obj.rs()->setVibrationFrameIndex(n);
 		
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
-		gui.mainCanvas()->postRedisplay(TRUE);
+// 		gui.mainCanvas()->postRedisplay();
 
-		pixmap = gui.mainCanvas()->generateImage(width, height, TRUE);
+		pixmap = engine().renderSceneImage(RenderEngine::HighQuality, width, height);
 		pixmap.save(basename.get(), "png", -1);
 		
 		if (!progress.update(progid,n))

@@ -79,7 +79,7 @@ class TextPrimitiveChunk
 	// Add primitive to list
 	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
 	// Render all primitives in chunk
-	void renderAll(QPainter& painter, TCanvas* canvas);
+	void renderAll(QPainter& painter, int verticalOffset);
 };
 
 // Text Primitive List
@@ -101,7 +101,7 @@ class TextPrimitiveList
 	// Add primitive to list
 	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
 	// Render all primitives in list
-	void renderAll(QPainter& painter, TCanvas* canvas);
+	void renderAll(QPainter& painter, int verticalOffset);
 };
 
 #endif

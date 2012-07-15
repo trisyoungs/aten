@@ -73,7 +73,7 @@ void AtenForm::setActiveStyleAction(Atom::DrawStyle ds)
 	else if (ds == Atom::ScaledStyle) ui.actionStyleScaled->setChecked(TRUE);
 	else if (ds == Atom::IndividualStyle) ui.actionStyleIndividual->setChecked(TRUE);
 	prefs.setRenderStyle(ds);
-	gui.mainCanvas()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 // Enter basic atom selection mode

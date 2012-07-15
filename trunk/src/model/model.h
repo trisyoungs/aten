@@ -856,14 +856,6 @@ class Model
 	// Rendering Source
 	*/
 	private:
-	// Stored pixel data from last render
-	GLubyte *pixelData_;
-	// Model source of stored pixel data
-	Model *pixelDataSource_;
-	// Logpoint of last stored pixel data
-	int pixelDataLogPoint_;
-	// Width and height of stored pixel data
-	int pixelDataWidth_, pixelDataHeight_;
 	// Where to get render source data
 	RenderSource renderSource_;
 	// Flags whether to draw from associated vibration instead of model
@@ -880,12 +872,6 @@ class Model
 	void setRenderFromVibration(bool b);
 	// Return whether to render from vibration frames
 	bool renderFromVibration();
-	// Return whether stored pixel data is valid
-	bool pixelDataIsValid(int currentwidth, int currentheight, Model *source, int logpoint);
-	// Prepare pixel data buffer
-	void preparePixelData(int width, int height, Model *source, int logpoint);
-	// Return pixel data buffer pointer
-	GLubyte *pixelData();
 
 
 	/*

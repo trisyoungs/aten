@@ -72,18 +72,12 @@ class Model;
 class Forcefield;
 class Grid;
 
-// QT4 GUI
+// Qt4 GUI
 class GuiQt
 {
 	public:
 	// Constructor
 	GuiQt();
-	// Bitmap Formats
-	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
-	static BitmapFormat bitmapFormat(const char *name, bool reportError = 0);
-	static BitmapFormat bitmapFormatFromFilter(const char *s);
-	static const char *bitmapFormatFilter(BitmapFormat bf);
-	static const char *bitmapFormatExtension(BitmapFormat bf);
 	// Update Targets
 	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, ModelsTarget = 32, CanvasTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, AllTarget = 4095 };
 
@@ -109,6 +103,7 @@ class GuiQt
 	// Set interactivity (to full or zero), except for main view camera changes
 	void setInteractive(bool interactive);
 
+
 	/*
 	// Refresh Functions
 	*/
@@ -133,8 +128,6 @@ class GuiQt
 	void printMessage(const char*);
 	// Save before close
 	bool saveBeforeClose();
-	// Save image of current view
-	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 85);
 
 
 	/*
@@ -147,8 +140,6 @@ class GuiQt
 	AtenForm *mainWindow_;
 	// Main rendering canvas
 	TCanvas *mainCanvas_;
-	// Original QGLContext, created in initialise()
-	QGLContext *mainContext_;
 	// Type of application initialised
 	QApplication::Type applicationType_;
 
