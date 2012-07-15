@@ -308,14 +308,12 @@ class Prefs
 	Dnchar angleLabelFormat_;
 	// C-style format for charge label values
 	Dnchar chargeLabelFormat_;
-	// Pointsize for labels
-	int labelSize_;
-	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
-	bool useNiceText_;
+	// Relative size for text labels, in percentage of view height
+	double labelSize_;
 	// Flag to manually perform swapBuffers
 	bool manualSwapBuffers_;
-	// Flag to use framebuffer for image saving rather than the renderPixmap() method
-	bool useFrameBuffer_;
+	// Flag to use pixelbuffers for image saving rather than the renderPixmap() method
+	bool usePixelBuffers_;
 	// Whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics_;
 	// Mouse move event filter rate
@@ -341,21 +339,17 @@ class Prefs
 	// Return C-style format for charge label values
 	const char *chargeLabelFormat();
 	// Set the pointsize of labels in the model
-	void setLabelSize(int size);
+	void setLabelSize(double size);
 	// Return the current label pointsize
-	int labelSize() const;
-	// Set whether to use nice text rendering
-	void setUseNiceText(bool b);
-	// Return whether to use nice text rendering
-	bool useNiceText() const;
+	double labelSize() const;
 	// Set manual swapbuffers
 	void setManualSwapBuffers(bool on);
 	// Return whether manual buffer swapping is enabled
 	bool manualSwapBuffers() const;
-	// Set usage of framebuffer in image saving
-	void setUseFrameBuffer(bool on);
-	// Return whether to use framebuffer for image saving
-	bool useFrameBuffer() const;
+	// Set usage of pixelbuffers in image saving
+	void setUsePixelBuffers(bool on);
+	// Return whether to use pixelbuffers for image saving
+	bool usePixelBuffers() const;
 	// Return whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics();
 	// Set  whether to use solid or dashed circles for aromatic ring rendering

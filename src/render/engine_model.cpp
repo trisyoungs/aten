@@ -27,15 +27,16 @@
 #include "base/pattern.h"
 #include "gui/tcanvas.uih"
 #include "base/sysfunc.h"
+#include "main/aten.h"
+#include "gui/gui.h"
 
 // Render bond
-void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b, bool transparentSel, GLfloat *penColour)
+void RenderEngine::renderBond(RenderEngine::TriangleObject basicList, RenderEngine::TriangleObject selectionList, Matrix A, Vec3< double > vij, Atom* i, Atom::DrawStyle style_i, GLfloat* colour_i, double radius_i, Atom* j, Atom::DrawStyle style_j, GLfloat* colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b, bool transparentSel, GLfloat* penColour)
 {
 	double dvisible, selvisible, factor, rij, phi;
 	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx, normz;
 	GLfloat alpha_i, alpha_j;
-	Primitive *sticks[2] = { &stickLines_, &stickSelectedLines_ };
-	int stickList;
+	int lineList, baseLineList = (basicList == RenderEngine::BasicObject ? NormalLineObject : NormalGuiLineObject);
 	Matrix B;
 
 	// Store copies of alpha values
@@ -99,51 +100,51 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	switch (style_i)
 	{
 		case (Atom::StickStyle):
-			if (!rebuildSticks_) break;
+			if ((!rebuildSticks_) && (baseLineList == 0)) break;
 			// First vertex is at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
 			stickpos = A * Vec3<double>(0.0,0.0,1.0);
 			// Determine how many sticks to draw (bond multiplicity : aromatic still counts as one bond)
-			stickList = i->isSelected() ? 1 : 0;
+			lineList = baseLineList + (i->isSelected() ? 1 : 0);
 			switch (bt)
 			{
 				case (Bond::Double):
 					dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle)*0.5,0.0,0.0);
-					sticks[stickList]->defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
 					break;
 				case (Bond::Triple):
 					dx = A.rotateVector(prefs.atomStyleRadius(Atom::StickStyle),0.0,0.0);
-					sticks[stickList]->defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i, FALSE);
 					break;
 				default:
-					sticks[stickList]->defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i, FALSE);
 					break;
 			}
 			break;
 		case (Atom::TubeStyle):
-			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A);
+			renderPrimitive(basicList, primitives_[set_].bonds_[style_i][bt], colour_i, A);
 			if (i->isSelected() && (selvisible > 0.0))
 			{
 				if (transparentSel)
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], colour_i, A);
+					renderPrimitive(selectionList, primitives_[set_].selectedBonds_[style_i][bt], colour_i, A);
 					colour_i[3] = alpha_i;
 				}
-				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], penColour, A, GL_LINE);
+				else renderPrimitive(selectionList, primitives_[set_].selectedBonds_[style_i][bt], penColour, A, GL_LINE);
 			}
 			break;
 		case (Atom::SphereStyle):
 		case (Atom::ScaledStyle):
-			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_i][bt], colour_i, A);
+			renderPrimitive(basicList, primitives_[set_].bonds_[style_i][bt], colour_i, A);
 			if (i->isSelected() && (selvisible > 0.0))
 			{
 				// Move to edge of selected atom and apply selection bond scaling
@@ -152,10 +153,10 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 				if (transparentSel)
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], colour_i, A);
+					renderPrimitive(selectionList, primitives_[set_].selectedBonds_[style_i][bt], colour_i, A);
 					colour_i[3] = alpha_i;
 				}
-				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_i][bt], penColour, A, GL_LINE);
+				else renderPrimitive(selectionList, primitives_[set_].selectedBonds_[style_i][bt], penColour, A, GL_LINE);
 			}
 			break;
 	}
@@ -164,51 +165,51 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 	switch (style_j)
 	{
 		case (Atom::StickStyle):
-			if (!rebuildSticks_) break;
+			if ((!rebuildSticks_) && (baseLineList == 0)) break;
 			// First vertex is *still* at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
 			stickpos = B * Vec3<double>(0.0,0.0,1.0);
-			stickList = j->isSelected() ? 1 : 0;
+			lineList = baseLineList + (j->isSelected() ? 1 : 0);
 			switch (bt)
 			{
 				case (Bond::Double):
 					dx = B.rotateVector(prefs.atomStyleRadius(Atom::StickStyle)*0.5,0.0,0.0);
-					sticks[stickList]->defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					break;
 				case (Bond::Triple):
 					dx = B.rotateVector(prefs.atomStyleRadius(Atom::StickStyle),0.0,0.0);
-					sticks[stickList]->defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j, FALSE);
 					break;
 				default:
-					sticks[stickList]->defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j, FALSE);
-					sticks[stickList]->defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j, FALSE);
+					linePrimitives_[lineList].defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j, FALSE);
 					break;
 			}
 			break;
 		case (Atom::TubeStyle):
-			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, B);
+			renderPrimitive(basicList, primitives_[set_].bonds_[style_j][bt], colour_j, B);
 			if (j->isSelected())
 			{
 				B.applyTranslationZ((selscale*radius_j-radius_j) / dvisible);
 				if (transparentSel)
 				{
 					colour_j[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, B);
+					renderPrimitive(selectionList, primitives_[set_].selectedBonds_[style_j][bt], colour_j, B);
 					colour_j[3] = alpha_j;
 				}
-				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], penColour, B, GL_LINE);
+				else renderPrimitive(selectionList, primitives_[set_].selectedBonds_[style_j][bt], penColour, B, GL_LINE);
 			}
 			break;
 		case (Atom::SphereStyle):
 		case (Atom::ScaledStyle):
-			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].bonds_[style_j][bt], colour_j, B);
+			renderPrimitive(basicList, primitives_[set_].bonds_[style_j][bt], colour_j, B);
 			if (j->isSelected() && (selvisible > 0.0))
 			{
 				B.applyTranslationZ((selscale*radius_j-radius_j) / dvisible);
@@ -216,19 +217,195 @@ void RenderEngine::renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawSty
 				if (transparentSel)
 				{
 					colour_j[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], colour_j, B);
+					renderPrimitive(selectionList, primitives_[set_].selectedBonds_[style_j][bt], colour_j, B);
 					colour_j[3] = alpha_j;
 				}
-				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedBonds_[style_j][bt], penColour, B, GL_LINE);
+				else renderPrimitive(selectionList, primitives_[set_].selectedBonds_[style_j][bt], penColour, B, GL_LINE);
 			}
 			break;
 	}
 }
 
-// Render basic model information (atoms, bonds, labels, and glyphs)
-void RenderEngine::renderModel(Model *source, Matrix basetransform)
+// Render full Model
+void RenderEngine::renderModel(Model *source, bool currentModel, bool renderType)
 {
 	msg.enter("RenderEngine::renderModel");
+	GLfloat colour[4];
+
+	// Valid pointer passed?
+	if (source == NULL)
+	{
+		msg.exit("RenderEngine::renderModel");
+		return;
+	}
+	msg.print(Messenger::GL, " --> RENDERING BEGIN : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
+	
+	// If this is a trajectory frame, check its ID against the last one rendered
+	if (source->parent() != NULL)
+	{
+		displayFrameId_ = source->parent()->trajectoryFrameIndex();
+		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
+	}
+	
+	// Set initial transformation matrix, including any translation occurring from cell...
+	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
+	
+	// Set target matrix mode and reset it, and set colour mode
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+
+	// Grab model-specific viewport
+	GLint *vp = source->viewportMatrix();
+
+	// Render rotation globe in small viewport in lower right-hand corner
+	if (prefs.viewRotationGlobe())
+	{
+		int n = prefs.globeSize();
+		if (aten.nVisibleModels() > 2) n /= 2;
+		glViewport(vp[0]+vp[2]-n,vp[1],n,n);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		Matrix A = modelTransformationMatrix_;
+		A.removeTranslationAndScaling();
+		A[14] = -1.2;
+		glMultMatrixd(A.matrix());
+		prefs.copyColour(Prefs::GlobeColour, colour);
+		glColor4fv(colour);
+		primitives_[set_].rotationGlobe_.sendToGL();
+		prefs.copyColour(Prefs::GlobeAxesColour, colour);
+		glColor4fv(colour);
+		primitives_[set_].rotationGlobeAxes_.sendToGL();
+	}
+
+	// Prepare for model rendering
+	glViewport(vp[0], vp[1], vp[2], vp[3]);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixd(source->modelProjectionMatrix().matrix());
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	// Clear the necessary triangle lists (i.e. only those for which the content may have changed)
+	// By default, regenerate all lists (the case if the source model pointer has changed)
+	
+	int n;
+	for (n=0; n<RenderEngine::nTriangleObjects; ++n) activePrimitiveLists_[n] = TRUE;
+	if ((lastSource_ == source) && (!clearListsFlag_))
+	{
+		// Check model logs against logs stored when the lists were last generated
+		bool redobasic = !lastLog_.isSame(Log::Coordinates,source->changeLog);
+		if (!redobasic) redobasic = !lastLog_.isSame(Log::Structure,source->changeLog);
+
+		// If the model style has changed, need to rerender both basic and selection lists. Otherwise, depends on other logs
+		if (redobasic || (!lastLog_.isSame(Log::Style,source->changeLog)))
+		{
+			activePrimitiveLists_[RenderEngine::BasicObject] = TRUE;
+			activePrimitiveLists_[RenderEngine::AtomSelectionObject] = TRUE;
+		}
+		else
+		{
+			activePrimitiveLists_[RenderEngine::BasicObject] = FALSE;
+			activePrimitiveLists_[RenderEngine::AtomSelectionObject] = !lastLog_.isSame(Log::Selection, source->changeLog);
+		}
+		
+		// Stick style primitives
+		if (redobasic || (!lastLog_.isSame(Log::Style,source->changeLog)) || (!lastLog_.isSame(Log::Selection,source->changeLog)))
+		{
+			linePrimitives_[RenderEngine::NormalLineObject].forgetAll();
+			linePrimitives_[RenderEngine::SelectedLineObject].forgetAll();
+			rebuildSticks_ = TRUE;
+		}
+		else rebuildSticks_ = FALSE;
+		
+		// Glyphs must be redone on basic change (since they may follow atom coordinates
+		if (redobasic || !lastLog_.isSame(Log::Glyphs, source->changeLog)) activePrimitiveLists_[RenderEngine::GlyphObject]  = TRUE;
+		else activePrimitiveLists_[RenderEngine::GlyphObject]  = FALSE;
+		
+		// Grids only depend on their own log
+		if (!lastLog_.isSame(Log::Grids, source->changeLog)) activePrimitiveLists_[RenderEngine::GridObject] = TRUE;
+	}
+	else
+	{
+		linePrimitives_[RenderEngine::NormalLineObject].forgetAll();
+		linePrimitives_[RenderEngine::SelectedLineObject].forgetAll();
+		rebuildSticks_ = TRUE;
+	}
+
+	// Always clear GUI line primitives
+	linePrimitives_[RenderEngine::NormalGuiLineObject].forgetAll();
+	linePrimitives_[RenderEngine::SelectedGuiLineObject].forgetAll();
+	
+	// Clear flagged lists
+	for (n=0; n<RenderEngine::nTriangleObjects; ++n) if (activePrimitiveLists_[n])
+	{
+		solidPrimitives_[n].clear();
+		transparentPrimitives_[n].clear();
+	}
+	
+	// Extra lists to clear for Glyphs
+	if (activePrimitiveLists_[RenderEngine::GlyphObject])
+	{
+		glyphTriangles_[RenderEngine::SolidTriangle].forgetAll();
+		glyphTriangles_[RenderEngine::TransparentTriangle].forgetAll();
+		glyphTriangles_[RenderEngine::WireTriangle].forgetAll();
+		glyphLines_.forgetAll();
+	}
+	
+	// Always draw unit cell, regardless of list status
+	renderCell(source);
+
+	// Draw main model (atoms, bonds, etc.)
+	if (activePrimitiveLists_[RenderEngine::BasicObject] || activePrimitiveLists_[RenderEngine::AtomSelectionObject]) renderAtomsAndBonds(source);
+
+	// Draw model glyphs
+	if (activePrimitiveLists_[RenderEngine::GlyphObject]) renderGlyphs(source);
+	renderTextGlyphs(source);
+
+	// Draw model grids
+	if (activePrimitiveLists_[RenderEngine::GridObject]) renderGrids(source);
+	
+	lastSource_ = source;
+	lastLog_ = source->changeLog;
+	
+	// Render additional data for active model
+	if ((renderType == OnscreenScene) && currentModel && gui.exists())
+	{
+		// Render embellshments for current UserAction
+		renderUserActions(source);
+		// Render extras arising from open tool windows (current model only)
+		renderWindowExtras(source);
+	}
+
+	// If the stick primitives were regenerated, need to create a new instance (after popping the old one)
+	if (rebuildSticks_) for (n = 0; n<RenderEngine::nLineObjects; ++n)
+	{
+		linePrimitives_[n].popInstance(NULL);
+		linePrimitives_[n].pushInstance(NULL);
+	}
+	else for (n = NormalGuiLineObject; n<RenderEngine::nLineObjects; ++n)
+	{
+		linePrimitives_[n].popInstance(NULL);
+		linePrimitives_[n].pushInstance(NULL);
+	}
+
+	// All 3D primitive objects have now been filtered, so sort and send to GL
+	sortAndSendGL();
+
+	// Render overlays
+	renderModelOverlays(source);
+
+	// Reset the clear lists flag
+	clearListsFlag_ = FALSE;
+
+	msg.exit("RenderEngine::renderModel");
+}
+
+// Render basic model information (atoms, bonds, labels, and glyphs)
+void RenderEngine::renderAtomsAndBonds(Model* source, Matrix baseTransform, bool isFragment)
+{
+	msg.enter("RenderEngine::renderAtomsAndBonds");
 	GLfloat colour_i[4], colour_j[4], alpha_i, penColour[4];
 	int id_i, labels, m, n, el_j;
 	Dnchar text;
@@ -237,12 +414,17 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 	Atom *i, *j, *k, *l, **atoms;
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
-	Matrix atomtransform, A, B;
+	Matrix atomTransform, A, B;
 	Refitem<Bond,int> *rb;
 	Refitem<Atom,int> *ra;
 	Atom::DrawStyle style_i, style_j, globalstyle;
 	Prefs::ColouringScheme scheme;
 	ForcefieldAtom *ffa;
+	
+	// Set target lists based on whether this is a fragment
+	RenderEngine::TriangleObject basicList = (isFragment ? GuiObject : BasicObject);
+	RenderEngine::TriangleObject selectionList = (isFragment ? GuiObject : AtomSelectionObject);
+	int baseLineList = (isFragment ? NormalGuiLineObject : NormalLineObject);
 	
 	// Grab global style values and atom radii
 	scheme = prefs.colourScheme();
@@ -266,8 +448,8 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 		pos = i->r();
 
 		// Move to local atom position
-		atomtransform = basetransform;
-		atomtransform.applyTranslation(pos.x, pos.y, pos.z);
+		atomTransform = baseTransform;
+		atomTransform.applyTranslation(pos.x, pos.y, pos.z);
 		
 		// Select colour
 		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_i);
@@ -302,26 +484,26 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			// Only need to draw something if the atom has no bonds
 			if (i->nBonds() == 0)
 			{
-				if (i->isSelected()) stickSelectedLines_.plotCross(0.5, atomtransform, colour_i);
-				else stickLines_.plotCross(0.5, atomtransform, colour_i);
+				if (i->isSelected()) linePrimitives_[baseLineList+1].plotCross(0.5, atomTransform, colour_i);
+				else linePrimitives_[baseLineList].plotCross(0.5, atomTransform, colour_i);
 			}
 		}
 		else
 		{
 			radius_i = aradius[style_i];
 			if (style_i == Atom::ScaledStyle) radius_i *= elements().el[i->element()].atomicRadius;
-			A = atomtransform;
+			A = atomTransform;
 			A.applyScaling(radius_i,radius_i,radius_i);
-			renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].atom_, colour_i, A);
+			renderPrimitive(basicList, primitives_[set_].atom_, colour_i, A);
 			if (i->isSelected())
 			{
 				if (transparentSel)
 				{
 					colour_i[3] = 0.5f;
-					renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedAtom_, colour_i, A);
+					renderPrimitive(selectionList, primitives_[set_].selectedAtom_, colour_i, A);
 					colour_i[3] = alpha_i;
 				}
-				else renderPrimitive(RenderEngine::AtomSelectionObject, primitives_[Q_].selectedAtom_, penColour, A, GL_LINE);
+				else renderPrimitive(selectionList, primitives_[set_].selectedAtom_, penColour, A, GL_LINE);
 			}
 		}
 
@@ -370,7 +552,7 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 			v = source->cell()->mimVector(i, j);
 			
 			// Render bond
-			renderBond(atomtransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item, transparentSel, penColour);
+			renderBond(basicList, selectionList, atomTransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item, transparentSel, penColour);
 		}
 		
 	}
@@ -440,24 +622,24 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 					mag -= radius_i*0.9;
 					mag *= 0.75;
 					// Construct transformation matrix
-					atomtransform = basetransform;
-					atomtransform.applyTranslation(pos.x, pos.y, pos.z);
+					atomTransform = baseTransform;
+					atomTransform.applyTranslation(pos.x, pos.y, pos.z);
 					A.setColumn(0, r1*mag, 0.0);
 					A.setColumn(1, r2*mag, 0.0);
 					A.setColumn(2, r3*mag, 0.0);
 					A.setColumn(3, 0.0, 0.0, 0.0, 1.0);
-					atomtransform *= A;
+					atomTransform *= A;
 
 					// Render ring
 					if (prefs.renderDashedAromatics())
 					{
-						if (globalstyle == Atom::StickStyle) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].segmentedLineRings_, colour_i, atomtransform);
-						else renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].segmentedTubeRings_, colour_i, atomtransform);
+						if (globalstyle == Atom::StickStyle) renderPrimitive(basicList, primitives_[set_].segmentedLineRings_, colour_i, atomTransform);
+						else renderPrimitive(basicList, primitives_[set_].segmentedTubeRings_, colour_i, atomTransform);
 					}
 					else
 					{
-						if (globalstyle == Atom::StickStyle) renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].lineRings_, colour_i, atomtransform);
-						else renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].tubeRings_, colour_i, atomtransform);
+						if (globalstyle == Atom::StickStyle) renderPrimitive(basicList, primitives_[set_].lineRings_, colour_i, atomTransform);
+						else renderPrimitive(basicList, primitives_[set_].tubeRings_, colour_i, atomTransform);
 					}
 
 					id_i += p->nAtoms();
@@ -553,32 +735,32 @@ void RenderEngine::renderModel(Model *source, Matrix basetransform)
 				delta = (mag - 6.0*dotradius) < 0.0 ? -1.0 : mag / 4.0;
 				
 				// The matrix 'atomtransform' will only contain the translation. Scaling will be applied to its copy in 'A'
-				atomtransform = basetransform;
-				atomtransform.applyTranslation(pos);
+				atomTransform = baseTransform;
+				atomTransform.applyTranslation(pos);
 				
 				// H-bond dot 1
-				if (delta > 0.0) atomtransform.applyTranslation(r1*delta);
-				A = atomtransform;
+				if (delta > 0.0) atomTransform.applyTranslation(r1*delta);
+				A = atomTransform;
 				A.applyScaling(dotradius, dotradius, dotradius);
-				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].spheres_, colour_i, A);
+				renderPrimitive(basicList, primitives_[set_].spheres_, colour_i, A);
 				
 				// H-bond dot 2
-				if (delta > 0.0) atomtransform.applyTranslation(r1*delta);
-				else atomtransform.applyTranslation(r1*mag*0.5);
-				A = atomtransform;
+				if (delta > 0.0) atomTransform.applyTranslation(r1*delta);
+				else atomTransform.applyTranslation(r1*mag*0.5);
+				A = atomTransform;
 				A.applyScaling(dotradius, dotradius, dotradius);
-				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].spheres_, colour_i, A);
+				renderPrimitive(basicList, primitives_[set_].spheres_, colour_i, A);
 				
 				// H-bond dot 3
-				if (delta > 0.0) atomtransform.applyTranslation(r1*delta);
-				else atomtransform.applyTranslation(r1*mag*0.5);
-				A = atomtransform;
+				if (delta > 0.0) atomTransform.applyTranslation(r1*delta);
+				else atomTransform.applyTranslation(r1*mag*0.5);
+				A = atomTransform;
 				A.applyScaling(dotradius, dotradius, dotradius);
-				renderPrimitive(RenderEngine::BasicObject, primitives_[Q_].spheres_, colour_i, A);
+				renderPrimitive(basicList, primitives_[set_].spheres_, colour_i, A);
 			}
 		}
 	}
-	msg.exit("RenderEngine::renderModel");
+	msg.exit("RenderEngine::renderAtomsAndBonds");
 }
 
 // Render model cell
@@ -598,7 +780,7 @@ void RenderEngine::renderCell(Model *source)
 	glMultMatrixd(A.matrix());
 	
 	// Draw a wire cube for the cell
-	primitives_[Q_].wireCube_.sendToGL();
+	primitives_[set_].wireCube_.sendToGL();
 
 	// Copy colour for axes, move to llh corner, and draw them
 	prefs.copyColour(Prefs::UnitCellAxesColour, colour);
@@ -606,7 +788,7 @@ void RenderEngine::renderCell(Model *source)
 	glTranslated(-0.5, -0.5, -0.5);
 	Vec3<double> v = source->cell()->lengths();
 	glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
-	primitives_[Q_].cellAxes_.sendToGL();
+	primitives_[set_].cellAxes_.sendToGL();
 
 	msg.exit("RenderEngine::renderCell");
 }
@@ -676,7 +858,7 @@ void RenderEngine::renderGrids(Model *source)
 			A.columnMultiply(0, g->nPoints().x);
 			A.columnMultiply(1, g->nPoints().y);
 			A.columnMultiply(2, g->nPoints().z);
-			renderPrimitive(RenderEngine::GridObject, primitives_[Q_].originCubes_, textcolour, A, GL_LINE, 1.0);
+			renderPrimitive(RenderEngine::GridObject, primitives_[set_].originCubes_, textcolour, A, GL_LINE, 1.0);
 		}
 	}
 	msg.exit("RenderEngine::renderGrids");

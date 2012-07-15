@@ -121,10 +121,14 @@ class Primitive
 	bool colouredVertexData();
 	// Flag that this primitive should not use instances (rendering will use vertex arrays)
 	void setNoInstances();
+	// Return whether this primitive uses instances
+	bool useInstances();
 	// Push instance layer from current vertex chunk list
 	void pushInstance(const QGLContext *context);
 	// Pop topmost instance layer
 	void popInstance(const QGLContext *context);
+	// Return context associated to topmost primitive on stack
+	const QGLContext *topContext();
 	// Set name of primitive
 	void setName(const char *s);
 	// Return name of primitive

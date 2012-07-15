@@ -1,5 +1,6 @@
 add_library(render
 engine.h
+engine_primitives.h
 gridprimitive.h
 primitive.h
 primitivegroup.h
@@ -10,6 +11,7 @@ vertexchunk.h
 engine.cpp
 engine_glyph.cpp
 engine_model.cpp
+engine_primitives.cpp
 engine_useractions.cpp
 engine_windows.cpp
 gridprimitive.cpp

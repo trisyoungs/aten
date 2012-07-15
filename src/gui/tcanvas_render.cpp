@@ -20,119 +20,54 @@
 */
 
 #include "gui/tcanvas.uih"
-#include "model/model.h"
+#include "main/aten.h"
 #include "base/sysfunc.h"
 
-// Draw 2D objects with QPainter
-void TCanvas::render2D(QPainter &painter, Model *source)
+// Perform main rendering
+void TCanvas::renderScene(int width, int height)
 {
-	msg.enter("TCanvas::render2D");
-	// Variables
-	static Dnchar text;
-	QColor color;
-	QBrush solidbrush(Qt::SolidPattern), nobrush(Qt::NoBrush);
-	GLfloat colour[4];
-	Vec4<double> screenr;
-	Vec3<double> r;
-	int i, skip, n;
-	double dx, halfw;
-
-	// Text Primitives
-	prefs.copyColour(Prefs::TextColour, colour);
-	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
-	solidbrush.setColor(color);
-	painter.setBrush(solidbrush);
-	painter.setPen(Qt::SolidLine);
-	painter.setPen(color);
-	engine_.renderText(painter, this);
-
-	// Active mode embellishments
-	prefs.copyColour(Prefs::BackgroundColour, colour);
-	color.setRgbF(1.0-colour[0], 1.0-colour[1], 1.0-colour[2], 1.0);
-	painter.setPen(color);
-	painter.setPen(Qt::DashLine);
-	painter.setBrush(nobrush);
-	switch (activeMode_)
+	// Begin the GL commands
+	if (!beginGl())
 	{
-		case (UserAction::NoAction):
-			break;
-		// Only selection mode where we draw a selection box
-		case (UserAction::SelectAction):
-			painter.drawRect(rMouseDown_.x, rMouseDown_.y, rMouseLast_.x-rMouseDown_.x, rMouseLast_.y-rMouseDown_.y);
-			break;
-		default:
-			break;
+		msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
+		msg.exit("TCanvas::renderScene");
+		return;
 	}
 
-	// Passive mode embellishments
-	switch (selectedMode_)
+	// If we're rendering offscreen, store the current context size so we can restore it afterwards
+	int oldWidth, oldHeight;
+	if (renderType_ != RenderEngine::OnscreenScene)
 	{
-		// Draw on distance ruler for drawing modes
-		case (UserAction::DrawAtomAction):
-		case (UserAction::DrawChainAction):
-			// Get pixel 'length' in Angstrom terms at current draw depth
-			r = source->screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
-			r -= source->screenToModel(contextWidth_/2, contextHeight_/2, currentDrawDepth_);
-			dx = 10.0 / r.magnitude();
-			
-			halfw = contextWidth_ / 2.0;
-			i = int( halfw / dx);
-			skip = 1;
-			while ( (i/skip) > 5)
-			{
-				skip += (skip == 1 ? 4 : 5);
-			}
-			for (n = -i; n <= i; n ++)
-			{
-				if ((n%skip) != 0) continue;
-				painter.drawLine(halfw + n*dx, 20, halfw + n*dx, 10);
-				painter.drawLine(halfw + n*dx, contextHeight_-20, halfw + n*dx, contextHeight_-10);
-				if (n != i)
-				{
-					painter.drawLine(halfw + (n+0.5*skip)*dx, contextHeight_-15, halfw + (n+0.5*skip)*dx, contextHeight_-10);
-					painter.drawLine(halfw + (n+0.5*skip)*dx, contextHeight_-15, halfw + (n+0.5*skip)*dx, contextHeight_-10);
-				}
-			}
-			painter.drawLine(halfw - i*dx, 10, halfw + i*dx, 10);
-			painter.drawLine(halfw - i*dx, contextHeight_-10, halfw + i*dx, contextHeight_-10);
-			for (n = -i; n <= i; n++)
-			{
-				if ((n%skip) != 0) continue;
-				renderText(halfw + n*dx - (n < 0 ? 8 : 3), contextHeight_, itoa(n));
-			}
-			break;
-		default:
-			break;
+		oldWidth = contextWidth_;
+		oldHeight = contextHeight_;
 	}
-	msg.exit("TCanvas::render2D");
-}
 
-// Render 3D objects for current displayModel_
-void TCanvas::render3D(Model *source, bool currentModel)
-{	
-	// Valid pointer set?
-	if (source == NULL) return;
-	msg.enter("TCanvas::render3D");
+	// Render model data - pass this TCanvas' QGLContext pointer so we can check it against the one owned by RenderEngine.
+	engine().renderScene(primitiveSet_, width, height, context(), renderType_, renderIconSource_);
+
+	// Swap buffers if necessary
+	if (prefs.manualSwapBuffers()) swapBuffers();
 	
-	// Render model
-	msg.print(Messenger::GL, " --> RENDERING BEGIN : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
-	
-	// If this is a trajectory frame, check its ID against the last one rendered
-	if (source->parent() != NULL)
+	// Pop primitive instance if we were using the TCanvas to render a high-quality offscreen pixmap
+	if ((primitiveSet_ == RenderEngine::HighQuality) && (!prefs.usePixelBuffers()))
 	{
-		displayFrameId_ = source->parent()->trajectoryFrameIndex();
-		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
+		msg.print(Messenger::Verbose, "GUI rendering offscreen, so popping instance created earlier.\n");
+		engine().popInstance(RenderEngine::HighQuality, context());
 	}
-		
-	// Render 3D elements (with OpenGL)
-	checkGlError();
-	if (selectedMode_ == UserAction::DrawFragmentAction) engine_.flagClearLists();
-	engine_.render3D(highQuality_, source, this, currentModel);
-	//glFlush();
-	checkGlError();
+	
+	// Always revert to lower quality for next pass
+	primitiveSet_ = RenderEngine::LowQuality;
+	
+	// If we're rendering offscreen, restore the old context size
+	if (renderType_ != RenderEngine::OnscreenScene)
+	{
+		contextWidth_ = oldWidth;
+		contextHeight_ = oldHeight;
+	}
+	
+	endGl();
 
-	msg.print(Messenger::GL, " --> RENDERING END\n");
-	msg.exit("TCanvas::render3D");
+	msg.exit("TCanvas::renderScene");
 }
 
 // Attempt to detect/check for corrupt rendering
@@ -169,7 +104,7 @@ void TCanvas::isRenderingOk()
 	if (!result)
 	{
 		prefs.setManualSwapBuffers(TRUE);
-		QMessageBox::information(NULL, "Rendering Check", "Aten detected that it's rendering was producing corrupt images. To attempt to remedy this, manual buffer swapping has been activated. If the main rendering canvas now displays everything correctly, you can add the line 'aten.prefs.manualswapbuffers = TRUE;' to your personal '.aten/user.dat' file in your home directory.");
+		QMessageBox::information(NULL, "Rendering Check", "Aten detected that it's rendering was producing corrupt images. To attempt to remedy this, manual buffer swapping has been activated. If the main rendering canvas now displays everything correctly, you can add the line 'aten.prefs.manualSwapBuffers = TRUE;' to your personal '.aten/user.txt' file in your home directory.");
 	}
 
 	// Set the clear colour back to the user-defined value

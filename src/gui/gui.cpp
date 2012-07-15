@@ -66,28 +66,6 @@
 // External Declarations
 GuiQt gui;
 
-// Bitmap Image Formats (conform to allowable pixmap formats in Qt)
-const char *bitmapFormatFilters[GuiQt::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
-const char *bitmapFormatExtensions[GuiQt::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
-GuiQt::BitmapFormat GuiQt::bitmapFormat(const char *s, bool reportError)
-{
-	GuiQt::BitmapFormat bf = (GuiQt::BitmapFormat) enumSearch("bitmap format",GuiQt::nBitmapFormats,bitmapFormatExtensions,s);
-	if ((bf == GuiQt::nBitmapFormats) && reportError) enumPrintValid(GuiQt::nBitmapFormats,bitmapFormatExtensions);
-	return bf;
-}
-GuiQt::BitmapFormat GuiQt::bitmapFormatFromFilter(const char *s)
-{
-	return (GuiQt::BitmapFormat) enumSearch("bitmap format",GuiQt::nBitmapFormats,bitmapFormatFilters,s);
-}
-const char *GuiQt::bitmapFormatFilter(GuiQt::BitmapFormat bf)
-{
-	return bitmapFormatFilters[bf];
-}
-const char *GuiQt::bitmapFormatExtension(GuiQt::BitmapFormat bf)
-{
-	return bitmapFormatExtensions[bf];
-}
-
 // Constructor
 GuiQt::GuiQt()
 {
@@ -95,7 +73,7 @@ GuiQt::GuiQt()
 	application_ = NULL;
 	mainWindow_ = NULL;
 	mainCanvas_ = NULL;
-	mainContext_ = NULL;
+	
 	prefsDialog = NULL;
 	forcefieldEditorDialog = NULL;
 	loadModelDialog = NULL;
@@ -166,16 +144,14 @@ void GuiQt::initialise(int &argc, char **argv)
 	{
 		mainWindow_ = new AtenForm;
 
-		// Create the main QGLWidget
-		QGLFormat format;
-		format.setSampleBuffers(TRUE);
-		mainContext_ = new QGLContext(format);
-
 		// Create the widget
-		mainCanvas_ = new TCanvas(mainContext_, mainWindow_);
+		mainCanvas_ = new TCanvas(engine().canvasContext(), mainWindow_);
 		mainCanvas_->probeFeatures();
 		mainCanvas_->setGeometry(0,0,800,600);
 		mainCanvas_->setCursor(Qt::ArrowCursor);
+		
+		// Reinitialise pixelbuffer so we can share its QGLContext
+		engine().initialisePixelBuffer(800,600, TRUE);
 	}
 	
 	msg.exit("GuiQt::initialise");
@@ -296,8 +272,7 @@ void GuiQt::run()
 	// Reset view of all loaded models
 	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
 
-	gui.mainCanvas()->setDrawingTarget(TCanvas::ScreenTarget);
-	gui.mainCanvas()->postRedisplay(TRUE);
+	gui.mainCanvas()->postRedisplay();
 
 	// Display message box warning if there was a filter load error
 	if (aten.nFiltersFailed() == -1)
@@ -522,38 +497,6 @@ bool GuiQt::saveBeforeClose()
 			}
 		}
 	}
-	return TRUE;
-}
-
-// Save image of current view
-bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality)
-{
-	msg.enter("GuiQt::saveImage");
-	if (bf == GuiQt::nBitmapFormats)
-	{
-		msg.print("Invalid bitmap format given to Gui::saveImage().\n");
-		msg.exit("GuiQt::saveImage");
-		return FALSE;
-	}
-
-	QPixmap pixmap;
-	// Get current mainCanvas_ geometry if none was specified
-	if (width == 0) width = mainCanvas_->width();
-	if (height == 0) height = mainCanvas_->height();
-	// Temporarily adjust label size...
-	int oldlabelsize = prefs.labelSize();
-	int newlabelsize = int (oldlabelsize*( (1.0*height / mainCanvas_->height()) ));
-	prefs.setLabelSize(newlabelsize);
-
-	pixmap = mainCanvas_->generateImage(width, height, TRUE);
-
-	// Restore label size
-	prefs.setLabelSize(oldlabelsize);
-
-	pixmap.save(filename, GuiQt::bitmapFormatExtension(bf), quality);
-	msg.print("Saved current view as '%s' [%ix%i %s]\n", filename, width, height, GuiQt::bitmapFormatFilter(bf));
-
-	msg.exit("GuiQt::saveImage");
 	return TRUE;
 }
 

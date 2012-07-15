@@ -19,15 +19,92 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "main/aten.h"
 #include "render/engine.h"
 #include "model/model.h"
 #include "model/fragment.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include "gui/fragments.h"
+#include "base/sysfunc.h"
+
+// Render active mode embellishments
+void RenderEngine::renderActiveModes(QPainter& painter, int width, int height)
+{
+	// Variables
+	Dnchar text;
+	QColor color;
+	QBrush nobrush(Qt::NoBrush);
+	GLfloat colour[4];
+	Vec3<double> r, mouseLast, mouseDown;
+	int i, skip, n;
+	double dx, halfw;
+
+	// Active mode embellishments
+	prefs.copyColour(Prefs::BackgroundColour, colour);
+	color.setRgbF(1.0-colour[0], 1.0-colour[1], 1.0-colour[2], 1.0);
+	painter.setPen(color);
+	painter.setPen(Qt::DashLine);
+	painter.setBrush(nobrush);
+	switch (gui.mainCanvas()->activeMode())
+	{
+		case (UserAction::NoAction):
+			break;
+		// Only selection mode where we draw a selection box
+		case (UserAction::SelectAction):
+			mouseLast = gui.mainCanvas()->rMouseLast();
+			mouseDown = gui.mainCanvas()->rMouseDown();
+			painter.drawRect(mouseDown.x, mouseDown.y, mouseLast.x-mouseDown.x, mouseLast.y-mouseDown.y);
+			break;
+		default:
+			break;
+	}
+
+	// Passive mode embellishments
+	Model *modelTarget = aten.currentModel();
+	if (modelTarget != NULL) switch (gui.mainCanvas()->selectedMode())
+	{
+		// Draw on distance ruler for drawing modes
+		case (UserAction::DrawAtomAction):
+		case (UserAction::DrawChainAction):
+			// Get pixel 'length' in Angstrom terms at current draw depth
+			r = modelTarget->screenToModel(width/2+10, contextHeight_/2, gui.mainCanvas()->currentDrawDepth());
+			r -= modelTarget->screenToModel(width/2, contextHeight_/2, gui.mainCanvas()->currentDrawDepth());
+			dx = 10.0 / r.magnitude();
+			
+			halfw = width / 2.0;
+			i = int( halfw / dx);
+			skip = 1;
+			while ( (i/skip) > 5)
+			{
+				skip += (skip == 1 ? 4 : 5);
+			}
+			for (n = -i; n <= i; n ++)
+			{
+				if ((n%skip) != 0) continue;
+				painter.drawLine(halfw + n*dx, 20, halfw + n*dx, 10);
+				painter.drawLine(halfw + n*dx, contextHeight_-20, halfw + n*dx, contextHeight_-10);
+				if (n != i)
+				{
+					painter.drawLine(halfw + (n+0.5*skip)*dx, contextHeight_-15, halfw + (n+0.5*skip)*dx, contextHeight_-10);
+					painter.drawLine(halfw + (n+0.5*skip)*dx, contextHeight_-15, halfw + (n+0.5*skip)*dx, contextHeight_-10);
+				}
+			}
+			painter.drawLine(halfw - i*dx, 10, halfw + i*dx, 10);
+			painter.drawLine(halfw - i*dx, contextHeight_-10, halfw + i*dx, contextHeight_-10);
+			for (n = -i; n <= i; n++)
+			{
+				if ((n%skip) != 0) continue;
+				painter.drawText(halfw + n*dx - (n < 0 ? 8 : 3), contextHeight_, itoa(n));
+			}
+			break;
+		default:
+			break;
+	}
+}
 
 // Render addition elements related to selected/active UserActions
-void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
+void RenderEngine::renderUserActions(Model *source)
 {
 	Matrix A;
 	Atom *i, *j, tempj;
@@ -38,6 +115,9 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 	double radius_i, radius_j;
 	Dnchar text;
 	Fragment *frag;
+
+	if (!gui.exists()) return;
+	TCanvas *canvas = gui.mainCanvas();
 
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
 	for (Refitem<Atom,int> *ri = canvas->pickedAtoms(); ri != NULL; ri = ri->next)
@@ -52,7 +132,7 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 		radius_i = prefs.atomStyleRadius(style_i);
 		if (style_i == Atom::ScaledStyle) radius_i *= elements().el[i->element()].atomicRadius;
 		A.applyScaling(radius_i, radius_i, radius_i);
-		renderPrimitive(RenderEngine::MiscObject, primitives_[Q_].selectedAtom_, colour, A, GL_LINE);
+		renderPrimitive(RenderEngine::GuiObject, primitives_[set_].selectedAtom_, colour, A, GL_LINE);
 	}
 
 	// Active user actions
@@ -122,7 +202,7 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 			A.applyTranslation(pos);
 			
 			// Render new (temporary) bond
-			renderBond(A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale());
+			renderBond(GuiObject, GuiObject, A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale());
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
@@ -149,11 +229,11 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 				A.setIdentity();
 				A.applyTranslation(pos);
 				// Did we find a valid anchor point?
-				if (m != NULL) renderModel(m, A);
+				if (m != NULL) renderAtomsAndBonds(m, A, TRUE);
 				else
 				{
 					prefs.copyColour(Prefs::TextColour, colour);
-					renderPrimitive(RenderEngine::MiscObject, &primitives_[Q_].crossedCube_, FALSE, colour, A, GL_LINE, 2.0);
+					renderPrimitive(RenderEngine::GuiObject, &primitives_[set_].crossedCube_, FALSE, colour, A, GL_LINE, 2.0);
 				}
 			}
 			else
@@ -162,9 +242,10 @@ void RenderEngine::renderUserActions(Model *source, TCanvas *canvas)
 				// Get drawing point origin, translate to it, and render the stored model
 				if (canvas->activeMode() == UserAction::DrawFragmentAction) pos = source->screenToModel(canvas->rMouseDown().x, canvas->rMouseDown().y, prefs.drawDepth());
 				else pos = source->screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());
-				A.setIdentity();;
+				A.setIdentity();
 				A.applyTranslation(pos);
-				renderModel(frag->orientedModel(), A);
+				A.print();
+				renderAtomsAndBonds(frag->orientedModel(), A, TRUE);
 			}
 			break;
 	}

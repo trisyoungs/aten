@@ -340,14 +340,13 @@ Prefs::Prefs()
 	partitionGridSize_.set(50,50,50);
 
 	// Rendering Options
-	useNiceText_ = TRUE;
 	distanceLabelFormat_ = "%0.3f ";
 	angleLabelFormat_ = "%0.2f";
 	chargeLabelFormat_ = "(%0.3f e)";
-	labelSize_ = 10;
+	labelSize_ = 1.5;
 	manualSwapBuffers_ = FALSE;
 	mouseMoveFilter_ = 10;
-	useFrameBuffer_ = FALSE;
+	usePixelBuffers_ = TRUE;
 	renderDashedAromatics_ = TRUE;
 	nModelsPerRow_ = 2;
 	drawHydrogenBonds_ = FALSE;
@@ -1892,27 +1891,15 @@ const char *Prefs::chargeLabelFormat()
 }
 
 // Set the scale of labels in the model
-void Prefs::setLabelSize(int size)
+void Prefs::setLabelSize(double size)
 {
 	labelSize_ = size;
 }
 
 // Return the current label scale
-int Prefs::labelSize() const
+double Prefs::labelSize() const
 {
 	return labelSize_;
-}
-
-// Set whether to use nice text rendering
-void Prefs::setUseNiceText(bool b)
-{
-	useNiceText_ = b;
-}
-
-// Return whether to use nice text rendering
-bool Prefs::useNiceText() const
-{
-	return useNiceText_;
 }
 
 // Set manual swapbuffers
@@ -1928,15 +1915,15 @@ bool Prefs::manualSwapBuffers() const
 }
 
 // Return whether manual buffer swapping is enabled
-bool Prefs::useFrameBuffer() const
+bool Prefs::usePixelBuffers() const
 {
-	return useFrameBuffer_;
+	return usePixelBuffers_;
 }
 
 // Set manual swapbuffers
-void Prefs::setUseFrameBuffer(bool on)
+void Prefs::setUsePixelBuffers(bool on)
 {
-	useFrameBuffer_ = on;
+	usePixelBuffers_ = on;
 }
 
 // Return whether to use solid or dashed circles for aromatic ring rendering

@@ -209,7 +209,7 @@ void GlyphsWidget::on_GlyphList_currentRowChanged(int row)
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
 		g->setSelected(ui.GlyphList->item(i)->isSelected());
 	}
-	gui.mainCanvas()->postRedisplay(FALSE, TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphList_itemSelectionChanged()
@@ -312,21 +312,21 @@ void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 		g->setSelected( ui.GlyphList->item(i)->isSelected());
 	}
 	refreshing_ = FALSE;
-	gui.mainCanvas()->postRedisplay(FALSE, TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphHideAllButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
-	gui.mainCanvas()->postRedisplay(FALSE, TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphHideNoneButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(TRUE);
-	gui.mainCanvas()->postRedisplay(FALSE, TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
@@ -337,7 +337,7 @@ void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
 		g->setVisible(FALSE);
 	}
-	gui.mainCanvas()->postRedisplay(FALSE, TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
@@ -360,7 +360,7 @@ void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
 		item->setText(s);
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
-	gui.mainCanvas()->postRedisplay(FALSE, TRUE);
+	gui.mainCanvas()->postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphLineEdit_returnPressed()

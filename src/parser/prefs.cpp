@@ -97,7 +97,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "hDistance",			VTypes::DoubleData,		0, FALSE },
 	{ "imageQuality",		VTypes::IntegerData,		0, FALSE },
 	{ "keyAction",			VTypes::StringData,		Prefs::nModifierKeys, FALSE },
-	{ "labelSize",			VTypes::IntegerData,		0, FALSE },
+	{ "labelSize",			VTypes::DoubleData,		0, FALSE },
 	{ "levelOfDetailStartZ",	VTypes::DoubleData,		0, FALSE },
 	{ "levelOfDetailWidth",		VTypes::DoubleData,		0, FALSE },
 	{ "levelsOfDetail",		VTypes::IntegerData,		0, FALSE },
@@ -141,8 +141,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "transparentSelection",	VTypes::IntegerData,		0, FALSE },
 	{ "unitCellAxesColour",		VTypes::DoubleData,		4, FALSE },
 	{ "unitCellColour",		VTypes::DoubleData,		4, FALSE },
-	{ "useFrameBuffer",		VTypes::IntegerData,		0, FALSE },
-	{ "useNiceText",		VTypes::IntegerData,		0, FALSE },
+	{ "usePixelBuffers",		VTypes::IntegerData,		0, FALSE },
 	{ "vdwCutoff",			VTypes::DoubleData,		0, FALSE },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, FALSE },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, FALSE },
@@ -552,11 +551,8 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::UnitCellColour), 4);
 			break;
-		case (PreferencesVariable::UseFrameBuffer):
-			rv.set( ptr->useFrameBuffer() );
-			break;
-		case (PreferencesVariable::UseNiceText):
-			rv.set( ptr->useNiceText() );
+		case (PreferencesVariable::UsePixelBuffers):
+			rv.set( ptr->usePixelBuffers() );
 			break;
 		case (PreferencesVariable::VdwCutoff):
 			rv.set( ptr->vdwCutoff() );
@@ -683,7 +679,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
 			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
-			gui.mainCanvas()->updatePrimitives();
+			engine().updatePrimitives();
 			break;
 		case (PreferencesVariable::BackCull):
 			ptr->setBackfaceCulling(newvalue.asBool());
@@ -697,7 +693,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setBondStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
 			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
-			gui.mainCanvas()->updatePrimitives();
+			engine().updatePrimitives();
 			break;
 		case (PreferencesVariable::BondTolerance):
 			ptr->setBondTolerance( newvalue.asDouble(result) );
@@ -860,7 +856,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			}
 			break;
 		case (PreferencesVariable::LabelSize):
-			ptr->setLabelSize( newvalue.asInteger(result) );
+			ptr->setLabelSize( newvalue.asDouble(result) );
 			break;
 		case (PreferencesVariable::LevelOfDetailStartZ):
 			ptr->setLevelOfDetailStartZ( newvalue.asDouble(result) );
@@ -870,7 +866,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::LevelsOfDetail):
 			ptr->setLevelsOfDetail( newvalue.asInteger(result) );
-			gui.mainCanvas()->updatePrimitives();
+			engine().updatePrimitives();
 			break;
 		case (PreferencesVariable::LineAliasing):
 			ptr->setLineAliasing( newvalue.asBool() );
@@ -960,7 +956,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::SelectionScale):
 			ptr->setSelectionScale( newvalue.asDouble(result) );
-			gui.mainCanvas()->updatePrimitives();
+			engine().updatePrimitives();
 			break;
 		case (PreferencesVariable::Shininess):
 			ptr->setShininess( newvalue.asInteger(result) );
@@ -1032,11 +1028,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(result));
 			break;
-		case (PreferencesVariable::UseFrameBuffer):
-			ptr->setUseFrameBuffer( newvalue.asBool() );
-			break;
-		case (PreferencesVariable::UseNiceText):
-			ptr->setUseNiceText( newvalue.asBool() );
+		case (PreferencesVariable::UsePixelBuffers):
+			ptr->setUsePixelBuffers( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::VdwCutoff):
 			ptr->setVdwCutoff( newvalue.asDouble(result) );
@@ -1070,12 +1063,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			result = FALSE;
 			break;
 	}
-	// Update model and main view  TGAY necessary?
-// 	if (result)
-// 	{
-// 		if (aten.current.rs() != NULL) aten.current.rs()->changeLog.add(Log::Visual);
-// 		gui.mainCanvas()->postRedisplay();
-// 	}
+
 	msg.exit("PreferencesVariable::setAccessor");
 	return result;
 }

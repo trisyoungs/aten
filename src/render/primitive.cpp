@@ -273,6 +273,12 @@ void Primitive::setNoInstances()
 	useInstances_ = FALSE;
 }
 
+// Return whether this primitive uses instances
+bool Primitive::useInstances()
+{
+	return useInstances_;
+}
+
 // Push instance of primitive
 void Primitive::pushInstance(const QGLContext *context)
 {
@@ -355,8 +361,18 @@ void Primitive::popInstance(const QGLContext *context)
 			}
 			else glDeleteLists(pi->id(),1);
 		}
+		instances_.removeLast();
 	}
-	instances_.removeLast();
+	else printf("Internal Error: Tried to pop an instance for context %p when one didn't exist.\n", context);
+}
+
+// Return context associated to topmost primitive on stack
+const QGLContext *Primitive::topContext()
+{
+	if (!useInstances_) return NULL;
+	PrimitiveInstance *pi = instances_.last();
+	if (pi != NULL) return pi->context();
+	else printf("Internal Error: Tried to get context for topmost instance in primitive '%s', but no instances exist.\n", name_.get());
 }
 
 // Send to OpenGL (i.e. render)

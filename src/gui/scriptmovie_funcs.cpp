@@ -67,6 +67,7 @@ void ScriptMovieWidget::on_LoadScriptButton_clicked(bool on)
 
 void ScriptMovieWidget::on_SaveScriptButton_clicked(bool on)
 {
+	// TODO
 }
 
 void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
@@ -137,11 +138,6 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid);
 	aten.initialiseImageRedirect(basename, maxframes);
 	
-	// Temporarily adjust label size...
-	int oldlabelsize = prefs.labelSize();
-	int newlabelsize = int (oldlabelsize*( (1.0*height / gui.mainCanvas()->height()) ));
-	prefs.setLabelSize(newlabelsize);
-
 	int progid = progress.initialise("Saving scripted movie frames...", -1, FALSE);
 	bool canceled = FALSE;
 	ReturnValue rv;
@@ -151,9 +147,6 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
-
-	// Restore label size
-	prefs.setLabelSize(oldlabelsize);
 
 	// Now run external program to create movie
 	TProcess encoderProcess;

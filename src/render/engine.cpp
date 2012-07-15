@@ -27,322 +27,136 @@
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include "main/aten.h"
+#include "base/sysfunc.h"
 #include <math.h>
 
-/*
-// Render Primitives
-*/
-
-// Constructor
-RenderPrimitives::RenderPrimitives()
+// Class return function
+RenderEngine &engine()
 {
-	// Primitives
-	requestedQuality_ = -1;
-	currentQuality_ = -1;
-	stackSize_ = 0;
-	
-	// Set names of primitives (for bug-tracking)
-	atom_.setName("Atom");
-	selectedAtom_.setName("SelectedAtom");
-	bonds_[Atom::TubeStyle][Bond::Single].setName("Bond[Tube,Single]");
-	bonds_[Atom::SphereStyle][Bond::Single].setName("Bond[Sphere,Single]");
-	bonds_[Atom::ScaledStyle][Bond::Single].setName("Bond[Scaled,Single]");
-	selectedBonds_[Atom::TubeStyle][Bond::Single].setName("SelectedBond[Tube,Single]");
-	selectedBonds_[Atom::SphereStyle][Bond::Single].setName("SelectedBond[Sphere,Single]");
-	selectedBonds_[Atom::ScaledStyle][Bond::Single].setName("SelectedBond[Scaled,Single]");
-	bonds_[Atom::TubeStyle][Bond::Double].setName("Bond[Tube,Double]");
-	bonds_[Atom::SphereStyle][Bond::Double].setName("Bond[Sphere,Double]");
-	bonds_[Atom::ScaledStyle][Bond::Double].setName("Bond[Scaled,Double]");
-	selectedBonds_[Atom::TubeStyle][Bond::Double].setName("SelectedBond[Tube,Double]");
-	selectedBonds_[Atom::SphereStyle][Bond::Double].setName("SelectedBond[Sphere,Double]");
-	selectedBonds_[Atom::ScaledStyle][Bond::Double].setName("SelectedBond[Scaled,Double]");
-	bonds_[Atom::TubeStyle][Bond::Triple].setName("Bond[Tube,Triple]");
-	bonds_[Atom::SphereStyle][Bond::Triple].setName("Bond[Sphere,Triple]");
-	bonds_[Atom::ScaledStyle][Bond::Triple].setName("Bond[Scaled,Triple]");
-	selectedBonds_[Atom::TubeStyle][Bond::Triple].setName("SelectedBond[Tube,Triple]");
-	selectedBonds_[Atom::SphereStyle][Bond::Triple].setName("SelectedBond[Sphere,Triple]");
-	selectedBonds_[Atom::ScaledStyle][Bond::Triple].setName("SelectedBond[Scaled,Triple]");
-	bonds_[Atom::TubeStyle][Bond::Aromatic].setName("Bond[Tube,Aromatic]");
-	bonds_[Atom::SphereStyle][Bond::Aromatic].setName("Bond[Sphere,Aromatic]");
-	bonds_[Atom::ScaledStyle][Bond::Aromatic].setName("Bond[Scaled,Aromatic]");
-	selectedBonds_[Atom::TubeStyle][Bond::Aromatic].setName("SelectedBond[Tube,Aromatic]");
-	selectedBonds_[Atom::SphereStyle][Bond::Aromatic].setName("SelectedBond[Sphere,Aromatic]");
-	selectedBonds_[Atom::ScaledStyle][Bond::Aromatic].setName("SelectedBond[Scaled,Aromatic]");
-	cubes_.setName("Cubes");
-	originCubes_.setName("OriginCubes");
-	spheres_.setName("Spheres");
-	cylinders_.setName("Cylinders");
-	cones_.setName("Cones");
-	tubeRings_.setName("TubeRings");
-	segmentedTubeRings_.setName("SegmentedTubeRings");
-	lineRings_.setName("LineRings");
-	segmentedLineRings_.setName("SegmentedLineRings");
-	wireCube_.setName("WireCube");
-	crossedCube_.setName("CrossedCube");
-	cellAxes_.setName("CellAxes");
-	rotationGlobe_.setName("RotationGlobe");
-	rotationGlobeAxes_.setName("RotationGlobeAxes");
+	static RenderEngine engine_;
+	return engine_;
 }
 
-// Destructor
-RenderPrimitives::~RenderPrimitives()
+// Bitmap Image Formats (conform to allowable pixmap formats in Qt)
+const char *bitmapFormatFilters[RenderEngine::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
+const char *bitmapFormatExtensions[RenderEngine::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
+RenderEngine::BitmapFormat RenderEngine::bitmapFormat(const char *s, bool reportError)
 {
+	RenderEngine::BitmapFormat bf = (RenderEngine::BitmapFormat) enumSearch("bitmap format", RenderEngine::nBitmapFormats, bitmapFormatExtensions, s);
+	if ((bf == RenderEngine::nBitmapFormats) && reportError) enumPrintValid(RenderEngine::nBitmapFormats, bitmapFormatExtensions);
+	return bf;
+}
+RenderEngine::BitmapFormat RenderEngine::bitmapFormatFromFilter(const char *s)
+{
+	return (RenderEngine::BitmapFormat) enumSearch("bitmap format", RenderEngine::nBitmapFormats, bitmapFormatFilters,s);
+}
+const char *RenderEngine::bitmapFormatFilter(RenderEngine::BitmapFormat bf)
+{
+	return bitmapFormatFilters[bf];
+}
+const char *RenderEngine::bitmapFormatExtension(RenderEngine::BitmapFormat bf)
+{
+	return bitmapFormatExtensions[bf];
 }
 
-// Set the desired primitive quality
-void RenderPrimitives::setQuality(int quality)
+// Primitive Set
+const char *primitiveSetKeywords[RenderEngine::nPrimitiveSets] = { "offscreen-lo", "offscreen-hi" };
+const char *RenderEngine::primitiveSet(PrimitiveSet ps)
 {
-	requestedQuality_ = quality;
+	return primitiveSetKeywords[ps];
 }
-	
-// Return current primitive instance stacksize
-int RenderPrimitives::stackSize()
-{
-	return stackSize_;
-}
-
-// (Re)Generate primitives
-void RenderPrimitives::recreatePrimitives(bool force)
-{
-	msg.enter("RenderPrimitives::recreatePrimitives");
-	double radius, lodratio, aradius[Atom::nDrawStyles], bradius[Atom::nDrawStyles], selscale;
-	int n, m, lod, nstacks, nslices;
-	
-	// If current quality is the same as the requested quality, do nothing
-	if ((requestedQuality_ == currentQuality_) && (!force))
-	{
-		msg.exit("RenderPrimitives::recreatePrimitives");
-		return;
-	}
-
-	currentQuality_ = requestedQuality_;
-
-	// Clear old primitive groups
-	atom_.clear();
-	selectedAtom_.clear();
-	for (n=0; n<Atom::nDrawStyles; ++n)
-	{
-		for (m=0; m<Bond::nBondTypes; ++m)
-		{
-			bonds_[n][m].clear();
-			selectedBonds_[n][m].clear();
-		}
-	}
-	tubeRings_.clear();
-	segmentedTubeRings_.clear();
-	lineRings_.clear();
-	segmentedLineRings_.clear();
-	spheres_.clear();
-	cubes_.clear();
-	originCubes_.clear();
-	cylinders_.clear();
-	cones_.clear();
-	wireCube_.clear();
-	crossedCube_.clear();
-	cellAxes_.clear();
-	rotationGlobe_.clear();
-	rotationGlobeAxes_.clear();
-	
-	// To clean up following code, grab radii here
-	for (n=0; n<Atom::nDrawStyles; ++n)
-	{
-		aradius[n] = prefs.atomStyleRadius( (Atom::DrawStyle) n);
-		bradius[n] = prefs.bondStyleRadius( (Atom::DrawStyle) n);
-	}
-	selscale = prefs.selectionScale();
-
-	// Loop over levels of detail
-	for (lod=0; lod < prefs.levelsOfDetail(); ++lod)
-	{
-		// Calculate general level-of-detail ratio, which ranges from 1 (at lod=0) to 0 (at lod=nlevels)
-		lodratio = 1.0 - (double (lod)/prefs.levelsOfDetail());
-		nstacks = max(3,(int) (currentQuality_*lodratio*0.75));
-		nslices = max(3,(int) (currentQuality_*lodratio*1.5));
-		
-		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
-		atom_.primitive(lod).plotSphere(1.0, nstacks, nslices);
-		selectedAtom_.primitive(lod).plotSphere(selscale, nstacks, nslices);
-		
-		// Bond primitive accuracy
-		nstacks = max(1,(int) (currentQuality_*lodratio*0.25));
-		nslices = max(3,(int) (currentQuality_*lodratio));
-		
-		// All sphere styles - Single and Aromatic Bonds
-		bonds_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
-		bonds_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
-		bonds_[Atom::ScaledStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle], bradius[Atom::ScaledStyle], nstacks, nslices);
-		selectedBonds_[Atom::TubeStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle]*selscale, bradius[Atom::TubeStyle]*selscale, nstacks, nslices);
-		selectedBonds_[Atom::SphereStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
-		selectedBonds_[Atom::ScaledStyle][Bond::Single].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
-		bonds_[Atom::TubeStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle], bradius[Atom::TubeStyle], nstacks, nslices);
-		bonds_[Atom::SphereStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle], bradius[Atom::SphereStyle], nstacks, nslices);
-		bonds_[Atom::ScaledStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle], bradius[Atom::ScaledStyle], nstacks, nslices);
-		selectedBonds_[Atom::TubeStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::TubeStyle]*selscale, bradius[Atom::TubeStyle]*selscale, nstacks, nslices);
-		selectedBonds_[Atom::SphereStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::SphereStyle]*selscale, bradius[Atom::SphereStyle]*selscale, nstacks, nslices);
-		selectedBonds_[Atom::ScaledStyle][Bond::Aromatic].primitive(lod).plotCylinder(0,0,0,0,0,1,bradius[Atom::ScaledStyle]*selscale, bradius[Atom::ScaledStyle]*selscale, nstacks, nslices);
-		
-		// All styles - Double Bond
-		bonds_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
-		bonds_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5, bradius[Atom::TubeStyle]*0.5, nstacks, nslices);
-		bonds_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
-		bonds_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5, bradius[Atom::SphereStyle]*0.5, nstacks, nslices);
-		bonds_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
-		bonds_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.50,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5, bradius[Atom::ScaledStyle]*0.5, nstacks, nslices);
-		selectedBonds_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5*selscale, bradius[Atom::TubeStyle]*0.5*selscale, nstacks, nslices);
-		selectedBonds_[Atom::TubeStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.5*selscale, bradius[Atom::TubeStyle]*0.5*selscale, nstacks, nslices);
-		selectedBonds_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::SphereStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5*selscale, bradius[Atom::SphereStyle]*0.5*selscale, nstacks, nslices);
-		selectedBonds_[Atom::SphereStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.5*selscale, bradius[Atom::SphereStyle]*0.5*selscale, nstacks, nslices);
-		selectedBonds_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5*selscale, bradius[Atom::ScaledStyle]*0.5*selscale, nstacks, nslices);
-		selectedBonds_[Atom::ScaledStyle][Bond::Double].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.5,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.5*selscale, bradius[Atom::ScaledStyle]*0.5*selscale, nstacks, nslices);
-		
-		// All styles - Triple Bond
-		bonds_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.33, bradius[Atom::TubeStyle]*0.33, nstacks, nslices);
-		bonds_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.33, bradius[Atom::TubeStyle]*0.33, nstacks, nslices);
-		bonds_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.33, bradius[Atom::TubeStyle]*0.33, nstacks, nslices);
-		bonds_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.33, bradius[Atom::SphereStyle]*0.33, nstacks, nslices);
-		bonds_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.33, bradius[Atom::SphereStyle]*0.33, nstacks, nslices);
-		bonds_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.33, bradius[Atom::SphereStyle]*0.33, nstacks, nslices);
-		bonds_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33, bradius[Atom::ScaledStyle]*0.33, nstacks, nslices);
-		bonds_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33, bradius[Atom::ScaledStyle]*0.33, nstacks, nslices);
-		bonds_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33, bradius[Atom::ScaledStyle]*0.33, nstacks, nslices);
-		selectedBonds_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.33*selscale, bradius[Atom::TubeStyle]*0.33*selscale, nstacks, nslices);
-		selectedBonds_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.33*selscale, bradius[Atom::TubeStyle]*0.33*selscale, nstacks, nslices);
-		selectedBonds_[Atom::TubeStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::TubeStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::TubeStyle]*0.33*selscale, bradius[Atom::TubeStyle]*0.33*selscale, nstacks, nslices);
-		selectedBonds_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.33*selscale, bradius[Atom::SphereStyle]*0.33*selscale, nstacks, nslices);
-		selectedBonds_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.33*selscale, bradius[Atom::SphereStyle]*0.33*selscale, nstacks, nslices);
-		selectedBonds_[Atom::SphereStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::SphereStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::SphereStyle]*0.33*selscale, bradius[Atom::SphereStyle]*0.33*selscale, nstacks, nslices);
-		selectedBonds_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(-bradius[Atom::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33*selscale, bradius[Atom::ScaledStyle]*0.33*selscale, nstacks, nslices);
-		selectedBonds_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(0.0,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33*selscale, bradius[Atom::ScaledStyle]*0.33*selscale, nstacks, nslices);
-		selectedBonds_[Atom::ScaledStyle][Bond::Triple].primitive(lod).plotCylinder(bradius[Atom::ScaledStyle]*0.66,0.0,0.0,0.0, 0.0, 1.0, bradius[Atom::ScaledStyle]*0.33*selscale, bradius[Atom::ScaledStyle]*0.33*selscale, nstacks, nslices);
-		
-		// Other primitives
-		nstacks = max(3,(int) (currentQuality_*lodratio*0.75));
-		nslices = max(3,(int) (currentQuality_*lodratio*1.5));
-		cubes_.primitive(lod).createCube(1.0, max(1, int(currentQuality_*lodratio)), -0.5, -0.5, -0.5);
-		originCubes_.primitive(lod).createCube(1.0, max(1, int(currentQuality_*lodratio)), 0.0, 0.0, 0.0);
-		spheres_.primitive(lod).plotSphere(1.0, nstacks, nslices);
-		cylinders_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,1.0,nstacks, nslices);
-		cones_.primitive(lod).plotCylinder(0,0,0,0,0,1,1.0,0.0,nstacks,nslices);
-		tubeRings_.primitive(lod).plotRing(1.0, 0.1, 10, nslices, 5);
-		segmentedTubeRings_.primitive(lod).plotRing(1.0, 0.1, 20, nslices, 5, TRUE);
-		lineRings_.primitive(lod).plotCircle(1.0, 10, 5);
-		segmentedLineRings_.primitive(lod).plotCircle(1.0, 20, 5, TRUE);
-	}
-
-	// One-off objects
-	wireCube_.createWireCube(1.0);
-	crossedCube_.createCrossedCube(1.0);
-	cellAxes_.createCellAxes();
-	rotationGlobe_.plotSphere(0.75,10,13);
-	rotationGlobeAxes_.createRotationGlobeAxes(8,10);
-
-	msg.exit("RenderPrimitives::recreatePrimitives");
-}
-
-// Create instance for primitives
-void RenderPrimitives::pushInstance(const QGLContext* context, bool forceRegenerate)
-{
-	msg.enter("RenderPrimitives::pushInstance");
-	
-	// Recreate primitives
-	recreatePrimitives(forceRegenerate);
-	
-	// Push instances
-	atom_.pushInstance(context);
-	selectedAtom_.pushInstance(context);
-	for (int n=0; n<Atom::nDrawStyles; ++n)
-	{
-		for (int m=0; m<Bond::nBondTypes; ++m)
-		{
-			bonds_[n][m].pushInstance(context);
-			selectedBonds_[n][m].pushInstance(context);
-		}
-	}
-	tubeRings_.pushInstance(context);
-	segmentedTubeRings_.pushInstance(context);
-	lineRings_.pushInstance(context);
-	segmentedLineRings_.pushInstance(context);
-	spheres_.pushInstance(context);
-	cubes_.pushInstance(context);
-	originCubes_.pushInstance(context);
-	cylinders_.pushInstance(context);
-	cones_.pushInstance(context);
-	wireCube_.pushInstance(context);
-	crossedCube_.pushInstance(context);
-	cellAxes_.pushInstance(context);
-	rotationGlobe_.pushInstance(context);
-	rotationGlobeAxes_.pushInstance(context);
-
-	// Increase stacksize
-	++stackSize_;
-
-	msg.exit("RenderPrimitives::pushInstance");
-}
-
-// Pop topmost instance for primitives
-void RenderPrimitives::popInstance(const QGLContext *context)
-{
-	msg.enter("RenderPrimitives::popInstance");
-	atom_.popInstance(context);
-	selectedAtom_.popInstance(context);
-	for (int n=0; n<Atom::nDrawStyles; ++n)
-	{
-		for (int m=0; m<Bond::nBondTypes; ++m)
-		{
-			bonds_[n][m].popInstance(context);
-			selectedBonds_[n][m].popInstance(context);
-		}
-	}
-	tubeRings_.popInstance(context);
-	segmentedTubeRings_.popInstance(context);
-	lineRings_.popInstance(context);
-	segmentedLineRings_.popInstance(context);
-	spheres_.popInstance(context);
-	cubes_.popInstance(context);
-	originCubes_.popInstance(context);
-	cylinders_.popInstance(context);
-	cones_.popInstance(context);
-	wireCube_.popInstance(context);
-	crossedCube_.popInstance(context);
-	cellAxes_.popInstance(context);
-	rotationGlobe_.popInstance(context);
-	rotationGlobeAxes_.popInstance(context);
-
-	// Decrease stacksize
-	--stackSize_;
-
-	msg.exit("RenderPrimitives::popInstance");
-}
-
-/*
-// Render Engine
-*/
 
 // Constructor
 RenderEngine::RenderEngine()
 {
+	// Render Target
+	displayFrameId_ = -1;
+	pixelBufferContext_ = NULL;
+	pixelBuffer_ = NULL;
+	pixelBufferHeight_ = 0;
+	pixelBufferWidth_ = 0;
+
+	// Check VBO capability, if requested.
+	// There are some things to consider here, namely that we can *only* use and create VBOs on the mainWidget's context.
+	// The major reason it that, since QGLWidget::renderPixmap() seems to fail regularly when reusing the main context (and
+	// which cannot be done at all on Windows platforms) we either have to regenerate and manage a secondary set of 
+	// VBOs when rendering to offscreen bitmaps, or simply not use VBOs when rendering offscreen bitmaps.
+	// The latter is simpler, so this function and the main rendering call take note of which context is being used.
+	if (prefs.instanceType() == PrimitiveInstance::VBOInstance)
+	{
+		// Get Extensions string and check for presence of 'GL_ARB_vertex_buffer_object'
+		const GLubyte *glexts = NULL;
+		glexts = glGetString( GL_EXTENSIONS );
+		msg.print(Messenger::Verbose, "Available GL Extensions are : %s\n", glexts);
+		if (strstr( (const char *) glexts, "GL_ARB_vertex_buffer_object") == 0)
+		{
+			printf("Error: VBOs requested but the extension is not available. Falling back to display lists.\n");
+			prefs.setInstanceType(PrimitiveInstance::ListInstance);
+		}
+		else
+		{
+			// Store VBO function pointers (Windows only)
+			#ifdef _WIN32
+			Primitive::glGenBuffers = (PFNGLGENBUFFERSPROC) wglGetProcAddress("glGenBuffers");
+			Primitive::glBindBuffer = (PFNGLBINDBUFFERPROC) wglGetProcAddress("glBindBuffer");
+			Primitive::glBufferData = (PFNGLBUFFERDATAPROC) wglGetProcAddress("glBufferData");
+			Primitive::glDeleteBuffers = (PFNGLDELETEBUFFERSPROC) wglGetProcAddress("glDeleteBuffers");
+			if ((Primitive::glGenBuffers == NULL) || (Primitive::glBindBuffer == NULL) || (Primitive::glBufferData == NULL) || (Primitive::glDeleteBuffers == NULL))
+			{
+				printf("Error: VBOs requested but the relevant procedures could not be located. Falling back to display lists.\n");
+				prefs.setInstanceType(PrimitiveInstance::ListInstance);
+			}
+			#endif
+		}
+	}
+
 	// Primitives
 	for (int n=0; n<nTriangleStyles; ++n)
 	{
 		glyphTriangles_[n].setColourData(TRUE);
 		glyphTriangles_[n].setNoInstances();
 	}
-	stickLines_.setColourData(TRUE);
-	stickLines_.setType(GL_LINES);
-	stickSelectedLines_.setColourData(TRUE);
-	stickSelectedLines_.setType(GL_LINES);
+	glyphTriangles_[RenderEngine::SolidTriangle].setName("GlyphTriangle[Solid]");
+	glyphTriangles_[RenderEngine::TransparentTriangle].setName("GlyphTriangle[Transparent]");
+	glyphTriangles_[RenderEngine::WireTriangle].setName("GlyphTriangle[Wire]");
+	linePrimitives_[RenderEngine::NormalLineObject].setColourData(TRUE);
+	linePrimitives_[RenderEngine::NormalLineObject].setType(GL_LINES);
+	linePrimitives_[RenderEngine::NormalLineObject].setName("LineLines");
+	linePrimitives_[RenderEngine::SelectedLineObject].setColourData(TRUE);
+	linePrimitives_[RenderEngine::SelectedLineObject].setType(GL_LINES);
+	linePrimitives_[RenderEngine::SelectedLineObject].setName("LineSelectedLines");
+	linePrimitives_[RenderEngine::NormalGuiLineObject].setColourData(TRUE);
+	linePrimitives_[RenderEngine::NormalGuiLineObject].setType(GL_LINES);
+	linePrimitives_[RenderEngine::NormalGuiLineObject].setName("GuiLineLines");
+	linePrimitives_[RenderEngine::SelectedGuiLineObject].setColourData(TRUE);
+	linePrimitives_[RenderEngine::SelectedGuiLineObject].setType(GL_LINES);
+	linePrimitives_[RenderEngine::SelectedGuiLineObject].setName("GuiStickLines");
 	glyphLines_.setColourData(TRUE);
 	glyphLines_.setType(GL_LINES);
 	glyphLines_.setNoInstances();
+	glyphLines_.setName("glyphLines");
 	initialiseTransparency();
 	scaledAtomAdjustments_ = new double[elements().nElements()];
-	primitives_[0].setQuality(prefs.primitiveQuality());
-	primitives_[1].setQuality(prefs.imagePrimitiveQuality());
+	primitives_[RenderEngine::LowQuality].setQuality(prefs.primitiveQuality());
+	primitives_[RenderEngine::HighQuality].setQuality(prefs.imagePrimitiveQuality());
 	lastSource_ = NULL;
 	rebuildSticks_ = FALSE;
-	Q_ = 0;
+	set_ = RenderEngine::LowQuality;
 	clearListsFlag_ = FALSE;
 	calculateAdjustments();
+
+	// Setup QGLFormat for all contexts
+	QGLFormat::defaultFormat().setSampleBuffers(TRUE);
+
+	#if QT_VERSION >= 0x040600
+	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL);
+	#endif
+	
+	// Create a context for the TCanvas
+	canvasContext_ = new QGLContext(QGLFormat::defaultFormat());
+
+	// Attempt to initialise a pixelbuffer
+	if (prefs.usePixelBuffers() && (!initialisePixelBuffer(2048,2048))) prefs.setUsePixelBuffers(FALSE);
 }
 
 // Destructor
@@ -385,7 +199,7 @@ void RenderEngine::calculateAdjustments()
 }
 
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-void RenderEngine::renderPrimitive(RenderEngine::RenderingObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
+void RenderEngine::renderPrimitive(RenderEngine::TriangleObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
 {
 	if (!activePrimitiveLists_[obj]) return;
 	if ((colour[3] > 0.99f) || (fillMode != GL_FILL))
@@ -403,7 +217,7 @@ void RenderEngine::renderPrimitive(RenderEngine::RenderingObject obj, PrimitiveG
 }
 
 // Render primitive in specified colour
-void RenderEngine::renderPrimitive(RenderEngine::RenderingObject obj, Primitive* primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
+void RenderEngine::renderPrimitive(RenderEngine::TriangleObject obj, Primitive* primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
 {
 	if (!activePrimitiveLists_[obj]) return;
 	if ((!isTransparent) || (fillMode != GL_FILL) || ((colour != NULL) && (colour[3] > 0.99f)))
@@ -423,7 +237,7 @@ void RenderEngine::renderPrimitive(RenderEngine::RenderingObject obj, Primitive*
 // Add text primitive for rendering later
 void RenderEngine::renderTextPrimitive(int x, int y, const char *text, QChar addChar, bool rightalign)
 {
-	textPrimitives_.add(x, y, text, addChar, rightalign);
+	textPrimitives_.add(x, contextHeight_-y, text, addChar, rightalign);
 }
 
 // Search for primitive associated to specified Grid pointer
@@ -449,15 +263,15 @@ void RenderEngine::sortAndSendGL()
 	Primitive *prim;
 
 	// Transform and render each solid primitive in each list
-	for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
+	for (int n=0; n<RenderEngine::nTriangleObjects; ++n)
 	{
 		for (PrimitiveInfo *pi = solidPrimitives_[n].first(); pi != NULL; pi = pi->next)
 		{
 			// If the info structure has a pointer to a primitive in it, use that.
 			// Otherwise, retrieve a primitive with a suitable level of detail by passing the current model transformation matrix
 			prim = pi->primitive();
-			if (prim == NULL) prim = (Q_ == 1 ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
-
+			if (prim == NULL) prim = (set_ == 1 ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
+			
 			// If colour data is not present in the vertex data array, use the colour stored in the PrimitiveInfo object
 			if (!prim->colouredVertexData()) glColor4fv(pi->colour());
 			glPolygonMode(GL_FRONT_AND_BACK, pi->fillMode());
@@ -488,9 +302,11 @@ void RenderEngine::sortAndSendGL()
 	glDisable(GL_LIGHTING);
 	glLoadMatrixd(modelTransformationMatrix_.matrix());
 	glLineWidth(prefs.stickLineNormalWidth());
-	stickLines_.sendToGL();
+	linePrimitives_[NormalLineObject].sendToGL();
+	linePrimitives_[NormalGuiLineObject].sendToGL();
 	glLineWidth(prefs.stickLineSelectedWidth());
-	stickSelectedLines_.sendToGL();
+	linePrimitives_[SelectedLineObject].sendToGL();
+	linePrimitives_[SelectedGuiLineObject].sendToGL();
 	glEnable(GL_LIGHTING);
 	glLineWidth(1.0);
 	
@@ -498,7 +314,7 @@ void RenderEngine::sortAndSendGL()
 	if (prefs.transparencyCorrect())
 	{
 		triangleChopper_.emptyTriangles();
-		for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
+		for (int n=0; n<RenderEngine::nTriangleObjects; ++n)
 		{
 			for (PrimitiveInfo *pi = transparentPrimitives_[n].first(); pi != NULL; pi = pi->next)
 			{
@@ -511,14 +327,14 @@ void RenderEngine::sortAndSendGL()
 		triangleChopper_.sendToGL();
 		glPopClientAttrib();
 	}
-	else for (int n=0; n<RenderEngine::nRenderingObjects; ++n)
+	else for (int n=0; n<RenderEngine::nTriangleObjects; ++n)
 	{
 		for (PrimitiveInfo *pi = transparentPrimitives_[n].first(); pi != NULL; pi = pi->next)
 		{
 			// If the info structure has a pointer to a primitive in it, use that.
 			// Otherwise, work out a level of detail value to pass to the primitive group referenced.
 			prim = pi->primitive();
-			if (prim == NULL) prim = (Q_ == 1 ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
+			if (prim == NULL) prim = (set_ == 1 ? pi->bestPrimitive() : pi->primitive(modelTransformationMatrix_));
 			if (!prim->colouredVertexData()) glColor4fv(pi->colour());
 			A = modelTransformationMatrix_ * pi->localTransform();
 			glLoadMatrixd(A.matrix());
@@ -541,7 +357,9 @@ void RenderEngine::initialiseGL()
 	GLfloat col[4];
 	prefs.copyColour(Prefs::BackgroundColour, col);
 	glClearColor(col[0],col[1],col[2],col[3]);
-	//glClearDepth(1.0);
+// 	glClearDepth(1.0);
+// 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+// 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Perspective hint
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
 	// Enable depth buffer
@@ -611,206 +429,377 @@ void RenderEngine::initialiseGL()
 }
 
 // Push primitives instance (in specified quality)
-void RenderEngine::pushInstance(bool highQuality, const QGLContext *context)
+void RenderEngine::pushInstance(RenderEngine::PrimitiveSet set, const QGLContext *context)
 {
-	msg.print(Messenger::Verbose, "Pushing %s quality primitive instance for context %p\n", highQuality ? "high" : "normal", context);
-	primitives_[highQuality].pushInstance(context);
-	// Push separate instance of the stick primitives
-	stickLines_.pushInstance(context);
-	stickSelectedLines_.pushInstance(context);
+	msg.print(Messenger::Verbose, "Pushing %s primitive instance for context %p (current context is %p).\n", RenderEngine::primitiveSet(set), context, QGLContext::currentContext());
+	primitives_[set].pushInstance(context);
+	// Push separate instance of the line primitives
+	for (int n = 0; n<RenderEngine::nLineObjects; ++n) linePrimitives_[n].pushInstance(context);
 }
 
 // Pop topmost primitive instance
-void RenderEngine::popInstance(bool highQuality, const QGLContext *context)
+void RenderEngine::popInstance(RenderEngine::PrimitiveSet set, const QGLContext *context)
 {
-	msg.print(Messenger::Verbose, "Popping %s quality primitive instance for context %p\n", highQuality ? "high" : "normal", context);
-	primitives_[highQuality].popInstance(context);
-	stickLines_.popInstance(context);
-	stickSelectedLines_.popInstance(context);
+	msg.print(Messenger::Verbose, "Popping %s quality primitive instance for context %p\n", RenderEngine::primitiveSet(set), context);
+	primitives_[set].popInstance(context);
+	// Pop separate instance of the line primitives
+	for (int n = 0; n<RenderEngine::nLineObjects; ++n) linePrimitives_[n].popInstance(context);
 }
 
 // Update all primitives (following prefs change, etc.)
-void RenderEngine::updatePrimitives(const QGLContext *context, bool force)
+void RenderEngine::updatePrimitives()
 {
 	// Set (possibly new) quality
-	primitives_[0].setQuality(prefs.primitiveQuality());
-	primitives_[1].setQuality(prefs.imagePrimitiveQuality());
+	primitives_[LowQuality].setQuality(prefs.primitiveQuality());
+	primitives_[HighQuality].setQuality(prefs.imagePrimitiveQuality());
 	
 	// Recalculate adjustments for bond positioning
 	calculateAdjustments();
 
 	// Generate new VBOs / display lists - pop and push a context
-	for (int n=0; n<2; ++n) if (primitives_[n].stackSize() != 0)
+	for (int n=0; n<nPrimitiveSets; ++n) if (primitives_[n].stackSize() != 0)
 	{
-		primitives_[n].popInstance(context);
-		primitives_[n].pushInstance(context, force);
+		primitives_[n].popInstance(prefs.usePixelBuffers() ? pixelBufferContext_ : canvasContext_);
+		primitives_[n].pushInstance(prefs.usePixelBuffers() ? pixelBufferContext_ : canvasContext_);
+	}
+}
+
+// (Re)initialise pixelbuffer to desired size
+bool RenderEngine::initialisePixelBuffer(int w, int h, bool forceRecreate)
+{
+	// Are pixelBuffers supported?
+	if (!QGLPixelBuffer::hasOpenGLPbuffers())
+	{
+		msg.print("Error: System does not support pixel buffers.\nWill have to revert to QGLWidget::renderPixmap() for offscreen images.\n");
+		return FALSE;
 	}
 	
+	// Check new size against old size
+	if (forceRecreate || (w > pixelBufferWidth_) || (h > pixelBufferHeight_))
+	{
+		int newWidth = 1, newHeight = 1;
+		while (newWidth < w) { newWidth *= 2; };
+		while (newHeight < h) { newHeight *= 2; };
+		msg.print(Messenger::Verbose, "Creating new offscreen pixelbuffer - requested = %ix%i, old = %ix%i, new = %ix%i\n", w, h, pixelBufferWidth_, pixelBufferHeight_, newWidth, newHeight);
+		pixelBufferHeight_ = newHeight;
+		pixelBufferWidth_ = newWidth;
+		
+		// Clean up from previous instantiation
+		if (pixelBuffer_ != NULL)
+		{
+			delete pixelBuffer_;
+			popInstance(LowQuality, pixelBufferContext_);
+			popInstance(HighQuality, pixelBufferContext_);
+		}
+		
+		// Create new pixelbuffer and associated primitives
+		pixelBuffer_ = new QGLPixelBuffer(pixelBufferWidth_, pixelBufferHeight_, QGLFormat::defaultFormat(), gui.mainCanvas());
+		
+		if (!pixelBuffer_->makeCurrent())
+		{
+			msg.print("Error: Couldn't make pixelBuffer_'s context current.\n");
+			delete pixelBuffer_;
+			pixelBuffer_ = NULL;
+			pixelBufferHeight_ = 0;
+			pixelBufferWidth_ = 0;
+			pixelBufferContext_ = NULL;
+			return FALSE;
+		}
+		pixelBufferContext_ = QGLContext::currentContext();
+		pushInstance(LowQuality, pixelBufferContext_);
+		pushInstance(HighQuality, pixelBufferContext_);
+	}
+	return TRUE;
 }
 
-// Render text objects (with supplied QPainter)
-void RenderEngine::renderText(QPainter &painter, TCanvas *canvas)
+// Return context for TCanvas
+QGLContext *RenderEngine::canvasContext()
 {
-	textPrimitives_.renderAll(painter, canvas);
+	return canvasContext_;
 }
 
-// Flag that next render should clear all primitive lists
-void RenderEngine::flagClearLists()
+// Check for GL Error
+void RenderEngine::checkGlError()
 {
-	clearListsFlag_ = TRUE;
+	// Do GL error check
+	if (msg.isOutputActive(Messenger::GL))
+	{
+		GLenum glerr = GL_NO_ERROR;
+		do
+		{
+			switch (glGetError())
+			{
+				case (GL_INVALID_ENUM): msg.print(Messenger::GL, "GLenum argument out of range\n"); break;
+				case (GL_INVALID_VALUE): msg.print(Messenger::GL, "Numeric argument out of range\n"); break;
+				case (GL_INVALID_OPERATION): msg.print(Messenger::GL, "Operation illegal in current state\n"); break;
+				case (GL_STACK_OVERFLOW): msg.print(Messenger::GL, "Command would cause a stack overflow\n"); break;
+				case (GL_STACK_UNDERFLOW): msg.print(Messenger::GL, "Command would cause a stack underflow\n"); break;
+				case (GL_OUT_OF_MEMORY): msg.print(Messenger::GL, "Not enough memory left to execute command\n"); break;
+				case (GL_NO_ERROR): msg.print(Messenger::GL, "No GL error\n"); break;
+				default:
+					msg.print(Messenger::GL, "Unknown GL error?\n");
+					break;
+			}
+		} while (glerr != GL_NO_ERROR);
+	}
 }
 
-// Clear text primitive list
-void RenderEngine::forgetTextPrimitives()
+// Render Main Scene
+void RenderEngine::renderScene(RenderEngine::PrimitiveSet set, int width, int height, const QGLContext* context, RenderEngine::RenderType renderType, Model* iconSource)
 {
+	msg.enter("RenderEngine::renderScene");
+	QColor color;
+	QRect currentBox;
+	Refitem<Model,int> *first, localri;
+	int px, py, nperrow = prefs.nModelsPerRow(), nrows, col, row, nmodels;
+	bool modelIsCurrentModel;
+	Model *m;
+
+	// Store set specifier
+	set_ = set;
+	
+	// Store full context height
+	contextHeight_ = height;
+
+	// Setup basic GL stuff
+	initialiseGL();
+
+	// Note: An internet source suggests that the QPainter documentation is incomplete, and that
+	// all OpenGL calls should be made after the QPainter is constructed, and before the QPainter
+	// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
+	// so here it is done in the 'wrong' order.
+	
+	// Set the first item to consider - set localri to the passed iconSource (if there was one)
+	localri.item = iconSource;
+	nmodels = aten.nVisibleModels();
+	if ((nmodels == 0) || (renderType == OffscreenModel))
+	{
+		if (renderType != OffscreenModel) localri.item = aten.currentModel();
+		nmodels = 1;
+		first = &localri;
+	}
+	else first = aten.visibleModels();
+
+	// Clear view
+	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
+	glViewport(0,0,width,height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	textPrimitives_.forgetAll();
-}
-
-// Render 3D
-void RenderEngine::render3D(bool highQuality, Model *source, TCanvas *canvas, bool currentModel)
-{
-	GLfloat colour[4];
-
-	// Set initial transformation matrix, including any translation occurring from cell...
-	setTransformationMatrix(source->modelViewMatrix(), source->cell()->centre());
 	
-	// Set target matrix mode and reset it, and set colour mode
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
+	// Set up some useful values
+	nrows = nmodels/nperrow + (nmodels%nperrow == 0 ? 0 : 1);
+	py = height / nrows;
+	px = (nmodels == 1 ? width : width / nperrow);
 
-	// Store quality specifier
-	Q_ = highQuality ? 1 : 0;
-
-	// Grab model-specific viewport
-	GLint *vp = source->viewportMatrix();
-
-	// Render rotation globe in small viewport in lower right-hand corner
-	if (prefs.viewRotationGlobe())
+	// Loop over model refitems in list (or single refitem)
+	col = 0;
+	row = 0;
+	for (Refitem<Model,int> *ri = first; ri != NULL; ri = ri->next)
 	{
-		int n = prefs.globeSize();
-		if (aten.nVisibleModels() > 2) n /= 2;
-		glViewport(vp[0]+vp[2]-n,vp[1],n,n);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		Matrix A = modelTransformationMatrix_;
-		A.removeTranslationAndScaling();
-		A[14] = -1.2;
-		glMultMatrixd(A.matrix());
-		prefs.copyColour(Prefs::GlobeColour, colour);
-		glColor4fv(colour);
-		primitives_[Q_].rotationGlobe_.sendToGL();
-		prefs.copyColour(Prefs::GlobeAxesColour, colour);
-		glColor4fv(colour);
-		primitives_[Q_].rotationGlobeAxes_.sendToGL();
+		// Grab model pointer
+		m = ri->item;
+		if (m == NULL) continue;
+
+		// Store coordinates for box if this is the current model
+		if (m == aten.currentModel())
+		{
+			modelIsCurrentModel = TRUE;
+			currentBox.setRect(col*px, row*py, px, py);
+		}
+		else modelIsCurrentModel = FALSE;
+
+		// Vibration frame?
+		m = m->renderSourceModel();
+		if (m->renderFromVibration() && (m->vibrationCurrentFrame() != NULL)) m = m->vibrationCurrentFrame();
+
+		// Determine desired pixel range and set up view(port)
+		checkGlError();
+		m->setupView(col*px, height-(row+1)*py, px, py);
+
+		// Render the 3D parts of the model
+		renderModel(m, modelIsCurrentModel, renderType);
+
+		// Increase counters
+		++col;
+		if (col%nperrow == 0)
+		{
+			col = 0;
+			++row;
+		}
 	}
 
-	// Prepare for model rendering
-	glViewport(vp[0], vp[1], vp[2], vp[3]);
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixd(source->modelProjectionMatrix().matrix());
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	// Select QPaintDevice* for QPainter
+	QPaintDevice* targetDevice = NULL;
+	if ((renderType != OnscreenScene) && prefs.usePixelBuffers()) targetDevice = pixelBuffer_;
+	else if (context != canvasContext_) targetDevice = QGLContext::currentContext()->device();
+	else targetDevice = gui.mainCanvas();
+	
+	// Start of QPainter code
+	static QFont font;
+	static QBrush nobrush(Qt::NoBrush), solidbrush(Qt::SolidPattern);
+	static QPen pen;
+	QPainter painter(targetDevice);
 
-	// Clear the necessary triangle lists (i.e. only those for which the content may have changed)
-	// By default, regenerate all lists (the case if the source model pointer has changed)
-	int n;
-	for (n=0; n<RenderEngine::nRenderingObjects; ++n) activePrimitiveLists_[n] = TRUE;
-	if ((lastSource_ == source) && (!clearListsFlag_))
+	// Need to offset QPainter vertically if using pixelbuffers
+	if ((renderType != OnscreenScene) && (prefs.usePixelBuffers()))
 	{
-		// Check model logs against logs stored when the lists were last generated
-		bool redobasic = !lastLog_.isSame(Log::Coordinates,source->changeLog);
-		if (!redobasic) redobasic = !lastLog_.isSame(Log::Structure,source->changeLog);
-		// If the model style has changed, need to rerender both basic and selection lists. Otherwise, depends on other logs
-		if (redobasic || (!lastLog_.isSame(Log::Style,source->changeLog)))
+		painter.translate(0, painter.viewport().height()-height);
+	}
+
+	// Text Primitives
+	GLfloat colour[4];
+	double fontSize = (prefs.labelSize()/100.0)*height;
+	font.setPointSizeF(fontSize);
+	painter.setFont(font);
+	painter.setRenderHint(QPainter::Antialiasing);
+	prefs.copyColour(Prefs::TextColour, colour);
+	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
+	solidbrush.setColor(color);
+	painter.setBrush(solidbrush);
+	painter.setPen(Qt::SolidLine);
+	painter.setPen(color);
+	textPrimitives_.renderAll(painter, fontSize);
+
+	// Draw box around current model
+	color.setRgbF(0.0,0.0,0.0,1.0);
+	pen.setColor(color);
+	pen.setWidth(2);
+	painter.setBrush(nobrush);
+	painter.setPen(Qt::SolidLine);
+	painter.setPen(pen);
+
+	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
+	if (prefs.frameWholeView())
+	{
+		currentBox.setRect(0,0,width,height);
+		painter.drawRect(currentBox);
+	}
+
+	// Render active user modes
+	if (renderType == OnscreenScene) renderActiveModes(painter, width, height);
+
+	// Done
+	painter.end();
+
+	msg.print(Messenger::GL, " --> RENDERING END\n");
+	
+	msg.exit("RenderEngine::renderScene");
+}
+
+// Render or grab image
+QPixmap RenderEngine::renderSceneImage(RenderEngine::PrimitiveSet set, int w, int h)
+{
+	if (prefs.usePixelBuffers())
+	{
+		// Check that we can create a pixelbuffer object
+		initialisePixelBuffer(w, h);
+		if (!pixelBuffer_->makeCurrent())
 		{
-			activePrimitiveLists_[RenderEngine::BasicObject] = TRUE;
-			activePrimitiveLists_[RenderEngine::AtomSelectionObject] = TRUE;
+			msg.print("Error: QGLPixelBuffer could not be made current.\n");
+			return QPixmap();
 		}
-		else
-		{
-			activePrimitiveLists_[RenderEngine::BasicObject] = FALSE;
-			activePrimitiveLists_[RenderEngine::AtomSelectionObject] = !lastLog_.isSame(Log::Selection, source->changeLog);
-		}
+
+		// Clear lists in engine
+		clearListsFlag_ = TRUE;
 		
-		// Stick style primitives
-		if (redobasic || (!lastLog_.isSame(Log::Style,source->changeLog)) || (!lastLog_.isSame(Log::Selection,source->changeLog)))
-		{
-			stickLines_.forgetAll();
-			stickSelectedLines_.forgetAll();
-			rebuildSticks_ = TRUE;
-		}
-		else rebuildSticks_ = FALSE;
+		// Generate offscreen bitmap
+		renderScene(RenderEngine::HighQuality, w, h, pixelBufferContext_, OffscreenScene);
+		pixelBuffer_->doneCurrent();
 		
-		// Glyphs must be redone on basic change (since they may follow atom coordinates
-		if (redobasic || !lastLog_.isSame(Log::Glyphs, source->changeLog)) activePrimitiveLists_[RenderEngine::GlyphObject]  = TRUE;
-		else activePrimitiveLists_[RenderEngine::GlyphObject]  = FALSE;
+		// Flag for rendering list regeneration again
+		clearListsFlag_ = TRUE;
 		
-		// Grids only depend on their own log
-		if (!lastLog_.isSame(Log::Grids, source->changeLog)) activePrimitiveLists_[RenderEngine::GridObject] = TRUE;
+		QImage image = pixelBuffer_->toImage().copy(0,pixelBufferHeight_-h,w,h);
+		
+		return QPixmap::fromImage(image);
 	}
 	else
 	{
-		stickLines_.forgetAll();
-		stickSelectedLines_.forgetAll();
-		rebuildSticks_ = TRUE;
-	}
+		// Clear lists in engine
+		clearListsFlag_ = TRUE;
 
-	// Clear flagged lists
-	for (n=0; n<RenderEngine::nRenderingObjects; ++n) if (activePrimitiveLists_[n])
+		// Request high-quality primitives for next render
+		gui.mainCanvas()->requestHighQuality();
+		
+		// Generate offscreen bitmap (a temporary context will be created)
+		gui.mainCanvas()->setRenderType(OffscreenScene);
+		QPixmap pixmap = gui.mainCanvas()->renderPixmap(w,h);
+		gui.mainCanvas()->setRenderType(OnscreenScene);
+		
+		// Flag for rendering list regeneration again
+		clearListsFlag_ = TRUE;
+		return pixmap;
+	}
+}
+
+// Create icon pixmap for specific model
+QPixmap RenderEngine::renderModelIcon(Model *source)
+{
+	msg.print(Messenger::Verbose, "Rendering model icon for '%s'....\n", source == NULL ? "??NULL Model??" : source->name());
+	if (prefs.usePixelBuffers())
 	{
-		solidPrimitives_[n].clear();
-		transparentPrimitives_[n].clear();
+		// Check that we can use create a pixelbuffer object
+		initialisePixelBuffer(100, 100);
+		if (!pixelBuffer_->makeCurrent())
+		{
+			msg.print("Error: QGLPixelBuffer could not be made current.\n");
+			return QPixmap();
+		}
+
+		// Clear lists in engine
+		clearListsFlag_ = TRUE;
+		
+		// Generate offscreen bitmap
+		renderScene(RenderEngine::LowQuality, 100, 100, pixelBufferContext_, OffscreenModel, source);
+		pixelBuffer_->doneCurrent();
+		
+		// Flag for rendering list regeneration again
+		clearListsFlag_ = TRUE;
+		
+		QImage image = pixelBuffer_->toImage().copy(0,pixelBufferHeight_-100,100,100);
+		
+		return QPixmap::fromImage(image);
 	}
-	
-	// Extra lists to clear for Glyphs
-	if (activePrimitiveLists_[RenderEngine::GlyphObject])
+	else
 	{
-		glyphTriangles_[RenderEngine::SolidTriangle].forgetAll();
-		glyphTriangles_[RenderEngine::TransparentTriangle].forgetAll();
-		glyphTriangles_[RenderEngine::WireTriangle].forgetAll();
-		glyphLines_.forgetAll();
+		// Clear lists in engine
+		clearListsFlag_ = TRUE;
+
+		// Request high-quality primitives for next render
+		gui.mainCanvas()->requestHighQuality();
+		
+		// Generate offscreen bitmap (a temporary context will be created)
+		gui.mainCanvas()->setRenderType(OffscreenModel, source);
+		QPixmap pixmap = gui.mainCanvas()->renderPixmap(100,100);
+		gui.mainCanvas()->setRenderType(OffscreenModel);
+		
+		// Flag for rendering list regeneration again
+		clearListsFlag_ = TRUE;
+		return pixmap;
 	}
-	
-	// Always draw unit cell, regardless of list status
-	renderCell(source);
-	// Draw main model (atoms, bonds, etc.)
-	if (activePrimitiveLists_[RenderEngine::BasicObject] || activePrimitiveLists_[RenderEngine::AtomSelectionObject]) renderModel(source);
-	// Draw model glyphs
-	if (activePrimitiveLists_[RenderEngine::GlyphObject]) renderGlyphs(source);
-	renderTextGlyphs(source, gui.mainCanvas());
-	// Draw model grids
-	if (activePrimitiveLists_[RenderEngine::GridObject]) renderGrids(source);
-	
-	lastSource_ = source;
-	lastLog_ = source->changeLog;
-	
-	if (gui.exists())
+}
+
+// Save image of current view
+bool RenderEngine::saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality)
+{
+	msg.enter("RenderEngine::saveImage");
+	if (bf == RenderEngine::nBitmapFormats)
 	{
-		// Render embellshments for current UserAction
-		renderUserActions(source, gui.mainCanvas());
-		// Render extras arising from open tool windows (current model only)
-		if (currentModel) renderWindowExtras(source);
+		msg.print("Invalid bitmap format given to Gui::saveImage().\n");
+		msg.exit("RenderEngine::saveImage");
+		return FALSE;
 	}
 
-	// If the stick primitives were regenerated, need to create a new instance (after popping the old one)
-	if (rebuildSticks_)
-	{
-		const QGLContext *context = gui.mainCanvas()->context();
-		stickLines_.popInstance(context);
-		stickSelectedLines_.popInstance(context);
-		stickLines_.pushInstance(context);
-		stickSelectedLines_.pushInstance(context);
-	}
+	QPixmap pixmap;
+	// Get current mainCanvas_ geometry if none was specified
+	if (width == 0) width = pixelBufferWidth_;
+	if (height == 0) height = pixelBufferHeight_;
 
-	// All 3D primitive objects have now been filtered, so sort and send to GL
-	sortAndSendGL();
+	pixmap = renderSceneImage(RenderEngine::HighQuality, width, height);
 
-	// Render overlays
-	renderModelOverlays(source);
+	pixmap.save(filename, RenderEngine::bitmapFormatExtension(bf), quality);
+	msg.print("Saved current view as '%s' [%ix%i %s]\n", filename, width, height, RenderEngine::bitmapFormatFilter(bf));
 
-	// Reset the clear lists flag
-	clearListsFlag_ = FALSE;
+	msg.exit("RenderEngine::saveImage");
+	return TRUE;
 }

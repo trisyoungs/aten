@@ -253,10 +253,10 @@ void AtenForm::createDialogFilters()
 
 	// Save image
 	saveBitmapFilters.clear();
-	for (n=0; n < GuiQt::nBitmapFormats; n++)
+	for (n=0; n < RenderEngine::nBitmapFormats; n++)
 	{
 		if (!saveBitmapFilters.isEmpty()) saveBitmapFilters += ";;";
-		saveBitmapFilters += GuiQt::bitmapFormatFilter( (GuiQt::BitmapFormat) n);
+		saveBitmapFilters += RenderEngine::bitmapFormatFilter( (RenderEngine::BitmapFormat) n);
 	}
 
 	// Save vector

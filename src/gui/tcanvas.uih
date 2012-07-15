@@ -41,17 +41,14 @@ class TCanvas : public QGLWidget
 	// Constructor / Destructor
 	TCanvas(QGLContext *context, QWidget *parent);
 	~TCanvas();
-	// Drawing Targets enum
-	enum DrawingTarget { NoTarget, ScreenTarget, PixmapTarget };
-	
+
+
 	/*
 	// Character / Setup
 	*/
 	private:
 	// Width, height, and aspect ratio of the canvas
 	GLsizei contextWidth_, contextHeight_;
-	// Flag to indicate whether we may draw to the canvas
-	bool valid_;
 	
 	public:
 	// Return the current height of the drawing area
@@ -63,48 +60,24 @@ class TCanvas : public QGLWidget
 	
 	
 	/*
-	// Render Target
-	*/
-	private:
-	// ID of last trajectory frame displayed (if any)
-	int displayFrameId_;
-	// Flag whether to use Aten's current model as rendering source (the default)
-	bool useCurrentModel_;
-	// Model to render if we are not using the current model in Aten
-	Model *renderSource_;
-
-	public:
-	// Return the current display model
-	Model *displayModel() const;
-	// Set the rendering source to the supplied model (reverts to useCurrentModel_ if a NULL pointer is supplied)
-	void setRenderSource(Model *source);
-	// Determine target model based on clicked position on TCanvas
-	Model *modelAt(int x, int y);
-	
-	
-	/*
 	// Rendering Functions
 	*/
 	private:
-	// Flag indicating if we are currently drawing to this canvas
-	bool drawing_;
-	// Current drawing target (none, screen, or pixmap)
-	DrawingTarget drawingTarget_;
-	// Flag stating whether high-quality primitives should be used for rendering
-	bool highQuality_;
 	// Time counter for mouse move events
 	QTime mouseMoveCounter_;
-	// Rendering engine
-	RenderEngine engine_;
-	// Flag specifying that stored model pixel data should not be used
-	bool noPixelData_;
-	// Flag specifying that the active model should be redrawn regardless of pixeldata availability
-	bool redrawActiveModel_;
+	// Flag indicating if we are currently drawing
+	bool drawing_;
+	// Primtive set to use for rendering
+	RenderEngine::PrimitiveSet primitiveSet_;
+	// Rendering type to pass to RenderEngine
+	RenderEngine::RenderType renderType_;
+	// Model icon source for renderType==OffscreenModel (if relevant)
+	Model *renderIconSource_;
 	
 	protected:
 	// Initialise context widget (when created by Qt)
 	void initializeGL();
-	// General repaint callback
+	// General repaint callbacks
 	void paintGL();
 	void paintEvent(QPaintEvent *event);
 	// Resize function
@@ -119,30 +92,18 @@ class TCanvas : public QGLWidget
 	bool beginGl();
 	// Finish OpenGL commands
 	void endGl();
-	// Check for GL error
-	void checkGlError();
-	// Render 3D objects for current displayModel_
-	void render3D(Model *source, bool currentModel);
-	// Draw 2D objects with supplied QPainter
-	void render2D(QPainter &painter, Model *source);
+	// Render whole scene
+	void renderScene(int width, int height);
 	
 	public:
-	// Set current drawing target (none, screen, or pixmap)
-	void setDrawingTarget(DrawingTarget dt);
-	// Return current drawing target (none, screen, or pixmap)
-	DrawingTarget drawingTarget();
-	// Return whether rendering should use high quality primitives
-	bool highQuality() const;
-	// Update primitives (after, e.g., change in preferences)
-	void updatePrimitives(bool force = FALSE);
-	// Reinitialise transparency correction
-	void reinitialiseTransparency();
+	// Determine target model based on clicked position on TCanvas
+	Model *modelAt(int x, int y);
+	// Request a high-quality rendering pass on next redraw (for image saving, etc.)
+	void requestHighQuality();
+	// Set renderType to pass to RenderEngine::renderScene()
+	void setRenderType(RenderEngine::RenderType type, Model *iconSource = NULL);
 	// Update Canvas
-	void postRedisplay(bool noImages = FALSE, bool redrawActive = FALSE);
-	// Update view matrix stored in RenderEngine
-	void updateTransformation(Matrix &mat, Vec3<double> cellcentre);
-	// Render or grab image
-	QPixmap generateImage(int w, int h, bool highQuality);
+	void postRedisplay();
 
 
 	/*
@@ -254,7 +215,7 @@ class TCanvas : public QGLWidget
 	// Clears the subsel of atoms
 	void clearPicked();
 	// End manual picking
-	void endddManualPick(bool resetaction);
+	void endManualPick(bool resetaction);
 	// Return start of picked atom list
 	Refitem<Atom,int> *pickedAtoms();
 	

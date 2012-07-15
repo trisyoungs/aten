@@ -43,10 +43,6 @@ Model::Model()
 	// Camera / View / render
 	modelViewMatrix_.setIdentity();
 	modelViewMatrix_[14] = -10.0;
-	pixelData_ = NULL;
-	pixelDataLogPoint_ = -1;
-	pixelDataWidth_ = -1;
-	pixelDataHeight_ = -1;
 	renderSource_ = Model::ModelSource;
 	renderFromVibration_ = FALSE;
 
@@ -118,7 +114,6 @@ Model::~Model()
 	distanceMeasurements_.clear();
 	angleMeasurements_.clear();
 	torsionMeasurements_.clear();
-	if (pixelData_ != NULL) delete[] pixelData_;
 }
 
 // Sets the filename of the model
@@ -214,15 +209,13 @@ void Model::regenerateIcon()
 	prefs.setFrameCurrentModel(FALSE);
 	prefs.setFrameWholeView(FALSE);
 	prefs.setViewRotationGlobe(FALSE);
-	gui.mainCanvas()->setRenderSource(this);
 
 	changeLog.add(Log::Style);
-	icon_ = gui.mainCanvas()->generateImage(100, 100, FALSE);
+	icon_ = engine().renderModelIcon(this);
 
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
-	gui.mainCanvas()->setRenderSource(NULL);
 	
 	msg.exit("Model::regenerateIcon");
 }

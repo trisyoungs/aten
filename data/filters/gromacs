@@ -119,18 +119,13 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 				i = p.atoms[n];
 				i.bit = chgrp;
 				# All atoms attached to this atom which have only one bond will be part of the same charge group
-				for (Bond x = i.bonds; x; ++x)
+				for (Bond bnd = i.bonds; bnd; ++bnd)
 				{
-					i.bit = chgrp;
-					# All atoms attached to this atom which have only one bond will be part of the same charge group
-					for (Bond x = i.bonds; x; ++x)
-					{
-						j = x.partner(i);
-						if ((j.nBonds != 1) || (j.bit != 0)) continue;
-						j.bit = chgrp;
-					}
-					++chgrp;
+					j = bnd.partner(i);
+					if ((j.nBonds != 1) || (j.bit != 0)) continue;
+					j.bit = chgrp;
 				}
+				++chgrp;
 			}
 		}
 	}

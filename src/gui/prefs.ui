@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>536</height>
+    <width>476</width>
+    <height>603</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -891,7 +891,7 @@
                 <item row="0" column="1">
                  <widget class="QLineEdit" name="DistanceLabelFormatEdit">
                   <property name="toolTip">
-                   <string>C_style format string to use for on-screen distances</string>
+                   <string>C-style format string to use for on-screen distances</string>
                   </property>
                  </widget>
                 </item>
@@ -905,31 +905,21 @@
                 <item row="0" column="3">
                  <widget class="QLineEdit" name="AngleLabelFormatEdit">
                   <property name="toolTip">
-                   <string>C_style format string to use for on-screen angles</string>
+                   <string>C-style format string to use for on-screen angles</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="2">
                  <widget class="QLabel" name="label_13">
                   <property name="text">
-                   <string>Point Size</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
-                 <widget class="QSpinBox" name="LabelSizeSpin">
-                  <property name="minimum">
-                   <number>1</number>
-                  </property>
-                  <property name="maximum">
-                   <number>200</number>
+                   <string>Relative Size</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="1">
                  <widget class="QLineEdit" name="ChargeLabelFormatEdit">
                   <property name="toolTip">
-                   <string>C_style format string to use for on-screen distances</string>
+                   <string>C-style format string to use for on-screen distances</string>
                   </property>
                  </widget>
                 </item>
@@ -937,6 +927,16 @@
                  <widget class="QLabel" name="label_46">
                   <property name="text">
                    <string>Charge</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QDoubleSpinBox" name="LabelSizeSpin">
+                  <property name="toolTip">
+                   <string>Text size, expressed as a percent of the total view height</string>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.200000000000000</double>
                   </property>
                  </widget>
                 </item>

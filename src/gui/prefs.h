@@ -84,7 +84,7 @@ class AtenPrefs : public QDialog
 	// View Page
 	*/
 	private:
-	void updateAfterViewPrefs(bool force);
+	void updateAfterViewPrefs();
 	void setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom);
 	void spotlightPosChanged(int i, double value);
 	void spotlightColourChanged(Prefs::ColourComponent);
@@ -102,7 +102,7 @@ class AtenPrefs : public QDialog
 	void on_AngleLabelFormatEdit_textEdited(const QString &text);
 	void on_DistanceLabelFormatEdit_textEdited(const QString &text);
 	void on_ChargeLabelFormatEdit_textEdited(const QString &text);
-	void on_LabelSizeSpin_valueChanged(int value);
+	void on_LabelSizeSpin_valueChanged(double value);
 	void on_RenderDashedAromaticsCheck_clicked(bool checked);
 	void on_DrawHydrogenBondsCheck_clicked(bool checked);
 	void on_HydrogenBondDotRadiusSpin_valueChanged(double value);

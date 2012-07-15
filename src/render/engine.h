@@ -27,9 +27,8 @@
 #include <GL/gl.h>
 #include "glext.h"
 #endif
+#include "render/engine_primitives.h"
 #include "render/triangles.h"
-#include "render/primitivegroup.h"
-#include "render/primitiveinfo.h"
 #include "render/gridprimitive.h"
 #include "render/textprimitive.h"
 #include "base/log.h"
@@ -41,56 +40,7 @@
 // Forward declarations
 class Model;
 class TCanvas;
-class RenderEngine;
 class QGLContext;
-
-// Rendering Primitives
-class RenderPrimitives
-{
-	public:
-	// Constructor / Destructor
-	RenderPrimitives();
-	~RenderPrimitives();
-	// Declare RenderEngine as a Friend
-	friend class RenderEngine;
-	
-	/*
-	// Primitives
-	*/
-	private:
-	// Quality setting that primitives should be next generated at
-	int requestedQuality_;
-	// Quality setting that primitives were last generated at (if at all)
-	int currentQuality_;
-	// Stack size counter
-	int stackSize_;
-	// Atom
-	PrimitiveGroup atom_;
-	// Selected atom styles
-	PrimitiveGroup selectedAtom_;
-	// Bond styles
-	PrimitiveGroup bonds_[Atom::nDrawStyles][Bond::nBondTypes];
-	// Selected bond styles
-	PrimitiveGroup selectedBonds_[Atom::nDrawStyles][Bond::nBondTypes];
-	// Rings
-	PrimitiveGroup lineRings_, segmentedLineRings_, tubeRings_, segmentedTubeRings_;
-	// Primitive objects
-	PrimitiveGroup cubes_, originCubes_, spheres_, cylinders_, cones_;
-	// One-off objects
-	Primitive wireCube_, crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_;
-
-	public:
-	// Set the desired primitive quality
-	void setQuality(int quality);	
-	// Return current primitive instance stacksize
-	int stackSize();
-	// (Re)Generate primitive vertex arrays (if necessary)
-	void recreatePrimitives(bool force = FALSE);
-	// Push instance layer for all primitives
-	void pushInstance(const QGLContext *context, bool forceRegenerate = FALSE);
-	// Pop last instance layer
-	void popInstance(const QGLContext *context);
-};
 
 // Render Engine
 class RenderEngine
@@ -101,8 +51,23 @@ class RenderEngine
 	~RenderEngine();
 	// Style enum for ease of coding
 	enum TriangleStyle { SolidTriangle, TransparentTriangle, WireTriangle, nTriangleStyles };
-	// Objects for rendering
-	enum RenderingObject { BasicObject, AtomSelectionObject, GridObject, GlyphObject, MiscObject, nRenderingObjects };
+	// Triangle-based Objects for rendering
+	enum TriangleObject { BasicObject, AtomSelectionObject, GridObject, GlyphObject, GuiObject, nTriangleObjects };
+	// Stick objects for rendering
+	enum LineObject { NormalLineObject, SelectedLineObject, NormalGuiLineObject, SelectedGuiLineObject, nLineObjects };
+	// Drawing Targets enum
+	enum DrawingTarget { NoTarget, ScreenTarget, PixmapTarget };
+	// Bitmap Formats
+	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
+	static BitmapFormat bitmapFormat(const char *name, bool reportError = 0);
+	static BitmapFormat bitmapFormatFromFilter(const char *s);
+	static const char *bitmapFormatFilter(BitmapFormat bf);
+	static const char *bitmapFormatExtension(BitmapFormat bf);
+	// Primitive Set
+	enum PrimitiveSet { LowQuality, HighQuality, nPrimitiveSets };
+	static const char *primitiveSet(PrimitiveSet ps);
+	// Rendering Type
+	enum RenderType { OnscreenScene, OffscreenScene, OffscreenModel };
 
 
 	/*
@@ -123,22 +88,22 @@ class RenderEngine
 	private:
 	// Atom bond adjustment distances
 	double sphereAtomAdjustment_, *scaledAtomAdjustments_;
-	// Normal (0, display) and high-quality (offscreen, 1) primitives
-	RenderPrimitives primitives_[2];
+	// Primitive sets for on and offscreen rendering
+	RenderPrimitives primitives_[RenderEngine::nPrimitiveSets];
 	// Flag indicating that next render should completely clear all filtered primitive lists
 	bool clearListsFlag_;
-	// Current primitive source quality (0 or 1)
-	int Q_;
+	// Current source primitive set
+	RenderEngine::PrimitiveSet set_;
 	// Last rendered model
 	Model *lastSource_;
 	// Logs for last rendered source model
 	Log lastLog_;
 	// List of filtered solid primitives
-	List<PrimitiveInfo> solidPrimitives_[RenderEngine::nRenderingObjects];
+	List<PrimitiveInfo> solidPrimitives_[RenderEngine::nTriangleObjects];
 	// List of filtered primitives
-	List<PrimitiveInfo> transparentPrimitives_[RenderEngine::nRenderingObjects];
-	// Basic (model) line primitive (for stick styles)
-	Primitive stickLines_, stickSelectedLines_;
+	List<PrimitiveInfo> transparentPrimitives_[RenderEngine::nTriangleObjects];
+	//  Line primitives
+	Primitive linePrimitives_[RenderEngine::nLineObjects];
 	// Text primitives
 	TextPrimitiveList textPrimitives_;
 	// Triangle
@@ -150,17 +115,19 @@ class RenderEngine
 	// Glyph line primitives
 	Primitive glyphLines_;
 	// Flags indicating which primitive lists are open for rebuilding
-	bool activePrimitiveLists_[RenderEngine::nRenderingObjects];
+	bool activePrimitiveLists_[RenderEngine::nTriangleObjects];
 	// Flag stating whether to rebuild stick primitives
 	bool rebuildSticks_;
+	// Height of current rendering target
+	int contextHeight_;
 
 	private:
 	// Calculate atom/bond adjustments
 	void calculateAdjustments();
 	// Render primitive from primitive group in specified colour and level of detail
-	void renderPrimitive(RenderEngine::RenderingObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
+	void renderPrimitive(RenderEngine::TriangleObject obj, PrimitiveGroup& pg, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Render primitive in specified colour
-	void renderPrimitive(RenderEngine::RenderingObject obj, Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
+	void renderPrimitive(RenderEngine::TriangleObject obj, Primitive *primitive, bool isTransparent, GLfloat *colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Add text primitive for rendering later
 	void renderTextPrimitive(int x, int y, const char *text, QChar addChar = 0, bool rightalign = FALSE);
 	// Search for primitive associated to specified Grid pointer
@@ -170,21 +137,25 @@ class RenderEngine
 	// Sort and render filtered polygons by depth
 	void sortAndSendGL();
 	// Render bond
-	void renderBond(Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b = NULL, bool transparentSel = FALSE, GLfloat *penColour = NULL);
-	// Render basic model information (atoms, bonds, labels)
-	void renderModel(Model *source, Matrix basetransform = Matrix());
+	void renderBond(TriangleObject basicList, TriangleObject selectionList, Matrix A, Vec3<double> vij, Atom *i, Atom::DrawStyle style_i, GLfloat *colour_i, double radius_i, Atom *j, Atom::DrawStyle style_j, GLfloat *colour_j, double radius_j, Bond::BondType bt, double selscale, Bond *b = NULL, bool transparentSel = FALSE, GLfloat *penColour = NULL);
+	// Setup and render full Model
+	void renderModel(Model* source, bool currentModel, bool renderType);
+	// Render atoms and bonds
+	void renderAtomsAndBonds(Model* source, Matrix baseTransform = Matrix(), bool isFragment = FALSE);
 	// Render model cell
 	void renderCell(Model *source);
 	// Render grids
 	void renderGrids(Model *source);
 	// Render 3D glyphs
-	void renderGlyphs(Model* source);
+	void renderGlyphs(Model *source);
 	// Render text glyphs
-	void renderTextGlyphs(Model *source, TCanvas *canvas);
+	void renderTextGlyphs(Model *source);
 	// Render additional model information (labels, measurements etc.) which need to appear on top of everything else
 	void renderModelOverlays(Model *source);
+	// Render active mode embellishments
+	void renderActiveModes(QPainter& painter, int width, int height);
 	// Render addition elements related to selected/active UserActions
-	void renderUserActions(Model *source, TCanvas *canvas);
+	void renderUserActions(Model *source);
 	// Render addition elements related to visible windows
 	void renderWindowExtras(Model *source);
 
@@ -194,19 +165,46 @@ class RenderEngine
 	// Initialise GL
 	void initialiseGL();
 	// Push primitives instance (in specified quality)
-	void pushInstance(bool highQuality, const QGLContext *context);
+	void pushInstance(RenderEngine::PrimitiveSet set, const QGLContext *context);
 	// Pop topmost primitive instance
-	void popInstance(bool highQuality, const QGLContext *context);
+	void popInstance(RenderEngine::PrimitiveSet set, const QGLContext *context);
 	// Update all primitives (following prefs change, etc.)
-	void updatePrimitives(const QGLContext *context, bool regenerate = FALSE);
-	// Render text objects (with supplied QPainter)
-	void renderText(QPainter &painter, TCanvas *canvas);
-	// Flag that next render should clear all primitive lists
-	void flagClearLists();
-	// Forget all stored text primitives
-	void forgetTextPrimitives();
-	// Render 3D elements with OpenGL
-	void render3D(bool highQuality, Model* source, TCanvas* canvas, bool currentModel);
+	void updatePrimitives();
+
+
+	/*
+	// Rendering
+	*/
+	private:
+	// QQLPixelBuffer for offscreen rendering
+	QGLPixelBuffer *pixelBuffer_;
+	// Size of QGLPixelBuffer at last creation
+	int pixelBufferWidth_, pixelBufferHeight_;
+	// Context of current pixelBuffer_
+	const QGLContext *pixelBufferContext_;
+	// Context for TCanvas
+	QGLContext *canvasContext_;
+	// ID of last trajectory frame displayed (if any)
+	int displayFrameId_;
+
+	public:
+	// (Re)initialise pixelbuffer to desired size
+	bool initialisePixelBuffer(int w, int h, bool forceRecreate = FALSE);
+	// Return context for TCanvas
+	QGLContext *canvasContext();
+	// Check for GL error
+	void checkGlError();
+	// Render whole scene
+	void renderScene(RenderEngine::PrimitiveSet set, int width, int height, const QGLContext* context, RenderType renderType, Model *iconSource = NULL);
+	// Create pixmap of whole scene
+	QPixmap renderSceneImage(RenderEngine::PrimitiveSet set, int w, int h);
+	// Create icon pixmap for specific model
+	QPixmap renderModelIcon(Model *source);
+	// Save image of current view
+	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 85);
 };
+
+// External Declaration
+extern RenderEngine &engine();
 
 #endif
