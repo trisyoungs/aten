@@ -1,6 +1,8 @@
 <h1>Known Bugs</h1>
 
 <ul>
+<li>Creating expression for trajectory frame causes crash?</li>
+<li>Normals for plotCube() are wrong.</li>
 <li>When manipulating an atom selection, undoing afterwards does not undo Fold</li>
 <li>UnitCell:mim(Atom*,Vec3) returns incorrect position - where is it used?</li>
 <li>Glyph list not updated on model load.</li>
