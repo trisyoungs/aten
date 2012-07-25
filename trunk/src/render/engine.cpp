@@ -771,7 +771,7 @@ QPixmap RenderEngine::renderModelIcon(Model *source)
 		// Generate offscreen bitmap (a temporary context will be created)
 		gui.mainCanvas()->setRenderType(OffscreenModel, source);
 		QPixmap pixmap = gui.mainCanvas()->renderPixmap(100,100);
-		gui.mainCanvas()->setRenderType(OffscreenModel);
+		gui.mainCanvas()->setRenderType(OnscreenModel);
 		
 		// Flag for rendering list regeneration again
 		clearListsFlag_ = TRUE;
