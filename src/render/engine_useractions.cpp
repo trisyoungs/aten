@@ -244,7 +244,6 @@ void RenderEngine::renderUserActions(Model *source)
 				else pos = source->screenToModel(canvas->rMouseLast().x, canvas->rMouseLast().y, prefs.drawDepth());
 				A.setIdentity();
 				A.applyTranslation(pos);
-				A.print();
 				renderAtomsAndBonds(frag->orientedModel(), A, TRUE);
 			}
 			break;
