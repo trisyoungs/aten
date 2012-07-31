@@ -69,7 +69,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	}
 	
 	// Get current active model
-	Model *source = aten.currentModel();
+	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless TCanvas::mousePressEvent - no source model.\n");
@@ -145,7 +145,7 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 	static Vec3<double> delta;
 	
 	// Get current active model
-	Model *source = aten.currentModel();
+	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless TCanvas::mouseMoveEvent - no source model.\n");
@@ -222,7 +222,7 @@ void TCanvas::wheelEvent(QWheelEvent *event)
 	msg.enter("TCanvas::modeScroll");
 	
 	// Get current active model
-	Model *source = aten.currentModel();
+	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless TCanvas::modeScroll - no source model.\n");
@@ -297,7 +297,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
 	
 	// Get current active model
-	Model *source = aten.currentModel();
+	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless TCanvas::keyPressEvent - no source model.\n");
@@ -422,7 +422,7 @@ void TCanvas::keyReleaseEvent(QKeyEvent *event)
 	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
 	
 	// Get current active model
-	Model *source = aten.currentModel();
+	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless TCanvas::keyReleaseEvent - no source model.\n");
@@ -471,7 +471,7 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	msg.enter("TCanvas::setSelectedMode");
 
 	// Get current active model
-	Model *source = aten.currentModel();
+	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless TCanvas::setSelectedMode - no source model.\n");
@@ -598,7 +598,7 @@ void TCanvas::beginMode(Prefs::MouseButton button)
 	// the signal, current selection / draw modes and key modifier states.
 
 	// Get current active model
-	Model *source = aten.currentModel();
+	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless TCanvas::beginMode - no source model.\n");
@@ -706,7 +706,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 	Fragment *frag;
 	
 	// Get current active model
-	Model *source = aten.currentModel();
+	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless TCanvas::endMode - no source model.\n");
