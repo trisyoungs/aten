@@ -720,7 +720,11 @@ QPixmap RenderEngine::renderSceneImage(RenderEngine::PrimitiveSet set, int w, in
 
 		// Request high-quality primitives for next render
 		gui.mainCanvas()->requestHighQuality();
-		
+
+		// Store current size
+		int w = gui.mainCanvas()->contextWidth();
+		int h = gui.mainCanvas()->contextHeight();
+
 		// Generate offscreen bitmap (a temporary context will be created)
 		gui.mainCanvas()->setRenderType(OffscreenScene);
 		QPixmap pixmap = gui.mainCanvas()->renderPixmap(w,h);
@@ -728,6 +732,10 @@ QPixmap RenderEngine::renderSceneImage(RenderEngine::PrimitiveSet set, int w, in
 		
 		// Flag for rendering list regeneration again
 		clearListsFlag_ = TRUE;
+		
+		// Reset view size and refresh
+		gui.mainCanvas()->resize(w, h);
+
 		return pixmap;
 	}
 }
@@ -765,9 +773,10 @@ QPixmap RenderEngine::renderModelIcon(Model *source)
 		// Clear lists in engine
 		clearListsFlag_ = TRUE;
 
-		// Request high-quality primitives for next render
-		gui.mainCanvas()->requestHighQuality();
-		
+		// Store current size
+		int w = gui.mainCanvas()->contextWidth();
+		int h = gui.mainCanvas()->contextHeight();
+
 		// Generate offscreen bitmap (a temporary context will be created)
 		gui.mainCanvas()->setRenderType(OffscreenModel, source);
 		QPixmap pixmap = gui.mainCanvas()->renderPixmap(100,100);
@@ -775,6 +784,10 @@ QPixmap RenderEngine::renderModelIcon(Model *source)
 		
 		// Flag for rendering list regeneration again
 		clearListsFlag_ = TRUE;
+		
+		// Reset view size and refresh
+		gui.mainCanvas()->resize(w, h);
+
 		return pixmap;
 	}
 }
