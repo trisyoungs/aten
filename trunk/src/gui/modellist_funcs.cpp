@@ -161,7 +161,7 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 	// Check logpoint against that of model
 	rv = item->dataForKey("log");
 	int logpoint = rv.asInteger();
-	if (logpoint != m->changeLog.log(Log::Total))
+	if (logpoint != m->changeLog.log(Log::Structure))
 	{
 		m->regenerateIcon();
 		item->setIcon(0,m->icon());
@@ -170,7 +170,7 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 		item->setText(1, text.get());
 		item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 		// Update log value
-		item->dataForKey("log").set(m->changeLog.log(Log::Total));
+		item->dataForKey("log").set(m->changeLog.log(Log::Structure));
 	}
 	
 	// Set selection status of row
