@@ -175,6 +175,7 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 	
 	// Set selection status of row
 	if (m->isVisible() || (m == aten.currentModel())) item->setSelected(TRUE);
+	else item->setSelected(FALSE);
 }
 
 // Return item under mouse (if any)

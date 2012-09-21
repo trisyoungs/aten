@@ -42,7 +42,9 @@ void AtenForm::on_actionFileNew_triggered(bool checked)
 	Model *m = aten.addModel();
 	m->enableUndoRedo();
 	m->regenerateIcon();
+
 	// Update GUI
+	aten.setCurrentModel(m, TRUE);
 	gui.update(GuiQt::AllTarget);
 }
 
