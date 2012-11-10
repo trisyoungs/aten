@@ -45,6 +45,8 @@ Model::Model()
 	modelViewMatrix_[14] = -10.0;
 	renderSource_ = Model::ModelSource;
 	renderFromVibration_ = FALSE;
+	repeatCellsNegative_.set(0,0,0);
+	repeatCellsPositive_.set(1,1,1);
 
 	// Properties
 	name_ = "NewModel";

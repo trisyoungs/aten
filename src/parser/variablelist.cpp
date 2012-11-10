@@ -266,6 +266,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 		case (VTypes::VectorData):
 			var = new VectorArrayVariable(sizeexpr);
 			break;
+		case (VTypes::MatrixData):
+			var = new MatrixArrayVariable(sizeexpr);
+			break;
 		case (VTypes::VibrationData):
 			var = new VibrationArrayVariable(sizeexpr);
 			break;

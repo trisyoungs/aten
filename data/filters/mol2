@@ -1,7 +1,8 @@
 # Tripos (Sybyl) Mol2 filter (for v1.2+)
 # Created:	 12/04/2009
-# Last modified: 02/09/2011
+# Last modified: 10/11/2012
 # ChangeLog:
+#	10/11/2012 - Added 'atom_type' output for ATOM record (element symbol, rather than Sybyl atom type).
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 
 filter(type="importmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
@@ -77,7 +78,7 @@ filter(type="exportmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extensio
 	
 	# Write atoms section
 	writeLine("@<TRIPOS>ATOM");
-	for (i = m.atoms; i != 0; ++i) writeLineF("%6i  %5s  %10.5f  %10.5f  %10.5f\n",i.id,i.symbol,i.rx,i.ry,i.rz);
+	for (i = m.atoms; i != 0; ++i) writeLineF("%6i  %5s  %10.5f  %10.5f  %10.5f  %5s\n",i.id,i.symbol,i.rx,i.ry,i.rz, i.symbol);
 
 	# Write bonds section
 	if (m.nBonds > 0)

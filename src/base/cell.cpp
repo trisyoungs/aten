@@ -612,7 +612,7 @@ Vec3<double> UnitCell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 // Minimum image position of i with respect to r2
 Vec3<double> UnitCell::mim(Atom *i, const Vec3<double> &r2) const
 {
-	return mimVector(r2,i->r()) + i->r();
+	return mimVector(r2,i->r()) + r2;
 }
 
 // Minimum image position of i with respect to j

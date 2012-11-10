@@ -544,30 +544,6 @@ void Prefs::setGlobeSize(int i)
 	globeSize_ = i;
 }
 
-// Set positive repeat cell value
-void Prefs::setRepeatCellsPos(int i, int r)
-{
-	repeatCellsPos_.set(i,r);
-}
-
-// Get positive repeat cell value
-int Prefs::repeatCellsPos(int i) const
-{
-	return repeatCellsPos_.get(i);
-}
-
-// Set negative repeat cell value
-void Prefs::setRepeatCellsNeg(int i, int r)
-{
-	repeatCellsNeg_.set(i,r);
-}
-
-// Get negative repeat cell value
-int Prefs::repeatCellsNeg(int i) const
-{
-	return repeatCellsNeg_.get(i);
-}
-
 // Set the general primitive detail
 void Prefs::setPrimitiveQuality(int n)
 {

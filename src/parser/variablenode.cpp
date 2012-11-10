@@ -212,15 +212,6 @@ bool VariableNode::set(ReturnValue &setrv)
 				if (!arrayIndex_->execute(index)) result = FALSE;
 				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
 			}
-
-// 	OLD CODE:	executerv.set(component, setrv.asDouble());
-// 			if (arrayIndex_ == NULL) result = variable_->set(executerv);
-// 			else
-// 			{
-// 				ReturnValue index;
-// 				if (!arrayIndex_->execute(index)) result = FALSE;
-// 				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
-// 			}
 		}
 	}
 	else if (variable_->returnType() == VTypes::MatrixData)
@@ -228,7 +219,7 @@ bool VariableNode::set(ReturnValue &setrv)
 		// Grab accessor ID from last (only) step and use it to set the vector component
 		int component = ((StepNode*) args_.last()->item)->accessor();
 		if (arrayIndex_ == NULL) result = variable_->execute(executerv);
-		else 
+		else
 		{
 			ReturnValue index;
 			if (!arrayIndex_->execute(index)) result = FALSE;

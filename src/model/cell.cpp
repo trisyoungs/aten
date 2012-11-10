@@ -368,7 +368,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 				// Set new atom positions
 				for (m=0; m<p->nAtoms(); m++)
 				{
-					newpos = cell_.mim(i,oldcog) - oldcog + newcog;
+					newpos = cell_.mimVector(i,oldcog) + newcog;
 					positionAtom(i,newpos);
 					i = i->next;
 				}

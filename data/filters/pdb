@@ -2,6 +2,7 @@
 # Created:	 14/04/2009
 # Last modified: 16/04/2012
 # ChangeLog:
+#	10/11/2012 - Added handling of SCALE, TITLE, and ORIGX records, and added option for 'loose' reading of data.
 # 	23/04/2012 - Made element name handling a little better.
 #	16/04/2012 - Tidied up export filter, added crystal/spgrp information.
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8.
@@ -13,31 +14,44 @@
 filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extension="pdb", glob="*.pdb", zmap="firstalpha", id=13)
 {
 	# Variable declarations
-	string keyword,line,e,name;
+	string keyword, line, e, name, discard;
 	element el;
 	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma;
-	int n,id,i,bondatoms[5],found;
+	int n, i, id, bondatoms[5], scale123 = 0, origx123 = 0;
+	matrix scale, origx;
+	vector scale_u, origx_u;
+
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "PDB Import Options";
+		ui.addCheck("strictFormat", "Demand strict format", 1);
+	}
+	# Execute dialog
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+
+	# Get dialog values
+	Dialog ui = defaultDialog();
+	int strictFormat = ui.asInteger("strictFormat");
 
 	# Create default model
-	newModel("PDB Model");
-	found = 0;
+	Model m = newModel("PDB Model");
 	while (!eof())
 	{
 		readLineF("%-6s%100s",keyword,line);
-		if (keyword == "HEADER")
-		{
-			found = 1;
-			setName(line);
-		}
+		if (keyword == "HEADER") printf("HEADER entry: %s\n", line);
+		else if (keyword == "TITLE") setName(line);
 		else if (keyword == "CRYST1")
 		{
-			readVarF(line, "%9f%9f%9f%7f%7f%7f", ca,cb,cc,alpha,beta,gamma);
+			if (strictFormat) readVarF(line, "%9f%9f%9f%7f%7f%7f", ca, cb, cc, alpha, beta, gamma);
+			else readVar(line, ca, cb, cc, alpha, beta, gamma);
 			cell(ca,cb,cc,alpha,beta,gamma);
 		}
 		else if ((keyword == "HETATM") || (keyword == "ATOM"))
 		{
 			#readVar $line "*@5 $e@4 *@1 *@1 *@3 *@1 *@1 *@4 *@1 *@3 $rx@8 $ry@8 $rz@8 *@6 *@6 *@6 *@4 *@2 *@2"
-			readVarF(line, "%5i %4s              %8f%8f%8f%22*%2s", id, name, rx, ry, rz, e);
+			if (strictFormat) readVarF(line, "%5i %4s              %8f%8f%8f%22*%2s", id, name, rx, ry, rz, e);
+			else readVar(line, id, name, discard, discard, discard, discard, discard, discard, discard, discard, rx, ry, rz, e);
 			# Check 'e' - if not blank, try to convert it first before we resort to using 'name'
 			el = 0;
 			if (e != "") el = aten.findElement(e);
@@ -52,9 +66,48 @@ filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extensio
 		}	
 		else if (keyword == "SCALE1")
 		{
+			if (strictFormat) readVarF(line, "    %10.6f%10.6f%10.6f     %10.5f", scale.xx, scale.xy, scale.xz, scale_u.x);
+			else readVar(line, scale.xx, scale.xy, scale.xz, scale_u.x);
+			++scale123;
+		}
+		else if (keyword == "SCALE2")
+		{
+			if (strictFormat) readVarF(line, "    %10.6f%10.6f%10.6f     %10.5f", scale.yx, scale.yy, scale.yz, scale_u.y);
+			else readVar(line, scale.yx, scale.yy, scale.yz, scale_u.y);
+			++scale123;
+		}
+		else if (keyword == "SCALE3")
+		{
+			if (strictFormat) readVarF(line, "    %10.6f%10.6f%10.6f     %10.5f", scale.zx, scale.zy, scale.zz, scale_u.z);
+			else readVar(line, scale.zx, scale.zy, scale.zz, scale_u.z);
+			++scale123;
+		}
+		else if (keyword == "ORIGX1")
+		{
+			if (strictFormat) readVarF(line, "    %10.6f%10.6f%10.6f     %10.5f", origx.xx, origx.xy, origx.xz, origx_u.x);
+			else readVar(line, origx.xx, origx.xy, origx.xz, origx_u.x);
+			++origx123;
+		}
+		else if (keyword == "ORIGX2")
+		{
+			if (strictFormat) readVarF(line, "    %10.6f%10.6f%10.6f     %10.5f", origx.yx, origx.yy, origx.yz, origx_u.y);
+			else readVar(line, origx.yx, origx.yy, origx.yz, origx_u.y);
+			++origx123;
+		}
+		else if (keyword == "ORIGX3")
+		{
+			if (strictFormat) readVarF(line, "    %10.6f%10.6f%10.6f     %10.5f", origx.zx, origx.zy, origx.zz, origx_u.z);
+			else readVar(line, origx.zx, origx.zy, origx.zz, origx_u.z);
+			++origx123;
 		}
 	}
-	if (found == 0) printf("Warning: No HEADER record found in file.");
+
+	# Did we find a full SCALE matrix?
+	if (scale123 == 999) for (Atom a = m.atoms(); a; ++a) a.r = a.r * scale + scale_u; 
+
+	# Did we find a full ORIGX matrix?
+	if (origx123 == 999) for (Atom a = m.atoms(); a; ++a) a.r = a.r * scale + scale_u; 
+
 	finaliseModel();
 }
 

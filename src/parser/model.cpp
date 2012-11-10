@@ -98,6 +98,8 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nVibrations",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
 	{ "propagateStyle",	VTypes::IntegerData,		0, FALSE },
+	{ "repeatCellNegative",	VTypes::VectorData,		0, FALSE },
+	{ "repeatCellPositive",	VTypes::VectorData,		0, FALSE },
 	{ "selection",		VTypes::AtomData,		-1, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
 	{ "vibrations",		VTypes::VibrationData,		0, TRUE },
@@ -498,6 +500,12 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::PropagateStyle):
 			rv.set(ptr->trajectoryPropagateParentStyle());
 			break;
+		case (ModelVariable::RepeatCellNegative):
+			rv.set(ptr->repeatCellsNegative(0), ptr->repeatCellsNegative(1), ptr->repeatCellsNegative(2));
+			break;
+		case (ModelVariable::RepeatCellPositive):
+			rv.set(ptr->repeatCellsPositive(0), ptr->repeatCellsPositive(1), ptr->repeatCellsPositive(2));
+			break;
 		case (ModelVariable::Selection):
 			if (!hasArrayIndex)
 			{
@@ -600,6 +608,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
 		result = FALSE;
 	}
+	int n;
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Celldata):
@@ -628,7 +637,18 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		case (ModelVariable::PropagateStyle):
 			ptr->setTrajectoryPropagateParentStyle( newvalue.asBool() );
 			break;
-
+		case (ModelVariable::RepeatCellNegative):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setRepeatCellsNegative(n, newvalue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setRepeatCellsNegative(arrayIndex-1, newvalue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setRepeatCellsNegative(n, newvalue.asInteger(result));
+			ptr->changeLog.add(Log::Style);
+			break;
+		case (ModelVariable::RepeatCellPositive):
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setRepeatCellsPositive(n, newvalue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setRepeatCellsPositive(arrayIndex-1, newvalue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newvalue.asInteger(result));
+			ptr->changeLog.add(Log::Style);
+			break;
 		default:
 			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;

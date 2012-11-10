@@ -33,18 +33,24 @@ MatrixVariable::MatrixVariable(bool constant)
 	returnType_ = VTypes::MatrixData;
 	readOnly_ = constant;
 }
-MatrixVariable::MatrixVariable(Matrix m, bool constant) : matrixData_(v)
+MatrixVariable::MatrixVariable(Matrix m, bool constant) : matrixData_(m)
 {
 	// Private variables
 	returnType_ = VTypes::MatrixData;
 	readOnly_ = constant;
 }
-MatrixVariable::MatrixVariable(TreeNode *x, TreeNode *y, TreeNode *z)
+MatrixVariable::MatrixVariable(TreeNode *xx, TreeNode *xy, TreeNode *xz, TreeNode *yx, TreeNode *yy, TreeNode *yz, TreeNode *zx, TreeNode *zy, TreeNode *zz)
 {
 	// Private variables
-	constX_ = x;
-	constY_ = y;
-	constZ_ = z;
+	constXX_ = xx;
+	constXY_ = xy;
+	constXZ_ = xz;
+	constYX_ = yx;
+	constYY_ = yy;
+	constYZ_ = yz;
+	constZX_ = zx;
+	constZY_ = zy;
+	constZZ_ = zz;
 	readOnly_ = TRUE;
 	returnType_ = VTypes::MatrixData;
 }
@@ -63,20 +69,22 @@ bool MatrixVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector) cannot be assigned to.\n");
+		msg.print("A constant value (in this case a matrix) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success = FALSE;
-	if (rv.arraySize() == -1) vectorData_ = rv.asVector(success);
-	else if (rv.arraySize() == 3)
+	if (rv.arraySize() == -1) matrixData_ = rv.asMatrix(success);
+	else if (rv.arraySize() == 9)
 	{
-		vectorData_.x = rv.asDouble(0, success);
-		if (success) vectorData_.y = rv.asDouble(1, success);
-		if (success) vectorData_.z = rv.asDouble(2, success);
+		for (int n=0; n<9; ++n)
+		{
+			matrixData_[n/3*4+n%3] = rv.asDouble(n, success);
+			if (!success) break;
+		}
 	}
 	else
 	{
-		msg.print("Error: Array assigned to vector variable must contain three elements.\n");
+		msg.print("Error: Array assigned to matrix variable must contain nine elements.\n");
 		success = FALSE;
 	}
 	return success;
@@ -85,26 +93,37 @@ bool MatrixVariable::set(ReturnValue &rv)
 // Reset variable
 bool MatrixVariable::reCreate()
 {
-	ReturnValue rv1,rv2,rv3;
-	if ((!constX_->execute(rv1)) || (!constY_->execute(rv2)) || (!constZ_->execute(rv3))) return FALSE;
-	bool s1, s2, s3;
-	vectorData_.set(rv1.asDouble(s1), rv2.asDouble(s2), rv3.asDouble(s3));
-	if (s1 && s2 && s3) return TRUE;
-	else return FALSE;
+	ReturnValue rv[9];
+	if (!constXX_->execute(rv[0])) return FALSE;
+	if (!constXY_->execute(rv[1])) return FALSE;
+	if (!constXZ_->execute(rv[2])) return FALSE;
+	if (!constYX_->execute(rv[3])) return FALSE;
+	if (!constYY_->execute(rv[4])) return FALSE;
+	if (!constYZ_->execute(rv[5])) return FALSE;
+	if (!constZX_->execute(rv[6])) return FALSE;
+	if (!constZY_->execute(rv[7])) return FALSE;
+	if (!constZZ_->execute(rv[8])) return FALSE;
+	bool success;
+	for (int n=0; n<9; ++n)
+	{
+		matrixData_[n/3*4+n%3] = rv[n].asDouble(success);
+		if (!success) return FALSE;
+	}
+	return TRUE;
 }
 
 // Reset variable
 void MatrixVariable::reset()
 {
-	vectorData_.set(0.0,0.0,0.0);
+	matrixData_.zero();
 }
 
 // Return value of node
 bool MatrixVariable::execute(ReturnValue &rv)
 {
-	// If this vector is a constant, read the three stored expressions to recreate it
+	// If this matrix is a constant, read the nine stored expressions to recreate it
 	if (readOnly_) reCreate();
-	rv.set(vectorData_);
+	rv.set(matrixData_);
 	return TRUE;
 }
 
@@ -121,9 +140,9 @@ void MatrixVariable::nodePrint(int offset, const char *prefix)
 	if (readOnly_)
 	{
 		reCreate();
-		printf("[C]%s{%f,%f,%f} (constant value)\n", tab.get(), vectorData_.x, vectorData_.y, vectorData_.z);
+		printf("[C]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f} (constant value)\n", tab.get(), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[8], matrixData_[9], matrixData_[10]);
 	}
-	else printf("[V]%s{%f,%f,%f} (variable, name=%s)\n", tab.get(), vectorData_.x, vectorData_.y, vectorData_.z, name_.get());
+	else printf("[V]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f} (variable, name=%s)\n", tab.get(), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[8], matrixData_[9], matrixData_[10], name_.get());
 	delete[] tab;
 }
 
@@ -133,10 +152,16 @@ void MatrixVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor MatrixVariable::accessorData[MatrixVariable::nAccessors] = {
-	{ "mag", VTypes::DoubleData, FALSE, FALSE },
-	{ "x", VTypes::DoubleData, FALSE, FALSE },
-	{ "y", VTypes::DoubleData, FALSE, FALSE },
-	{ "z", VTypes::DoubleData, FALSE, FALSE }
+	{ "determinant", VTypes::DoubleData, FALSE, TRUE },
+	{ "xx", VTypes::DoubleData, FALSE, FALSE },
+	{ "xy", VTypes::DoubleData, FALSE, FALSE },
+	{ "xz", VTypes::DoubleData, FALSE, FALSE },
+	{ "yx", VTypes::DoubleData, FALSE, FALSE },
+	{ "yy", VTypes::DoubleData, FALSE, FALSE },
+	{ "yz", VTypes::DoubleData, FALSE, FALSE },
+	{ "zx", VTypes::DoubleData, FALSE, FALSE },
+	{ "zy", VTypes::DoubleData, FALSE, FALSE },
+	{ "zz", VTypes::DoubleData, FALSE, FALSE }
 };
 
 // Function data
@@ -164,14 +189,14 @@ StepNode *MatrixVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Vector' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'Matrix' has no member or function named '%s'.\n", s);
 			msg.exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'Vector' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'Matrix' function '%s'.\n", s);
 			msg.exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
@@ -180,7 +205,7 @@ StepNode *MatrixVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Vector' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'Matrix' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -197,7 +222,7 @@ StepNode *MatrixVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		// Were we given an argument list when we didn't want one?
 		if (arglist != NULL)
 		{
-			msg.print("Error: Argument list given to 'Vector&' array member '%s'.\n", s);
+			msg.print("Error: Argument list given to 'Matrix&' array member '%s'.\n", s);
 			msg.exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
@@ -214,7 +239,7 @@ bool MatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Vector type.\n", i);
+		printf("Internal Error: Accessor id %i is out of range for Matrix type.\n", i);
 		msg.exit("MatrixVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -228,20 +253,22 @@ bool MatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Vec3<double> v = rv.asVector(result);
+	Matrix m = rv.asMatrix(result);
 	if (result) switch (acc)
 	{
-		case (MatrixVariable::Magnitude):
-			rv.set(v.magnitude());
+		case (MatrixVariable::Determinant):
+			rv.set(m.determinant());
 			break;
-		case (MatrixVariable::X):
-			rv.set(v.x);
-			break;
-		case (MatrixVariable::Y):
-			rv.set(v.y);
-			break;
-		case (MatrixVariable::Z):
-			rv.set(v.z);
+		case (MatrixVariable::XX):
+		case (MatrixVariable::XY):
+		case (MatrixVariable::XZ):
+		case (MatrixVariable::YX):
+		case (MatrixVariable::YY):
+		case (MatrixVariable::YZ):
+		case (MatrixVariable::ZX):
+		case (MatrixVariable::ZY):
+		case (MatrixVariable::ZZ):
+			rv.set(m[(acc-MatrixVariable::XX)/3*4+(acc-MatrixVariable::XX)%3]);
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in MatrixVariable.\n", accessorData[i].name);
@@ -259,7 +286,7 @@ bool MatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Vector type.\n", i);
+		printf("Internal Error: Accessor id %i is out of range for Matrix type.\n", i);
 		msg.exit("MatrixVariable::setAccessor");
 		return FALSE;
 	}
@@ -292,17 +319,17 @@ bool MatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	}
 	else
 	{
-		// This is not an array member, so cannot be assigned an array unless its a Vector
+		// This is not an array member, so cannot be assigned an array unless its a Matrix
 		if (newvalue.arraySize() != -1)
 		{
-			if (accessorData[i].returnType != VTypes::VectorData)
+			if (accessorData[i].returnType != VTypes::MatrixData)
 			{
 				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newvalue.type() != VTypes::MatrixData) && (newvalue.arraySize() != 9))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				msg.print("Error: Only an array of size 9 can be assigned to a matrix (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -313,18 +340,19 @@ bool MatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Vec3<double> v = sourcerv.asVector(result);
+	Matrix& m = sourcerv.matrix();
 	if (result) switch (acc)
 	{
-		case (MatrixVariable::Magnitude):
-			// Normalise existing vector, then multiply by new magnitude
-			v.normalise();
-			sourcerv.set( v * newvalue.asDouble(result) );
-			break;
-		case (MatrixVariable::X):
-		case (MatrixVariable::Y):
-		case (MatrixVariable::Z):
-			sourcerv.set(acc - MatrixVariable::X, newvalue.asDouble(result));
+		case (MatrixVariable::XX):
+		case (MatrixVariable::XY):
+		case (MatrixVariable::XZ):
+		case (MatrixVariable::YX):
+		case (MatrixVariable::YY):
+		case (MatrixVariable::YZ):
+		case (MatrixVariable::ZX):
+		case (MatrixVariable::ZY):
+		case (MatrixVariable::ZZ):
+			m[(acc-MatrixVariable::XX)/3*4+(acc-MatrixVariable::XX)%3] = newvalue.asDouble(result);
 			break;
 		default:
 			printf("MatrixVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -342,13 +370,13 @@ bool MatrixVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
-		printf("Internal Error: FunctionAccessor id %i is out of range for Vector type.\n", i);
+		printf("Internal Error: FunctionAccessor id %i is out of range for Matrix type.\n", i);
 		msg.exit("MatrixVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Vec3<double> v = rv.asVector();
+	Matrix m = rv.asMatrix();
 	if (result) switch (i)
 	{
 		default:
@@ -369,7 +397,7 @@ MatrixArrayVariable::MatrixArrayVariable(TreeNode *sizeexpr, bool constant) : ar
 {
 	// Private variables
 	returnType_ = VTypes::MatrixData;
-	vectorArrayData_ = NULL;
+	matrixArrayData_ = NULL;
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;
 	readOnly_ = constant;
@@ -378,7 +406,7 @@ MatrixArrayVariable::MatrixArrayVariable(TreeNode *sizeexpr, bool constant) : ar
 // Destructor
 MatrixArrayVariable::~MatrixArrayVariable()
 {
-	if (vectorArrayData_ != NULL) delete[] vectorArrayData_;
+	if (matrixArrayData_ != NULL) delete[] matrixArrayData_;
 }
 
 /*
@@ -390,16 +418,16 @@ bool MatrixArrayVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector array) cannot be assigned to.\n");
+		msg.print("A constant value (in this case a matrix array) cannot be assigned to.\n");
 		return FALSE;
 	}
-	if (vectorArrayData_ == NULL)
+	if (matrixArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return FALSE;
 	}
 	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) vectorArrayData_[i] = rv.asVector();
+	for (int i=0; i<arraySize_; i++) matrixArrayData_[i] = rv.asMatrix();
 	return TRUE;
 }
 
@@ -408,10 +436,10 @@ bool MatrixArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector array?) cannot be assigned to.\n");
+		msg.print("A constant value (in this case a matrix array?) cannot be assigned to.\n");
 		return FALSE;
 	}
-	if (vectorArrayData_ == NULL)
+	if (matrixArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return FALSE;
@@ -423,26 +451,26 @@ bool MatrixArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	// Set individual element
-	vectorArrayData_[arrayindex] = rv.asVector();
+	matrixArrayData_[arrayindex] = rv.asMatrix();
 	return TRUE;
 }
 
 // Reset variable
 void MatrixArrayVariable::reset()
 {
-	if (vectorArrayData_ == NULL)
+	if (matrixArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return;
 	}
 	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) vectorArrayData_[i] = 0;
+	for (int i=0; i<arraySize_; i++) matrixArrayData_[i].zero();
 }
 
 // Return value of node
 bool MatrixArrayVariable::execute(ReturnValue &rv)
 {
-	msg.print("A whole vector array ('%s') cannot be passed as a value.\n", name_.get());
+	msg.print("A whole matrix array ('%s') cannot be passed as a value.\n", name_.get());
 	return FALSE;
 }
 
@@ -455,7 +483,7 @@ bool MatrixArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( vectorArrayData_[arrayindex] );
+	rv.set( matrixArrayData_[arrayindex] );
 	return TRUE;
 }
 
@@ -480,14 +508,14 @@ bool MatrixArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for vector array '%s'.\n", name_.get());
+		msg.print("Failed to find size for matrix array '%s'.\n", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different
-	if ((arraySize_ != newsize.asInteger()) && (vectorArrayData_ != NULL)) { delete[] vectorArrayData_; vectorArrayData_ = NULL; }
+	if ((arraySize_ != newsize.asInteger()) && (matrixArrayData_ != NULL)) { delete[] matrixArrayData_; matrixArrayData_ = NULL; }
 	// Store new array size
 	arraySize_ = newsize.asInteger();
-	if ((arraySize_ > 0) && (vectorArrayData_ == NULL)) vectorArrayData_ = new Vec3<double>[arraySize_];
+	if ((arraySize_ > 0) && (matrixArrayData_ == NULL)) matrixArrayData_ = new Matrix[arraySize_];
 	if (initialValue_ == NULL) reset();
 	else
 	{

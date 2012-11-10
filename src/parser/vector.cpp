@@ -313,18 +313,18 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Vec3<double> v = sourcerv.asVector(result);
+	Vec3<double>& v = sourcerv.vector();
 	if (result) switch (acc)
 	{
 		case (VectorVariable::Magnitude):
 			// Normalise existing vector, then multiply by new magnitude
 			v.normalise();
-			sourcerv.set( v * newvalue.asDouble(result) );
+			v *= newvalue.asDouble(result);
 			break;
 		case (VectorVariable::X):
 		case (VectorVariable::Y):
 		case (VectorVariable::Z):
-			sourcerv.set(acc - VectorVariable::X, newvalue.asDouble(result));
+			v.set(acc - VectorVariable::X, newvalue.asDouble(result));
 			break;
 		default:
 			printf("VectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

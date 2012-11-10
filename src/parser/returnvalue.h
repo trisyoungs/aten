@@ -99,12 +99,10 @@ class ReturnValue
 	void set(const char *s);
 	// Set from vector value
 	void set(Vec3<double> v);
-	// Set from Matrix value
-	void set(Matrix m);
 	// Set from individual vector data
 	void set(double x, double y, double z);
-	// Set from single vector data
-	void set(int id, double xyz);
+	// Set from Matrix value
+	void set(Matrix m);
 	// Set from pointer value
 	void set(VTypes::DataType type, void *ptr, void *refitem = NULL);
 	// Set from standard array
@@ -123,6 +121,10 @@ class ReturnValue
 	void setElement(int id, Matrix m);
 	// Set array element from pointer value
 	void setElement(int id, VTypes::DataType type, void *ptr);
+	// Return actual vector object for in-place modification
+	Vec3<double>& vector();
+	// Return actual matrix object for in-place modification
+	Matrix& matrix();
 
 
 	/*
@@ -138,7 +140,7 @@ class ReturnValue
 	// Return vector data
 	Vec3<double> asVector(bool &success);
 	// Return matrix data
-	Vec3<double> asMatrix(bool &success);
+	Matrix asMatrix(bool &success);
 	// Return pointer data
 	void *asPointer(VTypes::DataType type, bool &success);
 	// Return pointer refitem data
@@ -172,7 +174,7 @@ class ReturnValue
 	// Return vector data
 	Vec3<double> asVector();
 	// Return matrix data
-	Vec3<double> asMatrix();
+	Matrix asMatrix();
 	// Return pointer data
 	void *asPointer(VTypes::DataType type);
 	// Return as boolean (guaranteed conversion)

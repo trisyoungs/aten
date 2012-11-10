@@ -405,6 +405,8 @@ bool Command::function_OperatorMultiply(CommandNode *c, Bundle &obj, ReturnValue
 		case (VTypes::VecInt):
 		case (VTypes::VecDbl): rv.set(lhs.asVector(b) * rhs.asDouble(b)); break;
 		case (VTypes::VecVec): rv.set(lhs.asVector(b) * rhs.asVector(b)); break;
+		case (VTypes::VecMat): rv.set(rhs.asMatrix(b) * lhs.asVector(b)); break;
+		case (VTypes::MatVec): rv.set(lhs.asMatrix(b) * rhs.asVector(b)); break;
 		case (VTypes::IntVec):
 		case (VTypes::DblVec): rv.set(rhs.asVector(b) * lhs.asDouble(b)); break;
 		case (VTypes::IntAVec):

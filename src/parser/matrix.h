@@ -55,11 +55,11 @@ class MatrixVariable : public Variable
 	// Variable Data
 	*/
 	private:
-	// Recreate data (for constant vectors) from TreeNode parts
+	// Recreate data (for constant Matrices) from TreeNode parts
 	bool reCreate();
-	// Vector data
+	// Matrix data
 	Matrix matrixData_;
-	// Node data for constant vectors
+	// Node data for constant Matrices
 	TreeNode *constXX_, *constXY_, *constXZ_, *constYX_, *constYY_, *constYZ_, *constZX_, *constZY_, *constZZ_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
@@ -88,7 +88,7 @@ class MatrixVariable : public Variable
 	static FunctionAccessor functionData[nFunctions];
 };
 
-// Vector Array Variable
+// Matrix Array Variable
 class MatrixArrayVariable : public Variable
 {
 	public:
@@ -119,8 +119,8 @@ class MatrixArrayVariable : public Variable
 	TreeNode *arraySizeExpression_;
 	// Array size
 	int arraySize_;
-	// Vector data
-	Vec3<double> *vectorArrayData_;
+	// Matrix data
+	Matrix *matrixArrayData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix);
 
