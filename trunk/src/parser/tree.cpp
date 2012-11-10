@@ -775,7 +775,7 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 		scope = ri->item;
 	}
 	// Check initialvalue....
-	if ((initialValue != NULL) && (type != VTypes::VectorData))
+	if ((initialValue != NULL) && (type != VTypes::VectorData) && (type != VTypes::MatrixData))
 	{
 		if ((initialValue->nodeType() == TreeNode::ArrayVarNode) || (initialValue->nodeType() == TreeNode::ArrayConstantNode))
 		{

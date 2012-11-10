@@ -438,6 +438,10 @@ class Model
 	GLint viewportMatrix_[4];
 	// Projection matrix for model
 	Matrix modelProjectionMatrix_;
+	// Repeat cells to draw in positive xyz directions
+	Vec3<int> repeatCellsPositive_;
+	// Repeat cells to draw in negative xyz directions
+	Vec3<int> repeatCellsNegative_;
 
 	private:
 	// Calculate and return inverse of current view matrix
@@ -476,7 +480,14 @@ class Model
 	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
 	// Convert screen coordinates into modelspace coordinates
 	Vec3<double> &screenToModel(int x, int y, double z);
-
+	// Set positive repeat cell value
+	void setRepeatCellsPositive(int i, int r);
+	// Get positive repeat cell value
+	int repeatCellsPositive(int i) const;
+	// Set negative repeat cell value
+	void setRepeatCellsNegative(int i, int r);
+	// Get negative repeat cell value
+	int repeatCellsNegative(int i) const;
 
 	/*
 	// Atom Labels

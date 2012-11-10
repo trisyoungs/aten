@@ -382,12 +382,12 @@ void Primitive::plotCube(double size, int nsubs, double ox, double oy, double oz
 				vertex[1] = oy + i*veca[1] + j*vecb[1];
 				vertex[2] = oz + i*veca[2] + j*vecb[2];
 				// Define trangle vertices for 'lower' plane
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
-				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2, TRUE);
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, -1*(plane == 1), -1*(plane == 2), TRUE);
+				defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, -1*(plane == 1), -1*(plane == 2), TRUE);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, -1*(plane == 1), -1*(plane == 2), TRUE);
+				defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, -1*(plane == 1), -1*(plane == 2), TRUE);
+				defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, -1*(plane == 1), -1*(plane == 2), TRUE);
+				defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, -1*(plane == 1), -1*(plane == 2), TRUE);
 
 				// Define trangle vertices for 'upper' plane
 				vertex[plane] += size;

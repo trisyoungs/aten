@@ -2,9 +2,6 @@
 
 <ul>
 <li>Creating expression for trajectory frame causes crash?</li>
-<li>Normals for plotCube() are wrong.</li>
-<li>When manipulating an atom selection, undoing afterwards does not undo Fold</li>
-<li>UnitCell:mim(Atom*,Vec3) returns incorrect position - where is it used?</li>
 <li>Glyph list not updated on model load.</li>
 <li>Model not updated when changing glyph selection?</li>
 <li>Running from CLI with unset DISPLAY variable causes segfault.</li>
@@ -37,6 +34,8 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Add 'repeatCellNegative' and 'repeatCellPositive' accessors to ModelVariable.</li>
+<li>Add MatrixVariable description.</li>
 <li>Add 'newPattern' and 'clearPattern' functions to ModelVariable</li>
 <li>Add pore alkoxylation script to examples</li>
 <li>Clarify use of pointers for non-POD objects, add 'new' usage description.</li>

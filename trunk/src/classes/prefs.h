@@ -102,10 +102,6 @@ class Prefs
 	bool frameWholeView_;
 	// Rotation globe style
 	bool viewRotationGlobe_;
-	// Repeat units in positive xyz directions
-	Vec3<int> repeatCellsPos_;
-	// Repeat units in negative xyz directions
-	Vec3<int> repeatCellsNeg_;
 	// Size in pixels of the viewport to draw the rotation globe in.
 	int globeSize_;
 	// Rendering style of models
@@ -154,14 +150,6 @@ class Prefs
 	int globeSize() const;
 	// Set the current rotation globe size in pixels
 	void setGlobeSize(int i);
-	// Set positive repeat cell value
-	void setRepeatCellsPos(int i, int r);
-	// Get positive repeat cell value
-	int repeatCellsPos(int i) const;
-	// Set negative repeat cell value
-	void setRepeatCellsNeg(int i, int r);
-	// Get negative repeat cell value
-	int repeatCellsNeg(int i) const;
 	// Sets the general primitive quality
 	void setPrimitiveQuality(int n);
 	// Return the current primitive quality

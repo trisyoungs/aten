@@ -430,3 +430,28 @@ Vec3<double> &Model::screenToModel(int x, int y, double z)
 	msg.exit("Model::screenToModel");
 	return modelr;
 }
+
+
+// Set positive repeat cell value
+void Model::setRepeatCellsPositive(int i, int r)
+{
+	repeatCellsPositive_.set(i,r);
+}
+
+// Get positive repeat cell value
+int Model::repeatCellsPositive(int i) const
+{
+	return repeatCellsPositive_.get(i);
+}
+
+// Set negative repeat cell value
+void Model::setRepeatCellsNegative(int i, int r)
+{
+	repeatCellsNegative_.set(i,r);
+}
+
+// Get negative repeat cell value
+int Model::repeatCellsNegative(int i) const
+{
+	return repeatCellsNegative_.get(i);
+}

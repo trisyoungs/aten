@@ -355,9 +355,22 @@ void RenderEngine::renderModel(Model *source, bool currentModel, bool renderType
 	
 	// Always draw unit cell, regardless of list status
 	renderCell(source);
-
+	
 	// Draw main model (atoms, bonds, etc.)
-	if (activePrimitiveLists_[RenderEngine::BasicObject] || activePrimitiveLists_[RenderEngine::AtomSelectionObject]) renderAtomsAndBonds(source);
+	Matrix offset;
+	for (int x = -source->repeatCellsNegative(0); x <= source->repeatCellsPositive(0); ++x)
+	{
+		for (int y = -source->repeatCellsNegative(1); y <= source->repeatCellsPositive(1); ++y)
+		{
+			for (int z = -source->repeatCellsNegative(2); z <= source->repeatCellsPositive(2); ++z)
+			{
+				offset.setIdentity();
+				offset.addTranslation(source->cell()->axes() * Vec3<double>(x,y,z));
+				
+				if (activePrimitiveLists_[RenderEngine::BasicObject] || activePrimitiveLists_[RenderEngine::AtomSelectionObject]) renderAtomsAndBonds(source, offset);
+			}
+		}
+	}
 
 	// Draw model glyphs
 	if (activePrimitiveLists_[RenderEngine::GlyphObject]) renderGlyphs(source);
@@ -372,7 +385,7 @@ void RenderEngine::renderModel(Model *source, bool currentModel, bool renderType
 	// Render additional data for active model
 	if ((renderType == OnscreenScene) && currentModel && gui.exists())
 	{
-		// Render embellshments for current UserAction
+		// Render embellishments for current UserAction
 		renderUserActions(source);
 		// Render extras arising from open tool windows (current model only)
 		renderWindowExtras(source);
