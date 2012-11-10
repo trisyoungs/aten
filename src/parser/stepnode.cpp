@@ -38,6 +38,7 @@
 #include "parser/glyph.h"
 #include "parser/glyphdata.h"
 #include "parser/grid.h"
+#include "parser/matrix.h"
 #include "parser/mc.h"
 #include "parser/measurement.h"
 #include "parser/model.h"
@@ -203,6 +204,10 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = GridVariable::performFunction(accessor_, rv, this);
 			else result = GridVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::MatrixData):
+			if (functionAccessor_) result = MatrixVariable::performFunction(accessor_, rv, this);
+			else result = MatrixVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::MeasurementData):
 			if (functionAccessor_) result = MeasurementVariable::performFunction(accessor_, rv, this);
 			else result = MeasurementVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -321,6 +326,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::GridData):
 			printf("%s", GridVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::MatrixData):
+			printf("%s", MatrixVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::MeasurementData):
 			printf("%s", MeasurementVariable::accessorData[accessor_].name);
@@ -452,6 +460,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::GridData):
 			result = GridVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::MatrixData):
+			result = MatrixVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::MeasurementData):
 			result = MeasurementVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -571,6 +582,9 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::GridData):
 			result = GridVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::MatrixData):
+			result = VectorVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::MeasurementData):
 			result = MeasurementVariable::accessorSearch(s, arrayindex, arglist);

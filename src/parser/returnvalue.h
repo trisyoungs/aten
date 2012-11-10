@@ -24,9 +24,10 @@
 
 #include "parser/vtypes.h"
 #include "base/dnchar.h"
+#include "base/matrix.h"
 #include "templates/vector3.h"
 
-// Tree Return Value
+// Return Value
 class ReturnValue
 {
 	public:
@@ -36,6 +37,7 @@ class ReturnValue
 	ReturnValue(double d);
 	ReturnValue(const char *s);
 	ReturnValue(Vec3<double> v);
+	ReturnValue(Matrix m);
 	ReturnValue(VTypes::DataType type, void *ptr);
 	~ReturnValue();
 	// Operator=
@@ -62,12 +64,14 @@ class ReturnValue
 	double valueD_;
 	Dnchar valueS_;
 	Vec3<double> valueV_;
+	Matrix valueM_;
 	void *valueP_, *valueRefitem_;
 	// Array members for returns
 	int *arrayI_;
 	double *arrayD_;
 	Dnchar *arrayS_;
 	Vec3<double> *arrayV_;
+	Matrix *arrayM_;
 	void **arrayP_;
 	// Clear any current array data
 	void clearArrayData();
@@ -95,6 +99,8 @@ class ReturnValue
 	void set(const char *s);
 	// Set from vector value
 	void set(Vec3<double> v);
+	// Set from Matrix value
+	void set(Matrix m);
 	// Set from individual vector data
 	void set(double x, double y, double z);
 	// Set from single vector data
@@ -113,6 +119,8 @@ class ReturnValue
 	void setElement(int id, const char *s);
 	// Set array element from vector value
 	void setElement(int id, Vec3<double> v);
+	// Set array element from vector value
+	void setElement(int id, Matrix m);
 	// Set array element from pointer value
 	void setElement(int id, VTypes::DataType type, void *ptr);
 
@@ -129,6 +137,8 @@ class ReturnValue
 	const char *asString(bool &success);
 	// Return vector data
 	Vec3<double> asVector(bool &success);
+	// Return matrix data
+	Vec3<double> asMatrix(bool &success);
 	// Return pointer data
 	void *asPointer(VTypes::DataType type, bool &success);
 	// Return pointer refitem data
@@ -141,6 +151,8 @@ class ReturnValue
 	const char *asString(int index, bool &success);
 	// Return vector element data
 	Vec3<double> asVector(int index, bool &success);
+	// Return matrix element data
+	Vec3<double> asMatrix(int index, bool &success);
 	// Return pointer element data
 	void *asPointer(int index, VTypes::DataType type, bool &success);
 	// Return array size of data
@@ -159,6 +171,8 @@ class ReturnValue
 	const char *asString();
 	// Return vector data
 	Vec3<double> asVector();
+	// Return matrix data
+	Vec3<double> asMatrix();
 	// Return pointer data
 	void *asPointer(VTypes::DataType type);
 	// Return as boolean (guaranteed conversion)

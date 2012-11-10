@@ -1,6 +1,6 @@
 /*
 	*** Return Value
-	*** src/parser/treevalue.cpp
+	*** src/parser/returnvalue.cpp
 	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
@@ -46,6 +46,7 @@ ReturnValue::ReturnValue()
 	arrayD_ = NULL;
 	arrayS_ = NULL;
 	arrayV_ = NULL;
+	arrayM_ = NULL;
 	arrayP_ = NULL;
 	
 	// Public variables
@@ -72,6 +73,12 @@ ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), arraySize_(
 	next = NULL;
 }
 ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), arraySize_(-1), valueV_(v)
+{
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+ReturnValue::ReturnValue(Matrix m) : type_(VTypes::MatrixData), arraySize_(-1), valueM_(m)
 {
 	// Public variables
 	prev = NULL;

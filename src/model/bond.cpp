@@ -180,6 +180,24 @@ void Model::initialiseBondingCuboids()
 	Vec3<double> r;
 	extentMin_ = 1e6;
 	extentMax_ = -1e6;
+	
+	// Prepare (if non-periodic cell)
+	if (cell_.type() == UnitCell::NoCell)
+	{
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			r = i->r();
+			if (r.x < extentMin_.x) extentMin_.x = r.x;
+			if (r.x > extentMax_.x) extentMax_.x = r.x;
+			if (r.y < extentMin_.y) extentMin_.y = r.y;
+			if (r.y > extentMax_.y) extentMax_.y = r.y;
+			if (r.z < extentMin_.z) extentMin_.z = r.z;
+			if (r.z > extentMax_.z) extentMax_.z = r.z;
+		}
+		extentRange_ = extentMax_ - extentMin_;
+	}
+	
+	// Main loop
 	do
 	{
 		cuboidSize_.set(size,size,size);
@@ -188,17 +206,6 @@ void Model::initialiseBondingCuboids()
 		// Determine the number of cuboids to partition our space into
 		if (cell_.type() == UnitCell::NoCell)
 		{
-			for (Atom *i = atoms_.first(); i != NULL; i = i->next)
-			{
-				r = i->r();
-				if (r.x < extentMin_.x) extentMin_.x = r.x;
-				if (r.x > extentMax_.x) extentMax_.x = r.x;
-				if (r.y < extentMin_.y) extentMin_.y = r.y;
-				if (r.y > extentMax_.y) extentMax_.y = r.y;
-				if (r.z < extentMin_.z) extentMin_.z = r.z;
-				if (r.z > extentMax_.z) extentMax_.z = r.z;
-			}
-			extentRange_ = extentMax_ - extentMin_;
 			cuboidBoxes_.x = int(extentRange_.x / cuboidSize_.x) + 1;
 			cuboidBoxes_.y = int(extentRange_.y / cuboidSize_.y) + 1;
 			cuboidBoxes_.z = int(extentRange_.z / cuboidSize_.z) + 1;

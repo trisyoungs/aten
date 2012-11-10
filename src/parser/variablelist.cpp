@@ -40,6 +40,7 @@
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
+#include "parser/matrix.h"
 #include "parser/measurement.h"
 #include "parser/model.h"
 #include "parser/pattern.h"
@@ -92,6 +93,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 			break;
 		case (VTypes::VectorData):
 			v = (Variable*) new VectorVariable(FALSE);
+			break;
+		case (VTypes::MatrixData):
+			v = (Variable*) new MatrixVariable(FALSE);
 			break;
 		case (VTypes::AtenData):
 			v = (Variable*) new AtenVariable();
