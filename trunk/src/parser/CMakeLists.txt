@@ -25,6 +25,7 @@ glyph.h
 glyphdata.h
 grid.h
 integer.h
+matrix.h
 mc.h
 measurement.h
 model.h
@@ -77,6 +78,7 @@ glyphdata.cpp
 grammar.cc
 grid.cpp
 integer.cpp
+matrix.cpp
 mc.cpp
 measurement.cpp
 model.cpp

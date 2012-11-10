@@ -50,6 +50,9 @@ filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extensio
 			readVar(line,i,bondatoms[1],bondatoms[2],bondatoms[3],bondatoms[4],bondatoms[5]);
 			for (n=1; n<=5; ++n) if (bondatoms[n] > 0) newBond(i,bondatoms[n]);
 		}	
+		else if (keyword == "SCALE1")
+		{
+		}
 	}
 	if (found == 0) printf("Warning: No HEADER record found in file.");
 	finaliseModel();

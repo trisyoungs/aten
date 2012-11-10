@@ -23,6 +23,7 @@
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
 #include "parser/stepnode.h"
+#include "parser/matrix.h"
 #include "parser/vector.h"
 #include <string.h>
 
@@ -220,6 +221,29 @@ bool VariableNode::set(ReturnValue &setrv)
 // 				if (!arrayIndex_->execute(index)) result = FALSE;
 // 				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
 // 			}
+		}
+	}
+	else if (variable_->returnType() == VTypes::MatrixData)
+	{
+		// Grab accessor ID from last (only) step and use it to set the vector component
+		int component = ((StepNode*) args_.last()->item)->accessor();
+		if (arrayIndex_ == NULL) result = variable_->execute(executerv);
+		else 
+		{
+			ReturnValue index;
+			if (!arrayIndex_->execute(index)) result = FALSE;
+			else result = variable_->executeAsArray(executerv, index.asInteger() - 1);
+		}
+		if (result)
+		{
+			MatrixVariable::setAccessor(component, executerv, setrv, FALSE);
+			if (arrayIndex_ == NULL) result = variable_->set(executerv);
+			else
+			{
+				ReturnValue index;
+				if (!arrayIndex_->execute(index)) result = FALSE;
+				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
+			}
 		}
 	}
 	else
