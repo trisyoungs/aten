@@ -23,7 +23,7 @@
 #include "base/sysfunc.h"
 #include "base/elements.h"
 #include "classes/neta.h"
-#include "classes/neta_grammar.h"
+#include "classes/neta_grammar.hh"
 #include "classes/neta_parser.h"
 
 // Symbols
