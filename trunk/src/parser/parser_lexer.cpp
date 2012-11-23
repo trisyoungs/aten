@@ -23,7 +23,7 @@
 #include "base/dnchar.h"
 #include "parser/variable.h"
 #include "parser/parser.h"
-#include "parser/grammar.h"
+#include "parser/grammar.hh"
 #include "parser/tree.h"
 #include "parser/program.h"
 #include "command/commands.h"
