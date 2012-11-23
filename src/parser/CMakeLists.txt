@@ -20,7 +20,7 @@ forcefieldatom.h
 forcefieldbound.h
 forcefield.h
 format.h
-grammar.h
+grammar.hh
 glyph.h
 glyphdata.h
 grid.h
