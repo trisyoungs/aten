@@ -89,8 +89,8 @@ echo ""
 echo "Copying new files..."
 cp -v ../../$DISTFILE ./
 osc add $DISTFILE
+cp -v ../../aten.spec ./
 cp -v ../../extra/aten.dsc ./
-cp -v ../../extra/aten.spec ./
 cp -v ../../extra/debian.* ./
 echo ""
 echo "Committing changes...."

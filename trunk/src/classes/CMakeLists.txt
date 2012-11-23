@@ -5,7 +5,7 @@ grid.h
 forcefieldatom.h
 forcefieldbound.h
 neta.h
-neta_grammar.h
+neta_grammar.hh
 neta_parser.h
 prefs.h
 restraint.h
