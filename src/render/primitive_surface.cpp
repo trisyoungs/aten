@@ -514,76 +514,101 @@ void GridPrimitive::createSurfaceMarchingCubes()
 // Render normal '2D' surface 
 void GridPrimitive::createSurface2D()
 {
-	int i, j;
-	Vec3<double> r, gradientx, gradienty, normal;
-	int cscale;
+	int i, j, n;
+	Vec3<double> normal[4];
+	int cscale = source_->useColourScale() ? source_->colourScale() : -1;
 	Vec3<int> npoints = source_->nPoints();
-	GLfloat colour[4], poscol[4];
+	GLfloat col1[4], col2[4], minalpha1, minalpha2;
 	double **data;
 	bool usez = source_->useDataForZ();
+
 	// Grab the data pointer and surface cutoff
 	data = source_->data2d();
 
-	// Set colour / transparency for surface
-	prefs.copyColour(Prefs::SpecularColour, colour);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour);
-	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-	cscale = source_->useColourScale() ? source_->colourScale() : -1;
-	if (cscale == -1) source_->copyPrimaryColour(poscol);
-
-	// Render surface
-	for (i = 1; i<npoints.x-2; i++)
+	// Grab colours (if not using a colourscale) and determine colour mode to use
+	if (cscale == -1)
 	{
-		for (j = 1; j<npoints.y-2; j++)
-		{
-			gradientx.set(1.0,0,(data[i+1][j] - data[i-1][j])*0.5);
-			gradienty.set(0,1.0,(data[i][j+1] - data[i][j-1])*0.5);
-			normal = (gradientx * gradienty);
-			normal.normalise();
-			if (cscale != -1)
-			{
-				prefs.colourScale[cscale].colour(data[i][j], colour);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
-			}
-			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i, j, usez ? data[i][j] : 0.0);
-
-			gradientx.set(1.0,0,(data[i+2][j] - data[i][j])*0.5);
-			gradienty.set(0,1.0,(data[i+1][j+1] - data[i+1][j-1])*0.5);
-			normal = gradientx * gradienty;
-			normal.normalise();
-			if (cscale != -1)
-			{
-				prefs.colourScale[cscale].colour(data[i+1][j], colour);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
-			}
-			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i+1, j, usez ? data[i+1][j] : 0.0);
-
-			gradientx.set(1.0,0,(data[i+2][j+1] - data[i][j+1])*0.5);
-			gradienty.set(0,1.0,(data[i+1][j+2] - data[i+1][j])*0.5);
-			normal = gradientx * gradienty;
-			normal.normalise();
-			if (cscale != -1)
-			{
-				prefs.colourScale[cscale].colour(data[i+1][j+1], colour);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
-			}
-			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i+1, j+1, usez ? data[i+1][j+1] : 0.0);
-
-			gradientx.set(1.0,0,(data[i+1][j+1] - data[i-1][j+1])*0.5);
-			gradienty.set(0,1.0,(data[i][j+2] - data[i][j])*0.5);
-			normal = gradientx * gradienty;
-			normal.normalise();
-			if (cscale != -1)
-			{
-				prefs.colourScale[cscale].colour(data[i][j+1], colour);
-				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
-			}
-			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i, j+1, usez ? data[i][j+1] : 0.0);
-		}
+		source_->copyPrimaryColour(col1);
+		source_->copySecondaryColour(col2);
+		primaryPrimitive_.setColourData(FALSE);
+		secondaryPrimitive_.setColourData(FALSE);
+		minalpha1 = col1[3];
+		minalpha2 = col2[3];
 	}
-	glEnd();
+	else
+	{
+		primaryPrimitive_.setColourData(TRUE);
+		secondaryPrimitive_.setColourData(TRUE);
+		minalpha1 = 1.0f;
+		minalpha2 = 1.0f;
+	}
+
+	// Clear primitive data
+	primaryPrimitive_.clear();
+	secondaryPrimitive_.clear();
+	
+	int di = 0, di2 = 2, dj, dj2;
+	for (i = 0; i<npoints.x-1; ++i)
+	{
+		if (i == npoints.x-2) di2 = 1;
+		dj = 0;
+		dj2 = 2;
+		for (j = 0; j<npoints.y-1; ++j)
+		{
+			if (j == npoints.y-2) dj2 = 1;
+			// Calculate normals...
+			normal[0] = Vec3<double>(1.0,0.0,(data[i+1][j] - data[i-di][j])*0.5) * Vec3<double>(0.0,1.0,(data[i][j+1] - data[i][j-dj])*0.5);	// N(i,j)
+			normal[1] = Vec3<double>(1.0,0.0,(data[i+di2][j] - data[i][j])*0.5) * Vec3<double>(0.0,1.0,(data[i+1][j+1] - data[i+1][j-dj])*0.5);	// N(i+1,j)
+			normal[2] = Vec3<double>(1.0,0.0,(data[i+1][j+1] - data[i-di][j+1])*0.5) * Vec3<double>(0.0,1.0,(data[i][j+dj2] - data[i][j])*0.5);	// N(i,j+1)
+			normal[3] = Vec3<double>(1.0,0.0,(data[i+di2][j+1] - data[i][j+1])*0.5) * Vec3<double>(0.0,1.0,(data[i+1][j+dj2] - data[i+1][j])*0.5);	// N(i+1,j+1)
+			for (n=0; n<4; ++n) normal[n].normalise();
+			
+			// Set triangle coordinates and add cube position
+			if (cscale != -1)
+			{
+				// First triangle
+				prefs.colourScale[cscale].colour(data[i][j], col1);
+				primaryPrimitive_.defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z, col1[0], col1[1], col1[2], col1[3], TRUE);
+				if (col1[3] < minalpha1) minalpha1 = col1[3];
+				
+				prefs.colourScale[cscale].colour(data[i+1][j], col1);
+				primaryPrimitive_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, col1[0], col1[1], col1[2], col1[3], TRUE);
+				if (col1[3] < minalpha1) minalpha1 = col1[3];
+				
+				prefs.colourScale[cscale].colour(data[i][j+1], col1);
+				primaryPrimitive_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, col1[0], col1[1], col1[2], col1[3], TRUE);
+				if (col1[3] < minalpha1) minalpha1 = col1[3];
+				
+				// Second triangle
+				primaryPrimitive_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, col1[0], col1[1], col1[2], col1[3], TRUE);
+				
+				prefs.colourScale[cscale].colour(data[i+1][j], col1);
+				primaryPrimitive_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, col1[0], col1[1], col1[2], col1[3], TRUE);
+				if (col1[3] < minalpha1) minalpha1 = col1[3];
+
+				prefs.colourScale[cscale].colour(data[i+1][j+1], col1);
+				primaryPrimitive_.defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z, col1[0], col1[1], col1[2], col1[3], TRUE);
+				if (col1[3] < minalpha1) minalpha1 = col1[3];
+			}
+			else
+			{
+				// First triangle
+				primaryPrimitive_.defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z, TRUE);
+				primaryPrimitive_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, TRUE);
+				primaryPrimitive_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, TRUE);
+				
+				// Second triangle
+				primaryPrimitive_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, TRUE);
+				primaryPrimitive_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, TRUE);
+				primaryPrimitive_.defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z, TRUE);	
+			}
+			dj = 1;
+
+		}
+		di = 1;
+	}
+
+	// Set transparency flags
+	primaryIsTransparent_ = (minalpha1 <= 0.99f);
+	secondaryIsTransparent_ = (minalpha2 <= 0.99f);	
 }

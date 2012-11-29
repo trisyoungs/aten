@@ -55,6 +55,7 @@ GridVariable::~GridVariable()
 Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "axes",			VTypes::CellData,	0, TRUE },
 	{ "colour",			VTypes::DoubleData,	4, FALSE },
+	{ "colourScale",		VTypes::IntegerData,	0, FALSE },
 	{ "cutoff",			VTypes::DoubleData,	0, FALSE },
 	{ "name",			VTypes::StringData,	0, FALSE },
 	{ "nx",				VTypes::IntegerData,	0, TRUE },
@@ -70,6 +71,8 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "shiftY",			VTypes::IntegerData,	0, FALSE },
 	{ "shiftZ",			VTypes::IntegerData,	0, FALSE },
 	{ "upperCutoff",		VTypes::DoubleData,	0, FALSE },
+	{ "useColourScale",		VTypes::IntegerData,	0, FALSE },
+	{ "useDataForZ",		VTypes::IntegerData,	0, FALSE },
 	{ "visible",			VTypes::IntegerData,	0, FALSE }
 };
 
@@ -188,6 +191,9 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			if (hasArrayIndex) rv.set( ptr->primaryColour()[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->primaryColour(), 4);
 			break;
+		case (GridVariable::ColourScale):
+			rv.set(ptr->colourScale()+1);
+			break;
 		case (GridVariable::Cutoff):
 			rv.set(ptr->lowerPrimaryCutoff());
 			break;
@@ -229,6 +235,12 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			break;
 		case (GridVariable::UpperCutoff):
 			rv.set(ptr->upperPrimaryCutoff());
+			break;
+		case (GridVariable::UseColourScale):
+			rv.set(ptr->useColourScale());
+			break;
+		case (GridVariable::UseDataForZ):
+			rv.set(ptr->useDataForZ());
 			break;
 		case (GridVariable::Visible):
 			rv.set(ptr->isVisible());
@@ -317,6 +329,10 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			else if (hasArrayIndex) ptr->primaryColour()[arrayIndex-1] = newvalue.asDouble(result);
 			else for (n=0; n<4; ++n) ptr->primaryColour()[n] = newvalue.asDouble(result);
 			break;
+		case (GridVariable::ColourScale):
+			ptr->setColourScale( newvalue.asInteger()-1 );
+			ptr->setUseColourScale( ptr->colourScale() != 0 );
+			break;
 		case (GridVariable::Cutoff):
 			ptr->setLowerPrimaryCutoff( newvalue.asDouble() );
 			break;
@@ -354,6 +370,12 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			break;
 		case (GridVariable::UpperCutoff):
 			ptr->setUpperPrimaryCutoff( newvalue.asDouble() );
+			break;
+		case (GridVariable::UseColourScale):
+			ptr->setUseColourScale( newvalue.asBool() );
+			break;
+		case (GridVariable::UseDataForZ):
+			ptr->setUseDataForZ( newvalue.asBool() );
 			break;
 		case (GridVariable::Visible):
 			ptr->setVisible( newvalue.asBool() );
