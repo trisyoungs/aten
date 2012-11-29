@@ -134,7 +134,7 @@ void Tree::reset(bool clearVariables)
 			scope->createGlobalVariables();
 		}
 	}
-	
+
 	// Remove all local function nodes
 	functions_.clear();
 	
