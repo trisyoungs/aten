@@ -34,6 +34,7 @@
 <h1>Manual TODO</h1>
 
 <ul>
+<li>Add 'colourScale', 'useColourScale', and 'useDataForZ' accessors to GridVariable.</li>
 <li>Add 'repeatCellNegative' and 'repeatCellPositive' accessors to ModelVariable.</li>
 <li>Add MatrixVariable description.</li>
 <li>Add 'newPattern' and 'clearPattern' functions to ModelVariable</li>

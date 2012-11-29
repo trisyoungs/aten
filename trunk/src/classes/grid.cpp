@@ -244,7 +244,7 @@ bool Grid::initialise(GridType gt, Vec3<int> npoints)
 		case (Grid::RegularXYData):
 			nPoints_ = npoints;
 			result = allocateArrays();
-			if (result) msg.print("Initialised grid structure for regular 2D XY data, %i points total.\n", nPoints_.x*nPoints_.y*nPoints_.z);
+			if (result) msg.print("Initialised grid structure for regular 2D XY data, %i points total.\n", nPoints_.x*nPoints_.y);
 			break;
 		case (Grid::RegularXYZData):
 			nPoints_ = npoints;
