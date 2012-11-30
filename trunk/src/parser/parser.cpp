@@ -195,7 +195,7 @@ bool CommandParser::generate()
 	if (result != 0)
 	{
 		printErrorInfo();
-		program_->clear();
+// 		program_->clear();
 	}
 	if (failed_) result = -1;
 	program_ = NULL;
