@@ -41,7 +41,7 @@ class ColourScalePointVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Colour, nAccessors };
+	enum Accessors { Colour, Value, nAccessors };
 	// Function list
 	enum Functions { Copy, nFunctions };
 	// Search variable access list for provided accessor
