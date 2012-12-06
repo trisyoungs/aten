@@ -671,7 +671,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setAngleLabelFormat(newvalue.asString());
 			break;
 		case (PreferencesVariable::AromaticRingColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::AromaticRingColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(result));
 			break;
@@ -685,7 +686,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setBackfaceCulling(newvalue.asBool());
 			break;
 		case (PreferencesVariable::BackgroundColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::BackgroundColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(result));
 			break;
@@ -806,12 +808,14 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setFrameWholeView( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::GlobeAxesColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeAxesColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::GlobeColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(result));
 			break;
@@ -819,7 +823,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setGlobeSize( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::GlyphDefaultColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphDefaultColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(result));
 			break;
@@ -962,7 +967,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setShininess( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::SpecularColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::SpecularColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(result));
 			break;
@@ -970,22 +976,26 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setSpotlightActive( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::SpotlightAmbient):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::AmbientComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightDiffuse):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::DiffuseComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightPosition):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightPosition(n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightPosition(n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightPosition(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightPosition(arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightPosition(n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightSpecular):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::SpecularComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(result));
 			break;
@@ -999,7 +1009,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setTempDir( newvalue.asString(result) );
 			break;
 		case (PreferencesVariable::TextColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::TextColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(result));
 			break;
@@ -1019,12 +1030,14 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setTransparentSelectionStyle( newvalue.asInteger() );
 			break;
 		case (PreferencesVariable::UnitCellAxesColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellAxesColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::UnitCellColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(result));
 			break;
@@ -1035,7 +1048,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setVdwCutoff( newvalue.asDouble(result) );
 			break;
 		case (PreferencesVariable::VibrationArrowColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::VibrationArrowColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(result));
 			break;
@@ -1046,7 +1060,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setWarning1056( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::WireSelectionColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::WireSelectionColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asDouble(result));
 			break;

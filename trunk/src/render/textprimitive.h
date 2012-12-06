@@ -24,7 +24,8 @@
 
 #include <QtGui/QtGui>
 #include "templates/vector3.h"
-#include "base/matrix.h"
+// #include "base/matrix.h"
+#include "base/dnchar.h"
 #include "templates/list.h"
 
 #define TEXTCHUNKSIZE 100
@@ -102,6 +103,34 @@ class TextPrimitiveList
 	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
 	// Render all primitives in list
 	void renderAll(QPainter& painter, int verticalOffset);
+};
+
+// 3D Text Primitive
+class TextPrimitive3D
+{
+	public:
+	// Constructor
+	TextPrimitive3D();
+	// List pointers
+	TextPrimitive3D *prev, *next;
+
+	private:
+	// Text coordinates
+	Vec3<double> r_;
+	// Whether to right-align text
+	bool rightAlign_;
+	// Text to render
+	Dnchar text_;
+	
+	public:
+	// Set data
+	void set(Vec3<double> r, bool rightalign, const char *text);
+	// Return text coordinate
+	Vec3<double> r();
+	// Return text to render
+	const char *text();
+	// Return whether to right-align text
+	bool rightAlign();
 };
 
 #endif

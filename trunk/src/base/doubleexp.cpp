@@ -59,7 +59,6 @@ void DoubleExp::set(double value)
 	exponent_ = floor(log10(fabs(value)+std::numeric_limits<double>::min()));
 	mantissa_ = value / pow(10.0,exponent_);
 	recalculate();
-	printf("Inpu value %f gives mantissa of %f and exponent of %i\n", value, mantissa_, exponent_);
 }
 
 // Set mantissa

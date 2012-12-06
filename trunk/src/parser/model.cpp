@@ -638,13 +638,15 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 			ptr->setTrajectoryPropagateParentStyle( newvalue.asBool() );
 			break;
 		case (ModelVariable::RepeatCellNegative):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setRepeatCellsNegative(n, newvalue.asInteger(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setRepeatCellsNegative(n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setRepeatCellsNegative(n, newvalue.asInteger(n, result));
 			else if (hasArrayIndex) ptr->setRepeatCellsNegative(arrayIndex-1, newvalue.asInteger(result));
 			else for (n=0; n<3; ++n) ptr->setRepeatCellsNegative(n, newvalue.asInteger(result));
 			ptr->changeLog.add(Log::Style);
 			break;
 		case (ModelVariable::RepeatCellPositive):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setRepeatCellsPositive(n, newvalue.asInteger(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setRepeatCellsPositive(n, newvalue.asInteger(n, result));
 			else if (hasArrayIndex) ptr->setRepeatCellsPositive(arrayIndex-1, newvalue.asInteger(result));
 			else for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newvalue.asInteger(result));
 			ptr->changeLog.add(Log::Style);

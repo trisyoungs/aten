@@ -54,9 +54,17 @@ GridVariable::~GridVariable()
 // Accessor data
 Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "axes",			VTypes::CellData,	0, TRUE },
+	{ "axisMajorSpacing", 		VTypes::VectorData,	0, FALSE },
+	{ "axisMinorTicks", 		VTypes::IntegerData,	3, FALSE },
+	{ "axisPositionX", 		VTypes::VectorData,	0, FALSE },
+	{ "axisPositionY", 		VTypes::VectorData,	0, FALSE },
+	{ "axisPositionZ", 		VTypes::VectorData,	0, FALSE },
+	{ "axisVisible", 		VTypes::IntegerData,	3, FALSE },
 	{ "colour",			VTypes::DoubleData,	4, FALSE },
 	{ "colourScale",		VTypes::IntegerData,	0, FALSE },
 	{ "cutoff",			VTypes::DoubleData,	0, FALSE },
+	{ "dataMaximum", 		VTypes::VectorData,	0, FALSE },
+	{ "dataMinimum", 		VTypes::VectorData,	0, FALSE },
 	{ "name",			VTypes::StringData,	0, FALSE },
 	{ "nx",				VTypes::IntegerData,	0, TRUE },
 	{ "ny",				VTypes::IntegerData,	0, TRUE },
@@ -187,6 +195,27 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (GridVariable::Axes):
 			rv.set(VTypes::CellData, ptr->cell());
 			break;
+		case (GridVariable::AxisMajorSpacing):
+			if (hasArrayIndex) rv.set( ptr->axisMajorSpacing()[arrayIndex-1] );
+			else rv.set(ptr->axisMajorSpacing());
+			break;
+		case (GridVariable::AxisMinorTicks):
+			if (hasArrayIndex) rv.set( ptr->axisMinorTicks()[arrayIndex-1] );
+			else
+			{
+				int tempArray[3] = { ptr->axisMinorTicks().x, ptr->axisMinorTicks().y, ptr->axisMinorTicks().z };
+				rv.setArray( VTypes::IntegerData, tempArray, 3);
+			}
+		case (GridVariable::AxisPositionX):
+		case (GridVariable::AxisPositionY):
+		case (GridVariable::AxisPositionZ):
+			if (hasArrayIndex) rv.set( ptr->axisPosition(acc-AxisPositionX)[arrayIndex-1] );
+			else rv.set(ptr->axisPosition(acc-AxisPositionX));
+			break;
+		case (GridVariable::AxisVisible):
+			if (hasArrayIndex) rv.set( ptr->axisVisible()[arrayIndex-1] );
+			else rv.setArray( VTypes::IntegerData, ptr->axisVisible(), 3);
+			break;
 		case (GridVariable::Colour):
 			if (hasArrayIndex) rv.set( ptr->primaryColour()[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->primaryColour(), 4);
@@ -196,6 +225,12 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			break;
 		case (GridVariable::Cutoff):
 			rv.set(ptr->lowerPrimaryCutoff());
+			break;
+		case (GridVariable::DataMaximum):
+			rv.set(ptr->dataMaximum());
+			break;
+		case (GridVariable::DataMinimum):
+			rv.set(ptr->dataMinimum());
 			break;
 		case (GridVariable::Name):
 			rv.set(ptr->name());
@@ -324,8 +359,35 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	if (result) switch (acc)
 	{
+		case (GridVariable::AxisMajorSpacing):
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisMajorSpacing(n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setAxisMajorSpacing(n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setAxisMajorSpacing(arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<3; ++n) ptr->setAxisMajorSpacing(n, newvalue.asDouble(result));
+			break;
+		case (GridVariable::AxisMinorTicks):
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisMinorTicks(n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setAxisMinorTicks(n, newvalue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setAxisMinorTicks(arrayIndex-1, newvalue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setAxisMinorTicks(n, newvalue.asInteger(result));
+			break;
+		case (GridVariable::AxisPositionX):
+		case (GridVariable::AxisPositionY):
+		case (GridVariable::AxisPositionZ):
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setAxisPosition(acc-AxisPositionX, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<3; ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newvalue.asDouble(result));
+			break;
+		case (GridVariable::AxisVisible):
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisVisible(n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setAxisVisible(n, newvalue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setAxisVisible(arrayIndex-1, newvalue.asBool());
+			else for (n=0; n<3; ++n) ptr->setAxisVisible(n, newvalue.asBool());
+			break;
 		case (GridVariable::Colour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->primaryColour()[n] = newvalue.asDouble(n, result);
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->primaryColour()[n] = newvalue.asVector(result)[n];
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->primaryColour()[n] = newvalue.asDouble(n, result);
 			else if (hasArrayIndex) ptr->primaryColour()[arrayIndex-1] = newvalue.asDouble(result);
 			else for (n=0; n<4; ++n) ptr->primaryColour()[n] = newvalue.asDouble(result);
 			break;
@@ -335,6 +397,12 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			break;
 		case (GridVariable::Cutoff):
 			ptr->setLowerPrimaryCutoff( newvalue.asDouble() );
+			break;
+		case (GridVariable::DataMaximum):
+			ptr->setDataMaximum( newvalue.asVector() );
+			break;
+		case (GridVariable::DataMinimum):
+			ptr->setDataMinimum( newvalue.asVector() );
 			break;
 		case (GridVariable::Name):
 			ptr->setName( newvalue.asString() );
@@ -349,7 +417,8 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->setPeriodic( newvalue.asInteger() );
 			break;
 		case (GridVariable::SecondaryColour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->secondaryColour()[n] = newvalue.asDouble(n, result);
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->secondaryColour()[n] = newvalue.asVector(result)[n];
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->secondaryColour()[n] = newvalue.asDouble(n, result);
 			else if (hasArrayIndex) ptr->secondaryColour()[arrayIndex-1] = newvalue.asDouble(result);
 			else for (n=0; n<4; ++n) ptr->secondaryColour()[n] = newvalue.asDouble(result);
 			break;

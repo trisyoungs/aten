@@ -36,6 +36,11 @@ GridPrimitive::GridPrimitive(Grid *source)
 	// Set both primitives to use no instances
 	primaryPrimitive_.setNoInstances();
 	secondaryPrimitive_.setNoInstances();
+	for (int n=0; n<3; ++n)
+	{
+		axisLinePrimitives_[n].setType(GL_LINES);
+		axisLinePrimitives_[n].setNoInstances();
+	}
 }
 
 // Return primary primitive
@@ -72,4 +77,16 @@ bool GridPrimitive::primaryIsTransparent()
 bool GridPrimitive::secondaryIsTransparent()
 {
 	return secondaryIsTransparent_;
+}
+
+// Return axis line primitive specified
+Primitive &GridPrimitive::axisLinePrimitive(int axis)
+{
+	return axisLinePrimitives_[axis];
+}
+
+// Return axis text primitive list specified
+List<TextPrimitive3D> &GridPrimitive::axisTextPrimitives(int axis)
+{
+	return axisTextPrimitives_[axis];
 }

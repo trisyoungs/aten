@@ -143,6 +143,14 @@ Grid::Grid()
 	partialPrimarySum_ = 0.0;
 	partialSecondarySum_ = 0.0;
 	sumPoint_ = -1;
+	axisVisible_[0] = FALSE;
+	axisVisible_[1] = FALSE;
+	axisVisible_[2] = FALSE;
+	axisPosition_[0].set(0.0,0.0,0.0);
+	axisPosition_[1].set(0.0,0.0,0.0);
+	axisPosition_[2].set(0.0,0.0,0.0);
+	axisMajorSpacing_.set(1.0, 1.0, 1.0);
+	axisMinorTicks_.set(3, 3, 3);
 
 	// Public variables
 	prev = NULL;
@@ -307,6 +315,86 @@ void Grid::setOrigin(const Vec3<double> v)
 Vec3<double> Grid::origin() const
 {
 	return origin_;
+}
+
+// Set data minima
+void Grid::setDataMinimum(const Vec3<double> v)
+{
+	dataMinimum_ = v;
+	logChange();
+}
+
+// Return the data minimum
+Vec3<double> Grid::dataMinimum() const
+{
+	return dataMinimum_;
+}
+
+// Set data maxima
+void Grid::setDataMaximum(const Vec3<double> v)
+{
+	dataMaximum_ = v;
+	logChange();
+}
+
+// Return the data maximum
+Vec3<double> Grid::dataMaximum() const
+{
+	return dataMaximum_;
+}
+
+// Set whether axis is visible
+void Grid::setAxisVisible(int id, bool visible)
+{
+	axisVisible_[id] = visible;
+}
+
+// Return whether axis is visible
+bool Grid::isAxisVisible(int id)
+{
+	return axisVisible_[id];
+}
+
+// Return axis visibility array
+bool *Grid::axisVisible()
+{
+	return axisVisible_;
+}
+
+// Set axis position element
+void Grid::setAxisPosition(int axis, int el, double value)
+{
+	axisPosition_[axis].set(el, value);
+}
+
+// Return axis position
+Vec3<double> Grid::axisPosition(int axis)
+{
+	return axisPosition_[axis];
+}
+
+// Set axis major spacing
+void Grid::setAxisMajorSpacing(int axis, double value)
+{
+	axisMajorSpacing_.set(axis, value);
+}
+
+// Return axis position
+Vec3<double> Grid::axisMajorSpacing()
+{
+	return axisMajorSpacing_;
+}
+
+// Set axis major spacing
+void Grid::setAxisMinorTicks(int axis, int value)
+{
+	axisMinorTicks_.set(axis, value);
+}
+
+// Return axis position
+Vec3<int> Grid::axisMinorTicks()
+{
+	return axisMinorTicks_;
 }
 
 // Return number of points in data series

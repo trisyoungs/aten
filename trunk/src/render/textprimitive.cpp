@@ -137,3 +137,40 @@ void TextPrimitiveList::renderAll(QPainter &painter, int verticalOffset)
 	for (TextPrimitiveChunk *chunk = textPrimitives_.first(); chunk != NULL; chunk = chunk->next) chunk->renderAll(painter, verticalOffset);
 }
 
+/*
+// Text Primitive 3D
+*/
+
+// Constructor
+TextPrimitive3D::TextPrimitive3D()
+{
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+// Set data
+void TextPrimitive3D::set(Vec3<double> r, bool rightalign, const char *text)
+{
+	r_ = r;
+	rightAlign_ = rightalign;
+	text_ = text;
+}
+
+// Return text coordinate
+Vec3<double> TextPrimitive3D::r()
+{
+	return r_;
+}
+
+// Return text to render
+const char *TextPrimitive3D::text()
+{
+	return text_.get();
+}
+
+// Return whether to right-align text
+bool TextPrimitive3D::rightAlign()
+{
+	return rightAlign_;
+}
