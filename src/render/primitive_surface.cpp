@@ -24,6 +24,7 @@
 #include "classes/prefs.h"
 #include "classes/grid.h"
 #include "base/wrapint.h"
+#include <base/sysfunc.h>
 
 /*
 	Marching Cube vertex and [edge] numbering
@@ -611,4 +612,101 @@ void GridPrimitive::createSurface2D()
 	// Set transparency flags
 	primaryIsTransparent_ = (minalpha1 <= 0.99f);
 	secondaryIsTransparent_ = (minalpha2 <= 0.99f);	
+}
+
+// Create axes
+void GridPrimitive::createAxes()
+{
+	// Get some useful values before we start...
+	Vec3<double> origin[3], axisRealMajorSpacing, axisRealMinorSpacing, gridDelta, axisRealMin, axisRealMax, axisRealRange, realToGrid;
+	Vec3<int> axisMinorNTicks;
+	double majorTickSize = 0.1, tickFactor = 1.0;
+	int n, i, j, tickCount;
+	bool majorTick;
+	
+	// Get useful values from source Grid
+	for (n=0; n<3; ++n)
+	{
+		gridDelta[n] = source_->axes().columnMagnitude(n);
+		axisRealMin[n] = source_->dataMinimum()[n];
+		axisRealMax[n] = source_->dataMaximum()[n];
+		axisRealRange[n] = axisRealMax[n] - axisRealMin[n]; 
+
+		// Calculate conversion factor
+		realToGrid[n] = source_->nPoints()[n] / axisRealRange[n];
+	}
+	axisRealMajorSpacing = source_->axisMajorSpacing();
+	axisMinorNTicks = source_->axisMinorTicks() + 1;
+
+	// Loop over axes
+	for (n=0; n<3; ++n)
+	{
+		// Clear any old data
+		axisLinePrimitives_[n].clear();
+		axisTextPrimitives_[n].clear();
+
+		double x, value;
+		double tickSize1 = majorTickSize / gridDelta[(n+1)%3], tickSize2 = majorTickSize / gridDelta[(n+2)%3];
+		Vec3<double> v;
+// 		printf("(axis %i) gridDelta = %f, real min/max = %f/%f, xSpacing = %f\n", n, gridDelta[n], axisRealMin[n], axisRealMax[n], axisRealRange[n], axisRealMajorSpacing[n]);
+
+		// Set origin coordinates for axis (in grid units)
+		origin[n].zero();
+		for (i=1; i<3; ++i)
+		{
+			j = (n+i)%3;
+			origin[n].set(j, (source_->axisPosition(n)[j] - axisRealMin[j]) / gridDelta[j]);
+		}
+
+		// Render axis line
+		axisLinePrimitives_[n].defineVertex(origin[n].x, origin[n].y, origin[n].z, 1.0, 0.0, 0.0, TRUE);
+		v = origin[n];
+		v.add(n, axisRealRange[n]*realToGrid[n]);
+		axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
+
+		// Determine starting axis value and tickCount...
+		if (axisMinorNTicks[n] < 1) axisMinorNTicks[n] = 1;
+		axisRealMinorSpacing[n] = axisRealMajorSpacing[n] /= axisMinorNTicks[n];
+		// -- First, set value to start at next whole spacing...
+		value = int(axisRealMin[n] / axisRealMajorSpacing[n])*axisRealMajorSpacing[n] + (axisRealMin[n] > 0.0 ? 1.0 : 0.0);
+		// -- Now, do we have any minor tick values to put in the gap between the minimum and 'value'
+		tickCount = int( (value - axisRealMin[n]) / axisRealMinorSpacing[n] );
+		value -= tickCount * axisRealMinorSpacing[n];
+		tickCount = axisMinorNTicks[n] - tickCount;
+
+		// Draw axis...
+		while (value <= axisRealMax[n])
+		{
+			// Convert current value to Grid-coordinates
+			x = (value - axisRealMin[n]) * realToGrid[n];
+			v = origin[n];
+			v.add(n, x);
+
+			// Major / minor tick?
+			majorTick = (tickCount%axisMinorNTicks[n] == 0);
+			tickFactor = majorTickSize * (tickCount%axisMinorNTicks[n] == 0 ? 1.0 : 0.5);
+			
+			// Draw line in first other axis direction
+			i = (n+1)%3;
+			v.add(i, -tickFactor*tickSize1);
+			axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
+			v.add(i, 2.0*tickFactor*tickSize1);
+			axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
+
+			// Put label here (if a major tick), then reset position back to centre of original line
+			if (majorTick) axisTextPrimitives_[n].add()->set(v, FALSE, ftoa(value, "%3.0f"));
+			v[i] = origin[n].get(i);
+
+			// Draw line in second other axis direction
+			i = (n+2)%3;
+			v.add(i, -tickFactor*tickSize2);
+			axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
+			v.add(i, 2.0*tickFactor*tickSize2);
+			axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
+
+			// Add on delta
+			value += axisRealMinorSpacing[n];
+			++tickCount;
+		}
+	}
 }

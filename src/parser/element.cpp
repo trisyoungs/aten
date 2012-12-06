@@ -262,7 +262,8 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	if (result) switch (acc)
 	{
 		case (ElementVariable::Colour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->colour[n] = newvalue.asDouble(n, result);
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->colour[n] = newvalue.asVector(result)[n];
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->colour[n] = newvalue.asDouble(n, result);
 			else if (hasArrayIndex) ptr->colour[arrayIndex-1] = newvalue.asDouble(result);
 			else for (n=0; n<4; ++n) ptr->colour[n] = newvalue.asDouble(result);
 			break;

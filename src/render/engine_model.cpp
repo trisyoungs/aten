@@ -378,6 +378,7 @@ void RenderEngine::renderModel(Model *source, bool currentModel, bool renderType
 
 	// Draw model grids
 	if (activePrimitiveLists_[RenderEngine::GridObject]) renderGrids(source);
+	renderGridText(source);
 	
 	lastSource_ = source;
 	lastLog_ = source->changeLog;
@@ -822,8 +823,10 @@ void RenderEngine::renderGrids(Model *source)
 	{
 		// Check visibility
 		if (!g->isVisible()) continue;
+
 		// Does a GridPrimitive already exist?
 		GridPrimitive *gp = findGridPrimitive(g);
+
 		// If the GridPrimitive exists and is 'in date', no need to regenerate it...
 		if ((gp == NULL) || g->shouldRerender())
 		{
@@ -841,6 +844,9 @@ void RenderEngine::renderGrids(Model *source)
 			}
 			else gp->createSurface2D();
 			g->updateRenderPoint();
+			
+			// Construct axes?
+			gp->createAxes();
 		}
 		
 		// Grid primitive now exists (or has been updated) so create transformation and render it
@@ -865,6 +871,14 @@ void RenderEngine::renderGrids(Model *source)
 				renderPrimitive(RenderEngine::GridObject, &gp->secondaryPrimitive(), gp->secondaryIsTransparent(), colour, A, style);
 			}
 		}
+
+		// Render axes?
+		colour[0] = 0.0;
+		colour[1] = 0.0;
+		colour[2] = 0.0;
+		colour[3] = 1.0;
+		for (int n=0; n<3; ++n) if (g->isAxisVisible(n)) renderPrimitive(RenderEngine::GridObject, &gp->axisLinePrimitive(n), FALSE, colour, A, GL_LINE);
+
 		// Render volume outline
 		if (g->outlineVolume())
 		{
@@ -873,8 +887,53 @@ void RenderEngine::renderGrids(Model *source)
 			A.columnMultiply(2, g->nPoints().z);
 			renderPrimitive(RenderEngine::GridObject, primitives_[set_].originCubes_, textcolour, A, GL_LINE, 1.0);
 		}
+
 	}
 	msg.exit("RenderEngine::renderGrids");
+}
+
+// Render text for grids
+void RenderEngine::renderGridText(Model *source)
+{
+	msg.enter("RenderEngine::renderGridText");
+	// Cycle over grids stored in current model
+	for (Grid *g = source->grids(); g != NULL; g = g->next)
+	{
+		// Check visibility
+		if (!g->isVisible()) continue;
+
+		// Setup transformation matrix for Grid
+		Matrix A;
+		A.setIdentity();
+		A.applyTranslation(g->origin());
+		A.multiplyRotation(g->axes());
+
+		// Find GridPrimitive for this Grid
+		GridPrimitive *gp = findGridPrimitive(g);
+		if (gp == NULL)
+		{
+			printf("Internal Error: Tried to render text for Grid, but no GridPrimitive has been created.\n");
+			continue;
+		}
+
+		// Loop over axes
+		for (int n=0; n<3; ++n)
+		{
+			// Is axis visible
+			if (!g->isAxisVisible(n)) continue;
+			
+			// Dump text for this axis
+			Vec3<double> r, r2;
+			Vec4<double> screenr;
+			for (TextPrimitive3D *tp = gp->axisTextPrimitives(n).first(); tp != NULL; tp = tp->next)
+			{
+				r = A * tp->r();
+				r2 = source->modelToWorld(r, &screenr);
+				if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, tp->text(), 0, tp->rightAlign());
+			}
+		}
+	}
+	msg.exit("RenderEngine::renderGridText");
 }
 
 // Render additional model information (measurements etc.)

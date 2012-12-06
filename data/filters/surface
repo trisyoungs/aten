@@ -15,7 +15,7 @@ filter(type="importgrid", name="2D Surface Data", nickname="surf", extension="su
 	string order;
 
 	# Create new grid
-	newGrid(filterFilename());
+	Grid g = newGrid(filterFilename());
 
 	# First line contains number of gridpoints in each direction x,y
 	readLine(nx,ny);
@@ -25,9 +25,11 @@ filter(type="importgrid", name="2D Surface Data", nickname="surf", extension="su
 	readLine(vx.x, vx.y, vx.z, vy.x, vy.y, vy.z);
 	gridAxes(vx.x, vx.y, vx.z, vy.x, vy.y, vy.z, 0, 0, 1);
 
-	# Third line contains grid origin (lower left-hand corner)
-	readLine(origin.x, origin.y, origin.z);
-	gridOrigin(origin.x, origin.y, origin.z);
+	# Third line contains grid origin (lower left-hand corner) and optional data minima and maxima
+	readLine(g.origin.x, g.origin.y, g.origin.z, g.dataMinimum.x, g.dataMinimum.y, g.dataMinimum.z, g.dataMaximum.x, g.dataMaximum.y, g.dataMaximum.z);
+	g.axisPositionX = { 0.0, g.dataMinimum.y, g.dataMinimum.z };
+	g.axisPositionY = { g.dataMinimum.x, 0.0, g.dataMinimum.z };
+	g.axisPositionZ = { g.dataMinimum.x, g.dataMinimum.y, 0.0 };
 
 	# Fourth line contains loop order
 	readLine(order);

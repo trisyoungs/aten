@@ -113,6 +113,18 @@ class Grid
 	UnitCell cell_;
 	// Surface origin
 	Vec3<double> origin_;
+	// Data minima (values at origin)
+	Vec3<double> dataMinimum_;
+	// Data maxima
+	Vec3<double> dataMaximum_;
+	// Whether axes are visible
+	bool axisVisible_[3];
+	// Positions of axes
+	Vec3<double> axisPosition_[3];
+	// Major spacing for axis ticks
+	Vec3<double> axisMajorSpacing_;
+	// Number of minor ticks per major spacing
+	Vec3<int> axisMinorTicks_;
 	// Number of points in each direction
 	Vec3<int> nPoints_;
 	// Voxel values
@@ -170,6 +182,32 @@ class Grid
 	void setOrigin(const Vec3<double> v);
 	// Return the origin of the Grid data
 	Vec3<double> origin() const;
+	// Set data minima
+	void setDataMinimum(const Vec3<double> v);
+	// Return the axis minima
+	Vec3<double> dataMinimum() const;
+	// Set data maxima
+	void setDataMaximum(const Vec3<double> v);
+	// Return the axis maxima
+	Vec3<double> dataMaximum() const;
+	// Set whether axis is visible
+	void setAxisVisible(int id, bool visible);
+	// Return whether axis is visible
+	bool isAxisVisible(int id);
+	// Return axis visibility array
+	bool *axisVisible();
+	// Set axis position element
+	void setAxisPosition(int axis, int el, double value);
+	// Return axis position
+	Vec3<double> axisPosition(int axis);
+	// Set axis major spacing
+	void setAxisMajorSpacing(int axis, double value);
+	// Return axis position
+	Vec3<double> axisMajorSpacing();
+	// Set axis major spacing
+	void setAxisMinorTicks(int axis, int value);
+	// Return axis position
+	Vec3<int> axisMinorTicks();
 	// Return number of points in regular gridded data (if it exists)
 	Vec3<int> nPoints() const;
 	// Return minimum value in data[]

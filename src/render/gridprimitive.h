@@ -23,6 +23,7 @@
 #define ATEN_GRIDPRIMITIVE_H
 
 #include "render/primitive.h"
+#include "render/textprimitive.h"
 
 // Forward Declarations
 class Grid;
@@ -47,6 +48,10 @@ class GridPrimitive
 	bool primaryIsTransparent_;
 	// Whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
 	bool secondaryIsTransparent_;
+	// Axes (line) primitives
+	Primitive axisLinePrimitives_[3];
+	// Axes (text) primitives
+	List<TextPrimitive3D> axisTextPrimitives_[3];
 	
 	public:
 	// Return primary primitive
@@ -65,6 +70,12 @@ class GridPrimitive
 	void createSurface2D();
 	// Create 3D isosurface using Marching Cubes algorithm
 	void createSurfaceMarchingCubes();
+	// Create axes
+	void createAxes();
+	// Return axis line primitive specified
+	Primitive &axisLinePrimitive(int axis);
+	// Return axis text primitive list specified
+	List<TextPrimitive3D> &axisTextPrimitives(int axis);
 };
 
 #endif

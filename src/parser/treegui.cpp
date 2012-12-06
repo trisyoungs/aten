@@ -1477,7 +1477,7 @@ double TreeGui::asDouble(const char *name)
 		msg.print("Error: No widget named '%s' exists in this dialog (calling asDouble).\n", name);
 		msg.print("Valid widgets are:\n");
 		listWidgets();
-		return FALSE;
+		return 0.0;
 	}
 	return widget->asDouble();
 }
@@ -1492,7 +1492,7 @@ const char *TreeGui::asCharacter(const char *name)
 		msg.print("Error: No widget named '%s' exists in this dialog (calling asCharacter).\n", name);
 		msg.print("Valid widgets are:\n");
 		listWidgets();
-		return FALSE;
+		return "NULL";
 	}
 	return widget->asCharacter();
 }

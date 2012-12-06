@@ -146,6 +146,8 @@ class RenderEngine
 	void renderCell(Model *source);
 	// Render grids
 	void renderGrids(Model *source);
+	// Render text for grids
+	void renderGridText(Model *source);
 	// Render 3D glyphs
 	void renderGlyphs(Model *source);
 	// Render text glyphs

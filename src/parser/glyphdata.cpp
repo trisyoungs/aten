@@ -264,7 +264,8 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 			ptr->setAtomData( (GlyphData::GlyphDataType) newvalue.asInteger() );
 			break;
 		case (GlyphDataVariable::Colour):
-			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
+			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(n, newvalue.asVector(result)[n]);
+			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
 			break;
