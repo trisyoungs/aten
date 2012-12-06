@@ -722,8 +722,8 @@ QPixmap RenderEngine::renderSceneImage(RenderEngine::PrimitiveSet set, int w, in
 		gui.mainCanvas()->requestHighQuality();
 
 		// Store current size
-		int w = gui.mainCanvas()->contextWidth();
-		int h = gui.mainCanvas()->contextHeight();
+		int oldWidth = gui.mainCanvas()->contextWidth();
+		int oldHeight = gui.mainCanvas()->contextHeight();
 
 		// Generate offscreen bitmap (a temporary context will be created)
 		gui.mainCanvas()->setRenderType(OffscreenScene);
@@ -734,7 +734,7 @@ QPixmap RenderEngine::renderSceneImage(RenderEngine::PrimitiveSet set, int w, in
 		clearListsFlag_ = TRUE;
 		
 		// Reset view size and refresh
-		gui.mainCanvas()->resize(w, h);
+		gui.mainCanvas()->resize(oldWidth, oldHeight);
 
 		return pixmap;
 	}

@@ -618,7 +618,7 @@ void GridPrimitive::createSurface2D()
 void GridPrimitive::createAxes()
 {
 	// Get some useful values before we start...
-	Vec3<double> origin[3], axisRealMajorSpacing, axisRealMinorSpacing, gridDelta, axisRealMin, axisRealMax, axisRealRange, realToGrid;
+	Vec3<double> origin, axisRealMajorSpacing, axisRealMinorSpacing, gridDelta, axisRealMin, axisRealMax, axisRealRange, realToGrid;
 	Vec3<int> axisMinorNTicks;
 	double majorTickSize = 0.1, tickFactor = 1.0;
 	int n, i, j, tickCount;
@@ -651,16 +651,16 @@ void GridPrimitive::createAxes()
 // 		printf("(axis %i) gridDelta = %f, real min/max = %f/%f, xSpacing = %f\n", n, gridDelta[n], axisRealMin[n], axisRealMax[n], axisRealRange[n], axisRealMajorSpacing[n]);
 
 		// Set origin coordinates for axis (in grid units)
-		origin[n].zero();
+		origin.zero();
 		for (i=1; i<3; ++i)
 		{
 			j = (n+i)%3;
-			origin[n].set(j, (source_->axisPosition(n)[j] - axisRealMin[j]) / gridDelta[j]);
+			origin.set(j, (source_->axisPosition(n)[j] - axisRealMin[j]) / gridDelta[j]);
 		}
 
 		// Render axis line
-		axisLinePrimitives_[n].defineVertex(origin[n].x, origin[n].y, origin[n].z, 1.0, 0.0, 0.0, TRUE);
-		v = origin[n];
+		axisLinePrimitives_[n].defineVertex(origin.x, origin.y, origin.z, 1.0, 0.0, 0.0, TRUE);
+		v = origin;
 		v.add(n, axisRealRange[n]*realToGrid[n]);
 		axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
 
@@ -679,7 +679,7 @@ void GridPrimitive::createAxes()
 		{
 			// Convert current value to Grid-coordinates
 			x = (value - axisRealMin[n]) * realToGrid[n];
-			v = origin[n];
+			v = origin;
 			v.add(n, x);
 
 			// Major / minor tick?
@@ -693,9 +693,8 @@ void GridPrimitive::createAxes()
 			v.add(i, 2.0*tickFactor*tickSize1);
 			axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
 
-			// Put label here (if a major tick), then reset position back to centre of original line
-			if (majorTick) axisTextPrimitives_[n].add()->set(v, FALSE, ftoa(value, "%3.0f"));
-			v[i] = origin[n].get(i);
+			// Reset position back to centre of original line
+			v[i] = origin.get(i);
 
 			// Draw line in second other axis direction
 			i = (n+2)%3;
@@ -703,6 +702,19 @@ void GridPrimitive::createAxes()
 			axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
 			v.add(i, 2.0*tickFactor*tickSize2);
 			axisLinePrimitives_[n].defineVertex(v.x, v.y, v.z, 1.0, 0.0, 0.0, TRUE);
+
+			// Reset position back to centre of original line
+			v[i] = origin.get(i);
+
+			// Draw label (if a major tick)
+			if (majorTick)
+			{
+				i = (n+1)%3;
+				v.add(i, origin[i] < 0.5*(axisRealRange[i] + axisRealMin[i]) ? -tickSize1 : tickSize1);
+				i = (n+2)%3;
+				v.add(i, origin[i] < 0.5*(axisRealRange[i] + axisRealMin[i]) ? -tickSize2 : tickSize2);
+				axisTextPrimitives_[n].add()->set(v, FALSE, ftoa(value, "%3.0f"));
+			}
 
 			// Add on delta
 			value += axisRealMinorSpacing[n];

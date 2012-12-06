@@ -50,7 +50,8 @@ ColourScalePointVariable::~ColourScalePointVariable()
 
 // Accessor data
 Accessor ColourScalePointVariable::accessorData[ColourScalePointVariable::nAccessors] = {
-	{ "colour",		VTypes::DoubleData,	4, FALSE }
+	{ "colour",		VTypes::DoubleData,	4, FALSE },
+	{ "value",		VTypes::DoubleData,	0, TRUE }
 };
 
 // Function data
@@ -163,6 +164,9 @@ bool ColourScalePointVariable::retrieveAccessor(int i, ReturnValue &rv, bool has
 		case (ColourScalePointVariable::Colour):
 			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(), 4);
+			break;
+		case (ColourScalePointVariable::Value):
+			rv.set(ptr->value());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ColourScalePointVariable.\n", accessorData[i].name);
