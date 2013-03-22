@@ -125,9 +125,9 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 	# Cell (if present) 
 	if (imcon <> 0)
 	{
-		writeLineF("%20.12f%20.12f%20.12f\n",m.cell.ax, m.cell.ay, m.cell.az);
-		writeLineF("%20.12f%20.12f%20.12f\n",m.cell.bx, m.cell.by, m.cell.bz);
-		writeLineF("%20.12f%20.12f%20.12f\n",m.cell.cx, m.cell.cy, m.cell.cz);
+		writeLineF("%20.6f%20.6f%20.6f\n", m.cell.ax, m.cell.ay, m.cell.az);
+		writeLineF("%20.6f%20.6f%20.6f\n", m.cell.bx, m.cell.by, m.cell.bz);
+		writeLineF("%20.6f%20.6f%20.6f\n", m.cell.cx, m.cell.cy, m.cell.cz);
 	}
 
 	# Atoms
@@ -258,13 +258,13 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		# Coordinates
 		recsize = readInt(intsize);
 		if (recsize != natoms*realsize) { printf("Error reading coordinate info from trajectory frame.\n"); return FALSE; }
-		if (!readDoubleArray(x,natoms)) { printf("Error reading x-coordinates from trajectory frame.\n"); return FALSE; }
+		if (readDoubleArray(x,natoms) != 0) { printf("Error reading x-coordinates from trajectory frame.\n"); return FALSE; }
 		recsize = readInt(intsize);
 		recsize = readInt(intsize);
-		if (!readDoubleArray(y,natoms)) { printf("Error reading y-coordinates from trajectory frame.\n"); return FALSE; }
+		if (readDoubleArray(y,natoms) != 0) { printf("Error reading y-coordinates from trajectory frame.\n"); return FALSE; }
 		recsize = readInt(intsize);
 		recsize = readInt(intsize);
-		if (!readDoubleArray(z,natoms)) { printf("Error reading z-coordinates from trajectory frame.\n"); return FALSE; }
+		if (readDoubleArray(z,natoms) != 0) { printf("Error reading z-coordinates from trajectory frame.\n"); return FALSE; }
 		recsize = readInt(intsize);
 		Vector v;
 		for (n = 1; n<= natoms; ++n)
@@ -279,13 +279,13 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		{
 			recsize = readInt(intsize);
 			if (recsize != natoms*realsize) { printf("Error reading velocity info from trajectory frame.\n"); return FALSE; }
-			if (!readDoubleArray(x,natoms)) { printf("Error reading x-velocities from trajectory frame.\n"); return FALSE; }
+			if (readDoubleArray(x,natoms) != 0) { printf("Error reading x-velocities from trajectory frame.\n"); return FALSE; }
 			recsize = readInt(intsize);
 			recsize = readInt(intsize);
-			if (!readDoubleArray(y,natoms)) { printf("Error reading y-velocities from trajectory frame.\n"); return FALSE; }
+			if (readDoubleArray(y,natoms) != 0) { printf("Error reading y-velocities from trajectory frame.\n"); return FALSE; }
 			recsize = readInt(intsize);
 			recsize = readInt(intsize);
-			if (!readDoubleArray(z,natoms)) { printf("Error reading z-velocities from trajectory frame.\n"); return FALSE; }
+			if (readDoubleArray(z,natoms) != 0) { printf("Error reading z-velocities from trajectory frame.\n"); return FALSE; }
 			recsize = readInt(intsize);
 			for (n = 1; n<= natoms; ++n) setVelocities(x[n], y[n], z[n], n);
 		}
@@ -295,13 +295,13 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		{
 			recsize = readInt(intsize);
 			if (recsize != natoms*realsize) { printf("Error reading force info from trajectory frame.\n"); return FALSE; }
-			if (!readDoubleArray(x,natoms)) { printf("Error reading x-forces from trajectory frame.\n"); return FALSE; }
+			if (readDoubleArray(x,natoms) != 0) { printf("Error reading x-forces from trajectory frame.\n"); return FALSE; }
 			recsize = readInt(intsize);
 			recsize = readInt(intsize);
-			if (!readDoubleArray(y,natoms)) { printf("Error reading y-forces from trajectory frame.\n"); return FALSE; }
+			if (readDoubleArray(y,natoms) != 0) { printf("Error reading y-forces from trajectory frame.\n"); return FALSE; }
 			recsize = readInt(intsize);
 			recsize = readInt(intsize);
-			if (!readDoubleArray(z,natoms)) { printf("Error reading z-forces from trajectory frame.\n"); return FALSE; }
+			if (readDoubleArray(z,natoms) != 0) { printf("Error reading z-forces from trajectory frame.\n"); return FALSE; }
 			recsize = readInt(intsize);
 			for (n = 1; n<= natoms; ++n) setForces(x[n], y[n], z[n], n);
 		}

@@ -244,7 +244,7 @@ bool Command::function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue 
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getDoubleArray( av->arrayData(), count) );
-	msg.print(Messenger::Commands,"Unformatted double read %s.\n", rv.asInteger() ? "succeeded" : "failed");
+	msg.print(Messenger::Commands,"Unformatted double read returned code %i.\n", rv.asInteger());
 	return TRUE;
 }
 
@@ -291,7 +291,7 @@ bool Command::function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getIntegerArray( av->arrayData(), count) );
-	msg.print(Messenger::Commands,"Unformatted integer read %s.\n", rv.asInteger() ? "succeeded" : "failed");
+	msg.print(Messenger::Commands,"Unformatted integer read returned code %i.\n", rv.asInteger());
 	return TRUE;
 }
 
