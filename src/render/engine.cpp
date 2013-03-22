@@ -580,6 +580,8 @@ void RenderEngine::renderScene(RenderEngine::PrimitiveSet set, int width, int he
 	}
 	else first = aten.visibleModels();
 
+	msg.print(Messenger::GL, " --> Target context is %p (canvas context = %p)\n", context, canvasContext_);
+
 	// Clear view
 	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
 	glViewport(0,0,width,height);
