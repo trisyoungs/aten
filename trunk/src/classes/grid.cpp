@@ -197,7 +197,7 @@ void Grid::operator=(Grid &source)
 	useDataForZ_ = source.useDataForZ_;
 	cell_ = source.cell_;
 	origin_ = source.origin_;
-	nPoints_ = source.nPoints_;
+	nXYZ_ = source.nXYZ_;
 	// Delete any existing 2D or 3D array in this Grid
 	deleteArrays();
 	// Create new data structure
@@ -206,19 +206,19 @@ void Grid::operator=(Grid &source)
 	int x,y,z;
 	if (type_ == Grid::RegularXYZData)
 	{
-		for (x=0; x<nPoints_.x; x++)
+		for (x=0; x<nXYZ_.x; x++)
 		{
-			for (y=0; y<nPoints_.y; y++)
+			for (y=0; y<nXYZ_.y; y++)
 			{
-				for (z=0; z<nPoints_.z; z++) data3d_[x][y][z] = source.data3d_[x][y][z];
+				for (z=0; z<nXYZ_.z; z++) data3d_[x][y][z] = source.data3d_[x][y][z];
 			}
 		}
 	}
 	else
 	{
-		for (x=0; x<nPoints_.x; x++)
+		for (x=0; x<nXYZ_.x; x++)
 		{
-			for (y=0; y<nPoints_.y; y++) data2d_[x][y] = source.data2d_[x][y];
+			for (y=0; y<nXYZ_.y; y++) data2d_[x][y] = source.data2d_[x][y];
 		}
 	}
 	name_ = source.name_;
@@ -241,23 +241,23 @@ const char *Grid::name() const
 }
 
 // Initialise grid of specified type and size (if relevant)
-bool Grid::initialise(GridType gt, Vec3<int> npoints)
+bool Grid::initialise(Grid::GridType type, Vec3<int> nXYZ)
 {
 	msg.enter("Grid::initialise");
-	type_ = gt;
+	type_ = type;
 	bool result = TRUE;
 	clear();
 	switch (type_)
 	{
 		case (Grid::RegularXYData):
-			nPoints_ = npoints;
+			nXYZ_ = nXYZ;
 			result = allocateArrays();
-			if (result) msg.print("Initialised grid structure for regular 2D XY data, %i points total.\n", nPoints_.x*nPoints_.y);
+			if (result) msg.print("Initialised grid structure for regular 2D XY data, %i points total.\n", nXYZ_.x*nXYZ_.y);
 			break;
 		case (Grid::RegularXYZData):
-			nPoints_ = npoints;
+			nXYZ_ = nXYZ;
 			result = allocateArrays();
-			if (result) msg.print("Initialised grid structure for regular 3D XY data, %i points total.\n", nPoints_.x*nPoints_.y*nPoints_.z);
+			if (result) msg.print("Initialised grid structure for regular 3D XY data, %i points total.\n", nXYZ_.x*nXYZ_.y*nXYZ_.z);
 			break;
 		case (Grid::FreeXYZData):
 			msg.print("Initialised grid structure for free 3D XYZ data.\n");
@@ -398,9 +398,28 @@ Vec3<int> Grid::axisMinorTicks()
 }
 
 // Return number of points in data series
-Vec3<int> Grid::nPoints() const
+Vec3<int> Grid::nXYZ() const
 {
-	return nPoints_;
+	return nXYZ_;
+}
+
+// Return number of points in data series
+int Grid::nPoints() const
+{
+	switch (type_)
+	{
+		case (Grid::RegularXYData):
+			return nXYZ_.x*nXYZ_.y;
+			break;
+		case (Grid::RegularXYZData):
+			return nXYZ_.x*nXYZ_.y*nXYZ_.z;
+			break;
+		case (Grid::FreeXYZData):
+			return gridPoints_.nItems();
+			break;
+		default:
+			break;
+	}
 }
 
 // Return minimum value in data[]
@@ -572,6 +591,12 @@ void Grid::setLoopOrder(int n, int xyz)
 	loopOrder_.set(n,xyz);
 }
 
+// Return loop ordering 
+Vec3<int> Grid::loopOrder()
+{
+	return loopOrder_;
+}
+
 // Return whether re-rendering is necessary
 bool Grid::shouldRerender() const
 {
@@ -696,22 +721,22 @@ void Grid::setColourScale(int id)
 	// Adjust the colour scale to encompass all grid values...
 	if (type_ == Grid::RegularXYZData)
 	{
-		for (i = 0; i < nPoints_.x; i++)
+		for (i = 0; i < nXYZ_.x; i++)
 		{
 			data2 = data3d_[i];
-			for (j = 0; j<nPoints_.y; j++)
+			for (j = 0; j<nXYZ_.y; j++)
 			{
 				data1 = data2[j];
-				for (k = 0; k<nPoints_.z; k++) prefs.colourScale[colourScale_].adjustRange(data1[k]);
+				for (k = 0; k<nXYZ_.z; k++) prefs.colourScale[colourScale_].adjustRange(data1[k]);
 			}
 		}
 	}
 	else if (type_ == Grid::RegularXYData)
 	{
-		for (i = 0; i < nPoints_.x; i++)
+		for (i = 0; i < nXYZ_.x; i++)
 		{
 			data1 = data2d_[i];
-			for (j = 0; j<nPoints_.y; j++) prefs.colourScale[colourScale_].adjustRange(data1[j]);
+			for (j = 0; j<nXYZ_.y; j++) prefs.colourScale[colourScale_].adjustRange(data1[j]);
 		}
 	}
 }
@@ -760,13 +785,13 @@ void Grid::calculateSums()
 	partialSecondarySum_ = 0.0;
 	if (type_ == Grid::RegularXYZData)
 	{
-		for (i = 0; i < nPoints_.x; i++)
+		for (i = 0; i < nXYZ_.x; i++)
 		{
 			data2 = data3d_[i];
-			for (j = 0; j<nPoints_.y; j++)
+			for (j = 0; j<nXYZ_.y; j++)
 			{
 				data1 = data2[j];
-				for (k = 0; k<nPoints_.z; k++)
+				for (k = 0; k<nXYZ_.z; k++)
 				{
 					if (data1[k] > 0) totalPositiveSum_ += data1[k];
 					else totalNegativeSum_ += data1[k];
@@ -779,10 +804,10 @@ void Grid::calculateSums()
 	}
 	else if (type_ == Grid::RegularXYData)
 	{
-		for (i = 0; i < nPoints_.x; i++)
+		for (i = 0; i < nXYZ_.x; i++)
 		{
 			data1 = data2d_[i];
-			for (j = 0; j<nPoints_.y; j++)
+			for (j = 0; j<nXYZ_.y; j++)
 			{
 				if (data1[j] > 0) totalPositiveSum_ += data1[j];
 				else totalNegativeSum_ += data1[j];
@@ -848,30 +873,30 @@ bool Grid::allocateArrays()
 		case (Grid::RegularXYZData):
 			if (data3d_ != NULL) clear();
 			// Check point limits (secondary only)
-			if (nPoints_.min() < 1)
+			if (nXYZ_.min() < 1)
 			{
-				msg.print("Can't allocate 3D grid array - One or more grid limits are secondary (%i,%i,%i).\n", nPoints_.x, nPoints_.y, nPoints_.z);
+				msg.print("Can't allocate 3D grid array - One or more grid limits are secondary (%i,%i,%i).\n", nXYZ_.x, nXYZ_.y, nXYZ_.z);
 				msg.exit("Grid::allocateArrays");
 				return FALSE;
 			}
-			data3d_ = new double**[nPoints_.x];
-			for (i = 0; i<nPoints_.x; i++)
+			data3d_ = new double**[nXYZ_.x];
+			for (i = 0; i<nXYZ_.x; i++)
 			{
-				data3d_[i] = new double*[nPoints_.y];
-				for (j = 0; j<nPoints_.y; j++) data3d_[i][j] = new double[nPoints_.z];
+				data3d_[i] = new double*[nXYZ_.y];
+				for (j = 0; j<nXYZ_.y; j++) data3d_[i][j] = new double[nXYZ_.z];
 			}
 			break;
 		case (Grid::RegularXYData):
 			if (data2d_ != NULL) clear();
 			// Check point limits (secondary only)
-			if ((nPoints_.x < 1) || (nPoints_.y < 1))
+			if ((nXYZ_.x < 1) || (nXYZ_.y < 1))
 			{
-				msg.print("Can't allocate 2D grid array - One or more grid limits are secondary (%i,%i).\n", nPoints_.x, nPoints_.y);
+				msg.print("Can't allocate 2D grid array - One or more grid limits are secondary (%i,%i).\n", nXYZ_.x, nXYZ_.y);
 				msg.exit("Grid::allocateArrays");
 				return FALSE;
 			}
-			data2d_ = new double*[nPoints_.x];
-			for (i = 0; i<nPoints_.x; i++) data2d_[i] = new double[nPoints_.y];
+			data2d_ = new double*[nXYZ_.x];
+			for (i = 0; i<nXYZ_.x; i++) data2d_[i] = new double[nXYZ_.y];
 		case (Grid::FreeXYZData):
 			break;
 		default:
@@ -889,9 +914,9 @@ void Grid::deleteArrays()
 	int i, j;
 	if (data3d_ != NULL)
 	{
-		for (i = 0; i<nPoints_.x; i++)
+		for (i = 0; i<nXYZ_.x; i++)
 		{
-			for (j = 0; j<nPoints_.y; j++) delete[] data3d_[i][j];
+			for (j = 0; j<nXYZ_.y; j++) delete[] data3d_[i][j];
 			delete[] data3d_[i];
 		}
 		delete[] data3d_;
@@ -899,7 +924,7 @@ void Grid::deleteArrays()
 	}
 	if (data2d_ != NULL)
 	{
-		for (i = 0; i<nPoints_.x; i++)
+		for (i = 0; i<nXYZ_.x; i++)
 		{
 			delete[] data2d_[i];
 		}
@@ -969,19 +994,19 @@ void Grid::setLimits(double d)
 void Grid::setData(int x, int y, int z, double d)
 {
 	// Check limits against npoints vector
-	if ((x < 0) || (x >= nPoints_.x))
+	if ((x < 0) || (x >= nXYZ_.x))
 	{
-		msg.print("X index %i is outside array bounds (0 to %i) for grid data.\n", x, nPoints_.x-1);
+		msg.print("X index %i is outside array bounds (0 to %i) for grid data.\n", x, nXYZ_.x-1);
 		return;
 	}
-	else if ((y < 0) || (y >= nPoints_.y))
+	else if ((y < 0) || (y >= nXYZ_.y))
 	{
-		msg.print("Y index %i is outside array bounds (0 to %i) for grid data.\n", y, nPoints_.y-1);
+		msg.print("Y index %i is outside array bounds (0 to %i) for grid data.\n", y, nXYZ_.y-1);
 		return;
 	}
-	else if ((type_ == Grid::RegularXYData) && ((z < 0) || (z >= nPoints_.z)))
+	else if ((type_ == Grid::RegularXYData) && ((z < 0) || (z >= nXYZ_.z)))
 	{
-		msg.print("Z index %i is outside array bounds (0 to %i) for grid data.\n", z, nPoints_.z-1);
+		msg.print("Z index %i is outside array bounds (0 to %i) for grid data.\n", z, nXYZ_.z-1);
 		return;
 	}
 	// Okay, so store data
@@ -1005,15 +1030,15 @@ void Grid::setNextData(double d)
 	{
 		data3d_[currentPoint_.x][currentPoint_.y][currentPoint_.z] = d;
 		currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
-		if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))
+		if (currentPoint_.get(loopOrder_.x) == nXYZ_.get(loopOrder_.x))
 		{
 			currentPoint_.set(loopOrder_.x, 0);
 			currentPoint_.set(loopOrder_.y, currentPoint_.get(loopOrder_.y) + 1);
-			if (currentPoint_.get(loopOrder_.y) == nPoints_.get(loopOrder_.y))
+			if (currentPoint_.get(loopOrder_.y) == nXYZ_.get(loopOrder_.y))
 			{
 				currentPoint_.set(loopOrder_.y, 0);
 				currentPoint_.set(loopOrder_.z, currentPoint_.get(loopOrder_.z) + 1);
-				if (currentPoint_.get(loopOrder_.z) == nPoints_.get(loopOrder_.z)) dataFull_ = TRUE;
+				if (currentPoint_.get(loopOrder_.z) == nXYZ_.get(loopOrder_.z)) dataFull_ = TRUE;
 			}
 		}
 	}
@@ -1021,11 +1046,11 @@ void Grid::setNextData(double d)
 	{
 		data2d_[currentPoint_.x][currentPoint_.y] = d;
 		currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
-		if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))
+		if (currentPoint_.get(loopOrder_.x) == nXYZ_.get(loopOrder_.x))
 		{
 			currentPoint_.set(loopOrder_.x, 0);
 			currentPoint_.set(loopOrder_.y, currentPoint_.get(loopOrder_.y) + 1);
-			if (currentPoint_.get(loopOrder_.y) == nPoints_.get(loopOrder_.y)) dataFull_ = TRUE;
+			if (currentPoint_.get(loopOrder_.y) == nXYZ_.get(loopOrder_.y)) dataFull_ = TRUE;
 		}
 	}
 	// Set new minimum / maximum
@@ -1188,8 +1213,8 @@ int Grid::modifyRegion(int startX, int startY, int startZ, double minValue, doub
 					v = vec;
 					v.add(x, y);
 					// Fold position if necessary
-					if (v[x] < 0) { if (periodic) v.set(x,nPoints_[x]-1); else continue; }
-					else if (v[x] >= nPoints_[x]) { if (periodic) v.set(x,0); else continue; }
+					if (v[x] < 0) { if (periodic) v.set(x,nXYZ_[x]-1); else continue; }
+					else if (v[x] >= nXYZ_[x]) { if (periodic) v.set(x,0); else continue; }
 					value = data3d_[v.x][v.y][v.z];
 					if ((value < minValue) || (value > maxValue)) continue;
 					else
@@ -1237,8 +1262,8 @@ int Grid::modifyRegion(int startX, int startY, int startZ, double minValue, doub
 					v = vec;
 					v.add(x, y);
 					// Fold position if necessary
-					if (v[x] < 0) { if (periodic) v.set(x,nPoints_[x]-1); else continue; }
-					else if (v[x] >= nPoints_[x]) { if (periodic) v.set(x,0); else continue; }
+					if (v[x] < 0) { if (periodic) v.set(x,nXYZ_[x]-1); else continue; }
+					else if (v[x] >= nXYZ_[x]) { if (periodic) v.set(x,0); else continue; }
 					value = data2d_[v.x][v.y];
 					if ((value < minValue) || (value > maxValue)) continue;
 					else

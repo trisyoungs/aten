@@ -26,8 +26,6 @@
 #include "base/constants.h"
 #include "base/elements.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 /*
 // Variable
@@ -65,10 +63,12 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "cutoff",			VTypes::DoubleData,	0, FALSE },
 	{ "dataMaximum", 		VTypes::VectorData,	0, FALSE },
 	{ "dataMinimum", 		VTypes::VectorData,	0, FALSE },
+	{ "loopOrder", 			VTypes::IntegerData,	3, FALSE },
 	{ "name",			VTypes::StringData,	0, FALSE },
 	{ "nx",				VTypes::IntegerData,	0, TRUE },
 	{ "ny",				VTypes::IntegerData,	0, TRUE },
 	{ "nz",				VTypes::IntegerData,	0, TRUE },
+	{ "nPoints",			VTypes::IntegerData,	0, TRUE },
 	{ "origin", 			VTypes::VectorData,	0, FALSE },
 	{ "outlineVolume",		VTypes::IntegerData,	0, FALSE },
 	{ "periodic",			VTypes::IntegerData,	0, FALSE },
@@ -78,6 +78,7 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "shiftX",			VTypes::IntegerData,	0, FALSE },
 	{ "shiftY",			VTypes::IntegerData,	0, FALSE },
 	{ "shiftZ",			VTypes::IntegerData,	0, FALSE },
+	{ "type",			VTypes::StringData,	0, TRUE },
 	{ "upperCutoff",		VTypes::DoubleData,	0, FALSE },
 	{ "useColourScale",		VTypes::IntegerData,	0, FALSE },
 	{ "useDataForZ",		VTypes::IntegerData,	0, FALSE },
@@ -86,8 +87,9 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor GridVariable::functionData[GridVariable::nFunctions] = {
-	{ "data",	VTypes::DoubleData,	"IIi",	"int i, int j, int k = -1" },
-	{ "shift",	VTypes::NoData,		"IIIi",	"int dx, int dy, int dz, bool shiftAtoms = FALSE" }
+	{ "data",		VTypes::DoubleData,	"IIi",	"int i, int j, int k = -1" },
+	{ "initialise",		VTypes::IntegerData,	"SIIi",	"string type, int nx, int ny, int nz = -1" },
+	{ "shift",		VTypes::NoData,		"IIIi",	"int dx, int dy, int dz, bool shiftAtoms = FALSE" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -232,13 +234,24 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (GridVariable::DataMinimum):
 			rv.set(ptr->dataMinimum());
 			break;
+		case (GridVariable::LoopOrder):
+			if (hasArrayIndex) rv.set( ptr->loopOrder()[arrayIndex-1] );
+			else
+			{
+				int tempArray[3] = { ptr->loopOrder().x, ptr->loopOrder().y, ptr->loopOrder().z };
+				rv.setArray( VTypes::IntegerData, tempArray, 3);
+			}
+			break;
 		case (GridVariable::Name):
 			rv.set(ptr->name());
 			break;
 		case (GridVariable::NX):
 		case (GridVariable::NY):
 		case (GridVariable::NZ):
-			rv.set(ptr->nPoints().get(acc-GridVariable::NX));
+			rv.set(ptr->nXYZ().get(acc-GridVariable::NX));
+			break;
+		case (GridVariable::NPoints):
+			rv.set(ptr->nPoints());
 			break;
 		case (GridVariable::Origin):
 			rv.set(ptr->origin());
@@ -267,6 +280,9 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			break;
 		case (GridVariable::ShiftZ):
 			rv.set(ptr->shift().z);
+			break;
+		case (GridVariable::Type):
+			rv.set(Grid::gridType(ptr->type()));
 			break;
 		case (GridVariable::UpperCutoff):
 			rv.set(ptr->upperPrimaryCutoff());
@@ -472,6 +488,7 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Grid *ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
+	Grid::GridType gt;
 	int nx, ny, nz;
 	if (result) switch (i)
 	{
@@ -483,14 +500,14 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 					if (node->nArgs() == 3) msg.print("Warning: Third dimension given to 'data' function will be ignored...\n");
 					nx = node->argi(0) - 1;
 					ny = node->argi(1) - 1;
-					if ((nx < 0) || (nx >= ptr->nPoints().x))
+					if ((nx < 0) || (nx >= ptr->nXYZ().x))
 					{
-						msg.print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nPoints().x);
+						msg.print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nXYZ().x);
 						result = FALSE;
 					}
-					else if ((ny < 0) || (ny >= ptr->nPoints().y))
+					else if ((ny < 0) || (ny >= ptr->nXYZ().y))
 					{
-						msg.print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nPoints().y);
+						msg.print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nXYZ().y);
 						result = FALSE;
 					}
 					else rv.set( ptr->data2d()[nx][ny] );
@@ -505,19 +522,19 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 					nx = node->argi(0) - 1;
 					ny = node->argi(1) - 1;
 					nz = node->argi(2) - 1;
-					if ((nx < 0) || (nx >= ptr->nPoints().x))
+					if ((nx < 0) || (nx >= ptr->nXYZ().x))
 					{
-						msg.print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nPoints().x);
+						msg.print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nXYZ().x);
 						result = FALSE;
 					}
-					else if ((ny < 0) || (ny >= ptr->nPoints().y))
+					else if ((ny < 0) || (ny >= ptr->nXYZ().y))
 					{
-						msg.print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nPoints().y);
+						msg.print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nXYZ().y);
 						result = FALSE;
 					}
-					else if ((nz < 0) || (nz >= ptr->nPoints().z))
+					else if ((nz < 0) || (nz >= ptr->nXYZ().z))
 					{
-						msg.print("Error: Z value for grid (%i) is out of range (nz = %i)\n", nz+1, ptr->nPoints().z);
+						msg.print("Error: Z value for grid (%i) is out of range (nz = %i)\n", nz+1, ptr->nXYZ().z);
 						result = FALSE;
 					}
 					else rv.set( ptr->data3d()[nx][ny][nz] );
@@ -527,6 +544,11 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 					result = FALSE;
 					break;
 			}
+			break;
+		case (GridVariable::Initialise):
+			gt = Grid::gridType(node->argc(0), TRUE);
+			if (gt == Grid::nGridTypes) return FALSE;
+			result = ptr->initialise(gt, Vec3<int>(node->argi(1), node->argi(2), node->nArgs() == 3 ? -1 : node->argi(3)));
 			break;
 		case (GridVariable::Shift):
 			ptr->setShift(ptr->shift().x+node->argi(0), ptr->shift().y+node->argi(1), ptr->shift().z+node->argi(2));

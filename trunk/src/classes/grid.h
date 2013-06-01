@@ -96,7 +96,7 @@ class Grid
 	// Return name of Grid data
 	const char *name() const;
 	// Initialise grid to specified type and size
-	bool initialise(GridType type, Vec3<int> npoints);
+	bool initialise(GridType type, Vec3<int> nXYZ);
 	// Return type of Grid data
 	GridType type() const;
 	// Return parent model
@@ -126,7 +126,7 @@ class Grid
 	// Number of minor ticks per major spacing
 	Vec3<int> axisMinorTicks_;
 	// Number of points in each direction
-	Vec3<int> nPoints_;
+	Vec3<int> nXYZ_;
 	// Voxel values
 	double ***data3d_;
 	// Surface values
@@ -209,7 +209,9 @@ class Grid
 	// Return axis position
 	Vec3<int> axisMinorTicks();
 	// Return number of points in regular gridded data (if it exists)
-	Vec3<int> nPoints() const;
+	Vec3<int> nXYZ() const;
+	// Return total number of points
+	int nPoints() const;
 	// Return minimum value in data[]
 	double minimum() const;
 	// Return maximum value in data[]
@@ -246,6 +248,8 @@ class Grid
 	GridPoint *gridPoints();
 	// Set loop ordering
 	void setLoopOrder(int n, int xyz);
+	// Return loop ordering 
+	Vec3<int> loopOrder();
 	// Set whether to use data2d_ values for the z-component of the 2D surface
 	void setUseDataForZ(bool b);
 	// Whether to use data2d_ values for z-component of 2D surface

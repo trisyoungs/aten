@@ -440,7 +440,7 @@ void PartitioningScheme::createPartitionsFromGrid()
 	
 	// Loop over grid elements - we will add new partition nodes as we go...
 	int i, j, k, pid;
-	Vec3<int> npoints = grid_.nPoints();
+	Vec3<int> npoints = grid_.nXYZ();
 	double ***data = grid_.data3d();
 	for (i=0; i<npoints.x; ++i)
 	{

@@ -882,9 +882,9 @@ void RenderEngine::renderGrids(Model *source)
 		// Render volume outline
 		if (g->outlineVolume())
 		{
-			A.columnMultiply(0, g->nPoints().x);
-			A.columnMultiply(1, g->nPoints().y);
-			A.columnMultiply(2, g->nPoints().z);
+			A.columnMultiply(0, g->nXYZ().x);
+			A.columnMultiply(1, g->nXYZ().y);
+			A.columnMultiply(2, g->nXYZ().z);
 			renderPrimitive(RenderEngine::GridObject, primitives_[set_].originCubes_, textcolour, A, GL_LINE, 1.0);
 		}
 
