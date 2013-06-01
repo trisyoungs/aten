@@ -324,7 +324,7 @@ void GridPrimitive::createSurfaceMarchingCubes()
 	int ii, jj, kk, n, cubetype, *faces, cscale;
 	Vec3<GLfloat> normal, gradient[8];
 	Vec3<double> r;
-	Vec3<int> npoints = source_->nPoints(), shift = source_->shift();
+	Vec3<int> npoints = source_->nXYZ(), shift = source_->shift();
 	WrapInt i, j, k;
 	GLfloat col1[4], col2[4], minalpha1, minalpha2;
 	double ***data, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
@@ -518,7 +518,7 @@ void GridPrimitive::createSurface2D()
 	int i, j, n;
 	Vec3<double> normal[4];
 	int cscale = source_->useColourScale() ? source_->colourScale() : -1;
-	Vec3<int> npoints = source_->nPoints();
+	Vec3<int> npoints = source_->nXYZ();
 	GLfloat col1[4], col2[4], minalpha1, minalpha2;
 	double **data;
 	bool usez = source_->useDataForZ();
@@ -633,7 +633,7 @@ void GridPrimitive::createAxes()
 		axisRealRange[n] = axisRealMax[n] - axisRealMin[n]; 
 
 		// Calculate conversion factor
-		realToGrid[n] = source_->nPoints()[n] / axisRealRange[n];
+		realToGrid[n] = source_->nXYZ()[n] / axisRealRange[n];
 	}
 	axisRealMajorSpacing = source_->axisMajorSpacing();
 	axisMinorNTicks = source_->axisMinorTicks() + 1;

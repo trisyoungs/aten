@@ -156,7 +156,7 @@ void GridsWidget::refreshGridInfo()
 	// Set minimum, maximum, and cutoff, and stepsizes for spins
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
 	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
-	ui.GridNPointsLabel->setText(itoa(g->nPoints().x*g->nPoints().y*g->nPoints().z));
+	ui.GridNPointsLabel->setText(itoa(g->nXYZ().x*g->nXYZ().y*g->nXYZ().z));
 	ui.GridLowerCutoffSpin->setMinimum(g->minimum());
 	ui.GridLowerCutoffSpin->setMaximum(g->maximum());
 	ui.GridLowerCutoffSpin->setValue(g->lowerPrimaryCutoff());

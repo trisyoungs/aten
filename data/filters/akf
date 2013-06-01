@@ -14,9 +14,8 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 	# Variable declaration
 	int n,i,j,k,l,ndata,atomdata;
 	String e,keywd,line,type,style;
-	double rx,ry,rz, lengths[3], angs[3], q, colour[4];
-	Glyph g;
-	atom atm;
+	double rx,ry,rz, lengths[3], angs[3], q, colour[4], data;
+	Atom atm;
 	Vector v;
 
 	newModel(filterFilename());
@@ -54,7 +53,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 		else if (keywd == "glyph")
 		{
 			readVar(line,type,ndata);
-			g = newGlyph(type);
+			Glyph g = newGlyph(type);
 			# First 'n' lines are the 'n' data points for the glyph
 			for (n=1; n<=ndata; ++n)
 			{
@@ -98,6 +97,27 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			readVar(line,i,j,k,l);
 			measure(i,j,k,l);
 		}
+		else if (keywd == "grid")
+		{
+			readVar(line, type, i, j, k);
+			Grid g = newGrid("NAME");
+			g.initialise(type, i, j, k);
+			do
+			{
+				readLineF("%s%r",keywd,line);
+				if (keywd == "axes") readVarF(line,"%f %f %f %f %f %f %f %f %f", g.axes.ax, g.axes.ay, g.axes.az, g.axes.bx, g.axes.by, g.axes.bz, g.axes.cx, g.axes.cy, g.axes.cz);
+				else if (keywd == "origin") readVarF(line,"%f %f %f", g.origin.x, g.origin.y, g.origin.z);
+				else if (keywd == "data")
+				{
+					for (n=0; n<g.nPoints; ++n)
+					{
+						if (!readLine(data)) error("Couldn't read point %i from file.\n", n+1);
+						addNextGridPoint(data);
+					}
+				}
+				else if (keywd != "endgrid") printf("Unrecognised glyph property '%s'\n", keywd);
+			} while (keywd != "endgrid");
+		}
 		else printf("Warning: Keyword '%s' not recognised.\n",keywd);
 	}
 	finaliseModel();
@@ -140,5 +160,27 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 		if (g.text != "") writeLineF("  text  '%s'\n", g.text);
 		if (!g.solid) writeLineF("  wireframe\n");
 		writeLineF("endglyph\n");
+	}
+
+	// Grids
+	for (grid g = m.grids; g; ++g)
+	{
+		writeLineF("grid  %s  %i  %i  %i\n", g.type, g.nx, g.ny, g.nz);
+		#writeLineF("  looporder  xyz\n");
+		writeLineF("  axes       %f  %f  %f  %f  %f  %f  %f  %f  %f\n", g.axes.ax, g.axes.ay, g.axes.az, g.axes.bx, g.axes.by, g.axes.bz, g.axes.cx, g.axes.cy, g.axes.cz);
+		writeLineF("  origin     %f  %f  %f\n", g.origin.x, g.origin.y, g.origin.z);
+		writeLineF("  data\n");
+		if (g.type == "regularxy")
+		{
+			for (int x=1; x<=g.nx; ++x)
+				for (int y=1; y<=g.ny; ++y) writeLineF("    %f\n", g.data(x, y));
+		}
+		else if (g.type == "regularxyz")
+		{
+			for (int x=1; x<=g.nx; ++x)
+				for (int y=1; y<=g.ny; ++y)
+					for (int z=1; z<=g.nz; ++z) writeLineF("    %f\n", g.data(x, y, z));
+		}
+		writeLineF("endgrid\n");
 	}
 }
