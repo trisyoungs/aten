@@ -460,7 +460,7 @@ void RenderEngine::updatePrimitives()
 	for (int n=0; n<nPrimitiveSets; ++n) if (primitives_[n].stackSize() != 0)
 	{
 		primitives_[n].popInstance(prefs.usePixelBuffers() ? pixelBufferContext_ : canvasContext_);
-		primitives_[n].pushInstance(prefs.usePixelBuffers() ? pixelBufferContext_ : canvasContext_);
+		primitives_[n].pushInstance(prefs.usePixelBuffers() ? pixelBufferContext_ : canvasContext_, true);
 	}
 }
 
