@@ -677,9 +677,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
-			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() == (Atom::nDrawStyles - 1)) for (n=0; n<Atom::nDrawStyles-1; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
-			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
+			else for (n=0; n<Atom::nDrawStyles-1; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
 			engine().updatePrimitives();
 			break;
 		case (PreferencesVariable::BackCull):
@@ -692,9 +692,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::BondStyleRadius):
-			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() == (Atom::nDrawStyles - 1)) for (n=0; n<Atom::nDrawStyles-1; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setBondStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
-			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
+			else for (n=0; n<Atom::nDrawStyles-1; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
 			engine().updatePrimitives();
 			break;
 		case (PreferencesVariable::BondTolerance):
