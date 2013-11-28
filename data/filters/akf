@@ -12,7 +12,7 @@
 filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension="akf", glob="*.akf", id=1)
 {
 	# Variable declaration
-	int n,i,j,k,l,ndata,atomdata;
+	int n,i,j,k,l,ndata,atomdata, fixed;
 	String e,keywd,line,type,style;
 	double rx,ry,rz, lengths[3], angs[3], q, colour[4], data;
 	Atom atm;
@@ -30,11 +30,12 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 
 		if (keywd == "atom")
 		{
-			readVar(line,i,e,rx,ry,rz,q,style,colour[1],colour[2],colour[3],colour[4]);
+			readVar(line,i,e,rx,ry,rz,q,style,colour[1],colour[2],colour[3],colour[4],fixed);
 			atm = newAtom(e,rx,ry,rz);
 			atm.q = q;
 			if (style != "") atm.style = style;
 			atm.colour = colour;
+			atm.fixed = fixed;
 		}
 		else if (keywd == "bond")
 		{
@@ -131,7 +132,7 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 	writeLineF("title  %s\n", m.name);
 
 	// Atom data
-	for (atom i = m.atoms; i; ++i) writeLineF("atom   %i %s %f %f %f %f %s %f %f %f %f\n", i.id, i.symbol, i.rx, i.ry, i.rz, i.q, i.style, i.colour[1], i.colour[2], i.colour[3], i.colour[4] );
+	for (atom i = m.atoms; i; ++i) writeLineF("atom   %i %s %f %f %f %f %s %f %f %f %f %i\n", i.id, i.symbol, i.rx, i.ry, i.rz, i.q, i.style, i.colour[1], i.colour[2], i.colour[3], i.colour[4], i.fixed );
 
 	// Bond data
 	for (bond b = m.bonds; b; ++b) writeLineF("bond   %i %i %s\n", b.i.id, b.j.id, b.type);

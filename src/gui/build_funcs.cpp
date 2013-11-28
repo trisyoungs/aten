@@ -191,13 +191,13 @@ void BuildWidget::on_DrawRebondMenuButton_menuItemClicked(int menuItemId)
 			CommandNode::run(Command::ReBond, "i", 0);
 			break;
 		case (BuildWidget::SelectionItem):
-			CommandNode::run(Command::ReBondSelection, "");
+			CommandNode::run(Command::ReBondSelection, "i", 0);
 			break;
 		case (BuildWidget::SelectionNoAugmentItem):
 			CommandNode::run(Command::ReBondSelection, "i", 1);
 			break;
 		case (BuildWidget::PatternsItem):
-			CommandNode::run(Command::ReBondPatterns, "");
+			CommandNode::run(Command::ReBondPatterns, "i", 0);
 			break;
 		case (BuildWidget::PatternsNoAugmentItem):
 			CommandNode::run(Command::ReBondPatterns, "i", 1);
