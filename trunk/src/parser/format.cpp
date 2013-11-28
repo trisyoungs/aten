@@ -401,7 +401,7 @@ const char *Format::string()
 bool Format::writeToString()
 {
 	msg.enter("Format::writeToString");
-	char bit[4096];
+	char bit[8192];
 	createdString_[0] = '\0';
 	ReturnValue rv;
 	bool result = TRUE;

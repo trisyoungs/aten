@@ -137,6 +137,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	Atom i, j;
 	Bound b;
 	Bond bnd;
+	String rotText, s;
 
 	# Main dialog creation function
 	void createDefaultDialog(Dialog ui)
@@ -235,7 +236,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			++mol;
 			// Write centre of mass
 			com = p.com(m) - boxsize*0.5;
-			writeLineF("   %-2i %13.6e %13.6e %13.6e %13.6e %13.6e %13.6e %5i\n",p.nMolAtoms,com.x,com.y,com.z,0.0,0.0,0.0,mol);
+			writeLineF("   %-2i %13.6e %13.6e %13.6e %13.6e %13.6e %13.6e F %5i\n",p.nMolAtoms,com.x,com.y,com.z,0.0,0.0,0.0,mol);
 
 			// Write atom information
 			for (n=1; n<=p.nMolAtoms; ++n)
@@ -258,7 +259,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 					if (ui.asInteger("restrain_bonds")) for (b in p.bonds) if (((b.id[1] == n) || (b.id[2] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[2]]) < rijmax)) ++nresb;
 					if (ui.asInteger("restrain_angles")) for (b in p.angles) if (((b.id[1] == n) || (b.id[3] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[3]]) < rijmax)) ++nresa;
 					if (ui.asInteger("restrain_torsions")) for (b in p.torsions) if (((b.id[1] == n) || (b.id[4] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[4]]) < rijmax)) ++nrest;
-					writeLineF("  %2i", nresa+nresb+nrest);
+					writeLineF(" %2i ", nresa+nresb+nrest);
 					if (nresb > 0) for (b in p.bonds)
 					{
 						// Search for bonds in which this atom is involved
@@ -316,48 +317,65 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			}
 
 			// Write headgroup rotations
+			// We will construct a list of rotations and count them up as we go. A string will be created containing all the info to be written out.
 			nrot = 0;
+			rotText = "";
 			for (b in p.bonds)
 			{
 				if (p.atomsInRing(b.id[1],b.id[2])) continue;
 				if (p.atoms[b.id[1]].nBonds == 1) continue;
 				if (p.atoms[b.id[2]].nBonds == 1) continue;
+				bnd = p.atoms[b.id[1]].findBond(p.atoms[b.id[2]]);
+				srcmodel.selectNone();
+				srcmodel.selectTree(p.atoms[b.id[1]], bnd);
+				// Check here the number of selected atoms - if greater than half the atoms in the molecule then we're better off with the inverse selection!
+				if (srcmodel.nSelected > 0.5*p.nMolAtoms)
+				{
+					for (o=1; o<=p.nMolAtoms; ++o)
+					{
+						if (p.atoms[o].selected) p.atoms[o].selected = FALSE;
+						else p.atoms[o].selected = TRUE;
+					}
+				}
+
+				// If the two atoms which form the rotation axis are both fixed, ignore this bond
+				if (p.atoms[b.id[1]].fixed && p.atoms[b.id[2]].fixed) continue;
+
+				// Remove the two atoms which form the rotation axis from the selection
+				srcmodel.deselect(p.atoms[b.id[1]], p.atoms[b.id[2]]);
+
+				// Loop over selected atoms now, deselecting all those which have their positions fixed
+				for (o=1; o<=p.nMolAtoms; ++o)
+				{
+					if (p.atoms[o].selected && p.atoms[o].fixed) p.atoms[o].selected = FALSE;
+				}
+				
+				// Still anything selected?
+				if (srcmodel.nSelected == 0) continue;
+				
+				// There are some suitable atoms to rotate, so create the necessary text
 				++nrot;
+				rotText += " ROT\n";
+				sprintf(s, "%5i%5i\n", b.id[1], b.id[2]);
+				rotText += s;
+				// List of rotating atoms should be given 14 per line (13 + natoms on the first line)
+				count = 1;
+				sprintf(s, " %4i", srcmodel.nSelected);
+				rotText += s;
+				for (j in srcmodel.selection)
+				{
+					if (count%14 == 0) writeLineF("\n");
+					sprintf(s, " %4i", j.id-p.firstAtomId+1);
+					rotText += s;
+					++count;
+				}
+				rotText += "\n";
 			}
-			writeLineF(" %5i\n", nrot);
+
 			if (nrot > 0)
 			{
-				for (b in p.bonds)
-				{
-					if (p.atomsInRing(b.id[1],b.id[2])) continue;
-					if (p.atoms[b.id[1]].nBonds == 1) continue;
-					if (p.atoms[b.id[2]].nBonds == 1) continue;
-					bnd = p.atoms[b.id[1]].findBond(p.atoms[b.id[2]]);
-					writeLine(" ROT");
-					writeLineF("%5i%5i\n", b.id[1], b.id[2]);
-					srcmodel.selectNone();
-					srcmodel.selectTree(p.atoms[b.id[1]], bnd);
-					// Check here the number of selected atoms - if greater than half the atoms in the molecule then we're better off with the inverse selection!
-					if (srcmodel.nSelected > 0.5*p.nMolAtoms)
-					{
-						for (o=1; o<=p.nMolAtoms; ++o)
-						{
-							if (p.atoms[o].selected) p.atoms[o].selected = FALSE;
-							else p.atoms[o].selected = TRUE;
-						}
-					}
-					srcmodel.deselect(p.atoms[b.id[1]], p.atoms[b.id[2]]);
-					// List of rotating atoms should be given 14 per line (13 + natoms on the first line)
-					count = 1;
-					writeLineF(" %4i", srcmodel.nSelected);
-					for (j in srcmodel.selection)
-					{
-						if (count%14 == 0) writeLineF("\n");
-						writeLineF(" %4i", j.id-p.firstAtomId+1);
-						++count;
-					}
-					writeLineF("\n");
-				}
+				writeLineF(" %5i\n", nrot);
+				writeLineF("%s", rotText);
 			}
 		}
 	}
@@ -368,8 +386,8 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	for (ffatom ffa in srcmodel.ffTypes)
 	{
 		if ((ffa.form != "lj") && (ffa.form != "ljgeom")) error("Error: Atom type '%s' contains short-range parameters of an incompatible type with EPSR (%s).\n", ffa.name, ffa.form);
-		if (ffa.z == 1) writeLineF(" %3s %3s    %1i\n", ffa.name, aten.elements[ffa.z].symbol, 1);
-		else writeLineF(" %3s %3s    %1i\n", ffa.name, aten.elements[ffa.z].symbol, 0);
+		if (ffa.z == 1) writeLineF(" %-3s %-3s %1i\n", ffa.name, aten.elements[ffa.z].symbol, 1);
+		else writeLineF(" %-3s %-3s %1i\n", ffa.name, aten.elements[ffa.z].symbol, 0);
 
 		// Masses - for H atoms, write deuterium mass instead
 		if (ffa.z == 1) mass = 2.0;

@@ -24,6 +24,7 @@
 #include "base/bond.h"
 #include "base/constants.h"
 #include "base/elements.h"
+#include "model/model.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,7 +56,7 @@ Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
 	{ "i",		VTypes::AtomData,	0, TRUE },
 	{ "j",		VTypes::AtomData,	0, TRUE },
 	{ "order",	VTypes::DoubleData,	0, TRUE },
-	{ "type",	VTypes::StringData,	0, TRUE }
+	{ "type",	VTypes::StringData,	0, FALSE }
 };
 
 // Function data
@@ -248,13 +249,20 @@ bool BondVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	Bond *ptr = (Bond*) sourcerv.asPointer(VTypes::BondData, result);
+	Bond::BondType bt;
 	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BondData));
 		result = FALSE;
 	}
+	Model *ptrParent = ptr->atomI()->parent();
 	if (result) switch (acc)
 	{
+		case (BondVariable::Type):
+			bt = Bond::bondType(newvalue.asString(), TRUE);
+			if (bt == Bond::nBondTypes) break;
+			ptrParent->changeBond(ptr, bt);
+			break;
 		default:
 			printf("BondVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;

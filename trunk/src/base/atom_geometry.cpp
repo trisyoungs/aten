@@ -175,7 +175,6 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 					{
 						// All atoms appear to be in plane, so add a perpendicular atom to this plane
 						vector = vec[0] * vec[1];
-						vector.normalise();
 					}
 					break;
 				case (Atom::OctahedralGeometry):
@@ -254,6 +253,8 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 			break;
 	}
 
+	// Normalise vector
+	vector.normalise();
 // 	printf("Final vector is "); vector.print();
 
 	msg.exit("Atom::nextBondVector");
