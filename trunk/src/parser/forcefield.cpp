@@ -77,6 +77,7 @@ FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions
 	{ "findBond",		VTypes::ForcefieldBoundData, 	"CC",					"string typei, string typej" },
 	{ "findImproper",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
 	{ "findTorsion",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
+	{ "findType",		VTypes::ForcefieldAtomData, 	"C",					"string type" },
 	{ "findUreyBradley",	VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" }
 };
 
@@ -183,7 +184,16 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	if (result) switch (acc)
 	{
 		case (ForcefieldVariable::AtomTypes):
-			rv.set(VTypes::ForcefieldAtomData, ptr->types());
+			if (hasArrayIndex)
+			{
+				if (arrayIndex > ptr->nTypes())
+				{
+					msg.print("Error: Array index is out of bounds for 'atomTypes' accessor (n = %i, nTypes = %i)\n", arrayIndex, ptr->nTypes());
+					return FALSE;
+				}
+				else rv.set(VTypes::ForcefieldAtomData, ptr->type(arrayIndex-1));
+			}
+			else rv.set(VTypes::ForcefieldAtomData, ptr->types());
 			break;
 		case (FileName):
 			rv.set( ptr->filename() );
@@ -353,10 +363,12 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		case (ForcefieldVariable::FindTorsion):
 			rv.set(VTypes::ForcefieldBoundData, ptr->findTorsion(node->argc(0), node->argc(1), node->argc(2), node->argc(3)));
 			break;
+		case (ForcefieldVariable::FindType):
+			rv.set(VTypes::ForcefieldAtomData, ptr->findType(node->argc(0)));
+			break;
 		case (ForcefieldVariable::FindUreyBradley):
 			rv.set(VTypes::ForcefieldBoundData, ptr->findUreyBradley(node->argc(0), node->argc(1), node->argc(2)));
 			break;
-			
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldVariable.\n", functionData[i].name);
 			result = FALSE;
