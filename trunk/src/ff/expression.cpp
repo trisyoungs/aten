@@ -394,17 +394,18 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 			else msg.print("... Found parameters for %i angles (%i dummy terms), %i with corresponding Urey-Bradley definitions.\n", angles_.nItems(), nDummyAngles, nUreyBradleys);
 		}
 		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
-		// Torsions
-		if (torsions_.nItems() != nTorsions)
+		// Torsions - impropers may have been added to the list, so subtract this number in the check
+		if ((torsions_.nItems()-nImpropers) != nTorsions)
 		{
+			msg.print("NIMPROPERS = %i\n", nImpropers);
 			msg.print("...INTERNAL ERROR: expected %i torsions, found %i\n", nTorsions, torsions_.nItems());
 			incomplete_ = TRUE;
 		}
 		else if (torsions_.nItems() == 0) msg.print("... No torsions in model.\n");
 		else if (itorsions == 0)
 		{
-			if (nDummyTorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
-			else msg.print("... Found parameters for %i torsions (%i dummy terms).\n", torsions_.nItems(), nDummyTorsions);
+			if (nDummyTorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems()-nImpropers);
+			else msg.print("... Found parameters for %i torsions (%i dummy terms).\n", torsions_.nItems()-nImpropers, nDummyTorsions);
 		}
 		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
 		// Impropers
