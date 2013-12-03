@@ -377,6 +377,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 				writeLineF(" %5i\n", nrot);
 				writeLineF("%s", rotText);
 			}
+			else writeLineF("   %-2i\n", 0);
 		}
 	}
 
