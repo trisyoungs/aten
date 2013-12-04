@@ -1,7 +1,7 @@
 /*
 	*** Rendering Engine
 	*** src/render/engine.cpp
-	Copyright T. Youngs 2007-2012
+	Copyright T. Youngs 2007-2013
 
 	This file is part of Aten.
 
@@ -786,9 +786,9 @@ QPixmap RenderEngine::renderModelIcon(Model *source)
 		
 		// Flag for rendering list regeneration again
 		clearListsFlag_ = TRUE;
-		
-		// Reset view size and refresh
-		gui.mainCanvas()->resize(w, h);
+
+		// Reset view size
+		gui.mainCanvas()->resizeGL(w, h);
 
 		return pixmap;
 	}

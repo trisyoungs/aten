@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>CellDefinitionWidget</class>
  <widget class="QDockWidget" name="CellDefinitionWidget">
@@ -5,15 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>270</width>
-    <height>226</height>
+    <width>273</width>
+    <height>271</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>270</width>
-    <height>226</height>
+    <width>273</width>
+    <height>271</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
   <property name="floating">
    <bool>true</bool>

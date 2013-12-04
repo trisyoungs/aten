@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 2.6.5.  */
 
 /* Bison implementation for Yacc-like parsers in C
    
-      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
+      Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "2.5"
+#define YYBISON_VERSION "2.6.5"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -58,8 +58,6 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
-/* Using locations.  */
-#define YYLSP_NEEDED 0
 
 /* Substitute the variable and function names.  */
 #define yyparse         CommandParser_parse
@@ -70,10 +68,8 @@
 #define yydebug         CommandParser_debug
 #define yynerrs         CommandParser_nerrs
 
-
 /* Copy the first part of user declarations.  */
-
-/* Line 268 of yacc.c  */
+/* Line 360 of yacc.c  */
 #line 4 "grammar.yy"
 
 
@@ -97,14 +93,16 @@ TreeNode *tempNode;
 int globalDeclarations;
 
 
+/* Line 360 of yacc.c  */
+#line 98 "grammar.cc"
 
-/* Line 268 of yacc.c  */
-#line 103 "grammar.cc"
-
-/* Enabling traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+# ifndef YY_NULL
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULL nullptr
+#  else
+#   define YY_NULL 0
+#  endif
+# endif
 
 /* Enabling verbose error messages.  */
 #ifdef YYERROR_VERBOSE
@@ -114,11 +112,17 @@ int globalDeclarations;
 # define YYERROR_VERBOSE 0
 #endif
 
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
+/* In a future release of Bison, this section will be replaced
+   by #include "y.tab.h".  */
+#ifndef YY_COMMANDPARSER_Y_TAB_H_INCLUDED
+# define YY_COMMANDPARSER_Y_TAB_H_INCLUDED
+/* Enabling traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
 #endif
-
+#if YYDEBUG
+extern int CommandParser_debug;
+#endif
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -218,12 +222,10 @@ int globalDeclarations;
 
 
 
-
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
-
-/* Line 293 of yacc.c  */
+/* Line 376 of yacc.c  */
 #line 31 "grammar.yy"
 
 	int functionId;			/* Function enum id */
@@ -236,21 +238,36 @@ typedef union YYSTYPE
 	double doubleconst;		/* double constant value */
 
 
-
-/* Line 293 of yacc.c  */
-#line 242 "grammar.cc"
+/* Line 376 of yacc.c  */
+#line 243 "grammar.cc"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+extern YYSTYPE CommandParser_lval;
+
+#ifdef YYPARSE_PARAM
+#if defined __STDC__ || defined __cplusplus
+int CommandParser_parse (void *YYPARSE_PARAM);
+#else
+int CommandParser_parse ();
+#endif
+#else /* ! YYPARSE_PARAM */
+#if defined __STDC__ || defined __cplusplus
+int CommandParser_parse (void);
+#else
+int CommandParser_parse ();
+#endif
+#endif /* ! YYPARSE_PARAM */
+
+#endif /* !YY_COMMANDPARSER_Y_TAB_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-
-/* Line 343 of yacc.c  */
-#line 254 "grammar.cc"
+/* Line 379 of yacc.c  */
+#line 271 "grammar.cc"
 
 #ifdef short
 # undef short
@@ -303,24 +320,24 @@ typedef short int yytype_int16;
 # if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* INFRINGES ON USER NAME SPACE */
-#   define YY_(msgid) dgettext ("bison-runtime", msgid)
+#   define YY_(Msgid) dgettext ("bison-runtime", Msgid)
 #  endif
 # endif
 # ifndef YY_
-#  define YY_(msgid) msgid
+#  define YY_(Msgid) Msgid
 # endif
 #endif
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(e) ((void) (e))
+# define YYUSE(E) ((void) (E))
 #else
-# define YYUSE(e) /* empty */
+# define YYUSE(E) /* empty */
 #endif
 
 /* Identity function, used to suppress warnings about constant conditions.  */
 #ifndef lint
-# define YYID(n) (n)
+# define YYID(N) (N)
 #else
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
@@ -356,6 +373,7 @@ YYID (yyi)
 #    if ! defined _ALLOCA_H && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 #     include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
+      /* Use EXIT_SUCCESS as a witness for stdlib.h.  */
 #     ifndef EXIT_SUCCESS
 #      define EXIT_SUCCESS 0
 #     endif
@@ -447,20 +465,20 @@ union yyalloc
 #endif
 
 #if defined YYCOPY_NEEDED && YYCOPY_NEEDED
-/* Copy COUNT objects from FROM to TO.  The source and destination do
+/* Copy COUNT objects from SRC to DST.  The source and destination do
    not overlap.  */
 # ifndef YYCOPY
 #  if defined __GNUC__ && 1 < __GNUC__
-#   define YYCOPY(To, From, Count) \
-      __builtin_memcpy (To, From, (Count) * sizeof (*(From)))
+#   define YYCOPY(Dst, Src, Count) \
+      __builtin_memcpy (Dst, Src, (Count) * sizeof (*(Src)))
 #  else
-#   define YYCOPY(To, From, Count)		\
-      do					\
-	{					\
-	  YYSIZE_T yyi;				\
-	  for (yyi = 0; yyi < (Count); yyi++)	\
-	    (To)[yyi] = (From)[yyi];		\
-	}					\
+#   define YYCOPY(Dst, Src, Count)              \
+      do                                        \
+        {                                       \
+          YYSIZE_T yyi;                         \
+          for (yyi = 0; yyi < (Count); yyi++)   \
+            (Dst)[yyi] = (Src)[yyi];            \
+        }                                       \
       while (YYID (0))
 #  endif
 # endif
@@ -626,7 +644,7 @@ static const yytype_uint16 yyrline[] =
 };
 #endif
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+#if YYDEBUG || YYERROR_VERBOSE || 0
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
@@ -650,7 +668,7 @@ static const char *const yytname[] =
   "block", "blockment", "flowstatement", "$@4", "$@5", "$@6", "caselabel",
   "caselist", "filteroptions", "filter", "savetokenname", "savetype",
   "cleartype", "pushscope", "popscope", "pushstepname", "pushfunc",
-  "pushfilter", "setglobal", "unsetglobal", 0
+  "pushfilter", "setglobal", "unsetglobal", YY_NULL
 };
 #endif
 
@@ -948,10 +966,10 @@ static const yytype_int16 yytable[] =
        2,     3,   172,     5,     0,   117,   118,   119,   120,   121
 };
 
-#define yypact_value_is_default(yystate) \
-  ((yystate) == (-189))
+#define yypact_value_is_default(Yystate) \
+  (!!((Yystate) == (-189)))
 
-#define yytable_value_is_error(yytable_value) \
+#define yytable_value_is_error(Yytable_value) \
   YYID (0)
 
 static const yytype_int16 yycheck[] =
@@ -1158,62 +1176,35 @@ static const yytype_uint8 yystos[] =
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
-#define YYBACKUP(Token, Value)					\
-do								\
-  if (yychar == YYEMPTY && yylen == 1)				\
-    {								\
-      yychar = (Token);						\
-      yylval = (Value);						\
-      YYPOPSTACK (1);						\
-      goto yybackup;						\
-    }								\
-  else								\
-    {								\
+#define YYBACKUP(Token, Value)                                  \
+do                                                              \
+  if (yychar == YYEMPTY)                                        \
+    {                                                           \
+      yychar = (Token);                                         \
+      yylval = (Value);                                         \
+      YYPOPSTACK (yylen);                                       \
+      yystate = *yyssp;                                         \
+      goto yybackup;                                            \
+    }                                                           \
+  else                                                          \
+    {                                                           \
       yyerror (YY_("syntax error: cannot back up")); \
       YYERROR;							\
     }								\
 while (YYID (0))
 
-
+/* Error token number */
 #define YYTERROR	1
 #define YYERRCODE	256
 
 
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#define YYRHSLOC(Rhs, K) ((Rhs)[K])
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)				\
-    do									\
-      if (YYID (N))                                                    \
-	{								\
-	  (Current).first_line   = YYRHSLOC (Rhs, 1).first_line;	\
-	  (Current).first_column = YYRHSLOC (Rhs, 1).first_column;	\
-	  (Current).last_line    = YYRHSLOC (Rhs, N).last_line;		\
-	  (Current).last_column  = YYRHSLOC (Rhs, N).last_column;	\
-	}								\
-      else								\
-	{								\
-	  (Current).first_line   = (Current).last_line   =		\
-	    YYRHSLOC (Rhs, 0).last_line;				\
-	  (Current).first_column = (Current).last_column =		\
-	    YYRHSLOC (Rhs, 0).last_column;				\
-	}								\
-    while (YYID (0))
-#endif
-
-
 /* This macro is provided for backward compatibility. */
-
 #ifndef YY_LOCATION_PRINT
 # define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 #endif
 
 
 /* YYLEX -- calling `yylex' with the right arguments.  */
-
 #ifdef YYLEX_PARAM
 # define YYLEX yylex (YYLEX_PARAM)
 #else
@@ -1263,6 +1254,8 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep)
     YYSTYPE const * const yyvaluep;
 #endif
 {
+  FILE *yyo = yyoutput;
+  YYUSE (yyo);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
@@ -1514,12 +1507,12 @@ static int
 yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                 yytype_int16 *yyssp, int yytoken)
 {
-  YYSIZE_T yysize0 = yytnamerr (0, yytname[yytoken]);
+  YYSIZE_T yysize0 = yytnamerr (YY_NULL, yytname[yytoken]);
   YYSIZE_T yysize = yysize0;
   YYSIZE_T yysize1;
   enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
   /* Internationalized format string. */
-  const char *yyformat = 0;
+  const char *yyformat = YY_NULL;
   /* Arguments of yyformat. */
   char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
   /* Number of reported tokens (one for the "unexpected", one per
@@ -1579,7 +1572,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                     break;
                   }
                 yyarg[yycount++] = yytname[yyx];
-                yysize1 = yysize + yytnamerr (0, yytname[yyx]);
+                yysize1 = yysize + yytnamerr (YY_NULL, yytname[yyx]);
                 if (! (yysize <= yysize1
                        && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
                   return 2;
@@ -1671,27 +1664,22 @@ yydestruct (yymsg, yytype, yyvaluep)
 }
 
 
-/* Prevent warnings from -Wmissing-prototypes.  */
-#ifdef YYPARSE_PARAM
-#if defined __STDC__ || defined __cplusplus
-int yyparse (void *YYPARSE_PARAM);
-#else
-int yyparse ();
-#endif
-#else /* ! YYPARSE_PARAM */
-#if defined __STDC__ || defined __cplusplus
-int yyparse (void);
-#else
-int yyparse ();
-#endif
-#endif /* ! YYPARSE_PARAM */
 
 
 /* The lookahead symbol.  */
 int yychar;
 
+
+#ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END
+#endif
+#ifndef YY_INITIAL_VALUE
+# define YY_INITIAL_VALUE(Value) /* Nothing. */
+#endif
+
 /* The semantic value of the lookahead symbol.  */
-YYSTYPE yylval;
+YYSTYPE yylval YY_INITIAL_VALUE(yyval_default);
 
 /* Number of syntax errors so far.  */
 int yynerrs;
@@ -1731,7 +1719,7 @@ yyparse ()
        `yyss': related to states.
        `yyvs': related to semantic values.
 
-       Refer to the stacks thru separate pointers, to allow yyoverflow
+       Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
     /* The state stack.  */
@@ -1749,7 +1737,7 @@ yyparse ()
   int yyn;
   int yyresult;
   /* Lookahead token as an internal (translated) token number.  */
-  int yytoken;
+  int yytoken = 0;
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
@@ -1767,9 +1755,8 @@ yyparse ()
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
-  yytoken = 0;
-  yyss = yyssa;
-  yyvs = yyvsa;
+  yyssp = yyss = yyssa;
+  yyvsp = yyvs = yyvsa;
   yystacksize = YYINITDEPTH;
 
   YYDPRINTF ((stderr, "Starting parse\n"));
@@ -1778,14 +1765,6 @@ yyparse ()
   yyerrstatus = 0;
   yynerrs = 0;
   yychar = YYEMPTY; /* Cause a token to be read.  */
-
-  /* Initialize stack pointers.
-     Waste one element of value and location stack
-     so that they stay on the same level as the state stack.
-     The wasted elements are never initialized.  */
-  yyssp = yyss;
-  yyvsp = yyvs;
-
   goto yysetstate;
 
 /*------------------------------------------------------------.
@@ -1926,7 +1905,9 @@ yybackup:
   yychar = YYEMPTY;
 
   yystate = yyn;
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   *++yyvsp = yylval;
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 
   goto yynewstate;
 
@@ -1963,22 +1944,19 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 81 "grammar.yy"
     { }
     break;
 
   case 3:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 82 "grammar.yy"
     { }
     break;
 
   case 4:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 87 "grammar.yy"
     {
 		if (((yyvsp[(1) - (1)].node) != NULL) && (!cmdparser.addStatement((yyvsp[(1) - (1)].node)))) YYABORT;
@@ -1986,8 +1964,7 @@ yyreduce:
     break;
 
   case 5:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 90 "grammar.yy"
     {
 		if (((yyvsp[(1) - (1)].node) != NULL) && (!cmdparser.addStatement((yyvsp[(1) - (1)].node)))) YYABORT;
@@ -1995,36 +1972,31 @@ yyreduce:
     break;
 
   case 6:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 100 "grammar.yy"
     { (yyval.node) = cmdparser.addConstant((yyvsp[(1) - (1)].intconst)); }
     break;
 
   case 7:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 101 "grammar.yy"
     { (yyval.node) = cmdparser.addConstant((yyvsp[(1) - (1)].doubleconst)); }
     break;
 
   case 8:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 102 "grammar.yy"
     { (yyval.node) = cmdparser.addConstant((yyvsp[(1) - (1)].name)->get()); }
     break;
 
   case 9:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 103 "grammar.yy"
     { (yyval.node) = cmdparser.addElementConstant((yyvsp[(1) - (1)].intconst)); }
     break;
 
   case 10:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 112 "grammar.yy"
     {
 		if (!cmdparser.expandPath(stepNameStack.last(), (yyvsp[(4) - (5)].node))) YYABORT;
@@ -2033,8 +2005,7 @@ yyreduce:
     break;
 
   case 11:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 116 "grammar.yy"
     {
 		if (!cmdparser.expandPath(stepNameStack.last(), NULL, (yyvsp[(4) - (5)].node))) YYABORT;
@@ -2043,8 +2014,7 @@ yyreduce:
     break;
 
   case 12:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 120 "grammar.yy"
     {
 		if (!cmdparser.expandPath(stepNameStack.last(), NULL, NULL)) YYABORT;
@@ -2053,8 +2023,7 @@ yyreduce:
     break;
 
   case 13:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 124 "grammar.yy"
     {
 		if (!cmdparser.expandPath((yyvsp[(1) - (2)].name))) YYABORT;
@@ -2063,29 +2032,25 @@ yyreduce:
     break;
 
   case 14:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 132 "grammar.yy"
     { }
     break;
 
   case 15:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 133 "grammar.yy"
     { }
     break;
 
   case 16:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 134 "grammar.yy"
     { msg.print("Error formulating path.\n"); YYABORT; }
     break;
 
   case 17:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 139 "grammar.yy"
     {
 		(yyval.node) = cmdparser.wrapVariable((yyvsp[(1) - (4)].variable),(yyvsp[(3) - (4)].node));
@@ -2094,8 +2059,7 @@ yyreduce:
     break;
 
   case 18:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 143 "grammar.yy"
     {
 		(yyval.node) = cmdparser.wrapVariable((yyvsp[(1) - (1)].variable));
@@ -2104,8 +2068,7 @@ yyreduce:
     break;
 
   case 19:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 147 "grammar.yy"
     {
 		(yyval.node) = cmdparser.wrapVariable((yyvsp[(1) - (4)].variable),(yyvsp[(3) - (4)].node));
@@ -2114,8 +2077,7 @@ yyreduce:
     break;
 
   case 20:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 151 "grammar.yy"
     {
 		(yyval.node) = cmdparser.wrapVariable((yyvsp[(1) - (1)].variable));
@@ -2124,8 +2086,7 @@ yyreduce:
     break;
 
   case 21:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 155 "grammar.yy"
     {
 		cmdparser.createPath((yyvsp[(1) - (2)].node));
@@ -2133,8 +2094,7 @@ yyreduce:
     break;
 
   case 22:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 157 "grammar.yy"
     {
 		(yyval.node) = cmdparser.finalisePath();
@@ -2142,8 +2102,7 @@ yyreduce:
     break;
 
   case 23:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 160 "grammar.yy"
     {
 		msg.print("Can't use a variable as a function. Did you mean '[' instead?\n"); (yyval.node) = NULL;
@@ -2151,8 +2110,7 @@ yyreduce:
     break;
 
   case 24:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 171 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction( (Command::Function) (yyvsp[(1) - (3)].functionId));
@@ -2162,8 +2120,7 @@ yyreduce:
     break;
 
   case 25:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 176 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunctionWithArglist( (Command::Function) (yyvsp[(1) - (4)].functionId),(yyvsp[(3) - (4)].node));
@@ -2173,8 +2130,7 @@ yyreduce:
     break;
 
   case 26:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 181 "grammar.yy"
     {
 		msg.print("Error: Missing brackets after function call?\n");
@@ -2183,8 +2139,7 @@ yyreduce:
     break;
 
   case 27:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 189 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addUserFunction((yyvsp[(1) - (3)].tree));
@@ -2194,8 +2149,7 @@ yyreduce:
     break;
 
   case 28:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 194 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addUserFunction((yyvsp[(1) - (4)].tree),(yyvsp[(3) - (4)].node));
@@ -2205,8 +2159,7 @@ yyreduce:
     break;
 
   case 29:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 199 "grammar.yy"
     {
 		msg.print("Error: Missing brackets after function call?\n");
@@ -2215,8 +2168,7 @@ yyreduce:
     break;
 
   case 30:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 211 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addArrayConstant((yyvsp[(2) - (3)].node));
@@ -2225,253 +2177,217 @@ yyreduce:
     break;
 
   case 31:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 222 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignment,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 32:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 223 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignment,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 33:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 224 "grammar.yy"
     { msg.print("Mangled expression used in assignment.\n"); YYABORT; }
     break;
 
   case 34:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 229 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 35:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 230 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 36:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 231 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 37:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 232 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignmentPlus,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 38:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 233 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignmentSubtract,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 39:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 234 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignmentMultiply,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 40:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 235 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignmentDivide,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 41:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 236 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorNegate, (yyvsp[(2) - (2)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 42:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 237 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPostfixIncrease, (yyvsp[(1) - (2)].node));  if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 43:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 238 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPostfixDecrease, (yyvsp[(1) - (2)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 44:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 239 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPrefixIncrease, (yyvsp[(2) - (2)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 45:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 240 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPrefixDecrease, (yyvsp[(2) - (2)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 46:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 241 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 47:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 242 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAdd, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 48:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 243 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorSubtract, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 49:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 244 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorMultiply, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 50:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 245 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorDivide, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 51:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 246 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPower, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 52:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 247 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorModulus, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 53:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 248 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorEqualTo, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 54:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 249 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorNotEqualTo, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 55:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 250 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorGreaterThan, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 56:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 251 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorGreaterThanEqualTo, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 57:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 252 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorLessThan, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 58:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 253 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorLessThanEqualTo, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 59:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 254 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAnd, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 60:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 255 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorOr, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 61:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 256 "grammar.yy"
     { (yyval.node) = (yyvsp[(2) - (3)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 62:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 257 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorNot, (yyvsp[(2) - (2)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 63:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 258 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorInlineIf, (yyvsp[(1) - (5)].node), (yyvsp[(3) - (5)].node), (yyvsp[(5) - (5)].node)); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 64:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 259 "grammar.yy"
     { (yyval.node) = cmdparser.addNew(yylval.vtype); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 65:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 260 "grammar.yy"
     { msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
     break;
 
   case 66:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 265 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -2480,8 +2396,7 @@ yyreduce:
     break;
 
   case 67:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 269 "grammar.yy"
     {
 		(yyval.node) = Tree::joinArguments((yyvsp[(3) - (3)].node),(yyvsp[(1) - (3)].node));
@@ -2489,8 +2404,7 @@ yyreduce:
     break;
 
   case 68:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 272 "grammar.yy"
     {
 		msg.print("Error: Missing comma between items.\n");
@@ -2499,8 +2413,7 @@ yyreduce:
     break;
 
   case 69:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 284 "grammar.yy"
     {
 		tokenName = yylval.variable->name();
@@ -2511,8 +2424,7 @@ yyreduce:
     break;
 
   case 70:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 290 "grammar.yy"
     {
 		tokenName = Command::data[yylval.functionId].keyword;
@@ -2522,8 +2434,7 @@ yyreduce:
     break;
 
   case 71:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 295 "grammar.yy"
     {
 		tokenName = yylval.variable->name();
@@ -2534,8 +2445,7 @@ yyreduce:
     break;
 
   case 72:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 301 "grammar.yy"
     {
 		tokenName = yylval.variable->name();
@@ -2546,8 +2456,7 @@ yyreduce:
     break;
 
   case 73:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 307 "grammar.yy"
     {
 		tokenName = yylval.tree->name();
@@ -2558,8 +2467,7 @@ yyreduce:
     break;
 
   case 74:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 313 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : variablename : variable type-name '%s'\n", VTypes::dataType(yylval.vtype));
@@ -2569,8 +2477,7 @@ yyreduce:
     break;
 
   case 75:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 318 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : variablename : new token '%s'\n", tokenName.get());
@@ -2580,8 +2487,7 @@ yyreduce:
     break;
 
   case 76:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 327 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with array assignment\n", tokenName.get());
@@ -2590,8 +2496,7 @@ yyreduce:
     break;
 
   case 77:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 331 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with expr assignment\n", tokenName.get());
@@ -2600,8 +2505,7 @@ yyreduce:
     break;
 
   case 78:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 335 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with array assignment\n", tokenName.get());
@@ -2610,8 +2514,7 @@ yyreduce:
     break;
 
   case 79:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 339 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr assignment\n", tokenName.get());
@@ -2620,8 +2523,7 @@ yyreduce:
     break;
 
   case 80:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 347 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s'\n", tokenName.get());
@@ -2630,8 +2532,7 @@ yyreduce:
     break;
 
   case 81:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 351 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s'\n", tokenName.get());
@@ -2640,8 +2541,7 @@ yyreduce:
     break;
 
   case 82:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 355 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -2649,8 +2549,7 @@ yyreduce:
     break;
 
   case 83:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 362 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -2658,8 +2557,7 @@ yyreduce:
     break;
 
   case 84:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 365 "grammar.yy"
     {
 		(yyval.node) = Tree::joinArguments((yyvsp[(3) - (3)].node),(yyvsp[(1) - (3)].node));
@@ -2667,8 +2565,7 @@ yyreduce:
     break;
 
   case 85:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 368 "grammar.yy"
     {
 		msg.print("Error: Missing comma between declarations?\n");
@@ -2677,8 +2574,7 @@ yyreduce:
     break;
 
   case 86:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 376 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s'\n", tokenName.get());
@@ -2687,8 +2583,7 @@ yyreduce:
     break;
 
   case 87:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 380 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s' with expr assignment\n", tokenName.get());
@@ -2697,8 +2592,7 @@ yyreduce:
     break;
 
   case 88:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 388 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -2706,8 +2600,7 @@ yyreduce:
     break;
 
   case 89:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 391 "grammar.yy"
     {
 		(yyval.node) = Tree::joinArguments((yyvsp[(3) - (3)].node),(yyvsp[(1) - (3)].node));
@@ -2715,8 +2608,7 @@ yyreduce:
     break;
 
   case 90:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 394 "grammar.yy"
     {
 		msg.print("Error: Missing comma between declarations?\n");
@@ -2725,8 +2617,7 @@ yyreduce:
     break;
 
   case 91:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 402 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : global declaration : standard variable declaration list\n");
@@ -2736,8 +2627,7 @@ yyreduce:
     break;
 
   case 92:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 407 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : declaration : standard variable declaration list\n");
@@ -2747,8 +2637,7 @@ yyreduce:
     break;
 
   case 93:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 412 "grammar.yy"
     {
 		msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType));
@@ -2757,8 +2646,7 @@ yyreduce:
     break;
 
   case 94:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 424 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined subroutine (VOID return value, no arguments)\n");
@@ -2769,8 +2657,7 @@ yyreduce:
     break;
 
   case 95:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 430 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined subroutine (VOID return value, arguments)\n");
@@ -2779,8 +2666,7 @@ yyreduce:
     break;
 
   case 96:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 433 "grammar.yy"
     {
 		if (!cmdparser.addStatement((yyvsp[(9) - (9)].node))) YYABORT;
@@ -2790,8 +2676,7 @@ yyreduce:
     break;
 
   case 97:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 438 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, no arguments)\n", VTypes::dataType((yyvsp[(4) - (7)].tree)->returnType()));
@@ -2802,8 +2687,7 @@ yyreduce:
     break;
 
   case 98:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 444 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, arguments)\n", VTypes::dataType((yyvsp[(4) - (7)].tree)->returnType()));
@@ -2812,8 +2696,7 @@ yyreduce:
     break;
 
   case 99:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 447 "grammar.yy"
     {
 		if (!cmdparser.addStatement((yyvsp[(9) - (9)].node))) YYABORT;
@@ -2823,8 +2706,7 @@ yyreduce:
     break;
 
   case 100:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 460 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (2)].node);
@@ -2832,8 +2714,7 @@ yyreduce:
     break;
 
   case 101:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 463 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (2)].node);
@@ -2841,8 +2722,7 @@ yyreduce:
     break;
 
   case 102:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 466 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (2)].node);
@@ -2850,8 +2730,7 @@ yyreduce:
     break;
 
   case 103:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 469 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (2)].node);
@@ -2859,8 +2738,7 @@ yyreduce:
     break;
 
   case 104:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 472 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (2)].node);
@@ -2868,8 +2746,7 @@ yyreduce:
     break;
 
   case 105:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 475 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -2877,8 +2754,7 @@ yyreduce:
     break;
 
   case 106:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 478 "grammar.yy"
     {
 		(yyval.node) = NULL;
@@ -2886,8 +2762,7 @@ yyreduce:
     break;
 
   case 107:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 481 "grammar.yy"
     {
 		(yyval.node) = NULL;
@@ -2895,8 +2770,7 @@ yyreduce:
     break;
 
   case 108:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 484 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::Help, cmdparser.addConstant((yyvsp[(2) - (2)].functionId)));
@@ -2904,8 +2778,7 @@ yyreduce:
     break;
 
   case 109:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 487 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::Return,(yyvsp[(2) - (3)].node));
@@ -2913,8 +2786,7 @@ yyreduce:
     break;
 
   case 110:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 490 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::Return);
@@ -2922,8 +2794,7 @@ yyreduce:
     break;
 
   case 111:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 493 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::Continue);
@@ -2931,8 +2802,7 @@ yyreduce:
     break;
 
   case 112:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 496 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::Break);
@@ -2940,8 +2810,7 @@ yyreduce:
     break;
 
   case 113:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 503 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -2949,8 +2818,7 @@ yyreduce:
     break;
 
   case 114:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 506 "grammar.yy"
     {
 		if ((yyvsp[(2) - (2)].node) == NULL) (yyval.node) = (yyvsp[(1) - (2)].node);
@@ -2959,8 +2827,7 @@ yyreduce:
     break;
 
   case 115:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 514 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(3) - (5)].node);
@@ -2968,8 +2835,7 @@ yyreduce:
     break;
 
   case 116:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 517 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::NoFunction);
@@ -2977,8 +2843,7 @@ yyreduce:
     break;
 
   case 117:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 524 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -2986,8 +2851,7 @@ yyreduce:
     break;
 
   case 118:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 527 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -2995,8 +2859,7 @@ yyreduce:
     break;
 
   case 119:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 534 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::If,(yyvsp[(3) - (7)].node),(yyvsp[(5) - (7)].node),(yyvsp[(7) - (7)].node));
@@ -3004,8 +2867,7 @@ yyreduce:
     break;
 
   case 120:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 537 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::If,(yyvsp[(3) - (5)].node),(yyvsp[(5) - (5)].node));
@@ -3013,8 +2875,7 @@ yyreduce:
     break;
 
   case 121:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 540 "grammar.yy"
     {
 		(yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (10)].node), cmdparser.addFunction(Command::For, (yyvsp[(4) - (10)].node),(yyvsp[(6) - (10)].node),(yyvsp[(8) - (10)].node),(yyvsp[(10) - (10)].node))); cmdparser.popScope();
@@ -3022,8 +2883,7 @@ yyreduce:
     break;
 
   case 122:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 543 "grammar.yy"
     {
 		(yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (10)].node), cmdparser.addFunction(Command::For, (yyvsp[(4) - (10)].node),(yyvsp[(6) - (10)].node),(yyvsp[(8) - (10)].node),(yyvsp[(10) - (10)].node))); cmdparser.popScope();
@@ -3031,8 +2891,7 @@ yyreduce:
     break;
 
   case 123:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 546 "grammar.yy"
     {
 		if ((yyvsp[(4) - (7)].node)->returnType() <= VTypes::VectorData) { msg.print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
@@ -3041,8 +2900,7 @@ yyreduce:
     break;
 
   case 124:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 549 "grammar.yy"
     {
 		(yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (9)].node), cmdparser.addFunction(Command::ForIn,(yyvsp[(4) - (9)].node),(yyvsp[(6) - (9)].node),(yyvsp[(9) - (9)].node)));
@@ -3051,8 +2909,7 @@ yyreduce:
     break;
 
   case 125:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 553 "grammar.yy"
     { 
 		if (declaredType <= VTypes::VectorData)
@@ -3070,8 +2927,7 @@ yyreduce:
     break;
 
   case 126:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 565 "grammar.yy"
     {
 		(yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (11)].node), cmdparser.addFunction(Command::ForIn,tempNode,(yyvsp[(8) - (11)].node),(yyvsp[(11) - (11)].node)));
@@ -3080,8 +2936,7 @@ yyreduce:
     break;
 
   case 127:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 569 "grammar.yy"
     {
 		(yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (6)].node), cmdparser.addFunction(Command::While, (yyvsp[(4) - (6)].node),(yyvsp[(6) - (6)].node)));
@@ -3090,8 +2945,7 @@ yyreduce:
     break;
 
   case 128:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 573 "grammar.yy"
     {
 		(yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (8)].node), cmdparser.addFunction(Command::DoWhile, (yyvsp[(3) - (8)].node),(yyvsp[(6) - (8)].node)));
@@ -3100,8 +2954,7 @@ yyreduce:
     break;
 
   case 129:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 577 "grammar.yy"
     {
 		if (((yyvsp[(3) - (4)].node)->returnType() != VTypes::IntegerData) && ((yyvsp[(3) - (4)].node)->returnType() != VTypes::StringData))
@@ -3113,8 +2966,7 @@ yyreduce:
     break;
 
   case 130:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 583 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::Switch, (yyvsp[(3) - (8)].node));
@@ -3123,8 +2975,7 @@ yyreduce:
     break;
 
   case 131:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 591 "grammar.yy"
     {
 		if (((yyvsp[(3) - (5)].node)->returnType() != VTypes::IntegerData) && ((yyvsp[(3) - (5)].node)->returnType() != VTypes::StringData))
@@ -3138,8 +2989,7 @@ yyreduce:
     break;
 
   case 132:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 600 "grammar.yy"
     {
 		(yyval.node) = cmdparser.addFunction(Command::Default);
@@ -3147,8 +2997,7 @@ yyreduce:
     break;
 
   case 133:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 607 "grammar.yy"
     {
 		(yyval.node) = (yyvsp[(1) - (1)].node);
@@ -3156,8 +3005,7 @@ yyreduce:
     break;
 
   case 134:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 610 "grammar.yy"
     {
 		(yyval.node) = Tree::joinArguments((yyvsp[(2) - (2)].node),(yyvsp[(1) - (2)].node));
@@ -3165,8 +3013,7 @@ yyreduce:
     break;
 
   case 135:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 613 "grammar.yy"
     {
 		(yyval.node) = Tree::joinArguments((yyvsp[(2) - (2)].node),(yyvsp[(1) - (2)].node));
@@ -3174,8 +3021,7 @@ yyreduce:
     break;
 
   case 136:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 624 "grammar.yy"
     {
 		if (!cmdparser.setFilterOption(&tokenName, (yyvsp[(4) - (4)].node))) YYABORT;
@@ -3184,8 +3030,7 @@ yyreduce:
     break;
 
   case 137:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 628 "grammar.yy"
     {
 		if (!cmdparser.setFilterOption(&tokenName, (yyvsp[(6) - (6)].node))) YYABORT;
@@ -3194,8 +3039,7 @@ yyreduce:
     break;
 
   case 138:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 636 "grammar.yy"
     {
 		if (((yyvsp[(6) - (6)].node) != NULL) && (!cmdparser.addStatement((yyvsp[(6) - (6)].node)))) YYABORT;
@@ -3205,50 +3049,43 @@ yyreduce:
     break;
 
   case 139:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 648 "grammar.yy"
     { tokenName = *yylval.name; }
     break;
 
   case 140:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 652 "grammar.yy"
     { declaredType = yylval.vtype; }
     break;
 
   case 141:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 656 "grammar.yy"
     { declaredType = VTypes::NoData; }
     break;
 
   case 142:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 660 "grammar.yy"
     { (yyval.node) = cmdparser.pushScope(); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 143:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 664 "grammar.yy"
     { if (!cmdparser.popScope()) YYABORT; }
     break;
 
   case 144:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 668 "grammar.yy"
     { stepNameStack.add()->set(yylval.name->get()); }
     break;
 
   case 145:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 672 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : pushfunc : function/statement '%s'\n", yylval.name->get());
@@ -3258,8 +3095,7 @@ yyreduce:
     break;
 
   case 146:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 680 "grammar.yy"
     {
 		msg.print(Messenger::Parse,"PARSER : pushfilter : new filter definition\n");
@@ -3268,23 +3104,20 @@ yyreduce:
     break;
 
   case 147:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 687 "grammar.yy"
     { globalDeclarations = TRUE; }
     break;
 
   case 148:
-
-/* Line 1806 of yacc.c  */
+/* Line 1778 of yacc.c  */
 #line 691 "grammar.yy"
     { globalDeclarations = FALSE; }
     break;
 
 
-
-/* Line 1806 of yacc.c  */
-#line 3288 "grammar.cc"
+/* Line 1778 of yacc.c  */
+#line 3121 "grammar.cc"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3447,7 +3280,9 @@ yyerrlab1:
       YY_STACK_PRINT (yyss, yyssp);
     }
 
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   *++yyvsp = yylval;
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 
 
   /* Shift the error token.  */
@@ -3471,7 +3306,7 @@ yyabortlab:
   yyresult = 1;
   goto yyreturn;
 
-#if !defined(yyoverflow) || YYERROR_VERBOSE
+#if !defined yyoverflow || YYERROR_VERBOSE
 /*-------------------------------------------------.
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
@@ -3513,12 +3348,10 @@ yyreturn:
 }
 
 
-
-/* Line 2067 of yacc.c  */
+/* Line 2041 of yacc.c  */
 #line 694 "grammar.yy"
 
 
 void yyerror(char *s)
 {
 }
-

@@ -1,7 +1,7 @@
 /*
 	*** GlyphData Variable and Array
 	*** src/parser/glyphdata.h
-	Copyright T. Youngs 2007-2012
+	Copyright T. Youngs 2007-2013
 
 	This file is part of Aten.
 
