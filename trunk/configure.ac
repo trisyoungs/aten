@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[1.855])
+m4_define([ATEN_VERSION],[1.856])
 AC_INIT(aten,ATEN_VERSION,tris@projectaten.net)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -88,9 +88,11 @@ if test "$with_qt" != "framework"; then
   PKG_PROG_PKG_CONFIG
 fi
 
-
 # Check for other dependencies
 AC_CHECK_HEADER([$RLINCDIR/readline.h],,[AC_MSG_ERROR([Cannot find headers for readline.])])
+
+# Determine whether to link against libncurses or libncurses5
+AC_SEARCH_LIBS(tgetent, [ncurses ncurses5 curses termcap])
 
 # Set up compilation for Qt GUI
 if test "$with_qt" = "framework"; then
@@ -109,7 +111,7 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
   PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
-GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses -lGL"
+GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL"
 GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
 
 
