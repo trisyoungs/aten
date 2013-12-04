@@ -1,7 +1,7 @@
 /*
 	*** Aten version information
 	*** src/main/version.h
-	Copyright T. Youngs 2007-2012
+	Copyright T. Youngs 2007-2013
 
 	This file is part of Aten.
 
@@ -22,8 +22,8 @@
 #ifndef ATEN_VERSION_H
 #define ATEN_VERSION_H
 
-#define ATENVERSION "1.856"
-#define ATENREVISION "1856"
+#define ATENVERSION "1.857"
+#define ATENREVISION "1857"
 #define ATENDATE "Thu 28 Jun - 13:36"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 

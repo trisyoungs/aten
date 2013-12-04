@@ -80,6 +80,7 @@ class TCanvas : public QGLWidget
 	// General repaint callbacks
 	void paintGL();
 	void paintEvent(QPaintEvent *event);
+	public:
 	// Resize function
 	void resizeGL(int, int);
 
