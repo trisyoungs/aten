@@ -48,16 +48,6 @@ tar -zxvf $DISTFILE
 zip -9r $ZIPDISTFILE aten-${ATENVERSION}
 rm -rf aten-${ATENVERSION}
 
-# FTP source tgz and zip to website
-pftp -i ftp.projectaten.net << EOF
-cd Beta
-binary
-mdelete aten*tar.gz
-mdelete aten*zip
-put $DISTFILE
-put $ZIPDISTFILE
-EOF
-
 # Update tarfile info in ./extra/aten.dsc
 echo ""
 echo "Updating extra/aten.dsc..."
@@ -97,9 +87,6 @@ echo "Committing changes...."
 DATE=`date`
 osc commit -m "Committing version $ATENVERSION (release=$RELEASE) on $DATE."
 cd ../../
-
-# Cleanup
-rm $DISTFILE $ZIPDISTFILE
 
 exit 0
 
