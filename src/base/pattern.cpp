@@ -722,16 +722,8 @@ void Pattern::createMatrices()
 	for (n=0; n<nAtoms_; n++) elecScaleMatrix_[n] = new double[nAtoms_];
 
 	msg.print("Connectivity matrix.....initialising....");
-	for (n=0; n<nAtoms_; n++)
-		for (m=0; m<nAtoms_; m++) conMatrix_[n][m] = 0;
-
-	msg.print("seeding.....");
-	// First, build up the bond matrix
-	for (pb = bonds_.first(); pb != NULL; pb = pb->next)
-	{
-		conMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 1;
-		conMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
-	}
+	for (n=0; n<nAtoms_; ++n)
+		for (m=0; m<nAtoms_; ++m) conMatrix_[n][m] = 0;
 
 	// Print out the bonding matrix
 /*	printf("Bonding Matrix\n");
@@ -741,43 +733,122 @@ void Pattern::createMatrices()
 		printf("\n");
 	} */
 
-	msg.print("transforming.....");
-	// Now, transform into the connectivity matrix.
-	for (a1=0; a1<nAtoms_; a1++)
+	// Since the full transformation to the connectivity matrix is quite intensive, we will only do this for patterns containing less than 1000 atoms
+	if (nAtoms_ < 1000)
 	{
-		for (a2=0; a2<nAtoms_; a2++)
+		msg.print("seeding.....");
+		// First, build up the bond matrix
+		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 		{
-			if (conMatrix_[a1][a2] != 0)
+			conMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 1;
+			conMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
+		}
+
+		msg.print("transforming (full).....");
+		// Now, transform into the connectivity matrix.
+		for (a1=0; a1<nAtoms_; a1++)
+		{
+			for (a2=0; a2<nAtoms_; a2++)
 			{
-				// A2 *is* bound directly to A1.
-				// So, we may increase the distance of A2 from all *other* atoms that A1 is bound to by one hop.
-				for (m=0; m<nAtoms_; m++)
+				if (conMatrix_[a1][a2] != 0)
 				{
-					// We only potentially increase the distance if :
-					//	1) The atom 'm' is *not equal* to a2 (i.e. is not itself)
-					//	2) The atom 'm' we're looking at is also bound to a1.
-					if ((m != a2) && (conMatrix_[a1][m] != 0))
-					if ((conMatrix_[a1][m] != 0))
+					// A2 *is* bound directly to A1.
+					// So, we may increase the distance of A2 from all *other* atoms that A1 is bound to by one hop.
+					for (m=0; m<nAtoms_; m++)
 					{
-						// We only actually increase the distance if :
-						// 	1) Atom 'm' is not directly bound to a2 **OR**
-						//	2) The combined distances of m->a1 and a1->a2 is less than m->a2
-						// The last check means that only the minimum distance m->a2 persists at the end
-						if ((conMatrix_[m][a2] == 0) || (conMatrix_[a1][m]+conMatrix_[a1][a2] < conMatrix_[m][a2]))
-							conMatrix_[m][a2] = conMatrix_[a1][m] + conMatrix_[a1][a2];
+						// We only potentially increase the distance if :
+						//	1) The atom 'm' is *not equal* to a2 (i.e. is not itself)
+						//	2) The atom 'm' we're looking at is also bound to a1.
+						if ((m != a2) && (conMatrix_[a1][m] != 0))
+						if ((conMatrix_[a1][m] != 0))
+						{
+							// We only actually increase the distance if :
+							// 	1) Atom 'm' is not directly bound to a2 **OR**
+							//	2) The combined distances of m->a1 and a1->a2 is less than m->a2
+							// The last check means that only the minimum distance m->a2 persists at the end
+							if ((conMatrix_[m][a2] == 0) || (conMatrix_[a1][m]+conMatrix_[a1][a2] < conMatrix_[m][a2]))
+								conMatrix_[m][a2] = conMatrix_[a1][m] + conMatrix_[a1][a2];
+						}
 					}
 				}
 			}
 		}
 	}
+	else
+	{
+		// Create minimal transformation matrix, using only bond, angle, and torsion data
+		msg.print("transforming (minimal).....");
+
+		// There may be more than one consecutive bound fragment in the pattern, so we must perform treeSelects in order to populate the initial matrix
+		Atom* i = firstAtom_;
+		int count = 100, ii, jj, diagii;
+		while (i != NULL)
+		{
+			// Treeselect from current atom
+			parent_->selectTree(i, TRUE);
+			
+			// For the current marked selection, set the diagonal matrix elements to the current 'count' value
+			for (Refitem<Atom,int>* ri = parent_->selection(TRUE); ri != NULL; ri = ri->next)
+			{
+				ii = ri->item->id() - startAtom_;
+				conMatrix_[ii][ii] = count;
+			}
+
+			// Find next unmarked atom
+			while (i && i->isSelected(TRUE)) i = i->next;
+
+			// Deselect all atoms, and increase count
+			parent_->selectNone(TRUE);
+			++count;
+		}
+
+		// The diagonal elements of conMatrix_ now indicate the parent fragments of each atom
+		// For all atoms within a given fragment, set the connectivity to the diagonal value to start with
+		for (ii = 0; ii < nAtoms_; ++ii)
+		{
+			diagii = conMatrix_[ii][ii];
+			for (jj = 0; jj < nAtoms_; ++jj)
+			{
+				if (diagii != conMatrix_[jj][jj]) continue;
+				conMatrix_[ii][jj] = diagii;
+				conMatrix_[jj][ii] = diagii;
+			}
+		}
+
+		// Done with the diagonals now, so zero them
+		for (ii = 0; ii < nAtoms_; ++ii) conMatrix_[ii][ii] = 0;
+
+		// Now, add bonds to matrix
+		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
+		{
+			conMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 1;
+			conMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
+		}
+
+		// Angles (but don't overwrite bonds)
+		for (pb = angles_.first(); pb != NULL; pb = pb->next)
+		{
+			if (conMatrix_[pb->atomId(0)][pb->atomId(2)] == 1) continue;
+			conMatrix_[pb->atomId(0)][pb->atomId(2)] = 2;
+			conMatrix_[pb->atomId(2)][pb->atomId(0)] = 2;
+		}
+
+		// Torsions (but don't overwrite angles or bonds)
+		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
+		{
+			if (conMatrix_[pb->atomId(0)][pb->atomId(3)] < 3) continue;
+			conMatrix_[pb->atomId(0)][pb->atomId(3)] = 3;
+			conMatrix_[pb->atomId(3)][pb->atomId(0)] = 3;
+		}
+	}
 	msg.print("done.\n");
 
-/*	printf("Connectivity Matrix\n");
-	for (n=0; n<nAtoms_; n++)
-	{
-		for (m=0; m<nAtoms_; m++) printf ("%2i",conMatrix_[n][m]);
-		printf("\n"); 
-	} */
+// 	printf("Connectivity Matrix\n");
+// 	for (n=0; n<nAtoms_; n++)
+// 	{
+// 		for (m=0; m<nAtoms_; m++) printf ("%2i",conMatrix_[n][m]);
+// 		printf("\n"); 
+// 	} 
 
 	// Update contents of scale matrices
 	updateScaleMatrices();

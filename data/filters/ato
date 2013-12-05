@@ -2,6 +2,7 @@
 # Created:	 23/03/2011
 # Last modified: 02/09/2011
 # ChangeLog:
+#	05/12/2013 - Restraint calculation now much more efficient. Added option to control output of headgroup rotations.
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 # 	28/05/2011 - Added writing of random numbers on export. Fixed import to recognise end of LJ specifications.
 # 	23/03/2011 - Initial version.
@@ -134,10 +135,10 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	int nmols, n, m, o, mol, nresb, nresa, nrest, nrot, idj, count;
 	double rij, mass, boxsize;
 	Vector com, r;
-	Atom i, j;
+	Atom i, j, k, l;
 	Bound b;
-	Bond bnd;
-	String rotText, s;
+	Bond b1, b2, b3;
+	String rotText, resText, s;
 
 	# Main dialog creation function
 	void createDefaultDialog(Dialog ui)
@@ -158,6 +159,11 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		group.addDoubleSpin("epsr_mtrans", "Whole Molecule Translations", 0.0, 10.0, 0.01, 0.1);
 		ui.addDoubleSpin("epsr_vtemp", "Vibrational Temperature", 0.0, 1500.0, 10.0, 65.0);
 
+		# Output Options
+		group = ui.addGroup("outputoptions", "Output Options", -1, -1, 1);
+		group.verticalFill = TRUE;
+		group.addCheck("outputrotations", "Write Rotational Groups", 1);
+
 		# Restraints
 		group = ui.addGroup("restraints", "Restraints", -1, -1, 1);
 		ui.addRadioGroup("restraintgroup");
@@ -168,8 +174,8 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		ui.addRadioGroup("connectivitygroup");
 		w.verticalFill = TRUE;
 		w.addRadioButton("restrain_bonds", "Across Bonds", "connectivitygroup", 1);
-		w.addRadioButton("restrain_angles", "Across Angles","connectivitygroup",  0);
-		w.addRadioButton("restrain_torsions", "Across Torsions", "connectivitygroup", 0);
+		w.addRadioButton("restrain_angles", "Across Bonds and Angles","connectivitygroup",  0);
+		w.addRadioButton("restrain_torsions", "Across Bonds, Angles and Torsions", "connectivitygroup", 0);
 		w.addDoubleSpin("restrain_con_max", "Maximum Distance", 0.0, 10.0, 0.1, 2.4);
 
 		w = group.addFrame("restrain_dist_frame", 2, 2);
@@ -183,6 +189,12 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	}
 	if (!showDefaultDialog()) error("Canceled through dialog.\n");
 	Dialog ui = defaultDialog();
+
+	// Grab some dialog values
+	int resType = ui.asInteger("restrain_bonds");
+	if (ui.asInteger("restrain_angles")) resType = 2;
+	else if (ui.asInteger("restrain_torsions")) resType = 3;
+	double rijmax = ui.asDouble("restrain_con_max");
 
 	// First, some checks. We need valid patterns and a cubic cell.
 	if (!createExpression(FALSE,TRUE)) error("Error: Can't write ATO file without valid forcefield types assigned to all atoms.\n");
@@ -250,58 +262,71 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 
 				// Restraint information
 				count = 0;
+				resText = "";
 				if (ui.asInteger("restrain_con"))
 				{
-					nresb = 0;
-					nresa = 0;
-					nrest = 0;
-					double rijmax = ui.asDouble("restrain_con_max");
-					if (ui.asInteger("restrain_bonds")) for (b in p.bonds) if (((b.id[1] == n) || (b.id[2] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[2]]) < rijmax)) ++nresb;
-					if (ui.asInteger("restrain_angles")) for (b in p.angles) if (((b.id[1] == n) || (b.id[3] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[3]]) < rijmax)) ++nresa;
-					if (ui.asInteger("restrain_torsions")) for (b in p.torsions) if (((b.id[1] == n) || (b.id[4] == n)) && (geometry(p.atoms[b.id[1]],p.atoms[b.id[4]]) < rijmax)) ++nrest;
-					writeLineF(" %2i ", nresa+nresb+nrest);
-					if (nresb > 0) for (b in p.bonds)
+					// Loop over bonds to this atom
+					for (b1 in i.bonds)
 					{
-						// Search for bonds in which this atom is involved
-						if (b.id[1] == n) idj = b.id[2];
-						else if (b.id[2] == n) idj = b.id[1];
-						else continue;
-						rij = geometry(p.atoms[b.id[1]],p.atoms[b.id[2]]);
-						if (rij > rijmax) continue;
-						if (count && (count%5 == 0)) writeLineF("\n");
-						++count;
-						writeLineF("%4i %9.3e ", idj, rij);
+						j = b1.partner(i);
+
+						// Always restrain bond distance (if within max distance allowed)....
+						rij = geometry(b1.i.id, b1.j.id);
+						if (rij < rijmax)
+						{
+							++count;
+							sprintf(s, "%4i %9.3e ", j.id - p.firstAtomId + 1, rij);
+							resText += s;
+							if (count%5 == 0) resText += "\n";
+						}
+
+						// Restrain across angles?
+						if (resType > 1)
+						{
+							// Loop over bonds on j
+							for (b2 in j.bonds)
+							{
+								if (b1 == b2) continue;
+								k = b2.partner(j);
+								rij = geometry(k.id, i.id);
+								if (rij < rijmax)
+								{
+									++count;
+									sprintf(s, "%4i %9.3e ", k.id - p.firstAtomId + 1, rij);
+									resText += s;
+									if (count%5 == 0) resText += "\n";
+								}
+
+								// Restrain across torsions?
+								if (resType > 2)
+								{
+									// Loop over bonds on k
+									for (b3 in k.bonds)
+									{
+										if (b2 == b3) continue;
+										l = b3.partner(k);
+										rij = geometry(l.id, i.id);
+										if (rij < rijmax)
+										{
+											++count;
+											sprintf(s, "%4i %9.3e ", l.id - p.firstAtomId + 1, rij);
+											resText += s;
+											if (count%5 == 0) resText += "\n";
+										}
+		
+									}
+								}
+							}
+						}
+
+						
 					}
-					if (nresa > 0) for (b in p.angles)
-					{
-						// Search for angles in which this atom is involved
-						if (b.id[1] == n) idj = b.id[3];
-						else if (b.id[3] == n) idj = b.id[1];
-						else continue;
-						rij = geometry(p.atoms[b.id[1]],p.atoms[b.id[3]]);
-						if (rij > rijmax) continue;
-						if (count && (count%5 == 0)) writeLineF("\n");
-						++count;
-						writeLineF("%4i %9.3e ", idj, rij);
-					}
-					if (nrest > 0) for (b in p.torsions)
-					{
-						// Search for torsions in which this atom is involved
-						if (b.id[1] == n) idj = b.id[4];
-						else if (b.id[4] == n) idj = b.id[1];
-						else continue;
-						rij = geometry(p.atoms[b.id[1]],p.atoms[b.id[4]]);
-						if (rij > rijmax) continue;
-						if (count && (count%5 == 0)) writeLineF("\n");
-						++count;
-						writeLineF("%4i %9.3e ", idj, rij);
-					}
-					writeLineF("\n");
+					
+					writeLineF(" %2i %s\n", count, resText);
 				}
 				else
 				{
 					nresb = 0;
-					double rijmax = ui.asDouble("restrain_dist_max");
 					for (idj = 1; idj<=p.nMolAtoms; ++idj) if ((n != idj) && (geometry(p.atoms[n],p.atoms[idj]) < rijmax)) ++nresb;
 					writeLineF(" %4i", nresb);
 					if (nresb > 0) for (idj = 1; idj<=p.nMolAtoms; ++idj)
@@ -320,14 +345,14 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			// We will construct a list of rotations and count them up as we go. A string will be created containing all the info to be written out.
 			nrot = 0;
 			rotText = "";
-			for (b in p.bonds)
+			if (ui.asInteger("outputrotations")) for (b in p.bonds)
 			{
 				if (p.atomsInRing(b.id[1],b.id[2])) continue;
 				if (p.atoms[b.id[1]].nBonds == 1) continue;
 				if (p.atoms[b.id[2]].nBonds == 1) continue;
-				bnd = p.atoms[b.id[1]].findBond(p.atoms[b.id[2]]);
+				b1 = p.atoms[b.id[1]].findBond(p.atoms[b.id[2]]);
 				srcmodel.selectNone();
-				srcmodel.selectTree(p.atoms[b.id[1]], bnd);
+				srcmodel.selectTree(p.atoms[b.id[1]], b1);
 				// Check here the number of selected atoms - if greater than half the atoms in the molecule then we're better off with the inverse selection!
 				if (srcmodel.nSelected > 0.5*p.nMolAtoms)
 				{
@@ -399,7 +424,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	// Extra data
 
 	// Used by fmole to keep non-bonded atoms apart
-	writeLineF(" %10.4e  %10.4e\n", 1.0, 3.0);
+	writeLineF(" %10.4e  %10.4e\n", 1.0, 1.0);
 
 	// Random numbers for restart purposes
 	for (n=0; n<15; ++n) writeLineF(" %i", randomI());
