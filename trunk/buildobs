@@ -1,10 +1,16 @@
 #!/bin/bash
 
 # Submit current source to OpenSuSE Build Service
-# Usage is: 'buildobs'
+# Usage is: 'buildobs [release]'
 
 # Variables
 RELEASE="false"
+if [ "$1" = "release" ]
+then
+  RELEASE="true"
+  echo "Committing release version."
+fi
+exit 0
 
 # Set proxy for 'osc'
 export HTTPS_PROXY="http://wwwcache.rl.ac.uk:8080"
@@ -48,6 +54,19 @@ tar -zxvf $DISTFILE
 zip -9r $ZIPDISTFILE aten-${ATENVERSION}
 rm -rf aten-${ATENVERSION}
 
+# FTP source tgz and zip to website (only if beta version)
+if [ "$RELEASE" = "false" ]
+then
+pftp -i ftp.projectaten.net << EOF
+cd projects/aten/downloads/current
+binary
+mdelete aten*tar.gz
+mdelete aten*zip
+put $DISTFILE
+put $ZIPDISTFILE
+EOF
+fi
+
 # Update tarfile info in ./extra/aten.dsc
 echo ""
 echo "Updating extra/aten.dsc..."
@@ -89,7 +108,4 @@ osc commit -m "Committing version $ATENVERSION (release=$RELEASE) on $DATE."
 cd ../../
 
 exit 0
-
-
-
 
