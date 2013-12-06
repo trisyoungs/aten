@@ -10,7 +10,6 @@ then
   RELEASE="true"
   echo "Committing release version."
 fi
-exit 0
 
 # Set proxy for 'osc'
 export HTTPS_PROXY="http://wwwcache.rl.ac.uk:8080"
