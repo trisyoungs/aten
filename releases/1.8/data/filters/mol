@@ -1,0 +1,36 @@
+# MDL Mol File (for v1.2+)
+# Created:	 12/04/2009
+# Last modified: 02/09/2011
+# ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
+
+filter(type="importmodel",name="MDL Mol File", nickname="mol", extension="mol", glob="*.mol", id=10)
+{
+	# Variable declaration
+	string line,e,title;
+	int n,natoms,nbonds,ii,jj,bondtype;
+	double rx,ry,rz;
+	
+	# Create default model
+	getLine(title);
+	newModel(title);
+	
+	skipLine(2);
+	
+	readLine(natoms,nbonds);
+	
+	for (n=0; n<natoms; ++n)
+	{
+		readLine(rx,ry,rz,e);
+		newAtom(e,rx,ry,rz);
+	}
+	
+	for (n=0; n<nbonds; ++n)
+	{
+		readLine(ii,jj,bondtype);
+		newBond(ii,jj,bondtype);
+	}
+	
+	finaliseModel();
+}
+

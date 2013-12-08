@@ -1,0 +1,98 @@
+# Tripos (Sybyl) Mol2 filter (for v1.2+)
+# Created:	 12/04/2009
+# Last modified: 10/11/2012
+# ChangeLog:
+#	10/11/2012 - Added 'atom_type' output for ATOM record (element symbol, rather than Sybyl atom type).
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
+
+filter(type="importmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
+{
+	# Variable declaration
+	int n,natoms,nbonds,id,ii,jj,spgrp,setting;
+	string tripos,keywd,e,bondtype,title,discard;
+	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma;
+
+	# Read in lines, looking for the sections we're interested in.
+	# All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
+	# Read a line and parse it into '@<TRIPOS>' and keyword parts
+	while (!eof())
+	{
+		readLineF("%9s%s",tripos,keywd);
+		if (keywd == "MOLECULE")
+		{
+			# Molecule information
+			getLine(title);
+			newModel(title);
+			readLine(natoms,nbonds);
+			# Skip the next four lines, which are type of molecule, charges used, and user comment
+			skipLine(4);
+		}
+		else if (keywd == "ATOM")
+		{
+			for (n=0; n<natoms; ++n)
+			{
+				readLine(id,e,rx,ry,rz);
+				newAtom(e,rx,ry,rz);
+			}
+		}
+		else if (keywd == "BOND")
+		{
+			for (n=0; n<nbonds; ++n)
+			{
+				readLine(discard,ii,jj,bondtype);
+				newBond(ii,jj,bondtype);
+			}
+		}
+		else if (keywd == "CRYSIN")
+		{
+			# Crystal cell information
+			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
+			readLine(ca,cb,cc,alpha,beta,gamma,spgrp,setting);
+			cell(ca,cb,cc,alpha,beta,gamma);
+			spacegroup(spgrp);
+		}
+	}
+
+	# Perform post-load operations
+	pack();
+	fold();
+	finaliseModel();
+}
+
+filter(type="exportmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
+{
+	# Variables
+	atom i;
+	bond b;
+	int n;
+	model m = aten.frame;
+
+	# Write title section
+	writeLine("@<TRIPOS>MOLECULE");
+	writeLine(m.name);
+	writeLineF("%i   %i\n", m.nAtoms, m.nBonds);
+	writeLine("SMALL");
+	writeLine("NO_CHARGES");
+	writeLine("Coordinates churned out by Aten");
+	writeLine("");
+	
+	# Write atoms section
+	writeLine("@<TRIPOS>ATOM");
+	for (i = m.atoms; i != 0; ++i) writeLineF("%6i  %5s  %10.5f  %10.5f  %10.5f  %5s\n",i.id,i.symbol,i.rx,i.ry,i.rz, i.symbol);
+
+	# Write bonds section
+	if (m.nBonds > 0)
+	{
+		writeLine("@<TRIPOS>BOND");
+		n = 0;
+		for (b=m.bonds; b != 0; ++b) writeLineF("%5i  %5i  %5i  %s\n", ++n, b.i.id, b.j.id, b.type);
+	}
+
+	# Write cell section (if the model has one)
+	if (m.cell.type <> "none")
+	{
+		writeLine("@<TRIPOS>CRYSIN");
+		writeLine(m.cell.a,m.cell.b,m.cell.c,m.cell.alpha,m.cell.beta,m.cell.gamma,m.cell.sgId,0);
+	}
+}
+

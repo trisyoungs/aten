@@ -1,0 +1,181 @@
+# Don't forget to include output directory, otherwise
+# the UI file won't be wrapped!
+INCLUDE_DIRECTORIES(
+${CMAKE_CURRENT_BINARY_DIR} 
+${CMAKE_CURRENT_BINARY_DIR}/../
+${QT_INCLUDE_DIR}
+./
+../
+${CMAKE_SOURCE_DIR}
+${CMAKE_BINARY_DIR}
+)
+
+set(qtproject_SRCS
+  useractions.h
+  useractions.cpp
+  gui.h 
+  tcombobox.h
+  textratreewidgetitem.h
+  ttreewidgetitem.h
+  ttablewidgetitem.h
+  tlistwidgetitem.h 
+  about_funcs.cpp
+  atomlist_funcs.cpp
+  build_funcs.cpp
+  celldefinition_funcs.cpp
+  celltransform_funcs.cpp
+  contextmenu_funcs.cpp
+  command_funcs.cpp
+  disorderoptions_funcs.cpp
+  disorderwizard_funcs.cpp
+  ffeditor_funcs.cpp
+  forcefields_funcs.cpp
+  fragments_funcs.cpp
+  geometry_funcs.cpp
+  glyphs_funcs.cpp
+  grids_funcs.cpp
+  gui.cpp
+  layoutlist.cpp
+  loadmodel_funcs.cpp
+  mainmenuactions.cpp
+  mainwindow_funcs.cpp
+  mainwindow_init.cpp
+  md_funcs.cpp
+  messages_funcs.cpp
+  modellist_funcs.cpp
+  mouseactions.cpp
+  pores_funcs.cpp
+  position_funcs.cpp
+  prefs_funcs.cpp
+  progress_funcs.cpp
+  scriptmovie_funcs.cpp
+  select_funcs.cpp
+  selectelement_funcs.cpp
+  selectfilter_funcs.cpp
+  selectpattern_funcs.cpp
+  selectvariable_funcs.cpp
+  settings.cpp
+  tcanvas_funcs.cpp
+  tcanvas_input.cpp
+  tcanvas_render.cpp
+  tcolourframe_funcs.cpp
+  tcombobox_funcs.cpp
+  tmenubutton_funcs.cpp
+  tlistwidgetitem_funcs.cpp
+  tdoublespindelegate_funcs.cpp
+  tintegerspindelegate_funcs.cpp
+  toolbaractions.cpp
+  toolbox_funcs.cpp
+  trajectory_funcs.cpp
+  transform_funcs.cpp
+  treegui_funcs.cpp
+  tprocess_funcs.cpp
+  tprompt_funcs.cpp
+  ttablewidgetitem_funcs.cpp
+  textratreewidgetitem_funcs.cpp
+  ttreewidgetitem_funcs.cpp
+  vibrations_funcs.cpp
+  viewbasis_funcs.cpp
+  vieweigenvector_funcs.cpp
+  zmatrix_funcs.cpp
+)
+
+SET(pro_MOC_HDRS
+  about.h
+  atomlist.h
+  build.h
+  celldefinition.h
+  celltransform.h
+  command.h
+  disorderoptions.h
+  disorderwizard.h
+  ffeditor.h
+  forcefields.h
+  fragments.h
+  geometry.h
+  glyphs.h
+  grids.h
+  layoutlist.h
+  loadmodel.h
+  mainwindow.h
+  md.h
+  messages.h
+  modellist.h
+  pores.h
+  position.h
+  prefs.h
+  progress.h
+  scriptmovie.h
+  select.h
+  selectelement.h
+  selectfilter.h
+  selectpattern.h
+  selectvariable.h
+  toolbox.h
+  trajectory.h
+  transform.h
+  treegui.h
+  vibrations.h
+  viewbasis.h
+  vieweigenvector.h
+  zmatrix.h
+  tcanvas.uih
+  tdoublespindelegate.uih
+  tcolourframe.uih
+  tintegerspindelegate.uih
+  tmenubutton.uih
+  tprocess.uih
+  tprompt.uih
+  tradiogroup.uih
+  ttablewidget.uih
+  ttreewidget.uih
+)
+QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)
+
+SET(pro_UIS
+  about.ui
+  atomlist.ui
+  build.ui
+  celldefinition.ui
+  celltransform.ui
+  command.ui
+  disorderoptions.ui
+  disorderwizard.ui
+  ffeditor.ui
+  forcefields.ui
+  fragments.ui
+  geometry.ui
+  glyphs.ui
+  grids.ui
+  loadmodel.ui
+  mainwindow.ui
+  md.ui
+  messages.ui
+  modellist.ui
+  pores.ui
+  position.ui
+  prefs.ui
+  progress.ui
+  scriptmovie.ui
+  select.ui
+  selectelement.ui
+  selectfilter.ui
+  selectpattern.ui
+  selectvariable.ui
+  toolbox.ui
+  trajectory.ui
+  transform.ui
+  treegui.ui
+  vibrations.ui
+  viewbasis.ui
+  vieweigenvector.ui
+  zmatrix.ui
+)
+QT4_WRAP_UI(pro_UIS_H ${pro_UIS})
+
+set(pro_RES_QRC
+  icons.qrc 
+)
+QT4_ADD_RESOURCES(pro_RES ${pro_RES_QRC})
+
+add_library(gui ${pro_RES} ${pro_UIS_H} ${qtproject_SRCS} ${pro_MOC_SRCS})

@@ -1,0 +1,48 @@
+# Name / Description
+string name = "CylinderX";
+string description = "Cylinder along X-Axis";
+
+# Number of partitions
+int nPartitions = 2;
+
+# A partition may contain options set through a function called partitionOptions()...
+global double y = 0.5, z = 0.5, r = 0.1;
+int partitionOptions()
+{
+	Dialog ui = createDialog("CylinderX Scheme Options");
+	ui.verticalFill = TRUE;
+	ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
+	ui.addDoubleSpin("z", "Z", 0.0, 1.0, 0.1, z);
+	ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
+	if (ui.show())
+	{
+		y = ui.asDouble("y");
+		z = ui.asDouble("z");
+		r = ui.asDouble("r");
+		return TRUE;
+	}
+	return FALSE;
+}
+
+# Every partition definition *must* contain 'partition' and 'partitionName' functions
+int partition(double px, double py, double pz)
+{
+	// Check 1 - Is the point inside the defined cylinder (region 1)
+	if ( ((py-y)*(py-y) + (pz-z)*(pz-z)) <= (r*r)) return 1;
+
+	// Not inside any defined regions, so return '0' for 'inside rest of cell'
+	return 0;
+}
+
+string partitionName(int id)
+{
+	switch(id)
+	{
+		case (0):
+			return "Unit Cell";
+		case (1):
+			return "Cylinder";
+		default:
+			return "UNKNOWN";
+	}
+}

@@ -1,0 +1,47 @@
+<h1>Known Bugs</h1>
+
+<ul>
+<li>Creating expression for trajectory frame causes crash?</li>
+<li>Glyph list not updated on model load.</li>
+<li>Model not updated when changing glyph selection?</li>
+<li>Running from CLI with unset DISPLAY variable causes segfault.</li>
+</ul>
+
+<h1>General TODO</h1>
+
+<ul>
+<li>Command language needs to be brought in line with C++ in terms of pointers / references etc.</li>
+<li>Ability to have 'preferences' in filters - global variables in filter, coupled with suitable accessors through &aten?</li>
+<li>PovRay export</li>
+<li>Add method to check current pattern definition so that it doesn't have to be removed so often.</li>
+<li>Detect corrupt canvas by rendering a small offscreen bitmap and checking colour?</li>
+<li>Make access through PatternBound to FFBound a bit easier - add accessor to FFBound data?</li>
+<li>Update script to perform conformational searching on molecule (add GUI options)</li>
+<li>Glyph Undo/Redo</li>
+<li>Allow (somehow) rotation of fragments without drawing them *or* rotating main view</li>
+<li>Add on glyph selection methods (a la box select with the mouse)</li>
+<li>Store current dialog widget values so that, if canceled in the GUI, they may be restored</li>
+</ul>
+
+<h1>Filter TODO</h1>
+
+<ul>
+<li>Add options to FIELD import filter, allowing application of pattern to model.</li>
+<li>Add more options to GAMESS-US inp filter: MD options</li>
+<li>Storage of grid data in AKF format</li>
+</ul>
+
+<h1>Manual TODO</h1>
+
+<ul>
+<li>Add 'colourScale', 'useColourScale', and 'useDataForZ' accessors to GridVariable.</li>
+<li>Add 'repeatCellNegative' and 'repeatCellPositive' accessors to ModelVariable.</li>
+<li>Add MatrixVariable description.</li>
+<li>Add 'newPattern' and 'clearPattern' functions to ModelVariable</li>
+<li>Add pore alkoxylation script to examples</li>
+<li>Clarify use of pointers for non-POD objects, add 'new' usage description.</li>
+<li>Update Build Window graphic and description.</li>
+<li>New dialog code description </li>
+<li>Topics: Colourscales, Glyphs, Grids, Partitioning Schemes</li>
+</ul>
+

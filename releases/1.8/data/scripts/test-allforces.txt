@@ -1,0 +1,260 @@
+# Script to test all of Aten's forcefield potentials for energy/force consistency
+
+# Variables
+int n, npoints = 500;
+double delta;
+model m;
+forcefield ff;
+double rmse, u[npoints], du[npoints], x[npoints];
+
+#
+# van der Waals Potentials
+#
+npoints = 500;
+delta = 0.01;
+
+m = newmodel("Buckingham Test");
+newatom("C",0,0,0);
+newatom("C",1.2,0,0);
+ff = newff("Buckingham Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("buck",1,0.0,2000000.0,0.2,10000.0);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = m.atoms[2].rx;
+	u[n] = m.vdwenergy();
+	du[n] = m.atoms[1].fx;
+	m.atoms[2].rx +=delta; 
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - (u[n+1]-u[n-1])/(x[n+1]-x[n-1]))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], (u[n+1]-u[n-1])/(x[n+1]-x[n-1]));
+printf("RMSE for : van der Waals : Buckingham    = %f (~ 0.18)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+m = newmodel("Lennard-Jones Test");
+newatom("C",0,0,0);
+newatom("C",2.0,0,0);
+ff = newff("Lennard-Jones Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("lj",1,0.0,0.65,3.20);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = m.atoms[2].rx;
+	u[n] = m.vdwenergy();
+	du[n] = m.atoms[1].fx;
+	m.atoms[2].rx += delta; 
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - (u[n+1]-u[n-1])/(x[n+1]-x[n-1]))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], (u[n+1]-u[n-1])/(x[n+1]-x[n-1]));
+printf("RMSE for : van der Waals : LJ 12-6       = %f (~ 0.26)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+m = newmodel("Lennard-Jones AB Test");
+newatom("C",0,0,0);
+newatom("C",2.0,0,0);
+ff = newff("Lennard-Jones AB Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("ljab",1,0.0,2767011.611056,2576.980378);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = m.atoms[2].rx;
+	u[n] = m.vdwenergy();
+	du[n] = m.atoms[1].fx;
+	m.atoms[2].rx += delta; 
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - (u[n+1]-u[n-1])/(x[n+1]-x[n-1]))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], (u[n+1]-u[n-1])/(x[n+1]-x[n-1]));
+printf("RMSE for : van der Waals : LJ AB         = %f (~ 0.25)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+m = newmodel("Morse Test");
+newatom("C",0,0,0);
+newatom("C",2.0,0,0);
+ff = newff("Morse Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("morse",1,0.0,75.0,1.0,3.0);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = m.atoms[2].rx;
+	u[n] = m.vdwenergy();
+	du[n] = m.atoms[1].fx;
+	m.atoms[2].rx += delta; 
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - (u[n+1]-u[n-1])/(x[n+1]-x[n-1]))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], (u[n+1]-u[n-1])/(x[n+1]-x[n-1]));
+printf("RMSE for : van der Waals : Morse         = %f (~ 0.01)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+m = newmodel("Inverse Power Test");
+newatom("C",0,0,0);
+newatom("C",2.0,0,0);
+ff = newff("Inverse Power Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("inversepower",1,0.0,3.0,4.0,3.0);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = m.atoms[2].rx;
+	u[n] = m.vdwenergy();
+	du[n] = m.atoms[1].fx;
+	m.atoms[2].rx += delta; 
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - (u[n+1]-u[n-1])/(x[n+1]-x[n-1]))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], (u[n+1]-u[n-1])/(x[n+1]-x[n-1]));
+printf("RMSE for : van der Waals : Inverse Power = %f (~ 0.00)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+#
+# Bond Potentials
+#
+npoints = 100;
+delta = 0.01;
+
+m = newmodel("Harmonic Test");
+chain("C",0,0,0);
+chain("C",1.0,0,0);
+ff = newff("Harmonic Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("lj",1,0.0,0.0,0.0);
+ff.addbond("harmonic","C","C", 3000.0, 1.5);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = m.atoms[2].rx;
+	u[n] = m.bondenergy();
+	du[n] = m.atoms[1].fx;
+	m.atoms[2].rx += delta; 
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - (u[n+1]-u[n-1])/(x[n+1]-x[n-1]))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], (u[n+1]-u[n-1])/(x[n+1]-x[n-1]));
+printf("RMSE for : bond          : Harmonic      = %f (~ 0.01)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+m = newmodel("Morse Test");
+chain("C",0,0,0);
+chain("C",1.0,0,0);
+ff = newff("Morse Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("lj",1,0.0,0.0,0.0);
+ff.addbond("morse","C","C", 75.0, 1.0, 1.5);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = m.atoms[2].rx;
+	u[n] = m.bondenergy();
+	du[n] = m.atoms[1].fx;
+	m.atoms[2].rx += delta; 
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - (u[n+1]-u[n-1])/(x[n+1]-x[n-1]))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], (u[n+1]-u[n-1])/(x[n+1]-x[n-1]));
+printf("RMSE for : bond          : Morse         = %f (~ 0.01)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+
+#
+# Angle Potentials
+#
+npoints = 500;
+delta = 0.05;
+
+m = newmodel("Harmonic Test");
+chain("C",0,0,0);
+chain("C",1.0,0,0);
+chain("C",1.0,1.0,0);
+ff = newff("Harmonic Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("lj",1,0.0,0.0,0.0);
+ff.addbond("harmonic","C","C", 0.0, 0.0);
+ff.addangle("harmonic","C","C","C", 400.0, 109.47);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = geometry(1,2,3);
+	u[n] = m.angleenergy();
+	du[n] = m.atoms[1].fy;
+	setangle(1,2,3,x[n]+delta);
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - ((u[n+1]-u[n-1])/(x[n+1]-x[n-1])*DEGRAD))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], ((u[n+1]-u[n-1])/(x[n+1]-x[n-1])*DEGRAD));
+printf("RMSE for : bond          : Harmonic      = %f (~ 0.00)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+m = newmodel("Cosine Test");
+chain("C",0,0,0);
+chain("C",1.0,0,0);
+chain("C",1.0,1.0,0);
+ff = newff("Cosine Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("lj",1,0.0,0.0,0.0);
+ff.addbond("harmonic","C","C", 0.0, 0.0);
+ff.addangle("cos","C","C","C", 400.0, 3, 109.47, 1.0);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = geometry(1,2,3);
+	u[n] = m.angleenergy();
+	du[n] = m.atoms[1].fy;
+	setangle(1,2,3,x[n]+delta);
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - ((u[n+1]-u[n-1])/(x[n+1]-x[n-1])*DEGRAD))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], ((u[n+1]-u[n-1])/(x[n+1]-x[n-1])*DEGRAD));
+printf("RMSE for : bond          : Cosine        = %f (~ 0.00)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+m = newmodel("Cos2 Test");
+chain("C",0,0,0);
+chain("C",1.0,0,0);
+chain("C",1.0,1.0,0);
+ff = newff("Cos2 Test");
+ff.addtype(1,"C","C",C,"");
+ff.addinter("lj",1,0.0,0.0,0.0);
+ff.addbond("harmonic","C","C", 0.0, 0.0);
+ff.addangle("cos2","C","C","C", 400.0, 1.0, 2.0, 3.0);
+for (n=1; n<=npoints; ++n)
+{
+	modelforces();
+	x[n] = geometry(1,2,3);
+	u[n] = m.angleenergy();
+	du[n] = m.atoms[1].fy;
+	setangle(1,2,3,x[n]+delta);
+}
+rmse = 0.0;
+for (n=2; n<npoints; ++n) rmse += (du[n] - ((u[n+1]-u[n-1])/(x[n+1]-x[n-1])*DEGRAD))^2;
+#for (n=2; n<npoints; ++n) printf(" %f %f %f %f\n", x[n], u[n], du[n], ((u[n+1]-u[n-1])/(x[n+1]-x[n-1])*DEGRAD));
+printf("RMSE for : bond          : Cos2          = %f (~ 0.00)\n", sqrt(rmse/(npoints-2)));
+deletemodel();
+deleteff(ff);
+
+
+
+
+
+
+
+
+
+
+# Done
+quit();

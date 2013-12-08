@@ -1,0 +1,21 @@
+# ZMatrix Routines
+
+# Write Z-Matrix to Current File
+void writeZMatrix(Model m)
+{
+	ZMatrix zmat = m.zMatrix;
+	# ZMatrix connectivities
+	for (ZMatrixElement zel = zmat.elements; zel; ++zel)
+	{
+		if (zel.torsionAtom) writeLineF("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", zel.atom[1].symbol, zel.atom[2].id, zel.distanceName, zel.atom[3].id, zel.angleName, zel.atom[4].id, zel.torsionName);
+		else if (zel.angleAtom) writeLineF("%-4s %-4i %-6s %-4i %-6s\n", zel.atom[1].symbol, zel.atom[2].id, zel.distanceName, zel.atom[3].id, zel.angleName);
+		else if (zel.distanceAtom) writeLineF("%-4s %-4i %-6s\n", zel.atom[1].symbol, zel.atom[2].id, zel.distanceName);
+		else writeLineF("%-4s\n", zel.atom[1].symbol);
+	}
+	writeLine("");
+	# ZMatrix variables
+	for (int n=1; n<=zmat.nDistances; ++n) writeLineF("%-6s  %f\n", zmat.distanceNames[n], zmat.distances[n]);
+	for (int n=1; n<=zmat.nAngles; ++n) writeLineF("%-6s  %f\n", zmat.angleNames[n], zmat.angles[n]);
+	for (int n=1; n<=zmat.nTorsions; ++n) writeLineF("%-6s  %f\n", zmat.torsionNames[n], zmat.torsions[n]);
+}
+

@@ -1,0 +1,110 @@
+#!/bin/bash
+
+# Submit current source to OpenSuSE Build Service
+# Usage is: 'buildobs [release]'
+
+# Variables
+RELEASE="false"
+if [ "$1" = "release" ]
+then
+  RELEASE="true"
+  echo "Committing release version."
+fi
+
+# Set proxy for 'osc'
+export HTTPS_PROXY="http://wwwcache.rl.ac.uk:8080"
+
+# Get current version information from src/main/version.h
+echo -n "Determining current version / revision : "
+ATENVERSION=`grep '#define ATENVERSION' src/main/version.h | sed -e 's/#define ATENVERSION "\([0-9a-z\.]\+\).*"/\1/g'`
+ATENREVISION=`grep '#define ATENREVISION' src/main/version.h | sed -e 's/#define ATENREVISION "\([0-9a-z\.]\+\).*"/\1/g'`
+echo "Version is $ATENVERSION, revision is $ATENREVISION"
+
+# Check revision of last version to be sent
+if [ -e "lastrevision" ]
+then
+  LASTREVISION=`cat lastrevision`
+  echo "Found last revision file...  (r$LASTREVISION)"
+else
+  LASTREVISION="0"
+  echo "Last revision file does not exist."
+fi
+if [ $ATENREVISION = $LASTREVISION ]
+then
+  echo "Current revision ($ATENREVISION) is the same as the last built revision. Nothing will be done."
+  exit 0
+fi
+echo $ATENREVISION > lastrevision
+
+# Create dist file, and then transform its contents so they exist in the correct path
+make dist
+DISTFILE="aten-${ATENVERSION}.tar.gz"
+echo ""
+if [ -e "$DISTFILE" ]
+then
+  echo "Found dist file $DISTFILE."
+else
+  echo "ERROR - Couldn't find distfile (expected it to be $DISTFILE)"
+fi
+
+# Make a zip of the distfile
+ZIPDISTFILE="aten-${ATENVERSION}.zip"
+tar -zxvf $DISTFILE
+zip -9r $ZIPDISTFILE aten-${ATENVERSION}
+rm -rf aten-${ATENVERSION}
+
+# FTP source tgz and zip to website (only if beta version)
+if [ "$RELEASE" = "false" ]
+then
+pftp -i ftp.projectaten.net << EOF
+cd projects/aten/downloads/current
+binary
+mdelete aten*tar.gz
+mdelete aten*zip
+put $DISTFILE
+put $ZIPDISTFILE
+EOF
+fi
+
+# Update tarfile info in ./extra/aten.dsc
+echo ""
+echo "Updating extra/aten.dsc..."
+FILESIZE=`filesize $DISTFILE`
+HASH=`md5sum $DISTFILE | gawk '{print $1}'`
+sed -i -e "s/Version: \([0-9a-z\.]\+\)/Version: $ATENVERSION/g" -e "s/^ \([a-z0-9]*\) \([0-9]*\) .*/ $HASH $FILESIZE $DISTFILE/g" ./extra/aten.dsc
+grep 'Version:' ./extra/aten.dsc
+grep $DISTFILE ./extra/aten.dsc
+
+# Check out OBS repo and update files
+if [ "$RELEASE" = "false" ]
+then
+  OBSREPO="home:trisyoungs/Aten"
+else
+  OBSREPO="home:trisyoungs/Aten-Releases"
+fi
+echo ""
+echo "Checking out OBS repo ($OBSREPO)..."
+osc co $OBSREPO
+cd $OBSREPO
+osc up
+echo ""
+echo "Removing old tar.gz files..."
+for a in *.tar.gz
+do
+  osc rm $a
+done
+echo ""
+echo "Copying new files..."
+cp -v ../../$DISTFILE ./
+osc add $DISTFILE
+cp -v ../../aten.spec ./
+cp -v ../../extra/aten.dsc ./
+cp -v ../../extra/debian.* ./
+echo ""
+echo "Committing changes...."
+DATE=`date`
+osc commit -m "Committing version $ATENVERSION (release=$RELEASE) on $DATE."
+cd ../../
+
+exit 0
+

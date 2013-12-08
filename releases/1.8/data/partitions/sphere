@@ -1,0 +1,59 @@
+# Example partition definition for Aten
+# Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 in a cubic cell.
+# Shearing / scaling of all coordinates is performed internally by Aten when necessary.
+
+# Name / Description
+string name = "Sphere";
+string description = "Simple spherical region";
+
+# Number of partitions
+# The total possible number of partitions, *including* the unit cell itself.
+int nPartitions = 2;
+
+# A partition may contain options set through the defaultDialog as follows
+global double x = 0.5, y = 0.5, z = 0.5, r = 0.3;
+int partitionOptions()
+{
+	Dialog ui = createDialog("Sphere Scheme Options");
+	ui.verticalFill = TRUE;
+	ui.addDoubleSpin("x", "x", 0.0, 1.0, 0.1, x);
+	ui.addDoubleSpin("y", "Y", 0.0, 1.0, 0.1, y);
+	ui.addDoubleSpin("z", "Z", 0.0, 1.0, 0.1, z);
+	ui.addDoubleSpin("r", "R", 0.001, 1.0, 0.1, r);
+	if (ui.show())
+	{
+		x = ui.asDouble("x");
+		y = ui.asDouble("y");
+		z = ui.asDouble("z");
+		r = ui.asDouble("r");
+		return TRUE;
+	}
+	else return FALSE;
+}
+
+# Every partition definition *must* contain 'partition' and 'partitionName' functions
+int partition(double px, double py, double pz)
+{
+	# When constructing the insertion grid, Aten will call this function to determine which points on the grid fall within which partitions.
+	# Unit cell coordinates are always given. The function should return the integer ID number of the partition in which the point
+	# falls, or zero to mean the point falls in no partition at all (i.e. it is elsewhere in the cell)
+	# Partitions *must* be numbered consecutively from zero upwards.
+	// Check 1 - Is the point inside the defined sphere (region 1)
+	if (( (px-x)*(px-x) + (py-y)*(py-y) + (pz-z)*(pz-z) ) <= (r*r)) return 1;
+
+	// Not inside any defined regions, so return '0' for 'inside rest of cell'
+	return 0;
+}
+
+string partitionName(int id)
+{
+	switch(id)
+	{
+		case (0):
+			return "Unit Cell";
+		case (1):
+			return "Sphere";
+		default:
+			return "UNKNOWN";
+	}
+}
