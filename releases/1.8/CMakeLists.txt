@@ -44,9 +44,6 @@ if(WIN32)
   set(WIN32_INCLUDES "C:/src/include")
 endif(WIN32)
 
-# tell cmake to process CMakeLists.txt in that subdirectory
-add_subdirectory(${SRCS})
-
 If(APPLE)
   set(MACOSX_BUNDLE_ICON_FILE  "aten.icns")
   set(MACOSX_BUNDLE_GUI_IDENTIFIER  "Aten")
@@ -57,6 +54,7 @@ If(APPLE)
   set(MACOSX_BUNDLE_COPYRIGHT "${AUTHOR}")
 endif(APPLE)
 
+# Set include directories
 include_directories(
 ${CMAKE_SOURCE_DIR} 
 ${CMAKE_BINARY_DIR}
@@ -67,6 +65,9 @@ ${QT_INCLUDE_DIR}
 ${READLINE_INCLUDE_DIR}
 ${WIN32_INCLUDES}
 )
+
+# Process CMakeLists in subdirs
+add_subdirectory(${SRCS})
 
 add_executable(${target_name}  MACOSX_BUNDLE
 ${SRCS}/main.cpp 
