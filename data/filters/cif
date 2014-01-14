@@ -1,8 +1,9 @@
 # Crystallographic Information File (cif) (for v1.2+)
 # Created:	 10/04/2009
-# Last modified: 02/09/2011
+# Last modified: 14/01/2014
 # ChangeLog:
-#	02/09/2011 -eTweaked to use capitalised command/member names in v1.8
+#	14/01/2014 - Adjusted to recognise non-standard _atom_site_Cartn_* loop entries, and _space_group_name_H-M_alt.
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 #	10/02/2011 - Added basic support for data contained in mmCIFs.
 #	28/05/2009 - Near total rewrite.
 #	21/05/2009 - Major fixes - data in loops was not read correctly.
@@ -36,6 +37,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 		readVar(line, keywd, data1);
 		if (keywd == "") continue;
 		readVarF(keywd, "%1s", char);
+		keywd = lowerCase(keywd);
 
 		if ((keywd == "_chemical_name_common") || (keywd == "_chem_comp.name")) { setName(data1); inloop = 0; continue; }
 		else if (keywd == "_cell_length_a") { length[1] = atof(data1); cellspec++; inloop = 0; continue; }
@@ -46,6 +48,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 		else if (keywd == "_cell_angle_gamma") { cellangle[3] = atof(data1); cellspec++; inloop = 0; continue; }
 		# Spacegroup name - strip spaces which are sometimes be inserted by other programs
 		else if (keywd == "_symmetry_space_group_name_H-M") { spacegroup(data1); inloop = 0; continue; }
+		else if (keywd == "_space_group_name_H-M_alt") { spacegroup(data1); inloop = 0; continue; }
 		# Loops
 		else if (keywd == "loop_") { inloop = 1; nloopdata = 0; looptype = "none"; continue; }
 		# End of loop data items (if first char is a '_')
@@ -76,6 +79,9 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 				else if (keywd == "_atom_site_fract_x") id_r[1] = nloopdata;
 				else if (keywd == "_atom_site_fract_y") id_r[2] = nloopdata;
 				else if (keywd == "_atom_site_fract_z") id_r[3] = nloopdata;
+				else if (keywd == "_atom_site_cartn_x") { id_r[1] = nloopdata; fractional = FALSE; }
+				else if (keywd == "_atom_site_cartn_y") { id_r[2] = nloopdata; fractional = FALSE; }
+				else if (keywd == "_atom_site_cartn_z") { id_r[3] = nloopdata; fractional = FALSE; }
 			}
 			else if ((data1 == "symmetry") && (data2 == "equiv"))
 			{
