@@ -4,7 +4,7 @@ project(Aten)
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
 set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "860")
+set(VERSION_MINOR "866")
 set(VERSION_PATCH "1")
 
 set(CMAKE_BUILD_TYPE "Release")
@@ -23,7 +23,6 @@ endif(COMMAND cmake_policy)
 
 set (target_name Aten)
 
-#set(Bison_DIR "${CMAKE_SOURCE_DIR}/data")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 find_package(Qt4 REQUIRED) # find and setup Qt4 for this project
 find_package(READLINE REQUIRED)
@@ -40,8 +39,10 @@ if(WIN32)
   ADD_DEFINITIONS("-DNOMINMAX")
 endif(WIN32)
 
-# tell cmake to process CMakeLists.txt in that subdirectory
-add_subdirectory(${SRCS})
+# Setup Windows include dirs
+if(WIN32)
+  set(WIN32_INCLUDES "C:/src/include")
+endif(WIN32)
 
 If(APPLE)
   set(MACOSX_BUNDLE_ICON_FILE  "aten.icns")
@@ -53,6 +54,7 @@ If(APPLE)
   set(MACOSX_BUNDLE_COPYRIGHT "${AUTHOR}")
 endif(APPLE)
 
+# Set include directories
 include_directories(
 ${CMAKE_SOURCE_DIR} 
 ${CMAKE_BINARY_DIR}
@@ -61,7 +63,11 @@ ${SRCS}/templates/
 ${SRCS}/
 ${QT_INCLUDE_DIR}
 ${READLINE_INCLUDE_DIR}
+${WIN32_INCLUDES}
 )
+
+# Process CMakeLists in subdirs
+add_subdirectory(${SRCS})
 
 add_executable(${target_name}  MACOSX_BUNDLE
 ${SRCS}/main.cpp 
