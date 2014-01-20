@@ -1,10 +1,9 @@
 project(Aten)
 
-
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
 set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "866")
+set(VERSION_MINOR "867")
 set(VERSION_PATCH "1")
 
 set(CMAKE_BUILD_TYPE "Release")
@@ -129,11 +128,13 @@ if(WIN32)
   Find_File(qtsvg QtSvg4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
   Find_File(qtxml QtXml4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
   Find_File(qsvg qsvg4.dll PATHS ${QT_PLUGINS_DIR}/iconengines NO_DEFAULT_PATH)
+  Find_File(mingwgcc libgcc_s_dw2-1.dll PATHS "C:/MinGW/bin" NO_DEFAULT_PATH)
+  Find_File(mingwg++ libstdc++-6.dll PATHS "C:/MinGW/bin" NO_DEFAULT_PATH)
   if(NOT qsvg) 
     Find_File(qsvg qsvgicon4.dll PATHS ${QT_PLUGINS_DIR}/iconengines NO_DEFAULT_PATH)
   endif(NOT qsvg)
   Find_File(qsvgie qsvg4.dll PATHS ${QT_PLUGINS_DIR}/imageformats NO_DEFAULT_PATH)
-  install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline} ${qtsvg} ${qtxml} ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons/aten.ico
+  install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline} ${qtsvg} ${qtxml} ${mingwgcc} ${mingwg++} ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons/aten.ico
    DESTINATION bin
   )
   install(FILES ${qsvg} 
