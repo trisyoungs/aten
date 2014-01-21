@@ -744,8 +744,8 @@ void Pattern::createMatrices()
 			conMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
 		}
 
-		msg.print("transforming (full).....");
 		// Now, transform into the connectivity matrix.
+		msg.print("transforming (full).....");
 		for (a1=0; a1<nAtoms_; a1++)
 		{
 			for (a2=0; a2<nAtoms_; a2++)
@@ -782,11 +782,15 @@ void Pattern::createMatrices()
 		// There may be more than one consecutive bound fragment in the pattern, so we must perform treeSelects in order to populate the initial matrix
 		Atom* i = firstAtom_;
 		int count = 100, ii, jj, diagii;
+		parent_->selectNone(TRUE);
 		while (i != NULL)
 		{
+			// Check that we are still in the current pattern
+			if (i->id() > endAtom_) break;
+
 			// Treeselect from current atom
 			parent_->selectTree(i, TRUE);
-			
+
 			// For the current marked selection, set the diagonal matrix elements to the current 'count' value
 			for (Refitem<Atom,int>* ri = parent_->selection(TRUE); ri != NULL; ri = ri->next)
 			{

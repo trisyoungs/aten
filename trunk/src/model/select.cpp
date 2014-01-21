@@ -351,7 +351,7 @@ void Model::selectTree(Atom *i, bool markonly, bool deselect, Bond *omitbond)
 	// From here, select all atoms that are bound - if they are already
 	// selected then ignore them. If they are not already selected, then
 	// recursively call the routine on that atom.
-	msg.enter("Model::selectTree");
+	//msg.enter("Model::selectTree");
 	bool status;
 	Atom *j;
 	deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
@@ -368,7 +368,7 @@ void Model::selectTree(Atom *i, bool markonly, bool deselect, Bond *omitbond)
 			selectTree(j, markonly, deselect, omitbond);
 		}
 	}
-	msg.exit("Model::selectTree");
+	//msg.exit("Model::selectTree");
 }
 
 // Select by Element
