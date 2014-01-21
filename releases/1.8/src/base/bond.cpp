@@ -106,10 +106,10 @@ Bond::BondType Bond::type() const
 	return type_;
 }
 
-// Return real-valued bond order
-double Bond::order() const
+// Return real-valued bond order (static function)
+double Bond::order(Bond::BondType bt)
 {
-	switch (type_)
+	switch (bt)
 	{
 		case (Bond::Any):
 			return 0.0;
@@ -125,6 +125,12 @@ double Bond::order() const
 			return 0.0;
 	}
 	return 0.0;
+}
+
+// Return real-valued bond order
+double Bond::order() const
+{
+	return order(type_);
 }
 
 // Return first atom in bond

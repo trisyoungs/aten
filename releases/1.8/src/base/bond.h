@@ -69,6 +69,8 @@ class Bond
 	BondType type() const;
 	// Return real-valued bond order
 	double order() const;
+	// Return real-valued bond order (static function)
+	static double order(BondType bt);
 	// Returns the partner of the specified atom in the bond structure
 	Atom *partner(Atom *i);
 	// Return bond type that best satisfies the involved atoms valencies

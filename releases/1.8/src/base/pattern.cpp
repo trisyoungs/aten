@@ -744,8 +744,8 @@ void Pattern::createMatrices()
 			conMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
 		}
 
-		msg.print("transforming (full).....");
 		// Now, transform into the connectivity matrix.
+		msg.print("transforming (full).....");
 		for (a1=0; a1<nAtoms_; a1++)
 		{
 			for (a2=0; a2<nAtoms_; a2++)
@@ -782,11 +782,15 @@ void Pattern::createMatrices()
 		// There may be more than one consecutive bound fragment in the pattern, so we must perform treeSelects in order to populate the initial matrix
 		Atom* i = firstAtom_;
 		int count = 100, ii, jj, diagii;
+		parent_->selectNone(TRUE);
 		while (i != NULL)
 		{
+			// Check that we are still in the current pattern
+			if (i->id() > endAtom_) break;
+
 			// Treeselect from current atom
 			parent_->selectTree(i, TRUE);
-			
+
 			// For the current marked selection, set the diagonal matrix elements to the current 'count' value
 			for (Refitem<Atom,int>* ri = parent_->selection(TRUE); ri != NULL; ri = ri->next)
 			{
@@ -1358,13 +1362,15 @@ void Pattern::augment()
 {
 	msg.enter("Pattern::augment");
 	Atom *i, *j;
+	Reflist<Bond,Bond::BondType> refbonds;
 	Refitem<Bond,Bond::BondType> *rb;
-	Refitem<Bond,int> *bref, *heavybond = NULL, *bestref;
+	Refitem<Bond,int> *bref, *heavybond = NULL, *bestref, *bref2;
 	Refitem<Atom,int> *aref;
 	Reflist<Bond,int> bondlist;
 	Bond *b1, *b2, *b3;
 	Bond::BondType bt;
-	int n, nHeavy, totalpenalty, ringpenalty, newpenalty;
+	int n, nHeavy, totalpenalty, ringpenalty, newpenalty, m, o, p;
+
 	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
 	/*
 	Assume the structure is chemically 'correct' - i.e. each atom is bound to a likely number of other atoms.
@@ -1392,15 +1398,66 @@ void Pattern::augment()
 		if (nHeavy == 1) parent_->changeBond(heavybond->item, heavybond->item->augmented());
 		i = i->next;
 	}
-	// Stage 2 - Augmenting all remaining atoms
-//  	i = firstAtom_;
-// 	for (n=0; n<nAtoms_; n++)
-// 	{
-// 		for (bref = i->bonds(); bref != NULL; bref = bref->next)
-// 			parent_->changeBond(bref->item, bref->item->augmented());
-// 		i = i->next;
-// 	}
+
+	// Stage 2 - Augment around heavy atom centres
+ 	i = firstAtom_;
+	for (n=0; n<nAtoms_; n++)
+	{
+		if ((i->element() == 1) || (i->nBonds() < 2))
+		{
+			i = i->next;
+			continue;
+		}
+
+		// Construct a working reflist of non-hydrogen bonds around this atom, and the current penalty value centred on it
+		o = 0;
+		totalpenalty = 0;
+		refbonds.clear();
+		for (bref = i->bonds(); bref != NULL; bref = bref->next)
+		{
+			j = bref->item->partner(i);
+			if (j->element() == 1) continue;
+
+			refbonds.add(bref->item, bref->item->type());
+			totalpenalty += elements().bondOrderPenalty(j, j->totalBondOrder()/2);
+			if (bref->item->type() == Bond::Single) ++o;
+		}
+		// If all bonds are single, no point in changing them so move on
+		if (o == i->nBonds())
+		{
+			i = i->next;
+			continue;
+		}
+
+		// Now, shuffle bond types and see if a better overall penalty can be found
+		for (o=1; o<refbonds.nItems(); ++o)
+		{
+			// Shuffle bond types in our temporary list
+			bt = refbonds[0]->item->type();
+			for (m=0; m<refbonds.nItems()-1; ++m) refbonds[m]->data = refbonds[m+1]->data;
+			refbonds[refbonds.nItems()-1]->data = bt;
+
+			// Calculate new penalty
+			newpenalty = 0;
+			for (rb = refbonds.first(); rb != NULL; rb = rb->next)
+			{
+				j = rb->item->partner(i);
+				newpenalty += elements().bondOrderPenalty(j, (j->totalBondOrder() - rb->item->order()*2 + Bond::order(rb->data)*2)/2);
+			}
+
+			// If new penalty is better, change the bonds around
+			if (newpenalty < totalpenalty)
+			{
+				for (rb = refbonds.first(); rb != NULL; rb = rb->next) parent_->changeBond(rb->item, rb->data);
+				totalpenalty = newpenalty;
+			}
+		}
+		i = i->next;
+	}
+
+	// Stage 3 - Augmenting each bond locally
 	// Construct a bond list for us to work from
+	bondlist.clear();
  	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
@@ -1440,7 +1497,8 @@ void Pattern::augment()
 		if (bestref->data >= 0) break;
 		else parent_->changeBond(bestref->item, bestref->item->augmented());
 	}
-	// Stage 3 - Attempt to fix any problems, mostly with (poly)cyclic systems
+	
+	// Stage 4 - Attempt to fix any problems, mostly with (poly)cyclic systems
 	// Get total, reference bond order penalty for the molecule - we will try to reduce this as much as possible if we can
 	totalpenalty = totalBondOrderPenalty();
 	msg.print(Messenger::Verbose, "Bond order penalty after first pass is %i.\n", totalpenalty);
