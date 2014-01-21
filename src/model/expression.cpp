@@ -238,7 +238,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 		}
 		p->createMatrices();
 	}
-	
+
 	// 3) Check the electrostatic setup for the model
 	Electrostatics::ElecMethod emodel = prefs.electrostaticsMethod();
 	switch (emodel)

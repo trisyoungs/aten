@@ -26,6 +26,8 @@
 // Perform main rendering
 void TCanvas::renderScene(int width, int height)
 {
+	msg.enter("TCanvas::renderScene");
+
 	// Begin the GL commands
 	if (!beginGl())
 	{
