@@ -36,6 +36,7 @@ AtenLoadModel::AtenLoadModel(QWidget *parent) : QDialog(parent)
 void AtenLoadModel::setControls()
 {
 	refreshing_ = TRUE;
+
 	if (prefs.bondOnLoad() == Choice::Default) ui.RebondCombo->setCurrentIndex(0);
 	else if (prefs.bondOnLoad() == Choice::No) ui.RebondCombo->setCurrentIndex(1);
 	else ui.RebondCombo->setCurrentIndex(2);
@@ -61,6 +62,10 @@ void AtenLoadModel::setControls()
 	ui.FormatCombo->addItem("<Auto Detect>");
 	Refitem<Tree,int> *ri;
 	for (ri = aten.filters(FilterData::ModelImport); ri != NULL; ri = ri->next) 	ui.FormatCombo->addItem(ri->item->filter.description());
+
+	ui.KeepNamesCheck->setChecked(prefs.keepNames());
+	ui.KeepTypesCheck->setChecked(prefs.keepTypes());
+
 	refreshing_ = FALSE;
 }
 
@@ -156,4 +161,10 @@ void AtenLoadModel::on_KeepNamesCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	prefs.setKeepNames(checked);
+}
+
+void AtenLoadModel::on_KeepTypesCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+	prefs.setKeepTypes(checked);
 }

@@ -220,7 +220,7 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	if (prefs.keepTypes())
 	{
-		ForcefieldAtom *ffa;
+		ForcefieldAtom *ffa = NULL;
 		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 		{
 			ffa = ff->findType(c->argc(0));
