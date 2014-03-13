@@ -50,6 +50,7 @@ class AtenLoadModel : public QDialog
 	void on_ZMappingCombo_activated(int index);
 	void on_BohrCheck_clicked(bool checked);
 	void on_KeepNamesCheck_clicked(bool checked);
+	void on_KeepTypesCheck_clicked(bool checked);
 
 	/*
 	// Data
