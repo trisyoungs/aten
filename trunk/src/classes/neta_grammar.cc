@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Bison implementation for Yacc-like parsers in C
    
@@ -44,7 +44,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "2.6.5"
+#define YYBISON_VERSION "2.7"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -69,7 +69,7 @@
 #define yynerrs         NetaParser_nerrs
 
 /* Copy the first part of user declarations.  */
-/* Line 360 of yacc.c  */
+/* Line 371 of yacc.c  */
 #line 4 "neta_grammar.yy"
 
 
@@ -88,7 +88,7 @@ void NetaParser_error(char *s);
 Neta::NetaValue savedval;
 
 
-/* Line 360 of yacc.c  */
+/* Line 371 of yacc.c  */
 #line 93 "neta_grammar.cc"
 
 # ifndef YY_NULL
@@ -109,8 +109,8 @@ Neta::NetaValue savedval;
 
 /* In a future release of Bison, this section will be replaced
    by #include "y.tab.h".  */
-#ifndef YY_NETAPARSER_Y_TAB_H_INCLUDED
-# define YY_NETAPARSER_Y_TAB_H_INCLUDED
+#ifndef YY_NETAPARSER_NETA_GRAMMAR_HH_INCLUDED
+# define YY_NETAPARSER_NETA_GRAMMAR_HH_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -166,7 +166,7 @@ extern int NetaParser_debug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
-/* Line 376 of yacc.c  */
+/* Line 387 of yacc.c  */
 #line 27 "neta_grammar.yy"
 
 	NetaNode *netanode;			/* Generic node pointer */
@@ -180,7 +180,7 @@ typedef union YYSTYPE
 	Refitem<ForcefieldAtom,int> *typelist;	/* Pointer to head of created element/type list */
 
 
-/* Line 376 of yacc.c  */
+/* Line 387 of yacc.c  */
 #line 185 "neta_grammar.cc"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
@@ -204,11 +204,11 @@ int NetaParser_parse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_NETAPARSER_Y_TAB_H_INCLUDED  */
+#endif /* !YY_NETAPARSER_NETA_GRAMMAR_HH_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-/* Line 379 of yacc.c  */
+/* Line 390 of yacc.c  */
 #line 213 "neta_grammar.cc"
 
 #ifdef short
@@ -803,7 +803,7 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep)
   switch (yytype)
     {
       default:
-	break;
+        break;
     }
 }
 
@@ -1045,7 +1045,6 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 {
   YYSIZE_T yysize0 = yytnamerr (YY_NULL, yytname[yytoken]);
   YYSIZE_T yysize = yysize0;
-  YYSIZE_T yysize1;
   enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
   /* Internationalized format string. */
   const char *yyformat = YY_NULL;
@@ -1108,11 +1107,13 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                     break;
                   }
                 yyarg[yycount++] = yytname[yyx];
-                yysize1 = yysize + yytnamerr (YY_NULL, yytname[yyx]);
-                if (! (yysize <= yysize1
-                       && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
-                  return 2;
-                yysize = yysize1;
+                {
+                  YYSIZE_T yysize1 = yysize + yytnamerr (YY_NULL, yytname[yyx]);
+                  if (! (yysize <= yysize1
+                         && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+                    return 2;
+                  yysize = yysize1;
+                }
               }
         }
     }
@@ -1132,10 +1133,12 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 # undef YYCASE_
     }
 
-  yysize1 = yysize + yystrlen (yyformat);
-  if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
-    return 2;
-  yysize = yysize1;
+  {
+    YYSIZE_T yysize1 = yysize + yystrlen (yyformat);
+    if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
+      return 2;
+    yysize = yysize1;
+  }
 
   if (*yymsg_alloc < yysize)
     {
@@ -1195,7 +1198,7 @@ yydestruct (yymsg, yytype, yyvaluep)
     {
 
       default:
-	break;
+        break;
     }
 }
 
@@ -1480,91 +1483,91 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 59 "neta_grammar.yy"
     { netaparser.setDescription(NULL); YYACCEPT; }
     break;
 
   case 3:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 60 "neta_grammar.yy"
     { netaparser.setDescription((yyvsp[(1) - (1)].netanode)); YYACCEPT; }
     break;
 
   case 4:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 64 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 5:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 65 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.join(Neta::NetaAndLogic, (yyvsp[(1) - (3)].netanode), (yyvsp[(3) - (3)].netanode)); }
     break;
 
   case 6:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 66 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.join(Neta::NetaOrLogic, (yyvsp[(1) - (3)].netanode), (yyvsp[(3) - (3)].netanode)); }
     break;
 
   case 7:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 67 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(2) - (3)].netanode); }
     break;
 
   case 8:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 71 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 9:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 72 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 10:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 73 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 11:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 74 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 12:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 75 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 13:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 76 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 14:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 77 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 15:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 78 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 16:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 79 "neta_grammar.yy"
     {
 		(yyval.netanode) = netaparser.findDefine(netaparser.lastUnknownToken());
@@ -1573,7 +1576,7 @@ yyreduce:
     break;
 
   case 17:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 83 "neta_grammar.yy"
     {
 		msg.print("Error: NETA description contains an unrecognised keyword (%s)\n", netaparser.lastUnknownToken());
@@ -1582,218 +1585,218 @@ yyreduce:
     break;
 
   case 18:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 87 "neta_grammar.yy"
     { msg.print("Error: Stray integer constant found in NETA description.\n"); YYABORT; }
     break;
 
   case 19:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 92 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createKeywordNode((yyvsp[(1) - (1)].netakey)); }
     break;
 
   case 20:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 93 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createGeometryNode((yyvsp[(1) - (1)].atomgeom)); }
     break;
 
   case 21:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 98 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(5) - (5)].intconst)); }
     break;
 
   case 22:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 99 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 23:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 100 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThan, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 24:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 101 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThan, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 25:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 102 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 26:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 103 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 27:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 104 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::NotEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 28:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 109 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createRingNode(); netaparser.popContext(); }
     break;
 
   case 29:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 110 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.createChainNode(); netaparser.popContext(); }
     break;
 
   case 30:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 111 "neta_grammar.yy"
     { (yyvsp[(3) - (5)].ringnode)->setInnerNeta((yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].ringnode); netaparser.popContext(); }
     break;
 
   case 31:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 112 "neta_grammar.yy"
     { (yyvsp[(3) - (7)].chainnode)->setInnerNeta((yyvsp[(6) - (7)].netanode),(yyvsp[(4) - (7)].netanode)); (yyval.netanode) = (yyvsp[(3) - (7)].chainnode); netaparser.popContext(); }
     break;
 
   case 32:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 113 "neta_grammar.yy"
     { (yyvsp[(3) - (5)].chainnode)->setInnerNeta(NULL,(yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].chainnode); netaparser.popContext(); }
     break;
 
   case 33:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 117 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 34:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 118 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(2) - (2)].netanode); (yyvsp[(2) - (2)].netanode)->setReverseLogic(); }
     break;
 
   case 35:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 119 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.link((yyvsp[(1) - (2)].netanode),(yyvsp[(2) - (2)].netanode)); }
     break;
 
   case 36:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 120 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.link((yyvsp[(1) - (3)].netanode),(yyvsp[(3) - (3)].netanode)); (yyvsp[(3) - (3)].netanode)->setReverseLogic(); }
     break;
 
   case 37:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 124 "neta_grammar.yy"
     { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Any); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 38:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 125 "neta_grammar.yy"
     { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Single); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 39:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 126 "neta_grammar.yy"
     { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Double); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 40:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 127 "neta_grammar.yy"
     { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Any); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 41:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 128 "neta_grammar.yy"
     { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Single); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 42:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 129 "neta_grammar.yy"
     { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Double); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 43:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 134 "neta_grammar.yy"
     { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
     break;
 
   case 44:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 135 "neta_grammar.yy"
     { (yyval.typelist) = (yyvsp[(2) - (3)].typelist); }
     break;
 
   case 45:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 139 "neta_grammar.yy"
     { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
     break;
 
   case 46:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 140 "neta_grammar.yy"
     { (yyval.typelist) = netaparser.joinElementTypes((yyvsp[(1) - (3)].typelist),(yyvsp[(3) - (3)].typelist)); }
     break;
 
   case 47:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 144 "neta_grammar.yy"
     { (yyval.typelist) = netaparser.createElementType((yyvsp[(1) - (1)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
     break;
 
   case 48:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 145 "neta_grammar.yy"
     { (yyval.typelist) = netaparser.createElementType(-(yyvsp[(2) - (2)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
     break;
 
   case 49:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 150 "neta_grammar.yy"
     { savedval = yylval.netaval; }
     break;
 
   case 50:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 155 "neta_grammar.yy"
     { (yyval.ringnode) = netaparser.createRingNode(); }
     break;
 
   case 51:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 159 "neta_grammar.yy"
     { (yyval.chainnode) = netaparser.createChainNode(); }
     break;
 
   case 52:
-/* Line 1778 of yacc.c  */
+/* Line 1792 of yacc.c  */
 #line 163 "neta_grammar.yy"
     { (yyval.boundnode) = netaparser.createBoundNode(); }
     break;
 
 
-/* Line 1778 of yacc.c  */
-#line 1797 "neta_grammar.cc"
+/* Line 1792 of yacc.c  */
+#line 1800 "neta_grammar.cc"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2024,7 +2027,7 @@ yyreturn:
 }
 
 
-/* Line 2041 of yacc.c  */
+/* Line 2055 of yacc.c  */
 #line 166 "neta_grammar.yy"
 
 
