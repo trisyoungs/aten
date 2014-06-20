@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.5.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Bison interface for Yacc-like parsers in C
    
@@ -87,7 +87,7 @@ extern int NetaParser_debug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
-/* Line 2042 of yacc.c  */
+/* Line 2058 of yacc.c  */
 #line 27 "neta_grammar.yy"
 
 	NetaNode *netanode;			/* Generic node pointer */
@@ -101,7 +101,7 @@ typedef union YYSTYPE
 	Refitem<ForcefieldAtom,int> *typelist;	/* Pointer to head of created element/type list */
 
 
-/* Line 2042 of yacc.c  */
+/* Line 2058 of yacc.c  */
 #line 106 "neta_grammar.hh"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1

@@ -64,7 +64,7 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			if (!readLine(r.x, r.y, r.z)) error("Error reading atom coordinates %i for molecule %i\n", n+1, m+1);
 			// Adjust for molecule centre of mass, and also apply a half-cell translation since EPSR uses -0.5 -> 0.5 coordinates
 			r += com;
-			r += aten.model.cell.centre;
+			//r += aten.model.cell.centre;
 			// Create a new atom with element 0 - it will be set to a proper element later on
 			i = newAtom(0, r.x, r.y, r.z);
 			i.data = atomname;
