@@ -65,7 +65,7 @@ void GuiQt::callContextMenu(Atom *undermouse, int x, int y)
 	// If the atom under the mouse is selected, just run the popup. If it is not selected, deselect everything else and select it
 	QPoint pos(x,y);
 //	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
-	Model *viewTarget = aten.currentModel();
+	Model *viewTarget = aten.currentModelOrFrame();
 	if (!target->isSelected())
 	{
 		viewTarget->beginUndoState("Select atom (Context Menu)");
@@ -86,7 +86,7 @@ void GuiQt::callContextMenu(Atom *undermouse, int x, int y)
 // Set atom style
 void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
-	if ((target == NULL) || (aten.currentModel()->nSelected() > 1)) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
+	if ((target == NULL) || (aten.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
 	else CommandNode::run(Command::AtomStyle, "ci", Atom::drawStyle(ds), target->id()+1);
 	target = NULL;
 }
@@ -118,7 +118,7 @@ void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 // Set atom labels
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
-	if ((target == NULL) || (aten.currentModel()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
+	if ((target == NULL) || (aten.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
 	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id()+1);
 	target = NULL;
 	gui.mainCanvas()->postRedisplay();
@@ -128,7 +128,7 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 void AtenForm::removeAtomLabels(bool all)
 {
 	if (all) CommandNode::run(Command::ClearLabels, "");
-	else if ((target == NULL) || (aten.currentModel()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
+	else if ((target == NULL) || (aten.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
 	else CommandNode::run(Command::RemoveLabels, "i", target->id()+1);
 	target = NULL;
 	gui.mainCanvas()->postRedisplay();
@@ -236,7 +236,7 @@ void AtenForm::on_actionOrderReorder_triggered(bool checked)
 // Set atom hidden
 void AtenForm::setAtomHidden(bool hidden)
 {
-	if ((target == NULL) || (aten.currentModel()->nSelected() > 1)) 
+	if ((target == NULL) || (aten.currentModelOrFrame()->nSelected() > 1)) 
 	{
 		if (hidden) CommandNode::run(Command::Hide, "");
 		else CommandNode::run(Command::Show, "");
@@ -261,14 +261,14 @@ void AtenForm::on_actionAtomProbe_triggered(bool checked)
 
 void AtenForm::on_actionAtomFixPosition_triggered(bool checked)
 {
-	if ((target == NULL) || (aten.currentModel()->nSelected() > 1)) CommandNode::run(Command::Fix, "");
+	if ((target == NULL) || (aten.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::Fix, "");
 	else CommandNode::run(Command::Fix, "i", target->id()+1);
 	gui.mainCanvas()->postRedisplay();
 }
 
 void AtenForm::on_actionAtomFreePosition_triggered(bool checked)
 {
-	if ((target == NULL) || (aten.currentModel()->nSelected() > 1)) CommandNode::run(Command::Free, "");
+	if ((target == NULL) || (aten.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::Free, "");
 	else CommandNode::run(Command::Free, "i", target->id()+1);
 	gui.mainCanvas()->postRedisplay();
 }
@@ -296,7 +296,7 @@ void AtenForm::on_actionCentreAtOrigin_triggered(bool checked)
 
 void AtenForm::on_actionCreateFragment_triggered(bool checked)
 {
-	Model *viewTarget = aten.currentModel();
+	Model *viewTarget = aten.currentModelOrFrame();
 	aten.addFragmentFromSelection(viewTarget, "Selections");
 	gui.fragmentsWidget->refresh();
 }
@@ -322,7 +322,7 @@ void AtenForm::createGlyph()
 	// Create glyph in model
 	CommandNode::run(Command::NewGlyph, "c", Glyph::glyphType(gt));
 	// Set data to atom selection
-	Model *viewTarget = aten.currentModel();
+	Model *viewTarget = aten.currentModelOrFrame();
 	n = 1;
 	for (Refitem<Atom,int> *ri = viewTarget->selection(); ri != NULL; ri = ri->next)
 	{
