@@ -160,6 +160,7 @@ void RenderEngine::renderUserActions(Model *source)
 			{
 				j = &tempj;
 				v = source->screenToModel(rmouse.x, rmouse.y, canvas->currentDrawDepth());
+				j->r() = v;
 				style_j = (prefs.renderStyle() == Atom::IndividualStyle ? Atom::StickStyle : prefs.renderStyle());
 				j->setStyle(style_j);
 			}
@@ -172,7 +173,7 @@ void RenderEngine::renderUserActions(Model *source)
 			else if (style_j == Atom::ScaledStyle) radius_j = prefs.styleRadius(j) - scaledAtomAdjustments_[canvas->sketchElement()];
 			else radius_j = prefs.styleRadius(j) - sphereAtomAdjustment_;
 			v -= pos;
-			
+
 			// Select colour
 			if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour);
 			else switch (prefs.colourScheme())
@@ -198,11 +199,11 @@ void RenderEngine::renderUserActions(Model *source)
 			elements().copyColour(canvas->sketchElement(), colour_j);
 			
 			// Construct transformation matrix to centre on original (first) atom
-			A = modelTransformationMatrix_;
+			A.setIdentity();
 			A.applyTranslation(pos);
 			
 			// Render new (temporary) bond
-			renderBond(GuiObject, GuiObject, A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale());
+			renderBond(GuiObject, GuiObject, A, v, i, style_i, colour, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL, false, colour);
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
