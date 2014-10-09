@@ -760,7 +760,9 @@ TreeNode *Tree::addElementConstant(int el)
 // Add variable to topmost scope
 TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue, bool global)
 {
-	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
+	if (global) msg.print(Messenger::Parse, "A new global variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
+	else msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
+
 	// Get topmost scopenode or, if global variable, the parent programs global scopenode
 	ScopeNode *scope;
 	if (global) scope = &globalScope_;
@@ -797,7 +799,8 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 // Add array variable to topmost ScopeNode using the most recently declared type
 TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue, bool global)
 {
-	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
+	if (global) msg.print(Messenger::Parse, "A new global array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
+	else msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
 	// Get topmost scopenode or, if global variable, the parent programs global scopenode
 	ScopeNode *scope;
 	if (global) scope = &globalScope_;
