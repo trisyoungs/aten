@@ -403,7 +403,7 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 	}
 	// Search for global variable by that name...
 	bool result;
-	Variable *var = partitionFunction_->globalVariables().find(name);
+	Variable *var = schemeDefinition_.mainProgram()->globalVariables().find(name);
 	if (var != NULL)
 	{
 		msg.print(Messenger::Verbose, "Found global variable '%s' in partitioning scheme '%s' - setting value to '%s'\n", name, name_.get(), value);
