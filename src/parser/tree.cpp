@@ -1083,7 +1083,7 @@ bool Tree::addLocalFunctionArguments(TreeNode *arglist)
 	if (type_ != Tree::FunctionTree)
 	{
 		printf("Internal Error: Target tree is not a function.\n");
-		return NULL;
+		return FALSE;
 	}
 	TreeNode *first, *node;
 	VariableNode *vnode;

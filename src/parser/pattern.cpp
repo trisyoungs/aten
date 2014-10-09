@@ -444,7 +444,7 @@ bool PatternVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 				result = FALSE;
 			}
 			id_j = node->hasArg(1) ? node->argi(1)-1 : -1;
-			if ((id_j != -1) && (id_j < 0) || (id_j >= ptr->nAtoms()))
+			if ((id_j != -1) && ((id_j < 0) || (id_j >= ptr->nAtoms())))
 			{
 				msg.print("Second atom id %i is out of range for 'atomsinring' function in pattern '%s'.\n", id_j, ptr->name());
 				result = FALSE;
