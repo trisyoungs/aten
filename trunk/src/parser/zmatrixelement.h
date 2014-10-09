@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ZMATRIXELEMENtVARIABLE_H
+#ifndef ATEN_ZMATRIXELEMENTVARIABLE_H
 #define ATEN_ZMATRIXELEMENTVARIABLE_H
 
 #include "parser/pvariable.h"

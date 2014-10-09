@@ -1046,7 +1046,7 @@ bool TreeGuiWidget::addSpacer(bool expandHorizontal, bool expandVertical, int l,
 	if (qtWidgetObject_ == NULL)
 	{
 		msg.exit("TreeGuiWidget::addSpacer");
-		return NULL;
+		return FALSE;
 	}
 	
 	// Check widget type - does it have a layout?
