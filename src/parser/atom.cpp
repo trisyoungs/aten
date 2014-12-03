@@ -374,6 +374,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	{
 		case (AtomVariable::Bit):
 			ptr->setBit( newvalue.asInteger() );
+			break;
 		case (AtomVariable::Colour):
 			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(n, newvalue.asVector(result)[n]);
 			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));

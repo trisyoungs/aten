@@ -118,6 +118,8 @@ types
 80	O2   	O	"~&81"						"Acetate oxygen"
 81	CO2  	C	"-C(nh=3),~O(n=2,nbonds=1)"			"Carbon with two oxygens in acetate"
 82	CTA  	C	"nh=3,-&81"					"Methyl carbon in acetate"
+# Extra / Fixes
+83	CT4	C	"-&74,nh=3"					"Terminal carbon in R=ethyl group of alkylsulfonate"
 end
 
 inter ljgeom
@@ -230,13 +232,15 @@ inter ljgeom
 80	O2	-0.80	0.87860		2.96
 81	CO2	0.70	0.43930		3.75
 82	CTA	-0.28	0.27614		3.50
+# Extra / Fixes
+83	CT4	-0.18	0.27614		3.50
 end
 
 equivalents
 HA	HCW HCR HNA HAP
 HC	H1 HOS HAL 	HS3 HS4
 F	F1 FSI
-CT	C1 C2 CE CS C1H CCR C1P CTO C2O CMO CEO CTA CAL 	CS3 CS4
+CT	C1 C2 CE CS C1H CCR C1P CTO C2O CMO CEO CTA CAL 	CS3 CS4 CT4
 CM	CMT
 CF	CBT C1F C3F CSF CTF
 CA	CA1 CA2 CA3

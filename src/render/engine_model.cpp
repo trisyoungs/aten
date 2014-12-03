@@ -253,6 +253,7 @@ void RenderEngine::renderModel(Model *source, bool currentModel, bool renderType
 	// Set target matrix mode and reset it, and set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Grab model-specific viewport
 	GLint *vp = source->viewportMatrix();

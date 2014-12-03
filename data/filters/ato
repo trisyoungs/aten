@@ -11,7 +11,7 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 {
 	// Variables
 	Atom i;
-	int nmols,m,n,l,natoms,nres,nrot,count,done,id,nrotatoms;
+	int nmols,m,n,l,natoms,nres,nrot,count,done,id,nrotatoms,ncons;
 	Element el;
 	double boxsize, temp, eps, sigma, mass, q;
 	String atomname, elname, line, dummy;
@@ -80,14 +80,22 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			}
 		}
 
-		// Discard molecular rotations
+		// Discard molecular rotations and dihedrals
 		// There are 14 atoms per line - first line contains number of atoms followed by (up to) 13 indices
 		if (!readLine(nrot)) error("Error reading nrotations for atom %i of molecule %i.\n", n+1, m+1);
 		for (n=0; n<nrot; ++n)
 		{
-			// Skip ROT and axis lines
-			skipLine(2);
-			// Read in number of atoms and find next number of lines to discard
+			// Read line to find out which type of definition this is...
+			if (!readline(dummy)) error("Error reading type of rotation group %i.\n", n+1);
+			// Skip axis line
+			skipLine(1);
+			// If a DIHedral, we expect an integer which defines the number of constraints? Skip this number of lines
+			if (dummy == "DIH")
+			{
+				readLine(ncons);
+				skipLine(ncons);
+			}
+			// Finally, read in number of atoms affected by rotation and calcualte next number of lines to discard
 			readLine(nrotatoms);
 			skipLine(nrotatoms/14);
 		}

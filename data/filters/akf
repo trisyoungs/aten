@@ -47,6 +47,11 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			readVar(line,lengths[1],lengths[2],lengths[3],angs[1],angs[2],angs[3]);
 			cell(lengths[1],lengths[2],lengths[3],angs[1],angs[2],angs[3]);
 		}
+		else if (keywd == "cellmatrix")
+		{
+			UnitCell c = aten.model.cell;
+			readVar(line, c.ax, c.ay, c.az, c.bx, c.by, c.bz, c.cx, c.cy, c.cz);
+		}
 		else if (keywd == "title")
 		{
 			setName(line);
@@ -126,7 +131,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 
 filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension="akf", glob="*.akf", id=1)
 {
-	model m = aten.frame;
+	Model m = aten.frame;
 
 	// Title
 	writeLineF("title  %s\n", m.name);
@@ -138,7 +143,8 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 	for (bond b = m.bonds; b; ++b) writeLineF("bond   %i %i %s\n", b.i.id, b.j.id, b.type);
 
 	// Cell data
-	if (m.cell.type != "none") writeLineF("cell   %f %f %f %f %f %f\n", m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
+	//if (m.cell.type != "none") writeLineF("cell   %f %f %f %f %f %f\n", m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
+	if (m.cell.type != "none") writeLineF("cellmatrix   %f %f %f %f %f %f %f %f %f\n", m.cell.ax, m.cell.ay, m.cell.az, m.cell.bx, m.cell.by, m.cell.bz, m.cell.cx, m.cell.cy, m.cell.cz);
 
 	// Measurements
 	for (measurement g = m.distances; g; ++g) writeLineF("distance %i %i\t# %f\n", g.i.id, g.j.id, g.value);
