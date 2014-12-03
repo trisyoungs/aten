@@ -7,9 +7,9 @@
 filter(type="exportmodel",name="EPSR Molfile", extension="mol", glob="*.mol", nickname="epsrmol")
 {
 	# Variable declaration
-	pattern p;
+	Pattern p;
 	int nvdw, n, nc, n2, nconstraints;
-	model m = aten.model.frame;
+	Model m = aten.frame;
 
 	# Main dialog creation function
 	void createDefaultDialog(Dialog ui)

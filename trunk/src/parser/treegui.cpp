@@ -1326,7 +1326,6 @@ AtenTreeGuiDialog *TreeGui::qtTreeGui()
 // Create new widget of specified type
 TreeGuiWidget *TreeGui::createWidget(const char *name, TreeGuiWidget::WidgetType type)
 {
-	printf("Creating widget %s\n", name);
 	// Does this name already exist?
 	if (findWidget(name))
 	{

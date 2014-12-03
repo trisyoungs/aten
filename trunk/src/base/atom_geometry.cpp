@@ -119,7 +119,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 			u.normalise();
 			v = cell->mimVector(this, atoms[1]);
 			v.normalise();
-			// Check for pathological case where bonds are opposite each other (just select 90degree vector
+			// Check for pathological case where bonds are opposite each other (just select 90degree vector)
 			if (fabs(u.dp(v)) > 0.99) vector = u.orthogonal(TRUE);
 			else
 			{
