@@ -318,9 +318,9 @@ filter(type="importmodel", name="Quantum Espresso Output (PWSCF)", nickname="qep
 {
 	# Variable declaration
 	int nAtoms, nConfigs = 1, atomForces = FALSE;
-	string keywd, discard, line, alatKeywd;
+	string keywd, discard, line, alatKeywd, el;
 	UnitCell ucell = new UnitCell;
-	double alat;
+	double alat, x, y, z;
 	removeReadOption("skipblanks");
 
 	# Locate lattice coordinate and number of atoms
@@ -351,22 +351,45 @@ filter(type="importmodel", name="Quantum Espresso Output (PWSCF)", nickname="qep
 	# Atomic forces?
 	atomForces = readPWForces(m);
 
-	# Any other configurations, e.g. from geometry optimisation?
+	# Any other configurations, e.g. from geometry optimisation or MD?
 	while (!eof())
 	{
 		# Attempt to find new cell information
-		if (!readPWCellFrame(ucell, alat, alatKeywd)) break;
-		++nConfigs;
-		m = addFrame(toa("Frame %i",nConfigs));
-		m.cell.copy(ucell);
-		if (!readPWAtomsFrame(m, nAtoms))
+		if (readPWCellFrame(ucell, alat, alatKeywd))
 		{
-			printf("Failed to find atom coordinates for frame %i\n", nConfigs);
-			finaliseFrame();
-			break;
+			++nConfigs;
+			m = addFrame(toa("Frame %i",nConfigs));
+			m.cell.copy(ucell);
+			if (!readPWAtomsFrame(m, nAtoms))
+			{
+				printf("Failed to find atom coordinates for frame %i\n", nConfigs);
+				finaliseFrame();
+				break;
+			}
+			# Atomic forces?
+			if (atomForces) readPWForces(m);
 		}
-		# Atomic forces?
-		if (atomForces) readPWForces(m);
+		else if (find("ATOMIC_POSITIONS", line))
+		{
+			m = addFrame(toa("Frame %i",nConfigs));
+			m.cell.copy(ucell);
+
+			// Parse 'line' to find how the coordinates are specified
+			readVar(line, discard, keywd);
+			for (int n=0; n<nAtoms; ++n)
+			{
+				readLine(el, x, y, z);
+				if (keywd == "(crystal)") newAtomFrac(el, x, y, z);
+				else
+				{
+					printf("Unrecognised coordinate system in ATOMIC_POSITIONS : %s\n", keywd);
+					newAtom(el, x, y, z);
+				}
+			}
+		}
+		else break;
+
+		// Rebond and finalise frame
 		rebond();
 		finaliseFrame();
 	}
