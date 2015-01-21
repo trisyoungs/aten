@@ -230,7 +230,7 @@ void AtenForm::on_actionOrderMoveToEnd_triggered(bool checked)
 void AtenForm::on_actionOrderReorder_triggered(bool checked)
 {
 	CommandNode::run(Command::ReOrder, "");
-	gui.update(GuiQt::CanvasTarget);
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
 }
 
 // Set atom hidden

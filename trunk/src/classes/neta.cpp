@@ -20,6 +20,7 @@
 */
 
 #include "classes/neta.h"
+#include "classes/neta_parser.h"
 #include "base/sysfunc.h"
 #include "base/atom.h"
 #include "base/dnchar.h"
@@ -28,10 +29,10 @@
 #include "classes/forcefieldatom.h"
 #include "base/elements.h"
 #include "base/lineparser.h"
+#include <model/model.h>
 
 // NETA Keywords
-const char *NetaKeywordKeywords[Neta::nNetaKeywords] = { "alphatic", "aromatic", "noring", "nonaromatic", "notself", "planar" };
-enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotSelfKeyword, nNetaKeywords };
+const char *NetaKeywordKeywords[Neta::nNetaKeywords] = { "alphatic", "aromatic", "noring", "nonaromatic", "notprev", "notself", "planar" };
 Neta::NetaKeyword Neta::netaKeyword(const char *s, bool reportError)
 {
 	Neta::NetaKeyword n = (Neta::NetaKeyword) enumSearch("NETA keyword",Neta::nNetaKeywords,NetaKeywordKeywords,s, reportError);
@@ -57,7 +58,7 @@ const char *Neta::netaValue(Neta::NetaValue nv)
 }
 
 // NETA expanders
-const char *NetaExpanderKeywords[Neta::nNetaExpanders] = { "-", "chain", "=", "ring" };
+const char *NetaExpanderKeywords[Neta::nNetaExpanders] = { "-", "chain", "=", "geometry", "path", "ring" };
 Neta::NetaExpander Neta::netaExpander(const char *s, bool reportError)
 {
 	Neta::NetaExpander n = (Neta::NetaExpander) enumSearch("NETA expander",Neta::nNetaExpanders,NetaExpanderKeywords,s, reportError);
@@ -272,8 +273,9 @@ int Neta::matchAtom(Atom *i, List<Ring> *rings, Model *parent)
 	Reflist<Atom,int> boundList;
 	i->addBoundToReflist(&boundList);
 	Reflist<Ring,int> ringList;
-	for (Ring *r = targetRingList_->first(); r != NULL; r = r->next) if (r->containsAtom(i)) ringList.add(r);
-	int score = description_->score(i, &boundList, &ringList, description_, NULL, 0);
+	if (targetRingList_) for (Ring *r = targetRingList_->first(); r != NULL; r = r->next) if (r->containsAtom(i)) ringList.add(r);
+	Reflist<Atom,int> path;
+	int score = description_->score(i, &boundList, &ringList, description_, path, 0);
 // 	printf("Score is %i\n", score);
 	targetAtom_ = NULL;
 	targetRingList_ = NULL;
@@ -294,6 +296,73 @@ void Neta::linkReferenceTypes()
 		bnode->linkReferenceTypes();
 	}
 	msg.exit("Neta::linkReferenceTypes");
+}
+
+// Create a basic description for the specified Atom
+bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
+{
+	// Clear any existing data
+	clear();
+
+	// Check atom pointer
+	if (i == NULL) return false;
+
+	// Set character element and create NETA
+	setCharacterElement(i->element());
+	Atom* j, *k, *l;
+	Refitem<Bond,int>* rb, *rb2, *rb3;
+	Bond* b, *b2, *b3;
+	char bondType;
+	Dnchar typeDesc(-1, "nbonds=%i", i->nBonds()), torsionDesc;
+	for (rb = i->bonds(); rb != NULL; rb = rb->next)
+	{
+		b = rb->item;
+		j = b->partner(i);
+
+		if (!explicitBondType) bondType = '~';
+		else if (b->type() == Bond::Single) bondType = '-';
+		else if (b->type() == Bond::Double) bondType = '=';
+		else bondType = '~';
+		typeDesc.strcatf(",%c%s(nbonds=%i", bondType, ElementMap().symbol(j->element()), j->nBonds());
+
+		// Loop over secondary atoms
+		for (rb2 = j->bonds(); rb2 != NULL; rb2 = rb2->next)
+		{
+			b2 = rb2->item;
+			k = b2->partner(j);
+			if (k == i) continue;
+
+			if (!explicitBondType) bondType = '~';
+			else if (b2->type() == Bond::Single) bondType = '-';
+			else if (b2->type() == Bond::Double) bondType = '=';
+			else bondType = '~';
+			typeDesc.strcatf(",%c%s(nbonds=%i)", bondType, ElementMap().symbol(k->element()), k->nBonds());
+
+			if ((torsionTolerance > 0.0) && i->parent())
+			{
+				for (rb3 = k->bonds(); rb3 != NULL; rb3 = rb3->next)
+				{
+					b3 = rb3->item;
+					l = b3->partner(k);
+					if (l == j) continue;
+// 					if (l->element() == 1) continue;
+					torsionDesc.strcatf(",geometry(%f,%f,~%s,~%s,~%s)", i->parent()->torsion(i, j, k, l), torsionTolerance, ElementMap().symbol(j), ElementMap().symbol(k), ElementMap().symbol(l));
+				}
+			}
+		}
+		typeDesc += ')';
+	}
+	if (!torsionDesc.isEmpty()) typeDesc.strcatf("%s", torsionDesc.get());
+
+	if (!netaparser.createNeta(this, typeDesc, NULL))
+	{
+		msg.print("Failed to create type description in Neta::createBasic().\n");
+		return false;
+	}
+
+	msg.print(Messenger::Verbose, "Create basic NETA for atom %p : %s\n", i, typeDesc.get());
+
+	return true;
 }
 
 /*
@@ -350,7 +419,7 @@ void NetaNode::setParent(Neta *neta)
 }
 
 // Print contextual score
-void NetaNode::printScore(int level, const char *fmt ...)
+void NetaNode::printScore(int level, const char *fmt, ...)
 {
 	// Construct tabbed offset
 	Dnchar tab(level+32);
@@ -446,34 +515,34 @@ NetaLogicNode::~NetaLogicNode()
 
 
 // Validation function (virtual)
-int NetaLogicNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
+int NetaLogicNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaLogicNode::score");
 	int score1 = -1, score2 = -1, totalscore = -1;
 	switch (netaLogic_)
 	{
 		case (Neta::NetaAndLogic):
-			score1 = argument1_->score(target, nbrs, rings, context, prevTarget, level);
+			score1 = argument1_->score(target, nbrs, rings, context, path, level);
 			if (score1 != -1)
 			{
-				score2 = argument2_->score(target, nbrs, rings, context, prevTarget, level);
+				score2 = argument2_->score(target, nbrs, rings, context, path, level);
 				if (score2 != -1) totalscore = score1 + score2;
 			}
 			break;
 		case (Neta::NetaOrLogic):
-			score1 = argument1_->score(target, nbrs, rings, context, prevTarget, level);
+			score1 = argument1_->score(target, nbrs, rings, context, path, level);
 			if (score1 != -1) totalscore = score1;
 			else
 			{
-				score2 = argument2_->score(target, nbrs, rings, context, prevTarget, level);
+				score2 = argument2_->score(target, nbrs, rings, context, path, level);
 				if (score2 != -1) totalscore = score2;
 			}
 			break;
 		case (Neta::NetaAndNotLogic):
-			score1 = argument1_->score(target, nbrs, rings, context, prevTarget, level);
+			score1 = argument1_->score(target, nbrs, rings, context, path, level);
 			if (score1 != -1)
 			{
-				score2 = argument2_->score(target, nbrs, rings, context, prevTarget, level);
+				score2 = argument2_->score(target, nbrs, rings, context, path, level);
 				if (score2 == -1) totalscore = score1;
 			}
 			break;
@@ -729,7 +798,7 @@ const char *NetaBoundNode::elementsAndTypesString()
 }
 
 // Validation function (virtual)
-int NetaBoundNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
+int NetaBoundNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaBoundNode::score");
 	int totalscore = -1, n, boundscore;
@@ -776,7 +845,9 @@ int NetaBoundNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 				// Construct new ringlist
 				Reflist<Ring,int> ringList;
 				for (Ring *r = parent()->targetRingList()->first(); r != NULL; r = r->next) if (r->containsAtom(ri->item)) ringList.add(r);
-				boundscore = innerNeta_->score(ri->item, &boundList, &ringList, this, target, level+1);
+				path.add(target);
+				boundscore = innerNeta_->score(ri->item, &boundList, &ringList, this, path, level+1);
+				path.removeLast();
 				if (boundscore != -1) si->data += boundscore;
 				else si->data = -1;
 			}
@@ -828,7 +899,7 @@ NetaKeywordNode::~NetaKeywordNode()
 }
 
 // Validation function (virtual)
-int NetaKeywordNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
+int NetaKeywordNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaKeywordNode::score");
 	int totalscore = -1;
@@ -854,13 +925,31 @@ int NetaKeywordNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,i
 			if (context->nodeType() == NetaNode::RingNode) totalscore = ((NetaRingNode*) context)->currentRing()->type() != Ring::AromaticRing ? 1 : -1;
 			else if (target->environment() != Atom::AromaticEnvironment) totalscore = 1;
 			break;
+		case (Neta::NotPrevKeyword):
+			if (context->nodeType() == NetaNode::RootNode) msg.print("NETA: Invalid context for 'notprev' keyword.\n");
+			else if (context->nodeType() == NetaNode::RingNode)
+			{
+				totalscore = (((NetaRingNode*) context)->currentRing()->containsAtom( parent()->targetAtom() ) ? -1 : 1);
+			}
+			else
+			{
+				// Need to step back twice in the path, since the last atom in the path is the atom we're actually 'sat' on
+				if (path.last() == NULL) totalscore = 1;
+				else if (path.last()->prev == NULL) totalscore = 1;
+				else if (path.last()->prev->item != target) totalscore = 1;
+			}
+			break;
 		case (Neta::NotSelfKeyword):
 			if (context->nodeType() == NetaNode::RootNode) msg.print("NETA: Invalid context for 'notself' keyword.\n");
 			else if (context->nodeType() == NetaNode::RingNode)
 			{
 				totalscore = (((NetaRingNode*) context)->currentRing()->containsAtom( parent()->targetAtom() ) ? -1 : 1);
 			}
-			else if (target != prevTarget) totalscore = 1;
+			else
+			{
+				if (path.first() == NULL) totalscore = 1;
+				else if (path.first()->item != target) totalscore = 1;
+			}
 			break;
 		case (Neta::PlanarKeyword):
 			if (target->isPlanar(15.0)) totalscore = 1;
@@ -929,7 +1018,7 @@ NetaGeometryNode::~NetaGeometryNode()
 }
 
 // Validation function (virtual)
-int NetaGeometryNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
+int NetaGeometryNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaGeometryNode::score");
 	int totalscore = -1;
@@ -996,7 +1085,7 @@ NetaValueNode::~NetaValueNode()
 }
 
 // Validation function (virtual)
-int NetaValueNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
+int NetaValueNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaValueNode::score");
 	int totalscore = -1, n;
@@ -1005,10 +1094,10 @@ int NetaValueNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 	switch (netaValue_)
 	{
 		case (Neta::BondValue):
-			if (prevTarget == NULL) msg.print("NETA: Invalid context for 'bond=xxx' in NETA for type %s/%i.\n", parent()->parentForcefieldAtom()->name(), parent()->parentForcefieldAtom()->typeId());
+			if (path.last() == NULL) msg.print("NETA: Invalid context for 'bond=xxx' in NETA for type %s/%i.\n", parent()->parentForcefieldAtom()->name(), parent()->parentForcefieldAtom()->typeId());
 			else
 			{
-				b = target->findBond(prevTarget);
+				b = target->findBond(path.last()->item);
 				if (Neta::netaValueCompare(b->type(), netaComparison_, value_)) totalscore = 1;
 			}
 			break;
@@ -1104,9 +1193,9 @@ NetaRootNode::~NetaRootNode()
 }
 
 // Validation function (virtual)
-int NetaRootNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
+int NetaRootNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
-	return (innerNeta_ != NULL ? innerNeta_->score(target, nbrs, rings, this, prevTarget, level) : 0);
+	return (innerNeta_ != NULL ? innerNeta_->score(target, nbrs, rings, this, path, level) : 0);
 }
 
 // Print node contents
@@ -1168,7 +1257,7 @@ Ring *NetaRingNode::currentRing()
 }
 
 // Validation function (virtual)
-int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
+int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaRingNode::score");
 	int totalscore = -1, n;
@@ -1208,7 +1297,7 @@ int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>
 				// Add atoms in this ring to an atomCheckList
 				ri->item->addAtomsToReflist(&atomCheckList,NULL);
 				// Get a match score for the innerNeta
-				si->data = innerNeta_->score(target, &atomCheckList, NULL, this, prevTarget, level+1);
+				si->data = innerNeta_->score(target, &atomCheckList, NULL, this, path, level+1);
 			}
 			// Calculate how many rings we matched, and if this satisfies any repeat condition
 			n = 0;
@@ -1308,7 +1397,7 @@ NetaChainNode::~NetaChainNode()
 }
 
 // Private (recursive) scoring function
-int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, Atom *prevTarget, int level)
+int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaChainNode::score(private)");
 	int totalscore = -1, atomscore = -1;
@@ -1319,7 +1408,7 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Refli
 	// Sanity check first...
 	if (nbrs->nItems() != 1) printf("Internal NETA Error: Atom target in ChainNode not passed with exactly 1 neighbour (nNbrs = %i)\n", nbrs->nItems());
 	i = nbrs->first()->item;
-	totalscore = currentNode->score(target, nbrs, rings, this, prevTarget, level);
+	totalscore = currentNode->score(target, nbrs, rings, this, path, level);
 	if (totalscore != -1)
 	{
 		// This node matched, so proceed to branch into all neighbours on the atom contained in 'nbrs'
@@ -1332,7 +1421,8 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Refli
 		}
 		currentChain_.add(i);
 // 		printf("Added atom id %i to chain\n", currentChain_.last() == NULL ? -999 : currentChain_.last()->item->id());
-// 		printf("CHAIN = "); for (rj = currentChain_.first(); rj != NULL; rj = rj->next) printf(" %i", rj->item->id()); printf("\n");
+// 		printf("CHAIN testing atom %p %i\n", target, target->id());
+// 		int count = 0; for (Refitem<Atom,int>* ri = path.first(); ri != NULL; ri = ri->next) printf(" -- path %i : %p %i\n", ++count, ri->item, ri->item->id());
 		// Cycle over new bound list for matches to the next node, exiting immediately if we get a positive match
 		for (Refitem<Bond,int> *b = i->bonds(); b != NULL; b = b->next)
 		{
@@ -1343,14 +1433,22 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Refli
 			// Construct new, single-item bound reflist
 			Reflist<Atom,int> boundList;
 			boundList.add(j);
+
 			// Score it...
-			if (nRepeat > 1) atomscore = score(currentNode, nRepeat-1, i, &boundList, rings, target, level);
+			if (nRepeat > 1)
+			{
+				path.add(target);
+				atomscore = score(currentNode, nRepeat-1, i, &boundList, rings, path, level);
+				path.removeLast();
+			}
 			else
 			{
 				// Cast the next node pointer up to a BoundNode and get its repeat value
 				NetaContextNode *ncn = (NetaContextNode*) (currentNode->nextNode);
 // 				printf("ncn = %p, repeat is %i, last atom id is %i\n", ncn, ncn->repeat(), currentChain_.last() == NULL ? -999 : currentChain_.last()->item->id());
-				atomscore = score(ncn, ncn->repeat() == -1 ? 1 : ncn->repeat(), i, &boundList, rings, target, level);
+				path.add(target);
+				atomscore = score(ncn, ncn->repeat() == -1 ? 1 : ncn->repeat(), i, &boundList, rings, path, level);
+				path.removeLast();
 			}
 			// Check atomscore - if failed, continue loop.
 			if (atomscore == -1) continue;
@@ -1367,7 +1465,7 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Refli
 }
 
 // Validation function (virtual)
-int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
+int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaChainNode::score");
 	int totalscore = -1, n;
@@ -1384,10 +1482,9 @@ int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 		boundList.clear();
 		boundList.add(ri->item);
 		if (linearNeta_ == NULL) { si->data = 0; msg.print("Warning: No chain description specified in 'chain' command.\n"); }
-		else si->data = score(linearNeta_, 1, target, &boundList, rings, NULL, level);
+		else si->data = score(linearNeta_, 1, target, &boundList, rings, path, level);
 	}
-	// Execute innerNeta?
-	// innerNeta_->score();
+
 	// How many matches?
 	n = 0;
 	for (si = scores.first(); si != NULL; si = si->next) if (si->data > 0) ++n;
@@ -1457,5 +1554,252 @@ NetaNode *NetaChainNode::clone(Neta *newparent)
 	node->innerNeta_ = innerNeta_ == NULL ? NULL : innerNeta_->clone(newparent);
 	newparent->ownNode(node);
 	msg.exit("NetaChainNode::clone");
+	return node;
+}
+
+/*
+// NetaMeasurementNode
+*/
+
+// Constructor
+NetaMeasurementNode::NetaMeasurementNode()
+{
+	// Private variables
+	nodeType_ = NetaNode::MeasurementNode;
+	requiredValue_ = 0.0;
+	tolerance_ = 1.0;
+	removeNeighbours_ = false;
+}
+
+//Destructor
+NetaMeasurementNode::~NetaMeasurementNode()
+{
+}
+
+// Set required value
+void NetaMeasurementNode::setRequiredValue(double value, double tolerance)
+{
+	requiredValue_ = value;
+	tolerance_ = tolerance;
+}
+
+// Set whether a match should remove atoms from allowable paths for other nodes
+void NetaMeasurementNode::setRemoveNeighbours(bool b)
+{
+	removeNeighbours_ = b;
+}
+
+// Private (recursive) scoring function
+int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, Reflist<Atom,int>& path, int level)
+{
+	msg.enter("NetaMeasurementNode::score(private)");
+	int totalscore = -1, atomscore = -1;
+	double measurement;
+	Atom *i, *j;
+	// The target atom we're passed is the last atom in the current chain (or the originating atomic centre).
+	// The neighbours list should contain a single bound atom reference that we are interested in checking at this point in the chain.
+	// So, determine if the current chain node matches the target/nbrs combination.
+	// Sanity check first...
+	if (nbrs->nItems() != 1) printf("Internal NETA Error: Atom target in ChainNode not passed with exactly 1 neighbour (nNbrs = %i)\n", nbrs->nItems());
+	i = nbrs->first()->item;
+	totalscore = currentNode->score(target, nbrs, rings, this, path, level);
+	if (totalscore != -1)
+	{
+		currentChain_.add(i);
+// 		printf("Added atom id %i to chain\n", currentChain_.last() == NULL ? -999 : currentChain_.last()->item->id());
+		// This node matched, so proceed to branch into all neighbours on the atom contained in 'nbrs'
+		// Unless, of course, this is the last node in the list, in which case have found the required chain.
+		// Then, we must check the geometry...
+		if ((currentNode->nextNode == NULL) && (nRepeat == 1))
+		{
+// 			printf("Finished constructing measurement chain successfully.\n");
+// 			int count = 0; for (Refitem<Atom,int>* ri = currentChain_.first(); ri != NULL; ri = ri->next) printf(" -- measchain %i : %p %i\n", ++count, ri->item, ri->item->id());
+
+			// The number of atoms in the chain will determine what we actually calculate here....
+			if (currentChain_.nItems() > 4) return -1;
+			if (!target->parent()) return -1;
+			Atom* atoms[4];
+			double delta;
+			for (int n=0; n<currentChain_.nItems(); ++n) atoms[n] = currentChain_[n]->item;
+			if (currentChain_.nItems() == 2)
+			{
+				measurement = target->parent()->distance(atoms[0], atoms[1]);
+				delta = fabs(measurement-requiredValue_);
+			}
+			else if (currentChain_.nItems() == 3)
+			{
+				measurement = target->parent()->angle(atoms[0], atoms[1], atoms[2]);
+				delta = fabs(measurement-requiredValue_);
+			}
+			else
+			{
+				// For torsions, need to account for circular nature
+				measurement = target->parent()->torsion(atoms[0], atoms[1], atoms[2], atoms[3]);
+				delta = fabs(measurement-requiredValue_);
+				if (delta > 180.0) delta = 360.0 - delta;
+			}
+// 			printf("Measurement is %f, required is %f\n", measurement, requiredValue_);
+			bool result = (delta < tolerance_);
+			if (reverseLogic_) result = !result;
+
+			// If it is not a match based on the required value, remove this atom from the chain and return -1
+			if (!result) currentChain_.removeLast();
+// 			printf("Result = %i\n", result);
+			
+			msg.exit("NetaMeasurementNode::score(private)");
+			return (result ? totalscore : -1);
+		}
+// 		printf("CHAIN testing atom %p %i\n", target, target->id());
+// 		int count = 0; for (Refitem<Atom,int>* ri = path.first(); ri != NULL; ri = ri->next) printf(" -- path %i : %p %i\n", ++count, ri->item, ri->item->id());
+		// Cycle over new bound list for matches to the next node, exiting immediately if we get a positive match
+		for (Refitem<Bond,int> *b = i->bonds(); b != NULL; b = b->next)
+		{
+			// Get bound partner
+			j = b->item->partner(i);
+			// Skip if this atom already exists in the chain
+			if (currentChain_.contains(j) != NULL) continue;
+			// Construct new, single-item bound reflist
+			Reflist<Atom,int> boundList;
+			boundList.add(j);
+
+			// Score it...
+			if (nRepeat > 1)
+			{
+				path.add(target);
+				atomscore = score(currentNode, nRepeat-1, i, &boundList, rings, path, level);
+				path.removeLast();
+			}
+			else
+			{
+				// Cast the next node pointer up to a BoundNode and get its repeat value
+				NetaContextNode *ncn = (NetaContextNode*) (currentNode->nextNode);
+// 				printf("ncn = %p, repeat is %i, last atom id is %i\n", ncn, ncn->repeat(), currentChain_.last() == NULL ? -999 : currentChain_.last()->item->id());
+				path.add(target);
+				atomscore = score(ncn, ncn->repeat() == -1 ? 1 : ncn->repeat(), i, &boundList, rings, path, level);
+				path.removeLast();
+			}
+			// Check atomscore - if failed, continue loop.
+			if (atomscore == -1) continue;
+			else break;
+		}
+		// Did we match a bound atom?
+		if (atomscore == -1) totalscore = -1;
+		else totalscore += atomscore;
+		currentChain_.removeLast();
+	}
+	// No check for reverse logic needs to be done here since it is accounted for by NetaBoundNode::score().
+	msg.exit("NetaMeasurementNode::score(private)");
+	return totalscore;
+}
+
+// Validation function (virtual)
+int NetaMeasurementNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+{
+	msg.enter("NetaMeasurementNode::score");
+	int totalscore = -1, n;
+	Reflist<Atom,int> scores;
+	Refitem<Atom,int> *si;
+	Reflist<Atom,int> boundList;
+	Atom* j;
+
+	// Check for a linearNeta_ definition
+	if (linearNeta_ == NULL)
+	{
+		msg.print("Internal Error: No chain description specified in NetaMeasurementNode.\n");
+		msg.exit("NetaMeasurementNode::score");
+		return -1;
+	}
+
+	// Clear the local chain list, and add our target atom as the first item
+	currentChain_.clear();
+	currentChain_.add(target);
+
+	// Depending on whether we are modifying the neighbour list (if removeNeighbours_ == TRUE) or not, we either use the nbrs list here, or the list of bound atoms
+	if (removeNeighbours_) for (Refitem<Atom,int> *ri = nbrs->first(); ri != NULL; ri = ri->next)
+	{
+		boundList.clear();
+		boundList.add(ri->item);
+		scores.add(ri->item, score(linearNeta_, 1, target, &boundList, rings, path, level));
+	}
+	else for (Refitem<Bond,int>* rb = target->bonds(); rb != NULL; rb = rb->next)
+	{
+		j = rb->item->partner(target);
+		boundList.clear();
+		boundList.add(j);
+		scores.add(j, score(linearNeta_, 1, target, &boundList, rings, path, level));
+	}
+
+	// How many matches? Note that we do not modify the nbrs list here if removeNeighbours_ == FALSE
+	n = 0;
+	for (si = scores.first(); si != NULL; si = si->next) if (si->data > 0) ++n;
+	if (n == 0) totalscore = -1;
+	else if ((repeat_ == -1) || (Neta::netaValueCompare(n, repeatComparison_, repeat_)))
+	{
+		n = repeat_ == -1 ? 1 : repeat_;
+		totalscore = 0;
+		for (si = scores.first(); si != NULL; si = si->next)
+		{
+			if (si->data > 0)
+			{
+				totalscore += si->data;
+				if (removeNeighbours_) nbrs->remove(si->item);
+				--n;
+			}
+			if (n == 0) break;
+		}
+	}
+	else totalscore = -1;
+	// Check for reverse logic
+// 	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
+	NetaNode::printScore(level, "Measurement Check (%i required) = %i", repeat_ == -1 ? 1 : repeat_, totalscore);
+	msg.exit("NetaMeasurementNode::score");
+	return totalscore;
+}
+
+// Print node contents
+void NetaMeasurementNode::nodePrint(int offset, const char *prefix)
+{
+	// Construct tabbed offset
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.strcat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.strcat(prefix);
+	// Output node data
+	printf("%s (Measurement Node:)\n", tab.get());
+	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
+	else printf("%s   -> No Inner Description\n", tab.get());
+}
+
+// Print (append) NETA representation of node contents
+void NetaMeasurementNode::netaPrint(Dnchar &neta)
+{
+	msg.enter("NetaMeasurementNode::netaPrint");
+	neta.strcat("m");
+	if (innerNeta_ != NULL)
+	{
+		neta.strcatf("(%f,%f,", requiredValue_, tolerance_);
+		if (innerNeta_ != NULL) innerNeta_->netaPrint(neta);
+		neta += ')';
+	}
+	msg.exit("NetaMeasurementNode::netaPrint");
+}
+
+// Clone node structure
+NetaNode *NetaMeasurementNode::clone(Neta *newparent)
+{
+	msg.enter("NetaMeasurementNode::clone");
+	NetaMeasurementNode *node = new NetaMeasurementNode();
+	node->setParent(newparent);
+	node->reverseLogic_ = reverseLogic_;
+	node->nodeType_ = nodeType_;
+	node->repeat_ = repeat_;
+	node->innerNeta_ = innerNeta_ == NULL ? NULL : innerNeta_->clone(newparent);
+	// TODO Clone linearNeta_
+// 	node->linearNeta_ = linearNeta_ == NULL ? NULL : linearNeta_->clone(newparent);
+	node->requiredValue_ = requiredValue_;	
+	node->tolerance_ = tolerance_;
+	newparent->ownNode(node);
+	msg.exit("NetaMeasurementNode::clone");
 	return node;
 }

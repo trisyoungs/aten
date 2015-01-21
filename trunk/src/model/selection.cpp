@@ -22,8 +22,10 @@
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
+#include "base/pattern.h"
 #include "base/elements.h"
 #include "base/sysfunc.h"
+#include "classes/neta.h"
 
 /*
 // Private Functions
@@ -39,6 +41,14 @@ void Model::shiftAtomUp(Atom *i)
 		msg.exit("Model::shiftAtomUp");
 		return;
 	}
+
+	// Ignore request if this is the head of the list
+	if (i->id() == 0)
+	{
+		msg.exit("Model::shiftAtomUp");
+		return;
+	}
+
 	int tempid, oldid;
 	oldid = i->id();
 	// Shift atom up
@@ -68,6 +78,14 @@ void Model::shiftAtomDown(Atom *i)
 		msg.exit("Model::shiftAtomDown");
 		return;
 	}
+
+	// Ignore request if this is the head of the list
+	if (i->id() == (atoms_.nItems()-1))
+	{
+		msg.exit("Model::shiftAtomDown");
+		return;
+	}
+
 	int tempid, oldid;
 	oldid = i->id();
 	// Shift atom down
@@ -98,7 +116,7 @@ void Model::moveAtomAfter(Atom *i, Atom *reference)
 		return;
 	}
 	int oldid = i->id();
-	int shift = (reference == NULL ? -i->id() : reference->id() - i->id() + 1);
+	int shift = (reference == NULL ? -i->id() : reference->id() - i->id());
 
 	// Move atom
 	atoms_.moveAfter(i, reference);
@@ -118,85 +136,6 @@ void Model::moveAtomAfter(Atom *i, Atom *reference)
 /*
 // Public Functions
 */
-
-// Move atoms 'up'
-void Model::shiftSelectionUp()
-{
-	msg.enter("Model::shiftSelectionUp");
-	if (selection_.nItems() == 0)
-	{
-		msg.print("No atoms selected.");
-		msg.exit("Model::shiftSelectionUp");
-		return;
-	}
-	Atom *i, *next;
-	// For each selected atom in the model, shift it one place 'up' the atom list
-	i = atoms_.first()->next;
-	while (i != NULL)
-	{
-		next = i->next;
-		if (i->isSelected() && (i != atoms_.first())) shiftAtomUp(i);
-		i = next;
-	}
-	changeLog.add(Log::Structure);
-	msg.exit("Model::shiftSelectionUp");
-}
-
-// Move atoms 'down'
-void Model::shiftSelectionDown()
-{
-	msg.enter("Model::shiftSelectionDown");
-	if (selection_.nItems() == 0)
-	{
-		msg.print("No atoms selected.");
-		msg.exit("Model::shiftSelectionDown");
-		return;
-	}
-	Atom *i, *next;
-	// For each selected atom in the model, shift it one place 'down' the atom list
-	i = atoms_.last()->prev;
-	while (i != NULL)
-	{
-		next = i->prev;
-		if (i->isSelected()) shiftAtomDown(i);
-		i = next;
-	}
-	changeLog.add(Log::Structure);
-	msg.exit("Model::shiftSelectionDown");
-}
-
-// Move atoms to start
-void Model::moveSelectionToStart()
-{
-	msg.enter("Model::moveSelectionToStart");
-	Atom *next, *i;
-	// For each selected atom in the model, shift it to the start of the list
-	i = atoms_.last();
-	for (int n=0; n<atoms_.nItems(); ++n)
-	{
-		next = i->prev;
-		if (i->isSelected()) moveAtomAfter(i, NULL);
-		i = next;
-	}
-	changeLog.add(Log::Structure);
-	msg.exit("Model::moveSelectionToStart");
-}
-
-// Move atoms to end
-void Model::moveSelectionToEnd()
-{
-	msg.enter("Model::moveSelectionToEnd");
-	// For each selected atom in the model, shift it to the end of the list, preserving their relative order
-	Atom *next, *i = atoms_.first();
-	for (int n=0; n<atoms_.nItems(); ++n)
-	{
-		next = i->next;
-		if (i->isSelected()) moveAtomAfter(i, atoms_.last());
-		i = next;
-	}
-	changeLog.add(Log::Structure);
-	msg.exit("Model::moveSelectionToEnd");
-}
 
 // Get selection cog
 Vec3<double> Model::selectionCentreOfGeometry() const
@@ -312,25 +251,157 @@ void Model::fragmentFromSelection(Atom *start, Reflist<Atom,int> &list)
 void Model::reorderSelectedAtoms()
 {
 	msg.enter("Model::reorderSelectedAtoms");
-	// First, mark atoms from current selection
-	markSelectedAtoms();
-	// Loop over marked atoms in ID order. For each move any bound neighbour that is not adjacent to the index above this one.
-	Atom *i, *j;
+
+	// Is there a selection?
+	if (selection_.nItems() == 0)
+	{
+		msg.print("No atoms selected - no reordering to be performed.\n");
+		msg.exit("Model::reorderSelectedAtoms");
+		return;
+	}
+
+	// First, create a copy of the list of selected atoms
+	Reflist<Atom,int> targetAtoms = selection_;
+	Atom* i, *j;
+	Refitem<Atom,int>* ri;
+	Refitem<Atom, List<Neta> >* rj, *rk;
 	Refitem<Bond,int> *rb;
 	int diff, n;
-	for (Refitem<Atom,int> *ri = selection(TRUE); ri != NULL; ri = ri->next)
+
+	// First we will make sure that all molecular fragments in the current selection contain consecutive atoms
+	msg.print("Enforcing consecutive atom numbering in all molecular fragments...\n");
+	Reflist<Atom,int> selectedAtoms = targetAtoms;
+	while (selectedAtoms.first())
 	{
-		i = ri->item;
-		// Loop over bonds
-		for (rb = i->bonds(); rb != NULL; rb = rb->next)
+		// Deselect everything, and then treeselect from the first atom remaining in our list
+		selectNone(TRUE);
+		selectTree(selectedAtoms.first()->item, TRUE);
+		for (ri = selection(TRUE); ri != NULL; ri = ri->next)
 		{
-			j = rb->item->partner(i);
-			if (!j->isSelected(TRUE)) continue;
-			diff = j->id() - i->id();
-			for (n=1; n<diff; n++) shiftAtomUp(j);
+			// Check - is this atom in our target list? If not, we've treeSelected an extra one, so must exit...
+			if (selectedAtoms.contains(ri->item)) selectedAtoms.remove(ri->item);
+			else
+			{
+				msg.print("Error: Found an extra atom, bound to one in the current selection, which was not selected itself.\nAborting reorder.");
+				return;
+			}
 		}
-		// De-mark the root atom
-		deselectAtom(i, TRUE);
+
+		// Move these atoms to the end of the atom list, and remove them from our list
+		moveSelectionToEnd(TRUE);
+	}
+
+	// Select first fragment, add it to a separate list, and remove its atoms from selectedAtoms
+	selectedAtoms = targetAtoms;
+	Reflist<Atom, List<Neta> > referenceFragment;
+	selectNone(TRUE);
+	selectTree(targetAtoms.first()->item,TRUE);
+	Neta* neta;
+	for (ri = selection(TRUE); ri != NULL; ri = ri->next)
+	{
+		rj = referenceFragment.add(ri->item);
+		selectedAtoms.remove(ri->item);
+
+		// Create a basic NETA description for this atom, with a 10 degree tolerance on the torsions
+		neta = rj->data.add();
+		neta->createBasic(rj->item, FALSE, 10.0);
+	}
+
+	// Test the atom types...
+	List<Ring> dummyRingList;
+	int referenceId = 0, netaLevel = 0;
+	for (rk = referenceFragment.first(); rk != NULL; rk = rk->next, ++referenceId)
+	{
+		int nMatched = 0;
+		for (rj = referenceFragment.first(); rj != NULL; rj = rj->next)
+		{
+			if (rk->data.first()->matchAtom(rj->item, &dummyRingList, this) != -1) nMatched++;
+		}
+		msg.print(Messenger::Verbose, "Testing constructed NETA for atom index %i : nMatched = %i\n", rk->item->id(), nMatched);
+		if (nMatched == 0)
+		{
+			msg.print("Internal Error: Atom type for reference fragment atom %i failed to detect it.\n", referenceId);
+			return;
+		}
+		else if (nMatched == 1) msg.print("Typing for reference fragment atom %i tested successfully.\n");
+		else msg.print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.\n");
+	}
+
+	// We will create a pattern here to allow us to get a connectivity matrix easily
+	Pattern referencePattern;
+	referencePattern.setParent(this);
+	referencePattern.initialise(0, 0, 1, referenceFragment.nItems());
+	referencePattern.createMatrices();
+
+	// We now select fragments sequentially, and reorder the atoms in each one...
+	msg.print("Reordering atoms in individual fragments...\n");
+	while (selectedAtoms.first())
+	{
+		// Tree select this fragment, and do some basic checking...
+		selectNone(TRUE);
+		selectTree(selectedAtoms.first()->item, TRUE);
+		if (marked_.nItems() != referenceFragment.nItems())
+		{
+			msg.print("Warning: Skipping fragment with atom ids %i to %i since it has a different number of atoms to the reference (first) fragment.\n", marked_.first()->item->id()+1, marked_.last()->item->id()+1);
+			for (ri = marked_.first(); ri != NULL; ri = ri->next) selectedAtoms.remove(ri->item);
+			continue;
+		}
+
+		// Get root id of the fragment here....
+		int rootId = marked_.first()->item->id();
+
+		// Loop over referenceAtoms, searching for a NETA match with an atom in the current marked_ selection
+		referenceId = 0;
+		for (rj = referenceFragment.first(); rj != NULL; rj = rj->next, ++referenceId)
+		{
+			// Loop over NETA defined for the reference atom, creating new (looser) ones if necessary
+			neta = rj->data.first();
+			netaLevel = 1;
+			ri = NULL;
+			while (ri == NULL)
+			{
+				// Loop over remaining marked_ atoms and see if we can find a match using the current neta
+				for (ri = marked_.first(); ri != NULL; ri = ri->next) if (neta->matchAtom(ri->item, &dummyRingList, this) != -1) break;
+
+				if (ri == NULL)
+				{
+					// Move on to next NETA definition (or create it)
+					neta = neta->next;
+					if (neta == NULL)
+					{
+						// Check that we haven't reached the maximum (sensible) number of definitions (where the tolerance is 90 degrees
+						if (rj->data.nItems() == 9)
+						{
+							msg.print("Error: Reached maximum torsion tolerance of 90 degrees, and no atoms were matched.\n");
+							break;
+						}
+						else
+						{
+							neta = rj->data.add();
+							neta->createBasic(rj->item, FALSE, rj->data.nItems() * 10.0);
+							msg.print("Created neta for reference atom %i with torsion tolerance of %f\n", referenceId, rj->data.nItems()*10.0);
+						}
+					}
+				}
+				++netaLevel;
+			}
+
+			// Did we find a match?
+			if (ri == NULL)
+			{
+				msg.print("Error: Failed to find a match for reference atom %i in fragment with atom ids %i to %i.\n", referenceId, marked_.first()->item->id()+1, marked_.last()->item->id()+1);
+				msg.exit("Model::reorderSelectedAtoms");
+				return;
+			}
+			if (netaLevel >= 4) msg.print("Warning: Matched atom to reference index %i with torsion tolerance of %f...\n", referenceId, netaLevel*10.0);
+
+			// Yes we did! Now, check it's position - is it in the correct place?
+			if (((ri->item->id() - rootId) - referenceId) != 0) swapAtoms(atoms_[rootId+referenceId], ri->item);
+
+			// Finally, remove this atom from the selectedAtoms and marked_ lists - we are done with it
+			deselectAtom(ri->item, TRUE);
+			selectedAtoms.remove(ri->item);
+		}
 	}
 	msg.exit("Model::reorderSelectedAtoms");
 }

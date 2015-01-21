@@ -132,16 +132,16 @@ bool Command::function_ClearTypes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Create energy expression for current model ('createexpression(bool nointra, bool allowdummy, bool assigncharges)'}
+// Create energy expression for current model ('createexpression(bool vdwOnly, bool allowdummy, bool assigncharges)'}
 bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->createPatterns()) return FALSE;
-	Choice noIntra, allowDummy, assignCharges;
-	noIntra = c->hasArg(0) ? c->argb(0) : Choice::Default;
-	allowDummy = c->hasArg(1) ? c->argb(1) : Choice::Default;
-	assignCharges = c->hasArg(2) ? c->argb(2) : Choice::Default;
-	bool result = obj.m->createExpression(noIntra, allowDummy, assignCharges);
+	Choice vdwOnly, allowDummy, assignCharges;
+	if (c->hasArg(0)) vdwOnly = c->argb(0) ? Choice::Yes : Choice::No;
+	if (c->hasArg(1)) allowDummy = c->argb(1) ? Choice::Yes : Choice::No;
+	if (c->hasArg(2)) assignCharges = c->argb(2) ? Choice::Yes : Choice::No;
+	bool result = obj.m->createExpression(vdwOnly, allowDummy, assignCharges);
 	rv.set(result);
 	return TRUE;
 }
@@ -616,17 +616,17 @@ bool Command::function_PrintType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Recreate energy expression for current model ('recreateexpression(bool nointra, bool allowdummy, bool assigncharges)'}
+// Recreate energy expression for current model ('recreateexpression(bool vdwOnly, bool allowdummy, bool assigncharges)'}
 bool Command::function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->clearExpression();
 	if (!obj.m->createPatterns()) return FALSE;
-	Choice noIntra, allowDummy, assignCharges;
-	noIntra = c->hasArg(0) ? c->argb(0) : Choice::Default;
-	allowDummy = c->hasArg(1) ? c->argb(1) : Choice::Default;
-	assignCharges = c->hasArg(2) ? c->argb(2) : Choice::Default;
-	if (!obj.m->createExpression(noIntra, allowDummy, assignCharges)) return FALSE;
+	Choice vdwOnly, allowDummy, assignCharges;
+	if (c->hasArg(0)) vdwOnly = c->argb(0) ? Choice::Yes : Choice::No;
+	if (c->hasArg(1)) allowDummy = c->argb(1) ? Choice::Yes : Choice::No;
+	if (c->hasArg(2)) assignCharges = c->argb(2) ? Choice::Yes : Choice::No;
+	if (!obj.m->createExpression(vdwOnly, allowDummy, assignCharges)) return FALSE;
 	rv.reset();
 	return TRUE;
 }

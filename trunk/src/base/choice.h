@@ -31,7 +31,6 @@ class Choice
 	// Constructors
 	Choice();
 	Choice(Choice::ChoiceType);
-	Choice(bool);
 
 
 	/*
@@ -51,14 +50,11 @@ class Choice
 	*/
 	public:
 	// Assignment
-	void operator=(bool b);
 	void operator=(Choice::ChoiceType ct);
 	// Equality
 	bool operator==(Choice::ChoiceType ct);
-	bool operator==(bool b);
 	// Inequality
 	bool operator!=(Choice::ChoiceType ct);
-	bool operator!=(bool b);
 	// Conversion
 	operator bool();
 };

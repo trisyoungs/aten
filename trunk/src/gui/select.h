@@ -48,6 +48,8 @@ class SelectWidget : public QDockWidget
 	void on_TypeSelectElementButton_clicked(bool on);
 	void on_SelectTypeButton_clicked(bool on);
 	void on_DeselectTypeButton_clicked(bool on);
+	void on_SelectForButton_clicked(bool on);
+	void on_DeselectForButton_clicked(bool on);
 	protected:
 	void closeEvent(QCloseEvent *event);
 

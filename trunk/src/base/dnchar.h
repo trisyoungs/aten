@@ -144,9 +144,9 @@ class Dnchar
 	// Concatenate supplied string on to end of this string
 	void strcat(const char *s, int charcount = -1);
 	// Append formatted string (not actually a C string function, but would be useful!)
-	void strcatf(const char *fmt ...);
+	void strcatf(const char *fmt, ...);
 	// Create formatted string
-	void sprintf(const char *fmt ...);
+	void sprintf(const char *fmt, ...);
 	// Search for character in string
 	char *strchr(char c) const;
 	// Copy substring of supplied string into this string

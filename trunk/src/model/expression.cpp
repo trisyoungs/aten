@@ -223,7 +223,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 						else if (choice == 3)
 						{
 							// Flag generation of dummy terms in expression for all patterns, and let the loop cycle
-							allowDummy = TRUE;
+							allowDummy = Choice::Yes;
 							done = FALSE;
 						}
 					}

@@ -49,6 +49,8 @@ template <class T, class D> class Reflist
 	// Constructor / Destructor
 	Reflist<T,D>();
 	~Reflist();
+	// Copy constructor
+	Reflist<T,D>(const Reflist<T,D>& source);
 
 	/*
 	// Reference List of Items
@@ -95,7 +97,7 @@ template <class T, class D> class Reflist
 	// Remove the last item in the list
 	void removeLast();
 	// Operator =
-	void operator=(Reflist<T,D> &source);
+	void operator=(const Reflist<T,D>& source);
 	// Element access operator
 	Refitem<T,D> *operator[](int);
 	// Search references for item
@@ -143,8 +145,19 @@ template <class T, class D> Refitem<T,D>::~Refitem()
 {
 }
 
+// Copy constructor
+template <class T, class D> Reflist<T,D>::Reflist(const Reflist<T,D>& source)
+{
+	listHead_ = NULL;
+	listTail_ = NULL;
+	items_ = NULL;
+	regenerate_ = 1;
+	nItems_ = 0;
+	for (Refitem<T,D> *ri = source.first(); ri != NULL; ri = ri->next) add(ri->item, ri->data);
+}
+
 // Assignment operator =
-template <class T, class D> void Reflist<T,D>::operator=(Reflist<T,D> &source)
+template <class T, class D> void Reflist<T,D>::operator=(const Reflist<T,D> &source)
 {
 	// Clear any current data...
 	clear();

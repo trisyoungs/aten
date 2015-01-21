@@ -64,25 +64,67 @@ int NetaParser::lex()
 	// Integer number
 	*/
 	/*
-	// Number Detection - Either '.' or  a digit begins a number
+	// Number Detection - Either '-', '.' or a digit begins a number
 	*/
-	if (isdigit (c))
+	bool nextCharIsPossibleDigit = (isdigit(peekChar()) || (peekChar() == '.'));
+	if ((c == '.') || isdigit(c) || ((c == '-') && nextCharIsPossibleDigit))
 	{
+		// Default to integer, unless first char is '.'
+		bool integer = (c == '.' ? FALSE : TRUE);
+		bool hasexp = FALSE;
 		token += c;
 		done = FALSE;
 		do
 		{
 			c = getChar();
 			if (isdigit(c)) token += c;
+			else if (c == '.')
+			{
+				integer = FALSE;
+				token += '.';
+			}
+			else if ((c == 'e') || (c == 'E'))
+			{
+				// Check for previous exponential in number
+				if (hasexp)
+				{
+					msg.print("Error: Number has two exponentiations (e/E).\n");
+					return 0;
+				}
+				token += 'E';
+				hasexp = TRUE;
+			}
+			else if ((c == '-') || (c == '+'))
+			{
+				// We allow '-' or '+' only as part of an exponentiation, so if it is not preceeded by 'E' we stop parsing
+				if ((!token.isEmpty()) && (token.lastChar() != 'E'))
+				{
+					unGetChar();
+					done = TRUE;
+				}
+				else token += c;
+			}
 			else
 			{
 				unGetChar();
 				done = TRUE;
 			}
 		} while (!done);
-		NetaParser_lval.intconst = atoi(token);
-		msg.print(Messenger::Test, "NETA : found an integer constant [%s] [%i]\n", token.get(), NetaParser_lval.intconst);
-		return INTCONST;
+		// We now have the number as a text token...
+		if (!hasexp)
+		{
+			if (integer) NetaParser_lval.intconst = atoi(token);
+			else NetaParser_lval.doubleconst = atof(token);
+		}
+		else
+		{
+			// Exponentiations are always returned as a double
+			integer = FALSE;
+			NetaParser_lval.doubleconst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
+		}
+		if (integer) msg.print(Messenger::Parse, "NETA : found an integer constant [%s] [%i]\n", token.get(), NetaParser_lval.intconst);
+		else msg.print(Messenger::Parse, "NETA : found a floating-point constant [%s] [%e]\n", token.get(), NetaParser_lval.doubleconst);
+		return (integer ? INTCONST : DOUBLECONST);
 	}
 
 	/*
@@ -127,9 +169,9 @@ int NetaParser::lex()
 		Atom::AtomGeometry ag = Atom::atomGeometry(token, FALSE);
 		if (ag != Atom::nAtomGeometries)
 		{
-			msg.print(Messenger::Test, "NETA : ...which is a geometry (->NETAGEOM)\n");
+			msg.print(Messenger::Test, "NETA : ...which is a geometry (->NETAGEOMETRYTYPE)\n");
 			NetaParser_lval.atomgeom = ag;
-			return NETAGEOM;
+			return NETAGEOMETRYTYPE;
 		}
 
 		// Is this a NETA value?
@@ -148,6 +190,8 @@ int NetaParser::lex()
 			msg.print(Messenger::Test, "NETA : ...which is an expander (->NETAEXP)\n");
 			if (ne == Neta::RingExpander) return NETARING;
 			else if (ne == Neta::ChainExpander) return NETACHAIN;
+			else if (ne == Neta::GeometryExpander) return NETAGEOMETRY;
+			else if (ne == Neta::PathExpander) return NETAPATH;
 			return 0;
 		}
 

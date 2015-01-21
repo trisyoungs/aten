@@ -26,15 +26,11 @@
 // Constructor
 Choice::Choice()
 {
-	choice_ = Choice::No;
+	choice_ = Choice::Default;
 }
 Choice::Choice(Choice::ChoiceType ct)
 {
 	choice_ = ct;
-}
-Choice::Choice(bool b)
-{
-	choice_ = b;
 }
 
 /*
@@ -57,38 +53,10 @@ void Choice::operator=(Choice::ChoiceType ct)
 	choice_ = ct;
 }
 
-// Assignment (bool)
-void Choice::operator=(bool b)
-{
-	choice_ = (b ? Choice::Yes : Choice::No);
-}
-
-// Equality (bool)
-bool Choice::operator==(bool b)
-{
-	if (choice_ == Choice::Default)
-	{
-		printf("Warning - Choice value has not been resolved from 'Default'. Equating to FALSE.\n");
-		return FALSE;
-	}
-	return (b == (choice_ == Choice::Yes ? TRUE : FALSE));
-}
-
 // Equality (Choice)
 bool Choice::operator==(Choice::ChoiceType ct)
 {
 	return (choice_ == ct);
-}
-
-// Inequivalence
-bool Choice::operator!=(bool b)
-{
-	if (choice_ == Choice::Default)
-	{
-		printf("Warning - Choice value has not been resolved from 'Default'. (In)Equating to FALSE.\n");
-		return FALSE;
-	}
-	return (b != (choice_ == Choice::Yes ? TRUE : FALSE));
 }
 
 // Inequality (Choice)

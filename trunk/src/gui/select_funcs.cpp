@@ -130,6 +130,18 @@ void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 	}
 }
 
+void SelectWidget::on_SelectForButton_clicked(bool on)
+{
+	CommandNode::run(Command::SelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+}
+
+void SelectWidget::on_DeselectForButton_clicked(bool on)
+{
+	CommandNode::run(Command::DeSelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
+	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+}
+
 void SelectWidget::refresh()
 {
 	// If the select window is not visible, don't do anything

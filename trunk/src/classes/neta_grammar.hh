@@ -56,12 +56,15 @@ extern int NetaParser_debug;
      INTCONST = 265,
      ELEMENT = 266,
      TYPEREF = 267,
-     NETAKEY = 268,
-     NETAVAL = 269,
-     NETARING = 270,
-     NETACHAIN = 271,
-     NETAGEOM = 272,
-     TOKEN = 273
+     DOUBLECONST = 268,
+     NETAKEY = 269,
+     NETAVAL = 270,
+     NETARING = 271,
+     NETACHAIN = 272,
+     NETAGEOMETRY = 273,
+     NETAPATH = 274,
+     NETAGEOMETRYTYPE = 275,
+     TOKEN = 276
    };
 #endif
 /* Tokens.  */
@@ -75,12 +78,15 @@ extern int NetaParser_debug;
 #define INTCONST 265
 #define ELEMENT 266
 #define TYPEREF 267
-#define NETAKEY 268
-#define NETAVAL 269
-#define NETARING 270
-#define NETACHAIN 271
-#define NETAGEOM 272
-#define TOKEN 273
+#define DOUBLECONST 268
+#define NETAKEY 269
+#define NETAVAL 270
+#define NETARING 271
+#define NETACHAIN 272
+#define NETAGEOMETRY 273
+#define NETAPATH 274
+#define NETAGEOMETRYTYPE 275
+#define TOKEN 276
 
 
 
@@ -94,7 +100,9 @@ typedef union YYSTYPE
 	NetaBoundNode *boundnode;		/* Bound node pointer */
 	NetaRingNode *ringnode;			/* Ring node pointer */
 	NetaChainNode *chainnode;		/* Chain node pointer */
+	NetaMeasurementNode *measurenode;	/* Measurement node pointer */
 	int intconst;				/* Integer number */
+	double doubleconst;			/* Floating point number */
 	Neta::NetaKeyword netakey;		/* NETA keyword ID */
 	Atom::AtomGeometry atomgeom;		/* NETA geometry ID */
 	Neta::NetaValue netaval;		/* NETA value ID */
@@ -102,7 +110,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 106 "neta_grammar.hh"
+#line 114 "neta_grammar.hh"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

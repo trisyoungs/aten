@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>SelectWidget</class>
  <widget class="QDockWidget" name="SelectWidget">
@@ -6,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>313</height>
+    <height>325</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>313</height>
+    <height>325</height>
    </size>
   </property>
   <property name="font">
@@ -595,7 +596,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="SelectCodeButton">
+           <widget class="QPushButton" name="SelectForButton">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -623,7 +624,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="DeselectCodeButton">
+           <widget class="QPushButton" name="DeselectForButton">
             <property name="minimumSize">
              <size>
               <width>0</width>

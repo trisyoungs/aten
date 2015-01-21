@@ -567,3 +567,56 @@ void Model::clearAtomBits()
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->clearBit();
 }
+
+// Move specified atom up/down in the atom list
+void Model::moveAtom(int index, int delta)
+{
+	msg.enter("Model::moveAtom");
+	if ((index < 0) || (index >= atoms_.nItems()))
+	{
+		printf("Internal Error: Atom index out of range (%i) in Model::moveAtom.", index);
+		msg.exit("Model::moveAtom");
+		return;
+	}
+
+	// Move the atom, and then renumber those atoms that will have changed...
+	atoms_.move(index, delta);
+	int startId = min(index+delta, index), endId = max(index+delta, index);
+	for (int n=startId; n<=endId; ++n) atoms_[n]->setId(n);
+
+	msg.exit("Model::moveAtom");
+}
+
+// Swap specified atoms in the atom list
+void Model::swapAtoms(Atom* i, Atom* j)
+{
+	msg.enter("Model::swapAtoms");
+	if ((i == NULL) || (j == NULL))
+	{
+		printf("Internal Error: NULL Atom pointer(s) passed to Model::swapAtoms.");
+		msg.exit("Model::swapAtoms");
+		return;
+	}
+
+	// Swap atoms and their indices
+	int tempId = j->id();
+	j->setId(i->id());
+	i->setId(tempId);
+	atoms_.swapByIndex(i->id(), j->id());
+
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		IdSwapEvent *newchange = new IdSwapEvent;
+		newchange->set(i->id(), j->id());
+		recordingState_->addEvent(newchange);
+	}
+	changeLog.add(Log::Structure);
+	msg.exit("Model::swapAtoms");
+}
+
+// Swap specified atoms in the atom list
+void Model::swapAtoms(int id1, int id2)
+{
+	swapAtoms(atom(id1), atom(id2));
+}

@@ -144,8 +144,8 @@ template <class T> class List
 	// Item Moves
 	*/
 	private:
-	// Swap two items in list
-	void swapItems(T*, T*);
+	// Swap two items in list (by pointer)
+	void swap(T*, T*);
 
 	public:
 	// Shift item up (towards head)
@@ -160,6 +160,8 @@ template <class T> class List
 	void moveToStart(T *item);
 	// Move item so it is after specified item
 	void moveAfter(T *item, T *reference);
+	// Swap two items in list
+	void swapByIndex(int id1, int id2);
 };
 
 // Constructors
@@ -438,11 +440,11 @@ template <class T> T **List<T>::array()
 */
 
 // Swap items
-template <class T> void List<T>::swapItems(T* item1, T* item2)
+template <class T> void List<T>::swap(T* item1, T* item2)
 {
 	if ((item1 == NULL) || (item2 == NULL))
 	{
-		printf("Internal Error: NULL pointer(s) passed to List<T>::swapItems(%p,%p).\n", item1, item2);
+		printf("Internal Error: NULL pointer(s) passed to List<T>::swap(%p,%p).\n", item1, item2);
 		return;
 	}
 	// If the items are adjacent, swap the pointers 'outside' the pair and swap the next/prev between them
@@ -510,7 +512,7 @@ template <class T> void List<T>::shiftUp(T* item)
 	}
 	// If the item is already at the head of the list, return NULL.
 	if (listHead_ == item) return;
-	swapItems(item->prev,item);
+	swap(item->prev,item);
 	regenerate_ = 1;
 }
 
@@ -524,7 +526,7 @@ template <class T> void List<T>::shiftDown(T* item)
 	}
 	// If the item is already at the tail of the list, return.
 	if (listTail_ == item) return;
-	swapItems(item->next,item);
+	swap(item->next,item);
 	regenerate_ = 1;
 }
 
@@ -616,6 +618,28 @@ template <class T> void List<T>::moveAfter(T *item, T *reference)
 	if (newnext != NULL) newnext->prev = item;
 	else listTail_ = item;
 	item->next = newnext;
+	regenerate_ = 1;
+}
+
+// Swap two items in list
+template <class T> void List<T>::swapByIndex(int id1, int id2)
+{
+	// Check positions
+	if ((id1 < 0) || (id2 >= nItems_))
+	{
+		printf("Internal Error: First index (%i) is out of range (0 - %i) in List<T>::swap\n", id1, nItems_-1);
+		return;
+	}
+	if ((id2 < 0) || (id2 >= nItems_))
+	{
+		printf("Internal Error: Second index (%i) is out of range (0 - %i) in List<T>::swap\n", id2, nItems_-1);
+		return;
+	}
+
+	// Get pointers to item that we're swapping, and swap them
+	swap(array()[id1], array()[id2]);
+
+	// Flag for regeneration
 	regenerate_ = 1;
 }
 
