@@ -177,7 +177,7 @@ bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int nselected = obj.rs()->nSelected();
 	
 	// Construct program
-	Dnchar code(-1, "int internalDeselectAtom(atom i) { %s; return FALSE; }", c->argc(0));
+	Dnchar code(-1, "int internalDeselectAtom(Atom i) { %s; return FALSE; }", c->argc(0));
 	Program program;
 	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
 	{

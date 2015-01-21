@@ -542,14 +542,13 @@ void IdShiftEvent::undo(Model *m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		msg.print(Messenger::Verbose,"Reversing atom shift - atom %i moves %i places\n", targetId_+delta_, -delta_);
-		m->atoms_.move(targetId_+delta_, -delta_);
+		m->moveAtom(targetId_+delta_, -delta_);
 	}
 	else
 	{
 		msg.print(Messenger::Verbose,"Performing atom shift - atom %i moves %i places\n", targetId_, delta_);
-		m->atoms_.move(targetId_, delta_);
+		m->moveAtom(targetId_, delta_);
 	}
-	m->renumberAtoms();
 	msg.exit("IdShiftEvent::undo");
 }
 
@@ -558,6 +557,47 @@ void IdShiftEvent::print()
 {
 	if (direction_ == UndoEvent::Undo) printf("       Atom shift - atom %i moves %i places\n", targetId_+delta_, -delta_);
 	else printf("       Atom shift - atom %i moves %i places\n", targetId_, delta_);
+}
+
+/*
+// IdSwap Event
+*/
+
+// Constructor
+IdSwapEvent::IdSwapEvent()
+{
+}
+
+// Destructor
+IdSwapEvent::~IdSwapEvent()
+{
+}
+
+// Set change 
+void IdSwapEvent::set(int id1, int id2)
+{
+	msg.enter("IdSwapEvent::set");
+	firstId_ = id1;
+	secondId_ = id2;
+	msg.exit("IdSwapEvent::set");
+}
+
+// Undo stored change
+void IdSwapEvent::undo(Model *m)
+{
+	msg.enter("IdSwapEvent::undo");
+	// Atom swap change - same regardless of direction
+	msg.print(Messenger::Verbose,"Applying atom swap - atoms %i and %i\n", firstId_, secondId_);
+
+	m->swapAtoms(firstId_, secondId_);
+
+	msg.exit("IdSwapEvent::undo");
+}
+
+// Print event info
+void IdSwapEvent::print()
+{
+	printf("       Atom swap - atom %i with atom %i\n", firstId_, secondId_);
 }
 
 /*

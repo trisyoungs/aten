@@ -485,7 +485,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Force bonding calculation of atoms on load
 				case (Cli::BondSwitch):
-					prefs.setBondOnLoad(TRUE);
+					prefs.setBondOnLoad(Choice::Yes);
 					break;
 				// Set trajectory cache limit
 				case (Cli::CacheSwitch):
@@ -493,7 +493,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Force model centering on load (for non-periodic systems)
 				case (Cli::CentreSwitch):
-					prefs.setCentreOnLoad(TRUE);
+					prefs.setCentreOnLoad(Choice::Yes);
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
@@ -567,7 +567,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):
-					prefs.setFoldOnLoad(TRUE);
+					prefs.setFoldOnLoad(Choice::Yes);
 					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
@@ -699,19 +699,19 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					prefs.setBondOnLoad(FALSE);
+					prefs.setBondOnLoad(Choice::No);
 					break;
 				// Prohibit model centering on load (for non-periodic systems)
 				case (Cli::NoCentreSwitch):
-					prefs.setCentreOnLoad(FALSE);
+					prefs.setCentreOnLoad(Choice::No);
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
-					prefs.setFoldOnLoad(FALSE);
+					prefs.setFoldOnLoad(Choice::No);
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
-					prefs.setPackOnLoad(FALSE);
+					prefs.setPackOnLoad(Choice::No);
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):
@@ -719,7 +719,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit packing (application of symmetry operators) on load
 				case (Cli::PackSwitch):
-					prefs.setPackOnLoad(TRUE);
+					prefs.setPackOnLoad(Choice::Yes);
 					break;
 				// Read and execute commads from pipe
 				case (Cli::PipeSwitch):

@@ -281,6 +281,27 @@ class IdShiftEvent : public UndoEvent
 	void print();
 };
 
+// Atom ID Swap Event
+class IdSwapEvent : public UndoEvent
+{
+	public:
+	// Constructor / Destructor
+	IdSwapEvent();
+	~IdSwapEvent();
+	
+	private:
+	// Change data
+	int firstId_, secondId_;
+
+	public:
+	// Set change data
+	void set(int id1, int id2);
+	// Undo stored change
+	void undo(Model *m);
+	// Print change information
+	void print();
+};
+
 // Label Event
 class LabelEvent : public UndoEvent
 {

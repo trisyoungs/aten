@@ -114,6 +114,8 @@ class NetaParser
 	NetaRingNode *createRingNode();
 	// Create chain node in current NETA structure
 	NetaChainNode *createChainNode();
+	// Create measurement node in current NETA structure
+	NetaMeasurementNode *createMeasurementNode(bool removeNeighbours);
 	// Find named define in forcefield
 	NetaNode *findDefine(const char *name);
 };

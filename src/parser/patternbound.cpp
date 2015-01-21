@@ -205,9 +205,9 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 			else
 			{
 				// Need to adjust atom ids to go from 1-N....
-				int ids[MAXFFPARAMDATA];
-				for (int n=0; n<MAXFFPARAMDATA; ++n) ids[n] = ptr->atomIds_[n]+1;
-				rv.setArray(VTypes::IntegerData, &ids, MAXFFPARAMDATA);
+				int ids[MAXFFBOUNDTYPES];
+				for (int n=0; n<MAXFFBOUNDTYPES; ++n) ids[n] = ptr->atomIds_[n]+1;
+				rv.setArray(VTypes::IntegerData, &ids, MAXFFBOUNDTYPES);
 			}
 			break;
 		case (PatternBoundVariable::TermId):

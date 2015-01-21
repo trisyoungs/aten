@@ -345,7 +345,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	*/
         // First, create expression for the current model and assign charges
 	msg.print("Creating expression for target model...\n");
-        if ((!srcmodel->createExpression(TRUE)) || (srcmodel->nAtoms() == 0))
+        if ((!srcmodel->createExpression(Choice::Yes)) || (srcmodel->nAtoms() == 0))
 	{
 		msg.exit("MonteCarlo::minimise");
 		return FALSE;

@@ -29,7 +29,9 @@ Neta::NetaValue savedval;
 	NetaBoundNode *boundnode;		/* Bound node pointer */
 	NetaRingNode *ringnode;			/* Ring node pointer */
 	NetaChainNode *chainnode;		/* Chain node pointer */
+	NetaMeasurementNode *measurenode;	/* Measurement node pointer */
 	int intconst;				/* Integer number */
+	double doubleconst;			/* Floating point number */
 	Neta::NetaKeyword netakey;		/* NETA keyword ID */
 	Atom::AtomGeometry atomgeom;		/* NETA geometry ID */
 	Neta::NetaValue netaval;		/* NETA value ID */
@@ -43,14 +45,16 @@ Neta::NetaValue savedval;
 %left GEQ LEQ EQ NEQ '>' '<'
 
 %token <intconst> INTCONST ELEMENT TYPEREF
+%token <doubleconst> DOUBLECONST
 %token <netakey> NETAKEY
 %token <netaval> NETAVAL
-%token NETARING NETACHAIN
-%token <atomgeom> NETAGEOM
+%token NETARING NETACHAIN NETAGEOMETRY NETAPATH
+%token <atomgeom> NETAGEOMETRYTYPE
 %token TOKEN
 %type <netanode> node nodelist keyword value expander bound chain
 %type <ringnode> pushctxtr
 %type <chainnode> pushctxtc
+%type <measurenode> pushctxtg pushctxtp
 %type <boundnode> pushctxtb
 %type <typelist> elemtype elemtypes elemtypelist
 %%
@@ -80,7 +84,7 @@ node:
 		$$ = netaparser.findDefine(netaparser.lastUnknownToken());
 		if ($$ == NULL) { msg.print("Error: NETA description references a non-existent 'define' name (%s)\n", netaparser.lastUnknownToken()); YYABORT; }
 		}
-	| TOKEN					{
+	| TOKEN						{
 		msg.print("Error: NETA description contains an unrecognised keyword (%s)\n", netaparser.lastUnknownToken());
 		YYABORT;
 		}
@@ -90,7 +94,7 @@ node:
 /* Keywords : NETA statements that are simple, individual words with no arguments, and that cannot be expanded */
 keyword:
 	NETAKEY						{ $$ = netaparser.createKeywordNode($1); }
-	| NETAGEOM					{ $$ = netaparser.createGeometryNode($1); }
+	| NETAGEOMETRYTYPE				{ $$ = netaparser.createGeometryNode($1); }
 	;
 
 /* Values : NETA statements that require a comparison operator and a value, and cannot be expanded */
@@ -109,15 +113,15 @@ expander:
 	NETARING					{ $$ = netaparser.createRingNode(); netaparser.popContext(); }
 	| NETACHAIN					{ $$ = netaparser.createChainNode(); netaparser.popContext(); }
 	| NETARING '(' pushctxtr nodelist ')'		{ $3->setInnerNeta($4); $$ = $3; netaparser.popContext(); }
-	| NETACHAIN '(' pushctxtc chain ',' nodelist ')'{ $3->setInnerNeta($6,$4); $$ = $3; netaparser.popContext(); }
 	| NETACHAIN '(' pushctxtc chain ')'		{ $3->setInnerNeta(NULL,$4); $$ = $3; netaparser.popContext(); }
+	| NETAGEOMETRY '(' pushctxtg DOUBLECONST ',' DOUBLECONST ',' chain ')' { $3->setInnerNeta(NULL,$8); $3->setRequiredValue($4,$6); $$ = $3; netaparser.popContext(); }
+	| NETAPATH '(' pushctxtp DOUBLECONST ',' DOUBLECONST ',' chain ')' { $3->setInnerNeta(NULL,$8); $3->setRequiredValue($4,$6); $$ = $3; netaparser.popContext(); }
 	;
 
 chain:
 	bound						{ $$ = $1; }
 	| '!' bound					{ $$ = $2; $2->setReverseLogic(); }
-	| chain bound					{ $$ = netaparser.link($1,$2); }
-	| chain '!' bound				{ $$ = netaparser.link($1,$3); $3->setReverseLogic(); }
+	| chain ',' chain				{ $$ = netaparser.link($1,$3); }
 	;
 
 bound:
@@ -157,6 +161,14 @@ pushctxtr:
 
 pushctxtc:
 	/* empty */					{ $$ = netaparser.createChainNode(); }
+	;
+
+pushctxtg:
+	/* empty */					{ $$ = netaparser.createMeasurementNode(false); }
+	;
+
+pushctxtp:
+	/* empty */					{ $$ = netaparser.createMeasurementNode(true); }
 	;
 
 pushctxtb:

@@ -320,7 +320,7 @@ void ForcefieldsWidget::on_UntypeModelButton_clicked(bool checked)
 
 void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
 {
-	aten.currentModelOrFrame()->createExpression(Choice::Default, Choice::Default, ui.AssignFFChargesCheck->isChecked());
+	aten.currentModelOrFrame()->createExpression(Choice::Default, Choice::Default, ui.AssignFFChargesCheck->isChecked() ? Choice::Yes : Choice::No );
 }
 
 /*

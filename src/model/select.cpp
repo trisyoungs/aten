@@ -492,6 +492,47 @@ Refitem<Atom,int> *Model::selected(int n)
 	return NULL;
 }
 
+// Move atoms 'up'
+void Model::shiftSelectionUp(bool markOnly)
+{
+	msg.enter("Model::shiftSelectionUp");
+
+	if (markOnly) for (Refitem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
+	else for (Refitem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
+	changeLog.add(Log::Structure);
+	msg.exit("Model::shiftSelectionUp");
+}
+
+// Move atoms 'down'
+void Model::shiftSelectionDown(bool markOnly)
+{
+	msg.enter("Model::shiftSelectionDown");
+	if (markOnly) for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
+	else for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
+	changeLog.add(Log::Structure);
+	msg.exit("Model::shiftSelectionDown");
+}
+
+// Move atoms to start
+void Model::moveSelectionToStart(bool markOnly)
+{
+	msg.enter("Model::moveSelectionToStart");
+	if (markOnly) for (Refitem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
+	else for (Refitem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
+	changeLog.add(Log::Structure);
+	msg.exit("Model::moveSelectionToStart");
+}
+
+// Move atoms to end
+void Model::moveSelectionToEnd(bool markOnly)
+{
+	msg.enter("Model::moveSelectionToEnd");
+	if (markOnly) for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
+	else for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
+	changeLog.add(Log::Structure);
+	msg.exit("Model::moveSelectionToEnd");
+}
+
 // Select overlapping atoms
 void Model::selectOverlaps(double tolerance, bool markonly)
 {

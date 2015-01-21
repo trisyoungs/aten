@@ -316,6 +316,19 @@ NetaChainNode *NetaParser::createChainNode()
 	return newnode;
 }
 
+// Create measurement node in current NETA structure
+NetaMeasurementNode *NetaParser::createMeasurementNode(bool removeNeighbours)
+{
+	msg.enter("NetaParser::createMeasurementNode");
+	NetaMeasurementNode *newnode = new NetaMeasurementNode();
+	newnode->setParent(neta_);
+	newnode->setRemoveNeighbours(removeNeighbours);
+	contextStack_.add(newnode);
+	neta_->ownedNodes_.own(newnode);
+	msg.exit("NetaParser::createMeasurementNode");
+	return newnode;
+}
+
 // Find named define in forcefield
 NetaNode *NetaParser::findDefine(const char *name)
 {
