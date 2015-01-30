@@ -138,12 +138,13 @@ extern int NetaParser_debug;
      DOUBLECONST = 268,
      NETAKEY = 269,
      NETAVAL = 270,
-     NETARING = 271,
-     NETACHAIN = 272,
-     NETAGEOMETRY = 273,
-     NETAPATH = 274,
-     NETAGEOMETRYTYPE = 275,
-     TOKEN = 276
+     NETAREPEAT = 271,
+     NETARING = 272,
+     NETACHAIN = 273,
+     NETAGEOMETRY = 274,
+     NETAPATH = 275,
+     NETAGEOMETRYTYPE = 276,
+     TOKEN = 277
    };
 #endif
 /* Tokens.  */
@@ -160,12 +161,13 @@ extern int NetaParser_debug;
 #define DOUBLECONST 268
 #define NETAKEY 269
 #define NETAVAL 270
-#define NETARING 271
-#define NETACHAIN 272
-#define NETAGEOMETRY 273
-#define NETAPATH 274
-#define NETAGEOMETRYTYPE 275
-#define TOKEN 276
+#define NETAREPEAT 271
+#define NETARING 272
+#define NETACHAIN 273
+#define NETAGEOMETRY 274
+#define NETAPATH 275
+#define NETAGEOMETRYTYPE 276
+#define TOKEN 277
 
 
 
@@ -189,7 +191,7 @@ typedef union YYSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 193 "neta_grammar.cc"
+#line 195 "neta_grammar.cc"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -217,7 +219,7 @@ int NetaParser_parse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 221 "neta_grammar.cc"
+#line 223 "neta_grammar.cc"
 
 #ifdef short
 # undef short
@@ -435,22 +437,22 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  41
+#define YYFINAL  45
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   137
+#define YYLAST   162
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  36
+#define YYNTOKENS  37
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  18
+#define YYNNTS  19
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  54
+#define YYNRULES  63
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  107
+#define YYNSTATES  127
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   276
+#define YYMAXUTOK   277
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -461,16 +463,16 @@ static const yytype_uint8 yytranslate[] =
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    29,     2,     2,    30,     2,    35,     2,
-      27,    28,     2,     2,    25,    32,     2,     2,     2,     2,
+       2,     2,     2,    30,     2,     2,    31,     2,    36,     2,
+      28,    29,     2,     2,    26,    33,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        8,     6,     7,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,    33,     2,    34,     2,     2,     2,     2,     2,     2,
+       2,    34,     2,    35,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,    26,     2,    31,     2,     2,     2,
+       2,     2,     2,     2,    27,     2,    32,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -485,7 +487,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-      18,    19,    20,    21,    22,    23,    24
+      18,    19,    20,    21,    22,    23,    24,    25
 };
 
 #if YYDEBUG
@@ -494,46 +496,53 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyprhs[] =
 {
        0,     0,     3,     4,     6,     8,    12,    16,    20,    23,
-      26,    29,    32,    34,    36,    38,    40,    43,    45,    47,
-      49,    51,    57,    62,    67,    72,    77,    82,    87,    89,
-      91,    97,   103,   113,   123,   125,   128,   132,   136,   140,
-     144,   151,   158,   165,   167,   171,   173,   177,   179,   182,
-     183,   184,   185,   186,   187
+      26,    29,    32,    35,    37,    39,    41,    43,    45,    48,
+      50,    52,    54,    56,    62,    67,    72,    77,    82,    87,
+      92,    98,   103,   108,   113,   118,   123,   128,   130,   132,
+     138,   146,   156,   166,   168,   171,   175,   179,   183,   187,
+     194,   201,   208,   210,   214,   216,   220,   222,   225,   226,
+     227,   228,   229,   230
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      37,     0,    -1,    -1,    38,    -1,    39,    -1,    38,    25,
-      39,    -1,    38,    26,    38,    -1,    27,    38,    28,    -1,
-      29,    40,    -1,    29,    41,    -1,    29,    42,    -1,    29,
-      44,    -1,    40,    -1,    41,    -1,    42,    -1,    44,    -1,
-      30,    24,    -1,    24,    -1,    13,    -1,    17,    -1,    23,
-      -1,    18,    48,     6,     6,    13,    -1,    18,    48,     6,
-      13,    -1,    18,    48,     7,    13,    -1,    18,    48,     8,
-      13,    -1,    18,    48,    12,    13,    -1,    18,    48,    11,
-      13,    -1,    18,    48,     9,    13,    -1,    19,    -1,    20,
-      -1,    19,    27,    49,    38,    28,    -1,    20,    27,    50,
-      43,    28,    -1,    21,    27,    51,    16,    25,    16,    25,
-      43,    28,    -1,    22,    27,    52,    16,    25,    16,    25,
-      43,    28,    -1,    44,    -1,    29,    44,    -1,    43,    25,
-      43,    -1,    31,    45,    53,    -1,    32,    45,    53,    -1,
-       6,    45,    53,    -1,    31,    45,    27,    53,    38,    28,
-      -1,    32,    45,    27,    53,    38,    28,    -1,     6,    45,
-      27,    53,    38,    28,    -1,    47,    -1,    33,    46,    34,
-      -1,    47,    -1,    46,    25,    47,    -1,    14,    -1,    35,
-      13,    -1,    -1,    -1,    -1,    -1,    -1,    -1
+      38,     0,    -1,    -1,    39,    -1,    40,    -1,    39,    26,
+      40,    -1,    39,    27,    39,    -1,    28,    39,    29,    -1,
+      30,    41,    -1,    30,    42,    -1,    30,    43,    -1,    30,
+      44,    -1,    30,    46,    -1,    41,    -1,    42,    -1,    43,
+      -1,    44,    -1,    46,    -1,    31,    25,    -1,    25,    -1,
+      13,    -1,    17,    -1,    24,    -1,    18,    50,     6,     6,
+      13,    -1,    18,    50,     6,    13,    -1,    18,    50,     7,
+      13,    -1,    18,    50,     8,    13,    -1,    18,    50,    12,
+      13,    -1,    18,    50,    11,    13,    -1,    18,    50,     9,
+      13,    -1,    19,    50,     6,     6,    13,    -1,    19,    50,
+       6,    13,    -1,    19,    50,     7,    13,    -1,    19,    50,
+       8,    13,    -1,    19,    50,    12,    13,    -1,    19,    50,
+      11,    13,    -1,    19,    50,     9,    13,    -1,    20,    -1,
+      21,    -1,    20,    28,    51,    39,    29,    -1,    21,    28,
+      52,    45,    26,    43,    29,    -1,    22,    28,    53,    16,
+      26,    16,    26,    45,    29,    -1,    23,    28,    54,    16,
+      26,    16,    26,    45,    29,    -1,    46,    -1,    30,    46,
+      -1,    45,    26,    45,    -1,    32,    47,    55,    -1,    33,
+      47,    55,    -1,     6,    47,    55,    -1,    32,    47,    28,
+      55,    39,    29,    -1,    33,    47,    28,    55,    39,    29,
+      -1,     6,    47,    28,    55,    39,    29,    -1,    49,    -1,
+      34,    48,    35,    -1,    49,    -1,    48,    26,    49,    -1,
+      14,    -1,    36,    13,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    63,    63,    64,    68,    69,    70,    71,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    87,    91,    96,
-      97,   102,   103,   104,   105,   106,   107,   108,   113,   114,
-     115,   116,   117,   118,   122,   123,   124,   128,   129,   130,
-     131,   132,   133,   138,   139,   143,   144,   148,   149,   154,
-     159,   163,   167,   171,   175
+       0,    64,    64,    65,    69,    70,    71,    72,    76,    77,
+      78,    79,    80,    81,    82,    83,    84,    85,    86,    90,
+      94,    99,   100,   105,   106,   107,   108,   109,   110,   111,
+     116,   117,   118,   119,   120,   121,   122,   127,   128,   129,
+     130,   131,   132,   136,   137,   138,   142,   143,   144,   145,
+     146,   147,   152,   153,   157,   158,   162,   163,   168,   173,
+     177,   181,   185,   189
 };
 #endif
 
@@ -544,12 +553,13 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "IF", "OR", "AND", "'='", "'>'", "'<'",
   "NEQ", "EQ", "LEQ", "GEQ", "INTCONST", "ELEMENT", "TYPEREF",
-  "DOUBLECONST", "NETAKEY", "NETAVAL", "NETARING", "NETACHAIN",
-  "NETAGEOMETRY", "NETAPATH", "NETAGEOMETRYTYPE", "TOKEN", "','", "'|'",
-  "'('", "')'", "'!'", "'$'", "'~'", "'-'", "'['", "']'", "'&'", "$accept",
-  "neta", "nodelist", "node", "keyword", "value", "expander", "chain",
-  "bound", "elemtypelist", "elemtypes", "elemtype", "saveval", "pushctxtr",
-  "pushctxtc", "pushctxtg", "pushctxtp", "pushctxtb", YY_NULL
+  "DOUBLECONST", "NETAKEY", "NETAVAL", "NETAREPEAT", "NETARING",
+  "NETACHAIN", "NETAGEOMETRY", "NETAPATH", "NETAGEOMETRYTYPE", "TOKEN",
+  "','", "'|'", "'('", "')'", "'!'", "'$'", "'~'", "'-'", "'['", "']'",
+  "'&'", "$accept", "neta", "nodelist", "node", "keyword", "value",
+  "repeat", "expander", "chain", "bound", "elemtypelist", "elemtypes",
+  "elemtype", "saveval", "pushctxtr", "pushctxtc", "pushctxtg",
+  "pushctxtp", "pushctxtb", YY_NULL
 };
 #endif
 
@@ -560,31 +570,33 @@ static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,    61,    62,    60,   261,
      262,   263,   264,   265,   266,   267,   268,   269,   270,   271,
-     272,   273,   274,   275,   276,    44,   124,    40,    41,    33,
-      36,   126,    45,    91,    93,    38
+     272,   273,   274,   275,   276,   277,    44,   124,    40,    41,
+      33,    36,   126,    45,    91,    93,    38
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    36,    37,    37,    38,    38,    38,    38,    39,    39,
-      39,    39,    39,    39,    39,    39,    39,    39,    39,    40,
-      40,    41,    41,    41,    41,    41,    41,    41,    42,    42,
-      42,    42,    42,    42,    43,    43,    43,    44,    44,    44,
-      44,    44,    44,    45,    45,    46,    46,    47,    47,    48,
-      49,    50,    51,    52,    53
+       0,    37,    38,    38,    39,    39,    39,    39,    40,    40,
+      40,    40,    40,    40,    40,    40,    40,    40,    40,    40,
+      40,    41,    41,    42,    42,    42,    42,    42,    42,    42,
+      43,    43,    43,    43,    43,    43,    43,    44,    44,    44,
+      44,    44,    44,    45,    45,    45,    46,    46,    46,    46,
+      46,    46,    47,    47,    48,    48,    49,    49,    50,    51,
+      52,    53,    54,    55
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     0,     1,     1,     3,     3,     3,     2,     2,
-       2,     2,     1,     1,     1,     1,     2,     1,     1,     1,
-       1,     5,     4,     4,     4,     4,     4,     4,     1,     1,
-       5,     5,     9,     9,     1,     2,     3,     3,     3,     3,
-       6,     6,     6,     1,     3,     1,     3,     1,     2,     0,
-       0,     0,     0,     0,     0
+       2,     2,     2,     1,     1,     1,     1,     1,     2,     1,
+       1,     1,     1,     5,     4,     4,     4,     4,     4,     4,
+       5,     4,     4,     4,     4,     4,     4,     1,     1,     5,
+       7,     9,     9,     1,     2,     3,     3,     3,     3,     6,
+       6,     6,     1,     3,     1,     3,     1,     2,     0,     0,
+       0,     0,     0,     0
 };
 
 /* YYDEFACT[STATE-NAME] -- Default reduction number in state STATE-NUM.
@@ -592,49 +604,53 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     0,    18,    19,    49,    28,    29,     0,     0,    20,
-      17,     0,     0,     0,     0,     0,     0,     3,     4,    12,
-      13,    14,    15,    47,     0,     0,    54,    43,     0,    50,
-      51,    52,    53,     0,     8,     9,    10,    11,    16,    54,
-      54,     1,     0,     0,     0,    45,    48,    54,    39,     0,
+       2,     0,    20,    21,    58,    58,    37,    38,     0,     0,
+      22,    19,     0,     0,     0,     0,     0,     0,     3,     4,
+      13,    14,    15,    16,    17,    56,     0,     0,    63,    52,
+       0,     0,    59,    60,    61,    62,     0,     8,     9,    10,
+      11,    12,    18,    63,    63,     1,     0,     0,     0,    54,
+      57,    63,    48,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     7,
-      54,    37,    54,    38,     5,     6,     0,    44,     0,     0,
-      22,    23,    24,    27,    26,    25,     0,     0,     0,    34,
-       0,     0,     0,     0,    46,     0,    21,    30,    35,     0,
-      31,     0,     0,     0,     0,    42,    36,     0,     0,    40,
-      41,     0,     0,     0,     0,    32,    33
+      63,    46,    63,    47,     5,     6,     0,    53,     0,     0,
+      24,    25,    26,    29,    28,    27,     0,    31,    32,    33,
+      36,    35,    34,     0,     0,     0,    43,     0,     0,     0,
+       0,    55,     0,    23,    30,    39,    44,     0,     0,     0,
+       0,     0,    51,     0,    45,     0,     0,    49,    50,    40,
+       0,     0,     0,     0,     0,    41,    42
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,    16,    17,    18,    19,    20,    21,    78,    22,    26,
-      44,    27,    28,    55,    56,    57,    58,    48
+      -1,    17,    18,    19,    20,    21,    22,    23,   114,    24,
+      28,    48,    29,    30,    65,    66,    67,    68,    52
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -39
-static const yytype_int8 yypact[] =
+#define YYPACT_NINF -64
+static const yytype_int16 yypact[] =
 {
-      -4,    -3,   -39,   -39,   -39,    -6,    26,    35,    43,   -39,
-     -39,    -4,    61,    51,    -3,    -3,    76,    31,   -39,   -39,
-     -39,   -39,   -39,   -39,     8,    78,    72,   -39,    89,   -39,
-     -39,   -39,   -39,   -18,   -39,   -39,   -39,   -39,   -39,    79,
-      81,   -39,    18,    -4,   -22,   -39,   -39,   -39,   -39,    55,
-      91,    99,   101,   104,   108,    -4,    23,   107,   109,   -39,
-     -39,   -39,   -39,   -39,   -39,    31,     8,   -39,    -4,   111,
-     -39,   -39,   -39,   -39,   -39,   -39,    77,    28,    41,   -39,
-     102,   103,    -4,    -4,   -39,    85,   -39,   -39,   -39,    23,
-     -39,   110,   113,    90,    94,   -39,   105,   106,   112,   -39,
-     -39,    23,    23,    46,    60,   -39,   -39
+      54,    -3,   -64,   -64,   -64,   -64,   -16,   -14,    10,    20,
+     -64,   -64,    54,     3,   -15,    -3,    -3,    16,    43,   -64,
+     -64,   -64,   -64,   -64,   -64,   -64,    -7,     5,    52,   -64,
+     121,   128,   -64,   -64,   -64,   -64,    23,   -64,   -64,   -64,
+     -64,   -64,   -64,    55,    68,   -64,    93,    54,   -18,   -64,
+     -64,   -64,   -64,    34,    90,    92,   106,   107,   108,    38,
+     109,   118,   125,   130,   132,    54,    13,    49,   131,   -64,
+     -64,   -64,   -64,   -64,   -64,    43,    -7,   -64,    54,   133,
+     -64,   -64,   -64,   -64,   -64,   -64,   135,   -64,   -64,   -64,
+     -64,   -64,   -64,    35,    24,   123,   -64,   124,   126,    54,
+      54,   -64,    71,   -64,   -64,   -64,   -64,     9,   137,   138,
+      75,   115,   -64,   122,   129,   134,   136,   -64,   -64,   -64,
+      13,    13,    13,    37,    62,   -64,   -64
 };
 
 /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int8 yypgoto[] =
+static const yytype_int16 yypgoto[] =
 {
-     -39,   -39,   -10,    92,   120,   121,   123,   -38,   -12,    -9,
-     -39,   -20,   -39,   -39,   -39,   -39,   -39,    47
+     -64,   -64,   -10,   110,   144,   145,   -12,   146,   -63,   -13,
+      77,   -64,   -22,   156,   -64,   -64,   -64,   -64,   -38
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -643,44 +659,50 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      37,    33,     1,    66,    45,    39,    40,    42,    43,     2,
-      59,    23,    67,     3,     4,     5,     6,     7,     8,     9,
-      10,    29,    23,    11,     1,    12,    13,    14,    15,     1,
-      24,     2,    25,    65,     1,     3,     4,     5,     6,     7,
-       8,     9,    10,    25,    79,    76,    84,    12,    13,    14,
-      15,    96,    77,    30,    14,    15,    42,    43,    85,    14,
-      15,    69,    31,   103,   104,    88,    89,     1,    70,    90,
-      32,    89,    93,    94,   105,    38,    41,    79,     3,     4,
-       5,     6,     7,     8,     9,    89,    61,    63,   106,    79,
-      79,    46,    14,    15,    68,    49,    50,    51,    52,    47,
-      53,    54,    42,    43,    71,    87,    60,    82,    62,    83,
-      42,    43,    72,    95,    73,    42,    43,    74,    99,    42,
-      43,    75,   100,    80,    86,    81,    97,    91,    92,    98,
-      89,   101,    34,    35,    64,    36,     0,   102
+      41,    39,    36,    95,    49,    71,    73,    25,    76,     1,
+      42,    25,    32,    78,    33,     1,    45,    77,    50,     1,
+       3,     4,     5,     6,     7,     8,     9,    10,     5,    27,
+       1,    26,    99,    27,   100,    15,    16,    75,    34,    94,
+      79,    15,    16,    94,    86,    15,    16,    80,    35,    46,
+      47,    87,    69,    96,   101,    93,    15,    16,   123,   124,
+       1,    46,    47,   120,   105,    97,   125,     2,   102,    46,
+      47,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      51,   106,    12,    70,    13,    14,    15,    16,   120,   110,
+     111,   126,    43,    44,    96,   113,    72,    46,    47,     1,
+     112,    46,    47,    81,   117,    82,     2,    96,    96,    96,
+       3,     4,     5,     6,     7,     8,     9,    10,    11,    83,
+      84,    85,    88,    13,    14,    15,    16,    53,    54,    55,
+      56,    89,    57,    58,    59,    60,    61,    62,    90,    63,
+      64,    46,    47,    91,   118,    92,   103,    98,   104,   107,
+     108,   119,   109,   115,   116,   120,    74,    37,    38,    40,
+     121,    31,   122
 };
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-39)))
+  (!!((Yystate) == (-64)))
 
 #define yytable_value_is_error(Yytable_value) \
   YYID (0)
 
-static const yytype_int8 yycheck[] =
+static const yytype_uint8 yycheck[] =
 {
-      12,    11,     6,    25,    24,    14,    15,    25,    26,    13,
-      28,    14,    34,    17,    18,    19,    20,    21,    22,    23,
-      24,    27,    14,    27,     6,    29,    30,    31,    32,     6,
-      33,    13,    35,    43,     6,    17,    18,    19,    20,    21,
-      22,    23,    24,    35,    56,    55,    66,    29,    30,    31,
-      32,    89,    29,    27,    31,    32,    25,    26,    68,    31,
-      32,     6,    27,   101,   102,    77,    25,     6,    13,    28,
-      27,    25,    82,    83,    28,    24,     0,    89,    17,    18,
-      19,    20,    21,    22,    23,    25,    39,    40,    28,   101,
-     102,    13,    31,    32,    47,     6,     7,     8,     9,    27,
-      11,    12,    25,    26,    13,    28,    27,    60,    27,    62,
-      25,    26,    13,    28,    13,    25,    26,    13,    28,    25,
-      26,    13,    28,    16,    13,    16,    16,    25,    25,    16,
-      25,    25,    12,    12,    42,    12,    -1,    25
+      13,    13,    12,    66,    26,    43,    44,    14,    26,     6,
+      25,    14,    28,    51,    28,     6,     0,    35,    13,     6,
+      17,    18,    19,    20,    21,    22,    23,    24,    19,    36,
+       6,    34,    70,    36,    72,    32,    33,    47,    28,    30,
+       6,    32,    33,    30,     6,    32,    33,    13,    28,    26,
+      27,    13,    29,    66,    76,    65,    32,    33,   121,   122,
+       6,    26,    27,    26,    29,    16,    29,    13,    78,    26,
+      27,    17,    18,    19,    20,    21,    22,    23,    24,    25,
+      28,    94,    28,    28,    30,    31,    32,    33,    26,    99,
+     100,    29,    15,    16,   107,   107,    28,    26,    27,     6,
+      29,    26,    27,    13,    29,    13,    13,   120,   121,   122,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    13,
+      13,    13,    13,    30,    31,    32,    33,     6,     7,     8,
+       9,    13,    11,    12,     6,     7,     8,     9,    13,    11,
+      12,    26,    27,    13,    29,    13,    13,    16,    13,    26,
+      26,    29,    26,    16,    16,    26,    46,    13,    13,    13,
+      26,     5,    26
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -688,16 +710,18 @@ static const yytype_int8 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,     6,    13,    17,    18,    19,    20,    21,    22,    23,
-      24,    27,    29,    30,    31,    32,    37,    38,    39,    40,
-      41,    42,    44,    14,    33,    35,    45,    47,    48,    27,
-      27,    27,    27,    38,    40,    41,    42,    44,    24,    45,
-      45,     0,    25,    26,    46,    47,    13,    27,    53,     6,
-       7,     8,     9,    11,    12,    49,    50,    51,    52,    28,
-      27,    53,    27,    53,    39,    38,    25,    34,    53,     6,
-      13,    13,    13,    13,    13,    13,    38,    29,    43,    44,
-      16,    16,    53,    53,    47,    38,    13,    28,    44,    25,
-      28,    25,    25,    38,    38,    28,    43,    16,    16,    28,
-      28,    25,    25,    43,    43,    28,    28
+      24,    25,    28,    30,    31,    32,    33,    38,    39,    40,
+      41,    42,    43,    44,    46,    14,    34,    36,    47,    49,
+      50,    50,    28,    28,    28,    28,    39,    41,    42,    43,
+      44,    46,    25,    47,    47,     0,    26,    27,    48,    49,
+      13,    28,    55,     6,     7,     8,     9,    11,    12,     6,
+       7,     8,     9,    11,    12,    51,    52,    53,    54,    29,
+      28,    55,    28,    55,    40,    39,    26,    35,    55,     6,
+      13,    13,    13,    13,    13,    13,     6,    13,    13,    13,
+      13,    13,    13,    39,    30,    45,    46,    16,    16,    55,
+      55,    49,    39,    13,    13,    29,    46,    26,    26,    26,
+      39,    39,    29,    43,    45,    16,    16,    29,    29,    29,
+      26,    26,    26,    45,    45,    29,    29
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1499,331 +1523,385 @@ yyreduce:
     {
         case 2:
 /* Line 1792 of yacc.c  */
-#line 63 "neta_grammar.yy"
+#line 64 "neta_grammar.yy"
     { netaparser.setDescription(NULL); YYACCEPT; }
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 64 "neta_grammar.yy"
+#line 65 "neta_grammar.yy"
     { netaparser.setDescription((yyvsp[(1) - (1)].netanode)); YYACCEPT; }
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 68 "neta_grammar.yy"
+#line 69 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 69 "neta_grammar.yy"
+#line 70 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.join(Neta::NetaAndLogic, (yyvsp[(1) - (3)].netanode), (yyvsp[(3) - (3)].netanode)); }
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 70 "neta_grammar.yy"
+#line 71 "neta_grammar.yy"
     { (yyval.netanode) = netaparser.join(Neta::NetaOrLogic, (yyvsp[(1) - (3)].netanode), (yyvsp[(3) - (3)].netanode)); }
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 71 "neta_grammar.yy"
+#line 72 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(2) - (3)].netanode); }
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 75 "neta_grammar.yy"
+#line 76 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 76 "neta_grammar.yy"
+#line 77 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 77 "neta_grammar.yy"
+#line 78 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 78 "neta_grammar.yy"
+#line 79 "neta_grammar.yy"
     { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 79 "neta_grammar.yy"
-    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
+#line 80 "neta_grammar.yy"
+    { (yyvsp[(2) - (2)].netanode)->setReverseLogic(); (yyval.netanode) = (yyvsp[(2) - (2)].netanode); }
     break;
 
   case 13:
-/* Line 1792 of yacc.c  */
-#line 80 "neta_grammar.yy"
-    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
-    break;
-
-  case 14:
 /* Line 1792 of yacc.c  */
 #line 81 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
-  case 15:
+  case 14:
 /* Line 1792 of yacc.c  */
 #line 82 "neta_grammar.yy"
     { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
-  case 16:
+  case 15:
 /* Line 1792 of yacc.c  */
 #line 83 "neta_grammar.yy"
+    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
+    break;
+
+  case 16:
+/* Line 1792 of yacc.c  */
+#line 84 "neta_grammar.yy"
+    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
+    break;
+
+  case 17:
+/* Line 1792 of yacc.c  */
+#line 85 "neta_grammar.yy"
+    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
+    break;
+
+  case 18:
+/* Line 1792 of yacc.c  */
+#line 86 "neta_grammar.yy"
     {
 		(yyval.netanode) = netaparser.findDefine(netaparser.lastUnknownToken());
 		if ((yyval.netanode) == NULL) { msg.print("Error: NETA description references a non-existent 'define' name (%s)\n", netaparser.lastUnknownToken()); YYABORT; }
 		}
     break;
 
-  case 17:
+  case 19:
 /* Line 1792 of yacc.c  */
-#line 87 "neta_grammar.yy"
+#line 90 "neta_grammar.yy"
     {
 		msg.print("Error: NETA description contains an unrecognised keyword (%s)\n", netaparser.lastUnknownToken());
 		YYABORT;
 		}
     break;
 
-  case 18:
-/* Line 1792 of yacc.c  */
-#line 91 "neta_grammar.yy"
-    { msg.print("Error: Stray integer constant found in NETA description.\n"); YYABORT; }
-    break;
-
-  case 19:
-/* Line 1792 of yacc.c  */
-#line 96 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createKeywordNode((yyvsp[(1) - (1)].netakey)); }
-    break;
-
   case 20:
 /* Line 1792 of yacc.c  */
-#line 97 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createGeometryNode((yyvsp[(1) - (1)].atomgeom)); }
+#line 94 "neta_grammar.yy"
+    { msg.print("Error: Stray integer constant found in NETA description.\n"); YYABORT; }
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 102 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(5) - (5)].intconst)); }
+#line 99 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createKeywordNode((yyvsp[(1) - (1)].netakey)); }
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 103 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(4) - (4)].intconst)); }
+#line 100 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createGeometryNode((yyvsp[(1) - (1)].atomgeom)); }
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 104 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThan, (yyvsp[(4) - (4)].intconst)); }
+#line 105 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(5) - (5)].intconst)); }
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 105 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThan, (yyvsp[(4) - (4)].intconst)); }
+#line 106 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 106 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
+#line 107 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThan, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 107 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
+#line 108 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThan, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 108 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::NotEqualTo, (yyvsp[(4) - (4)].intconst)); }
+#line 109 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 113 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createRingNode(); netaparser.popContext(); }
+#line 110 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 114 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.createChainNode(); netaparser.popContext(); }
+#line 111 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::NotEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 115 "neta_grammar.yy"
-    { (yyvsp[(3) - (5)].ringnode)->setInnerNeta((yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].ringnode); netaparser.popContext(); }
+#line 116 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(5) - (5)].intconst)); }
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 116 "neta_grammar.yy"
-    { (yyvsp[(3) - (5)].chainnode)->setInnerNeta(NULL,(yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].chainnode); netaparser.popContext(); }
+#line 117 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::EqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 117 "neta_grammar.yy"
-    { (yyvsp[(3) - (9)].measurenode)->setInnerNeta(NULL,(yyvsp[(8) - (9)].netanode)); (yyvsp[(3) - (9)].measurenode)->setRequiredValue((yyvsp[(4) - (9)].doubleconst),(yyvsp[(6) - (9)].doubleconst)); (yyval.netanode) = (yyvsp[(3) - (9)].measurenode); netaparser.popContext(); }
+#line 118 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThan, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 118 "neta_grammar.yy"
-    { (yyvsp[(3) - (9)].measurenode)->setInnerNeta(NULL,(yyvsp[(8) - (9)].netanode)); (yyvsp[(3) - (9)].measurenode)->setRequiredValue((yyvsp[(4) - (9)].doubleconst),(yyvsp[(6) - (9)].doubleconst)); (yyval.netanode) = (yyvsp[(3) - (9)].measurenode); netaparser.popContext(); }
+#line 119 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThan, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 122 "neta_grammar.yy"
-    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
+#line 120 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::GreaterThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 123 "neta_grammar.yy"
-    { (yyval.netanode) = (yyvsp[(2) - (2)].netanode); (yyvsp[(2) - (2)].netanode)->setReverseLogic(); }
+#line 121 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::LessThanEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 124 "neta_grammar.yy"
-    { (yyval.netanode) = netaparser.link((yyvsp[(1) - (3)].netanode),(yyvsp[(3) - (3)].netanode)); }
+#line 122 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createValueNode(savedval, Neta::NotEqualTo, (yyvsp[(4) - (4)].intconst)); }
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 128 "neta_grammar.yy"
-    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Any); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
+#line 127 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createRingNode(); netaparser.popContext(); }
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 129 "neta_grammar.yy"
-    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Single); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
+#line 128 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.createChainNode(); netaparser.popContext(); }
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 130 "neta_grammar.yy"
-    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Double); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
+#line 129 "neta_grammar.yy"
+    { (yyvsp[(3) - (5)].ringnode)->setInnerNeta((yyvsp[(4) - (5)].netanode)); (yyval.netanode) = (yyvsp[(3) - (5)].ringnode); netaparser.popContext(); }
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 131 "neta_grammar.yy"
-    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Any); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
+#line 130 "neta_grammar.yy"
+    { (yyvsp[(3) - (7)].chainnode)->setInnerNeta(NULL,(yyvsp[(4) - (7)].netanode)); (yyval.netanode) = (yyvsp[(3) - (7)].chainnode); netaparser.popContext(); }
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 132 "neta_grammar.yy"
-    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Single); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
+#line 131 "neta_grammar.yy"
+    { (yyvsp[(3) - (9)].measurenode)->setInnerNeta(NULL,(yyvsp[(8) - (9)].netanode)); (yyvsp[(3) - (9)].measurenode)->setRequiredValue((yyvsp[(4) - (9)].doubleconst),(yyvsp[(6) - (9)].doubleconst)); (yyval.netanode) = (yyvsp[(3) - (9)].measurenode); netaparser.popContext(); }
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 133 "neta_grammar.yy"
-    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Double); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
+#line 132 "neta_grammar.yy"
+    { (yyvsp[(3) - (9)].measurenode)->setInnerNeta(NULL,(yyvsp[(8) - (9)].netanode)); (yyvsp[(3) - (9)].measurenode)->setRequiredValue((yyvsp[(4) - (9)].doubleconst),(yyvsp[(6) - (9)].doubleconst)); (yyval.netanode) = (yyvsp[(3) - (9)].measurenode); netaparser.popContext(); }
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 138 "neta_grammar.yy"
-    { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
+#line 136 "neta_grammar.yy"
+    { (yyval.netanode) = (yyvsp[(1) - (1)].netanode); }
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 139 "neta_grammar.yy"
-    { (yyval.typelist) = (yyvsp[(2) - (3)].typelist); }
+#line 137 "neta_grammar.yy"
+    { (yyval.netanode) = (yyvsp[(2) - (2)].netanode); (yyvsp[(2) - (2)].netanode)->setReverseLogic(); }
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 143 "neta_grammar.yy"
-    { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
+#line 138 "neta_grammar.yy"
+    { (yyval.netanode) = netaparser.link((yyvsp[(1) - (3)].netanode),(yyvsp[(3) - (3)].netanode)); }
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 144 "neta_grammar.yy"
-    { (yyval.typelist) = netaparser.joinElementTypes((yyvsp[(1) - (3)].typelist),(yyvsp[(3) - (3)].typelist)); }
+#line 142 "neta_grammar.yy"
+    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Any); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 148 "neta_grammar.yy"
-    { (yyval.typelist) = netaparser.createElementType((yyvsp[(1) - (1)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
+#line 143 "neta_grammar.yy"
+    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Single); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 149 "neta_grammar.yy"
-    { (yyval.typelist) = netaparser.createElementType(-(yyvsp[(2) - (2)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
+#line 144 "neta_grammar.yy"
+    { (yyvsp[(3) - (3)].boundnode)->set((yyvsp[(2) - (3)].typelist), NULL, Bond::Double); (yyval.netanode) = (yyvsp[(3) - (3)].boundnode); netaparser.popContext(); }
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 154 "neta_grammar.yy"
-    { savedval = yylval.netaval; }
+#line 145 "neta_grammar.yy"
+    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Any); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 159 "neta_grammar.yy"
-    { (yyval.ringnode) = netaparser.createRingNode(); }
+#line 146 "neta_grammar.yy"
+    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Single); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 163 "neta_grammar.yy"
-    { (yyval.chainnode) = netaparser.createChainNode(); }
+#line 147 "neta_grammar.yy"
+    { (yyvsp[(4) - (6)].boundnode)->set((yyvsp[(2) - (6)].typelist), (yyvsp[(5) - (6)].netanode), Bond::Double); (yyval.netanode) = (yyvsp[(4) - (6)].boundnode); netaparser.popContext(); }
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 167 "neta_grammar.yy"
-    { (yyval.measurenode) = netaparser.createMeasurementNode(false); }
+#line 152 "neta_grammar.yy"
+    { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 171 "neta_grammar.yy"
-    { (yyval.measurenode) = netaparser.createMeasurementNode(true); }
+#line 153 "neta_grammar.yy"
+    { (yyval.typelist) = (yyvsp[(2) - (3)].typelist); }
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 175 "neta_grammar.yy"
+#line 157 "neta_grammar.yy"
+    { (yyval.typelist) = (yyvsp[(1) - (1)].typelist); }
+    break;
+
+  case 55:
+/* Line 1792 of yacc.c  */
+#line 158 "neta_grammar.yy"
+    { (yyval.typelist) = netaparser.joinElementTypes((yyvsp[(1) - (3)].typelist),(yyvsp[(3) - (3)].typelist)); }
+    break;
+
+  case 56:
+/* Line 1792 of yacc.c  */
+#line 162 "neta_grammar.yy"
+    { (yyval.typelist) = netaparser.createElementType((yyvsp[(1) - (1)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
+    break;
+
+  case 57:
+/* Line 1792 of yacc.c  */
+#line 163 "neta_grammar.yy"
+    { (yyval.typelist) = netaparser.createElementType(-(yyvsp[(2) - (2)].intconst)); if ((yyval.typelist) == NULL) YYABORT; }
+    break;
+
+  case 58:
+/* Line 1792 of yacc.c  */
+#line 168 "neta_grammar.yy"
+    { savedval = yylval.netaval; }
+    break;
+
+  case 59:
+/* Line 1792 of yacc.c  */
+#line 173 "neta_grammar.yy"
+    { (yyval.ringnode) = netaparser.createRingNode(); }
+    break;
+
+  case 60:
+/* Line 1792 of yacc.c  */
+#line 177 "neta_grammar.yy"
+    { (yyval.chainnode) = netaparser.createChainNode(); }
+    break;
+
+  case 61:
+/* Line 1792 of yacc.c  */
+#line 181 "neta_grammar.yy"
+    { (yyval.measurenode) = netaparser.createMeasurementNode(false); }
+    break;
+
+  case 62:
+/* Line 1792 of yacc.c  */
+#line 185 "neta_grammar.yy"
+    { (yyval.measurenode) = netaparser.createMeasurementNode(true); }
+    break;
+
+  case 63:
+/* Line 1792 of yacc.c  */
+#line 189 "neta_grammar.yy"
     { (yyval.boundnode) = netaparser.createBoundNode(); }
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1827 "neta_grammar.cc"
+#line 1905 "neta_grammar.cc"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2055,7 +2133,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 178 "neta_grammar.yy"
+#line 192 "neta_grammar.yy"
 
 
 void yyerror(char *s)

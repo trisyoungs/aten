@@ -1,7 +1,7 @@
 /*
 	*** Preferences Window functions
 	*** src/gui/prefs_funcs.cpp
-	Copyright T. Youngs 2007-2013
+	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
 

@@ -48,10 +48,11 @@ Neta::NetaValue savedval;
 %token <doubleconst> DOUBLECONST
 %token <netakey> NETAKEY
 %token <netaval> NETAVAL
+%token <netarepeat> NETAREPEAT
 %token NETARING NETACHAIN NETAGEOMETRY NETAPATH
 %token <atomgeom> NETAGEOMETRYTYPE
 %token TOKEN
-%type <netanode> node nodelist keyword value expander bound chain
+%type <netanode> node nodelist keyword value repeat expander bound chain
 %type <ringnode> pushctxtr
 %type <chainnode> pushctxtc
 %type <measurenode> pushctxtg pushctxtp
@@ -74,10 +75,12 @@ nodelist:
 node:
 	'!' keyword					{ $2->setReverseLogic(); $$ = $2; }
 	| '!' value					{ $2->setReverseLogic(); $$ = $2; }
+	| '!' repeat					{ $2->setReverseLogic(); $$ = $2; }
 	| '!' expander					{ $2->setReverseLogic(); $$ = $2; }
 	| '!' bound					{ $2->setReverseLogic(); $$ = $2; }
 	| keyword					{ $$ = $1; }
 	| value						{ $$ = $1; }
+	| repeat					{ $$ = $1; }
 	| expander					{ $$ = $1; }
 	| bound						{ $$ = $1; }
 	| '$' TOKEN					{
@@ -108,12 +111,23 @@ value:
 	| NETAVAL saveval NEQ INTCONST			{ $$ = netaparser.createValueNode(savedval, Neta::NotEqualTo, $4); }
 	;
 
+/* Values: Special case for repeat (which we use exclusively elsewhere in 'chain' */
+repeat:
+	NETAREPEAT saveval '=' '=' INTCONST		{ $$ = netaparser.createValueNode(savedval, Neta::EqualTo, $5); }
+	| NETAREPEAT saveval '=' INTCONST		{ $$ = netaparser.createValueNode(savedval, Neta::EqualTo, $4); }
+	| NETAREPEAT saveval '>' INTCONST		{ $$ = netaparser.createValueNode(savedval, Neta::GreaterThan, $4); }
+	| NETAREPEAT saveval '<' INTCONST		{ $$ = netaparser.createValueNode(savedval, Neta::LessThan, $4); }
+	| NETAREPEAT saveval GEQ INTCONST		{ $$ = netaparser.createValueNode(savedval, Neta::GreaterThanEqualTo, $4); }
+	| NETAREPEAT saveval LEQ INTCONST		{ $$ = netaparser.createValueNode(savedval, Neta::LessThanEqualTo, $4); }
+	| NETAREPEAT saveval NEQ INTCONST		{ $$ = netaparser.createValueNode(savedval, Neta::NotEqualTo, $4); }
+	;
+
 /* Expanders : NETA statements that may optionally take a bracketed expansion */
 expander:
 	NETARING					{ $$ = netaparser.createRingNode(); netaparser.popContext(); }
 	| NETACHAIN					{ $$ = netaparser.createChainNode(); netaparser.popContext(); }
 	| NETARING '(' pushctxtr nodelist ')'		{ $3->setInnerNeta($4); $$ = $3; netaparser.popContext(); }
-	| NETACHAIN '(' pushctxtc chain ')'		{ $3->setInnerNeta(NULL,$4); $$ = $3; netaparser.popContext(); }
+	| NETACHAIN '(' pushctxtc chain ',' repeat ')'	{ $3->setInnerNeta(NULL,$4); $$ = $3; netaparser.popContext(); }
 	| NETAGEOMETRY '(' pushctxtg DOUBLECONST ',' DOUBLECONST ',' chain ')' { $3->setInnerNeta(NULL,$8); $3->setRequiredValue($4,$6); $$ = $3; netaparser.popContext(); }
 	| NETAPATH '(' pushctxtp DOUBLECONST ',' DOUBLECONST ',' chain ')' { $3->setInnerNeta(NULL,$8); $3->setRequiredValue($4,$6); $$ = $3; netaparser.popContext(); }
 	;

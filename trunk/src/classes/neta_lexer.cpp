@@ -1,7 +1,7 @@
 /*
 	*** NETA Lexer
 	*** src/parser/neta_lexer.cpp
-	Copyright T. Youngs 2007-2013
+	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
 
@@ -176,7 +176,13 @@ int NetaParser::lex()
 
 		// Is this a NETA value?
 		Neta::NetaValue nv = Neta::netaValue(token, FALSE);
-		if (nv != Neta::nNetaValues)
+		if (nv == Neta::RepeatValue)
+		{
+			msg.print(Messenger::Test, "NETA : ...which is a repeat value (->NETAREPEAT)\n");
+			NetaParser_lval.netaval = nv;
+			return NETAREPEAT;
+		}
+		else if (nv != Neta::nNetaValues)
 		{
 			msg.print(Messenger::Test, "NETA : ...which is a value (->NETAVAL)\n");
 			NetaParser_lval.netaval = nv;

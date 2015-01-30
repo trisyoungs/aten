@@ -59,12 +59,13 @@ extern int NetaParser_debug;
      DOUBLECONST = 268,
      NETAKEY = 269,
      NETAVAL = 270,
-     NETARING = 271,
-     NETACHAIN = 272,
-     NETAGEOMETRY = 273,
-     NETAPATH = 274,
-     NETAGEOMETRYTYPE = 275,
-     TOKEN = 276
+     NETAREPEAT = 271,
+     NETARING = 272,
+     NETACHAIN = 273,
+     NETAGEOMETRY = 274,
+     NETAPATH = 275,
+     NETAGEOMETRYTYPE = 276,
+     TOKEN = 277
    };
 #endif
 /* Tokens.  */
@@ -81,12 +82,13 @@ extern int NetaParser_debug;
 #define DOUBLECONST 268
 #define NETAKEY 269
 #define NETAVAL 270
-#define NETARING 271
-#define NETACHAIN 272
-#define NETAGEOMETRY 273
-#define NETAPATH 274
-#define NETAGEOMETRYTYPE 275
-#define TOKEN 276
+#define NETAREPEAT 271
+#define NETARING 272
+#define NETACHAIN 273
+#define NETAGEOMETRY 274
+#define NETAPATH 275
+#define NETAGEOMETRYTYPE 276
+#define TOKEN 277
 
 
 
@@ -110,7 +112,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 114 "neta_grammar.hh"
+#line 116 "neta_grammar.hh"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
