@@ -80,5 +80,14 @@ then
 fi
 grep 'Version:' ./extra/aten.dsc | sed -e 's/Version: \([0-9a-z\.]\+\)/\1/g'
 
+# ./extra/dmginfo.txt
+echo -n "     dmginfo.txt (Program Version) : "
+if [ "$#" -eq "3" ]
+then
+  cp ./extra/dmginfo.txt ./extra/dmginfo.txt.orig
+  sed -e "s/APP_VERSION=\"\([0-9a-z\.]\+\)\"/APP_VERSION=\"$1.$2\"/g"  ./extra/dmginfo.txt.orig > ./extra/dmginfo.txt
+fi
+grep 'APP_VERSION=' ./extra/dmginfo.txt | sed -e 's/APP_VERSION=\"\([0-9a-z\.]\+\)\"/\1/g'
+
 exit 0
 
