@@ -1,0 +1,713 @@
+<h1>ChangeLog for Release v1.2</h1>
+
+<b>Revision 917</b>
+<ul type='circle'>
+	<li> Fixed crash with manual generator definition for model.</li>
+	<li> Heavy update to 'cif' filter.</li>
+	<li> Added data/BisonConfig.cmake to dist package file lists - Windows and Mac builds were broken without it.</li>
+	<li> Added 'nextarg' command - like 'readnext' but reads directly from file.</li>
+	<li> Corrected 'sgid' and 'sgname' accessors in Cell.</li>
+	<li> Updated About window.</li>
+	<li> Updated CMakeLists.txt to work correctly with new files.</li>
+	<li> Many small modifications to fix Windows build.</li>
+	<li> Renamed Atomtype class as Neta. Added some Forcefield accessors.</li>
+</ul>
+
+<b>Revision 916</b>
+<ul type='circle'>
+	<li> Removed more old (defunct) files from repo.</li>
+</ul>
+
+<b>Revision 915</b>
+<ul type='circle'>
+	<li> Removed some old Bison-related working files.</li>
+</ul>
+
+<b>Revision 914</b>
+<ul type='circle'>
+	<li> Merged Bison branch back into trunk.</li>
+</ul>
+
+<b>Revision 913</b>
+<ul type='circle'>
+	<li> Spacegroup definitons are now in the hands of SGInfo. Fixed escaping of characters in LineParser::getLine(). Added 'sginfo' command. Updated 'cif' filter.</li>
+</ul>
+
+<b>Revision 912</b>
+<ul type='circle'>
+	<li> Reverted ReturnValue::setPtr() to overloaded ReturnValue::set().</li>
+	<li> Fixed PreferencesVariable to use the provided pointer when setting and retrieving values.</li>
+	<li> FInalised Prefs::save().</li>
+	<li> More updates to Prefs window.</li>
+	<li> Changed LineParser::readChars() and associated 'readchars' command to take an optional boolean to force skipping of end-of-line markers.</li>
+</ul>
+
+<b>Revision 908</b>
+<ul type='circle'>
+	<li> Minor changes.</li>
+</ul>
+
+<b>Revision 907</b>
+<ul type='circle'>
+	<li> Simplified and improved ring search - all possible rings of a given maximum size are now properly detected.</li>
+</ul>
+
+<b>Revision 906</b>
+<ul type='circle'>
+	<li> Added ZMap selection to LoadModel dialog, and 'zmap' accessor to PrefsVariable.</li>
+	<li> Added Prefs::gasConstant and added Boltzmann probability checks to MC.</li>
+	<li> Reintroduced 'elec', 'ecut', and 'vcut' commands (now in EnergyCommands) in order to setup energy calculation without poking Prefs.</li>
+	<li> Fixed power operator.</li>
+	<li> Added 'tan' operator.</li>
+	<li> More scripts updated to work with new command syntax.</li>
+</ul>
+
+<b>Revision 905</b>
+<ul type='circle'>
+	<li> Fixed ReturnValue::setARray() which was crashing in spectacular style.</li>
+	<li> Added 'glyphcolour' accessor to PrefsVeriable.</li>
+	<li> Added remaining two example scripts from paper.</li>
+	<li> Added modulus operator.</li>
+	<li> Fixed enabling of undo/redo for default model in GUI.</li>
+	<li> Fixed greedy format specifier (%r) which was not storing data properly.</li>
+	<li> Fixes to GUI-based model saving - logs were not always updated, and current model (rather than current rendersource) was targeted for some data manipulation.</li>
+	<li> Added 'akf' model import/export.</li>
+</ul>
+
+<b>Revision 904</b>
+<ul type='circle'>
+	<li> Added two (paper) example scripts.</li>
+	<li> 'Fixed' rebond for non-periodic systems.</li>
+	<li> Corrected usage of 'element' arguments for SetElement, SelectType, and DeSelectType commands.</li>
+</ul>
+
+<b>Revision 903</b>
+<ul type='circle'>
+	<li> Added example scripts from paper.</li>
+	<li> Fixed use of Atom variable as an element type in TreeNode::argz().</li>
+	<li> Element symbols found by the lexer are now instantiated as constant ElementVariables in the grammar, with pointer set to the corresponding element entry in ElementMap.</li>
+	<li> Added 'Z' numbers to Element info.</li>
+</ul>
+
+<b>Revision 902</b>
+<ul type='circle'>
+	<li> Aten::addForcefield() now sets the new forcefield as the default if no others are loaded.</li>
+	<li> Fixes to parser - pattern&amp; and bound&amp; (PatternBound) variables were completely missing.</li>
+	<li> Corrected some small bugs in parser.</li>
+	<li> Reinstated DL_POLY FIELD export.</li>
+	<li> Changed the way non-standard pointer arrays (i.e.</li>
+	<li> lists) are handled by ReturnValue.</li>
+	<li> Fixed 'readdoublearray' and 'readintegerarray' to handle new array stuff.</li>
+	<li> Fixed deselection of integer ranges of atom IDs.</li>
+	<li> Tweaked appearance of progress indicator in GUI.</li>
+	<li> ReturnValue now stores copy of text data in a Dnchar, rather than just the const char* pointer.</li>
+	<li> Fixed operation of nested Format::writeStrings() - bad use of static members.</li>
+</ul>
+
+<b>Revision 901</b>
+<ul type='circle'>
+	<li> Completed checking of operator types.</li>
+</ul>
+
+<b>Revision 900</b>
+<ul type='circle'>
+	<li> Small fix to 'siesta' exportmodel filter to give correct charge of system.</li>
+	<li> Added full accessor list for Preferences and removed corresponding commands.</li>
+	<li> Made backup and copy of default data in ElementMap to ease preferences cancelling/saving.</li>
+	<li> Big update to Prefs window.</li>
+	<li> Fix to new rebond to prevent crashing when no atoms are present.</li>
+	<li> Added 'selectinsidecell' and 'selectoutsidecell' commands.</li>
+	<li> Cell set commands no longer promote a Log::Structure changes (they shouldn't).</li>
+	<li> Incompletely overhauled operator actions between varied types, and operator checking between varied types.</li>
+</ul>
+
+<b>Revision 899</b>
+<ul type='circle'>
+	<li> Small fix to 'siesta' exportmodel filter to give correct charge of system.</li>
+	<li> Added full accessor list for Preferences and removed corresponding commands.</li>
+	<li> Made backup and copy of default data in ElementMap to ease preferences cancelling/saving.</li>
+	<li> Big update to Prefs window.</li>
+	<li> Fix to new rebond to prevent crashing when no atoms are present.</li>
+	<li> Added 'selectinsidecell' and 'selectoutsidecell' commands.</li>
+</ul>
+
+<b>Revision 898</b>
+<ul type='circle'>
+	<li> Converted all GL-related definitions to 'double[4]' instead of GLfloat[4] - conversion is applied on retrieval via the relevant copy*() functions.</li>
+	<li> Many changes/fixes to array access and array setting.</li>
+	<li> Reimplemented preferences file loading (saving still to do).</li>
+</ul>
+
+<b>Revision 897</b>
+<ul type='circle'>
+	<li> More work on PreferencesVariable access.</li>
+	<li> Fixes to ElementVariable access.</li>
+	<li> Fixes to filters to use new 'aten.frame' member instead of 'aten.model' when writing out model data.</li>
+	<li> FIxed siesdta filter.</li>
+	<li> Added better array checking in Tree::expandPath().</li>
+</ul>
+
+<b>Revision 896</b>
+<ul type='circle'>
+	<li> Some incomplete stuff.</li>
+</ul>
+
+<b>Revision 895</b>
+<ul type='circle'>
+	<li> In pdb filter &quot;ATOM&quot; keyword was never recognised because of explicit trailing spaces in string - negating length in specifier now strips trailing blank characters on formatted read.</li>
+	<li> Filters are added to master filter lists at the head position so filters read in later override those read in earlier.</li>
+	<li> Added '--filter' CLI switch to permit a filter file to be specified and read in from the CLI.</li>
+	<li> Renamed 'fdf' filter (and nickname) to 'siesta'.</li>
+	<li> Added 'nframes' and 'frames' accessors for Model, and made 'cell' accessor rw (added new Model::setCell(Cell*) member function).</li>
+	<li> New 'E' command argument specifier to require an 'element'.</li>
+	<li> Changed some command specs and code to use new TreeNode::argz() to convert argument to atomic number.</li>
+</ul>
+
+<b>Revision 894</b>
+<ul type='circle'>
+	<li> Better error handling in some parts of grammar.</li>
+	<li> Fixes to grammar.</li>
+	<li> Some scripts updated.</li>
+	<li> Added creation of constant arrays for assignment of initial values.</li>
+	<li> Better checking of initial values given to variables (e.g.</li>
+	<li> type, array size etc.).</li>
+	<li> Modified accessor quantity indicating array (now an integer).</li>
+	<li> Implemented missing accessor list for Pattern type.</li>
+	<li> Major reworking of ElementsMap and associated accessors to allow easy set/get of array'd information.</li>
+	<li> Fixes setting of individual elements of array'd accessors.</li>
+</ul>
+
+<b>Revision 893</b>
+<ul type='circle'>
+	<li> Fix to trajectory seeking.</li>
+	<li> Changes to read-success return integers to make them 'logical'.</li>
+	<li> Fixes to some filters - current model returned by aten.model accessor is now the rendering source as opposed to the master model.</li>
+	<li></li>
+</ul>
+
+<b>Revision 892</b>
+<ul type='circle'>
+	<li> Small fix to StringArrayVariable.</li>
+	<li> Moved completed filters to data/filters, and made some minor fixes.</li>
+	<li> Added possibility to comment with '//' in command language.</li>
+	<li> Added 'cachelimit' command.</li>
+</ul>
+
+<b>Revision 891</b>
+<ul type='circle'>
+	<li> Model's created with '-n' now have undo/redo enabled.</li>
+	<li> Added undo/redo to all path-accessed properties where possible.</li>
+	<li> Fixed use of alternative argument specifications for commands.</li>
+	<li> Implemented arguments and default arguments for user functions.</li>
+	<li> Major changes to set/get action in prefs-based commands.</li>
+</ul>
+
+<b>Revision 890</b>
+<ul type='circle'>
+	<li> Model's created with '-n' now have undo/redo enabled.</li>
+	<li> Added undo/redo to all path-accessed properties where possible.</li>
+	<li> Fixed use of alternative argument specifications for commands.</li>
+	<li> Implemented arguments and default arguments for user functions.</li>
+</ul>
+
+<b>Revision 889</b>
+<ul type='circle'>
+	<li> Reworked 'help' command to not be a 'proper' command.</li>
+	<li> Added rw 'magnitude' accessor to vector type, allowing vector to be scaled by setting the property.</li>
+	<li> Implemented prefs access (accessors still incomplete).</li>
+	<li> Renamed 'afterchar' and 'beforechar' to 'afterstr' and 'beforestr', and made them operate on search strings rather than search characters.</li>
+	<li> Reimplemented vector constants ( {a,b,c} ) in grammar.</li>
+	<li> Fixes to some commands.</li>
+</ul>
+
+<b>Revision 888</b>
+<ul type='circle'>
+	<li> Removed 'warn' command.</li>
+	<li> Some fixes to read/write commands, especially formatted read/write.</li>
+</ul>
+
+<b>Revision 887</b>
+<ul type='circle'>
+	<li> Changes.</li>
+</ul>
+
+<b>Revision 886</b>
+<ul type='circle'>
+	<li> Updated command definitions, and some commands.</li>
+</ul>
+
+<b>Revision 885</b>
+<ul type='circle'>
+	<li> Fixes to various CMakeList.txt's.</li>
+	<li> Added data/BisonConfig.cmake to permit compilation of Bison parser with CMake.</li>
+</ul>
+
+<b>Revision 884</b>
+<ul type='circle'>
+	<li> Added unformatted history file import to DL_POLY filter.</li>
+	<li> Minor improvements to grammar.</li>
+</ul>
+
+<b>Revision 883</b>
+<ul type='circle'>
+	<li> Fixed plenty of memory leaks - base class TreeNode was not declared with a virtual destructor.</li>
+	<li> Fixed parsing of forcefields and atomtypes - geometry commands now exist in the list of known atomtype commands, duplicating names in Atom::AtomGeometry.</li>
+	<li> Fixes to bond rendering.</li>
+	<li> Updated model and status bar to keep track of and display the number of atoms of unknown eloement ('XX').</li>
+</ul>
+
+<b>Revision 882</b>
+<ul type='circle'>
+	<li> Adjusted some aspects of command spec - partial OR'ing, and number repeats (needs testing).</li>
+</ul>
+
+<b>Revision 881</b>
+<ul type='circle'>
+	<li> Added water66 DL_POLY example CONFIG and HISu file.</li>
+	<li> Version was changed in a prior commit to 1.2.</li>
+	<li> Updated reporting of command syntax.</li>
+</ul>
+
+<b>Revision 880</b>
+<ul type='circle'>
+	<li> Fixed broken repo - command/nucommand conflicts.</li>
+</ul>
+
+<b>Revision 879</b>
+<ul type='circle'>
+	<li> Tidying up source tree (2/2).</li>
+</ul>
+
+<b>Revision 878</b>
+<ul type='circle'>
+	<li> Tidying up source tree (part 2/2).</li>
+</ul>
+
+<b>Revision 877</b>
+<ul type='circle'>
+	<li> Tidying up source tree (part 2/2).</li>
+</ul>
+
+<b>Revision 876</b>
+<ul type='circle'>
+	<li> Tidying up source tree (part 1/2).</li>
+</ul>
+
+<b>Revision 875</b>
+<ul type='circle'>
+	<li> Trajectory import working.</li>
+	<li> Added capability for functions to take and return arrays as arguments.</li>
+	<li> Unformatted DL_POLY trajectory import added.</li>
+	<li> Fixed errors with single (static) commands run from the GUI.</li>
+</ul>
+
+<b>Revision 874</b>
+<ul type='circle'>
+	<li> Minor - added functions to find, set, and retrieve trajectory header and frame functions.</li>
+</ul>
+
+<b>Revision 873</b>
+<ul type='circle'>
+	<li> Updated error reporting when parsing from files (e.g.</li>
+	<li> filters etc.).</li>
+	<li> Significant improvements to grammar and tree generation.</li>
+	<li> User-defined functions added.</li>
+</ul>
+
+<b>Revision 872</b>
+<ul type='circle'>
+	<li> Changes.</li>
+</ul>
+
+<b>Revision 871</b>
+<ul type='circle'>
+	<li> Changes to command spec.</li>
+	<li> (a bit more)</li>
+</ul>
+
+<b>Revision 870</b>
+<ul type='circle'>
+	<li> Changes to command spec.</li>
+</ul>
+
+<b>Revision 869</b>
+<ul type='circle'>
+	<li> Changes once more.</li>
+</ul>
+
+<b>Revision 868</b>
+<ul type='circle'>
+	<li> Trajectory creation from scripts/filters now working.</li>
+	<li> More filters converted.</li>
+</ul>
+
+<b>Revision 867</b>
+<ul type='circle'>
+	<li> Trajectory creation from scripts/filters now working.</li>
+	<li> More filters converted.</li>
+</ul>
+
+<b>Revision 866</b>
+<ul type='circle'>
+	<li> Added AND and OR operators, and fixed OperatorNegate.</li>
+	<li> Added partial trajectory creation handling from scripts.</li>
+</ul>
+
+<b>Revision 865</b>
+<ul type='circle'>
+	<li> Reimplementation of arrays as separate classes (one for each type) with PointerVariable and PointerArrayVariable base classes for pointer variables.</li>
+	<li> Renamed all Nu* classes and removed some old files.</li>
+</ul>
+
+<b>Revision 864</b>
+<ul type='circle'>
+	<li> More filters and fixes.</li>
+</ul>
+
+<b>Revision 863</b>
+<ul type='circle'>
+	<li> More stuff.</li>
+</ul>
+
+<b>Revision 862</b>
+<ul type='circle'>
+	<li> Fix and fix again.</li>
+</ul>
+
+<b>Revision 861</b>
+<ul type='circle'>
+	<li> More stuff up and running.</li>
+</ul>
+
+<b>Revision 860</b>
+<ul type='circle'>
+	<li> File tidy up.</li>
+	<li> Billions more bugs fixed.</li>
+</ul>
+
+<b>Revision 859</b>
+<ul type='circle'>
+	<li> Changes.</li>
+</ul>
+
+<b>Revision 858</b>
+<ul type='circle'>
+	<li> Added While, DoWhile, Break, and Continue flow control.</li>
+</ul>
+
+<b>Revision 857</b>
+<ul type='circle'>
+	<li> Preliminary change to allow escaped characters in parser strings.</li>
+</ul>
+
+<b>Revision 856</b>
+<ul type='circle'>
+	<li> Fixes to vector set/assignment, and setting of components of vector quantities.</li>
+</ul>
+
+<b>Revision 855</b>
+<ul type='circle'>
+	<li> Ch-ch-changes.</li>
+</ul>
+
+<b>Revision 854</b>
+<ul type='circle'>
+	<li> Changes....</li>
+</ul>
+
+<b>Revision 853</b>
+<ul type='circle'>
+	<li> changes.</li>
+</ul>
+
+<b>Revision 852</b>
+<ul type='circle'>
+	<li> Fixed list-based crashes.</li>
+</ul>
+
+<b>Revision 851</b>
+<ul type='circle'>
+	<li> Changes.</li>
+	<li> Odd segfault madness - variable.h/treenode.h prev/next pointer clash?</li>
+</ul>
+
+<b>Revision 850</b>
+<ul type='circle'>
+	<li> Fixes.</li>
+</ul>
+
+<b>Revision 849</b>
+<ul type='circle'>
+	<li> More stuff.</li>
+</ul>
+
+<b>Revision 848</b>
+<ul type='circle'>
+	<li> Partial addition of post/prefix increment/decrement operators.</li>
+</ul>
+
+<b>Revision 847</b>
+<ul type='circle'>
+	<li> Path setting implemented.</li>
+	<li> Formatted writing implemented.</li>
+</ul>
+
+<b>Revision 846</b>
+<ul type='circle'>
+	<li> Fixed nuparser checking of tree pointer.</li>
+</ul>
+
+<b>Revision 845</b>
+<ul type='circle'>
+	<li> Changes.</li>
+</ul>
+
+<b>Revision 844</b>
+<ul type='circle'>
+	<li> At stage of implementing formatted reading.</li>
+</ul>
+
+<b>Revision 843</b>
+<ul type='circle'>
+	<li> Magyar changes.</li>
+</ul>
+
+<b>Revision 842</b>
+<ul type='circle'>
+	<li> Incredible developments.</li>
+</ul>
+
+<b>Revision 841</b>
+<ul type='circle'>
+	<li> Les Changes.</li>
+</ul>
+
+<b>Revision 840</b>
+<ul type='circle'>
+	<li> Changes (Duh).</li>
+</ul>
+
+<b>Revision 839</b>
+<ul type='circle'>
+	<li> More stuff has changed.</li>
+</ul>
+
+<b>Revision 838</b>
+<ul type='circle'>
+	<li> Baaaaaaaaaaayson.</li>
+</ul>
+
+<b>Revision 837</b>
+<ul type='circle'>
+	<li> Reworking GUI commands.</li>
+	<li> Old Parser now LineParser.</li>
+</ul>
+
+<b>Revision 836</b>
+<ul type='circle'>
+	<li> Replacing old command-code with new routines/structures.</li>
+</ul>
+
+<b>Revision 835</b>
+<ul type='circle'>
+	<li> Complete breakage for Filter update.</li>
+</ul>
+
+<b>Revision 834</b>
+<ul type='circle'>
+	<li> Adjusted commands.</li>
+</ul>
+
+<b>Revision 833</b>
+<ul type='circle'>
+	<li> Bulk added old commands ready for rewriting.</li>
+</ul>
+
+<b>Revision 832</b>
+<ul type='circle'>
+	<li> Simplified grammar.</li>
+	<li> Paths work.</li>
+	<li> Arrays work.</li>
+</ul>
+
+<b>Revision 831</b>
+<ul type='circle'>
+	<li> Bayson.</li>
+</ul>
+
+<b>Revision 830</b>
+<ul type='circle'>
+	<li> Grammatical block-scoped correctness.</li>
+</ul>
+
+<b>Revision 829</b>
+<ul type='circle'>
+	<li> Operator additions.</li>
+</ul>
+
+<b>Revision 828</b>
+<ul type='circle'>
+	<li> Bloops (Bison loops).</li>
+</ul>
+
+<b>Revision 827</b>
+<ul type='circle'>
+	<li> Yak.</li>
+</ul>
+
+<b>Revision 826</b>
+<ul type='circle'>
+	<li> Biiiiig bison.</li>
+</ul>
+
+<b>Revision 825</b>
+<ul type='circle'>
+	<li> Bison paths working.</li>
+</ul>
+
+<b>Revision 824</b>
+<ul type='circle'>
+	<li> Broken Bison.</li>
+</ul>
+
+<b>Revision 823</b>
+<ul type='circle'>
+	<li> Biiiiison.</li>
+</ul>
+
+<b>Revision 822</b>
+<ul type='circle'>
+	<li> Added accessors for other variable types.</li>
+</ul>
+
+<b>Revision 821</b>
+<ul type='circle'>
+	<li> Path traversal working.</li>
+</ul>
+
+<b>Revision 820</b>
+<ul type='circle'>
+	<li> Byson.</li>
+</ul>
+
+<b>Revision 819</b>
+<ul type='circle'>
+	<li> Add untested Bison retrieval of Model and Atom.</li>
+</ul>
+
+<b>Revision 818</b>
+<ul type='circle'>
+	<li> Bison retrieval of simple vector path quantities implemented.</li>
+</ul>
+
+<b>Revision 817</b>
+<ul type='circle'>
+	<li> Bill Bison.</li>
+</ul>
+
+<b>Revision 816</b>
+<ul type='circle'>
+	<li> Bisonic path finding.</li>
+</ul>
+
+<b>Revision 813</b>
+<ul type='circle'>
+	<li> Bison - before path implementation.</li>
+</ul>
+
+<b>Revision 812</b>
+<ul type='circle'>
+	<li> Major Bison movements.</li>
+</ul>
+
+<b>Revision 811</b>
+<ul type='circle'>
+	<li> Add nucommand to Bison.</li>
+</ul>
+
+<b>Revision 810</b>
+<ul type='circle'>
+	<li> Started adding old commands back in.</li>
+</ul>
+
+<b>Revision 809</b>
+<ul type='circle'>
+	<li> Bison.</li>
+</ul>
+
+<b>Revision 808</b>
+<ul type='circle'>
+	<li> Completed Bison parser.</li>
+</ul>
+
+<b>Revision 807</b>
+<ul type='circle'>
+	<li> Bai sun.</li>
+</ul>
+
+<b>Revision 806</b>
+<ul type='circle'>
+	<li> Bi son.</li>
+</ul>
+
+<b>Revision 805</b>
+<ul type='circle'>
+	<li> Minorbison.</li>
+</ul>
+
+<b>Revision 804</b>
+<ul type='circle'>
+	<li> B-b-b-b-b-bison.</li>
+</ul>
+
+<b>Revision 803</b>
+<ul type='circle'>
+	<li> Significant Bisonage.</li>
+</ul>
+
+<b>Revision 802</b>
+<ul type='circle'>
+	<li> Bisonic file removal.</li>
+</ul>
+
+<b>Revision 801</b>
+<ul type='circle'>
+	<li> Bisonic modifications.</li>
+</ul>
+
+<b>Revision 800</b>
+<ul type='circle'>
+	<li> More Bisonification.</li>
+</ul>
+
+<b>Revision 799</b>
+<ul type='circle'>
+	<li> Heavy Bison changes.</li>
+</ul>
+
+<b>Revision 798</b>
+<ul type='circle'>
+	<li> Bison branch changes.</li>
+</ul>
+
+<b>Revision 797</b>
+<ul type='circle'>
+	<li> Bison branch parser changes.</li>
+</ul>
+
+<b>Revision 796</b>
+<ul type='circle'>
+	<li> Bison branch changes.</li>
+</ul>
+
+<b>Revision 795</b>
+<ul type='circle'>
+	<li> Commit to bison branch.</li>
+</ul>
+
+<b>Revision 794</b>
+<ul type='circle'>
+	<li> Creating 'bison' branch.</li>
+</ul>
+
+</section>

@@ -1,0 +1,647 @@
+<h1>ChangeLog for Release v1.7</h1>
+
+<b>Revision 1690</b>
+<ul type="circle">
+	<li>Added detection of valid X11 DISPLAY, forcing Aten to run in console mode if no X-server is present.</li>
+	<li>Replaced optional renaming argument of 'loadmodel' with optional filter nickname specification to force loading of model in desired format.</li>
+</ul>
+<b>Revision 1689</b>
+<ul type="circle">
+	<li>Added MAXIT and PCM options to GAMESS-US output filter, and adjusted output.</li>
+	<li>Fixed - Setting quoted filter options on the command line now works.</li>
+	<li>Added ability to set filter options for expression export.</li>
+</ul>
+<b>Revision 1688</b>
+<ul type="circle">
+	<li>Added option to Build widget to adjust bond tolerance.</li>
+	<li>Doc update.</li>
+	<li>Added some main menu shortcuts, and tweaked others.</li>
+	<li>Removed old generator-related member functions and variables from ForcefieldAtom, and Forcefield::readGenerator function.</li>
+	<li>Updated Forcefield::save() - now nearly complete.</li>
+</ul>
+<b>Revision 1687</b>
+<ul type="circle">
+	<li>Updated TODO.</li>
+</ul>
+<b>Revision 1686</b>
+<ul type="circle">
+	<li>User action modes in tool windows are now properly deselected when the containing window is closed.</li>
+	<li>Fixed - Update of Cell Definition window after undoing/redoing a cell change.</li>
+	<li>Fixed - Mismatch of logs and crash when redoing an undone action.</li>
+	<li>Added Log::Cell type.</li>
+	<li>Switched usage of Log::Misc to Log::Camera in CellTransform functions when a redraw of the model was necessary.</li>
+	<li>Fixed - Changes to the unit cell would not affect any logs relevant to savepoint.</li>
+	<li>Fixed - Several logs were not updated on undo/redo.</li>
+</ul>
+<b>Revision 1685</b>
+<ul type="circle">
+	<li>Fixed - Format of IFREEZ in GAMESS-US output was incorrect.</li>
+</ul>
+<b>Revision 1684</b>
+<ul type="circle">
+	<li>Fixed - 'insertatom' was broken since Model::addAtom() would somehow mistakenly accept an id in place of a Vec3, and do nothing with it.</li>
+</ul>
+<b>Revision 1683</b>
+<ul type="circle">
+	<li>Fixed - Argument definition for 'selectf' command was wrong, breaking command.</li>
+	<li>Doc update (many missing selection commands).</li>
+	<li>Fixed - Interactive prompt and GUI panel were broken since existing variables could not be referenced.</li>
+</ul>
+<b>Revision 1682</b>
+<ul type="circle">
+	<li>Updated messaging on failed pattern creation.</li>
+	<li>Added check for current colour scheme after setting custom atom colours through the context menu through the context menu.</li>
+</ul>
+<b>Revision 1681</b>
+<ul type="circle">
+	<li>Added overloaded Matrix::applyScaling() and Primitive::defineVertex() functions to accept Vec3<double>s as arguments.</li>
+	<li>Tweaked format of header in disorder builder output.</li>
+	<li>Fixed - watermethane script.</li>
+	<li>Moved glyph rendering to separate file src/render/engine_glyph.cpp and tidied up code a little.</li>
+	<li>Reimplemented tetrahedron rendering.</li>
+	<li>Fixed - Rendering of line glyphs, and arrow bodies of vector and arrow glyphs.</li>
+</ul>
+<b>Revision 1680</b>
+<ul type="circle">
+	<li>Fixed - Tab ordering within and sizes of several tool windows.</li>
+</ul>
+<b>Revision 1679</b>
+<ul type="circle">
+	<li>Added menu option to allow creation of default pattern.</li>
+	<li>Removed optional argument from 'createpatterns' command which allowed default pattern to be accepted.</li>
+	<li>Combined all menu actions source filed in src/gui into one file src/gui/mainmenuactions.cpp.</li>
+</ul>
+<b>Revision 1678</b>
+<ul type="circle">
+	<li>Broken Commit - Partial removal of automatic default pattern generation.</li>
+</ul>
+<b>Revision 1677</b>
+<ul type="circle">
+	<li>Changed 'getview' so it prints out data in a more usable format.</li>
+	<li>Fixed - Added reset of modelview matrix to cell drawing, and fixed drawing of additional cells when Cell Replicate page is visible.</li>
+	<li>Fixed - Creating a new model removed previously-visible models from the list, but did not set the flags in the actual models.</li>
+</ul>
+<b>Revision 1676</b>
+<ul type="circle">
+	<li>Fixed - 'newglyph' was not reporting list of valid glyph types on error.</li>
+	<li>Fixed - Initial vector now set for tubearrow glyph.</li>
+</ul>
+<b>Revision 1675</b>
+<ul type="circle">
+	<li>Fixed - Several test scripts were broken because of removal of 'calculateelec' Prefs member.</li>
+	<li>Fixed - UFF parameters test script.</li>
+	<li>Fixed - Some issues with consistency of signs of calculated van der Waals forces.</li>
+	<li>Added script to test consistency of van der Waals force/energy calculation.</li>
+	<li>Changed ordering of van der Waals Morse potential parameters to be more logical, and corrected conversion of 'k' value.</li>
+</ul>
+<b>Revision 1674</b>
+<ul type="circle">
+	<li>Updated TODO and manual.</li>
+</ul>
+<b>Revision 1673</b>
+<ul type="circle">
+	<li>Fixed - Update of Select window after various toolbar/menu actions.</li>
+</ul>
+<b>Revision 1672</b>
+<ul type="circle">
+	<li>Added KVMap::pairs() function to return first pair in list.</li>
+	<li>Removed filename argument from Forcefield::save().</li>
+	<li>Added 'Save' button to complement 'Save As' in Forcefields window.</li>
+	<li>Added List::second() function to return second item in the list.</li>
+	<li>Doc update.</li>
+	<li>Fixed - Many issues with forcefield save code, but still not complete.</li>
+	<li>Tweaked cgparticle.txt, chloroform.txt, and watermethane.txt scripts to work with new disorder builder code.</li>
+	<li>Removed regions.txt and regions2.txt from repo.</li>
+	<li>Fixed - Consistency of step number in MC output.</li>
+Tweaked all partitions to have more accessible variable values when setting from the CLI.
+</ul>
+<b>Revision 1671</b>
+<ul type="circle">
+	<li>Fixed - Update of element colours after changes in prefs window.</li>
+	<li>Added progress indicator to generation of icons in Fragments window.</li>
+	<li>Fixed - Alpha values were not honoured in element colours (e.g. when setting through prefs).</li>
+	<li>When setting custom atom colour theourh context menu, scheme is now automatically set to 'custom'.</li>
+	<li>Fixed - ZMatrix window was not updated when shown.</li>
+</ul>
+<b>Revision 1670</b>
+<ul type="circle">
+	<li>Fixed - Tweaks in Disorder builder were never accepted since candidate molecule itself was not excluded from loop.</li>
+	<li>Moved all control variable definitions for Disorder builder to the MonteCarlo class, and added accessors.</li>
+	<li>Added method options dialog to Disorder wizard (final page).</li>
+	<li>Fixed - Disorder builder was not cancelable via the progress indicator.</li>
+	<li>Fixed - Progress indicator for Disorder builder indicated no progress.</li>
+	<li>Added recovery procedure to Disorder builder in order to help separate molecules with bad contacts at the end of the build.</li>
+	<li>Added DisorderData::sourceModel() method.</li>
+	<li>Added forcefield pointer to information copied in Model::copy().</li>
+	<li>Fixed - Crash when running Disorder builder twice, which would mistakenly try to delete the previous newly-created model (if there was one).</li>
+	<li>Disorder builder now adds on a valid pattern definition, including original forcefields assigned to component models.</li>
+	<li>Added check for no cell when Disorder building using the free cell option.</li>
+	<li>Fixed - PartitionData::clear() was not nullifying currentCellChunk_ pointer, leading to crashes when re-running disorder builder using the same scheme.</li>
+</ul>
+<b>Revision 1669</b>
+<ul type="circle">
+	<li>Fixed - Command text for 'setupcomponent' definition stated default partition was 0 when it should be 1.</li>
+	<li>Fixed - Disorder builder would fail to find a suitable component for deletion sometimes owing to incorrect usage of recently updated AtenMath::randomi.</li>
+	<li>Reverted AtenMath::randomi() to return random number between 0 and range-1, and corrected 'randomi' command to match.</li>
+	<li>Fixed - Model::selectionDelete() would crash because previous change from atom list to selection list did not grab the atom pointer.</li>
+	<li>Added some more verbosity to Clipboard::copy*() functions, and optional quiet operation flags to some.</li>
+	<li>Fixed - Check for densities in Disorder builder now accounts for accuracy parameter.</li>
+</ul>
+<b>Revision 1668</b>
+<ul type="circle">
+	<li>Fixed - Changes to model (e.g. selections) arising from execution of filters when writing files would fill up undo/redo lists, so now undo/redo is temporarily disabled before calling executeWrite().</li>
+	<li>Added 'random' and 'randomi' functions.</li>
+	<li>Tweaked AtenMath::random() to return 0.0 to 1.0 inclusive, and added function to return random integer between 0 and RAND_MAX.</li>
+	<li>Added CHARMM27 Pro-Na forcefield to repo, in data/fftesting.</li>
+	<li>Fixed - Interactive modes (CLI and GUI) were broken in the sense that variables were cleared from the containing Program after each command.</li>
+	<li>Fixed - Interactive panel of Command Window now resizes columns in the variable list.</li>
+	<li>Added some verbosity to Prefs file loading on startup, stating where and which file(s) were found.</li>
+	<li>Fixed - Stick line widths were not set in Preferences window.</li>
+	<li>Changed Primitive::createCross() to Primitive::plotCross() and removed level-of-detail support.</li>
+	<li>Removed RenderPrimitives::stickAtom_ in favour of plotting vertices each time.</li>
+	<li>Fixed - Unbound stick atoms did not display correctly when selected.</li>
+	<li>Ato file export now writes random number information.</li>
+	<li>Fixed - Ato file import now correctly recognises end of LJ input section.</li>
+</ul>
+<b>Revision 1667</b>
+<ul type="circle">
+	<li>Added prefs GUI options and accessors 'chargelabelformat' to change format of atom charge label, and 'sticknormalwidth' and 'stickselectedwidth' to determine line thicknesses of stick models.</li>
+	<li>Fixed - Display of selected stick atoms with no bonds.</li>
+	<li>Fixed - Labels for atoms were drawn twice each render.</li>
+</ul>
+<b>Revision 1666</b>
+<ul type="circle">
+	<li>Removed arrays of scaled atoms from RenderPrimitives, and made single unit and scaled atom objects, plus stick atom primitive.</li>
+	<li>Rendering of offscreen bitmaps now considerably faster owing to lighter primitive generation load.</li>
+</ul>
+<b>Revision 1665</b>
+<ul type="circle">
+	<li>Removed progress indicator usage from Clipboard::paste(), Clipboard::copySelection(), and Clipboard::copyBonds().</li>
+	<li>Removed ability for ProgressIndicator to display secondary job information, instead allowing just a subtitle to be set if desired.</li>
+	<li>Removed storage of main context pointer in GuiQt since it was utterly pointless on Windows.</li>
+	<li>Removed simple enable/disable of drawing in TCanvas in favour of enum directing rendering target to none, screen, or pixmap.</li>
+	<li>Primitive instances are now cleared at the back end of TCanvas::paintGL if the current drawing target is PixmapTarget.</li>
+	<li>Fixed - Memory leak in Model destructor, not freeing pixelData_.</li>
+</ul>
+<b>Revision 1664</b>
+<ul type="circle">
+	<li>Added new fragments.</li>
+</ul>
+<b>Revision 1663</b>
+<ul type="circle">
+	<li>Fixed - Saving images of models in process/batch modes was broken since the visible models list was not cleared and reinitialised with each model.</li>
+	<li>Added Quick Command item to Edit menu (shortcut F10).</li>
+</ul>
+<b>Revision 1662</b>
+<ul type="circle">
+	<li>Fixed - Warning message regarding element searches on blank string was not suppressed in quiet mode.</li>
+	<li>Fixed - Text labels (i.e.</li>
+	<li>primitives) are now cleared correctly on changing model.</li>
+</ul>
+<b>Revision 1661</b>
+<ul type="circle">
+	<li>Fixed - Disorder builder would delete too many molecules when adjusting for too high density.</li>
+	<li>Tweaked progress indicator to not promote minor events to major ones (prevents excessive messages when using clipboard, and fixes lack of Disorder build progress indicator, amongst other things).</li>
+	<li>Fixed - Some icons were not in plain svg format.</li>
+	<li>Disorder build now creates an undo state on completion.</li>
+</ul>
+<b>Revision 1660</b>
+<ul type="circle">
+	<li>Fixed - Detection of bond planes was broken due to a combination of bad logic and idiocy.</li>
+</ul>
+<b>Revision 1659</b>
+<ul type="circle">
+	<li>Reformatted TODO.</li>
+	<li>Added --process switch to run supplied commands on all models but not save results.</li>
+	<li>Added some verbosity to program modes.</li>
+	<li>Tidied up Atom List widget a little.</li>
+</ul>
+<b>Revision 1658</b>
+<ul type="circle">
+	<li>Added flag to RenderEngine to allow forced clearing of primitive lists in next render.</li>
+	<li>Fixed - Saving images was randomly broken from CLI since filtered primitive lists were not recreated.</li>
+	<li>Fixed - Primitive instances now free their associated OpenGL display list of VBO, but only if they are being freed from the main (permanent) context.</li>
+	<li>Fixed - Echoes of stick bonds/atoms from previous model.</li>
+</ul>
+<b>Revision 1657</b>
+<ul type="circle">
+	<li>Removed ppc from Mac build targets in CMakeLists.txt, since latest Qt 4.7.3 seems to be incompatible.</li>
+</ul>
+<b>Revision 1656</b>
+<ul type="circle">
+	<li>Fixed - Keeping of view through '--keepview' switch was not honoured due to badly placed reset of prefs values on GUI start.</li>
+	<li>Added 'cleartypes' command to remove all atom typing from the current model.</li>
+	<li>Updated manual.</li>
+</ul>
+<b>Revision 1655</b>
+<ul type="circle">
+	<li>Removed debug info from code running scripts from CLI.</li>
+	<li>Fixed - Range checking for component partition was wrong in MonteCarlo::disorder().</li>
+	<li>Fixed - 'newpattern' command was not returning a pointer to the new pattern.</li>
+	<li>Reinstated verbosity of Model::addPattern command.</li>
+	<li>Fixed - Pattern detection would report wrong source atom on failure.</li>
+	<li>Removed Aten::defaultForcefield_ member and accessors since this was being confused with the forcefield stored in current.ff.</li>
+	<li>Fixed - Assigning a forcefield to a specific pattern was broken.</li>
+	<li>Fixed - Rebonding within patterns would ignore the argument specifying whether to augment if the related Prefs value was TRUE.</li>
+	<li>Removed 'defaultff' command since it was just a less-flexible duplicate of 'currentff'.</li>
+	<li>Removed ElementMap::findAlpha() and combined the two ElementMap::find() overloads into one single function for clarity.</li>
+	<li>Fixed - Setting ZMapping style on command line and then loading a forcefield</li>
+</ul>
+<b>Revision 1654</b>
+<ul type="circle">
+	<li>Show Toolbox menu item now repositions toolbox as well, in case it was lost offscreen.</li>
+	<li>Added 'Manual Swap Buffers' option to Settings menu.</li>
+	<li>Fixed - Draw/Detect Hydrogen Bonds menu item was not updated after Prefs change.</li>
+</ul>
+<b>Revision 1653</b>
+<ul type="circle">
+	<li>Fixed - Determination of bond plane did not take into account linear bonds, breaking bond drawing in such cases.</li>
+	<li>Updated TODO.</li>
+</ul>
+<b>Revision 1652</b>
+<ul type="circle">
+	<li>Update pdf with links, and corrected Aten literature reference.</li>
+</ul>
+<b>Revision 1651</b>
+<ul type="circle">
+	<li>Added new user manual to repo.</li>
+</ul>
+<b>Revision 1650</b>
+<ul type="circle">
+	<li>Removed PrefsVariable accessor 'vdwscale' and references thereto, and MonteCarlo::vdwScale_ member, neither of which are used any more.</li>
+	<li>Final removal of old documentation detritus.</li>
+	<li>Removed references to vdwScale in vdW energy and force calculation.</li>
+</ul>
+<b>Revision 1649</b>
+<ul type="circle">
+	<li>More removal of old documentation.</li>
+</ul>
+<b>Revision 1648</b>
+<ul type="circle">
+	<li>Removed definition of VdwScale function left over in last commit.</li>
+	<li>Removed old documentation from repo.</li>
+</ul>
+<b>Revision 1647</b>
+<ul type="circle">
+	<li>Changed 'loadmodel' command so that new current model is returned, rather than the number of models loaded.</li>
+	<li>Removed third argument from 'disorder' command since it was irrelevant.</li>
+	<li>Removed 'vdwscale' command since it is no longer used.</li>
+</ul>
+<b>Revision 1646</b>
+<ul type="circle">
+	<li>Fixed - Transformation of selected atoms by matrix was broken.</li>
+</ul>
+<b>Revision 1645</b>
+<ul type="circle">
+	<li>Updated todo.</li>
+	<li>Minor fix in mainwindow_funcs.cpp (printf format).</li>
+</ul>
+<b>Revision 1644</b>
+<ul type="circle">
+	<li>Added saving of main window geometry to global settings.</li>
+	<li>Fixed - Toolbox position was not restored correctly on startup.</li>
+</ul>
+<b>Revision 1643</b>
+<ul type="circle">
+	<li>Rearranged Scripts tab of Command window a little, and added button to allow selected scripts to be removed.</li>
+	<li>Fixed - Rebond (No Augment) option in Build window was still augmenting bonds.</li>
+	<li>Added menu item to toggle detection/display of H-bonds in models.</li>
+	<li>Fixed - Drawing of selected multiple stick bonds was broken.</li>
+</ul>
+<b>Revision 1642</b>
+<ul type="circle">
+	<li>Renamed 'gridcolourprimary' command to 'gridcolour' for consistency, and renamed internal enum to match.</li>
+</ul>
+<b>Revision 1641</b>
+<ul type="circle">
+	<li>Fixed - Disorder builder was checking for partition density for models using 'population' insertion policy.</li>
+	<li>Fixed - Model variable member 'componentpartition' was being set with ID in range 1-N as opposed to 0-N-1.</li>
+	<li>Made lower limit for disorder scalefactor a bit more generous (1.0 c.f.</li>
+	<li>1.15).</li>
+</ul>
+<b>Revision 1640</b>
+<ul type="circle">
+	<li>Fixed - Fragments window was not updated on first showing.</li>
+</ul>
+<b>Revision 1639</b>
+<ul type="circle">
+	<li>Corrected some spelling errors in copyright notices in a few files.</li>
+</ul>
+<b>Revision 1638</b>
+<ul type="circle">
+	<li>Fixed - ElementO button in Build window was not in the relevant buttongroup.</li>
+	<li>Fixed - Loaded models etc. are now made the visible primary model.</li>
+</ul>
+<b>Revision 1637</b>
+<ul type="circle">
+	<li>Fixed - Stack counters in PrimitiveInstances were never updated.</li>
+	<li>Fixed - Update of primitives after Prefs change was utterly broken.</li>
+</ul>
+<b>Revision 1636</b>
+<ul type="circle">
+	<li>Fixed - WidgetNode::setWidgetValue() was not returning a value.</li>
+</ul>
+<b>Revision 1635</b>
+<ul type="circle">
+	<li>Fixed - Forces for BondConstraint angles were calculated incorrectly.</li>
+</ul>
+<b>Revision 1634</b>
+<ul type="circle">
+	<li>Fixed - Drawing of Fragments when DrawFragmentAction was active was broken.</li>
+	<li>Added extra flag to RenderEngine::render3D() to allow forcing of all lists to be updated.</li>
+	<li>Fixed - Icons were not generated for fragments created from selections.</li>
+</ul>
+<b>Revision 1633</b>
+<ul type="circle">
+	<li>Fixed - 'addangle, 'addbond', and 'addtorsion' member functions of ForcefieldVariable now return a value of type ForcefieldBound.</li>
+</ul>
+<b>Revision 1632</b>
+<ul type="circle">
+	<li>Removed enum member LineParser::Defaults and references thereto, and added LineParser::StripComments.</li>
+	<li>Control of comment removal is now governed by the state of the LineParser::StripComments bit.</li>
+	<li>Fixed - Always stripping comments in LineParser::readNextLine was a bad idea, and broke cds filter which needed the commented lines.</li>
+	<li>Fixed - Some read options were not passed down to commands from parent tree.</li>
+</ul>
+<b>Revision 1631</b>
+<ul type="circle">
+	<li>Fixed - Generator::setMatrixPart was setting incorrect translation vectors because of incorrect string to number conversion.</li>
+	<li>Fixed - Model::pack() was using transpose of rotation matrix from SGinfo by mistake, breaking 'exotic' spacegroups.</li>
+	<li>Fixed - Generator::setMatrixPart() was setting the transpose of the rotation matrix.</li>
+	<li>Fixed - Generator::set() was not clearing the matrix before setting it, leaving traces of the identity matrix behind.</li>
+	<li>Changed Generator::setMatrixPart() to return void instead of bool, since it wasn't returning anything useful.</li>
+	<li>WidgetNode::setWidgetValue() now returns a bool to allow better checking of success by other routines.</li>
+	<li>Fixed - Setting a widget option (when specifying a filter) which contained an invalid combo item would not raise an error.</li>
+	<li>Added Matrix::setRow() functions.</li>
+</ul>
+<b>Revision 1630</b>
+<ul type="circle">
+	<li>Updated Grids Widget to allow simultaneous editing of multiple grids at once, including display/editing of all grids across all models instead of just the current one.</li>
+	<li>Updated WrapInt class with more useful constructor.</li>
+	<li>Implemented different colour of multiple partitions in same scheme.</li>
+</ul>
+<b>Revision 1629</b>
+<ul type="circle">
+	<li>Added detection and rendering of hydrogen bonds, and added Prefs GUI option and accessors to control it.</li>
+	<li>Moved Colours to separate subpage in View options in Prefs window.</li>
+	<li>Fixed - Stick primitives were not correctly cleared all the time (e.g. when starting a new model).</li>
+	<li>Removed debug output from tcanvas_funcs.cpp.</li>
+</ul>
+<b>Revision 1628</b>
+<ul type="circle">
+	<li>Removed some style definitions from several ui files (ToolTipBase and ToolTipText) to fix build using Qt 4.3.</li>
+	<li>Added basic case code to GuiQt::pid() to fix build with Qt4.3.</li>
+	<li>Fixed - Some (all?) picking modes were broken due to the mode being reactivated in the buttongroup callback, without the number of atoms to pick supplied.</li>
+</ul>
+<b>Revision 1627</b>
+<ul type="circle">
+	<li>Moved variable setting code from PartitionScheme::setVariable() to general Tree::setVariable().</li>
+	<li>Added ability to set filter options in 'savemodel' command and --export mode.</li>
+	<li>Removed descriptive text from DFTTYP options in GAMESS-US filter.</li>
+	<li>Fixed - Export and BatchExport modes were not setting custom option values in filters.</li>
+	<li>Fixed - Some crash-inducing pointer misuses in WidgetNode::setWidgetValue.</li>
+</ul>
+<b>Revision 1626</b>
+<ul type="circle">
+	<li>Fixed - Default number of steps in GAMESS-US optimize runs was incorrect in filter.</li>
+	<li>Fixed - Orthographic view was flipped top to bottom.</li>
+</ul>
+<b>Revision 1625</b>
+<ul type="circle">
+	<li>Fixed - Include paths for GL/gl.h in render/vertexchunk.h and render/primitiveinfo.h were incorrect on Mac OS X.</li>
+	<li>Minor code cleanups throughout.</li>
+	<li>Fixed - Glyph rendering was mistakenly passing colour as boolean calcCentroid values for triangle glyphs.</li>
+	<li>Fixed - Crash related to primitive updates when no previous instance was present.</li>
+	<li>Fixed - List and Reflist now do much more checking for NULL pointers in many of their member functions.</li>
+	<li>Fixed - Windows build was broken due to use of VBOs requiring extension functions to be defined.</li>
+</ul>
+<b>Revision 1624</b>
+<ul type="circle">
+	<li>Fixed - Aromatic ring name/keyword was missing from atom colour lists.</li>
+</ul>
+<b>Revision 1623</b>
+<ul type="circle">
+	<li>Fixed - Vector shift buttons were not connected.</li>
+	<li>More updates to Vibrations widget - control over frame delay, better checking of source data.</li>
+	<li>Moved generation of fragment icons to be first repopulation of Fragments Widget list, rather than on startup.</li>
+	<li>Removed calls to GuiQt::setInteractive() when updating and terminating progress dialog.</li>
+	<li>Fixed - TCanvas::displayModel() would potentially return a vibration frame pointer, which should never be necessary.</li>
+	<li>Added integer vibration frame index counter to Model, and frame retrieval function.</li>
+	<li>Fixed - Prefs option keepView had no effect on trajectory frames.</li>
+	<li>Fixed - keepview option is now switched off when GUI starts.</li>
+	<li>Removed usage of OpenGL calls in Model::setupView(), preferring instead to calculate projection matrices directly.</li>
+	<li>Removed wasteful Model-specific rotation globe projection matrices in favour of on-the-fly creation in RenderEngine.</li>
+	<li>Removed all references to 'savevector' command.</li>
+	<li>Added ability to save images of vibration frames (movies to follow).</li>
+</ul>
+<b>Revision 1622</b>
+<ul type="circle">
+	<li>Fixed - Many action-related buttons in dock widgets (namely Transform) were missing from the internal button group.</li>
+	<li>Renamed some members of UserAction enum to provide better coherence with widget names in GUI.</li>
+	<li>Added data/test/axes.xyz example.</li>
+	<li>Fixed - Stick-style was 'bleeding' between models because the relevant primitives were not propery cleared.</li>
+	<li>Fixed - Update issues relating to global style changes through toolbar and View menu.</li>
+</ul>
+<b>Revision 1621</b>
+<ul type="circle">
+	<li>Fixed - Delay value in Trajectory widget was ignored.</li>
+	<li>Added GuiQt::setInteractivity() function to allow interactivity to be turned on/off, leaving only ability to be changing camera view.</li>
+	<li>Increased maximum number of disorder cycles to 10000.</li>
+	<li>Fixed - Rendering of vibration frames was broken.</li>
+	<li>Vibrations window updated and partially improved.</li>
+	<li>Fixed - Matrix transformation of systems appeared to be broken for several reasons.</li>
+</ul>
+<b>Revision 1620</b>
+<ul type="circle">
+	<li>Added KVTable::pairs() function to return head of pair list.</li>
+	<li>Made QButtonGroups list a private member of CustomDialog so they could be deleted properly on destruction.</li>
+	<li>Added postRedisplay() call to TCanvas::generateImage() to prevent usage of current buffer when saved image is same size as context.</li>
+	<li>Added 'selectfor' and 'deselectfor' commands, and options to do so in Select widget.</li>
+	<li>Fixed - RenderEngine::initialiseGL() was only called in TCanvas::initialiseGL(), meaning that spotlight / colour changes etc were not propagated to the main view (but were to saved images).</li>
+	<li>Made spotlight default position a little more sensible, and changed Prefs window UI widgets to allow more extreme values.</li>
+</ul>
+<b>Revision 1619</b>
+<ul type="circle">
+	<li>Fixed - Stick rendering was incorrect and slow, and is now much better.</li>
+</ul>
+<b>Revision 1618</b>
+<ul type="circle">
+	<li>Fixed - Changing status of grid volume outline in Grid class was not logging change in self or parent Model.</li>
+	<li>Fixed - GridPrimitives now use no instances.</li>
+</ul>
+<b>Revision 1617</b>
+<ul type="circle">
+	<li>Added CLI option to force rendering to use direct vertex array passing only, rather than display lists.</li>
+	<li>Finished implementation of primitive instances.</li>
+</ul>
+<b>Revision 1616</b>
+<ul type="circle">
+	<li>Updates to new rendering method.</li>
+</ul>
+<b>Revision 1615</b>
+<ul type="circle">
+	<li>Broken commit - partial implementation of Primitive instantiation method.</li>
+</ul>
+<b>Revision 1614</b>
+<ul type="circle">
+	<li>Reverted to old text rendering (no lists) for simplicity and sanity.</li>
+	<li>Added Reflist of text glyphs to Model and separate rendering function.</li>
+</ul>
+<b>Revision 1613</b>
+<ul type="circle">
+	<li>Updated 'speedtest' function to provide better output.</li>
+	<li>Removed Log::Visual and replaced with Log::Camera and Log::Style.</li>
+	<li>Improved rendering engine to only recalculate primitive lists on model (rather than camera) change.</li>
+	<li>Added != operator to and isSame(Log::LogType, Log &other) functions to Log.</li>
+	<li>Glyph lineWidth_ property removed.</li>
+	<li>Removed TCanvas::isValid() function, since it was hiding a function from QGLWidget.</li>
+	<li>Disabled rendering check for now, since it didn't work.</li>
+	<li>Made some commonly-used pointer members of GuiQt private (e.g. mainWidget, mainWindow etc.).</li>
+	<li>Text object rendering broken in current commit (to be fixed subsequently).</li>
+	<li>Added (optional) use of vertex buffer objects (--vbo CLI switch).</li>
+</ul>
+<b>Revision 1612</b>
+<ul type="circle">
+	<li>Fixed - Atom::copy was neglecting hidden status meaning, for example, that hidden atoms were not honoured in vibration frame generation.</li>
+	<li>Fixed - Vibration arrow drawing for hidden atoms fixed.</li>
+</ul>
+<b>Revision 1611</b>
+<ul type="circle">
+	<li>Added code to allow removal of trajectory from current model.</li>
+	<li>Added additional menu items controlling propagation of style to/from parent model in trajectory frames.</li>
+	<li>Fixed - Vibrations widget is now disabled when no vibrations are available.</li>
+</ul>
+<b>Revision 1610</b>
+<ul type="circle">
+	<li>Fixed - User includes were not loaded since wrong path was searched.</li>
+	<li>Fixed - Some user-file loading code was not using the Aten::atenDir_ variable to determine the path, meaning Windows versions would not find anything.</li>
+	<li>Fixed - Loading multiple include files was erasing previously defined global functions.</li>
+	<li>Added extra, optional argument to all Parser::generate() and Tree::generate() calls to allow clearing of previous program cnoitents to be overridden.</li>
+</ul>
+<b>Revision 1609</b>
+<ul type="circle">
+	<li>Added many checks for NULL nodes to parser grammar.</li>
+</ul>
+<b>Revision 1608</b>
+<ul type="circle">
+	<li>Finished basic implementation of parent style copying in trajectory playback.</li>
+</ul>
+<b>Revision 1607</b>
+<ul type="circle">
+	<li>Partial implementation of trajectory style copying.</li>
+</ul>
+<b>Revision 1606</b>
+<ul type="circle">
+	<li>Program and user prefs file loading now looks for 'prefs.txt' and 'user.txt' in addition to dat files.</li>
+	<li>Removed Aten::prefsCommands in favour of using local Program variables in Prefs::load().</li>
+	<li>Tweaked progress indicator to always (unless quiet) print job title in text mode.</li>
+	<li>Added prefs options for post-processing video encoder executable and arguments, and necessary accessors and GUI options.</li>
+</ul>
+<b>Revision 1605</b>
+<ul type="circle">
+	<li>Fixed - Rotation globe was not hidden when saving bitmap images from the command-line.</li>
+	<li>Fixed - User background colour settings were lost.</li>
+</ul>
+<b>Revision 1604</b>
+<ul type="circle">
+	<li>Fixed - --noqtsettings switch was broken.</li>
+	<li>Fixed - Grid origin group had default widget title.</li>
+</ul>
+<b>Revision 1603</b>
+<ul type="circle">
+	<li>Fixed some issues with documentation which prevented build.</li>
+</ul>
+<b>Revision 1602</b>
+<ul type="circle">
+	<li>Fixed - 'selectfftype' was performing inverted selection.</li>
+	<li>Fixed - Grammar would allow failed function additions to pass without aborting program.</li>
+</ul>
+<b>Revision 1601</b>
+<ul type="circle">
+	<li>Reinstated importgrid filter for cube files, but model data is no longer loaded.</li>
+	<li>Fixed - Missing endGL() call in TCanvas::isRenderingOk() which was killing all rendering.</li>
+	<li>Made TCanvas::isRenderingOk() more robust.</li>
+	<li>Fixed - Spewing of QPainter errors when certain dock widgets were floated, related to assigned svg window icons.</li>
+</ul>
+<b>Revision 1600</b>
+<ul type="circle">
+	<li>Added trial function to detect corrupt rendering canvas.</li>
+	<li>Changed declaration of Prefs::load() to accept no arguments - program and user preferences are both loaded from the function (if they exist).</li>
+</ul>
+<b>Revision 1599</b>
+<ul type="circle">
+	<li>Changed Gaussian cube file filter type from 'importgrid' to 'importmodel'.</li>
+</ul>
+<b>Revision 1598</b>
+<ul type="circle">
+	<li>Fixed - ato filter was reading rotations wrongly.</li>
+	<li>Added test file data/test/ipa.ato.</li>
+	<li>Made more of Pattern output only visible when in verbose mode.</li>
+	<li>Added progress indicators to Disorder-related functions.</li>
+	<li>Some general fixes and tweaks to progress indicators.</li>
+	<li>Fixed - Update of main view after disorder build.</li>
+</ul>
+<b>Revision 1597</b>
+<ul type="circle">
+	<li>Renamed some functions in DisorderData and MonteCarlo::disorder() for clarity.</li>
+	<li>Implemented new GUI progress dialog.</li>
+	<li>Fixed Windows build.</li>
+	<li>Fixed - All dock widgets referred to the wrong button (AtomListButton) when setting its own state.</li>
+	<li>Fixed - Corruption and update of extra visual elements from CellTransform widget.</li>
+</ul>
+<b>Revision 1596</b>
+<ul type="circle">
+	<li>Partial reimplementation of progress indicator.</li>
+	<li>Removed configure option --with-oldqt - propet QT_VERSION define now used instead.</li>
+</ul>
+<b>Revision 1594</b>
+<ul type="circle">
+	<li>Merging changes from nugui branch back into trunk.</li>
+</ul>
+<b>Revision 1568</b>
+<ul type="circle">
+	<li>Added Atom::data_ member to permit temporary storage of data associated to individual atoms (from filters, etc.) and accessors to match.</li>
+	<li>Added preliminary basis for EPSR ATO file import and export filter.</li>
+	<li>Fixed - 'nextarg' command failed with DOS-style linefeeds, since LineParser::getCharsDelim() did not recognise them.</li>
+</ul>
+<b>Revision 1560</b>
+<ul type="circle">
+	<li>Updated changeversion script to accept alpha character minor subversion.</li>
+</ul>
+<b>Revision 1557</b>
+<ul type="circle">
+	<li>Fixed some debug output calls in Aten::openIncludes() and Aten::openFilters().</li>
+	<li>Fixed - Checking for presence of standard input on startup failed to realise there was no input on some systems.</li>
+</ul>
+<b>Revision 1529</b>
+<ul type="circle">
+	<li>Tweaks to aten.dsc (from 1.6 release).</li>
+</ul>
+<b>Revision 1527</b>
+<ul type="circle">
+	<li>Reversioned to 1.7 (some files had been overwritten with 1.6 versions).</li>
+</ul>
+<b>Revision 1525</b>
+<ul type="circle">
+	<li>Tweaked cldp-il.ff again.</li>
+	<li>Updated build files to fix some builds (from 1.6 commits).</li>
+</ul>
+<b>Revision 1519</b>
+<ul type="circle">
+	<li>Changed definitions for dicyanamide anion in cldp-il.ff so as not to use multiple bond information.</li>
+</ul>
+<b>Revision 1518</b>
+<ul type="circle">
+	<li>Minor change to Ring class to prevent misuse of potentially undefined value.</li>
+</ul>
+<b>Revision 1512</b>
+<ul type="circle">
+	<li>Tweaks to changelog1.6 and doc build script (to remove aggravating xml header in single-page manual).</li>
+</ul>
+<b>Revision 1510</b>
+<ul type="circle">
+	<li>Added 1.6 changelog to trunk.</li>
+</ul>
+<b>Revision 1496</b>
+<ul type="circle">
+	<li>Version bump to 1.7.</li>
+</ul>

@@ -1,0 +1,193 @@
+# Aten 'Custom' file format (for v1.2+)
+# Created:	 14/05/2009
+# Last modified: 02/09/2011
+# ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
+#	11/12/2010 - Tweaked glyph data-reading loop
+#	09/12/2010 - Added 'wireframe' glyph property and more associated verbosity. Fixed some minor bugs.
+# 	02/09/2010 - Added read/write of atom style / custom colour information
+# 	27/06/2010 - Added glyph support
+# 	09/04/2010 - Added 'title' keyword
+
+filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension="akf", glob="*.akf", id=1)
+{
+	# Variable declaration
+	int n,i,j,k,l,ndata,atomdata, fixed;
+	String e,keywd,line,type,style;
+	double rx,ry,rz, lengths[3], angs[3], q, colour[4], data;
+	Atom atm;
+	Vector v;
+
+	newModel(filterFilename());
+
+	addReadOption("skipblanks");
+
+	# Read line
+	while (!eof())
+	{
+		readLineF("%s%r",keywd,line);
+		if (keywd == "") continue;
+
+		if (keywd == "atom")
+		{
+			readVar(line,i,e,rx,ry,rz,q,style,colour[1],colour[2],colour[3],colour[4],fixed);
+			atm = newAtom(e,rx,ry,rz);
+			atm.q = q;
+			if (style != "") atm.style = style;
+			atm.colour = colour;
+			atm.fixed = fixed;
+		}
+		else if (keywd == "bond")
+		{
+			readVar(line,i,j,e);
+			newBond(i,j,e);
+		}
+		else if (keywd == "cell")
+		{
+			readVar(line,lengths[1],lengths[2],lengths[3],angs[1],angs[2],angs[3]);
+			cell(lengths[1],lengths[2],lengths[3],angs[1],angs[2],angs[3]);
+		}
+		else if (keywd == "cellmatrix")
+		{
+			UnitCell c = aten.model.cell;
+			readVar(line, c.ax, c.ay, c.az, c.bx, c.by, c.bz, c.cx, c.cy, c.cz);
+		}
+		else if (keywd == "title")
+		{
+			setName(line);
+		}
+		else if (keywd == "glyph")
+		{
+			readVar(line,type,ndata);
+			Glyph g = newGlyph(type);
+			# First 'n' lines are the 'n' data points for the glyph
+			for (n=1; n<=ndata; ++n)
+			{
+				# Format:   <DataNo> <AtomID or 0 for vector> <AtomData Type> <vx> <vy> <vz> <r> <g> <b> <a>
+				readLine(l,i,atomdata,v.x,v.y,v.z,g.data[l].colour[1],g.data[l].colour[2],g.data[l].colour[3],g.data[l].colour[4]);
+				if (i <= 0) g.data[l].vector = v;
+				else g.data[l].atom = aten.model.atoms[i];
+				g.data[l].atomdata = atomdata;
+			}
+			# Additional data now...
+			do
+			{
+				readLineF("%s%r",keywd,line);
+				if (keywd == "rotation") readVarF(line,"%f %f %f %f %f %f %f %f %f", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
+				else if (keywd == "invisible") g.visible = FALSE;
+				else if (keywd == "text") g.text = line;
+				else if (keywd == "wireframe") g.solid = FALSE;
+				else if (keywd != "endglyph") printf("Unrecognised glyph property '%s'\n", keywd);
+			} while (keywd != "endglyph");
+		}
+		else if (keywd == "geometry")
+		{
+			readVar(line,n,i,j,k,l);
+			if (n == 2) measure(i,j);
+			else if (n == 3) measure(i,j,k);
+			else if (n == 4) measure(i,j,k,l);
+			else printf("Warning: Invalid measurement between %i atoms.\n", n);
+		}
+		else if (keywd == "distance")
+		{
+			readVar(line,i,j);
+			measure(i,j);
+		}
+		else if (keywd == "angle")
+		{
+			readVar(line,i,j,k);
+			measure(i,j,k);
+		}
+		else if (keywd == "torsion")
+		{
+			readVar(line,i,j,k,l);
+			measure(i,j,k,l);
+		}
+		else if (keywd == "grid")
+		{
+			readVar(line, type, i, j, k);
+			Grid g = newGrid("NAME");
+			g.initialise(type, i, j, k);
+			do
+			{
+				readLineF("%s%r",keywd,line);
+				if (keywd == "axes") readVarF(line,"%f %f %f %f %f %f %f %f %f", g.axes.ax, g.axes.ay, g.axes.az, g.axes.bx, g.axes.by, g.axes.bz, g.axes.cx, g.axes.cy, g.axes.cz);
+				else if (keywd == "origin") readVarF(line,"%f %f %f", g.origin.x, g.origin.y, g.origin.z);
+				else if (keywd == "data")
+				{
+					for (n=0; n<g.nPoints; ++n)
+					{
+						if (!readLine(data)) error("Couldn't read point %i from file.\n", n+1);
+						addNextGridPoint(data);
+					}
+				}
+				else if (keywd != "endgrid") printf("Unrecognised glyph property '%s'\n", keywd);
+			} while (keywd != "endgrid");
+		}
+		else printf("Warning: Keyword '%s' not recognised.\n",keywd);
+	}
+	finaliseModel();
+}
+
+filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension="akf", glob="*.akf", id=1)
+{
+	Model m = aten.frame;
+
+	// Title
+	writeLineF("title  %s\n", m.name);
+
+	// Atom data
+	for (atom i = m.atoms; i; ++i) writeLineF("atom   %i %s %f %f %f %f %s %f %f %f %f %i\n", i.id, i.symbol, i.rx, i.ry, i.rz, i.q, i.style, i.colour[1], i.colour[2], i.colour[3], i.colour[4], i.fixed );
+
+	// Bond data
+	for (bond b = m.bonds; b; ++b) writeLineF("bond   %i %i %s\n", b.i.id, b.j.id, b.type);
+
+	// Cell data
+	//if (m.cell.type != "none") writeLineF("cell   %f %f %f %f %f %f\n", m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
+	if (m.cell.type != "none") writeLineF("cellmatrix   %f %f %f %f %f %f %f %f %f\n", m.cell.ax, m.cell.ay, m.cell.az, m.cell.bx, m.cell.by, m.cell.bz, m.cell.cx, m.cell.cy, m.cell.cz);
+
+	// Measurements
+	for (measurement g = m.distances; g; ++g) writeLineF("distance %i %i\t# %f\n", g.i.id, g.j.id, g.value);
+	for (measurement g = m.angles; g; ++g) writeLineF("angle %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.value);
+	for (measurement g = m.torsions; g; ++g) writeLineF("torsion %i %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.l.id, g.value);
+
+	// Glyphs
+	for (glyph g = m.glyphs; g; ++g)
+	{
+		writeLineF("glyph  %s  %i\n", g.type, g.ndata);
+		# First 'n' lines are the 'n' data points for the glyph
+		for (int n=1; n<=g.ndata; ++n)
+		{
+			if (g.data[n].atom) writeLineF("  %i  %i  %i  0.0 0.0 0.0  %f %f %f %f\n", n, g.data[n].atom.id, g.data[n].atomdata, g.data[n].colour[1], g.data[n].colour[2], g.data[n].colour[3], g.data[n].colour[4]);
+			else writeLineF("  %i  -1  -1  %f %f %f  %f %f %f %f\n", n, g.data[n].vector.x, g.data[n].vector.y, g.data[n].vector.z, g.data[n].colour[1], g.data[n].colour[2], g.data[n].colour[3], g.data[n].colour[4]);
+		}
+		# Additional data now...
+		if (g.rotated) writeLineF("  rotation  %f %f %f %f %f %f %f %f %f\n", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
+		if (!g.visible) writeLineF("  invisible\n");
+		if (g.text != "") writeLineF("  text  '%s'\n", g.text);
+		if (!g.solid) writeLineF("  wireframe\n");
+		writeLineF("endglyph\n");
+	}
+
+	// Grids
+	for (grid g = m.grids; g; ++g)
+	{
+		writeLineF("grid  %s  %i  %i  %i\n", g.type, g.nx, g.ny, g.nz);
+		#writeLineF("  looporder  xyz\n");
+		writeLineF("  axes       %f  %f  %f  %f  %f  %f  %f  %f  %f\n", g.axes.ax, g.axes.ay, g.axes.az, g.axes.bx, g.axes.by, g.axes.bz, g.axes.cx, g.axes.cy, g.axes.cz);
+		writeLineF("  origin     %f  %f  %f\n", g.origin.x, g.origin.y, g.origin.z);
+		writeLineF("  data\n");
+		if (g.type == "regularxy")
+		{
+			for (int x=1; x<=g.nx; ++x)
+				for (int y=1; y<=g.ny; ++y) writeLineF("    %f\n", g.data(x, y));
+		}
+		else if (g.type == "regularxyz")
+		{
+			for (int x=1; x<=g.nx; ++x)
+				for (int y=1; y<=g.ny; ++y)
+					for (int z=1; z<=g.nz; ++z) writeLineF("    %f\n", g.data(x, y, z));
+		}
+		writeLineF("endgrid\n");
+	}
+}

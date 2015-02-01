@@ -1,0 +1,1509 @@
+<h1>ChangeLog for Release v1.6</h1>
+
+<b>Revision 1495</b>
+<ul type='circle'>
+	<li>Creating 1.6 release branch.</li>
+</ul>
+
+<b>Revision 1494</b>
+<ul type='circle'>
+	<li>Fixed - Silly error in dipole script, and unit conversion to Debye.</li>
+</ul>
+
+<b>Revision 1493</b>
+<ul type='circle'>
+	<li>Fixed - Windows and Mac builds were broken because of ambiguous conversion of streampos to int in src/main/cli.cpp.</li>
+</ul>
+
+<b>Revision 1492</b>
+<ul type='circle'>
+	<li>Updated TODO.</li>
+	<li>Added expression export filter for Aten's own FF format.</li>
+</ul>
+
+<b>Revision 1490</b>
+<ul type='circle'>
+	<li>Added CLI switch to force reading from piped input on startup, and matching prefs member.</li>
+	<li>Fixed - Hang on startup arising from new code to read from stdin on startup.</li>
+</ul>
+
+<b>Revision 1489</b>
+<ul type='circle'>
+	<li>Transplanted code to remove comments from LineParser::readNextLine and put into separate global removeComments routine.</li>
+	<li>Added global isEmpty() function to check for presence of only whitespace in character strings.</li>
+	<li>Fixed - Reading of scripts from stdin (and pipe).</li>
+</ul>
+
+<b>Revision 1488</b>
+<ul type='circle'>
+	<li>Tweaked cldp-il.ff.</li>
+	<li>FIxed - Atoms were not being described properly whtn using disordered builder, meaning ring information etc. was not available and typing would fail.</li>
+</ul>
+
+<b>Revision 1487</b>
+<ul type='circle'>
+	<li>Added more options to gamess inp output filter.</li>
+	<li>Tweaked size policies of custom dialog widgets to fill out space a bit better.</li>
+</ul>
+
+<b>Revision 1486</b>
+<ul type='circle'>
+	<li>Removed extra call to QGLWidget::swapBuffers() in an attempt to fix odd Windows behaviour.</li>
+</ul>
+
+<b>Revision 1485</b>
+<ul type='circle'>
+	<li>Fixed - Custom dialog for failed expression generation was broken due to previous changes to radiogroup handling in widget nodes.</li>
+	<li>Added import of ESP charges to gamess logfile filter.</li>
+</ul>
+
+<b>Revision 1484</b>
+<ul type='circle'>
+	<li>Updated FAQ.</li>
+</ul>
+
+<b>Revision 1483</b>
+<ul type='circle'>
+	<li>Fixed - LineParser had not been updated correctly in line with 'newline' fixes for Windows.</li>
+</ul>
+
+<b>Revision 1482</b>
+<ul type='circle'>
+	<li>Partial update of years in copyright notice in source files (gui).</li>
+</ul>
+
+<b>Revision 1481</b>
+<ul type='circle'>
+	<li>Partial update of years in copyright notice in source files (render, templates, methods).</li>
+</ul>
+
+<b>Revision 1480</b>
+<ul type='circle'>
+	<li>Partial update of years in copyright notice in source files (parser).</li>
+</ul>
+
+<b>Revision 1479</b>
+<ul type='circle'>
+	<li>Partial update of years in copyright notice in source files (model).</li>
+</ul>
+
+<b>Revision 1478</b>
+<ul type='circle'>
+	<li>Partial update of years in copyright notice in source files (ff, main).</li>
+</ul>
+
+<b>Revision 1477</b>
+<ul type='circle'>
+	<li>Partial update of years in copyright notice in source files (command).</li>
+</ul>
+
+<b>Revision 1476</b>
+<ul type='circle'>
+	<li>Partial update of years in copyright notice in source files (classes).</li>
+</ul>
+
+<b>Revision 1475</b>
+<ul type='circle'>
+	<li>Partial update of years in copyright notice in source files.</li>
+	<li>Tweaked src/gui/grids.ui and src/gui/position.ui to remove rogue XML info on line 1.</li>
+</ul>
+
+<b>Revision 1474</b>
+<ul type='circle'>
+	<li>Added 'grids' and 'ngrids' accessors to ModelVariable.</li>
+	<li>Added 'data' function to GridVariable to allow retrieval of data.</li>
+	<li>Added 'colour' and 'secondarycolour' accessors to GridVariable, and renamed cutoff-related members to be more consistent with actual class.</li>
+	<li>Added 'Periodic' flag to Grid class, accessor, and GUI option.</li>
+	<li>Tweaked Tree::expandPath() to accept no array specification for list types.</li>
+	<li>Primitive::createCube now accepts origin coordinates as arguments.</li>
+	<li>Added RenderEngine::originCubes_ primitive.</li>
+	<li>Added WrapInt class, providing integer whose value is wrapped inside specified limits.</li>
+	<li>Added ability for Grids to be shifted point-wise along their axes.</li>
+	<li>Added options to show bounding cuboid for grid, and allow corrected rendering of periodic grid data.</li>
+	<li>Doc update.</li>
+</ul>
+
+<b>Revision 1473</b>
+<ul type='circle'>
+	<li>Fixed - SVG warning messages ("Could not add child element to parent...") related to text objects in stack_command.svg.</li>
+	<li>Rewrote parts of LineParser to recognise Mac, Windows, and UNIX linefeeds on all platforms.</li>
+	<li>Fixed - Issue with 'eof' command on Windows which would lose data when reading from a UNIX-newline file, related to incompatibilities with seekg and tellg in fstream's text mode.</li>
+</ul>
+
+<b>Revision 1472</b>
+<ul type='circle'>
+	<li>Fixed - Crash occurring when pressing multiple mouse buttons simultaneously, e.g.</li>
+	<li>drawing atom chain and then invoking context menu.</li>
+</ul>
+
+<b>Revision 1471</b>
+<ul type='circle'>
+	<li>Added basic PDC options to gamess output filter.</li>
+</ul>
+
+<b>Revision 1470</b>
+<ul type='circle'>
+	<li>Removed old key code enum from TCanvas.</li>
+	<li>Fixed - 'custom' colouring scheme did not have a keyword definition in Prefs::ColouringSchemeKeywords.</li>
+	<li>Added ability to cycle current drawing style with F8, and current colouring scheme style with F9.</li>
+</ul>
+
+<b>Revision 1469</b>
+<ul type='circle'>
+	<li>Fixed - Crash when attempting to set colour of atom selection from Selection menu.</li>
+</ul>
+
+<b>Revision 1468</b>
+<ul type='circle'>
+	<li>Update cif filter to handle basics of mmCIF.</li>
+</ul>
+
+<b>Revision 1467</b>
+<ul type='circle'>
+	<li>Added NETA selection to Select window.</li>
+</ul>
+
+<b>Revision 1466</b>
+<ul type='circle'>
+	<li>Doc update.</li>
+	<li>Reworked filtering of mouse move events to be based on time interval instead of call interval, and added GUI option to Prefs window.</li>
+</ul>
+
+<b>Revision 1465</b>
+<ul type='circle'>
+	<li>Added Prefs member mouseMoveFilter_ to control filtering of mouse move events, and associated accessor.</li>
+</ul>
+
+<b>Revision 1464</b>
+<ul type='circle'>
+	<li>Fixed - Type definition for thioether in GAFF.</li>
+	<li>Some debug output from UFF removed.</li>
+	<li>Fixed - 'data' member of PatternBound type had wrong array limit set.</li>
+</ul>
+
+<b>Revision 1463</b>
+<ul type='circle'>
+	<li>Added data/includes/* directory to contain commonly-used functions for use in filters and scripts, and functions to read.</li>
+	<li>Added Prefs::loadIncludes_ option and CLI switch.</li>
+	<li>Updates to gamess filter, including option to write ZMatrix instead of Cartesians.</li>
+	<li>Fixed - Uninitialised result variable in Program::execute() which occasionally prevented stored program from running if guiOptions were not invoked.</li>
+</ul>
+
+<b>Revision 1462</b>
+<ul type='circle'>
+	<li>Fixed - Parser grammar was missing definition for user-defined void function with arguments.</li>
+	<li>Fixed/Updated - 'radiobutton' and 'radiogroup' controls to be more flexible (and actually work properly).</li>
+	<li>Update GAMESS 'trj' filter to recognise IRC data.</li>
+	<li>Updated Gaussian 'gjf' export filter to allow choice between cartesian/z-matrix output.</li>
+	<li>Fixed - Titles of custom export dialogs were not set correctly.</li>
+</ul>
+
+<b>Revision 1461</b>
+<ul type='circle'>
+	<li>Removed debug output from Primitive.</li>
+	<li>Added deletion of gui.mainWindow to main() to account for lazy mismanagement of memory related to rendering primitive.</li>
+</ul>
+
+<b>Revision 1460</b>
+<ul type='circle'>
+	<li>Fixed - Severe memory leak in primitive vertex generation.</li>
+</ul>
+
+<b>Revision 1459</b>
+<ul type='circle'>
+	<li>Fixed - Missing GUI function, breaking windows and Mac builds.</li>
+</ul>
+
+<b>Revision 1458</b>
+<ul type='circle'>
+	<li>Removed filePath() function from src/base/sysfunc.h, since it was the same as absoluteFilePath().</li>
+	<li>Fixed - Memory errors / crashes from use of absoluteFilePath() and removePath() functions, arising from destruction of local objects.</li>
+</ul>
+
+<b>Revision 1457</b>
+<ul type='circle'>
+	<li>Tweaks to switch/case construct.</li>
+	<li>Added initial version of Gaussian export filter.</li>
+	<li>Reworked 'radiogroup' GUI control to be a container rather than a widget (needs testing).</li>
+</ul>
+
+<b>Revision 1456</b>
+<ul type='circle'>
+	<li>Added switch/case construct to grammar (needs proper testing).</li>
+</ul>
+
+<b>Revision 1455</b>
+<ul type='circle'>
+	<li>Addition of GUI options 'radiobutton' and 'stack'.</li>
+	<li>Fixed - Bad logic and use associated to Dnchar::find().</li>
+	<li>Extended GUI control 'state' parsing to allow no state value to be passed.</li>
+	<li>Removed needless virtual overloads in src/parser/parser_tree.cpp, and made all previously-virtual members of Tree class non-virtual.</li>
+	<li>Complete rewrite of main parser grammar.</li>
+	<li>Partial addition of 'switch/case' construct in parser grammar.</li>
+</ul>
+
+<b>Revision 1454</b>
+<ul type='circle'>
+	<li>Added 'printzmatrix' command which crudely outputs z-matrix for current model to the command-line.</li>
+</ul>
+
+<b>Revision 1453</b>
+<ul type='circle'>
+	<li>Corrected include path of QFileInfo in src/base/sysfunc.cpp to fix Windows/Mac builds.</li>
+</ul>
+
+<b>Revision 1452</b>
+<ul type='circle'>
+	<li>Fixed - Undo of cell removal was broken, and could not be re-done.</li>
+	<li>Finalised Interactive page on Command window.</li>
+</ul>
+
+<b>Revision 1451</b>
+<ul type='circle'>
+	<li>Removed debug output from LineParser::getNextArg().</li>
+	<li>Changed some file-based sysfunc routines to use QFileInfo for cross-system compatibility.</li>
+	<li>Fixed - Rotation of multiple bonds into bonc plane.</li>
+	<li>Fixed - Number shortcuts in Recent File menu were not updated correctly when a new file was loaded.</li>
+	<li>Fixed - Interactive mode would rerun all commands previously typed.</li>
+	<li>Added preliminary 'Interactive' page in Command window (not yet fully working).</li>
+</ul>
+
+<b>Revision 1450</b>
+<ul type='circle'>
+	<li>Removed some debug output from createExpression.</li>
+</ul>
+
+<b>Revision 1449</b>
+<ul type='circle'>
+	<li>Fixed - Script menu was not updated after loading a new script in the GUI.</li>
+	<li>Updated bool argument Program::execute() method to run GUI options part if specified.</li>
+	<li>Fixed - Running scripts from Scripts menu or Command window now launches custom dialog options if they exist.</li>
+	<li>Added Forcefield::containsType(ForcefieldAtom *type) function.</li>
+	<li>Model::dereferenceForcefield() now does a more thorough job, including invalidating current expression if necessary.</li>
+	<li>Fixed - Crash caused by Pattern and Model-global allForcefieldTypes_ lists not being cleared when recreating or applying new expressions (from, e.g., new forcefield).</li>
+</ul>
+
+<b>Revision 1448</b>
+<ul type='circle'>
+	<li>Fixed - options in mopac export filter (also corrects MOPAC minimisation).</li>
+	<li>Minimiser window now disables relevant controls when MOPAC minimiser is selected.</li>
+	<li>Tweaked alkyl fragments.</li>
+	<li>Fixed - Drawing fragments along existing bonds would occasionally (not) delete (wrong) atom.</li>
+</ul>
+
+<b>Revision 1447</b>
+<ul type='circle'>
+	<li>Fixed - Default cell size in Cell Define window was all zero.</li>
+	<li>Fixed - Drawing of oriented (not anchored) fragments was broken.</li>
+</ul>
+
+<b>Revision 1446</b>
+<ul type='circle'>
+	<li>Fixed - Display of aromatic rings in stick style.</li>
+	<li>Fixed - Augmentation of bonds, particularly aromatic rings, was not working correctly from toolbar button.</li>
+	<li>Fixed - Colouring of stick bonds.</li>
+	<li>Fixed - Display of multiple bonds in global stick style not working.</li>
+	<li>Removed unused Vec3&lt;T&gt;::rotate() method.</li>
+</ul>
+
+<b>Revision 1445</b>
+<ul type='circle'>
+	<li>Renamed Program source files (from forest.h|cpp to program.h|cpp).</li>
+	<li>Fixed - Crash in previous commit arising from NULL parent of mainProgram_ Tree in Program class.</li>
+</ul>
+
+<b>Revision 1444</b>
+<ul type='circle'>
+	<li>Changed list of trees in Forest to be single main program and list of filter-type trees.</li>
+	<li>Renamed Forest class to Program (source files will be renamed in next commit).</li>
+</ul>
+
+<b>Revision 1443</b>
+<ul type='circle'>
+	<li>Fixed - Pattern::initialise was returning internal ID number for start of pattern, rather than 'end-user' value.</li>
+	<li>Updated documentation.</li>
+	<li>Added simplistic amorphous silica script.</li>
+	<li>Added 'AVOGADRO' as recognised numerical constant in parser.</li>
+	<li>Added 'deleteff' command.</li>
+	<li>Fixed - Resetting of view when using orthographic projection now working correctly.</li>
+</ul>
+
+<b>Revision 1442</b>
+<ul type='circle'>
+	<li>Added Vec3&lt;T&gt;::abs() method to return absolute vector of elements.</li>
+	<li>Fixed - Hang on startup caused by Model::resetView when using an orthographic projection.</li>
+	<li>Updated Model::resetView() to better fit model to screen.</li>
+</ul>
+
+<b>Revision 1441</b>
+<ul type='circle'>
+	<li>Updated TODO.</li>
+</ul>
+
+<b>Revision 1440</b>
+<ul type='circle'>
+	<li>Reverted to old path structure on website, changing doc build script to match.</li>
+</ul>
+
+<b>Revision 1439</b>
+<ul type='circle'>
+	<li>Updated rendering of multiple stick bonds.</li>
+</ul>
+
+<b>Revision 1438</b>
+<ul type='circle'>
+	<li>Partial addition of multiple bond rendering for stick style.</li>
+</ul>
+
+<b>Revision 1437</b>
+<ul type='circle'>
+	<li>Updated doc build script to reflect adjusted website layout.</li>
+</ul>
+
+<b>Revision 1436</b>
+<ul type='circle'>
+	<li>Doc update.</li>
+</ul>
+
+<b>Revision 1435</b>
+<ul type='circle'>
+	<li>Added definition to CMakeList.txt in order to define _MAC on Mac.</li>
+	<li>Added compiler directive to include correct gl.h on Mac builds.</li>
+</ul>
+
+<b>Revision 1434</b>
+<ul type='circle'>
+	<li>Tweaked src/render/textprimitive.h to load different header for Windows compatibility.</li>
+</ul>
+
+<b>Revision 1433</b>
+<ul type='circle'>
+	<li>Fixed global compiler include -DNOMINMAX for Windows build (ADD_DEFINITIONS was in wrong place in root CMakeLists.txt).</li>
+	<li>Adjusted AtenCustomDialog::checkBoxWidget_clicked() to correctly compare boolean with integers in state change code.</li>
+	<li>Removed some unused variables from various routines.</li>
+</ul>
+
+<b>Revision 1432</b>
+<ul type='circle'>
+	<li>More tweaks and fixes to source headers.</li>
+	<li>Added global compiler include -DNOMINMAX for Windows build.</li>
+</ul>
+
+<b>Revision 1431</b>
+<ul type='circle'>
+	<li>Removed defunct src/render/surface.cpp and corrected src/render/CMakeLists.txt.</li>
+</ul>
+
+<b>Revision 1430</b>
+<ul type='circle'>
+	<li>Moved math functions into class of their own.</li>
+	<li>Added basic script to perform conformational searching.</li>
+	<li>Removed redundant /data/scripts/water245-energy.txt script.</li>
+</ul>
+
+<b>Revision 1429</b>
+<ul type='circle'>
+	<li>Removed debug output from LineParser::getArgsDelim.</li>
+	<li>Fixed - Incorrect output of number of angles found when Urey-Bradley definitions were present.</li>
+	<li>Fixed - Generation of torsions for expression failed if Urey-Bradley terms had been previously added (reordered term generation to fix).</li>
+</ul>
+
+<b>Revision 1428</b>
+<ul type='circle'>
+	<li>Adjusted layout of Build window.</li>
+	<li>Added checkbox option to Build window to allow prevention of atom folding after mouse-based transformations.</li>
+	<li>Doc update.</li>
+</ul>
+
+<b>Revision 1427</b>
+<ul type='circle'>
+	<li>Added some control options to MOPAC filter.</li>
+	<li>Fixed - Crash when critical gui widget options were not specified.</li>
+	<li>Fixed - Neatened error output when opening files for reading/writing.</li>
+	<li>Fixed - Checking and removal of duplicate scripts loaded on startup.</li>
+</ul>
+
+<b>Revision 1426</b>
+<ul type='circle'>
+	<li>Added missing src/gui/useractions.h and src/gui/useractions.cpp to repo.</li>
+</ul>
+
+<b>Revision 1425</b>
+<ul type='circle'>
+	<li>Merge changes from 'render' branch back into trunk.</li>
+</ul>
+
+<b>Revision 1420</b>
+<ul type='circle'>
+	<li>Fixed - Windows build was not generating zip package.</li>
+</ul>
+
+<b>Revision 1402</b>
+<ul type='circle'>
+	<li>Rewrote example script 'dipole.txt' which was still using the defunct scripting language format.</li>
+</ul>
+
+<b>Revision 1399</b>
+<ul type='circle'>
+	<li>Updated gamess filter to better read in vibration data.</li>
+	<li>Added missing 'nvibrations' code to ModelVariable.</li>
+</ul>
+
+<b>Revision 1389</b>
+<ul type='circle'>
+	<li>Added literal measurement calculation value (i.e.</li>
+	<li>non-mimd) to Measurement class, and added accessors to variable and rendering of additional value.</li>
+	<li>Gamess-US log import filter now names models more appropriately.</li>
+	<li>Gromacs top export filter now uses forcefield type masses throughout.</li>
+</ul>
+
+<b>Revision 1375</b>
+<ul type='circle'>
+	<li>Fixed - Erroneous output from 'measureselected' command.</li>
+</ul>
+
+<b>Revision 1373</b>
+<ul type='circle'>
+	<li>Fixed - Some discrepancies between context menu atom IDs and those sent to commands.</li>
+	<li>Minor tweak to grammar.</li>
+</ul>
+
+<b>Revision 1365</b>
+<ul type='circle'>
+	<li>Fixed - Some discrepancies between context menu atom IDs and those sent to commands.</li>
+	<li>Minor tweak to grammar.</li>
+</ul>
+
+<b>Revision 1363</b>
+<ul type='circle'>
+	<li>Tweaked some ui files to fix more builds.</li>
+</ul>
+
+<b>Revision 1362</b>
+<ul type='circle'>
+	<li>Changes to widget usage in CustomDialog ui and funcs to attempt build fixes.</li>
+</ul>
+
+<b>Revision 1361</b>
+<ul type='circle'>
+	<li>Changes to widget usage in CustomDialog ui and funcs to attempt build fixes.</li>
+</ul>
+
+<b>Revision 1356</b>
+<ul type='circle'>
+	<li>Fixed - Prefs values 'useframebuffer', 'usenicetext', and 'tempdir' were saved incorrectly.</li>
+</ul>
+
+<b>Revision 1350</b>
+<ul type='circle'>
+	<li>Fixed - getNextArg was not using defined read options.</li>
+</ul>
+
+<b>Revision 1349</b>
+<ul type='circle'>
+	<li>Added back in optional allowDummy argument to Model::createExpression(), but its usage is now correct.</li>
+	<li>Updated gromacs 'gro' file export to use pattern definitions and write correct 'residue' information.</li>
+	<li>Changed wording of 'Set Default' button in Prefs window to 'Save as Default'.</li>
+	<li>Changed Prefs::updateEnergy*() routines to return FALSE on first step.</li>
+	<li>Corrected output of CG minimiser which was printing RMS force instead of total energy on Init step.</li>
+</ul>
+
+<b>Revision 1347</b>
+<ul type='circle'>
+	<li>Corrected output of main parser grammar to raise error when encountering an undefined function name.</li>
+	<li>Renamed some tokens in main parser grammar to prevent Windows build from failing.</li>
+	<li>Heavy update to forcefield editor.</li>
+</ul>
+
+<b>Revision 1346</b>
+<ul type='circle'>
+	<li>Fixed - dlpoly FIELD file import filter tweaked, and energy unit conversion added.</li>
+</ul>
+
+<b>Revision 1345</b>
+<ul type='circle'>
+	<li>Added '--keeptypes' CLI switch to allow assignment and fixing of atom types names when converting from forcefield type names.</li>
+	<li>Doc update.</li>
+</ul>
+
+<b>Revision 1343</b>
+<ul type='circle'>
+	<li>Removed 'allowdummy' argument of Model::createExpression() and Pattern::createExpression() since it was unnecessary and being awkward.</li>
+	<li>Removed some debug output from atom colour changes.</li>
+	<li>More updates to ForcefieldEditor.</li>
+</ul>
+
+<b>Revision 1339</b>
+<ul type='circle'>
+	<li>Fixed - Selection by ranges had become broken somehow.</li>
+	<li>Corrected 'mopacminimise' command to use defined paths/command in Prefs.</li>
+	<li>Prefs window settings for external programs now functional.</li>
+	<li>Added 'mopacexe' and 'tempdir' accessors to PrefsVariable.</li>
+	<li>Fixed - Prefs file saving was not taking 'aten' directory difference between Windows and Linux into account.</li>
+</ul>
+
+<b>Revision 1338</b>
+<ul type='circle'>
+	<li>Partial (heavy) update to forcefield editor.</li>
+</ul>
+
+<b>Revision 1337</b>
+<ul type='circle'>
+	<li>Updated Prefs::convertEnergy() to accept optional 'to' unit (default is current internal units).</li>
+	<li>Added Prefs::autoConversionUnit_, used when (and only when) in a filter automatically converts energetic forcefield parameters accessed through variables.</li>
+	<li>Added 'autoconversionunit' command, but no corresponding PrefsVariable accessor.</li>
+	<li>Added functions to Forcefield to allow for term searching by type names.</li>
+	<li>Added 'find*' functions to ForcefieldVariable to allow searching of defined terms.</li>
+	<li>Corrected Gromacs topology export filter to write energies only in kJ.</li>
+	<li>Doc update.</li>
+	<li>Added command-line switches '-e' and '--expression' for expression import.</li>
+	<li>Added 'null', 'lowercase' and 'uppercase' commands.</li>
+	<li>Added 'nangles', 'natomtypes', 'nbonds', 'ntorsions', and 'nimpropers' accessors to ForcefieldVariable.</li>
+	<li>Modified 'angledef', 'bonddef', 'torsiondef', and 'typedef' commands to return the newly-created object pointer.</li>
+	<li>Quietened error output of VTypes::dataPair() in favour of better type checking in Tree::checkBinaryOperatorTypes and Tree::checkUnaryOperatorType.</li>
+</ul>
+
+<b>Revision 1336</b>
+<ul type='circle'>
+	<li>Corrected output of Morse bond potential paremeters in dlpoly field file export.</li>
+	<li>Added in ability to utilise defined ImportExpression filters from the GUI.</li>
+	<li>Fixed - Improper return value in Maat3&lt;T&gt;::element() function.</li>
+</ul>
+
+<b>Revision 1335</b>
+<ul type='circle'>
+	<li>Added missing doc/images/window_command_index.png to repo.</li>
+</ul>
+
+<b>Revision 1334</b>
+<ul type='circle'>
+	<li>Removed 'simplexminimise' command shell - it was never going to be implemented.</li>
+	<li>Added 'mopacminimise' command and GUI access.</li>
+	<li>Added separate working models list to Aten, useful for internal filter-related stuff.</li>
+	<li>Updated default Linux/Windows paths.</li>
+	<li>Added storage and access for temporary directory and MOPAC executable to Prefs class, related PrefsVariable accessors, and Prefs window widgets (partial).</li>
+</ul>
+
+<b>Revision 1333</b>
+<ul type='circle'>
+	<li>Added Model::selected(int n) to retrieve nth selected atom.</li>
+	<li>Added 'selection' accessor to ModelVariable.</li>
+	<li>Added for/in loops.</li>
+</ul>
+
+<b>Revision 1332</b>
+<ul type='circle'>
+	<li>Fixed - Atom custom colour is now copied in Atom::copy().</li>
+	<li>Added 'recolouratoms' command to reset custom colours to element defaults.</li>
+	<li>Added colour section to selection/context menu.</li>
+	<li>Fixed - Crash when trying to redo the very first stored undone state.</li>
+</ul>
+
+<b>Revision 1331</b>
+<ul type='circle'>
+	<li>Removed all angle brackets from command syntax and descriptions, and corrected some minor mistakes in syntax strings.</li>
+	<li>Fixed - Command search in Command window now works properly.</li>
+	<li>Doc update (Command window).</li>
+</ul>
+
+<b>Revision 1330</b>
+<ul type='circle'>
+	<li>Changed rendering of Globe glob to always use 10 stacks/slices instead of the current atom detail setting.</li>
+	<li>Removed all cylinder-style globs in favour of drawing them properly, but by hand.</li>
+	<li>Fixed - Calculation of bond planes on atomic centres was not working correctly.</li>
+	<li>Detection of aromatic rings in fused-ring systems should now work better.</li>
+	<li>Rendering of aromatic rings vastly improved, but still needs tweaking for complex systems (e.g.</li>
+	<li>fused rings).</li>
+</ul>
+
+<b>Revision 1329</b>
+<ul type='circle'>
+	<li>Added --nofilters CLI option.</li>
+	<li>Fixed - Horrific Grammar Bug No.</li>
+	<li>1, where all statements following a function declaration were hidden (grammar has been rearranged and rewritten).</li>
+	<li>Fixed - CommandParser::peekChar was improperly returning the first character on the following line in the case of a stringlist source, when it should really have been a newline or similar.</li>
+	<li>Fixed - Horrific Parser Bug No.</li>
+	<li>1, where a real number beginning with a period and placed immediately after a symbol was causing unknown symbol errors.</li>
+	<li>Fixed - Horrific Parser Bug No.</li>
+	<li>2, where a real number beginning with a period was recognised as an integer by the parser.</li>
+</ul>
+
+<b>Revision 1328</b>
+<ul type='circle'>
+	<li>Moved labels displaying percentages in Grids window to more approprite positions.</li>
+	<li>Added KDevelop4 project file to repo.</li>
+</ul>
+
+<b>Revision 1327</b>
+<ul type='circle'>
+	<li>Fixed - Potential crash when reloading script file which no longer exists.</li>
+</ul>
+
+<b>Revision 1326</b>
+<ul type='circle'>
+	<li>Renamed 'geometric' keyword to 'geomdat' to prevent clashes with named combination rules.</li>
+	<li>Added some extra output when reading a forcefield file which has missing data in certain blocks.</li>
+	<li>FIxed - Secondary cutoff controls in Grids Window were not working properly.</li>
+	<li>Fixed - Drawing of secondary surface for grid could not be turned off.</li>
+</ul>
+
+<b>Revision 1325</b>
+<ul type='circle'>
+	<li>Renamed 'geometric' keyword to 'geomdat' to prevent clashes with named combination rules.</li>
+	<li>Added some extra output when reading a forcefield file which has missing data in certain blocks.</li>
+	<li>FIxed - Secondary cutoff controls in Grids Window were not working properly.</li>
+	<li>Fixed - Drawing of secondary surface for grid could not be turned off.</li>
+</ul>
+
+<b>Revision 1323</b>
+<ul type='circle'>
+	<li>Removed specific measurement commands 'distance', 'distances', 'angle', 'angles', 'torsion', and 'torsions'.</li>
+	<li>Added 'geometry' command which uses same argument style as 'measure', but does not create a measurement in the model ('measure', on the other hand, does).</li>
+	<li>Added 'measureselected' command which adds all measurements of the specified bound type (number of atoms) in the current atom selection.</li>
+	<li>Renamed old 'geometry' analyise command to be 'geometric' to prevent conflict with new 'geometry' measuring command.</li>
+</ul>
+
+<b>Revision 1322</b>
+<ul type='circle'>
+	<li>Fixed - Corrected syntax definitions for angle and torsion commands.</li>
+	<li>Fixed - Measure was still printing data.</li>
+</ul>
+
+<b>Revision 1321</b>
+<ul type='circle'>
+	<li>Fixed - Some updates of GUI were incorrect owing to undo() and redo() methods improperly logging a visual change.</li>
+</ul>
+
+<b>Revision 1320</b>
+<ul type='circle'>
+	<li>Updated CellDefine window to work with Cell matrix rather than cell lengths and angles, and added separate page to set matrix from lengths/angles.</li>
+	<li>Fixed - Had forgotten to remove default printing of new measurement values in Model::addMeasurement(), and measured values were still not being return correctly.</li>
+	<li>Modified CellEvent to store matrices rather than lengths and angles.</li>
+</ul>
+
+<b>Revision 1319</b>
+<ul type='circle'>
+	<li>Fixed - measurement functions in Model were doing several bad things, probably causing crashes.</li>
+	<li>Fixed - Distance and angle measurement commands were not returning values.</li>
+	<li>Add optional argument to all measurement commands to prevent printing of measured values (default = FALSE).</li>
+</ul>
+
+<b>Revision 1318</b>
+<ul type='circle'>
+	<li>Added UreyBradleyInteraction as a new ForcefieldBound::type.</li>
+	<li>Improper and Urey-Bradley terms are now created with the correct types.</li>
+	<li>Added 'type' accessor to PatternBoundVariable.</li>
+	<li>Removed separate (wasteful) file and code for Urey-Bradley terms, and now reuses bond code instead.</li>
+	<li>Added new Gromacs topology file export filter.</li>
+</ul>
+
+<b>Revision 1317</b>
+<ul type='circle'>
+	<li>Added placeholders for additional messaging/gui functions.</li>
+</ul>
+
+<b>Revision 1316</b>
+<ul type='circle'>
+	<li>Calling 'error' command now also displays a modal message box in the GUI as well as printing the message.</li>
+	<li>Renamed 'finddata' function in ForcefieldBoundVariable and PatternBoundVariable to 'parameter', and added similar function to ForcefieldAtomVariable.</li>
+	<li>Removed redundant declarations of 'generator*' functions in ForcefieldAtomVariable.</li>
+	<li>Removed prevention of unary operators acting on ElementData, ForcefieldAtomData, and ForcefieldBoundData (in Tree::checkUnaryOperatorTypes).</li>
+	<li>Renamed some members of ForcefieldBound to be more consistent (style -> form).</li>
+	<li>Removed Morse2 bond form, and corrected Morse form (renaming 'k' to 'B').</li>
+</ul>
+
+<b>Revision 1315</b>
+<ul type='circle'>
+	<li>Fixed - 'form' accessor of ForcefieldBoundVariable did not, when set, store default parameter values for the functional form specified, since ForcefieldBound::setForm() was being a very lazy boy.</li>
+	<li>Fixed - Some type descriptions in UFF were rubbish, and cos angle terms should have had s parameter set to -1.0.</li>
+</ul>
+
+<b>Revision 1314</b>
+<ul type='circle'>
+	<li>Added cutoff-related accessors to GridVariable.</li>
+	<li>Extended 'gridcutoff' command to accept upper cutoff value, and added complementary 'gridcutoffsecondary' command.</li>
+</ul>
+
+<b>Revision 1313</b>
+<ul type='circle'>
+	<li>Tweaked controls and signal usage of Grids window to make changing cutoffs easier.</li>
+	<li>Changed 'Integrals' in Grids window to be 'Sums' to avoid confusion.</li>
+	<li>Removed isSymmetric flag from Grid class in favour of more flexible pair of secondary cutoffs.</li>
+	<li>Modified Grids window to provide access to secondary cutoffs.</li>
+	<li>Renamed many functions and variables in Grid class to reflect changes.</li>
+	<li>Doc update (grids).</li>
+	<li>Renamed 'gridcolour' and 'gridcolournegative' commands to 'gridcolourprimary' and 'gridcoloursecondary'.</li>
+	<li>Added organization name to QCoreApplication, and moved setting data to before creation of main AtenForm, which would otherwise break saving of QSettings on Windows platforms.</li>
+	<li>Note: Partial, broken commit.</li>
+</ul>
+
+<b>Revision 1312</b>
+<ul type='circle'>
+	<li>Added 'noqtsettings' accessor to PrefsVariable.</li>
+</ul>
+
+<b>Revision 1311</b>
+<ul type='circle'>
+	<li>Finalised script reloading through GUI.</li>
+</ul>
+
+<b>Revision 1310</b>
+<ul type='circle'>
+	<li>Added Forest::reload() method.</li>
+	<li>Fixed - Some example scripts were wrongly using 'nmols' instead of 'setnmols'.</li>
+	<li>Reinstated Scripts menu, linked to contents of Command/Script window (partial).</li>
+</ul>
+
+<b>Revision 1308</b>
+<ul type='circle'>
+	<li>Fixed - Bug in torsion angle generation for rule forcefields introduced when implementing dummy term generation.</li>
+	<li>Added 'expand', 'selectall', and 'selectnone' functions to ModelVariable.</li>
+	<li>Made edit operations a little more verbose.</li>
+</ul>
+
+<b>Revision 1307</b>
+<ul type='circle'>
+	<li>Added missing increase and decrease code for ZMatrixElementData variable.</li>
+	<li>Added 'element' accessor to AtomVariable, returning pointer to ElementData.</li>
+	<li>Removed pointless ZMatrix::updateModel() function, replacing calls with single line of code.</li>
+	<li>Fixed - ZMatrixElements were created without the parent_ pointer being set, leading to convincing crashes.</li>
+</ul>
+
+<b>Revision 1306</b>
+<ul type='circle'>
+	<li>Allowed renaming of custom dialogs.</li>
+	<li>Added FilterData::isExportFilter() function.</li>
+	<li>Custom dialogs are now named appropriately depending on the type of associated filter (import or export).</li>
+	<li>Added 'radiogroup' GUI control type.</li>
+	<li>Static Tree creation (e.g.</li>
+	<li>for custom GUI dialogs) now proceeds through Tree constructor rather than Forest constructor.</li>
+	<li>Corrected generic function callback for integer spinbox in CustomDialog.</li>
+	<li>Modifier Messenger to print specific output type messages to console regardless of whether GUI exists or not.</li>
+	<li>Added better boundary checking to Pattern::updateScaleMatrices().</li>
+	<li>Added ability to generate (and store locally in Patterns) dummy forcefield terms in order to satisfy expression creation.</li>
+	<li>Updated '(re)createexpression) to accept optional flag to allow dummy term generation.</li>
+</ul>
+
+<b>Revision 1305</b>
+<ul type='circle'>
+	<li>Tweaked rendering to display surfaces with repeat cell units.</li>
+</ul>
+
+<b>Revision 1304</b>
+<ul type='circle'>
+	<li>Updated root CMakeLists to add in missing QtSvg imageformat for Windows package.</li>
+</ul>
+
+<b>Revision 1303</b>
+<ul type='circle'>
+	<li>Changed Aten::addFragmentFromSelection() to be a void function rather than (pointlessly) returning a Model pointer.</li>
+</ul>
+
+<b>Revision 1302</b>
+<ul type='circle'>
+	<li>Added Urey-Bradley storage, definitions, and energy/force calculation to Pattern class, relevant file I/O to Forcefield, and detection of terms.</li>
+	<li>Renamed Energy class to be EnergyStore.</li>
+	<li>Added EnergyStoreVariable and accessors and (basic) Site variable.</li>
+	<li>Added 'energy' accessor to ModelVariable, returning pointer to associated EnergyStore.</li>
+	<li>Fixed some non-POD errors from Dnchar usage.</li>
+</ul>
+
+<b>Revision 1301</b>
+<ul type='circle'>
+	<li>Added ReturnValue constructor for pointer types.</li>
+	<li>Extended 'loadmodel' command to accept a model pointer variable as optional third argument, set to the new current model after load.</li>
+	<li>Renamed 'nmols' command to 'setnmols', and added 'nrequested' accessor to ModelVariable.</li>
+</ul>
+
+<b>Revision 1300</b>
+<ul type='circle'>
+	<li>Fixed - Mouse cursor seemed to be unset over main view on startup.</li>
+</ul>
+
+<b>Revision 1299</b>
+<ul type='circle'>
+	<li>Tweaked dnchar.cpp to fix Windows build.</li>
+	<li>Removed many uses of char[] in GUI functions.</li>
+</ul>
+
+<b>Revision 1298</b>
+<ul type='circle'>
+	<li>Removed script-related actions from mainwindow.h, infavour of (finally) completed scripts page in Command/Scripts window.</li>
+	<li>Added Command Help to Command/Scripts window.</li>
+	<li>Removed Scripts menu and Command Help window.</li>
+</ul>
+
+<b>Revision 1297</b>
+<ul type='circle'>
+	<li>Fixed - lww-il.ff had cos torsion terms listed in wrong order.</li>
+	<li>Added search functions to bond, angle, and torsion functions.</li>
+	<li>Added 'finddata' function to ForcefieldBoundVariable and PatternBoundVariable.</li>
+	<li>Updated dlpoly FIELD export filter to use 'finddata' function.</li>
+	<li>Replaced many more uses of standard char[] with Dnchar and associated routines.</li>
+	<li>Character addition operator += in Dnchar now extends storage by 100 characters at a time instead of 1.</li>
+	<li>Closing Vibrations window now stops animation at the same time.</li>
+</ul>
+
+<b>Revision 1296</b>
+<ul type='circle'>
+	<li>Fixed - dmimcl-fm.ff had wrong charge for N.</li>
+	<li>Fixed - Both dmimcl-fm.ff and dmimcl-fm2.ff has torsion parameters in the wrong order.</li>
+	<li>Fixed - Using DoubleExp::set did not recalculate actual value_, meaning e.g.</li>
+	<li>ewald precision could not be set properly.</li>
+	<li>Fixed - dlpoly FIELD filter was writing cos torsion parameters in the wrong order.</li>
+</ul>
+
+<b>Revision 1295</b>
+<ul type='circle'>
+	<li>Removed many delete[] statements remaining from changing char array usage to Dnchar.</li>
+	<li>On Windows, user's 'aten' directory should now be referenced without the preceding dot.</li>
+	<li>Fixed - 'setvelocities' command was probing the wrong argument number for the atom/id.</li>
+</ul>
+
+<b>Revision 1294</b>
+<ul type='circle'>
+	<li>Added 'operator const char*()', 'rFind()', 'eraseFrom()', and catPrint() functions to Dnchar.</li>
+	<li>Removed many uses of strcat throughout code, in favour of new Dnchar functions.</li>
+</ul>
+
+<b>Revision 1293</b>
+<ul type='circle'>
+	<li>Corrected siesta filter to use Bohr in vectors file.</li>
+</ul>
+
+<b>Revision 1292</b>
+<ul type='circle'>
+	<li>Fixed - Doc build was broken.</li>
+</ul>
+
+<b>Revision 1291</b>
+<ul type='circle'>
+	<li>Fixed - Crash when swapping between vibrations while viewing them.</li>
+</ul>
+
+<b>Revision 1290</b>
+<ul type='circle'>
+	<li>Fixed - Playing a trajectory to the end would lock Canvas in read-only mode.</li>
+</ul>
+
+<b>Revision 1289</b>
+<ul type='circle'>
+	<li>Updated Vibrations window to include vector scale and render delay controls.</li>
+	<li>Rendered cylinder vibration vectors look better now.</li>
+	<li>Added Canvas::editable_ flag to disable interactive elements of the Canvas, except for view manipulations.</li>
+	<li>Canvas is now 'read-only' when viewing vibrations or trajectories.</li>
+</ul>
+
+<b>Revision 1288</b>
+<ul type='circle'>
+	<li>Added 'ANGBOHR' as recognised lexer constant.</li>
+	<li>Updates SIESTA filter to read in vectors files.</li>
+	<li>Vibrations now display with original bonds.</li>
+</ul>
+
+<b>Revision 1287</b>
+<ul type='circle'>
+	<li>Rendering of vibration vector arrows fixed.</li>
+	<li>Proper rendering of vibrations implemented.</li>
+</ul>
+
+<b>Revision 1286</b>
+<ul type='circle'>
+	<li>Renamed Model::trajectoryParent_ to Model::parent_ to make it more general.</li>
+	<li>All routines in Model which were aware of parent_ pointer (mostly view-related routines) now pass through to the parent function rather than just returning the parent's value, allowing parent values to be retrieved from any depth.</li>
+	<li>Added ModelType enum to Model class (currently unused).</li>
+</ul>
+
+<b>Revision 1285</b>
+<ul type='circle'>
+	<li>Vibrational display implemented, but not working correctly.</li>
+</ul>
+
+<b>Revision 1284</b>
+<ul type='circle'>
+	<li>Fixed - Aten's 'frame' accessor variable was wrongly using Model::renderSource() instead of Model::renderSourceModel().</li>
+</ul>
+
+<b>Revision 1283</b>
+<ul type='circle'>
+	<li>Replaced 'bool Model::renderFromSelf_' with an enummed Model::renderSource_ comprising model, trajectory, and vibration flags.</li>
+	<li>Updated Vibrations window.</li>
+	<li>Renamed many trajectory-related variables and functions in Model to explicitly separate them from potential new functions related to vibration frames.</li>
+	<li>Added 'intensity' and 'rmass' accessors to Vibration variable.</li>
+	<li>Heavily updated gamess filter to read un basis set, MO, and vibrations data.</li>
+</ul>
+
+<b>Revision 1282</b>
+<ul type='circle'>
+	<li>Adapted Eigenvector and BasisShell functions to accomodate both cartesian and spherical basis function types.</li>
+	<li>Tweaked Basis view window.</li>
+	<li>Added ability to draw vibration displacement vectors on model (from Vibrations window).</li>
+</ul>
+
+<b>Revision 1281</b>
+<ul type='circle'>
+	<li>Updated vibrations window.</li>
+</ul>
+
+<b>Revision 1280</b>
+<ul type='circle'>
+	<li>Merged in minor changes from aten-vib branch.</li>
+	<li>Added basic Vibrations window to GUI (incomplete).</li>
+	<li>Update 'bohr' command to actually recognise some objects.</li>
+	<li>Added 'toangstroms' function to Model variable.</li>
+	<li>Made Format-ted reading aware of SkipLines.</li>
+</ul>
+
+<b>Revision 1279</b>
+<ul type='circle'>
+	<li>Added 'group' accessor to Element variable.</li>
+	<li>Updated uff.ff with torsion generation.</li>
+</ul>
+
+<b>Revision 1278</b>
+<ul type='circle'>
+	<li>Added 'datakeyword', 'dataname', and 'nparams' accessors to ForcefieldAtom variable.</li>
+	<li>Fixed - VDW generation was broken since the wrong function name was searched for.</li>
+	<li>Update UFF test script.</li>
+	<li>Added 'generatevdw' command.</li>
+	<li>Removed specific UFFLj vdw form - sanity has returned.</li>
+	<li>Removed some defunct routines related to hardcoded generator functions.</li>
+	<li>Fixed - Assignment of atom environments was horribly broken, causing problems with forcefield type assignment.</li>
+	<li>Fixed - On changing the internal unit of energy, energetic forcefield parameters were not converted.</li>
+	<li>Fixed - Detection of ring type did not set aromatic bond property.</li>
+	<li>Updated Atom::findBondPlane() to be more consistent when aromatic bonds exist.</li>
+	<li>Updated renderer to draw aromatic bonds in wireframe style.</li>
+</ul>
+
+<b>Revision 1277</b>
+<ul type='circle'>
+	<li>Refixed - LJ forces not particularly broken.</li>
+	<li>Added (partial) test script for UFF parameter generation.</li>
+	<li>Added 'generatebond', 'generateangle', and 'generatetorsion' functions, and renamed accepted generator function names in forcefields to 'vdwgenerator', 'bondgenerator' etc to avoid clashes with new commands.</li>
+	<li>Fixed - Elements of a constant array of type 'string' could not be accessed.</li>
+	<li>Added 'nparams', 'datanames', 'datakeywords' accessors to ForcefieldBound variable.</li>
+</ul>
+
+<b>Revision 1276</b>
+<ul type='circle'>
+	<li>Removed 'n' parameter from LjN.</li>
+	<li>Added UFFLj vdw style, taking D, sigma, and N parameters.</li>
+	<li>Fixed - Forces for Lj were calculated incorrectly.</li>
+	<li>Updated uff.ff.</li>
+</ul>
+
+<b>Revision 1275</b>
+<ul type='circle'>
+	<li>Removed debug output from LineParser::getCharsDelim(Dnchar,Dnchar).</li>
+	<li>Added 'nbasisshells', 'nbasiscartesians', and 'neigenvectors' accessors to Model variable.</li>
+	<li>Added 'eigenvalue' and 'occupancy' accessors to Eigenvector variable.</li>
+	<li>Removed many calls to closeFile() in LineParser which affecting the usability of the parsing routines.</li>
+	<li>Fixed - 'find' command was not resetting file position properly if the search string was not found, since the file needed a clear() before the seekg() call.</li>
+	<li>Removed debug output from PointerArrayVariable::executeAsArray().</li>
+	<li>Extended BasisShell class with more shell name information.</li>
+	<li>Added Kelvin energy units.</li>
+	<li>Some corrections to uff.ff.</li>
+</ul>
+
+<b>Revision 1274</b>
+<ul type='circle'>
+	<li>Added ViewBasis and ViewEigenvector dialogs (partial).</li>
+	<li>Fixed - Crash in Pattern::vdwInterPatternEnergy() and Pattern::vdwInterPatternForces().</li>
+	<li>Added 'nextvararg' function to grab (and remove) next delimited argument from supplied string variable.</li>
+</ul>
+
+<b>Revision 1273</b>
+<ul type='circle'>
+	<li>Modified LineParser::readLine() to accept optional argument to keep file open after reaching eof (default is TRUE).</li>
+	<li>Fixed - No code for any model accessor functions had been linked in.</li>
+	<li>Creating Bundle with Model pointer as constructor argument now sets both 'm' and 'rs' data members.</li>
+	<li>Fixed - Error function was not returning properly from filters.</li>
+</ul>
+
+<b>Revision 1272</b>
+<ul type='circle'>
+	<li>Added test h2 GAMESS-US output files as basic test of forthcoming orbital plotting.</li>
+	<li>Moved around and renamed most of the basis/eigenvector source files to better represent the contents.</li>
+</ul>
+
+<b>Revision 1271</b>
+<ul type='circle'>
+	<li>Added static QStrings to save dialog codes to remember last-used filters.</li>
+	<li>Added storage for basis functions and eigenvectors in Model class.</li>
+	<li>Implemented accessors for basis functions and eigenvectors.</li>
+	<li>Fixed - ForcefieldAtomVariable's 'data' member could only be set by array index, and not assigned an array of values.</li>
+</ul>
+
+<b>Revision 1270</b>
+<ul type='circle'>
+	<li>Added Selection->CreateFragment menu item allowing creation of a new fragment from the current atom selection.</li>
+	<li>Modified fragment builder to allow positioning along any bond of target atom, instead of just hydrogens (cycle with Ctrl).</li>
+	<li>Added shift modifier to Transmute tool, transmuting all atoms of the same element type as the clicked atom.</li>
+	<li>Doc update.</li>
+	<li>Tweaked gamess filter.</li>
+</ul>
+
+<b>Revision 1269</b>
+<ul type='circle'>
+	<li>Added optional 'markonly' flag to several selection-related transforms in Model class.</li>
+	<li>Fixed - Measurements were not updated after performing 'setdistance'.</li>
+	<li>Added code to perform state changes on signals of other widgets (doublespin makes literal comparison of values, and so will not work as expected).</li>
+	<li>Fixed - File->Save and 'savemodel' command now properly store values from custom dialog.</li>
+	<li>Fixed - Return of original source string by 'beforestr' and 'afterstr' if no search string was found was broken.</li>
+</ul>
+
+<b>Revision 1268</b>
+<ul type='circle'>
+	<li>Added DEGRAD as recognised constant in parser-lexer.</li>
+	<li>Removed 'generator' keyword from forcefield files, since 'data' keyword performs exactly the same function.</li>
+	<li>Updated selection and deselection commands and GUI Window to accept a comma-separated list of selection actions.</li>
+	<li>Added Model->CreateExpression menu item.</li>
+	<li>Updated uff with new rules (testing still required).</li>
+	<li>Doc update.</li>
+</ul>
+
+<b>Revision 1267</b>
+<ul type='circle'>
+	<li>Tweaked 'beforestr' and 'afterstr' commands to take an extra optional flag to return the source string if no match is found.</li>
+	<li>Old rule-based forcefield generation code removed in favour of new, file-based definitions of functions (in progress).</li>
+	<li>Fixed - Warning would be issued for missing extra data for atom types, even if it was all supplied correctly.</li>
+	<li>Added 'findbond' function to AtomVariable.</li>
+	<li>Implemented missing set functions in ForcefieldBoundVariable.</li>
+	<li>Added 'convertenergy' function to AtenVariable.</li>
+	<li>Modified all variable accessor set code to accept arrays of any size, provided it is less than or equal to the limit of the desination array.</li>
+	<li>Partial update of UFF to use new parameter generation style.</li>
+</ul>
+
+<b>Revision 1266</b>
+<ul type='circle'>
+	<li>Tweak - 'find' command now returns to previous file position if search string is not found.</li>
+	<li>Updated g03 filter to read in coordinate sets in standard orientation.</li>
+	<li>Fixed - Partial picked atom selection is now cleared when canvas mode is changed.</li>
+</ul>
+
+<b>Revision 1265</b>
+<ul type='circle'>
+	<li>Added preliminary BasisFunction and Eigenvector classes.</li>
+	<li>Fixed - Rotation of torsion angles through 'settorsion' command or GUI did not rotate atoms attached to atom 'k'.</li>
+	<li>Removed debug output from state setting functions in widgetnode.</li>
+	<li>Removed debug output from DoubleExp::set.</li>
+	<li>Fixed - Calculation of selection centre of mass was wrong.</li>
+</ul>
+
+<b>Revision 1264</b>
+<ul type='circle'>
+	<li>Added preliminary Gaussian03 log import filter.</li>
+	<li>Fixed - Grammar for do/while loops was broken.</li>
+</ul>
+
+<b>Revision 1263</b>
+<ul type='circle'>
+	<li>Fixed - Crash arising from long line length in gamess filter (from previous commit), overflowing token storage in the main lexer.</li>
+	<li>Implemented ability to change states of several GUI control types.</li>
+	<li>Updated gamess filter.</li>
+</ul>
+
+<b>Revision 1262</b>
+<ul type='circle'>
+	<li>Updated gamess filter to fix a few formatting issues and add some extra controls/functionality.</li>
+	<li>Added ability to link changes in GUI controls to property setting of other controls.</li>
+	<li>Fixed - Crash when exporting two files of the same format which has GUI widgets defined.</li>
+	<li>Custom dialogs are now individually-created dialogs, owned by the relevant tree (filter).</li>
+	<li>WARNING - This revision is not fully operational.</li>
+</ul>
+
+<b>Revision 1261</b>
+<ul type='circle'>
+	<li>Re-tweak to md.ui file to fix build on some RH-based distros.</li>
+</ul>
+
+<b>Revision 1260</b>
+<ul type='circle'>
+	<li>Tweaks to several ui files to fix builds on RH-based distros.</li>
+</ul>
+
+<b>Revision 1259</b>
+<ul type='circle'>
+	<li>Removed annoying spurious xml headers from seversl ui files.</li>
+</ul>
+
+<b>Revision 1258</b>
+<ul type='circle'>
+	<li>Updated Grid class (and Grids window) to calculate (and display) total and cut volume integrals.</li>
+</ul>
+
+<b>Revision 1253</b>
+<ul type='circle'>
+	<li>Tweaked src/gui/canvas.cpp to fix Windows build after addition of GL_MULTISAMPLE usage.</li>
+</ul>
+
+<b>Revision 1252</b>
+<ul type='circle'>
+	<li>Corrected title of Select window, and updated control layout a little.</li>
+	<li>Doc update (new GUI additions).</li>
+	<li>Moved 'showall' command to Model section.</li>
+</ul>
+
+<b>Revision 1251</b>
+<ul type='circle'>
+	<li>Fixed - Crash related to ownership of main rendering context (e.g.</li>
+	<li>GLXBadContextTag errors), which can be prevented with the --nofragmenticons CLI switch.</li>
+</ul>
+
+<b>Revision 1250</b>
+<ul type='circle'>
+	<li>Fixed - Occasional crash resulting from AtenCustomDialog-created widgets being double-freed.</li>
+	<li>Fixed - Combination of VDW parameters was broken when two types had the same name.</li>
+	<li>Big update to oplsaa.ff, adding equivalents to allow atom types having same names yet different VDW parameters.</li>
+</ul>
+
+<b>Revision 1249</b>
+<ul type='circle'>
+	<li>Added 'style' accessor to Atom variable.</li>
+	<li>Added support for reading/writing atom style and custom colour information to akf format.</li>
+</ul>
+
+<b>Revision 1247</b>
+<ul type='circle'>
+	<li>Added missing src/gui/select.h to dist.</li>
+	<li>Fixed - Relatively large memory leaks arising from parts of the GUI not properly being deleted.</li>
+	<li>Fixed - Type 107 in oplsaa.ff was incorrect, breaking all-atom carbons in tert-alkanes.</li>
+	<li>Select Window fully implemented.</li>
+</ul>
+
+<b>Revision 1246</b>
+<ul type='circle'>
+	<li>Added skeleton files for Select window.</li>
+	<li>Added Transmute Selection button to Build toolbar.</li>
+	<li>Fixed some alcohol type descriptions (157-159) in oplsaa.ff.</li>
+</ul>
+
+<b>Revision 1245</b>
+<ul type='circle'>
+	<li>Fixed - Dummy element XX (0) could not be set through aten.elements[] accessor.</li>
+</ul>
+
+<b>Revision 1244</b>
+<ul type='circle'>
+	<li>Reworked GuiFilterOptionNode to be a more generic WidgetNode.</li>
+	<li>Added overloaded Forest constructor which takes a string of commands to generate.</li>
+	<li>Generation of widgets associated to Trees moved to Forest::finalise().</li>
+	<li>Increased number of decimal places in custom DoubleSpin widgets to 5.</li>
+	<li>Doc update.</li>
+	<li>Added Paste Translated menu option.</li>
+	<li>Changed status of edit menu items based on the clipboard contents and current model selection.</li>
+</ul>
+
+<b>Revision 1243</b>
+<ul type='circle'>
+	<li>Reworked FilterOptionsDialog to be a general means for displaying on-the-fly generated widgets in a dialog (AtenCustomDialog).</li>
+</ul>
+
+<b>Revision 1242</b>
+<ul type='circle'>
+	<li>Fixed - Control of widgets in Glyphs window was incorrect.</li>
+</ul>
+
+<b>Revision 1241</b>
+<ul type='circle'>
+	<li>Added ability to assign any colour to individual atoms.</li>
+	<li>Added 'colour' accessor to AtomVariable.</li>
+	<li>Added 'colouratoms' command to set colour of current atom selection.</li>
+	<li>Added 'custom' option to atom ColouringSchemes (and added missing 'velocity' scheme to menu).</li>
+	<li>Renamed some functions in Model class for clarity/consistency.</li>
+	<li>Added UndoEvent for custom atom colour changes.</li>
+</ul>
+
+<b>Revision 1240</b>
+<ul type='circle'>
+	<li>Tweak to previous commit.</li>
+</ul>
+
+<b>Revision 1239</b>
+<ul type='circle'>
+	<li>Added more options to gamess filter.</li>
+	<li>Added fractional position access to Atom variables.</li>
+</ul>
+
+<b>Revision 1238</b>
+<ul type='circle'>
+	<li>Made 'data' member of ListItem template class private, adding set/get methods.</li>
+	<li>Added 'option' keyword to command parser lexer, allowing for definitions of GUI-based filter control options (through FilterOptionNode).</li>
+	<li>Converted src/base/kvmap.h to a template to accomodate any value datatype rather than just a character string (old Dnchar/Dnchar-based class still remains for time being).</li>
+	<li>Fixed - Horrible bug in Dnchar's copy constructor, which was not initialising any class values.</li>
+	<li>Renamed argument addition functions in TreeNode class for clarity.</li>
+	<li>Command parser now allows built-in functions to be hidden by new variable declarations of the same name.</li>
+	<li>Added filter options dialog to create and display user-defined filter options (still in development).</li>
+</ul>
+
+<b>Revision 1237</b>
+<ul type='circle'>
+	<li>Fixed - Altering torsion angle of selected atoms through Geometry window was not working, since no code had been written(!).</li>
+	<li>Fixed - Adjustment of torsions through ZMatrix editor.</li>
+	<li>Added modification of torsion variables through ZMatrix window.</li>
+</ul>
+
+<b>Revision 1236</b>
+<ul type='circle'>
+	<li>Renamed search functions in List and Reflist to be clear and consistent with each other.</li>
+	<li>ZMatrix generation should now be much better, using any available bound neighbours to define angles and torsions.</li>
+	<li>Fixed - Reflist::addStart() was not updating list tail pointer.</li>
+</ul>
+
+<b>Revision 1235</b>
+<ul type='circle'>
+	<li>Fixed - Setting view along Cartesian axes was broken (mismatch between radians/degrees).</li>
+</ul>
+
+<b>Revision 1234</b>
+<ul type='circle'>
+	<li>Replaced explicit mantissa/exponent variables in MDEngine with a single DoubleExp.</li>
+	<li>Added ZMatrix and ZMatrixElement variables for script/filter access.</li>
+	<li>Added static functions to Command to allow 'terse' retrieval of data within code.</li>
+	<li>Added many function accessors to Model variable duplicating standard commands.</li>
+	<li>Doc update - added function accessor info for some variable types.</li>
+	<li>Added SelectVariable dialog for use in ZMatrix editor.</li>
+	<li>ZMatrix creation now working.</li>
+	<li>ZMatrix editing through GUI now working.</li>
+	<li>Added functions to Model to explicitly set distance, angle, and torsion of 2/3/4 atoms.</li>
+	<li>Changed Model::angle(), Cell::angle(), Model::torsion(), and Cell::torsion() to return angles in degrees rather than radians, and modified functions throughout to match.</li>
+</ul>
+
+<b>Revision 1233</b>
+<ul type='circle'>
+	<li>Some work on ZMatrix window.</li>
+	<li>ZMatrix generation not yet working.</li>
+</ul>
+
+<b>Revision 1232</b>
+<ul type='circle'>
+	<li>Merged basic MD window definitions (from svn/branches/aten-md, r1122-1123) into trunk.</li>
+	<li>Add initial ZMatrix class and bare GUI window to permit creation and editing of z-matrices for models.</li>
+</ul>
+
+<b>Revision 1231</b>
+<ul type='circle'>
+	<li>Fixed - New pointerpair.h template was missing from relevant Makefile.am, meaning it was left out of distribution.</li>
+</ul>
+
+<b>Revision 1230</b>
+<ul type='circle'>
+	<li>Fixed - Calculation of interpattern Coulomb forces would cause a crash.</li>
+	<li>Tweaked minimiser outputs again, primarily to be more verbose.</li>
+	<li>Fixed some text typos in forcefield commands.</li>
+	<li>Extended Bundle constructors to allow for setting of single pointer on creation.</li>
+	<li>Added mechanism for calling commands with a custom pointer bundle.</li>
+	<li>Added term generation accessor functions to ForcefieldVariable.</li>
+	<li>Replaced some usages of Commands structure within main Aten singleton with references to static Commands::data.</li>
+	<li>Removed data/scripts/points.txt.</li>
+</ul>
+
+<b>Revision 1229</b>
+<ul type='circle'>
+	<li>Doc update - minor corrections.</li>
+	<li>Moved gui/icons/stack_edit.svg to gui/icons/stack_build.svg.</li>
+</ul>
+
+<b>Revision 1228</b>
+<ul type='circle'>
+	<li>Doc update - moved example images from examples/images to main images/ directory, and tweaked ice and alumina examples which had wrong image links.</li>
+	<li>Tweaked output columns of MC builder.</li>
+	<li>Added PointerPair/PairTable template, to store a pair of pointers of given type which are associated with an array of data of a different type.</li>
+	<li>Fixed - New combination rule code had crippled energy/force calculation, making it so slow as to be unusable for modest systems (combined parameters now pre-calculated as part of Model::createExpression()).</li>
+	<li>Added extra value access functions to EnergyStore.</li>
+	<li>Made output of SD minimiser a little more verbose.</li>
+	<li>Fixed - Bug in energy calculation for BondConstraint angle type.</li>
+	<li>Added Prefs::shouldUpdateModel() method.</li>
+</ul>
+
+<b>Revision 1227</b>
+<ul type='circle'>
+	<li>Fixed doc build script which wasn't rewriting image links in the examples.</li>
+</ul>
+
+<b>Revision 1226</b>
+<ul type='circle'>
+	<li>Fixed - Pattern detection was broken in a previous commit.</li>
+	<li>Doc update - old tutorials now included in examples manual.</li>
+</ul>
+
+<b>Revision 1225</b>
+<ul type='circle'>
+	<li>Added further const declarations to some class methods.</li>
+</ul>
+
+<b>Revision 1224</b>
+<ul type='circle'>
+	<li>Improved LoadModel dialog, adding tooltips, KeepNames checkbox, Format combo, and fixed Bohr conversion.</li>
+	<li>Added array-based item access to Reflist class.</li>
+	<li>Added const declarations to many class methods throughout.</li>
+	<li>Moved some method code out of MethodCg and LineMinimiser headers.</li>
+</ul>
+
+<b>Revision 1223</b>
+<ul type='circle'>
+	<li>Added MAXELEMENTS constant for use in pattern generation routines.</li>
+	<li>Pattern generation now correctly checks bonds within molecules.</li>
+</ul>
+
+<b>Revision 1222</b>
+<ul type='circle'>
+	<li>Misc tweaks to source to remove some warnings.</li>
+	<li>Removed setFirstItemSpanned() call in fragment_funcs.cpp to remove incompatibility with RHEL.</li>
+</ul>
+
+<b>Revision 1221</b>
+<ul type='circle'>
+	<li>Removed 'leftMargin', 'rightMargin', 'topMargin', and 'bottomMargin' propert definitions from QBoxLayouts in glyphs.ui, grids.ui, and position.ui since they do not get moc'd properly with the Qt version supplied in RHEL (no other ui files contained the definitions).</li>
+</ul>
+
+<b>Revision 1220</b>
+<ul type='circle'>
+	<li>Tweaked command.ui and mainwindow.ui, since the top xml tag appeared to be confusing builds based on RHEL.</li>
+</ul>
+
+<b>Revision 1219</b>
+<ul type='circle'>
+	<li>Fixed - Bug in 'initgrid' which was incorrectly using the three grid dimensions.</li>
+	<li>Fixed - Bug in Grid::initialise() which wasn't correctly checking the grid size limits for 3D grids.</li>
+</ul>
+
+<b>Revision 1218</b>
+<ul type='circle'>
+	<li>More functionality added to Glyphs window.</li>
+	<li>Default text for Text glyphs added.</li>
+	<li>Fixed - Renderer would complain (wrongly) that it didn't know to draw text glyphs (type 9 and 10).</li>
+	<li>Fixed - Espresso export filter used 'writeline' where it should have used 'writelinef'.</li>
+	<li>Changed autoDefault properties of many buttons in the GUI to prevent tool windows from closing / acting without warning after editing text or numbers.</li>
+</ul>
+
+<b>Revision 1217</b>
+<ul type='circle'>
+	<li>Completed basic glyph addition via context menu.</li>
+</ul>
+
+<b>Revision 1216</b>
+<ul type='circle'>
+	<li>Fleshed out Glyphs window.</li>
+	<li>Added Model::removeGlyph() method.</li>
+	<li>Partial addition of glyph creation to atom context menu.</li>
+</ul>
+
+<b>Revision 1215</b>
+<ul type='circle'>
+	<li>Reordered GlyphType enum to be vaguely alphabetic.</li>
+	<li>Added 'ndata' and 'rotated' members and 'recolour' function to GlyphVariable, and 'atom' and 'atomdata' members to GlyphDataVariable.</li>
+	<li>Added glyph support to akf filter.</li>
+	<li>Fixed - GlyphData did not have associated inc/dec methods.</li>
+	<li>Changed default state of 'Force Update' checkbox in Command window to 'checked'.</li>
+</ul>
+
+<b>Revision 1214</b>
+<ul type='circle'>
+	<li>Added basic glyph window (no functionality yet).</li>
+	<li>Fixed - LineParser would complain about files already open, stemming from file source not being closed after string search in Aten::probeFile().</li>
+</ul>
+
+<b>Revision 1213</b>
+<ul type='circle'>
+	<li>Added ability for Grid class to store ungridded data through list of GridPoints.</li>
+	<li>Removed Grid::setType() method in favour of general Grid::initialise() method.</li>
+	<li>Removed 'gridsize' command, replacing with 'initgrid'.</li>
+	<li>Adjusted grid import filters to use new commands.</li>
+	<li>Added shell for Delaunay 3D tetrahedralization algorithm.</li>
+	<li>Fixed - Vector toCartesian() and toSpherical() routines were assuming and setting radians respectively, instead of degrees.</li>
+</ul>
+
+<b>Revision 1212</b>
+<ul type='circle'>
+	<li>Added new 'glyphcolours' command to set all data points of glyph to same colour simultaneously.</li>
+	<li>Reworked glyph option specification to use a proper enum.</li>
+	<li>Added 'colour' text option to 'newglyph' command.</li>
+	<li>Added 'espresso' filter, missing from previous commit.</li>
+</ul>
+
+<b>Revision 1211</b>
+<ul type='circle'>
+	<li>Added preliminary Quantum Espresso filter.</li>
+	<li>Fixed - Declaration and usage of user-defined functions within filters (they were being lost in an extraneous tree).</li>
+	<li>Fixed - Output of pure strings with printf function (nothing was output, bug in Format::writeToString).</li>
+	<li>Fixed - Current model pointer was not reset after loading of fragments.</li>
+</ul>
+
+<b>Revision 1210</b>
+<ul type='circle'>
+	<li>Mopac arc import filter now handles superlarge systems correctly.</li>
+	<li>Added 'centre' accessor to CellVariable to return cell centre as a vector.</li>
+</ul>
+
+<b>Revision 1209</b>
+<ul type='circle'>
+	<li>Tweaked 'rebond', 'centre', and 'fold' commands to respect file sources a bit more, so preventing them with CLI switches works more correctly.</li>
+</ul>
+
+<b>Revision 1208</b>
+<ul type='circle'>
+	<li>DL_POLY config import filter now no longer sets zmapping type itself.</li>
+</ul>
+
+<b>Revision 1207</b>
+<ul type='circle'>
+	<li>Fixed - Matrix transformation through the Transform window was broken.</li>
+	<li>Fixed - Free rotation of selection in periodic systems.</li>
+</ul>
+
+<b>Revision 1206</b>
+<ul type='circle'>
+	<li>Added 'sprintf' command, essentially as an alias for 'writevarf'.</li>
+</ul>
+
+<b>Revision 1205</b>
+<ul type='circle'>
+	<li>Fixed - Patterns would always complain about reaching maximum allowed ring limit, even if no were detected.</li>
+	<li>Made batch export mode a little more verbose.</li>
+</ul>
+
+<b>Revision 1204</b>
+<ul type='circle'>
+	<li>Fixed - Atom set commands did not accept an atom pointer as the optional argument.</li>
+	<li>Added early support for Chem3D cc1 files.</li>
+</ul>
+
+<b>Revision 1203</b>
+<ul type='circle'>
+	<li>Fixed - Crash when element conversion gave a number that was out range.</li>
+	<li>Forcefield load window now begins in Aten's data directory.</li>
+	<li>Fixed - dlpoly FIELD filter was referencing 'ljopls' instead of 'ljgeom'.</li>
+</ul>
+
+<b>Revision 1201</b>
+<ul type='circle'>
+	<li>Long options are now accepted in the format '-option' as well as '--option' for compatibility8 with Windows environments.</li>
+	<li>Fixed - CLI options '--nofragments' and '--nofragmenticons' had no effect.</li>
+</ul>
+
+<b>Revision 1200</b>
+<ul type='circle'>
+	<li>Added Gromacs configuration (.gro) import/export.</li>
+	<li>Gromacs 'rtp' filter now contained within general 'gromacs' filter.</li>
+</ul>
+
+<b>Revision 1199</b>
+<ul type='circle'>
+	<li>Removed debug output from cif filter.</li>
+	<li>Fixed - Hideous bug in Mat4&lt;T&gt; *= T which was using an out-of-bounds array index.</li>
+	<li>Fixed - Free rotation of selection about its centre of geometry was broken when the view was rotated.</li>
+</ul>
+
+<b>Revision 1198</b>
+<ul type='circle'>
+	<li>Fixes to specfile (mandriva).</li>
+	<li>Tweaked src/gui/fragment_funcs.cpp to fix Windows build.</li>
+</ul>
+
+<b>Revision 1194</b>
+<ul type='circle'>
+	<li>Beta version bump to 1.6.</li>
+</ul>
+
+</section>

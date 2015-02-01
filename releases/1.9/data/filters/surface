@@ -1,0 +1,46 @@
+# Simple 2D height map data definition (for v1.2+)
+# Created:	 15/04/2009
+# Last modified: 02/09/2011
+# ChangeLog:
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
+#	03/05/2010 - Adjusted to use modified grid commands
+# Notes:
+
+filter(type="importgrid", name="2D Surface Data", nickname="surf", extension="surf", glob="*.surf", id=3)
+{
+	# Variable declarations
+	int n,nx,ny,nz,npoints;
+	vector origin, vx, vy;
+	double data;
+	string order;
+
+	# Create new grid
+	Grid g = newGrid(filterFilename());
+
+	# First line contains number of gridpoints in each direction x,y
+	readLine(nx,ny);
+	initGrid("regularxy",nx,ny,0);
+
+	# Second line contains vectors between gridpoints
+	readLine(vx.x, vx.y, vx.z, vy.x, vy.y, vy.z);
+	gridAxes(vx.x, vx.y, vx.z, vy.x, vy.y, vy.z, 0, 0, 1);
+
+	# Third line contains grid origin (lower left-hand corner) and optional data minima and maxima
+	readLine(g.origin.x, g.origin.y, g.origin.z, g.dataMinimum.x, g.dataMinimum.y, g.dataMinimum.z, g.dataMaximum.x, g.dataMaximum.y, g.dataMaximum.z);
+	g.axisPositionX = { 0.0, g.dataMinimum.y, g.dataMinimum.z };
+	g.axisPositionY = { g.dataMinimum.x, 0.0, g.dataMinimum.z };
+	g.axisPositionZ = { g.dataMinimum.x, g.dataMinimum.y, 0.0 };
+
+	# Fourth line contains loop order
+	readLine(order);
+	gridLoopOrder(order);
+
+	# Read in grid data
+	npoints = nx*ny;
+	for (n=0; n<npoints; ++n)
+	{
+		if (!readLine(data)) error("Couldn't read point %i from file.\n", n+1);
+		addNextGridPoint(data);
+	}
+	finaliseGrid();
+}

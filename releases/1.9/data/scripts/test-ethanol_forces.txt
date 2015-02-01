@@ -1,0 +1,97 @@
+# Create test forcefield (compatible with reference forces)
+forcefield waterff = newff("Ethanol Test");
+waterff.units = "kj";
+
+# Create type definitions
+waterff.addtype(1,"CM","CM",C, "-C,nh=3", "Methyl carbon");
+waterff.addtype(2,"CT","CT",C, "-C,-O,nh=2", "Carbon with OH");
+waterff.addtype(3,"OH_a","OH",O, "", "Alcohol oxygen");
+waterff.addtype(4,"HC","HC",H, "-C", "Aliphatic hydrogen");
+waterff.addtype(5,"HO","HO",H, "-O", "Alcoholic hydrogen");
+waterff.addinter("ljgeom", 1, -0.18,  0.276144, 3.50);
+waterff.addinter("ljgeom", 2,  0.145, 0.276144, 3.50); 
+waterff.addinter("ljgeom", 3, -0.683, 0.711280, 3.12);
+waterff.addinter("ljgeom", 4,  0.06,  0.125520, 2.50);
+waterff.addinter("ljgeom", 5,  0.418, 0.0,      0.0);
+waterff.addbond("harmonic", "CM", "CT", 2242.624, 1.529);
+waterff.addbond("harmonic", "CM", "HC", 2845.120, 1.090);
+waterff.addbond("harmonic", "CT", "HC", 2845.120, 1.090);
+waterff.addbond("harmonic", "CT", "OH", 2677.760, 1.410);
+waterff.addbond("harmonic", "OH", "HO", 4627.504, 0.945);
+waterff.addangle("harmonic", "CT", "CM", "HC", 313.800, 110.7000);
+waterff.addangle("harmonic", "HC", "CM", "HC", 276.144, 107.8000);
+waterff.addangle("harmonic", "CM", "CT", "OH", 418.400, 109.5000);
+waterff.addangle("harmonic", "CM", "CT", "HC", 313.800, 110.7000);
+waterff.addangle("harmonic", "OH", "CT", "HC", 292.880, 109.5000);
+waterff.addangle("harmonic", "HC", "CT", "HC", 276.144, 107.8000);
+waterff.addangle("harmonic", "CT", "OH", "HO", 460.240, 108.5000);
+waterff.addtorsion("cos3", "HC", "C*", "C*", "HC", 0.0, 0.0, 1.2552);
+waterff.addtorsion("cos3", "HC", "C*", "C*", "OH", 0.0, 0.0, 1.9581);
+waterff.addtorsion("cos3", "CM", "CT", "OH", "HO", -1.4895, -0.7280, 2.0585);
+waterff.addtorsion("cos3", "HC", "CT", "OH", "HO", 0.0, 0.0, 1.4744);
+waterff.finalise();
+
+# Load reference forces models - Note that all forces in these files are in units of 10J/mol rather than kJ/mol
+aten.prefs.zmap = "ff";
+loadmodel("data/test/ethanol-forces-elec.CONFIG");
+model elecref = aten.model;
+loadmodel("data/test/ethanol-forces-vdw.CONFIG");
+model vdwref = aten.model;
+loadmodel("data/test/ethanol-forces-intra.CONFIG");
+model intraref = aten.model;
+
+# Load another copy of one of the reference models so we have the coordinates
+loadmodel("data/test/ethanol-forces-vdw.CONFIG");
+
+# Check various force components
+aten.prefs.eleccutoff = 7.0;
+aten.prefs.vdwcutoff = 7.0;
+aten.prefs.elecmethod = "ewald";
+aten.prefs.ewaldalpha = 0.46582;
+aten.prefs.ewaldkmax = {8,8,8}; 
+vector v;
+
+# Electrostatics (via Ewald sum)
+aten.prefs.calculateintra = FALSE;
+aten.prefs.calculatevdw = FALSE;
+modelforces();
+double rmse_elec = 0.0;
+for (int i=1; i<=aten.model.natoms; ++i)
+{
+	v = aten.model.atoms[i].f - elecref.atoms[i].f/100.0;
+	rmse_elec += v.x*v.x + v.y*v.y + v.z*v.z;
+}
+rmse_elec = sqrt(rmse_elec / aten.model.natoms);
+
+# Intramolecular terms
+aten.prefs.elecmethod = "none";
+aten.prefs.calculateintra = TRUE;
+aten.prefs.calculatevdw = FALSE;
+modelforces();
+double rmse_intra = 0.0;
+for (int i=1; i<=aten.model.natoms; ++i)
+{
+	v = aten.model.atoms[i].f - intraref.atoms[i].f/100.0;
+	rmse_intra += v.x*v.x + v.y*v.y + v.z*v.z;
+}
+rmse_intra = sqrt(rmse_intra / aten.model.natoms);
+
+# Short-range (vdW)
+aten.prefs.elecmethod = "none";
+aten.prefs.calculateintra = FALSE;
+aten.prefs.calculatevdw = TRUE;
+modelforces();
+double rmse_vdw = 0.0;
+for (int i=1; i<=aten.model.natoms; ++i)
+{
+	v = aten.model.atoms[i].f - vdwref.atoms[i].f/100.0;
+	rmse_vdw += v.x*v.x + v.y*v.y + v.z*v.z;
+}
+rmse_vdw = sqrt(rmse_vdw / aten.model.natoms);
+
+printf("Electrostatic  force RMSE = %f\n", rmse_elec);
+printf("Short-range    force RMSE = %f\n", rmse_vdw);
+printf("Intramolecular force RMSE = %f\n", rmse_intra);
+
+quit();
+

@@ -1,0 +1,770 @@
+# DL_POLY Configuration Import / Export (for v1.2+)
+# Created:	 25/03/2009
+# Last modified: 23/06/2012
+# ChangeLog:
+#	23/06/2012 - FIELD export now accounts for fixed atoms
+#	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
+# 	17/03/2011 - Added custom dialog options to control level or written data and half-cell shift in CONFIG files.
+# 	16/09/2009 - Expression export filter now uses atom type names rathern than ffbound type names. FF term loop styles updated.
+#	11/06/2009 - Fixed counting and output of constraint terms in FIELD export. 'nvdw' section corrected to 'vdw'.
+
+filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCON,config,revcon", glob="*CON*",exact="CONFIG,REVCON,config,revcon",nickname="dlpoly",id=2)
+{
+	# Variable Declaration
+	string e, title;
+	int n,keytrj,imcon;
+	double ax,ay,az,bx,by,bz,cx,cy,cz;
+	double rx,ry,rz,vx,vy,vz,fx,fy,fz;
+
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "DL_POLY Import Options";
+		widget group, w, tabs, page;
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
+		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
+		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1, 1, 4);
+	}
+	# Execute dialog
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+
+	# Get dialog values
+	Dialog ui = defaultDialog();
+	int cellShift = ui.asInteger("cellShift");
+
+	#aten.prefs.zmap = "ff";
+
+	# Title section
+	getLine(title);
+	newModel(title);
+	readLine(keytrj,imcon);
+
+	# Cell (if present)
+	if (imcon != 0)
+	{
+		readLine(ax,ay,az);
+		readLine(bx,by,bz);
+		readLine(cx,cy,cz);
+		cellAxes(ax,ay,az,bx,by,bz,cx,cy,cz);
+	}
+
+	# Atoms
+	while (!eof())
+	{
+		readLine(e);
+		readLine(rx,ry,rz);
+		newAtom(e,rx,ry,rz);
+		if (keytrj > 0)
+		{
+			readLine(vx,vy,vz);
+			setVelocities(vx,vy,vz);
+		}
+		if (keytrj > 1)
+		{
+			readLine(fx,fy,fz);
+			setForces(fx,fy,fz);
+		}
+	}
+	
+	# Shift atoms if requested
+	if (cellShift && (imcon != 0))
+	{
+		selectAll();
+		translateCell(0.5,0.5,0.5);
+		selectNone();
+	}
+
+	rebond();
+	fold();
+	finaliseModel();
+}
+
+filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCON,config,revcon", glob="*CON*", exact="CONFIG,REVCON,config,revcon", nickname="dlpoly", id=2)
+{
+	# Variable Declaration
+	int n,imcon;
+	atom i;
+
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "DL_POLY Export Options";
+		widget group, w;
+		ui.verticalFill = TRUE;
+		group = ui.addGroup("group", "Output Level");
+		ui.addRadioGroup("keygroup");
+		w = group.addRadioButton("radio1", "Coordinates", "keygroup", 1);
+		w = group.addRadioButton("radio2", "Coordinates and velocities", "keygroup", 0);
+		w = group.addRadioButton("radio3", "Coordinates, velocities and forces", "keygroup", 0);
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5");
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert");
+		ui.addLabel("","Aten to DL_POLY coordinates by shifting all atoms by one half of the unit cell.");
+		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1);
+	}
+	# Execute dialog
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+	Dialog ui = defaultDialog();
+
+	int keytrj = ui.asInteger("keygroup");
+	int cellShift = ui.asInteger("cellShift");
+
+	# Get current model
+	model m = aten.frame;
+
+	# Title section
+	writeLine(m.name);
+
+	# Convert celltype string to DL_POLY-style integer
+	if (m.cell.type == "none") imcon = 0;
+	else if (m.cell.type == "cubic") imcon = 1;
+	else if (m.cell.type == "orthorhombic") imcon = 2;
+	else if (m.cell.type == "parallelepiped") imcon = 3;
+	writeLineF("%10i%10i\n",keytrj-1,imcon);
+
+	# Cell (if present) 
+	if (imcon <> 0)
+	{
+		writeLineF("%20.6f%20.6f%20.6f\n", m.cell.ax, m.cell.ay, m.cell.az);
+		writeLineF("%20.6f%20.6f%20.6f\n", m.cell.bx, m.cell.by, m.cell.bz);
+		writeLineF("%20.6f%20.6f%20.6f\n", m.cell.cx, m.cell.cy, m.cell.cz);
+	}
+
+	# Atoms
+	vector v;
+	for (n = 1; n <= m.nAtoms; ++n)
+	{
+		# Get variable pointer to make manipulation a little less cluttered
+		i = m.atoms[n];
+		if (i.type == 0) writeLineF("%-8s%10i%20f\n",i.symbol,i.id,i.mass);
+		else writeLineF("%-8s%10i%20f\n",i.type.name,i.id,i.type.mass);
+		if (cellShift && (imcon != 0)) v = m.cell.translateAtom(i,-0.5,-0.5,-0.5);
+		else v = i.r;
+		writeLineF("%20.14f%20.14f%20.14f\n", v.x, v.y, v.z);
+		if (keytrj > 1) writeLineF("%20.14f%20.14f%20.14f\n",i.vx,i.vy,i.vz);
+		if (keytrj > 2) writeLineF("%20.14f%20.14f%20.14f\n",i.fx,i.fy,i.fz);
+	}
+}
+
+
+filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="HISu", glob="*HISu", exact="HISTORY", nickname="dlpolyu")
+{
+	# Since its a Fortran code, each record in the file is preceded and followed by an integer specifying
+	# the record size in characters.
+
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "DL_POLY Trajectory Import Options";
+		widget group, w, tabs, page;
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1);
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2);
+		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3);
+		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1, 1, 4);
+		ui.addCombo("rebondType", "Rebonding", "'None', 'Plain (no augment)', 'Full'", 2, 1, 5);
+	}
+	# Execute dialog
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+
+	# Get dialog values
+	Dialog ui = defaultDialog();
+	global int cellShift = ui.asInteger("cellShift");
+	global int rebondType = ui.asInteger("rebondType");
+
+	int readHeader()
+	{
+		int intsize=4, realsize=8, recsize;
+
+		# First line is 80-character header.
+		recsize = readInt(intsize);
+		if (recsize == 40)
+		{
+			printf("No header found in unformatted DL_POLY trajectory file. Assuming a restarted trajectory...\n");
+			rewind();
+			return TRUE;
+		}
+		else if (recsize != 80)
+		{
+			printf("File '%s' doesn't appear to be a DL_POLY Unformatted trajectory.\n", filterFilename());
+			return FALSE;
+		}
+		string title = readChars(recsize);
+		recsize = readInt(intsize);
+
+		# Next, number of atoms in the system (as a double)
+		recsize = readInt(intsize);
+		int natoms = nint(readDouble());
+		recsize = readInt(intsize);
+
+		# Atom names
+		recsize = readInt(intsize);
+		skipChars(recsize);
+		recsize = readInt(intsize);
+
+		# Atomic masses
+		recsize = readInt(intsize);
+		skipChars(recsize);
+		recsize = readInt(intsize);
+
+		# Atom charges
+		recsize = readInt(intsize);
+		skipChars(recsize);
+		recsize = readInt(intsize);
+		
+		return TRUE;
+	}
+
+	int readFrame()
+	{
+		int intsize=4, realsize=8, recsize;
+
+		# Variables
+		double mass,q,tstep;
+		double axes[9];
+		string title;
+		int natoms, nstep, keytrj, imcon, n;
+		Model m = aten.frame;
+
+		# First data for frame is : nstep, $natoms, keytrj, imcon, tstep, all as doubles 
+		recsize = readInt(intsize);
+		if (recsize != 5*realsize) { printf("Error reading start of trajectory frame.\n"); return FALSE; }
+		nstep = nint(readDouble(realsize));
+		natoms = nint(readDouble(realsize));
+		keytrj = nint(readDouble(realsize));
+		imcon = nint(readDouble(realsize));
+		tstep = readDouble(realsize);
+		recsize = readInt(intsize);
+		verbose("nstep = %i, natoms = %i, keytrj = %i, imcon = %i, tstep = %f\n", nstep, natoms, keytrj, imcon, tstep);
+		title = "t = " + ftoa(tstep) + ", n = " + itoa(nstep);
+		setName(title);
+
+		# Create temporary data arrays for reading
+		double x[natoms], y[natoms], z[natoms];
+
+		# Unit cell
+		if (imcon != 0)
+		{
+			recsize = readInt(intsize);
+			if (recsize != 9*realsize) { printf("Error reading cell info from trajectory frame.\n"); return FALSE; }
+			readDoubleArray(axes,9);
+			recsize = readInt(intsize);
+			cellAxes(axes[1],axes[2],axes[3],axes[4],axes[5],axes[6],axes[7],axes[8],axes[9]);
+		}
+
+		# Template atoms in parent model
+		modelTemplate();
+		if (aten.model.nAtoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
+
+		# Coordinates
+		recsize = readInt(intsize);
+		if (recsize != natoms*realsize) { printf("Error reading coordinate info from trajectory frame.\n"); return FALSE; }
+		if (readDoubleArray(x,natoms) != 0) { printf("Error reading x-coordinates from trajectory frame.\n"); return FALSE; }
+		recsize = readInt(intsize);
+		recsize = readInt(intsize);
+		if (readDoubleArray(y,natoms) != 0) { printf("Error reading y-coordinates from trajectory frame.\n"); return FALSE; }
+		recsize = readInt(intsize);
+		recsize = readInt(intsize);
+		if (readDoubleArray(z,natoms) != 0) { printf("Error reading z-coordinates from trajectory frame.\n"); return FALSE; }
+		recsize = readInt(intsize);
+		Vector v;
+		for (n = 1; n<= natoms; ++n)
+		{
+			v = { x[n], y[n], z[n] };
+			if (cellShift && (imcon != 0)) v += m.cell.fracToReal(0.5, 0.5, 0.5);
+			setCoords(v.x, v.y, v.z, n);
+		}
+
+		# Velocities
+		if (keytrj > 0)
+		{
+			recsize = readInt(intsize);
+			if (recsize != natoms*realsize) { printf("Error reading velocity info from trajectory frame.\n"); return FALSE; }
+			if (readDoubleArray(x,natoms) != 0) { printf("Error reading x-velocities from trajectory frame.\n"); return FALSE; }
+			recsize = readInt(intsize);
+			recsize = readInt(intsize);
+			if (readDoubleArray(y,natoms) != 0) { printf("Error reading y-velocities from trajectory frame.\n"); return FALSE; }
+			recsize = readInt(intsize);
+			recsize = readInt(intsize);
+			if (readDoubleArray(z,natoms) != 0) { printf("Error reading z-velocities from trajectory frame.\n"); return FALSE; }
+			recsize = readInt(intsize);
+			for (n = 1; n<= natoms; ++n) setVelocities(x[n], y[n], z[n], n);
+		}
+
+		# Forces
+		if (keytrj > 1)
+		{
+			recsize = readInt(intsize);
+			if (recsize != natoms*realsize) { printf("Error reading force info from trajectory frame.\n"); return FALSE; }
+			if (readDoubleArray(x,natoms) != 0) { printf("Error reading x-forces from trajectory frame.\n"); return FALSE; }
+			recsize = readInt(intsize);
+			recsize = readInt(intsize);
+			if (readDoubleArray(y,natoms) != 0) { printf("Error reading y-forces from trajectory frame.\n"); return FALSE; }
+			recsize = readInt(intsize);
+			recsize = readInt(intsize);
+			if (readDoubleArray(z,natoms) != 0) { printf("Error reading z-forces from trajectory frame.\n"); return FALSE; }
+			recsize = readInt(intsize);
+			for (n = 1; n<= natoms; ++n) setForces(x[n], y[n], z[n], n);
+		}
+
+		# Rebond (if requested)
+		if (rebondType == 2) rebond(FALSE);
+		else if (rebondType == 3) rebond(TRUE);
+
+		return TRUE;
+	}
+}
+
+filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HISf", glob="*HISf", exact="HISTORY", nickname="dlpolyf")
+{
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "DL_POLY Trajectory Import Options";
+		widget group, w, tabs, page;
+		ui.addLabel("","DL_POLY uses fractional cell coordinates ranging from -0.5 to +0.5", 1, 1, 3);
+		ui.addLabel("","while Aten uses 0 to 1.0. The option below, if checked, will convert", 1, 2, 3);
+		ui.addLabel("","DL_POLY to Aten coordinates by shifting all atoms by one half of the unit cell.", 1, 3, 3);
+		ui.addCheck("cellShift", "Shift input coordinates by half cell", 1, 1, 4);
+		ui.addCombo("rebondType", "Rebonding", "'None', 'Plain (no augment)', 'Full'", 2, 2, 4);
+		ui.addCheck("strictFormat", "Demand strict format", 1, 1, 5);
+	}
+	# Execute dialog
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+
+	# Get dialog values
+	Dialog ui = defaultDialog();
+	global int cellShift = ui.asInteger("cellShift");
+	global int rebondType = ui.asInteger("rebondType");
+	global int strictFormat = ui.asInteger("strictFormat");
+
+	int readHeader()
+	{
+		string title;
+		# DL_POLY formatted history files may contain a header.
+		# Check first 8 characters of first line - if it reads 'timestep' then this trajectory doesn't have a header
+		readLineF("%8s",title);
+		if (title == "timestep")
+		{
+			printf("No header found in DL_POLY formatted trajectory. Assuming a restarted trajectory...\n");
+			rewind();
+		}
+		else
+		{
+			# Next line contains keytrj, imcon, and natoms
+			skipLine();
+		}
+		return TRUE;
+	}
+
+	int readFrame()
+	{
+		string title, e;
+		int nstep, natoms, keytrj, imcon, n, id;
+		vector x,y,z;
+		double tstep, mass, q;
+
+		# Frame header - '"timestep"	nstep	natms	keytrj	imcon	tstep'
+		if (strictFormat) readLineF("%8s%10i%10i%10i%10i%12.6f", title, nstep, natoms, keytrj, imcon, tstep);
+		else readLine(title, nstep, natoms, keytrj, imcon, tstep);
+		title = "t = " + ftoa(tstep) + ", n = " + itoa(nstep);
+		setName(title);
+
+		# Check number of atoms in trajectory frame
+		if (aten.model.nAtoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
+		modelTemplate();
+
+		# Read cell if its present
+		if (imcon > 0)
+		{
+			if (strictFormat)
+			{
+				readLineF("%12.4f%12.4f%12.4f",x.x, x.y, x.z);
+				readLineF("%12.4f%12.4f%12.4f",y.x, y.y, y.z);
+				readLineF("%12.4f%12.4f%12.4f",z.x, z.y, z.z);
+			}
+			else
+			{
+				readLine(x.x, x.y, x.z);
+				readLine(y.x, y.y, y.z);
+				readLine(z.x, z.y, z.z);
+			}
+			cellAxes(x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z);
+		}
+
+		# Now the atoms, velocities, and forces
+		Vector v;
+		if (cellShift) v = aten.frame.cell.fracToReal(0.5,0.5,0.5);
+		if (strictFormat) for (n=1; n<=natoms; ++n)
+		{
+			readLineF("%8s%10i%12.6f%12.6f", e, id, mass, q);
+			readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
+			if (cellShift) setCoords(x.x+v.x, x.y+v.y, x.z+v.z, n);
+			else setCoords(x.x, x.y, x.z, n);
+			if (keytrj > 0)
+			{
+				readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
+				setVelocities(x.x, x.y, x.z, n);
+			}
+			if (keytrj > 1)
+			{
+				readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
+				setForces(x.x, x.y, x.z, n);
+			}
+		}
+		else for (n=1; n<=natoms; ++n)
+		{
+			readLine(e, id, mass, q);
+			readLine(x.x, x.y, x.z);
+			if (cellShift) setCoords(x.x+v.x, x.y+v.y, x.z+v.z, n);
+			else setCoords(x.x, x.y, x.z, n);
+			if (keytrj > 0)
+			{
+				readLine(x.x, x.y, x.z);
+				setVelocities(x.x, x.y, x.z, n);
+			}
+			if (keytrj > 1)
+			{
+				readLine(x.x, x.y, x.z);
+				setForces(x.x, x.y, x.z, n);
+			}
+		}
+
+		# Rebond if requested
+		if (rebondType == 2) rebond(FALSE);
+		else if (rebondType == 3) rebond(TRUE);
+
+		return TRUE;
+	}
+}
+
+filter(type="exportexpression",name="DL_POLY Forcefield Specification", extension="FIELD", glob="*FIELD",exact="FIELD",nickname="dlpoly")
+{
+	# Variable declaration
+	pattern p;
+	atom i;
+	bound b;
+	ffatom at1, at2;
+	int nvdw, n, nc, n2, nconstraints;
+	model m = aten.model;
+
+	# First, write header consisting of title, energy units, and number of molecule types
+	writeLine(m.name);
+	if (aten.prefs.energyUnit == "kj") writeLine("units kj");
+	else if (aten.prefs.energyUnit == "kcal") writeLine("units kcal");
+	else if (aten.prefs.energyUnit == "ev") writeLine("units ev");
+	else error("Current energy unit (%s) is not compatible with DL_POLY FIELD output.\n", aten.prefs.energyUnit);
+
+	writeLine("molecules",m.nPatterns);
+
+	# Loop over patterns (molecule types)
+	for (p = m.patterns; p; ++p)
+	{
+		nconstraints = 0;
+
+		# Write pattern name and number of molecules
+		writeLine(p.name);
+		writeLine("nummols",p.nMols);
+
+		# Write atoms - just loop over those in the first molecule of the pattern
+		writeLine("atoms",p.nMolAtoms);
+		i = p.firstAtom;
+		for (n=0; n<p.nMolAtoms; ++n)
+		{
+			writeLineF("%-8s   %10.5f  %9.6f   1   %i   1\n",i.type.name,i.type.mass,i.q,i.fixed);
+			++i;
+		}
+
+		# Bonds in pattern
+		nc = 0;
+		for (b=p.bonds; b; ++b) if (b.form == "constraint") ++nc;
+		writeLine("bonds",p.nBonds-nc);
+		for (b=p.bonds; b; ++b)
+		{
+			# Convert functional form to be recognised by DL_POLY
+			# Note: DL_POLY constraint terms are written in their own section
+			if (b.form == "harmonic") writeLineF("harm     %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.parameter("k"),b.parameter("eq"));
+			else if (b.form == "morse") writeLineF("morse    %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.parameter("d"),b.parameter("eq"),b.parameter("k"));
+			else if (b.form == "constraint") nconstraints++;
+			else
+			{
+				printf("Functional form of bond term (%s) not accounted for in export filter.\n",b.form);
+				writeLineF("X%s  %5i %5i %10.4f %10.4f %10.4f %10.4f\n",b.form,b.id[1],b.id[2],b.data[1],b.data[2],b.data[3],b.data[4]);
+			}
+		}
+
+		# Angles in pattern
+		nc = 0;
+		for (b=p.angles; b; ++b) if (b.form == "bondconstraint") ++nc;
+		writeLine("angles",p.nAngles-nc);
+		for (b=p.angles; b; ++b)
+		{
+			# Convert functional form to be recognised by DL_POLY
+			if (b.form == "harmonic") writeLineF("harm     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.parameter("k"),b.parameter("eq"));
+			else if (b.form == "cos") writeLineF("cos      %5i %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.parameter("k"),b.parameter("eq"),b.parameter("n"));
+			else if (b.form == "harmcos") writeLineF("hcos     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.parameter("k"),b.parameter("eq"));
+			else if (b.form == "bondconstraint") nconstraints++;
+			else
+			{
+				printf("Functional form of angle term (%s) not accounted for in export filter.\n",b.form);
+				writeLineF("X%s  %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.form,b.id[1],b.id[2],b.id[3],b.data[1],b.data[2],b.data[3],b.data[4],b.data[5],b.data[6]);
+			}
+		}
+
+		# Torsions in pattern
+		writeLine("dihedrals",p.nTorsions);
+		for (b=p.torsions; b; ++b)
+		{
+			# Convert functional form to be recognised by DL_POLY
+			if (b.form == "cos") writeLineF("cos      %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.parameter("k"),b.parameter("eq"),b.parameter("n"),b.eScale,b.vScale);
+			else if (b.form == "cos3") writeLineF("cos3     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.parameter("k1"),b.parameter("k2"),b.parameter("k3"),b.eScale,b.vScale);
+			else if (b.form == "cos3c") writeLineF("opls     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.parameter("k0"),b.parameter("k1"),b.parameter("k2"),b.parameter("k3"),b.eScale);
+			else
+			{
+				printf("Functional form of torsion term (%s) not accounted for in export filter.\n",b.form);
+				writeLineF("X%s     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.form,b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.eScale,b.vScale);
+			}
+		}
+		# Constraint terms
+		if (nconstraints > 0)
+		{
+			writeLine("constraints",nconstraints);
+			# ...proper bond constraints first
+			for (b=p.bonds; b; ++b)
+			{
+				if (b.form == "constraint") writeLineF("    %5i %5i  %10.4f\n",b.id[1],b.id[2],b.data[2]);
+			}
+			# ...and now angles that are of type 'bondconstraint'
+			for (b=p.angles; b; ++b)
+			{
+				if (b.form == "bondconstraint") writeLineF("    %5i %5i  %10.4f\n",b.id[1],b.id[3],b.data[2]);
+			}
+		}
+
+		# Terminating line
+		writeLine("finish");
+	}
+
+	# VDW Specification
+	# Get total number of pair terms to write
+	nvdw = 0;
+	for (n=1; n<=m.nFFTypes; ++n) nvdw += n;
+	writeLine("vdw",nvdw);
+	for (n=1; n<=m.nFFTypes; ++n)
+	{
+		at1 = m.ffTypes[n];
+		for (n2=1; n2<=n; ++n2)
+		{
+			at2 = m.ffTypes[n2];
+			# Check functional forms of each atomtype
+			if (at1.form != at2.form)
+			{
+				printf("Functional forms of ffTypes '%s' and '%s' differ - raw data written to output...",at1.name,at2.name); 
+				writeLineF("%-8s  %-8s   %12.6f  %12.6f  %12.6f  %12.6f  %12.6f %12.6f\n",at1.name,at2.name,at1.data[1],at1.data[2],at1.data[3],at1.data[4],at1.data[5],at1.data[6]);
+			}
+			else if (at1.form == "lj") writeLineF("%-8s %-8s  lj  %12.6f  %12.6f\n",at1.name,at2.name,at1.combine(at2,1),at1.combine(at2,2));
+			else if (at1.form == "ljgeom") writeLineF("%-8s %-8s  lj  %12.6f  %12.6f\n",at1.name,at2.name,at1.combine(at2,1),at1.combine(at2,2));
+			else if (at1.form == "buck") error("Buckingham potential not included in FIELD file export yet.\n");
+			else printf("Functional form of VDW term (%s) not accounted for in export filter.\n",at1.form);
+		}
+	}
+	writeLine("close");
+}
+
+# Function definitions
+int elementByMass(double mass, double masstol)
+{
+	for (int n=1; 1<=aten.nElements; ++n) if (abs(mass-aten.elements[n].mass) < masstol) return n;
+	return 0;
+}
+
+filter(type="importexpression",name="DL_POLY Forcefield Specification", extension="FIELD", glob="*FIELD",exact="FIELD",nickname="dlpoly")
+{
+	# Variable declaration
+	Forcefield ff;
+	FFBound ffb;
+	FFAtom at1, at2;
+	int i, j, k, l, m, n, natoms, nmols, mol, nrepeat, nbound, nvdw;
+	double mass, charge, qdiff, data[10];
+	string discard, s, keyword, form, name, names[100];
+
+	# Main dialog creation function
+	void createDefaultDialog(Dialog ui)
+	{
+		ui.title = "DL_POLY FIELD Import Options";
+		widget group, w;
+		ui.verticalFill = TRUE;
+		ui.addCheck("assumeua", "Assume United Atom", 0);
+		ui.addCheck("reducetypes", "Reduce Types", 1);
+		ui.addDoubleSpin("masstol", "Mass Tolerance", 0.0, 1.0, 0.01, 0.01);
+		ui.addDoubleSpin("qtol", "Charge Tolerance", 0.0, 1.0, 0.01, 0.01);
+	}
+	# Execute dialog and grab values
+	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+	Dialog ui = defaultDialog();
+	int assumeua = ui.asInteger("assumeua"); 
+	int reducetypes = ui.asInteger("reducetypes");
+	double masstol = ui.asDouble("masstol");
+	double qtol = ui.asDouble("qtol");
+
+	# First line is header information - use as FF name
+	getLine(s);
+	ff = newFF(s);
+
+	# Next line is energy unit
+	readLine(discard, s);
+	if ((lowerCase(s) != "kj") && (lowerCase(s) != "kcal") && (lowerCase(s) != "ev")) error("FIELD file energy unit (%s) is not compatible with Aten.\n", s);
+	units(s);
+
+	# Next is number of molecules specified in the 
+	readLine(s, nmols);
+	if (lowerCase(s) != "molecules") error("Didn't find 'molecules' directive where expected.");
+	else printf("Number of molecule types specified in FIELD file : %i\n", nmols);
+
+	# Loop over molecule types
+	for (mol=1; mol<=nmols; ++mol)
+	{
+		# First line is pattern name, next is number of molecules (neither of which we care about)
+		getLine(s);
+		skipLine();
+
+		# Number of atoms per molecule of this type we need...
+		readLine(keyword,natoms);
+		printf(" -- %i atoms in molecule '%s'\n", natoms, s);
+		n = 0;
+		do
+		{
+			readLine(name, mass, charge, nrepeat);
+			if (nrepeat == 0) nrepeat = 1;
+			# if 'reducetypes == TRUE' check previous atomtype definitions for ones with same name and charge (within tolerance)
+			if (reducetypes)
+			{
+				for (at1 in ff.atomTypes)
+				{
+					qdiff = abs(charge - at1.charge);
+					if ((at1.name == name) && (qdiff < qtol)) break;
+				}
+			}
+			else null(at1);
+			# if 'at1 != NULL' this type already exists and we should move on....Otherwise, create a new type
+			if (at1 == NULL)
+			{
+				at1 = typeDef(ff.nAtomTypes,name,name,elementByMass(mass, masstol),"");
+				at1.charge = charge;
+			}
+			# Increase atom counter and store names for upcoming bound definitions
+			for (m=0; m<nrepeat; ++m) names[++n] = name;
+		} while (n < natoms);
+
+		# Next sections are optional, and terminated by 'end' keyword
+		while (1)
+		{
+			readLine(keyword, nbound);
+			keyword = lowerCase(keyword);
+			if (keyword == "bonds")
+			{
+				printf("Found 'bonds' block...\n");
+				for (n=1; n<=nbound; ++n)
+				{
+					readLine(form, i, j, data[1], data[2], data[3], data[4]);
+					form = lowerCase(form);
+					# Does a bond definition between atom names i and j already exist?
+					if (ff.findBond(names[i], names[j]))
+					{
+						printf("Bond %s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j]);
+						continue;
+					}
+					// Create new definition
+					if (form == "harm") bondDef("harmonic", names[i], names[j], data[1], data[2]);
+					else if (form == "morse") bondDef("morse", names[i], names[j], data[1], data[3], data[2]);
+					else printf("Functional form of bond term (%s) is not present in Aten.\n", form);
+				}
+			}
+			else if (keyword == "constraints")
+			{
+				printf("Found 'constraints' block...\n");
+				for (n=1; n<=nbound; ++n)
+				{
+					readLine(i, j, data[1]);
+					# Does a constraint bond definition between atom names i, and j already exist?
+					if (ff.findBond(names[i], names[j]))
+					{
+						printf("Constraint bond %s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j]);
+						continue;
+					}
+					// Create new definition
+					bondDef("constraint", names[i], names[j], 1000.0, data[1]);
+				}
+			}
+			else if (keyword == "angles")
+			{
+				printf("Found 'angles' block...\n");
+				for (n=1; n<=nbound; ++n)
+				{
+					readLine(form, i, j, k, data[1], data[2], data[3], data[4]);
+					form = lowerCase(form);
+					# Does an angle definition between atom names i, j, and k already exist?
+					if (ff.findAngle(names[i], names[j], names[k]))
+					{
+						printf("Angle %s-%s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j], names[k]);
+						continue;
+					}
+					// Create new definition
+					if (form == "harm") angleDef("harmonic", names[i], names[j], names[k], data[1], data[2]);
+					else if (form == "cos") angleDef("cos", names[i], names[j], names[k], data[1], data[3], data[2]);
+					else if (form == "hcos") angleDef("harmcos", names[i], names[j], names[k], data[1], data[2]);
+					else printf("Functional form of angle term (%s) is not present in Aten.\n", form);
+				}
+			}
+			else if (keyword == "dihedrals")
+			{
+				printf("Found 'dihedrals' block...\n");
+				for (n=1; n<=nbound; ++n)
+				{
+					readLine(form, i, j, k, l, data[1], data[2], data[3], data[4], data[5]);
+					form = lowerCase(form);
+					# Does a torsion definition between atom names i, j, k, and l already exist?
+					if (ff.findTorsion(names[i], names[j], names[k], names[l]))
+					{
+						printf("Torsion %s-%s-%s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j], names[k], names[l]);
+						continue;
+					}
+					// Create new definition
+					null(ffb);
+					if (form == "cos") ffb = torsionDef("cos", names[i], names[j], names[k], names[l], data[1], data[3], data[2]);
+					else if (form == "cos3") ffb = torsionDef("cos3", names[i], names[j], names[k], names[l], data[1], data[2], data[3]);
+					else if (form == "opls") ffb = torsionDef("cos3c", names[i], names[j], names[k], names[l], data[1], data[2], data[3], data[4]);
+					else printf("Functional form of torsion term (%s) is not present in Aten.\n", form);
+					if (ffb != NULL) { ffb.eScale = data[4]; ffb.vScale = data[5]; }
+				}
+			}
+			else if (keyword == "finish") break;
+			else printf("Unrecognised keyword in FIELD file - '%s'\n", keyword);
+		}
+	}
+
+	# VDW Specification
+	readLine(keyword, nvdw);
+	if (lowerCase(keyword) != "vdw") printf("Didn't find 'vdw' section where expected. VDW information not converted.");
+	else
+	{
+		printf("Found 'vdw' block...\n");
+		for (n=0; n<nvdw; ++n)
+		{
+			# Read in each line of data, searching for those where the first atomtype is equal to the second
+			readLine(names[1], names[2], form, data[1], data[2], data[3], data[4], data[5]);
+			if (names[1] != names[2]) continue;
+			# We may have added multiple types of the same name earlier, so search the whole list explicitly
+			for (at1 in ff.atomTypes)
+			{
+				if (at1.name != names[1]) continue;
+				# Check form
+				if (form == "lj") interDef("lj", at1.id, at1.charge, data[1], data[2]);
+#				else if (form == "buck") error("Buckingham potential not included in FIELD file export yet.\n");
+				else printf("Functional form of VDW term (%s) is not present in Aten.\n",form);
+			}
+		}
+	}
+
+	# Perform necessary tasks
+	finaliseFF();
+}

@@ -1,0 +1,69 @@
+#
+# Script to create disordered [dmim]Cl system
+#
+
+# Define number of ion pairs and required density
+int npairs = 100;
+double density = 1.1016;  # g/cm3 at 450 K
+
+# Load Canongia Lopes ionic liquids forcefield (giving it a nickname of 'ilff')
+# This will become the current forcefield (used by the 'ff' commands later on)
+loadff("data/ff/cldp-il.ff", "ilff");
+
+# Prepare first component to add in - [dmim] cation
+# Load model from file and call it 'dmim'
+loadmodel("data/test/siesta-dmim.xyz","dmim");
+setupcomponent("both", 1, npairs, density);
+
+# Associate the current forcefield (the only one) to the model
+ffmodel();
+
+# Create a forcefield expression for the model (determine atom types, bond types, etc.)
+createexpression();
+
+# Assign atomic partial charges from the forcefield as well
+chargeff();
+
+# Print out the model data 
+info();
+
+# Prepare second component - chloride anion
+# Create a new model (naming it 'chloride') and draw a chloride atom
+newmodel("chloride");
+newatom(Cl);
+setupcomponent("both", 1, npairs, density);
+
+# Associate forcefield to the model
+ffmodel();
+
+# Create the forcefield expression
+createexpression();
+
+# Assign charges from the forcefield
+chargeff();
+
+# Print the data
+info();
+
+# New we're ready to use these two components to create a new system.
+# First, create another empty model (called 'box') and create a cubic
+# cell in it. The disorder builder will adjust its size to suit.
+newmodel("box");
+cell(1.0,1.0,1.0,90,90,90);
+
+# Print out the current component list for the disordered builder
+listcomponents();
+
+# Begin! Run the Monte Carlo for 10 cycles
+disorder("None", FALSE);
+
+# Request the Ewald sum for electrostatics (or none for just VDW intermolecular energies)
+#elec ewald 0.256 10 10 10
+#elec none
+
+# Save out the current model (will be 'box', since it was the last created) as a DL_POLY config file
+savemodel("dlpoly", "dmimcl.CONFIG");
+savemodel("mopac", "dmimcl.mop");
+
+# Done.
+quit();
