@@ -33,13 +33,11 @@ class Atom;
 class Matrix;
 
 // Glyph data
-class GlyphData
+class GlyphData : public ListItem<GlyphData>
 {
 	public:
 	// Constructor
 	GlyphData();
-	// List pointers
-	GlyphData *prev, *next;
 	// Atom data pointer type
 	enum GlyphDataType { PositionData, ForceData, VelocityData };
 
@@ -87,13 +85,11 @@ class GlyphData
 };
 
 // Glyph
-class Glyph
+class Glyph : public ListItem<Glyph>
 {
 	public:
 	// Constructor
 	Glyph();
-	// List pointers
-	Glyph *prev, *next;
 	// Operator =
 	void operator=(Glyph &source);
 	// Glyph style

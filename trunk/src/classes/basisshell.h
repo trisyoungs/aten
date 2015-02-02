@@ -26,13 +26,11 @@
 #include "templates/list.h"
 
 // Basis Primitive
-class BasisPrimitive
+class BasisPrimitive : public ListItem<BasisPrimitive>
 {
 	public:
 	// Constructor
 	BasisPrimitive();
-	// List pointers
-	BasisPrimitive *prev, *next;
 
 	/*
 	// Data
@@ -41,7 +39,7 @@ class BasisPrimitive
 	// Basis function exponent
 	double exponent_;
 	// Basis function contraction coefficients
-	List< ListItem<double> > coefficients_;
+	QList<double> coefficients_;
 
 	public:
 	// Set basis function exponent
@@ -57,13 +55,11 @@ class BasisPrimitive
 };
 
 // Basis Shell
-class BasisShell
+class BasisShell : public ListItem<BasisShell>
 {
 	public:
 	// Constructor
 	BasisShell();
-	// List pointers
-	BasisShell *prev, *next;
 	// Function Type
 	enum BasisShellType { NoType, SShellType, PShellType, DShellType, FShellType, GShellType, SPShellType, nBasisShellTypes };
 	static BasisShellType basisShellType(const char *s, bool reportError = FALSE);

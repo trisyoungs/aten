@@ -33,13 +33,11 @@
 class TreeGui;
 
 // Qt/TreeGuiWidget Map Object
-class QtWidgetObject
+class QtWidgetObject : public ListItem<QtWidgetObject>
 {
 	public:
 	// Constructor
 	QtWidgetObject();
-	// List pointers
-	QtWidgetObject *prev, *next;
 	
 	private:
 	// TreeGuiWidget to which Qt widget/object is associated

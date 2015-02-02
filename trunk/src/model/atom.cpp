@@ -68,7 +68,7 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<d
 Atom *Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 {
 	msg.enter("Model::addAtom");
-	Atom *newatom = atoms_.insert(targetid == 0 ? NULL : atoms_[targetid-1]);
+	Atom *newatom = targetid == 0 ? atoms_.prepend() : atoms_.insertAfter(atoms_[targetid-1]);
 	newatom->setParent(this);
 	newatom->setElement(newel);
 	newatom->setColourFromElement();
@@ -119,7 +119,7 @@ Atom *Model::addCopy(Atom *source)
 Atom *Model::addCopy(Atom *afterthis, Atom *source)
 {
 	msg.enter("Model::addCopy");
-	Atom *newatom = atoms_.insert(afterthis);
+	Atom *newatom = atoms_.insertAfter(afterthis);
 	//printf("Adding copy after... %p %p\n",afterthis,source);
 	newatom->copy(source);
 	renumberAtoms(afterthis);
@@ -401,7 +401,7 @@ void Model::atomResetColour(Atom *i)
 {
 	// Grab new colour...
 	double newcol[4];
-	for (int n=0; n<4; ++n) newcol[n] = elements().el[i->element()].colour[n];
+	for (int n=0; n<4; ++n) newcol[n] = Elements().el[i->element()].colour[n];
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -465,7 +465,7 @@ void Model::positionAtom(Atom *target, Vec3<double> newr)
 int Model::totalBondOrderPenalty() const
 {
 	int result = 0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) result += elements().bondOrderPenalty(i, i->totalBondOrder()/2);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) result += Elements().bondOrderPenalty(i, i->totalBondOrder()/2);
 	return result;
 }
 
@@ -496,7 +496,7 @@ double Model::forcefieldMass() const
 		if (i->type() == NULL)
 		{
 			msg.print("Error: Atom id %i doesn't have a forcefield type - using atom mass instead...\n", i->id()+1);
-			ffmass += elements().atomicMass(i);
+			ffmass += Elements().atomicMass(i);
 		}
 		else ffmass += i->type()->elementMass();
 	}
@@ -507,7 +507,7 @@ double Model::forcefieldMass() const
 // Reduce the mass (and unknown element count) of the model
 void Model::reduceMass(int element)
 {
-	mass_ -= elements().atomicMass(element);
+	mass_ -= Elements().atomicMass(element);
 	if (mass_ < 0.0) mass_ = 0.0;
 	if (element == 0) --nUnknownAtoms_;
 }
@@ -515,7 +515,7 @@ void Model::reduceMass(int element)
 // Increasethe mass (and unknown element count) of the model
 void Model::increaseMass(int element)
 {
-	mass_ += elements().atomicMass(element);
+	mass_ += Elements().atomicMass(element);
 	if (element == 0) ++nUnknownAtoms_;
 }
 
@@ -528,7 +528,7 @@ void Model::calculateMass()
 	nUnknownAtoms_ = 0;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		mass_ += elements().atomicMass(i);
+		mass_ += Elements().atomicMass(i);
 		if (i->element() == 0) ++nUnknownAtoms_;
 	}
 	msg.exit("Model::calculateMass");

@@ -36,13 +36,11 @@
 class QGLContext;
 
 // Primitive Instance
-class PrimitiveInstance
+class PrimitiveInstance : public ListItem<PrimitiveInstance>
 {
 	public:
 	// Constructor
 	PrimitiveInstance();
-	// List pointers
-	PrimitiveInstance *prev, *next;
 	// Instance Type
 	enum InstanceType { NoInstance, ListInstance, VBOInstance };
 	

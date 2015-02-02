@@ -27,7 +27,7 @@
 #include "parser/character.h"
 
 // Constructor
-ForcefieldAtom::ForcefieldAtom()
+ForcefieldAtom::ForcefieldAtom() : ListItem<ForcefieldAtom>()
 {
 	// Private variables
 	name_.set("Unnamed");
@@ -38,10 +38,6 @@ ForcefieldAtom::ForcefieldAtom()
 	neta_.setParentForcefieldAtom(this);
 	element_ = 0;
 	elementMass_ = -1.0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor
@@ -203,7 +199,7 @@ void ForcefieldAtom::setElementMass(double d)
 // Custom 'element' mass (or natural element mass)
 double ForcefieldAtom::elementMass() const
 {
-	return (elementMass_ < 0.0 ? elements().atomicMass(element_) : elementMass_);
+	return (elementMass_ < 0.0 ? Elements().atomicMass(element_) : elementMass_);
 }
 
 // Return whether this is a united-atom type (i.e. has had its mass set explicitly)

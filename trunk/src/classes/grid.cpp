@@ -52,15 +52,11 @@ Grid::SurfaceStyle Grid::surfaceStyle(const char *s)
 */
 
 // Constructor
-GridPoint::GridPoint()
+GridPoint::GridPoint() : ListItem<GridPoint>()
 {
 	// Private variables
 	flag_ = 0;
 	value_ = 0.0;
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
 }
 
 // Destructor
@@ -103,7 +99,7 @@ void GridPoint::setFlag(int i)
 */
 
 // Constructor
-Grid::Grid()
+Grid::Grid() : ListItem<Grid>()
 {
 	// Private variables
 	data3d_ = NULL;
@@ -151,10 +147,6 @@ Grid::Grid()
 	axisPosition_[2].set(0.0,0.0,0.0);
 	axisMajorSpacing_.set(1.0, 1.0, 1.0);
 	axisMinorTicks_.set(3, 3, 3);
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor
@@ -1177,21 +1169,19 @@ int Grid::modifyRegion(int startX, int startY, int startZ, double minValue, doub
 {
 	int i, j, k, x, y, z, nCells = 0;
 	double value;
-	List< ListItem< Vec3<int> > > queue;
-	ListItem< Vec3<int> > *li;
+	QList< Vec3<int> > queue;
 	Vec3<int> v;
 
 	if (type_ == Grid::RegularXYZData)
 	{
 		// Seed queue with the target cell...
-		li = queue.add();
-		li->value().set(startX, startY, startZ);
+		queue.append(Vec3<int>(startX, startY, startZ));
 
 		// Loop over queued points
-		while (queue.nItems() > 0)
+		while (queue.count() > 0)
 		{
 			// Grab last queued point
-			Vec3<int> &vec = queue.last()->value();
+			Vec3<int>& vec = queue.last();
 
 			// If this cell value is not in the range required, remove point from queue and continue
 			value = data3d_[vec.x][vec.y][vec.z];
@@ -1220,9 +1210,8 @@ int Grid::modifyRegion(int startX, int startY, int startZ, double minValue, doub
 					else
 					{
 						// Insert a new item at the beginning of the list, so we can still removeLast on the original item later...
-						li = queue.insert(NULL);
+						queue.prepend(Vec3<int>(v.x,v.y,v.z));
 // 						printf("Queueing adjacent cell %i %i %i \n", x, y, z);
-						li->value().set(v.x,v.y,v.z);
 					}
 				}
 			}
@@ -1233,14 +1222,13 @@ int Grid::modifyRegion(int startX, int startY, int startZ, double minValue, doub
 	else
 	{
 		// Seed queue with the target cell...
-		li = queue.add();
-		li->value().set(startX, startY, 0);
+		queue.append(Vec3<int>(startX, startY, 0));
 
 		// Loop over queued points
-		while (queue.nItems() > 0)
+		while (queue.count() > 0)
 		{
 			// Grab last queued point
-			Vec3<int> &vec = queue.last()->value();
+			Vec3<int>& vec = queue.last();
 
 			// If this cell value is not in the range required, remove point from queue and continue
 			value = data2d_[vec.x][vec.y];
@@ -1269,9 +1257,8 @@ int Grid::modifyRegion(int startX, int startY, int startZ, double minValue, doub
 					else
 					{
 						// Insert a new item at the beginning of the list, so we can still removeLast on the original item later...
-						li = queue.insert(NULL);
+						queue.prepend(Vec3<int>(v.x,v.y,0));
 // 						printf("Queueing adjacent cell %i %i %i \n", x, y, z);
-						li->value().set(v.x,v.y,0);
 					}
 				}
 			}

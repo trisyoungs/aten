@@ -23,14 +23,10 @@
 #include "model/model.h"
 
 // Constructor
-UndoEvent::UndoEvent()
+UndoEvent::UndoEvent() : ListItem<UndoEvent>()
 {
 	// Private variables
 	direction_ = UndoEvent::Undo;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor
@@ -43,7 +39,7 @@ UndoEvent::~UndoEvent()
 */
 
 // Constructor
-AtomEvent::AtomEvent()
+AtomEvent::AtomEvent() : UndoEvent()
 {
 }
 
@@ -105,7 +101,7 @@ void AtomEvent::print()
 */
 
 // Constructor
-BondEvent::BondEvent()
+BondEvent::BondEvent() : UndoEvent()
 {
 }
 
@@ -160,7 +156,7 @@ void BondEvent::print()
 */
 
 // Constructor
-BondTypeEvent::BondTypeEvent()
+BondTypeEvent::BondTypeEvent() : UndoEvent()
 {
 }
 
@@ -214,7 +210,7 @@ void BondTypeEvent::print()
 */
 
 // Constructor
-CellEvent::CellEvent()
+CellEvent::CellEvent() : UndoEvent()
 {
 }
 
@@ -266,7 +262,7 @@ void CellEvent::print()
 */
 
 // Constructor
-ChargeEvent::ChargeEvent()
+ChargeEvent::ChargeEvent() : UndoEvent()
 {
 }
 
@@ -317,7 +313,7 @@ void ChargeEvent::print()
 */
 
 // Constructor
-GlyphEvent::GlyphEvent()
+GlyphEvent::GlyphEvent() : UndoEvent()
 {
 }
 
@@ -359,7 +355,7 @@ void GlyphEvent::print()
 */
 
 // Constructor
-ColourEvent::ColourEvent()
+ColourEvent::ColourEvent() : UndoEvent()
 {
 }
 
@@ -416,7 +412,7 @@ void ColourEvent::print()
 */
 
 // Constructor
-FixFreeEvent::FixFreeEvent()
+FixFreeEvent::FixFreeEvent() : UndoEvent()
 {
 }
 
@@ -466,7 +462,7 @@ void FixFreeEvent::print()
 */
 
 // Constructor
-HideEvent::HideEvent()
+HideEvent::HideEvent() : UndoEvent()
 {
 }
 
@@ -516,7 +512,7 @@ void HideEvent::print()
 */
 
 // Constructor
-IdShiftEvent::IdShiftEvent()
+IdShiftEvent::IdShiftEvent() : UndoEvent()
 {
 }
 
@@ -564,7 +560,7 @@ void IdShiftEvent::print()
 */
 
 // Constructor
-IdSwapEvent::IdSwapEvent()
+IdSwapEvent::IdSwapEvent() : UndoEvent()
 {
 }
 
@@ -605,7 +601,7 @@ void IdSwapEvent::print()
 */
 
 // Constructor
-LabelEvent::LabelEvent()
+LabelEvent::LabelEvent() : UndoEvent()
 {
 }
 
@@ -656,7 +652,7 @@ void LabelEvent::print()
 */
 
 // Constructor
-MeasurementEvent::MeasurementEvent()
+MeasurementEvent::MeasurementEvent() : UndoEvent()
 {
 }
 
@@ -718,7 +714,7 @@ void MeasurementEvent::print()
 */
 
 // Constructor
-ModelRenameEvent::ModelRenameEvent()
+ModelRenameEvent::ModelRenameEvent() : UndoEvent()
 {
 }
 
@@ -764,7 +760,7 @@ void ModelRenameEvent::print()
 */
 
 // Constructor
-SelectEvent::SelectEvent()
+SelectEvent::SelectEvent() : UndoEvent()
 {
 }
 
@@ -814,7 +810,7 @@ void SelectEvent::print()
 */
 
 // Constructor
-TranslateEvent::TranslateEvent()
+TranslateEvent::TranslateEvent() : UndoEvent()
 {
 }
 
@@ -864,7 +860,7 @@ void TranslateEvent::print()
 */
 
 // Constructor
-StyleEvent::StyleEvent()
+StyleEvent::StyleEvent() : UndoEvent()
 {
 }
 
@@ -915,7 +911,7 @@ void StyleEvent::print()
 */
 
 // Constructor
-TransmuteEvent::TransmuteEvent()
+TransmuteEvent::TransmuteEvent() : UndoEvent()
 {
 }
 

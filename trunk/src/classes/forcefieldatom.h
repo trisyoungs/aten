@@ -31,14 +31,12 @@
 class Forcefield;
 
 // Forcefield atom type
-class ForcefieldAtom
+class ForcefieldAtom : public ListItem<ForcefieldAtom>
 {
 	public:
 	// Constructor / Destructor
 	ForcefieldAtom();
 	~ForcefieldAtom();
-	// List pointers
-	ForcefieldAtom *prev, *next;
 	// Copy structure
 	void copy(ForcefieldAtom *source);
 

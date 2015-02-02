@@ -26,11 +26,9 @@
 #include "ff/forms.h"
 
 // Forcefield bound interaction type
-class ForcefieldBound
+class ForcefieldBound : public ListItem<ForcefieldBound>
 {
 	public:
-	// List pointers
-	ForcefieldBound *prev, *next;
 	// Constructor
 	ForcefieldBound();
 	// Forcefield Bound Interaction Type

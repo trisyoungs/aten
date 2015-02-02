@@ -29,7 +29,7 @@
 */
 
 // Constructor
-FormatChunk::FormatChunk(ChunkType type, const char *fmt, TreeNode *arg, VTypes::DataType retrieveType)
+FormatChunk::FormatChunk(ChunkType type, const char *fmt, TreeNode *arg, VTypes::DataType retrieveType) : ListItem<FormatChunk>()
 {
 	// Private variables
 	type_ = type;
@@ -46,10 +46,6 @@ FormatChunk::FormatChunk(ChunkType type, const char *fmt, TreeNode *arg, VTypes:
 		for (const char *c = &fmt[1]; isdigit(*c) || (*c == '-'); c++) text += *c;
 		formatLength_ = atoi(text);
 	}
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
 }
 
 // Return chunktype

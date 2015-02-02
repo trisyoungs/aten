@@ -22,18 +22,18 @@
 #ifndef ATEN_MEASUREMENT_H
 #define ATEN_MEASUREMENT_H
 
+#include "templates/list.h"
+
 // Forward Declarations
 class Atom;
 class UnitCell;
 
 // Measurement
-class Measurement
+class Measurement : public ListItem<Measurement>
 {
 	public:
 	// Constructor
 	Measurement();
-	// List pointers
-	Measurement *next, *prev;
 	// Geometry types
 	enum MeasurementType { None, Distance, Angle, Torsion, nMeasurementTypes };
 	static int nMeasurementAtoms(MeasurementType);

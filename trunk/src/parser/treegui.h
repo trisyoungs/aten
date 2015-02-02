@@ -34,14 +34,12 @@ class TreeGuiWidget;
 class TreeGui;
 
 // Widget Event
-class TreeGuiWidgetEvent
+class TreeGuiWidgetEvent : public ListItem<TreeGuiWidgetEvent>
 {
 	public:
 	// Constructor / Destructor
 	TreeGuiWidgetEvent();
 	~TreeGuiWidgetEvent();
-	// List pointers
-	TreeGuiWidgetEvent *prev, *next;
 	// Event Qualifier
 	enum EventQualifier { ClickQualifier, IntegerQualifier, DoubleQualifier, StringQualifier, nEventQualifiers };
 	// Event Type
@@ -105,14 +103,12 @@ class TreeGuiWidgetEvent
 };
 
 // Widget in TreeGui
-class TreeGuiWidget
+class TreeGuiWidget : public ListItem<TreeGuiWidget>
 {
 	public:
 	// Constructor / Destructor
 	TreeGuiWidget();
 	virtual ~TreeGuiWidget();
-	// List pointers
-	TreeGuiWidget *prev, *next;
 	// Widget Types
 	enum WidgetType { ButtonWidget, CheckWidget, ComboWidget, DialogWidget, DoubleSpinWidget, EditWidget, FrameWidget, GroupWidget, IntegerSpinWidget, LabelWidget, PageWidget, RadioButtonWidget, RadioGroupWidget, StackWidget, TabWidget, nWidgetTypes };
 	static WidgetType widgetType(const char *s, bool reportError = FALSE);
@@ -282,14 +278,12 @@ class TreeGuiWidget
 };
 
 // TreeGui
-class TreeGui : public TreeGuiWidget
+class TreeGui : public TreeGuiWidget, public ListItem<TreeGui>
 {
 	public:
 	// Constructor / Destructor
 	TreeGui();
 	~TreeGui();
-	// List pointers
-	TreeGui *prev, *next;
 	// Friend classes
 	friend class TreeGuiWidget;
 	

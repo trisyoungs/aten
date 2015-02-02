@@ -32,13 +32,11 @@ class Atom;
 class UndoEvent;
 
 // UndoState (series of UndoEvents)
-class UndoState
+class UndoState : public ListItem<UndoState>
 {
 	public:
 	// Constructor
 	UndoState();
-	// List pointers
-	UndoState *prev, *next;
 
 	/*
 	// Changelist

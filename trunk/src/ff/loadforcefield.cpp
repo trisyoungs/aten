@@ -239,7 +239,7 @@ bool Forcefield::readTypes()
 			return FALSE;
 		}
 		ffa->setName(ffparser.argc(1));
-		int el = elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
+		int el = Elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
 		if (el == 0)
 		{
 			msg.print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).\n", ffparser.argc(2), ffa->name(), ffa->typeId());
@@ -304,7 +304,7 @@ bool Forcefield::readUnitedAtomTypes()
 		}
 		ffa->setName(ffparser.argc(1));
 		ffa->setEquivalent(ffparser.argc(1));
-		int el = elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
+		int el = Elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
 		if (el == 0)
 		{
 			msg.print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).\n", ffparser.argc(2), ffa->name(), ffa->typeId());
@@ -313,7 +313,7 @@ bool Forcefield::readUnitedAtomTypes()
 		}
 		ffa->setElement(el);
 		ffa->setElementMass(ffparser.argd(3));
-		ffa->neta()->setCharacterElement(elements().find(ffparser.argc(2), ElementMap::AlphaZMap));
+		ffa->neta()->setCharacterElement(Elements().find(ffparser.argc(2), ElementMap::AlphaZMap));
 		if (!ffa->setNeta(ffparser.argc(4), this))
 		{
 			msg.exit("Forcefield::readUnitedAtomTypes");

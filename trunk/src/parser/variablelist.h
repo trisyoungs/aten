@@ -42,9 +42,9 @@ class VariableList
 
 	private:
 	// List of variables
-	List<Variable> variables_;
+	List<TreeNode> variables_;
 	// List of constants
-	List<Variable> constants_;
+	List<TreeNode> constants_;
 	// Create variable of specified type
 	static Variable *makeVariable(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 	// Create a new array variable in the list
@@ -57,7 +57,7 @@ class VariableList
 	Variable *find(const char *name) const;
 	// Create a new variable in the list
 	Variable *create(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
-	// Create a new variable (static function, so we don't take ownership of it).
+	// Create a new variable
 	Variable *createFree(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 	// Create a new array variable in the list
 	Variable *createArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue = NULL);
@@ -65,8 +65,8 @@ class VariableList
 	Variable *createArrayConstant(VTypes::DataType type, int size);
 	// Return the number of variables (not constants) contained in the list
 	int nVariables() const;
-	// Return first variable in the list
-	Variable *variables() const;
+	// Return first variable in the list (as it's TreeNode base)
+	TreeNode *variables() const;
 	// Return specified variable in the list
 	Variable *variable(int index);
 	// Reset all variable values

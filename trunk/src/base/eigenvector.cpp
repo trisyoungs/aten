@@ -26,17 +26,13 @@
 #include <stdio.h>
 
 // Constructor
-Eigenvector::Eigenvector()
+Eigenvector::Eigenvector() : ListItem<Eigenvector>()
 {
 	// Private variables
 	size_ = -1;
 	eigenvector_ = NULL;
 	occupancy_ = 0.0;
 	isSpherical_ = FALSE;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 Eigenvector::~Eigenvector()

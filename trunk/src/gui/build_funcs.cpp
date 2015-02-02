@@ -112,7 +112,7 @@ void BuildWidget::on_ElementPickButton_clicked(bool checked)
 	if (newel != -1)
 	{
 		// Set text of custom element button
-		ui.ElementCustomButton->setText( elements().symbol(newel) );
+		ui.ElementCustomButton->setText( Elements().symbol(newel) );
 		customElement_ = newel;
 		// Activate custom element button
 		ui.ElementCustomButton->setChecked(TRUE);

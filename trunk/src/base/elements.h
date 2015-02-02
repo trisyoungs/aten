@@ -158,7 +158,6 @@ class ElementMap
 	double *colour(Atom *i);
 };
 
-extern ElementMap &elements();
-extern ElementMap *elementsAsPointer();
+extern ElementMap &Elements();
 
 #endif

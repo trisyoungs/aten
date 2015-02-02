@@ -385,9 +385,9 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 				if (ri->item->element() == at->characterElement())
 				{
 					matchscore = at->matchAtom(ri->item, p->ringList(), m);
-					msg.print("Atom %i (%s) matched type with score %i.\n", ri->item->id()+1, elements().symbol(ri->item), matchscore);
+					msg.print("Atom %i (%s) matched type with score %i.\n", ri->item->id()+1, Elements().symbol(ri->item), matchscore);
 				}
-				else msg.print("Atom %i (%s) is the wrong element for this type.\n", ri->item->id()+1, elements().symbol(ri->item));
+				else msg.print("Atom %i (%s) is the wrong element for this type.\n", ri->item->id()+1, Elements().symbol(ri->item));
 			}
 		}
 	}
@@ -397,7 +397,7 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 void ForcefieldsWidget::on_ManualTypeEdit_returnPressed()
 {
 	// Get the contents of the line edit and check that it is an element symbol
-	int el = elements().find(qPrintable(ui.ManualTypeEdit->text()));
+	int el = Elements().find(qPrintable(ui.ManualTypeEdit->text()));
 	if (el == -1)
 	{
 		msg.print("Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));

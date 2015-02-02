@@ -32,11 +32,12 @@
 class Grid;
 
 // Colour Scale
-class ColourScale
+class ColourScale : public ListItem<ColourScale>
 {
 	public:
 	// Constructor
 	ColourScale();
+
 
 	/*
 	// Rendering

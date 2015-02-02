@@ -32,16 +32,12 @@
 */
 
 // Constructor
-Fragment::Fragment()
+Fragment::Fragment() : ListItem<Fragment>()
 {
 	// Private variables
 	masterModel_ = NULL;
 	masterLinkAtom_ = NULL;
 	masterLinkPartner_ = NULL;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set link partner
@@ -306,7 +302,7 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replaceb
 	{
 		Vec3<double> delta = linkPartner->r() - anchorpoint->r();
 		double original = delta.magAndNormalise();
-		delta *= (elements().atomicRadius(linkPartner) + elements().atomicRadius(anchorpoint)) - original;
+		delta *= (Elements().atomicRadius(linkPartner) + Elements().atomicRadius(anchorpoint)) - original;
 		clip.translate(delta);
 	}
 	clip.pasteToModel(target, FALSE);
@@ -326,13 +322,8 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replaceb
 */
 
 // Constructor
-FragmentGroup::FragmentGroup()
+FragmentGroup::FragmentGroup() : ListItem<FragmentGroup>()
 {
-	// Private variables
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set name of group

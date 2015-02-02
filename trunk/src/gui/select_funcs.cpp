@@ -98,7 +98,7 @@ void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
 {
 	// Call the select element dialog...
 	int newel = gui.selectElementDialog->selectElement();
-	if (newel != -1) ui.TypeElementEdit->setText( elements().symbol(newel) );
+	if (newel != -1) ui.TypeElementEdit->setText( Elements().symbol(newel) );
 }
 
 void SelectWidget::on_SelectCombo_currentIndexChanged(int n)
@@ -109,7 +109,7 @@ void SelectWidget::on_SelectCombo_currentIndexChanged(int n)
 void SelectWidget::on_SelectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
-	int el = elements().find(qPrintable(ui.TypeElementEdit->text()));
+	int el = Elements().find(qPrintable(ui.TypeElementEdit->text()));
 	if (el == 0) msg.print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
 	else
 	{
@@ -121,7 +121,7 @@ void SelectWidget::on_SelectTypeButton_clicked(bool on)
 void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
-	int el = elements().find(qPrintable(ui.TypeElementEdit->text()));
+	int el = Elements().find(qPrintable(ui.TypeElementEdit->text()));
 	if (el == 0) msg.print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
 	else
 	{

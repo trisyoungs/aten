@@ -24,19 +24,18 @@
 
 #include "base/atom.h"
 #include "base/bond.h"
+#include "templates/list.h"
 
 // Forward declarations
 class Pattern;
 
 // Ring
-class Ring
+class Ring : public ListItem<Ring>
 {
 	public:
 	// Constructor / Destructor
 	Ring();
 	~Ring();
-	// List pointers
-	Ring *prev, *next;
 	// Circular list browsing
 	Refitem<Atom,int> *getNext(Refitem<Atom,int> *ri) const;
 	Refitem<Atom,int> *getPrev(Refitem<Atom,int> *ri) const;

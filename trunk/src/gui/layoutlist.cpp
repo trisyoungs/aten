@@ -29,12 +29,8 @@
 */
 
 // Constructor
-LayoutData::LayoutData()
+LayoutData::LayoutData() : ListItem<LayoutData>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
 	// Private variables
 	layout_ = NULL;
 	row_ = 0;

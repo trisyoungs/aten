@@ -29,20 +29,18 @@
 #include <stdarg.h>
 
 // Constructors
-TreeNode::TreeNode()
+TreeNode::TreeNode() : ListItem<TreeNode>()
 {
 	// Private variables
 	returnType_ = VTypes::NoData;
 	returnsArray_ = FALSE;
 	readOnly_ = TRUE;
 	parent_ = NULL;
-	nextArgument = NULL;
-	prevArgument = NULL;
 	nodeType_ = TreeNode::BasicNode;
 
 	// Public variables
-	prev = NULL;
-	next = NULL;
+	nextArgument = NULL;
+	prevArgument = NULL;
 }
 
 // Destructor
@@ -666,7 +664,7 @@ short int TreeNode::argz(int i)
 			// Attempt conversion of the string first from the users type list
 			for (nm = aten.typeImportMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),rv.asString()) == 0) break;
-			if (nm == NULL) result = elements().find(rv.asString());
+			if (nm == NULL) result = Elements().find(rv.asString());
 			else result = nm->data();
 			break;
 		case (VTypes::AtomData):

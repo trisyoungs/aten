@@ -42,12 +42,8 @@ PFNGLDELETEBUFFERSPROC Primitive::glDeleteBuffers = NULL;
 */
 
 // Constructor
-PrimitiveInstance::PrimitiveInstance()
+PrimitiveInstance::PrimitiveInstance() : ListItem<PrimitiveInstance>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-	
 	// Private variables
 	context_ = NULL;
 	type_ = PrimitiveInstance::ListInstance;

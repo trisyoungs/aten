@@ -28,14 +28,12 @@
 #include "base/constants.h"
 
 // GridPoint class
-class GridPoint
+class GridPoint : public ListItem<GridPoint>
 {
 	public:
 	// Constructor / Destructor
 	GridPoint();
 	~GridPoint();
-	// List pointers
-	GridPoint *prev, *next;
 
 	// Data
 	private:
@@ -60,14 +58,12 @@ class GridPoint
 };
 
 // Grid Data Class
-class Grid
+class Grid : public ListItem<Grid>
 {
 	public:
 	// Constructor / Destructor
 	Grid();
 	~Grid();
-	// List pointers
-	Grid *prev, *next;
 	// Grid type
 	enum GridType { NoData, RegularXYData, RegularXYZData, FreeXYZData, nGridTypes };
 	static GridType gridType(const char *s, bool reportError);

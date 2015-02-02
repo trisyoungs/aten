@@ -33,14 +33,12 @@
 class Model;
 
 // UndoEvent Base Class
-class UndoEvent
+class UndoEvent : public ListItem<UndoEvent>
 {
 	public:
 	// Constructor / Destructor
 	UndoEvent();
 	virtual ~UndoEvent();
-	// List pointers
-	UndoEvent *prev, *next;
 	// State change directions
 	enum EventDirection { Undo, Redo };
 

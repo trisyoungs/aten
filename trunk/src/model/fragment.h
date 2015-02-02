@@ -31,13 +31,11 @@
 class Atom;
 
 // Fragment Model data
-class Fragment
+class Fragment : public ListItem<Fragment>
 {
 	public:
 	// Constructor
 	Fragment();
-	// List pointers
-	Fragment *prev, *next;
 
 	/*
 	// Fragment Model Data
@@ -90,13 +88,11 @@ class Fragment
 };
 
 // Fragment Library
-class FragmentGroup
+class FragmentGroup : public ListItem<FragmentGroup>
 {
 	public:
 	// Constructor
 	FragmentGroup();
-	// List pointers
-	FragmentGroup *prev, *next;
 
 	/*
 	// Data

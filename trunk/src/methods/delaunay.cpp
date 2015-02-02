@@ -26,16 +26,12 @@
 */
 
 // Constructor
-DelaunayEdge::DelaunayEdge(GridPoint *p1, GridPoint *p2)
+DelaunayEdge::DelaunayEdge(GridPoint *p1, GridPoint *p2) : ListItem<DelaunayEdge>()
 {
 	// Private variables
 	refCount_ = 0;
 	vertexA_ = p1;
 	vertexB_ = p2;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Return whether edge contains the supplied points (in either order)
@@ -86,7 +82,7 @@ void DelaunayEdge::print()
 */
 
 // Constructor
-DelaunayTriangle::DelaunayTriangle(DelaunayEdge *edgea, DelaunayEdge *edgeb, DelaunayEdge *edgec)
+DelaunayTriangle::DelaunayTriangle(DelaunayEdge *edgea, DelaunayEdge *edgeb, DelaunayEdge *edgec) : ListItem<DelaunayTriangle>()
 {
 	// Private variables
 	refCount_ = 0;
@@ -114,10 +110,6 @@ DelaunayTriangle::DelaunayTriangle(DelaunayEdge *edgea, DelaunayEdge *edgeb, Del
 	if (radius_ < 0.0) radius_ = -radius_;
 // 	circumCentre_ = vertex(0)->r() + num / (2.0 * ba.dp(ca*da));
 // 	printf("Triangle circumcircle radius is %f, circumcentre is at %f %f %f\n", radius_, circumCentre_.x, circumCentre_.y, circumCentre_.z);
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Return the circumcentre of the triangle
@@ -203,7 +195,7 @@ void DelaunayTriangle::print()
 */
 
 // Constructor
-DelaunayTetrahedron::DelaunayTetrahedron(DelaunayTriangle *t1, DelaunayTriangle *t2, DelaunayTriangle *t3, DelaunayTriangle *t4)
+DelaunayTetrahedron::DelaunayTetrahedron(DelaunayTriangle *t1, DelaunayTriangle *t2, DelaunayTriangle *t3, DelaunayTriangle *t4) : ListItem<DelaunayTetrahedron>()
 {
 	// Private variables
 	triangles_[0] = t1;
@@ -229,10 +221,6 @@ DelaunayTetrahedron::DelaunayTetrahedron(DelaunayTriangle *t1, DelaunayTriangle 
 	radius_ = num.magnitude() / (2.0 * ba.dp(ca*da)) / 2.0;
 	if (radius_ < 0.0) radius_ = -radius_;
 	circumCentre_ = vertex(0)->r() + num / (2.0 * ba.dp(ca*da));
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Return the circumcentre of the tetrahedron
@@ -255,7 +243,7 @@ bool DelaunayTetrahedron::containsPoint(Vec3<double> r)
 	Matrix reference, m;
 	int n;
 	bool result = TRUE;
-	for (n=0; n<4; ++n) reference.setColumn(n,vertex(n)->r(),1.0);	// BROKEN Should the fourth element 'w' be 1.0?
+	for (n=0; n<4; ++n) reference.setColumn(n,vertex(n)->r(),1.0);	// TODO BROKEN Should the fourth element 'w' be 1.0?
 	double det, refdet = reference.determinant();
 	for (n=0; n<4; ++n)
 	{

@@ -32,17 +32,13 @@
 #include "base/sysfunc.h"
 
 // Constructors
-Program::Program()
+Program::Program() : ListItem<Program>()
 {
 	// Private variables
 	name_ = "NewProgram";
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = FALSE;
 	mainProgram_.setParent(this);
-	
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor
@@ -314,7 +310,7 @@ bool Program::executeFunction(const char *funcname, ReturnValue &rv, const char 
 				break;
 			case ('c'):
 			case ('s'):
-				var = new StringVariable(va_arg(vars, const char *), TRUE);
+				var = new StringVariable(va_arg(vars, const char*), TRUE);
 				break;
 			case ('a'):
 				var = new AtomVariable(va_arg(vars, Atom*));
@@ -330,7 +326,7 @@ bool Program::executeFunction(const char *funcname, ReturnValue &rv, const char 
 				var = NULL;
 				break;
 		}
-		args.own(var);
+		if (var) args.own(var);
 	}
 	va_end(vars);
 

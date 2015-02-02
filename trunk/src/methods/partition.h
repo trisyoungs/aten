@@ -34,13 +34,11 @@
 #define CELLCHUNKSIZE 1000
 
 // Partition Cell Data
-class PartitionCellData
+class PartitionCellData : public ListItem<PartitionCellData>
 {
 	public:
 	// Constructor
 	PartitionCellData();
-	// List pointers
-	PartitionCellData *next, *prev;
 
 	public:
 	// Data
@@ -50,13 +48,11 @@ class PartitionCellData
 };
 
 // Partition Data
-class PartitionData
+class PartitionData : public ListItem<PartitionData>
 {
 	public:
 	// Constructor
 	PartitionData();
-	// List pointers
-	PartitionData *prev, *next;
 
 	/*
 	// Data
@@ -125,14 +121,12 @@ class PartitionData
 };
 
 // Partitioning Scheme for Disordered Builder
-class PartitioningScheme
+class PartitioningScheme : public ListItem<PartitioningScheme>
 {
 	public:
 	// Constructor / Destructor
 	PartitioningScheme();
 	~PartitioningScheme();
-	// List pointers
-	PartitioningScheme *prev, *next;
 
 	/*
 	// Function Data

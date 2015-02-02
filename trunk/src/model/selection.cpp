@@ -168,8 +168,8 @@ Vec3<double> Model::selectionCentreOfMass() const
 			}
 			else
 			{
-				massnorm += elements().atomicMass(i);
-				result += cell_.mim(i, selection_.first()->item) * elements().atomicMass(i);
+				massnorm += Elements().atomicMass(i);
+				result += cell_.mim(i, selection_.first()->item) * Elements().atomicMass(i);
 			}
 		}
 		result /= massnorm;
@@ -426,7 +426,7 @@ void Model::selectionEmpirical(Dnchar &target, bool markonly, bool addspaces) co
 		if (elcount[n] != 0)
 		{
 			if ((count>0) && addspaces) target.strcat(" ");
-			target.strcat(elements().symbol(n));
+			target.strcat(Elements().symbol(n));
 			if (elcount[n] > 1) target.strcat(itoa(elcount[n]));
 			count++;
 		}
@@ -455,7 +455,7 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 		if (newel == lastel) count ++;
 		else
 		{
-			target.strcat(elements().symbol(i));
+			target.strcat(Elements().symbol(i));
 			target.strcat(itoa(count));
 			lastel = newel;
 			count = 0;
@@ -464,7 +464,7 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 	// Check for last element chunk
 	if (count != 0)
 	{
-		target.strcat(elements().symbol(lastel));
+		target.strcat(Elements().symbol(lastel));
 		target.strcat(itoa(count));
 	}
 	msg.exit("Model::selectionAtomFingerprint");

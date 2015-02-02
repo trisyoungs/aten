@@ -54,17 +54,13 @@ const char *TreeGuiWidgetEvent::eventProperty(TreeGuiWidgetEvent::EventProperty 
 }
 
 // Constructor / Destructor
-TreeGuiWidgetEvent::TreeGuiWidgetEvent()
+TreeGuiWidgetEvent::TreeGuiWidgetEvent() : ListItem<TreeGuiWidgetEvent>()
 {
 	// Private variables
 	qualifier_ = TreeGuiWidgetEvent::nEventQualifiers;
 	type_ = TreeGuiWidgetEvent::nEventTypes;
 	targetWidget_ = NULL;
 	targetProperty_ = TreeGuiWidgetEvent::nEventProperties;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 TreeGuiWidgetEvent::~TreeGuiWidgetEvent()
@@ -218,7 +214,7 @@ const char *TreeGuiWidget::widgetType(TreeGuiWidget::WidgetType i)
 }
 
 // Constructor
-TreeGuiWidget::TreeGuiWidget()
+TreeGuiWidget::TreeGuiWidget() : ListItem<TreeGuiWidget>()
 {
 	// Private variables
 	type_ = TreeGuiWidget::nWidgetTypes;
@@ -233,10 +229,6 @@ TreeGuiWidget::TreeGuiWidget()
 	for (int n = 0; n < TreeGuiWidgetEvent::nEventProperties; ++n) propertyChanged_[n] = FALSE;
 	enabled_ = TRUE;
 	visible_ = TRUE;
-	
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor
@@ -1296,7 +1288,7 @@ void TreeGuiWidget::checkWidgetEvents()
 */
 
 // Constructor
-TreeGui::TreeGui() : TreeGuiWidget()
+TreeGui::TreeGui() : TreeGuiWidget(), ListItem<TreeGui>()
 {
 	// Private variables
 	if (gui.applicationType() != QApplication::Tty)
@@ -1306,10 +1298,6 @@ TreeGui::TreeGui() : TreeGuiWidget()
 	}
 	else qtTreeGui_ = NULL;
 	set(TreeGuiWidget::DialogWidget, "DialogWidget", this);
-	
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor

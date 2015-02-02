@@ -113,7 +113,7 @@ const char *Neta::netaLogic(NetaLogicType lt)
 // Neta Parent Structure
 */
 
-Neta::Neta()
+Neta::Neta() : ListItem<Neta>()
 {
 	// Private variables
 	characterElement_ = -1;
@@ -122,10 +122,6 @@ Neta::Neta()
 	targetAtom_ = NULL;
 	targetRingList_ = NULL;
 	targetParent_ = NULL;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructors
@@ -369,7 +365,7 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 // NetaNode
 */
 
-NetaNode::NetaNode()
+NetaNode::NetaNode() : ListItem<NetaNode>()
 {
 	// Private variables
 	nodeType_ = NetaNode::nNetaNodeTypes;
@@ -377,8 +373,6 @@ NetaNode::NetaNode()
 	reverseLogic_ = FALSE;
 
 	// Public variables
-	prev = NULL;
-	next = NULL;
 	prevNode = NULL;
 	nextNode = NULL;
 }
@@ -644,7 +638,7 @@ void NetaBoundNode::nodePrint(int offset, const char *prefix)
 	for (Refitem<ForcefieldAtom,int> *ri = allowedElementsAndTypes_.first(); ri != NULL; ri = ri->next)
 	{
 		if (ri->data == 0) printf("Any ");
-		else if (ri->data > 0) printf("%s ", elements().symbol(ri->data));
+		else if (ri->data > 0) printf("%s ", Elements().symbol(ri->data));
 		else printf("&%i ", -ri->data);
 	}
 	printf("\n");
@@ -790,7 +784,7 @@ const char *NetaBoundNode::elementsAndTypesString()
 			s.strcat(itoa(abs(ri->data)));
 		}
 		else if (ri->data == 0) s.strcat("Any");
-		else s.strcat(elements().symbol(ri->data));
+		else s.strcat(Elements().symbol(ri->data));
 	}
 	if (allowedElementsAndTypes_.nItems() != 1) s += ']';
 	msg.exit("NetaBoundNode::elementsAndTypesString");

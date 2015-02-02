@@ -86,7 +86,7 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
-	{ "elements",	VTypes::ElementData,		elements().nElements(), TRUE },
+	{ "elements",	VTypes::ElementData,		Elements().nElements(), TRUE },
 	{ "frame",	VTypes::ModelData,		0, TRUE },
 	{ "mc",		VTypes::MonteCarloData,		0, TRUE },
 	{ "model",	VTypes::ModelData,		0, TRUE },
@@ -187,7 +187,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
-		if ((arrayIndex < (acc == AtenVariable::Elements ? 0 : 1)) || (arrayIndex > accessorData[i].arraySize))
+		if ((arrayIndex < (acc == AtenVariable::ElementsMap ? 0 : 1)) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			msg.exit("AtenVariable::retrieveAccessor");
@@ -199,18 +199,18 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	bool result = TRUE;
 	if (result) switch (acc)
 	{
-		case (AtenVariable::Elements):
+		case (AtenVariable::ElementsMap):
 			if (hasArrayIndex)
 			{
-				if ((arrayIndex < 0) || (arrayIndex > elements().nElements()))
+				if ((arrayIndex < 0) || (arrayIndex > Elements().nElements()))
 				{
 					msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
 					result = FALSE;
 				}
-				else rv.set(VTypes::ElementData, &elements().el[arrayIndex]);
+				else rv.set(VTypes::ElementData, &Elements().el[arrayIndex]);
 				// Note: array index is not decreased by 1, since element 0 is 'XX'
 			}
-			else rv.set(VTypes::ElementData, &elements().el[0]);
+			else rv.set(VTypes::ElementData, &Elements().el[0]);
 			break;
 		case (AtenVariable::Frame):
 			if (aten.currentModel() == NULL) rv.set(VTypes::ModelData, NULL);
@@ -237,7 +237,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(VTypes::ModelData, m);
 			break;
 		case (AtenVariable::NElements):
-			rv.set(elements().nElements());
+			rv.set(Elements().nElements());
 			break;
 		case (AtenVariable::NModels):
 			rv.set(aten.nModels());
@@ -351,8 +351,8 @@ bool AtenVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			else rv.set( prefs.convertEnergy(node->argd(0), eu) );
 			break;
 		case (AtenVariable::FindElement):
-			el = elements().find(node->argc(0));
-			if (el != 0) rv.set(VTypes::ElementData, &elements().el[el]);
+			el = Elements().find(node->argc(0));
+			if (el != 0) rv.set(VTypes::ElementData, &Elements().el[el]);
 			else rv.set(VTypes::ElementData, NULL);
 			break;
 		default:

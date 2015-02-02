@@ -44,14 +44,12 @@ class NetaContextNode;
 class NetaRootNode;
 
 // NETA description
-class Neta
+class Neta : public ListItem<Neta>
 {
 	public:
 	// Constructor / Destructor
 	Neta();
 	~Neta();
-	// List pointers
-	Neta *prev, *next;
 	// NETA Keywords
 	enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotPrevKeyword, NotSelfKeyword, PlanarKeyword, nNetaKeywords };
 	static NetaKeyword netaKeyword(const char *s, bool reportError = FALSE);
@@ -149,14 +147,12 @@ class Neta
 };
 
 // NETA Specification Node
-class NetaNode
+class NetaNode : public ListItem<NetaNode>
 {
 	public:
 	// Constructor / Destructor
 	NetaNode();
 	virtual ~NetaNode();
-	// List pointers
-	NetaNode *prev, *next;
 	// Linear node pointers
 	NetaNode *prevNode, *nextNode;
 	// Neta node types

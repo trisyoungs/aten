@@ -32,15 +32,13 @@
 class TreeNode;
 
 // Format node
-class FormatChunk
+class FormatChunk : public ListItem<FormatChunk>
 {
 	public:
 	// Node types
 	enum ChunkType { PlainTextChunk, FormattedChunk, DelimitedChunk, GreedyDelimitedChunk, nChunkTypes };
 	// Constructors
 	FormatChunk(ChunkType type, const char *fmt, TreeNode *arg = NULL, VTypes::DataType retrieveType = VTypes::NoData);
-	// List pointers
-	FormatChunk *next, *prev;
 
 
 	/*

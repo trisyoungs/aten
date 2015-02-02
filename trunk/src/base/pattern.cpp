@@ -29,7 +29,7 @@
 #include "main/aten.h"
 
 // Constructors
-Pattern::Pattern()
+Pattern::Pattern() : ListItem<Pattern>()
 {
 	parent_ = NULL;
 	id_ = 0;
@@ -53,34 +53,22 @@ Pattern::Pattern()
 	noIntramolecular_ = FALSE;
 	atomsFixed_ = FALSE;
 	addDummyTerms_ = FALSE;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
-PatternAtom::PatternAtom()
+PatternAtom::PatternAtom() : ListItem<PatternAtom>()
 {
 	// Private variables
 	data_ = NULL;
 	atom_ = NULL;
 	forcefieldDataId_ = -1;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
-PatternBound::PatternBound()
+PatternBound::PatternBound() : ListItem<PatternBound>()
 {
 	// Private variables
 	for (int i=0; i<MAXFFBOUNDTYPES; i++) atomIds_[i] = -1;
 	data_ = NULL;
 	forcefieldDataId_ = -1;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructors
@@ -952,9 +940,9 @@ bool Pattern::validate()
 	}
 	else testAtomLimit_ = TRUE;
 	// 2) Elemental composition of individual molecules within pattern
-	elcomp1 = new int[elements().nElements()+1];
-	elcomp2 = new int[elements().nElements()+1];
-	for (m=0; m<elements().nElements()+1; m++) elcomp1[m] = 0;
+	elcomp1 = new int[Elements().nElements()+1];
+	elcomp2 = new int[Elements().nElements()+1];
+	for (m=0; m<Elements().nElements()+1; m++) elcomp1[m] = 0;
 	if (nMolecules_ == 1) testElement_ = TRUE;
 	else
 	{
@@ -974,13 +962,13 @@ bool Pattern::validate()
 			else
 			{
 				// Calculate the test atomic composition...
-				for (a=0; a<elements().nElements()+1; a++) elcomp2[a] = 0;
+				for (a=0; a<Elements().nElements()+1; a++) elcomp2[a] = 0;
 				for (a=0; a<nAtoms_; a++)
 				{
 					elcomp2[i->element()] ++; i = i->next;
 				}
 				// ... and test against reference
-				for (a=0; a<elements().nElements()+1; a++)
+				for (a=0; a<Elements().nElements()+1; a++)
 					if (elcomp1[a] != elcomp2[a]) ok = FALSE;
 			}
 			if (!ok)
@@ -1098,8 +1086,8 @@ Vec3<double> Pattern::calculateCom(int mol, Model *srcmodel)
 	{
 		// Do minimum image w.r.t. first atom in molecule
 		mim_i = cell->mim(modelatoms[a1]->r(), modelatoms[offset]->r());
-		com += mim_i * elements().atomicMass(modelatoms[a1]->element());
-		massnorm += elements().atomicMass(modelatoms[a1]->element());
+		com += mim_i * Elements().atomicMass(modelatoms[a1]->element());
+		massnorm += Elements().atomicMass(modelatoms[a1]->element());
 	}
 	com /= massnorm;
 	msg.exit("Pattern::calculateCom");
@@ -1329,7 +1317,7 @@ bool Pattern::ringSearch(Atom *i, Ring *currentpath)
 			if (done || maxreached) break;
 		}
 		// Return the list to its original state
-		msg.print(Messenger::Verbose," --- Removing atom %s[%p] from current path...\n",elements().symbol(i),i);
+		msg.print(Messenger::Verbose," --- Removing atom %s[%p] from current path...\n",Elements().symbol(i),i);
 		currentpath->removeAtom(currentpath->lastAtom());
 	}
 // 	else printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
@@ -1351,7 +1339,7 @@ int Pattern::totalBondOrderPenalty()
 	int result = 0;
 	for (int n=0; n<nAtoms_; n++)
 	{
-		result += elements().bondOrderPenalty(i, i->totalBondOrder()/2);
+		result += Elements().bondOrderPenalty(i, i->totalBondOrder()/2);
 		i = i->next;
 	}
 	return result;
@@ -1419,7 +1407,7 @@ void Pattern::augment()
 			if (j->element() == 1) continue;
 
 			refbonds.add(bref->item, bref->item->type());
-			totalpenalty += elements().bondOrderPenalty(j, j->totalBondOrder()/2);
+			totalpenalty += Elements().bondOrderPenalty(j, j->totalBondOrder()/2);
 			if (bref->item->type() == Bond::Single) ++o;
 		}
 		// If all bonds are single, no point in changing them so move on
@@ -1442,7 +1430,7 @@ void Pattern::augment()
 			for (rb = refbonds.first(); rb != NULL; rb = rb->next)
 			{
 				j = rb->item->partner(i);
-				newpenalty += elements().bondOrderPenalty(j, (j->totalBondOrder() - rb->item->order()*2 + Bond::order(rb->data)*2)/2);
+				newpenalty += Elements().bondOrderPenalty(j, (j->totalBondOrder() - rb->item->order()*2 + Bond::order(rb->data)*2)/2);
 			}
 
 			// If new penalty is better, change the bonds around
@@ -1461,7 +1449,7 @@ void Pattern::augment()
  	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-		if ((i->element() == 1) || (elements().bondOrderPenalty(i, i->totalBondOrder()/2) == 0))
+		if ((i->element() == 1) || (Elements().bondOrderPenalty(i, i->totalBondOrder()/2) == 0))
 		{
 			i = i->next;
 			continue;
@@ -1485,10 +1473,10 @@ void Pattern::augment()
 			// Store original bond type and get augmented 'best' penalty
 			bt = b1->type();
 			b1->setType(b1->augmented());
-			bref->data = elements().bondOrderPenalty(i, i->totalBondOrder()/2) + elements().bondOrderPenalty(j, j->totalBondOrder()/2);
+			bref->data = Elements().bondOrderPenalty(i, i->totalBondOrder()/2) + Elements().bondOrderPenalty(j, j->totalBondOrder()/2);
 			// Reset back to original bond type and subtract orginal bond order penalty
 			b1->setType(bt);
-			bref->data -= (elements().bondOrderPenalty(i, i->totalBondOrder()/2) + elements().bondOrderPenalty(j, j->totalBondOrder()/2));
+			bref->data -= (Elements().bondOrderPenalty(i, i->totalBondOrder()/2) + Elements().bondOrderPenalty(j, j->totalBondOrder()/2));
 // 			printf("Option: for bond %i-%i change from %s to %s gives delta of %i\n", i->id()+1, j->id()+1, Bond::bondType(bt), Bond::bondType(b1->augmented()), bref->data);
 		}
 		// Find lowest score (i.e. best move to make)
@@ -1589,7 +1577,7 @@ void printstuff(Pattern *p)
 	Atom *i = p->firstAtom();
 	for (int n=0; n<p->nAtoms(); n++)
 	{
-		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n", n, elements().symbol(i),
+		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n", n, Elements().symbol(i),
 			i->id(),i->nBonds(),Atom::atomEnvironment(i->environment()));
 		i = i->next;
 	}
@@ -1719,7 +1707,7 @@ bool Pattern::typeAtoms()
 			i = i->next;
 			continue;
 		}
-		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n", a, elements().symbol(i->element()));
+		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n", a, Elements().symbol(i->element()));
 		bestmatch = 0;
 		parent_->setAtomType(i, NULL, FALSE);
 		// Check for element 'XX' first
@@ -1751,7 +1739,7 @@ bool Pattern::typeAtoms()
 		}
 		if (i->type() == NULL)
 		{
-			msg.print("Failed to type atom - %s, id = %i, nbonds = %i.\n", elements().name(i), i->id()+1, i->nBonds());
+			msg.print("Failed to type atom - %s, id = %i, nbonds = %i.\n", Elements().name(i), i->id()+1, i->nBonds());
 			nfailed ++;
 			result = FALSE;
 		}

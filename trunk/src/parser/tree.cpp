@@ -31,7 +31,7 @@
 #include "main/aten.h"
 
 // Constructors
-Tree::Tree()
+Tree::Tree() : ListItem<Tree>()
 {
 	// Private variables
 	parent_ = NULL;
@@ -44,10 +44,6 @@ Tree::Tree()
 	runCount_ = 0;
 	createDefaultDialogFunction_ = NULL;
 	defaultDialogCreated_ = FALSE;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 
 	// Initialise
 	initialise();
@@ -751,8 +747,8 @@ TreeNode *Tree::addConstant(const char *s)
 TreeNode *Tree::addElementConstant(int el)
 {
 	ElementVariable *var;
-	if ((el < 1) || (el > elements().nElements())) var = new ElementVariable(NULL,TRUE);
-	else var = new ElementVariable(&elements().el[el], TRUE);
+	if ((el < 1) || (el > Elements().nElements())) var = new ElementVariable(NULL,TRUE);
+	else var = new ElementVariable(&Elements().el[el], TRUE);
 	nodes_.own(var);
 	return var;
 }
@@ -1138,7 +1134,8 @@ TreeGui &Tree::defaultDialog()
 // Create and return new, temporary dialog
 TreeGui *Tree::createDialog(const char *title)
 {
-	TreeGui *dialog = dialogs_.add();
+	TreeGui *dialog = new TreeGui;
+	dialogs_.own(dialog);
 	dialog->setProperty(TreeGuiWidgetEvent::TextProperty, title);
 	return dialog;
 }

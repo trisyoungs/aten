@@ -27,15 +27,11 @@
 */
 
 // Constructor
-KVPair::KVPair(const char *key, const char *value)
+KVPair::KVPair(const char *key, const char *value) : ListItem<KVPair>()
 {
 	// Private variables
 	if (key != NULL) key_ = key;
 	if (value != NULL) value_ = value;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Retrieve key associated to pair

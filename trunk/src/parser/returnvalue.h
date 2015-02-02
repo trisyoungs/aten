@@ -28,7 +28,7 @@
 #include "templates/vector3.h"
 
 // Return Value
-class ReturnValue
+class ReturnValue : public ListItem<ReturnValue>
 {
 	public:
 	// Constructors / Destructor
@@ -45,8 +45,6 @@ class ReturnValue
 	void operator=(double d);
 	void operator=(int i);
 	void operator=(const char *s);
-	// List pointers
-	ReturnValue *prev, *next;
 
 
 	/*

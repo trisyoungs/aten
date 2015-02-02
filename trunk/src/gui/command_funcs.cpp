@@ -93,8 +93,8 @@ void CommandWidget::updateVariableList()
 	ui.VariableTable->setColumnCount(3);
 	ui.VariableTable->setHorizontalHeaderLabels(QStringList() << "Variable" << "Type" << "Value");
 	QTableWidgetItem *item;
-	Variable *var;
 	TreeNode *node;
+	Variable* var;
 	ReturnValue rv;
 	Dnchar s;
 	for (Refitem<ScopeNode,int> *sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next)
@@ -125,7 +125,7 @@ void CommandWidget::on_InteractivePrompt_returnPressed()
 {
 	// Grab the current text of the line edit (and clear it at the same time)
 	interactiveProgram_.mainProgram()->reset(FALSE);
-	if (interactiveProgram_.generateFromString(ui.InteractivePrompt->getText(), "InteractivePromptCommand", FALSE, FALSE))
+	if (interactiveProgram_.generateFromString(ui.InteractivePrompt->getText(), "InteractivePromptCommand", "", FALSE, FALSE))
 	{
 		ReturnValue result;
 		interactiveProgram_.execute(result);

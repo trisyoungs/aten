@@ -30,14 +30,12 @@ class Model;
 class ZMatrix;
 
 // Element of ZMatrix
-class ZMatrixElement
+class ZMatrixElement : public ListItem<ZMatrixElement>
 {
 	public:
 	// Constructor / Destructor
 	ZMatrixElement();
 	~ZMatrixElement();
-	// List pointers
-	ZMatrixElement *prev, *next;
 
 	/*
 	// Data
@@ -138,19 +136,19 @@ class ZMatrix
 	// Return number of defined angle variables
 	int nAngles();
 	// Return start of angles list
-	Variable *angles();
+	TreeNode *angles();
 	// Return specified angle variable
 	Variable *angle(int index);
 	// Return number of defined distance variables
 	int nDistances();
 	// Return start of distances list
-	Variable *distances();
+	TreeNode *distances();
 	// Return specified distance variable
 	Variable *distance(int index);
 	// Return number of defined torsion variables
 	int nTorsions();
 	// Return start of torsions list
-	Variable *torsions();
+	TreeNode *torsions();
 	// Return specified torsion variable
 	Variable *torsion(int index);
 

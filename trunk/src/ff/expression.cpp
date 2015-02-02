@@ -48,8 +48,8 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 	// Temp vars for type storage
 	ForcefieldAtom *ti, *tj, *tk, *tl;
 	int ii, jj, kk, ll, n, m;
-	List< ListItem<int> > *bonding;
-	bonding = new List< ListItem<int> >[nAtoms_];
+	QList<int> *bonding;
+	bonding = new QList<int>[nAtoms_];
 	// Clear old arrays
 	atoms_.clear();
 	bonds_.clear();
@@ -116,7 +116,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 		}
 		if (ai->type() == NULL)
 		{
-			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, elements().symbol(ai));
+			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, Elements().symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}
@@ -127,7 +127,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 		// Make another check to see that we now have vdw parameters
 		if (ai->type()->vdwForm() ==  VdwFunctions::None)
 		{
-			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, elements().symbol(ai));
+			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, Elements().symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}
@@ -188,8 +188,8 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 						msg.print(Messenger::Verbose,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 					// Update the bonding array counters
-					bonding[ii].add()->setValue(jj);
-					bonding[jj].add()->setValue(ii);
+					bonding[ii] << jj;
+					bonding[jj] << ii;
 				}
 				bref = bref->next;
 			}
@@ -204,20 +204,20 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 			jj = pb->atomId(0);
 			kk = pb->atomId(1);
 			// Loop over list of atoms bound to jj
-			for (ii=0; ii<bonding[jj].nItems(); ii++)
+			for (ii=0; ii<bonding[jj].count(); ii++)
 			{
 				// Skip atom kk
-				if (bonding[jj][ii]->value() == kk) continue;
+				if (bonding[jj][ii] == kk) continue;
 				// Loop over list of atoms bound to kk
-				for (ll=0; ll<bonding[kk].nItems(); ll++)
+				for (ll=0; ll<bonding[kk].count(); ll++)
 				{
 					// Skip atom jj
-					if (bonding[kk][ll]->value() == jj) continue;
+					if (bonding[kk][ll] == jj) continue;
 					
-					ai = atoms_[bonding[jj][ii]->value()]->atom();
+					ai = atoms_[bonding[jj][ii]]->atom();
 					aj = atoms_[jj]->atom();
 					ak = atoms_[kk]->atom();
-					al = atoms_[bonding[kk][ll]->value()]->atom();
+					al = atoms_[bonding[kk][ll]]->atom();
 					
 					// Check for ii == ll (caused by three-membered rings)
 					if (ai->id() == al->id())
@@ -245,7 +245,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 							++nDummyTorsions;
 						}
 					}
-					addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
+					addTorsionData(ffb, bonding[jj][ii], jj, kk, bonding[kk][ll]);
 					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
@@ -266,13 +266,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 		// Loop over central atoms 'jj'
 		for (jj=0; jj<nAtoms_; jj++)
 		{
-			for (ii=0; ii<bonding[jj].nItems(); ii++)
+			for (ii=0; ii<bonding[jj].count(); ii++)
 			{
-				for (kk=ii+1; kk<bonding[jj].nItems(); kk++)
+				for (kk=ii+1; kk<bonding[jj].count(); kk++)
 				{
-					ai = atoms_[bonding[jj][ii]->value()]->atom();
+					ai = atoms_[bonding[jj][ii]]->atom();
 					aj = atoms_[jj]->atom();
-					ak = atoms_[bonding[jj][kk]->value()]->atom();
+					ak = atoms_[bonding[jj][kk]]->atom();
 					ti = ai->type();
 					tj = aj->type();
 					tk = ak->type();
@@ -289,7 +289,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 							++nDummyAngles;
 						}
 					}
-					addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
+					addAngleData(ffb, bonding[jj][ii], jj, bonding[jj][kk]);
 					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
@@ -306,7 +306,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 						if (ffb != NULL)
 						{
 							++nUreyBradleys;
-							addBondData(ffb, bonding[jj][ii]->value(), bonding[jj][kk]->value());
+							addBondData(ffb, bonding[jj][ii], bonding[jj][kk]);
 						}
 					}
 				}

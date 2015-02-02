@@ -30,14 +30,12 @@
 class Model;
 
 // Vibrational mode
-class Vibration
+class Vibration : public ListItem<Vibration>
 {
 	public:
 	// Constructor / Destructor
 	Vibration(Model *parent = NULL);
 	~Vibration();
-	// List pointers
-	Vibration *prev, *next;
 	
 
 	/*

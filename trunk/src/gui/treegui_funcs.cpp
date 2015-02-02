@@ -30,12 +30,8 @@
 */
 
 // Constructor
-QtWidgetObject::QtWidgetObject()
+QtWidgetObject::QtWidgetObject() : ListItem<QtWidgetObject>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-	
 	// Private variables
 	treeGuiWidget_ = NULL;
 	qWidget_ = NULL;

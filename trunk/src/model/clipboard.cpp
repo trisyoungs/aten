@@ -30,14 +30,10 @@
 */
 
 // Constructors
-Clipatom::Clipatom()
+Clipatom::Clipatom() : ListItem<Clipatom>()
 {
 	// Private variables
 	atomPointer_ = NULL;
-	
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Copy atom information and store original pointer
@@ -69,15 +65,11 @@ Atom &Clipatom::atom()
 // Clipbond functions
 */
 
-Clipbond::Clipbond()
+Clipbond::Clipbond() : ListItem<Clipbond>()
 {
 	// Private variables
 	atomI_ = NULL;
 	atomJ_ = NULL;
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
 }
 
 // Set atoms for bond
@@ -139,7 +131,7 @@ void Clipboard::copyAtom(Atom *i)
 		// Find first atom in current list with original ID *higher* than the current one
 		for (j = atoms_.first(); j != NULL; j = j->next) if (j->atomPointer()->id() > i->id()) break;
 		// Now, insert new item in list *before* the current 'j' atom (in other words, after 'j->prev')
-		newatom = atoms_.insert(j == NULL ? atoms_.last() : j->prev);
+		newatom = j == NULL ? atoms_.add() : atoms_.insertAfter(j->prev);
 	}
 	newatom->set(i);
 	msg.exit("Clipboard::copyAtom");

@@ -36,10 +36,10 @@ AtenPrefs::AtenPrefs(QWidget *parent) : QDialog(parent)
 	int i;
 	// Add elements to element list and select first item
 	QListWidgetItem *item;
-	for (i=0; i<elements().nElements(); i++)
+	for (i=0; i<Elements().nElements(); i++)
 	{
 		item = new QListWidgetItem(ui.ElementList);
-		item->setText(elements().name(i));
+		item->setText(Elements().name(i));
 	}
 	ui.ElementList->setCurrentRow(0);
 }
@@ -182,7 +182,7 @@ void AtenPrefs::setControls()
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
-	elements().backupData();
+	Elements().backupData();
 
 	refreshing_ = FALSE;
 	msg.exit("AtenPrefs::setControls");
@@ -203,7 +203,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 {
 	// Copy old preferences values back into main structure, update view and close window
 	prefs = prefsBackup_;
-	elements().restoreData();
+	Elements().restoreData();
 
 	gui.mainWindow()->updateControls();
 	aten.globalLogChange(Log::Style);
@@ -231,11 +231,11 @@ void AtenPrefs::on_PrefsSaveAsDefaultButton_clicked(bool checked)
 void AtenPrefs::on_ElementList_currentRowChanged(int row)
 {
 	// Update the info for the current element
-	ui.ElementNameLabel->setText(elements().name(row));
-	ui.ElementSymbolLabel->setText(elements().symbol(row));
-	ui.ElementMassLabel->setText(ftoa(elements().atomicMass(row)));
-	ui.ElementColourFrame->setColour(elements().colour(row));
-	ui.ElementRadiusSpin->setValue(elements().atomicRadius(row));
+	ui.ElementNameLabel->setText(Elements().name(row));
+	ui.ElementSymbolLabel->setText(Elements().symbol(row));
+	ui.ElementMassLabel->setText(ftoa(Elements().atomicMass(row)));
+	ui.ElementColourFrame->setColour(Elements().colour(row));
+	ui.ElementRadiusSpin->setValue(Elements().atomicRadius(row));
 }
 
 void AtenPrefs::on_ElementColourButton_clicked(bool checked)
@@ -244,7 +244,7 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
 	// Get element's current ambient colour and convert into a QColor
-	double *col = elements().colour(el);
+	double *col = Elements().colour(el);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -252,7 +252,7 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	elements().setColour(el, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	Elements().setColour(el, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.ElementColourFrame->setColour(newcol);
 	ui.ElementColourFrame->update();
 	// Re-set atom colours in model(s)
@@ -265,7 +265,7 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 	// Get current row
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
-	elements().setAtomicRadius(el, value);
+	Elements().setAtomicRadius(el, value);
 	// Re-draw models
 	aten.currentModel()->changeLog.add(Log::Style);
 	gui.mainCanvas()->postRedisplay();

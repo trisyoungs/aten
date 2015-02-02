@@ -84,14 +84,10 @@ const char *BasisShell::sphericalFunction(BasisShellType bft, int index)
 */
 
 // Constructor
-BasisPrimitive::BasisPrimitive()
+BasisPrimitive::BasisPrimitive() : ListItem<BasisPrimitive>()
 {
 	// Private variables
 	exponent_ = 0.0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set basis function exponent
@@ -109,21 +105,20 @@ double BasisPrimitive::exponent() const
 // Add contraction coefficient
 void BasisPrimitive::addCoefficient(double coeff)
 {
-	ListItem<double> *newitem = coefficients_.add();
-	newitem->setValue(coeff);
+	coefficients_ << coeff;
 }
 
 // Return number of defined coefficients
 int BasisPrimitive::nCoefficients() const
 {
-	return coefficients_.nItems();
+	return coefficients_.count();
 }
 
 // Return specified contraction coefficient
 double BasisPrimitive::coefficient(int index)
 {
-	if ((index < 0) || (index >= coefficients_.nItems())) msg.print("Coefficient index %i is out of bounds.\n", index);
-	else return coefficients_[index]->value();
+	if ((index < 0) || (index >= coefficients_.count())) msg.print("Coefficient index %i is out of bounds.\n", index);
+	else return coefficients_.at(index);
 	return 0.0;
 }
 
@@ -132,15 +127,11 @@ double BasisPrimitive::coefficient(int index)
 */
 
 // Constructor
-BasisShell::BasisShell()
+BasisShell::BasisShell() : ListItem<BasisShell>()
 {
 	// Private variables
 	type_ = BasisShell::NoType;
 	atomId_ = -1;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set associated atom pointer

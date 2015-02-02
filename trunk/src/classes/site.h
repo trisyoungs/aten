@@ -26,6 +26,7 @@
 #include "templates/vector3.h"
 #include "templates/list.h"
 #include "base/dnchar.h"
+#include <QtCore/QList>
 
 // Site types
 enum SiteType { ST_ATOMCOM, ST_ATOMCOG, ST_MOLCOM, ST_MOLCOG, ST_NITEMS };
@@ -38,13 +39,11 @@ class Pattern;
 class Model;
 
 // Site
-class Site
+class Site : public ListItem<Site>
 {
 	public:
 	// Constructor
 	Site();
-	// List pointers
-	Site *prev, *next;
 
 	/*
 	// Site pattern, molecule and atoms
@@ -82,7 +81,7 @@ class Site
 	// Set centre of site
 	void setCentre(Vec3<double>);
 	// List of relative atom ids that define the site
-	List< ListItem<int> > atoms;
+	QList<int> atoms;
 
 	/*
 	// Site Axes
@@ -95,9 +94,9 @@ class Site
 	// Set axes
 	void setAxes(Matrix axes);
 	// List of atoms whose average defines the x axis (from site centre)
-	List< ListItem<int> > xAxisAtoms;
+	QList<int> xAxisAtoms;
 	// List of atoms whose average defines the y axis (from site centre)
-	List< ListItem<int> > yAxisAtoms;
+	QList<int> yAxisAtoms;
 };
 
 #endif

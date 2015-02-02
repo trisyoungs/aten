@@ -22,12 +22,8 @@
 #include "render/gridprimitive.h"
 
 // Constructor
-GridPrimitive::GridPrimitive(Grid *source)
+GridPrimitive::GridPrimitive(Grid *source) : ListItem<GridPrimitive>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
 	// Private variables
 	source_ = source;
 	primaryIsTransparent_ = FALSE;

@@ -28,7 +28,7 @@
 #include "classes/prefs.h"
 
 // Constructor
-PrimitiveInfo::PrimitiveInfo()
+PrimitiveInfo::PrimitiveInfo() : ListItem<PrimitiveInfo>()
 {
 	// Private variables
 	primitive_ = NULL;
@@ -39,10 +39,6 @@ PrimitiveInfo::PrimitiveInfo()
 	colour_[1] = 0.0;
 	colour_[2] = 0.0;
 	colour_[3] = 1.0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set primitive info data

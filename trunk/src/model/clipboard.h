@@ -32,13 +32,11 @@ class Model;
 class Clipatom;
 
 // Clipboard Atom
-class Clipatom
+class Clipatom : public ListItem<Clipatom>
 {
 	public:
 	// Constructor
 	Clipatom();
-	// List pointers
-	Clipatom *prev, *next;
 
 	/*
 	// Atom Data
@@ -61,13 +59,11 @@ class Clipatom
 };
 
 // Clipboard Bond
-class Clipbond
+class Clipbond : public ListItem<Clipbond>
 {
 	public:
 	// Constructor
 	Clipbond();
-	// List pointer
-	Clipbond *next, *prev;
 
 	private:
 	// Pointers to both atoms involved in the bond

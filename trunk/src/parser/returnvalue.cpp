@@ -33,7 +33,7 @@
 #include <stdlib.h>
 
 // Constructors
-ReturnValue::ReturnValue()
+ReturnValue::ReturnValue() : ListItem<ReturnValue>()
 {
 	// Private variables
 	type_ = VTypes::NoData;
@@ -48,47 +48,42 @@ ReturnValue::ReturnValue()
 	arrayV_ = NULL;
 	arrayM_ = NULL;
 	arrayP_ = NULL;
-	
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
-ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), arraySize_(-1), valueI_(i)
+ReturnValue::ReturnValue(int i) : ListItem<ReturnValue>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-	
+	type_ = VTypes::IntegerData;
+	arraySize_ = -1;
+	valueI_ = i;
 }
-ReturnValue::ReturnValue(double d) : type_(VTypes::DoubleData), arraySize_(-1), valueD_(d)
+ReturnValue::ReturnValue(double d) : ListItem<ReturnValue>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
+	type_ = VTypes::DoubleData;
+	arraySize_ = -1;
+	valueD_ = d;
 }
-ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), arraySize_(-1), valueS_(s)
+ReturnValue::ReturnValue(const char *s) : ListItem<ReturnValue>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
+	type_ = VTypes::StringData;
+	arraySize_ = -1;
+	valueS_ = s;
 }
-ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), arraySize_(-1), valueV_(v)
+ReturnValue::ReturnValue(Vec3<double> v) : ListItem<ReturnValue>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
+	type_ = VTypes::VectorData;
+	arraySize_ = -1;
+	valueV_ = v;
 }
-ReturnValue::ReturnValue(Matrix m) : type_(VTypes::MatrixData), arraySize_(-1), valueM_(m)
+ReturnValue::ReturnValue(Matrix m) : ListItem<ReturnValue>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
+	type_ = VTypes::MatrixData;
+	arraySize_ = -1;
+	valueM_ = m;
 }
-ReturnValue::ReturnValue(VTypes::DataType dt, void *ptr) : type_(dt), arraySize_(-1), valueP_(ptr)
+ReturnValue::ReturnValue(VTypes::DataType dt, void *ptr) : ListItem<ReturnValue>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
+	type_ = dt;
+	arraySize_ = -1;
+	valueP_ = ptr;
 }
 
 // Operator =
@@ -649,12 +644,12 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 			if ((type_ == VTypes::IntegerData) && (ptrtype == VTypes::ElementData))
 			{
 				int el = asInteger();
-				if ((el < 0) || (el > elements().nElements()))
+				if ((el < 0) || (el > Elements().nElements()))
 				{
 					msg.print("Warning: Conversion of integer value %i does not correspond to a defined element. Returning '0' (undefined element 'XX').\n", el);
 					el = 0;
 				}
-				return &elements().el[el];
+				return &Elements().el[el];
 			}
 			else if (arraySize_ == -1)
 			{

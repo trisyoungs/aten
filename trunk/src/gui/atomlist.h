@@ -89,7 +89,7 @@ class AtomListWidget : public QDockWidget
 	// Array of currently-visible items
 	bool visibleItems_[nAtomItems];
 	// List of currently-visible atom data
-	List< ListItem<int> > displayItems_;
+	QList<int> displayItems_;
 	// Last model displayed in list
 	Model *listLastModel_;
 	// Current root atom id of model (ID displayed in row 1)

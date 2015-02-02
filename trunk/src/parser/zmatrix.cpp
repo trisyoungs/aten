@@ -175,7 +175,7 @@ bool ZMatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 		case (ZMatrixVariable::AngleNames):
 			if (!hasArrayIndex)
 			{
-				if (ptr->angles() != NULL) rv.set(ptr->angles()->name());
+				if (ptr->angles() != NULL) rv.set(ptr->angle(0)->name());
 				else
 				{
 					msg.print("No angle data in ZMatrix to return.\n");
@@ -217,7 +217,7 @@ bool ZMatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 		case (ZMatrixVariable::DistanceNames):
 			if (!hasArrayIndex)
 			{
-				if (ptr->distances() != NULL) rv.set(ptr->distances()->name());
+				if (ptr->distances() != NULL) rv.set(ptr->distance(0)->name());
 				else
 				{
 					msg.print("No distance data in ZMatrix to return.\n");
@@ -280,7 +280,7 @@ bool ZMatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 		case (ZMatrixVariable::TorsionNames):
 			if (!hasArrayIndex)
 			{
-				if (ptr->torsions() != NULL) rv.set(ptr->torsions()->name());
+				if (ptr->torsions() != NULL) rv.set(ptr->torsion(0)->name());
 				else
 				{
 					msg.print("No torsion data in ZMatrix to return.\n");

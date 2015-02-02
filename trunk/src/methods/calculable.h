@@ -28,17 +28,12 @@
 class Model;
 
 // Calculable Class
-class Calculable
+class Calculable : public ListItem<Calculable>
 {
-	/*
-	// Calculable Quantity
-	*/
 	public:
 	// Constructor / Destructor
 	Calculable();
 	virtual ~Calculable();
-	// List pointers
-	Calculable *prev, *next;
 
 	/*
 	// Identity

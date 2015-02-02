@@ -23,16 +23,12 @@
 #include "classes/grid.h"
 
 // Constructor
-ColourScalePoint::ColourScalePoint()
+ColourScalePoint::ColourScalePoint() : ListItem<ColourScalePoint>()
 {
 	// Private variables
 	value_ = 0.0;
 	setColour(1.0, 1.0, 1.0, 1.0);
 	parent_ = NULL;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set parent colourscale
@@ -88,15 +84,11 @@ double *ColourScalePoint::colour()
 */
 
 // Constructor
-ColourScaleDelta::ColourScaleDelta()
+ColourScaleDelta::ColourScaleDelta() : ListItem<ColourScaleDelta>()
 {
 	// Private variables
 	start_ = 0.0;
 	delta_ = 0.0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Check whether the delta 'contains' the supplied value

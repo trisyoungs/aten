@@ -23,6 +23,7 @@
 #define ATEN_COLOURSCALEPOINT_H
 
 #include <QtOpenGL/QtOpenGL>
+#include "templates/list.h"
 
 // Forward declarations
 class Grid;
@@ -30,13 +31,11 @@ class ColourScale;
 class ColourScaleDelta;
 
 // Colour scale point
-class ColourScalePoint
+class ColourScalePoint : public ListItem<ColourScalePoint>
 {
 	public:
 	// Constructor
 	ColourScalePoint();
-	// List pointer
-	ColourScalePoint *prev, *next;
 	// Friend class
 	friend class ColourScaleDelta;
 
@@ -66,13 +65,11 @@ class ColourScalePoint
 };
 
 // Colour scale delta
-class ColourScaleDelta
+class ColourScaleDelta : public ListItem<ColourScaleDelta>
 {
 	public:
 	// Constructor
 	ColourScaleDelta();
-	// List pointer
-	ColourScaleDelta *prev, *next;
 
 	private:
 	// Value at which the delta starts

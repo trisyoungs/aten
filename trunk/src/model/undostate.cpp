@@ -24,11 +24,8 @@
 #include "model/model.h"
 
 // Constructor
-UndoState::UndoState()
+UndoState::UndoState() : ListItem<UndoState>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set the text associated with the current undo state

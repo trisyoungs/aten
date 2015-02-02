@@ -33,15 +33,11 @@ const char *Ring::ringType(Ring::RingType rt)
 }
 
 // Constructor
-Ring::Ring()
+Ring::Ring() : ListItem<Ring>()
 {
 	// Private variables
 	parent_ = NULL;
 	requestedSize_ = -1;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor
@@ -185,7 +181,7 @@ void Ring::removeAtom(Refitem<Atom,int> *ri)
 int Ring::totalBondOrderPenalty()
 {
 	int result = 0;
-	for (Refitem<Atom,int> *ri = atoms_.first(); ri != NULL; ri = ri->next) result += elements().bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
+	for (Refitem<Atom,int> *ri = atoms_.first(); ri != NULL; ri = ri->next) result += Elements().bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
 	return result;
 }
 
@@ -252,7 +248,7 @@ void Ring::detectType()
 		// For rings with an odd number of atoms, adjacent single bonds may use a medial heteroatom to grant aromaticity
 		for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
 		{
-			group = elements().group(ra->item);
+			group = Elements().group(ra->item);
 			// If its a heteroatom there's a chance. If not, we're done
 			if ((group == 15) || (group == 16))
 			{
@@ -350,7 +346,7 @@ void Ring::print() const
 	// Print out the data of the ring.
 	msg.print(Messenger::Verbose,"Ring has %i atoms: ",atoms_.nItems());
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
-		msg.print(Messenger::Verbose,"%s(%i),", elements().symbol(ra->item),ra->data);
+		msg.print(Messenger::Verbose,"%s(%i),", Elements().symbol(ra->item),ra->data);
 	msg.print(Messenger::Verbose,"\n");
 }
 

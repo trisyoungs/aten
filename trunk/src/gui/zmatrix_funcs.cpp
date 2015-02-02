@@ -64,7 +64,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 	{
 		// First atom (the creation target)
 		i = zel->atom(0);
-		item = new QTableWidgetItem(elements().symbol(i));
+		item = new QTableWidgetItem(Elements().symbol(i));
 		ui.ZMatrixTable->setItem(count, AtenZMatrix::SymbolColumn, item);
 		// Second atom (distance specifier)
 		i = zel->atom(1);
@@ -105,9 +105,19 @@ void AtenZMatrix::refresh(bool forceupdate)
 	ReturnValue rv;
 	Variable *var;
 	count = 0;
-	for (TreeNode *v = zMatrix_->distances(); v != NULL; v = v->next)
+	for (int n=0; n<zMatrix_->nDistances(); ++n)
 	{
-		var = (Variable*) v;
+		Variable *var = zMatrix_->distance(n);
+		item = new QTableWidgetItem(var->name());
+		ui.VariablesTable->setItem(count, 0, item);
+		var->execute(rv);
+		item = new QTableWidgetItem(rv.asString());
+		ui.VariablesTable->setItem(count, 1, item);
+		++count;
+	}
+	for (int n=0; n<zMatrix_->nAngles(); ++n)
+	{
+		Variable *var = zMatrix_->angle(n);
 		item = new QTableWidgetItem( var->name());
 		ui.VariablesTable->setItem(count, 0, item);
 		var->execute(rv);
@@ -115,19 +125,9 @@ void AtenZMatrix::refresh(bool forceupdate)
 		ui.VariablesTable->setItem(count, 1, item);
 		++count;
 	}
-	for (TreeNode *v = zMatrix_->angles(); v != NULL; v = v->next)
+	for (int n=0; n<zMatrix_->nTorsions(); ++n)
 	{
-		var = (Variable*) v;
-		item = new QTableWidgetItem( var->name());
-		ui.VariablesTable->setItem(count, 0, item);
-		var->execute(rv);
-		item = new QTableWidgetItem(rv.asString());
-		ui.VariablesTable->setItem(count, 1, item);
-		++count;
-	}
-	for (TreeNode *v = zMatrix_->torsions(); v != NULL; v = v->next)
-	{
-		var = (Variable*) v;
+		Variable *var = zMatrix_->torsion(n);
 		item = new QTableWidgetItem( var->name());
 		ui.VariablesTable->setItem(count, 0, item);
 		var->execute(rv);

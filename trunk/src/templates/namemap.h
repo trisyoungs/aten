@@ -26,13 +26,11 @@
 #include "templates/list.h"
 
 // Simple string/data pair class
-template <class T> class NameMap
+template <class T> class NameMap : public ListItem< NameMap<T> >
 {
 	public:
 	// Constructor / Destructor
 	NameMap<T>();
-	// List pointers
-	NameMap *next, *prev;
 
 	/*
 	// Data
@@ -57,11 +55,8 @@ template <class T> class NameMap
 };
 
 // Constructor
-template <class T> NameMap<T>::NameMap()
+template <class T> NameMap<T>::NameMap() : ListItem< NameMap<T> >()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set name
