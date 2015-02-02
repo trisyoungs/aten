@@ -22,8 +22,10 @@
 #ifndef ATEN_DNCHAR_H
 #define ATEN_DNCHAR_H
 
+#include "templates/list.h"
+
 // Dynamic character array
-class Dnchar
+class Dnchar : public ListItem<Dnchar>
 {
 	public:
 	// Constructor / Destructor
@@ -36,8 +38,6 @@ class Dnchar
 	Dnchar(const Dnchar&);
 	// Conversion operators
 	operator const char*();
-	// List pointers
-	Dnchar *prev, *next;
 
 
 	/*

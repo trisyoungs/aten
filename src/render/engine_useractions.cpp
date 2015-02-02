@@ -130,7 +130,7 @@ void RenderEngine::renderUserActions(Model *source)
 		// Draw a wireframe sphere at the atoms position
 		style_i = (prefs.renderStyle() == Atom::IndividualStyle ? i->style() : prefs.renderStyle());
 		radius_i = prefs.atomStyleRadius(style_i);
-		if (style_i == Atom::ScaledStyle) radius_i *= elements().el[i->element()].atomicRadius;
+		if (style_i == Atom::ScaledStyle) radius_i *= Elements().el[i->element()].atomicRadius;
 		A.applyScaling(radius_i, radius_i, radius_i);
 		renderPrimitive(RenderEngine::GuiObject, primitives_[set_].selectedAtom_, colour, A, GL_LINE);
 	}
@@ -179,7 +179,7 @@ void RenderEngine::renderUserActions(Model *source)
 			else switch (prefs.colourScheme())
 			{
 				case (Prefs::ElementScheme):
-					elements().copyColour(i->element(), colour);
+					Elements().copyColour(i->element(), colour);
 					break;
 				case (Prefs::ChargeScheme):
 					prefs.colourScale[0].colour(i->charge(), colour);
@@ -196,7 +196,7 @@ void RenderEngine::renderUserActions(Model *source)
 				default:
 					break;
 			}
-			elements().copyColour(canvas->sketchElement(), colour_j);
+			Elements().copyColour(canvas->sketchElement(), colour_j);
 			
 			// Construct transformation matrix to centre on original (first) atom
 			A.setIdentity();

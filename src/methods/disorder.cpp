@@ -113,7 +113,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 				}
 				break;
 		}
-		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.insert(NULL) : components_.add());
+		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.prepend() : components_.add());
 		msg.print("Initialising component model '%s' for partition '%s'...\n", m->name(), scheme->partitionName(id));
 		if (!component->initialise(m, scheme->partition(id)))
 		{

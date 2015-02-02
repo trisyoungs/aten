@@ -31,18 +31,17 @@
 #include <GL/gl.h>
 #endif
 #include "base/constants.h"
+#include "templates/list.h"
 
 #define VERTEXCHUNKSIZE 1020
 
 // Chunk of triangles
-class VertexChunk
+class VertexChunk : public ListItem<VertexChunk>
 {
 	public:
 	// Constructor / Destructor
 	VertexChunk();
 	~VertexChunk();
-	// List pointers
-	VertexChunk *prev, *next;
 	
 	private:
 	// Vertex data array (containing normal and possibly colour data)

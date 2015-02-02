@@ -37,14 +37,12 @@ class StepNode;
 class Program;
 
 // Tree
-class Tree
+class Tree : public ListItem<Tree>
 {
 	public:
 	// Constructor / Destructor
 	Tree();
 	~Tree();
-	// List pointers
-	Tree *prev, *next;
 	// Tree Types
 	enum TreeType { UnknownTree, CommandTree, FilterTree, FunctionTree, nTreeTypes };
 
@@ -230,7 +228,7 @@ class Tree
 	// Whether create function has already been run
 	bool defaultDialogCreated_;
 	// List of additional, temporary dialogs created by the tree
-	List<TreeGui> dialogs_;
+	List<TreeGuiWidget> dialogs_;
 
 	public:
 	// Return default dialog structure

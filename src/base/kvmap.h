@@ -27,13 +27,11 @@
 #include "templates/list.h"
 
 // Simple string key/value pair class
-class KVPair
+class KVPair : public ListItem<KVPair>
 {
 	public:
 	// Constructor / Destructor
 	KVPair(const char *key = NULL, const char *value = NULL);
-	// List pointers
-	KVPair *prev, *next;
 
 	/*
 	// Data

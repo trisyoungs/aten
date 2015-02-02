@@ -34,15 +34,13 @@ class StepNode;
 class Tree;
 
 // Tree Node
-class TreeNode
+class TreeNode : public ListItem<TreeNode>
 {
 	public:
 	// Constructor / Destructor
 	TreeNode();
 	virtual ~TreeNode();
-	// List pointers
-	TreeNode *prev, *next;
-	// List pointers (for argument list)
+	// Argument list pointers
 	TreeNode *nextArgument, *prevArgument;
 	// Node Types
 	enum NodeType { BasicNode, CmdNode, ScopedNode, VarNode, VarWrapperNode, SteppedNode, ArrayVarNode, ArrayConstantNode, UserCmdNode, GuiWidgetNode, NewNode, nNodeTypes };

@@ -69,54 +69,7 @@ bool Command::function_PrintZMatrix(CommandNode *c, Bundle &obj, ReturnValue &rv
 	ZMatrix *zmat = obj.rs()->zMatrix();
 	if (zmat == NULL) return FALSE;
 	
-	Atom *i, *j, *k, *l;
-	for (ZMatrixElement *zel = zmat->elements(); zel != NULL; zel = zel->next)
-	{
-		// First atom (the creation target)
-		i = zel->atom(0);
-		// Second atom (distance specifier)
-		j = zel->atom(1);
-		if (j != NULL)
-		{
-			// Third atom (angle specifier)
-			k = zel->atom(2);
-			if (k != NULL)
-			{
-				// Fourth atom (torsion specifier)
-				l = zel->atom(3);
-				if (l != NULL)
-				{
-					printf("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", elements().symbol(i), j->id()+1, zel->distanceVariable()->name(), k->id()+1, zel->angleVariable()->name(), l->id()+1, zel->torsionVariable()->name());
-				}
-				else printf("%-4s %-4i %-6s %-4i %-6s\n", elements().symbol(i), j->id()+1, zel->distanceVariable()->name(), k->id()+1, zel->angleVariable()->name());
-			}
-			else printf("%-4s %-4i %-6s\n", elements().symbol(i), j->id()+1, zel->distanceVariable()->name());
-		}
-		else printf("%-4s\n", elements().symbol(i));
-	}
-	printf("\n");
-
-	// Variable list
-	ReturnValue varrv;
-	Variable *var;
-	for (TreeNode *v = zmat->distances(); v != NULL; v = v->next)
-	{
-		var = (Variable*) v;
-		var->execute(varrv);
-		printf("%-6s  %f\n", var->name(), varrv.asDouble());
-	}
-	for (TreeNode *v = zmat->angles(); v != NULL; v = v->next)
-	{
-		var = (Variable*) v;
-		var->execute(varrv);
-		printf("%-6s  %f\n", var->name(), varrv.asDouble());
-	}
-	for (TreeNode *v = zmat->torsions(); v != NULL; v = v->next)
-	{
-		var = (Variable*) v;
-		var->execute(varrv);
-		printf("%-6s  %f\n", var->name(), varrv.asDouble());
-	}
+	zmat->print();
 
 	return TRUE;
 }

@@ -27,14 +27,10 @@
 */
 
 // Constructor
-DataStoreItem::DataStoreItem(const char *key)
+DataStoreItem::DataStoreItem(const char *key) : ListItem<DataStoreItem>()
 {
 	// Private variables
 	if (key != NULL) key_ = key;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Retrieve key associated to data

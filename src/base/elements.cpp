@@ -27,7 +27,7 @@
 #include "base/atom.h"
 
 // Class return function
-ElementMap &elements()
+ElementMap &Elements()
 {
 	static ElementMap elementMap_;
 	return elementMap_;

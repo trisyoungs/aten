@@ -63,7 +63,7 @@ AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
 	
 	// Set item delegates for columns
 	int n;
-	ui.FFEditorTypesTable->setItemDelegateForColumn(TypeColumn::Id, new TIntegerSpinDelegate(this, 1, elements().nElements(), 1));
+	ui.FFEditorTypesTable->setItemDelegateForColumn(TypeColumn::Id, new TIntegerSpinDelegate(this, 1, Elements().nElements(), 1));
 	ui.FFEditorAtomsTable->setItemDelegateForColumn(AtomColumn::Charge, new TDoubleSpinDelegate(this));
 	for (n=AtomColumn::Data1; n<=AtomColumn::Data10; ++n) ui.FFEditorAtomsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
 	for (n=BondColumn::Data1; n<=BondColumn::Data10; ++n) ui.FFEditorBondsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
@@ -111,7 +111,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	{
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Id, item);
-		item = new QTableWidgetItem(elements().symbol(ffa->neta()->characterElement()));
+		item = new QTableWidgetItem(Elements().symbol(ffa->neta()->characterElement()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Element, item);
 		item = new QTableWidgetItem(ffa->name());
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Name, item);

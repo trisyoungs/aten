@@ -26,9 +26,10 @@
 #include <string.h>
 
 // Constructor
-UserCommandNode::UserCommandNode(Tree *func) : function_(func)
+UserCommandNode::UserCommandNode(Tree *func) : TreeNode()
 {
 	// Private variables
+	function_ = func;
 	nodeType_ = TreeNode::UserCmdNode;
 }
 

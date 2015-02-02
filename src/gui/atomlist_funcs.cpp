@@ -155,7 +155,7 @@ void AtomListWidget::updateRow(int row)
 		return;
 	}
 	r = i->r();
-	for (int column = 0; column < displayItems_.nItems(); ++column)
+	for (int column = 0; column < displayItems_.count(); ++column)
 	{
 		item = ui.AtomTable->item(row, column);
 		if (item == NULL)
@@ -163,13 +163,13 @@ void AtomListWidget::updateRow(int row)
 			item = new QTableWidgetItem();
 			ui.AtomTable->setItem(row, column, item);
 		}
-		switch (displayItems_[column]->value())
+		switch (displayItems_.at(column))
 		{
 			case (AtomListWidget::AtomIdItem):
 				item->setText(itoa(i->id()+1));
 				break;
 			case (AtomListWidget::AtomElementItem):
-				item->setText(elements().symbol(i));
+				item->setText(Elements().symbol(i));
 				break;
 			case (AtomListWidget::AtomTypeItem):
 				item->setText((i->type() == NULL ? "" : i->type()->name()));
@@ -187,7 +187,7 @@ void AtomListWidget::updateRow(int row)
 				item->setText(ftoa(i->charge()));
 				break;
 		}
-		if (AtomListItemDelegateType[displayItems_[column]->value()] == 0) item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (AtomListItemDelegateType[displayItems_.at(column)] == 0) item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		else item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 	}
 }
@@ -197,20 +197,16 @@ void AtomListWidget::updateDisplayItems()
 	displayItems_.clear();
 	for (int n=0; n<AtomListWidget::nAtomItems; ++n)
 	{
-		if (visibleItems_[n])
-		{
-			ListItem<int> *item = displayItems_.add();
-			item->setValue(n);
-		}
+		if (visibleItems_[n]) displayItems_ << n;
 	}
 	
 	// Redo column headings and set delegates
-	ui.AtomTable->setColumnCount(displayItems_.nItems());
+	ui.AtomTable->setColumnCount(displayItems_.count());
 	QStringList headerLabels;
 	int id;
-	for (int n=0; n<displayItems_.nItems(); ++n)
+	for (int n=0; n<displayItems_.count(); ++n)
 	{
-		id = displayItems_[n]->value();
+		id = displayItems_.at(n);
 		headerLabels << AtomListItemHeader[id];
 		if (AtomListItemDelegates[id] != NULL) ui.AtomTable->setItemDelegateForColumn(id, AtomListItemDelegates[id]);
 	}
@@ -338,7 +334,7 @@ void AtomListWidget::refresh()
 	listSelectionPoint_ = m->changeLog.log(Log::Selection);
 
 	// Resize columns to contents
-	for (int column = 0; column<displayItems_.nItems(); ++column) ui.AtomTable->resizeColumnToContents(column);
+	for (int column = 0; column<displayItems_.count(); ++column) ui.AtomTable->resizeColumnToContents(column);
 
 	refreshing_ = FALSE;
 	msg.exit("AtomListWidget::refresh");
@@ -642,12 +638,12 @@ void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
 	bool success;
 	Vec3<double> v;
 	int element;
-	switch (displayItems_[column]->value())
+	switch (displayItems_.at(column))
 	{
 		case (AtomListWidget::AtomXItem):
 		case (AtomListWidget::AtomYItem):
 		case (AtomListWidget::AtomZItem):
-			element = displayItems_[column]->value() - AtomListWidget::AtomXItem;
+			element = displayItems_.at(column) - AtomListWidget::AtomXItem;
 			valueD = item->text().toDouble(&success);
 			v = i->r();
 			if (success)

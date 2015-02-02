@@ -30,13 +30,11 @@ class PartitionData;
 class PartitioningScheme;
 
 // Insertion Data Class for Disorder builder
-class DisorderData
+class DisorderData : public ListItem<DisorderData>
 {
 	public:
 	// Constructor
 	DisorderData();
-	// List pointers
-	DisorderData *prev, *next;
 	
 	
 	/*

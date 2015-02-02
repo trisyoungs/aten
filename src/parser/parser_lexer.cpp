@@ -236,8 +236,8 @@ int CommandParser::lex()
 			}
 
 			// Element symbol?
-			for (n=0; n<elements().nElements(); ++n) if (strcmp(token,elements().symbol(n)) == 0) break;
-			if (n < elements().nElements())
+			for (n=0; n<Elements().nElements(); ++n) if (strcmp(token,Elements().symbol(n)) == 0) break;
+			if (n < Elements().nElements())
 			{
 				CommandParser_lval.intconst = n;
 				msg.print(Messenger::Parse, "LEXER (%p): ...which is a an element symbol (%i)\n",tree_,n);

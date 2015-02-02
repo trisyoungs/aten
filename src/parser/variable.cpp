@@ -31,16 +31,12 @@
 */
 
 // Constructor
-Variable::Variable()
+Variable::Variable() : TreeNode()
 {
 	// Private variables
 	name_.set("unnamedvariable");
 	initialValue_ = NULL;
 	nodeType_ = TreeNode::VarNode;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor (virtual)

@@ -23,18 +23,15 @@
 #include "parser/double.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
+#include "base/elements.h"
 
 /*
 // ZMatrix Element
 */
 
 // Constructor
-ZMatrixElement::ZMatrixElement()
+ZMatrixElement::ZMatrixElement() : ListItem<ZMatrixElement>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
 	// Private variables
 	parent_ = NULL;
 	for (int i=0; i<4; ++i)
@@ -486,7 +483,7 @@ int ZMatrix::nAngles()
 }
 
 // Return start of angles list
-Variable *ZMatrix::angles()
+TreeNode *ZMatrix::angles()
 {
 	return angles_.variables();
 }
@@ -495,7 +492,7 @@ Variable *ZMatrix::angles()
 Variable *ZMatrix::angle(int index)
 {
 	if ((index < 0) || (index >= angles_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::angles\n", index);
-	else return angles_.variable(index);
+	else return (Variable*) angles_.variable(index);
 	return NULL;
 }
 
@@ -506,7 +503,7 @@ int ZMatrix::nDistances()
 }
 
 // Return start of distances list
-Variable *ZMatrix::distances()
+TreeNode *ZMatrix::distances()
 {
 	return distances_.variables();
 }
@@ -515,7 +512,7 @@ Variable *ZMatrix::distances()
 Variable *ZMatrix::distance(int index)
 {
 	if ((index < 0) || (index >= distances_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::distances\n", index);
-	else return distances_.variable(index);
+	else return (Variable*) distances_.variable(index);
 	return NULL;
 }
 
@@ -526,7 +523,7 @@ int ZMatrix::nTorsions()
 }
 
 // Return start of torsions list
-Variable *ZMatrix::torsions()
+TreeNode *ZMatrix::torsions()
 {
 	return torsions_.variables();
 }
@@ -535,7 +532,7 @@ Variable *ZMatrix::torsions()
 Variable *ZMatrix::torsion(int index)
 {
 	if ((index < 0) || (index >= torsions_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::torsions\n", index);
-	else return torsions_.variable(index);
+	else return (Variable*) torsions_.variable(index);
 	return NULL;
 }
 
@@ -560,54 +557,50 @@ void ZMatrix::setVariable(Variable *v, double value)
 // Print zmatrix
 void ZMatrix::print()
 {
-	Dnchar s;
+	Atom *i, *j, *k, *l;
 	for (ZMatrixElement *zel = elements_.first(); zel != NULL; zel = zel->next)
 	{
 		// First atom (the creation target)
-		Atom *i = zel->atom(0);
-// 		item = new QTableWidgetItem(elements().symbol(i));
-		s.sprintf("%i   ", i->element());
+		i = zel->atom(0);
 		// Second atom (distance specifier)
-		i = zel->atom(1);
-		if (i != NULL)
+		j = zel->atom(1);
+		if (j != NULL)
 		{
-			s.strcatf("%i  %s  ", i->id()+1, zel->distanceVariable()->name());
-
-			// Third atom (angle specii->id()+1fier)
-			i = zel->atom(2);
-			if (i != NULL)
+			// Third atom (angle specifier)
+			k = zel->atom(2);
+			if (k != NULL)
 			{
-				s.strcatf("%i  %s  ", i->id()+1, zel->angleVariable()->name());
-				
 				// Fourth atom (torsion specifier)
-				i = zel->atom(3);
-				if (i != NULL)
+				l = zel->atom(3);
+				if (l != NULL)
 				{
-					s.strcatf("%i  %s  ", i->id()+1, zel->torsionVariable()->name());
+					printf("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", Elements().symbol(i), j->id()+1, zel->distanceVariable()->name(), k->id()+1, zel->angleVariable()->name(), l->id()+1, zel->torsionVariable()->name());
 				}
+				else printf("%-4s %-4i %-6s %-4i %-6s\n", Elements().symbol(i), j->id()+1, zel->distanceVariable()->name(), k->id()+1, zel->angleVariable()->name());
 			}
+			else printf("%-4s %-4i %-6s\n", Elements().symbol(i), j->id()+1, zel->distanceVariable()->name());
 		}
-		printf("%s\n", s.get());
+		else printf("%-4s\n", Elements().symbol(i));
 	}
+	printf("\n");
 
 	// Variable list
 	ReturnValue rv;
-	Variable *var;
-	for (TreeNode *v = distances_.variables(); v != NULL; v = v->next)
+	for (int n=0; n<distances_.nVariables(); ++n)
 	{
-		var = (Variable*) v;
+		Variable *var = distances_.variable(n);
 		var->execute(rv);
 		printf("  %s   %f\n", var->name(), rv.asDouble());
 	}
-	for (TreeNode *v = angles_.variables(); v != NULL; v = v->next)
+	for (int n=0; n<angles_.nVariables(); ++n)
 	{
-		var = (Variable*) v;
+		Variable *var = angles_.variable(n);
 		var->execute(rv);
 		printf("  %s   %f\n", var->name(), rv.asDouble());
 	}
-	for (TreeNode *v = torsions_.variables(); v != NULL; v = v->next)
+	for (int n=0; n<torsions_.nVariables(); ++n)
 	{
-		var = (Variable*) v;
+		Variable *var = torsions_.variable(n);
 		var->execute(rv);
 		printf("  %s   %f\n", var->name(), rv.asDouble());
 	}

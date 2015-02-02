@@ -583,7 +583,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 						dist = cell_.distance(i,j);
 						if (dist < tolerance)
 						{
-							msg.print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), dist, i->id()+1, elements().symbol(i));
+							msg.print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, Elements().symbol(j), dist, i->id()+1, Elements().symbol(i));
 							selectAtom(j, markonly);
 							++count;
 						}

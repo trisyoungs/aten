@@ -27,11 +27,8 @@
 #include <string.h>
 
 // Constructor
-Generator::Generator()
+Generator::Generator() : ListItem<Generator>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set partial element of matrix or translation vector

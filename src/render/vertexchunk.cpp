@@ -24,12 +24,8 @@
 #include <math.h>
 
 // Constructor
-VertexChunk::VertexChunk()
+VertexChunk::VertexChunk() : ListItem<VertexChunk>()
 {
-	// Public variables
-	next = NULL;
-	prev = NULL;
-	
 	// Private variables
 	vertexData_ = NULL;
 	centroids_ = NULL;

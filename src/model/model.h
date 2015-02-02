@@ -51,14 +51,12 @@ class Measurement;
 class Grid;
 
 // Model
-class Model
+class Model : public ListItem<Model>
 {
 	public:
 	// Constructor / Destructor
 	Model();
 	~Model();
-	// List pointers
-	Model *prev, *next;
 	// Render source list
 	enum RenderSource { ModelSource, TrajectorySource };
 	// Model types

@@ -25,14 +25,12 @@
 #include "templates/list.h"
 
 // Pointer pair/data class
-template <class T, class D> class PointerPair
+template <class T, class D> class PointerPair : public ListItem< PointerPair<T,D> >
 {
 	public:
 	// Constructor / Destructor
 	PointerPair<T,D>(T *ptr1, T *ptr2, int size);
 	~PointerPair();
-	// List pointers
-	PointerPair *next, *prev;
 	
 	/*
 	// Data
@@ -87,12 +85,8 @@ template <class T, class D> class PairTable
 */
 
 // Constructor
-template <class T, class D> PointerPair<T,D>::PointerPair(T *p1, T *p2, int size)
+template <class T, class D> PointerPair<T,D>::PointerPair(T *p1, T *p2, int size) : ListItem< PointerPair<T,D> >()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
 	// Set pointer data
 	p1_ = p1;
 	p2_ = p2;

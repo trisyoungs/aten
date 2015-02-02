@@ -27,13 +27,11 @@
 #include "templates/list.h"
 
 // Symmetry generator
-class Generator
+class Generator : public ListItem<Generator>
 {
 	public:
 	// Constructor
 	Generator();
-	// List pointers
-	Generator *prev, *next;
 
 	/*
 	// Rotation Matrix and Translation Vector

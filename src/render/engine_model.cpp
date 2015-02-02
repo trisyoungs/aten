@@ -471,7 +471,7 @@ void RenderEngine::renderAtomsAndBonds(Model* source, Matrix baseTransform, bool
 		else switch (scheme)
 		{
 			case (Prefs::ElementScheme):
-				elements().copyColour(i->element(), colour_i);
+				Elements().copyColour(i->element(), colour_i);
 				break;
 			case (Prefs::ChargeScheme):
 				prefs.colourScale[0].colour(i->charge(), colour_i);
@@ -506,7 +506,7 @@ void RenderEngine::renderAtomsAndBonds(Model* source, Matrix baseTransform, bool
 		else
 		{
 			radius_i = aradius[style_i];
-			if (style_i == Atom::ScaledStyle) radius_i *= elements().el[i->element()].atomicRadius;
+			if (style_i == Atom::ScaledStyle) radius_i *= Elements().el[i->element()].atomicRadius;
 			A = atomTransform;
 			A.applyScaling(radius_i,radius_i,radius_i);
 			renderPrimitive(basicList, primitives_[set_].atom_, colour_i, A);
@@ -539,7 +539,7 @@ void RenderEngine::renderAtomsAndBonds(Model* source, Matrix baseTransform, bool
 			else switch (scheme)
 			{
 				case (Prefs::ElementScheme):
-					elements().copyColour(j->element(), colour_j);
+					Elements().copyColour(j->element(), colour_j);
 					break;
 				case (Prefs::ChargeScheme):
 					prefs.colourScale[0].colour(j->charge(), colour_j);
@@ -704,7 +704,7 @@ void RenderEngine::renderAtomsAndBonds(Model* source, Matrix baseTransform, bool
 				
 				// Element check
 				el_j = j->element();
-				if ((el_j != 7) && (el_j != 8) && (el_j != 8) && (elements().group(el_j) != 17)) continue;
+				if ((el_j != 7) && (el_j != 8) && (el_j != 8) && (Elements().group(el_j) != 17)) continue;
 				
 				// Get (any) bond partner of atom j
 				l = j->nBonds() == 0 ? NULL : j->bonds()->item->partner(j);
@@ -977,7 +977,7 @@ void RenderEngine::renderModelOverlays(Model *source)
 		text.clear();
 		// Now add on all parts of the label that are required
 		if (labels&(1 << Atom::IdLabel)) text.strcatf("%i ", i->id()+1);
-		if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", elements().symbol(i));
+		if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", Elements().symbol(i));
 		if (labels&(1 << Atom::TypeLabel))
 		{
 			if (ffa == NULL) text.strcat("[None] ");

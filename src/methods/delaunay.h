@@ -27,13 +27,11 @@
 #include "classes/grid.h"
 
 // Delaunay Edge
-class DelaunayEdge
+class DelaunayEdge : public ListItem<DelaunayEdge>
 {
 	public:
 	// Constructors
 	DelaunayEdge(GridPoint *p1, GridPoint *p2);
-	// List pointers
-	DelaunayEdge *prev, *next;
 
 	private:
 	// Reference counter
@@ -59,13 +57,11 @@ class DelaunayEdge
 };
 
 // Delaunay Triangle
-class DelaunayTriangle
+class DelaunayTriangle : public ListItem<DelaunayTriangle>
 {
 	public:
 	// Constructor
 	DelaunayTriangle(DelaunayEdge *edgea, DelaunayEdge *edgeb, DelaunayEdge *edgec);
-	// List pointers
-	DelaunayTriangle *prev, *next;
 
 	private:
 	// Reference counter
@@ -103,13 +99,11 @@ class DelaunayTriangle
 };
 
 // Delaunay Tetrahedron
-class DelaunayTetrahedron
+class DelaunayTetrahedron : public ListItem<DelaunayTetrahedron>
 {
 	public:
 	// Constructor
 	DelaunayTetrahedron(DelaunayTriangle *t1, DelaunayTriangle *t2, DelaunayTriangle *t3, DelaunayTriangle *t4);
-	// List pointers
-	DelaunayTetrahedron *prev, *next;
 
 	private:
 	// Edges that make up the triangle

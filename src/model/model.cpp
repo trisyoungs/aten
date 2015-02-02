@@ -34,7 +34,7 @@
 #include "gui/gui.h"
 
 // Constructors
-Model::Model()
+Model::Model() : ListItem<Model>()
 {
 	// Private variables
 	parent_ = NULL;
@@ -99,10 +99,6 @@ Model::Model()
 	vibrationCurrentFrame_ = NULL;
 	vibrationForward_ = TRUE;
 	vibrationFrameIndex_ = -1;
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
 }
 
 // Destructor
@@ -326,8 +322,8 @@ void Model::printCoords() const
 	msg.enter("Model::printCoords");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), elements().symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
-	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),elements().symbol(i),r.x,r.y,r.z,
+		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), Elements().symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
+	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),Elements().symbol(i),r.x,r.y,r.z,
 	//		i->get_charge(),(ff == NULL ? " " : ff->name(i)));
 	}
 	msg.exit("Model::printCoords");
@@ -400,7 +396,7 @@ void Model::printForces() const
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), elements().symbol(i), i->f().x, i->f().y, i->f().z);
+		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), Elements().symbol(i), i->f().x, i->f().y, i->f().z);
 	}
 }
 

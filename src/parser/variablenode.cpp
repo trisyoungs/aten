@@ -28,9 +28,10 @@
 #include <string.h>
 
 // Constructor
-VariableNode::VariableNode(Variable *var) : variable_(var)
+VariableNode::VariableNode(Variable *var) : TreeNode()
 {
 	// Private variables
+	variable_ = var;
 	readOnly_ = FALSE;
 	nodeType_ = TreeNode::VarWrapperNode;
 	arrayIndex_ = NULL;

@@ -36,14 +36,12 @@ class ForcefieldAtom;
 class ForcefieldBound;
 
 // Forcefield
-class Forcefield
+class Forcefield : public ListItem<Forcefield>
 {
 	public:
 	// Constructor / Destructor
 	Forcefield();
 	~Forcefield();
-	// List pointers
-	Forcefield *prev, *next;
         // Forcefield Commands
 	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, UreyBradleyCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);

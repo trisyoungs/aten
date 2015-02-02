@@ -32,15 +32,12 @@ SiteType ST_from_text(const char *s)
 	{ return (SiteType) enumSearch("site type",ST_NITEMS,ST_keywords,s); }
 
 // Constructor
-Site::Site()
+Site::Site() : ListItem<Site>()
 {
 	// Private variables
-	centre_ = ST_MOLCOM;
+	type_ = ST_MOLCOM;
 	pattern_ = NULL;
 	centre_.zero();
-	// Public variables
-	next = NULL;
-	prev = NULL;
 }
 
 // Set the pattern pointer for the atom

@@ -23,19 +23,18 @@
 #define ATEN_PRIMITIVEINFO_H
 
 #include "base/matrix.h"
+#include "templates/list.h"
 
 // Forward Declarations
 class PrimitiveGroup;
 class Primitive;
 
 // Primitive Info
-class PrimitiveInfo
+class PrimitiveInfo : public ListItem<PrimitiveInfo>
 {
 	public:
 	// Constructor
 	PrimitiveInfo();
-	// List pointer
-	PrimitiveInfo *prev, *next;
 
 	private:
 	// Target primitive (if not primitive group)

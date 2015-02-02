@@ -259,7 +259,7 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				}
 				break;
 			default:
-				msg.print(" ... Skipping atom %i (%s) in termination ...\n", i->id()+1, elements().symbol(i));
+				msg.print(" ... Skipping atom %i (%s) in termination ...\n", i->id()+1, Elements().symbol(i));
 				break;
 		}
 	}

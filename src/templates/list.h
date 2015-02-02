@@ -1,11 +1,11 @@
 /*
-	*** Object list class
+	*** Linked List Class
 	*** src/templates/list.h
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2013-2015
 
 	This file is part of Aten.
 
-	Aten is free software: you can redistribute it and/or modify
+	uChroma is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
@@ -24,68 +24,86 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <QtCore/QString>
 
-/*
-// Template object for types not including prev/next pointers (e.g. PODs)
-*/
+// Forward declarations
+template <class T> class List;
+
+/*!
+ * \brief ListItem Class
+ * \details Basic class providing linked list pointers. Any class which is required to be contained in a linked list must
+ * subclass ListItem.
+ */
 template <class T> class ListItem
 {
 	public:
 	// Constructor
 	ListItem<T>();
 	// List pointers
-	ListItem<T> *prev, *next;
+	T *prev, *next;
 
 	private:
-	// Data object
-	T data_;
+	// Pointer to parent list
+	List<T>* listParent_;
 
 	public:
-	// Set data object
-	void setValue(T value);
-	// Return data object
-	T &value();
+	// Set list parent
+	void setListParent(List<T>* parent);
+	// Return index of item in parent list (if one is available)
+	int listIndex() const;
 };
 
-// Constructor
+/*!
+ * \brief Constructor
+ * \details Constructor for ListItem
+ */
 template <class T> ListItem<T>::ListItem()
 {
 	prev = NULL;
 	next = NULL;
+
+	listParent_ = NULL;
 }
 
-// Set data object
-template <class T> void ListItem<T>::setValue(T value)
+// Set list parent
+template <class T> void ListItem<T>::setListParent(List<T>* parent)
 {
-	data_ = value;
+	listParent_ = parent;
 }
 
-// Set data object
-template <class T> T &ListItem<T>::value()
+// Return index of item in parent list (if one is available)
+template <class T> int ListItem<T>::listIndex() const
 {
-	return data_;
+	if (listParent_) return listParent_->indexOf((T*)this);
+	else return -1;
 }
 
-/*
-// List structure for user-generated classes (containing prev/next pointers)
+/*!
+ * \brief List Class
+ * \details Linked list for user-defined classes. Any class which is required to be contained in a List must subclass ListItem.
 */
 template <class T> class List
 {
 	public:
-	// Constructor / Destructor
+	// Constructor
 	List<T>();
+	// Destructor
 	~List();
+	// Copy Constructor
+	List<T>(const List<T>& source);
 
-	/*
-	// Item List
-	*/
-	private:
+
+	/*!
+	 * \name Item List
+	 */
+	///@{
+	protected:
 	// Pointers to head and tail of list
-	T *listHead_, *listTail_;
+	T* listHead_, *listTail_;
 	// Number of items in list
 	int nItems_;
 	// Static array of items
-	T **items_;
+	T** items_;
 	// Array regeneration flag
 	bool regenerate_;
 
@@ -94,41 +112,51 @@ template <class T> class List
 	// Returns the number of items in the list
 	int nItems() const;
 	// Returns the list head
-	T *first() const;
+	T* first() const;
 	// Returns the second item in the list
-	T *second() const;
+	T* second() const;
 	// Returns the list tail
-	T *last() const;
+	T* last() const;
 	// Append an item to the list
-	T *add();
+	T* add();
+	// Prepend an item to the list
+	T* prepend();
+	// Add an item into the list at the position specified
+	T* addAt(int position);
 	// Insert an item into the list (after supplied item)
-	T *insert(T* before);
+	T* insertAfter(T* item);
+	// Insert an item into the list (before supplied item)
+	T* insertBefore(T* item);
 	// Add the item into this list
-	void own(T*);
+	void own(T* item);
 	// Disown the item, but do not delete it
-	void disown(T*);
+	void disown(T* item);
 	// Remove an item from the list
-	void remove(T*);
+	void remove(T* item);
+	// Remove first item from the list
+	void removeFirst();
 	// Remove last item from the list
 	void removeLast();
 	// Return whether the item is owned by the list
-	bool contains(T*);
+	bool contains(T* item) const;
+	// Return whether list contains named item
+	T* contains(QString name) const;
 	// Remove an item from the list, and return the next in the list
-	T* removeAndGetNext(T*);
-	// Bridge items either side of the specified item
-	void cut(T*);
+	T* removeAndGetNext(T* item);
+	// Cut item from list
+	void cut(T* item);
 	// Fills the supplied array with pointer values to the list items
-	void fillArray(int, T**);
+	void fillArray(int nItems, T** itemArray);
 	// Clear the list
 	void clear();
 	// Create empty list of size N
-	void createEmpty(int);
+	void createEmpty(int size);
 	// Find list index of supplied item
-	int indexOf(T*) const;
-	// Return item at given position
-	T *itemAt(int n);
+	int indexOf(T* item) const;
+	// Return nth item in List
+	T* item(int n) const;
 	// Generate (if necessary) and return item array
-	T **array();
+	T** array();
 
 
 	/*
@@ -136,35 +164,39 @@ template <class T> class List
 	*/
 	public:
 	// Assignment operator
-	void operator=(List<T> &source);
+	void operator=(const List<T>& source);
 	// Element access operator
-	T *operator[](int);
+	T* operator[](int);
+
 
 	/*
 	// Item Moves
 	*/
 	private:
 	// Swap two items in list (by pointer)
-	void swap(T*, T*);
+	void swap(T* item1, T* item2);
 
 	public:
 	// Shift item up (towards head)
-	void shiftUp(T*);
+	void shiftUp(T* item);
 	// Shift item down (towards tail)
-	void shiftDown(T*);
+	void shiftDown(T* item);
 	// Move item at position 'old' by 'delta' positions (+/-)
 	void move(int target, int delta);
 	// Move item to end of list
-	void moveToEnd(T *item);
+	void moveToEnd(T* item);
 	// Move item to start of list
-	void moveToStart(T *item);
+	void moveToStart(T* item);
 	// Move item so it is after specified item
-	void moveAfter(T *item, T *reference);
-	// Swap two items in list
-	void swapByIndex(int id1, int id2);
+	void moveAfter(T* item, T* reference);
+        // Swap two items in list
+        void swapByIndex(int id1, int id2);
 };
 
-// Constructors
+/*!
+ * \brief Constructor
+ * \details Constructor for List. 
+ */
 template <class T> List<T>::List()
 {
 	listHead_ = NULL;
@@ -174,108 +206,200 @@ template <class T> List<T>::List()
 	items_ = NULL;
 }
 
-// Destructor
+/*!
+ * \brief Destructor
+ * \details Destructor for List. 
+ */
 template <class T> List<T>::~List()
 {
 	clear();
 }
 
-// Returns the number of items in the list
+// Copy Constructor
+template <class T> List<T>::List(const List<T>& source)
+{
+	(*this) = source;
+}
+
+/*!
+ * \brief Return the number of items in the list
+ */
 template <class T> int List<T>::nItems() const
 {
 	return nItems_;
 }
 
-// Returns the list head
-template <class T> T *List<T>::first() const
+/*!
+ * \brief Return the list head
+ */
+template <class T> T* List<T>::first() const
 {
 	return listHead_;
 }
 
-// Returns second item in the list
-template <class T> T *List<T>::second() const
+/*!
+ * \brief Return second item in the list
+ */
+template <class T> T* List<T>::second() const
 {
 	return (listHead_ == NULL ? NULL : listHead_->next);
 }
 
-// Returns the list tail
-template <class T> T *List<T>::last() const
+/*!
+ * \brief Returns the list tail
+ */
+template <class T> T* List<T>::last() const
 {
 	return listTail_;
 }
 
-// Add item to list
+/*!
+ * \brief Add item to list
+ */
 template <class T> T* List<T>::add()
 {
-	T *newitem = new T;
+	T* newItem = new T;
 	// Add the pointer to the list
-	listHead_ == NULL ? listHead_ = newitem : listTail_->next = newitem;
-	newitem->prev = listTail_;
-	listTail_ = newitem;
-	nItems_ ++;
+	listHead_ == NULL ? listHead_ = newItem : listTail_->next = newItem;
+	newItem->prev = listTail_;
+	listTail_ = newItem;
+	newItem->setListParent(this);
+	++nItems_;
 	regenerate_ = 1;
-	return newitem;
+	return newItem;
 }
 
-// Insert new item after supplied item
-template <class T> T *List<T>::insert(T* newprev)
+/*!
+ * \brief Prepend an item to list
+ */
+template <class T> T* List<T>::prepend()
 {
-	T *newitem = new T;
-	// Get pointer to next item after newprev (our newnext)
-	T *newnext = (newprev == NULL ? listHead_ : newprev->next);
+	T* newItem = new T;
+	
+	// Add the pointer to the start of the list
+	newItem->next = listHead_;
+	listHead_ == NULL ? listTail_ = newItem : listHead_->prev = newItem;
+	listHead_ = newItem;
+	newItem->setListParent(this);
+	++nItems_;
+	regenerate_ = 1;
+	return newItem;
+}
+
+/*!
+ * \brief Add an item into the list at the position specified
+ */
+template <class T> T* List<T>::addAt(int position)
+{
+	// If position is -1, or the list is empty, just add at end of the list
+	if ((position == -1) || (nItems_ == 0)) return add();
+
+	// If position is zero, add at start of list
+	if (position == 0) return insertBefore(listHead_);
+
+	// Get item at (position-1), and add a new item after it
+	T* prevItem = array()[position-1];
+	return insertAfter(prevItem);
+}
+
+/*!
+ * \brief Insert new item after supplied item
+ */
+template <class T> T* List<T>::insertAfter(T* item)
+{
+	if (item == NULL) return prepend();
+
+	T* newItem = new T;
+	// Get pointer to next item after the supplied item (our newnext)
+	T* newNext = item->next;
 	// Re-point newprev and the new item
-	if (newprev != NULL) newprev->next = newitem;
-	else listHead_ = newitem;
-	newitem->prev = newprev;
+	item->next = newItem;
+	newItem->prev = item;
 	// Re-point newnext and the new item
-	if (newnext != NULL) newnext->prev = newitem;
-	else listTail_ = newitem;
-	newitem->next = newnext;
-	nItems_ ++;
+	if (newNext != NULL) newNext->prev = newItem;
+	else listTail_ = newItem;
+	newItem->next = newNext;
+	newItem->setListParent(this);
+	++nItems_;
 	regenerate_ = 1;
-	return newitem;
+	return newItem;
 }
 
-// Own an existing item
-template <class T> void List<T>::own(T* olditem)
+/*!
+ * \brief Insert new item before supplied item
+ */
+template <class T> T* List<T>::insertBefore(T* item)
 {
-	if (olditem == NULL)
+	if (item == NULL)
+	{
+		printf("No item supplied to List<T>::insertBefore().\n");
+		return NULL;
+	}
+	T* newItem = new T;
+	// Get pointer to next item after the supplied item (our newprev)
+	T* newPrev = item->prev;
+	// Re-point newnext and the new item
+	item->prev = newItem;
+	newItem->next = item;
+	// Re-point newprev and the new item
+	if (newPrev != NULL) newPrev->next = newItem;
+	else listHead_ = newItem;
+	newItem->prev = newPrev;
+	newItem->setListParent(this);
+	++nItems_;
+	regenerate_ = 1;
+	return newItem;
+}
+
+/*!
+ * \brief Own an existing item
+ */
+template <class T> void List<T>::own(T* oldItem)
+{
+	if (oldItem == NULL)
 	{
 		printf("Internal Error: NULL pointer passed to List<T>::own().\n");
 		return;
 	}
 	// In the interests of 'pointer etiquette', refuse to own the item if its pointers are not NULL
-	if ((olditem->next != NULL) || (olditem->prev != NULL))
+	if ((oldItem->next != NULL) || (oldItem->prev != NULL))
 	{
 		printf("list::own <<<< List refused to own an item that still had ties >>>>\n");
 		return;
 	}
-	listHead_ == NULL ? listHead_ = olditem : listTail_->next = olditem;
-	olditem->prev = listTail_;
-	olditem->next = NULL;
-	listTail_ = olditem;
-	nItems_ ++;
+	listHead_ == NULL ? listHead_ = oldItem : listTail_->next = oldItem;
+	oldItem->prev = listTail_;
+	oldItem->next = NULL;
+	listTail_ = oldItem;
+	oldItem->setListParent(this);
+	++nItems_;
 	regenerate_ = 1;
 }
 
-// Disown the item, but do not delete it
-template <class T> void List<T>::disown(T* xitem)
+/*!
+ * \brief Disown the item, but do not delete it
+ */
+template <class T> void List<T>::disown(T* xItem)
 {
-	if (xitem == NULL)
+	if (xItem == NULL)
 	{
 		printf("Internal Error: NULL pointer passed to List<T>::disown().\n");
 		return;
 	}
-	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
-	xitem->next == NULL ? listTail_ = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
-	xitem->next = NULL;
-	xitem->prev = NULL;
+	xItem->prev == NULL ? listHead_ = xItem->next : xItem->prev->next = xItem->next;
+	xItem->next == NULL ? listTail_ = xItem->prev : xItem->next->prev = xItem->prev;
+	xItem->next = NULL;
+	xItem->prev = NULL;
+	xItem->setListParent(NULL);
+
 	--nItems_;
 	regenerate_ = 1;
 }
 
-// Remove the specified item from the list
-template <class T> void List<T>::remove(T *xitem)
+/*!
+ * \brief Remove the specified item from the list
+ */
+template <class T> void List<T>::remove(T* xitem)
 {
 	if (xitem == NULL)
 	{
@@ -283,14 +407,36 @@ template <class T> void List<T>::remove(T *xitem)
 		return;
 	}
 	// Delete a specific item from the list
-	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
-	xitem->next == NULL ? listTail_ = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
+	xitem->prev == NULL ? listHead_ = xitem->next : xitem->prev->next = xitem->next;
+	xitem->next == NULL ? listTail_ = xitem->prev : xitem->next->prev = xitem->prev;
 	delete xitem;
 	--nItems_;
 	regenerate_ = 1;
 }
 
-// Remove last item from the list
+/*!
+ * \brief Remove first item from the list
+ */
+template <class T> void List<T>::removeFirst()
+{
+	if (listHead_ == NULL)
+	{
+		printf("Internal Error: No first item to delete in list.\n");
+		return;
+	}
+	
+	// Delete a first item from the list
+	T *xitem = listHead_;
+	xitem->next == NULL ? listTail_ = xitem->prev : xitem->next->prev = xitem->prev;
+	listHead_ = xitem->next;
+	delete xitem;
+	--nItems_;
+	regenerate_ = 1;
+}
+
+/*!
+ * \brief Remove last item from the list
+ */
 template <class T> void List<T>::removeLast()
 {
 	if (listTail_ == NULL)
@@ -298,25 +444,38 @@ template <class T> void List<T>::removeLast()
 		printf("Internal Error: No last item to delete in list.\n");
 		return;
 	}
-	// Delete a specific item from the list
+	// Delete the last item from the list
 	T *xitem = listTail_;
-	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
-	listTail_ = (T*) xitem->prev;
+	xitem->prev == NULL ? listHead_ = xitem->next : xitem->prev->next = xitem->next;
+	listTail_ = xitem->prev;
 	delete xitem;
 	--nItems_;
 	regenerate_ = 1;
 }
 
-// Return whether the item is owned by the list
-template <class T> bool List<T>::contains(T *searchitem)
+/*!
+ * \brief Return whether the item is owned by the list
+ */
+template <class T> bool List<T>::contains(T* searchItem) const
 {
-	T *item;
-	for (item = listHead_; item != NULL; item = item->next) if (searchitem == item) break;
+	T* item;
+	for (item = listHead_; item != NULL; item = item->next) if (searchItem == item) break;
 	return (item != NULL);
 }
 
-// Remove the specified item from the list, returning the next
-template <class T> T* List<T>::removeAndGetNext(T *xitem)
+/*!
+ * \brief Return whether list contains named item (requires T::isNamed(QString name) function)
+ */
+template <class T> T* List<T>::contains(QString name) const
+{
+	for (T* item = listHead_; item != NULL; item = item->next) if (item->isNamed(name)) return item;
+	return NULL;
+}
+
+/*!
+ * \brief Remove the specified item from the list, returning the next
+ */
+template <class T> T* List<T>::removeAndGetNext(T* xitem)
 {
 	if (xitem == NULL)
 	{
@@ -325,16 +484,18 @@ template <class T> T* List<T>::removeAndGetNext(T *xitem)
 	}
 	// Delete a specific item from the list, and return the next in the list
 	T* result = xitem->next;
-	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
-	xitem->next == NULL ? listTail_ = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
+	xitem->prev == NULL ? listHead_ = xitem->next : xitem->prev->next = xitem->next;
+	xitem->next == NULL ? listTail_ = xitem->prev : xitem->next->prev = xitem->prev;
 	delete xitem;
 	--nItems_;
 	regenerate_ = 1;
 	return result;
 }
 
-// Cut - Bridge items over specified item
-template <class T> void List<T>::cut(T *item)
+/*!
+ * \brief Cut - Bridge items over specified item
+ */
+template <class T> void List<T>::cut(T* item)
 {
 	if (item == NULL)
 	{
@@ -350,12 +511,14 @@ template <class T> void List<T>::cut(T *item)
 	else next->prev = prev;
 	item->next = NULL;
 	item->prev = NULL;
-	--nItems_;
+	item->setListParent(NULL);
 	regenerate_ = 1;
 }
 
-// Fill array
-template <class T> void List<T>::fillArray(int n, T **data)
+/*!
+ * \brief Fill array
+ */
+template <class T> void List<T>::fillArray(int nItems, T** data)
 {
 	int count = 0;
 	T *i = listHead_;
@@ -363,74 +526,89 @@ template <class T> void List<T>::fillArray(int n, T **data)
 	{
 		data[count] = i->item;
 		++count;
-		if (count == n) break;
+		if (count == nItems) break;
 		i = i->next;
-		if (i == NULL) printf("List::fillArray <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
+		if (i == NULL) printf("List::fillArray <<<< Not enough items in list - requested %i, had %i >>>>\n", nItems ,nItems_);
 	}
 }
 
-// Remove all items in the list
+/*!
+ * \brief Remove all items in the list
+ */
 template <class T> void List<T>::clear()
 {
-	T *xitem = listHead_;
-	while (xitem != NULL)
-	{
-		remove(xitem);
-		xitem = listHead_;
-	}
-	// Delete static items array if its there
-	if (items_ != NULL) delete[] items_;
+	// Grab the item array, to make sure that it is up to date.
+	array();
+
+	// We will go through this array backwards, deleting the items here rather than using the remove() method.
+	// In this way, any calls to find the item's index in destructors will succeed.
+	for (int n=nItems_-1; n >= 0; --n) delete items_[n];
+
+	// Delete static items array and reset all quantities
+	if (items_) delete[] items_;
 	items_ = NULL;
+	listHead_ = NULL;
+	listTail_ = NULL;
+	nItems_ = 0;
 	regenerate_ = 1;
 }
 
-// Find index of supplied item
+/*!
+ * \brief Find index of supplied item
+ */
 template <class T> int List<T>::indexOf(T* item) const
 {
 	int result = 0;
 	for (T* i = listHead_; i != NULL; i = i->next)
 	{
-		if (item == i) break;
-		result ++;
+		if (item == i) return result;
+		++result;
 	}
-	if (result == nItems_)
-	{
-		printf("Internal Error: List::indexOf could not find supplied item.\n");
-		result = -1;
-	}
-	return result;
+	printf("Internal Error: List::indexOf() could not find supplied item.\n");
+	return -1;
 }
 
-// Return item at given position
-template <class T> T *List<T>::itemAt(int n)
+/*!
+ * \brief Return item at given position (slow)
+ */
+template <class T> T* List<T>::item(int n) const
 {
 	if ((n < 0) || (n >= nItems_))
 	{
-		printf("Internal Error: List array index %i is out of bounds in List<T>::itemAt().\n", n);
+		printf("Internal Error: List array index %i is out of bounds in List<T>::item().\n", n);
 		return NULL;
 	}
-	return array()[n];
+	int count = -1;
+	for (T* item = listHead_; item != NULL; item = item->next) if (++count == n) return item;
+	return NULL;
 }
 
-// Create empty list
-template <class T> void List<T>::createEmpty(int newsize)
+/*!
+ * \brief Create empty list
+ */
+template <class T> void List<T>::createEmpty(int size)
 {
 	clear();
-	for (int n=0; n<newsize; n++) add();
+	for (int n=0; n<size; ++n) add();
 	regenerate_ = 1;
 }
 
-// Create (or just return) the item array
-template <class T> T **List<T>::array()
+/*!
+ * \brief Create (or just return) the item array
+ */
+template <class T> T** List<T>::array()
 {
 	if (regenerate_ == 0) return items_;
+	
 	// Delete old atom list (if there is one)
 	if (items_ != NULL) delete[] items_;
+	
 	// Create new list
 	items_ = new T*[nItems_];
+	
 	// Fill in pointers
 	int count = 0;
-	for (T *i = listHead_; i != NULL; i = i->next) items_[count++] = i;
+	for (T* i = listHead_; i != NULL; i = i->next) items_[count++] = i;
 	regenerate_ = 0;
 	return items_;
 }
@@ -439,7 +617,9 @@ template <class T> T **List<T>::array()
 // Item Moves
 */
 
-// Swap items
+/*!
+ * \brief Swap items by pointer
+ */
 template <class T> void List<T>::swap(T* item1, T* item2)
 {
 	if ((item1 == NULL) || (item2 == NULL))
@@ -502,7 +682,9 @@ template <class T> void List<T>::swap(T* item1, T* item2)
 	regenerate_ = 1;
 }
 
-// Shift item towards head
+/*!
+ * \brief Shift item towards head
+ */
 template <class T> void List<T>::shiftUp(T* item)
 {
 	if (item == NULL)
@@ -516,7 +698,9 @@ template <class T> void List<T>::shiftUp(T* item)
 	regenerate_ = 1;
 }
 
-// Shift item towards tail
+/*!
+ * \brief Shift item towards tail
+ */
 template <class T> void List<T>::shiftDown(T* item)
 {
 	if (item == NULL)
@@ -524,13 +708,16 @@ template <class T> void List<T>::shiftDown(T* item)
 		printf("Internal Error: NULL pointer passed to List<T>::shiftDown().\n");
 		return;
 	}
+
 	// If the item is already at the tail of the list, return.
 	if (listTail_ == item) return;
 	swap(item->next,item);
 	regenerate_ = 1;
 }
 
-// Move item at position 'target' the specified number of places up (+ve) or down (-ve)
+/*!
+ * \brief Move item at position 'target' the specified number of places up (+ve) or down (-ve)
+ */
 template <class T> void List<T>::move(int target, int delta)
 {
 	// Check positions
@@ -552,7 +739,9 @@ template <class T> void List<T>::move(int target, int delta)
 	regenerate_ = 1;
 }
 
-// Move item to end
+/*!
+ * \brief Move item to end
+ */
 template <class T> void List<T>::moveToEnd(T* item)
 {
 	if (item == NULL)
@@ -570,7 +759,9 @@ template <class T> void List<T>::moveToEnd(T* item)
 	regenerate_ = 1;
 }
 
-// Move item to start
+/*!
+ * \brief Move item to start
+ */
 template <class T> void List<T>::moveToStart(T* item)
 {
 	if (item == NULL)
@@ -588,8 +779,10 @@ template <class T> void List<T>::moveToStart(T* item)
 	regenerate_ = 1;
 }
 
-// Move item so it is after specified item
-template <class T> void List<T>::moveAfter(T *item, T *reference)
+/*!
+ * \brief Move item so it is after specified item
+ */
+template <class T> void List<T>::moveAfter(T* item, T* reference)
 {
 	// If 'reference' is NULL, then move to the start of the list
 	if (item == NULL)
@@ -625,14 +818,14 @@ template <class T> void List<T>::moveAfter(T *item, T *reference)
 template <class T> void List<T>::swapByIndex(int id1, int id2)
 {
 	// Check positions
-	if ((id1 < 0) || (id2 >= nItems_))
+	if ((id1 < 0) || (id1 >= nItems_))
 	{
-		printf("Internal Error: First index (%i) is out of range (0 - %i) in List<T>::swap\n", id1, nItems_-1);
+		printf("Internal Error: First index (%i) is out of range (0 - %i) in List<T>::swapByIndex\n", id1, nItems_-1);
 		return;
 	}
 	if ((id2 < 0) || (id2 >= nItems_))
 	{
-		printf("Internal Error: Second index (%i) is out of range (0 - %i) in List<T>::swap\n", id2, nItems_-1);
+		printf("Internal Error: Second index (%i) is out of range (0 - %i) in List<T>::swapByIndex\n", id2, nItems_-1);
 		return;
 	}
 
@@ -647,8 +840,10 @@ template <class T> void List<T>::swapByIndex(int id1, int id2)
 // Operators
 */
 
-// Assignment operator =
-template <class T> void List<T>::operator=(List<T> &source)
+/*!
+ * \brief Assignment operator =
+ */
+template <class T> void List<T>::operator=(const List<T>& source)
 {
 	// Clear any current data in the list...
 	clear();
@@ -666,15 +861,50 @@ template <class T> void List<T>::operator=(List<T> &source)
 	regenerate_ = 1;
 }
 
-// Element access operator
-template <class T> T *List<T>::operator[](int index)
+/*!
+ * \brief Element access operator
+ */
+template <class T> T* List<T>::operator[](int index)
 {
 	if ((index < 0) || (index >= nItems_))
 	{
-		printf("list::[] <<<< SEVERE - Array index (%i) out of bounds (0-%i) >>>>\n",index,nItems_-1);
+		printf("LIST_OPERATOR[] - Array index (%i) out of bounds (%i items in List) >>>>\n", index, nItems_);
 		return NULL;
 	}
 	return array()[index];
 }
+
+/*
+ * List with Parent references for items
+ */
+template <class T, class P> class ParentList : public List<T>
+{
+	public:
+	// Override the add() member function
+	T* add(P& parent)
+	{
+		T *newitem = new T(parent);
+		List<T>::own(newitem);
+		return newitem;
+	}
+	// Override the assignment operator
+	void operator=(const ParentList<T,P>& source)
+	{
+		// Clear any current data in the list...
+		List<T>::clear();
+		T *newitem, *olditem;
+		for (olditem = source.first(); olditem != NULL; olditem = olditem->next)
+		{
+			// To ensure that we don't mess around with the pointers of the old list, copy the object and then own it
+			newitem = new T(olditem->parent());
+			*newitem = *olditem;
+			newitem->prev = NULL;
+			newitem->next = NULL;
+			List<T>::own(newitem);
+		}
+		// Don't deep-copy the static list, just flag that it must be regenerated if required.
+		List<T>::regenerate_ = 1;
+	}
+};
 
 #endif

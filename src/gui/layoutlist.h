@@ -31,13 +31,11 @@ class QGridLayout;
 class QWidget;
 
 // QGridLayout*/int/int class
-class LayoutData
+class LayoutData : public ListItem<LayoutData>
 {
 	public:
 	// Constructor
 	LayoutData();
-	// List pointers
-	LayoutData *prev, *next;
 
 	private:
 	// Associated name of layout (e.g. group name)

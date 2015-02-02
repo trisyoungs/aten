@@ -42,12 +42,11 @@ bool Command::function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		parser.getArgsDelim(0, c->argc(2));
 		for (int n=0; n<parser.nArgs(); n++)
 		{
-			ListItem<int> *li = obj.s->atoms.add();
 			// Store n-1 since internally we work in 0-n range
-			li->setValue(parser.argi(n) - 1);
+			obj.s->atoms << parser.argi(n) - 1;
 		}
 	}
-	msg.print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.nItems(), (obj.s->atoms.nItems() == 0 ? " (will use centre of geometry)\n" : "\n"));
+	msg.print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.count(), (obj.s->atoms.count() == 0 ? " (will use centre of geometry)\n" : "\n"));
 	rv.reset();
 	return TRUE;
 }
@@ -64,8 +63,8 @@ bool Command::function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		for (s = s; s != NULL; s = s->next)
 		{
 			msg.print(" %15s %15s  ",s->name(), s->pattern()->name());
-			if (s->atoms.nItems() == 0) msg.print("All atoms assumed (none defined)");
-			else for (ListItem<int> *li = s->atoms.first(); li != NULL; li = li->next) msg.print(" %i",li->value());
+			if (s->atoms.count() == 0) msg.print("All atoms assumed (none defined)");
+			else for (int n=0; n<s->atoms.count(); ++n) msg.print(" %i", s->atoms.at(n));
 			msg.print("\n");
 		}
 	}
@@ -90,23 +89,20 @@ bool Command::function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::SitePointer)) return FALSE;
 	int n;
-	ListItem<int> *li;
 	LineParser parser;
 	// Parse atom list for x-axis
 	parser.getArgsDelim(0, c->argc(0));
 	for (n=0; n<parser.nArgs(); n++)
 	{
-		li = obj.s->xAxisAtoms.add();
 		// Store n-1 since internally we work in 0-n range
-		li->setValue(parser.argi(n) - 1);
+		obj.s->xAxisAtoms << parser.argi(n) - 1;
 	}
 	// Parse atom list for y-axis
 	parser.getArgsDelim(0, c->argc(1));
 	for (n=0; n<parser.nArgs(); n++)
 	{
-		li = obj.s->yAxisAtoms.add();
 		// Store n-1 since internally we work in 0-n range
-		li->setValue(parser.argi(n) - 1);
+		obj.s->yAxisAtoms << parser.argi(n) - 1;
 	}
 	rv.reset();
 	return TRUE;

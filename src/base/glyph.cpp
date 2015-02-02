@@ -66,7 +66,7 @@ Glyph::GlyphOption Glyph::glyphOption(const char *s, bool reportError)
  */
 
 // Constructor
-GlyphData::GlyphData()
+GlyphData::GlyphData() : ListItem<GlyphData>()
 {
 	// Private variables
 	atom_ = NULL;
@@ -77,10 +77,6 @@ GlyphData::GlyphData()
 	colour_[1] = prefs.colour(Prefs::GlyphDefaultColour)[1];
 	colour_[2] = prefs.colour(Prefs::GlyphDefaultColour)[2];
 	colour_[3] = prefs.colour(Prefs::GlyphDefaultColour)[3];
-	
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set vector data
@@ -194,7 +190,7 @@ void GlyphData::copyColour(GLfloat *col) const
 */
 
 // Constructor
-Glyph::Glyph()
+Glyph::Glyph() : ListItem<Glyph>()
 {
 	// Private variables
 	selected_ = FALSE;
@@ -203,10 +199,6 @@ Glyph::Glyph()
 	rotation_ = NULL;
 	type_ = Glyph::nGlyphTypes;
 	parent_ = NULL;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Assignment operator

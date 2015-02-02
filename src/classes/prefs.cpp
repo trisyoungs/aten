@@ -431,19 +431,19 @@ bool Prefs::save(const char *filename)
 	{
 		// First - loop over all element data, comparing it to the stored default values
 		prefsfile.writeLine("// Element Data\n");
-		for (n=0; n<elements().nElements(); ++n)
+		for (n=0; n<Elements().nElements(); ++n)
 		{
 			// Ambient Colour
-			for (i = 0; i<4; ++i) if (elements().defaultEl[n].colour[i] != elements().el[n].colour[i]) break;
+			for (i = 0; i<4; ++i) if (Elements().defaultEl[n].colour[i] != Elements().el[n].colour[i]) break;
 			if (i != 4)
 			{
-				line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].colour[0], elements().el[n].colour[1], elements().el[n].colour[2], elements().el[n].colour[3]);
+				line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };\n", Elements().el[n].symbol, Elements().el[n].colour[0], Elements().el[n].colour[1], Elements().el[n].colour[2], Elements().el[n].colour[3]);
 				prefsfile.writeLine(line);
 			}
 			// Atomic radius
-			if (elements().defaultEl[n].atomicRadius != elements().el[n].atomicRadius)
+			if (Elements().defaultEl[n].atomicRadius != Elements().el[n].atomicRadius)
 			{
-				line.sprintf("aten.elements[%s].radius = %f;\n", elements().el[n].symbol, elements().el[n].atomicRadius);
+				line.sprintf("aten.elements[%s].radius = %f;\n", Elements().el[n].symbol, Elements().el[n].atomicRadius);
 				prefsfile.writeLine(line);
 			}
 		}
@@ -670,7 +670,7 @@ double Prefs::styleRadius(Atom *i) const
 {
 	Atom::DrawStyle dstyle;
 	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;
-	return (dstyle == Atom::ScaledStyle) ? (elements().atomicRadius(i) * atomStyleRadius_[Atom::ScaledStyle]) : atomStyleRadius_[dstyle];
+	return (dstyle == Atom::ScaledStyle) ? (Elements().atomicRadius(i) * atomStyleRadius_[Atom::ScaledStyle]) : atomStyleRadius_[dstyle];
 }
 
 /*

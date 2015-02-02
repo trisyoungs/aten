@@ -136,7 +136,7 @@ RenderEngine::RenderEngine()
 	glyphLines_.setNoInstances();
 	glyphLines_.setName("glyphLines");
 	initialiseTransparency();
-	scaledAtomAdjustments_ = new double[elements().nElements()];
+	scaledAtomAdjustments_ = new double[Elements().nElements()];
 	primitives_[RenderEngine::LowQuality].setQuality(prefs.primitiveQuality());
 	primitives_[RenderEngine::HighQuality].setQuality(prefs.imagePrimitiveQuality());
 	lastSource_ = NULL;
@@ -190,9 +190,9 @@ void RenderEngine::calculateAdjustments()
 	// Scaled Style
 	theta = asin(bondradius / atomradius);
 	sphereAtomAdjustment_ = atomradius - atomradius*cos(theta);
-	for (i = 0; i<elements().nElements(); ++i)
+	for (i = 0; i<Elements().nElements(); ++i)
 	{
-		atomradius = prefs.atomStyleRadius(Atom::ScaledStyle) * elements().el[i].atomicRadius;
+		atomradius = prefs.atomStyleRadius(Atom::ScaledStyle) * Elements().el[i].atomicRadius;
 		theta = asin(bondradius / atomradius);
 		scaledAtomAdjustments_[i] = (atomradius - atomradius*cos(theta));
 	}

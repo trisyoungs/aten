@@ -670,7 +670,7 @@ int Aten::parseCli(int argc, char *argv[])
 							printf("Mangled map value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
 							return -1;
 						}
-						el = elements().find(afterChar(parser.argc(n), '='), ElementMap::AlphaZMap);
+						el = Elements().find(afterChar(parser.argc(n), '='), ElementMap::AlphaZMap);
 						if (el == 0)
 						{
 							printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));

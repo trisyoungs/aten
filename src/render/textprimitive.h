@@ -24,7 +24,6 @@
 
 #include <QtGui/QtGui>
 #include "templates/vector3.h"
-// #include "base/matrix.h"
 #include "base/dnchar.h"
 #include "templates/list.h"
 
@@ -58,13 +57,11 @@ class TextPrimitive
 };
 
 // Text Primitive Chunk
-class TextPrimitiveChunk
+class TextPrimitiveChunk : public ListItem<TextPrimitiveChunk>
 {
 	public:
 	// Constructor
 	TextPrimitiveChunk();
-	// List pointers
-	TextPrimitiveChunk *prev, *next;
 
 	private:
 	// Array of TextPrimitive
@@ -106,13 +103,11 @@ class TextPrimitiveList
 };
 
 // 3D Text Primitive
-class TextPrimitive3D
+class TextPrimitive3D : public ListItem<TextPrimitive3D>
 {
 	public:
 	// Constructor
 	TextPrimitive3D();
-	// List pointers
-	TextPrimitive3D *prev, *next;
 
 	private:
 	// Text coordinates

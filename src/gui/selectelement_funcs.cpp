@@ -35,14 +35,14 @@ AtenSelectElement::AtenSelectElement(QWidget *parent) : QDialog(parent)
 	double *colour;
 
 	// Create element button array (and buttons)
-	elementButtons_ = new QPushButton*[elements().nElements()];
-	for (n=1; n<elements().nElements(); n++)
+	elementButtons_ = new QPushButton*[Elements().nElements()];
+	for (n=1; n<Elements().nElements(); n++)
 	{
 		elementButtons_[n] = new QPushButton(this);
-		elementButtons_[n]->setText(elements().symbol(n));
+		elementButtons_[n]->setText(Elements().symbol(n));
 		elementButtons_[n]->setMinimumSize(24,24);
 		elementButtons_[n]->setMaximumSize(24,24);
-		colour = elements().colour(n);
+		colour = Elements().colour(n);
 		elementButtons_[n]->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
 		QObject::connect(elementButtons_[n], SIGNAL(clicked(bool)), this, SLOT(ElementButton_clicked(bool)));
 	}
@@ -131,10 +131,10 @@ AtenSelectElement::~AtenSelectElement()
 QPushButton *AtenSelectElement::addCommonButton(int el)
 {
 	QPushButton *button = new QPushButton(this);
-	button->setText(elements().symbol(el));
+	button->setText(Elements().symbol(el));
 	button->setMinimumSize(24,24);
 	button->setMaximumSize(24,24);
-	double *colour = elements().colour(el);
+	double *colour = Elements().colour(el);
 	button->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
 	QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(CommonElementButton_clicked(bool)));
 	return button;
@@ -152,7 +152,7 @@ void AtenSelectElement::addCommonButtons(const char *buttonlist)
 	int n,z;
 	for (n=0; n<parser.nArgs(); n++)
 	{
-		z = elements().find(parser.argc(n));
+		z = Elements().find(parser.argc(n));
 		if (z > 0)
 		{
 			// Create button
@@ -184,8 +184,8 @@ void AtenSelectElement::ElementButton_clicked(bool checked)
         }
 
 	int result;
-	for (result=1; result<elements().nElements(); result++) if (elementButtons_[result] == button) break;
-	selectedElement_ = (result != elements().nElements() ? result : -1);
+	for (result=1; result<Elements().nElements(); result++) if (elementButtons_[result] == button) break;
+	selectedElement_ = (result != Elements().nElements() ? result : -1);
 	accept();
 }
 

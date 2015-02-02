@@ -54,18 +54,24 @@
 #include <string.h>
 
 // Constructors
-StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly, int arraysize) : previousType_(prevtype), accessor_(id), arrayIndex_(arrayindex), arraySize_(arraysize)
+StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly, int arraysize) : TreeNode()
 {
 	// Private variables
+	previousType_ = prevtype;
+	accessor_ = id;
+	arrayIndex_ = arrayindex;
+	arraySize_ = arraysize;
 	readOnly_ = readonly;
 	returnType_ = rtntype;
 	nodeType_ = TreeNode::SteppedNode;
 	functionAccessor_ = FALSE;
 // 	printf("Return type of StepNode is %s\n", VTypes::dataType(returnType_));
 }
-StepNode::StepNode(int id, VTypes::DataType prevtype, VTypes::DataType rtntype) : previousType_(prevtype), accessor_(id)
+StepNode::StepNode(int id, VTypes::DataType prevtype, VTypes::DataType rtntype) : TreeNode()
 {
 	// Private variables
+	previousType_ = prevtype;
+	accessor_ = id;
 	arraySize_ = 0;
 	arrayIndex_ = NULL;
 	readOnly_ = FALSE;
@@ -510,7 +516,7 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 // Set from returnvalue node
 bool StepNode::set(ReturnValue &rv)
 {
-	printf("Internal Error: Use StepNode::set(NUreturnValue,ReturnValue) for StepNodes.\n");
+	printf("Internal Error: Use StepNode::set(ReturnValue) for StepNodes.\n");
 	return FALSE;
 }
 

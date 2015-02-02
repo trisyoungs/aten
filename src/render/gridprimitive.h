@@ -29,13 +29,11 @@
 class Grid;
 
 // Grid Primitive
-class GridPrimitive
+class GridPrimitive : public ListItem<GridPrimitive>
 {
 	public:
 	// Constructor
 	GridPrimitive(Grid *source = NULL);
-	// List pointers
-	GridPrimitive *prev, *next;
 
 	private:
 	// Primitive containing generated porimary surface

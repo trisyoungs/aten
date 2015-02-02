@@ -64,12 +64,8 @@ bool TextPrimitive::rightAlign()
 */
 
 // Constructor
-TextPrimitiveChunk::TextPrimitiveChunk()
+TextPrimitiveChunk::TextPrimitiveChunk() : ListItem<TextPrimitiveChunk>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
 	// Private variables
 	nTextPrimitives_ = 0;
 }
@@ -142,11 +138,8 @@ void TextPrimitiveList::renderAll(QPainter &painter, int verticalOffset)
 */
 
 // Constructor
-TextPrimitive3D::TextPrimitive3D()
+TextPrimitive3D::TextPrimitive3D() : ListItem<TextPrimitive3D>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set data

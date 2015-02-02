@@ -41,13 +41,11 @@ class Ring;
 class UnitCell;
 
 // Structures to hold/point to forcefield descriptions in patterns.
-class PatternAtom
+class PatternAtom : public ListItem<PatternAtom>
 {
 	public:
 	// Constructor
 	PatternAtom();
-	// List pointers
-	PatternAtom *prev, *next;
 
 	/*
 	// Forcefield and atom data
@@ -75,13 +73,11 @@ class PatternAtom
 	void setForcefieldDataId(int id);
 };
 
-class PatternBound
+class PatternBound : public ListItem<PatternBound>
 {
 	public:
 	// Constructor
 	PatternBound();
-	// List pointers
-	PatternBound *prev, *next;
 	// Friend Variable class
 	friend class PatternBoundVariable;
 
@@ -112,14 +108,12 @@ class PatternBound
 };
 
 // Pattern Node
-class Pattern
+class Pattern : public ListItem<Pattern>
 {
 	public:
 	// Constructor / Destructor
 	Pattern();
 	~Pattern();
-	// List pointers
-	Pattern *prev, *next;
 
 	/*
 	// Definition

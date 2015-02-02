@@ -23,7 +23,7 @@
 #include "classes/grid.h"
 
 // Constructor
-ColourScale::ColourScale()
+ColourScale::ColourScale() : ListItem<ColourScale>()
 {
 	// Private variables
 	visible_ = FALSE;
@@ -89,9 +89,9 @@ ColourScalePoint *ColourScale::addPoint(int position, double value, double r, do
 	if (position < 0) position = 0;
 	else if (position > points_.nItems()) position = points_.nItems();
 	ColourScalePoint *csp;
-	if (position == 0) csp = points_.insert(NULL);
+	if (position == 0) csp = points_.prepend();
 	else if (position == points_.nItems()) csp = points_.add();
-	else csp = points_.insert( points_[position-1] );
+	else csp = points_.insertAfter( points_[position-1] );
 	// Now, set data in new point
 	csp->setParent(this);
 	csp->setColour(r, g, b, a);

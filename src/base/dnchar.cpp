@@ -29,56 +29,40 @@ using namespace std;
 #include <cstdarg>
 
 // Constructors
-Dnchar::Dnchar()
+Dnchar::Dnchar() : ListItem<Dnchar>()
 {
 	// Private variables
 	data_ = NULL;
 	size_ = 0;
 	endPosition_ = 0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
-Dnchar::Dnchar(int emptysize)
+Dnchar::Dnchar(int emptysize) : ListItem<Dnchar>()
 {
 	// Private variables
 	data_ = NULL;
 	size_ = 0;
 	endPosition_ = 0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 
 	createEmpty(emptysize);
 }
 
-Dnchar::Dnchar(const char *s)
+Dnchar::Dnchar(const char *s) : ListItem<Dnchar>()
 {
 	// Private variables
 	data_ = NULL;
 	size_ = 0;
 	endPosition_ = 0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 
 	set(s);
 }
 
-Dnchar::Dnchar(int dummyparameter, const char *fmt, ...)
+Dnchar::Dnchar(int dummyparameter, const char *fmt, ...) : ListItem<Dnchar>()
 {
 	// Private variables
 	data_ = NULL;
 	size_ = 0;
 	endPosition_ = 0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 
 	va_list arguments;
 	static char s[8096];
@@ -91,16 +75,12 @@ Dnchar::Dnchar(int dummyparameter, const char *fmt, ...)
 }
 
 // Copy constructor
-Dnchar::Dnchar(const Dnchar &source)
+Dnchar::Dnchar(const Dnchar &source)  : ListItem<Dnchar>()
 {
 	// Private variables
 	data_ = NULL;
 	size_ = 0;
 	endPosition_ = 0;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 
 	if (source.data_ == NULL) clear();
 	else set(source.data_);

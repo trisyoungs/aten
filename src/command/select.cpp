@@ -109,7 +109,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 				}
 				else
 				{
-					i = elements().find(from, ElementMap::AlphaZMap);
+					i = Elements().find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
 						msg.print("Unrecognised element (%s) in select.\n", from.get());
@@ -117,7 +117,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 					}
 					if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
 					else if (plus == -1) for (n=1; n <= i; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
-					else if (plus == 1) for (n=i; n <= elements().nElements(); n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
+					else if (plus == 1) for (n=i; n <= Elements().nElements(); n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 				}
 			}
 			else
@@ -131,13 +131,13 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 				}
 				else
 				{
-					i = elements().find(from, ElementMap::AlphaZMap);
+					i = Elements().find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
 						msg.print("Unrecognised element (%s) on left-hand side of range.\n", from.get());
 						return FALSE;
 					}
-					j = elements().find(to, ElementMap::AlphaZMap);
+					j = Elements().find(to, ElementMap::AlphaZMap);
 					if (j == 0)
 					{
 						msg.print("Unrecognised element (%s) on right-hand side of range.\n", to.get());
@@ -247,7 +247,7 @@ bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs()->nSelected();
-		obj.rs()->beginUndoState("Deselect %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
+		obj.rs()->beginUndoState("Deselect %s by type (%s)", Elements().el[c->argz(0)].symbol, c->argc(1));
 		int result = obj.rs()->selectType(c->argz(0), c->argc(1), FALSE, TRUE);
 		obj.rs()->endUndoState();
 		if (result != -1)
@@ -569,7 +569,7 @@ bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs()->nSelected();
-		obj.rs()->beginUndoState("Select %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
+		obj.rs()->beginUndoState("Select %s by type (%s)", Elements().el[c->argz(0)].symbol, c->argc(1));
 		int result = obj.rs()->selectType(c->argz(0), c->argc(1));
 		obj.rs()->endUndoState();
 		if (result != -1)

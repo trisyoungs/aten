@@ -29,11 +29,9 @@ restraints::restraints()
 {
 }
 
-restraint_ij::restraint_ij()
+restraint_ij::restraint_ij() : ListItem<restraint_ij>()
 {
 	rij = 0.0;
-	next = NULL;
-	prev = NULL;
 }
 
 // Destructors

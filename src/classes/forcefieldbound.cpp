@@ -37,16 +37,12 @@ int ForcefieldBound::boundTypeNAtoms(ForcefieldBound::BoundType bt)
 }
 
 // Constructor
-ForcefieldBound::ForcefieldBound()
+ForcefieldBound::ForcefieldBound() : ListItem<ForcefieldBound>()
 {
 	// Private variables
 	type_ = NoInteraction;
 	elecScale_ = 0.5;
 	vdwScale_ = 0.5;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Set the type of bound interaction

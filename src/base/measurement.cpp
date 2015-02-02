@@ -32,17 +32,13 @@ int Measurement::nMeasurementAtoms(Measurement::MeasurementType mt)
 }
 
 // Constructor
-Measurement::Measurement()
+Measurement::Measurement() : ListItem<Measurement>()
 {
 	// Private variables
 	type_ = Measurement::None;
-	for (int n=0; n<4; n++) atoms_[n] = NULL;
+	for (int n=0; n<4; ++n) atoms_[n] = NULL;
 	value_ = 0.0;
 	literalValue_ = 0.0;
-	
-	// Public variables
-	next = NULL;
-	prev = NULL;
 }
 
 // Set type of Measurement

@@ -32,7 +32,7 @@ Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
 }
 
 // Constructor
-Forcefield::Forcefield()
+Forcefield::Forcefield() : ListItem<Forcefield>()
 {
 	// Private variables
 	energyUnit_ = Prefs::KiloJoules;
@@ -45,10 +45,6 @@ Forcefield::Forcefield()
 	bondGenerator_ = NULL;
 	angleGenerator_ = NULL;
 	torsionGenerator_ = NULL;
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
 }
 
 // Destructor

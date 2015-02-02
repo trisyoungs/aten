@@ -26,15 +26,13 @@
 #include "templates/list.h"
 
 // Distance restraint
-class restraint_ij
+class restraint_ij : public ListItem<restraint_ij>
 {
 	public:
 	// Atoms in distance restraint
 	Atom *i,*j;
 	// Distance
 	double rij;
-	// List pointers
-	restraint_ij *next, *prev;
 	// Constructor
 	restraint_ij();
 	// Destructor

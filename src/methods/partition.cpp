@@ -32,10 +32,8 @@
 */
 
 // Constructor
-PartitionCellData::PartitionCellData()
+PartitionCellData::PartitionCellData() : ListItem<PartitionCellData>()
 {
-	next = NULL;
-	prev = NULL;
 	dataPos = 0;
 }
 
@@ -44,12 +42,8 @@ PartitionCellData::PartitionCellData()
 */
 
 // Constructor
-PartitionData::PartitionData()
+PartitionData::PartitionData() : ListItem<PartitionData>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
 	// Private variables
 	id_ = -1;
 	nCells_ = 0;
@@ -164,8 +158,8 @@ void PartitionData::resetReducedMass()
 // Adjust partition density based on supplied model
 void PartitionData::adjustReducedMass(Atom *i, bool subtract)
 {
-	if (subtract) reducedMass_ -= elements().atomicMass(i) / AVOGADRO;
-	else reducedMass_ += elements().atomicMass(i) / AVOGADRO;
+	if (subtract) reducedMass_ -= Elements().atomicMass(i) / AVOGADRO;
+	else reducedMass_ += Elements().atomicMass(i) / AVOGADRO;
 }
 
 // Adjust partition density based on supplied model
@@ -216,12 +210,8 @@ GridPrimitive &PartitionData::gridPrimitive()
 */
 
 // Constructor
-PartitioningScheme::PartitioningScheme()
+PartitioningScheme::PartitioningScheme() : ListItem<PartitioningScheme>()
 {
-	// Public variables
-	prev = NULL;
-	next = NULL;
-	
 	// Private variables
 	partitionFunction_ = NULL;
 	partitionNameFunction_ = NULL;

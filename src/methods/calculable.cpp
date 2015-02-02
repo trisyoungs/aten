@@ -23,10 +23,8 @@
 #include <stdlib.h>
 
 // Constructor
-Calculable::Calculable()
+Calculable::Calculable() : ListItem<Calculable>()
 {
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor

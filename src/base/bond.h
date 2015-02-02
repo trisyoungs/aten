@@ -22,17 +22,17 @@
 #ifndef ATEN_BOND_H
 #define ATEN_BOND_H
 
+#include "templates/list.h"
+
 // Forward declarations
 class Atom;
 
 // Basic Bond Definition
-class Bond
+class Bond : public ListItem<Bond>
 {
 	public:
 	// Constructor
 	Bond();
-	// List pointers
-	Bond *prev, *next;
 	// Bond types
 	enum BondType { Any = 0, Single, Double, Triple, Aromatic, nBondTypes };
 	// Bond type from text

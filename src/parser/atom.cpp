@@ -215,7 +215,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(ptr->data());
 			break;
 		case (AtomVariable::ElementInfo):
-			rv.set(VTypes::ElementData, &elements().el[ptr->element()]);
+			rv.set(VTypes::ElementData, &Elements().el[ptr->element()]);
 			break;
 		case (AtomVariable::F):
 			rv.set(ptr->f());
@@ -245,10 +245,10 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(ptr->id()+1);
 			break;
 		case (AtomVariable::Mass):
-			rv.set(elements().atomicMass(ptr));
+			rv.set(Elements().atomicMass(ptr));
 			break;
 		case (AtomVariable::Name):
-			rv.set(elements().name(ptr));
+			rv.set(Elements().name(ptr));
 			break;
 		case (AtomVariable::NBonds):
 			rv.set(ptr->nBonds());
@@ -271,7 +271,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(Atom::drawStyle(ptr->style()));
 			break;
 		case (AtomVariable::Symbol):
-			rv.set(elements().symbol(ptr));
+			rv.set(Elements().symbol(ptr));
 			break;
 		case (AtomVariable::Type):
 			rv.set(VTypes::ForcefieldAtomData, ptr->type());
@@ -391,7 +391,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 				msg.print("Invalid (NULL) element reference encountered while setting atom's element.\n");
 				result = FALSE;
 			}
-			else if (&elements().el[ptr->element()] != el)
+			else if (&Elements().el[ptr->element()] != el)
 			{
 				if (ptrParent)
 				{

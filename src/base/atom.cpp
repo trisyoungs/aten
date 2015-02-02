@@ -78,7 +78,7 @@ int Atom::atomGeometryNBonds(Atom::AtomGeometry ag)
 }
 
 // Constructor
-Atom::Atom()
+Atom::Atom() : ListItem<Atom>()
 {
 	// Private variables
 	charge_ = 0.0;
@@ -102,10 +102,6 @@ Atom::Atom()
 	colour_[1] = 0.0;
 	colour_[2] = 0.0;
 	colour_[3] = 1.0;
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
 }
 
 // Destructor
@@ -313,7 +309,7 @@ void Atom::copyStyle(Atom *source)
 void Atom::print() const
 {
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg.print("Atom ID %i (%s):\n", id_+1, elements().name(element_));
+	msg.print("Atom ID %i (%s):\n", id_+1, Elements().name(element_));
 	msg.print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
 	msg.print(" Coordinates : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
 	msg.print("  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
@@ -330,7 +326,7 @@ void Atom::printSummary() const
 {
 	// Print format :" Id     El   FFType   FFId          X             Y             Z              Q       Sel Fix \n");
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg.print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c  %c%c\n", id_+1, elements().symbol(element_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ', fixedPosition_ ? 'R' : ' ', fixedType_ ? 'T' : ' ');
+	msg.print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c  %c%c\n", id_+1, Elements().symbol(element_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ', fixedPosition_ ? 'R' : ' ', fixedType_ ? 'T' : ' ');
 }
 
 /*
@@ -776,7 +772,7 @@ void Atom::setColour(int n, double d)
 // Set custom colour from current atom element
 void Atom::setColourFromElement()
 {
-	for (int n=0; n<4; ++n) colour_[n] = elements().el[element_].colour[n];
+	for (int n=0; n<4; ++n) colour_[n] = Elements().el[element_].colour[n];
 }
 
 // Return custom colour

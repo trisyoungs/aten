@@ -28,13 +28,11 @@
 #include "parser/returnvalue.h"
 
 // Simple string key/value pair class
-class DataStoreItem
+class DataStoreItem : public ListItem<DataStoreItem>
 {
 	public:
 	// Constructor / Destructor
 	DataStoreItem(const char *key);
-	// List pointers
-	DataStoreItem *prev, *next;
 
 	/*
 	// Data

@@ -23,17 +23,13 @@
 #include "model/model.h"
 
 // Constructor
-Vibration::Vibration(Model *parent)
+Vibration::Vibration(Model *parent) : ListItem<Vibration>()
 {
 	// Private variables
 	parent_ = parent;
 	frequency_ = 0.0;
 	nDisplacements_ = 0;
 	displacements_ = NULL;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor

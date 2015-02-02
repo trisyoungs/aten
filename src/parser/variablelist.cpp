@@ -68,9 +68,13 @@ void VariableList::take(Variable *v, bool forcevariable)
 // Retrieve a named variable from the list
 Variable *VariableList::find(const char *name) const
 {
-	Variable *result = NULL;
-	for (result = variables_.first(); result != NULL; result = (Variable*) result->next) if (strcmp(name,result->name()) == 0) break;
-	return result;
+	Variable* var;
+	for (TreeNode* node = variables_.first(); node != NULL; node = node->next)
+	{
+		var = (Variable*) node;
+		if (strcmp(name,var->name()) == 0) return var;
+	}
+	return NULL;
 }
 
 // Create a new variable in the list
@@ -340,8 +344,8 @@ int VariableList::nVariables() const
 	return variables_.nItems();
 }
 
-// Return first variable in the list
-Variable *VariableList::variables() const
+// Return first variable in the list (as a TreeNode)
+TreeNode *VariableList::variables() const
 {
 	return variables_.first();
 }
@@ -352,11 +356,8 @@ Variable *VariableList::variable(int index)
 	if ((index < 0) || (index >= variables_.nItems())) printf("Array index %i is out of bounds for VariableList::variable()\n", index);
 	else
 	{
-		// Since the Variable class uses next/prev pointers from the base TreeNode class, the List<T> template array-access function cannot be used, since it will try to cast the TreeNode* next pointer into a Variable*, which won't work...
-		Variable *result;
-		int count = 0;
-		for (result = variables_.first(); result != NULL; result = (Variable*) result->next) if (count++ == index) break;
-		return result;
+		TreeNode* node = variables_.item(index);
+		if (node) return (Variable*) node;
 	}
 	return NULL;
 }
@@ -364,7 +365,12 @@ Variable *VariableList::variable(int index)
 // Initialise/reset all variables
 bool VariableList::initialise()
 {
-	for (Variable *v = variables_.first(); v != NULL; v = (Variable*) v->next) if (!v->initialise()) return FALSE;
+	Variable* var;
+	for (TreeNode* node = variables_.first(); node != NULL; node = node->next)
+	{
+		var = (Variable*) node;
+		if (!var->initialise()) return FALSE;
+	}
 	return TRUE;
 }
 
@@ -377,5 +383,10 @@ void VariableList::clear()
 // Print list of variables and their values
 void VariableList::print() const
 {
-	for (Variable *v = variables_.first(); v != NULL; v = (Variable*) v->next) v->nodePrint(0,"");
+	Variable* var;
+	for (TreeNode* node = variables_.first(); node != NULL; node = node->next)
+	{
+		var = (Variable*) node;
+		var->nodePrint(0,"");
+	}
 }

@@ -25,6 +25,7 @@
 #include "templates/vector3.h"
 #include "templates/vector4.h"
 #include "templates/reflist.h"
+#include "templates/list.h"
 #include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
@@ -33,14 +34,12 @@ class Bond;
 class ForcefieldAtom;
 
 // Base Atom Data
-class Atom
+class Atom : public ListItem<Atom>
 {
 	public:
 	// Constructor / Destructor
 	Atom();
 	~Atom();
-	// List pointers
-	Atom *prev, *next;
 	// Drawing style enum
 	enum DrawStyle { StickStyle, TubeStyle, SphereStyle, ScaledStyle, IndividualStyle, nDrawStyles };
 	static DrawStyle drawStyle(const char *name, bool reportError = 0);

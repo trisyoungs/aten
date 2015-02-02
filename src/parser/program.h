@@ -27,14 +27,12 @@
 #include "parser/scopenode.h"
 
 // Program
-class Program
+class Program : public ListItem<Program>
 {
 	public:
 	// Constructors / Destructor
 	Program();
 	~Program();
-	// List pointers
-	Program *prev, *next;
 
 
 	/*

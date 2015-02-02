@@ -72,8 +72,8 @@ bool Forcefield::save()
 		{
 			// Skip UATypes in this pass...
 			if (ffa->isUnitedAtom()) continue;
-			if (isEmpty(ffa->description())) parser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString());
-			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
+			if (isEmpty(ffa->description())) parser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), ffa->name(), Elements().symbol(ffa->element()), ffa->netaString());
+			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), Elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
 		}
 		parser.writeLine("end\n\n");
 	}
@@ -85,8 +85,8 @@ bool Forcefield::save()
 			// Skip normal types in this pass...
 			if (!ffa->isUnitedAtom()) continue;
 				
-			if (isEmpty(ffa->description())) parser.writeLineF("%i\t%s\t%s\t%f\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->elementMass(), ffa->netaString());
-			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
+			if (isEmpty(ffa->description())) parser.writeLineF("%i\t%s\t%s\t%f\t\"%s\"\n", ffa->typeId(), ffa->name(), Elements().symbol(ffa->element()), ffa->elementMass(), ffa->netaString());
+			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), Elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
 		}
 		parser.writeLine("end\n\n");
 	}

@@ -30,9 +30,10 @@
 #include <string.h>
 
 // Constructor
-CommandNode::CommandNode(Command::Function func) : function_(func)
+CommandNode::CommandNode(Command::Function func) : TreeNode()
 {
 	// Private variables
+	function_ = func;
 	nodeType_ = TreeNode::CmdNode;
 	format_ = NULL;
 }

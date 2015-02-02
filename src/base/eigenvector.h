@@ -25,14 +25,12 @@
 #include "base/dnchar.h"
 
 // Eigenvector (as for MO)
-class Eigenvector
+class Eigenvector : public ListItem<Eigenvector>
 {
 	public:
 	// Constructor / Destructor
 	Eigenvector();
 	~Eigenvector();
-	// List pointers
-	Eigenvector *prev, *next;
 
 	/*
 	// Data

@@ -35,7 +35,7 @@
 #include "ff/forcefield.h"
 
 // Constructor
-NewNode::NewNode(VTypes::DataType type)
+NewNode::NewNode(VTypes::DataType type) : TreeNode()
 {
 	// Private variables
 	nodeType_ = TreeNode::NewNode;

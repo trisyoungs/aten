@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[1.899])
+m4_define([ATEN_VERSION],[1.901])
 AC_INIT(aten,ATEN_VERSION,tris@projectaten.net)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -48,6 +48,13 @@ AC_ARG_WITH([qtrcc],[AC_HELP_STRING([--with-qtrcc=<executable],
 QTMOC="$with_qtmoc"
 QTRCC="$with_qtrcc"
 QTUIC="$with_qtuic"
+
+# Checks?
+CHECK_CFLAGS=""
+AC_ARG_WITH([checks], [AC_HELP_STRING([--with-checks], [Enable internal code array/pointer checking [default="no"]])], [with_checks="yes"], [with_checks="no"])
+if test "$with_checks" = "yes"; then
+  CHECK_CFLAGS="-DCHECKS"
+fi
 
 # Readline include dir
 RLINCDIR=""
@@ -112,7 +119,7 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
 GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL"
-GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
+GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR $CHECK_CFLAGS"
 
 
 VERSION=ATEN_VERSION

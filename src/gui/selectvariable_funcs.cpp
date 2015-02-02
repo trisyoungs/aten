@@ -82,7 +82,7 @@ Variable *AtenSelectVariable::selectVariable(ZMatrix *zmat, int vartype, Variabl
 	// Clear list and repopulate with variables of the correct type
 	QTableWidgetItem *item;
 	int count, nvars;
-	Variable *vars;
+	TreeNode *vars;
 	// Get number of relevant variables of specified type, and start of list...
 	variableType_ = vartype;
 	switch (variableType_)
@@ -112,17 +112,18 @@ Variable *AtenSelectVariable::selectVariable(ZMatrix *zmat, int vartype, Variabl
 	ui.VariableTable->setRowCount(nvars);
 	ReturnValue rv;
 	count = 0;
-	for (Variable *v = vars; v != NULL; v = (Variable*) v->next)
+	for (TreeNode *v = vars; v != NULL; v = v->next)
 	{
+		Variable* var = (Variable*) v;
 		// Set variable name
-		item = new QTableWidgetItem(v->name());
+		item = new QTableWidgetItem(var->name());
 		ui.VariableTable->setItem(count, 0, item);
 		// Set value
 		v->execute(rv);
 		item = new QTableWidgetItem(rv.asString());
 		ui.VariableTable->setItem(count, 1, item);
 		// Select?
-		if (currentVar == v) ui.VariableTable->setCurrentItem(item);
+		if (currentVar == var) ui.VariableTable->setCurrentItem(item);
 		count ++;
 	}
 	for (count=0; count<2; count++) ui.VariableTable->resizeColumnToContents(count);

@@ -566,7 +566,7 @@ bool Command::function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				msg.print("Mangled map value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
 				continue;
 			}
-			el = elements().find(afterChar(parser.argc(n), '='), ElementMap::AlphaZMap);
+			el = Elements().find(afterChar(parser.argc(n), '='), ElementMap::AlphaZMap);
 			if (el == 0) msg.print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 			else
 			{
