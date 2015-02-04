@@ -330,7 +330,9 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 						
 					}
 					
-					writeLineF(" %2i %s\n", count, resText);
+					# No need to add another newline on if there's one there already (i.e. last count was a multiple of 5)
+					if (count%5 == 0) writeLineF(" %2i %s", count, resText);
+					else writeLineF(" %2i %s\n", count, resText);
 				}
 				else
 				{
@@ -397,7 +399,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 				rotText += s;
 				for (j in srcmodel.selection)
 				{
-					if (count%14 == 0) writeLineF("\n");
+					if (count%14 == 0) rotText += "\n";
 					sprintf(s, " %4i", j.id-p.firstAtomId+1);
 					rotText += s;
 					++count;
