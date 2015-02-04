@@ -248,7 +248,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 
 	// Atom/molecule loop
 	mol = 0;
-	firstatom = 1;
+	firstatom = 0;
 	i = srcmodel.atoms;
 	for (p in srcmodel.patterns)
 	{
