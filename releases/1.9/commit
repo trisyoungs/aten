@@ -85,7 +85,7 @@ then
     ./changeversion $MAJOR $MINOR $REVISION
   else
     # Committing to branch - change only revision number in src/main/version.h
-    sed -i -e "s/#define TENREVISION \"[0-9\.]\+\(.*\)\"/#define ATENREVISION \"$REVISION\"\1/g" src/main/version.h
+    sed -i -e "s/#define ATENREVISION \"[0-9\.]\+\(.*\)\"/#define ATENREVISION \"$REVISION\"\1/g" src/main/version.h
     echo -n "       version.h (Program Version) : "
     grep '#define ATENVERSION' src/main/version.h | sed -e 's/#define ATENVERSION "\([0-9a-z\.]\+\).*"/\1/g'
     echo -n "       version.h (SVN Revision)    : "
