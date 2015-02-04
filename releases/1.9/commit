@@ -7,7 +7,7 @@ COMMITMSG="none"
 COMMITTYPE="none"
 TEST="false"
 UPDATE="false"
-BETA=""
+TRUNK=""
 
 # Parse CLI arguments / options
 USAGE1="commit [-F <filename>] [-m <text>] [-t]"
@@ -48,10 +48,10 @@ fi
 if `svn info | grep -q trunk`
 then
   echo "Committing to trunk - version number and revision will be changed."
-  BETA="true"
+  TRUNK="true"
 else
   echo "Not committing to trunk - only revision will be changed."
-  BETA="false"
+  TRUNK="false"
 fi
 
 # Determine current svn version number and increase it by one.
@@ -77,13 +77,19 @@ echo "Setting revision information..."
 
 if [ "$TEST" = "false" ]
 then
-  MAJOR=$(( REVISION/1000 ))
-  MINOR=$(( REVISION%1000 ))
-  if [ "$BETA" = "true" ]
+  if [ "$TRUNK" = "true"  ]
   then
+    # Committing to trunk - get major and minor revision from SVN revision number
+    MAJOR=$(( REVISION/1000 ))
+    MINOR=$(( REVISION%1000 ))
     ./changeversion $MAJOR $MINOR $REVISION
   else
-    ./changeversion 0 0 $REVISION
+    # Committing to branch - change only revision number in src/main/version.h
+    sed -i -e "s/#define TENREVISION \"[0-9\.]\+\(.*\)\"/#define ATENREVISION \"$REVISION\"\1/g" src/main/version.h
+    echo -n "       version.h (Program Version) : "
+    grep '#define ATENVERSION' src/main/version.h | sed -e 's/#define ATENVERSION "\([0-9a-z\.]\+\).*"/\1/g'
+    echo -n "       version.h (SVN Revision)    : "
+    grep '#define ATENREVISION' src/main/version.h | sed -e 's/#define ATENREVISION "\([0-9a-z\.]\+\).*"/\1/g'
   fi
 else
   ./changeversion

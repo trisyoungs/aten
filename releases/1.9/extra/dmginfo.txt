@@ -9,7 +9,7 @@
 APP_NAME=Aten
 
 # -- APP_VERSION : Should contain the version / revision number of the package (for renaming purposes)
-APP_VERSION="1.899"
+APP_VERSION="1.9"
 
 # -- APP_BIN : List of binaries (space-separated, with paths) to include in the bundle
 APP_BIN="bin/Aten.app/Contents/MacOS/Aten"

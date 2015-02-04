@@ -73,7 +73,7 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			if (!nextArg(nres)) error("Error reading nrestraints for atom %i of molecule %i.\n", n+1, m+1);
 			for (l=0; l<nres; ++l)
 			{
-				if (!nextArg(id) || !nextArg(temp)) error("Erro reading restraint information %i for atom %i of molecule %i.\n", l+1, n+1, m+1);
+				if (!nextArg(id) || !nextArg(temp)) error("Error reading restraint information %i for atom %i of molecule %i.\n", l+1, n+1, m+1);
 				// If the relative atom id is greater than the current atom number, ignore it (it will be repeated the other way around for the second atom)
 				if (id > (n+1)) continue;
 				newBond(count+n+1, count+id);
@@ -140,7 +140,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 	# Variable declaration
 	Model srcmodel = aten.frame;
 	Pattern p;
-	int nmols, n, m, o, mol, nresb, nresa, nrest, nrot, idj, count;
+	int nmols, n, m, o, mol, nresb, nresa, nrest, nrot, idj, count, firstatom;
 	double rij, mass, boxsize;
 	Vector com, r;
 	Atom i, j, k, l;
@@ -248,6 +248,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 
 	// Atom/molecule loop
 	mol = 0;
+	firstatom = 1;
 	i = srcmodel.atoms;
 	for (p in srcmodel.patterns)
 	{
@@ -283,7 +284,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 						if (rij < rijmax)
 						{
 							++count;
-							sprintf(s, "%4i %9.3e ", j.id - p.firstAtomId + 1, rij);
+							sprintf(s, "%4i %9.3e ", j.id - firstatom, rij);
 							resText += s;
 							if (count%5 == 0) resText += "\n";
 						}
@@ -300,7 +301,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 								if (rij < rijmax)
 								{
 									++count;
-									sprintf(s, "%4i %9.3e ", k.id - p.firstAtomId + 1, rij);
+									sprintf(s, "%4i %9.3e ", k.id - firstatom, rij);
 									resText += s;
 									if (count%5 == 0) resText += "\n";
 								}
@@ -317,7 +318,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 										if (rij < rijmax)
 										{
 											++count;
-											sprintf(s, "%4i %9.3e ", l.id - p.firstAtomId + 1, rij);
+											sprintf(s, "%4i %9.3e ", l.id - firstatom, rij);
 											resText += s;
 											if (count%5 == 0) resText += "\n";
 										}
@@ -343,7 +344,7 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 					{
 						if (n == idj) continue;
 						rij = geometry(p.atoms[n],p.atoms[idj]);
-						if (rij < rijmax) writeLineF("%4i %9.3e ", idj, rij);
+						if (rij < rijmax) writeLineF("%4i %9.3e ", idj-firstatom, rij);
 					}
 					writeLineF("\n");
 				}
@@ -413,6 +414,8 @@ filter(type="exportmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 				writeLineF("%s", rotText);
 			}
 			else writeLineF("   %-2i\n", 0);
+			
+			firstatom += p.nMolAtoms;
 		}
 	}
 

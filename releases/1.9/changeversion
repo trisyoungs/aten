@@ -10,15 +10,6 @@ elif [ "$#" -ne "3" ]
 then
   echo "Improper version number supplied (use 'changeversion MAJOR MINOR REVISION', or no args to check existing files)"
   exit 1
-else
-  echo "Changing version numbers in files..."
-  if [ "$1" -eq "0" ]
-  then
-    echo "Only revision number will be changed..."
-    sed -i -e "s/#define ATENREVISION \"[0-9\.]\+\(.*\)\"/#define ATENREVISION \"$3\"\1/g" src/main/version.h
-    # That's it - no other files to change...
-    exit 0
-  fi
 fi
 
 # Program (version.h)
