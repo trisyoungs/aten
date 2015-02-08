@@ -22,8 +22,8 @@
 #ifndef ATEN_TREEGUIQT_H
 #define ATEN_TREEGUIQT_H
 
-#include "gui/gui.h"
 #include "gui/ui_treegui.h"
+#include "base/dnchar.h"
 #include "templates/list.h"
 
 // Default height for 'single-line' widgets
@@ -31,6 +31,9 @@
 
 // Forward Declarations
 class TreeGui;
+class TreeGuiWidget;
+class QLabel;
+class QGridLayout;
 
 // Qt/TreeGuiWidget Map Object
 class QtWidgetObject : public ListItem<QtWidgetObject>

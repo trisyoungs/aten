@@ -25,7 +25,7 @@
 #include "templates/vector3.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "base/dnchar.h"
 
 // Forward declarations

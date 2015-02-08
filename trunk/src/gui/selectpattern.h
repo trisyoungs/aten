@@ -22,7 +22,6 @@
 #ifndef ATEN_SELECTPATTERNDIALOG_H
 #define ATEN_SELECTPATTERNDIALOG_H
 
-#include "gui/gui.h"
 #include "gui/ui_selectpattern.h"
 
 // Forward Declarations
@@ -63,7 +62,7 @@ class AtenSelectPattern : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenSelectPattern(QWidget *parent = 0);
+	AtenSelectPattern(QWidget* parent);
 	// Main form declaration
 	Ui::SelectPatternDialog ui;
 };

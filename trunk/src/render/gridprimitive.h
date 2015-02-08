@@ -33,7 +33,7 @@ class GridPrimitive : public ListItem<GridPrimitive>
 {
 	public:
 	// Constructor
-	GridPrimitive(Grid *source = NULL);
+	GridPrimitive(Grid* source = NULL);
 
 	private:
 	// Primitive containing generated porimary surface
@@ -41,7 +41,7 @@ class GridPrimitive : public ListItem<GridPrimitive>
 	// Primitive containing generated secondary surface
 	Primitive secondaryPrimitive_;
 	// Grid from which primitive was created
-	Grid *source_;
+	Grid* source_;
 	// Whether primary primitive contains any transparent triangles (and must be rendered through the chopper)
 	bool primaryIsTransparent_;
 	// Whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
@@ -49,7 +49,7 @@ class GridPrimitive : public ListItem<GridPrimitive>
 	// Axes (line) primitives
 	Primitive axisLinePrimitives_[3];
 	// Axes (text) primitives
-	List<TextPrimitive3D> axisTextPrimitives_[3];
+	List<TextPrimitive> axisTextPrimitives_[3];
 	
 	public:
 	// Return primary primitive
@@ -57,9 +57,9 @@ class GridPrimitive : public ListItem<GridPrimitive>
 	// Return secondary primitive
 	Primitive &secondaryPrimitive();
 	// Set source grid pointer
-	void setSource(Grid *g);
+	void setSource(Grid* g);
 	// Return source grid pointer
-	Grid *source();
+	Grid* source();
 	// Return whether primary primitive contains any transparent triangles (and must be rendered through the chopper)
 	bool primaryIsTransparent();
 	// Return whether secondary primitive contains any transparent triangles (and must be rendered through the chopper)
@@ -71,9 +71,9 @@ class GridPrimitive : public ListItem<GridPrimitive>
 	// Create axes
 	void createAxes();
 	// Return axis line primitive specified
-	Primitive &axisLinePrimitive(int axis);
+	Primitive& axisLinePrimitive(int axis);
 	// Return axis text primitive list specified
-	List<TextPrimitive3D> &axisTextPrimitives(int axis);
+	List<TextPrimitive>& axisTextPrimitives(int axis);
 };
 
 #endif

@@ -22,7 +22,7 @@
 #include "parser/eigenvector.h"
 #include "parser/stepnode.h"
 #include "base/eigenvector.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "base/elements.h"
 #include <stdio.h>
 #include <stdlib.h>

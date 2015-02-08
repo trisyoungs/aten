@@ -33,6 +33,46 @@
 
 #define MAXRECENTFILES 10
 
+// Forward Declarations 1 - Main Form and Windows
+class AtenAbout;
+class AtenPrefs;
+class AtenForcefieldEditor;
+class AtenProgress;
+
+// Forward Declarations 2 - Dialogs
+class AtenLoadModel;
+class AtenSelectFilter;
+class AtenSelectPattern;
+class AtenSelectElement;
+class AtenSelectVariable;
+class AtenViewBasis;
+class AtenViewEigenvector;
+class AtenZMatrix;
+
+// Forward Declarations 3 - Dock Widgets and Wizards
+class AtomListWidget;
+class BuildWidget;
+class CellDefinitionWidget;
+class CellTransformWidget;
+class CommandWidget;
+class DisorderWizard;
+class ForcefieldsWidget;
+class FragmentsWidget;
+class GeometryWidget;
+class GlyphsWidget;
+class GridsWidget;
+class MDWidget;
+class MessagesWidget;
+class ModelListWidget;
+class PoresWidget;
+class PositionWidget;
+class ScriptMovieWidget;
+class SelectWidget;
+class ToolBoxWidget;
+class TrajectoryWidget;
+class TransformWidget;
+class VibrationsWidget;
+
 // Forward Declarations
 class QLabel;
 class QProgressBar;
@@ -44,53 +84,86 @@ class QButtonGroup;
 class QStringListModel;
 class Forest;
 class Tree;
+class Aten;
 
-class AtenForm : public QMainWindow
+class AtenWindow : public QMainWindow
 {
 	// All Qt declarations must include this macro
 	Q_OBJECT
 
-
-	/*
-	// Window Functions
-	*/
 	public:
 	// Constructor / Destructor
-	AtenForm(QMainWindow *parent = 0);
-	~AtenForm();
+	AtenWindow(Aten& aten);
+	~AtenWindow();
 	// Main form declaration
-	Ui::MainWindow ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
+	Ui::AtenWindow ui;
+
+
+	/*
+	 * Aten Reference
+	 */
+	private:
+	// Aten reference
+	Aten& aten_;
+
+	public:
+	// Return reference to Aten
+	Aten& aten();
+
+
+	/*
+	 * Window Functions
+	 */
+	public:
 	// Create filter combos on file dialogs
-	void createDialogFilters();
+	void createDialogFilters(); // ATEN2???
+	// Finalise GUI
+	void finaliseUi();
 	// Set controls to reflect program variables
 	void setControls();
+
 	protected:
 	void closeEvent(QCloseEvent *event);
 
 
 	/*
-	// Refresh Functions
-	*/
+	 * Methods
+	 */
+	public:
+	// Initialise GUI file filters array
+	void initFilters();
+	// Add a message to the main window's message output box
+	void printMessage(const char*);
+	// Save before close
+	bool saveBeforeClose();
+	// Return the PID of Aten
+	int pid();
+	// Process application messages
+	void processMessages();
+	// Set interactivity (to full or zero), except for main view camera changes
+	void setInteractive(bool interactive);
+
+
+	/*
+	 * Refresh Functions
+	 */
 	private:
 	// Refresh window title
 	void updateWindowTitle();
 
 	public:
 	// Refresh main window to reflect model change
-	void update();
+	void updateMainWindow();
 	// Update trajectory control widgets
 	void updateTrajectoryMenu();
-	// Cancel any current mode and return to select
-	void cancelCurrentMode();
 
 	
 	/*
-	// File Menu / Actions
-	*/
+	 * File Menu / Actions
+	 */
 	public:
 	bool runSaveModelDialog();
+
 	private slots:
 	void on_actionFileNew_triggered(bool checked);
 	void on_actionFileOpen_triggered(bool checked);
@@ -104,8 +177,8 @@ class AtenForm : public QMainWindow
 
 	
 	/*
-	// Edit Menu / Actions
-	*/
+	 * Edit Menu / Actions
+	 */
 	private slots:
 	void on_actionEditUndo_triggered(bool checked);
 	void on_actionEditRedo_triggered(bool checked);
@@ -122,12 +195,13 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// View Menu / Actions
-	*/
+	 * View Menu / Actions
+	 */
 	public:
 	void setCartesianView(double x, double y, double z);
 	void setCellView(double x, double y, double z);
 	void setActiveSchemeAction(Prefs::ColouringScheme cs);
+
 	private slots:
 	void on_actionViewReset_triggered(bool checked);
 	void on_actionViewZoomIn_triggered(bool checked);
@@ -155,16 +229,20 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Selection Menu / Actions (doubles as Atom Context Menu)
-	*/
+	 * Selection Menu / Actions (doubles as Atom Context Menu)
+	 */
 	public:
 	void activateGlyphActions(int n);
+
 	private:
+	// Atom under mouse when context menu was called
+	Atom* contextAtom_;
 	void setAtomStyle(Atom::DrawStyle ds);
 	void setAtomLabel(Atom::AtomLabel al);
 	void removeAtomLabels(bool all);
 	void setAtomHidden(bool hidden);
 	QAction *createGlyphActions[Glyph::nGlyphTypes];
+
 	private slots:
 	void on_actionAtomStyleStick_triggered(bool checked);
 	void on_actionAtomStyleTube_triggered(bool checked);
@@ -197,8 +275,8 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Model Menu
-	*/
+	 * Model Menu
+	 */
 	private slots:
 	void on_actionModelRename_triggered(bool checked);
 	void on_actionModelFoldAtoms_triggered(bool checked);
@@ -210,8 +288,8 @@ class AtenForm : public QMainWindow
 
 	
 	/*
-	// Trajectory Menu
-	*/
+	 * Trajectory Menu
+	 */
 	private slots:
 	void on_actionTrajectoryOpen_triggered(bool checked);
 	void on_actionTrajectoryRemove_triggered(bool checked);
@@ -227,8 +305,8 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Expression Menu
-	*/
+	 * Expression Menu
+	 */
 	private slots:
 	void on_actionOpenForcefield_triggered(bool checked);
 	void on_actionOpenExpression_triggered(bool checked);
@@ -243,8 +321,8 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Settings Menu / Actions
-	*/
+	 * Settings Menu / Actions
+	 */
 	private slots:
 	void on_actionPreferences_triggered(bool checked);
 	void on_actionReloadFilters_triggered(bool checked);
@@ -254,16 +332,16 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Help Menu / Actions
-	*/
+	 * Help Menu / Actions
+	 */
 	private slots:
 	void on_actionAboutAten_triggered(bool checked);
 	void on_actionAboutQt_triggered(bool checked);
 
 	
 	/*
-	// Main Toolbar (other actions not already account for by menus)
-	*/
+	 * Main Toolbar (other actions not already account for by menus)
+	 */
 	private slots:
 	void on_actionStyleStick_triggered(bool checked);
 	void on_actionStyleTube_triggered(bool checked);
@@ -273,13 +351,14 @@ class AtenForm : public QMainWindow
 	void on_actionSelectAtoms_triggered(bool checked);
 	void on_actionSelectMolecules_triggered(bool checked);
 	void on_actionSelectElement_triggered(bool checked);
+
 	public:
 	void setActiveStyleAction(Atom::DrawStyle ds);
 
 
 	/*
-	// Mouse Toolbar Actions
-	*/
+	 * Mouse Toolbar Actions
+	 */
 	private slots:
 	void on_actionMouseInteract_triggered(bool checked);
 	void on_actionMouseRotate_triggered(bool checked);
@@ -287,8 +366,8 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Local Widgets and Routines
-	*/
+	 * Local Widgets and Routines
+	 */
 	private:
 	// List of manually-created QActionGroups
 	Reflist<QActionGroup,int> actionGroups_;
@@ -300,6 +379,10 @@ class AtenForm : public QMainWindow
 	QButtonGroup uaButtons_;
 	// Text labels for model information and UI messages in status bar
 	QLabel *infoLabel1_, *infoLabel2_, *messageLabel_;
+	// Filter set from save model dialog
+	Tree *saveModelFilter_;
+	// Filename set from save model dialog
+	Dnchar saveModelFilename_;
 
 	private slots:
 	// Change current user action
@@ -314,17 +397,21 @@ class AtenForm : public QMainWindow
 	void setActiveUserAction(UserAction::Action ua);
 	// Set message label text
 	void setMessageLabel(const char *s);
-	// String lists to hold file dialog filter definitions
-	QString loadModelFilters, saveModelFilters, loadTrajectoryFilters, saveTrajectoryFilters, loadExpressionFilters, saveExpressionFilters, saveBitmapFilters, saveVectorFilters, loadScriptFilters, loadGridFilters, saveGridFilters;
-	// Filter set from save model dialog
-	Tree *saveModelFilter;
-	// Filename set from save model dialog
-	Dnchar saveModelFilename;
 
 
 	/*
-	// Settings
-	*/
+	 * Context Menu
+	 */
+	public:
+	// Update context menu
+	void updateContextMenu();
+	// Call the atompopup menu
+	void callContextMenu(Atom*, int, int);
+
+
+	/*
+	 * Settings
+	 */
 	private:
 	// Settings structure
 	QSettings settings_;
@@ -335,11 +422,12 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Recent files
-	*/
+	 * Recent files
+	 */
 	private slots:
 	// Load recent file
 	void loadRecent();
+
 	private:
 	// Pointers to recent file actions
 	QAction *actionRecentFile[MAXRECENTFILES];
@@ -347,6 +435,132 @@ class AtenForm : public QMainWindow
 	public:
 	// Add file to top of recent list
 	void addRecent(const char*);
+
+
+	/*
+	 * Dock Widgets
+	 */
+	public:
+	// Update Targets
+	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, ModelsTarget = 32, CanvasTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, AllTarget = 4095 };
+
+	private:
+	// List of dock widgets
+	QList<QDockWidget*> dockWidgets_;
+	
+	public:
+	// Atom list dock widget
+	AtomListWidget *atomListWidget;
+	// Build dock widget
+	BuildWidget *buildWidget;
+	// Cell definition dock widget
+	CellDefinitionWidget *cellDefinitionWidget;
+	// Cell transform dock widget
+	CellTransformWidget *cellTransformWidget;
+	// Command dock widget
+	CommandWidget *commandWidget;
+	// Disorder wizard
+	DisorderWizard *disorderWizard;
+	// Forcefields dock widget
+	ForcefieldsWidget *forcefieldsWidget;
+	// Fragment Library dock widget
+	FragmentsWidget *fragmentsWidget;
+	// Geometry dock widget
+	GeometryWidget *geometryWidget;
+	// Glyphs dock widget
+	GlyphsWidget *glyphsWidget;
+	// Grids dock widget
+	GridsWidget *gridsWidget;
+	// Messages dock widget
+	MessagesWidget *messagesWidget;
+	// Model List dock widget
+	ModelListWidget *modelListWidget;
+	// Pore builder dock widget
+	PoresWidget *poresWidget;
+	// Atom positioning dock widget
+	PositionWidget *positionWidget;
+	// Scripted movie dock widget
+	ScriptMovieWidget *scriptMovieWidget;
+	// Atom selection dock widget
+	SelectWidget *selectWidget;
+	// Trajectory control dock widget
+	TrajectoryWidget *trajectoryWidget;
+	// Atom transformation dock widget
+	TransformWidget *transformWidget;
+	// Vibrations dock widget
+	VibrationsWidget *vibrationsWidget;
+
+
+	/*
+	 * GUI / Interaction
+	 */
+	private:
+	// Active interaction mode of the main canvas
+	UserAction::Action activeMode_;
+	// Selected interaction mode (from GUI)
+	UserAction::Action selectedMode_;
+	// Whether the mouse has moved between begin_mode() and end_mode() calls
+	bool hasMoved_;
+	// Current drawing depth for certain tools
+	double currentDrawDepth_;
+	// Selected drawing element
+	short int sketchElement_;
+	// Whether to accept editing actions (i.e. anything other than view manipulation)
+	bool editable_;
+	// Number of atoms to pick in PickAtomsAction
+	int nAtomsToPick_;
+	// User action before picking mode was entered
+	UserAction::Action actionBeforePick_;
+	// List of picked atoms
+	Reflist<Atom,int> pickedAtoms_;
+	// Pointer to callback function when PickAtomsAction exits
+	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
+	// Atom that was clicked at the start of a mouse press event
+	Atom* atomClicked_;
+	// Whether we are selecting atoms and placing them in the subsel list	
+	bool pickEnabled_;
+	// Reflist of selected atoms and their positions so manipulations may be un-done
+	Reflist< Atom,Vec3<double> > oldPositions_;
+
+	private:
+	// Begin an action on the model (called from MouseButtondown)
+	void beginMode(Prefs::MouseButton button);
+	// End an action on the model (called from MouseButtonup)
+	void endMode(Prefs::MouseButton button);
+	
+	public:
+	// Refreshes specified (or all) dock widgets
+	void updateWidgets(int targets = 0);
+	// Refresh main viewer
+	void postRedisplay();
+	// Set the active mode to the current user mode
+	void useSelectedMode();
+	// Sets the currently selected interact mode
+	void setSelectedMode(UserAction::Action ua, int atomsToPick = -1, void (*callback)(Reflist<Atom,int>*) = NULL);
+	// Cancel any current mode and return to select
+	void cancelCurrentMode();
+	// Return the currently selected mode
+	UserAction::Action selectedMode() const;
+	// Return the currently active mode
+	UserAction::Action activeMode() const;
+	// Set current drawing element
+	void setSketchElement(short int el);
+	// Return current drawing element
+	short int sketchElement() const;
+	// Current drawing depth for certain tools
+	double currentDrawDepth();
+	// Set whether to accept editing actions (i.e. anything other than view manipulation)
+	void setEditable(bool b);
+	// Return whether to accept editing actions (i.e. anything other than view manipulation)
+	bool editable();
+	// Returns the clicked atom within a mouse click event
+	Atom* atomClicked();
+	// Clears the subsel of atoms
+	void clearPicked();
+	// End manual picking
+	void endManualPick(bool resetaction);
+	// Return start of picked atom list
+	Refitem<Atom,int>* pickedAtoms();
 };
 
 #endif

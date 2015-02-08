@@ -22,7 +22,6 @@
 #ifndef ATEN_SELECTFILTERDIALOG_H
 #define ATEN_SELECTFILTERDIALOG_H
 
-#include "gui/gui.h"
 #include "gui/ui_selectfilter.h"
 
 // Forward Declarations
@@ -73,7 +72,7 @@ class AtenSelectFilter : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenSelectFilter(QWidget *parent = 0);
+	AtenSelectFilter(QWidget* parent);
 	// Main form declaration
 	Ui::SelectFilterDialog ui;
 };

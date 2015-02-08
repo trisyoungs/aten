@@ -24,6 +24,9 @@
 
 #include "gui/ui_messages.h"
 
+// Forward Declarations
+class AtenWindow;
+
 // Messages window
 class MessagesWidget : public QDockWidget
 {
@@ -44,9 +47,13 @@ class MessagesWidget : public QDockWidget
 	/*
 	// Widgets
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor
-	MessagesWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	MessagesWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::MessagesWidget ui;
 	// Set controls to reflect program variables

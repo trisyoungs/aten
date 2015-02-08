@@ -20,7 +20,7 @@
 */
 
 #include "gui/useractions.h"
-#include "base/constants.h"
+#include "math/constants.h"
 
 // User action texts (name, nomod, shift, ctrl, alt)
 UserAction UserActions[] = {

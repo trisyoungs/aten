@@ -240,7 +240,7 @@ bool Command::function_SaveMovie(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		obj.m->seekTrajectoryFrame(n, TRUE);
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
-// 		gui.mainCanvas()->postRedisplay();
+// 		parent_.postRedisplay();
 
 		pixmap = engine().renderSceneImage(RenderEngine::HighQuality, width, height);
 		pixmap.save(basename.get(), "png", -1);
@@ -312,7 +312,7 @@ bool Command::function_SaveVibrationMovie(CommandNode *c, Bundle &obj, ReturnVal
 		obj.rs()->setVibrationFrameIndex(n);
 		
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
-// 		gui.mainCanvas()->postRedisplay();
+// 		parent_.postRedisplay();
 
 		pixmap = engine().renderSceneImage(RenderEngine::HighQuality, width, height);
 		pixmap.save(basename.get(), "png", -1);

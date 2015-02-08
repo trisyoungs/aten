@@ -27,15 +27,13 @@
 #include "gui/geometry.h"
 #include "gui/position.h"
 #include "gui/transform.h"
-#include "gui/gui.h"
-#include "gui/toolbox.h"
 #include "gui/tcanvas.uih"
 #include "gui/grids.h"
 
 // Finalise GUI
-void AtenForm::finaliseUi()
+void AtenWindow::finaliseUi()
 {
-	msg.enter("AtenForm::finaliseUi");
+	msg.enter("AtenWindow::finaliseUi");
 	int n;
 
 	// Set the title of the main window to reflect the version
@@ -96,15 +94,6 @@ void AtenForm::finaliseUi()
 	group->addAction(ui.actionTrajectoryModel);
 	group->addAction(ui.actionTrajectoryFrames);
 
-	// Add the previously-created QGLWidget to the main interface, and set up calls
-	QVBoxLayout *vbox = new QVBoxLayout();
-	vbox->setMargin(0);
-	gui.mainCanvas()->setParent(this);
-	gui.mainCanvas()->setMouseTracking(TRUE);
-	gui.mainCanvas()->setFocusPolicy(Qt::StrongFocus);
-	vbox->addWidget( (QWidget*) gui.mainCanvas() );
-	ui.ViewFrame->setLayout(vbox);
-
 	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
 	{
@@ -133,33 +122,33 @@ void AtenForm::finaliseUi()
 	uaDummyButton_->setVisible(FALSE);
 	uaButtons_.addButton(uaDummyButton_);
 	// -- From Build Dock Widget
-	uaButtons_.addButton(gui.buildWidget->ui.DrawAtomButton, UserAction::DrawAtomAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawChainButton, UserAction::DrawChainAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawFragmentButton, UserAction::DrawFragmentAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawDeleteAtomButton, UserAction::DrawDeleteAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawTransmuteButton, UserAction::DrawTransmuteAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawAddHButton, UserAction::DrawAddHydrogenAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawGrowButton, UserAction::DrawGrowAtomAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawSingleBondButton, UserAction::DrawBondSingleAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawDoubleBondButton, UserAction::DrawBondDoubleAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawTripleBondButton, UserAction::DrawBondTripleAction);
-	uaButtons_.addButton(gui.buildWidget->ui.DrawDeleteBondButton, UserAction::DrawDeleteBondAction);
+	uaButtons_.addButton(buildWidget->ui.DrawAtomButton, UserAction::DrawAtomAction);
+	uaButtons_.addButton(buildWidget->ui.DrawChainButton, UserAction::DrawChainAction);
+	uaButtons_.addButton(buildWidget->ui.DrawFragmentButton, UserAction::DrawFragmentAction);
+	uaButtons_.addButton(buildWidget->ui.DrawDeleteAtomButton, UserAction::DrawDeleteAction);
+	uaButtons_.addButton(buildWidget->ui.DrawTransmuteButton, UserAction::DrawTransmuteAction);
+	uaButtons_.addButton(buildWidget->ui.DrawAddHButton, UserAction::DrawAddHydrogenAction);
+	uaButtons_.addButton(buildWidget->ui.DrawGrowButton, UserAction::DrawGrowAtomAction);
+	uaButtons_.addButton(buildWidget->ui.DrawSingleBondButton, UserAction::DrawBondSingleAction);
+	uaButtons_.addButton(buildWidget->ui.DrawDoubleBondButton, UserAction::DrawBondDoubleAction);
+	uaButtons_.addButton(buildWidget->ui.DrawTripleBondButton, UserAction::DrawBondTripleAction);
+	uaButtons_.addButton(buildWidget->ui.DrawDeleteBondButton, UserAction::DrawDeleteBondAction);
 	// -- From Geometry Dock Widget
-	uaButtons_.addButton(gui.geometryWidget->ui.MeasureDistanceButton, UserAction::MeasureDistanceAction);
-	uaButtons_.addButton(gui.geometryWidget->ui.MeasureAngleButton, UserAction::MeasureAngleAction);
-	uaButtons_.addButton(gui.geometryWidget->ui.MeasureTorsionButton, UserAction::MeasureTorsionAction);
+	uaButtons_.addButton(geometryWidget->ui.MeasureDistanceButton, UserAction::MeasureDistanceAction);
+	uaButtons_.addButton(geometryWidget->ui.MeasureAngleButton, UserAction::MeasureAngleAction);
+	uaButtons_.addButton(geometryWidget->ui.MeasureTorsionButton, UserAction::MeasureTorsionAction);
 	// -- From Position Dock Widget
-	uaButtons_.addButton(gui.positionWidget->ui.ShiftPickVectorButton, UserAction::ShiftPickVectorAction);
+	uaButtons_.addButton(positionWidget->ui.ShiftPickVectorButton, UserAction::ShiftPickVectorAction);
 	// -- From Transform Dock Widget
-	uaButtons_.addButton(gui.transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
-	uaButtons_.addButton(gui.transformWidget->ui.TransformPickBButton, UserAction::TransformPickBAction);
-	uaButtons_.addButton(gui.transformWidget->ui.TransformPickCButton, UserAction::TransformPickCAction);
-	uaButtons_.addButton(gui.transformWidget->ui.ConvertSourcePickAButton, UserAction::ConvertSourcePickAAction);
-	uaButtons_.addButton(gui.transformWidget->ui.ConvertSourcePickBButton, UserAction::ConvertSourcePickBAction);
-	uaButtons_.addButton(gui.transformWidget->ui.ConvertSourcePickCButton, UserAction::ConvertSourcePickCAction);
-	uaButtons_.addButton(gui.transformWidget->ui.ConvertTargetPickAButton, UserAction::ConvertTargetPickAAction);
-	uaButtons_.addButton(gui.transformWidget->ui.ConvertTargetPickBButton, UserAction::ConvertTargetPickBAction);
-	uaButtons_.addButton(gui.transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
+	uaButtons_.addButton(transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
+	uaButtons_.addButton(transformWidget->ui.TransformPickBButton, UserAction::TransformPickBAction);
+	uaButtons_.addButton(transformWidget->ui.TransformPickCButton, UserAction::TransformPickCAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickAButton, UserAction::ConvertSourcePickAAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickBButton, UserAction::ConvertSourcePickBAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickCButton, UserAction::ConvertSourcePickCAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickAButton, UserAction::ConvertTargetPickAAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickBButton, UserAction::ConvertTargetPickBAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
 	
 	// Connect buttonPressed signal of button group to our handler
 	QObject::connect(&uaButtons_, SIGNAL(buttonClicked(int)), this, SLOT(uaButtonClicked(int)));
@@ -209,93 +198,13 @@ void AtenForm::finaliseUi()
 	// Create filter lists for file dialogs
 	createDialogFilters();
 
-	msg.exit("AtenForm::finaliseUi");
-}
-
-// Set filter combos on file dialogs
-void AtenForm::createDialogFilters()
-{
-	msg.enter("AtenForm::createDialogFilters");
-	Refitem<Tree,int> *ri;
-	int n;
-
-	// Model Import
-	loadModelFilters.clear();
-	loadModelFilters += "All files (*)";
-	for (ri = aten.filters(FilterData::ModelImport); ri != NULL; ri = ri->next)
-	{
-		loadModelFilters += ";;";
-		loadModelFilters += ri->item->filter.description();
-	}
-	ui.actionFileOpen->setEnabled(!loadModelFilters.isEmpty());
-	ui.RecentMenu->setEnabled(!loadModelFilters.isEmpty());
-
-	// Trajectory Import
-	loadTrajectoryFilters.clear();
-	loadTrajectoryFilters += "All files (*)";
-	for (ri= aten.filters(FilterData::TrajectoryImport); ri != NULL; ri = ri->next)
-	{
-		loadTrajectoryFilters += ";;";
-		loadTrajectoryFilters += ri->item->filter.description();
-	}
-	ui.actionTrajectoryOpen->setEnabled(!loadTrajectoryFilters.isEmpty());
-
-	// Model Export
-	saveModelFilters.clear();
-	for (ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
-	{
-		if (!saveModelFilters.isEmpty()) saveModelFilters += ";;";
-		saveModelFilters += ri->item->filter.description();
-	}
-	// Check for empty filters list
-	ui.actionFileSave->setEnabled(!saveModelFilters.isEmpty());
-	ui.actionFileSaveAs->setEnabled(!saveModelFilters.isEmpty());
-
-	// Save image
-	saveBitmapFilters.clear();
-	for (n=0; n < RenderEngine::nBitmapFormats; n++)
-	{
-		if (!saveBitmapFilters.isEmpty()) saveBitmapFilters += ";;";
-		saveBitmapFilters += RenderEngine::bitmapFormatFilter( (RenderEngine::BitmapFormat) n);
-	}
-
-	// Save vector
-// 	saveVectorDialog->filters().clear();
-// 	filters.clear();
-// 	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
-// 	saveVectorDialog->setFilters(filters);
-
-	// Expression Export
-	saveExpressionFilters.clear();
-	for (ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
-	{
-		if (!saveExpressionFilters.isEmpty()) saveExpressionFilters += ";;";
-		saveExpressionFilters += ri->item->filter.description();
-	}
-	// Check for empty filters list
-	ui.actionSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
-
-	// Grid import
-	loadGridFilters.clear();
-	loadGridFilters += "All files (*)";
-	for (ri = aten.filters(FilterData::GridImport); ri != NULL; ri = ri->next)
-	{
-		loadGridFilters += ";;";
-		loadGridFilters += ri->item->filter.description();
-	}
-	gui.gridsWidget->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
-
-	// Create open script dialog
-	loadScriptFilters.clear();
-	loadScriptFilters += "All files (*)";
-
-	msg.exit("AtenForm::createDialogFilters");
+	msg.exit("AtenWindow::finaliseUi");
 }
 
 // Set controls
-void AtenForm::setControls()
+void AtenWindow::setControls()
 {
-	msg.enter("AtenForm::setControls");
+	msg.enter("AtenWindow::setControls");
 	
 	// Set correct Atom::DrawStyle on toolbar
 	setActiveStyleAction(prefs.renderStyle());
@@ -306,6 +215,6 @@ void AtenForm::setControls()
 	// Set correct colour scheme menuitem
 	setActiveSchemeAction(prefs.colourScheme());
 
-	msg.exit("AtenForm::setControls");
+	msg.exit("AtenWindow::setControls");
 }
 

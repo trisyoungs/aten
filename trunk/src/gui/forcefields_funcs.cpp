@@ -30,14 +30,12 @@
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
 #include "gui/mainwindow.h"
-#include "gui/toolbox.h"
-#include "gui/gui.h"
 #include "gui/forcefields.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
 // Constructor
-ForcefieldsWidget::ForcefieldsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+ForcefieldsWidget::ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 
@@ -49,7 +47,7 @@ ForcefieldsWidget::ForcefieldsWidget(QWidget *parent, Qt::WindowFlags flags) : Q
 	QStringList filters;
 	openForcefieldDialog = new QFileDialog(this);
 	openForcefieldDialog->setFileMode(QFileDialog::ExistingFile);
-	openForcefieldDialog->setDirectory(aten.dataDir());
+	openForcefieldDialog->setDirectory(parent_.aten().dataDir());
 	openForcefieldDialog->setWindowTitle("Open Forcefield");
 	filters.clear();
 	filters << "All files (*)";
@@ -60,7 +58,7 @@ ForcefieldsWidget::ForcefieldsWidget(QWidget *parent, Qt::WindowFlags flags) : Q
 	saveForcefieldDialog = new QFileDialog(this);
 	saveForcefieldDialog->setWindowTitle("Save Forcefield");
 	saveForcefieldDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveForcefieldDialog->setDirectory(aten.workDir());
+	saveForcefieldDialog->setDirectory(parent_.aten().workDir());
 	saveForcefieldDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	filters << "All files (*)";
@@ -72,29 +70,21 @@ void ForcefieldsWidget::showWidget()
 {
 	show();
 	refresh();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.ForcefieldsButton->setChecked(TRUE);
 }
 
 void ForcefieldsWidget::refresh()
 {
 	msg.enter("ForcefieldsWidget::refresh");
-	// If the window is not visible, don't do anything
-	if (!gui.forcefieldsWidget->isVisible())
-	{
-		msg.exit("ForcefieldsWidget::refresh");
-		return;
-	}
 	
 	// Update list of forcefields in the combo box
 	refreshing_ = TRUE;
 	QStringList slist;
 	int def = -1, n = 0;
 	slist << "<No Forcefield>";
-	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
+	for (Forcefield *ff = parent_.aten().forcefields(); ff != NULL; ff = ff->next)
 	{
 		n++;
-		if (ff == aten.currentForcefield()) def = n;
+		if (ff == parent_.aten().currentForcefield()) def = n;
 		slist << ff->name();
 	}
 	ui.ForcefieldCombo->clear();
@@ -106,7 +96,7 @@ void ForcefieldsWidget::refresh()
 	else ui.ForcefieldCombo->setCurrentIndex(0);
 	
 	// Is a valid current forcefield selected?
-	bool ffselected = (aten.currentForcefield() != NULL);
+	bool ffselected = (parent_.aten().currentForcefield() != NULL);
 	ui.CloseForcefieldButton->setEnabled(ffselected);
 	ui.EditForcefieldButton->setEnabled(ffselected);
 	ui.AssociateGroup->setEnabled(ffselected);
@@ -123,7 +113,7 @@ void ForcefieldsWidget::refreshTypes()
 	ui.FFTypeTable->clear();
 	QTableWidgetItem *item;
 	int count = 0;
-	Forcefield *ff = aten.currentForcefield();
+	Forcefield *ff = parent_.aten().currentForcefield();
 	if (ff == NULL) return;
 	// Reset header labels
 	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
@@ -148,11 +138,11 @@ void ForcefieldsWidget::refreshTypes()
 // Load forcefield (public function)
 void ForcefieldsWidget::loadForcefield()
 {
-	static QDir currentDirectory_(aten.dataDir());
+	static QDir currentDirectory_(parent_.aten().dataDir());
 	QString filename = QFileDialog::getOpenFileName(this, "Select Forcefield", currentDirectory_.path());
 	if (!filename.isEmpty())
 	{
-		aten.loadForcefield(qPrintable(filename));
+		parent_.aten().loadForcefield(qPrintable(filename));
 		refresh();
 		
 		// Store path for next use
@@ -167,15 +157,15 @@ void ForcefieldsWidget::loadForcefield()
 void ForcefieldsWidget::on_CurrentEnergyButton_clicked(bool checked)
 {
 	bool result;
-	if (aten.current.rs() == aten.current.m) result = CommandNode::run(Command::ModelEnergy, "");
+	if (parent_.aten().current.rs() == parent_.aten().current.m) result = CommandNode::run(Command::ModelEnergy, "");
 	else result = CommandNode::run(Command::FrameEnergy, "");
 	// Print energy
-	if (result) aten.currentModel()->renderSourceModel()->energy.print();
+	if (result) parent_.aten().currentModel()->renderSourceModel()->energy.print();
 }
 
 void ForcefieldsWidget::on_CurrentForcesButton_clicked(bool checked)
 {
-	if (aten.current.rs() == aten.current.m) CommandNode::run(Command::ModelForces, "");
+	if (parent_.aten().current.rs() == parent_.aten().current.m) CommandNode::run(Command::ModelForces, "");
 	else CommandNode::run(Command::FrameForces, "");
 }
 
@@ -206,7 +196,7 @@ void ForcefieldsWidget::on_ForcefieldMinimiseButton_clicked(bool checked)
 			break;
 	}
 	// Update the view
-	gui.update(GuiQt::AtomsTarget+GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::CanvasTarget);
 }
 
 void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
@@ -215,7 +205,7 @@ void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
 	Dnchar options(-1, "BFGS %s %s %s CHARGE=%i", qPrintable(ui.MopacHFCombo->currentText()), qPrintable(ui.MopacHamiltonianCombo->currentText()), 	qPrintable(ui.MopacSpinCombo->currentText()), ui.MopacChargeSpin->value());
 	if (ui.MopacMozymeCheck->isChecked()) options.strcat(" MOZYME");
 	CommandNode::run(Command::MopacMinimise, "c", options.get());
-	gui.update(GuiQt::AtomsTarget+GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::CanvasTarget);
 }
 			
 /*
@@ -226,8 +216,8 @@ void ForcefieldsWidget::on_ForcefieldCombo_currentIndexChanged(int index)
 {
 	if (refreshing_) return;
 	// Set the new default forcefield in the master and refresh the forcefields page
-	if (index == 0) aten.setCurrentForcefield( (Forcefield*) NULL);
-	else aten.setCurrentForcefield(index-1);
+	if (index == 0) parent_.aten().setCurrentForcefield( (Forcefield*) NULL);
+	else parent_.aten().setCurrentForcefield(index-1);
 	refreshTypes();
 }
 
@@ -241,7 +231,7 @@ void ForcefieldsWidget::on_OpenForcefieldButton_clicked(bool checked)
 void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 {
 	// Get current forcefield
-	Forcefield *ff = aten.currentForcefield();
+	Forcefield *ff = parent_.aten().currentForcefield();
 	if (ff == NULL) return;
 
 	// Does forcefield have a valid filename? If not, call the other routine....
@@ -259,10 +249,10 @@ void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
 {
 	// Get current forcefield
-	Forcefield *ff = aten.currentForcefield();
+	Forcefield *ff = parent_.aten().currentForcefield();
 	if (ff == NULL) return;
 
-	static QDir currentDirectory_(aten.dataDir());
+	static QDir currentDirectory_(parent_.aten().dataDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Forcefield", currentDirectory_.path());
 	if (filename.isEmpty()) return;
 	ff->setFilename(qPrintable(filename));
@@ -275,52 +265,54 @@ void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
 // Remove selected forcefield in list
 void ForcefieldsWidget::on_CloseForcefieldButton_clicked(bool checked)
 {
-	aten.removeForcefield(aten.currentForcefield());
+	parent_.aten().removeForcefield(parent_.aten().currentForcefield());
 	refresh();
 }
 
 // Call forcefield editor
 void ForcefieldsWidget::on_EditForcefieldButton_clicked(bool checked)
 {
-	gui.forcefieldEditorDialog->populate(aten.currentForcefield());
-	gui.forcefieldEditorDialog->show();
+	AtenForcefieldEditor ffEditor(this);
+	ffEditor.populate(parent_.aten().currentForcefield());
+	ffEditor.show();
 }
 
 // Assign current forcefield to model
 void ForcefieldsWidget::on_AssignFFToCurrentButton_clicked(bool checked)
 {
-	aten.currentModelOrFrame()->setForcefield(aten.currentForcefield());
+	parent_.aten().currentModelOrFrame()->setForcefield(parent_.aten().currentForcefield());
 }
 
 // Assign current forcefield to all models
 void ForcefieldsWidget::on_AssignFFToAllButton_clicked(bool checked)
 {
-	for (Model *m = aten.models(); m != NULL; m = m->next) m->setForcefield(aten.currentForcefield());
+	for (Model *m = parent_.aten().models(); m != NULL; m = m->next) m->setForcefield(parent_.aten().currentForcefield());
 }
 
 // Assign current forcefield to pattern
 void ForcefieldsWidget::on_AssignFFToPatternButton_clicked(bool checked)
 {
-	Pattern *p = gui.selectPatternDialog->selectPattern(aten.currentModelOrFrame());
-	if (p != NULL) p->setForcefield(aten.currentForcefield());
+	AtenSelectPattern patternSelect(this);
+	Pattern* p = patternSelect.selectPattern(parent_.aten().currentModelOrFrame());
+	if (p != NULL) p->setForcefield(parent_.aten().currentForcefield());
 }
 
 // Perform automatic atom typing
 void ForcefieldsWidget::on_TypeModelButton_clicked(bool checked)
 {
-	if (aten.currentModelOrFrame()->typeAll()) gui.update(GuiQt::CanvasTarget);
+	if (parent_.aten().currentModelOrFrame()->typeAll()) parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Remove typing from model
 void ForcefieldsWidget::on_UntypeModelButton_clicked(bool checked)
 {
-	aten.currentModelOrFrame()->removeTyping();
-	gui.update(GuiQt::CanvasTarget);
+	parent_.aten().currentModelOrFrame()->removeTyping();
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
 {
-	aten.currentModelOrFrame()->createExpression(Choice::Default, Choice::Default, ui.AssignFFChargesCheck->isChecked() ? Choice::Yes : Choice::No );
+	parent_.aten().currentModelOrFrame()->createExpression(Choice::Default, Choice::Default, ui.AssignFFChargesCheck->isChecked() ? Choice::Yes : Choice::No );
 }
 
 /*
@@ -331,8 +323,8 @@ void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
 void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 {
 	// Check selected forcefield against that assigned to the model
-	Model *m = aten.currentModel();
-	Forcefield *ff = aten.currentForcefield();
+	Model *m = parent_.aten().currentModel();
+	Forcefield *ff = parent_.aten().currentForcefield();
 	if ((m == NULL) || (ff == NULL)) return;
 	if (m->forcefield() != ff)
 	{
@@ -347,30 +339,30 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 	if (ffa != NULL)
 	{
 		m->selectionSetType(ffa, TRUE);
-		msg.print("Manually set types of %i atoms.\n", aten.currentModel()->nSelected());
+		msg.print("Manually set types of %i atoms.\n", parent_.aten().currentModel()->nSelected());
 	}
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Clear type definitions from the selected atoms
 void ForcefieldsWidget::on_ManualTypeClearButton_clicked(bool checked)
 {
-	aten.currentModel()->selectionSetType(NULL, FALSE);
-	msg.print("Cleared types of %i atoms.\n", aten.currentModel()->nSelected());
-	gui.update(GuiQt::CanvasTarget);
+	parent_.aten().currentModel()->selectionSetType(NULL, FALSE);
+	msg.print("Cleared types of %i atoms.\n", parent_.aten().currentModel()->nSelected());
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Test selected atom type on current atom selection
 void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 {
-	Forcefield *ff = aten.currentForcefield();
+	Forcefield *ff = parent_.aten().currentForcefield();
 	int row = ui.FFTypeTable->currentRow();
 	if (row == -1) return;
 	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
 	ForcefieldAtom *ffa = ff->findType(atoi(qPrintable(item->text())));
 	if (ffa != NULL)
 	{
-		Model *m = aten.currentModel();
+		Model *m = parent_.aten().currentModel();
 		Neta *at = ffa->neta();
 		if (m->createPatterns())
 		{
@@ -410,8 +402,5 @@ void ForcefieldsWidget::on_ManualTypeEdit_returnPressed()
 
 void ForcefieldsWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.ForcefieldsButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

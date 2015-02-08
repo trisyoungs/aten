@@ -23,12 +23,12 @@
 #define ATEN_LOADMODELWINDOW_H
 
 #include "base/dnchar.h"
-#include "gui/gui.h"
 #include "gui/ui_loadmodel.h"
 
 // Forward Declarations
 class Forcefield;
 class Tree;
+class AtenWindow;
 
 // Model Load Dialog
 class AtenLoadModel : public QDialog
@@ -36,9 +36,24 @@ class AtenLoadModel : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
+	public:
+	// Constructor
+	AtenLoadModel(AtenWindow& parent);
+	// Main form declaration
+	Ui::LoadModelDialog ui;
+
+
 	/*
-	// Widget Functions
-	*/
+	 * Reference to AtenWindow
+	 */
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	 * Widget Functions
+	 */
 	private slots:
 	void on_BrowseButton_clicked(bool checked);
 	void on_FilenameEdit_editingFinished();
@@ -52,9 +67,14 @@ class AtenLoadModel : public QDialog
 	void on_KeepNamesCheck_clicked(bool checked);
 	void on_KeepTypesCheck_clicked(bool checked);
 
+	public:
+	// Update controls and show dialog
+	void updateAndShow();
+
+
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Whether the window is currently refreshing its controls
 	bool refreshing_;
@@ -66,19 +86,6 @@ class AtenLoadModel : public QDialog
 	Tree *selectedFormat();
 	// Return filename
 	const char *selectedFilename();
-
-	/*
-	// Widgets
-	*/
-	public:
-	// Constructor
-	AtenLoadModel(QWidget *parent = 0);
-	// Main form declaration
-	Ui::LoadModelDialog ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

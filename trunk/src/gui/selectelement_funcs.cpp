@@ -24,7 +24,7 @@
 #include "base/sysfunc.h"
 
 // Constructor
-AtenSelectElement::AtenSelectElement(QWidget *parent) : QDialog(parent)
+AtenSelectElement::AtenSelectElement(AtenWindow& parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 

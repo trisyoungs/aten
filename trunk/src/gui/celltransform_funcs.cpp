@@ -22,13 +22,11 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
-#include "gui/toolbox.h"
-#include "gui/gui.h"
 #include "gui/celltransform.h"
 #include "parser/commandnode.h"
 
 // Constructor
-CellTransformWidget::CellTransformWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+CellTransformWidget::CellTransformWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 
@@ -40,15 +38,13 @@ CellTransformWidget::CellTransformWidget(QWidget *parent, Qt::WindowFlags flags)
 void CellTransformWidget::showWidget()
 {
 	show();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.CellTransformButton->setChecked(TRUE);
 }
 
 // Refresh window
 void CellTransformWidget::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
 	UnitCell::CellType ct = m->cell()->type();
 	if (refreshing_) return;
@@ -79,7 +75,7 @@ void CellTransformWidget::refresh()
 void CellTransformWidget::on_CellReplicateButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Replicate, "dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void CellTransformWidget::on_CellReplicateFoldCheck_clicked(bool checked)
@@ -94,38 +90,38 @@ void CellTransformWidget::on_CellReplicateTrimCheck_clicked(bool checked)
 
 void CellTransformWidget::on_CellReplicateNegXSpin_valueChanged(double d)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicateNegYSpin_valueChanged(double d)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicateNegZSpin_valueChanged(double d)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosXSpin_valueChanged(double d)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosYSpin_valueChanged(double d)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_CellReplicatePosZSpin_valueChanged(double d)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 /*
@@ -136,7 +132,7 @@ void CellTransformWidget::on_CellScaleButton_clicked(bool checked)
 {
 	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::ScaleMolecules, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
 	else CommandNode::run(Command::Scale, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::CellTarget);
 }
 
 /*
@@ -179,49 +175,48 @@ void CellTransformWidget::on_CellRotateZAnticlockwise_clicked(bool checked)
 void CellTransformWidget::on_MillerCutButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void CellTransformWidget::on_MillerSelectButton_clicked(bool checked)
 {
 	CommandNode::run(Command::SelectMiller, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void CellTransformWidget::on_MillerHSpin_valueChanged(int value)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_MillerKSpin_valueChanged(int value)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_MillerLSpin_valueChanged(int value)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_MillerInRadio_clicked(bool checked)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::on_MillerOutRadio_clicked(bool checked)
 {
-	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.mainCanvas()->postRedisplay();
+	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Camera);
+	parent_.postRedisplay();
 }
 
 void CellTransformWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.CellTransformButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
+	if (this->isFloating()) parent_.postRedisplay();
 	event->accept();
 }

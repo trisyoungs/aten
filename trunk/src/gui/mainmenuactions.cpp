@@ -25,7 +25,6 @@
 #include "gui/loadmodel.h"
 #include "gui/selectfilter.h"
 #include "gui/trajectory.h"
-#include "gui/toolbox.h"
 #include "gui/prefs.h"
 #include "gui/forcefields.h"
 #include "gui/grids.h"
@@ -37,7 +36,7 @@
 */
 
 // Add new model to workspace
-void AtenForm::on_actionFileNew_triggered(bool checked)
+void AtenWindow::on_actionFileNew_triggered(bool checked)
 {
 	Model *m = aten.addModel();
 	m->enableUndoRedo();
@@ -45,35 +44,36 @@ void AtenForm::on_actionFileNew_triggered(bool checked)
 
 	// Update GUI
 	aten.setCurrentModel(m, TRUE);
-	gui.update(GuiQt::AllTarget);
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 // Open existing file
-void AtenForm::on_actionFileOpen_triggered(bool checked)
+void AtenWindow::on_actionFileOpen_triggered(bool checked)
 {
-	Tree *filter;
-	if (gui.loadModelDialog->exec() == 1)
+	AtenLoadModel loadModelDialog(this);
+	Tree* filter;
+	if (loadModelDialog.exec() == 1)
 	{
-		filter = gui.loadModelDialog->selectedFormat();
+		filter = loadModelDialog.selectedFormat();
 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten.probeFile(gui.loadModelDialog->selectedFilename(), FilterData::ModelImport);
+		if (filter == NULL) filter = aten.probeFile(loadModelDialog.selectedFilename(), FilterData::ModelImport);
 		if (filter != NULL)
 		{
-			if (!filter->executeRead(gui.loadModelDialog->selectedFilename())) return;
-			addRecent(gui.loadModelDialog->selectedFilename());
+			if (!filter->executeRead(loadModelDialog.selectedFilename())) return;
+			addRecent(loadModelDialog.selectedFilename());
 			aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 			aten.currentModelOrFrame()->regenerateIcon();
-			gui.update(GuiQt::AllTarget);
+			updateWidgets(AtenWindow::AllTarget);
 		}
 	}
 }
 
 // Local save function
-bool AtenForm::runSaveModelDialog()
+bool AtenWindow::runSaveModelDialog()
 {
 	saveModelFilename.clear();
 	saveModelFilter = NULL;
-	Tree *filter = NULL;
+	Tree* filter = NULL;
 	static QString selectedFilter(aten.filters(FilterData::ModelExport) == NULL ? NULL : aten.filters(FilterData::ModelExport)->item->filter.name());
 	static QDir currentDirectory_(aten.workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(), saveModelFilters, &selectedFilter);
@@ -133,7 +133,7 @@ bool AtenForm::runSaveModelDialog()
 }
 
 // Save current model under a different name
-void AtenForm::on_actionFileSaveAs_triggered(bool checked)
+void AtenWindow::on_actionFileSaveAs_triggered(bool checked)
 {
 	Model *m;
 	if (runSaveModelDialog())
@@ -141,7 +141,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 		m = aten.currentModelOrFrame();
 		if (m == NULL)
 		{
-			printf("Internal Error: Model pointer is NULL in AtenForm::on_actionFileSaveAs_triggered.\n");
+			printf("Internal Error: Model pointer is NULL in AtenWindow::on_actionFileSaveAs_triggered.\n");
 			return;
 		}
 		m->setFilter(saveModelFilter);
@@ -161,7 +161,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 }
 
 // Save current model
-void AtenForm::on_actionFileSave_triggered(bool checked)
+void AtenWindow::on_actionFileSave_triggered(bool checked)
 {
 	// Check the filter of the current model
 	// If there isn't one, or it can't export, raise the file dialog.
@@ -200,7 +200,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 }
 
 // Modify export options for current model's associated filter
-void AtenForm::on_actionExportOptions_triggered(bool checked)
+void AtenWindow::on_actionExportOptions_triggered(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m->filter() == NULL) msg.print("No filter currently assigned to model '%s', so there are no export options.\n", m->name());
@@ -208,15 +208,15 @@ void AtenForm::on_actionExportOptions_triggered(bool checked)
 }
 
 // Close current model
-void AtenForm::on_actionFileClose_triggered(bool checked)
+void AtenWindow::on_actionFileClose_triggered(bool checked)
 {
 	Model *m = aten.currentModel();
 	aten.closeModel(m);
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 // Save the current view as a bitmap image.
-void AtenForm::on_actionFileSaveImage_triggered(bool checked)
+void AtenWindow::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Get geometry from user - initial setup is to use current canvas geometry
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
@@ -288,14 +288,14 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 }
 
 // Open grid file
-void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
+void AtenWindow::on_actionFileOpenGrid_triggered(bool checked)
 {
 	// Call routine in grids window...
 	gui.gridsWidget->loadGrid();
 }
 
 // Quit program
-void AtenForm::on_actionFileQuit_triggered(bool checked)
+void AtenWindow::on_actionFileQuit_triggered(bool checked)
 {
 	if (!gui.saveBeforeClose()) return;
 	saveSettings();
@@ -306,40 +306,40 @@ void AtenForm::on_actionFileQuit_triggered(bool checked)
 // Edit Actions
 */
 
-void AtenForm::on_actionEditUndo_triggered(bool checked)
+void AtenWindow::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Command::Undo, "");
-	gui.mainCanvas()->postRedisplay();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::CellTarget+GuiQt::GlyphsTarget);
+	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::CellTarget+AtenWindow::GlyphsTarget);
 }
 
-void AtenForm::on_actionEditRedo_triggered(bool checked)
+void AtenWindow::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Command::Redo, "");
-	gui.mainCanvas()->postRedisplay();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::CellTarget+GuiQt::GlyphsTarget);
+	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::CellTarget+AtenWindow::GlyphsTarget);
 }
 
-void AtenForm::on_actionEditCut_triggered(bool checked)
+void AtenWindow::on_actionEditCut_triggered(bool checked)
 {
 	CommandNode::run(Command::Cut, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenForm::on_actionEditCopy_triggered(bool checked)
+void AtenWindow::on_actionEditCopy_triggered(bool checked)
 {
 	CommandNode::run(Command::Copy, "");
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
-void AtenForm::on_actionEditPaste_triggered(bool checked)
+void AtenWindow::on_actionEditPaste_triggered(bool checked)
 {
 	CommandNode::run(Command::Paste, "");
-	gui.mainCanvas()->postRedisplay();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
+void AtenWindow::on_actionEditPasteTranslated_triggered(bool checked)
 {
 	// Static tree containing a single tree with variables and dialog control definitions
 	Tree dialog;
@@ -355,42 +355,42 @@ void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 	{
 		Vec3<double> r = ui.asVec3("newx", "newy", "newz");
 		CommandNode::run(Command::Paste, "ddd", r.x, r.y, r.z);
-		gui.mainCanvas()->postRedisplay();
-		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+		parent_.postRedisplay();
+		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
 
-void AtenForm::on_actionEditDelete_triggered(bool checked)
+void AtenWindow::on_actionEditDelete_triggered(bool checked)
 {
 	CommandNode::run(Command::Delete, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenForm::on_actionSelectionAll_triggered(bool checked)
+void AtenWindow::on_actionSelectionAll_triggered(bool checked)
 {
 	CommandNode::run(Command::SelectAll, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenForm::on_actionSelectionNone_triggered(bool checked)
+void AtenWindow::on_actionSelectionNone_triggered(bool checked)
 {
 	CommandNode::run(Command::SelectNone, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenForm::on_actionSelectionInvert_triggered(bool checked)
+void AtenWindow::on_actionSelectionInvert_triggered(bool checked)
 {
 	CommandNode::run(Command::Invert, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenForm::on_actionSelectionExpand_triggered(bool on)
+void AtenWindow::on_actionSelectionExpand_triggered(bool on)
 {
 	CommandNode::run(Command::Expand, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenForm::on_actionEditQuickCommand_triggered(bool on)
+void AtenWindow::on_actionEditQuickCommand_triggered(bool on)
 {
 	// Raise an edit box to get the user command
 	bool ok;
@@ -407,7 +407,7 @@ void AtenForm::on_actionEditQuickCommand_triggered(bool on)
 			{
 				ReturnValue rv;
 				program.execute(rv);
-				gui.update(GuiQt::AllTarget);
+				parent_.updateWidgets(AtenWindow::AllTarget);
 				break;
 			}
 			else
@@ -426,164 +426,164 @@ void AtenForm::on_actionEditQuickCommand_triggered(bool on)
 */
 
 // Zoom in
-void AtenForm::on_actionViewZoomIn_triggered(bool checked)
+void AtenWindow::on_actionViewZoomIn_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Zoom out
-void AtenForm::on_actionViewZoomOut_triggered(bool checked)
+void AtenWindow::on_actionViewZoomOut_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Reset view
-void AtenForm::on_actionViewReset_triggered(bool checked)
+void AtenWindow::on_actionViewReset_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->resetView();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set perspective view
-void AtenForm::on_actionViewPerspective_triggered(bool checked)
+void AtenWindow::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set orthographic view
-void AtenForm::on_actionViewOrthographic_triggered(bool checked)
+void AtenWindow::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set view along cartesian axis supplied
-void AtenForm::setCartesianView(double x, double y, double z)
+void AtenWindow::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified axis
 	aten.currentModelOrFrame()->viewAlong(x,y,z);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set view along Cell axis supplied
-void AtenForm::setCellView(double x, double y, double z)
+void AtenWindow::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified cell axis
 	aten.currentModelOrFrame()->viewAlongCell(x,y,z);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
-void AtenForm::on_actionViewSetCartesianPosX_triggered(bool checked)
+void AtenWindow::on_actionViewSetCartesianPosX_triggered(bool checked)
 {
 	 setCartesianView(1,0,0);
 }
 
-void AtenForm::on_actionViewSetCartesianPosY_triggered(bool checked)
+void AtenWindow::on_actionViewSetCartesianPosY_triggered(bool checked)
 {
 	 setCartesianView(0,1,0);
 }
 
-void AtenForm::on_actionViewSetCartesianPosZ_triggered(bool checked)
+void AtenWindow::on_actionViewSetCartesianPosZ_triggered(bool checked)
 {
 	 setCartesianView(0,0,1);
 }
 
-void AtenForm::on_actionViewSetCartesianNegX_triggered(bool checked)
+void AtenWindow::on_actionViewSetCartesianNegX_triggered(bool checked)
 {
 	 setCartesianView(-1,0,0);
 }
 
-void AtenForm::on_actionViewSetCartesianNegY_triggered(bool checked)
+void AtenWindow::on_actionViewSetCartesianNegY_triggered(bool checked)
 {
 	 setCartesianView(0,-1,0);
 }
 
-void AtenForm::on_actionViewSetCartesianNegZ_triggered(bool checked)
+void AtenWindow::on_actionViewSetCartesianNegZ_triggered(bool checked)
 {
 	 setCartesianView(0,0,-1);
 }
 
-void AtenForm::on_actionViewSetCellNegX_triggered(bool checked)
+void AtenWindow::on_actionViewSetCellNegX_triggered(bool checked)
 {
 	 setCellView(1,0,0);
 }
 
-void AtenForm::on_actionViewSetCellNegY_triggered(bool checked)
+void AtenWindow::on_actionViewSetCellNegY_triggered(bool checked)
 {
 	 setCellView(0,1,0);
 }
 
-void AtenForm::on_actionViewSetCellNegZ_triggered(bool checked)
+void AtenWindow::on_actionViewSetCellNegZ_triggered(bool checked)
 {
 	 setCellView(0,0,1);
 }
 
-void AtenForm::on_actionViewSetCellPosX_triggered(bool checked)
+void AtenWindow::on_actionViewSetCellPosX_triggered(bool checked)
 {
 	 setCellView(-1,0,0);
 }
 
-void AtenForm::on_actionViewSetCellPosY_triggered(bool checked)
+void AtenWindow::on_actionViewSetCellPosY_triggered(bool checked)
 {
 	 setCellView(0,-1,0);
 }
 
-void AtenForm::on_actionViewSetCellPosZ_triggered(bool checked)
+void AtenWindow::on_actionViewSetCellPosZ_triggered(bool checked)
 {
 	 setCellView(0,0,-1);
 }
 
 // Set current colouring scheme to elemental colours
-void AtenForm::on_actionSchemeElement_triggered(bool checked)
+void AtenWindow::on_actionSchemeElement_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set current colouring scheme to charge
-void AtenForm::on_actionSchemeCharge_triggered(bool checked)
+void AtenWindow::on_actionSchemeCharge_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set current colouring scheme to force
-void AtenForm::on_actionSchemeForce_triggered(bool checked)
+void AtenWindow::on_actionSchemeForce_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set current colouring scheme to velocity
-void AtenForm::on_actionSchemeVelocity_triggered(bool checked)
+void AtenWindow::on_actionSchemeVelocity_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::VelocityScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set current colouring scheme to custom
-void AtenForm::on_actionSchemeCustom_triggered(bool checked)
+void AtenWindow::on_actionSchemeCustom_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::CustomScheme);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Set scheme actions to reflect supplied Prefs::ColouringScheme
-void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
+void AtenWindow::setActiveSchemeAction(Prefs::ColouringScheme cs)
 {
 	if (cs == Prefs::ChargeScheme) ui.actionSchemeCharge->setChecked(TRUE);
 	else if (cs == Prefs::ElementScheme) ui.actionSchemeElement->setChecked(TRUE);
@@ -592,15 +592,15 @@ void AtenForm::setActiveSchemeAction(Prefs::ColouringScheme cs)
 	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
 	prefs.setColourScheme(cs);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Toggle detection and siaply of hydrogen bonds in models
-void AtenForm::on_actionDetectDisplayHBonds_triggered(bool checked)
+void AtenWindow::on_actionDetectDisplayHBonds_triggered(bool checked)
 {
 	prefs.setDrawHydrogenBonds(checked);
 	aten.globalLogChange(Log::Style);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 /*
@@ -608,7 +608,7 @@ void AtenForm::on_actionDetectDisplayHBonds_triggered(bool checked)
 */
 
 // Rename model
-void AtenForm::on_actionModelRename_triggered(bool checked)
+void AtenWindow::on_actionModelRename_triggered(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	bool ok;
@@ -621,21 +621,21 @@ void AtenForm::on_actionModelRename_triggered(bool checked)
 }
 
 // Fold atoms in model
-void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
+void AtenWindow::on_actionModelFoldAtoms_triggered(bool checked)
 {
 	CommandNode::run(Command::Fold, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Fold molecules in model
-void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
+void AtenWindow::on_actionModelFoldMolecules_triggered(bool checked)
 {
 	CommandNode::run(Command::FoldMolecules, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Move to next model in list
-void AtenForm::on_actionModelNext_triggered(bool checked)
+void AtenWindow::on_actionModelNext_triggered(bool checked)
 {
 	// If multiple models are visible, step along to next visible model. Otherwise, just next in list
 	if (aten.nVisibleModels() > 1)
@@ -655,11 +655,11 @@ void AtenForm::on_actionModelNext_triggered(bool checked)
 		Model *m = aten.currentModel();
 		aten.setCurrentModel(m->next == NULL ? aten.models() : m->next, TRUE);
 	}
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 // Move to previous model in list
-void AtenForm::on_actionModelPrevious_triggered(bool checked)
+void AtenWindow::on_actionModelPrevious_triggered(bool checked)
 {
 	// If multiple models are visible, step back to previous visible model. Otherwise, just previous in list
 	if (aten.nVisibleModels() > 1)
@@ -681,18 +681,18 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 		Model *m = aten.currentModel();
 		aten.setCurrentModel(m->prev == NULL ? aten.model(aten.nModels()-1) : m->prev, TRUE);
 	}
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 // Show all atoms in current model
-void AtenForm::on_actionModelShowAll_triggered(bool checked)
+void AtenWindow::on_actionModelShowAll_triggered(bool checked)
 {
 	CommandNode::run(Command::ShowAll, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // List all measurements in model
-void AtenForm::on_actionListMeasurements_triggered(bool on)
+void AtenWindow::on_actionListMeasurements_triggered(bool on)
 {
 	aten.currentModelOrFrame()->listMeasurements();
 }
@@ -702,7 +702,7 @@ void AtenForm::on_actionListMeasurements_triggered(bool on)
 */
 
 // Add trajectory to model
-void AtenForm::on_actionTrajectoryOpen_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryOpen_triggered(bool checked)
 {
 	// Stop playback, and set view to be the parent model before we do anything
 	gui.trajectoryWidget->stopTrajectoryPlayback();
@@ -728,12 +728,12 @@ void AtenForm::on_actionTrajectoryOpen_triggered(bool checked)
 			updateTrajectoryMenu();
 		}
 		else msg.print( "Couldn't determine trajectory file format.\n");
-		gui.update(GuiQt::AllTarget);
+		parent_.updateWidgets(AtenWindow::AllTarget);
 	}
 }
 
 // Remove associated trajectory to model
-void AtenForm::on_actionTrajectoryRemove_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryRemove_triggered(bool checked)
 {
 	// Stop playback, and set view to be the parent model before we do anything
 	gui.trajectoryWidget->stopTrajectoryPlayback();
@@ -741,46 +741,46 @@ void AtenForm::on_actionTrajectoryRemove_triggered(bool checked)
 	
 	Model *m = aten.currentModel();
 	m->clearTrajectory();
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 // Switch render focus from the model's trajectory to the model.
-void AtenForm::on_actionTrajectoryModel_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryModel_triggered(bool checked)
 {
 	aten.currentModel()->setRenderSource(Model::ModelSource);
 	gui.trajectoryWidget->refresh();
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 // Switch render focus from the model to the model's trajectory
-void AtenForm::on_actionTrajectoryFrames_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryFrames_triggered(bool checked)
 {
 	aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	gui.trajectoryWidget->refresh();
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
-void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstTrajectoryFrame();
 	gui.trajectoryWidget->refresh();
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
-void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekLastTrajectoryFrame();
 	gui.trajectoryWidget->refresh();
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
-void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryPlayPause_triggered(bool checked)
 {
 	gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->setChecked(checked);
-// 	gui.update(GuiQt::AllTarget);
+// 	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
-void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
+void AtenWindow::on_actionTrajectorySaveMovie_triggered(bool checked)
 {
 	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
 	int width, height;
@@ -825,7 +825,7 @@ void AtenForm::on_actionTrajectorySaveMovie_triggered(bool checked)
 	CommandNode::run(Command::SaveMovie, "ciiiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip, fps);
 }
 
-void AtenForm::on_actionTrajectoryInheritParentStyle_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryInheritParentStyle_triggered(bool checked)
 {
 	if (!checked) return;
 	// If a trajectory is already associated, change its style now
@@ -834,7 +834,7 @@ void AtenForm::on_actionTrajectoryInheritParentStyle_triggered(bool checked)
 	else m->trajectoryCopyAtomStyle(m);
 }
 
-void AtenForm::on_actionTrajectoryCopyStyleToParent_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryCopyStyleToParent_triggered(bool checked)
 {
 	Model *m = aten.currentModel();
 	Model *frame = m->trajectoryCurrentFrame();
@@ -842,7 +842,7 @@ void AtenForm::on_actionTrajectoryCopyStyleToParent_triggered(bool checked)
 	m->copyAtomStyle(frame);
 }
 
-void AtenForm::on_actionTrajectoryPropagateStyleFromHere_triggered(bool checked)
+void AtenWindow::on_actionTrajectoryPropagateStyleFromHere_triggered(bool checked)
 {
 	
 	Model *m = aten.currentModel();
@@ -856,14 +856,14 @@ void AtenForm::on_actionTrajectoryPropagateStyleFromHere_triggered(bool checked)
 */
 
 // Open forcefield file
-void AtenForm::on_actionOpenForcefield_triggered(bool checked)
+void AtenWindow::on_actionOpenForcefield_triggered(bool checked)
 {
 	// Call routine in forcefields window...
 	gui.forcefieldsWidget->loadForcefield();
 }
 
 // Open expression file
-void AtenForm::on_actionOpenExpression_triggered(bool checked)
+void AtenWindow::on_actionOpenExpression_triggered(bool checked)
 {
 	Tree *filter;
 	static QDir currentDirectory_(aten.workDir());
@@ -882,11 +882,11 @@ void AtenForm::on_actionOpenExpression_triggered(bool checked)
 			if (!filter->executeRead(qPrintable(filename))) return;
 		}
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Save expression
-void AtenForm::on_actionSaveExpression_triggered(bool checked)
+void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 {
 	Tree *filter;
 	static QString selectedFilter(aten.filters(FilterData::ExpressionExport)->item->filter.name());
@@ -953,51 +953,51 @@ void AtenForm::on_actionSaveExpression_triggered(bool checked)
 }
 
 // Create patterns for model
-void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
+void AtenWindow::on_actionModelCreatePatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->createPatterns();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Remove patterns from model
-void AtenForm::on_actionModelRemovePatterns_triggered(bool checked)
+void AtenWindow::on_actionModelRemovePatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->clearPatterns();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // List patterns in model
-void AtenForm::on_actionModelListPatterns_triggered(bool checked)
+void AtenWindow::on_actionModelListPatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->printPatterns();
 }
 
 // Perform forcefield typing in model
-void AtenForm::on_actionModelFFType_triggered(bool checked)
+void AtenWindow::on_actionModelFFType_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->typeAll();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Remove typing from model
-void AtenForm::on_actionModelFFUntype_triggered(bool checked)
+void AtenWindow::on_actionModelFFUntype_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->removeTyping();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Create energy expression for model
-void AtenForm::on_actionModelCreateExpression_triggered(bool checked)
+void AtenWindow::on_actionModelCreateExpression_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->createExpression();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Add default pattern
-void AtenForm::on_actionModelAddDefaultPattern_triggered(bool checked)
+void AtenWindow::on_actionModelAddDefaultPattern_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->createDefaultPattern();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -1005,14 +1005,14 @@ void AtenForm::on_actionModelAddDefaultPattern_triggered(bool checked)
 */
 
 // Show preferences window
-void AtenForm::on_actionPreferences_triggered(bool checked)
+void AtenWindow::on_actionPreferences_triggered(bool checked)
 {
 	gui.prefsDialog->setControls();
 	gui.prefsDialog->exec();
 }
 
 // Reload all filters
-void AtenForm::on_actionReloadFilters_triggered(bool checked)
+void AtenWindow::on_actionReloadFilters_triggered(bool checked)
 {
 	if (aten.reloadFilters() > 0)
 	{
@@ -1023,7 +1023,7 @@ void AtenForm::on_actionReloadFilters_triggered(bool checked)
 }
 
 // Show main ToolBox
-void AtenForm::on_actionShowToolBox_triggered(bool checked)
+void AtenWindow::on_actionShowToolBox_triggered(bool checked)
 {
 	gui.toolBoxWidget->setVisible(TRUE);
 	gui.toolBoxWidget->setFloating(TRUE);
@@ -1031,9 +1031,9 @@ void AtenForm::on_actionShowToolBox_triggered(bool checked)
 }
 
 // Toggle manualswapbuffers option
-void AtenForm::on_actionManualSwapBuffers_triggered(bool checked)
+void AtenWindow::on_actionManualSwapBuffers_triggered(bool checked)
 {
 	prefs.setManualSwapBuffers(checked);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 

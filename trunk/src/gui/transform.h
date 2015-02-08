@@ -24,6 +24,9 @@
 
 #include "gui/ui_transform.h"
 
+// Forward Declarations
+class AtenWindow;
+
 // Atom transform window
 class TransformWidget : public QDockWidget
 {
@@ -98,9 +101,13 @@ class TransformWidget : public QDockWidget
 	/*
 	// Dialog
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor / Destructor
-	TransformWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	TransformWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::TransformWidget ui;
 };

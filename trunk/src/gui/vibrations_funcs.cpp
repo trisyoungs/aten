@@ -22,14 +22,12 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/vibrations.h"
-#include "gui/toolbox.h"
-#include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 #include "base/sysfunc.h"
 
 // Constructor
-VibrationsWidget::VibrationsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+VibrationsWidget::VibrationsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	// Private variables
 	refreshing_ = FALSE;
@@ -45,8 +43,6 @@ void VibrationsWidget::showWidget()
 {
 	show();
 	refresh();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.VibrationsButton->setChecked(TRUE);
 }
 
 // Refresh window contents
@@ -54,7 +50,7 @@ void VibrationsWidget::refresh()
 {
 	msg.enter("VibrationsWidget::refresh");
 	refreshing_ = TRUE;
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	Dnchar text;
 	ui.VibrationsList->clear();
 	ui.DisplacementsTable->clear();
@@ -82,7 +78,7 @@ void VibrationsWidget::refresh()
 		ui.SaveImageButton->setEnabled(TRUE);
 		ui.SaveMovieButton->setEnabled(TRUE);
 	
-		Model *m = aten.currentModelOrFrame();
+		Model *m = parent_.aten().currentModelOrFrame();
 		m->generateVibration(ui.VibrationsList->currentRow(), 20);
 		m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
 	}
@@ -100,7 +96,7 @@ void VibrationsWidget::refreshDisplacements()
 	ui.DisplacementsTable->setHorizontalHeaderLabels(QStringList() << "Atom" << "dX" << "dY" << "dZ" );
 	int row = ui.VibrationsList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	Vibration *vib = m->vibration(row);
 	Vec3<double> *displacements = vib->displacements();
 	QTableWidgetItem *item;
@@ -131,12 +127,12 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	refreshDisplacements();
-	if (ui.ShowVectorsCheck->isChecked()) gui.mainCanvas()->postRedisplay();
+	if (ui.ShowVectorsCheck->isChecked()) parent_.postRedisplay();
 	// Regenerate vibration trajectory
 	// Stop current timer (if playing) - we'll restart it afterwards
 	bool wasplaying = ui.PlayPauseVibration->isChecked();
 	if (wasplaying) stopTimer();
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	m->generateVibration(ui.VibrationsList->currentRow(), 20);
 	m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
 	if (wasplaying) resetTimer(ui.DelaySpin->value());
@@ -144,12 +140,12 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 
 void VibrationsWidget::on_ShowVectorsCheck_clicked(bool checked)
 {
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void VibrationsWidget::on_VectorScaleSpin_valueChanged(double value)
 {
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
@@ -158,7 +154,7 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 	{
 		vibrationPlaying_ = TRUE;
 		this->setEnabled(TRUE);
-		Model *m = aten.currentModelOrFrame();
+		Model *m = parent_.aten().currentModelOrFrame();
 		ui.FrameSlider->setEnabled(FALSE);
 		ui.SaveImageButton->setEnabled(FALSE);
 		ui.SaveMovieButton->setEnabled(FALSE);
@@ -169,20 +165,20 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		vibrationPlaying_ = FALSE;
 		this->killTimer(vibrationTimerId_);
 		vibrationTimerId_ = -1;
-		Model *m = aten.currentModelOrFrame();
+		Model *m = parent_.aten().currentModelOrFrame();
 		ui.FrameSlider->setEnabled(TRUE);
 		ui.SaveImageButton->setEnabled(TRUE);
 		ui.SaveMovieButton->setEnabled(TRUE);
-		gui.mainCanvas()->postRedisplay();
+		parent_.postRedisplay();
 	}
 }
 
 void VibrationsWidget::on_FrameSlider_valueChanged(int value)
 {
 	if (vibrationPlaying_) return;
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void VibrationsWidget::on_DelaySpin_valueChanged(int value)
@@ -193,12 +189,12 @@ void VibrationsWidget::on_DelaySpin_valueChanged(int value)
 
 void VibrationsWidget::on_SaveImageButton_clicked(bool checked)
 {
-	gui.mainWindow()->ui.actionFileSaveImage->trigger();
+	parent_.ui.actionFileSaveImage->trigger();
 }
 
 void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 {
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
+	static Dnchar geometry(-1,"%ix%i", (int) parent_.ui.MainView->width(), (int) parent_.ui.MainView->height());
 	int width, height;
 	
 	Tree dialog;
@@ -225,7 +221,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	
 	// Get movie filename
 	static QString selectedFilter("All Files (*.*)");
-	static QDir currentDirectory_(aten.workDir());
+	static QDir currentDirectory_(parent_.aten().workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Movie", currentDirectory_.path(), "All Files (*.*)", &selectedFilter);
 	if (filename.isEmpty()) return;
 	// Store path for next use
@@ -256,10 +252,10 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 	else
 	{
 		DONTDRAW = TRUE;
-		Model *m = aten.currentModelOrFrame();
+		Model *m = parent_.aten().currentModelOrFrame();
 		m->vibrationNextFrame();
 		ui.FrameSlider->setValue(m->vibrationFrameIndex()+1);
-		gui.mainCanvas()->postRedisplay();
+		parent_.postRedisplay();
 		DONTDRAW = FALSE;
 	}
 }
@@ -267,10 +263,9 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 void VibrationsWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	m->setRenderFromVibration(FALSE);
-	gui.toolBoxWidget->ui.VibrationsButton->setChecked(FALSE);
-	gui.setInteractive(TRUE);
-	gui.mainCanvas()->postRedisplay();
+	parent_.setInteractive(TRUE);
+	parent_.postRedisplay();
 	event->accept();
 }

@@ -21,7 +21,7 @@
 
 #include "parser/prefs.h"
 #include "parser/stepnode.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "classes/prefs.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"

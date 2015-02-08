@@ -68,9 +68,13 @@ class GeometryWidget : public QDockWidget
 	/*
 	// Widgets
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor
-	GeometryWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	GeometryWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::GeometryWidget ui;
 };

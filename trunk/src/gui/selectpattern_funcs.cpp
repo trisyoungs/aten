@@ -25,7 +25,7 @@
 #include "base/pattern.h"
 
 // Constructor
-AtenSelectPattern::AtenSelectPattern(QWidget *parent) : QDialog(parent)
+AtenSelectPattern::AtenSelectPattern(AtenWindow& parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 

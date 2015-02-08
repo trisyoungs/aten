@@ -1,6 +1,6 @@
 /*
-	*** TCanvas input functions
-	*** src/gui/tcanvas_input.cpp
+	*** Viewer input functions
+	*** src/gui/viewer_input.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,11 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tcanvas.uih"
+#include "gui/viewer.uih"
 #include "gui/fragments.h"
 #include "gui/build.h"
 #include "gui/mainwindow.h"
-#include "gui/gui.h"
 #include "model/model.h"
 #include "model/fragment.h"
 #include "main/aten.h"
@@ -33,10 +32,10 @@
 */
 
 // Qt Signal (mouse press event)
-void TCanvas::mousePressEvent(QMouseEvent *event)
+void Viewer::mousePressEvent(QMouseEvent *event)
 {
 	// Handle button presses (button down) from the mouse
-	msg.enter("TCanvas::mousePressEvent");
+	msg.enter("Viewer::mousePressEvent");
 	static Prefs::MouseButton button = Prefs::nMouseButtons;
 
 	// End old mode if one is active (i.e. prevent mode overlap on different mouse buttons)
@@ -48,7 +47,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
-		msg.exit("TCanvas::mousePressEvent");
+		msg.exit("Viewer::mousePressEvent");
 		return;
 	}
 	
@@ -65,15 +64,15 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	if (m != aten.currentModel())
 	{
 		aten.setCurrentModel(m);
-		gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget-GuiQt::CanvasTarget);
+		parent_.updateWidgets(AtenWindow::AllTarget-AtenWindow::ModelsTarget-AtenWindow::CanvasTarget);
 	}
 	
 	// Get current active model
 	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::mousePressEvent - no source model.\n");
-		msg.exit("TCanvas::mousePressEvent");
+		printf("Pointless Viewer::mousePressEvent - no source model.\n");
+		msg.exit("Viewer::mousePressEvent");
 		return;
 	}
 
@@ -85,7 +84,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 		{
 			gui.callContextMenu(tempi, event->globalX(), event->globalY());
 			postRedisplay();
-			msg.exit("TCanvas::mousePressEvent");
+			msg.exit("Viewer::mousePressEvent");
 			return;
 		}
 	}
@@ -107,21 +106,21 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	
 	// Activate mode...
 	beginMode(button);
-	msg.exit("TCanvas::mousePressEvent");
+	msg.exit("Viewer::mousePressEvent");
 }
 
 // Qt Signal (mouse release event)
-void TCanvas::mouseReleaseEvent(QMouseEvent *event)
+void Viewer::mouseReleaseEvent(QMouseEvent *event)
 {
 	// Handle button releases (button up) from the mouse
-	msg.enter("TCanvas::mouseReleaseEvent");
+	msg.enter("Viewer::mouseReleaseEvent");
 	Prefs::MouseButton button;
 	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
 	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
 	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
-		msg.exit("TCanvas::mouseReleaseEvent");
+		msg.exit("Viewer::mouseReleaseEvent");
 		return;
 	}
 	
@@ -136,11 +135,11 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 	
 	postRedisplay();
 	
-	msg.exit("TCanvas::mouseReleaseEvent");
+	msg.exit("Viewer::mouseReleaseEvent");
 }
 
 // Qt Signal (mouse move event)
-void TCanvas::mouseMoveEvent(QMouseEvent *event)
+void Viewer::mouseMoveEvent(QMouseEvent *event)
 {
 	static Vec3<double> delta;
 	
@@ -148,8 +147,8 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::mouseMoveEvent - no source model.\n");
-		msg.exit("TCanvas::mouseMoveEvent");
+		printf("Pointless Viewer::mouseMoveEvent - no source model.\n");
+		msg.exit("Viewer::mouseMoveEvent");
 		return;
 	}
 	
@@ -217,16 +216,16 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 }
 
 // Qt Signal (mouse wheel event)
-void TCanvas::wheelEvent(QWheelEvent *event)
+void Viewer::wheelEvent(QWheelEvent *event)
 {
-	msg.enter("TCanvas::modeScroll");
+	msg.enter("Viewer::modeScroll");
 	
 	// Get current active model
 	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::modeScroll - no source model.\n");
-		msg.exit("TCanvas::modeScroll");
+		printf("Pointless Viewer::modeScroll - no source model.\n");
+		msg.exit("Viewer::modeScroll");
 		return;
 	}
 
@@ -255,23 +254,23 @@ void TCanvas::wheelEvent(QWheelEvent *event)
 			break;
 	}
 	postRedisplay();
-	msg.exit("TCanvas::modeScroll");
+	msg.exit("Viewer::modeScroll");
 }
 
 // Return mouse coordinates at last mousedown event
-Vec3<double> TCanvas::rMouseDown()
+Vec3<double> Viewer::rMouseDown()
 {
 	return rMouseDown_;
 }
 
 // Return mouse coordinates at last mouseup event
-Vec3<double> TCanvas::rMouseUp()
+Vec3<double> Viewer::rMouseUp()
 {
 	return rMouseUp_;
 }
 
 // Return mouse coordinates at last mousemove event
-Vec3<double> TCanvas::rMouseLast()
+Vec3<double> Viewer::rMouseLast()
 {
 	return rMouseLast_;
 }
@@ -281,13 +280,13 @@ Vec3<double> TCanvas::rMouseLast()
 */
 
 // Return state of specified keymodifier
-bool TCanvas::keyModifier(Prefs::ModifierKey mk)
+bool Viewer::keyModifier(Prefs::ModifierKey mk)
 {
 	return keyModifier_[mk];
 }
 
 // Qt Slot (key press event)
-void TCanvas::keyPressEvent(QKeyEvent *event)
+void Viewer::keyPressEvent(QKeyEvent *event)
 {
 	// Check datamodel...
 	bool refresh = FALSE, ignore = TRUE;
@@ -300,8 +299,8 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::keyPressEvent - no source model.\n");
-		msg.exit("TCanvas::keyPressEvent");
+		printf("Pointless Viewer::keyPressEvent - no source model.\n");
+		msg.exit("Viewer::keyPressEvent");
 		return;
 	}
 
@@ -337,7 +336,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 				source->endUndoState();
 				source->updateMeasurements();
 				source->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-				gui.update(GuiQt::CanvasTarget);
+				parent_.updateWidgets(AtenWindow::CanvasTarget);
 			}
 			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
 			refresh = TRUE;
@@ -410,7 +409,7 @@ void TCanvas::keyPressEvent(QKeyEvent *event)
 }
 
 // Qt Slot (key release event)
-void TCanvas::keyReleaseEvent(QKeyEvent *event)
+void Viewer::keyReleaseEvent(QKeyEvent *event)
 {
 	// Set keystates
 	bool oldshift = keyModifier_[Prefs::ShiftKey];
@@ -425,8 +424,8 @@ void TCanvas::keyReleaseEvent(QKeyEvent *event)
 	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::keyReleaseEvent - no source model.\n");
-		msg.exit("TCanvas::keyReleaseEvent");
+		printf("Pointless Viewer::keyReleaseEvent - no source model.\n");
+		msg.exit("Viewer::keyReleaseEvent");
 		return;
 	}
 
@@ -466,16 +465,16 @@ void TCanvas::keyReleaseEvent(QKeyEvent *event)
 */
 
 // Set selected mode
-void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*callback)(Reflist<Atom,int>*))
+void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*callback)(Reflist<Atom,int>*))
 {
-	msg.enter("TCanvas::setSelectedMode");
+	msg.enter("Viewer::setSelectedMode");
 
 	// Get current active model
 	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::setSelectedMode - no source model.\n");
-		msg.exit("TCanvas::setSelectedMode");
+		printf("Pointless Viewer::setSelectedMode - no source model.\n");
+		msg.exit("Viewer::setSelectedMode");
 		return;
 	}
 	
@@ -534,62 +533,62 @@ void TCanvas::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*cal
 	if (selectedMode_ == UserAction::SelectAction) setCursor(Qt::ArrowCursor);
 	else setCursor(Qt::CrossCursor);
 
-	gui.update(GuiQt::CanvasTarget+GuiQt::StatusBarTarget);
-	msg.exit("TCanvas::setSelectedMode");
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::StatusBarTarget);
+	msg.exit("Viewer::setSelectedMode");
 }
 
 // Set the active mode to the current user mode
-void TCanvas::useSelectedMode()
+void Viewer::useSelectedMode()
 {
 	activeMode_ = selectedMode_;
 }
 
 // Return the currently selected mode
-UserAction::Action TCanvas::selectedMode() const
+UserAction::Action Viewer::selectedMode() const
 {
 	return selectedMode_;
 }
 
 // Return the currently active mode
-UserAction::Action TCanvas::activeMode() const
+UserAction::Action Viewer::activeMode() const
 {
 	return activeMode_;
 }
 
 // Set current drawing element
-void TCanvas::setSketchElement(short int el)
+void Viewer::setSketchElement(short int el)
 {
 	sketchElement_ = el;
 }
 
 // Return current drawing element
-short int TCanvas::sketchElement() const
+short int Viewer::sketchElement() const
 {
 	return sketchElement_;
 }
 
 // Current drawing depth for certain tools
-double TCanvas::currentDrawDepth()
+double Viewer::currentDrawDepth()
 {
 	return currentDrawDepth_;
 }
 
 // Set whether to accept editing actions (i.e. anything other than view manipulation)
-void TCanvas::setEditable(bool b)
+void Viewer::setEditable(bool b)
 {
 	editable_ = b;
 }
 
 // Return whether to accept editing actions (i.e. anything other than view manipulation)
-bool TCanvas::editable()
+bool Viewer::editable()
 {
 	return editable_;
 }
 
 // Begin Mode
-void TCanvas::beginMode(Prefs::MouseButton button)
+void Viewer::beginMode(Prefs::MouseButton button)
 {
-	msg.enter("TCanvas::beginMode");
+	msg.enter("Viewer::beginMode");
 	static bool manipulate, zrotate;
 	static int n;
 	static Atom *i;
@@ -601,8 +600,8 @@ void TCanvas::beginMode(Prefs::MouseButton button)
 	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::beginMode - no source model.\n");
-		msg.exit("TCanvas::beginMode");
+		printf("Pointless Viewer::beginMode - no source model.\n");
+		msg.exit("Viewer::beginMode");
 		return;
 	}
 	
@@ -690,14 +689,14 @@ void TCanvas::beginMode(Prefs::MouseButton button)
 		}
 	}
 	postRedisplay();
-	msg.exit("TCanvas::beginMode");
+	msg.exit("Viewer::beginMode");
 }
 
 // End Mode
-void TCanvas::endMode(Prefs::MouseButton button)
+void Viewer::endMode(Prefs::MouseButton button)
 {
 	// Finalize the current action on the model
-	msg.enter("TCanvas::endMode");
+	msg.enter("Viewer::endMode");
 	double area, radius;
 	Vec4<double> screenr;
 	Atom *atoms[4], *i;
@@ -709,8 +708,8 @@ void TCanvas::endMode(Prefs::MouseButton button)
 	Model *source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless TCanvas::endMode - no source model.\n");
-		msg.exit("TCanvas::endMode");
+		printf("Pointless Viewer::endMode - no source model.\n");
+		msg.exit("Viewer::endMode");
 		return;
 	}
 	
@@ -746,7 +745,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				else source->selectAtom(atomClicked_);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::GeometryTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GeometryTarget);
 			break;
 		// Other selection operations
 		case (UserAction::SelectMoleculeAction):
@@ -754,14 +753,14 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, FALSE, ctrled);
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::GeometryTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GeometryTarget);
 			break;
 		case (UserAction::SelectElementAction):
 			source->beginUndoState("Select Element");
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL) source->selectElement(atomClicked_, FALSE, ctrled);
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::GeometryTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GeometryTarget);
 			break;
 		case (UserAction::SelectRadialAction):
 			source->beginUndoState("Select Radial");
@@ -774,7 +773,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->selectRadial(atomClicked_,radius);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget+GuiQt::GeometryTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GeometryTarget);
 			break;
 		// Measurements
 		case (UserAction::MeasureDistanceAction):
@@ -785,7 +784,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			source->addDistanceMeasurement(atoms[0],atoms[1]);
 			source->endUndoState();
 			pickedAtoms_.clear();
-			gui.update(GuiQt::CanvasTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget);
 			break;
 		case (UserAction::MeasureAngleAction):
 			// Must be two atoms in subselection to continue
@@ -795,7 +794,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			source->addAngleMeasurement(atoms[0],atoms[1],atoms[2]);
 			source->endUndoState();
 			pickedAtoms_.clear();
-			gui.update(GuiQt::CanvasTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget);
 			break;
 		case (UserAction::MeasureTorsionAction):
 			// Must be two atoms in subselection to continue
@@ -805,7 +804,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			source->addTorsionMeasurement(atoms[0],atoms[1],atoms[2],atoms[3]);
 			source->endUndoState();
 			pickedAtoms_.clear();
-			gui.update(GuiQt::CanvasTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget);
 			break;
 		// Draw single atom
 		case (UserAction::DrawAtomAction):
@@ -817,7 +816,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->addAtom(sketchElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				source->endUndoState();
 			}
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
 		// Draw chains of atoms
 		case (UserAction::DrawChainAction):
@@ -844,7 +843,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->bondAtoms(i,atomClicked_,bt);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
 		// Draw fragments
 		case (UserAction::DrawFragmentAction):
@@ -862,7 +861,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				frag->pasteOrientedModel(source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), source);
 			}
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
 		case (UserAction::DrawTransmuteAction):
 			if (atomClicked_ == NULL) break;
@@ -875,7 +874,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			}
 			else source->transmuteAtom(atomClicked_, sketchElement_);
 			source->endUndoState();
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
 		case (UserAction::DrawDeleteAction):
 			if (shifted)
@@ -893,7 +892,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->deleteAtom(atomClicked_);
 				source->endUndoState();
 			}
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
 		case (UserAction::DrawProbeAction):
 			if (atomClicked_ != NULL) atomClicked_->print();
@@ -926,7 +925,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->endUndoState();
 			}
 			pickedAtoms_.clear();
-			gui.update(GuiQt::CanvasTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget);
 			break;
 		// Delete bond
 		case (UserAction::DrawDeleteBondAction):
@@ -940,7 +939,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->endUndoState();
 			}
 			pickedAtoms_.clear();
-			gui.update(GuiQt::CanvasTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget);
 			break;
 		// Misc Building
 		case (UserAction::DrawAddHydrogenAction):
@@ -949,7 +948,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 				source->beginUndoState("Add Hydrogen to Atom");
 				source->hydrogenSatisfy(atomClicked_);
 				source->endUndoState();
-				gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+				parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			}
 			break;
 		case (UserAction::DrawGrowAtomAction):
@@ -967,7 +966,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, TRUE);
 				}
 				source->endUndoState();
-				gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+				parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			}
 			break;
 		// Model transformations
@@ -977,7 +976,7 @@ void TCanvas::endMode(Prefs::MouseButton button)
 			// Clear list of oldPositions_ if nothing was moved
 			if (!hasMoved_) oldPositions_.clear();
 			source->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-			gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+			parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
 		// View changes (no action)
 		case (UserAction::RotateXYAction):
@@ -1015,19 +1014,19 @@ void TCanvas::endMode(Prefs::MouseButton button)
 }
 
 // Returns the atom currently under the mouse
-Atom *TCanvas::atomClicked()
+Atom *Viewer::atomClicked()
 {
 	return atomClicked_;
 }
 
 // Clears the list of picked atoms
-void TCanvas::clearPicked()
+void Viewer::clearPicked()
 {
 	pickedAtoms_.clear();
 }
 
 // Return start of picked atom list
-Refitem<Atom,int> *TCanvas::pickedAtoms()
+Refitem<Atom,int> *Viewer::pickedAtoms()
 {
 	return pickedAtoms_.first();
 }

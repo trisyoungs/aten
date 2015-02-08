@@ -25,7 +25,7 @@
 #include "templates/vector3.h"
 #include "base/dnchar.h"
 #include "base/cell.h"
-#include "base/constants.h"
+#include "math/constants.h"
 
 // GridPoint class
 class GridPoint : public ListItem<GridPoint>

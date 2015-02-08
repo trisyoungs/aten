@@ -24,7 +24,6 @@ set(qtproject_SRCS
   build_funcs.cpp
   celldefinition_funcs.cpp
   celltransform_funcs.cpp
-  contextmenu_funcs.cpp
   command_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
@@ -38,9 +37,9 @@ set(qtproject_SRCS
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainmenuactions.cpp
+  mainwindow_context.cpp
   mainwindow_funcs.cpp
   mainwindow_init.cpp
-  md_funcs.cpp
   messages_funcs.cpp
   modellist_funcs.cpp
   mouseactions.cpp
@@ -55,9 +54,9 @@ set(qtproject_SRCS
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
-  tcanvas_funcs.cpp
-  tcanvas_input.cpp
-  tcanvas_render.cpp
+  viewer_funcs.cpp
+  viewer_input.cpp
+  viewer_render.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
   tmenubutton_funcs.cpp
@@ -65,7 +64,6 @@ set(qtproject_SRCS
   tdoublespindelegate_funcs.cpp
   tintegerspindelegate_funcs.cpp
   toolbaractions.cpp
-  toolbox_funcs.cpp
   trajectory_funcs.cpp
   transform_funcs.cpp
   treegui_funcs.cpp
@@ -98,7 +96,6 @@ SET(pro_MOC_HDRS
   layoutlist.h
   loadmodel.h
   mainwindow.h
-  md.h
   messages.h
   modellist.h
   pores.h
@@ -111,7 +108,6 @@ SET(pro_MOC_HDRS
   selectfilter.h
   selectpattern.h
   selectvariable.h
-  toolbox.h
   trajectory.h
   transform.h
   treegui.h
@@ -149,7 +145,6 @@ SET(pro_UIS
   grids.ui
   loadmodel.ui
   mainwindow.ui
-  md.ui
   messages.ui
   modellist.ui
   pores.ui
@@ -162,7 +157,6 @@ SET(pro_UIS
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
-  toolbox.ui
   trajectory.ui
   transform.ui
   treegui.ui

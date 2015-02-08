@@ -342,7 +342,7 @@ bool Aten::closeModel(Model *m)
 			case (QMessageBox::Discard):
 				aten.removeModel(m);
 				// Update GUI
-				gui.update(GuiQt::AllTarget);
+				parent_.updateWidgets(AtenWindow::AllTarget);
 				break;
 				// Cancel close
 			case (QMessageBox::Cancel):
@@ -372,7 +372,7 @@ bool Aten::closeModel(Model *m)
 				}
 				aten.removeModel(m);
 				// Update GUI
-				gui.update(GuiQt::AllTarget);
+				parent_.updateWidgets(AtenWindow::AllTarget);
 				break;
 		}
 	}

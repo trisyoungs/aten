@@ -22,14 +22,12 @@
 #include "main/aten.h"
 #include "gui/position.h"
 #include "gui/mainwindow.h"
-#include "gui/toolbox.h"
-#include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 #include "base/sysfunc.h"
 
 // Constructor
-PositionWidget::PositionWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+PositionWidget::PositionWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 }
@@ -37,8 +35,6 @@ PositionWidget::PositionWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWi
 void PositionWidget::showWidget()
 {
 	show();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.PositionButton->setChecked(TRUE);
 }
 
 /*
@@ -63,7 +59,7 @@ void PositionWidget::on_FlipZButton_clicked(bool checked)
 void PositionWidget::flipSelection(int axis)
 {
 	CommandNode::run(Command::Mirror, "i", axis);
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -73,7 +69,7 @@ void PositionWidget::flipSelection(int axis)
 void PositionWidget::on_DefineCentreButton_clicked(bool checked)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
+	Vec3<double> centre = parent_.aten().currentModelOrFrame()->selectionCentreOfGeometry();
 	ui.CentreXSpin->setValue(centre.x);
 	ui.CentreYSpin->setValue(centre.y);
 	ui.CentreZSpin->setValue(centre.z);
@@ -84,7 +80,7 @@ void PositionWidget::on_CentreSelectionButton_clicked(bool checked)
 	Vec3<double> centre(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	Vec3<int> lock(ui.CentreLockXCheck->isChecked(), ui.CentreLockYCheck->isChecked(), ui.CentreLockZCheck->isChecked());
 	CommandNode::run(Command::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -127,7 +123,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 	Vec3<double> tvec;
 	tvec.set(axis, double(dir));
 	// Grab model in preparation for undostate...
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (ui.TranslateModelFrameRadio->isChecked())
 	{
 		// Translate selection in the cartesian axes of the model
@@ -150,14 +146,14 @@ void PositionWidget::translateSelection(int axis, int dir)
 			msg.print("No unit cell defined for model.\n");
 			return;
 		}
-		tvec = aten.currentModelOrFrame()->cell()->axes().columnAsVec3(axis);
+		tvec = parent_.aten().currentModelOrFrame()->cell()->axes().columnAsVec3(axis);
 		tvec *= double(dir) * step;
 		m->beginUndoState("Translate Cell (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionLocal(tvec);
 	}
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -166,20 +162,20 @@ void PositionWidget::translateSelection(int axis, int dir)
 
 void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(FALSE);
-	// If there are not two atoms in the list then the mode must have been canceled
-	if (picked->nItems() != 2) return;
-	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
-	gui.positionWidget->ui.ShiftVectorXSpin->setValue(v.x);
-	gui.positionWidget->ui.ShiftVectorYSpin->setValue(v.y);
-	gui.positionWidget->ui.ShiftVectorZSpin->setValue(v.z);
-	gui.positionWidget->ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+// 	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(FALSE); ATEN2
+// 	// If there are not two atoms in the list then the mode must have been canceled
+// 	if (picked->nItems() != 2) return;
+// 	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
+// 	gui.positionWidget->ui.ShiftVectorXSpin->setValue(v.x);
+// 	gui.positionWidget->ui.ShiftVectorYSpin->setValue(v.y);
+// 	gui.positionWidget->ui.ShiftVectorZSpin->setValue(v.z);
+// 	gui.positionWidget->ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
 void PositionWidget::on_ShiftPickVectorButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainCanvas()->setSelectedMode(UserAction::ShiftPickVectorAction,2,&shiftPickAxisButton_callback);
+	parent_.setSelectedMode(UserAction::ShiftPickVectorAction,2, &shiftPickAxisButton_callback);
 }
 
 void PositionWidget::on_ShiftNormaliseVectorButton_clicked(bool on)
@@ -229,12 +225,12 @@ void PositionWidget::on_ShiftVectorPositiveButton_clicked(bool checked)
 	v.y = ui.ShiftVectorYSpin->value();
 	v.z = ui.ShiftVectorZSpin->value();
 	v *= ui.ShiftVectorDeltaSpin->value();
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void PositionWidget::on_ShiftVectorNegativeButton_clicked(bool checked)
@@ -244,12 +240,12 @@ void PositionWidget::on_ShiftVectorNegativeButton_clicked(bool checked)
 	v.y = ui.ShiftVectorYSpin->value();
 	v.z = ui.ShiftVectorZSpin->value();
 	v *= -ui.ShiftVectorDeltaSpin->value();
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -262,18 +258,18 @@ void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 	v.x = ui.RepositionTargetXSpin->value() - ui.RepositionReferenceXSpin->value();
 	v.y = ui.RepositionTargetYSpin->value() - ui.RepositionReferenceYSpin->value();
 	v.z = ui.RepositionTargetZSpin->value() - ui.RepositionReferenceZSpin->value();
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	m->beginUndoState("Reposition %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void PositionWidget::on_RepositionDefineReferenceButton_clicked(bool on)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
+	Vec3<double> centre = parent_.aten().currentModelOrFrame()->selectionCentreOfGeometry();
 	ui.RepositionReferenceXSpin->setValue(centre.x);
 	ui.RepositionReferenceYSpin->setValue(centre.y);
 	ui.RepositionReferenceZSpin->setValue(centre.z);
@@ -282,7 +278,7 @@ void PositionWidget::on_RepositionDefineReferenceButton_clicked(bool on)
 void PositionWidget::on_RepositionDefineTargetButton_clicked(bool on)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
+	Vec3<double> centre = parent_.aten().currentModelOrFrame()->selectionCentreOfGeometry();
 	ui.RepositionTargetXSpin->setValue(centre.x);
 	ui.RepositionTargetYSpin->setValue(centre.y);
 	ui.RepositionTargetZSpin->setValue(centre.z);
@@ -290,12 +286,8 @@ void PositionWidget::on_RepositionDefineTargetButton_clicked(bool on)
 
 void PositionWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.PositionButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
-
 	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isPositionWidgetAction(gui.mainCanvas()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
+	if (UserAction::isPositionWidgetAction(parent_.selectedMode())) parent_.cancelCurrentMode();
 
 	event->accept();
 }

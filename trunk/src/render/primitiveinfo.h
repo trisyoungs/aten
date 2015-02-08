@@ -1,7 +1,7 @@
 /*
 	*** Primitive Info
 	*** src/render/primitiveinfo.h
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2013-2014
 
 	This file is part of Aten.
 
@@ -22,11 +22,10 @@
 #ifndef ATEN_PRIMITIVEINFO_H
 #define ATEN_PRIMITIVEINFO_H
 
-#include "base/matrix.h"
+#include "math/matrix.h"
 #include "templates/list.h"
 
 // Forward Declarations
-class PrimitiveGroup;
 class Primitive;
 
 // Primitive Info
@@ -37,10 +36,8 @@ class PrimitiveInfo : public ListItem<PrimitiveInfo>
 	PrimitiveInfo();
 
 	private:
-	// Target primitive (if not primitive group)
+	// Target primitive
 	Primitive *primitive_;
-	// Target primitive group (if not primitive)
-	PrimitiveGroup *primitiveGroup_;
 	// Local transformation of primitive
 	Matrix localTransform_;
 	// Colour of primitive (if vertexData_ doesn't contain colour information)
@@ -53,14 +50,8 @@ class PrimitiveInfo : public ListItem<PrimitiveInfo>
 	public:
 	// Set primitive info data
 	void set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
-	// Set primitive info data
-	void set(PrimitiveGroup *pg, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
 	// Return pointer to stored primitive
 	Primitive *primitive();
-	// Return pointer to primitive, selected from group (based on level of detail)
-	Primitive *primitive(Matrix& modeltransform);
-	// Return pointer to best primitive in group
-	Primitive *bestPrimitive();
 	// Return local transformation of primitive
 	Matrix &localTransform();
 	// Return colour array

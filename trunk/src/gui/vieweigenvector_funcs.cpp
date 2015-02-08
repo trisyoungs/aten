@@ -27,7 +27,7 @@
 #include "model/model.h"
 
 // Constructor
-AtenViewEigenvector::AtenViewEigenvector(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+AtenViewEigenvector::AtenViewEigenvector(QWidget* parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 }

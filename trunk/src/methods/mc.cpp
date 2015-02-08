@@ -468,7 +468,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			lastPrintedEnergy = currentEnergy;
 		}
 		
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
+		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	} // Loop over MC cycles
 	progress.terminate(pid);

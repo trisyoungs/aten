@@ -22,12 +22,12 @@
 #ifndef ATEN_SELECTVARIABLEDIALOG_H
 #define ATEN_SELECTVARIABLEDIALOG_H
 
-#include "gui/gui.h"
 #include "gui/ui_selectvariable.h"
 
 // Forward Declarations
 class Variable;
 class ZMatrix;
+class AtenWindow;
 
 // Select Variable Dialog
 class AtenSelectVariable : public QDialog
@@ -69,9 +69,13 @@ class AtenSelectVariable : public QDialog
 	/*
 	// Widgets
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor
-	AtenSelectVariable(QWidget *parent = 0);
+	AtenSelectVariable(QWidget* parent);
 	// Main form declaration
 	Ui::SelectVariableDialog ui;
 };

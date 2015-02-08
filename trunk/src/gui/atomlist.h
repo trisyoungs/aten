@@ -105,12 +105,17 @@ class AtomListWidget : public QDockWidget
 	// Last clicked and 'moved over' Atom
 	Atom *prevClicked_, *lastClicked_, *lastHovered_;
 
+
 	/*
 	// Dialog
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor / Destructor
-	AtomListWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	AtomListWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::AtomListWidget ui;
 };

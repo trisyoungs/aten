@@ -22,7 +22,7 @@
 #include "base/lineparser.h"
 #include "base/sysfunc.h"
 #include "base/mathfunc.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "base/messenger.h"
 #include <string.h>
 #include <stdarg.h>

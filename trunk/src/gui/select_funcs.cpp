@@ -22,14 +22,12 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/select.h"
-#include "gui/toolbox.h"
 #include "gui/selectelement.h"
-#include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
 // Constructor
-SelectWidget::SelectWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+SelectWidget::SelectWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	// Private variables
 	refreshing_ = FALSE;
@@ -42,8 +40,6 @@ void SelectWidget::showWidget()
 {
 	show();
 	refresh();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.SelectButton->setChecked(TRUE);
 }
 
 void SelectWidget::setHistories(QStringList select, QStringList forlist, QStringList netalist)
@@ -61,43 +57,43 @@ void SelectWidget::setHistories(QStringList select, QStringList forlist, QString
 void SelectWidget::on_SelectAllButton_clicked(bool on)
 {
 	CommandNode::run(Command::SelectAll, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectNoneButton_clicked(bool on)
 {
 	CommandNode::run(Command::SelectNone, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectionExpandButton_clicked(bool on)
 {
 	CommandNode::run(Command::Expand, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectionInvertButton_clicked(bool on)
 {
 	CommandNode::run(Command::Invert, "");
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectButton_clicked(bool on)
 {
 	CommandNode::run(Command::Select, "c", qPrintable(ui.SelectCombo->currentText()));
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_DeselectButton_clicked(bool on)
 {
 	CommandNode::run(Command::DeSelect, "c", qPrintable(ui.SelectCombo->currentText()));
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
 {
-	// Call the select element dialog...
-	int newel = gui.selectElementDialog->selectElement();
+	AtenSelectElement elementSelect(this);
+	int newel = elementSelect.selectElement();
 	if (newel != -1) ui.TypeElementEdit->setText( Elements().symbol(newel) );
 }
 
@@ -114,7 +110,7 @@ void SelectWidget::on_SelectTypeButton_clicked(bool on)
 	else
 	{
 		CommandNode::run(Command::SelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
-		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
 
@@ -126,28 +122,25 @@ void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 	else
 	{
 		CommandNode::run(Command::DeSelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
-		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
 
 void SelectWidget::on_SelectForButton_clicked(bool on)
 {
 	CommandNode::run(Command::SelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_DeselectForButton_clicked(bool on)
 {
 	CommandNode::run(Command::DeSelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget+GuiQt::SelectTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::refresh()
 {
-	// If the select window is not visible, don't do anything
-	if (!gui.selectWidget->isVisible()) return;
-
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 
 	// Update selection text details
 	// First label, total number of selected atoms.
@@ -160,8 +153,5 @@ void SelectWidget::refresh()
 
 void SelectWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.SelectButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

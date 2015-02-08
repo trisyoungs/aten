@@ -71,9 +71,13 @@ class TrajectoryWidget : public QDockWidget
 	/*
 	// Dialog
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor
-	TrajectoryWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	TrajectoryWidget(AtenWindow& parent1, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::TrajectoryWidget ui;
 };

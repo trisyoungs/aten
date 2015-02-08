@@ -23,7 +23,7 @@
 #include "parser/tree.h"
 
 // Constructor
-AtenSelectFilter::AtenSelectFilter(QWidget *parent) : QDialog(parent)
+AtenSelectFilter::AtenSelectFilter(AtenWindow& parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 

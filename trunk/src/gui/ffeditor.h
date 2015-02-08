@@ -22,7 +22,6 @@
 #ifndef ATEN_FFEDITWINDOW_H
 #define ATEN_FFEDITWINDOW_H
 
-#include "gui/gui.h"
 #include "gui/ui_ffeditor.h"
 #include "classes/forcefieldbound.h"
 
@@ -121,7 +120,7 @@ class AtenForcefieldEditor : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenForcefieldEditor(QWidget *parent = 0);
+	AtenForcefieldEditor(QWidget* parent);
 	// Main form declaration
 	Ui::FFEditorDialog ui;
 };

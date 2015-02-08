@@ -1,7 +1,7 @@
 /*
 	*** Text Primitive
 	*** src/render/textprimitive.h
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2013-2014
 
 	This file is part of Aten.
 
@@ -22,110 +22,104 @@
 #ifndef ATEN_TEXTPRIMITIVE_H
 #define ATEN_TEXTPRIMITIVE_H
 
-#include <QtGui/QtGui>
+#include "render/textfragment.h"
+#include "render/textformat.h"
+#include "math/matrix.h"
 #include "templates/vector3.h"
-#include "base/dnchar.h"
 #include "templates/list.h"
+#include <QtCore/QString>
 
-#define TEXTCHUNKSIZE 100
+// External Declarations
+extern int TextPrimitiveParser_parse();
 
 // Forward Declarations
-class TCanvas;
+/* none */
 
 // Text Primitive
-class TextPrimitive
+class TextPrimitive : public ListItem<TextPrimitive>
 {
-	private:
-	// Screen coordinates
-	int x_, y_;
-	// Whether to right-align text
-	bool rightAlign_;
-	// Text to render
-	QString text_;
-	
 	public:
+	// Constructor / Destructor
+	TextPrimitive();
+	~TextPrimitive();
+	// Text Anchors enum
+	enum TextAnchor { TopLeftAnchor, TopMiddleAnchor, TopRightAnchor, MiddleLeftAnchor, CentralAnchor, MiddleRightAnchor, BottomLeftAnchor, BottomMiddleAnchor, BottomRightAnchor, nTextAnchors };
+	// Convert text string to TextAnchor
+	static TextAnchor textAnchor(QString s);
+	// Convert TextAnchor to text string
+	static const char* textAnchor(TextAnchor anchor);
+	// Escape Sequence enum
+	enum EscapeSequence { BoldEscape, ItalicEscape, NewLineEscape, SubScriptEscape, SuperScriptEscape, nEscapeSequences };
+	// Convert text string to EscapeSequence
+	static EscapeSequence escapeSequence(QString s);
+
+
+	/*
+	 * Definition
+	 */
+	private:
+	// General text scaling factor
+	static double textSizeScale_;
+	// Coordinates of anchorpoint of text
+	Vec3<double> anchorPoint_;
+	// Location of anchorpoint on text bounding box
+	TextAnchor anchorPosition_;
+	// Vector by which to adjust position of text
+	Vec3<double> adjustmentVector_;
+	// Local transform matrix for the text
+	Matrix localRotation_;
+	// Text size
+	double textSize_;
+	// Text fragments to render
+	List<TextFragment> fragments_;
+
+	public:
+	// Set text scaling factor
+	static void setTextSizeScale(double textSizeScale);
 	// Set data
-	void set(int x, int y, bool rightalign, const char *text);
-	// Return x coordinate
-	int x();
-	// Return y coordinate
-	int y();
-	// Return text to render
-	QString &text();
-	// Return whether to right-align text
-	bool rightAlign();
-};
+	void set(QString text, Vec3<double> anchorPoint, TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix& rotation, double textSize);
+	// Return transformation matrix to use when rendering (including fragment scale/translation if one is specified)
+	Matrix transformationMatrix(double baseFontSize, TextFragment* fragment = NULL);
+	// Calculate bounding box of primitive
+	void boundingBox(Vec3<double>& lowerLeft, Vec3<double>& upperRight);
+	// Render primitive
+	void render(Matrix viewMatrix, bool correctOrientation, double baseFontSize);
 
-// Text Primitive Chunk
-class TextPrimitiveChunk : public ListItem<TextPrimitiveChunk>
-{
-	public:
-	// Constructor
-	TextPrimitiveChunk();
 
+	/*
+	 * Generation
+	 */
 	private:
-	// Array of TextPrimitive
-	TextPrimitive textPrimitives_[TEXTCHUNKSIZE];
-	// Number of text primitives currently in the array
-	int nTextPrimitives_;
+	// Character string source
+	static QString stringSource_;
+	// Integer position in stringSource, total length of string, and starting position of current token/function
+	static int stringPos_, stringLength_;
+	// Get next character from current input stream
+	static QChar getChar();
+	// Peek next character from current input stream
+	static QChar peekChar();
+	// 'Replace' last character read from current input stream
+	static void unGetChar();
+	// Current target for generation
+	static TextPrimitive* target_;
+	// Format stack, used when generating primitive
+	static List<TextFormat> formatStack_;
+	// Current horizontal position, used when generating primitive
+	static double horizontalPosition_;
 
 	public:
-	// Forget all text primitives in list
-	void forgetAll();
-	// Return whether array is full
-	bool full();
-	// Add primitive to list
-	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
-	// Render all primitives in chunk
-	void renderAll(QPainter& painter, int verticalOffset);
-};
-
-// Text Primitive List
-class TextPrimitiveList
-{
-	public:
-	// Constructor
-	TextPrimitiveList();
-
-	private:
-	// List of text primitive chunks
-	List<TextPrimitiveChunk> textPrimitives_;
-	// Current TextPrimitiveChunk
-	TextPrimitiveChunk *currentChunk_;
-
-	public:
-	// Forget all text primitives, but keeping lists intact
-	void forgetAll();
-	// Add primitive to list
-	void add(int x, int y, const char *text, QChar addChar = 0, bool rightAlign = FALSE);
-	// Render all primitives in list
-	void renderAll(QPainter& painter, int verticalOffset);
-};
-
-// 3D Text Primitive
-class TextPrimitive3D : public ListItem<TextPrimitive3D>
-{
-	public:
-	// Constructor
-	TextPrimitive3D();
-
-	private:
-	// Text coordinates
-	Vec3<double> r_;
-	// Whether to right-align text
-	bool rightAlign_;
-	// Text to render
-	Dnchar text_;
-	
-	public:
-	// Set data
-	void set(Vec3<double> r, bool rightalign, const char *text);
-	// Return text coordinate
-	Vec3<double> r();
-	// Return text to render
-	const char *text();
-	// Return whether to right-align text
-	bool rightAlign();
+	// Parser lexer, called by yylex()
+	static int lex();
+	// Generate TextFragment data for specified TextPrimitive from supplied string
+	static bool generateFragments(TextPrimitive* target, QString inputString);
+	// Return current target
+	static TextPrimitive* target();
+	// Add text fragment
+	bool addFragment(QString text);
+	// Add escape marker
+	static bool addEscape(TextPrimitive::EscapeSequence escSeq);
+	// Remove escape marker
+	static void removeEscape();
 };
 
 #endif

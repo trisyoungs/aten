@@ -20,7 +20,6 @@
 */
 
 #include "main/aten.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 
 // Load filters
@@ -36,7 +35,7 @@ void Aten::openFilters()
 
 	// Construct a list of possible locations for the filters
 	QStringList paths;
-	if (!aten.dataDir_.isEmpty())
+	if (!dataDir_.isEmpty())
 	{
 		msg.print(Messenger::Verbose, "Aten::openFilters() - data directory is '%s'.\n", dataDir_.get());
 		paths << dataDir_.get();
@@ -113,6 +112,86 @@ bool Aten::openFilter(const char *filename)
 	}
 	msg.exit("Aten::openFilter");
 	return TRUE;
+}
+
+// Create filter strings for file dialogs
+void Aten::createFileDialogFilters()
+{
+	msg.enter("Aten::createFileDialogFilters");
+	Refitem<Tree,int> *ri;
+	int n;
+
+	// Model Import
+	loadModelFilters.clear();
+	loadModelFilters += "All files (*)";
+	for (ri = aten.filters(FilterData::ModelImport); ri != NULL; ri = ri->next)
+	{
+		loadModelFilters += ";;";
+		loadModelFilters += ri->item->filter.description();
+	}
+	ui.actionFileOpen->setEnabled(!loadModelFilters.isEmpty());
+	ui.RecentMenu->setEnabled(!loadModelFilters.isEmpty());
+
+	// Trajectory Import
+	loadTrajectoryFilters.clear();
+	loadTrajectoryFilters += "All files (*)";
+	for (ri= aten.filters(FilterData::TrajectoryImport); ri != NULL; ri = ri->next)
+	{
+		loadTrajectoryFilters += ";;";
+		loadTrajectoryFilters += ri->item->filter.description();
+	}
+	ui.actionTrajectoryOpen->setEnabled(!loadTrajectoryFilters.isEmpty());
+
+	// Model Export
+	saveModelFilters.clear();
+	for (ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+	{
+		if (!saveModelFilters.isEmpty()) saveModelFilters += ";;";
+		saveModelFilters += ri->item->filter.description();
+	}
+	// Check for empty filters list
+	ui.actionFileSave->setEnabled(!saveModelFilters.isEmpty());
+	ui.actionFileSaveAs->setEnabled(!saveModelFilters.isEmpty());
+
+	// Save image
+	saveBitmapFilters.clear();
+	for (n=0; n < RenderEngine::nBitmapFormats; n++)
+	{
+		if (!saveBitmapFilters.isEmpty()) saveBitmapFilters += ";;";
+		saveBitmapFilters += RenderEngine::bitmapFormatFilter( (RenderEngine::BitmapFormat) n);
+	}
+
+	// Save vector
+// 	saveVectorDialog->filters().clear();
+// 	filters.clear();
+// 	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
+// 	saveVectorDialog->setFilters(filters);
+
+	// Expression Export
+	saveExpressionFilters.clear();
+	for (ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+	{
+		if (!saveExpressionFilters.isEmpty()) saveExpressionFilters += ";;";
+		saveExpressionFilters += ri->item->filter.description();
+	}
+	// Check for empty filters list
+	ui.actionSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
+
+	// Grid import
+	loadGridFilters.clear();
+	loadGridFilters += "All files (*)";
+	for (ri = aten.filters(FilterData::GridImport); ri != NULL; ri = ri->next)
+	{
+		loadGridFilters += ";;";
+		loadGridFilters += ri->item->filter.description();
+	}
+	gui.gridsWidget->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
+
+	// Create open script dialog
+	loadScriptFilters.clear();
+	loadScriptFilters += "All files (*)";
+
+	msg.exit("Aten::createFileDialogFilters");
 }
 
 // Register a filter of a given type at start of list

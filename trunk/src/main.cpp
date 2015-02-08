@@ -1,7 +1,7 @@
 /*
 	*** Aten Main
 	*** src/main.cpp
-	Copyright T. Youngs 2007-2012
+	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
 
@@ -21,20 +21,22 @@
 
 #include "main/aten.h"
 #include "main/version.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "base/messenger.h"
-#include "base/mathfunc.h"
+#include "math/mathfunc.h"
 #include <time.h>
 #include <ctime>
 #include <iostream>
 
 int main(int argc, char *argv[])
 {
-	// Parse early command-line options
+	// Create main Aten object
+	Aten aten;
+
+	/* Parse early command-line options */
 	if (!aten.parseCliEarly(argc, argv)) return -1;
 
-	// Print GPL license information
+	/* Print GPL license information */
 	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2010  T. Youngs.\n", ATENVERSION);
 	msg.print(Messenger::Verbose, "SVN repository is %s.\n", ATENURL);
 	msg.print(Messenger::Verbose, "Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
@@ -42,52 +44,64 @@ int main(int argc, char *argv[])
 	msg.print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
 	msg.print(Messenger::Verbose, "For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
+	/* Set random seed */
 	srand( (unsigned)time( NULL ) );
-	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
 
-	// Get environment variables
+	/* Get environment variables */
 	if (getenv("HOME") != '\0') aten.setHomeDir(getenv("HOME"));
 	else aten.setHomeDir( getenv("USERPROFILE") );
 	aten.setWorkDir(getenv("PWD"));
 	if (!aten.dataDirSet()) aten.setDataDir(getenv("ATENDATA"));
 	msg.print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", aten.homeDir(), aten.workDir(), aten.dataDir());
 
-	// Initialise QApplication
-	gui.initialise(argc, argv);
+	/* Create the main QApplication */
+	QApplication app(argc, argv, QApplication::GuiClient);
+	QCoreApplication::setOrganizationName("ProjectAten");
+	QCoreApplication::setOrganizationDomain("www.projectaten.net");
+	QCoreApplication::setApplicationName("Aten");
 
-	// Reconstruct combination rule functions
+	#if QT_VERSION >= 0x040600
+	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL);
+	#endif
+
+	/* Tweak the default QGLFormat */
+	QGLFormat::defaultFormat().setSampleBuffers(true);
+
+	/* Create the main window */
+	AtenForm mainWindow;
+
+	/* Reconstruct combination rule functions */
 	Combine::regenerateEquations();
 
-	// Read in includes (if unsuccessful, a messagebox will be raised in the GUI)
+	/* Read in includes (if unsuccessful, a messagebox will be raised in the GUI) */
 	if (prefs.loadIncludes()) aten.openIncludes();
 
-	// Read in file filters (if unsuccessful, a messagebox will be raised in the GUI)
-	// This will also set dataDir_ to a valid value (provided one could be found in a default search location)
+	/* Read in file filters (if unsuccessful, a messagebox will be raised in the GUI) */
+	/* This will also set dataDir_ to a valid value (provided one could be found in a default search location) */
 	if (prefs.loadFilters()) aten.openFilters();
 	
-	// Load in fragments
+	/* Load in fragments */
 	if (prefs.loadFragments()) aten.openFragments();
 	
-	// Load in partitions
+	/* Load in partitions */
 	if (prefs.loadPartitions()) aten.openPartitions();
 	
-	// Load in program and user preferences
+	/* Load in program and user preferences */
 	if (!prefs.load()) return -1;
 	
-	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
+	/* Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure */
 	if (aten.parseCli(argc,argv) == -1) return -1;
 
-	// Display message for 1056
-	if (prefs.warning1056())
-	{
-		printf("****** INFO *******\nNote that v1.5 (revision 1056) introduced a rewrite of the typing language, along with some subtle changes to the syntax.\nYour own forcefield files may need to be checked in order to ensure consistency.\n(Disable this warning with 'aten.prefs.warn1056 = FALSE;' in your prefs file)\n");
-	}
-
-	// Enter the correct program mode
+	/* Enter the correct program mode */
+	int result = 0;
 	switch (aten.programMode())
 	{
 		case (Aten::GuiMode):
-			if (gui.applicationType() != QApplication::Tty) gui.run();
+			/* Show the main window */
+			mainWindow.show();
+
+			/* Enter Qt's main events loop */
+			result =  app.exec();
 			break;
 		case (Aten::BatchMode):
 			msg.print("Batch mode in effect - models will be processed and saved.\n");
@@ -112,13 +126,7 @@ int main(int argc, char *argv[])
 			break;
 	}
 
-	// Delete the main TCanvas
-	if (gui.mainWindow() != NULL) delete gui.mainWindow();
-
-	// Delete the main QApplication
-	delete gui.application();
-
-	// Done.
+	/* Done. */
 	return 0;
 }
 

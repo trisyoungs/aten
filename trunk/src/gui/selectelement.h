@@ -22,7 +22,6 @@
 #ifndef ATEN_SELECTELEMENTDIALOG_H
 #define ATEN_SELECTELEMENTDIALOG_H
 
-#include "gui/gui.h"
 #include "gui/ui_selectelement.h"
 #include "base/elements.h"
 
@@ -69,7 +68,7 @@ class AtenSelectElement : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenSelectElement(QWidget *parent = 0);
+	AtenSelectElement(QWidget* parent);
 	~AtenSelectElement();
 	// Main form declaration
 	Ui::SelectElementDialog ui;

@@ -23,7 +23,7 @@
 #define ATEN_LINEPARSER_H
 
 #include "base/dnchar.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "templates/list.h"
 #include <fstream>
 #include <iostream>

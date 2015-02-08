@@ -24,7 +24,7 @@
 
 #include "parser/vtypes.h"
 #include "base/dnchar.h"
-#include "base/matrix.h"
+#include "math/matrix.h"
 #include "templates/vector3.h"
 
 // Return Value
@@ -35,16 +35,16 @@ class ReturnValue : public ListItem<ReturnValue>
 	ReturnValue();
 	ReturnValue(int i);
 	ReturnValue(double d);
-	ReturnValue(const char *s);
+	ReturnValue(const char* s);
 	ReturnValue(Vec3<double> v);
 	ReturnValue(Matrix m);
-	ReturnValue(VTypes::DataType type, void *ptr);
+	ReturnValue(VTypes::DataType type, void* ptr);
 	~ReturnValue();
 	// Operator=
 	void operator=(const ReturnValue &rv);
 	void operator=(double d);
 	void operator=(int i);
-	void operator=(const char *s);
+	void operator=(const char* s);
 
 
 	/*
@@ -63,13 +63,13 @@ class ReturnValue : public ListItem<ReturnValue>
 	Dnchar valueS_;
 	Vec3<double> valueV_;
 	Matrix valueM_;
-	void *valueP_, *valueRefitem_;
+	void* valueP_, *valueRefitem_;
 	// Array members for returns
-	int *arrayI_;
-	double *arrayD_;
-	Dnchar *arrayS_;
-	Vec3<double> *arrayV_;
-	Matrix *arrayM_;
+	int* arrayI_;
+	double* arrayD_;
+	Dnchar* arrayS_;
+	Vec3<double>* arrayV_;
+	Matrix* arrayM_;
 	void **arrayP_;
 	// Clear any current array data
 	void clearArrayData();
@@ -80,7 +80,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Reset data
 	void reset();
 	// Return string of contained data
-	const char *info();
+	const char* info();
 	// Return unique 'pair' code based on return types
 	int dataPair(ReturnValue &source);
 
@@ -94,7 +94,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Set from real value
 	void set(double d);
 	// Set from character value
-	void set(const char *s);
+	void set(const char* s);
 	// Set from vector value
 	void set(Vec3<double> v);
 	// Set from individual vector data
@@ -112,13 +112,13 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Set array element from real value
 	void setElement(int id, double d);
 	// Set array element from character value
-	void setElement(int id, const char *s);
+	void setElement(int id, const char* s);
 	// Set array element from vector value
 	void setElement(int id, Vec3<double> v);
 	// Set array element from vector value
 	void setElement(int id, Matrix m);
 	// Set array element from pointer value
-	void setElement(int id, VTypes::DataType type, void *ptr);
+	void setElement(int id, VTypes::DataType type, void* ptr);
 	// Return actual vector object for in-place modification
 	Vec3<double>& vector();
 	// Return actual matrix object for in-place modification
@@ -134,7 +134,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Return real value
 	double asDouble(bool &success);
 	// Return character string
-	const char *asString(bool &success);
+	const char* asString(bool &success);
 	// Return vector data
 	Vec3<double> asVector(bool &success);
 	// Return matrix data
@@ -148,7 +148,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Return real element value
 	double asDouble(int index, bool &success);
 	// Return character string element
-	const char *asString(int index, bool &success);
+	const char* asString(int index, bool &success);
 	// Return vector element data
 	Vec3<double> asVector(int index, bool &success);
 	// Return matrix element data
@@ -168,7 +168,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Return real value
 	double asDouble();
 	// Return character string
-	const char *asString();
+	const char* asString();
 	// Return vector data
 	Vec3<double> asVector();
 	// Return matrix data

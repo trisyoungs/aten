@@ -20,15 +20,13 @@
 */
 
 #include "main/aten.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/geometry.h"
-#include "gui/toolbox.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
 // Constructor
-GeometryWidget::GeometryWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+GeometryWidget::GeometryWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 }
@@ -37,8 +35,6 @@ void GeometryWidget::showWidget()
 {
 	refresh();
 	show();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.GeometryButton->setChecked(TRUE);
 }
 
 // Update active tab and labels
@@ -52,7 +48,7 @@ void GeometryWidget::refresh()
 void GeometryWidget::updateTabs()
 {
 	// Check current atom selection
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() < 2) return;
 	switch (m->nSelected())
 	{
@@ -83,7 +79,7 @@ void GeometryWidget::updateTabs()
 // Update value labels
 void GeometryWidget::updateLabels()
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() < 2) return;
 	double value;
 	Atom *i, *j, *k, *l;
@@ -125,28 +121,28 @@ void GeometryWidget::updateLabels()
 void GeometryWidget::on_MeasureDistanceSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MeasureSelected, "i", 2);
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Measure all bond angles in current selection
 void GeometryWidget::on_MeasureAngleSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MeasureSelected, "i", 3);
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Measure all bond torsions in current selection
 void GeometryWidget::on_MeasureTorsionSelectionButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MeasureSelected, "i", 4);
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Clear all selections from model
 void GeometryWidget::on_MeasureClearAllButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ClearMeasurements, "");
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 /*
@@ -155,7 +151,7 @@ void GeometryWidget::on_MeasureClearAllButton_clicked(bool checked)
 
 void GeometryWidget::on_SetNewDistanceButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
 		msg.print("Can't set distance - %i atoms are selected but 2 are required.\n", m->nSelected());
@@ -167,12 +163,12 @@ void GeometryWidget::on_SetNewDistanceButton_clicked(bool checked)
 	j = ri->next->item;
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, ui.NewDistanceSpin->value());
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
 		msg.print("Can't nudge distance - %i atoms are selected but 2 are required.\n", m->nSelected());
@@ -185,12 +181,12 @@ void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
 	double value = m->distance(i,j) + ui.NudgeDistanceSpin->value();
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, value);
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
 		msg.print("Can't nudge distance - %i atoms are selected but 2 are required.\n", m->nSelected());
@@ -203,7 +199,7 @@ void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 	double value = m->distance(i,j) - ui.NudgeDistanceSpin->value();
 	CommandNode::run(Command::SetDistance, "iid", i->id()+1, j->id()+1, value);
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -212,7 +208,7 @@ void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 
 void GeometryWidget::on_SetNewAngleButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
 		msg.print("Can't set angle - %i atoms are selected but 3 are required.\n", m->nSelected());
@@ -225,12 +221,12 @@ void GeometryWidget::on_SetNewAngleButton_clicked(bool checked)
 	k = ri->next->next->item;
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, ui.NewAngleSpin->value());
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
 		msg.print("Can't nudge angle - %i atoms are selected but 3 are required.\n", m->nSelected());
@@ -244,12 +240,12 @@ void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
 	double value = m->angle(i,j,k) + ui.NudgeAngleSpin->value();
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, value);
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
 		msg.print("Can't nudge angle - %i atoms are selected but 3 are required.\n", m->nSelected());
@@ -263,7 +259,7 @@ void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 	double value = m->angle(i,j,k) - ui.NudgeAngleSpin->value();
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, value);
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -272,7 +268,7 @@ void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 
 void GeometryWidget::on_SetNewTorsionButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
 		msg.print("Can't set torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
@@ -286,12 +282,12 @@ void GeometryWidget::on_SetNewTorsionButton_clicked(bool checked)
 	l = ri->next->next->next->item;
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, ui.NewTorsionSpin->value());
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
 		msg.print("Can't nudge torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
@@ -306,12 +302,12 @@ void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
 	double value = m->torsion(i,j,k,l) + ui.NudgeTorsionSpin->value();
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
 		msg.print("Can't nudge torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
@@ -326,17 +322,13 @@ void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 	double value = m->torsion(i,j,k,l) - ui.NudgeTorsionSpin->value();
 	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
 	updateLabels();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void GeometryWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.GeometryButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
-
 	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isGeometryWidgetAction(gui.mainCanvas()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
+	if (UserAction::isGeometryWidgetAction(parent_.selectedMode())) parent_.cancelCurrentMode();
 
 	event->accept();
 }

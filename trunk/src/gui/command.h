@@ -106,9 +106,13 @@ class CommandWidget : public QDockWidget
 	/*
 	// Widgets
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor
-	CommandWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	CommandWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::CommandWidget ui;
 	// Finalise widgets (things that couldn't be done in Qt Designer)

@@ -23,8 +23,8 @@
 #define ATEN_VECTOR3_H
 
 #include "base/messenger.h"
-#include "base/constants.h"
-#include "base/mathfunc.h"
+#include "math/constants.h"
+#include "math/mathfunc.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -35,7 +35,7 @@ template <class T> class Vec3
 	// Constructor
 	Vec3<T>(T xx = 0, T yy = 0, T zz = 0);
 	// Components of vector
-	T x,y,z;
+	T x, y, z;
 
 
 	/*
@@ -103,7 +103,7 @@ template <class T> class Vec3
 	// Returns the index of the minimum absolute-valued element in the vector
 	int absMinElement() const;
 	// Dot product between this and supplied vector
-	double dp(const Vec3<T> &v) const;
+	double dp(const Vec3<T>& v) const;
 	// Normalise and return original magnitude
 	double magAndNormalise();
 	// Calculate vector magnitude
@@ -119,15 +119,15 @@ template <class T> class Vec3
 	// Returns the minimum valued element in the vector
 	int minElement() const;
 	// Multiply elements of this vector with those of supplied vector
-	void multiply(const Vec3<T> &v);
+	void multiply(const Vec3<T>& v);
 	// Normalise the vector to unity
 	void normalise();
 	// Returns an orthogonal unit vector
-	Vec3<T> orthogonal(bool isNormalised = FALSE) const;
+	Vec3<T> orthogonal(bool isNormalised = false) const;
 	// Orthogonalise (Gram-Schmidt) w.r.t. supplied vector
-	void orthogonalise(const Vec3<T>&);
+	void orthogonalise(const Vec3<T>& other);
 	// Orthogonalise (two vectors)
-	void orthogonalise(const Vec3<T> &source1, const Vec3<T> &source2);
+	void orthogonalise(const Vec3<T>& source1, const Vec3<T>& source2);
 	// Prints the contents of the vector
 	void print() const;
 	// Generate random unit vector
@@ -230,7 +230,7 @@ template <class T> void Vec3<T>::operator+=(T v)
 }
 
 // Operator += (Vec3)
-template <class T> void Vec3<T>::operator+=(const Vec3<T> &v)
+template <class T> void Vec3<T>::operator+=(const Vec3<T>& v)
 {
 	x += v.x;
 	y += v.y;
@@ -248,7 +248,7 @@ template <class T> Vec3<T> Vec3<T>::operator+(T v) const
 }
 
 // Operator + (Vec3)
-template <class T> Vec3<T> Vec3<T>::operator+(const Vec3<T> &v) const
+template <class T> Vec3<T> Vec3<T>::operator+(const Vec3<T>& v) const
 {
 	Vec3<T> result;
 	result.x = x+v.x;
@@ -266,7 +266,7 @@ template <class T> void Vec3<T>::operator-=(T v)
 }
 
 // Operator -= (Vec3)
-template <class T> void Vec3<T>::operator-=(const Vec3<T> &v)
+template <class T> void Vec3<T>::operator-=(const Vec3<T>& v)
 {
 	x -= v.x;
 	y -= v.y;
@@ -292,7 +292,7 @@ template <class T> Vec3<T> Vec3<T>::operator-(T v) const
 }
 
 // Operator - (Vec3)
-template <class T> Vec3<T> Vec3<T>::operator-(const Vec3<T> &v) const
+template <class T> Vec3<T> Vec3<T>::operator-(const Vec3<T>& v) const
 {
 	Vec3<T> result;
 	result.set(x-v.x,y-v.y,z-v.z);
@@ -308,7 +308,7 @@ template <class T> void Vec3<T>::operator/=(T v)
 }
 
 // Operator /= (Vec3)
-template <class T> void Vec3<T>::operator/=(const Vec3<T> &v)
+template <class T> void Vec3<T>::operator/=(const Vec3<T>& v)
 {
 	x /= v.x;
 	y /= v.y;
@@ -326,7 +326,7 @@ template <class T> Vec3<T> Vec3<T>::operator/(T v) const
 }
 
 // Operator / (Vec3)
-template <class T> Vec3<T> Vec3<T>::operator/(const Vec3<T> &v) const
+template <class T> Vec3<T> Vec3<T>::operator/(const Vec3<T>& v) const
 {
 	Vec3<T> result;
 	result.x = x/v.x;
@@ -354,7 +354,7 @@ template <class T> Vec3<T> Vec3<T>::operator*(T v) const
 }
 
 // Operator * (Vec3) (Cross product)
-template <class T> Vec3<T> Vec3<T>::operator*(const Vec3<T> &v) const
+template <class T> Vec3<T> Vec3<T>::operator*(const Vec3<T>& v) const
 {
 	Vec3<T> result;
 	result.x = y * v.z - z * v.y;
@@ -415,7 +415,7 @@ template <class T> int Vec3<T>::absMinElement() const
 }
 
 // Dot product
-template <class T> double Vec3<T>::dp(const Vec3<T> &v) const
+template <class T> double Vec3<T>::dp(const Vec3<T>& v) const
 {
 	return (x*v.x + y*v.y + z*v.z);
 }
@@ -477,7 +477,7 @@ template <class T> int Vec3<T>::minElement() const
 }
 
 // Multiply elements of this vector with those of the supplied vector
-template <class T> void Vec3<T>::multiply(const Vec3<T> &v)
+template <class T> void Vec3<T>::multiply(const Vec3<T>& v)
 {
 	x *= v.x;
 	y *= v.y;
@@ -513,17 +513,17 @@ template <class T> Vec3<T> Vec3<T>::orthogonal(bool isNormalised) const
 }
 
 // Orthogonalise
-template <class T> void Vec3<T>::orthogonalise(const Vec3<T> &source)
+template <class T> void Vec3<T>::orthogonalise(const Vec3<T>& other)
 {
-	double sourcemag = source.magnitude();
-	double dpovermagsq = dp(source) / (sourcemag * sourcemag);
-	x = x - dpovermagsq * source.x;
-	y = y - dpovermagsq * source.y;
-	z = z - dpovermagsq * source.z;
+	double sourcemag = other.magnitude();
+	double dpovermagsq = dp(other) / (sourcemag * sourcemag);
+	x = x - dpovermagsq * other.x;
+	y = y - dpovermagsq * other.y;
+	z = z - dpovermagsq * other.z;
 }
 
 // Orthogonalise (two vectors)
-template <class T> void Vec3<T>::orthogonalise(const Vec3<T> &source1, const Vec3<T> &source2)
+template <class T> void Vec3<T>::orthogonalise(const Vec3<T>& source1, const Vec3<T>& source2)
 {
 	// This routine actually generates the orthogonal vector via the cross-product
 	// We also calculate the scalar resolute (dp) to ensure the new vector points in the same direction

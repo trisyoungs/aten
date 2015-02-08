@@ -20,7 +20,7 @@
 */
 
 #include "parser/integer.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include <string.h>
 
 /*

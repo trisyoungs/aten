@@ -1,7 +1,7 @@
 /*
-	*** Primitive
+	*** Rendering Primitive
 	*** src/render/primitive.h
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2013-2014
 
 	This file is part of Aten.
 
@@ -27,160 +27,91 @@
 #include <GL/gl.h>
 #include "glext.h"
 #endif
-#include "templates/list.h"
+#include "render/primitiveinstance.h"
 #include "render/vertexchunk.h"
-#include "base/matrix.h"
-#include "base/dnchar.h"
+#include "math/matrix.h"
+#include "templates/list.h"
 
 // Forward Declarations
-class QGLContext;
-
-// Primitive Instance
-class PrimitiveInstance : public ListItem<PrimitiveInstance>
-{
-	public:
-	// Constructor
-	PrimitiveInstance();
-	// Instance Type
-	enum InstanceType { NoInstance, ListInstance, VBOInstance };
-	
-	private:
-	// Context to which primitive instance is associated
-	const QGLContext *context_;
-	// Type of instance
-	InstanceType type_;
-	// OpenGL ID of instance
-	GLuint id_;
-	
-	public:
-	// Set data
-	void set(const QGLContext *context, PrimitiveInstance::InstanceType type, GLuint id);
-	// Return context to which primitive instance is associated
-	const QGLContext *context();
-	// Return type of instance
-	InstanceType type();
-	// Return OpenGL ID of instance
-	int id();
-};
+/* none */
 
 // Rendering Primitive
-class Primitive
+class Primitive : public ListItem<Primitive>
 {
 	public:
 	// Constructor / Destructor
 	Primitive();
 	~Primitive();
-	// List pointer
-	Primitive *prev, *next;
-	// VBO function pointers (Windows only)
-	#ifdef _WIN32
-	static PFNGLGENBUFFERSPROC glGenBuffers;
-	static PFNGLBINDBUFFERPROC glBindBuffer;
-	static PFNGLBUFFERDATAPROC glBufferData;
-	static PFNGLBUFFERSUBDATAPROC glBufferSubData;
-	static PFNGLDELETEBUFFERSPROC glDeleteBuffers;
-	#endif
+
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
-	// List of vertices in primitive
-	List<VertexChunk> vertexChunks_;
-	// Current vertex chunk
-	VertexChunk *currentVertexChunk_;
+	// Vertex chunk for this primitive
+	VertexChunk vertexChunk_;
 	// Whether vertexData_ array also contains colour information
 	bool colouredVertexData_;
-	// Number of vertices that have been defined
-	int nDefinedVertices_;
 	// GL object drawing method
 	GLenum type_;
 	// Stack of OpenGL VBO or display list IDs and the contexts in which they were created
 	List<PrimitiveInstance> instances_;
 	// Flag stating whether or not instances should be used for this primitive
 	bool useInstances_;
-	// Name of primitive (for easier bug-tracking)
-	Dnchar name_;
 
 	public:
-	// Clear existing data (including deleting arrays)
-	void clear();
+	// Initialise primitive storage
+	void initialise(int maxVertices, int maxIndices, GLenum type, bool colourData);
 	// Forget all data, leaving arrays intact
 	void forgetAll();
 	// Return number of vertices currently defined in primitive
-	int nDefinedVertices();
-	// Set GL drawing primitive type
-	void setType(GLenum type);
-	// Return vertex array
-	VertexChunk *vertexChunks();
-	// Flag whether primitive should contain colour data information for each vertex
-	void setColourData(bool b);
+	int nDefinedVertices() const;
+	// Return number of indices currently defined in primitive
+	int nDefinedIndices() const;
+	// Return vertex chunk
+	const VertexChunk& vertexChunk();
 	// Return whether vertex data contains colour information
-	bool colouredVertexData();
+	bool colouredVertexData() const;
 	// Flag that this primitive should not use instances (rendering will use vertex arrays)
 	void setNoInstances();
-	// Return whether this primitive uses instances
-	bool useInstances();
 	// Push instance layer from current vertex chunk list
-	void pushInstance(const QGLContext *context);
+	void pushInstance(const QGLContext* context, GLExtensions* extensions);
 	// Pop topmost instance layer
 	void popInstance(const QGLContext *context);
-	// Return context associated to topmost primitive on stack
-	const QGLContext *topContext();
-	// Set name of primitive
-	void setName(const char *s);
-	// Return name of primitive
-	const char *name();
+	// Return number of instances available
+	int nInstances();
 	// Send to OpenGL (i.e. render)
-	void sendToGL();
-	
-	
+	void sendToGL() const;
+
+
 	/*
-	// Vertex Generation
-	*/
+	 * Vertex / Index Generation
+	 */
 	public:
 	// Define next vertex and normal
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid);
-	// Define next vertex, normal, and colour (as array)
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat *colour, bool calcCentroid);
+	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz);
+	// Define next vertex and normal (as Vec3<double>)
+	GLuint defineVertex(Vec3<double> vertex, Vec3<double> normal);
 	// Define next vertex, normal, and colour
-	void defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool calcCentroid);
+	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+	// Define next vertex, normal, and colour
+	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, Vec3<double>& normal, Vec4<GLfloat>& colour);
 	// Define next vertex, normal, and colour (as Vec3<double>s and array)
-	void defineVertex(Vec3<double> &v, Vec3<double> &u, GLfloat *colour, bool calcCentroid);
-	// Define triangle fromn supplied array data, unique colour per vertex
-	void defineTriangle(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
-	// Define triangle with single colour per vertex
-	void defineTriangleSingleColour(GLfloat *vertices, GLfloat *normals, GLfloat *colour);
-	// Plot simple line between specified coordinates
-	void plotLine(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2);
-	// Plot vertices of sphere with specified radius and quality
-	void plotSphere(double radius, int nstacks, int nslices);
-	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
-	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nstacks, int nslices, bool capStart = FALSE, bool capEnd = FALSE);
-	// Plot tube ring of specified radius and tube width
-	void plotRing(double radius, double width, int nstacks, int nslices, int nsegments, bool segmented = FALSE);
-	// Plot circle of specified radius
-	void plotCircle(double radius, int nstacks, int nsegments, bool segmented = FALSE);
-	// Create vertices of cross with specified width
-	void plotCross(double halfWidth, Matrix &transform, GLfloat colour[4]);
-	// Plot solid cube of specified size at specified origin, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
-	void plotCube(double size, int nsubs, double ox, double oy, double oz);
+	GLuint defineVertex(Vec3<double> &v, Vec3<double> &u, Vec4<GLfloat> &colour);
+	// Define next index double
+	bool defineIndices(GLuint a, GLuint b);
+	// Define next index triple
+	bool defineIndices(GLuint a, GLuint b, GLuint c);
 
 
 	/*
-	// Primitive Generation
-	*/
+	 * Geometric Primitive Generation
+	 */
 	public:
-	// Create wireframe cube centred at zero
-	void createWireCube(double size);
-	// Create wireframe, crossed, cube centred at zero
-	void createCrossedCube(double size);
-	// Create solid cube of specified size at specified origin, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
-	void createCube(double size, int nsubs, double ox, double oy, double oz);
-	// Create cell axes
-	void createCellAxes();
-	// Create rotation globe axes
-	void createRotationGlobeAxes(int nstacks, int nslices);
+	// Draw line
+	void line(double x1, double y1, double z1, double x2, double y2, double z2);
+	// Draw line
+	void line(Vec3<double> v1, Vec3<double> v2);
 };
 
 #endif

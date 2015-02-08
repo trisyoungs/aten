@@ -21,16 +21,14 @@
 
 #include "main/aten.h"
 #include "gui/zmatrix.h"
-#include "gui/gui.h"
 #include "gui/selectvariable.h"
 #include "gui/mainwindow.h"
-#include "gui/toolbox.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include "parser/commandnode.h"
 
 // Constructor
-AtenZMatrix::AtenZMatrix(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+AtenZMatrix::AtenZMatrix(AtenWindow& parent, Qt::WindowFlags flags) : QDialog(&parent, flags), parent_(parent)
 {
 	refreshing_ = FALSE;
 	zMatrix_ = NULL;
@@ -47,8 +45,9 @@ void AtenZMatrix::showWidget()
 void AtenZMatrix::refresh(bool forceupdate)
 {
 	msg.enter("AtenZMatrix::refresh");
-	Model *m = aten.currentModelOrFrame();
+
 	// Grab (and create) zmatrix for current model
+	Model *m = parent_.aten().currentModelOrFrame();
 	zMatrix_ = m->zMatrix();
 	if (zMatrix_ == NULL) return;
 	
@@ -146,6 +145,10 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 	Variable *newvar, *oldvar;
 	ZMatrixElement *el;
 	bool changed = FALSE;
+
+	// Create a variable selection dialog ready...
+	AtenSelectVariable variableSelect(this);
+
 	// We are only interested in the event *if* a variable name was clicked, since we will not allow atom IDs to be edited (yet)
 	switch (column)
 	{
@@ -155,14 +158,14 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 			// Select a new variable of distance type
 			oldvar = zMatrix_->distance(row-1);
 			el = zMatrix_->element(row-1);
-			newvar = gui.selectVariableDialog->selectVariable(zMatrix_, 0, oldvar, el->negated(0));
+			newvar = variableSelect.selectVariable(zMatrix_, 0, oldvar, el->negated(0));
 			if (newvar != NULL)
 			{
 				// Set new variable if it is different
 				if (newvar != oldvar)
 				{
 					el->setDistanceVariable(newvar);
-					el->setNegated(0, gui.selectVariableDialog->isNegated());
+					el->setNegated(0, variableSelect.isNegated());
 				}
 				changed = TRUE;
 			}
@@ -173,14 +176,14 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 			// Select a new variable of angle type
 			oldvar = zMatrix_->angle(row-2);
 			el = zMatrix_->element(row-2);
-			newvar = gui.selectVariableDialog->selectVariable(zMatrix_, 1, oldvar, el->negated(1));
+			newvar = variableSelect.selectVariable(zMatrix_, 1, oldvar, el->negated(1));
 			if (newvar != NULL)
 			{
 				// Set new variable if it is different
 				if (newvar != oldvar)
 				{
 					el->setAngleVariable(newvar);
-					el->setNegated(1, gui.selectVariableDialog->isNegated());
+					el->setNegated(1, variableSelect.isNegated());
 				}
 				changed = TRUE;
 			}
@@ -191,14 +194,14 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 			// Select a new variable of angle type
 			oldvar = zMatrix_->angle(row-3);
 			el = zMatrix_->element(row-3);
-			newvar = gui.selectVariableDialog->selectVariable(zMatrix_, 2, oldvar, el->negated(2));
+			newvar = variableSelect.selectVariable(zMatrix_, 2, oldvar, el->negated(2));
 			if (newvar != NULL)
 			{
 				// Set new variable if it is different
 				if (newvar != oldvar)
 				{
 					el->setTorsionVariable(newvar);
-					el->setNegated(2, gui.selectVariableDialog->isNegated());
+					el->setNegated(2, variableSelect.isNegated());
 				}
 				changed = TRUE;
 			}
@@ -208,7 +211,7 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 	if (changed)
 	{
 		// New value has already been put into zmatrix structure, so update model and refresh window
-		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 		refresh();
 	}
 }
@@ -235,7 +238,7 @@ void AtenZMatrix::on_VariablesTable_itemChanged(QTableWidgetItem *w)
 	if (column == 1)
 	{
 		if (var != NULL) zMatrix_->setVariable(var, atof(qPrintable(w->text())));
-		gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 		refresh();
 	}
 }
@@ -248,7 +251,7 @@ void AtenZMatrix::on_ShiftUpButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::ShiftUp, "i", 1);
 	refresh();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
@@ -259,7 +262,7 @@ void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::ShiftDown, "i", 1);
 	refresh();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
@@ -270,7 +273,7 @@ void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::MoveToStart, "");
 	refresh();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
@@ -281,11 +284,9 @@ void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Command::MoveToEnd, "");
 	refresh();
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenZMatrix::dialogFinished(int result)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.ZMatrixButton->setChecked(FALSE);
 }
