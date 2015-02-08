@@ -23,7 +23,7 @@
 #include "parser/stepnode.h"
 #include "classes/forcefieldatom.h"
 #include "classes/prefs.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "main/aten.h"
 #include <string.h>
 

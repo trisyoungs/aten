@@ -87,9 +87,13 @@ class ForcefieldsWidget : public QDockWidget
 	/*
 	// Dialog
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor / Destructor
-	ForcefieldsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::ForcefieldsWidget ui;
 };

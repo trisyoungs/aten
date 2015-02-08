@@ -22,12 +22,12 @@
 #ifndef ATEN_PREFSWINDOW_H
 #define ATEN_PREFSWINDOW_H
 
-#include "gui/gui.h"
 #include "gui/ui_prefs.h"
 #include "classes/prefs.h"
 
 // Forwads declarations
 class Element;
+class AtenWindow;
 
 // Program preferences window
 class AtenPrefs : public QDialog
@@ -206,9 +206,13 @@ class AtenPrefs : public QDialog
 	/*
 	// Widgets
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor
-	AtenPrefs(QWidget *parent = 0);
+	AtenPrefs(AtenWindow& parent);
 	// Main form declaration
 	Ui::PrefsDialog ui;
 	// Set controls to reflect program variables

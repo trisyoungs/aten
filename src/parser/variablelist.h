@@ -23,7 +23,7 @@
 #define ATEN_VARIABLELIST_H
 
 #include "parser/variable.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "templates/list.h"
 
 // Forward Declarations

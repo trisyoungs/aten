@@ -141,6 +141,8 @@ class Matrix
 	public:
 	// Create a translation to the matrix (as glTranslated would do)
 	void createTranslation(double dx, double dy, double dz);
+	// Create a translation to the matrix (as glTranslated would do)
+	void createTranslation(Vec3<double> vec);
 	// Apply a translation to the matrix (as glTranslated would do)
 	void applyTranslation(double dx, double dy, double dz);
 	// Apply a translation to the matrix (as glTranslated would do)
@@ -173,6 +175,14 @@ class Matrix
 	void applyScalingY(double scale);
 	// Apply a z-scaling to the matrix
 	void applyScalingZ(double scale);
+
+
+	/*
+	 * Shearing
+	 */
+	public:
+	// Apply a shearing along X
+	void applyShearX(double shearx);
 
 
 	/*

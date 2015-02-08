@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/constants.h"
+#include "math/constants.h"
 #include "base/messenger.h"
 #include "base/log.h"
 #include <stdio.h>

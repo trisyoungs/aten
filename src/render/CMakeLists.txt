@@ -1,10 +1,13 @@
 add_library(render
 engine.h
 engine_primitives.h
+glextensions.h
 gridprimitive.h
 primitive.h
 primitivegroup.h
 primitiveinfo.h
+primitiveinstance.h
+primitivelist.h
 textprimitive.h
 triangles.h
 vertexchunk.h
@@ -15,9 +18,12 @@ engine_primitives.cpp
 engine_useractions.cpp
 engine_windows.cpp
 gridprimitive.cpp
+glextensions.cpp
 primitive.cpp
 primitivegroup.cpp
 primitiveinfo.cpp
+primitiveinstance.cpp
+primitivelist.cpp
 primitive_surface.cpp
 primitive_vertex.cpp
 textprimitive.cpp

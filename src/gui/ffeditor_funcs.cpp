@@ -376,16 +376,16 @@ void AtenForcefieldEditor::boundFunctionChanged(TComboBox *sender, int i, Forcef
 // Test entered atom type
 void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
 {
-	Model *m = aten.currentModelOrFrame();
-	if (m == NULL) return;
-	// Get position of changed item (skipping _NDEF_)
-	int row = ui.FFEditorTypesTable->currentRow();
-	if (row == -1) return;
-	// Get pointer to forcefield type from edited row (skipping _NDEF_)
-	ForcefieldAtom *ffa = targetForcefield_->type(row+1);
-	m->selectNone(TRUE);
-	m->selectType(ffa->element(), ffa->netaString(), TRUE, FALSE);
-	msg.print("Type description matched %i atoms in current model.\n", m->nMarked());
+// 	Model *m = parent_.aten().currentModelOrFrame();   ATEN2 TODO
+// 	if (m == NULL) return;
+// 	// Get position of changed item (skipping _NDEF_)
+// 	int row = ui.FFEditorTypesTable->currentRow();
+// 	if (row == -1) return;
+// 	// Get pointer to forcefield type from edited row (skipping _NDEF_)
+// 	ForcefieldAtom *ffa = targetForcefield_->type(row+1);
+// 	m->selectNone(TRUE);
+// 	m->selectType(ffa->element(), ffa->netaString(), TRUE, FALSE);
+// 	msg.print("Type description matched %i atoms in current model.\n", m->nMarked());
 }
 
 // Item in type table edited

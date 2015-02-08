@@ -73,7 +73,7 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 			aten.setCurrentModel(m,TRUE);
 			msg.print("Current model is now '%s'.\n", aten.current.m->name());
 			// Update GUI
-			gui.update(GuiQt::AllTarget);
+			parent_.updateWidgets(AtenWindow::AllTarget);
 		}
 	}
 	else msg.print("Current model is '%s'.\n", aten.current.m->name());
@@ -104,7 +104,7 @@ bool Command::function_DeleteModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.removeModel(m);
 		// Update GUI
-		gui.update(GuiQt::AllTarget);
+		parent_.updateWidgets(AtenWindow::AllTarget);
 		return TRUE;
 	}
 	else
@@ -157,7 +157,7 @@ bool Command::function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(m,TRUE);
 		// Update GUI
-		gui.update(GuiQt::AllTarget);
+		parent_.updateWidgets(AtenWindow::AllTarget);
 	}
 	else return FALSE;
 	return TRUE;
@@ -183,7 +183,7 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		aten.setCurrentModel(m,TRUE);
 		m->setRenderSource(Model::ModelSource);
 		// Update GUI
-		gui.update(GuiQt::AllTarget);
+		parent_.updateWidgets(AtenWindow::AllTarget);
 		return TRUE;
 	}
 	else
@@ -211,7 +211,7 @@ bool Command::function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(m,TRUE);
 		// Update GUI
-		gui.update(GuiQt::AllTarget);
+		parent_.updateWidgets(AtenWindow::AllTarget);
 	}
 	else return FALSE;
 	return TRUE;
@@ -305,7 +305,7 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(VTypes::ModelData, obj.m);
 	// Update GUI
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 	return TRUE;
 }
 
@@ -319,7 +319,7 @@ bool Command::function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		aten.setCurrentModel(obj.m->next, TRUE);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
 		// Update GUI
-		gui.update(GuiQt::AllTarget);
+		parent_.updateWidgets(AtenWindow::AllTarget);
 	}
 	rv.set(VTypes::ModelData, obj.m);
 	return TRUE;
@@ -338,7 +338,7 @@ bool Command::function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.m->setRenderSource(Model::ModelSource);
 	aten.setCurrentModel(obj.m, TRUE);
 	// Update GUI
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 	return TRUE;
 }
 
@@ -352,7 +352,7 @@ bool Command::function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		aten.setCurrentModel(obj.m->prev, TRUE);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
 		// Update GUI
-		gui.update(GuiQt::AllTarget);
+		parent_.updateWidgets(AtenWindow::AllTarget);
 	}
 	rv.set(VTypes::ModelData, obj.m);
 	return TRUE;

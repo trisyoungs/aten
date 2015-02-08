@@ -23,7 +23,6 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/command.h"
-#include "gui/toolbox.h"
 #include "gui/select.h"
 #include "main/aten.h"
 #include <QtCore/QSettings>

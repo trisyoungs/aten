@@ -20,15 +20,13 @@
 */
 
 #include "main/aten.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
-#include "gui/toolbox.h"
 #include "gui/command.h"
 #include "parser/scopenode.h"
 #include "base/sysfunc.h"
 
 // Constructor
-CommandWidget::CommandWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+CommandWidget::CommandWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 	repopulateCommandList(NULL);
@@ -39,8 +37,6 @@ void CommandWidget::showWidget()
 {
 	show();
 	refresh();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.CommandButton->setChecked(TRUE);
 }
 
 void CommandWidget::refresh()
@@ -74,7 +70,7 @@ void CommandWidget::on_CommandPrompt_returnPressed()
 		tempScript.execute(result);
 	}
 	// Force update of the GUI?
-	if (ui.PromptForceUpdateCheck->isChecked()) gui.update(GuiQt::CanvasTarget);
+	if (ui.PromptForceUpdateCheck->isChecked()) parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 /*
@@ -132,7 +128,7 @@ void CommandWidget::on_InteractivePrompt_returnPressed()
 		updateVariableList();
 	}
 	// Force update of the GUI?
-	if (ui.InteractiveForceUpdateCheck->isChecked()) gui.update(GuiQt::CanvasTarget);
+	if (ui.InteractiveForceUpdateCheck->isChecked()) parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 /*
@@ -145,20 +141,20 @@ void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 	if (refreshlist)
 	{
 		ui.ScriptsList->clear();
-		for (Program *script = aten.scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
+		for (Program *script = parent_.aten().scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
 	}
 	// Refresh scripts menu
 	if (refreshactions)
 	{
 		for (Refitem<QAction, Program*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
 		{
-			gui.mainWindow()->ui.ScriptsMenu->removeAction(sa->item);
+// 			gui.mainWindow()->ui.ScriptsMenu->removeAction(sa->item);
 			// Free Reflist QActions
 			delete sa->item;
 		}
 		// Clear Reflist and repopulate, along with Scripts menu actions
 		scriptActions_.clear();
-		for (Program *prog = aten.scripts(); prog != NULL; prog = prog->next)
+		for (Program *prog = parent_.aten().scripts(); prog != NULL; prog = prog->next)
 		{
 			// Create new QAction and add to Reflist
 			QAction *qa = new QAction(this);
@@ -167,23 +163,22 @@ void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 			qa->setText(prog->name());
 			QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
 			scriptActions_.add(qa, prog);
-			gui.mainWindow()->ui.ScriptsMenu->addAction(qa);
 		}
 	}
 }
 
 void CommandWidget::on_OpenScriptButton_clicked(bool v)
 {
-	static QDir currentDirectory_(aten.workDir());
+	static QDir currentDirectory_(parent_.aten().workDir());
 	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Script", currentDirectory_.path(), gui.mainWindow()->loadScriptFilters, &selFilter);
+	QString filename = QFileDialog::getOpenFileName(this, "Open Script", currentDirectory_.path(), "All files (*)", &selFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 
 		// Create script and model variables within it
-		Program *ca = aten.addScript();
+		Program* ca = parent_.aten().addScript();
 		if (ca->generateFromFile(qPrintable(filename)))
 		{
 			msg.print("Script file '%s' loaded succesfully.\n", qPrintable(filename));
@@ -192,7 +187,7 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 		}
 		else
 		{
-			aten.removeScript(ca);
+			parent_.aten().removeScript(ca);
 			msg.print("Failed to load script file '%s'.\n", qPrintable(filename));
 		}
 	}
@@ -201,15 +196,15 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 {
 	// Cycle over scripts, clearing and reloading
-	Program *script = aten.scripts(), *xscript;
+	Program* script = parent_.aten().scripts(), *xscript;
 	while (script != NULL)
 	{
 		// Check that the file still exists
 		if (!fileExists(script->filename()))
 		{
 			Tree dialog;
-			TreeGuiWidget *group;
-			TreeGui &ui = dialog.defaultDialog();
+			TreeGuiWidget* group;
+			TreeGui& ui = dialog.defaultDialog();
 			ui.setProperty(TreeGuiWidgetEvent::TextProperty, "!! Error Finding Script !!");
 			ui.addLabel("", "The following script could not be found:",1,1);
 			ui.addLabel("", script->filename(),1,2);
@@ -222,7 +217,7 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 				if (choice == 1)
 				{
 					xscript = script->next;
-					aten.removeScript(script);
+					parent_.aten().removeScript(script);
 					script = xscript;
 					continue;
 				}
@@ -232,8 +227,8 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 		else if (!script->reload())
 		{
 			Tree dialog;
-			TreeGuiWidget *group;
-			TreeGui &ui = dialog.defaultDialog();
+			TreeGuiWidget* group;
+			TreeGui& ui = dialog.defaultDialog();
 			ui.setProperty(TreeGuiWidgetEvent::TextProperty, "!! Error Loading Script !!");
 			ui.addLabel("", "The following script contained an error (see MessageBox for more details):",1,1);
 			ui.addLabel("", script->filename(),1,2);
@@ -251,7 +246,7 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 				else if (choice == 2)
 				{
 					xscript = script->next;
-					aten.removeScript(script);
+					parent_.aten().removeScript(script);
 					script = xscript;
 					continue;
 				}
@@ -275,7 +270,7 @@ void CommandWidget::on_RunSelectedScriptButton_clicked(bool checked)
 {
 	int row = ui.ScriptsList->currentRow();
 	if (row == -1) return;
-	Program *script = aten.script(row);
+	Program *script = parent_.aten().script(row);
 	if (script != NULL)
 	{
 		// Execute the script
@@ -283,15 +278,15 @@ void CommandWidget::on_RunSelectedScriptButton_clicked(bool checked)
 		ReturnValue result;
 		script->execute(result);
 	}
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 void CommandWidget::on_RemoveSelectedScriptButton_clicked(bool checked)
 {
 	int row = ui.ScriptsList->currentRow();
 	if (row == -1) return;
-	Program *script = aten.script(row);
-	if (script != NULL) aten.removeScript(script);
+	Program *script = parent_.aten().script(row);
+	if (script != NULL) parent_.aten().removeScript(script);
 	// Better refresh the window and lists
 	refreshScripts();
 }
@@ -315,7 +310,7 @@ void CommandWidget::runScript()
 		ReturnValue result;
 		ri->data->execute(result);
 	}
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 /*
@@ -359,8 +354,5 @@ void CommandWidget::on_CommandList_currentTextChanged(const QString &text)
 
 void CommandWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.CommandButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

@@ -20,7 +20,7 @@
 */
 
 #include "classes/forcefieldbound.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include <stdlib.h>
 #include <stdio.h>
 

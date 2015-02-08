@@ -23,8 +23,6 @@
 #include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
-#include "gui/gui.h"
-#include "gui/toolbox.h"
 #include "gui/viewbasis.h"
 #include "gui/vieweigenvector.h"
 #include "gui/tlistwidgetitem.h"
@@ -32,7 +30,7 @@
 #include "base/sysfunc.h"
 
 // Constructor
-GridsWidget::GridsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+GridsWidget::GridsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 
@@ -57,8 +55,6 @@ GridsWidget::GridsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 void GridsWidget::showWidget()
 {
 	show();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.GridsButton->setChecked(TRUE);
 }
 
 // Refresh widget
@@ -73,7 +69,7 @@ void GridsWidget::refresh()
 	if (ui.ShowAllGridsCheck->isChecked())
 	{
 		// Need to loop over models, frames (if any) and grids
-		for (m = aten.models(); m != NULL; m = m->next)
+		for (m = parent_.aten().models(); m != NULL; m = m->next)
 		{
 			if (m->hasTrajectory())
 			{
@@ -90,7 +86,7 @@ void GridsWidget::refresh()
 	}
 	else 
 	{
-		m = aten.currentModelOrFrame();
+		m = parent_.aten().currentModelOrFrame();
 		for (Grid *g = m->grids(); g != NULL; g = g->next) addGridToList(g);
 	}
 	// Select the first item
@@ -100,7 +96,7 @@ void GridsWidget::refresh()
 	// Update orbital page
 	QTableWidgetItem *tabitem;
 	ui.OrbitalTable->clear();
-	m = aten.currentModelOrFrame();
+	m = parent_.aten().currentModelOrFrame();
 	ui.OrbitalTable->setRowCount(m->nEigenvectors());
 	int count = 0;
 	for (Eigenvector *vec = m->eigenvectors(); vec != NULL; vec = vec->next)
@@ -226,17 +222,17 @@ void GridsWidget::loadGrid()
 {
 	msg.enter("GridsWidget::loadGrid");
 	Tree *filter;
-	static QDir currentDirectory_(aten.workDir());
+	static QDir currentDirectory_(parent_.aten().workDir());
 	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Grid", currentDirectory_.path(), gui.mainWindow()->loadGridFilters, &selFilter);
+	QString filename = QFileDialog::getOpenFileName(this, "Open Grid", currentDirectory_.path(), parent_.aten().fileDialogFilters(FilterData::GridImport), &selFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		
 		// Find the filter that was selected
-		filter = aten.findFilterByDescription(FilterData::GridImport, qPrintable(selFilter));
-		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::GridImport);
+		filter = parent_.aten().findFilterByDescription(FilterData::GridImport, qPrintable(selFilter));
+		if (filter == NULL) filter = parent_.aten().probeFile(qPrintable(filename), FilterData::GridImport);
 		if (filter != NULL)
 		{
 			// Run any import options in the filter
@@ -244,7 +240,7 @@ void GridsWidget::loadGrid()
 		}
 	}
 	refresh();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 	msg.exit("GridsWidget::loadGrid");
 }
 
@@ -265,7 +261,7 @@ void GridsWidget::on_actionGridCopy_triggered(bool checked)
 		msg.print("No grid selected to copy.\n");
 		return;
 	}
-	aten.copyGrid(g);
+	parent_.aten().copyGrid(g);
 }
 
 void GridsWidget::on_actionGridCut_triggered(bool checked)
@@ -276,11 +272,11 @@ void GridsWidget::on_actionGridCut_triggered(bool checked)
 		msg.print("No grid selected to cut.\n");
 		return;
 	}
-	Model *m = aten.currentModelOrFrame();
-	aten.copyGrid(g);
+	Model *m = parent_.aten().currentModelOrFrame();
+	parent_.aten().copyGrid(g);
 	m->removeGrid(g);
 	refresh();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_actionGridDelete_triggered(bool checked)
@@ -297,22 +293,22 @@ void GridsWidget::on_actionGridDelete_triggered(bool checked)
 		m->removeGrid(g);
 	}
 	refresh();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_actionGridPaste_triggered(bool checked)
 {
-	Grid *g = aten.gridClipboard();
+	Grid *g = parent_.aten().gridClipboard();
 	if (g == NULL)
 	{
 		msg.print("No grid data on clipboard.\n");
 		return;
 	}
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	Grid *newgrid = m->addGrid();
 	*newgrid = *g;
 	refresh();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 /*
@@ -403,7 +399,7 @@ void GridsWidget::on_GridUseInternalColoursRadio_clicked(bool checked)
 	if (g == NULL) return;
 	ui.GridSecondaryColourButton->setEnabled(g->useSecondary());
 	g->setUseColourScale(FALSE);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
@@ -417,7 +413,7 @@ void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
 	Grid *g = getCurrentGrid();
 	if (g == NULL) return;
 	g->setUseColourScale(TRUE);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::gridOriginChanged(int component, double value)
@@ -436,7 +432,7 @@ void GridsWidget::gridOriginChanged(int component, double value)
 		o.set(component, value);
 		g->setOrigin(o);
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::gridAxisChanged(int axis, int component, double value)
@@ -455,7 +451,7 @@ void GridsWidget::gridAxisChanged(int axis, int component, double value)
 		axes[axis*4+component] = value;
 		g->setAxes(axes);
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridList_currentRowChanged(int row)
@@ -474,7 +470,7 @@ void GridsWidget::on_GridList_itemClicked(QListWidgetItem *item)
 	Grid *g = (Grid*) titem->data.asPointer(VTypes::GridData);
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridList_itemSelectionChanged()
@@ -500,7 +496,7 @@ void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 		g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
 	}
 	refreshGridInfo();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
@@ -516,7 +512,7 @@ void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 		g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
 	}
 	refreshGridInfo();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
@@ -532,7 +528,7 @@ void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 		g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
 	}
 	refreshGridInfo();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
@@ -548,7 +544,7 @@ void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 		g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
 	}
 	refreshGridInfo();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
@@ -563,7 +559,7 @@ void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
 		g->setStyle(Grid::SurfaceStyle (index));
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
@@ -578,7 +574,7 @@ void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
 		g->setOutlineVolume(checked);
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridFillEnclosedVolumeCheck_clicked(bool checked)
@@ -593,7 +589,7 @@ void GridsWidget::on_GridFillEnclosedVolumeCheck_clicked(bool checked)
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
 		g->setFillEnclosedVolume(checked);
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
@@ -608,7 +604,7 @@ void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
 		g->setPeriodic(checked);
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
@@ -636,7 +632,7 @@ void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 	}
 	ui.GridPrimaryColourFrame->setColour(newcol);
 	ui.GridPrimaryColourFrame->update();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
@@ -664,7 +660,7 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 	}
 	ui.GridSecondaryColourFrame->setColour(newcol);
 	ui.GridSecondaryColourFrame->update();
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
@@ -683,7 +679,7 @@ void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 	scalename += prefs.colourScale[g->colourScale()].name();
 	scalename += ")";
 	ui.GridColourscaleName->setText(scalename);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
@@ -700,7 +696,7 @@ void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 		ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
 		ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 
@@ -741,7 +737,7 @@ void GridsWidget::gridShiftChanged()
 			m->endUndoState();
 		}
 	}
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void GridsWidget::on_ShiftGridPosXButton_clicked(bool checked)
@@ -801,7 +797,8 @@ void GridsWidget::on_GridShiftZSpin_valueChanged(int i)
 
 void GridsWidget::on_ViewBasisButton_clicked(bool checked)
 {
-	gui.viewBasisDialog->showWindow( aten.currentModelOrFrame() );
+	AtenViewBasis basisView(this);
+	basisView.showWindow( parent_.aten().currentModelOrFrame() );
 }
 
 void GridsWidget::on_ViewEigenvectorButton_clicked(bool checked)
@@ -812,7 +809,9 @@ void GridsWidget::on_ViewEigenvectorButton_clicked(bool checked)
 		msg.print("No orbital selected!\n");
 		return;
 	}
-	gui.viewEigenvectorDialog->showWindow( aten.currentModelOrFrame(), row);
+
+	AtenViewEigenvector eigenView(this);
+	eigenView.showWindow( parent_.aten().currentModelOrFrame(), row);
 }
 
 void GridsWidget::on_OrbitalCalculateButton_clicked(bool checked)
@@ -824,7 +823,7 @@ void GridsWidget::on_OrbitalCalculateButton_clicked(bool checked)
 		return;
 	}
 	// Generate a new grid in the current model
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	Grid *g = m->addGrid();
 	// Set origin
 	Vec3<double> origin(ui.OrbitalOriginXSpin->value(), ui.OrbitalOriginYSpin->value(), ui.OrbitalOriginZSpin->value());
@@ -874,8 +873,5 @@ void GridsWidget::on_OrbitalPointsSpin_valueChanged(int i)
 
 void GridsWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.GridsButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

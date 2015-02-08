@@ -22,7 +22,7 @@
 #include "parser/returnvalue.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "classes/grid.h"
@@ -79,7 +79,7 @@ ReturnValue::ReturnValue(Matrix m) : ListItem<ReturnValue>()
 	arraySize_ = -1;
 	valueM_ = m;
 }
-ReturnValue::ReturnValue(VTypes::DataType dt, void *ptr) : ListItem<ReturnValue>()
+ReturnValue::ReturnValue(VTypes::DataType type, void* ptr) : ListItem<ReturnValue>()
 {
 	type_ = dt;
 	arraySize_ = -1;

@@ -208,5 +208,5 @@ void TCanvas::postRedisplay()
 
 void TCanvas::focusOutEvent(QFocusEvent *event)
 {
-	gui.update(GuiQt::StatusBarTarget);
+	parent_.updateWidgets(AtenWindow::StatusBarTarget);
 }

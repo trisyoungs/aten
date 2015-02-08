@@ -23,7 +23,7 @@
 #define ATEN_GENERATOR_H
 
 #include "base/dnchar.h"
-#include "base/matrix.h"
+#include "math/matrix.h"
 #include "templates/list.h"
 
 // Symmetry generator

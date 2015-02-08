@@ -1,7 +1,14 @@
 noinst_LIBRARIES = librender.a
 
-librender_a_SOURCES = engine.cpp engine_glyph.cpp engine_model.cpp engine_primitives.cpp engine_useractions.cpp engine_windows.cpp gridprimitive.cpp primitive.cpp primitive_surface.cpp primitive_vertex.cpp primitivegroup.cpp primitiveinfo.cpp textprimitive.cpp triangles.cpp vertexchunk.cpp
+AM_YFLAGS = -d
 
-noinst_HEADERS = engine.h engine_primitives.h gridprimitive.h primitive.h primitivegroup.h primitiveinfo.h textprimitive.h triangles.h vertexchunk.h
+clean-local:
+	-rm -f textprimitive_grammar.cc
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
+librender_a_SOURCES = textprimitive_grammar.yy
+librender_a_SOURCES += fontinstance.cpp glextensions.cpp linestipple.cpp linestyle.cpp primitive.cpp primitiveinfo.cpp primitiveinstance.cpp primitivelist.cpp textformat.cpp textfragment.cpp textprimitive.cpp textprimitivelist.cpp vertexchunk.cpp
+
+noinst_HEADERS = fontinstance.h glextensions.h linestipple.h linestyle.h primitive.h primitiveinfo.h primitiveinstance.h primitivelist.h textformat.h textfragment.h textprimitive.h textprimitivelist.h vertexchunk.h
+
+librender_a_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/gui @GUI_CFLAGS@
+

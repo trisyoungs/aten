@@ -1,7 +1,7 @@
 /*
-	*** TCanvas - GL Drawing class based on QGLWidget
-	*** src/gui/tcanvas.uih
-	Copyright T. Youngs 2007-2012
+	*** Viewer - GL Drawing class based on QGLWidget
+	*** src/gui/viewer.uih
+	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
 
@@ -19,37 +19,59 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TCANVAS_H
-#define ATEN_TCANVAS_H
+#ifndef ATEN_VIEWER_H
+#define ATEN_VIEWER_H
 
-#include <QtOpenGL/QGLWidget>
-#include <QtCore/QObject>
 #include "base/log.h"
 #include "classes/prefs.h"
 #include "gui/useractions.h"
-#include "render/engine.h"
+// #include "render/engine.h"
+#include <QtOpenGL/QGLWidget>
+#include <QtCore/QObject>
 
 // Forward Declarations
 class Model;
 
 // Base rendering widget
-class TCanvas : public QGLWidget
+class Viewer : public QGLWidget
 {
 	Q_OBJECT
 
 	public:
 	// Constructor / Destructor
-	TCanvas(QGLContext *context, QWidget *parent);
-	~TCanvas();
+	Viewer(QWidget *parent);
+	~Viewer();
 
 
 	/*
-	// Character / Setup
-	*/
+	 * Character / Setup
+	 */
 	private:
+	// GLExtension pointer stack
+	List<GLExtensions> extensionsStack_;
 	// Width, height, and aspect ratio of the canvas
 	GLsizei contextWidth_, contextHeight_;
-	
+	// Flag to indicate whether we may draw to the context
+	bool valid_;
+	// Flag indicating if we are currently drawing to this context
+	bool drawing_;
+	// Flag specifying whether we are currently rendering offscreen
+	bool renderingOffScreen_;
+	// Line width scaling factor to use (to adjust line width when saving images)
+	double lineWidthScaling_;
+
+	protected:
+	// Initialise context widget (when created by Qt)
+	void initializeGL();
+	// General repaint callbacks
+	void paintGL();
+	// Resize function
+	void resizeGL(int, int);
+
+	private:
+	// Setup basic GL properties
+	void setupGL();
+
 	public:
 	// Return the current height of the drawing area
 	GLsizei contextHeight() const;
@@ -57,54 +79,22 @@ class TCanvas : public QGLWidget
 	GLsizei contextWidth() const;
 	// Probe widget/context/format features
 	void probeFeatures();
-	
-	
-	/*
-	// Rendering Functions
-	*/
-	private:
-	// Time counter for mouse move events
-	QTime mouseMoveCounter_;
-	// Flag indicating if we are currently drawing
-	bool drawing_;
-	// Primtive set to use for rendering
-	RenderEngine::PrimitiveSet primitiveSet_;
-	// Rendering type to pass to RenderEngine
-	RenderEngine::RenderType renderType_;
-	// Model icon source for renderType==OffscreenModel (if relevant)
-	Model *renderIconSource_;
-	
-	protected:
-	// Initialise context widget (when created by Qt)
-	void initializeGL();
-	// General repaint callbacks
-	void paintGL();
-	void paintEvent(QPaintEvent *event);
-	public:
-	// Resize function
-	void resizeGL(int, int);
-
-	public slots:
-	// Attempt to detect/check for corrupt rendering
-	void isRenderingOk();
-
-	private:
-	// Begin construct for any OpenGL commands
-	bool beginGl();
-	// Finish OpenGL commands
-	void endGl();
-	// Render whole scene
-	void renderScene(int width, int height);
+	// Check for GL error
+	void checkGlError();
+	// Set whether we are currently rendering offscreen
+	void setRenderingOffScreen(bool b);
+	// Set line width and text scaling to use
+	void setObjectScaling(double scaling);
+	// Grab current contents of framebuffer
+	QPixmap frameBuffer();
+	// Render or grab image
+	QPixmap generateImage(int w, int h);
 	
 	public:
 	// Determine target model based on clicked position on TCanvas
-	Model *modelAt(int x, int y);
+	Model* modelAt(int x, int y);
 	// Request a high-quality rendering pass on next redraw (for image saving, etc.)
 	void requestHighQuality();
-	// Set renderType to pass to RenderEngine::renderScene()
-	void setRenderType(RenderEngine::RenderType type, Model *iconSource = NULL);
-	// Update Canvas
-	void postRedisplay();
 
 
 	/*

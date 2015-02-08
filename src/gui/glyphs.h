@@ -23,7 +23,7 @@
 #define ATEN_GLYPHSWINDOW_H
 
 #include "gui/ui_glyphs.h"
-#include "base/constants.h"
+#include "math/constants.h"
 
 // Forward Declarations
 class Glyph;
@@ -119,9 +119,13 @@ class GlyphsWidget : public QDockWidget
 	/*
 	// Dialog
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor / Destructor
-	GlyphsWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	GlyphsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::GlyphsWidget ui;
 };

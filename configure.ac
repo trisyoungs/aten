@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[1.901])
+m4_define([ATEN_VERSION],[1.907])
 AC_INIT(aten,ATEN_VERSION,tris@projectaten.net)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -84,6 +84,9 @@ if test "$with_install_dir" != "/usr/local"; then
   INSTALLDIR="$with_install_dir"
 fi
 
+# Freetype and FTGL
+PKG_CHECK_MODULES(FREETYPE, freetype2 >= 2.0)
+PKG_CHECK_MODULES(FTGL, ftgl >= 2.0)
 
 # QT-FRAMEWORK  (Mac only)
 AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
@@ -118,9 +121,8 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
   PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
-GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL"
-GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR $CHECK_CFLAGS"
-
+GUI_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses -lGL -lfreetype"
+GUI_CFLAGS="$FREETYPE_CFLAGS $QTGUI_CFLAGS -I$RLINCDIR $CHECK_FLAGS"
 
 VERSION=ATEN_VERSION
 # Perform Makefile substitutions
@@ -156,6 +158,7 @@ src/command/Makefile
 src/ff/Makefile
 src/gui/Makefile
 src/main/Makefile
+src/math/Makefile
 src/methods/Makefile
 src/parser/Makefile
 src/model/Makefile

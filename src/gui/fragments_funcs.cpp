@@ -21,11 +21,9 @@
 
 #include "base/sysfunc.h"
 #include "base/progress.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
 #include "gui/build.h"
-#include "gui/toolbox.h"
 #include "gui/ttreewidgetitem.h"
 #include "gui/ttablewidgetitem.h"
 #include "gui/tcanvas.uih"
@@ -34,7 +32,7 @@
 #include "main/aten.h"
 
 // Constructor
-FragmentsWidget::FragmentsWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+FragmentsWidget::FragmentsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 	ui.FragmentTable->setVisible(FALSE);
@@ -49,8 +47,6 @@ void FragmentsWidget::showWidget()
 {
 	show();
 	refresh();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.FragmentsButton->setChecked(TRUE);
 }
 
 // Increment bond id value
@@ -75,12 +71,6 @@ Fragment *FragmentsWidget::currentFragment()
 void FragmentsWidget::refresh()
 {
 	msg.enter("FragmentsWidget::refresh");
-
-	if ((!gui.exists()) || (!isVisible()))
-	{
-		msg.exit("FragmentsWidget::refresh");
-		return;
-	}
 	
 	TTreeWidgetItem *item, *group;
 	TTableWidgetItem *tabitem;
@@ -96,9 +86,9 @@ void FragmentsWidget::refresh()
 	if ((!iconsGenerated_) && prefs.generateFragmentIcons())
 	{
 		int nfragments = 0;
-		for (FragmentGroup *fg = aten.fragmentGroups(); fg != NULL; fg = fg->next) nfragments += fg->nFragments();
+		for (FragmentGroup *fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next) nfragments += fg->nFragments();
 		int pid = progress.initialise("Initialising fragment icons", nfragments, FALSE);
-		for (FragmentGroup *fg = aten.fragmentGroups(); fg != NULL; fg = fg->next)
+		for (FragmentGroup *fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
 		{
 			for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
 			{
@@ -110,7 +100,7 @@ void FragmentsWidget::refresh()
 	}
 
 	// Go through all available fragment groups
-	for (FragmentGroup *fg = aten.fragmentGroups(); fg != NULL; fg = fg->next)
+	for (FragmentGroup *fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
 	{
 		// Are there any fragments in this group?
 		if (fg->nFragments() == 0) continue;
@@ -197,7 +187,7 @@ void FragmentsWidget::on_FragmentTree_currentItemChanged(QTreeWidgetItem *curren
 
 void FragmentsWidget::on_FragmentTree_doubleClicked(const QModelIndex &index)
 {
-	gui.buildWidget->ui.DrawFragmentButton->click();
+// 	gui.buildWidget->ui.DrawFragmentButton->click(); ATEN2 TODO
 }
 
 void FragmentsWidget::on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
@@ -219,7 +209,7 @@ void FragmentsWidget::on_FragmentTable_currentItemChanged(QTableWidgetItem *curr
 
 void FragmentsWidget::on_FragmentTable_doubleClicked(const QModelIndex &index)
 {
-	gui.buildWidget->ui.DrawFragmentButton->click();
+	// gui.buildWidget->ui.DrawFragmentButton->click(); ATEN2 TODO
 }
 
 
@@ -266,8 +256,5 @@ void FragmentsWidget::on_ViewAsGridCheck_clicked(bool checked)
 
 void FragmentsWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.FragmentsButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

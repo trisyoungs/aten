@@ -27,6 +27,7 @@
 // Forward declarations
 class Model;
 class ZMatrix;
+class AtenWindow;
 
 // ZMatrix Window
 class AtenZMatrix : public QDialog
@@ -65,9 +66,13 @@ class AtenZMatrix : public QDialog
 	/*
 	// Dialog
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor / Destructor
-	AtenZMatrix(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	AtenZMatrix(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::ZMatrixDialog ui;
 };

@@ -22,7 +22,7 @@
 #ifndef ATEN_FORMS_H
 #define ATEN_FORMS_H
 
-#include "base/constants.h"
+#include "math/constants.h"
 #include "parser/program.h"
 
 // Combination Rule Data

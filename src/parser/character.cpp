@@ -20,7 +20,7 @@
 */
 
 #include "parser/character.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

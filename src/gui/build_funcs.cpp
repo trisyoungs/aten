@@ -22,14 +22,12 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/build.h"
-#include "gui/toolbox.h"
 #include "gui/selectelement.h"
-#include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
 // Constructor
-BuildWidget::BuildWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+BuildWidget::BuildWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);
@@ -73,7 +71,7 @@ void BuildWidget::showWidget()
 {
 	show();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.BuildButton->setChecked(TRUE);
+// 	gui.toolBoxWidget->ui.BuildButton->setChecked(TRUE);
 }
 
 /*
@@ -82,33 +80,34 @@ void BuildWidget::showWidget()
 
 void BuildWidget::on_ElementHButton_clicked(bool checked)
 {
-	if (checked) gui.mainCanvas()->setSketchElement(1);
+	if (checked) parent_.setSketchElement(1);
 }
 
 void BuildWidget::on_ElementCButton_clicked(bool checked)
 {
-	if (checked) gui.mainCanvas()->setSketchElement(6);
+	if (checked) parent_.setSketchElement(6);
 }
 
 void BuildWidget::on_ElementNButton_clicked(bool checked)
 {
-	if (checked) gui.mainCanvas()->setSketchElement(7);
+	if (checked) parent_.setSketchElement(7);
 }
 
 void BuildWidget::on_ElementOButton_clicked(bool checked)
 {
-	if (checked) gui.mainCanvas()->setSketchElement(8);
+	if (checked) parent_.setSketchElement(8);
 }
 
 void BuildWidget::on_ElementCustomButton_clicked(bool checked)
 {
-	if (checked) gui.mainCanvas()->setSketchElement(customElement_);
+	if (checked) parent_.setSketchElement(customElement_);
 }
 
 void BuildWidget::on_ElementPickButton_clicked(bool checked)
 {
 	// Call the select element dialog...
-	int newel = gui.selectElementDialog->selectElement();
+	AtenSelectElement elementSelect(this); 
+	int newel = elementSelect.selectElement();
 	if (newel != -1)
 	{
 		// Set text of custom element button
@@ -116,7 +115,7 @@ void BuildWidget::on_ElementPickButton_clicked(bool checked)
 		customElement_ = newel;
 		// Activate custom element button
 		ui.ElementCustomButton->setChecked(TRUE);
-		gui.mainCanvas()->setSketchElement(customElement_);
+		parent_.setSketchElement(customElement_);
 	}
 }
 
@@ -127,13 +126,13 @@ void BuildWidget::on_DrawGrowMenuButton_menuItemClicked(int menuItemId)
 	switch (menuItemId)
 	{
 		case (0):
-			CommandNode::run(Command::SelectionGrowAtom, "ic", gui.mainCanvas()->sketchElement(), Atom::atomGeometry(ag));
+			CommandNode::run(Command::SelectionGrowAtom, "ic", parent_.sketchElement(), Atom::atomGeometry(ag));
 			break;
 		default:
 			printf("BuildWidget - Unhandled menu item from DrawGrowMenuButton.\n");
 			break;
 	}
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void BuildWidget::on_DrawTransmuteMenuButton_menuItemClicked(int menuItemId)
@@ -141,13 +140,13 @@ void BuildWidget::on_DrawTransmuteMenuButton_menuItemClicked(int menuItemId)
 	switch (menuItemId)
 	{
 		case (0):
-		CommandNode::run(Command::Transmute, "i", gui.mainCanvas()->sketchElement());
+		CommandNode::run(Command::Transmute, "i", parent_.sketchElement());
 			break;
 		default:
 			printf("BuildWidget - Unhandled menu item from DrawTransmuteMenuButton.\n");
 			break;
 	}
-	gui.update(GuiQt::CanvasTarget+GuiQt::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void BuildWidget::on_DrawAddHMenuButton_menuItemClicked(int menuItemId)
@@ -164,7 +163,7 @@ void BuildWidget::on_DrawAddHMenuButton_menuItemClicked(int menuItemId)
 			printf("BuildWidget - Unhandled menu item from DrawAddHMenuButton.\n");
 			break;
 	}
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 /*
@@ -174,13 +173,13 @@ void BuildWidget::on_DrawAddHMenuButton_menuItemClicked(int menuItemId)
 void BuildWidget::on_DrawRebondButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ReBond, "");
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void BuildWidget::on_DrawClearBondingButton_clicked(bool checked)
 {
 	CommandNode::run(Command::ClearBonds, "");
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void BuildWidget::on_DrawRebondMenuButton_menuItemClicked(int menuItemId)
@@ -206,7 +205,7 @@ void BuildWidget::on_DrawRebondMenuButton_menuItemClicked(int menuItemId)
 			printf("BuildWidget - Unhandled menu item from DrawRebondButton.\n");
 			break;
 	}
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void BuildWidget::on_DrawClearBondingMenuButton_menuItemClicked(int menuItemId)
@@ -215,7 +214,7 @@ void BuildWidget::on_DrawClearBondingMenuButton_menuItemClicked(int menuItemId)
 	if (menuItemId == 0)
 	{
 		CommandNode::run(Command::ClearSelectedBonds, "");
-		gui.update(GuiQt::CanvasTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget);
 	}
 	else printf("BuildWidget - Unhandled menu item from DrawRebondButton.\n");
 }
@@ -223,7 +222,7 @@ void BuildWidget::on_DrawClearBondingMenuButton_menuItemClicked(int menuItemId)
 void BuildWidget::on_DrawAugmentButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Augment, "");
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 /*
@@ -234,13 +233,13 @@ void BuildWidget::on_AddAtomButton_clicked(bool on)
 {
 	if (ui.AddAtomFractionalCheck->isChecked())
 	{
-		CommandNode::run(Command::NewAtomFrac, "iddd", gui.mainCanvas()->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+		CommandNode::run(Command::NewAtomFrac, "iddd", parent_.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
 	else
 	{
-		CommandNode::run(Command::NewAtom, "iddd", gui.mainCanvas()->sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+		CommandNode::run(Command::NewAtom, "iddd", parent_.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 /*
@@ -270,11 +269,11 @@ void BuildWidget::on_BondToleranceSpin_valueChanged(double value)
 void BuildWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.BuildButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
+// 	gui.toolBoxWidget->ui.BuildButton->setChecked(FALSE);
+	if (this->isFloating()) parent_.postRedisplay();
 
 	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isBuildWidgetAction(gui.mainCanvas()->selectedMode())) gui.mainWindow()->cancelCurrentMode();
+	if (UserAction::isBuildWidgetAction(parent_.selectedMode())) parent_.cancelCurrentMode();
 
 	event->accept();
 }

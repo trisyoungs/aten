@@ -21,7 +21,7 @@
 
 #include "model/bundle.h"
 #include "model/model.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include <stdio.h>
 
 // Constructor

@@ -21,7 +21,6 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/gui.h"
 #include "gui/disorderwizard.h"
 #include "gui/disorderoptions.h"
 #include "gui/ttreewidgetitem.h"
@@ -32,7 +31,7 @@
 #include "parser/commandnode.h"
 
 // Constructor
-DisorderWizard::DisorderWizard(QWidget *parent) : QWizard(parent)
+DisorderWizard::DisorderWizard(AtenWindow& parent) : QWizard(&parent), parent_(parent)
 {
 	ui.setupUi(this);
 	QObject::connect(this, SIGNAL(currentIdChanged(int)), SLOT(pageChanged(int)));
@@ -65,7 +64,7 @@ int DisorderWizard::run()
 {
 	// If there are no loaded models with periodicity, disable this option on page 1
 	int nperiodic = 0;
-	for (Model *m = aten.models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) ++nperiodic;
+	for (Model *m = parent_.aten().models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) ++nperiodic;
 	ui.TargetExistingRadio->setEnabled(nperiodic != 0);
 	ui.TargetNewRadio->setChecked(nperiodic == 0);
 	ui.TargetExistingRadio->setChecked(nperiodic != 0);
@@ -80,8 +79,8 @@ int DisorderWizard::run()
 	restart();
 	
 	// Update partition grids
-	int pid = progress.initialise("Generating Partition Info", aten.nPartitioningSchemes(), FALSE);
-	for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
+	int pid = progress.initialise("Generating Partition Info", parent_.aten().nPartitioningSchemes(), FALSE);
+	for (PartitioningScheme *ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
 	{
 		progress.update(pid, -1, ps->name());
 		ps->setGridSize(prefs.partitionGridSize());
@@ -162,8 +161,8 @@ void DisorderWizard::pageChanged(int id)
 			// CLEANUP - Do we need to remove a previously-created model since we moved back a page?
 			if (newModel_ != NULL)
 			{
-				aten.removeModel(newModel_);
-				gui.update(GuiQt::AllTarget);
+				parent_.aten().removeModel(newModel_);
+				parent_.updateWidgets(AtenWindow::AllTarget);
 				newModel_ = NULL;
 			}
 			existingModel_ = NULL;
@@ -173,12 +172,12 @@ void DisorderWizard::pageChanged(int id)
 			// INITIALISE - Create new model if necessary
 			if (targetType_ != DisorderWizard::ExistingTarget)
 			{
-				newModel_ = aten.addModel();
-				aten.setCurrentModel(newModel_, TRUE);
+				newModel_ = parent_.aten().addModel();
+				parent_.aten().setCurrentModel(newModel_, TRUE);
 				newModel_->setName("Disorder Model");
 				if (targetType_ == DisorderWizard::NewTarget) setCellAbsolute(0.0);
 				else setCellRelative(0.0);
-				gui.update(GuiQt::AllTarget);
+				parent_.updateWidgets(AtenWindow::AllTarget);
 			}
 			
 			// Set correct stack page to show...
@@ -190,7 +189,7 @@ void DisorderWizard::pageChanged(int id)
 				ui.ExistingModelTree->clear();
 				ui.ExistingModelTree->setColumnCount(2);
 				selectitem = NULL;
-				for (m = aten.models(); m != NULL; m = m->next)
+				for (m = parent_.aten().models(); m != NULL; m = m->next)
 				{
 					if (m->renderSourceModel()->cell()->type() == UnitCell::NoCell) continue;
 					item = new TTreeWidgetItem(ui.ExistingModelTree);
@@ -212,7 +211,7 @@ void DisorderWizard::pageChanged(int id)
 			partitioningSchemeItems_.clear();
 			selectitem = NULL;
 			
-			for (PartitioningScheme *ps = aten.partitioningSchemes(); ps != NULL; ps = ps->next)
+			for (PartitioningScheme *ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
 			{
 				qitem = new QTreeWidgetItem(ui.PartitionTree);
 				partitioningSchemeItems_.add(qitem, ps);
@@ -236,7 +235,7 @@ void DisorderWizard::pageChanged(int id)
 			ui.NumberAndDensityPolicyRadio->setChecked(targetType_ == DisorderWizard::GenerateTarget);
 			ui.ChooseComponentsTree->clear();
 			ui.ChooseComponentsTree->setColumnCount(2);
-			for (m = aten.models(); m != NULL; m = m->next)
+			for (m = parent_.aten().models(); m != NULL; m = m->next)
 			{
 				if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) continue;
 				item = new TTreeWidgetItem(ui.ChooseComponentsTree);
@@ -278,7 +277,7 @@ void DisorderWizard::pageChanged(int id)
 			}
 
 			// Flag all components not required as having no insertion policy
-			for (m = aten.models(); m != NULL; m = m->next) if (!componentModelItems_.containsData(m)) m->setComponentInsertionPolicy(Model::NoPolicy);
+			for (m = parent_.aten().models(); m != NULL; m = m->next) if (!componentModelItems_.containsData(m)) m->setComponentInsertionPolicy(Model::NoPolicy);
 			ui.EditComponentsTree->setCurrentItem(selectitem);
 			ui.EditComponentsTree->resizeColumnToContents(0);
 			ui.EditComponentsTree->resizeColumnToContents(1);
@@ -301,11 +300,11 @@ void DisorderWizard::rejected()
 	// If a new model was created, remove it here
 	if (newModel_ != NULL)
 	{
-		aten.removeModel(newModel_);
+		parent_.aten().removeModel(newModel_);
 		newModel_ = NULL;
 	}
 	existingModel_ = NULL;
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 void DisorderWizard::accepted()
@@ -319,7 +318,7 @@ void DisorderWizard::accepted()
 	// Clean up
 	newModel_ = NULL;
 	existingModel_ = NULL;
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 /*
@@ -352,9 +351,9 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *cu
 	existingModel_ = (Model*) twi->data.asPointer(VTypes::ModelData);
 	if (existingModel_ == NULL) return;
 	existingModel_ = existingModel_->renderSourceModel();
-	aten.setCurrentModel(existingModel_, TRUE);
+	parent_.aten().setCurrentModel(existingModel_, TRUE);
 	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
-	gui.update(GuiQt::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
 void DisorderWizard::on_ExistingModelTree_itemSelectionChanged()
@@ -373,7 +372,7 @@ void DisorderWizard::setCellAbsolute(double value)
 	{
 		newModel_->cell()->setLengths(Vec3<double>(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value()));
 		newModel_->cell()->setAngles(Vec3<double>(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value()));
-		gui.update(GuiQt::CanvasTarget+GuiQt::CellTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::CellTarget);
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
 }
@@ -385,7 +384,7 @@ void DisorderWizard::setCellRelative(double value)
 	{
 		newModel_->cell()->setLengths(Vec3<double>(ui.CellRelativeASpin->value(), ui.CellRelativeBSpin->value(), ui.CellRelativeCSpin->value()));
 		newModel_->cell()->setAngles(Vec3<double>(ui.CellRelativeAngleASpin->value(), ui.CellRelativeAngleBSpin->value(), ui.CellRelativeAngleCSpin->value()));
-		gui.update(GuiQt::CanvasTarget+GuiQt::CellTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::CellTarget);
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
 }
@@ -411,7 +410,7 @@ void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem *curren
 	partitioningScheme_ = ri->data;
 	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
 	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Camera);
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 	// Enable/disable options button based on presence of custom dialog widgets...
 	ui.PartitionSchemeOptionsButton->setEnabled(partitioningScheme_->hasOptions());
 }
@@ -429,7 +428,7 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	partitioningScheme_ = ri->data;
 	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
 	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Camera);
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Step 4 / 5 - Select component models

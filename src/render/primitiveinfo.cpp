@@ -1,7 +1,7 @@
 /*
 	*** Primitive Info
 	*** src/render/primitiveinfo.cpp
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2013-2014
 
 	This file is part of Aten.
 
@@ -24,15 +24,12 @@
 #include <GL/gl.h>
 #endif
 #include "render/primitiveinfo.h"
-#include "render/primitivegroup.h"
-#include "classes/prefs.h"
 
 // Constructor
 PrimitiveInfo::PrimitiveInfo() : ListItem<PrimitiveInfo>()
 {
 	// Private variables
 	primitive_ = NULL;
-	primitiveGroup_ = NULL;
 	fillMode_ = GL_FILL;
 	lineWidth_ = 1.0f;
 	colour_[0] = 0.0;
@@ -42,7 +39,7 @@ PrimitiveInfo::PrimitiveInfo() : ListItem<PrimitiveInfo>()
 }
 
 // Set primitive info data
-void PrimitiveInfo::set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
+void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
 {
 	primitive_ = prim;
 	localTransform_ = transform;
@@ -51,49 +48,20 @@ void PrimitiveInfo::set(Primitive *prim, GLfloat *colour, Matrix &transform, GLe
 	if (colour != NULL) for (int n=0; n<4; ++n) colour_[n] = colour[n];
 }
 
-// Set primitive info data
-void PrimitiveInfo::set(PrimitiveGroup *pg, GLfloat *colour, Matrix &transform, GLenum fillMode, GLfloat lineWidth)
-{
-	primitiveGroup_ = pg;
-	localTransform_ = transform;
-	fillMode_ = fillMode;
-	lineWidth_ = lineWidth;
-	if (colour != NULL) for (int n=0; n<4; ++n) colour_[n] = colour[n];
-}
-
 // Return pointer to primitive
-Primitive *PrimitiveInfo::primitive()
+Primitive* PrimitiveInfo::primitive()
 {
 	return primitive_;
 }
 
-// Return pointer to primitive, selected from group (based on level of detail)
-Primitive *PrimitiveInfo::primitive(Matrix &modeltransform)
-{
-	// Determine LOD for primitive based on supplied transform and stored matrix
-	double z = modeltransform[2]*localTransform_[12] + modeltransform[6]*localTransform_[13] + modeltransform[10]*localTransform_[14] + modeltransform[14]*localTransform_[15];
-	// If z is greater than 0 (i.e. it's behind the viewer), we are rendering to an offscreen bitmap, or
-	int lod;
-	if ((z > 0) || (-z < prefs.levelOfDetailStartZ())) lod = 0;
-	else lod = (-z-prefs.levelOfDetailStartZ()) / prefs.levelOfDetailWidth();
-	if (lod >= prefs.levelsOfDetail()) lod = prefs.levelsOfDetail()-1;
-	return &primitiveGroup_->primitive(lod);
-}
-
-// Return pointer to best primitive in the group
-Primitive *PrimitiveInfo::bestPrimitive()
-{
-	return &primitiveGroup_->primitive(0);
-}
-
 // Return local transformation of primitive
-Matrix &PrimitiveInfo::localTransform()
+Matrix& PrimitiveInfo::localTransform()
 {
 	return localTransform_;
 }
 
 // Return colour array
-GLfloat *PrimitiveInfo::colour()
+GLfloat* PrimitiveInfo::colour()
 {
 	return colour_;
 }

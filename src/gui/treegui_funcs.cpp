@@ -20,7 +20,6 @@
 */
 
 #include "gui/treegui.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "main/aten.h"
 #include "base/sysfunc.h"
@@ -376,7 +375,7 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
 */
 
 // Constructor
-AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog(gui.mainWindow())
+AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog()
 {
 	updating_ = FALSE;
 // 	setVisible(FALSE);

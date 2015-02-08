@@ -22,15 +22,13 @@
 #include "main/aten.h"
 #include "gui/scriptmovie.h"
 #include "gui/mainwindow.h"
-#include "gui/toolbox.h"
-#include "gui/gui.h"
 #include "base/progress.h"
 #include "parser/commandnode.h"
 #include "base/sysfunc.h"
 #include "gui/tprocess.uih"
 
 // Constructor
-ScriptMovieWidget::ScriptMovieWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+ScriptMovieWidget::ScriptMovieWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	// Add default text to the text edit
 	ui.setupUi(this);
@@ -41,15 +39,13 @@ ScriptMovieWidget::ScriptMovieWidget(QWidget *parent, Qt::WindowFlags flags) : Q
 void ScriptMovieWidget::showWidget()
 {
 	show();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.ScriptMovieButton->setChecked(TRUE);
 }
 
 void ScriptMovieWidget::on_LoadScriptButton_clicked(bool on)
 {
-	static QDir currentDirectory_(aten.workDir());
+	static QDir currentDirectory_(parent_.aten().workDir());
 	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Load Script", currentDirectory_.path(), gui.mainWindow()->loadScriptFilters, &selFilter);
+	QString filename = QFileDialog::getOpenFileName(this, "Load Script", currentDirectory_.path(), "All files (*)", &selFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -80,7 +76,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		return;
 	}
 	
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
+	static Dnchar geometry(-1,"%ix%i", (int) parent_.ui.MainView->width(), (int) parent_.ui.MainView->height());
 	int width, height;
 	
 	Tree dialog;
@@ -107,7 +103,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	
 	// Get movie filename
 	static QString selectedFilter("All Files (*.*)");
-	static QDir currentDirectory(aten.workDir());
+	static QDir currentDirectory(parent_.aten().workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Scripted Movie", currentDirectory.path(), "All Files (*.*)", &selectedFilter);
 	if (filename.isEmpty()) return;
 	// Store path for next use
@@ -133,10 +129,10 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	do
 	{
 		runid = AtenMath::randomimax();
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, 0);
+		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid, 0);
 	} while (fileExists(basename));
-	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid);
-	aten.initialiseImageRedirect(basename, maxframes);
+	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid);
+	parent_.aten().initialiseImageRedirect(basename, maxframes);
 	
 	int progid = progress.initialise("Saving scripted movie frames...", -1, FALSE);
 	bool canceled = FALSE;
@@ -151,7 +147,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	// Now run external program to create movie
 	TProcess encoderProcess;
 	// Grab encoder command and replace
-	basename.sprintf("%s%caten-movie-%i-%i-*.png", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+	basename.sprintf("%s%caten-movie-%i-%i-*.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid);
 	QString encoderArgs = prefs.encoderArguments();
 	encoderArgs.replace("OUTPUT", qPrintable(filename));
 	encoderArgs.replace("FILES", basename.get());
@@ -168,7 +164,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	{
 		// Is output file already present?
 		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
-		gui.processMessages();
+		parent_.processMessages();
 	}
 
 	// Run secondary, post-process command (if one was given)
@@ -190,16 +186,16 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		{
 			// Is output file already present?
 			while (postProcess.outputAvailable()) postProcess.printLineToMessages();
-			gui.processMessages();
+			parent_.processMessages();
 		}
 	}
 
 	// Cancel image redirection and perform cleanup
-	int nframes = aten.cancelImageRedirect();
+	int nframes = parent_.aten().cancelImageRedirect();
 	bool pid = progress.initialise("Cleaning up...", nframes, FALSE);
 	for (int n = 0; n < nframes; ++n)
 	{
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, gui.pid(), runid, n);
+		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid, n);
 		QFile::remove(basename.get());
 		if (!progress.update(pid,n)) break;
 	}
@@ -208,9 +204,5 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 
 void ScriptMovieWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.ScriptMovieButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
-
 	event->accept();
 }

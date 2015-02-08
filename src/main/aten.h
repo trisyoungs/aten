@@ -24,12 +24,14 @@
 
 #include "base/dnchar.h"
 #include "base/kvmap.h"
+#include "classes/prefs.h"
 #include "model/bundle.h"
 #include "model/fragment.h"
 #include "templates/list.h"
 #include "parser/program.h"
 #include "parser/variablelist.h"
 #include "methods/partition.h"
+#include "gui/useractions.h"
 
 // Forward Declarations
 class Model;
@@ -79,41 +81,41 @@ class Aten
 	// Set usage of working model list
 	void setUseWorkingList(bool b);
 	// Return list of working models
-	Model *workingModels() const;
+	Model* workingModels() const;
 	// Sets the current active model for editing
-	void setCurrentModel(Model *m, bool deselectOthers = FALSE);
+	void setCurrentModel(Model* m, bool deselectOthers = FALSE);
 	// Return current active model for editing
-	Model *currentModel() const;
+	Model* currentModel() const;
 	// Return current active model for editing, accounting for trajectory frames
-	Model *currentModelOrFrame() const;
+	Model* currentModelOrFrame() const;
 	// Return first item in the model list
-	Model *models() const;
+	Model* models() const;
 	// Return nth item in the model list
-	Model *model(int n);
+	Model* model(int n);
 	// Return pointer to model list
-	const List<Model> *modelList() const;
+	const List<Model>* modelList() const;
 	// Return the current model's index in the model list
 	int currentModelId() const;
 	// Return index of specified model
-	int modelIndex(Model *m) const;
+	int modelIndex(Model* m) const;
 	// Return the number of models in the model list
 	int nModels() const;
 	// Add a new model to the workspace
 	Model* addModel();
 	// Remove specified model from the list
-	void removeModel(Model *m);
+	void removeModel(Model* m);
 	// Close specified model, saving first if requested
-	bool closeModel(Model *m);
+	bool closeModel(Model* m);
 	// Find model by name
-	Model *findModel(const char *name) const;
+	Model* findModel(const char* name) const;
 	// Set visible flag for specified model
-	void setModelVisible(Model *m, bool visible);
+	void setModelVisible(Model* m, bool visible);
 	// Return number of visible models
 	int nVisibleModels();
 	// Return reflist of visible models
-	Refitem<Model, int> *visibleModels();
+	Refitem<Model, int>* visibleModels();
 	// Return n'th visible model
-	Model *visibleModel(int id);
+	Model* visibleModel(int id);
 	// Log specified change(s) in all models
 	void globalLogChange(Log::LogType);
 
@@ -127,43 +129,49 @@ class Aten
 	// Filenames (including paths) of filters that failed to load
 	List<Dnchar> failedFilters_;
 	// Parse directory index and load filters
-	int parseFilterDir(const char *path);
+	int parseFilterDir(const char* path);
 	// Set export partners for import filters
 	void partnerFilters();
 	// List of Filter programs
 	List<Program> filterPrograms_;
 	// Reflists of file filters of different types
 	Reflist<Tree,int> filters_[FilterData::nFilterTypes];
+	// Filter strings for file dialogs
+	QString fileDialogFilters_[FilterData::nFilterTypes];
 
 	public:
 	// Load filters
 	void openFilters();
 	// Load filter from specified filename
-	bool openFilter(const char *filename);
+	bool openFilter(const char* filename);
+	// Create filter strings for file dialogs
+	void createFileDialogFilters();
 	// Register a filter of a given type
-	void registerFilter(Tree *filter, FilterData::FilterType ft);
+	void registerFilter(Tree* filter, FilterData::FilterType ft);
 	// Whether filters loaded succesfully on startup
 	int nFiltersFailed() const;
 	// Return first item in failed filter list
-	Dnchar *failedFilters() const;
+	Dnchar* failedFilters() const;
 	// Reload filters
 	int reloadFilters();
 	// Probe file for its format
-	Tree *probeFile(const char *filename, FilterData::FilterType);
+	Tree* probeFile(const char* filename, FilterData::FilterType);
 	// Find filter of specified type with nickname provided
-	Tree *findFilter(FilterData::FilterType ft, const char *nickname) const;
+	Tree* findFilter(FilterData::FilterType ft, const char* nickname) const;
 	// Find filter by description
-	Tree *findFilterByDescription(FilterData::FilterType ft, const char *description) const;
+	Tree* findFilterByDescription(FilterData::FilterType ft, const char* description) const;
 	// Return first filter in list (of a given type)
-	Refitem<Tree,int> *filters(FilterData::FilterType ft) const;
+	Refitem<Tree,int>* filters(FilterData::FilterType ft) const;
 	// Return nth filter in list (of a given type)
-	Refitem<Tree,int> *filter(FilterData::FilterType ft, int index);
+	Refitem<Tree,int>* filter(FilterData::FilterType ft, int index);
 	// Return number of filters of a given type
 	int nFilters(FilterData::FilterType ft) const;
 	// Return pointer to list of filters of given type
-	Reflist<Tree,int> *filterList(FilterData::FilterType ft);
+	Reflist<Tree,int>* filterList(FilterData::FilterType ft);
 	// Print list of valid filter nicknames
 	void printValidNicknames(FilterData::FilterType ft);
+	// Return filter strings for file dialogs
+	QString fileDialogFilters(FilterData::FilterType ft);
 
 	
 	/*
@@ -177,7 +185,7 @@ class Aten
 	// Filenames (including paths) of includes that failed to load
 	List<Dnchar> failedIncludes_;
 	// Parse directory index and load includes
-	int parseIncludeDir(const char *path);
+	int parseIncludeDir(const char* path);
 	// Programs containing partitioning schemes
 	List<PartitioningScheme> partitioningSchemes_;
 	// How many partitioning files had errors on startup
@@ -185,35 +193,35 @@ class Aten
 	// Filenames (including paths) of partitions that failed to load
 	List<Dnchar> failedPartitioningSchemes_;
 	// Parse directory index and load includes
-	int parsePartitionsDir(const char *path);
+	int parsePartitionsDir(const char* path);
 	
 	public:
 	// Load global include functions
 	void openIncludes();
 	// Load include from specified filename
-	bool openInclude(const char *filename);
+	bool openInclude(const char* filename);
 	// Whether includes loaded succesfully on startup
 	int nIncludesFailed() const;
 	// Return first item in failed includes list
-	Dnchar *failedIncludes() const;
+	Dnchar* failedIncludes() const;
 	// Find global include function by name
-	Tree *findIncludeFunction(const char *name);
+	Tree* findIncludeFunction(const char* name);
 	// Load global partition functions
 	void openPartitions();
 	// Load partition from specified filename
-	bool openPartition(const char *filename);
+	bool openPartition(const char* filename);
 	// Whether partitions loaded succesfully on startup
 	int nPartitioningSchemesFailed() const;
 	// Return first item in failed partitions list
-	Dnchar *failedPartitioningSchemes() const;
+	Dnchar* failedPartitioningSchemes() const;
 	// Find named partitioning scheme
-	PartitioningScheme *findPartitioningScheme(const char *name);
+	PartitioningScheme* findPartitioningScheme(const char* name);
 	// Return number of partitioning schemes in the list
 	int nPartitioningSchemes();
 	// Return first partitioning scheme in the list
-	PartitioningScheme *partitioningSchemes();
+	PartitioningScheme* partitioningSchemes();
 	// Return nth partitioning scheme in the list
-	PartitioningScheme *partitioningSchemes(int index);
+	PartitioningScheme* partitioningSchemes(int index);
 	// Copy specified partitioning scheme and add it to the list
 	void addPartitioningScheme(PartitioningScheme &scheme);
 
@@ -227,23 +235,23 @@ class Aten
 
 	public:
 	// Add a new forcefield
-	Forcefield *addForcefield(const char *name = NULL);
+	Forcefield* addForcefield(const char* name = NULL);
 	// Load the specified forcefield
-	Forcefield *loadForcefield(const char *filename);
+	Forcefield* loadForcefield(const char* filename);
 	// Find forcefield by name
-	Forcefield *findForcefield(const char *name) const;
+	Forcefield* findForcefield(const char* name) const;
 	// Return the first ff in the list
-	Forcefield *forcefields() const;
+	Forcefield* forcefields() const;
 	// Return the nth forcefield in the list
-	Forcefield *forcefield(int n);
+	Forcefield* forcefield(int n);
 	// Return the number of loaded forcefields
 	int nForcefields() const;
 	// Set active forcefield
-	void setCurrentForcefield(Forcefield *ff);
+	void setCurrentForcefield(Forcefield* ff);
 	// Set active forcefield by ID
 	void setCurrentForcefield(int id);
 	// Return the active forcefield
-	Forcefield *currentForcefield() const;
+	Forcefield* currentForcefield() const;
 	// Return ID of current forcefield
 	int currentForcefieldId() const;
 	// Remove specified forcefield
@@ -261,11 +269,11 @@ class Aten
 
 	public:
 	// User clipboard
-	Clipboard *userClipboard;
+	Clipboard* userClipboard;
 	// Copy specified grid
-	void copyGrid(Grid *g);
+	void copyGrid(Grid* g);
 	// Return grid on clipboard
-	Grid *gridClipboard();
+	Grid* gridClipboard();
 	
 
 	/*
@@ -285,21 +293,21 @@ class Aten
 
 	public:
 	// Set location of users's home directory
-	void setHomeDir(const char *path);
+	void setHomeDir(const char* path);
 	// Return the current home directory location
-	const char *homeDir() const;
+	const char* homeDir() const;
 	// Set working directory
-	void setWorkDir(const char *path);
+	void setWorkDir(const char* path);
 	// Return the current working directory
-	const char *workDir() const;
+	const char* workDir() const;
 	// Set data directory
-	void setDataDir(const char *path);
+	void setDataDir(const char* path);
 	// Return the data directory path
-	const char *dataDir() const;
+	const char* dataDir() const;
 	// Return whether the data dir has already been set
 	bool dataDirSet() const;
 	// Return the aten directory name
-	const char *atenDir() const;
+	const char* atenDir() const;
 
 
 	/*
@@ -325,15 +333,15 @@ class Aten
 
 	public:
 	// Add script to list
-	Program *addScript();
+	Program* addScript();
 	// Remove specified script
-	void removeScript(Program *script);
+	void removeScript(Program* script);
 	// Return number of loaded scripts
 	int nScripts();
 	// Return first script in list
-	Program *scripts();
+	Program* scripts();
 	// Return n'th script in list
-	Program *script(int n);
+	Program* script(int n);
 
 
 	/*
@@ -362,13 +370,13 @@ class Aten
 	// Return whether type export conversion is enabled
 	bool typeExportMapping() const;
 	// Convert supplied type name according to export type map
-	const char *typeExportConvert(const char *s) const;
+	const char* typeExportConvert(const char* s) const;
 	// Return whether saveImage redirect is active (for scripted movie making)
 	bool redirectedImagesActive();
 	// Initialise image redirection
-	void initialiseImageRedirect(const char *filenameFormat, int maxFrames);
+	void initialiseImageRedirect(const char* filenameFormat, int maxFrames);
 	// Return next filename for image redirection
-	const char *nextRedirectedFilename();
+	const char* nextRedirectedFilename();
 	// Cancel image redirection, returning number of images saved
 	int cancelImageRedirect();
 
@@ -382,7 +390,7 @@ class Aten
 	// Variable list holding vars set from CLI
 	VariableList passedValues_;
 	// Add passed value
-	bool addPassedValue(VTypes::DataType dt, const char *name, const char *value);
+	bool addPassedValue(VTypes::DataType dt, const char* name, const char* value);
 
 	public:
 	// Parse early command line options, before filter / prefs load
@@ -390,7 +398,7 @@ class Aten
 	// Parse command line options (after filter / prefs load
 	int parseCli(int, char**);
 	// Find passed value
-	Variable *findPassedValue(const char *name) const;
+	Variable* findPassedValue(const char* name) const;
 
 
 	/*
@@ -398,17 +406,17 @@ class Aten
 	*/
 	private:
 	// Model format in which to export models
-	Tree *exportFilter_;
+	Tree* exportFilter_;
 	// Cached commands to use in batch processing mode
 	List<Program> batchCommands_;
 
 	public:
 	// Set format to use in export
-	void setExportFilter(Tree *f);
+	void setExportFilter(Tree* f);
 	// Export all currently loaded models in the referenced format
 	void exportModels();
 	// Add set of batch commands
-	Program *addBatchCommand();
+	Program* addBatchCommand();
 	// Run all stored commands on all loaded models
 	void processModels();
 	// Save all models under their original names
@@ -432,21 +440,19 @@ class Aten
 	// Groups of fragments within the library
 	List<FragmentGroup> fragmentGroups_;
 	// Search for name fragment group
-	FragmentGroup *findFragmentGroup(const char *name);
+	FragmentGroup* findFragmentGroup(const char* name);
 	// Internal count for naming new fragments
 	int fragmentModelId_;
 	// Parse fragment directory
-	bool parseFragmentDir(const char *path, const char *groupname);
+	bool parseFragmentDir(const char* path, const char* groupname);
 
 	public:
 	// Add new fragment model from specified model's current selection
-	void addFragmentFromSelection(Model *source, const char *parentgroup);
+	void addFragmentFromSelection(Model* source, const char* parentgroup);
 	// Load fragment library
 	void openFragments();
 	// Return first fragment library
-	FragmentGroup *fragmentGroups();
+	FragmentGroup* fragmentGroups();
 };
-
-extern Aten aten;
 
 #endif

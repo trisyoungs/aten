@@ -113,9 +113,13 @@ class DisorderWizard : public QWizard
 	/*
 	// Dialog
 	*/
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 	public:
 	// Constructor
-	DisorderWizard(QWidget *parent = 0);
+	DisorderWizard(AtenWindow& parent);
 	// Main form declaration
 	Ui::DisorderWizard ui;
 };

@@ -22,7 +22,7 @@
 #include "parser/forcefield.h"
 #include "parser/stepnode.h"
 #include "base/atom.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "base/elements.h"
 #include "ff/forcefield.h"
 #include "main/aten.h"

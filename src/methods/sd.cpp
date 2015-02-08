@@ -142,7 +142,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 			lastPrintedEnergy = currentEnergy;
 		}
 
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
+		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 		if (lineDone || converged) break;
 	}

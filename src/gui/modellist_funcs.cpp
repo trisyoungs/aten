@@ -20,9 +20,7 @@
 */
 
 #include "main/aten.h"
-#include "gui/gui.h"
 #include "gui/modellist.h"
-#include "gui/toolbox.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
@@ -30,7 +28,7 @@
 #include "base/sysfunc.h"
 
 // Constructor
-ModelListWidget::ModelListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+ModelListWidget::ModelListWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 	refreshing_ = FALSE;
@@ -57,33 +55,25 @@ void ModelListWidget::showWidget()
 {
 	show();
 	refresh();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.ModelListButton->setChecked(TRUE);
 }
 
 // Refresh the model list
 void ModelListWidget::refresh()
 {
 	msg.enter("ModelListWidget::refresh");
-	// If the model list is not visible, don't do anything
-	if (refreshing_ || (!gui.modelListWidget->isVisible()))
-	{
-		msg.exit("ModelListWidget::refresh");
-		return;
-	}
 	
 	refreshing_ = TRUE;
 	
 	// Set number of visible models and model total
 	ui.ModelsPerRowSpin->setValue(prefs.nModelsPerRow());
-	ui.TotalLoadedModelsLabel->setText(itoa(aten.nModels()));
+	ui.TotalLoadedModelsLabel->setText(itoa(parent_.aten().nModels()));
 	ui.ModelTree->setColumnCount(2);
 
 // 	// Clear the current list
 // 	ui.ModelTree->clear();
 	
 // 	TExtraTreeWidgetItem *item;
-// 	for (Model *m = aten.models(); m != NULL; m = m->next)
+// 	for (Model *m = parent_.aten().models(); m != NULL; m = m->next)
 // 	{
 // 		// Filter?
 // // 		if (!filterText_.isEmpty() && (strstr(lowerCase(f->masterModel()->name()), filterText_.get()) == 0)) continue;
@@ -92,7 +82,7 @@ void ModelListWidget::refresh()
 // 		item->setIcon(0,m->icon());
 // 		item->setText(1,m->name());
 // 		item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
-// 		if (m->isVisible() || (m == aten.currentModel())) item->setSelected(TRUE);
+// 		if (m->isVisible() || (m == parent_.aten().currentModel())) item->setSelected(TRUE);
 // 	}
 
 	// Go through items currently in QTreeWidget
@@ -105,7 +95,7 @@ void ModelListWidget::refresh()
 	Model *m;
 	ReturnValue rv;
 	TExtraTreeWidgetItem *twi;
-	for (m = aten.models(); m != NULL; m = m->next) xmodels.add(m);
+	for (m = parent_.aten().models(); m != NULL; m = m->next) xmodels.add(m);
 	
 	// Now cycle over models currently in the QTreeWidget
 	for (int n=0; n<ui.ModelTree->topLevelItemCount(); ++n)
@@ -174,7 +164,7 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 	}
 	
 	// Set selection status of row
-	if (m->isVisible() || (m == aten.currentModel())) item->setSelected(TRUE);
+	if (m->isVisible() || (m == parent_.aten().currentModel())) item->setSelected(TRUE);
 	else item->setSelected(FALSE);
 }
 
@@ -204,31 +194,31 @@ void ModelListWidget::toggleItem(TExtraTreeWidgetItem *twi)
 	bool selected = twi->isSelected();
 	
 	// So, check for a single selected model for which toggling would be invalid
-	if (selected && (aten.nVisibleModels() == 1)) return;
+	if (selected && (parent_.aten().nVisibleModels() == 1)) return;
 
 	// Now, if the item is *not* selected we can safely select it and make it current
 	if (!selected)
 	{
 		twi->setSelected(TRUE);
-		aten.setModelVisible(m,TRUE);
+		parent_.aten().setModelVisible(m,TRUE);
 	}
 	else
 	{
 		// We are deselecting, so need to check if its currently the active model
 		twi->setSelected(FALSE);
-		aten.setModelVisible(m,FALSE);
-		if (m == aten.currentModel())
+		parent_.aten().setModelVisible(m,FALSE);
+		if (m == parent_.aten().currentModel())
 		{
 			// Grab the last visible model added to the list
 			Refitem<Model,int> *ri;
 			m = NULL;
-			for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item != aten.currentModel()) m = ri->item;
+			for (ri = parent_.aten().visibleModels(); ri != NULL; ri = ri->next) if (ri->item != parent_.aten().currentModel()) m = ri->item;
 			if (ri == NULL) printf("Internal Error: Couldn't reassign active model in ModelListWidget::treeMouseMoveEvent.\n");
-			else aten.setCurrentModel(m);
+			else parent_.aten().setCurrentModel(m);
 		}
 	}
 	refreshing_ = FALSE;
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Deselect all items in list (except the supplied item)
@@ -252,7 +242,7 @@ void ModelListWidget::deselectAll(TExtraTreeWidgetItem *selectitem)
 		twi = (TExtraTreeWidgetItem*) item;
 		rv = twi->dataForKey("model");
 		m = (Model*) rv.asPointer(VTypes::ModelData);
-		aten.setModelVisible(m, FALSE);
+		parent_.aten().setModelVisible(m, FALSE);
 		twi->setSelected(FALSE);
 	}
 	
@@ -264,14 +254,14 @@ void ModelListWidget::deselectAll(TExtraTreeWidgetItem *selectitem)
 
 void ModelListWidget::on_RefreshIconsButton_clicked(bool checked)
 {
-	for (Model *m = aten.models(); m != NULL; m = m->next) m->regenerateIcon();
+	for (Model *m = parent_.aten().models(); m != NULL; m = m->next) m->regenerateIcon();
 	refresh();
 }
 
 void ModelListWidget::on_ModelsPerRowSpin_valueChanged(int value)
 {
 	prefs.setNModelsPerRow(value);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 // Mouse pressed on ModelList
@@ -293,9 +283,9 @@ void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 				deselectAll(lastClicked_);
 				rv = lastClicked_->dataForKey("model");
 				m = (Model*) rv.asPointer(VTypes::ModelData);
-				aten.setCurrentModel(m);
+				parent_.aten().setCurrentModel(m);
 			}
-			gui.update(GuiQt::AllTarget - GuiQt::ModelsTarget - GuiQt::ForcefieldsTarget);
+			parent_.updateWidgets(AtenWindow::AllTarget - AtenWindow::ModelsTarget - AtenWindow::ForcefieldsTarget);
 		}
 		lastHovered_ = lastClicked_;
 	}
@@ -313,7 +303,7 @@ void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 void ModelListWidget::treeMouseReleaseEvent(QMouseEvent *event)
 {
 	lastHovered_ = NULL;
-	gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget-AtenWindow::ModelsTarget);
 }
 
 // Mouse moved over ModelList
@@ -351,7 +341,7 @@ void ModelListWidget::treeMouseDoubleClickEvent(QMouseEvent *event)
 			// Create a temporary Bundle
 			Bundle bundle(m);
 			CommandNode::run(Command::SetName, "c", qPrintable(text));
-			gui.update(GuiQt::ModelsTarget);
+			parent_.updateWidgets(AtenWindow::ModelsTarget);
 		}
 	}
 }
@@ -373,7 +363,7 @@ void ModelListWidget::renameModel(bool checked)
 		// Create a temporary Bundle
 		Bundle bundle(m);
 		CommandNode::run(Command::SetName, "c", qPrintable(text));
-		gui.update(GuiQt::ModelsTarget);
+		parent_.updateWidgets(AtenWindow::ModelsTarget);
 	}
 }
 
@@ -388,10 +378,10 @@ void ModelListWidget::closeSelectedModels(bool checked)
 		ReturnValue rv = lastClicked_->dataForKey("model");
 		Model *m = (Model*) rv.asPointer(VTypes::ModelData);
 		if (m == NULL) continue;
-		if (!aten.closeModel(m)) break;
+		if (!parent_.aten().closeModel(m)) break;
 	}
 	// There are probably now no selected models, and potentially none left at all...
-	gui.update(GuiQt::AllTarget - GuiQt::ForcefieldsTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget - AtenWindow::ForcefieldsTarget);
 }
 
 // Close unselected models in list
@@ -405,7 +395,7 @@ void ModelListWidget::closeUnselectedModels(bool checked)
 	Model *m;
 	ReturnValue rv;
 	TExtraTreeWidgetItem *twi;
-	for (m = aten.models(); m != NULL; m = m->next) xmodels.add(m);
+	for (m = parent_.aten().models(); m != NULL; m = m->next) xmodels.add(m);
 	// ...then prune it with the current model selection from the treeview
 	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
 	{
@@ -418,9 +408,9 @@ void ModelListWidget::closeUnselectedModels(bool checked)
 	// The xmodels list now contains all unselected models....
 	for (Refitem<Model,int> *ri = xmodels.first(); ri != NULL; ri = ri->next)
 	{
-		if (!aten.closeModel(ri->item)) break;
+		if (!parent_.aten().closeModel(ri->item)) break;
 	}
-	gui.update(GuiQt::AllTarget - GuiQt::ForcefieldsTarget);
+	parent_.updateWidgets(AtenWindow::AllTarget - AtenWindow::ForcefieldsTarget);
 }
 
 void ModelListWidget::closeThisModel(bool checked)
@@ -431,15 +421,12 @@ void ModelListWidget::closeThisModel(bool checked)
 	// Close clicked model
 	ReturnValue rv = lastClicked_->dataForKey("model");
 	Model *m = (Model*) rv.asPointer(VTypes::ModelData);
-	aten.closeModel(m);
-	gui.update(GuiQt::AllTarget - GuiQt::ForcefieldsTarget);
+	parent_.aten().closeModel(m);
+	parent_.updateWidgets(AtenWindow::AllTarget - AtenWindow::ForcefieldsTarget);
 }
 
 // Window closed
 void ModelListWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.ModelListButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }

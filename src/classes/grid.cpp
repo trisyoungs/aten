@@ -23,7 +23,7 @@
 #include "base/messenger.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
-#include "base/constants.h"
+#include "math/constants.h"
 #include "model/model.h"
 #include <QtOpenGL/QtOpenGL>
 

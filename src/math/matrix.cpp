@@ -694,6 +694,12 @@ void Matrix::createTranslation(double dx, double dy, double dz)
 	matrix_[15] = 1.0;
 }
 
+// Create a translation to the matrix (as glTranslated would do)
+void Matrix::createTranslation(Vec3<double> vec)
+{
+	createTranslation(vec.x, vec.y, vec.z);
+}
+
 // Apply a translation to the matrix (as glTranslated would do)
 void Matrix::applyTranslation(double dx, double dy, double dz)
 {
@@ -802,6 +808,19 @@ void Matrix::applyScalingZ(double scale)
 	matrix_[9] *= scale;
 	matrix_[10] *= scale;
 	matrix_[11] *= scale;
+}
+
+/*
+ * shear
+ */
+
+// Apply a shearing along X
+void Matrix::applyShearX(double shearx)
+{
+	matrix_[4] += shearx*matrix_[0];
+	matrix_[5] += shearx*matrix_[1];
+	matrix_[6] += shearx*matrix_[2];
+	matrix_[7] += shearx*matrix_[3];
 }
 
 /*

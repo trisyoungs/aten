@@ -21,14 +21,11 @@
 
 #include "base/pattern.h"
 #include "base/sysfunc.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/atomlist.h"
-#include "gui/toolbox.h"
 #include "model/model.h"
 #include "main/aten.h"
 #include "parser/commandnode.h"
-#include "gui/tcanvas.uih"
 #include "gui/tdoublespindelegate.uih"
 #include "classes/forcefieldatom.h"
 
@@ -40,7 +37,7 @@ bool AtomListItemDelegateType[AtomListWidget::nAtomItems] = { 0, 0, 0, 1, 1, 1, 
 */
 
 // Constructor
-AtomListWidget::AtomListWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+AtomListWidget::AtomListWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent,flags), parent_(parent)
 {
 	ui.setupUi(this);
 	
@@ -90,7 +87,7 @@ void AtomListWidget::showWidget()
 	recalculateRowSize();
 	if (shouldRefresh_) refresh();
 	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+// 	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
 }
 
 // Redetermine max number of visible rows
@@ -253,19 +250,12 @@ Atom *AtomListWidget::atomInRow(int row)
 void AtomListWidget::refresh()
 {
 	if (refreshing_) return;
-	msg.enter("AtomListWidget::refresh");
-	// If the atom list page is not visible, don't do anything
-	if (!gui.atomListWidget->isVisible())
-	{
-		shouldRefresh_ = TRUE;
-		msg.exit("AtomListWidget::refresh");
-		return;
-	}
+
 	refreshing_ = TRUE;
 
 	// Check the current active model against the last one we represented in the list
 	bool updateSel = FALSE, updateAtoms = FALSE;
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m != listLastModel_)
 	{
 		listStructurePoint_ = -1;
@@ -428,7 +418,7 @@ void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 	CommandNode::run(Command::ShiftUp, "i", 1);
 	updateSelection();
 	refresh();
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
@@ -436,7 +426,7 @@ void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 	CommandNode::run(Command::ShiftDown, "i", 1);
 	updateSelection();
 	refresh();
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
@@ -444,7 +434,7 @@ void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
 	CommandNode::run(Command::MoveToStart, "");
 	updateSelection();
 	refresh();
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
@@ -452,7 +442,7 @@ void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
 	CommandNode::run(Command::MoveToEnd, "");
 	updateSelection();
 	refresh();
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 //  the selection state in the model
@@ -523,7 +513,7 @@ void AtomListWidget::tableMouseReleaseEvent(QMouseEvent *event)
 	if (listLastModel_->recordingUndoState()) listLastModel_->endUndoState();
 	
 	refresh();
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void AtomListWidget::tableMouseMoveEvent(QMouseEvent *event)
@@ -598,7 +588,7 @@ void AtomListWidget::tableMouseMoveEvent(QMouseEvent *event)
 		// If not NULL, and the current hovered item is not the same as the previous one, toggle the item
 		toggleItem(i);
 		lastHovered_ = i;
-		gui.update(GuiQt::CanvasTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget);
 	}
 }
 
@@ -670,14 +660,14 @@ void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
 			break;
 	}
 
-	gui.update(GuiQt::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void AtomListWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.AtomListButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
+// 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
+// 	gui.toolBoxWidget->ui.AtomListButton->setChecked(FALSE);
+// 	if (this->isFloating()) parent_.postRedisplay();
 	event->accept();
 }
 

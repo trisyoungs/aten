@@ -20,7 +20,6 @@
 */
 
 #include "main/aten.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "gui/build.h"
@@ -41,68 +40,311 @@
 #include <iostream>
 #include <fstream>
 
+#include "gui/atomlist.h"
+#include "gui/build.h"
+#include "gui/celldefinition.h"
+#include "gui/celltransform.h"
+#include "gui/command.h"
+#include "gui/disorderwizard.h"
+#include "gui/forcefields.h"
+#include "gui/fragments.h"
+#include "gui/geometry.h"
+#include "gui/glyphs.h"
+#include "gui/grids.h"
+#include "gui/messages.h"
+#include "gui/modellist.h"
+#include "gui/pores.h"
+#include "gui/position.h"
+#include "gui/scriptmovie.h"
+#include "gui/select.h"
+#include "gui/trajectory.h"
+#include "gui/transform.h"
+#include "gui/vibrations.h"
+
 // Constructor
-AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
+AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 {
+	// Initialise Qt's icons resource
+	Q_INIT_RESOURCE(icons);
+
+	// Seutp user interface
+	ui.setupUi(this);
+
 	// Private variables
-	saveModelFilter = NULL;
+	saveModelFilter_ = NULL;
+	contextAtom_ = NULL;
 
 	// Public variables
 	infoLabel1_ = NULL;
 	infoLabel2_ = NULL;
 	messageLabel_ = NULL;
 
-	ui.setupUi(this);
+	// If no model loaded, add one
+	if (aten.nModels() == 0)
+	{
+		Model *m = aten.addModel();
+		m->enableUndoRedo();
+		m->regenerateIcon();
+	}
+
+	// Create dock widgets
+	atomListWidget = new AtomListWidget(*this, Qt::Tool);
+	buildWidget = new BuildWidget(*this, Qt::Tool);
+	cellDefinitionWidget = new CellDefinitionWidget(*this, Qt::Tool);
+	cellTransformWidget = new CellTransformWidget(*this, Qt::Tool);
+	commandWidget = new CommandWidget(*this, Qt::Tool);
+	disorderWizard = new DisorderWizard(*this);
+	forcefieldsWidget = new ForcefieldsWidget(*this, Qt::Tool);
+	fragmentsWidget = new FragmentsWidget(*this, Qt::Tool);
+	geometryWidget = new GeometryWidget(*this, Qt::Tool);
+	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
+	gridsWidget = new GridsWidget(*this, Qt::Tool);
+	messagesWidget = new MessagesWidget(*this, Qt::Tool);
+	modelListWidget = new ModelListWidget(*this, Qt::Tool);
+	positionWidget = new PositionWidget(*this, Qt::Tool);
+	poresWidget = new PoresWidget(*this, Qt::Tool);
+	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
+	selectWidget = new SelectWidget(*this, Qt::Tool);
+	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
+	transformWidget = new TransformWidget(*this, Qt::Tool);
+	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << messagesWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << trajectoryWidget << transformWidget << vibrationsWidget;
+
+	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
+	finaliseUi();
+
+	// Set controls in some windows
+	setControls();
+	fragmentsWidget->refresh();
+	commandWidget->refresh();
+
+	// Refresh the necessary windows, including the mainwindow
+	gridsWidget->refresh();
+	forcefieldsWidget->refresh();
+	cellDefinitionWidget->refresh();
+	cellTransformWidget->refresh();
+	commandWidget->refreshScripts();
+	modelListWidget->refresh();
+	atomListWidget->refresh();
+	updateControls();
+	updateWidgets();
+
+	// Reset view of all loaded models
+	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
+
+	postRedisplay();
+
+	// Display message box warning if there was a filter load error
+	if (aten.nFiltersFailed() == -1)
+	{
+		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+	}
+	else if (aten.nFiltersFailed() > 0)
+	{
+		// Construct the messagebox text
+		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
+		for (Dnchar *d = aten.failedFilters(); d != NULL; d = d->next)
+		{
+			text += "\t";
+			text += d->get();
+			if (d->next != NULL) text += "\n";
+		}
+		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
+	}
+
+	// Add GNU GPL message to statusbox
+	msg.print("<b>Aten</b> version %s (%s@%s) built on %s, Copyright (C) 2007-2013  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
+	msg.print("<b>Aten</b> uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
+	msg.print("<b>Aten</b> comes with ABSOLUTELY NO WARRANTY.\n");
+	msg.print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
+	msg.print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
+
+	// Set some preferences back to their default values
+	prefs.setZMapType(ElementMap::AutoZMap, FALSE);
+	prefs.setKeepView(FALSE);
 }
 
 // Destructor
-AtenForm::~AtenForm()
+AtenWindow::~AtenWindow()
 {
-	// No need (i.e. do not) delete: dummyToolButton.
-	//if (infoLabel1_ != NULL) delete infoLabel1_;
-	//if (infoLabel2_ != NULL) delete infoLabel2_;
-	//if (messageLabel_ != NULL) delete messageLabel_;
 }
 
 // Catch window close event
-void AtenForm::closeEvent(QCloseEvent *event)
+void AtenWindow::closeEvent(QCloseEvent *event)
 {
-	if (gui.saveBeforeClose())
+	if (saveBeforeClose())
 	{
 		saveSettings();
 		event->accept();
-		// Delete subwindows / dialogs
-// 		delete gui.prefsDialog;
-// 		delete gui.forcefieldEditorDialog;
-// // 		delete gui.loadModelDialog;
-// 		delete gui.selectPatternDialog;
-// 		delete gui.atomlistWindow;
-// 		delete gui.buildWindow;
-// 		delete gui.cellDefineWindow;
-// 		delete gui.cellTransformWindow;
-// 		delete gui.disorderWindow;
-// 		delete gui.forcefieldsWindow;
-// 		delete gui.glyphsWindow;
-// 		delete gui.gridsWindow;
-// 		delete gui.mdWindow;
-// 		delete gui.positionWindow;
-// 		delete gui.selectWindow;
-// 		delete gui.transformWindow;
-		gui.application()->exit(0);
 	}
 	else event->ignore();
+}
+
+
+/*
+// Methods
+*/
+
+// Print message
+void AtenWindow::printMessage(const char *s)
+{
+	static char str[8096];
+	static int n;
+	// Remove the '\n' from the end of s (if it has one)
+	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
+	str[n] = '\0';
+	messagesWidget->ui.MessagesBrowser->moveCursor(QTextCursor::End);
+	messagesWidget->ui.MessagesBrowser->append(str);
+}
+
+// Check the status of all models, asking to save before close if necessary
+bool AtenWindow::saveBeforeClose()
+{
+	Dnchar text;
+	int returnvalue;
+	ReturnValue rv;
+	Tree *f;
+	for (Model *m = aten_.models(); m != NULL; m = m->next)
+	{
+		if (m->changeLog.isModified())
+		{
+			aten_.setCurrentModel(m, TRUE);
+			// Create a model message dialog
+			text.sprintf("Model '%s' has been modified.\n", m->name());
+			returnvalue = QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+			switch (returnvalue)
+			{
+				// Discard changes
+				case (QMessageBox::Discard):
+					break;
+				// Cancel quit and return to app
+				case (QMessageBox::Cancel):
+					return FALSE;
+				// Save model before quit
+				case (QMessageBox::Save):
+					// Temporarily disable undo/redo for the model, save, and re-enable
+					m->disableUndoRedo();
+					// If model has a filter set, just save it
+					f = m->filter();
+					if (f != NULL) f->executeWrite(m->filename(), rv);
+					else if (runSaveModelDialog())
+					{
+						m->setFilter(saveModelFilter_);
+						m->setFilename(saveModelFilename_.get());
+						saveModelFilter_->executeWrite(m->filename(), rv);
+					}
+					else
+					{
+						m->enableUndoRedo();
+						return FALSE;
+					}
+					m->enableUndoRedo();
+					break;
+			}
+		}
+	}
+	return TRUE;
+}
+
+
+// Return the PID of Aten
+int AtenWindow::pid()
+{
+#if QT_VERSION >= 0x040400
+	return QApplication::applicationPid();
+#else
+	static int pid = AtenMath::random(50000)+1000;
+	return pid;
+#endif
+}
+
+// Process application messages
+void AtenWindow::processMessages()
+{
+	QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
+}
+
+// Set interactivity (to full or zero), except for main view camera changes
+void AtenWindow::setInteractive(bool interactive)
+{
+	// Set enabled status of all the dock widgets..
+	foreach( QObject *obj, dockWidgets_) obj->setProperty("enabled", interactive);
+
+	// ...and the main toolbar...
+	ui.MainToolbar->setEnabled(interactive);
+	
+	// ...and set the canvas 'editability'
+	ui.MainView->setEditable(interactive);
 }
 
 /*
 // Refresh Functions
 */
 
+// Update GUI after model change (or different model selected) (accessible wrapper to call AtenWindow's function)
+void AtenWindow::updateWidgets(int targets)
+{
+	// Refresh aspects of main window and dock widgets
+	updateMainWindow();
+	updateContextMenu();
+	
+	if (targets&AtenWindow::ModelsTarget) modelListWidget->refresh();
+	if (targets&AtenWindow::GeometryTarget) geometryWidget->refresh();
+	if (targets&AtenWindow::SelectTarget) selectWidget->refresh();
+	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
+	if (targets&AtenWindow::TrajectoryTarget) trajectoryWidget->refresh();
+
+	// Update contents of the atom list
+	if (targets&AtenWindow::AtomsTarget) atomListWidget->refresh();
+
+	// Update contents of the glyph list
+	if (targets&AtenWindow::GlyphsTarget) glyphsWidget->refresh();
+
+	// Update contents of the grid window
+	if (targets&AtenWindow::GridsTarget) gridsWidget->refresh();
+
+	// Update the contents of the cell page
+	if (targets&AtenWindow::CellTarget)
+	{
+		cellDefinitionWidget->refresh();
+		cellTransformWidget->refresh();
+	}
+
+	// Update forcefields in the forcefield widget
+	if (targets&AtenWindow::ForcefieldsTarget) forcefieldsWidget->refresh();
+
+	if (targets&AtenWindow::StatusBarTarget)
+	{
+		static Dnchar text(512);
+		static UserAction::Action lastAction = UserAction::NoAction;
+		
+		// Initialise string if NoAction
+		if (lastAction == UserAction::NoAction) text.clear();
+		
+		// If current action is not the same as the last action, recreate string
+		if (lastAction != selectedMode())
+		{
+			lastAction = selectedMode();
+			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
+			if (UserActions[lastAction].shiftModified[0] != '\0') text.strcatf(", <b>+shift</b> %s", UserActions[lastAction].shiftModified);
+			if (UserActions[lastAction].ctrlModified[0] != '\0') text.strcatf(", <b>+ctrl</b> %s", UserActions[lastAction].ctrlModified);
+			if (UserActions[lastAction].altModified[0] != '\0') text.strcatf(", <b>+alt</b> %s", UserActions[lastAction].altModified);
+		}
+		// Set text in statusbar widget
+// 		if (clear) this->setMessageLabel("");  TGAY
+		this->setMessageLabel(text);
+	}
+	
+	// Request redraw of the main canvas
+	if (targets&AtenWindow::CanvasTarget) postRedisplay();
+}
+
 // Update GUI after model change (or different model selected)
-void AtenForm::update()
+void AtenWindow::updateMainWindow()
 {
 	// Update status bar
 	QString s;
-	Model *m = aten.currentModel();
+	Model *m = aten_.currentModel();
 	// First label - atom and trajectory frame information
 	if (m->hasTrajectory())
 	{
@@ -120,7 +362,7 @@ void AtenForm::update()
 			s += itoa(m->nTrajectoryFrames());
 			s += ") ";
 		}
-		gui.trajectoryWidget->refresh();
+		trajectoryWidget->refresh();
 	}
 	updateTrajectoryMenu();
 
@@ -171,8 +413,8 @@ void AtenForm::update()
 	// Update Undo Redo lists
 	updateUndoRedo();
 	// Enable/Disable cut/copy/paste/delete based on selection status and clipboard contents
-	ui.actionEditPaste->setEnabled( aten.userClipboard->nAtoms() != 0);
-	ui.actionEditPasteTranslated->setEnabled( aten.userClipboard->nAtoms() != 0);
+	ui.actionEditPaste->setEnabled( aten_.userClipboard->nAtoms() != 0);
+	ui.actionEditPasteTranslated->setEnabled( aten_.userClipboard->nAtoms() != 0);
 	ui.actionEditCopy->setEnabled( m->nSelected() != 0 );
 	ui.actionEditCut->setEnabled( m->nSelected() != 0 );
 	ui.actionEditDelete->setEnabled( m->nSelected() != 0 );
@@ -181,11 +423,10 @@ void AtenForm::update()
 }
 
 // Update trajectory menu
-void AtenForm::updateTrajectoryMenu()
+void AtenWindow::updateTrajectoryMenu()
 {
-	if (!gui.exists()) return;
 	// First see if the model has a trajectory associated to it
-	Model *m = aten.currentModel();
+	Model *m = aten_.currentModel();
 	Model::RenderSource rs = m->renderSource();
 	bool hastrj = (m->nTrajectoryFrames() != 0);
 	int framenatoms = hastrj ? m->trajectoryCurrentFrame()->nAtoms() : -1;
@@ -197,7 +438,7 @@ void AtenForm::updateTrajectoryMenu()
 	ui.actionTrajectoryFirstFrame->setEnabled(hastrj);
 	ui.actionTrajectoryLastFrame->setEnabled(hastrj);
 	ui.actionTrajectoryPlayPause->setEnabled(hastrj);
-	ui.actionTrajectoryPlayPause->setChecked( gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
+	ui.actionTrajectoryPlayPause->setChecked(trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
 	ui.actionTrajectoryFrames->setEnabled(hastrj);
 	ui.actionTrajectorySaveMovie->setEnabled(hastrj);
 	// Select the correct view action
@@ -206,25 +447,24 @@ void AtenForm::updateTrajectoryMenu()
 }
 
 // Refresh window title
-void AtenForm::updateWindowTitle()
+void AtenWindow::updateWindowTitle()
 {
-	if (!gui.exists()) return;
-	Model *m = aten.currentModel();
+	Model *m = aten_.currentModel();
 	Dnchar title;
 	title.sprintf("Aten (v%s) - %s (%s)%s", ATENVERSION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
 	setWindowTitle(title.get());
 }
 
 // Cancel any current mode and return to select
-void AtenForm::cancelCurrentMode()
+void AtenWindow::cancelCurrentMode()
 {
 	// If the previous mode was DrawFragment, flag a complete redraw of the current model
-	if (gui.mainCanvas()->selectedMode() == UserAction::DrawFragmentAction) aten.currentModel()->changeLog.add(Log::Style);
+	if (selectedMode() == UserAction::DrawFragmentAction) aten_.currentModel()->changeLog.add(Log::Style);
 	ui.actionSelectAtoms->trigger();
 }
 
 // Load recent file
-void AtenForm::loadRecent()
+void AtenWindow::loadRecent()
 {
 	Dnchar filename;
 	Model *m;
@@ -233,34 +473,34 @@ void AtenForm::loadRecent()
 	QAction *action = qobject_cast<QAction*> (sender());
 	if (!action)
 	{
-		printf("AtenForm::loadRecent - Sender was not a QAction.\n");
+		printf("AtenWindow::loadRecent - Sender was not a QAction.\n");
 		return;
 	}
 	// Grab the filename from the action
 	filename = qPrintable(action->data().toString());
 	// See if any loaded model filename matches this filename
-	for (m = aten.models(); m != NULL; m = m->next)
+	for (m = aten_.models(); m != NULL; m = m->next)
 	{
 		msg.print(Messenger::Verbose,"Checking loaded models for '%s': %s\n",filename.get(),m->filename());
 		if (filename == m->filename())
 		{
 			msg.print(Messenger::Verbose,"Matched filename to loaded model.\n");
-			aten.setCurrentModel(m);
+			aten_.setCurrentModel(m);
 			// Update GUI
-			gui.update(GuiQt::AllTarget);
+			updateWidgets(AtenWindow::AllTarget);
 			return;
 		}
 	}
 	// If we get to here then the model is not currently loaded...
-	filter = aten.probeFile(filename.get(), FilterData::ModelImport);
+	filter = aten_.probeFile(filename.get(), FilterData::ModelImport);
 	if (filter != NULL)
 	{
 		ReturnValue rv;
 		filter->executeRead(filename.get(), rv);
-		aten.currentModel()->changeLog.add(Log::Camera);
-		aten.currentModel()->regenerateIcon();
+		aten_.currentModel()->changeLog.add(Log::Camera);
+		aten_.currentModel()->regenerateIcon();
 		// Update GUI
-		gui.update(GuiQt::AllTarget);
+		updateWidgets(AtenWindow::AllTarget);
 	}
 	else
 	{
@@ -277,7 +517,7 @@ void AtenForm::loadRecent()
 }
 
 // Add file to top of recent list
-void AtenForm::addRecent(const char *filename)
+void AtenWindow::addRecent(const char *filename)
 {
 	// Find unused (i.e. still hidden) recent file action
 	int last, n;
@@ -304,30 +544,31 @@ void AtenForm::addRecent(const char *filename)
 	actionRecentFile[last]->setVisible(TRUE);
 }
 
-void AtenForm::on_actionAboutAten_triggered(bool checked)
+void AtenWindow::on_actionAboutAten_triggered(bool checked)
 {
-	gui.aboutDialog->showWindow();
+	AtenAbout aboutDialog;
+	aboutDialog.show();
 }
 
-void AtenForm::on_actionAboutQt_triggered(bool checked)
+void AtenWindow::on_actionAboutQt_triggered(bool checked)
 {
 	QMessageBox::aboutQt(this, "About Qt");
 }
 
 // Update any controls related to Prefs values etc.
-void AtenForm::updateControls()
+void AtenWindow::updateControls()
 {
 	ui.actionManualSwapBuffers->setChecked(prefs.manualSwapBuffers());
 	ui.actionDetectDisplayHBonds->setChecked(prefs.drawHydrogenBonds());
-	gui.buildWidget->ui.BondToleranceSpin->setValue(prefs.bondTolerance());
-	gui.buildWidget->ui.BondToleranceSlider->setValue(int(prefs.bondTolerance()*1000.0));
+	buildWidget->ui.BondToleranceSpin->setValue(prefs.bondTolerance());
+	buildWidget->ui.BondToleranceSlider->setValue(int(prefs.bondTolerance()*1000.0));
 }
 
 // Update undo/redo actions in Edit menu
-void AtenForm::updateUndoRedo()
+void AtenWindow::updateUndoRedo()
 {
 	Dnchar text;
-	Model *m = aten.currentModelOrFrame();
+	Model *m = aten_.currentModelOrFrame();
 	// Check the model's state pointers
 	if (m->currentUndoState() == NULL)
 	{
@@ -354,22 +595,22 @@ void AtenForm::updateUndoRedo()
 }
 
 // Change current user action
-void AtenForm::uaButtonClicked(int id)
+void AtenWindow::uaButtonClicked(int id)
 {
 	QAbstractButton *button;
 	// Check button correspondiong to supplied index
 	button = uaButtons_.button(id);
-	if (button == NULL) printf("Internal Error: AtenForm::uaButtonClicked - No button associated to id %i\n", id);
+	if (button == NULL) printf("Internal Error: AtenWindow::uaButtonClicked - No button associated to id %i\n", id);
 	else if (button->isChecked())
 	{
 		// Activate the relevant mode, bu tonly if it isn't already active
-		if (gui.mainCanvas()->selectedMode() == (UserAction::Action) id) return;
-		gui.mainCanvas()->setSelectedMode((UserAction::Action) id);
+		if (selectedMode() == (UserAction::Action) id) return;
+		setSelectedMode((UserAction::Action) id);
 	}
 }
 
 // Set action/button to reflect supplied user action
-void AtenForm::setActiveUserAction(UserAction::Action ua)
+void AtenWindow::setActiveUserAction(UserAction::Action ua)
 {
 	// Set (check) relevant action or button based on supplied UserAction
 	QAbstractButton *button;
@@ -397,7 +638,7 @@ void AtenForm::setActiveUserAction(UserAction::Action ua)
 }
 
 // Set message label text
-void AtenForm::setMessageLabel(const char *s)
+void AtenWindow::setMessageLabel(const char *s)
 {
 	messageLabel_->setText(s);
 }

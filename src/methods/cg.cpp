@@ -121,7 +121,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 		}
 		if (converged) break;
 
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update(GuiQt::CanvasTarget);
+		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 		// Store old forces and calculate new forces at the new line-minimised position
 		for (i=0; i<srcmodel->nAtoms()*3; i += 3)

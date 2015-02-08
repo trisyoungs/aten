@@ -22,15 +22,13 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/pores.h"
-#include "gui/gui.h"
-#include "gui/toolbox.h"
 #include "base/sysfunc.h"
 
 // Static members
 PartitioningScheme PoresWidget::partitioningScheme_;
 
 // Constructor
-PoresWidget::PoresWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+PoresWidget::PoresWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);
@@ -43,8 +41,6 @@ PoresWidget::PoresWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(p
 void PoresWidget::showWidget()
 {
 	show();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.PoresButton->setChecked(TRUE);
 }
 
 // Return the widgets partitioning scheme
@@ -60,7 +56,7 @@ PartitioningScheme &PoresWidget::partitioningScheme()
 void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
-	Model *m = aten.currentModelOrFrame();
+	Model *m = parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
 		msg.print("Can't drill pores in a non-periodic model.\n");
@@ -74,13 +70,13 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
 	double sizeParam = ui.PoreSizeSpin->value();
 	CommandNode::run(Command::SelectPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
-	Model *m = aten.currentModelOrFrame();
+	Model *m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
 		msg.print("Can't drill pores in a non-periodic model.\n");
@@ -94,7 +90,7 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
 	double sizeParam = ui.PoreSizeSpin->value();
 	CommandNode::run(Command::DrillPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 /*
@@ -104,7 +100,7 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 void PoresWidget::on_TerminateButton_clicked(bool checked)
 {
 	// First check - are any atoms selected
-	Model *m = aten.currentModelOrFrame();
+	Model *m =parent_.aten().currentModelOrFrame();
 	if (m->nSelected() == 0)
 	{
 		msg.print("No atoms selected in current model, so nothing to terminate.\n");
@@ -113,7 +109,7 @@ void PoresWidget::on_TerminateButton_clicked(bool checked)
 
 	// Run the command
 	CommandNode::run(Command::Terminate, "");
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 /*
@@ -123,7 +119,7 @@ void PoresWidget::on_TerminateButton_clicked(bool checked)
 void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
-	Model *m = aten.currentModelOrFrame();
+	Model *m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
 		msg.print("Can't generate a partitioning scheme for a non-periodic model.\n");
@@ -153,13 +149,13 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	ui.PartitionVolumeLabel->setText( s.get() );
 	s.sprintf("%5.1f %%", 100.0*volume/m->cell()->volume());
 	ui.PartitionVolumePercentLabel->setText( s.get() );
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
-	Model *m = aten.currentModelOrFrame();
+	Model *m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
 		msg.print("Can't generate a partitioning scheme for a non-periodic model.\n");
@@ -172,14 +168,10 @@ void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
 	int atomExtent = ui.AtomExtentSpin->value();
 	CommandNode::run(Command::CreateScheme, "ciiidii", name.get(), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 1);
-	gui.mainCanvas()->postRedisplay();
+	parent_.postRedisplay();
 }
 
 void PoresWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.PoresButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
-
 	event->accept();
 }

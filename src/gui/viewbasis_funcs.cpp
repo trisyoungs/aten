@@ -27,7 +27,7 @@
 #include "model/model.h"
 
 // Constructor
-AtenViewBasis::AtenViewBasis(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+AtenViewBasis::AtenViewBasis(QWidget* parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	// Private variables
 	target_ = NULL;

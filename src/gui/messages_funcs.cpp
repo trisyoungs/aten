@@ -19,12 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/gui.h"
+#include "gui/mainwindow.h"
 #include "gui/messages.h"
-#include "gui/toolbox.h"
 
 // Constructor
-MessagesWidget::MessagesWidget(QWidget *parent, Qt::WindowFlags flags) : QDockWidget(parent,flags)
+MessagesWidget::MessagesWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 }
@@ -33,8 +32,6 @@ void MessagesWidget::showWidget()
 {
 	show();
 	refresh();
-	// Make sure toolbutton is in correct state
-	gui.toolBoxWidget->ui.MessagesButton->setChecked(TRUE);
 }
 
 void MessagesWidget::refresh()
@@ -58,14 +55,11 @@ void MessagesWidget::on_MessagesBrowser_anchorClicked(const QUrl &link)
 	program.execute(rv);
 	
 	// Re-focus to the main window canvas
-	gui.mainCanvas()->setFocus();
-	gui.update(GuiQt::AllTarget-GuiQt::ModelsTarget);
+// 	gui.mainCanvas()->setFocus(); ATEN2 TODO
+	parent_.updateWidgets(AtenWindow::AllTarget-AtenWindow::ModelsTarget);
 }
 	
 void MessagesWidget::closeEvent(QCloseEvent *event)
 {
-	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	gui.toolBoxWidget->ui.MessagesButton->setChecked(FALSE);
-	if (this->isFloating()) gui.mainCanvas()->postRedisplay();
 	event->accept();
 }
