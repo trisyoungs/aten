@@ -117,7 +117,7 @@ void ForcefieldsWidget::refreshTypes()
 	if (ff == NULL) return;
 	// Reset header labels
 	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
-	for (ForcefieldAtom *ffa = ff->types(); ffa != NULL; ffa = ffa->next)
+	for (ForcefieldAtom* ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 	{
 		if (ffa->neta()->characterElement() != typelistElement_) continue;
 		ui.FFTypeTable->setRowCount(count+1);
@@ -286,13 +286,13 @@ void ForcefieldsWidget::on_AssignFFToCurrentButton_clicked(bool checked)
 // Assign current forcefield to all models
 void ForcefieldsWidget::on_AssignFFToAllButton_clicked(bool checked)
 {
-	for (Model *m = parent_.aten().models(); m != NULL; m = m->next) m->setForcefield(parent_.aten().currentForcefield());
+	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) m->setForcefield(parent_.aten().currentForcefield());
 }
 
 // Assign current forcefield to pattern
 void ForcefieldsWidget::on_AssignFFToPatternButton_clicked(bool checked)
 {
-	AtenSelectPattern patternSelect(this);
+	AtenSelectPattern patternSelect(parent_);
 	Pattern* p = patternSelect.selectPattern(parent_.aten().currentModelOrFrame());
 	if (p != NULL) p->setForcefield(parent_.aten().currentForcefield());
 }
@@ -323,7 +323,7 @@ void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
 void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 {
 	// Check selected forcefield against that assigned to the model
-	Model *m = parent_.aten().currentModel();
+	Model* m = parent_.aten().currentModel();
 	Forcefield *ff = parent_.aten().currentForcefield();
 	if ((m == NULL) || (ff == NULL)) return;
 	if (m->forcefield() != ff)
@@ -335,7 +335,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 	int row = ui.FFTypeTable->currentRow();
 	if (row == -1) return;
 	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
-	ForcefieldAtom *ffa = ff->findType(atoi(qPrintable(item->text())));
+	ForcefieldAtom* ffa = ff->findType(atoi(qPrintable(item->text())));
 	if (ffa != NULL)
 	{
 		m->selectionSetType(ffa, TRUE);
@@ -359,10 +359,10 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 	int row = ui.FFTypeTable->currentRow();
 	if (row == -1) return;
 	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
-	ForcefieldAtom *ffa = ff->findType(atoi(qPrintable(item->text())));
+	ForcefieldAtom* ffa = ff->findType(atoi(qPrintable(item->text())));
 	if (ffa != NULL)
 	{
-		Model *m = parent_.aten().currentModel();
+		Model* m = parent_.aten().currentModel();
 		Neta *at = ffa->neta();
 		if (m->createPatterns())
 		{
@@ -373,7 +373,7 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 			for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next)
 			{
 				// Get the pattern in which the atom exists
-				Pattern *p = m->pattern(ri->item);
+				Pattern* p = m->pattern(ri->item);
 				if (ri->item->element() == at->characterElement())
 				{
 					matchscore = at->matchAtom(ri->item, p->ringList(), m);

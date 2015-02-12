@@ -106,7 +106,7 @@ void BuildWidget::on_ElementCustomButton_clicked(bool checked)
 void BuildWidget::on_ElementPickButton_clicked(bool checked)
 {
 	// Call the select element dialog...
-	AtenSelectElement elementSelect(this); 
+	AtenSelectElement elementSelect(parent_); 
 	int newel = elementSelect.selectElement();
 	if (newel != -1)
 	{

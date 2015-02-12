@@ -103,7 +103,7 @@ void TransformWidget::rotateSelection(double direction)
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
 	CommandNode::run(Command::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	m->updateMeasurements();
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }

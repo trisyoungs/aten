@@ -19,11 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "gui/mainwindow.h"
 #include "gui/selectvariable.h"
 #include "classes/zmatrix.h"
 
 // Constructor
-AtenSelectVariable::AtenSelectVariable(QWidget *parent) : QDialog(parent)
+AtenSelectVariable::AtenSelectVariable(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 {
 	// Private variables
 	selectedVariable_ = NULL;

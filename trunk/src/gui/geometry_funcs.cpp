@@ -48,7 +48,7 @@ void GeometryWidget::refresh()
 void GeometryWidget::updateTabs()
 {
 	// Check current atom selection
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() < 2) return;
 	switch (m->nSelected())
 	{
@@ -79,10 +79,10 @@ void GeometryWidget::updateTabs()
 // Update value labels
 void GeometryWidget::updateLabels()
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() < 2) return;
 	double value;
-	Atom *i, *j, *k, *l;
+	Atom* i, *j, *k, *l;
 	Dnchar text;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
@@ -151,13 +151,13 @@ void GeometryWidget::on_MeasureClearAllButton_clicked(bool checked)
 
 void GeometryWidget::on_SetNewDistanceButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
 		msg.print("Can't set distance - %i atoms are selected but 2 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j;
+	Atom* i, *j;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -168,13 +168,13 @@ void GeometryWidget::on_SetNewDistanceButton_clicked(bool checked)
 
 void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
 		msg.print("Can't nudge distance - %i atoms are selected but 2 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j;
+	Atom* i, *j;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -186,13 +186,13 @@ void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
 
 void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
 		msg.print("Can't nudge distance - %i atoms are selected but 2 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j;
+	Atom* i, *j;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -208,13 +208,13 @@ void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 
 void GeometryWidget::on_SetNewAngleButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
 		msg.print("Can't set angle - %i atoms are selected but 3 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j, *k;
+	Atom* i, *j, *k;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -226,13 +226,13 @@ void GeometryWidget::on_SetNewAngleButton_clicked(bool checked)
 
 void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
 		msg.print("Can't nudge angle - %i atoms are selected but 3 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j, *k;
+	Atom* i, *j, *k;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -245,13 +245,13 @@ void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
 
 void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
 		msg.print("Can't nudge angle - %i atoms are selected but 3 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j, *k;
+	Atom* i, *j, *k;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -268,13 +268,13 @@ void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 
 void GeometryWidget::on_SetNewTorsionButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
 		msg.print("Can't set torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j, *k, *l;
+	Atom* i, *j, *k, *l;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -287,13 +287,13 @@ void GeometryWidget::on_SetNewTorsionButton_clicked(bool checked)
 
 void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
 		msg.print("Can't nudge torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j, *k, *l;
+	Atom* i, *j, *k, *l;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -307,13 +307,13 @@ void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
 
 void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
 		msg.print("Can't nudge torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
 		return;
 	}
-	Atom *i, *j, *k, *l;
+	Atom* i, *j, *k, *l;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;

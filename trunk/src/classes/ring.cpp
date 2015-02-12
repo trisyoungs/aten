@@ -80,13 +80,13 @@ bool Ring::operator==(Ring &r) const
 }
 
 // Set pattern parent
-void Ring::setParent(Pattern *p)
+void Ring::setParent(Pattern* p)
 {
 	parent_ = p;
 }
 
 // Return parent pattern
-Pattern *Ring::parent()
+Pattern* Ring::parent()
 {
 	return parent_;
 }
@@ -143,14 +143,14 @@ int Ring::requestedSize() const
 }
 
 // Search ring list for specified atom
-bool Ring::containsAtom(Atom *i)
+bool Ring::containsAtom(Atom* i)
 {
 	return atoms_.contains(i);
 }
 
 
 // Add atom to ring
-bool Ring::addAtom(Atom *i)
+bool Ring::addAtom(Atom* i)
 {
 	msg.enter("Ring::addAtom");
 	// Size check
@@ -256,7 +256,7 @@ void Ring::detectType()
 				bt1 = ra->item->findBond(getPrev(ra)->item)->type();
 				bt2 = ra->item->findBond(getNext(ra)->item)->type();
 				// TODO Need to check against the bondorder penalty
-			//bondOrderPenalty(Atom *i, int bo);
+			//bondOrderPenalty(Atom* i, int bo);
 				if ((bt1 == Bond::Single) && (bt2 == Bond::Single)) nhetero ++;
 				else failed = TRUE;
 			}
@@ -357,7 +357,7 @@ void Ring::clear()
 }
 
 // Add atoms_.to Reflist
-void Ring::addAtomsToReflist(Reflist<Atom,int> *rlist, Atom *i)
+void Ring::addAtomsToReflist(Reflist<Atom,int> *rlist, Atom* i)
 {
 	// Add all atoms_.in the ring 'r' to the list, excluding the atom 'i'
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next) if (ra->item != i) rlist->add(ra->item);

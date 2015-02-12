@@ -307,7 +307,7 @@ bool Command::function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Grid *g = NULL;
-	Tree *filter = aten.probeFile(c->argc(0), FilterData::GridImport);
+	Tree* filter = aten.probeFile(c->argc(0), FilterData::GridImport);
 	if (filter != NULL) if (filter->executeRead(c->argc(0))) g = obj.g;
 	rv.set(VTypes::GridData, g);
 	return TRUE;

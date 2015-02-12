@@ -71,7 +71,7 @@ class FilterData
 	// File filter glob (for gui)
 	Dnchar glob_;
 	// Partner filter
-	Tree *partner_;
+	Tree* partner_;
 	// Filter description
 	Dnchar description_;
 	// Filename alias list
@@ -83,25 +83,25 @@ class FilterData
 	// Type of element mapping to use
 	ElementMap::ZMapType zMapType_;
 	// Pointer to trajectory header read/write routine (for trajectory filters)
-	Tree *headerFunction_;
+	Tree* headerFunction_;
 	// Pointer to trajectory frame read/write routine (for trajectory filters)
-	Tree *frameFunction_;
+	Tree* frameFunction_;
 
 
 	/*
-	// Set
-	*/
+	 * Set
+	 */
 	public:
 	// Set option by name
 	bool setOption(Dnchar *name, TreeNode *value);
 	// Set the type of filter
 	void setType(FilterType ft);
 	// Set the partner filter
-	void setPartner(Tree *partner);
+	void setPartner(Tree* partner);
 	// Set trajectory header function
-	void setTrajectoryHeaderFunction(Tree *func);
+	void setTrajectoryHeaderFunction(Tree* func);
 	// Set trajectory frame function
-	void setTrajectoryFrameFunction(Tree *func);
+	void setTrajectoryFrameFunction(Tree* func);
 
 
 	/*
@@ -133,7 +133,7 @@ class FilterData
 	// Return whether the supplied text matches any of the filter's possible exact filenames
 	bool doesNameMatch(const char *name) const;
 	// Return the partner filter
-	Tree *partner() const;
+	Tree* partner() const;
 	// Return the file filter
 	const char *glob() const;
 	// Return the type of filter
@@ -143,9 +143,9 @@ class FilterData
 	// Return (after creation if it is needed) the long description of the filter (including glob)
 	const char *description();
 	// Return trajectory header function
-	Tree *trajectoryHeaderFunction() const;
+	Tree* trajectoryHeaderFunction() const;
 	// Return trajectory frame function
-	Tree *trajectoryFrameFunction() const;
+	Tree* trajectoryFrameFunction() const;
 };
 
 #endif

@@ -78,7 +78,7 @@ bool Program::finalise()
 	msg.enter("Program::finalise");
 	
 	// Cycle over generated filters
-	for (Tree *filter = filters_.first(); filter != NULL; filter = filter->next)
+	for (Tree* filter = filters_.first(); filter != NULL; filter = filter->next)
 	{
 		// Register file filters with the master
 		if (filter->isFilter())
@@ -88,7 +88,7 @@ bool Program::finalise()
 			if (filter->filter.type() == FilterData::TrajectoryImport)
 			{
 				// Search for 'int readHeader()' function
-				Tree *func = filter->findLocalFunction("readHeader");
+				Tree* func = filter->findLocalFunction("readHeader");
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
@@ -129,7 +129,7 @@ bool Program::finalise()
 	}
 	
 	// Cycle over defined local functions and finalise
-	for (Tree *func = functions_.first(); func != NULL; func = func->next)
+	for (Tree* func = functions_.first(); func != NULL; func = func->next)
 	{
 		if (!func->finalise())
 		{
@@ -144,15 +144,15 @@ bool Program::finalise()
 }
 
 // Return main program
-Tree *Program::mainProgram()
+Tree* Program::mainProgram()
 {
 	return &mainProgram_;
 }
 
 // Create a new filter
-Tree *Program::addFilter()
+Tree* Program::addFilter()
 {
-	Tree *tree = filters_.add();
+	Tree* tree = filters_.add();
 	tree->setParent(this);
 	tree->setType(Tree::FilterTree);
 	return tree;
@@ -218,7 +218,7 @@ bool Program::reload()
 }
 
 // Delete specified tree
-void Program::deleteTree(Tree *t)
+void Program::deleteTree(Tree* t)
 {
 	if (t == NULL) return;
 	// Search for the specified tree...
@@ -257,9 +257,9 @@ void Program::print()
 */
 
 // Add a Program-global function
-Tree *Program::addFunction(const char *name)
+Tree* Program::addFunction(const char *name)
 {
-	Tree *tree = functions_.add();
+	Tree* tree = functions_.add();
 	tree->setName(name);
 	tree->setType(Tree::FunctionTree);
 	tree->setParent(this);
@@ -267,15 +267,15 @@ Tree *Program::addFunction(const char *name)
 }
 
 // Search for existing global function
-Tree *Program::findFunction(const char *name)
+Tree* Program::findFunction(const char *name)
 {
-	Tree *result;
+	Tree* result;
 	for (result = functions_.first(); result != NULL; result = result->next) if (strcmp(result->name(),name) == 0) break;
 	return result;
 }
 
 // Return first defined global function...
-Tree *Program::functions()
+Tree* Program::functions()
 {
 	return functions_.first();
 }
@@ -285,7 +285,7 @@ bool Program::executeFunction(const char *funcname, ReturnValue &rv, const char 
 {
 	msg.enter("Program::executeGlobalFunction");
 	// First, locate function with the name supplied
-	Tree *func = findFunction(funcname);
+	Tree* func = findFunction(funcname);
 	if (func == NULL)
 	{
 		printf("Error: No global function named '%s' exists in '%s'.\n", funcname, name_.get());

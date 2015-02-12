@@ -37,7 +37,7 @@ Forcefield::Forcefield() : ListItem<Forcefield>()
 	// Private variables
 	energyUnit_ = Prefs::KiloJoules;
 	// Create _NDEF_ type common to all FFs)
-	ForcefieldAtom *ffa = types_.add();
+	ForcefieldAtom* ffa = types_.add();
 	ffa->setParent(this);
 	ffa->setName("_NDEF_");
 	ffa->setTypeId(-1);
@@ -103,22 +103,22 @@ int Forcefield::nTypes()
 }
 
 // Add a new type to the forcefield
-ForcefieldAtom *Forcefield::addType()
+ForcefieldAtom* Forcefield::addType()
 {
-	ForcefieldAtom *ffa = types_.add();
+	ForcefieldAtom* ffa = types_.add();
 	ffa->setParent(this);
 	ffa->setTypeId(types_.nItems()-1);
 	return ffa;
 }
 
 // Returns the head of the atomtype list
-ForcefieldAtom *Forcefield::types()
+ForcefieldAtom* Forcefield::types()
 {
 	return types_.first();
 }
 
 // Returns nth defined atomtype
-ForcefieldAtom *Forcefield::type(int n)
+ForcefieldAtom* Forcefield::type(int n)
 {
 	if ((n < 0) || (n > types_.nItems()))
 	{
@@ -129,11 +129,11 @@ ForcefieldAtom *Forcefield::type(int n)
 }
 
 // Search FF for type ID
-ForcefieldAtom *Forcefield::findType(int query)
+ForcefieldAtom* Forcefield::findType(int query)
 {
 	// Search for the typeId_ specified and return the internal integer id (i.e. position in atomtype list)
 	msg.enter("Forcefield::findType[int]");
-	ForcefieldAtom *result;
+	ForcefieldAtom* result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if (query == result->typeId()) break;
 	msg.exit("Forcefield::findType[int]");
@@ -141,13 +141,13 @@ ForcefieldAtom *Forcefield::findType(int query)
 }
 
 	// Find the named atomtype
-ForcefieldAtom *Forcefield::findType(const char *name)
+ForcefieldAtom* Forcefield::findType(const char *name)
 {
 	// Search for the atomname specified and return the internal integer id (i.e. position in atomtype list)
 	// We return the first occurrence we find (since there may be more than one - only typeId_ need be unique)
 	// Search both names and equivalents (since aliases may be defined that are not themselves defined as types_)
 	msg.enter("Forcefield::findType[char]");
-	ForcefieldAtom *result;
+	ForcefieldAtom* result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if ((strcmp(result->name(),name) == 0) || (strcmp(result->equivalent(),name) == 0)) break;
 	msg.exit("Forcefield::findType[char]");
@@ -155,10 +155,10 @@ ForcefieldAtom *Forcefield::findType(const char *name)
 }
 
 // Return description of typeId_
-ForcefieldAtom *Forcefield::findByTypeId(int i, ForcefieldAtom *excluding)
+ForcefieldAtom* Forcefield::findByTypeId(int i, ForcefieldAtom* excluding)
 {
 	msg.enter("Forcefield::findByTypeId");
-	ForcefieldAtom *result = NULL;
+	ForcefieldAtom* result = NULL;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if ((result->typeId() == i) && (result != excluding)) break;
 //	if (result == NULL) printf("Forcefield::typeOfId <<<< FFID %i not found in forcefield >>>>\n",i);
@@ -187,7 +187,7 @@ Neta *Forcefield::typeDefine(const char *name)
 }
 
 // Returns whether the specified forcefield type is contained in this forcefield
-bool Forcefield::containsType(ForcefieldAtom *type)
+bool Forcefield::containsType(ForcefieldAtom* type)
 {
 	return types_.contains(type);
 }
@@ -229,7 +229,7 @@ ForcefieldBound *Forcefield::bond(int n)
 }
 
 // Find bond type
-ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
+ForcefieldBound *Forcefield::findBond(ForcefieldAtom* ffi, ForcefieldAtom* ffj)
 {
 	// Search the forcefield for the bond definition for the interaction of the atom types i-j
 	// Return NULL if no match found ('result' remains 'NULL' if no kind of match is found).
@@ -327,7 +327,7 @@ ForcefieldBound *Forcefield::angle(int n)
 }
 
 // Find angle type
-ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk)
+ForcefieldBound *Forcefield::findAngle(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk)
 {
 	// Search the forcefield for the angle definition for the interaction of the atom types i-j-k
 	// Return NULL is no match found.
@@ -443,7 +443,7 @@ ForcefieldBound *Forcefield::torsion(int n)
 }
 
 // Find torsion type
-ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk, ForcefieldAtom *ffl)
+ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk, ForcefieldAtom* ffl)
 {
 	// Search the forcefield for the torsion definition for the interaction of the atom types i-j-k-l
 	// Return NULL is no match found.
@@ -620,7 +620,7 @@ ForcefieldBound *Forcefield::ureyBradley(int n)
 }
 
 // Find Urey-Bradley type
-ForcefieldBound *Forcefield::findUreyBradley(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk)
+ForcefieldBound *Forcefield::findUreyBradley(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk)
 {
 	// Search the forcefield for the Urey-Bradley definition for the interaction of the atom types i-j-k
 	// Return NULL is no match found.
@@ -736,7 +736,7 @@ int Forcefield::matchType(const char *test, const char *target)
 }
 
 // Match atom types to names
-int Forcefield::matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char *typei, const char *typej)
+int Forcefield::matchTypes(ForcefieldAtom* ffi, ForcefieldAtom* ffj, const char *typei, const char *typej)
 {
 	// Type Match routines - string match the name of types_ 'i' and 'j' to the string'd types_
 	// specified in the bond / angle / torsion data supplied. Only check 'one way round' - the routine
@@ -793,7 +793,7 @@ void Forcefield::convertParameters()
 	// Convert units of all the energetic parameters within the forcefield from the forcefield's current units to the program's internal units (specified in prefs)
 	msg.enter("Forcefield::convertParameters");
 	ForcefieldBound *ffb;
-	ForcefieldAtom *ffa;
+	ForcefieldAtom* ffa;
 	int n;
 	Dnchar *param;
 	Variable *v;

@@ -24,14 +24,14 @@
 #include "base/pattern.h"
 
 // Calculate bond energy of pattern (or molecule in pattern)
-void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
+void Pattern::bondEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 {
 	msg.enter("Pattern::bondEnergy");
 	int i, j, m1, aoff;
 	double forcek, eq, rij, energy, ubenergy, bondenergy, d, expo, beta;
 	ForcefieldBound *ffb;
 	PatternBound *pb;
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
@@ -94,7 +94,7 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 }
 
 // Calculate bond forces in pattern
-void Pattern::bondForces(Model *srcmodel)
+void Pattern::bondForces(Model* srcmodel)
 {
 	msg.enter("Pattern::bondForcess");
 	int i, j, m1, aoff;
@@ -102,7 +102,7 @@ void Pattern::bondForces(Model *srcmodel)
 	static double forcek, eq, rij, d, expo, du_dr, beta;
 	static ForcefieldBound *ffb;;
 	PatternBound *pb;
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)

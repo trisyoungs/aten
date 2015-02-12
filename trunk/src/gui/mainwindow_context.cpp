@@ -30,7 +30,7 @@
 void AtenWindow::updateContextMenu()
 {
 	msg.enter("AtenWindow::updateContextMenu");
-	Model *viewTarget = aten_.currentModel();
+	Model* viewTarget = aten_.currentModel();
 
 	// Enable bond, angle, and torsion editing
 	int nselected = (viewTarget == NULL ? 0 : viewTarget->nSelected());
@@ -53,7 +53,7 @@ void AtenWindow::activateGlyphActions(int n)
 }
 
 // Show the modelview context menu
-void AtenWindow::callContextMenu(Atom *undermouse, int x, int y)
+void AtenWindow::callContextMenu(Atom* undermouse, int x, int y)
 {
 	// If there is no atom under the mouse, then exit
 	contextAtom_ = undermouse;
@@ -62,7 +62,7 @@ void AtenWindow::callContextMenu(Atom *undermouse, int x, int y)
 	// If the atom under the mouse is selected, just run the popup. If it is not selected, deselect everything else and select it
 	QPoint pos(x,y);
 //	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
-	Model *viewTarget = aten_.currentModelOrFrame();
+	Model* viewTarget = aten_.currentModelOrFrame();
 	if (!contextAtom_->isSelected())
 	{
 		viewTarget->beginUndoState("Select atom (Context Menu)");
@@ -293,7 +293,7 @@ void AtenWindow::on_actionCentreAtOrigin_triggered(bool checked)
 
 void AtenWindow::on_actionCreateFragment_triggered(bool checked)
 {
-	Model *viewTarget = aten_.currentModelOrFrame();
+	Model* viewTarget = aten_.currentModelOrFrame();
 	aten_.addFragmentFromSelection(viewTarget, "Selections");
 	fragmentsWidget->refresh();
 }
@@ -319,7 +319,7 @@ void AtenWindow::createGlyph()
 	// Create glyph in model
 	CommandNode::run(Command::NewGlyph, "c", Glyph::glyphType(gt));
 	// Set data to atom selection
-	Model *viewTarget = aten_.currentModelOrFrame();
+	Model* viewTarget = aten_.currentModelOrFrame();
 	n = 1;
 	for (Refitem<Atom,int> *ri = viewTarget->selection(); ri != NULL; ri = ri->next)
 	{

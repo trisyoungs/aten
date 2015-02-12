@@ -56,9 +56,9 @@ class UndoEvent : public ListItem<UndoEvent>
 	*/
 	public:
 	// Undo stored change
-	virtual void undo(Model *m)=0;
+	virtual void undo(Model* m)=0;
 	// Redo stored change
-	void redo(Model *m);
+	void redo(Model* m);
 	// Print change information
 	virtual void print()=0;
 };
@@ -77,9 +77,9 @@ class AtomEvent : public UndoEvent
 
 	public:
 	// Set change data
-	void set(bool creation, Atom *i);
+	void set(bool creation, Atom* i);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -101,7 +101,7 @@ class BondEvent : public UndoEvent
 	// Set change data
 	void set(bool creation, int id1, int id2, Bond::BondType bondtype);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -123,7 +123,7 @@ class BondTypeEvent : public UndoEvent
 	// Set change data
 	void set(int id1, int id2, Bond::BondType oldbondtype, Bond::BondType newbondtype);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -145,7 +145,7 @@ class CellEvent : public UndoEvent
 	// Set change data
 	void set(Matrix oldaxes, Matrix newaxes, bool ohs, bool nhs);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -167,7 +167,7 @@ class ChargeEvent : public UndoEvent
 	// Set change data
 	void set(int id, double oldcharge, double newcharge);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -189,7 +189,7 @@ class ColourEvent : public UndoEvent
 	// Set change data
 	void set(int id, double oldr, double oldg, double oldb, double olda, double newr, double newg, double newb, double newa);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -210,7 +210,7 @@ class FixFreeEvent : public UndoEvent
 	// Set change data
 	void set(bool fix, int id);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -232,7 +232,7 @@ class GlyphEvent : public UndoEvent
 	// Set change data
 	void set(bool creation, Glyph *g);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -253,7 +253,7 @@ public:
 	// Set change data
 	void set(bool hide, int id);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -274,7 +274,7 @@ class IdShiftEvent : public UndoEvent
 	// Set change data
 	void set(int id, int delta);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -295,7 +295,7 @@ class IdSwapEvent : public UndoEvent
 	// Set change data
 	void set(int id1, int id2);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -316,7 +316,7 @@ class LabelEvent : public UndoEvent
 	// Set change data
 	void set(int id, int oldlabels, int newlabels);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -338,7 +338,7 @@ class MeasurementEvent : public UndoEvent
 	// Set change data
 	void set(bool creation, Measurement::MeasurementType, int id1, int id2, int id3 = 0, int id4 = 0);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -359,7 +359,7 @@ class ModelRenameEvent : public UndoEvent
 	// Set change data
 	void set(const char *oldname, const char *newname);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -380,7 +380,7 @@ class SelectEvent : public UndoEvent
 	// Set change data
 	void set(bool select, int id);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -402,7 +402,7 @@ class TranslateEvent : public UndoEvent
 	// Set change data
 	void set(int id, Vec3<double> delta);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -424,7 +424,7 @@ class StyleEvent : public UndoEvent
 	// Set change data
 	void set(int id, Atom::DrawStyle oldstyle, Atom::DrawStyle newstyle);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };
@@ -445,7 +445,7 @@ class TransmuteEvent : public UndoEvent
 	// Set change data
 	void set(int id, int oldel, int newel);
 	// Undo stored change
-	void undo(Model *m);
+	void undo(Model* m);
 	// Print change information
 	void print();
 };

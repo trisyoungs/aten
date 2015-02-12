@@ -39,9 +39,9 @@ class Bundle
 	// Constructors
 	Bundle();
 	Bundle(Forcefield *ptr);
-	Bundle(Model *ptr);
-	Bundle(Pattern *ptr);
-	Bundle(Atom *ptr);
+	Bundle(Model* ptr);
+	Bundle(Pattern* ptr);
+	Bundle(Atom* ptr);
 	Bundle(Grid *ptr);
 	Bundle(Glyph *ptr);
 	// Bundle Pointer Types
@@ -49,11 +49,11 @@ class Bundle
 
 	public:
 	// Model pointer
-	Model *m;
+	Model* m;
 	// Pattern pointer
-	Pattern *p;
+	Pattern* p;
 	// Atom pointer
-	Atom *i;
+	Atom* i;
 	//Forcefield pointer
 	Forcefield *ff;
 	// Grid pointer
@@ -63,7 +63,7 @@ class Bundle
 	// Glyph
 	Glyph *gl;
 	// Return render source pointer for stored model
-	Model *rs();
+	Model* rs();
 
 	/*
 	// Member Functions

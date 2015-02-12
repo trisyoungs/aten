@@ -55,8 +55,10 @@ set(qtproject_SRCS
   selectvariable_funcs.cpp
   settings.cpp
   viewer_funcs.cpp
-  viewer_input.cpp
-  viewer_render.cpp
+  viewer_key.cpp
+  viewer_mouse.cpp
+  viewer_scene.cpp
+  viewer_user.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
   tmenubutton_funcs.cpp

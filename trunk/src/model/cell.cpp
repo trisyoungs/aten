@@ -33,7 +33,7 @@
 Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bool centreOfMass)
 {
 	i->addBit(referenceBit);
-	Atom *j;
+	Atom* j;
 	Vec3<double> mim, total = i->r();
 	if (centreOfMass) total *= Elements().atomicMass(i);
 	++count;
@@ -53,10 +53,10 @@ Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bo
 }
 
 // Determine COG or COM of reassembled fragment without actually reassembling it
-Vec3<double> Model::reassembleFragment(Atom *i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass)
+Vec3<double> Model::reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass)
 {
 	i->addBit(referenceBit);
-	Atom *j;
+	Atom* j;
 	Vec3<double> mim, total = i->r();
 	if (centreOfMass) total *= Elements().atomicMass(i);
 	++count;
@@ -187,7 +187,7 @@ void Model::foldAllAtoms()
 {
 	msg.enter("Model::foldAllAtoms");
 	// Standard fold - individual atoms
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) positionAtom(i, cell_.fold(i));
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) positionAtom(i, cell_.fold(i));
 	changeLog.add(Log::Coordinates);
 	msg.exit("Model::foldAllAtoms");
 }
@@ -201,7 +201,7 @@ void Model::foldAllMolecules()
 	
 	// Loop over atoms, searching for one which hasn't yet been used.
 	clearAtomBits();
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->hasBit(1)) continue;
 		count = 0;
@@ -234,7 +234,7 @@ void Model::pack(Generator *gen)
 	// Copy selection to clipboard
 	clip.copyMarked(this);
 	clip.pasteToModel(this, FALSE);
-	for (Atom *i = atoms_[oldnatoms]; i != NULL; i = i->next)
+	for (Atom* i = atoms_[oldnatoms]; i != NULL; i = i->next)
 	{
 		// Get the position of the newly-pasted atom
 		newr = cell_.realToFrac(i->r());
@@ -320,7 +320,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	double olde = 0.0, newe;
 	bool success;
 	int n,m;
-	Atom *i;
+	Atom* i;
 	// First, make sure we have a cell and a valid pattern (if using cog)
 	if (cell_.type() == UnitCell::NoCell)
 	{
@@ -356,7 +356,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	// use new cell to get new local coordinates.
 	if (usecog)
 	{
-		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+		for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 		{
 			i = p->firstAtom();
 			for (n=0; n<p->nMolecules(); n++)
@@ -479,7 +479,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	if (prefs.replicateTrim())
 	{
 		bool delatom;
-		Atom *i, *j;
+		Atom* i, *j;
 		Vec3<double> fracr;
 		Matrix cellinverse = cell_.inverse();
 	
@@ -553,7 +553,7 @@ void Model::rotateCell(int axis, double angle)
 void Model::fracToReal()
 {
 	msg.enter("Model::fracToReal");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
 	msg.exit("Model::fracToReal");
 }
 

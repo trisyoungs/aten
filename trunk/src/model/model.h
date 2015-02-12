@@ -74,11 +74,11 @@ class Model : public ListItem<Model>
 	// Name of model
 	Dnchar name_;
 	// Format of model when loaded / last saved
-	Tree *filter_;
+	Tree* filter_;
 	// Filename of model when loaded / last saved
 	Dnchar filename_;
 	// Parent model (if a trajectory or vibration frame)
-	Model *parent_;
+	Model* parent_;
 	// Type of model
 	ModelType type_;
 	// QIcon containing miniature picture of model
@@ -92,9 +92,9 @@ class Model : public ListItem<Model>
 	// Return the stored filename of the model
 	const char *filename() const;
 	// Sets the file filter of the model
-	void setFilter(Tree *f);
+	void setFilter(Tree* f);
 	// Return the stored file filter of the model
-	Tree *filter() const;
+	Tree* filter() const;
 	// Sets the name of the model
 	void setName(const char *s);
 	// Return the name of the model
@@ -106,15 +106,15 @@ class Model : public ListItem<Model>
 	// Print log information for the current model
 	void printLogs() const;
 	// Copy all information from another model
-	void copy(Model *source);
+	void copy(Model* source);
 	// Copy all atom data from specified model
-	void copyAtomData(Model *source, int data);
+	void copyAtomData(Model* source, int data);
 	// Copy range of atom data from specified model
-	void copyAtomData(Model *source, int data, int startid, int n);
+	void copyAtomData(Model* source, int data, int startid, int n);
 	// Set parent model of model (for frames)
-	void setParent(Model *m);
+	void setParent(Model* m);
 	// Return parent model of model (for frames)
-	Model *parent() const;
+	Model* parent() const;
 	// Set model type
 	void setType(Model::ModelType mt);
 	// Return model type
@@ -145,11 +145,11 @@ class Model : public ListItem<Model>
 	// Delete the specified atom (internal function)
 	void removeAtom(Atom*, bool noupdate);
 	// Move specified atom one place 'up' in the list (to lower ID)
-	void shiftAtomUp(Atom *i);
+	void shiftAtomUp(Atom* i);
 	// Move specified atom one place 'down' in the list (to higher ID)
-	void shiftAtomDown(Atom *i);
+	void shiftAtomDown(Atom* i);
 	// Move specified atom so it sits after the reference atom (or head of the list if NULL)
-	void moveAtomAfter(Atom *i, Atom *reference);
+	void moveAtomAfter(Atom* i, Atom* reference);
 	// Total mass of atoms in the model
 	double mass_;
 	// Number of atoms with unidentified element ('XX') in model
@@ -161,35 +161,35 @@ class Model : public ListItem<Model>
 	
 	public:
 	// Create a new atom
-	Atom *addAtom(short int el, Vec3<double> r, Vec3<double> f = Vec3<double>(), Vec3<double> v = Vec3<double>());
+	Atom* addAtom(short int el, Vec3<double> r, Vec3<double> f = Vec3<double>(), Vec3<double> v = Vec3<double>());
 	// Create a new atom with specified id
-	Atom *addAtomWithId(short int el, Vec3<double> r, int atomid);
+	Atom* addAtomWithId(short int el, Vec3<double> r, int atomid);
 	// Create a new atom at the Model's current pen position
-	Atom *addAtomAtPen(short int el);
+	Atom* addAtomAtPen(short int el);
 	// Create copy of supplied atom
-	Atom *addCopy(Atom *source);
+	Atom* addCopy(Atom* source);
 	// Create copy of supplied atom at the specified position
-	Atom *addCopy(Atom *after, Atom *source);
+	Atom* addCopy(Atom* after, Atom* source);
 	// Return the start of the atom list
-	Atom *atoms() const;
+	Atom* atoms() const;
 	// Return the n'th atom in the atom list
-	Atom *atom(int n);
+	Atom* atom(int n);
 	// Return the number of atoms in the model
 	int nAtoms() const;
 	// Return the list index of the specified atom
-	int atomIndex(Atom *i) const;
+	int atomIndex(Atom* i) const;
 	// Delete specified atom
-	void deleteAtom(Atom *target, bool noupdate = FALSE);
+	void deleteAtom(Atom* target, bool noupdate = FALSE);
 	// Translate specified atom
-	void translateAtom(Atom *target, Vec3<double> delta);
+	void translateAtom(Atom* target, Vec3<double> delta);
 	// Position specified atom
-	void positionAtom(Atom *target, Vec3<double> newr);
+	void positionAtom(Atom* target, Vec3<double> newr);
 	// Delete all atoms in the model
 	void clearAtoms();
 	// Perform alchemy on an atom
-	void transmuteAtom(Atom *target, short int element);
+	void transmuteAtom(Atom* target, short int element);
 	// Renumber atoms in the model
-	void renumberAtoms(Atom *from = NULL);
+	void renumberAtoms(Atom* from = NULL);
 	// Move specified atom up/down in the atom list
 	void moveAtom(int index, int delta);
 	// Swap specified atoms in the atom list
@@ -197,25 +197,25 @@ class Model : public ListItem<Model>
 	// Swap specified atoms in the atom list (by index)
 	void swapAtoms(int id1, int id2);
 	// Return (and autocreate if necessary) the static atoms array
-	Atom **atomArray();
+	Atom* *atomArray();
 	// Set visibility of specified atom
-	void atomSetHidden(Atom *i, bool hidden);
+	void atomSetHidden(Atom* i, bool hidden);
 	// Set fixed status of specified atom
-	void atomSetFixed(Atom *i, bool fixed);
+	void atomSetFixed(Atom* i, bool fixed);
 	// Set charge of specified atom
-	void atomSetCharge(Atom *i, double q);
+	void atomSetCharge(Atom* i, double q);
 	// Set custom colour of specified atom
-	void atomSetColour(Atom *i, double r, double g, double b, double a = 1.0);
+	void atomSetColour(Atom* i, double r, double g, double b, double a = 1.0);
 	// Reset custom colour of specified atom
-	void atomResetColour(Atom *i);
+	void atomResetColour(Atom* i);
 	// Set the drawing style of the specified atom
-	void atomSetStyle(Atom *i, Atom::DrawStyle);
+	void atomSetStyle(Atom* i, Atom::DrawStyle);
 	// Prints out the coordinates of the atoms in the model
 	void printCoords() const;
 	// Return total bond order penalty of atoms in the first pattern molecule
 	int totalBondOrderPenalty() const;
 	// Return the number of bonds of specified type to the atom
-	int countBondsToAtom(Atom *i, Bond::BondType);
+	int countBondsToAtom(Atom* i, Bond::BondType);
 	// Calculate the total mass of the model
 	void calculateMass();
 	// Return the mass of the model
@@ -225,7 +225,7 @@ class Model : public ListItem<Model>
 	// Return number of unknown atoms in the model
 	int nUnknownAtoms() const;
 	// Copy atom style from specified model
-	void copyAtomStyle(Model *source);
+	void copyAtomStyle(Model* source);
 	// Clear tempBits of all atoms
 	void clearAtomBits();
 
@@ -237,9 +237,9 @@ class Model : public ListItem<Model>
 	// Cell definition (also contains reciprocal cell definition)
 	UnitCell cell_;
 	// Reassemble molecule/fragment, beginning at supplied atom, returning COG (or COM) of atoms
-	Vec3<double> reassembleFragment(Atom *i, int referenceBit, int &count, bool centreOfMass = FALSE);
+	Vec3<double> reassembleFragment(Atom* i, int referenceBit, int &count, bool centreOfMass = FALSE);
 	// Determine COG or COM of reassembled fragment without actually reassembling it
-	Vec3<double> reassembleFragment(Atom *i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass = FALSE);
+	Vec3<double> reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass = FALSE);
 
 	public:
 	// Return pointer to unit cell structure
@@ -293,7 +293,7 @@ class Model : public ListItem<Model>
 	// Free any created reflists
 	void freeBondingCuboids();
 	// Add atom to cuboid reflists
-	void addAtomToCuboid(Atom *i);
+	void addAtomToCuboid(Atom* i);
 	// Calculate bonding from stored cuboid lists
 	void rebond();
 
@@ -305,11 +305,11 @@ class Model : public ListItem<Model>
 	// Return the nth bond in the model
 	Bond *bond(int n);
 	// Add bond of specified type between atoms
-	void bondAtoms(Atom *i, Atom *j, Bond::BondType bt);
+	void bondAtoms(Atom* i, Atom* j, Bond::BondType bt);
 	// Add bond of specified type between atoms (by id)
 	void bondAtoms(int ii, int jj, Bond::BondType bt);
 	// Delete bond between specified atoms
-	void unbondAtoms(Atom *i, Atom *j, Bond *b = NULL);
+	void unbondAtoms(Atom* i, Atom* j, Bond *b = NULL);
 	// Change type of specified bond
 	void changeBond(Bond *b, Bond::BondType bt);
 	// Clear all bonding in model
@@ -337,15 +337,15 @@ class Model : public ListItem<Model>
 
 	public:
 	// Select the specified atom
-	void selectAtom(Atom *i, bool markOnly = FALSE);
+	void selectAtom(Atom* i, bool markOnly = FALSE);
 	// Select the specified atom ID
 	void selectAtom(int id, bool markOnly = FALSE);
 	// Deselect the specified atom
-	void deselectAtom(Atom *i, bool markOnly = FALSE);
+	void deselectAtom(Atom* i, bool markOnly = FALSE);
 	// Deselect the specified atom
 	void deselectAtom(int id, bool markOnly = FALSE);
 	// Toggle the selection state of the atom
-	void selectionToggle(Atom *i, bool markOnly = FALSE);
+	void selectionToggle(Atom* i, bool markOnly = FALSE);
 	// Select all atoms
 	void selectAll(bool markOnly = FALSE);
 	// Select no atoms
@@ -367,15 +367,15 @@ class Model : public ListItem<Model>
 	// Expand current atom selection by one bond
 	void selectionExpand(bool markOnly = FALSE);
 	// Return the atom at the clicked screen coordinates (if any)
-	Atom *atomOnScreen(double, double);
+	Atom* atomOnScreen(double, double);
 	// Select all atoms in specified pattern
-	void selectPattern(Pattern *p, bool markOnly = FALSE, bool deselect = FALSE);
+	void selectPattern(Pattern* p, bool markOnly = FALSE, bool deselect = FALSE);
 	// Select all atoms within the rectangular boundary specified
 	void selectBox(double, double, double, double, bool deselect = FALSE);
 	// Select all atoms connected by a path from the specified atom
-	void selectTree(Atom *i, bool markOnly = FALSE, bool deselect = FALSE, Bond *omitbond = NULL);
+	void selectTree(Atom* i, bool markOnly = FALSE, bool deselect = FALSE, Bond *omitbond = NULL);
 	// Select all atoms of the same element as the specified atom
-	void selectElement(Atom *i, bool markOnly = FALSE, bool deselect = FALSE);
+	void selectElement(Atom* i, bool markOnly = FALSE, bool deselect = FALSE);
 	// Select all atoms of the same element as the atom with the specified id
 	void selectElement(int el, bool markOnly = FALSE, bool deselect = FALSE);
 	// DeSelect all atoms of the same element as the atom with the specified id
@@ -383,7 +383,7 @@ class Model : public ListItem<Model>
 	// Select all atoms which match the provided type
 	int selectType(int element, const char *typedesc, bool markOnly = FALSE, bool deselect = FALSE);
 	// Select all atoms within cutoff of specified atom
-	void selectRadial(Atom *i, double d);
+	void selectRadial(Atom* i, double d);
 	// Return the first selected atom in the model (if any)
 	Refitem<Atom,int> *selection(bool markOnly = FALSE) const;
 	// Return the nth selected atom in the model
@@ -407,9 +407,9 @@ class Model : public ListItem<Model>
 	// Select atoms within distance from a line (i.e. cylinder select)
 	void selectLine(Vec3<double> line, Vec3<double> point, double dr, bool markOnly = FALSE);
 	// Get atoms of a bound fragment with the current selection
-	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
+	void fragmentFromSelection(Atom* start, Reflist<Atom,int> &list);
 	// Recursive selector for fragmentFromSelection()
-	void fragmentFromSelectionSelector(Atom *start, Reflist<Atom,int> &list);
+	void fragmentFromSelectionSelector(Atom* start, Reflist<Atom,int> &list);
 	// Clear all atom labelling from the current selection
 	void selectionClearLabels();
 	// Clear specified atom labelling from the current selection
@@ -496,13 +496,13 @@ class Model : public ListItem<Model>
 	*/
 	public:
 	// Add label to atom
-	void addLabel(Atom *i, Atom::AtomLabel al);
+	void addLabel(Atom* i, Atom::AtomLabel al);
 	// Remove atom label
-	void removeLabel(Atom *i, Atom::AtomLabel al);
+	void removeLabel(Atom* i, Atom::AtomLabel al);
 	// Clear all atom labelling
 	void clearAllLabels();
 	// Clear labelling from specific atom
-	void clearLabels(Atom *i);
+	void clearLabels(Atom* i);
 
 
 	/*
@@ -528,7 +528,7 @@ class Model : public ListItem<Model>
 	// Return the forcefield containing original atom names for the model
 	Forcefield *namesForcefield() const;
 	// Add name to names forcefield
-	ForcefieldAtom *addAtomName(int el, const char *name);
+	ForcefieldAtom* addAtomName(int el, const char *name);
 	// Remove reference to names forcefield
 	void removeNamesForcefield();
 
@@ -556,7 +556,7 @@ class Model : public ListItem<Model>
 
 	public:
 	// Set type of specified atom
-	void setAtomType(Atom *i, ForcefieldAtom *ffa, bool fixed);
+	void setAtomType(Atom* i, ForcefieldAtom* ffa, bool fixed);
 	// Determine hybridicities of atoms
 	void describeAtoms();
 	// Assign forcefield types to all atoms
@@ -564,7 +564,7 @@ class Model : public ListItem<Model>
 	// Remove forcefield types from all atoms
 	void removeTyping();
 	// Set atomtypes of selected atoms
-	void selectionSetType(ForcefieldAtom *ffa, bool fixed);
+	void selectionSetType(ForcefieldAtom* ffa, bool fixed);
 	// Create unique lists
 	void createForcefieldLists();
 	// Return number of unique bond interactions in model
@@ -602,7 +602,7 @@ class Model : public ListItem<Model>
 	// Generate parameters for total energy function
 	void fillExpression(int);
 	// Return specified pair data from combination table
-	PointerPair<ForcefieldAtom,double> *combinedParameters(ForcefieldAtom *at1, ForcefieldAtom *at2);
+	PointerPair<ForcefieldAtom,double> *combinedParameters(ForcefieldAtom* at1, ForcefieldAtom* at2);
 
 
 	/*
@@ -616,25 +616,25 @@ class Model : public ListItem<Model>
 	// Storage for energy
 	EnergyStore energy;
 	// Calculate (and return) the total energy of the specified model configuration
-	double totalEnergy(Model *config, bool &success);
+	double totalEnergy(Model* config, bool &success);
 	// Calculate (and return) the total interaction energy of the specified pattern molecule with the remainder
-	double moleculeEnergy(Model *config, Pattern *molpattern, int molecule, bool &success);
+	double moleculeEnergy(Model* config, Pattern* molpattern, int molecule, bool &success);
 	// Calculate and return the total angle energy of the model
-	double angleEnergy(Model *config, bool &success);
+	double angleEnergy(Model* config, bool &success);
 	// Calculate and return the total bond energy of the model
-	double bondEnergy(Model *config, bool &success);
+	double bondEnergy(Model* config, bool &success);
 	// Calculate and return the total electrostatic energy of the model
-	double electrostaticEnergy(Model *config, bool &success);
+	double electrostaticEnergy(Model* config, bool &success);
 	// Calculate and return the total intermolecular energy of the model
-	double intermolecularEnergy(Model *config, bool &success);
+	double intermolecularEnergy(Model* config, bool &success);
 	// Calculate and return the total intramolecular energy of the model
-	double intramolecularEnergy(Model *config, bool &success);
+	double intramolecularEnergy(Model* config, bool &success);
 	// Calculate and return the total torsion energy of the model
-	double torsionEnergy(Model *config, bool &success);
+	double torsionEnergy(Model* config, bool &success);
 	// Calculate and return the total van der Waals energy of the model
-	double vdwEnergy(Model *config, bool &success);
+	double vdwEnergy(Model* config, bool &success);
 	// Calculate forces in the specified model configuration
-	bool calculateForces(Model *config);
+	bool calculateForces(Model* config);
 	// Prints out atomic forces
 	void printForces() const;
 	// Return RMS of last calculated forces
@@ -658,27 +658,27 @@ class Model : public ListItem<Model>
 
 	public:
 	// Create a new pattern node
-	Pattern *addPattern(const char *name, int nMols, int nAtomsPerMol);
+	Pattern* addPattern(const char *name, int nMols, int nAtomsPerMol);
 	// Cut the pattern from the list
-	void cutPattern(Pattern *pattern);
+	void cutPattern(Pattern* pattern);
 	// Own the specified pattern (bool = whether to set ownermodel)
-	void ownPattern(Pattern *pattern, bool setparent);
+	void ownPattern(Pattern* pattern, bool setparent);
 	// Number of nodes in pattern
 	int nPatterns() const;
 	// Return the first pattern node of the model
-	Pattern *patterns() const;
+	Pattern* patterns() const;
 	// Return the pattern with the ID specified
-	Pattern *pattern(int id);
+	Pattern* pattern(int id);
 	// Return the pattern that the specified atom is in
-	Pattern *pattern(Atom *i);
+	Pattern* pattern(Atom* i);
 	// Return the last pattern node of the model
-	Pattern *lastPattern() const;
+	Pattern* lastPattern() const;
 	// Find pattern by name
-	Pattern *findPattern(const char *name) const;
+	Pattern* findPattern(const char *name) const;
 	// Autocreate patterns for the model
 	bool createPatterns();
 	// Create default pattern
-	Pattern *createDefaultPattern();
+	Pattern* createDefaultPattern();
 	// Validate current pattern definition
 	bool validatePatterns();
 	// Clear the current pattern definition
@@ -716,9 +716,9 @@ class Model : public ListItem<Model>
 
 	public:
 	// Add a single atom of the type specified to the atom specified
-	Atom *growAtom(Atom *target, short int element, double distance, Atom::AtomGeometry geometry, bool bound = TRUE);
+	Atom* growAtom(Atom* target, short int element, double distance, Atom::AtomGeometry geometry, bool bound = TRUE);
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
-	void hydrogenSatisfy(Atom *target = NULL);
+	void hydrogenSatisfy(Atom* target = NULL);
 	// Return the pen orientation matrix
 	Matrix penOrientation() const;
 	// Rotate the pen orientation matrix about the specified axis
@@ -732,11 +732,11 @@ class Model : public ListItem<Model>
 	// Set the pen position absolutely
 	void setPenPosition(Vec3<double> v);
 	// Set distance between atoms, moving atom j
-	void setAtomicDistance(Atom *i, Atom *j, double newdistance);
+	void setAtomicDistance(Atom* i, Atom* j, double newdistance);
 	// Set angle between atoms, moving atom k
-	void setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle);
+	void setAtomicAngle(Atom* i, Atom* j, Atom* k, double newangle);
 	// Set torsionx between atoms, moving atom l
-	void setAtomicTorsion(Atom *i, Atom *j, Atom *k, Atom *l, double newtorsion);
+	void setAtomicTorsion(Atom* i, Atom* j, Atom* k, Atom* l, double newtorsion);
 
 
 	/*
@@ -745,13 +745,13 @@ class Model : public ListItem<Model>
 	public:
 	// Calculate distance
 	double distance(int i, int j);
-	double distance(Atom *i, Atom *j);
+	double distance(Atom* i, Atom* j);
 	// Calculate angle
 	double angle(int i, int j, int k);
-	double angle(Atom *i, Atom *j, Atom *k);
+	double angle(Atom* i, Atom* j, Atom* k);
 	// Calculate torsion
 	double torsion(int i, int j, int k, int l);
-	double torsion(Atom *i, Atom *j, Atom *k, Atom *l);
+	double torsion(Atom* i, Atom* j, Atom* k, Atom* l);
 
 
 	/*
@@ -796,9 +796,9 @@ class Model : public ListItem<Model>
 	// Filename of file
 	Dnchar trajectoryFilename_;
 	// Filter for trajectory file
-	Tree *trajectoryFilter_;
+	Tree* trajectoryFilter_;
 	// Header and frame read functions from filter
-	Tree *trajectoryHeaderFunction_, *trajectoryFrameFunction_;
+	Tree* trajectoryHeaderFunction_, *trajectoryFrameFunction_;
 	// Trajectory file parser
 	LineParser trajectoryParser_;
 	// File offsets for frames
@@ -820,13 +820,13 @@ class Model : public ListItem<Model>
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
 	// Current trajectory frame (Model*) to be drawn
-	Model *trajectoryCurrentFrame_;
+	Model* trajectoryCurrentFrame_;
 	// Whether to propagate atom styles and colours from parent model to trajectory frames
 	bool trajectoryPropagateParentStyle_;
 
 	public:
 	// Add frame to trajectory
-	Model *addTrajectoryFrame();
+	Model* addTrajectoryFrame();
 	// Return whether a trajectory for this model exists
 	bool hasTrajectory() const;
 	// Return whether the trajectory is cached (if there is one)
@@ -836,13 +836,13 @@ class Model : public ListItem<Model>
 	// Reinitialise (clear) the associated trajectory
 	void clearTrajectory();
 	// Set the format of the trajectory
-	void setTrajectoryFilter(Tree *f);
+	void setTrajectoryFilter(Tree* f);
 	// Return the trajectory file pointer
 	ifstream *trajectoryFile();
 	// Return the current frame pointer
-	Model *trajectoryCurrentFrame() const;
+	Model* trajectoryCurrentFrame() const;
 	// Return pointer to specified frame number
-	Model *trajectoryFrame(int n);
+	Model* trajectoryFrame(int n);
 	// Return the total number of frames in the trajectory (file or cached)
 	int nTrajectoryFrames() const;
 	// Return the current integer frame position
@@ -862,7 +862,7 @@ class Model : public ListItem<Model>
 	// Set whether to propagate atom styles and colours from parent model to trajectory frames
 	void setTrajectoryPropagateParentStyle(bool b);
 	// Copy style of the supplied model to all trajectory frames
-	void trajectoryCopyAtomStyle(Model *source);
+	void trajectoryCopyAtomStyle(Model* source);
 
 
 	/*
@@ -880,7 +880,7 @@ class Model : public ListItem<Model>
 	// Return whether rendering from self
 	RenderSource renderSource() const;
 	// Return the current rendering source for the model
-	Model *renderSourceModel();
+	Model* renderSourceModel();
 	// Set whether to render from vibration frames
 	void setRenderFromVibration(bool b);
 	// Return whether to render from vibration frames
@@ -932,11 +932,11 @@ class Model : public ListItem<Model>
 	// Clear all measurements
 	void clearMeasurements();
 	// Find specific distance
-	Measurement *findDistanceMeasurement(Atom *i, Atom *j) const;
+	Measurement *findDistanceMeasurement(Atom* i, Atom* j) const;
 	// Find specific angle
-	Measurement *findAngleMeasurement(Atom *i, Atom *j, Atom *k) const;
+	Measurement *findAngleMeasurement(Atom* i, Atom* j, Atom* k) const;
 	// Find specific torsion
-	Measurement *findTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l) const;
+	Measurement *findTorsionMeasurement(Atom* i, Atom* j, Atom* k, Atom* l) const;
 	// Clear specific type of measurements
 	void removeMeasurements(Measurement::MeasurementType);
 	// Delete specific measurement
@@ -948,15 +948,15 @@ class Model : public ListItem<Model>
 	// Add measurements of specific type in current selection
 	void addMeasurementsInSelection(Measurement::MeasurementType);
 	// Add distance measurement between atoms
-	double addDistanceMeasurement(Atom *i, Atom *j, bool quiet = FALSE);
+	double addDistanceMeasurement(Atom* i, Atom* j, bool quiet = FALSE);
 	// Add distance measurement between atom ids
 	double addDistanceMeasurement(int i, int j, bool quiet = FALSE);
 	// Add angle measurement between atoms
-	double addAngleMeasurement(Atom *i, Atom *j, Atom *k, bool quiet = FALSE);
+	double addAngleMeasurement(Atom* i, Atom* j, Atom* k, bool quiet = FALSE);
 	// Add angle measurement between atom ids
 	double addAngleMeasurement(int i, int j, int k, bool quiet = FALSE);
 	// Add torsion measurement between atoms
-	double addTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l, bool quiet = FALSE);
+	double addTorsionMeasurement(Atom* i, Atom* j, Atom* k, Atom* l, bool quiet = FALSE);
 	// Add torsion measurement between atom ids
 	double addTorsionMeasurement(int i, int j, int k, int l, bool quiet = FALSE);
 	// Update stored measurements
@@ -1186,7 +1186,7 @@ class Model : public ListItem<Model>
 	// List of vibration frames
 	List<Model> vibrationFrames_;
 	// Current vibration frame
-	Model *vibrationCurrentFrame_;
+	Model* vibrationCurrentFrame_;
 	// Direction of current playback
 	bool vibrationForward_;
 	// Integer index of current frame (0-(nsteps-1))
@@ -1204,7 +1204,7 @@ class Model : public ListItem<Model>
 	// Generate trajectory for n'th vibration
 	void generateVibration(int index, int nsteps);
 	// Return current vibration frame
-	Model *vibrationCurrentFrame();
+	Model* vibrationCurrentFrame();
 	// Move on to next/prev frame (depending on current playback direction)
 	void vibrationNextFrame();
 	// Return index of current vibration frame

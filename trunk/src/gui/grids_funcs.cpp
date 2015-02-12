@@ -65,7 +65,7 @@ void GridsWidget::refresh()
 	// Clear and refresh the grids list
 	refreshing_ = TRUE;
 	ui.GridList->clear();
-	Model *m;
+	Model* m;
 	if (ui.ShowAllGridsCheck->isChecked())
 	{
 		// Need to loop over models, frames (if any) and grids
@@ -221,7 +221,7 @@ void GridsWidget::refreshGridInfo()
 void GridsWidget::loadGrid()
 {
 	msg.enter("GridsWidget::loadGrid");
-	Tree *filter;
+	Tree* filter;
 	static QDir currentDirectory_(parent_.aten().workDir());
 	QString selFilter;
 	QString filename = QFileDialog::getOpenFileName(this, "Open Grid", currentDirectory_.path(), parent_.aten().fileDialogFilters(FilterData::GridImport), &selFilter);
@@ -272,7 +272,7 @@ void GridsWidget::on_actionGridCut_triggered(bool checked)
 		msg.print("No grid selected to cut.\n");
 		return;
 	}
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	parent_.aten().copyGrid(g);
 	m->removeGrid(g);
 	refresh();
@@ -289,7 +289,7 @@ void GridsWidget::on_actionGridDelete_triggered(bool checked)
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
 		g = (Grid*) item->data.asPointer(VTypes::GridData);
-		Model *m = g->parent();
+		Model* m = g->parent();
 		m->removeGrid(g);
 	}
 	refresh();
@@ -304,7 +304,7 @@ void GridsWidget::on_actionGridPaste_triggered(bool checked)
 		msg.print("No grid data on clipboard.\n");
 		return;
 	}
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	Grid *newgrid = m->addGrid();
 	*newgrid = *g;
 	refresh();
@@ -719,7 +719,7 @@ void GridsWidget::gridShiftChanged()
 		g->setShift(ui.GridShiftXSpin->value(), ui.GridShiftYSpin->value(), ui.GridShiftZSpin->value());
 		if (ui.ShiftAtomNoneRadio->isChecked() == FALSE)
 		{
-			Model *m = g->parent();
+			Model* m = g->parent();
 			// Determine shift amount...
 			Vec3<int> delta = g->shift() - oldshift;
 			Vec3<double> vec;
@@ -823,7 +823,7 @@ void GridsWidget::on_OrbitalCalculateButton_clicked(bool checked)
 		return;
 	}
 	// Generate a new grid in the current model
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	Grid *g = m->addGrid();
 	// Set origin
 	Vec3<double> origin(ui.OrbitalOriginXSpin->value(), ui.OrbitalOriginYSpin->value(), ui.OrbitalOriginZSpin->value());

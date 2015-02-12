@@ -90,17 +90,17 @@ class Forcefield : public ListItem<Forcefield>
 	// Returns the number of atom types specified in the Forcefield
 	int nTypes();
 	// Adds a new type to the forcefield
-	ForcefieldAtom *addType();
+	ForcefieldAtom* addType();
 	// Returns the head of tha atomtype list
-	ForcefieldAtom *types();
+	ForcefieldAtom* types();
 	// Returns the n'th type in the list
-	ForcefieldAtom *type(int n);
+	ForcefieldAtom* type(int n);
 	// Get the atomtype specified by the ffid number passed
-	ForcefieldAtom *findType(int id);
+	ForcefieldAtom* findType(int id);
 	// Find the named atomtype
-	ForcefieldAtom *findType(const char *name);
+	ForcefieldAtom* findType(const char *name);
 	// Returns the ForcefieldAtom with the typeId provided
-	ForcefieldAtom *findByTypeId(int id, ForcefieldAtom *excluding = NULL);
+	ForcefieldAtom* findByTypeId(int id, ForcefieldAtom* excluding = NULL);
 	// Return number of type defines in forcefield
 	int nTypeDefines();
 	// Return type defines list
@@ -108,7 +108,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Find type define
 	Neta *typeDefine(const char *name);
 	// Returns whether the specified forcefield type is contained in this forcefield
-	bool containsType(ForcefieldAtom *type);
+	bool containsType(ForcefieldAtom* type);
 
 
 	/*
@@ -128,7 +128,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Return the n'th bond in the list
 	ForcefieldBound *bond(int n);
 	// Retrieve bond data corresponding to specified atomtype id's
-	ForcefieldBound *findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj);
+	ForcefieldBound *findBond(ForcefieldAtom* ffi, ForcefieldAtom* ffj);
 	// Retrieve bond data corresponding to specified names
 	ForcefieldBound *findBond(const char *typei, const char *typej);
 
@@ -150,7 +150,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Return the n'th angle in the list
 	ForcefieldBound *angle(int n);
 	// Retrieve angle data corresponding to specified atomtype id's
-	ForcefieldBound *findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk);
+	ForcefieldBound *findAngle(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk);
 	// Retrieve angle data corresponding to specified names
 	ForcefieldBound *findAngle(const char *typei, const char *typej, const char *typek);
 	
@@ -172,7 +172,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Return the n'th torsion in the list
 	ForcefieldBound *torsion(int n);
 	// Retrieve torsion data corresponding to specified atomtype id's
-	ForcefieldBound *findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk, ForcefieldAtom *ffl);
+	ForcefieldBound *findTorsion(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk, ForcefieldAtom* ffl);
 	// Retrieve torsion data corresponding to specified names
 	ForcefieldBound *findTorsion(const char *typei, const char *typej, const char *typek, const char *typel);
 
@@ -232,13 +232,13 @@ class Forcefield : public ListItem<Forcefield>
 	// Container for generator functions defined in this forcefield
 	Program generatorFunctions_;
 	// Pointer to vdw generation function (if one is defined)
-	Tree *vdwGenerator_;
+	Tree* vdwGenerator_;
 	// Pointer to bond generation function (if one is defined)
-	Tree *bondGenerator_;
+	Tree* bondGenerator_;
 	// Pointer to angle generation function (if one is defined)
-	Tree *angleGenerator_;
+	Tree* angleGenerator_;
 	// Pointer to torsion generation function (if one is defined)
-	Tree *torsionGenerator_;
+	Tree* torsionGenerator_;
 
 	public:
 	// Add energy data value to list of those flagged as energies
@@ -246,21 +246,21 @@ class Forcefield : public ListItem<Forcefield>
 	// Return list of energy data values
 	Dnchar *energyData();
 	// Return pointer to vdw generation function (if one is defined)
-	Tree *vdwGenerator();
+	Tree* vdwGenerator();
 	// Return pointer to bond generation function (if one is defined)
-	Tree *bondGenerator();
+	Tree* bondGenerator();
 	// Return pointer to angle generation function (if one is defined)
-	Tree *angleGenerator();
+	Tree* angleGenerator();
 	// Return pointer to torsion generation function (if one is defined)
-	Tree *torsionGenerator();
+	Tree* torsionGenerator();
 	// Generate VDW params for specified atom
-	bool generateVdw(Atom *i);
+	bool generateVdw(Atom* i);
 	// Generate bond params for specified atoms
-	ForcefieldBound *generateBond(Atom *i, Atom *j);
+	ForcefieldBound *generateBond(Atom* i, Atom* j);
 	// Generate angle params for specified atoms
-	ForcefieldBound *generateAngle(Atom *i, Atom *j, Atom *k);
+	ForcefieldBound *generateAngle(Atom* i, Atom* j, Atom* k);
 	// Generate torsion params for specified atoms
-	ForcefieldBound *generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l);
+	ForcefieldBound *generateTorsion(Atom* i, Atom* j, Atom* k, Atom* l);
 
 
 	/*
@@ -272,7 +272,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Character-match the atomtype names supplied
 	int matchType(const Dnchar &a, const Dnchar &b);
 	// Match names of atomtypes supplied to strings supplied
-	int matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char *typei, const char *typej);
+	int matchTypes(ForcefieldAtom* ffi, ForcefieldAtom* ffj, const char *typei, const char *typej);
 	// Match names of supplied typenames and test names 
 	int matchTypes(const char *testi, const char *testj, const char *typei, const char *typej);
 

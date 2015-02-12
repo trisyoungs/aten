@@ -49,7 +49,7 @@ AtomEvent::~AtomEvent()
 }
 
 // Set change 
-void AtomEvent::set(bool creation, Atom *i)
+void AtomEvent::set(bool creation, Atom* i)
 {
 	msg.enter("AtomEvent::set");
 	direction_ = (creation ? UndoEvent::Undo : UndoEvent::Redo);
@@ -65,10 +65,10 @@ void AtomEvent::set(bool creation, Atom *i)
 }
 
 // Undo stored change
-void AtomEvent::undo(Model *m)
+void AtomEvent::undo(Model* m)
 {
 	msg.enter("AtomEvent::undo");
-	Atom **modelatoms = m->atomArray();
+	Atom* *modelatoms = m->atomArray();
 	int id;
 	// Atom creation (UndoEvent::Redo) and deletion (UndoEvent::Undo)
 	if (direction_ == UndoEvent::Undo)
@@ -80,7 +80,7 @@ void AtomEvent::undo(Model *m)
 	}
 	else
 	{
-		Atom *i;
+		Atom* i;
 		// Insert a new atom at the position before the stored atom id
 		id = atomData_.id();
 		msg.print(Messenger::Verbose,"Replaying atom creation - atom id = %i\n", id);
@@ -122,10 +122,10 @@ void BondEvent::set(bool creation, int id1, int id2, Bond::BondType bondtype)
 }
 
 // Undo stored change
-void BondEvent::undo(Model *m)
+void BondEvent::undo(Model* m)
 {
 	msg.enter("BondEvent::undo");
-	Atom *i, *j, **modelatoms = m->atomArray();
+	Atom* i, *j, **modelatoms = m->atomArray();
 	// Bond creation (UndoEvent::Redo) and deletion (UndoEvent::Undo)
 	i = modelatoms[targetId1_];
 	j = modelatoms[targetId2_];
@@ -177,10 +177,10 @@ void BondTypeEvent::set(int id1, int id2, Bond::BondType oldbondtype, Bond::Bond
 }
 
 // Undo stored change
-void BondTypeEvent::undo(Model *m)
+void BondTypeEvent::undo(Model* m)
 {
 	msg.enter("BondTypeEvent::undo");
-	Atom *i, *j, **modelatoms = m->atomArray();
+	Atom* i, *j, **modelatoms = m->atomArray();
 	// Bond order change - from newBondType_ to oldBondType_ (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId1_];
 	j = modelatoms[targetId2_];
@@ -231,7 +231,7 @@ void CellEvent::set(Matrix oldaxes, Matrix newaxes, bool ohs, bool nhs)
 }
 
 // Undo stored change
-void CellEvent::undo(Model *m)
+void CellEvent::undo(Model* m)
 {
 	msg.enter("CellEvent::undo");
 	// Cell change - from newLengths/Angles to oldLengths/Angles (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
@@ -282,11 +282,11 @@ void ChargeEvent::set(int id, double oldcharge, double newcharge)
 }
 
 // Undo stored change
-void ChargeEvent::undo(Model *m)
+void ChargeEvent::undo(Model* m)
 {
 	msg.enter("ChargeEvent::undo");
 	// Atom charge change - from realData[1] to realData[0] (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
@@ -338,7 +338,7 @@ void GlyphEvent::set(bool creation, Glyph *g)	// TODO Need a separate event for 
 }
 
 // Undo stored change
-void GlyphEvent::undo(Model *m)
+void GlyphEvent::undo(Model* m)
 {
 	msg.enter("GlypheEvent::undo");
 	// Glyph creation (UndoEvent::Redo) or deletion (UndoEvent::Undo)
@@ -381,10 +381,10 @@ void ColourEvent::set(int id, double oldr, double oldg, double oldb, double olda
 }
 
 // Undo stored change
-void ColourEvent::undo(Model *m)
+void ColourEvent::undo(Model* m)
 {
 	msg.enter("ColourEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
@@ -431,10 +431,10 @@ void FixFreeEvent::set(bool fix, int id)
 }
 
 // Undo stored change
-void FixFreeEvent::undo(Model *m)
+void FixFreeEvent::undo(Model* m)
 {
 	msg.enter("FixFreeEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
@@ -481,10 +481,10 @@ void HideEvent::set(bool hide, int id)
 }
 
 // Undo stored change
-void HideEvent::undo(Model *m)
+void HideEvent::undo(Model* m)
 {
 	msg.enter("HideEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
@@ -531,7 +531,7 @@ void IdShiftEvent::set(int id, int delta)
 }
 
 // Undo stored change
-void IdShiftEvent::undo(Model *m)
+void IdShiftEvent::undo(Model* m)
 {
 	msg.enter("IdShiftEvent::undo");
 	// Atom list position change - -data[1] (UndoEvent::Undo) or +data[1] places in list (UndoEvent::Redo)
@@ -579,7 +579,7 @@ void IdSwapEvent::set(int id1, int id2)
 }
 
 // Undo stored change
-void IdSwapEvent::undo(Model *m)
+void IdSwapEvent::undo(Model* m)
 {
 	msg.enter("IdSwapEvent::undo");
 	// Atom swap change - same regardless of direction
@@ -621,10 +621,10 @@ void LabelEvent::set(int id, int oldlabels, int newlabels)
 }
 
 // Undo stored change
-void LabelEvent::undo(Model *m)
+void LabelEvent::undo(Model* m)
 {
 	msg.enter("LabelEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	// Atom label change - from data[2] to data[1] (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
@@ -675,11 +675,11 @@ void MeasurementEvent::set(bool creation, Measurement::MeasurementType mt, int i
 }
 
 // Undo stored change
-void MeasurementEvent::undo(Model *m)
+void MeasurementEvent::undo(Model* m)
 {
 	msg.enter("MeasurementEvent::undo");
 	Measurement *me = NULL;
-	Atom *i, *j, *k,*l, **modelatoms = m->atomArray();
+	Atom* i, *j, *k,*l, **modelatoms = m->atomArray();
 	// Measurement creation (UndoEvent::Undo) and deletion (UndoEvent::Redo)
 	i = modelatoms[targetId_[0]];
 	j = modelatoms[targetId_[1]];
@@ -733,7 +733,7 @@ void ModelRenameEvent::set(const char *oldname, const char *newname)
 }
 
 // Undo stored change
-void ModelRenameEvent::undo(Model *m)
+void ModelRenameEvent::undo(Model* m)
 {
 	msg.enter("ModelRenameEvent::undo");
 	// Model Rename, to oldName_ (UndoEvent::Undo) or newName_ (UndoEvent::Redo)
@@ -779,10 +779,10 @@ void SelectEvent::set(bool select, int id)
 }
 
 // Undo stored change
-void SelectEvent::undo(Model *m)
+void SelectEvent::undo(Model* m)
 {
 	msg.enter("SelectEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	// Atom selection (UndoEvent::Redo) and deselection (UndoEvent::Undo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
@@ -829,10 +829,10 @@ void TranslateEvent::set(int id, Vec3<double> delta)
 }
 
 // Undo stored change
-void TranslateEvent::undo(Model *m)
+void TranslateEvent::undo(Model* m)
 {
 	msg.enter("TranslateEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	// Atom position change - add (UndoEvent::Undo) or subtract (UndoEvent::Redo) delta_.
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
@@ -880,10 +880,10 @@ void StyleEvent::set(int id, Atom::DrawStyle oldstyle, Atom::DrawStyle newstyle)
 }
 
 // Undo stored change
-void StyleEvent::undo(Model *m)
+void StyleEvent::undo(Model* m)
 {
 	msg.enter("StyleEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	// Atom style change - newStyle_ to oldStyle_ (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
@@ -931,10 +931,10 @@ void TransmuteEvent::set(int id, int oldel, int newel)
 }
 
 // Undo stored change
-void TransmuteEvent::undo(Model *m)
+void TransmuteEvent::undo(Model* m)
 {
 	msg.enter("TransmuteEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
+	Atom* i, **modelatoms = m->atomArray();
 	// Atom transmute - newEl_ to oldEl_ (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
@@ -962,7 +962,7 @@ void TransmuteEvent::print()
 */
 
 // Redo stored change
-void UndoEvent::redo(Model *m)
+void UndoEvent::redo(Model* m)
 {
 	msg.enter("UndoEvent::redo");
 	// Re-use the commands in Change::undo, performing the change in the opposite direction

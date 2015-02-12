@@ -73,7 +73,7 @@ void Aten::openIncludes()
 	nfailed = parseIncludeDir(path);
 	if (nfailed > 0) nIncludesFailed_ += nfailed;
 
-	for (Tree *tree = includeFunctions_.functions(); tree != NULL; tree = tree->next)
+	for (Tree* tree = includeFunctions_.functions(); tree != NULL; tree = tree->next)
 		msg.print(Messenger::Verbose, " Included Function : %s\n", tree->name());
 
 	msg.exit("Aten::openIncludes");
@@ -148,7 +148,7 @@ Dnchar *Aten::failedIncludes() const
 }
 
 // Find global include function by name
-Tree *Aten::findIncludeFunction(const char *name)
+Tree* Aten::findIncludeFunction(const char *name)
 {
 	return includeFunctions_.findFunction(name);
 }

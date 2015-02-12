@@ -1,7 +1,8 @@
-<ui version="4.0" >
- <class>SelectPatternDialog</class>
- <widget class="QDialog" name="SelectPatternDialog" >
-  <property name="geometry" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AtenSelectPattern</class>
+ <widget class="QDialog" name="AtenSelectPattern">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,75 +10,76 @@
     <height>141</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Select Pattern</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="icons.qrc" >:/program/icons/aten.png</iconset>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>2</number>
-   </property>
-   <property name="spacing" >
+  <layout class="QVBoxLayout">
+   <property name="spacing">
     <number>4</number>
    </property>
+   <property name="margin">
+    <number>2</number>
+   </property>
    <item>
-    <widget class="QTableWidget" name="PatternTable" >
-     <property name="editTriggers" >
+    <widget class="QTableWidget" name="PatternTable">
+     <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="selectionMode" >
+     <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
      </property>
-     <property name="selectionBehavior" >
+     <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Pattern</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Forcefield</string>
       </property>
      </column>
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="maximumSize" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="maximumSize">
       <size>
        <width>16777215</width>
        <height>30</height>
       </size>
      </property>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <resources>
-  <include location="icons.qrc" />
+  <include location="icons.qrc"/>
  </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>SelectPatternDialog</receiver>
+   <receiver>AtenSelectPattern</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -86,14 +88,14 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>SelectPatternDialog</receiver>
+   <receiver>AtenSelectPattern</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>

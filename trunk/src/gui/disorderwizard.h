@@ -47,7 +47,7 @@ class DisorderWizard : public QWizard
 	public:
 	int run();
 	private:
-	void setComponentData(Model *data);
+	void setComponentData(Model* data);
 	void updateComponentControls();
 	void setPartitionData(QTreeWidgetItem *target, PartitioningScheme *data);
 	private slots:
@@ -91,15 +91,15 @@ class DisorderWizard : public QWizard
 	// Target model type
 	DisorderWizard::TargetModelType targetType_;
 	// Target model for existing model runs
-	Model *existingModel_;
+	Model* existingModel_;
 	// Target model for new model runs
-	Model *newModel_;
+	Model* newModel_;
 	// Selected partitioning scheme
 	PartitioningScheme *partitioningScheme_;
 	// Reflist of tree items and partitioning schemes
 	Reflist<QTreeWidgetItem, PartitioningScheme*> partitioningSchemeItems_;
 	// Current component (Model*) editing target
-	Model *componentTarget_;
+	Model* componentTarget_;
 	// Reflist of tree items and selected model components
 	Reflist<QTreeWidgetItem, Model*> componentModelItems_;
 	

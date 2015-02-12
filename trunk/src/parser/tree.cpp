@@ -164,7 +164,7 @@ bool Tree::finalise()
 	}
 	
 	// Call finalise on any child trees
-	for (Tree *func = functions_.first(); func != NULL; func = func->next)
+	for (Tree* func = functions_.first(); func != NULL; func = func->next)
 	{
 		if (!func->finalise())
 		{
@@ -607,7 +607,7 @@ TreeNode *Tree::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, 
 }
 
 // Add user-defined function-based leaf node to topmost branch on stack
-TreeNode *Tree::addUserFunction(Tree *func, TreeNode *arglist)
+TreeNode *Tree::addUserFunction(Tree* func, TreeNode *arglist)
 {
 	msg.enter("Tree::addUserFunction");
 	// Create new command node
@@ -1056,15 +1056,15 @@ Refitem<ScopeNode,int> *Tree::scopeNodes()
 */
 
 // Search for existing local function
-Tree *Tree::findLocalFunction(const char *funcname) const
+Tree* Tree::findLocalFunction(const char *funcname) const
 {
-	Tree *result;
+	Tree* result;
 	for (result = functions_.first(); result != NULL; result = result ->next) if (strcmp(result->name(),funcname) == 0) break;
 	return result;
 }
 
 // Add new local function
-Tree *Tree::addLocalFunction(const char *funcname)
+Tree* Tree::addLocalFunction(const char *funcname)
 {
 	Tree* result = functions_.add();
 	result->setName(funcname);

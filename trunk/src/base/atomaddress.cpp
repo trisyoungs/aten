@@ -60,13 +60,13 @@ int Atomaddress::molecule()
 }
 
 // Set the pattern pointer for the atom
-void Atomaddress::setPattern(Pattern *p)
+void Atomaddress::setPattern(Pattern* p)
 {
 	pattern_ = p;
 }
 
 // Returns the current pattern for the atom
-Pattern *Atomaddress::pattern()
+Pattern* Atomaddress::pattern()
 {
 	return pattern_;
 }

@@ -127,13 +127,13 @@ const char *Model::filename() const
 }
 
 // Sets the file filter of the model
-void Model::setFilter(Tree *f)
+void Model::setFilter(Tree* f)
 {
 	filter_ = f;
 }
 
 // Return the stored file filter of the model
-Tree *Model::filter() const
+Tree* Model::filter() const
 {
 	return filter_;
 }
@@ -174,13 +174,13 @@ void Model::clear()
 }
 
 // Set parent model of model (for frames)
-void Model::setParent(Model *m)
+void Model::setParent(Model* m)
 {
 	parent_ = m;
 }
 
 // Return parent model of model (for frames)
-Model *Model::parent() const
+Model* Model::parent() const
 {
 	return parent_;
 }
@@ -241,7 +241,7 @@ bool Model::isVisible()
 */
 
 // Add label to atom
-void Model::addLabel(Atom *i, Atom::AtomLabel al)
+void Model::addLabel(Atom* i, Atom::AtomLabel al)
 {
 	int oldlabels = i->labels();
 	i->addLabel(al);
@@ -256,7 +256,7 @@ void Model::addLabel(Atom *i, Atom::AtomLabel al)
 }
 
 // Remove atom label
-void Model::removeLabel(Atom *i, Atom::AtomLabel al)
+void Model::removeLabel(Atom* i, Atom::AtomLabel al)
 {
 	int oldlabels = i->labels();
 	i->removeLabel(al);
@@ -271,7 +271,7 @@ void Model::removeLabel(Atom *i, Atom::AtomLabel al)
 }
 
 // Clear labelling from atom
-void Model::clearLabels(Atom *i)
+void Model::clearLabels(Atom* i)
 {
 	int oldlabels = i->labels();
 	i->clearLabels();
@@ -288,28 +288,28 @@ void Model::clearLabels(Atom *i)
 // Clear atom labelling
 void Model::clearAllLabels()
 {
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) clearLabels(i);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) clearLabels(i);
 	changeLog.add(Log::Labels);
 }
 
 // Clear all labels in selection
 void Model::selectionClearLabels()
 {
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) clearLabels(i);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) clearLabels(i);
 	changeLog.add(Log::Labels);
 }
 
 // Remove specific labels in selection
 void Model::selectionRemoveLabels(Atom::AtomLabel al)
 {
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) removeLabel(i, al);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) removeLabel(i, al);
 	changeLog.add(Log::Labels);
 }
 
 // Add atom labels
 void Model::selectionAddLabels(Atom::AtomLabel al)
 {
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addLabel(i, al);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addLabel(i, al);
 	changeLog.add(Log::Labels);
 }
 
@@ -320,7 +320,7 @@ void Model::selectionAddLabels(Atom::AtomLabel al)
 void Model::printCoords() const
 {
 	msg.enter("Model::printCoords");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), Elements().symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
 	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),Elements().symbol(i),r.x,r.y,r.z,
@@ -334,7 +334,7 @@ void Model::bohrToAngstrom()
 {
 	msg.enter("Model::bohrToAngstrom");
 	// Coordinates
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
 	// Cell
 	UnitCell::CellType ct = cell_.type();
 	if (ct != UnitCell::NoCell)
@@ -351,7 +351,7 @@ void Model::bohrToAngstrom()
 void Model::clearCharges()
 {
 	msg.enter("Model::clearCharges");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) atomSetCharge(i, 0.0);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) atomSetCharge(i, 0.0);
 	msg.exit("Model::clearCharges");
 }
 
@@ -366,10 +366,10 @@ void Model::print() const
 	msg.print("  Atoms : %i\n", atoms_.nItems());
 	msg.print(" Id     El   FFType    FFId         X             Y             Z              Q      Sel Fix\n");
 	// Print from pattern definition if possible, otherwise just use model atom list
-	Atom *i;
+	Atom* i;
 	int n;
 	if (patterns_.nItems() != 0)
-		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+		for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 		{
 			i = p->firstAtom();
 			for (n=0; n<p->totalAtoms(); n++)
@@ -394,21 +394,21 @@ void Model::printLogs() const
 // Print Forces
 void Model::printForces() const
 {
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), Elements().symbol(i), i->f().x, i->f().y, i->f().z);
 	}
 }
 
 // Copy model
-void Model::copy(Model *srcmodel)
+void Model::copy(Model* srcmodel)
 {
 	// Clear any current contents of the model
 	clear();
 	// Copy name
 	name_ = srcmodel->name_;
 	// Copy atoms
-	for (Atom *i = srcmodel->atoms(); i != NULL; i = i->next) addCopy(i);
+	for (Atom* i = srcmodel->atoms(); i != NULL; i = i->next) addCopy(i);
 	// Copy bonds
 	for (Bond *b = srcmodel->bonds(); b != NULL; b = b->next) bondAtoms(b->atomI()->id(), b->atomJ()->id(), b->type());
 	// Copy unit cell
@@ -424,7 +424,7 @@ void Model::copy(Model *srcmodel)
 }
 
 // Copy atom data from specified model
-void Model::copyAtomData(Model *srcmodel, int dat)
+void Model::copyAtomData(Model* srcmodel, int dat)
 {
 	msg.enter("Model::copyAtomData");
 	// Simple failsafe - check atom numbers in each are the same
@@ -434,7 +434,7 @@ void Model::copyAtomData(Model *srcmodel, int dat)
 		msg.exit("Model::copyAtomData");
 		return;
 	}
-	Atom *i, *j;
+	Atom* i, *j;
 	j = srcmodel->atoms_.first();
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
@@ -453,7 +453,7 @@ void Model::copyAtomData(Model *srcmodel, int dat)
 }
 
 // Copy range of atom data from specified model
-void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
+void Model::copyAtomData(Model* srcmodel, int dat, int startatom, int ncopy)
 {
 	msg.enter("Model::copyAtomData[range]");
 	// Simple failsafe - check atom numbers in each are the same
@@ -473,8 +473,8 @@ void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 		else
 		{
 			// Get staticatoms arrays from both models
-			Atom **ii = atomArray();
-			Atom **jj = srcmodel->atomArray();
+			Atom* *ii = atomArray();
+			Atom* *jj = srcmodel->atomArray();
 			for (int n=startatom; n<finishatom; n++)
 			{
 				// Copy data items referenced in 'dat'

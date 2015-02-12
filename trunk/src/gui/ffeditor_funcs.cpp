@@ -107,7 +107,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	count = 0;
 	ui.FFEditorTypesTable->setRowCount(ff->nTypes()-1);
 	ui.FFEditorTypesTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "El" << "Name" << "Equiv" << "NETA" << "Description");
-	for (ForcefieldAtom *ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
+	for (ForcefieldAtom* ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
 	{
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Id, item);
@@ -131,7 +131,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	ui.FFEditorAtomsTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Charge" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10" );
 	slist.clear();
 	for (n=0; n<VdwFunctions::nVdwFunctions; n++) slist << VdwFunctions::VdwFunctions[n].keyword;
-	for (ForcefieldAtom *ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
+	for (ForcefieldAtom* ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
 	{
 		params = ffa->parameters();
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
@@ -376,13 +376,13 @@ void AtenForcefieldEditor::boundFunctionChanged(TComboBox *sender, int i, Forcef
 // Test entered atom type
 void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
 {
-// 	Model *m = parent_.aten().currentModelOrFrame();   ATEN2 TODO
+// 	Model* m = parent_.aten().currentModelOrFrame();   ATEN2 TODO
 // 	if (m == NULL) return;
 // 	// Get position of changed item (skipping _NDEF_)
 // 	int row = ui.FFEditorTypesTable->currentRow();
 // 	if (row == -1) return;
 // 	// Get pointer to forcefield type from edited row (skipping _NDEF_)
-// 	ForcefieldAtom *ffa = targetForcefield_->type(row+1);
+// 	ForcefieldAtom* ffa = targetForcefield_->type(row+1);
 // 	m->selectNone(TRUE);
 // 	m->selectType(ffa->element(), ffa->netaString(), TRUE, FALSE);
 // 	msg.print("Type description matched %i atoms in current model.\n", m->nMarked());
@@ -397,10 +397,10 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 	int row = ui.FFEditorTypesTable->row(w) + 1;
 	int column = ui.FFEditorTypesTable->column(w);
 	// Get pointer to forcefield type from edited row
-	ForcefieldAtom *ffa = targetForcefield_->type(row);
+	ForcefieldAtom* ffa = targetForcefield_->type(row);
 	// Set new data based on the column edited
 	Dnchar text;
-	ForcefieldAtom *old;
+	ForcefieldAtom* old;
 	int n, returnvalue;
 	switch (column)
 	{
@@ -446,7 +446,7 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 // Atom Page
 */
 
-void AtenForcefieldEditor::updateVdwLabels(ForcefieldAtom *ffa)
+void AtenForcefieldEditor::updateVdwLabels(ForcefieldAtom* ffa)
 {
 	if (ffa == NULL)
 	{
@@ -480,7 +480,7 @@ void AtenForcefieldEditor::VdwFunctionChanged(int index)
 		return;
 	}
 	// Get ForcefieldAtom pointer and set data
-	ForcefieldAtom *ffa = (ForcefieldAtom*) combo->data.asPointer(VTypes::ForcefieldAtomData);
+	ForcefieldAtom* ffa = (ForcefieldAtom*) combo->data.asPointer(VTypes::ForcefieldAtomData);
 	ffa->setVdwForm( (VdwFunctions::VdwFunction) index);
 	updateVdwLabels(ffa);
 }
@@ -494,7 +494,7 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 	int row = ui.FFEditorAtomsTable->row(w) + 1;
 	int column = ui.FFEditorAtomsTable->column(w);
 	// Get pointer to forcefield type from edited row
-	ForcefieldAtom *ffa = targetForcefield_->type(row);
+	ForcefieldAtom* ffa = targetForcefield_->type(row);
 	// Set new data based on the column edited
 	Dnchar text;
 	int n;
@@ -541,7 +541,7 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemSelectionChanged()
 		updateVdwLabels(NULL);
 		return;
 	}
-	ForcefieldAtom *ffa = targetForcefield_->type(row+1);
+	ForcefieldAtom* ffa = targetForcefield_->type(row+1);
 	updateVdwLabels(ffa);
 }
 

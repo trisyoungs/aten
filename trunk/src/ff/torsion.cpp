@@ -25,7 +25,7 @@
 #include "base/pattern.h"
 
 // Torsion energy
-void Pattern::torsionEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
+void Pattern::torsionEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 {
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
 	msg.enter("Pattern::torsionEnergy");
@@ -154,7 +154,7 @@ Matrix make_cp_mat(Vec3<double> &v)
 }
 
 // Torsion forces
-void Pattern::torsionForces(Model *srcmodel)
+void Pattern::torsionForces(Model* srcmodel)
 {
 	// Calculate force contributions from the torsions in this pattern with coordinates from *xcfg
 	msg.enter("Pattern::torsionForces");
@@ -166,7 +166,7 @@ void Pattern::torsionForces(Model *srcmodel)
 	ForcefieldBound *ffb;
 	static double k1, k2, k3, k4, s;
 	PatternBound *pb;
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)

@@ -23,7 +23,11 @@
 #define ATEN_SELECTELEMENTDIALOG_H
 
 #include "gui/ui_selectelement.h"
+#include "templates/reflist.h"
 #include "base/elements.h"
+
+// Forward Declarations
+class AtenWindow;
 
 // Select Element Dialog
 class AtenSelectElement : public QDialog
@@ -31,51 +35,47 @@ class AtenSelectElement : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
-	/*
-	// Window Functions
-	*/
 	private:
-	QPushButton *addCommonButton(int el);
+	// Reference to main window
+	AtenWindow& parent_;
+
+	public:
+	// Constructor / Destructor
+	AtenSelectElement(AtenWindow& parent);
+	~AtenSelectElement();
+	// Main form declaration
+	Ui::AtenSelectElement ui;
+
+
+	/*
+	 * Window Functions
+	 */
 	private slots:
 	void on_CancelButton_clicked(bool checked);
 	void ElementButton_clicked(bool checked);
 	void CommonElementButton_clicked(bool checked);
-	public:
-	void addCommonButtons(const char *buttonlist);
 
+	
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Selected element
 	int selectedElement_;
 	// Reflist of common element buttons
 	Reflist<QPushButton,int> commonButtons_;	
 	// Array of element buttons
-	QPushButton **elementButtons_;
+	QList<QPushButton*> elementButtons_;
 	// Layout for common elements group
-	QHBoxLayout *commonGroupLayout_;
+	QHBoxLayout* commonGroupLayout_;
+
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	public:
 	// Select an element
 	int selectElement();
-
-	/*
-	// Widgets
-	*/
-	public:
-	// Constructor / Destructor
-	AtenSelectElement(QWidget* parent);
-	~AtenSelectElement();
-	// Main form declaration
-	Ui::SelectElementDialog ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

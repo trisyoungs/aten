@@ -77,7 +77,7 @@ int UndoState::endLog(Log::LogType log) const
 }
 
 // Undo changes detailed in state
-void UndoState::undo(Model *m)
+void UndoState::undo(Model* m)
 {
 	msg.enter("UndoState::Undo");
 	// Undo the changes stored in the change list
@@ -88,7 +88,7 @@ void UndoState::undo(Model *m)
 }
 
 // Redo changes detailed in state
-void UndoState::redo(Model *m)
+void UndoState::redo(Model* m)
 {
 	msg.enter("UndoState::redo");
 	for (UndoEvent* u = events_.first(); u != NULL; u = u->next) u->redo(m);

@@ -33,7 +33,7 @@ class PatternVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	PatternVariable(Pattern *ptr = NULL, bool constant = FALSE);
+	PatternVariable(Pattern* ptr = NULL, bool constant = FALSE);
 	~PatternVariable();
 
 	/*

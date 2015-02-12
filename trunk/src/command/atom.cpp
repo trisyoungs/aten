@@ -32,7 +32,7 @@ bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (ds == Atom::nDrawStyles) return FALSE;
 	if (c->hasArg(1))
 	{
-		Atom *i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
+		Atom* i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
 		if (i == NULL) return FALSE;
 		obj.rs()->beginUndoState("Style individual atom");
 		obj.rs()->atomSetStyle(i, ds);
@@ -63,7 +63,7 @@ bool Command::function_ColourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_CurrentAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
+	Atom* i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
 	if (i == NULL) return FALSE;
 	// Set atom information
 	obj.i = i;
@@ -77,7 +77,7 @@ bool Command::function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))
 	{
-		Atom *i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
+		Atom* i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
 		obj.rs()->beginUndoState("Fix position of single atom");
 		obj.rs()->atomSetFixed(i, TRUE);
 		obj.rs()->endUndoState();
@@ -98,7 +98,7 @@ bool Command::function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))
 	{
-		Atom *i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
+		Atom* i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
 		obj.rs()->beginUndoState("Free position of single atom");
 		obj.rs()->atomSetFixed(i, FALSE);
 		obj.rs()->endUndoState();
@@ -117,7 +117,7 @@ bool Command::function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
+	Atom* i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
 	if (i == NULL) return FALSE;
 	rv.set(VTypes::AtomData, i);
 	return TRUE;

@@ -55,7 +55,7 @@ class UnitCell
 	*/
 	private:
 	// Parent model
-	Model *parent_;
+	Model* parent_;
 	// Cell type
 	CellType type_;
 	// Vectors of the principal cell axes (rows[0] = A, rows[1] = B, rows[2] = C)
@@ -78,9 +78,9 @@ class UnitCell
 
 	public:
 	// Set parent model
-	void setParent(Model *m);
+	void setParent(Model* m);
 	// Return parent model
-	Model *parent();
+	Model* parent();
 	// Copy data from specified cell
 	bool copy(UnitCell *source);
 	// Print cell data
@@ -194,17 +194,17 @@ class UnitCell
 	// Minimum image vector from r1 to r2
 	Vec3<double> mimVector(const Vec3<double> &r1, const Vec3<double> &r2) const;
 	// Minimum image vector from i to r2
-	Vec3<double> mimVector(Atom *i, const Vec3<double> &r2) const;
+	Vec3<double> mimVector(Atom* i, const Vec3<double> &r2) const;
 	// Minimum image vector from i to j
-	Vec3<double> mimVector(Atom *i, Atom *j) const;
+	Vec3<double> mimVector(Atom* i, Atom* j) const;
 	// Minimum image position of r1 with respect to r2
 	Vec3<double> mim(const Vec3<double> &r1, const Vec3<double> &r2) const;
 	// Minimum image position of i with respect to r2
-	Vec3<double> mim(Atom *i, const Vec3<double> &r2) const;
+	Vec3<double> mim(Atom* i, const Vec3<double> &r2) const;
 	// Minimum image position of i with respect to j
-	Vec3<double> mim(Atom *i, Atom *j) const;
+	Vec3<double> mim(Atom* i, Atom* j) const;
 	// Fold specified atom coordinates into unit cell
-	Vec3<double> fold(Atom *i) const;
+	Vec3<double> fold(Atom* i) const;
 	// Fold provided coordinates into unit cell
 	Vec3<double> fold(Vec3<double> &r) const;
 	// Fold fractional coordinates into cell
@@ -220,15 +220,15 @@ class UnitCell
 	// Calculate distance between supplied coordinates
 	double distance(const Vec3<double> &ri, const Vec3<double> &rj, bool useMim = TRUE) const;
 	// Calculate distance between supplied atoms
-	double distance(Atom *i, Atom *j, bool useMim = TRUE) const;
+	double distance(Atom* i, Atom* j, bool useMim = TRUE) const;
 	// Calculate angle between supplied coordinates
 	double angle(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, bool useMim = TRUE) const;
 	// Calculate angle between supplied atoms
-	double angle(Atom *i, Atom *j, Atom *k, bool useMim = TRUE) const;
+	double angle(Atom* i, Atom* j, Atom* k, bool useMim = TRUE) const;
 	// Calculate torsion angle between supplied coordinates
 	double torsion(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, const Vec3<double> &rl, bool useMim = TRUE) const;
 	// Calculate torsion angle between supplied atoms
-	double torsion(Atom *i, Atom *j, Atom *k, Atom *l, bool useMim = TRUE) const;
+	double torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim = TRUE) const;
 };
 
 #endif

@@ -20,7 +20,6 @@
 */
 
 #include "gui/progress.h"
-#include "gui/gui.h"
 #include "base/progress.h"
 
 // Constructor
@@ -57,7 +56,7 @@ void AtenProgress::initialise()
 	ui.JobTitleLabel->setText(progress.jobTitle());
 	ui.TimeRemainingLabel->setText(progress.eta());
 	setSubTitle();
-	gui.processMessages();
+	QApplication::processEvents();
 }
 
 // Update dialog, setting new secondary job title if necessary
@@ -66,7 +65,7 @@ void AtenProgress::updateProgress()
 	ui.ProgressBar->setValue(progress.currentStep());
 	ui.TimeRemainingLabel->setText(progress.eta());
 	setSubTitle();
-	gui.processMessages();
+	QApplication::processEvents();
 }
 
 // Close dialog window

@@ -1,5 +1,5 @@
 /*
-	*** Qt selectfilter functions interface
+	*** Select filter functions interface
 	*** src/gui/selectfilter_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -19,11 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "gui/mainwindow.h"
 #include "gui/selectfilter.h"
 #include "parser/tree.h"
 
 // Constructor
-AtenSelectFilter::AtenSelectFilter(AtenWindow& parent) : QDialog(parent)
+AtenSelectFilter::AtenSelectFilter(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 {
 	ui.setupUi(this);
 
@@ -83,7 +84,7 @@ void AtenSelectFilter::update()
 }
 
 // Select a filter from the list supplied
-Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full, bool showextcheck)
+Tree* AtenSelectFilter::selectFilter(const char* text, Reflist<Tree,int>* partial, Reflist<Tree,int>* full, bool showExtCheck)
 {
 	// Set source structures
 	partialList_ = partial;
@@ -100,7 +101,7 @@ Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partia
 	ui.OkButton->setDisabled(TRUE);
 
 	// Show/hide 'Append Extension' checkbox
-	ui.AppendExtensionCheck->setVisible(showextcheck);
+	ui.AppendExtensionCheck->setVisible(showExtCheck);
 	
 	update();
 

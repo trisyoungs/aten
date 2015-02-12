@@ -38,31 +38,31 @@ Dnchar *Forcefield::energyData()
 }
 
 // Return pointer to vdw generation function (if one is defined)
-Tree *Forcefield::vdwGenerator()
+Tree* Forcefield::vdwGenerator()
 {
 	return vdwGenerator_;
 }
 
 // Return pointer to bond generation function (if one is defined)
-Tree *Forcefield::bondGenerator()
+Tree* Forcefield::bondGenerator()
 {
 	return bondGenerator_;
 }
 
 // Return pointer to angle generation function (if one is defined)
-Tree *Forcefield::angleGenerator()
+Tree* Forcefield::angleGenerator()
 {
 	return angleGenerator_;
 }
 
 // Return pointer to torsion generation function (if one is defined)
-Tree *Forcefield::torsionGenerator()
+Tree* Forcefield::torsionGenerator()
 {
 	return torsionGenerator_;
 }
 
 // Generate VDW params
-bool Forcefield::generateVdw(Atom *i)
+bool Forcefield::generateVdw(Atom* i)
 {
 	msg.enter("Forcefield::generateVdw");
 	// Call the generator function.....
@@ -80,7 +80,7 @@ bool Forcefield::generateVdw(Atom *i)
 		return FALSE;
 	}
 	// Grab forcefieldatom pointer
-	ForcefieldAtom *ffi = i->type();
+	ForcefieldAtom* ffi = i->type();
 	// Call the generator function with the necessary arguments
 	ReturnValue rv;
 	if (!generatorFunctions_.executeFunction("vdwgenerator", rv, "y", ffi))
@@ -95,7 +95,7 @@ bool Forcefield::generateVdw(Atom *i)
 }
 
 // Generate bond params
-ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
+ForcefieldBound *Forcefield::generateBond(Atom* i, Atom* j)
 {
 	msg.enter("Forcefield::generateBond");
 	// Check for presence of the generator function.....
@@ -128,7 +128,7 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 }
 
 // Generate angle params
-ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
+ForcefieldBound *Forcefield::generateAngle(Atom* i, Atom* j, Atom* k)
 {
 	msg.enter("Forcefield::generateAngle");
 	// Check for presence of the generator function.....
@@ -162,7 +162,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 }
 
 // Generate torsion params
-ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
+ForcefieldBound *Forcefield::generateTorsion(Atom* i, Atom* j, Atom* k, Atom* l)
 {
 	msg.enter("Forcefield::generateTorsion");
 	// Check for presence of the generator function.....

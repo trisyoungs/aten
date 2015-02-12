@@ -30,7 +30,7 @@ bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double angle;
-	Atom *i, *j;
+	Atom* i, *j;
 	Vec3<double> v, o;
 	// Determine which data has been supplied
 	switch (c->nArgs())
@@ -135,7 +135,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 	Vec3<double> o, v;
 	bool sourcenoz = FALSE, targetnoz = FALSE;
 	int n;
-	Atom *i, *j;
+	Atom* i, *j;
 	switch (c->nArgs())
 	{
 		// Twelve atom ids defining both matrices (and optional origin)
@@ -266,7 +266,7 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Vec3<double> o, v;
 	bool sourcenoz = FALSE;
 	int n;
-	Atom *i = NULL, *j = NULL;
+	Atom* i = NULL, *j = NULL;
 
 	// Determine source matrix
 	for (n=0; n<5; n+=2)
@@ -322,19 +322,19 @@ bool Command::function_SetAngle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
 		msg.print("Atom 'i' given to 'setangle' is NULL.\n");
 		return FALSE;
 	}
-	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
 		msg.print("Atom 'j' given to 'setangle' is NULL.\n");
 		return FALSE;
 	}
-	Atom *k = c->argType(2) == VTypes::IntegerData ? obj.rs()->atom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
+	Atom* k = c->argType(2) == VTypes::IntegerData ? obj.rs()->atom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
 	if (k == NULL)
 	{
 		msg.print("Atom 'k' given to 'setangle' is NULL.\n");
@@ -369,13 +369,13 @@ bool Command::function_SetDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
 		msg.print("Atom 'i' given to 'setdistance' is NULL.\n");
 		return FALSE;
 	}
-	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
 		msg.print("Atom 'j' given to 'setdistance' is NULL.\n");
@@ -409,25 +409,25 @@ bool Command::function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
 		msg.print("Atom 'i' given to 'settorsion' is NULL.\n");
 		return FALSE;
 	}
-	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
 		msg.print("Atom 'j' given to 'settorsion' is NULL.\n");
 		return FALSE;
 	}
-	Atom *k = c->argType(2) == VTypes::IntegerData ? obj.rs()->atom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
+	Atom* k = c->argType(2) == VTypes::IntegerData ? obj.rs()->atom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
 	if (k == NULL)
 	{
 		msg.print("Atom 'k' given to 'settorsion' is NULL.\n");
 		return FALSE;
 	}
-	Atom *l = c->argType(3) == VTypes::IntegerData ? obj.rs()->atom(c->argi(3)-1) : (Atom*) c->argp(3, VTypes::AtomData);
+	Atom* l = c->argType(3) == VTypes::IntegerData ? obj.rs()->atom(c->argi(3)-1) : (Atom*) c->argp(3, VTypes::AtomData);
 	if (l == NULL)
 	{
 		msg.print("Atom 'l' given to 'settorsion' is NULL.\n");

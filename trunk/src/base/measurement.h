@@ -63,13 +63,13 @@ class Measurement : public ListItem<Measurement>
 	// Return literal coordinate value of the Measurement
 	double literalValue() const;
 	// Set atom
-	void setAtom(int n, Atom *i);
+	void setAtom(int n, Atom* i);
 	// Return whether the specified atom is used in this measurement
-	bool involvesAtom(Atom *i) const;
+	bool involvesAtom(Atom* i) const;
 	// Return specific atom
-	Atom *atom(int index);
+	Atom* atom(int index);
 	// Return atoms array
-	Atom **atoms();
+	Atom* *atoms();
 	// Print
 	void print() const;
 };

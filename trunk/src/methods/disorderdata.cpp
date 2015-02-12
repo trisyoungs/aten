@@ -40,7 +40,7 @@ DisorderData::DisorderData() : ListItem<DisorderData>()
 */
 
 // Initialise structure
-bool DisorderData::initialise(Model *sourceModel, PartitionData *partitionData)
+bool DisorderData::initialise(Model* sourceModel, PartitionData *partitionData)
 {
 	if (sourceModel == NULL)
 	{
@@ -120,7 +120,7 @@ PartitionData *DisorderData::partition()
 }
 
 // Copy contents of component across to specified model
-void DisorderData::copyTo(Model *target)
+void DisorderData::copyTo(Model* target)
 {
 	clipboard_.copyAll(&targetModel_, TRUE);
 	clipboard_.pasteToModel(target, FALSE);
@@ -148,7 +148,7 @@ void DisorderData::prepareCandidate(const Matrix& volumeElement)
 		// Move the model back to the origin, and then apply a random rotation
 		sourceModel_.centre(0.0,0.0,0.0);
 		rotation.createRotationXY(AtenMath::random()*360.0, AtenMath::random()*360.0);
-		for (Atom *i = sourceModel_.atoms(); i != NULL; i = i->next) i->r() = rotation * i->r();
+		for (Atom* i = sourceModel_.atoms(); i != NULL; i = i->next) i->r() = rotation * i->r();
 	}
 	// Centre the sourceModel_ at the random position, and we're done
 	sourceModel_.centre(pos);
@@ -238,7 +238,7 @@ void DisorderData::tweakCandidate(double maxDistance, double maxAngle, Partition
 		Vec3<double> oldCentre = sourceModel_.selectionCentreOfGeometry();
 		sourceModel_.centre(0.0,0.0,0.0);
 		rotation.createRotationXY(AtenMath::random()*maxAngle, AtenMath::random()*maxAngle);
-		for (Atom *i = sourceModel_.atoms(); i != NULL; i = i->next) i->r() = rotation * i->r();
+		for (Atom* i = sourceModel_.atoms(); i != NULL; i = i->next) i->r() = rotation * i->r();
 		sourceModel_.centre(oldCentre);
 	}
 	// Apply a random shift to the position, but ensure that the centre of geometry stays in the same region
@@ -254,10 +254,10 @@ void DisorderData::tweakCandidate(double maxDistance, double maxAngle, Partition
 }
 
 // Determine whether candidate molecule overlaps with supplied model
-bool DisorderData::modelOverlaps(Model *other, UnitCell *globalCell)
+bool DisorderData::modelOverlaps(Model* other, UnitCell *globalCell)
 {
 	double rij, ri;
-	Atom **ii = other->atomArray(), **jj = sourceModel_.atomArray();
+	Atom* *ii = other->atomArray(), **jj = sourceModel_.atomArray();
 	int i, j;
 	// Perform double loop over candidate molecule atoms and supplied model atoms
 	for (i = 0; i < other->nAtoms(); ++i)

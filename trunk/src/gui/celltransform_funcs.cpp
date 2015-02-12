@@ -44,7 +44,7 @@ void CellTransformWidget::showWidget()
 void CellTransformWidget::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
 	UnitCell::CellType ct = m->cell()->type();
 	if (refreshing_) return;

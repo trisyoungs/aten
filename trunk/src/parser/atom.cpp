@@ -31,7 +31,7 @@
 */
 
 // Constructor
-AtomVariable::AtomVariable(Atom *ptr, bool constant)
+AtomVariable::AtomVariable(Atom* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::AtomData;
@@ -187,7 +187,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Atom *ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
+	Atom* ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
@@ -361,13 +361,13 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	int n;
 	Atom::DrawStyle ds;
 	Element *el;
-	Atom *ptr = (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
+	Atom* ptr = (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
 		result = FALSE;
 	}
-	Model *ptrParent = ptr->parent();
+	Model* ptrParent = ptr->parent();
 	
 	// Set value based on enumerated id
 	if (result) switch (acc)
@@ -523,8 +523,8 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Atom *ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
-	Model *ptrParent = ptr->parent();
+	Atom* ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
+	Model* ptrParent = ptr->parent();
 	if (result) switch (i)
 	{
 		case (AtomVariable::AddBit):
@@ -538,7 +538,7 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			}
 			else if (ptrParent)
 			{
-				Atom *i = (Atom*) node->argp(0, VTypes::AtomData);
+				Atom* i = (Atom*) node->argp(0, VTypes::AtomData);
 				ptrParent->beginUndoState("Copy atom data");
 				i->isSelected() ? ptrParent->selectAtom(ptr) : ptrParent->deselectAtom(ptr);
 				ptrParent->positionAtom(ptr, i->r());

@@ -21,51 +21,50 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/gui.h"
 #include "model/model.h"
 
 // Set current rendering style to stick
-void AtenForm::on_actionStyleStick_triggered(bool checked)
+void AtenWindow::on_actionStyleStick_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::StickStyle);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set current rendering style to tube
-void AtenForm::on_actionStyleTube_triggered(bool checked)
+void AtenWindow::on_actionStyleTube_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::TubeStyle);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set current rendering style to sphere
-void AtenForm::on_actionStyleSphere_triggered(bool checked)
+void AtenWindow::on_actionStyleSphere_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::SphereStyle);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set current rendering style to scaled
-void AtenForm::on_actionStyleScaled_triggered(bool checked)
+void AtenWindow::on_actionStyleScaled_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::ScaledStyle);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set current rendering style to individual
-void AtenForm::on_actionStyleIndividual_triggered(bool checked)
+void AtenWindow::on_actionStyleIndividual_triggered(bool checked)
 {
 	prefs.setRenderStyle(Atom::IndividualStyle);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set corresponding action to supplied Atom::DrawStyle
-void AtenForm::setActiveStyleAction(Atom::DrawStyle ds)
+void AtenWindow::setActiveStyleAction(Atom::DrawStyle ds)
 {
 	if (ds == Atom::StickStyle) ui.actionStyleStick->setChecked(TRUE);
 	else if (ds == Atom::TubeStyle) ui.actionStyleTube->setChecked(TRUE);
@@ -73,24 +72,24 @@ void AtenForm::setActiveStyleAction(Atom::DrawStyle ds)
 	else if (ds == Atom::ScaledStyle) ui.actionStyleScaled->setChecked(TRUE);
 	else if (ds == Atom::IndividualStyle) ui.actionStyleIndividual->setChecked(TRUE);
 	prefs.setRenderStyle(ds);
-	parent_.postRedisplay();
+	postRedisplay();
 }
 
 // Enter basic atom selection mode
-void AtenForm::on_actionSelectAtoms_triggered(bool on)
+void AtenWindow::on_actionSelectAtoms_triggered(bool on)
 {
-	if (on) gui.mainCanvas()->setSelectedMode(UserAction::SelectAction);
+	if (on) ui.MainView->setSelectedMode(UserAction::SelectAction);
 }
 
 // Enter molecule selection mode
-void AtenForm::on_actionSelectMolecules_triggered(bool on)
+void AtenWindow::on_actionSelectMolecules_triggered(bool on)
 {
-	if (on) gui.mainCanvas()->setSelectedMode(UserAction::SelectMoleculeAction);
+	if (on) ui.MainView->setSelectedMode(UserAction::SelectMoleculeAction);
 }
 
 // Enter element selection mode
-void AtenForm::on_actionSelectElement_triggered(bool on)
+void AtenWindow::on_actionSelectElement_triggered(bool on)
 {
-	if (on) gui.mainCanvas()->setSelectedMode(UserAction::SelectElementAction);
+	if (on) ui.MainView->setSelectedMode(UserAction::SelectElementAction);
 }
 

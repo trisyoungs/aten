@@ -35,49 +35,50 @@ class AtenSelectVariable : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
-	/*
-	// Widget Functions
-	*/
-	private slots:
-	void on_VariableTable_doubleClicked(const QModelIndex &index);
-	void on_VariableTable_itemSelectionChanged();
-
-	/*
-	// Private Data
-	*/
-	private:
-	// Whether the list is refreshing
-	bool refreshing_;
-	// Source ZMatrix
-	ZMatrix *zMatrix_;
-	// Target variable type
-	int variableType_;
-	// Variable selected in list
-	Variable *selectedVariable_;
-	// Get variable of given type, based on Table row number
-	Variable *getVariable(int row);
-
-	/*
-	// Methods
-	*/
-	public:
-	// Select a variable from the specified list (first item provided)
-	Variable *selectVariable(ZMatrix *zmat, int vartype, Variable *currentVar, bool currentNegate);
-	// Return status of negate checkbox
-	bool isNegated();
-
-	/*
-	// Widgets
-	*/
 	private:
 	// Reference to main window
 	AtenWindow& parent_;
 
 	public:
 	// Constructor
-	AtenSelectVariable(QWidget* parent);
+	AtenSelectVariable(AtenWindow& parent);
 	// Main form declaration
-	Ui::SelectVariableDialog ui;
+	Ui::AtenSelectVariable ui;
+
+
+	/*
+	 * Widget Functions
+	 */
+	private slots:
+	void on_VariableTable_doubleClicked(const QModelIndex &index);
+	void on_VariableTable_itemSelectionChanged();
+
+	
+	/*
+	 * Local Variables
+	 */
+	private:
+	// Whether the list is refreshing
+	bool refreshing_;
+	// Source ZMatrix
+	ZMatrix* zMatrix_;
+	// Target variable type
+	int variableType_;
+	// Variable selected in list
+	Variable* selectedVariable_;
+	// Get variable of given type, based on Table row number
+	Variable* getVariable(int row);
+
+
+	/*
+	 * Methods
+	 */
+	public:
+	// Select a variable from the specified ZMatrix
+	Variable* selectVariable(ZMatrix* zmat, int vartype, Variable* currentVar, bool currentNegate);
+	// Return status of negate checkbox
+	bool isNegated();
+
 };
 
 #endif

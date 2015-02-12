@@ -55,7 +55,7 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 	Vec3<double> v1, v2;
 	Dnchar text;
 	msg.print("Model           Policy     Partition  Population   Density\n");
-	for (Model *m = aten.models(); m != NULL; m = m->next)
+	for (Model* m = aten.models(); m != NULL; m = m->next)
 	{
 		if (m->cell()->type() != UnitCell::NoCell) continue;
 		msg.print("%-15s %-10s     %i        %5i    %8.4f\n", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());

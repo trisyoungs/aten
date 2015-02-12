@@ -255,7 +255,7 @@ bool BondVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BondData));
 		result = FALSE;
 	}
-	Model *ptrParent = ptr->atomI()->parent();
+	Model* ptrParent = ptr->atomI()->parent();
 	if (result) switch (acc)
 	{
 		case (BondVariable::Type):

@@ -109,7 +109,7 @@ bool Pdens::initialise()
 }
 
 // Accumulate quantity data_ from supplied model
-void Pdens::accumulate(Model *sourcemodel)
+void Pdens::accumulate(Model* sourcemodel)
 {
 	msg.enter("Pdens::accumulate");
 	int m1, m2;
@@ -155,7 +155,7 @@ void Pdens::addPoint(Vec3<int> &coords)
 }
 
 // Finalise
-void Pdens::finalise(Model *sourcemodel)
+void Pdens::finalise(Model* sourcemodel)
 {
 	msg.enter("Pdens::finalise");
 	int n, m, o;

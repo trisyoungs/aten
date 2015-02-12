@@ -57,14 +57,14 @@ void ZMatrixElement::setParent(ZMatrix *parent)
 }
 
 // Set n'th atom datum
-void ZMatrixElement::setAtom(int id, Atom *i)
+void ZMatrixElement::setAtom(int id, Atom* i)
 {
 	if ((id < 0) || (id > 3)) printf("Internal Error: Id for ZMatrixElement::setAtom is out of range (%i)\n", id);
 	else atoms_[id] = i;
 }
 
 // Retrieve n'th atom datum
-Atom *ZMatrixElement::atom(int id)
+Atom* ZMatrixElement::atom(int id)
 {
 	if ((id < 0) || (id > 3)) printf("Internal Error: Id for ZMatrixElement::atom is out of range (%i)\n", id);
 	else return atoms_[id];
@@ -78,7 +78,7 @@ void ZMatrixElement::setNegated(int id, bool b)
 	else
 	{
 		negated_[id] = b;
-		Model *m = parent_->parent();
+		Model* m = parent_->parent();
 		if (m != NULL) m->recalculateFromZMatrix();
 	}
 }
@@ -269,7 +269,7 @@ ZMatrix::~ZMatrix()
 }
 
 // Return parent model
-Model *ZMatrix::parent()
+Model* ZMatrix::parent()
 {
 	return parent_;
 }
@@ -339,7 +339,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 }
 
 // Create (recursively) along bonds in the model wherever possible
-void ZMatrix::createAlongBonds(Atom *target, Reflist<Atom,int> &atomlist)
+void ZMatrix::createAlongBonds(Atom* target, Reflist<Atom,int> &atomlist)
 {
 	msg.enter("ZMatrix::createAlongBonds");
 	// Add the current atom to the list and create an element for it
@@ -348,7 +348,7 @@ void ZMatrix::createAlongBonds(Atom *target, Reflist<Atom,int> &atomlist)
 	// Mark this atom so it won't be added again
 	parent_->selectAtom(target, TRUE);
 	// Cycle over bonds, progressing along each connected atom
-	Atom *i;
+	Atom* i;
 	for (Refitem<Bond,int> *ri = target->bonds(); ri != NULL; ri = ri->next)
 	{
 		i = ri->item->partner(target);
@@ -368,7 +368,7 @@ bool ZMatrix::createBoundPath(Reflist<Atom,int> &atomlist, int size, Reflist<Ato
 		return TRUE;
 	}
 	// From last atom in path, add bound neighbours to path list (if their ID is lower) and recurse if necessary
-	Atom *i = atomlist.last()->item, *j;
+	Atom* i = atomlist.last()->item, *j;
 	int maxid = atomlist.first()->item->id();
 	for (Refitem<Bond,int> *ri = i->bonds(); ri != NULL; ri = ri->next)
 	{
@@ -389,7 +389,7 @@ bool ZMatrix::createBoundPath(Reflist<Atom,int> &atomlist, int size, Reflist<Ato
 }
 
 // Create from specified model
-void ZMatrix::create(Model *source, bool usebonds)
+void ZMatrix::create(Model* source, bool usebonds)
 {
 	msg.enter("ZMatrix::create");
 	// Clear old data and set new target
@@ -412,7 +412,7 @@ void ZMatrix::create(Model *source, bool usebonds)
 	{
 		// Step through atoms in order, creating elements as we go using bonds wherever possible
 		// We always maintain a list of the previous four atoms, just in case there are not enough bound connections to use
-		for (Atom *i = parent_->atoms(); i != NULL; i = i->next)
+		for (Atom* i = parent_->atoms(); i != NULL; i = i->next)
 		{
 			// Check current size of atomlist
 			if (atomlist.nItems() == 4) atomlist.removeLast();
@@ -444,7 +444,7 @@ void ZMatrix::create(Model *source, bool usebonds)
 	else
 	{
 		// Step through atoms in order, creating elements as we go...
-		for (Atom *i = parent_->atoms(); i != NULL; i = i->next)
+		for (Atom* i = parent_->atoms(); i != NULL; i = i->next)
 		{
 			// Check current size of atomlist
 			if (atomlist.nItems() == 4) atomlist.removeLast();
@@ -557,7 +557,7 @@ void ZMatrix::setVariable(Variable *v, double value)
 // Print zmatrix
 void ZMatrix::print()
 {
-	Atom *i, *j, *k, *l;
+	Atom* i, *j, *k, *l;
 	for (ZMatrixElement *zel = elements_.first(); zel != NULL; zel = zel->next)
 	{
 		// First atom (the creation target)

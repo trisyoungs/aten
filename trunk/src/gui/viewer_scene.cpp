@@ -1,6 +1,6 @@
 /*
-	*** Steepest descent minimiser
-	*** src/methods/sd.h
+	*** Viewer - Main scene render function
+	*** src/gui/viewer_scene.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,35 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_SD_H
-#define ATEN_SD_H
+#include "gui/viewer.uih"
+#include "main/aten.h"
+#include "base/sysfunc.h"
 
-#include "methods/linemin.h"
-
-// Forward Declarations
-class Model;
-
-// Steepest Descent Minimiser
-class MethodSd : public LineMinimiser
+// Perform main rendering
+void Viewer::renderScene()
 {
-	public:
-	// Constructor
-	MethodSd();
+	msg.enter("Viewer::renderScene");
 
-	private:
-	// Maximum number of iterations to perform
-	int nCycles_;
+	endGl();
 
-	public:
-	// Set maximum number of cycles to perform
-	void setNCycles(int i);
-	// Get maximum number of  for MC move
-	int nCycles() const;
-	// Minimise the specified model
-	void minimise(Model* source, double econ, double fcon, bool simple);
-};
+	msg.exit("Viewer::renderScene");
+}
 
-// Static Singleton
-extern MethodSd sd;
-
-#endif

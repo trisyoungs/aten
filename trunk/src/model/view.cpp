@@ -38,7 +38,7 @@ Model::RenderSource Model::renderSource() const
 }
 
 // Return the current rendering source for the model
-Model *Model::renderSourceModel()
+Model* Model::renderSourceModel()
 {
 	switch (renderSource_)
 	{
@@ -149,7 +149,7 @@ void Model::resetView()
 	mview.setColumn(3,0.0,0.0,0.0,1.0);
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		rad = prefs.styleRadius(i);
 		rabs = i->r().abs();

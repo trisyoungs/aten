@@ -47,7 +47,7 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 	// Check the presence of arg(0)
 	if (c->hasArg(0))
 	{
-		Model *m = NULL;
+		Model* m = NULL;
 		switch (c->argType(0))
 		{
 			case (VTypes::IntegerData):
@@ -85,7 +85,7 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_DeleteModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = NULL;
+	Model* m = NULL;
 	if (c->hasArg(0))
 	{
 		switch (c->argType(0))
@@ -121,7 +121,7 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	// If this command is being run from a filter, set the output filter in the model.
 	if (c->parent()->isFilter())
 	{
-		Tree *t = c->parent();
+		Tree* t = c->parent();
 // 		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
 		obj.m->setFilename(c->parent()->parser()->inputFilename());
 		obj.m->setFilter(t->filter.partner());
@@ -151,7 +151,7 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 // Set current model to be first loaded/created model
 bool Command::function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Model *m = aten.model(0);
+	Model* m = aten.model(0);
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
@@ -167,7 +167,7 @@ bool Command::function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = NULL;
+	Model* m = NULL;
 	switch (c->argType(0))
 	{
 		case (VTypes::ModelData): m = (Model*) c->argp(0, VTypes::ModelData); break;
@@ -205,7 +205,7 @@ bool Command::function_Info(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Set current model to be last loaded/created model
 bool Command::function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Model *m = aten.model(aten.nModels()-1);
+	Model* m = aten.model(aten.nModels()-1);
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
@@ -221,7 +221,7 @@ bool Command::function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ListModels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (aten.nModels() != 0) msg.print("Name            NAtoms  Forcefield\n");
-	for (Model *m = aten.models(); m != NULL; m = m->next)
+	for (Model* m = aten.models(); m != NULL; m = m->next)
 		msg.print("%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
 	rv.reset();
 	return TRUE;
@@ -230,7 +230,7 @@ bool Command::function_ListModels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Load model from file
 bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Tree *filter;
+	Tree* filter;
 	
 	// Was a specific filter nickname provided?
 	if (c->hasArg(1))
@@ -257,7 +257,7 @@ bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int oldnmodels = aten.nModels();
 	if (filter->executeRead(c->argc(0)))
 	{
-		Model *m = aten.currentModel();
+		Model* m = aten.currentModel();
 		obj.i = m->atoms();
 		rv.set(VTypes::ModelData, m);
 	}
@@ -285,7 +285,7 @@ bool Command::function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &r
 	}
 	// Create the atoms template
 	Vec3<double> v;
-	Atom *j;
+	Atom* j;
 	for (obj.i = obj.m->atoms(); obj.i != NULL; obj.i = obj.i->next)
 	{
 		j = obj.rs()->addAtom(obj.i->element(), v);
@@ -368,7 +368,7 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	parser.getArgsDelim(LineParser::UseQuotes, c->argc(0));
 	
 	// First part of argument is nickname
-	Tree *filter = aten.findFilter(FilterData::ModelExport, parser.argc(0));
+	Tree* filter = aten.findFilter(FilterData::ModelExport, parser.argc(0));
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{
@@ -403,7 +403,7 @@ bool Command::function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Find filter with a nickname matching that given in argc(0)
-	Tree *filter = aten.findFilter(FilterData::ModelExport, c->argc(0));
+	Tree* filter = aten.findFilter(FilterData::ModelExport, c->argc(0));
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{
@@ -457,7 +457,7 @@ bool Command::function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Show all atoms", obj.rs()->nSelected());
-	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) obj.rs()->atomSetHidden(i,FALSE);
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) obj.rs()->atomSetHidden(i,FALSE);
 	obj.rs()->endUndoState();
 	rv.reset();
 	return TRUE;

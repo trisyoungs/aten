@@ -146,7 +146,7 @@ bool Forcefield::load(const char *filename)
 	if (types_.nItems() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");
 
 	// Link forcefield type references (&N) to their actual forcefield types
-	for (ForcefieldAtom *ffa = types_.first(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
+	for (ForcefieldAtom* ffa = types_.first(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
 	// Last thing - convert energetic units in the forcefield to the internal units of the program
 	convertParameters();
 	msg.exit("Forcefield::load");
@@ -204,7 +204,7 @@ bool Forcefield::readTypes()
 	msg.enter("Forcefield::readTypes");
 	int success, newffid, nadded = 0;
 	bool done;
-	ForcefieldAtom *ffa, *idsearch;
+	ForcefieldAtom* ffa, *idsearch;
 	done = FALSE;
 	// Format of lines is 'ffid typename element description [text]'
 	do
@@ -268,7 +268,7 @@ bool Forcefield::readUnitedAtomTypes()
 	msg.enter("Forcefield::readUnitedAtomTypes");
 	int success, newffid, nadded = 0;
 	bool done;
-	ForcefieldAtom *ffa, *idsearch;
+	ForcefieldAtom* ffa, *idsearch;
 	done = FALSE;
 	// Format of lines is 'ffid typename element description [text]'
 	do
@@ -366,7 +366,7 @@ bool Forcefield::readData(const char *vars)
 		}
 		else if (strcmp(ffparser.argc(0),"end") == 0) break;
 		// Search for this ffatom ID and retrieve it
-		ForcefieldAtom *ffa = findType(ffparser.argi(0));
+		ForcefieldAtom* ffa = findType(ffparser.argi(0));
 		if (ffa == NULL)
 		{
 			msg.print("Error: forcefield type ID '%i' has not been specified, so can't add data to it.\n", ffparser.argi(0));
@@ -469,7 +469,7 @@ bool Forcefield::readEquivalents()
 	*/
 	msg.enter("Forcefield::readEquivalents");
 	int count, success, argpos;
-	ForcefieldAtom *ffa;
+	ForcefieldAtom* ffa;
 	bool done = FALSE;
 	count = 0;
 	do
@@ -506,7 +506,7 @@ bool Forcefield::readInter()
 	// Format of lines is: 'ffid  fftype  charge  data1  data2  ... dataN'
 	msg.enter("Forcefield::readInter");
 	int success, count, n;
-	ForcefieldAtom *ffa;
+	ForcefieldAtom* ffa;
 	// Get functional form of vdw
 	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(ffparser.argc(1));
 	if (vdwstyle == VdwFunctions::nVdwFunctions)

@@ -54,7 +54,7 @@ void Fragment::setLinkPartner()
 }
 
 // Set data from source model
-bool Fragment::setMasterModel(Model *m)
+bool Fragment::setMasterModel(Model* m)
 {
 	msg.enter("Fragment::setMasterModel");
 	masterModel_ = m;
@@ -98,7 +98,7 @@ bool Fragment::setMasterModel(Model *m)
 }
 
 // Return model pointer
-Model *Fragment::masterModel()
+Model* Fragment::masterModel()
 {
 	return masterModel_;
 }
@@ -117,7 +117,7 @@ void Fragment::cycleLinkAtom()
 	setLinkPartner();
 	// Re-translate masterModel_, orientedModel_, and anchoredModel_ so new link atom is at the origin
 	masterModel_->translateSelectionLocal(-masterLinkAtom_->r(), TRUE);
-	Atom *i = anchoredModel_.atom(masterLinkAtom_->id());
+	Atom* i = anchoredModel_.atom(masterLinkAtom_->id());
 	anchoredModel_.translateSelectionLocal(-i->r(), TRUE);
 	i = orientedModel_.atom(masterLinkAtom_->id());
 	orientedModel_.translateSelectionLocal(-i->r(), TRUE);
@@ -128,7 +128,7 @@ void Fragment::resetOrientedModel()
 {
 	// Copy masterModel_ over to orientedModel_
 	orientedModel_.copy(masterModel_);
-	Atom *i = orientedModel_.atom(masterLinkAtom_->id());
+	Atom* i = orientedModel_.atom(masterLinkAtom_->id());
 	orientedModel_.markAll();
 	orientedModel_.translateSelectionLocal(-i->r(), TRUE);
 }
@@ -142,13 +142,13 @@ void Fragment::rotateOrientedModel(double dx, double dy)
 }
 
 // Return oriented model pointer
-Model *Fragment::orientedModel()
+Model* Fragment::orientedModel()
 {
 	return &orientedModel_;
 }
 
 // Paste oriented model to target model
-void Fragment::pasteOrientedModel(Vec3<double> origin, Model *target)
+void Fragment::pasteOrientedModel(Vec3<double> origin, Model* target)
 {
 	msg.enter("Fragment::pasteOrientedModel");
 
@@ -179,8 +179,8 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 	// If a link partner exists, adjust axis rotation value. Otherwise, free rotate model
 	if (masterLinkPartner_ != NULL)
 	{
-		Atom *linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
-		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
+		Atom* linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
+		Atom* linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
 		Vec3<double> ref = anchoredModel_.cell()->mimVector(linkAtom, linkPartner);
 		ref.normalise();
 		anchoredModel_.rotateSelectionVector(Vec3<double>(), ref, -dy, TRUE);
@@ -196,7 +196,7 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 }
 
 // Return anchored model, oriented to attach to specified atom
-Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond)
+Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond)
 {
 	msg.enter("Fragment::anchoredModel");
 
@@ -228,8 +228,8 @@ Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond
 	Vec3<double> ref(1.0,0.0,0.0);
 	if (masterLinkPartner_ != NULL)
 	{
-		Atom *linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
-		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
+		Atom* linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
+		Atom* linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
 		ref = anchoredModel_.cell()->mimVector(linkAtom, linkPartner);
 		ref.normalise();
 	}
@@ -256,7 +256,7 @@ Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond
 }
 
 // Paste anchored model to target model
-void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replacebond, Model *target, bool adjustbond)
+void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int &replacebond, Model* target, bool adjustbond)
 {
 	msg.enter("Fragment::pasteAnchoredModel");
 
@@ -269,7 +269,7 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replaceb
 
 	// Get pointers to link and partner atoms, determine if there was a bond there, and then delete link atom
 	Bond::BondType bt = Bond::nBondTypes;
-	Atom *linkPartner = NULL, *linkAtom;
+	Atom* linkPartner = NULL, *linkAtom;
 	if (masterLinkPartner_ != NULL)
 	{
 		linkPartner = anchoredModel_.atom(masterLinkPartner_->id());

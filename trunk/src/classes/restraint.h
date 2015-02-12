@@ -30,7 +30,7 @@ class restraint_ij : public ListItem<restraint_ij>
 {
 	public:
 	// Atoms in distance restraint
-	Atom *i,*j;
+	Atom* i,*j;
 	// Distance
 	double rij;
 	// Constructor
@@ -49,7 +49,7 @@ class restraints
 
 	private:
 	// Parent model
-	Model *ownermodel;
+	Model* ownermodel;
 	// List of distance restraints
 	List<restraint_ij> ijs;
 	// List of angle restraints

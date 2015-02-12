@@ -164,7 +164,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	{
 		// Is output file already present?
 		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
-		parent_.processMessages();
+		QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
 	}
 
 	// Run secondary, post-process command (if one was given)
@@ -186,7 +186,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		{
 			// Is output file already present?
 			while (postProcess.outputAvailable()) postProcess.printLineToMessages();
-			parent_.processMessages();
+			QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
 		}
 	}
 

@@ -23,7 +23,7 @@
 #include "model/model.h"
 
 // Constructor
-Vibration::Vibration(Model *parent) : ListItem<Vibration>()
+Vibration::Vibration(Model* parent) : ListItem<Vibration>()
 {
 	// Private variables
 	parent_ = parent;
@@ -39,13 +39,13 @@ Vibration::~Vibration()
 }
 
 // Return parent model
-Model *Vibration::parent() const
+Model* Vibration::parent() const
 {
 	return parent_;
 }
 
 // Initialise to specified size
-void Vibration::initialise(Model *parent, int size)
+void Vibration::initialise(Model* parent, int size)
 {
 	parent_ = parent;
 	// Get number of atoms from parent model and create data array, unless a size was specified

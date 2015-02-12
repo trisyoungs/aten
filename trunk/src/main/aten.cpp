@@ -21,7 +21,6 @@
 
 #include "main/aten.h"
 #include "main/version.h"
-#include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
@@ -34,8 +33,27 @@
 #include "base/sysfunc.h"
 #include "parser/parser.h"
 
-// Singleton definition
-Aten aten;
+// Bitmap Image Formats (conform to allowable pixmap formats in Qt)
+const char *bitmapFormatFilters[Aten::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
+const char *bitmapFormatExtensions[Aten::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
+Aten::BitmapFormat Aten::bitmapFormat(const char *s, bool reportError)
+{
+	Aten::BitmapFormat bf = (Aten::BitmapFormat) enumSearch("bitmap format", Aten::nBitmapFormats, bitmapFormatExtensions, s);
+	if ((bf == Aten::nBitmapFormats) && reportError) enumPrintValid(Aten::nBitmapFormats, bitmapFormatExtensions);
+	return bf;
+}
+Aten::BitmapFormat Aten::bitmapFormatFromFilter(const char *s)
+{
+	return (Aten::BitmapFormat) enumSearch("bitmap format", Aten::nBitmapFormats, bitmapFormatFilters,s);
+}
+const char *Aten::bitmapFormatFilter(Aten::BitmapFormat bf)
+{
+	return bitmapFormatFilters[bf];
+}
+const char *Aten::bitmapFormatExtension(Aten::BitmapFormat bf)
+{
+	return bitmapFormatExtensions[bf];
+}
 
 // Constructor
 Aten::Aten()
@@ -167,7 +185,7 @@ int Aten::cancelImageRedirect()
 */
 
 // Set the active model
-void Aten::setCurrentModel(Model *m, bool deselectOthers)
+void Aten::setCurrentModel(Model* m, bool deselectOthers)
 {
 	msg.enter("Aten::setCurrentModel");
 	if (m == NULL)
@@ -215,31 +233,31 @@ void Aten::setUseWorkingList(bool b)
 }
 
 // Return list of working models
-Model *Aten::workingModels() const
+Model* Aten::workingModels() const
 {
 	return workingModels_.first();
 }
 
 // Return current active model for editing
-Model *Aten::currentModel() const
+Model* Aten::currentModel() const
 {
 	return current.m;
 }
 
 // Return current active model for editing, accounting for trajectory frames
-Model *Aten::currentModelOrFrame() const
+Model* Aten::currentModelOrFrame() const
 {
 	return (current.m == NULL ? NULL : current.m->renderSourceModel());
 }
 
 // Return first item in the model list
-Model *Aten::models() const
+Model* Aten::models() const
 {
 	return models_.first();
 }
 
 // Return nth item in the model list
-Model *Aten::model(int n)
+Model* Aten::model(int n)
 {
 	return models_[n];
 }
@@ -257,7 +275,7 @@ int Aten::currentModelId() const
 }
 
 // Return index of specified model
-int Aten::modelIndex(Model *m) const
+int Aten::modelIndex(Model* m) const
 {
 	return models_.indexOf(m);
 }
@@ -269,11 +287,11 @@ int Aten::nModels() const
 }
 
 // Add model
-Model *Aten::addModel()
+Model* Aten::addModel()
 {
 	msg.enter("Aten::addModel");
 	Dnchar newname;
-	Model *m = NULL;
+	Model* m = NULL;
 	// Check current list target for model creation
 	switch (targetModelList_)
 	{
@@ -310,11 +328,11 @@ Model *Aten::addModel()
 }
 
 // Remove model
-void Aten::removeModel(Model *xmodel)
+void Aten::removeModel(Model* xmodel)
 {
 	// Remove this model from the model_list in the main window
 	msg.enter("Aten::removeModel");
-	Model *m;
+	Model* m;
 	// Delete the current model, but don't allow there to be zero models...
 	if (models_.nItems() == 1) m = aten.addModel();
 	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
@@ -326,11 +344,11 @@ void Aten::removeModel(Model *xmodel)
 }
 
 // Close specified model, saving first if requested
-bool Aten::closeModel(Model *m)
+bool Aten::closeModel(Model* m)
 {
 	// If the current model has been modified, ask for confirmation before we close it
 	Dnchar text;
-	Tree *filter;
+	Tree* filter;
 	if (m->changeLog.isModified())
 	{
 		// Create a modal message dialog
@@ -381,18 +399,18 @@ bool Aten::closeModel(Model *m)
 }
 
 // Find model by name
-Model *Aten::findModel(const char *s) const
+Model* Aten::findModel(const char *s) const
 {
 	// Search model list for name 's' (script function)
 	msg.enter("Aten::findModel");
-	Model *result = NULL;
+	Model* result = NULL;
 	for (result = models_.first(); result != NULL; result = result->next) if (strcmp(s,result->name()) == 0) break;
 	msg.exit("Aten::findModel");
 	return result ;
 }
 
 // Set visible flag for specified model
-void Aten::setModelVisible(Model *m, bool visible)
+void Aten::setModelVisible(Model* m, bool visible)
 {
 	// Check model pointer
 	if (m == NULL) return;
@@ -416,7 +434,7 @@ Refitem<Model,int> *Aten::visibleModels()
 }
 
 // Return n'th visible model
-Model *Aten::visibleModel(int id)
+Model* Aten::visibleModel(int id)
 {
 	if ((id < 0) || (id >= visibleModels_.nItems()))
 	{
@@ -430,7 +448,7 @@ Model *Aten::visibleModel(int id)
 void Aten::globalLogChange(Log::LogType log)
 {
 	// Loop over all loaded models and log change in their current rendersource
-	for (Model *m = models_.first(); m != NULL; m = m->next) m->renderSourceModel()->changeLog.add(log);
+	for (Model* m = models_.first(); m != NULL; m = m->next) m->renderSourceModel()->changeLog.add(log);
 }
 
 /*
@@ -523,7 +541,7 @@ void Aten::dereferenceForcefield(Forcefield *xff)
 {
 	// Remove references to the forcefield in the models
 	msg.enter("Aten::dereferenceForcefield");
-	for (Model *m = models_.first(); m != NULL; m = m->next)
+	for (Model* m = models_.first(); m != NULL; m = m->next)
 	{
 		if (m->forcefield() == xff)
 		{
@@ -533,11 +551,11 @@ void Aten::dereferenceForcefield(Forcefield *xff)
 		}
 		if (m->patterns() != NULL)
 		{
-			for (Pattern *p = m->patterns(); p != NULL; p = p->next)
+			for (Pattern* p = m->patterns(); p != NULL; p = p->next)
 			{
 				if (p->forcefield() == xff)
 				{
-					Atom *i = p->firstAtom();
+					Atom* i = p->firstAtom();
 					for (int n=0; n<p->totalAtoms(); n++)
 					{
 						i->setType(NULL);
@@ -551,7 +569,7 @@ void Aten::dereferenceForcefield(Forcefield *xff)
 		else
 		{
 			int count = 0;
-			for (Atom *i = m->atoms(); i != NULL; i = i->next) if (xff->containsType(i->type()))
+			for (Atom* i = m->atoms(); i != NULL; i = i->next) if (xff->containsType(i->type()))
 			{
 				++count;
 				i->setType(NULL);

@@ -32,7 +32,7 @@
 */
 
 // Move specified atom up in the list (to lower ID)
-void Model::shiftAtomUp(Atom *i)
+void Model::shiftAtomUp(Atom* i)
 {
 	msg.enter("Model::shiftAtomUp");
 	if (i == NULL)
@@ -69,7 +69,7 @@ void Model::shiftAtomUp(Atom *i)
 }
 
 // Move specified atom up in the list (to higher ID)
-void Model::shiftAtomDown(Atom *i)
+void Model::shiftAtomDown(Atom* i)
 {
 	msg.enter("Model::shiftAtomDown");
 	if (i == NULL)
@@ -106,7 +106,7 @@ void Model::shiftAtomDown(Atom *i)
 }
 
 // Move specified atom so it sits after the reference atom (or head of the list if NULL)
-void Model::moveAtomAfter(Atom *i, Atom *reference)
+void Model::moveAtomAfter(Atom* i, Atom* reference)
 {
 	msg.enter("Model::moveAtom");
 	if (i == NULL)
@@ -153,7 +153,7 @@ Vec3<double> Model::selectionCentreOfGeometry() const
 Vec3<double> Model::selectionCentreOfMass() const
 {
 	Vec3<double> result;
-	Atom *i;
+	Atom* i;
 	double massnorm = 0.0;
 	if (selection_.nItems() != 0)
 	{
@@ -209,13 +209,13 @@ void Model::selectionResetColour()
 void Model::selectionSetStyle(Atom::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) atomSetStyle(i, ds);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) atomSetStyle(i, ds);
 }
 
 // Select bound and selected atoms from the current atom
-void Model::fragmentFromSelectionSelector(Atom *i, Reflist<Atom,int> &list)
+void Model::fragmentFromSelectionSelector(Atom* i, Reflist<Atom,int> &list)
 {
-	Atom *j;
+	Atom* j;
 	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
@@ -229,7 +229,7 @@ void Model::fragmentFromSelectionSelector(Atom *i, Reflist<Atom,int> &list)
 }
 
 // Get atoms of a bound fragment with the current selection
-void Model::fragmentFromSelection(Atom *start, Reflist<Atom,int> &list)
+void Model::fragmentFromSelection(Atom* start, Reflist<Atom,int> &list)
 {
 	msg.enter("Model::fragmentFromSelection");
 	if ((start == NULL) || (!start->isSelected()))
@@ -414,7 +414,7 @@ void Model::selectionEmpirical(Dnchar &target, bool markonly, bool addspaces) co
 	target.clear();
 	// Reset element counters
 	for (n=0; n<MAXELEMENTS; n++) elcount[n] = 0;
-	Atom *i = atoms_.first();
+	Atom* i = atoms_.first();
 	while (i != NULL)
 	{
 		if (i->isSelected(markonly)) elcount[i->element()] ++;
@@ -446,7 +446,7 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 	Refitem<Atom,int> *ri = selection_.first();
 	int lastel = ri->item->element(), newel;
 	int count = 1;
-	Atom *i;
+	Atom* i;
 	for (ri = ri->next; ri != NULL; ri = ri->next)
 	{
 		// Check this element against the last. If the last element is the same, increase the counter. If different, append to the string
@@ -477,8 +477,8 @@ void Model::selectionBondFingerprint(Dnchar &target)
 	target.clear();
 	int count = 0, diff;
 	Refitem<Bond,int> *ri;
-	Atom *i = atoms_.first();
-	Atom *j;
+	Atom* i = atoms_.first();
+	Atom* j;
 	while (i != NULL)
 	{
 		if (i->isSelected()) 

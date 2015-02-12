@@ -24,12 +24,12 @@
 #include "base/elements.h"
 
 // Add hydrogens to model
-void Model::hydrogenSatisfy(Atom *target)
+void Model::hydrogenSatisfy(Atom* target)
 {
 	// Cycles over atoms in model (or only the atom supplied), and works out how many hydrogens (and in which geometry) should be added to each
 	msg.enter("Model::hydrogenSatisfy");
 	int numh, tbo, nsingle, ndouble, valency, n;
-	Atom *i, *endatom;
+	Atom* i, *endatom;
 	double bondLength = prefs.hydrogenDistance();
 	i = (target == NULL ? atoms_.first() : target);
 	endatom = (target == NULL ? NULL : target->next);
@@ -80,7 +80,7 @@ void Model::hydrogenSatisfy(Atom *target)
 }
 
 // Add a single atom of the type specified to the atom specified
-Atom *Model::growAtom(Atom *i, short int element, double distance, Atom::AtomGeometry geometry, bool bound)
+Atom* Model::growAtom(Atom* i, short int element, double distance, Atom::AtomGeometry geometry, bool bound)
 {
 	msg.enter("Model::growAtom");
 
@@ -95,7 +95,7 @@ Atom *Model::growAtom(Atom *i, short int element, double distance, Atom::AtomGeo
 	// Check distance - if negative, work out new distance based on radii of elements involved
 	if (distance < 0.0) distance = Elements().atomicRadius(i) + Elements().atomicRadius(element);
 	newVec *= distance;
-	Atom *newAtom = addAtom(element, i->r() + newVec);
+	Atom* newAtom = addAtom(element, i->r() + newVec);
 
 	// Bond atoms if requested
 	if (bound) bondAtoms(i, newAtom, Bond::Single);
@@ -152,7 +152,7 @@ void Model::setPenPosition(Vec3<double> v)
 }
 
 // Set distance between atoms, moving atom j
-void Model::setAtomicDistance(Atom *i, Atom *j, double newdistance)
+void Model::setAtomicDistance(Atom* i, Atom* j, double newdistance)
 {
 	Vec3<double> vij = cell_.mimVector(i, j);
 	double delta = newdistance - vij.magnitude();
@@ -162,7 +162,7 @@ void Model::setAtomicDistance(Atom *i, Atom *j, double newdistance)
 }
 
 // Set angle between atoms, moving atom k
-void Model::setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle)
+void Model::setAtomicAngle(Atom* i, Atom* j, Atom* k, double newangle)
 {
 	Matrix r, u, ut, gr, Igr;
 	double ang = angle(i,j,k);
@@ -192,7 +192,7 @@ void Model::setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle)
 }
 
 // Set torsion between atoms, moving atom l
-void Model::setAtomicTorsion(Atom *i, Atom *j, Atom *k, Atom *l, double newtorsion)
+void Model::setAtomicTorsion(Atom* i, Atom* j, Atom* k, Atom* l, double newtorsion)
 {
 	Matrix r, u, ut, gr, Igr;
 	double ang = torsion(l,k,j,i);

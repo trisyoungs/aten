@@ -53,7 +53,7 @@ void TDoubleSpinDelegate::setEditorData(QWidget *editor, const QModelIndex &inde
 }
 
 // Get value from editing widget, and set back in model
-void TDoubleSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+void TDoubleSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel* model, const QModelIndex &index) const
 {
 	QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
 	spinBox->interpretText();

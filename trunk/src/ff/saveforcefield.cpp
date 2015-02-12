@@ -64,11 +64,11 @@ bool Forcefield::save()
 	// Atomtype definitions
 	// Count UATypes first...
 	int nUATypes = 0;
-	for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next) if (ffa->isUnitedAtom()) ++nUATypes;
+	for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next) if (ffa->isUnitedAtom()) ++nUATypes;
 	if ((types_.nItems() - nUATypes - 1) > 0)
 	{
 		parser.writeLine("types\n");
-		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
+		for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{
 			// Skip UATypes in this pass...
 			if (ffa->isUnitedAtom()) continue;
@@ -80,7 +80,7 @@ bool Forcefield::save()
 	if (nUATypes > 0)
 	{
 		parser.writeLine("uatypes\n");
-		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
+		for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{
 			// Skip normal types in this pass...
 			if (!ffa->isUnitedAtom()) continue;
@@ -96,7 +96,7 @@ bool Forcefield::save()
 	KVMap equivalentMap;
 	KVPair *kvp;
 	Dnchar tname(100);
-	for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
+	for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 	{
 		// Are equivalent and type names the same? If so, just continue.
 		if (strcmp(ffa->equivalent(),ffa->name()) == 0) continue;
@@ -148,7 +148,7 @@ bool Forcefield::save()
 
 		Variable *v;
 		ReturnValue rv;
-		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
+		for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{
 			parser.writeLineF("%i\t%s\t", ffa->typeId(), ffa->name());
 			for (NameMap<VTypes::DataType> *nm = typeData_.first(); nm != NULL; nm = nm->next)
@@ -211,13 +211,13 @@ bool Forcefield::save()
 		// First, get populations of specified parameters in each VDW form
 		int count[VdwFunctions::nVdwFunctions];
 		for (n = 0; n < VdwFunctions::nVdwFunctions; ++n) count[n] = 0;
-		for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next) ++count[ffa->vdwForm()];
+		for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next) ++count[ffa->vdwForm()];
 
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < VdwFunctions::nVdwFunctions; ++n) if (count[n] != 0)
 		{
 			parser.writeLineF("inter %s\n", VdwFunctions::VdwFunctions[n].keyword);
-			for (ForcefieldAtom *ffa = types_.second(); ffa != NULL; ffa = ffa->next)
+			for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 			{
 				if (ffa->vdwForm() != n) continue;
 				parser.writeLineF("%i\t%s\t%f", ffa->typeId(), ffa->name(), ffa->charge());

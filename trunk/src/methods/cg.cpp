@@ -47,7 +47,7 @@ int MethodCg::nCycles() const
 }
 
 // Minimise Energy w.r.t. coordinates by Conjugate Gradient
-void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
+void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodCg::minimise");
@@ -55,7 +55,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	double currentEnergy, oldEnergy, deltaEnergy = 0.0, lastPrintedEnergy, oldForce, newForce, deltaForce = 0.0, g_old_sq, gamma, g_current_sq;
 	double *g_old;
 	Vec3<double> f;
-	Atom **modelatoms;
+	Atom* *modelatoms;
 	bool linedone, converged, success;
 	Dnchar etatext;
 

@@ -195,7 +195,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		}
 	}
 	// Variables used in retrieval
-	Model *m = NULL;
+	Model* m = NULL;
 	bool result = TRUE;
 	if (result) switch (acc)
 	{

@@ -103,9 +103,9 @@ class PartitionData : public ListItem<PartitionData>
 	// Reset reduced mass of partition
 	void resetReducedMass();
 	// Adjust partition reduced mass contents
-	void adjustReducedMass(Atom *i, bool subtract = FALSE);
+	void adjustReducedMass(Atom* i, bool subtract = FALSE);
 	// Adjust partition reduced mass contents (from Model)
-	void adjustReducedMass(Model *m, bool subtract = FALSE);
+	void adjustReducedMass(Model* m, bool subtract = FALSE);
 	// Return current density of partition
 	double density();
 	// Clear component list
@@ -139,11 +139,11 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Description of scheme (retrieved from description() function)
 	Dnchar description_;
 	// Pointer to partition() function
-	Tree *partitionFunction_;
+	Tree* partitionFunction_;
 	// Pointer to partitionName() function
-	Tree *partitionNameFunction_;
+	Tree* partitionNameFunction_;
 	// Pointer to partitionOptions() function
-	Tree *partitionOptionsFunction_;
+	Tree* partitionOptionsFunction_;
 	
 	public:
 	// Return Program structure

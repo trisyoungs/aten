@@ -34,7 +34,7 @@ class Vibration : public ListItem<Vibration>
 {
 	public:
 	// Constructor / Destructor
-	Vibration(Model *parent = NULL);
+	Vibration(Model* parent = NULL);
 	~Vibration();
 	
 
@@ -43,7 +43,7 @@ class Vibration : public ListItem<Vibration>
 	*/
 	private:
 	// Parent model
-	Model *parent_;
+	Model* parent_;
 	// Name of the vibration
 	Dnchar name_;
 	// Frequency of the vibration
@@ -59,9 +59,9 @@ class Vibration : public ListItem<Vibration>
 
 	public:
 	// Return parent model
-	Model *parent() const;
+	Model* parent() const;
 	// Initialise to specified size
-	void initialise(Model *parent, int size = -1);
+	void initialise(Model* parent, int size = -1);
 	// Set associated name
 	void setName(const char *name);
 	// Return associated name of the vibration

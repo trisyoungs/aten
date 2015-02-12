@@ -554,7 +554,7 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			ptr->setShift(ptr->shift().x+node->argi(0), ptr->shift().y+node->argi(1), ptr->shift().z+node->argi(2));
 			if (node->argb(3))
 			{
-				Model *m = ptr->parent();
+				Model* m = ptr->parent();
 				// Determine shift amount...
 				Vec3<double> vec;
 				vec += ptr->axes().columnAsVec3(0) * node->argi(0);

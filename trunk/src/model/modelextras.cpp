@@ -166,14 +166,14 @@ void Model::generateVibration(int index, int nsteps)
 	{	
 		delta=k*stepdelta;
 		// To add a new frame to the list	
-		Model *m = vibrationFrames_.add();
+		Model* m = vibrationFrames_.add();
 		m->setParent(this);
 		m->setType(Model::VibrationFrameType);
 		clip.pasteToModel(m, FALSE);
 		
 		// To loop over original atom coordinates
 		int count = 0;
-		for (Atom *i = m->atoms(); i != NULL; i = i->next)
+		for (Atom* i = m->atoms(); i != NULL; i = i->next)
 		{
 			i->r() += displacements[count] * delta;
 			++count;
@@ -188,7 +188,7 @@ void Model::generateVibration(int index, int nsteps)
 }
 
 // Return current vibration frame
-Model *Model::vibrationCurrentFrame()
+Model* Model::vibrationCurrentFrame()
 {
 	return vibrationCurrentFrame_;
 }

@@ -39,9 +39,9 @@ Vec3<double> Model::siteCentre(Site *s, int mol)
 {
 	msg.enter("Model::calculateCentre");
 	int offset, n, ii;
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	static Vec3<double> firstid, mim, centre;
-	Pattern *sitep = s->pattern();
+	Pattern* sitep = s->pattern();
 	offset = sitep->startAtom();
 	offset += sitep->nAtoms() * mol;
 	// If no atoms are in the list, use all atoms in the molecule
@@ -81,11 +81,11 @@ Matrix Model::siteAxes(Site *s, int mol)
 {
 	msg.enter("Model::calculateAxes");
 	int offset, n;
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	static Vec3<double> mim, v1, v2, centre;
 	Matrix axes;
 	ListItem<int> *li;
-	Pattern *sitep = s->pattern();
+	Pattern* sitep = s->pattern();
 	offset = sitep->startAtom();
 	offset += sitep->nAtoms() * mol;
 	// Calculate 'position' of x-axis (defining vector COG->xpos)

@@ -45,7 +45,7 @@ bool Command::function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_CurrentPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Pattern *p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
+	Pattern* p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
 	if (p != NULL) obj.p = p;
 	rv.set(VTypes::PatternData, p);
 	return TRUE;
@@ -64,7 +64,7 @@ bool Command::function_FixPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Pattern *p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
+	Pattern* p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
 	rv.set(VTypes::PatternData, p);
 	return TRUE;
 }

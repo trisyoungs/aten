@@ -61,7 +61,7 @@ void Model::selectMarkedAtoms()
 }
 
 // Select Atom
-void Model::selectAtom(Atom *i, bool markonly)
+void Model::selectAtom(Atom* i, bool markonly)
 {
 	if (markonly)
 	{
@@ -100,13 +100,13 @@ void Model::selectAtom(Atom *i, bool markonly)
 // Select Atom by ID
 void Model::selectAtom(int id, bool markonly)
 {
-	Atom *i = atom(id);
+	Atom* i = atom(id);
 	if (i == NULL) msg.print("Can't %s atom %i\n", markonly ? "mark" : "select", id+1);
 	else selectAtom(i, markonly);
 }
 
 // Deselect Atom
-void Model::deselectAtom(Atom *i, bool markonly)
+void Model::deselectAtom(Atom* i, bool markonly)
 {
 	if (markonly)
 	{
@@ -137,13 +137,13 @@ void Model::deselectAtom(Atom *i, bool markonly)
 // Deselect Atom by ID
 void Model::deselectAtom(int id, bool markonly)
 {
-	Atom *i = atom(id);
+	Atom* i = atom(id);
 	if (i == NULL) msg.print("Can't %s atom %i\n", markonly ? "unmark" : "deselect", id+1);
 	else deselectAtom(i, markonly);
 }
 
 // Toggle Selection State
-void Model::selectionToggle(Atom *i, bool markonly)
+void Model::selectionToggle(Atom* i, bool markonly)
 {
 	i->isSelected(markonly) ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 }
@@ -152,7 +152,7 @@ void Model::selectionToggle(Atom *i, bool markonly)
 void Model::selectionInvert(bool markonly)
 {
 	msg.enter("Model::selectionInvert");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		i->isSelected(markonly) ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 	msg.exit("Model::selectionInvert");
 }
@@ -161,7 +161,7 @@ void Model::selectionInvert(bool markonly)
 void Model::selectionDelete(bool markonly)
 {
 	msg.enter("Model::selectionDelete");
-	Atom *i, *tempi;
+	Atom* i, *tempi;
 	int count = 0;
 	bool cancelled = FALSE;
 	// Attempt to be clever here for the sake of undo/redo, while avoiding renumbering at every step.
@@ -178,7 +178,7 @@ void Model::selectionDelete(bool markonly)
 		{
 			// Need to detach the bond from both atoms involved
 			Bond *b = bref->item;
-			Atom *j = b->partner(i);
+			Atom* j = b->partner(i);
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
 		}
@@ -208,7 +208,7 @@ void Model::selectionDelete(bool markonly)
 void Model::selectionExpand(bool markonly)
 {
 	msg.enter("Model::selectionExpand");
-	Atom *i;
+	Atom* i;
 	Refitem<Bond,int> *bref;
 	// Store the current selection state in i->tempBit_
 	for (i = atoms_.first(); i != NULL; i = i->next) i->setBit(i->isSelected(markonly));
@@ -226,7 +226,7 @@ void Model::selectAll(bool markonly)
 	{
 		// Quicker to reconstruct the whole list, since it must be in ID order
 		marked_.clear();
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			i->setSelected(TRUE, TRUE);
 			marked_.add(i);
@@ -235,7 +235,7 @@ void Model::selectAll(bool markonly)
 	else
 	{
 		// Here, just add atoms which are not currently selected (i.e. we assume the atom selection flags and selection_ list reflect each other)
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected())
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected())
 		{
 			i->setSelected(TRUE);
 			// Add the change to the undo state (if there is one)
@@ -263,7 +263,7 @@ void Model::selectNone(bool markonly)
 	}
 	else
 	{
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected())
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected())
 		{
 			i->setSelected(FALSE);
 			// Add the change to the undo state (if there is one)
@@ -281,17 +281,17 @@ void Model::selectNone(bool markonly)
 }
 
 // Atom at Screen Coordinates
-Atom *Model::atomOnScreen(double x1, double y1)
+Atom* Model::atomOnScreen(double x1, double y1)
 {
 	// See if an atom exists under the coordinates x1,y1
 	// Ignore hidden atoms.
 	msg.enter("Model::atomOnScreen");
-	Atom *closest = NULL;
+	Atom* closest = NULL;
 	Vec3<double> wr;
 	Vec4<double> sr;
 	double closestz = 10000.0, dist, nclip = prefs.clipNear();
 	y1 = gui.mainCanvas()->contextHeight() - y1;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
 		wr = -modelToWorld(i->r(), &sr, prefs.styleRadius(i));
@@ -318,7 +318,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	// Box selection - choose all the atoms within the selection area
 	msg.enter("Model::selectBox");
 	double t;
-	Atom *i;
+	Atom* i;
 	Vec4<double> sr;
 	y1 = gui.mainCanvas()->contextHeight() - y1;
 	y2 = gui.mainCanvas()->contextHeight() - y2;
@@ -345,7 +345,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 }
 
 // Tree Select
-void Model::selectTree(Atom *i, bool markonly, bool deselect, Bond *omitbond)
+void Model::selectTree(Atom* i, bool markonly, bool deselect, Bond *omitbond)
 {
 	// The passed atom node is the starting point for the algorithm.
 	// From here, select all atoms that are bound - if they are already
@@ -353,7 +353,7 @@ void Model::selectTree(Atom *i, bool markonly, bool deselect, Bond *omitbond)
 	// recursively call the routine on that atom.
 	//msg.enter("Model::selectTree");
 	bool status;
-	Atom *j;
+	Atom* j;
 	deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
@@ -372,7 +372,7 @@ void Model::selectTree(Atom *i, bool markonly, bool deselect, Bond *omitbond)
 }
 
 // Select by Element
-void Model::selectElement(Atom *target, bool markonly, bool deselect)
+void Model::selectElement(Atom* target, bool markonly, bool deselect)
 {
 	// Select all atoms which are the same element as the atom i
 	selectElement(target->element(), markonly, deselect);
@@ -383,7 +383,7 @@ void Model::selectElement(int el, bool markonly, bool deselect)
 {
 	// Select all atoms which are the same element as the atom with id 'target'
 	msg.enter("Model::selectElement");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		if (i->element() == el) (deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly));
 	msg.exit("Model::selectElement");
 }
@@ -393,7 +393,7 @@ void Model::deselectElement(int el, bool markonly)
 {
 	// Select all atoms which are the same element as the atom i
 	msg.enter("Model::deselectElement");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		if (i->element() == el) deselectAtom(i, markonly);
 	msg.exit("Model::deselectElement");
 }
@@ -414,9 +414,9 @@ int Model::selectType(int element, const char *typedesc, bool markonly, bool des
 	// Prepare for typing
 	describeAtoms();
 	// Loop over patterns and select atoms
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
-		Atom *i = p->firstAtom();
+		Atom* i = p->firstAtom();
 		for (n=0; n<p->nAtoms(); n++)
 		{
 			atomscore = testat.matchAtom(i,p->ringList(),this);
@@ -439,11 +439,11 @@ int Model::selectType(int element, const char *typedesc, bool markonly, bool des
 }
 
 // Select with bounding Sphere
-void Model::selectRadial(Atom *target, double radius)
+void Model::selectRadial(Atom* target, double radius)
 {
 	// Select all atoms which are within the distance 'radius' from atom 'target'
 	msg.enter("Model::selectRadial");
-	Atom *i = atoms_.first();
+	Atom* i = atoms_.first();
 	printf("Selection radius is %8.4f Angstroms\n",radius);
 	while (i != NULL)
 	{
@@ -455,20 +455,20 @@ void Model::selectRadial(Atom *target, double radius)
 }
 
 // Select all atoms in specified pattern
-void Model::selectPattern(Pattern *p, bool markonly, bool deselect)
+void Model::selectPattern(Pattern* p, bool markonly, bool deselect)
 {
 	// Select all atoms covered by the specified pattern.
 	msg.enter("Model::selectPattern");
 	// Check that this pattern is valid and belongs to this model...
 	bool found = FALSE;
-	for (Pattern *modelp = patterns_.first(); modelp != NULL; modelp = modelp->next) if (p == modelp) found = TRUE;
+	for (Pattern* modelp = patterns_.first(); modelp != NULL; modelp = modelp->next) if (p == modelp) found = TRUE;
 	if (!found)
 	{
 		msg.print("Pattern does not belong to this model, or is out of date.\n");
 		msg.exit("Model::selectPattern");
 		return;
 	}
-	Atom *i = p->firstAtom();
+	Atom* i = p->firstAtom();
 	for (int n=0; n<p->totalAtoms(); n++)
 	{
 		deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
@@ -539,7 +539,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	msg.enter("Model::selectOverlaps");
 	int n, m, x, y, z, x2, y2, z2, checklist[8], count;
 	double dist;
-	Atom *i, *j;
+	Atom* i, *j;
 	selectNone(markonly);
 	// Create cuboid lists
 	initialiseBondingCuboids();
@@ -621,7 +621,7 @@ void Model::selectInsideCell(bool moleculecogs, bool markonly)
 	{
 		createPatterns();
 		int m,n,id = 0;
-		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+		for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 		{
 			for (m=0; m<p->nMolecules(); ++m)
 			{
@@ -634,7 +634,7 @@ void Model::selectInsideCell(bool moleculecogs, bool markonly)
 	}
 	else
 	{
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			pos = cell_.realToFrac(i->r());
 			if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) selectAtom(i, markonly);
@@ -653,7 +653,7 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 	{
 		createPatterns();
 		int m,n,id = 0;
-		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+		for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 		{
 			for (m=0; m<p->nMolecules(); ++m)
 			{
@@ -666,7 +666,7 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 	}
 	else
 	{
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			pos = cell_.realToFrac(i->r());
 			if ((pos.x > 1) || (pos.y > 1) || (pos.z > 1)) selectAtom(i, markonly);
@@ -687,7 +687,7 @@ void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
 	}
 	double c, d;
 	Vec3<double> hkl(h == 0 ? 0 : 1.0/h, k == 0 ? 0 : 1.0/k, l == 0 ? 0 : 1.0/l), r;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		r = cell_.realToFrac(i->r());
 		c = r.dp(hkl);
@@ -723,7 +723,7 @@ void Model::selectLine(Vec3<double> line, Vec3<double> point, double dr, bool ma
 	{
 		origin = point;
 		if (pass > 0) origin += cell_.axes().columnAsVec3(pass-1);
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			if (i->isSelected()) continue;
 			r = i->r() - origin;

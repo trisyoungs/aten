@@ -341,7 +341,7 @@ int CommandParser::lex()
 			}
 
 			// Is it a user-defined function keyword in the local scope? (Requires valid tree)
-			Tree *func;
+			Tree* func;
 			if (tree_ != NULL)
 			{
 				func = tree_->findLocalFunction(token);

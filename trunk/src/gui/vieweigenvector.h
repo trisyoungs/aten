@@ -41,7 +41,7 @@ class AtenViewEigenvector : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow(Model *m, int id);
+	void showWindow(Model* m, int id);
 	private slots:
 	void dialogFinished(int result);
 

@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SelectVariableDialog</class>
- <widget class="QDialog" name="SelectVariableDialog">
+ <class>AtenSelectVariable</class>
+ <widget class="QDialog" name="AtenSelectVariable">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -78,7 +79,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>SelectVariableDialog</receiver>
+   <receiver>AtenSelectVariable</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -94,7 +95,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>SelectVariableDialog</receiver>
+   <receiver>AtenSelectVariable</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

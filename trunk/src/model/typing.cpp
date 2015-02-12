@@ -111,7 +111,7 @@ Atom typing is performed in several steps.
 */
 
 // Set type of specified atom
-void Model::setAtomType(Atom *i, ForcefieldAtom *ffa, bool fixed)
+void Model::setAtomType(Atom* i, ForcefieldAtom* ffa, bool fixed)
 {
 	i->setType(ffa);
 	i->setTypeFixed(fixed);
@@ -122,7 +122,7 @@ void Model::describeAtoms()
 {
 	// Locate ring structure and assign atom hybridisations in all patterns.
 	msg.enter("Model::describeAtoms");
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->describeAtoms();
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->describeAtoms();
 	msg.exit("Model::describeAtoms");
 }
 
@@ -156,7 +156,7 @@ bool Model::typeAll()
 	msg.print("Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
 	
 	// Assign forcefield types to atoms
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
 		if (!p->typeAtoms())
 		{
@@ -175,7 +175,7 @@ bool Model::typeAll()
 }
 
 // Set atomtypes of selected atoms
-void Model::selectionSetType(ForcefieldAtom *ffa, bool fixed)
+void Model::selectionSetType(ForcefieldAtom* ffa, bool fixed)
 {
 	msg.enter("Pattern::selectionSetType");
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) setAtomType(ri->item, ffa, fixed);
@@ -188,6 +188,6 @@ void Model::removeTyping()
 {
 	// Remove all atom typing from the current model
 	msg.enter("Model::removeTyping");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) setAtomType(i, NULL, FALSE);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) setAtomType(i, NULL, FALSE);
 	msg.exit("Model::removeTyping");
 }

@@ -43,7 +43,7 @@ bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	cg.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	cg.minimise(obj.rs(), econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs()->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", TRUE);
@@ -75,7 +75,7 @@ bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	mc.minimise(obj.rs(), econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs()->finalizeTransform(oldpos, "Minimise (Monte Carlo)", TRUE);
@@ -90,13 +90,13 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	rv.reset();
 
 	// Grab pointers to MOPAC import and export filters
-	Tree *mopacexport = aten.findFilter(FilterData::ModelExport, "mopac");
+	Tree* mopacexport = aten.findFilter(FilterData::ModelExport, "mopac");
 	if (mopacexport == NULL)
 	{
 		msg.print("Error: Couldn't find MOPAC export filter.\n");
 		return FALSE;
 	}
-	Tree *mopacimport = aten.findFilter(FilterData::ModelImport, "mopacarc");
+	Tree* mopacimport = aten.findFilter(FilterData::ModelImport, "mopacarc");
 	if (mopacimport == NULL)
 	{
 		msg.print("Error: Couldn't find MOPAC arc import filter.\n");
@@ -131,7 +131,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
 	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", mopacInput.get());
 	parser.writeLineF("Temporary MOPAC Job Output : %s\n", mopacArc.get());	
-	for (Atom *i = aten.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
+	for (Atom* i = aten.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
 	{
 		opt = 1 - i->isPositionFixed();
 		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", Elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
@@ -171,7 +171,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	aten.setUseWorkingList(TRUE);
 	int result = CommandNode::run(Command::LoadModel, "c", mopacArc.get());
 	// There should now be a model in the working model list (our results)
-	Model *m = aten.workingModels();
+	Model* m = aten.workingModels();
 	if (m == NULL)
 	{
 		msg.print("Error: No results model found.\n");
@@ -190,7 +190,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Start a new undostate in the original model
 	//printf("Target for new coords = %p\n", obj.rs);
 	obj.rs()->beginUndoState("MOPAC geometry optimisation");
-	Atom *i, *j = obj.rs()->atoms();
+	Atom* i, *j = obj.rs()->atoms();
 	for (i = tempmodel.atoms(); i != NULL; i = i->next)
 	{
 		obj.rs()->positionAtom(j, i->r());
@@ -209,7 +209,7 @@ bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	sd.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	sd.minimise(obj.rs(), econverge, fconverge, c->hasArg(1) ? c->argb(1) : FALSE);
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs()->finalizeTransform(oldpos, "Minimise (Steepest Descent)", TRUE);

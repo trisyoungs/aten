@@ -33,7 +33,7 @@ class ModelVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelVariable(Model *ptr = NULL, bool constant = FALSE);
+	ModelVariable(Model* ptr = NULL, bool constant = FALSE);
 	~ModelVariable();
 
 	/*

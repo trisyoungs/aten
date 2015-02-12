@@ -269,13 +269,13 @@ Grid::GridType Grid::type() const
 }
 
 // Return parent model
-Model *Grid::parent()
+Model* Grid::parent()
 {
 	return parent_;
 }
 
 // Set parent model
-void Grid::setParent(Model *parent)
+void Grid::setParent(Model* parent)
 {
 	parent_ = parent;
 }

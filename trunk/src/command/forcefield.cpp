@@ -216,7 +216,7 @@ bool Command::function_EnergyConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
-	ForcefieldAtom *ffa;
+	ForcefieldAtom* ffa;
 	LineParser parser;
 	// Loop over command arguments
 	for (int n=1; n<c->nArgs(); ++n)
@@ -274,7 +274,7 @@ bool Command::function_FFPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (!c->hasArg(0)) obj.p->setForcefield(obj.ff);
 	else
 	{
-		Pattern *p = NULL;
+		Pattern* p = NULL;
 		switch (c->argType(0))
 		{
 			case (VTypes::IntegerData):
@@ -314,7 +314,7 @@ bool Command::function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that some forcefield types were defined...
 	if (obj.ff->nTypes() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");
 	// Link forcefield type references (&N) to their actual forcefield types
-	for (ForcefieldAtom *ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
+	for (ForcefieldAtom* ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
 	// Convert energetic units in the forcefield to the internal units of the program
 	obj.ff->convertParameters();
 	rv.reset();
@@ -326,7 +326,7 @@ bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
-	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
+	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
 		if (c->argType(0) == VTypes::IntegerData) msg.print("Forcefield type ID %i not defined in forcefield '%s'.\n", c->argi(0), obj.ff->name());
@@ -336,7 +336,7 @@ bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	if (c->hasArg(1))
 	{
-		Atom *i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+		Atom* i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 		if (i == NULL) return FALSE;
 		obj.m->setAtomType(i, ffa, TRUE);
 		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
@@ -357,7 +357,7 @@ bool Command::function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1))
 	{
-		Atom *i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+		Atom* i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 		if (i == NULL) return FALSE;
 		obj.m->setAtomType(i, i->type(), FALSE);
 	}
@@ -372,7 +372,7 @@ bool Command::function_GenerateAngle(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
 	// Find named atoms in forcefield
-	Atom *atoms[3];
+	Atom* atoms[3];
 	for (int i=0; i<3; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs()->atom(c->argi(i)-1));
 	// Check atom and associated type pointers
 	for (int i=0; i<3; ++i)
@@ -400,7 +400,7 @@ bool Command::function_GenerateBond(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
 	// Find named atoms in forcefield
-	Atom *atoms[2];
+	Atom* atoms[2];
 	for (int i=0; i<2; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs()->atom(c->argi(i)-1));
 	// Check atom and associated type pointers
 	for (int i=0; i<2; ++i)
@@ -428,7 +428,7 @@ bool Command::function_GenerateTorsion(CommandNode *c, Bundle &obj, ReturnValue 
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
 	// Find named atoms in forcefield
-	Atom *atoms[4];
+	Atom* atoms[4];
 	for (int i=0; i<4; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs()->atom(c->argi(i)-1));
 	// Check atom and associated type pointers
 	for (int i=0; i<4; ++i)
@@ -456,14 +456,14 @@ bool Command::function_GenerateVdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
 	// Find named atoms in forcefield
-	Atom *i = (c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0, VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1));
+	Atom* i = (c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0, VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1));
 	// Check atom and associated type pointers
 	if (i == NULL)
 	{
 		msg.print("Atom given to 'generatevdw' is NULL.\n");
 		return FALSE;
 	}
-	ForcefieldAtom *ffa = i->type();
+	ForcefieldAtom* ffa = i->type();
 	if (ffa == NULL)
 	{
 		msg.print("Atom given to 'generatevdw' has no forcefield atom assigned.\n");
@@ -521,7 +521,7 @@ bool Command::function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(c->argc(0), TRUE);
 	if (vdwstyle == VdwFunctions::nVdwFunctions) return FALSE;
 	// Find typeId referenced by command
-	ForcefieldAtom *ffa = obj.ff->findType(c->argi(1));
+	ForcefieldAtom* ffa = obj.ff->findType(c->argi(1));
 	if (ffa == NULL)
 	{
 		msg.print("TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
@@ -604,7 +604,7 @@ bool Command::function_PrintType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Does the identified type exist in the forcefield
-	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
+	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
 		msg.print("Error: Type id %i is not defined in forcefield '%s'.\n", c->argi(0), obj.ff->name());
@@ -642,7 +642,7 @@ bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &
 	parser.getArgsDelim(LineParser::UseQuotes, c->argc(0));
 	
 	// First part of argument is nickname
-	Tree *filter = aten.findFilter(FilterData::ExpressionExport, parser.argc(0));
+	Tree* filter = aten.findFilter(FilterData::ExpressionExport, parser.argc(0));
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{
@@ -719,13 +719,13 @@ bool Command::function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Search for this ID to make sure it hasn't already been used
 	int newffid = c->argi(0);
-	ForcefieldAtom *idsearch = obj.ff->findType(newffid);
+	ForcefieldAtom* idsearch = obj.ff->findType(newffid);
 	if (idsearch != NULL)
 	{
 		msg.print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
 		return FALSE;
 	}
-	ForcefieldAtom *ffa = obj.ff->addType();
+	ForcefieldAtom* ffa = obj.ff->addType();
 	ffa->setTypeId(newffid);
 	ffa->setName(c->argc(1));
 	ffa->setEquivalent(c->argc(2));
@@ -751,7 +751,7 @@ bool Command::function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return FALSE;
 	rv.reset();
 	// Find the specified type...
-	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
+	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
 		msg.print("Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->name());
@@ -764,10 +764,10 @@ bool Command::function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			// Prepare for typing
 			obj.m->describeAtoms();
 			// Get atom, element, and the atom's pattern
-			Atom *i = NULL;
+			Atom* i = NULL;
 			if (c->argType(1) == VTypes::AtomData) i = (Atom*) c->argp(1, VTypes::AtomData);
 			else if (c->argType(1) == VTypes::IntegerData) i = obj.m->atomArray()[c->argi(1)-1];
-			Pattern *p = obj.m->pattern(i);
+			Pattern* p = obj.m->pattern(i);
 			int score = ffa->neta()->matchAtom(i,p->ringList(),obj.m);
 			if (score > 0) msg.print("Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
 			else msg.print("Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());

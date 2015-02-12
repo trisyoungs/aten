@@ -31,7 +31,7 @@
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 
-bool selectAtoms(Model *m, TreeNode *node, bool deselect)
+bool selectAtoms(Model* m, TreeNode *node, bool deselect)
 {
 	static Dnchar from, to;
 	int i, j, n, plus = 0;
@@ -42,7 +42,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
 	if ((value.type() == VTypes::AtomData) || (value.type() == VTypes::IntegerData))
 	{
-		Atom *ii = value.type() == VTypes::IntegerData ? m->atom(value.asInteger()-1) : (Atom*) value.asPointer(VTypes::AtomData);
+		Atom* ii = value.type() == VTypes::IntegerData ? m->atom(value.asInteger()-1) : (Atom*) value.asPointer(VTypes::AtomData);
 		m->beginUndoState("%select (%i)", deselect ? "Des" : "S", ii->id()+1);
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
 		m->endUndoState();
@@ -57,7 +57,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 	}
 	else if (value.type() == VTypes::PatternData)
 	{
-		Pattern *pp = (Pattern*) value.asPointer(VTypes::PatternData);
+		Pattern* pp = (Pattern*) value.asPointer(VTypes::PatternData);
 		m->beginUndoState("%select pattern '%s' (%i atoms)", deselect ? "Des" : "S", pp->name(), pp->totalAtoms());
 		m->selectPattern(pp, FALSE, deselect);
 		m->endUndoState();
@@ -187,7 +187,7 @@ bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	
 	// Get global function and set up variable and UserCommandNode
-	Tree *function = program.mainProgram()->findLocalFunction("internalDeselectAtom");
+	Tree* function = program.mainProgram()->findLocalFunction("internalDeselectAtom");
 	if (function == NULL)
 	{
 		msg.print("Internal Error: Couldn't find generated deselection function.\n");
@@ -200,7 +200,7 @@ bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	AtomVariable atomVariable;
 	functionNode.addArgument(&atomVariable);
 	obj.rs()->beginUndoState("Deselect atoms by for loop");
-	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next)
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
 	{
 		// Poke atom value 
 		rv.set(VTypes::AtomData, i);
@@ -339,9 +339,9 @@ bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv
 	}
 	// Store current number of selected atoms
 	int nselected = obj.rs()->nSelected();
-	ForcefieldAtom *ffa;
+	ForcefieldAtom* ffa;
 	obj.rs()->beginUndoState("Select by forcefield type (%s)", c->argc(0));
-	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next)
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
 	{
 		ffa = i->type();
 		if (ffa != NULL)
@@ -369,7 +369,7 @@ bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	// Get global function and set up variable and UserCommandNode
-	Tree *function = program.mainProgram()->findLocalFunction("internalSelectAtom");
+	Tree* function = program.mainProgram()->findLocalFunction("internalSelectAtom");
 	if (function == NULL)
 	{
 		msg.print("Internal Error: Couldn't find generated selection function.\n");
@@ -382,7 +382,7 @@ bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	AtomVariable atomVariable;
 	functionNode.addArgument(&atomVariable);
 	obj.rs()->beginUndoState("Select atoms by for loop");
-	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next)
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
 	{
 		// Poke atom value 
 		rv.set(VTypes::AtomData, i);
@@ -449,7 +449,7 @@ bool Command::function_SelectMolecule(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	obj.rs()->beginUndoState("Select bound fragment/molecule");
 	obj.rs()->selectTree(i);
 	obj.rs()->endUndoState();
@@ -508,7 +508,7 @@ bool Command::function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValu
 bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Pattern *p = NULL;
+	Pattern* p = NULL;
 	if (c->hasArg(0))
 	{
 		if (c->argType(0) == VTypes::IntegerData) p = obj.rs()->pattern(c->argi(0)-1);
@@ -520,7 +520,7 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 	else
 	{
 		obj.rs()->beginUndoState("Select pattern '%s'", p->name());
-		Atom *i = p->firstAtom();
+		Atom* i = p->firstAtom();
 		for (int n=0; n<p->totalAtoms(); n++)
 		{
 			obj.rs()->selectAtom(i);
@@ -536,7 +536,7 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL) return FALSE;
 	int nselected = obj.rs()->nSelected();
 	obj.rs()->beginUndoState("Radial selection %8.4f from atom %i", c->argd(1), i->id()+1);
@@ -550,7 +550,7 @@ bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_SelectTree(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL) return FALSE;
 	Bond *b = c->hasArg(1) ? (Bond*) c->argp(1, VTypes::BondData) : NULL;
 	int nselected = obj.rs()->nSelected();

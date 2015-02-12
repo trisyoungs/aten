@@ -82,7 +82,7 @@ Glyph *Model::glyph(int n)
 // Return vector data for glyph
 Vec3<double> Model::glyphVector(Glyph *g, int dataid) const
 {
-	Atom *i;
+	Atom* i;
 	if ((dataid < 0) || (dataid >= g->nData())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", dataid+1, g->nData());
 	else
 	{
@@ -100,7 +100,7 @@ Vec3<double> Model::glyphVector(Glyph *g, int dataid) const
 // 				msg.print( "Atom ID set in glyph (%i) is outside range for model.\n", id);
 // 				return Vec3<double>();
 // 			}
-// 			Atom *i = atoms_[id];
+// 			Atom* i = atoms_[id];
 			switch (g->data(dataid)->atomData())
 			{
 				case (GlyphData::PositionData):
@@ -123,7 +123,7 @@ void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 	msg.enter("Model::addPolyhedraGlyphs");
 	// From the current selection of atoms, add polyhedra to/around them.
 	Reflist<Atom,int> atoms;
-	Atom *i, *j;
+	Atom* i, *j;
 	Refitem<Atom,int> *ri, *rj, *rk;
 	Glyph *g;
 	while (selection_.nItems() > 0)
@@ -196,7 +196,7 @@ void Model::addEllipsoidGlyphs()
 	Vec3<double> centroid, v, u, vecx, vecy, vecz;
 	double mag, best, r, phi;
 	Refitem<Atom,int> *ri, *rj;
-	Atom *i, *j, *k, *l;
+	Atom* i, *j, *k, *l;
 	Matrix A;
 	Reflist<Atom, Vec3<double> > xaxisatoms;
 	Refitem<Atom, Vec3<double> > *rid;

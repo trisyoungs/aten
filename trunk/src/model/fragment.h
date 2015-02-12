@@ -42,19 +42,19 @@ class Fragment : public ListItem<Fragment>
 	*/
 	private:
 	// Pointer to master model, containing fragment in original rotation
-	Model *masterModel_;
+	Model* masterModel_;
 	// Link atom, which acts as connection point for fragment
-	Atom *masterLinkAtom_;
+	Atom* masterLinkAtom_;
 	// Bond partner for link atom (if any)
-	Atom *masterLinkPartner_;
+	Atom* masterLinkPartner_;
 	// Set link partner
 	void setLinkPartner();
 
 	public:
 	// Set data from source model
-	bool setMasterModel(Model *m);
+	bool setMasterModel(Model* m);
 	// Return model pointer
-	Model *masterModel();
+	Model* masterModel();
 	// Return icon (from masterModel_)
 	QIcon &icon();
 	// Cycle link atom
@@ -76,13 +76,13 @@ class Fragment : public ListItem<Fragment>
 	// Rotate oriented model according to screen delta
 	void rotateOrientedModel(double dx, double dy);
 	// Return oriented model pointer
-	Model *orientedModel();
+	Model* orientedModel();
 	// Paste oriented model to target model
-	void pasteOrientedModel(Vec3<double> origin, Model *model);
+	void pasteOrientedModel(Vec3<double> origin, Model* model);
 	// Adjust anchored model rotation (from mouse delta)
 	void rotateAnchoredModel(double dx, double dy);
 	// Return anchored model, oriented to attach to specified atom
-	Model *anchoredModel(Atom *anchorpoint, bool replace, int &replacebond);
+	Model* anchoredModel(Atom* anchorpoint, bool replace, int &replacebond);
 	// Paste anchored model to target model
 	void pasteAnchoredModel(Atom* anchorpoint, bool replace, int& replacebond, Model* target, bool adjustbond);
 };

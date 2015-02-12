@@ -82,8 +82,8 @@ bool Command::function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		else bt = (Bond::BondType) n;
 	}
 	// Add the bond
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
-	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if ((i != NULL) && (j != NULL))
 	{
 		// Add the bond

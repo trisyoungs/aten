@@ -72,11 +72,11 @@ class Program : public ListItem<Program>
 	// Finalise program
 	bool finalise();
 	// Return main program
-	Tree *mainProgram();
+	Tree* mainProgram();
 	// Add a filter tree
-	Tree *addFilter();
+	Tree* addFilter();
 	// Delete specified tree
-	void deleteTree(Tree *t);
+	void deleteTree(Tree* t);
 	// Return whether the Program is being generated from a filter file
 	bool isFromFilterFile();
 	// Execute main program, including GUI options if specified
@@ -94,11 +94,11 @@ class Program : public ListItem<Program>
 
 	public:
 	// Add a new Program-global function tree
-	Tree *addFunction(const char *name);
+	Tree* addFunction(const char *name);
 	// Search for existing global function
-	Tree *findFunction(const char *s);
+	Tree* findFunction(const char *s);
 	// Return first defined global function
-	Tree *functions();
+	Tree* functions();
 	// Execute specified global function
 	bool executeFunction(const char *name, ReturnValue &rv, const char* arglist, ...);
 };

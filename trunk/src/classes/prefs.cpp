@@ -666,7 +666,7 @@ void Prefs::setTransparencyBinWidth(double width)
 
 
 // Return styled radius of specified atom
-double Prefs::styleRadius(Atom *i) const
+double Prefs::styleRadius(Atom* i) const
 {
 	Atom::DrawStyle dstyle;
 	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;

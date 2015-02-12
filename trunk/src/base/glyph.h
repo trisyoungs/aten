@@ -45,7 +45,7 @@ class GlyphData : public ListItem<GlyphData>
 	// Position or direction vector
 	Vec3<double> vector_;
 	// Atom in the parent model from which to get r, f, or v
-	Atom *atom_;
+	Atom* atom_;
 	// Type of vector data to take from atom (if defined)
 	GlyphDataType atomData_;
 	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
@@ -61,13 +61,13 @@ class GlyphData : public ListItem<GlyphData>
 	void setVector(double x, double y, double z);
 	void setVector(int i, double d);
 	// Set atom pointer for datapoint
-	void setAtom(Atom *atom);
+	void setAtom(Atom* atom);
 	// Set atom data type for datapoint
 	void setAtomData(GlyphData::GlyphDataType av);
 	// Set atom pointer and datatype for datapoint
-	void setAtom(Atom *atom, GlyphData::GlyphDataType av);
+	void setAtom(Atom* atom, GlyphData::GlyphDataType av);
 	// Returns the atom associated to the datapoint (if any)
-	Atom *atom();
+	Atom* atom();
 	// Returns whether the atom was set last
 	bool atomSetLast() const;
 	// Return the atom data type
@@ -109,7 +109,7 @@ class Glyph : public ListItem<Glyph>
 	// Text data
 	Dnchar text_;
 	// Parent model
-	Model *parent_;
+	Model* parent_;
 	// Vector data for Glyph
 	List<GlyphData> data_;
 	// Rotation matrix for the glyph (NULL if not rotated)
@@ -149,9 +149,9 @@ class Glyph : public ListItem<Glyph>
 	// Rotate about Z axis
 	void rotateZ(double angle);
 	// Set parent model
-	void setParent(Model *parent);
+	void setParent(Model* parent);
 	// Return parent model
-	Model *parent();
+	Model* parent();
 
 	/*
 	// Style

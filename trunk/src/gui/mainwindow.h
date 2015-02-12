@@ -115,8 +115,6 @@ class AtenWindow : public QMainWindow
 	 * Window Functions
 	 */
 	public:
-	// Create filter combos on file dialogs
-	void createDialogFilters(); // ATEN2???
 	// Finalise GUI
 	void finaliseUi();
 	// Set controls to reflect program variables
@@ -138,8 +136,6 @@ class AtenWindow : public QMainWindow
 	bool saveBeforeClose();
 	// Return the PID of Aten
 	int pid();
-	// Process application messages
-	void processMessages();
 	// Set interactivity (to full or zero), except for main view camera changes
 	void setInteractive(bool interactive);
 
@@ -152,7 +148,7 @@ class AtenWindow : public QMainWindow
 	void updateWindowTitle();
 
 	public:
-	// Refresh main window to reflect model change
+	// Refresh main window
 	void updateMainWindow();
 	// Update trajectory control widgets
 	void updateTrajectoryMenu();
@@ -380,7 +376,7 @@ class AtenWindow : public QMainWindow
 	// Text labels for model information and UI messages in status bar
 	QLabel *infoLabel1_, *infoLabel2_, *messageLabel_;
 	// Filter set from save model dialog
-	Tree *saveModelFilter_;
+	Tree* saveModelFilter_;
 	// Filename set from save model dialog
 	Dnchar saveModelFilename_;
 

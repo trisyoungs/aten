@@ -19,21 +19,20 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "classes/prefs.h"
 
-void AtenForm::on_actionMouseInteract_triggered(bool checked)
+void AtenWindow::on_actionMouseInteract_triggered(bool checked)
 {
 	prefs.setMouseAction(Prefs::LeftButton, Prefs::InteractAction);
 }
 
-void AtenForm::on_actionMouseRotate_triggered(bool checked)
+void AtenWindow::on_actionMouseRotate_triggered(bool checked)
 {
 	prefs.setMouseAction(Prefs::LeftButton, Prefs::RotateAction);
 }
 
-void AtenForm::on_actionMouseTranslate_triggered(bool checked)
+void AtenWindow::on_actionMouseTranslate_triggered(bool checked)
 {
 	prefs.setMouseAction(Prefs::LeftButton, Prefs::TranslateAction);
 }

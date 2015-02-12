@@ -41,13 +41,13 @@ Site::Site() : ListItem<Site>()
 }
 
 // Set the pattern pointer for the atom
-void Site::setPattern(Pattern *p)
+void Site::setPattern(Pattern* p)
 {
 	pattern_ = p;
 }
 
 // Returns the current pattern for the atom
-Pattern *Site::pattern()
+Pattern* Site::pattern()
 {
 	return pattern_;
 }

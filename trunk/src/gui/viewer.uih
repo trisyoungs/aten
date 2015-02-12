@@ -22,14 +22,17 @@
 #ifndef ATEN_VIEWER_H
 #define ATEN_VIEWER_H
 
-#include "base/log.h"
-#include "classes/prefs.h"
-#include "gui/useractions.h"
-// #include "render/engine.h"
 #include <QtOpenGL/QGLWidget>
 #include <QtCore/QObject>
+#include "base/log.h"
+#include "classes/prefs.h"
+#include "render/renderprimitives.h"
+#include "render/textprimitivelist.h"
+#include "render/gridprimitive.h"
+#include "gui/useractions.h"
 
 // Forward Declarations
+class Aten;
 class Model;
 
 // Base rendering widget
@@ -47,6 +50,8 @@ class Viewer : public QGLWidget
 	 * Character / Setup
 	 */
 	private:
+	// Pointer to Aten
+	Aten* aten_;
 	// GLExtension pointer stack
 	List<GLExtensions> extensionsStack_;
 	// Width, height, and aspect ratio of the canvas
@@ -67,12 +72,16 @@ class Viewer : public QGLWidget
 	void paintGL();
 	// Resize function
 	void resizeGL(int, int);
+	// Mouse focus lost
+	void focusOutEvent(QFocusEvent* event);
 
 	private:
 	// Setup basic GL properties
 	void setupGL();
 
 	public:
+	// Set pointer to Aten's main structure
+	void setAten(Aten* aten);
 	// Return the current height of the drawing area
 	GLsizei contextHeight() const;
 	// Return the current width of the drawing area
@@ -98,8 +107,8 @@ class Viewer : public QGLWidget
 
 
 	/*
-	// Mouse Input
-	*/
+	 * Mouse Input
+	 */
 	private:
 	// Button flags (uses enum 'MouseButton')
 	bool mouseButton_[Prefs::nMouseButtons];
@@ -110,13 +119,13 @@ class Viewer : public QGLWidget
 	
 	protected:
 	// Qt Virtual (mouse press event)
-	void mousePressEvent(QMouseEvent*);
+	void mousePressEvent(QMouseEvent* event);
 	// Qt Virtual (mouse release event)
-	void mouseReleaseEvent(QMouseEvent*);
+	void mouseReleaseEvent(QMouseEvent* event);
 	// Qt Virtual (mouse move event)
-	void mouseMoveEvent(QMouseEvent*);
+	void mouseMoveEvent(QMouseEvent* event);
 	// Qt Virtual (mouse wheel event)
-	void wheelEvent(QWheelEvent*);
+	void wheelEvent(QWheelEvent* event);
 
 	public:
 	// Return mouse coordinates at last mousedown event
@@ -128,10 +137,10 @@ class Viewer : public QGLWidget
 
 	
 	/*
-	// Key Input
-	*/
+	 * Key Input
+	 */
 	private:
-	// Key flags (set by Gui::informMouseDown and used by TCanvas::beginMode)
+	// Key flags (set by Gui::informMouseDown and used by Viewer::beginMode)
 	bool keyModifier_[Prefs::nModifierKeys];
 	
 	public:
@@ -140,14 +149,14 @@ class Viewer : public QGLWidget
 
 	public slots:
 	// Qt Slot (key press event)
-	void keyPressEvent(QKeyEvent*);
+	void keyPressEvent(QKeyEvent* event);
 	// Qt Slot (key release event)
-	void keyReleaseEvent(QKeyEvent*);
+	void keyReleaseEvent(QKeyEvent* event);
 	
 	
 	/*
-	// User Actions
-	*/
+	 * User Actions
+	 */
 	private:
 	// Active interaction mode of the main canvas
 	UserAction::Action activeMode_;
@@ -170,7 +179,7 @@ class Viewer : public QGLWidget
 	// Pointer to callback function when PickAtomsAction exits
 	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
 	// Atom that was clicked at the start of a mouse press event
-	Atom *atomClicked_;
+	Atom* atomClicked_;
 	// Whether we are selecting atoms and placing them in the subsel list	
 	bool pickEnabled_;
 	// Reflist of selected atoms and their positions so manipulations may be un-done
@@ -208,14 +217,119 @@ class Viewer : public QGLWidget
 	// End manual picking
 	void endManualPick(bool resetaction);
 	// Return start of picked atom list
-	Refitem<Atom,int> *pickedAtoms();
-	
-	
+	Refitem<Atom,int>* pickedAtoms();
+
+
 	/*
-	// Other Qt Virtuals
+	 * Scene Rendering
+	 */
+	public:
+	// Triangle-based Objects for rendering
+	enum TriangleObject { BasicObject, AtomSelectionObject, GridObject, GlyphObject, GuiObject, nTriangleObjects };
+	// Primitive Set
+	enum PrimitiveSet { LowQuality, HighQuality, nPrimitiveSets };
+	// Stick objects for rendering
+	enum LineObject { NormalLineObject, SelectedLineObject, NormalGuiLineObject, SelectedGuiLineObject, nLineObjects };
+	// Glyph triangle style
+	enum GlyphTriangleStyle { SolidTriangle, TransparentTriangle, WireTriangle, nTriangleStyles };
+
+	private:
+	// Local copy of model transformation matrix
+	Matrix modelTransformationMatrix_;
+	// Atom bond adjustment distances
+	double sphereAtomAdjustment_, *scaledAtomAdjustments_;
+	// Primitive sets for on and offscreen rendering
+	RenderPrimitives primitives_[Viewer::nPrimitiveSets];
+	// Current source primitive set
+	Viewer::PrimitiveSet primitiveSet_;
+	// Flag indicating that next render should completely clear all filtered primitive lists
+	bool clearListsFlag_;
+	// Last rendered model
+	Model* lastSource_;
+	// ID of last trajectory frame displayed (if any)
+	int lastSourceFrameId_;
+	// Logs for last rendered source model
+	Log lastLog_;
+	// List of filtered solid primitives
+	List<PrimitiveInfo> solidPrimitives_[Viewer::nTriangleObjects];
+	//  Line primitives
+	Primitive linePrimitives_[Viewer::nLineObjects];
+	// Text primitives
+	TextPrimitiveList textPrimitives_;
+	// Grid primitives (for all models)
+	List<GridPrimitive> gridPrimitives_;
+	// Glyph triangle primitives
+	Primitive glyphTriangles_[Viewer::nTriangleStyles];
+	// Glyph line primitives
+	Primitive glyphLines_;
+	// Flags indicating which primitive lists are open for rebuilding
+	bool activePrimitiveLists_[Viewer::nTriangleObjects];
+	// Flag stating whether to rebuild stick primitives
+	bool rebuildSticks_;
+
+	private:
+	// Calculate atom/bond adjustments
+	void calculateAdjustments();
+
+	public:
+	// Set transformation matrix
+	void setTransformationMatrix(Matrix& mat, Vec3<double> cellcentre);
+	// Push primitives instance (in specified quality)
+	void pushInstance(Viewer::PrimitiveSet set, const QGLContext *context);
+	// Pop topmost primitive instance
+	void popInstance(Viewer::PrimitiveSet set, const QGLContext *context);
+	// Render whole scene
+	void renderScene();
+	// Update all primitives (following prefs change, etc.)
+	void updatePrimitives();
+
+
+	/*
+	 * Object Rendering Functions
+	 */
+	private:
+	// Render primitive in specified colour
+	void renderPrimitive(Viewer::TriangleObject obj, Primitive* primitive, bool isTransparent, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
+	// Add text primitive for rendering later
+	void renderTextPrimitive(int x, int y, const char* text, QChar addChar = 0, bool rightalign = FALSE);
+	// Search for primitive associated to specified Grid pointer
+	GridPrimitive* findGridPrimitive(Grid* g);
+	// Remove grid primitive from list (if it exists)
+	void removeGridPrimitive(Grid* g);
+	// Render bond
+	void renderBond(TriangleObject basicList, TriangleObject selectionList, Matrix A, Vec3<double> vij, Atom* i, Atom::DrawStyle style_i, GLfloat* colour_i, double radius_i, Atom* j, Atom::DrawStyle style_j, GLfloat* colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b = NULL, bool transparentSel = FALSE, GLfloat *penColour = NULL);
+	// Setup and render full Model
+	void renderModel(Model* source, bool currentModel, bool renderType);
+	// Render atoms and bonds
+	void renderAtomsAndBonds(Model* source, Matrix baseTransform = Matrix(), bool isFragment = FALSE);
+	// Render model cell
+	void renderCell(Model* source);
+	// Render grids
+	void renderGrids(Model* source);
+	// Render text for grids
+	void renderGridText(Model* source);
+	// Render 3D glyphs
+	void renderGlyphs(Model* source);
+	// Render text glyphs
+	void renderTextGlyphs(Model* source);
+	// Render additional model information (labels, measurements etc.) which need to appear on top of everything else
+	void renderModelOverlays(Model* source);
+	// Render active mode embellishments
+	void renderActiveModes(QPainter& painter, int width, int height);
+	// Render addition elements related to selected/active UserActions
+	void renderUserActions(Model* source);
+	// Render addition elements related to visible windows
+	void renderWindowExtras(Model* source);
+
+
+	/*
+	// Rendering
 	*/
-	protected:
-	void focusOutEvent(QFocusEvent *event);
+	public:
+	// Create pixmap of whole scene
+// 	QPixmap renderSceneImage(RenderEngine::PrimitiveSet set, int w, int h); ATEN2 TODO
+	// Create icon pixmap for specific model
+// 	QPixmap renderModelIcon(Model* source); ATEN2 TODO
 };
 
 #endif

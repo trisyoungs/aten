@@ -8,6 +8,7 @@ primitivegroup.h
 primitiveinfo.h
 primitiveinstance.h
 primitivelist.h
+renderprimitives.h
 textprimitive.h
 triangles.h
 vertexchunk.h
@@ -26,6 +27,7 @@ primitiveinstance.cpp
 primitivelist.cpp
 primitive_surface.cpp
 primitive_vertex.cpp
+renderprimitives.cpp
 textprimitive.cpp
 triangles.cpp
 vertexchunk.cpp

@@ -70,6 +70,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Seutp user interface
 	ui.setupUi(this);
 
+	// Set pointer to Aten in the Viewer
+	ui.MainView->setAten(&aten_);
+
 	// Private variables
 	saveModelFilter_ = NULL;
 	contextAtom_ = NULL;
@@ -82,7 +85,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// If no model loaded, add one
 	if (aten.nModels() == 0)
 	{
-		Model *m = aten.addModel();
+		Model* m = aten.addModel();
 		m->enableUndoRedo();
 		m->regenerateIcon();
 	}
@@ -130,7 +133,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	updateWidgets();
 
 	// Reset view of all loaded models
-	for (Model *m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
+	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
 
 	postRedisplay();
 
@@ -203,8 +206,8 @@ bool AtenWindow::saveBeforeClose()
 	Dnchar text;
 	int returnvalue;
 	ReturnValue rv;
-	Tree *f;
-	for (Model *m = aten_.models(); m != NULL; m = m->next)
+	Tree* f;
+	for (Model* m = aten_.models(); m != NULL; m = m->next)
 	{
 		if (m->changeLog.isModified())
 		{
@@ -256,12 +259,6 @@ int AtenWindow::pid()
 	static int pid = AtenMath::random(50000)+1000;
 	return pid;
 #endif
-}
-
-// Process application messages
-void AtenWindow::processMessages()
-{
-	QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
 }
 
 // Set interactivity (to full or zero), except for main view camera changes
@@ -344,7 +341,7 @@ void AtenWindow::updateMainWindow()
 {
 	// Update status bar
 	QString s;
-	Model *m = aten_.currentModel();
+	Model* m = aten_.currentModel();
 	// First label - atom and trajectory frame information
 	if (m->hasTrajectory())
 	{
@@ -406,18 +403,32 @@ void AtenWindow::updateMainWindow()
 	}
 	else s = "Non-periodic";
 	infoLabel2_->setText(s);
+
 	// Update save button status
 	ui.actionFileSave->setEnabled( m->changeLog.isModified() );
+
 	// Enable the Atom menu if one or more atoms are selected
 	ui.AtomContextMenu->setEnabled( m->renderSourceModel()->nSelected() == 0 ? FALSE : TRUE);
+
 	// Update Undo Redo lists
 	updateUndoRedo();
+
 	// Enable/Disable cut/copy/paste/delete based on selection status and clipboard contents
 	ui.actionEditPaste->setEnabled( aten_.userClipboard->nAtoms() != 0);
 	ui.actionEditPasteTranslated->setEnabled( aten_.userClipboard->nAtoms() != 0);
 	ui.actionEditCopy->setEnabled( m->nSelected() != 0 );
 	ui.actionEditCut->setEnabled( m->nSelected() != 0 );
 	ui.actionEditDelete->setEnabled( m->nSelected() != 0 );
+
+	// Check for empty filters list and enable/disable menu actions accordingly
+	ui.actionFileOpen->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
+	ui.RecentMenu->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
+	ui.actionTrajectoryOpen->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
+	ui.actionFileSave->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
+	ui.actionFileSaveAs->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
+	ui.actionSaveExpression->setEnabled(!aten_.fileDialogFilters(FilterData::ExpressionExport).isEmpty());
+	gridsWidget->ui.actionGridLoad->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
+
 	// Update main window title
 	updateWindowTitle();
 }
@@ -426,21 +437,22 @@ void AtenWindow::updateMainWindow()
 void AtenWindow::updateTrajectoryMenu()
 {
 	// First see if the model has a trajectory associated to it
-	Model *m = aten_.currentModel();
+	Model* m = aten_.currentModel();
 	Model::RenderSource rs = m->renderSource();
-	bool hastrj = (m->nTrajectoryFrames() != 0);
-	int framenatoms = hastrj ? m->trajectoryCurrentFrame()->nAtoms() : -1;
-	ui.actionTrajectoryRemove->setEnabled(hastrj);
+	bool hasTrj = (m->nTrajectoryFrames() != 0);
+	int frameNAtoms = hasTrj ? m->trajectoryCurrentFrame()->nAtoms() : -1;
+	ui.actionTrajectoryRemove->setEnabled(hasTrj);
 	ui.actionTrajectoryInheritParentStyle->setChecked(m->trajectoryPropagateParentStyle());
-	ui.actionTrajectoryInheritParentStyle->setEnabled(m->nAtoms() == framenatoms);
-	ui.actionTrajectoryCopyStyleToParent->setEnabled((rs == Model::TrajectorySource) && (m->nAtoms() == framenatoms));
+	ui.actionTrajectoryInheritParentStyle->setEnabled(m->nAtoms() == frameNAtoms);
+	ui.actionTrajectoryCopyStyleToParent->setEnabled((rs == Model::TrajectorySource) && (m->nAtoms() == frameNAtoms));
 	ui.actionTrajectoryPropagateStyleFromHere->setEnabled((rs == Model::TrajectorySource) && m->trajectoryIsCached());
-	ui.actionTrajectoryFirstFrame->setEnabled(hastrj);
-	ui.actionTrajectoryLastFrame->setEnabled(hastrj);
-	ui.actionTrajectoryPlayPause->setEnabled(hastrj);
+	ui.actionTrajectoryFirstFrame->setEnabled(hasTrj);
+	ui.actionTrajectoryLastFrame->setEnabled(hasTrj);
+	ui.actionTrajectoryPlayPause->setEnabled(hasTrj);
 	ui.actionTrajectoryPlayPause->setChecked(trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
-	ui.actionTrajectoryFrames->setEnabled(hastrj);
-	ui.actionTrajectorySaveMovie->setEnabled(hastrj);
+	ui.actionTrajectoryFrames->setEnabled(hasTrj);
+	ui.actionTrajectorySaveMovie->setEnabled(hasTrj);
+
 	// Select the correct view action
 	ui.actionTrajectoryModel->setChecked(rs == Model::ModelSource);
 	ui.actionTrajectoryFrames->setChecked(rs == Model::TrajectorySource);
@@ -449,7 +461,7 @@ void AtenWindow::updateTrajectoryMenu()
 // Refresh window title
 void AtenWindow::updateWindowTitle()
 {
-	Model *m = aten_.currentModel();
+	Model* m = aten_.currentModel();
 	Dnchar title;
 	title.sprintf("Aten (v%s) - %s (%s)%s", ATENVERSION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
 	setWindowTitle(title.get());
@@ -467,8 +479,8 @@ void AtenWindow::cancelCurrentMode()
 void AtenWindow::loadRecent()
 {
 	Dnchar filename;
-	Model *m;
-	Tree *filter;
+	Model* m;
+	Tree* filter;
 	// Cast sending QAction and grab filename
 	QAction *action = qobject_cast<QAction*> (sender());
 	if (!action)
@@ -568,7 +580,7 @@ void AtenWindow::updateControls()
 void AtenWindow::updateUndoRedo()
 {
 	Dnchar text;
-	Model *m = aten_.currentModelOrFrame();
+	Model* m = aten_.currentModelOrFrame();
 	// Check the model's state pointers
 	if (m->currentUndoState() == NULL)
 	{

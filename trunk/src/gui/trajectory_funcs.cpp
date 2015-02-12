@@ -46,7 +46,7 @@ void TrajectoryWidget::refresh()
 {
 	if (refreshing_) return;
 	refreshing_ = TRUE;
-	Model *m = parent_.aten().currentModel();
+	Model* m = parent_.aten().currentModel();
 	bool hastrj = m->nTrajectoryFrames() > 0;
 	ui.ControlsWidget->setEnabled(hastrj);
 	ui.FrameSelectWidget->setEnabled(hastrj);
@@ -156,7 +156,7 @@ void TrajectoryWidget::timerEvent(QTimerEvent *event)
 	else
 	{
 		DONTDRAW = TRUE;
-		Model *m = parent_.aten().currentModel();
+		Model* m = parent_.aten().currentModel();
 		m->seekNextTrajectoryFrame();
 		if (m->trajectoryFrameIndex() == m->nTrajectoryFrames()-1) ui.TrajectoryPlayPauseButton->click();
 		parent_.updateWidgets(AtenWindow::CanvasTarget);

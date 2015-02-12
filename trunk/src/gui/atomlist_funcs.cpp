@@ -145,7 +145,7 @@ void AtomListWidget::updateRow(int row)
 		printf("Internal Error - Couldn't get atom reference in AtomListWidget::updateRow()\n");
 		return;
 	}
-	Atom *i = ri->item;
+	Atom* i = ri->item;
 	if (i == NULL)
 	{
 		printf("Internal Error - NULL atom pointer found in AtomListWidget::updateRow()\n");
@@ -217,7 +217,7 @@ void AtomListWidget::updateSelection()
 	ui.AtomTable->clearSelection();
 
 	Refitem<Atom,int> *refAtom = atomItems_.first();
-	Atom *i;
+	Atom* i;
 	for (int row = 0; row < ui.AtomTable->rowCount(); ++row)
 	{
 		// Get atom pointer corresponding to scrollbar top position
@@ -238,7 +238,7 @@ void AtomListWidget::updateSelection()
 }
 
 // Return atom corresponding to row ID provided
-Atom *AtomListWidget::atomInRow(int row)
+Atom* AtomListWidget::atomInRow(int row)
 {
 	if ((row < 0) || (row > maxTableRows_)) return NULL;
 	Refitem<Atom,int> *ri = atomItems_[row];
@@ -255,7 +255,7 @@ void AtomListWidget::refresh()
 
 	// Check the current active model against the last one we represented in the list
 	bool updateSel = FALSE, updateAtoms = FALSE;
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m != listLastModel_)
 	{
 		listStructurePoint_ = -1;
@@ -292,7 +292,7 @@ void AtomListWidget::refresh()
 // 	printf("Scrollbar value is now %i\n", atomId);
 	
 	Refitem<Atom,int> *refAtom = atomItems_.first();
-	Atom *i;
+	Atom* i;
 	for (int row = 0; row < ui.AtomTable->rowCount(); ++row)
 	{
 		// Get atom pointer corresponding to scrollbar top position
@@ -446,7 +446,7 @@ void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
 }
 
 //  the selection state in the model
-void AtomListWidget::toggleItem(Atom *i)
+void AtomListWidget::toggleItem(Atom* i)
 {
 	// Swap selection status of atom, and update the list
 	if (i->isSelected()) listLastModel_->deselectAtom(i);
@@ -483,7 +483,7 @@ void AtomListWidget::tableMouseReleaseEvent(QMouseEvent *event)
 {
 	bool shift = event->modifiers()&Qt::ShiftModifier;
 	int row = ui.AtomTable->rowAt(event->pos().y());
-	Atom *i = atomInRow(row);
+	Atom* i = atomInRow(row);
 // 	printf("mouse release event. shift status is %i  %p  %p\n", shift, prevClicked_, i);
 
 	// If SHIFT was held, (de)select all atoms between the last clicked atom and this one
@@ -528,7 +528,7 @@ void AtomListWidget::tableMouseMoveEvent(QMouseEvent *event)
 	if (shift) return;
 	
 	int row = ui.AtomTable->rowAt(event->pos().y());
-	Atom *i = atomInRow(row);
+	Atom* i = atomInRow(row);
 	
 	// If the hovered widget is NULL, then we are either above or below the visible widgets, so scroll the slider...
 	if (i == NULL)
@@ -616,7 +616,7 @@ void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
 {
 	if (refreshing_) return;
 	int row = item->row(), column = item->column();
-	Atom *i = atomInRow(row);
+	Atom* i = atomInRow(row);
 	if (i == NULL)
 	{
 		printf("Internal Error: NULL atom pointer in AtomListWidget::tableItemChanged.\n");

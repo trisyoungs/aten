@@ -81,13 +81,13 @@ void FourierData::create(int newnAtoms, Vec3<int> newkvec, int newkmax)
 	msg.exit("FourierData:::create");
 }
 
-void FourierData::calculate(Model *srcmodel)
+void FourierData::calculate(Model* srcmodel)
 {
 	// Calculate the atomic vectors for all atoms in the configuration
 	calculate(srcmodel,0,nAtoms);
 }
 
-void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
+void FourierData::calculate(Model* srcmodel, int startatom, int atomstodo)
 {
 	// (Re-)Calculate the range of reciprocal space vectors of the coordinates in the supplied config.
 	msg.enter("FourierData:::calculate");
@@ -101,7 +101,7 @@ void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
 		return;
 	}
 	// Make sure model has a staticatoms space
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	// Generate reciprocal space coordinates for atoms at each cartesian k-vector.
 	// Only create positive k-vector positions for cos since is an even function. For sin calculate negative
 	// also (odd function), where rSin[k] runs from k=0,2*kmax+1, with k=kmax the central (zero) vector (=complex(1,0)).
@@ -153,7 +153,7 @@ void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
 	msg.exit("FourierData:::calculate");
 }
 
-void FourierData::prepare(Model *srcmodel, Vec3<int> newkvec)
+void FourierData::prepare(Model* srcmodel, Vec3<int> newkvec)
 {
 	// Set up arrays in the fourier class to handle all atoms / maximum kvectors specified.
 	msg.enter("FourierData:::prepare");
