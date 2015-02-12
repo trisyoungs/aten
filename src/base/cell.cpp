@@ -94,13 +94,13 @@ void UnitCell::operator=(UnitCell &source)
 }
 
 // Set parent model
-void UnitCell::setParent(Model *m)
+void UnitCell::setParent(Model* m)
 {
 	parent_ = m;
 }
 
 // Return parent model
-Model *UnitCell::parent()
+Model* UnitCell::parent()
 {
 	return parent_;
 }
@@ -592,13 +592,13 @@ Vec3<double> UnitCell::mimVector(const Vec3<double> &r1, const Vec3<double> &r2)
 }
 
 // Minimum image vector from i to r2
-Vec3<double> UnitCell::mimVector(Atom *i, const Vec3<double> &r2) const
+Vec3<double> UnitCell::mimVector(Atom* i, const Vec3<double> &r2) const
 {
 	return mimVector(i->r(), r2);
 }
 
 // Minimum image vector from i to j
-Vec3<double> UnitCell::mimVector(Atom *i, Atom *j) const
+Vec3<double> UnitCell::mimVector(Atom* i, Atom* j) const
 {
 	return mimVector(i->r(), j->r());
 }
@@ -610,13 +610,13 @@ Vec3<double> UnitCell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 }
 
 // Minimum image position of i with respect to r2
-Vec3<double> UnitCell::mim(Atom *i, const Vec3<double> &r2) const
+Vec3<double> UnitCell::mim(Atom* i, const Vec3<double> &r2) const
 {
 	return mimVector(r2,i->r()) + r2;
 }
 
 // Minimum image position of i with respect to j
-Vec3<double> UnitCell::mim(Atom *i, Atom *j) const
+Vec3<double> UnitCell::mim(Atom* i, Atom* j) const
 {
 	return mimVector(j->r(),i->r()) + j->r();
 }
@@ -656,7 +656,7 @@ Vec3<double> UnitCell::fold(Vec3<double> &r) const
 }
 
 // Fold provided coordinates into unit cell
-Vec3<double> UnitCell::fold(Atom *i) const
+Vec3<double> UnitCell::fold(Atom* i) const
 {
 	return fold(i->r());
 }
@@ -711,7 +711,7 @@ double UnitCell::distance(const Vec3<double> &r1, const Vec3<double> &r2, bool u
 }
 
 // Calculate distance between supplied atoms
-double UnitCell::distance(Atom *i, Atom *j, bool useMim) const
+double UnitCell::distance(Atom* i, Atom* j, bool useMim) const
 {
 	return distance(i->r(),j->r(),useMim);
 }
@@ -733,7 +733,7 @@ double UnitCell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec
 }
 
 // Calculate angle between supplied atoms
-double UnitCell::angle(Atom *i, Atom *j, Atom *k, bool useMim) const
+double UnitCell::angle(Atom* i, Atom* j, Atom* k, bool useMim) const
 {
 	return angle(i->r(),j->r(),k->r(), useMim);
 }
@@ -769,7 +769,7 @@ double UnitCell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec
 }
 
 // Calculate torsion angle between supplied atoms
-double UnitCell::torsion(Atom *i, Atom *j, Atom *k, Atom *l, bool useMim) const
+double UnitCell::torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim) const
 {
 	return torsion(i->r(),j->r(),k->r(),l->r(), useMim);
 }

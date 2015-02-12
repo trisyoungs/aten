@@ -30,7 +30,7 @@ libgui_a_SOURCES += ffeditor_funcs.cpp gui.cpp layoutlist.cpp loadmodel_funcs.cp
 libgui_a_SOURCES += mainmenuactions.cpp mouseactions.cpp toolbaractions.cpp
 
 libgui_a_SOURCES += tcolourframe.uih ttablewidget.uih tdoublespindelegate.uih tintegerspindelegate.uih ttreewidget.uih tmenubutton.uih tprocess.uih tprompt.uih tradiogroup.uih viewer.uih
-libgui_a_SOURCES += viewer_funcs.cpp viewer_input.cpp viewer_render.cpp tdoublespindelegate_funcs.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tlistwidgetitem_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
+libgui_a_SOURCES += viewer_funcs.cpp viewer_key.cpp viewer_mouse.cpp viewer_scene.cpp viewer_user.cpp tdoublespindelegate_funcs.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tlistwidgetitem_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
 
 libgui_a_SOURCES += useractions.cpp
 

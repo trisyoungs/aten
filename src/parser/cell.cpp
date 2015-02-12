@@ -321,7 +321,7 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		result = FALSE;
 	}
 	
-	Model *ptrParent = ptr->parent();
+	Model* ptrParent = ptr->parent();
 	if (result) switch (acc)
 	{
 		case (CellVariable::A):
@@ -373,7 +373,7 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Atom *ii, *jj;
+	Atom* ii, *jj;
 	Vec3<double> v1, v2;
 	UnitCell *ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if (result) switch (i)

@@ -38,7 +38,7 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 	ForcefieldAtom();
 	~ForcefieldAtom();
 	// Copy structure
-	void copy(ForcefieldAtom *source);
+	void copy(ForcefieldAtom* source);
 
 	/*
 	// Properties

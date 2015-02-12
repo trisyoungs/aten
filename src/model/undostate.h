@@ -71,9 +71,9 @@ class UndoState : public ListItem<UndoState>
 	// Return the current text associated with the state
 	const char *description() const;
 	// Undo the changes specified in the state
-	void undo(Model *m);
+	void undo(Model* m);
 	// Redo the changes specified in the state
-	void redo(Model *m);
+	void redo(Model* m);
 	// Print changes captured in state
 	void print() const;
 };

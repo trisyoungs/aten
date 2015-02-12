@@ -19,13 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "gui/mainwindow.h"
 #include "gui/selectpattern.h"
 #include "ff/forcefield.h"
 #include "model/model.h"
 #include "base/pattern.h"
 
 // Constructor
-AtenSelectPattern::AtenSelectPattern(AtenWindow& parent) : QDialog(parent)
+AtenSelectPattern::AtenSelectPattern(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 {
 	ui.setupUi(this);
 
@@ -51,7 +52,7 @@ void AtenSelectPattern::on_PatternTable_itemSelectionChanged()
 }
 
 // Select a pattern from the specified model
-Pattern *AtenSelectPattern::selectPattern(Model *source)
+Pattern* AtenSelectPattern::selectPattern(Model* source)
 {
 	// Set the currentmodel
 	currentModel_ = source;
@@ -72,7 +73,7 @@ Pattern *AtenSelectPattern::selectPattern(Model *source)
 	ui.PatternTable->clear();
 	ui.PatternTable->setHorizontalHeaderLabels(QStringList() << "Pattern" << "Forcefield");
 	ui.PatternTable->setRowCount(currentModel_->nPatterns());
-	for (Pattern *p = currentModel_->patterns(); p != NULL; p = p->next)
+	for (Pattern* p = currentModel_->patterns(); p != NULL; p = p->next)
 	{
 		// Set pattern name
 		item = new QTableWidgetItem(p->name());

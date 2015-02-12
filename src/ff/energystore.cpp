@@ -398,11 +398,11 @@ void EnergyStore::printEwald()
 }
 
 // Print out VDW energy decomposition Matrix
-void EnergyStore::printVdwMatrix(Model *m)
+void EnergyStore::printVdwMatrix(Model* m)
 {
 	msg.enter("EnergyStore::printVdwMatrix");
 	int count1, count2;
-	Pattern *p1, *p2;
+	Pattern* p1, *p2;
 	if (!calculated_)
 	{
 		msg.print("EnergyStore::printVdwMatrix - Total energy has not yet been calculated.\n");
@@ -430,11 +430,11 @@ void EnergyStore::printVdwMatrix(Model *m)
 }
 
 // Print out electrostatic energy decomposition Matrix
-void EnergyStore::printElecMatrix(Model *m)
+void EnergyStore::printElecMatrix(Model* m)
 {
 	msg.enter("EnergyStore::printElecMatrix");
 	int count1, count2;
-	Pattern *p1, *p2;
+	Pattern* p1, *p2;
 	double energy;
 	if (!calculated_)
 	{
@@ -482,11 +482,11 @@ void EnergyStore::printElecMatrix(Model *m)
 }
 
 // Print out interpattern energy decomposition Matrix
-void EnergyStore::printInterMatrix(Model *m)
+void EnergyStore::printInterMatrix(Model* m)
 {
 	msg.enter("EnergyStore::printInterMatrix");
 	int count1, count2;
-	Pattern *p1, *p2;
+	Pattern* p1, *p2;
 	double energyInter, energyIntra;
 	if (!calculated_)
 	{
@@ -544,11 +544,11 @@ void EnergyStore::printInterMatrix(Model *m)
 }
 
 // Print out intramolecular energy decomposition Matrix
-void EnergyStore::printIntraMatrix(Model *m)
+void EnergyStore::printIntraMatrix(Model* m)
 {
 	msg.enter("EnergyStore::printIntraMatrix");
 	int count1;
-	Pattern *p1;
+	Pattern* p1;
 	double energy;
 	if (!calculated_)
 	{

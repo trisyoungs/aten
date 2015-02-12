@@ -82,25 +82,25 @@ Pattern::~Pattern()
 */
 
 // Set ff type of pattern atom
-void PatternAtom::setData(ForcefieldAtom *ffa)
+void PatternAtom::setData(ForcefieldAtom* ffa)
 {
 	data_ = ffa;
 }
 
 // Get ff type of pattern atom
-ForcefieldAtom *PatternAtom::data()
+ForcefieldAtom* PatternAtom::data()
 {
 	return data_;
 }
 
 // Set pointer to atom in patterns representative molecule
-void PatternAtom::setAtom(Atom *a)
+void PatternAtom::setAtom(Atom* a)
 {
 	atom_ = a;
 }
 
 // Get pointer to atom in patterns representative molecule
-Atom *PatternAtom::atom()
+Atom* PatternAtom::atom()
 {
 	return atom_;
 }
@@ -162,9 +162,9 @@ void PatternBound::setForcefieldDataId(int id)
 */
 
 // Add the atom data specified
-void Pattern::addAtomData(Atom *i, ForcefieldAtom *ffa)
+void Pattern::addAtomData(Atom* i, ForcefieldAtom* ffa)
 {
-	PatternAtom *pa = atoms_.add();
+	PatternAtom* pa = atoms_.add();
 	pa->setAtom(i);
 	pa->setData(ffa);
 	pa->setForcefieldDataId(-1);
@@ -242,7 +242,7 @@ int Pattern::id() const
 }
 
 // Returns head of the atom list for this pattern (located in main model list)
-Atom *Pattern::firstAtom()
+Atom* Pattern::firstAtom()
 {
 	return firstAtom_;
 }
@@ -254,7 +254,7 @@ void Pattern::setFirstAtom(Atom* i)
 }
 
 // Returns last of the atom list for this pattern (located in main model list)
-Atom *Pattern::lastAtom()
+Atom* Pattern::lastAtom()
 {
 	return lastAtom_;
 }
@@ -488,13 +488,13 @@ int Pattern::nExpectedMolecules() const
 }
 
 // Sets the parent model
-void Pattern::setParent(Model *m)
+void Pattern::setParent(Model* m)
 {
 	parent_ = m;
 }
 
 // Returns the model for which the pattern was created
-Model *Pattern::parent()
+Model* Pattern::parent()
 {
 	return parent_;
 }
@@ -556,7 +556,7 @@ bool Pattern::isBondingOk() const
 }
 
 // Postfix increment
-Pattern *Pattern::operator++()
+Pattern* Pattern::operator++()
 {
 	return (this->next);
 }
@@ -584,13 +584,13 @@ bool Pattern::atomsInRing(int id_i, int id_j)
 {
 	if (id_j == -1)
 	{
-		Atom *i = atoms_[id_i]->atom();
+		Atom* i = atoms_[id_i]->atom();
 		for (Ring *r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return TRUE;
 	}
 	else
 	{
-		Atom *i = atoms_[id_i]->atom();
-		Atom *j = atoms_[id_j]->atom();
+		Atom* i = atoms_[id_i]->atom();
+		Atom* j = atoms_[id_j]->atom();
 		for (Ring *r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return TRUE;
 	}
 	return FALSE;
@@ -624,7 +624,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 	else
 	{
 		// Get the first atom in the list
-		Atom *i = parent_->atoms();
+		Atom* i = parent_->atoms();
 		// Skip past atoms until we get to startAtom_ (ranges from 0 upwards)
 		for (int n=0; n<startAtom_; n++) i = i->next;
 		firstAtom_ = i;
@@ -946,7 +946,7 @@ bool Pattern::validate()
 	if (nMolecules_ == 1) testElement_ = TRUE;
 	else
 	{
-		Atom *i = firstAtom_;
+		Atom* i = firstAtom_;
 		for (m=0; m<nMolecules_; m++)
 		{
 			ok = TRUE;
@@ -989,7 +989,7 @@ bool Pattern::validate()
 }
 
 // Create (or return existing) dummy bond term for supplied atom types
-ForcefieldBound *Pattern::createDummyBond(ForcefieldAtom *i, ForcefieldAtom *j)
+ForcefieldBound *Pattern::createDummyBond(ForcefieldAtom* i, ForcefieldAtom* j)
 {
 	// Search for existing term...
 	ForcefieldBound *ffb;
@@ -1006,7 +1006,7 @@ ForcefieldBound *Pattern::createDummyBond(ForcefieldAtom *i, ForcefieldAtom *j)
 }
 
 // Create (or return existing) angle bond term for supplied atom types
-ForcefieldBound *Pattern::createDummyAngle(ForcefieldAtom *i, ForcefieldAtom *j, ForcefieldAtom *k)
+ForcefieldBound *Pattern::createDummyAngle(ForcefieldAtom* i, ForcefieldAtom* j, ForcefieldAtom* k)
 {
 	// Search for existing term...
 	ForcefieldBound *ffb;
@@ -1024,7 +1024,7 @@ ForcefieldBound *Pattern::createDummyAngle(ForcefieldAtom *i, ForcefieldAtom *j,
 }
 
 // Create (or return existing) angle bond term for supplied atom types
-ForcefieldBound *Pattern::createDummyTorsion(ForcefieldAtom *i, ForcefieldAtom *j, ForcefieldAtom *k, ForcefieldAtom *l)
+ForcefieldBound *Pattern::createDummyTorsion(ForcefieldAtom* i, ForcefieldAtom* j, ForcefieldAtom* k, ForcefieldAtom* l)
 {
 	// Search for existing term...
 	ForcefieldBound *ffb;
@@ -1043,7 +1043,7 @@ ForcefieldBound *Pattern::createDummyTorsion(ForcefieldAtom *i, ForcefieldAtom *
 }
 
 // Calculate centre of geometry for molecule 'mol' in pattern, from (Model) config supplied or parent_ if NULL
-Vec3<double> Pattern::calculateCog(int mol, Model *srcmodel)
+Vec3<double> Pattern::calculateCog(int mol, Model* srcmodel)
 {
 	// Calculate the centre of geometry for this molecule
 	msg.enter("Pattern::calculateCog");
@@ -1052,7 +1052,7 @@ Vec3<double> Pattern::calculateCog(int mol, Model *srcmodel)
 	msg.print(Messenger::Verbose,"Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
 	UnitCell *cell = srcmodel->cell();
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	cog = modelatoms[offset]->r();
 	for (int a1=1; a1 < nAtoms_; ++a1)
 	{
@@ -1068,7 +1068,7 @@ Vec3<double> Pattern::calculateCog(int mol, Model *srcmodel)
 }
 
 // Calculate centre of mass for molecule 'mol' in pattern, from config supplied
-Vec3<double> Pattern::calculateCom(int mol, Model *srcmodel)
+Vec3<double> Pattern::calculateCom(int mol, Model* srcmodel)
 {
 	// Calculate the centre of geometry for this molecule
 	msg.enter("Pattern::calculateCom");
@@ -1081,7 +1081,7 @@ Vec3<double> Pattern::calculateCom(int mol, Model *srcmodel)
 	com.zero();
 	msg.print(Messenger::Verbose,"molecule_com : Offset = %i\n", offset);
 	UnitCell *cell = srcmodel->cell();
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
 	{
 		// Do minimum image w.r.t. first atom in molecule
@@ -1102,7 +1102,7 @@ void Pattern::propagateAtomtypes()
 {
 	// Copy type information contained in the first molecule in the pattern to all other molecules in the pattern
 	msg.enter("Pattern::propagateAtomtypes");
-	Atom *i, *j;
+	Atom* i, *j;
 	int n, m;
 	j = firstAtom_;
 	for (n=0; n<nAtoms_; n++) j = j->next;
@@ -1129,7 +1129,7 @@ void Pattern::propagateBondTypes()
 	// find the relative atom id and search for the corresponding atom in the n'th molecule.
 	msg.enter("Pattern::propagateBondTypes");
 	int n,m,o,offset;
-	Atom *i, *j, *k;
+	Atom* i, *j, *k;
 	Refitem<Bond,int> *bref;
 	Bond *b1, *b2;
 	// Set the pointer 'j' to be the first atom of the second molecule
@@ -1171,7 +1171,7 @@ void Pattern::selectAtom(int id, bool markonly, bool deselect)
 {
 	msg.enter("Pattern::selectAtom");
 	int n,m;
-	Atom *i = firstAtom_;
+	Atom* i = firstAtom_;
 	for (m=0; m<nMolecules_; m++)
 	{
 		for (n=0; n<nAtoms_; n++)
@@ -1188,11 +1188,11 @@ void Pattern::selectAtom(int id, bool markonly, bool deselect)
 */
 
 // Append atom
-Atom *Pattern::appendCopy(Atom *source)
+Atom* Pattern::appendCopy(Atom* source)
 {
 	// Append the supplied atom to the pattern's 'local' atom list
 	msg.enter("Pattern::appendCopy");
-	Atom *newatom = new Atom;
+	Atom* newatom = new Atom;
 	firstAtom_ == NULL ? firstAtom_ = newatom : lastAtom_->next = newatom;
 	newatom->prev = lastAtom_;
 	lastAtom_ = newatom;
@@ -1203,7 +1203,7 @@ Atom *Pattern::appendCopy(Atom *source)
 }
 
 // Delete atom
-void Pattern::deleteAtom(Atom *xatom)
+void Pattern::deleteAtom(Atom* xatom)
 {
 	// Delete the supplied atom from the pattern's 'local' atom list
 	msg.enter("Pattern::deleteAtom");
@@ -1233,7 +1233,7 @@ void Pattern::findRings()
 	msg.enter("Pattern::findRings");
 	int n, rsize;
 	bool okay = TRUE;
-	Atom *i;
+	Atom* i;
 	Ring path;
 	// Loop over atoms, searching for rings on each
 	i = firstAtom_;
@@ -1260,7 +1260,7 @@ void Pattern::findRings()
 }
 
 // Ring search
-bool Pattern::ringSearch(Atom *i, Ring *currentpath)
+bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 {
 	// Extend the path (ring) passed by the atom 'i', searching for a path length of 'ringsize'
 	msg.enter("Pattern::ringSearch");
@@ -1335,7 +1335,7 @@ bool Pattern::isRingInList(Ring *source)
 // Return total bond order penalty of atoms in one molecule of the pattern
 int Pattern::totalBondOrderPenalty()
 {
-	Atom *i = firstAtom_;
+	Atom* i = firstAtom_;
 	int result = 0;
 	for (int n=0; n<nAtoms_; n++)
 	{
@@ -1349,7 +1349,7 @@ int Pattern::totalBondOrderPenalty()
 void Pattern::augment()
 {
 	msg.enter("Pattern::augment");
-	Atom *i, *j;
+	Atom* i, *j;
 	Reflist<Bond,Bond::BondType> refbonds;
 	Refitem<Bond,Bond::BondType> *rb;
 	Refitem<Bond,int> *bref, *heavybond = NULL, *bestref, *bref2;
@@ -1572,9 +1572,9 @@ void Pattern::augment()
 	msg.exit("Pattern::augment");
 }
 
-void printstuff(Pattern *p)
+void printstuff(Pattern* p)
 {
-	Atom *i = p->firstAtom();
+	Atom* i = p->firstAtom();
 	for (int n=0; n<p->nAtoms(); n++)
 	{
 		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n", n, Elements().symbol(i),
@@ -1610,7 +1610,7 @@ void Pattern::clearEnvironments()
 {
 	// Set all environment flags of the atoms in pattern to Atomtype::NoEnvironment
 	msg.enter("Pattern::clearEnvironments");
-	Atom *i = firstAtom_;
+	Atom* i = firstAtom_;
 	for (int n=0; n<nAtoms_; n++)
 	{
 		i->setEnvironment(Atom::NoEnvironment);
@@ -1624,7 +1624,7 @@ void Pattern::assignEnvironments()
 {
 	// Assign hybridisation types to the atoms in this pattern.
 	msg.enter("Pattern::assignEnvironments");
-	Atom *i = firstAtom_;
+	Atom* i = firstAtom_;
 	int nsingle, nother;
 	for (int n=0; n<nAtoms_; n++)
 	{
@@ -1672,9 +1672,9 @@ bool Pattern::typeAtoms()
 	msg.enter("Pattern::typeAtoms");
 	int a, newmatch, bestmatch, nfailed;
 	Neta *at;
-	Atom *i;
+	Atom* i;
 	Forcefield *ff;
-	ForcefieldAtom *ffa;
+	ForcefieldAtom* ffa;
 	bool result = TRUE;
 	// Select the forcefield we're typing with. First, if this pattern doesn't have a specific ff, take the model's ff
 	ff = forcefield_;

@@ -41,13 +41,13 @@ double LineMinimiser::tolerance() const
 }
 
 // Copy contents of source model, initialising the minimiser
-void LineMinimiser::initialise(Model *srcmodel)
+void LineMinimiser::initialise(Model* srcmodel)
 {
 	// Make tempModel_ the same size as srcmodel
 	tempModel_.clear();
 	tempModel_.setCell(srcmodel->cell());
-	Atom *newatom;
-	for (Atom *i = srcmodel->atoms(); i != NULL; i = i->next)
+	Atom* newatom;
+	for (Atom* i = srcmodel->atoms(); i != NULL; i = i->next)
 	{
 		newatom = tempModel_.addAtomAtPen(i->element());
 		newatom->setCharge(i->charge());
@@ -55,12 +55,12 @@ void LineMinimiser::initialise(Model *srcmodel)
 }
 
 // Perform gradient move
-void LineMinimiser::gradientMove(Model *srcmodel, double delta)
+void LineMinimiser::gradientMove(Model* srcmodel, double delta)
 {
 	// Generate a new set of coordinates in destmodel following the normalised gradient vector present in srcmodel, with the stepsize given
 	msg.enter("LineMinimiser::gradientMove");
-	Atom **srcatoms = srcmodel->atomArray();
-	Atom **destatoms = tempModel_.atomArray();
+	Atom* *srcatoms = srcmodel->atomArray();
+	Atom* *destatoms = tempModel_.atomArray();
 	for (int i=0; i<srcmodel->nAtoms(); ++i)
 	{
 		destatoms[i]->r() = srcatoms[i]->r();
@@ -70,7 +70,7 @@ void LineMinimiser::gradientMove(Model *srcmodel, double delta)
 }
 
 // Perform Golden Search within specified bounds
-void LineMinimiser::goldenSearch(Model *srcmodel, double *bounds, double *energies)
+void LineMinimiser::goldenSearch(Model* srcmodel, double *bounds, double *energies)
 {
 	msg.enter("LineMinimiser::goldenSearch");
 	int targetbound;
@@ -119,7 +119,7 @@ void LineMinimiser::goldenSearch(Model *srcmodel, double *bounds, double *energi
 }
 
 // Line minimise supplied model along its current gradient vector (forces)
-double LineMinimiser::lineMinimise(Model *srcmodel)
+double LineMinimiser::lineMinimise(Model* srcmodel)
 {
 	msg.enter("LineMinimiser::lineMinimise");
 	double enew, ecurrent, bounds[3], energies[3], newmin, a, b, b10, b12;

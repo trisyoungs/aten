@@ -34,7 +34,7 @@ ZMatrix *Model::zMatrix()
 void Model::recalculateFromZMatrix()
 {
 	msg.enter("Model::recalculateFromZMatrix");
-	Atom *i, *j, *k, *l;
+	Atom* i, *j, *k, *l;
 	// Cycle over each element in the zmatrix, repositioning atoms as we go
 	for (ZMatrixElement *el = zMatrix_.elements(); el != NULL; el = el->next)
 	{

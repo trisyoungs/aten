@@ -92,7 +92,7 @@ void SelectWidget::on_DeselectButton_clicked(bool on)
 
 void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
 {
-	AtenSelectElement elementSelect(this);
+	AtenSelectElement elementSelect(parent_);
 	int newel = elementSelect.selectElement();
 	if (newel != -1) ui.TypeElementEdit->setText( Elements().symbol(newel) );
 }
@@ -140,7 +140,7 @@ void SelectWidget::on_DeselectForButton_clicked(bool on)
 
 void SelectWidget::refresh()
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 
 	// Update selection text details
 	// First label, total number of selected atoms.

@@ -315,7 +315,7 @@ bool CommandParser::generateFromFile(Program* prog, const char* filename, bool d
 }
 
 // Return current tree target, raising warning and setting fail flag if no tree is defined...
-Tree *CommandParser::tree()
+Tree* CommandParser::tree()
 {
 	static Tree dummyTree;
 	if (tree_ == NULL)
@@ -470,7 +470,7 @@ TreeNode *CommandParser::addFunction(Command::Function func, TreeNode *a1, TreeN
 }
 
 // Associate a user-defined command-based leaf node to the Tree
-TreeNode *CommandParser::addUserFunction(Tree *func, TreeNode *arglist)
+TreeNode *CommandParser::addUserFunction(Tree* func, TreeNode *arglist)
 {
 	return tree()->addUserFunction(func, arglist);
 }

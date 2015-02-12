@@ -32,7 +32,7 @@
 */
 
 // Constructor
-ForcefieldAtomVariable::ForcefieldAtomVariable(ForcefieldAtom *ptr, bool constant)
+ForcefieldAtomVariable::ForcefieldAtomVariable(ForcefieldAtom* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ForcefieldAtomData;
@@ -171,7 +171,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	int n;
-	ForcefieldAtom *ptr = (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
+	ForcefieldAtom* ptr = (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
@@ -322,7 +322,7 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	// Get current data from ReturnValue
 	VdwFunctions::VdwFunction vf;
 	int n;
-	ForcefieldAtom *ptr = (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
+	ForcefieldAtom* ptr = (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
@@ -381,8 +381,8 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	int param;
-	ForcefieldAtom *at2;
-	ForcefieldAtom *ptr = (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
+	ForcefieldAtom* at2;
+	ForcefieldAtom* ptr = (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
 	Variable *v;
 	int id;
 	ReturnValue resultrv;

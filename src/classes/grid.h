@@ -80,7 +80,7 @@ class Grid : public ListItem<Grid>
 	*/
 	private:
 	// Parent model
-	Model *parent_;
+	Model* parent_;
 	// Name of the Grid data
 	Dnchar name_;
 	// Type of data contained in the class
@@ -96,9 +96,9 @@ class Grid : public ListItem<Grid>
 	// Return type of Grid data
 	GridType type() const;
 	// Return parent model
-	Model *parent();
+	Model* parent();
 	// Set parent model
-	void setParent(Model *parent);
+	void setParent(Model* parent);
 
 
 	/*

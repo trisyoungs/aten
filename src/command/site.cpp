@@ -30,7 +30,7 @@ bool Command::function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// First, check that the pattern name provided refers to a pattern of the current model
-	Pattern *p = obj.m->findPattern(c->argc(1));
+	Pattern* p = obj.m->findPattern(c->argc(1));
 	if (p == NULL) return FALSE;
 	obj.s = obj.m->sites.add();
 	obj.s->setName(c->argc(0));

@@ -50,7 +50,7 @@ class Site : public ListItem<Site>
 	*/
 	private:
 	// Pattern the site is related to
-	Pattern *pattern_;
+	Pattern* pattern_;
 	// Molecule mask definition
 	// TODO Select a subset of molecules based on some kind of criteria
 	// Name of site
@@ -58,9 +58,9 @@ class Site : public ListItem<Site>
 
 	public:
 	// Set the pattern pointer for the atom
-	void setPattern(Pattern *p);
+	void setPattern(Pattern* p);
 	// Returns the current pattern for the atom
-	Pattern *pattern();
+	Pattern* pattern();
 	// Set name of site
 	void setName(const char *s);
 	// Get name of site

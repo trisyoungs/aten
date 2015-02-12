@@ -49,8 +49,8 @@ class AtomListWidget : public QDockWidget
 	void updateRow(int row);
 	void updateDisplayItems();
 	void updateSelection();
-	Atom *atomInRow(int row);
-	void toggleItem(Atom *i);
+	Atom* atomInRow(int row);
+	void toggleItem(Atom* i);
 	private slots:
 	void on_AtomTableScrollBar_valueChanged(int value);
 	void on_ViewStyleCombo_currentIndexChanged(int index);
@@ -91,7 +91,7 @@ class AtomListWidget : public QDockWidget
 	// List of currently-visible atom data
 	QList<int> displayItems_;
 	// Last model displayed in list
-	Model *listLastModel_;
+	Model* listLastModel_;
 	// Current root atom id of model (ID displayed in row 1)
 	int currentRootId_;
 	// Whether the widget should refresh when it is next shown
@@ -103,7 +103,7 @@ class AtomListWidget : public QDockWidget
 	// Reflist of currently-displayed atoms
 	Reflist<Atom,int> atomItems_;
 	// Last clicked and 'moved over' Atom
-	Atom *prevClicked_, *lastClicked_, *lastHovered_;
+	Atom* prevClicked_, *lastClicked_, *lastHovered_;
 
 
 	/*

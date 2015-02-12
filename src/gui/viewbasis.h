@@ -41,7 +41,7 @@ class AtenViewBasis : public QDialog
 	// Window Functions
 	*/
 	public:
-	void showWindow(Model *m);
+	void showWindow(Model* m);
 	private slots:
 	void dialogFinished(int result);
 
@@ -50,7 +50,7 @@ class AtenViewBasis : public QDialog
 	*/
 	private:
 	// Current model target
-	Model *target_;
+	Model* target_;
 
 	/*
 	// Dialog

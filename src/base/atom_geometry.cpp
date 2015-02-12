@@ -49,7 +49,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 	}
 
 	// Now, find the next position for the required geometry
-	Atom *atoms[5];
+	Atom* atoms[5];
 	static Vec3<double> vec[5], u, v;
 	Matrix rotMat;
 	static double **angleArray = NULL;

@@ -28,7 +28,7 @@
 #include "classes/forcefieldatom.h"
 
 // Return the start of the atom list
-Atom *Model::atoms() const
+Atom* Model::atoms() const
 {
 	return atoms_.first();
 }
@@ -40,10 +40,10 @@ int Model::nAtoms() const
 }
 
 // Add atom
-Atom *Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<double> force)
+Atom* Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<double> force)
 {
 	msg.enter("Model::addAtom");
-	Atom *newatom = atoms_.add();
+	Atom* newatom = atoms_.add();
 	newatom->setParent(this);
 	newatom->setElement(newel);
 	newatom->setColourFromElement();
@@ -65,10 +65,10 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<d
 }
 
 // Add atom with specified id
-Atom *Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
+Atom* Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 {
 	msg.enter("Model::addAtom");
-	Atom *newatom = targetid == 0 ? atoms_.prepend() : atoms_.insertAfter(atoms_[targetid-1]);
+	Atom* newatom = targetid == 0 ? atoms_.prepend() : atoms_.insertAfter(atoms_[targetid-1]);
 	newatom->setParent(this);
 	newatom->setElement(newel);
 	newatom->setColourFromElement();
@@ -89,16 +89,16 @@ Atom *Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 }
 
 // Create a new atom at the Model's current pen position
-Atom *Model::addAtomAtPen(short int el)
+Atom* Model::addAtomAtPen(short int el)
 {
 	return addAtom(el, penPosition_);
 }
 
 // Add atom copy
-Atom *Model::addCopy(Atom *source)
+Atom* Model::addCopy(Atom* source)
 {
 	msg.enter("Model::addCopy");
-	Atom *newatom = atoms_.add();
+	Atom* newatom = atoms_.add();
 	newatom->copy(source);
 	newatom->setParent(this);
 	newatom->setId(atoms_.nItems() - 1);
@@ -116,10 +116,10 @@ Atom *Model::addCopy(Atom *source)
 }
 
 // Add atom copy at specified position in list
-Atom *Model::addCopy(Atom *afterthis, Atom *source)
+Atom* Model::addCopy(Atom* afterthis, Atom* source)
 {
 	msg.enter("Model::addCopy");
-	Atom *newatom = atoms_.insertAfter(afterthis);
+	Atom* newatom = atoms_.insertAfter(afterthis);
 	//printf("Adding copy after... %p %p\n",afterthis,source);
 	newatom->copy(source);
 	renumberAtoms(afterthis);
@@ -137,14 +137,14 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 }
 
 // Remove atom
-void Model::removeAtom(Atom *xatom, bool noupdate)
+void Model::removeAtom(Atom* xatom, bool noupdate)
 {
 	msg.enter("Model::removeAtom");
 	// Delete a specific atom (passed as xatom)
 	reduceMass(xatom->element());
 // 	if (!noupdate) calculateDensity();
 	// Renumber the ids of all atoms in the list after this one
-	if (!noupdate) for (Atom *i = xatom->next; i != NULL; i = i->next) i->decreaseId();
+	if (!noupdate) for (Atom* i = xatom->next; i != NULL; i = i->next) i->decreaseId();
 	// Deselect and unmark if necessary
 	if (xatom->isSelected()) deselectAtom(xatom);
 	if (xatom->isSelected(TRUE)) deselectAtom(xatom, TRUE);
@@ -161,7 +161,7 @@ void Model::removeAtom(Atom *xatom, bool noupdate)
 }
 
 // Delete Atom
-void Model::deleteAtom(Atom *xatom, bool noupdate)
+void Model::deleteAtom(Atom* xatom, bool noupdate)
 {
 	msg.enter("Model::deleteAtom");
 	// The atom may be present in other, unassociated lists (e.g. measurements), so we must
@@ -177,7 +177,7 @@ void Model::deleteAtom(Atom *xatom, bool noupdate)
 		{
 			// Need to detach the bond from both atoms involved
 			Bond *b = bref->item;
-			Atom *j = b->partner(xatom);
+			Atom* j = b->partner(xatom);
 			unbondAtoms(xatom,j,b);
 			bref = xatom->bonds();
 		}
@@ -195,7 +195,7 @@ void Model::deleteAtom(Atom *xatom, bool noupdate)
 }
 
 // Transmute atom
-void Model::transmuteAtom(Atom *i, short int el)
+void Model::transmuteAtom(Atom* i, short int el)
 {
 	msg.enter("Model::transmuteAtom");
 	if (i == NULL) msg.print("No atom to transmute.\n");
@@ -221,7 +221,7 @@ void Model::transmuteAtom(Atom *i, short int el)
 }
 
 // Return (and autocreate if necessary) the static atoms array
-Atom **Model::atomArray()
+Atom* *Model::atomArray()
 {
 	return atoms_.array();
 }
@@ -230,7 +230,7 @@ Atom **Model::atomArray()
 void Model::clearAtoms()
 {
 	msg.enter("Model::clearAtoms");
-	Atom *i = atoms_.first();
+	Atom* i = atoms_.first();
 	while (i != NULL)
 	{
 		deleteAtom(i);
@@ -240,17 +240,17 @@ void Model::clearAtoms()
 }
 
 // Return the list index of the specified atom
-int Model::atomIndex(Atom *i) const
+int Model::atomIndex(Atom* i) const
 {
 	return atoms_.indexOf(i);
 }
 
 // Renumber Atoms
-void Model::renumberAtoms(Atom *from)
+void Model::renumberAtoms(Atom* from)
 {
 	msg.enter("Model::renumberAtoms");
 	int count;
-	Atom *i;
+	Atom* i;
 	if (from == NULL)
 	{
 		count = -1;
@@ -266,7 +266,7 @@ void Model::renumberAtoms(Atom *from)
 }
 
 // Return atom 'n' in the model
-Atom *Model::atom(int n)
+Atom* Model::atom(int n)
 {
 	msg.enter("Model::atom");
 	// Check range first
@@ -284,7 +284,7 @@ Atom *Model::atom(int n)
 void Model::zeroForces()
 {
 	msg.enter("Model::zeroForces");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->f().zero();
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->f().zero();
 	msg.exit("Model::zeroForces");
 }
 
@@ -292,9 +292,9 @@ void Model::zeroForces()
 void Model::zeroForcesFixed()
 {
 	msg.enter("Model::zeroForcesFixed");
-	Atom *i;
+	Atom* i;
 	// First, apply pattern-designated fixes
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) if (p->areAtomsFixed())
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) if (p->areAtomsFixed())
 	{
 		i = p->firstAtom();
 		for (int n=0; n<p->totalAtoms(); ++n) { i->f().zero(); i = i->next; }
@@ -312,17 +312,17 @@ void Model::normaliseForces(double norm, bool tolargest)
 	if (tolargest)
 	{
 		double largestsq = 0.0, f;
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			f = i->f().magnitudeSq();
 			if (f > largestsq) largestsq = f;
 		}
 		largestsq = sqrt(largestsq);
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->f() /= largestsq;
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->f() /= largestsq;
 	}
 	else
 	{
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			i->f().normalise();
 			i->f() *= norm;
@@ -332,7 +332,7 @@ void Model::normaliseForces(double norm, bool tolargest)
 }
 
 // Set visibility of specified atom
-void Model::atomSetHidden(Atom *i, bool hidden)
+void Model::atomSetHidden(Atom* i, bool hidden)
 {
 	if (i->isHidden() != hidden)
 	{
@@ -349,7 +349,7 @@ void Model::atomSetHidden(Atom *i, bool hidden)
 }
 
 // Set fixed status of specified atom
-void Model::atomSetFixed(Atom *i, bool fixed)
+void Model::atomSetFixed(Atom* i, bool fixed)
 {
 	if (i->isPositionFixed() != fixed)
 	{
@@ -366,7 +366,7 @@ void Model::atomSetFixed(Atom *i, bool fixed)
 }
 
 // Set charge of specified atom
-void Model::atomSetCharge(Atom *target, double q)
+void Model::atomSetCharge(Atom* target, double q)
 {
 	double oldcharge = target->charge();
 	target->setCharge(q);
@@ -381,7 +381,7 @@ void Model::atomSetCharge(Atom *target, double q)
 }
 
 // Set custom colour of specified atom
-void Model::atomSetColour(Atom *i, double r, double g, double b, double a)
+void Model::atomSetColour(Atom* i, double r, double g, double b, double a)
 {
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
@@ -397,7 +397,7 @@ void Model::atomSetColour(Atom *i, double r, double g, double b, double a)
 }
 
 // Reset custom colour of specified atom
-void Model::atomResetColour(Atom *i)
+void Model::atomResetColour(Atom* i)
 {
 	// Grab new colour...
 	double newcol[4];
@@ -416,7 +416,7 @@ void Model::atomResetColour(Atom *i)
 }
 
 // Set style of individual atom
-void Model::atomSetStyle(Atom *i, Atom::DrawStyle ds)
+void Model::atomSetStyle(Atom* i, Atom::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
 	Atom::DrawStyle oldstyle = i->style();
@@ -432,7 +432,7 @@ void Model::atomSetStyle(Atom *i, Atom::DrawStyle ds)
 }
 
 // Move specified atom (channel for undo/redo)
-void Model::translateAtom(Atom *target, Vec3<double> delta)
+void Model::translateAtom(Atom* target, Vec3<double> delta)
 {
 	target->r() += delta;
 	changeLog.add(Log::Coordinates);
@@ -446,7 +446,7 @@ void Model::translateAtom(Atom *target, Vec3<double> delta)
 }
 
 // Position specified atom (channel for undo/redo)
-void Model::positionAtom(Atom *target, Vec3<double> newr)
+void Model::positionAtom(Atom* target, Vec3<double> newr)
 {
 	static Vec3<double> delta;
 	delta = newr - target->r();
@@ -465,12 +465,12 @@ void Model::positionAtom(Atom *target, Vec3<double> newr)
 int Model::totalBondOrderPenalty() const
 {
 	int result = 0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) result += Elements().bondOrderPenalty(i, i->totalBondOrder()/2);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) result += Elements().bondOrderPenalty(i, i->totalBondOrder()/2);
 	return result;
 }
 
 // Count bonds of specific type
-int Model::countBondsToAtom(Atom *i, Bond::BondType type)
+int Model::countBondsToAtom(Atom* i, Bond::BondType type)
 {
 	msg.enter("Model::countBondsToAtom");
 	int count = 0;
@@ -491,7 +491,7 @@ double Model::forcefieldMass() const
 {
 	msg.enter("Model::forcefieldMass");
 	double ffmass = 0.0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->type() == NULL)
 		{
@@ -526,7 +526,7 @@ void Model::calculateMass()
 	msg.enter("Model::calculateMass");
 	mass_ = 0.0;
 	nUnknownAtoms_ = 0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		mass_ += Elements().atomicMass(i);
 		if (i->element() == 0) ++nUnknownAtoms_;
@@ -541,7 +541,7 @@ int Model::nUnknownAtoms() const
 }
 
 // Copy atom style from specified model
-void Model::copyAtomStyle(Model *source)
+void Model::copyAtomStyle(Model* source)
 {
 	msg.enter("Model::copyAtomStyle");
 	if (source == NULL)
@@ -556,7 +556,7 @@ void Model::copyAtomStyle(Model *source)
 		msg.exit("Model::copyParentStyle");
 	}
 	// Do the loop
-	Atom **ii = source->atomArray(), **jj = atomArray();
+	Atom* *ii = source->atomArray(), **jj = atomArray();
 	for (int n=0; n<atoms_.nItems(); ++n) jj[n]->copyStyle(ii[n]);
 	changeLog.add(Log::Style);
 	msg.exit("Model::copyAtomStyle");
@@ -565,7 +565,7 @@ void Model::copyAtomStyle(Model *source)
 // Clear tempBits of all atoms
 void Model::clearAtomBits()
 {
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->clearBit();
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->clearBit();
 }
 
 // Move specified atom up/down in the atom list

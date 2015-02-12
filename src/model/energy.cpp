@@ -26,7 +26,7 @@
 #include "classes/prefs.h"
 
 // Calculate total energy of model (from supplied coordinates)
-double Model::totalEnergy(Model *srcmodel, bool &success)
+double Model::totalEnergy(Model* srcmodel, bool &success)
 {
 	msg.enter("Model::totalEnergy");
 	// Check the expression validity
@@ -40,7 +40,7 @@ double Model::totalEnergy(Model *srcmodel, bool &success)
 	// Clear the energy store
 	energy.clear();
 	// Cycle through patterns, calculating the contributions from each
-	Pattern *p, *p2;
+	Pattern* p, *p2;
 	p = patterns_.first();
 	// Calculate VDW correction
 	if (prefs.calculateVdw() && (cell_.type() != UnitCell::NoCell))
@@ -132,7 +132,7 @@ double Model::totalEnergy(Model *srcmodel, bool &success)
 }
 
 // Calculate total interaction energy of specified molecule with remainder of model
-double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule, bool &success)
+double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule, bool &success)
 {
 	msg.enter("Model::moleculeEnergy");
 	// Check the expression validity
@@ -145,7 +145,7 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule,
 	}
 	// Clear the energy store
 	energy.clear();
-	Pattern *p;
+	Pattern* p;
 	
 	// Prepare Ewald (if necessary)
 	Electrostatics::ElecMethod emodel = prefs.electrostaticsMethod();
@@ -204,7 +204,7 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule,
 }
 
 // Calculate and return the total angle energy of the model
-double Model::angleEnergy(Model *config, bool &success)
+double Model::angleEnergy(Model* config, bool &success)
 {
 	msg.enter("Model::angleEnergy");
 	// Check the expression validity
@@ -218,7 +218,7 @@ double Model::angleEnergy(Model *config, bool &success)
 	
 	// Calculate total angle energy over all patterns
 	EnergyStore tempenergy(patterns_.nItems());
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->angleEnergy(config, &tempenergy);
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->angleEnergy(config, &tempenergy);
 	
 	success = TRUE;
 	tempenergy.totalise();
@@ -227,7 +227,7 @@ double Model::angleEnergy(Model *config, bool &success)
 }
 
 // Calculate and return the total bond energy of the model
-double Model::bondEnergy(Model *config, bool &success)
+double Model::bondEnergy(Model* config, bool &success)
 {
 	msg.enter("Model::bondEnergy");
 	// Check the expression validity
@@ -241,7 +241,7 @@ double Model::bondEnergy(Model *config, bool &success)
 	
 	// Calculate total bond energy over all patterns
 	EnergyStore tempenergy(patterns_.nItems());
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->bondEnergy(config, &tempenergy);
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->bondEnergy(config, &tempenergy);
 	
 	success = TRUE;
 	tempenergy.totalise();
@@ -250,7 +250,7 @@ double Model::bondEnergy(Model *config, bool &success)
 }
 
 // Calculate and return the total coulomb energy of the model
-double Model::electrostaticEnergy(Model *config, bool &success)
+double Model::electrostaticEnergy(Model* config, bool &success)
 {
 	msg.enter("Model::coulombEnergy");
 	// Check the expression validity
@@ -287,8 +287,8 @@ double Model::electrostaticEnergy(Model *config, bool &success)
 	
 	// Calculate total torsion energy over all patterns
 	EnergyStore tempenergy(patterns_.nItems());
-	Pattern *p2;
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	Pattern* p2;
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
 		switch (emodel)
 		{
@@ -314,7 +314,7 @@ double Model::electrostaticEnergy(Model *config, bool &success)
 }
 
 // Calculate and return the total intermolecular energy of the model
-double Model::intermolecularEnergy(Model *config, bool &success)
+double Model::intermolecularEnergy(Model* config, bool &success)
 {
 	double interenergy = vdwEnergy(config, success);
 	if (!success) return 0.0;
@@ -324,7 +324,7 @@ double Model::intermolecularEnergy(Model *config, bool &success)
 }
 
 // Calculate and return the total intramolecular energy of the model
-double Model::intramolecularEnergy(Model *config, bool &success)
+double Model::intramolecularEnergy(Model* config, bool &success)
 {
 	double intraenergy = bondEnergy(config, success);
 	if (!success) return 0.0;
@@ -336,7 +336,7 @@ double Model::intramolecularEnergy(Model *config, bool &success)
 }
 
 // Calculate and return the total torsion energy of the model
-double Model::torsionEnergy(Model *config, bool &success)
+double Model::torsionEnergy(Model* config, bool &success)
 {
 	msg.enter("Model::torsionEnergy");
 	// Check the expression validity
@@ -350,7 +350,7 @@ double Model::torsionEnergy(Model *config, bool &success)
 	
 	// Calculate total torsion energy over all patterns
 	EnergyStore tempenergy(patterns_.nItems());
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->torsionEnergy(config, &tempenergy);
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->torsionEnergy(config, &tempenergy);
 	
 	success = TRUE;
 	tempenergy.totalise();
@@ -359,7 +359,7 @@ double Model::torsionEnergy(Model *config, bool &success)
 }
 
 // Calculate and return the total van der Waals energy of the model
-double Model::vdwEnergy(Model *config, bool &success)
+double Model::vdwEnergy(Model* config, bool &success)
 {
 	msg.enter("Model::vdwEnergy");
 	// Check the expression validity
@@ -373,8 +373,8 @@ double Model::vdwEnergy(Model *config, bool &success)
 	
 	// Calculate total torsion energy over all patterns
 	EnergyStore tempenergy(patterns_.nItems());
-	Pattern *p2;
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	Pattern* p2;
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
 		if (!p->vdwIntraPatternEnergy(config, &tempenergy))
 		{
@@ -400,7 +400,7 @@ double Model::vdwEnergy(Model *config, bool &success)
 }
 
 // Calculate forces from specified config
-bool Model::calculateForces(Model *srcmodel)
+bool Model::calculateForces(Model* srcmodel)
 {
 	// Calculate the forces for the atoms of 'srcmodel' from the expression defined in the *this model
 	msg.enter("Model::calculateForces");
@@ -413,7 +413,7 @@ bool Model::calculateForces(Model *srcmodel)
 	}
 	srcmodel->zeroForces();
 	// Cycle through patterns, calculate the intrapattern forces for each
-	Pattern *p, *p2;
+	Pattern* p, *p2;
 	p = patterns_.first();
 	
 	// Prepare Ewald (if necessary)
@@ -488,7 +488,7 @@ bool Model::calculateForces(Model *srcmodel)
 	
 	// Calculate RMS force
 	rmsForce_ = 0.0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) rmsForce_ += i->f().magnitudeSq();
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) rmsForce_ += i->f().magnitudeSq();
 	rmsForce_ /= atoms_.nItems();
 	rmsForce_ = sqrt(rmsForce_);
 	msg.exit("Model::calculateForces");

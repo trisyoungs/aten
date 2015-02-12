@@ -34,13 +34,13 @@ int Model::nPatterns() const
 }
 
 // Return the first pattern node of the model
-Pattern *Model::patterns() const
+Pattern* Model::patterns() const
 {
 	return patterns_.first();
 }
 
 // Return the last pattern node of the model
-Pattern *Model::lastPattern() const
+Pattern* Model::lastPattern() const
 {
 	return patterns_.last();
 }
@@ -52,19 +52,19 @@ bool Model::arePatternsValid() const
 }
 
 // Return n'th pattern node
-Pattern *Model::pattern(int id)
+Pattern* Model::pattern(int id)
 {
 	return patterns_[id];
 }
 
 // Add Pattern Node
-Pattern *Model::addPattern(const char *patternName, int nMols, int nAtomsPerMol)
+Pattern* Model::addPattern(const char *patternName, int nMols, int nAtomsPerMol)
 {
 	msg.enter("Model::addPattern");
 	// Determine starting atom...
-	Pattern *lastp = patterns_.last();
+	Pattern* lastp = patterns_.last();
 	int start = (lastp == NULL ? 0 : lastp->startAtom() + lastp->nMolecules() * lastp->nAtoms());
-	Pattern *newpnode = patterns_.add();
+	Pattern* newpnode = patterns_.add();
 	newpnode->setParent(this);
 	newpnode->setName(patternName);
 	newpnode->initialise(patterns_.nItems()-1,start,nMols,nAtomsPerMol);
@@ -90,17 +90,17 @@ Pattern *Model::addPattern(const char *patternName, int nMols, int nAtomsPerMol)
 }
 
 // Cut pattern
-void Model::cutPattern(Pattern *source)
+void Model::cutPattern(Pattern* source)
 {
 	patterns_.cut(source);
 }
 
 // Own pattern
-void Model::ownPattern(Pattern *source, bool own)
+void Model::ownPattern(Pattern* source, bool own)
 {
 	msg.enter("Model::ownPattern");
 	// Set the starting atom from the last pattern in the model's list
-	Pattern *p = patterns_.last();
+	Pattern* p = patterns_.last();
 	int start = (p == NULL ? 0 : p->startAtom() + p->nMolecules() * p->nAtoms());
 	// Add the pattern onto the end of the current list
 	patterns_.own(source);
@@ -118,7 +118,7 @@ void Model::setPatternsFixed(int upto)
 {
 	// Set all patterns in the current model to be 'fixed'
 	msg.enter("Model::setPatternsFixed");
-	Pattern *p = patterns_.first();
+	Pattern* p = patterns_.first();
 	int count = 0;
 	while (p != NULL)
 	{
@@ -131,11 +131,11 @@ void Model::setPatternsFixed(int upto)
 }
 
 // Determine the locality of the supplied atom
-Atomaddress Model::locateAtom(Atom *i)
+Atomaddress Model::locateAtom(Atom* i)
 {
 	msg.enter("Model::locateAtom");
 	int patternno, molno, atomno, id;
-	Pattern *p;
+	Pattern* p;
 	Atomaddress result;
 	if (!createPatterns())
 	{
@@ -196,10 +196,10 @@ bool Model::createPatterns()
 	Dnchar emp;
 	Clipboard patclip;
 	emp.createEmpty(1024);
-	Pattern *p;
+	Pattern* p;
 	Refitem<Bond,int> *rb;
-	Atom *i, *selectSource;
-	Clipatom *clipi;
+	Atom* i, *selectSource;
+	ClipAtom* clipi;
 	Refitem<Atom,int> *isel;
 	
 	// Check current pattern first...
@@ -367,18 +367,18 @@ bool Model::createPatterns()
 }
 
 // Create default pattern
-Pattern *Model::createDefaultPattern()
+Pattern* Model::createDefaultPattern()
 {
 	clearPatterns();
-	Pattern *p = addPattern("Default", 1, atoms_.nItems());
+	Pattern* p = addPattern("Default", 1, atoms_.nItems());
 	return p;
 }
 
 // Find pattern by name
-Pattern *Model::findPattern(const char *s) const
+Pattern* Model::findPattern(const char *s) const
 {
 	msg.enter("Model::findPattern");
-	Pattern *p = NULL;
+	Pattern* p = NULL;
 	for (p = patterns_.first(); p != NULL; p = p->next)
 		if (strcmp(p->name(),s) == 0) break;
 	if (p == NULL) msg.print("Pattern '%s' does not exist in model '%s'.\n",s,name_.get());
@@ -387,11 +387,11 @@ Pattern *Model::findPattern(const char *s) const
 }
 
 // Charge pattern atom
-void Model::chargePatternAtom(Pattern *p, int id, double q)
+void Model::chargePatternAtom(Pattern* p, int id, double q)
 {
 	msg.enter("Model::chargePatternAtom");
 	int n,m,pnatoms;
-	Atom *i = p->firstAtom();
+	Atom* i = p->firstAtom();
 	pnatoms = p->nAtoms();
 	// Skip on the 'i' pointer so it points to the atom 'id' in the first molecule of the pattern
 	for (n=0; n<id; n++) i = i->next;
@@ -406,11 +406,11 @@ void Model::chargePatternAtom(Pattern *p, int id, double q)
 }
 
 // Find pattern for given atom
-Pattern *Model::pattern(Atom *i)
+Pattern* Model::pattern(Atom* i)
 {
 	msg.enter("Model::pattern[atom]");
 	int id = i->id();
-	Pattern *p;
+	Pattern* p;
 	for (p = patterns_.first(); p != NULL; p = p->next)
 		if ((id >= p->startAtom()) && (id <= p->endAtom())) break;
 	msg.exit("Model::pattern[atom]");
@@ -421,7 +421,7 @@ Pattern *Model::pattern(Atom *i)
 void Model::printPatterns() const
 {
 	msg.enter("Model::printPatterns");
-	Pattern *p = patterns_.first();
+	Pattern* p = patterns_.first();
 	if (p == NULL) msg.print("No patterns defined for model '%s'.\n",name_.get());
 	else
 	{

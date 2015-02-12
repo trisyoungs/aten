@@ -64,7 +64,7 @@ int DisorderWizard::run()
 {
 	// If there are no loaded models with periodicity, disable this option on page 1
 	int nperiodic = 0;
-	for (Model *m = parent_.aten().models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) ++nperiodic;
+	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) ++nperiodic;
 	ui.TargetExistingRadio->setEnabled(nperiodic != 0);
 	ui.TargetNewRadio->setChecked(nperiodic == 0);
 	ui.TargetExistingRadio->setChecked(nperiodic != 0);
@@ -91,7 +91,7 @@ int DisorderWizard::run()
 }
 
 // Update component data shown for current component
-void DisorderWizard::setComponentData(Model *m)
+void DisorderWizard::setComponentData(Model* m)
 {
 	// Find the corresponding QTreeWidgetItem
 	Refitem<QTreeWidgetItem, Model*> *ri = componentModelItems_.containsData(m);
@@ -151,7 +151,7 @@ void DisorderWizard::pageChanged(int id)
 {
 	TTreeWidgetItem *item;
 	QTreeWidgetItem *qitem, *selectitem;
-	Model *m;
+	Model* m;
 	Dnchar text;
 	int count;
 	switch (id)

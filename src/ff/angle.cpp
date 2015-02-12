@@ -24,7 +24,7 @@
 #include "base/pattern.h"
 
 // Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)
-void Pattern::angleEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
+void Pattern::angleEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 {
 	msg.enter("Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
@@ -104,7 +104,7 @@ void Pattern::angleEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 }
 
 // Calculate angle forces in pattern
-void Pattern::angleForces(Model *srcmodel)
+void Pattern::angleForces(Model* srcmodel)
 {
 	msg.enter("Pattern::angleForcess");
 	int i,j,k,aoff,m1;
@@ -113,7 +113,7 @@ void Pattern::angleForces(Model *srcmodel)
 	double du_dtheta, dtheta_dcostheta;
 	ForcefieldBound *ffb;
 	PatternBound *pb;
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)

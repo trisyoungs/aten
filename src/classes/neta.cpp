@@ -142,13 +142,13 @@ Forcefield *Neta::parentForcefield()
 }
 
 // Set parent forcefield atom
-void Neta::setParentForcefieldAtom(ForcefieldAtom *ffa)
+void Neta::setParentForcefieldAtom(ForcefieldAtom* ffa)
 {
 	parentForcefieldAtom_ = ffa;
 }
 
 // Return parent forcefield atom
-ForcefieldAtom *Neta::parentForcefieldAtom()
+ForcefieldAtom* Neta::parentForcefieldAtom()
 {
 	return parentForcefieldAtom_;
 }
@@ -228,7 +228,7 @@ void Neta::clear()
 }
 
 // Return current atom target
-Atom *Neta::targetAtom()
+Atom* Neta::targetAtom()
 {
 	return targetAtom_;
 }
@@ -240,13 +240,13 @@ List<Ring> *Neta::targetRingList()
 }
 
 // Return target atom's parent model
-Model *Neta::targetParent()
+Model* Neta::targetParent()
 {
 	return targetParent_;
 }
 
 // Check supplied atom to see if it matches this NETA description
-int Neta::matchAtom(Atom *i, List<Ring> *rings, Model *parent)
+int Neta::matchAtom(Atom* i, List<Ring> *rings, Model* parent)
 {
 	msg.enter("Neta::matchAtom");
 	// Check element type first
@@ -509,7 +509,7 @@ NetaLogicNode::~NetaLogicNode()
 
 
 // Validation function (virtual)
-int NetaLogicNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaLogicNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaLogicNode::score");
 	int score1 = -1, score2 = -1, totalscore = -1;
@@ -705,7 +705,7 @@ void NetaBoundNode::set(Refitem<ForcefieldAtom,int> *elemtypes, NetaNode *innern
 // Link forcefield type references in elementtype lists
 void NetaBoundNode::linkReferenceTypes()
 {
-	ForcefieldAtom *ffa;
+	ForcefieldAtom* ffa;
 	for (Refitem<ForcefieldAtom,int> *ri = allowedElementsAndTypes_.first(); ri != NULL; ri = ri->next)
 	{
 		// Skip if its just an element
@@ -727,7 +727,7 @@ void NetaBoundNode::linkReferenceTypes()
 }
 
 // Validation function to check supplied atom against allowed elements and types
-int NetaBoundNode::atomScore(Atom *target)
+int NetaBoundNode::atomScore(Atom* target)
 {
 	msg.enter("NetaBoundNode::atomScore");
 	int totalscore = -1;
@@ -792,7 +792,7 @@ const char *NetaBoundNode::elementsAndTypesString()
 }
 
 // Validation function (virtual)
-int NetaBoundNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaBoundNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaBoundNode::score");
 	int totalscore = -1, n, boundscore;
@@ -893,7 +893,7 @@ NetaKeywordNode::~NetaKeywordNode()
 }
 
 // Validation function (virtual)
-int NetaKeywordNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaKeywordNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaKeywordNode::score");
 	int totalscore = -1;
@@ -1012,7 +1012,7 @@ NetaGeometryNode::~NetaGeometryNode()
 }
 
 // Validation function (virtual)
-int NetaGeometryNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaGeometryNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaGeometryNode::score");
 	int totalscore = -1;
@@ -1079,7 +1079,7 @@ NetaValueNode::~NetaValueNode()
 }
 
 // Validation function (virtual)
-int NetaValueNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaValueNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaValueNode::score");
 	int totalscore = -1, n;
@@ -1187,7 +1187,7 @@ NetaRootNode::~NetaRootNode()
 }
 
 // Validation function (virtual)
-int NetaRootNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaRootNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	return (innerNeta_ != NULL ? innerNeta_->score(target, nbrs, rings, this, path, level) : 0);
 }
@@ -1251,7 +1251,7 @@ Ring *NetaRingNode::currentRing()
 }
 
 // Validation function (virtual)
-int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaRingNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaRingNode::score");
 	int totalscore = -1, n;
@@ -1391,11 +1391,11 @@ NetaChainNode::~NetaChainNode()
 }
 
 // Private (recursive) scoring function
-int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, Reflist<Atom,int>& path, int level)
+int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaChainNode::score(private)");
 	int totalscore = -1, atomscore = -1;
-	Atom *i, *j;
+	Atom* i, *j;
 	// The target atom we're passed is the last atom in the current chain (or the originating atomic centre).
 	// The neighbours list should contain a single bound atom reference that we are interested in checking at this point in the chain.
 	// So, determine if the current chain node matches the target/nbrs combination.
@@ -1459,7 +1459,7 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Refli
 }
 
 // Validation function (virtual)
-int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaChainNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaChainNode::score");
 	int totalscore = -1, n;
@@ -1584,12 +1584,12 @@ void NetaMeasurementNode::setRemoveNeighbours(bool b)
 }
 
 // Private (recursive) scoring function
-int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, Reflist<Atom,int>& path, int level)
+int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaMeasurementNode::score(private)");
 	int totalscore = -1, atomscore = -1;
 	double measurement;
-	Atom *i, *j;
+	Atom* i, *j;
 	// The target atom we're passed is the last atom in the current chain (or the originating atomic centre).
 	// The neighbours list should contain a single bound atom reference that we are interested in checking at this point in the chain.
 	// So, determine if the current chain node matches the target/nbrs combination.
@@ -1687,7 +1687,7 @@ int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom *target,
 }
 
 // Validation function (virtual)
-int NetaMeasurementNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	msg.enter("NetaMeasurementNode::score");
 	int totalscore = -1, n;

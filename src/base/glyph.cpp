@@ -102,7 +102,7 @@ void GlyphData::setVector(int i, double d)
 }
 
 // Set atom data
-void GlyphData::setAtom(Atom *atom)
+void GlyphData::setAtom(Atom* atom)
 {
 	atom_ = atom;
 	set_ = TRUE;
@@ -121,14 +121,14 @@ void GlyphData::setAtomData(GlyphData::GlyphDataType av)
 }
 
 // Set atom pointer and datatype for datapoint
-void GlyphData::setAtom(Atom *atom, GlyphData::GlyphDataType av)
+void GlyphData::setAtom(Atom* atom, GlyphData::GlyphDataType av)
 {
 	setAtom(atom);
 	setAtomData(av);
 }
 
 // Return the atom pointer
-Atom *GlyphData::atom()
+Atom* GlyphData::atom()
 {
 	return atom_;
 }
@@ -238,13 +238,13 @@ GlyphData *Glyph::data(int i)
 }
 
 // Set parent model
-void Glyph::setParent(Model *parent)
+void Glyph::setParent(Model* parent)
 {
 	parent_ = parent;
 }
 
 // Return parent model
-Model *Glyph::parent()
+Model* Glyph::parent()
 {
 	return parent_;
 }

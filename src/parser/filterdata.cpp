@@ -147,13 +147,13 @@ bool FilterData::doesNameMatch(const char *name) const
 }
 
 // Set the partner filter
-void FilterData::setPartner(Tree *filter)
+void FilterData::setPartner(Tree* filter)
 {
 	partner_ = filter;
 }
 
 // Return the partner filter
-Tree *FilterData::partner() const
+Tree* FilterData::partner() const
 {
 	return partner_;
 }
@@ -280,25 +280,25 @@ const char *FilterData::description()
 }
 
 // Set trajectory header function
-void FilterData::setTrajectoryHeaderFunction(Tree *func)
+void FilterData::setTrajectoryHeaderFunction(Tree* func)
 {
 	headerFunction_ = func;
 }
 
 // Set trajectory frame function
-void FilterData::setTrajectoryFrameFunction(Tree *func)
+void FilterData::setTrajectoryFrameFunction(Tree* func)
 {
 	frameFunction_ = func;
 }
 
 // Set trajectory header function
-Tree *FilterData::trajectoryHeaderFunction() const
+Tree* FilterData::trajectoryHeaderFunction() const
 {
 	return headerFunction_;
 }
 
 // Set trajectory frame function
-Tree *FilterData::trajectoryFrameFunction() const
+Tree* FilterData::trajectoryFrameFunction() const
 {
 	return frameFunction_;
 }

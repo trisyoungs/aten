@@ -1,5 +1,5 @@
 /*
-	*** TCanvas Functions
+	*** Viewer Functions
 	*** src/gui/tcanvas_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -20,25 +20,22 @@
 */
 
 #include "main/aten.h"
-#include "gui/tcanvas.uih"
-#include "gui/gui.h"
-
-// Local variables
-bool DONTDRAW = FALSE;
+#include "gui/viewer.uih"
+#include "render/glextensions.h"
 
 // Constructor
-TCanvas::TCanvas(QGLContext *ctxt, QWidget *parent) : QGLWidget(ctxt, parent)
+Viewer::Viewer(QWidget* parent)
 {
 	// Character / Setup
+	aten_ = NULL;
 	contextWidth_ = 0;
 	contextHeight_ = 0;
 
 	// Rendering
 	drawing_ = FALSE;
-	mouseMoveCounter_.start();
-	primitiveSet_ = RenderEngine::LowQuality;
-	renderType_ = RenderEngine::OnscreenScene;
-	renderIconSource_ = NULL;
+	lastSource_ = NULL;
+	lastSourceFrameId_ = -1;
+	primitiveSet_ = Viewer::LowQuality;
 
 	// Atom Selection
 	atomClicked_ = NULL;
@@ -65,29 +62,116 @@ TCanvas::TCanvas(QGLContext *ctxt, QWidget *parent) : QGLWidget(ctxt, parent)
 }
 
 // Destructor
-TCanvas::~TCanvas()
+Viewer::~Viewer()
 {
-// 	printf("Destroying TCanvas\n");
 }
 
 /*
-// Character
-*/
+ * Character / Setup
+ */
+
+// Initialise context widget (when created by Qt)
+void Viewer::initializeGL()
+{
+	msg.enter("Viewer::initializeGL");
+	
+        valid_ = true;
+
+        // Create a GLExtensions object to probe features and give when pushing instances etc.
+        GLExtensions* extensions = extensionsStack_.add();
+
+        // Check for vertex buffer extensions
+        if ((!extensions->hasVBO()) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
+        {
+		// ATEN2 TODO If this is called for an offscreen render, and VBOs are not available (but *are* in the GUI), won't this break rendering?
+                printf("VBO extension is requested but not available, so reverting to display lists instead.\n");
+                PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
+        }
+
+	msg.exit("Viewer::initializeGL");
+}
+
+void Viewer::paintGL()
+{
+	// Do nothing if the canvas is not valid, or we are still drawing from last time, or the Aten pointer has not been set
+	if ((!valid_) || drawing_ || (!aten_))
+	{
+		msg.exit("Viewer::paintGL");
+		return;
+	}
+
+	// Set the drawing flag so we don't have any rendering clashes
+	drawing_ = true;
+
+	// Grab topmost GLExtensions pointer
+	GLExtensions* extensions = extensionsStack_.last();
+	if (extensions == NULL)
+	{
+		printf("Internal Error: No GLExtensions object on stack.\n");
+		drawing_ = false;
+		msg.exit("Viewer::paintGL");
+		return;
+	}
+
+	// Setup basic GL stuff
+	setupGL();
+
+	// Set colour mode
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_TEXTURE_2D);
+
+	// Clear view
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	renderScene();
+
+	// Set the rendering flag to false
+	drawing_ = false;
+
+	// If we were rendering offscreen, delete the topmost GLExtensions object here (primitives will have already been popped)
+	if (renderingOffScreen_) extensionsStack_.removeLast();
+
+	// Always revert to lower quality for next pass
+	primitiveSet_ = Viewer::LowQuality;
+
+	msg.exit("Viewer::paintGL");
+}
+
+// Resize function
+void Viewer::resizeGL(int newwidth, int newheight)
+{
+	// Store the new width and height of the widget
+	contextWidth_ = (GLsizei) newwidth;
+	contextHeight_ = (GLsizei) newheight;
+}
+
+void Viewer::focusOutEvent(QFocusEvent *event)
+{
+	parent_.updateWidgets(AtenWindow::StatusBarTarget);
+}
+
+// Set pointer to Aten's main structure
+void Viewer::setAten(Aten* aten)
+{
+	aten_ = aten;
+}
 
 // Return the current height of the drawing area
-GLsizei TCanvas::contextHeight() const
+GLsizei Viewer::contextHeight() const
 {
 	return contextHeight_;
 }
 
 // Return the current width of the drawing area
-GLsizei TCanvas::contextWidth() const
+GLsizei Viewer::contextWidth() const
 {
 	return contextWidth_;
 }
 
 // Probe features
-void TCanvas::probeFeatures()
+void Viewer::probeFeatures()
 {
 	if (msg.isOutputActive(Messenger::GL))
 	{
@@ -105,108 +189,98 @@ void TCanvas::probeFeatures()
 	}
 }
 
-/*
-// Render Target
-*/
 
-// Determine target model based on clicked position on TCanvas
-Model *TCanvas::modelAt(int x, int y)
+// Check for GL error
+void Viewer::checkGlError()
+{
+	GLenum glerr = GL_NO_ERROR;
+	do
+	{
+		switch (glGetError())
+		{
+			case (GL_INVALID_ENUM): msg.print(Messenger::Verbose, "GLenum argument out of range\n"); break;
+			case (GL_INVALID_VALUE): msg.print(Messenger::Verbose, "Numeric argument out of range\n"); break;
+			case (GL_INVALID_OPERATION): msg.print(Messenger::Verbose, "Operation illegal in current state\n"); break;
+			case (GL_STACK_OVERFLOW): msg.print(Messenger::Verbose, "Command would cause a stack overflow\n"); break;
+			case (GL_STACK_UNDERFLOW): msg.print(Messenger::Verbose, "Command would cause a stack underflow\n"); break;
+			case (GL_OUT_OF_MEMORY): msg.print(Messenger::Verbose, "Not enough memory left to execute command\n"); break;
+			case (GL_NO_ERROR): msg.print(Messenger::Verbose, "No GL error\n"); break;
+			default:
+				msg.print(Messenger::Verbose, "Unknown GL error?\n");
+				break;
+		}
+	} while (glerr != GL_NO_ERROR);
+}
+
+// Refresh widget / scene
+void Viewer::postRedisplay()
+{
+	if ((!valid_) || drawing_) return;
+	update();
+}
+
+// Set whether we are currently rendering offscreen
+void Viewer::setRenderingOffScreen(bool b)
+{
+	renderingOffScreen_ = b;
+}
+
+// Set line width and text scaling to use
+void Viewer::setObjectScaling(double scaling)
+{
+	lineWidthScaling_ = scaling;
+
+	// Pass this value on to those that depend on it
+	LineStyle::setLineWidthScale(scaling);
+	TextPrimitive::setTextSizeScale(scaling);
+}
+
+// Grab current contents of framebuffer
+QPixmap Viewer::frameBuffer()
+{
+	QImage image = grabFrameBuffer();
+	return QPixmap::fromImage(image);
+}
+
+// Render or grab image
+QPixmap Viewer::generateImage(int w, int h)
+{
+	renderingOffScreen_ = true;
+
+	// Generate offscreen bitmap (a temporary context will be created)
+	QPixmap pixmap = renderPixmap(w, h, false);
+
+	// Ensure correct widget context size is stored
+	contextWidth_ = (GLsizei) width();
+	contextHeight_ = (GLsizei) height();
+
+	renderingOffScreen_ = false;
+
+	return pixmap;
+}
+
+// Determine target model based on clicked position on Viewer
+Model* Viewer::modelAt(int x, int y)
 {
 	int nrows, py, px, id;
 	
 	// Is only one model displayed?
-	if (aten.nVisibleModels() <= 1) return aten.currentModel();
+	if (aten_->nVisibleModels() <= 1) return aten_->currentModel();
 
 	// Determine whether we need to change Aten's currentmodel based on click position on the canvas
-	nrows = aten.nVisibleModels()/prefs.nModelsPerRow() + (aten.nVisibleModels()%prefs.nModelsPerRow() == 0 ? 0 : 1);
+	nrows = aten_->nVisibleModels()/prefs.nModelsPerRow() + (aten_->nVisibleModels()%prefs.nModelsPerRow() == 0 ? 0 : 1);
 	py = contextHeight_ / nrows;
-	px = (aten.nVisibleModels() == 1 ? contextWidth_ : contextWidth_ / prefs.nModelsPerRow());
+	px = (aten_->nVisibleModels() == 1 ? contextWidth_ : contextWidth_ / prefs.nModelsPerRow());
 
 	// Work out model index...
 	id = (y/py)*prefs.nModelsPerRow() + x/px;
 
 	// In the case of clicking in a blank part of the canvas with no model (i.e. bottom-right corner) return a safe model pointer
-	return (id >= aten.nVisibleModels() ? aten.currentModel() : aten.visibleModel(id));
+	return (id >= aten_->nVisibleModels() ? aten_->currentModel() : aten_->visibleModel(id));
 }
 
 // Request a high-quality rendering pass on next redraw (for image saving, etc.)
-void TCanvas::requestHighQuality()
+void Viewer::requestHighQuality()
 {
-	primitiveSet_ = RenderEngine::HighQuality;
-}
-
-// Set renderType to pass to RenderEngine::renderScene()
-void TCanvas::setRenderType(RenderEngine::RenderType type, Model *iconSource)
-{
-	renderType_ = type;
-	renderIconSource_ = iconSource;
-}
-
-/*
-// Rendering Functions
-*/
-
-// Initialise context widget (when created by Qt)
-void TCanvas::initializeGL()
-{
-	// Initialize GL
-	msg.enter("TCanvas::initializeGL");
-	
-	// Push primitive instance for the TCanvas *if* we are not using pixelbuffers
-	if (!prefs.usePixelBuffers())
-	{
-		engine().pushInstance(primitiveSet_, context());
-// 		engine().pushInstance(RenderEngine::HighQuality, context());
-	}
-
-	msg.exit("TCanvas::initializeGL");
-}
-
-void TCanvas::paintGL()
-{
-	renderScene(contextWidth_, contextHeight_);
-}
-
-// General repaint callback
-void TCanvas::paintEvent(QPaintEvent *event)
-{
-	// Do nothing if the canvas is not valid, or we are still drawing from last time.
-	renderScene(contextWidth_, contextHeight_);
-}
-
-// Resize function
-void TCanvas::resizeGL(int newwidth, int newheight)
-{
-	// Store the new width and height of the widget
-	contextWidth_ = (GLsizei) newwidth;
-	contextHeight_ = (GLsizei) newheight;
-}
-
-// Begin GL
-bool TCanvas::beginGl()
-{
-	drawing_ = TRUE;
-	return TRUE;
-}
-
-// Finalize GL commands
-void TCanvas::endGl()
-{
-	drawing_ = FALSE;
-}
-
-// Refresh widget
-void TCanvas::postRedisplay()
-{
-	if (drawing_) return;
-	update();
-}
-
-/*
-// Other Qt Virtuals
-*/
-
-void TCanvas::focusOutEvent(QFocusEvent *event)
-{
-	parent_.updateWidgets(AtenWindow::StatusBarTarget);
+	primitiveSet_ = Viewer::HighQuality;
 }

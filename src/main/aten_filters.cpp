@@ -118,74 +118,28 @@ bool Aten::openFilter(const char *filename)
 void Aten::createFileDialogFilters()
 {
 	msg.enter("Aten::createFileDialogFilters");
-	Refitem<Tree,int> *ri;
-	int n;
 
-	// Model Import
-	loadModelFilters.clear();
-	loadModelFilters += "All files (*)";
-	for (ri = aten.filters(FilterData::ModelImport); ri != NULL; ri = ri->next)
+	// Standard filter types
+	for (int n=0; n<FilterData::nFilterTypes; ++n)
 	{
-		loadModelFilters += ";;";
-		loadModelFilters += ri->item->filter.description();
-	}
-	ui.actionFileOpen->setEnabled(!loadModelFilters.isEmpty());
-	ui.RecentMenu->setEnabled(!loadModelFilters.isEmpty());
-
-	// Trajectory Import
-	loadTrajectoryFilters.clear();
-	loadTrajectoryFilters += "All files (*)";
-	for (ri= aten.filters(FilterData::TrajectoryImport); ri != NULL; ri = ri->next)
-	{
-		loadTrajectoryFilters += ";;";
-		loadTrajectoryFilters += ri->item->filter.description();
-	}
-	ui.actionTrajectoryOpen->setEnabled(!loadTrajectoryFilters.isEmpty());
-
-	// Model Export
-	saveModelFilters.clear();
-	for (ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
-	{
-		if (!saveModelFilters.isEmpty()) saveModelFilters += ";;";
-		saveModelFilters += ri->item->filter.description();
-	}
-	// Check for empty filters list
-	ui.actionFileSave->setEnabled(!saveModelFilters.isEmpty());
-	ui.actionFileSaveAs->setEnabled(!saveModelFilters.isEmpty());
-
-	// Save image
-	saveBitmapFilters.clear();
-	for (n=0; n < RenderEngine::nBitmapFormats; n++)
-	{
-		if (!saveBitmapFilters.isEmpty()) saveBitmapFilters += ";;";
-		saveBitmapFilters += RenderEngine::bitmapFormatFilter( (RenderEngine::BitmapFormat) n);
+		FilterData::FilterType ft = (FilterData::FilterType) n;
+		fileDialogFilters_[ft].clear();
+		fileDialogFilters_[ft] += "All files (*)";
+		for (Refitem<Tree,int>* ri = filters_[ft].first(); ri != NULL; ri = ri->next)
+		{
+			fileDialogFilters_[ft] += ";;";
+			fileDialogFilters_[ft] += ri->item->filter.description();
+		}
 	}
 
-	// Save vector
-// 	saveVectorDialog->filters().clear();
-// 	filters.clear();
-// 	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
-// 	saveVectorDialog->setFilters(filters);
-
-	// Expression Export
-	saveExpressionFilters.clear();
-	for (ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+	// Bitmap formats
+	bitmapFileDialogFilters_.clear();
+	for (int n=0; n < Aten::nBitmapFormats; ++n)
 	{
-		if (!saveExpressionFilters.isEmpty()) saveExpressionFilters += ";;";
-		saveExpressionFilters += ri->item->filter.description();
+		if (!bitmapFileDialogFilters_.isEmpty()) bitmapFileDialogFilters_ += ";;";
+		bitmapFileDialogFilters_ += Aten::bitmapFormatFilter( (Aten::BitmapFormat) n);
 	}
-	// Check for empty filters list
-	ui.actionSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
 
-	// Grid import
-	loadGridFilters.clear();
-	loadGridFilters += "All files (*)";
-	for (ri = aten.filters(FilterData::GridImport); ri != NULL; ri = ri->next)
-	{
-		loadGridFilters += ";;";
-		loadGridFilters += ri->item->filter.description();
-	}
-	gui.gridsWidget->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
 
 	// Create open script dialog
 	loadScriptFilters.clear();
@@ -195,7 +149,7 @@ void Aten::createFileDialogFilters()
 }
 
 // Register a filter of a given type at start of list
-void Aten::registerFilter(Tree *filter, FilterData::FilterType ft)
+void Aten::registerFilter(Tree* filter, FilterData::FilterType ft)
 {
 	filters_[ft].addStart(filter);
 }
@@ -296,7 +250,7 @@ void Aten::partnerFilters()
 	// Loop through import filters and search / set export partners
 	Dnchar s("Model Formats:");
 	Refitem<Tree,int> *ri, *rj;
-	Tree *imp, *exp;
+	Tree* imp, *exp;
 	int importid;
 	for (ri = filters_[FilterData::ModelImport].first(); ri != NULL; ri = ri->next)
 	{
@@ -350,7 +304,7 @@ void Aten::partnerFilters()
 }
 
 // Find filter with specified type and nickname
-Tree *Aten::findFilter(FilterData::FilterType ft, const char *nickname) const
+Tree* Aten::findFilter(FilterData::FilterType ft, const char *nickname) const
 {
 	msg.enter("Aten::findFilter");
 	Refitem<Tree,int> *result;
@@ -362,7 +316,7 @@ Tree *Aten::findFilter(FilterData::FilterType ft, const char *nickname) const
 }
 
 // Find filter by description
-Tree *Aten::findFilterByDescription(FilterData::FilterType ft, const char *description) const
+Tree* Aten::findFilterByDescription(FilterData::FilterType ft, const char *description) const
 {
 	msg.enter("Aten::findFilterByDescription");
 	Refitem<Tree,int> *result;

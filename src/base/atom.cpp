@@ -111,13 +111,13 @@ Atom::~Atom()
 }
 
 // Set parent model
-void Atom::setParent(Model *m)
+void Atom::setParent(Model* m)
 {
 	parent_ = m;
 }
 
 // Return parent model
-Model *Atom::parent()
+Model* Atom::parent()
 {
 	return parent_;
 }
@@ -193,13 +193,13 @@ short int Atom::os() const
 }
 
 // Set the forcefield type of the atom
-void Atom::setType(ForcefieldAtom *ffa)
+void Atom::setType(ForcefieldAtom* ffa)
 {
 	type_ = ffa;
 }
 
 // Return the forcefield type of the atom
-ForcefieldAtom *Atom::type() const
+ForcefieldAtom* Atom::type() const
 {
 	return type_;
 }
@@ -237,7 +237,7 @@ int Atom::nHydrogens()
 }
 
 // Check the ff type of the atom against the supplied value
-bool Atom::typeIs(ForcefieldAtom *type) const
+bool Atom::typeIs(ForcefieldAtom* type) const
 {
 	return (type == type ? TRUE : FALSE);
 }
@@ -271,7 +271,7 @@ void Atom::reset()
 }
 
 // Copy atom data
-bool Atom::copy(Atom *source)
+bool Atom::copy(Atom* source)
 {
 	if (source == NULL) return FALSE;
 	r_ = source->r_;
@@ -295,7 +295,7 @@ bool Atom::copy(Atom *source)
 }
 
 // Copy atom style
-void Atom::copyStyle(Atom *source)
+void Atom::copyStyle(Atom* source)
 {
 	style_ = source->style_;
 	hidden_ = source->hidden_;
@@ -390,7 +390,7 @@ int Atom::totalBondOrder()
 }
 
 // Find bond to atom 'j'
-Bond *Atom::findBond(Atom *j)
+Bond *Atom::findBond(Atom* j)
 {
 	msg.enter("Atom::findBond");
 	Bond *result = NULL;
@@ -407,7 +407,7 @@ Bond *Atom::findBond(Atom *j)
 }
 
 // Return bond order with specified bond partner
-double Atom::bondOrder(Atom *j)
+double Atom::bondOrder(Atom* j)
 {
 	msg.enter("Atom::bondOrder");
 	// First, find the bond
@@ -551,12 +551,12 @@ void Atom::addBoundToReflist(Reflist<Atom,int> *rlist)
 }
 
 // Calculate bond plane (unit) vector
-Vec3<double> Atom::findBondPlane(Atom *other, Bond *excludedBond, const Vec3<double> &vij, bool vijIsNormalised)
+Vec3<double> Atom::findBondPlane(Atom* other, Bond *excludedBond, const Vec3<double> &vij, bool vijIsNormalised)
 {
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	Vec3<double> rk, xp, vijnorm;
 	Refitem<Bond,int> *bref;
-	Atom *origin;
+	Atom* origin;
 
 	vijnorm = vij;
 	if (!vijIsNormalised) vijnorm.normalise();

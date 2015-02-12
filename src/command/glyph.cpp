@@ -70,7 +70,7 @@ bool Command::function_GlyphAtomF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
-	Atom *target = obj.i;
+	Atom* target = obj.i;
 	if (c->hasArg(1))
 	{
 		if (c->argType(1) == VTypes::AtomData) target = (Atom*) c->argp(1, VTypes::AtomData);
@@ -95,7 +95,7 @@ bool Command::function_GlyphAtomR(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
-	Atom *target = obj.i;
+	Atom* target = obj.i;
 	if (c->hasArg(1))
 	{
 		if (c->argType(1) == VTypes::AtomData) target = (Atom*) c->argp(1, VTypes::AtomData);
@@ -120,7 +120,7 @@ bool Command::function_GlyphAtomV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
-	Atom *target = obj.i;
+	Atom* target = obj.i;
 	if (c->hasArg(1))
 	{
 		if (c->argType(1) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(1, VTypes::AtomData), GlyphData::VelocityData);

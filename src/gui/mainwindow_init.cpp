@@ -195,9 +195,6 @@ void AtenWindow::finaliseUi()
 	// Load Qt Settings
 	loadSettings();
 
-	// Create filter lists for file dialogs
-	createDialogFilters();
-
 	msg.exit("AtenWindow::finaliseUi");
 }
 
@@ -217,4 +214,3 @@ void AtenWindow::setControls()
 
 	msg.exit("AtenWindow::setControls");
 }
-

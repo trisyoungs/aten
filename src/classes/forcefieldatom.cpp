@@ -254,7 +254,7 @@ VariableList *ForcefieldAtom::data()
 }
 
 // Copy structure
-void ForcefieldAtom::copy(ForcefieldAtom *source)
+void ForcefieldAtom::copy(ForcefieldAtom* source)
 {
 	vdwForm_ = source->vdwForm_;
 	typeId_ = source->typeId_;

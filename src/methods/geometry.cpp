@@ -97,7 +97,7 @@ bool Geometry::initialise()
 }
 
 // Accumulate quantity data from supplied model
-void Geometry::accumulate(Model *sourcemodel)
+void Geometry::accumulate(Model* sourcemodel)
 {
 	msg.enter("Geometry::accumulate");
 	int m1, m2, m3, m4, bin;
@@ -188,7 +188,7 @@ void Geometry::accumulate(Model *sourcemodel)
 }
 
 // Finalise
-void Geometry::finalise(Model *sourcemodel)
+void Geometry::finalise(Model* sourcemodel)
 {
 	msg.enter("Geometry::finalise");
 	msg.exit("Geometry::finalise");

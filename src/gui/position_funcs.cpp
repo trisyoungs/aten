@@ -123,7 +123,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 	Vec3<double> tvec;
 	tvec.set(axis, double(dir));
 	// Grab model in preparation for undostate...
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (ui.TranslateModelFrameRadio->isChecked())
 	{
 		// Translate selection in the cartesian axes of the model
@@ -225,7 +225,7 @@ void PositionWidget::on_ShiftVectorPositiveButton_clicked(bool checked)
 	v.y = ui.ShiftVectorYSpin->value();
 	v.z = ui.ShiftVectorZSpin->value();
 	v *= ui.ShiftVectorDeltaSpin->value();
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
@@ -240,7 +240,7 @@ void PositionWidget::on_ShiftVectorNegativeButton_clicked(bool checked)
 	v.y = ui.ShiftVectorYSpin->value();
 	v.z = ui.ShiftVectorZSpin->value();
 	v *= -ui.ShiftVectorDeltaSpin->value();
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
@@ -258,7 +258,7 @@ void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 	v.x = ui.RepositionTargetXSpin->value() - ui.RepositionReferenceXSpin->value();
 	v.y = ui.RepositionTargetYSpin->value() - ui.RepositionReferenceYSpin->value();
 	v.z = ui.RepositionTargetZSpin->value() - ui.RepositionReferenceZSpin->value();
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	m->beginUndoState("Reposition %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();

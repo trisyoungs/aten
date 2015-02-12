@@ -36,7 +36,7 @@ bool Command::function_AddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(0))
 	{
 		obj.rs()->beginUndoState("Add Hydrogens to Atom");
-		Atom *i;
+		Atom* i;
 		static ReturnValue v1;
 		if (!c->arg(0, v1)) return FALSE;
 		if (v1.type() == VTypes::IntegerData) i = obj.rs()->atom(v1.asInteger()-1);
@@ -61,8 +61,8 @@ bool Command::function_AddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Convert coordinates/data of object(s) to Bohr
 bool Command::function_Bohr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Atom *i;
-	Model *m;
+	Atom* i;
+	Model* m;
 	Grid *g;
 	bool result = TRUE;
 	for (int n=0; n<c->nArgs(); ++n)
@@ -110,7 +110,7 @@ bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
 	obj.rs()->beginUndoState("Draw Chain");
-	Atom *i;
+	Atom* i;
 	ReturnValue v1;
 	short int el = c->argz(0);
 	if (c->hasArg(3))
@@ -169,7 +169,7 @@ bool Command::function_GrowAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Determine element (based on type of variable provided)
 	short int el = c->argz(0);
 
-	Atom *i;
+	Atom* i;
 	ReturnValue v1;
 	if (!c->arg(1, v1)) return FALSE;
 	if (v1.type() == VTypes::IntegerData) i = obj.rs()->atom(v1.asInteger()-1);
@@ -214,13 +214,13 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Add the name to the model's namesForcefield, if requested and it exists
 	if (prefs.keepNames())
 	{
-		ForcefieldAtom *ffa = obj.rs()->addAtomName(el, c->argc(0));
+		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
 		aten.current.i->setType(ffa);
 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
 	}
 	if (prefs.keepTypes())
 	{
-		ForcefieldAtom *ffa = NULL;
+		ForcefieldAtom* ffa = NULL;
 		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 		{
 			ffa = ff->findType(c->argc(0));
@@ -286,13 +286,13 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Add the name to the model's namesForcefield, if requested and it exists
  	if (prefs.keepNames())
  	{
-		ForcefieldAtom *ffa = obj.rs()->addAtomName(el, c->argc(0));
+		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
  		aten.current.i->setType(ffa);
  		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
  	}
  	if (prefs.keepTypes())
 	{
-		ForcefieldAtom *ffa;
+		ForcefieldAtom* ffa;
 		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 		{
 			ffa = ff->findType(c->argc(0));
@@ -328,13 +328,13 @@ bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Add the name to the model's namesForcefield, if requested and it exists
  	if (prefs.keepNames())
  	{
-		ForcefieldAtom *ffa = obj.rs()->addAtomName(el, c->argc(0));
+		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
  		aten.current.i->setType(ffa);
  		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
  	}
  	if (prefs.keepTypes())
 	{
-		ForcefieldAtom *ffa;
+		ForcefieldAtom* ffa;
 		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 		{
 			ffa = ff->findType(c->argc(0));

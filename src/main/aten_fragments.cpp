@@ -22,7 +22,7 @@
 #include "main/aten.h"
 
 // Add new fragment model from specified model's current selection
-void Aten::addFragmentFromSelection(Model *source, const char *parentgroup)
+void Aten::addFragmentFromSelection(Model* source, const char *parentgroup)
 {
 	msg.enter("Aten::addFragmentFromSelection");
 
@@ -46,7 +46,7 @@ void Aten::addFragmentFromSelection(Model *source, const char *parentgroup)
 	// Create new fragment model and paste in source model selection
 	Clipboard clip;
 	clip.copySelection(source);
-	Model *m = addModel();
+	Model* m = addModel();
 	clip.pasteToModel(m, FALSE);
 
 	// Does the named fragment group already exist? If not, create new one
@@ -74,7 +74,7 @@ bool Aten::parseFragmentDir(const char *path, const char *groupname)
 {
 	msg.enter("Aten::parseFragmentDir");
 	int i;
-	Tree *t;
+	Tree* t;
 	Fragment *f;
 	FragmentGroup *fg;
 	QPixmap pixmap;

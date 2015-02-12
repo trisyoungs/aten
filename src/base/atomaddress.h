@@ -34,7 +34,7 @@ class Atomaddress
 	// Local (molecule) atom offset
 	int offset_;
 	// Pattern node in which the atom lies (must be set by model before site is used)
-	Pattern *pattern_;
+	Pattern* pattern_;
 
 	public:
 	// Constructor / Destructor
@@ -56,9 +56,9 @@ class Atomaddress
 	// Returns the molecule the atom is in
 	int molecule();
 	// Set the pattern pointer for the atom
-	void setPattern(Pattern *p);
+	void setPattern(Pattern* p);
 	// Returns the current pattern for the atom
-	Pattern *pattern();
+	Pattern* pattern();
 };
 
 #endif

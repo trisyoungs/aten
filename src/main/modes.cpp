@@ -27,7 +27,7 @@
 */
 
 // Set format to use in export
-void Aten::setExportFilter(Tree *filter)
+void Aten::setExportFilter(Tree* filter)
 {
 	exportFilter_ = filter;
 }
@@ -39,7 +39,7 @@ void Aten::exportModels()
 	Dnchar filename;
 
 	// Loop over loaded models
-	for (Model *m = aten.models(); m != NULL; m = m->next)
+	for (Model* m = aten.models(); m != NULL; m = m->next)
 	{
 		aten.setCurrentModel(m, TRUE);
 		// Generate new filename for model.
@@ -81,7 +81,7 @@ Program  *Aten::addBatchCommand()
 void Aten::processModels()
 {
 	ReturnValue rv;
-	for (Model *m = models_.first(); m != NULL; m = m->next)
+	for (Model* m = models_.first(); m != NULL; m = m->next)
 	{
 		for (Program *cmd = batchCommands_.first(); cmd != NULL; cmd = cmd->next)
 		{
@@ -96,11 +96,11 @@ void Aten::processModels()
 // Save all models under their original names
 void Aten::saveModels()
 {
-	for (Model *m = models_.first(); m != NULL; m = m->next)
+	for (Model* m = models_.first(); m != NULL; m = m->next)
 	{
 		setCurrentModel(m, TRUE);
 		// Check model's filter - it will be the import filter, so try to get the partner
-		Tree *t = m->filter();
+		Tree* t = m->filter();
 		if (t == NULL)
 		{
 			msg.print("No export filter available for model '%s'. Not saved.\n", m->name());

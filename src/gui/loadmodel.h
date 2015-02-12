@@ -83,7 +83,7 @@ class AtenLoadModel : public QDialog
 
 	public:
 	// Return the selected format (if any)
-	Tree *selectedFormat();
+	Tree* selectedFormat();
 	// Return filename
 	const char *selectedFilename();
 };

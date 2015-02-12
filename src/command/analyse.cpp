@@ -41,7 +41,7 @@ bool Command::function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab trajectory config for analysis
-	Model *frame = obj.m->trajectoryCurrentFrame();
+	Model* frame = obj.m->trajectoryCurrentFrame();
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
 	rv.reset();
 	return TRUE;
@@ -130,7 +130,7 @@ bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int n, startframe, totalframes, frameskip, framestodo, framesdone;
 	bool calculate;
-	Model *frame;
+	Model* frame;
 	Calculable *calc;
 	// Check that the model has a trajectory associated to it
 	totalframes = obj.m->nTrajectoryFrames();

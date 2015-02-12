@@ -98,7 +98,7 @@ void restraints::clear_all()
 }
 
 // Prune restraints for deleted atoms
-void restraints::prune_atom(Atom *xatom)
+void restraints::prune_atom(Atom* xatom)
 {
 	// Search the lists of restraints for the supplied atom, and remove any that use it
 	msg.enter("restraints::prune_atom");

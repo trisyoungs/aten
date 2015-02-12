@@ -25,7 +25,7 @@
 #include <iostream>
 
 // Probe model
-Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
+Tree* Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 {
 	msg.enter("Aten::probeFile");
 	// Before we do the proper checking, make sure that the file exists and is readable
@@ -49,7 +49,7 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 	const char *dotpos;
 	Dnchar nameonly, *d;
 	Refitem<Tree,int> *ri;
-	Tree *f = NULL, *result = NULL;
+	Tree* f = NULL, *result = NULL;
 
 	// Get position of file extention and pure filename
 	dotpos = strrchr(filename,'.');

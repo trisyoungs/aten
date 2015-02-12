@@ -153,7 +153,7 @@ void AtenLoadModel::updateAndShow()
  */
 
 // Return the selected filter
-Tree *AtenLoadModel::selectedFormat()
+Tree* AtenLoadModel::selectedFormat()
 {
 	// Return the filter selected in the combo (or NULL if <Auto Detect> was selected)
 	int i = ui.FormatCombo->currentIndex();

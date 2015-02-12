@@ -88,7 +88,7 @@ void Model::clearMeasurements()
 }
 
 // Add distance measurement
-double Model::addDistanceMeasurement(Atom *i, Atom *j, bool quiet)
+double Model::addDistanceMeasurement(Atom* i, Atom* j, bool quiet)
 {
 	// Measure distances between atoms
 	msg.enter("Model::addDistanceMeasurement");
@@ -113,7 +113,7 @@ double Model::addDistanceMeasurement(int i, int j, bool quiet)
 }
 
 // Add angle measurement
-double Model::addAngleMeasurement(Atom *i, Atom *j, Atom *k, bool quiet)
+double Model::addAngleMeasurement(Atom* i, Atom* j, Atom* k, bool quiet)
 {
 	// Measure angles between atoms
 	msg.enter("Model::addAngleMeasurement");
@@ -138,7 +138,7 @@ double Model::addAngleMeasurement(int i, int j, int k, bool quiet)
 }
 
 // Add torsion measurement
-double Model::addTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l, bool quiet)
+double Model::addTorsionMeasurement(Atom* i, Atom* j, Atom* k, Atom* l, bool quiet)
 {
 	// Measure torsions between atoms
 	msg.enter("Model::addTorsionMeasurement");
@@ -171,7 +171,7 @@ void Model::removeMeasurement(Measurement *me)
 	if (recordingState_ != NULL)
 	{
 		MeasurementEvent *newchange = new MeasurementEvent;
-		Atom **atoms = me->atoms();
+		Atom* *atoms = me->atoms();
 		switch (type)
 		{
 			case (Measurement::Distance):
@@ -216,7 +216,7 @@ void Model::removeMeasurements(Measurement::MeasurementType gt)
 }
 
 // Delete measurements involving specific atom
-void Model::removeMeasurements(Atom *xatom)
+void Model::removeMeasurements(Atom* xatom)
 {
 	// Search the lists of measurements for the supplied atom, and remove any that use it
 	msg.enter("Model::removeMeasurements[atom]");
@@ -249,7 +249,7 @@ void Model::removeMeasurements(Atom *xatom)
 Measurement *Model::addMeasurement(Measurement::MeasurementType gt, ...)
 {
 	msg.enter("Model::addMeasurement");
-	Atom *i, *atoms[4];
+	Atom* i, *atoms[4];
 	// Get remaining atoms_...
 	int n, nexpected = Measurement::nMeasurementAtoms(gt);
 	va_list vars;
@@ -302,7 +302,7 @@ Measurement *Model::addMeasurement(Measurement::MeasurementType gt, ...)
 void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 {
 	msg.enter("Model::addMeasurementsInSelection");
-	Atom *i, *j, *k, *l;
+	Atom* i, *j, *k, *l;
 	Refitem<Atom,int> *ri;
 	Refitem<Bond,int> *b1, *b2, *b3;
 	switch (gt)
@@ -380,7 +380,7 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 }
 
 // Find specific distance
-Measurement *Model::findDistanceMeasurement(Atom *i, Atom *j) const
+Measurement *Model::findDistanceMeasurement(Atom* i, Atom* j) const
 {
 	Measurement *result = NULL;
 	for (result = distanceMeasurements_.first(); result != NULL; result = result->next)
@@ -392,7 +392,7 @@ Measurement *Model::findDistanceMeasurement(Atom *i, Atom *j) const
 }
 
 // Find specific angle
-Measurement *Model::findAngleMeasurement(Atom *i, Atom *j, Atom *k) const
+Measurement *Model::findAngleMeasurement(Atom* i, Atom* j, Atom* k) const
 {
 	Measurement *result = NULL;
 	for (result = angleMeasurements_.first(); result != NULL; result = result->next)
@@ -405,7 +405,7 @@ Measurement *Model::findAngleMeasurement(Atom *i, Atom *j, Atom *k) const
 }
 
 // Find specific torsion
-Measurement *Model::findTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l) const
+Measurement *Model::findTorsionMeasurement(Atom* i, Atom* j, Atom* k, Atom* l) const
 {
 	Measurement *result = NULL;
 	for (result = torsionMeasurements_.first(); result != NULL; result = result->next)
@@ -423,7 +423,7 @@ Measurement *Model::findTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l) c
 }
 
 // Calculate distance
-double Model::distance(Atom *i, Atom *j)
+double Model::distance(Atom* i, Atom* j)
 {
 	return cell_.distance(i,j);
 }
@@ -432,12 +432,12 @@ double Model::distance(Atom *i, Atom *j)
 double Model::distance(int i, int j)
 {
 	// Make sure we have a staticatoms array
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	return cell_.distance(modelatoms[i], modelatoms[j]);
 }
 
 // Calculate angle
-double Model::angle(Atom *i, Atom *j, Atom *k)
+double Model::angle(Atom* i, Atom* j, Atom* k)
 {
 	return cell_.angle(i,j,k);
 }
@@ -446,12 +446,12 @@ double Model::angle(Atom *i, Atom *j, Atom *k)
 double Model::angle(int i, int j, int k)
 {
 	// Make sure we have a staticatoms array
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	return cell_.angle(modelatoms[i], modelatoms[j], modelatoms[k]);
 }
 
 // Calculate torsion
-double Model::torsion(Atom *i, Atom *j, Atom *k, Atom *l)
+double Model::torsion(Atom* i, Atom* j, Atom* k, Atom* l)
 {
 	return cell_.torsion(i,j,k,l);
 }
@@ -460,7 +460,7 @@ double Model::torsion(Atom *i, Atom *j, Atom *k, Atom *l)
 double Model::torsion(int i, int j, int k, int l)
 {
 	// Make sure we have a staticatoms array
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	return cell_.torsion(modelatoms[i], modelatoms[j], modelatoms[k], modelatoms[l]);
 }
 

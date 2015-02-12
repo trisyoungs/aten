@@ -27,6 +27,7 @@
 // Forward Declarations
 class Pattern;
 class Model;
+class AtenWindow;
 
 // Select Pattern Dialog
 class AtenSelectPattern : public QDialog
@@ -34,37 +35,42 @@ class AtenSelectPattern : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+	public:
+	// Constructor / Destructor
+	AtenSelectPattern(AtenWindow& parent);
+	~AtenSelectPattern();
+	// Main form declaration
+	Ui::AtenSelectPattern ui;
+
+
 	/*
-	// Widget Functions
-	*/
+	 * Widget Functions
+	 */
 	private slots:
 	void on_PatternTable_doubleClicked(const QModelIndex &index);
 	void on_PatternTable_itemSelectionChanged();
 
+	
 	/*
-	// Private Data
+	 * Local Variables
 	*/
 	private:
 	// Current model target
-	Model *currentModel_;
+	Model* currentModel_;
 	// Pattern selected in list
-	Pattern *selectedPattern_;
+	Pattern* selectedPattern_;
+
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	public:
 	// Select a pattern from the specified model
-	Pattern *selectPattern(Model *source);
-
-	/*
-	// Widgets
-	*/
-	public:
-	// Constructor
-	AtenSelectPattern(QWidget* parent);
-	// Main form declaration
-	Ui::SelectPatternDialog ui;
+	Pattern* selectPattern(Model* source);
 };
 
 #endif

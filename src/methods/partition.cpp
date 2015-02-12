@@ -156,16 +156,16 @@ void PartitionData::resetReducedMass()
 }
 
 // Adjust partition density based on supplied model
-void PartitionData::adjustReducedMass(Atom *i, bool subtract)
+void PartitionData::adjustReducedMass(Atom* i, bool subtract)
 {
 	if (subtract) reducedMass_ -= Elements().atomicMass(i) / AVOGADRO;
 	else reducedMass_ += Elements().atomicMass(i) / AVOGADRO;
 }
 
 // Adjust partition density based on supplied model
-void PartitionData::adjustReducedMass(Model *m, bool subtract)
+void PartitionData::adjustReducedMass(Model* m, bool subtract)
 {
-	for (Atom *i = m->atoms(); i != NULL; i = i->next) adjustReducedMass(i, subtract);
+	for (Atom* i = m->atoms(); i != NULL; i = i->next) adjustReducedMass(i, subtract);
 }
 
 // Return current density of partition

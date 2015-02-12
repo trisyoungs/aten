@@ -31,6 +31,9 @@
 #include "base/choice.h"
 #include "render/primitive.h"
 
+// Set namespace
+using namespace AtenSpace;
+
 // Forward declarations
 class UnitCell;
 

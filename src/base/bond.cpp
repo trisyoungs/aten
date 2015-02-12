@@ -72,20 +72,20 @@ Bond::Bond() : ListItem<Bond>()
 }
 
 // Set atoms for bond
-void Bond::setAtoms(Atom *i, Atom *j)
+void Bond::setAtoms(Atom* i, Atom* j)
 {
 	atomI_ = i;
 	atomJ_ = j;
 }
 
 // Set atom I for bond
-void Bond::setAtomI(Atom *i)
+void Bond::setAtomI(Atom* i)
 {
 	atomI_ = i;
 }
 
 // Set atom I for bond
-void Bond::setAtomJ(Atom *j)
+void Bond::setAtomJ(Atom* j)
 {
 	atomJ_ = j;
 }
@@ -130,19 +130,19 @@ double Bond::order() const
 }
 
 // Return first atom in bond
-Atom *Bond::atomI()
+Atom* Bond::atomI()
 {
 	return atomI_;
 }
 
 // Return second atom in bond
-Atom *Bond::atomJ()
+Atom* Bond::atomJ()
 {
 	return atomJ_;
 }
 
 // Returns the partner of the specified atom in the bond structure
-Atom *Bond::partner(Atom *i)
+Atom* Bond::partner(Atom* i)
 {
 	return (i == atomI_ ? atomJ_ : atomI_);
 }

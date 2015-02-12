@@ -27,7 +27,7 @@
 #include <fstream>
 
 // Set the format of the trajectory
-void Model::setTrajectoryFilter(Tree *f)
+void Model::setTrajectoryFilter(Tree* f)
 {
 	trajectoryFilter_ = f;
 }
@@ -46,15 +46,15 @@ bool Model::trajectoryIsCached() const
 }
 
 // Return the current frame pointer
-Model *Model::trajectoryCurrentFrame() const
+Model* Model::trajectoryCurrentFrame() const
 {
 	return trajectoryCurrentFrame_;
 }
 
 // Return pointer to specified frame number
-Model *Model::trajectoryFrame(int n)
+Model* Model::trajectoryFrame(int n)
 {
-	Model *frame = NULL;
+	Model* frame = NULL;
 	if (trajectoryFramesAreCached_)
 	{
 		if ((n < 0) || (n >= nTrajectoryFrames())) msg.print("Frame %i is out of range for trajectory associated to model '%s'.\n", n, name_.get());
@@ -99,7 +99,7 @@ void Model::clearTrajectory()
 }
 
 // Initialise trajectory
-bool Model::initialiseTrajectory(const char *fname, Tree *f)
+bool Model::initialiseTrajectory(const char *fname, Tree* f)
 {
 	// Associate the supplied trajectory file with the model
 	msg.enter("Model::initialiseTrajectory");
@@ -159,7 +159,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	// Determine frame size and number of frames in file
 	msg.print(Messenger::Verbose,"Testing trajectory frame read...\n");
 	//printf("Initialised config\n");
-	Model *newframe = addTrajectoryFrame();
+	Model* newframe = addTrajectoryFrame();
 	setRenderSource(Model::TrajectorySource);
 
 	// Read first frame
@@ -226,10 +226,10 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 }
 
 // Add frame to trajectory
-Model *Model::addTrajectoryFrame()
+Model* Model::addTrajectoryFrame()
 {
 	msg.enter("Model::addFrame");	
-	Model *newframe = trajectoryFrames_.add();
+	Model* newframe = trajectoryFrames_.add();
 	newframe->setType(Model::TrajectoryFrameType);
 	// Set trajectoryCurrentFrame_ here (always points to the last added frame)
 	trajectoryCurrentFrame_ = newframe;
@@ -241,7 +241,7 @@ Model *Model::addTrajectoryFrame()
 }
 
 // Delete cached frame from trajectory
-void Model::removeTrajectoryFrame(Model *xframe)
+void Model::removeTrajectoryFrame(Model* xframe)
 {
 	// Delete the specified frame from the trajectory structure
 	msg.enter("Model::removeTrajectoryFrame");
@@ -458,7 +458,7 @@ void Model::setTrajectoryPropagateParentStyle(bool b)
 }
 
 // Copy style of the supplied model to all trajectory frames
-void Model::trajectoryCopyAtomStyle(Model *source)
+void Model::trajectoryCopyAtomStyle(Model* source)
 {
 	msg.enter("Model::trajectoryCopyAtomStyle");
 	if (source == NULL)
@@ -468,7 +468,7 @@ void Model::trajectoryCopyAtomStyle(Model *source)
 		return;
 	}
 	int pid = progress.initialise("Applying style to trajectory frames...", trajectoryFrames_.nItems(), FALSE);
-	for (Model *m = trajectoryFrames_.first(); m != NULL; m = m->next)
+	for (Model* m = trajectoryFrames_.first(); m != NULL; m = m->next)
 	{
 		if (m != source) m->copyAtomStyle(source);
 		progress.update(pid);

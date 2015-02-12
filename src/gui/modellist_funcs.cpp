@@ -73,7 +73,7 @@ void ModelListWidget::refresh()
 // 	ui.ModelTree->clear();
 	
 // 	TExtraTreeWidgetItem *item;
-// 	for (Model *m = parent_.aten().models(); m != NULL; m = m->next)
+// 	for (Model* m = parent_.aten().models(); m != NULL; m = m->next)
 // 	{
 // 		// Filter?
 // // 		if (!filterText_.isEmpty() && (strstr(lowerCase(f->masterModel()->name()), filterText_.get()) == 0)) continue;
@@ -92,7 +92,7 @@ void ModelListWidget::refresh()
 	
 	// Construct reference list of loaded models
 	Reflist<Model,int> xmodels;
-	Model *m;
+	Model* m;
 	ReturnValue rv;
 	TExtraTreeWidgetItem *twi;
 	for (m = parent_.aten().models(); m != NULL; m = m->next) xmodels.add(m);
@@ -140,7 +140,7 @@ void ModelListWidget::refresh()
 void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 {
 	ReturnValue rv;
-	Model *m;
+	Model* m;
 	Dnchar text;
 	
 	// Get model pointer from item
@@ -182,7 +182,7 @@ void ModelListWidget::toggleItem(TExtraTreeWidgetItem *twi)
 	// Check for no item or header item
 	if (twi == NULL) return;
 	ReturnValue rv = twi->dataForKey("model");
-	Model *m = (Model*) rv.asPointer(VTypes::ModelData);
+	Model* m = (Model*) rv.asPointer(VTypes::ModelData);
 	if (m == NULL) return;
 
 	refreshing_ = TRUE;
@@ -235,7 +235,7 @@ void ModelListWidget::deselectAll(TExtraTreeWidgetItem *selectitem)
 	
 	// Clear selected items
 	TExtraTreeWidgetItem *twi;
-	Model *m;
+	Model* m;
 	ReturnValue rv;
 	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
 	{
@@ -254,7 +254,7 @@ void ModelListWidget::deselectAll(TExtraTreeWidgetItem *selectitem)
 
 void ModelListWidget::on_RefreshIconsButton_clicked(bool checked)
 {
-	for (Model *m = parent_.aten().models(); m != NULL; m = m->next) m->regenerateIcon();
+	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) m->regenerateIcon();
 	refresh();
 }
 
@@ -268,7 +268,7 @@ void ModelListWidget::on_ModelsPerRowSpin_valueChanged(int value)
 void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 {
 	ReturnValue rv;
-	Model *m;
+	Model* m;
 	// Left Button is selection operator, right is context menu
 	if ((event->buttons()&Qt::LeftButton))
 	{
@@ -330,7 +330,7 @@ void ModelListWidget::treeMouseDoubleClickEvent(QMouseEvent *event)
 		if (lastClicked_ == NULL) return;
 
 		ReturnValue rv = lastClicked_->dataForKey("model");
-		Model *m = (Model*) rv.asPointer(VTypes::ModelData);
+		Model* m = (Model*) rv.asPointer(VTypes::ModelData);
 		if (m == NULL) return;
 
 		m = m->renderSourceModel();
@@ -352,7 +352,7 @@ void ModelListWidget::renameModel(bool checked)
 	if (lastClicked_ == NULL) return;
 		
 	ReturnValue rv = lastClicked_->dataForKey("model");
-	Model *m = (Model*) rv.asPointer(VTypes::ModelData);
+	Model* m = (Model*) rv.asPointer(VTypes::ModelData);
 	if (m == NULL) return;
 	m = m->renderSourceModel();
 	
@@ -371,12 +371,12 @@ void ModelListWidget::renameModel(bool checked)
 void ModelListWidget::closeSelectedModels(bool checked)
 {
 	TExtraTreeWidgetItem *twi;
-	Model *m;
+	Model* m;
 	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
 	{
 		twi = (TExtraTreeWidgetItem*) item;
 		ReturnValue rv = lastClicked_->dataForKey("model");
-		Model *m = (Model*) rv.asPointer(VTypes::ModelData);
+		Model* m = (Model*) rv.asPointer(VTypes::ModelData);
 		if (m == NULL) continue;
 		if (!parent_.aten().closeModel(m)) break;
 	}
@@ -392,7 +392,7 @@ void ModelListWidget::closeUnselectedModels(bool checked)
 
 	// First, create a list of all loaded models...
 	Reflist<Model,int> xmodels;
-	Model *m;
+	Model* m;
 	ReturnValue rv;
 	TExtraTreeWidgetItem *twi;
 	for (m = parent_.aten().models(); m != NULL; m = m->next) xmodels.add(m);
@@ -420,7 +420,7 @@ void ModelListWidget::closeThisModel(bool checked)
 	
 	// Close clicked model
 	ReturnValue rv = lastClicked_->dataForKey("model");
-	Model *m = (Model*) rv.asPointer(VTypes::ModelData);
+	Model* m = (Model*) rv.asPointer(VTypes::ModelData);
 	parent_.aten().closeModel(m);
 	parent_.updateWidgets(AtenWindow::AllTarget - AtenWindow::ForcefieldsTarget);
 }

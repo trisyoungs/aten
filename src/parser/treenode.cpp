@@ -66,13 +66,13 @@ TreeNode::NodeType TreeNode::nodeType() const
 }
 
 // Set parent 
-void TreeNode::setParent(Tree *parent)
+void TreeNode::setParent(Tree* parent)
 {
 	parent_ = parent;
 }
 
 // Retrieve parent
-Tree *TreeNode::parent() const
+Tree* TreeNode::parent() const
 {
 	return parent_;
 }
@@ -648,7 +648,7 @@ short int TreeNode::argz(int i)
 	}
 	static ReturnValue rv;
 	NameMap<int> *nm;
-	Atom *atm;
+	Atom* atm;
 	short int result = 0;
 	Element *elem;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);

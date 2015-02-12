@@ -108,7 +108,7 @@ void GlyphsWidget::refresh()
 	refreshing_ = TRUE;
 	// Clear any existing items
 	ui.GlyphList->clear();
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) addItemToList(g);
 	// Set initial selection
 	ui.GlyphList->setCurrentRow(0);
@@ -224,7 +224,7 @@ void GlyphsWidget::on_GlyphList_itemSelectionChanged()
 
 void GlyphsWidget::on_GlyphAddButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setSelected(FALSE);
 	Glyph *g = m->addGlyph(Glyph::ArrowGlyph);
@@ -246,7 +246,7 @@ void GlyphsWidget::on_GlyphDeleteSelectedButton_clicked(bool checked)
 	// Loop over list of selected items and set new colour
 	int row = ui.GlyphList->currentRow();
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	Glyph *g;
 	for (int i = items.size()-1; i>=0; --i)
 	{
@@ -262,7 +262,7 @@ void GlyphsWidget::on_GlyphDeleteSelectedButton_clicked(bool checked)
 
 void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	Glyph *g;
 	refreshing_ = TRUE;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
@@ -277,7 +277,7 @@ void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
 
 void GlyphsWidget::on_GlyphSelectNoneButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	Glyph *g = m->glyphs();
 	refreshing_ = TRUE;
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
@@ -307,14 +307,14 @@ void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 
 void GlyphsWidget::on_GlyphHideAllButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
 	parent_.postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphHideNoneButton_clicked(bool checked)
 {
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(TRUE);
 	parent_.postRedisplay();
 }

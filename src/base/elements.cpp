@@ -379,43 +379,43 @@ void ElementMap::restoreData()
 }
 
 // Return group number of atomic number 'i'
-int ElementMap::group(Atom *i)
+int ElementMap::group(Atom* i)
 {
 	return group(i->element());
 }
 
 // Return atomic mass of atomic number 'i'
-double ElementMap::atomicMass(Atom *i)
+double ElementMap::atomicMass(Atom* i)
 {
 	return atomicMass(i->element());
 }
 
 // Return name of atomic number 'i'
-const char *ElementMap::name(Atom *i)
+const char *ElementMap::name(Atom* i)
 {
 	return name(i->element());
 }
 
 // Return symbol of atomic number 'i'
-const char *ElementMap::symbol(Atom *i)
+const char *ElementMap::symbol(Atom* i)
 {
 	return symbol(i->element());
 }
 
 // Return effective radius of atomic number 'i'
-double ElementMap::atomicRadius(Atom *i)
+double ElementMap::atomicRadius(Atom* i)
 {
 	return atomicRadius(i->element());
 }
 
 // Return bond order penalty for TBO 'bo' of atomic number 'i'
-int ElementMap::bondOrderPenalty(Atom *i, int bo)
+int ElementMap::bondOrderPenalty(Atom* i, int bo)
 {
 	return bondOrderPenalty(i->element(), bo);
 }
 
 // Return the colour of the element
-double *ElementMap::colour(Atom *i)
+double *ElementMap::colour(Atom* i)
 {
 	return colour(i->element());
 }
@@ -593,7 +593,7 @@ int ElementMap::nameToZ(const char *s) const
 // Convert string from fftype to element number
 int ElementMap::ffToZ(const char *s) const
 {
-	ForcefieldAtom *ffa;
+	ForcefieldAtom* ffa;
 	int result = -1;
 	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 	{

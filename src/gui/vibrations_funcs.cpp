@@ -50,7 +50,7 @@ void VibrationsWidget::refresh()
 {
 	msg.enter("VibrationsWidget::refresh");
 	refreshing_ = TRUE;
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	Dnchar text;
 	ui.VibrationsList->clear();
 	ui.DisplacementsTable->clear();
@@ -78,7 +78,7 @@ void VibrationsWidget::refresh()
 		ui.SaveImageButton->setEnabled(TRUE);
 		ui.SaveMovieButton->setEnabled(TRUE);
 	
-		Model *m = parent_.aten().currentModelOrFrame();
+		Model* m = parent_.aten().currentModelOrFrame();
 		m->generateVibration(ui.VibrationsList->currentRow(), 20);
 		m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
 	}
@@ -96,13 +96,13 @@ void VibrationsWidget::refreshDisplacements()
 	ui.DisplacementsTable->setHorizontalHeaderLabels(QStringList() << "Atom" << "dX" << "dY" << "dZ" );
 	int row = ui.VibrationsList->currentRow();
 	if (row == -1) return;
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	Vibration *vib = m->vibration(row);
 	Vec3<double> *displacements = vib->displacements();
 	QTableWidgetItem *item;
 	ui.DisplacementsTable->setRowCount(vib->nDisplacements());
 	int n;
-	Atom *i = m->atoms();
+	Atom* i = m->atoms();
 	for (n=0; n<vib->nDisplacements(); ++n)
 	{
 		if (i == NULL) msg.print("Warning - More displacements defined in Vibration than there are atoms in the parent model.\n");
@@ -132,7 +132,7 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 	// Stop current timer (if playing) - we'll restart it afterwards
 	bool wasplaying = ui.PlayPauseVibration->isChecked();
 	if (wasplaying) stopTimer();
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	m->generateVibration(ui.VibrationsList->currentRow(), 20);
 	m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
 	if (wasplaying) resetTimer(ui.DelaySpin->value());
@@ -154,7 +154,7 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 	{
 		vibrationPlaying_ = TRUE;
 		this->setEnabled(TRUE);
-		Model *m = parent_.aten().currentModelOrFrame();
+		Model* m = parent_.aten().currentModelOrFrame();
 		ui.FrameSlider->setEnabled(FALSE);
 		ui.SaveImageButton->setEnabled(FALSE);
 		ui.SaveMovieButton->setEnabled(FALSE);
@@ -165,7 +165,7 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		vibrationPlaying_ = FALSE;
 		this->killTimer(vibrationTimerId_);
 		vibrationTimerId_ = -1;
-		Model *m = parent_.aten().currentModelOrFrame();
+		Model* m = parent_.aten().currentModelOrFrame();
 		ui.FrameSlider->setEnabled(TRUE);
 		ui.SaveImageButton->setEnabled(TRUE);
 		ui.SaveMovieButton->setEnabled(TRUE);
@@ -176,7 +176,7 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 void VibrationsWidget::on_FrameSlider_valueChanged(int value)
 {
 	if (vibrationPlaying_) return;
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
 	parent_.postRedisplay();
 }
@@ -252,7 +252,7 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 	else
 	{
 		DONTDRAW = TRUE;
-		Model *m = parent_.aten().currentModelOrFrame();
+		Model* m = parent_.aten().currentModelOrFrame();
 		m->vibrationNextFrame();
 		ui.FrameSlider->setValue(m->vibrationFrameIndex()+1);
 		parent_.postRedisplay();
@@ -263,7 +263,7 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 void VibrationsWidget::closeEvent(QCloseEvent *event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	m->setRenderFromVibration(FALSE);
 	parent_.setInteractive(TRUE);
 	parent_.postRedisplay();

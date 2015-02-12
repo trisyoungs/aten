@@ -66,7 +66,7 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 	UnitCell *cell = obj.rs()->cell();
 	Vec3<double> r;
 	// Determine rough atom size (in grid cells....
-	for (Atom *i = obj.rs()->atoms(); i != NULL; i = i->next)
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
 	{
 		// Work in fractional coordinates
 		// Atom centre...
@@ -228,7 +228,7 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	
 	// Loop over atoms in current selection
 	obj.rs()->selectNone(TRUE);
-	Atom *i, *j;
+	Atom* i, *j;
 	obj.rs()->beginUndoState("Terminate atoms");
 	for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{

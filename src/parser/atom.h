@@ -33,7 +33,7 @@ class AtomVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	AtomVariable(Atom *i = NULL, bool constant = FALSE);
+	AtomVariable(Atom* i = NULL, bool constant = FALSE);
 	~AtomVariable();
 
 	/*

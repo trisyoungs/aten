@@ -50,7 +50,7 @@ class Ring : public ListItem<Ring>
 	*/
 	private:
 	// Parent pattern
-	Pattern *parent_;
+	Pattern* parent_;
 	// List of referenced atoms
 	Reflist<Atom,int> atoms_;
 	// List of referenced bonds (and their types)
@@ -62,9 +62,9 @@ class Ring : public ListItem<Ring>
 
 	public:
 	// Set pattern parent
-	void setParent(Pattern *p);
+	void setParent(Pattern* p);
 	// Return parent pattern
-	Pattern *parent();
+	Pattern* parent();
 	// Return first referenced atom
 	Refitem<Atom,int> *atoms() const;
 	// Return last referenced atom
@@ -74,7 +74,7 @@ class Ring : public ListItem<Ring>
 	// Return size of atom reflist
 	int nAtoms() const;
 	// Search ring list for specified atom
-	bool containsAtom(Atom *i);
+	bool containsAtom(Atom* i);
 	// Set requested size
 	void setRequestedSize(int size);
 	// Return requested size

@@ -98,7 +98,7 @@ void MDEngine::run()
 	msg.enter("MDEngine::run");
 
 	// Perform some checks to make sure the model is ready...
-	Model *m = aten.currentModel()->renderSourceModel();
+	Model* m = aten.currentModel()->renderSourceModel();
 	if (m->nAtoms() == 0)
 	{
 		msg.print("No atoms in model - can't run MD.\n");

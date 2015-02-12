@@ -1,6 +1,6 @@
 /*
-	*** Viewer input functions
-	*** src/gui/viewer_input.cpp
+	*** Viewer - User mode actions
+	*** src/gui/viewer_user.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -20,449 +20,12 @@
 */
 
 #include "gui/viewer.uih"
-#include "gui/fragments.h"
-#include "gui/build.h"
-#include "gui/mainwindow.h"
-#include "model/model.h"
-#include "model/fragment.h"
-#include "main/aten.h"
-
-/*
-// Mouse Input
-*/
-
-// Qt Signal (mouse press event)
-void Viewer::mousePressEvent(QMouseEvent *event)
-{
-	// Handle button presses (button down) from the mouse
-	msg.enter("Viewer::mousePressEvent");
-	static Prefs::MouseButton button = Prefs::nMouseButtons;
-
-	// End old mode if one is active (i.e. prevent mode overlap on different mouse buttons)
-	if (activeMode_ != UserAction::NoAction) endMode(button);
-	
-	// Which mouse button was pressed?
-	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
-	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
-	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
-	else
-	{
-		msg.exit("Viewer::mousePressEvent");
-		return;
-	}
-	
-	// Store event information
-	rMouseDown_.set(event->x(), event->y(), 0.0);
-	rMouseUp_.set(event->x(), event->y(), 0.0);
-	Qt::KeyboardModifiers km = event->modifiers();
-	keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
-	keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
-	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
-
-	// Determine whether we need to change Aten's currentmodel based on click position on the canvas
-	Model *m = modelAt(rMouseDown_.x, rMouseDown_.y);
-	if (m != aten.currentModel())
-	{
-		aten.setCurrentModel(m);
-		parent_.updateWidgets(AtenWindow::AllTarget-AtenWindow::ModelsTarget-AtenWindow::CanvasTarget);
-	}
-	
-	// Get current active model
-	Model *source = aten.currentModelOrFrame();
-	if (source == NULL)
-	{
-		printf("Pointless Viewer::mousePressEvent - no source model.\n");
-		msg.exit("Viewer::mousePressEvent");
-		return;
-	}
-
-	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
-	if ((button == Prefs::RightButton) && editable_)
-	{
-		Atom *tempi = source->atomOnScreen(event->x(), event->y());
-		if (tempi != NULL)
-		{
-			gui.callContextMenu(tempi, event->globalX(), event->globalY());
-			postRedisplay();
-			msg.exit("Viewer::mousePressEvent");
-			return;
-		}
-	}
-
-	// Determine if there is an atom under the mouse
-	atomClicked_ = source->atomOnScreen(event->x(), event->y());
-	
-	// Perform atom picking before entering mode (if required)
-	if (pickEnabled_ && (atomClicked_ != NULL))
-	{
-		// Don't add the same atom more than once
-		if (pickedAtoms_.contains(atomClicked_) == NULL)
-		{
-			pickedAtoms_.add(atomClicked_);
-			msg.print(Messenger::Verbose,"Adding atom %i to canvas subselection.\n",atomClicked_);
-		}
-		else msg.print(Messenger::Verbose,"Atom %i is already in canvas subselection.\n",atomClicked_);
-	}
-	
-	// Activate mode...
-	beginMode(button);
-	msg.exit("Viewer::mousePressEvent");
-}
-
-// Qt Signal (mouse release event)
-void Viewer::mouseReleaseEvent(QMouseEvent *event)
-{
-	// Handle button releases (button up) from the mouse
-	msg.enter("Viewer::mouseReleaseEvent");
-	Prefs::MouseButton button;
-	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
-	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
-	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
-	else
-	{
-		msg.exit("Viewer::mouseReleaseEvent");
-		return;
-	}
-	
-	// Only finalise the mode if the button is the same as the one that caused the mousepress event.
-	if (mouseButton_[button])
-	{
-		rMouseUp_.set(event->x(), event->y(), 0.0);
-		// Deactivate mode...
-		endMode(button);
-	}
-	atomClicked_ = NULL;
-	
-	postRedisplay();
-	
-	msg.exit("Viewer::mouseReleaseEvent");
-}
-
-// Qt Signal (mouse move event)
-void Viewer::mouseMoveEvent(QMouseEvent *event)
-{
-	static Vec3<double> delta;
-	
-	// Get current active model
-	Model *source = aten.currentModelOrFrame();
-	if (source == NULL)
-	{
-		printf("Pointless Viewer::mouseMoveEvent - no source model.\n");
-		msg.exit("Viewer::mouseMoveEvent");
-		return;
-	}
-	
-	// Perform action associated with mode (if any)
-	if ((activeMode_ != UserAction::NoAction) || (selectedMode_ == UserAction::DrawFragmentAction))
-	{
-		// Calculate new delta.
-		delta.set(event->x(), event->y(),0.0);
-		delta = delta - rMouseLast_;
-		// Use activeMode_ to determine what needs to be performed
-		switch (activeMode_)
-		{
-			case (UserAction::NoAction):
-				break;
-			case (UserAction::RotateXYAction):
-				source->rotateView(delta.x/2.0,delta.y/2.0);
-				break;
-			case (UserAction::RotateZAction):
-				source->zRotateView(delta.x/2.0);
-				break;
-			case (UserAction::TranslateAction):
-				source->adjustCamera(delta.x/15.0, delta.y/15.0, 0.0);
-				break;
-			case (UserAction::ZoomAction):
-				source->adjustZoom(delta.y < 0.0);
-				break;
-			case (UserAction::DrawFragmentAction):
-				if (gui.fragmentsWidget->currentFragment() != NULL)
-				{
-					if (atomClicked_ == NULL) gui.fragmentsWidget->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
-					else gui.fragmentsWidget->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
-					postRedisplay();
-				}
-				break;
-			case (UserAction::TransformRotateXYAction):
-				source->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
-				source->updateMeasurements();
-				hasMoved_ = TRUE;
-				break;
-			case (UserAction::TransformRotateZAction):
-				source->rotateSelectionZaxis(delta.x/2.0);
-				source->updateMeasurements();
-				hasMoved_ = TRUE;
-				break;
-			case (UserAction::TransformTranslateAction):
-				delta.y = -delta.y;
-				delta /= source->translateScale() * 2.0;
-				source->translateSelectionWorld(delta);
-				source->updateMeasurements();
-				hasMoved_ = TRUE;
-				break;
-			default:
-				break;
-		}
-		
-		// Update display (only if mouse move filtering permits)
-		if (mouseMoveCounter_.elapsed() > prefs.mouseMoveFilter())
-		{
-			mouseMoveCounter_.start();
-			postRedisplay();
-		}
-	}
-	rMouseLast_.set(event->x(), event->y(), 0.0);
-	setFocus();
-}
-
-// Qt Signal (mouse wheel event)
-void Viewer::wheelEvent(QWheelEvent *event)
-{
-	msg.enter("Viewer::modeScroll");
-	
-	// Get current active model
-	Model *source = aten.currentModelOrFrame();
-	if (source == NULL)
-	{
-		printf("Pointless Viewer::modeScroll - no source model.\n");
-		msg.exit("Viewer::modeScroll");
-		return;
-	}
-
-	// Do the requested wheel action as defined in the control panel
-	bool scrollup = event->delta() > 0;
-	switch (prefs.mouseAction(Prefs::WheelButton))
-	{
-		case (Prefs::NoAction):
-			break;
-		case (Prefs::InteractAction):
-			// Only act if the editable_ flag is set
-			if (!editable_) break;
-			useSelectedMode();
-			break;
-		case (Prefs::RotateAction):
-			scrollup ? source->rotateView(1.0,0.0) : source->rotateView(-1.0,0.0);
-			break;
-		case (Prefs::TranslateAction):
-			// Only act if the editable_ flag is set
-			if (!editable_) break;
-			break;
-		case (Prefs::ZoomAction):
-			source->adjustZoom(scrollup);
-			break;
-		default:
-			break;
-	}
-	postRedisplay();
-	msg.exit("Viewer::modeScroll");
-}
-
-// Return mouse coordinates at last mousedown event
-Vec3<double> Viewer::rMouseDown()
-{
-	return rMouseDown_;
-}
-
-// Return mouse coordinates at last mouseup event
-Vec3<double> Viewer::rMouseUp()
-{
-	return rMouseUp_;
-}
-
-// Return mouse coordinates at last mousemove event
-Vec3<double> Viewer::rMouseLast()
-{
-	return rMouseLast_;
-}
-
-/*
-// Key Input
-*/
-
-// Return state of specified keymodifier
-bool Viewer::keyModifier(Prefs::ModifierKey mk)
-{
-	return keyModifier_[mk];
-}
-
-// Qt Slot (key press event)
-void Viewer::keyPressEvent(QKeyEvent *event)
-{
-	// Check datamodel...
-	bool refresh = FALSE, ignore = TRUE;
-	Qt::KeyboardModifiers km = event->modifiers();
-	keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
-	keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
-	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
-	
-	// Get current active model
-	Model *source = aten.currentModelOrFrame();
-	if (source == NULL)
-	{
-		printf("Pointless Viewer::keyPressEvent - no source model.\n");
-		msg.exit("Viewer::keyPressEvent");
-		return;
-	}
-
-	// Set some useful flags...
-	bool manipulate = FALSE;
-	bool nofold = gui.buildWidget->ui.PreventFoldCheck->isChecked();
-	for (int n=0; n<3; n++)
-	{
-		if (keyModifier_[n])
-		{
-			switch (prefs.keyAction(Prefs::ModifierKey(n)))
-			{
-				case (Prefs::ManipulateKeyAction):
-					manipulate = TRUE;
-					break;
-				default:
-					break;
-			}
-		}
-	}
-	
-	int n;
-	
-	switch (event->key())
-	{
-		case (Qt::Key_Left):
-			if (keyModifier_[Prefs::CtrlKey])
-			{
-				printf("Why doesn't this ever get printed?\n");
-				source->prepareTransform();
-				source->beginUndoState("Rotate selection about world Y axis");
-				source->rotateSelectionWorld(2.0,0.0);
-				source->endUndoState();
-				source->updateMeasurements();
-				source->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-				parent_.updateWidgets(AtenWindow::CanvasTarget);
-			}
-			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
-			refresh = TRUE;
-			ignore = FALSE;
-			break;
-		case (Qt::Key_Right):
-			source->rotateView( keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0, 0.0);
-			refresh = TRUE;
-			ignore = FALSE;
-			break;
-		case (Qt::Key_Up):
-			source->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0);
-			refresh = TRUE;
-			ignore = FALSE;
-			break;
-		case (Qt::Key_Down):
-			source->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0);
-			refresh = TRUE;
-			ignore = FALSE;
-			break;
-		case (Qt::Key_Escape):
-			gui.mainWindow()->cancelCurrentMode();
-			refresh = TRUE;
-			ignore = FALSE;
-			break;
-		// Cycle render styles
-		case (Qt::Key_F8):
-			n = prefs.renderStyle() + 1;
-			if (n == Atom::nDrawStyles) n = 0;
-			gui.mainWindow()->setActiveStyleAction( (Atom::DrawStyle) n);
-			ignore = FALSE;
-			break;
-		// Cycle colouring styles
-		case (Qt::Key_F9):
-			n = prefs.colourScheme() + 1;
-			if (n == Prefs::nColouringSchemes) n = 0;
-			gui.mainWindow()->setActiveSchemeAction( (Prefs::ColouringScheme) n);
-			ignore = FALSE;
-			break;
-		default:
-			break;
-	}
-	
-	// Mode-specific
-	switch (selectedMode_)
-	{
-		case (UserAction::DrawFragmentAction):
-			// Cycle link atom....
-			if (keyModifier_[Prefs::AltKey])
-			{
-				Fragment *frag = gui.fragmentsWidget->currentFragment();
-				if (frag == NULL) break;
-				frag->cycleLinkAtom();
-				refresh = TRUE;
-			}
-			// Refresh if Shift status has changed
-			if (keyModifier_[Prefs::ShiftKey]) refresh = TRUE;
-			if (keyModifier_[Prefs::CtrlKey])
-			{
-				refresh = TRUE;
-				gui.fragmentsWidget->increaseBondId();
-			}
-			break;
-		default:
-			break;
-	}
-	// Update display if necessary
-	if (refresh) postRedisplay();
-	if (ignore) event->ignore();
-}
-
-// Qt Slot (key release event)
-void Viewer::keyReleaseEvent(QKeyEvent *event)
-{
-	// Set keystates
-	bool oldshift = keyModifier_[Prefs::ShiftKey];
-	bool oldctrl = keyModifier_[Prefs::CtrlKey];
-	bool oldalt = keyModifier_[Prefs::AltKey];
-	Qt::KeyboardModifiers km = event->modifiers();
-	keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
-	keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
-	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
-	
-	// Get current active model
-	Model *source = aten.currentModelOrFrame();
-	if (source == NULL)
-	{
-		printf("Pointless Viewer::keyReleaseEvent - no source model.\n");
-		msg.exit("Viewer::keyReleaseEvent");
-		return;
-	}
-
-	// Set some useful flags...
-	bool manipulate = FALSE;
-	for (int n=0; n<3; n++)
-	{
-		if (keyModifier_[n])
-		{
-			switch (prefs.keyAction(Prefs::ModifierKey(n)))
-			{
-				case (Prefs::ManipulateKeyAction):
-					manipulate = TRUE;
-					break;
-				default:
-					break;
-			}
-		}
-	}
-	
-	// Mode-specific
-	switch (selectedMode_)
-	{
-		case (UserAction::DrawFragmentAction):
-			// Refresh if Shift status has changed
-			if (keyModifier_[Prefs::ShiftKey] != oldshift) postRedisplay();
-			break;
-		default:
-			break;
-	}
-
-	event->ignore();
-}
-
-/*
-// User Actions
-*/
+// #include "gui/fragments.h"
+// #include "gui/build.h"
+// #include "gui/mainwindow.h"
+// #include "model/model.h"
+// #include "model/fragment.h"
+// #include "main/aten.h"
 
 // Set selected mode
 void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*callback)(Reflist<Atom,int>*))
@@ -470,7 +33,7 @@ void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*call
 	msg.enter("Viewer::setSelectedMode");
 
 	// Get current active model
-	Model *source = aten.currentModelOrFrame();
+	Model* source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless Viewer::setSelectedMode - no source model.\n");
@@ -591,13 +154,13 @@ void Viewer::beginMode(Prefs::MouseButton button)
 	msg.enter("Viewer::beginMode");
 	static bool manipulate, zrotate;
 	static int n;
-	static Atom *i;
+	static Atom* i;
 	// Do the requested action as defined in the control panel, but only if another action
 	// isn't currently in progress. Set the UserAction based on the mouse button that sent
 	// the signal, current selection / draw modes and key modifier states.
 
 	// Get current active model
-	Model *source = aten.currentModelOrFrame();
+	Model* source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless Viewer::beginMode - no source model.\n");
@@ -699,13 +262,13 @@ void Viewer::endMode(Prefs::MouseButton button)
 	msg.enter("Viewer::endMode");
 	double area, radius;
 	Vec4<double> screenr;
-	Atom *atoms[4], *i;
+	Atom* atoms[4], *i;
 	Bond *b;
 	Bond::BondType bt;
 	Fragment *frag;
 	
 	// Get current active model
-	Model *source = aten.currentModelOrFrame();
+	Model* source = aten.currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless Viewer::endMode - no source model.\n");
@@ -870,7 +433,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 			if (shifted)
 			{
 				int element = atomClicked_->element();
-				for (Atom *i = source->atoms(); i != NULL; i = i->next) if (i->element() == element) source->transmuteAtom(i,sketchElement_);
+				for (Atom* i = source->atoms(); i != NULL; i = i->next) if (i->element() == element) source->transmuteAtom(i,sketchElement_);
 			}
 			else source->transmuteAtom(atomClicked_, sketchElement_);
 			source->endUndoState();
@@ -1014,7 +577,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 }
 
 // Returns the atom currently under the mouse
-Atom *Viewer::atomClicked()
+Atom* Viewer::atomClicked()
 {
 	return atomClicked_;
 }

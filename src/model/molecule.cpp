@@ -24,12 +24,12 @@
 //#include "base/elements.h"
 
 // Position molecule at specified coordinates
-void Model::positionMolecule(Pattern *p, int mol, const Vec3<double> &v)
+void Model::positionMolecule(Pattern* p, int mol, const Vec3<double> &v)
 {
 	msg.enter("Model::positionMolecule");
 	static Vec3<double> newpos, cog;
 	static int pnatoms, offset, n;
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
 	msg.print(Messenger::Verbose,"Model::positionMolecule : Moving %i atoms starting at %i (config can hold %i atoms)\n", pnatoms, offset, atoms_.nItems());
@@ -53,12 +53,12 @@ void Model::positionMolecule(Pattern *p, int mol, const Vec3<double> &v)
 }
 
 // Translate molecule along vector
-void Model::translateMolecule(Pattern *p, int mol, const Vec3<double> &v)
+void Model::translateMolecule(Pattern* p, int mol, const Vec3<double> &v)
 {
 	// Vector 'v' should be normalised before passing
 	msg.enter("Model::translateMolecule");
 	static int pnatoms, offset, n;
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
 	msg.print(Messenger::Verbose,"Model::translateMolecule : Moving %i atoms starting at %i (%i atoms currently in model)\n", pnatoms, offset, atoms_.nItems());
@@ -67,7 +67,7 @@ void Model::translateMolecule(Pattern *p, int mol, const Vec3<double> &v)
 	msg.exit("Model::translateMolecule");
 }
 
-void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
+void Model::rotateMolecule(Pattern* p, int mol, double rotx, double roty)
 {
 	// Rotate the coordinates of the atoms in pattern p, molecule mol, about their centre of geometry.
 	// rotx and roty are the rotations about the x and y axes respectively, in degrees
@@ -75,7 +75,7 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 	static Matrix rotmat;
 	static Vec3<double> delta, newpos, cog;
 	static int pnatoms, offset, n;
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	rotmat.createRotationXY(rotx,roty);
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
@@ -100,11 +100,11 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 }
 
 // Set the hidden flag on atoms of the specified molecule
-void Model::hideMolecule(Pattern *p, int mol, bool visible)
+void Model::hideMolecule(Pattern* p, int mol, bool visible)
 {
 	msg.enter("Model::hideMolecule");
 	static int pnatoms, offset, n;
-	Atom **modelatoms = atomArray();
+	Atom* *modelatoms = atomArray();
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
 	if (offset < atoms_.nItems()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->setHidden(visible);

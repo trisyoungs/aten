@@ -98,7 +98,7 @@ class CommandParser
 	// Current program target
 	Program *program_;
 	// Current tree (target of node creation)
-	Tree *tree_;
+	Tree* tree_;
 	// Stack of created trees
 	Reflist<Tree,bool> stack_;
 	// Flag to indicate failure in tree generation (set by tree() function)
@@ -114,11 +114,11 @@ class CommandParser
 
 	public:
 	// Return current Tree target, raising warning and setting fail flag if no tree is defined...
-	Tree *tree();
+	Tree* tree();
 	// Push filter
 	void pushFilter();
 	// Push function
-	Tree *pushFunction(const char *name, VTypes::DataType returntype);
+	Tree* pushFunction(const char *name, VTypes::DataType returntype);
 	// Pop tree (or function) from stack
 	void popTree();
 	// Discard current tree and its contents
@@ -160,7 +160,7 @@ class CommandParser
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
 	TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
 	// Associate a user-defined command-based leaf node to the Tree
-	TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
+	TreeNode *addUserFunction(Tree* func, TreeNode *arglist = NULL);
 	// Add a declaration list
 	TreeNode *addDeclarations(TreeNode *declist);
 	// Add a global declaration list

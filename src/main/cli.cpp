@@ -377,10 +377,10 @@ int Aten::parseCli(int argc, char *argv[])
 	LineParser parser;
 	ElementMap::ZMapType zm;
 	NameMap<int> *nmi;
-	Model *m;
+	Model* m;
 	Program *script, tempProgram;
 	ReturnValue rv;
-	Tree *f, *modelfilter = NULL;
+	Tree* f, *modelfilter = NULL;
 	Program interactiveScript;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -765,7 +765,7 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 					else
 					{
-						Tree *f = probeFile(argtext.get(), FilterData::TrajectoryImport);
+						Tree* f = probeFile(argtext.get(), FilterData::TrajectoryImport);
 						if (f == NULL) return -1;
 						if (!current.m->initialiseTrajectory(argtext.get(),f)) return -1;
 					}

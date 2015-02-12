@@ -55,15 +55,15 @@ class TreeNode : public ListItem<TreeNode>
 	// Type of node
 	NodeType nodeType_;
 	// Pointer to parent tree
-	Tree *parent_;
+	Tree* parent_;
 
 	public:
 	// Retrieve node type
 	NodeType nodeType() const;
 	// Set parent 
-	void setParent(Tree *parent);
+	void setParent(Tree* parent);
 	// Retrieve parent
-	Tree *parent() const;
+	Tree* parent() const;
 
 
 	/*

@@ -50,21 +50,27 @@ class Aten
 	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, ExportMode, BatchMode, ProcessMode, BatchExportMode, NoMode };
 	// Target list for model creation
 	enum TargetModelList { MainModelList, FragmentLibraryList, WorkingModelList };
+	// Bitmap formats
+	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
+	static BitmapFormat bitmapFormat(const char *name, bool reportError = 0);
+	static BitmapFormat bitmapFormatFromFilter(const char *s);
+	static const char* bitmapFormatFilter(BitmapFormat bf);
+	static const char* bitmapFormatExtension(BitmapFormat bf);
 	// Remove all dynamic data
 	void clear();
 
 
 	/*
-	// Current Objects
-	*/
+	 * Current Objects
+	 */
 	public:
 	// Current object Bundle
 	Bundle current;
 
 
 	/*
-	// Models
-	*/
+	 * Models
+	 */
 	private:
 	// Internal count for naming new models.
 	int modelId_;
@@ -121,8 +127,8 @@ class Aten
 
 
 	/*
-	// Filters
-	*/
+	 * Filters
+	 */
 	private:
 	// How many filters had errors on startup
 	int nFiltersFailed_;
@@ -136,8 +142,10 @@ class Aten
 	List<Program> filterPrograms_;
 	// Reflists of file filters of different types
 	Reflist<Tree,int> filters_[FilterData::nFilterTypes];
-	// Filter strings for file dialogs
+	// Filter strings for filter file dialogs
 	QString fileDialogFilters_[FilterData::nFilterTypes];
+	// Filter strings for bitmap file dialogs
+	QString bitmapFileDialogFilters_;
 
 	public:
 	// Load filters
@@ -171,12 +179,14 @@ class Aten
 	// Print list of valid filter nicknames
 	void printValidNicknames(FilterData::FilterType ft);
 	// Return filter strings for file dialogs
-	QString fileDialogFilters(FilterData::FilterType ft);
+	QString& fileDialogFilters(FilterData::FilterType ft) const;
+	// Return filter strings for bitmap file dialogs
+	QString& bitmapFileDialogFilters() const;
 
-	
+
 	/*
-	// Global Function Includes and Partitioning Schemes
-	*/
+	 * Global Function Includes and Partitioning Schemes
+	 */
 	private:
 	// Program containing all globally-defined include functions
 	Program includeFunctions_;
@@ -227,8 +237,8 @@ class Aten
 
 
 	/*
-	// Forcefields
-	*/
+	 * Forcefields
+	 */
 	private:
 	// List of loaded forcefields
 	List<Forcefield> forcefields_;
@@ -261,8 +271,8 @@ class Aten
 
 
 	/*
-	// Clipboards
-	*/
+	 * Clipboards
+	 */
 	private:
 	// Grid 'clipboard'
 	Grid* gridClipboard_;
@@ -277,8 +287,8 @@ class Aten
 	
 
 	/*
-	// Program Locations
-	*/
+	 * Program Locations
+	 */
 	private:
 	// Location of user's home directory
 	Dnchar homeDir_;
@@ -311,8 +321,8 @@ class Aten
 
 
 	/*
-	// Program Modes
-	*/
+	 * Program Modes
+	 */
 	private:
 	// Current mode of program operation
 	ProgramMode programMode_;
@@ -325,8 +335,8 @@ class Aten
 
 
 	/*
-	// Scripts
-	*/
+	 * Scripts
+	 */
 	private:
 	// List of loaded scripts
 	List<Program> scripts_;
@@ -345,8 +355,8 @@ class Aten
 
 
 	/*
-	// Program Control / Settings (not Prefs)
-	*/
+	 * Program Control / Settings (not Prefs)
+	 */
 	private:
 	// Whether type export conversion is enabled
 	bool typeExportMapping_;
@@ -382,8 +392,8 @@ class Aten
 
 
 	/*
-	// CLI
-	*/
+	 * CLI
+	 */
 	private:
 	// Print usage information
 	void printUsage() const;
@@ -424,16 +434,16 @@ class Aten
 
 
 	/*
-	// Commands
-	*/
+	 * Commands
+	 */
 	public:
 	// Command Definitions
 	Command commands;
 
 
 	/*
-	// Fragment Library
-	*/
+	 * Fragment Library
+	 */
 	private:
 	// Models making up fragment library
 	List<Model> fragmentModels_;

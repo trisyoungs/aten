@@ -44,7 +44,7 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Parent ZMatrix
 	ZMatrix *parent_;
 	// Atom pointers (first = target, second-fourth = distance, angle, torsion specifiers)
-	Atom *atoms_[4];
+	Atom* atoms_[4];
 	// Variables holding defined distance, angle, and torsion values
 	Variable *values_[3];
 	// Flags stating whether the negative of the variable value should be used instead
@@ -54,9 +54,9 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Set parent
 	void setParent(ZMatrix *parent);
 	// Set n'th atom datum
-	void setAtom(int id, Atom *i);
+	void setAtom(int id, Atom* i);
 	// Retrieve n'th atom datum
-	Atom *atom(int id);
+	Atom* atom(int id);
 	// Set n'th negate flag
 	void setNegated(int id, bool b);
 	// Retrieve n'th negate flag
@@ -112,7 +112,7 @@ class ZMatrix
 	*/
 	private:
 	// Parent model for which the zmatrix has been created
-	Model *parent_;
+	Model* parent_;
 	// Coordinate origin of first atom
 	Vec3<double> origin_;
 	// List of ZMatrix elements, one per atom
@@ -122,7 +122,7 @@ class ZMatrix
 
 	public:
 	// Return parent model
-	Model *parent();
+	Model* parent();
 	// Return coordinate origin
 	Vec3<double> origin();
 	// Return number of defined elements
@@ -160,13 +160,13 @@ class ZMatrix
 	// Add single definition to list
 	ZMatrixElement *addElement(Reflist<Atom,int> &atomlist);
 	// Create zmatrix recursively along bonds
-	void createAlongBonds(Atom *target, Reflist<Atom,int> &atomlist);
+	void createAlongBonds(Atom* target, Reflist<Atom,int> &atomlist);
 	// Create path of bound atoms from current atom
 	bool createBoundPath(Reflist<Atom,int> &atomlist, int size, Reflist<Atom,int> &bestlist);
 
 	public:
 	// Create for specified model
-	void create(Model *source, bool usebonds);
+	void create(Model* source, bool usebonds);
 	// Set variable value and recalculate atom positions in model
 	void setVariable(Variable *v, double value);
 	// Print zmatrix

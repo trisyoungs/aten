@@ -140,7 +140,7 @@ class Tree : public ListItem<Tree>
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
 	TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
 	// Associate a user-defined command-based leaf node to the Tree
-	TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
+	TreeNode *addUserFunction(Tree* func, TreeNode *arglist = NULL);
 	// Add a declaration list
 	TreeNode *addDeclarations(TreeNode *declist);
 	// Join two nodes together
@@ -200,9 +200,9 @@ class Tree : public ListItem<Tree>
 
 	public:
 	// Search for existing local function
-	Tree *findLocalFunction(const char *name) const;
+	Tree* findLocalFunction(const char *name) const;
 	// Add new local function
-	Tree *addLocalFunction(const char *name);
+	Tree* addLocalFunction(const char *name);
 	// Add list of variable arguments to topmost function
 	bool addLocalFunctionArguments(TreeNode* arglist);
 
@@ -224,7 +224,7 @@ class Tree : public ListItem<Tree>
 	// Default GUI dialog, run at start of Program execution
 	TreeGui defaultDialog_;
 	// Pointer to create function
-	Tree *createDefaultDialogFunction_;
+	Tree* createDefaultDialogFunction_;
 	// Whether create function has already been run
 	bool defaultDialogCreated_;
 	// List of additional, temporary dialogs created by the tree

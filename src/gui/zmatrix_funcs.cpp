@@ -47,7 +47,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 	msg.enter("AtenZMatrix::refresh");
 
 	// Grab (and create) zmatrix for current model
-	Model *m = parent_.aten().currentModelOrFrame();
+	Model* m = parent_.aten().currentModelOrFrame();
 	zMatrix_ = m->zMatrix();
 	if (zMatrix_ == NULL) return;
 	
@@ -55,7 +55,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 	// ZMatrix 'Connectivity' Table
 	int count = 0;
 	QTableWidgetItem *item;
-	Atom *i;
+	Atom* i;
 	ui.ZMatrixTable->setRowCount(zMatrix_->nElements());
 	ui.ZMatrixTable->setColumnCount(AtenZMatrix::nColumns);
 	ui.ZMatrixTable->setHorizontalHeaderLabels(QStringList() << "El" << "Id" << "D" << "Id" << "A" << "Id" << "T");
@@ -147,7 +147,7 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 	bool changed = FALSE;
 
 	// Create a variable selection dialog ready...
-	AtenSelectVariable variableSelect(this);
+	AtenSelectVariable variableSelect(parent_);
 
 	// We are only interested in the event *if* a variable name was clicked, since we will not allow atom IDs to be edited (yet)
 	switch (column)

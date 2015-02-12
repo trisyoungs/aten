@@ -50,7 +50,7 @@ class DisorderData : public ListItem<DisorderData>
 	
 	public:
 	// Initialise structure
-	bool initialise(Model *sourceModel, PartitionData *partitionData);
+	bool initialise(Model* sourceModel, PartitionData *partitionData);
 	// Return insertion policy of source model
 	Model::InsertionPolicy insertionPolicy();
 	// Return requested component population
@@ -68,7 +68,7 @@ class DisorderData : public ListItem<DisorderData>
 	// Return partition pointer
 	PartitionData *partition();
 	// Copy contents of component across to specified model
-	void copyTo(Model *target);
+	void copyTo(Model* target);
 
 
 	/*
@@ -104,7 +104,7 @@ class DisorderData : public ListItem<DisorderData>
 	// Tweak molecule position / rotation, and place in sourceModel_
 	void tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme *scheme);
 	// Determine whether candidate molecule overlaps with supplied model
-	bool modelOverlaps(Model *other, UnitCell *globalCell);
+	bool modelOverlaps(Model* other, UnitCell *globalCell);
 	// Determine whether candidate molecule overlaps rest of population
 	bool selfOverlaps(UnitCell *globalCell);
 	// Determine whether candidate molecule overlaps with all other insertion models

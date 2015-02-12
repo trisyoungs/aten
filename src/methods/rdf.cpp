@@ -110,7 +110,7 @@ bool Rdf::initialise()
 }
 
 // Accumulate quantity data_ from supplied model
-void Rdf::accumulate(Model *sourcemodel)
+void Rdf::accumulate(Model* sourcemodel)
 {
 	msg.enter("Rdf::accumulate");
 	int m1, m2, bin;
@@ -139,7 +139,7 @@ void Rdf::accumulate(Model *sourcemodel)
 }
 
 // Finalise
-void Rdf::finalise(Model *sourcemodel)
+void Rdf::finalise(Model* sourcemodel)
 {
 	msg.enter("Rdf::finalise");
 	int n;

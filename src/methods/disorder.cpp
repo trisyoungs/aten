@@ -30,13 +30,13 @@
 #include "base/pattern.h"
 
 // Disorder Builder
-bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fixedCell)
+bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fixedCell)
 {
 	msg.enter("MonteCarlo::disorder");
 	DisorderData *component, *other;
 	Refitem<DisorderData,int> *ri;
 	PartitionData *pd;
-	Atom *i;
+	Atom* i;
 	Dnchar cycleText;
 	int n, m, id, cycle, nSatisfied, nInsertions, nRelative = 0, totalToAdd = 0;
 	Vec3<double> r;
@@ -62,11 +62,11 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 	// Step 2 - Construct list of components with partition references, taking copies of all component models
 	// List all models with RelativePolicy at the start of the list, and store a reflist of the components in the original model order
 	// Also, build up reverse list of components associated to partitions
-	Model *targetModel_ = destmodel;
+	Model* targetModel_ = destmodel;
 	cell = targetModel_->cell();
 	List<DisorderData> components_;
 	Reflist<DisorderData, int> componentsOrder_;
-	for (Model *m = aten.models(); m != NULL; m = m->next)
+	for (Model* m = aten.models(); m != NULL; m = m->next)
 	{
 		if (m->componentInsertionPolicy() == Model::NoPolicy) continue;
 		// Check that we can get the requested partition
@@ -506,7 +506,7 @@ bool MonteCarlo::disorder(Model *destmodel, PartitioningScheme *scheme, bool fix
 			msg.print(" -- No pattern added for insertion model '%s' since zero molecules were added.\n", ri->item->modelName());
 			continue;
 		}
-		Pattern *p = targetModel_->addPattern(ri->item->modelName(), ri->item->nAdded(), ri->item->sourceModel().nAtoms());
+		Pattern* p = targetModel_->addPattern(ri->item->modelName(), ri->item->nAdded(), ri->item->sourceModel().nAtoms());
 		p->setForcefield(ri->item->sourceModel().forcefield());
 	}
 	targetModel_->printPatterns();

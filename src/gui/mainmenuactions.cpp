@@ -20,7 +20,6 @@
 */
 
 #include "main/aten.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
 #include "gui/selectfilter.h"
@@ -38,31 +37,31 @@
 // Add new model to workspace
 void AtenWindow::on_actionFileNew_triggered(bool checked)
 {
-	Model *m = aten.addModel();
+	Model* m = aten_.addModel();
 	m->enableUndoRedo();
 	m->regenerateIcon();
 
 	// Update GUI
-	aten.setCurrentModel(m, TRUE);
+	aten_.setCurrentModel(m, TRUE);
 	updateWidgets(AtenWindow::AllTarget);
 }
 
 // Open existing file
 void AtenWindow::on_actionFileOpen_triggered(bool checked)
 {
-	AtenLoadModel loadModelDialog(this);
+	AtenLoadModel loadModelDialog(*this);
 	Tree* filter;
 	if (loadModelDialog.exec() == 1)
 	{
 		filter = loadModelDialog.selectedFormat();
 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten.probeFile(loadModelDialog.selectedFilename(), FilterData::ModelImport);
+		if (filter == NULL) filter = aten_.probeFile(loadModelDialog.selectedFilename(), FilterData::ModelImport);
 		if (filter != NULL)
 		{
 			if (!filter->executeRead(loadModelDialog.selectedFilename())) return;
 			addRecent(loadModelDialog.selectedFilename());
-			aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-			aten.currentModelOrFrame()->regenerateIcon();
+			aten_.currentModelOrFrame()->changeLog.add(Log::Camera);
+			aten_.currentModelOrFrame()->regenerateIcon();
 			updateWidgets(AtenWindow::AllTarget);
 		}
 	}
@@ -71,12 +70,12 @@ void AtenWindow::on_actionFileOpen_triggered(bool checked)
 // Local save function
 bool AtenWindow::runSaveModelDialog()
 {
-	saveModelFilename.clear();
-	saveModelFilter = NULL;
+	saveModelFilename_.clear();
+	saveModelFilter_ = NULL;
 	Tree* filter = NULL;
-	static QString selectedFilter(aten.filters(FilterData::ModelExport) == NULL ? NULL : aten.filters(FilterData::ModelExport)->item->filter.name());
-	static QDir currentDirectory_(aten.workDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(), saveModelFilters, &selectedFilter);
+	static QString selectedFilter(aten_.filters(FilterData::ModelExport) == NULL ? NULL : aten_.filters(FilterData::ModelExport)->item->filter.name());
+	static QDir currentDirectory_(aten_.workDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ModelExport), &selectedFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -88,17 +87,19 @@ bool AtenWindow::runSaveModelDialog()
 		{
 			QFileInfo fileInfo( filename );
 			// Does this filename uniquely identify a specific filter?
-			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+			for (Refitem<Tree,int> *ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			{
 				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
 			}
 			msg.print(Messenger::Verbose, "Exact filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+
 			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
-			if (filters.nItems() != 0) filter = gui.selectFilterDialog->selectFilter("Name matches one or more model export filters.", &filters, aten.filterList(FilterData::ModelExport));
+			AtenSelectFilter selectFilter(*this);
+			if (filters.nItems() != 0) filter = selectFilter.selectFilter("Name matches one or more model export filters.", &filters, aten_.filterList(FilterData::ModelExport));
 			else
 			{
-				filter = gui.selectFilterDialog->selectFilter("Couldn't determine format to save expression in.", NULL, aten.filterList(FilterData::ModelExport), TRUE);
-				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				filter = selectFilter.selectFilter("Couldn't determine format to save expression in.", NULL, aten_.filterList(FilterData::ModelExport), true);
+				if ((filter != NULL) && selectFilter.appendExtension())
 				{
 					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
 				}
@@ -107,27 +108,32 @@ bool AtenWindow::runSaveModelDialog()
 		else
 		{
 			// Does this extension uniquely identify a specific filter?
-			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+			for (Refitem<Tree,int> *ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			{
 				if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
 			}
 			msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
 			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
 			if (filters.nItems() == 1) filter = filters.first()->item;
-			else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches one or more model export filters.", &filters, aten.filterList(FilterData::ModelExport));
+			else if (filters.nItems() > 1)
+			{
+				AtenSelectFilter selectFilter(*this);
+				filter = selectFilter.selectFilter("Extension matches one or more model export filters.", &filters, aten_.filterList(FilterData::ModelExport));
+			}
 			else
 			{
-				filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known model export filters.", NULL, aten.filterList(FilterData::ModelExport), TRUE);
-				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				AtenSelectFilter selectFilter(*this);
+				filter = selectFilter.selectFilter("Extension doesn't match any in known model export filters.", NULL, aten_.filterList(FilterData::ModelExport), TRUE);
+				if ((filter != NULL) && selectFilter.appendExtension())
 				{
 					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
 				}
 			}
 		}
-		saveModelFilter = filter;
-		saveModelFilename = qPrintable(filename);
-		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", saveModelFilename.get());
-		return (saveModelFilter == NULL ? FALSE : TRUE);
+		saveModelFilter_ = filter;
+		saveModelFilename_ = qPrintable(filename);
+		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", saveModelFilename_.get());
+		return (saveModelFilter_ == NULL ? FALSE : TRUE);
 	}
 	else return FALSE;
 }
@@ -135,28 +141,28 @@ bool AtenWindow::runSaveModelDialog()
 // Save current model under a different name
 void AtenWindow::on_actionFileSaveAs_triggered(bool checked)
 {
-	Model *m;
+	Model* m;
 	if (runSaveModelDialog())
 	{
-		m = aten.currentModelOrFrame();
+		m = aten_.currentModelOrFrame();
 		if (m == NULL)
 		{
 			printf("Internal Error: Model pointer is NULL in AtenWindow::on_actionFileSaveAs_triggered.\n");
 			return;
 		}
-		m->setFilter(saveModelFilter);
-		m->setFilename(saveModelFilename.get());
+		m->setFilter(saveModelFilter_);
+		m->setFilename(saveModelFilename_.get());
 		// Temporarily disable undo/redo for the model, save, and re-enable
 		m->disableUndoRedo();
 		
-		if (saveModelFilter->executeWrite(saveModelFilename.get()))
+		if (saveModelFilter_->executeWrite(saveModelFilename_.get()))
 		{
 			m->changeLog.updateSavePoint();
-			msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
+			msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename_.get(), saveModelFilter_->filter.name());
 		}
 		else msg.print("Failed to save model '%s'.\n", m->name());
 		m->enableUndoRedo();
-		gui.update();
+		updateWidgets();
 	}
 }
 
@@ -166,8 +172,8 @@ void AtenWindow::on_actionFileSave_triggered(bool checked)
 	// Check the filter of the current model
 	// If there isn't one, or it can't export, raise the file dialog.
 	// Similarly, if no filename has been set, raise the file dialog.
-	Model *m = aten.currentModelOrFrame();
-	Tree *t = m->filter();
+	Model* m = aten_.currentModelOrFrame();
+	Tree* t = m->filter();
 	if ((t != NULL) && (t->filter.type() != FilterData::ModelExport)) t = NULL;
 	Dnchar filename;
 	filename = m->filename();
@@ -175,14 +181,14 @@ void AtenWindow::on_actionFileSave_triggered(bool checked)
 	{
 		if (runSaveModelDialog())
 		{
-			m->setFilter(saveModelFilter);
-			m->setFilename(saveModelFilename.get());
+			m->setFilter(saveModelFilter_);
+			m->setFilename(saveModelFilename_.get());
 			// Temporarily disable undo/redo for the model, save, and re-enable
 			m->disableUndoRedo();
-			if (saveModelFilter->executeWrite(saveModelFilename.get()))
+			if (saveModelFilter_->executeWrite(saveModelFilename_.get()))
 			{
 				m->changeLog.updateSavePoint();
-				msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
+				msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename_.get(), saveModelFilter_->filter.name());
 			}
 			else msg.print("Failed to save model '%s'.\n", m->name());
 			m->enableUndoRedo();
@@ -196,13 +202,13 @@ void AtenWindow::on_actionFileSave_triggered(bool checked)
 		m->changeLog.updateSavePoint();
 		m->enableUndoRedo();
 	}
-	gui.update();
+	updateWidgets();
 }
 
 // Modify export options for current model's associated filter
 void AtenWindow::on_actionExportOptions_triggered(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model* m = aten_.currentModelOrFrame();
 	if (m->filter() == NULL) msg.print("No filter currently assigned to model '%s', so there are no export options.\n", m->name());
 	else m->filter()->defaultDialog().execute();
 }
@@ -210,37 +216,37 @@ void AtenWindow::on_actionExportOptions_triggered(bool checked)
 // Close current model
 void AtenWindow::on_actionFileClose_triggered(bool checked)
 {
-	Model *m = aten.currentModel();
-	aten.closeModel(m);
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	Model* m = aten_.currentModel();
+	aten_.closeModel(m);
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 // Save the current view as a bitmap image.
 void AtenWindow::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Get geometry from user - initial setup is to use current canvas geometry
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
+	static Dnchar geometry(-1,"%ix%i", ui.MainView->width(), ui.MainView->height());
 	int width, height;
 	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView();
 	bool currentframemodel, currentframeview, viewglobe;
 	
 	Tree dialog;
-	TreeGuiWidget *group, *w;
-	TreeGui &ui = dialog.defaultDialog();
-	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Save Image Options");
-	ui.addEdit("geometry", "Image Size", geometry.get(),1,1);
-	group = ui.addRadioGroup("framechoice");
-	ui.addRadioButton("noframes", "No Frames", "framechoice", 1, 1, 2, 1);
-	ui.addRadioButton("framemodel", "Frame Current Model", "framechoice", 0, 1, 3, 1);
-	ui.addRadioButton("frameview", "Frame Whole View", "framechoice", 0, 1, 4, 1);
-	ui.addRadioButton("frameboth", "Frame Current Model and View", "framechoice", 0, 1, 5, 1);
+	TreeGuiWidget* group, *w;
+	TreeGui& saveImageGui = dialog.defaultDialog();  // ATEN2 TODO
+	saveImageGui.setProperty(TreeGuiWidgetEvent::TextProperty, "Save Image Options");
+	saveImageGui.addEdit("geometry", "Image Size", geometry.get(),1,1);
+	group = saveImageGui.addRadioGroup("framechoice");
+	saveImageGui.addRadioButton("noframes", "No Frames", "framechoice", 1, 1, 2, 1);
+	saveImageGui.addRadioButton("framemodel", "Frame Current Model", "framechoice", 0, 1, 3, 1);
+	saveImageGui.addRadioButton("frameview", "Frame Whole View", "framechoice", 0, 1, 4, 1);
+	saveImageGui.addRadioButton("frameboth", "Frame Current Model and View", "framechoice", 0, 1, 5, 1);
 	
 	// Poke values into dialog widgets and execute
-	ui.setWidgetValue("framechoice", framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) );
+	saveImageGui.setWidgetValue("framechoice", framemodel ? (frameview ? 4 : 2) : (frameview ? 3 : 1) );
 	if (!dialog.defaultDialog().execute()) return;
 
 	// Get values from dialog
-	geometry = ui.asCharacter("geometry");
+	geometry = saveImageGui.asCharacter("geometry");
 	width = atoi(beforeChar(geometry,'x'));
 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
@@ -249,7 +255,7 @@ void AtenWindow::on_actionFileSaveImage_triggered(bool checked)
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}
-	int choice = ui.asInteger("framechoice");
+	int choice = saveImageGui.asInteger("framechoice");
 	framemodel = choice%2 == 0;
 	frameview = choice > 2;
 	currentframemodel = prefs.frameCurrentModel();
@@ -257,19 +263,21 @@ void AtenWindow::on_actionFileSaveImage_triggered(bool checked)
 	viewglobe = prefs.viewRotationGlobe();
 	
 	// Get filename from user
-	RenderEngine::BitmapFormat bf;
+	Aten::BitmapFormat bf;
 	static QString selectedFilter("Windows Bitmap (*.bmp)");
-	static QDir currentDirectory_(aten.workDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Bitmap", currentDirectory_.path(), saveBitmapFilters, &selectedFilter);
+	static QDir currentDirectory_(aten_.workDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Bitmap", currentDirectory_.path(), aten_.bitmapFileDialogFilters(), &selectedFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
+
 		// Grab filename extension and search for it
 		Dnchar ext = afterLastChar(qPrintable(filename), '.');
-		bf = RenderEngine::bitmapFormat(ext.get());
-		// If we didn't recognise the extension, complain and quit
-		if (bf == RenderEngine::nBitmapFormats) 
+		bf = Aten::bitmapFormat(ext.get());
+
+		// If we didn't recognise the extension, complain
+		if (bf == Aten::nBitmapFormats) 
 		{
 			Dnchar message(-1, "Bitmap format not recognised - '%s'.\n", ext.get());
 			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
@@ -279,7 +287,8 @@ void AtenWindow::on_actionFileSaveImage_triggered(bool checked)
 			prefs.setFrameCurrentModel(framemodel);
 			prefs.setFrameWholeView(frameview);
 			prefs.setViewRotationGlobe(FALSE);
-			if (!engine().saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
+			QPixmap pixmap = ui.MainView->generateImage(width, height);
+			pixmap.save(filename, aten_.bitmapFormatExtension(bf), -1);
 			prefs.setFrameCurrentModel(currentframemodel);
 			prefs.setFrameWholeView(currentframeview);
 			prefs.setViewRotationGlobe(viewglobe);
@@ -291,15 +300,15 @@ void AtenWindow::on_actionFileSaveImage_triggered(bool checked)
 void AtenWindow::on_actionFileOpenGrid_triggered(bool checked)
 {
 	// Call routine in grids window...
-	gui.gridsWidget->loadGrid();
+	gridsWidget->loadGrid();
 }
 
 // Quit program
 void AtenWindow::on_actionFileQuit_triggered(bool checked)
 {
-	if (!gui.saveBeforeClose()) return;
+	if (!saveBeforeClose()) return;
 	saveSettings();
-	gui.application()->exit(0);
+	QApplication::exit(0);
 }
 
 /*
@@ -309,34 +318,34 @@ void AtenWindow::on_actionFileQuit_triggered(bool checked)
 void AtenWindow::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Command::Undo, "");
-	parent_.postRedisplay();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::CellTarget+AtenWindow::GlyphsTarget);
+	postRedisplay();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::CellTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Command::Redo, "");
-	parent_.postRedisplay();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::CellTarget+AtenWindow::GlyphsTarget);
+	postRedisplay();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::CellTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_actionEditCut_triggered(bool checked)
 {
 	CommandNode::run(Command::Cut, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionEditCopy_triggered(bool checked)
 {
 	CommandNode::run(Command::Copy, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::CanvasTarget);
 }
 
 void AtenWindow::on_actionEditPaste_triggered(bool checked)
 {
 	CommandNode::run(Command::Paste, "");
-	parent_.postRedisplay();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	postRedisplay();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionEditPasteTranslated_triggered(bool checked)
@@ -355,39 +364,39 @@ void AtenWindow::on_actionEditPasteTranslated_triggered(bool checked)
 	{
 		Vec3<double> r = ui.asVec3("newx", "newy", "newz");
 		CommandNode::run(Command::Paste, "ddd", r.x, r.y, r.z);
-		parent_.postRedisplay();
-		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+		postRedisplay();
+		updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
 
 void AtenWindow::on_actionEditDelete_triggered(bool checked)
 {
 	CommandNode::run(Command::Delete, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionSelectionAll_triggered(bool checked)
 {
 	CommandNode::run(Command::SelectAll, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionSelectionNone_triggered(bool checked)
 {
 	CommandNode::run(Command::SelectNone, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionSelectionInvert_triggered(bool checked)
 {
 	CommandNode::run(Command::Invert, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionSelectionExpand_triggered(bool on)
 {
 	CommandNode::run(Command::Expand, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionEditQuickCommand_triggered(bool on)
@@ -407,7 +416,7 @@ void AtenWindow::on_actionEditQuickCommand_triggered(bool on)
 			{
 				ReturnValue rv;
 				program.execute(rv);
-				parent_.updateWidgets(AtenWindow::AllTarget);
+				updateWidgets(AtenWindow::AllTarget);
 				break;
 			}
 			else
@@ -428,22 +437,22 @@ void AtenWindow::on_actionEditQuickCommand_triggered(bool on)
 // Zoom in
 void AtenWindow::on_actionViewZoomIn_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0);
-	parent_.postRedisplay();
+	aten_.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0);
+	postRedisplay();
 }
 
 // Zoom out
 void AtenWindow::on_actionViewZoomOut_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
-	parent_.postRedisplay();
+	aten_.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
+	postRedisplay();
 }
 
 // Reset view
 void AtenWindow::on_actionViewReset_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->resetView();
-	parent_.postRedisplay();
+	aten_.currentModelOrFrame()->resetView();
+	postRedisplay();
 }
 
 // Set perspective view
@@ -451,30 +460,30 @@ void AtenWindow::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
-	parent_.postRedisplay();
+	postRedisplay();
 }
 
 // Set orthographic view
 void AtenWindow::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
-	parent_.postRedisplay();
+	postRedisplay();
 }
 
 // Set view along cartesian axis supplied
 void AtenWindow::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified axis
-	aten.currentModelOrFrame()->viewAlong(x,y,z);
-	parent_.postRedisplay();
+	aten_.currentModelOrFrame()->viewAlong(x,y,z);
+	postRedisplay();
 }
 
 // Set view along Cell axis supplied
 void AtenWindow::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified cell axis
-	aten.currentModelOrFrame()->viewAlongCell(x,y,z);
-	parent_.postRedisplay();
+	aten_.currentModelOrFrame()->viewAlongCell(x,y,z);
+	postRedisplay();
 }
 
 void AtenWindow::on_actionViewSetCartesianPosX_triggered(bool checked)
@@ -542,8 +551,8 @@ void AtenWindow::on_actionSchemeElement_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set current colouring scheme to charge
@@ -551,8 +560,8 @@ void AtenWindow::on_actionSchemeCharge_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set current colouring scheme to force
@@ -560,8 +569,8 @@ void AtenWindow::on_actionSchemeForce_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set current colouring scheme to velocity
@@ -569,8 +578,8 @@ void AtenWindow::on_actionSchemeVelocity_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::VelocityScheme);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set current colouring scheme to custom
@@ -578,8 +587,8 @@ void AtenWindow::on_actionSchemeCustom_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::CustomScheme);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Set scheme actions to reflect supplied Prefs::ColouringScheme
@@ -591,16 +600,16 @@ void AtenWindow::setActiveSchemeAction(Prefs::ColouringScheme cs)
 	else if (cs == Prefs::VelocityScheme) ui.actionSchemeVelocity->setChecked(TRUE);
 	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
 	prefs.setColourScheme(cs);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 // Toggle detection and siaply of hydrogen bonds in models
 void AtenWindow::on_actionDetectDisplayHBonds_triggered(bool checked)
 {
 	prefs.setDrawHydrogenBonds(checked);
-	aten.globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	aten_.globalLogChange(Log::Style);
+	postRedisplay();
 }
 
 /*
@@ -610,7 +619,7 @@ void AtenWindow::on_actionDetectDisplayHBonds_triggered(bool checked)
 // Rename model
 void AtenWindow::on_actionModelRename_triggered(bool checked)
 {
-	Model *m = aten.currentModelOrFrame();
+	Model* m = aten_.currentModelOrFrame();
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())
@@ -624,77 +633,77 @@ void AtenWindow::on_actionModelRename_triggered(bool checked)
 void AtenWindow::on_actionModelFoldAtoms_triggered(bool checked)
 {
 	CommandNode::run(Command::Fold, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Fold molecules in model
 void AtenWindow::on_actionModelFoldMolecules_triggered(bool checked)
 {
 	CommandNode::run(Command::FoldMolecules, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Move to next model in list
 void AtenWindow::on_actionModelNext_triggered(bool checked)
 {
 	// If multiple models are visible, step along to next visible model. Otherwise, just next in list
-	if (aten.nVisibleModels() > 1)
+	if (aten_.nVisibleModels() > 1)
 	{
 		// Find current model in visible models list...
 		Refitem<Model,int> *ri;
-		for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten.currentModel()) break;
+		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
 		if (ri == NULL)
 		{
 			printf("Internal Error : Failed to find current model in visible models list.\n");
 			return;
 		}
-		aten.setCurrentModel(ri->next == NULL ? aten.visibleModels()->item : ri->next->item);
+		aten_.setCurrentModel(ri->next == NULL ? aten_.visibleModels()->item : ri->next->item);
 	}
 	else
 	{
-		Model *m = aten.currentModel();
-		aten.setCurrentModel(m->next == NULL ? aten.models() : m->next, TRUE);
+		Model* m = aten_.currentModel();
+		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next, TRUE);
 	}
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 // Move to previous model in list
 void AtenWindow::on_actionModelPrevious_triggered(bool checked)
 {
 	// If multiple models are visible, step back to previous visible model. Otherwise, just previous in list
-	if (aten.nVisibleModels() > 1)
+	if (aten_.nVisibleModels() > 1)
 	{
 		// Find current model in visible models list...
 		Refitem<Model,int> *ri;
-		for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten.currentModel()) break;
+		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
 		if (ri == NULL)
 		{
 			printf("Internal Error : Failed to find current model in visible models list.\n");
 			return;
 		}
 		// If previous pointer is NULL, need to get the last item in the list by hand
-		if (ri->prev != NULL) aten.setCurrentModel(ri->prev->item);
-		else for (ri = aten.visibleModels(); ri != NULL; ri = ri->next) if (ri->next == NULL) aten.setCurrentModel(ri->item);
+		if (ri->prev != NULL) aten_.setCurrentModel(ri->prev->item);
+		else for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->next == NULL) aten_.setCurrentModel(ri->item);
 	}
 	else
 	{
-		Model *m = aten.currentModel();
-		aten.setCurrentModel(m->prev == NULL ? aten.model(aten.nModels()-1) : m->prev, TRUE);
+		Model* m = aten_.currentModel();
+		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev, TRUE);
 	}
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 // Show all atoms in current model
 void AtenWindow::on_actionModelShowAll_triggered(bool checked)
 {
 	CommandNode::run(Command::ShowAll, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // List all measurements in model
 void AtenWindow::on_actionListMeasurements_triggered(bool on)
 {
-	aten.currentModelOrFrame()->listMeasurements();
+	aten_.currentModelOrFrame()->listMeasurements();
 }
 
 /*
@@ -705,30 +714,31 @@ void AtenWindow::on_actionListMeasurements_triggered(bool on)
 void AtenWindow::on_actionTrajectoryOpen_triggered(bool checked)
 {
 	// Stop playback, and set view to be the parent model before we do anything
-	gui.trajectoryWidget->stopTrajectoryPlayback();
+	trajectoryWidget->stopTrajectoryPlayback();
 	ui.actionTrajectoryModel->trigger();
 
-	Tree *filter;
-	Model *m = aten.currentModel();
-	static QDir currentDirectory_(aten.workDir());
+	Tree* filter;
+	Model* m = aten_.currentModel();
+	static QDir currentDirectory_(aten_.workDir());
 	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), loadTrajectoryFilters, &selFilter);
+	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::TrajectoryImport), &selFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		
 		// Find the filter that was selected
-		filter = aten.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
+		filter = aten_.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
+
 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
+		if (filter == NULL) filter = aten_.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
 		if (filter != NULL)
 		{
 			m->initialiseTrajectory(qPrintable(filename), filter);
 			updateTrajectoryMenu();
 		}
 		else msg.print( "Couldn't determine trajectory file format.\n");
-		parent_.updateWidgets(AtenWindow::AllTarget);
+		updateWidgets(AtenWindow::AllTarget);
 	}
 }
 
@@ -736,57 +746,56 @@ void AtenWindow::on_actionTrajectoryOpen_triggered(bool checked)
 void AtenWindow::on_actionTrajectoryRemove_triggered(bool checked)
 {
 	// Stop playback, and set view to be the parent model before we do anything
-	gui.trajectoryWidget->stopTrajectoryPlayback();
+	trajectoryWidget->stopTrajectoryPlayback();
 	ui.actionTrajectoryModel->trigger();
 	
-	Model *m = aten.currentModel();
+	Model* m = aten_.currentModel();
 	m->clearTrajectory();
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 // Switch render focus from the model's trajectory to the model.
 void AtenWindow::on_actionTrajectoryModel_triggered(bool checked)
 {
-	aten.currentModel()->setRenderSource(Model::ModelSource);
-	gui.trajectoryWidget->refresh();
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	aten_.currentModel()->setRenderSource(Model::ModelSource);
+	trajectoryWidget->refresh();
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 // Switch render focus from the model to the model's trajectory
 void AtenWindow::on_actionTrajectoryFrames_triggered(bool checked)
 {
-	aten.currentModel()->setRenderSource(Model::TrajectorySource);
-	gui.trajectoryWidget->refresh();
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	aten_.currentModel()->setRenderSource(Model::TrajectorySource);
+	trajectoryWidget->refresh();
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 void AtenWindow::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
-	aten.currentModel()->seekFirstTrajectoryFrame();
-	gui.trajectoryWidget->refresh();
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	aten_.currentModel()->seekFirstTrajectoryFrame();
+	trajectoryWidget->refresh();
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 void AtenWindow::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
-	aten.currentModel()->seekLastTrajectoryFrame();
-	gui.trajectoryWidget->refresh();
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	aten_.currentModel()->seekLastTrajectoryFrame();
+	trajectoryWidget->refresh();
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 void AtenWindow::on_actionTrajectoryPlayPause_triggered(bool checked)
 {
-	gui.trajectoryWidget->ui.TrajectoryPlayPauseButton->setChecked(checked);
-// 	parent_.updateWidgets(AtenWindow::AllTarget);
+	trajectoryWidget->ui.TrajectoryPlayPauseButton->setChecked(checked);
+// 	updateWidgets(AtenWindow::AllTarget);
 }
 
 void AtenWindow::on_actionTrajectorySaveMovie_triggered(bool checked)
 {
-	static Dnchar geometry(-1,"%ix%i", (int) gui.mainCanvas()->width(), (int) gui.mainCanvas()->height());
+	static Dnchar geometry(-1,"%ix%i", ui.MainView->width(), ui.MainView->height());
 	int width, height;
 	
-// 	static Tree dialog("Save Movie","option('Image Size', 'edit', '10x10'); option('First Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Last Frame', 'intspin', 1, 1, 1, 1, 'newline'); option('Frame Interval', 'intspin', 1, 9999999, 0, 1, 'newline'); option('Movie FPS', 'intspin', 1, 100, 25, 1, 'newline'); ");
-	Model *m = aten.currentModel();
+	Model* m = aten_.currentModel();
 	Tree dialog;
 	TreeGui &ui = dialog.defaultDialog();
 	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Movie Options");
@@ -815,9 +824,10 @@ void AtenWindow::on_actionTrajectorySaveMovie_triggered(bool checked)
 	
 	// Get movie filename
 	static QString selectedFilter("All Files (*.*)");
-	static QDir currentDirectory_(aten.workDir());
+	static QDir currentDirectory_(aten_.workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Movie", currentDirectory_.path(), "All Files (*.*)", &selectedFilter);
 	if (filename.isEmpty()) return;
+
 	// Store path for next use
 	currentDirectory_.setPath(filename);
 	
@@ -829,69 +839,68 @@ void AtenWindow::on_actionTrajectoryInheritParentStyle_triggered(bool checked)
 {
 	if (!checked) return;
 	// If a trajectory is already associated, change its style now
-	Model *m = aten.currentModel();
+	Model* m = aten_.currentModel();
 	if (m->nTrajectoryFrames() == 0) return;
 	else m->trajectoryCopyAtomStyle(m);
 }
 
 void AtenWindow::on_actionTrajectoryCopyStyleToParent_triggered(bool checked)
 {
-	Model *m = aten.currentModel();
-	Model *frame = m->trajectoryCurrentFrame();
+	Model* m = aten_.currentModel();
+	Model* frame = m->trajectoryCurrentFrame();
 	if ((m == NULL) || (frame == NULL)) return;
 	m->copyAtomStyle(frame);
 }
 
 void AtenWindow::on_actionTrajectoryPropagateStyleFromHere_triggered(bool checked)
 {
-	
-	Model *m = aten.currentModel();
-	Model *frame = m->trajectoryCurrentFrame();
+	Model* m = aten_.currentModel();
+	Model* frame = m->trajectoryCurrentFrame();
 	if ((m == NULL) || (frame == NULL)) return;
 	m->trajectoryCopyAtomStyle(frame);
 }
 
 /*
-// Forcefield Actions
-*/
+ * Forcefield Actions
+ */
 
 // Open forcefield file
 void AtenWindow::on_actionOpenForcefield_triggered(bool checked)
 {
 	// Call routine in forcefields window...
-	gui.forcefieldsWidget->loadForcefield();
+	forcefieldsWidget->loadForcefield();
 }
 
 // Open expression file
 void AtenWindow::on_actionOpenExpression_triggered(bool checked)
 {
-	Tree *filter;
-	static QDir currentDirectory_(aten.workDir());
+	Tree* filter;
+	static QDir currentDirectory_(aten_.workDir());
 	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Expression", currentDirectory_.path(), gui.mainWindow()->loadExpressionFilters, &selFilter);
+	QString filename = QFileDialog::getOpenFileName(this, "Open Expression", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ExpressionImport), &selFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		
 		// Find the filter that was selected
-		filter = aten.findFilterByDescription(FilterData::ExpressionImport, qPrintable(selFilter));
-		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::ExpressionImport);
+		filter = aten_.findFilterByDescription(FilterData::ExpressionImport, qPrintable(selFilter));
+		if (filter == NULL) filter = aten_.probeFile(qPrintable(filename), FilterData::ExpressionImport);
 		if (filter != NULL)
 		{
 			if (!filter->executeRead(qPrintable(filename))) return;
 		}
 	}
-	parent_.postRedisplay();
+	postRedisplay();
 }
 
 // Save expression
 void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 {
-	Tree *filter;
-	static QString selectedFilter(aten.filters(FilterData::ExpressionExport)->item->filter.name());
-	static QDir currentDirectory_(aten.workDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters);
+	Tree* filter;
+	static QString selectedFilter(aten_.filters(FilterData::ExpressionExport)->item->filter.name());
+	static QDir currentDirectory_(aten_.workDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ExpressionExport));
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -904,17 +913,19 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 		{
 			QFileInfo fileInfo( filename );
 			// Does this filename uniquely identify a specific filter?
-			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+			for (Refitem<Tree,int> *ri = aten_.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
 			{
 				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
 			}
 			msg.print(Messenger::Verbose, "Exact filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+
 			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
-			if (filters.nItems() != 0) filter = gui.selectFilterDialog->selectFilter("Exact name matches one or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
+			AtenSelectFilter selectFilter(*this);
+			if (filters.nItems() != 0) filter = selectFilter.selectFilter("Exact name matches one or more known expression export filters.", &filters, aten_.filterList(FilterData::ExpressionExport));
 			else
 			{
-				filter = gui.selectFilterDialog->selectFilter("Couldn't determine format to save expression in.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
-				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				filter = selectFilter.selectFilter("Couldn't determine format to save expression in.", NULL, aten_.filterList(FilterData::ExpressionExport), TRUE);
+				if ((filter != NULL) && selectFilter.appendExtension())
 				{
 					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
 				}
@@ -922,24 +933,30 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 		}
 		else
 		{
-			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+			for (Refitem<Tree,int> *ri = aten_.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
 			{
 				if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
 			}
 			msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+
 			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
 			if (filters.nItems() == 1) filter = filters.first()->item;
-			else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches two or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
+			else if (filters.nItems() > 1)
+			{
+				AtenSelectFilter selectFilter(*this);
+				filter = selectFilter.selectFilter("Extension matches two or more known expression export filters.", &filters, aten_.filterList(FilterData::ExpressionExport));
+			}
 			else
 			{
-				filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
-				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				AtenSelectFilter selectFilter(*this);
+				filter = selectFilter.selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten_.filterList(FilterData::ExpressionExport), TRUE);
+				if ((filter != NULL) && selectFilter.appendExtension())
 				{
 					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
 				}
 			}
 		}
-		Model *m = aten.currentModelOrFrame();
+		Model* m = aten_.currentModelOrFrame();
 		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
 		else
 		{
@@ -955,85 +972,77 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 // Create patterns for model
 void AtenWindow::on_actionModelCreatePatterns_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->createPatterns();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	aten_.currentModelOrFrame()->createPatterns();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Remove patterns from model
 void AtenWindow::on_actionModelRemovePatterns_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->clearPatterns();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	aten_.currentModelOrFrame()->clearPatterns();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // List patterns in model
 void AtenWindow::on_actionModelListPatterns_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->printPatterns();
+	aten_.currentModelOrFrame()->printPatterns();
 }
 
 // Perform forcefield typing in model
 void AtenWindow::on_actionModelFFType_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->typeAll();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	aten_.currentModelOrFrame()->typeAll();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Remove typing from model
 void AtenWindow::on_actionModelFFUntype_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->removeTyping();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	aten_.currentModelOrFrame()->removeTyping();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Create energy expression for model
 void AtenWindow::on_actionModelCreateExpression_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->createExpression();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	aten_.currentModelOrFrame()->createExpression();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 // Add default pattern
 void AtenWindow::on_actionModelAddDefaultPattern_triggered(bool checked)
 {
-	aten.currentModelOrFrame()->createDefaultPattern();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	aten_.currentModelOrFrame()->createDefaultPattern();
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 /*
-// Settings Actions
-*/
+ * Settings Actions
+ */
 
 // Show preferences window
 void AtenWindow::on_actionPreferences_triggered(bool checked)
 {
-	gui.prefsDialog->setControls();
-	gui.prefsDialog->exec();
+	AtenPrefs prefsDialog(*this);
+	prefsDialog.setControls();
+	prefsDialog.exec();
 }
 
 // Reload all filters
 void AtenWindow::on_actionReloadFilters_triggered(bool checked)
 {
-	if (aten.reloadFilters() > 0)
+	if (aten_.reloadFilters() > 0)
 	{
 		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
 	}
-	createDialogFilters();
-	gui.loadModelDialog->setControls();
-}
-
-// Show main ToolBox
-void AtenWindow::on_actionShowToolBox_triggered(bool checked)
-{
-	gui.toolBoxWidget->setVisible(TRUE);
-	gui.toolBoxWidget->setFloating(TRUE);
-	gui.toolBoxWidget->move(200,200);
+	aten_.createFileDialogFilters();
 }
 
 // Toggle manualswapbuffers option
 void AtenWindow::on_actionManualSwapBuffers_triggered(bool checked)
 {
 	prefs.setManualSwapBuffers(checked);
-	parent_.postRedisplay();
+	postRedisplay();
 }
 

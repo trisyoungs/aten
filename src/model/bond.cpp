@@ -45,7 +45,7 @@ Bond *Model::bond(int n)
 }
 
 // Add Bond (pointers)
-void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
+void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 {
         // Create a new bond each atom and add them to the atom's own lists.
 	msg.enter("Model::bondAtoms");
@@ -104,8 +104,8 @@ void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
 	else
 	{
 		// First, locate the two atoms with the specified id's
-		Atom *i = atom(ii);
-		Atom *j = atom(jj);
+		Atom* i = atom(ii);
+		Atom* j = atom(jj);
 		if (i == NULL || j == NULL)
 		{
 			printf("Couldn't locate one or both atoms in bond with specified ids %i and %i\n",ii,jj);
@@ -118,7 +118,7 @@ void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
 }
 
 // Delete Bond
-void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
+void Model::unbondAtoms(Atom* i, Atom* j, Bond *bij)
 {
         // Delete info from bond lists for atoms i and j.
 	msg.enter("Model::unbondAtoms");
@@ -156,14 +156,14 @@ void Model::clearBonding()
 {
 	msg.enter("Model::clearBonding");
         // Clear the bond list.
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		Refitem<Bond,int> *bref = i->bonds();
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
 			Bond *b = bref->item;
-			Atom *j = b->partner(i);
+			Atom* j = b->partner(i);
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
 		}
@@ -184,7 +184,7 @@ void Model::initialiseBondingCuboids()
 	// Prepare (if non-periodic cell)
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			r = i->r();
 			if (r.x < extentMin_.x) extentMin_.x = r.x;
@@ -257,7 +257,7 @@ void Model::freeBondingCuboids()
 }
 
 // Add atom to cuboid reflists
-void Model::addAtomToCuboid(Atom *i)
+void Model::addAtomToCuboid(Atom* i)
 {
 	int x,y,z;
 	Vec3<double> r;
@@ -343,7 +343,7 @@ void Model::rebond()
 	int n, m, x, y, z, x2, y2, z2, checklist[8];
 	double dist, radsum;
 	double tolerance = prefs.bondTolerance();
-	Atom *i, *j;
+	Atom* i, *j;
 	// Loop over cuboids, checking distances with atoms in adjacent boxes
 	Refitem<Atom,double> *ri, *rj;
 	x = 0;
@@ -411,7 +411,7 @@ void Model::calculateBonding(bool augment)
 	// Create cuboid lists
 	initialiseBondingCuboids();
 	// Add all atoms to cuboid list
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) addAtomToCuboid(i);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) addAtomToCuboid(i);
 	// Rebond within the cuboids
 	rebond();
 	// Free bonding cuboids
@@ -425,7 +425,7 @@ void Model::calculateBonding(bool augment)
 // void Model::calculateBonding()
 // {
 // 	msg.enter("Model::calculateBonding");
-// 	Atom *i, *j;
+// 	Atom* i, *j;
 // 	double dist, radsum;
 // 	double tolerance = prefs.bondTolerance();
 // 	msg.print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...",tolerance);
@@ -451,7 +451,7 @@ void Model::calculateBonding(bool augment)
 void Model::patternCalculateBonding(bool augment)
 {
 	msg.enter("Model::patternCalculateBonding");
-	Atom *i,*j;
+	Atom* i,*j;
 	int ii, jj, el, m;
 	double dist;
 	double tolerance = prefs.bondTolerance();
@@ -459,7 +459,7 @@ void Model::patternCalculateBonding(bool augment)
 	clearBonding();
 	msg.print("Calculating bonds within patterns (tolerance = %5.2f)...", tolerance);
 	// For all the pattern nodes currently defined, bond within molecules
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
 		// Loop over molecules
 		i = p->firstAtom();
@@ -510,7 +510,7 @@ void Model::selectionCalculateBonding(bool augment)
 	// Create cuboid lists
 	initialiseBondingCuboids();
 	// Add all atoms to cuboid list
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addAtomToCuboid(i);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addAtomToCuboid(i);
 	// Rebond within the cuboids
 	rebond();
 	// Free bonding cuboids
@@ -525,7 +525,7 @@ void Model::selectionBondAll()
 {
 	// Add bonds between all atoms in current selection
 	msg.enter("Model::selectionBondAll");
-	Atom *i, *j;
+	Atom* i, *j;
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isSelected())
@@ -547,7 +547,7 @@ void Model::selectionClearBonding()
 {
 	// Clear all bonds between currently selected atoms
 	msg.enter("Model::selectionClearBonding");
-	Atom *i, *j;
+	Atom* i, *j;
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isSelected())
@@ -588,6 +588,6 @@ void Model::augmentBonding()
 		return;
 	}
 	describeAtoms();
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->augment();
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->augment();
 	msg.exit("Model::augmentBonding");
 }

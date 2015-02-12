@@ -66,7 +66,7 @@ class AtenForcefieldEditor : public QDialog
 	// Atoms Tab
 	*/
 	private slots:
-	void updateVdwLabels(ForcefieldAtom *ffa);
+	void updateVdwLabels(ForcefieldAtom* ffa);
 	void VdwFunctionChanged(int index);
 	void on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w);
 	void on_FFEditorAtomsTable_itemSelectionChanged();

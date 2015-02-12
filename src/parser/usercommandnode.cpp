@@ -26,7 +26,7 @@
 #include <string.h>
 
 // Constructor
-UserCommandNode::UserCommandNode(Tree *func) : TreeNode()
+UserCommandNode::UserCommandNode(Tree* func) : TreeNode()
 {
 	// Private variables
 	function_ = func;
@@ -162,13 +162,13 @@ bool UserCommandNode::initialise()
 }
 
 // Set function pointer
-void UserCommandNode::setFunction(Tree *func)
+void UserCommandNode::setFunction(Tree* func)
 {
 	function_ = func;
 }
 
 // Create, run, and free a single command with simple argument list
-bool UserCommandNode::run(Tree *func, ReturnValue &rv, const char *arglist ...)
+bool UserCommandNode::run(Tree* func, ReturnValue &rv, const char *arglist ...)
 {
 	msg.enter("UserCommandNode::run");
 	// Local tree to contain usercommandnode and its arguments
@@ -212,7 +212,7 @@ bool UserCommandNode::run(Tree *func, ReturnValue &rv, const char *arglist ...)
 }
 
 // Create, run, and free a single command with simple argument list
-bool UserCommandNode::run(Tree *func, ReturnValue &rv, TreeNode *arglisthead)
+bool UserCommandNode::run(Tree* func, ReturnValue &rv, TreeNode *arglisthead)
 {
 	msg.enter("UserCommandNode::run(arglist)");
 	// Local tree to contain usercommandnode and its arguments

@@ -48,21 +48,21 @@ class Bond : public ListItem<Bond>
 
 	private:
 	// Pointers to both atoms involved in the bond
-	Atom *atomI_, *atomJ_;
+	Atom* atomI_, *atomJ_;
 	// Bond type
 	BondType type_;
 
 	public:
 	// Set atoms for bond
-	void setAtoms(Atom *i, Atom *j);
+	void setAtoms(Atom* i, Atom* j);
 	// Set atom I for bond
-	void setAtomI(Atom *i);
+	void setAtomI(Atom* i);
 	// Return first atom in bond
-	Atom *atomI();
+	Atom* atomI();
 	// Set atom I for bond
-	void setAtomJ(Atom *j);
+	void setAtomJ(Atom* j);
 	// Return second atom in bond
-	Atom *atomJ();
+	Atom* atomJ();
 	// Set bond type
 	void setType(BondType bt);
 	// Return type of bond
@@ -72,7 +72,7 @@ class Bond : public ListItem<Bond>
 	// Return real-valued bond order (static function)
 	static double order(BondType bt);
 	// Returns the partner of the specified atom in the bond structure
-	Atom *partner(Atom *i);
+	Atom* partner(Atom* i);
 	// Return bond type that best satisfies the involved atoms valencies
 	Bond::BondType augmented() const;
 };

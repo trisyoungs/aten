@@ -152,7 +152,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 }
 
 // Intrapattern VDW energy
-bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lonemolecule)
+bool Pattern::vdwIntraPatternEnergy(Model* srcmodel, EnergyStore *estore, int lonemolecule)
 {
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
@@ -160,10 +160,10 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 	int aoff, m1, i, j, start1, finish1, con;
 	Vec3<double> vec_ij;
 	double U, rij, energy_inter, energy_intra, cutoff;
-	PatternAtom *pai, *paj;
+	PatternAtom* pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
@@ -208,17 +208,17 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 }
 
 // Interpattern VDW energy
-bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, EnergyStore *estore, int molId)
+bool Pattern::vdwInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, EnergyStore *estore, int molId)
 {
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
 	msg.enter("Pattern::vdwInterPatternEnergy");
 	static int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> vec_ij;
 	static double rij, energy_inter, cutoff, U;
-	PatternAtom *pai, *paj;
+	PatternAtom* pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 	// Outer loop over molecules in *this* pattern
@@ -296,7 +296,7 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 }
 
 // Intrapattern VDW forces
-bool Pattern::vdwIntraPatternForces(Model *srcmodel)
+bool Pattern::vdwIntraPatternForces(Model* srcmodel)
 {
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
@@ -307,10 +307,10 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 	int i,j,aoff,m1,con;
 	Vec3<double> vec_ij, f_i, tempf;
 	double cutoff, rij;
-	PatternAtom *pai, *paj;
+	PatternAtom* pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
@@ -355,7 +355,7 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 }
 
 // Interpattern VDW forces
-bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
+bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 {
 	// Calculate the VDW forces from interactions between different molecules
 	// of this pnode and the one supplied
@@ -363,10 +363,10 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 	int i,j,aoff1,aoff2,m1,m2,start,finish;
 	Vec3<double> vec_ij, f_i, tempf;
 	double rij, cutoff;
-	PatternAtom *pai, *paj;
+	PatternAtom* pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	Atom **modelatoms = srcmodel->atomArray();
+	Atom* *modelatoms = srcmodel->atomArray();
 	UnitCell *cell = srcmodel->cell();
 	aoff1 = startAtom_;
 	//printf("Pattern IDs are %i (this) and %i\n",id_, otherPattern->id_);
@@ -429,9 +429,9 @@ bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 	// Calculate the long-range correction to the VDW energy
 	msg.enter("Pattern::vdwCorrectEnergy");
 	static int i, j;
-	static Pattern *p1, *p2;
+	static Pattern* p1, *p2;
 	static double energy, rho, cutoff, du_dr, sigma, epsilon, sigmar3, sigmar9, volume, vrs;
-	PatternAtom *pai, *paj;
+	PatternAtom* pai, *paj;
 	double *paramsi, *paramsj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();

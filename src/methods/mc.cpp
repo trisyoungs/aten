@@ -377,7 +377,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// For each attempt, select a random molecule in a random pattern
 	nmoves = 0;
 	npats = srcmodel->nPatterns();
-	Pattern *p = NULL;
+	Pattern* p = NULL;
 
 	// Start progess indicator
 	int pid = progress.initialise("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert, !gui.exists());

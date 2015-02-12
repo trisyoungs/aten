@@ -38,7 +38,7 @@ class UserCommandNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	UserCommandNode(Tree *func = NULL);
+	UserCommandNode(Tree* func = NULL);
 	~UserCommandNode();
 
 	/*
@@ -46,7 +46,7 @@ class UserCommandNode : public TreeNode
 	*/
 	protected:
 	// Pointer to Tree containing the user-defined function
-	Tree *function_;
+	Tree* function_;
 	
 	public:
 	// Check validity of supplied arguments
@@ -60,9 +60,9 @@ class UserCommandNode : public TreeNode
 	// Initialise node
 	bool initialise();
 	// Set function pointer
-	void setFunction(Tree *func);
+	void setFunction(Tree* func);
 	// Create, run, and free a single function with simple arguments
-	static bool run(Tree *func, ReturnValue &rv, const char *arglist, ...);
+	static bool run(Tree* func, ReturnValue &rv, const char *arglist, ...);
 	static bool run(Tree* func, ReturnValue& rv, TreeNode* arglisthead);
 };
 

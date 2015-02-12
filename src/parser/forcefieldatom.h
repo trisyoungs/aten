@@ -33,7 +33,7 @@ class ForcefieldAtomVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ForcefieldAtomVariable(ForcefieldAtom *ptr = NULL, bool constant = FALSE);
+	ForcefieldAtomVariable(ForcefieldAtom* ptr = NULL, bool constant = FALSE);
 	~ForcefieldAtomVariable();
 
 	/*

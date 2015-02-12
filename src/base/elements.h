@@ -143,19 +143,19 @@ class ElementMap
 	*/
 	public:
 	// Return periodic table group number
-	int group(Atom *i);
+	int group(Atom* i);
 	// Return atomic mass of atomic number 'i'
-	double atomicMass(Atom *i);
+	double atomicMass(Atom* i);
 	// Return name of atomic number 'i'
-	const char *name(Atom *i);
+	const char *name(Atom* i);
 	// Return symbol of atomic number 'i'
-	const char *symbol(Atom *i);
+	const char *symbol(Atom* i);
 	// Return effective radius of atomic number 'i'
-	double atomicRadius(Atom *i);
+	double atomicRadius(Atom* i);
 	// Return bond order penalty for TBO 'bo' of atomic number 'i'
-	int bondOrderPenalty(Atom *i, int bo);
+	int bondOrderPenalty(Atom* i, int bo);
 	// Return the colour of the element
-	double *colour(Atom *i);
+	double *colour(Atom* i);
 };
 
 extern ElementMap &Elements();

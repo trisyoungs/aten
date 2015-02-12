@@ -276,7 +276,7 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 void AtenPrefs::updateAfterViewPrefs()
 {
 	if (refreshing_) return;
-	engine().updatePrimitives();
+	parent_.ui.MainView->updatePrimitives();
 	parent_.aten().globalLogChange(Log::Style);
 	parent_.postRedisplay();
 }
@@ -453,54 +453,6 @@ void AtenPrefs::on_ImagePrimitiveQualitySlider_valueChanged(int value)
 void AtenPrefs::on_ImagePrimitiveQualitySpin_valueChanged(int value)
 {
 	prefs.setImagePrimitiveQuality(value);
-}
-
-void AtenPrefs::on_LevelOfDetailNLevelsSpin_valueChanged(int value)
-{
-	prefs.setLevelsOfDetail(value);
-	updateAfterViewPrefs();
-}
-
-void AtenPrefs::on_LevelOfDetailStartZSpin_valueChanged(double value)
-{
-	prefs.setLevelOfDetailStartZ(value);
-	updateAfterViewPrefs();
-}
-
-void AtenPrefs::on_LevelOfDetailWidthSpin_valueChanged(double value)
-{
-	prefs.setLevelOfDetailWidth(value);
-	updateAfterViewPrefs();
-}
-
-void AtenPrefs::on_TransparencyGroup_clicked(bool checked)
-{
-	prefs.setTransparencyCorrect(checked);
-	parent_.postRedisplay();
-}
-
-void AtenPrefs::on_TransparencyNSlicesSpin_valueChanged(int value)
-{
-	prefs.setTransparencyNBins(value);
-	if (refreshing_) return;
-	engine().initialiseTransparency();
-	parent_.postRedisplay();
-}
-
-void AtenPrefs::on_TransparencyStartZSpin_valueChanged(double value)
-{
-	prefs.setTransparencyBinStartZ(value);
-	if (refreshing_) return;
-	engine().initialiseTransparency();
-	parent_.postRedisplay();
-}
-
-void AtenPrefs::on_TransparencyBinWidthSpin_valueChanged(double value)
-{
-	prefs.setTransparencyBinWidth(value);
-	if (refreshing_) return;
-	engine().initialiseTransparency();
-	parent_.postRedisplay();
 }
 
 void AtenPrefs::on_FarClipSpin_valueChanged(double value)
@@ -825,7 +777,6 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem *item)
 void AtenPrefs::on_CommonElementsEdit_textEdited(const QString &text)
 {
 	prefs.setCommonElements( qPrintable(text) );
-	gui.selectElementDialog->addCommonButtons(prefs.commonElements());
 }
 
 void AtenPrefs::on_DensityUnitCombo_currentIndexChanged(int index)

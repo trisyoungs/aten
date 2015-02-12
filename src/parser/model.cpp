@@ -33,7 +33,7 @@
 */
 
 // Constructor
-ModelVariable::ModelVariable(Model *ptr, bool constant)
+ModelVariable::ModelVariable(Model* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ModelData;
@@ -255,7 +255,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Model *ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
+	Model* ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
@@ -602,7 +602,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	}
 	// Get current data from ReturnValue
 	Model::InsertionPolicy inspol;
-	Model *ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
+	Model* ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
@@ -674,7 +674,7 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Model *ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
+	Model* ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
 	int bit;
 
 	// Construct temporary bundle object containing our model pointer
@@ -691,7 +691,7 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		case (ModelVariable::AtomWithBit):
 			rv.reset();
 			bit = node->argi(0);
-			for (Atom *j = ptr->atoms(); j != NULL; j = j->next) if (j->bit() == bit) rv.set(VTypes::AtomData, j);
+			for (Atom* j = ptr->atoms(); j != NULL; j = j->next) if (j->bit() == bit) rv.set(VTypes::AtomData, j);
 			break;
  		case (ModelVariable::Augment):
 			result = aten.commands.call(Command::Augment, node, rv, bundle);

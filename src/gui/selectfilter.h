@@ -23,8 +23,10 @@
 #define ATEN_SELECTFILTERDIALOG_H
 
 #include "gui/ui_selectfilter.h"
+#include "templates/reflist.h"
 
 // Forward Declarations
+class AtenWindow;
 class Tree;
 
 // Select Filter Dialog
@@ -33,9 +35,21 @@ class AtenSelectFilter : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+	public:
+	// Constructor / Destructor
+	AtenSelectFilter(AtenWindow& parent);
+	~AtenSelectFilter();
+	// Main form declaration
+	Ui::AtenSelectFilter ui;
+
+
 	/*
-	// Widget Functions
-	*/
+	 * Widget Functions
+	 */
 	private slots:
 	void on_FilterTable_doubleClicked(const QModelIndex &index);
 	void on_FilterTable_itemSelectionChanged();
@@ -43,38 +57,31 @@ class AtenSelectFilter : public QDialog
 	void on_CancelButton_clicked(bool checked);
 	void on_OkButton_clicked(bool checked);
 
+
 	/*
-	// Private Data
-	*/
+	 * Local Variables
+	 */
 	private:
 	// First items in reference lists
-	Reflist<Tree,int> *partialList_, *fullList_;
+	Reflist<Tree,int>* partialList_, *fullList_;
 	// Selected filter
-	Tree *selectedFilter_;
+	Tree* selectedFilter_;
 	// Whether to append extension to filename automatically
 	bool appendExtension_;
 
+
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	private:
 	// Update list
 	void update();
 
 	public:
 	// Select a filter from the list(s) provided
-	Tree *selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full, bool showExtCheck = FALSE);
+	Tree* selectFilter(const char* text, Reflist<Tree,int>* partial, Reflist<Tree,int>* full, bool showExtCheck = false);
 	// Whether to append extension to filename
 	bool appendExtension();
-
-	/*
-	// Widgets
-	*/
-	public:
-	// Constructor
-	AtenSelectFilter(QWidget* parent);
-	// Main form declaration
-	Ui::SelectFilterDialog ui;
 };
 
 #endif

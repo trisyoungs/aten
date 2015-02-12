@@ -49,11 +49,11 @@ Forcefield *Model::namesForcefield() const
 }
 
 // Add name to names forcefield
-ForcefieldAtom *Model::addAtomName(int el, const char *name)
+ForcefieldAtom* Model::addAtomName(int el, const char *name)
 {
 	if (namesForcefield_ == NULL) createNamesForcefield();
 	// Search for this typename in the ff
-	ForcefieldAtom *ffa = namesForcefield_->findType(name);
+	ForcefieldAtom* ffa = namesForcefield_->findType(name);
 	if (ffa == NULL)
 	{
 		ffa = namesForcefield_->addType();
@@ -83,7 +83,7 @@ void Model::clearExpression()
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
 	uniqueForcefieldTypes_.clear();
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->deleteExpression();
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->deleteExpression();
 	expressionPoint_  = -1;
 	msg.exit("Model::clearExpression");
 }
@@ -102,7 +102,7 @@ bool Model::assignForcefieldCharges()
 	msg.enter("Model::assignForcefieldCharges");
 	int nfailed = 0;
 	double totalq = 0.0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->type() == NULL)
 		{
@@ -148,7 +148,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	// 0) If the expression is already valid, just update scaling terms in pattern matrices and return
 	if (isExpressionValid() && (vdwOnly == expressionVdwOnly_))
 	{
-		for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->updateScaleMatrices();
+		for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->updateScaleMatrices();
 		msg.exit("Model::createExpression");
 		return TRUE;
 	}
@@ -175,7 +175,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	
 	// 2) Remove old expression data and create new
 	bool done;
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
 		done = FALSE;
 		while (!done)
@@ -271,7 +271,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	// 6) Create VDW lookup table of combined parameters
 	combinationTable_.clear();
 	PointerPair<ForcefieldAtom,double> *pp;
-	ForcefieldAtom *ffa, *ffb;
+	ForcefieldAtom* ffa, *ffb;
 	Combine::CombinationRule *crflags;
 	int i;
 	for (Refitem<ForcefieldAtom,int> *rfa = allForcefieldTypes_.first(); rfa != NULL; rfa = rfa->next)
@@ -320,7 +320,7 @@ void Model::createForcefieldLists()
 	Refitem<ForcefieldAtom,int> *ffa2;
 
 	// Cycle over patterns, adding their unique forcefield terms to ours...
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
 		msg.print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.\n", p->name(), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
 
@@ -360,7 +360,7 @@ void Model::createForcefieldLists()
 }
 
 // Return specified pair data from combination table
-PointerPair<ForcefieldAtom,double> *Model::combinedParameters(ForcefieldAtom *at1, ForcefieldAtom *at2)
+PointerPair<ForcefieldAtom,double> *Model::combinedParameters(ForcefieldAtom* at1, ForcefieldAtom* at2)
 {
 	if ((at1 == NULL) || (at2 == NULL))
 	{

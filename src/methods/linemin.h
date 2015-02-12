@@ -46,20 +46,20 @@ class LineMinimiser
 	// Return current tolerance
 	double tolerance() const;
 	// Initialise temporary model
-	void initialise(Model *srcmodel);
+	void initialise(Model* srcmodel);
 
 	/*
 	// Minimisation Methods
 	*/
 	protected:
 	// Generate a new config in tempModel_ following the supplied gradient vector
-	void gradientMove(Model *source, double delta);
+	void gradientMove(Model* source, double delta);
 	// Perform Golden Search within specified bounds
-	void goldenSearch(Model *source, double *bounds, double *energies);
+	void goldenSearch(Model* source, double *bounds, double *energies);
 
 	public:
 	// Minimise the specified model (srcmodel should already contain desired forces (i.e. gradient vector)) along which to minimise)
-	double lineMinimise(Model *source);
+	double lineMinimise(Model* source);
 };
 
 #endif

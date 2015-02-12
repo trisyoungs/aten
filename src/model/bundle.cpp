@@ -36,19 +36,19 @@ Bundle::Bundle(Forcefield *ptr)
 	ff = ptr;
 }
 
-Bundle::Bundle(Model *ptr)
+Bundle::Bundle(Model* ptr)
 {
 	clear();
 	m = ptr;
 }
 
-Bundle::Bundle(Pattern *ptr)
+Bundle::Bundle(Pattern* ptr)
 {
 	clear();
 	p = ptr;
 }
 
-Bundle::Bundle(Atom *ptr)
+Bundle::Bundle(Atom* ptr)
 {
 	clear();
 	i = ptr;
@@ -67,7 +67,7 @@ Bundle::Bundle(Glyph *ptr)
 }
 
 // Return reendersource for stored model
-Model *Bundle::rs()
+Model* Bundle::rs()
 {
 	return (m == NULL ? NULL : m->renderSourceModel());
 }

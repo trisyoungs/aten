@@ -38,7 +38,7 @@ bool Command::function_ClearMeasurements(CommandNode *c, Bundle &obj, ReturnValu
 bool Command::function_GeometryCalc(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *atoms[4];
+	Atom* atoms[4];
 	if (c->hasArg(3))
 	{
 		for (int n=0; n<4; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->atom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
@@ -70,7 +70,7 @@ bool Command::function_ListMeasurements(CommandNode *c, Bundle &obj, ReturnValue
 bool Command::function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *atoms[4];
+	Atom* atoms[4];
 	if (c->hasArg(3))
 	{
 		obj.rs()->beginUndoState("Measure torsion");
