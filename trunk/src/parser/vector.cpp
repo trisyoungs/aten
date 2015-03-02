@@ -21,10 +21,8 @@
 
 #include "parser/vector.h"
 #include "parser/stepnode.h"
-#include "math/constants.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Constructors
 VectorVariable::VectorVariable(bool constant)
@@ -39,7 +37,7 @@ VectorVariable::VectorVariable(Vec3<double> v, bool constant) : vectorData_(v)
 	returnType_ = VTypes::VectorData;
 	readOnly_ = constant;
 }
-VectorVariable::VectorVariable(TreeNode *x, TreeNode *y, TreeNode *z)
+VectorVariable::VectorVariable(TreeNode* x, TreeNode* y, TreeNode* z)
 {
 	// Private variables
 	constX_ = x;
@@ -59,11 +57,11 @@ VectorVariable::~VectorVariable()
 */
 
 // Set value of variable
-bool VectorVariable::set(ReturnValue &rv)
+bool VectorVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a vector) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success = FALSE;
@@ -76,7 +74,7 @@ bool VectorVariable::set(ReturnValue &rv)
 	}
 	else
 	{
-		msg.print("Error: Array assigned to vector variable must contain three elements.\n");
+		Messenger::print("Error: Array assigned to vector variable must contain three elements.\n");
 		success = FALSE;
 	}
 	return success;
@@ -100,7 +98,7 @@ void VectorVariable::reset()
 }
 
 // Return value of node
-bool VectorVariable::execute(ReturnValue &rv)
+bool VectorVariable::execute(ReturnValue& rv)
 {
 	// If this vector is a constant, read the three stored expressions to recreate it
 	if (readOnly_) reCreate();
@@ -109,7 +107,7 @@ bool VectorVariable::execute(ReturnValue &rv)
 }
 
 // Print node contents
-void VectorVariable::nodePrint(int offset, const char *prefix)
+void VectorVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -145,16 +143,16 @@ FunctionAccessor VectorVariable::functionData[VectorVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *VectorVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* VectorVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return VectorVariable::accessorSearch(s, arrayindex, arglist);
+	return VectorVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* VectorVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("VectorVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("VectorVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -164,66 +162,66 @@ StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Vector' has no member or function named '%s'.\n", s);
-			msg.exit("VectorVariable::accessorSearch");
+			Messenger::print("Error: Type 'Vector' has no member or function named '%s'.\n", s);
+			Messenger::exit("VectorVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Vector' function '%s'.\n", s);
-			msg.exit("VectorVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Vector' function '%s'.\n", s);
+			Messenger::exit("VectorVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::VectorData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Vector' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Vector' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Vector&' array member '%s'.\n", s);
-			msg.exit("VectorVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Vector&' array member '%s'.\n", s);
+			Messenger::exit("VectorVariable::accessorSearch");
 			return NULL;
 		}
-		else result = new StepNode(i, VTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		else result = new StepNode(i, VTypes::VectorData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("VectorVariable::accessorSearch");
+	Messenger::exit("VectorVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool VectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool VectorVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("VectorVariable::retrieveAccessor");
+	Messenger::enter("VectorVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vector type.\n", i);
-		msg.exit("VectorVariable::retrieveAccessor");
+		Messenger::exit("VectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if (hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("VectorVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("VectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -248,19 +246,19 @@ bool VectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 			result = FALSE;
 			break;
 	}
-	msg.exit("VectorVariable::retrieveAccessor");
+	Messenger::exit("VectorVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool VectorVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("VectorVariable::setAccessor");
+	Messenger::enter("VectorVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vector type.\n", i);
-		msg.exit("VectorVariable::setAccessor");
+		Messenger::exit("VectorVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -272,20 +270,20 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -293,23 +291,23 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("VectorVariable::setAccessor");
+		Messenger::exit("VectorVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -319,31 +317,31 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		case (VectorVariable::Magnitude):
 			// Normalise existing vector, then multiply by new magnitude
 			v.normalise();
-			v *= newvalue.asDouble(result);
+			v *= newValue.asDouble(result);
 			break;
 		case (VectorVariable::X):
 		case (VectorVariable::Y):
 		case (VectorVariable::Z):
-			v.set(acc - VectorVariable::X, newvalue.asDouble(result));
+			v.set(acc - VectorVariable::X, newValue.asDouble(result));
 			break;
 		default:
 			printf("VectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("VectorVariable::setAccessor");
+	Messenger::exit("VectorVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool VectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool VectorVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("VectorVariable::performFunction");
+	Messenger::enter("VectorVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Vector type.\n", i);
-		msg.exit("VectorVariable::performFunction");
+		Messenger::exit("VectorVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -356,7 +354,7 @@ bool VectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("VectorVariable::performFunction");
+	Messenger::exit("VectorVariable::performFunction");
 	return result;
 }
 
@@ -365,7 +363,7 @@ bool VectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 */
 
 // Constructor
-VectorArrayVariable::VectorArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
+VectorArrayVariable::VectorArrayVariable(TreeNode* sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
 {
 	// Private variables
 	returnType_ = VTypes::VectorData;
@@ -386,11 +384,11 @@ VectorArrayVariable::~VectorArrayVariable()
 */
 
 // Set from returnvalue node
-bool VectorArrayVariable::set(ReturnValue &rv)
+bool VectorArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector array) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a vector array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (vectorArrayData_ == NULL)
@@ -404,11 +402,11 @@ bool VectorArrayVariable::set(ReturnValue &rv)
 }
 
 // Set array element from returnvalue node
-bool VectorArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+bool VectorArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector array?) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a vector array?) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (vectorArrayData_ == NULL)
@@ -417,13 +415,13 @@ bool VectorArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	// Check index
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
-	vectorArrayData_[arrayindex] = rv.asVector();
+	vectorArrayData_[arrayIndex] = rv.asVector();
 	return TRUE;
 }
 
@@ -440,27 +438,27 @@ void VectorArrayVariable::reset()
 }
 
 // Return value of node
-bool VectorArrayVariable::execute(ReturnValue &rv)
+bool VectorArrayVariable::execute(ReturnValue& rv)
 {
-	msg.print("A whole vector array ('%s') cannot be passed as a value.\n", name_.get());
+	Messenger::print("A whole vector array ('%s') cannot be passed as a value.\n", name_.get());
 	return FALSE;
 }
 
 // Return value of node as array
-bool VectorArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+bool VectorArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Check bounds
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( vectorArrayData_[arrayindex] );
+	rv.set( vectorArrayData_[arrayIndex] );
 	return TRUE;
 }
 
 // Print node contents
-void VectorArrayVariable::nodePrint(int offset, const char *prefix)
+void VectorArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -480,7 +478,7 @@ bool VectorArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for vector array '%s'.\n", name_.get());
+		Messenger::print("Failed to find size for vector array '%s'.\n", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different
@@ -502,7 +500,7 @@ bool VectorArrayVariable::initialise()
 }
 
 // Search variable access list for provided accessor
-StepNode *VectorArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* VectorArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return VectorVariable::accessorSearch(s, arrayindex, arglist);
+	return VectorVariable::accessorSearch(s, arrayIndex, argList);
 }

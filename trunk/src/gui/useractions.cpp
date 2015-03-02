@@ -22,6 +22,8 @@
 #include "gui/useractions.h"
 #include "math/constants.h"
 
+ATEN_BEGIN_NAMESPACE
+
 // User action texts (name, nomod, shift, ctrl, alt)
 UserAction UserActions[] = {
 	{ "", "", "", "", "" },
@@ -173,7 +175,11 @@ UserAction UserActions[] = {
 		"",
 		"",
 		"" }
-	};
+};
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Action group checks
 bool UserAction::isBuildWidgetAction(UserAction::Action ua)

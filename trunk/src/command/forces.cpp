@@ -21,10 +21,13 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
+#include "model/bundle.h"
 #include "model/model.h"
 
+ATEN_USING_NAMESPACE
+
 // Calculate forces at trajectory configuration ('frameforces')
-bool Command::function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FrameForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->createExpression()) return FALSE;
@@ -34,7 +37,7 @@ bool Command::function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Calculate atomic forces of model ('modelforces')
-bool Command::function_ModelForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ModelForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->createExpression()) return FALSE;
@@ -44,7 +47,7 @@ bool Command::function_ModelForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Print forces of model ('printforces')
-bool Command::function_PrintForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_PrintForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->printForces();

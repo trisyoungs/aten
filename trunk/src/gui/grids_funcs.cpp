@@ -19,14 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
+#include <QtGui/QFileDialog>
+#include <QtGui/QColorDialog>
 #include "main/aten.h"
-#include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
 #include "gui/viewbasis.h"
 #include "gui/vieweigenvector.h"
 #include "gui/tlistwidgetitem.h"
-#include "classes/grid.h"
 #include "base/sysfunc.h"
 
 // Constructor
@@ -60,7 +61,7 @@ void GridsWidget::showWidget()
 // Refresh widget
 void GridsWidget::refresh()
 {
-	msg.enter("GridsWidget::refresh");
+	Messenger::enter("GridsWidget::refresh");
 
 	// Clear and refresh the grids list
 	refreshing_ = TRUE;
@@ -74,20 +75,20 @@ void GridsWidget::refresh()
 			if (m->hasTrajectory())
 			{
 				// If it's *not* a cached trajectory, only do the current frame
-				if (!m->trajectoryIsCached()) for (Grid *g = m->trajectoryCurrentFrame()->grids(); g != NULL; g = g->next) addGridToList(g);
+				if (!m->trajectoryIsCached()) for (Grid* g = m->trajectoryCurrentFrame()->grids(); g != NULL; g = g->next) addGridToList(g);
 				else
 				{
 					for (int n=0; n<m->nTrajectoryFrames(); ++n)
-						for (Grid *g = m->trajectoryFrame(n)->grids(); g != NULL; g = g->next) addGridToList(g);
+						for (Grid* g = m->trajectoryFrame(n)->grids(); g != NULL; g = g->next) addGridToList(g);
 				}
 			}
-			else for (Grid *g = m->grids(); g != NULL; g = g->next) addGridToList(g);
+			else for (Grid* g = m->grids(); g != NULL; g = g->next) addGridToList(g);
 		}
 	}
 	else 
 	{
 		m = parent_.aten().currentModelOrFrame();
-		for (Grid *g = m->grids(); g != NULL; g = g->next) addGridToList(g);
+		for (Grid* g = m->grids(); g != NULL; g = g->next) addGridToList(g);
 	}
 	// Select the first item
 	ui.GridList->setCurrentRow(0);
@@ -116,20 +117,20 @@ void GridsWidget::refresh()
 	ui.OrbitalTable->resizeColumnToContents(1);
 	ui.OrbitalTable->resizeColumnToContents(2);
 	refreshing_ = FALSE;
-	msg.exit("GridsWidget::refresh");
+	Messenger::exit("GridsWidget::refresh");
 }
 
-Grid *GridsWidget::getCurrentGrid()
+Grid* GridsWidget::getCurrentGrid()
 {
 	// Return first selected grid in widget
 	QList<QListWidgetItem*> selection = ui.GridList->selectedItems();
 	if (selection.size() == 0) return NULL;
 	TListWidgetItem *item = (TListWidgetItem*) ui.GridList->currentItem();
-	Grid *g = (Grid*) item->data.asPointer(VTypes::GridData);
+	Grid* g = (Grid*) item->data.asPointer(VTypes::GridData);
 	return g;
 }
 
-void GridsWidget::addGridToList(Grid *g)
+void GridsWidget::addGridToList(Grid* g)
 {
 	TListWidgetItem *item = new TListWidgetItem(ui.GridList);
 	item->setText(g->name());
@@ -139,12 +140,12 @@ void GridsWidget::addGridToList(Grid *g)
 
 void GridsWidget::refreshGridInfo()
 {
-	msg.enter("GridsWidget::refreshGridInfo");
+	Messenger::enter("GridsWidget::refreshGridInfo");
 	// Get the current row selected in the grid list
-	Grid *g = getCurrentGrid();
+	Grid* g = getCurrentGrid();
 	if (g == NULL)
 	{
-		msg.exit("GridsWidget::refreshGridInfo");
+		Messenger::exit("GridsWidget::refreshGridInfo");
 		return;
 	}
 
@@ -214,13 +215,13 @@ void GridsWidget::refreshGridInfo()
 	ui.GridShiftYSpin->setValue(g->shift().y);
 	ui.GridShiftZSpin->setValue(g->shift().z);
 	refreshing_ = FALSE;
-	msg.exit("GridsWidget::refreshGridInfo");
+	Messenger::exit("GridsWidget::refreshGridInfo");
 }
 
 // Load grid (public function)
 void GridsWidget::loadGrid()
 {
-	msg.enter("GridsWidget::loadGrid");
+	Messenger::enter("GridsWidget::loadGrid");
 	Tree* filter;
 	static QDir currentDirectory_(parent_.aten().workDir());
 	QString selFilter;
@@ -241,7 +242,7 @@ void GridsWidget::loadGrid()
 	}
 	refresh();
 	parent_.postRedisplay();
-	msg.exit("GridsWidget::loadGrid");
+	Messenger::exit("GridsWidget::loadGrid");
 }
 
 /*
@@ -255,10 +256,10 @@ void GridsWidget::on_actionGridLoad_triggered(bool checked)
 
 void GridsWidget::on_actionGridCopy_triggered(bool checked)
 {
-	Grid *g = getCurrentGrid();
+	Grid* g = getCurrentGrid();
 	if (g == NULL)
 	{
-		msg.print("No grid selected to copy.\n");
+		Messenger::print("No grid selected to copy.\n");
 		return;
 	}
 	parent_.aten().copyGrid(g);
@@ -266,10 +267,10 @@ void GridsWidget::on_actionGridCopy_triggered(bool checked)
 
 void GridsWidget::on_actionGridCut_triggered(bool checked)
 {
-	Grid *g = getCurrentGrid();
+	Grid* g = getCurrentGrid();
 	if (g == NULL)
 	{
-		msg.print("No grid selected to cut.\n");
+		Messenger::print("No grid selected to cut.\n");
 		return;
 	}
 	Model* m = parent_.aten().currentModelOrFrame();
@@ -283,7 +284,7 @@ void GridsWidget::on_actionGridDelete_triggered(bool checked)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -298,14 +299,14 @@ void GridsWidget::on_actionGridDelete_triggered(bool checked)
 
 void GridsWidget::on_actionGridPaste_triggered(bool checked)
 {
-	Grid *g = parent_.aten().gridClipboard();
+	Grid* g = parent_.aten().gridClipboard();
 	if (g == NULL)
 	{
-		msg.print("No grid data on clipboard.\n");
+		Messenger::print("No grid data on clipboard.\n");
 		return;
 	}
 	Model* m = parent_.aten().currentModelOrFrame();
-	Grid *newgrid = m->addGrid();
+	Grid* newgrid = m->addGrid();
 	*newgrid = *g;
 	refresh();
 	parent_.postRedisplay();
@@ -395,7 +396,7 @@ void GridsWidget::on_GridUseInternalColoursRadio_clicked(bool checked)
 	if (refreshing_) return;
 
 	// Get current grid and set data
-	Grid *g = getCurrentGrid();
+	Grid* g = getCurrentGrid();
 	if (g == NULL) return;
 	ui.GridSecondaryColourButton->setEnabled(g->useSecondary());
 	g->setUseColourScale(FALSE);
@@ -410,7 +411,7 @@ void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
 	if (refreshing_) return;
 
 	// Get current grid and set data
-	Grid *g = getCurrentGrid();
+	Grid* g = getCurrentGrid();
 	if (g == NULL) return;
 	g->setUseColourScale(TRUE);
 	parent_.postRedisplay();
@@ -420,7 +421,7 @@ void GridsWidget::gridOriginChanged(int component, double value)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -439,7 +440,7 @@ void GridsWidget::gridAxisChanged(int axis, int component, double value)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -467,7 +468,7 @@ void GridsWidget::on_GridList_itemClicked(QListWidgetItem *item)
 	// Cast item to our own TListWidgetItem
 	TListWidgetItem *titem = (TListWidgetItem*) item;
 	// Get grid associated to item
-	Grid *g = (Grid*) titem->data.asPointer(VTypes::GridData);
+	Grid* g = (Grid*) titem->data.asPointer(VTypes::GridData);
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
 	parent_.postRedisplay();
@@ -487,7 +488,7 @@ void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -503,7 +504,7 @@ void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -519,7 +520,7 @@ void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -535,7 +536,7 @@ void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -551,7 +552,7 @@ void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -566,7 +567,7 @@ void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -581,7 +582,7 @@ void GridsWidget::on_GridFillEnclosedVolumeCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -596,7 +597,7 @@ void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -611,10 +612,10 @@ void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current grid and set data
-	Grid *g = getCurrentGrid();
+	Grid* g = getCurrentGrid();
 	if (g == NULL) return;
 	// Get current surface colour and convert into a QColor
-	double *col = g->primaryColour();
+	double* col = g->primaryColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -639,10 +640,10 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current grid and set data
-	Grid *g = getCurrentGrid();
+	Grid* g = getCurrentGrid();
 	if (g == NULL) return;
 	// Get current surface colour and convert into a QColor
-	double *col = g->secondaryColour();
+	double* col = g->secondaryColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -667,7 +668,7 @@ void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -686,7 +687,7 @@ void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -708,7 +709,7 @@ void GridsWidget::gridShiftChanged()
 {
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
-	Grid *g;
+	Grid* g;
 	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
@@ -806,7 +807,7 @@ void GridsWidget::on_ViewEigenvectorButton_clicked(bool checked)
 	int row = ui.OrbitalTable->currentRow();
 	if (row == -1) 
 	{
-		msg.print("No orbital selected!\n");
+		Messenger::print("No orbital selected!\n");
 		return;
 	}
 
@@ -819,12 +820,12 @@ void GridsWidget::on_OrbitalCalculateButton_clicked(bool checked)
 	int row = ui.OrbitalTable->currentRow();
 	if (row == -1)
 	{
-		msg.print("No orbital selected!\n");
+		Messenger::print("No orbital selected!\n");
 		return;
 	}
 	// Generate a new grid in the current model
 	Model* m = parent_.aten().currentModelOrFrame();
-	Grid *g = m->addGrid();
+	Grid* g = m->addGrid();
 	// Set origin
 	Vec3<double> origin(ui.OrbitalOriginXSpin->value(), ui.OrbitalOriginYSpin->value(), ui.OrbitalOriginZSpin->value());
 	g->setOrigin(origin);

@@ -24,7 +24,9 @@
 
 #include "parser/treenode.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Variable;
 
 // Variable Node
@@ -42,7 +44,7 @@ class VariableNode : public TreeNode
 	// Variable that this node links to
 	Variable* variable_;
 	// Array index (if any)
-	TreeNode *arrayIndex_;
+	TreeNode* arrayIndex_;
 	
 	public:
 	// Set variable target
@@ -50,11 +52,11 @@ class VariableNode : public TreeNode
 	// Get variable target
 	Variable* variable();
 	// Set array index
-	void setArrayIndex(TreeNode *index);
+	void setArrayIndex(TreeNode* index);
 	// Return array index
-	TreeNode *arrayIndex();	
+	TreeNode* arrayIndex();	
 	// Return name of variable target
-	const char *name();
+	const char* name();
 	// Finalise variable path (if there is one)
 	void finalisePath();
 
@@ -63,15 +65,17 @@ class VariableNode : public TreeNode
 	*/
 	public:
 	// Execute node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char* prefix = "");
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Initialise node
 	bool initialise();
 	// Search accessors (if any) available for linked variable
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

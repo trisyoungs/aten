@@ -21,12 +21,15 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "base/pattern.h"
-#include "classes/site.h"
+#include "model/bundle.h"
 #include "model/model.h"
+#include "base/pattern.h"
+#include "base/site.h"
+
+ATEN_USING_NAMESPACE
 
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
-bool Command::function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NewSite(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// First, check that the pattern name provided refers to a pattern of the current model
@@ -46,26 +49,26 @@ bool Command::function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			obj.s->atoms << parser.argi(n) - 1;
 		}
 	}
-	msg.print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.count(), (obj.s->atoms.count() == 0 ? " (will use centre of geometry)\n" : "\n"));
+	Messenger::print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.count(), (obj.s->atoms.count() == 0 ? " (will use centre of geometry)\n" : "\n"));
 	rv.reset();
 	return TRUE;
 }
 
 // Print site definitions for model ('listsites')
-bool Command::function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ListSites(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Site *s = obj.m->sites.first();
-	if (s == NULL) msg.print("No sites defined for model '%s'.\n",obj.m->name());
+	Site* s = obj.m->sites.first();
+	if (s == NULL) Messenger::print("No sites defined for model '%s'.\n",obj.m->name());
 	else
 	{
-		msg.print("Site list for model '%s':\n",obj.m->name());
+		Messenger::print("Site list for model '%s':\n",obj.m->name());
 		for (s = s; s != NULL; s = s->next)
 		{
-			msg.print(" %15s %15s  ",s->name(), s->pattern()->name());
-			if (s->atoms.count() == 0) msg.print("All atoms assumed (none defined)");
-			else for (int n=0; n<s->atoms.count(); ++n) msg.print(" %i", s->atoms.at(n));
-			msg.print("\n");
+			Messenger::print(" %15s %15s  ",s->name(), s->pattern()->name());
+			if (s->atoms.count() == 0) Messenger::print("All atoms assumed (none defined)");
+			else for (int n=0; n<s->atoms.count(); ++n) Messenger::print(" %i", s->atoms.at(n));
+			Messenger::print("\n");
 		}
 	}
 	rv.reset();
@@ -73,19 +76,19 @@ bool Command::function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Select named site from currently defined model sites ('getsite <name>')
-bool Command::function_GetSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GetSite(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Site *s;
+	Site* s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
-	if (s == NULL) msg.print("No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
+	if (s == NULL) Messenger::print("No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
 	else obj.s = s;
 	rv.reset();
 	return FALSE;
 }
 
 // Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
-bool Command::function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SiteAxes(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::SitePointer)) return FALSE;
 	int n;

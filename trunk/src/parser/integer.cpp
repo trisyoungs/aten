@@ -20,8 +20,8 @@
 */
 
 #include "parser/integer.h"
-#include "math/constants.h"
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
@@ -45,11 +45,11 @@ IntegerVariable::~IntegerVariable()
 */
 
 // Set from returnvalue node
-bool IntegerVariable::set(ReturnValue &rv)
+bool IntegerVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success;
@@ -65,14 +65,14 @@ void IntegerVariable::reset()
 
 
 // Return value of node
-bool IntegerVariable::execute(ReturnValue &rv)
+bool IntegerVariable::execute(ReturnValue& rv)
 {
 	rv.set(integerData_);
 	return TRUE;
 }
 
 // Print node contents
-void IntegerVariable::nodePrint(int offset, const char *prefix)
+void IntegerVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -90,7 +90,7 @@ void IntegerVariable::nodePrint(int offset, const char *prefix)
 */
 
 // Constructor
-IntegerArrayVariable::IntegerArrayVariable(TreeNode *sizeexpr, bool constant)
+IntegerArrayVariable::IntegerArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::IntegerData;
@@ -112,11 +112,11 @@ IntegerArrayVariable::~IntegerArrayVariable()
 */
 
 // Set from returnvalue node
-bool IntegerArrayVariable::set(ReturnValue &rv)
+bool IntegerArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an int array) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an int array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (integerArrayData_ == NULL)
@@ -135,23 +135,23 @@ bool IntegerArrayVariable::set(ReturnValue &rv)
 			integerArrayData_[1] = v.y;
 			integerArrayData_[2] = v.z;
 		}
-		else msg.print("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
+		else Messenger::print("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
 	}
 	else if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asDouble(success);
 	else
 	{
-		if (rv.arraySize() != arraySize_) msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+		if (rv.arraySize() != arraySize_) Messenger::print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
 		else for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asInteger(i, success);
 	}
 	return success;
 }
 
 // Set array element from returnvalue node
-bool IntegerArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+bool IntegerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array?) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (integerArrayData_ == NULL)
@@ -160,13 +160,13 @@ bool IntegerArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	// Check index
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
-	integerArrayData_[arrayindex] = rv.asInteger();
+	integerArrayData_[arrayIndex] = rv.asInteger();
 	return TRUE;
 }
 
@@ -183,7 +183,7 @@ void IntegerArrayVariable::reset()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) integerArrayData_[count++] = 0;
 			else integerArrayData_[count++] = value.asInteger();
@@ -193,7 +193,7 @@ void IntegerArrayVariable::reset()
 }
 
 // Return value of node
-bool IntegerArrayVariable::execute(ReturnValue &rv)
+bool IntegerArrayVariable::execute(ReturnValue& rv)
 {
 	if (integerArrayData_ == NULL)
 	{
@@ -214,20 +214,20 @@ bool IntegerArrayVariable::execute(ReturnValue &rv)
 }
 
 // Return value of node as array
-bool IntegerArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+bool IntegerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Check bounds
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( integerArrayData_[arrayindex] );
+	rv.set( integerArrayData_[arrayIndex] );
 	return TRUE;
 }
 
 // Print node contents
-void IntegerArrayVariable::nodePrint(int offset, const char *prefix)
+void IntegerArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -253,7 +253,7 @@ bool IntegerArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for int array '%s'.\n", name_.get());
+		Messenger::print("Failed to find size for int array '%s'.\n", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different
@@ -266,7 +266,7 @@ bool IntegerArrayVariable::initialise()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) return FALSE;
 			integerArrayData_[count++] = value.asInteger();

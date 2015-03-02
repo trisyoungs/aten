@@ -21,6 +21,8 @@
 
 #include "gui/ttablewidgetitem.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 TTableWidgetItem::TTableWidgetItem() : QTableWidgetItem()
 {

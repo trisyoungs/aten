@@ -23,17 +23,49 @@
 #define ATEN_PREFSWINDOW_H
 
 #include "gui/ui_prefs.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
+#include "base/namespace.h"
+
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
 
 // Forwads declarations
 class Element;
-class AtenWindow;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Program preferences window
 class AtenPrefs : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor
+	AtenPrefs(AtenWindow& parent);
+	// Main form declaration
+	Ui::PrefsDialog ui;
+	// Set controls to reflect program variables
+	void setControls(); // ATEN2 TODO Do we need this?  Can't just set in updateAndShow() / Constructor
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Whether the window is currently refreshing
+	bool refreshing_;
+	// Local copy of prefs/elements data
+	Prefs prefsBackup_;
+
 
 	/*
 	// Window Functions
@@ -42,6 +74,7 @@ class AtenPrefs : public QDialog
 	void on_PrefsOkButton_clicked(bool checked);
 	void on_PrefsCancelButton_clicked(bool checked);
 	void on_PrefsSaveAsDefaultButton_clicked(bool checked);
+
 
 	/*
 	// General Page
@@ -58,6 +91,7 @@ class AtenPrefs : public QDialog
 	void on_MaxUndoLevelsSpin_valueChanged(int value);
 	void on_ModelUpdateSpin_valueChanged(int value);
 
+
 	/*
 	// Element Page
 	*/
@@ -65,6 +99,7 @@ class AtenPrefs : public QDialog
 	void on_ElementList_currentRowChanged(int row);
 	void on_ElementColourButton_clicked(bool checked);
 	void on_ElementRadiusSpin_valueChanged(double value);
+
 
 	/*
 	// Interaction page
@@ -80,14 +115,16 @@ class AtenPrefs : public QDialog
 	void on_ZoomThrottleSpin_valueChanged(double value);
 	void on_MouseMoveFilterSpin_valueChanged(int value);
 
+
 	/*
 	// View Page
 	*/
 	private:
 	void updateAfterViewPrefs();
-	void setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom);
+	void setRadiusChanged(Prefs::DrawStyle ds, double value, bool foratom);
 	void spotlightPosChanged(int i, double value);
 	void spotlightColourChanged(Prefs::ColourComponent);
+
 	private slots:
 	// Style page
 	void on_StickRadiusSpin_valueChanged(double value);
@@ -99,9 +136,9 @@ class AtenPrefs : public QDialog
 	void on_SphereBondRadiusSpin_valueChanged(double value);
 	void on_ScaledBondRadiusSpin_valueChanged(double value);
 	void on_SelectionScaleSpin_valueChanged(double value);
-	void on_AngleLabelFormatEdit_textEdited(const QString &text);
-	void on_DistanceLabelFormatEdit_textEdited(const QString &text);
-	void on_ChargeLabelFormatEdit_textEdited(const QString &text);
+	void on_AngleLabelFormatEdit_textEdited(const QString& text);
+	void on_DistanceLabelFormatEdit_textEdited(const QString& text);
+	void on_ChargeLabelFormatEdit_textEdited(const QString& text);
 	void on_LabelSizeSpin_valueChanged(double value);
 	void on_RenderDashedAromaticsCheck_clicked(bool checked);
 	void on_DrawHydrogenBondsCheck_clicked(bool checked);
@@ -111,13 +148,6 @@ class AtenPrefs : public QDialog
 	// Colours page
 	void on_ColoursTable_cellDoubleClicked(int row, int column);
 	// Rendering / Quality page
-	void on_LevelOfDetailNLevelsSpin_valueChanged(int value);
-	void on_LevelOfDetailStartZSpin_valueChanged(double value);
-	void on_LevelOfDetailWidthSpin_valueChanged(double value);
-	void on_TransparencyGroup_clicked(bool checked);
-	void on_TransparencyNSlicesSpin_valueChanged(int value);
-	void on_TransparencyStartZSpin_valueChanged(double value);
-	void on_TransparencyBinWidthSpin_valueChanged(double value);
 	void on_PrimitiveQualitySpin_valueChanged(int value);
 	void on_PrimitiveQualitySlider_valueChanged(int value);
 	void on_ImagePrimitivesGroup_clicked(bool checked);
@@ -140,12 +170,14 @@ class AtenPrefs : public QDialog
 	void on_ShininessSpin_valueChanged(int value);
 	void on_FrameCurrentModelCheck_clicked(bool checked);
 	void on_FrameWholeViewCheck_clicked(bool checked);
-	
+
+
 	/*
 	// Colourscales page
 	*/
 	private:
 	void updateScalePointsList();
+
 	private slots:
 	void on_ScaleList_currentRowChanged(int id);
 	void on_ScalePointsTable_currentCellChanged(int row, int col, int prevrow, int prevcol);
@@ -156,11 +188,13 @@ class AtenPrefs : public QDialog
 	void on_ScaleList_itemClicked(QListWidgetItem *item);
 	void on_ScaleList_itemDoubleClicked(QListWidgetItem *item);
 
+
 	/*
 	// Energy / FF Page
 	*/
 	private:
 	void updateParameterTable();
+
 	private slots:
 	void on_CalculateIntraCheck_stateChanged(int state);
 	void on_CalculateVdwCheck_stateChanged(int state);
@@ -177,7 +211,7 @@ class AtenPrefs : public QDialog
 	void ParameterRuleChanged(int index);
 	void on_ParameterTable_itemChanged(QTableWidgetItem *w);
 
-	
+
 	/*
 	// External Programs
 	*/
@@ -192,31 +226,6 @@ class AtenPrefs : public QDialog
 	void on_EncoderPostExecutableEdit_textEdited(const QString &text);
 	void on_EncoderPostExecutableButton_clicked(bool checked);
 	void on_EncoderPostArgumentsEdit_textEdited(const QString &text);
-
-	
-	/*
-	// Local variables
-	*/
-	private:
-	// Whether the window is currently refreshing
-	bool refreshing_;
-	// Local copy of prefs/elements data
-	Prefs prefsBackup_;
-
-	/*
-	// Widgets
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor
-	AtenPrefs(AtenWindow& parent);
-	// Main form declaration
-	Ui::PrefsDialog ui;
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

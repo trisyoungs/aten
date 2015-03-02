@@ -21,6 +21,8 @@
 
 #include "parser/pvariable.h"
 
+ATEN_USING_NAMESPACE
+
 /*
 // Variable
 */
@@ -30,11 +32,11 @@
 */
 
 // Set value of variable
-bool PointerVariable::set(ReturnValue &rv)
+bool PointerVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case %s) cannot be assigned to.\n", VTypes::aDataType(returnType_));
+		Messenger::print("A constant value (in this case %s) cannot be assigned to.\n", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
 	bool success;
@@ -51,14 +53,14 @@ void PointerVariable::reset()
 }
 
 // Return value of node
-bool PointerVariable::execute(ReturnValue &rv)
+bool PointerVariable::execute(ReturnValue& rv)
 {
 	rv.set(returnType_, pointerData_, refitemData_);
 	return TRUE;
 }
 
 // Print node contents
-void PointerVariable::nodePrint(int offset, const char *prefix)
+void PointerVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -86,11 +88,11 @@ PointerArrayVariable::~PointerArrayVariable()
 */
 
 // Set from returnvalue node
-bool PointerArrayVariable::set(ReturnValue &rv)
+bool PointerArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case %s array) cannot be assigned to.\n", VTypes::aDataType(returnType_));
+		Messenger::print("A constant value (in this case %s array) cannot be assigned to.\n", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
 	if (pointerArrayData_ == NULL)
@@ -104,7 +106,7 @@ bool PointerArrayVariable::set(ReturnValue &rv)
 	{
 		if (rv.arraySize() != arraySize_)
 		{
-			msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+			Messenger::print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
 			return FALSE;
 		}
 		bool success;
@@ -115,11 +117,11 @@ bool PointerArrayVariable::set(ReturnValue &rv)
 }
 
 // Set array element from returnvalue node
-bool PointerArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+bool PointerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case %s array?) cannot be assigned to.\n", VTypes::aDataType(returnType_));
+		Messenger::print("A constant value (in this case %s array?) cannot be assigned to.\n", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
 	if (pointerArrayData_ == NULL)
@@ -128,13 +130,13 @@ bool PointerArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	// Check index
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
-	pointerArrayData_[arrayindex] = rv.asPointer(returnType_);
+	pointerArrayData_[arrayIndex] = rv.asPointer(returnType_);
 	return TRUE;
 }
 
@@ -151,7 +153,7 @@ void PointerArrayVariable::reset()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) pointerArrayData_[count++] = 0;
 			else pointerArrayData_[count++] = value.asPointer(returnType_);
@@ -161,7 +163,7 @@ void PointerArrayVariable::reset()
 }
 
 // Return value of node
-bool PointerArrayVariable::execute(ReturnValue &rv)
+bool PointerArrayVariable::execute(ReturnValue& rv)
 {
 	if (pointerArrayData_ == NULL)
 	{
@@ -182,21 +184,21 @@ bool PointerArrayVariable::execute(ReturnValue &rv)
 }
 
 // Return value of node as array
-bool PointerArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+bool PointerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Check bounds
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( returnType_, pointerArrayData_[arrayindex] );
+	rv.set( returnType_, pointerArrayData_[arrayIndex] );
 // 	printf("Executed :: '%s'\n", rv.info());
 	return TRUE;
 }
 
 // Print node contents
-void PointerArrayVariable::nodePrint(int offset, const char *prefix)
+void PointerArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -216,7 +218,7 @@ bool PointerArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for %s array '%s'.\n", VTypes::aDataType(returnType_), name_.get());
+		Messenger::print("Failed to find size for %s array '%s'.\n", VTypes::aDataType(returnType_), name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different
@@ -229,7 +231,7 @@ bool PointerArrayVariable::initialise()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) return FALSE;
 			pointerArrayData_[count++] = value.asPointer(returnType_);

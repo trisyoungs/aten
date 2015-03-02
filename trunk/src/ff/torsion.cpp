@@ -20,19 +20,21 @@
 */
 
 #include "model/model.h"
-#include "classes/forcefieldbound.h"
+#include "base/forcefieldbound.h"
 #include "ff/forms.h"
 #include "base/pattern.h"
 
+ATEN_USING_NAMESPACE
+
 // Torsion energy
-void Pattern::torsionEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
+void Pattern::torsionEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 {
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
-	msg.enter("Pattern::torsionEnergy");
+	Messenger::enter("Pattern::torsionEnergy");
 	int i,j,k,l,aoff,m1;
 	static double k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, eq, phi, energy, period, s, chi;
-	PatternBound *pb;
-	ForcefieldBound *ffb;
+	PatternBound* pb;
+	ForcefieldBound* ffb;
 	Vec3<double> vecij, veckj;
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
@@ -51,7 +53,7 @@ void Pattern::torsionEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 			switch (pb->data()->torsionForm())
 			{
 				case (TorsionFunctions::None):
-					msg.print("Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
+					Messenger::print("Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
 				case (TorsionFunctions::Ignore):
 					break;
 				case (TorsionFunctions::Cosine): 
@@ -113,7 +115,7 @@ void Pattern::torsionEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 					k9 = ffb->parameter(TorsionFunctions::Pol9K9);
 					energy += k1 + cos(chi)*(k2 + cos(chi)*(k3 + cos(chi)*(k4 + cos(chi)*(k5 + cos(chi)*(k6 + cos(chi)*(k7 + cos(chi)*(k8 + cos(chi)*k9)))))));
 				default:
-					msg.print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionForm()].name);
+					Messenger::print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionForm()].name);
 					break;
 			}
 			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->atomId(0),pb->atomId(1),pb->atomId(2),pb->atomId(3), phi,energy);
@@ -122,7 +124,7 @@ void Pattern::torsionEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 	}
 	// Increment energy for pattern
 	estore->add(EnergyStore::TorsionEnergy,energy,id_);
-	msg.exit("Pattern::torsionEnergy");
+	Messenger::exit("Pattern::torsionEnergy");
 }
 
 // Returns a unit vector in the specified direction
@@ -157,17 +159,17 @@ Matrix make_cp_mat(Vec3<double> &v)
 void Pattern::torsionForces(Model* srcmodel)
 {
 	// Calculate force contributions from the torsions in this pattern with coordinates from *xcfg
-	msg.enter("Pattern::torsionForces");
+	Messenger::enter("Pattern::torsionForces");
 	int i,j,k,l,aoff,m1;
 	static Vec3<double> vec_ji, vec_jk, vec_kl, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
 	Matrix dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
 	static double phi, dp, forcek, period, eq, mag_ji, mag_jk, mag_kl, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
 	static Vec3<double> fi, fj, fk, fl;
-	ForcefieldBound *ffb;
+	ForcefieldBound* ffb;
 	static double k1, k2, k3, k4, s;
-	PatternBound *pb;
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	PatternBound* pb;
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -236,7 +238,7 @@ void Pattern::torsionForces(Model* srcmodel)
 			switch (pb->data()->torsionForm())
 			{
 				case (TorsionFunctions::None):
-					msg.print("Warning: No function is specified for torsion force %i-%i-%i-%i.\n", i, j, k, l);
+					Messenger::print("Warning: No function is specified for torsion force %i-%i-%i-%i.\n", i, j, k, l);
 				case (TorsionFunctions::Ignore):
 					du_dphi = 0.0;
 					break;
@@ -314,5 +316,5 @@ void Pattern::torsionForces(Model* srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	msg.exit("Pattern::torsionForces");
+	Messenger::exit("Pattern::torsionForces");
 }

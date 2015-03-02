@@ -24,8 +24,11 @@
 
 #include "render/primitive.h"
 #include "render/textprimitive.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Grid;
 
 // Grid Primitive
@@ -75,5 +78,7 @@ class GridPrimitive : public ListItem<GridPrimitive>
 	// Return axis text primitive list specified
 	List<TextPrimitive>& axisTextPrimitives(int axis);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

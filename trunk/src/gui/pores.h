@@ -24,6 +24,12 @@
 
 #include "gui/ui_pores.h"
 #include "methods/partition.h"
+#include "base/namespace.h"
+
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_USING_NAMESPACE
 
 // Pores window
 class PoresWidget : public QDockWidget
@@ -32,25 +38,17 @@ class PoresWidget : public QDockWidget
 	Q_OBJECT
 
 	public:
+	// Constructor / Destructor
+	PoresWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::PoresWidget ui;
 	// Enum for pore shapes
 	enum PoreGeometry { CylinderGeometry };
 
-	/*
-	// Window Functions
-	*/
-	public:
-	void showWidget();
-	private slots:
-	// Drill Tab
-	void on_PoreSelectButton_clicked(bool checked);
-	void on_PoreSelectAndCutButton_clicked(bool checked);
-	// Terminate Tab
-	void on_TerminateButton_clicked(bool checked);
-	// Scheme Tab
-	void on_GenerateSchemeButton_clicked(bool checked);
-	void on_CopySchemeButton_clicked(bool checked);
-	protected:
-	void closeEvent(QCloseEvent *event);
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 
 	/*
 	// Local variables
@@ -63,18 +61,25 @@ class PoresWidget : public QDockWidget
 	// Return the widgets partitioning scheme
 	static PartitioningScheme &partitioningScheme();
 
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
 
+	/*
+	// Window Functions
+	*/
 	public:
-	// Constructor / Destructor
-	PoresWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::PoresWidget ui;
+	void showWidget();
+
+	private slots:
+	// Drill Tab
+	void on_PoreSelectButton_clicked(bool checked);
+	void on_PoreSelectAndCutButton_clicked(bool checked);
+	// Terminate Tab
+	void on_TerminateButton_clicked(bool checked);
+	// Scheme Tab
+	void on_GenerateSchemeButton_clicked(bool checked);
+	void on_CopySchemeButton_clicked(bool checked);
+
+	protected:
+	void closeEvent(QCloseEvent *event);
 };
 
 #endif

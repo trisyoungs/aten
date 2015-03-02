@@ -29,51 +29,70 @@
 #include "parser/treenode.h"
 #include "parser/returnvalue.h"
 #include "parser/format.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Tree;
+class Aten;
 
 // Command Node
 class CommandNode : public TreeNode
 {
 	public:
 	// Constructors / Destructor
-	CommandNode(Command::Function func = Command::NoFunction);
-	CommandNode(TreeNode *source);
+	CommandNode(Commands::Function func = Commands::NoFunction);
+	CommandNode(TreeNode* source);
 	~CommandNode();
+
+
+	/*
+	 * Link to Aten
+	 */
+	private:
+	// Reference to Aten
+	static Aten& aten_;
+
+	public:
+	// Return reference to Aten
+	Aten& aten();
+
 
 	/*
 	// Command Data
 	*/
 	protected:
 	// Command that this node performs
-	Command::Function function_;
+	Commands::Function function_;
 	// Associated format node (if any)
-	Format *format_;
+	Format* format_;
 	
 	public:
 	// Prepare the stored command function, initialising any data and running any commands
 	bool prepFunction();
 	// Get command function
-	Command::Function function();
+	Commands::Function function();
 	// Create format node (if necessary) from supplied argument id
-	Format *createFormat(int fmtargid, int firstargid);
+	Format* createFormat(int fmtargid, int firstargid);
 	// Create a 'delimited' writeable format (if necessary) from supplied argument id
-	Format *createFormat(const char *delimiter);
+	Format* createFormat(const char* delimiter);
 	// Execute command
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char* prefix = "");
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Initialise node
 	bool initialise();
 	// Create, run, and free a single command with simple arguments
-	static bool run(Command::Function func, const char *arglist, ...);
+	static bool run(Commands::Function func, const char* argList, ...);
 	// Create, run, and free a single command with simple arguments and specified bundle
-	static bool run(Command::Function func, Bundle &bundle, const char *arglist, ...);
+	static bool run(Commands::Function func, Bundle& bundle, const char* argList, ...);
 	// Execute command with specified bundle
-	bool execute(Bundle &bundle, ReturnValue &rv);
+	bool execute(Bundle& bundle, ReturnValue& rv);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -24,6 +24,9 @@
 
 #include <QtGui/QTableWidgetItem>
 #include "parser/returnvalue.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 class TTableWidgetItem : public QTableWidgetItem
 {
@@ -38,6 +41,8 @@ class TTableWidgetItem : public QTableWidgetItem
 	// Associated data item
 	ReturnValue data;
 };
+
+ATEN_END_NAMESPACE
 
 #endif
 

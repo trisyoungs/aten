@@ -26,18 +26,21 @@
 #include "parser/tree.h"
 #include "templates/reflist.h"
 #include "base/dnchar.h"
-#include <fstream>
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Program;
 class TreeNode;
+class Aten;
 
 // Parser
 class CommandParser
 {
 	public:
 	// Constructor / Destructor
-	CommandParser();
+	CommandParser(Aten& aten);
 	~CommandParser();
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
 	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, PlusPlusSymbol, MinusMinusSymbol, AndSymbol, OrSymbol, nSymbolTokens };
@@ -48,13 +51,25 @@ class CommandParser
 
 
 	/*
+	 * Link to Aten
+	 */
+	private:
+	// Reference to Aten
+	Aten& aten_;
+
+	public:
+	// Return reference to Aten
+	Aten& aten();
+
+
+	/*
 	// Create / Execute
 	*/
 	private:
 	// Character string source
 	Dnchar stringSource_;
 	// Character string list source
-	Dnchar *stringListSource_;
+	Dnchar* stringListSource_;
 	// Integer position in stringSource, total length of string, and starting position of current token/function
 	int stringPos_, stringLength_, tokenStart_, functionStart_;
 	// Line parser
@@ -86,9 +101,9 @@ class CommandParser
 	// Print error information and location
 	void printErrorInfo();
 	// Set source information string (if not from a file)
-	void setSourceInfo(const char *s);
+	void setSourceInfo(const char* s);
 	// Return short info on the current parsing source (filename, line number etc.)
-	const char *sourceInfo();
+	const char* sourceInfo();
 
 
 	/*
@@ -96,7 +111,7 @@ class CommandParser
 	*/
 	private:
 	// Current program target
-	Program *program_;
+	Program* program_;
 	// Current tree (target of node creation)
 	Tree* tree_;
 	// Stack of created trees
@@ -106,11 +121,11 @@ class CommandParser
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
 	// Populate target Program from specified character string
-	bool generateFromString(Program *prog, const char *s, const char *sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromString(Program* prog, const char* s, const char* sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Populate target Program from specified string list
-	bool generateFromStringList(Program *prog, Dnchar *stringListHead, const char *sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromStringList(Program* prog, Dnchar* stringListHead, const char* sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Populate target Program from specified file(name)
-	bool generateFromFile(Program *prog, const char *filename, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromFile(Program* prog, const char* filename, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 
 	public:
 	// Return current Tree target, raising warning and setting fail flag if no tree is defined...
@@ -118,7 +133,7 @@ class CommandParser
 	// Push filter
 	void pushFilter();
 	// Push function
-	Tree* pushFunction(const char *name, VTypes::DataType returntype);
+	Tree* pushFunction(const char* name, VTypes::DataType returntype);
 	// Pop tree (or function) from stack
 	void popTree();
 	// Discard current tree and its contents
@@ -130,49 +145,49 @@ class CommandParser
 	*/
 	public:	
 	// Add integer constant
-	TreeNode *addConstant(int i);
+	TreeNode* addConstant(int i);
 	// Add double constant
-	TreeNode *addConstant(double d);
+	TreeNode* addConstant(double d);
 	// Add string constant
-	TreeNode *addConstant(const char *s);
+	TreeNode* addConstant(const char* s);
 	// Add Element constant
-	TreeNode *addElementConstant(int el);
+	TreeNode* addElementConstant(int el);
 	// Create a new path on the stack with the specified base 'variable'
-	TreeNode *createPath(TreeNode *var);
+	TreeNode* createPath(TreeNode* var);
 	// Expand topmost path
-	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL, TreeNode *arglist = NULL);
+	bool expandPath(Dnchar* name, TreeNode* arrayIndex = NULL, TreeNode* argList = NULL);
 	// Finalise and remove the topmost path on the stack
-	TreeNode *finalisePath();
+	TreeNode* finalisePath();
 	// Join two commands together
-	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
+	TreeNode* joinCommands(TreeNode* node1, TreeNode* node2);
 	// Add on a new scope to the stack
-	TreeNode *pushScope(Command::Function func = Command::NoFunction);
+	TreeNode* pushScope(Commands::Function func = Commands::NoFunction);
 	// Pop the topmost scope node
 	bool popScope();
 	// Add a node representing a whole statement to the execution list
-	bool addStatement(TreeNode *leaf);
+	bool addStatement(TreeNode* leaf);
 	// Add a 'new' node to the Tree
-	TreeNode *addNew(VTypes::DataType type);
+	TreeNode* addNew(VTypes::DataType type);
 	// Add an operator to the Tree
-	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL, TreeNode *arg3 = NULL);
+	TreeNode* addOperator(Commands::Function func, TreeNode* arg1, TreeNode* arg2 = NULL, TreeNode* arg3 = NULL);
 	// Associate a command-based leaf node to the Tree
-	TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
+	TreeNode* addFunctionWithArglist(Commands::Function func, TreeNode* argList);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
-	TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
+	TreeNode* addFunction(Commands::Function func, TreeNode* a1 = NULL, TreeNode* a2 = NULL, TreeNode* a3 = NULL, TreeNode* a4 = NULL);
 	// Associate a user-defined command-based leaf node to the Tree
-	TreeNode *addUserFunction(Tree* func, TreeNode *arglist = NULL);
+	TreeNode* addUserFunction(Tree* func, TreeNode* argList = NULL);
 	// Add a declaration list
-	TreeNode *addDeclarations(TreeNode *declist);
+	TreeNode* addDeclarations(TreeNode* declist);
 	// Add a global declaration list
-	TreeNode *addGlobalDeclarations(TreeNode *declist);
+	TreeNode* addGlobalDeclarations(TreeNode* declist);
 	// Wrap named variable (and array index)
-	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
+	TreeNode* wrapVariable(Variable *var, TreeNode* arrayIndex = NULL);
 	// Add variable to topmost ScopeNode
-	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL, bool global = FALSE);
+	TreeNode* addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initialValue = NULL, bool global = FALSE);
 	// Add array variable to topmost ScopeNode
-	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL, bool global = FALSE);
+	TreeNode* addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = FALSE);
 	// Add array 'constant'
-	TreeNode *addArrayConstant(TreeNode *values);
+	TreeNode* addArrayConstant(TreeNode* values);
 
 
 	/*
@@ -180,10 +195,12 @@ class CommandParser
 	*/
 	public:
 	// Set filter option
-	bool setFilterOption(Dnchar *name, TreeNode *value);
+	bool setFilterOption(Dnchar* name, TreeNode* value);
 };
 
 // External declaration
 extern CommandParser cmdparser;
+
+ATEN_END_NAMESPACE
 
 #endif

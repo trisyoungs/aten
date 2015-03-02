@@ -22,6 +22,8 @@
 #include "gui/progress.h"
 #include "base/progress.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 AtenProgress::AtenProgress(QWidget *parent, Qt::WindowFlags flags ) : QDialog(parent, flags)
 {

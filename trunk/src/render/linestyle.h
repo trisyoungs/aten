@@ -25,7 +25,7 @@
 #include "render/linestipple.h"
 #include <QtGui/QColor>
 
-// Forward Declarations
+// Forward Declarations (Aten)
 /* none */
 
 // Line Style

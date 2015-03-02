@@ -23,6 +23,8 @@
 #include "math/constants.h"
 #include <stdio.h>
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 Choice::Choice()
 {

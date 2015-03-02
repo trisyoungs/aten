@@ -20,7 +20,9 @@
 */
 
 #include "methods/calculable.h"
-#include <stdlib.h>
+// #include <stdlib.h>
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 Calculable::Calculable() : ListItem<Calculable>()
@@ -33,25 +35,25 @@ Calculable::~Calculable()
 }
 
 // Set identifiable name of the quantity
-void Calculable::setName(const char *s)
+void Calculable::setName(const char* s)
 {
 	name_ = s;
 }
 
 // Return name of the quantity
-const char *Calculable::name() const
+const char* Calculable::name() const
 {
 	return name_.get();
 }
 
 // Set filename of the quantity
-void Calculable::setFilename(const char *s)
+void Calculable::setFilename(const char* s)
 {
 	filename_ = s;
 }
 
 // Return filename of the quantity
-const char *Calculable::filename() const
+const char* Calculable::filename() const
 {
 	return filename_.get();
 }

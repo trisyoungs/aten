@@ -22,9 +22,8 @@
 #include "parser/variable.h"
 #include "parser/returnvalue.h"
 #include "parser/accessor.h"
-#include "classes/prefs.h"
-#include "base/sysfunc.h"
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
@@ -44,6 +43,10 @@ Variable::~Variable()
 {
 }
 
+/*
+ * Variable Character
+ */
+
 // Set name of variable
 void Variable::setName(const char* s)
 {
@@ -51,7 +54,7 @@ void Variable::setName(const char* s)
 }
 
 // Get name of variable
-const char *Variable::name() const
+const char* Variable::name() const
 {
 	return name_.get();
 }
@@ -68,7 +71,7 @@ bool Variable::initialise()
 			if (set(rv)) return TRUE;
 			else
 			{
-				msg.print("Error: Failed to initialise variable '%s'.\n", name_.get());
+				Messenger::print("Error: Failed to initialise variable '%s'.\n", name_.get());
 				return FALSE;
 			}
 		}
@@ -78,7 +81,7 @@ bool Variable::initialise()
 }
 
 // Set initial value expression
-bool Variable::setInitialValue(TreeNode *node)
+bool Variable::setInitialValue(TreeNode* node)
 {
 	initialValue_ = node;
 	if (initialValue_ == NULL) return TRUE;
@@ -90,15 +93,15 @@ bool Variable::setInitialValue(TreeNode *node)
 		case (VTypes::DoubleData):
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData))
 			{
-				msg.print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
 				return FALSE;
 			}
-			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) msg.print("Warning: Initial value for integer variable '%s' is a double and will lose precision.\n", name_.get());
+			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) Messenger::print("Warning: Initial value for integer variable '%s' is a double and will lose precision.\n", name_.get());
 			break;
 		case (VTypes::VectorData):
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData) && (dt != returnType_))
 			{
-				msg.print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
 				return FALSE;
 			}
 			break;
@@ -106,7 +109,7 @@ bool Variable::setInitialValue(TreeNode *node)
 		default:
 			if (returnType_ == dt) break;
 			if ((dt == VTypes::IntegerData) && (returnType_ > VTypes::VectorData)) break;
-			msg.print("Error: Initial value for variable '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+			Messenger::print("Error: Initial value for variable '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
 			return FALSE;
 			break;
 	}
@@ -114,29 +117,29 @@ bool Variable::setInitialValue(TreeNode *node)
 }
 
 // Return TreeNode corresponding to initial value
-TreeNode *Variable::initialValue() const
+TreeNode* Variable::initialValue() const
 {
 	return initialValue_;
 }
 
 // Execute as an array
-bool Variable::executeAsArray(ReturnValue &rv, int arrayindex)
+bool Variable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Secondary array 'retrieval' executor
-	msg.print("Error: Variable '%s' is not an array.\n", name_.get());
+	Messenger::print("Error: Variable '%s' is not an array.\n", name_.get());
 	return FALSE;
 }
 
 // Set as an array
-bool Variable::setAsArray(ReturnValue &rv, int arrayindex)
+bool Variable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Secondary array 'set' executor
-	msg.print("Error: Variable '%s' is not an array.\n", name_.get());
+	Messenger::print("Error: Variable '%s' is not an array.\n", name_.get());
 	return FALSE;
 }
 
 // Search accessors (if any) available for node
-StepNode *Variable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* Variable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
 	// Default is to return NULL since no accessors are defined
 	printf("Error: No accessors are available for a variable of type '%s'.\n", VTypes::dataType(returnType_));
@@ -144,37 +147,18 @@ StepNode *Variable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 }
 
 // Search accessor list provided
-int Variable::searchAccessor(const char *s, int nAccessors, Accessor *accessors)
+int Variable::searchAccessor(const char* s, int nAccessors, Accessor *accessors)
 {
-	for (int i = 0; i < nAccessors; ++i)
-	{
-		// Case sensitive search
-		if (strcmp(accessors[i].name,s) == 0) return i;
-		// Case insensitive search
-		if (prefs.allowDeprecated() && strcmp(lowerCase(accessors[i].name),s) == 0)
-		{
-			msg.print("Warning: '%s' is deprecated - use '%s' instead.\n", s, accessors[i].name);
-			return i;
-		}
-	}
+	// Search for accessor (case-sensitive)
+	for (int i = 0; i < nAccessors; ++i) if (strcmp(accessors[i].name,s) == 0) return i;
 	return -1;
 }
 
 // Search accessor list provided
-int Variable::searchAccessor(const char *s, int nAccessors, FunctionAccessor *accessors)
+int Variable::searchAccessor(const char* s, int nAccessors, FunctionAccessor *accessors)
 {
-	Dnchar lcase = lowerCase(s);
-	for (int i = 0; i < nAccessors; ++i)
-	{
-		// Case sensitive search
-		if (strcmp(accessors[i].name,s) == 0) return i;
-		// Case insensitive search
-		if (prefs.allowDeprecated() && strcmp(lowerCase(accessors[i].name),lcase) == 0)
-		{
-			msg.print("Warning: '%s' is deprecated - use '%s' instead.\n", s, accessors[i].name);
-			return i;
-		}
-	}
+	// Search for accessor (case-sensitive)
+	for (int i = 0; i < nAccessors; ++i) if (strcmp(accessors[i].name,s) == 0) return i;
 	return -1;
 }
 

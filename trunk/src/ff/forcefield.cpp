@@ -20,13 +20,15 @@
 */
 
 #include "ff/forcefield.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
+#include "base/forcefieldatom.h"
+#include "base/forcefieldbound.h"
 #include "base/sysfunc.h"
 
+ATEN_USING_NAMESPACE
+
 // Forcefield keywords
-const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "impropers", "inter", "message", "name", "torsions", "types", "uatypes", "units", "ureybradleys", "vdw", "vscale" };
-Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
+const char* ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "impropers", "inter", "message", "name", "torsions", "types", "uatypes", "units", "ureybradleys", "vdw", "vscale" };
+Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char* s)
 {
 	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
 }
@@ -57,25 +59,25 @@ Forcefield::~Forcefield()
 */
 
 // Sets the name of the Forcefield
-void Forcefield::setName(const char *s)
+void Forcefield::setName(const char* s)
 {
 	name_.set(s);
 }
 
 // Returns the name of the Forcefield
-const char *Forcefield::name()
+const char* Forcefield::name()
 {
 	return name_.get();
 }
 
 // Sets the filename of the Forcefield
-void Forcefield::setFilename(const char *s)
+void Forcefield::setFilename(const char* s)
 {
 	filename_.set(s);
 }
 
 // Returns the filename of the Forcefield
-const char *Forcefield::filename()
+const char* Forcefield::filename()
 {
 	return filename_.get();
 }
@@ -132,37 +134,37 @@ ForcefieldAtom* Forcefield::type(int n)
 ForcefieldAtom* Forcefield::findType(int query)
 {
 	// Search for the typeId_ specified and return the internal integer id (i.e. position in atomtype list)
-	msg.enter("Forcefield::findType[int]");
+	Messenger::enter("Forcefield::findType[int]");
 	ForcefieldAtom* result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if (query == result->typeId()) break;
-	msg.exit("Forcefield::findType[int]");
+	Messenger::exit("Forcefield::findType[int]");
 	return result;
 }
 
 	// Find the named atomtype
-ForcefieldAtom* Forcefield::findType(const char *name)
+ForcefieldAtom* Forcefield::findType(const char* name)
 {
 	// Search for the atomname specified and return the internal integer id (i.e. position in atomtype list)
 	// We return the first occurrence we find (since there may be more than one - only typeId_ need be unique)
 	// Search both names and equivalents (since aliases may be defined that are not themselves defined as types_)
-	msg.enter("Forcefield::findType[char]");
+	Messenger::enter("Forcefield::findType[char]");
 	ForcefieldAtom* result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if ((strcmp(result->name(),name) == 0) || (strcmp(result->equivalent(),name) == 0)) break;
-	msg.exit("Forcefield::findType[char]");
+	Messenger::exit("Forcefield::findType[char]");
 	return result;
 }
 
 // Return description of typeId_
 ForcefieldAtom* Forcefield::findByTypeId(int i, ForcefieldAtom* excluding)
 {
-	msg.enter("Forcefield::findByTypeId");
+	Messenger::enter("Forcefield::findByTypeId");
 	ForcefieldAtom* result = NULL;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if ((result->typeId() == i) && (result != excluding)) break;
 //	if (result == NULL) printf("Forcefield::typeOfId <<<< FFID %i not found in forcefield >>>>\n",i);
-	msg.exit("Forcefield::findByTypeId");
+	Messenger::exit("Forcefield::findByTypeId");
 	return result;
 }
 
@@ -179,7 +181,7 @@ Neta *Forcefield::typeDefines()
 }
 
 // Find type define
-Neta *Forcefield::typeDefine(const char *name)
+Neta *Forcefield::typeDefine(const char* name)
 {
 	Neta *node;
 	for (node = typeDefines_.first(); node != NULL; node = node->next) if (strcmp(name,node->name()) == 0) break;
@@ -197,9 +199,9 @@ bool Forcefield::containsType(ForcefieldAtom* type)
 */
 
 // Add bond term to the forcefield
-ForcefieldBound *Forcefield::addBond(BondFunctions::BondFunction form)
+ForcefieldBound* Forcefield::addBond(BondFunctions::BondFunction form)
 {
-	ForcefieldBound *ffb = bonds_.add();
+	ForcefieldBound* ffb = bonds_.add();
 	ffb->setType(ForcefieldBound::BondInteraction);
 	ffb->setBondForm(form);
 	return ffb;
@@ -212,13 +214,13 @@ int Forcefield::nBonds()
 }
 
 // Returns the bond list
-ForcefieldBound *Forcefield::bonds()
+ForcefieldBound* Forcefield::bonds()
 {
 	return bonds_.first();
 }
 
 // Returns nth defined bond
-ForcefieldBound *Forcefield::bond(int n)
+ForcefieldBound* Forcefield::bond(int n)
 {
 	if ((n < 0) || (n > bonds_.nItems()))
 	{
@@ -229,15 +231,15 @@ ForcefieldBound *Forcefield::bond(int n)
 }
 
 // Find bond type
-ForcefieldBound *Forcefield::findBond(ForcefieldAtom* ffi, ForcefieldAtom* ffj)
+ForcefieldBound* Forcefield::findBond(ForcefieldAtom* ffi, ForcefieldAtom* ffj)
 {
 	// Search the forcefield for the bond definition for the interaction of the atom types i-j
 	// Return NULL if no match found ('result' remains 'NULL' if no kind of match is found).
-	msg.enter("Forcefield::findBond");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findBond");
+	ForcefieldBound* result = NULL;
 	int matchij, matchji, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *b = bonds_.first();
+	ForcefieldBound* b = bonds_.first();
 	while (b != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the bond specification
@@ -255,20 +257,20 @@ ForcefieldBound *Forcefield::findBond(ForcefieldAtom* ffi, ForcefieldAtom* ffj)
 		if (bestmatch == 0) break;
 		b = b ->next;
 	}
-	msg.exit("Forcefield::findBond");
+	Messenger::exit("Forcefield::findBond");
 	return result;
 }
 
 // Retrieve bond data corresponding to specified names
-ForcefieldBound *Forcefield::findBond(const char *typei, const char *typej)
+ForcefieldBound* Forcefield::findBond(const char* typei, const char* typej)
 {
 	// Search the forcefield for the bond definition for the interaction of the atom types i-j
 	// Return NULL if no match found ('result' remains 'NULL' if no kind of match is found).
-	msg.enter("Forcefield::findBond[string]");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findBond[string]");
+	ForcefieldBound* result = NULL;
 	int matchij, matchji, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *b = bonds_.first();
+	ForcefieldBound* b = bonds_.first();
 	while (b != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the bond specification
@@ -286,7 +288,7 @@ ForcefieldBound *Forcefield::findBond(const char *typei, const char *typej)
 			if (bestmatch == 0) break;
 			b = b ->next;
 	}
-	msg.exit("Forcefield::findBond[string]");
+	Messenger::exit("Forcefield::findBond[string]");
 	return result;
 }
 
@@ -295,9 +297,9 @@ ForcefieldBound *Forcefield::findBond(const char *typei, const char *typej)
 */
 
 // Add angle term to the forcefield
-ForcefieldBound *Forcefield::addAngle(AngleFunctions::AngleFunction form)
+ForcefieldBound* Forcefield::addAngle(AngleFunctions::AngleFunction form)
 {
-	ForcefieldBound *ffb = angles_.add();
+	ForcefieldBound* ffb = angles_.add();
 	ffb->setType(ForcefieldBound::AngleInteraction);
 	ffb->setAngleForm(form);
 	return ffb;
@@ -310,13 +312,13 @@ int Forcefield::nAngles()
 }
 
 // Returns the angle list
-ForcefieldBound *Forcefield::angles()
+ForcefieldBound* Forcefield::angles()
 {
 	return angles_.first();
 }
 
 // Returns nth defined angle
-ForcefieldBound *Forcefield::angle(int n)
+ForcefieldBound* Forcefield::angle(int n)
 {
 	if ((n < 0) || (n > angles_.nItems()))
 	{
@@ -327,15 +329,15 @@ ForcefieldBound *Forcefield::angle(int n)
 }
 
 // Find angle type
-ForcefieldBound *Forcefield::findAngle(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk)
+ForcefieldBound* Forcefield::findAngle(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk)
 {
 	// Search the forcefield for the angle definition for the interaction of the atom types i-j-k
 	// Return NULL is no match found.
-	msg.enter("Forcefield::findAngle");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findAngle");
+	ForcefieldBound* result = NULL;
 	int matchj, matchik, matchki, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *a = angles_.first();
+	ForcefieldBound* a = angles_.first();
 	while (a != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the angle specification
@@ -362,20 +364,20 @@ ForcefieldBound *Forcefield::findAngle(ForcefieldAtom* ffi, ForcefieldAtom* ffj,
 		if (bestmatch == 0) break;
 		a = a->next;
 	}
-	msg.exit("Forcefield::findAngle");
+	Messenger::exit("Forcefield::findAngle");
 	return result;
 }
 
 // Find angle type
-ForcefieldBound *Forcefield::findAngle(const char *typei, const char *typej, const char *typek)
+ForcefieldBound* Forcefield::findAngle(const char* typei, const char* typej, const char* typek)
 {
 	// Search the forcefield for the angle definition for the interaction of the atom types i-j-k
 	// Return NULL is no match found.
-	msg.enter("Forcefield::findAngle[string[");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findAngle[string[");
+	ForcefieldBound* result = NULL;
 	int matchj, matchik, matchki, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *a = angles_.first();
+	ForcefieldBound* a = angles_.first();
 	while (a != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the angle specification
@@ -402,7 +404,7 @@ ForcefieldBound *Forcefield::findAngle(const char *typei, const char *typej, con
 		if (bestmatch == 0) break;
 		a = a->next;
 	}
-	msg.exit("Forcefield::findAngle[string[");
+	Messenger::exit("Forcefield::findAngle[string[");
 	return result;
 }
 
@@ -411,9 +413,9 @@ ForcefieldBound *Forcefield::findAngle(const char *typei, const char *typej, con
 */
 
 // Add torsions term to the forcefield
-ForcefieldBound *Forcefield::addTorsion(TorsionFunctions::TorsionFunction form)
+ForcefieldBound* Forcefield::addTorsion(TorsionFunctions::TorsionFunction form)
 {
-	ForcefieldBound *ffb = torsions_.add();
+	ForcefieldBound* ffb = torsions_.add();
 	ffb->setType(ForcefieldBound::TorsionInteraction);
 	ffb->setTorsionForm(form);
 	return ffb;
@@ -426,13 +428,13 @@ int Forcefield::nTorsions()
 }
 
 // Returns the torsion list
-ForcefieldBound *Forcefield::torsions()
+ForcefieldBound* Forcefield::torsions()
 {
 	return torsions_.first();
 }
 
 // Returns nth defined torsion
-ForcefieldBound *Forcefield::torsion(int n)
+ForcefieldBound* Forcefield::torsion(int n)
 {
 	if ((n < 0) || (n > torsions_.nItems()))
 	{
@@ -443,15 +445,15 @@ ForcefieldBound *Forcefield::torsion(int n)
 }
 
 // Find torsion type
-ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk, ForcefieldAtom* ffl)
+ForcefieldBound* Forcefield::findTorsion(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk, ForcefieldAtom* ffl)
 {
 	// Search the forcefield for the torsion definition for the interaction of the atom types i-j-k-l
 	// Return NULL is no match found.
-	msg.enter("Forcefield::findTorsion");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findTorsion");
+	ForcefieldBound* result = NULL;
 	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *t = torsions_.first();
+	ForcefieldBound* t = torsions_.first();
 	while (t != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the torsion specification
@@ -473,20 +475,20 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom* ffi, ForcefieldAtom* ff
 		if (bestmatch == 0) break;
 		t = t->next;
 	}
-	msg.exit("Forcefield::findTorsion");
+	Messenger::exit("Forcefield::findTorsion");
 	return result;
 }
 
 // Retrieve torsion data corresponding to specified names
-ForcefieldBound *Forcefield::findTorsion(const char *typei, const char *typej, const char *typek, const char *typel)
+ForcefieldBound* Forcefield::findTorsion(const char* typei, const char* typej, const char* typek, const char* typel)
 {
 	// Search the forcefield for the torsion definition for the interaction of the atom types i-j-k-l
 	// Return NULL is no match found.
-	msg.enter("Forcefield::findTorsion[string]");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findTorsion[string]");
+	ForcefieldBound* result = NULL;
 	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *t = torsions_.first();
+	ForcefieldBound* t = torsions_.first();
 	while (t != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the torsion specification
@@ -508,7 +510,7 @@ ForcefieldBound *Forcefield::findTorsion(const char *typei, const char *typej, c
 		if (bestmatch == 0) break;
 		t = t->next;
 	}
-	msg.exit("Forcefield::findTorsion[string]");
+	Messenger::exit("Forcefield::findTorsion[string]");
 	return result;
 }
 
@@ -517,9 +519,9 @@ ForcefieldBound *Forcefield::findTorsion(const char *typei, const char *typej, c
 */
 
 // Add torsions term to the forcefield
-ForcefieldBound *Forcefield::addImproper(TorsionFunctions::TorsionFunction form)
+ForcefieldBound* Forcefield::addImproper(TorsionFunctions::TorsionFunction form)
 {
-	ForcefieldBound *ffb = impropers_.add();
+	ForcefieldBound* ffb = impropers_.add();
 	ffb->setType(ForcefieldBound::ImproperInteraction);
 	ffb->setTorsionForm(form);
 	return ffb;
@@ -532,13 +534,13 @@ int Forcefield::nImpropers()
 }
 
 // Returns the improper torsion list
-ForcefieldBound *Forcefield::impropers()
+ForcefieldBound* Forcefield::impropers()
 {
 	return impropers_.first();
 }
 
 // Returns nth defined improper torsion
-ForcefieldBound *Forcefield::improper(int n)
+ForcefieldBound* Forcefield::improper(int n)
 {
 	if ((n < 0) || (n > impropers_.nItems()))
 	{
@@ -549,15 +551,15 @@ ForcefieldBound *Forcefield::improper(int n)
 }
 
 // Retrieve improper torsion data corresponding to specified names
-ForcefieldBound *Forcefield::findImproper(const char *typei, const char *typej, const char *typek, const char *typel)
+ForcefieldBound* Forcefield::findImproper(const char* typei, const char* typej, const char* typek, const char* typel)
 {
 	// Search the forcefield for the improper torsion definition for the interaction of the atom types i-j-k-l
 	// Return NULL is no match found.
-	msg.enter("Forcefield::findImproper[string]");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findImproper[string]");
+	ForcefieldBound* result = NULL;
 	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *t = impropers_.first();
+	ForcefieldBound* t = impropers_.first();
 	while (t != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the torsion specification
@@ -579,7 +581,7 @@ ForcefieldBound *Forcefield::findImproper(const char *typei, const char *typej, 
 		if (bestmatch == 0) break;
 		t = t->next;
 	}
-	msg.exit("Forcefield::findImproper[string]");
+	Messenger::exit("Forcefield::findImproper[string]");
 	return result;
 }
 
@@ -588,9 +590,9 @@ ForcefieldBound *Forcefield::findImproper(const char *typei, const char *typej, 
 */
 
 // Add Urey-Bradley term to the forcefield
-ForcefieldBound *Forcefield::addUreyBradley(BondFunctions::BondFunction form)
+ForcefieldBound* Forcefield::addUreyBradley(BondFunctions::BondFunction form)
 {
-	ForcefieldBound *ffb = ureyBradleys_.add();
+	ForcefieldBound* ffb = ureyBradleys_.add();
 	ffb->setType(ForcefieldBound::UreyBradleyInteraction);
 	ffb->setBondForm(form);
 	return ffb;
@@ -603,13 +605,13 @@ int Forcefield::nUreyBradleys()
 }
 
 // Returns the Urey-Bradley list
-ForcefieldBound *Forcefield::ureyBradleys()
+ForcefieldBound* Forcefield::ureyBradleys()
 {
 	return ureyBradleys_.first();
 }
 
 // Returns nth defined Urey-Bradley
-ForcefieldBound *Forcefield::ureyBradley(int n)
+ForcefieldBound* Forcefield::ureyBradley(int n)
 {
 	if ((n < 0) || (n > ureyBradleys_.nItems()))
 	{
@@ -620,15 +622,15 @@ ForcefieldBound *Forcefield::ureyBradley(int n)
 }
 
 // Find Urey-Bradley type
-ForcefieldBound *Forcefield::findUreyBradley(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk)
+ForcefieldBound* Forcefield::findUreyBradley(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk)
 {
 	// Search the forcefield for the Urey-Bradley definition for the interaction of the atom types i-j-k
 	// Return NULL is no match found.
-	msg.enter("Forcefield::findUreyBradley");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findUreyBradley");
+	ForcefieldBound* result = NULL;
 	int matchj, matchik, matchki, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *a = ureyBradleys_.first();
+	ForcefieldBound* a = ureyBradleys_.first();
 	while (a != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the Urey-Bradley specification
@@ -654,20 +656,20 @@ ForcefieldBound *Forcefield::findUreyBradley(ForcefieldAtom* ffi, ForcefieldAtom
 		if (bestmatch == 0) break;		// Early exit for an exact match
 		a = a ->next;
 	}
-	msg.exit("Forcefield::findUreyBradley");
+	Messenger::exit("Forcefield::findUreyBradley");
 	return result;
 }
 
 // Find Urey-Bradley type
-ForcefieldBound *Forcefield::findUreyBradley(const char *typei, const char *typej, const char *typek)
+ForcefieldBound* Forcefield::findUreyBradley(const char* typei, const char* typej, const char* typek)
 {
 	// Search the forcefield for the Urey-Bradley definition for the interaction of the atom types i-j-k
 	// Return NULL is no match found.
-	msg.enter("Forcefield::findUreyBradley[string]");
-	ForcefieldBound *result = NULL;
+	Messenger::enter("Forcefield::findUreyBradley[string]");
+	ForcefieldBound* result = NULL;
 	int matchj, matchik, matchki, bestmatch;
 	bestmatch = 10;
-	ForcefieldBound *a = ureyBradleys_.first();
+	ForcefieldBound* a = ureyBradleys_.first();
 	while (a != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the Urey-Bradley specification
@@ -693,7 +695,7 @@ ForcefieldBound *Forcefield::findUreyBradley(const char *typei, const char *type
 		if (bestmatch == 0) break;		// Early exit for an exact match
 			a = a ->next;
 	}
-	msg.exit("Forcefield::findUreyBradley[string]");
+	Messenger::exit("Forcefield::findUreyBradley[string]");
 	return result;
 }
 
@@ -708,14 +710,14 @@ int Forcefield::matchType(const Dnchar &a, const Dnchar &b)
 }
 
 // Match two forcefield type strings
-int Forcefield::matchType(const char *test, const char *target)
+int Forcefield::matchType(const char* test, const char* target)
 {
 	// Text-match the single atomtype 'i' to the passed string.
 	// Wildcard '*' in the atomname matches rest of string.
 	// Return 1 for a wildcard, '0' for an exact match, and an arbitrary '10' for no match
 	if (strcmp(test,target) == 0) return 0;
 	bool wild = FALSE, failed = FALSE;
-	int length = max(strlen(test),strlen(target));
+	int length = std::max(strlen(test),strlen(target));
 	for (int n=0; n <length; n++)
 	{
 		if ((target[n] == '*') || (test[n] == '*'))
@@ -736,46 +738,46 @@ int Forcefield::matchType(const char *test, const char *target)
 }
 
 // Match atom types to names
-int Forcefield::matchTypes(ForcefieldAtom* ffi, ForcefieldAtom* ffj, const char *typei, const char *typej)
+int Forcefield::matchTypes(ForcefieldAtom* ffi, ForcefieldAtom* ffj, const char* typei, const char* typej)
 {
 	// Type Match routines - string match the name of types_ 'i' and 'j' to the string'd types_
 	// specified in the bond / angle / torsion data supplied. Only check 'one way round' - the routine
 	// must be called again with i and j swapped over to test the inverse case.
 	// Matches against 'equiv' atomnames.
-	msg.enter("Forcefield::matchTypes");
+	Messenger::enter("Forcefield::matchTypes");
 	int matchi, matchj;
 	// Best case - exact, direct match:
 	if ((strcmp(ffi->equivalent(),typei) == 0) && (strcmp(ffj->equivalent(),typej) == 0))
 	{
-		msg.exit("Forcefield::matchTypes");
+		Messenger::exit("Forcefield::matchTypes");
 		return 0;
 	}
 	// No such luck, so match each atom separately
 	matchi = matchType(ffi->equivalent(),typei);
 	matchj = matchType(ffj->equivalent(),typej);
-	msg.exit("Forcefield::matchTypes");
+	Messenger::exit("Forcefield::matchTypes");
 	return (matchi + matchj);
 }
 
 // Match names of supplied typenames and test names 
-int Forcefield::matchTypes(const char *testi, const char *testj, const char *typei, const char *typej)
+int Forcefield::matchTypes(const char* testi, const char* testj, const char* typei, const char* typej)
 {
 	// Type Match routines - string match the name of types_ 'i' and 'j' to the string'd types_
 	// specified in the bond / angle / torsion data supplied. Only check 'one way round' - the routine
 	// must be called again with i and j swapped over to test the inverse case.
 	// Matches against 'equiv' atomnames.
-	msg.enter("Forcefield::matchTypes[string]");
+	Messenger::enter("Forcefield::matchTypes[string]");
 	int matchi, matchj;
 	// Best case - exact, direct match:
 	if ((strcmp(testi,typei) == 0) && (strcmp(testj,typej) == 0))
 	{
-		msg.exit("Forcefield::matchTypes[string]");
+		Messenger::exit("Forcefield::matchTypes[string]");
 		return 0;
 	}
 	// No such luck, so match each atom separately
 	matchi = matchType(testi,typei);
 	matchj = matchType(testj,typej);
-	msg.exit("Forcefield::matchTypes[string]");
+	Messenger::exit("Forcefield::matchTypes[string]");
 	return (matchi + matchj);
 }
 
@@ -791,11 +793,11 @@ int Forcefield::matchTypes(const char *testi, const char *testj, const char *typ
 void Forcefield::convertParameters()
 {
 	// Convert units of all the energetic parameters within the forcefield from the forcefield's current units to the program's internal units (specified in prefs)
-	msg.enter("Forcefield::convertParameters");
-	ForcefieldBound *ffb;
+	Messenger::enter("Forcefield::convertParameters");
+	ForcefieldBound* ffb;
 	ForcefieldAtom* ffa;
 	int n;
-	Dnchar *param;
+	Dnchar* param;
 	Variable *v;
 	ReturnValue newvalue, oldvalue;
 	// VDW and extra defined data - skip first definition which is '_NDEF_'
@@ -835,5 +837,5 @@ void Forcefield::convertParameters()
 	}
 	// Set new energy unit of the forcefield to the programs internal unit
 	energyUnit_ = prefs.energyUnit();
-	msg.exit("Forcefield::convertParameters");
+	Messenger::exit("Forcefield::convertParameters");
 }

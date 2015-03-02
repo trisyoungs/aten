@@ -22,6 +22,8 @@
 #include "main/aten.h"
 #include "model/model.h"
 
+ATEN_USING_NAMESPACE
+
 /*
 // BatchExport
 */
@@ -35,24 +37,28 @@ void Aten::setExportFilter(Tree* filter)
 // Export all currently loaded models in the referenced format
 void Aten::exportModels()
 {
-	msg.enter("Aten::exportModels");
+	Messenger::enter("Aten::exportModels");
 	Dnchar filename;
 
 	// Loop over loaded models
-	for (Model* m = aten.models(); m != NULL; m = m->next)
+	for (Model* m = models_.first(); m != NULL; m = m->next)
 	{
-		aten.setCurrentModel(m, TRUE);
+		// Set current model
+		setCurrentModel(m, TRUE);
+
 		// Generate new filename for model.
 		filename = m->filename();
 		int n = filename.rFind('.', '/', '\\');
 		filename.eraseFrom(n);
+
 		// Append new suffix
 		filename += '.';
 		filename.strcat(exportFilter_->filter.extensions()->get());
+
 		// Make sure that the new filename is not the same as the old filename
 		if (filename == m->filename())
 		{
-			msg.print("Export filename generated is identical to the original (%s) - not converted.\n", filename.get());
+			Messenger::print("Export filename generated is identical to the original (%s) - not converted.\n", filename.get());
 			continue;
 		}
 		m->setFilter(exportFilter_);
@@ -60,11 +66,11 @@ void Aten::exportModels()
 		
 		// Temporarily disable undo/redo for the model, save, and re-enable
 		m->disableUndoRedo();
-		if (exportFilter_->executeWrite(filename)) msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), filename.get(), exportFilter_->filter.name());
-		else msg.print("Failed to save model '%s'.\n", m->name());
+		if (exportFilter_->executeWrite(filename)) Messenger::print("Model '%s' saved to file '%s' (%s)\n", m->name(), filename.get(), exportFilter_->filter.name());
+		else Messenger::print("Failed to save model '%s'.\n", m->name());
 		m->enableUndoRedo();
 	}
-	msg.exit("Aten::exportModels");
+	Messenger::exit("Aten::exportModels");
 }
 
 /*
@@ -83,10 +89,11 @@ void Aten::processModels()
 	ReturnValue rv;
 	for (Model* m = models_.first(); m != NULL; m = m->next)
 	{
-		for (Program *cmd = batchCommands_.first(); cmd != NULL; cmd = cmd->next)
+		for (Program* cmd = batchCommands_.first(); cmd != NULL; cmd = cmd->next)
 		{
 			// Set the current model
-			aten.setCurrentModel(m, TRUE);
+			setCurrentModel(m, TRUE);
+
 			// Run the command list
 			if (!cmd->execute(rv)) return;
 		}
@@ -103,12 +110,12 @@ void Aten::saveModels()
 		Tree* t = m->filter();
 		if (t == NULL)
 		{
-			msg.print("No export filter available for model '%s'. Not saved.\n", m->name());
+			Messenger::print("No export filter available for model '%s'. Not saved.\n", m->name());
 			continue;
 		}
 		if (t->filter.type() != FilterData::ModelExport)
 		{
-			msg.print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), t->filter.nickname());
+			Messenger::print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), t->filter.nickname());
 			continue;
 		}
 		

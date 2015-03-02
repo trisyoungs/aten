@@ -21,6 +21,8 @@
 
 #include "gui/tcombobox.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 TComboBox::TComboBox(QWidget *parent) : QComboBox(parent)
 {

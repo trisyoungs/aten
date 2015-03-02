@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/pores.h"
@@ -59,7 +60,7 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
-		msg.print("Can't drill pores in a non-periodic model.\n");
+		Messenger::print("Can't drill pores in a non-periodic model.\n");
 		return;
 	}
 
@@ -69,7 +70,7 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 	Vec3<double> v(ui.PoreVectorX->value(), ui.PoreVectorY->value(), ui.PoreVectorZ->value());
 	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
 	double sizeParam = ui.PoreSizeSpin->value();
-	CommandNode::run(Command::SelectPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
+	CommandNode::run(Commands::SelectPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
 	parent_.postRedisplay();
 }
 
@@ -79,7 +80,7 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
-		msg.print("Can't drill pores in a non-periodic model.\n");
+		Messenger::print("Can't drill pores in a non-periodic model.\n");
 		return;
 	}
 
@@ -89,7 +90,7 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 	Vec3<double> v(ui.PoreVectorX->value(), ui.PoreVectorY->value(), ui.PoreVectorZ->value());
 	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
 	double sizeParam = ui.PoreSizeSpin->value();
-	CommandNode::run(Command::DrillPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
+	CommandNode::run(Commands::DrillPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
 	parent_.postRedisplay();
 }
 
@@ -103,12 +104,12 @@ void PoresWidget::on_TerminateButton_clicked(bool checked)
 	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->nSelected() == 0)
 	{
-		msg.print("No atoms selected in current model, so nothing to terminate.\n");
+		Messenger::print("No atoms selected in current model, so nothing to terminate.\n");
 		return;
 	}
 
 	// Run the command
-	CommandNode::run(Command::Terminate, "");
+	CommandNode::run(Commands::Terminate, "");
 	parent_.postRedisplay();
 }
 
@@ -122,7 +123,7 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
-		msg.print("Can't generate a partitioning scheme for a non-periodic model.\n");
+		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.\n");
 		return;
 	}
 
@@ -131,7 +132,7 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	Vec3<int> npoints(ui.PartitionGridXSpin->value(), ui.PartitionGridYSpin->value(), ui.PartitionGridZSpin->value());
 	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
 	int atomExtent = ui.AtomExtentSpin->value();
-	CommandNode::run(Command::CreateScheme, "ciiidii", name.get(), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 0);
+	CommandNode::run(Commands::CreateScheme, "ciiidii", name.get(), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 0);
 	
 	// Update info in window
 	double volume = 0.0;
@@ -158,7 +159,7 @@ void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
-		msg.print("Can't generate a partitioning scheme for a non-periodic model.\n");
+		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.\n");
 		return;
 	}
 
@@ -167,7 +168,7 @@ void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 	Vec3<int> npoints(ui.PartitionGridXSpin->value(), ui.PartitionGridYSpin->value(), ui.PartitionGridZSpin->value());
 	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
 	int atomExtent = ui.AtomExtentSpin->value();
-	CommandNode::run(Command::CreateScheme, "ciiidii", name.get(), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 1);
+	CommandNode::run(Commands::CreateScheme, "ciiidii", name.get(), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 1);
 	parent_.postRedisplay();
 }
 

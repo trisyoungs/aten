@@ -22,7 +22,11 @@
 #ifndef ATEN_ENERGYSTORE_H
 #define ATEN_ENERGYSTORE_H
 
-// Forward Declarations
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Pattern;
 class Model;
 
@@ -49,35 +53,35 @@ class EnergyStore
 	// Whether the Energy has actually been used (i.e. calculated)
 	bool calculated_;
 	// Bond energies
-	double *bond_;
+	double* bond_;
 	// Angle energies
-	double *angle_;
+	double* angle_;
 	// Torsion energies
-	double *torsion_;
+	double* torsion_;
 	// Urey-Bradley energies
-	double *ureyBradley_;
+	double* ureyBradley_;
 	// Intramolecular VDW energies
-	double *vdwIntra_;
+	double* vdwIntra_;
 	// Intermolecular VDW energies
-	double **vdwInter_;
+	double** vdwInter_;
 	// Long-range tail correction to VDW
 	double vdwTail_;
 	// Intramolecular coulomb energies
-	double *coulombIntra_;
+	double* coulombIntra_;
 	// Intermolecular coulomb energies
-	double **coulombInter_;
+	double** coulombInter_;
 	// Intramolecular real-space Ewald energies
-	double *ewaldRealIntra_;
+	double* ewaldRealIntra_;
 	// Intermolecular real-space Ewald energies
-	double **ewaldRealInter_;
+	double** ewaldRealInter_;
 	// Intramolecular reciprocal-space Ewald energies
-	double *ewaldRecipIntra_;
+	double* ewaldRecipIntra_;
 	// Intermolecular reciprocal-space Ewald energies
-	double **ewaldRecipInter_;
+	double** ewaldRecipInter_;
 	// Ewald self-interaction correction to reciprocal energy
-	double *ewaldSelfCorrect_;
+	double* ewaldSelfCorrect_;
 	// Ewald molecular-interaction correction to reciprocal energy
-	double *ewaldMolCorrect_;
+	double* ewaldMolCorrect_;
 	// Intramolecular contributions
 	double totalBond_, totalAngle_, totalTorsion_, totalUreyBradley_;
 	// Short-range interactions total
@@ -131,13 +135,15 @@ class EnergyStore
 	// Prints out components of the Ewald sum energy
 	void printEwald();
 	// Prints out energy decomposition matrix for VDW
-	void printVdwMatrix(Model*);
+	void printVdwMatrix(Model* model);
 	// Prints out energy decomposition matrix for electrostatics
-	void printElecMatrix(Model*);
+	void printElecMatrix(Model* model);
 	// Prints out energy decomposition matrix for total interpattern interactions
-	void printInterMatrix(Model*);
+	void printInterMatrix(Model* model);
 	// Prints out energy decomposition matrix for intramolecular interactions
-	void printIntraMatrix(Model*);
+	void printIntraMatrix(Model* model);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

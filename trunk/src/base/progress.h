@@ -24,8 +24,12 @@
 
 #include "base/dnchar.h"
 #include <QtCore/QTime>
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 extern Dnchar s;
+
 // Progress Indicator Data
 class ProgressIndicator
 {
@@ -44,26 +48,24 @@ class ProgressIndicator
 	Dnchar etaText_, jobTitle_, subTitle_;
 	// Flags to indicate whether indicator is active
 	bool hasJob_;
-	// Whether text indicator should be printed out
-	bool hidden_;
 	
 	public:
 	// Notify that the progress indicator should be canceled
 	void notifyCanceled();
 	// Instantiate a new progress dialog (or a sub-job) of the current one
-	int initialise(const char* jobtitle, int stepstodo, bool hidden);
+	int initialise(const char* jobtitle, int stepstodo);
 	// Update the progress dialog
-	bool update(int id, int currentstep = -1, const char *subtitle = NULL);
+	bool update(int id, int currentstep = -1, const char* subtitle = NULL);
 	// Terminate the progress dialog
 	void terminate(int id);
 	// Return whether a major job is in progress
 	bool hasJob();
 	// Return ETA (as text)
-	const char *eta();
+	const char* eta();
 	// Return major job title
-	const char *jobTitle();
+	const char* jobTitle();
 	// Return minor job title
-	const char *subTitle();
+	const char* subTitle();
 	// Return number of steps to do
 	int stepsToDo();
 	// Return current step number
@@ -72,5 +74,7 @@ class ProgressIndicator
 
 // External declaration
 extern ProgressIndicator progress;
+
+ATEN_END_NAMESPACE
 
 #endif

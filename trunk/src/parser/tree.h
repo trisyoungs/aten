@@ -29,8 +29,11 @@
 #include "parser/scopenode.h"
 #include "command/commands.h"
 #include "base/dnchar.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class TreeNode;
 class VariableNode;
 class StepNode;
@@ -48,11 +51,19 @@ class Tree : public ListItem<Tree>
 
 
 	/*
+	 * Link to Aten
+	 */
+	private:
+	// Reference to Aten
+	static Aten& aten_;
+
+
+	/*
 	// Tree Character
 	*/
 	private:
 	// Program parent
-	Program *parent_;
+	Program* parent_;
 	// Tree name (if any)
 	Dnchar name_;
 	// Type of tree
@@ -62,13 +73,13 @@ class Tree : public ListItem<Tree>
 
 	public:
 	// Set parent
-	void setParent(Program *prog);
+	void setParent(Program* prog);
 	// Return parent
-	Program *parent() const;
+	Program* parent() const;
 	// Set name of tree
-	void setName(const char *s);
+	void setName(const char* s);
 	// Return name of tree
-	const char *name() const;
+	const char* name() const;
 	// Set type
 	void setType(Tree::TreeType type);
 	// Return type
@@ -104,23 +115,23 @@ class Tree : public ListItem<Tree>
 	// Number of syntactic errors encountered
 	int nErrors_;
 	// Check unary operator type compatibility
-	VTypes::DataType checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, bool array, bool &returnsarray);
+	VTypes::DataType checkUnaryOperatorTypes(Commands::Function func, VTypes::DataType type, bool array, bool &returnsarray);
 	// Check binary operator type compatibility
-	VTypes::DataType checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray);
+	VTypes::DataType checkBinaryOperatorTypes(Commands::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray);
 	// Check ternary operator type compatibility
-	VTypes::DataType checkTernaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool &returnsarray);
+	VTypes::DataType checkTernaryOperatorTypes(Commands::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool &returnsarray);
 	
 	public:
 	// Create a new path on the stack with the specified base 'variable'
-	TreeNode *createPath(TreeNode *var);
+	TreeNode* createPath(TreeNode* var);
 	// Expand topmost path
-	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL, TreeNode *arglist = NULL);
+	bool expandPath(Dnchar* name, TreeNode* arrayIndex = NULL, TreeNode* argList = NULL);
 	// Finalise and remove the topmost path on the stack
-	TreeNode *finalisePath();
+	TreeNode* finalisePath();
 	// Return number of arguments defined (for function)
 	int nArgs() const;
 	// Return first argument defined (for function)
-	TreeNode *args() const;
+	TreeNode* args() const;
 	// Return first in stack of scopenodes
 	Refitem<ScopeNode,int> *scopeNodes();
 	
@@ -130,25 +141,25 @@ class Tree : public ListItem<Tree>
 	*/
 	public:
 	// Add a node representing a whole statement to the execution list
-	bool addStatement(TreeNode *leaf);
+	bool addStatement(TreeNode* leaf);
 	// Add a 'new' node to the Tree
-	TreeNode *addNew(VTypes::DataType type);
+	TreeNode* addNew(VTypes::DataType type);
 	// Add an operator to the Tree
-	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL, TreeNode *arg3 = NULL);
+	TreeNode* addOperator(Commands::Function func, TreeNode* arg1, TreeNode* arg2 = NULL, TreeNode* arg3 = NULL);
 	// Associate a command-based leaf node to the Tree
-	TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
+	TreeNode* addFunctionWithArglist(Commands::Function func, TreeNode* argList);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
-	TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
+	TreeNode* addFunction(Commands::Function func, TreeNode* a1 = NULL, TreeNode* a2 = NULL, TreeNode* a3 = NULL, TreeNode* a4 = NULL);
 	// Associate a user-defined command-based leaf node to the Tree
-	TreeNode *addUserFunction(Tree* func, TreeNode *arglist = NULL);
+	TreeNode* addUserFunction(Tree* func, TreeNode* argList = NULL);
 	// Add a declaration list
-	TreeNode *addDeclarations(TreeNode *declist);
+	TreeNode* addDeclarations(TreeNode* declist);
 	// Join two nodes together
-	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
+	static TreeNode* joinArguments(TreeNode* arg1, TreeNode* arg2);
 	// Join two commands together
-	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
+	TreeNode* joinCommands(TreeNode* node1, TreeNode* node2);
 	// Add on a new scope to the stack
-	TreeNode *pushScope(Command::Function func = Command::NoFunction);
+	TreeNode* pushScope(Commands::Function func = Commands::NoFunction);
 	// Pop the topmost scope node
 	bool popScope();
 	// Print statement info
@@ -160,31 +171,31 @@ class Tree : public ListItem<Tree>
 	*/
 	private:
 	// Pointer to local ScopeNode (for functions)
-	ScopeNode *localScope_;
+	ScopeNode* localScope_;
 	// Variable list containing 'global' variable definitione
 	ScopeNode globalScope_;
 
 	public:
 	// Add constant value to topmost scope
-	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
+	TreeNode* addConstant(VTypes::DataType type, Dnchar* token);
 	// Add integer constant
-	TreeNode *addConstant(int i);
+	TreeNode* addConstant(int i);
 	// Add double constant
-	TreeNode *addConstant(double d);
+	TreeNode* addConstant(double d);
 	// Add string constant
-	TreeNode *addConstant(const char *s);
+	TreeNode* addConstant(const char* s);
 	// Add Element constant
-	TreeNode *addElementConstant(int el);
+	TreeNode* addElementConstant(int el);
 	// Add variable to topmost ScopeNode
-	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL, bool global = FALSE);
+	TreeNode* addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initialValue = NULL, bool global = FALSE);
 	// Add array variable to topmost ScopeNode
-	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL, bool global = FALSE);
+	TreeNode* addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = FALSE);
 	// Add array 'constant'
-	TreeNode *addArrayConstant(TreeNode *values);
+	TreeNode* addArrayConstant(TreeNode* values);
 	// Search for variable in current local scope
-	Variable *findLocalVariable(const char *name, int &scopelevel);
+	Variable *findLocalVariable(const char* name, int &scopelevel);
 	// Wrap named variable (and array index)
-	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
+	TreeNode* wrapVariable(Variable *var, TreeNode* arrayIndex = NULL);
 	// Return local scope's variable list
 	const VariableList &localVariables() const;
 	// Return global scope's variable list
@@ -200,11 +211,11 @@ class Tree : public ListItem<Tree>
 
 	public:
 	// Search for existing local function
-	Tree* findLocalFunction(const char *name) const;
+	Tree* findLocalFunction(const char* name) const;
 	// Add new local function
-	Tree* addLocalFunction(const char *name);
+	Tree* addLocalFunction(const char* name);
 	// Add list of variable arguments to topmost function
-	bool addLocalFunctionArguments(TreeNode* arglist);
+	bool addLocalFunctionArguments(TreeNode* argList);
 
 
 	/*
@@ -234,7 +245,7 @@ class Tree : public ListItem<Tree>
 	// Return default dialog structure
 	TreeGui &defaultDialog();
 	// Create and return new, temporary dialog
-	TreeGui *createDialog(const char *title = NULL);
+	TreeGui *createDialog(const char* title = NULL);
 	// Delete specified temporary dialogs
 	void deleteDialogs();
 
@@ -248,13 +259,13 @@ class Tree : public ListItem<Tree>
 	// Current input stream target, in the form of a LineParser
 	LineParser *parser_;
 	// Flag to indicate that recent failure of this token is known and we should continue
-	Command::Function acceptedFail_;
+	Commands::Function acceptedFail_;
 	// Number of times tree has been run
 	int runCount_;
 
 	public:
 	// Set widget or global variable value
-	bool setAccessibleVariable(const char *name, const char *value);
+	bool setAccessibleVariable(const char* name, const char* value);
 	// Add read option
 	void addReadOption(LineParser::ParseOption po);
 	// Remove read option
@@ -268,23 +279,25 @@ class Tree : public ListItem<Tree>
 	// Return whether the LineParser is ready for file writing
 	bool isFileGoodForWriting() const;
 	// Set function for accepted fail
-	void setAcceptedFail(Command::Function func);
+	void setAcceptedFail(Commands::Function func);
 	// Return function for accepted fail
-	Command::Function acceptedFail() const;
+	Commands::Function acceptedFail() const;
 	// Execute
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Execute, using specified parser as input/output source
-	bool execute(LineParser *parser, ReturnValue &rv);
+	bool execute(LineParser *parser, ReturnValue& rv);
 	// Execute, opening specified file as input source
-	bool executeRead(const char *filename, ReturnValue &rv);
+	bool executeRead(const char* filename, ReturnValue& rv);
 	// Execute, with specified filename as data target
-	bool executeWrite(const char *filename, ReturnValue &rv);
+	bool executeWrite(const char* filename, ReturnValue& rv);
 	// Execute, opening specified file as input source (no return value)
-	bool executeRead(const char *filename);
+	bool executeRead(const char* filename);
 	// Execute, with specified filename as data target (no return value)
-	bool executeWrite(const char *filename);
+	bool executeWrite(const char* filename);
 	// Return number of times tree has been run
 	int runCount();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -24,14 +24,16 @@
 
 #include "parser/variable.h"
 
+ATEN_BEGIN_NAMESPACE
+
 // Pointer Variable Base
 class PointerVariable : public Variable
 {
 	public:
 	// Pointer variable
-	void *pointerData_;
+	void* pointerData_;
 	// Pointer to parent Refitem structure, if valid
-	void *refitemData_;
+	void* refitemData_;
 
 
 	/*
@@ -39,13 +41,13 @@ class PointerVariable : public Variable
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Reset node
 	void reset();
 	// Print node contents
-	void nodePrint(int offset, const char *prefix);
+	void nodePrint(int offset, const char* prefix);
 };
 
 // Pointer Array Variable
@@ -55,33 +57,36 @@ class PointerArrayVariable : public Variable
 	// Destructor
 	~PointerArrayVariable();
 
+
 	/*
 	// Set / Get
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Return value of node as array
-	bool executeAsArray(ReturnValue &rv, int arrayindex);
+	bool executeAsArray(ReturnValue& rv, int arrayIndex);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Set from returnvalue node as array
-	bool setAsArray(ReturnValue &rv, int arrayindex);
+	bool setAsArray(ReturnValue& rv, int arrayIndex);
 	// Reset variable
 	void reset();
+
 
 	/*
 	// Variable Data
 	*/
 	protected:
 	// TreeNode determining array size on initialisation
-	TreeNode *arraySizeExpression_;
+	TreeNode* arraySizeExpression_;
 	// Array size
 	int arraySize_;
 	// Pointer data
-	void **pointerArrayData_;
+	void** pointerArrayData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix);
+	void nodePrint(int offset, const char* prefix);
+
 
 	/*
 	// Inherited Virtuals
@@ -90,5 +95,7 @@ class PointerArrayVariable : public Variable
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

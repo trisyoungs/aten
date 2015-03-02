@@ -24,7 +24,7 @@
 
 #include "base/dnchar.h"
 #include "base/kvmap.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
 #include "model/bundle.h"
 #include "model/fragment.h"
 #include "templates/list.h"
@@ -32,8 +32,14 @@
 #include "parser/variablelist.h"
 #include "methods/partition.h"
 #include "gui/useractions.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 class Forcefield;
 class Grid;
@@ -50,22 +56,8 @@ class Aten
 	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, ExportMode, BatchMode, ProcessMode, BatchExportMode, NoMode };
 	// Target list for model creation
 	enum TargetModelList { MainModelList, FragmentLibraryList, WorkingModelList };
-	// Bitmap formats
-	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
-	static BitmapFormat bitmapFormat(const char *name, bool reportError = 0);
-	static BitmapFormat bitmapFormatFromFilter(const char *s);
-	static const char* bitmapFormatFilter(BitmapFormat bf);
-	static const char* bitmapFormatExtension(BitmapFormat bf);
 	// Remove all dynamic data
 	void clear();
-
-
-	/*
-	 * Current Objects
-	 */
-	public:
-	// Current object Bundle
-	Bundle current;
 
 
 	/*
@@ -110,8 +102,6 @@ class Aten
 	Model* addModel();
 	// Remove specified model from the list
 	void removeModel(Model* m);
-	// Close specified model, saving first if requested
-	bool closeModel(Model* m);
 	// Find model by name
 	Model* findModel(const char* name) const;
 	// Set visible flag for specified model
@@ -179,9 +169,9 @@ class Aten
 	// Print list of valid filter nicknames
 	void printValidNicknames(FilterData::FilterType ft);
 	// Return filter strings for file dialogs
-	QString& fileDialogFilters(FilterData::FilterType ft) const;
+	const QString& fileDialogFilters(FilterData::FilterType ft) const;
 	// Return filter strings for bitmap file dialogs
-	QString& bitmapFileDialogFilters() const;
+	const QString& bitmapFileDialogFilters() const;
 
 
 	/*
@@ -328,8 +318,6 @@ class Aten
 	ProgramMode programMode_;
 
 	public:
-	// Sets the current program mode
-	void setProgramMode(ProgramMode pm);
 	// Return the current program mode
 	ProgramMode programMode() const;
 
@@ -342,7 +330,7 @@ class Aten
 	List<Program> scripts_;
 
 	public:
-	// Add script to list
+	// Add script
 	Program* addScript();
 	// Remove specified script
 	void removeScript(Program* script);
@@ -412,8 +400,8 @@ class Aten
 
 
 	/*
-	// Single-shot program modes
-	*/
+	 * Single-shot program modes
+	 */
 	private:
 	// Model format in which to export models
 	Tree* exportFilter_;
@@ -436,9 +424,27 @@ class Aten
 	/*
 	 * Commands
 	 */
-	public:
+	private:
 	// Command Definitions
-	Command commands;
+	Commands commands_;
+
+	public:
+	// Return specified command keyword
+	const char* commandKeyword(Commands::Function func);
+	// Return specified command arguments
+	const char* commandArguments(Commands::Function func);
+	// Return specified return-value datatype
+	VTypes::DataType commandReturnType(Commands::Function func);
+	// Return whether specified command takes any arguments
+	bool commandHasArguments(Commands::Function func);
+	// Return specified command argument names
+	const char* commandArgText(Commands::Function func);
+	// Return specified command syntax
+	const char* commandSyntax(Commands::Function func);
+	// Execute specified command
+	bool callCommand(Commands::Function cf, CommandNode* node, ReturnValue& rv);
+	// Execute specified TreeNode command with specified bundle
+	bool callCommand(Commands::Function cf, TreeNode* node, ReturnValue& rv, Bundle& bundle);
 
 
 	/*
@@ -463,6 +469,62 @@ class Aten
 	void openFragments();
 	// Return first fragment library
 	FragmentGroup* fragmentGroups();
+
+
+	/*
+	 * Link to AtenWindow
+	 */
+	private:
+	// Pointer to AtenWindow
+	AtenWindow* atenWindow_;
+
+	public:
+	// Set pointer to AtenWindow
+	void setAtenWindow(AtenWindow* atenWindow);
+	// Return pointer to AtenWindow
+	AtenWindow* atenWindow();
+
+
+	/*
+	 * Current Objects
+	 */
+	private:
+	// Current object Bundle
+	Bundle current_;
+
+	public:
+	// Return current object Bundle
+	Bundle& current();
+
+
+	/*
+	 * Image Generation
+	 */
+	public:
+	// Bitmap formats
+	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
+	static Aten::BitmapFormat bitmapFormat(const char* name, bool reportError = 0);
+	static Aten::BitmapFormat bitmapFormatFromFilter(const char* s);
+	static const char* bitmapFormatFilter(Aten::BitmapFormat bf);
+	static const char* bitmapFormatExtension(Aten::BitmapFormat bf);
+
+	public:
+	// Save image of current view
+	QPixmap currentViewAsPixmap( int width, int height );
+	// Return pixmap of specified model
+	QPixmap modelPixmap(Model* model, int width, int height);
+
+
+	/*
+	 * Prefs
+	 */
+	public:
+	// Load user preferences file
+	bool loadPrefs();
+	// Save user preferences file
+	bool savePrefs(const char* fileName);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

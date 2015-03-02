@@ -19,8 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/colourscale.h"
-#include "classes/grid.h"
+#include "base/colourscale.h"
+#include "base/grid.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 ColourScalePoint::ColourScalePoint() : ListItem<ColourScalePoint>()
@@ -65,7 +67,7 @@ void ColourScalePoint::setColour(double r, double g, double b, double a)
 }
 
 // Copy colour
-void ColourScalePoint::copyColour(GLfloat *target) const
+void ColourScalePoint::copyColour(GLfloat* target) const
 {
 	target[0] = (GLfloat) colour_[0];
 	target[1] = (GLfloat) colour_[1];
@@ -74,7 +76,7 @@ void ColourScalePoint::copyColour(GLfloat *target) const
 }
 
 // Return pointer to colour array
-double *ColourScalePoint::colour()
+double* ColourScalePoint::colour()
 {
 	return colour_;
 }
@@ -100,7 +102,7 @@ bool ColourScaleDelta::containsValue(double d) const
 }
 
 // Create delta from two existing colours
-void ColourScaleDelta::set(ColourScalePoint *point1, ColourScalePoint *point2)
+void ColourScaleDelta::set(ColourScalePoint* point1, ColourScalePoint* point2)
 {
 	// Copy first colour point
 	start_ = point1->value_;
@@ -116,7 +118,7 @@ void ColourScaleDelta::set(ColourScalePoint *point1, ColourScalePoint *point2)
 }
 
 // Get colour for value v
-void ColourScaleDelta::colour(double v, GLfloat *target) const
+void ColourScaleDelta::colour(double v, GLfloat* target) const
 {
 	// Clamp 'v' to range 0.0 - 1.0 to span range of delta
 	double clampv = (v - start_) / delta_;

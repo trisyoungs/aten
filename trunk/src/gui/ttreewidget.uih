@@ -26,6 +26,11 @@
 #include "gui/ttreewidgetitem.h"
 #include <QtGui/QTreeWidget>
 #include <QtCore/QObject>
+#include "base/namespace.h"
+
+ATEN_USING_NAMESPACE
+
+ATEN_BEGIN_NAMESPACE
 
 class TTreeWidget : public QTreeWidget
 {
@@ -63,5 +68,7 @@ class TTreeWidget : public QTreeWidget
 	// Return the reflist of TTreeViewAtoms
 	Refitem<TTreeWidgetItem,int> *atomItems() { return atomItems_.first(); }
 };
+
+ATEN_END_NAMESPACE
 
 #endif

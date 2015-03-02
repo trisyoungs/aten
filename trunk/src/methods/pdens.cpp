@@ -21,9 +21,11 @@
 
 #include "methods/pdens.h"
 #include "model/model.h"
-#include "classes/site.h"
+#include "base/site.h"
 #include "base/pattern.h"
 #include <fstream>
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 Pdens::Pdens()
@@ -57,14 +59,14 @@ int Pdens::nSteps() const
 }
 
 // Set site
-void Pdens::setSite(int i, Site *s)
+void Pdens::setSite(int i, Site* s)
 {
 	if (i < 2) sites_[i] = s;
 	else printf("OUTOFRANGE:pdenssetsite\n");
 }
 
 // Get site
-Site *Pdens::site(int i)
+Site* Pdens::site(int i)
 {
 	if (i < 2) return sites_[i];
 	else printf("OUTOFRANGE:pdensgetsite\n");
@@ -82,12 +84,12 @@ void Pdens::setRange(double ss, int n)
 // Initialise structure
 bool Pdens::initialise()
 {
-	msg.enter("Pdens::initialise");
+	Messenger::enter("Pdens::initialise");
 	// Check site definitions....
 	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
-		msg.print("Pdens::initialise - At least one site has NULL value.\n");
-		msg.exit("calculable::initialise");
+		Messenger::print("Pdens::initialise - At least one site has NULL value.\n");
+		Messenger::exit("calculable::initialise");
 		return FALSE;
 	}
 	// Create the data_ array
@@ -102,21 +104,21 @@ bool Pdens::initialise()
 			for (o=0; o<totalSteps_; o++) data_[n][m][o] = 0.0;
 		}
 	}
-	msg.print("There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.\n", totalSteps_, stepSize_, name_.get());
+	Messenger::print("There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.\n", totalSteps_, stepSize_, name_.get());
 	nAdded_ = 0;
-	msg.exit("Pdens::initialise");
+	Messenger::exit("Pdens::initialise");
 	return TRUE;
 }
 
 // Accumulate quantity data_ from supplied model
 void Pdens::accumulate(Model* sourcemodel)
 {
-	msg.enter("Pdens::accumulate");
+	Messenger::enter("Pdens::accumulate");
 	int m1, m2;
 	static Vec3<double> centre1, centre2, mimd;
 	static Vec3<int> gridPoint;
 	Matrix axes;
-	UnitCell *cell = sourcemodel->cell();
+	UnitCell* cell = sourcemodel->cell();
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{
@@ -140,7 +142,7 @@ void Pdens::accumulate(Model* sourcemodel)
 	}
 	// Increase accumulation counter
 	nAdded_ ++;
-	msg.exit("Pdens::accumulate");
+	Messenger::exit("Pdens::accumulate");
 }
 
 // Add point to data_ array
@@ -157,7 +159,7 @@ void Pdens::addPoint(Vec3<int> &coords)
 // Finalise
 void Pdens::finalise(Model* sourcemodel)
 {
-	msg.enter("Pdens::finalise");
+	Messenger::enter("Pdens::finalise");
 	int n, m, o;
 	double factor, numberDensity;
 	// Normalise the pdens w.r.t. number of frames, number of central molecules, and number density of system
@@ -166,14 +168,14 @@ void Pdens::finalise(Model* sourcemodel)
 	for (n=0; n<totalSteps_; n++)
 		for (m=0; m<totalSteps_; m++)
 			for (o=0; o<totalSteps_; o++) data_[n][m][o] /= factor;
-	msg.exit("Pdens::finalise");
+	Messenger::exit("Pdens::finalise");
 }
 
 // Save RDF data_
 bool Pdens::save()
 {
 	int n, m, o;
-	ofstream output(filename_.get(), ios::out);
+	std::ofstream output(filename_.get(), std::ios::out);
 	for (n=0; n<totalSteps_; n++)
 		for (m=0; m<totalSteps_; m++)
 			for (o=0; o<totalSteps_; o++) output << data_[n][m][o] << "\n";

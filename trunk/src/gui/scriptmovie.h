@@ -24,7 +24,7 @@
 
 #include "gui/ui_scriptmovie.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class AtenWindow;
 
 // Script movie window
@@ -32,6 +32,17 @@ class ScriptMovieWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	ScriptMovieWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::ScriptMovieWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 
 	/*
 	// Window Functions
@@ -44,24 +55,6 @@ class ScriptMovieWidget : public QDockWidget
 	void on_SaveScriptedMovieButton_clicked(bool on);
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	ScriptMovieWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::ScriptMovieWidget ui;
 };
 
 #endif

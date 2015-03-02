@@ -24,10 +24,11 @@
 #include "model/undoevent.h"
 #include "base/bond.h"
 #include "base/pattern.h"
-#include "classes/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 // Return first bond in the model
-Bond *Model::bonds()
+Bond* Model::bonds()
 {
 	return bonds_.first();
 }
@@ -39,7 +40,7 @@ int Model::nBonds() const
 }
 
 // Return the nth bond in the model
-Bond *Model::bond(int n)
+Bond* Model::bond(int n)
 {
 	return bonds_[n];
 }
@@ -48,12 +49,12 @@ Bond *Model::bond(int n)
 void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 {
         // Create a new bond each atom and add them to the atom's own lists.
-	msg.enter("Model::bondAtoms");
-	if (i == j) msg.print("Cannot bond an atom to itself!\n");
+	Messenger::enter("Model::bondAtoms");
+	if (i == j) Messenger::print("Cannot bond an atom to itself!\n");
 	else
 	{
 		// Search for old bond between atoms
-		Bond *b = i->findBond(j);
+		Bond* b = i->findBond(j);
 		//printf("Atoms / Bond = %p-%p / %p\n", i, j, b);
 		// If we found one, just set the new bond order
 		if (b != NULL)
@@ -91,16 +92,16 @@ void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 		}
 	}
 	//printf("Done with bond atom...\n");
-	msg.exit("Model::bondAtoms");
+	Messenger::exit("Model::bondAtoms");
 }
 
 // Add Bond (id's)
 void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
 {
         // Create a new bond for each atom and add them to the atom's own lists.
-	msg.enter("Model::bondAtoms[int]");
+	Messenger::enter("Model::bondAtoms[int]");
 	//printf("Atom ids given to Model::bondAtoms() are %i and %i (natoms=%i)\n",ii,jj,atoms_.nItems());
-	if (ii == jj) msg.print("Cannot bond an atom to itself!\n");
+	if (ii == jj) Messenger::print("Cannot bond an atom to itself!\n");
 	else
 	{
 		// First, locate the two atoms with the specified id's
@@ -109,21 +110,21 @@ void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
 		if (i == NULL || j == NULL)
 		{
 			printf("Couldn't locate one or both atoms in bond with specified ids %i and %i\n",ii,jj);
-			msg.exit("Model::bondAtoms[int]");
+			Messenger::exit("Model::bondAtoms[int]");
 			return;
 		}
 		bondAtoms(i,j,bt);
 	}
-	msg.exit("Model::bondAtoms[int]");
+	Messenger::exit("Model::bondAtoms[int]");
 }
 
 // Delete Bond
-void Model::unbondAtoms(Atom* i, Atom* j, Bond *bij)
+void Model::unbondAtoms(Atom* i, Atom* j, Bond* bij)
 {
         // Delete info from bond lists for atoms i and j.
-	msg.enter("Model::unbondAtoms");
+	Messenger::enter("Model::unbondAtoms");
 	// Find bond between atoms (unless already supplied)
-	Bond *b;
+	Bond* b;
 	if (bij != NULL) b = bij;
 	else
 	{
@@ -131,7 +132,7 @@ void Model::unbondAtoms(Atom* i, Atom* j, Bond *bij)
 		if (b == NULL)
 		{
 			printf("Couldn't locate bond to unbond!\n");
-			msg.exit("Model::unbondAtoms");
+			Messenger::exit("Model::unbondAtoms");
 			return;
 		}
 	}
@@ -148,34 +149,34 @@ void Model::unbondAtoms(Atom* i, Atom* j, Bond *bij)
 		newchange->set(FALSE, i->id(), j->id(), bt);
 		recordingState_->addEvent(newchange);
 	}
-	msg.exit("Model::unbondAtoms");
+	Messenger::exit("Model::unbondAtoms");
 }
 
 // Delete All Bonding
 void Model::clearBonding()
 {
-	msg.enter("Model::clearBonding");
+	Messenger::enter("Model::clearBonding");
         // Clear the bond list.
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
-		Refitem<Bond,int> *bref = i->bonds();
+		Refitem<Bond,int>* bref = i->bonds();
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
-			Bond *b = bref->item;
+			Bond* b = bref->item;
 			Atom* j = b->partner(i);
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
 		}
 	}
 	changeLog.add(Log::Structure);
-	msg.exit("Model::clearBonding");
+	Messenger::exit("Model::clearBonding");
 }
 
 // Initialise reflists based on current extent of model
 void Model::initialiseBondingCuboids()
 {
-	msg.enter("Model::initialiseBondingCuboids");
+	Messenger::enter("Model::initialiseBondingCuboids");
 	double size = 5.0;
 	Vec3<double> r;
 	extentMin_ = 1e6;
@@ -230,7 +231,7 @@ void Model::initialiseBondingCuboids()
 		if (cuboidBoxes_.max() > prefs.maxCuboids())
 		{
 			size += 1.0;
-			msg.print(Messenger::Verbose, "Too many cuboids (%ix%ix%i) - bonding cuboid size increased to %f.\n", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, size);
+			Messenger::print(Messenger::Verbose, "Too many cuboids (%ix%ix%i) - bonding cuboid size increased to %f.\n", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, size);
 		}
 	} while (cuboidBoxes_.max() > prefs.maxCuboids());
 	cuboidYZ_ = cuboidBoxes_.y * cuboidBoxes_.z;
@@ -242,18 +243,18 @@ void Model::initialiseBondingCuboids()
 // 	printf("ExtentRange = "); extentRange_.print();
 	bondingCuboids_ = new Reflist<Atom,double>[nCuboids_];
 	bondingOverlays_ = new Reflist<Atom,double>[nCuboids_];
-	msg.exit("Model::initialiseBondingCuboids");
+	Messenger::exit("Model::initialiseBondingCuboids");
 }
 
 // Free any created reflists
 void Model::freeBondingCuboids()
 {
-	msg.enter("Model::freeBondingCuboids");
+	Messenger::enter("Model::freeBondingCuboids");
 	if (bondingCuboids_ != NULL) delete[] bondingCuboids_;
 	if (bondingOverlays_ != NULL) delete[] bondingOverlays_;
 	bondingCuboids_ = NULL;
 	bondingOverlays_ = NULL;
-	msg.exit("Model::freeBondingCuboids");
+	Messenger::exit("Model::freeBondingCuboids");
 }
 
 // Add atom to cuboid reflists
@@ -345,7 +346,7 @@ void Model::rebond()
 	double tolerance = prefs.bondTolerance();
 	Atom* i, *j;
 	// Loop over cuboids, checking distances with atoms in adjacent boxes
-	Refitem<Atom,double> *ri, *rj;
+	Refitem<Atom,double>* ri, *rj;
 	x = 0;
 	y = 0;
 	z = 0;
@@ -405,8 +406,8 @@ void Model::rebond()
 // Calculate Bonding
 void Model::calculateBonding(bool augment)
 {
-	msg.enter("Model::calculateBonding");
-	msg.print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...", prefs.bondTolerance());
+	Messenger::enter("Model::calculateBonding");
+	Messenger::print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...", prefs.bondTolerance());
 	clearBonding();
 	// Create cuboid lists
 	initialiseBondingCuboids();
@@ -418,17 +419,17 @@ void Model::calculateBonding(bool augment)
 	freeBondingCuboids();
 	// Augment?
 	if (augment) augmentBonding();
-	msg.print(Messenger::Verbose, "Done.\n");
-	msg.exit("Model::calculateBonding");
+	Messenger::print(Messenger::Verbose, "Done.\n");
+	Messenger::exit("Model::calculateBonding");
 }
 
 // void Model::calculateBonding()
 // {
-// 	msg.enter("Model::calculateBonding");
+// 	Messenger::enter("Model::calculateBonding");
 // 	Atom* i, *j;
 // 	double dist, radsum;
 // 	double tolerance = prefs.bondTolerance();
-// 	msg.print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...",tolerance);
+// 	Messenger::print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...",tolerance);
 // 	clearBonding();
 // 	// Create cuboid lists
 // // 	initialiseBondingCuboids();
@@ -443,21 +444,21 @@ void Model::calculateBonding(bool augment)
 // 	printf("radsum*tol = %f, dist = %f\n",radsum*tolerance,dist);
 // 			if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 // 		}
-// 	msg.print(Messenger::Verbose, "Done.\n");
-// 	msg.exit("Model::calculateBonding");
+// 	Messenger::print(Messenger::Verbose, "Done.\n");
+// 	Messenger::exit("Model::calculateBonding");
 // }
 
 // Calculate Bonding within Patterns
 void Model::patternCalculateBonding(bool augment)
 {
-	msg.enter("Model::patternCalculateBonding");
+	Messenger::enter("Model::patternCalculateBonding");
 	Atom* i,*j;
 	int ii, jj, el, m;
 	double dist;
 	double tolerance = prefs.bondTolerance();
 	double radius_i, radsum;
 	clearBonding();
-	msg.print("Calculating bonds within patterns (tolerance = %5.2f)...", tolerance);
+	Messenger::print("Calculating bonds within patterns (tolerance = %5.2f)...", tolerance);
 	// For all the pattern nodes currently defined, bond within molecules
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
@@ -499,14 +500,14 @@ void Model::patternCalculateBonding(bool augment)
 	}
 	// Augment?
 	if (augment) augmentBonding();
-	msg.print(" Done.\n");
-	msg.exit("Model::patternCalculateBonding");
+	Messenger::print(" Done.\n");
+	Messenger::exit("Model::patternCalculateBonding");
 }
 
 // Calculate Bonding in current selection
 void Model::selectionCalculateBonding(bool augment)
 {
-	msg.enter("Model::selectionCalculateBonding");
+	Messenger::enter("Model::selectionCalculateBonding");
 	// Create cuboid lists
 	initialiseBondingCuboids();
 	// Add all atoms to cuboid list
@@ -517,14 +518,14 @@ void Model::selectionCalculateBonding(bool augment)
 	freeBondingCuboids();
 	// Augment?
 	if (augment) augmentBonding();
-	msg.exit("Model::selectionCalculateBonding");
+	Messenger::exit("Model::selectionCalculateBonding");
 }
 
 // Bond all atoms in current selection
 void Model::selectionBondAll()
 {
 	// Add bonds between all atoms in current selection
-	msg.enter("Model::selectionBondAll");
+	Messenger::enter("Model::selectionBondAll");
 	Atom* i, *j;
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
@@ -539,14 +540,14 @@ void Model::selectionBondAll()
 	}
 	// Augment?
 	if (prefs.augmentAfterRebond()) augmentBonding();
-	msg.exit("Model::selectionBondAll");
+	Messenger::exit("Model::selectionBondAll");
 }
 
 // Clear Bonding in current selection
 void Model::selectionClearBonding()
 {
 	// Clear all bonds between currently selected atoms
-	msg.enter("Model::selectionClearBonding");
+	Messenger::enter("Model::selectionClearBonding");
 	Atom* i, *j;
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
@@ -559,11 +560,11 @@ void Model::selectionClearBonding()
 			}
 		}
 	}
-	msg.exit("Model::selectionClearBonding");
+	Messenger::exit("Model::selectionClearBonding");
 }
 
 // Alter type of bond
-void Model::changeBond(Bond *b, Bond::BondType bt)
+void Model::changeBond(Bond* b, Bond::BondType bt)
 {
 	Bond::BondType oldorder = b->type();
 	b->setType(bt);
@@ -580,14 +581,14 @@ void Model::changeBond(Bond *b, Bond::BondType bt)
 // Augment bonding for all model patterns
 void Model::augmentBonding()
 {
-	msg.enter("Model::augmentBonding");
+	Messenger::enter("Model::augmentBonding");
 	if (!createPatterns())
 	{
-		msg.print("Can't augment bonding without a valid pattern.\n");
-		msg.exit("Model::augmentBonding");
+		Messenger::print("Can't augment bonding without a valid pattern.\n");
+		Messenger::exit("Model::augmentBonding");
 		return;
 	}
 	describeAtoms();
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->augment();
-	msg.exit("Model::augmentBonding");
+	Messenger::exit("Model::augmentBonding");
 }

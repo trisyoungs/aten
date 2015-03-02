@@ -20,28 +20,30 @@
 */
 
 #include "model/model.h"
-#include "main/aten.h"
+// #include "main/aten.h"
 #include "ff/forcefield.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
+#include "base/forcefieldatom.h"
+#include "base/forcefieldbound.h"
 #include "base/pattern.h"
 
+ATEN_USING_NAMESPACE
+
 // Create forcefield expression for pattern
-bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
+bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaultForcefield)
 {
 	// Create arrays for storage of FF data for atoms, bonds, angles etc.
 	// NBonds can be calculated through a loop over all atoms
 	// NAngles can be calculated from atomic nBonds data.
 	// NTorsions can be calculated from the bond list and atomic nBonds data.
-	msg.enter("Pattern::createExpression");
+	Messenger::enter("Pattern::createExpression");
 	Atom* i;
-	Refitem<Bond,int> *bref;
+	Refitem<Bond,int>* bref;
 	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0, nUreyBradleys = 0;
 	int nDummyBonds = 0, nDummyAngles = 0, nDummyTorsions = 0;
 	Atom* ai, *aj, *ak, *al;
-	ForcefieldBound *ffb;
+	ForcefieldBound* ffb;
 	PatternAtom* ipa[4];
-	PatternBound *pb;
+	PatternBound* pb;
 	// Counters for incomplete aspects of the expression
 	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;
 	incomplete_ = FALSE;
@@ -62,18 +64,18 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 	uniqueForcefieldTypes_.clear();
 	allForcefieldTypes_.clear();
 	// Get forcefield to use - we should be guaranteed to find one at this point, but check anyway...
-	Forcefield *ff = (forcefield_ == NULL ? parent_->forcefield() : forcefield_);
-	if (ff == NULL) ff = aten.currentForcefield();
+	Forcefield* ff = (forcefield_ == NULL ? parent_->forcefield() : forcefield_);
+	if (ff == NULL) ff = defaultForcefield;
 	if (ff == NULL)
 	{
-		msg.print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());
-		msg.exit("Pattern::createExpression");
+		Messenger::print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());
+		Messenger::exit("Pattern::createExpression");
 		return FALSE;
 	}
 	if (vdwOnly)
 	{
 		noIntramolecular_ = TRUE;
-		msg.print("Expression for pattern '%s' contains Atomtype terms only.\n", name_.get());
+		Messenger::print("Expression for pattern '%s' contains Atomtype terms only.\n", name_.get());
 	}
 	else
 	{
@@ -96,13 +98,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 		// Some totals are double counted, so...
 		nBonds /= 2;
 		nTorsions /= 2;
-		msg.print("Basic pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers and Urey-Bradley terms (if any) will be added later.\n", name_.get(), nBonds, nAngles, nTorsions);
+		Messenger::print("Basic pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers and Urey-Bradley terms (if any) will be added later.\n", name_.get(), nBonds, nAngles, nTorsions);
 	}
 	// Fill the energy expression for the pattern.
 	// The structure that we create will include a static array of pointers
 	// to the original atomic elements, to ease the generation of the expression.
-	msg.print("Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
-	msg.print("... Using forcefield '%s'...\n", ff->name());
+	Messenger::print("Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
+	Messenger::print("... Using forcefield '%s'...\n", ff->name());
 	// Construct the atom list.
 	// If any atom has not been assigned a type, we *still* include it in the list
 	ai = firstAtom_;
@@ -110,13 +112,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 	{
 		if (ai == NULL)
 		{
-			msg.print("Fatal Error: Fell off end of atom list while assigning types - can't complete expression for pattern '%s'.\n", name_.get());
-			msg.exit("Pattern::fillExpression");
+			Messenger::print("Fatal Error: Fell off end of atom list while assigning types - can't complete expression for pattern '%s'.\n", name_.get());
+			Messenger::exit("Pattern::fillExpression");
 			return FALSE;
 		}
 		if (ai->type() == NULL)
 		{
-			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, Elements().symbol(ai));
+			Messenger::print("!!! No FF type definition for atom %i (%s).\n", n+1, Elements().symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}
@@ -127,7 +129,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 		// Make another check to see that we now have vdw parameters
 		if (ai->type()->vdwForm() ==  VdwFunctions::None)
 		{
-			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, Elements().symbol(ai));
+			Messenger::print("!!! No FF type definition for atom %i (%s).\n", n+1, Elements().symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}
@@ -156,8 +158,8 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 				// Quick check to ensure the bond is within the same molecule...
 				if (jj > endAtom_)
 				{
-					msg.print("!!! Found bond between molecules. Check pattern.\n");
-					msg.exit("Pattern::createExpression");
+					Messenger::print("!!! Found bond between molecules. Check pattern.\n");
+					Messenger::exit("Pattern::createExpression");
 					return FALSE;
 				}
 				if (jj > ii)
@@ -179,13 +181,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 					// Check ffb - if it's still NULL we couldn't find a definition
 					if (ffb == NULL)
 					{
-						msg.print("!!! No FF definition for bond %s-%s.\n", ti->equivalent(), tj->equivalent());
+						Messenger::print("!!! No FF definition for bond %s-%s.\n", ti->equivalent(), tj->equivalent());
 						incomplete_ = TRUE;
 						ibonds ++;
 					}
 					else
 					{
-						msg.print(Messenger::Verbose,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+						Messenger::print(Messenger::Verbose, "Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 					// Update the bonding array counters
 					bonding[ii] << jj;
@@ -222,7 +224,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 					// Check for ii == ll (caused by three-membered rings)
 					if (ai->id() == al->id())
 					{
-						msg.print("... Excluded torsion %i-%i-%i-%i because terminal atoms are the same (three-membered ring?) - expected nTorsions reduced from %i to %i...\n", ai->id()+1, aj->id()+1, ak->id()+1, al->id()+1, nTorsions, nTorsions-1);
+						Messenger::print("... Excluded torsion %i-%i-%i-%i because terminal atoms are the same (three-membered ring?) - expected nTorsions reduced from %i to %i...\n", ai->id()+1, aj->id()+1, ak->id()+1, al->id()+1, nTorsions, nTorsions-1);
 						nTorsions --;
 						continue;
 					}
@@ -249,13 +251,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
-						msg.print("!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
+						Messenger::print("!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
 						incomplete_ = TRUE;
 						itorsions ++;
 					}
 					else
 					{
-						msg.print(Messenger::Verbose,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+						Messenger::print(Messenger::Verbose, "Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 				}
 			}
@@ -293,13 +295,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
-						msg.print("!!! No FF definition for angle %s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent());
+						Messenger::print("!!! No FF definition for angle %s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent());
 						incomplete_ = TRUE;
 						iangles ++;
 					}
 					else
 					{
-						msg.print(Messenger::Verbose,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+						Messenger::print(Messenger::Verbose, "Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 						// Check here for Urey-Bradley definition involving the same atoms.
 						// We don't mind if there isn't one
 						ffb = ff->findUreyBradley(ti,tj,tk);
@@ -338,7 +340,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 					double dist = parent_->distance(ipa[n]->atom(), ipa[n-1]->atom());
 					if (dist > prefs.maxImproperDist())
 					{
-						msg.print(Messenger::Verbose, "Atom %i of improper is too far from previous atom (%f A, limit is %f).\n", n+1, dist, prefs.maxImproperDist());
+						Messenger::print(Messenger::Verbose, "Atom %i of improper is too far from previous atom (%f A, limit is %f).\n", n+1, dist, prefs.maxImproperDist());
 						break;
 					}
 				}
@@ -350,7 +352,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 			// If we get here, then we did, so add this improper to the torsion array
 			nImpropers++;
 			addTorsionData(ffb, ipa[0]->atom()->id()-startAtom_, ipa[1]->atom()->id()-startAtom_, ipa[2]->atom()->id()-startAtom_, ipa[3]->atom()->id()-startAtom_);
-			msg.print(Messenger::Verbose,"Improper %s-%s-%s-%s data : %f %f %f %f\n", ipa[0]->atom()->type()->equivalent(), ipa[1]->atom()->type()->equivalent(), ipa[2]->atom()->type()->equivalent(), ipa[3]->atom()->type()->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+			Messenger::print(Messenger::Verbose, "Improper %s-%s-%s-%s data : %f %f %f %f\n", ipa[0]->atom()->type()->equivalent(), ipa[1]->atom()->type()->equivalent(), ipa[2]->atom()->type()->equivalent(), ipa[3]->atom()->type()->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 
 		}
 		
@@ -358,63 +360,63 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 		// Bonds
 		if ((bonds_.nItems()-nUreyBradleys) != nBonds)
 		{
-			msg.print("...INTERNAL ERROR: expected %i bonds, found %i\n", nBonds, bonds_.nItems());
+			Messenger::print("...INTERNAL ERROR: expected %i bonds, found %i\n", nBonds, bonds_.nItems());
 			incomplete_ = TRUE;
 		}
-		else if (bonds_.nItems() == 0) msg.print("... No bonds in model.\n");
+		else if (bonds_.nItems() == 0) Messenger::print("... No bonds in model.\n");
 		else if (ibonds == 0)
 		{
 			if (nDummyBonds == 0)
 			{
-				if (nUreyBradleys != 0) msg.print("... Found parameters for %i bonds and %i Urey-Bradley terms.\n", bonds_.nItems()-nUreyBradleys, nUreyBradleys);
-				else msg.print("... Found parameters for %i bonds.\n", bonds_.nItems());
+				if (nUreyBradleys != 0) Messenger::print("... Found parameters for %i bonds and %i Urey-Bradley terms.\n", bonds_.nItems()-nUreyBradleys, nUreyBradleys);
+				else Messenger::print("... Found parameters for %i bonds.\n", bonds_.nItems());
 			}
 			else
 			{
-				if (nUreyBradleys != 0) msg.print("... Found parameters for %i bonds (%i dummy terms) and %i Urey-Bradley terms.\n", bonds_.nItems(), nDummyBonds, nUreyBradleys);
-				else msg.print("... Found parameters for %i bonds (%i dummy terms).\n", bonds_.nItems(), nDummyBonds);
+				if (nUreyBradleys != 0) Messenger::print("... Found parameters for %i bonds (%i dummy terms) and %i Urey-Bradley terms.\n", bonds_.nItems(), nDummyBonds, nUreyBradleys);
+				else Messenger::print("... Found parameters for %i bonds (%i dummy terms).\n", bonds_.nItems(), nDummyBonds);
 			}
 		}
-		else msg.print("... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
+		else Messenger::print("... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
 		// Angles
 		if (angles_.nItems() != nAngles)
 		{
-			msg.print("...INTERNAL ERROR: expected %i angles, found %i\n", nAngles, angles_.nItems());
+			Messenger::print("...INTERNAL ERROR: expected %i angles, found %i\n", nAngles, angles_.nItems());
 			incomplete_ = TRUE;
 		}
-		else if (angles_.nItems() == 0) msg.print("... No angles in model.\n");
+		else if (angles_.nItems() == 0) Messenger::print("... No angles in model.\n");
 		else if (iangles == 0)
 		{
 			if (nUreyBradleys == 0)
 			{
-				if (nDummyAngles == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
-				else msg.print("... Found parameters for %i angles (%i dummy terms).\n", bonds_.nItems(), nDummyAngles);
+				if (nDummyAngles == 0) Messenger::print("... Found parameters for %i angles.\n", angles_.nItems());
+				else Messenger::print("... Found parameters for %i angles (%i dummy terms).\n", bonds_.nItems(), nDummyAngles);
 			}
-			else if (nDummyAngles == 0) msg.print("... Found parameters for %i angles, %i with corresponding Urey-Bradley definitions.\n", angles_.nItems(), nUreyBradleys);
-			else msg.print("... Found parameters for %i angles (%i dummy terms), %i with corresponding Urey-Bradley definitions.\n", angles_.nItems(), nDummyAngles, nUreyBradleys);
+			else if (nDummyAngles == 0) Messenger::print("... Found parameters for %i angles, %i with corresponding Urey-Bradley definitions.\n", angles_.nItems(), nUreyBradleys);
+			else Messenger::print("... Found parameters for %i angles (%i dummy terms), %i with corresponding Urey-Bradley definitions.\n", angles_.nItems(), nDummyAngles, nUreyBradleys);
 		}
-		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
+		else Messenger::print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
 		// Torsions - impropers may have been added to the list, so subtract this number in the check
 		if ((torsions_.nItems()-nImpropers) != nTorsions)
 		{
-			msg.print("NIMPROPERS = %i\n", nImpropers);
-			msg.print("...INTERNAL ERROR: expected %i torsions, found %i\n", nTorsions, torsions_.nItems());
+			Messenger::print("NIMPROPERS = %i\n", nImpropers);
+			Messenger::print("...INTERNAL ERROR: expected %i torsions, found %i\n", nTorsions, torsions_.nItems());
 			incomplete_ = TRUE;
 		}
-		else if (torsions_.nItems() == 0) msg.print("... No torsions in model.\n");
+		else if (torsions_.nItems() == 0) Messenger::print("... No torsions in model.\n");
 		else if (itorsions == 0)
 		{
-			if (nDummyTorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems()-nImpropers);
-			else msg.print("... Found parameters for %i torsions (%i dummy terms).\n", torsions_.nItems()-nImpropers, nDummyTorsions);
+			if (nDummyTorsions == 0) Messenger::print("... Found parameters for %i torsions.\n", torsions_.nItems()-nImpropers);
+			else Messenger::print("... Found parameters for %i torsions (%i dummy terms).\n", torsions_.nItems()-nImpropers, nDummyTorsions);
 		}
-		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
+		else Messenger::print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
 		// Impropers
-		if (nImpropers > 0) msg.print("... Found parameters for %i impropers.\n", nImpropers);
+		if (nImpropers > 0) Messenger::print("... Found parameters for %i impropers.\n", nImpropers);
 	}
 	delete[] bonding;
 	// Print out a warning if the expression is incomplete.
-	if (incomplete_) msg.print("!!! Expression is incomplete.\n");
-	msg.exit("Pattern::createExpression");
+	if (incomplete_) Messenger::print("!!! Expression is incomplete.\n");
+	Messenger::exit("Pattern::createExpression");
 	return (incomplete_ ? FALSE : TRUE);
 }
 

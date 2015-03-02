@@ -20,10 +20,12 @@
 */
 
 #include "model/model.h"
-#include "classes/grid.h"
+#include "base/grid.h"
+
+ATEN_USING_NAMESPACE
 
 // Return list of surfaces
-Grid *Model::grids() const
+Grid* Model::grids() const
 {
 	return grids_.first();
 }
@@ -35,21 +37,21 @@ int Model::nGrids() const
 }
 
 // Return specified surface
-Grid *Model::grid(int id)
+Grid* Model::grid(int id)
 {
 	return grids_[id];
 }
 
 // Add new surface
-Grid *Model::addGrid()
+Grid* Model::addGrid()
 {
-	Grid *g = grids_.add();
-	g->setParent(this);
-	return g;
+	Grid* grid = grids_.add();
+	grid->setParent(this);
+	return grid;
 }
 
 // Remove surface
-void Model::removeGrid(Grid *xgrid)
+void Model::removeGrid(Grid* xgrid)
 {
 	grids_.remove(xgrid);
 }

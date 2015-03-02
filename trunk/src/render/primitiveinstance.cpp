@@ -19,9 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Need to include <QtCore/QString>, <GL/glx.h>, and then "render/glextensions.h" in that order, to prevent hideous errors.
+#include <QtCore/QString>
+#include <GL/glx.h>
 #include "render/glextensions.h"
 #include "render/primitiveinstance.h"
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Static members
 PrimitiveInstance::InstanceType PrimitiveInstance::globalInstanceType_ = PrimitiveInstance::VBOInstance;

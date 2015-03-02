@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+ATEN_USING_NAMESPACE
+
 /*
 // Variable
 */
@@ -38,7 +40,7 @@ StringVariable::StringVariable()
 }
 
 
-StringVariable::StringVariable(const char *s, bool constant) : stringData_(s)
+StringVariable::StringVariable(const char* s, bool constant) : stringData_(s)
 {
 	// Private variables
 	returnType_ = VTypes::StringData;
@@ -55,11 +57,11 @@ StringVariable::~StringVariable()
 */
 
 // Set value of node from returnvalue
-bool StringVariable::set(ReturnValue &rv)
+bool StringVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a character) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a character) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success;
@@ -74,14 +76,18 @@ void StringVariable::reset()
 }
 
 // Return value of node
-bool StringVariable::execute(ReturnValue &rv)
+bool StringVariable::execute(ReturnValue& rv)
 {
 	rv.set(stringData_.get());
 	return TRUE;
 }
 
+/*
+ * Variable Data
+ */
+
 // Print node contents
-void StringVariable::nodePrint(int offset, const char *prefix)
+void StringVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -100,7 +106,7 @@ void StringVariable::nodePrint(int offset, const char *prefix)
 */
 
 // Constructor
-StringArrayVariable::StringArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
+StringArrayVariable::StringArrayVariable(TreeNode* sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
 {
 	// Private variables
 	returnType_ = VTypes::StringData;
@@ -121,11 +127,11 @@ StringArrayVariable::~StringArrayVariable()
 */
 
 // Set from returnvalue node
-bool StringArrayVariable::set(ReturnValue &rv)
+bool StringArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (stringArrayData_ == NULL)
@@ -139,7 +145,7 @@ bool StringArrayVariable::set(ReturnValue &rv)
 	{
 		if (rv.arraySize() != arraySize_)
 		{
-			msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+			Messenger::print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
 			return FALSE;
 		}
 		bool success;
@@ -150,11 +156,11 @@ bool StringArrayVariable::set(ReturnValue &rv)
 }
 
 // Set array element from returnvalue node
-bool StringArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+bool StringArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array?) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (stringArrayData_ == NULL)
@@ -163,13 +169,13 @@ bool StringArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	// Check index
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
-	stringArrayData_[arrayindex] = rv.asString();
+	stringArrayData_[arrayIndex] = rv.asString();
 	return TRUE;
 }
 
@@ -186,7 +192,7 @@ void StringArrayVariable::reset()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) stringArrayData_[count++].clear();
 			else stringArrayData_[count++] = value.asString();
@@ -196,7 +202,7 @@ void StringArrayVariable::reset()
 }
 
 // Return value of node
-bool StringArrayVariable::execute(ReturnValue &rv)
+bool StringArrayVariable::execute(ReturnValue& rv)
 {
 	if (stringArrayData_ == NULL)
 	{
@@ -217,20 +223,20 @@ bool StringArrayVariable::execute(ReturnValue &rv)
 }
 
 // Return value of node as array
-bool StringArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+bool StringArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Check bounds
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( stringArrayData_[arrayindex].get() );
+	rv.set( stringArrayData_[arrayIndex].get() );
 	return TRUE;
 }
 
 // Print node contents
-void StringArrayVariable::nodePrint(int offset, const char *prefix)
+void StringArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -250,7 +256,7 @@ bool StringArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for string array '%s'.\n", name_.get());
+		Messenger::print("Failed to find size for string array '%s'.\n", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different
@@ -263,7 +269,7 @@ bool StringArrayVariable::initialise()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) return FALSE;
 			stringArrayData_[count++] = value.asString();

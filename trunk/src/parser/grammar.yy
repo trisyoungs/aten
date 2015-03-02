@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+// #include "base/dnchar.h"
 #include "command/commands.h"
 #include "parser/parser.h"
 #include "parser/tree.h"
@@ -15,11 +16,13 @@
 int CommandParser_lex(void);
 void CommandParser_error(char *s);
 
+ATEN_USING_NAMESPACE
+
 /* Local Variables */
 Dnchar tokenName;
 List<Dnchar> stepNameStack;
 VTypes::DataType declaredType, funcType;
-TreeNode *tempNode;
+TreeNode* tempNode;
 int globalDeclarations;
 
 %}
@@ -30,17 +33,17 @@ int globalDeclarations;
 /* Type Definition */
 %union {
 	int functionId;			/* Function enum id */
-	Dnchar *name;			/* character pointer for names */
-	TreeNode *node;			/* node pointer */
-	Variable *variable;		/* variable pointer */
-	Tree *tree;			/* function (tree) pointer */
+	Dnchar* name;			/* character pointer for names */
+	TreeNode* node;			/* node pointer */
+	Variable* variable;		/* variable pointer */
+	Tree* tree;			/* function (tree) pointer */
 	VTypes::DataType vtype;		/* variable type for next declarations */
-	int intconst;			/* integer constant value */
-	double doubleconst;		/* double constant value */
+	int intConst;			/* integer constant value */
+	double doubleConst;		/* double constant value */
 };
 
-%token <intconst> INTCONST ELEMENTCONST
-%token <doubleconst> DOUBLECONST
+%token <intConst> INTCONST ELEMENTCONST
+%token <doubleConst> DOUBLECONST
 %token <name> NEWTOKEN CHARCONST STEPTOKEN
 %token <variable> VAR VARSAMESCOPE
 %token <functionId> FUNCCALL
@@ -169,14 +172,14 @@ variable:
 /* Built-In Functions */
 function:
 	FUNCCALL '(' ')'				{
-		$$ = cmdparser.addFunction( (Command::Function) $1);
+		$$ = cmdparser.addFunction( (Commands::Function) $1);
 		if ($$ == NULL) YYABORT;
-		msg.print(Messenger::Parse,"PARSER : function : function '%s'\n", commands.data[(Command::Function) $1].keyword);
+		msg.print(Messenger::Parse, "PARSER : function : function '%i'\n", Commands::command((Commands::Function) $1));
 		}
 	| FUNCCALL '(' expressionlist ')'		{
-		$$ = cmdparser.addFunctionWithArglist( (Command::Function) $1,$3);
+		$$ = cmdparser.addFunctionWithArglist( (Commands::Function) $1,$3);
 		if ($$ == NULL) YYABORT;
-		msg.print(Messenger::Parse,"PARSER : function : function '%s' with exprlist\n", commands.data[(Command::Function) $1].keyword);
+		msg.print(Messenger::Parse, "PARSER : function : function '%i' with exprlist\n", Commands::command((Commands::Function) $1));
 		}
 	| FUNCCALL error				{
 		msg.print("Error: Missing brackets after function call?\n");
@@ -219,8 +222,8 @@ ARRAYCONST:
 /* ----------- */
 
 assignment:
-	variable '=' expression				{ $$ = cmdparser.addOperator(Command::OperatorAssignment,$1,$3); if ($$ == NULL) YYABORT; }
-	| variable '=' ARRAYCONST			{ $$ = cmdparser.addOperator(Command::OperatorAssignment,$1,$3); if ($$ == NULL) YYABORT; }
+	variable '=' expression				{ $$ = cmdparser.addOperator(Commands::OperatorAssignment,$1,$3); if ($$ == NULL) YYABORT; }
+	| variable '=' ARRAYCONST			{ $$ = cmdparser.addOperator(Commands::OperatorAssignment,$1,$3); if ($$ == NULL) YYABORT; }
 	| variable '=' error				{ msg.print("Mangled expression used in assignment.\n"); YYABORT; }
 	;
 
@@ -229,33 +232,33 @@ expression:
 	constant					{ $$ = $1; if ($$ == NULL) YYABORT; }
 	| function					{ $$ = $1; if ($$ == NULL) YYABORT; }
 	| userfunction					{ $$ = $1; if ($$ == NULL) YYABORT; }
-	| variable PEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentPlus,$1,$3); if ($$ == NULL) YYABORT; }
-	| variable MEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentSubtract,$1,$3); if ($$ == NULL) YYABORT; }
-	| variable TEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentMultiply,$1,$3); if ($$ == NULL) YYABORT; }
-	| variable DEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorAssignmentDivide,$1,$3); if ($$ == NULL) YYABORT; }
-	| '-' expression %prec UMINUS			{ $$ = cmdparser.addOperator(Command::OperatorNegate, $2); if ($$ == NULL) YYABORT; }
-	| variable PLUSPLUS				{ $$ = cmdparser.addOperator(Command::OperatorPostfixIncrease, $1);  if ($$ == NULL) YYABORT; }
-	| variable MINUSMINUS				{ $$ = cmdparser.addOperator(Command::OperatorPostfixDecrease, $1); if ($$ == NULL) YYABORT; }
-	| PLUSPLUS variable				{ $$ = cmdparser.addOperator(Command::OperatorPrefixIncrease, $2); if ($$ == NULL) YYABORT; }
-	| MINUSMINUS variable				{ $$ = cmdparser.addOperator(Command::OperatorPrefixDecrease, $2); if ($$ == NULL) YYABORT; }
+	| variable PEQ expression			{ $$ = cmdparser.addOperator(Commands::OperatorAssignmentPlus,$1,$3); if ($$ == NULL) YYABORT; }
+	| variable MEQ expression			{ $$ = cmdparser.addOperator(Commands::OperatorAssignmentSubtract,$1,$3); if ($$ == NULL) YYABORT; }
+	| variable TEQ expression			{ $$ = cmdparser.addOperator(Commands::OperatorAssignmentMultiply,$1,$3); if ($$ == NULL) YYABORT; }
+	| variable DEQ expression			{ $$ = cmdparser.addOperator(Commands::OperatorAssignmentDivide,$1,$3); if ($$ == NULL) YYABORT; }
+	| '-' expression %prec UMINUS			{ $$ = cmdparser.addOperator(Commands::OperatorNegate, $2); if ($$ == NULL) YYABORT; }
+	| variable PLUSPLUS				{ $$ = cmdparser.addOperator(Commands::OperatorPostfixIncrease, $1);  if ($$ == NULL) YYABORT; }
+	| variable MINUSMINUS				{ $$ = cmdparser.addOperator(Commands::OperatorPostfixDecrease, $1); if ($$ == NULL) YYABORT; }
+	| PLUSPLUS variable				{ $$ = cmdparser.addOperator(Commands::OperatorPrefixIncrease, $2); if ($$ == NULL) YYABORT; }
+	| MINUSMINUS variable				{ $$ = cmdparser.addOperator(Commands::OperatorPrefixDecrease, $2); if ($$ == NULL) YYABORT; }
 	| variable					{ $$ = $1; if ($$ == NULL) YYABORT; }
-	| expression '+' expression			{ $$ = cmdparser.addOperator(Command::OperatorAdd, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression '-' expression			{ $$ = cmdparser.addOperator(Command::OperatorSubtract, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression '*' expression			{ $$ = cmdparser.addOperator(Command::OperatorMultiply, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression '/' expression			{ $$ = cmdparser.addOperator(Command::OperatorDivide, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression '^' expression			{ $$ = cmdparser.addOperator(Command::OperatorPower, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression '%' expression			{ $$ = cmdparser.addOperator(Command::OperatorModulus, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression EQ expression			{ $$ = cmdparser.addOperator(Command::OperatorEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression NEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorNotEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression '>' expression			{ $$ = cmdparser.addOperator(Command::OperatorGreaterThan, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression GEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorGreaterThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression '<' expression			{ $$ = cmdparser.addOperator(Command::OperatorLessThan, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression LEQ expression			{ $$ = cmdparser.addOperator(Command::OperatorLessThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression AND expression			{ $$ = cmdparser.addOperator(Command::OperatorAnd, $1, $3); if ($$ == NULL) YYABORT; }
-	| expression OR expression			{ $$ = cmdparser.addOperator(Command::OperatorOr, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '+' expression			{ $$ = cmdparser.addOperator(Commands::OperatorAdd, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '-' expression			{ $$ = cmdparser.addOperator(Commands::OperatorSubtract, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '*' expression			{ $$ = cmdparser.addOperator(Commands::OperatorMultiply, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '/' expression			{ $$ = cmdparser.addOperator(Commands::OperatorDivide, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '^' expression			{ $$ = cmdparser.addOperator(Commands::OperatorPower, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '%' expression			{ $$ = cmdparser.addOperator(Commands::OperatorModulus, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression EQ expression			{ $$ = cmdparser.addOperator(Commands::OperatorEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression NEQ expression			{ $$ = cmdparser.addOperator(Commands::OperatorNotEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '>' expression			{ $$ = cmdparser.addOperator(Commands::OperatorGreaterThan, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression GEQ expression			{ $$ = cmdparser.addOperator(Commands::OperatorGreaterThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression '<' expression			{ $$ = cmdparser.addOperator(Commands::OperatorLessThan, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression LEQ expression			{ $$ = cmdparser.addOperator(Commands::OperatorLessThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression AND expression			{ $$ = cmdparser.addOperator(Commands::OperatorAnd, $1, $3); if ($$ == NULL) YYABORT; }
+	| expression OR expression			{ $$ = cmdparser.addOperator(Commands::OperatorOr, $1, $3); if ($$ == NULL) YYABORT; }
 	| '(' expression ')'				{ $$ = $2; if ($$ == NULL) YYABORT; }
-	| '!' expression				{ $$ = cmdparser.addOperator(Command::OperatorNot, $2); if ($$ == NULL) YYABORT; }
-	| expression '?' expression ':' expression	{ $$ = cmdparser.addOperator(Command::OperatorInlineIf, $1, $3, $5); if ($$ == NULL) YYABORT; }
+	| '!' expression				{ $$ = cmdparser.addOperator(Commands::OperatorNot, $2); if ($$ == NULL) YYABORT; }
+	| expression '?' expression ':' expression	{ $$ = cmdparser.addOperator(Commands::OperatorInlineIf, $1, $3, $5); if ($$ == NULL) YYABORT; }
 	| ATEN_NEW VTYPE				{ $$ = cmdparser.addNew(yylval.vtype); if ($$ == NULL) YYABORT; }
 	| NEWTOKEN					{ msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
 	;
@@ -288,7 +291,7 @@ variablename:
 		$$ = &tokenName;
 		}
 	| FUNCCALL					{
-		tokenName = Command::data[yylval.functionId].keyword;
+		tokenName = Commands::command((Commands::Function) yylval.functionId);
 		msg.print(Messenger::Parse,"PARSER : variablename : existing built-in function '%s'\n", tokenName.get());
 		$$ = &tokenName;
 		}
@@ -482,19 +485,19 @@ statement:
 		$$ = NULL;
 		}
 	| HELP FUNCCALL					{
-		$$ = cmdparser.addFunction(Command::Help, cmdparser.addConstant($2));
+		$$ = cmdparser.addFunction(Commands::Help, cmdparser.addConstant($2));
 		}
 	| ATEN_RETURN expression ';'			{
-		$$ = cmdparser.addFunction(Command::Return,$2);
+		$$ = cmdparser.addFunction(Commands::Return,$2);
 		}
 	| ATEN_RETURN ';'				{
-		$$ = cmdparser.addFunction(Command::Return);
+		$$ = cmdparser.addFunction(Commands::Return);
 		}
 	| ATEN_CONTINUE ';'				{
-		$$ = cmdparser.addFunction(Command::Continue);
+		$$ = cmdparser.addFunction(Commands::Continue);
 		}
 	| ATEN_BREAK ';'				{
-		$$ = cmdparser.addFunction(Command::Break);
+		$$ = cmdparser.addFunction(Commands::Break);
 		}
 	;
 
@@ -515,7 +518,7 @@ block:
 		$$ = $3;
 		}
 	| '{' '}'					{
-		$$ = cmdparser.addFunction(Command::NoFunction);
+		$$ = cmdparser.addFunction(Commands::NoFunction);
 		}
 	;
 
@@ -532,22 +535,22 @@ blockment:
 /* Flow-Control Statement */
 flowstatement:
 	ATEN_IF '(' expression ')' blockment ATEN_ELSE blockment 	{
-		$$ = cmdparser.addFunction(Command::If,$3,$5,$7);
+		$$ = cmdparser.addFunction(Commands::If,$3,$5,$7);
 		}
 	| ATEN_IF '(' expression ')' blockment 			{
-		$$ = cmdparser.addFunction(Command::If,$3,$5);
+		$$ = cmdparser.addFunction(Commands::If,$3,$5);
 		}
 	| ATEN_FOR pushscope '(' assignment ';' expression ';' expression ')' blockment {
-		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope();
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Commands::For, $4,$6,$8,$10)); cmdparser.popScope();
 		}
 	| ATEN_FOR pushscope '(' declaration ';' expression ';' expression ')' blockment {
-		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope();
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Commands::For, $4,$6,$8,$10)); cmdparser.popScope();
 		}
 	| ATEN_FOR pushscope '(' variable ATEN_IN expression ')'	{
 		if ($4->returnType() <= VTypes::VectorData) { msg.print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
 		if ($4->returnType() != $6->returnType()) { msg.print("Error: For/In loop variable is not being assigned the correct type.\n"); YYABORT; }
 		} blockment {
-		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::ForIn,$4,$6,$9));
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Commands::ForIn,$4,$6,$9));
 		cmdparser.popScope();
 		}
 	| ATEN_FOR pushscope '(' VTYPE savetype variablename ATEN_IN expression ')' { 
@@ -563,15 +566,15 @@ flowstatement:
 			YYABORT;
 		}
 		} blockment {
-		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::ForIn,tempNode,$8,$11));
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Commands::ForIn,tempNode,$8,$11));
 		cmdparser.popScope();
 		}
 	| ATEN_WHILE pushscope '(' expression ')' blockment	{
-		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::While, $4,$6));
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Commands::While, $4,$6));
 		cmdparser.popScope();
 		}
 	| ATEN_DO pushscope block ATEN_WHILE '(' expression ')' ';' {
-		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6));
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Commands::DoWhile, $3,$6));
 		cmdparser.popScope();
 		}
 	| ATEN_SWITCH '(' expression ')' 		{
@@ -581,7 +584,7 @@ flowstatement:
 			YYABORT;
 		}
 		} '{' caselist '}' {
-		$$ = cmdparser.addFunction(Command::Switch, $3);
+		$$ = cmdparser.addFunction(Commands::Switch, $3);
 		$$->addJoinedArguments($7);
 		}
 	;
@@ -594,11 +597,11 @@ caselabel:
 			msg.print("Error: Case value must be of integer or string type.\n");
 			YYABORT;
 		}
-		$$ = cmdparser.addFunction(Command::Case, $3);
+		$$ = cmdparser.addFunction(Commands::Case, $3);
 		if ($$ == NULL) { msg.print("Error: Invalid case expression.\n"); YYABORT; }
 		}
 	| ATEN_DEFAULT ':'				{
-		$$ = cmdparser.addFunction(Command::Default);
+		$$ = cmdparser.addFunction(Commands::Default);
 		}
 	;
 

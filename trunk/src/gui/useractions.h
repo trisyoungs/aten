@@ -22,6 +22,10 @@
 #ifndef ATEN_USERACTIONS_H
 #define ATEN_USERACTIONS_H
 
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
 // User action text data
 class UserAction
 {
@@ -31,11 +35,11 @@ class UserAction
 	enum Action { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, DrawGrowAtomAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ShiftPickVectorAction, RotatePickAxisAction, TransformPickAAction, TransformPickBAction, TransformPickCAction, ConvertSourcePickAAction, ConvertSourcePickBAction, ConvertSourcePickCAction, ConvertTargetPickAAction, ConvertTargetPickBAction, ConvertTargetPickCAction, nUserActions };
 
 	// Action texts
-	const char *name;
-	const char *unModified;
-	const char *shiftModified;
-	const char *ctrlModified;
-	const char *altModified;
+	const char* name;
+	const char* unModified;
+	const char* shiftModified;
+	const char* ctrlModified;
+	const char* altModified;
 
 	// Action group checks
 	static bool isBuildWidgetAction(UserAction::Action ua);
@@ -45,5 +49,7 @@ class UserAction
 };
 
 extern UserAction UserActions[];
+
+ATEN_END_NAMESPACE
 
 #endif

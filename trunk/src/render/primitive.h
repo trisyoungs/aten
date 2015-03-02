@@ -31,8 +31,11 @@
 #include "render/vertexchunk.h"
 #include "math/matrix.h"
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 /* none */
 
 // Rendering Primitive
@@ -77,7 +80,7 @@ class Primitive : public ListItem<Primitive>
 	// Push instance layer from current vertex chunk list
 	void pushInstance(const QGLContext* context, GLExtensions* extensions);
 	// Pop topmost instance layer
-	void popInstance(const QGLContext *context);
+	void popInstance(const QGLContext *context, GLExtensions* extensions);
 	// Return number of instances available
 	int nInstances();
 	// Send to OpenGL (i.e. render)
@@ -92,6 +95,8 @@ class Primitive : public ListItem<Primitive>
 	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz);
 	// Define next vertex and normal (as Vec3<double>)
 	GLuint defineVertex(Vec3<double> vertex, Vec3<double> normal);
+	// Define next vertex and normal
+	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, Vec4<GLfloat>& colour);
 	// Define next vertex, normal, and colour
 	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	// Define next vertex, normal, and colour
@@ -112,6 +117,22 @@ class Primitive : public ListItem<Primitive>
 	void line(double x1, double y1, double z1, double x2, double y2, double z2);
 	// Draw line
 	void line(Vec3<double> v1, Vec3<double> v2);
+	// Plot vertices of sphere with specified radius and quality
+	void plotSphere(double radius, int nStacks, int nSlices);
+	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
+	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nStacks, int nSlices, bool capStart = FALSE, bool capEnd = FALSE);
+	// Plot tube ring of specified radius and tube width
+	void plotRing(double radius, double width, int nStacks, int nSlices, int nSegments, bool segmented = FALSE);
+	// Plot circle of specified radius
+	void plotCircle(double radius, int nStacks, int nSegments, bool segmented = FALSE);
+	// Create vertices of cross with specified width
+	void plotCross(double halfWidth, Matrix& transform, Vec4<GLfloat>& colour);
+	// Plot solid cube of specified size at specified origin, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
+	void plotCube(double size, int nSubs, double ox, double oy, double oz);
+	// Create wireframe, crossed cube centred at zero
+	void plotCrossedCube(double size, int nSubs, double ox, double oy, double oz);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

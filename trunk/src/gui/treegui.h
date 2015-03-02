@@ -25,15 +25,25 @@
 #include "gui/ui_treegui.h"
 #include "base/dnchar.h"
 #include "templates/list.h"
+#include "base/namespace.h"
+
+// Forward Declarations (Qt)
+class QLabel;
+class QGridLayout;
 
 // Default height for 'single-line' widgets
 #define WIDGETHEIGHT 20
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class TreeGui;
 class TreeGuiWidget;
-class QLabel;
-class QGridLayout;
+class AtenWindow;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Qt/TreeGuiWidget Map Object
 class QtWidgetObject : public ListItem<QtWidgetObject>
@@ -62,7 +72,7 @@ class QtWidgetObject : public ListItem<QtWidgetObject>
 
 	public:
 	// Set TreeGuiWidget/QWidget pair
-	void set(TreeGuiWidget *widget, QWidget *wid, const char *label = NULL, QGridLayout *layout = NULL);
+	void set(TreeGuiWidget *widget, QWidget *wid, const char* label = NULL, QGridLayout *layout = NULL);
 	// Set TreeGuiWidget/QObject pair
 	void set(TreeGuiWidget *widget, QObject *obj);
 	// Return whether currently refreshing
@@ -101,6 +111,24 @@ class AtenTreeGuiDialog : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
+	public:
+	// Constructor / Destructor
+	AtenTreeGuiDialog(TreeGui *parent = 0);
+	~AtenTreeGuiDialog();
+	// Main form declaration
+	Ui::AtenTreeGuiDialog ui;
+
+
+	/*
+	 * Window Functions
+	 */
+	public:
+	// Finalise widgets (things that we couldn't do in Qt Designer)
+	void finaliseUi();
+	// Set controls to reflect program variables
+	void setControls();
+
+
 	/*
 	// Generic Widget Functions
 	*/
@@ -135,29 +163,29 @@ class AtenTreeGuiDialog : public QDialog
 
 	public:
 	// Create new button widget
-	QtWidgetObject *addButton(TreeGuiWidget *widget, const char *label);
+	QtWidgetObject *addButton(TreeGuiWidget *widget, const char* label);
 	// Create new checkbox widget
-	QtWidgetObject *addCheck(TreeGuiWidget *widget, const char *label);
+	QtWidgetObject *addCheck(TreeGuiWidget *widget, const char* label);
 	// Create new combo widget
-	QtWidgetObject *addCombo(TreeGuiWidget *widget, const char *label);
+	QtWidgetObject *addCombo(TreeGuiWidget *widget, const char* label);
 	// Create new dialog layout
 	QtWidgetObject *addDialogLayout(TreeGui *treeGui);
 	// Create new double spin widget
-	QtWidgetObject *addDoubleSpin(TreeGuiWidget *widget, const char *label, double step);
+	QtWidgetObject *addDoubleSpin(TreeGuiWidget *widget, const char* label, double step);
 	// Create new edit widget
-	QtWidgetObject *addEdit(TreeGuiWidget *widget, const char *label);
+	QtWidgetObject *addEdit(TreeGuiWidget *widget, const char* label);
 	// Create new frame widget
 	QtWidgetObject *addFrame(TreeGuiWidget *widget);
 	// Create new group box
-	QtWidgetObject *addGroup(TreeGuiWidget *widget, const char *label);
+	QtWidgetObject *addGroup(TreeGuiWidget *widget, const char* label);
 	// Create new integer spin widget
-	QtWidgetObject *addIntegerSpin(TreeGuiWidget *widget, const char *label, int step);
+	QtWidgetObject *addIntegerSpin(TreeGuiWidget *widget, const char* label, int step);
 	// Create new label widget
-	QtWidgetObject *addLabel(TreeGuiWidget *widget, const char *text);
+	QtWidgetObject *addLabel(TreeGuiWidget *widget, const char* text);
 	// Create new page (only in tab widget)
-	QtWidgetObject *addPage(TreeGuiWidget *widget, TreeGuiWidget *tabWidget, const char *label);
+	QtWidgetObject *addPage(TreeGuiWidget *widget, TreeGuiWidget *tabWidget, const char* label);
 	// Create new radio button
-	QtWidgetObject *addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char *name, const char *label, int id);
+	QtWidgetObject *addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char* name, const char* label, int id);
 	// Create new (invisible) radio group
 	QtWidgetObject *addRadioGroup(TreeGuiWidget *widget);
 	// Create new stack widget
@@ -165,22 +193,7 @@ class AtenTreeGuiDialog : public QDialog
 	// Create new tab widget
 	QtWidgetObject *addTabs(TreeGuiWidget *widget);
 	// Execute (show) dialog with supplied title
-	bool execute(const char *title);
-
-
-	/*
-	// Widgets
-	*/
-	public:
-	// Constructor / Destructor
-	AtenTreeGuiDialog(TreeGui *parent = 0);
-	~AtenTreeGuiDialog();
-	// Main form declaration
-	Ui::AtenTreeGuiDialog ui;
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
+	bool execute(const char* title);
 };
 
 #endif

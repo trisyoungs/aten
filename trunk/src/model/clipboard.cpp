@@ -1,6 +1,6 @@
 /*
 	*** Clipboard
-	*** src/classes/clipboard.cpp
+	*** src/base/clipboard.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -20,10 +20,10 @@
 */
 
 #include "model/clipboard.h"
-#include "base/bond.h"
 #include "base/pattern.h"
 #include "model/model.h"
-#include "base/progress.h"
+
+ATEN_USING_NAMESPACE
 
 /*
 // ClipAtom functions
@@ -122,7 +122,7 @@ ClipAtom* Clipboard::atoms()
 // Copy atom to clipboard, inserting it into the current list in the correct (original) atom ID position
 void Clipboard::copyAtom(Atom* i)
 {
-	msg.enter("Clipboard::copyAtom");
+	Messenger::enter("Clipboard::copyAtom");
         // Initialise the new ClipAtom
 	ClipAtom* newatom, *j;
 	if (atoms_.nItems() == 0) newatom = atoms_.add();
@@ -134,7 +134,7 @@ void Clipboard::copyAtom(Atom* i)
 		newatom = j == NULL ? atoms_.add() : atoms_.insertAfter(j->prev);
 	}
 	newatom->set(i);
-	msg.exit("Clipboard::copyAtom");
+	Messenger::exit("Clipboard::copyAtom");
 }
 
 // Renumber copied atoms
@@ -148,16 +148,16 @@ void Clipboard::renumberAtoms()
 void Clipboard::clear()
 {
 	// Clear the list of atoms on the clipboard
-	msg.enter("Clipboard::clear");
+	Messenger::enter("Clipboard::clear");
 	atoms_.clear();
 	bonds_.clear();
-	msg.exit("Clipboard::clear");
+	Messenger::exit("Clipboard::clear");
 }
 
 // Copy bonds for atoms
 void Clipboard::copyBonds()
 {
-	msg.enter("Clipboard::copyBonds");
+	Messenger::enter("Clipboard::copyBonds");
 	// Go through pairs of oldptrs in the atoms list and check for bonds, adding to our list as we go.
 	// The bonds we generate will point to pairs of ClipAtoms.
 	Bond *oldbond;
@@ -175,17 +175,17 @@ void Clipboard::copyBonds()
 			}
 		}
 	}
-	msg.exit("Clipboard::copyBonds");
+	Messenger::exit("Clipboard::copyBonds");
 }
 
 // Copy selection
 void Clipboard::copySelection(Model* m, bool quiet)
 {
-	msg.enter("Clipboard::copySelection");
+	Messenger::enter("Clipboard::copySelection");
 	if (m->nSelected() == 0)
 	{
-		msg.print("Nothing selected to copy.\n");
-		msg.exit("Clipboard::copySelection");
+		Messenger::print("Nothing selected to copy.\n");
+		Messenger::exit("Clipboard::copySelection");
 		return;
 	}
 	
@@ -193,26 +193,26 @@ void Clipboard::copySelection(Model* m, bool quiet)
 	clear();
 	
 	// Copy atoms
-	if (!quiet) msg.print("Copying %i atoms from model '%s'...", m->nSelected(), m->name());
-	for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next) copyAtom(ri->item);
+	if (!quiet) Messenger::print("Copying %i atoms from model '%s'...", m->nSelected(), m->name());
+	for (Refitem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next) copyAtom(ri->item);
 	renumberAtoms();
 	
 	// Copy bonds
-	if (!quiet) msg.print("bonds...");
+	if (!quiet) Messenger::print("bonds...");
 	copyBonds();
-	if (!quiet) msg.print(" Done.\n");
+	if (!quiet) Messenger::print(" Done.\n");
 	
-	msg.exit("Clipboard::copySelection");
+	Messenger::exit("Clipboard::copySelection");
 }
 
 // Copy selection
 void Clipboard::copyMarked(Model* m)
 {
-	msg.enter("Clipboard::copyMarked");
+	Messenger::enter("Clipboard::copyMarked");
 	if (m->nMarked() == 0)
 	{
-		msg.print("Nothing marked to copy.\n");
-		msg.exit("Clipboard::copyMarked");
+		Messenger::print("Nothing marked to copy.\n");
+		Messenger::exit("Clipboard::copyMarked");
 		return;
 	}
 	
@@ -220,46 +220,46 @@ void Clipboard::copyMarked(Model* m)
 	clear();
 	
 	// Copy atoms
-	for (Refitem<Atom,int> *ri = m->selection(TRUE); ri != NULL; ri = ri->next) copyAtom(ri->item);
+	for (Refitem<Atom,int>* ri = m->selection(TRUE); ri != NULL; ri = ri->next) copyAtom(ri->item);
 	renumberAtoms();
 	
 	// Copy bonds
 	copyBonds();
 	
-	msg.exit("Clipboard::copyMarked");
+	Messenger::exit("Clipboard::copyMarked");
 }
 
 // Copy model
 void Clipboard::copyAll(Model* m, bool quiet)
 {
-	msg.enter("Clipboard::copyAll");
+	Messenger::enter("Clipboard::copyAll");
 	
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
 	
 	// Copy atoms
-	if (!quiet) msg.print("Copying all atoms from model '%s'...", m->name());
+	if (!quiet) Messenger::print("Copying all atoms from model '%s'...", m->name());
 	for (Atom* i = m->atoms(); i != NULL; i = i->next) copyAtom(i);
 	renumberAtoms();
-	if (!quiet) msg.print("bonds...");
+	if (!quiet) Messenger::print("bonds...");
 	
 	// Copy bonds
 	copyBonds();
-	if (!quiet) msg.print(" Done.\n");
+	if (!quiet) Messenger::print(" Done.\n");
 	
-	msg.exit("Clipboard::copyAll");
+	Messenger::exit("Clipboard::copyAll");
 }
 
 // Cut selection
 void Clipboard::cutSelection(Model* m)
 {
 	// Cut the selection from the specified model into the clipboard
-	msg.enter("Clipboard::cutSelection");
+	Messenger::enter("Clipboard::cutSelection");
 	// Copy selection...
 	copySelection(m);
 	// ..and then we can use selectionDelete() to rid ourselves of the selected atoms
 	m->selectionDelete();
-	msg.exit("Clipboard::cutSelection");
+	Messenger::exit("Clipboard::cutSelection");
 }
 
 // Paste to model
@@ -267,22 +267,39 @@ void Clipboard::pasteToModel(Model* targetModel, bool selectPasted)
 {
 	// Paste the contents of the clipboard into the model specified.
 	// Deselect all atoms of the model, and select the pasted atoms_.
-	msg.enter("Clipboard::pasteToModel");
+	Messenger::enter("Clipboard::pasteToModel");
 	Atom* pastedi;
-	if (selectpasted) m->selectNone();
-	int count = 0;
-	for (ClipAtom* i = atoms_.first(); i != NULL; i = i->next)
+
+	if (selectPasted)
 	{
-		// Create a new atom in the target model
-		pastedi = m->addCopy(&i->atom());
-		//printf("Pasted atom has id %i\n",pastedi->id());
-		if (selectpasted) m->selectAtom(pastedi);
-		// Store reference to the newly-pasted atom
-		i->setAtomPointer(pastedi);
+		targetModel->selectNone();
+		for (ClipAtom* i = atoms_.first(); i != NULL; i = i->next)
+		{
+			// Create a new atom in the target model
+			pastedi = targetModel->addCopy(&i->atom());
+
+			// Select atom
+			targetModel->selectAtom(pastedi);
+
+			// Store reference to the newly-pasted atom
+			i->setAtomPointer(pastedi);
+		}
 	}
+	else
+	{
+		for (ClipAtom* i = atoms_.first(); i != NULL; i = i->next)
+		{
+			// Create a new atom in the target model
+			pastedi = targetModel->addCopy(&i->atom());
+
+			// Store reference to the newly-pasted atom
+			i->setAtomPointer(pastedi);
+		}
+	}
+
 	// Add in bonds to pasted atoms
-	pasteBonds(m);
-	msg.exit("Clipboard::pasteToModel");
+	pasteBonds(targetModel);
+	Messenger::exit("Clipboard::pasteToModel");
 }
 
 // Paste to pattern
@@ -290,34 +307,37 @@ void Clipboard::pasteToPattern(Model* targetModel, Pattern* targetPattern)
 {
 	// Paste the contents of the clipboard into the model specified.
 	// An optional pattern is supplied, indicating atoms should be pasted into its local list. Otherwise, use the model.
-	// Deselect all atoms of the model, and select the pasted atoms_.
-	msg.enter("Clipboard::pasteToPattern");
+	Messenger::enter("Clipboard::pasteToPattern");
 	Atom* pastedi = NULL;
-	m->selectNone();
+
+	// Deselect all atoms of the model, and select the pasted atoms_.
+	targetModel->selectNone();
 	for (ClipAtom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		// Create a new atom in the target model
-		pastedi = p->appendCopy(pastedi);
-		m->selectAtom(pastedi);
+		pastedi = targetPattern->appendCopy(pastedi);
+		targetModel->selectAtom(pastedi);
+
 		// Store reference to the newly-pasted atom
 		i->setAtomPointer(pastedi);
-	}	
+	}
+	
 	// Add in bonds to pasted atoms
-	pasteBonds(m);
-	msg.exit("Clipboard::pasteToPattern");
+	pasteBonds(targetModel);
+	Messenger::exit("Clipboard::pasteToPattern");
 }
 
 // Paste to model in specified pattern / position
 void Clipboard::pasteToModel(Model* targetModel, Pattern* targetPattern, int mol)
 {
 	// Paste the contents of the clipboard into the configuration supplied, and in the pattern / molecule position given.
-	msg.enter("Clipboard::pasteToModel");
+	Messenger::enter("Clipboard::pasteToModel");
 
 	// Check pattern spec against number of atoms in clipboard
 	if (targetPattern->nAtoms() != atoms_.nItems())
 	{
 		printf("Number of atoms in clipboard (%i) does not match number in one molecule of pattern (%i).\n", atoms_.nItems(), targetPattern->nAtoms());
-		msg.exit("Clipboard::pasteToModel");
+		Messenger::exit("Clipboard::pasteToModel");
 		return;
 	}
 
@@ -334,13 +354,13 @@ void Clipboard::pasteToModel(Model* targetModel, Pattern* targetPattern, int mol
 		i = i->next;
 	}
 
-	msg.exit("Clipboard::pasteToModel");
+	Messenger::exit("Clipboard::pasteToModel");
 }
 
 // Paste to model translated
 void Clipboard::pasteToModel(Model* m, Vec3<double> translation)
 {
-	msg.enter("Clipboard::pasteToModel[translated]");
+	Messenger::enter("Clipboard::pasteToModel[translated]");
 	Atom* pastedi;
 	// Deselect all atoms of the model, and select the pasted atoms_.
 	m->selectNone();
@@ -356,16 +376,16 @@ void Clipboard::pasteToModel(Model* m, Vec3<double> translation)
 	}	
 	// Add in bonds to pasted atoms
 	pasteBonds(m);
-	msg.exit("Clipboard::pasteToModel[translated]");
+	Messenger::exit("Clipboard::pasteToModel[translated]");
 }
 
 // Paste bonds
 void Clipboard::pasteBonds(Model* target)
 {
-	msg.enter("Clipboard::pasteBonds");
+	Messenger::enter("Clipboard::pasteBonds");
 	// By this point, bondi and bondj pointers in the bondlist will refer to ClipAtom* pointers
 	for (ClipBond *b = bonds_.first(); b != NULL; b = b->next) target->bondAtoms(b->atomI()->atomPointer(), b->atomJ()->atomPointer(), b->type());
-	msg.exit("Clipboard::pasteBonds");
+	Messenger::exit("Clipboard::pasteBonds");
 }
 
 // Translate Clipped Atoms

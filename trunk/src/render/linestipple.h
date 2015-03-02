@@ -33,7 +33,7 @@
 #include <QtCore/QVector>
 #include <QtCore/QString>
 
-// Forward Declarations
+// Forward Declarations (Aten)
 class QComboBox;
 
 // Line Stipple

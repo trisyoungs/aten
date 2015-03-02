@@ -23,8 +23,11 @@
 #define ATEN_MEASUREMENT_H
 
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Atom;
 class UnitCell;
 
@@ -35,7 +38,7 @@ class Measurement : public ListItem<Measurement>
 	// Constructor
 	Measurement();
 	// Geometry types
-	enum MeasurementType { None, Distance, Angle, Torsion, nMeasurementTypes };
+	enum MeasurementType { NoMeasurement, DistanceMeasurement, AngleMeasurement, TorsionMeasurement, nMeasurementTypes };
 	static int nMeasurementAtoms(MeasurementType);
 
 	/*
@@ -57,7 +60,7 @@ class Measurement : public ListItem<Measurement>
 	// Return type of Measurement
 	MeasurementType type() const;
 	// Calculate Measurement value
-	void calculate(UnitCell *cell);
+	void calculate(UnitCell* cell);
 	// Return proper, MIM'd value of the Measurement
 	double value() const;
 	// Return literal coordinate value of the Measurement
@@ -69,9 +72,11 @@ class Measurement : public ListItem<Measurement>
 	// Return specific atom
 	Atom* atom(int index);
 	// Return atoms array
-	Atom* *atoms();
+	Atom** atoms();
 	// Print
 	void print() const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

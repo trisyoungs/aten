@@ -23,6 +23,7 @@
 #define ATEN_DISORDEROPTIONS_H
 
 #include "gui/ui_disorderoptions.h"
+#include "base/namespace.h"
 
 // Disordered builder options dialog
 class DisorderOptions : public QDialog

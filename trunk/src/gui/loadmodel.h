@@ -24,11 +24,20 @@
 
 #include "base/dnchar.h"
 #include "gui/ui_loadmodel.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Forcefield;
 class Tree;
-class AtenWindow;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Model Load Dialog
 class AtenLoadModel : public QDialog
@@ -42,13 +51,25 @@ class AtenLoadModel : public QDialog
 	// Main form declaration
 	Ui::LoadModelDialog ui;
 
-
-	/*
-	 * Reference to AtenWindow
-	 */
 	private:
 	// Reference to main window
 	AtenWindow& parent_;
+
+
+	/*
+	 * Data
+	 */
+	private:
+	// Whether the window is currently refreshing its controls
+	bool refreshing_;
+	// Filename in edit box
+	Dnchar selectedFilename_;
+
+	public:
+	// Return the selected format (if any)
+	Tree* selectedFormat();
+	// Return filename
+	const char* selectedFilename();
 
 
 	/*
@@ -70,22 +91,6 @@ class AtenLoadModel : public QDialog
 	public:
 	// Update controls and show dialog
 	void updateAndShow();
-
-
-	/*
-	 * Data
-	 */
-	private:
-	// Whether the window is currently refreshing its controls
-	bool refreshing_;
-	// Filename in edit box
-	Dnchar selectedFilename_;
-
-	public:
-	// Return the selected format (if any)
-	Tree* selectedFormat();
-	// Return filename
-	const char *selectedFilename();
 };
 
 #endif

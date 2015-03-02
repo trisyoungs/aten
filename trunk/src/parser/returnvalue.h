@@ -26,6 +26,9 @@
 #include "base/dnchar.h"
 #include "math/matrix.h"
 #include "templates/vector3.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Return Value
 class ReturnValue : public ListItem<ReturnValue>
@@ -41,7 +44,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	ReturnValue(VTypes::DataType type, void* ptr);
 	~ReturnValue();
 	// Operator=
-	void operator=(const ReturnValue &rv);
+	void operator=(const ReturnValue& rv);
 	void operator=(double d);
 	void operator=(int i);
 	void operator=(const char* s);
@@ -82,7 +85,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Return string of contained data
 	const char* info();
 	// Return unique 'pair' code based on return types
-	int dataPair(ReturnValue &source);
+	int dataPair(ReturnValue& source);
 
 
 	/*
@@ -102,7 +105,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Set from Matrix value
 	void set(Matrix m);
 	// Set from pointer value
-	void set(VTypes::DataType type, void *ptr, void *refitem = NULL);
+	void set(VTypes::DataType type, void* ptr, void *refitem = NULL);
 	// Set from standard array
 	void setArray(VTypes::DataType type, void *source, int arraysize);
 	// Set from Vec3<int>
@@ -188,5 +191,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Decrease the contained variable
 	bool decrease();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -28,11 +28,13 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-using namespace std;
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 #define MAXLINELENGTH 1024
 
-// Forward Declarations
+// Forward Declarations (Aten)
 class Format;
 
 // Line Parser
@@ -64,31 +66,31 @@ class LineParser
 	// Integer line number of last read line
 	int lastLineNo_;
 	// Source stream for reading
-	ifstream *inputFile_;
+	std::ifstream *inputFile_;
 	// Target stream for writing
-	ofstream *outputFile_;
+	std::ofstream *outputFile_;
 	// Target stream for cached writing
-	stringstream *cachedFile_;
+	std::stringstream *cachedFile_;
 
 	public:
 	// Reset data
 	void reset();
 	// Return filename of current inputFile (if any)
-	const char *inputFilename() const;
+	const char* inputFilename() const;
 	// Return filename of current outputFile (if any)
-	const char *outputFilename() const;
+	const char* outputFilename() const;
 	// Return pointer to start of current line
-	const char *line() const;
+	const char* line() const;
 	// Set line target
-	void setLine(const char *s);
+	void setLine(const char* s);
 	// Return integer line number of last read line
 	int lastLineNo() const;
 	// Return read-only status of file
 	bool isFileReadOnly() const;
 	// Open new file for reading
-	bool openInput(const char *filename);
+	bool openInput(const char* filename);
 	// Open new stream for writing
-	bool openOutput(const char *filename, bool directOutput);
+	bool openOutput(const char* filename, bool directOutput);
 	// Close file(s)
 	void closeFiles();
 	// Return whether current file source is good for reading
@@ -96,13 +98,13 @@ class LineParser
 	// Return whether current file source is good for writing
 	bool isFileGoodForWriting() const;
 	// Tell current position of input stream
-	streampos tellg() const;
+	std::streampos tellg() const;
 	// Peek next character in input stream
 	char peek() const;
 	// Seek position in input stream
-	void seekg(streampos pos);
+	void seekg(std::streampos pos);
 	// Seek n bytes in specified direction in input stream
-	void seekg(streamoff off, ios_base::seekdir dir);
+	void seekg(std::streamoff off, std::ios_base::seekdir dir);
 	// Rewind input stream to start
 	void rewind();
 	// Return whether the end of the input stream has been reached (or only whitespace remains)
@@ -120,27 +122,27 @@ class LineParser
 
 	public:
 	// Gets next delimited arg from internal line
-	bool getNextArg(int optionMask, Dnchar *destarg);
+	bool getNextArg(int optionMask, Dnchar* destarg);
 	// Gets next n chars from internal line
-	bool getNextN(int optionMask, int length, Dnchar *destarg = NULL);
+	bool getNextN(int optionMask, int length, Dnchar* destarg = NULL);
 	// Read line from file and do delimited parse
 	int getArgsDelim(int optionMask);
 	// Get rest of line starting at next delimited part
-	bool getRestDelim(Dnchar *destarg = NULL);
+	bool getRestDelim(Dnchar* destarg = NULL);
 	// Set line and parse using delimiters
-	void getArgsDelim(int optionMask, const char *s);
+	void getArgsDelim(int optionMask, const char* s);
 	// Get next delimited chunk from file (not line)
-	bool getCharsDelim(Dnchar *destarg = NULL);
+	bool getCharsDelim(Dnchar* destarg = NULL);
 	// Get next delimited chunk from string, removing grabbed part
-	bool getCharsDelim(int optionMask, Dnchar *source, Dnchar *destarg);
+	bool getCharsDelim(int optionMask, Dnchar* source, Dnchar* destarg);
 	// Read next line from internal source file, setting as parsing source
 	int readNextLine(int optionMask);
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
 	// Get next delimited argument from internal line
-	bool getArgDelim(int optionMask, Dnchar *destarg);
+	bool getArgDelim(int optionMask, Dnchar* destarg);
 	// Return a number of characters from the input stream
-	const char *getChars(int nchars, bool skipeol = TRUE);
+	const char* getChars(int nchars, bool skipeol = TRUE);
 	// Skip a number of characters from the input stream
 	void skipChars(int nchars);
 	// Return an integer value from reading 'n' chars of an (unformatted) input file
@@ -150,11 +152,11 @@ class LineParser
 	// Return a double value from reading 'n' chars of an (unformatted) input file
 	double getDouble(int nbytes = 0);
 	// Fill an array of double values from reading of an (unformatted) input file
-	int getDoubleArray(double *array, int count);
+	int getDoubleArray(double* array, int count);
 	// Write line to file
-	bool writeLine(const char *s);
+	bool writeLine(const char* s);
 	// Write formatter line to file
-	bool writeLineF(const char *fmt, ...);
+	bool writeLineF(const char* fmt, ...);
 	// Commit cached output stream to actual output file
 	bool commitCache();
 
@@ -174,7 +176,7 @@ class LineParser
 	// Returns number of arguments grabbed from last parse
 	int nArgs() const;
 	// Returns the specified argument as a character string
-	const char *argc(int i);
+	const char* argc(int i);
 	// Returns the specified argument as an integer
 	int argi(int i);
 	// Returns the specified argument as a double
@@ -192,9 +194,11 @@ class LineParser
 	*/
 	public:
 	// Remove atomtype description from string and return it
-	const char *parseNetaString(Dnchar&);
+	const char* parseNetaString(Dnchar&);
 	// Remove keyword from string and return it
-	const char *trimNetaKeyword(Dnchar&);
+	const char* trimNetaKeyword(Dnchar&);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

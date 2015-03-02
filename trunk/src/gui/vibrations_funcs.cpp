@@ -19,6 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
+#include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/vibrations.h"
@@ -48,14 +51,14 @@ void VibrationsWidget::showWidget()
 // Refresh window contents
 void VibrationsWidget::refresh()
 {
-	msg.enter("VibrationsWidget::refresh");
+	Messenger::enter("VibrationsWidget::refresh");
 	refreshing_ = TRUE;
 	Model* m = parent_.aten().currentModelOrFrame();
 	Dnchar text;
 	ui.VibrationsList->clear();
 	ui.DisplacementsTable->clear();
 	int count = 0;
-	for (Vibration *vib = m->vibrations(); vib != NULL; vib = vib->next)
+	for (Vibration* vib = m->vibrations(); vib != NULL; vib = vib->next)
 	{
 		text.sprintf("%i. Freq=%f\n", ++count, vib->frequency());
 		ui.VibrationsList->addItem(text.get());
@@ -85,7 +88,7 @@ void VibrationsWidget::refresh()
 	ui.VibrationsTabWidget->setDisabled(count == 0);
 	refreshing_ = FALSE;
 	refreshDisplacements();
-	msg.exit("VibrationsWidget::refresh");
+	Messenger::exit("VibrationsWidget::refresh");
 }
 
 // Refresh displacement data
@@ -97,7 +100,7 @@ void VibrationsWidget::refreshDisplacements()
 	int row = ui.VibrationsList->currentRow();
 	if (row == -1) return;
 	Model* m = parent_.aten().currentModelOrFrame();
-	Vibration *vib = m->vibration(row);
+	Vibration* vib = m->vibration(row);
 	Vec3<double> *displacements = vib->displacements();
 	QTableWidgetItem *item;
 	ui.DisplacementsTable->setRowCount(vib->nDisplacements());
@@ -105,7 +108,7 @@ void VibrationsWidget::refreshDisplacements()
 	Atom* i = m->atoms();
 	for (n=0; n<vib->nDisplacements(); ++n)
 	{
-		if (i == NULL) msg.print("Warning - More displacements defined in Vibration than there are atoms in the parent model.\n");
+		if (i == NULL) Messenger::print("Warning - More displacements defined in Vibration than there are atoms in the parent model.\n");
 		item = new QTableWidgetItem();
 		item->setText(i == NULL ? "NULL" : Elements().symbol(i));
 		ui.DisplacementsTable->setItem(n, 0, item);
@@ -228,7 +231,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	currentDirectory_.setPath(filename);
 	
 	// Generate movie file...
-	CommandNode::run(Command::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow()+1, 20, ncycles, fps);
+	CommandNode::run(Commands::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow()+1, 20, ncycles, fps);
 }
 
 // Stop current timer (if any)
@@ -248,7 +251,7 @@ void VibrationsWidget::resetTimer(int delay)
 
 void VibrationsWidget::timerEvent(QTimerEvent*)
 {
-	if (DONTDRAW) msg.print(Messenger::Verbose, "VibrationsWidget - Still drawing previous frame...\n");
+	if (DONTDRAW) Messenger::print(Messenger::Verbose, "VibrationsWidget - Still drawing previous frame...\n");
 	else
 	{
 		DONTDRAW = TRUE;

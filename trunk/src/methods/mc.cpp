@@ -22,22 +22,27 @@
 #include "model/model.h"
 #include "methods/mc.h"
 #include "model/clipboard.h"
-#include "gui/gui.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 #include "base/progress.h"
 
+ATEN_BEGIN_NAMESPACE
+
 // Static Singleton
 MonteCarlo mc;
 
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
+
 // Monte Carlo move types
-const char *MoveTypeKeywords[MonteCarlo::nMoveTypes] = { "Translate", "Rotate", "ZMatrix", "Insert", "Delete" };
-const char *MonteCarlo::moveTypeKeyword(MonteCarlo::MoveType mt)
+const char* MoveTypeKeywords[MonteCarlo::nMoveTypes] = { "Translate", "Rotate", "ZMatrix", "Insert", "Delete" };
+const char* MonteCarlo::moveTypeKeyword(MonteCarlo::MoveType mt)
 {
 	return MoveTypeKeywords[mt];
 }
 
-MonteCarlo::MoveType MonteCarlo::moveType(const char *s, bool reportError)
+MonteCarlo::MoveType MonteCarlo::moveType(const char* s, bool reportError)
 {
 	MonteCarlo::MoveType mt = (MonteCarlo::MoveType) enumSearch("Monte Carlo move", MonteCarlo::nMoveTypes, MoveTypeKeywords, s);
 	if ((mt == MonteCarlo::nMoveTypes) && reportError) enumPrintValid(MonteCarlo::nMoveTypes,MoveTypeKeywords);
@@ -330,7 +335,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
-	msg.enter("MonteCarlo::minimise");
+	Messenger::enter("MonteCarlo::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats;
 	Dnchar s;
 	double newEnergy, currentEnergy, lastPrintedEnergy, currentVdwEnergy, currentElecEnergy, phi, theta;
@@ -344,10 +349,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Prepare the calculation
 	*/
         // First, create expression for the current model and assign charges
-	msg.print("Creating expression for target model...\n");
+	Messenger::print("Creating expression for target model...\n");
         if ((!srcmodel->createExpression(Choice::Yes)) || (srcmodel->nAtoms() == 0))
 	{
-		msg.exit("MonteCarlo::minimise");
+		Messenger::exit("MonteCarlo::minimise");
 		return FALSE;
 	}
 
@@ -358,20 +363,20 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Create ratio array (not per-pattern, just per move type)
 	createRatioArray(1);
 
-	msg.print("Beginning Monte Carlo minimise...\n\n");
-	msg.print(" Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%\n");
+	Messenger::print("Beginning Monte Carlo minimise...\n\n");
+	Messenger::print(" Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%\n");
 
 	// Calculate initial reference energy
 	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	if (!success)
 	{
-		msg.exit("MonteCarlo::minimise");
+		Messenger::exit("MonteCarlo::minimise");
 		return FALSE;
 	}
 	currentVdwEnergy = srcmodel->energy.vdw();
 	currentElecEnergy = srcmodel->energy.electrostatic();
 	lastPrintedEnergy = currentEnergy;
-	msg.print("--     %13.6e               %13.6e %13.6e\n", currentEnergy,  currentVdwEnergy, currentElecEnergy);
+	Messenger::print("--     %13.6e               %13.6e %13.6e\n", currentEnergy,  currentVdwEnergy, currentElecEnergy);
 
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
@@ -380,7 +385,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	Pattern* p = NULL;
 
 	// Start progess indicator
-	int pid = progress.initialise("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert, !gui.exists());
+	int pid = progress.initialise("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert);
 
 	// Loop over MC cycles
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -464,11 +469,11 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, currentEnergy, currentEnergy-lastPrintedEnergy, currentVdwEnergy, currentElecEnergy);
 			for (n=0; n<MonteCarlo::nMoveTypes; n++) s.strcatf(" %3i", int(acceptanceRatio_[0][n]*100.0));
 			s.strcatf("  %s\n", etatext.get());
-			msg.print(s.get());
+			Messenger::print(s.get());
 			lastPrintedEnergy = currentEnergy;
 		}
 		
-		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget);
+// 		if (prefs.shouldUpdateModel(cycle+1)) updateWidgets(AtenWindow::CanvasTarget);  ATEN2 TODO
 
 	} // Loop over MC cycles
 	progress.terminate(pid);
@@ -480,6 +485,6 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Finalise
 	srcmodel->changeLog.add(Log::Coordinates);
 
-	msg.exit("MonteCarlo::minimise");
+	Messenger::exit("MonteCarlo::minimise");
 	return TRUE;
 }

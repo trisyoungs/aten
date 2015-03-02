@@ -26,7 +26,7 @@
 // Set current rendering style to stick
 void AtenWindow::on_actionStyleStick_triggered(bool checked)
 {
-	prefs.setRenderStyle(Atom::StickStyle);
+	prefs.setRenderStyle(Prefs::StickStyle);
 	aten_.globalLogChange(Log::Style);
 	postRedisplay();
 }
@@ -34,7 +34,7 @@ void AtenWindow::on_actionStyleStick_triggered(bool checked)
 // Set current rendering style to tube
 void AtenWindow::on_actionStyleTube_triggered(bool checked)
 {
-	prefs.setRenderStyle(Atom::TubeStyle);
+	prefs.setRenderStyle(Prefs::TubeStyle);
 	aten_.globalLogChange(Log::Style);
 	postRedisplay();
 }
@@ -42,7 +42,7 @@ void AtenWindow::on_actionStyleTube_triggered(bool checked)
 // Set current rendering style to sphere
 void AtenWindow::on_actionStyleSphere_triggered(bool checked)
 {
-	prefs.setRenderStyle(Atom::SphereStyle);
+	prefs.setRenderStyle(Prefs::SphereStyle);
 	aten_.globalLogChange(Log::Style);
 	postRedisplay();
 }
@@ -50,7 +50,7 @@ void AtenWindow::on_actionStyleSphere_triggered(bool checked)
 // Set current rendering style to scaled
 void AtenWindow::on_actionStyleScaled_triggered(bool checked)
 {
-	prefs.setRenderStyle(Atom::ScaledStyle);
+	prefs.setRenderStyle(Prefs::ScaledStyle);
 	aten_.globalLogChange(Log::Style);
 	postRedisplay();
 }
@@ -58,19 +58,19 @@ void AtenWindow::on_actionStyleScaled_triggered(bool checked)
 // Set current rendering style to individual
 void AtenWindow::on_actionStyleIndividual_triggered(bool checked)
 {
-	prefs.setRenderStyle(Atom::IndividualStyle);
+	prefs.setRenderStyle(Prefs::IndividualStyle);
 	aten_.globalLogChange(Log::Style);
 	postRedisplay();
 }
 
-// Set corresponding action to supplied Atom::DrawStyle
-void AtenWindow::setActiveStyleAction(Atom::DrawStyle ds)
+// Set corresponding action to supplied Prefs::DrawStyle
+void AtenWindow::setActiveStyleAction(Prefs::DrawStyle ds)
 {
-	if (ds == Atom::StickStyle) ui.actionStyleStick->setChecked(TRUE);
-	else if (ds == Atom::TubeStyle) ui.actionStyleTube->setChecked(TRUE);
-	else if (ds == Atom::SphereStyle) ui.actionStyleSphere->setChecked(TRUE);
-	else if (ds == Atom::ScaledStyle) ui.actionStyleScaled->setChecked(TRUE);
-	else if (ds == Atom::IndividualStyle) ui.actionStyleIndividual->setChecked(TRUE);
+	if (ds == Prefs::StickStyle) ui.actionStyleStick->setChecked(TRUE);
+	else if (ds == Prefs::TubeStyle) ui.actionStyleTube->setChecked(TRUE);
+	else if (ds == Prefs::SphereStyle) ui.actionStyleSphere->setChecked(TRUE);
+	else if (ds == Prefs::ScaledStyle) ui.actionStyleScaled->setChecked(TRUE);
+	else if (ds == Prefs::IndividualStyle) ui.actionStyleIndividual->setChecked(TRUE);
 	prefs.setRenderStyle(ds);
 	postRedisplay();
 }

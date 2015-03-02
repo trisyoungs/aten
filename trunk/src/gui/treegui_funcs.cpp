@@ -19,10 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QRadioButton>
+#include <QtGui/QStackedWidget>
 #include "gui/treegui.h"
 #include "gui/mainwindow.h"
 #include "main/aten.h"
 #include "base/sysfunc.h"
+
+ATEN_USING_NAMESPACE
 
 /*
 // Qt/TreeGuiWidget Map Object
@@ -43,7 +47,7 @@ QtWidgetObject::QtWidgetObject() : ListItem<QtWidgetObject>()
 }
 
 // Set TreeGuiWidget/QWidget pair
-void QtWidgetObject::set(TreeGuiWidget *widget, QWidget *wid, const char *label, QGridLayout *layout)
+void QtWidgetObject::set(TreeGuiWidget *widget, QWidget *wid, const char* label, QGridLayout *layout)
 {
 	treeGuiWidget_ = widget;
 	qWidget_ = wid;
@@ -143,7 +147,7 @@ void QtWidgetObject::updateQt()
 			if (treeGuiWidget_->propertyChanged(TreeGuiWidgetEvent::ItemsProperty))
 			{
 				combo->clear();
-				for (Dnchar *d = treeGuiWidget_->items(); d != NULL; d = d->next) combo->addItem(d->get());
+				for (Dnchar* d = treeGuiWidget_->items(); d != NULL; d = d->next) combo->addItem(d->get());
 				treeGuiWidget_->resetChanged(TreeGuiWidgetEvent::ItemsProperty);
 			}
 			// Set current index
@@ -687,7 +691,7 @@ QtWidgetObject *AtenTreeGuiDialog::addCombo(TreeGuiWidget* widget, const char* l
 	QComboBox *combo = new QComboBox(this);
 	qtwo->set(widget, combo, label);
 	// Add items to combo and set current index
-	for (Dnchar *d = widget->items(); d != NULL; d = d->next) combo->addItem(d->get());
+	for (Dnchar* d = widget->items(); d != NULL; d = d->next) combo->addItem(d->get());
 	combo->setCurrentIndex(widget->valueI() - 1);
 	combo->setEnabled(widget->enabled());
 	combo->setVisible(widget->visible());
@@ -726,7 +730,7 @@ QtWidgetObject *AtenTreeGuiDialog::addDoubleSpin(TreeGuiWidget* widget, const ch
 }
 
 // Create new edit widget
-QtWidgetObject *AtenTreeGuiDialog::addEdit(TreeGuiWidget *widget, const char *label)
+QtWidgetObject *AtenTreeGuiDialog::addEdit(TreeGuiWidget *widget, const char* label)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
 	QLineEdit *edit = new QLineEdit(this);
@@ -757,7 +761,7 @@ QtWidgetObject *AtenTreeGuiDialog::addFrame(TreeGuiWidget *widget)
 }
 
 // Create new group box
-QtWidgetObject *AtenTreeGuiDialog::addGroup(TreeGuiWidget *widget, const char *label)
+QtWidgetObject *AtenTreeGuiDialog::addGroup(TreeGuiWidget *widget, const char* label)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
 	QGroupBox *group = new QGroupBox(label);
@@ -790,7 +794,7 @@ QtWidgetObject *AtenTreeGuiDialog::addIntegerSpin(TreeGuiWidget* widget, const c
 }
 
 // Create new label widget
-QtWidgetObject *AtenTreeGuiDialog::addLabel(TreeGuiWidget *widget, const char *text)
+QtWidgetObject *AtenTreeGuiDialog::addLabel(TreeGuiWidget *widget, const char* text)
 {
 	QtWidgetObject *qtwo = widgetObjects_.add();
 	QLabel *label = new QLabel(this);
@@ -804,7 +808,7 @@ QtWidgetObject *AtenTreeGuiDialog::addLabel(TreeGuiWidget *widget, const char *t
 }
 
 // Create new page (only in Tab widget or Stack widget)
-QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget *parentWidget, const char *label)
+QtWidgetObject *AtenTreeGuiDialog::addPage(TreeGuiWidget *widget, TreeGuiWidget *parentWidget, const char* label)
 {
 	// Grab widget object...
 	QtWidgetObject *wo = parentWidget->qtWidgetObject();
@@ -865,7 +869,7 @@ QtWidgetObject *AtenTreeGuiDialog::addRadioGroup(TreeGuiWidget *widget)
 }
 
 // Create new radio button
-QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char *name, const char *label, int id)
+QtWidgetObject *AtenTreeGuiDialog::addRadioButton(TreeGuiWidget *widget, TreeGuiWidget *groupWidget, const char* name, const char* label, int id)
 {
 	// Cast QObject in groupWidget into QButtonGroup
 	QtWidgetObject *wo = groupWidget->qtWidgetObject();
@@ -924,11 +928,11 @@ QtWidgetObject *AtenTreeGuiDialog::addTabs(TreeGuiWidget *widget)
 // Execute (show) the custom dialog
 bool AtenTreeGuiDialog::execute(const char* title)
 {
-	msg.enter("AtenTreeGuiDialog::execute");
+	Messenger::enter("AtenTreeGuiDialog::execute");
 	if (parentTree_ == NULL)
 	{
 		printf("Error - NULL Tree pointer found when in AtenTreeGuiDialog::execute\n");
-		msg.exit("AtenTreeGuiDialog::execute");
+		Messenger::exit("AtenTreeGuiDialog::execute");
 		return FALSE;
 	}
 
@@ -939,6 +943,6 @@ bool AtenTreeGuiDialog::execute(const char* title)
 	updating_ = FALSE;
 	bool result = (exec() == 1 ? TRUE : FALSE);
 	updating_ = TRUE;
-	msg.exit("AtenTreeGuiDialog::execute");
+	Messenger::exit("AtenTreeGuiDialog::execute");
 	return result;
 }

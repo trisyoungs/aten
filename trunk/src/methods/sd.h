@@ -23,8 +23,11 @@
 #define ATEN_SD_H
 
 #include "methods/linemin.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 
 // Steepest Descent Minimiser
@@ -49,5 +52,7 @@ class MethodSd : public LineMinimiser
 
 // Static Singleton
 extern MethodSd sd;
+
+ATEN_END_NAMESPACE
 
 #endif

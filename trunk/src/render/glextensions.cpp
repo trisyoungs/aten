@@ -19,13 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Need to include <QtCore/QString>, <GL/glx.h>, and then "render/glextensions.h" in that order, to prevent hideous errors.
+#include <QtCore/QString>
+#include <GL/glx.h>
 #include "render/glextensions.h"
-#include <string.h>
+#include "render/primitiveinstance.h"
 
 // For OSX, define an function to obtain function entry point from a library
 #ifdef __APPLE__
 #import <mach-o/dyld.h>
-void* osxglGetProcAddress(const char *name)
+void* osxglGetProcAddress(const char* name)
 {
     NSSymbol symbol;
     char* symbolName = new char[strlen(name)+2];
@@ -37,6 +40,8 @@ void* osxglGetProcAddress(const char *name)
     return symbol ? NSAddressOfSymbol (symbol) : NULL;
 }
 #endif
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 GLExtensions::GLExtensions() : ListItem<GLExtensions>()

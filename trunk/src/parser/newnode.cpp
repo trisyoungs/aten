@@ -26,13 +26,15 @@
 #include "base/eigenvector.h"
 #include "base/glyph.h"
 #include "base/vibration.h"
-#include "classes/basisshell.h"
-#include "classes/colourscale.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
-#include "classes/grid.h"
-#include "classes/zmatrix.h"
+#include "base/basisshell.h"
+#include "base/colourscale.h"
+#include "base/forcefieldatom.h"
+#include "base/forcefieldbound.h"
+#include "base/grid.h"
+#include "base/zmatrix.h"
 #include "ff/forcefield.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 NewNode::NewNode(VTypes::DataType type) : TreeNode()
@@ -96,19 +98,19 @@ NewNode::~NewNode()
 			delete (ZMatrix*) object_;
 			break;
 		default:
-			msg.print("Internal Error: NewNode doesn't know how to delete a variable of type %s.\n", VTypes::dataType(type_));
+			Messenger::print("Internal Error: NewNode doesn't know how to delete a variable of type %s.\n", VTypes::dataType(type_));
 			break;
 	}
 }
 
 // Execute command
-bool NewNode::execute(ReturnValue &rv)
+bool NewNode::execute(ReturnValue& rv)
 {
 	// Create a new variable of the desired type...
 	switch (type_)
 	{
 		case (VTypes::NoData):
-			msg.print("Internal Error: No data type set in NewNode::execute().\n");
+			Messenger::print("Internal Error: No data type set in NewNode::execute().\n");
 			rv.reset();
 			return FALSE;
 			break;
@@ -158,7 +160,7 @@ bool NewNode::execute(ReturnValue &rv)
 			object_ = new ZMatrix;
 			break;
 		default:
-			msg.print("Internal Error: NewNode doesn't know how to create a variable of type %s.\n", VTypes::dataType(type_));
+			Messenger::print("Internal Error: NewNode doesn't know how to create a variable of type %s.\n", VTypes::dataType(type_));
 			rv.reset();
 			return FALSE;
 			break;
@@ -171,7 +173,7 @@ bool NewNode::execute(ReturnValue &rv)
 }
 
 // Set from returnvalue node
-bool NewNode::set(ReturnValue &rv)
+bool NewNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Trying to 'set' a NewNode.\n");
 	return FALSE;
@@ -185,7 +187,7 @@ bool NewNode::initialise()
 }
 
 // Print node contents
-void NewNode::nodePrint(int offset, const char *prefix)
+void NewNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);

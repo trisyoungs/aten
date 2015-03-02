@@ -21,10 +21,8 @@
 
 #include "parser/matrix.h"
 #include "parser/stepnode.h"
-#include "math/constants.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Constructors
 MatrixVariable::MatrixVariable(bool constant)
@@ -39,7 +37,7 @@ MatrixVariable::MatrixVariable(Matrix m, bool constant) : matrixData_(m)
 	returnType_ = VTypes::MatrixData;
 	readOnly_ = constant;
 }
-MatrixVariable::MatrixVariable(TreeNode *xx, TreeNode *xy, TreeNode *xz, TreeNode *yx, TreeNode *yy, TreeNode *yz, TreeNode *zx, TreeNode *zy, TreeNode *zz)
+MatrixVariable::MatrixVariable(TreeNode* xx, TreeNode* xy, TreeNode* xz, TreeNode* yx, TreeNode* yy, TreeNode* yz, TreeNode* zx, TreeNode* zy, TreeNode* zz)
 {
 	// Private variables
 	constXX_ = xx;
@@ -65,11 +63,11 @@ MatrixVariable::~MatrixVariable()
 */
 
 // Set value of variable
-bool MatrixVariable::set(ReturnValue &rv)
+bool MatrixVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a matrix) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a matrix) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success = FALSE;
@@ -84,7 +82,7 @@ bool MatrixVariable::set(ReturnValue &rv)
 	}
 	else
 	{
-		msg.print("Error: Array assigned to matrix variable must contain nine elements.\n");
+		Messenger::print("Error: Array assigned to matrix variable must contain nine elements.\n");
 		success = FALSE;
 	}
 	return success;
@@ -119,7 +117,7 @@ void MatrixVariable::reset()
 }
 
 // Return value of node
-bool MatrixVariable::execute(ReturnValue &rv)
+bool MatrixVariable::execute(ReturnValue& rv)
 {
 	// If this matrix is a constant, read the nine stored expressions to recreate it
 	if (readOnly_) reCreate();
@@ -128,7 +126,7 @@ bool MatrixVariable::execute(ReturnValue &rv)
 }
 
 // Print node contents
-void MatrixVariable::nodePrint(int offset, const char *prefix)
+void MatrixVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -170,16 +168,16 @@ FunctionAccessor MatrixVariable::functionData[MatrixVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *MatrixVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* MatrixVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return MatrixVariable::accessorSearch(s, arrayindex, arglist);
+	return MatrixVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *MatrixVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* MatrixVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("MatrixVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("MatrixVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -189,66 +187,66 @@ StepNode *MatrixVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Matrix' has no member or function named '%s'.\n", s);
-			msg.exit("MatrixVariable::accessorSearch");
+			Messenger::print("Error: Type 'Matrix' has no member or function named '%s'.\n", s);
+			Messenger::exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Matrix' function '%s'.\n", s);
-			msg.exit("MatrixVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Matrix' function '%s'.\n", s);
+			Messenger::exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::MatrixData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Matrix' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Matrix' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Matrix&' array member '%s'.\n", s);
-			msg.exit("MatrixVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Matrix&' array member '%s'.\n", s);
+			Messenger::exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
-		else result = new StepNode(i, VTypes::MatrixData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		else result = new StepNode(i, VTypes::MatrixData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("MatrixVariable::accessorSearch");
+	Messenger::exit("MatrixVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool MatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool MatrixVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("MatrixVariable::retrieveAccessor");
+	Messenger::enter("MatrixVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Matrix type.\n", i);
-		msg.exit("MatrixVariable::retrieveAccessor");
+		Messenger::exit("MatrixVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if (hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("MatrixVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("MatrixVariable::retrieveAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -275,19 +273,19 @@ bool MatrixVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 			result = FALSE;
 			break;
 	}
-	msg.exit("MatrixVariable::retrieveAccessor");
+	Messenger::exit("MatrixVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool MatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("MatrixVariable::setAccessor");
+	Messenger::enter("MatrixVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Matrix type.\n", i);
-		msg.exit("MatrixVariable::setAccessor");
+		Messenger::exit("MatrixVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -299,20 +297,20 @@ bool MatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -320,23 +318,23 @@ bool MatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Matrix
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::MatrixData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::MatrixData) && (newvalue.arraySize() != 9))
+			else if ((newValue.type() != VTypes::MatrixData) && (newValue.arraySize() != 9))
 			{
-				msg.print("Error: Only an array of size 9 can be assigned to a matrix (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 9 can be assigned to a matrix (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("MatrixVariable::setAccessor");
+		Messenger::exit("MatrixVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -352,26 +350,26 @@ bool MatrixVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		case (MatrixVariable::ZX):
 		case (MatrixVariable::ZY):
 		case (MatrixVariable::ZZ):
-			m[(acc-MatrixVariable::XX)/3*4+(acc-MatrixVariable::XX)%3] = newvalue.asDouble(result);
+			m[(acc-MatrixVariable::XX)/3*4+(acc-MatrixVariable::XX)%3] = newValue.asDouble(result);
 			break;
 		default:
 			printf("MatrixVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("MatrixVariable::setAccessor");
+	Messenger::exit("MatrixVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool MatrixVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool MatrixVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("MatrixVariable::performFunction");
+	Messenger::enter("MatrixVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Matrix type.\n", i);
-		msg.exit("MatrixVariable::performFunction");
+		Messenger::exit("MatrixVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -384,7 +382,7 @@ bool MatrixVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("MatrixVariable::performFunction");
+	Messenger::exit("MatrixVariable::performFunction");
 	return result;
 }
 
@@ -393,7 +391,7 @@ bool MatrixVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 */
 
 // Constructor
-MatrixArrayVariable::MatrixArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
+MatrixArrayVariable::MatrixArrayVariable(TreeNode* sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
 {
 	// Private variables
 	returnType_ = VTypes::MatrixData;
@@ -414,11 +412,11 @@ MatrixArrayVariable::~MatrixArrayVariable()
 */
 
 // Set from returnvalue node
-bool MatrixArrayVariable::set(ReturnValue &rv)
+bool MatrixArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a matrix array) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a matrix array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (matrixArrayData_ == NULL)
@@ -432,11 +430,11 @@ bool MatrixArrayVariable::set(ReturnValue &rv)
 }
 
 // Set array element from returnvalue node
-bool MatrixArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+bool MatrixArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a matrix array?) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a matrix array?) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (matrixArrayData_ == NULL)
@@ -445,13 +443,13 @@ bool MatrixArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	// Check index
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
-	matrixArrayData_[arrayindex] = rv.asMatrix();
+	matrixArrayData_[arrayIndex] = rv.asMatrix();
 	return TRUE;
 }
 
@@ -468,27 +466,27 @@ void MatrixArrayVariable::reset()
 }
 
 // Return value of node
-bool MatrixArrayVariable::execute(ReturnValue &rv)
+bool MatrixArrayVariable::execute(ReturnValue& rv)
 {
-	msg.print("A whole matrix array ('%s') cannot be passed as a value.\n", name_.get());
+	Messenger::print("A whole matrix array ('%s') cannot be passed as a value.\n", name_.get());
 	return FALSE;
 }
 
 // Return value of node as array
-bool MatrixArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+bool MatrixArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Check bounds
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( matrixArrayData_[arrayindex] );
+	rv.set( matrixArrayData_[arrayIndex] );
 	return TRUE;
 }
 
 // Print node contents
-void MatrixArrayVariable::nodePrint(int offset, const char *prefix)
+void MatrixArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -508,7 +506,7 @@ bool MatrixArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for matrix array '%s'.\n", name_.get());
+		Messenger::print("Failed to find size for matrix array '%s'.\n", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different
@@ -530,7 +528,7 @@ bool MatrixArrayVariable::initialise()
 }
 
 // Search variable access list for provided accessor
-StepNode *MatrixArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* MatrixArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return MatrixVariable::accessorSearch(s, arrayindex, arglist);
+	return MatrixVariable::accessorSearch(s, arrayIndex, argList);
 }

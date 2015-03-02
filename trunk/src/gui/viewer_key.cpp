@@ -19,13 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/viewer.uih"
-// #include "gui/fragments.h"
-// #include "gui/build.h"
-// #include "gui/mainwindow.h"
-// #include "model/model.h"
-// #include "model/fragment.h"
-// #include "main/aten.h"
+#include <QtGui/QKeyEvent>
+#include "gui/mainwindow.h"
+#include "gui/fragments.h"
+#include "gui/build.h"
+#include "model/model.h"
+#include "main/aten.h"
 
 // Return state of specified keymodifier
 bool Viewer::keyModifier(Prefs::ModifierKey mk)
@@ -44,17 +43,17 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
 	
 	// Get current active model
-	Model* source = aten.currentModelOrFrame();
+	Model* source = aten_->currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless Viewer::keyPressEvent - no source model.\n");
-		msg.exit("Viewer::keyPressEvent");
+		Messenger::exit("Viewer::keyPressEvent");
 		return;
 	}
 
 	// Set some useful flags...
 	bool manipulate = FALSE;
-	bool nofold = gui.buildWidget->ui.PreventFoldCheck->isChecked();
+	bool nofold = atenWindow_->buildWidget->ui.PreventFoldCheck->isChecked();	// ATEN2 TODO
 	for (int n=0; n<3; n++)
 	{
 		if (keyModifier_[n])
@@ -84,7 +83,7 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 				source->endUndoState();
 				source->updateMeasurements();
 				source->finalizeTransform(oldPositions_, "Transform Selection", nofold);
-				parent_.updateWidgets(AtenWindow::CanvasTarget);
+				atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
 			}
 			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
 			refresh = TRUE;
@@ -106,22 +105,22 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 			ignore = FALSE;
 			break;
 		case (Qt::Key_Escape):
-			gui.mainWindow()->cancelCurrentMode();
+			cancelCurrentMode();
 			refresh = TRUE;
 			ignore = FALSE;
 			break;
 		// Cycle render styles
 		case (Qt::Key_F8):
 			n = prefs.renderStyle() + 1;
-			if (n == Atom::nDrawStyles) n = 0;
-			gui.mainWindow()->setActiveStyleAction( (Atom::DrawStyle) n);
+			if (n == Prefs::nDrawStyles) n = 0;
+			atenWindow_->setActiveStyleAction( (Prefs::DrawStyle) n);
 			ignore = FALSE;
 			break;
 		// Cycle colouring styles
 		case (Qt::Key_F9):
 			n = prefs.colourScheme() + 1;
 			if (n == Prefs::nColouringSchemes) n = 0;
-			gui.mainWindow()->setActiveSchemeAction( (Prefs::ColouringScheme) n);
+			atenWindow_->setActiveSchemeAction( (Prefs::ColouringScheme) n);
 			ignore = FALSE;
 			break;
 		default:
@@ -135,7 +134,7 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 			// Cycle link atom....
 			if (keyModifier_[Prefs::AltKey])
 			{
-				Fragment *frag = gui.fragmentsWidget->currentFragment();
+				Fragment *frag = atenWindow_->fragmentsWidget->currentFragment();	// ATEN2 TODO
 				if (frag == NULL) break;
 				frag->cycleLinkAtom();
 				refresh = TRUE;
@@ -145,14 +144,14 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 			if (keyModifier_[Prefs::CtrlKey])
 			{
 				refresh = TRUE;
-				gui.fragmentsWidget->increaseBondId();
+				atenWindow_->fragmentsWidget->increaseBondId();
 			}
 			break;
 		default:
 			break;
 	}
 	// Update display if necessary
-	if (refresh) postRedisplay();
+	if (refresh) update();
 	if (ignore) event->ignore();
 }
 
@@ -169,11 +168,11 @@ void Viewer::keyReleaseEvent(QKeyEvent *event)
 	keyModifier_[Prefs::AltKey] = km&Qt::AltModifier;
 	
 	// Get current active model
-	Model* source = aten.currentModelOrFrame();
+	Model* source = aten_->currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless Viewer::keyReleaseEvent - no source model.\n");
-		msg.exit("Viewer::keyReleaseEvent");
+		Messenger::exit("Viewer::keyReleaseEvent");
 		return;
 	}
 
@@ -199,7 +198,7 @@ void Viewer::keyReleaseEvent(QKeyEvent *event)
 	{
 		case (UserAction::DrawFragmentAction):
 			// Refresh if Shift status has changed
-			if (keyModifier_[Prefs::ShiftKey] != oldshift) postRedisplay();
+			if (keyModifier_[Prefs::ShiftKey] != oldshift) update();
 			break;
 		default:
 			break;

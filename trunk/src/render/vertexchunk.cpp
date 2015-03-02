@@ -318,13 +318,13 @@ int VertexChunk::nDefinedTypes() const
 }
 
 // Return vertex array
-const GLfloat *VertexChunk::vertexData()
+const GLfloat* VertexChunk::vertexData()
 {
 	return vertexData_;
 }
 
 // Return centroid array
-const GLfloat *VertexChunk::centroids()
+const GLfloat* VertexChunk::centroids()
 {
 	return centroids_;
 }

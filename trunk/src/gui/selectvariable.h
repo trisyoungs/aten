@@ -23,11 +23,20 @@
 #define ATEN_SELECTVARIABLEDIALOG_H
 
 #include "gui/ui_selectvariable.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Variable;
 class ZMatrix;
-class AtenWindow;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Select Variable Dialog
 class AtenSelectVariable : public QDialog
@@ -45,14 +54,6 @@ class AtenSelectVariable : public QDialog
 	// Main form declaration
 	Ui::AtenSelectVariable ui;
 
-
-	/*
-	 * Widget Functions
-	 */
-	private slots:
-	void on_VariableTable_doubleClicked(const QModelIndex &index);
-	void on_VariableTable_itemSelectionChanged();
-
 	
 	/*
 	 * Local Variables
@@ -68,6 +69,14 @@ class AtenSelectVariable : public QDialog
 	Variable* selectedVariable_;
 	// Get variable of given type, based on Table row number
 	Variable* getVariable(int row);
+
+
+	/*
+	 * Widget Functions
+	 */
+	private slots:
+	void on_VariableTable_doubleClicked(const QModelIndex &index);
+	void on_VariableTable_itemSelectionChanged();
 
 
 	/*

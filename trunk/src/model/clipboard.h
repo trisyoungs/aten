@@ -1,6 +1,6 @@
 /*
 	*** Clipboard
-	*** src/classes/clipboard.h
+	*** src/base/clipboard.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -25,8 +25,11 @@
 #include "base/atom.h"
 #include "base/bond.h"
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Pattern;
 class Model;
 class ClipAtom;
@@ -164,5 +167,7 @@ class Clipboard
 	// Translate clipped atoms by supplied vector
 	void translate(const Vec3< double >& translation);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

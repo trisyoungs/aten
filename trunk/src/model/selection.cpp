@@ -23,9 +23,10 @@
 #include "model/undoevent.h"
 #include "model/undostate.h"
 #include "base/pattern.h"
-#include "base/elements.h"
 #include "base/sysfunc.h"
-#include "classes/neta.h"
+#include "base/neta.h"
+
+ATEN_USING_NAMESPACE
 
 /*
 // Private Functions
@@ -34,18 +35,18 @@
 // Move specified atom up in the list (to lower ID)
 void Model::shiftAtomUp(Atom* i)
 {
-	msg.enter("Model::shiftAtomUp");
+	Messenger::enter("Model::shiftAtomUp");
 	if (i == NULL)
 	{
 		printf("Internal Error: NULL Atom pointer passed to shiftAtomUp.");
-		msg.exit("Model::shiftAtomUp");
+		Messenger::exit("Model::shiftAtomUp");
 		return;
 	}
 
 	// Ignore request if this is the head of the list
 	if (i->id() == 0)
 	{
-		msg.exit("Model::shiftAtomUp");
+		Messenger::exit("Model::shiftAtomUp");
 		return;
 	}
 
@@ -65,24 +66,24 @@ void Model::shiftAtomUp(Atom* i)
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Structure);
-	msg.exit("Model::shiftAtomUp");
+	Messenger::exit("Model::shiftAtomUp");
 }
 
 // Move specified atom up in the list (to higher ID)
 void Model::shiftAtomDown(Atom* i)
 {
-	msg.enter("Model::shiftAtomDown");
+	Messenger::enter("Model::shiftAtomDown");
 	if (i == NULL)
 	{
 		printf("Internal Error: NULL Atom pointer passed to shiftAtomDown.");
-		msg.exit("Model::shiftAtomDown");
+		Messenger::exit("Model::shiftAtomDown");
 		return;
 	}
 
 	// Ignore request if this is the head of the list
 	if (i->id() == (atoms_.nItems()-1))
 	{
-		msg.exit("Model::shiftAtomDown");
+		Messenger::exit("Model::shiftAtomDown");
 		return;
 	}
 
@@ -102,17 +103,17 @@ void Model::shiftAtomDown(Atom* i)
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Structure);
-	msg.exit("Model::shiftAtomDown");
+	Messenger::exit("Model::shiftAtomDown");
 }
 
 // Move specified atom so it sits after the reference atom (or head of the list if NULL)
 void Model::moveAtomAfter(Atom* i, Atom* reference)
 {
-	msg.enter("Model::moveAtom");
+	Messenger::enter("Model::moveAtom");
 	if (i == NULL)
 	{
 		printf("Internal Error: NULL Atom pointer passed to Model::moveAtom.");
-		msg.exit("Model::moveAtom");
+		Messenger::exit("Model::moveAtom");
 		return;
 	}
 	int oldid = i->id();
@@ -130,7 +131,7 @@ void Model::moveAtomAfter(Atom* i, Atom* reference)
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Structure);
-	msg.exit("Model::shiftAtomDown");
+	Messenger::exit("Model::shiftAtomDown");
 }
 
 /*
@@ -143,7 +144,7 @@ Vec3<double> Model::selectionCentreOfGeometry() const
 	Vec3<double> result;
 	if (selection_.nItems() != 0)
 	{
-		for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) result += cell_.mim(ri->item, selection_.first()->item);
+		for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) result += cell_.mim(ri->item, selection_.first()->item);
 		result /= selection_.nItems();
 	}
 	return result;
@@ -157,12 +158,12 @@ Vec3<double> Model::selectionCentreOfMass() const
 	double massnorm = 0.0;
 	if (selection_.nItems() != 0)
 	{
-		for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item;
 			if (i->element() == 0)
 			{
-				msg.print("Warning - selection contains an unknown element - mass assumed to be 1.0\n");
+				Messenger::print("Warning - selection contains an unknown element - mass assumed to be 1.0\n");
 				massnorm += 1.0;
 				result += cell_.mim(i, selection_.first()->item);
 			}
@@ -180,7 +181,7 @@ Vec3<double> Model::selectionCentreOfMass() const
 // Set selection visibility
 void Model::selectionSetHidden(bool hidden)
 {
-	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) atomSetHidden(ri->item, hidden);
+	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetHidden(ri->item, hidden);
 	changeLog.add(Log::Selection);
 }
 
@@ -188,35 +189,35 @@ void Model::selectionSetHidden(bool hidden)
 void Model::selectionSetFixed(bool fixed)
 {
 	// Sets 'fixed' values to TRUE
-	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) atomSetFixed(ri->item, fixed);
+	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetFixed(ri->item, fixed);
 }
 
 // Set custom colour of atoms in selection
 void Model::selectionSetColour(double r, double g, double b, double a)
 {
-	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) atomSetColour(ri->item, r, g, b, a);
+	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetColour(ri->item, r, g, b, a);
 	changeLog.add(Log::Style);
 }
 
 // Reset custom colour of atoms in selection back to element defaults
 void Model::selectionResetColour()
 {
-	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) atomResetColour(ri->item);
+	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomResetColour(ri->item);
 	changeLog.add(Log::Style);
 }
 
 // Set selection style
-void Model::selectionSetStyle(Atom::DrawStyle ds)
+void Model::selectionSetStyle(Prefs::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) atomSetStyle(i, ds);
 }
 
 // Select bound and selected atoms from the current atom
-void Model::fragmentFromSelectionSelector(Atom* i, Reflist<Atom,int> &list)
+void Model::fragmentFromSelectionSelector(Atom* i, Reflist<Atom,int>& list)
 {
 	Atom* j;
-	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
 		if (j->isSelected())
@@ -229,13 +230,13 @@ void Model::fragmentFromSelectionSelector(Atom* i, Reflist<Atom,int> &list)
 }
 
 // Get atoms of a bound fragment with the current selection
-void Model::fragmentFromSelection(Atom* start, Reflist<Atom,int> &list)
+void Model::fragmentFromSelection(Atom* start, Reflist<Atom,int>& list)
 {
-	msg.enter("Model::fragmentFromSelection");
+	Messenger::enter("Model::fragmentFromSelection");
 	if ((start == NULL) || (!start->isSelected()))
 	{
-		msg.print("No atom provided, or atom is not selected.");
-		msg.exit("Model::fragmentFromSelection");
+		Messenger::print("No atom provided, or atom is not selected.");
+		Messenger::exit("Model::fragmentFromSelection");
 		return;
 	}
 	// Clear the provided list and add the start atom
@@ -244,19 +245,19 @@ void Model::fragmentFromSelection(Atom* start, Reflist<Atom,int> &list)
 	// From the atom provided, put all bound and selected atoms in the reflist provided
 	deselectAtom(start);
 	fragmentFromSelectionSelector(start, list);
-	msg.exit("Model::fragmentFromSelection");
+	Messenger::exit("Model::fragmentFromSelection");
 }
 
 // Reorder bound atoms/fragments within the selection so that they are consecutive
 void Model::reorderSelectedAtoms()
 {
-	msg.enter("Model::reorderSelectedAtoms");
+	Messenger::enter("Model::reorderSelectedAtoms");
 
 	// Is there a selection?
 	if (selection_.nItems() == 0)
 	{
-		msg.print("No atoms selected - no reordering to be performed.\n");
-		msg.exit("Model::reorderSelectedAtoms");
+		Messenger::print("No atoms selected - no reordering to be performed.\n");
+		Messenger::exit("Model::reorderSelectedAtoms");
 		return;
 	}
 
@@ -265,11 +266,11 @@ void Model::reorderSelectedAtoms()
 	Atom* i, *j;
 	Refitem<Atom,int>* ri;
 	Refitem<Atom, List<Neta> >* rj, *rk;
-	Refitem<Bond,int> *rb;
+	Refitem<Bond,int>* rb;
 	int diff, n;
 
 	// First we will make sure that all molecular fragments in the current selection contain consecutive atoms
-	msg.print("Enforcing consecutive atom numbering in all molecular fragments...\n");
+	Messenger::print("Enforcing consecutive atom numbering in all molecular fragments...\n");
 	Reflist<Atom,int> selectedAtoms = targetAtoms;
 	while (selectedAtoms.first())
 	{
@@ -282,7 +283,7 @@ void Model::reorderSelectedAtoms()
 			if (selectedAtoms.contains(ri->item)) selectedAtoms.remove(ri->item);
 			else
 			{
-				msg.print("Error: Found an extra atom, bound to one in the current selection, which was not selected itself.\nAborting reorder.");
+				Messenger::print("Error: Found an extra atom, bound to one in the current selection, which was not selected itself.\nAborting reorder.");
 				return;
 			}
 		}
@@ -317,14 +318,14 @@ void Model::reorderSelectedAtoms()
 		{
 			if (rk->data.first()->matchAtom(rj->item, &dummyRingList, this) != -1) nMatched++;
 		}
-		msg.print(Messenger::Verbose, "Testing constructed NETA for atom index %i : nMatched = %i\n", rk->item->id(), nMatched);
+		Messenger::print(Messenger::Verbose, "Testing constructed NETA for atom index %i : nMatched = %i\n", rk->item->id(), nMatched);
 		if (nMatched == 0)
 		{
-			msg.print("Internal Error: Atom type for reference fragment atom %i failed to detect it.\n", referenceId);
+			Messenger::print("Internal Error: Atom type for reference fragment atom %i failed to detect it.\n", referenceId);
 			return;
 		}
-		else if (nMatched == 1) msg.print("Typing for reference fragment atom %i tested successfully.\n");
-		else msg.print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.\n");
+		else if (nMatched == 1) Messenger::print("Typing for reference fragment atom %i tested successfully.\n");
+		else Messenger::print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.\n");
 	}
 
 	// We will create a pattern here to allow us to get a connectivity matrix easily
@@ -334,7 +335,7 @@ void Model::reorderSelectedAtoms()
 	referencePattern.createMatrices();
 
 	// We now select fragments sequentially, and reorder the atoms in each one...
-	msg.print("Reordering atoms in individual fragments...\n");
+	Messenger::print("Reordering atoms in individual fragments...\n");
 	while (selectedAtoms.first())
 	{
 		// Tree select this fragment, and do some basic checking...
@@ -342,7 +343,7 @@ void Model::reorderSelectedAtoms()
 		selectTree(selectedAtoms.first()->item, TRUE);
 		if (marked_.nItems() != referenceFragment.nItems())
 		{
-			msg.print("Warning: Skipping fragment with atom ids %i to %i since it has a different number of atoms to the reference (first) fragment.\n", marked_.first()->item->id()+1, marked_.last()->item->id()+1);
+			Messenger::print("Warning: Skipping fragment with atom ids %i to %i since it has a different number of atoms to the reference (first) fragment.\n", marked_.first()->item->id()+1, marked_.last()->item->id()+1);
 			for (ri = marked_.first(); ri != NULL; ri = ri->next) selectedAtoms.remove(ri->item);
 			continue;
 		}
@@ -372,14 +373,14 @@ void Model::reorderSelectedAtoms()
 						// Check that we haven't reached the maximum (sensible) number of definitions (where the tolerance is 90 degrees
 						if (rj->data.nItems() == 9)
 						{
-							msg.print("Error: Reached maximum torsion tolerance of 90 degrees, and no atoms were matched.\n");
+							Messenger::print("Error: Reached maximum torsion tolerance of 90 degrees, and no atoms were matched.\n");
 							break;
 						}
 						else
 						{
 							neta = rj->data.add();
 							neta->createBasic(rj->item, FALSE, rj->data.nItems() * 10.0);
-							msg.print("Created neta for reference atom %i with torsion tolerance of %f\n", referenceId, rj->data.nItems()*10.0);
+							Messenger::print("Created neta for reference atom %i with torsion tolerance of %f\n", referenceId, rj->data.nItems()*10.0);
 						}
 					}
 				}
@@ -389,11 +390,11 @@ void Model::reorderSelectedAtoms()
 			// Did we find a match?
 			if (ri == NULL)
 			{
-				msg.print("Error: Failed to find a match for reference atom %i in fragment with atom ids %i to %i.\n", referenceId, marked_.first()->item->id()+1, marked_.last()->item->id()+1);
-				msg.exit("Model::reorderSelectedAtoms");
+				Messenger::print("Error: Failed to find a match for reference atom %i in fragment with atom ids %i to %i.\n", referenceId, marked_.first()->item->id()+1, marked_.last()->item->id()+1);
+				Messenger::exit("Model::reorderSelectedAtoms");
 				return;
 			}
-			if (netaLevel >= 4) msg.print("Warning: Matched atom to reference index %i with torsion tolerance of %f...\n", referenceId, netaLevel*10.0);
+			if (netaLevel >= 4) Messenger::print("Warning: Matched atom to reference index %i with torsion tolerance of %f...\n", referenceId, netaLevel*10.0);
 
 			// Yes we did! Now, check it's position - is it in the correct place?
 			if (((ri->item->id() - rootId) - referenceId) != 0) swapAtoms(atoms_[rootId+referenceId], ri->item);
@@ -403,13 +404,13 @@ void Model::reorderSelectedAtoms()
 			selectedAtoms.remove(ri->item);
 		}
 	}
-	msg.exit("Model::reorderSelectedAtoms");
+	Messenger::exit("Model::reorderSelectedAtoms");
 }
 
 // Get empirical formula of selection
 void Model::selectionEmpirical(Dnchar &target, bool markonly, bool addspaces) const
 {
-	msg.enter("Model::selectionEmpirical");
+	Messenger::enter("Model::selectionEmpirical");
 	int n, count, elcount[MAXELEMENTS];
 	target.clear();
 	// Reset element counters
@@ -430,20 +431,20 @@ void Model::selectionEmpirical(Dnchar &target, bool markonly, bool addspaces) co
 			if (elcount[n] > 1) target.strcat(itoa(elcount[n]));
 			count++;
 		}
-	msg.exit("Model::selectionEmpirical");
+	Messenger::exit("Model::selectionEmpirical");
 }
 
 // Get atom fingerprint of current selection
 void Model::selectionAtomFingerprint(Dnchar &target)
 {
-	msg.enter("Model::selectionAtomFingerprint");
+	Messenger::enter("Model::selectionAtomFingerprint");
 	target.clear();
 	if (selection_.first() == NULL)
 	{
-		msg.exit("Model::selectionAtomFingerprint");
+		Messenger::exit("Model::selectionAtomFingerprint");
 		return;
 	}
-	Refitem<Atom,int> *ri = selection_.first();
+	Refitem<Atom,int>* ri = selection_.first();
 	int lastel = ri->item->element(), newel;
 	int count = 1;
 	Atom* i;
@@ -467,16 +468,16 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 		target.strcat(Elements().symbol(lastel));
 		target.strcat(itoa(count));
 	}
-	msg.exit("Model::selectionAtomFingerprint");
+	Messenger::exit("Model::selectionAtomFingerprint");
 }
 
 // Get bond fingerprint of current selection
 void Model::selectionBondFingerprint(Dnchar &target)
 {
-	msg.enter("Model::selectionBondFingerprint");
+	Messenger::enter("Model::selectionBondFingerprint");
 	target.clear();
 	int count = 0, diff;
-	Refitem<Bond,int> *ri;
+	Refitem<Bond,int>* ri;
 	Atom* i = atoms_.first();
 	Atom* j;
 	while (i != NULL)
@@ -501,5 +502,5 @@ void Model::selectionBondFingerprint(Dnchar &target)
 		}
 		i = i->next;
 	}
-	msg.exit("Model::selectionBondFingerprint");
+	Messenger::exit("Model::selectionBondFingerprint");
 }

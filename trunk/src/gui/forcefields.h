@@ -24,14 +24,40 @@
 
 #include "gui/ui_forcefields.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class QFileDialog;
+class AtenWindow;
 
 // Minimiser window
 class ForcefieldsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+	
+	public:
+	// Constructor / Destructor
+	ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::ForcefieldsWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Whether the widget is currently refreshing
+	bool refreshing_;
+	// Element selected in Type filter
+	int typelistElement_;
+
+	public:
+	// File dialogs for forcefields
+	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
+
 
 	/*
 	// Window Functions
@@ -43,6 +69,7 @@ class ForcefieldsWidget : public QDockWidget
 	void refresh();
 	void refreshTypes();
 	void loadForcefield();
+
 	private slots:
 	// Energy Tab
 	void on_CurrentEnergyButton_clicked(bool checked);
@@ -67,35 +94,9 @@ class ForcefieldsWidget : public QDockWidget
 	void on_ManualTypeClearButton_clicked(bool checked);
 	void on_ManualTypeTestButton_clicked(bool checked);
 	void on_ManualTypeEdit_returnPressed();
+
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-	// Whether the widget is currently refreshing
-	bool refreshing_;
-	// Element selected in Type filter
-	int typelistElement_;
-
-	public:
-	// File dialogs for forcefields
-	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
-	
-	
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::ForcefieldsWidget ui;
 };
 
 #endif

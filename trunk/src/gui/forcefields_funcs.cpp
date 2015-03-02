@@ -19,6 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
+#include <QtGui/QFileDialog>
 #include "main/aten.h"
 #include "methods/mc.h"
 #include "methods/sd.h"
@@ -26,13 +28,15 @@
 #include "ff/forcefield.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
-#include "classes/forcefieldatom.h"
+#include "base/forcefieldatom.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
 #include "gui/mainwindow.h"
 #include "gui/forcefields.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 ForcefieldsWidget::ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
@@ -74,14 +78,14 @@ void ForcefieldsWidget::showWidget()
 
 void ForcefieldsWidget::refresh()
 {
-	msg.enter("ForcefieldsWidget::refresh");
+	Messenger::enter("ForcefieldsWidget::refresh");
 	
 	// Update list of forcefields in the combo box
 	refreshing_ = TRUE;
 	QStringList slist;
 	int def = -1, n = 0;
 	slist << "<No Forcefield>";
-	for (Forcefield *ff = parent_.aten().forcefields(); ff != NULL; ff = ff->next)
+	for (Forcefield* ff = parent_.aten().forcefields(); ff != NULL; ff = ff->next)
 	{
 		n++;
 		if (ff == parent_.aten().currentForcefield()) def = n;
@@ -104,7 +108,7 @@ void ForcefieldsWidget::refresh()
 	ui.ManualTypingGroup->setEnabled(ffselected);
 	if (ffselected) refreshTypes();
 	refreshing_ = FALSE;
-	msg.exit("ForcefieldsWidget::refresh");
+	Messenger::exit("ForcefieldsWidget::refresh");
 }
 
 // Update list of forcefield types in typelist
@@ -113,7 +117,7 @@ void ForcefieldsWidget::refreshTypes()
 	ui.FFTypeTable->clear();
 	QTableWidgetItem *item;
 	int count = 0;
-	Forcefield *ff = parent_.aten().currentForcefield();
+	Forcefield* ff = parent_.aten().currentForcefield();
 	if (ff == NULL) return;
 	// Reset header labels
 	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
@@ -157,22 +161,22 @@ void ForcefieldsWidget::loadForcefield()
 void ForcefieldsWidget::on_CurrentEnergyButton_clicked(bool checked)
 {
 	bool result;
-	if (parent_.aten().current.rs() == parent_.aten().current.m) result = CommandNode::run(Command::ModelEnergy, "");
-	else result = CommandNode::run(Command::FrameEnergy, "");
+	if (parent_.aten().current().rs() == parent_.aten().currentModel()) result = CommandNode::run(Commands::ModelEnergy, "");
+	else result = CommandNode::run(Commands::FrameEnergy, "");
 	// Print energy
 	if (result) parent_.aten().currentModel()->renderSourceModel()->energy.print();
 }
 
 void ForcefieldsWidget::on_CurrentForcesButton_clicked(bool checked)
 {
-	if (parent_.aten().current.rs() == parent_.aten().current.m) CommandNode::run(Command::ModelForces, "");
-	else CommandNode::run(Command::FrameForces, "");
+	if (parent_.aten().current().rs() == parent_.aten().currentModel()) CommandNode::run(Commands::ModelForces, "");
+	else CommandNode::run(Commands::FrameForces, "");
 }
 
 void ForcefieldsWidget::on_ForcefieldMinimiseButton_clicked(bool checked)
 {
 	// Set convergence criteria and get maxcycles data
-	CommandNode::run(Command::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
+	CommandNode::run(Commands::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
 	int maxcycles = ui.MinimiseCyclesSpin->value();
 	Dnchar options;
 	
@@ -180,19 +184,19 @@ void ForcefieldsWidget::on_ForcefieldMinimiseButton_clicked(bool checked)
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (SimpleSteepestMethod):
-			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
-			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 1);
+			CommandNode::run(Commands::LineTolerance, "d", 1.0e-4);
+			CommandNode::run(Commands::SDMinimise, "ii", maxcycles, 1);
 			break;
 		case (SteepestMethod):
-			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
-			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 0);
+			CommandNode::run(Commands::LineTolerance, "d", 1.0e-4);
+			CommandNode::run(Commands::SDMinimise, "ii", maxcycles, 0);
 			break;
 		case (ConjugateMethod):
-			CommandNode::run(Command::LineTolerance, "d", 1.0e-4);
-			CommandNode::run(Command::CGMinimise, "i", maxcycles);
+			CommandNode::run(Commands::LineTolerance, "d", 1.0e-4);
+			CommandNode::run(Commands::CGMinimise, "i", maxcycles);
 			break;
 		case (MonteCarloMethod):
-			CommandNode::run(Command::MCMinimise, "i", maxcycles);
+			CommandNode::run(Commands::MCMinimise, "i", maxcycles);
 			break;
 	}
 	// Update the view
@@ -204,7 +208,7 @@ void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
 	// Construct command string from GUI widget options
 	Dnchar options(-1, "BFGS %s %s %s CHARGE=%i", qPrintable(ui.MopacHFCombo->currentText()), qPrintable(ui.MopacHamiltonianCombo->currentText()), 	qPrintable(ui.MopacSpinCombo->currentText()), ui.MopacChargeSpin->value());
 	if (ui.MopacMozymeCheck->isChecked()) options.strcat(" MOZYME");
-	CommandNode::run(Command::MopacMinimise, "c", options.get());
+	CommandNode::run(Commands::MopacMinimise, "c", options.get());
 	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::CanvasTarget);
 }
 			
@@ -231,7 +235,7 @@ void ForcefieldsWidget::on_OpenForcefieldButton_clicked(bool checked)
 void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 {
 	// Get current forcefield
-	Forcefield *ff = parent_.aten().currentForcefield();
+	Forcefield* ff = parent_.aten().currentForcefield();
 	if (ff == NULL) return;
 
 	// Does forcefield have a valid filename? If not, call the other routine....
@@ -240,7 +244,7 @@ void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 	else
 	{
 		// Save forcefield under filename currently in 'filenanme'
-		msg.print("Saving forcefield '%s' to file '%s'...\n", ff->name(), ff->filename());
+		Messenger::print("Saving forcefield '%s' to file '%s'...\n", ff->name(), ff->filename());
 		ff->save();
 	}
 }
@@ -249,7 +253,7 @@ void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
 {
 	// Get current forcefield
-	Forcefield *ff = parent_.aten().currentForcefield();
+	Forcefield* ff = parent_.aten().currentForcefield();
 	if (ff == NULL) return;
 
 	static QDir currentDirectory_(parent_.aten().dataDir());
@@ -258,7 +262,7 @@ void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
 	ff->setFilename(qPrintable(filename));
 	
 	// Save forcefield under filename currently in 'filenanme'
-	msg.print("Saving forcefield '%s' to file '%s'...\n", ff->name(), ff->filename());
+	Messenger::print("Saving forcefield '%s' to file '%s'...\n", ff->name(), ff->filename());
 	ff->save();
 }
 
@@ -300,7 +304,7 @@ void ForcefieldsWidget::on_AssignFFToPatternButton_clicked(bool checked)
 // Perform automatic atom typing
 void ForcefieldsWidget::on_TypeModelButton_clicked(bool checked)
 {
-	if (parent_.aten().currentModelOrFrame()->typeAll()) parent_.updateWidgets(AtenWindow::CanvasTarget);
+	if (parent_.aten().currentModelOrFrame()->typeAll(parent_.aten().currentForcefield())) parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Remove typing from model
@@ -324,11 +328,11 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 {
 	// Check selected forcefield against that assigned to the model
 	Model* m = parent_.aten().currentModel();
-	Forcefield *ff = parent_.aten().currentForcefield();
+	Forcefield* ff = parent_.aten().currentForcefield();
 	if ((m == NULL) || (ff == NULL)) return;
 	if (m->forcefield() != ff)
 	{
-		msg.print("The type you are trying to assign is in a different forcefield to that assigned to the model.\n");
+		Messenger::print("The type you are trying to assign is in a different forcefield to that assigned to the model.\n");
 		return;
 	}
 	// Get the selected row in the FFTypeList
@@ -339,7 +343,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 	if (ffa != NULL)
 	{
 		m->selectionSetType(ffa, TRUE);
-		msg.print("Manually set types of %i atoms.\n", parent_.aten().currentModel()->nSelected());
+		Messenger::print("Manually set types of %i atoms.\n", parent_.aten().currentModel()->nSelected());
 	}
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
@@ -348,14 +352,14 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 void ForcefieldsWidget::on_ManualTypeClearButton_clicked(bool checked)
 {
 	parent_.aten().currentModel()->selectionSetType(NULL, FALSE);
-	msg.print("Cleared types of %i atoms.\n", parent_.aten().currentModel()->nSelected());
+	Messenger::print("Cleared types of %i atoms.\n", parent_.aten().currentModel()->nSelected());
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Test selected atom type on current atom selection
 void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 {
-	Forcefield *ff = parent_.aten().currentForcefield();
+	Forcefield* ff = parent_.aten().currentForcefield();
 	int row = ui.FFTypeTable->currentRow();
 	if (row == -1) return;
 	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
@@ -366,20 +370,20 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 		Neta *at = ffa->neta();
 		if (m->createPatterns())
 		{
-			msg.print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->name(), ffa->typeId(), ff->name());
+			Messenger::print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->name(), ffa->typeId(), ff->name());
 			// Prepare for typing
 			m->describeAtoms();
 			int matchscore;
-			for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next)
+			for (Refitem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next)
 			{
 				// Get the pattern in which the atom exists
 				Pattern* p = m->pattern(ri->item);
 				if (ri->item->element() == at->characterElement())
 				{
 					matchscore = at->matchAtom(ri->item, p->ringList(), m);
-					msg.print("Atom %i (%s) matched type with score %i.\n", ri->item->id()+1, Elements().symbol(ri->item), matchscore);
+					Messenger::print("Atom %i (%s) matched type with score %i.\n", ri->item->id()+1, Elements().symbol(ri->item), matchscore);
 				}
-				else msg.print("Atom %i (%s) is the wrong element for this type.\n", ri->item->id()+1, Elements().symbol(ri->item));
+				else Messenger::print("Atom %i (%s) is the wrong element for this type.\n", ri->item->id()+1, Elements().symbol(ri->item));
 			}
 		}
 	}
@@ -389,10 +393,10 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 void ForcefieldsWidget::on_ManualTypeEdit_returnPressed()
 {
 	// Get the contents of the line edit and check that it is an element symbol
-	int el = Elements().find(qPrintable(ui.ManualTypeEdit->text()));
+	int el = Elements().find(qPrintable(ui.ManualTypeEdit->text()), ElementMap::AlphaZMap);
 	if (el == -1)
 	{
-		msg.print("Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));
+		Messenger::print("Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));
 		ui.ManualTypeEdit->setText("H");
 		typelistElement_ = 1;
 	}

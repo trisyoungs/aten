@@ -23,6 +23,9 @@
 #define ATEN_EIGENVECTOR_H
 
 #include "base/dnchar.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Eigenvector (as for MO)
 class Eigenvector : public ListItem<Eigenvector>
@@ -43,7 +46,7 @@ class Eigenvector : public ListItem<Eigenvector>
 	// Size of eigenvector when created
 	int size_;
 	// Eigenvector
-	double *eigenvector_;
+	double* eigenvector_;
 	// Eigenvalue
 	double eigenvalue_;
 	// Occupancy
@@ -57,15 +60,15 @@ class Eigenvector : public ListItem<Eigenvector>
 	// Return whether coefficients correspond to spherical or cartesian functions
 	bool isSpherical();
 	// Set text name of eigenvalue
-	void setName(const char *name);
+	void setName(const char* name);
 	// Return text 'name' of eigenvalue
-	const char *name() const;
+	const char* name() const;
 	// Set array index
 	void setValue(int index, double value);
 	// Return array value specified
 	double value(int index);
 	// Return array pointer
-	double *eigenvector();
+	double* eigenvector();
 	// Set eigenvalue
 	void setEigenvalue(double d);
 	// Return eigenvalue
@@ -75,5 +78,7 @@ class Eigenvector : public ListItem<Eigenvector>
 	// Return occupancy
 	double occupancy();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

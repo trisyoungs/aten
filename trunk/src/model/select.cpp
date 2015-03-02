@@ -22,10 +22,10 @@
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
-#include "classes/neta_parser.h"
+#include "base/neta_parser.h"
 #include "base/pattern.h"
-#include "base/progress.h"
-#include "gui/gui.h"
+
+ATEN_USING_NAMESPACE
 
 // Return the number of selected atoms
 int Model::nSelected() const
@@ -43,21 +43,21 @@ int Model::nMarked() const
 void Model::markAll()
 {
 	selectAll(TRUE);
-	msg.print(Messenger::Verbose, "All atoms marked.\n");
+	Messenger::print(Messenger::Verbose, "All atoms marked.\n");
 }
 
 // Match marked atoms to current selection
 void Model::markSelectedAtoms()
 {
 	selectNone(TRUE);
-	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item, TRUE);
-	msg.print(Messenger::Verbose, "There are now %i atoms marked.\n", marked_.nItems());
+	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item, TRUE);
+	Messenger::print(Messenger::Verbose, "There are now %i atoms marked.\n", marked_.nItems());
 }
 
 // Select marked atoms
 void Model::selectMarkedAtoms()
 {
-	for (Refitem<Atom,int> *ri = marked_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item);
+	for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item);
 }
 
 // Select Atom
@@ -69,7 +69,7 @@ void Model::selectAtom(Atom* i, bool markonly)
 		{
 			i->setSelected(TRUE, TRUE);
 			// Add at correct position in list
-			Refitem<Atom,int> *ri = marked_.first();
+			Refitem<Atom,int>* ri = marked_.first();
 			if (ri == NULL) marked_.add(i);
 			else if (ri->item->id() > i->id()) marked_.addStart(i);
 			else
@@ -101,7 +101,7 @@ void Model::selectAtom(Atom* i, bool markonly)
 void Model::selectAtom(int id, bool markonly)
 {
 	Atom* i = atom(id);
-	if (i == NULL) msg.print("Can't %s atom %i\n", markonly ? "mark" : "select", id+1);
+	if (i == NULL) Messenger::print("Can't %s atom %i\n", markonly ? "mark" : "select", id+1);
 	else selectAtom(i, markonly);
 }
 
@@ -138,7 +138,7 @@ void Model::deselectAtom(Atom* i, bool markonly)
 void Model::deselectAtom(int id, bool markonly)
 {
 	Atom* i = atom(id);
-	if (i == NULL) msg.print("Can't %s atom %i\n", markonly ? "unmark" : "deselect", id+1);
+	if (i == NULL) Messenger::print("Can't %s atom %i\n", markonly ? "unmark" : "deselect", id+1);
 	else deselectAtom(i, markonly);
 }
 
@@ -151,23 +151,23 @@ void Model::selectionToggle(Atom* i, bool markonly)
 // Invert Current Selection
 void Model::selectionInvert(bool markonly)
 {
-	msg.enter("Model::selectionInvert");
+	Messenger::enter("Model::selectionInvert");
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		i->isSelected(markonly) ? deselectAtom(i, markonly) : selectAtom(i, markonly);
-	msg.exit("Model::selectionInvert");
+	Messenger::exit("Model::selectionInvert");
 }
 
 // Delete Selected Atoms
 void Model::selectionDelete(bool markonly)
 {
-	msg.enter("Model::selectionDelete");
+	Messenger::enter("Model::selectionDelete");
 	Atom* i, *tempi;
 	int count = 0;
 	bool cancelled = FALSE;
 	// Attempt to be clever here for the sake of undo/redo, while avoiding renumbering at every step.
 	// 1) First, delete all measurements and bonds to the selected atoms
-	Refitem<Bond,int> *bref;
-	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
+	Refitem<Bond,int>* bref;
+	for (Refitem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		i = ri->item;
 		// Remove measurements
@@ -201,27 +201,27 @@ void Model::selectionDelete(bool markonly)
 	}
 	// Renumber remaining atoms
 	renumberAtoms();
-	msg.exit("Model::selectionDelete");
+	Messenger::exit("Model::selectionDelete");
 }
 
 // Expand Current Selection
 void Model::selectionExpand(bool markonly)
 {
-	msg.enter("Model::selectionExpand");
+	Messenger::enter("Model::selectionExpand");
 	Atom* i;
-	Refitem<Bond,int> *bref;
+	Refitem<Bond,int>* bref;
 	// Store the current selection state in i->tempBit_
 	for (i = atoms_.first(); i != NULL; i = i->next) i->setBit(i->isSelected(markonly));
 	// Now use the temporary state to find atoms where we select atomic neighbours
 	for (i = atoms_.first(); i != NULL; i = i->next)
 		if (i->bit()) for (bref = i->bonds(); bref != NULL; bref = bref->next) selectAtom(bref->item->partner(i), markonly);
-	msg.exit("Model::selectionExpand");
+	Messenger::exit("Model::selectionExpand");
 }
 
 // Select All Atoms
 void Model::selectAll(bool markonly)
 {
-	msg.enter("Model::selectAll");
+	Messenger::enter("Model::selectAll");
 	if (markonly)
 	{
 		// Quicker to reconstruct the whole list, since it must be in ID order
@@ -249,16 +249,16 @@ void Model::selectAll(bool markonly)
 		}
 		changeLog.add(Log::Selection);
 	}
-	msg.exit("Model::selectAll");
+	Messenger::exit("Model::selectAll");
 }
 
 // Deselect All Atoms
 void Model::selectNone(bool markonly)
 {
-	msg.enter("Model::selectNone");
+	Messenger::enter("Model::selectNone");
 	if (markonly)
 	{
-		for (Refitem<Atom,int> *ri = marked_.first(); ri != NULL; ri = ri->next) ri->item->setSelected(FALSE, TRUE);
+		for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) ri->item->setSelected(FALSE, TRUE);
 		marked_.clear();
 	}
 	else
@@ -266,6 +266,7 @@ void Model::selectNone(bool markonly)
 		for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected())
 		{
 			i->setSelected(FALSE);
+
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
@@ -277,24 +278,22 @@ void Model::selectNone(bool markonly)
 		changeLog.add(Log::Selection);
 		selection_.clear();
 	}
-	msg.exit("Model::selectNone");
+	Messenger::exit("Model::selectNone");
 }
 
 // Atom at Screen Coordinates
 Atom* Model::atomOnScreen(double x1, double y1)
 {
-	// See if an atom exists under the coordinates x1,y1
-	// Ignore hidden atoms.
-	msg.enter("Model::atomOnScreen");
+	// See if an atom exists under the canvas coordinates x1,y1
+	Messenger::enter("Model::atomOnScreen");
 	Atom* closest = NULL;
 	Vec3<double> wr;
 	Vec4<double> sr;
 	double closestz = 10000.0, dist, nclip = prefs.clipNear();
-	y1 = gui.mainCanvas()->contextHeight() - y1;
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		wr = -modelToWorld(i->r(), &sr, prefs.styleRadius(i));
+		wr = -modelToWorld(i->r(), &sr, prefs.styleRadius(i->style(), i->element()));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
@@ -308,7 +307,7 @@ Atom* Model::atomOnScreen(double x1, double y1)
 			}
 		}
 	}
-	msg.exit("Model::atomOnScreen");
+	Messenger::exit("Model::atomOnScreen");
 	return closest;
 }
 
@@ -316,12 +315,10 @@ Atom* Model::atomOnScreen(double x1, double y1)
 void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 {
 	// Box selection - choose all the atoms within the selection area
-	msg.enter("Model::selectBox");
+	Messenger::enter("Model::selectBox");
 	double t;
 	Atom* i;
 	Vec4<double> sr;
-	y1 = gui.mainCanvas()->contextHeight() - y1;
-	y2 = gui.mainCanvas()->contextHeight() - y2;
 	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
 	if (x1 > x2)
 	{
@@ -341,7 +338,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 		modelToWorld(i->r(), &sr);
 		if ((sr.x >= x1) && (sr.x <= x2) && (sr.y >= y1) && (sr.y <= y2)) (deselect ? deselectAtom(i) : selectAtom(i));
 	}
-	msg.exit("Model::selectBox");
+	Messenger::exit("Model::selectBox");
 }
 
 // Tree Select
@@ -351,11 +348,11 @@ void Model::selectTree(Atom* i, bool markonly, bool deselect, Bond *omitbond)
 	// From here, select all atoms that are bound - if they are already
 	// selected then ignore them. If they are not already selected, then
 	// recursively call the routine on that atom.
-	//msg.enter("Model::selectTree");
+	//Messenger::enter("Model::selectTree");
 	bool status;
 	Atom* j;
 	deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
-	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		if (bref->item == omitbond) continue;
 		j = bref->item->partner(i);
@@ -368,7 +365,7 @@ void Model::selectTree(Atom* i, bool markonly, bool deselect, Bond *omitbond)
 			selectTree(j, markonly, deselect, omitbond);
 		}
 	}
-	//msg.exit("Model::selectTree");
+	//Messenger::exit("Model::selectTree");
 }
 
 // Select by Element
@@ -382,32 +379,32 @@ void Model::selectElement(Atom* target, bool markonly, bool deselect)
 void Model::selectElement(int el, bool markonly, bool deselect)
 {
 	// Select all atoms which are the same element as the atom with id 'target'
-	msg.enter("Model::selectElement");
+	Messenger::enter("Model::selectElement");
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		if (i->element() == el) (deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly));
-	msg.exit("Model::selectElement");
+	Messenger::exit("Model::selectElement");
 }
 
 // Deselect by Element
 void Model::deselectElement(int el, bool markonly)
 {
 	// Select all atoms which are the same element as the atom i
-	msg.enter("Model::deselectElement");
+	Messenger::enter("Model::deselectElement");
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		if (i->element() == el) deselectAtom(i, markonly);
-	msg.exit("Model::deselectElement");
+	Messenger::exit("Model::deselectElement");
 }
 
 // Select all atoms which match the provided type
-int Model::selectType(int element, const char *typedesc, bool markonly, bool deselect)
+int Model::selectType(int element, const char* typedesc, bool markonly, bool deselect)
 {
-	msg.enter("Model::selectType");
+	Messenger::enter("Model::selectType");
 	Neta testat;
 	testat.setCharacterElement(element);
 	if (!netaparser.createNeta(&testat, typedesc, NULL))
 	{
-		msg.print("Failed to create type description.\n");
-		msg.exit("Model::selectType");
+		Messenger::print("Failed to create type description.\n");
+		Messenger::exit("Model::selectType");
 		return -1;
 	}
 	int count = 0, matchscore = 0, atomscore, n;
@@ -433,8 +430,8 @@ int Model::selectType(int element, const char *typedesc, bool markonly, bool des
 	// Update model
 	changeLog.add(Log::Selection);
 	// Write results
-	msg.print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
-	msg.exit("Model::selectType");
+	Messenger::print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
+	Messenger::exit("Model::selectType");
 	return count;
 }
 
@@ -442,7 +439,7 @@ int Model::selectType(int element, const char *typedesc, bool markonly, bool des
 void Model::selectRadial(Atom* target, double radius)
 {
 	// Select all atoms which are within the distance 'radius' from atom 'target'
-	msg.enter("Model::selectRadial");
+	Messenger::enter("Model::selectRadial");
 	Atom* i = atoms_.first();
 	printf("Selection radius is %8.4f Angstroms\n",radius);
 	while (i != NULL)
@@ -451,21 +448,21 @@ void Model::selectRadial(Atom* target, double radius)
 		else if (distance(target,i) < radius) selectAtom(i);
 		i = i->next;
 	}
-	msg.exit("Model::selectRadial");
+	Messenger::exit("Model::selectRadial");
 }
 
 // Select all atoms in specified pattern
 void Model::selectPattern(Pattern* p, bool markonly, bool deselect)
 {
 	// Select all atoms covered by the specified pattern.
-	msg.enter("Model::selectPattern");
+	Messenger::enter("Model::selectPattern");
 	// Check that this pattern is valid and belongs to this model...
 	bool found = FALSE;
 	for (Pattern* modelp = patterns_.first(); modelp != NULL; modelp = modelp->next) if (p == modelp) found = TRUE;
 	if (!found)
 	{
-		msg.print("Pattern does not belong to this model, or is out of date.\n");
-		msg.exit("Model::selectPattern");
+		Messenger::print("Pattern does not belong to this model, or is out of date.\n");
+		Messenger::exit("Model::selectPattern");
 		return;
 	}
 	Atom* i = p->firstAtom();
@@ -474,18 +471,18 @@ void Model::selectPattern(Pattern* p, bool markonly, bool deselect)
 		deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 		i = i->next;
 	}
-	msg.exit("Model::selectPattern");
+	Messenger::exit("Model::selectPattern");
 }
 
 // Get first selected
-Refitem<Atom,int> *Model::selection(bool markonly) const
+Refitem<Atom,int>* Model::selection(bool markonly) const
 {
 	if (markonly) return marked_.first();
 	else return selection_.first();
 }
 
 // Return the nth selected atom in the model
-Refitem<Atom,int> *Model::selected(int n)
+Refitem<Atom,int>* Model::selected(int n)
 {
 	if ((n<0) || (n>=selection_.nItems())) printf("Array index for selection_ is out of bounds : %i.\n", n);
 	else return selection_[n];
@@ -495,48 +492,48 @@ Refitem<Atom,int> *Model::selected(int n)
 // Move atoms 'up'
 void Model::shiftSelectionUp(bool markOnly)
 {
-	msg.enter("Model::shiftSelectionUp");
+	Messenger::enter("Model::shiftSelectionUp");
 
 	if (markOnly) for (Refitem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
 	else for (Refitem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
 	changeLog.add(Log::Structure);
-	msg.exit("Model::shiftSelectionUp");
+	Messenger::exit("Model::shiftSelectionUp");
 }
 
 // Move atoms 'down'
 void Model::shiftSelectionDown(bool markOnly)
 {
-	msg.enter("Model::shiftSelectionDown");
+	Messenger::enter("Model::shiftSelectionDown");
 	if (markOnly) for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
 	else for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
 	changeLog.add(Log::Structure);
-	msg.exit("Model::shiftSelectionDown");
+	Messenger::exit("Model::shiftSelectionDown");
 }
 
 // Move atoms to start
 void Model::moveSelectionToStart(bool markOnly)
 {
-	msg.enter("Model::moveSelectionToStart");
+	Messenger::enter("Model::moveSelectionToStart");
 	if (markOnly) for (Refitem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
 	else for (Refitem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
 	changeLog.add(Log::Structure);
-	msg.exit("Model::moveSelectionToStart");
+	Messenger::exit("Model::moveSelectionToStart");
 }
 
 // Move atoms to end
 void Model::moveSelectionToEnd(bool markOnly)
 {
-	msg.enter("Model::moveSelectionToEnd");
+	Messenger::enter("Model::moveSelectionToEnd");
 	if (markOnly) for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
 	else for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
 	changeLog.add(Log::Structure);
-	msg.exit("Model::moveSelectionToEnd");
+	Messenger::exit("Model::moveSelectionToEnd");
 }
 
 // Select overlapping atoms
 void Model::selectOverlaps(double tolerance, bool markonly)
 {
-	msg.enter("Model::selectOverlaps");
+	Messenger::enter("Model::selectOverlaps");
 	int n, m, x, y, z, x2, y2, z2, checklist[8], count;
 	double dist;
 	Atom* i, *j;
@@ -546,7 +543,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	// Add all atoms to cuboid list
 	for (i = atoms_.first(); i != NULL; i = i->next) addAtomToCuboid(i);
 	// Loop over cuboids, checking distances with atoms in adjacent boxes
-	Refitem<Atom,double> *ri, *rj;
+	Refitem<Atom,double>* ri, *rj;
 	x = 0;
 	y = 0;
 	z = 0;
@@ -583,7 +580,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 						dist = cell_.distance(i,j);
 						if (dist < tolerance)
 						{
-							msg.print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, Elements().symbol(j), dist, i->id()+1, Elements().symbol(i));
+							Messenger::print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, Elements().symbol(j), dist, i->id()+1, Elements().symbol(i));
 							selectAtom(j, markonly);
 							++count;
 						}
@@ -606,15 +603,15 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	}
 	// Free bonding cuboids
 	freeBondingCuboids();
-	msg.print("%i overlapping atoms selected.\n", count);
-	msg.exit("Model::selectOverlaps");
+	Messenger::print("%i overlapping atoms selected.\n", count);
+	Messenger::exit("Model::selectOverlaps");
 }
 
 
 // Select atoms (or molecule COGs) inside of the current unit cell
 void Model::selectInsideCell(bool moleculecogs, bool markonly)
 {
-	msg.enter("Model::selectInsideCell");
+	Messenger::enter("Model::selectInsideCell");
 	Vec3<double> pos;
 	// If using molecule COGs, need a valid pattern definition
 	if (moleculecogs)
@@ -640,13 +637,13 @@ void Model::selectInsideCell(bool moleculecogs, bool markonly)
 			if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) selectAtom(i, markonly);
 		}
 	}
-	msg.exit("Model::selectInsideCell");
+	Messenger::exit("Model::selectInsideCell");
 }
 
 // Select atoms (or molecule COGs) outside of the current unit cell
 void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 {
-	msg.enter("Model::selectOutsideCell");
+	Messenger::enter("Model::selectOutsideCell");
 	Vec3<double> pos;
 	// If using molecule COGs, need a valid pattern definition
 	if (moleculecogs)
@@ -672,17 +669,17 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 			if ((pos.x > 1) || (pos.y > 1) || (pos.z > 1)) selectAtom(i, markonly);
 		}
 	}
-	msg.exit("Model::selectOutsideCell");
+	Messenger::exit("Model::selectOutsideCell");
 }
 
 // Perform a Miller 'selection' on the cell contents
 void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
 {
-	msg.enter("Model::selectMiller");
+	Messenger::enter("Model::selectMiller");
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		msg.print("Can't use Miller planes on a non-periodic model.\n");
-		msg.exit("Model::selectMiller");
+		Messenger::print("Can't use Miller planes on a non-periodic model.\n");
+		Messenger::exit("Model::selectMiller");
 		return;
 	}
 	double c, d;
@@ -696,13 +693,13 @@ void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
 		if (inside) { if ((c > 1.0) && (d > 1.0)) selectAtom(i, markonly); }
 		else if ((c < 1.0) || (d < 1.0)) selectAtom(i, markonly);
 	}
-	msg.exit("Model::selectMiller");
+	Messenger::exit("Model::selectMiller");
 }
 
 // Select atoms within distance from a line (i.e. cylinder select)
 void Model::selectLine(Vec3<double> line, Vec3<double> point, double dr, bool markonly)
 {
-	msg.enter("Model::selectLine");
+	Messenger::enter("Model::selectLine");
 	// See: A Programmers Geometry, Bowyer and Woodwark, Butterworths (pub.), 1983, p99
 	// Line equation is :
 	//		x = point.x + line.x * t
@@ -712,8 +709,8 @@ void Model::selectLine(Vec3<double> line, Vec3<double> point, double dr, bool ma
 	double denom = line.dp(line);
 	if (denom < 1.0e-6)
 	{
-		msg.print("Line parameters appear to be corrupt.\n");
-		msg.exit("Model::selectLine");
+		Messenger::print("Line parameters appear to be corrupt.\n");
+		Messenger::exit("Model::selectLine");
 		return;
 	}
 	line.normalise();

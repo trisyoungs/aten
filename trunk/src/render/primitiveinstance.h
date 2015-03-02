@@ -32,9 +32,14 @@
 #include "glext.h"
 #endif
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class QGLContext;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class GLExtensions;
 
 // Primitive Instance
@@ -86,5 +91,7 @@ class PrimitiveInstance : public ListItem<PrimitiveInstance>
 	// Return VBO ID of index array for instance
 	GLuint vboIndexObject();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

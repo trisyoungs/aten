@@ -24,7 +24,7 @@
 
 #include "templates/list.h"
 
-// Forward Declarations
+// Forward Declarations (Aten)
 /* none */
 
 // Text Formatter

@@ -21,6 +21,8 @@
 
 #include "base/wrapint.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 WrapInt::WrapInt(int minvalue, int maxvalue)
 {

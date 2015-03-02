@@ -32,6 +32,9 @@
 #include "base/dnchar.h"
 #include "base/elements.h"
 #include "base/lineparser.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // FilterData
 class FilterData
@@ -42,12 +45,12 @@ class FilterData
 	~FilterData();
 	// Filter Types
 	enum FilterType { ModelImport, TrajectoryImport, ExpressionImport, GridImport, ModelExport, TrajectoryExport, ExpressionExport, GridExport, nFilterTypes };
-	static const char *filterType(FilterType ft);
-	static FilterType filterType(const char *s, bool reportError = FALSE);
+	static const char* filterType(FilterType ft);
+	static FilterType filterType(const char* s, bool reportError = FALSE);
 	// Filter commands
 	enum FilterOption { ExactOption, ExtensionOption, GlobOption, IdOption, NameOption, NicknameOption, SearchOption, TypeOption, WithinOption, ZMapOption, nFilterOptions };
-	static FilterOption filterOption(const char *s);
-	static const char *filterOption(FilterOption fo);
+	static FilterOption filterOption(const char* s);
+	static const char* filterOption(FilterOption fo);
 
 
 	/*
@@ -93,7 +96,7 @@ class FilterData
 	 */
 	public:
 	// Set option by name
-	bool setOption(Dnchar *name, TreeNode *value);
+	bool setOption(Dnchar* name, TreeNode* value);
 	// Set the type of filter
 	void setType(FilterType ft);
 	// Set the partner filter
@@ -111,41 +114,43 @@ class FilterData
 	// Return the ID of the filter
 	int id() const;
 	// Return the descriptive name of the filter
-	const char *name() const;
+	const char* name() const;
 	// Return the short nickname of the filter
-	const char *nickname() const;
+	const char* nickname() const;
 	// Return the first file extension
-	Dnchar *extensions() const;
+	Dnchar* extensions() const;
 	// Return a comma-separated list of file extensions
-	const char *extensionList() const;
+	const char* extensionList() const;
 	// Return the first alias
-	Dnchar *exactNames() const;
+	Dnchar* exactNames() const;
 	// Return the number of identifying strings defined
 	int nIdStrings() const;
 	// Return the number of lines to search for the identifying strings
 	int nLinesToSearch() const;
 	// Return the first identifying search string
-	Dnchar *searchStrings() const;
+	Dnchar* searchStrings() const;
 	// Return whether filter has an extension
 	bool hasExtension() const;
 	// Return whether the supplied text matches any of the filter's possible extensions
-	bool doesExtensionMatch(const char *ext) const;
+	bool doesExtensionMatch(const char* ext) const;
 	// Return whether the supplied text matches any of the filter's possible exact filenames
-	bool doesNameMatch(const char *name) const;
+	bool doesNameMatch(const char* name) const;
 	// Return the partner filter
 	Tree* partner() const;
 	// Return the file filter
-	const char *glob() const;
+	const char* glob() const;
 	// Return the type of filter
 	FilterType type() const;
 	// Return if the filter is an export filter
 	bool isExportFilter() const;
 	// Return (after creation if it is needed) the long description of the filter (including glob)
-	const char *description();
+	const char* description();
 	// Return trajectory header function
 	Tree* trajectoryHeaderFunction() const;
 	// Return trajectory frame function
 	Tree* trajectoryFrameFunction() const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

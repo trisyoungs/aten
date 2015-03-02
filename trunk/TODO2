@@ -1,0 +1,58 @@
+Remove empty destructors.
+Add ObjectLists (when using CHECK). 
+Add new rendering context code (inc. push/pop lists for GL functions).
+Remove level of detail code.
+Move msg.enter/msg.exit code to conditional compilation with CHECK.
+Remove defunct src/classes/restraint.cpp.
+Sort out comment style, and layout of headers (double-line gap etc.).
+Sort out pointer 'style' ( Object *T  to Object* T ).
+Rename Clipatom to ClipAtom and Clipbond to ClipBond.
+Remove Dnchar and replace with QString throughout.
+Move sg code to separate dir.
+Move math funcs/classes (e.g. Matrix) to separate dir.
+Use Qt5.
+Remove dialog pointers (use instances instead).
+Remove Scripts menu, and automatic loading of scripts on startup.
+Fix callbacks for atom picking etc.
+Add new RefList definition.
+Move Prefs from being a static global to a member of Aten.
+Split gui/mainmenu_actions.cpp into menu_* files.
+In AtenWindow::on_actionFileSaveImage_triggered convert options to proper QDialog.
+Add large image creation functions.
+Replace uses of TTreeWidgetItem, TTableWidgetItem, and TComboBox with normal Qt widgets combined with VariantPointer.
+Remove Messages window, and convert to show behind main view (and allow toggle between transparent, model, and messages)
+Remove mouse toolbar
+Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
+Remove global Fourier declaration, and make it local to each Model.
+Remove global MC, CG, SD declartions, and put them in Aten?
+Remove 'current_' Bundle containing current Model, ForceField, Atom etc. and move all commands depending on them to be functions of other variable types.
+Reimplement KeepNames functionality.
+Split model/fragment.h into model/fragmentgroup.h and model/fragment.h.
+Split methods/partitiondata* into partitiondata and partitionscheme.
+Split ZMatrix into ZMatrix and ZMatrixElement files.
+Add in calculation of quantities and graphing.
+Make ZMatrix a full member of Model, rather than a pointed that needs to be created.
+Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
+In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
+Instead of a separate AtenVariable, make Aten subclass Variable?
+Rename source files for parser/parser (grammar etc.) a la uChroma.
+Make ElementMap store reference to Aten, preventing passing of FFs, typeMapping data etc (and fix name-mapping).
+Remove Prefs member allowDeprecated_.
+Remove base/sysfunc.h, after moving from Dnchar to QString?
+Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
+Scale molecule COM inverts coordinates??
+Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
+Use indices in rendering Primitives.
+Check colours of buttons on all platforms (e.g. in selectelement?)
+Change SaveImageDialog to check for empty image filename, and disable OK button accordingly.
+Check - is using redirected filenames really necessary when saveing movie frame images?
+Fix image saving - in particular scaling & offset when saving large image (what role will/did ViewLayout play?)
+Make UserActions a member of something (Viewer?).
+Move Primitive rendering lists from Viewer to individual Model, and add feature to only specify matrix when necessary (for speed, reusing previous matrix otherwise).
+Fix Grid rimitive generation (need to know nVertices ahead of time...). Perhaps add a feature to Primitive to allow 'temporary' vertices/indices to be added (using old-style VertexChunk lists) and then 'committed' with a single array being created.
+
+
+Manual TODO:
+Remove level of detail and transparency options from Prefs.
+More examples (e.g. slab generation)
+Remove 'gui' keyword.

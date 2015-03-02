@@ -24,7 +24,9 @@
 
 #include "methods/calculable.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Site;
 
 // Radial Distribution Function Class
@@ -40,13 +42,13 @@ class Rdf : public Calculable
 	*/
 	private:
 	// Centres involved in RDF
-	Site *sites_[2];
+	Site* sites_[2];
 	
 	public:
 	// Set site involved in RDF
 	void setSite(int, Site*);
 	// Get site involved in RDF
-	Site *site(int);
+	Site* site(int);
 
 	/*
 	// Methods
@@ -87,9 +89,11 @@ class Rdf : public Calculable
 	*/
 	private:
 	// Distribution function
-	double *data_;
+	double* data_;
 	// Count for number of added data (i.e. nframes)
 	int nAdded_;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

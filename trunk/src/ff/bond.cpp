@@ -20,19 +20,21 @@
 */
 
 #include "model/model.h"
-#include "classes/forcefieldbound.h"
+#include "base/forcefieldbound.h"
 #include "base/pattern.h"
 
+ATEN_USING_NAMESPACE
+
 // Calculate bond energy of pattern (or molecule in pattern)
-void Pattern::bondEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
+void Pattern::bondEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 {
-	msg.enter("Pattern::bondEnergy");
+	Messenger::enter("Pattern::bondEnergy");
 	int i, j, m1, aoff;
 	double forcek, eq, rij, energy, ubenergy, bondenergy, d, expo, beta;
-	ForcefieldBound *ffb;
-	PatternBound *pb;
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	ForcefieldBound* ffb;
+	PatternBound* pb;
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
 	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startAtom_,nMolecules_,nAtoms_,nbonds);
@@ -49,7 +51,7 @@ void Pattern::bondEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 			switch (pb->data()->bondForm())
 			{
 				case (BondFunctions::None):
-					msg.print("Warning: No function is specified for bond energy %i-%i.\n", i, j);
+					Messenger::print("Warning: No function is specified for bond energy %i-%i.\n", i, j);
 				case (BondFunctions::Ignore):
 					energy = 0.0;
 					break;
@@ -77,7 +79,7 @@ void Pattern::bondEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 					energy = d * ( expo*expo );
 					break;
 				default:
-					msg.print( "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);
+					Messenger::print( "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);
 					energy = 0.0;
 					break;
 			}
@@ -90,20 +92,20 @@ void Pattern::bondEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 	// Increment energy for pattern
 	estore->add(EnergyStore::BondEnergy,bondenergy,id_);
 	estore->add(EnergyStore::UreyBradleyEnergy,ubenergy,id_);
-	msg.exit("Pattern::bondEnergy");
+	Messenger::exit("Pattern::bondEnergy");
 }
 
 // Calculate bond forces in pattern
 void Pattern::bondForces(Model* srcmodel)
 {
-	msg.enter("Pattern::bondForcess");
+	Messenger::enter("Pattern::bondForcess");
 	int i, j, m1, aoff;
 	static Vec3<double> vec_ij, fi;
 	static double forcek, eq, rij, d, expo, du_dr, beta;
-	static ForcefieldBound *ffb;;
-	PatternBound *pb;
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	static ForcefieldBound* ffb;;
+	PatternBound* pb;
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -119,7 +121,7 @@ void Pattern::bondForces(Model* srcmodel)
 			switch (pb->data()->bondForm())
 			{
 				case (BondFunctions::None):
-					msg.print("Warning: No function is specified for bond force %i-%i.\n", i, j);
+					Messenger::print("Warning: No function is specified for bond force %i-%i.\n", i, j);
 				case (BondFunctions::Ignore):
 					du_dr = 0.0;
 					break;
@@ -144,7 +146,7 @@ void Pattern::bondForces(Model* srcmodel)
 					du_dr = 2.0 * beta * d * (1.0 - expo) * expo;
 					break;
 				default:
-					msg.print( "No equation coded for bond forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);;
+					Messenger::print( "No equation coded for bond forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);;
 					break;
 			}
 			// Calculate forces
@@ -154,5 +156,5 @@ void Pattern::bondForces(Model* srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	msg.exit("Pattern::bondForcess");
+	Messenger::exit("Pattern::bondForcess");
 }

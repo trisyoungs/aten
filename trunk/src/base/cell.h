@@ -28,8 +28,11 @@
 #include "templates/reflist.h"
 #define SGCOREDEF__
 #include "base/sginfo.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Atom;
 class Model;
 
@@ -42,11 +45,11 @@ class UnitCell
 	~UnitCell();
 	// Cell types
 	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
-	static const char *cellType(CellType);
-	static CellType cellType(const char *name, bool reportError = 0);
+	static const char* cellType(CellType);
+	static CellType cellType(const char* name, bool reportError = 0);
 	// Cell definition parameters
 	enum CellParameter { CellA, CellB, CellC, CellAlpha, CellBeta, CellGamma, CellAX, CellAY, CellAZ, CellBX, CellBY, CellBZ, CellCX, CellCY, CellCZ, nCellParameters };
-	static CellParameter cellParameter(const char *);
+	static CellParameter cellParameter(const char* );
 	// Assignment operator
 	void operator=(UnitCell &source);
 
@@ -82,7 +85,7 @@ class UnitCell
 	// Return parent model
 	Model* parent();
 	// Copy data from specified cell
-	bool copy(UnitCell *source);
+	bool copy(UnitCell* source);
 	// Print cell data
 	void print();
 	// Generate random position inside cell
@@ -92,7 +95,7 @@ class UnitCell
 	// Set lengths and angles and calculates matrix
 	void set(const Vec3<double> &lengths, const Vec3<double> &angles);
 	// Set matrix and calculates lengths and angles
-	void set(const Matrix &axes);
+	void set(const Matrix& axes);
 	// Set lengths and calculates matrix
 	void setLengths(const Vec3<double> &lengths);
 	// Set individual length
@@ -118,7 +121,7 @@ class UnitCell
 	// Return the centre the cell
 	Vec3<double> centre() const;
 	// Return the inverse of the cell vectors as a column-major matrix in a 1D array
-	void inverseTransposeColumn(double *m);
+	void inverseTransposeColumn(double* m);
 	// Return the volume of the cell
 	double volume() const;
 	// Return the volume of the reciprocal cell
@@ -140,11 +143,11 @@ class UnitCell
 
 	public:
 	// Set spacegroup from supplied spacegroup name
-	bool setSpacegroup(const char *name, bool forceRhombohedral);
+	bool setSpacegroup(const char* name, bool forceRhombohedral);
 	// Return SgInfo spacegroup structure (if it exists)
 	T_SgInfo *spacegroup();
 	// Return spacegroup name in defined SgInfo structure
-	const char *spacegroupName() const;
+	const char* spacegroupName() const;
 	// Return the spacegroup of the model
 	int spacegroupId() const;
 	// Add manual generator
@@ -230,5 +233,7 @@ class UnitCell
 	// Calculate torsion angle between supplied atoms
 	double torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim = TRUE) const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

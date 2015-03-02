@@ -1,6 +1,6 @@
 /*
 	*** Atom location
-	*** src/base/atomaddress.h
+	*** src/base/AtomAddress.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -22,12 +22,26 @@
 #ifndef ATEN_ATOMADDRESS_H
 #define ATEN_ATOMADDRESS_H
 
-// Forward declarations
+#include "templates/list.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Pattern;
 
 // Atom Address
-class Atomaddress
+class AtomAddress : public ListItem<AtomAddress>
 {
+	public:
+	// Constructor / Destructor
+	AtomAddress();
+	~AtomAddress();
+
+
+	/*
+	 * Address Information
+	 */
 	private:
 	// Molecule in which the atom exists
 	int molecule_;
@@ -36,16 +50,6 @@ class Atomaddress
 	// Pattern node in which the atom lies (must be set by model before site is used)
 	Pattern* pattern_;
 
-	public:
-	// Constructor / Destructor
-	Atomaddress();
-	~Atomaddress();
-	// List pointers
-	Atomaddress *prev, *next;	
-
-	/*
-	// Variable Access
-	*/
 	public:
 	// Set the local molecule offset of the atom
 	void setOffset(int i);
@@ -60,5 +64,7 @@ class Atomaddress
 	// Returns the current pattern for the atom
 	Pattern* pattern();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

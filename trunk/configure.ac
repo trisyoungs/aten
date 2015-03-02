@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[1.908])
+m4_define([ATEN_VERSION],[1.909])
 AC_INIT(aten,ATEN_VERSION,tris@projectaten.net)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -153,7 +153,6 @@ AC_CHECK_FUNCS([floor pow select sqrt strchr strrchr strstr])
 AC_OUTPUT(Makefile
 src/Makefile
 src/base/Makefile
-src/classes/Makefile
 src/command/Makefile
 src/ff/Makefile
 src/gui/Makefile

@@ -28,11 +28,15 @@
 #include "templates/vector3.h"
 #include "templates/list.h"
 #include <QtCore/QString>
+#include "base/namespace.h"
+
 
 // External Declarations
 extern int TextPrimitiveParser_parse();
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 /* none */
 
 // Text Primitive
@@ -77,7 +81,7 @@ class TextPrimitive : public ListItem<TextPrimitive>
 	// Set text scaling factor
 	static void setTextSizeScale(double textSizeScale);
 	// Set data
-	void set(QString text, Vec3<double> anchorPoint, TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix& rotation, double textSize);
+	void set(QString text, Vec3<double> anchorPoint, TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix rotation, double textSize);
 	// Return transformation matrix to use when rendering (including fragment scale/translation if one is specified)
 	Matrix transformationMatrix(double baseFontSize, TextFragment* fragment = NULL);
 	// Calculate bounding box of primitive
@@ -121,5 +125,7 @@ class TextPrimitive : public ListItem<TextPrimitive>
 	// Remove escape marker
 	static void removeEscape();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

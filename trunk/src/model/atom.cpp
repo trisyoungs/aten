@@ -24,8 +24,10 @@
 #include "model/undoevent.h"
 #include "base/atom.h"
 #include "base/pattern.h"
-#include "base/elements.h"
-#include "classes/forcefieldatom.h"
+// #include "base/elements.h"
+#include "base/forcefieldatom.h"
+
+ATEN_USING_NAMESPACE
 
 // Return the start of the atom list
 Atom* Model::atoms() const
@@ -42,7 +44,7 @@ int Model::nAtoms() const
 // Add atom
 Atom* Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<double> force)
 {
-	msg.enter("Model::addAtom");
+	Messenger::enter("Model::addAtom");
 	Atom* newatom = atoms_.add();
 	newatom->setParent(this);
 	newatom->setElement(newel);
@@ -60,14 +62,14 @@ Atom* Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<d
 		newchange->set(TRUE, newatom);
 		recordingState_->addEvent(newchange);
 	}
-	msg.exit("Model::addAtom");
+	Messenger::exit("Model::addAtom");
 	return newatom;
 }
 
 // Add atom with specified id
 Atom* Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 {
-	msg.enter("Model::addAtom");
+	Messenger::enter("Model::addAtom");
 	Atom* newatom = targetid == 0 ? atoms_.prepend() : atoms_.insertAfter(atoms_[targetid-1]);
 	newatom->setParent(this);
 	newatom->setElement(newel);
@@ -84,7 +86,7 @@ Atom* Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 		newchange->set(TRUE, newatom);
 		recordingState_->addEvent(newchange);
 	}
-	msg.exit("Model::addAtom");
+	Messenger::exit("Model::addAtom");
 	return newatom;
 }
 
@@ -97,7 +99,7 @@ Atom* Model::addAtomAtPen(short int el)
 // Add atom copy
 Atom* Model::addCopy(Atom* source)
 {
-	msg.enter("Model::addCopy");
+	Messenger::enter("Model::addCopy");
 	Atom* newatom = atoms_.add();
 	newatom->copy(source);
 	newatom->setParent(this);
@@ -111,14 +113,14 @@ Atom* Model::addCopy(Atom* source)
 		newchange->set(TRUE, newatom);
 		recordingState_->addEvent(newchange);
 	}
-	msg.exit("Model::addCopy");
+	Messenger::exit("Model::addCopy");
 	return newatom;
 }
 
 // Add atom copy at specified position in list
 Atom* Model::addCopy(Atom* afterthis, Atom* source)
 {
-	msg.enter("Model::addCopy");
+	Messenger::enter("Model::addCopy");
 	Atom* newatom = atoms_.insertAfter(afterthis);
 	//printf("Adding copy after... %p %p\n",afterthis,source);
 	newatom->copy(source);
@@ -132,14 +134,14 @@ Atom* Model::addCopy(Atom* afterthis, Atom* source)
 		newchange->set(TRUE,newatom);
 		recordingState_->addEvent(newchange);
 	}
-	msg.exit("Model::addCopy");
+	Messenger::exit("Model::addCopy");
 	return newatom;
 }
 
 // Remove atom
 void Model::removeAtom(Atom* xatom, bool noupdate)
 {
-	msg.enter("Model::removeAtom");
+	Messenger::enter("Model::removeAtom");
 	// Delete a specific atom (passed as xatom)
 	reduceMass(xatom->element());
 // 	if (!noupdate) calculateDensity();
@@ -157,22 +159,22 @@ void Model::removeAtom(Atom* xatom, bool noupdate)
 		recordingState_->addEvent(newchange);
 	}
 	atoms_.remove(xatom);
-	msg.exit("Model::removeAtom");
+	Messenger::exit("Model::removeAtom");
 }
 
 // Delete Atom
 void Model::deleteAtom(Atom* xatom, bool noupdate)
 {
-	msg.enter("Model::deleteAtom");
+	Messenger::enter("Model::deleteAtom");
 	// The atom may be present in other, unassociated lists (e.g. measurements), so we must
 	// also check those lists for this atom and remove it.
-	if (xatom == NULL) msg.print("No atom to delete.\n");
+	if (xatom == NULL) Messenger::print("No atom to delete.\n");
 	else
 	{
 		// Remove measurements
 		removeMeasurements(xatom);
 		// Delete All Bonds To Specific Atom
-		Refitem<Bond,int> *bref = xatom->bonds();
+		Refitem<Bond,int>* bref = xatom->bonds();
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
@@ -183,7 +185,7 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 		}
 		// For all glyphs involving this atom, set the current coordinates
 		int i;
-		for (Glyph *g = glyphs_.first(); g != NULL; g = g->next)
+		for (Glyph* g = glyphs_.first(); g != NULL; g = g->next)
 		{
 			for (i=0; i<Glyph::nGlyphData(g->type()); ++i) if (g->data(i)->atom() == xatom) g->data(i)->setVector(xatom->r());
 		}
@@ -191,14 +193,14 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 		// Finally, delete the atom
 		removeAtom(xatom, noupdate);
 	}
-	msg.exit("Model::deleteAtom");
+	Messenger::exit("Model::deleteAtom");
 }
 
 // Transmute atom
 void Model::transmuteAtom(Atom* i, short int el)
 {
-	msg.enter("Model::transmuteAtom");
-	if (i == NULL) msg.print("No atom to transmute.\n");
+	Messenger::enter("Model::transmuteAtom");
+	if (i == NULL) Messenger::print("No atom to transmute.\n");
 	else
 	{
 		short int oldel = i->element();
@@ -217,11 +219,11 @@ void Model::transmuteAtom(Atom* i, short int el)
 			}
 		}
 	}
-	msg.exit("Model::transmuteAtom");
+	Messenger::exit("Model::transmuteAtom");
 }
 
 // Return (and autocreate if necessary) the static atoms array
-Atom* *Model::atomArray()
+Atom** Model::atomArray()
 {
 	return atoms_.array();
 }
@@ -229,14 +231,14 @@ Atom* *Model::atomArray()
 // Clear atoms
 void Model::clearAtoms()
 {
-	msg.enter("Model::clearAtoms");
+	Messenger::enter("Model::clearAtoms");
 	Atom* i = atoms_.first();
 	while (i != NULL)
 	{
 		deleteAtom(i);
 		i = atoms_.first();
 	}
-	msg.exit("Model::clearAtoms");
+	Messenger::exit("Model::clearAtoms");
 }
 
 // Return the list index of the specified atom
@@ -248,7 +250,7 @@ int Model::atomIndex(Atom* i) const
 // Renumber Atoms
 void Model::renumberAtoms(Atom* from)
 {
-	msg.enter("Model::renumberAtoms");
+	Messenger::enter("Model::renumberAtoms");
 	int count;
 	Atom* i;
 	if (from == NULL)
@@ -262,53 +264,55 @@ void Model::renumberAtoms(Atom* from)
 		i = from->next;
 	}
 	for (i = i; i != NULL; i = i->next) i->setId(++count);
-	msg.exit("Model::renumberAtoms");
+	Messenger::exit("Model::renumberAtoms");
 }
 
 // Return atom 'n' in the model
 Atom* Model::atom(int n)
 {
-	msg.enter("Model::atom");
+	Messenger::enter("Model::atom");
 	// Check range first
 	if ((n < 0) || (n >= atoms_.nItems()))
 	{
-		msg.print("Atom id '%i' is out of range for model '%s'.\n", n+1, name_.get());
-		msg.exit("Model::atom");
+		Messenger::print("Atom id '%i' is out of range for model '%s'.\n", n+1, name_.get());
+		Messenger::exit("Model::atom");
 		return NULL;
 	}
-	msg.exit("Model::atom");
+	Messenger::exit("Model::atom");
 	return atoms_[n];
 }
 
 // Reset forces on all atoms
 void Model::zeroForces()
 {
-	msg.enter("Model::zeroForces");
+	Messenger::enter("Model::zeroForces");
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->f().zero();
-	msg.exit("Model::zeroForces");
+	Messenger::exit("Model::zeroForces");
 }
 
 // Reset forces on all fixed atoms
 void Model::zeroForcesFixed()
 {
-	msg.enter("Model::zeroForcesFixed");
-	Atom* i;
+	Messenger::enter("Model::zeroForcesFixed");
+
 	// First, apply pattern-designated fixes
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) if (p->areAtomsFixed())
 	{
-		i = p->firstAtom();
+		Atom* i = p->firstAtom();
 		for (int n=0; n<p->totalAtoms(); ++n) { i->f().zero(); i = i->next; }
 	}
+
 	// Next, apply specific atom fixes
-	for (i = atoms_.first(); i != NULL; i = i->next) if (i->isPositionFixed()) i->f().zero();
-	msg.exit("Model::zeroForcesFixed");
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isPositionFixed()) i->f().zero();
+
+	Messenger::exit("Model::zeroForcesFixed");
 }
 
 // Normalise forces
 void Model::normaliseForces(double norm, bool tolargest)
 {
 	// 'Normalise' the forces such that the largest force is equal to the value provided
-	msg.enter("Model::normaliseForces");
+	Messenger::enter("Model::normaliseForces");
 	if (tolargest)
 	{
 		double largestsq = 0.0, f;
@@ -328,7 +332,7 @@ void Model::normaliseForces(double norm, bool tolargest)
 			i->f() *= norm;
 		}
 	}
-	msg.exit("Model::normaliseForces");
+	Messenger::exit("Model::normaliseForces");
 }
 
 // Set visibility of specified atom
@@ -387,7 +391,7 @@ void Model::atomSetColour(Atom* i, double r, double g, double b, double a)
 	if (recordingState_ != NULL)
 	{
 		ColourEvent *newchange = new ColourEvent;
-		double *oldcol = i->colour();
+		double* oldcol = i->colour();
 		newchange->set(i->id(), oldcol[0], oldcol[1], oldcol[2], oldcol[3], r, g, b, a);
 		recordingState_->addEvent(newchange);
 	}
@@ -406,7 +410,7 @@ void Model::atomResetColour(Atom* i)
 	if (recordingState_ != NULL)
 	{
 		ColourEvent *newchange = new ColourEvent;
-		double *oldcol = i->colour();
+		double* oldcol = i->colour();
 		newchange->set(i->id(), oldcol[0], oldcol[1], oldcol[2], oldcol[3], newcol[0], newcol[1], newcol[2], newcol[3]);
 		recordingState_->addEvent(newchange);
 	}
@@ -416,10 +420,10 @@ void Model::atomResetColour(Atom* i)
 }
 
 // Set style of individual atom
-void Model::atomSetStyle(Atom* i, Atom::DrawStyle ds)
+void Model::atomSetStyle(Atom* i, Prefs::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
-	Atom::DrawStyle oldstyle = i->style();
+	Prefs::DrawStyle oldstyle = i->style();
 	i->setStyle(ds);
 	changeLog.add(Log::Style);
 	// Add the change to the undo state (if there is one)
@@ -472,11 +476,11 @@ int Model::totalBondOrderPenalty() const
 // Count bonds of specific type
 int Model::countBondsToAtom(Atom* i, Bond::BondType type)
 {
-	msg.enter("Model::countBondsToAtom");
+	Messenger::enter("Model::countBondsToAtom");
 	int count = 0;
-	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 		if (bref->item->order() == type) count ++;
-	msg.exit("Model::countBondsToAtom");
+	Messenger::exit("Model::countBondsToAtom");
 	return count;
 }
 
@@ -489,18 +493,18 @@ double Model::mass() const
 // Calculate and return the forcefield mass of the model
 double Model::forcefieldMass() const
 {
-	msg.enter("Model::forcefieldMass");
+	Messenger::enter("Model::forcefieldMass");
 	double ffmass = 0.0;
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->type() == NULL)
 		{
-			msg.print("Error: Atom id %i doesn't have a forcefield type - using atom mass instead...\n", i->id()+1);
+			Messenger::print("Error: Atom id %i doesn't have a forcefield type - using atom mass instead...\n", i->id()+1);
 			ffmass += Elements().atomicMass(i);
 		}
 		else ffmass += i->type()->elementMass();
 	}
-	msg.exit("Model::forcefieldMass");
+	Messenger::exit("Model::forcefieldMass");
 	return ffmass;
 }
 
@@ -523,7 +527,7 @@ void Model::increaseMass(int element)
 void Model::calculateMass()
 {
 	// Recalculate the mass of the atoms in the model
-	msg.enter("Model::calculateMass");
+	Messenger::enter("Model::calculateMass");
 	mass_ = 0.0;
 	nUnknownAtoms_ = 0;
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
@@ -531,7 +535,7 @@ void Model::calculateMass()
 		mass_ += Elements().atomicMass(i);
 		if (i->element() == 0) ++nUnknownAtoms_;
 	}
-	msg.exit("Model::calculateMass");
+	Messenger::exit("Model::calculateMass");
 }
 
 // Return number of unknown atoms in the model
@@ -543,23 +547,23 @@ int Model::nUnknownAtoms() const
 // Copy atom style from specified model
 void Model::copyAtomStyle(Model* source)
 {
-	msg.enter("Model::copyAtomStyle");
+	Messenger::enter("Model::copyAtomStyle");
 	if (source == NULL)
 	{
-		msg.print("Internal Error: NULL reference passed to MOdel::copyAtomStyle()\n");
-		msg.exit("Model::copyAtomStyle");
+		Messenger::print("Internal Error: NULL reference passed to MOdel::copyAtomStyle()\n");
+		Messenger::exit("Model::copyAtomStyle");
 	}
 	// Perform only one check - that the number of atoms is the same
 	if (source->nAtoms() != atoms_.nItems())
 	{
-		msg.print("Error: Can't copy parent model's atom style becuase it has a different number of atoms (%i cf. %i)\n", source->nAtoms(), atoms_.nItems());
-		msg.exit("Model::copyParentStyle");
+		Messenger::print("Error: Can't copy parent model's atom style becuase it has a different number of atoms (%i cf. %i)\n", source->nAtoms(), atoms_.nItems());
+		Messenger::exit("Model::copyParentStyle");
 	}
 	// Do the loop
-	Atom* *ii = source->atomArray(), **jj = atomArray();
+	Atom** ii = source->atomArray(), **jj = atomArray();
 	for (int n=0; n<atoms_.nItems(); ++n) jj[n]->copyStyle(ii[n]);
 	changeLog.add(Log::Style);
-	msg.exit("Model::copyAtomStyle");
+	Messenger::exit("Model::copyAtomStyle");
 }
 
 // Clear tempBits of all atoms
@@ -571,30 +575,30 @@ void Model::clearAtomBits()
 // Move specified atom up/down in the atom list
 void Model::moveAtom(int index, int delta)
 {
-	msg.enter("Model::moveAtom");
+	Messenger::enter("Model::moveAtom");
 	if ((index < 0) || (index >= atoms_.nItems()))
 	{
 		printf("Internal Error: Atom index out of range (%i) in Model::moveAtom.", index);
-		msg.exit("Model::moveAtom");
+		Messenger::exit("Model::moveAtom");
 		return;
 	}
 
 	// Move the atom, and then renumber those atoms that will have changed...
 	atoms_.move(index, delta);
-	int startId = min(index+delta, index), endId = max(index+delta, index);
+	int startId = std::min(index+delta, index), endId = std::max(index+delta, index);
 	for (int n=startId; n<=endId; ++n) atoms_[n]->setId(n);
 
-	msg.exit("Model::moveAtom");
+	Messenger::exit("Model::moveAtom");
 }
 
 // Swap specified atoms in the atom list
 void Model::swapAtoms(Atom* i, Atom* j)
 {
-	msg.enter("Model::swapAtoms");
+	Messenger::enter("Model::swapAtoms");
 	if ((i == NULL) || (j == NULL))
 	{
 		printf("Internal Error: NULL Atom pointer(s) passed to Model::swapAtoms.");
-		msg.exit("Model::swapAtoms");
+		Messenger::exit("Model::swapAtoms");
 		return;
 	}
 
@@ -612,7 +616,7 @@ void Model::swapAtoms(Atom* i, Atom* j)
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Structure);
-	msg.exit("Model::swapAtoms");
+	Messenger::exit("Model::swapAtoms");
 }
 
 // Swap specified atoms in the atom list

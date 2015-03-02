@@ -24,7 +24,7 @@
 
 #include "gui/ui_messages.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class AtenWindow;
 
 // Messages window
@@ -33,24 +33,6 @@ class MessagesWidget : public QDockWidget
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
-	/*
-	// Window Functions
-	*/
-	public:
-	void showWidget();
-	void refresh();
-	protected:
-	void closeEvent(QCloseEvent *event);
-	private slots:
-	void on_MessagesBrowser_anchorClicked(const QUrl &link);
-	
-	/*
-	// Widgets
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
 	public:
 	// Constructor
 	MessagesWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
@@ -58,6 +40,24 @@ class MessagesWidget : public QDockWidget
 	Ui::MessagesWidget ui;
 	// Set controls to reflect program variables
 	void setControls();
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Window Functions
+	*/
+	public:
+	void showWidget();
+	void refresh();
+
+	protected:
+	void closeEvent(QCloseEvent *event);
+
+	private slots:
+	void on_MessagesBrowser_anchorClicked(const QUrl &link);
 };
 
 #endif

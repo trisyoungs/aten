@@ -21,7 +21,7 @@
 
 #include "gui/mainwindow.h"
 #include "gui/selectvariable.h"
-#include "classes/zmatrix.h"
+#include "base/zmatrix.h"
 
 // Constructor
 AtenSelectVariable::AtenSelectVariable(AtenWindow& parent) : QDialog(&parent), parent_(parent)
@@ -83,7 +83,7 @@ Variable *AtenSelectVariable::selectVariable(ZMatrix *zmat, int vartype, Variabl
 	// Clear list and repopulate with variables of the correct type
 	QTableWidgetItem *item;
 	int count, nvars;
-	TreeNode *vars;
+	TreeNode* vars;
 	// Get number of relevant variables of specified type, and start of list...
 	variableType_ = vartype;
 	switch (variableType_)
@@ -113,7 +113,7 @@ Variable *AtenSelectVariable::selectVariable(ZMatrix *zmat, int vartype, Variabl
 	ui.VariableTable->setRowCount(nvars);
 	ReturnValue rv;
 	count = 0;
-	for (TreeNode *v = vars; v != NULL; v = v->next)
+	for (TreeNode* v = vars; v != NULL; v = v->next)
 	{
 		Variable* var = (Variable*) v;
 		// Set variable name

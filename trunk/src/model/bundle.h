@@ -22,7 +22,11 @@
 #ifndef ATEN_BUNDLE_H
 #define ATEN_BUNDLE_H
 
-// Forward declarations
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Atom;
 class Model;
 class Site;
@@ -38,12 +42,12 @@ class Bundle
 	public:
 	// Constructors
 	Bundle();
-	Bundle(Forcefield *ptr);
+	Bundle(Forcefield* ptr);
 	Bundle(Model* ptr);
 	Bundle(Pattern* ptr);
 	Bundle(Atom* ptr);
-	Bundle(Grid *ptr);
-	Bundle(Glyph *ptr);
+	Bundle(Grid* ptr);
+	Bundle(Glyph* ptr);
 	// Bundle Pointer Types
 	enum BundlePointer { AtomPointer=1, PatternPointer=2, ModelPointer=4, ForcefieldPointer=8, GridPointer=16, SitePointer=32, GlyphPointer=64 };
 
@@ -55,13 +59,13 @@ class Bundle
 	// Atom pointer
 	Atom* i;
 	//Forcefield pointer
-	Forcefield *ff;
+	Forcefield* ff;
 	// Grid pointer
-	Grid *g;
+	Grid* g;
 	// Site pointer
-	Site *s;
+	Site* s;
 	// Glyph
-	Glyph *gl;
+	Glyph* gl;
 	// Return render source pointer for stored model
 	Model* rs();
 
@@ -76,5 +80,7 @@ class Bundle
 	// Check and notify of null pointers
 	bool notifyNull(int) const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

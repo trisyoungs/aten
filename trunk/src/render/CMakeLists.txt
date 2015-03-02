@@ -1,36 +1,25 @@
 add_library(render
-engine.h
-engine_primitives.h
-glextensions.h
-gridprimitive.h
-primitive.h
-primitivegroup.h
-primitiveinfo.h
-primitiveinstance.h
-primitivelist.h
-renderprimitives.h
-textprimitive.h
-triangles.h
-vertexchunk.h
-engine.cpp
-engine_glyph.cpp
-engine_model.cpp
-engine_primitives.cpp
-engine_useractions.cpp
-engine_windows.cpp
-gridprimitive.cpp
-glextensions.cpp
-primitive.cpp
-primitivegroup.cpp
-primitiveinfo.cpp
-primitiveinstance.cpp
-primitivelist.cpp
-primitive_surface.cpp
-primitive_vertex.cpp
-renderprimitives.cpp
-textprimitive.cpp
-triangles.cpp
-vertexchunk.cpp
+  fontinstance.h
+  glextensions.h
+  gridprimitive.h
+  primitive.h
+  primitiveinfo.h
+  primitiveinstance.h
+  primitivelist.h
+  renderprimitives.h
+  textprimitive.h
+  vertexchunk.h
+  fontinstance.cpp
+  gridprimitive.cpp
+  glextensions.cpp
+  primitive.cpp
+  primitiveinfo.cpp
+  primitiveinstance.cpp
+  primitivelist.cpp
+  renderprimitives.cpp
+  surface.cpp
+  textprimitive.cpp
+  vertexchunk.cpp
 )
 
 include_directories(

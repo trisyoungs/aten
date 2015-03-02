@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
@@ -47,7 +48,7 @@ void CellDefinitionWidget::refreshMatrix()
 {
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
-	UnitCell *cell = m->cell();
+	UnitCell* cell = m->cell();
 	Matrix matrix = cell->axes();
 	ui.CellMatrixXXSpin->setValue(matrix[0]);
 	ui.CellMatrixXYSpin->setValue(matrix[1]);
@@ -64,7 +65,7 @@ void CellDefinitionWidget::refreshABC()
 {
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
-	UnitCell *cell = m->cell();
+	UnitCell* cell = m->cell();
 	Vec3<double> lengths, angles;
 	lengths = cell->lengths();
 	angles = cell->angles();
@@ -81,7 +82,7 @@ void CellDefinitionWidget::refresh()
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
-	UnitCell *cell = m->cell();
+	UnitCell* cell = m->cell();
 	UnitCell::CellType ct = cell->type();
 	Dnchar label(-1, " Volume : %10.3f &#8491;<sup>3</sup>", cell->volume());
 	ui.CellVolumeLabel->setText(label.get());
@@ -115,7 +116,7 @@ void CellDefinitionWidget::refresh()
 void CellDefinitionWidget::on_DefineFromABCButton_clicked(bool checked)
 {
 	if (refreshing_) return;
-	CommandNode::run(Command::Cell, "dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
+	CommandNode::run(Commands::Cell, "dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	Model* m = parent_.aten().currentModelOrFrame();
 	Dnchar label;
 	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
@@ -129,7 +130,7 @@ void CellDefinitionWidget::cellChanged(int index, double newvalue)
 	Model* m = parent_.aten().currentModelOrFrame();
 	// Check supplied matrix index of supplied value to determine if it has changed...
 	if ((index != -1) && (fabs(m->cell()->axes()[index] - newvalue) < 1.0E-7)) return;
-	CommandNode::run(Command::CellAxes, "ddddddddd", ui.CellMatrixXXSpin->value(), ui.CellMatrixXYSpin->value(), ui.CellMatrixXZSpin->value(), ui.CellMatrixYXSpin->value(), ui.CellMatrixYYSpin->value(), ui.CellMatrixYZSpin->value(), ui.CellMatrixZXSpin->value(), ui.CellMatrixZYSpin->value(), ui.CellMatrixZZSpin->value());
+	CommandNode::run(Commands::CellAxes, "ddddddddd", ui.CellMatrixXXSpin->value(), ui.CellMatrixXYSpin->value(), ui.CellMatrixXZSpin->value(), ui.CellMatrixYXSpin->value(), ui.CellMatrixYYSpin->value(), ui.CellMatrixYZSpin->value(), ui.CellMatrixZXSpin->value(), ui.CellMatrixZYSpin->value(), ui.CellMatrixZZSpin->value());
 	Dnchar label;
 	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
 	ui.CellVolumeLabel->setText(label.get());
@@ -227,7 +228,7 @@ void CellDefinitionWidget::on_CellDefinitionGroup_clicked(bool checked)
 	}
 	else
 	{
-		CommandNode::run(Command::NoCell, "");
+		CommandNode::run(Commands::NoCell, "");
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
@@ -241,7 +242,7 @@ void CellDefinitionWidget::on_CellDefinitionGroup_clicked(bool checked)
 void CellDefinitionWidget::on_CellSpacegroupSetButton_clicked(bool checked)
 {
 	// Grab the current text of the line edit and determine spacegroup
-	CommandNode::run(Command::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));
+	CommandNode::run(Commands::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));
 	ui.CellSpacegroupEdit->setText("");
 	// Set spacegroup label
 	Model* m = parent_.aten().currentModelOrFrame();
@@ -252,14 +253,14 @@ void CellDefinitionWidget::on_CellSpacegroupSetButton_clicked(bool checked)
 
 void CellDefinitionWidget::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
-	CommandNode::run(Command::Spacegroup, "i", 0);
+	CommandNode::run(Commands::Spacegroup, "i", 0);
 	// Set spacegroup label
 	ui.SpacegroupLabel->setText("None (0)");
 }
 
 void CellDefinitionWidget::on_CellSpacegroupPackButton_clicked(bool checked)
 {
-	CommandNode::run(Command::Pack, "");
+	CommandNode::run(Commands::Pack, "");
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 

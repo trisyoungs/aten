@@ -24,13 +24,16 @@
 
 #include <QtGui/QTreeWidget>
 #include "parser/returnvalue.h"
+#include "base/namespace.h"
+
+ATEN_USING_NAMESPACE
 
 // Custom QTreeWidgetItem
 class TTreeWidgetItem : public QTreeWidgetItem
 {
 	public:
 	// Constructors
-	TTreeWidgetItem(QTreeWidgetItem *parent);
+	TTreeWidgetItem(QTreeWidgetItem* parent);
 	TTreeWidgetItem(QTreeWidget *parent);
 
 	/*
@@ -42,4 +45,3 @@ class TTreeWidgetItem : public QTreeWidgetItem
 };
 
 #endif
-

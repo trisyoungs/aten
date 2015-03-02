@@ -22,18 +22,17 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "parser/tree.h"
-#include "base/mathfunc.h"
-#include <stdio.h>
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Dummy Node
-bool Command::function_NoFunction(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NoFunction(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	return TRUE;
 }
 
 // Joiner
-bool Command::function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Joiner(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Execute both commands
 	bool result = TRUE;
@@ -43,7 +42,7 @@ bool Command::function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Declarations
-bool Command::function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Declarations(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Reset each variable argument
 	for (int n=0; n<c->nArgs(); ++n) if (!c->argNode(n)->initialise()) return FALSE;
@@ -51,40 +50,40 @@ bool Command::function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Break out of current 'for' loop or 'switch' structure
-bool Command::function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Break(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	c->parent()->setAcceptedFail(Command::Break);
+	c->parent()->setAcceptedFail(Commands::Break);
 	return FALSE;
 }
 
 // Case statement within 'switch' structure
-bool Command::function_Case(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Case(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (!c->arg(0, rv)) return FALSE;
 	return TRUE;
 }
 
 // Continue for loop at next iteration
-bool Command::function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Continue(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	c->parent()->setAcceptedFail(Command::Continue);
+	c->parent()->setAcceptedFail(Commands::Continue);
 	return FALSE;
 }
 
 // Default case statement within 'switch' structure
-bool Command::function_Default(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Default(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	return TRUE;
 }
 
 // Do-While loop
-bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_DoWhile(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Argument 0 - Blockment
 	// Argument 1 - Test condition
 	ReturnValue test;
 	bool result;
-	Command::Function af;
+	Commands::Function af;
 	do
 	{
 		// Run blockment- catch break and continue calls which return FALSE
@@ -93,13 +92,13 @@ bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		{
 			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
 			af = c->parent()->acceptedFail();
-			if (af == Command::Break)
+			if (af == Commands::Break)
 			{
-				c->parent()->setAcceptedFail(Command::NoFunction);
+				c->parent()->setAcceptedFail(Commands::NoFunction);
 				return TRUE;
 			}
-			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
-			else if (af != Command::NoFunction) return FALSE;
+			else if (af == Commands::Continue) c->parent()->setAcceptedFail(Commands::NoFunction);
+			else if (af != Commands::NoFunction) return FALSE;
 		}
 		// Perform test of condition
 		if (!c->arg(1, test)) return FALSE;
@@ -108,7 +107,7 @@ bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // For loop
-bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_For(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Argument 0 - Initial value expression
 	// Argument 1 - Loop condition
@@ -118,7 +117,7 @@ bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (!c->arg(0, rv)) return FALSE;
 	ReturnValue ifval;
 	bool result;
-	Command::Function af;
+	Commands::Function af;
 	while (TRUE)
 	{
 		// Termination condition
@@ -130,12 +129,12 @@ bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		{
 			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
 			af = c->parent()->acceptedFail();
-			if (af == Command::Break)
+			if (af == Commands::Break)
 			{
-				c->parent()->setAcceptedFail(Command::NoFunction);
+				c->parent()->setAcceptedFail(Commands::NoFunction);
 				return TRUE;
 			}
-			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
+			else if (af == Commands::Continue) c->parent()->setAcceptedFail(Commands::NoFunction);
 			else return FALSE;
 		}
 		// Loop 'increment' statement
@@ -145,7 +144,7 @@ bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // For x in y loop
-bool Command::function_ForIn(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ForIn(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Argument 0 - Initial value expression
 	// Argument 1 - Loop condition
@@ -154,7 +153,7 @@ bool Command::function_ForIn(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ReturnValue varval;
 	if (!c->arg(1, varval)) return FALSE;
 	c->setArg(0, varval);
-	Command::Function af;
+	Commands::Function af;
 	bool result;
 	while (c->argp(0,c->argType(0)) != NULL)
 	{
@@ -164,12 +163,12 @@ bool Command::function_ForIn(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		{
 			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
 			af = c->parent()->acceptedFail();
-			if (af == Command::Break)
+			if (af == Commands::Break)
 			{
-				c->parent()->setAcceptedFail(Command::NoFunction);
+				c->parent()->setAcceptedFail(Commands::NoFunction);
 				return TRUE;
 			}
-			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
+			else if (af == Commands::Continue) c->parent()->setAcceptedFail(Commands::NoFunction);
 			else return FALSE;
 		}
 		// Skip to next linked item...
@@ -180,7 +179,7 @@ bool Command::function_ForIn(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // If test
-bool Command::function_If(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_If(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	ReturnValue ifval;
 	if (!c->arg(0, ifval)) return FALSE;
@@ -190,22 +189,22 @@ bool Command::function_If(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Return from function/filter/program
-bool Command::function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Return(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	c->parent()->setAcceptedFail(Command::Return);
+	c->parent()->setAcceptedFail(Commands::Return);
 	if (c->hasArg(0)) c->arg(0, rv);
 	return FALSE;
 }
 
 // Switch statement
-bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Switch(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	ReturnValue switchval, caseval;
 	if (!c->arg(0, switchval)) return FALSE;
 	int index = 1;
-	CommandNode *node;
+	CommandNode* node;
 	bool result, execute = FALSE;
-	Command::Function af;
+	Commands::Function af;
 	while (c->hasArg(index))
 	{
 		// Do nothing if its not a CommandNode (but it always should be...)
@@ -215,17 +214,17 @@ bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			// Are we executing or checking case values?
 			if (execute)
 			{
-				if ((node->function() != Command::Case) && (node->function() != Command::Default))
+				if ((node->function() != Commands::Case) && (node->function() != Commands::Default))
 				{
 					result = c->arg(index, rv);
 					if (!result)
 					{
 						// Did we break out?
 						af = c->parent()->acceptedFail();
-						if (af == Command::Break)
+						if (af == Commands::Break)
 						{
 // 							printf("Broken.\n");
-							c->parent()->setAcceptedFail(Command::NoFunction);
+							c->parent()->setAcceptedFail(Commands::NoFunction);
 							return TRUE;
 						}
 						else return FALSE;
@@ -235,7 +234,7 @@ bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			else
 			{
 				// Is this a 'case' or a 'default' node
-				if (node->function() == Command::Default)
+				if (node->function() == Commands::Default)
 				{
 					++index;
 					if (c->hasArg(index))
@@ -244,7 +243,7 @@ bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
 						break;
 					}
 				}
-				else if ((node->function() == Command::Case) && (!execute))
+				else if ((node->function() == Commands::Case) && (!execute))
 				{
 					if (!c->arg(index, caseval)) return FALSE;
 // 					printf("Index %i is a case node whose value is %s..\n", index, caseval.info());
@@ -262,13 +261,13 @@ bool Command::function_Switch(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // While loop
-bool Command::function_While(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_While(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Argument 0 - Test condition
 	// Argument 1 - Blockment
 	ReturnValue test;
 	bool result;
-	Command::Function af;
+	Commands::Function af;
 	// Perform initial test of condition
 	if (!c->arg(0, test)) return FALSE;
 	while (test.asBool())
@@ -279,13 +278,13 @@ bool Command::function_While(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		{
 			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
 			af = c->parent()->acceptedFail();
-			if (af == Command::Break)
+			if (af == Commands::Break)
 			{
-				c->parent()->setAcceptedFail(Command::NoFunction);
+				c->parent()->setAcceptedFail(Commands::NoFunction);
 				return TRUE;
 			}
-			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
-			else if (af != Command::NoFunction) return FALSE;
+			else if (af == Commands::Continue) c->parent()->setAcceptedFail(Commands::NoFunction);
+			else if (af != Commands::NoFunction) return FALSE;
 		}
 		// Perform test of condition
 		if (!c->arg(0, test)) return FALSE;

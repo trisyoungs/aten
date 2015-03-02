@@ -25,7 +25,9 @@
 #include "methods/calculable.h"
 #include "templates/vector3.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Site;
 
 // Radial Distribution Function Class
@@ -41,13 +43,14 @@ class Pdens : public Calculable
 	*/
 	private:
 	// Centres involved in distribution
-	Site *sites_[2];
+	Site* sites_[2];
 	
 	public:
 	// Set site involved in distribution
-	void setSite(int, Site*);
+	void setSite(int index, Site* site);
 	// Get site involved in distribution
-	Site *site(int);
+	Site* site(int);
+
 
 	/*
 	// Methods
@@ -55,12 +58,13 @@ class Pdens : public Calculable
 	public:
 	// Initialise structure
 	bool initialise();
-	// Accumulate quantity data from supplied config
-	void accumulate(Model*);
+	// Accumulate quantity data from supplied model
+	void accumulate(Model* model);
 	// Finalise data
-	void finalise(Model*);
+	void finalise(Model* model);
 	// Save data
 	bool save();
+
 
 	/*
 	// Data Description
@@ -86,11 +90,13 @@ class Pdens : public Calculable
 	*/
 	private:
 	// Distribution
-	double ***data_;
+	double*** data_;
 	// Add point to data array
-	void addPoint(Vec3<int>&);
+	void addPoint(Vec3<int>& location);
 	// Count for number of added data (i.e. nframes)
 	int nAdded_;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

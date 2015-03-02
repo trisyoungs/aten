@@ -3,7 +3,7 @@ project(Aten)
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
 set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "908")
+set(VERSION_MINOR "909")
 set(VERSION_PATCH "1")
 
 set(CMAKE_BUILD_TYPE "Release")
@@ -75,13 +75,13 @@ ${SRCS}/main.cpp
 link_directories (${LIBRARY_OUTPUT_PATH})
 IF(WIN32 OR APPLE)
 target_link_libraries(${target_name} 
-main command parser gui render methods model ff fourier base classes math sg
+main command parser gui render methods model ff fourier base math sg
 ${QT_QTOPENGL_LIBRARY} ${OPENGL_LIBRARIES} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 ${READLINE_LIBRARY}
 )
 ELSE(WIN32 OR APPLE)
 target_link_libraries(${target_name} 
-main command parser gui render methods model ff fourier base classes math sg
+main command parser gui render methods model ff fourier base math sg
 ${QT_QTOPENGL_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 ${READLINE_LIBRARY}
 )

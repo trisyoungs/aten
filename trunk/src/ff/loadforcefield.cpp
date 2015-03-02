@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <fstream>
 #include "ff/forcefield.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
-#include "classes/neta_parser.h"
-#include "templates/namemap.h"
+#include "base/forcefieldatom.h"
+#include "base/forcefieldbound.h"
+#include "base/neta_parser.h"
+
+ATEN_USING_NAMESPACE
 
 // Load the specified forcefield
-bool Forcefield::load(const char *filename)
+bool Forcefield::load(const char* filename)
 {
-	msg.enter("Forcefield::load");
+	Messenger::enter("Forcefield::load");
 	bool done, okay;
 	int success, n;
 	Prefs::EnergyUnit ffunit;
@@ -39,16 +39,16 @@ bool Forcefield::load(const char *filename)
 	filename_.set(filename);
 	// Now follows blocks of keywords
 	done = FALSE;
-	msg.print("Opening forcefield : %s...\n",filename);
+	Messenger::print("Opening forcefield : %s...\n",filename);
 	do
 	{
 		okay = FALSE;
 		success = ffparser.getArgsDelim(LineParser::UseQuotes+LineParser::SkipBlanks);
 		if (success == 1)
 		{
-			msg.print("Error reading FF directive.\n");
+			Messenger::print("Error reading FF directive.\n");
 			ffparser.closeFiles();
-			msg.exit("Forcefield::load");
+			Messenger::exit("Forcefield::load");
 			return FALSE;
 		}
 		if (success == -1) break;
@@ -56,12 +56,12 @@ bool Forcefield::load(const char *filename)
 		switch (forcefieldCommand(ffparser.argc(0)))
 		{
 			case (Forcefield::MessageCommand):
-				msg.print("####\t %s\n",ffparser.argc(1));
+				Messenger::print("####\t %s\n",ffparser.argc(1));
 				okay = TRUE;
 				break;
 			case (Forcefield::NameCommand):
 				name_.set(ffparser.argc(1));
-				msg.print("\t: '%s'\n",name_.get());
+				Messenger::print("\t: '%s'\n",name_.get());
 				okay = TRUE;
 				break;
 			case (Forcefield::UnitsCommand):
@@ -69,7 +69,7 @@ bool Forcefield::load(const char *filename)
 				if (ffunit != Prefs::nEnergyUnits)
 				{
 					energyUnit_ = ffunit;
-					msg.print("\t: Energy units are %s\n", Prefs::energyUnit(energyUnit_));
+					Messenger::print("\t: Energy units are %s\n", Prefs::energyUnit(energyUnit_));
 					okay = TRUE;
 				}
 				else okay = FALSE;
@@ -87,7 +87,7 @@ bool Forcefield::load(const char *filename)
 				okay = readData(ffparser.argc(1));
 				break;
 			case (Forcefield::EquivalentsCommand):
-				if (types_.nItems() == 0) msg.print("\nWarning - Equivalent definitions have been provided before any types have been defined.\n\n");
+				if (types_.nItems() == 0) Messenger::print("\nWarning - Equivalent definitions have been provided before any types have been defined.\n\n");
 				okay = readEquivalents();
 				break;
 			case (Forcefield::FunctionCommand):
@@ -99,7 +99,7 @@ bool Forcefield::load(const char *filename)
 				okay = TRUE;
 				break;
 			case (Forcefield::VdwCommand):
-				msg.print("The 'vdw' keyword is deprecated - use 'inter' instead.\n");
+				Messenger::print("The 'vdw' keyword is deprecated - use 'inter' instead.\n");
 			case (Forcefield::InterCommand):
 				okay = readInter();
 				break;
@@ -119,23 +119,23 @@ bool Forcefield::load(const char *filename)
 				okay = readUreyBradley();
 				break;
 			case (Forcefield::VScaleCommand):
-				msg.print("Error: Use of 'vscale' command is deprecated.\n\tSpecify 1-4 scaling factors in the torsion block header.\n");
+				Messenger::print("Error: Use of 'vscale' command is deprecated.\n\tSpecify 1-4 scaling factors in the torsion block header.\n");
 				okay = FALSE;
 				break;
 			case (Forcefield::EScaleCommand):
-				msg.print("Error: Use of 'escale' command is deprecated.\n\tSpecify 1-4 scaling factors in the torsion block header.\n");
+				Messenger::print("Error: Use of 'escale' command is deprecated.\n\tSpecify 1-4 scaling factors in the torsion block header.\n");
 				okay = FALSE;
 				break;
 			default:
-				msg.print("Unrecognised forcefield keyword '%s'.\n",ffparser.argc(0));
+				Messenger::print("Unrecognised forcefield keyword '%s'.\n",ffparser.argc(0));
 				break;
 		}
 		// Check on 'okay'
 		if (!okay)
 		{
-			//msg.print("EreadVdwor reading forcefield file. Aborted.\n");
-			msg.print("Error at line %i of file.\n", ffparser.lastLineNo());
-			msg.exit("Forcefield::load");
+			//Messenger::print("EreadVdwor reading forcefield file. Aborted.\n");
+			Messenger::print("Error at line %i of file.\n", ffparser.lastLineNo());
+			Messenger::exit("Forcefield::load");
 			ffparser.closeFiles();
 			return FALSE;
 		}
@@ -143,20 +143,20 @@ bool Forcefield::load(const char *filename)
 	ffparser.closeFiles();
 
 	// Check that some forcefield types were defined...
-	if (types_.nItems() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");
+	if (types_.nItems() <= 1) Messenger::print("Warning - no types are defined in this forcefield.\n");
 
 	// Link forcefield type references (&N) to their actual forcefield types
 	for (ForcefieldAtom* ffa = types_.first(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
 	// Last thing - convert energetic units in the forcefield to the internal units of the program
 	convertParameters();
-	msg.exit("Forcefield::load");
+	Messenger::exit("Forcefield::load");
 	return TRUE;
 }
 
 // Read in forcefield type defines
 bool Forcefield::readDefines()
 {
-	msg.enter("Forcefield::readDefines");
+	Messenger::enter("Forcefield::readDefines");
 	int success, nadded = 0;
 	bool done;
 	Neta *neta;
@@ -167,9 +167,9 @@ bool Forcefield::readDefines()
 		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error while reading atom type defines %i.\n", types_.nItems());
-			if (success == -1) msg.print("End of file while reading atom type defines %i.\n", types_.nItems());
-			msg.exit("Forcefield::readDefines");
+			if (success == 1) Messenger::print("File error while reading atom type defines %i.\n", types_.nItems());
+			if (success == -1) Messenger::print("End of file while reading atom type defines %i.\n", types_.nItems());
+			Messenger::exit("Forcefield::readDefines");
 			return FALSE;
 		}
 		else if (strcmp(ffparser.argc(0),"end") == 0) break;
@@ -177,8 +177,8 @@ bool Forcefield::readDefines()
 		for (neta = typeDefines_.first(); neta != NULL; neta = neta->next) if (strcmp(ffparser.argc(0), neta->name()) == 0) break;
 		if (neta != NULL)
 		{
-			msg.print("Error: Duplicate type define name specified (%s) at line %i.\n", ffparser.argc(0), ffparser.lastLineNo());
-			msg.exit("Forcefield::readDefines");
+			Messenger::print("Error: Duplicate type define name specified (%s) at line %i.\n", ffparser.argc(0), ffparser.lastLineNo());
+			Messenger::exit("Forcefield::readDefines");
 			return FALSE;
 		}
 		neta = typeDefines_.add();
@@ -187,21 +187,21 @@ bool Forcefield::readDefines()
 		neta->setParentForcefield(this);
 		if (!netaparser.createNeta(neta, ffparser.argc(1), this))
 		{
-			msg.print("Error parsing type define at line %i.\n", ffparser.lastLineNo());
-			msg.exit("Forcefield::readDefines");
+			Messenger::print("Error parsing type define at line %i.\n", ffparser.lastLineNo());
+			Messenger::exit("Forcefield::readDefines");
 			return FALSE;
 		}
 	} while (!done);
-	if (nadded == 0) msg.print("Warning - No atype defines specified in this block (at line %i)!\n", ffparser.lastLineNo());
-	else msg.print("\t: Read in %i type defines\n", nadded);
-	msg.exit("Forcefield::readDefines");
+	if (nadded == 0) Messenger::print("Warning - No atype defines specified in this block (at line %i)!\n", ffparser.lastLineNo());
+	else Messenger::print("\t: Read in %i type defines\n", nadded);
+	Messenger::exit("Forcefield::readDefines");
 	return TRUE;
 }
 
 // Read in forcefield atom types.
 bool Forcefield::readTypes()
 {
-	msg.enter("Forcefield::readTypes");
+	Messenger::enter("Forcefield::readTypes");
 	int success, newffid, nadded = 0;
 	bool done;
 	ForcefieldAtom* ffa, *idsearch;
@@ -212,9 +212,9 @@ bool Forcefield::readTypes()
 		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error while reading atom type description %i.\n", types_.nItems());
-			if (success == -1) msg.print("End of file while reading atom type description %i.\n", types_.nItems());
-			msg.exit("Forcefield::readTypes");
+			if (success == 1) Messenger::print("File error while reading atom type description %i.\n", types_.nItems());
+			if (success == -1) Messenger::print("End of file while reading atom type description %i.\n", types_.nItems());
+			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
 		else if (strcmp(ffparser.argc(0),"end") == 0) break;
@@ -223,8 +223,8 @@ bool Forcefield::readTypes()
 		idsearch = findType(newffid);
 		if (idsearch != NULL)
 		{
-			msg.print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
-			msg.exit("Forcefield::readTypes");
+			Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
+			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
 		ffa = types_.add();
@@ -234,16 +234,16 @@ bool Forcefield::readTypes()
 		// Check number of items on line in file
 		if (ffparser.nArgs() < 4)
 		{
-			msg.print("Error: Missing data in 'types' block.\n\tFormat of lines in block is 'ffid  typename  element   NETA  [description]'\n");
-			msg.exit("Forcefield::readTypes");
+			Messenger::print("Error: Missing data in 'types' block.\n\tFormat of lines in block is 'ffid  typename  element   NETA  [description]'\n");
+			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
 		ffa->setName(ffparser.argc(1));
 		int el = Elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
 		if (el == 0)
 		{
-			msg.print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).\n", ffparser.argc(2), ffa->name(), ffa->typeId());
-			msg.exit("Forcefield::readTypes");
+			Messenger::print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).\n", ffparser.argc(2), ffa->name(), ffa->typeId());
+			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
 		ffa->setElement(el);
@@ -251,21 +251,21 @@ bool Forcefield::readTypes()
 		ffa->neta()->setCharacterElement(el);
 		if (!ffa->setNeta(ffparser.argc(3), this))
 		{
-			msg.exit("Forcefield::readTypes");
+			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
 		if (ffparser.hasArg(4)) ffa->setDescription(ffparser.argc(4));
 	} while (!done);
-	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", ffparser.lastLineNo());
-	else msg.print("\t: Read in %i type descriptions\n", nadded);
-	msg.exit("Forcefield::readTypes");
+	if (nadded == 0) Messenger::print("Warning - No atom types specified in this block (at line %i)!\n", ffparser.lastLineNo());
+	else Messenger::print("\t: Read in %i type descriptions\n", nadded);
+	Messenger::exit("Forcefield::readTypes");
 	return TRUE;
 }
 
 // Read in united atom forcefield types.
 bool Forcefield::readUnitedAtomTypes()
 {
-	msg.enter("Forcefield::readUnitedAtomTypes");
+	Messenger::enter("Forcefield::readUnitedAtomTypes");
 	int success, newffid, nadded = 0;
 	bool done;
 	ForcefieldAtom* ffa, *idsearch;
@@ -276,9 +276,9 @@ bool Forcefield::readUnitedAtomTypes()
 		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error while reading united atom type description %i.\n", types_.nItems());
-			if (success == -1) msg.print("End of file while reading united atom type description %i.\n", types_.nItems());
-			msg.exit("Forcefield::readUnitedAtomTypes");
+			if (success == 1) Messenger::print("File error while reading united atom type description %i.\n", types_.nItems());
+			if (success == -1) Messenger::print("End of file while reading united atom type description %i.\n", types_.nItems());
+			Messenger::exit("Forcefield::readUnitedAtomTypes");
 			return FALSE;
 		}
 		else if (strcmp(ffparser.argc(0),"end") == 0) break;
@@ -287,8 +287,8 @@ bool Forcefield::readUnitedAtomTypes()
 		idsearch = findType(newffid);
 		if (idsearch != NULL)
 		{
-			msg.print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
-			msg.exit("Forcefield::readTypes");
+			Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
+			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
 		ffa = types_.add();
@@ -298,8 +298,8 @@ bool Forcefield::readUnitedAtomTypes()
 		// Check number of items on line in file
 		if (ffparser.nArgs() < 5)
 		{
-			msg.print("Error: Missing data in 'uatypes' block.\n\tFormat of lines in block is 'ffid  typename  element  mass  NETA  [description]'\n");
-			msg.exit("Forcefield::readUnitedAtomTypes");
+			Messenger::print("Error: Missing data in 'uatypes' block.\n\tFormat of lines in block is 'ffid  typename  element  mass  NETA  [description]'\n");
+			Messenger::exit("Forcefield::readUnitedAtomTypes");
 			return FALSE;
 		}
 		ffa->setName(ffparser.argc(1));
@@ -307,8 +307,8 @@ bool Forcefield::readUnitedAtomTypes()
 		int el = Elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
 		if (el == 0)
 		{
-			msg.print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).\n", ffparser.argc(2), ffa->name(), ffa->typeId());
-			msg.exit("Forcefield::readUnitedAtomTypes");
+			Messenger::print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).\n", ffparser.argc(2), ffa->name(), ffa->typeId());
+			Messenger::exit("Forcefield::readUnitedAtomTypes");
 			return FALSE;
 		}
 		ffa->setElement(el);
@@ -316,21 +316,21 @@ bool Forcefield::readUnitedAtomTypes()
 		ffa->neta()->setCharacterElement(Elements().find(ffparser.argc(2), ElementMap::AlphaZMap));
 		if (!ffa->setNeta(ffparser.argc(4), this))
 		{
-			msg.exit("Forcefield::readUnitedAtomTypes");
+			Messenger::exit("Forcefield::readUnitedAtomTypes");
 			return FALSE;
 		}
 		if (ffparser.hasArg(5)) ffa->setDescription(ffparser.argc(4));
 	} while (!done);
-	if (nadded == 0) msg.print("Warning - No united atom types specified in this block (at line %i)!\n", ffparser.lastLineNo());
-	else msg.print("\t: Read in %i united-atom type descriptions\n", nadded);
-	msg.exit("Forcefield::readUnitedAtomTypes");
+	if (nadded == 0) Messenger::print("Warning - No united atom types specified in this block (at line %i)!\n", ffparser.lastLineNo());
+	else Messenger::print("\t: Read in %i united-atom type descriptions\n", nadded);
+	Messenger::exit("Forcefield::readUnitedAtomTypes");
 	return TRUE;
 }
 
 // Reads in extra data for atoms
-bool Forcefield::readData(const char *vars)
+bool Forcefield::readData(const char* vars)
 {
-	msg.enter("Forcefield::readData");
+	Messenger::enter("Forcefield::readData");
 	// Store current number of data defined, since there may be multiple 'data' blocks given
 	int lastn = typeData_.nItems();
 	// First, parse list of data items to get name
@@ -344,8 +344,8 @@ bool Forcefield::readData(const char *vars)
 		VTypes::DataType vt = VTypes::dataType(parser.argc(n));
 		if (vt == VTypes::nDataTypes)
 		{
-			msg.print("Unrecognised type ('%s') found in list in 'data' block header.\n", parser.argc(0));
-			msg.exit("Forcefield::readData");
+			Messenger::print("Unrecognised type ('%s') found in list in 'data' block header.\n", parser.argc(0));
+			Messenger::exit("Forcefield::readData");
 			return FALSE;
 		}
 		typeData_.add(parser.argc(n+1), vt);
@@ -359,9 +359,9 @@ bool Forcefield::readData(const char *vars)
 		success = ffparser.getArgsDelim(LineParser::UseQuotes+LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error while reading atom type data.\n");
-			if (success == -1) msg.print("End of file while reading atom type data.\n");
-			msg.exit("Forcefield::readData");
+			if (success == 1) Messenger::print("File error while reading atom type data.\n");
+			if (success == -1) Messenger::print("End of file while reading atom type data.\n");
+			Messenger::exit("Forcefield::readData");
 			return FALSE;
 		}
 		else if (strcmp(ffparser.argc(0),"end") == 0) break;
@@ -369,8 +369,8 @@ bool Forcefield::readData(const char *vars)
 		ForcefieldAtom* ffa = findType(ffparser.argi(0));
 		if (ffa == NULL)
 		{
-			msg.print("Error: forcefield type ID '%i' has not been specified, so can't add data to it.\n", ffparser.argi(0));
-			msg.exit("Forcefield::readData");
+			Messenger::print("Error: forcefield type ID '%i' has not been specified, so can't add data to it.\n", ffparser.argi(0));
+			Messenger::exit("Forcefield::readData");
 			return FALSE;
 		}
 		nadded ++;
@@ -380,7 +380,7 @@ bool Forcefield::readData(const char *vars)
 			// If the parser argument is blank we've run out of arguments early
 			if (!ffparser.hasArg(n))
 			{
-				msg.print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).\n", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
+				Messenger::print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).\n", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
 				continue;
 			}
 			index = lastn + n - 2;
@@ -396,22 +396,22 @@ bool Forcefield::readData(const char *vars)
 					ffa->addData(typeData_.name(index), ffparser.argc(n));
 					break;
 				default:
-					msg.print("Error: Unsuitable datatype for data item %i.\n", n-1);
-					msg.exit("Forcefield::readData");
+					Messenger::print("Error: Unsuitable datatype for data item %i.\n", n-1);
+					Messenger::exit("Forcefield::readData");
 					return TRUE;
 			}
 		}
 	} while (!done);
-	if (nadded == 0) msg.print("Warning - No data specified in this block (at line %i)!\n", ffparser.lastLineNo());
-	else msg.print("\t: Read in data for %i types\n", nadded);
-	msg.exit("Forcefield::readData");
+	if (nadded == 0) Messenger::print("Warning - No data specified in this block (at line %i)!\n", ffparser.lastLineNo());
+	else Messenger::print("\t: Read in data for %i types\n", nadded);
+	Messenger::exit("Forcefield::readData");
 	return TRUE;
 }
 
 // Read in generator function definitions
 bool Forcefield::readFunctions()
 {
-	msg.enter("Forcefield::readFunctions");
+	Messenger::enter("Forcefield::readFunctions");
 	// Store every line from the file up to the next 'end' block
 	bool done = FALSE;
 	int success;
@@ -420,15 +420,15 @@ bool Forcefield::readFunctions()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error while reading function block.\n");
-			if (success == -1) msg.print("End of file while reading function block.\n");
-			msg.exit("Forcefield::readFunctions");
+			if (success == 1) Messenger::print("File error while reading function block.\n");
+			if (success == -1) Messenger::print("End of file while reading function block.\n");
+			Messenger::exit("Forcefield::readFunctions");
 			return FALSE;
 		}
 		if (strcmp(ffparser.argc(0),"end") != 0)
 		{
 			// Add line to internal list and continue
-			Dnchar *newline = generatorFunctionText_.add();
+			Dnchar* newline = generatorFunctionText_.add();
 			newline->set(ffparser.line());
 		}
 		else done = TRUE;
@@ -436,26 +436,26 @@ bool Forcefield::readFunctions()
 	// Check for empty string list
 	if (generatorFunctionText_.nItems() == 0)
 	{
-		msg.print("Found an empty 'functions' block - ignored.\n");
-		msg.exit("Forcefield::readFunctions");
+		Messenger::print("Found an empty 'functions' block - ignored.\n");
+		Messenger::exit("Forcefield::readFunctions");
 		return TRUE;
 	}
 	// Now, attempt to parser the lines we just read in to create functions....
 	bool result = generatorFunctions_.generateFromStringList(generatorFunctionText_.first(), "GeneratorFuncs", "Generator Function", TRUE);
 	// Search for functions we recognise
 	vdwGenerator_ = generatorFunctions_.findFunction("vdwgenerator");
-	if (vdwGenerator_) msg.print("\t: Found 'vdwgenerator' function.\n");
-	else msg.print("\t: Warning - No 'vdwgenerator' function defined.\n");
+	if (vdwGenerator_) Messenger::print("\t: Found 'vdwgenerator' function.\n");
+	else Messenger::print("\t: Warning - No 'vdwgenerator' function defined.\n");
 	bondGenerator_ = generatorFunctions_.findFunction("bondgenerator");
-	if (bondGenerator_) msg.print("\t: Found 'bondgenerator' function.\n");
-	else msg.print("\t: Warning - No 'bondgenerator' function defined.\n");
+	if (bondGenerator_) Messenger::print("\t: Found 'bondgenerator' function.\n");
+	else Messenger::print("\t: Warning - No 'bondgenerator' function defined.\n");
 	angleGenerator_ = generatorFunctions_.findFunction("anglegenerator");
-	if (angleGenerator_) msg.print("\t: Found 'anglegenerator' function.\n");
-	else msg.print("\t: Warning - No 'anglegenerator' function defined.\n");
+	if (angleGenerator_) Messenger::print("\t: Found 'anglegenerator' function.\n");
+	else Messenger::print("\t: Warning - No 'anglegenerator' function defined.\n");
 	torsionGenerator_ = generatorFunctions_.findFunction("torsiongenerator");
-	if (torsionGenerator_) msg.print("\t: Found 'torsiongenerator' function.\n");
-	else msg.print("\t: Warning - No 'torsiongenerator' function defined.\n");
-	msg.exit("Forcefield::readFunctions");
+	if (torsionGenerator_) Messenger::print("\t: Found 'torsiongenerator' function.\n");
+	else Messenger::print("\t: Warning - No 'torsiongenerator' function defined.\n");
+	Messenger::exit("Forcefield::readFunctions");
 	return result;
 }
 
@@ -467,7 +467,7 @@ bool Forcefield::readEquivalents()
 	Here, we search/replace specified definitions and set the equiv names to the first name in the list.
 	The equivname doesn't have to exist in the atomtypes itself since the equivalent names are only used in intramolecular parameter searching.
 	*/
-	msg.enter("Forcefield::readEquivalents");
+	Messenger::enter("Forcefield::readEquivalents");
 	int count, success, argpos;
 	ForcefieldAtom* ffa;
 	bool done = FALSE;
@@ -477,9 +477,9 @@ bool Forcefield::readEquivalents()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error while reading equivalents data for atom %i.\n",count+1);
-			if (success == -1) msg.print("End of file while reading equivalents data for atom %i.\n",count+1);
-			msg.exit("Forcefield::readEquivalents");
+			if (success == 1) Messenger::print("File error while reading equivalents data for atom %i.\n",count+1);
+			if (success == -1) Messenger::print("End of file while reading equivalents data for atom %i.\n",count+1);
+			Messenger::exit("Forcefield::readEquivalents");
 			return FALSE;
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
@@ -495,8 +495,8 @@ bool Forcefield::readEquivalents()
 			count ++;
 		}
 	} while (!done);
-	msg.print("\t: Processed %i atomtype equivalents.\n",count);
-	msg.exit("Forcefield::readEquivalents");
+	Messenger::print("\t: Processed %i atomtype equivalents.\n",count);
+	Messenger::exit("Forcefield::readEquivalents");
 	return TRUE;
 }
 
@@ -504,7 +504,7 @@ bool Forcefield::readEquivalents()
 bool Forcefield::readInter()
 {
 	// Format of lines is: 'ffid  fftype  charge  data1  data2  ... dataN'
-	msg.enter("Forcefield::readInter");
+	Messenger::enter("Forcefield::readInter");
 	int success, count, n;
 	ForcefieldAtom* ffa;
 	// Get functional form of vdw
@@ -512,7 +512,7 @@ bool Forcefield::readInter()
 	if (vdwstyle == VdwFunctions::nVdwFunctions)
 	{
 		vdwstyle = VdwFunctions::None;
-		msg.print("VDW functional form not recognised - '%s'\n",ffparser.argc(1));
+		Messenger::print("VDW functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
 	}
 	bool done = FALSE;
@@ -523,9 +523,9 @@ bool Forcefield::readInter()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error reading VDW data for atom %i.\n",count+1);
-			if (success == -1) msg.print("End of file while reading VDW data for atom %i.\n",count+1);
-			msg.exit("Forcefield::readInter");
+			if (success == 1) Messenger::print("File error reading VDW data for atom %i.\n",count+1);
+			if (success == -1) Messenger::print("End of file while reading VDW data for atom %i.\n",count+1);
+			Messenger::exit("Forcefield::readInter");
 			return FALSE;
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
@@ -535,27 +535,27 @@ bool Forcefield::readInter()
 			ffa = findType(ffparser.argi(0));
 			if (ffa == NULL)
 			{
-				msg.print("Unrecognised forcefield atom id in VDW list: '%s'\n", ffparser.argc(0));
-				msg.exit("Forcefield::readInter");
+				Messenger::print("Unrecognised forcefield atom id in VDW list: '%s'\n", ffparser.argc(0));
+				Messenger::exit("Forcefield::readInter");
 				return FALSE;
 			}
 			ffa->setCharge(ffparser.argd(2));
 			ffa->setVdwForm(vdwstyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) ffa->setParameter(n, ffparser.argd(n+3));
-			msg.print(Messenger::Verbose,"VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->charge(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->parameter(3), ffa->parameter(4), ffa->parameter(5));
+			Messenger::print(Messenger::Verbose, "VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->charge(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->parameter(3), ffa->parameter(4), ffa->parameter(5));
 			count ++;
 		}
 	} while (!done);
-	msg.print("\t: Read in %i atomic VDW parameters (%s)\n", count, VdwFunctions::VdwFunctions[vdwstyle].name);
-	msg.exit("Forcefield::readInter");
+	Messenger::print("\t: Read in %i atomic VDW parameters (%s)\n", count, VdwFunctions::VdwFunctions[vdwstyle].name);
+	Messenger::exit("Forcefield::readInter");
 	return TRUE;
 }
 
 // Read in bond specifications
 bool Forcefield::readBonds()
 {
-	msg.enter("Forcefield::readBonds");
-	ForcefieldBound *newffbond;
+	Messenger::enter("Forcefield::readBonds");
+	ForcefieldBound* newffbond;
 	bool done = FALSE;
 	int count, success, n;
 	// Get functional form of bond potential
@@ -563,7 +563,7 @@ bool Forcefield::readBonds()
 	if (bondstyle == BondFunctions::nBondFunctions)
 	{
 		bondstyle = BondFunctions::None;
-		msg.print("Bond stretch functional form not recognised - '%s'\n",ffparser.argc(1));
+		Messenger::print("Bond stretch functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
 	}
 	count = 0;
@@ -573,9 +573,9 @@ bool Forcefield::readBonds()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error reading bond data %i.\n",count+1);
-			if (success == -1) msg.print("End of file error reading bond data %i.\n",count+1);
-			msg.exit("Forcefield::readBonds");
+			if (success == 1) Messenger::print("File error reading bond data %i.\n",count+1);
+			if (success == -1) Messenger::print("End of file error reading bond data %i.\n",count+1);
+			Messenger::exit("Forcefield::readBonds");
 			return FALSE;
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
@@ -586,7 +586,7 @@ bool Forcefield::readBonds()
 			for (n=0; n<2; n++)
 			{
 				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					msg.print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", ffparser.argc(n));
+					Messenger::print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", ffparser.argc(n));
 			}
 			// Create new ff_bond structure
 			newffbond = bonds_.add();
@@ -595,27 +595,27 @@ bool Forcefield::readBonds()
 			newffbond->setTypeName(1,ffparser.argc(1));
 			newffbond->setBondForm(bondstyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+2)) newffbond->setParameter(n, ffparser.argd(n+2));
-			msg.print(Messenger::Verbose,"BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->parameter(0), newffbond->parameter(1), newffbond->parameter(2), newffbond->parameter(3), newffbond->parameter(4), newffbond->parameter(5)); 
+			Messenger::print(Messenger::Verbose, "BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->parameter(0), newffbond->parameter(1), newffbond->parameter(2), newffbond->parameter(3), newffbond->parameter(4), newffbond->parameter(5)); 
 			count ++;
 		}
 	} while (!done);
-	msg.print("\t: Read in %i bond definitions (%s)\n", count, BondFunctions::BondFunctions[bondstyle].name);
-	msg.exit("Forcefield::readBonds");
+	Messenger::print("\t: Read in %i bond definitions (%s)\n", count, BondFunctions::BondFunctions[bondstyle].name);
+	Messenger::exit("Forcefield::readBonds");
 	return TRUE;
 }
 
 // Read in angle specifications
 bool Forcefield::readAngles()
 {
-	msg.enter("Forcefield::readAngles");
-	ForcefieldBound *newffangle;
+	Messenger::enter("Forcefield::readAngles");
+	ForcefieldBound* newffangle;
 	int count, success, n;
 	// Grab functional form of angle potential
 	AngleFunctions::AngleFunction anglestyle = AngleFunctions::angleFunction(ffparser.argc(1));
 	if (anglestyle == AngleFunctions::nAngleFunctions)
 	{
 		anglestyle = AngleFunctions::None;
-		msg.print("Angle bend functional form not recognised - '%s'\n",ffparser.argc(1));
+		Messenger::print("Angle bend functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
 	}
 	bool done = FALSE;
@@ -626,9 +626,9 @@ bool Forcefield::readAngles()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error reading angle data %i.\n",count+1);
-			if (success == -1) msg.print("End of file while reading angle data %i.\n",count+1);
-			msg.exit("Forcefield::readAngles");
+			if (success == 1) Messenger::print("File error reading angle data %i.\n",count+1);
+			if (success == -1) Messenger::print("End of file while reading angle data %i.\n",count+1);
+			Messenger::exit("Forcefield::readAngles");
 			return FALSE;
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
@@ -639,7 +639,7 @@ bool Forcefield::readAngles()
 			for (n=0; n<3; n++)
 			{
 				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					msg.print("\t... Warning - angle atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
+					Messenger::print("\t... Warning - angle atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
 			}
 			// Create new ff_angle structure
 			newffangle = angles_.add();
@@ -649,20 +649,20 @@ bool Forcefield::readAngles()
 			newffangle->setTypeName(2, ffparser.argc(2));
 			newffangle->setAngleForm(anglestyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) newffangle->setParameter(n,ffparser.argd(n+3));
-			msg.print(Messenger::Verbose,"ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->parameter(0), newffangle->parameter(1), newffangle->parameter(2), newffangle->parameter(3), newffangle->parameter(4), newffangle->parameter(5)); 
+			Messenger::print(Messenger::Verbose, "ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->parameter(0), newffangle->parameter(1), newffangle->parameter(2), newffangle->parameter(3), newffangle->parameter(4), newffangle->parameter(5)); 
 			count ++;
 		}
 	} while (!done);
-	msg.print("\t: Read in %i angle definitions (%s)\n", count, AngleFunctions::AngleFunctions[anglestyle].name);
-	msg.exit("Forcefield::readAngles");
+	Messenger::print("\t: Read in %i angle definitions (%s)\n", count, AngleFunctions::AngleFunctions[anglestyle].name);
+	Messenger::exit("Forcefield::readAngles");
 	return TRUE;
 }
 
 // Read in torsion data
 bool Forcefield::readTorsions()
 {
-	msg.enter("Forcefield::readTorsions");
-	ForcefieldBound *newfftorsion;
+	Messenger::enter("Forcefield::readTorsions");
+	ForcefieldBound* newfftorsion;
 	int count, success, n;
 	double escale = 0.5, vscale = 0.5;
 	// Get functional form of torsion potential
@@ -670,21 +670,21 @@ bool Forcefield::readTorsions()
 	if (torsionstyle == TorsionFunctions::nTorsionFunctions)
 	{
 		torsionstyle = TorsionFunctions::None;
-		msg.print("Torsion twist functional form not recognised - '%s'\n",ffparser.argc(1));
+		Messenger::print("Torsion twist functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
 	}
 	// Have new scaling factors been provided?
-	if (!ffparser.hasArg(2)) msg.print("   Electrostatic/VDW 1-4 scale factors not provided - defaults of %f and %f used instead.\n", escale, vscale);
+	if (!ffparser.hasArg(2)) Messenger::print("   Electrostatic/VDW 1-4 scale factors not provided - defaults of %f and %f used instead.\n", escale, vscale);
 	else if (!ffparser.hasArg(3))
 	{
-		msg.print("Error: Only electrostatic 1-4 scale factor was provided in torsion block header (line %i).\n",ffparser.lastLineNo());
+		Messenger::print("Error: Only electrostatic 1-4 scale factor was provided in torsion block header (line %i).\n",ffparser.lastLineNo());
 		return FALSE;
 	}
 	else
 	{
 		escale = ffparser.argd(2);
 		vscale = ffparser.argd(3);
-		msg.print("   Electrostatic/VDW 1-4 scale factors for these torsions are %f and %f.\n", escale, vscale);
+		Messenger::print("   Electrostatic/VDW 1-4 scale factors for these torsions are %f and %f.\n", escale, vscale);
 	}
 	count = 0;
 	bool done = FALSE;
@@ -694,9 +694,9 @@ bool Forcefield::readTorsions()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error reading torsion data %i.\n",count+1);
-			if (success == -1) msg.print("End of file error reading torsion data %i.\n",count+1);
-			msg.exit("Forcefield::readTorsions");
+			if (success == 1) Messenger::print("File error reading torsion data %i.\n",count+1);
+			if (success == -1) Messenger::print("End of file error reading torsion data %i.\n",count+1);
+			Messenger::exit("Forcefield::readTorsions");
 			return FALSE;
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
@@ -707,7 +707,7 @@ bool Forcefield::readTorsions()
 			for (n=0; n<4; n++)
 			{
 				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					msg.print("\t... Warning - torsion atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
+					Messenger::print("\t... Warning - torsion atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
 			}
 			// Create new ff_angle structure
 			newfftorsion = torsions_.add();
@@ -719,27 +719,27 @@ bool Forcefield::readTorsions()
 			newfftorsion->setTorsionForm(torsionstyle);
 			newfftorsion->setScaleFactors(escale, vscale);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+4)) newfftorsion->setParameter(n, ffparser.argd(n+4));
-			msg.print(Messenger::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
+			Messenger::print(Messenger::Verbose, "TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
 			count ++;
 		}
 	} while (!done);
-	msg.print("\t: Read in %i torsion definitions (%s)\n", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
-	msg.exit("Forcefield::readTorsions");
+	Messenger::print("\t: Read in %i torsion definitions (%s)\n", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
+	Messenger::exit("Forcefield::readTorsions");
 	return TRUE;
 }
 
 // Read in improper definitions
 bool Forcefield::readImpropers()
 {
-	msg.enter("Forcefield::readImpropers");
-	ForcefieldBound *newffimproper;
+	Messenger::enter("Forcefield::readImpropers");
+	ForcefieldBound* newffimproper;
 	int count, success, n;
 	// Get functional form of torsion potential
 	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(ffparser.argc(1));
 	if (torsionstyle == TorsionFunctions::nTorsionFunctions)
 	{
 		torsionstyle = TorsionFunctions::None;
-		msg.print("Improper torsion functional form not recognised - '%s'\n",ffparser.argc(1));
+		Messenger::print("Improper torsion functional form not recognised - '%s'\n",ffparser.argc(1));
 		TorsionFunctions::printValid();
 		return FALSE;
 	}
@@ -751,9 +751,9 @@ bool Forcefield::readImpropers()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error reading improper torsion data %i.\n",count+1);
-			if (success == -1) msg.print("End of file error reading improper torsion data %i.\n",count+1);
-			msg.exit("Forcefield::readImpropers");
+			if (success == 1) Messenger::print("File error reading improper torsion data %i.\n",count+1);
+			if (success == -1) Messenger::print("End of file error reading improper torsion data %i.\n",count+1);
+			Messenger::exit("Forcefield::readImpropers");
 			return FALSE;
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
@@ -764,7 +764,7 @@ bool Forcefield::readImpropers()
 			for (n=0; n<4; n++)
 			{
 				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					msg.print("\t... Warning - improper torsion atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
+					Messenger::print("\t... Warning - improper torsion atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
 			}
 			// Create new ff_angle structure
 			newffimproper = impropers_.add();
@@ -776,27 +776,27 @@ bool Forcefield::readImpropers()
 			newffimproper->setTorsionForm(torsionstyle);
 			newffimproper->setScaleFactors(1.0,1.0);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+4)) newffimproper->setParameter(n, ffparser.argd(n+4));
-			msg.print(Messenger::Verbose,"IMPROPER %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffimproper->typeName(0), newffimproper->typeName(1), newffimproper->typeName(2), newffimproper->typeName(3), newffimproper->parameter(0), newffimproper->parameter(1), newffimproper->parameter(2), newffimproper->parameter(3), newffimproper->parameter(4), newffimproper->parameter(5));
+			Messenger::print(Messenger::Verbose, "IMPROPER %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffimproper->typeName(0), newffimproper->typeName(1), newffimproper->typeName(2), newffimproper->typeName(3), newffimproper->parameter(0), newffimproper->parameter(1), newffimproper->parameter(2), newffimproper->parameter(3), newffimproper->parameter(4), newffimproper->parameter(5));
 			count ++;
 		}
 	} while (!done);
-	msg.print("\t: Read in %i improper torsion definitions (%s)\n", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
-	msg.exit("Forcefield::readImpropers");
+	Messenger::print("\t: Read in %i improper torsion definitions (%s)\n", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
+	Messenger::exit("Forcefield::readImpropers");
 	return TRUE;
 }
 
 // Read in Urey-Bradley data
 bool Forcefield::readUreyBradley()
 {
-	msg.enter("Forcefield::readUreyBradley");
-	ForcefieldBound *newffurey;
+	Messenger::enter("Forcefield::readUreyBradley");
+	ForcefieldBound* newffurey;
 	int count, success, n;
 	// Get functional form of potential
 	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(ffparser.argc(1));
 	if (bondstyle == BondFunctions::nBondFunctions)
 	{
 		bondstyle = BondFunctions::None;
-		msg.print("Urey-Bradley (bond) functional form not recognised - '%s'\n",ffparser.argc(1));
+		Messenger::print("Urey-Bradley (bond) functional form not recognised - '%s'\n",ffparser.argc(1));
 		BondFunctions::printValid();
 		return FALSE;
 	}
@@ -808,9 +808,9 @@ bool Forcefield::readUreyBradley()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg.print("File error reading Urey-Bradley data %i.\n",count+1);
-			if (success == -1) msg.print("End of file error reading Urey-Bradley data %i.\n",count+1);
-			msg.exit("Forcefield::readUreyBradley");
+			if (success == 1) Messenger::print("File error reading Urey-Bradley data %i.\n",count+1);
+			if (success == -1) Messenger::print("End of file error reading Urey-Bradley data %i.\n",count+1);
+			Messenger::exit("Forcefield::readUreyBradley");
 			return FALSE;
 		}
 		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
@@ -821,7 +821,7 @@ bool Forcefield::readUreyBradley()
 			for (n=0; n<3; n++)
 			{
 				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					msg.print("\t... Warning - Urey-Bradley atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
+					Messenger::print("\t... Warning - Urey-Bradley atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
 			}
 			// Create new ff_angle structure
 			newffurey = ureyBradleys_.add();
@@ -831,11 +831,11 @@ bool Forcefield::readUreyBradley()
 			newffurey->setTypeName(2,ffparser.argc(2));
 			newffurey->setBondForm(bondstyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) newffurey->setParameter(n, ffparser.argd(n+3));
-			msg.print(Messenger::Verbose,"UREY-BRADLEY %i : %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffurey->typeName(0), newffurey->typeName(1), newffurey->typeName(2), newffurey->parameter(0), newffurey->parameter(1), newffurey->parameter(2), newffurey->parameter(3), newffurey->parameter(4), newffurey->parameter(5));
+			Messenger::print(Messenger::Verbose, "UREY-BRADLEY %i : %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffurey->typeName(0), newffurey->typeName(1), newffurey->typeName(2), newffurey->parameter(0), newffurey->parameter(1), newffurey->parameter(2), newffurey->parameter(3), newffurey->parameter(4), newffurey->parameter(5));
 			count ++;
 		}
 	} while (!done);
-	msg.print("\t: Read in %i Urey-Bradley definitions (%s)\n", count, BondFunctions::BondFunctions[bondstyle].name);
-	msg.exit("Forcefield::readUreyBradley");
+	Messenger::print("\t: Read in %i Urey-Bradley definitions (%s)\n", count, BondFunctions::BondFunctions[bondstyle].name);
+	Messenger::exit("Forcefield::readUreyBradley");
 	return TRUE;
 }

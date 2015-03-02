@@ -24,8 +24,11 @@
 
 #include <QtGui/QComboBox>
 #include "parser/returnvalue.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class TComboBox : public QComboBox
 {
 	public:
@@ -36,6 +39,8 @@ class TComboBox : public QComboBox
 	// Associated data
 	ReturnValue data;
 };
+
+ATEN_END_NAMESPACE
 
 #endif
 

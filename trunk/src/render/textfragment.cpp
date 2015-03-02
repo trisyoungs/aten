@@ -21,6 +21,8 @@
 
 #include "render/textfragment.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 TextFragment::TextFragment() : ListItem<TextFragment>()
 {

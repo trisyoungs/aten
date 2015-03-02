@@ -22,14 +22,15 @@
 #include "parser/parser.h"
 #include "parser/program.h"
 
+ATEN_USING_NAMESPACE
+
 // External Declarations
-CommandParser cmdparser;
 int CommandParser_parse();
 
 // Constructor
-CommandParser::CommandParser()
-{
+CommandParser::CommandParser(Aten& aten) : aten_(aten)
 	// Private variables
+{
 	reset();
 }
 
@@ -37,6 +38,20 @@ CommandParser::CommandParser()
 CommandParser::~CommandParser()
 {
 }
+
+/*
+ * Link to Aten
+ */
+
+// Return reference to Aten
+Aten& CommandParser::aten()
+{
+	return aten_;
+}
+
+/*
+ * Create / Execute
+ */
 
 // Reset values in parser, ready for next source
 void CommandParser::reset()
@@ -60,7 +75,7 @@ void CommandParser::reset()
 // Print error information and location
 void CommandParser::printErrorInfo()
 {
-	if (source_ != CommandParser::StringSource) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.inputFilename());
+	if (source_ != CommandParser::StringSource) Messenger::print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.inputFilename());
 	// QUICK'n'DIRTY!
 	int i;
 	char *temp = new char[stringLength_+32];
@@ -70,13 +85,13 @@ void CommandParser::printErrorInfo()
 	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';
 	temp[stringPos_] = '\0';
 	// Print current string
-	msg.print(" %s\n", stringSource_.get());
-	msg.print(" %s^\n", temp);
+	Messenger::print(" %s\n", stringSource_.get());
+	Messenger::print(" %s^\n", temp);
 	delete[] temp;
 }
 
 // Return short info on the current parsing source (filename, line number etc.)
-const char *CommandParser::sourceInfo()
+const char* CommandParser::sourceInfo()
 {
 	// If its a file source, construct a suitable string. Otherwise, just return sourceInfo_ as is.
 	if (source_ == CommandParser::FileSource)
@@ -188,7 +203,7 @@ void CommandParser::unGetChar()
 // Perform tree generation (base function, called by generateFrom*)
 bool CommandParser::generate()
 {
-	msg.enter("CommandParser::generate");
+	Messenger::enter("CommandParser::generate");
 	expectPathStep_ = FALSE;
 	// Perform the parsing
 	int result = CommandParser_parse();
@@ -199,19 +214,19 @@ bool CommandParser::generate()
 	}
 	if (failed_) result = -1;
 	program_ = NULL;
-	msg.exit("CommandParser::generate");
+	Messenger::exit("CommandParser::generate");
 	return (result != 0 ? FALSE : TRUE);
 }
 
 // Fill target Program from specified character string
-bool CommandParser::generateFromString(Program *prog, const char *s, const char *sourceInfo, bool dontPushTree, bool clearExisting)
+bool CommandParser::generateFromString(Program* prog, const char* s, const char* sourceInfo, bool dontPushTree, bool clearExisting)
 {
-	msg.enter("CommandParser::generateFromString");
+	Messenger::enter("CommandParser::generateFromString");
 	// Clear any data in the existing Program (if requested)
 	if (prog == NULL)
 	{
 		printf("Internal Error: No Forest passed to CommandParser::generateFromString.\n");
-		msg.exit("CommandParser::generateFromString");
+		Messenger::exit("CommandParser::generateFromString");
 		return FALSE;
 	}
 	program_ = prog;
@@ -222,7 +237,7 @@ bool CommandParser::generateFromString(Program *prog, const char *s, const char 
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, FALSE);
-		msg.print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+		Messenger::print(Messenger::Parse, "Main program stacked - %p\n", tree_);
 	}
 	
 	// Store the source string
@@ -230,23 +245,23 @@ bool CommandParser::generateFromString(Program *prog, const char *s, const char 
 	stringSource_ = s;
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
-	msg.print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
+	Messenger::print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
 	source_ = CommandParser::StringSource;
 	bool result = generate();
 	reset();
-	msg.exit("CommandParser::generateFromString");
+	Messenger::exit("CommandParser::generateFromString");
 	return result;
 }
 
 // Populate target Program from specified string list
-bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead, const char *sourceInfo, bool dontPushTree, bool clearExisting)
+bool CommandParser::generateFromStringList(Program* prog, Dnchar* stringListHead, const char* sourceInfo, bool dontPushTree, bool clearExisting)
 {
-	msg.enter("CommandParser::generateFromStringList");
+	Messenger::enter("CommandParser::generateFromStringList");
 	// Clear any data in the existing Program
 	if (prog == NULL)
 	{
 		printf("Internal Error: No Forest passed to CommandParser::generateFromStringList.\n");
-		msg.exit("CommandParser::generateFromStringList");
+		Messenger::exit("CommandParser::generateFromStringList");
 		return FALSE;
 	}
 	program_ = prog;
@@ -257,7 +272,7 @@ bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, FALSE);
-		msg.print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+		Messenger::print(Messenger::Parse, "Main program stacked - %p\n", tree_);
 	}
 	
 	// Store the source strings
@@ -265,24 +280,24 @@ bool CommandParser::generateFromStringList(Program *prog, Dnchar *stringListHead
 	stringListSource_ = stringListHead;
 	stringPos_ = 0;
 	stringLength_ = 0;
-	msg.print(Messenger::Parse, "Parser source is now string list.\n");
+	Messenger::print(Messenger::Parse, "Parser source is now string list.\n");
 	source_ = CommandParser::StringListSource;
 	bool result = generate();
 	stringListSource_ = NULL;
 	reset();
-	msg.exit("CommandParser::generateFromStringList");
+	Messenger::exit("CommandParser::generateFromStringList");
 	return result;
 }
 
 // Fill target Program from specified file
 bool CommandParser::generateFromFile(Program* prog, const char* filename, bool dontPushTree, bool clearExisting)
 {
-	msg.enter("CommandParser::generateFromFile");
+	Messenger::enter("CommandParser::generateFromFile");
 	// Clear any data in the existing Program (if reqeusted)
 	if (prog == NULL)
 	{
 		printf("Internal Error: No Forest passed to CommandParser::generateFromFile.\n");
-		msg.exit("CommandParser::generateFromFile");
+		Messenger::exit("CommandParser::generateFromFile");
 		return FALSE;
 	}
 	program_ = prog;
@@ -293,14 +308,14 @@ bool CommandParser::generateFromFile(Program* prog, const char* filename, bool d
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, FALSE);
-		msg.print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+		Messenger::print(Messenger::Parse, "Main program stacked - %p\n", tree_);
 	}
 	
 	// Open the file
 	parser_.openInput(filename);
 	if (!parser_.isFileGoodForReading())
 	{
-		msg.exit("CommandParser::generateFromFile");
+		Messenger::exit("CommandParser::generateFromFile");
 		return FALSE;
 	}
 	// Set initial string pos and string length so we read in a line on the first getChar.
@@ -310,7 +325,7 @@ bool CommandParser::generateFromFile(Program* prog, const char* filename, bool d
 	bool result = generate();
 	source_ = CommandParser::StringSource;
 	reset();
-	msg.exit("CommandParser::generateFromFile");
+	Messenger::exit("CommandParser::generateFromFile");
 	return result;
 }
 
@@ -321,7 +336,7 @@ Tree* CommandParser::tree()
 	if (tree_ == NULL)
 	{
 		failed_ = TRUE;
-		msg.print("Internal Error: Parser tried to do something to a non-existent tree.\n");
+		Messenger::print("Internal Error: Parser tried to do something to a non-existent tree.\n");
 		return &dummyTree;
 	}
 	else return tree_;
@@ -332,39 +347,39 @@ void CommandParser::pushFilter()
 {
 	tree_ = program_->addFilter();
 	stack_.add(tree_, TRUE);
-	msg.print(Messenger::Parse, "New filter stacked - %p\n", tree_);
+	Messenger::print(Messenger::Parse, "New filter stacked - %p\n", tree_);
 }
 
 // Push function (into topmost tree)
 Tree* CommandParser::pushFunction(const char* name, VTypes::DataType returntype)
 {
 	// If there is no current tree target then we add a global function...
-	if (tree_ != NULL) msg.print(Messenger::Parse, "Pushing function onto tree %p (%s)\n", tree_, tree_->name());
+	if (tree_ != NULL) Messenger::print(Messenger::Parse, "Pushing function onto tree %p (%s)\n", tree_, tree_->name());
 	if (tree_ == NULL) tree_ = program_->addFunction(name);
 	else tree_ = tree_->addLocalFunction(name);
 	tree_->setReturnType(returntype);
 	stack_.add(tree_, FALSE);
-	msg.print(Messenger::Parse, "New function stacked (return type is %s) - %p\n", VTypes::dataType(tree_->returnType()), tree_);
+	Messenger::print(Messenger::Parse, "New function stacked (return type is %s) - %p\n", VTypes::dataType(tree_->returnType()), tree_);
 	return tree_;
 }
 
 // Pop tree
 void CommandParser::popTree()
 {
-	msg.enter("CommandParser::popTree");
+	Messenger::enter("CommandParser::popTree");
 	// If the tree to be popped is a Filter, check that a filter type has been defined
-	Refitem<Tree,bool> *ri = stack_.last();
+	Refitem<Tree,bool>* ri = stack_.last();
 	if (ri->data)
 	{
 		// Can use the 'isFilter' member function to check for the lack of a proper type
-		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
+		if (!ri->item->isFilter()) Messenger::print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
 	}
-	msg.print(Messenger::Parse, "Removing tree %p from stack (%i remain).\n", ri->item, stack_.nItems()-1);
+	Messenger::print(Messenger::Parse, "Removing tree %p from stack (%i remain).\n", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
 	// Set current tree target to the top tree now on the stack
 	ri = stack_.last();
 	tree_ = ri == NULL ? NULL : ri->item;
-	msg.exit("CommandParser::popTree");
+	Messenger::exit("CommandParser::popTree");
 }
 
 // Discard current tree and its contents
@@ -380,55 +395,55 @@ void CommandParser::deleteCurrentTree()
 */
 
 // Add integer constant
-TreeNode *CommandParser::addConstant(int i)
+TreeNode* CommandParser::addConstant(int i)
 {
 	return tree()->addConstant(i);
 }
 
 // Add double constant
-TreeNode *CommandParser::addConstant(double d)
+TreeNode* CommandParser::addConstant(double d)
 {
 	return tree()->addConstant(d);
 }
 
 // Add string constant
-TreeNode *CommandParser::addConstant(const char *s)
+TreeNode* CommandParser::addConstant(const char* s)
 {
 	return tree()->addConstant(s);
 }
 
 // Add Element constant
-TreeNode *CommandParser::addElementConstant(int el)
+TreeNode* CommandParser::addElementConstant(int el)
 {
 	return tree()->addElementConstant(el);
 }
 
 // Create a new path on the stack with the specified base 'variable'
-TreeNode *CommandParser::createPath(TreeNode *var)
+TreeNode* CommandParser::createPath(TreeNode* var)
 {
 	return tree()->createPath(var);
 }
 
 // Expand topmost path
-bool CommandParser::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
+bool CommandParser::expandPath(Dnchar* name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return tree()->expandPath(name, arrayindex, arglist);
+	return tree()->expandPath(name, arrayIndex, argList);
 }
 
 // Finalise and remove the topmost path on the stack
-TreeNode *CommandParser::finalisePath()
+TreeNode* CommandParser::finalisePath()
 {
 	return tree()->finalisePath();
 }
 
 // Join two commands together
-TreeNode *CommandParser::joinCommands(TreeNode *node1, TreeNode *node2)
+TreeNode* CommandParser::joinCommands(TreeNode* node1, TreeNode* node2)
 {
 	return tree()->joinCommands(node1, node2);
 }
 
 // Add on a new scope to the stack
-TreeNode *CommandParser::pushScope(Command::Function func)
+TreeNode* CommandParser::pushScope(Commands::Function func)
 {
 	return tree()->pushScope(func);
 }
@@ -440,67 +455,67 @@ bool CommandParser::popScope()
 }
 
 // Add a node representing a whole statement to the execution list
-bool CommandParser::addStatement(TreeNode *leaf)
+bool CommandParser::addStatement(TreeNode* leaf)
 {
 	return tree()->addStatement(leaf);
 }
 
 // Add a 'new' node to the Tree
-TreeNode *CommandParser::addNew(VTypes::DataType type)
+TreeNode* CommandParser::addNew(VTypes::DataType type)
 {
 	return tree()->addNew(type);
 }
 
 // Add an operator to the Tree
-TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2, TreeNode *arg3)
+TreeNode* CommandParser::addOperator(Commands::Function func, TreeNode* arg1, TreeNode* arg2, TreeNode* arg3)
 {
 	return tree()->addOperator(func, arg1, arg2, arg3);
 }
 
 // Associate a command-based leaf node to the Tree
-TreeNode *CommandParser::addFunctionWithArglist(Command::Function func, TreeNode *arglist)
+TreeNode* CommandParser::addFunctionWithArglist(Commands::Function func, TreeNode* argList)
 {
-	return tree()->addFunctionWithArglist(func, arglist);
+	return tree()->addFunctionWithArglist(func, argList);
 }
 
 // Add a function node to the list (overloaded to accept simple arguments instead of a list)
-TreeNode *CommandParser::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
+TreeNode* CommandParser::addFunction(Commands::Function func, TreeNode* a1, TreeNode* a2, TreeNode* a3, TreeNode* a4)
 {
 	return tree()->addFunction(func, a1, a2, a3, a4);
 }
 
 // Associate a user-defined command-based leaf node to the Tree
-TreeNode *CommandParser::addUserFunction(Tree* func, TreeNode *arglist)
+TreeNode* CommandParser::addUserFunction(Tree* func, TreeNode* argList)
 {
-	return tree()->addUserFunction(func, arglist);
+	return tree()->addUserFunction(func, argList);
 }
 
 // Add a declaration list
-TreeNode *CommandParser::addDeclarations(TreeNode *declist)
+TreeNode* CommandParser::addDeclarations(TreeNode* declist)
 {
 	return tree()->addDeclarations(declist);
 }
 
 // Wrap named variable (and array index)
-TreeNode *CommandParser::wrapVariable(Variable *var, TreeNode *arrayindex)
+TreeNode* CommandParser::wrapVariable(Variable *var, TreeNode* arrayIndex)
 {
-	return tree()->wrapVariable(var, arrayindex);
+	return tree()->wrapVariable(var, arrayIndex);
 }
 
 // Add variable to topmost ScopeNode
-TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue, bool global)
+TreeNode* CommandParser::addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initialValue, bool global)
 {
 	return tree()->addVariable(type, name, initialValue, global);
 }
 
 // Add array variable to topmost ScopeNode
-TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue, bool global)
+TreeNode* CommandParser::addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* sizeexpr, TreeNode* initialvalue, bool global)
 {
 	return tree()->addArrayVariable(type, name, sizeexpr, initialvalue, global);
 }
 
 // Add array 'constant'
-TreeNode *CommandParser::addArrayConstant(TreeNode *values)
+TreeNode* CommandParser::addArrayConstant(TreeNode* values)
 {
 	return tree()->addArrayConstant(values);
 }
@@ -510,7 +525,7 @@ TreeNode *CommandParser::addArrayConstant(TreeNode *values)
 */
 
 // Set filter option
-bool CommandParser::setFilterOption(Dnchar *name, TreeNode *value)
+bool CommandParser::setFilterOption(Dnchar* name, TreeNode* value)
 {
 	return tree()->filter.setOption(name, value);	
 }

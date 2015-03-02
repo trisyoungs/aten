@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libaten.a
+lib_LTLIBRARIES = libmain.la
 
-libaten_a_SOURCES = aten.cpp aten_filters.cpp aten_fragments.cpp aten_includes.cpp aten_partitions.cpp cli.cpp modes.cpp probe.cpp
+libmain_la_SOURCES = aten.cpp cli.cpp commands.cpp ff.cpp filters.cpp fragments.cpp image.cpp includes.cpp models.cpp modes.cpp partitions.cpp prefs.cpp probe.cpp scripts.cpp
 
 noinst_HEADERS = aten.h cli.h version.h
 

@@ -25,7 +25,9 @@
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 
 // Model Variable
@@ -35,6 +37,7 @@ class ModelVariable : public PointerVariable
 	// Constructor / Destructor
 	ModelVariable(Model* ptr = NULL, bool constant = FALSE);
 	~ModelVariable();
+
 
 	/*
 	// Access Data
@@ -46,15 +49,15 @@ class ModelVariable : public PointerVariable
 	enum Functions { AddHydrogen, AngleEnergy, AtomWithBit, Augment, BondEnergy, Charge, ClearBonds, ClearCharges, ClearPatterns, ClearSelectedBonds, Copy, Cut, Delete, DeSelect, ElectrostaticEnergy, Expand, Finalise, InterEnergy, IntraEnergy, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisShell, NewBond, NewEigenvector, NewGlyph, NewGrid, NewPattern, NewVibration, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, Select, SelectAll, SelectionAddHydrogen, SelectNone, SelectTree, SetupComponent, ShiftDown, ShiftUp, ShowAll, ToAngstroms, TorsionEnergy, Transmute, Undo, VdwEnergy, nFunctions };
 
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	static StepNode* accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex = -1);
 	// Perform desired function
-	static bool performFunction(int i, ReturnValue &rv, TreeNode *node);
+	static bool performFunction(int i, ReturnValue& rv, TreeNode* node);
 	// Print valid accessors/functions
 	static void printAccessors();
 	// Accessor data
@@ -68,14 +71,17 @@ class ModelArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	ModelArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+
 
 	/*
 	// Inherited Virtuals
 	*/
 	public:
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

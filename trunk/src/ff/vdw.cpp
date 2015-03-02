@@ -20,20 +20,22 @@
 */
 
 #include "model/model.h"
-#include "classes/forcefieldatom.h"
-#include "classes/prefs.h"
+#include "base/forcefieldatom.h"
+#include "base/prefs.h"
 #include "ff/forms.h"
 #include "ff/forcefield.h"
 #include "base/pattern.h"
 
+ATEN_USING_NAMESPACE
+
 // Calculate energy for specified interaction
-double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, int i, int j)
+double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double* params, int i, int j)
 {
 	static double U, epsilon, sigma, sigmar2, sigmar6, r6, ar12, br6, pwr, a, b, c, d, forcek, eq, expo;
 	switch (type)
 	{
 		case (VdwFunctions::None):
-			msg.print( "Warning: No function is specified for vdW energy %i-%i.\n", i, j);
+			Messenger::print( "Warning: No function is specified for vdW energy %i-%i.\n", i, j);
 			U = 0.0;
 			break;
 		case (VdwFunctions::InversePower):
@@ -81,21 +83,21 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, int
 			U = d * ( expo*expo - 1.0);
 			break;
 		default:
-			msg.print("Internal Error: Energy calculation for VDW form '%s' not present.\n", VdwFunctions::VdwFunctions[type].keyword);
+			Messenger::print("Internal Error: Energy calculation for VDW form '%s' not present.\n", VdwFunctions::VdwFunctions[type].keyword);
 			break;
 	}
 	return U;
 }
 
 // Calculate forces for specified interaction (return force on atom i)
-Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, double *params, int i, int j)
+Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, double* params, int i, int j)
 {
 	static double du_dr, epsilon, sigma, sigmar2, sigmar6, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
 	static Vec3<double> fi;
 	switch (type)
 	{
 		case (VdwFunctions::None):
-			msg.print( "Warning: No function is specified for vdW forces %i-%i.\n", i, j);
+			Messenger::print( "Warning: No function is specified for vdW forces %i-%i.\n", i, j);
 			du_dr = 0.0;
 			break;
 		case (VdwFunctions::InversePower):
@@ -143,7 +145,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 			break;
 		default:
-			msg.print("Internal Error: Force calculation for VDW form '%s' not present.\n", VdwFunctions::VdwFunctions[type].keyword);
+			Messenger::print("Internal Error: Force calculation for VDW form '%s' not present.\n", VdwFunctions::VdwFunctions[type].keyword);
 			break;
 	}
 	// Calculate final forces (vecij contains dx, dy, dz between target atoms)
@@ -152,19 +154,19 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 }
 
 // Intrapattern VDW energy
-bool Pattern::vdwIntraPatternEnergy(Model* srcmodel, EnergyStore *estore, int lonemolecule)
+bool Pattern::vdwIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, int lonemolecule)
 {
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
-	msg.enter("Pattern::vdwIntraPatternEnergy");
+	Messenger::enter("Pattern::vdwIntraPatternEnergy");
 	int aoff, m1, i, j, start1, finish1, con;
 	Vec3<double> vec_ij;
 	double U, rij, energy_inter, energy_intra, cutoff;
 	PatternAtom* pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 	start1 = (lonemolecule == -1 ? 0 : lonemolecule);
@@ -203,23 +205,23 @@ bool Pattern::vdwIntraPatternEnergy(Model* srcmodel, EnergyStore *estore, int lo
 	// Add totals into Energy
 	estore->add(EnergyStore::VdwIntraEnergy,energy_intra,id_);
 	estore->add(EnergyStore::VdwInterEnergy,energy_inter,id_,id_);
-	msg.exit("Pattern::vdwIntraPatternEnergy");
+	Messenger::exit("Pattern::vdwIntraPatternEnergy");
 	return TRUE;
 }
 
 // Interpattern VDW energy
-bool Pattern::vdwInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, EnergyStore *estore, int molId)
+bool Pattern::vdwInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, EnergyStore* estore, int molId)
 {
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
-	msg.enter("Pattern::vdwInterPatternEnergy");
+	Messenger::enter("Pattern::vdwInterPatternEnergy");
 	static int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> vec_ij;
 	static double rij, energy_inter, cutoff, U;
 	PatternAtom* pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	energy_inter = 0.0;
 	// Outer loop over molecules in *this* pattern
 	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -291,7 +293,7 @@ bool Pattern::vdwInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, Ener
 		aoff1 += nAtoms_;
 	}
 	estore->add(EnergyStore::VdwInterEnergy,energy_inter,id_,otherPattern->id_);
-	msg.exit("Pattern::vdwInterPatternEnergy");
+	Messenger::exit("Pattern::vdwInterPatternEnergy");
 	return TRUE;
 }
 
@@ -303,15 +305,15 @@ bool Pattern::vdwIntraPatternForces(Model* srcmodel)
 	// 'aoff' stores the atom number offset (molecule offset) but is *only* used for lookups in the coordinate
 	// arrays since assuming the pattern definition is correct then the sigmas/epsilons in molecule 0 represent
 	// those of all molecules.
-	msg.enter("Pattern::vdwIntraPatternForces");
+	Messenger::enter("Pattern::vdwIntraPatternForces");
 	int i,j,aoff,m1,con;
 	Vec3<double> vec_ij, f_i, tempf;
 	double cutoff, rij;
 	PatternAtom* pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -350,7 +352,7 @@ bool Pattern::vdwIntraPatternForces(Model* srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	msg.exit("Pattern::vdwIntraPatternForces");
+	Messenger::exit("Pattern::vdwIntraPatternForces");
 	return TRUE;
 }
 
@@ -359,15 +361,15 @@ bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 {
 	// Calculate the VDW forces from interactions between different molecules
 	// of this pnode and the one supplied
-	msg.enter("Pattern::vdwInterPatternForces");
+	Messenger::enter("Pattern::vdwInterPatternForces");
 	int i,j,aoff1,aoff2,m1,m2,start,finish;
 	Vec3<double> vec_ij, f_i, tempf;
 	double rij, cutoff;
 	PatternAtom* pai, *paj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	aoff1 = startAtom_;
 	//printf("Pattern IDs are %i (this) and %i\n",id_, otherPattern->id_);
 
@@ -410,7 +412,7 @@ bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 		}
 		aoff1 += nAtoms_;
 	}
-	msg.exit("Pattern::vdwInterPatternForces");
+	Messenger::exit("Pattern::vdwInterPatternForces");
 	return TRUE;
 }
 
@@ -424,15 +426,15 @@ bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 //
 // Assume p(r) is equal to the (bulk) number density at r > rcut.
 */
-bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
+bool Pattern::vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore)
 {
 	// Calculate the long-range correction to the VDW energy
-	msg.enter("Pattern::vdwCorrectEnergy");
+	Messenger::enter("Pattern::vdwCorrectEnergy");
 	static int i, j;
 	static Pattern* p1, *p2;
 	static double energy, rho, cutoff, du_dr, sigma, epsilon, sigmar3, sigmar9, volume, vrs;
 	PatternAtom* pai, *paj;
-	double *paramsi, *paramsj;
+	double* paramsi, *paramsj;
 	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
 
@@ -460,7 +462,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
 						case (VdwFunctions::None):
-							msg.print( "Warning: No function is specified for vdW energy correction %i-%i.\n", i, j);
+							Messenger::print( "Warning: No function is specified for vdW energy correction %i-%i.\n", i, j);
 							du_dr = 0.0;
 							break;
 						case (VdwFunctions::Lj):
@@ -482,7 +484,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 							du_dr *= (sigma * sigma * sigma);
 							break;
 						default:
-							msg.print("VDW tail correction not implemented for %s VDW interactions.\n", VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name);
+							Messenger::print("VDW tail correction not implemented for %s VDW interactions.\n", VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name);
 							break;
 					}
 					energy += 2.0 * PI * rho * du_dr;
@@ -491,7 +493,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore)
 		}
 	}
 	estore->add(EnergyStore::VdwTailEnergy,energy,-1);
-	msg.exit("Pattern::vdwCorrectEnergy");
+	Messenger::exit("Pattern::vdwCorrectEnergy");
 	return TRUE;
 }
 

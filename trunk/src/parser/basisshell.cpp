@@ -21,18 +21,20 @@
 
 #include "parser/basisshell.h"
 #include "parser/stepnode.h"
-#include "classes/basisshell.h"
+#include "base/basisshell.h"
 #include "math/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
 */
 
 // Constructor
-BasisShellVariable::BasisShellVariable(BasisShell *ptr, bool constant)
+BasisShellVariable::BasisShellVariable(BasisShell* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::BasisShellData;
@@ -63,16 +65,16 @@ FunctionAccessor BasisShellVariable::functionData[BasisShellVariable::nFunctions
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *BasisShellVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* BasisShellVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return BasisShellVariable::accessorSearch(s, arrayindex, arglist);
+	return BasisShellVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *BasisShellVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* BasisShellVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("BasisShellVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("BasisShellVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -82,84 +84,84 @@ StepNode *BasisShellVariable::accessorSearch(const char *s, TreeNode *arrayindex
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'BasisShell&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'BasisShell&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("BasisShellVariable::accessorSearch");
+			Messenger::exit("BasisShellVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'BasisShell&' function '%s'.\n", s);
-			msg.exit("BasisShellVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'BasisShell&' function '%s'.\n", s);
+			Messenger::exit("BasisShellVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::BasisShellData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'BasisShell&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'BasisShell&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'BasisShell&' array member '%s'.\n", s);
-			msg.exit("BasisShellVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'BasisShell&' array member '%s'.\n", s);
+			Messenger::exit("BasisShellVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::BasisShellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::BasisShellData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("BasisShellVariable::accessorSearch");
+	Messenger::exit("BasisShellVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool BasisShellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool BasisShellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("BasisShellVariable::retrieveAccessor");
+	Messenger::enter("BasisShellVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for BasisShell type.\n", i);
-		msg.exit("BasisShellVariable::retrieveAccessor");
+		Messenger::exit("BasisShellVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("BasisShellVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("BasisShellVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("BasisShellVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("BasisShellVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	BasisShell *ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
+	BasisShell* ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -170,7 +172,7 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 		case (BasisShellVariable::Primitives):
 			if ((arrayIndex < 1) || (arrayIndex > ptr->nPrimitives()))
 			{
-				msg.print("Array index [%i] is out of range for 'primitives' member.\n", arrayIndex);
+				Messenger::print("Array index [%i] is out of range for 'primitives' member.\n", arrayIndex);
 				result = FALSE;
 			}
 			else rv.set(VTypes::BasisPrimitiveData, ptr->primitive(arrayIndex-1));
@@ -183,19 +185,19 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisShellVariable::retrieveAccessor");
+	Messenger::exit("BasisShellVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool BasisShellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool BasisShellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("BasisShellVariable::setAccessor");
+	Messenger::enter("BasisShellVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for BasisShell type.\n", i);
-		msg.exit("BasisShellVariable::setAccessor");
+		Messenger::exit("BasisShellVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -207,20 +209,20 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -228,40 +230,40 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("BasisShellVariable::setAccessor");
+		Messenger::exit("BasisShellVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	BasisShell *ptr = (BasisShell*) sourcerv.asPointer(VTypes::BasisShellData, result);
+	BasisShell* ptr = (BasisShell*) sourcerv.asPointer(VTypes::BasisShellData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
 		result = FALSE;
 	}
 	BasisShell::BasisShellType bft;
 	if (result) switch (acc)
 	{
 		case (BasisShellVariable::AtomId):
-			ptr->setAtomId( newvalue.asInteger() - 1);
+			ptr->setAtomId( newValue.asInteger() - 1);
 			break;
 		case (BasisShellVariable::Type):
-			bft = BasisShell::basisShellType( newvalue.asString() );
+			bft = BasisShell::basisShellType( newValue.asString() );
 			if (bft == BasisShell::nBasisShellTypes) result = FALSE;
 			else ptr->setType(bft);
 			break;
@@ -270,25 +272,25 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisShellVariable::setAccessor");
+	Messenger::exit("BasisShellVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool BasisShellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool BasisShellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("BasisShellVariable::performFunction");
+	Messenger::enter("BasisShellVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for BasisShell type.\n", i);
-		msg.exit("BasisShellVariable::performFunction");
+		Messenger::exit("BasisShellVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	BasisShell *ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
-	BasisPrimitive *prim;
+	BasisShell* ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
+	BasisPrimitive* prim;
 	int n;
 	if (result) switch (i)
 	{
@@ -303,7 +305,7 @@ bool BasisShellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisShellVariable::performFunction");
+	Messenger::exit("BasisShellVariable::performFunction");
 	return result;
 }
 
@@ -312,15 +314,15 @@ void BasisShellVariable::printAccessors()
 {
 	if (BasisShellVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<BasisShellVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<BasisShellVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((BasisShellVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<BasisShellVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<BasisShellVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -329,7 +331,7 @@ void BasisShellVariable::printAccessors()
 */
 
 // Constructor
-BasisShellArrayVariable::BasisShellArrayVariable(TreeNode *sizeexpr, bool constant)
+BasisShellArrayVariable::BasisShellArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::BasisShellData;
@@ -341,8 +343,8 @@ BasisShellArrayVariable::BasisShellArrayVariable(TreeNode *sizeexpr, bool consta
 }
 
 // Search variable access list for provided accessor
-StepNode *BasisShellArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* BasisShellArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return BasisShellVariable::accessorSearch(s, arrayindex, arglist);
+	return BasisShellVariable::accessorSearch(s, arrayIndex, argList);
 }
 

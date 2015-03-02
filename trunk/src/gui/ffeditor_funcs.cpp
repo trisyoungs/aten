@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QMessageBox>
 #include "base/sysfunc.h"
 #include "gui/ffeditor.h"
 #include "gui/tcombobox.h"
@@ -27,8 +28,10 @@
 #include "ff/forcefield.h"
 #include "model/model.h"
 #include "main/aten.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
+#include "base/forcefieldatom.h"
+#include "base/forcefieldbound.h"
+
+ATEN_USING_NAMESPACE
 
 // Local enum variables
 namespace TypeColumn
@@ -78,7 +81,7 @@ AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
 }
 
 // Populate widget with specified forcefield
-void AtenForcefieldEditor::populate(Forcefield *ff)
+void AtenForcefieldEditor::populate(Forcefield* ff)
 {
 	updating_ = TRUE;
 	// Clear tables
@@ -95,7 +98,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	}
 	QTableWidgetItem *item;
 	int count, n;
-	double *params;
+	double* params;
 	QStringList slist;
 	TComboBox *combo;
 
@@ -166,7 +169,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	ui.FFEditorBondsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
-	for (ForcefieldBound *ffb = ff->bonds(); ffb != NULL; ffb = ffb->next)
+	for (ForcefieldBound* ffb = ff->bonds(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
@@ -197,7 +200,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	ui.FFEditorAnglesTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<AngleFunctions::nAngleFunctions; n++) slist << AngleFunctions::AngleFunctions[n].keyword;
-	for (ForcefieldBound *ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
+	for (ForcefieldBound* ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
@@ -230,7 +233,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	ui.FFEditorTorsionsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Form" << "EScale" << "VScale" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
-	for (ForcefieldBound *ffb = ff->torsions(); ffb != NULL; ffb = ffb->next)
+	for (ForcefieldBound* ffb = ff->torsions(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
@@ -269,7 +272,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	ui.FFEditorImpropersTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Form" << "EScale" << "VScale" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
-	for (ForcefieldBound *ffb = ff->impropers(); ffb != NULL; ffb = ffb->next)
+	for (ForcefieldBound* ffb = ff->impropers(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
@@ -308,7 +311,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	ui.FFEditorUreyBradleysTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
-	for (ForcefieldBound *ffb = ff->ureyBradleys(); ffb != NULL; ffb = ffb->next)
+	for (ForcefieldBound* ffb = ff->ureyBradleys(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
@@ -349,7 +352,7 @@ void AtenForcefieldEditor::boundFunctionChanged(TComboBox *sender, int i, Forcef
 	}
 
 	// Get ForcefieldBound pointer and set data
-	ForcefieldBound *ffb = (ForcefieldBound*) sender->data.asPointer(VTypes::ForcefieldBoundData);
+	ForcefieldBound* ffb = (ForcefieldBound*) sender->data.asPointer(VTypes::ForcefieldBoundData);
 	switch (bt)
 	{
 		case (ForcefieldBound::BondInteraction):
@@ -385,7 +388,7 @@ void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
 // 	ForcefieldAtom* ffa = targetForcefield_->type(row+1);
 // 	m->selectNone(TRUE);
 // 	m->selectType(ffa->element(), ffa->netaString(), TRUE, FALSE);
-// 	msg.print("Type description matched %i atoms in current model.\n", m->nMarked());
+// 	Messenger::print("Type description matched %i atoms in current model.\n", m->nMarked());
 }
 
 // Item in type table edited
@@ -549,7 +552,7 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemSelectionChanged()
 // Bonds Page
 */
 
-void AtenForcefieldEditor::updateBondsLabels(ForcefieldBound *ffb)
+void AtenForcefieldEditor::updateBondsLabels(ForcefieldBound* ffb)
 {
 	if (ffb == NULL)
 	{
@@ -587,7 +590,7 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w
 	int row = ui.FFEditorBondsTable->row(w);
 	int column = ui.FFEditorBondsTable->column(w);
 	// Get pointer to forcefield bound from edited row
-	ForcefieldBound *ffb = targetForcefield_->bond(row);
+	ForcefieldBound* ffb = targetForcefield_->bond(row);
 	// Set new data based on the column edited
 	int n;
 	switch (column)
@@ -624,7 +627,7 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemSelectionChanged()
 		updateBondsLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->bond(row);
+	ForcefieldBound* ffb = targetForcefield_->bond(row);
 	updateBondsLabels(ffb);
 }
 
@@ -632,7 +635,7 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemSelectionChanged()
 // Angles Page
 */
 
-void AtenForcefieldEditor::updateAnglesLabels(ForcefieldBound *ffb)
+void AtenForcefieldEditor::updateAnglesLabels(ForcefieldBound* ffb)
 {
 	if (ffb == NULL)
 	{
@@ -670,7 +673,7 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *
 	int row = ui.FFEditorAnglesTable->row(w);
 	int column = ui.FFEditorAnglesTable->column(w);
 	// Get pointer to forcefield bound from edited row
-	ForcefieldBound *ffb = targetForcefield_->angle(row);
+	ForcefieldBound* ffb = targetForcefield_->angle(row);
 	// Set new data based on the column edited
 	int n;
 	switch (column)
@@ -708,7 +711,7 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemSelectionChanged()
 		updateAnglesLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->angle(row);
+	ForcefieldBound* ffb = targetForcefield_->angle(row);
 	updateAnglesLabels(ffb);
 }
 
@@ -716,7 +719,7 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemSelectionChanged()
 // Torsions Page
 */
 
-void AtenForcefieldEditor::updateTorsionsLabels(ForcefieldBound *ffb)
+void AtenForcefieldEditor::updateTorsionsLabels(ForcefieldBound* ffb)
 {
 	if (ffb == NULL)
 	{
@@ -754,7 +757,7 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 	int row = ui.FFEditorTorsionsTable->row(w);
 	int column = ui.FFEditorTorsionsTable->column(w);
 	// Get pointer to forcefield bound from edited row
-	ForcefieldBound *ffb = targetForcefield_->torsion(row);
+	ForcefieldBound* ffb = targetForcefield_->torsion(row);
 	// Set new data based on the column edited
 	int n;
 	switch (column)
@@ -801,7 +804,7 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemSelectionChanged()
 		updateTorsionsLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->torsion(row);
+	ForcefieldBound* ffb = targetForcefield_->torsion(row);
 	updateTorsionsLabels(ffb);
 }
 
@@ -809,7 +812,7 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemSelectionChanged()
 // Impropers Page
 */
 
-void AtenForcefieldEditor::updateImpropersLabels(ForcefieldBound *ffb)
+void AtenForcefieldEditor::updateImpropersLabels(ForcefieldBound* ffb)
 {
 	if (ffb == NULL)
 	{
@@ -841,7 +844,7 @@ void AtenForcefieldEditor::on_FFEditorImpropersTable_itemChanged(QTableWidgetIte
 	int row = ui.FFEditorImpropersTable->row(w);
 	int column = ui.FFEditorImpropersTable->column(w);
 	// Get pointer to forcefield bound from edited row
-	ForcefieldBound *ffb = targetForcefield_->torsion(row);
+	ForcefieldBound* ffb = targetForcefield_->torsion(row);
 	// Set new data based on the column edited
 	int n;
 	switch (column)
@@ -880,7 +883,7 @@ void AtenForcefieldEditor::on_FFEditorImpropersTable_itemSelectionChanged()
 		updateImpropersLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->improper(row);
+	ForcefieldBound* ffb = targetForcefield_->improper(row);
 	updateImpropersLabels(ffb);
 }
 
@@ -888,7 +891,7 @@ void AtenForcefieldEditor::on_FFEditorImpropersTable_itemSelectionChanged()
 // Urey-Bradleys Page
 */
 
-void AtenForcefieldEditor::updateUreyBradleysLabels(ForcefieldBound *ffb)
+void AtenForcefieldEditor::updateUreyBradleysLabels(ForcefieldBound* ffb)
 {
 	if (ffb == NULL)
 	{
@@ -920,7 +923,7 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemChanged(QTableWidget
 	int row = ui.FFEditorUreyBradleysTable->row(w);
 	int column = ui.FFEditorUreyBradleysTable->column(w);
 	// Get pointer to forcefield bound from edited row
-	ForcefieldBound *ffb = targetForcefield_->ureyBradley(row);
+	ForcefieldBound* ffb = targetForcefield_->ureyBradley(row);
 	// Set new data based on the column edited
 	int n;
 	switch (column)
@@ -958,7 +961,7 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemSelectionChanged()
 		updateUreyBradleysLabels(NULL);
 		return;
 	}
-	ForcefieldBound *ffb = targetForcefield_->ureyBradley(row);
+	ForcefieldBound* ffb = targetForcefield_->ureyBradley(row);
 	updateUreyBradleysLabels(ffb);
 }
 

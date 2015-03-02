@@ -28,8 +28,11 @@
 #include "templates/vector3.h"
 #include "templates/list.h"
 #include <QtCore/QString>
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class ViewPane;
 
 // Text Primitive List
@@ -53,5 +56,7 @@ class TextPrimitiveList
 	// Render all primitives in list
 	void renderAll(Matrix viewMatrix, bool flatLabels, double baseFontSize);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

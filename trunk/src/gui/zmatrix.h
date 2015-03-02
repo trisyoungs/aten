@@ -23,11 +23,20 @@
 #define ATEN_ZMATRIXWINDOW_H
 
 #include "gui/ui_zmatrix.h"
+#include "base/namespace.h"
 
-// Forward declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 class ZMatrix;
-class AtenWindow;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // ZMatrix Window
 class AtenZMatrix : public QDialog
@@ -36,8 +45,27 @@ class AtenZMatrix : public QDialog
 	Q_OBJECT
 
 	public:
+	// Constructor / Destructor
+	AtenZMatrix(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::ZMatrixDialog ui;
 	// Column columns
 	enum TableColumns { SymbolColumn, DistanceAtomColumn, DistanceColumn, AngleAtomColumn, AngleColumn, TorsionAtomColumn, TorsionColumn, nColumns };
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Whether the widget is currently refreshing
+	bool refreshing_;
+	// ZMatrix target
+	ZMatrix *zMatrix_;
+
 
 	/*
 	// Window Functions
@@ -53,28 +81,6 @@ class AtenZMatrix : public QDialog
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);
 	void on_MoveToEndButton_clicked(bool checked);
-
-	/*
-	// Local variables
-	*/
-	private:
-	// Whether the widget is currently refreshing
-	bool refreshing_;
-	// ZMatrix target
-	ZMatrix *zMatrix_;
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	AtenZMatrix(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::ZMatrixDialog ui;
 };
 
 #endif

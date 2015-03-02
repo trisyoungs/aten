@@ -22,14 +22,17 @@
 #ifndef ATEN_UNDOEVENT_H
 #define ATEN_UNDOEVENT_H
 
-#include "base/matrix.h"
 #include "base/dnchar.h"
 #include "base/atom.h"
 #include "base/bond.h"
 #include "base/glyph.h"
 #include "base/measurement.h"
+#include "base/namespace.h"
+#include "math/matrix.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 
 // UndoEvent Base Class
@@ -230,7 +233,7 @@ class GlyphEvent : public UndoEvent
 
 	public:
 	// Set change data
-	void set(bool creation, Glyph *g);
+	void set(bool creation, Glyph* g);
 	// Undo stored change
 	void undo(Model* m);
 	// Print change information
@@ -357,7 +360,7 @@ class ModelRenameEvent : public UndoEvent
 
 	public:
 	// Set change data
-	void set(const char *oldname, const char *newname);
+	void set(const char* oldname, const char* newname);
 	// Undo stored change
 	void undo(Model* m);
 	// Print change information
@@ -418,11 +421,11 @@ class StyleEvent : public UndoEvent
 	private:
 	// Change data
 	int targetId_;
-	Atom::DrawStyle oldStyle_, newStyle_;
+	Prefs::DrawStyle oldStyle_, newStyle_;
 
 	public:
 	// Set change data
-	void set(int id, Atom::DrawStyle oldstyle, Atom::DrawStyle newstyle);
+	void set(int id, Prefs::DrawStyle oldStyle, Prefs::DrawStyle newStyle);
 	// Undo stored change
 	void undo(Model* m);
 	// Print change information
@@ -449,5 +452,7 @@ class TransmuteEvent : public UndoEvent
 	// Print change information
 	void print();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -19,16 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/glyph.h"
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
 
+ATEN_USING_NAMESPACE
+
 // Create new glyph in this model
-Glyph *Model::addGlyph(Glyph::GlyphType gt)
+Glyph* Model::addGlyph(Glyph::GlyphType gt)
 {
 	changeLog.add(Log::Glyphs);
-	Glyph *newglyph = glyphs_.add();
+	Glyph* newglyph = glyphs_.add();
 	newglyph->setParent(this);
 	newglyph->setType(gt);
 	if ((gt == Glyph::TextGlyph) || (gt == Glyph::Text3DGlyph)) textGlyphs_.add(newglyph);
@@ -43,7 +44,7 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 }
 
 // Remove specified glyph from model
-void Model::removeGlyph(Glyph *g)
+void Model::removeGlyph(Glyph* g)
 {
 	if ((g->type() == Glyph::TextGlyph) || (g->type() == Glyph::Text3DGlyph)) textGlyphs_.remove(g);
 	glyphs_.remove(g);
@@ -57,7 +58,7 @@ int Model::nGlyphs() const
 }
 
 // Return list of glyphs
-Glyph *Model::glyphs() const
+Glyph* Model::glyphs() const
 {
 	return glyphs_.first();
 }
@@ -69,21 +70,21 @@ Refitem<Glyph,int> *Model::textGlyphs() const
 }
 
 // Return specific glyph
-Glyph *Model::glyph(int n)
+Glyph* Model::glyph(int n)
 {
 	if ((n < 0) || (n >= glyphs_.nItems()))
 	{
-		msg.print("Glyph index %i is out of range for list.\n", n);
+		Messenger::print("Glyph index %i is out of range for list.\n", n);
 		return NULL;
 	}
 	return glyphs_[n];
 }
 
 // Return vector data for glyph
-Vec3<double> Model::glyphVector(Glyph *g, int dataid) const
+Vec3<double> Model::glyphVector(Glyph* g, int dataid) const
 {
 	Atom* i;
-	if ((dataid < 0) || (dataid >= g->nData())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", dataid+1, g->nData());
+	if ((dataid < 0) || (dataid >= g->nData())) Messenger::print( "Tried to get vector %i from glyph when it has only %i in total.\n", dataid+1, g->nData());
 	else
 	{
 		if (g->data(dataid)->atomSetLast())
@@ -91,13 +92,13 @@ Vec3<double> Model::glyphVector(Glyph *g, int dataid) const
 			i = g->data(dataid)->atom();
 			if (i == NULL)
 			{
-				msg.print( "Atom was apparently set last in glyph, but stored pointer is NULL.\n");
+				Messenger::print( "Atom was apparently set last in glyph, but stored pointer is NULL.\n");
 				return Vec3<double>();
 			}
 // 			// Check range of stored atom id
 // 			if (id >= atoms_.nItems())
 // 			{
-// 				msg.print( "Atom ID set in glyph (%i) is outside range for model.\n", id);
+// 				Messenger::print( "Atom ID set in glyph (%i) is outside range for model.\n", id);
 // 				return Vec3<double>();
 // 			}
 // 			Atom* i = atoms_[id];
@@ -120,12 +121,12 @@ Vec3<double> Model::glyphVector(Glyph *g, int dataid) const
 // Automatically add polyhedra to current atom selection 
 void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 {
-	msg.enter("Model::addPolyhedraGlyphs");
+	Messenger::enter("Model::addPolyhedraGlyphs");
 	// From the current selection of atoms, add polyhedra to/around them.
 	Reflist<Atom,int> atoms;
 	Atom* i, *j;
-	Refitem<Atom,int> *ri, *rj, *rk;
-	Glyph *g;
+	Refitem<Atom,int>* ri, *rj, *rk;
+	Glyph* g;
 	while (selection_.nItems() > 0)
 	{
 		// If 'centresonly' is true, for each selected atom use its bonds to determine the atom list
@@ -135,7 +136,7 @@ void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 		if (centresonly)
 		{
 			deselectAtom(i);
-			for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+			for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 				{
 					j = bref->item->partner(i);
 					if (j->nBonds() == 1) atoms.add(j);
@@ -184,23 +185,23 @@ void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 			}
 		}
 	}
-	msg.exit("Model::addPolyhedraGlyphs");
+	Messenger::exit("Model::addPolyhedraGlyphs");
 }
 
 // Automatically add ellipsoids to current atom selection 
 void Model::addEllipsoidGlyphs()
 {
-	msg.enter("Model::addEllipsoidGlyphs");
+	Messenger::enter("Model::addEllipsoidGlyphs");
 	// From the current selection of atoms, add polyhedra to/around them.
 	Reflist<Atom,int> atoms;
 	Vec3<double> centroid, v, u, vecx, vecy, vecz;
 	double mag, best, r, phi;
-	Refitem<Atom,int> *ri, *rj;
+	Refitem<Atom,int>* ri, *rj;
 	Atom* i, *j, *k, *l;
 	Matrix A;
 	Reflist<Atom, Vec3<double> > xaxisatoms;
-	Refitem<Atom, Vec3<double> > *rid;
-	Glyph *g;
+	Refitem<Atom, Vec3<double> >* rid;
+	Glyph* g;
 	while (selection_.nItems() > 0)
 	{
 		// If false, find individual fragments from the selection
@@ -218,7 +219,7 @@ void Model::addEllipsoidGlyphs()
 			g->data(1)->setVector(Vec3<double>(v.x+0.1,v.y,v.z));
 			g->data(2)->setVector(Vec3<double>(v.x,v.y+0.1,v.z));
 			g->data(3)->setVector(Vec3<double>(v.x,v.y,v.z+0.1));
-			msg.exit("Model::addEllipsoidGlyphs");
+			Messenger::exit("Model::addEllipsoidGlyphs");
 			return;
 		}
 		
@@ -309,6 +310,6 @@ void Model::addEllipsoidGlyphs()
 		g->data(3)->setVector(vecz+centroid);
 	}
 	
-	msg.exit("Model::addEllipsoidGlyphs");
+	Messenger::exit("Model::addEllipsoidGlyphs");
 	return;
 }

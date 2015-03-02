@@ -19,21 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "main/aten.h"
 #include "main/version.h"
-#include "parser/tree.h"
 #include "gui/mainwindow.h"
 #include "gui/build.h"
 #include "gui/geometry.h"
 #include "gui/position.h"
 #include "gui/transform.h"
-#include "gui/tcanvas.uih"
-#include "gui/grids.h"
 
 // Finalise GUI
 void AtenWindow::finaliseUi()
 {
-	msg.enter("AtenWindow::finaliseUi");
+	Messenger::enter("AtenWindow::finaliseUi");
 	int n;
 
 	// Set the title of the main window to reflect the version
@@ -97,19 +93,19 @@ void AtenWindow::finaliseUi()
 	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
 	{
-		case (Atom::StickStyle):
+		case (Prefs::StickStyle):
 			ui.actionStyleStick->setChecked(TRUE);
 			break;
-		case (Atom::TubeStyle):
+		case (Prefs::TubeStyle):
 			ui.actionStyleTube->setChecked(TRUE);
 			break;
-		case (Atom::SphereStyle):
+		case (Prefs::SphereStyle):
 			ui.actionStyleSphere->setChecked(TRUE);
 			break;
-		case (Atom::ScaledStyle):
+		case (Prefs::ScaledStyle):
 			ui.actionStyleScaled->setChecked(TRUE);
 			break;
-		case (Atom::IndividualStyle):
+		case (Prefs::IndividualStyle):
 			ui.actionStyleIndividual->setChecked(TRUE);
 			break;
 		default:
@@ -195,13 +191,13 @@ void AtenWindow::finaliseUi()
 	// Load Qt Settings
 	loadSettings();
 
-	msg.exit("AtenWindow::finaliseUi");
+	Messenger::exit("AtenWindow::finaliseUi");
 }
 
 // Set controls
 void AtenWindow::setControls()
 {
-	msg.enter("AtenWindow::setControls");
+	Messenger::enter("AtenWindow::setControls");
 	
 	// Set correct Atom::DrawStyle on toolbar
 	setActiveStyleAction(prefs.renderStyle());
@@ -212,5 +208,5 @@ void AtenWindow::setControls()
 	// Set correct colour scheme menuitem
 	setActiveSchemeAction(prefs.colourScheme());
 
-	msg.exit("AtenWindow::setControls");
+	Messenger::exit("AtenWindow::setControls");
 }

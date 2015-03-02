@@ -24,12 +24,37 @@
 
 #include "gui/ui_celltransform.h"
 #include "templates/vector3.h"
+#include "base/namespace.h"
+
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_USING_NAMESPACE
 
 // Cell transform window
 class CellTransformWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	CellTransformWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::CellTransformWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Whether the window is refreshing
+	bool refreshing_;
+
 
 	/*
 	// Window Functions
@@ -65,28 +90,9 @@ class CellTransformWidget : public QDockWidget
 	void on_MillerLSpin_valueChanged(int value);
 	void on_MillerInRadio_clicked(bool checked);
 	void on_MillerOutRadio_clicked(bool checked);
+
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-	// Whether the window is refreshing
-	bool refreshing_;
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	CellTransformWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::CellTransformWidget ui;
 };
 
 #endif

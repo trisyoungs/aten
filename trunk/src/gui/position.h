@@ -24,7 +24,7 @@
 
 #include "gui/ui_position.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class AtenWindow;
 
 // Atom position window
@@ -32,6 +32,17 @@ class PositionWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	PositionWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::PositionWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 
 	/*
 	// Window Functions
@@ -68,26 +79,9 @@ class PositionWidget : public QDockWidget
 	void on_RepositionSelectionButton_clicked(bool on);
 	void on_RepositionDefineReferenceButton_clicked(bool on);
 	void on_RepositionDefineTargetButton_clicked(bool on);
+
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	PositionWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::PositionWidget ui;
 };
 
 #endif

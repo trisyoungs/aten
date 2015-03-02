@@ -21,11 +21,12 @@
 
 #include "parser/forcefieldatom.h"
 #include "parser/stepnode.h"
-#include "classes/forcefieldatom.h"
-#include "classes/prefs.h"
+#include "base/forcefieldatom.h"
+#include "base/prefs.h"
 #include "math/constants.h"
 #include "main/aten.h"
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
@@ -77,16 +78,16 @@ FunctionAccessor ForcefieldAtomVariable::functionData[ForcefieldAtomVariable::nF
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ForcefieldAtomVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldAtomVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ForcefieldAtomVariable::accessorSearch(s, arrayindex, arglist);
+	return ForcefieldAtomVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldAtomVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("ForcefieldAtomVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("ForcefieldAtomVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -96,75 +97,75 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'FFAtom&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'FFAtom&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("ForcefieldAtomVariable::accessorSearch");
+			Messenger::exit("ForcefieldAtomVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'FFAtom&' function '%s'.\n", s);
-			msg.exit("ForcefieldAtomVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'FFAtom&' function '%s'.\n", s);
+			Messenger::exit("ForcefieldAtomVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::ForcefieldAtomData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'FFAtom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'FFAtom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'FFAtom&' array member '%s'.\n", s);
-			msg.exit("ForcefieldAtomVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'FFAtom&' array member '%s'.\n", s);
+			Messenger::exit("ForcefieldAtomVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::ForcefieldAtomData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("ForcefieldAtomVariable::accessorSearch");
+	Messenger::exit("ForcefieldAtomVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ForcefieldAtomVariable::retrieveAccessor");
+	Messenger::enter("ForcefieldAtomVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for ForcefieldAtom type.\n", i);
-		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
+		Messenger::exit("ForcefieldAtomVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("ForcefieldAtomVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ForcefieldAtomVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("ForcefieldAtomVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -174,7 +175,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	ForcefieldAtom* ptr = (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -207,7 +208,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			// Must have an array index here...
 			if (!hasArrayIndex)
 			{
-				msg.print("Accessor 'datakeyword' must have an array index.\n");
+				Messenger::print("Accessor 'datakeyword' must have an array index.\n");
 				result = FALSE;
 			}
 			else rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].parameterKeywords[arrayIndex-1]);
@@ -216,13 +217,13 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			// Must have an array index here...
 			if (!hasArrayIndex)
 			{
-				msg.print("Accessor 'dataname' must have an array index.\n");
+				Messenger::print("Accessor 'dataname' must have an array index.\n");
 				result = FALSE;
 			}
 			else rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].parameters[arrayIndex-1]);
 			break;
 		case (ForcefieldAtomVariable::Equivalent):
-			if (aten.typeExportMapping()) rv.set(aten.typeExportConvert(ptr->equivalent()));
+			if (aten_.typeExportMapping()) rv.set(aten_.typeExportConvert(ptr->equivalent()));
 			else rv.set(ptr->equivalent());
 			break;
 		case (ForcefieldAtomVariable::FField):
@@ -238,7 +239,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			rv.set(ptr->elementMass());
 			break;
 		case (ForcefieldAtomVariable::Name):
-			if (aten.typeExportMapping()) rv.set(aten.typeExportConvert(ptr->name()));
+			if (aten_.typeExportMapping()) rv.set(aten_.typeExportConvert(ptr->name()));
 			else rv.set(ptr->name());
 			break;
 		case (ForcefieldAtomVariable::Neta):
@@ -255,19 +256,19 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldAtomVariable::retrieveAccessor");
+	Messenger::exit("ForcefieldAtomVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ForcefieldAtomVariable::setAccessor");
+	Messenger::enter("ForcefieldAtomVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for ForcefieldAtom type.\n", i);
-		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
+		Messenger::exit("ForcefieldAtomVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -279,20 +280,20 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -300,23 +301,23 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("ForcefieldAtomVariable::setAccessor");
+		Messenger::exit("ForcefieldAtomVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -325,57 +326,57 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	ForcefieldAtom* ptr = (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
 		case (ForcefieldAtomVariable::Charge):
-			ptr->setCharge(newvalue.asDouble());
+			ptr->setCharge(newValue.asDouble());
 			break;
 		case (ForcefieldAtomVariable::Data):
-			if ((newvalue.arraySize() != -1) && (newvalue.arraySize() <= MAXFFPARAMDATA)) for (n=0; n<newvalue.arraySize(); ++n) ptr->setParameter(n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setParameter(arrayIndex-1, newvalue.asDouble());
-			else for (n=0; n<MAXFFPARAMDATA; ++n) ptr->setParameter(n, newvalue.asDouble());
+			if ((newValue.arraySize() != -1) && (newValue.arraySize() <= MAXFFPARAMDATA)) for (n=0; n<newValue.arraySize(); ++n) ptr->setParameter(n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setParameter(arrayIndex-1, newValue.asDouble());
+			else for (n=0; n<MAXFFPARAMDATA; ++n) ptr->setParameter(n, newValue.asDouble());
 			break;
 		case (ForcefieldAtomVariable::Description):
-			ptr->setDescription(newvalue.asString());
+			ptr->setDescription(newValue.asString());
 			break;
 		case (ForcefieldAtomVariable::Equivalent):
-			ptr->setEquivalent(newvalue.asString());
+			ptr->setEquivalent(newValue.asString());
 			break;
 		case (ForcefieldAtomVariable::Form):
-			vf = VdwFunctions::vdwFunction(newvalue.asString());
+			vf = VdwFunctions::vdwFunction(newValue.asString());
 			if (vf == VdwFunctions::None) result = FALSE;
 			else ptr->setVdwForm(vf);
 			break;
 		case (ForcefieldAtomVariable::Name):
-			ptr->setName(newvalue.asString());
+			ptr->setName(newValue.asString());
 			break;
 		case (ForcefieldAtomVariable::Neta):
-			ptr->setNeta(newvalue.asString(), NULL);
+			ptr->setNeta(newValue.asString(), NULL);
 			break;
 		case (ForcefieldAtomVariable::Z):
-			ptr->neta()->setCharacterElement(newvalue.asInteger());
+			ptr->neta()->setCharacterElement(newValue.asInteger());
 			break;
 		default:
 			printf("ForcefieldAtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldAtomVariable::setAccessor");
+	Messenger::exit("ForcefieldAtomVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool ForcefieldAtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("ForcefieldAtomVariable::performFunction");
+	Messenger::enter("ForcefieldAtomVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for ForcefieldAtom type.\n", i);
-		msg.exit("ForcefieldAtomVariable::performFunction");
+		Messenger::exit("ForcefieldAtomVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -395,14 +396,14 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 			if ((ptr == NULL) || (at2 == NULL))
 			{
 				result = FALSE;
-				msg.print("Error: NULL ForcefieldAtom (or target) passed to 'combine' function.\n");
+				Messenger::print("Error: NULL ForcefieldAtom (or target) passed to 'combine' function.\n");
 				break;
 			}
 			// Check functional forms
 			if (ptr->vdwForm() != at2->vdwForm())
 			{
 				result = FALSE;
-				msg.print("Error: ForcefieldAtom passed to 'combine' function has differing functional form ('%s' cf. '%s').\n", VdwFunctions::VdwFunctions[ptr->vdwForm()].name, VdwFunctions::VdwFunctions[at2->vdwForm()].name);
+				Messenger::print("Error: ForcefieldAtom passed to 'combine' function has differing functional form ('%s' cf. '%s').\n", VdwFunctions::VdwFunctions[ptr->vdwForm()].name, VdwFunctions::VdwFunctions[at2->vdwForm()].name);
 				break;
 			}
 			// Check parameter ID
@@ -410,7 +411,7 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 			if ((param < 0) || (param >= VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters))
 			{
 				result = FALSE;
-				msg.print("Error: Parameter ID is out of range for VDW functional form - asked for %i, valid parameter range is 1 - %i.\n", param, VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters);
+				Messenger::print("Error: Parameter ID is out of range for VDW functional form - asked for %i, valid parameter range is 1 - %i.\n", param, VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters);
 				break;
 			}
 			// Combine parameters
@@ -424,7 +425,7 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 			if (v == NULL)
 			{
 				result = FALSE;
-				msg.print("Error: Data '%s' has not been defined in this ForcefieldAtom.\n", node->argc(0));
+				Messenger::print("Error: Data '%s' has not been defined in this ForcefieldAtom.\n", node->argc(0));
 				break;
 			}
 			v->execute(resultrv);
@@ -448,7 +449,7 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldAtomVariable::performFunction");
+	Messenger::exit("ForcefieldAtomVariable::performFunction");
 	return result;
 }
 
@@ -457,15 +458,15 @@ void ForcefieldAtomVariable::printAccessors()
 {
 	if (ForcefieldAtomVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<ForcefieldAtomVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<ForcefieldAtomVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((ForcefieldAtomVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<ForcefieldAtomVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<ForcefieldAtomVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -474,7 +475,7 @@ void ForcefieldAtomVariable::printAccessors()
 */
 
 // Constructor
-ForcefieldAtomArrayVariable::ForcefieldAtomArrayVariable(TreeNode *sizeexpr, bool constant)
+ForcefieldAtomArrayVariable::ForcefieldAtomArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ForcefieldAtomData;
@@ -486,7 +487,7 @@ ForcefieldAtomArrayVariable::ForcefieldAtomArrayVariable(TreeNode *sizeexpr, boo
 }
 
 // Search variable access list for provided accessor
-StepNode *ForcefieldAtomArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldAtomArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ForcefieldAtomVariable::accessorSearch(s, arrayindex, arglist);
+	return ForcefieldAtomVariable::accessorSearch(s, arrayIndex, argList);
 }

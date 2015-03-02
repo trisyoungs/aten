@@ -25,8 +25,11 @@
 #include "base/dnchar.h"
 #include "base/log.h"
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 class Atom;
 class UndoEvent;
@@ -67,9 +70,9 @@ class UndoState : public ListItem<UndoState>
 	// Check difference between Change::StructureLog and Change::CoordinateLog between start/end points
 	bool doLogsDiffer() const;
 	// Set the text associated with the current undo state
-	void setDescription(const char *s);
+	void setDescription(const char* s);
 	// Return the current text associated with the state
-	const char *description() const;
+	const char* description() const;
 	// Undo the changes specified in the state
 	void undo(Model* m);
 	// Redo the changes specified in the state
@@ -77,5 +80,7 @@ class UndoState : public ListItem<UndoState>
 	// Print changes captured in state
 	void print() const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

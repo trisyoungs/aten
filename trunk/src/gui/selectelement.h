@@ -25,9 +25,12 @@
 #include "gui/ui_selectelement.h"
 #include "templates/reflist.h"
 #include "base/elements.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class AtenWindow;
+
+ATEN_USING_NAMESPACE
 
 // Select Element Dialog
 class AtenSelectElement : public QDialog

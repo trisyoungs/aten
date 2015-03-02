@@ -23,8 +23,9 @@
 #include "main/aten.h"
 #include "main/version.h"
 #include "model/model.h"
-#include "classes/prefs.h"
-#include "parser/tree.h"
+#include "base/prefs.h"
+#include "render/primitiveinstance.h"
+// #include "parser/tree.h"
 #include "base/sysfunc.h"
 #include <iostream>
 #include <readline/readline.h>
@@ -32,6 +33,8 @@
 #include <parser/double.h>
 #include <parser/integer.h>
 #include <parser/character.h>
+
+ATEN_USING_NAMESPACE
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 Cli cliSwitches[] = {
@@ -205,7 +208,7 @@ Cli::CliSwitch Cli::cliSwitch(char c)
 }
 
 // Search for long option
-Cli::CliSwitch Cli::cliSwitch(const char *s)
+Cli::CliSwitch Cli::cliSwitch(const char* s)
 {
 	int n;
 	for (n=0; n<Cli::nSwitchItems; ++n)
@@ -284,8 +287,8 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (1):
 					if (!hasArg)
 					{
-						if (isShort) msg.print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
-						else msg.print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
+						if (isShort) Messenger::print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
+						else Messenger::print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
 						return FALSE;
 					}
 					break;
@@ -298,16 +301,16 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			switch (opt)
 			{
 				case (Cli::AtenDataSwitch):
-					aten.setDataDir(argtext.get());
-					msg.print("Will search for filters in '%s'.\n", argtext.get());
+					setDataDir(argtext.get());
+					Messenger::print("Will search for filters in '%s'.\n", argtext.get());
 					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
-					if (!hasArg) msg.addOutputType(Messenger::Calls);
+					if (!hasArg) Messenger::addOutputType(Messenger::Calls);
 					else
 					{
 						ot = Messenger::outputType(argtext.get(), TRUE);
-						if (ot != Messenger::nOutputTypes) msg.addOutputType(ot);
+						if (ot != Messenger::nOutputTypes) Messenger::addOutputType(ot);
 						else return FALSE;
 					}
 					break;
@@ -338,22 +341,22 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Turn off display list usage
 				case (Cli::NoListsSwitch):
-					msg.print("OpenGL display lists will not be used.\n");
-					prefs.setInstanceType(PrimitiveInstance::NoInstance);
+					Messenger::print("OpenGL display lists will not be used.\n");
+					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::NoInstances);
 					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
-					msg.setQuiet(TRUE);
+					Messenger::setQuiet(TRUE);
 					break;
 				// Turn on VBO usage
 				case (Cli::VBOSwitch):
-					msg.print("OpenGL Vertex Buffer Objects will be used.\n");
-					prefs.setInstanceType(PrimitiveInstance::VBOInstance);
+					Messenger::print("OpenGL Vertex Buffer Objects will be used.\n");
+					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::VBOInstance);
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
-					msg.print("Verbosity enabled.\n");
-					msg.addOutputType(Messenger::Verbose);
+					Messenger::print("Verbosity enabled.\n");
+					Messenger::addOutputType(Messenger::Verbose);
 					break;
 				// Print version and exit
 				case (Cli::VersionSwitch):
@@ -369,19 +372,20 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 // Parse CLI options, after filters / prefs have been loaded
 int Aten::parseCli(int argc, char *argv[])
 {
-	int argn, opt, ntried = 0, n, el, i;
+	int argn, opt, nTried = 0, n, el, i;
 	bool isShort, hasArg;
-	char *line;
-	Dnchar arg, argtext, varname, varvalue, prompt;
-	Forcefield *ff;
+	char* line;
+	Dnchar arg, argText, varName, varValue, prompt;
+	Forcefield* ff;
 	LineParser parser;
 	ElementMap::ZMapType zm;
 	NameMap<int> *nmi;
-	Model* m;
-	Program *script, tempProgram;
+	Model* model;
+	Program* script, tempProgram;
 	ReturnValue rv;
-	Tree* f, *modelfilter = NULL;
+	Tree* filter, *modelFilter = NULL;
 	Program interactiveScript;
+
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
 	while (argn < (argc-1))
@@ -395,7 +399,7 @@ int Aten::parseCli(int argc, char *argv[])
 			// Manually-exclude some specific (and extremely annoying) extraneous command line options
 			if (strncmp(argv[argn],"-psn",4) == 0)
 			{
-				msg.print("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
+				Messenger::print("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
 				continue;
 			}
 			// Is this a long or short option?
@@ -403,18 +407,18 @@ int Aten::parseCli(int argc, char *argv[])
 			if (isShort)
 			{
 				arg = &argv[argn][1];
-				argtext.clear();
+				argText.clear();
 				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
 				{
 					isShort = FALSE;
 					arg = beforeChar(&argv[argn][1], '=');
-					argtext = afterChar(&argv[argn][1], '=');
+					argText = afterChar(&argv[argn][1], '=');
 				}
 			}
 			else
 			{
 				arg = beforeChar(&argv[argn][2], '=');
-				argtext = afterChar(&argv[argn][2], '=');
+				argText = afterChar(&argv[argn][2], '=');
 			}
 			// Search for option...
 			opt = (isShort ? Cli::cliSwitch(arg[0]) : Cli::cliSwitch(arg.get()));
@@ -425,11 +429,11 @@ int Aten::parseCli(int argc, char *argv[])
 				return -1;
 			}
 			// Check if an argument to the switch has been supplied...
-			if (argtext != "") hasArg = TRUE;
+			if (argText != "") hasArg = TRUE;
 			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
 			{
 				hasArg = TRUE;
-				argtext = argv[++argn];
+				argText = argv[++argn];
 			}
 			else hasArg = FALSE;
 			// ...and whether it expects one
@@ -442,8 +446,8 @@ int Aten::parseCli(int argc, char *argv[])
 				case (1):
 					if (!hasArg)
 					{
-						if (isShort) msg.print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
-						else msg.print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
+						if (isShort) Messenger::print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
+						else Messenger::print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
 						return -1;
 					}
 					break;
@@ -471,13 +475,13 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Enable batch mode
 				case (Cli::BatchSwitch):
-					if (aten.programMode() == Aten::ProcessMode)
+					if (programMode_ == Aten::ProcessMode)
 					{
 						printf("Error: --batch and --process options are mutually exclusive.\n");
 						return -1;
 					}
-					else if (aten.programMode() == Aten::ExportMode) aten.setProgramMode(Aten::BatchExportMode);
-					else aten.setProgramMode(Aten::BatchMode);
+					else if (programMode_ == Aten::ExportMode) programMode_ = Aten::BatchExportMode;
+					else programMode_ = Aten::BatchMode;
 					break;
 				// Convert coordinates from Bohr to Angstrom
 				case (Cli::BohrSwitch):
@@ -489,7 +493,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set trajectory cache limit
 				case (Cli::CacheSwitch):
-					prefs.setCacheLimit(argtext.asInteger());
+					prefs.setCacheLimit(argText.asInteger());
 					break;
 				// Force model centering on load (for non-periodic systems)
 				case (Cli::CentreSwitch):
@@ -497,15 +501,15 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
-					if ((aten.programMode() == Aten::BatchMode) || (aten.programMode() == Aten::ProcessMode) || (aten.programMode() == Aten::BatchExportMode))
+					if ((programMode_ == Aten::BatchMode) || (programMode_ == Aten::ProcessMode) || (programMode_ == Aten::BatchExportMode))
 					{
-						script = aten.addBatchCommand();
-						if (!script->generateFromString(argtext.get(), "BatchCommand", "Batch Command")) return -1;
+						script = addBatchCommand();
+						if (!script->generateFromString(argText.get(), "BatchCommand", "Batch Command")) return -1;
 					}
 					else
 					{
 						tempProgram.clear();
-						if (tempProgram.generateFromString(argtext.get(), "CLI Command", "CLI Command"))
+						if (tempProgram.generateFromString(argText.get(), "CLI Command", "CLI Command"))
 						{
 							if (!tempProgram.execute(rv)) return -1;
 						}
@@ -518,36 +522,36 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
-					if (aten.programMode() == Aten::ProcessMode)
+					if (programMode_ == Aten::ProcessMode)
 					{
 						printf("Error: --export and --process options are mutually exclusive.\n");
 						return -1;
 					}
 
 					// Parse the first option so we can get the filter nickname and any filter options
-					parser.getArgsDelim(LineParser::UseQuotes, argtext.get());
+					parser.getArgsDelim(LineParser::UseQuotes, argText.get());
 					
 					// First part of argument is nickname
-					f = aten.findFilter(FilterData::ModelExport, parser.argc(0));
+					filter = findFilter(FilterData::ModelExport, parser.argc(0));
 					// Check that a suitable format was found
-					if (f == NULL)
+					if (filter == NULL)
 					{
 						// Print list of valid filter nicknames
-						aten.printValidNicknames(FilterData::ModelExport);
+						printValidNicknames(FilterData::ModelExport);
 						return -1;
 					}
 
 					// Loop over remaining arguments which are widget/global variable assignments
-					for (i = 1; i < parser.nArgs(); ++i) if (!f->setAccessibleVariable(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
-					
-					aten.setExportFilter(f);
-					if (aten.programMode() == Aten::BatchMode) aten.setProgramMode(Aten::BatchExportMode);
-					else aten.setProgramMode(Aten::ExportMode);
+					for (i = 1; i < parser.nArgs(); ++i) if (!filter->setAccessibleVariable(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
+
+					setExportFilter(filter);
+					if (programMode_ == Aten::BatchMode) programMode_ = Aten::BatchExportMode;
+					else programMode_ = Aten::ExportMode;
 					break;
 				// Set export type remappings
 				case (Cli::ExportMapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(0, argtext.get());
+					parser.getArgsDelim(0, argText.get());
 					if (strchr(parser.argc(n),'=') == NULL)
 					{
 						printf("Mangled exportmap value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
@@ -557,13 +561,13 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load expression
 				case (Cli::ExpressionSwitch):
-					f = aten.probeFile(argtext.get(), FilterData::ExpressionImport);
-					if (f == NULL) return -1;
-					else if (!f->executeRead(argtext.get())) return -1;
+					filter = probeFile(argText.get(), FilterData::ExpressionImport);
+					if (filter == NULL) return -1;
+					else if (!filter->executeRead(argText.get())) return -1;
 					break;
 				// Load additional filter data from specified filename
 				case (Cli::FilterSwitch):
-					if (!aten.openFilter(argtext.get())) return -1;
+					if (!openFilter(argText.get())) return -1;
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):
@@ -571,46 +575,46 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
-					ff = aten.loadForcefield(argtext.get());
+					ff = loadForcefield(argText.get());
 					if (ff == NULL) return -1;
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelfilter = aten.findFilter(FilterData::ModelImport, argtext.get());
-					if (modelfilter == NULL)
+					modelFilter = findFilter(FilterData::ModelImport, argText.get());
+					if (modelFilter == NULL)
 					{
 						// Print list of valid filter nicknames
-						aten.printValidNicknames(FilterData::ModelImport);
+						printValidNicknames(FilterData::ModelImport);
 						return -1;
 					}
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
-					f = aten.probeFile(argtext.get(), FilterData::GridImport);
-					if (f == NULL) return -1;
-					else if (!f->executeRead(argtext.get())) return -1;
+					filter = probeFile(argText.get(), FilterData::GridImport);
+					if (filter == NULL) return -1;
+					else if (!filter->executeRead(argText.get())) return -1;
 					break;
 				// Pass value
 				case (Cli::DoubleSwitch):
 				case (Cli::IntSwitch):
 				case (Cli::StringSwitch):
 					// Split argument into name and value
-					varname = beforeChar(argtext.get(), '=');
-					varvalue = afterChar(argtext.get(), '=');
-					if (passedValues_.find(varname.get()) != NULL)
+					varName = beforeChar(argText.get(), '=');
+					varValue = afterChar(argText.get(), '=');
+					if (passedValues_.find(varName.get()) != NULL)
 					{
-						printf("Error: Passed variable named '%s' has already been declared.\n", varname.get());
+						printf("Error: Passed variable named '%s' has already been declared.\n", varName.get());
 						return -1;
 					}
-					else if (opt == Cli::IntSwitch) addPassedValue(VTypes::IntegerData, varname.get(), varvalue.get());
-					else if (opt == Cli::DoubleSwitch) addPassedValue(VTypes::DoubleData, varname.get(), varvalue.get());
-					else if (opt == Cli::StringSwitch) addPassedValue(VTypes::StringData, varname.get(), varvalue.get());
+					else if (opt == Cli::IntSwitch) addPassedValue(VTypes::IntegerData, varName.get(), varValue.get());
+					else if (opt == Cli::DoubleSwitch) addPassedValue(VTypes::DoubleData, varName.get(), varValue.get());
+					else if (opt == Cli::StringSwitch) addPassedValue(VTypes::StringData, varName.get(), varValue.get());
 					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
-					prompt.sprintf("Aten %s > ",ATENVERSION);
+					prompt.sprintf("Aten %s > ", ATENVERSION);
 					printf("Entering interactive mode...\n");
-					aten.setProgramMode(Aten::InteractiveMode);
+					programMode_ = Aten::InteractiveMode;
 					do
 					{
 						// Get string from user
@@ -620,7 +624,7 @@ int Aten::parseCli(int argc, char *argv[])
 						// Add the command to the history and delete it 
 						add_history(line);
 						free(line);
-					} while (aten.programMode() == Aten::InteractiveMode);
+					} while (programMode_ == Aten::InteractiveMode);
 					break;
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
@@ -648,21 +652,21 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load models from list in file
 				case (Cli::LoadFromListSwitch):
-					if (!parser.openInput(argtext.get())) return -1;
+					if (!parser.openInput(argText.get())) return -1;
 					while (!parser.eofOrBlank())
 					{
 						parser.readNextLine(LineParser::StripComments);
-						ntried ++;
-						if (modelfilter != NULL) f = modelfilter;
-						else f = aten.probeFile(parser.line(), FilterData::ModelImport);
-						if (f != NULL) f->executeRead(parser.line());
+						nTried ++;
+						if (modelFilter != NULL) filter = modelFilter;
+						else filter = probeFile(parser.line(), FilterData::ModelImport);
+						if (filter != NULL) filter->executeRead(parser.line());
 						else return -1;
 					}
 					break;
 				// Set type mappings
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(0, argtext.get());
+					parser.getArgsDelim(0, argText.get());
 					for (n=0; n<parser.nArgs(); n++)
 					{
 						if (strchr(parser.argc(n),'=') == NULL)
@@ -685,8 +689,8 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Create a new model
 				case (Cli::NewModelSwitch):
-					m = aten.addModel();
-					m->enableUndoRedo();
+					model = addModel();
+					model->enableUndoRedo();
 					break;
 				// Display filter nicknames and quit
 				case (Cli::NicknamesSwitch):
@@ -727,56 +731,56 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Enable processing mode
 				case (Cli::ProcessSwitch):
-					if ((aten.programMode() == Aten::ExportMode) || (aten.programMode() == Aten::BatchExportMode) || (aten.programMode() == Aten::BatchMode))
+					if ((programMode_ == Aten::ExportMode) || (programMode_ == Aten::BatchExportMode) || (programMode_ == Aten::BatchMode))
 					{
 						printf("Error: --process and --batch / --export options are mutually exclusive.\n");
 						return -1;
 					}
-					else aten.setProgramMode(Aten::ProcessMode);
+					else programMode_ = Aten::ProcessMode;
 					break;
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
-					script = aten.addScript();
-					if (script->generateFromFile(argtext.get(), "CliScript"))
+					script = addScript();
+					if (script->generateFromFile(argText.get(), "CliScript"))
 					{
-						msg.print("Successfully loaded script.\n");
-						aten.setProgramMode(Aten::CommandMode);
+						Messenger::print("Successfully loaded script.\n");
+						programMode_ = Aten::CommandMode;
 						if (!script->execute(rv))
 						{
-							msg.print("Script execution failed.\n");
+							Messenger::print("Script execution failed.\n");
 							return -1;
 						}
 						// Need to check program mode after each script since it can be changed
-						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);
+						if (programMode_ == Aten::CommandMode) programMode_ = Aten::GuiMode;
 					}
 					else
 					{
-						aten.removeScript(script);
+						removeScript(script);
 						return -1;
 					}
 					break;
 				// Associate trajectory with last loaded model
 				case (Cli::TrajectorySwitch):
 					// Check for a current model
-					if (current.m == NULL)
+					if (current_.m == NULL)
 					{
 						printf("There is no current model to associate a trajectory to.\n");
 						return -1;
 					}
 					else
 					{
-						Tree* f = probeFile(argtext.get(), FilterData::TrajectoryImport);
-						if (f == NULL) return -1;
-						if (!current.m->initialiseTrajectory(argtext.get(),f)) return -1;
+						Tree* filter = probeFile(argText.get(), FilterData::TrajectoryImport);
+						if (filter == NULL) return -1;
+						if (!current_.m->initialiseTrajectory(argText.get(),filter)) return -1;
 					}
 					break;
 				// Set maximum number of undolevels per model
 				case (Cli::UndoLevelSwitch):
-					prefs.setMaxUndoLevels(argtext.asInteger());
+					prefs.setMaxUndoLevels(argText.asInteger());
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):
-					zm = ElementMap::zMapType(argtext.get(), TRUE);
+					zm = ElementMap::zMapType(argText.get(), TRUE);
 					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm, TRUE);
 					else return -1;
 					break;
@@ -789,10 +793,10 @@ int Aten::parseCli(int argc, char *argv[])
 		else
 		{
 			// Not a CLI switch, so try to load it as a model
-			ntried ++;
-			if (modelfilter != NULL) f = modelfilter;
-			else f = aten.probeFile(argv[argn], FilterData::ModelImport);
-			if (f != NULL) f->executeRead(argv[argn]);
+			++nTried;
+			if (modelFilter != NULL) filter = modelFilter;
+			else filter = probeFile(argv[argn], FilterData::ModelImport);
+			if (filter != NULL) filter->executeRead(argv[argn]);
 			else return -1;
 		}
 	}
@@ -802,10 +806,10 @@ int Aten::parseCli(int argc, char *argv[])
 	if (prefs.readPipe()) readcin = TRUE;
 	else
 	{
-		cin.seekg(0, ios::end);
-		streampos endpos = cin.tellg();
-		if ((endpos != streampos(-1)) && (endpos != streampos(0))) readcin = TRUE;
-		cin.seekg(0, ios::beg);
+		std::cin.seekg(0, std::ios::end);
+		std::streampos endpos = std::cin.tellg();
+		if ((endpos != std::streampos(-1)) && (endpos != std::streampos(0))) readcin = TRUE;
+		std::cin.seekg(0, std::ios::beg);
 		
 	}
 	if (readcin)
@@ -813,19 +817,19 @@ int Aten::parseCli(int argc, char *argv[])
 		// Grab all lines from cin to a temporary stringlist....
 		List<Dnchar> commands;
 		char line[8096];
-		while (cin.good() && (!cin.eof()))
+		while (std::cin.good() && (!std::cin.eof()))
 		{
-			cin.getline(line, 8095);
+			std::cin.getline(line, 8095);
 			// Remove any commented part of line
 			removeComments(line);
 			if (isEmpty(line)) continue;
-			Dnchar *s = commands.add();
+			Dnchar* s = commands.add();
 			s->set(line);
 		}
 		// Create and execute commands
-		if ((aten.programMode() == Aten::BatchMode) || (aten.programMode() == Aten::ProcessMode) || (aten.programMode() == Aten::BatchExportMode))
+		if ((programMode_ == Aten::BatchMode) || (programMode_ == Aten::ProcessMode) || (programMode_ == Aten::BatchExportMode))
 		{
-			script = aten.addBatchCommand();
+			script = addBatchCommand();
 			if (!script->generateFromStringList(commands.first(), "BatchCommand", "Batch Command")) return -1;
 		}
 		else
@@ -839,7 +843,7 @@ int Aten::parseCli(int argc, char *argv[])
 		}
 	}
 
-	return aten.nModels();
+	return models_.nItems();
 }
 
 // Usage help
@@ -864,7 +868,7 @@ void Aten::printUsage() const
 }
 
 // Add passed value
-bool Aten::addPassedValue(VTypes::DataType type, const char *name, const char *value)
+bool Aten::addPassedValue(VTypes::DataType type, const char* name, const char* value)
 {
 	// Search for existing passed value of this name...
 	if (passedValues_.find(name)) return FALSE;
@@ -879,7 +883,7 @@ bool Aten::addPassedValue(VTypes::DataType type, const char *name, const char *v
 }
 
 // Find passed value
-Variable *Aten::findPassedValue(const char *name) const
+Variable *Aten::findPassedValue(const char* name) const
 {
 	return passedValues_.find(name);
 }

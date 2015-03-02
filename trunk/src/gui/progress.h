@@ -24,6 +24,7 @@
 
 #include "gui/ui_progress.h"
 #include <QtCore/QTime>
+#include "base/namespace.h"
 
 // Progress Dialog
 class AtenProgress : public QDialog
@@ -31,17 +32,15 @@ class AtenProgress : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
-	/*
-	// Window Functions
-	*/
 	public:
-	void showWindow();
-	private slots:
-	void on_CancelButton_clicked(bool checked);
+	// Constructor / Destructor
+	AtenProgress(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::AtenProgress ui;
 
 
 	/*
-	// Local Objects / Variables
+	// Local Variables
 	*/
 	private:
 	// Set subtitle (if one exists)
@@ -55,15 +54,15 @@ class AtenProgress : public QDialog
 	// Close dialog window
 	void terminate();
 
-
+	
 	/*
-	// Dialog
+	// Window Functions
 	*/
 	public:
-	// Constructor / Destructor
-	AtenProgress(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::AtenProgress ui;
+	void showWindow();
+
+	private slots:
+	void on_CancelButton_clicked(bool checked);
 };
 
 #endif

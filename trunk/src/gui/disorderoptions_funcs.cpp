@@ -22,6 +22,8 @@
 #include "gui/disorderoptions.h"
 #include "methods/mc.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 DisorderOptions::DisorderOptions(QWidget *parent)
 {

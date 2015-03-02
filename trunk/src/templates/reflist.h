@@ -153,7 +153,7 @@ template <class T, class D> Reflist<T,D>::Reflist(const Reflist<T,D>& source)
 	items_ = NULL;
 	regenerate_ = 1;
 	nItems_ = 0;
-	for (Refitem<T,D> *ri = source.first(); ri != NULL; ri = ri->next) add(ri->item, ri->data);
+	for (Refitem<T,D>* ri = source.first(); ri != NULL; ri = ri->next) add(ri->item, ri->data);
 }
 
 // Assignment operator =
@@ -161,7 +161,7 @@ template <class T, class D> void Reflist<T,D>::operator=(const Reflist<T,D> &sou
 {
 	// Clear any current data...
 	clear();
-	for (Refitem<T,D> *ri = source.first(); ri != NULL; ri = ri->next) add(ri->item, ri->data);
+	for (Refitem<T,D>* ri = source.first(); ri != NULL; ri = ri->next) add(ri->item, ri->data);
 }
 
 // Returns the head of the atom list
@@ -415,7 +415,7 @@ template <class T, class D> void Reflist<T,D>::createFromList(T *xitem)
 template <class T, class D> void Reflist<T,D>::fillArray(int n, T **data)
 {
 	int count = 0;
-	Refitem<T,D> *ri = listHead_;
+	Refitem<T,D>* ri = listHead_;
 	while (ri != NULL)
 	{
 		data[count] = ri->item;
@@ -453,7 +453,7 @@ template <class T, class D> Refitem<T,D> **Reflist<T,D>::array()
 	items_ = new Refitem<T,D>*[nItems_];
 	// Fill in pointers
 	int count = 0;
-	for (Refitem<T,D> *ri = listHead_; ri != NULL; ri = ri->next) items_[count++] = ri;
+	for (Refitem<T,D>* ri = listHead_; ri != NULL; ri = ri->next) items_[count++] = ri;
 	regenerate_ = 0;
 	return items_;
 }

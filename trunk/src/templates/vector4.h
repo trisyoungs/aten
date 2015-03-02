@@ -25,6 +25,9 @@
 #include "templates/vector3.h"
 #include <stdio.h>
 #include <math.h>
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // 4D vector
 template <class T> class Vec4
@@ -276,5 +279,7 @@ template <class T> void Vec4<T>::print() const
 {
 	printf("vec(xyzw) = %8.4f %8.4f %8.4f %8.4f\n", (double)x, (double)y, (double)z, (double)w);
 }
+
+ATEN_END_NAMESPACE
 
 #endif

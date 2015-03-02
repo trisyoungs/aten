@@ -21,19 +21,20 @@
 
 #include "base/cell.h"
 #include "base/atom.h"
-#include "model/model.h"
-#include "base/mathfunc.h"
 #include "base/sysfunc.h"
 #include "base/spacegroup.h"
-using namespace std;
+#include "model/model.h"
+#include "math/mathfunc.h"
+
+ATEN_USING_NAMESPACE
 
 // Cell types
-const char *CellTypeKeywords[UnitCell::nCellTypes] = { "None", "Cubic", "Orthorhombic", "Parallelepiped" };
-const char *UnitCell::cellType(UnitCell::CellType i)
+const char* CellTypeKeywords[UnitCell::nCellTypes] = { "None", "Cubic", "Orthorhombic", "Parallelepiped" };
+const char* UnitCell::cellType(UnitCell::CellType i)
 {
 	return CellTypeKeywords[i];
 }
-UnitCell::CellType UnitCell::cellType(const char *s, bool reportError)
+UnitCell::CellType UnitCell::cellType(const char* s, bool reportError)
 {
 	UnitCell::CellType ct = (UnitCell::CellType) enumSearch("cell type",UnitCell::nCellTypes,CellTypeKeywords,s);
 	if ((ct == UnitCell::nCellTypes) && reportError) enumPrintValid(UnitCell::nCellTypes,CellTypeKeywords);
@@ -41,8 +42,8 @@ UnitCell::CellType UnitCell::cellType(const char *s, bool reportError)
 }
 
 // Cell definition parameters
-const char *CellParameterKeywords[UnitCell::nCellParameters] = { "a", "b", "c", "alpha", "beta", "gamma", "ax", "ay", "az", "bx", "by", "bz", "cx", "cy", "cz" };
-UnitCell::CellParameter UnitCell::cellParameter(const char *s)
+const char* CellParameterKeywords[UnitCell::nCellParameters] = { "a", "b", "c", "alpha", "beta", "gamma", "ax", "ay", "az", "bx", "by", "bz", "cx", "cy", "cz" };
+UnitCell::CellParameter UnitCell::cellParameter(const char* s)
 {
 	return (CellParameter) enumSearch("cell parameter",UnitCell::nCellParameters,CellParameterKeywords,s);
 }
@@ -106,7 +107,7 @@ Model* UnitCell::parent()
 }
 
 // Copy data from specified cell
-bool UnitCell::copy(UnitCell *source)
+bool UnitCell::copy(UnitCell* source)
 {
 	if (source == NULL) return FALSE;
 	source->print();
@@ -128,7 +129,7 @@ void UnitCell::reset()
 // Set (by parameters)
 void UnitCell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles)
 {
-	msg.enter("UnitCell::set[vectors]");
+	Messenger::enter("UnitCell::set[vectors]");
 	// Store cell lengths and angles (in degrees) in structure
 	angles_ = newangles;
 	lengths_ = newlengths;
@@ -136,13 +137,13 @@ void UnitCell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles
 	calculateMatrix();
 	// Update dependent quantities
 	update();
-	msg.exit("UnitCell::set[vectors]");
+	Messenger::exit("UnitCell::set[vectors]");
 }
 
 // Set (by matrix)
-void UnitCell::set(const Matrix &newaxes)
+void UnitCell::set(const Matrix& newaxes)
 {
-	msg.enter("UnitCell::set[matrix]");
+	Messenger::enter("UnitCell::set[matrix]");
 	// Store the supplied matrix, making sure that column 4 is correct
 	axes_ = newaxes;
 	axes_.setColumn(3, 0.0, 0.0, 0.0, 1.0);
@@ -150,7 +151,7 @@ void UnitCell::set(const Matrix &newaxes)
 	calculateVectors();
 	// Update dependent quantities
 	update();
-	msg.exit("UnitCell::set[matrix]");
+	Messenger::exit("UnitCell::set[matrix]");
 }
 
 // Set lengths and calculates matrix
@@ -310,23 +311,23 @@ double UnitCell::density() const
 */
 
 // Set spacegroup from supplied spacegroup name
-bool UnitCell::setSpacegroup(const char *name, bool forceRhombohedral)
+bool UnitCell::setSpacegroup(const char* name, bool forceRhombohedral)
 {
-	msg.enter("UnitCell::setSpacegroup");
+	Messenger::enter("UnitCell::setSpacegroup");
 	// This is basically a chunk of verbatim code from 'sgquick.c'
 
 	// Do a table lookup of the sg text (assume volume is 'A')
 	const T_TabSgName *tsgn = FindTabSgNameEntry(name, 'A');
 	if (tsgn == NULL)
 	{
-		msg.print("Unable to find spacegroup '%s'.\n", name);
-		msg.exit("UnitCell::setSpacegroup");
+		Messenger::print("Unable to find spacegroup '%s'.\n", name);
+		Messenger::exit("UnitCell::setSpacegroup");
 		return FALSE;
 	}
 	// Check for hexagonal basis, and whether to force rhombohedral basis
 	if (strcmp(tsgn->Extension, "H") == 0)
 	{
-		if (!forceRhombohedral) msg.print("Warning: Spacegroup has hexagonal basis.\n");
+		if (!forceRhombohedral) Messenger::print("Warning: Spacegroup has hexagonal basis.\n");
 		else
 		{
 			Dnchar newname(128);
@@ -335,11 +336,11 @@ bool UnitCell::setSpacegroup(const char *name, bool forceRhombohedral)
 			tsgn = FindTabSgNameEntry(newname.get(), 'A');
 			if (tsgn == NULL)
 			{
-				msg.print("Unable to find spacegroup '%s'.\n", name);
-				msg.exit("UnitCell::setSpacegroup");
+				Messenger::print("Unable to find spacegroup '%s'.\n", name);
+				Messenger::exit("UnitCell::setSpacegroup");
 				return FALSE;
 			}
-			msg.print("Spacegroup %s forced into rhombohedral basis.\n", tsgn->SgLabels);
+			Messenger::print("Spacegroup %s forced into rhombohedral basis.\n", tsgn->SgLabels);
 		}
 	}
 	spacegroupId_ = tsgn->SgNumber;
@@ -355,7 +356,7 @@ bool UnitCell::setSpacegroup(const char *name, bool forceRhombohedral)
 	// Do some book-keeping and derive crystal system, point group, and - if not already set - find the entry in the internal table of space group symbols
 	CompleteSgInfo(&spacegroup_);
 
-	msg.print(Messenger::Verbose, "Space group belongs to the %s crystal system.\n", XS_Name[spacegroup_.XtalSystem]);
+	Messenger::print(Messenger::Verbose, "Space group belongs to the %s crystal system.\n", XS_Name[spacegroup_.XtalSystem]);
 	return TRUE;
 }
 
@@ -372,7 +373,7 @@ int UnitCell::spacegroupId() const
 }
 
 // Return the spacegroup name
-const char *UnitCell::spacegroupName() const
+const char* UnitCell::spacegroupName() const
 {
 	return Spacegroups[spacegroupId_].name;
 }
@@ -415,7 +416,7 @@ void UnitCell::update()
 // Determine Type
 void UnitCell::determineType()
 {
-	msg.enter("UnitCell::determineType");
+	Messenger::enter("UnitCell::determineType");
 	// Compare cell angles....
 	int count = 0;
 	if (fabs(90.0 - angles_.x) < 1.0e-5) ++count;
@@ -440,13 +441,13 @@ void UnitCell::determineType()
 // 		axes_[9] = 0.0;
 	}
 	else type_ = UnitCell::ParallelepipedCell;
-	msg.exit("UnitCell::determineType");
+	Messenger::exit("UnitCell::determineType");
 }
 
 // Calculate cell lengths/angles from current matrix
 void UnitCell::calculateVectors()
 {
-	msg.enter("UnitCell::calculateVectors");
+	Messenger::enter("UnitCell::calculateVectors");
 	// Calculate cell lengths
 	lengths_.x = axes_.columnMagnitude(0);
 	lengths_.y = axes_.columnMagnitude(1);
@@ -463,13 +464,13 @@ void UnitCell::calculateVectors()
 	angles_.y = acos(vecx.dp(vecz));
 	angles_.z = acos(vecx.dp(vecy));
 	angles_ *= DEGRAD;
-	msg.exit("UnitCell::calculateVectors");
+	Messenger::exit("UnitCell::calculateVectors");
 }
 
 // Calculate cell matrix from current vectors
 void UnitCell::calculateMatrix()
 {
-	msg.enter("UnitCell::calculateMatrix");
+	Messenger::enter("UnitCell::calculateMatrix");
 	double temp;
 	// Work in unit vectors. Assume that A lays along x-axis
 	axes_.setColumn(0,1.0,0.0,0.0,0.0);
@@ -488,18 +489,18 @@ void UnitCell::calculateMatrix()
 	axes_.columnMultiply(1,lengths_.y);
 	axes_.columnMultiply(2,lengths_.z);
 	axes_.setColumn(3, 0.0, 0.0, 0.0, 1.0);
-	msg.exit("UnitCell::calculateMatrix");
+	Messenger::exit("UnitCell::calculateMatrix");
 }
 
 // Calculate reciprocal cell vectors
 void UnitCell::calculateReciprocal()
 {
 	// Calculate the reciprocal cell of 'this->cell'
-	msg.enter("UnitCell::calculateReciprocal");
+	Messenger::enter("UnitCell::calculateReciprocal");
 	switch (type_)
 	{
 		case (UnitCell::NoCell):
-			msg.print("Cell : Can't calculate reciprocal cell - no cell defined.\n");
+			Messenger::print("Cell : Can't calculate reciprocal cell - no cell defined.\n");
 			break;
 		case (UnitCell::CubicCell):
 		case (UnitCell::OrthorhombicCell):
@@ -523,25 +524,25 @@ void UnitCell::calculateReciprocal()
 		default:
 			break;
 	}
-	msg.exit("UnitCell::calculateReciprocal");
+	Messenger::exit("UnitCell::calculateReciprocal");
 }
 
 // Calculate centre coordinate of cell
 void UnitCell::calculateCentre()
 {
-	msg.enter("UnitCell::calculateCentre");
+	Messenger::enter("UnitCell::calculateCentre");
 	if (type_ != UnitCell::NoCell) centre_ = axes_.transform(0.5,0.5,0.5);
 	else centre_.set(0.0,0.0,0.0);
-	msg.exit("UnitCell::calculateCentre");
+	Messenger::exit("UnitCell::calculateCentre");
 }
 
 // Calculate inverse matrix
 void UnitCell::calculateInverse()
 {
-	msg.enter("UnitCell::calculateInverse");
+	Messenger::enter("UnitCell::calculateInverse");
 	inverse_ = axes_;
 	inverse_.invert();
-	msg.exit("UnitCell::calculateInverse");
+	Messenger::exit("UnitCell::calculateInverse");
 }
 
 /*
@@ -625,7 +626,7 @@ Vec3<double> UnitCell::mim(Atom* i, Atom* j) const
 Vec3<double> UnitCell::fold(Vec3<double> &r) const
 {
 	// Folds the coordinates in 'r' into the defined unit cell
-	msg.enter("UnitCell::fold");
+	Messenger::enter("UnitCell::fold");
 	static Vec3<double> R;
 	switch (type_)
 	{
@@ -651,7 +652,7 @@ Vec3<double> UnitCell::fold(Vec3<double> &r) const
 			R = axes_.transform(R);
 			break;
 	}
-	msg.exit("UnitCell::fold");
+	Messenger::exit("UnitCell::fold");
 	return R;
 }
 
@@ -805,8 +806,8 @@ Vec3<double> UnitCell::randomPos() const
 // Print
 void UnitCell::print()
 {
-	msg.print("\t        x        y        z          l\n");
-	msg.print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]\n", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
-	msg.print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]\n", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
-	msg.print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]\n", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
+	Messenger::print("\t        x        y        z          l\n");
+	Messenger::print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]\n", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
+	Messenger::print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]\n", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
+	Messenger::print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]\n", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
 }

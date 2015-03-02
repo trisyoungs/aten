@@ -27,8 +27,11 @@
 #include "parser/vtypes.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class TreeNode;
 
 // Format node
@@ -38,7 +41,7 @@ class FormatChunk : public ListItem<FormatChunk>
 	// Node types
 	enum ChunkType { PlainTextChunk, FormattedChunk, DelimitedChunk, GreedyDelimitedChunk, nChunkTypes };
 	// Constructors
-	FormatChunk(ChunkType type, const char *fmt, TreeNode *arg = NULL, VTypes::DataType retrieveType = VTypes::NoData);
+	FormatChunk(ChunkType type, const char* fmt, TreeNode* arg = NULL, VTypes::DataType retrieveType = VTypes::NoData);
 
 
 	/*
@@ -52,7 +55,7 @@ class FormatChunk : public ListItem<FormatChunk>
 	// Length of formatted argument (if one was supplied)
 	int formatLength_;
 	// Argument pointing to source (in the case of read) or destination (in the case of write) command arguments
-	TreeNode *arg_;
+	TreeNode* arg_;
 	// Variable type to retrieve variable data as (related to contents of cFormat_)
 	VTypes::DataType retrieveType_;
 
@@ -60,13 +63,13 @@ class FormatChunk : public ListItem<FormatChunk>
 	// Return chunktype
 	ChunkType type();
 	// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
-	const char *cFormat();
+	const char* cFormat();
 	// Return length of formatted chunk
 	int formatLength();
 	// Return length of plaintext (cFormat)
 	int textLength();
 	// Return associated argument
-	TreeNode *arg();
+	TreeNode* arg();
 	// Return variable type to retrieve variable data as
 	VTypes::DataType retrieveType();
 };
@@ -77,7 +80,7 @@ class Format
 	public:
 	// Constructors / Destructor
 	Format(Refitem<TreeNode,int> *firstarg);
-	Format(const char *format, Refitem<TreeNode,int> *firstarg);
+	Format(const char* format, Refitem<TreeNode,int> *firstarg);
 	~Format();
 
 
@@ -94,13 +97,13 @@ class Format
 	// Created string
 	char createdString_[8192];
 	// Add new plaintext chunk to format
-	void addPlainTextChunk(const char *s);
+	void addPlainTextChunk(const char* s);
 	// Add new formatted chunk to format
-	void addFormattedChunk(const char *format, TreeNode *arg, VTypes::DataType retrievetype);
+	void addFormattedChunk(const char* format, TreeNode* arg, VTypes::DataType retrievetype);
 	// Add new delimited chunk to format
-	void addDelimitedChunk(TreeNode *arg);
+	void addDelimitedChunk(TreeNode* arg);
 	// Add new greedy delimited chunk to format
-	void addGreedyDelimitedChunk(TreeNode *arg, VTypes::DataType retrievetype);
+	void addGreedyDelimitedChunk(TreeNode* arg, VTypes::DataType retrievetype);
 
 	public:
 	// Return whether the format was created successfully
@@ -116,14 +119,15 @@ class Format
 
 	public:
 	// Return last written string
-	const char *string();
+	const char* string();
 	// Write format to internal string
 	bool writeToString();
 	// Read line and parse according to format
-	int read(const char *line, int optionMask);
+	int read(const char* line, int optionMask);
 	// Read line from file and parse according to format
 	int read(LineParser *parser, int optionMask);
 };
 
-#endif
+ATEN_END_NAMESPACE
 
+#endif

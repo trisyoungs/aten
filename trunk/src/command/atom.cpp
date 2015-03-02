@@ -21,15 +21,17 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
+#include "model/bundle.h"
 #include "model/model.h"
-#include "base/elements.h"
+
+ATEN_USING_NAMESPACE
 
 // Set atom style for current selection
-bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AtomStyle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0), TRUE);
-	if (ds == Atom::nDrawStyles) return FALSE;
+	Prefs::DrawStyle ds = Prefs::drawStyle(c->argc(0), TRUE);
+	if (ds == Prefs::nDrawStyles) return FALSE;
 	if (c->hasArg(1))
 	{
 		Atom* i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -49,7 +51,7 @@ bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set custom colours of selected atoms
-bool Command::function_ColourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ColourAtoms(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Set custom colour of %i atoms", obj.rs()->nSelected());
@@ -60,7 +62,7 @@ bool Command::function_ColourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom ('currentatom <id>')
-bool Command::function_CurrentAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_CurrentAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom* i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
@@ -72,7 +74,7 @@ bool Command::function_CurrentAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Fix positions of current atom selection or specified atom
-bool Command::function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Fix(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))
@@ -93,7 +95,7 @@ bool Command::function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Free positions of current atom selection or specified atom
-bool Command::function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Free(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))
@@ -114,7 +116,7 @@ bool Command::function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Retrieve atom info ('getatom <id>')
-bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GetAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom* i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs()->atom(c->argi(0)-1);
@@ -124,7 +126,7 @@ bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Hide current atom selection
-bool Command::function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Hide(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Hide %i atoms", obj.rs()->nSelected());
@@ -135,7 +137,7 @@ bool Command::function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set custom colours of selected atoms
-bool Command::function_RecolourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_RecolourAtoms(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Reset custom colour of %i atoms", obj.rs()->nSelected());
@@ -146,7 +148,7 @@ bool Command::function_RecolourAtoms(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Set current atom charge
-bool Command::function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetCharge(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -157,7 +159,7 @@ bool Command::function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom coordinates
-bool Command::function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetCoords(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = c->argType(3) == VTypes::AtomData ? (Atom*) c->argp(3,VTypes::AtomData) : obj.rs()->atom(c->argi(3)-1);
@@ -168,7 +170,7 @@ bool Command::function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom element
-bool Command::function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetElement(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -179,7 +181,7 @@ bool Command::function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom forces
-bool Command::function_SetForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = c->argType(3) == VTypes::AtomData ? (Atom*) c->argp(3,VTypes::AtomData) : obj.rs()->atom(c->argi(3)-1);
@@ -190,7 +192,7 @@ bool Command::function_SetForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom x force
-bool Command::function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetFX(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -201,7 +203,7 @@ bool Command::function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom y force
-bool Command::function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetFY(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -212,7 +214,7 @@ bool Command::function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom z force
-bool Command::function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetFZ(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -223,7 +225,7 @@ bool Command::function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom x coordinate
-bool Command::function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetRX(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -234,7 +236,7 @@ bool Command::function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom y coordinate
-bool Command::function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetRY(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -245,7 +247,7 @@ bool Command::function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom z coordinate
-bool Command::function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetRZ(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -256,7 +258,7 @@ bool Command::function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom velocities
-bool Command::function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetVelocities(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = c->argType(3) == VTypes::AtomData ? (Atom*) c->argp(3,VTypes::AtomData) : obj.rs()->atom(c->argi(3)-1);
@@ -267,7 +269,7 @@ bool Command::function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Set current atom x velocity
-bool Command::function_SetVX(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetVX(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -278,7 +280,7 @@ bool Command::function_SetVX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom y velocity
-bool Command::function_SetVY(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetVY(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -289,7 +291,7 @@ bool Command::function_SetVY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set current atom z velocity
-bool Command::function_SetVZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetVZ(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs()->atom(c->argi(1)-1);
@@ -300,7 +302,7 @@ bool Command::function_SetVZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Show current atom selection
-bool Command::function_Show(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Show(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Show %i atoms", obj.rs()->nSelected());

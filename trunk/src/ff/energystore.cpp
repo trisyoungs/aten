@@ -21,8 +21,10 @@
 
 #include "model/model.h"
 #include "ff/energystore.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
 #include "base/pattern.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructors
 EnergyStore::EnergyStore()
@@ -73,7 +75,7 @@ void EnergyStore::initialise()
 // Deallocate arrays
 void EnergyStore::deallocate()
 {
-	msg.enter("EnergyStore::deallocate");
+	Messenger::enter("EnergyStore::deallocate");
 	if (bond_ != NULL) delete[] bond_;
 	if (angle_ != NULL) delete[] angle_;
 	if (torsion_ != NULL) delete[] torsion_;
@@ -96,7 +98,7 @@ void EnergyStore::deallocate()
 	if (ewaldSelfCorrect_ != NULL) delete[] ewaldSelfCorrect_;
 	if (ewaldMolCorrect_ != NULL) delete[] ewaldMolCorrect_;
 	size_ = 0;
-	msg.exit("EnergyStore::deallocate");
+	Messenger::exit("EnergyStore::deallocate");
 }
 
 // Reset totals
@@ -121,7 +123,7 @@ void EnergyStore::resetTotals()
 void EnergyStore::clear()
 {
 	// Clear all the values in the energy store
-	msg.enter("EnergyStore::clear");
+	Messenger::enter("EnergyStore::clear");
 	int n,m;
 	for (n=0; n<size_; n++)
 	{
@@ -146,13 +148,13 @@ void EnergyStore::clear()
 	vdwTail_ = 0.0;
 	resetTotals();
 	calculated_ = FALSE;
-	msg.exit("EnergyStore::clear");
+	Messenger::exit("EnergyStore::clear");
 }
 
 // Resize
 void EnergyStore::resize(int npatterns)
 {
-	msg.enter("EnergyStore::resize");
+	Messenger::enter("EnergyStore::resize");
 	// Delete old data first
 	deallocate();
 	// Now create new arrays...
@@ -179,15 +181,15 @@ void EnergyStore::resize(int npatterns)
 	ewaldSelfCorrect_ = new double[size_];
 	ewaldMolCorrect_ = new double[size_];
 	clear();
-	msg.print(Messenger::Verbose,"Energy store resized to %i\n",size_);
-	msg.exit("EnergyStore::resize");
+	Messenger::print(Messenger::Verbose, "Energy store resized to %i\n",size_);
+	Messenger::exit("EnergyStore::resize");
 }
 
 // Create totals
 void EnergyStore::totalise()
 {
 	// Sum up the energies to get totals for individual aspects and the total overall energy.
-	msg.enter("EnergyStore::totalise");
+	Messenger::enter("EnergyStore::totalise");
 	resetTotals();
 	int n,m;
 	for (n=0; n<size_; n++)
@@ -230,17 +232,17 @@ void EnergyStore::totalise()
 	totalInter_ = totalVdw_ + totalElectrostatic_;
 	total_ = totalIntra_ + totalInter_;
 	calculated_ = TRUE;
-	msg.exit("EnergyStore::totalise");
+	Messenger::exit("EnergyStore::totalise");
 }
 
 // Add
 void EnergyStore::add(EnergyStore::EnergyType type, double value, int p1, int p2)
 {
-	msg.enter("EnergyStore::add");
+	Messenger::enter("EnergyStore::add");
 	if ((p1 >= size_) || (p2 >= size_))
 	{
 		printf("EnergyStore::add <<<< Array element out of range - %i %i - Ignored >>>>\n", p1, p2);
-		msg.exit("EnergyStore::add");
+		Messenger::exit("EnergyStore::add");
 		return;
 	}
 	switch (type)
@@ -294,7 +296,7 @@ void EnergyStore::add(EnergyStore::EnergyType type, double value, int p1, int p2
 			printf("Internal Error: Summation of energy type %i missed.\n", type);
 			break;
 	}
-	msg.exit("EnergyStore::add");
+	Messenger::exit("EnergyStore::add");
 }
 
 // Returns the total energy in the store
@@ -346,67 +348,67 @@ double EnergyStore::electrostatic()
 // Print out all energy terms
 void EnergyStore::print()
 {
-	msg.enter("EnergyStore::print");
+	Messenger::enter("EnergyStore::print");
 	if (!calculated_)
 	{
-		msg.print("EnergyStore::print - Total energy has not yet been calculated.\n");
-		msg.exit("EnergyStore::print");
+		Messenger::print("EnergyStore::print - Total energy has not yet been calculated.\n");
+		Messenger::exit("EnergyStore::print");
 		return;
 	}
-	msg.print("Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
-	msg.print("        Bond : %13.6e\n",totalBond_);
-	msg.print("       Angle : %13.6e\n",totalAngle_);
-	msg.print("Urey-Bradley : %13.6e\n",totalUreyBradley_);
-	msg.print("     Torsion : %13.6e\n",totalTorsion_);
-	msg.print("         VDW : %13.6e (tail contribution : %13.6e)\n",totalVdw_,vdwTail_);
-	msg.print("        Elec : %13.6e\n",totalElectrostatic_);
-	msg.print("       TOTAL : %13.6e\n",total_);
-	msg.exit("EnergyStore::print");
+	Messenger::print("Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
+	Messenger::print("        Bond : %13.6e\n",totalBond_);
+	Messenger::print("       Angle : %13.6e\n",totalAngle_);
+	Messenger::print("Urey-Bradley : %13.6e\n",totalUreyBradley_);
+	Messenger::print("     Torsion : %13.6e\n",totalTorsion_);
+	Messenger::print("         VDW : %13.6e (tail contribution : %13.6e)\n",totalVdw_,vdwTail_);
+	Messenger::print("        Elec : %13.6e\n",totalElectrostatic_);
+	Messenger::print("       TOTAL : %13.6e\n",total_);
+	Messenger::exit("EnergyStore::print");
 }
 
 // Print energy summary
 void EnergyStore::printSummary()
 {
-	msg.enter("EnergyStore::printSummary");
+	Messenger::enter("EnergyStore::printSummary");
 	if (!calculated_)
 	{
-		msg.print("EnergyStore::printSummary - Total energy has not yet been calculated.\n");
-		msg.exit("EnergyStore::printSummary");
+		Messenger::print("EnergyStore::printSummary - Total energy has not yet been calculated.\n");
+		Messenger::exit("EnergyStore::printSummary");
 		return;
 	}
-	msg.print("Etot = %13.6e %s, b a t u = %13.6e %13.6e %13.6e %13.6e v = %13.6e e = %13.6e\n", total_, Prefs::energyUnit(prefs.energyUnit()), totalBond_, totalAngle_, totalTorsion_, totalUreyBradley_, totalVdw_, totalElectrostatic_);
-	msg.exit("EnergyStore::printSummary");
+	Messenger::print("Etot = %13.6e %s, b a t u = %13.6e %13.6e %13.6e %13.6e v = %13.6e e = %13.6e\n", total_, Prefs::energyUnit(prefs.energyUnit()), totalBond_, totalAngle_, totalTorsion_, totalUreyBradley_, totalVdw_, totalElectrostatic_);
+	Messenger::exit("EnergyStore::printSummary");
 }
 
 // Print out Ewald energy terms
 void EnergyStore::printEwald()
 {
-	msg.enter("EnergyStore::printEwald");
+	Messenger::enter("EnergyStore::printEwald");
 	if (!calculated_)
 	{
-		msg.print("EnergyStore::printEwald - Total energy has not yet been calculated.\n");
-		msg.exit("EnergyStore::printEwald");
+		Messenger::print("EnergyStore::printEwald - Total energy has not yet been calculated.\n");
+		Messenger::exit("EnergyStore::printEwald");
 		return;
 	}
-	msg.print("Ewald Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
-	msg.print(" Real : %13.6e\n",totalEwaldReal_);
-	msg.print("Recip : %13.6e\n",totalEwaldRecip_);
-	msg.print(" Self : %13.6e\n",totalEwaldSelf_);
-	msg.print("  Mol : %13.6e\n",totalEwaldMol_);
-	msg.print("TOTAL : %13.6e\n",totalElectrostatic_);
-	msg.exit("EnergyStore::printEwald");
+	Messenger::print("Ewald Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
+	Messenger::print(" Real : %13.6e\n",totalEwaldReal_);
+	Messenger::print("Recip : %13.6e\n",totalEwaldRecip_);
+	Messenger::print(" Self : %13.6e\n",totalEwaldSelf_);
+	Messenger::print("  Mol : %13.6e\n",totalEwaldMol_);
+	Messenger::print("TOTAL : %13.6e\n",totalElectrostatic_);
+	Messenger::exit("EnergyStore::printEwald");
 }
 
 // Print out VDW energy decomposition Matrix
 void EnergyStore::printVdwMatrix(Model* m)
 {
-	msg.enter("EnergyStore::printVdwMatrix");
+	Messenger::enter("EnergyStore::printVdwMatrix");
 	int count1, count2;
 	Pattern* p1, *p2;
 	if (!calculated_)
 	{
-		msg.print("EnergyStore::printVdwMatrix - Total energy has not yet been calculated.\n");
-		msg.exit("EnergyStore::printVdwMatrix");
+		Messenger::print("EnergyStore::printVdwMatrix - Total energy has not yet been calculated.\n");
+		Messenger::exit("EnergyStore::printVdwMatrix");
 		return;
 	}
 	// Print out VDW energy decomposition
@@ -426,20 +428,20 @@ void EnergyStore::printVdwMatrix(Model* m)
 		printf("\n");
 		count1 ++;
 	}
-	msg.exit("EnergyStore::printVdwMatrix");
+	Messenger::exit("EnergyStore::printVdwMatrix");
 }
 
 // Print out electrostatic energy decomposition Matrix
 void EnergyStore::printElecMatrix(Model* m)
 {
-	msg.enter("EnergyStore::printElecMatrix");
+	Messenger::enter("EnergyStore::printElecMatrix");
 	int count1, count2;
 	Pattern* p1, *p2;
 	double energy;
 	if (!calculated_)
 	{
-		msg.print("EnergyStore::printElecMatrix - Total energy has not yet been calculated.\n");
-		msg.exit("EnergyStore::printElecMatrix");
+		Messenger::print("EnergyStore::printElecMatrix - Total energy has not yet been calculated.\n");
+		Messenger::exit("EnergyStore::printElecMatrix");
 		return;
 	}
 	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
@@ -478,20 +480,20 @@ void EnergyStore::printElecMatrix(Model* m)
 		printf("\n");
 		count1 ++;
 	}
-	msg.exit("EnergyStore::printElecMatrix");
+	Messenger::exit("EnergyStore::printElecMatrix");
 }
 
 // Print out interpattern energy decomposition Matrix
 void EnergyStore::printInterMatrix(Model* m)
 {
-	msg.enter("EnergyStore::printInterMatrix");
+	Messenger::enter("EnergyStore::printInterMatrix");
 	int count1, count2;
 	Pattern* p1, *p2;
 	double energyInter, energyIntra;
 	if (!calculated_)
 	{
-		msg.print("EnergyStore::printInterMatrix - Total energy has not yet been calculated.\n");
-		msg.exit("EnergyStore::printInterMatrix");
+		Messenger::print("EnergyStore::printInterMatrix - Total energy has not yet been calculated.\n");
+		Messenger::exit("EnergyStore::printInterMatrix");
 		return;
 	}
 	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
@@ -540,20 +542,20 @@ void EnergyStore::printInterMatrix(Model* m)
 		printf("\n");
 		count1 ++;
 	}
-	msg.exit("EnergyStore::printInterMatrix");
+	Messenger::exit("EnergyStore::printInterMatrix");
 }
 
 // Print out intramolecular energy decomposition Matrix
 void EnergyStore::printIntraMatrix(Model* m)
 {
-	msg.enter("EnergyStore::printIntraMatrix");
+	Messenger::enter("EnergyStore::printIntraMatrix");
 	int count1;
 	Pattern* p1;
 	double energy;
 	if (!calculated_)
 	{
-		msg.print("EnergyStore::printIntraMatrix - Total energy has not yet been calculated.\n");
-		msg.exit("EnergyStore::printIntraMatrix");
+		Messenger::print("EnergyStore::printIntraMatrix - Total energy has not yet been calculated.\n");
+		Messenger::exit("EnergyStore::printIntraMatrix");
 		return;
 	}
 	// Print out intramolecular energy decomposition
@@ -565,5 +567,5 @@ void EnergyStore::printIntraMatrix(Model* m)
 		printf("%13s  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n", p1->name(), energy, energy/p1->nMolecules(), bond_[count1], angle_[count1], torsion_[count1]);
 		count1 ++;
 	}
-	msg.exit("EnergyStore::printIntraMatrix");
+	Messenger::exit("EnergyStore::printIntraMatrix");
 }

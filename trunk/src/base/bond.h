@@ -23,8 +23,11 @@
 #define ATEN_BOND_H
 
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Atom;
 
 // Basic Bond Definition
@@ -36,11 +39,11 @@ class Bond : public ListItem<Bond>
 	// Bond types
 	enum BondType { Any = 0, Single, Double, Triple, Aromatic, nBondTypes };
 	// Bond type from text
-	static BondType bondType(const char *name, bool reportError = 0);
+	static BondType bondType(const char* name, bool reportError = 0);
 	// Bond type from order
 	static BondType bondType(double order);
 	// BondType Keywords
-	static const char *bondType(BondType);
+	static const char* bondType(BondType);
 	// Increase simple BondType (instead of defining postfix increment)
 	static BondType increase(BondType);
 	// Decrease simple BondType (instead of defining postfix increment)
@@ -76,5 +79,7 @@ class Bond : public ListItem<Bond>
 	// Return bond type that best satisfies the involved atoms valencies
 	Bond::BondType augmented() const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

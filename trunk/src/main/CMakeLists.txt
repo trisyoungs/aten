@@ -1,15 +1,21 @@
 add_library(main
-aten.h
-cli.h 
-version.h 
-aten.cpp
-aten_filters.cpp
-aten_fragments.cpp
-aten_includes.cpp
-aten_partitions.cpp
-cli.cpp 
-modes.cpp
-probe.cpp
+  aten.h
+  cli.h 
+  version.h 
+  aten.cpp
+  cli.cpp
+  commands.cpp
+  ff.cpp
+  filters.cpp
+  fragments.cpp
+  image.cpp
+  includes.cpp
+  models.cpp
+  modes.cpp
+  partitions.cpp
+  prefs.cpp
+  probe.cpp
+  scripts.cpp
 )
 
 include_directories(

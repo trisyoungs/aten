@@ -21,6 +21,9 @@
 
 #include "model/undoevent.h"
 #include "model/model.h"
+#include "base/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 UndoEvent::UndoEvent() : ListItem<UndoEvent>()
@@ -51,7 +54,7 @@ AtomEvent::~AtomEvent()
 // Set change 
 void AtomEvent::set(bool creation, Atom* i)
 {
-	msg.enter("AtomEvent::set");
+	Messenger::enter("AtomEvent::set");
 	direction_ = (creation ? UndoEvent::Undo : UndoEvent::Redo);
 	// Copy atom data from source atoms, unless they are NULL
 	if (i != NULL)
@@ -61,21 +64,21 @@ void AtomEvent::set(bool creation, Atom* i)
 		atomData_.setId(i->id());
 	}
 	else printf("Null pointer passed to AtomEvent::set()!\n");
-	msg.exit("AtomEvent::set");
+	Messenger::exit("AtomEvent::set");
 }
 
 // Undo stored change
 void AtomEvent::undo(Model* m)
 {
-	msg.enter("AtomEvent::undo");
-	Atom* *modelatoms = m->atomArray();
+	Messenger::enter("AtomEvent::undo");
+	Atom** modelatoms = m->atomArray();
 	int id;
 	// Atom creation (UndoEvent::Redo) and deletion (UndoEvent::Undo)
 	if (direction_ == UndoEvent::Undo)
 	{
 		// We delete the atom at the position referenced by the ID in the atom
 		id = atomData_.id();
-		msg.print(Messenger::Verbose,"Reversing atom creation - atom id = %i\n", id);
+		Messenger::print(Messenger::Verbose, "Reversing atom creation - atom id = %i\n", id);
 		m->deleteAtom(modelatoms[id]);
 	}
 	else
@@ -83,7 +86,7 @@ void AtomEvent::undo(Model* m)
 		Atom* i;
 		// Insert a new atom at the position before the stored atom id
 		id = atomData_.id();
-		msg.print(Messenger::Verbose,"Replaying atom creation - atom id = %i\n", id);
+		Messenger::print(Messenger::Verbose, "Replaying atom creation - atom id = %i\n", id);
 		if (id == 0) i = m->addCopy(NULL, &atomData_);
 		else i = m->addCopy(modelatoms[id-1], &atomData_);
 	}
@@ -113,18 +116,18 @@ BondEvent::~BondEvent()
 // Set change 
 void BondEvent::set(bool creation, int id1, int id2, Bond::BondType bondtype)
 {
-	msg.enter("BondEvent::set");
+	Messenger::enter("BondEvent::set");
 	direction_ = (creation ? UndoEvent::Undo : UndoEvent::Redo);
 	targetId1_ = id1;
 	targetId2_ = id2;
 	bondType_ = bondtype;
-	msg.exit("BondEvent::set");
+	Messenger::exit("BondEvent::set");
 }
 
 // Undo stored change
 void BondEvent::undo(Model* m)
 {
-	msg.enter("BondEvent::undo");
+	Messenger::enter("BondEvent::undo");
 	Atom* i, *j, **modelatoms = m->atomArray();
 	// Bond creation (UndoEvent::Redo) and deletion (UndoEvent::Undo)
 	i = modelatoms[targetId1_];
@@ -132,16 +135,16 @@ void BondEvent::undo(Model* m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		// Delete bond between stored atom ids
-		msg.print(Messenger::Verbose,"Reversing bond creation - atom ids = %i %i\n", targetId1_, targetId2_);
+		Messenger::print(Messenger::Verbose, "Reversing bond creation - atom ids = %i %i\n", targetId1_, targetId2_);
 		m->unbondAtoms(i,j);
 	}
 	else
 	{
 		// Add bond between stored atom ids
-		msg.print(Messenger::Verbose,"Reversing bond deletion - atom ids = %i %i\n", targetId1_, targetId2_);
+		Messenger::print(Messenger::Verbose, "Reversing bond deletion - atom ids = %i %i\n", targetId1_, targetId2_);
 		m->bondAtoms(i,j,bondType_);
 	}
-	msg.exit("BondEvent::undo");
+	Messenger::exit("BondEvent::undo");
 }
 
 // Print event info
@@ -168,18 +171,18 @@ BondTypeEvent::~BondTypeEvent()
 // Set change 
 void BondTypeEvent::set(int id1, int id2, Bond::BondType oldbondtype, Bond::BondType newbondtype)
 {
-	msg.enter("BondTypeEvent::set");
+	Messenger::enter("BondTypeEvent::set");
 	targetId1_ = id1;
 	targetId2_ = id2;
 	oldBondType_ = oldbondtype;
 	newBondType_ = newbondtype;
-	msg.exit("BondTypeEvent::set");
+	Messenger::exit("BondTypeEvent::set");
 }
 
 // Undo stored change
 void BondTypeEvent::undo(Model* m)
 {
-	msg.enter("BondTypeEvent::undo");
+	Messenger::enter("BondTypeEvent::undo");
 	Atom* i, *j, **modelatoms = m->atomArray();
 	// Bond order change - from newBondType_ to oldBondType_ (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId1_];
@@ -187,15 +190,15 @@ void BondTypeEvent::undo(Model* m)
 	Bond *b = i->findBond(j);
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing bond order change - atoms %i-%i, old = %i, new = %i\n", targetId1_, targetId2_, newBondType_, oldBondType_);
+		Messenger::print(Messenger::Verbose, "Reversing bond order change - atoms %i-%i, old = %i, new = %i\n", targetId1_, targetId2_, newBondType_, oldBondType_);
 		m->changeBond(b, oldBondType_);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying bond order change - atoms %i-%i, old = %i, new = %i\n", targetId1_, targetId2_, oldBondType_, newBondType_);
+		Messenger::print(Messenger::Verbose, "Replaying bond order change - atoms %i-%i, old = %i, new = %i\n", targetId1_, targetId2_, oldBondType_, newBondType_);
 		m->changeBond(b, newBondType_);
 	}
-	msg.exit("BondTypeEvent::undo");
+	Messenger::exit("BondTypeEvent::undo");
 }
 
 // Print event info
@@ -222,32 +225,32 @@ CellEvent::~CellEvent()
 // Set change 
 void CellEvent::set(Matrix oldaxes, Matrix newaxes, bool ohs, bool nhs)
 {
-	msg.enter("CellEvent::set");
+	Messenger::enter("CellEvent::set");
 	oldAxes_ = oldaxes;
 	newAxes_ = newaxes;
 	oldHasCell_ = ohs;
 	newHasCell_ = nhs;
-	msg.exit("CellEvent::set");
+	Messenger::exit("CellEvent::set");
 }
 
 // Undo stored change
 void CellEvent::undo(Model* m)
 {
-	msg.enter("CellEvent::undo");
+	Messenger::enter("CellEvent::undo");
 	// Cell change - from newLengths/Angles to oldLengths/Angles (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing cell change\n");
+		Messenger::print(Messenger::Verbose, "Reversing cell change\n");
 		if (!oldHasCell_) m->removeCell();
 		else m->setCell(oldAxes_);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying cell change\n");
+		Messenger::print(Messenger::Verbose, "Replaying cell change\n");
 		if (!newHasCell_) m->removeCell();
 		else m->setCell(newAxes_);
 	}
-	msg.exit("CellEvent::undo");
+	Messenger::exit("CellEvent::undo");
 }
 
 // Print event info
@@ -274,31 +277,31 @@ ChargeEvent::~ChargeEvent()
 // Set change 
 void ChargeEvent::set(int id, double oldcharge, double newcharge)
 {
-	msg.enter("ChargeEvent::set");
+	Messenger::enter("ChargeEvent::set");
 	targetId_ = id;
 	oldCharge_ = oldcharge;
 	newCharge_ = newcharge;
-	msg.exit("ChargeEvent::set");
+	Messenger::exit("ChargeEvent::set");
 }
 
 // Undo stored change
 void ChargeEvent::undo(Model* m)
 {
-	msg.enter("ChargeEvent::undo");
+	Messenger::enter("ChargeEvent::undo");
 	// Atom charge change - from realData[1] to realData[0] (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	Atom* i, **modelatoms = m->atomArray();
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom charge change - atom %i, from %i to %i\n", targetId_, newCharge_, oldCharge_);
+		Messenger::print(Messenger::Verbose, "Reversing atom charge change - atom %i, from %i to %i\n", targetId_, newCharge_, oldCharge_);
 		i->setCharge(oldCharge_);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom charge change - atom %i, from %i to %i\n", targetId_, oldCharge_, newCharge_);
+		Messenger::print(Messenger::Verbose, "Replaying atom charge change - atom %i, from %i to %i\n", targetId_, oldCharge_, newCharge_);
 		i->setCharge(newCharge_);
 	}
-	msg.exit("ChargeEvent::undo");
+	Messenger::exit("ChargeEvent::undo");
 }
 
 // Print event info
@@ -323,9 +326,9 @@ GlyphEvent::~GlyphEvent()
 }
 
 // Set change 
-void GlyphEvent::set(bool creation, Glyph *g)	// TODO Need a separate event for changes to glyph data - keep all changes in one event somehow?
+void GlyphEvent::set(bool creation, Glyph* g)	// TODO Need a separate event for changes to glyph data - keep all changes in one event somehow?
 {
-	msg.enter("GlyphEvent::set");
+	Messenger::enter("GlyphEvent::set");
 	direction_ = (creation ? UndoEvent::Undo : UndoEvent::Redo);
 	// Copy Glyph data
 	if (g != NULL)
@@ -334,15 +337,15 @@ void GlyphEvent::set(bool creation, Glyph *g)	// TODO Need a separate event for 
 		for (int i=0; i<glyphData_.nGlyphData(g->type()); ++i) atomIDs_[i] = (glyphData_.data(i)->atom() == NULL ? -1 : glyphData_.data(i)->atom()->id());
 	}
 	else printf("Null pointer passed to GlyphEvent::set()!\n");
-	msg.exit("GlyphEvent::set");
+	Messenger::exit("GlyphEvent::set");
 }
 
 // Undo stored change
 void GlyphEvent::undo(Model* m)
 {
-	msg.enter("GlypheEvent::undo");
+	Messenger::enter("GlypheEvent::undo");
 	// Glyph creation (UndoEvent::Redo) or deletion (UndoEvent::Undo)
-	msg.exit("GlypheEvent::undo");
+	Messenger::exit("GlypheEvent::undo");
 }
 
 // Print event info
@@ -367,7 +370,7 @@ ColourEvent::~ColourEvent()
 // Set change 
 void ColourEvent::set(int id, double oldr, double oldg, double oldb, double olda, double newr, double newg, double newb, double newa)
 {
-	msg.enter("ColourEvent::set");
+	Messenger::enter("ColourEvent::set");
 	targetId_ = id;
 	oldColour_[0] = oldr;
 	oldColour_[1] = oldg;
@@ -377,27 +380,27 @@ void ColourEvent::set(int id, double oldr, double oldg, double oldb, double olda
 	newColour_[1] = newg;
 	newColour_[2] = newb;
 	newColour_[3] = newa;
-	msg.exit("ColourEvent::set");
+	Messenger::exit("ColourEvent::set");
 }
 
 // Undo stored change
 void ColourEvent::undo(Model* m)
 {
-	msg.enter("ColourEvent::undo");
+	Messenger::enter("ColourEvent::undo");
 	Atom* i, **modelatoms = m->atomArray();
 	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom colour - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Reversing atom colour - atom id = %i\n", targetId_);
 		m->atomSetColour(i, oldColour_[0], oldColour_[1], oldColour_[2], oldColour_[3]);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom colour - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Replaying atom colour - atom id = %i\n", targetId_);
 		m->atomSetColour(i, newColour_[0], newColour_[1], newColour_[2], newColour_[3]);
 	}
-	msg.exit("ColourEvent::undo");
+	Messenger::exit("ColourEvent::undo");
 }
 
 // Print event info
@@ -424,30 +427,30 @@ FixFreeEvent::~FixFreeEvent()
 // Set change 
 void FixFreeEvent::set(bool fix, int id)
 {
-	msg.enter("FixFreeEvent::set");
+	Messenger::enter("FixFreeEvent::set");
 	direction_ = (fix ? UndoEvent::Undo : UndoEvent::Redo);
 	targetId_ = id;
-	msg.exit("FixFreeEvent::set");
+	Messenger::exit("FixFreeEvent::set");
 }
 
 // Undo stored change
 void FixFreeEvent::undo(Model* m)
 {
-	msg.enter("FixFreeEvent::undo");
+	Messenger::enter("FixFreeEvent::undo");
 	Atom* i, **modelatoms = m->atomArray();
 	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom fix - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Reversing atom fix - atom id = %i\n", targetId_);
 		m->atomSetFixed(i, FALSE);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom fix - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Replaying atom fix - atom id = %i\n", targetId_);
 		m->atomSetFixed(i, TRUE);
 	}
-	msg.exit("FixFreeEvent::undo");
+	Messenger::exit("FixFreeEvent::undo");
 }
 
 // Print event info
@@ -474,30 +477,30 @@ HideEvent::~HideEvent()
 // Set change 
 void HideEvent::set(bool hide, int id)
 {
-	msg.enter("HideEvent::set");
+	Messenger::enter("HideEvent::set");
 	direction_ = (hide ? UndoEvent::Undo : UndoEvent::Redo);
 	targetId_ = id;
-	msg.exit("HideEvent::set");
+	Messenger::exit("HideEvent::set");
 }
 
 // Undo stored change
 void HideEvent::undo(Model* m)
 {
-	msg.enter("HideEvent::undo");
+	Messenger::enter("HideEvent::undo");
 	Atom* i, **modelatoms = m->atomArray();
 	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom hide - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Reversing atom hide - atom id = %i\n", targetId_);
 		m->atomSetHidden(i, FALSE);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom hide - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Replaying atom hide - atom id = %i\n", targetId_);
 		m->atomSetHidden(i, TRUE);
 	}
-	msg.exit("HideEvent::undo");
+	Messenger::exit("HideEvent::undo");
 }
 
 // Print event info
@@ -524,28 +527,28 @@ IdShiftEvent::~IdShiftEvent()
 // Set change 
 void IdShiftEvent::set(int id, int delta)
 {
-	msg.enter("IdShiftEvent::set");
+	Messenger::enter("IdShiftEvent::set");
 	targetId_ = id;
 	delta_ = delta;
-	msg.exit("IdShiftEvent::set");
+	Messenger::exit("IdShiftEvent::set");
 }
 
 // Undo stored change
 void IdShiftEvent::undo(Model* m)
 {
-	msg.enter("IdShiftEvent::undo");
+	Messenger::enter("IdShiftEvent::undo");
 	// Atom list position change - -data[1] (UndoEvent::Undo) or +data[1] places in list (UndoEvent::Redo)
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom shift - atom %i moves %i places\n", targetId_+delta_, -delta_);
+		Messenger::print(Messenger::Verbose, "Reversing atom shift - atom %i moves %i places\n", targetId_+delta_, -delta_);
 		m->moveAtom(targetId_+delta_, -delta_);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Performing atom shift - atom %i moves %i places\n", targetId_, delta_);
+		Messenger::print(Messenger::Verbose, "Performing atom shift - atom %i moves %i places\n", targetId_, delta_);
 		m->moveAtom(targetId_, delta_);
 	}
-	msg.exit("IdShiftEvent::undo");
+	Messenger::exit("IdShiftEvent::undo");
 }
 
 // Print event info
@@ -572,22 +575,22 @@ IdSwapEvent::~IdSwapEvent()
 // Set change 
 void IdSwapEvent::set(int id1, int id2)
 {
-	msg.enter("IdSwapEvent::set");
+	Messenger::enter("IdSwapEvent::set");
 	firstId_ = id1;
 	secondId_ = id2;
-	msg.exit("IdSwapEvent::set");
+	Messenger::exit("IdSwapEvent::set");
 }
 
 // Undo stored change
 void IdSwapEvent::undo(Model* m)
 {
-	msg.enter("IdSwapEvent::undo");
+	Messenger::enter("IdSwapEvent::undo");
 	// Atom swap change - same regardless of direction
-	msg.print(Messenger::Verbose,"Applying atom swap - atoms %i and %i\n", firstId_, secondId_);
+	Messenger::print(Messenger::Verbose, "Applying atom swap - atoms %i and %i\n", firstId_, secondId_);
 
 	m->swapAtoms(firstId_, secondId_);
 
-	msg.exit("IdSwapEvent::undo");
+	Messenger::exit("IdSwapEvent::undo");
 }
 
 // Print event info
@@ -613,31 +616,31 @@ LabelEvent::~LabelEvent()
 // Set change 
 void LabelEvent::set(int id, int oldlabels, int newlabels)
 {
-	msg.enter("LabelEvent::set");
+	Messenger::enter("LabelEvent::set");
 	targetId_ = id;
 	oldLabels_ = oldlabels;
 	newLabels_ = newlabels;
-	msg.exit("LabelEvent::set");
+	Messenger::exit("LabelEvent::set");
 }
 
 // Undo stored change
 void LabelEvent::undo(Model* m)
 {
-	msg.enter("LabelEvent::undo");
+	Messenger::enter("LabelEvent::undo");
 	Atom* i, **modelatoms = m->atomArray();
 	// Atom label change - from data[2] to data[1] (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom label change - atom %i, from %i to %i\n", targetId_, newLabels_, oldLabels_);
+		Messenger::print(Messenger::Verbose, "Reversing atom label change - atom %i, from %i to %i\n", targetId_, newLabels_, oldLabels_);
 		i->setLabels(oldLabels_);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom label change - atom %i, from %i to %i\n", targetId_, oldLabels_, newLabels_);
+		Messenger::print(Messenger::Verbose, "Replaying atom label change - atom %i, from %i to %i\n", targetId_, oldLabels_, newLabels_);
 		i->setLabels(newLabels_);
 	}
-	msg.exit("LabelEvent::undo");
+	Messenger::exit("LabelEvent::undo");
 }
 
 // Print event info
@@ -664,21 +667,21 @@ MeasurementEvent::~MeasurementEvent()
 // Set change 
 void MeasurementEvent::set(bool creation, Measurement::MeasurementType mt, int id1, int id2, int id3, int id4)
 {
-	msg.enter("MeasurementEvent::set");
+	Messenger::enter("MeasurementEvent::set");
 	direction_ = (creation ? UndoEvent::Undo : UndoEvent::Redo);
 	type_ = mt;
 	targetId_[0] = id1;
 	targetId_[1] = id2;
 	targetId_[2] = id3;
 	targetId_[3] = id4;
-	msg.exit("MeasurementEvent::set");
+	Messenger::exit("MeasurementEvent::set");
 }
 
 // Undo stored change
 void MeasurementEvent::undo(Model* m)
 {
-	msg.enter("MeasurementEvent::undo");
-	Measurement *me = NULL;
+	Messenger::enter("MeasurementEvent::undo");
+	Measurement* me = NULL;
 	Atom* i, *j, *k,*l, **modelatoms = m->atomArray();
 	// Measurement creation (UndoEvent::Undo) and deletion (UndoEvent::Redo)
 	i = modelatoms[targetId_[0]];
@@ -687,19 +690,19 @@ void MeasurementEvent::undo(Model* m)
 	l = modelatoms[targetId_[3]];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing measurement - type = %i\n", type_);
-		if (type_ == Measurement::Distance) me = m->findDistanceMeasurement(i, j);
-		if (type_ == Measurement::Angle) me = m->findAngleMeasurement(i, j, k);
-		if (type_ == Measurement::Torsion) me = m->findTorsionMeasurement(i, j, k, l);
+		Messenger::print(Messenger::Verbose, "Reversing measurement - type = %i\n", type_);
+		if (type_ == Measurement::DistanceMeasurement) me = m->findDistanceMeasurement(i, j);
+		if (type_ == Measurement::AngleMeasurement) me = m->findAngleMeasurement(i, j, k);
+		if (type_ == Measurement::TorsionMeasurement) me = m->findTorsionMeasurement(i, j, k, l);
 		if (me != NULL) m->removeMeasurement(me);
 		else printf("Couldn't find measurement in UndoEvent.\n");
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying measurement - type = %i\n", type_);
+		Messenger::print(Messenger::Verbose, "Replaying measurement - type = %i\n", type_);
 		m->addMeasurement(type_, i, j, k, l);
 	}
-	msg.exit("MeasurementEvent::undo");
+	Messenger::exit("MeasurementEvent::undo");
 }
 
 // Print event info
@@ -724,28 +727,28 @@ ModelRenameEvent::~ModelRenameEvent()
 }
 
 // Set change 
-void ModelRenameEvent::set(const char *oldname, const char *newname)
+void ModelRenameEvent::set(const char* oldname, const char* newname)
 {
-	msg.enter("ModelRenameEvent::set");
+	Messenger::enter("ModelRenameEvent::set");
 	oldName_ = oldname;
 	newName_ = newname;
-	msg.exit("ModelRenameEvent::set");
+	Messenger::exit("ModelRenameEvent::set");
 }
 
 // Undo stored change
 void ModelRenameEvent::undo(Model* m)
 {
-	msg.enter("ModelRenameEvent::undo");
+	Messenger::enter("ModelRenameEvent::undo");
 	// Model Rename, to oldName_ (UndoEvent::Undo) or newName_ (UndoEvent::Redo)
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing model rename - to %i\n", oldName_.get());
+		Messenger::print(Messenger::Verbose, "Reversing model rename - to %i\n", oldName_.get());
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying model rename - to %i\n", newName_.get());
+		Messenger::print(Messenger::Verbose, "Replaying model rename - to %i\n", newName_.get());
 	}
-	msg.exit("ModelRenameEvent::undo");
+	Messenger::exit("ModelRenameEvent::undo");
 }
 
 // Print event info
@@ -772,30 +775,30 @@ SelectEvent::~SelectEvent()
 // Set change 
 void SelectEvent::set(bool select, int id)
 {
-	msg.enter("SelectionEvent::set");
+	Messenger::enter("SelectionEvent::set");
 	direction_ = (select ? UndoEvent::Undo : UndoEvent::Redo);
 	targetId_ = id;
-	msg.exit("SelectionEvent::set");
+	Messenger::exit("SelectionEvent::set");
 }
 
 // Undo stored change
 void SelectEvent::undo(Model* m)
 {
-	msg.enter("SelectEvent::undo");
+	Messenger::enter("SelectEvent::undo");
 	Atom* i, **modelatoms = m->atomArray();
 	// Atom selection (UndoEvent::Redo) and deselection (UndoEvent::Undo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom selection - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Reversing atom selection - atom id = %i\n", targetId_);
 		m->deselectAtom(i);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom selection - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Replaying atom selection - atom id = %i\n", targetId_);
 		m->selectAtom(i);
 	}
-	msg.exit("SelectEvent::undo");
+	Messenger::exit("SelectEvent::undo");
 }
 
 // Print event info
@@ -822,30 +825,30 @@ TranslateEvent::~TranslateEvent()
 // Set change 
 void TranslateEvent::set(int id, Vec3<double> delta)
 {
-	msg.enter("TranslateEvent::set");
+	Messenger::enter("TranslateEvent::set");
 	targetId_ = id;
 	delta_ = delta;
-	msg.exit("TranslateEvent::set");
+	Messenger::exit("TranslateEvent::set");
 }
 
 // Undo stored change
 void TranslateEvent::undo(Model* m)
 {
-	msg.enter("TranslateEvent::undo");
+	Messenger::enter("TranslateEvent::undo");
 	Atom* i, **modelatoms = m->atomArray();
 	// Atom position change - add (UndoEvent::Undo) or subtract (UndoEvent::Redo) delta_.
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom translation - atom %i, subtracting %f %f %f\n", targetId_, delta_.x, delta_.y, delta_.z);
+		Messenger::print(Messenger::Verbose, "Reversing atom translation - atom %i, subtracting %f %f %f\n", targetId_, delta_.x, delta_.y, delta_.z);
 		i->r() -= delta_;
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom translation - atom %i, adding %f %f %f\n", targetId_, delta_.x, delta_.y, delta_.z);
+		Messenger::print(Messenger::Verbose, "Replaying atom translation - atom %i, adding %f %f %f\n", targetId_, delta_.x, delta_.y, delta_.z);
 		i->r() += delta_;
 	}
-	msg.exit("TranslateEvent::undo");
+	Messenger::exit("TranslateEvent::undo");
 }
 
 // Print event info
@@ -870,33 +873,33 @@ StyleEvent::~StyleEvent()
 }
 
 // Set change 
-void StyleEvent::set(int id, Atom::DrawStyle oldstyle, Atom::DrawStyle newstyle)
+void StyleEvent::set(int id, Prefs::DrawStyle oldstyle, Prefs::DrawStyle newstyle)
 {
-	msg.enter("StyleEvent::set");
+	Messenger::enter("StyleEvent::set");
 	targetId_ = id;
 	oldStyle_ = oldstyle;
 	newStyle_ = newstyle;
-	msg.exit("StyleEvent::set");
+	Messenger::exit("StyleEvent::set");
 }
 
 // Undo stored change
 void StyleEvent::undo(Model* m)
 {
-	msg.enter("StyleEvent::undo");
+	Messenger::enter("StyleEvent::undo");
 	Atom* i, **modelatoms = m->atomArray();
 	// Atom style change - newStyle_ to oldStyle_ (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom style change - atom %i, old = %i, new = %i\n", targetId_, newStyle_, oldStyle_);
+		Messenger::print(Messenger::Verbose, "Reversing atom style change - atom %i, old = %i, new = %i\n", targetId_, newStyle_, oldStyle_);
 		m->atomSetStyle(i, oldStyle_);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom style change - atom %i, old = %i, new = %i\n", targetId_, oldStyle_, newStyle_);
+		Messenger::print(Messenger::Verbose, "Replaying atom style change - atom %i, old = %i, new = %i\n", targetId_, oldStyle_, newStyle_);
 		m->atomSetStyle(i, newStyle_);
 	}
-	msg.exit("StyleEvent::undo");
+	Messenger::exit("StyleEvent::undo");
 }
 
 // Print event info
@@ -923,31 +926,31 @@ TransmuteEvent::~TransmuteEvent()
 // Set change 
 void TransmuteEvent::set(int id, int oldel, int newel)
 {
-	msg.enter("TransmuteEvent::set");
+	Messenger::enter("TransmuteEvent::set");
 	targetId_ = id;
 	oldEl_ = oldel;
 	newEl_ = newel;
-	msg.exit("TransmuteEvent::set");
+	Messenger::exit("TransmuteEvent::set");
 }
 
 // Undo stored change
 void TransmuteEvent::undo(Model* m)
 {
-	msg.enter("TransmuteEvent::undo");
+	Messenger::enter("TransmuteEvent::undo");
 	Atom* i, **modelatoms = m->atomArray();
 	// Atom transmute - newEl_ to oldEl_ (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		msg.print(Messenger::Verbose,"Reversing atom transmute - atom %i, old = %i, new = %i\n", targetId_, newEl_, oldEl_);
+		Messenger::print(Messenger::Verbose, "Reversing atom transmute - atom %i, old = %i, new = %i\n", targetId_, newEl_, oldEl_);
 		m->transmuteAtom(i, oldEl_);
 	}
 	else
 	{
-		msg.print(Messenger::Verbose,"Replaying atom transmute - atom %i, old = %i, new = %i\n", targetId_, oldEl_, newEl_);
+		Messenger::print(Messenger::Verbose, "Replaying atom transmute - atom %i, old = %i, new = %i\n", targetId_, oldEl_, newEl_);
 		m->transmuteAtom(i, newEl_);
 	}
-	msg.exit("TransmuteEvent::undo");
+	Messenger::exit("TransmuteEvent::undo");
 }
 
 // Print event info
@@ -964,11 +967,11 @@ void TransmuteEvent::print()
 // Redo stored change
 void UndoEvent::redo(Model* m)
 {
-	msg.enter("UndoEvent::redo");
+	Messenger::enter("UndoEvent::redo");
 	// Re-use the commands in Change::undo, performing the change in the opposite direction
 	direction_ = (direction_ == UndoEvent::Undo ? UndoEvent::Redo : UndoEvent::Undo);
 	// Now just call reverse instead, and then set the old direction back at the end
 	undo(m);
 	direction_ = (direction_ == UndoEvent::Undo ? UndoEvent::Redo : UndoEvent::Undo);
-	msg.exit("UndoeEvent::redo");
+	Messenger::exit("UndoeEvent::redo");
 }

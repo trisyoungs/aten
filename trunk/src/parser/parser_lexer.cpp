@@ -21,16 +21,16 @@
 
 #include "main/aten.h"
 #include "base/dnchar.h"
-#include "parser/variable.h"
 #include "parser/parser.h"
-#include "parser/grammar.hh"
-#include "parser/tree.h"
-#include "parser/program.h"
-#include "command/commands.h"
 #include "base/sysfunc.h"
 
+ATEN_USING_NAMESPACE
+
+// Must include grammar.hh *after* ATEN_USING_NAMESPACE so that class declarations are found correctly
+#include "parser/grammar.hh"
+
 // Symbols
-const char *SymbolTokenKeywords[CommandParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--", "&&", "||" };
+const char* SymbolTokenKeywords[CommandParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--", "&&", "||" };
 int SymbolTokenValues[CommandParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ, PLUSPLUS, MINUSMINUS, AND, OR };
 
 // Bison-generated CommandParser_lex()
@@ -65,10 +65,10 @@ int CommandParser::lex()
 	/*
 	// A '.' followed by a character indicates a variable path - generate a step
 	*/
-	msg.print(Messenger::Parse, "LEXER (%p): begins at [%c], peek = [%c]\n", tree_, c, peekChar());
+	Messenger::print(Messenger::Parse, "LEXER (%p): begins at [%c], peek = [%c]\n", tree_, c, peekChar());
 	if ((c == '.') && isalpha(peekChar()))
 	{
-		msg.print(Messenger::Parse, "LEXER (%p): found a '.' before an alpha character - expecting a path step next...\n",tree_);
+		Messenger::print(Messenger::Parse, "LEXER (%p): found a '.' before an alpha character - expecting a path step next...\n",tree_);
 		expectPathStep_ = TRUE;
 		return '.';
 	}
@@ -97,7 +97,7 @@ int CommandParser::lex()
 				// Check for previous exponential in number
 				if (hasexp)
 				{
-					msg.print("Error: Number has two exponentiations (e/E).\n");
+					Messenger::print("Error: Number has two exponentiations (e/E).\n");
 					return 0;
 				}
 				token += 'E';
@@ -122,17 +122,17 @@ int CommandParser::lex()
 		// We now have the number as a text token...
 		if (!hasexp)
 		{
-			if (integer) CommandParser_lval.intconst = atoi(token);
-			else CommandParser_lval.doubleconst = atof(token);
+			if (integer) CommandParser_lval.intConst = atoi(token);
+			else CommandParser_lval.doubleConst = atof(token);
 		}
 		else
 		{
 			// Exponentiations are always returned as a double
 			integer = FALSE;
-			CommandParser_lval.doubleconst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
+			CommandParser_lval.doubleConst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
 		}
-		if (integer) msg.print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]\n", tree_, token.get(), CommandParser_lval.intconst);
-		else msg.print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]\n", tree_, token.get(), CommandParser_lval.doubleconst);
+		if (integer) Messenger::print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]\n", tree_, token.get(), CommandParser_lval.intConst);
+		else Messenger::print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]\n", tree_, token.get(), CommandParser_lval.doubleConst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 
@@ -167,12 +167,12 @@ int CommandParser::lex()
 			else if (c == quotechar) done = TRUE;
 			else if (c == '\0')
 			{
-				msg.print("Runaway character constant in input.\n");
+				Messenger::print("Runaway character constant in input.\n");
 				return 0;
 			}
 			else token += c;
 		} while (!done);
-		msg.print(Messenger::Parse, "LEXER (%p): found a literal string [%s]...\n",tree_,token.get());
+		Messenger::print(Messenger::Parse, "LEXER (%p): found a literal string [%s]...\n",tree_,token.get());
 		name = token;
 		CommandParser_lval.name = &name;
 		return CHARCONST;
@@ -190,7 +190,7 @@ int CommandParser::lex()
 		}
 		while (isalnum(c) || (c == '_'));
 		unGetChar();
-		msg.print(Messenger::Parse, "LEXER (%p): found an alpha token [%s]...\n", tree_, token.get());
+		Messenger::print(Messenger::Parse, "LEXER (%p): found an alpha token [%s]...\n", tree_, token.get());
 		// Skip over keyword detection if we are expecting a path step
 		if (!expectPathStep_)
 		{
@@ -198,7 +198,7 @@ int CommandParser::lex()
 			VTypes::DataType dt = VTypes::dataType(token);
 			if (dt != VTypes::nDataTypes)
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ...which is a variable type name (->VTYPE)\n",tree_);
+				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is a variable type name (->VTYPE)\n",tree_);
 				CommandParser_lval.vtype = dt;
 				return VTYPE;
 			}
@@ -206,32 +206,32 @@ int CommandParser::lex()
 			// Built-in constants
 			if (token == "TRUE")
 			{
-				CommandParser_lval.intconst = 1;
+				CommandParser_lval.intConst = 1;
 				return INTCONST;
 			}
 			else if ((token == "FALSE") || (token == "NULL"))
 			{
-				CommandParser_lval.intconst = 0;
+				CommandParser_lval.intConst = 0;
 				return INTCONST;
 			}
 			else if (token == "PI")
 			{
-				CommandParser_lval.doubleconst = 3.14159265358979323846;
+				CommandParser_lval.doubleConst = 3.14159265358979323846;
 				return DOUBLECONST;
 			}
 			else if (token == "DEGRAD")
 			{
-				CommandParser_lval.doubleconst = DEGRAD;
+				CommandParser_lval.doubleConst = DEGRAD;
 				return DOUBLECONST;
 			}
 			else if (token == "ANGBOHR")
 			{
-				CommandParser_lval.doubleconst = ANGBOHR;
+				CommandParser_lval.doubleConst = ANGBOHR;
 				return DOUBLECONST;
 			}
 			else if (token == "AVOGADRO")
 			{
-				CommandParser_lval.doubleconst = AVOGADRO;
+				CommandParser_lval.doubleConst = AVOGADRO;
 				return DOUBLECONST;
 			}
 
@@ -239,8 +239,8 @@ int CommandParser::lex()
 			for (n=0; n<Elements().nElements(); ++n) if (strcmp(token,Elements().symbol(n)) == 0) break;
 			if (n < Elements().nElements())
 			{
-				CommandParser_lval.intconst = n;
-				msg.print(Messenger::Parse, "LEXER (%p): ...which is a an element symbol (%i)\n",tree_,n);
+				CommandParser_lval.intConst = n;
+				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is a an element symbol (%i)\n",tree_,n);
 				return ELEMENTCONST;
 			}
 
@@ -264,14 +264,14 @@ int CommandParser::lex()
 			else if (token == "new") n = ATEN_NEW;
 			if (n != 0)
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);
+				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);
 				return n;
 			}
 
 			// Is this the start of a filter or a function?
 			if (token == "filter")
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ...which marks the start of a filter (->FILTERBLOCK)\n",tree_);
+				Messenger::print(Messenger::Parse, "LEXER (%p): ...which marks the start of a filter (->FILTERBLOCK)\n",tree_);
 				return FILTERBLOCK;
 			}
 
@@ -286,13 +286,13 @@ int CommandParser::lex()
 				{
 					if (scopelevel == 0)
 					{
-						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in the same scope (->VARSAMESCOPE)\n", tree_);
+						Messenger::print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in the same scope (->VARSAMESCOPE)\n", tree_);
 						CommandParser_lval.variable = v;
 						return VARSAMESCOPE;
 					}
 					else
 					{
-						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable (->VAR)\n", tree_);
+						Messenger::print(Messenger::Parse, "LEXER (%p): ...which is an existing variable (->VAR)\n", tree_);
 						CommandParser_lval.variable = v;
 						return VAR;
 					}
@@ -300,20 +300,20 @@ int CommandParser::lex()
 			}
 
 			// Is it an existing variable in global scope?
-			for (Refitem<Tree,bool> *ri = stack_.first(); ri != NULL; ri = ri->next)
+			for (Refitem<Tree,bool>* ri = stack_.first(); ri != NULL; ri = ri->next)
 			{
 				v = ri->item->globalVariables().find(token);
 				if (v != NULL)
 				{
 					if (tree_ == ri->item)
 					{
-						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in the same global scope (->VARSAMESCOPE)\n", tree_);
+						Messenger::print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in the same global scope (->VARSAMESCOPE)\n", tree_);
 						CommandParser_lval.variable = v;
 						return VARSAMESCOPE;
 					}
 					else
 					{
-						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in global scope (->VAR)\n", tree_);
+						Messenger::print(Messenger::Parse, "LEXER (%p): ...which is an existing variable in global scope (->VAR)\n", tree_);
 						CommandParser_lval.variable = v;
 						return VAR;
 					}
@@ -321,19 +321,19 @@ int CommandParser::lex()
 			}
 			
 			// Not in global scope - was it passed as a CLI value?
-			v = aten.findPassedValue(token);
+			v = aten_.findPassedValue(token);
 			if (v != NULL)
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing value passed through the CLI (->VAR).\n", tree_);
+				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is an existing value passed through the CLI (->VAR).\n", tree_);
 				CommandParser_lval.variable = v;
 				return VAR;
 			}
 
 			// Is it one of Aten's function keywords?
-			n = commands.command(token);
-			if (n != Command::nCommands)
+			n = Commands::command(token);
+			if (n != Commands::nCommands)
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ... which is a function (->FUNCCALL).\n", tree_);
+				Messenger::print(Messenger::Parse, "LEXER (%p): ... which is a function (->FUNCCALL).\n", tree_);
 				CommandParser_lval.functionId = n;
 				// Quick check - if we are declaring variables then we must raise an error
 				functionStart_ = tokenStart_;
@@ -347,7 +347,7 @@ int CommandParser::lex()
 				func = tree_->findLocalFunction(token);
 				if (func != NULL)
 				{
-					msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
+					Messenger::print(Messenger::Parse, "LEXER (%p): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
 					CommandParser_lval.tree = func;
 					return USERFUNCCALL;
 				}
@@ -355,10 +355,10 @@ int CommandParser::lex()
 
 			// Is it a user-defined function keyword in the global (Forest-wide) scope, or Aten's global scope?
 			func = program_->findFunction(token);
-			if (func == NULL) func = aten.findIncludeFunction(token);
+			if (func == NULL) func = aten_.findIncludeFunction(token);
 			if (func != NULL)
 			{
-				msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);
+				Messenger::print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);
 				CommandParser_lval.tree = func;
 				return USERFUNCCALL;
 			}
@@ -368,14 +368,14 @@ int CommandParser::lex()
 		if (expectPathStep_)
 		{
 			expectPathStep_ = FALSE;
-			msg.print(Messenger::Parse, "LEXER (%p): ...which we assume is a path step (->STEPTOKEN)\n", tree_);
+			Messenger::print(Messenger::Parse, "LEXER (%p): ...which we assume is a path step (->STEPTOKEN)\n", tree_);
 			name = token;
 			CommandParser_lval.name = &name;
 			return STEPTOKEN;
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token
-		msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
+		Messenger::print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
 		name = token;
 		CommandParser_lval.name = &name;
 		return NEWTOKEN;
@@ -385,7 +385,7 @@ int CommandParser::lex()
 	// Return immediately in the case of brackets, comma, and semicolon
 	if ((c == '(') || (c == ')') || (c == ';') || (c == ',') || (c == '{') || (c == '}') || (c == '[') || (c == ']') || (c == '%') || (c == ':') || (c == '?') || (c == ':'))
 	{
-		msg.print(Messenger::Parse, "LEXER (%p): found symbol [%c]\n",tree_,c);
+		Messenger::print(Messenger::Parse, "LEXER (%p): found symbol [%c]\n",tree_,c);
 		return c;
 	}
 	token += c;
@@ -399,17 +399,17 @@ int CommandParser::lex()
 	{
 		c = getChar();
 		token += c;
-		msg.print(Messenger::Parse, "LEXER (%p): found symbol [%s]\n",tree_,token.get());
+		Messenger::print(Messenger::Parse, "LEXER (%p): found symbol [%s]\n",tree_,token.get());
 		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token.get());
 		if (st != nSymbolTokens) return SymbolTokenValues[st];
-		else msg.print("Error: Unrecognised symbol found in input (%s).\n", token.get());
+		else Messenger::print("Error: Unrecognised symbol found in input (%s).\n", token.get());
  	}
 	else
 	{
 		// Make sure that this is a known symbol
 		if ((c == '$') || (c == '%') || (c == '&') || (c == '@') || (c == '?') || (c == ':'))
 		{
-			msg.print("Error: Unrecognised symbol found in input (%c).\n", c);
+			Messenger::print("Error: Unrecognised symbol found in input (%c).\n", c);
 		}
 		else return c;
 	}

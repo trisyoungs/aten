@@ -23,48 +23,48 @@
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "model/model.h"
-#include "gui/gui.h"
+#include "gui/mainwindow.h"
+
+ATEN_USING_NAMESPACE
 
 // Add new frame to the current model's trajectory
-bool Command::function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AddFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->addTrajectoryFrame();
 	obj.m->setRenderSource(Model::TrajectorySource);
 	if (c->hasArg(0)) obj.rs()->setName(c->argc(0));
-	parent_.updateWidgets(AtenWindow::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.set(VTypes::ModelData, obj.rs());
 	return TRUE;
 }
 
 // Clear any trajectory data in the current model
-bool Command::function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ClearTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs() != obj.m)
 	{
-		msg.print("Current model is a trajectory frame - resetting to the parent model...\n");
+		Messenger::print("Current model is a trajectory frame - resetting to the parent model...\n");
 		obj.m->setRenderSource(Model::ModelSource);
 	}
 	obj.m->clearTrajectory();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
 
 // Finalise current trajectory frame
-bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs() == obj.m)
 	{
-		msg.print( "Current model does not appear to be a trajectory frame.\n");
+		Messenger::print( "Current model does not appear to be a trajectory frame.\n");
 		return FALSE;
 	}
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.rs()->bohrToAngstrom();
 	obj.rs()->renumberAtoms();
-	if (!prefs.keepView()) obj.rs()->resetView();
+	if (!prefs.keepView()) obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
 	obj.rs()->calculateMass();
 	obj.rs()->selectNone();
 	obj.rs()->changeLog.reset();
@@ -78,40 +78,38 @@ bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Skip to first frame ('firstframe')
-bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FirstFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
 	obj.m->seekFirstTrajectoryFrame();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
 
 // Skip to last frame ('lastframe')
-bool Command::function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_LastFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
 	obj.m->seekLastTrajectoryFrame();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
-bool Command::function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Tree* filter = aten.probeFile(c->argc(0), FilterData::TrajectoryImport);
+	Tree* filter = aten_.probeFile(c->argc(0), FilterData::TrajectoryImport);
 	if (filter == NULL) return FALSE;
 	bool result = obj.m->initialiseTrajectory(c->argc(0), filter);
 	rv.set(result);
@@ -119,47 +117,43 @@ bool Command::function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Go to next frame ('nextframe')
-bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NextFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
 	obj.m->seekNextTrajectoryFrame();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
 
 // Go to previous frame ('prevframe')
-bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_PrevFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
 	obj.m->seekPreviousTrajectoryFrame();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+GuiQt::AtomsTarget+GuiQt::CellTarget);
 	rv.reset();
 	return TRUE;
 }
 
 // Seek to specified frame ('seekframe <n>')
-bool Command::function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SeekFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
 	obj.m->seekTrajectoryFrame(c->argi(0)-1);
-	parent_.updateWidgets(AtenWindow::CanvasTarget+GuiQt::AtomsTarget);
 	rv.reset();
 	return TRUE;
 }
-

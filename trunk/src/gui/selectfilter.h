@@ -24,10 +24,19 @@
 
 #include "gui/ui_selectfilter.h"
 #include "templates/reflist.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Tree;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Select Filter Dialog
 class AtenSelectFilter : public QDialog
@@ -40,9 +49,8 @@ class AtenSelectFilter : public QDialog
 	AtenWindow& parent_;
 
 	public:
-	// Constructor / Destructor
+	// Constructor
 	AtenSelectFilter(AtenWindow& parent);
-	~AtenSelectFilter();
 	// Main form declaration
 	Ui::AtenSelectFilter ui;
 

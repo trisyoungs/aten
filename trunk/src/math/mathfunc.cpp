@@ -19,10 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/mathfunc.h"
+#include "math/mathfunc.h"
 #include "math/constants.h"
 #include <cstdlib>
 #include <math.h>
+
+ATEN_USING_NAMESPACE
 
 // Error Function
 double AtenMath::erfc(double x)

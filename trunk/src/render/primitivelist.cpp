@@ -21,6 +21,8 @@
 
 #include "render/primitivelist.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 PrimitiveList::PrimitiveList()
 {
@@ -95,9 +97,9 @@ void PrimitiveList::pushInstance(const QGLContext* context, GLExtensions* extens
 }
 
 // Pop topmost instance layer
-void PrimitiveList::popInstance(const QGLContext *context)
+void PrimitiveList::popInstance(const QGLContext *context, GLExtensions* extensions)
 {
-	for (Primitive* prim = primitives_.first(); prim != NULL; prim = prim->next) prim->popInstance(context);
+	for (Primitive* prim = primitives_.first(); prim != NULL; prim = prim->next) prim->popInstance(context, extensions);
 }
 
 // Return number of instances of topmost primitive
@@ -118,7 +120,7 @@ void PrimitiveList::sendToGL()
  */
 
 // Element access operator
-Primitive *PrimitiveList::operator[](int index)
+Primitive* PrimitiveList::operator[](int index)
 {
 	return primitives_[index];
 }

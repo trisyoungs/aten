@@ -25,6 +25,8 @@
 #include <QtGui/QListWidgetItem>
 #include "parser/returnvalue.h"
 
+ATEN_USING_NAMESPACE
+
 class TListWidgetItem : public QListWidgetItem
 {
 	public:

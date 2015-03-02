@@ -21,40 +21,43 @@
 
 #include "main/aten.h"
 #include "base/sysfunc.h"
+#include "parser/tree.h"
 #include <fstream>
 #include <iostream>
 
+ATEN_USING_NAMESPACE
+
 // Probe model
-Tree* Aten::probeFile(const char *filename, FilterData::FilterType probetype)
+Tree* Aten::probeFile(const char* filename, FilterData::FilterType probetype)
 {
-	msg.enter("Aten::probeFile");
+	Messenger::enter("Aten::probeFile");
 	// Before we do the proper checking, make sure that the file exists and is readable
-	ifstream probefile;
-	probefile.open(filename,ios::in);
+	std::ifstream probefile;
+	probefile.open(filename, std::ios::in);
 	if (!probefile.is_open())
 	{
-		msg.print("File '%s' does not exist.\n",filename);
-		msg.exit("Aten::probeFile");
+		Messenger::print("File '%s' does not exist.\n", filename);
+		Messenger::exit("Aten::probeFile");
 		return NULL;
 	}
 	if (filename[0] == '\0')
 	{
-		msg.print("Filename is empty.\n");
-		msg.exit("Aten::probeFile");
+		Messenger::print("Filename is empty.\n");
+		Messenger::exit("Aten::probeFile");
 		return NULL;
 	}
 	probefile.close();
 	LineParser parser;
 	int n, m;
-	const char *dotpos;
-	Dnchar nameonly, *d;
-	Refitem<Tree,int> *ri;
+	const char* dotPos;
+	Dnchar nameOnly, *d;
+	Refitem<Tree,int>* ri;
 	Tree* f = NULL, *result = NULL;
 
 	// Get position of file extention and pure filename
-	dotpos = strrchr(filename,'.');
-	if (dotpos != NULL) dotpos++;
-	nameonly = removePath(filename);
+	dotPos = strrchr(filename,'.');
+	if (dotPos != NULL) dotPos++;
+	nameOnly = removePath(filename);
 
 	// Go through list of filters and do checks...
 	for (ri = filters_[probetype].first(); ri != NULL; ri = ri->next)
@@ -65,13 +68,13 @@ Tree* Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 		if (f->filter.extensions() != NULL)
 		{
 			// If a file extension is not present on the filename, then the filter is not a match
-			if (dotpos == NULL) continue;
+			if (dotPos == NULL) continue;
 			// Otherwise, try to match extension - if no match, then the filter is not a match
 			for (d = f->filter.extensions(); d != NULL; d = d->next)
 			{
-				if (strcmp(d->get(),dotpos) == 0)
+				if (strcmp(d->get(),dotPos) == 0)
 				{
-					msg.print(Messenger::Verbose, "PROBE: Filter extension [%s] matches file extension.\n", d->get()); 
+					Messenger::print(Messenger::Verbose, "PROBE: Filter extension [%s] matches file extension.\n", d->get()); 
 					break;
 				}
 			}
@@ -79,7 +82,7 @@ Tree* Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 		}
 		else if (f->filter.exactNames() != NULL)
 		{
-			for (d = f->filter.exactNames(); d != NULL; d = d->next) if (*d == nameonly) break;
+			for (d = f->filter.exactNames(); d != NULL; d = d->next) if (*d == nameOnly) break;
 			if (d == NULL) continue;
 		}
 		
@@ -98,7 +101,7 @@ Tree* Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 					if (m == -1) break;
 					if (m == 1)
 					{
-						msg.print("File error encountered while searching for identifying string.\n");
+						Messenger::print("File error encountered while searching for identifying string.\n");
 						break;
 					}
 					else if (strstr(parser.line(), d->get()) != NULL)
@@ -119,8 +122,8 @@ Tree* Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 		break;
 	}
 
-	if (result == NULL) msg.print("Couldn't determine format of file '%s'.\n",filename);
-	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n", result->filter.name());
-	msg.exit("Aten::probeFile");
+	if (result == NULL) Messenger::print("Couldn't determine format of file '%s'.\n",filename);
+	else Messenger::print(Messenger::Verbose, "Aten::probeFile - Selected filter '%s'\n", result->filter.name());
+	Messenger::exit("Aten::probeFile");
 	return result;
 }

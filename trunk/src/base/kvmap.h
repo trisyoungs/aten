@@ -25,13 +25,16 @@
 #include "base/dnchar.h"
 #include <cstdlib>
 #include "templates/list.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Simple string key/value pair class
 class KVPair : public ListItem<KVPair>
 {
 	public:
 	// Constructor / Destructor
-	KVPair(const char *key = NULL, const char *value = NULL);
+	KVPair(const char* key = NULL, const char* value = NULL);
 
 	/*
 	// Data
@@ -44,11 +47,11 @@ class KVPair : public ListItem<KVPair>
 
 	public:
 	// Retrieve key associated to pair
-	const char *key() const;
+	const char* key() const;
 	// Set value associated to pair
-	void setValue(const char *value);
+	void setValue(const char* value);
 	// Retrieve value associated to pair
-	const char *value() const;
+	const char* value() const;
 };
 
 // Simple string key/value list class
@@ -71,14 +74,16 @@ class KVMap
 	// Return number of pairs defined
 	int nPairs() const;
 	// Set (existing) key/value pair
-	void add(const char *key, const char *value);
+	void add(const char* key, const char* value);
 	// Search to see if specific key is in the table
-	KVPair *search(const char *key);
+	KVPair *search(const char* key) const;
 	// Retrieve value associated to key
-	const char *value(const char *key);
+	const char* value(const char* key);
 	// Return first key in list
 	KVPair *pairs();
 };
+
+ATEN_END_NAMESPACE
 
 #endif
 

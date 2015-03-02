@@ -23,9 +23,19 @@
 #define ATEN_VIEWBASISWINDOW_H
 
 #include "gui/ui_viewbasis.h"
+#include "base/namespace.h"
 
-// Forward declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // ViewBasis Window
 class AtenViewBasis : public QDialog
@@ -34,16 +44,13 @@ class AtenViewBasis : public QDialog
 	Q_OBJECT
 
 	public:
+	// Constructor / Destructor
+	AtenViewBasis(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::ViewBasisDialog ui;
 	// Table columns
 	enum TableColumns { AtomIdColumn, ShellColumn, TypeColumn, ExponentColumn, CoefficientColumn, nColumns };
 
-	/*
-	// Window Functions
-	*/
-	public:
-	void showWindow(Model* m);
-	private slots:
-	void dialogFinished(int result);
 
 	/*
 	// Local Variables
@@ -52,14 +59,14 @@ class AtenViewBasis : public QDialog
 	// Current model target
 	Model* target_;
 
+
 	/*
-	// Dialog
+	// Window Functions
 	*/
 	public:
-	// Constructor / Destructor
-	AtenViewBasis(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::ViewBasisDialog ui;
+	void showWindow(Model* m);
+	private slots:
+	void dialogFinished(int result);
 };
 
 #endif

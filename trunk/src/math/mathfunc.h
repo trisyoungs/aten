@@ -21,6 +21,9 @@
 
 #ifndef ATEN_MATHFUNC_H
 #define ATEN_MATHFUNC_H
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Mathematical functions
 class AtenMath
@@ -40,5 +43,7 @@ class AtenMath
 	public:
 	static int power(int i, int p);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

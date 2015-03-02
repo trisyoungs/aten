@@ -26,6 +26,8 @@
 #include "model/model.h"
 #include <string.h>
 
+ATEN_USING_NAMESPACE
+
 /*
 // Variable
 */
@@ -94,16 +96,16 @@ FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *AtomVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* AtomVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return AtomVariable::accessorSearch(s, arrayindex, arglist);
+	return AtomVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* AtomVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("AtomVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("AtomVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -113,75 +115,75 @@ StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Atom&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Atom&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("AtomVariable::accessorSearch");
+			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Atom&' function '%s'.\n", s);
-			msg.exit("AtomVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Atom&' function '%s'.\n", s);
+			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::AtomData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Atom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Atom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Atom&' array member '%s'.\n", s);
-			msg.exit("AtomVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Atom&' array member '%s'.\n", s);
+			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::AtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::AtomData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("AtomVariable::accessorSearch");
+	Messenger::exit("AtomVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("AtomVariable::retrieveAccessor");
+	Messenger::enter("AtomVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Atom type.\n", i);
-		msg.exit("AtomVariable::retrieveAccessor");
+		Messenger::exit("AtomVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("AtomVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("AtomVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("AtomVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("AtomVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -190,7 +192,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	Atom* ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -202,7 +204,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			if (!hasArrayIndex) rv.set( VTypes::BondData, ptr->bonds() == NULL ? NULL : ptr->bonds()->item, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
-				msg.print("Bond array index (%i) is out of bounds for atom '%i'\n", arrayIndex, ptr->id()+1);
+				Messenger::print("Bond array index (%i) is out of bounds for atom '%i'\n", arrayIndex, ptr->id()+1);
 				result = FALSE;
 			}
 			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item, ptr->bond(arrayIndex-1));
@@ -229,7 +231,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			if (ptr->parent()) rv.set((ptr->parent()->cell()->inverse() * ptr->r()).get(acc - AtomVariable::FracX));
 			else
 			{
-				msg.print("Can't retrieve the fractional coordinate of an unparented Atom (since it has no associated UnitCell).\n");
+				Messenger::print("Can't retrieve the fractional coordinate of an unparented Atom (since it has no associated UnitCell).\n");
 				result = FALSE;
 			}
 			break;
@@ -268,7 +270,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(ptr->isSelected());
 			break;
 		case (AtomVariable::Style):
-			rv.set(Atom::drawStyle(ptr->style()));
+			rv.set(Prefs::drawStyle(ptr->style()));
 			break;
 		case (AtomVariable::Symbol):
 			rv.set(Elements().symbol(ptr));
@@ -292,19 +294,19 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			result = FALSE;
 			break;
 	}
-	msg.exit("AtomVariable::retrieveAccessor");
+	Messenger::exit("AtomVariable::retrieveAccessor");
 	return result;
 }
 
 // Set specified data
-bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("AtomVariable::setAccessor");
+	Messenger::enter("AtomVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Atom type.\n", i);
-		msg.exit("AtomVariable::setAccessor");
+		Messenger::exit("AtomVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -316,20 +318,20 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -337,34 +339,34 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("AtomVariable::setAccessor");
+		Messenger::exit("AtomVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	Vec3<double> v;
 	int n;
-	Atom::DrawStyle ds;
-	Element *el;
+	Prefs::DrawStyle ds;
+	Element* el;
 	Atom* ptr = (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
 		result = FALSE;
 	}
 	Model* ptrParent = ptr->parent();
@@ -373,22 +375,22 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	if (result) switch (acc)
 	{
 		case (AtomVariable::Bit):
-			ptr->setBit( newvalue.asInteger() );
+			ptr->setBit( newValue.asInteger() );
 			break;
 		case (AtomVariable::Colour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(n, newValue.asDouble(result));
 			break;
 		case (AtomVariable::Data):
-			ptr->setData(newvalue.asString());
+			ptr->setData(newValue.asString());
 			break;
 		case (AtomVariable::ElementInfo):
-			el = (Element*) newvalue.asPointer(VTypes::ElementData);
+			el = (Element*) newValue.asPointer(VTypes::ElementData);
 			if (el == NULL)
 			{
-				msg.print("Invalid (NULL) element reference encountered while setting atom's element.\n");
+				Messenger::print("Invalid (NULL) element reference encountered while setting atom's element.\n");
 				result = FALSE;
 			}
 			else if (&Elements().el[ptr->element()] != el)
@@ -403,11 +405,11 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			}
 			break;
 		case (AtomVariable::F):
-			ptr->f() = newvalue.asVector();
+			ptr->f() = newValue.asVector();
 			break;
 		case (AtomVariable::Fixed):
-			if (ptrParent) ptrParent->atomSetFixed(ptr, newvalue.asBool());
-			else ptr->setPositionFixed(newvalue.asBool());
+			if (ptrParent) ptrParent->atomSetFixed(ptr, newValue.asBool());
+			else ptr->setPositionFixed(newValue.asBool());
 			break;
 		case (AtomVariable::FracX):
 		case (AtomVariable::FracY):
@@ -415,7 +417,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			if (ptrParent)
 			{
 				v = ptrParent->cell()->inverse() * ptr->r();
-				v.set(acc - AtomVariable::FracX, newvalue.asDouble());
+				v.set(acc - AtomVariable::FracX, newValue.asDouble());
 				v = ptrParent->cell()->fracToReal(v);
 				ptrParent->beginUndoState("Position atom (fractional coordinates)");
 				ptrParent->positionAtom(ptr, v);
@@ -423,42 +425,42 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			}
 			else
 			{
-				msg.print("Can't set the fractional coordinate of an unparented Atom (since it has no associated UnitCell).\n");
+				Messenger::print("Can't set the fractional coordinate of an unparented Atom (since it has no associated UnitCell).\n");
 				result = FALSE;
 			}
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
 		case (AtomVariable::FZ):
-			ptr->f().set(acc - AtomVariable::FX, newvalue.asDouble());
+			ptr->f().set(acc - AtomVariable::FX, newValue.asDouble());
 			break;
 		case (AtomVariable::Hidden):
-			if (ptrParent) ptrParent->atomSetHidden(ptr, newvalue.asBool());
-			else ptr->setHidden( newvalue.asBool() );
+			if (ptrParent) ptrParent->atomSetHidden(ptr, newValue.asBool());
+			else ptr->setHidden( newValue.asBool() );
 			break;
 		case (AtomVariable::Q):
 			if (ptrParent)
 			{
 				ptrParent->beginUndoState("Charge atom");
-				ptrParent->atomSetCharge(ptr, newvalue.asDouble());
+				ptrParent->atomSetCharge(ptr, newValue.asDouble());
 				ptrParent->endUndoState();
 			}
-			else ptr->setCharge(newvalue.asDouble());
+			else ptr->setCharge(newValue.asDouble());
 			break;
 		case (AtomVariable::R):
 			if (ptrParent)
 			{
 				ptrParent->beginUndoState("Position atom");
-				ptrParent->positionAtom(ptr, newvalue.asVector());
+				ptrParent->positionAtom(ptr, newValue.asVector());
 				ptrParent->endUndoState();
 			}
-			else ptr->r() = newvalue.asVector();
+			else ptr->r() = newValue.asVector();
 			break;
 		case (AtomVariable::RX):
 		case (AtomVariable::RY):
 		case (AtomVariable::RZ):
 			v = ptr->r();
-			v.set(acc - AtomVariable::RX, newvalue.asDouble());
+			v.set(acc - AtomVariable::RX, newValue.asDouble());
 			if (ptrParent)
 			{
 				ptrParent->beginUndoState("Position atom");
@@ -471,54 +473,54 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			if (ptrParent)
 			{
 				ptrParent->beginUndoState("(De)select atom");
-				newvalue.asBool() ? ptrParent->selectAtom(ptr) : ptrParent->deselectAtom(ptr);
+				newValue.asBool() ? ptrParent->selectAtom(ptr) : ptrParent->deselectAtom(ptr);
 				ptrParent->endUndoState();
 			}
-			else ptr->setSelected(newvalue.asBool());
+			else ptr->setSelected(newValue.asBool());
 			break;
 		case (AtomVariable::Style):
-			ds = Atom::drawStyle( newvalue.asString() );
-			if (ds != Atom::nDrawStyles) ptr->setStyle(ds);
+			ds = Prefs::drawStyle( newValue.asString() );
+			if (ds != Prefs::nDrawStyles) ptr->setStyle(ds);
 			else result = FALSE;
 			break;
 		case (AtomVariable::Type):
-			ptr->setType( (ForcefieldAtom*) newvalue.asPointer(VTypes::ForcefieldAtomData));
+			ptr->setType( (ForcefieldAtom*) newValue.asPointer(VTypes::ForcefieldAtomData));
 			break;
 		case (AtomVariable::V):
-			ptr->v() = newvalue.asVector();
+			ptr->v() = newValue.asVector();
 			break;
 		case (AtomVariable::VX):
 		case (AtomVariable::VY):
 		case (AtomVariable::VZ):
-			ptr->v().set(acc - AtomVariable::VX, newvalue.asDouble());
+			ptr->v().set(acc - AtomVariable::VX, newValue.asDouble());
 			break;
 		case (AtomVariable::Z):
 			if (ptrParent)
 			{
 				ptrParent->beginUndoState("Transmute atom");
-				ptrParent->transmuteAtom(ptr, newvalue.asInteger());
+				ptrParent->transmuteAtom(ptr, newValue.asInteger());
 				ptrParent->endUndoState();
 			}
-			else ptr->setElement( newvalue.asInteger() );
+			else ptr->setElement( newValue.asInteger() );
 			break;
 		default:
 			printf("AtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("AtomVariable::setAccessor");
+	Messenger::exit("AtomVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool AtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("AtomVariable::performFunction");
+	Messenger::enter("AtomVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Atom type.\n", i);
-		msg.exit("AtomVariable::performFunction");
+		Messenger::exit("AtomVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -533,7 +535,7 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		case (AtomVariable::Copy):
 			if (!((Atom*) node->argp(0, VTypes::AtomData)))
 			{
-				msg.print("Error: NULL pointer given to Atom's 'copy' function.\n");
+				Messenger::print("Error: NULL pointer given to Atom's 'copy' function.\n");
 				result = FALSE;
 			}
 			else if (ptrParent)
@@ -562,7 +564,7 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("AtomVariable::performFunction");
+	Messenger::exit("AtomVariable::performFunction");
 	return result;
 }
 
@@ -571,15 +573,15 @@ void AtomVariable::printAccessors()
 {
 	if (AtomVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<AtomVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<AtomVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((AtomVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<AtomVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<AtomVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -588,7 +590,7 @@ void AtomVariable::printAccessors()
 */
 
 // Constructor
-AtomArrayVariable::AtomArrayVariable(TreeNode *sizeexpr, bool constant)
+AtomArrayVariable::AtomArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::AtomData;
@@ -600,7 +602,7 @@ AtomArrayVariable::AtomArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *AtomArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* AtomArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return AtomVariable::accessorSearch(s, arrayindex, arglist);
+	return AtomVariable::accessorSearch(s, arrayIndex, argList);
 }

@@ -21,15 +21,12 @@
 
 #include "parser/prefs.h"
 #include "parser/stepnode.h"
-#include "math/constants.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
-#include "model/model.h"
-#include "gui/gui.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "ff/forcefield.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructors
 PreferencesVariable::PreferencesVariable()
@@ -53,10 +50,10 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "allowDialogs",		VTypes::IntegerData,		0, FALSE },
 	{ "angleLabelFormat",		VTypes::StringData,		0, FALSE },
 	{ "aromaticRingColour",		VTypes::DoubleData,		4, FALSE },
-	{ "atomStyleRadius",		VTypes::DoubleData,		Atom::nDrawStyles, FALSE },
+	{ "atomStyleRadius",		VTypes::DoubleData,		Prefs::nDrawStyles, FALSE },
 	{ "backCull",			VTypes::IntegerData,		0, FALSE },
 	{ "backgroundColour",		VTypes::DoubleData,		4, FALSE },
-	{ "bondStyleRadius",		VTypes::DoubleData,		Atom::nDrawStyles, FALSE },
+	{ "bondStyleRadius",		VTypes::DoubleData,		Prefs::nDrawStyles, FALSE },
 	{ "bondTolerance",		VTypes::DoubleData,		0, FALSE },
 	{ "cacheLimit",			VTypes::IntegerData,		0, FALSE },
 	{ "calculateIntra",		VTypes::IntegerData,		0, FALSE },
@@ -98,9 +95,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "imageQuality",		VTypes::IntegerData,		0, FALSE },
 	{ "keyAction",			VTypes::StringData,		Prefs::nModifierKeys, FALSE },
 	{ "labelSize",			VTypes::DoubleData,		0, FALSE },
-	{ "levelOfDetailStartZ",	VTypes::DoubleData,		0, FALSE },
-	{ "levelOfDetailWidth",		VTypes::DoubleData,		0, FALSE },
-	{ "levelsOfDetail",		VTypes::IntegerData,		0, FALSE },
 	{ "lineAliasing",		VTypes::IntegerData,		0, FALSE },
 	{ "manualSwapBuffers",		VTypes::IntegerData,		0, FALSE },
 	{ "maxCuboids",			VTypes::IntegerData,		0, FALSE },
@@ -134,10 +128,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "stickSelectedWidth",		VTypes::DoubleData,		4, FALSE },
 	{ "tempDir",			VTypes::StringData,		0, FALSE },
 	{ "textColour",			VTypes::DoubleData,		4, FALSE },
-	{ "transparencyBinStartZ",	VTypes::DoubleData,		0, FALSE },
-	{ "transparencyBinWidth",	VTypes::DoubleData,		0, FALSE },
-	{ "transparencyCorrect",	VTypes::IntegerData,		0, FALSE },
-	{ "transparencyNBins",		VTypes::IntegerData,		0, FALSE },
 	{ "transparentSelection",	VTypes::IntegerData,		0, FALSE },
 	{ "unitCellAxesColour",		VTypes::DoubleData,		4, FALSE },
 	{ "unitCellColour",		VTypes::DoubleData,		4, FALSE },
@@ -157,16 +147,16 @@ FunctionAccessor PreferencesVariable::functionData[PreferencesVariable::nFunctio
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *PreferencesVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* PreferencesVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return PreferencesVariable::accessorSearch(s, arrayindex, arglist);
+	return PreferencesVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* PreferencesVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("PreferencesVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("PreferencesVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -176,84 +166,84 @@ StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Prefs&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Prefs&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("PreferencesVariable::accessorSearch");
+			Messenger::exit("PreferencesVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Prefs&' function '%s'.\n", s);
-			msg.exit("PreferencesVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Prefs&' function '%s'.\n", s);
+			Messenger::exit("PreferencesVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::PreferencesData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Prefs&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Prefs&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Prefs&' array member '%s'.\n", s);
-			msg.exit("PreferencesVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Prefs&' array member '%s'.\n", s);
+			Messenger::exit("PreferencesVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::PreferencesData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::PreferencesData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("PreferencesVariable::accessorSearch");
+	Messenger::exit("PreferencesVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("PreferencesVariable::retrieveAccessor");
+	Messenger::enter("PreferencesVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Prefs type.\n", i);
-		msg.exit("PreferencesVariable::retrieveAccessor");
+		Messenger::exit("PreferencesVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("PreferencesVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("PreferencesVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("PreferencesVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("PreferencesVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Variables used in retrieval
 	bool result;
-	Prefs *ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
+	Prefs* ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -269,8 +259,8 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::AromaticRingColour), 4);
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
-			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
-			else rv.setArray( VTypes::DoubleData, ptr->atomStyleRadii(), Atom::nDrawStyles);
+			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Prefs::DrawStyle) (arrayIndex-1)) );
+			else rv.setArray( VTypes::DoubleData, ptr->atomStyleRadii(), Prefs::nDrawStyles);
 			break;
 		case (PreferencesVariable::BackCull):
 			rv.set( ptr->backfaceCulling() );
@@ -280,8 +270,8 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::BackgroundColour), 4);
 			break;
 		case (PreferencesVariable::BondStyleRadius):
-			if (hasArrayIndex) rv.set(ptr->bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
-			else rv.setArray( VTypes::DoubleData, ptr->bondStyleRadii(), Atom::nDrawStyles);
+			if (hasArrayIndex) rv.set(ptr->bondStyleRadius( (Prefs::DrawStyle) (arrayIndex-1)) );
+			else rv.setArray( VTypes::DoubleData, ptr->bondStyleRadii(), Prefs::nDrawStyles);
 			break;
 		case (PreferencesVariable::BondTolerance):
 			rv.set(ptr->bondTolerance());
@@ -412,15 +402,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::LabelSize):
 			rv.set( ptr->labelSize() );
 			break;
-		case (PreferencesVariable::LevelOfDetailStartZ):
-			rv.set( ptr->levelOfDetailStartZ() );
-			break;
-		case (PreferencesVariable::LevelOfDetailWidth):
-			rv.set( ptr->levelOfDetailWidth() );
-			break;
-		case (PreferencesVariable::LevelsOfDetail):
-			rv.set( ptr->levelsOfDetail() );
-			break;
 		case (PreferencesVariable::LineAliasing):
 			rv.set( ptr->lineAliasing() );
 			break;
@@ -475,7 +456,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( (int) ptr->primitiveQuality() );
 			break;
 		case (PreferencesVariable::RenderStyle):
-			rv.set( Atom::drawStyle(ptr->renderStyle()) );
+			rv.set( Prefs::drawStyle(ptr->renderStyle()) );
 			break;
 		case (PreferencesVariable::ReplicateFold):
 			rv.set( ptr->replicateFold() );
@@ -528,18 +509,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::TextColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::TextColour), 4);
 			break;
-		case (PreferencesVariable::TransparencyBinStartZ):
-			rv.set( ptr->transparencyBinStartZ() );
-			break;
-		case (PreferencesVariable::TransparencyBinWidth):
-			rv.set( ptr->transparencyBinWidth() );
-			break;
-		case (PreferencesVariable::TransparencyCorrect):
-			rv.set( ptr->transparencyCorrect() );
-			break;
-		case (PreferencesVariable::TransparencyNBins):
-			rv.set( ptr->transparencyNBins() );
-			break;
 		case (PreferencesVariable::TransparentSelection):
 			rv.set( ptr->transparentSelectionStyle() );
 			break;
@@ -582,19 +551,19 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			result = FALSE;
 			break;
 	}
-	msg.exit("PreferencesVariable::retrieveAccessor");
+	Messenger::exit("PreferencesVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("PreferencesVariable::setAccessor");
+	Messenger::enter("PreferencesVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Prefs type.\n", i);
-		msg.exit("PreferencesVariable::setAccessor");
+		Messenger::exit("PreferencesVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -606,20 +575,20 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -627,30 +596,30 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("PreferencesVariable::setAccessor");
+		Messenger::exit("PreferencesVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Prefs *ptr = (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
+	Prefs* ptr = (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
 		result = FALSE;
 	}
 	int n;
@@ -660,418 +629,401 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	Electrostatics::ElecMethod em;
 	Prefs::KeyAction ka;
 	Prefs::MouseAction ma;
-	Atom::DrawStyle ds;
+	Prefs::DrawStyle ds;
 	ElementMap::ZMapType zm;
 	if (result) switch (acc)
 	{
 		case (PreferencesVariable::AllowDialogs):
-			ptr->setAllowDialogs(newvalue.asBool());
+			ptr->setAllowDialogs(newValue.asBool());
 			break;
 		case (PreferencesVariable::AngleLabelFormat):
-			ptr->setAngleLabelFormat(newvalue.asString());
+			ptr->setAngleLabelFormat(newValue.asString());
 			break;
 		case (PreferencesVariable::AromaticRingColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::AromaticRingColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::AromaticRingColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::AromaticRingColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::AromaticRingColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
-			if (newvalue.arraySize() == (Atom::nDrawStyles - 1)) for (n=0; n<Atom::nDrawStyles-1; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
-			else for (n=0; n<Atom::nDrawStyles-1; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
-			engine().updatePrimitives();
+			if (newValue.arraySize() == (Prefs::nDrawStyles - 1)) for (n=0; n<Prefs::nDrawStyles-1; ++n) ptr->setAtomStyleRadius( (Prefs::DrawStyle) n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Prefs::DrawStyle) (arrayIndex-1), newValue.asDouble(result));
+			else for (n=0; n<Prefs::nDrawStyles-1; ++n) ptr->setAtomStyleRadius( (Prefs::DrawStyle) n, newValue.asDouble(result));
+// 			engine().updatePrimitives();	//ATEN2 TODO
 			break;
 		case (PreferencesVariable::BackCull):
-			ptr->setBackfaceCulling(newvalue.asBool());
+			ptr->setBackfaceCulling(newValue.asBool());
 			break;
 		case (PreferencesVariable::BackgroundColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::BackgroundColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::BackgroundColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::BackgroundColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::BackgroundColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::BondStyleRadius):
-			if (newvalue.arraySize() == (Atom::nDrawStyles - 1)) for (n=0; n<Atom::nDrawStyles-1; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setBondStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
-			else for (n=0; n<Atom::nDrawStyles-1; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
-			engine().updatePrimitives();
+			if (newValue.arraySize() == (Prefs::nDrawStyles - 1)) for (n=0; n<Prefs::nDrawStyles-1; ++n) ptr->setBondStyleRadius( (Prefs::DrawStyle) n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setBondStyleRadius( (Prefs::DrawStyle) (arrayIndex-1), newValue.asDouble(result));
+			else for (n=0; n<Prefs::nDrawStyles-1; ++n) ptr->setBondStyleRadius( (Prefs::DrawStyle) n, newValue.asDouble(result));
+// 			engine().updatePrimitives();   ATEN2 TODO
 			break;
 		case (PreferencesVariable::BondTolerance):
-			ptr->setBondTolerance( newvalue.asDouble(result) );
+			ptr->setBondTolerance( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::CacheLimit):
-			ptr->setCacheLimit( newvalue.asInteger(result) );
+			ptr->setCacheLimit( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::CalculateIntra):
-			ptr->setCalculateIntra( newvalue.asBool() );
+			ptr->setCalculateIntra( newValue.asBool() );
 			break;
 		case (PreferencesVariable::CalculateVdw):
-			ptr->setCalculateVdw( newvalue.asBool() );
+			ptr->setCalculateVdw( newValue.asBool() );
 			break;
 		case (PreferencesVariable::ChargeLabelFormat):
-			prefs.setChargeLabelFormat( newvalue.asString(result) );
+			prefs.setChargeLabelFormat( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::ClipFar):
-			ptr->setClipFar( newvalue.asDouble(result) );
+			ptr->setClipFar( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ClipNear):
-			ptr->setClipNear( newvalue.asDouble(result) );
+			ptr->setClipNear( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ColourScheme):
-			cs = Prefs::colouringScheme( newvalue.asString(result), TRUE );
+			cs = Prefs::colouringScheme( newValue.asString(result), TRUE );
 			if (cs != Prefs::nColouringSchemes) ptr->setColourScheme(cs);
 			else result = FALSE;
 			break;
 		case (PreferencesVariable::CombinationRule):
-			if (newvalue.arraySize() == Combine::nCombinationRules) for (n=0; n<Combine::nCombinationRules; ++n)
+			if (newValue.arraySize() == Combine::nCombinationRules) for (n=0; n<Combine::nCombinationRules; ++n)
 			{
-				ptr->setCombinationRule( (Combine::CombinationRule) n, newvalue.asString(n, result));
+				ptr->setCombinationRule( (Combine::CombinationRule) n, newValue.asString(n, result));
 			}
 			else if (hasArrayIndex)
 			{
-				ptr->setCombinationRule( (Combine::CombinationRule) (arrayIndex-1), newvalue.asString(result));
+				ptr->setCombinationRule( (Combine::CombinationRule) (arrayIndex-1), newValue.asString(result));
 			}
-			else for (n=0; n<Combine::nCombinationRules; ++n) ptr->setCombinationRule((Combine::CombinationRule) n, newvalue.asString(result));
+			else for (n=0; n<Combine::nCombinationRules; ++n) ptr->setCombinationRule((Combine::CombinationRule) n, newValue.asString(result));
 			// Regenerate equations to check
 			if (!Combine::regenerateEquations()) result = FALSE;
 			break;
 		case (PreferencesVariable::CommonElements):
-			ptr->setCommonElements( newvalue.asString(result) );
+			ptr->setCommonElements( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::DashedAromatics):
-			ptr->setRenderDashedAromatics(newvalue.asBool());
+			ptr->setRenderDashedAromatics(newValue.asBool());
 			break;
 		case (PreferencesVariable::DensityUnit):
-			du = Prefs::densityUnit( newvalue.asString(result), TRUE );
+			du = Prefs::densityUnit( newValue.asString(result), TRUE );
 			if (du != Prefs::nDensityUnits) ptr->setDensityUnit(du);
 			else result = FALSE;
 			break;
 		case (PreferencesVariable::DepthCue):
-			ptr->setDepthCue( newvalue.asBool() );
+			ptr->setDepthCue( newValue.asBool() );
 			break;
 		case (PreferencesVariable::DepthFar):
-			ptr->setDepthFar( newvalue.asInteger(result) );
+			ptr->setDepthFar( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::DepthNear):
-			ptr->setDepthNear( newvalue.asInteger(result) );
+			ptr->setDepthNear( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::DistanceLabelFormat):
-			ptr->setDistanceLabelFormat(newvalue.asString());
+			ptr->setDistanceLabelFormat(newValue.asString());
 			break;
 		case (PreferencesVariable::ElecCutoff):
-			ptr->setElecCutoff( newvalue.asDouble(result) );
+			ptr->setElecCutoff( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ElecMethod):
-			em = Electrostatics::elecMethod( newvalue.asString(result), TRUE );
+			em = Electrostatics::elecMethod( newValue.asString(result), TRUE );
 			if (em != Electrostatics::nElectrostatics) ptr->setElectrostaticsMethod(em);
 			else result = FALSE;
 			break;
 		case (PreferencesVariable::EncoderArgs):
-			ptr->setEncoderArguments( newvalue.asString(result) );
+			ptr->setEncoderArguments( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::EncoderExe):
-			ptr->setEncoderExe( newvalue.asString(result) );
+			ptr->setEncoderExe( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::EncoderPostArgs):
-			ptr->setEncoderPostArguments( newvalue.asString(result) );
+			ptr->setEncoderPostArguments( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::EncoderPostExe):
-			ptr->setEncoderPostExe( newvalue.asString(result) );
+			ptr->setEncoderPostExe( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::EnergyUnit):
-			eu = Prefs::energyUnit( newvalue.asString(result), TRUE );
-			if (eu != Prefs::nEnergyUnits) ptr->setEnergyUnit(eu);
+			eu = Prefs::energyUnit( newValue.asString(result), TRUE );
+			if (eu != Prefs::nEnergyUnits)
+			{
+				ptr->setEnergyUnit(eu);
+				// Loop over stored forcefields and convert energetic parameters
+				for (Forcefield* ff = aten_.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
+			}
 			else result = FALSE;
 			break;
 		case (PreferencesVariable::EnergyUpdate):
-			ptr->setEnergyUpdate( newvalue.asInteger(result) );
+			ptr->setEnergyUpdate( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::EwaldAlpha):
-			ptr->setEwaldAlpha( newvalue.asDouble(result) );
+			ptr->setEwaldAlpha( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::EwaldKMax):
-			if (newvalue.arraySize() == 3) for (n=0; n<3; ++n) ptr->setEwaldKMax(n, newvalue.asInteger(n, result));
-			else if (hasArrayIndex) ptr->setEwaldKMax(arrayIndex-1, newvalue.asInteger(result));
-			else for (n=0; n<3; ++n) ptr->setEwaldKMax(n, newvalue.asInteger(result));
+			if (newValue.arraySize() == 3) for (n=0; n<3; ++n) ptr->setEwaldKMax(n, newValue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setEwaldKMax(arrayIndex-1, newValue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setEwaldKMax(n, newValue.asInteger(result));
 			break;
 		case (PreferencesVariable::EwaldPrecision):
-			ptr->ewaldPrecision().set( newvalue.asDouble(result) );
+			ptr->ewaldPrecision().set( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
-			ptr->setForceRhombohedral( newvalue.asBool() );
+			ptr->setForceRhombohedral( newValue.asBool() );
 			break;
 		case (PreferencesVariable::FrameCurrentModel):
-			ptr->setFrameCurrentModel( newvalue.asBool() );
+			ptr->setFrameCurrentModel( newValue.asBool() );
 			break;
 		case (PreferencesVariable::FrameWholeView):
-			ptr->setFrameWholeView( newvalue.asBool() );
+			ptr->setFrameWholeView( newValue.asBool() );
 			break;
 		case (PreferencesVariable::GlobeAxesColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeAxesColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeAxesColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::GlobeColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::GlobeColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::GlobeSize):
-			ptr->setGlobeSize( newvalue.asInteger(result) );
+			ptr->setGlobeSize( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::GlyphDefaultColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphDefaultColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphDefaultColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphDefaultColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::HBonds):
-			ptr->setDrawHydrogenBonds( newvalue.asBool() );
+			ptr->setDrawHydrogenBonds( newValue.asBool() );
 			break;
 		case (PreferencesVariable::HBondDotRadius):
-			ptr->setHydrogenBondDotRadius( newvalue.asDouble() );
+			ptr->setHydrogenBondDotRadius( newValue.asDouble() );
 			break;
 		case (PreferencesVariable::HDistance):
-			ptr->setHydrogenDistance( newvalue.asDouble(result) );
+			ptr->setHydrogenDistance( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ImageQuality):
-			ptr->setImagePrimitiveQuality( newvalue.asInteger(result) );
+			ptr->setImagePrimitiveQuality( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::KeyAction):
-			if (newvalue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nModifierKeys; ++n)
+			if (newValue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nModifierKeys; ++n)
 			{
-				ka = Prefs::keyAction( newvalue.asString(n, result) );
+				ka = Prefs::keyAction( newValue.asString(n, result) );
 				if ((ka != Prefs::nKeyActions) && result) ptr->setKeyAction( (Prefs::ModifierKey) n, ka);
 				else { result = FALSE; break; }
 			}
 			else if (hasArrayIndex)
 			{
-				ka = Prefs::keyAction( newvalue.asString(result) );
+				ka = Prefs::keyAction( newValue.asString(result) );
 				if ((ka != Prefs::nKeyActions) && result) ptr->setKeyAction( (Prefs::ModifierKey) (arrayIndex-1), ka);
 				else result = FALSE;
 			}
 			else
 			{
-				ka = Prefs::keyAction( newvalue.asString(result) );
+				ka = Prefs::keyAction( newValue.asString(result) );
 				if ((ka != Prefs::nKeyActions) && result) for (n=0; n<Prefs::nKeyActions; ++n) ptr->setKeyAction( (Prefs::ModifierKey) n, ka);
 				else { result = FALSE; break; }
 			}
 			break;
 		case (PreferencesVariable::LabelSize):
-			ptr->setLabelSize( newvalue.asDouble(result) );
-			break;
-		case (PreferencesVariable::LevelOfDetailStartZ):
-			ptr->setLevelOfDetailStartZ( newvalue.asDouble(result) );
-			break;
-		case (PreferencesVariable::LevelOfDetailWidth):
-			ptr->setLevelOfDetailWidth( newvalue.asDouble(result) );
-			break;
-		case (PreferencesVariable::LevelsOfDetail):
-			ptr->setLevelsOfDetail( newvalue.asInteger(result) );
-			engine().updatePrimitives();
+			ptr->setLabelSize( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::LineAliasing):
-			ptr->setLineAliasing( newvalue.asBool() );
+			ptr->setLineAliasing( newValue.asBool() );
 			break;
 		case (PreferencesVariable::ManualSwapBuffers):
-			ptr->setManualSwapBuffers( newvalue.asBool() );
+			ptr->setManualSwapBuffers( newValue.asBool() );
 			break;
 		case (PreferencesVariable::MaxCuboids):
-			ptr->setMaxCuboids( newvalue.asInteger(result) );
+			ptr->setMaxCuboids( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::MaxRings):
-			ptr->setMaxRings( newvalue.asInteger(result) );
+			ptr->setMaxRings( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::MaxRingSize):
-			ptr->setMaxRingSize( newvalue.asInteger(result) );
+			ptr->setMaxRingSize( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::MaxUndo):
-			ptr->setMaxUndoLevels( newvalue.asInteger(result) );
+			ptr->setMaxUndoLevels( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::ModelUpdate):
-			ptr->setModelUpdate( newvalue.asInteger(result) );
+			ptr->setModelUpdate( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::MopacExe):
-			ptr->setMopacExe( newvalue.asString(result) );
+			ptr->setMopacExe( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::MouseAction):
-			if (newvalue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nMouseActions; ++n)
+			if (newValue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nMouseActions; ++n)
 			{
-				ma = Prefs::mouseAction( newvalue.asString(n, result) );
+				ma = Prefs::mouseAction( newValue.asString(n, result) );
 				if ((ma != Prefs::nMouseActions) && result) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
 				else { result = FALSE; break; }
 			}
 			else if (hasArrayIndex)
 			{
-				ma = Prefs::mouseAction( newvalue.asString(result) );
+				ma = Prefs::mouseAction( newValue.asString(result) );
 				if ((ma != Prefs::nMouseActions) && result) ptr->setMouseAction( (Prefs::MouseButton) (arrayIndex-1), ma);
 				else result = FALSE;
 			}
 			else
 			{
-				ma = Prefs::mouseAction( newvalue.asString(result) );
+				ma = Prefs::mouseAction( newValue.asString(result) );
 				if ((ma != Prefs::nMouseActions) && result) for (n=0; n<Prefs::nMouseActions; ++n) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
 				else { result = FALSE; break; }
 			}
 			break;
 		case (PreferencesVariable::MouseMoveFilter):
 			// Don't allow values below 1
-			if (newvalue.asInteger() > 0) ptr->setMouseMoveFilter( newvalue.asInteger() );
-			else msg.print("Values below 1 are not permitted for 'mousemovefilter' member.\n");
+			if (newValue.asInteger() > 0) ptr->setMouseMoveFilter( newValue.asInteger() );
+			else Messenger::print("Values below 1 are not permitted for 'mousemovefilter' member.\n");
 			break;
 		case (PreferencesVariable::MultiSampling):
-			ptr->setMultiSampling( newvalue.asBool() );
+			ptr->setMultiSampling( newValue.asBool() );
 			break;
 		case (PreferencesVariable::NoQtSettings):
-			ptr->setLoadQtSettings( newvalue.asBool() );
+			ptr->setLoadQtSettings( newValue.asBool() );
 			break;
 		case (PreferencesVariable::PartitionGrid):
-			if (newvalue.arraySize() == 3) for (n=0; n<3; ++n) ptr->setPartitionGridSize(n, newvalue.asInteger(n, result));
-			else if (hasArrayIndex) ptr->setPartitionGridSize(arrayIndex-1, newvalue.asInteger(result));
-			else for (n=0; n<3; ++n) ptr->setPartitionGridSize(n, newvalue.asInteger(result));
+			if (newValue.arraySize() == 3) for (n=0; n<3; ++n) ptr->setPartitionGridSize(n, newValue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setPartitionGridSize(arrayIndex-1, newValue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setPartitionGridSize(n, newValue.asInteger(result));
 			break;
 		case (PreferencesVariable::Perspective):
-			ptr->setPerspective( newvalue.asBool() );
+			ptr->setPerspective( newValue.asBool() );
 			break;
 		case (PreferencesVariable::PerspectiveFov):
-			ptr->setPerspectiveFov( newvalue.asDouble(result) );
+			ptr->setPerspectiveFov( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::PolygonAliasing):
-			ptr->setPolygonAliasing( newvalue.asBool() );
+			ptr->setPolygonAliasing( newValue.asBool() );
 			break;
 		case (PreferencesVariable::Quality):
-			ptr->setPrimitiveQuality( newvalue.asInteger(result) );
+			ptr->setPrimitiveQuality( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::RenderStyle):
-			ds = Atom::drawStyle( newvalue.asString(result), TRUE );
-			if ((ds != Atom::nDrawStyles) && result) ptr->setRenderStyle(ds);
+			ds = Prefs::drawStyle( newValue.asString(result), TRUE );
+			if ((ds != Prefs::nDrawStyles) && result) ptr->setRenderStyle(ds);
 			else result = FALSE;
 			break;
 		case (PreferencesVariable::ReplicateFold):
-			ptr->setReplicateFold( newvalue.asBool() );
+			ptr->setReplicateFold( newValue.asBool() );
 			break;
 		case (PreferencesVariable::ReplicateTrim):
-			ptr->setReplicateTrim( newvalue.asBool() );
+			ptr->setReplicateTrim( newValue.asBool() );
 			break;
 		case (PreferencesVariable::ReuseQuality):
-			ptr->setReusePrimitiveQuality( newvalue.asBool() );
+			ptr->setReusePrimitiveQuality( newValue.asBool() );
 			break;
 		case (PreferencesVariable::SelectionScale):
-			ptr->setSelectionScale( newvalue.asDouble(result) );
-			engine().updatePrimitives();
+			ptr->setSelectionScale( newValue.asDouble(result) );
+// 			engine().updatePrimitives();   ATEN2 TODO
 			break;
 		case (PreferencesVariable::Shininess):
-			ptr->setShininess( newvalue.asInteger(result) );
+			ptr->setShininess( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::SpecularColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::SpecularColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::SpecularColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::SpecularColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::SpecularColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::SpecularColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::Spotlight):
-			ptr->setSpotlightActive( newvalue.asBool() );
+			ptr->setSpotlightActive( newValue.asBool() );
 			break;
 		case (PreferencesVariable::SpotlightAmbient):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::AmbientComponent, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::AmbientComponent, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightDiffuse):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::DiffuseComponent, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::DiffuseComponent, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightPosition):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightPosition(n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightPosition(n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setSpotlightPosition(arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setSpotlightPosition(n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightPosition(n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setSpotlightPosition(n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setSpotlightPosition(arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setSpotlightPosition(n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightSpecular):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::SpecularComponent, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::SpecularComponent, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::StickNormalWidth):
-			ptr->setStickLineNormalWidth(newvalue.asDouble(result));
+			ptr->setStickLineNormalWidth(newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::StickSelectedWidth):
-			ptr->setStickLineSelectedWidth(newvalue.asDouble(result));
+			ptr->setStickLineSelectedWidth(newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::TempDir):
-			ptr->setTempDir( newvalue.asString(result) );
+			ptr->setTempDir( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::TextColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::TextColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::TextColour, n, newvalue.asDouble(result));
-			break;
-		case (PreferencesVariable::TransparencyBinStartZ):
-			ptr->setTransparencyBinStartZ( newvalue.asDouble() );
-			break;
-		case (PreferencesVariable::TransparencyBinWidth):
-			ptr->setTransparencyBinWidth( newvalue.asDouble() );
-			break;
-		case (PreferencesVariable::TransparencyCorrect):
-			ptr->setTransparencyCorrect( newvalue.asBool() );
-			break;
-		case (PreferencesVariable::TransparencyNBins):
-			ptr->setTransparencyNBins( newvalue.asInteger() );
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::TextColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::TextColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::TextColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::TextColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::TransparentSelection):
-			ptr->setTransparentSelectionStyle( newvalue.asInteger() );
+			ptr->setTransparentSelectionStyle( newValue.asInteger() );
 			break;
 		case (PreferencesVariable::UnitCellAxesColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellAxesColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellAxesColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::UnitCellColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::UnitCellColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::UsePixelBuffers):
-			ptr->setUsePixelBuffers( newvalue.asBool() );
+			ptr->setUsePixelBuffers( newValue.asBool() );
 			break;
 		case (PreferencesVariable::VdwCutoff):
-			ptr->setVdwCutoff( newvalue.asDouble(result) );
+			ptr->setVdwCutoff( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::VibrationArrowColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::VibrationArrowColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::VibrationArrowColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
-			ptr->setViewRotationGlobe( newvalue.asBool() );
+			ptr->setViewRotationGlobe( newValue.asBool() );
 			break;
 		case (PreferencesVariable::Warn1056):
-			ptr->setWarning1056( newvalue.asBool() );
+			ptr->setWarning1056( newValue.asBool() );
 			break;
 		case (PreferencesVariable::WireSelectionColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::WireSelectionColour, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::WireSelectionColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::WireSelectionColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::ZMapping):
-			zm = ElementMap::zMapType( newvalue.asString(result), TRUE );
+			zm = ElementMap::zMapType( newValue.asString(result), TRUE );
 			if (zm != ElementMap::nZMapTypes) ptr->setZMapType(zm);
 			else result = FALSE;
 			break;
 		case (PreferencesVariable::ZoomThrottle):
-			ptr->setZoomThrottle( newvalue.asDouble(result) );
+			ptr->setZoomThrottle( newValue.asDouble(result) );
 			break;
 		default:
 			printf("PreferencesVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -1079,24 +1031,24 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 	}
 
-	msg.exit("PreferencesVariable::setAccessor");
+	Messenger::exit("PreferencesVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool PreferencesVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool PreferencesVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("PreferencesVariable::performFunction");
+	Messenger::enter("PreferencesVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Preferences type.\n", i);
-		msg.exit("PreferencesVariable::performFunction");
+		Messenger::exit("PreferencesVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Prefs *ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
+	Prefs* ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
 	if (result) switch (i)
 	{
 		default:
@@ -1104,7 +1056,7 @@ bool PreferencesVariable::performFunction(int i, ReturnValue &rv, TreeNode *node
 			result = FALSE;
 			break;
 	}
-	msg.exit("PreferencesVariable::performFunction");
+	Messenger::exit("PreferencesVariable::performFunction");
 	return result;
 }
 
@@ -1113,14 +1065,14 @@ void PreferencesVariable::printAccessors()
 {
 	if (PreferencesVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<PreferencesVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<PreferencesVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((PreferencesVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<PreferencesVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<PreferencesVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }

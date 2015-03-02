@@ -21,6 +21,8 @@
 
 #include "gui/tlistwidgetitem.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 TListWidgetItem::TListWidgetItem(QListWidget *parent) : QListWidgetItem(parent)
 {

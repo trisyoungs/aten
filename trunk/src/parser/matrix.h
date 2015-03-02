@@ -24,9 +24,11 @@
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
-#include "base/matrix.h"
+#include "math/matrix.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class TreeNode;
 
 // Real 3x3 Matrix Variable
@@ -36,20 +38,22 @@ class MatrixVariable : public Variable
 	// Constructor / Destructor
 	MatrixVariable(bool constant = FALSE);
 	MatrixVariable(Matrix m, bool constant = FALSE);
-	MatrixVariable(TreeNode *xx, TreeNode *xy, TreeNode *xz, TreeNode *yx, TreeNode *yy, TreeNode *yz, TreeNode *zx, TreeNode *zy, TreeNode *zz);
+	MatrixVariable(TreeNode* xx, TreeNode* xy, TreeNode* xz, TreeNode* yx, TreeNode* yy, TreeNode* yz, TreeNode* zx, TreeNode* zy, TreeNode* zz);
 	~MatrixVariable();
 	friend class MatrixArrayVariable;
+
 
 	/*
 	// Set / Get
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Reset node
 	void reset();
+
 
 	/*
 	// Variable Data
@@ -60,9 +64,10 @@ class MatrixVariable : public Variable
 	// Matrix data
 	Matrix matrixData_;
 	// Node data for constant Matrices
-	TreeNode *constXX_, *constXY_, *constXZ_, *constYX_, *constYY_, *constYZ_, *constZX_, *constZY_, *constZZ_;
+	TreeNode* constXX_, *constXY_, *constXZ_, *constYX_, *constYY_, *constYZ_, *constZX_, *constZY_, *constZZ_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char* prefix = "");
+
 
 	/*
 	// Access Data
@@ -73,15 +78,15 @@ class MatrixVariable : public Variable
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	static StepNode* accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex = -1);
 	// Perform desired function
-	static bool performFunction(int i, ReturnValue &rv, TreeNode *node);
+	static bool performFunction(int i, ReturnValue& rv, TreeNode* node);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
 	// Function Accessor data
@@ -93,36 +98,39 @@ class MatrixArrayVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	MatrixArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	MatrixArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
 	~MatrixArrayVariable();
+
 
 	/*
 	// Set / Get
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Return value of node as array
-	bool executeAsArray(ReturnValue &rv, int arrayindex);
+	bool executeAsArray(ReturnValue& rv, int arrayIndex);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Set from returnvalue node as array
-	bool setAsArray(ReturnValue &rv, int arrayindex);
+	bool setAsArray(ReturnValue& rv, int arrayIndex);
 	// Reset variable
 	void reset();
+
 
 	/*
 	// Variable Data
 	*/
 	private:
 	// TreeNode determining array size on initialisation
-	TreeNode *arraySizeExpression_;
+	TreeNode* arraySizeExpression_;
 	// Array size
 	int arraySize_;
 	// Matrix data
 	Matrix *matrixArrayData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix);
+	void nodePrint(int offset, const char* prefix);
+
 
 	/*
 	// Inherited Virtuals
@@ -131,7 +139,9 @@ class MatrixArrayVariable : public Variable
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -24,8 +24,11 @@
 
 #include "templates/list.h"
 #include "base/dnchar.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 class Pattern;
 class PartitioningScheme;
@@ -39,8 +42,8 @@ class MonteCarlo
 	~MonteCarlo();
 	// Monte Carlo move types
 	enum MoveType { Translate, Rotate, ZMatrix, Insert, Delete, nMoveTypes };
-	static const char *moveTypeKeyword(MoveType);
-	static MoveType moveType(const char *name, bool reportError = 0);
+	static const char* moveTypeKeyword(MoveType);
+	static MoveType moveType(const char* name, bool reportError = 0);
 
 
 	/*
@@ -62,7 +65,7 @@ class MonteCarlo
 	// Turn on/off move types
 	bool moveAllowed_[nMoveTypes];
 	// Acceptance ratio counts per pattern
-	double **acceptanceRatio_;
+	double** acceptanceRatio_;
 	// Size of acceptratio array
 	int acceptanceRatioSize_;
 	// Number of cycles to perform in MC method
@@ -186,10 +189,12 @@ class MonteCarlo
 	// Minimise the specified model
 	bool minimise(Model* target, double, double);
 	// Run disordered builder
-	bool disorder(Model* destmodel, PartitioningScheme* scheme, bool fixedCell);
+	bool disorder(Model* allModels, Model* destmodel, PartitioningScheme* scheme, bool fixedCell);
 };
 
 // Static Singleton
 extern MonteCarlo mc;
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -25,9 +25,17 @@
 #include "base/dnchar.h"
 #include "templates/list.h"
 #include "templates/vector3.h"
-#include <QtOpenGL/QtOpenGL>
+#include "templates/vector4.h"
+#include "base/namespace.h"
+#ifdef _MAC
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 class Atom;
 class Matrix;
@@ -79,9 +87,9 @@ class GlyphData : public ListItem<GlyphData>
 	// Set n'th component of colour in datapoint
 	void setColour(int n, double d);
 	// Return i'th colour
-	double *colour();
+	double* colour();
 	// Copy colour for datapoint
-	void copyColour(GLfloat *c) const;
+	void copyColour(Vec4<GLfloat>& col) const;
 };
 
 // Glyph
@@ -94,14 +102,14 @@ class Glyph : public ListItem<Glyph>
 	void operator=(Glyph &source);
 	// Glyph style
 	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, TubeArrowGlyph, TubeVectorGlyph, VectorGlyph, nGlyphTypes };
-	static const char *glyphType(GlyphType gt);
-	static const char *glyphTypeName(GlyphType gt);
-	static GlyphType glyphType(const char *name, bool reportError = 0);
+	static const char* glyphType(GlyphType gt);
+	static const char* glyphTypeName(GlyphType gt);
+	static GlyphType glyphType(const char* name, bool reportError = 0);
 	static int nGlyphData(GlyphType gt);
 	// Glyph options
 	enum GlyphOption { GlyphColourOption, GlyphSolidOption, GlyphTextOption, GlyphWireOption, nGlyphOptions };
-	static const char *glyphOption(GlyphOption gt);
-	static GlyphOption glyphOption(const char *name, bool reportError = 0);
+	static const char* glyphOption(GlyphOption gt);
+	static GlyphOption glyphOption(const char* name, bool reportError = 0);
 
 	private:
 	// Style of Glyph
@@ -125,9 +133,9 @@ class Glyph : public ListItem<Glyph>
 	// Return style of Glyph
 	GlyphType type() const;
 	// Set text data
-	void setText(const char *s);
+	void setText(const char* s);
 	// Return text data
-	const char *text() const;
+	const char* text() const;
 	// Set colour of all datapoints
 	void setColour(double r, double g, double b, double a = 1.0f);
 	// Return whether glyph has been rotated (whether a rotation matrix exists)
@@ -178,5 +186,7 @@ class Glyph : public ListItem<Glyph>
 	// Return whether the Glyph should be drawn as a solid
 	bool isSolid() const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

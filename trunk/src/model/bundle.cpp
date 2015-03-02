@@ -24,13 +24,15 @@
 #include "math/constants.h"
 #include <stdio.h>
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 Bundle::Bundle()
 {
 	clear();
 }
 
-Bundle::Bundle(Forcefield *ptr)
+Bundle::Bundle(Forcefield* ptr)
 {
 	clear();
 	ff = ptr;
@@ -54,13 +56,13 @@ Bundle::Bundle(Atom* ptr)
 	i = ptr;
 }
 
-Bundle::Bundle(Grid *ptr)
+Bundle::Bundle(Grid* ptr)
 {
 	clear();
 	g = ptr;
 }
 
-Bundle::Bundle(Glyph *ptr)
+Bundle::Bundle(Glyph* ptr)
 {
 	clear();
 	gl = ptr;

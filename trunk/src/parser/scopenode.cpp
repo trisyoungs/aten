@@ -21,11 +21,11 @@
 
 #include "parser/scopenode.h"
 #include "main/aten.h"
-#include "model/model.h"
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Constructor
-ScopeNode::ScopeNode(Command::Function func) : CommandNode(func)
+ScopeNode::ScopeNode(Commands::Function func) : CommandNode(func)
 {
 	// Private variables
 	nodeType_ = TreeNode::ScopedNode;
@@ -44,14 +44,14 @@ void ScopeNode::createGlobalVariables()
 }
 
 // Execute command
-bool ScopeNode::execute(ReturnValue &rv)
+bool ScopeNode::execute(ReturnValue& rv)
 {
 	// Execute the command
-	return aten.commands.call(function_, this, rv);
+	return aten().callCommand(function_, this, rv);
 }
 
 // Set from returnvalue node
-bool ScopeNode::set(ReturnValue &rv)
+bool ScopeNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Trying to 'set' a ScopeNode.\n");
 	return FALSE;
@@ -65,7 +65,7 @@ bool ScopeNode::initialise()
 }
 
 // Print node contents
-void ScopeNode::nodePrint(int offset, const char *prefix)
+void ScopeNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -76,13 +76,13 @@ void ScopeNode::nodePrint(int offset, const char *prefix)
 	// Output node data
 	printf("[SN]%s (Scoped Node) (%i variables)\n", tab.get(), variables.nVariables());
 	int n = 1;
-	for (TreeNode *tn = variables.variables(); tn != NULL; tn = tn->next)
+	for (TreeNode* tn = variables.variables(); tn != NULL; tn = tn->next)
 	{
 		Variable *v = (Variable*) tn;
 		printf("%s --> %3i: %s (%s)\n", tab.get(), n++, v->name(), VTypes::dataType(v->returnType()));
 		if (v->initialValue() != NULL) v->initialValue()->nodePrint(offset+1, "init: ");
 	}
-	printf("[SN]%s%s (Command) (%i arguments)\n", tab.get(), Command::data[function_].keyword, args_.nItems());
+	printf("[SN]%s%s (Command) (%i arguments)\n", tab.get(), Commands::command(function_), args_.nItems());
 	// Output Argument data
-	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
+	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }

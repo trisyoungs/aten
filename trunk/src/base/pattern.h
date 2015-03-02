@@ -27,8 +27,11 @@
 #include "templates/reflist.h"
 #include "math/constants.h"
 #include "base/dnchar.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class EnergyStore;
 class Atom;
 class ForcefieldAtom;
@@ -40,7 +43,7 @@ class Model;
 class Ring;
 class UnitCell;
 
-// Structures to hold/point to forcefield descriptions in patterns.
+// Atom description in Pattern
 class PatternAtom : public ListItem<PatternAtom>
 {
 	public:
@@ -48,8 +51,8 @@ class PatternAtom : public ListItem<PatternAtom>
 	PatternAtom();
 
 	/*
-	// Forcefield and atom data
-	*/
+	 * Forcefield and atom data
+	 */
 	private:
 	// Original FF type of atom
 	ForcefieldAtom* data_;
@@ -73,6 +76,7 @@ class PatternAtom : public ListItem<PatternAtom>
 	void setForcefieldDataId(int id);
 };
 
+// Bond definition in Pattern
 class PatternBound : public ListItem<PatternBound>
 {
 	public:
@@ -82,13 +86,13 @@ class PatternBound : public ListItem<PatternBound>
 	friend class PatternBoundVariable;
 
 	/*
-	// Forcefield term data
-	*/
+	 * Forcefield term data
+	 */
 	private:
 	// Atoms involved in bond (referring to local molecule atom ids)
 	int atomIds_[MAXFFBOUNDTYPES];
 	// Pointer to function data / form
-	ForcefieldBound *data_;
+	ForcefieldBound* data_;
 	// Integer index of local forcefield bound data reference
 	int forcefieldDataId_;
 
@@ -98,16 +102,16 @@ class PatternBound : public ListItem<PatternBound>
 	// Return atom id
 	int atomId(int n) const;
 	// Set function data
-	void setData(ForcefieldBound *ffb);
+	void setData(ForcefieldBound* ffb);
 	// Get function data
-	ForcefieldBound *data();
+	ForcefieldBound* data();
 	// Return integer index of unique bound data reference
 	int forcefieldDataId() const;
 	// Set integer index of unique bound data reference
 	void setForcefieldDataId(int id);
 };
 
-// Pattern Node
+// Pattern
 class Pattern : public ListItem<Pattern>
 {
 	public:
@@ -116,8 +120,8 @@ class Pattern : public ListItem<Pattern>
 	~Pattern();
 
 	/*
-	// Definition
-	*/
+	 * Definition
+	 */
 	private:
 	// Parent model
 	Model* parent_;
@@ -146,7 +150,7 @@ class Pattern : public ListItem<Pattern>
 	// Used in various methods
 	bool fixed_;
 	// Specific forcefield to use (otherwise use model->ffs)
-	Forcefield *forcefield_;
+	Forcefield* forcefield_;
 	// Short name of the pattern (initially set to "n*m")
 	Dnchar name_;
 	// Remove atom from local list
@@ -206,13 +210,13 @@ class Pattern : public ListItem<Pattern>
 	// Returns whether the pattern is fixed
 	bool isFixed() const;
 	// Sets the name of the pattern 
-	void setName(const char *s);
+	void setName(const char* s);
 	// Returns the pattern name
-	const char *name() const;
+	const char* name() const;
 	// Sets the forcefield to use in the pattern
-	void setForcefield(Forcefield *newff);
+	void setForcefield(Forcefield* newff);
 	// Gets the forcefield associated with the pattern
-	Forcefield *forcefield();
+	Forcefield* forcefield();
 	// Returns whether the atomlimit in the pattern is valid
 	bool isAtomLimitOk() const;
 	// Returns whether the element composition in the pattern molecules is uniform
@@ -228,15 +232,15 @@ class Pattern : public ListItem<Pattern>
 
 
 	/*
-	// Expression
-	*/
+	 * Expression
+	 */
 	private:
 	// Connectivity matrix of atoms in one molecule of the pattern
 	int **conMatrix_;
 	// Scaling matrix for VDW interactions between atoms in each molecule
-	double **vdwScaleMatrix_;
+	double** vdwScaleMatrix_;
 	// Scaling matrix for electrostatic interactions between atoms in each molecule
-	double **elecScaleMatrix_;
+	double** elecScaleMatrix_;
 	// Flag for incomplete energy node
 	bool incomplete_;
 	// Flag for no intramolecular terms in expression
@@ -266,21 +270,21 @@ class Pattern : public ListItem<Pattern>
 	// List of dummy torsion terms local to this pattern
 	List<ForcefieldBound> dummyForcefieldTorsions_;
 	// Create (or return existing) dummy bond term for supplied atom types
-	ForcefieldBound *createDummyBond(ForcefieldAtom* i, ForcefieldAtom* j);
+	ForcefieldBound* createDummyBond(ForcefieldAtom* i, ForcefieldAtom* j);
 	// Create (or return existing) angle bond term for supplied atom types
-	ForcefieldBound *createDummyAngle(ForcefieldAtom* i, ForcefieldAtom* j, ForcefieldAtom* k);
+	ForcefieldBound* createDummyAngle(ForcefieldAtom* i, ForcefieldAtom* j, ForcefieldAtom* k);
 	// Create (or return existing) angle bond term for supplied atom types
-	ForcefieldBound *createDummyTorsion(ForcefieldAtom* i, ForcefieldAtom* j, ForcefieldAtom* k, ForcefieldAtom* l);
+	ForcefieldBound* createDummyTorsion(ForcefieldAtom* i, ForcefieldAtom* j, ForcefieldAtom* k, ForcefieldAtom* l);
 	// Flag whether to create dummy terms for missing intramolecular parameters
 	bool addDummyTerms_;
 	// Add atom data
 	void addAtomData(Atom* i, ForcefieldAtom* ffa);
 	// Add bond data
-	void addBondData(ForcefieldBound *ffb, int i, int j);
+	void addBondData(ForcefieldBound* ffb, int i, int j);
 	// Add angle data
-	void addAngleData(ForcefieldBound *ffb, int i, int j, int k);
+	void addAngleData(ForcefieldBound* ffb, int i, int j, int k);
 	// Add torsion data
-	void addTorsionData(ForcefieldBound *ffb, int i, int j, int k, int l);
+	void addTorsionData(ForcefieldBound* ffb, int i, int j, int k, int l);
 	// Whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool atomsFixed_;
 
@@ -288,7 +292,7 @@ class Pattern : public ListItem<Pattern>
 	// Empty the arrays of the energy expression
 	void deleteExpression();
 	// Create the shell of the energy expression
-	bool createExpression(bool vdwOnly = FALSE, bool allowDummy = FALSE);
+	bool createExpression(bool vdwOnly = FALSE, bool allowDummy = FALSE, Forcefield* defaultForcefield = NULL);
 	// Create the connectivity and scaling matrices
 	void createMatrices();
 	// Update scaling matrices
@@ -300,17 +304,17 @@ class Pattern : public ListItem<Pattern>
 	// Return number of torsions in one molecule of the pattern
 	int nTorsions() const;
 	// Return first bond of the pattern
-	PatternBound *bonds();
+	PatternBound* bonds();
 	// Return first angle of the pattern
-	PatternBound *angles();
+	PatternBound* angles();
 	// Return first torsion of the pattern
-	PatternBound *torsions();
+	PatternBound* torsions();
 	// Return selected bond of the pattern
-	PatternBound *bond(int i);
+	PatternBound* bond(int i);
 	// Return selected angle of the pattern
-	PatternBound *angle(int i);
+	PatternBound* angle(int i);
 	// Return selected torsion of the pattern
-	PatternBound *torsion(int i);
+	PatternBound* torsion(int i);
 	// Return number of unique bonds used in the pattern
 	int nForcefieldBonds() const;
 	// Return number of forcefield angles used in the pattern
@@ -320,21 +324,21 @@ class Pattern : public ListItem<Pattern>
 	// Return number of forcefield types used in the pattern
 	int nUniqueForcefieldTypes() const;
 	// Return first forcefield bond of the pattern
-	Refitem<ForcefieldBound,int> *forcefieldBonds();
+	Refitem<ForcefieldBound,int>* forcefieldBonds();
 	// Return first forcefield angle of the pattern
-	Refitem<ForcefieldBound,int> *forcefieldAngles();
+	Refitem<ForcefieldBound,int>* forcefieldAngles();
 	// Return first forcefield torsion of the pattern
-	Refitem<ForcefieldBound,int> *forcefieldTorsions();
+	Refitem<ForcefieldBound,int>* forcefieldTorsions();
 	// Return first (unique by name) forcefield type of the pattern
 	Refitem<ForcefieldAtom,int> *uniqueForcefieldTypes();
 	// Return first (unique by pointer) forcefield type of the pattern
 	Refitem<ForcefieldAtom,int> *allForcefieldTypes();
 	// Return selected forcefield bond of the pattern
-	Refitem<ForcefieldBound,int> *forcefieldBond(int i);
+	Refitem<ForcefieldBound,int>* forcefieldBond(int i);
 	// Return selected forcefield angle of the pattern
-	Refitem<ForcefieldBound,int> *forcefieldAngle(int i);
+	Refitem<ForcefieldBound,int>* forcefieldAngle(int i);
 	// Return selected forcefield torsion of the pattern
-	Refitem<ForcefieldBound,int> *forcefieldTorsion(int i);
+	Refitem<ForcefieldBound,int>* forcefieldTorsion(int i);
 	// Return selected (unique by name) forcefield type of the pattern
 	Refitem<ForcefieldAtom,int> *uniqueForcefieldType(int i);
 	// Return selected (unique by pointer) forcefield type of the pattern
@@ -348,33 +352,33 @@ class Pattern : public ListItem<Pattern>
 
 
 	/*
-	// Energy / Force Calculation
-	*/
+	 * Energy / Force Calculation
+	 */
 	public:
 	// Calculate bond energy of pattern (or specific molecule)
-	void bondEnergy(Model* source, EnergyStore *estore, int molecule = -1);
+	void bondEnergy(Model* source, EnergyStore* estore, int molecule = -1);
 	// Calculate angle energy of pattern (or specific molecule)
-	void angleEnergy(Model* source, EnergyStore *estore, int molecule = -1);
+	void angleEnergy(Model* source, EnergyStore* estore, int molecule = -1);
 	// Calculate torsion energy (including impropers) of pattern (or specific molecule)
-	void torsionEnergy(Model* source, EnergyStore *estore, int molecule = -1);
+	void torsionEnergy(Model* source, EnergyStore* estore, int molecule = -1);
 	// Calculate intrapattern Vdw energy (or for specific molecule)
-	bool vdwIntraPatternEnergy(Model* source, EnergyStore *estore, int molecule = -1);
+	bool vdwIntraPatternEnergy(Model* source, EnergyStore* estore, int molecule = -1);
 	// Calculate interpattern Vdw energy (or for specific molecule)
-	bool vdwInterPatternEnergy(Model* source, Pattern* other, EnergyStore *estore, int molecule = -1);
+	bool vdwInterPatternEnergy(Model* source, Pattern* other, EnergyStore* estore, int molecule = -1);
 	// Calculate Vdw correction energy for pattern
-	bool vdwCorrectEnergy(UnitCell *cell, EnergyStore *estore);
+	bool vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore);
 	// Calculate intrapattern coulomb energy (or for specific molecule)
-	void coulombIntraPatternEnergy(Model* source, EnergyStore *estore, int molecule = -1);
+	void coulombIntraPatternEnergy(Model* source, EnergyStore* estore, int molecule = -1);
 	// Calculate interpattern coulomb energy (or for specific molecule)
-	void coulombInterPatternEnergy(Model* source, Pattern* other, EnergyStore *estore, int molecule = -1);
+	void coulombInterPatternEnergy(Model* source, Pattern* other, EnergyStore* estore, int molecule = -1);
 	// Calculate intrapattern real-space Ewald energy (or for specific molecule)
-	void ewaldRealIntraPatternEnergy(Model* source, EnergyStore *estore, int molecule = -1);
+	void ewaldRealIntraPatternEnergy(Model* source, EnergyStore* estore, int molecule = -1);
 	// Calculate interpattern real-space Ewald energy (or for specific molecule)
-	void ewaldRealInterPatternEnergy(Model* source, Pattern* other, EnergyStore *estore, int molecule = -1);
+	void ewaldRealInterPatternEnergy(Model* source, Pattern* other, EnergyStore* estore, int molecule = -1);
 	// Calculate reciprocal-space Ewald energy (or for specific molecule)
-	void ewaldReciprocalEnergy(Model* source, Pattern* other, int, EnergyStore *estore, int molecule = -1);
+	void ewaldReciprocalEnergy(Model* source, Pattern* other, int, EnergyStore* estore, int molecule = -1);
 	// Calculate Ewald correction energy (or for specific molecule)
-	void ewaldCorrectEnergy(Model* source, EnergyStore *estore, int molecule = -1);
+	void ewaldCorrectEnergy(Model* source, EnergyStore* estore, int molecule = -1);
 	// Calculate bond forces in pattern
 	void bondForces(Model* source);
 	// Calculate angle forces in pattern
@@ -400,8 +404,8 @@ class Pattern : public ListItem<Pattern>
 
 
 	/*
-	// Typing
-	*/
+	 * Typing
+	 */
 	private:
 	// List of rings in one molecule of the pattern
 	List<Ring> rings_;
@@ -436,8 +440,8 @@ class Pattern : public ListItem<Pattern>
 
 
 	/*
-	// Propagation / Selectors
-	*/
+	 * Propagation / Selectors
+	 */
 	public:
 	// Copy atomtypes for first molecule to all other molecules
 	void propagateAtomtypes();
@@ -448,13 +452,15 @@ class Pattern : public ListItem<Pattern>
 
 
 	/*
-	// Properties
-	*/
+	 * Properties
+	 */
 	public:
 	// Calculate centre of geometry of molecule in specified config
 	Vec3<double> calculateCog(int, Model* source = NULL);
 	// Calculate centre of mass of molecule in specified config
 	Vec3<double> calculateCom(int, Model* source = NULL);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

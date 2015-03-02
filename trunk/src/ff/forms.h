@@ -24,6 +24,9 @@
 
 #include "math/constants.h"
 #include "parser/program.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Combination Rule Data
 class Combine
@@ -31,9 +34,9 @@ class Combine
 	public:
 	// Combination rules
 	enum CombinationRule { ArithmeticRule, GeometricRule, CustomRule1, CustomRule2, CustomRule3, nCombinationRules };
-	static CombinationRule combinationRule(const char *name, bool reportError = 0);
-	static const char *combinationRule(CombinationRule cr);
-	static const char *combinationRuleName(CombinationRule cr);
+	static CombinationRule combinationRule(const char* name, bool reportError = 0);
+	static const char* combinationRule(CombinationRule cr);
+	static const char* combinationRuleName(CombinationRule cr);
 
 	/*
 	// Functions
@@ -52,15 +55,15 @@ class FunctionData
 {
 	public:
 	// Long name of the function
-	const char *name;
+	const char* name;
 	// Keyword name for the function
-	const char *keyword;
+	const char* keyword;
 	// Number of parameters used (including optional params)
 	int nParameters;
 	// Parameter names
-	const char *parameters[MAXFFPARAMDATA];
+	const char* parameters[MAXFFPARAMDATA];
 	// Parameter keywords
-	const char *parameterKeywords[MAXFFPARAMDATA];
+	const char* parameterKeywords[MAXFFPARAMDATA];
 	// Flag indicating energetic parameter
 	bool isEnergyParameter[MAXFFPARAMDATA];
 	// Default values for parameters
@@ -74,8 +77,8 @@ namespace VdwFunctions
 {
 	enum VdwFunction { None, InversePower, Lj, LjGeometric, LjAB, Buckingham, Morse, nVdwFunctions };
 	extern FunctionData VdwFunctions[];
-	VdwFunction vdwFunction(const char *s, bool reportError = FALSE);
-	int vdwParameter(VdwFunction, const char *s, bool reportError = FALSE);
+	VdwFunction vdwFunction(const char* s, bool reportError = FALSE);
+	int vdwParameter(VdwFunction, const char* s, bool reportError = FALSE);
 	void printValid();
 	enum LjParameter { LjEpsilon, LjSigma };
 	enum LjABParameter { LjA, LjB };
@@ -89,8 +92,8 @@ namespace BondFunctions
 {
 	enum BondFunction { None, Ignore, Constraint, Harmonic, Morse, nBondFunctions };
 	extern FunctionData BondFunctions[];
-	BondFunction bondFunction(const char *s, bool reportError = FALSE);
-	int bondParameter(BondFunction, const char *s, bool reportError = FALSE);
+	BondFunction bondFunction(const char* s, bool reportError = FALSE);
+	int bondParameter(BondFunction, const char* s, bool reportError = FALSE);
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum ConstraintParameter { ConstraintK, ConstraintEq };
@@ -102,8 +105,8 @@ namespace AngleFunctions
 {
 	enum AngleFunction { None, Ignore, Harmonic, Cosine, Cos2, HarmonicCosine, BondConstraint, nAngleFunctions };
 	extern FunctionData AngleFunctions[];
-	AngleFunction angleFunction(const char *s, bool reportError = FALSE);
-	int angleParameter(AngleFunction, const char *s, bool reportError = FALSE);
+	AngleFunction angleFunction(const char* s, bool reportError = FALSE);
+	int angleParameter(AngleFunction, const char* s, bool reportError = FALSE);
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
@@ -117,8 +120,8 @@ namespace TorsionFunctions
 {
 	enum TorsionFunction { None, Ignore, Cosine, Cos3, Cos4, Cos3C, CosCos, Dreiding, Pol9, nTorsionFunctions };
 	extern FunctionData TorsionFunctions[];
-	TorsionFunction torsionFunction(const char *s, bool reportError = FALSE);
-	int torsionParameter(TorsionFunction, const char *s, bool reportError = FALSE);
+	TorsionFunction torsionFunction(const char* s, bool reportError = FALSE);
+	int torsionParameter(TorsionFunction, const char* s, bool reportError = FALSE);
 	void printValid();
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
 	enum Cos3Parameter { Cos3K1, Cos3K2, Cos3K3 };
@@ -134,8 +137,10 @@ namespace Electrostatics
 {
 	// Electrostatic model
 	enum ElecMethod { None, Coulomb, Ewald, EwaldAuto, nElectrostatics };
-	const char *elecMethod(ElecMethod);
-	ElecMethod elecMethod(const char *name, bool reportError = FALSE);
+	const char* elecMethod(ElecMethod);
+	ElecMethod elecMethod(const char* name, bool reportError = FALSE);
 }
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -21,13 +21,15 @@
 
 #include "base/atomaddress.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
-Atomaddress::Atomaddress()
+AtomAddress::AtomAddress()
 {
 }
 
 // Destructor
-Atomaddress::~Atomaddress()
+AtomAddress::~AtomAddress()
 {
 }
 
@@ -36,37 +38,37 @@ Atomaddress::~Atomaddress()
 */
 
 // Set the local molecule offset of the atom
-void Atomaddress::setOffset(int i)
+void AtomAddress::setOffset(int i)
 {
 	offset_ = i;
 }
 
 // Returns the local molecule offset of the atom
-int Atomaddress::getOffset()
+int AtomAddress::getOffset()
 {
 	return offset_;
 }
 
 // Set the molecule id of the atom
-void Atomaddress::setMolecule(int i)
+void AtomAddress::setMolecule(int i)
 {
 	molecule_ = i;
 }
 
 // Returns the molecule the atom is in
-int Atomaddress::molecule()
+int AtomAddress::molecule()
 {
 	return molecule_;
 }
 
 // Set the pattern pointer for the atom
-void Atomaddress::setPattern(Pattern* p)
+void AtomAddress::setPattern(Pattern* p)
 {
 	pattern_ = p;
 }
 
 // Returns the current pattern for the atom
-Pattern* Atomaddress::pattern()
+Pattern* AtomAddress::pattern()
 {
 	return pattern_;
 }

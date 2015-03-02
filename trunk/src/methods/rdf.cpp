@@ -21,8 +21,10 @@
 
 #include "methods/rdf.h"
 #include "model/model.h"
-#include "classes/site.h"
+#include "base/site.h"
 #include "base/pattern.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 Rdf::Rdf()
@@ -65,14 +67,14 @@ int Rdf::nBins()
 }
 
 // Set site
-void Rdf::setSite(int i, Site *s)
+void Rdf::setSite(int i, Site* s)
 {
 	if (i < 2) sites_[i] = s;
 	else printf("OUTOFRANGE:Rdf::set_site\n");
 }
 
 // Get site
-Site *Rdf::site(int i)
+Site* Rdf::site(int i)
 {
 	if (i < 2) return sites_[i];
 	else printf("OUTOFRANGE:Rdf::set_site\n");
@@ -92,30 +94,30 @@ void Rdf::setRange(double d, double w, int n)
 // Initialise structure
 bool Rdf::initialise()
 {
-	msg.enter("Rdf::initialise");
+	Messenger::enter("Rdf::initialise");
 	// Check site definitions....
 	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
-		msg.print("Rdf::initialise - At least one site has NULL value.\n");
-		msg.exit("Rdf::initialise");
+		Messenger::print("Rdf::initialise - At least one site has NULL value.\n");
+		Messenger::exit("Rdf::initialise");
 		return FALSE;
 	}
 	// Create the data_ arrays
 	data_ = new double[nBins_];
 	for (int n=0; n<nBins_; n++) data_[n] = 0.0;
-	msg.print("There are %i bins in rdf '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
+	Messenger::print("There are %i bins in rdf '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
 	nAdded_ = 0;
-	msg.exit("Rdf::initialise");
+	Messenger::exit("Rdf::initialise");
 	return TRUE;
 }
 
 // Accumulate quantity data_ from supplied model
 void Rdf::accumulate(Model* sourcemodel)
 {
-	msg.enter("Rdf::accumulate");
+	Messenger::enter("Rdf::accumulate");
 	int m1, m2, bin;
 	static Vec3<double> centre1, centre2, mimd;
-	UnitCell *cell = sourcemodel->cell();
+	UnitCell* cell = sourcemodel->cell();
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{
@@ -135,13 +137,13 @@ void Rdf::accumulate(Model* sourcemodel)
 	}
 	// Increase nAdded_umulation counter
 	nAdded_ ++;
-	msg.exit("Rdf::accumulate");
+	Messenger::exit("Rdf::accumulate");
 }
 
 // Finalise
 void Rdf::finalise(Model* sourcemodel)
 {
-	msg.enter("Rdf::finalise");
+	Messenger::enter("Rdf::finalise");
 	int n;
 	double factor, r1, r2, numDensity;
 	// Normalise the rdf w.r.t. number of frames and number of central molecules
@@ -156,7 +158,7 @@ void Rdf::finalise(Model* sourcemodel)
 		data_[n] /= factor;
 
 	}
-	msg.exit("Rdf::finalise");
+	Messenger::exit("Rdf::finalise");
 }
 
 // Save RDF data_

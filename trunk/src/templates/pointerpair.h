@@ -29,7 +29,7 @@ template <class T, class D> class PointerPair : public ListItem< PointerPair<T,D
 {
 	public:
 	// Constructor / Destructor
-	PointerPair<T,D>(T *ptr1, T *ptr2, int size);
+	PointerPair<T,D>(T* ptr1, T* ptr2, int size);
 	~PointerPair();
 	
 	/*
@@ -45,9 +45,9 @@ template <class T, class D> class PointerPair : public ListItem< PointerPair<T,D
 
 	public:
 	// Return first pointer of pair
-	T *ptr1();
+	T* ptr1();
 	// Return second pointer of pair
-	T *ptr2();
+	T* ptr2();
 	// Set data member
 	void setData(int id, D value);
 	// Return data member
@@ -75,9 +75,9 @@ template <class T, class D> class PairTable
 	// Clear all members
 	void clear();
 	// Add data member
-	PointerPair<T,D> *add(T *ptr1, T *ptr2, int size);
+	PointerPair<T,D> *add(T* ptr1, T* ptr2, int size);
 	// Search for data member
-	PointerPair<T,D> *find(T *ptr1, T *ptr2) const;
+	PointerPair<T,D> *find(T* ptr1, T* ptr2) const;
 };
 
 /*
@@ -160,7 +160,7 @@ template <class T, class D> void PairTable<T,D>::clear()
 }
 
 // Add data member
-template <class T, class D> PointerPair<T,D> *PairTable<T,D>::add(T *ptr1, T *ptr2, int size)
+template <class T, class D> PointerPair<T,D> *PairTable<T,D>::add(T* ptr1, T* ptr2, int size)
 {
 	// Create new data member
 	PointerPair<T,D> *pp = new PointerPair<T,D>(ptr1,ptr2,size);
@@ -169,7 +169,7 @@ template <class T, class D> PointerPair<T,D> *PairTable<T,D>::add(T *ptr1, T *pt
 }
 
 // Search for data member
-template <class T, class D> PointerPair<T,D> *PairTable<T,D>::find(T *ptr1, T *ptr2) const
+template <class T, class D> PointerPair<T,D> *PairTable<T,D>::find(T* ptr1, T* ptr2) const
 {
 	PointerPair<T,D> *pp;
 	for (pp = data_.first(); pp != NULL; pp = pp->next)

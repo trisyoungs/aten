@@ -44,7 +44,7 @@ void AtenZMatrix::showWidget()
 // Refresh the zmatrix
 void AtenZMatrix::refresh(bool forceupdate)
 {
-	msg.enter("AtenZMatrix::refresh");
+	Messenger::enter("AtenZMatrix::refresh");
 
 	// Grab (and create) zmatrix for current model
 	Model* m = parent_.aten().currentModelOrFrame();
@@ -59,7 +59,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 	ui.ZMatrixTable->setRowCount(zMatrix_->nElements());
 	ui.ZMatrixTable->setColumnCount(AtenZMatrix::nColumns);
 	ui.ZMatrixTable->setHorizontalHeaderLabels(QStringList() << "El" << "Id" << "D" << "Id" << "A" << "Id" << "T");
-	for (ZMatrixElement *zel = zMatrix_->elements(); zel != NULL; zel = zel->next)
+	for (ZMatrixElement* zel = zMatrix_->elements(); zel != NULL; zel = zel->next)
 	{
 		// First atom (the creation target)
 		i = zel->atom(0);
@@ -136,14 +136,14 @@ void AtenZMatrix::refresh(bool forceupdate)
 	}
 	for (count=0; count<2; count++) ui.VariablesTable->resizeColumnToContents(count);
 	refreshing_ = FALSE;
-	msg.exit("AtenZMatrix::refresh");
+	Messenger::exit("AtenZMatrix::refresh");
 }
 
 void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 {
 	if (refreshing_) return;
 	Variable *newvar, *oldvar;
-	ZMatrixElement *el;
+	ZMatrixElement* el;
 	bool changed = FALSE;
 
 	// Create a variable selection dialog ready...
@@ -249,7 +249,7 @@ void AtenZMatrix::on_ShiftUpButton_clicked(bool checked)
 	if (row == -1) return;
 	zMatrix_->parent()->selectNone();
 	zMatrix_->parent()->selectAtom(row);
-	CommandNode::run(Command::ShiftUp, "i", 1);
+	CommandNode::run(Commands::ShiftUp, "i", 1);
 	refresh();
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
@@ -260,7 +260,7 @@ void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
 	if (row == -1) return;
 	zMatrix_->parent()->selectNone();
 	zMatrix_->parent()->selectAtom(row);
-	CommandNode::run(Command::ShiftDown, "i", 1);
+	CommandNode::run(Commands::ShiftDown, "i", 1);
 	refresh();
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
@@ -271,7 +271,7 @@ void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
 	if (row == -1) return;
 	zMatrix_->parent()->selectNone();
 	zMatrix_->parent()->selectAtom(row);
-	CommandNode::run(Command::MoveToStart, "");
+	CommandNode::run(Commands::MoveToStart, "");
 	refresh();
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
@@ -282,7 +282,7 @@ void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
 	if (row == -1) return;
 	zMatrix_->parent()->selectNone();
 	zMatrix_->parent()->selectAtom(row);
-	CommandNode::run(Command::MoveToEnd, "");
+	CommandNode::run(Commands::MoveToEnd, "");
 	refresh();
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }

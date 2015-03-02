@@ -21,17 +21,18 @@
 
 #include "parser/commandnode.h"
 #include "parser/usercommandnode.h"
-#include "parser/atom.h"
-#include "parser/variable.h"
-#include "command/commands.h"
+#include "model/bundle.h"
 #include "model/model.h"
-#include "ff/forcefield.h"
-#include "classes/forcefieldatom.h"
-#include "parser/character.h"
 #include "base/pattern.h"
+#include "parser/atom.h"
+#include "ff/forcefield.h"
+#include "base/forcefieldatom.h"
+#include "parser/character.h"
 #include "base/sysfunc.h"
 
-bool selectAtoms(Model* m, TreeNode *node, bool deselect)
+ATEN_USING_NAMESPACE
+
+bool selectAtoms(Model* m, TreeNode* node, bool deselect)
 {
 	static Dnchar from, to;
 	int i, j, n, plus = 0;
@@ -49,7 +50,7 @@ bool selectAtoms(Model* m, TreeNode *node, bool deselect)
 	}
 	else if (value.type() == VTypes::ElementData)
 	{
-		Element *elem = (Element*) value.asPointer(VTypes::ElementData);
+		Element* elem = (Element*) value.asPointer(VTypes::ElementData);
 		if (elem == NULL) return FALSE;
 		m->beginUndoState("%select element (%s)", deselect ? "Des" : "S", elem->symbol);
 		deselect ? m->deselectElement(elem->z) : m->selectElement(elem->z);
@@ -78,7 +79,7 @@ bool selectAtoms(Model* m, TreeNode *node, bool deselect)
 				// Arguments for ranges cannot have '+' in them
 				if ((from.strchr('+')) || (to.strchr('+')))
 				{
-					msg.print("Range symbol (+) cannot be given in static range X-Y (input was '%s-%s').\n", from.get(), to.get());
+					Messenger::print("Range symbol (+) cannot be given in static range X-Y (input was '%s-%s').\n", from.get(), to.get());
 					return FALSE;
 				}
 			}
@@ -91,7 +92,7 @@ bool selectAtoms(Model* m, TreeNode *node, bool deselect)
 				else if (from.lastChar() == '+') plus = 1;
 				else
 				{
-					msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from.get());
+					Messenger::print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from.get());
 					return FALSE;
 				}
 			}
@@ -112,7 +113,7 @@ bool selectAtoms(Model* m, TreeNode *node, bool deselect)
 					i = Elements().find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
-						msg.print("Unrecognised element (%s) in select.\n", from.get());
+						Messenger::print("Unrecognised element (%s) in select.\n", from.get());
 						return FALSE;
 					}
 					if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
@@ -134,13 +135,13 @@ bool selectAtoms(Model* m, TreeNode *node, bool deselect)
 					i = Elements().find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
-						msg.print("Unrecognised element (%s) on left-hand side of range.\n", from.get());
+						Messenger::print("Unrecognised element (%s) on left-hand side of range.\n", from.get());
 						return FALSE;
 					}
 					j = Elements().find(to, ElementMap::AlphaZMap);
 					if (j == 0)
 					{
-						msg.print("Unrecognised element (%s) on right-hand side of range.\n", to.get());
+						Messenger::print("Unrecognised element (%s) on right-hand side of range.\n", to.get());
 						return FALSE;
 					}
 					for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
@@ -151,14 +152,14 @@ bool selectAtoms(Model* m, TreeNode *node, bool deselect)
 	}
 	else
 	{
-		msg.print("Cannot (de)select atoms based on supplied %s.\n", VTypes::dataType(value.type()));
+		Messenger::print("Cannot (de)select atoms based on supplied %s.\n", VTypes::dataType(value.type()));
 		return FALSE;
 	}
 	return TRUE;
 }
 
 // Deselect atom, range of atoms, or elements ('deselect <n>')
-bool Command::function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_DeSelect(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
@@ -171,7 +172,7 @@ bool Command::function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Deselect using conditional code
-bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_DeSelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
@@ -181,7 +182,7 @@ bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Program program;
 	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
 	{
-		msg.print("Error: Couldn't construct selection code.\n");
+		Messenger::print("Error: Couldn't construct selection code.\n");
 		rv.reset();
 		return FALSE;
 	}
@@ -190,7 +191,7 @@ bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Tree* function = program.mainProgram()->findLocalFunction("internalDeselectAtom");
 	if (function == NULL)
 	{
-		msg.print("Internal Error: Couldn't find generated deselection function.\n");
+		Messenger::print("Internal Error: Couldn't find generated deselection function.\n");
 		return FALSE;
 	}
 	Tree tree;
@@ -214,17 +215,17 @@ bool Command::function_DeSelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Deselect by formatted string
-bool Command::function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
 	int nselected = obj.rs()->nSelected();
 	bool result = TRUE;
 	// Write formatted string, then pass this to select()
-	Format *format = c->createFormat(0,1);
+	Format* format = c->createFormat(0,1);
 	if (!format->writeToString())
 	{
-		msg.print("Failed to format string for output.\n");
+		Messenger::print("Failed to format string for output.\n");
 		return FALSE;
 	}
 	LineParser parser;
@@ -239,7 +240,7 @@ bool Command::function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValu
 }
 
 // Deselect by supplied atom type description ('deselecttype <el> <typedesc>')
-bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_DeSelectType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
@@ -256,13 +257,13 @@ bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv
 			return TRUE;
 		}
 	}
-	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
+	else Messenger::print("Can't test atomtype description without a valid pattern definition!\n");
 	rv.reset();
 	return FALSE;
 }
 
 // Expand current selection
-bool Command::function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Expand(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Expand current selection");
@@ -275,7 +276,7 @@ bool Command::function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Invert selection
-bool Command::function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Invert(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Invert selection");
@@ -286,7 +287,7 @@ bool Command::function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Select all ('selectall')
-bool Command::function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectAll(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Select all atoms");
@@ -297,7 +298,7 @@ bool Command::function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Select atom, range of atoms, or elements ('select <n>')
-bool Command::function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Select(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
@@ -310,7 +311,7 @@ bool Command::function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Get selection centre of geometry ('selectioncog')
-bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectionCog(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> v = obj.rs()->selectionCentreOfGeometry();
@@ -319,7 +320,7 @@ bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Get selection centre of mass ('selectioncom')
-bool Command::function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectionCom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> v = obj.rs()->selectionCentreOfMass();
@@ -328,13 +329,13 @@ bool Command::function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Select by forcefield type ('selecffttype <fftype>')
-bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectFFType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Forcefield *ff = obj.rs()->forcefield();
+	Forcefield* ff = obj.rs()->forcefield();
 	if (ff == NULL)
 	{
-		msg.print("No forcefield associated to model.\n");
+		Messenger::print("No forcefield associated to model.\n");
 		return FALSE;
 	}
 	// Store current number of selected atoms
@@ -355,7 +356,7 @@ bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Select using conditional code
-bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
@@ -364,7 +365,7 @@ bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Program program;
 	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
 	{
-		msg.print("Error: Couldn't construct selection code.\n");
+		Messenger::print("Error: Couldn't construct selection code.\n");
 		rv.reset();
 		return FALSE;
 	}
@@ -372,7 +373,7 @@ bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Tree* function = program.mainProgram()->findLocalFunction("internalSelectAtom");
 	if (function == NULL)
 	{
-		msg.print("Internal Error: Couldn't find generated selection function.\n");
+		Messenger::print("Internal Error: Couldn't find generated selection function.\n");
 		return FALSE;
 	}
 	Tree tree;
@@ -396,17 +397,17 @@ bool Command::function_SelectFor(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Select by formatted string
-bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
 	int nselected = obj.rs()->nSelected();
 	bool result = TRUE;
 	// Write formatted string, then pass this to select()
-	Format *format = c->createFormat(0,1);
+	Format* format = c->createFormat(0,1);
 	if (!format->writeToString())
 	{
-		msg.print("Failed to format string for output.\n");
+		Messenger::print("Failed to format string for output.\n");
 		return FALSE;
 	}
 	LineParser parser;
@@ -421,7 +422,7 @@ bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue 
 }
 
 // Select atoms (or molecule COGs) inside the current unit cell
-bool Command::function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectInsideCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
@@ -433,7 +434,7 @@ bool Command::function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue
 }
 
 // Select atoms based on Miller plane definition
-bool Command::function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectMiller(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Select atoms from Miller plane (%i%i%i)", c->argi(0), c->argi(1), c->argi(2));	
@@ -445,7 +446,7 @@ bool Command::function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Select bound fragment or molecule
-bool Command::function_SelectMolecule(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectMolecule(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
@@ -458,7 +459,7 @@ bool Command::function_SelectMolecule(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Select atoms near to defined line
-bool Command::function_SelectLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectLine(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
@@ -470,7 +471,7 @@ bool Command::function_SelectLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Select no atoms ('selectnone')
-bool Command::function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectNone(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Deselect all atoms");
@@ -481,7 +482,7 @@ bool Command::function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Detect and select overlapping atoms
-bool Command::function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectOverlaps(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double tol = c->hasArg(0) ? c->argd(0) : 0.2;
@@ -493,7 +494,7 @@ bool Command::function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Select atoms (or molecule COGs) outside of the current unit cell
-bool Command::function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectOutsideCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs()->nSelected();
@@ -505,7 +506,7 @@ bool Command::function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValu
 }
 
 // Select all atoms in current (or named/id'd) pattern ('selectpattern [name|id]')
-bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectPattern(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Pattern* p = NULL;
@@ -516,7 +517,7 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 	}
 	else p = obj.p;
 	int nselected = obj.rs()->nSelected();
-	if (p == NULL) msg.print("No pattern in which to select atoms.\n");
+	if (p == NULL) Messenger::print("No pattern in which to select atoms.\n");
 	else
 	{
 		obj.rs()->beginUndoState("Select pattern '%s'", p->name());
@@ -533,7 +534,7 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Select all atoms within a distance of target atom
-bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectRadial(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
@@ -547,7 +548,7 @@ bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Select all atoms within a distance of target atom
-bool Command::function_SelectTree(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectTree(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
@@ -562,7 +563,7 @@ bool Command::function_SelectTree(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
-bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs()->createPatterns())
@@ -578,7 +579,7 @@ bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			return TRUE;
 		}
 	}
-	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
+	else Messenger::print("Can't test atomtype description without a valid pattern definition!\n");
 	rv.reset();
 	return FALSE;
 }

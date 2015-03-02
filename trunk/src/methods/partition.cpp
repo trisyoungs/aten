@@ -23,9 +23,11 @@
 #include "parser/double.h"
 #include "parser/usercommandnode.h"
 #include "model/model.h"
-#include "base/mathfunc.h"
+#include "math/mathfunc.h"
 #include "base/progress.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 /*
 // Partition Cell Data
@@ -80,13 +82,13 @@ int PartitionData::id()
 }
 
 // Set name of partition
-void PartitionData::setName(const char *s)
+void PartitionData::setName(const char* s)
 {
 	name_ = s;
 }
 
 // Return name of partition
-const char *PartitionData::name()
+const char* PartitionData::name()
 {
 	return name_.get();
 }
@@ -244,7 +246,7 @@ Program &PartitioningScheme::schemeDefinition()
 // Setup scheme information from generated program structure
 bool PartitioningScheme::initialiseFromProgram()
 {
-	msg.enter("PartitioningScheme::initialiseFromProgram");
+	Messenger::enter("PartitioningScheme::initialiseFromProgram");
 
 	ReturnValue rv;
 	bool success;
@@ -261,7 +263,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	}
 	else
 	{
-		msg.print("No 'name' variable defined in this partitioning scheme.\n");
+		Messenger::print("No 'name' variable defined in this partitioning scheme.\n");
 		name_ = "???";
 	}
 
@@ -275,7 +277,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	}
 	else
 	{
-		msg.print("No 'description' variable defined in this partitioning scheme.\n");
+		Messenger::print("No 'description' variable defined in this partitioning scheme.\n");
 		description_ = "???";
 	}
 
@@ -283,18 +285,18 @@ bool PartitioningScheme::initialiseFromProgram()
 	v = schemeDefinition_.mainProgram()->findLocalVariable("nPartitions", scopelevel);
 	if (v == NULL)
 	{
-		msg.print("Error: No 'nPartitions' variable defined in partitioning scheme '%s'\n", name_.get());
-		msg.exit("PartitioningScheme::initialiseFromProgram");
+		Messenger::print("Error: No 'nPartitions' variable defined in partitioning scheme '%s'\n", name_.get());
+		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
-	msg.print(Messenger::Verbose, "  --> Found 'nPartitions' variable in partitioning scheme '%s'.\n", name_.get());
+	Messenger::print(Messenger::Verbose, "  --> Found 'nPartitions' variable in partitioning scheme '%s'.\n", name_.get());
 	v->initialise();
 	success = v->execute(rv);
 	nparts  = rv.asInteger();
 	if (nparts < 1)
 	{
-		msg.print("Error: Invalid 'nPartitions' (%i) found in partitioning scheme '%s'\n", nparts, name_.get());
-		msg.exit("PartitioningScheme::initialiseFromProgram");
+		Messenger::print("Error: Invalid 'nPartitions' (%i) found in partitioning scheme '%s'\n", nparts, name_.get());
+		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	
@@ -303,22 +305,22 @@ bool PartitioningScheme::initialiseFromProgram()
 	
 	// Locate 'partition' function
 	partitionFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partition");
-	if (partitionFunction_) msg.print(Messenger::Verbose, "  --> Found 'partition' function in partitioning scheme '%s'.\n", name_.get());
+	if (partitionFunction_) Messenger::print(Messenger::Verbose, "  --> Found 'partition' function in partitioning scheme '%s'.\n", name_.get());
 	else
 	{
-		msg.print("Error: No 'partition' function defined in partitioning scheme '%s'\n", name_.get());
-		msg.exit("PartitioningScheme::initialiseFromProgram");
+		Messenger::print("Error: No 'partition' function defined in partitioning scheme '%s'\n", name_.get());
+		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	partitionFunctionNode_.setFunction(partitionFunction_);
 
 	// Locate 'partitionName' function
 	partitionNameFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partitionName");
-	if (partitionNameFunction_) msg.print(Messenger::Verbose, "  --> Found 'partitionName' function in partitioning scheme '%s'.\n", name_.get());
+	if (partitionNameFunction_) Messenger::print(Messenger::Verbose, "  --> Found 'partitionName' function in partitioning scheme '%s'.\n", name_.get());
 	else
 	{
-		msg.print("Error: No 'partitionName' function defined in partitioning scheme '%s'\n", name_.get());
-		msg.exit("PartitioningScheme::initialiseFromProgram");
+		Messenger::print("Error: No 'partitionName' function defined in partitioning scheme '%s'\n", name_.get());
+		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 	partitionNameNode_.setFunction(partitionNameFunction_);
@@ -327,7 +329,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	partitionOptionsFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partitionOptions");
 	if (partitionOptionsFunction_)
 	{
-		msg.print(Messenger::Verbose, "  --> Found 'partitionOptions' function in partitioning scheme '%s'.\n", name_.get());
+		Messenger::print(Messenger::Verbose, "  --> Found 'partitionOptions' function in partitioning scheme '%s'.\n", name_.get());
 		partitionOptionsNode_.setFunction(partitionOptionsFunction_);
 		hasOptions_ = TRUE;
 	}
@@ -336,8 +338,8 @@ bool PartitioningScheme::initialiseFromProgram()
 	// Run main partition tree so all variables / globals are set
 	if (!schemeDefinition_.mainProgram()->execute(rv))
 	{
-		msg.print("Error: Failed to run through partitioning scheme code.\n");
-		msg.exit("PartitioningScheme::initialiseFromProgram");
+		Messenger::print("Error: Failed to run through partitioning scheme code.\n");
+		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
 
@@ -350,12 +352,12 @@ bool PartitioningScheme::initialiseFromProgram()
 		pd->setName(partitionName(n));
 	}
 	
-	msg.exit("PartitioningScheme::initialiseFromProgram");
+	Messenger::exit("PartitioningScheme::initialiseFromProgram");
 	return TRUE;
 }
 
 // Setup scheme information manually (for absolute grid data)
-void PartitioningScheme::initialiseAbsolute(const char *name, const char *description)
+void PartitioningScheme::initialiseAbsolute(const char* name, const char* description)
 {
 	name_ = name;
 	description_ = description;
@@ -363,32 +365,32 @@ void PartitioningScheme::initialiseAbsolute(const char *name, const char *descri
 }
 
 // Set name and description of scheme manually
-void PartitioningScheme::setName(const char *name, const char *description)
+void PartitioningScheme::setName(const char* name, const char* description)
 {
 	name_ = name;
 	if (description != NULL) description_ = description;
 }
 
 // Return name of partitioning scheme
-const char *PartitioningScheme::name()
+const char* PartitioningScheme::name()
 {
 	return name_.get();
 }
 
 // Return description of partitioning scheme
-const char *PartitioningScheme::description()
+const char* PartitioningScheme::description()
 {
 	return description_.get();
 }
 
 // Find and set named variable in partitionFunction_
-bool PartitioningScheme::setVariable(const char *name, const char *value)
+bool PartitioningScheme::setVariable(const char* name, const char* value)
 {	
-	msg.enter("PartitioningScheme::setVariable");
+	Messenger::enter("PartitioningScheme::setVariable");
 	if (partitionFunction_ == NULL)
 	{
-		msg.print("Internal Error: No partitionFunction_ defined for variable search.\n");
-		msg.exit("PartitioningScheme::setVariable");
+		Messenger::print("Internal Error: No partitionFunction_ defined for variable search.\n");
+		Messenger::exit("PartitioningScheme::setVariable");
 		return FALSE;
 	}
 	// Search for global variable by that name...
@@ -396,7 +398,7 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 	Variable *var = schemeDefinition_.mainProgram()->globalVariables().find(name);
 	if (var != NULL)
 	{
-		msg.print(Messenger::Verbose, "Found global variable '%s' in partitioning scheme '%s' - setting value to '%s'\n", name, name_.get(), value);
+		Messenger::print(Messenger::Verbose, "Found global variable '%s' in partitioning scheme '%s' - setting value to '%s'\n", name, name_.get(), value);
 		ReturnValue rv(value);
 		var->set(rv);
 		result = TRUE;
@@ -407,7 +409,7 @@ bool PartitioningScheme::setVariable(const char *name, const char *value)
 	}
 
 	if (result) ++changeLog_;
-	msg.exit("PartitioningScheme::setVariable");
+	Messenger::exit("PartitioningScheme::setVariable");
 	return result;
 }
 
@@ -420,7 +422,7 @@ bool PartitioningScheme::staticData()
 // Create partition information from current grid data
 void PartitioningScheme::createPartitionsFromGrid()
 {
-	msg.enter("PartitioningScheme::createPartitionsFromGrid");
+	Messenger::enter("PartitioningScheme::createPartitionsFromGrid");
 	
 	// Remove old partition data and add default (cell) partition
 	partitions_.clear();
@@ -431,7 +433,7 @@ void PartitioningScheme::createPartitionsFromGrid()
 	// Loop over grid elements - we will add new partition nodes as we go...
 	int i, j, k, pid;
 	Vec3<int> npoints = grid_.nXYZ();
-	double ***data = grid_.data3d();
+	double** *data = grid_.data3d();
 	for (i=0; i<npoints.x; ++i)
 	{
 		for (j=0; j<npoints.y; ++j)
@@ -470,32 +472,32 @@ void PartitioningScheme::createPartitionsFromGrid()
 		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
 		prim.createSurfaceMarchingCubes();
 	}
-	msg.exit("PartitioningScheme::createPartitionsFromGrid");
+	Messenger::exit("PartitioningScheme::createPartitionsFromGrid");
 }
 
 // Recalculate partition information (after load or change in options)
 void PartitioningScheme::recalculatePartitions()
 {
-	msg.enter("PartitioningScheme::updatePartitions");
+	Messenger::enter("PartitioningScheme::updatePartitions");
 	
 	// If this scheme contains static data then there's nothingn to be done
 	if (staticData_)
 	{
-		msg.print(Messenger::Verbose, "Scheme '%s' contains static data, so nothing to recalculate.\n", name_.get());
-		msg.exit("PartitioningScheme::updatePartitions");
+		Messenger::print(Messenger::Verbose, "Scheme '%s' contains static data, so nothing to recalculate.\n", name_.get());
+		Messenger::exit("PartitioningScheme::updatePartitions");
 		return;
 	}
 	
 	// If log point has not changed, do nothing
 	if (changeLog_ == partitionLogPoint_)
 	{
-		msg.print(Messenger::Verbose, "Log point for partitions in scheme '%s' is up to date.\n", name_.get());
-		msg.exit("PartitioningScheme::updatePartitions");
+		Messenger::print(Messenger::Verbose, "Log point for partitions in scheme '%s' is up to date.\n", name_.get());
+		Messenger::exit("PartitioningScheme::updatePartitions");
 		return;
 	}
 
 	// Recalculate grid points
-	double ***data = data = grid_.data3d();
+	double** *data = data = grid_.data3d();
 	
 	// Clear partition data
 	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next) pd->clear();
@@ -509,7 +511,7 @@ void PartitioningScheme::recalculatePartitions()
 
 	// Okay, do the calculation
 	Dnchar text(-1, "Generating partition data for scheme '%s'", name_.get());
-	int progid = progress.initialise(text.get(), gridSize_.x, FALSE);
+	int progid = progress.initialise(text.get(), gridSize_.x);
 	x = 0.5*dx;
 	for (i=0; i<gridSize_.x; ++i)
 	{
@@ -549,7 +551,7 @@ void PartitioningScheme::recalculatePartitions()
 	
 	partitionLogPoint_ = changeLog_;
 
-	msg.exit("PartitioningScheme::updatePartitions");
+	Messenger::exit("PartitioningScheme::updatePartitions");
 }
 
 // Return number of partitions now recognised in grid
@@ -577,7 +579,7 @@ PartitionData *PartitioningScheme::partition(int id)
 }
 
 // Return name of nth partition in list
-const char *PartitioningScheme::partitionName(int id)
+const char* PartitioningScheme::partitionName(int id)
 {
 	static ReturnValue rv;
 	rv.set(id);

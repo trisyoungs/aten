@@ -24,19 +24,18 @@
 #include "methods/sd.h"
 #include "methods/mc.h"
 #include "methods/cg.h"
-#include "model/model.h"
 #include "main/aten.h"
-#include "classes/prefs.h"
 #include "base/sysfunc.h"
-#include "parser/filterdata.h"
-#include "gui/gui.h"
 #include "gui/tprocess.uih"
+#include <QtGui/QApplication>
+
+ATEN_USING_NAMESPACE
 
 // Local variables
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 
 // Minimise with conjugate gradient
-bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	cg.setTolerance(linetolerance);
@@ -52,7 +51,7 @@ bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set convergence criteria
-bool Command::function_Converge(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Converge(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	econverge = c->argd(0);
 	fconverge = c->argd(1);
@@ -61,7 +60,7 @@ bool Command::function_Converge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set line minimiser tolerance
-bool Command::function_LineTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_LineTolerance(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	linetolerance = c->argd(0);
 	rv.reset();
@@ -69,7 +68,7 @@ bool Command::function_LineTolerance(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
-bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_MCMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
@@ -84,28 +83,28 @@ bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Use MOPAC to minimise the current model
-bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
 
 	// Grab pointers to MOPAC import and export filters
-	Tree* mopacexport = aten.findFilter(FilterData::ModelExport, "mopac");
+	Tree* mopacexport = aten_.findFilter(FilterData::ModelExport, "mopac");
 	if (mopacexport == NULL)
 	{
-		msg.print("Error: Couldn't find MOPAC export filter.\n");
+		Messenger::print("Error: Couldn't find MOPAC export filter.\n");
 		return FALSE;
 	}
-	Tree* mopacimport = aten.findFilter(FilterData::ModelImport, "mopacarc");
+	Tree* mopacimport = aten_.findFilter(FilterData::ModelImport, "mopacarc");
 	if (mopacimport == NULL)
 	{
-		msg.print("Error: Couldn't find MOPAC arc import filter.\n");
+		Messenger::print("Error: Couldn't find MOPAC arc import filter.\n");
 		return FALSE;
 	}
 	// Check that defined MOPAC exe exists
 	if (!fileExists(prefs.mopacExe()))
 	{
-		msg.print("Error: MOPAC excutable doesn't appear to be at '%s'.\n", prefs.mopacExe());
+		Messenger::print("Error: MOPAC excutable doesn't appear to be at '%s'.\n", prefs.mopacExe());
 		return FALSE;
 	}
 	// Grab/create various filenames and paths
@@ -116,12 +115,12 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	do
 	{
 		runid = AtenMath::randomimax();
-		mopacInput.sprintf("%s%caten-mopac-%i-%i.mop", prefs.tempDir(), PATHSEP, gui.pid(), runid);
+		mopacInput.sprintf("%s%caten-mopac-%i-%i.mop", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid);
 	} while (fileExists(mopacInput));
-	mopacArc.sprintf("%s%caten-mopac-%i-%i.arc", prefs.tempDir(), PATHSEP, gui.pid(), runid);
-	mopacOut.sprintf("%s%caten-mopac-%i-%i.out", prefs.tempDir(), '/', gui.pid(), runid);
+	mopacArc.sprintf("%s%caten-mopac-%i-%i.arc", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid);
+	mopacOut.sprintf("%s%caten-mopac-%i-%i.out", prefs.tempDir(), '/', QApplication::applicationPid(), runid);
 	mopacCmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacInput.get());
-	msg.print("Command to run will be '%s'\n", mopacCmd.get());
+	Messenger::print("Command to run will be '%s'\n", mopacCmd.get());
 	
 	// Save input file
 	LineParser parser;
@@ -131,14 +130,14 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
 	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", mopacInput.get());
 	parser.writeLineF("Temporary MOPAC Job Output : %s\n", mopacArc.get());	
-	for (Atom* i = aten.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
+	for (Atom* i = aten_.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
 	{
 		opt = 1 - i->isPositionFixed();
 		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", Elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
 	}
-	if (aten.currentModelOrFrame()->cell()->type() != UnitCell::NoCell)
+	if (aten_.currentModelOrFrame()->cell()->type() != UnitCell::NoCell)
 	{
-		Matrix mat = aten.currentModelOrFrame()->cell()->axes();
+		Matrix mat = aten_.currentModelOrFrame()->cell()->axes();
 		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[0], mat[1], mat[2]);
 		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[4], mat[5], mat[6]);
 		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[8], mat[9], mat[10]);
@@ -148,7 +147,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Ready to run command....
 	if (!mopacProcess.execute(mopacCmd, NULL, mopacOut))
 	{
-		msg.print("Error: Failed to run MOPAC. Is it installed correctly?\n");
+		Messenger::print("Error: Failed to run MOPAC. Is it installed correctly?\n");
 		return FALSE;
 	}
 
@@ -157,24 +156,24 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	{
 		// Is output file already present?
 		while (mopacProcess.outputAvailable()) mopacProcess.printLineToMessages();
-		gui.processMessages();
+		QApplication::processEvents();
 	}
 	
 	// Check for existence of output file....
 	if (!fileExists(mopacArc))
 	{
-		msg.print("Error: Can't locate MOPAC output '%s'.\n", mopacArc.get());
+		Messenger::print("Error: Can't locate MOPAC output '%s'.\n", mopacArc.get());
 		return FALSE;
 	}
 
 	// Time to load in the results
-	aten.setUseWorkingList(TRUE);
-	int result = CommandNode::run(Command::LoadModel, "c", mopacArc.get());
+	aten_.setUseWorkingList(TRUE);
+	int result = CommandNode::run(Commands::LoadModel, "c", mopacArc.get());
 	// There should now be a model in the working model list (our results)
-	Model* m = aten.workingModels();
+	Model* m = aten_.workingModels();
 	if (m == NULL)
 	{
-		msg.print("Error: No results model found.\n");
+		Messenger::print("Error: No results model found.\n");
 		return FALSE;
 	}
 
@@ -186,7 +185,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 	// Copy the atoms into a temporary model
 	Model tempmodel;
 	tempmodel.copy(m);
-	aten.setUseWorkingList(FALSE);
+	aten_.setUseWorkingList(FALSE);
 	// Start a new undostate in the original model
 	//printf("Target for new coords = %p\n", obj.rs);
 	obj.rs()->beginUndoState("MOPAC geometry optimisation");
@@ -202,7 +201,7 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
-bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	sd.setTolerance(linetolerance);

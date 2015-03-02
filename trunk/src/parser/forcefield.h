@@ -25,7 +25,9 @@
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Forcefield;
 
 // Forcefield Variable
@@ -33,8 +35,9 @@ class ForcefieldVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ForcefieldVariable(Forcefield *ptr = NULL, bool constant = FALSE);
+	ForcefieldVariable(Forcefield* ptr = NULL, bool constant = FALSE);
 	~ForcefieldVariable();
+
 
 	/*
 	// Access Data
@@ -45,15 +48,15 @@ class ForcefieldVariable : public PointerVariable
 	// Function list
 	enum Functions { AddAngle, AddBond, AddInter, AddTorsion, AddType, Finalise, FindAngle, FindBond, FindImproper, FindTorsion, FindType, FindUreyBradley, nFunctions };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	static StepNode* accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex = -1);
 	// Perform desired function
-	static bool performFunction(int i, ReturnValue &rv, TreeNode *node);
+	static bool performFunction(int i, ReturnValue& rv, TreeNode* node);
 	// Print valid accessors/functions
 	static void printAccessors();
 	// Accessor data
@@ -67,14 +70,17 @@ class ForcefieldArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ForcefieldArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	ForcefieldArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+
 
 	/*
 	// Inherited Virtuals
 	*/
 	public:
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

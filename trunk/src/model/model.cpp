@@ -22,16 +22,12 @@
 #include "model/model.h"
 #include "model/undostate.h"
 #include "model/undoevent.h"
-#include "model/clipboard.h"
 #include "methods/calculable.h"
-#include "classes/prefs.h"
-#include "classes/site.h"
-#include "classes/grid.h"
-#include "classes/forcefieldbound.h"
-#include "classes/forcefieldatom.h"
-#include "base/elements.h"
+#include "base/site.h"
+#include "base/grid.h"
 #include "base/pattern.h"
-#include "gui/gui.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructors
 Model::Model() : ListItem<Model>()
@@ -115,13 +111,13 @@ Model::~Model()
 }
 
 // Sets the filename of the model
-void Model::setFilename(const char *s)
+void Model::setFilename(const char* s)
 {
 	filename_ = s;
 }
 
 // Return the stored filename of the model
-const char *Model::filename() const
+const char* Model::filename() const
 {
 	return filename_.get();
 }
@@ -139,7 +135,7 @@ Tree* Model::filter() const
 }
 
 // Sets the name of the model
-void Model::setName(const char *s)
+void Model::setName(const char* s)
 {
 	changeLog.add(Log::Misc);
 	// Add the change to the undo state (if there is one)
@@ -153,7 +149,7 @@ void Model::setName(const char *s)
 }
 
 // Return the name of the model
-const char *Model::name() const
+const char* Model::name() const
 {
 	return name_.get();
 }
@@ -200,8 +196,7 @@ Model::ModelType Model::type()
 // Regenerate icon
 void Model::regenerateIcon()
 {
-	if (gui.applicationType() == QApplication::Tty) return;
-	msg.enter("Model::regenerateIcon");
+	Messenger::enter("Model::regenerateIcon");
 	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
 	
 	prefs.setFrameCurrentModel(FALSE);
@@ -209,13 +204,13 @@ void Model::regenerateIcon()
 	prefs.setViewRotationGlobe(FALSE);
 
 	changeLog.add(Log::Style);
-	icon_ = engine().renderModelIcon(this);
+// 	icon_ = engine().renderModelIcon(this);	ATEN2 TODO
 
 	prefs.setFrameCurrentModel(framemodel);
 	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
 	
-	msg.exit("Model::regenerateIcon");
+	Messenger::exit("Model::regenerateIcon");
 }
 
 // Return icon
@@ -319,20 +314,20 @@ void Model::selectionAddLabels(Atom::AtomLabel al)
 
 void Model::printCoords() const
 {
-	msg.enter("Model::printCoords");
+	Messenger::enter("Model::printCoords");
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), Elements().symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
 	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),Elements().symbol(i),r.x,r.y,r.z,
 	//		i->get_charge(),(ff == NULL ? " " : ff->name(i)));
 	}
-	msg.exit("Model::printCoords");
+	Messenger::exit("Model::printCoords");
 }
 
 // Bohr to Angstrom
 void Model::bohrToAngstrom()
 {
-	msg.enter("Model::bohrToAngstrom");
+	Messenger::enter("Model::bohrToAngstrom");
 	// Coordinates
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
 	// Cell
@@ -344,27 +339,27 @@ void Model::bohrToAngstrom()
 		cell_.set(lengths,cell_.angles());
 	}
 	changeLog.add(Log::Coordinates);
-	msg.exit("Model::bohrToAngstrom");
+	Messenger::exit("Model::bohrToAngstrom");
 }
 
 // Clear charges
 void Model::clearCharges()
 {
-	msg.enter("Model::clearCharges");
+	Messenger::enter("Model::clearCharges");
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) atomSetCharge(i, 0.0);
-	msg.exit("Model::clearCharges");
+	Messenger::exit("Model::clearCharges");
 }
 
 // Print
 void Model::print() const
 {
-	msg.enter("Model::print");
-	msg.print("   Name : %s\n", name_.get());
-	msg.print("   File : %s\n", filename_.get());
-	msg.print("   Mass : %f\n", mass_);
-	if (cell_.type() != UnitCell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", UnitCell::cellType(cell_.type()), density(), Prefs::densityUnit(prefs.densityUnit()));
-	msg.print("  Atoms : %i\n", atoms_.nItems());
-	msg.print(" Id     El   FFType    FFId         X             Y             Z              Q      Sel Fix\n");
+	Messenger::enter("Model::print");
+	Messenger::print("   Name : %s\n", name_.get());
+	Messenger::print("   File : %s\n", filename_.get());
+	Messenger::print("   Mass : %f\n", mass_);
+	if (cell_.type() != UnitCell::NoCell) Messenger::print("   Cell : %s\nDensity : %f %s\n", UnitCell::cellType(cell_.type()), density(), Prefs::densityUnit(prefs.densityUnit()));
+	Messenger::print("  Atoms : %i\n", atoms_.nItems());
+	Messenger::print(" Id     El   FFType    FFId         X             Y             Z              Q      Sel Fix\n");
 	// Print from pattern definition if possible, otherwise just use model atom list
 	Atom* i;
 	int n;
@@ -379,16 +374,16 @@ void Model::print() const
 			}
 		}
 	else for (i = atoms_.first(); i != NULL; i = i->next) i->printSummary();
-	msg.exit("Model::print");
+	Messenger::exit("Model::print");
 }
 
 // Print points information
 void Model::printLogs() const
 {
-	msg.print("Logs for model '%s':\n",name_.get());
+	Messenger::print("Logs for model '%s':\n",name_.get());
 	changeLog.print();
-	msg.print("Expression point : %i\n", expressionPoint_);
-	msg.print("  Patterns point : %i\n", patternsPoint_);
+	Messenger::print("Expression point : %i\n", expressionPoint_);
+	Messenger::print("  Patterns point : %i\n", patternsPoint_);
 }
 
 // Print Forces
@@ -426,12 +421,12 @@ void Model::copy(Model* srcmodel)
 // Copy atom data from specified model
 void Model::copyAtomData(Model* srcmodel, int dat)
 {
-	msg.enter("Model::copyAtomData");
+	Messenger::enter("Model::copyAtomData");
 	// Simple failsafe - check atom numbers in each are the same
 	if (atoms_.nItems() != srcmodel->atoms_.nItems())
 	{
 		printf("Model::copyAtomData <<<< Models have different numbers of atoms (%i/%i) >>>>\n", atoms_.nItems(), srcmodel->atoms_.nItems());
-		msg.exit("Model::copyAtomData");
+		Messenger::exit("Model::copyAtomData");
 		return;
 	}
 	Atom* i, *j;
@@ -447,21 +442,21 @@ void Model::copyAtomData(Model* srcmodel, int dat)
 		if ((dat&Atom::FixedData) || (dat == Atom::AllData)) i->setPositionFixed(j->isPositionFixed());
 		j = j->next;
 	}
-	//msg.print(Messenger::Verbose,"Copied data for %i atoms from model '%s' to model '%s'.\n", count);
+	//Messenger::print(Messenger::Verbose, "Copied data for %i atoms from model '%s' to model '%s'.\n", count);
 // name(), srcmodel->name());
-	msg.exit("Model::copyAtomData");
+	Messenger::exit("Model::copyAtomData");
 }
 
 // Copy range of atom data from specified model
 void Model::copyAtomData(Model* srcmodel, int dat, int startatom, int ncopy)
 {
-	msg.enter("Model::copyAtomData[range]");
+	Messenger::enter("Model::copyAtomData[range]");
 	// Simple failsafe - check atom numbers in each are the same
 	int numatoms = atoms_.nItems();
 	if (numatoms != srcmodel->atoms_.nItems())
 	{
 		printf("Model::copyAtomData[range] <<<< Models have different numbers of atoms (%i/%i) >>>>\n", numatoms, srcmodel->atoms_.nItems());
-		msg.exit("Model::copyAtomData[range]");
+		Messenger::exit("Model::copyAtomData[range]");
 		return;
 	}
 	// Check limits of requested copy
@@ -473,8 +468,8 @@ void Model::copyAtomData(Model* srcmodel, int dat, int startatom, int ncopy)
 		else
 		{
 			// Get staticatoms arrays from both models
-			Atom* *ii = atomArray();
-			Atom* *jj = srcmodel->atomArray();
+			Atom** ii = atomArray();
+			Atom** jj = srcmodel->atomArray();
 			for (int n=startatom; n<finishatom; n++)
 			{
 				// Copy data items referenced in 'dat'
@@ -485,10 +480,10 @@ void Model::copyAtomData(Model* srcmodel, int dat, int startatom, int ncopy)
 				if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) ii[n]->setCharge(jj[n]->charge());
 				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->isPositionFixed());
 			}
-			msg.print(Messenger::Verbose,"Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
+			Messenger::print(Messenger::Verbose, "Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
 		}
 	}
-	msg.exit("Model::copyAtomData[range]");
+	Messenger::exit("Model::copyAtomData[range]");
 }
 
 // Return RMS of last calculated atomic forces

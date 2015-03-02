@@ -358,10 +358,10 @@ static int Try_GS_si(T_SgInfo *SgInfo)
 #endif /* USE_GS_SI */
 
 
-static const char *progn = "sginfo";
+static const char* progn = "sginfo";
 
 
-static void progerror(const char *message)
+static void progerror(const char* message)
 {
   fflush(stdout);
   fprintf(stderr, "%s: %s\n", progn, message);
@@ -389,7 +389,7 @@ static void PrintClearSgError(int ClearError, int CertainSgError)
 }
 
 
-static int str_icmp(const char *s, const char *t)
+static int str_icmp(const char* s, const char* t)
 {
   char     cs, ct;
 
@@ -403,7 +403,7 @@ static int str_icmp(const char *s, const char *t)
 }
 
 
-static int str_ibegin(const char *s1, const char *s2) /* string ignore-case */
+static int str_ibegin(const char* s1, const char* s2) /* string ignore-case */
 {                                                     /* begin              */
   char     u1, u2;
 
@@ -419,7 +419,7 @@ static int str_ibegin(const char *s1, const char *s2) /* string ignore-case */
 }
 
 
-static const char *LegendTabSgName[] =
+static const char* LegendTabSgName[] =
   {
     "",
     "  Extensions",
@@ -545,7 +545,7 @@ static void ListCIF(FILE *fpout)
   const char         **loop, *lbl;
   const T_TabSgName  *tsgn;
 
-  static const char *loop_monoclinic_extensions[] =
+  static const char* loop_monoclinic_extensions[] =
     {
   "_monoclinic_extension   # cf. _symmetry_space_group_id",
   "_monoclinic_axis        # cf. IT Vol. A 1983 sec. 2.16.",
@@ -579,7 +579,7 @@ static void ListCIF(FILE *fpout)
       NULL
     };
 
-  static const char *loop_symmetry_space_group[] =
+  static const char* loop_symmetry_space_group[] =
     {
   "_symmetry_space_group_id",
   "_symmetry_space_group_name_sch",
@@ -1191,7 +1191,7 @@ static int Lc2RLc(T_LatticeConstants *lc, T_LatticeConstants *rlc)
 }
 
 
-static void Lc2MetricalMx(T_LatticeConstants *lc, double *G)
+static void Lc2MetricalMx(T_LatticeConstants *lc, double* G)
 {
   G[0] =        lc->a * lc->a;
   G[1] = G[3] = lc->a * lc->b * lc->cg;
@@ -1287,7 +1287,7 @@ static int HarmonizeSgLatCon(T_SgInfo *SgInfo, T_LatticeConstants *lc, int np)
 }
 
 
-static void MxMultiply(double *ab, double *a, double *b, int ma, int na, int nb)
+static void MxMultiply(double* ab, double* a, double* b, int ma, int na, int nb)
 {
   int     i, j, k;
   double  *ai, *aij, *bk, *bkj;
@@ -1394,7 +1394,7 @@ static int TransformLatticeConstants(T_LatticeConstants *LatConA,
 
 static void usage(void)
 {
-  static const char *quick_help[] =
+  static const char* quick_help[] =
     {
       "-Hall|VolA|VolI   select conventions",
       "-ListTable[=#]    print [parts of] internal table",

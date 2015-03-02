@@ -20,18 +20,20 @@
 */
 
 #include "model/model.h"
-#include "classes/forcefieldbound.h"
+#include "base/forcefieldbound.h"
 #include "base/pattern.h"
 
+ATEN_USING_NAMESPACE
+
 // Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)
-void Pattern::angleEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
+void Pattern::angleEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 {
-	msg.enter("Pattern::angleEnergy");
+	Messenger::enter("Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
 	static double forcek, n, s, eq, rij, theta, energy, c0, c1, c2;
 	static double coseq, delta;
-	static ForcefieldBound *ffb;
-	static PatternBound *pb;
+	static ForcefieldBound* ffb;
+	static PatternBound* pb;
 	static Vec3<double> vecij, veckj;
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
@@ -50,7 +52,7 @@ void Pattern::angleEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 			switch (pb->data()->angleForm())
 			{
 				case (AngleFunctions::None):
-					msg.print("Warning: No function is specified for angle energy %i-%i-%i.\n", i, j, k);
+					Messenger::print("Warning: No function is specified for angle energy %i-%i-%i.\n", i, j, k);
 				case (AngleFunctions::Ignore):
 					break;
 				case (AngleFunctions::Harmonic): 
@@ -91,7 +93,7 @@ void Pattern::angleEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 					energy += 0.5 * forcek * rij * rij;
 					break;
 				default:
-					msg.print( "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
+					Messenger::print( "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
 					break;
 
 			}
@@ -100,21 +102,21 @@ void Pattern::angleEnergy(Model* srcmodel, EnergyStore *estore, int molecule)
 	}
 	// Increment energy for pattern
 	estore->add(EnergyStore::AngleEnergy,energy,id_);
-	msg.exit("Pattern::angleEnergy");
+	Messenger::exit("Pattern::angleEnergy");
 }
 
 // Calculate angle forces in pattern
 void Pattern::angleForces(Model* srcmodel)
 {
-	msg.enter("Pattern::angleForcess");
+	Messenger::enter("Pattern::angleForcess");
 	int i,j,k,aoff,m1;
 	Vec3<double> vec_ji, vec_jk, fi, fj, fk, vec_ik;
 	double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c1, c2, cosx, rij;
 	double du_dtheta, dtheta_dcostheta;
-	ForcefieldBound *ffb;
-	PatternBound *pb;
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	ForcefieldBound* ffb;
+	PatternBound* pb;
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -138,7 +140,7 @@ void Pattern::angleForces(Model* srcmodel)
 			switch (pb->data()->angleForm())
 			{
 				case (AngleFunctions::None):
-					msg.print("Warning: No function is specified for angle force %i-%i-%i.\n", i, j, k);
+					Messenger::print("Warning: No function is specified for angle force %i-%i-%i.\n", i, j, k);
 				case (AngleFunctions::Ignore):
 					du_dtheta = 0.0;
 					break;
@@ -178,7 +180,7 @@ void Pattern::angleForces(Model* srcmodel)
 					du_dtheta = -forcek * (rij - eq);
 					break;
 				default:
-					msg.print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
+					Messenger::print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
 					break;
 			}
 
@@ -208,5 +210,5 @@ void Pattern::angleForces(Model* srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	msg.exit("Pattern::angleForcess");
+	Messenger::exit("Pattern::angleForcess");
 }

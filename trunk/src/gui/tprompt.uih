@@ -26,10 +26,17 @@
 #include <QtCore/QObject>
 #include "base/dnchar.h"
 
-// Forward declarations
+// Qt Forward Declarations
 class QListWidget;
 class QListWidgetItem;
 class QLineEdit;
+
+ATEN_USING_NAMESPACE
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward declarations
+/* none */
 
 class TPrompt : public QWidget
 {
@@ -63,5 +70,7 @@ class TPrompt : public QWidget
 	signals:
 	void returnPressed();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -38,13 +38,13 @@ class Cli
 	// Short option character
 	char shortOpt;
 	// Long option keyword
-	const char *longOpt;
+	const char* longOpt;
 	// Argument type
 	int argument;
 	// Argument text (for description)
-	const char *argText;
+	const char* argText;
 	// Description of option
-	const char *description;
+	const char* description;
 
 	/*
 	// Member functions
@@ -53,7 +53,7 @@ class Cli
 	// Search for short option
 	static Cli::CliSwitch cliSwitch(char c);
 	// Search for long option
-	static Cli::CliSwitch cliSwitch(const char *s);
+	static Cli::CliSwitch cliSwitch(const char* s);
 };
 
 #endif
